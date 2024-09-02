@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOALPARAMETERBOOL_H_
-#define _DEOALPARAMETERBOOL_H_
+#ifndef _DEOGLPARAMETERBOOL_H_
+#define _DEOGLPARAMETERBOOL_H_
 
 #include "deoglParameter.h"
 

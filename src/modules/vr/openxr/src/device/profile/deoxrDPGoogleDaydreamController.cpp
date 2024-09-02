@@ -71,7 +71,7 @@ void deoxrDPGoogleDaydreamController::pSuggestBindings(){
 	// - /input/grip/pose
 	// - /input/aim/pose
 	
-	const int bindingCount = 5 * 2;
+	const int bindingCount = 6 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -82,7 +82,8 @@ void deoxrDPGoogleDaydreamController::pSuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
+		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
 		
@@ -101,7 +102,7 @@ void deoxrDPGoogleDaydreamController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "gdc_" );
+	pCreateDevice( device, left, "gdc_", true );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddButtonTrigger( device, trigger, false ); // has to be button 0

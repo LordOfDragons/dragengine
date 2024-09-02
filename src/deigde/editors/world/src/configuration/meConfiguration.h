@@ -92,6 +92,7 @@ private:
 	float pSensitivity;
 	
 	bool pEnableGI;
+	bool pEnableAuralization;
 	
 	deInputEvent::eKeyCodes pHotKeys[ EHK_COUNT ];
 	
@@ -179,6 +180,12 @@ public:
 	
 	/** \brief Set enable GI in cameras. */
 	void SetEnableGI( bool enable );
+	
+	/** \brief Enable auralization in microphones. */
+	inline bool GetEnableAuralization() const{ return pEnableAuralization; }
+	
+	/** \brief Set enable auralization in microphones. */
+	void SetEnableAuralization( bool enable );
 	
 	
 	

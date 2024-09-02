@@ -1,0 +1,90 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.User
+
+
+/**
+ * \brief Listener for service response and events related to user.
+ * \version 1.23
+ */
+interface ServiceUserListener
+	/**
+	 * \brief Logging in user finished.
+	 * \param service Service sending the event.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onLoginUser(ServiceUser service, Exception exception)
+	
+	/**
+	 * \brief Logging out user finished.
+	 * \param service Service sending the event.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onLogoutUser(ServiceUser service, Exception exception)
+	
+	/**
+	 * \brief Receive authentification token finished.
+	 * \param service Service sending the event.
+	 * \param token Authentification token. On failure null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetAuthToken(ServiceUser service, ServiceUserAuthToken token, Exception exception)
+	
+	/**
+	 * \brief User information received.
+	 * 
+	 * If logging in is required and no user is logged in failure is returned.
+	 * 
+	 * \param service Service sending the event.
+	 * \param info User information. On failure null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetUserInfo(ServiceUser service, ServiceUserInfo info, Exception exception)
+	
+	/**
+	 * \brief Loading resource finished.
+	 * \param service Service sending the event.
+	 * \param url URL of resource to load.
+	 * \param resource Loaded resource. On failure null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onLoadUserResource(ServiceUser service, String url, Object resource, Exception exception)
+	
+	/**
+	 * \brief Report user finished.
+	 * \param service Service sending the event.
+	 * \param userId Identifier of user the report has been submitted for.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onReportUser(ServiceUser service, String userId, Exception exception)
+	
+	/**
+	 * \brief User wallet balance finished.
+	 * \param service Service sending the event.
+	 * \param amount Amount in store currency.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onUserWalletBalance(ServiceUser service, String amount, Exception exception)
+end

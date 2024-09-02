@@ -110,7 +110,7 @@ const decDVector &view, float fovX, float fovY, int screenWidth, int screenHeigh
 		int lodLevel = 0;
 		
 		if( component.GetModel() ){
-			const deoglRModel &model = *component.GetModel();
+			const deoglRModel &model = component.GetModel();
 			const int lodLevelCount = model.GetLODCount();
 			
 			if( lodLevelCount > 1 ){
@@ -180,7 +180,7 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight ){
 			continue;
 		}
 		
-		const deoglRModel &model = *component.GetModel();
+		const deoglRModel &model = component.GetModel();
 		const int lodLevelCount = model.GetLODCount();
 		
 		if( lodLevelCount < 2 ){
@@ -219,7 +219,7 @@ float boxWidth, float boxHeight, int screenWidth, int screenHeight ){
 		return;
 	}
 	
-	const deoglRModel &model = *component.GetModel();
+	const deoglRModel &model = component.GetModel();
 	const int lodLevelCount = model.GetLODCount();
 	
 	if( lodLevelCount < 2 ){
@@ -256,7 +256,7 @@ const decDVector &position, int size ){
 		int lodLevel = 0;
 		
 		if( component.GetModel() ){
-			const deoglRModel &model = *component.GetModel();
+			const deoglRModel &model = component.GetModel();
 			const int lodLevelCount = model.GetLODCount();
 			
 			if( lodLevelCount > 1 ){

@@ -90,7 +90,7 @@ void deGraphicNull::CleanUp(){
 void deGraphicNull::SetRenderWindow( deRenderWindow *renderWindow ){
 }
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deGraphicNull::InitAppWindow(){
 }
 

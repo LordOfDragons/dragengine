@@ -73,6 +73,7 @@
 #undef GetMessage
 #undef GetProp
 #undef GetClassName
+#undef CreateService
 
 
 #ifdef OS_W32_VS

@@ -27,9 +27,11 @@
 
 #include <libdscript/libdscript.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 
 #include "dedsLoadingScreen.h"
+#include "dedsEngineException.h"
 
 
 class deClassPhysicsSystem;
@@ -214,6 +216,9 @@ class deClassVideo;
 class deClassVideoPlayer;
 class deClassVRSystem;
 class deClassWorld;
+class deClassService;
+class deClassServiceListener;
+class deClassServiceObject;
 
 class deCollisionInfo;
 class dedsColliderListenerClosest;
@@ -249,7 +254,9 @@ public:
 		esLoadGame,
 		esCreateGameObject,
 		esInitGameObject,
-		esReady
+		esReady,
+		esRestartShutdown,
+		esRestartInit
 	};
 	
 	struct sModuleVersion{
@@ -401,6 +408,9 @@ private:
 	deClassSafeArray *pClsSA;
 	deClassScriptSystem *pClsScrSys;
 	deClassShapeList *pClsShaList;
+	deClassService *pClsService;
+	deClassServiceListener *pClsServiceListener;
+	deClassServiceObject *pClsServiceObject;
 	deClassServer *pClsSvr;
 	deClassSkin *pClsSkin;
 	deClassSkinBuilder *pClsSkinBuilder;
@@ -469,6 +479,10 @@ private:
 	
 	// objects
 	dsValue *pGameObj;
+	decString pRestartInfo;
+	bool pRestartRequested;
+	
+	deVFSContainer::Ref pVFSContainerHideScriptDirectory;
 	
 public:
 	// constructor, destructor
@@ -517,6 +531,12 @@ public:
 	
 	/** \brief Create deSpeaker peer. */
 	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	
+	/**
+	 * \brief Create deService peer.
+	 * \version 1.23
+	 */
+	virtual deBaseScriptingService *CreateService( deService *service );
 	
 	/**
 	 * Initializes the game scripts. This usually involves creating the
@@ -724,6 +744,9 @@ public:
 	inline deClassServer *GetClassServer() const{ return pClsSvr; }
 	inline deClassServerListener *GetClassServerListener() const{ return pClsSvrL; }
 	inline deClassShapeList *GetClassShapeList() const{ return pClsShaList; }
+	inline deClassService *GetClassService() const{ return pClsService; }
+	inline deClassServiceListener *GetClassServiceListener() const{ return pClsServiceListener; }
+	inline deClassServiceObject *GetClassServiceObject() const{ return pClsServiceObject; }
 	inline deClassSkin *GetClassSkin() const{ return pClsSkin; }
 	inline deClassSkinBuilder *GetClassSkinBuilder() const{ return pClsSkinBuilder; }
 	inline deClassSky *GetClassSky() const{ return pClsSky; }
@@ -793,6 +816,9 @@ public:
 	const decPoint3 &GetPoint3( dsRealObject *myself ) const;
 	void PushPoint3( dsRunTime *rt, const decPoint3 &pt );
 	
+	inline const decString &GetRestartInfo() const{ return pRestartInfo; }
+	void RequestRestart( const char *info );
+	
 	/** \brief Adds a value to delete later. */
 	void AddValueDeleteLater( dsValue *value );
 	/** \brief Delete all values registered to be deleted later. */
@@ -813,6 +839,8 @@ private:
 	int pGetConstantValue(dsClass *Class, const char *name) const;
 	bool pCallFunction(const char *name);
 	decString BuildFullName( const dsClass *theClass ) const;
+	void pAddVFSContainerHideScriptDirectory();
+	void pRemoveVFSContainerHideScriptDirectory();
 	
 public:
 	void pAddExceptionTrace( deErrorTracePoint *tracePoint );

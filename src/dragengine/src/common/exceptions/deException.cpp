@@ -29,7 +29,7 @@
 #include <string.h>
 
 #ifdef OS_UNIX
-#ifndef ANDROID
+#ifndef OS_ANDROID
 #ifndef OS_BEOS
 #include <execinfo.h>
 #endif
@@ -40,7 +40,7 @@
 #include "../string/decStringList.h"
 #include "../math/decMath.h"
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <android/log.h>
 #include <unwind.h>
 #include <dlfcn.h>
@@ -146,7 +146,7 @@ void deException::PrintError() const{
 // this many first entries are related to exception handling. skip them
 #define SKIP_SELF_TRACE_COUNT	3
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 struct sBacktraceState{
 	void **current;
 	void **end;
@@ -169,7 +169,7 @@ static _Unwind_Reason_Code unwindCallback( struct _Unwind_Context *context, void
 #endif
 
 void deException::pBuildBacktrace(){
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS
 	const int maxFramepointerCount = MAX_BACKTRACE_COUNT + SKIP_SELF_TRACE_COUNT;
 	void *framepointers[ maxFramepointerCount ];
 	const int fpcount = backtrace( framepointers, maxFramepointerCount );
@@ -187,7 +187,7 @@ void deException::pBuildBacktrace(){
 	free( symbols );
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	// NOTE unwindCallback can segfault for strange reasons. The void* pointers are not
 	//      const on purpose. Using them const can result in segfault due to compiler
 	//      trying to optimize the wrong way
@@ -213,12 +213,14 @@ void deException::pBuildBacktrace(){
 			char * const demangled = abi::__cxa_demangle( symbol, 0, 0, &status );
 			if( demangled ){
 				symbol.Format( "%s(%s+0x%x) [%p] %s", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr, demangled );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr, demangled );
 				free( demangled );
 				
 			}else{
 				symbol.Format( "%s(%s+0x%x) [%p]", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr );
 			}
 			
 		}else{

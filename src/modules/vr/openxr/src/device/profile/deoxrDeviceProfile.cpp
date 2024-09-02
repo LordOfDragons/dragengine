@@ -89,9 +89,48 @@ deoxrSession *deoxrDeviceProfile::pGetSession() const{
 	return GetInstance().GetOxr().GetSession();
 }
 
-deVROpenXR::eInputActions deoxrDeviceProfile::pGripPoseAction( bool left ) const{
-// 	return deVROpenXR::eiaPose;
+void deoxrDeviceProfile::pHasHandDevices( deoxrDevice *deviceLeft, deoxrDevice *deviceRight,
+bool &hasLeft, bool &hasRight ) const{
+	const deoxrDeviceManager &devices = GetInstance().GetOxr().GetDevices();
+	const int count = devices.GetCount();
+	int i;
+	
+	hasLeft = false;
+	hasRight = false;
+	
+	for( i=0; i<count; i++ ){
+		deoxrDevice * const device = devices.GetAt( i );
+		if( deviceLeft == device || deviceRight == device ){
+			continue;
+		}
+		
+		switch( device->GetType() ){
+		case deInputDevice::edtVRLeftHand:
+			hasLeft = true;
+			break;
+			
+		case deInputDevice::edtVRRightHand:
+			hasRight = true;
+			break;
+			
+		default:
+			break;
+		}
+	}
+}
+
+bool deoxrDeviceProfile::pHasAnyHandDevice( deoxrDevice *deviceLeft, deoxrDevice *deviceRight ) const{
+	bool hasLeft = false, hasRight = false;
+	pHasHandDevices( deviceLeft, deviceRight, hasLeft, hasRight );
+	return hasLeft || hasRight;
+}
+
+deVROpenXR::eInputActions deoxrDeviceProfile::pPoseAction( bool left ) const{
 	return left ? deVROpenXR::eiaPoseLeft : deVROpenXR::eiaPoseRight;
+}
+
+deVROpenXR::eInputActions deoxrDeviceProfile::pPoseAction2( bool left ) const{
+	return left ? deVROpenXR::eiaPoseLeft2 : deVROpenXR::eiaPoseRight2;
 }
 
 void deoxrDeviceProfile::pAdd( deoxrInstance::sSuggestBinding *&bindings,
@@ -113,7 +152,8 @@ bool deoxrDeviceProfile::pMatchesProfile( const deoxrPath &path ) const{
 		&& pPath == state.interactionProfile;
 }
 
-void deoxrDeviceProfile::pCreateDevice( deoxrDevice::Ref &device, bool leftHand, const char *idPrefix ){
+void deoxrDeviceProfile::pCreateDevice( deoxrDevice::Ref &device, bool leftHand,
+const char *idPrefix, bool withOrientationAction ){
 	deVROpenXR &oxr = GetInstance().GetOxr();
 	device.TakeOver( new deoxrDevice( oxr, *this ) );
 	
@@ -132,11 +172,19 @@ void deoxrDeviceProfile::pCreateDevice( deoxrDevice::Ref &device, bool leftHand,
 		device->SetSubactionPath( GetInstance().GetPathHandRight() );
 	}
 	
-	device->SetActionPose( oxr.GetAction( pGripPoseAction( leftHand ) ) );
+	device->SetActionPose( oxr.GetAction( pPoseAction( leftHand ) ) );
+	if( withOrientationAction ){
+		device->SetActionPoseOrientation( oxr.GetAction( pPoseAction2( leftHand ) ) );
+	}
+	
 	device->SetID( id );
 	
 	device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(),
 		device->GetActionPose(), device->GetSubactionPath(), pDeviceRotation ) ) );
+	if( withOrientationAction ){
+		device->SetSpacePoseOrientation( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(),
+			device->GetActionPoseOrientation(), device->GetSubactionPath(), pDeviceRotation ) ) );
+	}
 }
 
 deoxrDeviceComponent *deoxrDeviceProfile::pAddComponent( deoxrDevice &device,
@@ -297,7 +345,7 @@ deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentGrip( deoxrDevice &device
 	return pAddComponent( device, deInputDeviceComponent::ectGeneric, "Grip", "grip", "Grip" );
 }
 
-void deoxrDeviceProfile::pAddAxesGripGrab( deoxrDevice &device, deoxrDeviceComponent *component ){
+void deoxrDeviceProfile::pAddAxisGripGrab( deoxrDevice &device, deoxrDeviceComponent *component ){
 	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripGrab ) );
 	axis->SetType( deInputDeviceAxis::eatGripGrab );
@@ -312,7 +360,7 @@ void deoxrDeviceProfile::pAddAxesGripGrab( deoxrDevice &device, deoxrDeviceCompo
 	device.AddAxis( axis );
 }
 
-void deoxrDeviceProfile::pAddAxesGripSqueeze( deoxrDevice &device, deoxrDeviceComponent *component ){
+void deoxrDeviceProfile::pAddAxisGripSqueeze( deoxrDevice &device, deoxrDeviceComponent *component ){
 	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripSqueeze ) );
 	axis->SetType( deInputDeviceAxis::eatGripSqueeze );
@@ -327,7 +375,7 @@ void deoxrDeviceProfile::pAddAxesGripSqueeze( deoxrDevice &device, deoxrDeviceCo
 	device.AddAxis( axis );
 }
 
-void deoxrDeviceProfile::pAddAxesGripPinch( deoxrDevice &device, deoxrDeviceComponent *component ){
+void deoxrDeviceProfile::pAddAxisGripPinch( deoxrDevice &device, deoxrDeviceComponent *component ){
 	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripSqueeze ) );
 	axis->SetType( deInputDeviceAxis::eatGripPinch );

@@ -1,0 +1,290 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Rating widget supporting up and down voting.
+ * \version 1.23
+ * 
+ * Widget can be read-only in which case labels are shown instead of buttons.
+ * 
+ * Designer selectors:
+ * - Widget: RatingUpDown
+ * 
+ * Read-write designer selectors:
+ * - Button up-vote: Button.RatingUpDown.Up
+ * - Button down-vote: Button.RatingUpDown.Down
+ * 
+ * Read-only designer selectors:
+ * - Panel up-vote: Panel.RatingUpDown.ReadOnly.Up
+ * - Image up-vote: Image.RatingUpDown.ReadOnly.Up
+ * - Label up-vote: Label.RatingUpDown.ReadOnly.Up
+ * - Panel down-vote: Panel.RatingUpDown.ReadOnly.Down
+ * - Image down-vote: Image.RatingUpDown.ReadOnly.Down
+ * - Label down-vote: Label.RatingUpDown.ReadOnly.Down
+ */
+class RatingUpDown extends Panel implements RatingModelListener
+	var RatingModel pModel
+	var ToggleButton pButtonUp, pButtonDown
+	var Panel pPanelUp, pPanelDown
+	var DisplayImage pImageUp, pImageDown
+	var Label pLabelUp, pLabelDown
+	var bool pReadOnly
+	
+	
+	/**
+	 * \brief Create rating widget.
+	 * \param model Rating model.
+	 */
+	func new(RatingModel model) this(model, false)
+	end
+	
+	/**
+	 * \brief Create rating widget.
+	 * \param model Rating model.
+	 */
+	func new(RatingModel model, bool readOnly)
+		pModel = model
+		pReadOnly
+		
+		runWhileBlockingLayout(block
+			createContent()
+			setDesignerSelector("RatingUpDown")
+			updateStates()
+		end)
+		
+		model.addListener(this)
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pModel.removeListener(this)
+		pButtonUp = pButtonDown = null
+		pPanelUp = pPanelDown = null
+		pImageUp = pImageDown = null
+		pLabelUp = pLabelDown = null
+		
+		super.dispose()
+	end
+	
+	
+	/** \brief Widget is read-only. */
+	func bool getReadOnly()
+		return pReadOnly
+	end
+	
+	
+	/** \brief Update UI states. */
+	func void updateStates()
+		runWhileBlockingLayout(block
+			var FormattingHelper fh = FormattingHelper.new()
+			var Dictionary ratingCounts = pModel.getCountsPerType()
+			var float countUp = ratingCounts.getAt(1, 0) cast float
+			var float countDown = ratingCounts.getAt(0, 0) cast float
+			var int rating = pModel.getRating() != null if pModel.getRating().value() else -1
+			
+			if pReadOnly
+				pLabelUp.setText(fh.formatCount(countUp))
+				pLabelDown.setText(fh.formatCount(countDown))
+				
+			else
+				pButtonUp.setText(fh.formatCount(countUp))
+				pButtonUp.setToggled(rating == 1)
+				
+				pButtonDown.setText(fh.formatCount(countDown))
+				pButtonDown.setToggled(rating == 0)
+			end
+		end)
+	end
+	
+	
+	/**
+	 * \brief Rate up button clicked.
+	 * 
+	 * If current model rating is not 1 sets model rating to 1.
+	 * Otherwise sets model rating to null.
+	 * 
+	 * \throws EInvalidAction Widget is read-only.
+	 */
+	func void onRateUp()
+		if pReadOnly
+			throw EInvalidAction.new("Read-only")
+		end
+		
+		var Integer rating = pModel.getRating()
+		
+		if rating == null or not rating.equals(1)
+			pModel.setRating(Integer.new(1))
+			
+		else
+			pModel.setRating(null)
+		end
+	end
+	
+	/**
+	 * \brief Rate down button clicked.
+	 * 
+	 * If current model rating is not 0 sets model rating to 0.
+	 * Otherwise sets model rating to null.
+	 * \throws EInvalidAction Widget is read-only.
+	 */
+	func void onRateDown()
+		if pReadOnly
+			throw EInvalidAction.new("Read-only")
+		end
+		
+		var Integer rating = pModel.getRating()
+		
+		if rating == null or not rating.equals(0)
+			pModel.setRating(Integer.new(0))
+			
+		else
+			pModel.setRating(null)
+		end
+	end
+	
+	
+	/** \brief Rating changed. */
+	func void ratingChanged(RatingModel model)
+		updateStates()
+	end
+	
+	/** \brief Counts per type changed. */
+	func void countsPerTypeChanged(RatingModel model)
+		updateStates()
+	end
+	
+	
+	/** \brief Designer selector changed. */
+	func void onDesignerSelectorChanged()
+		super.onDesignerSelectorChanged()
+		
+		runWhileBlockingLayout(block
+			var String selector = getDesignerSelector()
+			
+			if pReadOnly
+				var String panelSelector = "Panel." + selector
+				var String imageSelector = "Image." + selector
+				var String labelSelector = "Label." + selector
+				
+				pPanelUp.setDesignerSelector(panelSelector + ".ReadOnly.Up")
+				pPanelDown.setDesignerSelector(panelSelector + ".ReadOnly.Down")
+				pImageUp.setDesignerSelector(imageSelector + ".ReadOnly.Up")
+				pImageDown.setDesignerSelector(imageSelector + ".ReadOnly.Down")
+				pLabelUp.setDesignerSelector(labelSelector + ".ReadOnly.Up")
+				pLabelDown.setDesignerSelector(labelSelector + ".ReadOnly.Down")
+			
+			else
+				var String buttonSelector = "Button." + selector
+				
+				pButtonUp.setDesignerSelector(buttonSelector + ".Up")
+				pButtonDown.setDesignerSelector(buttonSelector + ".Down")
+			end
+		end)
+	end
+	
+	
+	/** \brief Up vote button or null if read-only. */
+	protected func ToggleButton getButtonUp()
+		return pButtonUp
+	end
+	
+	/** \brief Down vote button or null if read-only. */
+	protected func ToggleButton getButtonDown()
+		return pButtonDown
+	end
+	
+	/** \brief Up vote panel or null if not read-only. */
+	protected func Panel getPanelUp()
+		return pPanelUp
+	end
+	
+	/** \brief Down vote panel or null if not read-only. */
+	protected func Panel getPanelDown()
+		return pPanelDown
+	end
+	
+	/** \brief Up vote image or null if not read-only. */
+	protected func DisplayImage getImageUp()
+		return pImageUp
+	end
+	
+	/** \brief Down vote image or null if not read-only. */
+	protected func DisplayImage getImageDown()
+		return pImageDown
+	end
+	
+	/** \brief Up vote label or null if not read-only. */
+	protected func Label getLabelUp()
+		return pLabelUp
+	end
+	
+	/** \brief Down vote label or null if not read-only. */
+	protected func Label getLabelDown()
+		return pLabelDown
+	end
+	
+	/** \brief Create content. */
+	protected func void createContent()
+		setLayout(GridLayout.new(2, 1))
+		
+		if pReadOnly
+			pPanelUp = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p
+				pImageUp = DisplayImage.new()
+				p.addWidget(pImageUp)
+				
+				pLabelUp = Label.new("")
+				p.addWidget(pLabelUp)
+			end)
+			addWidget(pPanelUp)
+			
+			pPanelDown = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p
+				pImageDown = DisplayImage.new()
+				p.addWidget(pImageDown)
+				
+				pLabelDown = Label.new("")
+				p.addWidget(pLabelDown)
+			end)
+			addWidget(pPanelDown)
+			
+		else
+			pButtonUp = ToggleButton.new("", BlockActionListener.new(block ActionEvent event
+				onRateUp()
+			end))
+			pButtonUp.setLayout(CentrizedBoxLayout.new(LayoutAxis.x))
+			addWidget(pButtonUp)
+			
+			pButtonDown = ToggleButton.new("", BlockActionListener.new(block ActionEvent event
+				onRateDown()
+			end))
+			pButtonDown.setLayout(CentrizedBoxLayout.new(LayoutAxis.x))
+			addWidget(pButtonDown)
+		end
+	end
+end

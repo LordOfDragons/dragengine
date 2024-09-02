@@ -67,7 +67,7 @@ public:
 	deRenderWindow *CreateRenderWindow();
 	
 	/** \brief Create render window inside a host window. */
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	deRenderWindow *CreateRenderWindowInside( void *window );
 	#endif
 	#ifdef OS_BEOS

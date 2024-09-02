@@ -44,7 +44,7 @@
 
 
 
-// public func new()
+// func new()
 deClassGame::nfNew::nfNew( const sInitData &init ) :
 dsFunction( init.clsGame, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
@@ -54,7 +54,7 @@ void deClassGame::nfNew::RunFunction( dsRunTime*, dsValue* ){
 
 
 
-// public func void inputEvent( InputEvent event )
+// func void inputEvent(InputEvent event)
 deClassGame::nfInputEvent::nfInputEvent( const sInitData &init ) :
 dsFunction( init.clsGame, "inputEvent", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -65,7 +65,7 @@ void deClassGame::nfInputEvent::RunFunction( dsRunTime*, dsValue* ){
 
 
 
-// public func void initGame()
+// func void initGame()
 deClassGame::nfInitGame::nfInitGame( const sInitData &init ) :
 dsFunction( init.clsGame, "initGame", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -73,7 +73,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 void deClassGame::nfInitGame::RunFunction( dsRunTime*, dsValue* ){
 }
 
-// ppublic func void cleanUp()
+// pfunc void cleanUp()
 deClassGame::nfCleanUp::nfCleanUp( const sInitData &init ) :
 dsFunction( init.clsGame, "cleanUp", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -81,7 +81,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 void deClassGame::nfCleanUp::RunFunction( dsRunTime*, dsValue* ){
 }
 
-// public func void onFrameUpdate()
+// func void onFrameUpdate()
 deClassGame::nfOnFrameUpdate::nfOnFrameUpdate( const sInitData &init ) :
 dsFunction( init.clsGame, "onFrameUpdate", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -89,7 +89,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 void deClassGame::nfOnFrameUpdate::RunFunction( dsRunTime*, dsValue* ){
 }
 
-// public func void onResizeRenderWindow()
+// func void onResizeRenderWindow()
 deClassGame::nfOnResizeRenderWindow::nfOnResizeRenderWindow( const sInitData &init ) :
 dsFunction( init.clsGame, "onResizeRenderWindow", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -97,7 +97,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 void deClassGame::nfOnResizeRenderWindow::RunFunction( dsRunTime*, dsValue* ){
 }
 
-// public func void onAppActivate()
+// func void onAppActivate()
 deClassGame::nfOnAppActivate::nfOnAppActivate( const sInitData &init ) :
 dsFunction( init.clsGame, "onAppActivate", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -107,10 +107,7 @@ void deClassGame::nfOnAppActivate::RunFunction( dsRunTime*, dsValue* ){
 
 
 
-// Arguments
-//////////////
-
-// public func int getArgumentCount()
+// func int getArgumentCount()
 deClassGame::nfGetArgumentCount::nfGetArgumentCount( const sInitData &init ) :
 dsFunction( init.clsGame, "getArgumentCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
@@ -121,7 +118,7 @@ void deClassGame::nfGetArgumentCount::RunFunction( dsRunTime *rt, dsValue* ){
 	rt->PushInt( ds.GetGameEngine()->GetArguments()->GetCount() );
 }
 
-// public func String getArgumentAt( int index )
+// func String getArgumentAt(int index)
 deClassGame::nfGetArgumentAt::nfGetArgumentAt( const sInitData &init ) :
 dsFunction( init.clsGame, "getArgumentAt", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
@@ -133,6 +130,16 @@ void deClassGame::nfGetArgumentAt::RunFunction( dsRunTime *rt, dsValue* ){
 	const int index = rt->GetValue( 0 )->GetInt();
 	
 	rt->PushString( ds.GetGameEngine()->GetArguments()->GetArgument( index ) );
+}
+
+// func String getRestartInfo()
+deClassGame::nfGetRestartInfo::nfGetRestartInfo( const sInitData &init ) :
+dsFunction( init.clsGame, "getRestartInfo", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsString ){
+}
+void deClassGame::nfGetRestartInfo::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassGame* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetRestartInfo() );
 }
 
 
@@ -179,6 +186,7 @@ void deClassGame::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetArgumentCount( init ) );
 	AddFunction( new nfGetArgumentAt( init ) );
+	AddFunction( new nfGetRestartInfo( init ) );
 	
 	CalcMemberOffsets();
 }

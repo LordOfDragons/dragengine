@@ -291,6 +291,10 @@ void decrbPanelModuleStatus::UpdateModuleStatus(){
 			pEditType->setText( "Archive" );
 			break;
 			
+		case deModuleSystem::emtService:
+			pEditType->setText( "Service" );
+			break;
+			
 		default:
 			pEditType->setText( "Unknown Type" );
 		}

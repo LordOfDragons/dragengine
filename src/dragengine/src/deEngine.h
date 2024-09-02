@@ -82,6 +82,7 @@ class deResourceManager;
 class deRigManager;
 class deScriptingSystem;
 class deServerManager;
+class deServiceManager;
 class deSkinManager;
 class deSkyManager;
 class deSkyInstanceManager;
@@ -330,6 +331,7 @@ public:
 	deVideoManager *GetVideoManager() const;
 	deVideoPlayerManager *GetVideoPlayerManager() const;
 	deWorldManager *GetWorldManager() const;
+	deServiceManager *GetServiceManager() const;
 	
 	/** \brief Parallel processing. */
 	inline deParallelProcessing &GetParallelProcessing(){ return *pParallelProcessing; }

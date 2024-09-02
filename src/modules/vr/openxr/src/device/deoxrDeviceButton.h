@@ -26,6 +26,7 @@
 #define _DEOXRDEVICEBUTTON_H_
 
 #include "deoxrDeviceComponent.h"
+#include "deoxrDeviceAxis.h"
 #include "../action/deoxrAction.h"
 
 #include <stdint.h>
@@ -58,6 +59,7 @@ private:
 	
 	deoxrAction::Ref pActionPress;
 	deoxrAction::Ref pActionTouch;
+	deoxrDeviceAxis::Ref pFakeFromAxis;
 	
 	decString pID;
 	decString pName;
@@ -111,6 +113,12 @@ public:
 	/** Set touch button action. */
 	void SetActionTouch( deoxrAction *action );
 	
+	/** Button state is faked from axis state. */
+	inline const deoxrDeviceAxis::Ref &GetFakeFromAxis() const{ return pFakeFromAxis; }
+
+	/** Set button state is faked from axis state. */
+	void SetFakeFromAxis( const deoxrDeviceAxis::Ref &axis );
+
 	
 	
 	/** Identifier. */

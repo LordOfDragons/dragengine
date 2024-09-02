@@ -126,6 +126,7 @@
     <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUTF8Decoder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decBase64.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decDateTime.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decLayerMask.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decPRNG.cpp" />
@@ -699,6 +700,13 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\service\deService.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\service\deServiceObject.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\service\deServiceManager.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingService.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceService.cpp" />
+    <ClCompile Include="..\..\src\dragengine\base64\base64.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dragengine\src\app\deCmdLineArgs.h" />
@@ -795,6 +803,7 @@
     <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUTF8Decoder.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decBase64.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decDateTime.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decLayerMask.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decPRNG.h" />
@@ -1377,6 +1386,13 @@
     <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\threading\deWriteLockGuard.h" />
     <ClInclude Include="dragengine_configuration.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\service\deService.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\service\deServiceObject.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\service\deServiceManager.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingService.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceService.h" />
+    <ClInclude Include="..\..\src\dragengine\base64\base64.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\extern\zlib\extern_zlib.vcxproj">
@@ -1472,6 +1488,7 @@
     </PublicModuleDirectories>
     <AllProjectBMIsArePublic />
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\dragengine\</OutDir>
+    <IncludePath>$(SolutionDir)..\src\dragengine\base64;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -1481,6 +1498,7 @@
     </PublicModuleDirectories>
     <AllProjectBMIsArePublic />
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\dragengine\</OutDir>
+    <IncludePath>$(SolutionDir)..\src\dragengine\base64;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -1489,6 +1507,7 @@
     <PublicModuleDirectories />
     <AllProjectBMIsArePublic />
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\dragengine\</OutDir>
+    <IncludePath>$(SolutionDir)..\src\dragengine\base64;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

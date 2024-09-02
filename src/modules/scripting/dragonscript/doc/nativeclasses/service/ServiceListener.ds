@@ -1,0 +1,43 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+/**
+ * \brief Service listener.
+ * \version 1.23
+ * 
+ * This is a native class.
+ */
+interface ServiceListener
+	/**
+	 * \brief Response received for request.
+	 * \param service Service receiving the response.
+	 * \param id Identifier of request this response belongs to.
+	 * \param response Response data.
+	 * \param finished True if the request finished or false if more responses will be received.
+	 */
+	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
+	
+	/**
+	 * \brief Request failed.
+	 * \param service Service receiving the failure.
+	 * \param id Identifier of request that failed.
+	 * \param error Failure data.
+	 */
+	func void requestFailed(Service service, UniqueID id, ServiceObject error)
+	
+	/**
+	 * \brief Service event received for example notifications.
+	 * \param service Service receiving the event.
+	 * \param event Event data.
+	 */
+	func void eventReceived(Service service, ServiceObject event)
+end

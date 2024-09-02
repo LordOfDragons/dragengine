@@ -297,7 +297,7 @@ void deGraphicOpenGl::CleanUp(){
 void deGraphicOpenGl::InputOverlayCanvasChanged(){
 }
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 /** Application window has been created. */
 void deGraphicOpenGl::InitAppWindow(){
 	if( pConfiguration.GetDoLogInfo() ){
@@ -582,6 +582,13 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	#ifdef OS_BEOS
 	connection.opengl.dummy = nullptr;
 	
+	#elif defined OS_ANDROID
+	const deoglRTContext &context = pRenderThread->GetContext();
+	
+	connection.opengl.display = context.GetDisplay();
+	connection.opengl.config = context.GetConfig();
+	connection.opengl.context = context.GetContext();
+	
 	#elif defined OS_UNIX
 	const deoglRTContext &context = pRenderThread->GetContext();
 	
@@ -667,7 +674,7 @@ void deGraphicOpenGl::pLoadConfig(){
 	deoglLSConfiguration loadConfig( *this );
 	loadConfig.LoadConfig( pConfiguration );
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pConfiguration.SetLogLevel( deoglConfiguration::ellDebug );
 	#endif
 }

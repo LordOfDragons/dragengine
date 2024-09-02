@@ -87,7 +87,7 @@ void deoxrDPValveIndexController::pSuggestBindings(){
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 18 * 2;
+	const int bindingCount = 19 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -98,7 +98,8 @@ void deoxrDPValveIndexController::pSuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
+		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value" );
 		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
@@ -135,7 +136,7 @@ void deoxrDPValveIndexController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "ic_" );
+	pCreateDevice( device, left, "ic_", true );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );
@@ -153,8 +154,8 @@ void deoxrDPValveIndexController::pAddDevice( bool left ){
 	pAddButtonTrackpad( device, trackpad, true, true );
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddAxesGripGrab( device, grip );
-	pAddAxesGripSqueeze( device, grip );
+	pAddAxisGripGrab( device, grip );
+	pAddAxisGripSqueeze( device, grip );
 // 	pAddAxesGripPinch( device, grip );
 	pAddButtonGrip( device, grip, false );
 	

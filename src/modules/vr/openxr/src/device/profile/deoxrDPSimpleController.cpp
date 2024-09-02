@@ -65,7 +65,7 @@ void deoxrDPSimpleController::pSuggestBindings(){
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 4 * 2;
+	const int bindingCount = 5 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -76,7 +76,8 @@ void deoxrDPSimpleController::pSuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
+		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/click" );
 		
@@ -95,7 +96,7 @@ void deoxrDPSimpleController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "sc_" );
+	pCreateDevice( device, left, "sc_", true );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddButtonTrigger( device, trigger, false ); // has to be button 0

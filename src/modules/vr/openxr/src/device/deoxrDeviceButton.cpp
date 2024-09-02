@@ -72,6 +72,10 @@ void deoxrDeviceButton::SetActionTouch( deoxrAction *action ){
 	pActionTouch = action;
 }
 
+void deoxrDeviceButton::SetFakeFromAxis( const deoxrDeviceAxis::Ref &axis ){
+	pFakeFromAxis = axis;
+}
+
 void deoxrDeviceButton::SetID( const char *id ){
 	pID = id;
 }
@@ -191,6 +195,11 @@ void deoxrDeviceButton::TrackState(){
 	getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
 	getInfo.subactionPath = pDevice.GetSubactionPath();
 	
+	if( pFakeFromAxis ){
+		UpdatePressed( pFakeFromAxis->GetValue() > 0.9f ); // range -1..1
+		return;
+	}
+
 	XrActionStateBoolean state;
 	memset( &state, 0, sizeof( state ) );
 	state.type = XR_TYPE_ACTION_STATE_BOOLEAN;

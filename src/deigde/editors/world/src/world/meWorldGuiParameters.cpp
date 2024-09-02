@@ -74,7 +74,7 @@ pAutoUpdateVegetation( false ),
 
 pAddFilterObjectInclusive( false ),
 
-pRectSelDistance( 25.0f ),
+pRectSelDistance( 100.0f ),
 pRectSelDistanceStep( 1.0f ),
 pRectSelDragThreshold( 5 ){
 }

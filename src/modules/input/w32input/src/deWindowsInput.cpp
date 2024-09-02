@@ -510,7 +510,8 @@ void deWindowsInput::EventLoop( const MSG &message ){
 	
 	default:
 		//TranslateMessage( &message );
-		DispatchMessage( &message );
+		//DispatchMessage( &message );
+		break;
 	}
 }
 

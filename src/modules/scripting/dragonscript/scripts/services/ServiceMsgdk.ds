@@ -1,0 +1,539 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+pin Dragengine.Services.User
+pin Dragengine.Utils
+pin Dragengine.Gui
+pin Dragengine.Services.Stats
+
+
+/**
+ * \brief Service providing access to Microsoft GDK functionality if supported.
+ * \version 1.23
+ * 
+ * Provides access to these functionalities:
+ * - Stats/Achievements
+ * - User
+ */
+class ServiceMsgdk implements ServiceStats, ServiceUser, ServiceListener
+	/**
+	 * \brief Service initialization parameters.
+	 */
+	class InitParameters
+		/**
+		 * \brief Path to Microsoft game config.
+		 * 
+		 * File is typically named "MicrosoftGame.config" and is best placed in the root
+		 * of the game content directory. Hence the typically value is "/MicrosoftGame.config".
+		 */
+		public var String pathGameConfig
+		
+		
+		/** \brief Create new instance of class InitParameters. */
+		func new()
+		end
+	end
+	
+	/** \brief Authentification provider identifier. */
+	static public fixed var String authProviderId = "xboxLive"
+	
+	
+	
+	var Service pService
+	var InitParameters pInitParameters
+	var SafeArray pStatsListeners, pUserListeners
+	var BaseServiceConversions pConversions
+	var Dictionary pOnceListeners
+	
+	/**
+	 * \brief Create service ServiceMsgdk.
+	 * \param params Init parameters.
+	 * \throws EInvalidParam Microsoft GDK service module is not present.
+	 * \throws EInvalidAction Microsoft GDK can not be initialized.
+	 */
+	func new(InitParameters params)
+		pInitParameters = InitParameters.new()
+		pInitParameters.pathGameConfig = params.pathGameConfig
+		
+		pStatsListeners = SafeArray.new()
+		pUserListeners = SafeArray.new()
+		pConversions = BaseServiceConversions.new()
+		pOnceListeners = Dictionary.new()
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("pathGameConfig", params.pathGameConfig)
+		pService = Service.new("MicrosoftGdk", so)
+		
+		pService.setListener(this)
+	end
+	
+	/** \brief Dispose of Microsoft GDK service. */
+	func void dispose()
+		if pStatsListeners != null
+			pStatsListeners.removeAll()
+		end
+		if pUserListeners != null
+			pUserListeners.removeAll()
+		end
+		if pOnceListeners != null
+			pOnceListeners.removeAll()
+		end
+		
+		if pService != null
+			pService.setListener(null)
+		end
+		pService = null
+	end
+	
+	
+	
+	/**
+	 * \brief Checks if Microsoft GDK service is supported.
+	 * 
+	 * Service is reported supported if the Microsoft GDK Service Module is present.
+	 * Creating the service can still fail if Microsoft GDK can not be initialized.
+	 */
+	static func bool isServiceSupported()
+		return Engine.getSupportedServices().has("MicrosoftGdk")
+	end
+	
+	
+	
+	func void addStatListener(ServiceStatsListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pStatsListeners.add(listener)
+	end
+	
+	func void removeStatsListener(ServiceStatsListener listener)
+		pStatsListeners.remove(listener)
+	end
+	
+	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
+		if stats == null
+			throw ENullPointer.new("stats")
+		end
+		if achievements == null
+			throw ENullPointer.new("achievements")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getStatsAndAchievements")
+		
+		var ServiceObject so2 = ServiceObject.newList()
+		stats.forEach(block String each
+			so2.addStringChild(each)
+		end)
+		so.setChildAt("stats", so2)
+		
+		so2 = ServiceObject.newList()
+		achievements.forEach(block String each
+			so2.addStringChild(each)
+		end)
+		so.setChildAt("achievements", so2)
+		
+		runRequest(so, listener)
+	end
+	
+	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
+		if stats == null
+			throw ENullPointer.new("stats")
+		end
+		if achievements == null
+			throw ENullPointer.new("achievements")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "setStatsAndAchievements")
+		
+		if stats.getCount() > 0
+			var ServiceObject so2 = ServiceObject.new()
+			stats.forEach(block String key, Object value
+				if value castable String
+					so2.setStringChildAt(key, value cast String)
+					
+				elif value castable float
+					so2.setFloatChildAt(key, value cast float)
+					
+				elif value castable int
+					so2.setIntChildAt(key, value cast int)
+					
+				else
+					throw EInvalidParam.new("Invalid value for stat '{}': {}".format(\
+						Array.newWith(key, value)))
+				end
+			end)
+			so.setChildAt("stats", so2)
+		end
+		
+		if achievements.getCount() > 0
+			var ServiceObject so2 = ServiceObject.new()
+			achievements.forEach(block String key, bool value
+				so2.setBoolChildAt(key, value)
+			end)
+			so.setChildAt("achievements", so2)
+		end
+		
+		runRequest(so, listener)
+	end
+	
+	func void resetAllStats(bool resetAchievements)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "resetAllStats")
+		so.setBoolChildAt("withAchievements", resetAchievements)
+		pService.runAction(so)
+	end
+	
+	
+	
+	func void addUserListener(ServiceUserListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pUserListeners.add(listener)
+	end
+	
+	func void removeUserListener(ServiceUserListener listener)
+		pUserListeners.remove(listener)
+	end
+	
+	func ServiceUserFeatures getUserFeatures()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserFeatures")
+		return pConversions.convertUserFeatures(pService.runAction(so))
+	end
+	
+	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "userAdd")
+		
+		if credentials != null
+			so.setBoolChildAt("defaultUser", false)
+			so.setBoolChildAt("allowGuests", true)
+			
+		else
+			so.setBoolChildAt("defaultUser", true)
+			so.setBoolChildAt("allowGuests", false)
+		end
+		
+		runRequest(so, listener)
+	end
+	
+	func void logoutUser(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "userRemove")
+		pService.runAction(so)
+		
+		TimerBlock.new(0, false, block
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLogoutUser(this, null)
+			end)
+			if listener != null
+				listener.onLogoutUser(this, null)
+			end
+		end)
+		
+		pService.nextId()
+	end
+	
+	func bool isUserLoggedIn()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "isUserLoggedIn")
+		return pService.runAction(so).getBoolean()
+	end
+	
+	func void getAuthToken(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getTokenAndSignature")
+		
+		runRequest(so, listener)
+	end
+	
+	func void getUserInfo(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserInfo")
+		so = pService.runAction(so)
+		
+		var ServiceUserInfo info  = ServiceUserInfo.new()
+		var ServiceImage.Thumbnail thumbnail
+		
+		info.id = so.getChildAt("id").getString()
+		info.name = so.getChildAt("gamertagUniqueModern").getString()
+		info.displayName = so.getChildAt("gamertagModern").getString()
+		info.profileUrl = so.getChildAt("profileUrl").getString()
+		info.avatar = ServiceImage.new()
+		info.avatar.url = so.getChildAt("gamerPicture").getString()
+		
+		thumbnail = ServiceImage.Thumbnail.new()
+		thumbnail.size = Point.new(64, 64)
+		thumbnail.url = so.getChildAt("gamerPictureSmall").getString()
+		info.avatar.thumbnails.add(thumbnail)
+		
+		thumbnail = ServiceImage.Thumbnail.new()
+		thumbnail.size = Point.new(208, 208)
+		thumbnail.url = so.getChildAt("gamerPictureMedium").getString()
+		info.avatar.thumbnails.add(thumbnail)
+		
+		thumbnail = ServiceImage.Thumbnail.new()
+		thumbnail.size = Point.new(424, 424)
+		thumbnail.url = so.getChildAt("gamerPictureLarge").getString()
+		info.avatar.thumbnails.add(thumbnail)
+		
+		TimerBlock.new(0, false, block
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetUserInfo(this, info, null)
+			end)
+			if listener != null
+				listener.onGetUserInfo(this, info, null)
+			end
+		end)
+		
+		pService.nextId()
+	end
+	
+	func void loadUserResource(String url, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "loadUserResource")
+		so.setStringChildAt("url", url)
+		
+		runRequest(so, listener)
+	end
+	
+	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
+	func void getUserWalletBalance(ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
+	
+	
+	/** \brief Conversion helper */
+	public func BaseServiceConversions getConversions()
+		return pConversions
+	end
+	
+	
+	
+	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
+		var String function = response.getChildAt("function").getString()
+		var Object onceListener = getOnceListener(id)
+		
+		if function.equals("getTokenAndSignature")
+			var ServiceUserAuthToken token = ServiceUserAuthToken.new()
+			token.provider = authProviderId
+			token.token = response.getChildAt("token").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetAuthToken(this, token, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onGetAuthToken(this, token, null)
+			end
+			
+		elif function.equals("userAdd")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoginUser(this, null)
+			end
+			
+		elif function.equals("loadUserResource")
+			var String url = response.getChildAt("url").getString()
+			var Object resource
+			var ServiceObject so = response.getChildAt("resource")
+			if so != null
+				resource = response.getChildAt("resource").getResource()
+			end
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoadUserResource(this, url, resource, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, resource, null)
+			end
+			
+		elif function.equals("getStatsAndAchievements")
+			var Dictionary stats = Dictionary.new()
+			var ServiceObject soChild, so = response.getChildAt("stats")
+			so.getChildrenKeys().forEach(block String each
+				soChild = so.getChildAt(each)
+				if soChild != null
+					select soChild.getValueType()
+					case ServiceObjectType.string
+						stats.setAt(each, soChild.getString())
+						
+					case ServiceObjectType.floating
+						stats.setAt(each, soChild.getFloat())
+						
+					case ServiceObjectType.integer
+						stats.setAt(each, soChild.getInteger())
+						
+					else
+						throw EInvalidParam.new("Invalid value for stat '{}': {}".format(\
+							Array.newWith(each, soChild.getValueType())))
+					end
+					
+				else
+					stats.setAt(each, null)
+				end
+			end)
+			
+			var Dictionary achievements = Dictionary.new()
+			so = response.getChildAt("achievements")
+			so.getChildrenKeys().forEach(block String each
+				achievements.setAt(each, so.getChildAt(each).getBoolean())
+			end)
+			
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.onGetStats(this, stats, achievements, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).onGetStats(this, stats, achievements, null)
+			end
+			
+		elif function.equals("setStatsAndAchievements")
+			var Dictionary stats = Dictionary.new()
+			var ServiceObject soChild, so = response.getChildAt("stats")
+			so.getChildrenKeys().forEach(block String each
+				soChild = so.getChildAt(each)
+				select soChild.getValueType()
+				case ServiceObjectType.string
+					stats.setAt(each, soChild.getString())
+					
+				case ServiceObjectType.floating
+					stats.setAt(each, soChild.getFloat())
+					
+				case ServiceObjectType.integer
+					stats.setAt(each, soChild.getInteger())
+					
+				else
+					throw EInvalidParam.new("Invalid value for stat '{}': {}".format(\
+						Array.newWith(each, soChild.getValueType())))
+				end
+			end)
+			
+			var Dictionary achievements = Dictionary.new()
+			so = response.getChildAt("achievements")
+			so.getChildrenKeys().forEach(block String each
+				achievements.setAt(each, so.getChildAt(each).getBoolean())
+			end)
+			
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.onSetStats(this, stats, achievements, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).onSetStats(this, stats, achievements, null)
+			end
+		end
+	end
+	
+	func void requestFailed(Service service, UniqueID id, ServiceObject error)
+		var String function = error.getChildAt("function").getString()
+		var ServiceException exception = pConversions.createException(service, error)
+		var Object onceListener = getOnceListener(id)
+		
+		if function.equals("getTokenAndSignature")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetAuthToken(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onGetAuthToken(this, null, exception)
+			end
+			
+		elif function.equals("userAdd")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoginUser(this, exception)
+			end
+			
+		elif function.equals("loadUserResource")
+			var String url = error.getChildAt("url").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoadUserResource(this, url, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, null, exception)
+			end
+			
+		elif function.equals("getStatsAndAchievements")
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.onGetStats(this, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).onGetStats(this, null, null, exception)
+			end
+			
+		elif function.equals("setStatsAndAchievements")
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.onSetStats(this, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).onSetStats(this, null, null, exception)
+			end
+		end
+	end
+	
+	func void eventReceived(Service service, ServiceObject event)
+		var String eventName = event.getChildAt("event").getString()
+		var bool success = event.getChildAt("success").getBoolean()
+		var ServiceException exception
+		
+		if not success
+			exception = pConversions.createException(service, event)
+		end
+		
+		if eventName.equals("dummy")
+			
+		end
+	end
+	
+	
+	
+	/** \brief Once listener matching id or null. */
+	protected func Object getOnceListener(UniqueID id)
+		var Object listener = pOnceListeners.getAt(id, null)
+		if listener != null
+			pOnceListeners.remove(id)
+		end
+		return listener
+	end
+	
+	/** \brief Run request with optional once listener. */
+	protected func UniqueID runRequest(ServiceObject request, Object listener)
+		var UniqueID id = pService.nextId()
+		pService.startRequest(id, request)
+		if listener != null
+			pOnceListeners.setAt(id, listener)
+		end
+		return id
+	end
+end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -30,6 +33,7 @@ pin Dragengine.Networking
 pin Dragengine.Scenery
 pin Dragengine.TriggerSystem
 pin Dragengine.Utils
+pin Dragengine.Services
 
 
 /**
@@ -47,12 +51,12 @@ pin Dragengine.Utils
  * class ExampleApp extends BaseGameApp
  *    // handles loading the game world and handing control over to the player
  *    class LoadExampleGame extends WindowGameWorld.Loader
- *       public func new(WindowGameWorld window, String path) super(window)
+ *       func new(WindowGameWorld window, String path) super(window)
  *          setPathWorld(path)
  *          setDecalBuilder(MyExampleDecalBuilder.new())
  *       end
  *       
- *       public func void onLoadWorldFinished()
+ *       func void onLoadWorldFinished()
  *          var BaseGameApp app = BaseGameApp.getApp()
  *          var GameWorld gameWorld = getStubWorld().getGameWorld()
  *          
@@ -74,19 +78,19 @@ pin Dragengine.Utils
  *          app.finishLoadGameWorld()
  *       end
  *       
- *       public func void onLoadWorldFailed()
+ *       func void onLoadWorldFailed()
  *          super.onLoadWorldFailed()
  *          BaseGameApp.getApp().cancelLoadGameWorld()
  *          // fall back to main menu for example
  *       end
  *    end
  *    
- *    public func new()
+ *    func new()
  *       pathDesktopGuiTheme = "/content/ui/main.guitheme.xml"
  *       // set more properties here if required. do all init work in initGame()
  *    end
  *    
- *    public func void initGame()
+ *    func void initGame()
  *       super.initGame()
  *       
  *       // do all your initialization work here load the game world.
@@ -94,7 +98,7 @@ pin Dragengine.Utils
  *       startLoadGameWorld(LoadExampleGame.new(getWindowGameWorld(), "/content/world/game.deworld"))
  *    end
  *    
- *    public func void cleanUp()
+ *    func void cleanUp()
  *       // clean and everything
  *       super.cleanUp()
  *    end
@@ -361,33 +365,34 @@ class BaseGameApp extends Game
 	
 	
 	
-	private var ParameterTree pConfiguration
-	private var ParameterTree pSettings
-	private var Console pConsole
-	private var Loaders pLoaders
-	private var Desktop pDesktop
-	private var TranslationManager pTranslationManager
-	private var InputProcessor pInputProcessor
-	private var ElementClassList pElementClassList
-	private var CommandManager pCommandManager
-	private var ConsoleCommandList pConsoleCommands
-	private var BindingManager pBindingManager
-	private var ScreenshotCreator pScreenshotCreator
-	private var WindowConsole pWindowConsole
-	private var WindowGameWorld pWindowGameWorld
-	private var PanelHud pPanelHud
-	private var WindowSubTitle pWindowSubTitle
-	private var WindowPlayerChoice pWindowPlayerChoice
-	private var GameWorldLoader pGameWorldLoader
-	private var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
-	private var TSTriggerTable pTriggerTable
-	private var SkinAnnotations pSkinAnnotations
-	private var ConnectionTracker pConnectionTracker
-	private var NetworkStateTracker pNetworkStateTracker
-	private var MutableID pIDGenerator
-	private var GlobalEvents pGlobalEvents
+	var ParameterTree pConfiguration
+	var ParameterTree pSettings
+	var Console pConsole
+	var Loaders pLoaders
+	var Desktop pDesktop
+	var TranslationManager pTranslationManager
+	var InputProcessor pInputProcessor
+	var ElementClassList pElementClassList
+	var CommandManager pCommandManager
+	var ConsoleCommandList pConsoleCommands
+	var BindingManager pBindingManager
+	var ScreenshotCreator pScreenshotCreator
+	var WindowConsole pWindowConsole
+	var WindowGameWorld pWindowGameWorld
+	var PanelHud pPanelHud
+	var WindowSubTitle pWindowSubTitle
+	var WindowPlayerChoice pWindowPlayerChoice
+	var GameWorldLoader pGameWorldLoader
+	var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
+	var TSTriggerTable pTriggerTable
+	var SkinAnnotations pSkinAnnotations
+	var ConnectionTracker pConnectionTracker
+	var NetworkStateTracker pNetworkStateTracker
+	var MutableID pIDGenerator
+	var GlobalEvents pGlobalEvents
+	var BaseGameServices pBaseGameServices
 	
-	private static var BaseGameApp pApp = null
+	static var BaseGameApp pApp = null
 	
 	
 	
@@ -397,7 +402,7 @@ class BaseGameApp extends Game
 	 * Empty implementation. All initialization tasks have to be done in the initGame()
 	 * method call to support proper hook-method calls with custom subclass behavior.
 	 */
-	public func new()
+	func new()
 		pathDesktopGuiTheme = defaultPathGuiTheme
 		pathLanguagePacks = null
 		defaultLanguagePackName = UnicodeString.newFromUTF8("English")
@@ -436,6 +441,8 @@ class BaseGameApp extends Game
 	 * 
 	 * The super-call also invoked these hook methods to do initialization work:
 	 * - loadConfiguration()
+	 * - createBaseGameServices()
+	 * - autoInitBaseGameServices()
 	 * - initLanguages()
 	 * - registerPersistencyFactories()
 	 * - createWindowGameWorld()
@@ -450,7 +457,7 @@ class BaseGameApp extends Game
 	 * - loadSettings() and optionally initSettings()
 	 * - loadBindings() and optionally defaultBindings()
 	 */
-	public func void initGame()
+	func void initGame()
 		pApp = this
 		
 		InputSystem.setCaptureInputDevices(true)
@@ -470,6 +477,10 @@ class BaseGameApp extends Game
 		loadConfiguration()
 		
 		Engine.setDefaultEnableGI(pConfiguration.getBoolAt("defaultEnableGI", false))
+		Engine.setDefaultEnableAuralization(pConfiguration.getBoolAt("defaultEnableAuralization", true))
+		
+		pBaseGameServices = createBaseGameServices()
+		autoInitBaseGameServices()
 		
 		initLanguages()
 		registerPersistencyFactories()
@@ -538,7 +549,7 @@ class BaseGameApp extends Game
 	 * 
 	 * After this super-call BaseGameApp.getApp() returns null.
 	 */
-	public func void cleanUp()
+	func void cleanUp()
 		if pScreenshotCreator != null
 			pScreenshotCreator.dispose()
 		end
@@ -595,6 +606,11 @@ class BaseGameApp extends Game
 		pGlobalEvents = null
 		pLoaders = null
 		
+		if pBaseGameServices != null
+			pBaseGameServices.dispose()
+			pBaseGameServices = null
+		end
+		
 		TimerManager.giveUpAllTimersDefault()
 		
 		pConsole = null
@@ -621,7 +637,7 @@ class BaseGameApp extends Game
 	 * Both events receive no additional arguments. The event is send before the active
 	 * InputProcessor receives the event for processing.
 	 */
-	public func void inputEvent(InputEvent event)
+	func void inputEvent(InputEvent event)
 		pBindingManager.checkInputEvent(event)
 		
 		select event.getType()
@@ -645,7 +661,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Subclass has to super-call this method first before doing per-frame updates.
 	 */
-	public func void onFrameUpdate()
+	func void onFrameUpdate()
 		TimerManager.advanceDefault(Engine.getElapsedTime())
 		FrameUpdateManager.notifyAllDefault()
 		pScreenshotCreator.update()
@@ -656,7 +672,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Resizes desktop widget to fix primary canvas size.
 	 */
-	public func void onResizeRenderWindow()
+	func void onResizeRenderWindow()
 		pDesktop.setSize(GraphicSystem.getWindowSize())
 	end
 	
@@ -665,7 +681,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Default implementation calls quitGame().
 	 */
-	public func void userRequestedQuit()
+	func void userRequestedQuit()
 		quitGame()
 	end
 	
@@ -681,7 +697,7 @@ class BaseGameApp extends Game
 	 * Subclass can overwrite to ask user first if he wants to quit and optionally do
 	 * some additional closing actions. To close the game call Engine.quit() .
 	 */
-	public func void quitGame()
+	func void quitGame()
 		Engine.quit()
 	end
 	
@@ -695,36 +711,36 @@ class BaseGameApp extends Game
 	
 	
 	/** \brief Game configuration. */
-	public func ParameterTree getConfiguration()
+	func ParameterTree getConfiguration()
 		return pConfiguration
 	end
 	
 	/** \brief Saved settings. */
-	public func ParameterTree getSettings()
+	func ParameterTree getSettings()
 		return pSettings
 	end
 	
 	
 	
 	/** \brief Console object. */
-	public func Console getConsole()
+	func Console getConsole()
 		return pConsole
 	end
 	
 	/** \brief Loaders. */
-	public func Loaders getLoaders()
+	func Loaders getLoaders()
 		return pLoaders
 	end
 	
 	/** \brief Translation manager. */
-	public func TranslationManager getTranslationManager()
+	func TranslationManager getTranslationManager()
 		return pTranslationManager
 	end
 	
 	
 	
 	/** \brief Desktop widget. */
-	public func Desktop getDesktop()
+	func Desktop getDesktop()
 		return pDesktop
 	end
 	
@@ -738,7 +754,7 @@ class BaseGameApp extends Game
 	 * This method does not modify the input processor. To change input processor to
 	 * send events to the set desktop instance call setInputProcessorDesktop().
 	 */
-	public func void setDesktop(Desktop desktop)
+	func void setDesktop(Desktop desktop)
 		if desktop == null
 			throw EInvalidParam.new()
 		end
@@ -761,96 +777,96 @@ class BaseGameApp extends Game
 	
 	
 	/** \brief Element classes list. */
-	public func ElementClassList getElementClassList()
+	func ElementClassList getElementClassList()
 		return pElementClassList
 	end
 	
 	/** \brief Command Manager. */
-	public func CommandManager getCommandManager()
+	func CommandManager getCommandManager()
 		return pCommandManager
 	end
 	
 	/** \brief Console command list. */
-	public func ConsoleCommandList getConsoleCommands()
+	func ConsoleCommandList getConsoleCommands()
 		return pConsoleCommands
 	end
 	
 	/** \brief Binding manager. */
-	public func BindingManager getBindingManager()
+	func BindingManager getBindingManager()
 		return pBindingManager
 	end
 	
 	/** \brief Screenshot creator. */
-	public func ScreenshotCreator getScreenshotCreator()
+	func ScreenshotCreator getScreenshotCreator()
 		return pScreenshotCreator
 	end
 	
 	/** \brief Trigger table. */
-	public func TSTriggerTable getTriggerTable()
+	func TSTriggerTable getTriggerTable()
 		return pTriggerTable
 	end
 	
 	/** \brief Skin annotations. */
-	public func SkinAnnotations getSkinAnnotations()
+	func SkinAnnotations getSkinAnnotations()
 		return pSkinAnnotations
 	end
 	
 	/** \brief Connection tracker. */
-	public func ConnectionTracker getConnectionTracker()
+	func ConnectionTracker getConnectionTracker()
 		return pConnectionTracker
 	end
 	
 	/** \brief Network state tracker. */
-	public func NetworkStateTracker getNetworkStateTracker()
+	func NetworkStateTracker getNetworkStateTracker()
 		return pNetworkStateTracker
 	end
 	
 	/** \brief ID Generator. */ 
-	public func MutableID getIDGenerator()
+	func MutableID getIDGenerator()
 		return pIDGenerator
 	end
 	
 	/** \brief Global event manager. */ 
-	public func GlobalEvents getGlobalEvents()
+	func GlobalEvents getGlobalEvents()
 		return pGlobalEvents
 	end
 	
 	
 	
 	/** \brief Console window toggled using CommandToggleConsole or \em null if absent. */
-	public func WindowConsole getWindowConsole()
+	func WindowConsole getWindowConsole()
 		return pWindowConsole
 	end
 	
 	/** \brief SubTitle window or \em null if absent. */
-	public func WindowSubTitle getWindowSubTitle()
+	func WindowSubTitle getWindowSubTitle()
 		return pWindowSubTitle
 	end
 	
 	/** \brief PlayerChoice window or \em null if absent. */
-	public func WindowPlayerChoice getWindowPlayerChoice()
+	func WindowPlayerChoice getWindowPlayerChoice()
 		return pWindowPlayerChoice
 	end
 	
 	/** \brief Game world window or \em null. */
-	public func WindowGameWorld getWindowGameWorld()
+	func WindowGameWorld getWindowGameWorld()
 		return pWindowGameWorld
 	end
 	
 	/** \brief Game world HUD panel or \em null. */
-	public func PanelHud getPanelHud()
+	func PanelHud getPanelHud()
 		return pPanelHud
 	end
 	
 	
 	
 	/** \brief Input Processor. */
-	public func InputProcessor getInputProcessor()
+	func InputProcessor getInputProcessor()
 		return pInputProcessor
 	end
 	
 	/** \brief Set input processor. */
-	public func void setInputProcessor(InputProcessor inputProcessor)
+	func void setInputProcessor(InputProcessor inputProcessor)
 		pInputProcessor = inputProcessor
 		
 		if pDesktop != null and pDesktop.getGamepadController() != null
@@ -859,7 +875,7 @@ class BaseGameApp extends Game
 	end
 	
 	/** \brief Set input processor to forward events to desktop widget. */
-	public func void setInputProcessorDesktop()
+	func void setInputProcessorDesktop()
 		setInputProcessor(createInputProcessorDesktop())
 	end
 	
@@ -867,12 +883,12 @@ class BaseGameApp extends Game
 	 * \brief Create input processor to forward events to desktop widget.
 	 * \version 1.18
 	 */
-	public func InputProcessor createInputProcessorDesktop()
+	func InputProcessor createInputProcessorDesktop()
 		return WidgetInputProcessor.new(pDesktop)
 	end
 	
 	/** \brief Set input processor to forward events to binding manager. */
-	public func void setInputProcessorBindings()
+	func void setInputProcessorBindings()
 		setInputProcessor(createInputProcessorBindings())
 	end
 	
@@ -880,7 +896,7 @@ class BaseGameApp extends Game
 	 * \brief Create input processor to forward events to binding manager.
 	 * \version 1.18
 	 */
-	public func InputProcessor createInputProcessorBindings()
+	func InputProcessor createInputProcessorBindings()
 		var BindingInputProcessor processor = BindingInputProcessor.new(pBindingManager)
 		processor.setScaleMouseAxis(defaultInputMouseAxisScale)
 		processor.setScaleMouseWheel(defaultInputMouseWheelScale)
@@ -893,26 +909,26 @@ class BaseGameApp extends Game
 	 * This is useful in situation where your game transitions from one input situation to
 	 * another and you do not want to have any user interaction causing disturbances.
 	 */
-	public func void setInputProcessorNothing()
+	func void setInputProcessorNothing()
 		setInputProcessor(DefaultInputProcessor.new())
 	end
 	
 	
 	
 	/** \brief Load gui theme and assign it to desktop widget. */
-	public func void desktopLoadGuiTheme(String filename)
+	func void desktopLoadGuiTheme(String filename)
 		pDesktop.setGuiTheme(pLoaders.getGuiTheme().loadFromFile(filename))
 	end
 	
 	
 	
 	/** \brief Player controlled actor tracker. */
-	public func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
+	func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
 		return pPlayerControlledActor
 	end
 	
 	/** \brief Invert looking up-down. */
-	public func bool getInverseLookVertical()
+	func bool getInverseLookVertical()
 		return pSettings.getBoolAt(BaseGameApp.settingInputInvertLookVertical, false)
 	end
 	
@@ -921,7 +937,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Call saveSettings() after changing value. Not called automatically.
 	 */
-	public func void setInverseLookVertical(bool inverseLookVertical)
+	func void setInverseLookVertical(bool inverseLookVertical)
 		pSettings.setAt(BaseGameApp.settingInputInvertLookVertical, inverseLookVertical)
 	end
 	
@@ -929,7 +945,7 @@ class BaseGameApp extends Game
 	 * \brief Mouse sensitivity.
 	 * \version 1.18
 	 */
-	public func float getMouseSensitivity()
+	func float getMouseSensitivity()
 		return DEMath.max(pSettings.getFloatAt(BaseGameApp.settingInputMouseSensitivity, 1), 0.01)
 	end
 	
@@ -939,7 +955,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Call saveSettings() after changing value. Not called automatically.
 	 */
-	public func void setMouseSensitivity(float sensitivity)
+	func void setMouseSensitivity(float sensitivity)
 		pSettings.setAt(BaseGameApp.settingInputMouseSensitivity, DEMath.max(sensitivity, 0.01))
 	end
 	
@@ -1007,6 +1023,34 @@ class BaseGameApp extends Game
 	 */
 	protected func TranslationManager createTranslationManager()
 		return TranslationManager.new()
+	end
+	
+	/**
+	 * \brief Base game services.
+	 */
+	func BaseGameServices getBaseGameServices()
+		return pBaseGameServices
+	end
+	
+	/**
+	 * \brief Create base game services.
+	 * \version 1.23
+	 * 
+	 * Creates instance of BaseGameServices.
+	 */
+	protected func BaseGameServices createBaseGameServices()
+		return BaseGameServices.new(pConfiguration, pConsole)
+	end
+	
+	/**
+	 * \brief Auto initialize base game services.
+	 * \version 1.23
+	 * 
+	 * Automatically initialize services not requiring user intervention. The default
+	 * implementation calls \ref BaseGameServices#autoInitServices().
+	 */
+	protected func void autoInitBaseGameServices()
+		pBaseGameServices.autoInitServices()
 	end
 	
 	/**
@@ -1342,7 +1386,7 @@ class BaseGameApp extends Game
 	 * Uses property pathSavedSettings as file name. If the file exists already creates
 	 * first a backup copy with ".backup" appended to pathSavedBindings.
 	 */
-	public func void saveSettings()
+	func void saveSettings()
 		var String path = pConfiguration.getStringAt("pathSavedSettings", pathSavedSettings)
 		
 		if FileSystem.existsFile(path)
@@ -1363,7 +1407,7 @@ class BaseGameApp extends Game
 	 * Set the value of all settings supported by the application. Once saved the players
 	 * can modify the settings file and knows all possible settings without searching.
 	 */
-	public func void initSettings()
+	func void initSettings()
 		setInverseLookVertical(false)
 	end
 	
@@ -1439,7 +1483,7 @@ class BaseGameApp extends Game
 	 * end
 	 * \endcode
 	 */
-	public func DefaultBindingHelper defaultBindings()
+	func DefaultBindingHelper defaultBindings()
 		var DefaultBindingHelper helper = DefaultBindingHelper.new()
 		
 		if helper.hasKeyboard()
@@ -1468,7 +1512,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Uses property pathSavedBindings as file name.
 	 */
-	public func void saveBindings()
+	func void saveBindings()
 		pLoaders.getBindings().saveToFile(pConfiguration.getStringAt(\
 			"pathSavedBindings", pathSavedBindings), pBindingManager)
 	end
@@ -1476,7 +1520,7 @@ class BaseGameApp extends Game
 	
 	
 	/** \brief Game world loader or \em null. */
-	public func GameWorldLoader getGameWorldLoader()
+	func GameWorldLoader getGameWorldLoader()
 		return pGameWorldLoader
 	end
 	
@@ -1489,7 +1533,7 @@ class BaseGameApp extends Game
 	 * 
 	 * \throws EInvalidParam A game world loader is already active.
 	 */
-	public func void startLoadGameWorld(GameWorldLoader loader)
+	func void startLoadGameWorld(GameWorldLoader loader)
 		if pGameWorldLoader != null or loader == null
 			throw EInvalidParam.new()
 		end
@@ -1514,7 +1558,7 @@ class BaseGameApp extends Game
 	 * and dispose() is called on the active game world. After this call returns no game
 	 * world loader is active.
 	 */
-	public func void cancelLoadGameWorld()
+	func void cancelLoadGameWorld()
 		if pGameWorldLoader == null
 			return
 		end
@@ -1532,7 +1576,7 @@ class BaseGameApp extends Game
 	 * If no game world loader is active this method does nothing. Otherwise calls dispose()
 	 * on the active game world. After this call returns no game world loader is active.
 	 */
-	public func void finishLoadGameWorld()
+	func void finishLoadGameWorld()
 		if pGameWorldLoader == null
 			return
 		end
@@ -1555,7 +1599,7 @@ class BaseGameApp extends Game
 	 * This example shows a typical subclass implementation for this common scenario.
 	 * 
 	 * \code{.ds}
-	 * public func BaseConversationPlayback createConversationPlayback(Conversation conversation)
+	 * func BaseConversationPlayback createConversationPlayback(Conversation conversation)
 	 *    var BaseConversationPlayback playback = super.createConversationPlayback(conversation)
 	 *    playback.addCommand("player", PlayerGameCommand.new())
 	 *    playback.addCondition("player", PlayerGameCondition.new())
@@ -1571,7 +1615,7 @@ class BaseGameApp extends Game
 	 * Any number of commands and conditions can be added easily this way without needing
 	 * to subclass BaseConversationPlayback.
 	 */
-	public func BaseConversationPlayback createConversationPlayback(Conversation conversation)
+	func BaseConversationPlayback createConversationPlayback(Conversation conversation)
 		return BaseConversationPlayback.new(conversation)
 	end
 end

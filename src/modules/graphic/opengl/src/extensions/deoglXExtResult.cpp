@@ -27,7 +27,7 @@
 #include "deoglXExtResult.h"
 
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 
 // GLX_EXT_swap_control
 PFNGLXSWAPINTERVALEXTPROC pglXSwapInterval = nullptr;

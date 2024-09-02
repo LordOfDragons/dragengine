@@ -321,7 +321,7 @@ void deoglDecalMeshBuilder::BuildMeshForComponent ( const deoglRComponentLOD& lo
 	RemoveAllPoints();
 	
 	// non-octree version
-	const deoglRModel &oglModel = oglComponent.GetModelRef();
+	const deoglRModel &oglModel = oglComponent.GetModel();
 	const demodelLod &modelLod = oglModel.GetLODAt( 0 );
 	const oglModelPosition * const modelPositions = modelLod.GetPositions();
 	const oglModelVertex * const modelVertices = modelLod.GetVertices();

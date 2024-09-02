@@ -262,6 +262,9 @@ public:
 	/** Notify configuration enable GI changed. */
 	void ConfigEnableGIChanged();
 	
+	/** Notify configuration enable auralization changed. */
+	void ConfigEnableAuralizationChanged();
+	
 	
 	
 	inline bool GetUse3DCursor() const{ return pUse3DCursor; }

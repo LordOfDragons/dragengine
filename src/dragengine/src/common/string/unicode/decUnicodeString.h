@@ -27,7 +27,7 @@
 
 #include "../../../dragengine_export.h"
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <stdarg.h>
 #endif
 

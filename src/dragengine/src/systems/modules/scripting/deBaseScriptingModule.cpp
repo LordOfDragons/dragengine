@@ -25,6 +25,7 @@
 #include <stdlib.h>
 
 #include "deBaseScriptingModule.h"
+#include "deBaseScriptingService.h"
 #include "../../../deEngine.h"
 
 
@@ -50,4 +51,11 @@ void deBaseScriptingModule::UserRequestQuit(){
 
 bool deBaseScriptingModule::OnAppActivate(){
 	return true;
+}
+
+void deBaseScriptingModule::AddVFSContainers( deVirtualFileSystem&, const char* ){
+}
+
+deBaseScriptingService *deBaseScriptingModule::CreateService( deService* ){
+	return new deBaseScriptingService;
 }

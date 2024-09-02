@@ -595,6 +595,52 @@ void decString::AppendValue( unsigned int value ){
 	pString = newString;
 }
 
+void decString::AppendValue( long long value ){
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%lli", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
+	
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1 + 1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
+	if( snprintf( newString + length1, length2 + 1, "%lli", value ) != length2 ){
+		delete [] newString;
+		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	}
+	newString[ length1 + length2 ] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::AppendValue( unsigned long long value ){
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%llu", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
+	
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1 + 1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
+	if( snprintf( newString + length1, length2 + 1, "%llu", value ) != length2 ){
+		delete [] newString;
+		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	}
+	newString[ length1 + length2 ] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
 void decString::AppendValue( float value ){
 	const int length1 = ( int )strlen( pString );
 	const int length2 = snprintf( NULL, 0, "%g", value );
@@ -1436,11 +1482,11 @@ decString decString::GetUpper() const{
 
 
 int decString::ToInt() const{
-	return ( int )strtol( pString, nullptr, 10 );
+	return ( int )strtoll( pString, nullptr, 10 );
 }
 
 long long decString::ToLong() const{
-	return strtol( pString, nullptr, 10 );
+	return strtoll( pString, nullptr, 10 );
 }
 
 float decString::ToFloat() const{
@@ -1453,14 +1499,14 @@ double decString::ToDouble() const{
 
 int decString::ToIntValid() const{
 	char *end = nullptr;
-	const int value = ( int )strtol( pString, &end, 10 );
+	const int value = ( int )strtoll( pString, &end, 10 );
 	DEASSERT_TRUE( *end == 0 )
 	return value;
 }
 
 long long decString::ToLongValid() const{
 	char *end = nullptr;
-	const long long value = strtol( pString, &end, 10 );
+	const long long value = strtoll( pString, &end, 10 );
 	DEASSERT_TRUE( *end == 0 )
 	return value;
 }

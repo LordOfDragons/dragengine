@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <dirent.h>
+#include <string.h>
 
 #include <android/asset_manager.h>
 
@@ -595,6 +596,10 @@ void dealLauncher::StartGame(){
 	if( ! pEngine.GetEngine()->VFSAddScriptSharedDataDir() ){
 		DETHROW( deeInvalidAction );
 	}
+	
+	DEASSERT_TRUE( pEngine.GetEngine()->ModulesAddVFSContainers( deModuleSystem::VFSStagePatches ) )
+	DEASSERT_TRUE( pEngine.GetEngine()->ModulesAddVFSContainers( deModuleSystem::VFSStageMods ) )
+	DEASSERT_TRUE( pEngine.GetEngine()->ModulesAddVFSContainers( deModuleSystem::VFSStageOverlay ) )
 	
 	filePath.SetFromNative( pConfiguration.GetPathConfigUser() );
 	filePath.AddComponent( "games" );

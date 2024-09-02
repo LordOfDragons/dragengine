@@ -1,0 +1,124 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['OSWindows']:
+	Return()
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'liburing-liburing-2.6'
+
+libLinkVersion = '2'
+libLinkName = 'uring'
+
+libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
+staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'liburing', 'lib_liburing_fetch')
+
+# check if system liburing is present
+hasSystemUring = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_liburing'] != TernaryVariableNo:
+	hasSystemUring = conf.CheckLibWithHeader(libLinkName, 'liburing.h', 'c++', 'io_uring_get_probe();')
+conf.Finish()
+
+if not hasSystemUring and envLibrary['with_system_liburing'] == TernaryVariableYes:
+	Exit('Requested to use system liburing but no usable liburing found.')
+
+libs = [libLinkName]
+
+parent_report['use system liburing'] = 'yes' if hasSystemUring else 'no'
+
+if hasSystemUring:
+	parent_targets['lib_liburing'] = {
+		'name' : 'Internal liburing library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# we need to rename the library to be safe of problems
+libFileName = envLibrary.subst('lib/${SHLIBPREFIX}apng${SHLIBSUFFIX}')
+libLinkName = 'uring'
+
+libs = [libLinkName]
+
+# build animated liburing
+def liburingBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	if not buildStaticLinking:
+		for p in env['PATCHES']:
+			script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building liburing')
+
+if not buildStaticLinking:
+	patches = [] # create with 'diff -rupN original_sources patches_sources'
+	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.extend([
+	'include/liburing.h',
+	'include/liburing/barrier.h',
+	'include/liburing/compat.h',
+	'include/liburing/io_uring.h',
+	'include/liburing/io_uring_version.h'])
+
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(liburingBuild, 'Build liburing'))
+
+if not buildStaticLinking:
+	envLibrary.Depends(library, envLibrary['PATCHES'])
+
+depends = parent_env.Alias('lib_liburing', library)
+
+envLibrary.Clean(library, ['include', 'lib', 'man', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+
+libpath = [envLibrary.Dir('lib')]
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_liburing'] = {
+	'name' : 'Internal animated liburing library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

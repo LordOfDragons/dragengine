@@ -305,6 +305,11 @@ void delEngineProcess::ReadCommandsFromInPipe(){
 			CommandVFSAddDelgaFile();
 			break;
 			
+		case eccModulesAddVFSContainers:
+			pLogger->LogInfo( pLogSource, "Received eccModulesAddVFSContainers" );
+			CommandModulesAddVFSContainers();
+			break;
+			
 		case eccSetCmdLineArgs:
 			pLogger->LogInfo( pLogSource, "Received eccSetCmdLineArgs" );
 			CommandSetCmdLineArgs();
@@ -1047,7 +1052,35 @@ void delEngineProcess::CommandVFSAddDelgaFile(){
 	WriteUCharToPipe( ercFailed );
 }
 
-void delEngineProcess::CommandSetCmdLineArgs(){
+void delEngineProcess::CommandModulesAddVFSContainers(){
+	if( ! pEngine ){
+		WriteUCharToPipe( ercFailed );
+		return;
+	}
+	
+	decString stage;
+	
+	try{
+		ReadString16FromPipe( stage );
+		
+		deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
+		pEngine->GetModuleSystem()->ServicesAddVFSContainers( vfs, stage );
+		pEngine->GetScriptingSystem()->AddVFSContainers( vfs, stage );
+		
+		WriteUCharToPipe( ercSuccess );
+		return;
+		
+	}catch( const deException &e ){
+		pLogger->LogErrorFormat( pLogSource, "EngineProcess. CommandModulesAddVFSContainers"
+			"failed with exception (stage='%s'):", stage.GetString() );
+		pLogger->LogException( pLogSource, e );
+	}
+	
+	WriteUCharToPipe( ercFailed );
+}
+
+void delEngineProcess::CommandSetCmdLineArgs()
+{
 	if( ! pEngine ){
 		WriteUCharToPipe( ercFailed );
 		return;

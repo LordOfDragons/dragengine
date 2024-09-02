@@ -148,7 +148,17 @@ public:
 		 * 
 		 * Indicates the battery charge level in the range from 0 (discharged) to 1 (fully charged).
 		 */
-		eatBatteryLevel
+		eatBatteryLevel,
+		
+		/**
+		 * \brief Gesture.
+		 * \version 1.23
+		 * 
+		 * Gesture performed by the user. Usually this is the hand but can be also other body
+		 * parts or the entire body itself. Value ranges from 0 (not performing gesture) to
+		 * 1 (fully performing gesture).
+		 */
+		eatGesture
 	};
 	
 	

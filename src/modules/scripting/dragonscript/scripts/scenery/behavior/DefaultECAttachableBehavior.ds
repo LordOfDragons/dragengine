@@ -1,0 +1,198 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Default implementation of ECAttachableBehavior doing nothing.
+ * \version 1.23
+ * 
+ * The defaut implementation of \ref #persistencyFactoryName() returns null. BehaviorElement
+ * does not persist attachable behaviors returning null as persistency factory name.
+ * 
+ * If you want to persist the behavior implement a factory and overwrite
+ * \ref #persistencyFactoryName() returning the factory name. The \ref #writeObjectToFile()
+ * writes by default a 0 byte (version byte) to allow easy expansion in future revisions.
+ * 
+ * An example factor implementation looks like this:
+ * \code class Factory implements PersistencyFactory
+ *    public static fixed var String name = "MyAttachableBehavior"
+ *    
+ *    func new()
+ *    end
+ *    
+ *    func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+ *       return MyAttachableBehavior.new(env, reader)
+ *    end
+ * end \endcode
+ * 
+ * You need then also an implementation of
+ * MyAttachableBehavior.new(PersistencyEnvironment env, FileReader reader) like this:
+ * \code func new(PersistencyEnvironment env, FileReader reader)
+ *    if reader.readByte() !=  0 // version byte written by writeObjectToFile()
+ *       throw EInvalidParam.new("unsupported version")
+ *    end
+ * end \endcode
+ * 
+ * The default implementation of \ref #writeObjectToFile writes a single 0 value byte
+ * (version byte) to allow easy extension of the behavior in future revisions.
+ * 
+ * Also do not forget to add your factory to the game wide persistency factory list in
+ * \ref BaseGameApp#registerPersistencyFactories() like this:
+ * \code persistency.addFactory(MyAttachableBehavior.Factory.name, MyAttachableBehavior.Factory.new()) \endcode
+ */
+class DefaultECAttachableBehavior implements ECAttachableBehavior
+	var BehaviorElement pElement
+	var bool pRequiresThink
+	var bool pRequiresEnterFrame
+	
+	
+	
+	/** \brief Create default attachable behavior instance. */
+	func new()
+	end
+	
+	func void dispose()
+		pElement = null
+	end
+	
+	
+	
+	func BehaviorElement getElement()
+		return pElement
+	end
+	
+	func void setElement(BehaviorElement element)
+		if element == pElement
+			return
+		end
+		
+		if pElement != null
+			onRemoveFromElement()
+		end
+		
+		pElement = element
+		
+		if element != null
+			onAddToElement()
+		end
+	end
+	
+	/**
+	 * \brief Remove from element if present then call \ref #dispose().
+	 * 
+	 * Use this call to safely dispose of the attachable behavior.
+	 */
+	func void safeDispose()
+		if pElement != null
+			pElement.removeAttachableBehavior(this)
+		end
+		dispose()
+	end
+	
+	
+	
+	func void stateChanged()
+	end
+	
+	func void geometryChanged()
+	end
+	
+	func void addToGameWorld()
+	end
+	
+	func void removeFromGameWorld()
+	end
+	
+	func bool requiresEnterFrame()
+		return pRequiresEnterFrame
+	end
+	
+	/** \brief Set if behavior instance requires enterFrame() to be called. */
+	protected func void setRequiresEnterFrame(bool required)
+		pRequiresEnterFrame = required
+	end
+	
+	func void enterFrame()
+	end
+	
+	func bool requiresThink()
+		return pRequiresThink
+	end
+	
+	/** \brief Set if behavior instance requires think() and postThink() to be called. */
+	protected func void setRequiresThink(bool required)
+		if required == pRequiresThink
+			return
+		end
+		pRequiresThink = required
+		
+		if pElement != null
+			pElement.requiresThinkChanged()
+		end
+	end
+	
+	func void think(float elapsed)
+	end
+	
+	func void postThink(float elapsed)
+	end
+	
+	func void attachToParent(Element parent)
+	end
+	
+	func String persistencyFactoryName()
+		return null
+	end
+	
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
+	end
+	
+	
+	/**
+	 * \brief Behavior has been added to element.
+	 * 
+	 * Called by \ref #setElement() after element has been set in these situations:
+	 * - \ref BehaviorElement#addAttachableBehavior()
+	 * - \ref BehaviorElement#readFromFile()
+	 */
+	func void onAddToElement()
+	end
+	
+	/**
+	 * \brief Behavior has been removed from element.
+	 * 
+	 * Called by \ref #setElement() before element is set to null in these situations:
+	 * - \ref BehaviorElement#removeAttachableBehavior()
+	 */
+	func void onRemoveFromElement()
+	end
+end

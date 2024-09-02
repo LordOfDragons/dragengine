@@ -12,9 +12,9 @@
  * Runtime exceptions can be scripted exceptions or native class exceptions.
  * 
  * This is a native class.
- * \author Roland Plüss
+ * \author DragonDreams GmbH
  * \version 1.0
- * \date 2015
+ * \date 2024
  */
 class Exception
 	/** \name Constructors */

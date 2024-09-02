@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -43,10 +46,16 @@ pin Dragengine.Utils
  * and add all the desired ECBehavior instance. There is no need to subclas BehaviorElement.
  * When creating a new instance the BehaviorElement is filled with ECBehavior created
  * ECBehaviorInstance instances. These provide the actual behavior to the element.
+ * 
+ * \par Version 1.23
+ * 
+ * Added support for attachable behaviors. These behaviords can be added and removed at runtime
+ * to individual elements. This can be used for debugging purpose or adding temporary behaviors
+ * to an element. Attachable behaviors work similar to behaviors and will be also persisted.
  */
 class BehaviorElement extends Element
-	var Array pInstances
-	var Array pThinkingInstances
+	var Array pInstances, pThinkingInstances
+	var Array pAttachableBehaviors, pThinkingAttachableBehaviors
 	var bool pRequiresEnterFrame
 	var bool pRequiresThink
 	var bool pRequiresAttachToParent
@@ -58,6 +67,7 @@ class BehaviorElement extends Element
 	/** \brief Create element. */
 	func new(BehaviorElementClass eclass) super(eclass)
 		pInstances = Array.new()
+		pAttachableBehaviors = Array.new()
 		pRequiresEnterFrame = false
 		pRequiresThink = false
 		pRequiresAttachToParent = true
@@ -69,6 +79,13 @@ class BehaviorElement extends Element
 	
 	/** \brief Dispose of element. */
 	func void dispose()
+		if pAttachableBehaviors != null
+			pAttachableBehaviors.forEachReverse(block ECAttachableBehavior each
+				each.dispose()
+			end)
+			pAttachableBehaviors = null
+		end
+		
 		if pInstances != null
 			pInstances.forEachReverse(block ECBehaviorInstance each
 				each.dispose()
@@ -76,6 +93,7 @@ class BehaviorElement extends Element
 			pInstances = null
 		end
 		
+		pThinkingAttachableBehaviors = null
 		pThinkingInstances = null
 		
 		super.dispose()
@@ -145,6 +163,95 @@ class BehaviorElement extends Element
 	 */
 	func Array collectInstances(Block ablock)
 		return pInstances.collectCastable(ablock)
+	end
+	
+	
+	
+	/**
+	 * \brief Count of attachaed behaviors.
+	 * \version 1.23
+	 */
+	func int getAttachableBehaviorCount()
+		return pAttachableBehaviors.getCount()
+	end
+	
+	/**
+	 * \brief Attached behavior at index.
+	 * \version 1.23
+	 */
+	func ECAttachableBehavior getAttachableBehaviorAt(int index)
+		return pAttachableBehaviors.getAt(index) cast ECAttachableBehavior
+	end
+	
+	/**
+	 * \brief Add attached behavior.
+	 * \version 1.23
+	 */
+	func void addAttachableBehavior(ECAttachableBehavior behavior)
+		if behavior == null
+			throw ENullPointer.new("behavior")
+		end
+		
+		pAttachableBehaviors.add(behavior)
+		behavior.setElement(this)
+		pThinkingAttachableBehaviors = null
+		updateThinking()
+	end
+	
+	/**
+	 * \brief Remove attached behavior.
+	 * \version 1.23
+	 * 
+	 * \ref ECAttachableBehavior#dispose() is not called on the behavior.
+	 */
+	func void removeAttachableBehavior(ECAttachableBehavior behavior)
+		pAttachableBehaviors.remove(behavior)
+		behavior.setElement(null)
+		pThinkingAttachableBehaviors = null
+		updateThinking()
+	end
+	
+	/**
+	 * \brief Visit attached s with block.
+	 * 
+	 * Block is required to have one parameter of type ECAttachableBehavior or subclass
+	 * thereof. Block is called only for instances castable to block parameter type.
+	 */
+	func void forEachAttachableBehavior(Block ablock)
+		pAttachableBehaviors.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Visit attached behaviors with block in reverse order.
+	 * 
+	 * Block is required to have one parameter ECAttachableBehavior or subclass thereof.
+	 * Block is called only for instances castable to block parameter type.
+	 */
+	func void forEachAttachableBehaviorReverse(Block ablock)
+		pAttachableBehaviors.forEachReverseCastable(ablock)
+	end
+	
+	/**
+	 * \brief Find attached behavior with block.
+	 * 
+	 * Block is required to have one parameter ECAttachableBehavior or subclass thereof and
+	 * returning true if the right instance is found otherwise false. Block is called
+	 * only for instances castable to block parameter type.
+	 */
+	func ECAttachableBehavior findAttachableBehavior(Block ablock)
+		return pAttachableBehaviors.findCastable(ablock) cast ECAttachableBehavior
+	end
+	
+	/**
+	 * \brief Collect attached behaviors with block into Array.
+	 * \version 1.5
+	 * 
+	 * Block is required to have one parameter ECAttachableBehavior or subclass thereof and
+	 * returning true for instances to collect. Block is called only for instances castable
+	 * to block parameter type.
+	 */
+	func Array collectAttachableBehaviors(Block ablock)
+		return pAttachableBehaviors.collectCastable(ablock)
 	end
 	
 	
@@ -265,11 +372,17 @@ class BehaviorElement extends Element
 		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
 		end)
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
+			each.geometryChanged()
+		end)
 	end
 	
 	/** \brief Orientation changed. */
 	func void onSetOrientation()
 		pInstances.forEach(block ECBehaviorInstance each
+			each.geometryChanged()
+		end)
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
 			each.geometryChanged()
 		end)
 	end
@@ -279,11 +392,17 @@ class BehaviorElement extends Element
 		pInstances.forEach(block ECBehaviorInstance each
 			each.geometryChanged()
 		end)
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
+			each.geometryChanged()
+		end)
 	end
 	
 	/** \brief Position and orientation changed. */
 	func void onSetGeometry()
 		pInstances.forEach(block ECBehaviorInstance each
+			each.geometryChanged()
+		end)
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
 			each.geometryChanged()
 		end)
 	end
@@ -293,11 +412,17 @@ class BehaviorElement extends Element
 		pInstances.forEach(block ECBehaviorInstance each
 			each.stateChanged()
 		end)
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
+			each.stateChanged()
+		end)
 	end
 	
 	/** \brief Touchable state changed. */
 	func void onSetTouchable()
 		pInstances.forEach(block ECBehaviorInstance each
+			each.stateChanged()
+		end)
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
 			each.stateChanged()
 		end)
 	end
@@ -314,10 +439,16 @@ class BehaviorElement extends Element
 			pInstances.forEach(block ECBehaviorInstance each
 				each.addToGameWorld()
 			end)
+			pAttachableBehaviors.forEach(block ECAttachableBehavior each
+				each.addToGameWorld()
+			end)
 			
 			if pRequiresEnterFrame \
 			or getStub().getAttachTo() != null \
 			or pInstances.find(block ECBehaviorInstance each
+				return each.requiresEnterFrame()
+			end) != null \
+			or pAttachableBehaviors.find(block ECAttachableBehavior each
 				return each.requiresEnterFrame()
 			end) != null
 				getGameWorld().addEnterFrameOnce(this)
@@ -338,6 +469,9 @@ class BehaviorElement extends Element
 		try
 			pIsChangingGameWorld = true
 			
+			pAttachableBehaviors.forEachReverse(block ECAttachableBehavior each
+				each.removeFromGameWorld()
+			end)
 			pInstances.forEachReverse(block ECBehaviorInstance each
 				each.removeFromGameWorld()
 			end)
@@ -364,6 +498,9 @@ class BehaviorElement extends Element
 		super.enterFrame()
 		
 		pInstances.forEach(block ECBehaviorInstance each
+			each.enterFrame()
+		end)
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
 			each.enterFrame()
 		end)
 		
@@ -399,28 +536,37 @@ class BehaviorElement extends Element
 		pInstances.forEach(block ECBehaviorInstance each
 			each.attachToParent(parent)
 		end)
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
+			each.attachToParent(parent)
+		end)
 	end
 	
 	/** \brief Think about what the element is going to do in this frame. */
 	func void think(float elapsed)
-		if pThinkingInstances == null
-			return
+		if pThinkingInstances != null
+			pThinkingInstances.forEach(block ECBehaviorInstance each
+				each.think(elapsed)
+			end)
 		end
-		
-		pThinkingInstances.forEach(block ECBehaviorInstance each
-			each.think(elapsed)
-		end)
+		if pThinkingAttachableBehaviors != null
+			pThinkingAttachableBehaviors.forEach(block ECAttachableBehavior each
+				each.think(elapsed)
+			end)
+		end
 	end
 	
 	/** \brief Post thinking after physics processing is finished. */
 	func void postThink(float elapsed)
-		if pThinkingInstances == null
-			return
+		if pThinkingInstances != null
+			pThinkingInstances.forEach(block ECBehaviorInstance each
+				each.postThink(elapsed)
+			end)
 		end
-		
-		pThinkingInstances.forEach(block ECBehaviorInstance each
-			each.postThink(elapsed)
-		end)
+		if pThinkingAttachableBehaviors != null
+			pThinkingAttachableBehaviors.forEach(block ECAttachableBehavior each
+				each.postThink(elapsed)
+			end)
+		end
 	end
 	
 	
@@ -430,14 +576,18 @@ class BehaviorElement extends Element
 		var GameWorld gameWorld = getGameWorld()
 		if gameWorld == null
 			pThinkingInstances = null
+			pThinkingAttachableBehaviors = null
 			return
 		end
 		
 		pThinkingInstances = pInstances.collect(block ECBehaviorInstance each
 			return each.requiresThink()
 		end)
+		pThinkingAttachableBehaviors = pAttachableBehaviors.collect(block ECAttachableBehavior each
+			return each.requiresThink()
+		end)
 		
-		if pRequiresThink or pThinkingInstances.getCount() > 0
+		if pRequiresThink or pThinkingInstances.getCount() > 0 or pThinkingAttachableBehaviors.getCount() > 0
 			if not pIsThinker
 				gameWorld.addThinker(this)
 				pIsThinker = true
@@ -445,6 +595,7 @@ class BehaviorElement extends Element
 			
 		else
 			pThinkingInstances = null
+			pThinkingAttachableBehaviors = null
 			if pIsThinker
 				gameWorld.removeThinker(this)
 				pIsThinker = false
@@ -455,6 +606,7 @@ class BehaviorElement extends Element
 	/** \brief Stop thinking even though it would be required by behaviors. */
 	protected func void stopThinking()
 		pThinkingInstances = null
+		pThinkingAttachableBehaviors = null
 		
 		if pIsThinker
 			var GameWorld gameWorld = getGameWorld()
@@ -476,55 +628,72 @@ class BehaviorElement extends Element
 			end)
 			
 		case 1
-			var BehaviorElementClass eclass = getClass() cast BehaviorElementClass
+			readFromFileV1(env, reader)
 			
-			var Dictionary map = Dictionary.new()
-			pInstances.forEach(block int index, ECBehaviorInstance each
-				map.setAt((eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency).getBehaviorID(), each)
-			end)
+		case 2
+			readFromFileV1(env, reader)
 			
-			var int i, dataLength, count = reader.readShort()
-			var ECBehaviorInstance instance
-			var String identifier
-			//var int nextPosition
-			
-			for i = 0 to count
-				identifier = reader.readString8()
-				instance = map.getAt(identifier, null) cast ECBehaviorInstance
-				dataLength = reader.readInt()
-				
-				if instance != null
-					//nextPosition = reader.getPosition() + dataLength
-					instance.readFromFile(env, reader)
-					/*
-					if reader.getPosition() != nextPosition
-						throw EInvalidAction.new("next file position mismatch after reading behavior " + identifier)
-					end
-					*/
-					
-				elif pInstances.find(block int index, ECBehaviorInstance each
-					var BehaviorCompatiblePersistency bcp = eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency
-					if bcp.supportsBehaviorID(identifier)
-						//nextPosition = reader.getPosition() + dataLength
-						bcp.loadSupportedData(identifier, env, reader, each)
-						/*
-						if reader.getPosition() != nextPosition
-							throw EInvalidAction.new("next file position mismatch after compatibility reading behavior " + identifier)
-						end
-						*/
-						return true
-						
-					else
-						return false
-					end
-					
-				end) == null
-					reader.movePosition(dataLength)
+			var ECAttachableBehavior AttachableBehavior
+			while true
+				AttachableBehavior = env.readObjectOrNull(reader) cast ECAttachableBehavior
+				if AttachableBehavior == null
+					break
 				end
+				pAttachableBehaviors.add(AttachableBehavior)
+				AttachableBehavior.setElement(this)
 			end
 			
 		else
 			throw EInvalidParam.new("unsupported version")
+		end
+	end
+	
+	private func void readFromFileV1(PersistencyEnvironment env, FileReader reader)
+		var BehaviorElementClass eclass = getClass() cast BehaviorElementClass
+		
+		var Dictionary map = Dictionary.new()
+		pInstances.forEach(block int index, ECBehaviorInstance each
+			map.setAt((eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency).getBehaviorID(), each)
+		end)
+		
+		var int i, dataLength, count = reader.readShort()
+		var ECBehaviorInstance instance
+		var String identifier
+		//var int nextPosition
+		
+		for i = 0 to count
+			identifier = reader.readString8()
+			instance = map.getAt(identifier, null) cast ECBehaviorInstance
+			dataLength = reader.readInt()
+			
+			if instance != null
+				//nextPosition = reader.getPosition() + dataLength
+				instance.readFromFile(env, reader)
+				/*
+				if reader.getPosition() != nextPosition
+					throw EInvalidAction.new("next file position mismatch after reading behavior " + identifier)
+				end
+				*/
+				
+			elif pInstances.find(block int index, ECBehaviorInstance each
+				var BehaviorCompatiblePersistency bcp = eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency
+				if bcp.supportsBehaviorID(identifier)
+					//nextPosition = reader.getPosition() + dataLength
+					bcp.loadSupportedData(identifier, env, reader, each)
+					/*
+					if reader.getPosition() != nextPosition
+						throw EInvalidAction.new("next file position mismatch after compatibility reading behavior " + identifier)
+					end
+					*/
+					return true
+					
+				else
+					return false
+				end
+				
+			end) == null
+				reader.movePosition(dataLength)
+			end
 		end
 	end
 	
@@ -533,15 +702,22 @@ class BehaviorElement extends Element
 		var BehaviorElementClass eclass = getClass() cast BehaviorElementClass
 		var MemoryFile behaviorData = MemoryFile.new("behaviorData")
 		
-		writer.writeByte(1) // version
-		writer.writeShort(pInstances.getCount())
+		writer.writeByte(2) // version
 		
+		writer.writeShort(pInstances.getCount())
 		pInstances.forEach(block int index, ECBehaviorInstance each
 			each.writeToFile(env, behaviorData.getWriter(false))
 			writer.writeString8((eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency).getBehaviorID())
 			writer.writeInt(behaviorData.getSize())
 			writer.writeData(behaviorData.getReader())
 		end)
+		
+		pAttachableBehaviors.forEach(block ECAttachableBehavior each
+			if each.persistencyFactoryName() != null
+				env.writeObject(writer, each)
+			end
+		end)
+		env.writeObjectOrNull(writer, null) // end of list marker
 	end
 	
 	

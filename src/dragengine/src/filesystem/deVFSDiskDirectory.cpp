@@ -534,10 +534,10 @@ void deVFSDiskDirectory::SearchFiles( const decPath &directory, deContainerFileS
 				}
 				
 				if( ! FindNextFileW( searchHandle, &dirEntry ) ){
-				    if( GetLastError() == ERROR_NO_MORE_FILES ){
+					if( GetLastError() == ERROR_NO_MORE_FILES ){
 						break;
 					}
-				    DETHROW( deeDirectoryRead );
+					DETHROW( deeDirectoryRead );
 				}
 			}
 			

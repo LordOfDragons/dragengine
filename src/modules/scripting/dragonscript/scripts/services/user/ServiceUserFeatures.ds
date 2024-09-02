@@ -1,0 +1,133 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.User
+pin Dragengine.Gui
+
+/**
+ * \brief Features supported by a ServiceUser instance.
+ * \version 1.23
+ */
+class ServiceUserFeatures
+	/**
+	 * \brief Authentication token provider information.
+	 */
+	class AuthTokenProvider
+		/**
+		 * \brief Unique identifier stored in ServiceUserAuthToken instances.
+		 */
+		public var String id
+		
+		/**
+		 * \brief Name displayed in authentication provider listings.
+		 */
+		public var String name
+		
+		/**
+		 * \brief Small icon representing authentication token provider in listings.
+		 * 
+		 * Image size is 64x64. Used for authentication provider selection screen.
+		 */
+		public var Image icon
+		
+		/**
+		 * \brief Large image representing authentication token provider.
+		 * 
+		 * Used for authenticate screens if the authentication provider has been selected
+		 * and a separate dialog window is required.
+		 */
+		public var Image image
+		
+		
+		/**
+		 * \brief Create new instance of class AuthTokenProviderInfo.
+		 */
+		func new()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Service supports manually logging in user.
+	 */
+	public var bool canManualLogin
+	
+	/**
+	 * \brief Service supports automatic logging in user.
+	 */
+	public var bool canAutomaticLogin
+	
+	/**
+	 * \brief Service supports logging in using authentication provider.
+	 * 
+	 * Set contains strings of all supported login providers. The values in this set
+	 * match \ref #authTokenProvider values of other service feature object.
+	 * 
+	 * Set can be null or empty if service does not support logging in using
+	 * authentication providers.
+	 */
+	public var Set canAuthProviderLogin
+	
+	/**
+	 * \brief Service supports logging out user.
+	 */
+	public var bool canLogout
+	
+	/**
+	 * \brief Authentication token provider information.
+	 * 
+	 * Present if service supports requesting authentication. If service does not
+	 * support requesting authentication tokens this will be null.
+	 */
+	public var AuthTokenProvider authTokenProvider
+	
+	/**
+	 * \brief Reporting users is supported.
+	 */
+	public var bool canReportUser
+	
+	/**
+	 * \brief Monetization is supported using marketplace or store functionality.
+	 * 
+	 * If true user has a wallet for store purchases.
+	 */
+	public var bool hasMarketplace
+	
+	/**
+	 * \brief Monetization currency name.
+	 * 
+	 * If \ref #hasMarketplace is true contains the currency name which can be a real
+	 * currency code or a virtual currency name.
+	 */
+	public var String currency
+	
+	
+	
+	/**
+	 * \brief Create new instance of class ServiceUserFeatures.
+	 */
+	func new()
+	end
+end

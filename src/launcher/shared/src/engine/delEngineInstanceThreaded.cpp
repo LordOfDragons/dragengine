@@ -972,8 +972,23 @@ const char *archivePath, const decStringSet &hiddenPath ){
 	}
 }
 
-void delEngineInstanceThreaded::SetCmdLineArgs( const char *arguments ){
-	if( ! arguments ){
+void delEngineInstanceThreaded::ModulesAddVFSContainers( const char *stage ){
+	DEASSERT_NOTNULL( stage )
+	
+	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
+		"Sending eccModulesAddVFSContainers(stage='%s') to process %i", stage, ( int )pProcessID );
+	
+	WriteUCharToPipe( delEngineProcess::eccModulesAddVFSContainers );
+	WriteString16ToPipe( stage );
+	
+	if( ReadUCharFromPipe() != delEngineProcess::ercSuccess ){
+		DETHROW( deeInvalidAction );
+	}
+}
+
+void delEngineInstanceThreaded::SetCmdLineArgs(const char *arguments)
+{
+    if( ! arguments ){
 		DETHROW_INFO( deeNullPointer, "arguments" );
 	}
 	

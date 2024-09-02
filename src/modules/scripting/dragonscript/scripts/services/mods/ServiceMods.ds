@@ -1,0 +1,363 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.Mods
+pin Dragengine.Services.User
+
+
+/**
+ * \brief Interface for services supporting managing game modifications.
+ * \version 1.23
+ * 
+ * This interface is designed for services using a remote host to store modifications and
+ * user profiles with the installed and active mods. For this reason the majority of calls
+ * are asynchronous. This does not prevent local host only services to use this interface.
+ */
+interface ServiceMods
+	/**
+	 * \bief Mod management event.
+	 */
+	enum ManagementEvent
+		/**
+		 * \brief Begin installing modification.
+		 */
+		beginInstall
+		
+		/**
+		 * \brief Finished installing modification.
+		 * 
+		 * Modification is now allowed to be activated.
+		 */
+		installed
+		
+		/**
+		 * \brief Begin uninstalling modification.
+		 * 
+		 * Allowed only if the modification is deactivated.
+		 */
+		beginUninstall
+		
+		/**
+		 * \brief Finished uninstalling modification.
+		 */
+		uninstalled
+		
+		/**
+		 * \brief Begin updating modification to latest version.
+		 */
+		beginUpdate
+		
+		/**
+		 * \brief Finished updating modification to latest version.
+		 */
+		updated
+		
+		/**
+		 * \brief Begin uploading modification.
+		 */
+		beginUpload
+		
+		/**
+		 * \brief Finished uploading modification.
+		 */
+		uploaded
+		
+		/**
+		 * \brief Progress information.
+		 */
+		progress
+	end
+	
+	
+	
+	/**
+	 * \brief Features supported by this service.
+	 */
+	func ServiceModsFeatures getModsFeatures()
+	
+	/**
+	 * \brief Add modification listener.
+	 * \param listener Listener to add
+	 */
+	func void addModsListener(ServiceModsListener listener)
+	
+	/**
+	 * \brief Remove modification listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeModsListener(ServiceModsListener listener)
+	
+	
+	
+	/**
+	 * \brief Filtered list of available game modifications.
+	 * 
+	 * Requests a list of game modifications using the provided filters. All filter
+	 * parameters set to null cause default values to be used as defined by the
+	 * service provider. Filters not supported by the service provider are ignored.
+	 * 
+	 * Once finished \ref ServiceModsListener#onListMods() is called.
+	 * 
+	 * Receiving the results can take considerable amount of time depending on the
+	 * load of the service provider.
+	 * 
+	 * \param filter Filter to use.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void listAllMods(ServiceModFilter filter, ServiceModsListener listener)
+	
+	/**
+	 * \brief Load resource asynchronously.
+	 * 
+	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
+	 * \ref ServiceModsListener#onLoadModResource() is called with the same URL as used in
+	 * this function call.
+	 * 
+	 * \param url URL of image to load.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loadModResource(String url, ServiceModsListener listener)
+	
+	/**
+	 * \brief Mod management is paused.
+	 */
+	func bool getPauseModManagement()
+	
+	/**
+	 * \brief Pause mod management.
+	 * 
+	 * By default the service automatically downloads, installs and uninstalls mods.
+	 * This process can be temporarily paused for example during game play.
+	 */
+	func void setPauseModManagement(bool pause)
+	
+	/**
+	 * \brief Service is busy managing modifications.
+	 * 
+	 * Typical actions causing true to be returned are (non conclusive list):
+	 * - Installing modification
+	 * - Uninstalling modification
+	 * - Updating modification to latest version
+	 * - Uploading modification
+	 * 
+	 * While this method returns true certain functions will fail.
+	 */
+	func bool isModManagementBusy()
+	
+	/**
+	 * \brief Activate subscribed and installed modifications.
+	 * 
+	 * Installing modifications does not automatically activate them. This avoids interrupting a
+	 * running game flow while modifications are beeing installed. A typical use case is calling
+	 * activateMods() upon leaving the modification management dialog. This ensures modifications
+	 * start affecting the game at a well known point in time.
+	 * 
+	 * Unsubscribing from a modification calls activateMods() to avoid the game potentially
+	 * accessing to be deleted modification files.
+	 * 
+	 * Disabling and re-enabling modifications does not trigger activateMods().
+	 * 
+	 * Activating modifications runs immediately.
+	 * 
+	 * Starting a game automatically calls activateMods().
+	 */
+	func void activateMods()
+	
+	/**
+	 * \brief Subscribe to modification.
+	 * 
+	 * The user can also subscribe to a modification from outside the game using different means.
+	 * In both situationsn modifications are installed automatically the next time possible if at
+	 * least one user is subscribed to them. Hence subscribing and installing are different actions.
+	 * 
+	 * Once subscribing finished \ref ServiceModsListener#onSubscribeMod() is called. At this
+	 * point in time the modification is potentially not yet installed. Mod management installs
+	 * mods as soon as possible if necessary. Listen to \ref ServiceModsListener#onModManagement()
+	 * events to know when the modification started and finished installing.
+	 * 
+	 * \param token Authentication token.
+	 * \param id Identifier of modification to subscribe to.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void subscribeMod(String id, ServiceModsListener listener)
+	
+	/**
+	 * \brief Unsubscribe from modification.
+	 * 
+	 * The user can also unsubscribe from a modification from outside the game using different means.
+	 * In both situationsn modifications are uninstalled automatically the next time possible if
+	 * no user is subscribed to them. Hence unsubscribing and uninstalling are different actions.
+	 * 
+	 * Once unsubscribing finished \ref ServiceModsListener#onUnsubscribeMod() is called. At this
+	 * point in time the modification is still installed. Mod management uninstalls mods as soon
+	 * as possible if necessary. Listen to \ref ServiceModsListener#onModManagement() events to
+	 * know when the modification started and finished uninstalling.
+	 * 
+	 * \param token Authentication token.
+	 * \param id Identifier of modification to unsubscribe from.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void unsubscribeMod(String id, ServiceModsListener listener)
+	
+	/**
+	 * \brief Current mod install or update progress information.
+	 * 
+	 * If no suitable mod management action is in progress null is returned.
+	 */
+	func ServiceModProgress getCurrentModUpdate()
+	
+	/**
+	 * \brief User subscribed mods.
+	 * 
+	 * Returns modifications are potentially not installed. Use \ref ServiceModStatus#status
+	 * to filter modifications of interest. Returns dictionary with String modification
+	 * identifier and ServiceModStatus value.
+	 */
+	func Dictionary getSubscribedMods()
+	
+	/**
+	 * \brief System mods.
+	 * 
+	 * Returns all modifications installed on the system by all users. Returns dictionary
+	 * with String modification identifier and ServiceModStatus value.
+	 */
+	func Dictionary getSystemMods()
+	
+	/**
+	 * \brief Active mods.
+	 * 
+	 * Returns all active modifications (subscribed and enabled). Active modifications are
+	 * changed when \ref #activateMods() is called. This call is useful to know if a
+	 * game save state has been created with the same set of active modifications. Returns
+	 * dictionary with String modification identifier and ServiceModStatus value.
+	 */
+	func Dictionary getActiveMods()
+	
+	/**
+	 * \brief Retrieve information about game modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetModInfo() is called.
+	 * 
+	 * \param id Identifier of modification to retrieve.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getModInfo(String id, ServiceModsListener listener)
+	
+	/**
+	 * \brief Submit rating for modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onSubmitModRating() is called.
+	 * Can be used if \ref ServiceModsFeatures#canRateMods is true.
+	 * 
+	 * \param id Identifier of modification to submit rating for.
+	 * \param rating Rating to submit.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void submitModRating(String id, int rating, ServiceModsListener listener)
+	
+	/**
+	 * \brief Revoke rating for modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onRevokeModRating() is called.
+	 * Can be used if \ref ServiceModsFeatures#canRateMods is true.
+	 * 
+	 * \param id Identifier of modification to revoke rating for.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void revokeModRating(String id, ServiceModsListener listener)
+	
+	/**
+	 * \brief Report modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onReportMod() is called.
+	 * Can be used if \ref ServiceModsFeatures#canReportMods is true.
+	 * 
+	 * \param id Identifier of modification to report.
+	 * \param report Report to submit.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void reportMod(String id, ServiceModReport report, ServiceModsListener listener)
+	
+	/**
+	 * \brief Disable modification.
+	 * 
+	 * Modifications can be disabled by the user or the game if a modification
+	 * is missbehaving or preventing the game from running. To get the disabled
+	 * state of a modification use \ref #getSubscribedMods().
+	 * 
+	 * If modification is not found nothing is done.
+	 * 
+	 * \param id Identifier of modification to revoke rating for.
+	 * \param disabled Disabled state.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void setModDisabled(String id, bool disabled, ServiceModsListener listener)
+	
+	/**
+	 * \brief Modification has files matching one or more patterns.
+	 * 
+	 * Typically used to determine if an installed modification contains specific files.
+	 * For example if a modification contains script code \ref Engine#restart(String) has
+	 * to be called to restart the game to re-parse the script. Another example is
+	 * reloading cached game data if files are touched that have been cached before.
+	 * 
+	 * \param id Identifier of installed and enabled modification to scan for files.
+	 * \param directory Root directory to start searching in.
+	 * \param recursive Recursively scan directories for matching files.
+	 * \param patterns Set of String file patterns without directories.
+	 * \throws EInvalidAction Modification does not exist or is not installed.
+	 */
+	func bool modHasMatchingFiles(String id, String directory, bool recursive, Set patterns)
+	
+	/**
+	 * \brief Tags that can be used for ServiceModFilter.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetTags() is called with the list of
+	 * ServiceModTagCategory. Each category contains a list of tags usable for this category.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getModTags(ServiceModsListener listener)
+	
+	/**
+	 * \brief Purchased mods.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetPurchasedMods() is called with
+	 * array of \ref ServiceModInfo value.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getPurchasedMods(ServiceModsListener listener)
+	
+	/**
+	 * \brief Purchase mod.
+	 * 
+	 * Once finished \ref ServiceModsListener#onPurchaseMod() is called.
+	 * 
+	 * \param id Identifier of modification to purchase.
+	 * \param price Price shown to the user. Used to verify the price matches.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void purchaseMod(String id, String price, ServiceModsListener listener)
+end

@@ -56,6 +56,7 @@
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPCamera.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPTriggerTable.h>
 
 #include <dragengine/common/exceptions.h>
@@ -331,12 +332,34 @@ public:
 };
 
 
+class cActionEnableAuralization : public cBaseAction{
+public:
+	cActionEnableAuralization( meWPView &panel ) : cBaseAction( panel,
+		"Enable Auralization", "Enable auralization if supported by audio module" ){ }
+	
+	virtual void OnAction( meWorld &world ){
+		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
+		configuration.SetEnableAuralization( ! configuration.GetEnableAuralization() );
+		world.NotifyEditingChanged();
+	}
+};
+
+
 class cActionSkyChanged : public cBaseAction{
 public:
 	cActionSkyChanged( meWPView &panel ) : cBaseAction( panel, "", "" ){ }
 	
 	virtual void OnAction( meWorld &world ){
 		world.NotifySkyChanged();
+	}
+};
+
+class cEditBgObject : public cBaseAction{
+public:
+	cEditBgObject( meWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	
+	virtual void OnAction( meWorld &world ){
+		world.NotifyBgObjectChanged();
 	}
 };
 
@@ -375,8 +398,8 @@ public:
 meWPView::meWPView( meWindowProperties &windowProperties ) :
 igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
 pWindowProperties( windowProperties ),
-pListener( NULL ),
-pWorld( NULL )
+pListener( nullptr ),
+pWorld( nullptr )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -435,7 +458,7 @@ pWorld( NULL )
 	form.TakeOver( new igdeContainerForm( env ) );
 	groupBox->AddChild( form );
 	
-	helper.EditString( form, "Active:", "Active camera", pEditActiveCamera, NULL );
+	helper.EditString( form, "Active:", "Active camera", pEditActiveCamera, nullptr );
 	pEditActiveCamera->SetEditable( false );
 	
 	helper.FormLine( form, "", "", formLine );
@@ -446,21 +469,27 @@ pWorld( NULL )
 	pActionCameraObject.TakeOver( new cActionCameraObject( *this ) );
 	helper.Button( formLine, pActionCameraObject );
 	
-	helper.ComboBox( form, "Object Camera:", "Object camera", pCBCameraObjects, NULL );
+	helper.ComboBox( form, "Object Camera:", "Object camera", pCBCameraObjects, nullptr );
 	pCBCameraObjects->SetDefaultSorter();
 	
 	helper.WPCamera( groupBox, pWPCamera, new cActionCameraChanged( *this ),
 		"Camera Parameters:", false, false, true );
 	
 	
+	// microphone
+	helper.GroupBoxFlow( content, groupBox, "Microphone:" );
+	helper.CheckBox( groupBox, pChkEnableAuralization, new cActionEnableAuralization( *this ) );
+	
+	
 	// property panels
 	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ), "Sky:", false, false, true );
+	helper.WPWObject( content, pWPBgObject, new cEditBgObject( *this ), "Background Object:", false, true, true );
 	helper.WPTriggerTable( content, pWPTriggerTable, new cActionTriggerTable( *this ),
 		"Trigger Table:", false, true, true );
 }
 
 meWPView::~meWPView(){
-	SetWorld( NULL );
+	SetWorld( nullptr );
 	if( pListener ){
 		pListener->FreeReference();
 	}
@@ -476,9 +505,10 @@ void meWPView::SetWorld( meWorld *world ){
 		return;
 	}
 	
-	pWPSky->SetSky( NULL );
-	pWPCamera->SetCamera( NULL );
-	pWPTriggerTable->SetTriggerTargetList( NULL );
+	pWPSky->SetSky( nullptr );
+	pWPBgObject->SetObjectWrapper( nullptr );
+	pWPCamera->SetCamera( nullptr );
+	pWPTriggerTable->SetTriggerTargetList( nullptr );
 	pEditClassHideTags->SetTags( decStringSet() );
 	pEditClassPartialHideTags->Clear();
 	
@@ -494,6 +524,7 @@ void meWPView::SetWorld( meWorld *world ){
 		world->AddReference();
 		
 		pWPSky->SetSky( world->GetSky() );
+		pWPBgObject->SetObjectWrapper( world->GetBgObject() );
 		pWPTriggerTable->SetTriggerTargetList( &world->GetTriggerTable() );
 		
 		if( world->GetGameDefinition() ){
@@ -507,6 +538,7 @@ void meWPView::SetWorld( meWorld *world ){
 	UpdateCameraList();
 	UpdateCamera();
 	UpdateSky();
+	UpdateBgObject();
 	UpdateClassHideTagLists();
 	UpdateTriggerTable();
 }
@@ -515,7 +547,7 @@ void meWPView::SetWorld( meWorld *world ){
 
 meCamera *meWPView::GetSelectedCameraObject() const{
 	return pCBCameraObjects->GetSelectedItem() ?
-		( meCamera* )pCBCameraObjects->GetSelectedItem()->GetData() : NULL;
+		( meCamera* )pCBCameraObjects->GetSelectedItem()->GetData() : nullptr;
 }
 
 void meWPView::UpdateView(){
@@ -528,6 +560,8 @@ void meWPView::UpdateView(){
 	pChkScaleSnap->SetChecked( configuration.GetScaleSnap() );
 	pEditScaleStep->SetFloat( configuration.GetScaleStep() );
 	pEditSensitivity->SetFloat( configuration.GetSensitivity() );
+	pChkAutoUpdate->SetChecked( configuration.GetAutoUpdate() );
+	pChkEnableAuralization->SetChecked( configuration.GetEnableAuralization() );
 	
 	if( pWorld ){
 		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
@@ -591,6 +625,10 @@ void meWPView::UpdateSky(){
 	pWPSky->UpdateSky();
 }
 
+void meWPView::UpdateBgObject(){
+	pWPBgObject->UpdateObjectWrapper();
+}
+
 void meWPView::UpdateClassHideTagLists(){
 	if( pWorld ){
 		pEditClassHideTags->EnableTags( pWorld->GetGuiParameters().GetTagsHideClass() );
@@ -608,5 +646,6 @@ void meWPView::UpdateTriggerTable(){
 
 void meWPView::OnGameDefinitionChanged(){
 	UpdateSky();
+	UpdateBgObject();
 	UpdateClassHideTagLists();
 }

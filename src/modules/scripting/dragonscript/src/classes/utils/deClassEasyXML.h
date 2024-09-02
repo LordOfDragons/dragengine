@@ -90,6 +90,7 @@ private:
 	}
 	DEF_NATFUNC( nfNew );
 	DEF_NATFUNC( nfNewFile );
+	DEF_NATFUNC( nfNewFile2 );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetFilename );

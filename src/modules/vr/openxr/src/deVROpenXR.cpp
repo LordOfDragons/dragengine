@@ -51,6 +51,8 @@
 #include "device/profile/deoxrDPMSFTHandInteraction.h"
 #include "device/profile/deoxrDPNoControllerHands.h"
 #include "device/profile/deoxrDPEyeGazeInteraction.h"
+#include "device/profile/deoxrDPHandInteraction.h"
+#include "device/profile/deoxrDPHTCHandInteraction.h"
 #include "loader/deoxrLoader.h"
 
 #include <dragengine/deEngine.h>
@@ -127,7 +129,7 @@ void deVROpenXR::InputEventSetTimestamp( deInputEvent &event ) const{
 	#ifdef OS_W32
 	event.SetTime( { ( long )decDateTime().ToSystemTime(), 0 } );
 	#else
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	event.SetTime( { ( time_t )decDateTime().ToSystemTime(), 0 } );
 	#endif
 }
 
@@ -925,9 +927,15 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddFloatAction( "grip_pinch", "Grip Pinch" );
 	pActionSet->AddVibrationAction( "grip_haptic", "Haptic Grip" );
 	
+	pActionSet->AddFloatAction( "gesture_pinch", "Gesture Pinch" );
+	pActionSet->AddFloatAction( "gesture_aim", "Gesture Aim" );
+	pActionSet->AddFloatAction( "gesture_grasp", "Gesture Grasp" );
+	
 	pActionSet->AddPoseAction( "pose", "Pose" );
 	pActionSet->AddPoseAction( "pose_left", "Pose Left" );
 	pActionSet->AddPoseAction( "pose_right", "Pose Right" );
+	pActionSet->AddPoseAction( "pose_left2", "Pose Left 2" );
+	pActionSet->AddPoseAction( "pose_right2", "Pose Right 2" );
 	
 	// allow device profiles to add actions
 	const int count = pDeviceProfiles.GetCount();
@@ -960,11 +968,14 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHUAWEIControllerInteraction( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftMixedRealityMotionController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftXboxController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMSFTHandInteraction( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusGoController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusTouchController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSamsungOdysseyController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPValveIndexController( pInstance ) ) );
+	
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHandInteraction( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCHandInteraction( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMSFTHandInteraction( pInstance ) ) );
 	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPEyeGazeInteraction( pInstance ) ) );

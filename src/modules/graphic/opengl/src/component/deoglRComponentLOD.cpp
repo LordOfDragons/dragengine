@@ -530,7 +530,7 @@ deoglModelLOD *deoglRComponentLOD::GetModelLOD() const{
 }
 
 deoglModelLOD &deoglRComponentLOD::GetModelLODRef() const{
-	return pComponent.GetModelRef().GetLODAt( pLODIndex );
+	return pComponent.GetModel()->GetLODAt( pLODIndex );
 }
 
 void deoglRComponentLOD::PrepareWeights(){

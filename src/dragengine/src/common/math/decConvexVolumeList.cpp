@@ -198,7 +198,7 @@ void decConvexVolumeList::SplitByPlane( const decVector &splitNormal, const decV
 	
 	// loop over all volumes
 	volumeCount = pVolumeCount;
-	for( l=0; l<pVolumeCount; l++ ){
+	for( l=0; l<volumeCount; l++ ){
 		result = pTestByPlane( l, splitNormal, splitDot );
 		
 		if( deleteBackVolume ){
@@ -236,7 +236,7 @@ void decConvexVolumeList::SplitByFace( const decConvexVolume &volume, int face )
 	
 	// loop over all volumes
 	volumeCount = pVolumeCount;
-	for( l=0; l<pVolumeCount; l++ ){
+	for( l=0; l<volumeCount; l++ ){
 		if( pTestByFace( l, volume, *splitFace ) ){
 			if( pSplitByPlane( l, splitNormal, splitDot, false, splitFace ) == SPLIT_NONE ){
 				volumeCount--;

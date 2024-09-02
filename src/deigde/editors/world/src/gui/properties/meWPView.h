@@ -32,6 +32,7 @@
 #include <deigde/gui/composed/igdeToggleTagsReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/properties/igdeWPSkyReference.h>
+#include <deigde/gui/properties/igdeWPWObjectReference.h>
 #include <deigde/gui/properties/igdeWPCameraReference.h>
 #include <deigde/gui/properties/igdeWPTriggerTableReference.h>
 
@@ -66,6 +67,7 @@ private:
 	igdeTextFieldReference pEditActiveCamera;
 	
 	igdeWPSkyReference pWPSky;
+	igdeWPWObjectReference pWPBgObject;
 	igdeWPCameraReference pWPCamera;
 	igdeWPTriggerTableReference pWPTriggerTable;
 	igdeComboBoxReference pCBCameraObjects;
@@ -75,6 +77,8 @@ private:
 	igdeActionReference pActionCameraFreeRoaming;
 	igdeActionReference pActionCameraPlayer;
 	igdeActionReference pActionCameraObject;
+	
+	igdeCheckBoxReference pChkEnableAuralization;
 	
 	
 	
@@ -114,6 +118,9 @@ public:
 	
 	/** \brief Update sky. */
 	void UpdateSky();
+	
+	/** Update background object. */
+	void UpdateBgObject();
 	
 	/** \brief Update active camera. */
 	void UpdateCamera();

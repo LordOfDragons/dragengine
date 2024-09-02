@@ -39,6 +39,7 @@ private:
 	deScriptingDragonScript &pDS;
 	decTimer pDebugTimer;
 	bool pDefaultEnableGI;
+	bool pDefaultEnableAuralization;
 	
 	
 	
@@ -69,6 +70,12 @@ public:
 	
 	/** Set default enable GI. */
 	void SetDefaultEnableGI( bool enable );
+	
+	/** Default enable auralization. */
+	inline bool GetDefaultEnableAuralization() const{ return pDefaultEnableAuralization; }
+	
+	/** Set default enable auralization. */
+	void SetDefaultEnableAuralization( bool enable );
 	/*@}*/
 	
 	
@@ -82,6 +89,7 @@ private:
 		dsClass *clsFloat;
 		dsClass *clsString;
 		dsClass *clsBoolean;
+		dsClass *clsSet;
 		dsClass *clsDictionary;
 		
 		dsClass *clsWindow;
@@ -99,6 +107,7 @@ private:
 	DEF_NATFUNC( nfGetGame );
 	DEF_NATFUNC( nfGetFPSRate );
 	DEF_NATFUNC( nfQuit );
+	DEF_NATFUNC( nfRestart );
 	DEF_NATFUNC( nfGetEditMode );
 	DEF_NATFUNC( nfLoadingResourceCount );
 	DEF_NATFUNC( nfLog );
@@ -122,9 +131,13 @@ private:
 	
 	DEF_NATFUNC( nfGetDefaultEnableGI );
 	DEF_NATFUNC( nfSetDefaultEnableGI );
+	DEF_NATFUNC( nfGetDefaultEnableAuralization );
+	DEF_NATFUNC( nfSetDefaultEnableAuralization );
 	
 	DEF_NATFUNC( nfGetUserLocaleLanguage );
 	DEF_NATFUNC( nfGetUserLocaleTerritory );
+	
+	DEF_NATFUNC( nfGetSupportedServices );
 #undef DEF_NATFUNC
 };
 

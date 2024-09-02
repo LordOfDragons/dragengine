@@ -99,7 +99,7 @@ void dealRemoveDirTree::Remove( const char *path ){
 void dealRemoveDirTree::pRemove( deVirtualFileSystem &vfs, const decPath &deletePath ){
 	//pLogger.LogInfoFormat( LOGSOURCE, "Process '%s'", deletePath.GetPathUnix().GetString() );
 	// delete directories
-	deCollectFileSearchVisitor collectDirectories;
+	deCollectDirectorySearchVisitor collectDirectories;
 	vfs.SearchFiles( deletePath, collectDirectories );
 	const dePathList &directories = collectDirectories.GetDirectories();
 	const int directoryCount = directories.GetCount();

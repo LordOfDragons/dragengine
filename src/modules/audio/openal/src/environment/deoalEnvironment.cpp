@@ -250,8 +250,11 @@ void deoalEnvironment::Update(){
 	const decQuaternion &micOrient = microphone.GetOrientation();
 	const decDVector &micPos = microphone.GetPosition();
 	const float distanceSquared = ( float )( ( micPos - pPosition ).LengthSquared() );
-	const deoalConfiguration::eAuralizationModes AuralizationMode =
-		pAudioThread.GetConfiguration().GetAuralizationMode();
+	deoalConfiguration::eAuralizationModes auralizationMode = deoalConfiguration::eamDisabled;
+	
+	if( microphone.GetEnableAuralization() ){
+		auralizationMode = pAudioThread.GetConfiguration().GetAuralizationMode();
+	}
 	
 	if( distanceSquared > pRangeSquared ){
 		return;
@@ -262,7 +265,7 @@ void deoalEnvironment::Update(){
 	pGainMedium = 1.0f;
 	pGainHigh = 1.0f;
 	
-	switch( AuralizationMode ){
+	switch( auralizationMode ){
 	case deoalConfiguration::eamDirectSound:
 	case deoalConfiguration::eamFull:
 		pDirectPath( microphone, micPos );
@@ -287,7 +290,7 @@ void deoalEnvironment::Update(){
 	pReverbLateReverbPan.SetZero();
 	pReverbEchoTime = 0.25f;
 	
-	switch( AuralizationMode ){
+	switch( auralizationMode ){
 	case deoalConfiguration::eamFull:
 		pEnvReflection( microphone, micPos, micOrient );
 		break;

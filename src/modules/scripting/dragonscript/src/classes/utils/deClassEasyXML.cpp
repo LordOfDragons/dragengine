@@ -160,6 +160,70 @@ void deClassEasyXML::nfNewFile::RunFunction( dsRunTime *rt, dsValue *myself ){
 	}
 }
 
+// public func new(String filename, bool stripComments, bool cleanCharData)
+deClassEasyXML::nfNewFile2::nfNewFile2( const sInitData &init ) :
+dsFunction( init.clsXmlDocument, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // filename
+	p_AddParameter( init.clsBool ); // stripComments
+	p_AddParameter( init.clsBool ); // cleanCharData
+}
+void deClassEasyXML::nfNewFile2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sXMLNatDat &nd = *( ( sXMLNatDat* )p_GetNativeData( myself ) );
+	deScriptingDragonScript &ds = ( ( deClassEasyXML* )GetOwnerClass() )->GetDS();
+	
+	// prepare
+	nd.document = nullptr;
+	
+	// check arguments
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	if( ! filename ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const bool stripComments = rt->GetValue( 1 )->GetBool();
+	const bool cleanCharData = rt->GetValue( 2 )->GetBool();
+	
+	// load xml
+	deVirtualFileSystem &vfs = *ds.GetGameEngine()->GetVirtualFileSystem();
+	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
+	
+	try{
+		decBaseFileReaderReference reader;
+		reader.TakeOver( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+		
+		nd.document = new dedsXmlDocument( filename );
+		
+		if( parser.ParseXml( reader, nd.document ) ){
+			if( stripComments ){
+				nd.document->StripComments();
+			}
+			if( cleanCharData ){
+				nd.document->CleanCharData();
+			}
+			
+		}else{
+			nd.document->SetParseFailed( true );
+			nd.document->SetParseLog( parser.GetParseLog() );
+		}
+		
+	}catch( const deException &e ){
+		( ( deClassEasyXML* )GetOwnerClass() )->GetDS().LogException( e );
+		if( nd.document ){
+			nd.document->FreeReference();
+			nd.document = NULL;
+		}
+		throw;
+		
+	}catch( ... ){
+		if( nd.document ){
+			nd.document->FreeReference();
+			nd.document = NULL;
+		}
+		throw;
+	}
+}
+
 // public func destructor()
 deClassEasyXML::nfDestructor::nfDestructor( const sInitData &init ) :
 dsFunction( init.clsXmlDocument, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
@@ -340,6 +404,7 @@ void deClassEasyXML::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfNewFile( init ) );
+	AddFunction( new nfNewFile2( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetFilename( init ) );

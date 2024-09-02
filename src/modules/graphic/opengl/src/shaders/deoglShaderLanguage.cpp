@@ -50,7 +50,7 @@
 #include <dragengine/threading/deMutexGuard.h>
 
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 //#define PRINT_SHADERS
 //#define PRINT_COMPILING
 #endif
@@ -693,7 +693,7 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 			
 			pPreparePreprocessor( program.GetDefines() );
 			
-			#ifdef ANDROID
+			#ifdef OS_ANDROID
 			if( scFragment ){
 				pAppendPreprocessSourcesBuffer( scFragment->GetFilePath(), scFragment->GetSourceCode(), &outputList );
 				
@@ -1140,7 +1140,7 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 		pPreprocessor.SetSymbol( "HIGHP", "highp" );
 	}
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pPreprocessor.SetSymbol( "ANDROID", "1" );
 	//pPreprocessor.SourcesAppend( "float modf( in float x, out float i ){ i=floor(x); return fract(x); }\n" );
 	#endif
@@ -1148,7 +1148,7 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 
 
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deoglShaderLanguage::pAppendPreprocessSourcesBuffer(
 const char *inputFile, const char *data, const deoglShaderBindingList *outputList ){
 	if( ! outputList ){
@@ -1316,7 +1316,7 @@ bool deoglShaderLanguage::pLinkShader( GLuint handle ){
 }
 
 void deoglShaderLanguage::pOutputShaderToFile( const char *file ){
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	pRenderThread.GetLogger().LogErrorFormat( "%s_%.3i.shader", file, pShaderFileNumber++ );
 	pRenderThread.GetLogger().LogError( pPreprocessor.GetSources() );
 	

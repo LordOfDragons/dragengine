@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,43 +34,43 @@ pin Dragengine.Scenery
  */
 public class VideoMousePointerFactory extends DefaultMousePointerFactory
 	/** \brief Video. */
-	private var Video pVideo
+	var Video pVideo
 	
 	/** \brief Color matrix to use. */
-	private var ColorMatrix pColorMatrix
+	var ColorMatrix pColorMatrix
 	
 	
 	
 	/** \brief Create mouse pointer factory. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create copy of mouse pointer factory. */
-	public func new( VideoMousePointerFactory factory ) super( factory )
-		this.pVideo = factory.pVideo
-		this.pColorMatrix = factory.pColorMatrix
+	func new(VideoMousePointerFactory factory) super(factory)
+		pVideo = factory.pVideo
+		pColorMatrix = factory.pColorMatrix
 	end
 	
 	
 	
 	/** \brief Video or \em null if not set. */
-	public func Video getVideo()
-		return this.pVideo
+	func Video getVideo()
+		return pVideo
 	end
 	
 	/** \brief Set video or \em null if not set. */
-	public func void setVideo( Video video )
-		this.pVideo = video
+	func void setVideo(Video video)
+		pVideo = video
 	end
 	
 	/** \brief Color matrix to use. */
-	public func ColorMatrix getColorMatrix()
-		return this.pColorMatrix
+	func ColorMatrix getColorMatrix()
+		return pColorMatrix
 	end
 	
 	/** \brief Set color matrix to use. */
-	public func void setColorMatrix( ColorMatrix colorMatrix )
-		this.pColorMatrix = colorMatrix
+	func void setColorMatrix(ColorMatrix colorMatrix)
+		pColorMatrix = colorMatrix
 	end
 	
 	
@@ -81,39 +84,39 @@ public class VideoMousePointerFactory extends DefaultMousePointerFactory
 	 * | video | Video | setVideo |
 	 * | colorMatrix | ColorMatrix | setColorMatrix |
 	 */
-	public func void setParameter( String name, Object value )
-		if name.equals( "video" )
-			this.setVideo( value cast Video )
+	func void setParameter(String name, Object value)
+		if name.equals("video")
+			setVideo(value cast Video)
 			
-		elif name.equals( "colorMatrix" )
-			this.setColorMatrix( value cast ColorMatrix )
+		elif name.equals("colorMatrix")
+			setColorMatrix(value cast ColorMatrix)
 			
 		else
-			super.setParameter( name, value )
+			super.setParameter(name, value)
 		end
 	end
 	
 	
 	
 	/** \brief Create copy of mouse pointer factory. */
-	public func MousePointerFactory copyFactory()
-		return VideoMousePointerFactory.new( this )
+	func MousePointerFactory copyFactory()
+		return VideoMousePointerFactory.new(this)
 	end
 	
 	/** \brief Create mouse pointer. */
-	public func MousePointer createMousePointer()
+	func MousePointer createMousePointer()
 		var VideoMousePointer mousePointer = VideoMousePointer.new()
-		this.initVideoMousePointer( mousePointer )
+		initVideoMousePointer(mousePointer)
 		return mousePointer
 	end
 	
 	/** \brief Initialize canvas creator part of mouse pointer. */
-	protected func void initVideoMousePointer( VideoMousePointer mousePointer )
-		this.initDefaultMousePointer( mousePointer )
-		mousePointer.setVideo( this.pVideo )
+	protected func void initVideoMousePointer(VideoMousePointer mousePointer)
+		initDefaultMousePointer(mousePointer)
+		mousePointer.setVideo(pVideo)
 		
-		if this.pColorMatrix != null
-			mousePointer.getCanvas().setColorTransform( this.pColorMatrix )
+		if pColorMatrix != null
+			mousePointer.getCanvas().setColorTransform(pColorMatrix)
 		end
 	end
 end

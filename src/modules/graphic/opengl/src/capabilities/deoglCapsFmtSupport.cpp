@@ -144,7 +144,7 @@ void deoglCapsFmtSupport::DetectFormats( GLuint fbo ){
 	pDetectFBOTexCubeFormats( fbo );
 	pDetectFBOArrayTexFormats( fbo );
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	/*{
 	const deoglCapsTextureFormatList* lists[ 7 ] = {
 		&pFoundTex2DFormats, &pFoundTexCubeFormats, &pFoundArrTexFormats, &pFoundFBOTex2DFormats,
@@ -397,7 +397,7 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 	}
 	
 	// verify that all required formats are found
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
 		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
 		eutfDepth, eutfDepth_Stencil, eutfDepth16 };

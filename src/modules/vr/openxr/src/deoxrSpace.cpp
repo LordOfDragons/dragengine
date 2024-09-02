@@ -196,7 +196,7 @@ void deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion
 	const decQuaternion rotate( decQuaternion::CreateFromEulerY( 180.0f * DEG2RAD ) );
 	
 	if( ( location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT ) != 0 ){
-		const decVector converted( rotate * deoxrUtils::Convert( location.pose.position ) );
+		// const decVector converted( rotate * deoxrUtils::Convert( location.pose.position ) );
 
 		// while blinking the eyes can not be tracked. VIVE does not clear the valid bit
 		// which is incorrect since this causes the eyes to turn inside the head while

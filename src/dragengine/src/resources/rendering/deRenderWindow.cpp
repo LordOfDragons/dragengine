@@ -51,7 +51,7 @@
 deRenderWindow::deRenderWindow( deRenderWindowManager *manager ) :
 deResource( manager ),
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 pHostWindow( NULL ),
 pWindow( NULL ),
 #endif
@@ -101,7 +101,7 @@ deRenderWindow::~deRenderWindow(){
 // Management
 ///////////////
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deRenderWindow::SetHostWindow( void *window ){
 	if( window == pHostWindow ){
 		return;

@@ -91,7 +91,7 @@ void deoxrDPOculusTouchController::pSuggestBindings(){
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 11 * 2 + 5 + 5;
+	const int bindingCount = 12 * 2 + 5 + 5;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -103,7 +103,8 @@ void deoxrDPOculusTouchController::pSuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
+		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value" );
 		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
@@ -149,7 +150,7 @@ void deoxrDPOculusTouchController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "otc_" );
+	pCreateDevice( device, left, "otc_", true );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );
@@ -174,7 +175,7 @@ void deoxrDPOculusTouchController::pAddDevice( bool left ){
 	pAddButtonThumbrest( device, thumbrest );
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddAxesGripGrab( device, grip );
+	pAddAxisGripGrab( device, grip );
 	pAddButtonGrip( device, grip, false );
 	
 	pAddHandTracker( device, left );

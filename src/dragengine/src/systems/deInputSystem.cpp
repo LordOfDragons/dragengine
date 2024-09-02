@@ -49,7 +49,8 @@ deInputSystem::deInputSystem( deEngine *engine ) :
 deBaseSystem( engine, "Input", deModuleSystem::emtInput ),
 pActiveModule( NULL ),
 pEventQueue( NULL ),
-pCaptureInputDevices( false )
+pCaptureInputDevices( false ),
+pDropInputCount( 0 )
 {
 	pEventQueue = new deInputEventQueue( 100 );
 }
@@ -94,6 +95,49 @@ void deInputSystem::SetCaptureInputDevices( bool captureInputDevices ){
 	
 	if( GetIsRunning() ){
 		pActiveModule->CaptureInputDevicesChanged();
+	}
+}
+
+void deInputSystem::StartDropInput(){
+	pDropInputCount++;
+}
+
+void deInputSystem::StopDropInput(){
+	DEASSERT_TRUE( pDropInputCount > 0 )
+	pDropInputCount--;
+}
+
+bool deInputSystem::GetDropModeEnabled() const{
+	return pDropInputCount > 0;
+}
+
+bool deInputSystem::DropEvent(const deInputEvent& event) const{
+	if( pDropInputCount == 0 ){
+		return false;
+	}
+	
+	switch( event.GetType() ){
+	case deInputEvent::eeKeyPress:
+	case deInputEvent::eeKeyRelease:
+	case deInputEvent::eeMousePress:
+	case deInputEvent::eeMouseRelease:
+	case deInputEvent::eeMouseMove:
+	case deInputEvent::eeMouseWheel:
+	case deInputEvent::eeAxisMove:
+	case deInputEvent::eeButtonPress:
+	case deInputEvent::eeButtonRelease:
+	case deInputEvent::eeButtonTouch:
+	case deInputEvent::eeButtonUntouch:
+		return true;
+		
+	case deInputEvent::eeDeviceAttached:
+	case deInputEvent::eeDeviceDetached:
+	case deInputEvent::eeDeviceParamsChanged:
+	case deInputEvent::eeDevicesAttachedDetached:
+		return false;
+		
+	default:
+		return false;
 	}
 }
 

@@ -73,6 +73,9 @@ public:
 	/** \brief Layer mask changed. */
 	virtual void LayerMaskChanged();
 	
+	/** \brief Enable auralization changed. */
+	virtual void EnableAuralizationChanged();
+	
 	/** \brief Speaker has been added. */
 	virtual void SpeakerAdded( deSpeaker *speaker );
 	

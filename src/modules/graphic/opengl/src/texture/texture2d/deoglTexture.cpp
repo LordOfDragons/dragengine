@@ -38,7 +38,7 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDebug.h"
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
@@ -319,7 +319,7 @@ void deoglTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		return;
 	}
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	// glReadPixels under OpenGL ES does only support GL_RGBA and GL_RGBA_INTEGRAL.
 	// if something else is required (for exampel GL_RGB, GL_RG or GL_RED) we have
 	// to use a temporary texture containing 4 components and copy over from there.
@@ -328,8 +328,9 @@ void deoglTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, width, height, 1 );
-		const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4();
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, width, height, 1 ) ) );
+		const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4();
 		const int count = width * height;
 		int i;
 		
@@ -368,8 +369,9 @@ void deoglTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, width, height, 1 );
-		const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4();
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, 1 ) ) );
+		const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4();
 		const int count = width * height;
 		int i;
 		
@@ -574,7 +576,7 @@ void deoglTexture::UpdateMemoryUsage(){
 		return;
 	}
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pMemUse.SetUncompressed( *pFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount );
 	
 	#else

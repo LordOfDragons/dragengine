@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libjpeg-turbo-2.0.3-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libjpeg-turbo-2.0.3-vc64.zip" -UrlPath "libjpeg"
+
+Expand-Archive -Path "$ProjectDir\libjpeg-turbo-2.0.3-vc64.zip" -DestinationPath $ProjectDir

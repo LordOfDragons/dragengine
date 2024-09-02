@@ -25,6 +25,9 @@ else:
 	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
 	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libapng', 'lib_libapng_fetch')
+
 # check if system libapng is present
 hasSystemAPNG = False
 conf = envLibrary.Configure()
@@ -111,8 +114,7 @@ else:
 	targets = [ libFileName ]
 targets.extend( [ 'include/pngconf.h', 'include/png.h', 'include/pnglibconf.h' ] )
 
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action(libapngBuild, 'Build libapng' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libapngBuild, 'Build libapng' ) )
 
 if not buildStaticLinking:
 	envLibrary.Depends( library, envLibrary[ 'PATCHES' ] )

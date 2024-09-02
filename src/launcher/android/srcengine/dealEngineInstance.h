@@ -172,6 +172,12 @@ public:
 	/** \brief Add redirect directory to virtual file system. */
 	virtual bool VFSAddRedirect( const char *root, const char *redirect );
 	
+	/**
+	 * \brief Make modules add stage specific containers to virtual file system.
+	 * \version 1.23
+	 */
+	virtual bool ModulesAddVFSContainers( const char *stage );
+	
 	
 	
 	/** \brief Create render window. */

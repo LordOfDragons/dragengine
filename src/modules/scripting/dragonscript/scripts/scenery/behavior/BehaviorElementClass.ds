@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -45,31 +48,33 @@ pin Dragengine.Utils
  * ECBehaviorInstance instances. These provide the actual behavior to the element.
  */
 class BehaviorElementClass extends ElementClass
-	private var Array pBehaviors
-	private var Array pPrepareStubBehaviors
+	var Array pBehaviors
+	var Array pPrepareStubBehaviors
+	var Array pPreventCreationBehaviors
 	
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new() this("BehaviorElement", BaseGameApp.getApp().getLoaders())
+	func new() this("BehaviorElement", BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create element class. */
-	public func new(Loaders loaders) this("BehaviorElement", loaders)
+	func new(Loaders loaders) this("BehaviorElement", loaders)
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new(String className) this(className, BaseGameApp.getApp().getLoaders())
+	func new(String className) this(className, BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create element class. */
-	public func new(String className, Loaders loaders) super(className)
+	func new(String className, Loaders loaders) super(className)
 		pBehaviors = Array.new()
 		pPrepareStubBehaviors = Array.new()
+		pPreventCreationBehaviors = Array.new()
 	end
 	
 	/** \brief Dispose of element class. */
-	public func void dispose()
+	func void dispose()
 		if pBehaviors != null
 			pBehaviors.forEachReverse(block ECBehavior each
 				each.dispose()
@@ -78,6 +83,7 @@ class BehaviorElementClass extends ElementClass
 		end
 		
 		pPrepareStubBehaviors = null
+		pPreventCreationBehaviors = null
 		
 		super.dispose()
 	end
@@ -85,12 +91,12 @@ class BehaviorElementClass extends ElementClass
 	
 	
 	/** \brief Number of behaviors. */
-	public func int getBehaviorCount()
+	func int getBehaviorCount()
 		return pBehaviors.getCount()
 	end
 	
 	/** \brief Behavior at index. */
-	public func ECBehavior getBehaviorAt(int index)
+	func ECBehavior getBehaviorAt(int index)
 		return pBehaviors.getAt(index) cast ECBehavior
 	end
 	
@@ -100,7 +106,7 @@ class BehaviorElementClass extends ElementClass
 	 * This is called by constructors of class implementing ECBehavior. Usually you do not
 	 * have to call this manually.
 	 */
-	public func void addBehavior(ECBehavior behavior)
+	func void addBehavior(ECBehavior behavior)
 		if behavior == null or pBehaviors.has(behavior)
 			throw EInvalidParam.new()
 		end
@@ -116,7 +122,7 @@ class BehaviorElementClass extends ElementClass
 	 * Block is required to have one parameter of type ECBehavior or subclass thereof.
 	 * Block is called only for behaviors castable to block parameter type.
 	 */
-	public func void forEachBehavior(Block ablock)
+	func void forEachBehavior(Block ablock)
 		pBehaviors.forEachCastable(ablock)
 	end
 	
@@ -127,7 +133,7 @@ class BehaviorElementClass extends ElementClass
 	 * true if the right behavior is found otherwise false. Block is called only for
 	 * behaviors castable to block parameter type.
 	 */
-	public func ECBehavior findBehavior(Block ablock)
+	func ECBehavior findBehavior(Block ablock)
 		return pBehaviors.findCastable(ablock) cast ECBehavior
 	end
 	
@@ -139,18 +145,16 @@ class BehaviorElementClass extends ElementClass
 	 * true if the right behavior is found otherwise false. Block is called only for
 	 * behaviors castable to block parameter type.
 	 */
-	public func Array collectBehaviors(Block ablock)
+	func Array collectBehaviors(Block ablock)
 		return pBehaviors.collectCastable(ablock)
 	end
-	
-	
 	
 	/**
 	 * \brief Visit behaviors with block.
 	 * 
 	 * Block is required to have one parameter of type ECBehavior. For use by BehaviorElement.
 	 */
-	public func void forEachBehaviorDirect(Block ablock)
+	func void forEachBehaviorDirect(Block ablock)
 		pBehaviors.forEach(ablock)
 	end
 	
@@ -164,9 +168,6 @@ class BehaviorElementClass extends ElementClass
 	 * This can be used to alter the behavior initialization procss my modifying the stub
 	 * properties or textures.
 	 * 
-	 * This function is only called for newly created elements. For loading elements
-	 * preinitializing is not done since the preinitialized state has been already saved.
-	 * 
 	 * Usually preinitializing is done for elements to be added to a game world. It is thus
 	 * possible to use game world stub properties to alter the initialization. This can be
 	 * used to adjust the behavior depending on what game world they are created for. It is
@@ -174,12 +175,90 @@ class BehaviorElementClass extends ElementClass
 	 * game world. In this case gameWorld is null. Behaviors added for preinitializing have
 	 * to be able to handle gameWorld being null.
 	 */
-	public func void addPrepareStubBehavior(BehaviorPrepareStub behavior)
+	func void addPrepareStubBehavior(BehaviorPrepareStub behavior)
 		if behavior == null
 			throw ENullPointer.new("behavior")
 		end
 		
 		pPrepareStubBehaviors.add(behavior)
+	end
+	
+	/**
+	 * \brief Visit prepare stub behaviors with block.
+	 * version 1.23
+	 * 
+	 * Block is required to have one parameter of type ECBehavior or subclass thereof.
+	 * Block is called only for behaviors castable to block parameter type.
+	 */
+	func void forEachPrepareStubBehavior(Block ablock)
+		pPrepareStubBehaviors.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Call prepareStub on all prepare stub behaviors.
+	 * \version 1.23
+	 * 
+	 * For use by subclasses overwriting \ref #createAndAddElement(StubElement,GameWorld)
+	 * or \ref #loadAndAddElement(PersistencyEnvironment,StubElement,FileReader,GameWorld)
+	 * without super calling.
+	 * 
+	 * \see BehaviorPrepareStub#prepareStub(StubElement,GameWorld,bool)
+	 */
+	func void prepareStubs(StubElement stub, GameWorld gameWorld, bool loading)
+		pPrepareStubBehaviors.forEach(block BehaviorPrepareStub each
+			each.prepareStub(stub, gameWorld, loading)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Add behavior potentially preventing creation before initialization is done.
+	 * \version 1.23
+	 * 
+	 * Preventing creation allows behaviors to cancel creating and adding an element
+	 * before Element.init() is called. This can be used for to randomly create or not
+	 * create an element as well as creating elements only if the player choose a certain
+	 * difficulty level.
+	 * 
+	 * Usually preventing creation is done for elements to be added to a game world. It is
+	 * thus possible to use game world stub properties to alter the prevention condition.
+	 * It is possible preinitialization is done without the element to be added to a specific
+	 * game world. In this case gameWorld is null. Behaviors added for preventing creation
+	 * have to be able to handle gameWorld being null.
+	 */
+	func void addPreventCreationBehavior(BehaviorPreventCreation behavior)
+		if behavior == null
+			throw ENullPointer.new("behavior")
+		end
+		
+		pPreventCreationBehaviors.add(behavior)
+	end
+	
+	/**
+	 * \brief Visit prevent creation behaviors with block.
+	 * version 1.23
+	 * 
+	 * Block is required to have one parameter of type ECBehavior or subclass thereof.
+	 * Block is called only for behaviors castable to block parameter type.
+	 */
+	func void forEachPreventCreationBehavior(Block ablock)
+		pPreventCreationBehaviors.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Call prepareStub on all prepare stub behaviors.
+	 * \version 1.23
+	 * 
+	 * For use by subclasses overwriting \ref #createAndAddElement(StubElement,GameWorld)
+	 * without super calling.
+	 * 
+	 * \see BehaviorPreventCreation#preventCreation(StubElement,GameWorld)
+	 */
+	func bool preventCreation(StubElement stub, GameWorld gameWorld)
+		return pPreventCreationBehaviors.find(block BehaviorPreventCreation each
+			return each.preventCreation(stub, gameWorld)
+		end) != null
 	end
 	
 	
@@ -192,14 +271,23 @@ class BehaviorElementClass extends ElementClass
 	/**
 	 * \brief Create element from given stub and add it to game world.
 	 * 
-	 * Calls prepareStub() on behaviors supporting stub preparation. Then calls createElement(stub)
-	 * to obtain new element instance. If returned element is null no further processing is done.
-	 * Otherwise element is added to gameWorld.
+	 * Calls \ref BehaviorPrepareStub#prepareStub(StubElement,GameWorld,bool) on behaviors
+	 * supporting stub preparation. Then calls
+	 * \ref BehaviorPreventCreation#preventCreation(StubElement,GameWorld) to check if
+	 * creating and adding the element has to be cancelled. Then calls
+	 * \ref #createElement(StubElement) to obtain new element instance. If returned element
+	 * is null no further processing is done. Otherwise element is added to gameWorld.
 	 */
-	public func void createAndAddElement(StubElement stub, GameWorld gameWorld)
+	func void createAndAddElement(StubElement stub, GameWorld gameWorld)
 		pPrepareStubBehaviors.forEach(block BehaviorPrepareStub each
 			each.prepareStub(stub, gameWorld, false)
 		end)
+		
+		if pPreventCreationBehaviors.find(block BehaviorPreventCreation each
+			return each.preventCreation(stub, gameWorld)
+		end) != null
+			return
+		end
 		
 		super.createAndAddElement(stub, gameWorld)
 	end
@@ -207,11 +295,13 @@ class BehaviorElementClass extends ElementClass
 	/**
 	 * \brief Load element from file reader and add it to game world.
 	 * 
-	 * Calls prepareStub() on behaviors supporting stub preparation. Then calls loadElement(stub)
-	 * to obtain new element instance. If returned element is null no further processing is done.
+	 * Calls \ref BehaviorPrepareStub#prepareStub(StubElement,GameWorld,bool) on behaviors
+	 * supporting stub preparation. Then calls
+	 * \ref #loadElement(PersistencyEnvironment,StubElement,FileReader) to obtain new
+	 * element instance. If returned element is null no further processing is done.
 	 * Otherwise element is added to gameWorld.
 	 */
-	public func void loadAndAddElement(PersistencyEnvironment env, StubElement stub, \
+	func void loadAndAddElement(PersistencyEnvironment env, StubElement stub, \
 	FileReader reader, GameWorld gameWorld)
 		pPrepareStubBehaviors.forEach(block BehaviorPrepareStub each
 			each.prepareStub(stub, gameWorld, true)

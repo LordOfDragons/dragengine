@@ -1261,7 +1261,7 @@ class OBJECT_PT_DragengineBone(bpy.types.Panel):
         rd = context.active_bone
         col = layout.column(align=True)
         col.prop(rd, "dragengine_export", expand=True, toggle=True)
-registerClass(BJECT_PT_DragengineBone)
+registerClass(OBJECT_PT_DragengineBone)
 """
 
 

@@ -109,6 +109,8 @@ private:
 	
 	DEF_NATFUNC( nfAddBox );
 	DEF_NATFUNC( nfAddBox2 );
+	DEF_NATFUNC( nfAddBox3 );
+	DEF_NATFUNC( nfAddBox4 );
 	
 	DEF_NATFUNC( nfAddCylinder );
 	DEF_NATFUNC( nfAddCylinder2 );

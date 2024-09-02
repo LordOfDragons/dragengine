@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Quelldateien">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Headerdateien">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Ressourcendateien">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Quelldateien\tasks">
+      <UniqueIdentifier>{9fb11ef7-4477-4cb6-bbee-b497ee252fc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\tasks">
+      <UniqueIdentifier>{afe77da9-e151-40f6-a5c8-8681a0827f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\converstion">
+      <UniqueIdentifier>{fc3b1c32-59cc-4166-82b5-7c671e38ca36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\conversion">
+      <UniqueIdentifier>{01574059-c6ae-4bf2-be56-35f79a3dd3ae}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\gdk_include.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTAddUser.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetStatsAndAchievements.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.h">
+      <Filter>Headerdateien\converstion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkGameConfig.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTSetStatsAndAchievements.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTResetAllStats.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTAddUser.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetStatsAndAchievements.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.cpp">
+      <Filter>Quelldateien\conversion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkGameConfig.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTSetStatsAndAchievements.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTResetAllStats.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\service\msgdk\src\module.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+</Project>

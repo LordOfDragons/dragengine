@@ -1,0 +1,62 @@
+diff -rupN dragonscript-1.4-org/src/scriptengine/packages/default/dsClassArray.cpp dragonscript-1.4-new/src/scriptengine/packages/default/dsClassArray.cpp
+--- dragonscript-1.4-org/src/scriptengine/packages/default/dsClassArray.cpp	2023-01-28 23:41:53.000000000 +0100
++++ dragonscript-1.4-new/src/scriptengine/packages/default/dsClassArray.cpp	2024-06-02 13:47:52.651889939 +0200
+@@ -834,37 +834,12 @@ void dsClassArray::nfHas::RunFunction( d
+ 	rt->PushBool( false );
+ }
+ 
+-// function void Remove(int Position)
+-dsClassArray::nfRemove::nfRemove(const sInitData &init) : dsFunction(init.clsArr, "remove",
+-DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+-	p_AddParameter(init.clsInt); // Position
+-}
+-void dsClassArray::nfRemove::RunFunction( dsRunTime *rt, dsValue *myself ){
+-	sArrNatData *nd = (sArrNatData*)p_GetNativeData(myself);
+-	if( nd->lockModify != 0 ){
+-		DSTHROW_INFO( dueInvalidAction, errorModifyWhileLocked );
+-	}
+-	int i, vPos = rt->GetValue(0)->GetInt();
+-	if( vPos < 0 ){
+-		DSTHROW_INFO_FMT(dueInvalidParam, "position(%d) < 0", vPos);
+-	}
+-	if(vPos >= nd->count){
+-		DSTHROW_INFO_FMT(dueInvalidParam, "position(%d) >= count(%d)", vPos, nd->count);
+-	}
+-	const dsClassArray_LockModifyGuard lock( nd->lockModify );
+-	for(i=vPos; i<nd->count-1; i++){
+-		rt->MoveValue( nd->values[i+1], nd->values[i] );
+-	}
+-	rt->ClearValue( nd->values[ nd->count - 1 ] );
+-	nd->count--;
+-}
+-
+ // function void Remove(Object obj)
+-dsClassArray::nfRemove2::nfRemove2(const sInitData &init) : dsFunction(init.clsArr, "remove",
++dsClassArray::nfRemove::nfRemove(const sInitData &init) : dsFunction(init.clsArr, "remove",
+ DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+ 	p_AddParameter(init.clsObj); // obj
+ }
+-void dsClassArray::nfRemove2::RunFunction( dsRunTime *rt, dsValue *myself ){
++void dsClassArray::nfRemove::RunFunction( dsRunTime *rt, dsValue *myself ){
+ 	sArrNatData &nd = *( ( sArrNatData* )p_GetNativeData( myself ) );
+ 	if( nd.lockModify != 0 ){
+ 		DSTHROW_INFO( dueInvalidAction, errorModifyWhileLocked );
+@@ -4389,7 +4364,6 @@ void dsClassArray::CreateClassMembers( d
+ 	AddFunction( new nfIndexOf( init ) );
+ 	AddFunction( new nfHas( init ) );
+ 	AddFunction( new nfRemove( init ) );
+-	AddFunction( new nfRemove2( init ) );
+ 	AddFunction( new nfRemoveFrom( init ) );
+ 	AddFunction( new nfRemoveAll( init ) );
+ 	AddFunction( new nfGetObject( init ) );
+diff -rupN dragonscript-1.4-org/src/scriptengine/packages/default/dsClassArray.h dragonscript-1.4-new/src/scriptengine/packages/default/dsClassArray.h
+--- dragonscript-1.4-org/src/scriptengine/packages/default/dsClassArray.h	2023-01-28 23:41:53.000000000 +0100
++++ dragonscript-1.4-new/src/scriptengine/packages/default/dsClassArray.h	2024-06-02 13:47:32.738781713 +0200
+@@ -134,7 +134,6 @@ private:
+ 	DEF_NATFUNC( nfIndexOf );
+ 	DEF_NATFUNC( nfHas );
+ 	DEF_NATFUNC(nfRemove);
+-	DEF_NATFUNC(nfRemove2);
+ 	DEF_NATFUNC( nfRemoveFrom );
+ 	DEF_NATFUNC(nfRemoveAll);
+ 	DEF_NATFUNC(nfSetObject);

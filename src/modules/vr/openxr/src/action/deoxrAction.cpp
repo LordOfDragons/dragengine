@@ -173,7 +173,7 @@ deoxrAction::~deoxrAction(){
 
 void deoxrAction::DropActionSet(){
 	pActionSet = nullptr;
-	pAction = nullptr;
+	pAction = ( XrAction )nullptr;
 }
 
 
@@ -187,6 +187,6 @@ void deoxrAction::pCleanUp(){
 			pActionSet->GetInstance().xrDestroyAction( pAction );
 			pActionSet = nullptr;
 		}
-		pAction = nullptr;
+		pAction = ( XrAction )nullptr;
 	}
 }

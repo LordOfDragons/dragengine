@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -67,7 +70,7 @@ class WindowModal extends Window
 	
 	
 	/** \brief Window this window is blocking. */
-	private var Window pBlockWindow
+	var Window pBlockWindow
 	
 	
 	
@@ -76,31 +79,31 @@ class WindowModal extends Window
 	 * 
 	 * Window is initially hidden. Call one of the show() methods to make it visible.
 	 */
-	public func new()
-		this.setVisible( false )
-		this.setCanMaximize( false )
-		this.setCanMinimize( false )
-		this.setLayout( FlowLayout.new( LayoutAxis.y ) )
+	func new()
+		setVisible(false)
+		setCanMaximize(false)
+		setCanMinimize(false)
+		setLayout(FlowLayout.new(LayoutAxis.y))
 	end
 	
 	/** \brief Create window with the given geometry. */
-	public func new( int x, int y, int width, int height ) super( x, y, width, height )
-		this.setCanMaximize( false )
-		this.setCanMinimize( false )
-		this.setLayout( FlowLayout.new( LayoutAxis.y ) )
+	func new(int x, int y, int width, int height) super(x, y, width, height)
+		setCanMaximize(false)
+		setCanMinimize(false)
+		setLayout(FlowLayout.new(LayoutAxis.y))
 	end
 	
 	/** \brief Dispose of window. */
-	public func void dispose()
-		this.pBlockWindow = null
+	func void dispose()
+		pBlockWindow = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Window this window is blocking or \em null if not shown. */
-	public func Window getBlockWindow()
-		return this.pBlockWindow
+	func Window getBlockWindow()
+		return pBlockWindow
 	end
 	
 	/**
@@ -108,22 +111,22 @@ class WindowModal extends Window
 	 * \param blockWindow Refertence window for position calculation.
 	 * \param placement Placement of the window.
 	 */
-	public func Point calcWindowPosition( Window blockWindow, Placement placement )
+	func Point calcWindowPosition(Window blockWindow, Placement placement)
 		select placement
 		case Placement.window
-			return blockWindow.getPosition() + ( blockWindow.getSize() - this.getSize() ) / 2
+			return blockWindow.getPosition() + (blockWindow.getSize() - getSize()) / 2
 			
 		case Placement.desktop
-			return ( blockWindow.getDesktop().getSize() - this.getSize() ) / 2
+			return (blockWindow.getDesktop().getSize() - getSize()) / 2
 			
 		case Placement.mouseCursor
-			return blockWindow.getDesktop().getMouseLocation() - this.getSize() / 2
+			return blockWindow.getDesktop().getMouseLocation() - getSize() / 2
 			
 		case Placement.position
-			return this.getPosition() - this.getSize() / 2
+			return getPosition() - getSize() / 2
 			
 		case Placement.none
-			return this.getPosition()
+			return getPosition()
 			
 		else
 			throw EInvalidParam.new()
@@ -138,8 +141,8 @@ class WindowModal extends Window
 	 * \param blockWindow Window to block while modal window is shown.
 	 * \param placement Placement of the window.
 	 */
-	public func void show( Window blockWindow, Placement placement )
-		this.show( blockWindow, true, placement )
+	func void show(Window blockWindow, Placement placement)
+		show(blockWindow, true, placement)
 	end
 	
 	/**
@@ -149,29 +152,36 @@ class WindowModal extends Window
 	 * \param fitSize Fit window to content size
 	 * \param placement Placement of the window.
 	 */
-	public func void show( Window blockWindow, bool fitSize, Placement placement )
+	func void show(Window blockWindow, bool fitSize, Placement placement)
 		if blockWindow == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("blockWindow")
+		end
+		if blockWindow.getBlockingWindow() != null
+			throw EInvalidParam.new("blockWindow is already blocked by "\
+				+ blockWindow.getBlockingWindow().className())
 		end
 		
 		var Desktop desktop = blockWindow.getDesktop()
 		if desktop == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("blockWindow.getDesktop()")
 		end
 		
-		this.pBlockWindow = blockWindow
-		blockWindow.setBlockingWindow( this )
+		desktop.addWindow(this) // has to come first otherwise miminimum size can be wrong
 		
-		desktop.addWindow( this ) // has to come first otherwise miminimum size can be wrong
+		// set block windows has to come after adding the window to the desktop. this is required
+		// since setBlockingWindow can trigger moveWindow() calls which expect blocking and
+		// blocked windows to exist in the desktop.
+		pBlockWindow = blockWindow
+		blockWindow.setBlockingWindow(this)
 		
 		if fitSize
-			this.fitToContent()
+			fitToContent()
 		end
 		
-		this.setPosition( this.calcWindowPosition( blockWindow, placement ) )
+		setPosition(calcWindowPosition(blockWindow, placement))
 		
-		this.setVisible( true )
-		this.moveToTop()
+		setVisible(true)
+		moveToTop()
 	end
 	
 	/**
@@ -180,7 +190,7 @@ class WindowModal extends Window
 	 * \param blockWindow Window to block while modal window is shown.
 	 * \param position Position to show window at.
 	 */
-	public func void showAt( Window blockWindow, Point position )
+	func void showAt(Window blockWindow, Point position)
 		if blockWindow == null
 			throw EInvalidParam.new()
 		end
@@ -190,13 +200,15 @@ class WindowModal extends Window
 			throw EInvalidParam.new()
 		end
 		
-		this.pBlockWindow = blockWindow
-		blockWindow.setBlockingWindow( this )
+		desktop.addWindow(this)
 		
-		desktop.addWindow( this )
-		this.setPosition( position )
-		this.setVisible( true )
-		this.moveToTop()
+		// see show() function above for the reason why this is located after addWindow()
+		pBlockWindow = blockWindow
+		blockWindow.setBlockingWindow(this)
+		
+		setPosition(position)
+		setVisible(true)
+		moveToTop()
 	end
 	
 	
@@ -205,9 +217,11 @@ class WindowModal extends Window
 	 * \brief Close window.
 	 * \details Unblocks window.
 	 */
-	public func void close()
-		this.pBlockWindow.setBlockingWindow( null )
-		this.pBlockWindow = null
+	func void close()
+		if pBlockWindow != null
+			pBlockWindow.setBlockingWindow(null)
+			pBlockWindow = null
+		end
 		
 		super.close()
 	end
@@ -218,9 +232,9 @@ class WindowModal extends Window
 	 * \brief Move window to the top.
 	 * \details Ensure blocked window is moved right underneath.
 	 */
-	public func void moveToTop()
-		if this.pBlockWindow != null
-			this.pBlockWindow.moveToTop()
+	func void moveToTop()
+		if pBlockWindow != null
+			pBlockWindow.moveToTop()
 			
 		else
 			super.moveToTop()
@@ -231,9 +245,9 @@ class WindowModal extends Window
 	 * \brief Move window to the bottom.
 	 * \details Ensure blocked window is moved right underneath.
 	 */
-	public func void moveToBottom()
-		if this.pBlockWindow != null
-			this.pBlockWindow.moveToBottom()
+	func void moveToBottom()
+		if pBlockWindow != null
+			pBlockWindow.moveToBottom()
 			
 		else
 			super.moveToBottom()
@@ -244,12 +258,12 @@ class WindowModal extends Window
 	 * \brief Move window right above the given window.
 	 * \details Ensure blocked window is moved right underneath.
 	 */
-	public func void moveAbove( Window window )
-		if this.pBlockWindow != null
-			this.pBlockWindow.moveAbove( window )
+	func void moveAbove(Window window)
+		if pBlockWindow != null
+			pBlockWindow.moveAbove(window)
 			
 		else
-			super.moveAbove( window )
+			super.moveAbove(window)
 		end
 	end
 	
@@ -257,12 +271,12 @@ class WindowModal extends Window
 	 * \brief Move window right below the given window.
 	 * \details Ensure blocked window is moved right underneath.
 	 */
-	public func void moveBelow( Window window )
-		if this.pBlockWindow != null
-			this.pBlockWindow.moveBelow( window )
+	func void moveBelow(Window window)
+		if pBlockWindow != null
+			pBlockWindow.moveBelow(window)
 			
 		else
-			super.moveBelow( window )
+			super.moveBelow(window)
 		end
 	end
 	
@@ -271,9 +285,9 @@ class WindowModal extends Window
 	 * 
 	 * If window is blocked by another window calls moveAboveBlockWindow() also on this window too.
 	 */
-	public func void moveAboveBlockWindow()
-		if this.pBlockWindow != null
-			super.moveAbove( this.pBlockWindow )
+	func void moveAboveBlockWindow()
+		if pBlockWindow != null
+			super.moveAbove(pBlockWindow)
 		end
 	end
 end

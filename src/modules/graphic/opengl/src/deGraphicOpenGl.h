@@ -97,7 +97,7 @@ public:
 	/** Input system overlay canvas view changed. */
 	virtual void InputOverlayCanvasChanged();
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	/** Application window has been created. */
 	virtual void InitAppWindow();
 	

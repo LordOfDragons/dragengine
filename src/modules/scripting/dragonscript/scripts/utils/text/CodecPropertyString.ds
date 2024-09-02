@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -97,6 +100,91 @@ class CodecPropertyString
 		pShapeParameterSeparator = ':'
 		pShapeValueSeparator = ','
 		pEncodeTokenSeparator = ' '
+	end
+	
+	
+	
+	/**
+	 * \brief Basic separators for tokens in property strings containing multiple values.
+	 * \version 1.23
+	 */
+	func String getTokenSeparators()
+		return pTokenSeparators
+	end
+	
+	/**
+	 * \brief Set basic separators for tokens in property strings containing multiple values.
+	 * \version 1.23
+	 */
+	func void setTokenSeparators(String separators)
+		if separators == null
+			throw ENullPointer.new("separators")
+		end
+		pTokenSeparators = separators
+	end
+	
+	/**
+	 * \brief Separator for key and value in dictionaries.
+	 * \version 1.23
+	 */
+	func byte getKeyValueSeparator()
+		return pKeyValueSeparator
+	end
+	
+	/**
+	 * \brief Set separator for key and value in dictionaries.
+	 * \version 1.23
+	 */
+	func void setKeyValueSeparator(byte separator)
+		pKeyValueSeparator = separator
+	end
+	
+	/**
+	 * \brief Shape parameter separator character.
+	 * \version 1.23
+	 */
+	func byte getShapeParameterSeparator()
+		return pShapeParameterSeparator
+	end
+	
+	/**
+	 * \brief Set shape parameter separator character.
+	 * \version 1.23
+	 */
+	func void setShapeParameterSeparator(byte separator)
+		pShapeParameterSeparator = separator
+	end
+	
+	/**
+	 * \brief Shape value separator character.
+	 * \version 1.23
+	 */
+	func byte getShapeValueSeparator()
+		return pShapeValueSeparator
+	end
+	
+	/**
+	 * \brief Set shape value separator character.
+	 * \version 1.23
+	 */
+	func void setShapeValueSeparator(byte separator)
+		pShapeValueSeparator = separator
+	end
+	
+	/**
+	 * \brief Character to separate tokens with for encoding.
+	 * \version 1.23
+	 */
+	func byte getEncodeTokenSeparator()
+		return pEncodeTokenSeparator
+	end
+	
+	/**
+	 * \brief Set character to separate tokens with for encoding.
+	 * \version 1.23
+	 */
+	func void setEncodeTokenSeparator(byte separator)
+		pEncodeTokenSeparator = separator
 	end
 	
 	
@@ -212,15 +300,15 @@ class CodecPropertyString
 	
 	/**
 	 * \brief Decode property string into a dictionary of key/value strings.
-	 * \details Key/value pairs are separated by pTokenSeparators. Key and value
+	 * \details Key/value pairs are obtained using decodeStringList(). Key and value
 	 *          are separated by pKeyValueSeparator.
 	 */
 	func Dictionary decodeStringDictionary(String string) 
 		var Dictionary dict = Dictionary.new()
 		
-		string.split(pTokenSeparators).forEach(block String pair
-			var Array keyValue = pair.splitExact(pKeyValueSeparator)
-			dict.setAt(keyValue.getAt(0) cast String, keyValue.getAt(1) cast String)
+		decodeStringList(string).forEach(block String pair
+			var int index = pair.find(pKeyValueSeparator)
+			dict.setAt(pair.substring(0, index), pair.substring(index + 1))
 		end)
 		
 		return dict
@@ -706,81 +794,11 @@ class CodecPropertyString
 	
 	/** \brief Encode a string dictionary into a property string. */
 	func String encodeStringDictionary(Dictionary dict)
-		var int separatorCount = pTokenSeparators.getLength()
-		var Array keys = dict.getKeys()
-		var int count = keys.getCount()
-		var String string = ""
-		var int i, j, subcount
-		var bool quoteString
-		var String key, value
-		
-		for i = 0 to count
-			if i > 0
-				string = string + pEncodeTokenSeparator
-			end
-			
-			// key
-			key = keys.getAt(i) cast String
-			
-			quoteString = false
-			for j = 0 to separatorCount
-				if key.find(pTokenSeparators.getAt(j), 0) != -1
-					quoteString = true
-					break
-				end
-			end
-			
-			if quoteString
-				string = string + '"'
-			end
-			
-			subcount = key.getLength()
-			for j = 0 to subcount
-				if key.getAt(j) == '"'
-					string = string + "\\\""
-					
-				else
-					string = string + key.getAt(j)
-				end
-			end
-			
-			if quoteString
-				string = string + '"'
-			end
-			
-			// value
-			string = string + pKeyValueSeparator
-			
-			value = dict.getAt(key) cast String
-			
-			quoteString = false
-			for j = 0 to separatorCount
-				if value.find(pTokenSeparators.getAt(j), 0) != -1
-					quoteString = true
-					break
-				end
-			end
-			
-			if quoteString
-				string = string + '"'
-			end
-			
-			subcount = value.getLength()
-			for j = 0 to subcount
-				if value.getAt(j) == '"'
-					string = string + "\\\""
-					
-				else
-					string = string + value.getAt(j)
-				end
-			end
-			
-			if quoteString
-				string = string + '"'
-			end
-		end
-		
-		return string
+		var Array entries = Array.new()
+		dict.forEach(block String key, String value
+			entries.add(key + pKeyValueSeparator + value)
+		end)
+		return encodeStringList(entries)
 	end
 	
 	/** \brief Encode a 3-component vector into a property string. */

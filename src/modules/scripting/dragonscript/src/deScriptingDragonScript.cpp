@@ -38,6 +38,7 @@
 #include "peers/dedsParticleEmitter.h"
 #include "peers/dedsSpeaker.h"
 #include "peers/dedsSoundLevelMeter.h"
+#include "peers/dedsService.h"
 #include "deScriptSource.h"
 #include "deClassPathes.h"
 
@@ -190,6 +191,10 @@
 #include "classes/sound/deClassSoundLevelMeterSpeaker.h"
 #include "classes/sound/deClassSoundLevelMeterListener.h"
 
+#include "classes/service/deClassService.h"
+#include "classes/service/deClassServiceListener.h"
+#include "classes/service/deClassServiceObject.h"
+
 #include "classes/sky/deClassSky.h"
 #include "classes/sky/deClassSkyBody.h"
 #include "classes/sky/deClassSkyController.h"
@@ -270,6 +275,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
+#include <dragengine/filesystem/deVFSNull.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
@@ -312,7 +318,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DSCreateModule( deLoadableModule *loadableMod
 deBaseModule *DSCreateModule( deLoadableModule *loadableModule ){
 	try{
 		return new deScriptingDragonScript( *loadableModule );
-	}catch( const duException & ){
+	}catch( ... ){
 		return nullptr;
 	}
 }
@@ -469,6 +475,9 @@ pClsRTM( nullptr ),
 pClsSvrL( nullptr ),
 pClsSA( nullptr ),
 pClsShaList( nullptr ),
+pClsService( nullptr ),
+pClsServiceListener( nullptr ),
+pClsServiceObject( nullptr ),
 pClsSvr( nullptr ),
 pClsSkin( nullptr ),
 pClsSkinBuilder( nullptr ),
@@ -522,7 +531,8 @@ pResourceLoader( nullptr ),
 pColInfo( nullptr ),
 pColliderListenerClosest( nullptr ),
 pColliderListenerAdaptor( nullptr ),
-pGameObj( nullptr )
+pGameObj( nullptr ),
+pRestartRequested( false )
 {
 	pModuleVersion.SetVersion( DS_MODULE_VERSION );
 }
@@ -545,7 +555,7 @@ const char *deScriptingDragonScript::GetVFSSharedDataDir() const{
 }
 
 bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gameObject ){
-	if( pState != esStopped ){
+	if( pState != esStopped && pState != esRestartInit ){
 		return false;
 	}
 	
@@ -716,6 +726,8 @@ void deScriptingDragonScript::ShutDown(){
 	
 	DeleteValuesDeleteLater();
 	
+	pRemoveVFSContainerHideScriptDirectory();
+	
 	if( pColInfo ){
 		pColInfo->FreeReference();
 		pColInfo = nullptr;
@@ -821,6 +833,10 @@ deBaseScriptingSpeaker *deScriptingDragonScript::CreateSpeaker( deSpeaker *speak
 	return new dedsSpeaker( *this, speaker );
 }
 
+deBaseScriptingService *deScriptingDragonScript::CreateService( deService *service ){
+	return new dedsService( *this, service );
+}
+
 bool deScriptingDragonScript::InitGame(){
 	return true;
 }
@@ -829,7 +845,7 @@ bool deScriptingDragonScript::ExitGame(){
 	if( ! pGameObj ){
 		return true;
 	}
-	if( pState == esReady && ! pCallFunction( "cleanUp" ) ){
+	if( ( pState == esReady || pState == esRestartShutdown ) && ! pCallFunction( "cleanUp" ) ){
 		return false;
 	}
 	
@@ -881,6 +897,13 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 	
 	switch( pState ){
 	case esReady:{
+		if( pRestartRequested ){
+			LogInfoFormat( "Restart request using info '%s'", pRestartInfo.GetString() );
+			pRestartRequested = false;
+			pState = esRestartShutdown;
+			return true;
+		}
+		
 		pLoadingScreen = nullptr;
 		
 		#ifdef SPECIAL_DEBUG
@@ -941,6 +964,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 	case esLoadGame:
 		try{
 			pLoadGamePackage( pInitScriptDirectory, pInitGameObject );
+			pAddVFSContainerHideScriptDirectory();
 			
 			pResourceLoader = new dedsResourceLoader( this );
 			pColInfo = new deCollisionInfo;
@@ -1012,6 +1036,27 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 		
 		pState = esReady;
 		return true;
+		
+	case esRestartShutdown:
+		LogInfo( "Restart: Shutdown..." );
+		ShutDown();
+		pRemoveVFSContainerHideScriptDirectory();
+		pState = esRestartInit;
+		return true;
+		
+	case esRestartInit:{
+		LogInfo( "Restart: Init..." );
+		const decString scriptDir( pInitScriptDirectory ), gameObj( pInitGameObject );
+		if( Init( scriptDir, gameObj ) ){
+			LogInfo( "Restart: Finished" );
+			return true;
+			
+		}else{
+			LogInfo( "Restart: Init failed!" );
+			ShutDown();
+			return false;
+		}
+		}
 		
 	default:
 		return false;
@@ -1146,7 +1191,10 @@ void deScriptingDragonScript::PushPoint3( dsRunTime *rt, const decPoint3 &pt ){
 	pClsPt3->PushPoint( rt, pt );
 }
 
-
+void deScriptingDragonScript::RequestRestart( const char *info ){
+	pRestartInfo = info;
+	pRestartRequested = true;
+}
 
 void deScriptingDragonScript::AddValueDeleteLater( dsValue *value ){
 	pDeleteValuesLaterList.Add( value );
@@ -1335,6 +1383,9 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsCanvasView = new deClassCanvasView( *this ) );
 		package->AddHostClass( pClsCapCan = new deClassCaptureCanvas( *this ) );
 		package->AddHostClass( pClsCache = new deClassCache( *this ) );
+		package->AddHostClass( pClsService = new deClassService( *this ) );
+		package->AddHostClass( pClsServiceListener = new deClassServiceListener( *this ) );
+		package->AddHostClass( pClsServiceObject = new deClassServiceObject( *this ) );
 		package->AddHostClass( pClsSky = new deClassSky( *this ) );
 		package->AddHostClass( pClsSkyBody = new deClassSkyBody( *this ) );
 		package->AddHostClass( pClsSkyCtrl = new deClassSkyController( *this ) );
@@ -1809,4 +1860,29 @@ decString deScriptingDragonScript::BuildFullName( const dsClass *theClass ) cons
 	}
 	
 	return fullname;
+}
+
+void deScriptingDragonScript::pAddVFSContainerHideScriptDirectory(){
+	pRemoveVFSContainerHideScriptDirectory();
+	
+	const deVFSNull::Ref container( deVFSNull::Ref::New(
+		new deVFSNull( decPath::CreatePathUnix( pInitScriptDirectory ) ) ) );
+	container->SetHidden( true );
+	container->AddHiddenPath( decPath::CreatePathUnix( "/" ) );
+	pVFSContainerHideScriptDirectory = container;
+	
+	GetGameEngine()->GetVirtualFileSystem()->AddContainer( container );
+}
+
+
+void deScriptingDragonScript::pRemoveVFSContainerHideScriptDirectory(){
+	if( ! pVFSContainerHideScriptDirectory ){
+		return;
+	}
+	
+	deVirtualFileSystem &vfs = *GetGameEngine()->GetVirtualFileSystem();
+	if( vfs.HasContainer( pVFSContainerHideScriptDirectory ) ){
+		vfs.RemoveContainer( pVFSContainerHideScriptDirectory );
+	}
+	pVFSContainerHideScriptDirectory = nullptr;
 }

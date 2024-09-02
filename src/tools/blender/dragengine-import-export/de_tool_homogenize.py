@@ -135,10 +135,12 @@ exact same layout as the active mesh material slots"""
         vl = context.view_layer
 
         names = []
+        materials = []
         for o in objs:
             for ms in o.material_slots:
                 if ms.name not in names:
                     names.append(ms.name)
+                    materials.append(ms.material)
         count = len(names)
         if not count:
             return {'FINISHED'}
@@ -168,6 +170,7 @@ exact same layout as the active mesh material slots"""
                 while index < i:
                     bpy.ops.object.material_slot_move(direction='DOWN')
                     index = index + 1
+                ms.material = materials[i]
 
             o.active_material_index = 0
 

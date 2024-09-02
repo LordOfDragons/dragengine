@@ -21,7 +21,7 @@ if envModule['OSWindows']:
 	pass #useInternalLoader = True
 
 # fetch values in expanded form for later use
-versionString = '1.21'
+versionString = '1.23'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -40,6 +40,9 @@ if envModule['with_debug']:
 if useInternalLoader:
 	envModule.Append(CPPFLAGS = ['-DINTERNAL_XR_LOADER'])
 	envModule.Append(CPPPATH = ['extern/include'])
+
+if envModule['platform_android'] != 'no':
+	envModule.Append(CPPFLAGS = ['-Wno-cast-calling-convention'])
 
 # setup the builders
 sources = []

@@ -14,9 +14,9 @@ namespace Introspection
  * Use \code{.ds} requires Introspection \endcode in your script files to load the introspection package.
  * 
  * This is a native class.
- * \author Roland Plüss
+ * \author DragonDreams GmbH
  * \version 1.0
- * \date 2015
+ * \date 2024
  */
 class Package
 	/** \name Constructors */

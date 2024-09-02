@@ -78,8 +78,9 @@ private:
 		void TexturesChanged( deoglRComponent &component ) override;
 		void RenderStaticChanged( deoglRComponent &component ) override;
 		void MovementHintChanged( deoglRComponent &component ) override;
-		void VisibilityChanged( deoglRComponent &component) override;
-		void GIImportanceChanged(deoglRComponent & component) override;
+		void VisibilityChanged( deoglRComponent &component ) override;
+		void GIImportanceChanged(deoglRComponent &component ) override;
+		void ModelChanged( deoglRComponent &component ) override;
 	};
 	
 	class cDecalListener : public deoglDecalListener{

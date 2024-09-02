@@ -27,6 +27,7 @@
 
 #include "../deoglBasics.h"
 #include "../light/deoglLightList.h"
+#include "../model/deoglRModel.h"
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../world/deoglWorldComputeElement.h"
@@ -50,7 +51,6 @@ class deoglRComponentLOD;
 class deoglRComponentTexture;
 class deoglRDecal;
 class deoglRDynamicSkin;
-class deoglRModel;
 class deoglROcclusionMesh;
 class deoglRSkin;
 class deoglRWorld;
@@ -98,7 +98,7 @@ private:
 	
 	decIntList pModelSkinMappings;
 	decIntList pModelRigMappings;
-	deoglRModel *pModel;
+	deoglRModel::Ref pModel;
 	deoglRSkin *pSkin;
 	deoglRDynamicSkin *pDynamicSkin;
 	bool pStaticTextures;
@@ -314,11 +314,8 @@ public:
 	
 	
 	
-	/** Model or NULL if not set. */
-	inline deoglRModel *GetModel() const{ return pModel; }
-	
-	/** Model throwing exception if NULL. */
-	deoglRModel &GetModelRef() const;
+	/** Model. */
+	inline const deoglRModel::Ref &GetModel() const{ return pModel; }
 	
 	/** Set model or NULL if not set. */
 	void SetModel( deoglRModel *model );
@@ -710,6 +707,9 @@ public:
 	
 	/** Notify visibility changed. */
 	void NotifyVisibilityChanged();
+	
+	/** Notify model changed. */
+	void NotifyModelChanged();
 	/*@}*/
 	
 	

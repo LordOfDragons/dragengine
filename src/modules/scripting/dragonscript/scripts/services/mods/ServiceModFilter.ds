@@ -1,0 +1,325 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.Mods
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Modification filter for use by ServiceMods.
+ * \version 1.23
+ */
+class ServiceModFilter
+	/** \brief Mature content filter value. */
+	enum MatureContent
+		/** \brief Contains use or reference to alcohol substances. */
+		alcohol
+		
+		/** \brief Contains use or reference to drugs and other adictive substances. */
+		drugs
+		
+		/** \brief Contains display or reference to violent acts. */
+		violence
+		
+		/** \brief Contains explicit content. */
+		explicit
+	end
+	
+	/** \brief Revenue filter value. */
+	enum Revenue
+		/** \brief Filter free modifications. */
+		free
+		
+		/** \brief Filter paid modifications. */
+		paid
+	end
+	
+	/** \brief Field to use for sorting modifications. */
+	enum SortField
+		/** \brief Modification identifier. */
+		id
+		
+		/**
+		 * \brief Count of downloads in last 24 hours.
+		 * 
+		 * Count is given as floating point value.
+		 */
+		downloadsToday
+		
+		/**
+		 * \brief Count of subscribers.
+		 * 
+		 * Count is given as floating point value.
+		 */
+		subscriberCount
+		
+		/**
+		 * \brief Average modification rating.
+		 * 
+		 * Rating is given as floating point value in the range from 0 (worst) to 1 (best).
+		 */
+		rating
+		
+		/**
+		 * \brief Date modification has been marked live.
+		 * 
+		 * Value is a DateTime instance.
+		 */
+		dateMarkedLive
+		
+		/**
+		 * \brief Date modification has been last updated.
+		 * 
+		 * Value is a DateTime instance.
+		 */
+		dateUpdated
+		
+		/**
+		 * \brief Total count of downloads.
+		 * 
+		 * Count is given as floating point value.
+		 */
+		downloadsTotal
+		
+		/**
+		 * \brief Modification name in ascending order.
+		 */
+		nameAscending
+		
+		/**
+		 * \brief Modification name in descending order.
+		 */
+		nameDescending
+	end
+	
+	
+	
+	/**
+	 * \brief Field to sort modifications.
+	 * 
+	 * Use null to sort by the default field as defined by the service module.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var SortField sortField
+	
+	/**
+	 * \brief Filter by name matching one or more strings.
+	 * 
+	 * Set contains String names.
+	 * 
+	 * Use null to not filter by name.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var Set matchingName
+	
+	/**
+	 * \brief Filter by author user identifier matching one or more identifiers.
+	 * 
+	 * Set contains user identifiers as String instance.
+	 * 
+	 * Use null to not filter by author user identifier.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var Set matchingAuthor
+	
+	/**
+	 * \brief Filter by modification identifier matching one or more identifiers.
+	 * 
+	 * Set contains modification identifiers as String instance.
+	 * 
+	 * Use null to not filter by modification identifier.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var Set withIds
+	
+	/**
+	 * \brief Filter by modification identifier not matching identifiers.
+	 * 
+	 * Set contains modification identifiers as String instance.
+	 * 
+	 * Use null to not filter by modification identifier.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var Set withoutIds
+	
+	/**
+	 * \brief Filter by modifications released after a specific time.
+	 * 
+	 * Use null to not filter by release date.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var TimeDate releasedAfter
+	
+	/**
+	 * \brief Filter by modifications released before a specific time.
+	 * 
+	 * Use null to not filter by release date.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var TimeDate releasedBefore
+	
+	/**
+	 * \brief Filter by tag matching one or more tags.
+	 * 
+	 * Set contains tags as String instance.
+	 * 
+	 * Use null to not filter by tags.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var Set withTags
+	
+	/**
+	 * \brief Filter by tag not matching any tags.
+	 * 
+	 * Set contains tags as String instance.
+	 * 
+	 * Use null to not filter by tags.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var Set withoutTags
+	
+	/**
+	 * \brief Filter by meta data containing string.
+	 * 
+	 * Use null to not filter by meta data.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var String metadataLike
+	
+	/**
+	 * \brief Filter by revenue type.
+	 * 
+	 * Use null to not filter by revenue type.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var Revenue revenueType
+	
+	/**
+	 * \brief Exclude modifications with mature content.
+	 * 
+	 * Default value is false.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var bool disallowMatureContent
+	
+	/**
+	 * \brief Filter by maturity content flags matching one or more flags.
+	 * 
+	 * Set contains ServiceModFilterMatureContent constants.
+	 * 
+	 * Use null to not filter by mature content.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
+	 */
+	public var Set withMatureContentFlags
+	
+	/**
+	 * \brief Index of first filter result to show.
+	 * 
+	 * Invalid values are potentially clamped or result in request failure.
+	 * 
+	 * Supported by:
+	 * - ServiceModio: Minimum allowed value 0.
+	 */
+	public var int startIndex
+	
+	/**
+	 * \brief Count of result to show.
+	 * 
+	 * Invalid values are potentially clamped or result in request failure.
+	 * Use 0 for default value as governed by the used service provider.
+	 * 
+	 * Supported by:
+	 * - ServiceModio. Maximum allowed value 100.
+	 */
+	public var int resultCount
+	
+	
+	/**
+	 * \brief Create new instance of ServiceModFilter.
+	 */
+	func new()
+	end
+	
+	/**
+	 * \brief Create copy of ServiceModFilter.
+	 */
+	func new(ServiceModFilter filter)
+		sortField = filter.sortField
+		if filter.matchingName != null
+			matchingName = Set.new(filter.matchingName)
+		end
+		if filter.matchingAuthor != null
+			matchingAuthor = Set.new(filter.matchingAuthor)
+		end
+		if filter.withIds != null
+			withIds = Set.new(filter.withIds)
+		end
+		if filter.withoutIds != null
+			withoutIds = Set.new(filter.withoutIds)
+		end
+		releasedAfter = filter.releasedAfter
+		releasedBefore = filter.releasedBefore
+		if filter.withTags != null
+			withTags = Set.new(filter.withTags)
+		end
+		if filter.withoutTags != null
+			withoutTags = Set.new(filter.withoutTags)
+		end
+		metadataLike = filter.metadataLike
+		revenueType = filter.revenueType
+		disallowMatureContent = filter.disallowMatureContent
+		if filter.withMatureContentFlags != null
+			withMatureContentFlags = Set.new(filter.withMatureContentFlags)
+		end
+		startIndex = filter.startIndex
+		resultCount = filter.resultCount
+	end
+end

@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "fox-1.7.81-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "fox-1.7.81-vc64.zip" -UrlPath "fox"
+
+Expand-Archive -Path "$ProjectDir\fox-1.7.81-vc64.zip" -DestinationPath $ProjectDir

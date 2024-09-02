@@ -136,7 +136,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 	
 	deoglRenderThread &renderThread = pCapabilities.GetRenderThread();
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 		// a strange problem on ES 3.0 type hardware. some compilers fail linking with internal
 		// compiler error like:
 		//   Fragment shader compilation failed.
@@ -235,7 +235,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
-		#ifdef ANDROID
+		#ifdef OS_ANDROID
 			OGL_CHECK( renderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
 			OGL_CHECK( renderThread, glReadPixels( 0, 0, 1, 1, texformat.GetPixelFormat(),
 				texformat.GetPixelType(), ( GLvoid* )&result[ 0 ] ) );

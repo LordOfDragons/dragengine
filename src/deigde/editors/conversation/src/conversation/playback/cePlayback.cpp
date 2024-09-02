@@ -139,7 +139,7 @@ void cePlayback::SetRunning( bool running ){
 	pRunning = running;
 	
 	if( running ){
-		SetCameraHandling( echConversation );
+		//SetCameraHandling( echConversation );
 		pConversation.GetInfoBox().Clear();
 		ClearTextBoxText();
 		//ResetCamera();

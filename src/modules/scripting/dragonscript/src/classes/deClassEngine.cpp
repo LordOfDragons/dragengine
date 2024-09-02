@@ -35,11 +35,12 @@
 #include "../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/app/deOS.h>
 #include <dragengine/errortracing/deErrorTrace.h>
 #include <dragengine/errortracing/deErrorTracePoint.h>
 #include <dragengine/errortracing/deErrorTraceValue.h>
-#include <dragengine/app/deOS.h>
+#include <dragengine/resources/service/deServiceManager.h>
+#include <dragengine/systems/deScriptingSystem.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/dsMemoryManager.h>
@@ -95,6 +96,16 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 }
 void deClassEngine::nfQuit::RunFunction( dsRunTime*, dsValue* ){
 	( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine()->Quit();
+}
+
+// static public func void restart(String info)
+deClassEngine::nfRestart::nfRestart( const sInitData &init ) :
+dsFunction( init.clsEngine, "restart", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsString );
+}
+void deClassEngine::nfRestart::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->GetDS().RequestRestart( rt->GetValue( 0 )->GetString() );
 }
 
 
@@ -385,6 +396,25 @@ void deClassEngine::nfSetDefaultEnableGI::RunFunction( dsRunTime *rt, dsValue* )
 	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableGI( rt->GetValue( 0 )->GetBool() );
 }
 
+// static public func bool getDefaultEnableAuralization()
+deClassEngine::nfGetDefaultEnableAuralization::nfGetDefaultEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsEngine, "getDefaultEnableAuralization", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+}
+void deClassEngine::nfGetDefaultEnableAuralization::RunFunction( dsRunTime *rt, dsValue* ){
+	rt->PushBool( ( ( ( deClassEngine* )GetOwnerClass() )->GetDefaultEnableAuralization() ) );
+}
+
+// static public func void setDefaultEnableAuralization(bool enable)
+deClassEngine::nfSetDefaultEnableAuralization::nfSetDefaultEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsEngine, "setDefaultEnableAuralization", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsBoolean ); // enable
+}
+void deClassEngine::nfSetDefaultEnableAuralization::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableAuralization( rt->GetValue( 0 )->GetBool() );
+}
+
 
 
 // static public func String getUserLocaleLanguage()
@@ -409,6 +439,41 @@ void deClassEngine::nfGetUserLocaleTerritory::RunFunction( dsRunTime *rt, dsValu
 
 
 
+// static public func Set getSupportedServices()
+deClassEngine::nfGetSupportedServices::nfGetSupportedServices( const sInitData &init ) :
+dsFunction( init.clsEngine, "getSupportedServices", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsSet ){
+}
+void deClassEngine::nfGetSupportedServices::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const decStringSet names( ds.GetGameEngine()->GetServiceManager()->GetAllSupportedSerices() );
+	const dsEngine &sengine = *ds.GetScriptEngine();
+	const int count = names.GetCount();
+	int i;
+	
+	dsValue * const valueNames = rt->CreateValue( sengine.GetClassSet() );
+	
+	try{
+		rt->CreateObject( valueNames, sengine.GetClassSet(), 0 );
+		
+		for( i=0; i<count; i++ ){
+			rt->PushString( names.GetAt( i ) );
+			rt->RunFunction( valueNames, "add", 1 );
+		}
+		
+		rt->PushValue( valueNames );
+		rt->FreeValue( valueNames );
+		
+	}catch( ... ){
+		if( valueNames ){
+			rt->FreeValue( valueNames );
+		}
+		throw;
+	}
+}
+
+
+
 // Class deClassEngine
 ////////////////////////
 
@@ -418,7 +483,8 @@ void deClassEngine::nfGetUserLocaleTerritory::RunFunction( dsRunTime *rt, dsValu
 deClassEngine::deClassEngine( deScriptingDragonScript &ds ) :
 dsClass("Engine", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
 pDS( ds ),
-pDefaultEnableGI( false )
+pDefaultEnableGI( false ),
+pDefaultEnableAuralization( true )
 {
 	GetParserInfo()->SetParent( DENS_DRAGENGINE );
 	GetParserInfo()->SetBase( "Object" );
@@ -444,6 +510,7 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	init.clsFloat = engine->GetClassFloat();
 	init.clsBoolean = engine->GetClassBool();
 	init.clsString = engine->GetClassString();
+	init.clsSet = engine->GetClassSet();
 	init.clsDictionary = engine->GetClassDictionary();
 	init.clsWindow = engine->GetClass( DECN_WINDOW );
 	init.clsGame = pDS.GetClassGame();
@@ -454,6 +521,7 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfGetGame( init ) );
 	AddFunction( new nfGetFPSRate( init ) );
 	AddFunction( new nfQuit( init ) );
+	AddFunction( new nfRestart( init ) );
 	AddFunction( new nfGetEditMode( init ) );
 	AddFunction( new nfLoadingResourceCount( init ) );
 	AddFunction( new nfLog( init ) );
@@ -477,9 +545,13 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction( new nfGetDefaultEnableGI( init ) );
 	AddFunction( new nfSetDefaultEnableGI( init ) );
+	AddFunction( new nfGetDefaultEnableAuralization( init ) );
+	AddFunction( new nfSetDefaultEnableAuralization( init ) );
 	
 	AddFunction( new nfGetUserLocaleLanguage( init ) );
 	AddFunction( new nfGetUserLocaleTerritory( init ) );
+	
+	AddFunction( new nfGetSupportedServices( init ) );
 
 	// calculate member offsets
 	CalcMemberOffsets();
@@ -487,4 +559,8 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 
 void deClassEngine::SetDefaultEnableGI( bool enable ){
 	pDefaultEnableGI = enable;
+}
+
+void deClassEngine::SetDefaultEnableAuralization( bool enable ){
+	pDefaultEnableAuralization = enable;
 }

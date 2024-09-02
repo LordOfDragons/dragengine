@@ -135,6 +135,14 @@ public:
 	inline bool operator==( const deObjectReference &reference ) const{
 		return pObject == reference.pObject;
 	}
+	
+	/** \brief Test if object is not held by this holder. */
+	inline bool operator!=( deObject *object ) const{ return pObject != object; }
+	
+	/** \brief Test if object is not held by this holder. */
+	inline bool operator!=( const deObjectReference &reference ) const{
+		return pObject != reference.pObject;
+	}
 	/*@}*/
 };
 

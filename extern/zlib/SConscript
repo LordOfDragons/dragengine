@@ -23,7 +23,11 @@ else:
 	libFileName = 'lib/${SHLIBPREFIX}z${SHLIBSUFFIX}.1'
 	staticFileName = envLibrary.subst( 'lib/${LIBPREFIX}z${LIBSUFFIX}' )
 
-# check if system libapng is present
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.bz2'.format(srcdir), 'zlib', 'lib_zlib_fetch')
+
+# check if system zlib is present
 hasSystemZLib = False
 conf = envLibrary.Configure()
 if envLibrary[ 'with_system_zlib' ] != TernaryVariableNo:
@@ -124,8 +128,7 @@ targets.extend( [ 'include/zlib.h', 'include/zconf.h' ] )
 if envLibrary['OSWindows']:
 	targets.append(libFileName)
 
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action(zlibBuild, 'Build zlib' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(zlibBuild, 'Build zlib' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

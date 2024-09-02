@@ -65,6 +65,7 @@ pAudioThread( audioThread ),
 pVolume( 1.0f ),
 pMuted( true ),
 pSpeakerGain( 1.0f ),
+pEnableAuralization( true ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
 pEnvProbeList( NULL ),
@@ -138,6 +139,10 @@ void deoalAMicrophone::SetLayerMask( const decLayerMask &layerMask ){
 
 void deoalAMicrophone::SetSpeakerGain( float gain ){
 	pSpeakerGain = gain;
+}
+
+void deoalAMicrophone::SetEnableAuralization( bool enable ){
+	pEnableAuralization = enable;
 }
 
 

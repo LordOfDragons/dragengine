@@ -217,7 +217,7 @@ public:
 			"Raw property value. Values entered here can violate the\n"
 			"property type so be careful what you enter", value ) ){
 				pWidget.SetValue( value, pWidget.GetGDProperty() );
-				pWidget.EditWidgetValueChanged( false );
+				pWidget.NotifyPropertyValueChanged();
 		}
 	}
 	

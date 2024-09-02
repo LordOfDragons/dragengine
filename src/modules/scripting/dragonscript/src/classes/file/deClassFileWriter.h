@@ -92,6 +92,11 @@ private:
 	DEF_NATFUNC( nfGetStreamVersion );
 	DEF_NATFUNC( nfSetStreamVersion );
 	
+	DEF_NATFUNC( nfGetPosition );
+	DEF_NATFUNC( nfSetPosition );
+	DEF_NATFUNC( nfMovePosition );
+	DEF_NATFUNC( nfSetPositionEnd );
+	
 	DEF_NATFUNC( nfWriteChar );
 	DEF_NATFUNC( nfWriteByte );
 	DEF_NATFUNC( nfWriteShort );

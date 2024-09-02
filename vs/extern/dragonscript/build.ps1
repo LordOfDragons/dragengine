@@ -12,7 +12,9 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "dragonscript-1.4-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "dragonscript-1.4-vc64.zip" -UrlPath "dragonscript"
+
+Expand-Archive -Path "$ProjectDir\dragonscript-1.4-vc64.zip" -DestinationPath $ProjectDir
 
 # visual studio expects *.dll, *.lib and *.pdb to be located in the same directory
 # the archive contains though the *.dll in the "bin" directory while the other

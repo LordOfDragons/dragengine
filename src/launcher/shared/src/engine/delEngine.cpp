@@ -151,6 +151,7 @@ void delEngine::ReloadModules(){
 	AddModulesFrom( "/engine/lib/modules/sound", deModuleSystem::emtSound );
 	AddModulesFrom( "/engine/lib/modules/video", deModuleSystem::emtVideo );
 	AddModulesFrom( "/engine/lib/modules/occlusionmesh", deModuleSystem::emtOcclusionMesh );
+	AddModulesFrom( "/engine/lib/modules/service", deModuleSystem::emtService );
 }
 
 void delEngine::CheckModules( delEngineInstance &instance ){
@@ -384,6 +385,9 @@ const char *delEngine::GetModuleTypeText( deModuleSystem::eModuleTypes moduleTyp
 		
 	case deModuleSystem::emtArchive:
 		return "Archive";
+		
+	case deModuleSystem::emtService:
+		return "Service";
 		
 	case deModuleSystem::emtVR:
 		return "VR";

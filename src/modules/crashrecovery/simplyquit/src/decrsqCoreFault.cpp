@@ -36,7 +36,7 @@
 #endif
 
 #ifdef OS_UNIX
-#ifndef ANDROID
+#ifndef OS_ANDROID
 #ifndef OS_BEOS
 #include <execinfo.h>
 #include <unistd.h>
@@ -44,7 +44,7 @@
 #endif
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <android/log.h>
 #include <unwind.h>
 #include <dlfcn.h>
@@ -181,7 +181,7 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 // this many first entries are related to exception handling. skip them
 #define SKIP_SELF_TRACE_COUNT	3
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 struct sBacktraceState{
 	void **current;
 	void **end;
@@ -242,7 +242,7 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -264,7 +264,7 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 	}
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	// NOTE unwindCallback can segfault for strange reasons. The void* pointers are not
 	//      const on purpose. Using them const can result in segfault due to compiler
 	//      trying to optimize the wrong way
@@ -290,12 +290,14 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 			char * const demangled = abi::__cxa_demangle( symbol, 0, 0, &status );
 			if( demangled ){
 				symbol.Format( "%s(%s+0x%x) [%p] %s", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr, demangled );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr, demangled );
 				free( demangled );
 				
 			}else{
 				symbol.Format( "%s(%s+0x%x) [%p]", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr );
 			}
 			
 		}else{
@@ -369,7 +371,7 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -391,7 +393,7 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 	}
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	// NOTE unwindCallback can segfault for strange reasons. The void* pointers are not
 	//      const on purpose. Using them const can result in segfault due to compiler
 	//      trying to optimize the wrong way
@@ -417,12 +419,14 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 			char * const demangled = abi::__cxa_demangle( symbol, 0, 0, &status );
 			if( demangled ){
 				symbol.Format( "%s(%s+0x%x) [%p] %s", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr, demangled );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr, demangled );
 				free( demangled );
 				
 			}else{
 				symbol.Format( "%s(%s+0x%x) [%p]", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr );
 			}
 			
 		}else{
@@ -476,7 +480,7 @@ static void signalBusError( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -498,7 +502,7 @@ static void signalBusError( int number, siginfo_t *infos, void *ptrContext ){
 	}
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	// NOTE unwindCallback can segfault for strange reasons. The void* pointers are not
 	//      const on purpose. Using them const can result in segfault due to compiler
 	//      trying to optimize the wrong way
@@ -524,12 +528,14 @@ static void signalBusError( int number, siginfo_t *infos, void *ptrContext ){
 			char * const demangled = abi::__cxa_demangle( symbol, 0, 0, &status );
 			if( demangled ){
 				symbol.Format( "%s(%s+0x%x) [%p] %s", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr, demangled );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr, demangled );
 				free( demangled );
 				
 			}else{
 				symbol.Format( "%s(%s+0x%x) [%p]", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr );
 			}
 			
 		}else{

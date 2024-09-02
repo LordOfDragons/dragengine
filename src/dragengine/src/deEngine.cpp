@@ -104,6 +104,7 @@
 #include "resources/probe/deEnvMapProbeManager.h"
 #include "resources/canvas/deCanvasManager.h"
 #include "resources/canvas/capture/deCaptureCanvasManager.h"
+#include "resources/service/deServiceManager.h"
 
 #include "errortracing/deErrorTrace.h"
 #include "errortracing/deErrorTracePoint.h"
@@ -173,6 +174,7 @@ enum eResourceManager{
 	ermVideos,
 	ermVideoPlayers,
 	ermWorlds,
+	ermServices,
 	ermManagerCount
 };
 
@@ -261,6 +263,8 @@ static const int vLocalResourcePeerCreationOrder[ ermManagerCount ] = {
 	ermCaptureCanvas,
 	
 	ermRenderWindows,
+	
+	ermServices
 };
 
 const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[ 0 ];
@@ -635,6 +639,10 @@ deWorldManager *deEngine::GetWorldManager() const{
 	return ( deWorldManager* )pResMgrs[ ermWorlds ];
 }
 
+deServiceManager *deEngine::GetServiceManager() const{
+	return ( deServiceManager* )pResMgrs[ ermServices ];
+}
+
 
 
 void deEngine::RemoveLeakingResources(){
@@ -937,9 +945,9 @@ void deEngine::RunSingleFrame(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	deAudioSystem &audSys = *GetAudioSystem();
-	deInputEventQueue &eventQueue = GetInputSystem()->GetEventQueue();
+	deInputSystem &inpSys = *GetInputSystem();
+	deInputEventQueue &eventQueue = inpSys.GetEventQueue();
 	deInputEventQueue &vrEventQueue = GetVRSystem()->GetEventQueue();
-	deInputEvent event;
 	int i, count;
 	
 	// print out fps
@@ -948,7 +956,11 @@ void deEngine::RunSingleFrame(){
 	// process inputs
 	count = eventQueue.GetEventCount();
 	for( i=0; i<count; i++ ){
-		scrSys.SendEvent( ( deInputEvent* )&eventQueue.GetEventAt( i ) );
+		const deInputEvent &event = eventQueue.GetEventAt( i );
+		if( inpSys.DropEvent( event ) ){
+			continue;
+		}
+		scrSys.SendEvent( ( deInputEvent* )&event );
 		if( pScriptFailed ){
 			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
 			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
@@ -962,7 +974,11 @@ DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
 	// process vr inputs
 	count = vrEventQueue.GetEventCount();
 	for( i=0; i<count; i++ ){
-		scrSys.SendEvent( ( deInputEvent* )&vrEventQueue.GetEventAt( i ) );
+		const deInputEvent &event = vrEventQueue.GetEventAt( i );
+		if( inpSys.DropEvent( event ) ){
+			continue;
+		}
+		scrSys.SendEvent( ( deInputEvent* )&event );
 		if( pScriptFailed ){
 			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
 			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
@@ -972,6 +988,9 @@ DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
 	}
 	vrEventQueue.RemoveAllEvents();
 DEBUG_PRINT_TIMER( "DoFrame: Process VR events" );
+	
+	// process service events
+	GetServiceManager()->FrameUpdate();
 	
 	// frame update
 	pParallelProcessing->Update();
@@ -1110,6 +1129,7 @@ void deEngine::pInitResourceManagers(){
 	pResMgrs[ ermVideoPlayers ] = new deVideoPlayerManager( this );
 	pResMgrs[ ermVideos ] = new deVideoManager( this );
 	pResMgrs[ ermWorlds ] = new deWorldManager( this );
+	pResMgrs[ ermServices ] = new deServiceManager( this );
 	
 	// sanity check
 	RESMGRSANCHECK( ermAnimations, ertAnimation );
@@ -1161,6 +1181,7 @@ void deEngine::pInitResourceManagers(){
 	RESMGRSANCHECK( ermVideos, ertVideo );
 	RESMGRSANCHECK( ermVideoPlayers, ertVideoPlayer );
 	RESMGRSANCHECK( ermWorlds, ertWorld );
+	RESMGRSANCHECK( ermServices, ertService );
 	
 	// create resource loader
 	pResLoader = new deResourceLoader( *this );

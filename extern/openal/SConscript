@@ -33,6 +33,9 @@ else:
 	libLinkName = 'openal'
 	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openal${LIBSUFFIX}')
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'openal', 'lib_openal_fetch')
+
 # check if system openal is present
 hasSystemOpenAL = False
 """ force false due to annoying limitations
@@ -75,6 +78,7 @@ def openalBuild(target, source, env):
 		# OpenAL reacts badly to set up cross compilers manually because it is
 		# using host system compiler for certain things
 		script = []
+		script = createScriptHeader(env)
 	else:
 		#script = createScriptHeader(env, deps=[parent_targets['lib_sndio']])
 		script = createScriptHeader(env)
@@ -84,6 +88,10 @@ def openalBuild(target, source, env):
 	
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	if env['platform_android'] != 'no':
+		# fix for android ndk 27+ breaking cmake
+		script.append('sed -i -e "s/cmake_minimum_required(VERSION 3.0.2)/cmake_minimum_required(VERSION 3.5)/" ../openal-soft-1.22.2/CMakeLists.txt')
 	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	cmdline = ['cmake']
@@ -127,10 +135,15 @@ def openalBuild(target, source, env):
 	cmdline.append('"{}"'.format(realSrcDir))
 	
 	if env['platform_android'] != 'no':
-		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DANDROID_ABI="{}"'.format(env['ANDROID_ABI']))
+		cmdline.append('-DANDROID_ARM_MODE="{}"'.format(env['ANDROID_ARCH']))
+		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DANDROID_TOOLCHAIN=clang')
+		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
+		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
 		#cmdline.append('-DCMAKE_SYSTEM_NAME=Linux')
 		#cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=arm')
-		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
 		#cmdline.append('-DCMAKE_VERBOSE_MAKEFILE=ON')
 		
 	elif 'CROSSCOMPILE_HOST' in env:
@@ -209,8 +222,7 @@ elif envLibrary['OSBeOS']:
 	# BeOS requires some additional patches
 	globFiles(envLibrary, os.path.join('patches_beos', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
-	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-		envLibrary.Action(openalBuild, 'Build OpenAL'))
+	library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(openalBuild, 'Build OpenAL'))
 
 else:
 	# on unix systems openal can be compiled. it should be included in distros already
@@ -220,8 +232,7 @@ else:
 	# directly in the openalBuild function
 	globFiles(envLibrary, os.path.join('patches', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
-	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-		envLibrary.Action(openalBuild, 'Build OpenAL'))
+	library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(openalBuild, 'Build OpenAL'))
 
 #if parent_targets['lib_sndio']['depends']:
 #	envLibrary.Depends(library, parent_targets['lib_sndio']['depends'])

@@ -165,7 +165,7 @@ void decBaseFileWriter::WriteString16( const char *string ){
 }
 
 void decBaseFileWriter::WriteString32( const char *string ){
-	const unsigned int len = strlen( string );
+	const unsigned int len = ( int )strlen( string );
 	if ( len > 2147483647 ) {
 		DETHROW_INFO( deeInvalidParam, "string length > 2147483647" );
 	}
@@ -174,7 +174,7 @@ void decBaseFileWriter::WriteString32( const char *string ){
 }
 
 void decBaseFileWriter::WriteVarString( const char *string ){
-	const unsigned int len = strlen( string );
+	const unsigned int len = ( int )strlen( string );
 	if ( len > 1073741823 ) {
 		DETHROW_INFO( deeInvalidParam, "string length > 1073741823" );
 	}

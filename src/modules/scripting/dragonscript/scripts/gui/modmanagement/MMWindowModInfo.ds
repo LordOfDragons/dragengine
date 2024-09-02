@@ -1,0 +1,105 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui.ModManagement
+pin Dragengine.Services.Mods
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Designers
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+/**
+ * \brief Window showing modification information.
+ * \version 1.23
+ * 
+ * Designer selectors:
+ * - Window: Window.Dialog.MMWindowModInfo
+ * - Close button: Button.MMWindowModInfo.Close
+ */
+class MMWindowModInfo extends WindowDialog
+	var MMPanelModInfo pPanelModInfo
+	var Panel pPanelBottomLine
+	
+	
+	/**
+	 * \brief Create modification information window.
+	 */
+	func new(Window window, ServiceMods serviceMods, MMModification mod)
+		runWhileBlockingLayout(block
+			setGuiTheme(window.getGuiTheme())
+			setTitle(mod.info.name)
+			setDesignerSelector("Window.Dialog.MMWindowModInfo")
+			setSize(window.getDesktop().getContainerSize() - Point.new(200, 200))
+			createContent(serviceMods, mod)
+		end)
+		doLayout()
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pPanelModInfo = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Modification information panel. */
+	func MMPanelModInfo getPanelModInfo()
+		return pPanelModInfo
+	end
+	
+	
+	/** \brief Bottom line panel containing buttons to close window. */
+	protected func Panel getPanelBottomLine()
+		return pPanelBottomLine
+	end
+	
+	/** Create window content. */
+	protected func void createContent(ServiceMods serviceMods, MMModification mod)
+		setLayout(BorderLayout.new(10))
+		
+		pPanelModInfo = createModInfoPanel(serviceMods, mod)
+		addWidget(pPanelModInfo, BorderLayout.Area.content)
+		setActiveWidget(pPanelModInfo.getInitActivateWidget())
+		
+		pPanelBottomLine = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p
+			p.addWidget(createButton("@UI.Close", null, ".Close", CloseWindowActionListener.new(this)))
+		end)
+		addWidget(pPanelBottomLine, BorderLayout.Area.bottom)
+	end
+	
+	/** \brief Create button. */
+	protected func Button createButton(String text, String toolTip,\
+	String designerSelectorSuffix, ActionListener action)
+		var Button button = Button.new(text, action)
+		button.setDesignerSelector("Button.MMWindowModInfo" + designerSelectorSuffix)
+		button.setToolTip(toolTip)
+		return button
+	end
+	
+	/** \brief Create modification information panel. */
+	protected func MMPanelModInfo createModInfoPanel(ServiceMods serviceMods, MMModification mod)
+		return MMPanelModInfo.new(serviceMods, mod)
+	end
+end

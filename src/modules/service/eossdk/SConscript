@@ -1,0 +1,104 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envModule = parent_env.Clone()
+
+buildModule = envModule['build_service_eossdk'] != TernaryVariableNo
+parent_report['build EOS SDK Service Module'] = 'yes' if buildModule else 'no'
+
+if not buildModule or 'lib_eossdk' not in parent_targets:
+	Return()
+
+libs = []
+appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['lib_eossdk'], libs)
+
+# fetch values in expanded form for later use
+versionString = '1.23'
+if envModule['force_version']:
+	versionString = envModule['force_version']
+
+pathConfig = '{}/modules/service/eossdk/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
+pathModule = '{}/modules/service/eossdk/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
+pathShared = '{}/modules/service/eossdk/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
+
+envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+# determine the source files
+sources = []
+headers = []
+globFiles(envModule, 'src', '*.cpp', sources)
+globFiles(envModule, 'src', '*.h', headers)
+
+data = []
+globFiles(envModule, 'data', '*', data)
+
+# setup the builders
+objects = [envModule.SharedObject(s) for s in sources]
+
+library = envModule.LoadableModule(target='srveossdk', source=objects, LIBS=libs)
+targetBuild = envModule.Alias('srv_eossdk_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'srveossdk.pdb'))
+	archive['{}/srveossdk.pdb'.format(pathPdb)] = envModule.File('srveossdk.pdb')
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+rtlibs = []
+rtlibs.extend(parent_targets['lib_eossdk']['runtimelibs'])
+
+for l in reversed(rtlibs):
+	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
+	install.append(envModule.Install(pathModule, l))
+	archive[os.path.join(pathModule, l.name)] = l
+
+manifest = envModule.File('src/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+Depends(updateManifest, 'SConscript')
+Depends(updateManifest, rtlibs)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+for s in data:
+	filename = os.path.join(pathShared, s[5:])
+	install.append(envModule.InstallAs(filename, s))
+	archive[filename] = envModule.File(s).srcnode()
+
+targetInstall = envModule.Alias('srv_eossdk', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envModule, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envModule.Alias('srv_eossdk_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['srv_eossdk'] = {
+	'name' : 'EOS SDK Service Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

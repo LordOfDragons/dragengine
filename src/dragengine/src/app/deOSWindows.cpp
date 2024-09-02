@@ -245,6 +245,9 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 	MSG message;
 	
 	while( PeekMessage( &message, NULL, 0, 0, PM_REMOVE ) ){
+		TranslateMessage( &message );
+		DispatchMessage( &message );
+
 		// if( pCurWindow && message.hwnd == pCurWindow ){
 		switch( message.message ){
 		case WM_QUIT:
@@ -253,7 +256,7 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 			
 		case WM_ACTIVATEAPP:
 			SetAppActive( message.wParam == TRUE );
-			DispatchMessage( &message );
+			// DispatchMessage( &message );
 			break;
 			
 // 		case WM_ACTIVATE:
@@ -268,10 +271,11 @@ void deOSWindows::ProcessEventLoop( bool sendToInputModule ){
 			// notify the script module about the change
 			
 			break;
-		
+
 		default:
 			//TranslateMessage( &message );
-			DispatchMessage( &message );
+			// DispatchMessage( &message );
+			break;
 		}
 		
 		if( sendToInputModule ){

@@ -180,7 +180,7 @@ void deGraphicSystem::CreateAndSetHostedRenderWindow( int width, int height,
 bool fullScreen, const char *title, deImage *icon, BWindow *hostWindow )
 #define IMPLEMENT_CreateAndSetHostedRenderWindow 1
 #endif
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deGraphicSystem::CreateAndSetHostedRenderWindow( int width, int height,
 bool fullScreen, const char *title, deImage *icon, void *hostWindow )
 #define IMPLEMENT_CreateAndSetHostedRenderWindow 1
@@ -216,7 +216,7 @@ void deGraphicSystem::SetInputOverlayCanvas( deCanvasView *view ){
 
 
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deGraphicSystem::InitAppWindow(){
 	if( ! GetIsRunning() ){
 		return;

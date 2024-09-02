@@ -37,7 +37,7 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDebug.h"
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
@@ -283,7 +283,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		return;
 	}
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	// glReadPixels under OpenGL ES does only support GL_RGBA and GL_RGBA_INTEGRAL.
 	// if something else is required (for exampel GL_RGB, GL_RG or GL_RED) we have
 	// to use a temporary texture containing 4 components and copy over from there.
@@ -292,7 +292,8 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, size, size, 6 );
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, size, size, 6 ) ) );
 		const int count = size * size;
 		int i, j;
 		
@@ -302,7 +303,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfByte1:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sByte1 *dataDest = pixelBuffer.GetPointerByte1() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 				}
@@ -312,7 +313,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfByte2:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sByte2 *dataDest = pixelBuffer.GetPointerByte2() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -323,7 +324,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfByte3:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sByte3 *dataDest = pixelBuffer.GetPointerByte3() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -340,7 +341,8 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, size, size, 6 );
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, size, size, 6 ) ) );
 		const int count = size * size;
 		int i, j;
 		
@@ -350,7 +352,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfFloat1:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sFloat1 *dataDest = pixelBuffer.GetPointerFloat1() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 				}
@@ -360,7 +362,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfFloat2:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sFloat2 *dataDest = pixelBuffer.GetPointerFloat2() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -371,7 +373,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfFloat3:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sFloat3 *dataDest = pixelBuffer.GetPointerFloat3() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -575,7 +577,7 @@ void deoglCubeMap::UpdateMemoryUsage(){
 		return;
 	}
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pMemUse.SetUncompressed( *pFormat, pSize, pSize, 6, pRealMipMapLevelCount );
 	
 	#else

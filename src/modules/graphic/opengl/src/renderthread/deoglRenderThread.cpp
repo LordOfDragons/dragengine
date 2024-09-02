@@ -82,7 +82,7 @@
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/threading/deMutexGuard.h>
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #endif
@@ -420,7 +420,7 @@ void deoglRenderThread::CleanUp(){
 	}
 }
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deoglRenderThread::InitAppWindow(){
 	if( pAsyncRendering ){
 		if( pThreadState != etsWindowDown ){
@@ -619,7 +619,7 @@ void deoglRenderThread::Run(){
 				1.0f / decMath::max( pLastFrameTime, 0.001f ) );
 			*/
 			
-		#ifdef ANDROID
+		#ifdef OS_ANDROID
 		}else if( pThreadState == etsWindowTerminate ){
 			try{
 				pContext->TerminateAppWindow();
@@ -670,7 +670,7 @@ void deoglRenderThread::FinalizeAsyncResLoading(){
 void deoglRenderThread::Synchronize(){
 	pLogger->Synchronize(); // send asynchronous logs to game logger
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	if( pContext->GetScreenResized() ){
 		pContext->ClearScreenResized();
 		
@@ -1516,7 +1516,7 @@ void deoglRenderThread::pInitCapabilities(){
 	pCapabilities = new deoglCapabilities( *this );
 	pCapabilities->DetectCapabilities();
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pLogger->LogInfo( "Hardware information:" );
 	
 	int i, j;
@@ -1764,7 +1764,8 @@ void deoglRenderThread::pRenderSingleFrame(){
 #ifdef OS_ANDROID
 #include "../texture/texture2d/deoglRenderableColorTextureManager.h"
 #include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
-#include "../texture/arraytexture/deoglRenderableArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
@@ -1809,6 +1810,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	
 	pLogger->LogInfoFormat( "DebugMemoryUsage: %s", prefix );
 	
+#if 0
 	const char * const fmtTex2D  = "Tex2D (%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
 	const char * const fmtTexArr = "TexArr(%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
 	const char * const fmtCube   = "Cube  (%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
@@ -1818,7 +1820,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	const char * const fmtVBO    = "VBO   (%4i): %4uM | S(%4i) %4uM | I(%4i) %4uM | T(%4i) %4uM";
 	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM | R %3uM";
 	
-	const deoglMemoryConsumptionTexture &consumptionTexture2D = pMemoryManager.GetConsumption().GetTexture2D();
+	const deoglMemoryConsumptionTexture &consumptionTexture2D = pMemoryManager.GetConsumption().texture2D;
 	const int textureCount = consumptionTexture2D.GetCount();
 	const int textureColorCount = consumptionTexture2D.GetColorCount();
 	const int textureDepthCount = consumptionTexture2D.GetDepthCount();
@@ -1852,7 +1854,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		( int )textureColorRatioCompressed, textureColorGPUUncompressed, textureDepthCount, textureDepthGPU );
 	
 	// textures array
-	const deoglMemoryConsumptionTexture &consumptionTextureArray = pMemoryManager.GetConsumption().GetTextureArray();
+	const deoglMemoryConsumptionTexture &consumptionTextureArray = pMemoryManager.GetConsumption().textureArray;
 	const int textureArrayCount = consumptionTextureArray.GetCount();
 	const int textureArrayColorCount = consumptionTextureArray.GetColorCount();
 	const int textureArrayDepthCount = consumptionTextureArray.GetDepthCount();
@@ -1886,7 +1888,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		( int )textureArrayColorRatioCompressed, textureArrayColorGPUUncompressed, textureArrayDepthCount, textureArrayDepthGPU );
 	
 	// cube maps
-	const deoglMemoryConsumptionTexture &consumptionTextureCube = pMemoryManager.GetConsumption().GetTextureCube();
+	const deoglMemoryConsumptionTexture &consumptionTextureCube = pMemoryManager.GetConsumption().textureCube;
 	const int cubemapCount = consumptionTextureCube.GetCount();
 	const int cubemapColorCount = consumptionTextureCube.GetColorCount();
 	const int cubemapDepthCount = consumptionTextureCube.GetDepthCount();
@@ -1920,7 +1922,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		cubemapDepthCount, cubemapDepthGPU );
 	
 	// skin memory consumption
-	const deoglMemoryConsumptionTexture &consumptionSkin = pMemoryManager.GetConsumption().GetSkin();
+	const deoglMemoryConsumptionTexture &consumptionSkin = pMemoryManager.GetConsumption().skin;
 	const int skinCount = consumptionSkin.GetCount();
 	unsigned int skinGPU = consumptionSkin.GetGPU();
 	unsigned int skinGPUCompressed = consumptionSkin.GetGPUCompressed();
@@ -1953,7 +1955,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		renderableArrayCount, renderableArrayGPU );
 	
 	// vbo
-	const deoglMemoryConsumptionBufferObject &consumptionVBO = pMemoryManager.GetConsumption().GetVBO();
+	const deoglMemoryConsumptionBufferObject &consumptionVBO = pMemoryManager.GetConsumption().vbo;
 	const int vboCount = consumptionVBO.GetCount();
 	const int vboSharedCount = consumptionVBO.GetSharedCount();
 	const int vboIBOCount = consumptionVBO.GetIBOCount();
@@ -1981,6 +1983,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	totalGPU /= 1000000;
 	
 	pLogger->LogInfoFormat( "Total %4iM", totalGPU );
+#endif
 	
 	// proc/self/statm info
 	char bufstatm[256];
@@ -1996,7 +1999,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	// malloc info
 	const struct mallinfo minfo( mallinfo() );
 	//pLogger->LogInfoFormat( "HeapSize=%d HeapAllocSize=%d", minfo.usmblks, minfo.uordblks );
-	pLogger->LogInfoFormat( "TotalAllocSpace=%d TotalFreeSpace=%d", minfo.uordblks, minfo.fordblks );
+	pLogger->LogInfoFormat( "TotalAllocSpace=%zu TotalFreeSpace=%zu", minfo.uordblks, minfo.fordblks );
 	
 	#if 0
 	char *minfoString = NULL;
@@ -2049,8 +2052,9 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		free( minfoString );
 	}
 	pLogger->LogInfoFormat( "SystemCurrent=%ld SystemMax=%ld", systemCurrent, systemMax );
-	#endif
+#endif
 	
+#if 0
 	// resource consumption
 	deImage *scanImage = pOgl.GetGameEngine()->GetImageManager()->GetRootImage();
 	int imageMemUsage = 0;
@@ -2083,9 +2087,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 				+ sizeof( deModelFace ) * lod.GetFaceCount()
 				+ sizeof( decVector2 ) * ( lod.GetTextureCoordinatesSetCount() * lod.GetTextureCoordinatesCount() );
 		}
-		modelMemUsage += sizeof( decVector ) * scanModel->GetNormalCount() /* deprecated */
-			+ sizeof( decVector ) * scanModel->GetTangentCount() /* deprecated */
-			+ sizeof( deModel::sHackWeight ) * scanModel->GetHackWeightCount() /* deprecated */ ;
 		modelCount++;
 		scanModel = ( deModel* )scanModel->GetLLManagerNext();
 	}
@@ -2137,8 +2138,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	int componentCount = 0;
 	while( scanComponent ){
 		if( scanComponent->GetModel() ){
-			componentMemUsage += sizeof( decVector ) * scanComponent->GetModel()->GetLODAt( 0 )->GetVertexCount()
-				+ sizeof( decMatrix ) * scanComponent->GetModel()->GetHackWeightCount();
+			componentMemUsage += sizeof( decVector ) * scanComponent->GetModel()->GetLODAt( 0 )->GetVertexCount();
 		}
 		componentCount++;
 		scanComponent = ( deComponent* )scanComponent->GetLLManagerNext();
@@ -2187,13 +2187,14 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	}
 	pLogger->LogInfoFormat( "OGL-Components: Usage=%dM Bare=%dB Count=%d",
 		componentMemUsage / 1000000, componentBareUsage, componentCount );
+#endif
 }
 
 void deoglRenderThread::DebugMemoryUsageSmall( const char *prefix ){
 	if( ! DoesDebugMemoryUsage() ) return;
 	
 	const struct mallinfo minfo( mallinfo() );
-	pLogger->LogInfoFormat( "DebugMemoryUsageSmall: %s) TotalAllocSpace=%d TotalFreeSpace=%d",
+	pLogger->LogInfoFormat( "DebugMemoryUsageSmall: %s) TotalAllocSpace=%zu TotalFreeSpace=%zu",
 		prefix, minfo.uordblks, minfo.fordblks );
 }
 #endif
@@ -2209,7 +2210,7 @@ void deoglRenderThread::pSwapBuffers(){
 
 void deoglRenderThread::pBeginFrame(){
 	const deoglDebugTraceGroup debugTrace( *this, "BeginFrame" );
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pContext->CheckConfigurationChanged();
 	#endif
 	
@@ -2226,7 +2227,7 @@ void deoglRenderThread::pBeginFrame(){
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
 	
@@ -2280,11 +2281,9 @@ void deoglRenderThread::pVRStartBeginFrame(){
 
 void deoglRenderThread::pVRWaitBeginFrameFinished(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( ! vr ){
-		return;
+	if( vr ){
+		vr->WaitBeginFrameFinished();
 	}
-	
-	vr->WaitBeginFrameFinished();
 	
 	if( pSignalSemaphoreSyncVR ){
 		pSignalSemaphoreSyncVR = false;

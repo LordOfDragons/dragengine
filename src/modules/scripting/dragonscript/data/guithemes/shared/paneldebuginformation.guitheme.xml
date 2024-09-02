@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+	PanelDebugInformation: panel
+	Label.PanelDebugInformation.Label: label
+	Label.PanelDebugInformation.Details: details
+	-->
+	
+	<designer name='PanelDebugInformation' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0.75'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='Label.PanelDebugInformation' type='Label'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<font parameter='normal.font' size='13'>../modern/fonts/fixed9.defont</font>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Label.PanelDebugInformation.Label' extendNamed='Label.PanelDebugInformation'>
+		<color parameter='normal.textColor' r='1' g='1' b='0'/>
+	</designer>
+</guiTheme>

@@ -1,0 +1,92 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.User
+
+/**
+ * \brief Terms of service to show to user.
+ * 
+ * Additional data object for ServiceException with error ServiceUser.Errors.NeedAcceptTos.
+ * Caller has to first present to the user the terms of service as contained in this object.
+ * Upon accepting the terms of service the caller has to restart the failed action including
+ * the credentials parameters from this object.
+ */
+class ServiceUserErrorNeedAcceptTos
+	/**
+	 * \brief Link to display.
+	 */
+	class Link
+		/** \brief Label of link to display. */
+		public var String label
+		
+		/** \brief URL to open. */
+		public var String url
+		
+		/** \brief Displaying the link is required. */
+		public var bool required
+		
+		
+		/** \brief Create link to display. */
+		func new()
+		end
+	end
+	
+	
+	/**
+	 * \brief Terms text to display.
+	 */
+	public var String terms
+	
+	/**
+	 * \brief Links to display as Array of \ref Link.
+	 */
+	public var Array links
+	
+	/**
+	 * \brief Text to show for accept button.
+	 */
+	public var String buttonAccept
+	
+	/**
+	 * \brief Text to show for decline button.
+	 */
+	public var String buttonDecline
+	
+	/**
+	 * \brief Parameters to add to credentials for restarting failed request.
+	 * 
+	 * Dictionary with String key and String value.
+	 */
+	public var Dictionary credentialParameters
+	
+	
+	
+	/**
+	 * Create new instance of class ServiceUserErrorAcceptToS.
+	 */
+	func new()
+		links = Array.new()
+		credentialParameters = Dictionary.new()
+	end
+end

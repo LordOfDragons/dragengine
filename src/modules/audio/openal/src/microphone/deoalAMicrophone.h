@@ -65,6 +65,7 @@ private:
 	bool pMuted;
 	decLayerMask pLayerMask;
 	float pSpeakerGain;
+	bool pEnableAuralization;
 	
 	decObjectList pSpeakers;
 	deoalSpeakerList pActiveSpeakers;
@@ -149,6 +150,12 @@ public:
 	
 	/** Set gain to multiply all speakers with. */
 	void SetSpeakerGain( float gain );
+	
+	/** Enable auralization. */
+	inline bool GetEnableAuralization() const{ return pEnableAuralization; }
+	
+	/** Set enable auralization. */
+	void SetEnableAuralization( bool enable );
 	
 	
 	

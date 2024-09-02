@@ -21,6 +21,9 @@ if envLibrary['OSWindows']:
 else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libwebm', 'lib_libwebm_fetch')
+
 # check if system libwebm is present
 hasSystemWebm = False
 conf = envLibrary.Configure()
@@ -58,6 +61,10 @@ def libwebmBuild(target, source, env):
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
+	if env['platform_android'] != 'no':
+		# fix for android ndk 27+ breaking cmake
+		script.append('sed -i -e "s/cmake_minimum_required(VERSION 3.2)/cmake_minimum_required(VERSION 3.5)/" ../libwebm-libwebm-1.0.0.29/CMakeLists.txt')
+	
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
 	
@@ -72,8 +79,13 @@ def libwebmBuild(target, source, env):
 		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	
 	if env['platform_android'] != 'no':
-		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
-		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
+		cmdline.append('-DANDROID_ABI="{}"'.format(env['ANDROID_ABI']))
+		cmdline.append('-DANDROID_ARM_MODE="{}"'.format(env['ANDROID_ARCH']))
+		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DANDROID_TOOLCHAIN=clang')
+		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
+		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
 		
 	elif 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
@@ -119,8 +131,7 @@ targets.extend([
 	'include/webm/reader.h',
 	'include/webm/status.h',
 	'include/webm/webm_parser.h'])
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-	envLibrary.Action(libwebmBuild, 'Build libwebm'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(libwebmBuild, 'Build libwebm'))
 
 depends = parent_env.Alias('lib_libwebm', library)
 

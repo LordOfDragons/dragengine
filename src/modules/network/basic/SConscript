@@ -27,6 +27,9 @@ pathModule = '{}/modules/network/basic/{}'.format( envModule.subst( envModule[ '
 envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
+if envModule['platform_android'] != 'no':
+	envModule.Append(CPPFLAGS = ['-Wno-unused-function'])
+
 # setup the builders
 sources = []
 headers = []

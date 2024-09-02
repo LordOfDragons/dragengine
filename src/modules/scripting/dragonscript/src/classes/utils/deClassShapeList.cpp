@@ -449,6 +449,68 @@ void deClassShapeList::nfAddBox2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	}
 }
 
+// public func void addBox( Vector center, Vector extends, Vector2 tapering )
+deClassShapeList::nfAddBox3::nfAddBox3( const sInitData &init ) :
+dsFunction( init.clsShaList, "addBox", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsVec ); // center
+	p_AddParameter( init.clsVec ); // extends
+	p_AddParameter( init.clsVec2 ); // tapering
+}
+
+void deClassShapeList::nfAddBox3::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	
+	const decVector &center = ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &extends = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
+	const decVector2 &tapering = ds.GetClassVector2()->GetVector2( rt->GetValue( 2 )->GetRealObject() );
+	
+	decShapeBox *box = nullptr;
+	
+	try{
+		box = new decShapeBox( extends, tapering, center );
+		shapeList.Add( box );
+		
+	}catch( ... ){
+		if( box ){
+			delete box;
+		}
+		throw;
+	}
+}
+
+// public func void addBox( Vector center, Vector extends, Vector2 tapering, Quaternion orientation )
+deClassShapeList::nfAddBox4::nfAddBox4( const sInitData &init ) :
+dsFunction( init.clsShaList, "addBox", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsVec ); // center
+	p_AddParameter( init.clsVec ); // extends
+	p_AddParameter( init.clsVec2 ); // tapering
+	p_AddParameter( init.clsQuat ); // orientation
+}
+
+void deClassShapeList::nfAddBox4::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	
+	const decVector &center = ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &extends = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
+	const decVector2 &tapering = ds.GetClassVector2()->GetVector2( rt->GetValue( 2 )->GetRealObject() );
+	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 3 )->GetRealObject() );
+	
+	decShapeBox *box = nullptr;
+	
+	try{
+		box = new decShapeBox( extends, tapering, center, orientation );
+		shapeList.Add( box );
+		
+	}catch( ... ){
+		if( box ){
+			delete box;
+		}
+		throw;
+	}
+}
+
 
 
 // public func void addCylinder( float halfHeight, float radius )
@@ -1416,6 +1478,8 @@ void deClassShapeList::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfAddBox( init ) );
 	AddFunction( new nfAddBox2( init ) );
+	AddFunction( new nfAddBox3( init ) );
+	AddFunction( new nfAddBox4( init ) );
 	
 	AddFunction( new nfAddCylinder( init ) );
 	AddFunction( new nfAddCylinder2( init ) );

@@ -160,6 +160,12 @@ public:
 	/** \brief Appends an unsigned integer value. */
 	void AppendValue( unsigned int value );
 	
+	/** \brief Appends a signed long long value. */
+	void AppendValue( long long value );
+	
+	/** \brief Appends an unsigned long long value. */
+	void AppendValue( unsigned long long value );
+	
 	/** \brief Appends a float value. */
 	void AppendValue( float value );
 	

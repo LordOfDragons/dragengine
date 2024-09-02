@@ -1,0 +1,169 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui.ModManagement
+pin Dragengine.Services.Mods
+
+/**
+ * \brief Widget showing a preview size modification gallery image.
+ * \version 1.23
+ */
+class MMImageGalleryPreviewImage extends DisplayImage
+	/**
+	 * \brief Listener updating gallery image once loaded.
+	 */
+	class LoadImageListener extends DefaultServiceModsListener
+		var MMImageGalleryPreviewImage pWidget
+		var MMModification.GalleryImage pGalleryImage
+		
+		/** \brief Create load image listener. */
+		func new(MMImageGalleryPreviewImage widget, MMModification.GalleryImage galleryImage)
+			pWidget = widget
+			pGalleryImage = galleryImage
+		end
+		
+		/** \brief Finished loading resource. */
+		func void onLoadModResource(ServiceMods service, String url, Object resource, Exception exception)
+			if exception != null
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					app.getConsole().addError("Load image failed: " + url, exception)
+				end
+				return
+			end
+			
+			if pGalleryImage.info != null and url.equals(pGalleryImage.info.url)
+				pGalleryImage.imageOriginal = resource cast Image
+				pWidget.onOriginalImageChanged()
+				
+			elif pGalleryImage.thumbnail != null and url.equals(pGalleryImage.thumbnail.url)
+				pGalleryImage.imageThumbnail = resource cast Image
+				pWidget.update()
+			end
+		end
+	end
+	
+	
+	
+	var MMModification.GalleryImage pGalleryImage
+	var ListModel pModel
+	
+	
+	
+	/** \brief Create widget displaying gallery image preview. */
+	func new(String designerSelector, ListModel model) super(null, RepeatMode.stretchRatio)
+		pModel = model
+		setDesignerSelector(designerSelector)
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pModel = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Gallery image or null. */
+	func MMModification.GalleryImage getGalleryImage()
+		return pGalleryImage
+	end
+	
+	/** \brief Set gallery image or null. */
+	func void setGalleryImage(ServiceMods service, MMModification.GalleryImage galleryImage)
+		if galleryImage == pGalleryImage
+			return
+		end
+		
+		pGalleryImage = galleryImage
+		
+		if galleryImage == null
+			return
+		end
+		
+		if galleryImage.imageThumbnail == null and galleryImage.info != null
+			galleryImage.imageThumbnail = galleryImage.info.image
+			
+			if galleryImage.imageThumbnail == null and service != null
+				galleryImage.thumbnail = findLoadThumbnail(galleryImage.info)
+				if galleryImage.thumbnail != null
+					service.loadModResource(galleryImage.thumbnail.url, LoadImageListener.new(this, galleryImage))
+				end
+			end
+		end
+		
+		if galleryImage.imageOriginal == null and galleryImage.info != null
+			galleryImage.imageOriginal = galleryImage.info.image
+			if galleryImage.imageOriginal == null and service != null
+				service.loadModResource(galleryImage.info.url, LoadImageListener.new(this, galleryImage))
+			end
+		end
+		
+		update()
+	end
+	
+	
+	
+	/** \brief Update content from gallery image if present. */
+	func void update()
+		if pGalleryImage == null
+			return
+		end
+		
+		var Image image = pGalleryImage.imageThumbnail
+		if image == null
+			image = pGalleryImage.imageOriginal
+		end
+		setImage(image)
+	end
+	
+	
+	
+	/** \brief Original image changed. */
+	func void onOriginalImageChanged()
+		var int index = pModel.indexOf(pGalleryImage)
+		if index != -1
+			pModel.notifyContentChanged(index, index)
+		end
+	end
+	
+	/** \brief Find thumbnail best matching widget size. */
+	func ServiceImage.Thumbnail findLoadThumbnail(ServiceImage image)
+		var Point reqSize = getMinimumSize()
+		
+		if image.thumbnails != null
+			var Array found = image.thumbnails.collect(block ServiceImage.Thumbnail each
+				return each.size >= reqSize
+			end).sorted(block ServiceImage.Thumbnail a, ServiceImage.Thumbnail b
+				return a.size.compare(b)
+			end)
+			
+			if found.getCount() > 0
+				return found.getAt(0) cast ServiceImage.Thumbnail
+			end
+		end
+		
+		return null
+	end
+end

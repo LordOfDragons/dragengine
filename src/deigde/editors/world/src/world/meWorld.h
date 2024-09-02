@@ -81,6 +81,7 @@ class meWindowMain;
 
 class igdeEnvironment;
 class igdeWSky;
+class igdeWObject;
 
 class deForceField;
 
@@ -162,6 +163,7 @@ private:
 	deWorld *pDEWorld;
 	deColliderVolume *pEngColCollider;
 	igdeWSky *pSky;
+	igdeWObject *pBgObject;
 	deMicrophone *pEngMicrophone;
 	
 	deForceField *pEngForceField;
@@ -235,6 +237,8 @@ public:
 	inline deWorld *GetEngineWorld() const{ return pDEWorld; }
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
+	/** Background object wrapper. */
+	inline igdeWObject *GetBgObject() const{ return pBgObject; }
 	/** Retrieves the microphone. */
 	inline deMicrophone *GetMicrophone() const{ return pEngMicrophone; }
 	
@@ -315,6 +319,9 @@ public:
 	
 	/** Enable GI changed. */
 	void EnableGIChanged();
+	
+	/** Enable auralization changed. */
+	void EnableAuralizationChanged();
 	
 	/** Clear scaling of non-scaled elements. */
 	void ClearScalingOfNonScaledElements();
@@ -516,6 +523,8 @@ public:
 	void NotifySkyChanged();
 	/** Notifies all that the element or work mode changed. */
 	void NotifyModeChanged();
+	/** Notifies all that the background object changed. */
+	void NotifyBgObjectChanged();
 	/** Notifies all that the changed or saved state changed. */
 	virtual void NotifyStateChanged();
 	/** Notifies all that the undos changed. */

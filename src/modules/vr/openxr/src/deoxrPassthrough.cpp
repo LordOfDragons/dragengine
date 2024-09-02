@@ -45,41 +45,7 @@ pSession( session ),
 pPassthrough( XR_NULL_HANDLE ),
 pLayer( XR_NULL_HANDLE ),
 pEnabled( false ),
-pTransparency( 1.0f )
-{
-	deoxrInstance &instance = session.GetSystem().GetInstance();
-	
-	try{
-		// create passthrough
-		XrPassthroughCreateInfoFB createInfoPass;
-		memset( &createInfoPass, 0, sizeof( createInfoPass ) );
-		createInfoPass.type = XR_TYPE_PASSTHROUGH_CREATE_INFO_FB;
-		
-		OXR_CHECK( instance.xrCreatePassthroughFB( session.GetSession(), &createInfoPass, &pPassthrough ) );
-		
-		// create layer
-		XrPassthroughLayerCreateInfoFB createInfoLayer;
-		memset( &createInfoLayer, 0, sizeof( createInfoLayer ) );
-		createInfoLayer.type = XR_TYPE_PASSTHROUGH_LAYER_CREATE_INFO_FB;
-		createInfoLayer.passthrough = pPassthrough;
-		createInfoLayer.purpose = XR_PASSTHROUGH_LAYER_PURPOSE_RECONSTRUCTION_FB;
-		
-		OXR_CHECK( instance.xrCreatePassthroughLayerFB( session.GetSession(), &createInfoLayer, &pLayer ) );
-		
-		// init layer style structs
-		memset( &pLayerStyle, 0, sizeof( pLayerStyle ) );
-		pLayerStyle.type = XR_TYPE_PASSTHROUGH_STYLE_FB;
-		pLayerStyle.textureOpacityFactor = pTransparency;
-		
-		// init composite layer struct
-		memset( &pCompositeLayer, 0, sizeof( XrCompositionLayerPassthroughFB ) );
-		pCompositeLayer.type = XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB;
-		pCompositeLayer.layerHandle = pLayer;
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+pTransparency( 1.0f ){
 }
 
 deoxrPassthrough::~deoxrPassthrough(){
@@ -94,6 +60,10 @@ deoxrPassthrough::~deoxrPassthrough(){
 void deoxrPassthrough::SetEnabled( bool enabled ){
 	if( enabled == pEnabled ){
 		return;
+	}
+	
+	if( enabled ){
+		pEnsureCreated();
 	}
 	
 	pEnabled = enabled;
@@ -129,10 +99,12 @@ void deoxrPassthrough::pCleanUp(){
 	
 	if( pLayer != XR_NULL_HANDLE ){
 		OXR_CHECK( instance.xrDestroyPassthroughLayerFB( pLayer ) );
+		pLayer = XR_NULL_HANDLE;
 	}
 	
 	if( pPassthrough != XR_NULL_HANDLE ){
 		OXR_CHECK( instance.xrDestroyPassthroughFB( pPassthrough ) );
+		pPassthrough = XR_NULL_HANDLE;
 	}
 }
 
@@ -140,4 +112,52 @@ void deoxrPassthrough::pUpdateLayerStyle(){
 	pLayerStyle.textureOpacityFactor = pTransparency;
 	
 	OXR_CHECK( pSession.GetSystem().GetInstance().xrPassthroughLayerSetStyleFB( pLayer, &pLayerStyle ) );
+}
+
+void deoxrPassthrough::pEnsureCreated(){
+	if( pPassthrough != XR_NULL_HANDLE ){
+		return;
+	}
+	
+	deoxrInstance &instance = pSession.GetSystem().GetInstance();
+	
+	try{
+		// create passthrough. flags can not be 0 so we have to specify at least
+		// XR_PASSTHROUGH_IS_RUNNING_AT_CREATION_BIT_FB or XR_PASSTHROUGH_LAYER_DEPTH_BIT_FB.
+		// but since we have no depth layer yet we are forced to use
+		// XR_PASSTHROUGH_IS_RUNNING_AT_CREATION_BIT_FB to not get into troubles
+		XrPassthroughCreateInfoFB createInfoPass;
+		memset( &createInfoPass, 0, sizeof( createInfoPass ) );
+		createInfoPass.type = XR_TYPE_PASSTHROUGH_CREATE_INFO_FB;
+		createInfoPass.flags = XR_PASSTHROUGH_IS_RUNNING_AT_CREATION_BIT_FB;
+		
+		OXR_CHECK( instance.xrCreatePassthroughFB( pSession.GetSession(), &createInfoPass, &pPassthrough ) );
+		
+		// create layer
+		XrPassthroughLayerCreateInfoFB createInfoLayer;
+		memset( &createInfoLayer, 0, sizeof( createInfoLayer ) );
+		createInfoLayer.type = XR_TYPE_PASSTHROUGH_LAYER_CREATE_INFO_FB;
+		createInfoLayer.passthrough = pPassthrough;
+		createInfoLayer.purpose = XR_PASSTHROUGH_LAYER_PURPOSE_RECONSTRUCTION_FB;
+		
+		OXR_CHECK( instance.xrCreatePassthroughLayerFB( pSession.GetSession(), &createInfoLayer, &pLayer ) );
+		
+		// init layer style structs
+		memset( &pLayerStyle, 0, sizeof( pLayerStyle ) );
+		pLayerStyle.type = XR_TYPE_PASSTHROUGH_STYLE_FB;
+		pLayerStyle.textureOpacityFactor = pTransparency;
+		
+		// init composite layer struct
+		memset( &pCompositeLayer, 0, sizeof( XrCompositionLayerPassthroughFB ) );
+		pCompositeLayer.type = XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB;
+		pCompositeLayer.layerHandle = pLayer;
+		
+		// pause passthrough since it gets automatically activated
+		OXR_CHECK( instance.xrPassthroughPauseFB( pPassthrough ) );
+		OXR_CHECK( instance.xrPassthroughLayerPauseFB( pLayer ) );
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
 }

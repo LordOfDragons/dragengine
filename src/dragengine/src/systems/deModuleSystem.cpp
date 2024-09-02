@@ -30,6 +30,7 @@
 #include "modules/deLoadableModule.h"
 #include "modules/deLibraryModule.h"
 #include "modules/deBaseModule.h"
+#include "modules/service/deBaseServiceModule.h"
 #include "../deEngine.h"
 #include "../app/deOS.h"
 #include "../common/file/decPath.h"
@@ -179,6 +180,9 @@ void deModuleSystem::DetectModules(){
 		
 		logger.LogInfoFormat( LOGSOURCE, "Loading Occlusion Mesh modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "occlusionmesh", emtOcclusionMesh );
+		
+		logger.LogInfoFormat( LOGSOURCE, "Loading Service modules" );
+		pDetectModulesIn( searchPath.GetPathNative(), "service", emtService );
 		
 		logger.LogInfoFormat( LOGSOURCE, "Finished loading modules" );
 		
@@ -393,13 +397,37 @@ deBaseModule *deModuleSystem::GetModuleAbleToLoad( eModuleTypes type, const char
 	return module->GetModule();
 }
 
+void deModuleSystem::ServicesAddVFSContainers( deVirtualFileSystem &vfs, const char *stage ){
+	DEASSERT_NOTNULL( stage )
+	
+	decStringList names;
+	int i;
+	
+	for( i=0; i<pModules.GetCount(); i++ ){
+		const deLoadableModule &module = *( ( deLoadableModule* )pModules.GetAt( i ) );
+		if( module.GetType() == deModuleSystem::eModuleTypes::emtService && ! names.Has( module.GetName() ) ){
+			names.Add( module.GetName() );
+		}
+	}
+	
+	const int count = names.GetCount();
+	for( i=0; i<count; i++ ){
+		const deLoadableModule * const module = GetModuleNamed( names.GetAt( i ) );
+		if( module && module->GetType() == deModuleSystem::eModuleTypes::emtService
+		&& module->IsLoaded() && module->GetEnabled() ){
+			( ( deBaseServiceModule* )module->GetModule() )->AddVFSContainers( vfs, stage );
+		}
+	}
+}
+
 
 
 // Helper functions
 /////////////////////
 
-int deModuleSystem::CompareVersion( const char *version1, const char *version2 ){
-	if( ! version1 || ! version2 ){
+int deModuleSystem::CompareVersion(const char *version1, const char *version2)
+{
+    if( ! version1 || ! version2 ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -577,6 +605,9 @@ deModuleSystem::eModuleTypes deModuleSystem::GetTypeFromString( const char *type
 	}else if( strcmp( typeString, "VR" ) == 0 ){
 		return emtVR;
 		
+	}else if( strcmp( typeString, "Service" ) == 0 ){
+		return emtService;
+		
 	}else{
 		return emtUnknown;
 	}
@@ -649,6 +680,9 @@ const char *deModuleSystem::GetTypeDirectory( eModuleTypes type ){
 		
 	case emtVR:
 		return "vr";
+		
+	case emtService:
+		return "service";
 		
 	default:
 		DETHROW( deeInvalidParam );

@@ -31,9 +31,18 @@
 #define XR_NO_PROTOTYPES
 #endif
 
-#define XR_USE_GRAPHICS_API_OPENGL
-
-#ifdef OS_UNIX
+#ifdef OS_ANDROID
+	#include <jni.h>
+	
+	typedef void* EGLDisplay;
+	typedef void* EGLConfig;
+	typedef void* EGLContext;
+	typedef unsigned int EGLenum;
+	
+	#define XR_USE_PLATFORM_ANDROID
+	#define XR_USE_GRAPHICS_API_OPENGL_ES
+	
+#elif defined OS_UNIX
 // 	#include <X11/Xlib.h>
 // 	#include <X11/Xutil.h>
 	typedef struct _XDisplay Display;
@@ -42,6 +51,7 @@
 	typedef void *GLXContext;
 	
 	#define XR_USE_PLATFORM_XLIB
+	#define XR_USE_GRAPHICS_API_OPENGL
 
 #elif defined OS_W32
 	#include <dragengine/app/include_windows.h>
@@ -49,6 +59,7 @@
 	typedef struct HGLRC__ *HGLRC;
 	
 	#define XR_USE_PLATFORM_WIN32
+	#define XR_USE_GRAPHICS_API_OPENGL
 #endif
 
 #include <openxr/openxr.h>

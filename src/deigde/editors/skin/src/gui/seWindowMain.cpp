@@ -825,11 +825,10 @@ public:
 		// load Skin
 		pWindow.GetEditorModule().LogInfoFormat( "Import from Skin %s", skinPath );
 		
-		deObjectReference refImportedSkin;
-		refImportedSkin.TakeOver( pWindow.GetLoadSaveSystem().LoadSkin( skinPath, pWindow.GetGameDefinition() ) );
-		const seSkin &importedSkin = ( seSkin& )( deObject& )refImportedSkin;
+		const seSkin::Ref importedSkin( seSkin::Ref::New( pWindow.GetLoadSaveSystem().
+			LoadSkin( skinPath, pWindow.GetGameDefinition() ) ) );
 		
-		const seTextureList &importTextures = importedSkin.GetTextureList();
+		const seTextureList &importTextures = importedSkin->GetTextureList();
 		
 		// if there is no texture fail
 		if( importTextures.GetCount() == 0 ){
@@ -861,7 +860,7 @@ public:
 		}
 		
 		// determine the relative path change between the imported skin and the active skin
-		const decPath importSkinPath( decPath::CreatePathUnix( importedSkin.GetDirectoryPath() ) );
+		const decPath importSkinPath( decPath::CreatePathUnix( importedSkin->GetDirectoryPath() ) );
 		decPath pathChange;
 		
 		if( skin->GetDirectoryPath() == "" || skin->GetDirectoryPath() == "/" ){
@@ -929,9 +928,16 @@ public:
 		"Import Texture from a game definition skin", deInputEvent::ekcI ){}
 	
 	virtual igdeUndo *OnActionTexture( seSkin *skin, seTexture *texture ){
-		decString importSkin( pWindow.GetGameDefinition()->GetSkinManager()->GetDefaultSkinPath() );
-		return igdeDialogBrowserSkin::SelectSkin( &pWindow, importSkin )
-			? ImportTexture( skin, texture, importSkin ) : NULL;
+		decString importSkin( pWindow.importSkinLastGD );
+		if( importSkin.IsEmpty() ){
+			importSkin = pWindow.GetGameDefinition()->GetSkinManager()->GetDefaultSkinPath();
+		}
+		igdeUndo * const undo = igdeDialogBrowserSkin::SelectSkin( &pWindow, importSkin )
+			? ImportTexture( skin, texture, importSkin ) : nullptr;
+		if( undo ){
+			pWindow.importSkinLastGD = importSkin;
+		}
+		return undo;
 	}
 };
 
@@ -943,10 +949,17 @@ public:
 	
 	virtual igdeUndo *OnActionTexture( seSkin *skin, seTexture *texture ){
 		igdeEnvironment &env = pWindow.GetEnvironment();
-		decString filename( pWindow.GetGameDefinition()->GetSkinManager()->GetDefaultSkinPath() );
-		return igdeCommonDialogs::GetFileOpen( &pWindow, "Import Skin Texture", *env.GetFileSystemGame(),
-			*env.GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename )
-				? ImportTexture( skin, texture, filename ) : NULL;
+		decString filename( pWindow.importSkinLastPath );
+		if( filename.IsEmpty() ){
+			filename = pWindow.GetGameDefinition()->GetSkinManager()->GetDefaultSkinPath();
+		}
+		igdeUndo * const undo = igdeCommonDialogs::GetFileOpen( &pWindow, "Import Skin Texture",
+			*env.GetFileSystemGame(), *env.GetOpenFilePatternList( igdeEnvironment::efpltSkin ),
+			filename ) ? ImportTexture( skin, texture, filename ) : nullptr;
+		if( undo ){
+			pWindow.importSkinLastPath = filename;
+		}
+		return undo;
 	}
 };
 

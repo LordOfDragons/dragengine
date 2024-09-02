@@ -28,6 +28,9 @@ else:
 		distVersionMajor, distVersionMinor) )
 	libLinkName = 'dscript'
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'dragonscript', 'lib_dragonscript_fetch')
+
 # check if system dragonscript is present
 envLibrary.Append( CPPPATH = [ envLibrary[ 'with_dragonscript_inc' ] ] )
 envLibrary.Append( LIBPATH = [ envLibrary[ 'with_dragonscript_lib' ] ] )
@@ -80,6 +83,8 @@ def dragonscriptBuild( target, source, env ):
 			f.write('crosscompile = "android"\n')
 			if env['platform_android'] == 'armv7':
 				f.write('android_arch = "armv7a"\n')
+			elif env['platform_android'] == 'armv8':
+				f.write('android_arch = "aarch64"\n')
 			else:
 				f.write('android_arch = "x86"\n')
 			f.write('android_apilevel = "{}"\n'.format(env['apilevel']))
@@ -99,6 +104,9 @@ def dragonscriptBuild( target, source, env ):
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
+	if env['platform_android'] != 'no':
+		script.append('export NDK_ROOT="{}"'.format(env['ANDROID_NDKROOT']))
+
 	script.append('scons -j {} install || exit 1'.format(env['with_threads']))
 	if env['OSMacOS']:
 		script.append('install_name_tool -id "@rpath/libdscript.dylib" "{}" || exit 1'.format(target[0].abspath))
@@ -122,8 +130,7 @@ with open( envLibrary.File( 'data_file_list' ).srcnode().abspath, 'r' ) as f:
 	runtimedata.extend( [ envLibrary.File( envLibrary.subst( x[:-1] ) ) for x in f.readlines() ] )
 targets.extend( runtimedata )
 
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
 
 depends = parent_env.Alias( 'lib_dragonscript', library )
 

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 
 #include <stdlib.h>
 #include <string.h>

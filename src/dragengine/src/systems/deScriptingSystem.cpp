@@ -49,6 +49,7 @@
 #include "../resources/particle/deParticleEmitterInstance.h"
 #include "../resources/propfield/dePropField.h"
 #include "../resources/sound/deSpeaker.h"
+#include "../resources/service/deService.h"
 
 
 
@@ -175,7 +176,14 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 	}
 }
 
-void deScriptingSystem::SetEditMode( bool editMode ){
+void deScriptingSystem::AddVFSContainers( deVirtualFileSystem &vfs, const char *stage ){
+	if( pActiveModule ){
+		pActiveModule->AddVFSContainers( vfs, stage );
+	}
+}
+
+void deScriptingSystem::SetEditMode(bool editMode)
+{
 	if( GetIsRunning() ) DETHROW( deeInvalidParam );
 	pEditMode = editMode;
 }
@@ -322,6 +330,14 @@ void deScriptingSystem::LoadSpeaker( deSpeaker *speaker ){
 	if( GetIsRunning() && ! speaker->GetPeerScripting() ){
 		speaker->SetPeerScripting( pActiveModule->CreateSpeaker( speaker ) );
 	}
+}
+
+void deScriptingSystem::CreateService( deService *service ){
+	if( ! GetIsRunning() || service->GetPeerScripting() ){
+		return;
+	}
+	
+	service->SetPeerScripting( pActiveModule->CreateService( service ) );
 }
 
 

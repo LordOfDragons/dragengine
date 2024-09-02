@@ -52,6 +52,37 @@ class FileWriter
 	
 	
 	
+	/**
+	 * \brief Current writing position in the file.
+	 * \version 1.23
+	 */
+	func int getPosition()
+		return 0
+	end
+	
+	/**
+	 * \brief Set file position for the next write action.
+	 * \version 1.23
+	 */
+	func void setPosition(int position)
+	end
+	
+	/**
+	 * \brief Move file position by the given offset.
+	 * \version 1.23
+	 */
+	func void movePosition(int offset)
+	end
+	
+	/**
+	 * brief Set file position to the given position measured from the end of the file.
+	 * \version 1.23
+	 */
+	func void setPositionEnd(int position)
+	end
+	
+	
+	
 	/** \brief Write one byte (1 byte). */
 	func void writeChar(int value)
 	end

@@ -51,7 +51,7 @@ class NSView;
 #endif
 #endif
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #endif
@@ -67,7 +67,7 @@ class deoglRRenderWindow : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! OS_MACOS
 	Window pHostWindow;
 	Window pWindow;
 	Cursor pNullCursor;
@@ -163,13 +163,13 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** OS specific. */
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	inline Window GetHostWindow() const{ return pHostWindow; }
 	inline Window GetWindow() const{ return pWindow; }
 	void SetHostWindow( Window window );
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	inline void *GetHostWindow() const{ return 0; }
 	inline void *GetWindow() const{ return 0; }
 	void SetHostWindow( void *window );
@@ -273,7 +273,7 @@ public:
 	
 	
 private:
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	void pCreateNullCursor();
 	#endif
 	

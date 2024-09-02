@@ -278,11 +278,11 @@ void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
 
 
 void deoglRComponentTexture::UpdateUseSkin(){
-	pUseSkin = NULL;
+	pUseSkin = nullptr;
 	pUseTextureNumber = -1;
-	pUseSkinTexture = NULL;
-	pUseSkinState = NULL;
-	pUseDynamicSkin = NULL;
+	pUseSkinTexture = nullptr;
+	pUseSkinState = nullptr;
+	pUseDynamicSkin = nullptr;
 	pUseDoubleSided = false;
 	pUseDecal = false;
 	
@@ -429,7 +429,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 		pSharedSPBRTIGroupShadow.RemoveAll();
 		
 		if( pSharedSPBElement ){
-			const deoglRModel &model = pComponent.GetModelRef();
+			const deoglRModel &model = pComponent.GetModel();
 			deoglSharedSPB &spb = pSharedSPBElement->GetSPB();
 			deoglSharedSPBRTIGroup::Ref group;
 			
@@ -512,7 +512,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 }
 
 void deoglRComponentTexture::UpdateRTSInstances(){
-	const deoglRModel &model = pComponent.GetModelRef();
+	const deoglRModel &model = pComponent.GetModel();
 	const int count = pSharedSPBRTIGroup.GetCount();
 	int i;
 	
@@ -937,7 +937,7 @@ int element, const deoglSkinShader &skinShader ){
 	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
 	if( target != -1 ){
 		paramBlock.SetParameterDataBool( target, element,
-			pComponent.GetModelRef().GetLODAt( 0 ).GetTextureAt( pIndex ).GetDoubleSided() );
+			pComponent.GetModel()->GetLODAt( 0 ).GetTextureAt( pIndex ).GetDoubleSided() );
 	}
 	
 	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
@@ -1110,7 +1110,7 @@ int deoglRComponentTexture::pShadowCombineCount( int lodLevel ) const{
 		}
 	}
 	
-	const deoglModelLOD &modelLod = pComponent.GetModelRef().GetLODAt( lodLevel );
+	const deoglModelLOD &modelLod = pComponent.GetModel()->GetLODAt( lodLevel );
 	const int mask = ertfRender | ertfSolid | ertfShadowNone | ertfHoles | ertfDecal | ertfDoubleSided;
 	const int filter = pRenderTaskFilters & mask;
 	const int count = pComponent.GetTextureCount();

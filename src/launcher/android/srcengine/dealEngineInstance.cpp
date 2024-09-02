@@ -658,6 +658,27 @@ bool dealEngineInstance::VFSAddRedirect( const char *root, const char *redirect 
 	return true;
 }
 
+bool dealEngineInstance::ModulesAddVFSContainers( const char *stage ){
+	if( ! pEngine ){
+		return false;
+	}
+	
+	pLogger->LogInfoFormat( LOGSOURCE, "ModulesAddVFSContainers: stage=%s", stage );
+	
+	try{
+		deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
+		pEngine->GetModuleSystem()->ServicesAddVFSContainers( vfs, stage );
+		pEngine->GetScriptingSystem()->AddVFSContainers( vfs, stage );
+		
+	}catch( const deException &e ){
+		pLogger->LogErrorFormat( LOGSOURCE, "ModulesAddVFSContainers(stage=%s):", stage );
+		pLogger->LogException( LOGSOURCE, e );
+		return false;
+	}
+	
+	return true;
+}
+
 
 
 bool dealEngineInstance::CreateRenderWindow( int width, int height, bool fullScreen, const char *windowTitle ){

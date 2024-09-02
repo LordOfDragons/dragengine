@@ -1451,7 +1451,6 @@ void ceConversationActor::pUpdatePlayHeadLookAt( cePlayback &playback, float ela
 			value = 90.0f;
 		}
 		headLeftRight = value * blendFactor1;
-		
 		value = atan2f( lookAtPosition.y, decVector2( lookAtPosition.x, lookAtPosition.z ).Length() ) * RAD2DEG;
 		headUpDown = value * blendFactor1;
 	}

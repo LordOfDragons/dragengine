@@ -104,6 +104,7 @@ void meConfigurationXML::pWriteConfig( decXmlWriter &writer, const meConfigurati
 	writer.WriteDataTagInt( "scaleSnap", config.GetScaleSnap() ? 1 : 0 );
 	writer.WriteDataTagFloat( "sensitivity", config.GetSensitivity() );
 	writer.WriteDataTagBool( "enableGI", config.GetEnableGI() );
+	writer.WriteDataTagBool( "enableAuralization", config.GetEnableAuralization() );
 	config.GetWindowMain().GetRecentFiles().WriteToXml( writer );
 	
 	writer.WriteClosingTag( "worldEditor", true );
@@ -146,6 +147,9 @@ void meConfigurationXML::pReadConfig( const decXmlElementTag &root, meConfigurat
 			
 		}else if( tag->GetName() == "enableGI" ){
 			config.SetEnableGI( GetCDataBool( *tag ) );
+			
+		}else if( tag->GetName() == "enableAuralization" ){
+			config.SetEnableAuralization( GetCDataBool( *tag ) );
 			
 		}else if( tag->GetName() == "recentFiles" ){
 			config.GetWindowMain().GetRecentFiles().ReadFromXml( *tag );

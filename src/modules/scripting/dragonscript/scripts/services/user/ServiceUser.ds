@@ -1,0 +1,161 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.User
+
+
+/**
+ * \brief Interface for services supporting user information and management.
+ * \version 1.23
+ */
+interface ServiceUser
+	/**
+	 * \brief Errors.
+	 */
+	enum Errors
+		/**
+		 * \brief User has to accept terms of service.
+		 * 
+		 * Receiving this error the caller has to first present to the user the terms of service.
+		 * Upon accepting the terms of service the caller has to restart the failed action
+		 * including the provided credentials parameters.
+		 * 
+		 * The terms of service and the credentials parameters are found in the
+		 * ServiceUserErrorNeedAcceptToS instance assigned as additional error data.
+		 */
+		needAcceptTos
+	end
+	
+	
+	
+	/**
+	 * \brief Add user listener.
+	 * \param listener Listener to add
+	 */
+	func void addUserListener(ServiceUserListener listener)
+	
+	/**
+	 * \brief Remove user listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeUserListener(ServiceUserListener listener)
+	
+	
+	
+	/**
+	 * \brief Features supported by this service.
+	 */
+	func ServiceUserFeatures getUserFeatures()
+	
+	/**
+	 * \brief Log in user.
+	 * 
+	 * User can be logged in automatically or manually.
+	 * 
+	 * Automatic logging in is used for example Steam where the user has to log into the
+	 * platform before the game can be launched. Automatic logging in can trigger platform
+	 * specific log in procedure and terms acknowledge process. Typically this has to be
+	 * done once and then logging in is automatic.
+	 * 
+	 * Manual logging in requires the game to obtain the credentials from the user.
+	 * This can be useful for developers to not enter credentials each time they launch
+	 * the game. Production games usually do not require manual logging in unless the
+	 * service in question does not support automatic logging in.
+	 * 
+	 * Manual logging in is also possible using authentification tokens from other services.
+	 * For example a user can log into certain services using his Steam user account. See
+	 * \ref ServiceUserFeatures#canAuthProviderLogin obtained from \ref #getUserFeatures()
+	 * to know which other services are supported for manual login using auth tokens.
+	 * 
+	 * Once logging in finished \ref ServiceUserListener#onLoginUser() is called.
+	 * 
+	 * \param credentials Credentials for manual logging in. Use null for automatic logging in.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+	
+	/**
+	 * \brief Log out user.
+	 * 
+	 * Once logging out finished \ref ServiceUserListener#onLogoutUser() is called.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void logoutUser(ServiceUserListener listener)
+	
+	/**
+	 * \brief User is logged in.
+	 */
+	func bool isUserLoggedIn()
+	
+	/**
+	 * \brief Request authentification token.
+	 * 
+	 * Requests an encrypted appplication ticket. If one is cached it is returned.
+	 * The received ticket is Base64 encoded.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getAuthToken(ServiceUserListener listener)
+	
+	/**
+	 * \brief Retrieve user information.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getUserInfo(ServiceUserListener listener)
+	
+	/**
+	 * \brief Load resource asynchronously.
+	 * 
+	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
+	 * \ref ServiceUserListener#onLoadUserResource() is called with the same URL as used
+	 * in this function call.
+	 * 
+	 * \param url URL of image to load.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loadUserResource(String url, ServiceUserListener listener)
+	
+	/**
+	 * \brief Report user.
+	 * 
+	 * Once finished \ref ServiceUserListener#onReportUser() is called.
+	 * Can be used if \ref ServiceUserFeatures#canReportUser is true.
+	 * 
+	 * \param id Identifier of user to report.
+	 * \param report Report to submit.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
+	
+	/**
+	 * \brief Retrieve user wallet balance.
+	 * 
+	 * Can be used if \ref ServiceUserFeatures#hasMarketplace is true.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getUserWalletBalance(ServiceUserListener listener)
+end

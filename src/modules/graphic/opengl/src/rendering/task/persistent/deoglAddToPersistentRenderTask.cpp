@@ -196,7 +196,7 @@ const deoglCollideListComponent &clcomponent ){
 	
 	const int lodLevel = clcomponent.GetLODLevel();
 	const int specialFlags = clcomponent.GetSpecialFlags();
-	const deoglRModel &model = *component.GetModel();
+	const deoglRModel &model = component.GetModel();
 	const deoglModelLOD &modelLOD = model.GetLODAt( lodLevel );
 	const int textureCount = modelLOD.GetTextureCount();
 	int i;

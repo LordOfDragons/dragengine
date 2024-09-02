@@ -95,5 +95,17 @@ class Game
 	func String getArgumentAt(int index)
 		return null
 	end
+	
+	
+	/**
+	 * \brief Information passed to \ref Engine#restart(String) before restarting.
+	 * \version 1.23
+	 * 
+	 * If starting normally returns empty string.
+	 */
+	func String getRestartInfo()
+		return null
+	end
+	
 	/*@}*/
 end

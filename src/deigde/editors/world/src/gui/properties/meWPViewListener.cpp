@@ -57,6 +57,10 @@ void meWPViewListener::SkyChanged( meWorld* ){
 	pPanel.UpdateSky();
 }
 
+void meWPViewListener::BgObjectChanged( meWorld* ){
+	pPanel.UpdateBgObject();
+}
+
 void meWPViewListener::EditingChanged( meWorld* ){
 	pPanel.UpdateView();
 }

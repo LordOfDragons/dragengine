@@ -91,6 +91,7 @@ private:
 	
 	DEF_NATFUNC( nfGetArgumentCount );
 	DEF_NATFUNC( nfGetArgumentAt );
+	DEF_NATFUNC( nfGetRestartInfo );
 #undef DEF_NATFUNC
 };
 

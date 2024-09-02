@@ -104,6 +104,9 @@ private:
 	DEF_NATFUNC( nfSetSpeakerGain);
 	DEF_NATFUNC( nfGetParentWorld );
 	
+	DEF_NATFUNC( nfGetEnableAuralization );
+	DEF_NATFUNC( nfSetEnableAuralization );
+	
 	DEF_NATFUNC( nfAddSpeaker );
 	DEF_NATFUNC( nfRemoveSpeaker );
 	DEF_NATFUNC( nfRemoveAllSpeakers );

@@ -89,7 +89,7 @@ void deoxrDPHTCViveFocus3ControllerInteraction::pSuggestBindings(){
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 11 * 2 + 3 + 3;
+	const int bindingCount = 12 * 2 + 3 + 3;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -101,7 +101,8 @@ void deoxrDPHTCViveFocus3ControllerInteraction::pSuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
+		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/click" );
 		pAdd( b, deVROpenXR::eiaGripTouch, basePath + "/input/squeeze/touch" );
@@ -143,7 +144,7 @@ void deoxrDPHTCViveFocus3ControllerInteraction::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "htcvfc_" );
+	pCreateDevice( device, left, "htcvfc_", true );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

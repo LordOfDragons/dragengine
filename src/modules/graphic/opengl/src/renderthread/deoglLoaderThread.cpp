@@ -254,12 +254,12 @@ void deoglLoaderThread::pInit(){
 	deoglRTContext &context = pRenderThread.GetContext();
 	#endif
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( context.GetDisplay(),
 			context.GetActiveRRenderWindow()->GetWindow(), context.GetLoaderContext() ) );
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	if( eglMakeCurrent( context.GetDisplay(), context.GetSurface(),
 	context.GetSurface(), context.GetLoaderContext() ) == EGL_FALSE ){
 		DETHROW( deeInvalidParam );
@@ -280,11 +280,11 @@ void deoglLoaderThread::pInit(){
 }
 
 void deoglLoaderThread::pCleanUp(){
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pRenderThread.GetContext().GetDisplay(), None, nullptr ) );
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 		eglMakeCurrent( pRenderThread.GetContext().GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
 	#endif
 	

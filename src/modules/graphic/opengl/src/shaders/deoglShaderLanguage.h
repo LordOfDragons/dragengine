@@ -37,7 +37,7 @@ class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglRenderThread;
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 class deoglShaderBindingList;
 #endif
 
@@ -107,7 +107,7 @@ private:
 	void pCacheSaveShader( const deoglShaderProgram &program, const deoglShaderCompiled &compiled );
 	void pPreparePreprocessor( const deoglShaderDefines &defines );
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data, const deoglShaderBindingList *outputList = NULL );
 	#else
 	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data );

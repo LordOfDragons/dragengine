@@ -68,4 +68,18 @@
 	-->
 	<boolean path='defaultEnableGI'>true</boolean>
 	
+	
+	<!--
+	Default value for EnableAuralization parameter in microphones. Microphone and
+	CameraDirector use this value as default value for the EnableAuralization property.
+	
+	If true enables auralization if supported.
+	
+	This parameter exists since version 1.23 . The default value is true to be
+	consistent with version prior to 1.23 . Since version 1.23 new created projects
+	have this value set to true. You have to set this value to false here to change
+	the default behavior of all microphones created without having to do it manually
+	-->
+	<boolean path='defaultEnableAuralization'>true</boolean>
+	
 </parameterTree>

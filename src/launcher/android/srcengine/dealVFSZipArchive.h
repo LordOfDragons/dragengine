@@ -234,6 +234,8 @@ public:
 	 */
 	virtual bool CanDeleteFile( const decPath &path );
 	
+	
+	
 	/**
 	 * \brief Open file for reading.
 	 * 
@@ -269,8 +271,7 @@ public:
 	 * 
 	 * All found files and directories are added to the file listing.
 	 */
-	virtual void SearchFiles( const deVirtualFileSystem &vfs, const decPath &directory,
-		deFileSearchVisitor &visitor );
+	virtual void SearchFiles( const decPath &directory, deContainerFileSearch &searcher );
 	
 	/**
 	 * \brief Type of file.

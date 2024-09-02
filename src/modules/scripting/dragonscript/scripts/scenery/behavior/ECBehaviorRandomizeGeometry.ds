@@ -1,0 +1,196 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to randomize position, rotation and scaling.
+ * \version 1.23
+ * 
+ * This behavior is typically used to add variation to multiple instances of the
+ * same element added to a game world by randomizing the position, rotation
+ * and scaling before creating the element.
+ * 
+ * This behavior uses \ref BehaviorPrepareStub to apply the changes before the
+ * element is actually created. No randomizing is done if the element is created
+ * while loading a game world.
+ * 
+ * Default property prefix is "randomizeGeometry."
+ */
+class ECBehaviorRandomizeGeometry extends DefaultECBehavior implements BehaviorPrepareStub
+	var ECPBoolean pRandomize
+	var ECPVector pMinTranslate, pMaxTranslate
+	var ECPVector pMinRotate, pMaxRotate
+	var ECPFloat pMinScale, pMaxScale
+	
+	
+	/** \brief Create behavior. */
+	func new(BehaviorElementClass eclass) super(eclass)
+		var String prefix = "randomizeGeometry."
+		
+		pRandomize = ECPBoolean.new(prefix + "randomize", true)
+		eclass.addProperty(pRandomize)
+		
+		pMinTranslate = ECPVector.new(prefix + "minTranslate", Vector.new())
+		eclass.addProperty(pMinTranslate)
+		
+		pMaxTranslate = ECPVector.new(prefix + "maxTranslate", Vector.new())
+		eclass.addProperty(pMaxTranslate)
+		
+		pMinRotate = ECPVector.new(prefix + "minRotate", Vector.new())
+		eclass.addProperty(pMinRotate)
+		
+		pMaxRotate = ECPVector.new(prefix + "maxRotate", Vector.new())
+		eclass.addProperty(pMaxRotate)
+		
+		pMinScale = ECPFloat.new(prefix + "minScale", 1, 0)
+		eclass.addProperty(pMinScale)
+		
+		pMaxScale = ECPFloat.new(prefix + "maxScale", 1, 0)
+		eclass.addProperty(pMaxScale)
+		
+		eclass.addBehavior(this)
+		eclass.addPrepareStubBehavior(this)
+	end
+	
+	
+	/**
+	 * \brief Randomize property.
+	 * 
+	 * Property name is "randomize". Default value is true.
+	 */
+	func ECPBoolean getRandomize()
+		return pRandomize
+	end
+	
+	/**
+	 * \brief Minimum translation property.
+	 * 
+	 * Translation is randomly chosen between minimum and maximum translation.
+	 * Property name is "minTranslate". Default value is 0-Vector.
+	 */
+	func ECPVector getMinTranslate()
+		return pMinTranslate
+	end
+	
+	/**
+	 * \brief Maximum translation property.
+	 * 
+	 * Translation is randomly chosen between minimum and maximum translation.
+	 * Property name is "maxTranslate". Default value is 0-Vector.
+	 */
+	func ECPVector getMaxTranslate()
+		return pMaxTranslate
+	end
+	
+	/**
+	 * \brief Minimum rotation in degrees property.
+	 * 
+	 * Rotation is randomly chosen between minimum and maximum rotation.
+	 * Property name is "minRotate". Default value is 0-Vector.
+	 */
+	func ECPVector getMinRotate()
+		return pMinRotate
+	end
+	
+	/**
+	 * \brief Maximum rotation in degrees property.
+	 * 
+	 * Rotation is randomly chosen between minimum and maximum rotation.
+	 * Property name is "maxRotate". Default value is 0-Vector.
+	 */
+	func ECPVector getMaxRotate()
+		return pMaxRotate
+	end
+	
+	/**
+	 * \brief Minimum scaling property.
+	 * 
+	 * Scaling is randomly chosen between minimum and maximum scaling.
+	 * Property name is "minScale". Default value is 0. Minimum value is 1.
+	 */
+	func ECPFloat getMinScale()
+		return pMinScale
+	end
+	
+	/**
+	 * \brief Maximum scaling property.
+	 * 
+	 * Scaling is randomly chosen between minimum and maximum scaling.
+	 * Property name is "maxScale". Default value is 1. Minimum value is 1.
+	 */
+	func ECPFloat getMaxScale()
+		return pMaxScale
+	end
+	
+	
+	/**
+	 * \brief Prepare stub.
+	 * 
+	 * Called by \ref BehaviorElementClass#createAndAddElement(StubElement,GameWorld) with
+	 * loading set to false and
+	 * \ref BehaviorElementClass#loadAndAddElement(PersistencyEnvironment,StubElement,FileReader,GameWorld)
+	 * with loading set to true.
+	 */
+	func void prepareStub(StubElement stub, GameWorld gameWorld, bool loading)
+		if loading or not pRandomize.getValue(stub)
+			return
+		end
+		
+		var CodecPropertyString codec = stub.getClass().getCodecPropertyString()
+		
+		var Vector mint = pMinTranslate.getVector(stub, codec)
+		var Vector maxt = pMaxTranslate.getVector(stub, codec)
+		if not mint.isZero() or not maxt.isZero()
+			stub.setPosition(stub.getPosition() + DVector.new(\
+				DEMath.random(mint.getX(), maxt.getX()),\
+				DEMath.random(mint.getY(), maxt.getY()),\
+				DEMath.random(mint.getZ(), maxt.getZ())))
+		end
+		
+		var Vector minr = pMinRotate.getVector(stub, codec)
+		var Vector maxr = pMaxRotate.getVector(stub, codec)
+		if not minr.isZero() or not maxr.isZero()
+			stub.setRotation(stub.getRotation() + Vector.new(\
+				DEMath.random(minr.getX(), maxr.getX()),\
+				DEMath.random(minr.getY(), maxr.getY()),\
+				DEMath.random(minr.getZ(), maxr.getZ())))
+		end
+		
+		var float mins = pMinScale.getValue(stub)
+		var float maxs = pMaxScale.getValue(stub)
+		stub.setScaling(stub.getScaling() * DEMath.random(mins, maxs))
+	end
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return DefaultECBehaviorInstance.new(element)
+	end
+end

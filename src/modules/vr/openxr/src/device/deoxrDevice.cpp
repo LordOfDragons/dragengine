@@ -80,8 +80,16 @@ void deoxrDevice::SetActionPose( deoxrAction *action ){
 	pActionPose = action;
 }
 
+void deoxrDevice::SetActionPoseOrientation( deoxrAction *action ){
+	pActionPoseOrientation = action;
+}
+
 void deoxrDevice::SetSpacePose( deoxrSpace *space ){
 	pSpacePose = space;
+}
+
+void deoxrDevice::SetSpacePoseOrientation( deoxrSpace *space ){
+	pSpacePoseOrientation = space;
 }
 
 void deoxrDevice::SetType( deInputDevice::eDeviceTypes type ){
@@ -470,26 +478,23 @@ void deoxrDevice::TrackStates(){
 	}
 	
 	if( pActionPose && pSpacePose ){
-		XrActionStateGetInfo getInfo;
-		memset( &getInfo, 0, sizeof( getInfo ) );
+		XrActionStateGetInfo getInfo{};
 		getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
 		getInfo.action = pActionPose->GetAction();
 		getInfo.subactionPath = pSubactionPath;
 		
-		XrActionStatePose state;
-		memset( &state, 0, sizeof( state ) );
+		XrActionStatePose state{};
 		state.type = XR_TYPE_ACTION_STATE_POSE;
 		
 		void **nextState = &state.next;
-
-		XrEyeGazeSampleTimeEXT sampleTime;
+		
+		XrEyeGazeSampleTimeEXT sampleTime{};
 		if( pType == deInputDevice::edtVREyeTracker ){
-			memset( &sampleTime, 0, sizeof( sampleTime ) );
 			sampleTime.type = XR_TYPE_EYE_GAZE_SAMPLE_TIME_EXT;
 			*nextState = &sampleTime;
 			nextState = &sampleTime.next;
 		}
-
+		
 		if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
 		&& state.isActive == XR_TRUE ){
 			if( pType == deInputDevice::edtVREyeTracker ){
@@ -500,12 +505,29 @@ void deoxrDevice::TrackStates(){
 				// using local space requires locating space without converting coordinate system
 				pSpacePose->LocateSpaceEye( session.GetPredictedDisplayTime(),
 					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
-
+				
 			}else{
 				pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
 					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
+				
+				if( pActionPoseOrientation && pSpacePoseOrientation ){
+					getInfo = {};
+					getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
+					getInfo.action = pActionPoseOrientation->GetAction();
+					getInfo.subactionPath = pSubactionPath;
+					
+					state = {};
+					state.type = XR_TYPE_ACTION_STATE_POSE;
+					
+					if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
+					&& state.isActive == XR_TRUE ){
+						decVector ignore;
+						pSpacePoseOrientation->LocateSpace( session.GetSpace(),
+							session.GetPredictedDisplayTime(), ignore, pPoseOrientation );
+					}
+				}
 			}
-
+			
 			pPoseDevice.SetPosition( pPosePosition );
 			pPoseDevice.SetOrientation( pPoseOrientation );
 			pPoseDevice.SetLinearVelocity( pPoseLinearVelocity );
@@ -548,14 +570,14 @@ void deoxrDevice::TrackStates(){
 		pFaceTracker->Update();
 	}
 	
-	int i, count = pButtons.GetCount();
-	for( i=0; i<count; i++ ){
-		GetButtonAt( i )->TrackState();
-	}
-	
-	count = pAxes.GetCount();
+	int i, count = pAxes.GetCount();
 	for( i=0; i<count; i++ ){
 		GetAxisAt( i )->TrackState();
+	}
+	
+	count = pButtons.GetCount();
+	for( i=0; i<count; i++ ){
+		GetButtonAt( i )->TrackState();
 	}
 }
 

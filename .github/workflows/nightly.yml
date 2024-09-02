@@ -4,6 +4,12 @@ on:
   schedule:
     - cron:  '0 3 * * *'
   workflow_dispatch:
+    inputs:
+      codeql:
+        description: 'Run CodeQL'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build_linux:
@@ -14,6 +20,7 @@ jobs:
       artifactArchive: archives-linux
       artifactInstaller: installers-linux
       artifactTools: tools-crossplatform
+      codeql: ${{ !contains(inputs.codeql, 'false') }}
   
   # build_windows_mingw:
   #   uses: ./.github/workflows/build_windows.yml
@@ -43,6 +50,20 @@ jobs:
       releaseVersion: nightly
       buildVersion: 9999
       artifactInstaller: installers-linux-ci
+  
+  build_android64:
+    uses: ./.github/workflows/build_android_aarch64.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: 9999
+      artifactArchive: archives-android64
+  
+  build_android32:
+    uses: ./.github/workflows/build_android_armv7.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: 9999
+      artifactArchive: archives-android32
   
   build_live:
     needs: [build_linux, build_windows]

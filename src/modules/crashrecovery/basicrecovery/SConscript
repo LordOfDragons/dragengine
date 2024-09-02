@@ -6,7 +6,7 @@ envModule = parent_env.Clone()
 
 buildModule = envModule[ 'build_cr_basic' ] != TernaryVariableNo
 parent_report[ 'build Basic Crash-Recovery Module' ] = 'yes' if buildModule else 'no'
-if not buildModule:
+if not buildModule or 'lib_fox' not in parent_targets:
 	Return()
 
 libs = []
