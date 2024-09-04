@@ -57,5 +57,4 @@ rm -f build.log
 rm -rf .sconf_temp
 rm -f .sconsign.dblite
 
-dpkg-source --commit
 debuild -S -sa
