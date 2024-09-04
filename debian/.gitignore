@@ -14,3 +14,4 @@ debhelper-build-stamp
 files
 libdelauncher-dev
 libdelauncher1
+source/include-binaries
