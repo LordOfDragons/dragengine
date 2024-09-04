@@ -30,6 +30,7 @@ echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
 rm ../dragengine_*.orig.tar.gz
 
 gbp export-orig --upstream-tree=debian --force-create
+git clean -dfx
 
 # gbp does not include the downloaded files in the source archive. fix it
 FILE=`cd .. && dir -1 dragengine_*.orig.tar.gz`
@@ -50,4 +51,3 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
 gzip ../dragengine_*.orig.tar
 
 debuild -S -sa
-
