@@ -1,3 +1,5 @@
+#/bin/bash
+
 sudo apt update -y -q \
   && sudo apt-get -y -q install software-properties-common \
   && sudo add-apt-repository -y -u ppa:rpluess/dragondreams \
@@ -25,6 +27,8 @@ echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
 echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
 echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
 
+rm ../dragengine_*.orig.tar.gz
+
 gbp export-orig --upstream-tree=debian --force-create
 
 # gbp does not include the downloaded files in the source archive. fix it
@@ -44,3 +48,6 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   `dir -1 extern/steamsdk/steamsdk160.tar.xz` \
   extern/mingw/mingw_stdthreads.tar.bz2
 gzip ../dragengine_*.orig.tar
+
+debuild -S -sa
+
