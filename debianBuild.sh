@@ -8,6 +8,8 @@ sudo apt update -y -q \
 
 export SCONSFLAGS="-j 8"
 
+git clean -dfx
+
 scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
   lib_modio_fetch lib_openal_fetch lib_openxr_fetch \
   lib_steamsdk_fetch
@@ -48,6 +50,11 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   `dir -1 extern/steamsdk/steamsdk160.tar.xz` \
   extern/mingw/mingw_stdthreads.tar.bz2
 gzip ../dragengine_*.orig.tar
+
+find -type d -name "__pycache__" | xargs -- rm -rf
+rm -f config.log
+rm -rf .sconf_temp
+rm -f .sconsign.dblite
 
 dpkg-source --commit
 debuild -S -sa
