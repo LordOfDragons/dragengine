@@ -25,4 +25,22 @@ echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
 echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
 echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
 
+gbp export-orig --upstream-tree=debian --force-create
 
+# gbp does not include the downloaded files in the source archive. fix it
+FILE=`cd .. && dir -1 dragengine_*.orig.tar.gz`
+FILENOEXT=`echo $FILE | sed -e "s/.orig.tar.gz//" | sed -e "s/_/-/"`
+
+gunzip ../dragengine_*.orig.tar.gz
+tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
+  extern/eossdk/eossdk.zip \
+  extern/eossdk/eossdk_bin_linux.tar.xz \
+  `dir -1 extern/fox/fox-*.tar.bz2` \
+  `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` \
+  extern/modio/modio-sdk-ext.tar.xz \
+  extern/modio/modio-sdk.tar.xz \
+  `dir -1 extern/openal/openal-soft-*.tar.bz2` \
+  `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` \
+  `dir -1 extern/steamsdk/steamsdk160.tar.xz` \
+  extern/mingw/mingw_stdthreads.tar.bz2
+gzip ../dragengine_*.orig.tar
