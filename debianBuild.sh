@@ -59,3 +59,5 @@ rm -rf .sconf_temp
 rm -f .sconsign.dblite
 
 debuild -S -sa
+
+dput ppa:rpluess/dragondreams ../dragengine_*_source.changes
