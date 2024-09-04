@@ -30,6 +30,7 @@ echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
 echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
 
 rm ../dragengine_*.orig.tar.gz
+rm -rf ../dragengine_*-ppa*
 
 gbp export-orig --upstream-tree=debian --force-create
 
