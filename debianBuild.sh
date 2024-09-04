@@ -53,6 +53,7 @@ gzip ../dragengine_*.orig.tar
 
 find -type d -name "__pycache__" | xargs -- rm -rf
 rm -f config.log
+rm -f build.log
 rm -rf .sconf_temp
 rm -f .sconsign.dblite
 
