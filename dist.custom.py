@@ -131,6 +131,15 @@
 # 
 # with_system_soundtouch = 'auto'
 #   Use System soundtouch
+# 
+# with_system_openal = 'no'
+#   Use System OpenAL. Use only if System OpenAL is at least version 1.23.1
+# 
+# with_system_openvr = 'no'
+#   Use System OpenVR
+# 
+# with_system_openxr = 'no'
+#   Use System OpenXR
 
 # When compiling OpenAL what backends are required.
 # 

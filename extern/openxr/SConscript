@@ -36,6 +36,32 @@ else:
 	libLinkName = 'libopenxr_loader'
 	libpath = [envLibrary.Dir('lib')]
 
+# check if system openxr is present
+hasSystemOpenXR = False
+
+conf = envLibrary.Configure()
+if envLibrary['with_system_openxr'] != TernaryVariableNo:
+	hasSystemOpenXR = conf.CheckLibWithHeader(libLinkName,
+		'openxr/openxr.h', 'c++', 'xrCreateInstance(nullptr,nullptr);')
+conf.Finish()
+
+if not hasSystemOpenXR and envLibrary['with_system_openxr'] == TernaryVariableYes:
+	Exit('Requested to use system OpenXR but no usable OpenXR found.')
+
+parent_report['use system OpenXR'] = 'yes' if hasSystemOpenXR else 'no'
+
+if hasSystemOpenXR:
+	parent_targets['lib_openxr'] = {
+		'name' : 'Internal openxr library',
+		'cpppath' : [],
+		'cppflags' : [],
+		'libpath' : [],
+		'libs' : [libLinkName],
+		'runtimelibs' : [],
+		'depends' : []}
+	Return()
+
+# build openxr
 nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'openxr', 'lib_openxr_fetch')
 
 def openxrBuild(target, source, env):
