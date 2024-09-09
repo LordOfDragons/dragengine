@@ -50,11 +50,11 @@ if [ buildPackage ]; then
   # this is no more working since noble. the build is just not started.
   # debian crap again at it's best U_U
   #gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
-  ./debian/rules override_dh_auto_clean
-  ./debian/rules override_dh_auto_build
-  ./debian/rules override_dh_auto_install
-  ./debian/rules override_dh_shlibdeps
-  ./debian/rules override_dh_auto_clean
+  ./debian/rules override_dh_auto_clean || exit 1
+  ./debian/rules override_dh_auto_build || exit 1
+  ./debian/rules override_dh_auto_install || exit 1
+  ./debian/rules override_dh_shlibdeps || exit 1
+  ./debian/rules override_dh_auto_clean || exit 1
 else
   gbp export-orig --upstream-tree=debian --force-create || exit 1
 fi
