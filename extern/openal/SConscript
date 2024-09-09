@@ -38,7 +38,7 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), '
 
 # check if system openal is present
 hasSystemOpenAL = False
-""" force false due to annoying limitations
+
 conf = envLibrary.Configure()
 if envLibrary['with_system_openal'] != TernaryVariableNo:
 	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', 'alEnable(0);')
@@ -46,7 +46,6 @@ conf.Finish()
 
 if not hasSystemOpenAL and envLibrary['with_system_openal'] == TernaryVariableYes:
 	Exit('Requested to use system OpenAL but no usable OpenAL found.')
-"""
 
 libs = [libLinkName]
 #libs.extend(parent_targets['lib_sndio']['libs'])
