@@ -1,18 +1,20 @@
 #/bin/bash
 
-sudo apt update -y -q \
-  && sudo apt-get -y -q install software-properties-common \
-  && sudo add-apt-repository -y -u ppa:rpluess/dragondreams \
-  && sudo apt-get -y -q upgrade \
-  && sudo apt-get -y -q install libdscript-dev
+umask 0
+cd /sources/dragengine
+
+apt update -y -q \
+  && apt-get -y -q install software-properties-common \
+  && add-apt-repository -y -u ppa:rpluess/dragondreams \
+  && apt-get -y -q upgrade \
+  && apt-get -y -q install libdscript-dev
 
 export SCONSFLAGS="-j 8"
 
 git clean -dfx
 
 scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
-  lib_modio_fetch lib_openal_fetch lib_openxr_fetch \
-  lib_steamsdk_fetch
+  lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch
 
 FILE=debian/source/include-binaries
 echo "detesting/data/content/model/box/box2.demodel" >$FILE
@@ -24,13 +26,12 @@ echo `dir -1 extern/fox/fox-*.tar.bz2` >>$FILE
 echo `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` >>$FILE
 echo "extern/modio/modio-sdk-ext.tar.xz" >>$FILE
 echo "extern/modio/modio-sdk.tar.xz" >>$FILE
-echo `dir -1 extern/openal/openal-soft-*.tar.bz2` >>$FILE
 echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
 echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
 echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
 
-rm ../dragengine_*.orig.tar.gz
-rm -rf ../dragengine_*-ppa*
+rm -f /sources/dragengine_*.orig.tar.gz
+rm -rf /sources/dragengine_*-ppa*
 
 gbp export-orig --upstream-tree=debian --force-create
 
@@ -46,7 +47,6 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` \
   extern/modio/modio-sdk-ext.tar.xz \
   extern/modio/modio-sdk.tar.xz \
-  `dir -1 extern/openal/openal-soft-*.tar.bz2` \
   `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` \
   `dir -1 extern/steamsdk/steamsdk160.tar.xz` \
   extern/mingw/mingw_stdthreads.tar.bz2
@@ -60,4 +60,4 @@ rm -f .sconsign.dblite
 
 debuild -S -sa
 
-dput ppa:rpluess/dragondreams ../dragengine_*_source.changes
+dput ppa:rpluess/dragondreams /sources/dragengine_*_source.changes
