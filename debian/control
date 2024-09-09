@@ -29,7 +29,8 @@ Build-Depends: debhelper-compat (= 12),
                libsoundtouch-dev,
                libwebp-dev,
                libwebm-dev,
-               libvpx-dev
+               libvpx-dev,
+               libopenvr-dev
 Standards-Version: 4.1.3
 Homepage: https://dragondreams.ch
 Rules-Requires-Root: no
