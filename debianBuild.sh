@@ -19,6 +19,9 @@ apt update -y -q \
 
 export SCONSFLAGS="-j 8"
 
+# required since noble or git fails
+git config --global --add safe.directory /sources/dragengine
+
 git clean -dfx || exit 1
 
 fetchExternals() {
@@ -58,9 +61,6 @@ cleanScons
 
 rm -rf /sources/dragengine_*.orig.tar.gz
 rm -rf /sources/dragengine_*-ppa*
-
-# required since noble or git fails
-git config --global --add safe.directory /sources/dragengine
 
 if [ $buildPackage = true ]; then
   # this is no more working since noble. the build is just not started.
