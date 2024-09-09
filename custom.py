@@ -9,7 +9,7 @@ with_verbose = 'no'
 ##################################
 with_system_zlib = 'yes'
 with_system_libpng = 'yes'
-with_system_libapng ='yes'
+with_system_libapng ='no'           # ubuntu noble has no animation support
 with_system_libjpeg ='yes'
 with_system_libwebp = 'yes'
 with_system_openal = 'yes'

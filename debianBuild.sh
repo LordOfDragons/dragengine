@@ -14,7 +14,8 @@ export SCONSFLAGS="-j 8"
 git clean -dfx
 
 scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
-  lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch
+  lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch \
+  lib_libapng_fetch
 
 FILE=debian/source/include-binaries
 echo "detesting/data/content/model/box/box2.demodel" >$FILE
@@ -29,6 +30,7 @@ echo "extern/modio/modio-sdk.tar.xz" >>$FILE
 echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
 echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
 echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
+echo `dir -1 extern/libapng/libpng-*tar.bz2` >>$FILE
 
 rm -rf /sources/dragengine_*.orig.tar.gz
 rm -rf /sources/dragengine_*-ppa*
@@ -52,7 +54,8 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   extern/modio/modio-sdk.tar.xz \
   `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` \
   `dir -1 extern/steamsdk/steamsdk160.tar.xz` \
-  extern/mingw/mingw_stdthreads.tar.bz2
+  extern/mingw/mingw_stdthreads.tar.bz2 \
+  `dir -1 extern/libapng/libpng-*tar.bz2`
 gzip ../dragengine_*.orig.tar
 
 find -type d -name "__pycache__" | xargs -- rm -rf
