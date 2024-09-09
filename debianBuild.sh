@@ -46,15 +46,12 @@ rm -rf /sources/dragengine_*-ppa*
 # required since noble or git fails
 git config --global --add safe.directory /sources/dragengine
 
-if [ buildPackage ]; then
+if [ $buildPackage = true ]; then
   # this is no more working since noble. the build is just not started.
-  # debian crap again at it's best U_U
   #gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
-  ./debian/rules override_dh_auto_clean || exit 1
   ./debian/rules override_dh_auto_build || exit 1
   ./debian/rules override_dh_auto_install || exit 1
   ./debian/rules override_dh_shlibdeps || exit 1
-  ./debian/rules override_dh_auto_clean || exit 1
 else
   gbp export-orig --upstream-tree=debian --force-create || exit 1
 fi
@@ -82,6 +79,8 @@ rm -f config.log
 rm -f build.log
 rm -rf .sconf_temp
 rm -f .sconsign.dblite
+
+git clean -dfx || exit 1
 
 debuild -S -sa || exit 1
 
