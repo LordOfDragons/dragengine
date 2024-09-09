@@ -1,5 +1,13 @@
 #/bin/bash
 
+buildPackage=false
+for arg in "$*"; do
+  case "$arg" in
+  --build-package)
+    buildPackage=true ;;
+  esac
+done
+
 umask 0
 cd /sources/dragengine
 
@@ -39,6 +47,11 @@ rm -rf /sources/dragengine_*-ppa*
 git config --global --add safe.directory /sources/dragengine
 
 gbp export-orig --upstream-tree=debian --force-create || exit 1
+
+# test build package if requested
+if [ buildPackage ]; then
+  gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create
+fi
 
 # gbp does not include the downloaded files in the source archive. fix it
 FILE=`cd .. && dir -1 dragengine_*.orig.tar.gz`
