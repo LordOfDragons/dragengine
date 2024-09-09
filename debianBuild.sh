@@ -44,8 +44,17 @@ writeIncludeBinaries() {
   echo `dir -1 extern/libapng/libpng-*tar.bz2` >>$FILE
 }
 
+cleanScons() {
+  find -type d -name "__pycache__" | xargs -- rm -rf
+  rm -f config.log
+  rm -f build.log
+  rm -rf .sconf_temp
+  rm -f .sconsign.dblite
+}
+
 fetchExternals
 writeIncludeBinaries
+cleanScons
 
 rm -rf /sources/dragengine_*.orig.tar.gz
 rm -rf /sources/dragengine_*-ppa*
@@ -81,18 +90,13 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   `dir -1 extern/libapng/libpng-*tar.bz2` || exit 1
 gzip ../dragengine_*.orig.tar || exit 1
 
-find -type d -name "__pycache__" | xargs -- rm -rf
-rm -f config.log
-rm -f build.log
-rm -rf .sconf_temp
-rm -f .sconsign.dblite
-
 git clean -dfx || exit 1
 
 # above clean also kills the prefetched externals and include binaries file.
 # debuild now seems to need this suddenly
 fetchExternals
 writeIncludeBinaries
+cleanScons
 
 debuild -S -sa || exit 1
 
