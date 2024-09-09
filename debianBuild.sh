@@ -19,14 +19,6 @@ apt update -y -q \
 
 export SCONSFLAGS="-j 8"
 
-scons -c || exit 1
-
-find -type d -name "__pycache__" | xargs -- rm -rf
-rm -f config.log
-rm -f build.log
-rm -rf .sconf_temp
-rm -f .sconsign.dblite
-
 git clean -dfx || exit 1
 
 scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
@@ -55,7 +47,7 @@ rm -rf /sources/dragengine_*-ppa*
 git config --global --add safe.directory /sources/dragengine
 
 if [ buildPackage ]; then
-  gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
+  gbp buildpackage --git-debian-branch=debian --git-ignore-new || exit 1
 else
   gbp export-orig --upstream-tree=debian --force-create || exit 1
 fi
