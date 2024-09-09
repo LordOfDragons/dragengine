@@ -46,11 +46,10 @@ rm -rf /sources/dragengine_*-ppa*
 # required since noble or git fails
 git config --global --add safe.directory /sources/dragengine
 
-gbp export-orig --upstream-tree=debian --force-create || exit 1
-
-# test build package if requested
 if [ buildPackage ]; then
-  gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create
+  gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
+else
+  gbp export-orig --upstream-tree=debian --force-create || exit 1
 fi
 
 # gbp does not include the downloaded files in the source archive. fix it
