@@ -21,24 +21,31 @@ export SCONSFLAGS="-j 8"
 
 git clean -dfx || exit 1
 
-scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
-  lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch \
-  lib_libapng_fetch || exit 1
+fetchExternals() {
+  scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
+    lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch \
+    lib_libapng_fetch || exit 1
+}
 
-FILE=debian/source/include-binaries
-echo "detesting/data/content/model/box/box2.demodel" >$FILE
-echo "detesting/data/content/model/box/box.demodel" >>$FILE
-echo "detesting/data/content/image/icon64.png" >>$FILE
-echo "extern/eossdk/eossdk.zip" >>$FILE
-echo "extern/eossdk/eossdk_bin_linux.tar.xz" >>$FILE
-echo `dir -1 extern/fox/fox-*.tar.bz2` >>$FILE
-echo `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` >>$FILE
-echo "extern/modio/modio-sdk-ext.tar.xz" >>$FILE
-echo "extern/modio/modio-sdk.tar.xz" >>$FILE
-echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
-echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
-echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
-echo `dir -1 extern/libapng/libpng-*tar.bz2` >>$FILE
+writeIncludeBinaries() {
+  FILE=debian/source/include-binaries
+  echo "detesting/data/content/model/box/box2.demodel" >$FILE
+  echo "detesting/data/content/model/box/box.demodel" >>$FILE
+  echo "detesting/data/content/image/icon64.png" >>$FILE
+  echo "extern/eossdk/eossdk.zip" >>$FILE
+  echo "extern/eossdk/eossdk_bin_linux.tar.xz" >>$FILE
+  echo `dir -1 extern/fox/fox-*.tar.bz2` >>$FILE
+  echo `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` >>$FILE
+  echo "extern/modio/modio-sdk-ext.tar.xz" >>$FILE
+  echo "extern/modio/modio-sdk.tar.xz" >>$FILE
+  echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
+  echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
+  echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
+  echo `dir -1 extern/libapng/libpng-*tar.bz2` >>$FILE
+}
+
+fetchExternals
+writeIncludeBinaries
 
 rm -rf /sources/dragengine_*.orig.tar.gz
 rm -rf /sources/dragengine_*-ppa*
@@ -81,6 +88,11 @@ rm -rf .sconf_temp
 rm -f .sconsign.dblite
 
 git clean -dfx || exit 1
+
+# above clean also kills the prefetched externals and include binaries file.
+# debuild now seems to need this suddenly
+fetchExternals
+writeIncludeBinaries
 
 debuild -S -sa || exit 1
 
