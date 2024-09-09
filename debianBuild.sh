@@ -21,6 +21,12 @@ export SCONSFLAGS="-j 8"
 
 scons -c || exit 1
 
+find -type d -name "__pycache__" | xargs -- rm -rf
+rm -f config.log
+rm -f build.log
+rm -rf .sconf_temp
+rm -f .sconsign.dblite
+
 git clean -dfx || exit 1
 
 scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
