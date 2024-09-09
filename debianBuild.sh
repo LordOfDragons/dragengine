@@ -19,6 +19,8 @@ apt update -y -q \
 
 export SCONSFLAGS="-j 8"
 
+scons -c || exit 1
+
 git clean -dfx || exit 1
 
 scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
