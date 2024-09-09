@@ -30,8 +30,11 @@ echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
 echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
 echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
 
-rm -f /sources/dragengine_*.orig.tar.gz
+rm -rf /sources/dragengine_*.orig.tar.gz
 rm -rf /sources/dragengine_*-ppa*
+
+# required since noble or git fails
+git config --global --add safe.directory /sources/dragengine
 
 gbp export-orig --upstream-tree=debian --force-create
 
