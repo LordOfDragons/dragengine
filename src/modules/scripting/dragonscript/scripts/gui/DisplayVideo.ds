@@ -215,6 +215,22 @@ class DisplayVideo extends Widget
 		pVideoPlayer.setLooping(looping)
 	end
 	
+	/**
+	 * \brief Play speed.
+	 * \version 1.24
+	 */
+	func float getPlaySpeed()
+		return pVideoPlayer.getPlaySpeed()
+	end
+	
+	/**
+	 * \brief Set play speed.
+	 * \version 1.24
+	 */
+	func void setPlaySpeed(float playSpeed)
+		pVideoPlayer.setPlaySpeed(playSpeed)
+	end
+	
 	/** \brief Start playback. */
 	func void play()
 		if pVideoPlayer.isPlaying()
@@ -293,6 +309,30 @@ class DisplayVideo extends Widget
 	func void advancePlayPosition(float seconds)
 		pVideoPlayer.setPlayPosition(DEMath.normalize(\
 			pVideoPlayer.getPlayPosition() + seconds, pVideoPlayer.getPlayTo()))
+	end
+	
+	/**
+	 * \brief Start play position.
+	 * \version 1.24
+	 */
+	func float getPlayFrom()
+		return pVideoPlayer.getPlayFrom()
+	end
+	
+	/**
+	 * \brief End play position.
+	 * \version 1.24
+	 */
+	func float getPlayTo()
+		return pVideoPlayer.getPlayTo()
+	end
+	
+	/**
+	 * \brief Set play range.
+	 * \version 1.24
+	 */
+	func void setPlayRange(float playFrom, float playTo)
+		pVideoPlayer.setPlayRange(playFrom, playTo)
 	end
 	
 	
