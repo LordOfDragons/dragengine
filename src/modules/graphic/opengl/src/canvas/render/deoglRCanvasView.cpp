@@ -162,7 +162,8 @@ void deoglRCanvasView::RenderRenderTarget( const deoglRenderPlanMasked *renderPl
 	// each other out resulting in an identity transformation. this way no second code path is
 	// required.
 	context.SetTransform( GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
-	context.UpdateTransformMask();
+	//context.UpdateTransformMask();
+	context.SetTCTransformMask( *pRenderTarget );
 	
 	GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
 	

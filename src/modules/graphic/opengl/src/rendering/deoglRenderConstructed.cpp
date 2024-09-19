@@ -196,7 +196,7 @@ void deoglRenderConstructed::DrawNodeShape( const deoglRenderCanvasContext &cont
 		context.GetTCClampMaximum().x, context.GetTCClampMaximum().y );
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, context.GetTransform() );
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	shader.SetParameterFloat( spcGamma, node.GetGamma(), node.GetGamma(), node.GetGamma(), 1.0f );
 	
 	deoglSharedVBOBlock &vboBlock = *node.GetVBOBlock();
@@ -261,7 +261,7 @@ void deoglRenderConstructed::DrawNodeImage( const deoglRenderCanvasContext &cont
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, node.GetTCTransform() );
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
 	shader.SetParameterFloat( spcGamma, node.GetGamma(), node.GetGamma(), node.GetGamma(), 1.0f );
 	
@@ -342,7 +342,7 @@ void deoglRenderConstructed::DrawNodeText( const deoglRenderCanvasContext &conte
 		context.GetTCClampMinimum().x, context.GetTCClampMinimum().y,
 		context.GetTCClampMaximum().x, context.GetTCClampMaximum().y );
 	
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	
 	// render text
 	const deoglRFont::sGlyph * const oglGlyphs = font->GetGlyphs();
