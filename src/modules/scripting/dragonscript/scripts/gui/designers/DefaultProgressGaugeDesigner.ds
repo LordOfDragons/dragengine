@@ -28,14 +28,14 @@ pin Dragengine.Scenery
 
 
 /**
- * \brief Default implementation of \ref WidgetDesigner for \ref ProgressDial.
+ * \brief Default implementation of \ref WidgetDesigner for \ref ProgressGauge.
  */
-class DefaultProgressDialDesigner extends DefaultWidgetDesigner
+class DefaultProgressGaugeDesigner extends DefaultWidgetDesigner
 	/** \brief Design for particular widget state. */
-	public class ProgressDialStateDesign extends StateDesign
+	public class ProgressGaugeStateDesign extends StateDesign
 		var Boolean pShowPercentageLabel
 		var Float pBlendWidth
-		var CanvasCreator pCreatorDial, pCreatorBlend
+		var CanvasCreator pCreatorGauge, pCreatorBlend
 		
 		
 		
@@ -44,10 +44,10 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 		end
 		
 		/** \brief Create copy of state design. */
-		func new(ProgressDialStateDesign stateDesign) super(stateDesign)
+		func new(ProgressGaugeStateDesign stateDesign) super(stateDesign)
 			pShowPercentageLabel = stateDesign.pShowPercentageLabel
 			pBlendWidth = stateDesign.pBlendWidth
-			pCreatorDial = stateDesign.pCreatorDial
+			pCreatorGauge = stateDesign.pCreatorGauge
 			pCreatorBlend = stateDesign.pCreatorBlend
 		end
 		
@@ -73,14 +73,14 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 			pBlendWidth = width
 		end
 		
-		/** \brief Canvas creator for dial. */
-		func CanvasCreator getCreatorDial()
-			return pCreatorDial
+		/** \brief Canvas creator for gauge. */
+		func CanvasCreator getCreatorGauge()
+			return pCreatorGauge
 		end
 		
-		/** \brief Set canvas creator for dial. */
-		func void setCreatorDial(CanvasCreator creator)
-			pCreatorDial = creator
+		/** \brief Set canvas creator for gauge. */
+		func void setCreatorGauge(CanvasCreator creator)
+			pCreatorGauge = creator
 		end
 		
 		/** \brief Canvas creator for blend. */
@@ -107,7 +107,7 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 		 * | padding | BorderSize | setPadding |
 		 * | showPercentage | bool | setShowPercentage |
 		 * | blendWidth | float | setBlendWidth |
-		 * | dial | CanvasCreator | setCreatorDial |
+		 * | gauge | CanvasCreator | setCreatorGauge |
 		 * | blend | CanvasCreator | setCreatorBlend |
 		 */
 		func void setParameter(String name, Object value)
@@ -117,8 +117,8 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 			elif name.equals("blendWidth")
 				setBlendWidth(Float.new(value cast float))
 				
-			elif name.equals("dial")
-				setCreatorDial(value cast CanvasCreator)
+			elif name.equals("gauge")
+				setCreatorGauge(value cast CanvasCreator)
 				
 			elif name.equals("blend")
 				setCreatorBlend(value cast CanvasCreator)
@@ -131,13 +131,13 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 		
 		
 		func DefaultWidgetDesigner.StateDesign copyDesign()
-			return ProgressDialStateDesign.new(this)
+			return ProgressGaugeStateDesign.new(this)
 		end
 		
 		func void merge(DefaultWidgetDesigner.StateDesign state)
 			super.merge(state)
 			
-			var ProgressDialStateDesign pdstate = state cast ProgressDialStateDesign
+			var ProgressGaugeStateDesign pdstate = state cast ProgressGaugeStateDesign
 			
 			if pShowPercentageLabel != null
 				pdstate.pShowPercentageLabel = pShowPercentageLabel
@@ -145,8 +145,8 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 			if pBlendWidth != null
 				pdstate.pBlendWidth = pBlendWidth
 			end
-			if pCreatorDial != null
-				pdstate.pCreatorDial = pCreatorDial
+			if pCreatorGauge != null
+				pdstate.pCreatorGauge = pCreatorGauge
 			end
 			if pCreatorBlend != null
 				pdstate.pCreatorBlend = pCreatorBlend
@@ -156,14 +156,14 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 		func void apply(Widget widget)
 			super.apply(widget)
 			
-			var ProgressDial pd = widget cast ProgressDial
+			var ProgressGauge pd = widget cast ProgressGauge
 			if pShowPercentageLabel != null
 				pd.setShowPercentage(pShowPercentageLabel.value())
 			end
 			if pBlendWidth != null
 				pd.setBlendWidth(pBlendWidth.value())
 			end
-			pd.setDialCanvasCreator(pCreatorDial)
+			pd.setGaugeCanvasCreator(pCreatorGauge)
 			pd.setBlendCanvasCreator(pCreatorBlend)
 		end
 	end
@@ -172,42 +172,42 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 	
 	/** \brief Create new progress bar designer. */
 	func new()
-		setDesignNormal(ProgressDialStateDesign.new())
-		setDesignDisabled(ProgressDialStateDesign.new())
-		setDesignFocused(ProgressDialStateDesign.new())
-		setDesignHover(ProgressDialStateDesign.new())
-		setDesignFocusedHover(ProgressDialStateDesign.new())
+		setDesignNormal(ProgressGaugeStateDesign.new())
+		setDesignDisabled(ProgressGaugeStateDesign.new())
+		setDesignFocused(ProgressGaugeStateDesign.new())
+		setDesignHover(ProgressGaugeStateDesign.new())
+		setDesignFocusedHover(ProgressGaugeStateDesign.new())
 	end
 	
 	/** \brief Create copy of widget designer. */
-	func new(DefaultProgressDialDesigner designer) super(designer)
+	func new(DefaultProgressGaugeDesigner designer) super(designer)
 	end
 	
 	
 	
 	/** \brief Design for normal state. */
-	func ProgressDialStateDesign getProgressDialDesignNormal()
-		return getDesignNormal() cast ProgressDialStateDesign
+	func ProgressGaugeStateDesign getProgressGaugeDesignNormal()
+		return getDesignNormal() cast ProgressGaugeStateDesign
 	end
 	
 	/** \brief Design for disabled state. */
-	func ProgressDialStateDesign getProgressDialDesignDisabled()
-		return getDesignDisabled() cast ProgressDialStateDesign
+	func ProgressGaugeStateDesign getProgressGaugeDesignDisabled()
+		return getDesignDisabled() cast ProgressGaugeStateDesign
 	end
 	
 	/** \brief Design for focused state. */
-	func ProgressDialStateDesign getProgressDialDesignFocused()
-		return getDesignFocused() cast ProgressDialStateDesign
+	func ProgressGaugeStateDesign getProgressGaugeDesignFocused()
+		return getDesignFocused() cast ProgressGaugeStateDesign
 	end
 	
 	/** \brief Design for hover state. */
-	func ProgressDialStateDesign getProgressDialDesignHover()
-		return getDesignHover() cast ProgressDialStateDesign
+	func ProgressGaugeStateDesign getProgressGaugeDesignHover()
+		return getDesignHover() cast ProgressGaugeStateDesign
 	end
 	
 	/** \brief Design for focused hover state. */
-	func ProgressDialStateDesign getProgressDialDesignFocusedHover()
-		return getDesignFocusedHover() cast ProgressDialStateDesign
+	func ProgressGaugeStateDesign getProgressGaugeDesignFocusedHover()
+		return getDesignFocusedHover() cast ProgressGaugeStateDesign
 	end
 	
 	
@@ -221,7 +221,7 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 	 * | name | value | Setter |
 	 * | {state}.showPercentage | bool | getDesign{state}.setShowPercentage |
 	 * | {state}.blendWidth | float | getDesign{state}.setBlendWidth |
-	 * | {state}.dial | CanvasCreator | getDesign{state}.setCreatorDial |
+	 * | {state}.gauge | CanvasCreator | getDesign{state}.setCreatorGauge |
 	 * | {state}.blend | CanvasCreator | getDesign{state}.setCreatorBlend |
 	 */
 	func void setParameter(String name, Object value)
@@ -230,6 +230,6 @@ class DefaultProgressDialDesigner extends DefaultWidgetDesigner
 	
 	/** \brief Create copy of designer. */
 	func WidgetDesigner copyDesigner()
-		return DefaultProgressDialDesigner.new(this)
+		return DefaultProgressGaugeDesigner.new(this)
 	end
 end

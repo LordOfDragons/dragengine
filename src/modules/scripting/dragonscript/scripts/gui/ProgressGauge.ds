@@ -34,19 +34,19 @@ pin Dragengine.Scenery
  * \version 1.24
  * 
  * Similar in behavior to \ref ProgressBar but using a generic approach to represent
- * complex dial widgets. The empty dial is represented using the regular widget background
- * canvas designer. The filled dial is represented using second canvas designer. The gradual
+ * complex gauge widgets. The empty gauge is represented using the regular widget background
+ * canvas designer. The filled gauge is represented using second canvas designer. The gradual
  * filling in is done using a third canvas designer which is used as blending mask. This
  * canvas designer has to produce a grayscale image which is then color processed to turn
  * color values below the progress threshold to visible and color values above to be invisible.
  * The width of the threshold can be configured to get a sharper or smoother blend.
  * 
- * Supports designing using designer selector "ProgressDial".
+ * Supports designing using designer selector "ProgressGauge".
  */
-class ProgressDial extends Widget implements RangeModelListener
+class ProgressGauge extends Widget implements RangeModelListener
 	var RangeModel pModel
-	var CanvasCreator pDialCanvasCreator, pBlendCanvasCreator
-	var Canvas pCanvasDial
+	var CanvasCreator pGaugeCanvasCreator, pBlendCanvasCreator
+	var Canvas pCanvasGauge
 	var CanvasView pCanvasBlend
 	var CanvasText pCanvasText
 	var bool pShowPercentage
@@ -54,11 +54,11 @@ class ProgressDial extends Widget implements RangeModelListener
 	
 	
 	
-	/** \brief Create progress dial widget. */
+	/** \brief Create progress gauge widget. */
 	func new() this(DefaultRangeModel.new(0, 100, 1, 0, 1))
 	end
 	
-	/** \brief Create progress dial widget with model. */
+	/** \brief Create progress gauge widget with model. */
 	func new(RangeModel model)
 		if model == null
 			throw ENullPointer.new("model")
@@ -71,7 +71,7 @@ class ProgressDial extends Widget implements RangeModelListener
 		pCanvasText.setOrder(2)
 		getCanvasContent().addCanvas(pCanvasText)
 		
-		setDesignerSelector("ProgressDial")
+		setDesignerSelector("ProgressGauge")
 		
 		pModel = model
 		model.addListener(this)
@@ -79,18 +79,18 @@ class ProgressDial extends Widget implements RangeModelListener
 		updateProgress()
 	end
 	
-	/** \brief Create progress dial widget with designer selector. */
+	/** \brief Create progress gauge widget with designer selector. */
 	func new(String designerSelector) this()
 		setDesignerSelector(designerSelector)
 	end
 	
-	/** \brief Create progress dial widget with model and designer selector. */
+	/** \brief Create progress gauge widget with model and designer selector. */
 	func new(RangeModel model, String designerSelector) this(model)
 		setDesignerSelector(designerSelector)
 	end
 	
 	func void dispose()
-		pDialCanvasCreator = pBlendCanvasCreator = null
+		pGaugeCanvasCreator = pBlendCanvasCreator = null
 		pModel.removeListener(this)
 		pModel = null
 		
@@ -154,27 +154,27 @@ class ProgressDial extends Widget implements RangeModelListener
 	
 	
 	
-	/** \brief Dial canvas creator or \em null to show no dial. */
-	func CanvasCreator getDialCanvasCreator()
-		return pDialCanvasCreator
+	/** \brief gauge canvas creator or \em null to show no gauge. */
+	func CanvasCreator getGaugeCanvasCreator()
+		return pGaugeCanvasCreator
 	end
 	
-	/** \brief Set dial canvas creator or \em null to show no dial. */
-	func void setDialCanvasCreator(CanvasCreator creator)
-		if creator == pDialCanvasCreator
+	/** \brief Set gauge canvas creator or \em null to show no gauge. */
+	func void setGaugeCanvasCreator(CanvasCreator creator)
+		if creator == pGaugeCanvasCreator
 			return
 		end
 		
-		pDialCanvasCreator = creator
+		pGaugeCanvasCreator = creator
 		updateProgress()
 	end
 	
-	/** \brief Blend canvas creator or \em null to show no dial. */
+	/** \brief Blend canvas creator or \em null to show no gauge. */
 	func CanvasCreator getBlendCanvasCreator()
 		return pBlendCanvasCreator
 	end
 	
-	/** \brief Set blend canvas creator or \em null to show no dial. */
+	/** \brief Set blend canvas creator or \em null to show no gauge. */
 	func void setBlendCanvasCreator(CanvasCreator creator)
 		if creator == pBlendCanvasCreator
 			return
@@ -255,18 +255,18 @@ class ProgressDial extends Widget implements RangeModelListener
 		var CanvasView content = getCanvasContent()
 		var Point size = getSize()
 		
-		// update progress dial
-		if pCanvasDial != null
-			content.removeCanvas(pCanvasDial)
-			pCanvasDial = null
+		// update progress gauge
+		if pCanvasGauge != null
+			content.removeCanvas(pCanvasGauge)
+			pCanvasGauge = null
 		end
 		pCanvasBlend = null
 		
-		if pDialCanvasCreator != null
-			pCanvasDial = pDialCanvasCreator.createCanvas(size)
-			if pCanvasDial != null
-				pCanvasDial.setOrder(1)
-				content.addCanvas(pCanvasDial)
+		if pGaugeCanvasCreator != null
+			pCanvasGauge = pGaugeCanvasCreator.createCanvas(size)
+			if pCanvasGauge != null
+				pCanvasGauge.setOrder(1)
+				content.addCanvas(pCanvasGauge)
 				
 				if pBlendCanvasCreator != null
 					var Canvas canvas = pBlendCanvasCreator.createCanvas(size)
@@ -275,7 +275,7 @@ class ProgressDial extends Widget implements RangeModelListener
 						pCanvasBlend.setSize(size)
 						pCanvasBlend.setColorTransform(createBlendColorMatrix())
 						pCanvasBlend.addCanvas(canvas)
-						pCanvasDial.setMask(pCanvasBlend)
+						pCanvasGauge.setMask(pCanvasBlend)
 					end
 				end
 			end

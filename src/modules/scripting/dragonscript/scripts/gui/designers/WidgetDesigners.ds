@@ -84,7 +84,7 @@ class WidgetDesigners
 		add("OptionBox", DefaultOptionBoxDesigner.new())
 		add("PlayerChoiceEntry", DefaultLabelDesigner.new())
 		add("ProgressBar", DefaultProgressBarDesigner.new())
-		add("ProgressDial", DefaultProgressDialDesigner.new())
+		add("ProgressGauge", DefaultProgressGaugeDesigner.new())
 		add("ScrollBar", DefaultScrollBarDesigner.new())
 		add("Slider", DefaultSliderDesigner.new())
 		add("SpinButton", DefaultSpinButtonDesigner.new())
