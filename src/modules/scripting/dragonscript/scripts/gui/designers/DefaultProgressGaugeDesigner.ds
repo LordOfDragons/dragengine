@@ -112,10 +112,10 @@ class DefaultProgressGaugeDesigner extends DefaultWidgetDesigner
 		 */
 		func void setParameter(String name, Object value)
 			if name.equals("showPercentage")
-				setShowPercentage(Boolean.new(value cast bool))
+				setShowPercentage(value != null if Boolean.new(value cast bool) else null)
 				
 			elif name.equals("blendWidth")
-				setBlendWidth(Float.new(value cast float))
+				setBlendWidth(value != null if Float.new(value cast float) else null)
 				
 			elif name.equals("gauge")
 				setCreatorGauge(value cast CanvasCreator)

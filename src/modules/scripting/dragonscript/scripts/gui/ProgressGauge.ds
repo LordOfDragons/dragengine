@@ -297,18 +297,18 @@ class ProgressGauge extends Widget implements RangeModelListener
 		pCanvasText.setSize(textSize)
 	end
 	
-	/**
-	 * \brief Create blend color matrix.
-	 * 
-	 * Creates color matrix calculating "1 - (pixel - threshold) / blendWidth".
-	 */
+	/** \brief Create blend color matrix. */
 	protected func ColorMatrix createBlendColorMatrix()
-		var float width = DEMath.clamp(pBlendWidth, 0.0001, 1)
-		var float scale = 1.0 / width
+		var float bottom = -0.01 - pBlendWidth
+		var float top = 1.01
+		var float scale1 = 1.0 / (top - bottom)
 		var float threshold = getPercentage()
+		var float scale2 = -1.0 / DEMath.max(pBlendWidth * scale1, 0.0001)
 		
-		return ColorMatrix.newTranslation(-threshold, -threshold, -threshold, 0)\
-			* ColorMatrix.newScaling(-scale, -scale, -scale, 1)\
+		return ColorMatrix.newTranslation(-bottom, -bottom, -bottom, 0)\
+			* ColorMatrix.newScaling(scale1, scale1, scale1, 1)\
+			* ColorMatrix.newTranslation(-threshold, -threshold, -threshold, 0)\
+			* ColorMatrix.newScaling(scale2, scale2, scale2, 1)\
 			* ColorMatrix.newTranslation(1, 1, 1, 0)
 	end
 	
