@@ -1,0 +1,235 @@
+
+/* 
+ * Drag[en]gine DragonScript Module
+ *
+ * Copyright (C) 2024, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Borders.Factories
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of \ref WidgetDesigner for \ref ProgressDial.
+ */
+class DefaultProgressDialDesigner extends DefaultWidgetDesigner
+	/** \brief Design for particular widget state. */
+	public class ProgressDialStateDesign extends StateDesign
+		var Boolean pShowPercentageLabel
+		var Float pBlendWidth
+		var CanvasCreator pCreatorDial, pCreatorBlend
+		
+		
+		
+		/** \brief Create state design. */
+		func new()
+		end
+		
+		/** \brief Create copy of state design. */
+		func new(ProgressDialStateDesign stateDesign) super(stateDesign)
+			pShowPercentageLabel = stateDesign.pShowPercentageLabel
+			pBlendWidth = stateDesign.pBlendWidth
+			pCreatorDial = stateDesign.pCreatorDial
+			pCreatorBlend = stateDesign.pCreatorBlend
+		end
+		
+		
+		
+		/** \brief Show percentage label or null. */
+		func Boolean getShowPercentage()
+			return pShowPercentageLabel
+		end
+		
+		/** \brief Set if percentage label is shown or null. */
+		func void setShowPercentage( Boolean show )
+			pShowPercentageLabel = show
+		end
+		
+		/** \brief Blend width or null. */
+		func Float getBlendWidth()
+			return pBlendWidth
+		end
+		
+		/** \brief Set blend width or null. */
+		func void setBlendWidth(Float width)
+			pBlendWidth = width
+		end
+		
+		/** \brief Canvas creator for dial. */
+		func CanvasCreator getCreatorDial()
+			return pCreatorDial
+		end
+		
+		/** \brief Set canvas creator for dial. */
+		func void setCreatorDial(CanvasCreator creator)
+			pCreatorDial = creator
+		end
+		
+		/** \brief Canvas creator for blend. */
+		func CanvasCreator getCreatorBlend()
+			return pCreatorBlend
+		end
+		
+		/** \brief Set canvas creator for blend. */
+		func void setCreatorBlend(CanvasCreator creator)
+			pCreatorBlend = creator
+		end
+		
+		
+		
+		/**
+		 * \brief Set parameter.
+		 * 
+		 * Supported parameters:
+		 * | name | value | Setter |
+		 * | canvas | CanvasCreator | setCanvasCreator |
+		 * | border | BorderFactory | setBorderFactory |
+		 * | font | Font | setFont |
+		 * | textColor | Color | setTextColor |
+		 * | padding | BorderSize | setPadding |
+		 * | showPercentage | bool | setShowPercentage |
+		 * | blendWidth | float | setBlendWidth |
+		 * | dial | CanvasCreator | setCreatorDial |
+		 * | blend | CanvasCreator | setCreatorBlend |
+		 */
+		func void setParameter(String name, Object value)
+			if name.equals("showPercentage")
+				setShowPercentage(Boolean.new(value cast bool))
+				
+			elif name.equals("blendWidth")
+				setBlendWidth(Float.new(value cast float))
+				
+			elif name.equals("dial")
+				setCreatorDial(value cast CanvasCreator)
+				
+			elif name.equals("blend")
+				setCreatorBlend(value cast CanvasCreator)
+				
+			else
+				super.setParameter(name, value)
+			end
+		end
+		
+		
+		
+		func DefaultWidgetDesigner.StateDesign copyDesign()
+			return ProgressDialStateDesign.new(this)
+		end
+		
+		func void merge(DefaultWidgetDesigner.StateDesign state)
+			super.merge(state)
+			
+			var ProgressDialStateDesign pdstate = state cast ProgressDialStateDesign
+			
+			if pShowPercentageLabel != null
+				pdstate.pShowPercentageLabel = pShowPercentageLabel
+			end
+			if pBlendWidth != null
+				pdstate.pBlendWidth = pBlendWidth
+			end
+			if pCreatorDial != null
+				pdstate.pCreatorDial = pCreatorDial
+			end
+			if pCreatorBlend != null
+				pdstate.pCreatorBlend = pCreatorBlend
+			end
+		end
+		
+		func void apply(Widget widget)
+			super.apply(widget)
+			
+			var ProgressDial pd = widget cast ProgressDial
+			if pShowPercentageLabel != null
+				pd.setShowPercentage(pShowPercentageLabel.value())
+			end
+			if pBlendWidth != null
+				pd.setBlendWidth(pBlendWidth.value())
+			end
+			pd.setDialCanvasCreator(pCreatorDial)
+			pd.setBlendCanvasCreator(pCreatorBlend)
+		end
+	end
+	
+	
+	
+	/** \brief Create new progress bar designer. */
+	func new()
+		setDesignNormal(ProgressDialStateDesign.new())
+		setDesignDisabled(ProgressDialStateDesign.new())
+		setDesignFocused(ProgressDialStateDesign.new())
+		setDesignHover(ProgressDialStateDesign.new())
+		setDesignFocusedHover(ProgressDialStateDesign.new())
+	end
+	
+	/** \brief Create copy of widget designer. */
+	func new(DefaultProgressDialDesigner designer) super(designer)
+	end
+	
+	
+	
+	/** \brief Design for normal state. */
+	func ProgressDialStateDesign getProgressDialDesignNormal()
+		return getDesignNormal() cast ProgressDialStateDesign
+	end
+	
+	/** \brief Design for disabled state. */
+	func ProgressDialStateDesign getProgressDialDesignDisabled()
+		return getDesignDisabled() cast ProgressDialStateDesign
+	end
+	
+	/** \brief Design for focused state. */
+	func ProgressDialStateDesign getProgressDialDesignFocused()
+		return getDesignFocused() cast ProgressDialStateDesign
+	end
+	
+	/** \brief Design for hover state. */
+	func ProgressDialStateDesign getProgressDialDesignHover()
+		return getDesignHover() cast ProgressDialStateDesign
+	end
+	
+	/** \brief Design for focused hover state. */
+	func ProgressDialStateDesign getProgressDialDesignFocusedHover()
+		return getDesignFocusedHover() cast ProgressDialStateDesign
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * See DefaultButtonDesigner.setParameter for supported parameters.
+	 * 
+	 * Additional supported parameters:
+	 * | name | value | Setter |
+	 * | {state}.showPercentage | bool | getDesign{state}.setShowPercentage |
+	 * | {state}.blendWidth | float | getDesign{state}.setBlendWidth |
+	 * | {state}.dial | CanvasCreator | getDesign{state}.setCreatorDial |
+	 * | {state}.blend | CanvasCreator | getDesign{state}.setCreatorBlend |
+	 */
+	func void setParameter(String name, Object value)
+		super.setParameter(name, value)
+	end
+	
+	/** \brief Create copy of designer. */
+	func WidgetDesigner copyDesigner()
+		return DefaultProgressDialDesigner.new(this)
+	end
+end

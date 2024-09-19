@@ -38,42 +38,41 @@ pin Dragengine.Scenery
  * to keep in mind the used widget designers are shared.
  */
 class WidgetDesigners
-	/** \brief s. */
-	private var Dictionary pDesigners
+	var Dictionary pDesigners
 	
 	
 	
 	/** \brief Create widget designer factories. */
-	public func new()
+	func new()
 		pDesigners = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Add designer. */
-	public func void add(String name, WidgetDesigner designer)
+	func void add(String name, WidgetDesigner designer)
 		pDesigners.setAt(name, designer)
 	end
 	
 	/** \brief Named designer or \em null if not found. */
-	public func WidgetDesigner getNamed(String name)
+	func WidgetDesigner getNamed(String name)
 		return pDesigners.getAt(name, null) cast WidgetDesigner
 	end
 	
 	/** \brief Remove designer if present. */
-	public func void removeNamed(String name)
+	func void removeNamed(String name)
 		pDesigners.removeIfExisting(name)
 	end
 	
 	/** \brief Remove all factories. */
-	public func void removeAll()
+	func void removeAll()
 		pDesigners.removeAll()
 	end
 	
 	
 	
 	/** \brief Add default factories. */
-	public func void addDefaultDesigners()
+	func void addDefaultDesigners()
 		add("Button", DefaultButtonDesigner.new())
 		add("ButtonWidget", DefaultButtonWidgetDesigner.new())
 		add("CheckBox", DefaultCheckBoxDesigner.new())
@@ -85,6 +84,7 @@ class WidgetDesigners
 		add("OptionBox", DefaultOptionBoxDesigner.new())
 		add("PlayerChoiceEntry", DefaultLabelDesigner.new())
 		add("ProgressBar", DefaultProgressBarDesigner.new())
+		add("ProgressDial", DefaultProgressDialDesigner.new())
 		add("ScrollBar", DefaultScrollBarDesigner.new())
 		add("Slider", DefaultSliderDesigner.new())
 		add("SpinButton", DefaultSpinButtonDesigner.new())
