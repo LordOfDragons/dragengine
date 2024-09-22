@@ -1070,7 +1070,6 @@ class Desktop extends Container
 						
 					case Decoration.Area.menu
 						if event.getButton() == InputEventMouseButton.left
-							BaseGameApp.getApp().getConsole().addMessage("[DESKTOP] Open window menu: " + window.className() + "\n")
 							if window.getCanReorder()
 								window.moveToTop()
 							end
@@ -1222,11 +1221,7 @@ class Desktop extends Container
 				continue
 			end
 			
-			if not window.getCanActivate()
-				return
-			end
-			
-			if window.getBlockingWindow() != null
+			if window.getCanActivate() and window.getBlockingWindow() != null
 				if window.getCanReorder()
 					window.moveToTop()
 				end
@@ -1240,7 +1235,7 @@ class Desktop extends Container
 					continue
 				end
 				
-				if window.getCanReorder()
+				if window.getCanActivate() and window.getCanReorder()
 					window.moveToTop()
 				end
 				
