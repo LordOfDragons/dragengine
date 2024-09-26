@@ -329,9 +329,6 @@ if parent_env['OSMacOS']:
 	params.Add(PathVariable('path_launcher_include', 'Path to the Launcher headers',
 		'${includedir}/delauncher', PathVariable.PathAccept))
 	
-	params.Add(PathVariable('path_remotelauncher_include', 'Path to the Remote Launcher headers',
-		'${includedir}/deremotelauncher', PathVariable.PathAccept))
-	
 elif parent_env['OSBeOS']:
 	params.Add(TernaryVariable('with_dl', 'Use the dynamic library system'))
 	params.Add(TernaryVariable('with_pthread', 'Use pthread'))
@@ -392,9 +389,6 @@ elif parent_env['OSBeOS']:
 	params.Add(PathVariable('path_launcher_include', 'Path to the Launcher headers',
 		'${includedir}/delauncher', PathVariable.PathAccept))
 	
-	params.Add(PathVariable('path_remotelauncher_include', 'Path to the Remote Launcher headers',
-		'${includedir}/deremotelauncher', PathVariable.PathAccept))
-	
 elif parent_env['OSPosix']:
 	params.Add(TernaryVariable('with_dl', 'Use the dynamic library system'))
 	params.Add(TernaryVariable('with_pthread', 'Use pthread'))
@@ -453,9 +447,6 @@ elif parent_env['OSPosix']:
 		'/opt/delauncher/games', PathVariable.PathAccept))
 	params.Add(PathVariable('path_launcher_include', 'Path to the Launcher headers',
 		'${includedir}/delauncher', PathVariable.PathAccept))
-	
-	params.Add(PathVariable('path_remotelauncher_include', 'Path to the Remote Launcher headers',
-		'${includedir}/deremotelauncher', PathVariable.PathAccept))
 	
 elif parent_env['OSWindows']:
 	params.Add(EnumVariable('igde_toolkit', 'ToolKit to use for building IGDE', 'fox', ['fox','null']))
@@ -535,9 +526,6 @@ elif parent_env['OSWindows']:
 	
 	params.Add(PathVariable('path_launcher_include', 'Path to the Launcher headers',
 		'${path_de_sdk_inc}/delauncher', PathVariable.PathAccept))
-	
-	params.Add(PathVariable('path_remotelauncher_include', 'Path to the Remote Launcher headers',
-		'${path_de_sdk_inc}/deremotelauncher', PathVariable.PathAccept))
 	
 	params.Add(BoolVariable('with_install_pdb', 'Install/archive PDB files', False))
 	params.Add(PathVariable('path_pdb', 'Path to the PDBs',
@@ -874,8 +862,6 @@ scdirs.append('src/launcher/console')
 scdirs.append('src/launcher/gui')
 #scdirs.append('src/launcher/android')
 scdirs.append('src/launcher/live')
-
-scdirs.append('src/launcher/remote/shared')
 
 # tests
 scdirs.append('src/tests')
