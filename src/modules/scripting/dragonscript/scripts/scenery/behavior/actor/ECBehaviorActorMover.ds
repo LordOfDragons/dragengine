@@ -56,7 +56,13 @@ pin Dragengine.Utils
 class ECBehaviorActorMover extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
-		/** \brief Actor starts moving towards goal. */
+		/**
+		 * \brief Actor starts moving towards goal.
+		 * 
+		 * \note
+		 * \ref Instance#getPath() can be null if no path could be found or the actor is already
+		 * at the goal. In this case \ref #arrivedAtGoal() and \ref #stopMoving() is called too.
+		 */
 		func void startMoving(Instance instance)
 		
 		/** \brief Actor stops moving. */
@@ -64,7 +70,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		/**
 		 * \brief Actor arrived at goal position.
-		 * \note stopMoving() will be called before arrivedAtGoal() is called.
+		 * \note \ref #stopMoving() will be called before \ref #arrivedAtGoal() is called.
 		 */
 		func void arrivedAtGoal(Instance instance, DVector goalPosition)
 		
@@ -78,22 +84,15 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		func new()
 		end
 		
-		/** \brief Actor starts moving towards goal. */
 		func void startMoving(Instance instance)
 		end
 		
-		/** \brief Actor stops moving. */
 		func void stopMoving(Instance instance)
 		end
 		
-		/**
-		 * \brief Actor arrived at goal position.
-		 * \note stopMoving() will be called before arrivedAtGoal() is called.
-		 */
 		func void arrivedAtGoal(Instance instance, DVector goalPosition)
 		end
 		
-		/** \brief Modify locomotion values set by moveTowards(). */
 		func void modifyMoveTowards(Instance instance, DVector position, float elapsed)
 		end
 	end
@@ -633,8 +632,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pPause = false
 			pPath = null
 			
+			var bool alreadyAtGoal
 			if goal != null
-				updatePath()
+				alreadyAtGoal = bareUpdatePath()
 			end
 			
 			pListeners.forEach(block Listener each
@@ -642,6 +642,10 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			end)
 			
 			updateRequiresThinking()
+			
+			if alreadyAtGoal
+				arrivedAtGoal()
+			end
 		end
 		
 		/** \brief Stop moving. */
@@ -674,6 +678,20 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * navigation spaces or navigator changed in a way the current path might be no more valid.
 		 */
 		func bool updatePath()
+			if bareUpdatePath()
+				return true
+				
+			else
+				arrivedAtGoal()
+				return false
+			end
+		end
+		
+		/**
+		 * \brief Update move to path without calling \ref #arrivedAtGoal().
+		 * \version 1.24
+		 */
+		protected func bool bareUpdatePath()
 			if pGoalPosition == null
 				pPath = null
 				pNextPathPoint = 0
