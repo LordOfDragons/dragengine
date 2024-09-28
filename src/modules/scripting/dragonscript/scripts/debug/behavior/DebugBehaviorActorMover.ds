@@ -206,7 +206,7 @@ class DebugBehaviorActorMover
 				strPath = "-"
 			end
 			
-			pConsole.addMessage("DebugBehaviorActorMover.onStartMoving: id={} path{}".format(\
+			pConsole.addMessage("DebugBehaviorActorMover.onStartMoving: id={} path={}".format(\
 				Array.newWith(pBehavior.getElement().getID(), strPath)))
 		end
 	end
