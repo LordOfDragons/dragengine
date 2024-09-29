@@ -632,19 +632,24 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pPause = false
 			pPath = null
 			
-			var bool alreadyAtGoal
 			if goal != null
-				alreadyAtGoal = bareUpdatePath()
+				bareUpdatePath()
 			end
 			
-			pListeners.forEach(block Listener each
-				each.startMoving(this)
-			end)
-			
-			updateRequiresThinking()
-			
-			if alreadyAtGoal
-				arrivedAtGoal()
+			if pGoalPosition != null and pPath != null
+				pListeners.forEach(block Listener each
+					each.startMoving(this)
+				end)
+				
+				updateRequiresThinking()
+				
+				if pNextPathPoint == pPath.getCount()
+					arrivedAtGoal()
+				end
+				
+			else
+				stopMoving()
+				updateRequiresThinking()
 			end
 		end
 		
@@ -676,14 +681,24 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * This method can be called while the actor is moving along a path to calculate a new
 		 * path to the target. This is useful if the actor ended up in a bad location or the
 		 * navigation spaces or navigator changed in a way the current path might be no more valid.
+		 * 
+		 * \retval true Path is valid and actor starts moving.
+		 * \retval false No goal position is set.
+		 * \retval false Path is valid and actor is already at goal position.
 		 */
 		func bool updatePath()
-			if bareUpdatePath()
-				return true
+			bareUpdatePath()
+			
+			if pGoalPosition == null or pPath == null
+				return false
 				
-			else
+			elif pNextPathPoint == pPath.getCount()
 				arrivedAtGoal()
 				return false
+				
+			else
+				calculateRemainingDistance()
+				return true
 			end
 		end
 		
@@ -691,13 +706,13 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \brief Update move to path without calling \ref #arrivedAtGoal().
 		 * \version 1.24
 		 */
-		protected func bool bareUpdatePath()
+		protected func void bareUpdatePath()
 			if pGoalPosition == null
 				pPath = null
 				pNextPathPoint = 0
 				pNextPlaneNormal = null
 				pRemainingDistance = 0
-				return false
+				return
 			end
 			
 			// check if actor is already at target
@@ -770,13 +785,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				end
 			end
 			
-			if pNextPathPoint == pointCount
-				arrivedAtGoal()
-				return false
+			if pNextPathPoint < pointCount
+				calculateRemainingDistance()
 			end
-			
-			calculateRemainingDistance()
-			return true
 		end
 		
 		
