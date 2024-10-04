@@ -35,6 +35,10 @@ else:
 		format( libLinkName[ x ] ) )
 			for x in range( len( libLinkName ) ) ]
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.bz2'.format(srcdir), 'libtheora', 'lib_libtheora_fetch')
+
 # check if system libtheora is present
 hasSystemVorbis = False
 conf = envLibrary.Configure()
@@ -123,8 +127,7 @@ targets.append( 'include/theora/theoradec.h' )
 targets.append( 'include/theora/theoraenc.h' )
 targets.append( 'include/theora/theora.h' )
 targets.append( 'include/theora/codec.h' )
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action(libtheoraBuild, 'Build libtheora' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libtheoraBuild, 'Build libtheora' ) )
 
 if gnuConfigUpdate:
 	envLibrary.Depends(library, gnuConfigUpdate)

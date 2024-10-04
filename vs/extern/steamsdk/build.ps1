@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-TarXz -Path "$SourceDir\steamsdk160.tar.xz" -Destination "$ProjectDir\steamsdk"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "steamsdk160.tar.xz" -UrlPath "steamsdk"
+
+Expand-TarXz -Path "$ProjectDir\steamsdk160.tar.xz" -Destination "$ProjectDir\steamsdk"

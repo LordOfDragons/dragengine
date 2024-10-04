@@ -7,6 +7,9 @@ from SConsExternCommon import *
 
 Import('parent_env parent_targets parent_report')
 
+if parent_env['OSBeOS']:
+	Return()
+
 envLibrary = parent_env.Clone()
 
 # parameters
@@ -30,10 +33,13 @@ libs = libLinkNames[:]
 if depUring:
 	libs.extend(depUring['libs'])
 
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	['{}.tar.xz'.format(srcdir), '{}-ext.tar.xz'.format(srcdir)], 'modio', 'lib_modio_fetch')
+
 def modioBuild(target, source, env):
 	buildDir = target[0].get_dir().up().up().up()
 	untarArchive(buildDir.abspath, source[0].abspath)
-	untarArchive(buildDir.abspath, source[0].abspath[:-7] + '-ext.tar.xz')
+	untarArchive(buildDir.abspath, source[1].abspath)
 	
 	cmakeSourceDir = buildDir.Dir(srcdir).abspath
 	
@@ -112,7 +118,7 @@ envLibrary.Append(PATCHES = [])
 globFiles(envLibrary, os.path.join('patches'), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
-library = envLibrary.Command(targets, '{}.tar.xz'.format(srcdir),
+library = envLibrary.Command(targets, nodeArtifacts,
 	envLibrary.Action(modioBuild, 'Build ModIO library'))
 
 if depUring and depUring['depends']:

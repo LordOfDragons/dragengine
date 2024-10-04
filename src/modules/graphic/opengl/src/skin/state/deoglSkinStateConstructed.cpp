@@ -95,7 +95,8 @@ void deoglSkinStateConstructed::PrepareForRender( deoglSkinState &skinState ){
 	// each other out resulting in an identity transformation. this way no second code path is
 	// required.
 	context.SetTransform( pContent->GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
-	context.UpdateTransformMask();
+	//context.UpdateTransformMask();
+	context.SetTCTransformMask( *pRenderTarget );
 	
 	skinState.GetRenderThread().GetRenderers().GetConstructed().Prepare( context );
 	

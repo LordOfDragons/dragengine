@@ -168,8 +168,10 @@ class LoadBehaviorTree extends BaseXmlLoader
 		
 		if id.getAt(0) == '.'
 			id = parentID + id
+			
+		else
+			id = idPrefix + id
 		end
-		id = idPrefix + id
 		
 		if behaviorTree.hasRuleWithID(id)
 			logDuplicateObject(element, "rule", id)

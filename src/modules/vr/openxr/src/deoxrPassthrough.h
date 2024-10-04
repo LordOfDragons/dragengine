@@ -102,6 +102,7 @@ public:
 private:
 	void pCleanUp();
 	void pUpdateLayerStyle();
+	void pEnsureCreated();
 };
 
 #endif

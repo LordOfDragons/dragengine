@@ -1,0 +1,29 @@
+diff '--color=auto' -rupN modio-sdk-org/ext/CMakeLists.txt modio-sdk-cur/ext/CMakeLists.txt
+--- modio-sdk-org/ext/CMakeLists.txt	2024-06-26 07:38:05.000000000 +0200
++++ modio-sdk-cur/ext/CMakeLists.txt	2024-09-06 12:33:17.536314107 +0200
+@@ -11,7 +11,7 @@ set(OPTIONAL_BUILD_PACKAGE OFF)
+ set(OPTIONAL_BUILD_TESTS OFF)
+ 
+ add_subdirectory(optional EXCLUDE_FROM_ALL)
+-add_subdirectory(expected EXCLUDE_FROM_ALL)
++# add_subdirectory(expected EXCLUDE_FROM_ALL)
+ add_subdirectory(filesystem EXCLUDE_FROM_ALL)
+ add_subdirectory(fmt EXCLUDE_FROM_ALL)
+ add_subdirectory(utfcpp EXCLUDE_FROM_ALL)
+@@ -44,11 +44,11 @@ install(
+ 	DESTINATION ${CMAKE_INSTALL_PREFIX}/header_only/ext
+ 	COMPONENT header_only
+ )
+-install(
+-	DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/expected/include/
+-	DESTINATION ${CMAKE_INSTALL_PREFIX}/header_only/ext
+-	COMPONENT header_only
+-)
++# install(
++# 	DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/expected/include/
++# 	DESTINATION ${CMAKE_INSTALL_PREFIX}/header_only/ext
++# 	COMPONENT header_only
++# )
+ 
+ install(
+ 	DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/utfcpp/source/

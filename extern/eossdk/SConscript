@@ -1,6 +1,4 @@
 import os
-import sys
-import SCons
 import zipfile
 
 from SConsCommon import *
@@ -11,6 +9,9 @@ Import('parent_env parent_targets parent_report')
 if parent_env['platform_android'] != 'no':
 	Return()
 
+if parent_env['OSBeOS']:
+	Return()
+
 envLibrary = parent_env.Clone()
 
 if envLibrary['OSWindows']:
@@ -19,6 +20,9 @@ if envLibrary['OSWindows']:
 else:
 	libFileName = 'bin/libEOSSDK-Linux-Shipping.so'
 	binFileName = libFileName
+
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	['eossdk.zip', 'eossdk_bin_linux.tar.xz'], 'eossdk', 'lib_eossdk_fetch')
 
 def unpackArchiveFileSdk(target, source, env):
 	buildDir = target[0].get_dir().up()
@@ -112,10 +116,10 @@ targets.extend([
 	'include/Linux/eos_Linux_base.h',
 	'include/Linux/eos_Linux.h'])
 
-sdk = envLibrary.Command(targets, 'eossdk.zip',
-    envLibrary.Action(unpackArchiveFileSdk, 'Unpack EOS SDK'))
-rtlib = envLibrary.Command(envLibrary.File(binFileName), 'eossdk_bin_linux.tar.xz',
-    envLibrary.Action(unpackArchiveFileBin, 'Unpack EOS Libraries'))
+sdk = envLibrary.Command(targets, nodeArtifacts[0],
+	envLibrary.Action(unpackArchiveFileSdk, 'Unpack EOS SDK'))
+rtlib = envLibrary.Command(envLibrary.File(binFileName), nodeArtifacts[1],
+	envLibrary.Action(unpackArchiveFileBin, 'Unpack EOS Libraries'))
 
 envLibrary.Clean(sdk, ['bin', 'include'])
 

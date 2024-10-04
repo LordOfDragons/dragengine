@@ -33,9 +33,12 @@ else:
 	libLinkName = 'openal'
 	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openal${LIBSUFFIX}')
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'openal', 'lib_openal_fetch')
+
 # check if system openal is present
 hasSystemOpenAL = False
-""" force false due to annoying limitations
+
 conf = envLibrary.Configure()
 if envLibrary['with_system_openal'] != TernaryVariableNo:
 	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', 'alEnable(0);')
@@ -43,7 +46,6 @@ conf.Finish()
 
 if not hasSystemOpenAL and envLibrary['with_system_openal'] == TernaryVariableYes:
 	Exit('Requested to use system OpenAL but no usable OpenAL found.')
-"""
 
 libs = [libLinkName]
 #libs.extend(parent_targets['lib_sndio']['libs'])
@@ -219,8 +221,7 @@ elif envLibrary['OSBeOS']:
 	# BeOS requires some additional patches
 	globFiles(envLibrary, os.path.join('patches_beos', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
-	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-		envLibrary.Action(openalBuild, 'Build OpenAL'))
+	library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(openalBuild, 'Build OpenAL'))
 
 else:
 	# on unix systems openal can be compiled. it should be included in distros already
@@ -230,8 +231,7 @@ else:
 	# directly in the openalBuild function
 	globFiles(envLibrary, os.path.join('patches', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
-	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-		envLibrary.Action(openalBuild, 'Build OpenAL'))
+	library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(openalBuild, 'Build OpenAL'))
 
 #if parent_targets['lib_sndio']['depends']:
 #	envLibrary.Depends(library, parent_targets['lib_sndio']['depends'])

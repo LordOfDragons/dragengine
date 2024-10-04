@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "soundtouch-2.1.1-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "soundtouch-2.1.1-vc64.zip" -UrlPath "soundtouch"
+
+Expand-Archive -Path "$ProjectDir\soundtouch-2.1.1-vc64.zip" -DestinationPath $ProjectDir

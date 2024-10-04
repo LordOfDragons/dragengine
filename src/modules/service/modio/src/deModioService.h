@@ -76,6 +76,7 @@ private:
 	bool pModManagementEnabled;
 	float pElapsedUpdateProgress;
 	float pUpdateProgressInterval;
+	Modio::Optional<Modio::GameInfo> pGameInfo;
 	
 	static deModioService *pGlobalService;
 	
@@ -145,8 +146,13 @@ public:
 	void GetModInfo( const decUniqueID &id, const deServiceObject &request );
 	void SubmitModRating( const decUniqueID &id, const deServiceObject &request );
 	void RevokeModRating( const decUniqueID &id, const deServiceObject &request );
+	void ReportMod( const decUniqueID &id, const deServiceObject &request );
 	void GetModTagOptions( const decUniqueID &id, const deServiceObject &request );
 	void LoadUserResource( const decUniqueID &id, const deServiceObject &request );
+	void GetUserWalletBalance( const decUniqueID &id, const deServiceObject &request );
+	void ReportUser( const decUniqueID &id, const deServiceObject &request );
+	void GetUserPurchasedMods( const decUniqueID &id, const deServiceObject &request );
+	void PurchaseMod( const decUniqueID &id, const deServiceObject &request );
 	
 	void ActivateMods();
 	deServiceObject::Ref IsAuthenticated();
@@ -157,6 +163,7 @@ public:
 	void SetModDisabled( const deServiceObject &action );
 	deServiceObject::Ref ModHasMatchingFiles( const deServiceObject &action );
 	deServiceObject::Ref GetActiveMods();
+	deServiceObject::Ref GetModsFeatures();
 	deServiceObject::Ref GetUserFeatures();
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
@@ -176,6 +183,7 @@ private:
 	/** \name Callbacks */
 	/*@{*/
 	void pOnInitialize( Modio::ErrorCode ec );
+	void pOnInitializeGetGameInfo( Modio::ErrorCode ec, Modio::Optional<Modio::GameInfo> info );
 	void pOnInitializeFetchUpdates( Modio::ErrorCode ec );
 	void pOnRequestFinished( const decUniqueID &id, Modio::ErrorCode ec );
 	
@@ -197,6 +205,14 @@ private:
 	
 	void pOnGetModTagOptions( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<Modio::ModTagOptions> tagOptions );
+	
+	void pOnGetUserWalletBalance( const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<uint64_t> amount );
+	
+	void pOnGetUserPurchasedMods( const decUniqueID &id, Modio::ErrorCode ec );
+	
+	void pOnPurchaseMod( const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::TransactionRecord> record );
 	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	void pOnModManagement( Modio::ModManagementEvent event );

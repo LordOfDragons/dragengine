@@ -30,6 +30,9 @@ else:
 	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'fox', 'lib_fox_fetch')
+
 # check if system fox is present
 hasSystemFOX = False
 conf = envLibrary.Configure()
@@ -51,12 +54,13 @@ if hasSystemFOX:
 		'name' : 'Internal FOX-Toolkit library',
 		'cpppath' : [],
 		'libpath' : [],
-		'cppflags' : ['-DOLD_STRING_COMPARE_NS'],
+		'cppflags' : [],
 		'version' : libFOXVersion,
 		'libs' : libs,
 		'runtimelibs' : [],
 		'depends' : [],
 		'linkWholeArchive' : []}
+	# 'cppflags' : ['-DOLD_STRING_COMPARE_NS'],
 	Return()
 
 # build fox
@@ -172,8 +176,7 @@ else:
 with open(envLibrary.File('header_file_list/{}'.format(foxSrcVersion)).srcnode().abspath, 'r') as f:
 	targets.extend([x[:-1] for x in f.readlines()])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-	envLibrary.Action(foxBuild, 'Build fox'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(foxBuild, 'Build fox'))
 envLibrary.Depends(library, envLibrary['PATCHES'])
 envLibrary.Depends(library, envLibrary['POST_PATCHES'])
 if envLibrary['OSWindows']:
@@ -219,12 +222,11 @@ parent_targets['lib_fox'] = {
 	'name' : 'Internal FOX Toolkit library',
 	'cpppath' : cpppath,
 	'libpath' : libpath,
-	'cppflags' : [
-		'-DHAVE_FOX_{}_FX_H'.format(libFOXVersion.replace('.', '_')),
-		'-DOLD_STRING_COMPARE_NS'],
+	'cppflags' : ['-DHAVE_FOX_{}_FX_H'.format(libFOXVersion.replace('.', '_'))],
 	'version' : libFOXVersion,
 	'libs' : libs,
 	'runtimelibs' : runtimelibs,
 	'depends' : depends,
 	'linkWholeArchive' : linkWholeArchive,
 	'globalInstallTracker' : []}
+# 'cppflags' : ['-DOLD_STRING_COMPARE_NS']

@@ -130,6 +130,7 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagement.Value.NoTagSelected'>&#60; No Selection &#62;</translation>
 	<translation name='UI.ModManagementMod.DetailsDetails'>Details</translation>
 	<translation name='UI.ModManagementMod.DetailsTags'>Tags</translation>
+	<translation name='UI.ModManagementMod.DetailsPurchase'>Purchase</translation>
 	<translation name='UI.ModManagementMod.Subscribers'>Subscribers:</translation>
 	<translation name='UI.ModManagementMod.Downloads'>Downloads:</translation>
 	<translation name='UI.ModManagementMod.DownloadsToday'>Downloads Today:</translation>
@@ -151,6 +152,12 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementMod.Enable.ToolTip'>Enable modification</translation>
 	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
 	<translation name='UI.ModManagementMod.RemainingTime'>Remaining Time:</translation>
+	<translation name='UI.ModManagementMod.Purchase'>Purchase</translation>
+	<translation name='UI.ModManagementMod.Purchase.ToolTip'>Purchase modification</translation>
+	<translation name='UI.ModManagementMod.Free'>Free</translation>
+	<translation name='UI.ModManagementMod.Purchased'>Purchased</translation>
+	<translation name='UI.ModManagementMod.SubmitRating'>Submit Rating</translation>
+	<translation name='UI.ModManagementMod.RevokeRating'>Revoke Rating</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.downloading'>Downloading</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.extracting'>Extracting</translation>
@@ -182,4 +189,22 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementUserAccount.Login.ToolTip'>Log in to user account</translation>
 	<translation name='UI.ModManagementUserAccount.Logout.ToolTip'>Log out of user account</translation>
 	<translation name='UI.ModManagementUserAccount.SelectAuthProvider'>Select authentification provider to use to log into your account. Only providers supported by the modification service are listed. If no account is present a new one is created.</translation>
+	<translation name='UI.ModManagementMod.ReportMod'>Report</translation>
+	<translation name='UI.ModManagementMod.ReportMod.ToolTip'>Report modification</translation>
+	<translation name='UI.ModManagementReportMod.Title'>Report Modification</translation>
+	<translation name='UI.ModManagementReportMod.Type'>Type:</translation>
+	<translation name='UI.ModManagementReportMod.Type.ToolTip'>Report type</translation>
+	<translation name='UI.ModManagementReportMod.Description'>Description:</translation>
+	<translation name='UI.ModManagementReportMod.Description.ToolTip'>Report description</translation>
+	<translation name='UI.ModManagementReportMod.ReporterName'>Name:</translation>
+	<translation name='UI.ModManagementReportMod.ReporterName.ToolTip'>Reporter name. Useful for copyright infringement claims.</translation>
+	<translation name='UI.ModManagementReportMod.ReporterContact'>Contact:</translation>
+	<translation name='UI.ModManagementReportMod.ReporterContact.ToolTip'>Reporter contact. Useful for copyright infringement claims.</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.broken'>Not working</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.falseInformation'>False information</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.copyrightInfringement'>Copyright infringement</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.inappropriateContent'>Inappropriate content</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.illegalContent'>Illegal content</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.other'>Other reason</translation>
+	<translation name='UI.Submit'>Submit</translation>
 </languagePack>

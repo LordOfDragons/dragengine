@@ -1,17 +1,20 @@
 ﻿param (
+    [Parameter(Mandatory=$true)][string]$ProjectDir,
     [Parameter(Mandatory=$true)][string]$SourceDir
 )
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
-$ExpandedDir = "$SourceDir\build"
+$ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
 $OpenXRVersion = "1.1.38"
 
-Expand-TarXz -Path "$SourceDir\OpenXR-SDK-release-$OpenXRVersion.tar.xz" -Destination $ExpandedDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "OpenXR-SDK-release-$OpenXRVersion.tar.xz" -UrlPath "openxr"
+
+Expand-TarXz -Path "$ProjectDir\OpenXR-SDK-release-$OpenXRVersion.tar.xz" -Destination $ExpandedDir
 
 $CmakeBuildDir = "$ExpandedDir\build"
 $CmakeSourceDir = "$ExpandedDir\OpenXR-SDK-release-$OpenXRVersion"

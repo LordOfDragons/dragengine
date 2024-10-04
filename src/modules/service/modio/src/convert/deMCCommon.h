@@ -62,6 +62,9 @@ public:
 	static std::map<std::string, std::string> StringMap( const deServiceObject &so );
 	static deServiceObject::Ref StringMap( const std::map<std::string, std::string> &map );
 	
+	/** String or empty. */
+	static std::string StringOrEmpty( const deServiceObject &so, const char *key );
+	
 	/** Convert maturity content flags. */
 	static Modio::ProfileMaturity ProfileMaturity( const deServiceObject &so );
 	static deServiceObject::Ref ProfileMaturity( Modio::ProfileMaturity maturity );
@@ -76,6 +79,13 @@ public:
 	
 	static std::int64_t Int64( const decString &string );
 	static decString Int64ToString( std::int64_t value );
+	
+	/** Convert uint64. */
+	static std::uint64_t UInt64( const deServiceObject &so );
+	static deServiceObject::Ref UInt64( std::uint64_t value );
+	
+	static std::uint64_t UInt64( const decString &string );
+	static decString UInt64ToString( std::uint64_t value );
 	
 	/** Convert identifier. */
 	static std::int64_t ID( const deServiceObject &so );
@@ -119,6 +129,9 @@ public:
 	
 	/** Convert modio terms link. */
 	static deServiceObject::Ref TermsLink( const Modio::Terms::Link &link );
+	
+	/** Convert ReportType. */
+	static Modio::ReportType ReportParamsType( const deServiceObject &so );
 	/*@}*/
 };
 

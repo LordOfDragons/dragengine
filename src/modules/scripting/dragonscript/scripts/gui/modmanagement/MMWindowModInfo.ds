@@ -49,7 +49,7 @@ class MMWindowModInfo extends WindowDialog
 	func new(Window window, ServiceMods serviceMods, MMModification mod)
 		runWhileBlockingLayout(block
 			setGuiTheme(window.getGuiTheme())
-			setTitle("@UI.ModificationsMod")
+			setTitle(mod.info.name)
 			setDesignerSelector("Window.Dialog.MMWindowModInfo")
 			setSize(window.getDesktop().getContainerSize() - Point.new(200, 200))
 			createContent(serviceMods, mod)
@@ -81,6 +81,7 @@ class MMWindowModInfo extends WindowDialog
 		
 		pPanelModInfo = createModInfoPanel(serviceMods, mod)
 		addWidget(pPanelModInfo, BorderLayout.Area.content)
+		setActiveWidget(pPanelModInfo.getInitActivateWidget())
 		
 		pPanelBottomLine = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p
 			p.addWidget(createButton("@UI.Close", null, ".Close", CloseWindowActionListener.new(this)))

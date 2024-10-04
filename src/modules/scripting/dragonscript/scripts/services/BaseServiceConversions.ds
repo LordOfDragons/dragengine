@@ -25,6 +25,7 @@
 namespace Dragengine.Services
 pin Dragengine.Gui
 pin Dragengine.Services.User
+pin Dragengine.Services.Mods
 
 
 /**
@@ -150,6 +151,27 @@ class BaseServiceConversions
 		return so2 != null if so2.getResource() cast Image else null
 	end
 	
+	/** \brief Convert report to service object. */
+	func ServiceObject convertReport(ServiceModReport report)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("type", report.type.name())
+		so.setStringChildAt("description", report.description)
+		if report.reporterName != null
+			so.setStringChildAt("reporterName", report.reporterName)
+		end
+		if report.reporterContact != null
+			so.setStringChildAt("reporterContact", report.reporterContact)
+		end
+		return so
+	end
+	
+	/** \brief Convert report to service object. */
+	func ServiceObject convertReport(ServiceUserReport report)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("description", report.description)
+		return so
+	end
+	
 	
 	
 	/** \brief Create exception from response. */
@@ -180,6 +202,9 @@ class BaseServiceConversions
 		features.canLogout = convertBool(so, "canLogout", false)
 		features.canAuthProviderLogin = convertStringSet(so, "canAuthProviderLogin")
 		features.authTokenProvider = convertAuthTokenProvider(so.getChildAt("authTokenProvider"))
+		features.canReportUser = convertBool(so, "canReportUser", false)
+		features.hasMarketplace = convertBool(so, "hasMarketplace", false)
+		features.currency = convertString(so, "currency", null)
 		return features
 	end
 	
@@ -195,5 +220,19 @@ class BaseServiceConversions
 		atp.icon = convertImage(so, "icon")
 		atp.image = convertImage(so, "image")
 		return atp
+	end
+	
+	
+	
+	/** \brief Convert service mods features. */
+	func ServiceModsFeatures convertModsFeatures(ServiceObject so)
+		var ServiceModsFeatures features = ServiceModsFeatures.new()
+		features.name = convertString(so, "name", null)
+		features.modRatingCount = convertInteger(so, "modRatingCount", 0)
+		features.canRateMods = convertBool(so, "canRateMods", false)
+		features.canReportMods = convertBool(so, "canReportMods", false)
+		features.hasMarketplace = convertBool(so, "hasMarketplace", false)
+		features.currency = convertString(so, "currency", null)
+		return features
 	end
 end

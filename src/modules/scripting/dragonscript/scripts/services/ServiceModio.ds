@@ -232,11 +232,9 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	
 	
 	func ServiceModsFeatures getModsFeatures()
-		var ServiceModsFeatures features = ServiceModsFeatures.new()
-		features.name = "Mod.io"
-		features.modRatingCount = 2
-		features.userCanRateMods = true
-		return features
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getModsFeatures")
+		return pConversions.convertModsFeatures(pService.runAction(so))
 	end
 	
 	func void addModsListener(ServiceModsListener listener)
@@ -414,6 +412,14 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
+	func void reportMod(String id, ServiceModReport report, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "reportMod")
+		so.setStringChildAt("modId", id)
+		so.setChildAt("report", pConversions.convertReport(report))
+		runRequest(so, listener)
+	end
+	
 	func void setModDisabled(String id, bool disabled, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "setModDisabled")
@@ -459,6 +465,27 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	func void getModTags(ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getModTagOptions")
+		runRequest(so, listener)
+	end
+	
+	func void getPurchasedMods(ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserPurchasedMods")
+		runRequest(so, listener)
+	end
+	
+	func void purchaseMod(String id, String price, ServiceModsListener listener)
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		if price == null
+			throw ENullPointer.new("price")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "purchaseMod")
+		so.setStringChildAt("modId", id)
+		so.setStringChildAt("price", price)
 		runRequest(so, listener)
 	end
 	
@@ -551,6 +578,21 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "loadUserResource")
 		so.setStringChildAt("url", url)
+		
+		runRequest(so, listener)
+	end
+	
+	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "reportUser")
+		so.setStringChildAt("userId", id)
+		so.setChildAt("report", pConversions.convertReport(report))
+		runRequest(so, listener)
+	end
+	
+	func void getUserWalletBalance(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserWalletBalance")
 		
 		runRequest(so, listener)
 	end
@@ -661,6 +703,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, null)
 			end
 			
+		elif function.equals("reportMod")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onReportMod(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onReportMod(this, modId, null)
+			end
+			
 		elif function.equals("getModTagOptions")
 			var Array categories = convertTagCategoryList(response.getChildAt("categories"))
 			
@@ -681,6 +733,53 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, resource, null)
+			end
+			
+		elif function.equals("getUserWalletBalance")
+			var String amount = response.getChildAt("amount").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onUserWalletBalance(this, amount, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onUserWalletBalance(this, amount, null)
+			end
+			
+		elif function.equals("reportUser")
+			var String userId = response.getChildAt("userId").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onReportUser(this, userId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onReportUser(this, userId, null)
+			end
+			
+		elif function.equals("getUserPurchasedMods")
+			var ServiceObject soMods = response.getChildAt("mods")
+			var Array mods = Array.new()
+			var int i, count = soMods.getChildCount()
+			for i = 0 to count
+				mods.add(convertModInfo(soMods.getChildAt(i)))
+			end
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetPurchasedMods(this, mods, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetPurchasedMods(this, mods, null)
+			end
+			
+		elif function.equals("purchaseMod")
+			var String modId = response.getChildAt("modId").getString()
+			var String price = response.getChildAt("price").getString()
+			var String walletBalance = response.getChildAt("walletBalance").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onPurchaseMod(this, modId, price, walletBalance, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onPurchaseMod(this, modId, price, walletBalance, null)
 			end
 		end
 	end
@@ -772,6 +871,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, exception)
 			end
 			
+		elif function.equals("reportMod")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onReportMod(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onReportMod(this, modId, exception)
+			end
+			
 		elif function.equals("getModTagOptions")
 			pModsListeners.forEach(block ServiceModsListener each
 				each.onGetTags(this, null, exception)
@@ -788,6 +897,40 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, null, exception)
+			end
+			
+		elif function.equals("getUserWalletBalance")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onUserWalletBalance(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onUserWalletBalance(this, null, exception)
+			end
+			
+		elif function.equals("reportUser")
+			var String userId = error.getChildAt("userId").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onReportUser(this, userId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onReportUser(this, userId, exception)
+			end
+			
+		elif function.equals("getUserPurchasedMods")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetPurchasedMods(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetPurchasedMods(this, null, exception)
+			end
+			
+		elif function.equals("purchaseMod")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onPurchaseMod(this, null, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onPurchaseMod(this, null, null, null, exception)
 			end
 		end
 	end
@@ -935,7 +1078,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		info.metadata = pConversions.convertString(so, "metadataBlob")
 		info.metadataMap = pConversions.convertStringDict(so, "metadataKvp")
 		info.version = pConversions.convertString(so, "version")
-		info.price = pConversions.convertInteger(so, "price", 0).toString()
+		info.price = pConversions.convertString(so, "price")
 		info.hasDependencies = pConversions.convertBool(so, "dependencies", false)
 		
 		so2 = so.getChildAt("userRating")

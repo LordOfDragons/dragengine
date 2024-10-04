@@ -259,7 +259,7 @@ interface ServiceMods
 	 * 
 	 * Once finished \ref ServiceModsListener#onGetModInfo() is called.
 	 * 
-	 * \param modId Identifier of modification to retrieve.
+	 * \param id Identifier of modification to retrieve.
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void getModInfo(String id, ServiceModsListener listener)
@@ -268,8 +268,9 @@ interface ServiceMods
 	 * \brief Submit rating for modification.
 	 * 
 	 * Once finished \ref ServiceModsListener#onSubmitModRating() is called.
+	 * Can be used if \ref ServiceModsFeatures#canRateMods is true.
 	 * 
-	 * \param modId Identifier of modification to submit rating for.
+	 * \param id Identifier of modification to submit rating for.
 	 * \param rating Rating to submit.
 	 * \param listener If not null called once in addition to added listeners.
 	 */
@@ -279,11 +280,24 @@ interface ServiceMods
 	 * \brief Revoke rating for modification.
 	 * 
 	 * Once finished \ref ServiceModsListener#onRevokeModRating() is called.
+	 * Can be used if \ref ServiceModsFeatures#canRateMods is true.
 	 * 
-	 * \param modId Identifier of modification to revoke rating for.
+	 * \param id Identifier of modification to revoke rating for.
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void revokeModRating(String id, ServiceModsListener listener)
+	
+	/**
+	 * \brief Report modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onReportMod() is called.
+	 * Can be used if \ref ServiceModsFeatures#canReportMods is true.
+	 * 
+	 * \param id Identifier of modification to report.
+	 * \param report Report to submit.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void reportMod(String id, ServiceModReport report, ServiceModsListener listener)
 	
 	/**
 	 * \brief Disable modification.
@@ -294,7 +308,7 @@ interface ServiceMods
 	 * 
 	 * If modification is not found nothing is done.
 	 * 
-	 * \param modId Identifier of modification to revoke rating for.
+	 * \param id Identifier of modification to revoke rating for.
 	 * \param disabled Disabled state.
 	 * \param listener If not null called once in addition to added listeners.
 	 */
@@ -325,4 +339,25 @@ interface ServiceMods
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void getModTags(ServiceModsListener listener)
+	
+	/**
+	 * \brief Purchased mods.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetPurchasedMods() is called with
+	 * array of \ref ServiceModInfo value.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getPurchasedMods(ServiceModsListener listener)
+	
+	/**
+	 * \brief Purchase mod.
+	 * 
+	 * Once finished \ref ServiceModsListener#onPurchaseMod() is called.
+	 * 
+	 * \param id Identifier of modification to purchase.
+	 * \param price Price shown to the user. Used to verify the price matches.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void purchaseMod(String id, String price, ServiceModsListener listener)
 end

@@ -498,7 +498,7 @@ class MMPanelModManagement extends Panel
 		end
 		
 		pUserServices = Array.new(userServices)
-		pModelServices = DefaultListModel.new(userServices)
+		pModelServices = DefaultListModel.new(modsServices)
 		
 		pCodecPropertyString = CodecPropertyString.new()
 		pSearchTagCategories = Array.new()

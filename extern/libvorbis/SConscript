@@ -31,6 +31,10 @@ else:
 		format( libLinkName[ x ] ) )
 			for x in range( len( libLinkName ) ) ]
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.bz2'.format(srcdir), 'libvorbis', 'lib_libvorbis_fetch')
+
 # check if system libvorbis is present
 hasSystemVorbis = False
 conf = envLibrary.Configure()
@@ -103,8 +107,7 @@ else:
 targets.append( 'include/vorbis/vorbisenc.h' )
 targets.append( 'include/vorbis/vorbisfile.h' )
 targets.append( 'include/vorbis/codec.h' )
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action(libvorbisBuild, 'Build libvorbis' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libvorbisBuild, 'Build libvorbis' ) )
 
 if parent_targets[ 'lib_libogg' ][ 'depends' ]:
 	envLibrary.Depends( library, parent_targets[ 'lib_libogg' ][ 'depends' ] )

@@ -109,10 +109,37 @@ interface ServiceModsListener
 	func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
 	
 	/**
+	 * \brief Report modification finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the report has been submitted for.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onReportMod(ServiceMods service, String modId, Exception exception)
+	
+	/**
 	 * \brief Retrieve tags finished.
 	 * \param service Service sending the event.
 	 * \param categories Array of ServiceModTagCategory.
 	 * \param exception On success null. On failure contains error information.
 	 */
 	func void onGetTags(ServiceMods service, Array categories, Exception exception)
+	
+	/**
+	 * \brief Get purchased mods finished.
+	 * \param service Service sending the event.
+	 * \param mods Array of ServiceModInfo.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetPurchasedMods(ServiceMods service, Array mods, Exception exception)
+	
+	/**
+	 * \brief Purchase mod finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the user purchased.
+	 * \param price Price paid for the modification.
+	 * \param walletBalance Wallet balance after purchase.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onPurchaseMod(ServiceMods service, String modId, String price,\
+		String walletBalance, Exception exception)
 end

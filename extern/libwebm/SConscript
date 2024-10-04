@@ -21,6 +21,9 @@ if envLibrary['OSWindows']:
 else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libwebm', 'lib_libwebm_fetch')
+
 # check if system libwebm is present
 hasSystemWebm = False
 conf = envLibrary.Configure()
@@ -128,8 +131,7 @@ targets.extend([
 	'include/webm/reader.h',
 	'include/webm/status.h',
 	'include/webm/webm_parser.h'])
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-	envLibrary.Action(libwebmBuild, 'Build libwebm'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(libwebmBuild, 'Build libwebm'))
 
 depends = parent_env.Alias('lib_libwebm', library)
 

@@ -28,6 +28,7 @@ pin Dragengine.Gui.Layouts
 pin Dragengine.Gui.Events
 pin Dragengine.Gui.Designers
 pin Dragengine.Utils.StyledText.Definition.Nodes
+pin Dragengine.Services.User
 
 
 /**
@@ -105,12 +106,18 @@ class MMPanelModInfo extends Panel
 		func void onSubscribeMod(ServiceMods service, String modId, Exception exception)
 			if exception == null
 				pPanel.updateModInfo(modId, null)
+				
+			else
+				pPanel.promptMessage("@UI.ModManagementMod.Subscribe", exception.getReason())
 			end
 		end
 		
 		func void onUnsubscribeMod(ServiceMods service, String modId, Exception exception)
 			if exception == null
 				pPanel.updateModInfo(modId, null)
+				
+			else
+				pPanel.promptMessage("@UI.ModManagementMod.Unsubscribe", exception.getReason())
 			end
 		end
 		
@@ -118,18 +125,47 @@ class MMPanelModInfo extends Panel
 			if exception == null
 				pPanel.getMod().status.disabled = disabled
 				pPanel.updateModInfo(modId, null)
+				
+			else
+				if disabled
+					pPanel.promptMessage("@UI.ModManagementMod.Enable", exception.getReason())
+					
+				else
+					pPanel.promptMessage("@UI.ModManagementMod.Disable", exception.getReason())
+				end
 			end
 		end
 		
 		func void onSubmitModRating(ServiceMods service, String modId, Exception exception)
 			if exception == null
 				pPanel.updateModInfo(modId, null)
+				
+			else
+				pPanel.promptMessage("@UI.ModManagementMod.SubmitRating", exception.getReason())
 			end
 		end
 		
 		func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
 			if exception == null
 				pPanel.updateModInfo(modId, null)
+				
+			else
+				pPanel.promptMessage("@UI.ModManagementMod.RevokeRating", exception.getReason())
+			end
+		end
+		
+		func void onGetPurchasedMods(ServiceMods service, Array mods, Exception exception)
+			if exception == null and mods != null
+				pPanel.updatePurchasedMods(mods)
+			end
+		end
+		
+		func void onPurchaseMod(ServiceMods service, String modId, String price, String walletBalance, Exception exception)
+			if exception == null
+				pPanel.onPurchaseMod()
+				
+			else
+				pPanel.promptMessage("@UI.ModManagementMod.Purchase", exception.getReason())
 			end
 		end
 		
@@ -144,8 +180,8 @@ class MMPanelModInfo extends Panel
 	var ServiceMods pServiceMods
 	var ServiceModsFeatures pServiceModFeatures
 	var MMModification pMod
-	var Button pButtonSubscribe, pButtonDisable
-	var Dictionary pSubscribedMods, pSystemMods
+	var Button pButtonSubscribe, pButtonDisable, pButtonPurchase
+	var Dictionary pSubscribedMods, pSystemMods, pPurchasedMods
 	var ModEventListener pModEventListener
 	var DefaultTextModel pModelStatus
 	var DefaultRatingModel pModelRating
@@ -153,6 +189,7 @@ class MMPanelModInfo extends Panel
 	var Label pLabProgressRemaining
 	var String pRestartInfo
 	var DisplayStyledText pStyledDescription
+	var Panel pPanelPurchase
 	
 	
 	
@@ -161,6 +198,7 @@ class MMPanelModInfo extends Panel
 		pServiceMods = serviceMods
 		pServiceModFeatures = serviceMods.getModsFeatures()
 		pMod = mod
+		pPurchasedMods = Dictionary.new()
 		pSubscribedMods = serviceMods.getSubscribedMods()
 		pSystemMods = serviceMods.getSystemMods()
 		pModelStatus = DefaultTextModel.new()
@@ -181,6 +219,10 @@ class MMPanelModInfo extends Panel
 		serviceMods.addModsListener(pModEventListener)
 		
 		pModelRating.addListener(MMSubmitModRatingListener.new(serviceMods, mod))
+		
+		if pServiceModFeatures.hasMarketplace
+			pServiceMods.getPurchasedMods(null)
+		end
 	end
 	
 	/** \brief Dispose of widget. */
@@ -190,12 +232,13 @@ class MMPanelModInfo extends Panel
 			pModEventListener = null
 		end
 		
-		pButtonSubscribe = pButtonDisable = null
+		pButtonSubscribe = pButtonDisable = pButtonPurchase = null
 		pModelStatus = null
 		pModelRating = null
 		pLabProgressRemaining = null
 		pProgressStatus = null
 		pStyledDescription = null
+		pPanelPurchase = null
 		
 		super.dispose()
 	end
@@ -236,16 +279,42 @@ class MMPanelModInfo extends Panel
 		pRestartInfo = info
 	end
 	
+	/**
+	 * \brief Widget to activate.
+	 */
+	func Widget getInitActivateWidget()
+		return pButtonSubscribe
+	end
+	
 	
 	
 	/** \brief Update subscribed mods dictionary. */
 	func void updateSubscribedMods()
 		pSubscribedMods = pServiceMods.getSubscribedMods()
+		updateButtonStates()
 	end
 	
 	/** \brief Update system mods dictionary. */
 	func void updateSystemMods()
 		pSystemMods = pServiceMods.getSystemMods()
+	end
+	
+	/** \brief Update purchased mods dictionary. */
+	func void updatePurchasedMods(Array mods)
+		pPurchasedMods.removeAll()
+		mods.forEach(block ServiceModInfo each
+			pPurchasedMods.setAt(each.id, each)
+		end)
+		updateButtonStates()
+	end
+	
+	/** \brief Modification purchased successfully. */
+	func void onPurchaseMod()
+		pServiceMods.getPurchasedMods(null)
+		
+		if pServiceMods castable ServiceUser
+			(pServiceMods cast ServiceUser).getUserWalletBalance(null)
+		end
 	end
 	
 	
@@ -293,6 +362,51 @@ class MMPanelModInfo extends Panel
 	end
 	
 	/**
+	 * \brief Purchase button clicked.
+	 */
+	func void onPurchase()
+		if not pServiceModFeatures.hasMarketplace\
+		or pMod.info.price == null or pMod.info.price.equals("0")\
+		or pSubscribedMods.has(pMod.info.id) or pPurchasedMods.has(pMod.info.id)
+			return
+		end
+		
+		pServiceMods.purchaseMod(pMod.info.id, pMod.info.price, null)
+	end
+	
+	/**
+	 * \brief Report modification button clicked.
+	 * 
+	 * Shows \ref MMDialogReportMod. Upon accepting the dialog \ref #onReportMod(ServiceModReport)
+	 * is called to submit the report.
+	 */
+	func void onReportMod()
+		if not pServiceModFeatures.canReportMods
+			return
+		end
+		
+		var Window window = getWindow()
+		MMDialogReportMod.new(window, WindowDialog.BlockResultListener.new(block ServiceModReport report
+			if report != null
+				onReportMod(report)
+			end
+		end)).show(window, true, WindowDialog.Placement.window)
+	end
+	
+	/**
+	 * \brief Report modification.
+	 * 
+	 * Called by \ref #onReportMod() after dialog is accepted.
+	 */
+	func void onReportMod(ServiceModReport report)
+		if report == null
+			throw ENullPointer.new("report")
+		end
+		
+		pServiceMods.reportMod(pMod.info.id, report, null)
+	end
+	
+	/**
 	 * \brief Show unsubscribe requires restart input prompt and restart.
 	 * 
 	 * Default implementation shows input dialog informing user unsubscribed modification
@@ -310,6 +424,15 @@ class MMPanelModInfo extends Panel
 			end))
 	end
 	
+	/**
+	 * \brief Show message dialog window.
+	 * 
+	 * Default implementation calls \ref WindowDialog#message().
+	 */
+	func void promptMessage(String title, String message)
+		WindowDialog.message(getWindow(), title, message, null, null, null)
+	end
+	
 	
 	
 	/** \brief Gui theme changed. */
@@ -324,12 +447,12 @@ class MMPanelModInfo extends Panel
 	protected func void updateButtonStates()
 		pButtonSubscribe.runWhileBlockingLayout(block
 			if pSubscribedMods.has(pMod.info.id)
-				pButtonSubscribe.setDesignerSelector("Button.WindowModManagementMod.Unsubscribe")
+				pButtonSubscribe.setDesignerSelector("Button.MMPanelModInfo.Unsubscribe")
 				pButtonSubscribe.setText("@UI.ModManagementMod.Unsubscribe")
 				pButtonSubscribe.setToolTip("@UI.ModManagementMod.Unsubscribe.ToolTip")
 				
 			else
-				pButtonSubscribe.setDesignerSelector("Button.WindowModManagementMod.Subscribe")
+				pButtonSubscribe.setDesignerSelector("Button.MMPanelModInfo.Subscribe")
 				pButtonSubscribe.setText("@UI.ModManagementMod.Subscribe")
 				pButtonSubscribe.setToolTip("@UI.ModManagementMod.Subscribe.ToolTip")
 			end
@@ -338,12 +461,12 @@ class MMPanelModInfo extends Panel
 		
 		pButtonDisable.runWhileBlockingLayout(block
 			if pMod.status == null or pMod.status.disabled
-				pButtonDisable.setDesignerSelector("Button.WindowModManagementMod.Enable")
+				pButtonDisable.setDesignerSelector("Button.MMPanelModInfo.Enable")
 				pButtonDisable.setText("@UI.ModManagementMod.Enable")
 				pButtonDisable.setToolTip("@UI.ModManagementMod.Enable.ToolTip")
 				
 			else
-				pButtonDisable.setDesignerSelector("Button.WindowModManagementMod.Disable")
+				pButtonDisable.setDesignerSelector("Button.MMPanelModInfo.Disable")
 				pButtonDisable.setText("@UI.ModManagementMod.Disable")
 				pButtonDisable.setToolTip("@UI.ModManagementMod.Disable.ToolTip")
 			end
@@ -351,6 +474,43 @@ class MMPanelModInfo extends Panel
 			pButtonDisable.setEnabled(pMod.status != null)
 		end)
 		pButtonDisable.doLayoutIfBlocked()
+		
+		pButtonPurchase.runWhileBlockingLayout(block
+			if pServiceModFeatures.hasMarketplace or pMod.info.price == null or pMod.info.price.equals("0")
+				pButtonPurchase.setDesignerSelector("Button.MMPanelModInfo.Free")
+				pButtonPurchase.setText("@UI.ModManagementMod.Free")
+				pButtonPurchase.setToolTip(null)
+				pButtonPurchase.setEnabled(false)
+				
+			elif pSubscribedMods.has(pMod.info.id) or pPurchasedMods.has(pMod.info.id)
+				pButtonPurchase.setDesignerSelector("Button.MMPanelModInfo.Purchased")
+				pButtonPurchase.setText("@UI.ModManagementMod.Purchased")
+				pButtonPurchase.setToolTip(null)
+				pButtonPurchase.setEnabled(false)
+				
+			else
+				pButtonPurchase.setDesignerSelector("Button.MMPanelModInfo.Purchase")
+				pButtonPurchase.setText(buildPriceText())
+				pButtonPurchase.setToolTip("@UI.ModManagementMod.Purchase.ToolTip")
+				pButtonPurchase.setEnabled(true)
+			end
+		end)
+		pButtonPurchase.doLayoutIfBlocked()
+	end
+	
+	/** \brief Build price text. */
+	protected func String buildPriceText()
+		if pServiceModFeatures != null and pMod.info.price != null
+			if pServiceModFeatures.currency != null
+				return pServiceModFeatures.currency + " " + pMod.info.price
+				
+			else
+				return pMod.info.price
+			end
+			
+		else
+			return ""
+		end
 	end
 	
 	/**
@@ -427,10 +587,18 @@ class MMPanelModInfo extends Panel
 		setLayout(BorderLayout.new(10))
 		
 		// top: header
-		addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
-			p.setDesignerSelector("Panel.MMPanelModInfo.Header")
+		addWidget(Panel.new(BorderLayout.new(), block Panel p
+			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModInfo.Header")
+				p2.addWidget(Label.new(pMod.info.name, "Label.MMPanelModInfo.HeaderTitle"))
+			end), BorderLayout.Area.content)
 			
-			p.addWidget(Label.new(pMod.info.name, "Label.MMPanelModInfo.HeaderTitle"))
+			p.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p2
+				p2.addWidget(createButton("", "@UI.ModManagementMod.ReportMod.ToolTip", ".ReportMod",\
+					BlockActionListener.new(block ActionEvent e
+						onReportMod()
+					end)))
+			end), BorderLayout.Area.right)
 		end), BorderLayout.Area.top)
 		
 		// content: description
@@ -466,6 +634,21 @@ class MMPanelModInfo extends Panel
 					end))
 				p2.addWidget(pButtonDisable)
 			end))
+			
+			pPanelPurchase = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModInfo.Group.DetailsPurchase")
+				p2.setTitle("@UI.ModManagementMod.DetailsPurchase")
+				
+				pButtonPurchase = createButton(buildPriceText(),\
+					"@UI.ModManagementMod.Purchase.ToolTip", ".Purchase",\
+					BlockActionListener.new(block ActionEvent e
+						onPurchase()
+					end))
+				pButtonPurchase.setLayout(CentrizedBoxLayout.new(LayoutAxis.x))
+				p2.addWidget(pButtonPurchase)
+			end)
+			pPanelPurchase.setVisible(pServiceModFeatures.hasMarketplace)
+			p.addWidget(pPanelPurchase)
 			
 			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
 				p2.setDesignerSelector("Panel.MMPanelModInfo.Group.DetailsDetails")
@@ -523,7 +706,8 @@ class MMPanelModInfo extends Panel
 							text = pMod.info.dateUpdated.format("%x")
 							
 						else
-							text = fh.formatTimeDifference(seconds)
+							// deal with clock skew causing difference to be negative
+							text = fh.formatTimeDifference(DEMath.max(seconds, 0))
 						end
 						
 					else
@@ -540,7 +724,8 @@ class MMPanelModInfo extends Panel
 							text = pMod.info.dateReleased.format("%x")
 							
 						else
-							text = fh.formatTimeDifference(seconds)
+							// deal with clock skew causing difference to be negative
+							text = fh.formatTimeDifference(DEMath.max(seconds, 0))
 						end
 						
 					else
@@ -643,7 +828,7 @@ class MMPanelModInfo extends Panel
 	 * getServiceModsFeatures().userCanRateMods to set read-only if required.
 	 */
 	protected func Widget createRating()
-		var bool readOnly = not pServiceModFeatures.userCanRateMods
+		var bool readOnly = not pServiceModFeatures.canRateMods
 		
 		if pServiceModFeatures.modRatingCount == 2
 			return RatingUpDown.new(pModelRating, readOnly)

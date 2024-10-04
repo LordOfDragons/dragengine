@@ -60,7 +60,27 @@ class ServiceModsFeatures
 	 * If false and modRatingCount is not 0 ratings will be shown but the user
 	 * is not able to submit or revoke ratings.
 	 */
-	public var bool userCanRateMods
+	public var bool canRateMods
+	
+	/**
+	 * \brief Reporting modifications is supported.
+	 */
+	public var bool canReportMods
+	
+	/**
+	 * \brief Monetization is supported using marketplace or store functionality.
+	 * 
+	 * If true paid modifications can be purchased by the used.
+	 */
+	public var bool hasMarketplace
+	
+	/**
+	 * \brief Monetization currency name.
+	 * 
+	 * If \ref #hasMarketplace is true contains the currency name which can be a real
+	 * currency code or a virtual currency name.
+	 */
+	public var String currency
 	
 	
 	

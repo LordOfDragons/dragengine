@@ -103,6 +103,26 @@ class ServiceUserFeatures
 	 */
 	public var AuthTokenProvider authTokenProvider
 	
+	/**
+	 * \brief Reporting users is supported.
+	 */
+	public var bool canReportUser
+	
+	/**
+	 * \brief Monetization is supported using marketplace or store functionality.
+	 * 
+	 * If true user has a wallet for store purchases.
+	 */
+	public var bool hasMarketplace
+	
+	/**
+	 * \brief Monetization currency name.
+	 * 
+	 * If \ref #hasMarketplace is true contains the currency name which can be a real
+	 * currency code or a virtual currency name.
+	 */
+	public var String currency
+	
 	
 	
 	/**

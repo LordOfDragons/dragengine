@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libpng-1.6.29-ani-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libpng-1.6.29-ani-vc64.zip" -UrlPath "libpng"
+
+Expand-Archive -Path "$ProjectDir\libpng-1.6.29-ani-vc64.zip" -DestinationPath $ProjectDir

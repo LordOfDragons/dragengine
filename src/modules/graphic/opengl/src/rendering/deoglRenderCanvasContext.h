@@ -57,7 +57,7 @@ private:
 	decColorMatrix pColorTransform;
 	float pTransparency;
 	deoglTexture *pMask;
-	decTexMatrix2 pTransformMask;
+	decTexMatrix2 pTCTransformMask;
 	
 	
 	
@@ -162,11 +162,14 @@ public:
 	/** Set mask or NULL. */
 	void SetMask( deoglTexture *mask );
 	
-	/** Transformation relative to mask render target. */
-	inline const decTexMatrix2 &GetTransformMask() const{ return pTransformMask; }
+	/** Mask texture coordinate transformation. */
+	inline const decTexMatrix2 &GetTCTransformMask() const{ return pTCTransformMask; }
 	
-	/** Set transformation relative to mask render target. */
-	void SetTransformMask( const decTexMatrix2 &transform );
+	/** Set mask texture coordinate transformation. */
+	void SetTCTransformMask( const decTexMatrix2 &transform );
+	
+	/** Set mask texture coordinate transformation. */
+	void SetTCTransformMask( const deoglRenderTarget &renderTarget );
 	
 	/** Update transformation mask from transformation. */
 	void UpdateTransformMask();

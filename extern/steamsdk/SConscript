@@ -10,6 +10,9 @@ Import('parent_env parent_targets parent_report')
 if parent_env['platform_android'] != 'no':
 	Return()
 
+if parent_env['OSBeOS']:
+	Return()
+
 envLibrary = parent_env.Clone()
 
 steamSdkVersion = '160'
@@ -20,6 +23,9 @@ if envLibrary['OSWindows']:
 else:
 	libFileName = 'bin/libsteam_api.so'
 	binFileName = libFileName
+
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'steamsdk{}.tar.xz'.format(steamSdkVersion), 'steamsdk', 'lib_steamsdk_fetch')
 
 def unpackArchiveFile(target, source, env):
 	buildDir = target[0].get_dir().up()
@@ -77,8 +83,7 @@ targets.extend([
 	'include/steam_api.json',
 	'include/isteaminventory.h'])
 
-sdk = envLibrary.Command(targets, 'steamsdk{}.tar.xz'.format(steamSdkVersion),
-	envLibrary.Action(unpackArchiveFile, 'Unpack SDK'))
+sdk = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(unpackArchiveFile, 'Unpack SDK'))
 
 envLibrary.Clean(sdk, ['bin', 'include'])
 

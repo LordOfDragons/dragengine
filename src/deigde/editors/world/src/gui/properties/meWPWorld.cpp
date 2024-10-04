@@ -458,7 +458,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Menu" ),
 	pPanel( panel ){}
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+	void AddContextMenuEntries( igdeMenuCascade &contextMenu ) override{
 		if( ! pPanel.GetWorld() ){
 			return;
 		}
@@ -689,7 +689,9 @@ pWorld( NULL )
 	
 	helper.FormLineStretchFirst( groupBox, "Type:", "Type to edit", formLine );
 	helper.ComboBox( formLine, "Type to edit", pCBPFTType, new cComboPFTType( *this ) );
-	helper.Button( formLine, pBtnPFTTypes, new cActionPFTTypes( *this ), true );
+	pActionPFTTypes.TakeOver( new cActionPFTTypes( *this ) );
+	helper.Button( formLine, pBtnPFTTypes, pActionPFTTypes, true );
+	pActionPFTTypes->SetWidget( pBtnPFTTypes );
 	
 	helper.EditInteger( groupBox, "Type Number:", "Type number.",
 		pEditPFTTypeNumber, new cEditPFTTypeNumber( *this ) );

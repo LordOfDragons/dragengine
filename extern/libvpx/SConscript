@@ -25,6 +25,9 @@ else:
 	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libvpx', 'lib_libvpx_fetch')
+
 # check if system libvpx is present
 hasSystemVpx = False
 conf = envLibrary.Configure()
@@ -126,8 +129,7 @@ targets.extend([
 	'include/vpx/vpx_frame_buffer.h',
 	'include/vpx/vpx_image.h',
 	'include/vpx/vpx_integer.h'])
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-	envLibrary.Action(libvpxBuild, 'Build libvpx'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(libvpxBuild, 'Build libvpx'))
 
 depends = parent_env.Alias('lib_libvpx', library)
 

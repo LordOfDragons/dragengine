@@ -275,6 +275,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
+#include <dragengine/filesystem/deVFSNull.h>
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
@@ -725,6 +726,8 @@ void deScriptingDragonScript::ShutDown(){
 	
 	DeleteValuesDeleteLater();
 	
+	pRemoveVFSContainerHideScriptDirectory();
+	
 	if( pColInfo ){
 		pColInfo->FreeReference();
 		pColInfo = nullptr;
@@ -961,6 +964,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 	case esLoadGame:
 		try{
 			pLoadGamePackage( pInitScriptDirectory, pInitGameObject );
+			pAddVFSContainerHideScriptDirectory();
 			
 			pResourceLoader = new dedsResourceLoader( this );
 			pColInfo = new deCollisionInfo;
@@ -1036,6 +1040,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 	case esRestartShutdown:
 		LogInfo( "Restart: Shutdown..." );
 		ShutDown();
+		pRemoveVFSContainerHideScriptDirectory();
 		pState = esRestartInit;
 		return true;
 		
@@ -1855,4 +1860,29 @@ decString deScriptingDragonScript::BuildFullName( const dsClass *theClass ) cons
 	}
 	
 	return fullname;
+}
+
+void deScriptingDragonScript::pAddVFSContainerHideScriptDirectory(){
+	pRemoveVFSContainerHideScriptDirectory();
+	
+	const deVFSNull::Ref container( deVFSNull::Ref::New(
+		new deVFSNull( decPath::CreatePathUnix( pInitScriptDirectory ) ) ) );
+	container->SetHidden( true );
+	container->AddHiddenPath( decPath::CreatePathUnix( "/" ) );
+	pVFSContainerHideScriptDirectory = container;
+	
+	GetGameEngine()->GetVirtualFileSystem()->AddContainer( container );
+}
+
+
+void deScriptingDragonScript::pRemoveVFSContainerHideScriptDirectory(){
+	if( ! pVFSContainerHideScriptDirectory ){
+		return;
+	}
+	
+	deVirtualFileSystem &vfs = *GetGameEngine()->GetVirtualFileSystem();
+	if( vfs.HasContainer( pVFSContainerHideScriptDirectory ) ){
+		vfs.RemoveContainer( pVFSContainerHideScriptDirectory );
+	}
+	pVFSContainerHideScriptDirectory = nullptr;
 }

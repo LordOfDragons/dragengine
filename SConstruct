@@ -111,8 +111,8 @@ if parent_env['LogStdOut_Enabled']:
 	parent_env['LOG_STD_OUT_FILE'] = open('build.log', 'w')
 
 parent_env.Tool('runExternalCommand')
-
 parent_env.Tool('macos_bundle')
+parent_env.Tool('downloadArtifact')
 
 InitCommon(parent_env)
 #print('os.name', os.name)
@@ -166,12 +166,16 @@ params.Add(StringVariable('version', 'Version', '9999'))
 params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
 params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))
 
+params.Add(StringVariable('url_extern_artifacts',
+	'Base URL to download external artifacts from if missing',
+	'https://dragondreams.s3.eu-central-1.amazonaws.com/dragengine/extern'))
+
 params.Add(TernaryVariable('with_system_zlib', 'Use System Zlib'))
 params.Add(TernaryVariable('with_system_libpng', 'Use System libpng'))
 params.Add(TernaryVariable('with_system_sndio', 'Use System sndio'))
 params.Add(TernaryVariable('with_system_libapng', 'Use System libapng'))
 params.Add(TernaryVariable('with_system_libjpeg', 'Use System JPEG'))
-params.Add(TernaryVariable('with_system_openal', 'Use System OpenAL'))
+params.Add(TernaryVariable('with_system_openal', 'Use System OpenAL', TernaryVariableNo))
 params.Add(ListVariable('with_openal_backends', 'When compiling OpenAL what backends are required',
 	[], ['alsa', 'pulseaudio', 'portaudio', 'oss']))
 params.Add(TernaryVariable('with_system_libogg', 'Use System libogg'))
@@ -191,6 +195,8 @@ params.Add(TernaryVariable('with_system_libwebp', 'Use System libwebp'))
 params.Add(TernaryVariable('with_system_libwebm', 'Use System libwebm'))
 params.Add(TernaryVariable('with_system_libvpx', 'Use System libvpx'))
 params.Add(TernaryVariable('with_system_liburing', 'Use System liburing'))
+params.Add(TernaryVariable('with_system_openvr', 'Use System OpenVR'))
+params.Add(TernaryVariable('with_system_openxr', 'Use System OpenXR'))
 
 params.Add(TernaryVariable('with_opengl', 'Use OpenGL'))
 params.Add(TernaryVariable('with_python', 'Use Python'))

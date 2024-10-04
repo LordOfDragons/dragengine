@@ -424,6 +424,14 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		throw EInvalidParam.new("not supported")
 	end
 	
+	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
+	func void getUserWalletBalance(ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
 	
 	
 	/** \brief Conversion helper */
@@ -607,6 +615,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		info.nickname = pConversions.convertString(so, "nickname")
 		info.country = pConversions.convertString(so, "country")
 		info.preferredLanguage = pConversions.convertString(so, "preferredLanguage")
+		info.profileUrl = pConversions.convertString(so, "profileUrl")
 		return info
 	end
 end

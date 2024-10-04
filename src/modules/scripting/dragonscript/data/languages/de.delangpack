@@ -130,6 +130,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.Value.NoTagSelected'>&#60; Keine Auswahl &#62;</translation>
 	<translation name='UI.ModManagementMod.DetailsDetails'>Details</translation>
 	<translation name='UI.ModManagementMod.DetailsTags'>Tags</translation>
+	<translation name='UI.ModManagementMod.DetailsPurchase'>Kaufen</translation>
 	<translation name='UI.ModManagementMod.Subscribers'>Abonnenten:</translation>
 	<translation name='UI.ModManagementMod.Downloads'>Downloads:</translation>
 	<translation name='UI.ModManagementMod.DownloadsToday'>Downloads Heute:</translation>
@@ -151,6 +152,12 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementMod.Enable.ToolTip'>Modifikation deblockieren</translation>
 	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
 	<translation name='UI.ModManagementMod.RemainingTime'>Verbleibende Zeit:</translation>
+	<translation name='UI.ModManagementMod.Purchase'>Laufen</translation>
+	<translation name='UI.ModManagementMod.Purchase.ToolTip'>Modifikation kaufen</translation>
+	<translation name='UI.ModManagementMod.Free'>Frei</translation>
+	<translation name='UI.ModManagementMod.Purchased'>Gekauft</translation>
+	<translation name='UI.ModManagementMod.SubmitRating'>Bewertung abgeben</translation>
+	<translation name='UI.ModManagementMod.RevokeRating'>Bewertung anullieren</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.downloading'>Herunterladen</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.extracting'>Entpacken</translation>
@@ -182,4 +189,22 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementUserAccount.Login.ToolTip'>Bei Benutzerkonto anmelden</translation>
 	<translation name='UI.ModManagementUserAccount.Logout.ToolTip'>Von Benutzerkonto abmelden</translation>
 	<translation name='UI.ModManagementUserAccount.SelectAuthProvider'>Wählen Sie den Authentifizierungsanbieter aus, mit dem Sie sich bei Ihrem Konto anmelden möchten. Es werden nur Anbieter aufgelistet, die vom Modifizierungsdienst unterstützt werden. Ist kein Konto vorhanden wird ein neues erstellt.</translation>
+	<translation name='UI.ModManagementMod.ReportMod'>Melden</translation>
+	<translation name='UI.ModManagementMod.ReportMod.ToolTip'>Modifikation melden</translation>
+	<translation name='UI.ModManagementReportMod.Title'>Modifikation melden</translation>
+	<translation name='UI.ModManagementReportMod.Type'>Typ:</translation>
+	<translation name='UI.ModManagementReportMod.Type.ToolTip'>Meldungstyp</translation>
+	<translation name='UI.ModManagementReportMod.Description'>Beschreibung:</translation>
+	<translation name='UI.ModManagementReportMod.Description.ToolTip'>Beschreibung des Problems</translation>
+	<translation name='UI.ModManagementReportMod.ReporterName'>Name:</translation>
+	<translation name='UI.ModManagementReportMod.ReporterName.ToolTip'>Name der Meldeperson. Nützlich für Urheberrechtsverletzungen.</translation>
+	<translation name='UI.ModManagementReportMod.ReporterContact'>Kontaktdaten:</translation>
+	<translation name='UI.ModManagementReportMod.ReporterContact.ToolTip'>Kontaktdaten der Meldeperson. Nützlich für Urheberrechtsverletzungen.</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.broken'>Funktioniert nicht</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.falseInformation'>Falsche Angaben</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.copyrightInfringement'>Urheberrechtsverletzung</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.inappropriateContent'>Unangemessener Inhalt</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.illegalContent'>Verbotener Inhalt</translation>
+	<translation name='UI.ModManagementReportMod.Enum.ReportType.other'>Anderer Grund</translation>
+	<translation name='UI.Submit'>Senden</translation>
 </languagePack>

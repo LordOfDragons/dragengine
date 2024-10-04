@@ -37,24 +37,14 @@ pin Dragengine.Gui.Designers
  * create a copy first using copy constructor.
  */
 class GuiTheme
-	/** \brief Widget font. */
-	private var Font pFontWidget
-	
-	/**
-	 * \brief Widget designers.
-	 * 
-	 * Dictionary with String key and WidgetDesigner value. Do not edit directly.
-	 * Widget designers are shared across gui themes and widgets for efficiency.
-	 */
-	private var Dictionary pWidgetDesigners
-	
-	/** \brief Named gui themes as dictionary with string key and GuiTheme value. */
-	private var Dictionary pNamedGuiThemes
+	var Font pFontWidget
+	var Dictionary pWidgetDesigners
+	var Dictionary pNamedGuiThemes
 	
 	
 	
 	/** \brief Creates default gui theme. */
-	public func new()
+	func new()
 		pWidgetDesigners = Dictionary.new()
 		pWidgetDesigners.setAt("Button", DefaultButtonDesigner.new())
 		pWidgetDesigners.setAt("ButtonWidget", DefaultButtonWidgetDesigner.new())
@@ -67,6 +57,7 @@ class GuiTheme
 		pWidgetDesigners.setAt("OptionBox", DefaultOptionBoxDesigner.new())
 		pWidgetDesigners.setAt("PlayerChoiceEntry", DefaultWidgetDesigner.new())
 		pWidgetDesigners.setAt("ProgressBar", DefaultProgressBarDesigner.new())
+		pWidgetDesigners.setAt("ProgressGauge", DefaultProgressGaugeDesigner.new())
 		pWidgetDesigners.setAt("ScrollBar", DefaultScrollBarDesigner.new())
 		pWidgetDesigners.setAt("Slider", DefaultSliderDesigner.new())
 		pWidgetDesigners.setAt("SpinButton", DefaultSpinButtonDesigner.new())
@@ -87,7 +78,7 @@ class GuiTheme
 	 * a widget designer using setParameter() you have to call copyDesigner()
 	 * first and replace the entry in this dictionary.
 	 */
-	public func new(GuiTheme guitheme)
+	func new(GuiTheme guitheme)
 		pFontWidget = guitheme.pFontWidget
 		
 		pWidgetDesigners = Dictionary.new(guitheme.pWidgetDesigners)
@@ -97,12 +88,12 @@ class GuiTheme
 	
 	
 	/** \brief Font for widgets. */
-	public func Font getWidgetFont()
+	func Font getWidgetFont()
 		return pFontWidget
 	end
 	
 	/** \brief Set font for widgets. */
-	public func void setWidgetFont(Font font)
+	func void setWidgetFont(Font font)
 		pFontWidget = font
 	end
 	
@@ -124,7 +115,7 @@ class GuiTheme
 	 * Returned widget designer is shared. Do not modify directly. If you need to modify
 	 * using setParameter() call first copyDesigner().
 	 */
-	public func WidgetDesigner getWidgetDesigner(String selector)
+	func WidgetDesigner getWidgetDesigner(String selector)
 		var WidgetDesigner designer
 		var int index
 		
@@ -146,17 +137,17 @@ class GuiTheme
 	end
 	
 	/** \brief Number of widget designers. */
-	public func int getWidgetDesignerCount()
+	func int getWidgetDesignerCount()
 		return pWidgetDesigners.getCount()
 	end
 	
 	/** \brief Set named widget designer. */
-	public func WidgetDesigner getNamedWidgetDesigner(String name)
+	func WidgetDesigner getNamedWidgetDesigner(String name)
 		return pWidgetDesigners.getAt(name) cast WidgetDesigner
 	end
 	
 	/** \brief Set widget designer. */
-	public func void setWidgetDesigner(String name, WidgetDesigner designer)
+	func void setWidgetDesigner(String name, WidgetDesigner designer)
 		if name == null or designer == null
 			throw EInvalidParam.new()
 		end
@@ -168,24 +159,24 @@ class GuiTheme
 	 * 
 	 * First parameter String name. Second parameter WidgetDesigner designer.
 	 */
-	public func void forEachWidgetDesigner(Block ablock)
+	func void forEachWidgetDesigner(Block ablock)
 		pWidgetDesigners.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Number of named gui themes. */
-	public func int getNamedGuiThemeCount()
+	func int getNamedGuiThemeCount()
 		return pNamedGuiThemes.getCount()
 	end
 	
 	/** \brief Get named gui theme or \em null if absent. */
-	public func GuiTheme getNamedGuiTheme(String name)
+	func GuiTheme getNamedGuiTheme(String name)
 		return pNamedGuiThemes.getAt(name, null) cast GuiTheme
 	end
 	
 	/** \brief Set named gui theme. */
-	public func void setNamedGuiTheme(String name, GuiTheme guitheme)
+	func void setNamedGuiTheme(String name, GuiTheme guitheme)
 		if name == null or guitheme == null
 			throw EInvalidParam.new()
 		end
@@ -193,17 +184,17 @@ class GuiTheme
 	end
 	
 	/** \brief Remove named gui theme. */
-	public func void removeNamedGuiTheme(String name)
+	func void removeNamedGuiTheme(String name)
 		pNamedGuiThemes.remove(name)
 	end
 	
 	/** \brief Remove all named gui themes. */
-	public func void removeAllNamedGuiThemes()
+	func void removeAllNamedGuiThemes()
 		pNamedGuiThemes.removeAll()
 	end
 	
 	/** \brief Visit named gui themes with block with parameters String and GuiTheme. */
-	public func void forEachNamedGuiTheme(Block ablock)
+	func void forEachNamedGuiTheme(Block ablock)
 		pNamedGuiThemes.forEach(ablock)
 	end
 end

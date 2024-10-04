@@ -187,6 +187,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 	}else if( function == "revokeModRating" ){
 		RevokeModRating( id, request );
 		
+	}else if( function == "reportMod" ){
+		ReportMod( id, request );
+		
 	}else if( function == "getModTagOptions" ){
 		GetModTagOptions( id, request );
 		
@@ -195,6 +198,18 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 		
 	}else if( function == "loadUserResource" ){
 		LoadUserResource( id, request );
+		
+	}else if( function == "getUserWalletBalance" ){
+		GetUserWalletBalance( id, request );
+		
+	}else if( function == "reportUser" ){
+		ReportUser( id, request );
+		
+	}else if( function == "getUserPurchasedMods" ){
+		GetUserPurchasedMods( id, request );
+		
+	}else if( function == "purchaseMod" ){
+		PurchaseMod( id, request );
 		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
@@ -250,6 +265,9 @@ deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
 		
 	}else if( function == "getActiveMods" ){
 		return GetActiveMods();
+		
+	}else if( function == "getModsFeatures" ){
+		return GetModsFeatures();
 		
 	}else if( function == "getUserFeatures" ){
 		return GetUserFeatures();
@@ -606,6 +624,29 @@ void deModioService::RevokeModRating( const decUniqueID &id, const deServiceObje
 	});
 }
 
+void deModioService::ReportMod( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::ModID modId( deMCCommon::ID( *request.GetChildAt( "modId" ) ) );
+	const deServiceObject::Ref soReport( request.GetChildAt( "report" ) );
+	const Modio::ReportParams params( modId,
+		deMCCommon::ReportParamsType( soReport->GetChildAt( "type" ) ),
+		soReport->GetChildAt( "description" )->GetString().GetString(),
+		deMCCommon::StringOrEmpty( soReport, "reporterName" ),
+		deMCCommon::StringOrEmpty( soReport, "reporterContact" ) );
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	const decString strModId( deMCCommon::IDToString( modId ) );
+	data->SetChildAt( "modId", deServiceObject::NewString( strModId ) );
+	
+	pModule.LogInfoFormat( "deModioService.ReportMod: id=%" PRIi64, ( int64_t )modId );
+	
+	NewPendingRequest( id, "reportMod", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::ReportContentAsync( params, [ this, id ]( Modio::ErrorCode ec ){
+		pOnRequestFinished( id, ec );
+	});
+}
+
 void deModioService::GetModTagOptions( const decUniqueID &id, const deServiceObject &request ){
 	pModule.LogInfo( "deModioService.GetModTagOptions" );
 	
@@ -665,9 +706,10 @@ void deModioService::LoadUserResource( const decUniqueID &id, const deServiceObj
 			}
 			
 			AddRequiresEventHandlingCount();
-			Modio::GetUserMediaAsync( size, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
-				pOnLoadResourceFinished( id, ec, filename );
-			});
+			Modio::GetUserMediaAsync( size, [ this, id ](
+				Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
+					pOnLoadResourceFinished( id, ec, filename );
+				});
 			
 		}else{
 			DETHROW_INFO( deeInvalidParam, "url" );
@@ -676,6 +718,67 @@ void deModioService::LoadUserResource( const decUniqueID &id, const deServiceObj
 	}else{
 		DETHROW_INFO( deeInvalidParam, "url" );
 	}
+}
+
+void deModioService::GetUserWalletBalance( const decUniqueID &id, const deServiceObject &request ){
+	pModule.LogInfo( "deModioService.GetUserWalletBalance" );
+	
+	NewPendingRequest( id, "getUserWalletBalance" );
+	AddRequiresEventHandlingCount();
+	
+	Modio::GetUserWalletBalanceAsync( [ this, id ]( Modio::ErrorCode ec,
+		Modio::Optional<uint64_t> amount ){
+			pOnGetUserWalletBalance( id, ec, amount );
+		});
+}
+
+void deModioService::ReportUser( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::UserID userId( deMCCommon::ID( *request.GetChildAt( "userId" ) ) );
+	const deServiceObject::Ref soReport( request.GetChildAt( "report" ) );
+	const Modio::ReportParams params( userId, Modio::ReportType::Other,
+		soReport->GetChildAt( "description" )->GetString().GetString(), "", "" );
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	const decString strUserId( deMCCommon::IDToString( userId ) );
+	data->SetChildAt( "userId", deServiceObject::NewString( strUserId ) );
+	
+	pModule.LogInfoFormat( "deModioService.ReportUser: id=%" PRIi64, ( int64_t )userId );
+	
+	NewPendingRequest( id, "reportUser", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::ReportContentAsync( params, [ this, id ]( Modio::ErrorCode ec ){
+		pOnRequestFinished( id, ec );
+	});
+}
+
+void deModioService::GetUserPurchasedMods( const decUniqueID &id, const deServiceObject &request ){
+	pModule.LogInfo( "deModioService.GetUserPurchasedMods" );
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	NewPendingRequest( id, "getUserPurchasedMods", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::FetchUserPurchasesAsync( [ this, id ]( Modio::ErrorCode ec ){
+		pOnGetUserPurchasedMods( id, ec );
+	});
+}
+
+void deModioService::PurchaseMod( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::ModID modId( deMCCommon::ID( *request.GetChildAt( "modId" ) ) );
+	const uint64_t price = deMCCommon::UInt64( *request.GetChildAt( "price" ) );
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	pModule.LogInfoFormat( "deModioService.PurchaseMod: id=%" PRIi64, ( int64_t )modId );
+	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
+	
+	NewPendingRequest( id, "purchaseMod", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::PurchaseModAsync( modId, price, [ this, id ](
+		Modio::ErrorCode ec, Modio::Optional<Modio::TransactionRecord> record ){
+			pOnPurchaseMod( id, ec, record );
+		});
 }
 
 void deModioService::ActivateMods(){
@@ -837,6 +940,25 @@ deServiceObject::Ref deModioService::GetActiveMods(){
 	return so;
 }
 
+deServiceObject::Ref deModioService::GetModsFeatures(){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	so->SetStringChildAt( "name", "Mod.io" );
+	so->SetIntChildAt( "modRatingCount", 2 );
+	so->SetBoolChildAt( "canRateMods", true );
+	so->SetBoolChildAt( "canReportMods", true );
+	
+	if( pGameInfo.has_value() && ( pGameInfo->GameMonetizationOptions
+			& Modio::GameMonetizationOptions::Marketplace ) != 0 ){
+		so->SetBoolChildAt( "hasMarketplace", true );
+		so->SetStringChildAt( "currency", pGameInfo->VirtualTokenName.c_str() );
+		
+	}else{
+		so->SetBoolChildAt( "hasMarketplace", false );
+	}
+	
+	return so;
+}
+
 deServiceObject::Ref deModioService::GetUserFeatures(){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	so->SetBoolChildAt( "canManualLogin", true );
@@ -977,35 +1099,67 @@ void deModioService::pOnInitialize( Modio::ErrorCode ec ){
 	pModule.LogInfoFormat( "deModioService.pOnInitializeFinished: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
 	
-	RemoveRequiresEventHandlingCount();
-	pUpdateModManagementEnabled();
-	
-	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
-	
-	data->SetStringChildAt( "event", "initialized" );
-	deMCCommon::ErrorOutcome( data, ec );
-	
-	if( ! ec ) {
-		pIsInitialized = true;
+	if( ec ){ // failure
+		RemoveRequiresEventHandlingCount();
 		
-		pPrintBaseInfos();
-		pInitVFS();
-		
-		if( Modio::QueryUserProfile().has_value() ){
-			pModule.LogInfo( "deModioService.pOnInitializeFinished: User logged in. Fetch updates" );
-			Modio::FetchExternalUpdatesAsync( [ this ]( Modio::ErrorCode ec2 ){
-				pOnInitializeFetchUpdates( ec2 );
-			});
-			return;
-		}
+		const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+		data->SetStringChildAt( "event", "initialized" );
+		deMCCommon::ErrorOutcome( data, ec );
+		pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
+		return;
 	}
 	
+	pUpdateModManagementEnabled();
+	
+	pModule.LogInfo( "deModioService.pOnInitializeFinished: Get game information" );
+	Modio::GetGameInfoAsync( Modio::GameID( pGameId ),
+		[ this ]( Modio::ErrorCode ec2, Modio::Optional<Modio::GameInfo> info ){
+			pOnInitializeGetGameInfo( ec2, info );
+		});
+}
+
+void deModioService::pOnInitializeGetGameInfo( Modio::ErrorCode ec, Modio::Optional<Modio::GameInfo> info ){
+	pModule.LogInfoFormat( "deModioService.pOnInitializeGetGameInfo: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	if( ec ){ // failure
+		RemoveRequiresEventHandlingCount();
+		
+		const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+		data->SetStringChildAt( "event", "initialized" );
+		deMCCommon::ErrorOutcome( data, ec );
+		pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
+		return;
+	}
+	
+	pIsInitialized = true;
+	pGameInfo = info;
+	
+	pPrintBaseInfos();
+	pInitVFS();
+	
+	if( Modio::QueryUserProfile().has_value() ){
+		pModule.LogInfo( "deModioService.pOnInitializeFinished: User logged in. Fetch updates" );
+		Modio::FetchExternalUpdatesAsync( [ this ]( Modio::ErrorCode ec2 ){
+			pOnInitializeFetchUpdates( ec2 );
+		});
+		return;
+	}
+	
+	// finished successfully
+	RemoveRequiresEventHandlingCount();
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	data->SetStringChildAt( "event", "initialized" );
+	data->SetBoolChildAt( "success", true );
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }
 
 void deModioService::pOnInitializeFetchUpdates( Modio::ErrorCode ec ){
 	pModule.LogInfoFormat( "deModioService.pOnInitializeFetchUpdates: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
+	
+	RemoveRequiresEventHandlingCount();
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetStringChildAt( "event", "initialized" );
@@ -1270,7 +1424,61 @@ Modio::Optional<Modio::ModTagOptions> tagOptions ){
 	}
 }
 
-void deModioService::pOnLogCallback( Modio::LogLevel level, const std::string &message ){
+void deModioService::pOnGetUserWalletBalance( const decUniqueID &id,
+Modio::ErrorCode ec, Modio::Optional<uint64_t> amount ){
+	pModule.LogInfoFormat( "deModioService.pOnGetUserWalletBalance: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( pr ){
+		if( amount.has_value() ){
+			pr->data->SetChildAt( "amount", deMCCommon::UInt64( *amount ) );
+		}
+		pOnBaseResponseExit( pr );
+	}
+}
+
+void deModioService::pOnGetUserPurchasedMods( const decUniqueID &id, Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService.pOnGetUserPurchasedMods: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( ! pr ){
+		return;
+	}
+	
+	const std::map<Modio::ModID, Modio::ModInfo> result( Modio::QueryUserPurchasedMods() );
+	const deModioUserConfig &config = pModule.GetUserConfig( pUserId );
+	std::map<Modio::ModID, Modio::ModInfo>::const_iterator iter;
+	
+	const deServiceObject::Ref so( deServiceObject::NewList() );
+	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
+		so->AddChild( deMCModInfo::ModInfo( iter->second, config ) );
+	}
+	pr->data->SetChildAt( "mods", so );
+	
+	pOnBaseResponseExit( pr );
+}
+
+void deModioService::pOnPurchaseMod( const decUniqueID &id, Modio::ErrorCode ec,
+Modio::Optional<Modio::TransactionRecord> record ){
+	pModule.LogInfoFormat( "deModioService.pOnPurchaseMod: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( ! pr ){
+		return;
+	}
+	
+	if( record.has_value() ){
+		pr->data->SetChildAt( "price", deMCCommon::UInt64( record->Price ) );
+		pr->data->SetChildAt( "walletBalance", deMCCommon::UInt64( record->UpdatedUserWalletBalance ) );
+	}
+	
+	pOnBaseResponseExit( pr );
+}
+
+void deModioService::pOnLogCallback(Modio::LogLevel level, const std::string &message){
 	switch( level ){
 	case Modio::LogLevel::Trace:
 	case Modio::LogLevel::Info:

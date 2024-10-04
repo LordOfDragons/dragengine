@@ -25,6 +25,9 @@ else:
 	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
 	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'sndio', 'lib_sndio_fetch')
+
 # check if system sndio is present
 hasSystemOGG = False
 conf = envLibrary.Configure()
@@ -76,8 +79,7 @@ if buildStaticLinking:
 else:
 	targets = [ libFileName ]
 targets.extend(['include/sndio.h'])
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action(sndioBuild, 'Build sndio' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(sndioBuild, 'Build sndio' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

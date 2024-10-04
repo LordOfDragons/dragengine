@@ -137,4 +137,25 @@ interface ServiceUser
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void loadUserResource(String url, ServiceUserListener listener)
+	
+	/**
+	 * \brief Report user.
+	 * 
+	 * Once finished \ref ServiceUserListener#onReportUser() is called.
+	 * Can be used if \ref ServiceUserFeatures#canReportUser is true.
+	 * 
+	 * \param id Identifier of user to report.
+	 * \param report Report to submit.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
+	
+	/**
+	 * \brief Retrieve user wallet balance.
+	 * 
+	 * Can be used if \ref ServiceUserFeatures#hasMarketplace is true.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getUserWalletBalance(ServiceUserListener listener)
 end
