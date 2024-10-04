@@ -4,5 +4,5 @@
         "scripts"
     ],
     "python.REPL.enableREPLSmartSend": false,
-    "cmake.sourceDirectory": "/home/roland/encrypted/mp/progs/dragengine/src/modules/scripting/dragonscript/kdev_lang_dscript/src/parser"
+    "cmake.ignoreCMakeListsMissing": true
 }
