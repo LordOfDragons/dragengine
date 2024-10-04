@@ -7,6 +7,9 @@ from SConsExternCommon import *
 
 Import('parent_env parent_targets parent_report')
 
+if parent_env['OSBeOS']:
+	Return()
+
 envLibrary = parent_env.Clone()
 
 # parameters
