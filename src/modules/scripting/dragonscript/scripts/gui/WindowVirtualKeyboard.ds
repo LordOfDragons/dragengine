@@ -40,7 +40,7 @@ pin Dragengine.Gui.Layouts
  * Window shows one panel out of a selection of possible panels depending on the
  * characteristics of the input widget.
  * 
- * By default Desktop has no virtual keyboard assign. Use Desktop.setWindowVirtualKeyboard()
+ * By default Desktop has no virtual keyboard assigned. Use Desktop.setWindowVirtualKeyboard()
  * to assign an instance of this class. Widgets supporting keyboard input in a reasonable
  * way will call popup() upon receiving the focus and popdown(null) upon loosing the focus.
  */
