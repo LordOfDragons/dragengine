@@ -348,6 +348,7 @@ class GamepadController extends FrameUpdateListener
 		pButtonPressCount++
 		
 		if pButtonPressCount == 1
+			autoAddVirtualKeyboard()
 			sendMouseButtonPress()
 		end
 	end
@@ -438,13 +439,13 @@ class GamepadController extends FrameUpdateListener
 		end) cast AxisState
 		
 		if state != null
+			
 			state.update(this, event.getAxisValue())
 		end
 	end
 	
 	/** \brief Process button press event. */
 	protected func void processEventButtonPress(GamepadEvent event)
-		autoAddVirtualKeyboard()
 		if event.getCode() == 0
 			pressMouseButton()
 		end
