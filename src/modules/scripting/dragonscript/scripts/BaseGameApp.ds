@@ -1438,6 +1438,7 @@ class BaseGameApp extends Game
 			
 			try
 				pLoaders.getBindings().loadFromFile(path, pBindingManager, pCommandManager)
+				defaultBindings().updateBindingManagerFirstDevices()
 				return
 				
 			catch Exception e

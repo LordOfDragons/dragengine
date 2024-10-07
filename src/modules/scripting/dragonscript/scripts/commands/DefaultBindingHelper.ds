@@ -51,32 +51,15 @@ pin Dragengine.Utils
  * can apply the changes to the binding manager.
  */
 class DefaultBindingHelper
-	/** \brief Binding manager. */
-	private var BindingManager pBindingManager
-	
-	/** \brief Command manager. */
-	private var CommandManager pCommandManager
-	
-	/** \brief Axis bindings as array of Binding. */
-	private var Array pAxisBindings
-	
-	/** \brief Button bindings as array of Binding. */
-	private var Array pButtonBindings
-	
-	/** \brief First found mouse input device or \em null. */
-	private var InputDevice pMouse
-	
-	/** \brief First found keyboard input device or \em null. */
-	private var InputDevice pKeyboard
-	
-	/** \brief First found gamepad input device or \em null. */
-	private var InputDevice pGamepad
-	
-	/** \brief VR left hand controller or \em null. */
-	private var InputDevice pVRLeftHand
-	
-	/** \brief VR right hand controller or \em null. */
-	private var InputDevice pVRRightHand
+	var BindingManager pBindingManager
+	var CommandManager pCommandManager
+	var Array pAxisBindings
+	var Array pButtonBindings
+	var InputDevice pMouse
+	var InputDevice pKeyboard
+	var InputDevice pGamepad
+	var InputDevice pVRLeftHand
+	var InputDevice pVRRightHand
 	
 	
 	
@@ -91,7 +74,7 @@ class DefaultBindingHelper
 	 * \param bindingManager Binding manager to update once finished.
 	 * \param commandManager Command manager to use for bindings.
 	 */
-	public func new() this(BaseGameApp.getApp().getBindingManager(), \
+	func new() this(BaseGameApp.getApp().getBindingManager(),\
 	BaseGameApp.getApp().getCommandManager())
 	end
 	
@@ -103,7 +86,7 @@ class DefaultBindingHelper
 	 * \param bindingManager Binding manager to update once finished.
 	 * \param commandManager Command manager to use for bindings.
 	 */
-	public func new(BindingManager bindingManager, CommandManager commandManager)
+	func new(BindingManager bindingManager, CommandManager commandManager)
 		if bindingManager == null
 			throw ENullPointer.new("bindingManager")
 		end
@@ -127,19 +110,19 @@ class DefaultBindingHelper
 	/*@{*/
 	
 	/** \brief Binding manager to update once finished. */
-	public func BindingManager getBindingManager()
+	func BindingManager getBindingManager()
 		return pBindingManager
 	end
 	
 	/** \brief Command manager to use for bindings. */
-	public func CommandManager getCommandManager()
+	func CommandManager getCommandManager()
 		return pCommandManager
 	end
 	
 	
 	
 	/** \brief Remove all bindings. */
-	public func void reset()
+	func void reset()
 		pButtonBindings.removeAll()
 		pAxisBindings.removeAll()
 	end
@@ -150,7 +133,7 @@ class DefaultBindingHelper
 	 * \param clear Removes first all bindings from binding manager. Set to false to add and
 	 *              overwrite found bindings leaving other bindings intact.
 	 */
-	public func void updateBindingManager(bool clear)
+	func void updateBindingManager(bool clear)
 		if clear
 			pBindingManager.removeAllAxisBindings()
 			pBindingManager.removeAllButtonBindings()
@@ -173,13 +156,37 @@ class DefaultBindingHelper
 	end
 	
 	/**
+	 * \brief Update binding manager with found bindings for first devices.
+	 * \version 1.24
+	 * 
+	 * Adds bindings only if not assigned already.
+	 */
+	func void updateBindingManagerFirstDevices()
+		if pMouse != null
+			updateBindingManager(pMouse)
+		end
+		if pKeyboard != null
+			updateBindingManager(pKeyboard)
+		end
+		if pGamepad != null
+			updateBindingManager(pGamepad)
+		end
+		if pVRLeftHand != null
+			updateBindingManager(pVRRightHand)
+		end
+		if pVRLeftHand != null
+			updateBindingManager(pVRLeftHand)
+		end
+	end
+	
+	/**
 	 * \brief Update binding manager with found bindings of device.
 	 * \version 1.6
 	 * 
 	 * Adds bindings if not present already without clearing affected commands. For use of
 	 * adding bindings for a newly attached device with no bindings assigned.
 	 */
-	public func void updateBindingManager(InputDevice device)
+	func void updateBindingManager(InputDevice device)
 		var String id = device.getID()
 		
 		pAxisBindings.forEach(block Binding each
@@ -208,17 +215,17 @@ class DefaultBindingHelper
 	/*@{*/
 	
 	/** \brief Mouse device is present. */
-	public func bool hasMouse()
+	func bool hasMouse()
 		return pMouse != null
 	end
 	
 	/** \brief First mouse device or null. */
-	public func InputDevice getMouse()
+	func InputDevice getMouse()
 		return pMouse
 	end
 	
 	/** \brief Remove all mouse bindings. */
-	public func void mouseClear()
+	func void mouseClear()
 		if pMouse != null
 			removeAllDeviceBindings(pMouse)
 		end
@@ -231,11 +238,11 @@ class DefaultBindingHelper
 	 * \param moveY Name of command to bind to y movement or null.
 	 * \returns true if mouse is present and all commands have been bound.
 	 */
-	public func bool mouseBindMove(String moveX, String moveY)
+	func bool mouseBindMove(String moveX, String moveY)
 		return mouseBindMove(moveX, false, moveY, false)
 	end
 	
-	public func bool mouseBindMove(String moveX, bool inverseAxisX, String moveY, bool inverseAxisY)
+	func bool mouseBindMove(String moveX, bool inverseAxisX, String moveY, bool inverseAxisY)
 		if pMouse == null or (moveX == null and moveY == null)
 			return false
 		end
@@ -254,7 +261,7 @@ class DefaultBindingHelper
 				if moveX != null
 					var Command command = pCommandManager.getNamed(moveX)
 					if command != null
-						addAxisBinding(Binding.new(pMouse.getID(), \
+						addAxisBinding(Binding.new(pMouse.getID(),\
 							axis.getID(), command, inverseAxisX))
 						moveX = null  // mark as found
 					end
@@ -264,7 +271,7 @@ class DefaultBindingHelper
 				if moveY != null
 					var Command command = pCommandManager.getNamed(moveY)
 					if command != null
-						addAxisBinding(Binding.new(pMouse.getID(), \
+						addAxisBinding(Binding.new(pMouse.getID(),\
 							axis.getID(), command, inverseAxisY))
 						moveY = null  // mark as found
 					end
@@ -285,7 +292,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind to mouse wheel or null.
 	 * \returns true if mouse is present and command has been bound.
 	 */
-	public func bool mouseBindWheel(int wheel, String command)
+	func bool mouseBindWheel(int wheel, String command)
 		return bindTrigger(pMouse, InputDeviceAxisType.mouseWheel, wheel, command)
 	end
 	
@@ -297,7 +304,7 @@ class DefaultBindingHelper
 	 * \param down Name of command to bind to down mouse wheel movement or null.
 	 * \returns true if mouse is present and all commands have been bound.
 	 */
-	public func bool mouseBindWheel(int wheel, String up, String down)
+	func bool mouseBindWheel(int wheel, String up, String down)
 		return bindTrigger(pMouse, InputDeviceAxisType.mouseWheel, wheel, up, down)
 	end
 	
@@ -309,7 +316,7 @@ class DefaultBindingHelper
 	 * \param right Name of command to bind to right mouse button or null.
 	 * \returns true if mouse is present and all commands have been bound.
 	 */
-	public func bool mouseBindLMR(String left, String middle, String right)
+	func bool mouseBindLMR(String left, String middle, String right)
 		if pMouse == null or (left == null and right == null and middle == null)
 			return false
 		end
@@ -341,7 +348,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind to mouse button or null.
 	 * \returns true if mouse is present and command has been bound.
 	 */
-	public func bool mouseBindAux(int number, String command)
+	func bool mouseBindAux(int number, String command)
 		if pMouse == null or command == null
 			return false
 		end
@@ -356,17 +363,17 @@ class DefaultBindingHelper
 	/*@{*/
 	
 	/** \brief Keyboard device is present. */
-	public func bool hasKeyboard()
+	func bool hasKeyboard()
 		return pKeyboard != null
 	end
 	
 	/** \brief First keyboard device or null. */
-	public func InputDevice getKeyboard()
+	func InputDevice getKeyboard()
 		return pKeyboard
 	end
 	
 	/** \brief Remove all keyboard bindings. */
-	public func void keyboardClear()
+	func void keyboardClear()
 		if pKeyboard != null
 			removeAllDeviceBindings(pKeyboard)
 		end
@@ -381,7 +388,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if matching button is present and bound to command.
 	 */
-	public func bool keyboardBindKeyCode(int keyCode, String command)
+	func bool keyboardBindKeyCode(int keyCode, String command)
 		if pKeyboard == null or command == null or keyCode <= 0
 			return false
 		end
@@ -396,7 +403,7 @@ class DefaultBindingHelper
 			return false
 		end
 		
-		addButtonBinding(Binding.new(pKeyboard.getID(), \
+		addButtonBinding(Binding.new(pKeyboard.getID(),\
 			pKeyboard.getButtonAt(index).getID(), cmd, false))
 		return true
 	end
@@ -413,7 +420,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if matching button is present and bound to command.
 	 */
-	public func bool keyboardBindKeyCode(int keyCode, InputEventKeyLocation location, String command)
+	func bool keyboardBindKeyCode(int keyCode, InputEventKeyLocation location, String command)
 		if pKeyboard == null or command == null or keyCode <= 0 or location == null
 			return false
 		end
@@ -428,7 +435,7 @@ class DefaultBindingHelper
 			return false
 		end
 		
-		addButtonBinding(Binding.new(pKeyboard.getID(), \
+		addButtonBinding(Binding.new(pKeyboard.getID(),\
 			pKeyboard.getButtonAt(index).getID(), cmd, false))
 		return true
 	end
@@ -442,7 +449,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if matching key is present and bound to command.
 	 */
-	public func bool keyboardBindCharacter(int character, String command)
+	func bool keyboardBindCharacter(int character, String command)
 		if pKeyboard == null or command == null or character <= 0
 			return false
 		end
@@ -457,7 +464,7 @@ class DefaultBindingHelper
 			return false
 		end
 		
-		addButtonBinding(Binding.new(pKeyboard.getID(), \
+		addButtonBinding(Binding.new(pKeyboard.getID(),\
 			pKeyboard.getButtonAt(index).getID(), cmd, false))
 		return true
 	end
@@ -474,7 +481,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if matching key is present and bound to command.
 	 */
-	public func bool keyboardBindCharacter(int character, InputEventKeyLocation location, String command)
+	func bool keyboardBindCharacter(int character, InputEventKeyLocation location, String command)
 		if pKeyboard == null or command == null or character <= 0 or location == null
 			return false
 		end
@@ -501,17 +508,17 @@ class DefaultBindingHelper
 	/*@{*/
 	
 	/** \brief Gamepad device is present. */
-	public func bool hasGamepad()
+	func bool hasGamepad()
 		return pGamepad != null
 	end
 	
 	/** \brief First gamepad device or null. */
-	public func InputDevice getGamepad()
+	func InputDevice getGamepad()
 		return pGamepad
 	end
 	
 	/** \brief Remove all gamepad bindings. */
-	public func void gamepadClear()
+	func void gamepadClear()
 		if pGamepad != null
 			removeAllDeviceBindings(pGamepad)
 		end
@@ -525,7 +532,7 @@ class DefaultBindingHelper
 	 * \param vertical Name of command to bind to vertical movement or null.
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
-	public func bool gamepadBindStick(int stick, String horizontal, String vertical)
+	func bool gamepadBindStick(int stick, String horizontal, String vertical)
 		return bindStick(pGamepad, InputDeviceAxisType.stick, stick, horizontal, vertical, false)
 	end
 	
@@ -539,7 +546,7 @@ class DefaultBindingHelper
 	 * \param down Name of command to bind to down movement or null.
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
-	public func bool gamepadBindStick(int stick, String left, String right, String up, String down)
+	func bool gamepadBindStick(int stick, String left, String right, String up, String down)
 		return bindStick(pGamepad, InputDeviceAxisType.stick, stick, left, right, up, down, false)
 	end
 	
@@ -551,7 +558,7 @@ class DefaultBindingHelper
 	 * \param vertical Name of command to bind to up/down press or null.
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
-	public func bool gamepadBindHat(int hat, String horizontal, String vertical)
+	func bool gamepadBindHat(int hat, String horizontal, String vertical)
 		return bindStick(pGamepad, InputDeviceAxisType.hat, hat, horizontal, vertical, false)
 	end
 	
@@ -565,7 +572,7 @@ class DefaultBindingHelper
 	 * \param down Name of command to bind to down press or null.
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
-	public func bool gamepadBindHat(int hat, String left, String right, String up, String down)
+	func bool gamepadBindHat(int hat, String left, String right, String up, String down)
 		return bindStick(pGamepad, InputDeviceAxisType.hat, hat, left, right, up, down, false)
 	end
 	
@@ -577,7 +584,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind to horizontal movement or null.
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
-	public func bool gamepadBindTrigger(int trigger, String command)
+	func bool gamepadBindTrigger(int trigger, String command)
 		return bindTrigger(pGamepad, InputDeviceAxisType.trigger, trigger, command)
 	end
 	
@@ -590,7 +597,7 @@ class DefaultBindingHelper
 	 * \param release Name of command to bind to release or null.
 	 * \returns true if gamepad is present and all commands have been bound.
 	 */
-	public func bool gamepadBindTrigger(int trigger, String pull, String release)
+	func bool gamepadBindTrigger(int trigger, String pull, String release)
 		return bindTrigger(pGamepad, InputDeviceAxisType.trigger, trigger, pull, release)
 	end
 	
@@ -601,7 +608,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind to button or null.
 	 * \returns true if gamepad is present and command has been bound.
 	 */
-	public func bool gamepadBindButton(int button, String command)
+	func bool gamepadBindButton(int button, String command)
 		if button < 0
 			throw EInvalidParam.new()
 		end
@@ -621,7 +628,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind to button or null.
 	 * \returns true if gamepad is present and command has been bound.
 	 */
-	public func bool gamepadBindButton(int button, InputDeviceButtonType type, String command)
+	func bool gamepadBindButton(int button, InputDeviceButtonType type, String command)
 		if button < 0
 			throw EInvalidParam.new()
 		end
@@ -645,7 +652,7 @@ class DefaultBindingHelper
 	 * \version 1.6
 	 * \param rightHand True to check right hand controller otherwise left hand controller.
 	 */
-	public func bool hasVRHand(bool rightHand)
+	func bool hasVRHand(bool rightHand)
 		return (rightHand if pVRRightHand else pVRLeftHand) != null
 	end
 	
@@ -654,7 +661,7 @@ class DefaultBindingHelper
 	 * \version 1.6
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 */
-	public func InputDevice getVRHand(bool rightHand)
+	func InputDevice getVRHand(bool rightHand)
 		return rightHand if pVRRightHand else pVRLeftHand
 	end
 	
@@ -663,7 +670,7 @@ class DefaultBindingHelper
 	 * \version 1.10
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 */
-	public func Array getAllVRHands(bool rightHand)
+	func Array getAllVRHands(bool rightHand)
 		var InputDeviceType type = rightHand if InputDeviceType.vrRightHand else InputDeviceType.vrLeftHand
 		return pBindingManager.collectDevices(block InputDevice each
 			return each.getType() == type
@@ -675,7 +682,7 @@ class DefaultBindingHelper
 	 * \version 1.6
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 */
-	public func void vrHandClear(bool rightHand)
+	func void vrHandClear(bool rightHand)
 		getAllVRHands(rightHand).forEach(block InputDevice each
 			removeAllDeviceBindings(each)
 		end)
@@ -692,7 +699,7 @@ class DefaultBindingHelper
 	 * \param name Name of command to bind to horizontal movement or null.
 	 * \returns true if at least one controller is present with command bound.
 	 */
-	public func bool vrHandBindTrigger(bool rightHand, InputDeviceAxisType type, int trigger, String name)
+	func bool vrHandBindTrigger(bool rightHand, InputDeviceAxisType type, int trigger, String name)
 		return getAllVRHands(rightHand).collect(block InputDevice each
 			return bindTrigger(each, type, trigger, name)
 		end).getCount() > 0
@@ -710,7 +717,7 @@ class DefaultBindingHelper
 	 * \param release Name of command to bind to release movement or null.
 	 * \returns true if at least one controller is present with command bound.
 	 */
-	public func bool vrHandBindTrigger(bool rightHand, InputDeviceAxisType type, \
+	func bool vrHandBindTrigger(bool rightHand, InputDeviceAxisType type,\
 	int trigger, String pull, String release)
 		return getAllVRHands(rightHand).collect(block InputDevice each
 			return bindTrigger(each, type, trigger, pull, release)
@@ -727,7 +734,7 @@ class DefaultBindingHelper
 	 * \param vertical Name of command to bind to vertical movement or null.
 	 * \returns true if at least one controller is present with command bound.
 	 */
-	public func bool vrHandBindStick(bool rightHand, InputDeviceAxisType type, \
+	func bool vrHandBindStick(bool rightHand, InputDeviceAxisType type,\
 	int stick , String horizontal, String vertical)
 		return getAllVRHands(rightHand).collect(block InputDevice each
 			return bindStick(each, type, stick, horizontal, vertical, false)
@@ -746,7 +753,7 @@ class DefaultBindingHelper
 	 * \param down Name of command to bind to down movement or null.
 	 * \returns true if at least one controller is present with command bound.
 	 */
-	public func bool vrHandBindStick(bool rightHand, InputDeviceAxisType type, int stick, \
+	func bool vrHandBindStick(bool rightHand, InputDeviceAxisType type, int stick,\
 	String left, String right, String up, String down)
 		return getAllVRHands(rightHand).collect(block InputDevice each
 			return bindStick(each, type, stick, left, right, up, down, false)
@@ -761,7 +768,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind to button or null.
 	 * \returns true if vrLeftHand is present and command has been bound.
 	 */
-	public func bool vrHandBindButton(bool rightHand, int button, String command)
+	func bool vrHandBindButton(bool rightHand, int button, String command)
 		if button < 0
 			throw EInvalidParam.new()
 		end
@@ -779,7 +786,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind to button or null.
 	 * \returns true if vrLeftHand is present and command has been bound.
 	 */
-	public func bool vrHandBindButton(bool rightHand, InputDeviceButtonType type, int button, String command)
+	func bool vrHandBindButton(bool rightHand, InputDeviceButtonType type, int button, String command)
 		if button < 0
 			throw EInvalidParam.new()
 		end
@@ -804,7 +811,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if axis is present on device and bound to command.
 	 */
-	public func bool bindAxis(InputDevice device, int axis, String command)
+	func bool bindAxis(InputDevice device, int axis, String command)
 		if axis < 0 or axis >= device.getAxisCount()
 			return false
 		end
@@ -814,7 +821,7 @@ class DefaultBindingHelper
 			return false
 		end
 		
-		addAxisBinding(Binding.new(device.getID(), \
+		addAxisBinding(Binding.new(device.getID(),\
 			device.getAxisAt(axis).getID(), cmd, false))
 		return true
 	end
@@ -827,7 +834,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if button is present on device and bound to command.
 	 */
-	public func bool bindButton(InputDevice device, int button, String command)
+	func bool bindButton(InputDevice device, int button, String command)
 		if button < 0 or button >= device.getButtonCount()
 			return false
 		end
@@ -850,7 +857,7 @@ class DefaultBindingHelper
 	 * \param command Name of command to bind.
 	 * \returns true if button is present on device and bound to command.
 	 */
-	public func bool bindButton(InputDevice device, InputDeviceButtonType type, int button, String command)
+	func bool bindButton(InputDevice device, InputDeviceButtonType type, int button, String command)
 		if button < 0 or button >= device.getButtonCount()
 			return false
 		end
@@ -890,7 +897,7 @@ class DefaultBindingHelper
 	 * \param name Name of command to bind to horizontal movement or null.
 	 * \returns true if controller is present and command has been bound.
 	 */
-	public func bool bindTrigger(InputDevice device, InputDeviceAxisType type, int trigger, String name)
+	func bool bindTrigger(InputDevice device, InputDeviceAxisType type, int trigger, String name)
 		return bindTrigger(device, type, trigger, name, name)
 	end
 	
@@ -904,7 +911,7 @@ class DefaultBindingHelper
 	 * \param release Name of command to bind to release movement or null.
 	 * \returns true if device is present and all commands have been bound.
 	 */
-	public func bool bindTrigger(InputDevice device, InputDeviceAxisType type, int trigger, String pull, String release)
+	func bool bindTrigger(InputDevice device, InputDeviceAxisType type, int trigger, String pull, String release)
 		if trigger < 0
 			throw EInvalidParam.new("trigger < 0")
 		end
@@ -959,7 +966,7 @@ class DefaultBindingHelper
 	 * \param vertical Name of command to bind to vertical movement or null.
 	 * \returns true if device is present and all commands have been bound.
 	 */
-	public func bool bindStick(InputDevice device, InputDeviceAxisType type, \
+	func bool bindStick(InputDevice device, InputDeviceAxisType type,\
 	int stick , String horizontal, String vertical, bool inverse)
 		return bindStick(device, type, stick, horizontal, horizontal, vertical, vertical, inverse)
 	end
@@ -975,7 +982,7 @@ class DefaultBindingHelper
 	 * \param down Name of command to bind to down movement or null.
 	 * \returns true if device is present and all commands have been bound.
 	 */
-	public func bool bindStick(InputDevice device, InputDeviceAxisType type, int stick, \
+	func bool bindStick(InputDevice device, InputDeviceAxisType type, int stick,\
 	String left, String right, String up, String down, bool inverse)
 		if stick < 0
 			throw EInvalidParam.new("stick < 0")
@@ -1044,7 +1051,7 @@ class DefaultBindingHelper
 	end
 	
 	/** \brief Remove all bindings for device. */
-	public func void removeAllDeviceBindings(InputDevice device)
+	func void removeAllDeviceBindings(InputDevice device)
 		var String id = device.getID()
 		
 		pAxisBindings.removeIf(block Binding each
@@ -1059,7 +1066,7 @@ class DefaultBindingHelper
 	 * \brief Log bindings.
 	 * \version 1.10
 	 */
-	public func void logBindings(Console console)
+	func void logBindings(Console console)
 		console.addMessage("Axis Bindings:")
 		pAxisBindings.forEach(block Binding each
 			console.addMessage("- deviceId={} sourceId={} inverseAxis={} simulatePressed={} command={}".format(\
@@ -1082,7 +1089,7 @@ class DefaultBindingHelper
 	
 	/** \brief Add axis binding replacing bindings with same command. */
 	protected func void addAxisBinding(Binding binding)
-		removeAxisBinding(binding.getDeviceID(), binding.getSourceID(), \
+		removeAxisBinding(binding.getDeviceID(), binding.getSourceID(),\
 			binding.getInverseAxis(), binding.getCommand())
 		pAxisBindings.add(binding)
 	end
@@ -1094,7 +1101,7 @@ class DefaultBindingHelper
 	end
 	
 	/** \brief Remove axis binding matching device and source but not command. */
-	protected func void removeAxisBinding(String deviceID, String sourceID, \
+	protected func void removeAxisBinding(String deviceID, String sourceID,\
 	bool inverseAxis, Command command)
 		pAxisBindings.removeIf(block Binding each
 			return each.getDeviceID().equals(deviceID) \
