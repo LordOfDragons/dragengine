@@ -104,6 +104,12 @@ pEvdevMapKeys( NULL )
 	bool hasKeys = libevdev_has_event_type( pEvdevDevice, EV_KEY );
 // 		bool hasLeftMouse = libevdev_has_event_code( pEvdevDevice, EV_KEY, BTN_LEFT );
 	
+	const decString lcname( GetName().GetLower() );
+	if( lcname.FindString( "mouse" ) != -1 || lcname.FindString( "keyboard" ) != -1 ){
+		// drop mouse and keyboard. they are covered by core input already and mess things up
+		return;
+	}
+	
 	/*
 	if( hasRelativeAxes && hasLeftMouse ){
 		pType = deInputDevice::edtMouse;

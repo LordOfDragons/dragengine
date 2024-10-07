@@ -418,7 +418,6 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 	// https://www.freedesktop.org/software/libevdev/doc/latest/index.html
 	// SDL type mapping: https://meghprkh.github.io/blog/2016/06/03/Handling-joysticks-and-gamepads-in-linux/
 	const char * const basePath[] = { "/dev/input/event%d", "/dev/event%d" };
-	deObjectReference refDevice;
 	decString pathDevice;
 	int i, bp;
 	
@@ -427,8 +426,8 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 			pathDevice.Format( basePath[ bp ], i );
 			
 			try{
-				refDevice.TakeOver( new dexsiDeviceLibEvent( pModule, pathDevice ) );
-				dexsiDeviceLibEvent * const device = ( dexsiDeviceLibEvent* )( deObject* )refDevice;
+				const dexsiDeviceLibEvent::Ref device( dexsiDeviceLibEvent::Ref::New(
+						new dexsiDeviceLibEvent( pModule, pathDevice ) ) );
 				
 				// devices without buttons and axes are not interesting to us. this weeds out
 				// non-input devices like audio devices
