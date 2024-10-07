@@ -39,22 +39,15 @@ namespace Dragengine.Commands
  * After creating the binding manager has updated the internal data structures already.
  */
 class BindingManager
-	/** \brief Axis bindings as array of Binding. */
-	private var Array pAxisBindings
-	
-	/** \brief Button bindings as array of Binding. */
-	private var Array pButtonBindings
-	
-	/** \brief Input device information as array of InputDevice. */
-	private var Array pDevices
-	
-	/** \brief Listeners. */
-	private var Array pListeners
+	var Array pAxisBindings
+	var Array pButtonBindings
+	var Array pDevices
+	var Array pListeners
 	
 	
 	
 	/** \brief Create binding manager. */
-	public func new()
+	func new()
 		pAxisBindings = Array.new()
 		pButtonBindings = Array.new()
 		pDevices = Array.new()
@@ -64,7 +57,7 @@ class BindingManager
 	end
 	
 	/** \brief Create copy of binding manager. */
-	public func new(BindingManager bindingManager)
+	func new(BindingManager bindingManager)
 		pAxisBindings = bindingManager.pAxisBindings.map(block Binding each
 			return Binding.new(each)
 		end)
@@ -82,7 +75,7 @@ class BindingManager
 	 * Call after receiving input events of any kind. Updates internal data structures
 	 * if certain input events arrive.
 	 */
-	public func void checkInputEvent(InputEvent event)
+	func void checkInputEvent(InputEvent event)
 		select event.getType()
 		case InputEventType.deviceAttachedDetached
 			var Array oldDevices = Array.new(pDevices)
@@ -119,17 +112,17 @@ class BindingManager
 	
 	
 	/** \brief Number of axis bindings. */
-	public func int getAxisBindingCount()
+	func int getAxisBindingCount()
 		return pAxisBindings.getCount()
 	end
 	
 	/** \brief Axis binding at index. */
-	public func Binding getAxisBindingAt(int index)
+	func Binding getAxisBindingAt(int index)
 		return pAxisBindings.getAt(index) cast Binding
 	end
 	
 	/** \brief Add axis binding. */
-	public func void addAxisBinding(Binding binding)
+	func void addAxisBinding(Binding binding)
 		if binding == null
 			throw EInvalidParam.new()
 		end
@@ -144,7 +137,7 @@ class BindingManager
 	end
 	
 	/** \brief Remove axis binding. */
-	public func void removeAxisBinding(Binding binding)
+	func void removeAxisBinding(Binding binding)
 		pAxisBindings.remove(binding)
 		
 		pListeners.forEach(block BindingManagerListener each
@@ -153,7 +146,7 @@ class BindingManager
 	end
 	
 	/** \brief Remove all axis bindings. */
-	public func void removeAllAxisBindings()
+	func void removeAllAxisBindings()
 		if pAxisBindings.getCount() == 0
 			return
 		end
@@ -166,7 +159,7 @@ class BindingManager
 	end
 	
 	/** \brief Visit axis bindings with block with parameter Binding. */
-	public func void forEachAxisBinding(Block ablock)
+	func void forEachAxisBinding(Block ablock)
 		pAxisBindings.forEach(ablock)
 	end
 	
@@ -174,7 +167,7 @@ class BindingManager
 	 * \brief Find axis binding matching device and source.
 	 * \deprecated Use findAxisBinding(InputEventSource,int,int).
 	 */
-	public func Binding findAxisBinding(int device, int axis)
+	func Binding findAxisBinding(int device, int axis)
 		return findAxisBinding(InputEventSource.input, device, axis)
 	end
 	
@@ -182,7 +175,7 @@ class BindingManager
 	 * \brief Find axis binding matching device and source.
 	 * \version 1.6
 	 */
-	public func Binding findAxisBinding(InputEventSource source, int device, int axis)
+	func Binding findAxisBinding(InputEventSource source, int device, int axis)
 		return pAxisBindings.find(block Binding each
 			return each.getSystem() == source and each.getDeviceIndex() == device \
 				and each.getSourceIndex() == axis
@@ -193,7 +186,7 @@ class BindingManager
 	 * \brief Find axis binding matching device and source.
 	 * \deprecated Use findAxisBinding(InputEventSource,int,int,bool)
 	 */
-	public func Binding findAxisBinding(int device, int axis, bool inverseAxis)
+	func Binding findAxisBinding(int device, int axis, bool inverseAxis)
 		return findAxisBinding(InputEventSource.input, device, axis, inverseAxis)
 	end
 	
@@ -201,7 +194,7 @@ class BindingManager
 	 * \brief Find axis binding matching device and source.
 	 * \version 1.6
 	 */
-	public func Binding findAxisBinding(InputEventSource source, int device, int axis, bool inverseAxis)
+	func Binding findAxisBinding(InputEventSource source, int device, int axis, bool inverseAxis)
 		return pAxisBindings.find(block Binding each
 			return each.getSystem() == source and each.getDeviceIndex() == device \
 				and each.getSourceIndex() == axis and each.getInverseAxis() == inverseAxis
@@ -209,7 +202,7 @@ class BindingManager
 	end
 	
 	/** \brief Find axis binding matching device and source. */
-	public func Binding findAxisBinding(String deviceID, String axisID)
+	func Binding findAxisBinding(String deviceID, String axisID)
 		return pAxisBindings.find(block Binding each
 			return each.getDeviceID().equals(deviceID) \
 				and each.getSourceID().equals(axisID)
@@ -217,7 +210,7 @@ class BindingManager
 	end
 	
 	/** \brief Find axis binding matching device and source. */
-	public func Binding findAxisBinding(String deviceID, String axisID, bool inverseAxis)
+	func Binding findAxisBinding(String deviceID, String axisID, bool inverseAxis)
 		return pAxisBindings.find(block Binding each
 			return each.getDeviceID().equals(deviceID) \
 				and each.getSourceID().equals(axisID) \
@@ -226,7 +219,7 @@ class BindingManager
 	end
 	
 	/** \brief Find axis binding matching block with parameter Binding. */
-	public func Binding findAxisBinding(Block ablock)
+	func Binding findAxisBinding(Block ablock)
 		return pAxisBindings.find(ablock) cast Binding
 	end
 	
@@ -234,24 +227,24 @@ class BindingManager
 	 * \brief Collect axis binding matching block with parameter Binding as Array of Binding.
 	 * \version 1.10
 	 */
-	public func Array collectAxisBinding(Block ablock)
+	func Array collectAxisBinding(Block ablock)
 		return pAxisBindings.collect(ablock)
 	end
 	
 	
 	
 	/** \brief Number of button bindings. */
-	public func int getButtonBindingCount()
+	func int getButtonBindingCount()
 		return pButtonBindings.getCount()
 	end
 	
 	/** \brief Button binding at index. */
-	public func Binding getButtonBindingAt(int index)
+	func Binding getButtonBindingAt(int index)
 		return pButtonBindings.getAt(index) cast Binding
 	end
 	
 	/** \brief Add button binding. */
-	public func void addButtonBinding(Binding binding)
+	func void addButtonBinding(Binding binding)
 		if binding == null
 			throw EInvalidParam.new()
 		end
@@ -266,7 +259,7 @@ class BindingManager
 	end
 	
 	/** \brief Remove button binding. */
-	public func void removeButtonBinding(Binding binding)
+	func void removeButtonBinding(Binding binding)
 		pButtonBindings.remove(binding)
 		
 		pListeners.forEach(block BindingManagerListener each
@@ -275,7 +268,7 @@ class BindingManager
 	end
 	
 	/** \brief Remove all button bindings. */
-	public func void removeAllButtonBindings()
+	func void removeAllButtonBindings()
 		if pButtonBindings.getCount() == 0
 			return
 		end
@@ -288,7 +281,7 @@ class BindingManager
 	end
 	
 	/** \brief Visit button bindings with block with parameter Binding. */
-	public func void forEachButtonBinding(Block ablock)
+	func void forEachButtonBinding(Block ablock)
 		pButtonBindings.forEach(ablock)
 	end
 	
@@ -296,7 +289,7 @@ class BindingManager
 	 * \brief Find button binding matching device and source.
 	 * \deprecated Use findButtonBinding(InputEventSource,int,int)
 	 */
-	public func Binding findButtonBinding(int device, int button)
+	func Binding findButtonBinding(int device, int button)
 		return findButtonBinding(InputEventSource.input, device, button)
 	end
 	
@@ -304,7 +297,7 @@ class BindingManager
 	 * \brief Find button binding matching device and source.
 	 * \version 1.6
 	 */
-	public func Binding findButtonBinding(InputEventSource source, int device, int button)
+	func Binding findButtonBinding(InputEventSource source, int device, int button)
 		return pButtonBindings.find(block Binding each
 			return each.getSystem() == source and each.getDeviceIndex() == device \
 				and each.getSourceIndex() == button
@@ -312,14 +305,14 @@ class BindingManager
 	end
 	
 	/** \brief Find button binding matching device and source. */
-	public func Binding findButtonBinding(String deviceID, String buttonID)
+	func Binding findButtonBinding(String deviceID, String buttonID)
 		return pButtonBindings.find(block Binding each
 			return each.getDeviceID().equals(deviceID) and each.getSourceID().equals(buttonID)
 		end) cast Binding
 	end
 	
 	/** \brief Find button binding matching block with parameter Binding. */
-	public func Binding findButtonBinding(Block ablock)
+	func Binding findButtonBinding(Block ablock)
 		return pButtonBindings.find(ablock) cast Binding
 	end
 	
@@ -327,14 +320,14 @@ class BindingManager
 	 * \brief Collect button binding matching block with parameter Binding as Array of Binding.
 	 * \version 1.10
 	 */
-	public func Array collectButtonBinding(Block ablock)
+	func Array collectButtonBinding(Block ablock)
 		return pButtonBindings.collect(ablock)
 	end
 	
 	
 	
 	/** \brief Remove all bindings with command. */
-	public func void removeBindingsWithCommand(Command command)
+	func void removeBindingsWithCommand(Command command)
 		pAxisBindings.collect(block Binding each
 			return each.getCommand() == command
 		end).forEach(block Binding each
@@ -351,17 +344,17 @@ class BindingManager
 	
 	
 	/** \brief Number of input devices. */
-	public func int getDeviceCount()
+	func int getDeviceCount()
 		return pDevices.getCount()
 	end
 	
 	/** \brief Device at index. */
-	public func InputDevice getDeviceAt(int index)
+	func InputDevice getDeviceAt(int index)
 		return pDevices.getAt(index) cast InputDevice
 	end
 	
 	/** \brief Visit devices with block with parameter InputDevice. */
-	public func void forEachDevice(Block ablock)
+	func void forEachDevice(Block ablock)
 		pDevices.forEach(ablock)
 	end
 	
@@ -370,7 +363,7 @@ class BindingManager
 	 * 
 	 * \returns \em null if no device matches.
 	 */
-	public func InputDevice findDevice(Block ablock)
+	func InputDevice findDevice(Block ablock)
 		return pDevices.find(ablock) cast InputDevice
 	end
 	
@@ -378,7 +371,7 @@ class BindingManager
 	 * \brief Collect devices with block with parameter InputDevice as Array of InputDevice.
 	 * \version 1.10
 	 */
-	public func Array collectDevices(Block ablock)
+	func Array collectDevices(Block ablock)
 		return pDevices.collect(ablock)
 	end
 	
@@ -390,7 +383,7 @@ class BindingManager
 	 * Call if you made changes to the binding affecting device and source id.
 	 * You do not need to call this if you added or removed the binding.
 	 */
-	public func void updateAxisBindingIndices(Binding binding)
+	func void updateAxisBindingIndices(Binding binding)
 		var int deviceIndex = -1
 		var int sourceIndex = -1
 		
@@ -428,7 +421,7 @@ class BindingManager
 	 * Call if you made changes to the binding affecting device and source id.
 	 * You do not need to call this if you added or removed the binding.
 	 */
-	public func void updateButtonBindingIndices(Binding binding)
+	func void updateButtonBindingIndices(Binding binding)
 		var int deviceIndex = -1
 		var int sourceIndex = -1
 		
@@ -466,7 +459,7 @@ class BindingManager
 	 * Call if you made changes to many bindings affecting device and source ids.
 	 * You do not need to call this if you just added or removed bindings.
 	 */
-	public func void updateAllBindingIndices()
+	func void updateAllBindingIndices()
 		pAxisBindings.forEach(block Binding each
 			updateAxisBindingIndices(each)
 		end)
@@ -477,7 +470,7 @@ class BindingManager
 	end
 	
 	/** \brief Update input devices and all binding indices. */
-	public func void reloadDevices()
+	func void reloadDevices()
 		var int i, deviceCount
 		
 		pDevices.removeAll()
@@ -505,7 +498,7 @@ class BindingManager
 	 * \brief Add listener.
 	 * \version 1.6
 	 */
-	public func void addListener(BindingManagerListener listener)
+	func void addListener(BindingManagerListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
 		end
@@ -516,7 +509,7 @@ class BindingManager
 	 * \brief Remove listener.
 	 * \version 1.6
 	 */
-	public func void removeListener(BindingManagerListener listener)
+	func void removeListener(BindingManagerListener listener)
 		pListeners.remove(listener)
 	end
 end

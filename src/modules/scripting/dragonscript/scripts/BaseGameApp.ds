@@ -261,7 +261,8 @@ class BaseGameApp extends Game
 	 * \brief Global event send if input devices have been attached or detached.
 	 * \version 1.20
 	 * 
-	 * The event receives no additional data.
+	 * The event receives no additional data. The event is send by \ref #inputEvent()
+	 * before processing the original \ref InputEvent.
 	 */
 	public static var String eventDeviceAttachedDetached = "deviceAttachedDetached"
 	
@@ -269,7 +270,8 @@ class BaseGameApp extends Game
 	 * \brief Global event send if input device parameters have changed.
 	 * \version 1.20
 	 * 
-	 * The event receives no additional data.
+	 * The event receives no additional data. The event is send by \ref #inputEvent()
+	 * before processing the original \ref InputEvent.
 	 */
 	public static var String eventDeviceParamsChanged = "deviceParamsChanged"
 	
