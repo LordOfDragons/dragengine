@@ -42,6 +42,10 @@ class deXSystemInput;
  * \brief X-System input device axis.
  */
 class dexsiDeviceAxis : public deObject{
+public:
+	typedef deTObjectReference<dexsiDeviceAxis> Ref;
+	
+	
 private:
 	deXSystemInput &pModule;
 	

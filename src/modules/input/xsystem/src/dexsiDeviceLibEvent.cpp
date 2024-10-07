@@ -45,6 +45,154 @@
 
 
 
+// Table
+//////////
+
+struct sTableEntryAxis{
+	int code;
+	deInputDeviceAxis::eAxisTypes type;
+	const char *id;
+	const char *displayName;
+	const char *displayText;
+};
+
+struct sTableEntryButton{
+	int code;
+	deInputDeviceButton::eButtonTypes type;
+	const char *id;
+	const char *displayName;
+	const char *displayText;
+};
+
+static const int vTableRelativeAxisCount = 4;
+static const sTableEntryAxis vTableRelativeAxes[ vTableRelativeAxisCount ]{
+	{ REL_X, deInputDeviceAxis::eatTouchPad, "tpx1", "touchpadX", "1" },
+	{ REL_Y, deInputDeviceAxis::eatTouchPad, "tpy1", "touchpadY", "1" },
+	{ REL_RX, deInputDeviceAxis::eatTouchPad, "tpx2", "touchpadX", "2" },
+	{ REL_RY, deInputDeviceAxis::eatTouchPad, "tpy2", "touchpadY", "2" }
+	/*
+	REL_Z:
+	REL_RZ:
+	REL_HWHEEL:
+	REL_DIAL:
+	REL_WHEEL:
+	REL_MISC:
+	REL_WHEEL_HI_RES:
+	REL_HWHEEL_HI_RES:
+	*/
+};
+
+static const int vTableAbsolutAxisCount = 27;
+static const sTableEntryAxis vTableAbsolutAxes[ vTableAbsolutAxisCount ]{
+	{ ABS_X, deInputDeviceAxis::eatStick, "sx0", "stickX", "1" },
+	{ ABS_Y, deInputDeviceAxis::eatStick, "sy0", "stickY", "1" },
+	{ ABS_Z, deInputDeviceAxis::eatTrigger, "tr0", "trigger", "1" },
+	{ ABS_RX, deInputDeviceAxis::eatStick, "sx1", "stickX", "2" },
+	{ ABS_RY, deInputDeviceAxis::eatStick, "sy1", "stickY", "2" },
+	{ ABS_RZ, deInputDeviceAxis::eatTrigger, "tr1", "trigger", "2" },
+	{ ABS_THROTTLE, deInputDeviceAxis::eatThrottle, "thr", "trigger", "Thr" },
+	{ ABS_RUDDER, deInputDeviceAxis::eatThrottle, "rud", "trigger", "Rud" },
+	{ ABS_WHEEL, deInputDeviceAxis::eatSteeringWheel, "wh", "trigger", "Wh" },
+	{ ABS_GAS, deInputDeviceAxis::eatTrigger, "gas", "trigger", "Gas" },
+	{ ABS_BRAKE, deInputDeviceAxis::eatTrigger, "brk", "trigger", "Brk" },
+	{ ABS_HAT0X, deInputDeviceAxis::eatHat, "hx0", "stickX", "1" },
+	{ ABS_HAT0Y, deInputDeviceAxis::eatHat, "hy0", "stickY", "1" },
+	{ ABS_HAT1X, deInputDeviceAxis::eatHat, "hx1", "stickX", "2" },
+	{ ABS_HAT1Y, deInputDeviceAxis::eatHat, "hy1", "stickY", "2" },
+	{ ABS_HAT2X, deInputDeviceAxis::eatHat, "hx2", "stickX", "3" },
+	{ ABS_HAT2Y, deInputDeviceAxis::eatHat, "hy2", "stickY", "3" },
+	{ ABS_HAT3X, deInputDeviceAxis::eatHat, "hx3", "stickX", "4" },
+	{ ABS_HAT3Y, deInputDeviceAxis::eatHat, "hy3", "stickY", "4" },
+	{ ABS_PRESSURE, deInputDeviceAxis::eatGeneric, "pre", "trigger", "Pre" },
+	{ ABS_DISTANCE, deInputDeviceAxis::eatGeneric, "dis", "trigger", "Dis" },
+	{ ABS_TILT_X, deInputDeviceAxis::eatStick, "tltx", "stickX", "Tlt" },
+	{ ABS_TILT_Y, deInputDeviceAxis::eatStick, "tlty", "stickY", "Tlt" },
+	{ ABS_TOOL_WIDTH, deInputDeviceAxis::eatGeneric, "twi", "trigger", "Twi" },
+	{ ABS_VOLUME, deInputDeviceAxis::eatGeneric, "vol", "trigger", "Vol" },
+	{ ABS_PROFILE, deInputDeviceAxis::eatGeneric, "pro", "trigger", "Pro" },
+	{ ABS_MISC, deInputDeviceAxis::eatGeneric, "misc", "trigger", "Misc" }
+};
+
+static const int vTableButtonCount = 64;
+static const sTableEntryButton vTableButton[ vTableButtonCount ]{
+	// misc
+	{ BTN_0, deInputDeviceButton::ebtAction, "ba0", "button", "0" },
+	{ BTN_1, deInputDeviceButton::ebtAction, "ba1", "button", "1" },
+	{ BTN_2, deInputDeviceButton::ebtAction, "ba2", "button", "2" },
+	{ BTN_3, deInputDeviceButton::ebtAction, "ba3", "button", "3" },
+	{ BTN_4, deInputDeviceButton::ebtAction, "ba4", "button", "4" },
+	{ BTN_5, deInputDeviceButton::ebtAction, "ba5", "button", "5" },
+	{ BTN_6, deInputDeviceButton::ebtAction, "ba6", "button", "6" },
+	{ BTN_7, deInputDeviceButton::ebtAction, "ba7", "button", "7" },
+	{ BTN_8, deInputDeviceButton::ebtAction, "ba8", "button", "8" },
+	{ BTN_9, deInputDeviceButton::ebtAction, "ba9", "button", "9" },
+	
+	// mouse
+	{ BTN_LEFT, deInputDeviceButton::ebtAction, "bml", "button", "Left" },
+	{ BTN_RIGHT, deInputDeviceButton::ebtAction, "bmr", "button", "Right" },
+	{ BTN_MIDDLE, deInputDeviceButton::ebtAction, "bmm", "button", "Middle" },
+	{ BTN_SIDE, deInputDeviceButton::ebtAction, "bms", "button", "Side" },
+	{ BTN_EXTRA, deInputDeviceButton::ebtAction, "bme", "button", "Extra" },
+	{ BTN_FORWARD, deInputDeviceButton::ebtAction, "bmf", "button", "Forward" },
+	{ BTN_BACK, deInputDeviceButton::ebtAction, "bmb", "button", "Back" },
+	{ BTN_TASK, deInputDeviceButton::ebtAction, "bmt", "button", "Task" },
+	
+	// joystick
+	{ BTN_TRIGGER, deInputDeviceButton::ebtAction, "bjtr", "button", "Trigger" },
+	{ BTN_THUMB, deInputDeviceButton::ebtAction, "bjtb1", "button", "Thumb" },
+	{ BTN_THUMB2, deInputDeviceButton::ebtAction, "bjtb2", "button", "Thumb2" },
+	{ BTN_TOP, deInputDeviceButton::ebtAction, "bjtop1", "button", "Top" },
+	{ BTN_TOP2, deInputDeviceButton::ebtAction, "bjtop2", "button", "Top2" },
+	{ BTN_PINKIE, deInputDeviceButton::ebtAction, "bjpin", "button", "Pinkie" },
+	{ BTN_BASE, deInputDeviceButton::ebtAction, "bjba1", "button", "Base" },
+	{ BTN_BASE2, deInputDeviceButton::ebtAction, "bjba2", "button", "Base2" },
+	{ BTN_BASE3, deInputDeviceButton::ebtAction, "bjba3", "button", "Base3" },
+	{ BTN_BASE4, deInputDeviceButton::ebtAction, "bjba4", "button", "Base4" },
+	{ BTN_BASE5, deInputDeviceButton::ebtAction, "bjba5", "button", "Base5" },
+	{ BTN_BASE6, deInputDeviceButton::ebtAction, "bjba6", "button", "Base6" },
+	{ BTN_DEAD, deInputDeviceButton::ebtAction, "bjdead", "button", "Dead" },
+	
+	// gamepad
+	{ BTN_A, deInputDeviceButton::ebtAction, "baa", "button", "A" }, // BTN_SOUTH
+	{ BTN_B, deInputDeviceButton::ebtAction, "bab", "button", "B" }, // BTN_EAST
+	{ BTN_C, deInputDeviceButton::ebtAction, "bac", "button", "C" },
+	{ BTN_X, deInputDeviceButton::ebtAction, "bax", "button", "X" }, // BTN_NORTH
+	{ BTN_Y, deInputDeviceButton::ebtAction, "bay", "button", "Y" }, // BTN_WEST
+	{ BTN_Z, deInputDeviceButton::ebtAction, "baz", "button", "Z" },
+	{ BTN_TL, deInputDeviceButton::ebtShoulderLeft, "basl1", "button", "SL" },
+	{ BTN_TR, deInputDeviceButton::ebtShoulderRight, "basr1", "button", "SR" },
+	{ BTN_TL2, deInputDeviceButton::ebtShoulderLeft, "basl2", "button", "SL2" },
+	{ BTN_TR2, deInputDeviceButton::ebtShoulderRight, "basr2", "button", "SR2" },
+	{ BTN_SELECT, deInputDeviceButton::ebtSelect, "basel", "button", "Select" },
+	{ BTN_START, deInputDeviceButton::ebtHome, "basta", "button", "Start" },
+	{ BTN_MODE, deInputDeviceButton::ebtAction, "bamod", "button", "Mode" },
+	{ BTN_THUMBL, deInputDeviceButton::ebtStick, "batl", "button", "TL" },
+	{ BTN_THUMBR, deInputDeviceButton::ebtStick, "batr", "button", "TR" },
+	
+	// digi
+	{ BTN_TOOL_PEN, deInputDeviceButton::ebtAction, "badtp", "button", "Pen" },
+	{ BTN_TOOL_RUBBER, deInputDeviceButton::ebtAction, "badtr", "button", "Rubber" },
+	{ BTN_TOOL_BRUSH, deInputDeviceButton::ebtAction, "badtb", "button", "Brush" },
+	{ BTN_TOOL_PENCIL, deInputDeviceButton::ebtAction, "badtpc", "button", "Pencil" },
+	{ BTN_TOOL_AIRBRUSH, deInputDeviceButton::ebtAction, "badta", "button", "Airbrush" },
+	{ BTN_TOOL_FINGER, deInputDeviceButton::ebtAction, "badtf", "button", "Finger" },
+	{ BTN_TOOL_MOUSE, deInputDeviceButton::ebtAction, "badtm", "button", "Mouse" },
+	{ BTN_TOOL_LENS, deInputDeviceButton::ebtAction, "badtl", "button", "Lens" },
+	{ BTN_TOOL_DOUBLETAP, deInputDeviceButton::ebtAction, "badtt2", "button", "Tap2" },
+	{ BTN_TOOL_TRIPLETAP, deInputDeviceButton::ebtAction, "badtt3", "button", "Tap3" },
+	{ BTN_TOOL_QUADTAP, deInputDeviceButton::ebtAction, "badtt4", "button", "Tap4" },
+	{ BTN_TOOL_QUINTTAP, deInputDeviceButton::ebtAction, "badtt5", "button", "Tap5" },
+	{ BTN_STYLUS, deInputDeviceButton::ebtAction, "bads1", "button", "Stylus" },
+	{ BTN_STYLUS2, deInputDeviceButton::ebtAction, "bads2", "button", "Stylus2" },
+	{ BTN_STYLUS3, deInputDeviceButton::ebtAction, "bads3", "button", "Stylus3" },
+	{ BTN_TOUCH, deInputDeviceButton::ebtAction, "badth", "button", "Touch" },
+	
+	// wheel
+	{ BTN_GEAR_DOWN, deInputDeviceButton::ebtAction, "bawgd", "button", "GearDown" },
+	{ BTN_GEAR_UP, deInputDeviceButton::ebtAction, "bawgu", "button", "GearUp" }
+};
+
+
 // Class dexsiDeviceLibEvent
 //////////////////////////////
 
@@ -66,7 +214,7 @@ pEvdevMapKeys( NULL )
 	// SDL type mapping: https://meghprkh.github.io/blog/2016/06/03/Handling-joysticks-and-gamepads-in-linux/
 	
 	decString string;
-	int i;
+	int i, j;
 	
 	// create libevdev device for device at pathDevice
 	pEvdevFile = open( pathDevice, O_RDONLY | O_NONBLOCK );
@@ -155,7 +303,6 @@ pEvdevMapKeys( NULL )
 		}
 	}
 	
-	deObjectReference refObject;
 	int indexAxis = 0;
 	
 	if( hasRelativeAxes ){
@@ -164,28 +311,31 @@ pEvdevMapKeys( NULL )
 				continue;
 			}
 			
-			refObject.TakeOver( new dexsiDeviceAxis( module ) );
-			AddAxis( ( dexsiDeviceAxis* )( deObject* )refObject );
-			dexsiDeviceAxis &axis = ( dexsiDeviceAxis& )( deObject& )refObject;
-			axis.SetIndex( indexAxis );
-			axis.SetName( libevdev_event_code_get_name( EV_REL, i ) );
-			axis.SetType( deInputDeviceAxis::eatTouchPad );
-			string.Format( "ra%d", i );
-			axis.SetID( string );
-			axis.SetEvdevCode( i );
-			axis.SetAbsolute( false );
+			const dexsiDeviceAxis::Ref axis( dexsiDeviceAxis::Ref::New( new dexsiDeviceAxis( module ) ) );
+			AddAxis( axis );
+			axis->SetIndex( indexAxis );
+			axis->SetName( libevdev_event_code_get_name( EV_REL, i ) );
+			axis->SetEvdevCode( i );
+			axis->SetAbsolute( false );
 			
-			string.Format( "%d", indexAxis + 1 );
-			axis.SetDisplayText( string );
+			for( j=0; j<vTableRelativeAxisCount; j++ ){
+				if( vTableRelativeAxes[ j ].code == i ){
+					axis->SetType( vTableRelativeAxes[ j ].type );
+					axis->SetDisplayImages( vTableRelativeAxes[ j ].displayName );
+					axis->SetID( vTableRelativeAxes[ j ].id );
+					axis->SetDisplayText( vTableRelativeAxes[ j ].displayText );
+					break;
+				}
+			}
 			
-			if( i == 0 ){
-				axis.SetDisplayImages( "touchpadX" );
+			if( j == vTableRelativeAxisCount ){
+				axis->SetType( deInputDeviceAxis::eatGeneric );
 				
-			}else if( i == 1 ){
-				axis.SetDisplayImages( "touchpadY" );
+				string.Format( "ra%d", i );
+				axis->SetID( string );
 				
-			}else{
-				 // "mouseZ"
+				string.Format( "%d", indexAxis + 1 );
+				axis->SetDisplayText( string );
 			}
 			
 			pEvdevMapRelAxis[ i ] = indexAxis++;
@@ -200,93 +350,42 @@ pEvdevMapKeys( NULL )
 				continue;
 			}
 			
-			refObject.TakeOver( new dexsiDeviceAxis( module ) );
-			AddAxis( ( dexsiDeviceAxis* )( deObject* )refObject );
-			dexsiDeviceAxis &axis = ( dexsiDeviceAxis& )( deObject& )refObject;
-			axis.SetIndex( indexAxis );
-			axis.SetName( libevdev_event_code_get_name( EV_ABS, i ) );
-			axis.SetEvdevCode( i );
-			axis.SetAbsolute( true );
+			const dexsiDeviceAxis::Ref axis( dexsiDeviceAxis::Ref::New( new dexsiDeviceAxis( module ) ) );
+			AddAxis( axis );
+			axis->SetIndex( indexAxis );
+			axis->SetName( libevdev_event_code_get_name( EV_ABS, i ) );
+			axis->SetEvdevCode( i );
+			axis->SetAbsolute( true );
 			
-			axis.SetMinimum( libevdev_get_abs_minimum( pEvdevDevice, i ) );
-			axis.SetMaximum( libevdev_get_abs_maximum( pEvdevDevice, i ) );
-			axis.SetFuzz( libevdev_get_abs_fuzz( pEvdevDevice, i ) );
-			axis.SetFlat( libevdev_get_abs_flat( pEvdevDevice, i ) );
+			axis->SetMinimum( libevdev_get_abs_minimum( pEvdevDevice, i ) );
+			axis->SetMaximum( libevdev_get_abs_maximum( pEvdevDevice, i ) );
+			axis->SetFuzz( libevdev_get_abs_fuzz( pEvdevDevice, i ) );
+			axis->SetFlat( libevdev_get_abs_flat( pEvdevDevice, i ) );
 			
 			// libevdev likes to lie about the deadzone of input devices. ensure the deadzone
 			// is not smaller than a specific percentage of the total range. typical deadzone
 			// ranges are 0.2 - 0.25 of half-range
-			axis.LimitFlat( 0.1f );
+			axis->LimitFlat( 0.1f );
 			
-			if( axis.GetName().EqualsInsensitive( "abs_x" ) ){
-				axis.SetType( deInputDeviceAxis::eatStick );
-				axis.SetDisplayImages( "stickX" );
-				axis.SetID( "sx0" );
-				axis.SetDisplayText( "1" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_y" ) ){
-				axis.SetType( deInputDeviceAxis::eatStick );
-				axis.SetDisplayImages( "stickY" );
-				axis.SetID( "sy0" );
-				axis.SetDisplayText( "1" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_z" ) ){
-				axis.SetType( deInputDeviceAxis::eatTrigger );
-				axis.SetDisplayImages( "trigger" );
-				axis.SetID( "tr0" );
-				axis.SetDisplayText( "1" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_rx" ) ){
-				axis.SetType( deInputDeviceAxis::eatStick );
-				axis.SetDisplayImages( "stickX" );
-				axis.SetID( "sx1" );
-				axis.SetDisplayText( "2" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_ry" ) ){
-				axis.SetType( deInputDeviceAxis::eatStick );
-				axis.SetDisplayImages( "stickY" );
-				axis.SetID( "sy1" );
-				axis.SetDisplayText( "2" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_rz" ) ){
-				axis.SetType( deInputDeviceAxis::eatTrigger );
-				axis.SetDisplayImages( "trigger" );
-				axis.SetID( "tr1" );
-				axis.SetDisplayText( "2" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_hat0x" ) ){
-				axis.SetType( deInputDeviceAxis::eatHat );
-				axis.SetDisplayImages( "stickX" );
-				axis.SetID( "hx0" );
-				axis.SetDisplayText( "1" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_hat0y" ) ){
-				axis.SetType( deInputDeviceAxis::eatHat );
-				axis.SetDisplayImages( "stickY" );
-				axis.SetID( "hy0" );
-				axis.SetDisplayText( "1" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_hat1x" ) ){
-				axis.SetType( deInputDeviceAxis::eatHat );
-				axis.SetDisplayImages( "stickX" );
-				axis.SetID( "hx1" );
-				axis.SetDisplayText( "2" );
-				
-			}else if( axis.GetName().EqualsInsensitive( "abs_hat1y" ) ){
-				axis.SetType( deInputDeviceAxis::eatHat );
-				axis.SetDisplayImages( "stickY" );
-				axis.SetID( "hy1" );
-				axis.SetDisplayText( "2" );
-				
-			}else{
-				axis.SetType( deInputDeviceAxis::eatGeneric );
-				axis.SetDisplayImages( "stick" );
+			for( j=0; j<vTableAbsolutAxisCount; j++ ){
+				if( vTableAbsolutAxes[ j ].code == i ){
+					axis->SetType( vTableAbsolutAxes[ j ].type );
+					axis->SetDisplayImages( vTableAbsolutAxes[ j ].displayName );
+					axis->SetID( vTableAbsolutAxes[ j ].id );
+					axis->SetDisplayText( vTableAbsolutAxes[ j ].displayText );
+					break;
+				}
+			}
+			
+			if( j == vTableAbsolutAxisCount ){
+				axis->SetType( deInputDeviceAxis::eatGeneric );
+				axis->SetDisplayImages( "axis" );
 				
 				string.Format( "aa%d", nextGeneric++ );
-				axis.SetID( string );
+				axis->SetID( string );
 				
 				string.Format( "%d", nextGeneric );
-				axis.SetDisplayText( string );
+				axis->SetDisplayText( string );
 			}
 			
 			pEvdevMapAbsAxis[ i ] = indexAxis++;
@@ -309,100 +408,37 @@ pEvdevMapKeys( NULL )
 		}
 		
 		int indexButton = 0;
-		
 		int nextGeneric = 0;
-		int nextTrigger = 0;
 		
 		for( i=BTN_MISC; i<KEY_MAX; i++ ){
 			if( ! libevdev_has_event_code( pEvdevDevice, EV_KEY, i ) ){
 				continue;
 			}
 			
-			refObject.TakeOver( new dexsiDeviceButton( module ) );
-			AddButton( ( dexsiDeviceButton* )( deObject* )refObject );
-			dexsiDeviceButton &button = ( dexsiDeviceButton& )( deObject& )refObject;
-			button.SetName( libevdev_event_code_get_name( EV_KEY, i ) );
-			button.SetEvdevCode( i );
+			const dexsiDeviceButton::Ref button( dexsiDeviceButton::Ref::New( new dexsiDeviceButton( module ) ) );
+			AddButton( button );
+			button->SetName( libevdev_event_code_get_name( EV_KEY, i ) );
+			button->SetEvdevCode( i );
 			
-			// other seen names (but not assigned especially):
-			// BTN_MODE
-			// BTN_TRIGGER_HAPPY*
+			for( j=0; j<vTableButtonCount; j++ ){
+				if( vTableButton[ j ].code == i ){
+					button->SetType( vTableButton[ j ].type );
+					button->SetDisplayImages( vTableButton[ j ].displayName );
+					button->SetID( vTableButton[ j ].id );
+					button->SetDisplayText( vTableButton[ j ].displayText );
+					break;
+				}
+			}
 			
-			if( button.GetName().EqualsInsensitive( "btn_south" ) ){
-				button.SetType( deInputDeviceButton::ebtAction );
-				button.SetDisplayImages( "button" );
-				button.SetID( "baa" );
-				button.SetDisplayText( "A" );
+			if( j == vTableButtonCount ){
+				button->SetType( deInputDeviceButton::ebtGeneric );
+				button->SetDisplayImages( "button" );
 				
-			}else if( button.GetName().EqualsInsensitive( "btn_east" ) ){
-				button.SetType( deInputDeviceButton::ebtAction );
-				button.SetDisplayImages( "button" );
-				button.SetID( "bab" );
-				button.SetDisplayText( "B" );
-				
-			}else if( button.GetName().EqualsInsensitive( "btn_west" ) ){
-				button.SetType( deInputDeviceButton::ebtAction );
-				button.SetDisplayImages( "button" );
-				button.SetID( "bax" );
-				button.SetDisplayText( "X" );
-				
-			}else if( button.GetName().EqualsInsensitive( "btn_north" ) ){
-				button.SetType( deInputDeviceButton::ebtAction );
-				button.SetDisplayImages( "button" );
-				button.SetID( "bay" );
-				button.SetDisplayText( "Y" );
-				
-			}else if( button.GetName().EqualsInsensitive( "btn_tl" ) ){
-				button.SetType( deInputDeviceButton::ebtShoulderLeft );
-				button.SetDisplayImages( "button" );
-				button.SetID( "basl" );
-				button.SetDisplayText( "SL" );
-				
-			}else if( button.GetName().EqualsInsensitive( "btn_tr" ) ){
-				button.SetType( deInputDeviceButton::ebtShoulderRight );
-				button.SetDisplayImages( "button" );
-				button.SetID( "basr" );
-				button.SetDisplayText( "SR" );
-				
-			}else if( button.GetName().EqualsInsensitive( "btn_select" ) ){
-				button.SetType( deInputDeviceButton::ebtSelect );
-				button.SetDisplayImages( "button" );
-				button.SetID( "basel" );
-				button.SetDisplayText( "Select" );
-				
-			}else if( button.GetName().EqualsInsensitive( "btn_start" ) ){
-				button.SetType( deInputDeviceButton::ebtHome );
-				button.SetDisplayImages( "button" );
-				button.SetID( "basta" );
-				button.SetDisplayText( "Start" );
-				
-			}else if( button.GetName().EqualsInsensitive( "btn_thumbl" ) ){
-				button.SetType( deInputDeviceButton::ebtStick );
-				button.SetDisplayImages( "button" );
-				button.SetID( "bas0" );
-				button.SetDisplayText( "StkL" );
-				
-			}else if( button.GetName().EqualsInsensitive( "btn_thumbr" ) ){
-				button.SetType( deInputDeviceButton::ebtStick );
-				button.SetDisplayImages( "button" );
-				button.SetID( "bas1" );
-				button.SetDisplayText( "StkR" );
-				
-			}else if( button.GetName().BeginsWithInsensitive( "btn_trigger_" ) ){
-				button.SetType( deInputDeviceButton::ebtTrigger );
-				button.SetDisplayImages( "button" );
-				string.Format( "bt%d", nextTrigger++ );
-				button.SetID( string );
-				string.Format( "T%d", nextTrigger );
-				button.SetDisplayText( string );
-				
-			}else{
-				button.SetType( deInputDeviceButton::ebtGeneric );
-				button.SetDisplayImages( "button" );
 				string.Format( "bg%d", nextGeneric++ );
-				button.SetID( string );
+				button->SetID( string );
+				
 				string.Format( "%d", nextGeneric );
-				button.SetDisplayText( string );
+				button->SetDisplayText( string );
 			}
 			
 			pEvdevMapKeys[ i - BTN_MISC ] = indexButton++;
