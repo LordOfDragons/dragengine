@@ -17,6 +17,9 @@
 		},
 		{
 			"path": "src/modules/graphic/opengl"
+		},
+		{
+			"path": "src/modules/input/xsystem"
 		}
 	],
 	"settings": {

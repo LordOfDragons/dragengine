@@ -143,6 +143,12 @@ void dexsiDeviceAxis::SetFlat( int flat ){
 	pUpdateDeadZone();
 }
 
+void dexsiDeviceAxis::LimitFlat( float percentage ){
+	const int range = pMaximum - pMinimum;
+	const int minFlat = ( int )( ( float )range * percentage );
+	SetFlat( decMath::max( pFlat, minFlat ) );
+}
+
 void dexsiDeviceAxis::SetAbsolute( bool absolute ){
 	pAbsolute = absolute;
 }

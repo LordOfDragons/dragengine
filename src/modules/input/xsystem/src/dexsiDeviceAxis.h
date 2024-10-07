@@ -160,6 +160,9 @@ public:
 	/** \brief Set flat. */
 	void SetFlat( int flat );
 	
+	/** \brief Limit flat to minimum percentage of value range. */
+	void LimitFlat( float percentage );
+	
 	/** \brief Axis is absolute. */
 	inline bool GetAbsolute() const{ return pAbsolute; }
 	
