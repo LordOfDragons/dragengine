@@ -362,11 +362,6 @@ pEvdevMapKeys( NULL )
 			axis->SetFuzz( libevdev_get_abs_fuzz( pEvdevDevice, i ) );
 			axis->SetFlat( libevdev_get_abs_flat( pEvdevDevice, i ) );
 			
-			// libevdev likes to lie about the deadzone of input devices. ensure the deadzone
-			// is not smaller than a specific percentage of the total range. typical deadzone
-			// ranges are 0.2 - 0.25 of half-range
-			axis->LimitFlat( 0.1f );
-			
 			for( j=0; j<vTableAbsolutAxisCount; j++ ){
 				if( vTableAbsolutAxes[ j ].code == i ){
 					axis->SetType( vTableAbsolutAxes[ j ].type );
@@ -386,6 +381,13 @@ pEvdevMapKeys( NULL )
 				
 				string.Format( "%d", nextGeneric );
 				axis->SetDisplayText( string );
+			}
+			
+			if( axis->GetType() == deInputDeviceAxis::eatStick ){
+				// libevdev likes to lie about the deadzone of input devices. ensure the deadzone
+				// is not smaller than a specific percentage of the total range. typical deadzone
+				// ranges are 0.2 - 0.25 of half-range
+				axis->LimitFlat( 0.1f );
 			}
 			
 			pEvdevMapAbsAxis[ i ] = indexAxis++;
