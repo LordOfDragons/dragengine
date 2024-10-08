@@ -82,7 +82,7 @@ static const sTableEntryAxis vTableRelativeAxes[ vTableRelativeAxisCount ]{
 	*/
 };
 
-static const int vTableAbsolutAxisCount = 27;
+static const int vTableAbsolutAxisCount = 26;
 static const sTableEntryAxis vTableAbsolutAxes[ vTableAbsolutAxisCount ]{
 	{ ABS_X, deInputDeviceAxis::eatStick, "sx0", "stickX", "1" },
 	{ ABS_Y, deInputDeviceAxis::eatStick, "sy0", "stickY", "1" },
@@ -109,7 +109,7 @@ static const sTableEntryAxis vTableAbsolutAxes[ vTableAbsolutAxisCount ]{
 	{ ABS_TILT_Y, deInputDeviceAxis::eatStick, "tlty", "stickY", "Tlt" },
 	{ ABS_TOOL_WIDTH, deInputDeviceAxis::eatGeneric, "twi", "trigger", "Twi" },
 	{ ABS_VOLUME, deInputDeviceAxis::eatGeneric, "vol", "trigger", "Vol" },
-	{ ABS_PROFILE, deInputDeviceAxis::eatGeneric, "pro", "trigger", "Pro" },
+	// { ABS_PROFILE, deInputDeviceAxis::eatGeneric, "pro", "trigger", "Pro" }, // missing on github
 	{ ABS_MISC, deInputDeviceAxis::eatGeneric, "misc", "trigger", "Misc" }
 };
 
