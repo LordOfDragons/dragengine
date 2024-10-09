@@ -20,6 +20,12 @@
 		},
 		{
 			"path": "src/modules/input/xsystem"
+		},
+		{
+			"path": "src/deigde/deigde"
+		},
+		{
+			"path": "src/deigde/editors/conversation"
 		}
 	],
 	"settings": {

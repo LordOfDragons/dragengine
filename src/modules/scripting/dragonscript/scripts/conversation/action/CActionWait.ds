@@ -61,7 +61,7 @@ class CActionWait extends ConversationAction
 	
 	/** \brief Create conversation action. */
 	func new()
-		pInterval = 0.2
+		pInterval = 0
 		pActions = Array.new()
 	end
 	
