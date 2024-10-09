@@ -33,13 +33,8 @@ pin Dragengine.Scenery
  * \brief Conversation actions.
  */
 abstract class ConversationAction implements Persistable
-	/** \brief Wait for actor. */
-	var bool pWaitForActor
-	
-	/** \brief ID of actor to wait for or null to wait for all actors. */
+	var bool pWaitForActor, pWaitSpeakOnly
 	var String pWaitForActorID
-	
-	/** \brief Delay before processing the action. */
 	var float pDelay
 	
 	
@@ -47,14 +42,15 @@ abstract class ConversationAction implements Persistable
 	/** \brief Create conversation action. */
 	func new()
 		pWaitForActor = true
-		pDelay = 0
 	end
 	
 	/** \brief Read from file. */
 	func new(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			pWaitForActor = env.readBool(reader)
+			var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+			pWaitForActor = flags.getAt(0)
+			pWaitSpeakOnly = flags.getAt(1)
 			pWaitForActorID = env.readString8OrNullIfEmpty(reader)
 			pDelay = reader.readFloat()
 			
@@ -73,6 +69,22 @@ abstract class ConversationAction implements Persistable
 	/** \brief Set wait for actor. */
 	func void setWaitForActor(bool wait)
 		pWaitForActor = wait
+	end
+	
+	/**
+	 * \brief Waiting considers only actor speaking not actor waiting.
+	 * \version 1.24
+	 */
+	func bool getWaitSpeakOnly()
+		return pWaitSpeakOnly
+	end
+	
+	/**
+	 * \brief Set waiting considers only actor speaking not actor waiting.
+	 * \version 1.24
+	 */
+	func void setWaitSpeakOnly(bool speakOnly)
+		pWaitSpeakOnly = speakOnly
 	end
 	
 	/** \brief ID of actor to wait for or null to wait for all actors. */
@@ -106,7 +118,11 @@ abstract class ConversationAction implements Persistable
 	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 		writer.writeByte(0) // version
 		
-		env.writeBool(writer, pWaitForActor)
+		var PersistencyFlags flags = PersistencyFlags.new(2)
+		flags.setAt(0, pWaitForActor)
+		flags.setAt(1, pWaitSpeakOnly)
+		flags.writeToFile(writer)
+		
 		env.writeString8OrEmptyIfNull(writer, pWaitForActorID)
 		writer.writeFloat(pDelay)
 	end

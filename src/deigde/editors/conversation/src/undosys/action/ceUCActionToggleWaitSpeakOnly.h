@@ -22,57 +22,46 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef _CEUCACTIONTOGGLEWAITSPEAKONLY_H_
+#define _CEUCACTIONTOGGLEWAITSPEAKONLY_H_
 
-#include "ceConversationAction.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/exceptions.h>
-
-
-
-// Class ceConversationAction
-///////////////////////////////
-
-// Constructor, destructor
-////////////////////////////
-
-ceConversationAction::ceConversationAction( eActionTypes type ) :
-pType( type ),
-pWaitForActor( true ),
-pWaitSpeakOnly( false ),
-pDelay( 0.0f ){
-}
-
-ceConversationAction::ceConversationAction( const ceConversationAction &action ) :
-pType( action.pType ),
-pWaitForActor( action.pWaitForActor ),
-pWaitSpeakOnly( action.pWaitSpeakOnly ),
-pWaitForActorID( action.pWaitForActorID ),
-pDelay( action.pDelay ){
-}
-
-ceConversationAction::~ceConversationAction(){
-}
+class ceConversationAction;
+class ceConversationTopic;
 
 
 
-// Management
-///////////////
+/**
+ * \brief Undo action conversation action toggle wait speak only.
+ */
+class ceUCActionToggleWaitSpeakOnly : public igdeUndo{
+private:
+	ceConversationTopic *pTopic;
+	ceConversationAction *pAction;
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo. */
+	ceUCActionToggleWaitSpeakOnly( ceConversationTopic *topic, ceConversationAction *action );
+	
+protected:
+	/** \brief Clean up undo. */
+	virtual ~ceUCActionToggleWaitSpeakOnly();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
+	virtual void Undo();
+	
+	/** \brief Redo. */
+	virtual void Redo();
+	/*@}*/
+};
 
-void ceConversationAction::SetWaitForActor( bool wait ){
-	pWaitForActor = wait;
-}
-
-void ceConversationAction::SetWaitSpeakOnly( bool speakOnly ){
-	pWaitSpeakOnly = speakOnly;
-}
-
-void ceConversationAction::SetWaitForActorID( const char *wait ){
-	pWaitForActorID = wait;
-}
-
-void ceConversationAction::SetDelay( float delay ){
-	pDelay = delay;
-}
+#endif

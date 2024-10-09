@@ -474,9 +474,12 @@ void cePlayback::ProcessActions( float elapsed ){
 			const ceConversationActorList &actorList = pConversation.GetActorList();
 			
 			if( action->GetWaitForActor() ){
+				const bool useActorWait = ! action->GetWaitSpeakOnly();
+				
 				if( action->GetWaitForActorID().IsEmpty() ){
 					for( i=0; i<pActorCount; i++ ){
-						if( ! pActors[ i ].IsSpeechDone() || actorList.GetAt( i )->GetWaiting() ){
+						if( ! pActors[ i ].IsSpeechDone()
+						|| ( useActorWait && actorList.GetAt( i )->GetWaiting() ) ){
 							return;
 						}
 					}
@@ -484,7 +487,8 @@ void cePlayback::ProcessActions( float elapsed ){
 				}else{
 					const int index = actorList.IndexWithIDOrAliasID( action->GetWaitForActorID() );
 					if( index != -1 ){
-						if( ! pActors[ index ].IsSpeechDone() || actorList.GetAt( index )->GetWaiting() ){
+						if( ! pActors[ index ].IsSpeechDone()
+						|| ( useActorWait && actorList.GetAt( index )->GetWaiting() ) ){
 							return;
 						}
 					}

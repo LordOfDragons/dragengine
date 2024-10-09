@@ -38,6 +38,7 @@
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../configuration/ceConfiguration.h"
 #include "../../../undosys/action/ceUCActionToggleWaitForActor.h"
+#include "../../../undosys/action/ceUCActionToggleWaitSpeakOnly.h"
 #include "../../../undosys/action/ceUCActionSetWaitForActorID.h"
 #include "../../../undosys/action/ceUCActionSetDelay.h"
 
@@ -114,6 +115,33 @@ public:
 	}
 };
 
+class cActionWaitSpeakOnly : public igdeAction{
+	ceWPAction &pPanel;
+	
+public:
+	cActionWaitSpeakOnly( ceWPAction &panel ) : igdeAction( "Wait speak only",
+		"Waiting considers only actor speaking not actor waiting" ),
+		pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
+		if( ! topic || ! action ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new ceUCActionToggleWaitSpeakOnly( topic, action ) );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+	}
+	
+	virtual void Update(){
+		ceConversationAction * const action = pPanel.GetParentPanel().GetTreeAction();
+		SetEnabled( action );
+		SetSelected( action && action->GetWaitSpeakOnly() );
+	}
+};
+
 class cComboWaitForActorID : public igdeComboBoxListener {
 	ceWPAction &pPanel;
 	
@@ -164,6 +192,7 @@ void ceWPAction::CreateGUICommon( igdeContainerForm &container ){
 		pEditDelay, new cTextDelay( *this ) );
 	
 	helper.CheckBoxOnly( container, pChkWaitForActor, new cActionWaitForActor( *this ), true );
+	helper.CheckBoxOnly( container, pChkWaitSpeakOnly, new cActionWaitSpeakOnly( *this ), true );
 	helper.ComboBox( container, true, "ID of actor to wait for or empty string to wait for all actors",
 		pCBWaitForActorID, new cComboWaitForActorID( *this ) );
 }
@@ -185,6 +214,7 @@ void ceWPAction::UpdateCommonParams(){
 	}
 	
 	pChkWaitForActor->GetAction()->Update();
+	pChkWaitSpeakOnly->GetAction()->Update();
 }
 
 

@@ -23,37 +23,48 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
-#include "ceConversationAction.h"
+#include "ceUCActionToggleWaitSpeakOnly.h"
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/action/ceConversationAction.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class ceConversationAction
-///////////////////////////////
+// Class ceUCActionToggleWaitSpeakOnly
+////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-ceConversationAction::ceConversationAction( eActionTypes type ) :
-pType( type ),
-pWaitForActor( true ),
-pWaitSpeakOnly( false ),
-pDelay( 0.0f ){
+ceUCActionToggleWaitSpeakOnly::ceUCActionToggleWaitSpeakOnly(
+ceConversationTopic *topic, ceConversationAction *action )
+{
+	DEASSERT_NOTNULL( topic )
+	
+	pTopic = NULL;
+	pAction = NULL;
+	
+	SetShortInfo( "Action Toggle Wait Speak Only" );
+	
+	pTopic = topic;
+	topic->AddReference();
+	
+	pAction = action;
+	action->AddReference();
 }
 
-ceConversationAction::ceConversationAction( const ceConversationAction &action ) :
-pType( action.pType ),
-pWaitForActor( action.pWaitForActor ),
-pWaitSpeakOnly( action.pWaitSpeakOnly ),
-pWaitForActorID( action.pWaitForActorID ),
-pDelay( action.pDelay ){
-}
-
-ceConversationAction::~ceConversationAction(){
+ceUCActionToggleWaitSpeakOnly::~ceUCActionToggleWaitSpeakOnly(){
+	if( pAction ){
+		pAction->FreeReference();
+	}
+	if( pTopic ){
+		pTopic->FreeReference();
+	}
 }
 
 
@@ -61,18 +72,11 @@ ceConversationAction::~ceConversationAction(){
 // Management
 ///////////////
 
-void ceConversationAction::SetWaitForActor( bool wait ){
-	pWaitForActor = wait;
+void ceUCActionToggleWaitSpeakOnly::Undo(){
+	Redo();
 }
 
-void ceConversationAction::SetWaitSpeakOnly( bool speakOnly ){
-	pWaitSpeakOnly = speakOnly;
-}
-
-void ceConversationAction::SetWaitForActorID( const char *wait ){
-	pWaitForActorID = wait;
-}
-
-void ceConversationAction::SetDelay( float delay ){
-	pDelay = delay;
+void ceUCActionToggleWaitSpeakOnly::Redo(){
+	pAction->SetWaitSpeakOnly( ! pAction->GetWaitSpeakOnly() );
+	pTopic->NotifyActionChanged( pAction );
 }
