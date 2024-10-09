@@ -192,9 +192,10 @@ void ceWPAction::CreateGUICommon( igdeContainerForm &container ){
 		pEditDelay, new cTextDelay( *this ) );
 	
 	helper.CheckBoxOnly( container, pChkWaitForActor, new cActionWaitForActor( *this ), true );
-	helper.CheckBoxOnly( container, pChkWaitSpeakOnly, new cActionWaitSpeakOnly( *this ), true );
 	helper.ComboBox( container, true, "ID of actor to wait for or empty string to wait for all actors",
 		pCBWaitForActorID, new cComboWaitForActorID( *this ) );
+	
+	helper.CheckBox( container, pChkWaitSpeakOnly, new cActionWaitSpeakOnly( *this ), true );
 }
 
 void ceWPAction::UpdateCommonParams(){
