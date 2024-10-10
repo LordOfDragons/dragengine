@@ -839,6 +839,19 @@ class Desktop extends Container
 		end
 	end
 	
+	/**
+	 * \brief Popdown virtual keyboard if Desktop has one assigned.
+	 * \version 1.24
+	 * 
+	 * Modifies \ref Widget#popdownVirtualKeyboard() to always pop down virtual keyboard
+	 * no matter which widget is assigned to it.
+	 */
+	func void popdownVirtualKeyboard()
+		if pWindowVirtualKeyboard != null
+			pWindowVirtualKeyboard.popdown()
+		end
+	end
+	
 	
 	
 	/**
