@@ -1,0 +1,31 @@
+diff '--color=auto' -rupN OpenXR-SDK-release-1.1.41/src/cmake/FindJsonCpp.cmake OpenXR-SDK-release-1.1.41-new/src/cmake/FindJsonCpp.cmake
+--- OpenXR-SDK-release-1.1.41/src/cmake/FindJsonCpp.cmake	2024-09-26 17:14:06.000000000 +0200
++++ OpenXR-SDK-release-1.1.41-new/src/cmake/FindJsonCpp.cmake	2024-10-15 00:56:04.029449945 +0200
+@@ -65,7 +65,7 @@ set(__jsoncpp_have_jsoncpplib FALSE)
+ # See if we find a CMake config file - there is no harm in calling this more than once,
+ # and we need to call it at least once every CMake invocation to create the original
+ # imported targets, since those don't stick around like cache variables.
+-find_package(jsoncpp QUIET NO_MODULE)
++# find_package(jsoncpp QUIET NO_MODULE)
+ 
+ if(jsoncpp_FOUND)
+ 	# Build a string to help us figure out when to invalidate our cache variables.
+diff '--color=auto' -rupN OpenXR-SDK-release-1.1.41/src/external/jsoncpp/jsoncppConfig.cmake.in OpenXR-SDK-release-1.1.41-new/src/external/jsoncpp/jsoncppConfig.cmake.in
+--- OpenXR-SDK-release-1.1.41/src/external/jsoncpp/jsoncppConfig.cmake.in	2024-09-26 17:14:06.000000000 +0200
++++ OpenXR-SDK-release-1.1.41-new/src/external/jsoncpp/jsoncppConfig.cmake.in	2024-10-15 00:51:50.199035374 +0200
+@@ -6,6 +6,4 @@ cmake_policy(VERSION 3.0)
+ include ( "${CMAKE_CURRENT_LIST_DIR}/jsoncpp-targets.cmake" )
+ include ( "${CMAKE_CURRENT_LIST_DIR}/jsoncpp-namespaced-targets.cmake" )
+ 
+-check_required_components(JsonCpp)
+-
+ cmake_policy(POP)
+diff '--color=auto' -rupN OpenXR-SDK-release-1.1.41/src/loader/OpenXRConfig.cmake.in OpenXR-SDK-release-1.1.41-new/src/loader/OpenXRConfig.cmake.in
+--- OpenXR-SDK-release-1.1.41/src/loader/OpenXRConfig.cmake.in	2024-09-26 17:14:06.000000000 +0200
++++ OpenXR-SDK-release-1.1.41-new/src/loader/OpenXRConfig.cmake.in	2024-10-15 00:52:10.811150243 +0200
+@@ -11,5 +11,3 @@ include("${CMAKE_CURRENT_LIST_DIR}/OpenX
+ 
+ # Provide this variable as a convenience.
+ set_and_check(OpenXR_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+-
+-check_required_components(OpenXR)
