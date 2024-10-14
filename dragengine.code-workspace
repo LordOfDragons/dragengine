@@ -1,34 +1,44 @@
 {
 	"folders": [
 		{
-			"path": "src/modules/scripting/dragonscript"
-		},
-		{
+			"name": "dragengine",
 			"path": "src/dragengine"
 		},
 		{
-			"path": "src/modules/service/modio"
+			"name": "dragonscript",
+			"path": "src/modules/scripting/dragonscript"
 		},
 		{
-			"path": "src/modules/service/steamsdk"
-		},
-		{
-			"path": "src/modules/service/eossdk"
-		},
-		{
+			"name": "opengl",
 			"path": "src/modules/graphic/opengl"
 		},
 		{
+			"name": "openal",
+			"path": "src/modules/audio/openal"
+		},
+		{
+			"name": "xsystem",
 			"path": "src/modules/input/xsystem"
 		},
 		{
+			"name": "steamsdk",
+			"path": "src/modules/service/steamsdk"
+		},
+		{
+			"name": "eossdk",
+			"path": "src/modules/service/eossdk"
+		},
+		{
+			"name": "modio",
+			"path": "src/modules/service/modio"
+		},
+		{
+			"name": "deigde",
 			"path": "src/deigde/deigde"
 		},
 		{
+			"name": "conversation",
 			"path": "src/deigde/editors/conversation"
-		},
-		{
-			"path": "src/modules/audio/openal"
 		}
 	],
 	"settings": {
