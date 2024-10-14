@@ -59,7 +59,7 @@ public:
 	deoalWorldOctree( const decDVector &center, const decDVector &halfSize );
 	
 	/** \brief Clean up world octree. */
-	virtual ~deoalWorldOctree();
+	~deoalWorldOctree() override;
 	/*@}*/
 	
 	
@@ -67,10 +67,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Create octree for octant. */
-	virtual deoalDOctree *CreateOctree( int octant ) const;
+	deoalDOctree *CreateOctree( int octant ) const override;
 	
 	/** \brief Clear content of node. */
-	virtual void ClearNodeContent();
+	void ClearNodeContent() override;
 	
 	/** \brief Clear all components from tree. */
 	void ClearComponents();

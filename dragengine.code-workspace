@@ -26,6 +26,9 @@
 		},
 		{
 			"path": "src/deigde/editors/conversation"
+		},
+		{
+			"path": "src/modules/audio/openal"
 		}
 	],
 	"settings": {
