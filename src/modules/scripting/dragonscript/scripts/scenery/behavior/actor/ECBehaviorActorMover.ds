@@ -641,6 +641,10 @@ class ECBehaviorActorMover extends DefaultECBehavior
 					each.startMoving(this)
 				end)
 				
+				if pGoalPosition == null or pPath == null
+					return // listener forced stop moving
+				end
+				
 				updateRequiresThinking()
 				
 				if pNextPathPoint == pPath.getCount()
