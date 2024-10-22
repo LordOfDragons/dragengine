@@ -45,9 +45,10 @@ deoalPMaxEnvSlots::deoalPMaxEnvSlots( deAudioOpenAL &oal ) : deoalParameterInt( 
 		" If audio stutters or emits clicks try lowering this value."
 		" This parameter is only used if 'AuralizationMode' is set to 'full'."
 	);
-	SetType( deModuleParameter::eptNumeric );
-	SetMinimumValue( 2 );
-	SetMaximumValue( 8 );
+	SetType( deModuleParameter::eptRanged );
+	SetMinimumValue( 2.0f );
+	SetMaximumValue( 8.0f );
+	SetValueStepSize( 1.0f );
 	
 	SetCategory( ecBasic );
 	SetDisplayName( "Maximum Environments" );
