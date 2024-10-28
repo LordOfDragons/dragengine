@@ -118,6 +118,14 @@ pin Dragengine.Scenery
  *    end
  * end
  * \endcode
+ * 
+ * \par Allow Failure Support (version 1.24)
+ * 
+ * Resolving can be now done optionally by using \ref #addAllowFail() and
+ * \ref #addBehaviorAllowFail() instead of \ref #add() and \ref #addBehavior().
+ * This allows code to be resilient against resolving objects gone missing, for example due
+ * to modding or edge cases. If used the block can be called with null if resolving failed
+ * instead of throwing an exception.
  */
 class ElementResolver
 	/** \brief Resolve failure. */
@@ -140,9 +148,18 @@ class ElementResolver
 		var UniqueID pID
 		var int pBehaviorInstanceIndex
 		var Block pBlock
+		var bool pAllowFail
 		
 		/** \brief Create request. */
-		func new(UniqueID id, int behaviorInstanceIndex, Block ablock)
+		func new(UniqueID id, int behaviorInstanceIndex, Block ablock)\
+		this(id, behaviorInstanceIndex, ablock, false)
+		end
+		
+		/**
+		 * \brief Create request.
+		 * \version 1.24
+		 */
+		func new(UniqueID id, int behaviorInstanceIndex, Block ablock, bool allowFail)
 			if id == null
 				throw ENullPointer.new("id")
 			end
@@ -153,6 +170,7 @@ class ElementResolver
 			pID = id
 			pBehaviorInstanceIndex = behaviorInstanceIndex
 			pBlock = ablock
+			pAllowFail = allowFail
 		end
 		
 		/** \brief Unique ID to resolve. */
@@ -168,6 +186,16 @@ class ElementResolver
 		/** \brief Block to call with resolved element. */
 		func Block getBlock()
 			return pBlock
+		end
+		
+		/**
+		 * \brief Resolving is allowed to fail.
+		 * \version 1.24
+		 * 
+		 * If failed block is called with null instead of throwing an exception.
+		 */
+		func bool getAllowFail()
+			return pAllowFail
 		end
 	end
 	
@@ -191,7 +219,7 @@ class ElementResolver
 	 * element as parameter. If resolving fails \ref ResolveException is thrown.
 	 */
 	func void add(UniqueID id, Block ablock)
-		pRequests.add(Request.new(id, -1, ablock))
+		pRequests.add(Request.new(id, -1, ablock, false))
 	end
 	
 	/**
@@ -200,7 +228,28 @@ class ElementResolver
 	 * Same as \ref #add(UniqueID,Block) but reads the UniqueID from file reader.
 	 */
 	func void add(FileReader reader, Block ablock)
-		pRequests.add(Request.new(UniqueID.readFromFile(reader), -1, ablock))
+		pRequests.add(Request.new(UniqueID.readFromFile(reader), -1, ablock, false))
+	end
+	
+	/**
+	 * \brief Add resolve request which is allowed to fail.
+	 * \version 1.24
+	 * 
+	 * Add request to resolve element by identifier. Once resolved block is called with resolved
+	 * element as parameter. If resolving fails block is called with null as parameter.
+	 */
+	func void addAllowFail(UniqueID id, Block ablock)
+		pRequests.add(Request.new(id, -1, ablock, true))
+	end
+	
+	/**
+	 * \brief Add resolve request which is allowed to fail.
+	 * \version 1.24
+	 * 
+	 * Same as \ref #addAllowFail(UniqueID,Block) but reads the UniqueID from file reader.
+	 */
+	func void addAllowFail(FileReader reader, Block ablock)
+		pRequests.add(Request.new(UniqueID.readFromFile(reader), -1, ablock, true))
 	end
 	
 	/**
@@ -218,7 +267,7 @@ class ElementResolver
 	 * fails \ref ResolveException is thrown.
 	 */
 	func void addBehavior(UniqueID id, int behaviorInstanceIndex, Block ablock)
-		pRequests.add(Request.new(id, behaviorInstanceIndex, ablock))
+		pRequests.add(Request.new(id, behaviorInstanceIndex, ablock, false))
 	end
 	
 	/**
@@ -230,7 +279,32 @@ class ElementResolver
 	func void addBehavior(FileReader reader, Block ablock)
 		var UniqueID id = UniqueID.readFromFile(reader)
 		var int index = reader.readUShort()
-		pRequests.add(Request.new(id, index, ablock))
+		pRequests.add(Request.new(id, index, ablock, false))
+	end
+	
+	/**
+	 * \brief Add resolve request for BehaviorInstance which is allowed to fail.
+	 * \version 1.24
+	 * 
+	 * Add request to resolve element by identifier and behavior inside element by instance index.
+	 * Once resolved block is called with resolved behavior instance as parameter. If resolving
+	 * fails block is called with null as parameter.
+	 */
+	func void addBehaviorAllowFail(UniqueID id, int behaviorInstanceIndex, Block ablock)
+		pRequests.add(Request.new(id, behaviorInstanceIndex, ablock, true))
+	end
+	
+	/**
+	 * \brief Add resolve request for BehaviorInstance which is allowed to fail.
+	 * \version 1.24
+	 * 
+	 * Same as \ref #addBehaviorAllowFail(UniqueID,int,Block) but reads the parameters from file
+	 * reader. Reads first a UniqueID from file reader then a UShort as behavior index.
+	 */
+	func void addBehaviorAllowFail(FileReader reader, Block ablock)
+		var UniqueID id = UniqueID.readFromFile(reader)
+		var int index = reader.readUShort()
+		pRequests.add(Request.new(id, index, ablock, true))
 	end
 	
 	/**
@@ -260,16 +334,23 @@ class ElementResolver
 		
 		pRequests.forEach(block Request each
 			element = gameWorld.getElementWithID(each.getID())
-			if element == null
-				throw ResolveException.new(each.getID())
-			end
 			
-			index = each.getBehaviorInstanceIndex()
-			if index != -1
-				each.getBlock().run((element cast BehaviorElement).getInstanceAt(index))
+			if element != null
+				index = each.getBehaviorInstanceIndex()
+				if index != -1
+					each.getBlock().run((element cast BehaviorElement).getInstanceAt(index))
+					
+				else
+					each.getBlock().run(element)
+				end
 				
 			else
-				each.getBlock().run(element)
+				if each.getAllowFail()
+					each.getBlock().run(null)
+					
+				else
+					throw ResolveException.new(each.getID())
+				end
 			end
 		end)
 		
