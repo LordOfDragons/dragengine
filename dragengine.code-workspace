@@ -39,6 +39,9 @@
 		{
 			"name": "conversation",
 			"path": "src/deigde/editors/conversation"
+		},
+		{
+			"path": "src/tools/blender/dragengine-import-export"
 		}
 	],
 	"settings": {

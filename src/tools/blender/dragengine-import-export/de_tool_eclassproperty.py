@@ -79,7 +79,8 @@ class OBJECT_OT_DEToolEClassProperty(bpy.types.Operator):
 			
 			volume = Armature.CollisionVolume(obj, scalePosition)
 			if self.relative3DCursor:
-				volume.setMatrix(convertMatrix(matmul(relativeMatrix, volume.object.matrix_world)), scalePosition)
+				volume.setMatrix(convertMatrix(matmul(
+					relativeMatrix, volume.object.matrix_world)), scalePosition)
 			
 			pos = volume.position
 			rot = volume.rotation
@@ -167,7 +168,8 @@ class OBJECT_OT_DEToolEClassProperty(bpy.types.Operator):
 			
 			volume = Armature.CollisionVolume(obj, scalePosition)
 			if self.relative3DCursor:
-				volume.setMatrix(convertMatrix(matmul(relativeMatrix, volume.object.matrix_world)), scalePosition)
+				volume.setMatrix(convertMatrix(matmul(
+					relativeMatrix, volume.object.matrix_world)), scalePosition)
 			
 			points = []
 			
@@ -199,7 +201,8 @@ class OBJECT_OT_DEToolEClassProperty(bpy.types.Operator):
 			
 			volume = Armature.CollisionVolume(obj, scalePosition)
 			if self.relative3DCursor:
-				volume.setMatrix(convertMatrix(matmul(relativeMatrix, volume.object.matrix_world)), scalePosition)
+				volume.setMatrix(convertMatrix(matmul(
+					relativeMatrix, volume.object.matrix_world)), scalePosition)
 			
 			points = []
 			
@@ -248,7 +251,8 @@ class OBJECT_OT_DEToolEClassProperty(bpy.types.Operator):
 			
 			volume = Armature.CollisionVolume(obj, scalePosition)
 			if self.relative3DCursor:
-				volume.setMatrix(convertMatrix(matmul(relativeMatrix, volume.object.matrix_world)), scalePosition)
+				volume.setMatrix(convertMatrix(matmul(
+					relativeMatrix, volume.object.matrix_world)), scalePosition)
 			
 			pos = volume.position
 			rot = volume.rotation
