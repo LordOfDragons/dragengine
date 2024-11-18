@@ -164,7 +164,7 @@ bool debnSocket::ReceiveDatagram( deNetworkMessage &stream, debnAddress &address
 	if( select( 0, &fd, NULL, NULL, &tv ) == 1 )
 #endif
 	{
-		dataLen = 8192; // TEMP HACK !!!
+		dataLen = 65535;
 		stream.SetDataLength( dataLen );
 		
 		if( pAddress.GetType() == debnAddress::eatIPv6 ){
@@ -214,6 +214,8 @@ bool debnSocket::ReceiveDatagram( deNetworkMessage &stream, debnAddress &address
 }
 
 void debnSocket::SendDatagram( const deNetworkMessage &stream, const debnAddress &address ){
+	DEASSERT_TRUE( stream.GetDataLength() < 65500 )
+	
 	if( pAddress.GetType() == debnAddress::eatIPv6 ){
 		sockaddr_in6 sa;
 		memset( &sa, 0, sizeof( sa ) );

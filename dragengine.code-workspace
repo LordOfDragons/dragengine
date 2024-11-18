@@ -42,6 +42,9 @@
 		},
 		{
 			"path": "src/tools/blender/dragengine-import-export"
+		},
+		{
+			"path": "src/modules/network/basic"
 		}
 	],
 	"settings": {

@@ -524,10 +524,13 @@ void debnConnection::Disconnect(){
 }
 
 void debnConnection::SendMessage( deNetworkMessage *message, int maxDelay ){
-	if( ! message || message->GetDataLength() < 1 ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( message )
+	DEASSERT_TRUE( message->GetDataLength() >= 1 )
 	
 	// only if connected
-	if( pConnectionState != ecsConnected ) return;
+	if( pConnectionState != ecsConnected ){
+		return;
+	}
 	
 	// send message
 	decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
@@ -540,13 +543,17 @@ void debnConnection::SendMessage( deNetworkMessage *message, int maxDelay ){
 }
 
 void debnConnection::SendReliableMessage( deNetworkMessage *message ){
-	if( ! message || message->GetDataLength() < 1 ) DETHROW( deeInvalidParam );
-	debnMessage *bnMessage = NULL;
+	DEASSERT_NOTNULL( message )
+	DEASSERT_TRUE( message->GetDataLength() >= 1 )
 	
 	// only if connected
-	if( pConnectionState != ecsConnected ) return;
+	if( pConnectionState != ecsConnected ){
+		return;
+	}
 	
 	// add message
+	debnMessage *bnMessage = nullptr;
+	
 	try{
 		// create message
 		bnMessage = new debnMessage;
@@ -579,12 +586,15 @@ void debnConnection::SendReliableMessage( deNetworkMessage *message ){
 }
 
 void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state, bool readOnly ){
-	if( ! message || message->GetDataLength() < 1 || ! state ) DETHROW( deeInvalidParam );
-	debnState *bnState = ( debnState* )state->GetPeerNetwork();
-	debnMessage *bnMessage = NULL;
+	DEASSERT_NOTNULL( message )
+	DEASSERT_TRUE( message->GetDataLength() >= 1 )
 	
 	// only if connected
-	if( pConnectionState != ecsConnected ) return;
+	if( pConnectionState != ecsConnected ){
+		return;
+	}
+	
+	debnState * const bnState = ( debnState* )state->GetPeerNetwork();
 	
 	// state is now bound to us no matter what happens
 	//bnState->SetConnection( this );
@@ -617,6 +627,8 @@ void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state
 	//pNetBasic->LogInfoFormat( "Linking state %p using link %i", state, stateLink->GetIdentifier() );
 	
 	// add message
+	debnMessage *bnMessage = nullptr;
+	
 	try{
 		// create message
 		bnMessage = new debnMessage;
