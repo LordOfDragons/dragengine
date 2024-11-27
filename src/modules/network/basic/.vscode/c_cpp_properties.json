@@ -7,7 +7,10 @@
                 "${workspaceFolder}/../../../dragengine/build/include",
                 "${workspaceFolder}/../../../../../testing/include"
             ],
-            "defines": [],
+            "defines": [
+                "MOD_ENTRY_POINT_ATTR=",
+                "OS_POSIX=1"
+            ],
             "compilerPath": "/usr/lib/llvm/18/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++17",
