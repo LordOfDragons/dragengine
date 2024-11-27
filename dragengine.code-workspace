@@ -136,7 +136,8 @@
 			"iostream": "cpp",
 			"shared_mutex": "cpp",
 			"stdfloat": "cpp",
-			"typeindex": "cpp"
+			"typeindex": "cpp",
+			"*.ipp": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			
