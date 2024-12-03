@@ -45,6 +45,9 @@
 		},
 		{
 			"path": "src/modules/network/basic"
+		},
+		{
+			"path": "src/launcher/shared"
 		}
 	],
 	"settings": {

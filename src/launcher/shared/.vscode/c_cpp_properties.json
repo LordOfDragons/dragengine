@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../../dragengine/build/include",
+                "${workspaceFolder}/../../../../testing/include"
+            ],
+            "defines": [
+                "MOD_ENTRY_POINT_ATTR=",
+                "OS_POSIX=1"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}
