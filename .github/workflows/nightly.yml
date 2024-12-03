@@ -137,6 +137,31 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       
+      - name: Repackage archives
+        run: |
+          mkdir repackage
+          cd repackage
+
+          tar -xjf ../dragengine-dev-nightly-linux64.tar.bz2
+          mv usr sdk
+          tar -cjf ../dragengine-dev-nightly-linux64.tar.bz2 sdk
+          rm -rf sdk
+
+          tar -xjf ../deigde-dev-nightly-linux64.tar.bz2
+          mv usr sdk
+          tar -cjf ../deigde-dev-nightly-linux64.tar.bz2 sdk
+          rm -rf sdk
+
+          unzip -q dragengine-sdk-nightly-windows64.zip
+          mv @ProgramFiles/Dragengine/SDK .
+          zip -qr ../dragengine-sdk-nightly-windows64.zip SDK
+          rm -rf sdk
+
+          unzip -q deigde-sdk-nightly-windows64.zip
+          mv @ProgramFiles/DEIGDE/SDK .
+          zip -qr ../deigde-sdk-nightly-windows64.zip SDK
+          rm -rf sdk
+      
       - name: Update git tag
         run: |
           git tag -f nightly
