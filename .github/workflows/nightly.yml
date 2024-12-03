@@ -98,6 +98,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Get Linux Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: archives-linux
+      
+      - name: Get Windows Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: archives-windows
+      
       - name: Get Linux Installers
         uses: actions/download-artifact@v4
         with:
