@@ -147,12 +147,12 @@ jobs:
           tar -cjf ../deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2 sdk
           rm -rf sdk
 
-          unzip -q dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip
+          unzip -q ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip
           mv @ProgramFiles/Dragengine/SDK .
           zip -qr ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip SDK
           rm -rf sdk
 
-          unzip -q deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
+          unzip -q ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
           mv @ProgramFiles/DEIGDE/SDK .
           zip -qr ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip SDK
           rm -rf sdk

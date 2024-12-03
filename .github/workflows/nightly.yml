@@ -152,12 +152,12 @@ jobs:
           tar -cjf ../deigde-dev-nightly-linux64.tar.bz2 sdk
           rm -rf sdk
 
-          unzip -q dragengine-sdk-nightly-windows64.zip
+          unzip -q ../dragengine-sdk-nightly-windows64.zip
           mv @ProgramFiles/Dragengine/SDK .
           zip -qr ../dragengine-sdk-nightly-windows64.zip SDK
           rm -rf sdk
 
-          unzip -q deigde-sdk-nightly-windows64.zip
+          unzip -q ../deigde-sdk-nightly-windows64.zip
           mv @ProgramFiles/DEIGDE/SDK .
           zip -qr ../deigde-sdk-nightly-windows64.zip SDK
           rm -rf sdk
