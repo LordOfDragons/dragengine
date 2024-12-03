@@ -165,6 +165,9 @@ jobs:
           rm ../deigde-sdk-nightly-windows64.zip
           zip -qr ../deigde-sdk-nightly-windows64.zip SDK
           rm -rf SDK
+
+          cd ..
+          rm -rf repackage
       
       - name: Update git tag
         run: |
@@ -199,11 +202,9 @@ jobs:
             install-dragengine-nightly-windows64.exe,
             install-dragengine-sdk-nightly-windows64.exe,
             dragengine-sdk-nightly-windows64.zip,
-            dragengine-dbg-nightly-windows64.zip,
             install-deigde-nightly-windows64.exe,
             install-deigde-sdk-nightly-windows64.exe,
             deigde-sdk-nightly-windows64.zip,
-            deigde-dbg-nightly-windows64.zip,
             blender-addon-dragengine-9999.zip,
             dragengine-live-nightly.zip,
             install-dragengine-ci-nightly-linux64.sh,
