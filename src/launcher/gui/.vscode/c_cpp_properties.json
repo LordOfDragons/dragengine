@@ -8,11 +8,9 @@
                 "${workspaceFolder}/../../../../testing/include"
             ],
             "defines": [
-                "OS_POSIX=1",
-                "LAUNCHER_CONFIG_PATH=\"/path/launcher/config\"",
-                "LAUNCHER_SHARE_PATH=\"/path/launcher/share\"",
-                "LAUNCHER_GAMES_PATH=\"/path/launcher/games\""
+                "OS_POSIX=1"
             ],
+            "compilerPath": "/usr/lib/llvm/18/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "linux-clang-x64"

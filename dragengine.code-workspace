@@ -48,6 +48,9 @@
 		},
 		{
 			"path": "src/launcher/shared"
+		},
+		{
+			"path": "src/launcher/gui"
 		}
 	],
 	"settings": {
