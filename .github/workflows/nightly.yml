@@ -155,12 +155,12 @@ jobs:
           unzip -q ../dragengine-sdk-nightly-windows64.zip
           mv @ProgramFiles/Dragengine/SDK .
           zip -qr ../dragengine-sdk-nightly-windows64.zip SDK
-          rm -rf sdk
+          rm -rf SDK
 
           unzip -q ../deigde-sdk-nightly-windows64.zip
           mv @ProgramFiles/DEIGDE/SDK .
           zip -qr ../deigde-sdk-nightly-windows64.zip SDK
-          rm -rf sdk
+          rm -rf SDK
       
       - name: Update git tag
         run: |
