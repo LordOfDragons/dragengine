@@ -138,28 +138,28 @@ jobs:
           cd repackage
 
           tar -xjf ../dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
-          mv usr dragengine-sdk
+          mv usr sdk
           rm ../dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
-          tar -cjf ../dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2 dragengine-sdk
-          rm -rf dragengine-sdk
+          tar -cjf ../dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2 sdk
+          rm -rf sdk
 
           tar -xjf ../deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
-          mv usr deigde-sdk
+          mv usr sdk
           rm ../deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
-          tar -cjf ../deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2 deigde-sdk
-          rm -rf deigde-sdk
+          tar -cjf ../deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2 sdk
+          rm -rf sdk
 
           unzip -q ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip
-          mv @ProgramFiles/Dragengine/SDK Dragengine-SDK
+          mv @ProgramFiles/Dragengine/SDK .
           rm ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip
-          zip -qr ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip Dragengine-SDK
-          rm -rf Dragengine-SDK
+          zip -qr ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip SDK
+          rm -rf SDK
 
           unzip -q ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
-          mv @ProgramFiles/DEIGDE/SDK DEIGDE-SDK
+          mv @ProgramFiles/DEIGDE/SDK .
           rm ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
-          zip -qr ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip DEIGDE-SDK
-          rm -rf DEIGDE-SDK
+          zip -qr ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip SDK
+          rm -rf SDK
 
           cd ..
           rm -rf repackage
