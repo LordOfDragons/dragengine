@@ -195,9 +195,11 @@ jobs:
           artifacts: >
             install-dragengine-nightly-linux64.sh,
             install-dragengine-dev-nightly-linux64.sh,
+            dragengine-nightly-linux64.tar.bz2,
             dragengine-dev-nightly-linux64.tar.bz2,
             install-deigde-nightly-linux64.sh,
             install-deigde-dev-nightly-linux64.sh,
+            deigde-nightly-linux64.tar.bz2,
             deigde-dev-nightly-linux64.tar.bz2,
             install-dragengine-nightly-windows64.exe,
             install-dragengine-sdk-nightly-windows64.exe,
