@@ -181,6 +181,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\ioapi.c">
       <Filter>minizip</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projDialogDistribute.h">
@@ -341,6 +347,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\minizip\ioapi.h">
       <Filter>minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

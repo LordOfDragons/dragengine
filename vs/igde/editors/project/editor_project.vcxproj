@@ -30,6 +30,12 @@
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
       <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\denetwork\extern_denetwork.vcxproj">
+      <Project>{2ea48d00-18b8-49c6-9413-6df86ab3765a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\extern\deremotelauncher\extern_deremotelauncher.vcxproj">
+      <Project>{c1d9f4f2-7876-483c-a623-94fd74bb2d05}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\extern\zlib\extern_zlib.vcxproj">
       <Project>{b71c1152-6563-4322-b6e0-b5c64feec543}</Project>
     </ProjectReference>
@@ -64,6 +70,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\profile\projProfileList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\projProject.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\projProjectListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\task\projTaskDistribute.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameter.cpp" />
@@ -119,6 +127,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\profile\projProfileList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\projProject.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\projProjectListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\task\projTaskDistribute.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameter.h" />
@@ -322,6 +332,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>ws2_32.lib;iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\project\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
@@ -349,6 +360,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>ws2_32.lib;iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\project\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
@@ -376,6 +388,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>ws2_32.lib;iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\project\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
