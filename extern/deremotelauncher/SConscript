@@ -1,0 +1,48 @@
+import os
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+srcVersion = 'nightly'
+srcdir = 'deremotelauncher-unix-x64-{}'.format(srcVersion)
+
+libLinkName = 'deremotelauncher'
+
+libFileName = envLibrary.subst('{}/lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(srcdir, libLinkName))
+
+baseUrl = 'https://github.com/LordOfDragons/deremotelauncher/releases/download'
+
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.bz2'.format(srcdir), 'nightly', 'lib_deremotelauncher_fetch', baseUrl=baseUrl)
+
+if 'with_deremotelauncher_inc' in envLibrary and envLibrary['with_deremotelauncher_inc']:
+	envLibrary.Append(CPPPATH = [envLibrary['with_deremotelauncher_inc']])
+
+if 'with_deremotelauncher_lib' in envLibrary and envLibrary['with_deremotelauncher_lib']:
+	envLibrary.Append(LIBPATH = [envLibrary['with_deremotelauncher_lib']])
+
+def deremotelauncherUnpack(target, source, env):
+	untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
+
+targets = [libFileName]
+with open(envLibrary.File('header_file_list/deremotelauncher').srcnode().abspath, 'r') as f:
+	targets.extend([x[:-1] for x in f.readlines()])
+
+libraryHeaders = envLibrary.Command(targets, nodeArtifacts,
+	envLibrary.Action(deremotelauncherUnpack, 'Unpack DERemoteLauncher'))
+
+envLibrary.Clean(libraryHeaders, [srcdir])
+
+parent_targets['lib_deremotelauncher'] = {
+	'name' : 'Internal DragonScript library',
+	'cpppath' : [envLibrary.Dir(os.path.join(srcdir, 'include'))],
+	'libpath' : [envLibrary.Dir(os.path.join(srcdir, 'lib'))],
+	'libs' : libraryHeaders,
+	'runtimelibs' : [],
+	'runtimedata' : [],
+	'depends' : parent_env.Alias('lib_deremotelauncher', libraryHeaders)}

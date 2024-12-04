@@ -10,13 +10,13 @@ from SCons.Action import Action
 # SCons Tools required this method to be present. It is called if exists() returns true
 def generate(env):
 	def builderDownloadArtifact(env, target, source):
-		url = "{}/{}".format(env['url_extern_artifacts'], env['url'])
+		url = "{}/{}".format(env['baseUrl'] or env['url_extern_artifacts'], env['url'])
 		filename = target[0].abspath
 		
 		with urllib.request.urlopen(url) as r, open(filename, 'wb') as f:
 			shutil.copyfileobj(r, f)
 
-	def downloadArtifactHelper(filenameArtifact, urlPath, alias, fakeSource='SConscript'):
+	def downloadArtifactHelper(filenameArtifact, urlPath, alias, fakeSource='SConscript', baseUrl=None):
 		if type(filenameArtifact) not in [list, tuple]:
 			filenameArtifact = [filenameArtifact]
 
@@ -29,7 +29,8 @@ def generate(env):
 				nodes.append(x)
 			else:
 				nodes.append(node)
-				buildNodes.append(env.DownloadArtifact(node, fakeSource, url="{}/{}".format(urlPath, x)))
+				buildNodes.append(env.DownloadArtifact(node, fakeSource,
+					url="{}/{}".format(urlPath, x), baseUrl=baseUrl))
 		
 		env.Alias(alias, buildNodes)
 		return nodes
