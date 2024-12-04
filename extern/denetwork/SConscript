@@ -1,0 +1,48 @@
+import os
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+srcVersion = 'nightly'
+srcdir = 'denetworkcpp-unix-x64-{}'.format(srcVersion)
+
+libLinkName = 'denetwork'
+
+libFileName = envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(srcdir, libLinkName))
+
+baseUrl = 'https://github.com/LordOfDragons/denetwork/releases/download'
+
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.bz2'.format(srcdir), 'nightly', 'lib_denetwork_fetch', baseUrl=baseUrl)
+
+if 'with_denetwork_inc' in envLibrary and envLibrary['with_denetwork_inc']:
+	envLibrary.Append(CPPPATH = [envLibrary['with_denetwork_inc']])
+
+if 'with_denetwork_lib' in envLibrary and envLibrary['with_denetwork_lib']:
+	envLibrary.Append(LIBPATH = [envLibrary['with_denetwork_lib']])
+
+def denetworkUnpack(target, source, env):
+	untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
+
+targets = [libFileName]
+with open(envLibrary.File('header_file_list/denetwork').srcnode().abspath, 'r') as f:
+	targets.extend([x[:-1] for x in f.readlines()])
+
+libraryHeaders = envLibrary.Command(targets, nodeArtifacts,
+	envLibrary.Action(denetworkUnpack, 'Unpack DENetwork'))[0:1]
+
+envLibrary.Clean(libraryHeaders, [srcdir])
+
+parent_targets['lib_denetwork'] = {
+	'name' : 'Internal DENetwork library',
+	'cpppath' : [envLibrary.Dir(os.path.join(srcdir, 'include'))],
+	'libpath' : [envLibrary.Dir(os.path.join(srcdir, 'lib'))],
+	'libs' : libraryHeaders,
+	'runtimelibs' : [],
+	'runtimedata' : [],
+	'depends' : parent_env.Alias('lib_denetwork', libraryHeaders)}

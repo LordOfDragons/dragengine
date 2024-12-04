@@ -203,6 +203,12 @@ params.Add(PathVariable('with_deremotelauncher_inc',
 params.Add(PathVariable('with_deremotelauncher_lib',
 	'Path to DERemoteLauncher library files or empty to use system default',
 	'', PathVariable.PathAccept))
+params.Add(PathVariable('with_denetwork_inc',
+	'Path to DENetwork include files or empty to use system default',
+	'', PathVariable.PathAccept))
+params.Add(PathVariable('with_denetwork_lib',
+	'Path to DENetwork library files or empty to use system default',
+	'', PathVariable.PathAccept))
 
 params.Add(TernaryVariable('with_opengl', 'Use OpenGL'))
 params.Add(TernaryVariable('with_python', 'Use Python'))
@@ -776,6 +782,7 @@ extdirs.append('extern/eossdk')
 extdirs.append('extern/liburing')
 extdirs.append('extern/modio')
 extdirs.append('extern/deremotelauncher')
+extdirs.append('extern/denetwork')
 
 for extdir in extdirs:
 	SConscript(dirs=extdir, variant_dir='{}/build'.format(extdir),

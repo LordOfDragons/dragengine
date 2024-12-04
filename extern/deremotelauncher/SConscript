@@ -13,7 +13,7 @@ srcdir = 'deremotelauncher-unix-x64-{}'.format(srcVersion)
 
 libLinkName = 'deremotelauncher'
 
-libFileName = envLibrary.subst('{}/lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(srcdir, libLinkName))
+libFileName = envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(srcdir, libLinkName))
 
 baseUrl = 'https://github.com/LordOfDragons/deremotelauncher/releases/download'
 
@@ -34,12 +34,12 @@ with open(envLibrary.File('header_file_list/deremotelauncher').srcnode().abspath
 	targets.extend([x[:-1] for x in f.readlines()])
 
 libraryHeaders = envLibrary.Command(targets, nodeArtifacts,
-	envLibrary.Action(deremotelauncherUnpack, 'Unpack DERemoteLauncher'))
+	envLibrary.Action(deremotelauncherUnpack, 'Unpack DERemoteLauncher'))[0:1]
 
 envLibrary.Clean(libraryHeaders, [srcdir])
 
 parent_targets['lib_deremotelauncher'] = {
-	'name' : 'Internal DragonScript library',
+	'name' : 'Internal DERemoteLauncher library',
 	'cpppath' : [envLibrary.Dir(os.path.join(srcdir, 'include'))],
 	'libpath' : [envLibrary.Dir(os.path.join(srcdir, 'lib'))],
 	'libs' : libraryHeaders,

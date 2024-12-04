@@ -17,6 +17,10 @@
 			"path": "src/modules/audio/openal"
 		},
 		{
+			"name": "basic",
+			"path": "src/modules/network/basic"
+		},
+		{
 			"name": "xsystem",
 			"path": "src/modules/input/xsystem"
 		},
@@ -33,6 +37,14 @@
 			"path": "src/modules/service/modio"
 		},
 		{
+			"name": "shared",
+			"path": "src/launcher/shared"
+		},
+		{
+			"name": "gui",
+			"path": "src/launcher/gui"
+		},
+		{
 			"name": "deigde",
 			"path": "src/deigde/deigde"
 		},
@@ -41,16 +53,12 @@
 			"path": "src/deigde/editors/conversation"
 		},
 		{
+			"name": "project",
+			"path": "src/deigde/editors/project"
+		},
+		{
+			"name": "dragengine-import-export",
 			"path": "src/tools/blender/dragengine-import-export"
-		},
-		{
-			"path": "src/modules/network/basic"
-		},
-		{
-			"path": "src/launcher/shared"
-		},
-		{
-			"path": "src/launcher/gui"
 		}
 	],
 	"settings": {
