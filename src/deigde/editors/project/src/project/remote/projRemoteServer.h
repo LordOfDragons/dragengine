@@ -23,7 +23,7 @@
  */
 
 #ifndef _PROJREMOTESERVER_H_
-#define _PROJREMOTESERVER_H_s
+#define _PROJREMOTESERVER_H_
 
 #include <deremotelauncher/derlServer.h>
 
@@ -34,6 +34,10 @@ class projProject;
  * \brief Remote connection server.
  */
 class projRemoteServer : public derlServer{
+public:
+	typedef std::shared_ptr<projRemoteServer> Ref;
+	
+	
 private:
 	projProject &pProject;
 	
@@ -52,6 +56,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Create client for connection. */
+	derlRemoteClient::Ref CreateClient(const derlRemoteClientConnection::Ref &connection) override;
 	/*@}*/
 	
 	

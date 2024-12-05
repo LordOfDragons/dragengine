@@ -27,6 +27,7 @@
 #include <stdio.h>
 
 #include "projRemoteServer.h"
+#include "projRemoteClient.h"
 #include "../projProject.h"
 
 
@@ -38,7 +39,7 @@
 ////////////////////////////
 
 projRemoteServer::projRemoteServer(projProject &project) :
-pProject(project )
+pProject(project)
 {
 	//SetLogger();
 }
@@ -46,7 +47,9 @@ pProject(project )
 projRemoteServer::~projRemoteServer(){
 }
 
-
-
 // Management
 ///////////////
+
+derlRemoteClient::Ref projRemoteServer::CreateClient(const derlRemoteClientConnection::Ref &connection){
+	return std::make_shared<projRemoteClient>(pProject, *this, connection);
+}
