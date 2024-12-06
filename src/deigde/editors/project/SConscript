@@ -19,6 +19,8 @@ if envEditor[ 'OSBeOS' ]:
 appendLibrary(envEditor, parent_targets['lib_deremotelauncher'], libs)
 appendLibrary(envEditor, parent_targets['lib_denetwork'], libs)
 
+envEditor.Append(CXXFLAGS = ['-std=c++17'])
+
 versionString = '1.10'
 if envEditor['force_version']:
 	versionString = envEditor['force_version']
