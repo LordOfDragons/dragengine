@@ -91,7 +91,12 @@ jobs:
         uses: microsoft/setup-msbuild@v2
         
       - name: Install required packages
-        run: choco install cmake ninja 7zip
+        run: |
+          choco install cmake ninja 7zip
+          Write-Output "LOGS: chocolatey.log"
+          Get-Content "C:\ProgramData\chocolatey\logs\chocolatey.log"
+          Write-Output "LOGS: cmake.install.3.31.2.MsiInstall.log"
+          Get-Content "C:\Users\runneradmin\AppData\Local\Temp\chocolatey\cmake.install.3.31.2.MsiInstall.log"
 
       - name: Restore NuGet packages
         working-directory: vs
