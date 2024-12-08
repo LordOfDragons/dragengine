@@ -26,23 +26,42 @@ if 'with_denetwork_inc' in envLibrary and envLibrary['with_denetwork_inc']:
 if 'with_denetwork_lib' in envLibrary and envLibrary['with_denetwork_lib']:
 	envLibrary.Append(LIBPATH = [envLibrary['with_denetwork_lib']])
 
-def denetworkUnpack(target, source, env):
-	untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
+hasSystemLib = False
+conf = envLibrary.Configure()
+hasSystemLib = conf.CheckLibWithHeader(libLinkName, 'denetwork/denProtocolEnums.h', 'c++')
+conf.Finish()
 
 targets = [libFileName]
-with open(envLibrary.File('header_file_list/denetwork').srcnode().abspath, 'r') as f:
-	targets.extend([x[:-1] for x in f.readlines()])
+library = []
+cpppath = []
+libpath = []
 
-libraryHeaders = envLibrary.Command(targets, nodeArtifacts,
-	envLibrary.Action(denetworkUnpack, 'Unpack DENetwork'))[0:1]
+if hasSystemLib:
+	if 'with_denetwork_inc' in envLibrary and envLibrary['with_denetwork_inc']:
+		cpppath.append(envLibrary['with_denetwork_inc'])
+	if 'with_denetwork_lib' in envLibrary and envLibrary['with_denetwork_lib']:
+		libpath.append(envLibrary['with_denetwork_lib'])
+	library.append(libLinkName)
+else:
+	def denetworkUnpack(target, source, env):
+		untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
 
-envLibrary.Clean(libraryHeaders, [srcdir])
+	with open(envLibrary.File('header_file_list/denetwork').srcnode().abspath, 'r') as f:
+		targets.extend([x[:-1] for x in f.readlines()])
+
+	library = envLibrary.Command(targets, nodeArtifacts,
+		envLibrary.Action(denetworkUnpack, 'Unpack DENetwork'))[0:1]
+
+	envLibrary.Clean(library, [srcdir])
+
+	cpppath.append(envLibrary.Dir(os.path.join(srcdir, 'include')))
+	libpath.append(envLibrary.Dir(os.path.join(srcdir, 'lib')))
 
 parent_targets['lib_denetwork'] = {
 	'name' : 'Internal DENetwork library',
-	'cpppath' : [envLibrary.Dir(os.path.join(srcdir, 'include'))],
-	'libpath' : [envLibrary.Dir(os.path.join(srcdir, 'lib'))],
-	'libs' : libraryHeaders,
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : library,
 	'runtimelibs' : [],
 	'runtimedata' : [],
-	'depends' : parent_env.Alias('lib_denetwork', libraryHeaders)}
+	'depends' : parent_env.Alias('lib_denetwork', library)}

@@ -337,6 +337,12 @@ igdeTextFieldReference &textField, igdeTextFieldListener *listener ){
 	parent.AddChild( textField );
 }
 
+void igdeUIHelper::EditString( igdeContainer &parent, const char *description, int rows,
+igdeTextFieldReference &textField, igdeTextFieldListener *listener ){
+	EditString( description, rows, textField, listener );
+	parent.AddChild( textField );
+}
+
 void igdeUIHelper::EditString( const char *description, igdeTextFieldReference &textField,
 igdeTextFieldListener *listener ){
 	EditString( description, 15, textField, listener );

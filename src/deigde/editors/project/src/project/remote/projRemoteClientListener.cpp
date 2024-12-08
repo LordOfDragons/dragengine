@@ -22,74 +22,33 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
-#include "projPanelTestRun.h"
-#include "projPanelTestRunListener.h"
-#include "../project/projProject.h"
-
-#include <deigde/environment/igdeEnvironment.h>
-
-#include <dragengine/common/exceptions.h>
+#include "projRemoteClientListener.h"
 
 
-
-// Class projPanelTestRunListener
+// Class projRemoteClientListener
 ///////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-projPanelTestRunListener::projPanelTestRunListener( projPanelTestRun &panel ) :
-pPanel( panel ){
+projRemoteClientListener::projRemoteClientListener(){
 }
-
-projPanelTestRunListener::~projPanelTestRunListener(){
-}
-
 
 
 // Notifications
 //////////////////
 
-void projPanelTestRunListener::ProjectChanged( projProject *project ){
+void projRemoteClientListener::ClientChanged(projRemoteClient *client){
 }
 
-
-
-void projPanelTestRunListener::ProfileStructureChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
-		return;
-	}
-	
-	pPanel.UpdateProfiles();
+void projRemoteClientListener::ClientDisconnected(projRemoteClient *client){
 }
 
-void projPanelTestRunListener::ProfileNameChanged(
-projProject *project, projProfile *profile ){
-	if( pPanel.GetProject() != project ){
-		return;
-	}
-	
-	pPanel.UpdateProfiles();
+void projRemoteClientListener::LaunchProfilesChanged(projRemoteClient *client){
 }
 
-
-
-void projPanelTestRunListener::ActiveLaunchProfileChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
-		return;
-	}
-	
-	pPanel.SelectLauncherProfile();
+void projRemoteClientListener::ActiveLaunchProfileChanged(projRemoteClient *client){
 }
 
-void projPanelTestRunListener::RemoteClientConnected(projProject *project,
-const projRemoteClient::Ref &client){
-	if( pPanel.GetProject() != project ){
-		return;
-	}
-	
-	pPanel.AddRemoteClient(client);
+void projRemoteClientListener::DefaultLaunchProfileChanged(projRemoteClient *client){
 }

@@ -22,58 +22,53 @@
  * SOFTWARE.
  */
 
-#include "projProjectListener.h"
+#include "projRemoteServerThread.h"
+#include "projRemoteServer.h"
+#include "../projProject.h"
+#include "../../project.h"
+
+#include <dragengine/common/utils/decTimer.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
-
-// Class projProjectListener
-//////////////////////////////////
+// Class projRemoteServerThread
+/////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-projProjectListener::projProjectListener(){
+projRemoteServerThread::projRemoteServerThread(projRemoteServer &server) :
+pServer(server),
+pExit(false){
 }
 
-projProjectListener::~projProjectListener(){
+// Management
+///////////////
+
+void projRemoteServerThread::Run(){
+	pServer.GetProject().GetLogger()->LogInfo(LOGSOURCE, "Start Remote Server Thread");
+	
+	decTimer timer;
+	while(true){
+		{
+		const deMutexGuard guard(pMutexExit);
+		if(pExit){
+			break;
+		}
+		}
+		
+		pServer.Update(timer.GetElapsedTime());
+	}
+	
+	pServer.GetProject().GetLogger()->LogInfo(LOGSOURCE, "Exiting Remote Server Thread");
+	
+	pServer.StopListening();
+	pServer.WaitAllClientsDisconnected();
+	
+	pServer.GetProject().GetLogger()->LogInfo(LOGSOURCE, "Remote Server Thread Exited");
 }
 
-
-
-// Notifications
-//////////////////
-
-void projProjectListener::StateChanged( projProject *project ){
-}
-
-void projProjectListener::UndoChanged( projProject *project ){
-}
-
-void projProjectListener::ProjectChanged( projProject *project ){
-}
-
-
-
-void projProjectListener::ProfileStructureChanged( projProject *project ){
-}
-
-void projProjectListener::ProfileChanged( projProject *project,
-projProfile *profile ){
-}
-
-void projProjectListener::ProfileNameChanged( projProject *project,
-projProfile *profile ){
-	ProfileChanged( project, profile );
-}
-
-void projProjectListener::ActiveProfileChanged( projProject *project ){
-}
-
-
-
-void projProjectListener::ActiveLaunchProfileChanged( projProject *project ){
-}
-
-void projProjectListener::RemoteClientConnected(projProject *project,
-const projRemoteClient::Ref &client){
+void projRemoteServerThread::ExitThread(){
+	const deMutexGuard guard(pMutexExit);
+	pExit = true;
 }

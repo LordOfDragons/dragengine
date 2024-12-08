@@ -176,15 +176,16 @@ void igdeNativeFoxTabBook::DestroyNativeWidget(){
 // Management
 ///////////////
 
-void igdeNativeFoxTabBook::AddHeader( const igdeTabBook::cHeader &header ){
-	FXIcon * const iicon = header.icon ? ( FXIcon* )header.icon->GetNativeIcon() : NULL;
+void igdeNativeFoxTabBook::AddHeader(const igdeTabBook::cHeader &header){
+	FXIcon * const iicon = header.icon ? (FXIcon*)header.icon->GetNativeIcon() : nullptr;
 	
 	igdeNativeFoxTabBookHeader * const widget = new igdeNativeFoxTabBookHeader(
 		pHeaders, header.text.GetString(), iicon, this, ID_HEADER,
 		TOGGLEBUTTON_KEEPSTATE | FRAME_SUNKEN,
-		pPadLeft, pPadRight, pPadTop, pPadBottom );
-	widget->setFont( (FXFont*)pFont->GetNativeFont() );
-	if( id() ){
+		pPadLeft, pPadRight, pPadTop, pPadBottom);
+	widget->setFont((FXFont*)pFont->GetNativeFont());
+	
+	if(id()){
 		widget->create();
 	}
 }

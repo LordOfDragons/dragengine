@@ -63,7 +63,7 @@ pPathConfig("/config"),
 pPathCapture("/capture"),
 
 pActiveProfile(nullptr),
-pRemoteServer(std::make_shared<projRemoteServer>(*this))
+pRemoteServer(std::make_shared<projRemoteServer>(*this, *environment))
 {
 	try{
 		decPath path;
@@ -240,6 +240,14 @@ void projProject::NotifyActiveProfileChanged(){
 	}
 }
 
+void projProject::NotifyRemoteClientConnected(const projRemoteClient::Ref &client){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->RemoteClientConnected(this, client);
+	}
+}
 
 
 // Test running
@@ -318,6 +326,14 @@ void projProject::NotifyProjectChanged(){
 //////////////////////
 
 void projProject::pCleanUp(){
+	if(pRemoteServer){
+		try{
+			pRemoteServer->StopListenClientConnections();
+		}catch(...){
+		}
+		pRemoteServer.reset();
+	}
+	
 	pListeners.RemoveAll();
 	
 	GetUndoSystem()->RemoveAll();

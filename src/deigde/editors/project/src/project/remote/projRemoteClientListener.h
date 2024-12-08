@@ -22,61 +22,43 @@
  * SOFTWARE.
  */
 
-#ifndef _PROJREMOTESERVER_H_
-#define _PROJREMOTESERVER_H_
+#ifndef _PROJREMOTECLIENTLISTENER_H_
+#define _PROJREMOTECLIENTLISTENER_H_
 
-#include <deremotelauncher/derlServer.h>
-#include <dragengine/logger/deLogger.h>
+#include <dragengine/deObject.h>
 
-class projProject;
-class igdeEnvironment;
-class projRemoteServerThread;
+class projRemoteClient;
 
 
 /**
- * \brief Remote connection server.
+ * \brief Remote client listener.
  */
-class projRemoteServer : public derlServer{
-public:
-	typedef std::shared_ptr<projRemoteServer> Ref;
-	
-	
-private:
-	projProject &pProject;
-	projRemoteServerThread *pThreadUpdate;
-	
-	
+class projRemoteClientListener : public deObject{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create remote server. */
-	projRemoteServer(projProject &project, igdeEnvironment &environment);
-	
-	/** \brief Clean up remote server. */
-	~projRemoteServer() override;
+	/** \brief Create listener. */
+	projRemoteClientListener();
 	/*@}*/
 	
 	
-	
-	/** \name Management */
+	/** \name Notifications */
 	/*@{*/
-	/** \brief Project. */
-	inline projProject &GetProject() const{ return pProject; }
+	/** \brief Parameters changed. */
+	virtual void ClientChanged(projRemoteClient *client);
 	
-	/** \brief Create client for connection. */
-	derlRemoteClient::Ref CreateClient(const derlRemoteClientConnection::Ref &connection) override;
+	/** \brief Client disconnected. */
+	virtual void ClientDisconnected(projRemoteClient *client);
 	
-	/** \brief Listen for client connections. */
-	void ListenForClientConnections(const decString &address);
+	/** \brief Launch profiles changed. */
+	virtual void LaunchProfilesChanged(projRemoteClient *client);
 	
-	/** \brief Stop listening for client connections. */
-	void StopListenClientConnections();
+	/** \brief Active launch profile changed. */
+	virtual void ActiveLaunchProfileChanged(projRemoteClient *client);
+	
+	/** \brief Default launch profile changed. */
+	virtual void DefaultLaunchProfileChanged(projRemoteClient *client);
 	/*@}*/
-	
-	
-	
-private:
-	void pExitThread();
 };
 
 #endif

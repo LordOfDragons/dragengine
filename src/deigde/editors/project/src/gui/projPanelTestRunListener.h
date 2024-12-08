@@ -30,7 +30,6 @@
 class projPanelTestRun;
 
 
-
 /**
  * \brief Panel test-run listener.
  */
@@ -39,36 +38,35 @@ private:
 	projPanelTestRun &pPanel;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	projPanelTestRunListener( projPanelTestRun &panel );
+	projPanelTestRunListener(projPanelTestRun &panel);
 	
 	/** \brief Clean up listener. */
-	virtual ~projPanelTestRunListener();
+	~projPanelTestRunListener() override;
 	/*@}*/
-	
 	
 	
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Project changed. */
-	virtual void ProjectChanged( projProject *project );
-	
+	void ProjectChanged(projProject *project) override;
 	
 	
 	/** \brief Profile count or order changed. */
-	virtual void ProfileStructureChanged( projProject *project );
+	void ProfileStructureChanged(projProject *project) override;
 	
 	/** \brief Profile name changed. */
-	virtual void ProfileNameChanged( projProject *project, projProfile *profile );
-	
+	void ProfileNameChanged(projProject *project, projProfile *profile) override;
 	
 	
 	/** \brief Launcher profile changed. */
-	virtual void ActiveLaunchProfileChanged( projProject *project );
+	void ActiveLaunchProfileChanged(projProject *project) override;
+	
+	/** \brief Remote client connected. */
+	void RemoteClientConnected(projProject *project, const projRemoteClient::Ref &client) override;
 	/*@}*/
 };
 

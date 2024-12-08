@@ -22,61 +22,51 @@
  * SOFTWARE.
  */
 
-#ifndef _PROJREMOTESERVER_H_
-#define _PROJREMOTESERVER_H_
+#ifndef _PROJCONFIGURATIONXML_H_
+#define _PROJCONFIGURATIONXML_H_
 
-#include <deremotelauncher/derlServer.h>
-#include <dragengine/logger/deLogger.h>
+#include <deigde/utils/igdeBaseXML.h>
 
-class projProject;
-class igdeEnvironment;
-class projRemoteServerThread;
+#include <dragengine/common/string/decString.h>
+
+class decBaseFileReader;
+class decBaseFileWriter;
+class projConfiguration;
+class decXmlWriter;
+class decXmlElementTag;
 
 
 /**
- * \brief Remote connection server.
+ * \brief Load/Save Configuration XML.
  */
-class projRemoteServer : public derlServer{
-public:
-	typedef std::shared_ptr<projRemoteServer> Ref;
-	
-	
-private:
-	projProject &pProject;
-	projRemoteServerThread *pThreadUpdate;
-	
-	
+class projConfigurationXml : public igdeBaseXML{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create remote server. */
-	projRemoteServer(projProject &project, igdeEnvironment &environment);
+	/** Create configuration xml read/save. */
+	projConfigurationXml(deLogger *logger, const char *loggerSource);
 	
-	/** \brief Clean up remote server. */
-	~projRemoteServer() override;
+	/** Clean up configuration xml read/save. */
+	~projConfigurationXml() override;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Project. */
-	inline projProject &GetProject() const{ return pProject; }
+	/** Read from XML file. */
+	void ReadFromFile(decBaseFileReader &reader, projConfiguration &config);
 	
-	/** \brief Create client for connection. */
-	derlRemoteClient::Ref CreateClient(const derlRemoteClientConnection::Ref &connection) override;
-	
-	/** \brief Listen for client connections. */
-	void ListenForClientConnections(const decString &address);
-	
-	/** \brief Stop listening for client connections. */
-	void StopListenClientConnections();
+	/** Write to XML file. */
+	void WriteToFile(decBaseFileWriter &writer, const projConfiguration &config);
 	/*@}*/
 	
 	
-	
 private:
-	void pExitThread();
+	void pWriteConfig(decXmlWriter &writer, const projConfiguration &config);
+	void pWriteRemoteLauncher(decXmlWriter &writer, const projConfiguration &config);
+	
+	void pReadConfig(const decXmlElementTag &root, projConfiguration &config);
+	void pReadRemoteLauncher(const decXmlElementTag &root, projConfiguration &config);
 };
 
 #endif

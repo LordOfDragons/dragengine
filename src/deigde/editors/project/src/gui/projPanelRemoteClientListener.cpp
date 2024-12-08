@@ -22,74 +22,49 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
+#include "projPanelRemoteClient.h"
+#include "projPanelRemoteClientListener.h"
 #include "projPanelTestRun.h"
-#include "projPanelTestRunListener.h"
-#include "../project/projProject.h"
-
-#include <deigde/environment/igdeEnvironment.h>
-
-#include <dragengine/common/exceptions.h>
+#include "../project/remote/projRemoteClient.h"
 
 
-
-// Class projPanelTestRunListener
-///////////////////////////////////
+// Class projPanelRemoteClientListener
+////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-projPanelTestRunListener::projPanelTestRunListener( projPanelTestRun &panel ) :
-pPanel( panel ){
+projPanelRemoteClientListener::projPanelRemoteClientListener(projPanelRemoteClient &panel) :
+pPanel(panel){
 }
-
-projPanelTestRunListener::~projPanelTestRunListener(){
-}
-
 
 
 // Notifications
 //////////////////
 
-void projPanelTestRunListener::ProjectChanged( projProject *project ){
+void projPanelRemoteClientListener::ClientChanged(projRemoteClient *client){
 }
 
-
-
-void projPanelTestRunListener::ProfileStructureChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
-		return;
+void projPanelRemoteClientListener::ClientDisconnected(projRemoteClient *client){
+	const projRemoteClient::Ref ref(client->GetRefInServer());
+	if(ref){
+		pPanel.GetPanelTestRun().RemoveRemoteClient(ref);
 	}
-	
-	pPanel.UpdateProfiles();
 }
 
-void projPanelTestRunListener::ProfileNameChanged(
-projProject *project, projProfile *profile ){
-	if( pPanel.GetProject() != project ){
-		return;
-	}
-	
-	pPanel.UpdateProfiles();
+void projPanelRemoteClientListener::LaunchProfilesChanged(projRemoteClient *client){
+	pPanel.UpdateLaunchProfiles();
 }
 
-
-
-void projPanelTestRunListener::ActiveLaunchProfileChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
-		return;
+void projPanelRemoteClientListener::ActiveLaunchProfileChanged(projRemoteClient *client){
+	pPanel.SelectLaunchProfile(client->GetActiveLaunchProfile());
+	if(pPanel.GetSelectedLaunchProfile().IsEmpty()){
+		pPanel.SelectLaunchProfile(client->GetDefaultLaunchProfile());
 	}
-	
-	pPanel.SelectLauncherProfile();
 }
 
-void projPanelTestRunListener::RemoteClientConnected(projProject *project,
-const projRemoteClient::Ref &client){
-	if( pPanel.GetProject() != project ){
-		return;
+void projPanelRemoteClientListener::DefaultLaunchProfileChanged(projRemoteClient *client){
+	if(client->GetActiveLaunchProfile().IsEmpty()){
+		pPanel.SelectLaunchProfile(client->GetDefaultLaunchProfile());
 	}
-	
-	pPanel.AddRemoteClient(client);
 }

@@ -173,15 +173,19 @@ decString igdeCommonDialogs::FormatException( const deException &exception ){
 }
 
 void igdeCommonDialogs::Exception( igdeWidget *owner, const deException &exception ){
-	if( ! owner ){
-		DETHROW( deeInvalidParam );
-	}
+	Exception(owner, "Application Error", exception);
+}
+
+void igdeCommonDialogs::Exception(igdeWidget *owner, const char *title,
+const deException &exception){
+	DEASSERT_NOTNULL(owner)
+	DEASSERT_NOTNULL(title)
 	
 	// TODO create a dialog to display the exception. this allows to display the exception
 	//      trace in a separate list field keeping the output compact compared to using
 	//      FXMessageBox::error . this also allows to add buttons to copy the exception to
 	//      file bugs directly not requiring to go through the log files
-	Error( owner, "Application Error", FormatException( exception ) );
+	Error(owner, title, FormatException(exception));
 }
 
 

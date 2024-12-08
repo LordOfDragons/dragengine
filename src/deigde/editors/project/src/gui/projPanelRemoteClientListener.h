@@ -22,61 +22,47 @@
  * SOFTWARE.
  */
 
-#ifndef _PROJREMOTESERVER_H_
-#define _PROJREMOTESERVER_H_
+#ifndef _PROJPANELREMOTECLIENTLISTENER_H_
+#define _PROJPANELREMOTECLIENTLISTENER_H_
 
-#include <deremotelauncher/derlServer.h>
-#include <dragengine/logger/deLogger.h>
+#include "../project/remote/projRemoteClientListener.h"
 
-class projProject;
-class igdeEnvironment;
-class projRemoteServerThread;
+class projPanelRemoteClient;
 
 
 /**
- * \brief Remote connection server.
+ * \brief Panel test-run listener.
  */
-class projRemoteServer : public derlServer{
-public:
-	typedef std::shared_ptr<projRemoteServer> Ref;
-	
-	
+class projPanelRemoteClientListener : public projRemoteClientListener{
 private:
-	projProject &pProject;
-	projRemoteServerThread *pThreadUpdate;
+	projPanelRemoteClient &pPanel;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create remote server. */
-	projRemoteServer(projProject &project, igdeEnvironment &environment);
-	
-	/** \brief Clean up remote server. */
-	~projRemoteServer() override;
+	/** \brief Create listener. */
+	projPanelRemoteClientListener(projPanelRemoteClient &panel);
 	/*@}*/
 	
 	
-	
-	/** \name Management */
+	/** \name Notifications */
 	/*@{*/
-	/** \brief Project. */
-	inline projProject &GetProject() const{ return pProject; }
+	/** \brief Parameters changed. */
+	void ClientChanged(projRemoteClient *client) override;
 	
-	/** \brief Create client for connection. */
-	derlRemoteClient::Ref CreateClient(const derlRemoteClientConnection::Ref &connection) override;
+	/** \brief Client disconnected. */
+	void ClientDisconnected(projRemoteClient *client) override;
 	
-	/** \brief Listen for client connections. */
-	void ListenForClientConnections(const decString &address);
+	/** \brief Launch profiles changed. */
+	void LaunchProfilesChanged(projRemoteClient *client) override;
 	
-	/** \brief Stop listening for client connections. */
-	void StopListenClientConnections();
+	/** \brief Active launch profile changed. */
+	void ActiveLaunchProfileChanged(projRemoteClient *client) override;
+	
+	/** \brief Default launch profile changed. */
+	void DefaultLaunchProfileChanged(projRemoteClient *client) override;
 	/*@}*/
-	
-	
-	
-private:
-	void pExitThread();
 };
 
 #endif

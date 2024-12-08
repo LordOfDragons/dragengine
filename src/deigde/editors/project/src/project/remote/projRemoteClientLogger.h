@@ -22,61 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _PROJREMOTESERVER_H_
-#define _PROJREMOTESERVER_H_
+#ifndef _PROJREMOTECLIENTLOGGER_H_
+#define _PROJREMOTECLIENTLOGGER_H_
 
-#include <deremotelauncher/derlServer.h>
+#include <denetwork/denLogger.h>
 #include <dragengine/logger/deLogger.h>
-
-class projProject;
-class igdeEnvironment;
-class projRemoteServerThread;
+#include <dragengine/filesystem/deVFSContainer.h>
 
 
 /**
- * \brief Remote connection server.
+ * \brief Remote client logger.
  */
-class projRemoteServer : public derlServer{
-public:
-	typedef std::shared_ptr<projRemoteServer> Ref;
-	
-	
+class projRemoteClientLogger : public denLogger{
 private:
-	projProject &pProject;
-	projRemoteServerThread *pThreadUpdate;
+	const decString pLogSource;
+	deVFSContainer::Ref pContainer;
+	deLogger::Ref pLogger;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create remote server. */
-	projRemoteServer(projProject &project, igdeEnvironment &environment);
+	/** \brief Create remote logger. */
+	projRemoteClientLogger(const char *logSource, const char *pathLogFile);
 	
 	/** \brief Clean up remote server. */
-	~projRemoteServer() override;
+	~projRemoteClientLogger() override;
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Project. */
-	inline projProject &GetProject() const{ return pProject; }
-	
-	/** \brief Create client for connection. */
-	derlRemoteClient::Ref CreateClient(const derlRemoteClientConnection::Ref &connection) override;
-	
-	/** \brief Listen for client connections. */
-	void ListenForClientConnections(const decString &address);
-	
-	/** \brief Stop listening for client connections. */
-	void StopListenClientConnections();
+	/** \brief Logging. */
+	void Log(LogSeverity severity, const std::string &message) override;
 	/*@}*/
-	
-	
-	
-private:
-	void pExitThread();
 };
 
 #endif

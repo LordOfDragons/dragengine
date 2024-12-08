@@ -9,7 +9,8 @@
             ],
             "defines": [
                 "DS_MODULE_VERSION=\"9999\"",
-                "MOD_ENTRY_POINT_ATTR="
+                "MOD_ENTRY_POINT_ATTR=",
+                "IGDE_TOOLKIT_FOX=1"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11"

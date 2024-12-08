@@ -22,61 +22,41 @@
  * SOFTWARE.
  */
 
-#ifndef _PROJREMOTESERVER_H_
-#define _PROJREMOTESERVER_H_
+#ifndef _PROJREMOTESERVERTHREAD_H_
+#define _PROJREMOTESERVERTHREAD_H_
 
-#include <deremotelauncher/derlServer.h>
-#include <dragengine/logger/deLogger.h>
+#include <dragengine/threading/deThread.h>
 
-class projProject;
-class igdeEnvironment;
-class projRemoteServerThread;
+class projRemoteServer;
 
 
 /**
- * \brief Remote connection server.
+ * \brief Remote server thread.
  */
-class projRemoteServer : public derlServer{
-public:
-	typedef std::shared_ptr<projRemoteServer> Ref;
-	
-	
+class projRemoteServerThread : public deThread{
 private:
-	projProject &pProject;
-	projRemoteServerThread *pThreadUpdate;
+	projRemoteServer &pServer;
+	deMutex pMutexExit;
+	bool pExit;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create remote server. */
-	projRemoteServer(projProject &project, igdeEnvironment &environment);
-	
-	/** \brief Clean up remote server. */
-	~projRemoteServer() override;
+	/** \brief Create remote logger. */
+	projRemoteServerThread(projRemoteServer &server);
 	/*@}*/
 	
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Project. */
-	inline projProject &GetProject() const{ return pProject; }
+	/** \brief Run function of the thread. */
+	void Run() override;
 	
-	/** \brief Create client for connection. */
-	derlRemoteClient::Ref CreateClient(const derlRemoteClientConnection::Ref &connection) override;
-	
-	/** \brief Listen for client connections. */
-	void ListenForClientConnections(const decString &address);
-	
-	/** \brief Stop listening for client connections. */
-	void StopListenClientConnections();
+	/** \brief Exit thread. */
+	void ExitThread();
 	/*@}*/
-	
-	
-	
-private:
-	void pExitThread();
 };
 
 #endif

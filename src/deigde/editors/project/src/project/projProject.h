@@ -26,6 +26,7 @@
 #define _PROJDISTRIBUTOR_H_
 
 #include "profile/projProfileList.h"
+#include "remote/projRemoteClient.h"
 #include "remote/projRemoteServer.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
@@ -137,6 +138,9 @@ public:
 	
 	/** \brief Notify listeners active profile changed. */
 	void NotifyActiveProfileChanged();
+	
+	/** \brief Notify listeners remote client connected. */
+	void NotifyRemoteClientConnected(const projRemoteClient::Ref &client);
 	/*@}*/
 	
 	

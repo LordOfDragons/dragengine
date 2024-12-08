@@ -26,70 +26,45 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "projRemoteServer.h"
 #include "projRemoteServerLogger.h"
-#include "projRemoteServerThread.h"
-#include "projRemoteClient.h"
 #include "../projProject.h"
 
-#include <deigde/environment/igdeEnvironment.h>
-#include <deigde/gameproject/igdeGameProject.h>
+#include <dragengine/logger/deLoggerFile.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/filesystem/deVFSDiskDirectory.h>
 
 
-
-// Class projRemoteServer
-///////////////////////////
+// Class projRemoteServerLogger
+/////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-projRemoteServer::projRemoteServer(projProject &project, igdeEnvironment &environment) :
-pProject(project),
-pThreadUpdate(nullptr)
-{
-	SetLogger(std::make_shared<projRemoteServerLogger>("RemoteServer", *environment.GetLogger()));
-	SetPathDataDir(environment.GetGameProject()->GetDirectoryPath().GetString());
+projRemoteServerLogger::projRemoteServerLogger(const char *logSource, deLogger &logger) :
+pLogSource(logSource),
+pLogger(logger){
 }
 
-projRemoteServer::~projRemoteServer(){
+projRemoteServerLogger::~projRemoteServerLogger(){
 }
 
 // Management
 ///////////////
 
-derlRemoteClient::Ref projRemoteServer::CreateClient(const derlRemoteClientConnection::Ref &connection){
-	return std::make_shared<projRemoteClient>(pProject, *this, connection);
-}
-
-void projRemoteServer::ListenForClientConnections(const decString &address){
-	StopListenClientConnections();
-	
-	try{
-		ListenOn(address.GetString());
+void projRemoteServerLogger::Log(LogSeverity severity, const std::string &message){
+	switch(severity){
+	case LogSeverity::error:
+		pLogger.LogError(pLogSource, message.c_str());
+		break;
 		
-	}catch(const std::exception &e){
-		DETHROW_INFO(deeInvalidParam, e.what());
+	case LogSeverity::warning:
+		pLogger.LogWarn(pLogSource, message.c_str());
+		break;
+		
+	case LogSeverity::info:
+	case LogSeverity::debug:
+		pLogger.LogInfo(pLogSource, message.c_str());
+		break;
 	}
-	
-	pThreadUpdate = new projRemoteServerThread(*this);
-	pThreadUpdate->Start();
-}
-
-void projRemoteServer::StopListenClientConnections(){
-	pExitThread();
-}
-
-
-// Private Functions
-//////////////////////
-
-void projRemoteServer::pExitThread(){
-	if(!pThreadUpdate){
-		return;
-	}
-	
-	pThreadUpdate->ExitThread();
-	pThreadUpdate->WaitForExit();
-	delete pThreadUpdate;
-	pThreadUpdate = nullptr;
 }

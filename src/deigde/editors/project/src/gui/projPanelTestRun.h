@@ -25,13 +25,20 @@
 #ifndef _PROJPANELTESTRUN_H_
 #define _PROJPANELTESTRUN_H_
 
+#include "projPanelRemoteClient.h"
+#include "../project/remote/projRemoteClient.h"
+
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeTextAreaReference.h>
+#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeTabBookReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 #include <dragengine/deObjectReference.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/threading/deMutex.h>
 
 class projProject;
 class projPanelTestRunListener;
@@ -63,18 +70,22 @@ private:
 	
 	deObjectReference pSelectedProfile;
 	
-	igdeActionReference pActionStart;
-	igdeActionReference pActionQuit;
-	igdeActionReference pActionKill;
+	igdeActionReference pActionStart, pActionQuit, pActionKill;
+	
+	igdeTabBookReference pTabContent;
 	
 	igdeTextAreaReference pEditLogs;
 	
-	igdeComboBoxReference pCBProfile;
-	igdeComboBoxReference pCBLaunchProfile;
-	igdeButtonReference pBtnStart;
-	igdeButtonReference pBtnQuit;
-	igdeButtonReference pBtnKill;
+	decObjectOrderedSet pRemoteClients;
 	
+	igdeComboBoxReference pCBProfile, pCBLaunchProfile;
+	igdeButtonReference pBtnStart, pBtnQuit, pBtnKill;
+	
+	igdeTextFieldReference pEditRemoteAddress;
+	igdeButtonReference pBtnRemoteStartListen, pBtnRemoteStopListen;
+	
+	projRemoteClient::Set pPendingAddRemoteClient, pPendingRemoveRemoteClient;
+	deMutex pMutexPending;
 	
 	
 public:
@@ -117,6 +128,9 @@ public:
 	/** \brief Kill. */
 	void Kill();
 	
+	/** \brief Load configuration. */
+	void LoadConfig();
+	
 	/** \brief Update. */
 	void Update( float elapsed );
 	
@@ -146,6 +160,31 @@ public:
 	
 	/** \brief Move to bottom line. */
 	void MoveToBottomLine();
+	
+	/** \brief Start listening for remote client connections. */
+	void RemoteStartListen();
+	
+	/** \brief Stop listening for remote client connections. */
+	void RemoteStopListen();
+	
+	
+	/**
+	 * \brief Add remote client.
+	 * \note Thread sygesafe. Call will be done during next Update() call.
+	 */
+	void AddRemoteClient(const projRemoteClient::Ref &client);
+	
+	/**
+	 * \brief Remove remote client.
+	 * \note Thread sygesafe. Call will be done during next Update() call.
+	 */
+	void RemoveRemoteClient(const projRemoteClient::Ref &client);
+	
+	/** \brief Update all remote clients. */
+	void UpdateRemoteClients(float elapsed);
+	
+	/** \brief Panel for remote client or nullptr. */
+	projPanelRemoteClient::Ref GetRemoteClientPanel(projRemoteClient *client) const;
 	/*@}*/
 	
 	
@@ -154,6 +193,8 @@ private:
 	void pUpdateLaunchProfiles();
 	void pRemoveOldLines();
 	decString pGetLastLogsMaxLines() const;
+	void pProcessPendingAddRemoteClient();
+	void pProcessPendingRemoveRemoteClient();
 };
 
 #endif

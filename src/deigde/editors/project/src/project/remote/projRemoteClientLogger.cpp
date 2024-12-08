@@ -24,72 +24,55 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
-#include "projPanelTestRun.h"
-#include "projPanelTestRunListener.h"
-#include "../project/projProject.h"
+#include "projRemoteClientLogger.h"
+#include "../projProject.h"
 
-#include <deigde/environment/igdeEnvironment.h>
+#include <dragengine/logger/deLoggerFile.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/filesystem/deVFSDiskDirectory.h>
 
-#include <dragengine/common/exceptions.h>
 
-
-
-// Class projPanelTestRunListener
-///////////////////////////////////
+// Class projRemoteClientLogger
+/////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-projPanelTestRunListener::projPanelTestRunListener( projPanelTestRun &panel ) :
-pPanel( panel ){
-}
-
-projPanelTestRunListener::~projPanelTestRunListener(){
-}
-
-
-
-// Notifications
-//////////////////
-
-void projPanelTestRunListener::ProjectChanged( projProject *project ){
-}
-
-
-
-void projPanelTestRunListener::ProfileStructureChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
-		return;
-	}
+projRemoteClientLogger::projRemoteClientLogger(const char *logSource, const char *pathLogFile) :
+pLogSource(logSource)
+{
+	decPath diskPath(decPath::CreatePathNative(pathLogFile));
+	decPath filePath;
+	filePath.AddComponent(diskPath.GetLastComponent());
+	diskPath.RemoveLastComponent();
 	
-	pPanel.UpdateProfiles();
+	pContainer.TakeOver(new deVFSDiskDirectory(diskPath));
+	pLogger.TakeOver(new deLoggerFile(decBaseFileWriter::Ref::New(
+		pContainer->OpenFileForWriting(filePath))));
 }
 
-void projPanelTestRunListener::ProfileNameChanged(
-projProject *project, projProfile *profile ){
-	if( pPanel.GetProject() != project ){
-		return;
-	}
-	
-	pPanel.UpdateProfiles();
+projRemoteClientLogger::~projRemoteClientLogger(){
 }
 
+// Management
+///////////////
 
-
-void projPanelTestRunListener::ActiveLaunchProfileChanged( projProject *project ){
-	if( pPanel.GetProject() != project ){
-		return;
+void projRemoteClientLogger::Log(LogSeverity severity, const std::string &message){
+	switch(severity){
+	case LogSeverity::error:
+		pLogger->LogError(pLogSource, message.c_str());
+		break;
+		
+	case LogSeverity::warning:
+		pLogger->LogWarn(pLogSource, message.c_str());
+		break;
+		
+	case LogSeverity::info:
+	case LogSeverity::debug:
+		pLogger->LogInfo(pLogSource, message.c_str());
+		break;
 	}
-	
-	pPanel.SelectLauncherProfile();
-}
-
-void projPanelTestRunListener::RemoteClientConnected(projProject *project,
-const projRemoteClient::Ref &client){
-	if( pPanel.GetProject() != project ){
-		return;
-	}
-	
-	pPanel.AddRemoteClient(client);
 }

@@ -22,13 +22,26 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <algorithm>
 
 #include "projRemoteClient.h"
+#include "projRemoteClientLogger.h"
+#include "projRemoteClientListener.h"
 #include "../projProject.h"
+#include "../profile/projProfile.h"
 
+#include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/engine/igdeEngineController.h>
+
+#include <dragengine/deEngine.h>
+#include <dragengine/common/xmlparser/decXmlWriter.h>
+#include <dragengine/common/file/decDiskFileReader.h>
+#include <dragengine/common/file/decMemoryFile.h>
+#include <dragengine/common/file/decMemoryFileWriter.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageManager.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 // Class projRemoteClient
@@ -38,24 +51,137 @@
 ////////////////////////////
 
 projRemoteClient::projRemoteClient(projProject &project, derlServer &server,
-const derlRemoteClientConnection::Ref &connection) :
+	const derlRemoteClientConnection::Ref &connection) :
 derlRemoteClient(server, connection),
 pProject(project)
 {
-	//SetLogger();
+	// store path to log file to use
+	decString filename;
+	filename.Format("testRun-%s.log", GetName().c_str());
+	
+	const int last = filename.GetLength() - 4;
+	int i;
+	for(i=8; i<last; i++){
+		if(!isalnum(filename[i])){
+			filename[i] = '_';
+		}
+	}
+	
+	decPath path;
+	path.SetFromNative(project.GetEnvironment()->GetGameProject()->GetDirectoryPath());
+	path.AddUnixPath(filename);
+	
+	pPathLogFile = path.GetPathNative();
+	pLogFileReader.TakeOver(new decDiskFileReader(pPathLogFile));
+	
+	SetLogger(std::make_shared<projRemoteClientLogger>("RemoteClient", pPathLogFile));
 }
 
-projRemoteClient::~projRemoteClient()
-{
+projRemoteClient::~projRemoteClient(){
+	pListeners.RemoveAll();
 }
+
 
 // Management
 ///////////////
 
+projRemoteClient::Ref projRemoteClient::GetRefInServer() const{
+	const derlRemoteClient::List &clients = GetServer().GetClients();
+	const derlRemoteClient::List::const_iterator iter = std::find_if(
+		clients.cbegin(), clients.cend(), [&](const derlRemoteClient::Ref &each){
+			return each.get() == this;
+		});
+	return iter != clients.cend() ? std::static_pointer_cast<projRemoteClient>(*iter) : nullptr;
+}
+
+decString projRemoteClient::ReadNextLogData(){
+	const int position = pLogFileReader->GetPosition();
+	pLogFileReader->SetPositionEnd(0);
+	const int end = pLogFileReader->GetPosition();
+	
+	decString content;
+	
+	if(end > position){
+		content.Set(' ', end - position);
+		pLogFileReader->SetPosition(position);
+		pLogFileReader->Read((char*)content.GetString(), end - position);
+	}
+	
+	return content;
+}
+
+decString projRemoteClient::GetLastLogContent(){
+	try{
+		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+			new decDiskFileReader(pPathLogFile)));
+		
+		const int length = reader->GetLength();
+		if(length == 0){
+			return decString();
+		}
+		
+		decString content;
+		content.Set(' ', length);
+		reader->Read((char*)content.GetString(), length);
+		return content;
+		
+	}catch(const deException &){
+		// ignore errors. treat this as if file could not be found
+		return decString();
+	}
+}
+
+
+void projRemoteClient::StartApplication(){
+	projProfile * const profile = pProject.GetActiveProfile();
+	DEASSERT_NOTNULL(profile)
+	
+	derlRunParameters params;
+	params.SetProfileName(pActiveLaunchProfile.GetString());
+	
+	pBuildGameXml(params, *profile);
+	
+	try{
+		derlRemoteClient::StartApplication(params);
+		
+	}catch(const std::exception &e){
+		DETHROW_INFO(deeInvalidAction, e.what());
+	}
+}
+
+
+bool projRemoteClient::IsRunning(){
+	return GetRunStatus() != RunStatus::stopped;
+}
+
+void projRemoteClient::StopApplication(){
+	try{
+		derlRemoteClient::StopApplication();
+		
+	}catch(const std::exception &e){
+		DETHROW_INFO(deeInvalidAction, e.what());
+	}
+}
+
+void projRemoteClient::KillApplication(){
+	try{
+		derlRemoteClient::KillApplication();
+		
+	}catch(const std::exception &e){
+		DETHROW_INFO(deeInvalidAction, e.what());
+	}
+}
+
+
 void projRemoteClient::OnConnectionEstablished(){
+	const projRemoteClient::Ref ref(GetRefInServer());
+	if(ref){
+		pProject.NotifyRemoteClientConnected(ref);
+	}
 }
 
 void projRemoteClient::OnConnectionClosed(){
+	NotifyClientDisconnected();
 }
 
 void projRemoteClient::OnSynchronizeBegin(){
@@ -71,4 +197,197 @@ void projRemoteClient::OnRunStatusChanged(){
 }
 
 void projRemoteClient::OnSystemProperty(const std::string &property, const std::string &value){
+}
+
+
+decStringSet projRemoteClient::GetLaunchProfiles(){
+	const deMutexGuard guard(pMutex);
+	return pLaunchProfiles;
+}
+
+void projRemoteClient::SetLaunchProfiles(const decStringSet &profiles){
+	bool profilesChanged = false;
+	bool activeChanged = false;
+	
+	{
+	const deMutexGuard guard(pMutex);
+	if(profiles == pLaunchProfiles){
+		return;
+	}
+	
+	pLaunchProfiles = profiles;
+	profilesChanged = true;
+	
+	if(!pActiveLaunchProfile.IsEmpty() && !pLaunchProfiles.Has(pActiveLaunchProfile)){
+		pActiveLaunchProfile = "";
+		activeChanged = true;
+	}
+	}
+	
+	if(profilesChanged){
+		NotifyLaunchProfilesChanged();
+	}
+	if(activeChanged){
+		NotifyActiveLaunchProfileChanged();
+	}
+}
+
+decString projRemoteClient::GetActiveLaunchProfile(){
+	const deMutexGuard guard(pMutex);
+	return pActiveLaunchProfile;
+}
+
+void projRemoteClient::SetActiveLaunchProfile(const decString &profile){
+	bool changed = false;
+	
+	{
+	const deMutexGuard guard(pMutex);
+	if(profile == pActiveLaunchProfile){
+		return;
+	}
+	
+	pActiveLaunchProfile = profile;
+	changed = true;
+	}
+	
+	if(changed){
+		NotifyActiveLaunchProfileChanged();
+	}
+}
+
+decString projRemoteClient::GetDefaultLaunchProfile(){
+	const deMutexGuard guard(pMutex);
+	return pDefaultLaunchProfile;
+}
+
+void projRemoteClient::SetDefaultLaunchProfile(const decString &profile){
+	bool changed = false;
+	
+	{
+	const deMutexGuard guard(pMutex);
+	if(profile == pDefaultLaunchProfile){
+		return;
+	}
+	
+	pDefaultLaunchProfile = profile;
+	changed = true;
+	}
+	
+	if(changed){
+		NotifyActiveLaunchProfileChanged();
+	}
+}
+
+
+// Listeners
+//////////////
+
+void projRemoteClient::AddListener(projRemoteClientListener *listener){
+	pListeners.Add(listener);
+}
+
+void projRemoteClient::RemoveListener(projRemoteClientListener *listener){
+	pListeners.Remove(listener);
+}
+
+
+void projRemoteClient::NotifyClientChanged(){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((projRemoteClientListener*)pListeners.GetAt(i))->ClientChanged(this);
+	}
+}
+
+void projRemoteClient::NotifyClientDisconnected(){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((projRemoteClientListener*)pListeners.GetAt(i))->ClientDisconnected(this);
+	}
+}
+
+void projRemoteClient::NotifyLaunchProfilesChanged(){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((projRemoteClientListener*)pListeners.GetAt(i))->LaunchProfilesChanged(this);
+	}
+}
+
+void projRemoteClient::NotifyActiveLaunchProfileChanged(){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((projRemoteClientListener*)pListeners.GetAt(i))->ActiveLaunchProfileChanged(this);
+	}
+}
+
+
+// Private Functions
+//////////////////////
+
+void projRemoteClient::pBuildGameXml(derlRunParameters &params, const projProfile &profile){
+	const decMemoryFile::Ref file(decMemoryFile::Ref::New(new decMemoryFile("run.degame")));
+	
+	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::New(new decMemoryFileWriter(file, false)));
+	pBuildGameXml(xmlWriter, profile);
+	
+	params.SetGameConfig(file->GetPointer());
+}
+
+void projRemoteClient::pBuildGameXml(decXmlWriter &writer, const projProfile &profile){
+	writer.WriteXMLDeclaration();
+	
+	writer.WriteOpeningTag("degame");
+	
+	writer.WriteDataTagString("identifier", profile.GetIdentifier().ToHexString(false));
+	writer.WriteDataTagString("title", profile.GetTitle());
+	writer.WriteDataTagString("description", profile.GetGameDescription());
+	writer.WriteDataTagString("creator", profile.GetCreator());
+	writer.WriteDataTagString("homepage", profile.GetWebsite());
+	
+	igdeEnvironment &env = *pProject.GetEnvironment();
+	const decStringSet &iconPathList = profile.GetIcons();
+	const int iconPathCount = iconPathList.GetCount();
+	if(iconPathCount > 0){
+		deImageManager &imageManager = *env.GetEngineController()->GetEngine()->GetImageManager();
+		int i;
+		for( i=0; i<iconPathCount; i++ ){
+			const deImage::Ref icon(deImage::Ref::New(
+				imageManager.LoadImage(iconPathList.GetAt(i), "/")));
+			writer.WriteOpeningTagStart("icon");
+			writer.WriteAttributeInt("size", icon->GetWidth());
+			writer.WriteOpeningTagEnd(false, false);
+			writer.WriteTextString(iconPathList.GetAt(i));
+			writer.WriteClosingTag("icon", false);
+		}
+	}
+	
+	writer.WriteDataTagString("scriptDirectory", profile.GetScriptDirectory());
+	writer.WriteDataTagString("gameObject", profile.GetGameObject());
+	writer.WriteDataTagString("pathConfig", profile.GetPathConfig());
+	writer.WriteDataTagString("pathCapture", profile.GetPathCapture());
+	
+	writer.WriteOpeningTagStart("scriptModule");
+	if(!env.GetGameProject()->GetScriptModuleVersion().IsEmpty()){
+		writer.WriteAttributeString("version", env.GetGameProject()->GetScriptModuleVersion());
+	}
+	writer.WriteOpeningTagEnd(false, false);
+	writer.WriteTextString(env.GetGameProject()->GetScriptModule());
+	writer.WriteClosingTag("scriptModule", false);
+	
+	const decPoint &windowSize = profile.GetWindowSize();
+	if(windowSize != decPoint()){
+		writer.WriteOpeningTagStart("windowSize");
+		writer.WriteAttributeInt("x", windowSize.x);
+		writer.WriteAttributeInt("y", windowSize.y);
+		writer.WriteOpeningTagEnd(true);
+	}
+	
+	writer.WriteClosingTag("degame");
 }

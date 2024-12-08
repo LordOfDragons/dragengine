@@ -26,23 +26,42 @@ if 'with_deremotelauncher_inc' in envLibrary and envLibrary['with_deremotelaunch
 if 'with_deremotelauncher_lib' in envLibrary and envLibrary['with_deremotelauncher_lib']:
 	envLibrary.Append(LIBPATH = [envLibrary['with_deremotelauncher_lib']])
 
-def deremotelauncherUnpack(target, source, env):
-	untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
+hasSystemLib = False
+conf = envLibrary.Configure()
+hasSystemLib = conf.CheckLibWithHeader(libLinkName, 'deremotelauncher/derlProtocol.h', 'c++')
+conf.Finish()
 
 targets = [libFileName]
-with open(envLibrary.File('header_file_list/deremotelauncher').srcnode().abspath, 'r') as f:
-	targets.extend([x[:-1] for x in f.readlines()])
+library = []
+cpppath = []
+libpath = []
 
-libraryHeaders = envLibrary.Command(targets, nodeArtifacts,
-	envLibrary.Action(deremotelauncherUnpack, 'Unpack DERemoteLauncher'))[0:1]
+if hasSystemLib:
+	if 'with_deremotelauncher_inc' in envLibrary and envLibrary['with_deremotelauncher_inc']:
+		cpppath.append(envLibrary['with_deremotelauncher_inc'])
+	if 'with_deremotelauncher_lib' in envLibrary and envLibrary['with_deremotelauncher_lib']:
+		libpath.append(envLibrary['with_deremotelauncher_lib'])
+	library.append(libLinkName)
+else:
+	def deremotelauncherUnpack(target, source, env):
+		untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
 
-envLibrary.Clean(libraryHeaders, [srcdir])
+	with open(envLibrary.File('header_file_list/deremotelauncher').srcnode().abspath, 'r') as f:
+		targets.extend([x[:-1] for x in f.readlines()])
+
+	library = envLibrary.Command(targets, nodeArtifacts,
+		envLibrary.Action(deremotelauncherUnpack, 'Unpack DERemoteLauncher'))[0:1]
+
+	envLibrary.Clean(library, [srcdir])
+
+	cpppath.append(envLibrary.Dir(os.path.join(srcdir, 'include')))
+	libpath.append(envLibrary.Dir(os.path.join(srcdir, 'lib')))
 
 parent_targets['lib_deremotelauncher'] = {
 	'name' : 'Internal DERemoteLauncher library',
-	'cpppath' : [envLibrary.Dir(os.path.join(srcdir, 'include'))],
-	'libpath' : [envLibrary.Dir(os.path.join(srcdir, 'lib'))],
-	'libs' : libraryHeaders,
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : library,
 	'runtimelibs' : [],
 	'runtimedata' : [],
-	'depends' : parent_env.Alias('lib_deremotelauncher', libraryHeaders)}
+	'depends' : parent_env.Alias('lib_deremotelauncher', library)}
