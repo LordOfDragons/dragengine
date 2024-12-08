@@ -111,7 +111,8 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(!pPanel.IsRunning());
+		SetEnabled(pPanel.GetClient()->GetSynchronizeStatus()
+			!= derlRemoteClient::SynchronizeStatus::processing);
 	}
 };
 
@@ -383,6 +384,7 @@ void projPanelRemoteClient::Update(float elapsed){
 	CheckRunning();
 	UpdateLogs(false);
 	pEditSyncState->SetText(pClient->GetSynchronizeDetails().c_str());
+	pBtnSynchronize->GetAction()->Update();
 }
 
 void projPanelRemoteClient::CheckRunning(){

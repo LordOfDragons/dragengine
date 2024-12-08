@@ -33,7 +33,6 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/threading/deMutex.h>
 
 class projProject;
 class projProfile;
@@ -62,8 +61,6 @@ private:
 	decString pDefaultLaunchProfile;
 	
 	decObjectSet pListeners;
-	
-	deMutex pMutex;
 	
 	
 public:
@@ -96,6 +93,10 @@ public:
 	
 	/** \brief Last log file content if present. */
 	decString GetLastLogContent();
+	
+	
+	/** \brief Create task processors. */
+	derlTaskProcessorRemoteClient::Ref CreateTaskProcessor() override;
 	
 	
 	/** \brief Is running. */

@@ -207,6 +207,8 @@ void projProject::NotifyProfileStructureChanged(){
 	}
 	
 	SetChanged(true);
+	
+	pRemoteServer->OnProfileStructureChanged();
 }
 
 void projProject::NotifyProfileChanged(projProfile *profile){
@@ -218,6 +220,8 @@ void projProject::NotifyProfileChanged(projProfile *profile){
 	}
 	
 	SetChanged(true);
+	
+	pRemoteServer->OnProfileChanged(profile);
 }
 
 void projProject::NotifyProfileNameChanged(projProfile *profile){
@@ -229,6 +233,8 @@ void projProject::NotifyProfileNameChanged(projProfile *profile){
 	}
 	
 	SetChanged(true);
+	
+	pRemoteServer->OnProfileChanged(profile);
 }
 
 void projProject::NotifyActiveProfileChanged(){
@@ -238,6 +244,8 @@ void projProject::NotifyActiveProfileChanged(){
 	for(i=0; i<count; i++){
 		((projProjectListener*)pListeners.GetAt(i))->ActiveProfileChanged(this);
 	}
+	
+	pRemoteServer->OnActiveProfileChanged();
 }
 
 void projProject::NotifyRemoteClientConnected(const projRemoteClient::Ref &client){
@@ -326,6 +334,12 @@ void projProject::NotifyProjectChanged(){
 //////////////////////
 
 void projProject::pCleanUp(){
+	pListeners.RemoveAll();
+	
+	GetUndoSystem()->RemoveAll();
+	
+	RemoveAllProfiles();
+	
 	if(pRemoteServer){
 		try{
 			pRemoteServer->StopListenClientConnections();
@@ -333,10 +347,4 @@ void projProject::pCleanUp(){
 		}
 		pRemoteServer.reset();
 	}
-	
-	pListeners.RemoveAll();
-	
-	GetUndoSystem()->RemoveAll();
-	
-	RemoveAllProfiles();
 }

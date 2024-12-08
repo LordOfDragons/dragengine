@@ -54,6 +54,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projDialogDistribute.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelProfiles.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelProfilesListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClient.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClientListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelTestRun.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelTestRunListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelUndoHistory.cpp" />
@@ -71,7 +73,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\projProject.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\projProjectListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientLogger.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientTaskProcessor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerLogger.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerThreadLogger.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\task\projTaskDistribute.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameter.cpp" />
@@ -113,6 +120,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelProfilesListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelTestRun.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelTestRunListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClient.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClientListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelUndoHistory.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelUndoHistoryListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projWindowMain.h" />
@@ -128,7 +137,12 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\projProject.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\projProjectListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientLogger.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientTaskProcessor.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerLogger.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerThread.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\task\projTaskDistribute.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameter.h" />

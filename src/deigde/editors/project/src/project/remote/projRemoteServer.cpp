@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
 #include "projRemoteServer.h"
 #include "projRemoteServerLogger.h"
 #include "projRemoteServerThread.h"
@@ -34,6 +30,9 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
+
+#include <dragengine/common/file/decPath.h>
 
 
 
@@ -79,6 +78,34 @@ void projRemoteServer::StopListenClientConnections(){
 	pExitThread();
 }
 
+projRemoteServer::TaskProfileData::Ref projRemoteServer::GetTaskProfileData(){
+	const std::lock_guard<std::mutex> guard(GetMutex());
+	if(!pTaskProfileData){
+		pUpdateTaskProfileData();
+	}
+	return pTaskProfileData;
+}
+
+
+void projRemoteServer::OnProfileStructureChanged(){
+	const std::lock_guard<std::mutex> guard(GetMutex());
+	pTaskProfileData.reset();
+}
+
+void projRemoteServer::OnProfileChanged(projProfile *profile){
+	if(pProject.GetActiveProfile() != profile){
+		return;
+	}
+	
+	const std::lock_guard<std::mutex> guard(GetMutex());
+	pTaskProfileData.reset();
+}
+
+void projRemoteServer::OnActiveProfileChanged(){
+	const std::lock_guard<std::mutex> guard(GetMutex());
+	pTaskProfileData.reset();
+}
+
 
 // Private Functions
 //////////////////////
@@ -92,4 +119,26 @@ void projRemoteServer::pExitThread(){
 	pThreadUpdate->WaitForExit();
 	delete pThreadUpdate;
 	pThreadUpdate = nullptr;
+}
+
+void projRemoteServer::pUpdateTaskProfileData(){
+	igdeEnvironment &env = *pProject.GetEnvironment();
+	
+	pTaskProfileData = std::make_shared<TaskProfileData>();
+	
+	pTaskProfileData->vfs = env.GetFileSystemGame();
+	
+	const igdeGameDefinitionList &list = env.GetGameProject()->GetBaseGameDefinitionList();
+	const int count = list.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const igdeGameDefinition &gameDef = *list.GetAt(i);
+		if(gameDef.GetVFSPath().IsEmpty()){
+			continue;
+		}
+		
+		pTaskProfileData->excludeBaseGameDefPath.AddIfAbsent(
+			decPath::CreatePathUnix(gameDef.GetVFSPath()));
+	}
 }

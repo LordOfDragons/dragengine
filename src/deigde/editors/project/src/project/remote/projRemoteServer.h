@@ -26,11 +26,16 @@
 #define _PROJREMOTESERVER_H_
 
 #include <deremotelauncher/derlServer.h>
+
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/filesystem/dePathList.h>
 
 class projProject;
-class igdeEnvironment;
+class projProfile;
 class projRemoteServerThread;
+class igdeEnvironment;
+class deVirtualFileSystem;
 
 
 /**
@@ -40,10 +45,20 @@ class projRemoteServer : public derlServer{
 public:
 	typedef std::shared_ptr<projRemoteServer> Ref;
 	
+	/** \brief Profile data for use by task processors. */
+	struct TaskProfileData{
+		typedef std::shared_ptr<TaskProfileData> Ref;
+		
+		decStringSet excludePatterns;
+		dePathList excludeBaseGameDefPath;
+		deVirtualFileSystem *vfs;
+	};
+	
 	
 private:
 	projProject &pProject;
 	projRemoteServerThread *pThreadUpdate;
+	TaskProfileData::Ref pTaskProfileData;
 	
 	
 public:
@@ -71,12 +86,27 @@ public:
 	
 	/** \brief Stop listening for client connections. */
 	void StopListenClientConnections();
+	
+	
+	/** \brief Task profile data. */
+	TaskProfileData::Ref GetTaskProfileData();
+	
+	
+	/** \brief Profile structure changed. */
+	void OnProfileStructureChanged();
+	
+	/** \brief Profile changed. */
+	void OnProfileChanged(projProfile *profile);
+	
+	/** \brief Active profile changed. */
+	void OnActiveProfileChanged();
 	/*@}*/
 	
 	
 	
 private:
 	void pExitThread();
+	void pUpdateTaskProfileData();
 };
 
 #endif

@@ -37,6 +37,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelTestRunListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClientListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelUndoHistory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -184,7 +190,22 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientTaskProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -202,6 +223,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelTestRunListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClient.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClientListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelUndoHistory.h">
@@ -351,7 +378,22 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientLogger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientTaskProcessor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerLogger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerThread.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

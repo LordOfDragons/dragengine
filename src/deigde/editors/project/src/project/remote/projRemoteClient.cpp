@@ -27,6 +27,7 @@
 #include "projRemoteClient.h"
 #include "projRemoteClientLogger.h"
 #include "projRemoteClientListener.h"
+#include "projRemoteClientTaskProcessor.h"
 #include "../projProject.h"
 #include "../profile/projProfile.h"
 
@@ -131,6 +132,10 @@ decString projRemoteClient::GetLastLogContent(){
 	}
 }
 
+derlTaskProcessorRemoteClient::Ref projRemoteClient::CreateTaskProcessor(){
+	return std::make_shared<projRemoteClientTaskProcessor>(*this);
+}
+
 
 void projRemoteClient::StartApplication(){
 	projProfile * const profile = pProject.GetActiveProfile();
@@ -185,23 +190,46 @@ void projRemoteClient::OnConnectionClosed(){
 }
 
 void projRemoteClient::OnSynchronizeBegin(){
+	std::stringstream ss;
+	ss << "Begin synchronization of client '" << GetName() << "'.";
+	GetLogger()->Log(denLogger::LogSeverity::info, ss.str());
 }
 
 void projRemoteClient::OnSynchronizeUpdate(){
 }
 
 void projRemoteClient::OnSynchronizeFinished(){
+	std::stringstream ss;
+	ss << "Finished synchronization of client '" << GetName() << "'.";
+	GetLogger()->Log(denLogger::LogSeverity::info, ss.str());
 }
 
 void projRemoteClient::OnRunStatusChanged(){
+	std::stringstream ss;
+	ss << "Run status changed of client '" << GetName() << "' to ";
+	
+	switch(GetRunStatus()){
+	case RunStatus::running:
+		ss << "'Running'";
+		break;
+		
+	case RunStatus::stopped:
+		ss << "'Stopped'";
+		break;
+	}
+	
+	ss << ".";
+	
+	GetLogger()->Log(denLogger::LogSeverity::info, ss.str());
 }
 
 void projRemoteClient::OnSystemProperty(const std::string &property, const std::string &value){
+	// TODO
 }
 
 
 decStringSet projRemoteClient::GetLaunchProfiles(){
-	const deMutexGuard guard(pMutex);
+	const std::lock_guard<std::mutex> guard(GetMutex());
 	return pLaunchProfiles;
 }
 
@@ -210,7 +238,7 @@ void projRemoteClient::SetLaunchProfiles(const decStringSet &profiles){
 	bool activeChanged = false;
 	
 	{
-	const deMutexGuard guard(pMutex);
+	const std::lock_guard<std::mutex> guard(GetMutex());
 	if(profiles == pLaunchProfiles){
 		return;
 	}
@@ -233,7 +261,7 @@ void projRemoteClient::SetLaunchProfiles(const decStringSet &profiles){
 }
 
 decString projRemoteClient::GetActiveLaunchProfile(){
-	const deMutexGuard guard(pMutex);
+	const std::lock_guard<std::mutex> guard(GetMutex());
 	return pActiveLaunchProfile;
 }
 
@@ -241,7 +269,7 @@ void projRemoteClient::SetActiveLaunchProfile(const decString &profile){
 	bool changed = false;
 	
 	{
-	const deMutexGuard guard(pMutex);
+	const std::lock_guard<std::mutex> guard(GetMutex());
 	if(profile == pActiveLaunchProfile){
 		return;
 	}
@@ -256,7 +284,7 @@ void projRemoteClient::SetActiveLaunchProfile(const decString &profile){
 }
 
 decString projRemoteClient::GetDefaultLaunchProfile(){
-	const deMutexGuard guard(pMutex);
+	const std::lock_guard<std::mutex> guard(GetMutex());
 	return pDefaultLaunchProfile;
 }
 
@@ -264,7 +292,7 @@ void projRemoteClient::SetDefaultLaunchProfile(const decString &profile){
 	bool changed = false;
 	
 	{
-	const deMutexGuard guard(pMutex);
+	const std::lock_guard<std::mutex> guard(GetMutex());
 	if(profile == pDefaultLaunchProfile){
 		return;
 	}

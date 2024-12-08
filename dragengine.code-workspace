@@ -151,7 +151,8 @@
 			"shared_mutex": "cpp",
 			"stdfloat": "cpp",
 			"typeindex": "cpp",
-			"*.ipp": "cpp"
+			"*.ipp": "cpp",
+			"strstream": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			
