@@ -59,6 +59,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Path exists and refers to an existing directory. */
+	bool IsPathDirectory(const std::string &pathDir) override;
+	
 	/** \brief List all files in directory. */
 	void ListDirectoryFiles(ListDirEntries &entries, const std::string &pathDir) override;
 	

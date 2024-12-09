@@ -22,6 +22,12 @@
     <None Include="..\..\..\..\src\deigde\editors\project\SConscript" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\configuration/projConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\configuration/projConfigurationXml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projDialogDistribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -210,6 +216,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\configuration/projConfiguration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\configuration/projConfigurationXml.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projDialogDistribute.h">
       <Filter>Source Files</Filter>
     </ClInclude>

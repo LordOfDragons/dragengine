@@ -76,6 +76,12 @@ public:
 	}
 };
 
+bool projRemoteClientTaskProcessor::IsPathDirectory(const std::string &pathDir){
+	const decPath vfsPath(decPath::CreatePathUnix(pathDir.c_str()));
+	return pTaskProfileData->vfs->ExistsFile(vfsPath)
+		&& pTaskProfileData->vfs->GetFileType(vfsPath) == deVFSContainer::eftDirectory;
+}
+
 void projRemoteClientTaskProcessor::ListDirectoryFiles(
 ListDirEntries &entries, const std::string &pathDir){
 	const decPath vfsPath(decPath::CreatePathUnix(pathDir.c_str()));

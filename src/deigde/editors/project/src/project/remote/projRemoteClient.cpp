@@ -38,6 +38,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/file/decDiskFileReader.h>
+#include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/file/decMemoryFileWriter.h>
 #include <dragengine/resources/image/deImage.h>
@@ -73,6 +74,9 @@ pProject(project)
 	path.AddUnixPath(filename);
 	
 	pPathLogFile = path.GetPathNative();
+	
+	decDiskFileWriter::Ref::New(new decDiskFileWriter(pPathLogFile, false)); // clear file
+	
 	pLogFileReader.TakeOver(new decDiskFileReader(pPathLogFile));
 	
 	SetLogger(std::make_shared<projRemoteClientLogger>("RemoteClient", pPathLogFile));
@@ -362,8 +366,12 @@ void projRemoteClient::NotifyActiveLaunchProfileChanged(){
 void projRemoteClient::pBuildGameXml(derlRunParameters &params, const projProfile &profile){
 	const decMemoryFile::Ref file(decMemoryFile::Ref::New(new decMemoryFile("run.degame")));
 	
-	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::New(new decMemoryFileWriter(file, false)));
+	{
+	const decMemoryFileWriter::Ref writer(decMemoryFileWriter::Ref::New(
+		new decMemoryFileWriter(file, false)));
+	decXmlWriter xmlWriter(writer);
 	pBuildGameXml(xmlWriter, profile);
+	}
 	
 	params.SetGameConfig(file->GetPointer());
 }
