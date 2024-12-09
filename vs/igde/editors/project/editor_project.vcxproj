@@ -78,7 +78,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientTaskProcessor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerLogger.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerThreadLogger.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerThread.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\task\projTaskDistribute.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\testrunner\profile\projTRPParameter.cpp" />
