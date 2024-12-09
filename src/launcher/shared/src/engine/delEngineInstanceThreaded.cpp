@@ -624,6 +624,9 @@ bool delEngineInstanceThreaded::StopProcess(){
 			GetLauncher().GetLogger()->LogError( GetLauncher().GetLogSource(),
 				"EngineInstance.StopProcess sending eccStopProcess failed with exception:" );
 			GetLauncher().GetLogger()->LogException( GetLauncher().GetLogSource(), e );
+			
+			KillEngine();
+			return true;
 		}
 		
 #ifdef OS_W32
@@ -1059,13 +1062,19 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 }
 
 void delEngineInstanceThreaded::StopGame(){
-	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-		"Sending eccStopGame to process %i", ( int )pProcessID );
+	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+		"Sending eccStopGame to process %d", (int)pProcessID);
 	
 	WriteUCharToPipe( delEngineProcess::eccStopGame );
 	
-	if( ReadUCharFromPipe() != delEngineProcess::ercSuccess ){
-		DETHROW( deeInvalidAction );
+	try{
+		if(ReadUCharFromPipe() != delEngineProcess::ercSuccess){
+			DETHROW(deeInvalidAction);
+		}
+		
+	}catch(const deException &e){
+		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+			"Sending eccStopGame to process %d failed. Process no more running?", (int)pProcessID);
 	}
 }
 
@@ -1158,6 +1167,7 @@ int delEngineInstanceThreaded::IsGameRunning(){
 			GetLauncher().GetLogger()->LogInfo( GetLauncher().GetLogSource(), "running game finished" );
 			
 			pGameCollectChangedParams = nullptr;
+			StopEngine();
 			return 0; // exit
 		}
 	}

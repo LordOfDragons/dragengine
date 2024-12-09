@@ -188,8 +188,7 @@ private:
 	#endif
 	
 	deEngine *pEngine;
-	bool pEngineRunning;
-	bool pStopProcess;
+	bool pEngineRunning, pStopProcess, pStopGame;
 	delEngineProcessRunGame *pRunGame;
 	
 	deLogger::Ref pLogger;
@@ -244,6 +243,8 @@ public:
 	/** \brief Set use console. */
 	void SetUseConsole( bool useConsole );
 	
+	/** \brief Set stop game to true. */
+	void SetStopGame();
 	
 	
 	/** \brief Run the process. */

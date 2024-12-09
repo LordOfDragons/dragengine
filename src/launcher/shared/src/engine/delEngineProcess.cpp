@@ -119,6 +119,7 @@ pPipeOut( pipeOut ),
 pEngine( nullptr ),
 pEngineRunning( false ),
 pStopProcess( true ),
+pStopGame( false ),
 pRunGame( nullptr ),
 
 pLogSource( logSource ),
@@ -140,11 +141,16 @@ void delEngineProcess::SetUseConsole( bool useConsole ){
 	pUseConsole = useConsole;
 }
 
+void delEngineProcess::SetStopGame(){
+	pStopGame = true;
+}
+
 void delEngineProcess::Run(){
 	try{
 		StartEngine();
 		
 		pStopProcess = false;
+		pStopGame = false;
 		ReadCommandsFromInPipe();
 		
 		StopEngine();
@@ -1223,6 +1229,7 @@ void delEngineProcess::CommandStartGame(){
 	
 	// run game. this part does not send anything back to the pipe unless a command is received
 	try{
+		pStopGame = false;
 		pRunGame->Start();
 		
 		pLogger->LogInfo( pLogSource, "EngineProcess.CommandStartGame launching game" );
@@ -1247,6 +1254,13 @@ void delEngineProcess::CommandStartGame(){
 			delete pRunGame;
 			pRunGame = nullptr;
 		}
+	}
+	
+	// stop game requires an answer
+	if(pStopGame){
+		pStopGame = false;
+		pLogger->LogInfo(pLogSource, "EngineProcess.CommandStartGame answer eccStopGame");
+		WriteUCharToPipe(ercSuccess);
 	}
 	
 	// compare module parameters against stored ones and send back those which changed

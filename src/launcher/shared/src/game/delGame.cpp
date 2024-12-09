@@ -437,7 +437,15 @@ void delGame::StopGame(){
 	
 	logger.LogInfoFormat( pLauncher.GetLogSource(), "Stopping game '%s'", pTitle.ToUTF8().GetString() );
 	
-	pEngineInstance->StopEngine();
+	// calling IsGameRunning collects information if threaded
+	if(pEngineInstance->IsGameRunning() != 0){
+		pEngineInstance->StopGame();
+	}
+	
+	// ensure information is collected. and if still running kill the process
+	if(pEngineInstance->IsGameRunning() != 0){
+		pEngineInstance->KillEngine();
+	}
 	SetEngineInstance( nullptr );
 	
 	logger.LogInfoFormat( pLauncher.GetLogSource(), "Game '%s' stopped", pTitle.ToUTF8().GetString() );
