@@ -58,7 +58,6 @@ private:
 	const projRemoteClient::Ref pClient;
 	projPanelRemoteClientListener *pListener;
 	
-	bool pIsRunning;
 	int pMaxLines;
 	
 	igdeTextFieldReference pEditName, pEditAddress;
@@ -95,9 +94,6 @@ public:
 	inline const projRemoteClient::Ref &GetClient() const{ return pClient; }
 	
 	
-	/** \brief Is running. */
-	bool IsRunning();
-	
 	/** \brief Disconnect. */
 	void Disconnect();
 	
@@ -115,9 +111,6 @@ public:
 	
 	/** \brief Update. */
 	void Update(float elapsed);
-	
-	/** \brief Check running. */
-	void CheckRunning();
 	
 	/** \brief Update enabled state of widgets. */
 	void UpdateWidgetEnabled();

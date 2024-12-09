@@ -181,6 +181,33 @@ void projRemoteClient::KillApplication(){
 	}
 }
 
+void projRemoteClient::ProcessReceivedSystemProperties(){
+	ListSysProps props;
+	{
+	const std::lock_guard<std::mutex> guard(GetMutex());
+	props = pReceivedSysProps;
+	pReceivedSysProps.clear();
+	}
+	
+	for(const sSystemProperty &each : props){
+		if(each.property == derlProtocol::SystemPropertyNames::profileNames){
+			decStringSet profiles;
+			std::stringstream ss(each.value);
+			std::string s;
+			while(std::getline(ss, s, '\n')){
+				profiles.Add(s.c_str());
+			}
+			SetLaunchProfiles(profiles);
+			
+		}else if(each.property == derlProtocol::SystemPropertyNames::defaultProfile){
+			SetDefaultLaunchProfile(each.value.c_str());
+			
+			if(pActiveLaunchProfile.IsEmpty()){
+				SetActiveLaunchProfile(pDefaultLaunchProfile);
+			}
+		}
+	}
+}
 
 void projRemoteClient::OnConnectionEstablished(){
 	const projRemoteClient::Ref ref(GetRefInServer());
@@ -228,7 +255,8 @@ void projRemoteClient::OnRunStatusChanged(){
 }
 
 void projRemoteClient::OnSystemProperty(const std::string &property, const std::string &value){
-	// TODO
+	const std::lock_guard<std::mutex> guard(GetMutex());
+	pReceivedSysProps.push_back({property, value});
 }
 
 

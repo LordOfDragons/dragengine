@@ -128,7 +128,7 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(!pPanel.IsRunning());
+		SetEnabled(!pPanel.GetClient()->IsRunning());
 	}
 };
 
@@ -144,7 +144,7 @@ public:
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.IsRunning());
+		SetEnabled(pPanel.GetClient()->IsRunning());
 	}
 };
 
@@ -156,11 +156,11 @@ public:
 	pPanel(panel){}
 	
 	void OnAction() override{
-		pPanel.Stop();
+		pPanel.Kill();
 	}
 	
 	void Update() override{
-		SetEnabled(pPanel.IsRunning());
+		SetEnabled(pPanel.GetClient()->IsRunning());
 	}
 };
 
@@ -184,7 +184,6 @@ preventUpdate(true),
 pPanelTestRun(panelTestRun),
 pClient(client),
 pListener(nullptr),
-pIsRunning(false),
 pMaxLines(500)
 {
 	igdeEnvironment &env = panelTestRun.GetEnvironment();
@@ -266,6 +265,9 @@ pMaxLines(500)
 	client->AddListener(pListener);
 	
 	preventUpdate = false;
+	
+	pClient->RequestSystemProperty(derlProtocol::SystemPropertyNames::profileNames);
+	pClient->RequestSystemProperty(derlProtocol::SystemPropertyNames::defaultProfile);
 }
 
 projPanelRemoteClient::~projPanelRemoteClient(){
@@ -279,10 +281,6 @@ projPanelRemoteClient::~projPanelRemoteClient(){
 
 // Management
 ///////////////
-
-bool projPanelRemoteClient::IsRunning(){
-	return pIsRunning;
-}
 
 void projPanelRemoteClient::Disconnect(){
 	pClient->Disconnect();
@@ -309,7 +307,7 @@ void projPanelRemoteClient::Synchronize(){
 }
 
 void projPanelRemoteClient::Start(){
-	if(pIsRunning){
+	if(pClient->IsRunning()){
 		return;
 	}
 	
@@ -331,14 +329,12 @@ void projPanelRemoteClient::Start(){
 	
 	try{
 		pClient->StartApplication();
-		pIsRunning = true;
 		
 	}catch(const deException &e){
 		try{
 			pClient->KillApplication();
 		}catch(const deException &){
 		}
-		pIsRunning = false;
 		
 		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
 	}
@@ -348,13 +344,12 @@ void projPanelRemoteClient::Start(){
 }
 
 void projPanelRemoteClient::Stop(){
-	if(!pIsRunning){
+	if(!pClient->IsRunning()){
 		return;
 	}
 	
 	try{
 		pClient->StopApplication();
-		pIsRunning = false;
 		
 	}catch(const deException &e){
 		igdeCommonDialogs::Exception(&pPanelTestRun.GetWindowMain(), e);
@@ -368,8 +363,6 @@ void projPanelRemoteClient::Kill(){
 		return;
 	}
 	
-	pIsRunning = false;
-	
 	try{
 		pClient->KillApplication();
 		
@@ -381,32 +374,14 @@ void projPanelRemoteClient::Kill(){
 }
 
 void projPanelRemoteClient::Update(float elapsed){
-	CheckRunning();
+	pClient->ProcessReceivedSystemProperties();
 	UpdateLogs(false);
 	pEditSyncState->SetText(pClient->GetSynchronizeDetails().c_str());
-	pBtnSynchronize->GetAction()->Update();
-}
-
-void projPanelRemoteClient::CheckRunning(){
-	if(pClient->IsRunning()){
-		return;
-	}
-	
-	if(pIsRunning){
-		try{
-			pClient->StopApplication();
-			
-		}catch( const deException & ){
-			pClient->KillApplication();
-		}
-		
-		pIsRunning = false;
-		UpdateWidgetEnabled();
-	}
+	UpdateWidgetEnabled();
 }
 
 void projPanelRemoteClient::UpdateWidgetEnabled(){
-	pCBLaunchProfile->SetEnabled(!pIsRunning);
+	pCBLaunchProfile->SetEnabled(!pClient->IsRunning());
 	pBtnDisconnect->GetAction()->Update();
 	pBtnSynchronize->GetAction()->Update();
 	pBtnStart->GetAction()->Update();

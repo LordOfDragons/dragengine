@@ -49,8 +49,14 @@ public:
 	typedef std::shared_ptr<projRemoteClient> Ref;
 	typedef std::unordered_set<Ref> Set;
 	
+	struct sSystemProperty{
+		std::string property, value;
+	};
+	
 	
 private:
+	typedef std::vector<sSystemProperty> ListSysProps;
+	
 	projProject &pProject;
 	
 	decString pPathLogFile;
@@ -61,6 +67,8 @@ private:
 	decString pDefaultLaunchProfile;
 	
 	decObjectSet pListeners;
+	
+	ListSysProps pReceivedSysProps;
 	
 	
 public:
@@ -112,6 +120,8 @@ public:
 	/** \brief Kill application. */
 	void KillApplication();
 	
+	/** \brief Process received system properties. */
+	void ProcessReceivedSystemProperties();
 	
 	/** \brief Connection established. */
 	void OnConnectionEstablished() override;
