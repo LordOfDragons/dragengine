@@ -107,9 +107,12 @@ private:
 	NSWindow *pWindow;
 #endif
 	decString pTitle;
+	int pX;
+	int pY;
 	int pWidth;
 	int pHeight;
 	bool pFullScreen;
+	float pDpiScale;
 	bool pNotifyScriptOnResize;
 	bool pPaint;
 	deImageReference pIcon;
@@ -218,6 +221,17 @@ public:
 	void SetWindow( Window window );
 	#endif
 	
+	/** \brief X position in pixels. */
+	inline int GetX() const{ return pX; }
+	
+	/** \brief Y position in pixels. */
+	inline int GetY() const{ return pY; }
+	
+	/**
+	 * \brief Set position in pixels.
+	 */
+	void SetPosition(int x, int y);
+	
 	/** \brief Width in pixels. */
 	inline int GetWidth() const{ return pWidth; }
 	
@@ -236,6 +250,12 @@ public:
 	
 	/** \brief Set if the window is full screen. */
 	void SetFullScreen( bool fullscreen );
+	
+	/** \brief Window DPI scale factor. */
+	inline float GetDpiScale() const{ return pDpiScale; }
+	
+	/** \brief Set window DPI scale factor. */
+	void SetDpiScale(float scale);
 	
 	/** \brief Script is notified about the window changing size. */
 	inline bool GetNotifyScriptOnResize() const{ return pNotifyScriptOnResize; }

@@ -24,15 +24,18 @@
 
 #ifdef OS_W32_HELPER
 
+#include <windows.h>
+
 #include <delauncher/engine/delEngineProcessMain.h>
 
 int main( int argc, char **args ){
+	(void)SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
 	return delEngineProcessMain().RunMain( argc, args );
 }
 
 #ifdef OS_W32_VS
 
-#include <windows.h>
 #include <stdio.h>
 
 int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow ){

@@ -60,6 +60,7 @@ pRenderWindow( renderWindow ),
 
 pCanvasView( NULL ),
 pDirtyParams( false ),
+pDirtyPosition(true),
 pDirtySize( true ),
 pDirtyWindowTitle( true ),
 pDirtyFullScreen( true ),
@@ -73,6 +74,7 @@ pRRenderWindow( NULL )
 		pRRenderWindow = new deoglRRenderWindow( ogl.GetRenderThread() );
 		
 		pRRenderWindow->SetHostWindow( renderWindow.GetHostWindow() );
+		pRRenderWindow->SetPosition(renderWindow.GetX(), renderWindow.GetY());
 		pRRenderWindow->SetSize( renderWindow.GetWidth(), renderWindow.GetHeight() );
 		pRRenderWindow->SetTitle( renderWindow.GetTitle() );
 		pRRenderWindow->SetFullScreen( renderWindow.GetFullScreen() );
@@ -80,6 +82,7 @@ pRRenderWindow( NULL )
 		ogl.GetRenderThread().CreateRenderWindow( pRRenderWindow );
 		
 		renderWindow.SetWindow( pRRenderWindow->GetWindow() );
+		renderWindow.SetDpiScale(pRRenderWindow->GetAfterCreateDpiScale());
 		
 		// set application as active. x-system does not tell the new window it obtained
 		// the focus so we do this instead. (is this a bug or feature of x-system?)
@@ -110,6 +113,10 @@ deoglRenderWindow::~deoglRenderWindow(){
 
 void deoglRenderWindow::HostWindowChanged(){
 	pRRenderWindow->SetHostWindow( pRenderWindow.GetHostWindow() );
+}
+
+void deoglRenderWindow::PositionChanged(){
+	pDirtyPosition = true;
 }
 
 void deoglRenderWindow::SizeChanged(){
@@ -143,6 +150,11 @@ void deoglRenderWindow::SyncToRender(){
 		pRRenderWindow->SetFullScreen( pRenderWindow.GetFullScreen() );
 		pDirtyFullScreen = false;
 // 			pOgl.LogInfoFormat( "RWindow.Sync full screen: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+	}
+	
+	if(pDirtyPosition){
+		pRRenderWindow->SetPosition(pRenderWindow.GetX(), pRenderWindow.GetY());
+		pDirtyPosition = false;
 	}
 	
 	if( pDirtySize ){

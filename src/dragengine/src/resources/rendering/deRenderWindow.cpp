@@ -77,8 +77,10 @@ pWindow( 0 ),
 #endif
 
 pTitle( "Dragengine" ),
-pWidth( 100 ),
-pHeight( 100 ),
+pX(0),
+pY(0),
+pWidth(100),
+pHeight(100),
 pFullScreen( false ),
 pNotifyScriptOnResize( false ),
 pPaint( true ),
@@ -191,6 +193,23 @@ void deRenderWindow::SetWindow( Window window ){
 }
 #endif
 
+void deRenderWindow::SetPosition(int x, int y){
+	if(pX == x && pY == y){
+		return;
+	}
+	
+	pX = x;
+	pY = y;
+	
+	if(pNotifyScriptOnResize){
+		GetResourceManager()->GetScriptingSystem()->OnResizeRenderWindow();
+	}
+	
+	if(pPeerGraphic){
+		pPeerGraphic->PositionChanged();
+	}
+}
+
 void deRenderWindow::SetSize( int width, int height ){
 	if( width < 0 || height < 0 ){
 		DETHROW( deeInvalidParam );
@@ -223,6 +242,18 @@ void deRenderWindow::SetFullScreen( bool fullScreen ){
 	
 	if( pPeerGraphic ){
 		pPeerGraphic->FullScreenChanged();
+	}
+}
+
+void deRenderWindow::SetDpiScale(float scale){
+	if(fabsf(scale - pDpiScale) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pDpiScale = scale;
+	
+	if(pNotifyScriptOnResize){
+		GetResourceManager()->GetScriptingSystem()->OnResizeRenderWindow();
 	}
 }
 

@@ -61,11 +61,16 @@ private:
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
+	DEF_NATFUNC(nfGetWindowX);
+	DEF_NATFUNC(nfGetWindowY);
+	DEF_NATFUNC(nfGetWindowPosition);
 	DEF_NATFUNC( nfGetWindowWidth );
 	DEF_NATFUNC( nfGetWindowHeight );
 	DEF_NATFUNC( nfGetWindowSize );
 	DEF_NATFUNC( nfSetWindowGeometry );
+	DEF_NATFUNC(nfSetWindowGeometry2);
 	DEF_NATFUNC( nfSetWindowTitle );
+	DEF_NATFUNC(nfGetWindowDpiScale);
 	DEF_NATFUNC( nfGetPrimaryCanvas );
 	DEF_NATFUNC(nfGetParameterCount);
 	DEF_NATFUNC(nfGetParameterInfo);

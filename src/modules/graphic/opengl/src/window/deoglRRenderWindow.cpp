@@ -233,10 +233,13 @@ pPaint( true ),
 pRCanvasView( NULL ),
 
 pSwapBuffers( false ),
+pNotifyPositionChanged(false),
 pNotifySizeChanged( false ),
 
 pVSyncMode( deoglConfiguration::evsmAdaptive ),
-pInitSwapInterval( true )
+pInitSwapInterval( true ),
+
+pAfterCreateDpiScale(1.0f)
 {
 	LEAK_CHECK_CREATE( renderThread, RenderWindow );
 }
@@ -293,6 +296,28 @@ decPoint deoglRRenderWindow::GetInnerSize() const{
 	return decPoint( ( int )( rect.right - rect.left ), ( int )( rect.bottom - rect.top ) );
 }
 #endif
+
+void deoglRRenderWindow::SetPosition(int x, int y){
+	if(x < 0 || y < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	if(x == pX && y == pY){
+		return;
+	}
+	
+	if(pNotifyPositionChanged){
+		// user is most probably still resizing the window. do not change the size and
+		// wait for the next sync call to avoid problems
+		return;
+	}
+	
+	pX = x;
+	pY = y;
+	pNotifyPositionChanged = false;
+	
+	pResizeWindow();
+}
 
 void deoglRRenderWindow::SetSize( int width, int height ){
 	if( width < 0 || height < 0 ){
@@ -563,6 +588,8 @@ void deoglRRenderWindow::CreateWindow(){
 	if( ! pHostWindow ){
 		SetActiveWindow( pWindow );
 	}
+
+	pAfterCreateDpiScale = (float)GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
 #endif
 }
 
@@ -761,6 +788,29 @@ void deoglRRenderWindow::CenterOnScreen(){
 	#endif
 }
 
+void deoglRRenderWindow::OnReposition(int x, int y){
+	if(x == pX && y == pY){
+		return;
+	}
+	
+	pX = x;
+	pY = y;
+	
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#endif
+	
+	#ifdef OS_BEOS
+	#endif
+	
+	#ifdef OS_MACOS
+	#endif
+	
+	#ifdef OS_W32
+	#endif
+	
+	pNotifyPositionChanged = true;
+}
+
 void deoglRRenderWindow::OnResize( int width, int height ){
 	if( pWidth == 0 || pHeight == 0 ){
 		// due to X restrictions zero sized windows can not be defined so avoid
@@ -793,7 +843,8 @@ void deoglRRenderWindow::OnResize( int width, int height ){
 
 
 bool deoglRRenderWindow::GetNotifySizeChanged(){
-	const bool notify = pNotifySizeChanged;
+	const bool notify = pNotifySizeChanged || pNotifyPositionChanged;
+	pNotifyPositionChanged = false;
 	pNotifySizeChanged = false;
 	return notify;
 }
@@ -875,6 +926,10 @@ void deoglRRenderWindow::pDestroyWindow(){
 	}
 	pWindow = NULL;
 	#endif
+}
+
+void deoglRRenderWindow::pRepositionWindow(){
+	// TODO
 }
 
 void deoglRRenderWindow::pResizeWindow(){
@@ -1043,6 +1098,7 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 		
 		pWidth = rect.right - rect.left;
 		pHeight = rect.bottom - rect.top;
+		pNotifyPositionChanged = true;
 		pNotifySizeChanged = true;
 		//pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d", rect.left, rect.top, pWidth, pHeight );
 		

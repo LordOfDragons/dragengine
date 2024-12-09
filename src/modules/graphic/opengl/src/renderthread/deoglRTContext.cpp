@@ -589,6 +589,30 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 		}
 		}return 0;
 		
+	case WM_DPICHANGED:{
+		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
+		const float dpiScale = (float)HIWORD(wParam) / USER_DEFAULT_SCREEN_DPI;
+        const RECT &rect = *((RECT*)lParam);
+		const int count = windows.GetCount();
+		int i;
+
+		for(i=0; i<count; i++){
+			deoglRenderWindow &window = *windows.GetAt(i);
+			if(window.GetRRenderWindow()->GetWindow() == hwnd){
+				window.GetRenderWindow().SetDpiScale(dpiScale);
+
+				if(window.GetRRenderWindow()->GetFullScreen()){
+					window.GetRenderWindow().SetSize(rect.right - rect.left, rect.bottom - rect.top);
+
+				}else{
+					window.GetRenderWindow().SetPosition(rect.left, rect.top);
+					window.GetRenderWindow().SetSize(rect.right - rect.left, rect.bottom - rect.top);
+				}
+				break;
+			}
+		}
+		}return 0;
+
 	/*
 	case WM_SIZING:{
 		RECT rect( *( ( RECT* )lParam ) );
