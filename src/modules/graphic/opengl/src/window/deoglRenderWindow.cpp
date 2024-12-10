@@ -82,7 +82,7 @@ pRRenderWindow( NULL )
 		ogl.GetRenderThread().CreateRenderWindow( pRRenderWindow );
 		
 		renderWindow.SetWindow( pRRenderWindow->GetWindow() );
-		renderWindow.SetDpiScale(pRRenderWindow->GetAfterCreateDpiScale());
+		renderWindow.SetScaleFactor(pRRenderWindow->GetAfterCreateScaleFactor());
 		
 		// set application as active. x-system does not tell the new window it obtained
 		// the focus so we do this instead. (is this a bug or feature of x-system?)

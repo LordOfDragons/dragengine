@@ -240,10 +240,11 @@ bool deglLauncher::RunCommandLineGame(){
 			runParams.SetWidth( profile->GetWidth() );
 			runParams.SetHeight( profile->GetHeight() );
 			
-			if( game->GetWindowSize() != decPoint() ){
-				runParams.SetWidth( game->GetWindowSize().x );
-				runParams.SetHeight( game->GetWindowSize().y );
-				runParams.SetFullScreen( false );
+			const decPoint windowSize(game->GetDisplayScaledWindowSize());
+			if(windowSize != decPoint()){
+				runParams.SetWidth(windowSize.x);
+				runParams.SetHeight(windowSize.y);
+				runParams.SetFullScreen(false);
 			}
 			
 			game->StartGame( runParams );

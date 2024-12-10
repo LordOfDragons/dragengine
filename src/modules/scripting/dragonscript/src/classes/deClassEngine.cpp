@@ -415,6 +415,25 @@ void deClassEngine::nfSetDefaultEnableAuralization::RunFunction( dsRunTime *rt, 
 	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableAuralization( rt->GetValue( 0 )->GetBool() );
 }
 
+// static public func bool getDpiAware()
+deClassEngine::nfGetDpiAware::nfGetDpiAware(const sInitData &init) :
+dsFunction(init.clsEngine, "getDpiAware", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean){
+}
+void deClassEngine::nfGetDpiAware::RunFunction(dsRunTime *rt, dsValue*){
+	rt->PushBool((((deClassEngine*)GetOwnerClass())->GetDpiAware()));
+}
+
+// static public func void setDpiAware(bool dpiAware)
+deClassEngine::nfSetDpiAware::nfSetDpiAware(const sInitData &init) :
+dsFunction(init.clsEngine, "setDpiAware", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsBoolean); // dpiAware
+}
+void deClassEngine::nfSetDpiAware::RunFunction(dsRunTime *rt, dsValue*){
+	((deClassEngine*)GetOwnerClass() )->SetDpiAware(rt->GetValue(0)->GetBool());
+}
+
 
 
 // static public func String getUserLocaleLanguage()
@@ -484,7 +503,8 @@ deClassEngine::deClassEngine( deScriptingDragonScript &ds ) :
 dsClass("Engine", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
 pDS( ds ),
 pDefaultEnableGI( false ),
-pDefaultEnableAuralization( true )
+pDefaultEnableAuralization( true ),
+pDpiAware(false)
 {
 	GetParserInfo()->SetParent( DENS_DRAGENGINE );
 	GetParserInfo()->SetBase( "Object" );
@@ -547,6 +567,8 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfSetDefaultEnableGI( init ) );
 	AddFunction( new nfGetDefaultEnableAuralization( init ) );
 	AddFunction( new nfSetDefaultEnableAuralization( init ) );
+	AddFunction(new nfGetDpiAware(init));
+	AddFunction(new nfSetDpiAware(init));
 	
 	AddFunction( new nfGetUserLocaleLanguage( init ) );
 	AddFunction( new nfGetUserLocaleTerritory( init ) );
@@ -563,4 +585,8 @@ void deClassEngine::SetDefaultEnableGI( bool enable ){
 
 void deClassEngine::SetDefaultEnableAuralization( bool enable ){
 	pDefaultEnableAuralization = enable;
+}
+
+void deClassEngine::SetDpiAware(bool dpiAware){
+	pDpiAware = dpiAware;
 }

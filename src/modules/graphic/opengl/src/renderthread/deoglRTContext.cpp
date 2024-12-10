@@ -591,22 +591,26 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 		
 	case WM_DPICHANGED:{
 		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
-		const float dpiScale = (float)HIWORD(wParam) / USER_DEFAULT_SCREEN_DPI;
+		const int scaleFactor = 100 * HIWORD(wParam) / USER_DEFAULT_SCREEN_DPI;
         const RECT &rect = *((RECT*)lParam);
 		const int count = windows.GetCount();
 		int i;
 
 		for(i=0; i<count; i++){
 			deoglRenderWindow &window = *windows.GetAt(i);
-			if(window.GetRRenderWindow()->GetWindow() == hwnd){
-				window.GetRenderWindow().SetDpiScale(dpiScale);
+			deoglRRenderWindow &rwindow = *window.GetRRenderWindow();
 
-				if(window.GetRRenderWindow()->GetFullScreen()){
-					window.GetRenderWindow().SetSize(rect.right - rect.left, rect.bottom - rect.top);
+			if(rwindow.GetWindow() == hwnd){
+				deRenderWindow &engWindow = window.GetRenderWindow();
+
+				engWindow.SetScaleFactor(scaleFactor);
+
+				if(rwindow.GetFullScreen()){
+					engWindow.SetSize(rect.right - rect.left, rect.bottom - rect.top);
 
 				}else{
-					window.GetRenderWindow().SetPosition(rect.left, rect.top);
-					window.GetRenderWindow().SetSize(rect.right - rect.left, rect.bottom - rect.top);
+					engWindow.SetPosition(rect.left, rect.top);
+					engWindow.SetSize(rect.right - rect.left, rect.bottom - rect.top);
 				}
 				break;
 			}

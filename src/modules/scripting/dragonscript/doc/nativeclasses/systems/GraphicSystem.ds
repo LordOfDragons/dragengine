@@ -75,10 +75,22 @@ fixed class GraphicSystem
 	end
 
 	/**
-	 * \brief DPI scale factor of render window.
+	 * \brief Global scale factor of render window.
 	 * \version 1.24
+	 * 
+	 * Scaling factor is returned as integer scaling factor where 100 indicates 100%.
 	 */
-	public static func float getWindowDpiScale()
+	public static func int getWindowScaleFactor()
+		return 0
+	end
+
+	/**
+	 * \brief Global scale factor of render window.
+	 * \version 1.24
+	 * 
+	 * Scaling factor is returned as floating point scaling factor.
+	 */
+	public static func float getWindowScaleFactorFloat()
 		return 0.0
 	end
 	

@@ -65,20 +65,21 @@ dedsLoadingScreen::~dedsLoadingScreen(){
 ///////////////
 
 void dedsLoadingScreen::Update(){
-	deCanvasView * const content = pDS.GetGameEngine()->GetGraphicSystem()->GetRenderWindow()->GetCanvasView();
-	if( ! content ){
+	deCanvasView * const content = pDS.GetGameEngine()->
+		GetGraphicSystem()->GetRenderWindow()->GetCanvasView();
+	if(!content){
 		return;
 	}
 	
 	const decPoint &size = content->GetSize();
 	
-	if( pCanvasBackground ){
-		pCanvasBackground->SetSize( size );
+	if(pCanvasBackground){
+		pCanvasBackground->SetSize(size);
 	}
 	
-	if( pCanvasImage ){
+	if(pCanvasImage){
 		const decPoint &imageSize = pCanvasImage->GetSize();
-		pCanvasImage->SetPosition( decPoint( ( size.x - imageSize.x ) / 2, size.y - imageSize.y - 20 ) );
+		pCanvasImage->SetPosition(decPoint((size.x - imageSize.x) / 2, size.y - imageSize.y - 20));
 	}
 }
 

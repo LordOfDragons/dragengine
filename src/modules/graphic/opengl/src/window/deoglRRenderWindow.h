@@ -146,7 +146,7 @@ private:
 	
 	deoglRenderTarget::Ref pRenderTarget;
 	
-	float pAfterCreateDpiScale;
+	int pAfterCreateScaleFactor;
 	
 	
 public:
@@ -243,8 +243,8 @@ public:
 	/** Set icon. */
 	void SetIcon( deoglPixelBuffer *icon );
 	
-	/** DPI scale factor stored during CreateWindow. */
-	inline float GetAfterCreateDpiScale() const{ return pAfterCreateDpiScale; }
+	/** Scale factor stored during CreateWindow. */
+	inline int GetAfterCreateScaleFactor() const{ return pAfterCreateScaleFactor; }
 
 	
 	

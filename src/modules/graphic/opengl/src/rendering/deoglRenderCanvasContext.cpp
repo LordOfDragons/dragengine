@@ -91,10 +91,10 @@ pMask( NULL )
 	const float biasOffsetV = -1.0f;
 	
 	if( upsideDown ){
-		pTransform = decTexMatrix2::CreateST( biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV );
+		pTransform.SetST( biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV );
 		
 	}else{
-		pTransform = decTexMatrix2::CreateST( biasScaleU, biasScaleV, biasOffsetU, biasOffsetV );
+		pTransform.SetST( biasScaleU, biasScaleV, biasOffsetU, biasOffsetV );
 	}
 	
 	// mask
@@ -228,6 +228,20 @@ void deoglRenderCanvasContext::SetTransform( const decTexMatrix2 &transform ){
 	pTransform = transform;
 }
 
+void deoglRenderCanvasContext::SetTransformScaled(const decPoint &size, bool upsideDown){
+	const float biasScaleU = 2.0f / (float)size.x;
+	const float biasScaleV = 2.0f / (float)size.y;
+	const float biasOffsetU = -1.0f;
+	const float biasOffsetV = -1.0f;
+	
+	if(upsideDown){
+		pTransform.SetST(biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV);
+		
+	}else{
+		pTransform.SetST(biasScaleU, biasScaleV, biasOffsetU, biasOffsetV);
+	}
+}
+
 void deoglRenderCanvasContext::SetTCClampMinimum( const decVector2 &clamp ){
 	pTCClampMin = clamp;
 }
@@ -255,8 +269,8 @@ void deoglRenderCanvasContext::SetTCTransformMask( const decTexMatrix2 &transfor
 void deoglRenderCanvasContext::SetTCTransformMask( const deoglRenderTarget &renderTarget ){
 	const deoglTexture &texture = *renderTarget.GetTexture();
 	pTCTransformMask.SetScale(
-		renderTarget.GetSize().x / decMath::max( texture.GetWidth(), 1 ),
-		renderTarget.GetSize().y / decMath::max( texture.GetHeight(), 1 ) );
+		(float)renderTarget.GetSize().x / (float)decMath::max( texture.GetWidth(), 1 ),
+		(float)renderTarget.GetSize().y / (float)decMath::max( texture.GetHeight(), 1 ) );
 }
 
 void deoglRenderCanvasContext::UpdateTransformMask(){

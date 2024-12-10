@@ -220,6 +220,9 @@ public:
 	/** \brief Window size or 0 to run fullscreen if possible. */
 	inline const decPoint &GetWindowSize() const{ return pWindowSize; }
 	
+	/** \brief Display scaled window size or 0 to run fullscreen if possible. */
+	inline decPoint GetDisplayScaledWindowSize() const;
+	
 	/** \brief Set window size or 0 to run fullscreen if possible. */
 	void SetWindowSize( const decPoint &size );
 	

@@ -480,6 +480,7 @@ class BaseGameApp extends Game
 		
 		Engine.setDefaultEnableGI(pConfiguration.getBoolAt("defaultEnableGI", false))
 		Engine.setDefaultEnableAuralization(pConfiguration.getBoolAt("defaultEnableAuralization", true))
+		Engine.setDpiAware(pConfiguration.getBoolAt("dpiAware", false))
 		
 		pBaseGameServices = createBaseGameServices()
 		autoInitBaseGameServices()

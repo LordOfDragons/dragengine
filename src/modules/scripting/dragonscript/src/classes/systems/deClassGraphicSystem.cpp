@@ -28,6 +28,7 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassGraphicSystem.h"
+#include "../deClassEngine.h"
 #include "../deClassModuleParameter.h"
 #include "../canvas/deClassCanvasView.h"
 #include "../math/deClassPoint.h"
@@ -53,92 +54,103 @@
 /////////////////////
 
 // static public func int getWindowX()
-deClassGraphicSystem::nfGetWindowX::nfGetWindowX(const sInitData &init) : dsFunction(init.clsGraSys,
-"getWindowX", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
+deClassGraphicSystem::nfGetWindowX::nfGetWindowX(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowX", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
 }
 void deClassGraphicSystem::nfGetWindowX::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
 	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
-	rt->PushInt(graSys.GetRenderWindow()->GetX());
+	rt->PushInt(clsGraSys.CoordWindows2Canvas(graSys.GetRenderWindow()->GetX()));
 }
 
 // static public func int getWindowY()
-deClassGraphicSystem::nfGetWindowY::nfGetWindowY(const sInitData &init) : dsFunction(init.clsGraSys,
-"getWindowY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
+deClassGraphicSystem::nfGetWindowY::nfGetWindowY(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowY", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
 }
 void deClassGraphicSystem::nfGetWindowY::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
 	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
-	rt->PushInt(graSys.GetRenderWindow()->GetY());
+	rt->PushInt(clsGraSys.CoordWindows2Canvas(graSys.GetRenderWindow()->GetY()));
 }
 
 // static public func Point getWindowPosition()
-deClassGraphicSystem::nfGetWindowPosition::nfGetWindowPosition(const sInitData &init) : dsFunction(init.clsGraSys,
-"getWindowPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsPoint){
+deClassGraphicSystem::nfGetWindowPosition::nfGetWindowPosition(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowPosition", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsPoint){
 }
 void deClassGraphicSystem::nfGetWindowPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
 	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
 	const deRenderWindow &renderWindow = *graSys.GetRenderWindow();
-	const decPoint position(renderWindow.GetX(), renderWindow.GetY());
+	const decPoint position(clsGraSys.CoordWindows2Canvas(renderWindow.GetX()),
+		clsGraSys.CoordWindows2Canvas(renderWindow.GetY()));
 	
 	clsGraSys.GetDS().GetClassPoint()->PushPoint(rt, position);
 }
 
 // static public func int getWindowWidth()
-deClassGraphicSystem::nfGetWindowWidth::nfGetWindowWidth( const sInitData &init ) : dsFunction( init.clsGraSys,
-"getWindowWidth", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt ){
+deClassGraphicSystem::nfGetWindowWidth::nfGetWindowWidth(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowWidth", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
 }
-void deClassGraphicSystem::nfGetWindowWidth::RunFunction( dsRunTime *RT, dsValue *This ){
-	deClassGraphicSystem *clsGraSys = (deClassGraphicSystem*)GetOwnerClass();
-	deGraphicSystem *graSys = clsGraSys->GetDS().GetGameEngine()->GetGraphicSystem();
-	RT->PushInt( graSys->GetRenderWindow()->GetWidth() );
+void deClassGraphicSystem::nfGetWindowWidth::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
+	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
+	rt->PushInt(clsGraSys.CoordWindows2Canvas(graSys.GetRenderWindow()->GetWidth()));
 }
 
 // static public func int getWindowHeight()
-deClassGraphicSystem::nfGetWindowHeight::nfGetWindowHeight( const sInitData &init ) : dsFunction( init.clsGraSys,
-"getWindowHeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
+deClassGraphicSystem::nfGetWindowHeight::nfGetWindowHeight(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowHeight", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
 }
-void deClassGraphicSystem::nfGetWindowHeight::RunFunction( dsRunTime *RT, dsValue *This ){
-	deClassGraphicSystem *clsGraSys = (deClassGraphicSystem*)GetOwnerClass();
-	deGraphicSystem *graSys = clsGraSys->GetDS().GetGameEngine()->GetGraphicSystem();
-	RT->PushInt( graSys->GetRenderWindow()->GetHeight() );
+void deClassGraphicSystem::nfGetWindowHeight::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
+	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
+	rt->PushInt(clsGraSys.CoordWindows2Canvas(graSys.GetRenderWindow()->GetHeight()));
 }
 
 // static public func Point getWindowSize()
-deClassGraphicSystem::nfGetWindowSize::nfGetWindowSize( const sInitData &init ) : dsFunction( init.clsGraSys,
-"getWindowSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsPoint ){
+deClassGraphicSystem::nfGetWindowSize::nfGetWindowSize(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowSize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsPoint){
 }
-void deClassGraphicSystem::nfGetWindowSize::RunFunction( dsRunTime *RT, dsValue *This ){
-	const deClassGraphicSystem &clsGraSys = *( ( deClassGraphicSystem* )GetOwnerClass() );
+void deClassGraphicSystem::nfGetWindowSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
 	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
 	const deRenderWindow &renderWindow = *graSys.GetRenderWindow();
-	const decPoint size( renderWindow.GetWidth(), renderWindow.GetHeight() );
+	const decPoint size(clsGraSys.CoordWindows2Canvas(renderWindow.GetWidth()),
+		clsGraSys.CoordWindows2Canvas(renderWindow.GetHeight()));
 	
-	clsGraSys.GetDS().GetClassPoint()->PushPoint( RT, size );
+	clsGraSys.GetDS().GetClassPoint()->PushPoint(rt, size);
 }
 
-// public static func void setWindowGeometry( int width, int height, bool fullScreen )
-deClassGraphicSystem::nfSetWindowGeometry::nfSetWindowGeometry( const sInitData &init ) : dsFunction( init.clsGraSys,
-"setWindowGeometry", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // width
-	p_AddParameter( init.clsInt ); // height
-	p_AddParameter( init.clsBool ); // fullScreen
+// public static func void setWindowGeometry(int width, int height, bool fullScreen)
+deClassGraphicSystem::nfSetWindowGeometry::nfSetWindowGeometry(const sInitData &init) :
+dsFunction(init.clsGraSys, "setWindowGeometry", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsInt); // width
+	p_AddParameter(init.clsInt); // height
+	p_AddParameter(init.clsBool); // fullScreen
 }
-void deClassGraphicSystem::nfSetWindowGeometry::RunFunction( dsRunTime *RT, dsValue *This ){
-	deClassGraphicSystem *clsGraSys = ( deClassGraphicSystem* )GetOwnerClass();
-	deGraphicSystem *graSys = clsGraSys->GetDS().GetGameEngine()->GetGraphicSystem();
-	const int width = RT->GetValue( 0 )->GetInt();
-	const int height = RT->GetValue( 1 )->GetInt();
-	const bool fullScreen = RT->GetValue( 2 )->GetBool();
+void deClassGraphicSystem::nfSetWindowGeometry::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
+	deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
+	const int width = rt->GetValue(0)->GetInt();
+	const int height = rt->GetValue(1)->GetInt();
+	const bool fullScreen = rt->GetValue(2)->GetBool();
 	
-	graSys->GetRenderWindow()->SetSize( width, height );
-	graSys->GetRenderWindow()->SetFullScreen( fullScreen );
+	graSys.GetRenderWindow()->SetSize(clsGraSys.CoordCanvas2Window(width),
+		clsGraSys.CoordCanvas2Window(height));
+	graSys.GetRenderWindow()->SetFullScreen(fullScreen);
 }
 
 // public static func void setWindowGeometry(int x, int y, int width, int height, bool fullScreen)
-deClassGraphicSystem::nfSetWindowGeometry2::nfSetWindowGeometry2(const sInitData &init) : dsFunction(init.clsGraSys,
-"setWindowGeometry", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+deClassGraphicSystem::nfSetWindowGeometry2::nfSetWindowGeometry2(const sInitData &init) :
+dsFunction(init.clsGraSys, "setWindowGeometry", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsInt); // x
 	p_AddParameter(init.clsInt); // y
 	p_AddParameter(init.clsInt); // width
@@ -146,7 +158,7 @@ deClassGraphicSystem::nfSetWindowGeometry2::nfSetWindowGeometry2(const sInitData
 	p_AddParameter(init.clsBool); // fullScreen
 }
 void deClassGraphicSystem::nfSetWindowGeometry2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
 	deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
 	const int x = rt->GetValue(0)->GetInt();
 	const int y = rt->GetValue(1)->GetInt();
@@ -154,8 +166,10 @@ void deClassGraphicSystem::nfSetWindowGeometry2::RunFunction(dsRunTime *rt, dsVa
 	const int height = rt->GetValue(3)->GetInt();
 	const bool fullScreen = rt->GetValue(4)->GetBool();
 	
-	graSys.GetRenderWindow()->SetPosition(x, y);
-	graSys.GetRenderWindow()->SetSize(width, height);
+	graSys.GetRenderWindow()->SetPosition(clsGraSys.CoordCanvas2Window(x),
+		clsGraSys.CoordCanvas2Window(y));
+	graSys.GetRenderWindow()->SetSize(clsGraSys.CoordCanvas2Window(width),
+		clsGraSys.CoordCanvas2Window(height));
 	graSys.GetRenderWindow()->SetFullScreen(fullScreen);
 }
 
@@ -170,25 +184,40 @@ void deClassGraphicSystem::nfSetWindowTitle::RunFunction( dsRunTime *RT, dsValue
 	graSys->GetRenderWindow()->SetTitle( RT->GetValue( 0 )->GetString() );
 }
 
-// static public func float getWindowDpiScale()
-deClassGraphicSystem::nfGetWindowDpiScale::nfGetWindowDpiScale(const sInitData &init) : dsFunction(init.clsGraSys,
-"getWindowDpiScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFlt){
+// static public func int getWindowScaleFactor()
+deClassGraphicSystem::nfGetWindowScaleFactor::nfGetWindowScaleFactor(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowScaleFactor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt){
 }
-void deClassGraphicSystem::nfGetWindowDpiScale::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassGraphicSystem::nfGetWindowScaleFactor::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
 	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
-	rt->PushFloat(graSys.GetRenderWindow()->GetDpiScale());
+	rt->PushInt(graSys.GetRenderWindow()->GetScaleFactor());
+}
+
+// static public func float getWindowScaleFactorFloat()
+deClassGraphicSystem::nfGetWindowScaleFactorFloat::nfGetWindowScaleFactorFloat(const sInitData &init) :
+dsFunction(init.clsGraSys, "getWindowScaleFactorFloat", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFlt){
+}
+void deClassGraphicSystem::nfGetWindowScaleFactorFloat::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
+	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
+	rt->PushFloat(0.01f * (float)graSys.GetRenderWindow()->GetScaleFactor());
 }
 
 // public static func CanvasView getPrimaryCanvas()
-deClassGraphicSystem::nfGetPrimaryCanvas::nfGetPrimaryCanvas( const sInitData &init ) : dsFunction( init.clsGraSys,
-"getPrimaryCanvas", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCView ){
+deClassGraphicSystem::nfGetPrimaryCanvas::nfGetPrimaryCanvas(const sInitData &init) :
+dsFunction(init.clsGraSys, "getPrimaryCanvas", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCView){
 }
-void deClassGraphicSystem::nfGetPrimaryCanvas::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deClassGraphicSystem &clsGraSys = *( ( deClassGraphicSystem* )GetOwnerClass() );
+void deClassGraphicSystem::nfGetPrimaryCanvas::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deClassGraphicSystem &clsGraSys = *((deClassGraphicSystem*)GetOwnerClass());
 	const deGraphicSystem &graSys = *clsGraSys.GetDS().GetGameEngine()->GetGraphicSystem();
 	
-	clsGraSys.GetDS().GetClassCanvasView()->PushCanvas( rt, graSys.GetRenderWindow()->GetCanvasView() );
+	clsGraSys.ResizeActiveRenderWindowCanvas();
+
+	clsGraSys.GetDS().GetClassCanvasView()->PushCanvas(rt, graSys.GetRenderWindow()->GetCanvasView());
 }
 
 
@@ -353,7 +382,7 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfSetWindowGeometry( init ) );
 	AddFunction(new nfSetWindowGeometry2(init));
 	AddFunction( new nfSetWindowTitle( init ) );
-	AddFunction(new nfGetWindowDpiScale(init));
+	AddFunction(new nfGetWindowScaleFactor(init));
 	AddFunction( new nfGetPrimaryCanvas( init ) );
 	AddFunction( new nfGetParameterCount( init ) );
 	AddFunction( new nfGetParameterInfo( init ) ) ;
@@ -363,4 +392,51 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfSendCommand( init ) );
 	AddFunction( new nfGetFPSRate( init ) );
 	AddFunction( new nfSetVRDebugPanelPosition( init ) );
+}
+
+int deClassGraphicSystem::CoordCanvas2Window(int coordinates) const{
+	return pDS.GetClassEngine()->GetDpiAware() ? coordinates
+		: CoordCanvas2WindowAlways(coordinates);
+}
+
+int deClassGraphicSystem::CoordCanvas2WindowAlways(int coordinates) const{
+	const deRenderWindow * const renderWindow =
+		pDS.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	if(renderWindow){
+		coordinates = coordinates * renderWindow->GetScaleFactor() / 100;
+	}
+	return coordinates;
+}
+
+int deClassGraphicSystem::CoordWindows2Canvas(int coordinates) const{
+	return pDS.GetClassEngine()->GetDpiAware() ? coordinates
+		: CoordWindows2CanvasAlways(coordinates);
+}
+
+int deClassGraphicSystem::CoordWindows2CanvasAlways(int coordinates) const{
+	const deRenderWindow * const renderWindow =
+		pDS.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	if(renderWindow){
+		coordinates = coordinates * 100 / renderWindow->GetScaleFactor();
+	}
+	return coordinates;
+}
+
+void deClassGraphicSystem::ResizeActiveRenderWindowCanvas() const{
+	deRenderWindow * const renderWindow =
+		pDS.GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	if(renderWindow){
+		ResizeRenderWindowCanvas(*renderWindow);
+	}
+}
+
+void deClassGraphicSystem::ResizeRenderWindowCanvas(deRenderWindow& renderWindow) const{
+	if(pDS.GetClassEngine()->GetDpiAware()){
+		return;
+	}
+
+	renderWindow.GetCanvasView()->SetSize(decPoint(
+		renderWindow.GetWidth() * 100 / renderWindow.GetScaleFactor(),
+		renderWindow.GetHeight() * 100 / renderWindow.GetScaleFactor()
+	));
 }

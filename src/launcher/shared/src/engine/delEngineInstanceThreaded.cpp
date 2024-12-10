@@ -1072,7 +1072,7 @@ void delEngineInstanceThreaded::StopGame(){
 			DETHROW(deeInvalidAction);
 		}
 		
-	}catch(const deException &e){
+	}catch(const deException &){
 		GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
 			"Sending eccStopGame to process %d failed. Process no more running?", (int)pProcessID);
 	}
@@ -1223,6 +1223,21 @@ int delEngineInstanceThreaded::GetDisplayResolutions( int display, decPoint *res
 	}
 	
 	return sendResolutionCount;
+}
+
+int delEngineInstanceThreaded::GetDisplayCurrentScaleFactor(int display){
+	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+		"Sending eccGetDisplayCurrentScaleFactor(display=%d) to process %d",
+		display, (int)pProcessID );
+	
+	WriteUCharToPipe(delEngineProcess::eccGetDisplayCurrentScaleFactor);
+	WriteUCharToPipe(display);
+	
+	if(ReadUCharFromPipe() != delEngineProcess::ercSuccess){
+		DETHROW(deeInvalidAction);
+	}
+	
+	return ReadUShortFromPipe();
 }
 
 void delEngineInstanceThreaded::ReadDelgaGameDefs( const char *delgaFile, decStringList &list ){

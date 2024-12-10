@@ -112,7 +112,7 @@ private:
 	int pWidth;
 	int pHeight;
 	bool pFullScreen;
-	float pDpiScale;
+	int pScaleFactor;
 	bool pNotifyScriptOnResize;
 	bool pPaint;
 	deImageReference pIcon;
@@ -251,11 +251,11 @@ public:
 	/** \brief Set if the window is full screen. */
 	void SetFullScreen( bool fullscreen );
 	
-	/** \brief Window DPI scale factor. */
-	inline float GetDpiScale() const{ return pDpiScale; }
+	/** \brief Window scale factor multiplied by 100 (monitor/DPI scaling). */
+	inline int GetScaleFactor() const{ return pScaleFactor; }
 	
-	/** \brief Set window DPI scale factor. */
-	void SetDpiScale(float scale);
+	/** \brief Set window scale factor multiplied by 100 (monitor/DPI scaling). */
+	void SetScaleFactor(int scaleFactor);
 	
 	/** \brief Script is notified about the window changing size. */
 	inline bool GetNotifyScriptOnResize() const{ return pNotifyScriptOnResize; }

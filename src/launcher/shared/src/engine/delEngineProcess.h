@@ -108,6 +108,9 @@ public:
 		/** \brief Display resolutions. */
 		eccGetDisplayResolutions,
 		
+		/** \brief Display global scale factor. */
+		eccGetDisplayCurrentScaleFactor,
+		
 		/** \brief Command reading game definitions from DELGA file. */
 		eccReadDelgaGameDefs,
 		
@@ -368,6 +371,9 @@ public:
 	
 	/** \brief Command get display resolutions. */
 	void CommandGetDisplayResolutions();
+	
+	/** \brief Command get display global scale factor. */
+	void CommandGetDisplayCurrentScaleFactor();
 	
 	/** \brief Command reading game definitions from DELGA file. */
 	void CommandDelgaReadGameDefs();

@@ -120,7 +120,8 @@ void delLauncher::Prepare(){
 	pLogger->LogInfoFormat( pLogSource, "Engine share path = '%s'", pEngine.GetPathShare().GetString() );
 	pLogger->LogInfoFormat( pLogSource, "Engine lib path = '%s'", pEngine.GetPathLib().GetString() );
 	
-	pEngine.UpdateResolutions( instance );
+	pEngine.UpdateResolutions(instance);
+	pEngine.UpdateScaleFactor(instance);
 	pEngine.ReloadModules();
 	pEngine.CheckModules( instance );
 	pEngine.LoadConfig();

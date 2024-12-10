@@ -82,6 +82,7 @@ pY(0),
 pWidth(100),
 pHeight(100),
 pFullScreen( false ),
+pScaleFactor(100),
 pNotifyScriptOnResize( false ),
 pPaint( true ),
 
@@ -245,12 +246,12 @@ void deRenderWindow::SetFullScreen( bool fullScreen ){
 	}
 }
 
-void deRenderWindow::SetDpiScale(float scale){
-	if(fabsf(scale - pDpiScale) < FLOAT_SAFE_EPSILON){
+void deRenderWindow::SetScaleFactor(int scaleFactor){
+	if(scaleFactor == pScaleFactor){
 		return;
 	}
 	
-	pDpiScale = scale;
+	pScaleFactor = scaleFactor;
 	
 	if(pNotifyScriptOnResize){
 		GetResourceManager()->GetScriptingSystem()->OnResizeRenderWindow();

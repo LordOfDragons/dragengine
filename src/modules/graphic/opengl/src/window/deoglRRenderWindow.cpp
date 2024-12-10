@@ -239,7 +239,7 @@ pNotifySizeChanged( false ),
 pVSyncMode( deoglConfiguration::evsmAdaptive ),
 pInitSwapInterval( true ),
 
-pAfterCreateDpiScale(1.0f)
+pAfterCreateScaleFactor(100)
 {
 	LEAK_CHECK_CREATE( renderThread, RenderWindow );
 }
@@ -589,7 +589,7 @@ void deoglRRenderWindow::CreateWindow(){
 		SetActiveWindow( pWindow );
 	}
 
-	pAfterCreateDpiScale = (float)GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
+	pAfterCreateScaleFactor = 100 * GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
 #endif
 }
 
@@ -712,11 +712,23 @@ void deoglRRenderWindow::Render(){
 	// render canvas
 	pRenderThread.GetFramebuffer().Activate( nullptr /*pRenderTarget->GetFBO()*/ );
 	
-	const deoglRenderCanvasContext context( *pRCanvasView,
+	deoglRenderCanvasContext context( *pRCanvasView,
 		nullptr /*pRenderTarget->GetFBO()*/, decPoint(), size, true, NULL );
 	pRenderThread.GetRenderers().GetCanvas().Prepare( context );
+
+	const decPoint canvasSize(pRCanvasView->GetSize().Round());
+	if(canvasSize == size){
+		pRCanvasView->Render(context);
+
+	}else{
+		// this happens if global display scaling is not 100%. in this case the
+		// canvas view is smaller than the window and has to be upscaled
+		const decTexMatrix2 transform(context.GetTransform());
+		context.SetTransformScaled(canvasSize, true);
+		pRCanvasView->Render(context);
+		context.SetTransform(transform);
+	}
 	
-	pRCanvasView->Render( context );
 	if( isMainWindow ){
 		if( inputOverlayCanvas ){
 			inputOverlayCanvas->Render( context );
@@ -1087,23 +1099,28 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 		// we need to adjust the position again... see CreateWindow
 	}
 	
-	SetWindowPos( pWindow, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE
-		| SWP_NOZORDER | SWP_NOOWNERZORDER );
+	SetWindowPos(pWindow, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE
+		| SWP_NOZORDER | SWP_NOOWNERZORDER);
 	
 	if( pFullScreen ){
 		// if fullscreen force the window position to fill the entire work area. relying on WS_MAXIMIZE
 		// is unfortunately not working reliably so we resize and move the window on our own to be sure
-		RECT rect;
-		DEASSERT_TRUE( SystemParametersInfoA( SPI_GETWORKAREA, 0, &rect, 0 ) )
+		RECT rect{};
+		//DEASSERT_TRUE(SystemParametersInfoA(SPI_GETWORKAREA, 0, &rect, 0))
+		rect.right = GetSystemMetrics(SM_CXSCREEN);
+		rect.bottom = GetSystemMetrics(SM_CYSCREEN);
 		
+		pX = rect.left;
+		pY = rect.top;
 		pWidth = rect.right - rect.left;
 		pHeight = rect.bottom - rect.top;
 		pNotifyPositionChanged = true;
 		pNotifySizeChanged = true;
-		//pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d", rect.left, rect.top, pWidth, pHeight );
+		pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d",
+			rect.left, rect.top, pWidth, pHeight);
 		
-		SetWindowPos( pWindow, NULL, rect.left, rect.top, pWidth, pHeight,
-			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER );
+		SetWindowPos(pWindow, NULL, pX, pY, pWidth, pHeight,
+			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER);
 	}
 
 	/*

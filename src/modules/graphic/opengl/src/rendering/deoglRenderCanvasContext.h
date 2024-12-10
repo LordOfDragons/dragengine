@@ -132,6 +132,9 @@ public:
 	/** Set transformation relative to render target. */
 	void SetTransform( const decTexMatrix2 &transform );
 	
+	/** Set scaled transformation relative to render target. */
+	void SetTransformScaled(const decPoint &size, bool upsideDown);
+
 	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	

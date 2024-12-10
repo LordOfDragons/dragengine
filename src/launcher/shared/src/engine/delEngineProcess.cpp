@@ -346,6 +346,11 @@ void delEngineProcess::ReadCommandsFromInPipe(){
 			CommandGetDisplayResolutions();
 			break;
 			
+		case eccGetDisplayCurrentScaleFactor:
+			pLogger->LogInfo(pLogSource, "Received eccGetDisplayCurrentScaleFactor");
+			CommandGetDisplayCurrentScaleFactor();
+			break;
+			
 		case eccReadDelgaGameDefs:
 			pLogger->LogInfo( pLogSource, "Received eccReadDelgaGameDefs" );
 			CommandDelgaReadGameDefs();
@@ -1364,6 +1369,32 @@ void delEngineProcess::CommandGetDisplayResolutions(){
 		pLogger->LogException( pLogSource, e );
 		
 		WriteUCharToPipe( ercFailed );
+	}
+}
+
+void delEngineProcess::CommandGetDisplayCurrentScaleFactor(){
+	if(!pEngine){
+		WriteUCharToPipe(ercFailed);
+		return;
+	}
+	
+	int display = 0;
+	
+	try{
+		display = ReadUCharFromPipe();
+		
+		const int scale = pEngine->GetOS()->GetDisplayCurrentScaleFactor(display);
+		
+		WriteUCharToPipe(ercSuccess);
+		WriteUShortToPipe(scale);
+		
+	}catch(const deException &e){
+		pLogger->LogErrorFormat(pLogSource,
+			"EngineProcess.CommandGetDisplayCurrentScaleFactor "
+			" failed with exception (display=%d):", display);
+		pLogger->LogException(pLogSource, e);
+		
+		WriteUCharToPipe(ercFailed);
 	}
 }
 
