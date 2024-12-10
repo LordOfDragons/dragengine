@@ -140,7 +140,7 @@ void delGame::SetScriptModuleVersion( const char *version ){
 	pScriptModuleVersion = version;
 }
 
-inline decPoint delGame::GetDisplayScaledWindowSize() const{
+decPoint delGame::GetDisplayScaledWindowSize() const{
 	const int scaleFactor = pLauncher.GetEngine().GetScaleFactor();
 	return decPoint(pWindowSize.x * scaleFactor / 100, pWindowSize.y * scaleFactor / 100);
 }
