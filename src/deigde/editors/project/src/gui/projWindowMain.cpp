@@ -344,6 +344,8 @@ void projWindowMain::OnGameProjectChanged(){
 	if(pConfiguration){
 		pConfiguration->LoadConfiguration();
 	}
+	
+	pPanelTestRun->LoadConfig();
 }
 
 void projWindowMain::UpdateShowActionPath(){

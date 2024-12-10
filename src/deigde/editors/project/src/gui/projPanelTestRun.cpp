@@ -478,7 +478,6 @@ void projPanelTestRun::Update( float elapsed ){
 
 void projPanelTestRun::LoadConfig(){
 	const projConfiguration &config = pWindowMain.GetConfiguration();
-	
 	pEditRemoteAddress->SetText(config.GetRemoteAddress());
 }
 
