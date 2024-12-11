@@ -45,6 +45,7 @@ class projPanelTestRun;
 class projPanelUndoHistory;
 class projWindowMainListener;
 class decUnicodeStringList;
+class projConfiguration;
 
 class decStringList;
 
@@ -86,6 +87,7 @@ private:
 	igdeToolBarReference pTBDistribute;
 	igdeToolBarReference pTBEdit;
 	
+	projConfiguration *pConfiguration;
 	igdeClipboard pClipboard;
 	projLoadSaveSystem pLoadSaveSystem;
 	
@@ -146,6 +148,9 @@ public:
 	bool QuitRequest();
 	
 	
+	
+	/** Configuration. */
+	inline projConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
 	/** \brief Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }

@@ -22,6 +22,24 @@
     <None Include="..\..\..\..\src\deigde\editors\project\SConscript" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\unzip.c">
+      <Filter>minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\zip.c">
+      <Filter>minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\ioapi.c">
+      <Filter>minizip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\configuration\projConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\configuration\projConfigurationXml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projDialogDistribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -29,6 +47,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelProfilesListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClientListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelTestRun.cpp">
@@ -76,10 +100,25 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\projProjectListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.cpp">
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientTaskProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\task\projTaskDistribute.cpp">
@@ -115,9 +154,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetDelgaPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetRunArguments.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetDescription.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -148,6 +184,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetRequiredExtensions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetRunArguments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetScriptDirectory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -172,17 +211,32 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\undosys\project\projUProjectSetScriptDirectory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\unzip.c">
-      <Filter>minizip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\zip.c">
-      <Filter>minizip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\project\minizip\ioapi.c">
-      <Filter>minizip</Filter>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\project\src\project.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\minizip\unzip.h">
+      <Filter>minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\minizip\zip.h">
+      <Filter>minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\minizip\ioapi.h">
+      <Filter>minizip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\configuration\projConfiguration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\configuration\projConfigurationXml.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projDialogDistribute.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -190,6 +244,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelProfilesListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClient.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelRemoteClientListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\gui\projPanelTestRun.h">
@@ -237,10 +297,25 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\projProjectListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClient.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\projIGDEModule.h">
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientLogger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteClientTaskProcessor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerLogger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\project\remote\projRemoteServerThread.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\task\projTaskDistribute.h">
@@ -276,9 +351,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetDelgaPath.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetRunArguments.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetDescription.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -309,6 +381,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetRequiredExtensions.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetRunArguments.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\profile\projUProfileSetScriptDirectory.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -332,15 +407,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\project\src\undosys\project\projUProjectSetScriptDirectory.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\minizip\unzip.h">
-      <Filter>minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\minizip\zip.h">
-      <Filter>minizip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\project\minizip\ioapi.h">
-      <Filter>minizip</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

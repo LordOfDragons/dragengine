@@ -36,15 +36,15 @@ class ceConversationCondition;
 
 /**
  * \brief Wait Conversation Action.
- * Waits for a condition to becomes false. To avoid hammering the update interval is specified
- * in seconds. While the condition is true an optional lists of actions is processed in
- * a loop. As soon as the condition becomes false the loop is broken out of. Hence the actions
- * in the action list have to be chosen carefully to not stall the system. In general the
- * actions have to be chosen in a way that the result is sane no matter after which action
- * the processing stops. Blocking actions like the player choice action requiring user input
- * should be avoided unless the player is allowed to stop the waiting intentionally after a
- * given amount of time waiting. If the condition is missing it is assumed to be false hence
- * this action is skipped. The default test interval is 0.2 seconds.
+ * Waits for a condition to becomes false. While the condition is true an optional lists
+ * of actions is processed in a loop. As soon as the condition becomes false the loop is
+ * broken out of. Hence the actions in the action list have to be chosen carefully to not
+ * stall the system. In general the actions have to be chosen in a way that the result is
+ * sane no matter after which action the processing stops. Blocking actions like the player
+ * choice action requiring user input should be avoided unless the player is allowed to stop
+ * the waiting intentionally after a given amount of time waiting. If the condition is
+ * missing it is assumed to be false hence this action is skipped. The default test
+ * interval is 0 seconds.
  */
 class ceCAWait : public ceConversationAction{
 private:

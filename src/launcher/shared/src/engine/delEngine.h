@@ -62,6 +62,7 @@ private:
 	decPoint pCurrentResolution;
 	int pResolutionCount;
 	decPoint *pResolutions;
+	int pScaleFactor;
 	
 	
 	
@@ -154,6 +155,14 @@ public:
 	
 	/** \brief Index of resolution closest but not larger than size or -1 if there are no resolutions. */
 	int IndexOfClosestResolutionTo( int width, int height ) const;
+	
+	
+	
+	/** \brief Get global scale factor from engine. */
+	void UpdateScaleFactor(delEngineInstance &instance);
+	
+	/** \brief Current global scale factor for display multiplied by 100. */
+	inline int GetScaleFactor() const{ return pScaleFactor; }
 	
 	
 	

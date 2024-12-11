@@ -54,25 +54,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-projProject::projProject( igdeEnvironment *environment ) :
-igdeEditableEntity( environment ),
+projProject::projProject(igdeEnvironment *environment) :
+igdeEditableEntity(environment),
 
-pScriptDirectory( "/scripts" ),
-pGameObject( "MyGameApp" ),
-pPathConfig( "/config" ),
-pPathCapture( "/capture" ),
+pScriptDirectory("/scripts"),
+pGameObject("MyGameApp"),
+pPathConfig("/config"),
+pPathCapture("/capture"),
 
-pActiveProfile( NULL )
+pActiveProfile(nullptr),
+pRemoteServer(std::make_shared<projRemoteServer>(*this, *environment))
 {
 	try{
 		decPath path;
-		path.SetFromNative( environment->GetGameProject()->GetDirectoryPath() );
-		path.AddComponent( "project.xml" );
-		SetFilePath( path.GetPathNative() );
-		SetSaved( true );
-		SetChanged( false );
+		path.SetFromNative(environment->GetGameProject()->GetDirectoryPath());
+		path.AddComponent("project.xml");
+		SetFilePath(path.GetPathNative());
+		SetSaved(true);
+		SetChanged(false);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -87,8 +88,8 @@ projProject::~projProject(){
 // Management
 ///////////////
 
-void projProject::SetScriptDirectory( const char *directory ){
-	if( pScriptDirectory == directory ){
+void projProject::SetScriptDirectory(const char *directory){
+	if(pScriptDirectory == directory){
 		return;
 	}
 	
@@ -96,8 +97,8 @@ void projProject::SetScriptDirectory( const char *directory ){
 	NotifyProjectChanged();
 }
 
-void projProject::SetGameObject( const char *gameObject ){
-	if( pGameObject == gameObject ){
+void projProject::SetGameObject(const char *gameObject){
+	if(pGameObject == gameObject){
 		return;
 	}
 	
@@ -105,8 +106,8 @@ void projProject::SetGameObject( const char *gameObject ){
 	NotifyProjectChanged();
 }
 
-void projProject::SetPathConfig( const char *path ){
-	if( pPathConfig == path ){
+void projProject::SetPathConfig(const char *path){
+	if(pPathConfig == path){
 		return;
 	}
 	
@@ -114,8 +115,8 @@ void projProject::SetPathConfig( const char *path ){
 	NotifyProjectChanged();
 }
 
-void projProject::SetPathCapture( const char *path ){
-	if( pPathCapture == path ){
+void projProject::SetPathCapture(const char *path){
+	if(pPathCapture == path){
 		return;
 	}
 	
@@ -128,37 +129,37 @@ void projProject::SetPathCapture( const char *path ){
 // Profiles
 /////////////
 
-void projProject::AddProfile( projProfile *profile ){
-	pProfiles.Add( profile );
-	profile->SetProject( this );
+void projProject::AddProfile(projProfile *profile){
+	pProfiles.Add(profile);
+	profile->SetProject(this);
 	NotifyProfileStructureChanged();
 	
-	if( ! pActiveProfile ){
-		SetActiveProfile( profile );
+	if(! pActiveProfile){
+		SetActiveProfile(profile);
 	}
 }
 
-void projProject::RemoveProfile( projProfile *profile ){
-	if( ! profile || profile->GetProject() != this ){
-		DETHROW( deeInvalidParam );
+void projProject::RemoveProfile(projProfile *profile){
+	if(! profile || profile->GetProject() != this){
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( profile == pActiveProfile ){
-		if( pProfiles.GetCount() == 1 ){
-			SetActiveProfile( NULL );
+	if(profile == pActiveProfile){
+		if(pProfiles.GetCount() == 1){
+			SetActiveProfile(NULL);
 			
 		}else{
-			if( pProfiles.GetAt( 0 ) == profile ){
-				SetActiveProfile( pProfiles.GetAt( 1 ) );
+			if(pProfiles.GetAt(0) == profile){
+				SetActiveProfile(pProfiles.GetAt(1));
 				
 			}else{
-				SetActiveProfile( pProfiles.GetAt( 0 ) );
+				SetActiveProfile(pProfiles.GetAt(0));
 			}
 		}
 	}
 	
-	profile->SetProject( NULL );
-	pProfiles.Remove( profile );
+	profile->SetProject(NULL);
+	pProfiles.Remove(profile);
 	NotifyProfileStructureChanged();
 }
 
@@ -166,10 +167,10 @@ void projProject::RemoveAllProfiles(){
 	const int count = pProfiles.GetCount();
 	int i;
 	
-	SetActiveProfile( NULL );
+	SetActiveProfile(NULL);
 	
-	for( i=0; i<count; i++ ){
-		pProfiles.GetAt( i )->SetProject( NULL );
+	for(i=0; i<count; i++){
+		pProfiles.GetAt(i)->SetProject(NULL);
 	}
 	pProfiles.RemoveAll();
 	NotifyProfileStructureChanged();
@@ -177,18 +178,18 @@ void projProject::RemoveAllProfiles(){
 
 
 
-void projProject::SetActiveProfile( projProfile *profile ){
-	if( profile == pActiveProfile ){
+void projProject::SetActiveProfile(projProfile *profile){
+	if(profile == pActiveProfile){
 		return;
 	}
 	
-	if( pActiveProfile ){
+	if(pActiveProfile){
 		pActiveProfile->FreeReference();
 	}
 	
 	pActiveProfile = profile;
 	
-	if( profile ){
+	if(profile){
 		profile->AddReference();
 	}
 	
@@ -201,51 +202,67 @@ void projProject::NotifyProfileStructureChanged(){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projProjectListener* )pListeners.GetAt( i ) )->ProfileStructureChanged( this );
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->ProfileStructureChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
+	
+	pRemoteServer->OnProfileStructureChanged();
 }
 
-void projProject::NotifyProfileChanged( projProfile *profile ){
+void projProject::NotifyProfileChanged(projProfile *profile){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projProjectListener* )pListeners.GetAt( i ) )->ProfileChanged( this, profile );
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->ProfileChanged(this, profile);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
+	
+	pRemoteServer->OnProfileChanged(profile);
 }
 
-void projProject::NotifyProfileNameChanged( projProfile *profile ){
+void projProject::NotifyProfileNameChanged(projProfile *profile){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projProjectListener* )pListeners.GetAt( i ) )->ProfileNameChanged( this, profile );
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->ProfileNameChanged(this, profile);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
+	
+	pRemoteServer->OnProfileChanged(profile);
 }
 
 void projProject::NotifyActiveProfileChanged(){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projProjectListener* )pListeners.GetAt( i ) )->ActiveProfileChanged( this );
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->ActiveProfileChanged(this);
 	}
+	
+	pRemoteServer->OnActiveProfileChanged();
 }
 
+void projProject::NotifyRemoteClientConnected(const projRemoteClient::Ref &client){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->RemoteClientConnected(this, client);
+	}
+}
 
 
 // Test running
 /////////////////
 
-void projProject::SetActiveLaunchProfile( const char *profile ){
-	if( profile == pActiveLaunchProfile ){
+void projProject::SetActiveLaunchProfile(const char *profile){
+	if(profile == pActiveLaunchProfile){
 		return;
 	}
 	
@@ -260,11 +277,11 @@ void projProject::NotifyActiveLaunchProfileChanged(){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projProjectListener* )pListeners.GetAt( i ) )->ActiveLaunchProfileChanged( this );
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->ActiveLaunchProfileChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 
@@ -272,12 +289,12 @@ void projProject::NotifyActiveLaunchProfileChanged(){
 // Listeners
 //////////////
 
-void projProject::AddListener( projProjectListener *listener ){
-	pListeners.Add( listener );
+void projProject::AddListener(projProjectListener *listener){
+	pListeners.Add(listener);
 }
 
-void projProject::RemoveListener( projProjectListener *listener ){
-	pListeners.Remove( listener );
+void projProject::RemoveListener(projProjectListener *listener){
+	pListeners.Remove(listener);
 }
 
 
@@ -286,8 +303,8 @@ void projProject::NotifyStateChanged(){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projProjectListener* )pListeners.GetAt( i ) )->StateChanged( this );
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->StateChanged(this);
 	}
 }
 
@@ -295,8 +312,8 @@ void projProject::NotifyUndoChanged(){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projProjectListener* )pListeners.GetAt( i ) )->UndoChanged( this );
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->UndoChanged(this);
 	}
 }
 
@@ -304,11 +321,11 @@ void projProject::NotifyProjectChanged(){
 	const int count = pListeners.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		( ( projProjectListener* )pListeners.GetAt( i ) )->ProjectChanged( this );
+	for(i=0; i<count; i++){
+		((projProjectListener*)pListeners.GetAt(i))->ProjectChanged(this);
 	}
 	
-	SetChanged( true );
+	SetChanged(true);
 }
 
 
@@ -322,4 +339,12 @@ void projProject::pCleanUp(){
 	GetUndoSystem()->RemoveAll();
 	
 	RemoveAllProfiles();
+	
+	if(pRemoteServer){
+		try{
+			pRemoteServer->StopListenClientConnections();
+		}catch(...){
+		}
+		pRemoteServer.reset();
+	}
 }

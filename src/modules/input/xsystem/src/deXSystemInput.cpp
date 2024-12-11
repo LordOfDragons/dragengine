@@ -624,12 +624,14 @@ void deXSystemInput::pQueryMousePosition( bool sendEvents ){
 		pCenterPointer();
 		
 	}else{
+		/*
 		if( childX < 0 || childX >= renderWindow->GetWidth() ){
 			return;
 		}
 		if( childY < 0 || childY >= renderWindow->GetHeight() ){
 			return;
 		}
+		*/
 		
 		const int diffX = childX - pLastMouseX;
 		const int diffY = childY - pLastMouseY;

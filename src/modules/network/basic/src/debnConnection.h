@@ -28,6 +28,7 @@
 #include "deNetworkBasic.h"
 #include "debnAddress.h"
 
+#include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkConnection.h>
 
 class deConnection;
@@ -83,6 +84,11 @@ private:
 	int pReliableNumberSend;
 	int pReliableNumberRecv;
 	int pReliableWindowSize;
+	
+	deNetworkMessage::Ref pLongMessage;
+	int pLongMessagePartSize;
+	deNetworkMessage::Ref pLongLinkStateMessage;
+	deNetworkMessage::Ref pLongLinkStateValues;
 	
 	debnConnection *pPreviousConnection;
 	debnConnection *pNextConnection;
@@ -166,6 +172,12 @@ public:
 	/** \brief Process link update. */
 	void ProcessLinkUpdate( decBaseFileReader &reader );
 	
+	/** \brief Process long reliable message. */
+	void ProcessReliableMessageLong( decBaseFileReader &reader );
+	
+	/** \brief Process long reliable link state. */
+	void ProcessReliableLinkStateLong( decBaseFileReader &reader );
+	
 	/** \brief Connect to connection object on host. */
 	virtual bool ConnectTo( const char *address );
 	
@@ -215,6 +227,8 @@ private:
 	void pProcessQueuedMessages();
 	void pProcessReliableMessage( int number, decBaseFileReader &reader );
 	void pProcessLinkState( int number, decBaseFileReader &reader );
+	void pProcessReliableMessageLong( int number, decBaseFileReader &reader );
+	void pProcessLinkStateLong( int number, decBaseFileReader &reader );
 	void pAddReliableReceive( int type, int number, decBaseFileReader &reader );
 	void pRemoveSendReliablesDone();
 	void pSendPendingReliables();

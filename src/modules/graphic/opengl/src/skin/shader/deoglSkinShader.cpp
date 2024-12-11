@@ -1656,12 +1656,12 @@ void deoglSkinShader::GenerateShader(){
 		int i;
 		char cacheIdBuffer[ EIUT_COUNT * 2 + 1 ];
 		for( i=0; i<ETT_COUNT; i++ ){
-			snprintf( &cacheIdBuffer[ i * 2 ], 5, "%02hhx", ( uint8_t )( pTextureTargets[ i ] + 1 ) );
+			snprintf( &cacheIdBuffer[ i * 2 ], 3, "%02hhx", ( uint8_t )( pTextureTargets[ i ] + 1 ) );
 		}
 		cacheIdParts.Add( cacheIdBuffer );
 		
 		for( i=0; i<EIUT_COUNT; i++ ){
-			snprintf( &cacheIdBuffer[ i * 2 ], 5, "%02hhx", ( uint8_t )( pInstanceUniformTargets[ i ] + 1 ) );
+			snprintf( &cacheIdBuffer[ i * 2 ], 3, "%02hhx", ( uint8_t )( pInstanceUniformTargets[ i ] + 1 ) );
 		}
 		cacheIdParts.Add( cacheIdBuffer );
 		

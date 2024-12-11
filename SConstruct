@@ -197,6 +197,18 @@ params.Add(TernaryVariable('with_system_libvpx', 'Use System libvpx'))
 params.Add(TernaryVariable('with_system_liburing', 'Use System liburing'))
 params.Add(TernaryVariable('with_system_openvr', 'Use System OpenVR'))
 params.Add(TernaryVariable('with_system_openxr', 'Use System OpenXR'))
+params.Add(PathVariable('with_deremotelauncher_inc',
+	'Path to DERemoteLauncher include files or empty to use system default',
+	'', PathVariable.PathAccept))
+params.Add(PathVariable('with_deremotelauncher_lib',
+	'Path to DERemoteLauncher library files or empty to use system default',
+	'', PathVariable.PathAccept))
+params.Add(PathVariable('with_denetwork_inc',
+	'Path to DENetwork include files or empty to use system default',
+	'', PathVariable.PathAccept))
+params.Add(PathVariable('with_denetwork_lib',
+	'Path to DENetwork library files or empty to use system default',
+	'', PathVariable.PathAccept))
 
 params.Add(TernaryVariable('with_opengl', 'Use OpenGL'))
 params.Add(TernaryVariable('with_python', 'Use Python'))
@@ -769,6 +781,8 @@ extdirs.append('extern/steamsdk')
 extdirs.append('extern/eossdk')
 extdirs.append('extern/liburing')
 extdirs.append('extern/modio')
+extdirs.append('extern/deremotelauncher')
+extdirs.append('extern/denetwork')
 
 for extdir in extdirs:
 	SConscript(dirs=extdir, variant_dir='{}/build'.format(extdir),

@@ -135,7 +135,7 @@ void deoglShaderDefines::SetDefine( const char *name, const char *value ){
 
 void deoglShaderDefines::SetDefine( const char *name, int value ){
 	char buffer[ 16 ];
-	snprintf( &buffer[ 0 ], 16, "%d", value );
+	snprintf( &buffer[ 0 ], sizeof( buffer ), "%d", value );
 	SetDefine( name, buffer );
 }
 

@@ -330,7 +330,7 @@ void deoglRenderCanvas::DrawCanvasPaint( const deoglRenderCanvasContext &context
 		context.GetTCClampMaximum().x, context.GetTCClampMaximum().y );
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, context.GetTransform() );
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	
 	deoglSharedVBOBlock &vboBlock = *canvas.GetVBOBlock();
@@ -403,7 +403,7 @@ void deoglRenderCanvas::DrawCanvasImage( const deoglRenderCanvasContext &context
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
 	shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	
@@ -466,7 +466,7 @@ void deoglRenderCanvas::DrawCanvasCanvasView( const deoglRenderCanvasContext &co
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
 	shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	
@@ -524,7 +524,7 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer( const deoglRenderCanvasContext &c
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	shader.SetParameterColorMatrix5x4( spcColorTransform, spcColorTransform2, colorTransform );
 	shader.SetParameterFloat( spcGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	
@@ -614,7 +614,7 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 		context.GetTCClampMinimum().x, context.GetTCClampMinimum().y,
 		context.GetTCClampMaximum().x, context.GetTCClampMaximum().y );
 	
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	
 	// render text
 	const deoglRFont::sGlyph * const oglGlyphs = font->GetGlyphs();
@@ -791,7 +791,7 @@ const deoglRCanvasRenderWorld &canvas ){
 			defren.GetScalingU(), -defren.GetScalingV(), 0.0f, defren.GetScalingV() ) );
 	}
 	
-	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTransformMask() );
+	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	
 	// color correction from configuration applied over canvas color transformation
 	const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );

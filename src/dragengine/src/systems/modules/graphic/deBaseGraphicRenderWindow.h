@@ -49,6 +49,9 @@ public:
 	/** \brief Host window changed. */
 	virtual void HostWindowChanged();
 	
+	/** \brief Position of render window changed. */
+	virtual void PositionChanged();
+	
 	/** \brief Size of render window changed. */
 	virtual void SizeChanged();
 	

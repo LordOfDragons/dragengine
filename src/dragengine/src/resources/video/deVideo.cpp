@@ -67,7 +67,10 @@ pPeerGraphic( NULL )
 	DEASSERT_TRUE( sampleRate >= 8000 )
 	DEASSERT_TRUE( channelCount >= 1 )
 	
-	pPlayTime = ( float )frameCount / frameRate + fmodf( ( float )frameCount, frameRate ) / frameRate;
+	pPlayTime = ( float )frameCount / frameRate;
+	
+	// this rounds up to a full second... why has this been here?
+	//pPlayTime += fmodf( ( float )frameCount, frameRate ) / frameRate;
 }
 
 deVideo::deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,

@@ -42,7 +42,7 @@
 ceCAWait::ceCAWait() :
 ceConversationAction( eatWait ),
 pCondition( NULL ),
-pInterval( 0.2f ),
+pInterval( 0.0f ),
 pTIMExpanded( true ),
 pTIMConditionExpanded( true ),
 pTIMActionsExpanded( true ){

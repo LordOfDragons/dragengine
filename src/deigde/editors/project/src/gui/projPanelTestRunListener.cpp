@@ -84,3 +84,12 @@ void projPanelTestRunListener::ActiveLaunchProfileChanged( projProject *project 
 	
 	pPanel.SelectLauncherProfile();
 }
+
+void projPanelTestRunListener::RemoteClientConnected(projProject *project,
+const projRemoteClient::Ref &client){
+	if( pPanel.GetProject() != project ){
+		return;
+	}
+	
+	pPanel.AddRemoteClient(client);
+}

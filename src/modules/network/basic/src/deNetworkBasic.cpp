@@ -533,6 +533,14 @@ void deNetworkBasic::pReceiveDatagrams(){
 					connection->ProcessLinkUpdate( reader );
 					break;
 					
+				case eccReliableMessageLong:
+					connection->ProcessReliableMessageLong( reader );
+					break;
+					
+				case eccReliableLinkStateLong:
+					connection->ProcessReliableLinkStateLong( reader );
+					break;
+					
 				default:
 					break;
 				}

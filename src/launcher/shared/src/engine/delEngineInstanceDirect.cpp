@@ -723,8 +723,7 @@ int delEngineInstanceDirect::IsGameRunning(){
 
 decPoint delEngineInstanceDirect::GetDisplayCurrentResolution( int display ){
 	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-		"Processing GetDisplayCurrentResolution(display=%d)"
-		"", display );
+		"Processing GetDisplayCurrentResolution(display=%d)", display );
 	DEASSERT_NOTNULL( pEngine )
 	
 	return pEngine->GetOS()->GetDisplayCurrentResolution( display );
@@ -752,6 +751,14 @@ int delEngineInstanceDirect::GetDisplayResolutions( int display, decPoint *resol
 		resolutions[ i ] = pEngine->GetOS()->GetDisplayResolution( display, i );
 	}
 	return resolutionCount;
+}
+
+int delEngineInstanceDirect::GetDisplayCurrentScaleFactor(int display){
+	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+		"Processing GetDisplayCurrentScaleFactor(display=%d)", display);
+	DEASSERT_NOTNULL(pEngine)
+	
+	return pEngine->GetOS()->GetDisplayCurrentScaleFactor(display);
 }
 
 void delEngineInstanceDirect::ReadDelgaGameDefs( const char *delgaFile, decStringList &list ){

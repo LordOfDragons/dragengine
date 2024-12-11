@@ -24,29 +24,28 @@
 
 #ifdef OS_W32_HELPER
 
+#include <windows.h>
+
 #include <delauncher/engine/delEngineProcessMain.h>
 
-int main( int argc, char **args ){
-	return delEngineProcessMain().RunMain( argc, args );
+int main(int argc, char **args){
+	return delEngineProcessMain().RunMain(argc, args);
 }
 
 #ifdef OS_W32_VS
 
-#include <windows.h>
 #include <stdio.h>
 
-int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow ){
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
 	int nArgs;
-	LPWSTR * const szArglist = CommandLineToArgvW( GetCommandLineW(), &nArgs );
-	if( ! szArglist ){
-		wprintf( L"CommandLineToArgvW failed\n" );
+	LPWSTR * const szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+	if(!szArglist){
+		wprintf(L"CommandLineToArgvW failed\n");
 		return 0;
 	}
 	
-	const int result = main( nArgs, ( char** )szArglist );
-
-	LocalFree( szArglist );
-
+	const int result = main(nArgs, (char**)szArglist);
+	LocalFree(szArglist);
 	return result;
 }
 

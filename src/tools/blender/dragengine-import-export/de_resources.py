@@ -22,20 +22,15 @@
 # NOTE: For the GPL copy see http://www.gnu.org/licenses/gpl.html
 #
 
-import bpy
-import os
 import re
 import math
-import time
-import struct
-import mathutils
-
-from mathutils import Vector, Matrix
 from operator import attrgetter
 
-from .de_math import vector_by_matrix, matrixToEuler, convertEuler, convertMatrix, convertMatrixBone, Octree
+import bpy
+from mathutils import Vector, Matrix
+
+from .de_math import vector_by_matrix, matrixToEuler, convertMatrix, convertMatrixBone, Octree
 from .de_math import vecCross, vecSub, vecMul, vecDot, vecNeg, vecDiv, vecLength, vecAdd, vec2Sub
-from .de_math import transformPosition, transformBonePosition
 from .de_porting import matmul
 
 
@@ -104,38 +99,47 @@ class Armature:
             self.automaticRange = action.dragengine_autorange
     
     class CollisionVolume:
-        def __init__(self, object, scalePosition):
-            self.object = object
+        def __init__(self, obj, scale_position, obj_parent=None, transform=None):
+            if not obj_parent:
+                obj_parent = obj
+
+            self.object = obj
             self.bone = None
-            self.topRadiusScale = object.dragengine_shapetopradiusscale
-            self.bottomRadiusScale = object.dragengine_shapebottomradiusscale
-            self.unitRadii = math.fabs(self.topRadiusScale - 1) < 0.001 and math.fabs(self.bottomRadiusScale - 1) < 0.001
+            self.topRadiusScale = obj.dragengine_shapetopradiusscale
+            self.bottomRadiusScale = obj.dragengine_shapebottomradiusscale
+            self.unitRadii = math.fabs(self.topRadiusScale - 1) < 0.001\
+                and math.fabs(self.bottomRadiusScale - 1) < 0.001
             
-            self.matrix = object.matrix_world
-            if object.parent:
-                if object.parent.type == 'ARMATURE':
-                    self.matrix = convertMatrixBone(matmul(object.parent.matrix_world.inverted(), self.matrix))
-                    if object.parent_bone:
+            self.matrix = obj.matrix_world
+            if transform:
+                self.matrix = transform @ self.matrix
+
+            if obj_parent.parent:
+                if obj_parent.parent.type == 'ARMATURE':
+                    self.matrix = convertMatrixBone(matmul(
+                        obj_parent.parent.matrix_world.inverted(), self.matrix))
+                    if obj_parent.parent_bone:
                         self.matrix = matmul(
-                            convertMatrixBone(object.parent.pose.bones[object.parent_bone].matrix).inverted(),
-                            self.matrix)
-                        self.bone = object.parent_bone
+                            convertMatrixBone(obj_parent.parent.pose.bones[
+                                obj_parent.parent_bone].matrix).inverted(), self.matrix)
+                        self.bone = obj_parent.parent_bone
                 else:
-                    self.matrix = convertMatrix(matmul(object.parent.matrix_world.inverted(), self.matrix))
+                    self.matrix = convertMatrix(matmul(
+                        obj_parent.parent.matrix_world.inverted(), self.matrix))
             
-            self.setMatrix(self.matrix, scalePosition)
+            self.setMatrix(self.matrix, scale_position)
             
-        def setMatrix(self, matrix, scalePosition):
+        def setMatrix(self, matrix, scale_position):
             self.matrix = matrix
             
             (loc,rot,scale) = self.matrix.decompose()
             scale = Vector([self.object.dimensions[0], self.object.dimensions[2], self.object.dimensions[1]])
             self.matrix = matmul(Matrix.Translation(loc), rot.to_matrix().to_4x4())
             
-            self.position = vector_by_matrix(matmul(scalePosition, self.matrix), Vector())
+            self.position = vector_by_matrix(matmul(scale_position, self.matrix), Vector())
             self.rotation = matrixToEuler(self.matrix)
             
-            self.scaling = vector_by_matrix(scalePosition, scale)
+            self.scaling = vector_by_matrix(scale_position, scale)
             self.scaling = Vector([math.fabs(self.scaling.x), math.fabs(self.scaling.y), math.fabs(self.scaling.z)])
     
     class ConstraintAxis:

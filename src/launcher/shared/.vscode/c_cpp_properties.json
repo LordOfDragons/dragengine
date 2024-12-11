@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../../dragengine/build/include",
+                "${workspaceFolder}/../../../../testing/include"
+            ],
+            "defines": [
+                "OS_POSIX=1",
+                "LAUNCHER_CONFIG_PATH=\"/path/launcher/config\"",
+                "LAUNCHER_SHARE_PATH=\"/path/launcher/share\"",
+                "LAUNCHER_GAMES_PATH=\"/path/launcher/games\""
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}

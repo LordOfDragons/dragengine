@@ -33,6 +33,7 @@
 // predefinitions
 class deEngine;
 class deScriptingDragonScript;
+class deRenderWindow;
 
 
 // graphics script class
@@ -43,10 +44,28 @@ private:
 public:
 	// constructor
 	deClassGraphicSystem(deScriptingDragonScript &ds);
-	~deClassGraphicSystem();
+	~deClassGraphicSystem() override;
 	// internal functions
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+
+	/** Convert canvas coordinates to window coordinates (dpi awareness, if disabled). */
+	int CoordCanvas2Window(int coordinates) const;
+
+	/** Convert canvas coordinates to window coordinates (dpi awareness, always). */
+	int CoordCanvas2WindowAlways(int coordinates) const;
+
+	/** Convert window coordinates to canvas coordinates (dpi awareness, if disabled). */
+	int CoordWindows2Canvas(int coordinates) const;
+
+	/** Convert window coordinates to canvas coordinates (dpi awareness, always). */
+	int CoordWindows2CanvasAlways(int coordinates) const;
+	
+	/** Resize active render window canvas (dpi awareness, if disabled). */
+	void ResizeActiveRenderWindowCanvas() const;
+	
+	/** Resize render window canvas (dpi awareness, if disabled). */
+	void ResizeRenderWindowCanvas(deRenderWindow &renderWindow) const;
 
 private:
 	struct sInitData{
@@ -61,11 +80,17 @@ private:
 		name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
+	DEF_NATFUNC(nfGetWindowX);
+	DEF_NATFUNC(nfGetWindowY);
+	DEF_NATFUNC(nfGetWindowPosition);
 	DEF_NATFUNC( nfGetWindowWidth );
 	DEF_NATFUNC( nfGetWindowHeight );
 	DEF_NATFUNC( nfGetWindowSize );
 	DEF_NATFUNC( nfSetWindowGeometry );
+	DEF_NATFUNC(nfSetWindowGeometry2);
 	DEF_NATFUNC( nfSetWindowTitle );
+	DEF_NATFUNC(nfGetWindowScaleFactor);
+	DEF_NATFUNC(nfGetWindowScaleFactorFloat);
 	DEF_NATFUNC( nfGetPrimaryCanvas );
 	DEF_NATFUNC(nfGetParameterCount);
 	DEF_NATFUNC(nfGetParameterInfo);

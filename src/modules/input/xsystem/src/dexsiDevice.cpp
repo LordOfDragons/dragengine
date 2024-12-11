@@ -201,9 +201,7 @@ int dexsiDevice::GetButtonCount() const{
 }
 
 void dexsiDevice::AddButton( dexsiDeviceButton *button ){
-	if( ! button ){
-		DETHROW( deeNullPointer );
-	}
+	DEASSERT_NOTNULL( button )
 	pButtons.Add( button );
 }
 
@@ -274,9 +272,7 @@ int dexsiDevice::GetAxisCount() const{
 }
 
 void dexsiDevice::AddAxis( dexsiDeviceAxis *axis ){
-	if( ! axis ){
-		DETHROW( deeNullPointer );
-	}
+	DEASSERT_NOTNULL( axis )
 	pAxes.Add( axis );
 }
 

@@ -84,6 +84,8 @@ enum eCommandCodes{
 	eccLinkUp,
 	eccLinkDown,
 	eccLinkUpdate,
+	eccReliableMessageLong,
+	eccReliableLinkStateLong,
 };
 
 enum eConnectionAck{
@@ -95,6 +97,17 @@ enum eConnectionAck{
 enum eReliableAck{
 	eraSuccess,
 	eraFailed
+};
+
+enum eLongMessageFlags{
+	elmfFirst = 0x1,
+	elmfLast = 0x2
+};
+
+enum eLongLinkStateFlags{
+	ellsfReadOnly = 0x1,
+	ellsfFirst = 0x2,
+	ellsfLast = 0x4
 };
 
 enum eValueTypes{

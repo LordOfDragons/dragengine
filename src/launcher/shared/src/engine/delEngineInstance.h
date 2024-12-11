@@ -249,6 +249,13 @@ public:
 	virtual int GetDisplayResolutions( int display, decPoint *resolutions, int resolutionCount ) = 0;
 	
 	/**
+	 * \brief Current global scaling factor for display.
+	 * 
+	 * Value of 100 represents scaling of 100%. Value step size is 25.
+	 */
+	virtual int GetDisplayCurrentScaleFactor(int display) = 0;
+	
+	/**
 	 * \brief Read game definitions from DELGA file.
 	 * 
 	 * Replaces \em list with content of all found files.

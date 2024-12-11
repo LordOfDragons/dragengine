@@ -84,6 +84,8 @@ debnConnection::debnConnection( deNetworkBasic *netBasic, deConnection *connecti
 	pReliableNumberRecv = 0;
 	pReliableWindowSize = 10;
 	
+	pLongMessagePartSize = 1357;
+	
 	pPreviousConnection = NULL;
 	pNextConnection = NULL;
 	pIsRegistered = false;
@@ -456,7 +458,102 @@ void debnConnection::ProcessLinkUpdate( decBaseFileReader &reader ){
 	}
 }
 
+void debnConnection::ProcessReliableMessageLong( decBaseFileReader &reader ){
+	// we process nothing if not connected
+	if( pConnectionState != ecsConnected ){
+		return;
+	}
+	
+	// read the infos about the message
+	const int number = reader.ReadUShort();
+	bool validNumber;
+	
+	// verify number
+	if( number < pReliableNumberRecv ){
+		validNumber = number < ( pReliableNumberRecv + pReliableWindowSize ) % 65535;
+		
+	}else{
+		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
+	}
+	if( ! validNumber ){
+		return;
+	}
+	
+	// send ack
+// 	pNetBasic->LogInfoFormat( "ProcessReliableMessage: send ack for %i", number );
+	decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
+	sendWriter.SetPosition( 0 );
+	pNetBasic->GetSharedSendDatagram()->Clear();
+	sendWriter.WriteByte( ( uint8_t )eccReliableAck );
+	sendWriter.WriteUShort( ( uint16_t )number );
+	sendWriter.WriteByte( ( uint8_t )eraSuccess );
+	
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+	
+	// if the number is the next one expected send directly to the script
+	if( number == pReliableNumberRecv ){
+		// process message
+		pProcessReliableMessageLong( number, reader );
+		
+		// bump up the number
+		pReliableNumberRecv = ( pReliableNumberRecv + 1 ) % 65535;
+		
+		// check if the next message happens to be already in the queue
+		pProcessQueuedMessages();
+		
+	// otherwise add the message to the queue
+	}else{
+		pAddReliableReceive( eccReliableMessageLong, number, reader );
+	}
+}
 
+void debnConnection::ProcessReliableLinkStateLong( decBaseFileReader &reader ){
+	// we process nothing if not connected
+	if( pConnectionState != ecsConnected ){
+		return;
+	}
+	
+	// read the infos about the message
+	const int number = reader.ReadUShort();
+	bool validNumber;
+	
+	// verify number
+	if( number < pReliableNumberRecv ){
+		validNumber = number < ( pReliableNumberRecv + pReliableWindowSize ) % 65535;
+		
+	}else{
+		validNumber = number < pReliableNumberRecv + pReliableWindowSize;
+	}
+	if( ! validNumber ){
+		return;
+	}
+	
+	// send ack
+	decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
+	sendWriter.SetPosition( 0 );
+	pNetBasic->GetSharedSendDatagram()->Clear();
+	sendWriter.WriteByte( ( uint8_t )eccReliableAck );
+	sendWriter.WriteUShort( ( uint16_t )number );
+	sendWriter.WriteByte( ( uint8_t )eraSuccess );
+	
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+	
+	// if the number is the next one expected send directly to the script
+	if( number == pReliableNumberRecv ){
+		// process the link
+		pProcessLinkStateLong( number, reader );
+		
+		// bump up the number
+		pReliableNumberRecv = ( pReliableNumberRecv + 1 ) % 65535;
+		
+		// check if the next message happens to be already in the queue
+		pProcessQueuedMessages();
+		
+	// otherwise add the message to the queue
+	}else{
+		pAddReliableReceive( eccReliableLinkStateLong, number, reader );
+	}
+}
 
 bool debnConnection::ConnectTo( const char *address ){
 	// if we are already connected stop right here
@@ -524,10 +621,13 @@ void debnConnection::Disconnect(){
 }
 
 void debnConnection::SendMessage( deNetworkMessage *message, int maxDelay ){
-	if( ! message || message->GetDataLength() < 1 ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( message )
+	DEASSERT_TRUE( message->GetDataLength() >= 1 )
 	
 	// only if connected
-	if( pConnectionState != ecsConnected ) return;
+	if( pConnectionState != ecsConnected ){
+		return;
+	}
 	
 	// send message
 	decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
@@ -540,51 +640,111 @@ void debnConnection::SendMessage( deNetworkMessage *message, int maxDelay ){
 }
 
 void debnConnection::SendReliableMessage( deNetworkMessage *message ){
-	if( ! message || message->GetDataLength() < 1 ) DETHROW( deeInvalidParam );
-	debnMessage *bnMessage = NULL;
+	DEASSERT_NOTNULL( message )
+	const int length = message->GetDataLength();
+	DEASSERT_TRUE( length >= 1 )
 	
 	// only if connected
-	if( pConnectionState != ecsConnected ) return;
-	
-	// add message
-	try{
-		// create message
-		bnMessage = new debnMessage;
-		bnMessage->SetType( eccReliableMessage );
-		bnMessage->SetNumber( ( pReliableNumberSend + pReliableMessagesSend->GetMessageCount() ) % 65535 );
-		bnMessage->SetState( debnMessage::emsPending );
-		
-		// build message
-		decBaseFileWriterReference writer;
-		writer.TakeOver( new deNetworkMessageWriter( bnMessage->GetMessage(), false ) );
-		writer->WriteByte( eccReliableMessage );
-		writer->WriteUShort( ( uint16_t )bnMessage->GetNumber() );
-		writer->Write( message->GetBuffer(), message->GetDataLength() );
-		
-		// add
-		pReliableMessagesSend->AddMessage( bnMessage );
-		
-	}catch( const deException & ){
-		if( bnMessage ) delete bnMessage;
-		throw;
+	if( pConnectionState != ecsConnected ){
+		return;
 	}
 	
-	// if the message fits into the window send it right now
-	if( pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize ){
-		pSocket->SendDatagram( *bnMessage->GetMessage(), pRemoteAddress );
+	const int partCount = (int)( ( length - 1 ) / pLongMessagePartSize + 1 );
+	if( partCount > 1 ){
+		const uint8_t * const data = ( uint8_t* )message->GetBuffer();
+		int i, offset = 0;
 		
-		bnMessage->SetState( debnMessage::emsSend );
-		bnMessage->ResetElapsed();
+		for( i=0; i<partCount; i++ ){
+			debnMessage *bnMessage = nullptr;
+			
+			uint8_t flags = 0;
+			if( i == 0 ){
+				flags |= ( uint8_t )elmfFirst;
+			}
+			if( i == partCount - 1 ){
+				flags |= elmfLast;
+			}
+			
+			int partLength = length - offset;
+			if( pLongMessagePartSize < partLength ){
+				partLength = pLongMessagePartSize;
+			}
+			
+			try{
+				// create message
+				bnMessage = new debnMessage;
+				bnMessage->SetType( eccReliableMessageLong );
+				bnMessage->SetNumber( ( pReliableNumberSend
+					+ pReliableMessagesSend->GetMessageCount() ) % 65535 );
+				bnMessage->SetState( debnMessage::emsPending );
+				
+				// build message
+				decBaseFileWriterReference writer;
+				writer.TakeOver( new deNetworkMessageWriter( bnMessage->GetMessage(), false ) );
+				writer->WriteByte( eccReliableMessage );
+				writer->WriteUShort( ( uint16_t )bnMessage->GetNumber() );
+				writer->WriteByte( flags );
+				writer->Write( data + offset, partLength );
+				
+				// add
+				pReliableMessagesSend->AddMessage( bnMessage );
+				
+			}catch( const deException & ){
+				if( bnMessage ) delete bnMessage;
+				throw;
+			}
+			
+			offset += partLength;
+		}
+		
+		pSendPendingReliables();
+		
+	}else{
+		// add message
+		debnMessage *bnMessage = nullptr;
+		
+		try{
+			// create message
+			bnMessage = new debnMessage;
+			bnMessage->SetType( eccReliableMessage );
+			bnMessage->SetNumber( ( pReliableNumberSend + pReliableMessagesSend->GetMessageCount() ) % 65535 );
+			bnMessage->SetState( debnMessage::emsPending );
+			
+			// build message
+			decBaseFileWriterReference writer;
+			writer.TakeOver( new deNetworkMessageWriter( bnMessage->GetMessage(), false ) );
+			writer->WriteByte( eccReliableMessage );
+			writer->WriteUShort( ( uint16_t )bnMessage->GetNumber() );
+			writer->Write( message->GetBuffer(), message->GetDataLength() );
+			
+			// add
+			pReliableMessagesSend->AddMessage( bnMessage );
+			
+		}catch( const deException & ){
+			if( bnMessage ) delete bnMessage;
+			throw;
+		}
+		
+		// if the message fits into the window send it right now
+		if( pReliableMessagesSend->GetMessageCount() <= pReliableWindowSize ){
+			pSocket->SendDatagram( *bnMessage->GetMessage(), pRemoteAddress );
+			
+			bnMessage->SetState( debnMessage::emsSend );
+			bnMessage->ResetElapsed();
+		}
 	}
 }
 
 void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state, bool readOnly ){
-	if( ! message || message->GetDataLength() < 1 || ! state ) DETHROW( deeInvalidParam );
-	debnState *bnState = ( debnState* )state->GetPeerNetwork();
-	debnMessage *bnMessage = NULL;
+	DEASSERT_NOTNULL( message )
+	DEASSERT_TRUE( message->GetDataLength() >= 1 )
 	
 	// only if connected
-	if( pConnectionState != ecsConnected ) return;
+	if( pConnectionState != ecsConnected ){
+		return;
+	}
+	
+	debnState * const bnState = ( debnState* )state->GetPeerNetwork();
 	
 	// state is now bound to us no matter what happens
 	//bnState->SetConnection( this );
@@ -617,6 +777,8 @@ void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state
 	//pNetBasic->LogInfoFormat( "Linking state %p using link %i", state, stateLink->GetIdentifier() );
 	
 	// add message
+	debnMessage *bnMessage = nullptr;
+	
 	try{
 		// create message
 		bnMessage = new debnMessage;
@@ -720,6 +882,9 @@ void debnConnection::pDisconnect(){
 	pReliableMessagesSend->RemoveAllMessages();
 	pReliableNumberSend = 0;
 	pReliableNumberRecv = 0;
+	pLongMessage = nullptr;
+	pLongLinkStateMessage = nullptr;
+	pLongLinkStateValues = nullptr;
 	
 	// free the socket
 	pConnectionState = ecsDisconnected;
@@ -875,15 +1040,30 @@ void debnConnection::pProcessQueuedMessages(){
 		
 		// process the message
 		type = bnMessage->GetType();
-		if( type == eccReliableMessage ){
+		switch( type ){
+		case eccReliableMessage:{
 			decBaseFileReaderReference reader;
 			reader.TakeOver( new deNetworkMessageReader( bnMessage->GetMessage() ) );
 			pProcessReliableMessage( pReliableNumberRecv, reader );
+			}break;
 			
-		}else if( type == eccReliableLinkState ){
+		case eccReliableLinkState:{
 			decBaseFileReaderReference reader;
 			reader.TakeOver( new deNetworkMessageReader( bnMessage->GetMessage() ) );
 			pProcessLinkState( pReliableNumberRecv, reader );
+			}break;
+			
+		case eccReliableMessageLong:{
+			decBaseFileReaderReference reader;
+			reader.TakeOver( new deNetworkMessageReader( bnMessage->GetMessage() ) );
+			pProcessReliableMessageLong( pReliableNumberRecv, reader );
+			}break;
+			
+		case eccReliableLinkStateLong:{
+			decBaseFileReaderReference reader;
+			reader.TakeOver( new deNetworkMessageReader( bnMessage->GetMessage() ) );
+			pProcessLinkStateLong( pReliableNumberRecv, reader );
+			}break;
 		}
 		
 		// remove the message from the queue
@@ -994,6 +1174,145 @@ void debnConnection::pProcessLinkState( int number, decBaseFileReader &reader ){
 	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
 }
 
+void debnConnection::pProcessReliableMessageLong( int number, decBaseFileReader &reader ){
+	const uint8_t flags = reader.ReadByte();
+	if( ( flags & ( uint8_t )elmfFirst ) != 0 ) {
+		pLongMessage.TakeOver( new deNetworkMessage );
+	}
+	if( ! pLongMessage ){
+		return;
+	}
+	
+	const int position = reader.GetPosition();
+	const int length = reader.GetLength() - position;
+	const int offset = pLongMessage->GetDataLength();
+	pLongMessage->SetDataLength( offset + length );
+	reader.Read( pLongMessage->GetBuffer() + offset, length );
+	
+	deBaseScriptingConnection * const scrCon = pConnection->GetPeerScripting();
+	
+	if( ( flags & ( uint8_t )elmfLast ) != 0 ){
+		const deNetworkMessage::Ref message( pLongMessage );
+		pLongMessage = nullptr;
+		
+		message->SetTimeStamp( decDateTime::GetSystemTime() );
+		if( scrCon ){
+			scrCon->MessageReceived( message );
+		}
+		
+	}else{
+		if( scrCon ){
+			scrCon->MessageProgress( pLongMessage->GetDataLength() );
+		}
+	}
+}
+
+void debnConnection::pProcessLinkStateLong( int number, decBaseFileReader &reader ){
+	const int identifier = reader.ReadUShort();
+	const uint8_t flags = reader.ReadByte();
+	
+	debnStateLink *stateLink = pStateLinks->GetLinkWithIdentifier( identifier );
+	if( stateLink && stateLink->GetLinkState() != debnStateLink::elsDown ){
+		return;
+	}
+	
+	if( ( flags & ( uint8_t )ellsfFirst ) != 0 ){
+		pLongLinkStateMessage.TakeOver( new deNetworkMessage );
+		pLongLinkStateValues.TakeOver( new deNetworkMessage );
+	}
+	
+	if( ! pLongLinkStateMessage || ! pLongLinkStateValues ){
+		return;
+	}
+	
+	// message
+	int length = reader.ReadUShort();
+	int offset = pLongLinkStateMessage->GetDataLength();
+	pLongLinkStateMessage->SetDataLength( offset + length );
+	reader.Read( pLongLinkStateMessage->GetBuffer() + offset, length );
+	
+	// state values
+	const int position = reader.GetPosition();
+	length = reader.GetLength() - position;
+	offset = pLongLinkStateValues->GetDataLength();
+	pLongLinkStateValues->SetDataLength( offset + length );
+	reader.Read( pLongLinkStateValues->GetBuffer() + offset, length );
+	
+	if( ( flags & ( uint8_t )ellsfLast ) == 0 ){
+		return;
+	}
+	
+	// create linked network state
+	const deNetworkMessage::Ref message( pLongLinkStateMessage );
+	pLongLinkStateMessage = nullptr;
+	
+	const deNetworkMessage::Ref values( pLongLinkStateValues );
+	pLongLinkStateValues = nullptr;
+	
+	const bool readOnly = ( flags & ( uint8_t )ellsfReadOnly ) != 0;
+	
+	deBaseScriptingConnection * const scrCon = pConnection->GetPeerScripting();
+	deNetworkState::Ref state;
+	if( scrCon ){
+		state.TakeOver( pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState( readOnly ) );
+		if( ! scrCon->LinkState( state, message ) ){
+			state = nullptr;
+		}
+	}
+	
+	debnState *bnState = nullptr;
+	if( state ){
+		bnState = ( debnState* )state->GetPeerNetwork();
+	}
+	
+	eCommandCodes code = eccLinkDown;
+	if( bnState ){
+		if( bnState->LinkReadAndVerifyAllValues( deNetworkMessageReader::Ref::New(
+		new deNetworkMessageReader( values ) ) ) ){
+			// create the link if not existing, assign it a new identifier and add it
+			if( ! stateLink ){
+				try{
+					stateLink = new debnStateLink( bnState, *this );
+					stateLink->SetIdentifier( identifier );
+					pStateLinks->AddLink( stateLink );
+					
+				}catch( const deException & ){
+					if( stateLink ){
+						delete stateLink;
+					}
+					throw;
+				}
+				
+				bnState->GetLinks()->AddLink( stateLink );
+			}
+			
+			// mark the link as established
+			stateLink->SetLinkState( debnStateLink::elsUp );
+			
+			// done with it
+			//pNetBasic->LogInfo( "Link state succeeded." );
+			code = eccLinkUp;
+			
+		}else{
+// 			pNetBasic->LogInfo( "Link state does not match the state provided." );
+			code = eccLinkDown;
+		}
+		
+	}else{
+// 		pNetBasic->LogInfo( "No link state provided." );
+		code = eccLinkDown;
+	}
+	
+	// send link up 
+	decBaseFileWriter &sendWriter = pNetBasic->GetSharedSendDatagramWriter();
+	sendWriter.SetPosition( 0 );
+	pNetBasic->GetSharedSendDatagram()->Clear();
+	sendWriter.WriteByte( ( uint8_t )code );
+	sendWriter.WriteUShort( ( uint16_t )identifier );
+	
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), pRemoteAddress );
+}
+
 void debnConnection::pAddReliableReceive( int type, int number, decBaseFileReader &reader ){
 	debnMessage *bnMessage = NULL;
 	
@@ -1046,8 +1365,8 @@ void debnConnection::pRemoveSendReliablesDone(){
 }
 
 void debnConnection::pSendPendingReliables(){
-	int i, count = pReliableMessagesSend->GetMessageCount();
-	debnMessage *bnMessage;
+	const int count = pReliableMessagesSend->GetMessageCount();
+	int i;
 	
 	// check if there are messages inside the window that can be send
 	for( i=0; i<count; i++ ){
@@ -1055,7 +1374,7 @@ void debnConnection::pSendPendingReliables(){
 		if( i == pReliableWindowSize ) break;
 		
 		// if the message is pending send it
-		bnMessage = pReliableMessagesSend->GetMessageAt( i );
+		debnMessage * const bnMessage = pReliableMessagesSend->GetMessageAt( i );
 		if( bnMessage->GetState() == debnMessage::emsPending ){
 			pSocket->SendDatagram( *bnMessage->GetMessage(), pRemoteAddress );
 			

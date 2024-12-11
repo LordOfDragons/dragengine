@@ -26,6 +26,8 @@
 #define _PROJDISTRIBUTOR_H_
 
 #include "profile/projProfileList.h"
+#include "remote/projRemoteClient.h"
+#include "remote/projRemoteServer.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 
@@ -54,6 +56,7 @@ private:
 	
 	decObjectSet pListeners;
 	
+	projRemoteServer::Ref pRemoteServer;
 	
 	
 public:
@@ -93,6 +96,9 @@ public:
 	
 	/** \brief Set capture path. */
 	void SetPathCapture( const char *path );
+	
+	/** \brief Remote server. */
+	inline const projRemoteServer::Ref &GetRemoteServer() const{ return pRemoteServer; }
 	/*@}*/
 	
 	
@@ -132,6 +138,9 @@ public:
 	
 	/** \brief Notify listeners active profile changed. */
 	void NotifyActiveProfileChanged();
+	
+	/** \brief Notify listeners remote client connected. */
+	void NotifyRemoteClientConnected(const projRemoteClient::Ref &client);
 	/*@}*/
 	
 	

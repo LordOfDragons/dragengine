@@ -42,6 +42,10 @@ class deXSystemInput;
  * X-System input device button.
  */
 class dexsiDeviceButton : public deObject{
+public:
+	typedef deTObjectReference<dexsiDeviceButton> Ref;
+	
+	
 private:
 	deXSystemInput &pModule;
 	

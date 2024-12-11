@@ -283,6 +283,7 @@
 #include <dragengine/resources/loader/deResourceLoaderInfo.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
 #include <libdscript/exceptions.h>
@@ -1010,6 +1011,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 			rt.CreateObject( pGameObj, pClsGameObj, 0 );
 			
 			pState = esInitGameObject;
+			return true;
 			
 		}catch( const duException &e ){
 			SetErrorTraceDS( e );
@@ -1064,20 +1066,23 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 }
 
 bool deScriptingDragonScript::OnResizeRenderWindow(){
-	return pState != esReady || pCallFunction( "onResizeRenderWindow" );
+	if(pClsGraSys){
+		pClsGraSys->ResizeActiveRenderWindowCanvas();
+	}
+	return pState != esReady || pCallFunction("onResizeRenderWindow");
 }
 
-bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
-	if( pState != esReady ){
+bool deScriptingDragonScript::SendEvent(deInputEvent *event){
+	if(pState != esReady){
 		return true; // ignore
 	}
 	
-	switch( event->GetType() ){
+	switch(event->GetType()){
 	//case deInputEvent::eeDeviceAttached: // deprecated
 	//case deInputEvent::eeDeviceDetached: // deprecated
 	case deInputEvent::eeDeviceParamsChanged:
 	case deInputEvent::eeDevicesAttachedDetached:
-		switch( event->GetSource() ){
+		switch(event->GetSource()){
 		case deInputEvent::esInput:
 			pClsInpSys->InvalidCachedDevices();
 			break;
@@ -1086,6 +1091,7 @@ bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 			pClsVRSys->InvalidCachedDevices();
 			break;
 		}
+		break;
 		
 	default:
 		break;
@@ -1094,24 +1100,27 @@ bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 	dsRunTime &rt = *pScriptEngine->GetMainRunTime();
 	
 	try{
-		pClsInpEvent->PushInputEvent( &rt, *event );
-		rt.RunFunction( pGameObj, "inputEvent", 1 ); // inputEvent( event )
+		pPreprocessEventDpiAware(*event);
+		pClsInpEvent->PushInputEvent(&rt, *event);
+		rt.RunFunction(pGameObj, "inputEvent", 1); // inputEvent(event)
 		
-	}catch( const duException &e ){
-		SetErrorTraceDS( e );
-		LogExceptionDS( e );
-		deErrorTracePoint *tracePoint = AddErrorTracePoint( "deScriptingDragonScript::SendEvent", __LINE__ );
-		pAddSendEventTrace( *tracePoint, *event );
-		pAddExceptionTrace( tracePoint );
+	}catch(const duException &e){
+		SetErrorTraceDS(e);
+		LogExceptionDS(e);
+		deErrorTracePoint * const tracePoint = AddErrorTracePoint(
+			"deScriptingDragonScript::SendEvent", __LINE__);
+		pAddSendEventTrace(*tracePoint, *event);
+		pAddExceptionTrace(tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 		
-	}catch( const deException &e ){
-		SetErrorTrace( e );
-		LogException( e );
-		deErrorTracePoint *tracePoint = AddErrorTracePoint( "deScriptingDragonScript::SendEvent", __LINE__ );
-		pAddSendEventTrace( *tracePoint, *event );
-		pAddExceptionTrace( tracePoint );
+	}catch(const deException &e){
+		SetErrorTrace(e);
+		LogException(e);
+		deErrorTracePoint * const tracePoint = AddErrorTracePoint(
+			"deScriptingDragonScript::SendEvent", __LINE__);
+		pAddSendEventTrace(*tracePoint, *event);
+		pAddExceptionTrace(tracePoint);
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		return false;
 	}
@@ -1885,4 +1894,23 @@ void deScriptingDragonScript::pRemoveVFSContainerHideScriptDirectory(){
 		vfs.RemoveContainer( pVFSContainerHideScriptDirectory );
 	}
 	pVFSContainerHideScriptDirectory = nullptr;
+}
+
+void deScriptingDragonScript::pPreprocessEventDpiAware(deInputEvent& event) const{
+	if(pClsEngine->GetDpiAware()){
+		return;
+	}
+	
+	/*
+	if(GetGameEngine()->GetInputSystem()->GetCaptureInputDevices()){
+		return;
+	}
+	*/
+
+	if(event.GetType() != deInputEvent::eeMouseMove){
+		return;
+	}
+
+	event.SetX(pClsGraSys->CoordWindows2CanvasAlways(event.GetX()));
+	event.SetY(pClsGraSys->CoordWindows2CanvasAlways(event.GetY()));
 }

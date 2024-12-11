@@ -591,18 +591,19 @@ abstract class ConversationPlayback implements Persistable
 				// check for waiting conditions
 				if pActionWaiting
 					if action.getWaitForActor()
+						var bool useActorWait = not action.getWaitSpeakOnly()
 						var bool notDone = false
 						
 						if action.getWaitForActorID() != null
 							var ConversationActor actor = getActorMatching(\
 								StringID.new(action.getWaitForActorID()))
 							if actor != null
-								notDone = actor.isSpeaking() or actor.wait()
+								notDone = actor.isSpeaking() or (useActorWait and actor.wait())
 							end
 							
 						else
 							notDone = pActors.find(block ConversationActor each
-								return each.isSpeaking() or each.wait()
+								return each.isSpeaking() or (useActorWait and each.wait())
 							end) != null
 						end
 						

@@ -40,6 +40,7 @@ private:
 	decTimer pDebugTimer;
 	bool pDefaultEnableGI;
 	bool pDefaultEnableAuralization;
+	bool pDpiAware;
 	
 	
 	
@@ -76,6 +77,22 @@ public:
 	
 	/** Set default enable auralization. */
 	void SetDefaultEnableAuralization( bool enable );
+	
+	/**
+	 * \brief Scripts are DPI aware.
+	 * 
+	 * If enabled scripts are DPI aware and apply scaling properly. If disabled the engine
+	 * modules apply the scaling making DPI changes transparent. Default is disabled.
+	 */
+	inline bool GetDpiAware() const{ return pDpiAware; }
+	
+	/**
+	 * \brief Set if scripts are DPI aware.
+	 * 
+	 * If enabled scripts are DPI aware and apply scaling properly. If disabled the engine
+	 * modules apply the scaling making DPI changes transparent. Default is disabled.
+	 */
+	void SetDpiAware(bool dpiAware);
 	/*@}*/
 	
 	
@@ -133,6 +150,8 @@ private:
 	DEF_NATFUNC( nfSetDefaultEnableGI );
 	DEF_NATFUNC( nfGetDefaultEnableAuralization );
 	DEF_NATFUNC( nfSetDefaultEnableAuralization );
+	DEF_NATFUNC(nfGetDpiAware);
+	DEF_NATFUNC(nfSetDpiAware);
 	
 	DEF_NATFUNC( nfGetUserLocaleLanguage );
 	DEF_NATFUNC( nfGetUserLocaleTerritory );

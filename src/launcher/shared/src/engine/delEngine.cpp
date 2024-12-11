@@ -75,7 +75,8 @@ delEngine::delEngine( delLauncher &launcher, const char *logFileTitle ) :
 pLauncher( launcher ),
 pLogFile( decString( logFileTitle ) + ".log" ),
 pResolutionCount( 0 ),
-pResolutions( NULL ){
+pResolutions( NULL ),
+pScaleFactor(1.0f){
 }
 
 delEngine::~delEngine(){
@@ -428,7 +429,7 @@ void delEngine::UpdateResolutions( delEngineInstance &instance ){
 		}
 		pResolutionCount = 0;
 	}
-	
+
 	// sort resolutions by decreasing pixel count
 	int i;
 	for( i=1; i<pResolutionCount; i++ ){
@@ -472,6 +473,20 @@ int delEngine::IndexOfClosestResolutionTo( int width, int height ) const{
 	}
 	
 	return pResolutionCount - 1; // -1 if empty is correct
+}
+
+void delEngine::UpdateScaleFactor(delEngineInstance& instance){
+	const int display = 0;
+	
+	try{
+		pScaleFactor = instance.GetDisplayCurrentScaleFactor(display);
+		
+	}catch(const deException &e){
+		pLauncher.GetLogger()->LogError(pLauncher.GetLogSource(),
+			"Engine.UpdateScaleFactor failed with exception");
+		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
+		pScaleFactor = 1.0f;
+	}
 }
 
 

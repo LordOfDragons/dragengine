@@ -1,7 +1,8 @@
 {
-    "dragonscriptLanguage.scriptDirectories": [
-        "doc/nativeclasses",
-        "scripts"
-    ],
-    "python.REPL.enableREPLSmartSend": false
+	"dragonscriptLanguage.scriptDirectories": [
+		"doc/nativeclasses",
+		"scripts"
+	],
+	"python.REPL.enableREPLSmartSend": false,
+	"cmake.ignoreCMakeListsMissing": true
 }

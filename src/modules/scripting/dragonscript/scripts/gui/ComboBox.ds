@@ -241,6 +241,7 @@ class ComboBox extends Container implements ListModelListener
 	var bool pDropDownRequiresSelFromEditor
 	var String pSelectedElementDesignerSelector
 	var bool pPreventUpdateEditor
+	var bool pExplicitDropDown
 // 	var bool pFirstDropDown
 	
 	
@@ -417,6 +418,26 @@ class ComboBox extends Container implements ListModelListener
 		if pSelectedElement != null
 			pSelectedElement.setMinimumSize(getDefaultElementSize())
 		end
+	end
+	
+	/**
+	 * \brief Drop down only if clicking arrow or pressing directional keys.
+	 * \version 1.24
+	 * 
+	 * If true clicking on widget or receiving focus does not drop down. By default false.
+	 */
+	func bool getExplicitDropDown()
+		return pExplicitDropDown
+	end
+	
+	/**
+	 * \brief Drop down only if clicking arrow or pressing directional keys.
+	 * \version 1.24
+	 * 
+	 * If true clicking on widget or receiving focus does not drop down. By default false.
+	 */
+	func void setExplicitDropDown(bool explicitDropDown)
+		pExplicitDropDown = explicitDropDown
 	end
 	
 	
@@ -630,18 +651,23 @@ class ComboBox extends Container implements ListModelListener
 		
 		if event.getButton() == InputEventMouseButton.left
 			if pEditor != null
+				var bool sourceIsArrow = source == pWidgetButtonDropDown\
+					or (pWidgetButtonDropDownContainer != null\
+						and source.hasParent(pWidgetButtonDropDownContainer))
+				
 				if pEditor.getWidget().getVisible()
-					if source == pWidgetButtonDropDown\
-					or (pWidgetButtonDropDownContainer != null and source.hasParent(pWidgetButtonDropDownContainer))
+					if sourceIsArrow
 						toggleDropDown()
 						
 // 					elif pFirstDropDown
-					else
+					elif not pExplicitDropDown
 						dropDown()
 					end
 					
 				else
-					dropDown()
+					if sourceIsArrow or not pExplicitDropDown
+						dropDown()
+					end
 					startEditing()
 				end
 				

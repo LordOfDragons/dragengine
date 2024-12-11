@@ -108,6 +108,9 @@ public:
 		/** \brief Display resolutions. */
 		eccGetDisplayResolutions,
 		
+		/** \brief Display global scale factor. */
+		eccGetDisplayCurrentScaleFactor,
+		
 		/** \brief Command reading game definitions from DELGA file. */
 		eccReadDelgaGameDefs,
 		
@@ -188,8 +191,7 @@ private:
 	#endif
 	
 	deEngine *pEngine;
-	bool pEngineRunning;
-	bool pStopProcess;
+	bool pEngineRunning, pStopProcess, pStopGame;
 	delEngineProcessRunGame *pRunGame;
 	
 	deLogger::Ref pLogger;
@@ -244,6 +246,8 @@ public:
 	/** \brief Set use console. */
 	void SetUseConsole( bool useConsole );
 	
+	/** \brief Set stop game to true. */
+	void SetStopGame();
 	
 	
 	/** \brief Run the process. */
@@ -367,6 +371,9 @@ public:
 	
 	/** \brief Command get display resolutions. */
 	void CommandGetDisplayResolutions();
+	
+	/** \brief Command get display global scale factor. */
+	void CommandGetDisplayCurrentScaleFactor();
 	
 	/** \brief Command reading game definitions from DELGA file. */
 	void CommandDelgaReadGameDefs();

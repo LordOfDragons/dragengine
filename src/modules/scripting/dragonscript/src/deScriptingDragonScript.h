@@ -841,6 +841,7 @@ private:
 	decString BuildFullName( const dsClass *theClass ) const;
 	void pAddVFSContainerHideScriptDirectory();
 	void pRemoveVFSContainerHideScriptDirectory();
+	void pPreprocessEventDpiAware(deInputEvent &event) const;
 	
 public:
 	void pAddExceptionTrace( deErrorTracePoint *tracePoint );

@@ -126,6 +126,8 @@ private:
 	NSView *pView;
 	#endif
 	
+	int pX;
+	int pY;
 	int pWidth;
 	int pHeight;
 	decString pTitle;
@@ -136,6 +138,7 @@ private:
 	deoglRCanvasView *pRCanvasView;
 	
 	bool pSwapBuffers;
+	bool pNotifyPositionChanged;
 	bool pNotifySizeChanged;
 	
 	deoglConfiguration::eVSyncMode pVSyncMode;
@@ -143,6 +146,7 @@ private:
 	
 	deoglRenderTarget::Ref pRenderTarget;
 	
+	int pAfterCreateScaleFactor;
 	
 	
 public:
@@ -197,6 +201,15 @@ public:
 	inline NSView *GetView() const{ return pView; }
 	#endif
 	
+	/** X position of the window. */
+	inline int GetX() const{ return pX; }
+	
+	/** Y position of the window. */
+	inline int GetY() const{ return pY; }
+	
+	/** Set window position. */
+	void SetPosition(int x, int y);
+
 	/** Width of the window. */
 	inline int GetWidth() const{ return pWidth; }
 	
@@ -230,6 +243,9 @@ public:
 	/** Set icon. */
 	void SetIcon( deoglPixelBuffer *icon );
 	
+	/** Scale factor stored during CreateWindow. */
+	inline int GetAfterCreateScaleFactor() const{ return pAfterCreateScaleFactor; }
+
 	
 	
 	/** Render canvas view or \em NULL if not set. */
@@ -258,6 +274,9 @@ public:
 	/** Center window on screen. */
 	void CenterOnScreen();
 	
+	/** Windows repositioned (render thread event loop). */
+	void OnReposition(int x, int y);
+	
 	/** Windows resized (render thread event loop). */
 	void OnResize( int width, int height );
 	
@@ -279,11 +298,13 @@ private:
 	
 	void pDestroyWindow();
 	
+	void pRepositionWindow();
 	void pResizeWindow();
 	void pSetWindowTitle();
 	void pUpdateFullScreen();
 	void pSetIcon();
-	
+	int pGetDisplayScaleFactor();
+
 	#ifdef OS_MACOS
 	void pMacOSCreateWindow();
 	void pMacOSDestroyWindow();

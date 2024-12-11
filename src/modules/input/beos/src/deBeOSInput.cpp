@@ -667,12 +667,14 @@ void deBeOSInput::pQueryMousePosition( bool sendEvents ){
 		pCenterPointer();
 		
 	}else{
+		/*
 		if( positionX < 0 || positionX >= renderWindow->GetWidth() ){
 			return;
 		}
 		if( positionY < 0 || positionY >= renderWindow->GetHeight() ){
 			return;
 		}
+		*/
 		
 		const int diffX = positionX - pLastMouseX;
 		const int diffY = positionY - pLastMouseY;

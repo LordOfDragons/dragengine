@@ -64,7 +64,7 @@ class ConversationPlaybackLayer
 		end
 		
 		pActionIterator = iterator
-		pLoopEvalConditionInterval = 0.2
+		pLoopEvalConditionInterval = 0
 		pLooping = false
 		pTopicTopLevel = false
 		

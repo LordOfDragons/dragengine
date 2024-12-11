@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Commands
 
 
@@ -35,22 +34,22 @@ namespace Dragengine.Commands
  */
 class AttachDeviceDefaultBindings extends DefaultBindingManagerListener
 	/** \brief Create binding manager listener. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Device has been attached. */
-	public func void deviceAttached( BindingManager manager, InputDevice device )
+	func void deviceAttached(BindingManager manager, InputDevice device)
 		var InputEventSource source = device.getSource()
 		var int index = device.getIndex()
 		
-		if manager.findAxisBinding( block Binding each
+		if manager.findAxisBinding(block Binding each
 			return each.getSystem() == source and each.getDeviceIndex() == index
-		end ) != null or manager.findButtonBinding( block Binding each
+		end) != null or manager.findButtonBinding(block Binding each
 			return each.getSystem() == source and each.getDeviceIndex() == index
-		end ) != null
+		end) != null
 			return
 		end
 		
-		BaseGameApp.getApp().defaultBindings().updateBindingManager( device )
+		BaseGameApp.getApp().defaultBindings().updateBindingManager(device)
 	end
 end

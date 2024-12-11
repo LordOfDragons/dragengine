@@ -34,13 +34,13 @@ pin Dragengine.Scenery
  */
 class LoadNavigationSpace
 	/** Creates a new loader. */
-	public func new()
+	func new()
 	end
 	
 	
 	
-	/** Load portal system from file. */
-	public func NavigationSpace loadFromFile( String filename )
+	/** Load navigation space from file. */
+	func NavigationSpace loadFromFile(String filename)
 		var String signatureCheck = "Drag[en]gine Navigation Space"
 		var NavigationSpace navspace = NavigationSpace.new()
 		var FileReader fileReader
@@ -56,10 +56,10 @@ class LoadNavigationSpace
 		var float px, py, pz
 		var int i
 		
-		fileReader = FileReader.new( filename )
+		fileReader = FileReader.new(filename)
 		
-		signature = fileReader.readString( 29 )
-		if not signature.equals( signatureCheck )
+		signature = fileReader.readString(29)
+		if not signature.equals(signatureCheck)
 			throw EInvalidParam.new() // dueInvalidFileFormat
 		end
 		
@@ -75,21 +75,21 @@ class LoadNavigationSpace
 			wallCount = fileReader.readUShort()
 			roomCount = fileReader.readUShort()
 			
-			navspace.setType( NavigationSpaceType.withOrder( fileReader.readUShort() ) )
+			navspace.setType(NavigationSpaceType.withOrder(fileReader.readUShort()))
 			
-			navspace.setVertexCount( vertexCount )
-			navspace.setEdgeCount( edgeCount )
-			navspace.setCornerCount( cornerCount )
-			navspace.setFaceCount( faceCount )
-			navspace.setWallCount( wallCount )
-			navspace.setRoomCount( roomCount )
+			navspace.setVertexCount(vertexCount)
+			navspace.setEdgeCount(edgeCount)
+			navspace.setCornerCount(cornerCount)
+			navspace.setFaceCount(faceCount)
+			navspace.setWallCount(wallCount)
+			navspace.setRoomCount(roomCount)
 			
 			// read vertices
 			for i = 0 to vertexCount
 				px = fileReader.readFloat()
 				py = fileReader.readFloat()
 				pz = fileReader.readFloat()
-				navspace.setVertexAt( i, Vector.new( px, py, pz ) )
+				navspace.setVertexAt(i, Vector.new(px, py, pz))
 			end
 			
 			// read edges
@@ -98,28 +98,28 @@ class LoadNavigationSpace
 				v2 = fileReader.readUShort() // vertex 2
 				v3 = fileReader.readUShort() // type number 1
 				v4 = fileReader.readUShort() // type number 2
-				navspace.setEdgeAt( i, v1, v2, v3, v4 )
+				navspace.setEdgeAt(i, v1, v2, v3, v4)
 			end
 			
 			// read corners
 			for i = 0 to cornerCount
 				v1 = fileReader.readUShort() // vertex
 				v2 = fileReader.readUShort() // type number
-				navspace.setCornerAt( i, v1, v2 )
+				navspace.setCornerAt(i, v1, v2)
 			end
 			
 			// read faces
-			for  i = 0 to faceCount
+			for i = 0 to faceCount
 				v1 = fileReader.readUShort() // corner count
 				v2 = fileReader.readUShort() // type number
-				navspace.setFaceAt( i, v1, v2 )
+				navspace.setFaceAt(i, v1, v2)
 			end
 			
 			// read walls
 			for i = 0 to wallCount
 				v1 = fileReader.readUShort() // face
 				v2 = fileReader.readUShort() // type
-				navspace.setWallAt( i, v1, v2 )
+				navspace.setWallAt(i, v1, v2)
 			end
 			
 			// read rooms
@@ -127,7 +127,7 @@ class LoadNavigationSpace
 				v1 = fileReader.readUShort() // front wall count
 				v2 = fileReader.readUShort() // back wall count
 				v3 = fileReader.readUShort() // type number
-				navspace.setRoomAt( i, v1, v2, v3 )
+				navspace.setRoomAt(i, v1, v2, v3)
 			end
 		end
 		

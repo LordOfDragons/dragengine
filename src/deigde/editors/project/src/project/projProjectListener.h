@@ -22,14 +22,15 @@
  * SOFTWARE.
  */
 
-#ifndef _PROJDISTRIBUTORLISTENER_H_
-#define _PROJDISTRIBUTORLISTENER_H_
+#ifndef _PROJPROJECTLISTENER_H_
+#define _PROJPROJECTLISTENER_H_
+
+#include "../project/remote/projRemoteClient.h"
 
 #include <dragengine/deObject.h>
 
 class projProject;
 class projProfile;
-
 
 
 /**
@@ -43,40 +44,41 @@ public:
 	projProjectListener();
 	
 	/** \brief Clean up project listener. */
-	virtual ~projProjectListener();
+	~projProjectListener() override;
 	/*@}*/
-	
 	
 	
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Changed or saved state changed. */
-	virtual void StateChanged( projProject *project );
+	virtual void StateChanged(projProject *project);
 	
 	/** \brief Undos changed. */
-	virtual void UndoChanged( projProject *project );
+	virtual void UndoChanged(projProject *project);
 	
 	/** \brief Project changed. */
-	virtual void ProjectChanged( projProject *project );
-	
+	virtual void ProjectChanged(projProject *project);
 	
 	
 	/** \brief Profile count or order changed. */
-	virtual void ProfileStructureChanged( projProject *project );
+	virtual void ProfileStructureChanged(projProject *project);
 	
 	/** \brief Profile changed. */
-	virtual void ProfileChanged( projProject *project, projProfile *profile );
+	virtual void ProfileChanged(projProject *project, projProfile *profile);
 	
 	/** \brief Profile name changed. */
-	virtual void ProfileNameChanged( projProject *project, projProfile *profile );
+	virtual void ProfileNameChanged(projProject *project, projProfile *profile);
 	
 	/** \brief Active profile changed. */
-	virtual void ActiveProfileChanged( projProject *project );
-	
+	virtual void ActiveProfileChanged(projProject *project);
 	
 	
 	/** \brief Active launch profile changed. */
-	virtual void ActiveLaunchProfileChanged( projProject *project );
+	virtual void ActiveLaunchProfileChanged(projProject *project);
+	
+	
+	/** \brief Remote client connected. */
+	virtual void RemoteClientConnected(projProject *project, const projRemoteClient::Ref &client);
 	/*@}*/
 };
 

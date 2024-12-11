@@ -42,6 +42,7 @@
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! OS_MACOS
 #include <dragengine/app/deOSUnix.h>
 #include <X11/Xatom.h>
+#include <X11/Xresource.h>
 #include "../extensions/deoglXExtResult.h"
 #endif
 
@@ -233,10 +234,13 @@ pPaint( true ),
 pRCanvasView( NULL ),
 
 pSwapBuffers( false ),
+pNotifyPositionChanged(false),
 pNotifySizeChanged( false ),
 
 pVSyncMode( deoglConfiguration::evsmAdaptive ),
-pInitSwapInterval( true )
+pInitSwapInterval( true ),
+
+pAfterCreateScaleFactor(100)
 {
 	LEAK_CHECK_CREATE( renderThread, RenderWindow );
 }
@@ -293,6 +297,28 @@ decPoint deoglRRenderWindow::GetInnerSize() const{
 	return decPoint( ( int )( rect.right - rect.left ), ( int )( rect.bottom - rect.top ) );
 }
 #endif
+
+void deoglRRenderWindow::SetPosition(int x, int y){
+	if(x < 0 || y < 0){
+		DETHROW(deeInvalidParam);
+	}
+	
+	if(x == pX && y == pY){
+		return;
+	}
+	
+	if(pNotifyPositionChanged){
+		// user is most probably still resizing the window. do not change the size and
+		// wait for the next sync call to avoid problems
+		return;
+	}
+	
+	pX = x;
+	pY = y;
+	pNotifyPositionChanged = false;
+	
+	pResizeWindow();
+}
 
 void deoglRRenderWindow::SetSize( int width, int height ){
 	if( width < 0 || height < 0 ){
@@ -564,6 +590,8 @@ void deoglRRenderWindow::CreateWindow(){
 		SetActiveWindow( pWindow );
 	}
 #endif
+
+	pAfterCreateScaleFactor = pGetDisplayScaleFactor();
 }
 
 void deoglRRenderWindow::SwapBuffers(){
@@ -685,11 +713,23 @@ void deoglRRenderWindow::Render(){
 	// render canvas
 	pRenderThread.GetFramebuffer().Activate( nullptr /*pRenderTarget->GetFBO()*/ );
 	
-	const deoglRenderCanvasContext context( *pRCanvasView,
+	deoglRenderCanvasContext context( *pRCanvasView,
 		nullptr /*pRenderTarget->GetFBO()*/, decPoint(), size, true, NULL );
 	pRenderThread.GetRenderers().GetCanvas().Prepare( context );
+
+	const decPoint canvasSize(pRCanvasView->GetSize().Round());
+	if(canvasSize == size){
+		pRCanvasView->Render(context);
+
+	}else{
+		// this happens if global display scaling is not 100%. in this case the
+		// canvas view is smaller than the window and has to be upscaled
+		const decTexMatrix2 transform(context.GetTransform());
+		context.SetTransformScaled(canvasSize, true);
+		pRCanvasView->Render(context);
+		context.SetTransform(transform);
+	}
 	
-	pRCanvasView->Render( context );
 	if( isMainWindow ){
 		if( inputOverlayCanvas ){
 			inputOverlayCanvas->Render( context );
@@ -761,6 +801,29 @@ void deoglRRenderWindow::CenterOnScreen(){
 	#endif
 }
 
+void deoglRRenderWindow::OnReposition(int x, int y){
+	if(x == pX && y == pY){
+		return;
+	}
+	
+	pX = x;
+	pY = y;
+	
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#endif
+	
+	#ifdef OS_BEOS
+	#endif
+	
+	#ifdef OS_MACOS
+	#endif
+	
+	#ifdef OS_W32
+	#endif
+	
+	pNotifyPositionChanged = true;
+}
+
 void deoglRRenderWindow::OnResize( int width, int height ){
 	if( pWidth == 0 || pHeight == 0 ){
 		// due to X restrictions zero sized windows can not be defined so avoid
@@ -793,7 +856,8 @@ void deoglRRenderWindow::OnResize( int width, int height ){
 
 
 bool deoglRRenderWindow::GetNotifySizeChanged(){
-	const bool notify = pNotifySizeChanged;
+	const bool notify = pNotifySizeChanged || pNotifyPositionChanged;
+	pNotifyPositionChanged = false;
 	pNotifySizeChanged = false;
 	return notify;
 }
@@ -875,6 +939,10 @@ void deoglRRenderWindow::pDestroyWindow(){
 	}
 	pWindow = NULL;
 	#endif
+}
+
+void deoglRRenderWindow::pRepositionWindow(){
+	// TODO
 }
 
 void deoglRRenderWindow::pResizeWindow(){
@@ -1032,22 +1100,28 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 		// we need to adjust the position again... see CreateWindow
 	}
 	
-	SetWindowPos( pWindow, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE
-		| SWP_NOZORDER | SWP_NOOWNERZORDER );
+	SetWindowPos(pWindow, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE
+		| SWP_NOZORDER | SWP_NOOWNERZORDER);
 	
 	if( pFullScreen ){
 		// if fullscreen force the window position to fill the entire work area. relying on WS_MAXIMIZE
 		// is unfortunately not working reliably so we resize and move the window on our own to be sure
-		RECT rect;
-		DEASSERT_TRUE( SystemParametersInfoA( SPI_GETWORKAREA, 0, &rect, 0 ) )
+		RECT rect{};
+		//DEASSERT_TRUE(SystemParametersInfoA(SPI_GETWORKAREA, 0, &rect, 0))
+		rect.right = GetSystemMetrics(SM_CXSCREEN);
+		rect.bottom = GetSystemMetrics(SM_CYSCREEN);
 		
+		pX = rect.left;
+		pY = rect.top;
 		pWidth = rect.right - rect.left;
 		pHeight = rect.bottom - rect.top;
+		pNotifyPositionChanged = true;
 		pNotifySizeChanged = true;
-		//pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d", rect.left, rect.top, pWidth, pHeight );
+		pRenderThread.GetLogger().LogInfoFormat("Window.FullScreen: %d %d %d %d",
+			rect.left, rect.top, pWidth, pHeight);
 		
-		SetWindowPos( pWindow, NULL, rect.left, rect.top, pWidth, pHeight,
-			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER );
+		SetWindowPos(pWindow, NULL, pX, pY, pWidth, pHeight,
+			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER);
 	}
 
 	/*
@@ -1331,6 +1405,41 @@ void deoglRRenderWindow::pSetIcon(){
 #endif
 }
 
+int deoglRRenderWindow::pGetDisplayScaleFactor(){
+	int scale = 100;
+
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	Display * const display = pRenderThread.GetContext().GetDisplay();
+	const char * const resourceString = XResourceManagerString(display);
+	if(!resourceString){
+		return scale;
+	}
+
+	XrmInitialize(); // initialize db before calling Xrm* functions
+	const XrmDatabase db = XrmGetStringDatabase(resourceString);
+	
+	XrmValue value;
+	char *type = nullptr;
+	if(XrmGetResource(db, "Xft.dpi", "String", &type, &value) != True || !value.addr){
+		return scale;
+	}
+	
+	const double scalef = 100.0 * atof(value.addr) / 96.0;
+	scale = decMath::max((int)(scalef / 25.0 + 0.5) * 25, 100);
+#endif
+
+#ifdef OS_BEOS
+#endif
+
+#ifdef OS_MACOS
+#endif
+
+#ifdef OS_W32
+	scale = 100 * GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
+#endif
+
+    return scale;
+}
 
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 void deoglRRenderWindow::pCreateNullCursor(){

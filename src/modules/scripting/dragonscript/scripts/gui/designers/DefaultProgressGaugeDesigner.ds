@@ -1,0 +1,235 @@
+
+/* 
+ * Drag[en]gine DragonScript Module
+ *
+ * Copyright (C) 2024, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Borders.Factories
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of \ref WidgetDesigner for \ref ProgressGauge.
+ */
+class DefaultProgressGaugeDesigner extends DefaultWidgetDesigner
+	/** \brief Design for particular widget state. */
+	public class ProgressGaugeStateDesign extends StateDesign
+		var Boolean pShowPercentageLabel
+		var Float pBlendWidth
+		var CanvasCreator pCreatorGauge, pCreatorBlend
+		
+		
+		
+		/** \brief Create state design. */
+		func new()
+		end
+		
+		/** \brief Create copy of state design. */
+		func new(ProgressGaugeStateDesign stateDesign) super(stateDesign)
+			pShowPercentageLabel = stateDesign.pShowPercentageLabel
+			pBlendWidth = stateDesign.pBlendWidth
+			pCreatorGauge = stateDesign.pCreatorGauge
+			pCreatorBlend = stateDesign.pCreatorBlend
+		end
+		
+		
+		
+		/** \brief Show percentage label or null. */
+		func Boolean getShowPercentage()
+			return pShowPercentageLabel
+		end
+		
+		/** \brief Set if percentage label is shown or null. */
+		func void setShowPercentage( Boolean show )
+			pShowPercentageLabel = show
+		end
+		
+		/** \brief Blend width or null. */
+		func Float getBlendWidth()
+			return pBlendWidth
+		end
+		
+		/** \brief Set blend width or null. */
+		func void setBlendWidth(Float width)
+			pBlendWidth = width
+		end
+		
+		/** \brief Canvas creator for gauge. */
+		func CanvasCreator getCreatorGauge()
+			return pCreatorGauge
+		end
+		
+		/** \brief Set canvas creator for gauge. */
+		func void setCreatorGauge(CanvasCreator creator)
+			pCreatorGauge = creator
+		end
+		
+		/** \brief Canvas creator for blend. */
+		func CanvasCreator getCreatorBlend()
+			return pCreatorBlend
+		end
+		
+		/** \brief Set canvas creator for blend. */
+		func void setCreatorBlend(CanvasCreator creator)
+			pCreatorBlend = creator
+		end
+		
+		
+		
+		/**
+		 * \brief Set parameter.
+		 * 
+		 * Supported parameters:
+		 * | name | value | Setter |
+		 * | canvas | CanvasCreator | setCanvasCreator |
+		 * | border | BorderFactory | setBorderFactory |
+		 * | font | Font | setFont |
+		 * | textColor | Color | setTextColor |
+		 * | padding | BorderSize | setPadding |
+		 * | showPercentage | bool | setShowPercentage |
+		 * | blendWidth | float | setBlendWidth |
+		 * | gauge | CanvasCreator | setCreatorGauge |
+		 * | blend | CanvasCreator | setCreatorBlend |
+		 */
+		func void setParameter(String name, Object value)
+			if name.equals("showPercentage")
+				setShowPercentage(value != null if Boolean.new(value cast bool) else null)
+				
+			elif name.equals("blendWidth")
+				setBlendWidth(value != null if Float.new(value cast float) else null)
+				
+			elif name.equals("gauge")
+				setCreatorGauge(value cast CanvasCreator)
+				
+			elif name.equals("blend")
+				setCreatorBlend(value cast CanvasCreator)
+				
+			else
+				super.setParameter(name, value)
+			end
+		end
+		
+		
+		
+		func DefaultWidgetDesigner.StateDesign copyDesign()
+			return ProgressGaugeStateDesign.new(this)
+		end
+		
+		func void merge(DefaultWidgetDesigner.StateDesign state)
+			super.merge(state)
+			
+			var ProgressGaugeStateDesign pdstate = state cast ProgressGaugeStateDesign
+			
+			if pShowPercentageLabel != null
+				pdstate.pShowPercentageLabel = pShowPercentageLabel
+			end
+			if pBlendWidth != null
+				pdstate.pBlendWidth = pBlendWidth
+			end
+			if pCreatorGauge != null
+				pdstate.pCreatorGauge = pCreatorGauge
+			end
+			if pCreatorBlend != null
+				pdstate.pCreatorBlend = pCreatorBlend
+			end
+		end
+		
+		func void apply(Widget widget)
+			super.apply(widget)
+			
+			var ProgressGauge pd = widget cast ProgressGauge
+			if pShowPercentageLabel != null
+				pd.setShowPercentage(pShowPercentageLabel.value())
+			end
+			if pBlendWidth != null
+				pd.setBlendWidth(pBlendWidth.value())
+			end
+			pd.setGaugeCanvasCreator(pCreatorGauge)
+			pd.setBlendCanvasCreator(pCreatorBlend)
+		end
+	end
+	
+	
+	
+	/** \brief Create new progress bar designer. */
+	func new()
+		setDesignNormal(ProgressGaugeStateDesign.new())
+		setDesignDisabled(ProgressGaugeStateDesign.new())
+		setDesignFocused(ProgressGaugeStateDesign.new())
+		setDesignHover(ProgressGaugeStateDesign.new())
+		setDesignFocusedHover(ProgressGaugeStateDesign.new())
+	end
+	
+	/** \brief Create copy of widget designer. */
+	func new(DefaultProgressGaugeDesigner designer) super(designer)
+	end
+	
+	
+	
+	/** \brief Design for normal state. */
+	func ProgressGaugeStateDesign getProgressGaugeDesignNormal()
+		return getDesignNormal() cast ProgressGaugeStateDesign
+	end
+	
+	/** \brief Design for disabled state. */
+	func ProgressGaugeStateDesign getProgressGaugeDesignDisabled()
+		return getDesignDisabled() cast ProgressGaugeStateDesign
+	end
+	
+	/** \brief Design for focused state. */
+	func ProgressGaugeStateDesign getProgressGaugeDesignFocused()
+		return getDesignFocused() cast ProgressGaugeStateDesign
+	end
+	
+	/** \brief Design for hover state. */
+	func ProgressGaugeStateDesign getProgressGaugeDesignHover()
+		return getDesignHover() cast ProgressGaugeStateDesign
+	end
+	
+	/** \brief Design for focused hover state. */
+	func ProgressGaugeStateDesign getProgressGaugeDesignFocusedHover()
+		return getDesignFocusedHover() cast ProgressGaugeStateDesign
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * See DefaultButtonDesigner.setParameter for supported parameters.
+	 * 
+	 * Additional supported parameters:
+	 * | name | value | Setter |
+	 * | {state}.showPercentage | bool | getDesign{state}.setShowPercentage |
+	 * | {state}.blendWidth | float | getDesign{state}.setBlendWidth |
+	 * | {state}.gauge | CanvasCreator | getDesign{state}.setCreatorGauge |
+	 * | {state}.blend | CanvasCreator | getDesign{state}.setCreatorBlend |
+	 */
+	func void setParameter(String name, Object value)
+		super.setParameter(name, value)
+	end
+	
+	/** \brief Create copy of designer. */
+	func WidgetDesigner copyDesigner()
+		return DefaultProgressGaugeDesigner.new(this)
+	end
+end

@@ -98,6 +98,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Get Linux Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: archives-linux
+      
+      - name: Get Windows Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: archives-windows
+      
       - name: Get Linux Installers
         uses: actions/download-artifact@v4
         with:
@@ -127,6 +137,38 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       
+      - name: Repackage archives
+        run: |
+          mkdir repackage
+          cd repackage
+
+          tar -xjf ../dragengine-dev-nightly-linux64.tar.bz2
+          mv usr sdk
+          rm ../dragengine-dev-nightly-linux64.tar.bz2
+          tar -cjf ../dragengine-dev-nightly-linux64.tar.bz2 sdk
+          rm -rf sdk
+
+          tar -xjf ../deigde-dev-nightly-linux64.tar.bz2
+          mv usr sdk
+          rm ../deigde-dev-nightly-linux64.tar.bz2
+          tar -cjf ../deigde-dev-nightly-linux64.tar.bz2 sdk
+          rm -rf sdk
+
+          unzip -q ../dragengine-sdk-nightly-windows64.zip
+          mv @ProgramFiles/Dragengine/SDK .
+          rm ../dragengine-sdk-nightly-windows64.zip
+          zip -qr ../dragengine-sdk-nightly-windows64.zip SDK
+          rm -rf SDK
+
+          unzip -q ../deigde-sdk-nightly-windows64.zip
+          mv @ProgramFiles/DEIGDE/SDK .
+          rm ../deigde-sdk-nightly-windows64.zip
+          zip -qr ../deigde-sdk-nightly-windows64.zip SDK
+          rm -rf SDK
+
+          cd ..
+          rm -rf repackage
+      
       - name: Update git tag
         run: |
           git tag -f nightly
@@ -153,12 +195,18 @@ jobs:
           artifacts: >
             install-dragengine-nightly-linux64.sh,
             install-dragengine-dev-nightly-linux64.sh,
+            dragengine-nightly-linux64.tar.bz2,
+            dragengine-dev-nightly-linux64.tar.bz2,
             install-deigde-nightly-linux64.sh,
             install-deigde-dev-nightly-linux64.sh,
+            deigde-nightly-linux64.tar.bz2,
+            deigde-dev-nightly-linux64.tar.bz2,
             install-dragengine-nightly-windows64.exe,
             install-dragengine-sdk-nightly-windows64.exe,
+            dragengine-sdk-nightly-windows64.zip,
             install-deigde-nightly-windows64.exe,
             install-deigde-sdk-nightly-windows64.exe,
+            deigde-sdk-nightly-windows64.zip,
             blender-addon-dragengine-9999.zip,
             dragengine-live-nightly.zip,
             install-dragengine-ci-nightly-linux64.sh,

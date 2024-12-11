@@ -247,6 +247,9 @@ public:
 	void EditString( igdeContainer &parent, const char *description,
 		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
 	
+	void EditString( igdeContainer &parent, const char *description, int rows,
+		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+	
 	void EditString( const char *description, igdeTextFieldReference &textField,
 		igdeTextFieldListener *listener );
 	

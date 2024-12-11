@@ -29,6 +29,7 @@ void main( void ){
 	vTexCoord = vec2( pTCTransform * vec3( inPosition, 1.0 ) );
 	#endif
 	#ifdef WITH_MASK
-	vTexCoordMask = vec2( pTCTransformMask * vec3( gl_Position.xy, 1.0 ) );
+	//vTexCoordMask = vec2( pTCTransformMask * vec3( gl_Position.xy, 1.0 ) );
+	vTexCoordMask = vec2( pTCTransformMask * vec3( inPosition, 1.0 ) );
 	#endif
 }

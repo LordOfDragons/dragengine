@@ -506,6 +506,9 @@ void ceLoadSaveConversation::pWriteActionCommon( decXmlWriter &writer, const ceC
 	if( ! action.GetWaitForActor() ){
 		writer.WriteDataTagBool( "waitForActor", action.GetWaitForActor() );
 	}
+	if( action.GetWaitSpeakOnly() ){
+		writer.WriteDataTagBool( "waitSpeakOnly", action.GetWaitSpeakOnly() );
+	}
 	if( ! action.GetWaitForActorID().IsEmpty() ){
 		writer.WriteDataTagString( "waitForActorID", action.GetWaitForActorID() );
 	}
@@ -1925,6 +1928,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction( const decXmlElementTa
 bool ceLoadSaveConversation::pReadActionCommon( const decXmlElementTag &root, ceConversationAction &action ){
 	if( root.GetName() == "waitForActor" ){
 		action.SetWaitForActor( GetCDataBool( root ) );
+		return true;
+		
+	}else if( root.GetName() == "waitSpeakOnly" ){
+		action.SetWaitSpeakOnly( GetCDataBool( root ) );
 		return true;
 		
 	}else if( root.GetName() == "waitForActorID" ){

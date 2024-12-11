@@ -207,6 +207,9 @@ public:
 	/** \brief Display exception to user. */
 	static void Exception( igdeWidget *owner, const deException &exception );
 	
+	/** \brief Display exception to user. */
+	static void Exception(igdeWidget *owner, const char *title, const deException &exception);
+	
 	
 	
 	/**

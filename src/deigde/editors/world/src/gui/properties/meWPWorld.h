@@ -35,6 +35,7 @@
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditSliderTextReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWindowProperties;
@@ -53,6 +54,7 @@ private:
 	meWPWorldListener *pListener;
 	meWorld *pWorld;
 	
+	igdeActionContextMenuReference pActionPFTTypes;
 	igdeActionReference pActionPFTTypeAdd;
 	igdeActionReference pActionPFTTypeRemove;
 	igdeActionReference pActionPFTTypeClear;

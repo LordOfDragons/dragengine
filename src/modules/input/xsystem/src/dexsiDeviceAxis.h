@@ -42,6 +42,10 @@ class deXSystemInput;
  * \brief X-System input device axis.
  */
 class dexsiDeviceAxis : public deObject{
+public:
+	typedef deTObjectReference<dexsiDeviceAxis> Ref;
+	
+	
 private:
 	deXSystemInput &pModule;
 	
@@ -159,6 +163,9 @@ public:
 	
 	/** \brief Set flat. */
 	void SetFlat( int flat );
+	
+	/** \brief Limit flat to minimum percentage of value range. */
+	void LimitFlat( float percentage );
 	
 	/** \brief Axis is absolute. */
 	inline bool GetAbsolute() const{ return pAbsolute; }

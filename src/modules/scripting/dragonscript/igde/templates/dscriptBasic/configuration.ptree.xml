@@ -82,4 +82,15 @@
 	-->
 	<boolean path='defaultEnableAuralization'>true</boolean>
 	
+	
+	<!--
+	Scripts are DPI aware.
+	
+	If true scripts are DPI aware and apply scaling properly. If false the engine
+	modules apply the scaling making DPI changes transparent. Default value is false.
+	-->
+	<!--
+	<boolean path='dpiAware'>false</boolean>
+	-->
+	
 </parameterTree>

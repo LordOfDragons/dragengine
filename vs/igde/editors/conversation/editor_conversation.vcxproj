@@ -414,6 +414,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionSetDelay.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionSetWaitForActorID.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitForActor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitSpeakOnly.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCTopicActionPaste.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUndoCAction.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUndoCActionList.cpp" />
@@ -938,6 +939,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionSetDelay.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionSetWaitForActorID.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitForActor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitSpeakOnly.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCTopicActionPaste.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUndoCAction.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUndoCActionList.h" />

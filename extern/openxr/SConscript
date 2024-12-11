@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-openxrVersion = '1.1.38'
+openxrVersion = '1.1.41'
 
 srcdir = 'OpenXR-SDK-release-{}'.format(openxrVersion)
 

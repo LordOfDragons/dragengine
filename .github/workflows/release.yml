@@ -97,6 +97,16 @@ jobs:
     runs-on: ubuntu-20.04
     
     steps:
+      - name: Get Linux Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: archives-linux
+      
+      - name: Get Windows Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: archives-windows
+      
       - name: Get Linux Installers
         uses: actions/download-artifact@v4
         with:
@@ -122,6 +132,38 @@ jobs:
         with:
           name: archive-livelauncher
       
+      - name: Repackage archives
+        run: |
+          mkdir repackage
+          cd repackage
+
+          tar -xjf ../dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
+          mv usr sdk
+          rm ../dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
+          tar -cjf ../dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2 sdk
+          rm -rf sdk
+
+          tar -xjf ../deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
+          mv usr sdk
+          rm ../deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
+          tar -cjf ../deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2 sdk
+          rm -rf sdk
+
+          unzip -q ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip
+          mv @ProgramFiles/Dragengine/SDK .
+          rm ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip
+          zip -qr ../dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip SDK
+          rm -rf SDK
+
+          unzip -q ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
+          mv @ProgramFiles/DEIGDE/SDK .
+          rm ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
+          zip -qr ../deigde-sdk-${{ github.event.inputs.version }}-windows64.zip SDK
+          rm -rf SDK
+
+          cd ..
+          rm -rf repackage
+      
       - name: Upload Artifacts
         uses: ncipollo/release-action@v1
         with:
@@ -144,10 +186,12 @@ jobs:
             - install-dragengine-${{ github.event.inputs.version }}-linux64.sh
             - install-dragengine-${{ github.event.inputs.version }}-windows64.exe
             - dragengine-live-${{ github.event.inputs.version }}.zip (live-build suitable for running games without installing the game engine or demo-sessions on exhibitions)
+            - dragengine-${{ github.event.inputs.version }}-linux64.tar.bz2
             
             For Game Developers (you do NOT need source code nor compiling to develop games, just the engine and the IGDE):
             - install-deigde-${{ github.event.inputs.version }}-linux64.sh
             - install-deigde-${{ github.event.inputs.version }}-windows64.exe
+            - deigde-${{ github.event.inputs.version }}-linux64.tar.bz2
             
             For Continuous Integration (Build Servers):
             - install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh
@@ -155,22 +199,32 @@ jobs:
             
             For Engine Module developers:
             - install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh
+            - dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
             - install-dragengine-dev-${{ github.event.inputs.version }}-windows64.exe
+            - dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip
             
             For IGDE Editor developers:
             - install-deigde-dev-${{ github.event.inputs.version }}-linux64.sh
+            - deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
             - install-deigde-dev-${{ github.event.inputs.version }}-windows64.exe
+            - deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
             
             Example projects to learn developing with the Drag[en]gine Game Engine can be found on the Wiki (https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:exampleprojects) and in the DEExamples repository (https://github.com/LordOfDragons/deexamples).
           artifacts: >
             install-dragengine-${{ github.event.inputs.version }}-linux64.sh,
             install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh,
+            dragengine-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2,
             install-deigde-${{ github.event.inputs.version }}-linux64.sh,
             install-deigde-dev-${{ github.event.inputs.version }}-linux64.sh,
+            deigde-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2,
             install-dragengine-${{ github.event.inputs.version }}-windows64.exe,
             install-dragengine-sdk-${{ github.event.inputs.version }}-windows64.exe,
+            dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip,
             install-deigde-${{ github.event.inputs.version }}-windows64.exe,
             install-deigde-sdk-${{ github.event.inputs.version }}-windows64.exe,
+            deigde-sdk-${{ github.event.inputs.version }}-windows64.zip,
             blender-addon-dragengine-${{ github.event.inputs.version }}.zip,
             dragengine-live-${{ github.event.inputs.version }}.zip,
             install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
