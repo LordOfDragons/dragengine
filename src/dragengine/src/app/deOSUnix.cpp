@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include "../dragengine_configuration.h"
+
 #if defined OS_UNIX && defined HAS_LIB_X11
 
 #include <stdio.h>

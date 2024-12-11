@@ -42,6 +42,7 @@
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! OS_MACOS
 #include <dragengine/app/deOSUnix.h>
 #include <X11/Xatom.h>
+#include <X11/Xresource.h>
 #include "../extensions/deoglXExtResult.h"
 #endif
 
@@ -588,9 +589,9 @@ void deoglRRenderWindow::CreateWindow(){
 	if( ! pHostWindow ){
 		SetActiveWindow( pWindow );
 	}
-
-	pAfterCreateScaleFactor = 100 * GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
 #endif
+
+	pAfterCreateScaleFactor = pGetDisplayScaleFactor();
 }
 
 void deoglRRenderWindow::SwapBuffers(){
@@ -1404,6 +1405,41 @@ void deoglRRenderWindow::pSetIcon(){
 #endif
 }
 
+int deoglRRenderWindow::pGetDisplayScaleFactor(){
+	int scale = 100;
+
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	Display * const display = pRenderThread.GetContext().GetDisplay();
+	const char * const resourceString = XResourceManagerString(display);
+	if(!resourceString){
+		return scale;
+	}
+
+	XrmInitialize(); // initialize db before calling Xrm* functions
+	const XrmDatabase db = XrmGetStringDatabase(resourceString);
+	
+	XrmValue value;
+	char *type = nullptr;
+	if(XrmGetResource(db, "Xft.dpi", "String", &type, &value) != True || !value.addr){
+		return scale;
+	}
+	
+	const double scalef = 100.0 * atof(value.addr) / 96.0;
+	scale = decMath::max((int)(scalef / 25.0 + 0.5) * 25, 100);
+#endif
+
+#ifdef OS_BEOS
+#endif
+
+#ifdef OS_MACOS
+#endif
+
+#ifdef OS_W32
+	scale = 100 * GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
+#endif
+
+    return scale;
+}
 
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 void deoglRRenderWindow::pCreateNullCursor(){

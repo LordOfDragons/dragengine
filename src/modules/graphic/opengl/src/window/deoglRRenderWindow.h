@@ -303,7 +303,8 @@ private:
 	void pSetWindowTitle();
 	void pUpdateFullScreen();
 	void pSetIcon();
-	
+	int pGetDisplayScaleFactor();
+
 	#ifdef OS_MACOS
 	void pMacOSCreateWindow();
 	void pMacOSDestroyWindow();

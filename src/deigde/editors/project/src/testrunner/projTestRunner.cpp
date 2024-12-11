@@ -30,6 +30,7 @@
 #include <signal.h>
 #include <stdint.h>
 #include <sys/types.h>
+#include <dragengine/app/deOS.h>
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #include <dragengine/app/deOSWindows.h>
@@ -756,6 +757,7 @@ void projTestRunner::pSendLaunchParameters(){
 	int i, count;
 	
 	// merge them together
+	const int scaleFactor = pWindowMain.GetEngine()->GetOS()->GetDisplayCurrentScaleFactor(0);
 	int windowSizeX = 0;
 	int windowSizeY = 0;
 	bool fullScreen = true;
@@ -767,15 +769,15 @@ void projTestRunner::pSendLaunchParameters(){
 	}
 	
 	if( pProfile->GetWindowSize().x != 0 ){
-		windowSizeX = pProfile->GetWindowSize().x;
+		windowSizeX = pProfile->GetWindowSize().x * scaleFactor / 100;
 	}
 	if( pProfile->GetWindowSize().y != 0 ){
-		windowSizeY = pProfile->GetWindowSize().y;
+		windowSizeY = pProfile->GetWindowSize().y * scaleFactor / 100;
 	}
 	if( pProfile->GetWindowSize() != decPoint() ){
 		fullScreen = false;
 	}
-	
+
 	decString runArguments;
 	projTRPParameterList parameters;
 	

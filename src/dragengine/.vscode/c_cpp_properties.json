@@ -5,7 +5,11 @@
             "includePath": [
                 "${workspaceFolder}/**"
             ],
-            "defines": [],
+            "defines": [
+                "DE_ENGINE_PATH=",
+                "DE_SHARE_PATH=",
+                "DE_CONFIG_PATH="
+            ],
             "cStandard": "c11",
             "cppStandard": "c++11"
         }
