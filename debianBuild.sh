@@ -30,7 +30,8 @@ git clean -dfx || exit 1
 fetchExternals() {
   scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
     lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch \
-    lib_libapng_fetch || exit 1
+    lib_libapng_fetch \
+    lib_denetwork_fetch lib_deremotelauncher_fetch || exit 1
 }
 
 writeIncludeBinaries() {
@@ -48,6 +49,8 @@ writeIncludeBinaries() {
   echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
   echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
   echo `dir -1 extern/libapng/libpng-*tar.bz2` >>$FILE
+  echo `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` >>$FILE
+  echo `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` >>$FILE
 }
 
 cleanScons() {
@@ -66,7 +69,6 @@ rm -rf /sources/dragengine_*.orig.tar.gz
 rm -rf /sources/dragengine_*-ppa*
 
 if [ $buildPackage = true ]; then
-  # this is no more working since noble. the build is just not started.
   gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
   ./debian/rules override_dh_auto_build || exit 1
   ./debian/rules override_dh_auto_install || exit 1
@@ -91,6 +93,8 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   `dir -1 extern/steamsdk/steamsdk160.tar.xz` \
   extern/mingw/mingw_stdthreads.tar.bz2 \
   `dir -1 extern/libapng/libpng-*tar.bz2` || exit 1
+  `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` || exit 1
+  `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` || exit 1
 gzip ../dragengine_*.orig.tar || exit 1
 
 git clean -dfx || exit 1
