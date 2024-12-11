@@ -1,10 +1,13 @@
 #/bin/bash
 
 buildPackage=false
+uploadPackage=false
 for arg in "$*"; do
   case "$arg" in
   --build-package)
     buildPackage=true ;;
+  --upload-package)
+    uploadPackage=true ;;
   esac
 done
 
@@ -64,7 +67,7 @@ rm -rf /sources/dragengine_*-ppa*
 
 if [ $buildPackage = true ]; then
   # this is no more working since noble. the build is just not started.
-  #gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
+  gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
   ./debian/rules override_dh_auto_build || exit 1
   ./debian/rules override_dh_auto_install || exit 1
   ./debian/rules override_dh_shlibdeps || exit 1
@@ -100,4 +103,6 @@ cleanScons
 
 debuild -S -sa || exit 1
 
-dput ppa:rpluess/dragondreams /sources/dragengine_*_source.changes || exit 1
+if [ $uploadPackage = true ]; then
+  dput ppa:rpluess/dragondreams /sources/dragengine_*_source.changes || exit 1
+fi
