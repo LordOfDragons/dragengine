@@ -211,6 +211,24 @@ public:
 	}
 };
 
+class cActionRemoteSynchronizeAll : public igdeAction{
+	projPanelTestRun &pPanel;
+public:
+	cActionRemoteSynchronizeAll(projPanelTestRun &panel) : igdeAction("Synchronize All",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
+		"Synchronize all remote clients" ),
+	pPanel(panel){ }
+	
+	virtual void OnAction(){
+		pPanel.RemoteSynchronizeAll();
+	}
+	
+	virtual void Update(){
+		const projProject * const project = pPanel.GetProject();
+		SetEnabled(project && project->GetRemoteServer()->IsListening());
+	}
+};
+
 }
 
 
@@ -288,6 +306,7 @@ pMaxLines( 500 )
 	
 	helper.Button(groupBox, pBtnRemoteStartListen, new cActionRemoteStartListen(*this), true);
 	helper.Button(groupBox, pBtnRemoteStopListen, new cActionRemoteStopListen(*this), true);
+	helper.Button(groupBox, pBtnRemoteSynchronizeAll, new cActionRemoteSynchronizeAll(*this), true);
 	
 	
 	// logs / debug
@@ -590,6 +609,7 @@ void projPanelTestRun::UpdateWidgetEnabled(){
 	pEditRemoteAddress->SetEnabled(pProject && !pProject->GetRemoteServer()->IsListening());
 	pBtnRemoteStartListen->GetAction()->Update();
 	pBtnRemoteStopListen->GetAction()->Update();
+	pBtnRemoteSynchronizeAll->GetAction()->Update();
 }
 
 void projPanelTestRun::UpdateProfiles(){
@@ -668,6 +688,21 @@ void projPanelTestRun::RemoteStopListen(){
 	
 	try{
 		pProject->GetRemoteServer()->StopListenClientConnections();
+		
+	}catch(const deException &e){
+		igdeCommonDialogs::Exception(this, "Stop Listen", e);
+	}
+	
+	UpdateWidgetEnabled();
+}
+
+void projPanelTestRun::RemoteSynchronizeAll(){
+	if(!pProject){
+		return;
+	}
+	
+	try{
+		pProject->GetRemoteServer()->RemoteSynchronizeAllClients();
 		
 	}catch(const deException &e){
 		igdeCommonDialogs::Exception(this, "Stop Listen", e);

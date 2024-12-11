@@ -87,6 +87,9 @@ public:
 	/** \brief Stop listening for client connections. */
 	void StopListenClientConnections();
 	
+	/** \brief Synchronize all clients. */
+	void RemoteSynchronizeAllClients();
+	
 	
 	/** \brief Task profile data. */
 	TaskProfileData::Ref GetTaskProfileData();

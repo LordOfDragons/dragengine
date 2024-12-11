@@ -79,6 +79,12 @@ void projRemoteServer::StopListenClientConnections(){
 	pExitThread();
 }
 
+void projRemoteServer::RemoteSynchronizeAllClients(){
+	for(const derlRemoteClient::Ref &each : GetClients()){
+		std::static_pointer_cast<projRemoteClient>(each)->Synchronize();
+	}
+}
+
 projRemoteServer::TaskProfileData::Ref projRemoteServer::GetTaskProfileData(){
 	const std::lock_guard<std::mutex> guard(GetMutex());
 	if(!pTaskProfileData){

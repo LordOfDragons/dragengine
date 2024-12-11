@@ -70,7 +70,9 @@ private:
 	
 	deObjectReference pSelectedProfile;
 	
-	igdeActionReference pActionStart, pActionQuit, pActionKill;
+	igdeActionReference pActionStart;
+	igdeActionReference pActionQuit;
+	igdeActionReference pActionKill;
 	
 	igdeTabBookReference pTabContent;
 	
@@ -78,13 +80,19 @@ private:
 	
 	decObjectOrderedSet pRemoteClients;
 	
-	igdeComboBoxReference pCBProfile, pCBLaunchProfile;
-	igdeButtonReference pBtnStart, pBtnQuit, pBtnKill;
+	igdeComboBoxReference pCBProfile;
+	igdeComboBoxReference pCBLaunchProfile;
+	igdeButtonReference pBtnStart;
+	igdeButtonReference pBtnQuit;
+	igdeButtonReference pBtnKill;
 	
 	igdeTextFieldReference pEditRemoteAddress;
-	igdeButtonReference pBtnRemoteStartListen, pBtnRemoteStopListen;
+	igdeButtonReference pBtnRemoteStartListen;
+	igdeButtonReference pBtnRemoteStopListen;
+	igdeButtonReference pBtnRemoteSynchronizeAll;
 	
-	projRemoteClient::Set pPendingAddRemoteClient, pPendingRemoveRemoteClient;
+	projRemoteClient::Set pPendingAddRemoteClient;
+	projRemoteClient::Set pPendingRemoveRemoteClient;
 	deMutex pMutexPending;
 	
 	
@@ -166,6 +174,9 @@ public:
 	
 	/** \brief Stop listening for remote client connections. */
 	void RemoteStopListen();
+	
+	/** \brief Synchronize all remote client connections. */
+	void RemoteSynchronizeAll();
 	
 	
 	/**
