@@ -692,12 +692,14 @@ void deMacOSInput::pQueryMousePosition( bool sendEvents ){
 		const int childX = ( int )( mousePointer.x + 0.5 );
 		const int childY = renderWindow->GetHeight() - ( int )( mousePointer.y + 0.5 );
 		
+		/*
 		if( childX < 0 || childX >= renderWindow->GetWidth() ){
 			return;
 		}
 		if( childY < 0 || childY >= renderWindow->GetHeight() ){
 			return;
 		}
+		*/
 		
 		const int diffX = childX - pLastMouseX;
 		const int diffY = childY - pLastMouseY;
