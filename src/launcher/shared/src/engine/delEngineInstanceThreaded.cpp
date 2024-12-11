@@ -614,21 +614,19 @@ bool delEngineInstanceThreaded::StopProcess(){
 #else
 	if( pPipeIn ){
 #endif
-		if(CheckCanReadPipe()){
-			GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
-				"Sending eccStopProcess to process %i", ( int )pProcessID );
+		GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
+			"Sending eccStopProcess to process %i", ( int )pProcessID );
 		
-			try{
-				WriteUCharToPipe( delEngineProcess::eccStopProcess );
+		try{
+			WriteUCharToPipe( delEngineProcess::eccStopProcess );
 			
-			}catch( const deException &e ){
-				GetLauncher().GetLogger()->LogError( GetLauncher().GetLogSource(),
-					"EngineInstance.StopProcess sending eccStopProcess failed with exception:" );
-				GetLauncher().GetLogger()->LogException( GetLauncher().GetLogSource(), e );
+		}catch( const deException &e ){
+			GetLauncher().GetLogger()->LogError( GetLauncher().GetLogSource(),
+				"EngineInstance.StopProcess sending eccStopProcess failed with exception:" );
+			GetLauncher().GetLogger()->LogException( GetLauncher().GetLogSource(), e );
 			
-				KillEngine();
-				return true;
-			}
+			KillEngine();
+			return true;
 		}
 		
 #ifdef OS_W32
