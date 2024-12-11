@@ -405,7 +405,9 @@ void projRemoteClient::pBuildGameXml(derlRunParameters &params, const projProfil
 	pBuildGameXml(xmlWriter, profile);
 	}
 	
-	params.SetGameConfig(file->GetPointer());
+	std::string gameConfig;
+	gameConfig.assign(file->GetPointer(), file->GetLength());
+	params.SetGameConfig(gameConfig);
 }
 
 void projRemoteClient::pBuildGameXml(decXmlWriter &writer, const projProfile &profile){
