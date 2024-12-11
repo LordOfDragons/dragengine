@@ -27,6 +27,7 @@
 #include "projRemoteServerThread.h"
 #include "projRemoteClient.h"
 #include "../projProject.h"
+#include "../profile/projProfile.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
@@ -89,7 +90,7 @@ projRemoteServer::TaskProfileData::Ref projRemoteServer::GetTaskProfileData(){
 
 void projRemoteServer::OnProfileStructureChanged(){
 	const std::lock_guard<std::mutex> guard(GetMutex());
-	pTaskProfileData.reset();
+	pDropProfileData();
 }
 
 void projRemoteServer::OnProfileChanged(projProfile *profile){
@@ -98,12 +99,12 @@ void projRemoteServer::OnProfileChanged(projProfile *profile){
 	}
 	
 	const std::lock_guard<std::mutex> guard(GetMutex());
-	pTaskProfileData.reset();
+	pDropProfileData();
 }
 
 void projRemoteServer::OnActiveProfileChanged(){
 	const std::lock_guard<std::mutex> guard(GetMutex());
-	pTaskProfileData.reset();
+	pDropProfileData();
 }
 
 
@@ -140,5 +141,17 @@ void projRemoteServer::pUpdateTaskProfileData(){
 		
 		pTaskProfileData->excludeBaseGameDefPath.AddIfAbsent(
 			decPath::CreatePathUnix(gameDef.GetVFSPath()));
+	}
+	
+	if(pProject.GetActiveProfile()){
+		pTaskProfileData->excludePatterns = pProject.GetActiveProfile()->GetExcludePatterns();
+	}
+}
+
+void projRemoteServer::pDropProfileData(){
+	pTaskProfileData.reset();
+	
+	for(const derlRemoteClient::Ref &each : GetClients()){
+		std::static_pointer_cast<projRemoteClient>(each)->DropProfileData();
 	}
 }

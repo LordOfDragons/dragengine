@@ -107,6 +107,7 @@ public:
 private:
 	void pExitThread();
 	void pUpdateTaskProfileData();
+	void pDropProfileData();
 };
 
 #endif

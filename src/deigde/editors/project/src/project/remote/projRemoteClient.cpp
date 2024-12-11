@@ -209,6 +209,10 @@ void projRemoteClient::ProcessReceivedSystemProperties(){
 	}
 }
 
+void projRemoteClient::DropProfileData(){
+	SetFileLayoutServer(nullptr);
+}
+
 void projRemoteClient::OnConnectionEstablished(){
 	const projRemoteClient::Ref ref(GetRefInServer());
 	if(ref){

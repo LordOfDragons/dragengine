@@ -113,8 +113,7 @@ public:
 	/** \brief Start application. */
 	void StartApplication();
 	
-	/** \brief Stop application.
-	 */
+	/** \brief Stop application. */
 	void StopApplication();
 	
 	/** \brief Kill application. */
@@ -122,6 +121,10 @@ public:
 	
 	/** \brief Process received system properties. */
 	void ProcessReceivedSystemProperties();
+	
+	/** \brief Drop profile data. */
+	void DropProfileData();
+	
 	
 	/** \brief Connection established. */
 	void OnConnectionEstablished() override;

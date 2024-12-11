@@ -42,7 +42,8 @@
 ////////////////////////////
 
 projRemoteClientTaskProcessor::projRemoteClientTaskProcessor(projRemoteClient &client) :
-derlTaskProcessorRemoteClient(client){
+derlTaskProcessorRemoteClient(client),
+pRootPath(decPath::CreatePathUnix("/")){
 }
 
 projRemoteClientTaskProcessor::~projRemoteClientTaskProcessor(){
@@ -205,7 +206,7 @@ bool projRemoteClientTaskProcessor::pExcludedByBaseGameDefPath(const decPath &pa
 }
 
 bool projRemoteClientTaskProcessor::pExcludedByPattern(const decPath &path){
-	const decString fullPath(path.GetPathUnix());
+	const decString fullPath(path.AbsolutePath(pRootPath).GetPathUnix());
 	const int count = pTaskProfileData->excludePatterns.GetCount();
 	int i;
 	

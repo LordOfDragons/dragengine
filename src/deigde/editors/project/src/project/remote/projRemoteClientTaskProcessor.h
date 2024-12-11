@@ -29,10 +29,10 @@
 
 #include <deremotelauncher/processor/derlTaskProcessorRemoteClient.h>
 
+#include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 
 class projRemoteClient;
-class decPath;
 
 
 /**
@@ -43,6 +43,7 @@ private:
 	projRemoteServer::TaskProfileData::Ref pTaskProfileData;
 	decBaseFileReader::Ref pVfsFileReader;
 	std::string pVfsFilePath;
+	const decPath pRootPath;
 	
 	
 public:
