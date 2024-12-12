@@ -9,7 +9,7 @@ Import('parent_env parent_targets parent_report')
 envLibrary = parent_env.Clone()
 
 srcVersion = 'nightly'
-srcdir = 'deremotelauncher-unix-x64-{}'.format(srcVersion)
+srcdir = 'deremotelauncher-unix-x64-{}-sdk'.format(srcVersion)
 
 libLinkName = 'deremotelauncher'
 
