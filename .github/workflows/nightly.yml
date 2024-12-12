@@ -143,28 +143,28 @@ jobs:
           cd repackage
 
           tar -xjf ../dragengine-dev-nightly-linux64.tar.bz2
-          mv usr sdk
+          mv usr dragengine-sdk
           rm ../dragengine-dev-nightly-linux64.tar.bz2
-          tar -cjf ../dragengine-dev-nightly-linux64.tar.bz2 sdk
-          rm -rf sdk
+          tar -cjf ../dragengine-dev-nightly-linux64.tar.bz2 dragengine-sdk
+          rm -rf dragengine-sdk
 
           tar -xjf ../deigde-dev-nightly-linux64.tar.bz2
-          mv usr sdk
+          mv usr deigde-sdk
           rm ../deigde-dev-nightly-linux64.tar.bz2
-          tar -cjf ../deigde-dev-nightly-linux64.tar.bz2 sdk
-          rm -rf sdk
+          tar -cjf ../deigde-dev-nightly-linux64.tar.bz2 deigde-sdk
+          rm -rf deigde-sdk
 
           unzip -q ../dragengine-sdk-nightly-windows64.zip
-          mv @ProgramFiles/Dragengine/SDK .
+          mv @ProgramFiles/Dragengine/SDK DragengineSDK
           rm ../dragengine-sdk-nightly-windows64.zip
-          zip -qr ../dragengine-sdk-nightly-windows64.zip SDK
-          rm -rf SDK
+          zip -qr ../dragengine-sdk-nightly-windows64.zip DragengineSDK
+          rm -rf DragengineSDK
 
           unzip -q ../deigde-sdk-nightly-windows64.zip
-          mv @ProgramFiles/DEIGDE/SDK .
+          mv @ProgramFiles/DEIGDE/SDK DEIGDESDK
           rm ../deigde-sdk-nightly-windows64.zip
-          zip -qr ../deigde-sdk-nightly-windows64.zip SDK
-          rm -rf SDK
+          zip -qr ../deigde-sdk-nightly-windows64.zip DEIGDESDK
+          rm -rf DEIGDESDK
 
           cd ..
           rm -rf repackage
