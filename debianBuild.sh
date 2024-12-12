@@ -92,8 +92,8 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` \
   `dir -1 extern/steamsdk/steamsdk160.tar.xz` \
   extern/mingw/mingw_stdthreads.tar.bz2 \
-  `dir -1 extern/libapng/libpng-*tar.bz2` || exit 1
-  `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` || exit 1
+  `dir -1 extern/libapng/libpng-*tar.bz2` \
+  `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` \
   `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` || exit 1
 gzip ../dragengine_*.orig.tar || exit 1
 
