@@ -9,7 +9,7 @@ Import('parent_env parent_targets parent_report')
 envLibrary = parent_env.Clone()
 
 srcVersion = 'nightly'
-srcdir = 'deremotelauncher-unix-x64-{}-sdk'.format(srcVersion)
+srcdir = 'deremotelauncher-unix-x64-{}'.format(srcVersion)
 
 libLinkName = 'deremotelauncher'
 
@@ -17,8 +17,7 @@ libFileName = envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(sr
 
 baseUrl = 'https://github.com/LordOfDragons/deremotelauncher/releases/download'
 
-nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	'deremotelauncher-unix-x64-{}.tar.bz2'.format(srcVersion),
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir),
 	srcVersion, 'lib_deremotelauncher_fetch', baseUrl=baseUrl)
 
 if 'with_deremotelauncher_inc' in envLibrary and envLibrary['with_deremotelauncher_inc']:
@@ -48,7 +47,7 @@ else:
 		untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
 
 	with open(envLibrary.File('header_file_list/deremotelauncher').srcnode().abspath, 'r') as f:
-		targets.extend([x[:-1] for x in f.readlines()])
+		targets.extend([x[:-1].replace('{version}', srcVersion) for x in f.readlines()])
 
 	library = envLibrary.Command(targets, nodeArtifacts,
 		envLibrary.Action(deremotelauncherUnpack, 'Unpack DERemoteLauncher'))[0:1]
