@@ -18,7 +18,8 @@ libFileName = envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(sr
 baseUrl = 'https://github.com/LordOfDragons/deremotelauncher/releases/download'
 
 nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	'{}.tar.bz2'.format(srcdir), 'nightly', 'lib_deremotelauncher_fetch', baseUrl=baseUrl)
+	'deremotelauncher-unix-x64-{}.tar.bz2'.format(srcVersion),
+	srcVersion, 'lib_deremotelauncher_fetch', baseUrl=baseUrl)
 
 if 'with_deremotelauncher_inc' in envLibrary and envLibrary['with_deremotelauncher_inc']:
 	envLibrary.Append(CPPPATH = [envLibrary['with_deremotelauncher_inc']])
