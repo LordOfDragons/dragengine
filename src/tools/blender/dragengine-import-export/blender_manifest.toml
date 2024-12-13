@@ -5,7 +5,6 @@ name = "Drag[en]gine Import/Export"
 tagline = "Import/Export Drag[en]gine Resources including helper tools"
 maintainer = "DragonDreams GmbH <info@dragondreams.ch>"
 type = "add-on"
-permissions = ["files"]
 website = "https://developer.dragondreams.ch/wiki/doku.php/tag:blender?do=showtag&tag=blender"
 tags = [
   "Import-Export",
@@ -16,8 +15,10 @@ tags = [
 ]
 blender_version_min = "4.2.0"
 license = [
-  "SPDX:GPL-2.0-or-later"
+  "SPDX:GPL-3.0-or-later"
 ]
 copyright = [
   "2024 DragonDreams GmbH",
 ]
+[permissions]
+"files" = "Importing/Exporting resources"
