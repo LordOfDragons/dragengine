@@ -1,0 +1,328 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Show progress of value inside range.
+ * \version 1.24
+ * 
+ * Similar in behavior to \ref ProgressBar but using a generic approach to represent
+ * complex gauge widgets. The empty gauge is represented using the regular widget background
+ * canvas designer. The filled gauge is represented using second canvas designer. The gradual
+ * filling in is done using a third canvas designer which is used as blending mask. This
+ * canvas designer has to produce a grayscale image which is then color processed to turn
+ * color values below the progress threshold to visible and color values above to be invisible.
+ * The width of the threshold can be configured to get a sharper or smoother blend.
+ * 
+ * Supports designing using designer selector "ProgressGauge".
+ */
+class ProgressGauge extends Widget implements RangeModelListener
+	var RangeModel pModel
+	var CanvasCreator pGaugeCanvasCreator, pBlendCanvasCreator
+	var Canvas pCanvasGauge
+	var CanvasView pCanvasBlend
+	var CanvasText pCanvasText
+	var bool pShowPercentage
+	var float pBlendWidth
+	
+	
+	
+	/** \brief Create progress gauge widget. */
+	func new() this(DefaultRangeModel.new(0, 100, 1, 0, 1))
+	end
+	
+	/** \brief Create progress gauge widget with model. */
+	func new(RangeModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		
+		pShowPercentage = true
+		pBlendWidth = 0
+		
+		pCanvasText = CanvasText.new()
+		pCanvasText.setOrder(2)
+		getCanvasContent().addCanvas(pCanvasText)
+		
+		setDesignerSelector("ProgressGauge")
+		
+		pModel = model
+		model.addListener(this)
+		
+		updateProgress()
+	end
+	
+	/** \brief Create progress gauge widget with designer selector. */
+	func new(String designerSelector) this()
+		setDesignerSelector(designerSelector)
+	end
+	
+	/** \brief Create progress gauge widget with model and designer selector. */
+	func new(RangeModel model, String designerSelector) this(model)
+		setDesignerSelector(designerSelector)
+	end
+	
+	func void dispose()
+		pGaugeCanvasCreator = pBlendCanvasCreator = null
+		pModel.removeListener(this)
+		pModel = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Model. */
+	func RangeModel getModel()
+		return pModel
+	end
+	
+	/** \brief Set model. */
+	func void setModel(RangeModel model)
+		if model == pModel
+			return
+		end
+		
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		
+		pModel.removeListener(this)
+		pModel = model
+		model.addListener(this)
+		
+		updateProgress()
+	end
+	
+	/** \brief Show percentage label. */
+	func bool getShowPercentage()
+		return pShowPercentage
+	end
+	
+	/** \brief Set if percentage label is shown. */
+	func void setShowPercentage(bool show)
+		if show == pShowPercentage
+			return
+		end
+		
+		pShowPercentage = show
+		updateLabelCanvasParams()
+	end
+	
+	/** \brief Width of blending in the range from 0 to 1. */
+	func float getBlendWidth()
+		return pBlendWidth
+	end
+	
+	/** \brief Set width of blending in the range from 0 to 1. */
+	func void setBlendWidth(float width)
+		width = DEMath.clamp(width, 0.0, 1.0)
+		if DEMath.fabs(width - pBlendWidth) < 0.001
+			return
+		end
+		
+		pBlendWidth = width
+		updateCanvasGeometry()
+	end
+	
+	
+	
+	/** \brief gauge canvas creator or \em null to show no gauge. */
+	func CanvasCreator getGaugeCanvasCreator()
+		return pGaugeCanvasCreator
+	end
+	
+	/** \brief Set gauge canvas creator or \em null to show no gauge. */
+	func void setGaugeCanvasCreator(CanvasCreator creator)
+		if creator == pGaugeCanvasCreator
+			return
+		end
+		
+		pGaugeCanvasCreator = creator
+		updateProgress()
+	end
+	
+	/** \brief Blend canvas creator or \em null to show no gauge. */
+	func CanvasCreator getBlendCanvasCreator()
+		return pBlendCanvasCreator
+	end
+	
+	/** \brief Set blend canvas creator or \em null to show no gauge. */
+	func void setBlendCanvasCreator(CanvasCreator creator)
+		if creator == pBlendCanvasCreator
+			return
+		end
+		
+		pBlendCanvasCreator = creator
+		updateProgress()
+	end
+	
+	
+	
+	/** \brief Range model minimum, maximum or page size changed. */
+	func void rangeChanged(RangeModel rangeModel)
+		updateProgress()
+	end
+	
+	/** \brief Range model value changed. */
+	func void valueChanged(RangeModel rangeModel)
+		updateProgress()
+	end
+	
+	
+	
+	func Point getMinimumSize()
+		if isMinimumSizeSet()
+			return super.getMinimumSize()
+		end
+		
+		var int textSize = 0
+		
+		if pShowPercentage
+			var Font font = getFont()
+			if font != null
+				textSize = font.getSize()
+			end
+		end
+		
+		return super.getMinimumSize().largest(Point.new(textSize, textSize) + getPadding().getSize())
+	end
+	
+	
+	
+	func void onSetFont()
+		updateLabelCanvasParams()
+		updateProgress()
+	end
+	
+	func void onSetTextColor()
+		updateLabelCanvasParams()
+		updateProgress()
+	end
+	
+	 func void onResize(WidgetEvent event)
+		super.onResize(event)
+		updateProgress()
+	end
+	
+	func void onGuiThemeChanged()
+		super.onGuiThemeChanged()
+		updateLabelCanvasParams()
+		updateProgress()
+	end
+	
+	
+	
+	/** \brief Progress percentage in the range from 0 to 1. */
+	func float getPercentage()
+		if pModel == null
+			return 0
+		end
+		return DEMath.linearStep(pModel.getValue(), pModel.getMinimum(), pModel.getMaximum())
+	end
+	
+	
+	
+	/** \brief Update progress. */
+	protected func void updateProgress()
+		var CanvasView content = getCanvasContent()
+		var Point size = getSize()
+		
+		// update progress gauge
+		if pCanvasGauge != null
+			content.removeCanvas(pCanvasGauge)
+			pCanvasGauge = null
+		end
+		pCanvasBlend = null
+		
+		if pGaugeCanvasCreator != null
+			pCanvasGauge = pGaugeCanvasCreator.createCanvas(size)
+			if pCanvasGauge != null
+				pCanvasGauge.setOrder(1)
+				content.addCanvas(pCanvasGauge)
+				
+				if pBlendCanvasCreator != null
+					var Canvas canvas = pBlendCanvasCreator.createCanvas(size)
+					if canvas != null
+						pCanvasBlend = CanvasView.new()
+						pCanvasBlend.setSize(size)
+						pCanvasBlend.setColorTransform(createBlendColorMatrix())
+						pCanvasBlend.addCanvas(canvas)
+						pCanvasGauge.setMask(pCanvasBlend)
+					end
+				end
+			end
+		end
+		
+		// update progress text
+		var String text = "" + ((getPercentage() * 100) cast int) + "%"
+		var Font font = pCanvasText.getFont()
+		var Point textSize = Point.new(1, 1)
+		
+		if font != null
+			textSize = font.getTextSize(text)
+		end
+		
+		var Point position = (getSize() - textSize) / 2
+		
+		pCanvasText.setText(text)
+		pCanvasText.setPosition(position)
+		pCanvasText.setSize(textSize)
+	end
+	
+	/** \brief Create blend color matrix. */
+	protected func ColorMatrix createBlendColorMatrix()
+		var float bottom = -0.01 - pBlendWidth
+		var float top = 1.01
+		var float scale1 = 1.0 / (top - bottom)
+		var float threshold = getPercentage()
+		var float scale2 = -1.0 / DEMath.max(pBlendWidth * scale1, 0.0001)
+		
+		return ColorMatrix.newTranslation(-bottom, -bottom, -bottom, 0)\
+			* ColorMatrix.newScaling(scale1, scale1, scale1, 1)\
+			* ColorMatrix.newTranslation(-threshold, -threshold, -threshold, 0)\
+			* ColorMatrix.newScaling(scale2, scale2, scale2, 1)\
+			* ColorMatrix.newTranslation(1, 1, 1, 0)
+	end
+	
+	/** \brief Update label canvas font, color and visibility. */
+	protected func void updateLabelCanvasParams()
+		pCanvasText.setFont(getFont())
+		
+		var Color color = getTextColor()
+		if color == null
+			color = Color.transparent
+		end
+		
+		pCanvasText.setColor(color)
+		
+		pCanvasText.setVisible(pShowPercentage)
+	end
+end

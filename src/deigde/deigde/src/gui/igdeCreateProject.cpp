@@ -251,7 +251,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	writer->WriteString( pProject->GetPathLocal() + "\n" );
 	writer->WriteString( pPathCache + "\n" );
 	writer->WriteString( "distribute\n" );
-	writer->WriteString( "testRun.log\n" );
+	writer->WriteString( "testRun*.log\n" );
 	writer->WriteString( "*.kdev*\n" );
 	writer->WriteString( "*.blend[1-9]\n" );
 	writer->WriteString( "*.delga\n" );

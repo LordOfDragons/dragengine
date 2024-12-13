@@ -84,10 +84,16 @@ void deoglCanvas::SetDirtyParentPaint(){
 	pDirtyParentPaint = true;
 	
 	if( pCanvas.GetParentMask() ){
-		( ( deoglCanvas* )pCanvas.GetParentMask()->GetPeerGraphic() )->SetDirtyMaskContent();
+		deoglCanvas * const canvas = ( deoglCanvas* )pCanvas.GetParentMask()->GetPeerGraphic();
+		if( canvas ){
+			canvas->SetDirtyMaskContent();
+		}
 	}
 	if( pCanvas.GetParentView() ){
-		( ( deoglCanvasView* )pCanvas.GetParentView()->GetPeerGraphic() )->SetDirtyPaint();
+		deoglCanvasView * const canvas = ( deoglCanvasView* )pCanvas.GetParentView()->GetPeerGraphic();
+		if( canvas ){
+			canvas->SetDirtyPaint();
+		}
 	}
 }
 

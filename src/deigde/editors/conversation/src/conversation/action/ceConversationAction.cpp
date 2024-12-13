@@ -41,12 +41,14 @@
 ceConversationAction::ceConversationAction( eActionTypes type ) :
 pType( type ),
 pWaitForActor( true ),
+pWaitSpeakOnly( false ),
 pDelay( 0.0f ){
 }
 
 ceConversationAction::ceConversationAction( const ceConversationAction &action ) :
 pType( action.pType ),
 pWaitForActor( action.pWaitForActor ),
+pWaitSpeakOnly( action.pWaitSpeakOnly ),
 pWaitForActorID( action.pWaitForActorID ),
 pDelay( action.pDelay ){
 }
@@ -61,6 +63,10 @@ ceConversationAction::~ceConversationAction(){
 
 void ceConversationAction::SetWaitForActor( bool wait ){
 	pWaitForActor = wait;
+}
+
+void ceConversationAction::SetWaitSpeakOnly( bool speakOnly ){
+	pWaitSpeakOnly = speakOnly;
 }
 
 void ceConversationAction::SetWaitForActorID( const char *wait ){

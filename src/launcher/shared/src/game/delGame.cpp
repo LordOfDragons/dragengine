@@ -140,6 +140,11 @@ void delGame::SetScriptModuleVersion( const char *version ){
 	pScriptModuleVersion = version;
 }
 
+decPoint delGame::GetDisplayScaledWindowSize() const{
+	const int scaleFactor = pLauncher.GetEngine().GetScaleFactor();
+	return decPoint(pWindowSize.x * scaleFactor / 100, pWindowSize.y * scaleFactor / 100);
+}
+
 void delGame::SetWindowSize( const decPoint &size ){
 	pWindowSize = size.Largest( decPoint() );
 }
@@ -437,7 +442,15 @@ void delGame::StopGame(){
 	
 	logger.LogInfoFormat( pLauncher.GetLogSource(), "Stopping game '%s'", pTitle.ToUTF8().GetString() );
 	
-	pEngineInstance->StopEngine();
+	// calling IsGameRunning collects information if threaded
+	if(pEngineInstance->IsGameRunning() != 0){
+		pEngineInstance->StopGame();
+	}
+	
+	// ensure information is collected. and if still running kill the process
+	if(pEngineInstance->IsGameRunning() != 0){
+		pEngineInstance->KillEngine();
+	}
 	SetEngineInstance( nullptr );
 	
 	logger.LogInfoFormat( pLauncher.GetLogSource(), "Game '%s' stopped", pTitle.ToUTF8().GetString() );

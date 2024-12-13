@@ -14,7 +14,7 @@ parent_report['build BeOS Input Module'] = 'yes' if buildModule else 'no'
 if not buildModule:
 	Return()
 
-versionString = '1.3'
+versionString = '1.24'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

@@ -2367,6 +2367,8 @@ class Widget
 	/**
 	 * \brief Popup virtual keyboard if Desktop has one assigned.
 	 * \version 1.7
+	 * 
+	 * Does nothing if the virtual keyboard is shown and already assigned to this widget.
 	 */
 	func void popupVirtualKeyboard()
 		var Desktop desktop = getDesktop()
@@ -2381,6 +2383,8 @@ class Widget
 	/**
 	 * \brief Popdown virtual keyboard if Desktop has one assigned.
 	 * \version 1.7
+	 * 
+	 * Does nothing if the virtual keyboard is shown and not assigned to this widget.
 	 */
 	func void popdownVirtualKeyboard()
 		var Desktop desktop = getDesktop()

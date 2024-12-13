@@ -411,14 +411,22 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			
 			pRemainingDisplayTime = 0
 			pParts.removeAll()
-			setSubTitleText(null)
-			setRequiresThink(false)
+			advanceToNextPart()
+		end
+		
+		/**
+		 * \brief Skip current part advancing to next one if possible.
+		 * \version 1.24
+		 * 
+		 * Has no effect if \ref #isRunning() returns false.
+		 */
+		func void skipPart()
+			if not isRunning()
+				return
+			end
 			
-			onFinished()
-			
-			pListeners.forEach(block Listener each
-				each.transmissionFinished(this)
-			end)
+			pRemainingDisplayTime = 0
+			advanceToNextPart()
 		end
 		
 		
@@ -520,10 +528,24 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 */
 		func void think(float elapsed)
 			pRemainingDisplayTime -= elapsed
-			if pRemainingDisplayTime > 0
-				return
+			if pRemainingDisplayTime <= 0
+				advanceToNextPart()
 			end
-			
+		end
+		
+		/**
+		 * \brief Advance to next part.
+		 * \version 1.24
+		 * 
+		 * If more parts can be shown the next part is shown using \ref #displayPart().
+		 * 
+		 * If there are no more parts the subtitle text is cleared and requires thinking disabled.
+		 * Furthermore \ref #onFinished() is called and * \ref Listener#transmissionFinished()
+		 * is called on all listeners.
+		 * 
+		 * Call this method only if \ref #isRunning() returns true.
+		 */
+		protected func void advanceToNextPart()
 			if pParts.getCount() > 0
 				displayPart(pParts.getAt(0) cast Part)
 				return

@@ -446,10 +446,11 @@ long deglPanelGames::onPUGameRun( FXObject*, FXSelector, void* ){
 			runParams.SetHeight( profile->GetHeight() );
 			runParams.SetFullScreen( profile->GetFullScreen() );
 			
-			if( game->GetWindowSize() != decPoint() ){
-				runParams.SetWidth( game->GetWindowSize().x );
-				runParams.SetHeight( game->GetWindowSize().y );
-				runParams.SetFullScreen( false );
+			const decPoint windowSize(game->GetDisplayScaledWindowSize());
+			if(windowSize != decPoint()){
+				runParams.SetWidth(windowSize.x);
+				runParams.SetHeight(windowSize.y);
+				runParams.SetFullScreen(false);
 			}
 			
 			game->StartGame( runParams );
@@ -542,10 +543,11 @@ long deglPanelGames::onPUGameRunWith( FXObject*, FXSelector, void* ){
 				runParams.SetHeight( runParams.GetGameProfile()->GetHeight() );
 				runParams.SetFullScreen( runParams.GetGameProfile()->GetFullScreen() );
 				
-				if( game->GetWindowSize() != decPoint() ){
-					runParams.SetWidth( game->GetWindowSize().x );
-					runParams.SetHeight( game->GetWindowSize().y );
-					runParams.SetFullScreen( false );
+				const decPoint windowSize(game->GetDisplayScaledWindowSize());
+				if(windowSize != decPoint()){
+					runParams.SetWidth(windowSize.x);
+					runParams.SetHeight(windowSize.y);
+					runParams.SetFullScreen(false);
 				}
 				
 				if( runParams.GetGameProfile()->GetValid() ){

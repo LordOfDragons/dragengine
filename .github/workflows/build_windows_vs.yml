@@ -41,7 +41,7 @@ on:
         description: 'Build Version'
         required: true
         type: string
-        default: 9999
+        default: "9999"
       artifactArchive:
         description: 'Artifact Archive'
         required: true
@@ -91,7 +91,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
         
       - name: Install required packages
-        run: choco install cmake ninja 7zip
+        run: choco install ninja 7zip
 
       - name: Restore NuGet packages
         working-directory: vs

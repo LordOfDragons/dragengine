@@ -143,6 +143,27 @@ fixed class Engine
 	static func void setDefaultEnableAuralization(bool enable)
 	end
 	
+	/**
+	 * \brief Scripts are DPI aware.
+	 * \version 1.24
+	 * 
+	 * If enabled scripts are DPI aware and apply scaling properly. If disabled the engine
+	 * modules apply the scaling making DPI changes transparent. Default is disabled.
+	 */
+	static func bool getDpiAware()
+		return false
+	end
+	
+	/**
+	 * \brief Set if scripts are DPI aware.
+	 * \version 1.24
+	 * 
+	 * If enabled scripts are DPI aware and apply scaling properly. If disabled the engine
+	 * modules apply the scaling making DPI changes transparent. Default is disabled.
+	 */
+	static func void setDpiAware(bool dpiAware)
+	end
+	
 	
 	
 	/**

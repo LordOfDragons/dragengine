@@ -28,6 +28,7 @@
 #include "projPanelTestRun.h"
 #include "projPanelUndoHistory.h"
 #include "projDialogDistribute.h"
+#include "../configuration/projConfiguration.h"
 #include "../projIGDEModule.h"
 #include "../project.h"
 #include "../project/projProject.h"
@@ -93,15 +94,16 @@ enum ePanels{
 projWindowMain::projWindowMain( igdeEditorModule &module ) :
 igdeEditorWindow( module ),
 
-pListener( NULL ),
+pListener(nullptr),
+pConfiguration(nullptr),
 
 pLoadSaveSystem( *this ),
 
-pProject( NULL ),
+pProject(nullptr),
 
-pPanelProfiles( NULL ),
-pPanelTestRun( NULL ),
-pPanelUndoHistory( NULL )
+pPanelProfiles(nullptr),
+pPanelTestRun(nullptr),
+pPanelUndoHistory(nullptr)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -110,6 +112,9 @@ pPanelUndoHistory( NULL )
 	pCreateMenu();
 	
 	pListener = new projWindowMainListener( *this );
+	pConfiguration = new projConfiguration(*this);
+	
+	pConfiguration->LoadConfiguration();
 	
 	// content
 	pCreateToolBarDistribute();
@@ -132,21 +137,28 @@ pPanelUndoHistory( NULL )
 }
 
 projWindowMain::~projWindowMain(){
-	SetProject( NULL );
+	if( pConfiguration ){
+		pConfiguration->SaveConfiguration();
+	}
+	
+	SetProject(nullptr);
 	
 	if( pPanelProfiles ){
 		pPanelProfiles->FreeReference();
-		pPanelProfiles = NULL;
+		pPanelProfiles = nullptr;
 	}
 	if( pPanelTestRun ){
 		pPanelTestRun->FreeReference();
-		pPanelTestRun = NULL;
+		pPanelTestRun = nullptr;
 	}
 	if( pPanelUndoHistory ){
 		pPanelUndoHistory->FreeReference();
-		pPanelUndoHistory = NULL;
+		pPanelUndoHistory = nullptr;
 	}
 	
+	if(pConfiguration){
+		delete pConfiguration;
+	}
 	if( pListener ){
 		pListener->FreeReference();
 	}
@@ -328,6 +340,12 @@ bool projWindowMain::SaveDocument( const char *filename ){
 
 void projWindowMain::OnGameProjectChanged(){
 	LoadProject();
+	
+	if(pConfiguration){
+		pConfiguration->LoadConfiguration();
+	}
+	
+	pPanelTestRun->LoadConfig();
 }
 
 void projWindowMain::UpdateShowActionPath(){

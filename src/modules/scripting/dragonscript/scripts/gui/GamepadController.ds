@@ -68,6 +68,13 @@ pin Dragengine.Utils
  * devices and sends generated events as needed. Sending events can be temporarily disabled.
  * Once the gamepad controller is not required anymore call dispose(). After creating the
  * gamepad controller it is initially enabled.
+ * 
+ * \par Version 1.24
+ * 
+ * If the monitored widget is a \ref Desktop widget a virtual keyboard is automatically added
+ * the first time an input is registered on a gamepad if none is assigned yet. This allows
+ * users to use mouse and keyboard or gamepad as they please and a virtual keyboard is
+ * automatically present if needed.
  */
 class GamepadController extends FrameUpdateListener
 	private class InvalidateDevices extends GlobalEvents.DefaultListener
@@ -176,6 +183,7 @@ class GamepadController extends FrameUpdateListener
 	var int pButtonPressCount
 	var Vector2 pMouseMoveAccum
 	var float pMouseMovementAcceleration
+	var bool pAutoAddVirtualKeyboard, pAutoAddVirtualKeyboardDone
 	
 	
 	
@@ -197,6 +205,7 @@ class GamepadController extends FrameUpdateListener
 		pEnabled = true
 		pMouseMoveAccum = Vector2.new()
 		pMouseMovementAcceleration = 1.5
+		pAutoAddVirtualKeyboard = true
 		
 		pGlobalEvents = globalEvents
 		pInvalidateDevices = InvalidateDevices.new(this)
@@ -283,6 +292,23 @@ class GamepadController extends FrameUpdateListener
 		pMouseMovementAcceleration = DEMath.max(acceleration, 0.1)
 	end
 	
+	/**
+	 * \brief Automatically add virtual keyboard on first input if not present.
+	 * \version 1.24
+	 */
+	func bool getAutoAddVirtualKeyboard()
+		return pAutoAddVirtualKeyboard
+	end
+	
+	/**
+	 * \brief Automatically add virtual keyboard on first input if not present.
+	 * \version 1.24
+	 */
+	func void setAutoAddVirtualKeyboard(bool autoAdd)
+		pAutoAddVirtualKeyboard = autoAdd
+	end
+	
+	
 	
 	
 	/** \brief Process event. */
@@ -322,6 +348,7 @@ class GamepadController extends FrameUpdateListener
 		pButtonPressCount++
 		
 		if pButtonPressCount == 1
+			autoAddVirtualKeyboard()
 			sendMouseButtonPress()
 		end
 	end
@@ -412,6 +439,7 @@ class GamepadController extends FrameUpdateListener
 		end) cast AxisState
 		
 		if state != null
+			
 			state.update(this, event.getAxisValue())
 		end
 	end
@@ -539,5 +567,39 @@ class GamepadController extends FrameUpdateListener
 				indexTrigger++
 			end
 		end
+	end
+	
+	/**
+	 * \brief Automatically add virtual keyboard if preconditions are fulfilled.
+	 * \version 1.24
+	 * 
+	 * Virtual keyboard is added if:
+	 * - \ref #getAutoAddVirtualKeyboard() is true.
+	 * - \ref #getWidget() is castable to \ref Desktop.
+	 * - \ref Desktop#getWindowVirtualKeyboard() is null.
+	 */
+	protected func void autoAddVirtualKeyboard()
+		if pAutoAddVirtualKeyboardDone
+			return
+		end
+		
+		if pAutoAddVirtualKeyboard and pWidget castable Desktop
+			var Desktop desktop = pWidget cast Desktop
+			if desktop.getWindowVirtualKeyboard() == null
+				desktop.setWindowVirtualKeyboard(createWindowVirtualKeyboard())
+			end
+		end
+		
+		pAutoAddVirtualKeyboardDone = true
+	end
+	
+	/**
+	 * \brief Create virtual keyboard window.
+	 * \version 1.24
+	 * 
+	 * Default implementation returns instance of \ref WindowVirtualKeyboard.
+	 */
+	protected func WindowVirtualKeyboard createWindowVirtualKeyboard()
+		return WindowVirtualKeyboard.new()
 	end
 end

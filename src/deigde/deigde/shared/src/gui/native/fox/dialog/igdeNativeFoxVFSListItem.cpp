@@ -141,11 +141,18 @@ void igdeNativeFoxVFSListItem::UpdateText( const char* pattern ){
 // Sorting
 ////////////
 
+/*
 #ifdef OLD_STRING_COMPARE_NS
 	#define FOX_STRING_COMPARE compare
 #else
 	#define FOX_STRING_COMPARE FXString::compare
 #endif
+*/
+
+static FXint foxStringCompare( const FXString &s1, const FXString &s2 ){
+	return strcmp( s1.text(), s2.text() );
+}
+#define FOX_STRING_COMPARE foxStringCompare
 
 FXint igdeNativeFoxVFSListItem::fSortNameAsc( const FXIconItem *item1, const FXIconItem *item2 ){
 	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );

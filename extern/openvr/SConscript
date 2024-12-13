@@ -36,6 +36,32 @@ else:
 	libLinkName = 'openvr_api'
 	libpath = [envLibrary.Dir('lib')]
 
+# check if system openvr is present
+hasSystemOpenVR = False
+
+conf = envLibrary.Configure()
+if envLibrary['with_system_openvr'] != TernaryVariableNo:
+	hasSystemOpenVR = conf.CheckLibWithHeader(libLinkName,
+		'openvr/openvr.h', 'c++', 'vr::VR_IsRuntimeInstalled();')
+conf.Finish()
+
+if not hasSystemOpenVR and envLibrary['with_system_openvr'] == TernaryVariableYes:
+	Exit('Requested to use system OpenVR but no usable OpenVR found.')
+
+parent_report['use system OpenVR'] = 'yes' if hasSystemOpenVR else 'no'
+
+if hasSystemOpenVR:
+	parent_targets['lib_openvr'] = {
+		'name' : 'Internal OpenVR library',
+		'cpppath' : [],
+		'cppflags' : [],
+		'libpath' : [],
+		'libs' : [libLinkName],
+		'runtimelibs' : [],
+		'depends' : []}
+	Return()
+
+# build openvr
 def openvrBuild(target, source, env):
 	buildDir = target[0].get_dir().up()
 	

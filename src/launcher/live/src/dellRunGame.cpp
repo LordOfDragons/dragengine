@@ -185,10 +185,11 @@ bool dellRunGame::LocateProfile(){
 	pRunParams.SetHeight( profile->GetHeight() );
 	pRunParams.SetFullScreen( profile->GetFullScreen() );
 	
-	if( pGame->GetWindowSize() != decPoint() ){
-		pRunParams.SetWidth( pGame->GetWindowSize().x );
-		pRunParams.SetHeight( pGame->GetWindowSize().y );
-		pRunParams.SetFullScreen( false );
+	const decPoint windowSize(pGame->GetDisplayScaledWindowSize());
+	if(windowSize != decPoint()){
+		pRunParams.SetWidth(windowSize.x);
+		pRunParams.SetHeight(windowSize.y);
+		pRunParams.SetFullScreen(false);
 	}
 	
 	return true;

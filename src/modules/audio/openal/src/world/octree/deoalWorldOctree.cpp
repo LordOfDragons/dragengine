@@ -166,11 +166,11 @@ void deoalWorldOctree::ClearSoundLevelMeters(){
 }
 
 void deoalWorldOctree::ClearAll(){
-	void ClearComponents();
-	void ClearSpeakers();
-	void ClearMicrophones();
-	void ClearEnvProbes();
-	void ClearSoundLevelMeters();
+	ClearComponents();
+	ClearSpeakers();
+	ClearMicrophones();
+	ClearEnvProbes();
+	ClearSoundLevelMeters();
 }
 
 void deoalWorldOctree::InsertComponentIntoTree( deoalAComponent *component, int maxDepth ){

@@ -1,6 +1,4 @@
 import os
-import sys
-import SCons
 import zipfile
 
 from SConsCommon import *
@@ -9,6 +7,9 @@ from SConsExternCommon import *
 Import('parent_env parent_targets parent_report')
 
 if parent_env['platform_android'] != 'no':
+	Return()
+
+if parent_env['OSBeOS']:
 	Return()
 
 envLibrary = parent_env.Clone()

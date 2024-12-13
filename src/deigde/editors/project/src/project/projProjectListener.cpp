@@ -73,3 +73,7 @@ void projProjectListener::ActiveProfileChanged( projProject *project ){
 
 void projProjectListener::ActiveLaunchProfileChanged( projProject *project ){
 }
+
+void projProjectListener::RemoteClientConnected(projProject *project,
+const projRemoteClient::Ref &client){
+}

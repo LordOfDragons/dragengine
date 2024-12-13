@@ -56,7 +56,13 @@ pin Dragengine.Utils
 class ECBehaviorActorMover extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
-		/** \brief Actor starts moving towards goal. */
+		/**
+		 * \brief Actor starts moving towards goal.
+		 * 
+		 * \note
+		 * \ref Instance#getPath() can be null if no path could be found or the actor is already
+		 * at the goal. In this case \ref #arrivedAtGoal() and \ref #stopMoving() is called too.
+		 */
 		func void startMoving(Instance instance)
 		
 		/** \brief Actor stops moving. */
@@ -64,7 +70,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		/**
 		 * \brief Actor arrived at goal position.
-		 * \note stopMoving() will be called before arrivedAtGoal() is called.
+		 * \note \ref #stopMoving() will be called before \ref #arrivedAtGoal() is called.
 		 */
 		func void arrivedAtGoal(Instance instance, DVector goalPosition)
 		
@@ -78,22 +84,15 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		func new()
 		end
 		
-		/** \brief Actor starts moving towards goal. */
 		func void startMoving(Instance instance)
 		end
 		
-		/** \brief Actor stops moving. */
 		func void stopMoving(Instance instance)
 		end
 		
-		/**
-		 * \brief Actor arrived at goal position.
-		 * \note stopMoving() will be called before arrivedAtGoal() is called.
-		 */
 		func void arrivedAtGoal(Instance instance, DVector goalPosition)
 		end
 		
-		/** \brief Modify locomotion values set by moveTowards(). */
 		func void modifyMoveTowards(Instance instance, DVector position, float elapsed)
 		end
 	end
@@ -634,14 +633,28 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pPath = null
 			
 			if goal != null
-				updatePath()
+				bareUpdatePath()
 			end
 			
-			pListeners.forEach(block Listener each
-				each.startMoving(this)
-			end)
-			
-			updateRequiresThinking()
+			if pGoalPosition != null and pPath != null
+				pListeners.forEach(block Listener each
+					each.startMoving(this)
+				end)
+				
+				if pGoalPosition == null or pPath == null
+					return // listener forced stop moving
+				end
+				
+				updateRequiresThinking()
+				
+				if pNextPathPoint == pPath.getCount()
+					arrivedAtGoal()
+				end
+				
+			else
+				stopMoving()
+				updateRequiresThinking()
+			end
 		end
 		
 		/** \brief Stop moving. */
@@ -672,14 +685,38 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * This method can be called while the actor is moving along a path to calculate a new
 		 * path to the target. This is useful if the actor ended up in a bad location or the
 		 * navigation spaces or navigator changed in a way the current path might be no more valid.
+		 * 
+		 * \retval true Path is valid and actor starts moving.
+		 * \retval false No goal position is set.
+		 * \retval false Path is valid and actor is already at goal position.
 		 */
 		func bool updatePath()
+			bareUpdatePath()
+			
+			if pGoalPosition == null or pPath == null
+				return false
+				
+			elif pNextPathPoint == pPath.getCount()
+				arrivedAtGoal()
+				return false
+				
+			else
+				calculateRemainingDistance()
+				return true
+			end
+		end
+		
+		/**
+		 * \brief Update move to path without calling \ref #arrivedAtGoal().
+		 * \version 1.24
+		 */
+		protected func void bareUpdatePath()
 			if pGoalPosition == null
 				pPath = null
 				pNextPathPoint = 0
 				pNextPlaneNormal = null
 				pRemainingDistance = 0
-				return false
+				return
 			end
 			
 			// check if actor is already at target
@@ -752,13 +789,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				end
 			end
 			
-			if pNextPathPoint == pointCount
-				arrivedAtGoal()
-				return false
+			if pNextPathPoint < pointCount
+				calculateRemainingDistance()
 			end
-			
-			calculateRemainingDistance()
-			return true
 		end
 		
 		

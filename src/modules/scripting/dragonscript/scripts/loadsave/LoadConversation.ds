@@ -417,6 +417,10 @@ class LoadConversation extends BaseXmlLoader
 			action.setWaitForActor(root.getFirstCDataBool())
 			return true
 			
+		elif tagName.equals("waitSpeakOnly")
+			action.setWaitSpeakOnly(root.getFirstCDataBool())
+			return true
+			
 		elif tagName.equals("waitForActorID")
 			action.setWaitForActorID(root.getFirstCData())
 			return true

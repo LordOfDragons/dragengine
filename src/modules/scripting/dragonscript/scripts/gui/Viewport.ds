@@ -33,18 +33,24 @@ pin Dragengine.Gui.Layouts
  * \brief Display small view of a widget larger than the viewport.
  * 
  * Typical use is like this:
- * <code>ScrollPanel.new(Viewport.new(widget)).</code>
+ * \code{.ds}
+ * ScrollPanel.new(Viewport.new(widget)).
+ * \endcode
  * 
  * This shows scroll bars if widget is larger than the viewport and aligns
  * it to the left and top side. For different alignment set a layout.
  * The layout is only overwritten vertically or horizontally if the
  * widget is larger than the viewport. For example to center the widget
  * if smaller than the viewport use
- * <code>viewport.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))</code>
+ * \code{.ds}
+ * viewport.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+ * \endcode
  * 
  * Another typical situation is to stretch the widget to the viewport if
  * smaller. This can be done like this:
- * <code>viewport.setLayout(BoxLayout.new(LayoutAxis.y))</code>
+ * \code{.ds}
+ * viewport.setLayout(BoxLayout.new(LayoutAxis.y))
+ * \endcode
  * 
  * The default layout is FixedMinimalLayout. Other layouts are possible.
  */

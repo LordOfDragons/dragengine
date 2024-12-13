@@ -74,12 +74,21 @@ void delEngineProcessRunGame::Run(){
 			break;
 		}
 		
-		if( command == delEngineProcess::eccStopGame ){
+		if(command == delEngineProcess::eccStopGame
+		|| command == delEngineProcess::eccStopProcess){
+			// stop process is handled the same way as stop game. this is more of a
+			// historical situation than something useful
+			
 			// although we are in a separate thread we can simply call Quit on the game
 			// engine. this is because the Quit call just sets a quit request variable
 			// to true. this operation is thread safe no matter in what interleaved way
 			// the machine code is executed
 			pProcess.GetEngine()->Quit();
+			
+			// write answer to pipe once game exits. only required for stop game command
+			if(command == delEngineProcess::eccStopGame){
+				pProcess.SetStopGame();
+			}
 			
 			// after this we do no more read from the pipe. this is since after the stop
 			// game command is received the interpretation of upcoming commands has to
@@ -87,7 +96,7 @@ void delEngineProcessRunGame::Run(){
 			break;
 			
 		}else{
-			pProcess.WriteUCharToPipe( delEngineProcess::ercFailed );
+			pProcess.WriteUCharToPipe(delEngineProcess::ercFailed);
 		}
 	}
 }

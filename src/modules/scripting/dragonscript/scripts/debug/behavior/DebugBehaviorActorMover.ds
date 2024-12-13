@@ -41,107 +41,124 @@ pin Dragengine.Utils
 class DebugBehaviorActorMover
 	/** \brief Watch behavior listener. */
 	class WatchBehavior extends ECBehaviorActorMover.DefaultListener
-		private var DebugBehaviorActorMover pDebug
+		var DebugBehaviorActorMover pDebug
 		
-		public func new( DebugBehaviorActorMover debug )
-			this.pDebug = debug
+		func new(DebugBehaviorActorMover debug)
+			pDebug = debug
 		end
 		
-		public func void startMoving( ECBehaviorActorMover.Instance instance )
-			this.pDebug.onStartMoving()
+		func void startMoving(ECBehaviorActorMover.Instance instance)
+			pDebug.onStartMoving()
 		end
 		
-		public func void stopMoving( ECBehaviorActorMover.Instance instance )
-			this.pDebug.onStopMoving()
+		func void stopMoving(ECBehaviorActorMover.Instance instance)
+			pDebug.onStopMoving()
 		end
 		
-		public func void arrivedAtGoal( ECBehaviorActorMover.Instance instance, DVector goalPosition )
-			this.pDebug.onArrivedAtGoal( goalPosition )
+		func void arrivedAtGoal(ECBehaviorActorMover.Instance instance, DVector goalPosition)
+			pDebug.onArrivedAtGoal(goalPosition)
 		end
 		
-		public func void modifyMoveTowards( ECBehaviorActorMover.Instance instance, DVector position, float elapsed )
-			this.pDebug.onModifyMoveTowards( position, elapsed )
+		func void modifyMoveTowards(ECBehaviorActorMover.Instance instance, DVector position, float elapsed)
+			pDebug.onModifyMoveTowards(position, elapsed)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorActorMover.Instance pBehavior
-	private var DebugDrawer pDebugDrawer
-	private var GameWorld pGameWorld
-	private var float pBoxHalfExtends
-	private var float pSphereRadius
-	private var WeakReference pWatchBehavior
+	var ECBehaviorActorMover.Instance pBehavior
+	var DebugDrawer pDebugDrawer
+	var GameWorld pGameWorld
+	var float pBoxHalfExtends
+	var float pSphereRadius
+	var WeakReference pWatchBehavior
+	var Console pConsole
 	
 	
 	
 	/** \brief Create debug instance for behavior. */
-	public func new( ECBehaviorActorMover.Instance behavior )
-		this.pBoxHalfExtends = 0.015
-		this.pSphereRadius = 0.03
+	func new(ECBehaviorActorMover.Instance behavior)
+		pBoxHalfExtends = 0.015
+		pSphereRadius = 0.03
 		
-		this.pBehavior = behavior
-		var WatchBehavior watchBehavior = WatchBehavior.new( this )
-		behavior.addListener( watchBehavior )
-		this.pWatchBehavior = WeakReference.new( watchBehavior )
+		pBehavior = behavior
+		var WatchBehavior watchBehavior = WatchBehavior.new(this)
+		behavior.addListener(watchBehavior)
+		pWatchBehavior = WeakReference.new(watchBehavior)
 		
-		this.pDebugDrawer = DebugDrawer.new()
-		this.pDebugDrawer.setVisible( true )
-		this.pDebugDrawer.setXRay( true )
-		this.pDebugDrawer.setShapeCount( 1 )
-		this.pDebugDrawer.shapeSetEdgeColor( 0, Color.new( 1, 0, 1, 1 ) )
-		this.pDebugDrawer.shapeSetFillColor( 0, Color.new( 1, 0, 1, 0.2 ) )
+		pDebugDrawer = DebugDrawer.new()
+		pDebugDrawer.setVisible(true)
+		pDebugDrawer.setXRay(true)
+		pDebugDrawer.setShapeCount(1)
+		pDebugDrawer.shapeSetEdgeColor(0, Color.new(1, 0, 1, 1))
+		pDebugDrawer.shapeSetFillColor(0, Color.new(1, 0, 1, 0.2))
 	end
 	
 	
 	
 	/** \brief Remove from behavior. */
-	public func void removeFromBehavior()
-		var WatchBehavior watchBehavior = this.pWatchBehavior.get() cast WatchBehavior
+	func void removeFromBehavior()
+		var WatchBehavior watchBehavior = pWatchBehavior.get() cast WatchBehavior
 		if watchBehavior != null
-			this.pWatchBehavior.set( null )
-			this.pBehavior.removeListener( watchBehavior )
+			pWatchBehavior.set(null)
+			pBehavior.removeListener(watchBehavior)
 		end
 	end
 	
 	
 	
 	/** \brief Box half-extends. */
-	public func float getBoxHalfExtends()
-		return this.pBoxHalfExtends
+	func float getBoxHalfExtends()
+		return pBoxHalfExtends
 	end
 	
 	/** \brief Set box half-extends. */
-	public func void setBoxHalfExtends( float halfExtends )
-		this.pBoxHalfExtends = DEMath.max( halfExtends, 0.001 )
+	func void setBoxHalfExtends(float halfExtends)
+		pBoxHalfExtends = DEMath.max(halfExtends, 0.001)
 	end
 	
 	/** \brief Sphere radius. */
-	public func float getSphereRadius()
-		return this.pSphereRadius
+	func float getSphereRadius()
+		return pSphereRadius
 	end
 	
 	/** \brief Set sphere radius. */
-	public func void setSphereRadius( float radius )
-		this.pSphereRadius = DEMath.max( radius, 0.001 )
+	func void setSphereRadius(float radius)
+		pSphereRadius = DEMath.max(radius, 0.001)
 	end
 	
 	/** \brief Debug drawer. */
 	protected func DebugDrawer getDebugDrawer()
-		return this.pDebugDrawer
+		return pDebugDrawer
 	end
 	
 	/** \brief Set XRay mode. */
-	public func void setXRay( bool xray )
-		this.pDebugDrawer.setXRay( xray )
+	func void setXRay(bool xray)
+		pDebugDrawer.setXRay(xray)
+	end
+	
+	/**
+	 * \brief Console to log to or null.
+	 * \version 1.24
+	 */
+	func Console getConsole()
+		return pConsole
+	end
+	
+	/**
+	 * \brief Set console to log to or null.
+	 * \version 1.24
+	 */
+	func void setConsole(Console console)
+		pConsole = console
 	end
 	
 	
 	
 	/** \brief Update move towards debug drawer shape. */
-	protected func void updateShapeMoveTowards( DVector position )
-		var DVector actorPosition = this.pBehavior.getElement().getPosition()
-		var Vector direction = ( position - actorPosition ).toVector()
+	protected func void updateShapeMoveTowards(DVector position)
+		var DVector actorPosition = pBehavior.getElement().getPosition()
+		var Vector direction = (position - actorPosition).toVector()
 		var float distance = direction.getLength()
 		var ShapeList shapes = ShapeList.new()
 		
@@ -149,52 +166,76 @@ class DebugBehaviorActorMover
 			var Vector view = direction / distance
 			var Quaternion orientation
 			
-			if DEMath.fabs( view.getY() ) < 0.99
-				orientation = Matrix.newVU( view, Vector.new( 0, 1, 0 ) ).toQuaternion()
+			if DEMath.fabs(view.getY()) < 0.99
+				orientation = Matrix.newVU(view, Vector.new(0, 1, 0)).toQuaternion()
 				
 			else
-				orientation = Matrix.newVU( view, Vector.new( 0, 0, 1 ) ).toQuaternion()
+				orientation = Matrix.newVU(view, Vector.new(0, 0, 1)).toQuaternion()
 			end
 			
-			shapes.addBox( direction * 0.5, \
-				Vector.new( this.pBoxHalfExtends, this.pBoxHalfExtends, distance * 0.5 ), \
-				orientation )
+			shapes.addBox(direction * 0.5, \
+				Vector.new(pBoxHalfExtends, pBoxHalfExtends, distance * 0.5), \
+				orientation)
 		end
 		
-		shapes.addSphere( direction, this.pSphereRadius )
+		shapes.addSphere(direction, pSphereRadius)
 		
-		this.pDebugDrawer.shapeSetShapes( 0, shapes )
-		this.pDebugDrawer.setPosition( actorPosition )
+		pDebugDrawer.shapeSetShapes(0, shapes)
+		pDebugDrawer.setPosition(actorPosition)
 	end
 	
 	
 	
 	/** \brief Actor starts moving. */
-	public func void onStartMoving()
-		if this.pGameWorld == null
-			this.pGameWorld = this.pBehavior.getElement().getGameWorld()
-			if this.pGameWorld != null
-				this.pGameWorld.getWorld().addDebugDrawer( this.pDebugDrawer )
+	func void onStartMoving()
+		if pGameWorld == null
+			pGameWorld = pBehavior.getElement().getGameWorld()
+			if pGameWorld != null
+				pGameWorld.getWorld().addDebugDrawer(pDebugDrawer)
 			end
+		end
+		
+		if pConsole != null
+			var String strPath
+			
+			if pBehavior.getPath() != null
+				strPath = "(points={} length={})".format(Array.newWith(\
+					pBehavior.getPath().getCount(), pBehavior.getPath().getLength()))
+				
+			else
+				strPath = "-"
+			end
+			
+			pConsole.addMessage("DebugBehaviorActorMover.onStartMoving: id={} path={}".format(\
+				Array.newWith(pBehavior.getElement().getID(), strPath)))
 		end
 	end
 	
 	/** \brief Actor stops moving. */
-	public func void onStopMoving()
-		this.pDebugDrawer.shapeSetShapes( 0, ShapeList.new() )
+	func void onStopMoving()
+		pDebugDrawer.shapeSetShapes(0, ShapeList.new())
 		
-		if this.pGameWorld != null
-			this.pGameWorld.getWorld().removeDebugDrawer( this.pDebugDrawer )
-			this.pGameWorld = null
+		if pGameWorld != null
+			pGameWorld.getWorld().removeDebugDrawer(pDebugDrawer)
+			pGameWorld = null
+		end
+		
+		if pConsole != null
+			pConsole.addMessage("DebugBehaviorActorMover.onStopMoving: id={}".format(\
+				Array.newWith(pBehavior.getElement().getID())))
 		end
 	end
 	
 	/** \brief Actor arrived at target. */
-	public func void onArrivedAtGoal( DVector goalPosition )
+	func void onArrivedAtGoal(DVector goalPosition)
+		if pConsole != null
+			pConsole.addMessage("DebugBehaviorActorMover.onArrivedAtGoal: id={} position={}".format(\
+				Array.newWith(pBehavior.getElement().getID(), goalPosition)))
+		end
 	end
 	
 	/** \brief Modify move towards. */
-	public func void onModifyMoveTowards( DVector position, float elapsed )
-		this.updateShapeMoveTowards( position )
+	func void onModifyMoveTowards(DVector position, float elapsed)
+		updateShapeMoveTowards(position)
 	end
 end

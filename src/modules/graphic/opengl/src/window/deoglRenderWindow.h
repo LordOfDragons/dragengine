@@ -45,6 +45,7 @@ private:
 	
 	deoglCanvasView *pCanvasView;
 	bool pDirtyParams;
+	bool pDirtyPosition;
 	bool pDirtySize;
 	bool pDirtyWindowTitle;
 	bool pDirtyFullScreen;
@@ -59,7 +60,7 @@ public:
 	deoglRenderWindow( deGraphicOpenGl &ogl, deRenderWindow &renderWindow );
 	
 	/** Clean up peer. */
-	virtual ~deoglRenderWindow();
+	~deoglRenderWindow() override;
 	/*@}*/
 	
 	
@@ -89,25 +90,28 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** Host window changed. */
-	virtual void HostWindowChanged();
+	void HostWindowChanged() override;
 	
+	/** Position of render window changed. */
+	void PositionChanged() override;
+
 	/** Size of render window changed. */
-	virtual void SizeChanged();
+	void SizeChanged() override;
 	
 	/** Title of render window changed. */
-	virtual void TitleChanged();
+	void TitleChanged() override;
 	
 	/** Full screen changed. */
-	virtual void FullScreenChanged();
+	void FullScreenChanged() override;
 	
 	/** Notification of script on resize changed. */
-	virtual void ScriptNotifyChanged();
+	void ScriptNotifyChanged() override;
 	
 	/** Painting enabled changed. */
-	virtual void PaintEnabledChanged();
+	void PaintEnabledChanged() override;
 	
 	/** Icon changed. */
-	virtual void IconChanged();
+	void IconChanged() override;
 	/*@}*/
 	
 private:

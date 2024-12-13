@@ -645,12 +645,14 @@ void deWindowsInput::pQueryMousePosition( bool sendEvents ){
 		pCenterPointer();
 		
 	}else{
+		/*
 		if( position.x < 0 || position.x >= renderWindow->GetWidth() ){
 			return;
 		}
 		if( position.y < 0 || position.y >= renderWindow->GetHeight() ){
 			return;
 		}
+		*/
 		
 		const int diffX = position.x - pLastMouseX;
 		const int diffY = position.y - pLastMouseY;

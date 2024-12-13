@@ -84,7 +84,7 @@ public:
 	
 protected:
 	/** \brief Clean up engine instance. */
-	virtual ~delEngineInstanceThreaded();
+	~delEngineInstanceThreaded() override;
 	/*@}*/
 	
 	
@@ -109,16 +109,16 @@ public:
 	
 	
 	/** \brief Engine is running. */
-	virtual bool IsEngineRunning() const;
+	bool IsEngineRunning() const override;
 	
 	/** \brief Start engine if not running. */
-	virtual bool StartEngine();
+	bool StartEngine() override;
 	
 	/** \brief Stop engine if not running. */
-	virtual void StopEngine();
+	void StopEngine() override;
 	
 	/** \brief Kill engine if running. */
-	virtual void KillEngine();
+	void KillEngine() override;
 	
 	
 	
@@ -171,70 +171,70 @@ public:
 	bool StopProcess();
 	
 	/** \brief Get property from engine. */
-	virtual void GetProperty( int property, decString &value );
+	void GetProperty( int property, decString &value ) override;
 	
 	/** \brief Load modules. */
-	virtual void LoadModules();
+	void LoadModules() override;
 	
 	/** \brief Command get module status. */
-	virtual int GetModuleStatus( const char *moduleName, const char *moduleVersion );
+	int GetModuleStatus( const char *moduleName, const char *moduleVersion ) override;
 	
 	/** \brief Get module parameter list. */
-	virtual void GetModuleParams ( delEngineModule &module );
+	void GetModuleParams ( delEngineModule &module ) override;
 	
 	/** \brief Set module parameter. */
-	virtual void SetModuleParameter( const char *moduleName, const char *moduleVersion,
-		const char *parameter, const char *value );
+	void SetModuleParameter( const char *moduleName, const char *moduleVersion,
+		const char *parameter, const char *value ) override;
 	
 	/** \brief Activate module. */
-	virtual void ActivateModule( const char *moduleName, const char *moduleVersion );
+	void ActivateModule( const char *moduleName, const char *moduleVersion ) override;
 	
 	/** \brief Enable or disable module. */
-	virtual void EnableModule( const char *moduleName, const char *moduleVersion, bool enable );
+	void EnableModule( const char *moduleName, const char *moduleVersion, bool enable ) override;
 	
 	/** \brief Set data directory. */
-	virtual void SetDataDirectory( const char *directory );
+	void SetDataDirectory( const char *directory ) override;
 	
 	/** \brief Set cache application identifier. */
-	virtual void SetCacheAppID( const char *cacheAppID );
+	void SetCacheAppID( const char *cacheAppID ) override;
 	
 	/**
 	 * \brief Set overlay directory.
 	 * \version 1.7
 	 */
-	virtual void SetPathOverlay( const char *path );
+	void SetPathOverlay( const char *path ) override;
 	
 	/**
 	 * \brief Set capture directory.
 	 * \version 1.7
 	 */
-	virtual void SetPathCapture( const char *path );
+	void SetPathCapture( const char *path ) override;
 	
 	/**
 	 * \brief Set config directory.
 	 * \version 1.7
 	 */
-	virtual void SetPathConfig( const char *path );
+	void SetPathConfig( const char *path ) override;
 	
 	/** \brief Add disk directory to virtual file system. */
-	virtual void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly );
+	void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory, bool readOnly ) override;
 	
 	/**
 	 * \brief Add disk directory to virtual file system hidding a set of path.
 	 * \version 1.13
 	 */
-	virtual void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory,
-		bool readOnly, const decStringSet &hiddenPath );
+	void VFSAddDiskDir( const char *vfsRoot, const char *nativeDirectory,
+		bool readOnly, const decStringSet &hiddenPath ) override;
 	
 	/** \brief Add virtual file system container for module shared data. */
-	virtual void VFSAddScriptSharedDataDir();
+	void VFSAddScriptSharedDataDir() override;
 	
 	/**
 	 * \brief Add DELGA file to virtual file system as root container.
 	 * 
 	 * Container maps the content of \em archivePath into the virtual file system.
 	 */
-	virtual void VFSAddDelgaFile( const char *delgaFile, const char *archivePath );
+	void VFSAddDelgaFile( const char *delgaFile, const char *archivePath ) override;
 	
 	/**
 	 * \brief Add DELGA file to virtual file system as root container.
@@ -242,44 +242,44 @@ public:
 	 * 
 	 * Container maps the content of \em archivePath into the virtual file system.
 	 */
-	virtual void VFSAddDelgaFile( const char *delgaFile, const char *archivePath,
-		const decStringSet &hiddenPath );
+	void VFSAddDelgaFile( const char *delgaFile, const char *archivePath,
+		const decStringSet &hiddenPath ) override;
 	
 	/**
 	 * \brief Make modules add stage specific containers to virtual file system.
 	 * \version 1.23
 	 */
-	virtual void ModulesAddVFSContainers( const char *stage );
+	void ModulesAddVFSContainers( const char *stage ) override;
 	
 	/** \brief Set command line arguments. */
-	virtual void SetCmdLineArgs( const char *arguments );
+	void SetCmdLineArgs( const char *arguments ) override;
 	
 	/** \brief Create render window. */
-	virtual void CreateRenderWindow( int width, int height, bool fullScreen,
-		const char *windowTitle, const char *iconPath );
+	void CreateRenderWindow( int width, int height, bool fullScreen,
+		const char *windowTitle, const char *iconPath ) override;
 	
 	/**
 	 * \brief Start game.
 	 * \deprecated Use StartGame(const char*, const char*, const char*, delGPModuleList*).
 	 */
-	virtual void StartGame( const char *scriptDirectory, const char *gameObject,
-		delGPModuleList *collectChangedParams = NULL );
+	void StartGame( const char *scriptDirectory, const char *gameObject,
+		delGPModuleList *collectChangedParams = NULL ) override;
 	
 	/**
 	 * \brief Start game.
 	 * \version 1.9
 	 */
-	virtual void StartGame( const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
-		delGPModuleList *collectChangedParams = NULL );
+	void StartGame( const char *scriptDirectory, const char *scriptVersion, const char *gameObject,
+		delGPModuleList *collectChangedParams = NULL ) override;
 	
 	/** \brief Stop game. */
-	virtual void StopGame();
+	void StopGame() override;
 	
 	/** \brief Game is still running. */
-	virtual int IsGameRunning();
+	int IsGameRunning() override;
 	
 	/** \brief Current display resolution. */
-	virtual decPoint GetDisplayCurrentResolution( int display );
+	decPoint GetDisplayCurrentResolution( int display ) override;
 	
 	/**
 	 * \brief Resolution for display.
@@ -289,29 +289,36 @@ public:
 	 * fill with information. \em resolutionCount indicates the size of \em resolutions. The number
 	 * of written entries is returned which can be less than \em resolutionCount.
 	 */
-	virtual int GetDisplayResolutions( int display, decPoint *resolutions, int resolutionCount );
+	int GetDisplayResolutions( int display, decPoint *resolutions, int resolutionCount ) override;
+	
+	/**
+	 * \brief Current global scaling factor for display.
+	 * 
+	 * Value of 100 represents scaling of 100%. Value step size is 25.
+	 */
+	int GetDisplayCurrentScaleFactor(int display) override;
 	
 	/**
 	 * \brief Read game definitions from DELGA file.
 	 * 
 	 * Replaces \em list with content of all found files.
 	 */
-	virtual void ReadDelgaGameDefs( const char *delgaFile, decStringList &list );
+	void ReadDelgaGameDefs( const char *delgaFile, decStringList &list ) override;
 	
 	/**
 	 * \brief Read game definitions from DELGA file.
 	 * 
 	 * Replaces \em list with content of all found files.
 	 */
-	virtual void ReadDelgaPatchDefs( const char *delgaFile, decStringList &list );
+	void ReadDelgaPatchDefs( const char *delgaFile, decStringList &list ) override;
 	
 	/**
 	 * \brief Read files from DELGA file.
 	 * 
 	 * Stores content of files to \em filesContent as instances of decMemoryFile.
 	 */
-	virtual void ReadDelgaFiles( const char *delgaFile, const decStringList &filenames,
-		decObjectOrderedSet &filesContent );
+	void ReadDelgaFiles( const char *delgaFile, const decStringList &filenames,
+		decObjectOrderedSet &filesContent ) override;
 	/*@}*/
 };
 

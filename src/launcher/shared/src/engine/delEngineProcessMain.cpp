@@ -49,6 +49,8 @@ delEngineProcessMain::delEngineProcessMain(){
 
 #ifdef OS_W32
 int delEngineProcessMain::RunMain( int argc, char **args ){
+	(void)SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	
 	HANDLE pipeIn = INVALID_HANDLE_VALUE;
 	HANDLE pipeOut = INVALID_HANDLE_VALUE;
 	uint16_t logfileLength;

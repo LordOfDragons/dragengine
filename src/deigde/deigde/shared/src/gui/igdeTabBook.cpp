@@ -129,7 +129,7 @@ const char *description ){
 	}
 	
 	try{
-		( ( igdeNativeTabBook* )GetNativeWidget() )->AddHeader( ( const cHeader & )header );
+		((igdeNativeTabBook*)GetNativeWidget())->AddHeader((const cHeader &)*header);
 		
 	}catch( const deException & ){
 		pHeaders.RemoveFrom( pHeaders.GetCount() - 1 );

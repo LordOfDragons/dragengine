@@ -65,7 +65,7 @@ class Desktop extends Container
 	var MousePointerFactory pActiveMousePointer
 	var MousePointer pMousePointerInstance
 	var RectArea pMouseArea
-	var bool pMouseHidden
+	var bool pMouseHidden, pAllowMoveOutsideDesktop
 	var Array pMousePointerListeners
 	
 	var Window pDragWindow
@@ -102,6 +102,7 @@ class Desktop extends Container
 		setLayout(FixedLayout.new())
 		pMouseLocation = Point.new(width / 2, height / 2)
 		pMouseHidden = false
+		pAllowMoveOutsideDesktop = false
 		
 		pToolTipManager = ToolTipManager.new(this)
 		setClipboard(Clipboard.new())
@@ -382,7 +383,9 @@ class Desktop extends Container
 		if pMouseArea != null
 			location = pMouseArea.clamp(location)
 		end
-		location = RectArea.new(0, 0, getWidth() - 1, getHeight() - 1).clamp(location)
+		if not pAllowMoveOutsideDesktop
+			location = RectArea.new(0, 0, getWidth() - 1, getHeight() - 1).clamp(location)
+		end
 		if location.equals(pMouseLocation)
 			return
 		end
@@ -521,6 +524,35 @@ class Desktop extends Container
 			onMousePointerHidden(MousePointerEvent.new(this,\
 				MousePointerEvent.idMousePointerShown, pMousePointerInstance))
 		end
+	end
+	
+	/**
+	 * \brief Allow mouse pointer to move outside desktop boundaries.
+	 * \version 1.24
+	 * 
+	 * Enabling this is useful for top level desktops residing in a non-input-capturing
+	 * game window. If enabled the user can click and move outside the game window with
+	 * the mouse movement not being clamped to the game window. Default value is false.
+	 */
+	func bool getAllowMoveOutsideDesktop()
+		return pAllowMoveOutsideDesktop
+	end
+	
+	/**
+	 * \brief Set if mouse pointer is allowed to move outside desktop boundaries.
+	 * \version 1.24
+	 * 
+	 * Enabling this is useful for top level desktops residing in a non-input-capturing
+	 * game window. If enabled the user can click and move outside the game window with
+	 * the mouse movement not being clamped to the game window.
+	 */
+	func void setAllowMoveOutsideDesktop(bool allowMoveOutsideDesktop)
+		if allowMoveOutsideDesktop == pAllowMoveOutsideDesktop
+			return
+		end
+		
+		pAllowMoveOutsideDesktop = allowMoveOutsideDesktop
+		setMouseLocation(pMouseLocation)
 	end
 	
 	
@@ -839,6 +871,19 @@ class Desktop extends Container
 		end
 	end
 	
+	/**
+	 * \brief Popdown virtual keyboard if Desktop has one assigned.
+	 * \version 1.24
+	 * 
+	 * Modifies \ref Widget#popdownVirtualKeyboard() to always pop down virtual keyboard
+	 * no matter which widget is assigned to it.
+	 */
+	func void popdownVirtualKeyboard()
+		if pWindowVirtualKeyboard != null
+			pWindowVirtualKeyboard.popdown()
+		end
+	end
+	
 	
 	
 	/**
@@ -1070,7 +1115,6 @@ class Desktop extends Container
 						
 					case Decoration.Area.menu
 						if event.getButton() == InputEventMouseButton.left
-							BaseGameApp.getApp().getConsole().addMessage("[DESKTOP] Open window menu: " + window.className() + "\n")
 							if window.getCanReorder()
 								window.moveToTop()
 							end
@@ -1222,11 +1266,7 @@ class Desktop extends Container
 				continue
 			end
 			
-			if not window.getCanActivate()
-				return
-			end
-			
-			if window.getBlockingWindow() != null
+			if window.getCanActivate() and window.getBlockingWindow() != null
 				if window.getCanReorder()
 					window.moveToTop()
 				end
@@ -1240,7 +1280,7 @@ class Desktop extends Container
 					continue
 				end
 				
-				if window.getCanReorder()
+				if window.getCanActivate() and window.getCanReorder()
 					window.moveToTop()
 				end
 				

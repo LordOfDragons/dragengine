@@ -17,7 +17,7 @@ envModule = parent_env.Clone()
 envModule.Append(FRAMEWORKS = ['Cocoa', 'Carbon'])
 
 # fetch values in expanded form for later use
-versionString = '1.0'
+versionString = '1.24'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

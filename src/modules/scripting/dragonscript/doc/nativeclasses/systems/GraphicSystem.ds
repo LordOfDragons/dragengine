@@ -20,6 +20,30 @@ pin Dragengine.Scenery
 fixed class GraphicSystem
 	/** \name Management */
 	/*@{*/
+	/**
+	 * \brief X position in pixel of render window.
+	 * \version 1.24
+	 */
+	public static func int getWindowX()
+		return 0
+	end
+	
+	/**
+	 * \brief Y position in pixel of render window.
+	 * \version 1.24
+	 */
+	public static func int getWindowY()
+		return 0
+	end
+	
+	/**
+	 * \brief Position in pixel of render window.
+	 * \version 1.24
+	 */
+	public static func Point getWindowPosition()
+		return null
+	end
+	
 	/** \brief Width in pixel of render window. */
 	public static func int getWindowWidth()
 		return 0
@@ -39,8 +63,35 @@ fixed class GraphicSystem
 	public static func void setWindowGeometry( int width, int height, bool fullScreen )
 	end
 	
+	/**
+	 * \brief Set render window geometry.
+	 * \version 1.24.
+	 */
+	public static func void setWindowGeometry(int x, int y, int width, int height, bool fullScreen)
+	end
+	
 	/** \brief Set render window title. */
 	public static func void setWindowTitle( String title )
+	end
+
+	/**
+	 * \brief Global scale factor of render window.
+	 * \version 1.24
+	 * 
+	 * Scaling factor is returned as integer scaling factor where 100 indicates 100%.
+	 */
+	public static func int getWindowScaleFactor()
+		return 0
+	end
+
+	/**
+	 * \brief Global scale factor of render window.
+	 * \version 1.24
+	 * 
+	 * Scaling factor is returned as floating point scaling factor.
+	 */
+	public static func float getWindowScaleFactorFloat()
+		return 0.0
 	end
 	
 	/** \brief Primary canvas view. */

@@ -36,18 +36,42 @@ pin Dragengine.XML
  * \brief Load element class from XML file.
  */
 class LoadElementClass extends BaseXmlLoader
+	/** \brief Stores information about a failed loaded element class. */
+	class FailedLoadElementClass
+		var String pFilename
+		var Exception pException
+		
+		/** \brief Create failed loaded element class. */
+		func new(String filename, Exception exception)
+			pFilename = filename
+			pException = exception
+		end
+		
+		/** \brief File name of element class file. */
+		func String getFilename()
+			return pFilename
+		end
+		
+		/** \brief Exception thrown while loading. */
+		func Exception getException()
+			return pException
+		end
+	end
+	
+	
+	
 	/** \brief Create loader. */
-	public func new(Console console) this(console, "LoadElementClass")
+	func new(Console console) this(console, "LoadElementClass")
 	end
 	
 	/** \brief Create loader. */
-	public func new(Console console, String name) super(console, name)
+	func new(Console console, String name) super(console, name)
 	end
 	
 	
 	
 	/** \brief Load element class from file. */
-	public func ElementClass loadFromFile(ElementClassList ecmgr, String filename)
+	func ElementClass loadFromFile(ElementClassList ecmgr, String filename)
 		logLoadingFromFile(filename)
 		
 		return loadAndParseRootTag(filename, "elementClass", block EasyXMLElement root
@@ -65,7 +89,7 @@ class LoadElementClass extends BaseXmlLoader
 	 * \param directory Absolute path to directory to scan for files.
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void addXmlElementClasses(ElementClassList list, String directory, bool recursive)
+	func void addXmlElementClasses(ElementClassList list, String directory, bool recursive)
 		addXmlElementClasses(list, directory, "*.deeclass", recursive)
 	end
 	
@@ -75,25 +99,61 @@ class LoadElementClass extends BaseXmlLoader
 	 * XML element class files have the extension ".deeclass". These files can be exported
 	 * from the IGDE Game Definition Editor or edited manually.
 	 * 
+	 * \par Version 1.24
+	 * 
+	 * XML element classes can subclass other XML element classes loaded during this function
+	 * call in addition to XML element classes loaded during an earlier function call.
+	 * 
 	 * \param list List to add loaded element classes to.
 	 * \param directory Absolute path to directory to scan for files.
 	 * \param pattern File pattern to match. Has to be of the form "*.extension"
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void addXmlElementClasses(ElementClassList list, \
-	String directory, String pattern, bool recursive)
+	func void addXmlElementClasses(ElementClassList list, String directory, String pattern, bool recursive)
+		var Array failed = Array.new()
+		
 		FileSystem.searchFiles(directory, recursive, block String each, FileType type
 			if type == FileType.file and FileSystem.pathMatchesPattern(File.new(each).getName(), pattern)
-				list.add(loadFromFile(list, each))
+				try
+					list.add(loadFromFile(list, each))
+					
+				catch Exception e
+					failed.add(FailedLoadElementClass.new(each, e))
+				end
 			end
 			return true
 		end)
+		
+		while failed.getCount() > 0
+			// try loading again. resolves failed dependencies due to loading order
+			var Array lastFailed = failed
+			failed = Array.new()
+			
+			lastFailed.forEach(block FailedLoadElementClass each
+				try
+					list.add(loadFromFile(list, each.getFilename()))
+					
+				catch Exception e
+					failed.add(FailedLoadElementClass.new(each.getFilename(), e))
+				end
+			end)
+			
+			if failed.getCount() == lastFailed.getCount()
+				// no element class could be loaded. all remaining classes have real problems
+				lastFailed.forEach(block FailedLoadElementClass each
+					getConsole().addError("Failed loading XML element class '"\
+						+ each.getFilename() + "':", each.getException())
+				end)
+				
+				throw EInvalidAction.new("Failed loading XML element classes")
+			end
+		end
 	end
 	
 	
 	
 	/** \brief Parse element class tag. */
-	public func ElementClass readClass(ElementClassList ecmgr, EasyXMLElement root, String basePath)
+	func ElementClass readClass(ElementClassList ecmgr, EasyXMLElement root, String basePath)
 		if not root.hasAttributeNamed("name")
 			logMissingAttribute(root, "name")
 			throw EInvalidParam.new()
@@ -150,7 +210,7 @@ class LoadElementClass extends BaseXmlLoader
 	end
 	
 	/** \brief Parse element class property tag. */
-	public func void readClassProperty(EasyXMLElement tag, String baseClassName, ElementClass eclass)
+	func void readClassProperty(EasyXMLElement tag, String baseClassName, ElementClass eclass)
 		if not tag.hasAttributeNamed("name")
 			logMissingAttribute(tag, "name")
 			throw EInvalidParam.new()

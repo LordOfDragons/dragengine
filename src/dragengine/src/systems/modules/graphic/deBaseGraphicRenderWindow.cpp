@@ -43,6 +43,9 @@ deBaseGraphicRenderWindow::~deBaseGraphicRenderWindow(){
 void deBaseGraphicRenderWindow::HostWindowChanged(){
 }
 
+void deBaseGraphicRenderWindow::PositionChanged(){
+}
+
 void deBaseGraphicRenderWindow::SizeChanged(){
 }
 

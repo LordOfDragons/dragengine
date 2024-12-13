@@ -97,7 +97,7 @@ class OBJECT_OT_ToolCopyVerticesPaste(bpy.types.Operator):
         default=False)
 
     topology: bpy.props.BoolProperty(
-        name="Tologoty",
+        name="Topology",
         description="Mirror vertices with topology",
         default=False)
 

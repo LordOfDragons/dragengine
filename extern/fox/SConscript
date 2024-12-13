@@ -54,12 +54,13 @@ if hasSystemFOX:
 		'name' : 'Internal FOX-Toolkit library',
 		'cpppath' : [],
 		'libpath' : [],
-		'cppflags' : ['-DOLD_STRING_COMPARE_NS'],
+		'cppflags' : [],
 		'version' : libFOXVersion,
 		'libs' : libs,
 		'runtimelibs' : [],
 		'depends' : [],
 		'linkWholeArchive' : []}
+	# 'cppflags' : ['-DOLD_STRING_COMPARE_NS'],
 	Return()
 
 # build fox
@@ -221,12 +222,11 @@ parent_targets['lib_fox'] = {
 	'name' : 'Internal FOX Toolkit library',
 	'cpppath' : cpppath,
 	'libpath' : libpath,
-	'cppflags' : [
-		'-DHAVE_FOX_{}_FX_H'.format(libFOXVersion.replace('.', '_')),
-		'-DOLD_STRING_COMPARE_NS'],
+	'cppflags' : ['-DHAVE_FOX_{}_FX_H'.format(libFOXVersion.replace('.', '_'))],
 	'version' : libFOXVersion,
 	'libs' : libs,
 	'runtimelibs' : runtimelibs,
 	'depends' : depends,
 	'linkWholeArchive' : linkWholeArchive,
 	'globalInstallTracker' : []}
+# 'cppflags' : ['-DOLD_STRING_COMPARE_NS']

@@ -175,7 +175,7 @@ params.Add(TernaryVariable('with_system_libpng', 'Use System libpng'))
 params.Add(TernaryVariable('with_system_sndio', 'Use System sndio'))
 params.Add(TernaryVariable('with_system_libapng', 'Use System libapng'))
 params.Add(TernaryVariable('with_system_libjpeg', 'Use System JPEG'))
-params.Add(TernaryVariable('with_system_openal', 'Use System OpenAL'))
+params.Add(TernaryVariable('with_system_openal', 'Use System OpenAL', TernaryVariableNo))
 params.Add(ListVariable('with_openal_backends', 'When compiling OpenAL what backends are required',
 	[], ['alsa', 'pulseaudio', 'portaudio', 'oss']))
 params.Add(TernaryVariable('with_system_libogg', 'Use System libogg'))
@@ -195,6 +195,20 @@ params.Add(TernaryVariable('with_system_libwebp', 'Use System libwebp'))
 params.Add(TernaryVariable('with_system_libwebm', 'Use System libwebm'))
 params.Add(TernaryVariable('with_system_libvpx', 'Use System libvpx'))
 params.Add(TernaryVariable('with_system_liburing', 'Use System liburing'))
+params.Add(TernaryVariable('with_system_openvr', 'Use System OpenVR'))
+params.Add(TernaryVariable('with_system_openxr', 'Use System OpenXR'))
+params.Add(PathVariable('with_deremotelauncher_inc',
+	'Path to DERemoteLauncher include files or empty to use system default',
+	'', PathVariable.PathAccept))
+params.Add(PathVariable('with_deremotelauncher_lib',
+	'Path to DERemoteLauncher library files or empty to use system default',
+	'', PathVariable.PathAccept))
+params.Add(PathVariable('with_denetwork_inc',
+	'Path to DENetwork include files or empty to use system default',
+	'', PathVariable.PathAccept))
+params.Add(PathVariable('with_denetwork_lib',
+	'Path to DENetwork library files or empty to use system default',
+	'', PathVariable.PathAccept))
 
 params.Add(TernaryVariable('with_opengl', 'Use OpenGL'))
 params.Add(TernaryVariable('with_python', 'Use Python'))
@@ -767,6 +781,8 @@ extdirs.append('extern/steamsdk')
 extdirs.append('extern/eossdk')
 extdirs.append('extern/liburing')
 extdirs.append('extern/modio')
+extdirs.append('extern/deremotelauncher')
+extdirs.append('extern/denetwork')
 
 for extdir in extdirs:
 	SConscript(dirs=extdir, variant_dir='{}/build'.format(extdir),

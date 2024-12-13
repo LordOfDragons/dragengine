@@ -1144,6 +1144,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitForActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitSpeakOnly.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCTopicActionPaste.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2710,6 +2713,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitForActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitSpeakOnly.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCTopicActionPaste.h">
