@@ -31,6 +31,11 @@ def unpackArchiveFile(target, source, env):
 	buildDir = target[0].get_dir().up()
 	untarArchive(buildDir.abspath, source[0].abspath)
 
+	# fix permissions to avoid problems while installing files
+	for t in target:
+		if t.name.endswith('.so'):
+			os.chmod(t.abspath, 0o755)
+
 targets = []
 targets.append(libFileName)
 targets.append(binFileName)
