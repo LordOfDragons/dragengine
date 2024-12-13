@@ -19,4 +19,4 @@ if (!(Test-Path $ArchiveFile)) {
     Invoke-WebRequest "$BaseUrl/DERemoteLauncherSDK-nightly.zip" -OutFile $ArchiveFile
 }
 
-Expand-Archive -Path $ArchiveFile -DestinationPath $ExpandedDir
+Expand-Archive -Path $ArchiveFile -DestinationPath $ProjectDir
