@@ -59,6 +59,9 @@
 		{
 			"name": "dragengine-import-export",
 			"path": "src/tools/blender/dragengine-import-export"
+		},
+		{
+			"path": "src/shared/vulkan"
 		}
 	],
 	"settings": {

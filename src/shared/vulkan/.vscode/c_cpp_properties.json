@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/extern/include",
+                "${workspaceFolder}/../../dragengine/build/include",
+                "${workspaceFolder}/../../../../testing/include"
+            ],
+            "defines": [
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11"
+        }
+    ],
+    "version": 4
+}
