@@ -48,14 +48,11 @@ devkPipeline( device, configuration )
 	const devkSpecialization * const specialization = configuration.GetSpecialization();
 	VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
 	
-	VkComputePipelineCreateInfo pipelineInfo;
-	memset( &pipelineInfo, 0, sizeof( pipelineInfo ) );
-	pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+	VkComputePipelineCreateInfo pipelineInfo{VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO};
 	pipelineInfo.layout = pLayout;
 	pipelineInfo.flags = 0;
 	
-	VkSpecializationInfo specializationInfo;
-	memset( &specializationInfo, 0, sizeof( specializationInfo ) );
+	VkSpecializationInfo specializationInfo{};
 	if( specialization ){
 		specializationInfo.pData = specialization->GetData();
 		specializationInfo.dataSize = specialization->GetDataSize();

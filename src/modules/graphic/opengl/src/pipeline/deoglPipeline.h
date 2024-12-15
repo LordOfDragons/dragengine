@@ -28,7 +28,9 @@
 #include "deoglPipelineConfiguration.h"
 #include "../shaders/deoglShaderProgram.h"
 
+#ifdef WITH_VULKAN
 #include <pipeline/devkPipeline.h>
+#endif
 
 #include <dragengine/deObject.h>
 
@@ -121,24 +123,28 @@ private:
 	deoglRenderThread &pRenderThread;
 	int pRTSIndex;
 	
-	// opengl
+#ifdef WITH_OPENGL
 	const deoglPipelineConfiguration *pGlConfiguration;
+#endif
 	
-	// vulkan
+#ifdef WITH_VULKAN
 	devkPipeline *pVkPipeline;
-	
+#endif
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	deoglPipeline( deoglRenderThread &renderThread, const deoglPipelineConfiguration &configuration );
-	
-	deoglPipeline( deoglRenderThread &renderThread, const devkPipelineConfiguration &configuration );
+#ifdef WITH_OPENGL
+	deoglPipeline(deoglRenderThread &renderThread, const deoglPipelineConfiguration &configuration);
+#endif
+#ifdef WITH_VULKAN
+	deoglPipeline(deoglRenderThread &renderThread, const devkPipelineConfiguration &configuration);
+#endif
 	
 	/** Clean up pipeline. */
-	virtual ~deoglPipeline();
+	~deoglPipeline() override;
 	/*@}*/
 	
 	
@@ -150,16 +156,20 @@ public:
 	
 	
 	
-	/** OpenGL configuration or nullptr if not Vulkan. */
+#ifdef WITH_OPENGL
+	/** OpenGL configuration. */
 	const deoglPipelineConfiguration &GetGlConfiguration() const;
 	
 	/** OpenGL shader program. */
 	deoglShaderCompiled &GetGlShader() const;
+#endif
 	
 	
 	
+#ifdef WITH_VULKAN
 	/** Vulkan pipeline. */
 	inline devkPipeline *GetVkPipeline() const{ return pVkPipeline; }
+#endif
 	
 	
 	

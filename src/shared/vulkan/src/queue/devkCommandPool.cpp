@@ -44,10 +44,7 @@ pPool( VK_NULL_HANDLE )
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
 		
-		VkCommandPoolCreateInfo info;
-		memset( &info, 0, sizeof( info ) );
-		
-		info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		VkCommandPoolCreateInfo info{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
 		info.queueFamilyIndex = queueFamily;
 		info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		

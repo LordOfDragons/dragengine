@@ -86,9 +86,7 @@ devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 	VkDevice device = pOwner.GetDevice().GetDevice();
 	
 	const VkDescriptorSetLayout setLayouts[ 1 ] = { pOwner.GetLayout()->GetLayout() };
-	VkDescriptorSetAllocateInfo allocInfo;
-	memset( &allocInfo, 0, sizeof( allocInfo ) );
-	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	VkDescriptorSetAllocateInfo allocInfo{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
 	allocInfo.descriptorPool = pPool;
 	allocInfo.pSetLayouts = setLayouts;
 	allocInfo.descriptorSetCount = 1;

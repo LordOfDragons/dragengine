@@ -53,9 +53,7 @@ pCommand( VK_NULL_HANDLE )
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
 		
-		VkImageCreateInfo imageInfo;
-		memset( &imageInfo, 0, sizeof( imageInfo ) );
-		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		VkImageCreateInfo imageInfo{VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
 		imageInfo.flags = configuration.GetFlags();
 		imageInfo.imageType = configuration.GetType();
 		imageInfo.format = configuration.GetFormat();
@@ -73,9 +71,7 @@ pCommand( VK_NULL_HANDLE )
 		VK_CHECK( vulkan, device.vkCreateImage( device.GetDevice(), &imageInfo, VK_NULL_HANDLE, &pImage ) );
 		
 		// create the memory backing up the image
-		VkMemoryAllocateInfo allocInfo;
-		memset( &allocInfo, 0, sizeof( allocInfo ) );
-		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		VkMemoryAllocateInfo allocInfo{VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
 		
 		VkMemoryRequirements memoryRequirements;
 		pDevice.vkGetImageMemoryRequirements( device.GetDevice(), pImage, &memoryRequirements );
@@ -143,9 +139,7 @@ void devkImage::SetData( const void *data, uint32_t offset, uint32_t size ){
 	
 	memcpy( mapped, data, size );
 	
-	VkMappedMemoryRange mappedRange;
-	memset( &mappedRange, 0, sizeof( mappedRange ) );
-	mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+	VkMappedMemoryRange mappedRange{VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE};
 	mappedRange.memory = pBufferHostMemory;
 	
 	if( whole ){
@@ -179,9 +173,7 @@ void devkImage::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
 	}
 	VK_CHECK( vulkan, pDevice.vkResetFences( device, 1, &pFence ) );
 	
-	VkCommandBufferAllocateInfo allocInfo;
-	memset( &allocInfo, 0, sizeof( allocInfo ) );
-	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	VkCommandBufferAllocateInfo allocInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
 	allocInfo.commandPool = pool->GetPool();
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = 1;
@@ -190,14 +182,10 @@ void devkImage::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
 	VK_CHECK( vulkan, pDevice.vkAllocateCommandBuffers( device, &allocInfo, &command ) );
 	pCommandPool = pool;
 	
-	VkCommandBufferBeginInfo commandInfo;
-	memset( &commandInfo, 0, sizeof( commandInfo ) );
-	commandInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	VkCommandBufferBeginInfo commandInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 	VK_CHECK( vulkan, pDevice.vkBeginCommandBuffer( command, &commandInfo ) );
 	
-	VkBufferImageCopy copyRegion;
-	memset( &copyRegion, 0, sizeof( copyRegion ) );
-	
+	VkBufferImageCopy copyRegion{};
 	copyRegion.bufferOffset = 0;
 	copyRegion.bufferRowLength = 0;
 	copyRegion.bufferImageHeight = 0;
@@ -225,9 +213,7 @@ void devkImage::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
 		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion );
 	VK_CHECK( vulkan, pDevice.vkEndCommandBuffer( command ) );
 	
-	VkSubmitInfo submitInfo;
-	memset( &submitInfo, 0, sizeof( submitInfo ) );
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &command;
 	
@@ -269,9 +255,7 @@ void devkImage::GetData( void *data, uint32_t offset, uint32_t size ){
 	VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped ) );
 	const devkGuardUnmapBuffer guardUnmapBuffer( pDevice, pBufferHostMemory );
 	
-	VkMappedMemoryRange mappedRange;
-	memset( &mappedRange, 0, sizeof( mappedRange ) );
-	mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+	VkMappedMemoryRange mappedRange{VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE};
 	mappedRange.memory = pBufferHostMemory;
 	
 	if( whole ){
@@ -377,18 +361,14 @@ VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size ){
 	VkDevice const device = pDevice.GetDevice();
 	
 	// create buffer handle
-	VkBufferCreateInfo bufferInfo;
-	memset( &bufferInfo, 0, sizeof( bufferInfo ) );
-	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	VkBufferCreateInfo bufferInfo{VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
 	bufferInfo.usage = usage;
 	bufferInfo.size = size;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	VK_CHECK( vulkan, pDevice.vkCreateBuffer( device, &bufferInfo, VK_NULL_HANDLE, buffer ) );
 	
 	// create the memory backing up the buffer handle
-	VkMemoryAllocateInfo allocInfo;
-	memset( &allocInfo, 0, sizeof( allocInfo ) );
-	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	VkMemoryAllocateInfo allocInfo{VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
 	
 	VkMemoryRequirements memoryRequirements;
 	pDevice.vkGetBufferMemoryRequirements( device, *buffer, &memoryRequirements );
@@ -402,9 +382,7 @@ VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size ){
 void devkImage::pCreateFence(){
 	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
 	
-	VkFenceCreateInfo fenceInfo;
-	memset( &fenceInfo, 0, sizeof( fenceInfo ) );
-	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	VkFenceCreateInfo fenceInfo{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 	VK_CHECK( vulkan, pDevice.vkCreateFence( pDevice.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence ) );
 }

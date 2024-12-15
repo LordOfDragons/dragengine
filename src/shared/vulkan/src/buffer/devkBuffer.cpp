@@ -61,9 +61,7 @@ pCommand( VK_NULL_HANDLE )
 		
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
 		
-		VkFenceCreateInfo fenceInfo;
-		memset( &fenceInfo, 0, sizeof( fenceInfo ) );
-		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		VkFenceCreateInfo fenceInfo{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 		VK_CHECK( vulkan, device.vkCreateFence( device.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence ) );
 		
@@ -148,9 +146,7 @@ void devkBuffer::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
 	pFenceActive = false;
 	VK_CHECK( vulkan, pDevice.vkResetFences( device, 1, &pFence ) );
 	
-	VkCommandBufferAllocateInfo allocInfo;
-	memset( &allocInfo, 0, sizeof( allocInfo ) );
-	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	VkCommandBufferAllocateInfo allocInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
 	allocInfo.commandPool = pool->GetPool();
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = 1;
@@ -159,20 +155,15 @@ void devkBuffer::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
 	VK_CHECK( vulkan, pDevice.vkAllocateCommandBuffers( device, &allocInfo, &command ) );
 	pCommandPool = pool;
 	
-	VkCommandBufferBeginInfo commandInfo;
-	memset( &commandInfo, 0, sizeof( commandInfo ) );
-	commandInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	VkCommandBufferBeginInfo commandInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 	VK_CHECK( vulkan, pDevice.vkBeginCommandBuffer( command, &commandInfo ) );
 	
-	VkBufferCopy copyRegion;
-	memset( &copyRegion, 0, sizeof( copyRegion ) );
+	VkBufferCopy copyRegion{};
 	copyRegion.size = pSize;
 	pDevice.vkCmdCopyBuffer( command, pBufferHost, pBuffer, 1, &copyRegion );
 	VK_CHECK( vulkan, pDevice.vkEndCommandBuffer( command ) );
 	
-	VkSubmitInfo submitInfo;
-	memset( &submitInfo, 0, sizeof( submitInfo ) );
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &command;
 	
@@ -211,9 +202,7 @@ void devkBuffer::GetData( void *data, uint32_t offset, uint32_t size ){
 	VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped ) );
 	const devkGuardUnmapBuffer guardUnmapBuffer( pDevice, pBufferHostMemory );
 	
-	VkMappedMemoryRange mappedRange;
-	memset( &mappedRange, 0, sizeof( mappedRange ) );
-	mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+	VkMappedMemoryRange mappedRange{VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE};
 	mappedRange.memory = pBufferHostMemory;
 	
 	if( whole ){
@@ -284,18 +273,14 @@ VkBuffer* buffer, VkDeviceMemory *memory, VkDeviceSize size ){
 	VkDevice const device = pDevice.GetDevice();
 	
 	// create buffer handle
-	VkBufferCreateInfo bufferInfo;
-	memset( &bufferInfo, 0, sizeof( bufferInfo ) );
-	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	VkBufferCreateInfo bufferInfo{VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
 	bufferInfo.usage = usage;
 	bufferInfo.size = size;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	VK_CHECK( vulkan, pDevice.vkCreateBuffer( device, &bufferInfo, VK_NULL_HANDLE, buffer ) );
 	
 	// create the memory backing up the buffer handle
-	VkMemoryAllocateInfo allocInfo;
-	memset( &allocInfo, 0, sizeof( allocInfo ) );
-	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	VkMemoryAllocateInfo allocInfo{VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
 	
 	VkMemoryRequirements memoryRequirements;
 	pDevice.vkGetBufferMemoryRequirements( device, *buffer, &memoryRequirements );

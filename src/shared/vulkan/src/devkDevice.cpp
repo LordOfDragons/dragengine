@@ -221,9 +221,7 @@ void devkDevice::pCreateDevice(){
 	pInstance.vkGetPhysicalDeviceQueueFamilyProperties( pPhysicalDevice, &queueFamilyCount, queueFamilyProperties );
 	int i;
 	
-	VkDeviceQueueCreateInfo queueCreateInfo[ 3 ];
-	memset( &queueCreateInfo, 0, sizeof( queueCreateInfo ) );
-	
+	VkDeviceQueueCreateInfo queueCreateInfo[ 3 ]{};
 	int requiredQueueCount = 0;
 	int queueGraphic = -1;
 	int queueCompute = -1;
@@ -330,10 +328,7 @@ void devkDevice::pCreateDevice(){
 	}
 	
 	// create logical device
-	VkDeviceCreateInfo deviceCreateInfo;
-	memset( &deviceCreateInfo, 0, sizeof( deviceCreateInfo ) );
-	
-	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	VkDeviceCreateInfo deviceCreateInfo{VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO};
 	deviceCreateInfo.queueCreateInfoCount = requiredQueueCount;
 	deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo[ 0 ];
 	VK_CHECK( pInstance.GetVulkan(), pInstance.vkCreateDevice( pPhysicalDevice,

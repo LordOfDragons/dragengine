@@ -10,7 +10,9 @@
             ],
             "defines": [
                 "DS_MODULE_VERSION=\"9999\"",
-                "MOD_ENTRY_POINT_ATTR="
+                "MOD_ENTRY_POINT_ATTR=",
+                "WITH_OPENGL=1",
+                "WITH_VULKAN=1"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11"

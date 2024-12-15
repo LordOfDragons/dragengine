@@ -59,17 +59,13 @@ pLLPool( this )
 		VK_IF_CHECK( deSharedVulkan &vulkan = pool.GetDevice().GetInstance().GetVulkan() );
 		devkDevice &device = pool.GetDevice();
 		
-		VkCommandBufferAllocateInfo allocInfo;
-		memset( &allocInfo, 0, sizeof( allocInfo ) );
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		VkCommandBufferAllocateInfo allocInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
 		allocInfo.commandPool = pool.GetPool();
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = 1;
 		VK_CHECK( vulkan, device.vkAllocateCommandBuffers( device.GetDevice(), &allocInfo, &pBuffer ) );
 		
-		VkFenceCreateInfo fenceInfo;
-		memset( &fenceInfo, 0, sizeof( fenceInfo ) );
-		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		VkFenceCreateInfo fenceInfo{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 		VK_CHECK( vulkan, device.vkCreateFence( device.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence ) );
 		
@@ -93,9 +89,7 @@ void devkCommandBuffer::Begin(){
 	
 	Wait( true );
 	
-	VkCommandBufferBeginInfo beginInfo;
-	memset( &beginInfo, 0, sizeof( beginInfo ) );
-	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	VkCommandBufferBeginInfo beginInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
 	
 	VK_CHECK( pPool.GetDevice().GetInstance().GetVulkan(),
 		pPool.GetDevice().vkBeginCommandBuffer( pBuffer, &beginInfo ) );
@@ -110,9 +104,7 @@ VkAccessFlags sourceAccessMask, VkAccessFlags destAccessMask,
 VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask ){
 	DEASSERT_TRUE( pRecording )
 	
-	VkBufferMemoryBarrier barrier;
-	memset( &barrier, 0, sizeof( barrier ) );
-	barrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+	VkBufferMemoryBarrier barrier{VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER};
 	barrier.buffer = useDeviceBuffer ? buffer.GetBuffer() : buffer.GetBufferHost();
 	barrier.size = VK_WHOLE_SIZE;
 	barrier.srcAccessMask = sourceAccessMask;
@@ -143,10 +135,7 @@ void devkCommandBuffer::Barrier( const devkImage &image, VkAccessFlags sourceAcc
 VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask ){
 	DEASSERT_TRUE( pRecording )
 	
-	VkImageMemoryBarrier barrier;
-	memset( &barrier, 0, sizeof( barrier ) );
-	
-	barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+	VkImageMemoryBarrier barrier{VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
 	barrier.image = image.GetImage();
 	barrier.srcAccessMask = sourceAccessMask;
 	barrier.dstAccessMask = destAccessMask;
@@ -241,9 +230,7 @@ const decPoint &position, const decPoint &size ){
 	DEASSERT_TRUE( pRecording )
 	DEASSERT_NULL( pActiveRenderPass )
 	
-	VkRenderPassBeginInfo beginInfo;
-	memset( &beginInfo, 0, sizeof( beginInfo ) );
-	beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	VkRenderPassBeginInfo beginInfo{VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO};
 	beginInfo.renderPass = renderPass.GetRenderPass();
 	beginInfo.framebuffer = framebuffer.GetFramebuffer();
 	beginInfo.renderArea.offset.x = ( int32_t )position.x;
@@ -322,24 +309,20 @@ void devkCommandBuffer::EndRenderPass(){
 }
 
 void devkCommandBuffer::WriteBuffer( const devkBuffer &buffer ){
-	VkBufferCopy copy;
-	memset( &copy, 0, sizeof( copy ) );
+	VkBufferCopy copy{};
 	copy.size = buffer.GetSize();
 	pPool.GetDevice().vkCmdCopyBuffer( pBuffer, buffer.GetBufferHost(), buffer.GetBuffer(), 1, &copy );
 }
 
 void devkCommandBuffer::ReadBuffer( const devkBuffer &buffer ){
-	VkBufferCopy copy;
-	memset( &copy, 0, sizeof( copy ) );
+	VkBufferCopy copy{};
 	copy.size = buffer.GetSize();
 	pPool.GetDevice().vkCmdCopyBuffer( pBuffer, buffer.GetBuffer(), buffer.GetBufferHost(), 1, &copy );
 }
 
 void devkCommandBuffer::ReadImage( devkImage &image ){
 	const devkImageConfiguration &config = image.GetConfiguration();
-	VkBufferImageCopy copy;
-	memset( &copy, 0, sizeof( copy ) );
-	
+	VkBufferImageCopy copy{};
 	copy.bufferOffset = 0;
 	copy.bufferRowLength = 0;
 	copy.bufferImageHeight = 0;
@@ -393,9 +376,7 @@ void devkCommandBuffer::Submit( devkQueue &queue ){
 	pFenceActive = false;
 	VK_CHECK( vulkan, device.vkResetFences( device.GetDevice(), 1, &pFence ) );
 	
-	VkSubmitInfo submitInfo;
-	memset( &submitInfo, 0, sizeof( submitInfo ) );
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &pBuffer;
 	

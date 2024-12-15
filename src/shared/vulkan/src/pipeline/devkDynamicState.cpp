@@ -38,11 +38,9 @@
 ///////////////////////////
 
 devkDynamicState::devkDynamicState(){
-	memset( this, 0, sizeof( devkDynamicState ) );
 }
 
-devkDynamicState::devkDynamicState( const devkDynamicState &state ){
-	memset( this, 0, sizeof( devkDynamicState ) );
+devkDynamicState::devkDynamicState(const devkDynamicState &state){
 	*this = state;
 }
 

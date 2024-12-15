@@ -57,9 +57,7 @@ pModule( VK_NULL_HANDLE )
 		reader.Read( pSource, pSourceLength );
 		
 		// create shader module
-		VkShaderModuleCreateInfo info;
-		memset( &info, 0, sizeof( info ) );
-		info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		VkShaderModuleCreateInfo info{VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
 		info.codeSize = pSourceLength;
 		info.pCode = ( const uint32_t * )pSource;
 		

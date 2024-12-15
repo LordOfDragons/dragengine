@@ -47,16 +47,13 @@ devkPipeline( device, configuration )
 	const devkSpecialization * const specialization = configuration.GetSpecialization();
 	VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
 	
-	VkGraphicsPipelineCreateInfo pipelineInfo;
-	memset( &pipelineInfo, 0, sizeof( pipelineInfo ) );
-	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+	VkGraphicsPipelineCreateInfo pipelineInfo{VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO};
 	pipelineInfo.layout = pLayout;
 	pipelineInfo.flags = 0;
 	pipelineInfo.renderPass = configuration.GetRenderPass()->GetRenderPass();
 	
 	// specialization
-	VkSpecializationInfo specializationInfo;
-	memset( &specializationInfo, 0, sizeof( specializationInfo ) );
+	VkSpecializationInfo specializationInfo{};
 	if( specialization ){
 		specializationInfo.pData = specialization->GetData();
 		specializationInfo.dataSize = specialization->GetDataSize();
@@ -67,8 +64,7 @@ devkPipeline( device, configuration )
 	VkSpecializationInfo * const useSpecialization = specialization ? &specializationInfo : nullptr;
 	
 	// shader stages
-	VkPipelineShaderStageCreateInfo stageInfo[ 5 ];
-	memset( stageInfo, 0, sizeof( stageInfo ) );
+	VkPipelineShaderStageCreateInfo stageInfo[ 5 ]{};
 	
 	pipelineInfo.pStages = stageInfo;
 	
@@ -103,10 +99,8 @@ devkPipeline( device, configuration )
 	}
 	
 	// vertex input data
-	VkPipelineVertexInputStateCreateInfo vertexInputInfo;
-	memset( &vertexInputInfo, 0, sizeof( vertexInputInfo ) );
-	
-	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+	VkPipelineVertexInputStateCreateInfo vertexInputInfo{
+		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO};
 	vertexInputInfo.vertexBindingDescriptionCount = configuration.GetBindingCount();
 	vertexInputInfo.pVertexBindingDescriptions = configuration.GetBindings();
 	vertexInputInfo.vertexAttributeDescriptionCount = configuration.GetAttributeCount();
@@ -115,20 +109,16 @@ devkPipeline( device, configuration )
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	
 	// input assembly
-	VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
-	memset( &inputAssemblyInfo, 0, sizeof( inputAssemblyInfo ) );
-	
-	inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+	VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo{
+		VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO};
 	inputAssemblyInfo.topology = configuration.GetTopology();
 	inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 	
 	pipelineInfo.pInputAssemblyState = &inputAssemblyInfo;
 	
 	// rasterization
-	VkPipelineRasterizationStateCreateInfo rasterizationInfo;
-	memset( &rasterizationInfo, 0, sizeof( rasterizationInfo ) );
-	
-	rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+	VkPipelineRasterizationStateCreateInfo rasterizationInfo{
+		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO};
 	rasterizationInfo.depthClampEnable = VK_FALSE;
 	rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 	rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
@@ -147,10 +137,8 @@ devkPipeline( device, configuration )
 	pipelineInfo.pRasterizationState = &rasterizationInfo;
 	
 	// multi sampling
-	VkPipelineMultisampleStateCreateInfo multisampleInfo;
-	memset( &multisampleInfo, 0, sizeof( multisampleInfo ) );
-	
-	multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+	VkPipelineMultisampleStateCreateInfo multisampleInfo{
+		VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO};
 	multisampleInfo.sampleShadingEnable = VK_FALSE;
 	multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 	multisampleInfo.minSampleShading = 1.0f;
@@ -161,20 +149,16 @@ devkPipeline( device, configuration )
 	pipelineInfo.pMultisampleState = &multisampleInfo;
 	
 	// viewport
-	VkPipelineViewportStateCreateInfo viewportInfo;
-	memset( &viewportInfo, 0, sizeof( viewportInfo ) );
-	
-	viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	VkPipelineViewportStateCreateInfo viewportInfo{
+		VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO};
 	viewportInfo.viewportCount = 1;
 	viewportInfo.scissorCount = 1;
 	
 	pipelineInfo.pViewportState = &viewportInfo;
 	
 	// depth stencil
-	VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-	memset( &depthStencilInfo, 0, sizeof( depthStencilInfo ) );
-	
-	depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+	VkPipelineDepthStencilStateCreateInfo depthStencilInfo{
+		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO};
 	depthStencilInfo.depthTestEnable = configuration.GetDepthTest();
 	depthStencilInfo.depthWriteEnable = configuration.GetDepthWriteMask();
 	depthStencilInfo.depthCompareOp = configuration.GetDepthFunction();
@@ -186,15 +170,12 @@ devkPipeline( device, configuration )
 	pipelineInfo.pDepthStencilState = &depthStencilInfo;
 	
 	// blending
-	VkPipelineColorBlendStateCreateInfo blendInfo;
-	memset( &blendInfo, 0, sizeof( blendInfo ) );
-	
-	blendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+	VkPipelineColorBlendStateCreateInfo blendInfo{
+		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO};
 	blendInfo.logicOpEnable = VK_FALSE;
 	blendInfo.logicOp = VK_LOGIC_OP_COPY;
 	
-	VkPipelineColorBlendAttachmentState blendAttachment;
-	memset( &blendAttachment, 0, sizeof( blendAttachment ) );
+	VkPipelineColorBlendAttachmentState blendAttachment{};
 	
 	if( configuration.GetBlendColor() != devkPipelineConfiguration::ebDisable
 	|| configuration.GetBlendAlpha() != devkPipelineConfiguration::ebDisable ){
@@ -288,10 +269,8 @@ devkPipeline( device, configuration )
 	pipelineInfo.pColorBlendState = &blendInfo;
 	
 	// dynamic states
-	VkPipelineDynamicStateCreateInfo dynamicStateInfo;
-	memset( &dynamicStateInfo, 0, sizeof( dynamicStateInfo ) );
-	
-	dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	VkPipelineDynamicStateCreateInfo dynamicStateInfo{
+		VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO};
 	VkDynamicState dynamicStates[ 8 ];
 	int countDynamicStates = 0;
 	

@@ -89,8 +89,7 @@ void devkSpecialization::SetEntryCount( int count ){
 		return;
 	}
 	
-	pEntries = new VkSpecializationMapEntry[ count ];
-	memset( pEntries, 0, sizeof( VkSpecializationMapEntry ) * count );
+	pEntries = new VkSpecializationMapEntry[ count ]{};
 	pEntryCount = count;
 }
 

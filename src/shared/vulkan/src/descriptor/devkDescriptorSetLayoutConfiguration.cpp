@@ -84,8 +84,7 @@ void devkDescriptorSetLayoutConfiguration::SetLayoutBindingCount( int count ){
 		return;
 	}
 	
-	pLayoutBindings = new VkDescriptorSetLayoutBinding[ count ];
-	memset( pLayoutBindings, 0, sizeof( VkDescriptorSetLayoutBinding ) * count );
+	pLayoutBindings = new VkDescriptorSetLayoutBinding[ count ]{};
 	pLayoutBindingCount = count;
 }
 

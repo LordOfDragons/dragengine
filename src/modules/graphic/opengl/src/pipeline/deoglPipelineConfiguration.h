@@ -25,6 +25,8 @@
 #ifndef _DEOGLPIPELINECONFIGURATION_H_
 #define _DEOGLPIPELINECONFIGURATION_H_
 
+#ifdef WITH_OPENGL
+
 #include "../deoglBasics.h"
 #include "../shaders/deoglShaderProgram.h"
 
@@ -400,4 +402,5 @@ protected:
 	void pUpdateStencilSameFrontBack();
 };
 
+#endif
 #endif

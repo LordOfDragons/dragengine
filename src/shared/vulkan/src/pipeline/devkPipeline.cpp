@@ -72,9 +72,7 @@ pSaveCache( false )
 		
 		VkDescriptorSetLayout layouts;
 		
-		VkPipelineLayoutCreateInfo layoutInfo;
-		memset( &layoutInfo, 0, sizeof( layoutInfo ) );
-		layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		VkPipelineLayoutCreateInfo layoutInfo{VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO};
 		
 		if( configuration.GetDescriptorSetLayout() ){
 			layouts = configuration.GetDescriptorSetLayout()->GetLayout();
@@ -86,9 +84,7 @@ pSaveCache( false )
 		VK_CHECK( vulkan, device.vkCreatePipelineLayout(
 			device.GetDevice(), &layoutInfo, VK_NULL_HANDLE, &pLayout ) );
 		
-		VkPipelineCacheCreateInfo cacheInfo;
-		memset( &cacheInfo, 0, sizeof( cacheInfo ) );
-		cacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+		VkPipelineCacheCreateInfo cacheInfo{VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO};
 		
 		// load cache if present
 		deBaseModule &baseModule = vulkan.GetModule();

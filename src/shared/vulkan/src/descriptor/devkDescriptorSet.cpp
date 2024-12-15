@@ -52,10 +52,8 @@ pBindingCount( 0 )
 		const devkDescriptorSetLayoutConfiguration &configuration = pool.GetLayout()->GetConfiguration();
 		const int count = configuration.GetLayoutBindingCount();
 		if( count > 0 ){
-			pBindings = new VkDescriptorBufferInfo[ count ];
-			
-			pWriteSets = new VkWriteDescriptorSet[ count ];
-			memset( pWriteSets, 0, sizeof( VkWriteDescriptorSet ) * count );
+			pBindings = new VkDescriptorBufferInfo[ count ]{};
+			pWriteSets = new VkWriteDescriptorSet[ count ]{};
 			
 			int i;
 			for( i=0; i<count; i++ ){
