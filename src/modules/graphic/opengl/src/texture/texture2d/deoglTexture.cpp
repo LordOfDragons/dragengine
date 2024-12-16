@@ -299,7 +299,7 @@ void deoglTexture::SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelB
 		OGL_CHECK(pRenderThread, pglCompressedTexImage2D(GL_TEXTURE_2D, level, pGlFormat->GetFormat(),
 			width, height, 0, pixelBuffer.GetImageSize(), (const GLvoid *)pixelBufferData));
 		//OGL_CHECK(pRenderThread, pglCompressedTexSubImage2D(GL_TEXTURE_2D, level, 0, 0, width, height,
-		//	pFormat->GetFormat(), pixels.GetImageSize(), (const GLvoid *)pixelBufferData));
+		//	pGlFormat->GetFormat(), pixels.GetImageSize(), (const GLvoid *)pixelBufferData));
 		
 	}else{
 #ifdef OS_ANDROID
@@ -443,7 +443,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 		
 		const GLenum buffers[1] = { GL_NONE };
 		OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
-		if(pFormat->GetIsDepth()){
+		if(pGlFormat->GetIsDepth()){
 			fbo->AttachDepthTextureLevel((deoglTexture*)this, level);
 			OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 			
@@ -597,7 +597,7 @@ void deoglTexture::UpdateMemoryUsage(){
 	}
 	
 #ifdef OS_ANDROID
-	pMemUse.SetUncompressed(*pFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
+	pMemUse.SetUncompressed(*pGlFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
 	
 #else
 	if(pGlFormat->GetIsCompressed()){
@@ -636,277 +636,172 @@ void deoglTexture::UpdateMemoryUsage(){
 // Helper Functions
 /////////////////////
 
+#ifdef WITH_OPENGL
+	#define HELPER_SET_FORMAT_GL(funcType,constSuffix) \
+		SetFormat ## funcType ## ByNumber(deoglCapsFmtSupport::eutf ## constSuffix);
+#else
+	#define HELPER_SET_FORMAT_GL(funcType,constSuffix)
+#endif
+
+#ifdef WITH_VULKAN
+	#define HELPER_SET_FORMAT_VK(funcType,constSuffix) \
+		if(pRenderThread.GetVulkanDevice()){ \
+			SetFormat ## funcType ## ByNumber(devkDevice::ef ## constSuffix); \
+		}
+#else
+	#define HELPER_SET_FORMAT_VK(funcType,constSuffix)
+#endif
+
+#define HELPER_SET_FORMAT(funcType,constSuffix) \
+	HELPER_SET_FORMAT_GL(funcType,constSuffix) \
+	HELPER_SET_FORMAT_VK(funcType,constSuffix)
+
 void deoglTexture::SetMapingFormat(int channels, bool useFloat, bool compressed){
-#if WITH_OPENGL
 	if(channels == 1){
 		if(useFloat){
-			SetFormatMappingByNumber(deoglCapsFmtSupport::eutfR16F);
+			HELPER_SET_FORMAT(Mapping, R16F)
 			
 		}else{
 			if(compressed){
-				SetFormatMappingByNumber(deoglCapsFmtSupport::eutfR8_C);
+				HELPER_SET_FORMAT(Mapping, R8_C)
 				
 			}else{
-				SetFormatMappingByNumber(deoglCapsFmtSupport::eutfR8);
+				HELPER_SET_FORMAT(Mapping, R8)
 			}
 		}
 		
 	}else if(channels == 2){
 		if(useFloat){
-			SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRG16F);
+			HELPER_SET_FORMAT(Mapping, RG16F)
 			
 		}else{
 			if(compressed){
-				SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRG8_C);
+				HELPER_SET_FORMAT(Mapping, RG8_C)
 				
 			}else{
-				SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRG8);
+				HELPER_SET_FORMAT(Mapping, RG8)
 			}
 		}
 		
 	}else if(channels == 3){
 		if(useFloat){
-			SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRGB16F);
+			HELPER_SET_FORMAT(Mapping, RGB16F)
 			
 		}else{
 			if(compressed){
-				SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRGB8_C);
+				HELPER_SET_FORMAT(Mapping, RGB8_C)
 				
 			}else{
-				SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRGB8);
+				HELPER_SET_FORMAT(Mapping, RGB8)
 			}
 		}
 		
 	}else if(channels == 4){
 		if(useFloat){
-			SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRGBA16F);
+			HELPER_SET_FORMAT(Mapping, RGBA16F)
 			
 		}else{
 			if(compressed){
-				SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRGBA8_C);
+				HELPER_SET_FORMAT(Mapping, RGBA8_C)
 				
 			}else{
-				SetFormatMappingByNumber(deoglCapsFmtSupport::eutfRGBA8);
+				HELPER_SET_FORMAT(Mapping, RGBA8)
 			}
 		}
 		
 	}else{
 		DETHROW(deeInvalidParam);
 	}
-#endif
-	
-#if WITH_VULKAN
-	if(pRenderThread.GetVulkanDevice()){
-		if(channels == 1){
-			if(useFloat){
-				SetFormatMappingByNumber(devkDevice::efR16F);
-				
-			}else{
-				if(compressed){
-					SetFormatMappingByNumber(devkDevice::efR8_C);
-					
-				}else{
-					SetFormatMappingByNumber(devkDevice::efR8);
-				}
-			}
-			
-		}else if(channels == 2){
-			if(useFloat){
-				SetFormatMappingByNumber(devkDevice::efRG16F);
-				
-			}else{
-				if(compressed){
-					SetFormatMappingByNumber(devkDevice::efRG8_C);
-					
-				}else{
-					SetFormatMappingByNumber(devkDevice::efRG8);
-				}
-			}
-			
-		}else if(channels == 3){
-			if(useFloat){
-				SetFormatMappingByNumber(devkDevice::efRGB16F);
-				
-			}else{
-				if(compressed){
-					SetFormatMappingByNumber(devkDevice::efRGB8_C);
-					
-				}else{
-					SetFormatMappingByNumber(devkDevice::efRGB8);
-				}
-			}
-			
-		}else if(channels == 4){
-			if(useFloat){
-				SetFormatMappingByNumber(devkDevice::efRGBA16F);
-				
-			}else{
-				if(compressed){
-					SetFormatMappingByNumber(devkDevice::efRGBA8_C);
-					
-				}else{
-					SetFormatMappingByNumber(devkDevice::efRGBA8);
-				}
-			}
-			
-		}else{
-			DETHROW(deeInvalidParam);
-		}
-	}
-#endif
 }
 
 void deoglTexture::SetFBOFormat(int channels, bool useFloat){
-#ifdef WITH_OPENGL
 	if(channels == 1){
 		if(useFloat){
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR16F);
+			HELPER_SET_FORMAT(FBO, R16F)
 			
 		}else{
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR8);
+			HELPER_SET_FORMAT(FBO, R8)
 		}
 		
 	}else if(channels == 2){
 		if(useFloat){
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG16F);
+			HELPER_SET_FORMAT(FBO, RG16F)
 			
 		}else{
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG8);
+			HELPER_SET_FORMAT(FBO, RG8)
 		}
 		
 	}else if(channels == 3){
 		if(useFloat){
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB16F);
+			HELPER_SET_FORMAT(FBO, RGB16F)
 			
 		}else{
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB8);
+			HELPER_SET_FORMAT(FBO, RGB8)
 		}
 		
 	}else if(channels == 4){
 		if(useFloat){
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA16F);
+			HELPER_SET_FORMAT(FBO, RGBA16F)
 			
 		}else{
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA8);
+			HELPER_SET_FORMAT(FBO, RGBA8)
 		}
 		
 	}else{
 		DETHROW(deeInvalidParam);
 	}
-#endif
-	
-#ifdef WITH_VULKAN
-	if(pRenderThread.GetVulkanDevice()){
-		if(channels == 1){
-			if(useFloat){
-				SetFormatMappingByNumber(devkDevice::efR16F);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efR8);
-			}
-			
-		}else if(channels == 2){
-			if(useFloat){
-				SetFormatMappingByNumber(devkDevice::efRG16F);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRG8);
-			}
-			
-		}else if(channels == 3){
-			if(useFloat){
-				SetFormatMappingByNumber(devkDevice::efRGB16F);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRGB8);
-			}
-			
-		}else if(channels == 4){
-			if(useFloat){
-				SetFormatMappingByNumber(devkDevice::efRGBA16F);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRGBA8);
-			}
-			
-		}else{
-			DETHROW(deeInvalidParam);
-		}
-	}
-#endif
 }
 
 void deoglTexture::SetFBOFormatFloat32(int channels){
-#ifdef WITH_OPENGL
 	if(channels == 1){
-		SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR32F);
+		HELPER_SET_FORMAT(FBO, R32F)
 		
 	}else if(channels == 2){
-		SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG32F);
+		HELPER_SET_FORMAT(FBO, RG32F)
 		
 	}else if(channels == 3){
-		SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB32F);
+		HELPER_SET_FORMAT(FBO, RGB32F)
 		
 	}else if(channels == 4){
-		SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA32F);
+		HELPER_SET_FORMAT(FBO, RGBA32F)
 		
 	}else{
 		DETHROW(deeInvalidParam);
 	}
-#endif
-	
-#ifdef WITH_VULKAN
-	if(channels == 1){
-		SetFormatMappingByNumber(devkDevice::efR32F);
-		
-	}else if(channels == 2){
-		SetFormatMappingByNumber(devkDevice::efRG32F);
-		
-	}else if(channels == 3){
-		SetFormatMappingByNumber(devkDevice::efRGB32F);
-		
-	}else if(channels == 4){
-		SetFormatMappingByNumber(devkDevice::efRGBA32F);
-		
-	}else{
-		DETHROW(deeInvalidParam);
-	}
-#endif
 }
 
 void deoglTexture::SetFBOFormatIntegral(int channels, int bpp, bool useUnsigned){
-#ifdef WITH_OPENGL
 	if(bpp == 8){
 		if(channels == 1){
 			if(useUnsigned){
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR8UI);
+				HELPER_SET_FORMAT(FBO, R8UI)
 				
 			}else{
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR8I);
+				HELPER_SET_FORMAT(FBO, R8I)
 			}
 			
 		}else if(channels == 2){
 			if(useUnsigned){
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG8UI);
+				HELPER_SET_FORMAT(FBO, RG8UI)
 				
 			}else{
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG8I);
+				HELPER_SET_FORMAT(FBO, RG8I)
 			}
 			
 		}else if(channels == 3){
 			if(useUnsigned){
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB8UI);
+				HELPER_SET_FORMAT(FBO, RGB8UI)
 				
 			}else{
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB8I);
+				HELPER_SET_FORMAT(FBO, RGB8I)
 			}
 			
 		}else if(channels == 4){
 			if(useUnsigned){
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA8UI);
+				HELPER_SET_FORMAT(FBO, RGBA8UI)
 				
 			}else{
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA8I);
+				HELPER_SET_FORMAT(FBO, RGBA8I)
 			}
 			
 		}else{
@@ -916,34 +811,34 @@ void deoglTexture::SetFBOFormatIntegral(int channels, int bpp, bool useUnsigned)
 	}else if(bpp == 16){
 		if(channels == 1){
 			if(useUnsigned){
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR16UI);
+				HELPER_SET_FORMAT(FBO, R16UI)
 				
 			}else{
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR16I);
+				HELPER_SET_FORMAT(FBO, R16I)
 			}
 			
 		}else if(channels == 2){
 			if(useUnsigned){
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG16UI);
+				HELPER_SET_FORMAT(FBO, RG16UI)
 				
 			}else{
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG16I);
+				HELPER_SET_FORMAT(FBO, RG16I)
 			}
 			
 		}else if(channels == 3){
 			if(useUnsigned){
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB16UI);
+				HELPER_SET_FORMAT(FBO, RGB16UI)
 				
 			}else{
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB16I);
+				HELPER_SET_FORMAT(FBO, RGB16I)
 			}
 			
 		}else if(channels == 4){
 			if(useUnsigned){
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA16UI);
+				HELPER_SET_FORMAT(FBO, RGBA16UI)
 				
 			}else{
-				SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA16I);
+				HELPER_SET_FORMAT(FBO, RGBA16I)
 			}
 			
 		}else{
@@ -953,108 +848,26 @@ void deoglTexture::SetFBOFormatIntegral(int channels, int bpp, bool useUnsigned)
 	}else{
 		DETHROW(deeInvalidParam);
 	}
-#endif
-	
-#ifdef WITH_VULKAN
-	if(bpp == 8){
-		if(channels == 1){
-			if(useUnsigned){
-				SetFormatMappingByNumber(devkDevice::efR8UI);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efR8I);
-			}
-			
-		}else if(channels == 2){
-			if(useUnsigned){
-				SetFormatMappingByNumber(devkDevice::efRG8UI);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRG8I);
-			}
-			
-		}else if(channels == 3){
-			if(useUnsigned){
-				SetFormatMappingByNumber(devkDevice::efRGB8UI);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRGB8I);
-			}
-			
-		}else if(channels == 4){
-			if(useUnsigned){
-				SetFormatMappingByNumber(devkDevice::efRGBA8UI);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRGBA8I);
-			}
-			
-		}else{
-			DETHROW(deeInvalidParam);
-		}
-		
-	}else if(bpp == 16){
-		if(channels == 1){
-			if(useUnsigned){
-				SetFormatMappingByNumber(devkDevice::efR16UI);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efR16I);
-			}
-			
-		}else if(channels == 2){
-			if(useUnsigned){
-				SetFormatMappingByNumber(devkDevice::efRG16UI);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRG16I);
-			}
-			
-		}else if(channels == 3){
-			if(useUnsigned){
-				SetFormatMappingByNumber(devkDevice::efRGB16UI);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRGB16I);
-			}
-			
-		}else if(channels == 4){
-			if(useUnsigned){
-				SetFormatMappingByNumber(devkDevice::efRGBA16UI);
-				
-			}else{
-				SetFormatMappingByNumber(devkDevice::efRGBA16I);
-			}
-			
-		}else{
-			DETHROW(deeInvalidParam);
-		}
-		
-	}else{
-		DETHROW(deeInvalidParam);
-	}
-#endif
 }
 
 void deoglTexture::SetFBOFormatSNorm(int channels, int bpp){
-#ifdef WITH_OPENGL
 	switch(bpp){
 	case 8:
 		switch(channels){
 		case 1:
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR8_S);
+			HELPER_SET_FORMAT(FBO, R8_S)
 			break;
 			
 		case 2:
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG8_S);
+			HELPER_SET_FORMAT(FBO, RG8_S)
 			break;
 			
 		case 3:
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB8_S);
+			HELPER_SET_FORMAT(FBO, RGB8_S)
 			break;
 			
 		case 4:
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA8_S);
+			HELPER_SET_FORMAT(FBO, RGBA8_S)
 			break;
 			
 		default:
@@ -1065,19 +878,19 @@ void deoglTexture::SetFBOFormatSNorm(int channels, int bpp){
 	case 16:
 		switch(channels){
 		case 1:
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfR16_S);
+			HELPER_SET_FORMAT(FBO, R16_S)
 			break;
 			
 		case 2:
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRG16_S);
+			HELPER_SET_FORMAT(FBO, RG16_S)
 			break;
 			
 		case 3:
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGB16_S);
+			HELPER_SET_FORMAT(FBO, RGB16_S)
 			break;
 			
 		case 4:
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfRGBA16_S);
+			HELPER_SET_FORMAT(FBO, RGBA16_S)
 			break;
 			
 		default:
@@ -1088,100 +901,25 @@ void deoglTexture::SetFBOFormatSNorm(int channels, int bpp){
 	default:
 		DETHROW(deeInvalidParam);
 	}
-#endif
-	
-#ifdef WITH_VULKAN
-	switch(bpp){
-	case 8:
-		switch(channels){
-		case 1:
-			SetFormatMappingByNumber(devkDevice::efR8_S);
-			break;
-			
-		case 2:
-			SetFormatMappingByNumber(devkDevice::efRG8_S);
-			break;
-			
-		case 3:
-			SetFormatMappingByNumber(devkDevice::efRGB8_S);
-			break;
-			
-		case 4:
-			SetFormatMappingByNumber(devkDevice::efRGBA8_S);
-			break;
-			
-		default:
-			DETHROW(deeInvalidParam);
-		}
-		break;
-		
-	case 16:
-		switch(channels){
-		case 1:
-			SetFormatMappingByNumber(devkDevice::efR16_S);
-			break;
-			
-		case 2:
-			SetFormatMappingByNumber(devkDevice::efRG16_S);
-			break;
-			
-		case 3:
-			SetFormatMappingByNumber(devkDevice::efRGB16_S);
-			break;
-			
-		case 4:
-			SetFormatMappingByNumber(devkDevice::efRGBA16_S);
-			break;
-			
-		default:
-			DETHROW(deeInvalidParam);
-		}
-		break;
-		
-	default:
-		DETHROW(deeInvalidParam);
-	}
-#endif
 }
 
 void deoglTexture::SetDepthFormat(bool packedStencil, bool useFloat){
-#ifdef WITH_OPENGL
 	if(packedStencil){
 		if(useFloat){
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfDepthF_Stencil);
+			HELPER_SET_FORMAT(FBO, DepthF_Stencil)
 			
 		}else{
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfDepth_Stencil);
+			HELPER_SET_FORMAT(FBO, Depth_Stencil)
 		}
 		
 	}else{
 		if(useFloat){
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfDepthF);
+			HELPER_SET_FORMAT(FBO, DepthF)
 			
 		}else{
-			SetFormatFBOByNumber(deoglCapsFmtSupport::eutfDepth);
+			HELPER_SET_FORMAT(FBO, Depth)
 		}
 	}
-#endif
-	
-#ifdef WITH_VULKAN
-	if(packedStencil){
-		if(useFloat){
-			SetFormatMappingByNumber(devkDevice::efDepthF_Stencil);
-			
-		}else{
-			SetFormatMappingByNumber(devkDevice::efDepth_Stencil);
-		}
-		
-	}else{
-		if(useFloat){
-			SetFormatMappingByNumber(devkDevice::efDepthF);
-			
-		}else{
-			SetFormatMappingByNumber(devkDevice::efDepth);
-		}
-	}
-#endif
 }
 
 void deoglTexture::SetDebugObjectLabel(const char *name){
