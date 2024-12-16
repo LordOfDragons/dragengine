@@ -1,0 +1,11 @@
+diff '--color=auto' -rupN modio-sdk/ext/optional/include/tl/optional.hpp modio-sdk-new/ext/optional/include/tl/optional.hpp
+--- modio-sdk/ext/optional/include/tl/optional.hpp	2024-12-16 16:42:57.327816361 +0100
++++ modio-sdk-new/ext/optional/include/tl/optional.hpp	2024-12-16 16:50:32.979376580 +0100
+@@ -21,6 +21,7 @@
+ #define TL_OPTIONAL_VERSION_MINOR 0
+ #define TL_OPTIONAL_VERSION_PATCH 0
+ 
++#include <cstdlib>
+ #include <exception>
+ #include <functional>
+ #include <new>

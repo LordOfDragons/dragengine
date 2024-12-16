@@ -13,6 +13,7 @@ if parent_env['OSBeOS']:
 envLibrary = parent_env.Clone()
 
 # parameters
+libVersion = '2024_9_1'
 srcdir = 'modio-sdk'
 
 libLinkNames = ['modioStatic', 'mbedx509', 'mbedtls', 'mbedcrypto']
@@ -34,12 +35,11 @@ if depUring:
 	libs.extend(depUring['libs'])
 
 nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	['{}.tar.xz'.format(srcdir), '{}-ext.tar.xz'.format(srcdir)], 'modio', 'lib_modio_fetch')
+	['{}-{}.tar.xz'.format(srcdir, libVersion)], 'modio', 'lib_modio_fetch')
 
 def modioBuild(target, source, env):
 	buildDir = target[0].get_dir().up().up().up()
 	untarArchive(buildDir.abspath, source[0].abspath)
-	untarArchive(buildDir.abspath, source[1].abspath)
 	
 	cmakeSourceDir = buildDir.Dir(srcdir).abspath
 	
@@ -61,7 +61,7 @@ def modioBuild(target, source, env):
 	if env['platform_android'] != 'no':
 		cppflags.append('-Wno-error=unused-but-set-variable')
 		cppflags.append('-Wno-error=documentation')
-
+	
 	script = createScriptHeader(env, deps=deps, cppflags=cppflags, cflags=cppflags)
 	
 	# modio cmake scripts seem to only look at CXXFLAGS not CPPFLAGS
@@ -110,7 +110,13 @@ def modioBuild(target, source, env):
 		raise Exception('Failed building libmodio')
 
 targets = staticFileNames[:]
-targets.extend(['install/static/inc/modio/ModioSDK.h'])
+
+# after building lib_modio run this from build directory to update header listing
+# find install -name "*.h" -type f >../header_file_list/modio
+# find install -name "*.hpp" -type f >>../header_file_list/modio
+
+with open(envLibrary.File('header_file_list/modio').srcnode().abspath, 'r', encoding='utf-8') as f:
+	targets.extend([x[:-1] for x in f.readlines()])
 
 patches = [] # create with 'diff -rupN original_sources patches_sources'
 envLibrary.Append(PATCHES = [])
