@@ -22,6 +22,10 @@ on:
       artifactTools:
         required: true
         type: string
+      debugBuild:
+        type: boolean
+        required: false
+        default: false
       lfscache:
         required: false
         default: true
@@ -119,6 +123,7 @@ jobs:
           cp ${{ github.workspace }}/.github/workflows/custom_linux.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
+          sed -i -e 's/{DebugBuild}/${{ inputs.debugBuild }}/g' custom.py
       
       - name: Build external
         # Build first all external libraries. Aboids avoid running CodeQL on them.
