@@ -13,7 +13,13 @@ if parent_env['OSBeOS']:
 envLibrary = parent_env.Clone()
 
 # parameters
+
+# version "2024.11": broken, can't compile
+# version "2024.10": broken, can't compile
+# version "2024.9.1": compiles but missing runtime symbols
+
 libVersion = '2024_9_1'
+
 srcdir = 'modio-sdk'
 
 libLinkNames = ['modioStatic', 'mbedx509', 'mbedtls', 'mbedcrypto']
@@ -88,6 +94,10 @@ def modioBuild(target, source, env):
 		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
 		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
 	
+	cmdline.append('-DCMAKE_BUILD_TYPE="Release"')
+	cmdline.append('-DEXPECTED_BUILD_TESTS=Off')
+	cmdline.append('-DFETCHCONTENT_FULLY_DISCONNECTED=On')
+  
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
 	script.append('cmake --build "{}" -- -j {} || exit 1'.format(cmakeBuildDir, env['with_threads']))
