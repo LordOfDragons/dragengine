@@ -76,6 +76,10 @@ on:
         required: false
         default: true
         type: boolean
+      codeql:
+        required: false
+        default: false
+        type: boolean
       
 jobs:
   build:
