@@ -1460,7 +1460,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		VKTLOG( image->GetData( imgdata ), "Image GetData" )
 		int x, y;
 		for( y=0; y<32; y++ ){
-			decString string( "Drawn: [" );
+			string = "Drawn: [";
 			for( x=0; x<64; x++ ){
 				string.AppendCharacter( 'a' + ( int )imgdata[ 64 * y + x ].r * 25 / 255 );
 			}

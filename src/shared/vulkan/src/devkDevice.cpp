@@ -29,6 +29,8 @@
 #include "devkInstance.h"
 #include "deSharedVulkan.h"
 #include "devkGlobalFunctions.h"
+#include "devkFormat.h"
+#include "devkTestFormatConfig.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
@@ -48,39 +50,32 @@ transferQueueCount( 0 ){
 // Class devkDevice
 ///////////////////////
 
-devkDevice::devkDevice( devkInstance &instance, VkPhysicalDevice physicalDevice,
-const DeviceConfig &config ) :
-pInstance( instance ),
-pPhysicalDevice( physicalDevice ),
-pConfig( config ),
-pFamilyIndexGraphic( 0 ),
-pFamilyIndexCompute( 0 ),
-pFamilyIndexTransfer( 0 ),
-pDevice( VK_NULL_HANDLE ),
-pQueues( nullptr ),
-pDescriptorSetLayoutManager( *this ),
-pShaderModuleManager( *this ),
-pPipelineManager( *this )
+devkDevice::devkDevice(devkInstance &instance, VkPhysicalDevice physicalDevice,
+const DeviceConfig &config) :
+pInstance(instance),
+pPhysicalDevice(physicalDevice),
+pConfig(config),
+pFamilyIndexGraphic(0),
+pFamilyIndexCompute(0),
+pFamilyIndexTransfer(0),
+pSupportedFormats(nullptr),
+pSupportedFormatCount(0),
+pDevice(VK_NULL_HANDLE),
+pQueues(nullptr),
+pDescriptorSetLayoutManager(*this),
+pShaderModuleManager(*this),
+pPipelineManager(*this)
 {
-	memset( pSupportsExtension, 0, sizeof( pSupportsExtension ) );
-	pSupportsExtension[ extKHRMaintenance3 ].name = VK_KHR_MAINTENANCE3_EXTENSION_NAME;
-	pSupportsExtension[ extEXTDescriptorIndexing ].name = VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME;
+	pSupportsExtension[extKHRMaintenance3].name = VK_KHR_MAINTENANCE3_EXTENSION_NAME;
+	pSupportsExtension[extEXTDescriptorIndexing].name = VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME;
 	
-	if( ! physicalDevice ){
-		DETHROW_INFO( deeNullPointer, "physicalDevice" );
-	}
-	if( config.graphicQueueCount < 0 ){
-		DETHROW_INFO( deeInvalidParam, "config.graphicQueueCount" );
-	}
-	if( config.computeQueueCount < 0 ){
-		DETHROW_INFO( deeInvalidParam, "config.computeQueueCount" );
-	}
-	if( config.transferQueueCount < 0 ){
-		DETHROW_INFO( deeInvalidParam, "config.transferQueueCount" );
-	}
+	DEASSERT_NOTNULL(physicalDevice)
+	DEASSERT_TRUE(config.graphicQueueCount >= 0)
+	DEASSERT_TRUE(config.computeQueueCount >= 0)
+	DEASSERT_TRUE(config.transferQueueCount >= 0)
 	
-	#define DEVICE_LEVEL_VULKAN_FUNCTION( name ) name = VK_NULL_HANDLE;
-	#define DEVICE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION( name, extension ) name = VK_NULL_HANDLE;
+	#define DEVICE_LEVEL_VULKAN_FUNCTION(name) name = VK_NULL_HANDLE;
+	#define DEVICE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION(name,extension) name = VK_NULL_HANDLE;
 	
 	#include "devkFunctionNames.h"
 	
@@ -90,7 +85,7 @@ pPipelineManager( *this )
 	try{
 		pCreateDevice();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -105,12 +100,12 @@ devkDevice::~devkDevice(){
 // Management
 ///////////////
 
-bool devkDevice::SupportsExtension( eExtension extension ) const{
-	return pSupportsExtension[ extension ].version != 0;
+bool devkDevice::SupportsExtension(eExtension extension) const{
+	return pSupportsExtension[extension].version != 0;
 }
 
-uint32_t devkDevice::ExtensionVersion( eExtension extension ) const{
-	return pSupportsExtension[ extension ].version;
+uint32_t devkDevice::ExtensionVersion(eExtension extension) const{
+	return pSupportsExtension[extension].version;
 }
 
 uint32_t devkDevice::IndexOfMemoryType( VkMemoryPropertyFlags property, uint32_t bits ) const{
@@ -196,6 +191,11 @@ void devkDevice::pCleanUp(){
 		vkDestroyDevice( pDevice, VK_NULL_HANDLE );
 		pDevice = VK_NULL_HANDLE;
 	}
+	
+	// cleaning up
+	if(pSupportedFormats){
+		delete [] pSupportedFormats;
+	}
 }
 
 void devkDevice::pCreateDevice(){
@@ -204,6 +204,7 @@ void devkDevice::pCreateDevice(){
 	
 	pGetProperties();
 	pDetectExtensions();
+	pDetectCapabilities();
 	
 	// find requested queue families
 	const float defaultQueuePriority = 0.0f;
@@ -459,6 +460,77 @@ void devkDevice::pDetectExtensions(){
 	}catch( const deException & ){
 		delete [] extensions;
 		throw;
+	}
+}
+
+void devkDevice::pDetectCapabilities(){
+	pSupportedFormats = new devkFormat[etf_COUNT];
+	pSupportedFormatCount = 0;
+	
+	int i;
+	for(i=0; i<TEST_PROGRAM_COUNT; i++){
+		const sTestCase &tp = vTestProgram[i];
+		const sTestTextureFormat &ttf = vTestTextureFormats[tp.testFormat];
+		VkFormatProperties props{};
+		
+		pInstance.vkGetPhysicalDeviceFormatProperties(pPhysicalDevice, ttf.format, &props);
+		
+		const int ltf = props.linearTilingFeatures;
+		const int otf = props.optimalTilingFeatures;
+		// const int bf = props.bufferFeatures;
+		const int imgf = ltf | otf;
+		
+		if(!imgf){
+			continue;
+		}
+		
+		devkFormat &f = pSupportedFormats[pSupportedFormatCount++];
+		f.SetFormat(ttf.format);
+		f.SetBitsPerPixel(ttf.bitsPerPixel);
+		f.SetIsDepth(HAS_FLAG_DEPTH(ttf.flags));
+		f.SetIsDepthFloat(HAS_FLAG_DEPTH_FLOAT(ttf.flags));
+		f.SetIsStencil(HAS_FLAG_STENCIL(ttf.flags));
+		f.SetIsCompressed(HAS_FLAG_COMPRESSED(ttf.flags));
+		f.SetName(ttf.name);
+		
+		f.SetCanSample(imgf & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+		f.SetCanSampleFilter(imgf & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT);
+		f.SetCanImageStore(imgf & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT);
+		f.SetCanImageStoreAtomic(imgf & VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT);
+		
+		if(f.GetIsDepth() || f.GetIsDepthFloat() || f.GetIsStencil()){
+			f.SetCanAttach(imgf & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
+			
+		}else{
+			f.SetCanAttach(imgf & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT);
+			f.SetCanAttachBlend(imgf & VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT);
+		}
+		
+		if(f.GetCanSample()){
+			pUseTexFormats[tp.target] = &f;
+		}
+		
+		if(f.GetCanAttach()){
+			pUseFboFormats[tp.target] = &f;
+		}
+	}
+	
+	deBaseModule &module = pInstance.GetVulkan().GetModule();
+	module.LogInfo("Supported Formats:");
+	for(i=0; i<pSupportedFormatCount; i++){
+		module.LogInfoFormat("- %s", pSupportedFormats[i].GetName().GetString());
+	}
+	
+	module.LogInfo("Use Format Texture:");
+	for(i=0; i<FormatCount; i++){
+		module.LogInfoFormat("- %s: %s", vTextureFormatNames[i],
+			pUseTexFormats[i] ? pUseTexFormats[i]->GetName().GetString() : "-");
+	}
+	
+	module.LogInfo("Use Format FBO:");
+	for(i=0; i<FormatCount; i++){
+		module.LogInfoFormat("- %s: %s", vTextureFormatNames[i],
+			pUseFboFormats[i] ? pUseFboFormats[i]->GetName().GetString() : "-");
 	}
 }
 
