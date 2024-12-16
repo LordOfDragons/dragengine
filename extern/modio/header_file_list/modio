@@ -1,10 +1,10 @@
-install/header_only/common/ModioGeneratedVariables.h
 install/header_only/common/modio/impl/SDKPostAsync.h
 install/header_only/common/modio/impl/SDKPreconditionChecks.h
 install/header_only/common/modio/userdata/ModioUserDataService.h
 install/header_only/common/modio/detail/ModioUndefs.h
 install/header_only/common/modio/detail/HedleyWrapper.h
 install/header_only/common/modio/detail/ModioStringHelpers.h
+install/header_only/common/modio/detail/ModioGeneratedVariables.h
 install/header_only/common/modio/detail/ModioSDKSessionData.h
 install/header_only/common/modio/detail/ModioMovableTypes.h
 install/header_only/common/modio/detail/ModioCRC.h
@@ -87,7 +87,6 @@ install/header_only/common/modio/detail/ModioSingletons.h
 install/header_only/common/modio/detail/AsioWrapper.h
 install/header_only/common/modio/detail/file/IFileServiceImplementation.h
 install/header_only/common/modio/detail/file/IFileObjectImplementation.h
-install/header_only/common/modio/detail/ModioExtendedInitParamHandler.h
 install/header_only/common/modio/detail/ModioProfiling.h
 install/header_only/common/modio/detail/ModioLibraryConfigurationHelpers.h
 install/header_only/common/modio/detail/ops/auth/AuthenticateUserByPSN.h
@@ -372,7 +371,6 @@ install/header_only/linux/linux/detail/ops/file/ReadSomeFromFileOp.h
 install/header_only/linux/linux/detail/ops/file/DeleteFileOp.h
 install/header_only/linux/linux/TimerSharedState.h
 install/header_only/linux/ModioWeakSymbol.h
-install/static/inc/ModioGeneratedVariables.h
 install/static/inc/mbedtls/pkcs12.h
 install/static/inc/mbedtls/x509.h
 install/static/inc/mbedtls/sha1.h
@@ -443,6 +441,7 @@ install/static/inc/utf8/unchecked.h
 install/static/inc/modio/detail/ModioUndefs.h
 install/static/inc/modio/detail/HedleyWrapper.h
 install/static/inc/modio/detail/ModioStringHelpers.h
+install/static/inc/modio/detail/ModioGeneratedVariables.h
 install/static/inc/modio/detail/ModioSDKSessionData.h
 install/static/inc/modio/detail/ModioMovableTypes.h
 install/static/inc/modio/detail/ModioCRC.h
@@ -518,7 +517,6 @@ install/static/inc/modio/detail/compression/zip/CompressionImplementation.h
 install/static/inc/modio/detail/compression/zip/ZipStructures.h
 install/static/inc/modio/detail/ModioSingletons.h
 install/static/inc/modio/detail/AsioWrapper.h
-install/static/inc/modio/detail/ModioExtendedInitParamHandler.h
 install/static/inc/modio/detail/ModioProfiling.h
 install/static/inc/modio/detail/ModioLibraryConfigurationHelpers.h
 install/static/inc/modio/detail/hedley.h

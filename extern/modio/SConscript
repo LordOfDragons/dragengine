@@ -13,12 +13,7 @@ if parent_env['OSBeOS']:
 envLibrary = parent_env.Clone()
 
 # parameters
-
-# version "2024.11": broken, can't compile
-# version "2024.10": broken, can't compile
-# version "2024.9.1": compiles but missing runtime symbols
-
-libVersion = '2024_9_1'
+libVersion = '2024_11'
 
 srcdir = 'modio-sdk'
 
