@@ -252,7 +252,7 @@ void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool
 	// drop the textures including the fbo if the size differs
 	if( pForeignTexDepthSolid ){
 		if( pForeignTexDepthSolid->GetWidth() != size
-		|| pForeignTexDepthSolid->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+		|| pForeignTexDepthSolid->GetGlFormat()->GetIsDepthFloat() != useFloatDepth ){
 			DropTexturesSolid();
 		}
 	}
@@ -297,7 +297,7 @@ void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth
 	// drop the textures including the fbo if the size differs
 	if( pForeignTexDepthTransp ){
 		if( pForeignTexDepthTransp->GetWidth() != size
-		|| pForeignTexDepthTransp->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+		|| pForeignTexDepthTransp->GetGlFormat()->GetIsDepthFloat() != useFloatDepth ){
 			DropTexturesTransparent();
 		}
 	}
@@ -976,7 +976,7 @@ void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
 	// drop the textures including the fbo if the size differs
 	if( pForeignTexAmbient ){
 		if( pForeignTexAmbient->GetWidth() != size
-		|| pForeignTexAmbient->GetFormat()->GetIsDepthFloat() != useFloatDepth ){
+		|| pForeignTexAmbient->GetGlFormat()->GetIsDepthFloat() != useFloatDepth ){
 			DropAmbientTextures();
 		}
 	}

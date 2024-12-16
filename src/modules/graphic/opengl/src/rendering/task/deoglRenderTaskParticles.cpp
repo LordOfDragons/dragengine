@@ -169,7 +169,7 @@ void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
 		for( j=0; j<unitCount; j++ ){
 			const deoglTexUnitConfig &unit = step.GetTUC()->GetUnitAt( j );
 			if( unit.GetTexture() ){
-				text.AppendFormat( " T%i", unit.GetTexture()->GetTexture() );
+				text.AppendFormat( " T%i", unit.GetTexture()->GetGlTexture() );
 				
 			}else if( unit.GetCubeMap() ){
 				text.AppendFormat( " C%i", unit.GetCubeMap()->GetTexture() );

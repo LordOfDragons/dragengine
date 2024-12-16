@@ -108,6 +108,20 @@ uint32_t devkDevice::ExtensionVersion(eExtension extension) const{
 	return pSupportsExtension[extension].version;
 }
 
+const devkFormat &devkDevice::GetSupportedFormatAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pSupportedFormatCount)
+	return pSupportedFormats[index];
+}
+
+const devkFormat *devkDevice::GetUseTexFormat(eFormats format) const{
+	return pUseTexFormats[format];
+}
+
+const devkFormat *devkDevice::GetUseFboFormat(eFormats format) const{
+	return pUseFboFormats[format];
+}
+
 uint32_t devkDevice::IndexOfMemoryType( VkMemoryPropertyFlags property, uint32_t bits ) const{
 	uint32_t i;
 	for( i=0; i<pMemoryProperties.memoryTypeCount; i++ ){
@@ -512,6 +526,15 @@ void devkDevice::pDetectCapabilities(){
 		
 		if(f.GetCanAttach()){
 			pUseFboFormats[tp.target] = &f;
+		}
+	}
+	
+	for(i=0; i<TEST_FALLBACK_COUNT; i++ ){
+		if(!pUseTexFormats[vTestFallback[i].target]){
+			pUseTexFormats[vTestFallback[i].target] = pUseTexFormats[vTestFallback[i].fallbackTarget];
+		}
+		if(!pUseFboFormats[vTestFallback[i].target]){
+			pUseFboFormats[vTestFallback[i].target] = pUseFboFormats[vTestFallback[i].fallbackTarget];
 		}
 	}
 	

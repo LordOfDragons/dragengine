@@ -1679,7 +1679,7 @@ void deoglSkinChannel::pBuildCacheID(){
 	bool compressed = false;
 	
 	if( pTexture ){
-		compressed = pTexture->GetFormat()->GetIsCompressed();
+		compressed = pTexture->GetGlFormat()->GetIsCompressed();
 		
 	}else if( pCubeMap ){
 		compressed = pCubeMap->GetFormat()->GetIsCompressed();

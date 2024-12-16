@@ -425,7 +425,7 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 			for( u=0; u<unitCount; u++ ){
 				const deoglTexUnitConfig &unit = rttexture.GetTexture()->GetTUC()->GetUnitAt( u );
 				if( unit.GetTexture() ){
-					text.AppendFormat( " T%i", unit.GetTexture()->GetTexture() );
+					text.AppendFormat( " T%i", unit.GetTexture()->GetGlTexture() );
 					
 				}else if( unit.GetCubeMap() ){
 					text.AppendFormat( " C%i", unit.GetCubeMap()->GetTexture() );

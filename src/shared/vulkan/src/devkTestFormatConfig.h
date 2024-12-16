@@ -343,30 +343,73 @@ static const sTestCase vTestProgram[TEST_PROGRAM_COUNT] = {
 	{devkDevice::efRGBA16I, etfRGBA16I},
 	{devkDevice::efRGBA16UI, etfRGBA16UI},
 	
+	{devkDevice::efDepth16, etfDepth16},
+	
+	{devkDevice::efDepthF, etfDepth32F},
+	
+	{devkDevice::efStencil, etfStencil8},
+	
+	{devkDevice::efDepthF_Stencil, etfDepth32F_Stencil8},
+	
 	{devkDevice::efDepth, etfDepth16},
 	{devkDevice::efDepth, etfDepth32F},
 	
 	{devkDevice::efDepth_Stencil, etfDepth24_Stencil8},
-	{devkDevice::efDepth_Stencil, etfDepth32F_Stencil8},
-	
-	{devkDevice::efDepthF, etfDepth32F},
-	
-	{devkDevice::efDepthF_Stencil, etfDepth32F_Stencil8},
-	
-	{devkDevice::efStencil, etfStencil8},
-	
-	{devkDevice::efDepth16, etfDepth16}
+	{devkDevice::efDepth_Stencil, etfDepth32F_Stencil8}
 };
 
-#define TEST_FALLBACK_COUNT 7
+// see https://docs.vulkan.org/spec/latest/chapters/formats.html#features-required-format-support
+
+#define TEST_FALLBACK_COUNT 30
 static const sTestFallback vTestFallback[TEST_FALLBACK_COUNT] = {
-	{devkDevice::efR16F, devkDevice::efR32F},
-	{devkDevice::efRG16F, devkDevice::efRG32F},
-	{devkDevice::efRGB16F, devkDevice::efRGB32F},
-	{devkDevice::efRGBA16F, devkDevice::efRGBA32F},
-	{devkDevice::efDepth, devkDevice::efDepth_Stencil}, // some platforms support only combined
-	{devkDevice::efDepth16, devkDevice::efDepth},
-	{devkDevice::efDepth16, devkDevice::efDepth_Stencil}, // some platforms support only combined
+	// RGBA
+	{devkDevice::efRGBA4, devkDevice::efRGBA8},
+	{devkDevice::efRGB5A1, devkDevice::efRGBA8},
+	{devkDevice::efRGB10A2, devkDevice::efRGBA16UI},
+	{devkDevice::efRGBA16, devkDevice::efRGBA16UI},
+	{devkDevice::efRGBA8_S, devkDevice::efRGBA8},
+	{devkDevice::efRGBA16_S, devkDevice::efRGBA16I},
+	
+	{devkDevice::efRGBA8_C, devkDevice::efRGBA8}, // use no compression instead
+	
+	// RGB
+	{devkDevice::efRGB32F, devkDevice::efRGBA32F},
+	
+	{devkDevice::efRGB16F, devkDevice::efRGBA16F},
+	
+	{devkDevice::efRG11B10F, devkDevice::efRGB16F},
+	
+	{devkDevice::efRGB4, devkDevice::efRGB5},
+	{devkDevice::efRGB8, devkDevice::efRGBA8},
+	{devkDevice::efRGB16, devkDevice::efRGBA16},
+	{devkDevice::efRGB8_S, devkDevice::efRGBA8_S},
+	{devkDevice::efRGB16_S, devkDevice::efRGBA16_S},
+	
+	{devkDevice::efRGB8I, devkDevice::efRGBA8I},
+	{devkDevice::efRGB8UI, devkDevice::efRGBA8UI},
+	{devkDevice::efRGB16I, devkDevice::efRGBA16I},
+	{devkDevice::efRGB16UI, devkDevice::efRGBA16UI},
+	
+	{devkDevice::efRGB8_C, devkDevice::efRGB8}, // no compression
+	
+	// RG
+	{devkDevice::efRG8_S, devkDevice::efRG8},
+	{devkDevice::efRG16, devkDevice::efRG16UI},
+	{devkDevice::efRG16_S, devkDevice::efRG16I},
+	
+	{devkDevice::efRG8_C, devkDevice::efRG8}, // no compression
+	
+	// R
+	{devkDevice::efR16, devkDevice::efR16UI},
+	{devkDevice::efR8_S, devkDevice::efR8},
+	{devkDevice::efR16_S, devkDevice::efR16I},
+	
+	{devkDevice::efR8_C, devkDevice::efR8}, // no compression
+	
+	// depth, stencil
+	{devkDevice::efDepth16, devkDevice::efDepthF},
+	
+	{devkDevice::efDepth, devkDevice::efDepth_Stencil}
 };
 
 static const char *vTextureFormatNames[devkDevice::FormatCount] = {

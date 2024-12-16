@@ -25,8 +25,16 @@
 #ifndef _DEOGLTEXTURE_H_
 #define _DEOGLTEXTURE_H_
 
-#include "../../deoglBasics.h"
-#include "../../capabilities/deoglCapsFmtSupport.h"
+#ifdef WITH_OPENGL
+	#include "../../deoglBasics.h"
+	#include "../../capabilities/deoglCapsFmtSupport.h"
+#endif
+
+#ifdef WITH_VULKAN
+	#include "image/devkImage.h"
+	#include "devkDevice.h"
+#endif
+
 #include "../../memory/consumption/deoglMemoryConsumptionTextureUse.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -53,10 +61,17 @@ class deoglTexture{
 public:
 	deoglRenderThread &pRenderThread;
 	
-	GLuint pTexture;
+#ifdef WITH_OPENGL
+	GLuint pGlTexture;
+	const deoglCapsTextureFormat *pGlFormat;
+#endif
+	
+#ifdef WITH_VULKAN
+	devkImage::Ref pVkImage;
+	const devkFormat *pVkFormat;
+#endif
 	
 	decPoint pSize;
-	const deoglCapsTextureFormat *pFormat;
 	int pMipMapLevelCount;
 	int pRealMipMapLevelCount;
 	bool pMipMapped;
@@ -70,7 +85,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create opengl texture. */
-	deoglTexture( deoglRenderThread &renderThread );
+	deoglTexture(deoglRenderThread &renderThread);
 	
 	/** Clean up opengl texture. */
 	~deoglTexture();
@@ -80,9 +95,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+#ifdef WITH_OPENGL
 	/** Texture handle. */
-	inline GLuint GetTexture() const{ return pTexture; }
+	inline GLuint GetGlTexture() const{ return pGlTexture; }
 	
+	/** Texture format. */
+	inline const deoglCapsTextureFormat *GetGlFormat() const{ return pGlFormat; }
+	
+	/** Set texture format. */
+	void SetFormat(const deoglCapsTextureFormat *format);
+	
+	/** Set texture format by number from the list of mapping texture formats to use. */
+	void SetFormatMappingByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
+	
+	/** Set texture format by number from the list of fbo texture formats to use. */
+	void SetFormatFBOByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
+#endif
+	
+#ifdef WITH_VULKAN
+	/** Image or nullptr. */
+	inline const devkImage::Ref &GetVkImage() const{ return pVkImage; }
+	
+	/** Texture format. */
+	inline const devkFormat *GetVkFormat() const{ return pVkFormat; }
+	
+	/** Set texture format. */
+	void SetFormat(const devkFormat *format);
+	
+	/** Set texture format by number from the list of image formats to use. */
+	void SetFormatMappingByNumber(devkDevice::eFormats format);
+	
+	/** Set texture format by number from the list of fbo texture formats to use. */
+	void SetFormatFBOByNumber(devkDevice::eFormats format);
+#endif
 	
 	
 	/** Width in pixels. */
@@ -95,24 +140,10 @@ public:
 	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** Set size in pixels destroying opengl texture if present. */
-	void SetSize( int width, int height );
+	void SetSize(int width, int height);
 	
 	/** Set size in pixels destroying opengl texture if present. */
-	void SetSize( const decPoint &size );
-	
-	
-	
-	/** Texture format. */
-	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
-	
-	/** Set texture format. */
-	void SetFormat( const deoglCapsTextureFormat *format );
-	
-	/** Set texture format by number from the list of mapping texture formats to use. */
-	void SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
-	
-	/** Set texture format by number from the list of fbo texture formats to use. */
-	void SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
+	void SetSize(const decPoint &size);
 	
 	
 	
@@ -120,13 +151,13 @@ public:
 	inline bool GetMipMapped() const{ return pMipMapped; }
 	
 	/** Set if mip mapping has to be used on this texture. */
-	void SetMipMapped( bool mipmapped );
+	void SetMipMapped(bool mipmapped);
 	
 	/** Mip map level count or 0 to let the hardware auto-generate them. */
 	inline int GetMipMapLevelCount() const{ return pMipMapLevelCount; }
 	
 	/** Set mip map level count or 0 to let the hardware auto-generate them. */
-	void SetMipMapLevelCount( int count );
+	void SetMipMapLevelCount(int count);
 	
 	/**
 	 * Real mip map level count.
@@ -143,32 +174,32 @@ public:
 	void DestroyTexture();
 	
 	/** Set base level texture pixels from a pixel buffer. */
-	void SetPixels( const deoglPixelBuffer &pixelBuffer );
+	void SetPixels(const deoglPixelBuffer &pixelBuffer);
 	
 	/** Set texture level pixels from a pixel buffer. */
-	void SetPixelsLevel( int level, const deoglPixelBuffer &pixelBuffer );
+	void SetPixelsLevel(int level, const deoglPixelBuffer &pixelBuffer);
 	
 	/** Set texture level pixels from a pixel buffer layer. */
-	void SetPixelsLevelLayer( int level, const deoglPixelBuffer &pixelBuffer, int layer );
+	void SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelBuffer, int layer);
 	
 	/** Copy pixels from first level into pixel buffer. */
-	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
+	void GetPixels(deoglPixelBuffer &pixelBuffer) const;
 	
 	/** Copy pixels from level into pixel buffer. */
-	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
+	void GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) const;
 	
 	/** Size of a mip map level. */
-	void GetLevelSize( int level, int &width, int &height ) const;
+	void GetLevelSize(int level, int &width, int &height) const;
 	
 	/** Create mip maps if texture foramt is mip mapped. */
 	void CreateMipMaps();
 	
 	/** Copy from another texture to this texture. */
-	void CopyFrom( const deoglTexture &texture, bool withMipMaps );
+	void CopyFrom(const deoglTexture &texture, bool withMipMaps);
 	
 	/** Copy area from another texture to this texture. */
-	void CopyFrom( const deoglTexture &texture, bool withMipMaps,
-		int width, int height, int srcX, int srcY, int destX, int destY );
+	void CopyFrom(const deoglTexture &texture, bool withMipMaps,
+		int width, int height, int srcX, int srcY, int destX, int destY);
 	
 	
 	
@@ -184,25 +215,25 @@ public:
 	/** \name Helper Functions */
 	/*@{*/
 	/** Set texture format suitable for texture mapping. */
-	void SetMapingFormat( int channels, bool useFloat, bool compressed );
+	void SetMapingFormat(int channels, bool useFloat, bool compressed);
 	
 	/** Set texture format suitable for attaching as FBO render target. */
-	void SetFBOFormat( int channels, bool useFloat );
+	void SetFBOFormat(int channels, bool useFloat);
 	
 	/** Set texture format suitable for attaching as FBO render target. */
-	void SetFBOFormatFloat32( int channels );
+	void SetFBOFormatFloat32(int channels);
 	
 	/** Set texture format suitable for rendering to an integral texture using an FBO. */
-	void SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned );
+	void SetFBOFormatIntegral(int channels, int bpp, bool useUnsigned);
 	
 	/** Set texture format suitable for attaching as FBO render target. */
-	void SetFBOFormatSNorm( int channels, int bpp );
+	void SetFBOFormatSNorm(int channels, int bpp);
 	
 	/** Set depth texture format suitable for attaching as FBO render target. */
-	void SetDepthFormat( bool packedStencil, bool useFloat );
+	void SetDepthFormat(bool packedStencil, bool useFloat);
 	
 	/** Set debug object label. */
-	void SetDebugObjectLabel( const char *name );
+	void SetDebugObjectLabel(const char *name);
 	/*@}*/
 	
 private:

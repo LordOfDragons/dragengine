@@ -249,7 +249,7 @@ void deoglFramebuffer::AttachColorTextureLevel( int index, deoglTexture *texture
 	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture ){
 		DETHROW( deeInvalidParam );
 	}
-	AttachColorTextureLevel( index, texture->GetTexture(), level );
+	AttachColorTextureLevel( index, texture->GetGlTexture(), level );
 }
 
 void deoglFramebuffer::AttachColorCubeMap( int index, deoglCubeMap* texture ){
@@ -450,7 +450,7 @@ void deoglFramebuffer::AttachDepthTextureLevel( deoglTexture *texture, int level
 		DETHROW( deeInvalidParam );
 	}
 	
-	const GLuint image = texture->GetTexture();
+	const GLuint image = texture->GetGlTexture();
 	
 	if( pAttDepth.DoesNotMatch( image, eatTexture, level ) ){
 		DetachDepthImage();
@@ -636,7 +636,7 @@ void deoglFramebuffer::AttachStencilTextureLevel( deoglTexture *texture, int lev
 		DETHROW( deeInvalidParam );
 	}
 	
-	const GLuint image = texture->GetTexture();
+	const GLuint image = texture->GetGlTexture();
 	if( ! pAttStencil.DoesNotMatch( image, eatTexture, level ) ){
 		return;
 	}

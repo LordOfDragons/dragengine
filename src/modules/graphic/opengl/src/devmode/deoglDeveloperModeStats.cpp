@@ -610,7 +610,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 				
 				if( unit.GetTexture() ){
 					text.Format( "  - Unit %d Texture: gl=%u filtering=%d wrapping=%u depthCompare=%s\n", j,
-						unit.GetTexture()->GetTexture(),
+						unit.GetTexture()->GetGlTexture(),
 						unit.GetSampler() ? unit.GetSampler()->GetFilterMode() : 0,
 						unit.GetSampler() ? unit.GetSampler()->GetWrapMode() : 0,
 						unit.GetSampler() ? ( unit.GetSampler()->GetDepthCompareMode() ? "y" : "n" ) : "?" );
@@ -648,7 +648,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 				const deoglTexUnitConfig &unit = tuc->GetUnitAt( j );
 				
 				if( unit.GetTexture() ){
-					text.AppendFormat( " T%d", unit.GetTexture()->GetTexture() );
+					text.AppendFormat( " T%d", unit.GetTexture()->GetGlTexture() );
 					
 				}else if( unit.GetCubeMap() ){
 					text.AppendFormat( " C%d", unit.GetCubeMap()->GetTexture() );
@@ -682,7 +682,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 				}
 				
 				if( unit.GetTexture() ){
-					text.AppendFormat( "T%d", unit.GetTexture()->GetTexture() );
+					text.AppendFormat( "T%d", unit.GetTexture()->GetGlTexture() );
 					
 				}else if( unit.GetCubeMap() ){
 					text.AppendFormat( "C%d", unit.GetCubeMap()->GetTexture() );

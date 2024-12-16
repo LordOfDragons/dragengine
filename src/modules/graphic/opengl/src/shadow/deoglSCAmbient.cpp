@@ -92,7 +92,7 @@ deoglTexture *deoglSCAmbient::ObtainStaticMapWithSize( int size, bool useFloat )
 	}
 	
 	if( pStaticMap ){
-		if( pStaticMap->GetWidth() == size && pStaticMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+		if( pStaticMap->GetWidth() == size && pStaticMap->GetGlFormat()->GetIsDepthFloat() == useFloat ){
 			return pStaticMap;
 		}
 		
@@ -176,7 +176,7 @@ deoglTexture *deoglSCAmbient::ObtainDynamicMapWithSize( int size, bool useFloat 
 	
 	
 	if( pDynamicMap ){
-		if( pDynamicMap->GetWidth() == size && pDynamicMap->GetFormat()->GetIsDepthFloat() == useFloat ){
+		if( pDynamicMap->GetWidth() == size && pDynamicMap->GetGlFormat()->GetIsDepthFloat() == useFloat ){
 			return pDynamicMap;
 		}
 		

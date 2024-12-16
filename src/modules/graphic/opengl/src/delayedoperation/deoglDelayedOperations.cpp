@@ -548,7 +548,7 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 						deoglTexture * const cttexture = new deoglTexture( pRenderThread );
 						
 						cttexture->SetSize( texture->GetWidth(), texture->GetHeight() );
-						cttexture->SetFormat( texture->GetFormat() );
+						cttexture->SetFormat( texture->GetGlFormat() );
 						cttexture->SetMipMapped( texture->GetMipMapped() );
 						
 						if( compressedData ){

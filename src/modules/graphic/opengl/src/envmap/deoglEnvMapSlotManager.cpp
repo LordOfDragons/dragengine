@@ -168,7 +168,7 @@ void deoglEnvMapSlotManager::AddEnvironmentMap( deoglEnvironmentMap *envmap ){
 			pArrayTexture->CreateMipMaps(); // would be better to have a quicker init here to make sure the mip map levels exist
 			
 			for( i=0; i<pLayerCount; i++ ){
-				if( pSlots[ i ].GetEnvMap() && pSlots[ i ].GetEnvMap()->GetEquiEnvMap() && pSlots[ i ].GetEnvMap()->GetEquiEnvMap()->GetTexture() ){
+				if( pSlots[ i ].GetEnvMap() && pSlots[ i ].GetEnvMap()->GetEquiEnvMap() && pSlots[ i ].GetEnvMap()->GetEquiEnvMap()->GetGlTexture() ){
 					pRenderThread.GetLogger().LogInfoFormat( "EnvMapSlotManager.AddEnvironmentMap(IncreaseLayer): Copy EnvMap %p to layer %i", pSlots[ i ].GetEnvMap(), i );
 					//printf( "EnvMapSlotManager.AddEnvironmentMap(IncreaseLayer): Copy EnvMap %p to layer %i\n", pSlots[ i ].GetEnvMap(), i );
 					pArrayTexture->CopyFrom( *pSlots[ i ].GetEnvMap()->GetEquiEnvMap(), true, i );

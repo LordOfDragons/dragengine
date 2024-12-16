@@ -226,6 +226,20 @@ public:
 	
 	
 	
+	/** Count of supported formats. */
+	inline int GetSupportedFormatCount() const{ return pSupportedFormatCount; }
+	
+	/** Supported format at index. */
+	const devkFormat &GetSupportedFormatAt(int index) const;
+	
+	/** Format to use for textures and images or nullptr. */
+	const devkFormat *GetUseTexFormat(eFormats format) const;
+	
+	/** Format to use for framebuffer use or nullptr. */
+	const devkFormat *GetUseFboFormat(eFormats format) const;
+	
+	
+	
 	/** Device memory properties. */
 	inline const VkPhysicalDeviceMemoryProperties &GetMemoryProperties() const{ return pMemoryProperties; }
 	

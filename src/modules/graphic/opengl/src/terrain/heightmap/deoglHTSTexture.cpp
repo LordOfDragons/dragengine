@@ -202,7 +202,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexturePipelines::
 			deoglTexture ** const textureMasks = pSector.GetMaskTextures();
 			const int arrayLayer = pIndex >> 2;
 			
-			if( textureMasks && textureMasks[ arrayLayer ] && textureMasks[ arrayLayer ]->GetTexture() ){
+			if( textureMasks && textureMasks[ arrayLayer ] && textureMasks[ arrayLayer ]->GetGlTexture() ){
 				units[ target ].EnableTexture( textureMasks[ arrayLayer ],
 					renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 				

@@ -223,7 +223,7 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	shader.SetParameterFloat( spotLevel, ( float )level );
 	
 	if( gammaCorrect ){
-		if( texture->GetFormat()->GetIsDepth() ){
+		if( texture->GetGlFormat()->GetIsDepth() ){
 			shader.SetParameterFloat( spotGamma, 1000.0f, 1000.0f, 1000.0f, 1.0f );
 			
 		}else{
