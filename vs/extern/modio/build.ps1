@@ -10,15 +10,18 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "modio-sdk.tar.xz" -UrlPath "modio"
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "modio-sdk-ext.tar.xz" -UrlPath "modio"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "modio-sdk-2024_11.tar.xz" -UrlPath "modio"
 
-Expand-TarXz -Path "$ProjectDir\modio-sdk.tar.xz" -Destination $ExpandedDir
-Expand-TarXz -Path "$ProjectDir\modio-sdk-ext.tar.xz" -Destination $ExpandedDir
+Expand-TarXz -Path "$ProjectDir\modio-sdk-2024_11.tar.xz" -Destination $ExpandedDir
 
 $CmakeSourceDir = Join-Path -Path $ExpandedDir -ChildPath "modio-sdk"
 $CmakeBuildDir = Join-Path -Path $ExpandedDir -ChildPath "build"
 $CmakeInstallDir = Join-Path -Path $ExpandedDir -ChildPath "install"
+
+$OldPath = Get-Location
+Set-Location "$CmakeSourceDir"
+git apply -p1 --binary --ignore-space-change --ignore-whitespace "$SourceDir\patches\05_makefile_fix.patch"
+Set-Location $OldPath
 
 $Env:CXXFLAGS = "/DMODIO_SEPARATE_COMPILATION"
 
