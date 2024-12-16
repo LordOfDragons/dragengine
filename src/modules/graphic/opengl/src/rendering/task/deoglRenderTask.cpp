@@ -384,7 +384,7 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 	
 	for( s=0; s<pPipelineCount; s++ ){
 		const deoglRenderTaskPipeline &pipeline = *( ( deoglRenderTaskPipeline* )pPipelines.GetAt( s ) );
-		const deoglShaderProgram &shader = pipeline.GetPipeline()->GetGlConfiguration().GetShaderRef();
+		const deoglShaderProgram &shader = pipeline.GetPipeline()->GetConfiguration().GetShaderRef();
 		const deoglShaderDefines &defines = shader.GetDefines();
 		
 		rtlogger.LogInfoFormat( "- pipeline %d: shader=%p textures=%d points=%d vaos=%d "
@@ -425,7 +425,7 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 			for( u=0; u<unitCount; u++ ){
 				const deoglTexUnitConfig &unit = rttexture.GetTexture()->GetTUC()->GetUnitAt( u );
 				if( unit.GetTexture() ){
-					text.AppendFormat( " T%i", unit.GetTexture()->GetGlTexture() );
+					text.AppendFormat( " T%i", unit.GetTexture()->GetTexture() );
 					
 				}else if( unit.GetCubeMap() ){
 					text.AppendFormat( " C%i", unit.GetCubeMap()->GetTexture() );

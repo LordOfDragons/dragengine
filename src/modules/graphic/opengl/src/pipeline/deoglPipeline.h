@@ -25,11 +25,10 @@
 #ifndef _DEOGLPIPELINE_H_
 #define _DEOGLPIPELINE_H_
 
-#include "deoglPipelineConfiguration.h"
-#include "../shaders/deoglShaderProgram.h"
-
-#ifdef WITH_VULKAN
-#include <pipeline/devkPipeline.h>
+#ifdef BACKEND_OPENGL
+	#include "deoglPipelineConfiguration.h"
+#elif defined BACKEND_VULKAN
+	#include <pipeline/devkPipeline.h>
 #endif
 
 #include <dragengine/deObject.h>
@@ -123,12 +122,10 @@ private:
 	deoglRenderThread &pRenderThread;
 	int pRTSIndex;
 	
-#ifdef WITH_OPENGL
-	const deoglPipelineConfiguration *pGlConfiguration;
-#endif
-	
-#ifdef WITH_VULKAN
-	devkPipeline *pVkPipeline;
+#ifdef BACKEND_OPENGL
+	const deoglPipelineConfiguration *pConfiguration;
+#elif defined BACKEND_VULKAN
+	devkPipeline *pPipeline;
 #endif
 	
 	
@@ -136,10 +133,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-#ifdef WITH_OPENGL
+#ifdef BACKEND_OPENGL
 	deoglPipeline(deoglRenderThread &renderThread, const deoglPipelineConfiguration &configuration);
-#endif
-#ifdef WITH_VULKAN
+#elif defined BACKEND_VULKAN
 	deoglPipeline(deoglRenderThread &renderThread, const devkPipelineConfiguration &configuration);
 #endif
 	
@@ -156,18 +152,15 @@ public:
 	
 	
 	
-#ifdef WITH_OPENGL
-	/** OpenGL configuration. */
-	const deoglPipelineConfiguration &GetGlConfiguration() const;
+#ifdef BACKEND_OPENGL
+	/** Configuration. */
+	inline const deoglPipelineConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** OpenGL shader program. */
-	deoglShaderCompiled &GetGlShader() const;
-#endif
+	/** Shader program. */
+	deoglShaderCompiled &GetShader() const;
 	
-	
-	
-#ifdef WITH_VULKAN
-	/** Vulkan pipeline. */
+#elif defined BACKEND_VULKAN
+	/** Pipeline. */
 	inline devkPipeline *GetVkPipeline() const{ return pVkPipeline; }
 #endif
 	

@@ -181,10 +181,10 @@ void deoglRenderGeometry::RenderTask( const deoglRenderTask &renderTask ){
 		for( i=0; i<pipelineCount; i++ ){
 			const deoglRenderTaskPipeline &rtpipeline = *renderTask.GetPipelineAt( i );
 			const deoglPipeline &pipeline = *rtpipeline.GetPipeline();
-			const deoglPipelineConfiguration &pipconf = pipeline.GetGlConfiguration();
+			const deoglPipelineConfiguration &pipconf = pipeline.GetConfiguration();
 			const int targetSPBInstanceIndexBase = pipconf.GetSPBInstanceIndexBase();
 			const int targetDrawIDOffset = pipconf.GetDrawIDOffset();
-			deoglShaderCompiled &shader = pipeline.GetGlShader();
+			deoglShaderCompiled &shader = pipeline.GetShader();
 			
 			pipeline.Activate();
 			
@@ -450,10 +450,10 @@ void deoglRenderGeometry::RenderTask( const deoglComputeRenderTask &renderTask )
 				
 				pipeline.Activate();
 				
-				const deoglPipelineConfiguration &pipconf = pipeline.GetGlConfiguration();
+				const deoglPipelineConfiguration &pipconf = pipeline.GetConfiguration();
 				targetSPBInstanceIndexBase = pipconf.GetSPBInstanceIndexBase();
 				targetDrawIDOffset = pipconf.GetDrawIDOffset();
-				shader = &pipeline.GetGlShader();
+				shader = &pipeline.GetShader();
 				
 				if( renderParamBlock ){
 					renderParamBlock->Activate( deoglSkinShader::eubRenderParameters );
@@ -675,7 +675,7 @@ void deoglRenderGeometry::RenderTask( const deoglPersistentRenderTask &renderTas
 	while( iterPipeline ){
 		const deoglPersistentRenderTaskPipeline &rtpipeline = *( ( deoglPersistentRenderTaskPipeline* )iterPipeline->GetOwner() );
 		const deoglPipeline &pipeline = *rtpipeline.GetPipeline();
-		deoglShaderCompiled &shader = pipeline.GetGlShader();
+		deoglShaderCompiled &shader = pipeline.GetShader();
 		
 		pipeline.Activate();
 		
@@ -809,7 +809,7 @@ int firstPoint, int pointCount ){
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, vbo ) );
 	transformed.Activate();
 	
-	pPipelineCopyVNT->GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
+	pPipelineCopyVNT->GetShader().SetParameterUInt( 0, firstPoint, pointCount );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( pointCount - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
@@ -848,7 +848,7 @@ const sVertexPositionSetParams *params, int paramCount, const deoglSPBlockSSBO &
 	OGL_CHECK( renderThread, pglBindBufferBase( GL_SHADER_STORAGE_BUFFER, 0, vboVertexPositionSetData ) );
 	transformed.Activate();
 	
-	deoglShaderCompiled &shader = pPipelineVPSTransformVNT->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineVPSTransformVNT->GetShader();
 	
 	int i;
 	for( i=0; i<paramCount; i++ ){
@@ -882,7 +882,7 @@ int firstPoint, int pointCount, bool inplace ){
 		weightMatrices->Activate();
 	}
 	
-	pipeline.GetGlShader().SetParameterUInt( 0, firstPoint, pointCount );
+	pipeline.GetShader().SetParameterUInt( 0, firstPoint, pointCount );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( pointCount - 1 ) / 64 + 1, 1, 1 ) );
 	

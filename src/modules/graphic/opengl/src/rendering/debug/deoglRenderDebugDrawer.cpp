@@ -259,7 +259,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer ){
 		: ( plan.GetRenderStereo() ? *pPipelineShapeSolidStereo : *pPipelineShapeSolid );
 	pipeline.Activate();
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	shader.SetParameterInt( sprDrawIDOffset, 0 );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
@@ -338,7 +338,7 @@ const decDMatrix &matrixModel, deoglRDebugDrawer &debugDrawer ){
 		: ( plan.GetRenderStereo() ? *pPipelineMeshSolidStereo : *pPipelineMeshSolid );
 	pipeline.Activate();
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	shader.SetParameterInt( sprDrawIDOffset, 0 );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();

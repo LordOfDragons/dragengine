@@ -237,7 +237,7 @@ unsigned int deoglTexUnitsConfig::CalcUnitsHashCodeForUnits( const deoglTexUnitC
 	for( i=0; i<unitCount; i++ ){
 		if( units[ i ].GetTexture() ){
 			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME
-				+ ( unsigned int )units[ i ].GetTexture()->GetGlTexture();
+				+ ( unsigned int )units[ i ].GetTexture()->GetTexture();
 			
 		}else if( units[ i ].GetCubeMap() ){
 			hashCode += ( unsigned int )deoglTexUnitConfig::EST_BASE_GLNAME

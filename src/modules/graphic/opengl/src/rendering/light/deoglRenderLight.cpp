@@ -608,7 +608,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
-	shader = &pipeline->GetGlShader();
+	shader = &pipeline->GetShader();
 	shader->SetParameterFloat( espssaoTCTransform, 1.0f, 1.0f,
 		pixelSizeU * tcshift, pixelSizeV * tcshift );
 	shader->SetParameterFloat( espssaoSCTransform, 1.0f, 1.0f,
@@ -629,7 +629,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	const float dataToDepthOffsetV = defren.GetPixelSizeV() * inttcshift;
 	
 	pPipelineSSAOBlur1->Activate();
-	shader = &pPipelineSSAOBlur1->GetGlShader();
+	shader = &pPipelineSSAOBlur1->GetShader();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
 	ismgr.Enable( 0, *defren.GetTextureTemporary3(), 0, deoglImageStageManager::eaReadWrite );
@@ -648,7 +648,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	
 	pPipelineSSAOBlur2->Activate();
-	shader = &pPipelineSSAOBlur2->GetGlShader();
+	shader = &pPipelineSSAOBlur2->GetShader();
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	shader->SetParameterFloat( espssaobTCDataToDepth,
@@ -672,7 +672,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary3(), GetSamplerClampLinear() );
 	
-	shader = &pipeline->GetGlShader();
+	shader = &pipeline->GetShader();
 	defren.SetShaderParamFSQuad( *shader, espssaousTCTransform, reducedWidth, reducedHeight );
 	
 	RenderFullScreenQuad( plan );

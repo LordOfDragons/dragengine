@@ -25,7 +25,7 @@
 #ifndef _DEOGLPIPELINECONFIGURATION_H_
 #define _DEOGLPIPELINECONFIGURATION_H_
 
-#ifdef WITH_OPENGL
+#ifdef BACKEND_OPENGL
 
 #include "../deoglBasics.h"
 #include "../shaders/deoglShaderProgram.h"

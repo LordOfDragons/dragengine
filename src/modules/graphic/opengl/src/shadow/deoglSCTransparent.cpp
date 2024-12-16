@@ -107,7 +107,7 @@ deoglTexture *deoglSCTransparent::ObtainStaticShadowMapWithSize( int size, bool 
 	
 	if( pStaticShadowMap ){
 		if( pStaticShadowMap->GetWidth() == size
-		&& pStaticShadowMap->GetGlFormat()->GetIsDepthFloat() == useFloat ){
+		&& pStaticShadowMap->GetFormat()->GetIsDepthFloat() == useFloat ){
 			return pStaticShadowMap;
 		}
 		
@@ -258,7 +258,7 @@ deoglTexture *deoglSCTransparent::ObtainDynamicShadowMapWithSize( int size, bool
 	
 	if( pDynamicShadowMap ){
 		if( pDynamicShadowMap->GetWidth() == size
-		&& pDynamicShadowMap->GetGlFormat()->GetIsDepthFloat() == useFloat ){
+		&& pDynamicShadowMap->GetFormat()->GetIsDepthFloat() == useFloat ){
 			return pDynamicShadowMap;
 		}
 		

@@ -140,7 +140,7 @@ void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
 		
 		pipeline = step.GetPipeline();
 		rtlogger.LogInfo( "  - configuration:" );
-		const deoglShaderProgram &shader = pipeline->GetGlConfiguration().GetShaderRef();
+		const deoglShaderProgram &shader = pipeline->GetConfiguration().GetShaderRef();
 		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode()
 			? shader.GetVertexSourceCode()->GetFilePath().GetString() : "-" );
 		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode()
@@ -169,7 +169,7 @@ void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
 		for( j=0; j<unitCount; j++ ){
 			const deoglTexUnitConfig &unit = step.GetTUC()->GetUnitAt( j );
 			if( unit.GetTexture() ){
-				text.AppendFormat( " T%i", unit.GetTexture()->GetGlTexture() );
+				text.AppendFormat( " T%i", unit.GetTexture()->GetTexture() );
 				
 			}else if( unit.GetCubeMap() ){
 				text.AppendFormat( " C%i", unit.GetCubeMap()->GetTexture() );

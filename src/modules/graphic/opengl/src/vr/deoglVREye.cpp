@@ -295,7 +295,7 @@ void deoglVREye::Submit( deBaseVRModule &vrmodule ){
 	// 	pVR.GetCamera().GetRenderThread().GetLogger().LogInfoFormat("tcTo (%g,%g)", tcTo.x, tcTo.y );
 		
 		vrmodule.SubmitOpenGLTexture2D( pEye,
-			( void* )( intptr_t )pRenderTarget->GetTexture()->GetGlTexture(), tcFrom, tcTo, false );
+			( void* )( intptr_t )pRenderTarget->GetTexture()->GetTexture(), tcFrom, tcTo, false );
 	}
 }
 

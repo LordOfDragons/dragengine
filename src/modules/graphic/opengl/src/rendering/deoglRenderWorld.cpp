@@ -575,7 +575,7 @@ DEBUG_RESET_TIMER
 			
 			pRenderPB->Activate();
 			
-			shader = &pipeline.GetGlShader();
+			shader = &pipeline.GetShader();
 			defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
 			shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 			shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
@@ -1187,7 +1187,7 @@ DBG_ENTER("RenderFinalizeFBO")
 	
 	pRenderPB->Activate();
 	
-	deoglShaderCompiled * const shader = &pipeline.GetGlShader();
+	deoglShaderCompiled * const shader = &pipeline.GetShader();
 	
 	if( withGammaCorrection ){
 		const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
@@ -1274,7 +1274,7 @@ DBG_ENTER("RenderFinalizeContext")
 	
 	pRenderPB->Activate();
 	
-	shader = &pipeline.GetGlShader();
+	shader = &pipeline.GetShader();
 	shader->SetParameterFloat( spfinGamma, gamma, gamma, gamma, 1.0f );
 	shader->SetParameterFloat( spfinBrightness, pbn, pbn, pbn, 0.0f );
 	shader->SetParameterFloat( spfinContrast, contrast, contrast, contrast, 1.0f );

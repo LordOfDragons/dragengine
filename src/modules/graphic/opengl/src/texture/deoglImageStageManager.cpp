@@ -104,12 +104,12 @@ GLenum deoglImageStageManager::GetStageType( int stage ) const{
 
 
 void deoglImageStageManager::Enable( int stage, const deoglTexture &texture, int level, eAccess access ){
-	if( ! texture.GetGlFormat() ){
+	if( ! texture.GetFormat() ){
 		DETHROW_INFO( deeNullPointer, "texture.format" );
 	}
 	
-	BindImage( stage, texture.GetGlTexture(), GL_TEXTURE_2D, level, 0, access, false,
-		( GLenum )texture.GetGlFormat()->GetFormat() );
+	BindImage( stage, texture.GetTexture(), GL_TEXTURE_2D, level, 0, access, false,
+		( GLenum )texture.GetFormat()->GetFormat() );
 }
 
 void deoglImageStageManager::Enable( int stage, const deoglCubeMap &cubemap, int level, eAccess access ){

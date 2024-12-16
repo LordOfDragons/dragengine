@@ -768,7 +768,7 @@ deoglRenderTask *renderTask, deoglComputeRenderTask *computeRenderTask ){
 	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *pPipelineOccMapDownSampleStereo : *pPipelineOccMapDownSample;
 	pipeline.Activate();
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
@@ -920,7 +920,7 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		planCompute.GetSSBOCounters()->ClearDataUInt( 0, 1, 0, 1, 1, 0 );
 		
 		pPipelineOccTestComputeRT->Activate();
-		deoglShaderCompiled &shader = pPipelineOccTestComputeRT->GetGlShader();
+		deoglShaderCompiled &shader = pPipelineOccTestComputeRT->GetShader();
 		
 		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
 		shader.SetParameterFloat( spttfbScaleSize,
@@ -962,7 +962,7 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		const int inputDataCount = occlusionTest.GetInputDataCount();
 		
 		pPipelineOccTest->Activate();
-		deoglShaderCompiled &shader = pPipelineOccTest->GetGlShader();
+		deoglShaderCompiled &shader = pPipelineOccTest->GetShader();
 		
 		shader.SetParameterUInt( spttfInputDataCount, inputDataCount );
 		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
@@ -1053,7 +1053,7 @@ const decMatrix &matrixCamera2Stereo ){
 		planSkyLight.GetSSBOCounters()->ClearDataUInt( 0, 1, 0, 1, 1, 0 );
 		
 		pPipelineOccTestSunComputeRT->Activate();
-		deoglShaderCompiled &shader = pPipelineOccTestSunComputeRT->GetGlShader();
+		deoglShaderCompiled &shader = pPipelineOccTestSunComputeRT->GetShader();
 		
 		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
 		shader.SetParameterFloat( spttfbScaleSize,
@@ -1101,7 +1101,7 @@ const decMatrix &matrixCamera2Stereo ){
 		const int inputDataCount = occlusionTest.GetInputDataCount();
 		
 		pPipelineOccTestSun->Activate();
-		deoglShaderCompiled &shader = pPipelineOccTestSun->GetGlShader();
+		deoglShaderCompiled &shader = pPipelineOccTestSun->GetShader();
 		DEBUG_PRINT_TIMER( "Activate FBO" );
 		
 		shader.SetParameterUInt( spttfInputDataCount, inputDataCount );
@@ -1154,7 +1154,7 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 	DEBUG_PRINT_TIMER( "Entering Render Occlusion Tests" );
 	
 	pPipelineOccTestDual->Activate();
-	deoglShaderCompiled &shader = pPipelineOccTestDual->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineOccTestDual->GetShader();
 	DEBUG_PRINT_TIMER( "Activate FBO" );
 	
 	shader.SetParameterUInt( spttfInputDataCount, inputDataCount );

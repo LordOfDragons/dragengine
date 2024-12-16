@@ -38,6 +38,11 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDebug.h"
 
+#ifdef BACKEND_OPENGL
+#elif defined BACKEND_VULKAN
+#include <devkFormat.h>
+#endif
+
 #ifdef OS_ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
@@ -58,19 +63,20 @@
 deoglTexture::deoglTexture(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-#ifdef WITH_OPENGL
-pGlTexture(0),
-pGlFormat(renderThread.GetCapabilities().GetFormats().GetUseTex2DFormatFor(deoglCapsFmtSupport::eutfRGB8)),
-#endif
+#ifdef BACKEND_OPENGL
+pTexture(0),
+pFormat(0),
 
-#ifdef WITH_VULKAN
-pVkFormat(nullptr),
+#elif defined BACKEND_VULKAN
+pFormat(nullptr),
 #endif
 
 pMipMapLevelCount(0),
 pRealMipMapLevelCount(0),
 pMipMapped(false),
-pMemUse(pRenderThread.GetMemoryManager().GetConsumption().texture2D){
+pMemUse(pRenderThread.GetMemoryManager().GetConsumption().texture2D)
+{
+	SetMapingFormat(3, false, false);
 }
 
 deoglTexture::~deoglTexture(){
@@ -82,16 +88,16 @@ deoglTexture::~deoglTexture(){
 // Management
 ///////////////
 
-#ifdef WITH_OPENGL
+#ifdef BACKEND_OPENGL
 
 void deoglTexture::SetFormat(const deoglCapsTextureFormat *format){
 	DEASSERT_NOTNULL(format)
-	if(format == pGlFormat){
+	if(format == pFormat){
 		return;
 	}
 	
 	DestroyTexture();
-	pGlFormat = format;
+	pFormat = format;
 }
 
 void deoglTexture::SetFormatMappingByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber){
@@ -102,19 +108,16 @@ void deoglTexture::SetFormatFBOByNumber(deoglCapsFmtSupport::eUseTextureFormats 
 	SetFormat(pRenderThread.GetCapabilities().GetFormats().GetUseFBOTex2DFormatFor(formatNumber));
 }
 
-#endif
-
-
-#ifdef WITH_VULKAN
+#elif defined BACKEND_VULKAN
 
 void deoglTexture::SetFormat(const devkFormat *format){
 	DEASSERT_NOTNULL(format)
-	if(format == pVkFormat){
+	if(format == pFormat){
 		return;
 	}
 	
 	DestroyTexture();
-	pVkFormat = format;
+	pFormat = format;
 }
 
 void deoglTexture::SetFormatMappingByNumber(devkDevice::eFormats format){
@@ -164,20 +167,20 @@ void deoglTexture::SetMipMapLevelCount(int count){
 
 
 void deoglTexture::CreateTexture(){
-	if(pGlTexture){
+	if(pTexture){
 		return;
 	}
 	
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-	const GLenum glpixelformat = pGlFormat->GetPixelFormat();
-	const GLenum glpixeltype = pGlFormat->GetPixelType();
-	const GLenum glformat = pGlFormat->GetFormat();
+	const GLenum glpixelformat = pFormat->GetPixelFormat();
+	const GLenum glpixeltype = pFormat->GetPixelType();
+	const GLenum glformat = pFormat->GetFormat();
 	
-	OGL_CHECK(pRenderThread, glGenTextures(1, &pGlTexture));
+	OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
 	
-	if(! pGlTexture){
-		OGL_CHECK(pRenderThread, glGenTextures(1, &pGlTexture));
-		DEASSERT_NOTNULL(pGlTexture)
+	if(! pTexture){
+		OGL_CHECK(pRenderThread, glGenTextures(1, &pTexture));
+		DEASSERT_NOTNULL(pTexture)
 	}
 	
 	tsmgr.EnableBareTexture(0, *this);
@@ -259,12 +262,22 @@ void deoglTexture::CreateTexture(){
 }
 
 void deoglTexture::DestroyTexture(){
-	if(pGlTexture){
-		pRenderThread.GetDelayedOperations().DeleteOpenGLTexture(pGlTexture);
-		pGlTexture = 0;
+#ifdef BACKEND_OPENGL
+	if(pTexture){
+		pRenderThread.GetDelayedOperations().DeleteOpenGLTexture(pTexture);
+		pTexture = 0;
 		
 		UpdateMemoryUsage();
 	}
+	
+#elif defined BACKEND_VULKAN
+	if(pImage){
+		pImage = nullptr;
+		pFormat = nullptr;
+		
+		UpdateMemoryUsage();
+	}
+#endif
 }
 
 void deoglTexture::SetPixels(const deoglPixelBuffer &pixelBuffer){
@@ -296,7 +309,7 @@ void deoglTexture::SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelB
 		+ pixelBuffer.GetLayerStride() * layer;
 	
 	if(pixelBuffer.GetCompressed()){
-		OGL_CHECK(pRenderThread, pglCompressedTexImage2D(GL_TEXTURE_2D, level, pGlFormat->GetFormat(),
+		OGL_CHECK(pRenderThread, pglCompressedTexImage2D(GL_TEXTURE_2D, level, pFormat->GetFormat(),
 			width, height, 0, pixelBuffer.GetImageSize(), (const GLvoid *)pixelBufferData));
 		//OGL_CHECK(pRenderThread, pglCompressedTexSubImage2D(GL_TEXTURE_2D, level, 0, 0, width, height,
 		//	pGlFormat->GetFormat(), pixels.GetImageSize(), (const GLvoid *)pixelBufferData));
@@ -335,7 +348,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 			level, pixelBuffer.GetWidth(), width, pixelBuffer.GetHeight(), height, pixelBuffer.GetDepth());
 		DETHROW(deeInvalidParam);
 	}*/
-	if(!pGlTexture){
+	if(!pTexture){
 		return;
 	}
 	
@@ -553,12 +566,12 @@ int width, int height, int srcX, int srcY, int destX, int destY){
 		
 		for(i=0; i<mipMapLevelCount; i++){
 			if(pglCopyImageSubData){
-				pglCopyImageSubData(texture.GetGlTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
-					pGlTexture, GL_TEXTURE_2D, i, destX, destY, 0, width, height, 1);
+				pglCopyImageSubData(texture.GetTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
+					pTexture, GL_TEXTURE_2D, i, destX, destY, 0, width, height, 1);
 				
 			}else if(pglCopyImageSubDataNV){
-				pglCopyImageSubDataNV(texture.GetGlTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
-					pGlTexture, GL_TEXTURE_2D, i, destX, destY, 0, width, height, 1);
+				pglCopyImageSubDataNV(texture.GetTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
+					pTexture, GL_TEXTURE_2D, i, destX, destY, 0, width, height, 1);
 				
 			}else{
 				DETHROW(deeInvalidParam);
@@ -574,12 +587,12 @@ int width, int height, int srcX, int srcY, int destX, int destY){
 		
 	}else{
 		if(pglCopyImageSubData){
-			pglCopyImageSubData(texture.GetGlTexture(), GL_TEXTURE_2D, 0, srcX, srcY, 0,
-				pGlTexture, GL_TEXTURE_2D, 0, destX, destY, 0, width, height, 1);
+			pglCopyImageSubData(texture.GetTexture(), GL_TEXTURE_2D, 0, srcX, srcY, 0,
+				pTexture, GL_TEXTURE_2D, 0, destX, destY, 0, width, height, 1);
 			
 		}else if(pglCopyImageSubDataNV){
-			pglCopyImageSubDataNV(texture.GetGlTexture(), GL_TEXTURE_2D, 0, srcX, srcY, 0,
-				pGlTexture, GL_TEXTURE_2D, 0, destX, destY, 0, width, height, 1);
+			pglCopyImageSubDataNV(texture.GetTexture(), GL_TEXTURE_2D, 0, srcX, srcY, 0,
+				pTexture, GL_TEXTURE_2D, 0, destX, destY, 0, width, height, 1);
 			
 		}else{
 			DETHROW(deeInvalidParam);
@@ -592,7 +605,7 @@ int width, int height, int srcX, int srcY, int destX, int destY){
 void deoglTexture::UpdateMemoryUsage(){
 	pMemUse.Clear();
 	
-	if(! pGlTexture || ! pGlFormat){
+	if(! pTexture || ! pFormat){
 		return;
 	}
 	
@@ -600,7 +613,7 @@ void deoglTexture::UpdateMemoryUsage(){
 	pMemUse.SetUncompressed(*pGlFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
 	
 #else
-	if(pGlFormat->GetIsCompressed()){
+	if(pFormat->GetIsCompressed()){
 		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 		tsmgr.EnableBareTexture(0, *this);
 		
@@ -617,16 +630,16 @@ void deoglTexture::UpdateMemoryUsage(){
 				consumption += (unsigned long long)compressedSize;
 			}
 			
-			pMemUse.SetCompressed(consumption, *pGlFormat);
+			pMemUse.SetCompressed(consumption, *pFormat);
 			
 		}else{
-			pMemUse.SetUncompressed(*pGlFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
+			pMemUse.SetUncompressed(*pFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
 		}
 		
 		tsmgr.DisableStage(0);
 		
 	}else{
-		pMemUse.SetUncompressed(*pGlFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
+		pMemUse.SetUncompressed(*pFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
 	}
 #endif
 }
@@ -636,25 +649,13 @@ void deoglTexture::UpdateMemoryUsage(){
 // Helper Functions
 /////////////////////
 
-#ifdef WITH_OPENGL
-	#define HELPER_SET_FORMAT_GL(funcType,constSuffix) \
+#ifdef BACKEND_OPENGL
+	#define HELPER_SET_FORMAT(funcType,constSuffix) \
 		SetFormat ## funcType ## ByNumber(deoglCapsFmtSupport::eutf ## constSuffix);
-#else
-	#define HELPER_SET_FORMAT_GL(funcType,constSuffix)
+#elif defined BACKEND_VULKAN
+	#define HELPER_SET_FORMAT(funcType,constSuffix) \
+		SetFormat ## funcType ## ByNumber(devkDevice::ef ## constSuffix);
 #endif
-
-#ifdef WITH_VULKAN
-	#define HELPER_SET_FORMAT_VK(funcType,constSuffix) \
-		if(pRenderThread.GetVulkanDevice()){ \
-			SetFormat ## funcType ## ByNumber(devkDevice::ef ## constSuffix); \
-		}
-#else
-	#define HELPER_SET_FORMAT_VK(funcType,constSuffix)
-#endif
-
-#define HELPER_SET_FORMAT(funcType,constSuffix) \
-	HELPER_SET_FORMAT_GL(funcType,constSuffix) \
-	HELPER_SET_FORMAT_VK(funcType,constSuffix)
 
 void deoglTexture::SetMapingFormat(int channels, bool useFloat, bool compressed){
 	if(channels == 1){
@@ -924,11 +925,11 @@ void deoglTexture::SetDepthFormat(bool packedStencil, bool useFloat){
 
 void deoglTexture::SetDebugObjectLabel(const char *name){
 	pDebugObjectLabel.Format("2D: %s", name);
-	if(pGlTexture){
+	if(pTexture){
 		pUpdateDebugObjectLabel();
 	}
 }
 
 void deoglTexture::pUpdateDebugObjectLabel(){
-	pRenderThread.GetDebug().SetDebugObjectLabel(GL_TEXTURE, pGlTexture, pDebugObjectLabel);
+	pRenderThread.GetDebug().SetDebugObjectLabel(GL_TEXTURE, pTexture, pDebugObjectLabel);
 }

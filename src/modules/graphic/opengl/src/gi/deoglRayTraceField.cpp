@@ -213,7 +213,7 @@ void deoglRayTraceField::pPrepareRayTexFBO(){
 		setupFbo = true;
 	}
 	
-	if( ! pTexRays.GetGlTexture() ){
+	if( ! pTexRays.GetTexture() ){
 		const int width = pProbesPerLine * pProbeSize;
 		const int height = pProbeSize * ( ( ( pProbeCount - 1 ) / pProbesPerLine ) + 1 );
 		

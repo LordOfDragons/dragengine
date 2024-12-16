@@ -317,7 +317,7 @@ void deoglRenderCanvas::DrawCanvasPaint( const deoglRenderCanvasContext &context
 		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
 	}
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterFloat( spcClipRect,
 		( context.GetClipMin().x + 1.0f ) * context.GetClipFactor().x,
@@ -399,7 +399,7 @@ void deoglRenderCanvas::DrawCanvasImage( const deoglRenderCanvasContext &context
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -462,7 +462,7 @@ void deoglRenderCanvas::DrawCanvasCanvasView( const deoglRenderCanvasContext &co
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -520,7 +520,7 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer( const deoglRenderCanvasContext &c
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -586,7 +586,7 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	}
 	
 	// set shader
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	// set color
 	const float transparency = context.GetTransparency();
@@ -776,7 +776,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( size ) );
 	const float transparency = context.GetTransparency();
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	

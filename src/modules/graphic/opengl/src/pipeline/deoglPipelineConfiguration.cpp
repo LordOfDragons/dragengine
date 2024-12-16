@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#ifdef WITH_OPENGL
+#ifdef BACKEND_OPENGL
 
 #include <stdio.h>
 #include <string.h>

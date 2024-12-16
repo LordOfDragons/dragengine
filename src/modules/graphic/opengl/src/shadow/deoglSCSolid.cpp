@@ -101,8 +101,8 @@ deoglTexture *deoglSCSolid::ObtainStaticMapWithSize( int size, bool withStencil,
 	
 	if( pStaticMap ){
 		if( pStaticMap->GetWidth() == size
-		&& pStaticMap->GetGlFormat()->GetIsStencil() == withStencil
-		&& pStaticMap->GetGlFormat()->GetIsDepthFloat() == useFloat ){
+		&& pStaticMap->GetFormat()->GetIsStencil() == withStencil
+		&& pStaticMap->GetFormat()->GetIsDepthFloat() == useFloat ){
 			return pStaticMap;
 		}
 		
@@ -221,8 +221,8 @@ deoglTexture *deoglSCSolid::ObtainDynamicMapWithSize( int size, bool withStencil
 	
 	if( pDynamicMap ){
 		if( pDynamicMap->GetWidth() == size
-		&& pDynamicMap->GetGlFormat()->GetIsStencil() == withStencil
-		&& pDynamicMap->GetGlFormat()->GetIsDepthFloat() == useFloat ){
+		&& pDynamicMap->GetFormat()->GetIsStencil() == withStencil
+		&& pDynamicMap->GetFormat()->GetIsDepthFloat() == useFloat ){
 			return pDynamicMap;
 		}
 		

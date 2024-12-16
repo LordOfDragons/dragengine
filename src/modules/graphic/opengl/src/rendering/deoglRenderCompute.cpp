@@ -282,7 +282,7 @@ void deoglRenderCompute::UpdateElements( const deoglRenderPlan &plan ){
 	pSSBOUpdateElements->Activate( 0 );
 	wcompute.GetSSBOElements()->Activate( 1 );
 	
-	pPipelineUpdateElements->GetGlShader().SetParameterUInt( 0, count );
+	pPipelineUpdateElements->GetShader().SetParameterUInt( 0, count );
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 }
@@ -300,7 +300,7 @@ void deoglRenderCompute::UpdateElementGeometries( const deoglRenderPlan &plan ){
 	pSSBOUpdateIndices->Activate( 1 );
 	wcompute.GetSSBOElementGeometries()->Activate( 2 );
 	
-	pPipelineUpdateElementGeometries->GetGlShader().SetParameterUInt( 0, count );
+	pPipelineUpdateElementGeometries->GetShader().SetParameterUInt( 0, count );
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 	// pDebugPrintSSBOGeometries( plan, "UpdateElementGeometries: " );
@@ -318,7 +318,7 @@ void deoglRenderCompute::ClearGeometries( const deoglRenderPlan &plan ){
 	pSSBOClearGeometries->Activate( 0 );
 	wcompute.GetSSBOElementGeometries()->Activate( 1 );
 	
-	pPipelineClearGeometries->GetGlShader().SetParameterUInt( 0, count );
+	pPipelineClearGeometries->GetShader().SetParameterUInt( 0, count );
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ) );
 	// pDebugPrintSSBOGeometries( plan, "ClearGeometries: " );
@@ -434,7 +434,7 @@ const deoglSPBlockSSBO &visibleElements, const deoglSPBlockSSBO &counters, int l
 	
 	pPipelineUpdateCullResultSet->Activate();
 	
-	pPipelineUpdateCullResultSet->GetGlShader().SetParameterUInt( 0, lodLayer );
+	pPipelineUpdateCullResultSet->GetShader().SetParameterUInt( 0, lodLayer );
 	
 	findConfig.Activate( 0 );
 	plan.GetWorld()->GetCompute().GetSSBOElements()->Activate( 0 );
@@ -488,7 +488,7 @@ void deoglRenderCompute::FindGeometries( const deoglRenderPlan &plan ){
 	pSSBOVisibleGeometries->Activate( 2 );
 	pSSBOCounters->ActivateAtomic( 0 );
 	
-	pPipelineFindGeometries->GetGlShader().SetParameterUInt( 0, count );
+	pPipelineFindGeometries->GetShader().SetParameterUInt( 0, count );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
@@ -516,7 +516,7 @@ void deoglRenderCompute::FindGeometriesSkyShadow( const deoglRenderPlan &plan ){
 	pSSBOVisibleGeometries->Activate( 2 );
 	pSSBOCounters->ActivateAtomic( 0 );
 	
-	pPipelineFindGeometries->GetGlShader().SetParameterUInt( 0, count );
+	pPipelineFindGeometries->GetShader().SetParameterUInt( 0, count );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
@@ -541,7 +541,7 @@ void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComp
 	
 	pSSBOCounters->ActivateDispatchIndirect();
 	
-	deoglShaderCompiled &shaderBuild = pPipelineBuildRenderTask->GetGlShader();
+	deoglShaderCompiled &shaderBuild = pPipelineBuildRenderTask->GetShader();
 	const int dispatchOffset = CounterDispatchOffset( ecVisibleGeometries );
 	const int passCount = renderTask.GetPassCount();
 	int i;
@@ -621,7 +621,7 @@ void deoglRenderCompute::BuildRenderTaskSkyShadow( const deoglRenderPlanSkyLight
 	
 	pSSBOCounters->ActivateDispatchIndirect();
 	
-	deoglShaderCompiled &shaderBuild = pPipelineBuildRenderTask->GetGlShader();
+	deoglShaderCompiled &shaderBuild = pPipelineBuildRenderTask->GetShader();
 	const int dispatchOffset = CounterDispatchOffset( ecVisibleGeometries );
 	const int passCount = renderTask.GetPassCount();
 	int i;
@@ -669,7 +669,7 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	const int workGroupCount = ( ( potStepCount - 1 ) / maxLanSize ) + 1;
 	
 	// local sorting
-	deoglShaderCompiled &shaderSort = pPipelineSortRenderTask->GetGlShader();
+	deoglShaderCompiled &shaderSort = pPipelineSortRenderTask->GetShader();
 	shaderSort.SetParameterInt( esspStage, essLocalSort );
 	shaderSort.SetParameterUInt( esspLaneSize, maxLanSize );
 	OGL_CHECK( renderThread, pglDispatchCompute( workGroupCount, 1, 1 ) );
@@ -729,7 +729,7 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	pSSBOCounters->Activate( 0 );
 	pSSBORenderTaskSubInstGroups->Activate( 1 );
 	
-	deoglShaderCompiled &shaderSortSubInstGroup = pPipelineRenderTaskSubInstGroup[ 1 ]->GetGlShader();
+	deoglShaderCompiled &shaderSortSubInstGroup = pPipelineRenderTaskSubInstGroup[ 1 ]->GetShader();
 	
 	shaderSortSubInstGroup.SetParameterInt( ertsig2pStage, essLocalSort );
 	shaderSortSubInstGroup.SetParameterUInt( ertsig2pLaneSize, maxLanSize );

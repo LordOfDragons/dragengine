@@ -620,11 +620,11 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 		for( i=0; i<mipMapLevelCount; i++ ){
 			//printf( "copy image level %i\n", i );
 			if( pglCopyImageSubData ){
-				pglCopyImageSubData( texture.GetGlTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
+				pglCopyImageSubData( texture.GetTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
 					pTexture, GL_TEXTURE_2D_ARRAY, i, destX, destY, destLayer, width, height, 1 );
 				
 			}else if( pglCopyImageSubDataNV ){
-				pglCopyImageSubDataNV( texture.GetGlTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
+				pglCopyImageSubDataNV( texture.GetTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
 					pTexture, GL_TEXTURE_2D_ARRAY, i, destX, destY, destLayer, width, height, 1 );
 				
 			}else{
@@ -647,11 +647,11 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 		
 	}else{
 		if( pglCopyImageSubData ){
-			pglCopyImageSubData( texture.GetGlTexture(), GL_TEXTURE_2D, 0, srcX, srcY, 0,
+			pglCopyImageSubData( texture.GetTexture(), GL_TEXTURE_2D, 0, srcX, srcY, 0,
 				pTexture, GL_TEXTURE_2D_ARRAY, 0, destX, destY, destLayer, width, height, 1 );
 			
 		}else if( pglCopyImageSubDataNV ){
-			pglCopyImageSubDataNV( texture.GetGlTexture(), GL_TEXTURE_2D, 0, srcX, srcY, 0,
+			pglCopyImageSubDataNV( texture.GetTexture(), GL_TEXTURE_2D, 0, srcX, srcY, 0,
 				pTexture, GL_TEXTURE_2D_ARRAY, 0, destX, destY, destLayer, width, height, 1 );
 			
 		}else{

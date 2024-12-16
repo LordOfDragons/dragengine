@@ -25,12 +25,10 @@
 #ifndef _DEOGLTEXTURE_H_
 #define _DEOGLTEXTURE_H_
 
-#ifdef WITH_OPENGL
+#ifdef BACKEND_OPENGL
 	#include "../../deoglBasics.h"
 	#include "../../capabilities/deoglCapsFmtSupport.h"
-#endif
-
-#ifdef WITH_VULKAN
+#elif defined BACKEND_VULKAN
 	#include "image/devkImage.h"
 	#include "devkDevice.h"
 #endif
@@ -61,14 +59,13 @@ class deoglTexture{
 public:
 	deoglRenderThread &pRenderThread;
 	
-#ifdef WITH_OPENGL
-	GLuint pGlTexture;
-	const deoglCapsTextureFormat *pGlFormat;
-#endif
+#ifdef BACKEND_OPENGL
+	GLuint pTexture;
+	const deoglCapsTextureFormat *pFormat;
 	
-#ifdef WITH_VULKAN
-	devkImage::Ref pVkImage;
-	const devkFormat *pVkFormat;
+#elif defined BACKEND_VULKAN
+	devkImage::Ref pImage;
+	const devkFormat *pFormat;
 #endif
 	
 	decPoint pSize;
@@ -95,12 +92,12 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-#ifdef WITH_OPENGL
+#ifdef BACKEND_OPENGL
 	/** Texture handle. */
-	inline GLuint GetGlTexture() const{ return pGlTexture; }
+	inline GLuint GetTexture() const{ return pTexture; }
 	
 	/** Texture format. */
-	inline const deoglCapsTextureFormat *GetGlFormat() const{ return pGlFormat; }
+	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
 	
 	/** Set texture format. */
 	void SetFormat(const deoglCapsTextureFormat *format);
@@ -110,14 +107,13 @@ public:
 	
 	/** Set texture format by number from the list of fbo texture formats to use. */
 	void SetFormatFBOByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber);
-#endif
 	
-#ifdef WITH_VULKAN
+#elif defined BACKEND_VULKAN
 	/** Image or nullptr. */
-	inline const devkImage::Ref &GetVkImage() const{ return pVkImage; }
+	inline const devkImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Texture format. */
-	inline const devkFormat *GetVkFormat() const{ return pVkFormat; }
+	inline const devkFormat *GetFormat() const{ return pFormat; }
 	
 	/** Set texture format. */
 	void SetFormat(const devkFormat *format);

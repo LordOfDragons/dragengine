@@ -183,7 +183,7 @@ void deoglRenderConstructed::DrawNodeShape( const deoglRenderCanvasContext &cont
 		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
 	}
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterFloat( spcClipRect,
 		( context.GetClipMin().x + 1.0f ) * context.GetClipFactor().x,
@@ -257,7 +257,7 @@ void deoglRenderConstructed::DrawNodeImage( const deoglRenderCanvasContext &cont
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale(
 		decVector2( node.GetSize().x, node.GetSize().y ) ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, node.GetTCTransform() );
@@ -314,7 +314,7 @@ void deoglRenderConstructed::DrawNodeText( const deoglRenderCanvasContext &conte
 	}
 	
 	// set shader
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	// set color
 	const float transparency = context.GetTransparency();

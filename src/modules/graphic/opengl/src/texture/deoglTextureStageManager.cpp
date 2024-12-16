@@ -115,7 +115,7 @@ void deoglTextureStageManager::EnableBareArrayTexture( int stage, const deoglArr
 }
 
 void deoglTextureStageManager::EnableBareTexture( int stage, const deoglTexture &texture ){
-	BindTexture( stage, texture.GetGlTexture(), GL_TEXTURE_2D );
+	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D );
 }
 
 void deoglTextureStageManager::EnableBareCubeMap( int stage, const deoglCubeMap &cubemap ){
@@ -128,7 +128,7 @@ void deoglTextureStageManager::EnableBareTBO( int stage, GLuint tbo ){
 
 void deoglTextureStageManager::EnableTexture( int stage, const deoglTexture& texture,
 deoglTexSamplerConfig &samplerConfig ){
-	BindTexture( stage, texture.GetGlTexture(), GL_TEXTURE_2D, samplerConfig.GetSamplerObject() );
+	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D, samplerConfig.GetSamplerObject() );
 }
 
 void deoglTextureStageManager::EnableCubeMap( int stage, const deoglCubeMap &cubemap,
