@@ -30,7 +30,49 @@ on:
         required: false
         default: false
         type: boolean
-
+  
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch'
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        description: 'Release Version'
+        required: true
+        type: string
+        default: nightly
+      buildVersion:
+        description: 'Build Version'
+        required: true
+        type: string
+        default: "9999"
+      artifactArchive:
+        description: 'Artifact Archive'
+        required: true
+        type: string
+        default: "archives-linux"
+      artifactInstaller:
+        description: 'Artifact Installer'
+        required: true
+        type: string
+        default: "installers-linux"
+      artifactTools:
+        description: 'Artifact Tools'
+        required: true
+        type: string
+        default: "tools-crossplatform"
+      debugBuild:
+        description: 'Debug Build'
+        type: boolean
+        required: false
+        default: false
+      lfscache:
+        required: false
+        default: true
+        type: boolean
+      
 jobs:
   build:
     runs-on: ubuntu-20.04
