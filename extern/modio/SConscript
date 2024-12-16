@@ -145,8 +145,7 @@ envLibrary.Clean(library, ['install', 'build', srcdir])
 
 cpppath = [
 	envLibrary.Dir('install/static/inc'),
-	envLibrary.Dir('install/header_only/linux'),
-	]
+	envLibrary.Dir('install/header_only/linux')]
 if depUring:
 	cpppath.extend(depUring['cpppath'])
 

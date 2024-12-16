@@ -69,11 +69,11 @@ pPipeline(nullptr)
 		throw;
 	}
 }
+#endif
 
 deoglPipeline::~deoglPipeline(){
 	pCleanUp();
 }
-#endif
 
 
 
