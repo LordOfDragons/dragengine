@@ -179,24 +179,6 @@ void devkImage::TransferToDevice(devkCommandBuffer &commandBuffer){
 		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
 }
 
-void devkImage::TransferToDevice(devkCommandPool &pool){
-	Wait();
-	
-	pCommandBuffer = pool.GetCommandBuffer();
-	pCommandBuffer->Begin();
-	TransferToDevice(pCommandBuffer);
-	pCommandBuffer->Submit();
-}
-
-void devkImage::FetchFromDevice(devkCommandPool &pool){
-	Wait();
-	
-	pCommandBuffer = pool.GetCommandBuffer();
-	pCommandBuffer->Begin();
-	FetchFromDevice(pCommandBuffer);
-	pCommandBuffer->Submit();
-}
-
 void devkImage::FetchFromDevice(devkCommandBuffer &commandBuffer){
 	DEASSERT_TRUE(commandBuffer.GetRecording())
 	
@@ -222,13 +204,8 @@ void devkImage::FetchFromDevice(devkCommandBuffer &commandBuffer){
 		VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, pBufferHost, 1, &copy);
 }
 
-void devkImage::GenerateMipMaps(devkCommandPool &pool){
-	Wait();
-	
-	pCommandBuffer = pool.GetCommandBuffer();
-	pCommandBuffer->Begin();
-	
-	BarrierLayoutTransition(pCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+void devkImage::GenerateMipMaps(devkCommandBuffer &commandBuffer){
+	BarrierLayoutTransition(commandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 	
 	VkImageMemoryBarrier barrier{VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
 	barrier.image = pImage;
@@ -256,7 +233,7 @@ void devkImage::GenerateMipMaps(devkCommandPool &pool){
 		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 		barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
 		
-		pDevice.vkCmdPipelineBarrier(*pCommandBuffer,
+		pDevice.vkCmdPipelineBarrier(commandBuffer,
 			VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
 			0, 0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
 		
@@ -266,7 +243,7 @@ void devkImage::GenerateMipMaps(devkCommandPool &pool){
 		blit.dstOffsets[1] = {mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1};
 		blit.dstSubresource.mipLevel = i;
 		
-		pDevice.vkCmdBlitImage(*pCommandBuffer, pImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+		pDevice.vkCmdBlitImage(commandBuffer, pImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 			pImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);
 		
 		// transition layout
@@ -275,7 +252,7 @@ void devkImage::GenerateMipMaps(devkCommandPool &pool){
 		barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
 		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 		
-		pDevice.vkCmdPipelineBarrier(*pCommandBuffer,
+		pDevice.vkCmdPipelineBarrier(commandBuffer,
 			VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
 			0, 0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
 		
@@ -295,12 +272,9 @@ void devkImage::GenerateMipMaps(devkCommandPool &pool){
 	barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 	barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 	
-	pDevice.vkCmdPipelineBarrier(*pCommandBuffer,
+	pDevice.vkCmdPipelineBarrier(commandBuffer,
 		VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
 		0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
-	
-	// submit command
-	pCommandBuffer->Submit();
 }
 
 void devkImage::GetData( void *data ){
@@ -359,6 +333,14 @@ void devkImage::Wait(){
 		pCommandBuffer->Wait();
 		pCommandBuffer = nullptr;
 	}
+}
+
+devkCommandBuffer & devkImage::BeginCommandBuffer(devkCommandPool &pool){
+	Wait();
+	
+	pCommandBuffer = pool.GetCommandBuffer();
+	pCommandBuffer->Begin();
+	return pCommandBuffer;
 }
 
 void devkImage::DropTransferResources(){

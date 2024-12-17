@@ -1148,7 +1148,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 		}
 		decTimer timer;
 		VKTLOG( bufferInput->SetData( bufferInputData ), "Buffer SetData")
-		VKTLOG( bufferInput->TransferToDevice(commandPool), "Buffer TransferToDevice")
+		{
+		VKTLOG(devkCommandBuffer &cbuf = bufferInput->BeginCommandBuffer(commandPool), "Buffer BeginCommandBuffer");
+		VKTLOG(bufferInput->TransferToDevice(cbuf), "Buffer TransferToDevice")
+		VKTLOG(cbuf.Submit(), "Buffer Submit");
+		}
 		VKTLOG( bufferInput->Wait(), "Buffer Wait")
 		
 		devkDescriptorSetLayoutConfiguration dslSSBOConfig;
@@ -1424,7 +1428,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 		bufferInput.TakeOver( devkBuffer::Ref::New( new devkBuffer( pVulkanDevice,
 			sizeof( vertices ), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT ) ) );
 		VKTLOG( bufferInput->SetData( vertices ), "Buffer SetData" )
-		VKTLOG( bufferInput->TransferToDevice(commandPool), "Buffer TransferToDevice" )
+		{
+		VKTLOG(devkCommandBuffer &cbuf = bufferInput->BeginCommandBuffer(commandPool), "Buffer BeginCommandBuffer")
+		VKTLOG(bufferInput->TransferToDevice(cbuf), "Buffer TransferToDevice")
+		VKTLOG(cbuf.Submit(), "Buffer Submit");
+		}
 		VKTLOG( bufferInput->Wait(), "Buffer Wait" )
 		
 		pipelineConfig = devkPipelineConfiguration();

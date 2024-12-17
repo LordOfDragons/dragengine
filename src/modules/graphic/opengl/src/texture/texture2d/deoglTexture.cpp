@@ -589,7 +589,10 @@ void deoglTexture::CreateMipMaps(){
 	tsmgr.DisableStage(0);
 	
 #elif defined BACKEND_VULKAN
-	pImage->GenerateMipMaps(pRenderThread.GetContext().GetCommandPoolGraphic());
+	devkCommandBuffer &cbuf = pImage->BeginCommandBuffer(
+		pRenderThread.GetContext().GetCommandPoolGraphic());
+	pImage->GenerateMipMaps(cbuf);
+	cbuf.Submit();
 #endif
 }
 

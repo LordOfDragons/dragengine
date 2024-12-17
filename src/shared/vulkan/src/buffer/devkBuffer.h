@@ -116,23 +116,9 @@ public:
 	void TransferToDevice(devkCommandBuffer &commandBuffer);
 	
 	/**
-	 * Transfer data from host memory to device memory.
-	 * \note Calls Wait() before starting the transfer.
-	 * \note After call exist Wait() has to be called before using buffer.
-	 */
-	void TransferToDevice(devkCommandPool &pool);
-	
-	/**
 	 * Transfer data from device memory to host memory.
 	 */
 	void FetchFromDevice(devkCommandBuffer &commandBuffer);
-	
-	/**
-	 * Transfer data from device memory to host memory.
-	 * \note Calls Wait() before starting the transfer.
-	 * \note After call exist Wait() has to be called before using buffer.
-	 */
-	void FetchFromDevice(devkCommandPool &pool);
 	
 	/** Copy data from host memory. */
 	void GetData( void *data );
@@ -142,6 +128,14 @@ public:
 	
 	/** If command is active wait for command to be signaled. */
 	void Wait();
+	
+	/**
+	 * Begin awaitable command buffer.
+	 * 
+	 * Calls first Wait() to ensure a potential previous command buffer is finished.
+	 * Caller has to fill the command buffer and submit it.
+	 */
+	devkCommandBuffer &BeginCommandBuffer(devkCommandPool &pool);
 	/*@}*/
 	
 	

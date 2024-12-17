@@ -123,30 +123,12 @@ void devkBuffer::TransferToDevice(devkCommandBuffer &commandBuffer){
 	pDevice.vkCmdCopyBuffer(commandBuffer, pBufferHost, pBuffer, 1, &copy);
 }
 
-void devkBuffer::TransferToDevice(devkCommandPool &pool){
-	Wait();
-	
-	pCommandBuffer = pool.GetCommandBuffer();
-	pCommandBuffer->Begin();
-	TransferToDevice(pCommandBuffer);
-	pCommandBuffer->Submit();
-}
-
 void devkBuffer::FetchFromDevice(devkCommandBuffer &commandBuffer){
 	DEASSERT_TRUE(commandBuffer.GetRecording())
 	
 	VkBufferCopy copy{};
 	copy.size = pSize;
 	pDevice.vkCmdCopyBuffer(commandBuffer, pBuffer, pBufferHost, 1, &copy);
-}
-
-void devkBuffer::FetchFromDevice(devkCommandPool &pool){
-	Wait();
-	
-	pCommandBuffer = pool.GetCommandBuffer();
-	pCommandBuffer->Begin();
-	FetchFromDevice(pCommandBuffer);
-	pCommandBuffer->Submit();
 }
 
 void devkBuffer::GetData(void *data){
@@ -201,6 +183,14 @@ void devkBuffer::Wait(){
 
 // Private Functions
 //////////////////////
+
+devkCommandBuffer &devkBuffer::BeginCommandBuffer(devkCommandPool &pool){
+	Wait();
+	
+	pCommandBuffer = pool.GetCommandBuffer();
+	pCommandBuffer->Begin();
+	return pCommandBuffer;
+}
 
 void devkBuffer::pCleanUp(){
 	VkDevice const device = pDevice.GetDevice();

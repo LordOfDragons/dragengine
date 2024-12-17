@@ -96,36 +96,14 @@ public:
 	/** Copy data to host memory. */
 	void SetData( const void *data, uint32_t offset, uint32_t size );
 	
-	/**
-	 * Transfer data from host memory to device memory.
-	 */
+	/** Transfer data from host memory to device memory. */
 	void TransferToDevice(devkCommandBuffer &commandBuffer);
 	
-	/**
-	 * Transfer data from host memory to device memory.
-	 * \note Calls Wait() before starting the transfer.
-	 * \note After call exist Wait() has to be called before using buffer.
-	 */
-	void TransferToDevice(devkCommandPool &pool);
-	
-	/**
-	 * Transfer data from device memory to host memory.
-	 */
+	/** Transfer data from device memory to host memory. */
 	void FetchFromDevice(devkCommandBuffer &commandBuffer);
 	
-	/**
-	 * Transfer data from device memory to host memory.
-	 * \note Calls Wait() before starting the transfer.
-	 * \note After call exist Wait() has to be called before using buffer.
-	 */
-	void FetchFromDevice(devkCommandPool &pool);
-	
-	/**
-	 * Generate mipmap levels on device memoty.
-	 * \note Calls Wait() before starting the transfer.
-	 * \note After call exist Wait() has to be called before using buffer.
-	 */
-	void GenerateMipMaps(devkCommandPool &pool);
+	/** Generate mipmap levels on device memoty. */
+	void GenerateMipMaps(devkCommandBuffer &commandBuffer);
 	
 	/** Copy data from host memory. */
 	void GetData( void *data );
@@ -135,6 +113,14 @@ public:
 	
 	/** If command is active wait for command to be signaled. */
 	void Wait();
+	
+	/**
+	 * Begin awaitable command buffer.
+	 * 
+	 * Calls first Wait() to ensure a potential previous command buffer is finished.
+	 * Caller has to fill the command buffer and submit it.
+	 */
+	devkCommandBuffer &BeginCommandBuffer(devkCommandPool &pool);
 	
 	/** Drop resources used to transfer data if present. */
 	void DropTransferResources();
