@@ -173,7 +173,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *OpenGLCreateModule( deLoadableModule *loadableModule );
+#ifdef BACKEND_OPENGL
+MOD_ENTRY_POINT_ATTR deBaseModule *OpenGLCreateModule(deLoadableModule *loadableModule);
+#elif defined BACKEND_VULKAN
+MOD_ENTRY_POINT_ATTR deBaseModule *VulkanCreateModule(deLoadableModule *loadableModule);
+#endif
 #ifdef  __cplusplus
 }
 #endif
@@ -184,17 +188,20 @@ MOD_ENTRY_POINT_ATTR deBaseModule *OpenGLCreateModule( deLoadableModule *loadabl
 // has to be named CreateModule returning deBaseModule.
 // returns NULL on error.
 /////////////////////////////////////////////////////////
-deBaseModule *OpenGLCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
-	try{
-		module = new deGraphicOpenGl( *loadableModule );
-	}catch( const deException &e ){
-		e.PrintError();
-		return NULL;
-	}
-	return module;
-}
 
+#ifdef BACKEND_OPENGL
+deBaseModule *OpenGLCreateModule(deLoadableModule *loadableModule)
+#elif defined BACKEND_VULKAN
+deBaseModule *VulkanCreateModule(deLoadableModule *loadableModule)
+#endif
+{
+	try{
+		return new deGraphicOpenGl(*loadableModule);
+	}catch(const deException &e){
+		e.PrintError();
+		return nullptr;
+	}
+}
 
 
 // Class deGraphicOpenGl
