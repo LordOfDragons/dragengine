@@ -149,7 +149,11 @@ public:
 	/** End recording command buffer. */
 	void End();
 	
-	/** Submit to queue. */
+	/**
+	 * Submit to queue.
+	 * 
+	 * Calls End() before submitting if command buffer is in recording state.
+	 */
 	void Submit();
 	
 	

@@ -277,7 +277,9 @@ void devkCommandBuffer::End(){
 }
 
 void devkCommandBuffer::Submit(){
-	DEASSERT_FALSE(pRecording)
+	if(pRecording){
+		End();
+	}
 	
 	Wait(true);
 	
