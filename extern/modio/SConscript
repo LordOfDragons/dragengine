@@ -152,7 +152,6 @@ cpppath = [
 	envLibrary.Dir('install/header_only/common/modio/detail'),
 	envLibrary.Dir('install/header_only/common/modio/detail/userdata'),
 	envLibrary.Dir('install/header_only/common/modio/detail/compression/zip'),
-	envLibrary.Dir('install/header_only/linux'),
 	envLibrary.Dir('install/header_only/ext')]
 if depUring:
 	cpppath.extend(depUring['cpppath'])
