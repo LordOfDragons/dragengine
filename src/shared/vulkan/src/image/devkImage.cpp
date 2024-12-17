@@ -46,9 +46,7 @@ pImage( VK_NULL_HANDLE ),
 pImageSize( 0 ),
 pMemory( VK_NULL_HANDLE ),
 pBufferHost( VK_NULL_HANDLE ),
-pBufferHostMemory( VK_NULL_HANDLE ),
-pFence( VK_NULL_HANDLE ),
-pFenceActive( false )
+pBufferHostMemory( VK_NULL_HANDLE )
 {
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
@@ -182,22 +180,20 @@ void devkImage::TransferToDevice(devkCommandBuffer &commandBuffer){
 }
 
 void devkImage::TransferToDevice(devkCommandPool &pool){
-	Wait(true);
+	Wait();
 	
 	pCommandBuffer = pool.GetCommandBuffer();
 	pCommandBuffer->Begin();
 	TransferToDevice(pCommandBuffer);
-	pCommandBuffer->End();
 	pCommandBuffer->Submit();
 }
 
 void devkImage::FetchFromDevice(devkCommandPool &pool){
-	Wait(true);
+	Wait();
 	
 	pCommandBuffer = pool.GetCommandBuffer();
 	pCommandBuffer->Begin();
 	FetchFromDevice(pCommandBuffer);
-	pCommandBuffer->End();
 	pCommandBuffer->Submit();
 }
 
@@ -227,7 +223,7 @@ void devkImage::FetchFromDevice(devkCommandBuffer &commandBuffer){
 }
 
 void devkImage::GenerateMipMaps(devkCommandPool &pool){
-	Wait(true);
+	Wait();
 	
 	pCommandBuffer = pool.GetCommandBuffer();
 	pCommandBuffer->Begin();
@@ -304,7 +300,6 @@ void devkImage::GenerateMipMaps(devkCommandPool &pool){
 		0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
 	
 	// submit command
-	pCommandBuffer->End();
 	pCommandBuffer->Submit();
 }
 
@@ -332,7 +327,7 @@ void devkImage::GetData( void *data, uint32_t offset, uint32_t size ){
 		DETHROW_INFO( deeNullPointer, "bufferHost" );
 	}
 	
-	Wait(true);
+	Wait();
 	
 	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
 	const bool whole = offset == 0 && size == pImageSize;
@@ -359,33 +354,17 @@ void devkImage::GetData( void *data, uint32_t offset, uint32_t size ){
 	memcpy( data, mapped, size );
 }
 
-void devkImage::Wait( bool reset ){
+void devkImage::Wait(){
 	if(pCommandBuffer){
 		pCommandBuffer->Wait();
 		pCommandBuffer = nullptr;
-		
-	}else if(pFenceActive && pFence){
-		VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
-		VkDevice const device = pDevice.GetDevice();
-		
-		VK_CHECK(vulkan, pDevice.vkWaitForFences(device, 1, &pFence, VK_TRUE, UINT64_MAX));
-		
-		if(reset){
-			VK_CHECK(vulkan, pDevice.vkResetFences(device, 1, &pFence));
-			pFenceActive = false;
-		}
 	}
 }
 
 void devkImage::DropTransferResources(){
-	Wait(false);
+	Wait();
 	
 	VkDevice const device = pDevice.GetDevice();
-	
-	if(pFence){
-		pDevice.vkDestroyFence(device, pFence, VK_NULL_HANDLE);
-		pFence = VK_NULL_HANDLE;
-	}
 	
 	if(pBufferHost){
 		pDevice.vkDestroyBuffer(device, pBufferHost, VK_NULL_HANDLE);
@@ -398,7 +377,7 @@ void devkImage::DropTransferResources(){
 }
 
 void devkImage::EnsureHostBuffer(){
-	Wait(false);
+	Wait();
 	
 	if( ! pBufferHostMemory ){
 		pCreateBuffer( VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -504,11 +483,7 @@ void devkImage::BarrierTransferHost(devkCommandBuffer &commandBuffer){
 void devkImage::pCleanUp(){
 	VkDevice const device = pDevice.GetDevice();
 	
-	Wait(false);
-	
-	if(pFence){
-		pDevice.vkDestroyFence(device, pFence, VK_NULL_HANDLE);
-	}
+	Wait();
 	
 	if( pImage ){
 		pDevice.vkDestroyImage( device, pImage, VK_NULL_HANDLE );
@@ -547,12 +522,4 @@ VkBuffer *buffer, VkDeviceMemory *memory, VkDeviceSize size ){
 	
 	VK_CHECK( vulkan, pDevice.vkAllocateMemory( device, &allocInfo, VK_NULL_HANDLE, memory ) );
 	VK_CHECK( vulkan, pDevice.vkBindBufferMemory( device, *buffer, *memory, 0 ) );
-}
-
-void devkImage::pCreateFence(){
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
-	
-	VkFenceCreateInfo fenceInfo{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
-	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-	VK_CHECK( vulkan, pDevice.vkCreateFence( pDevice.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence ) );
 }

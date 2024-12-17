@@ -58,8 +58,6 @@ private:
 	VkBuffer pBufferHost;
 	VkDeviceMemory pBufferHostMemory;
 	
-	VkFence pFence;
-	bool pFenceActive;
 	devkCommandBuffer::Ref pCommandBuffer;
 	
 	
@@ -142,11 +140,8 @@ public:
 	/** Copy data from host memory. */
 	void GetData( void *data, uint32_t offset, uint32_t size );
 	
-	/**
-	 * If fence is active wait for fence to be signaled.
-	 * \param[in] reset If true reset fence and set it inactive after wait finished.
-	 */
-	void Wait(bool reset = true);
+	/** If command is active wait for command to be signaled. */
+	void Wait();
 	/*@}*/
 	
 	

@@ -43,13 +43,9 @@ pDevice(device),
 pSize((uint32_t)size),
 pUsage(usage),
 pBuffer(VK_NULL_HANDLE),
-pBufferHost(VK_NULL_HANDLE),
-pFence(VK_NULL_HANDLE),
-pFenceActive(false)
+pBufferHost(VK_NULL_HANDLE)
 {
-	if(size < 0){
-		DETHROW_INFO(deeInvalidParam, "size");
-	}
+	DEASSERT_TRUE(size >= 0)
 	
 	try{
 		pCreateBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -57,12 +53,6 @@ pFenceActive(false)
 		
 		pCreateBuffer(usage | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &pBuffer, &pBufferMemory, size);
-		
-		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan());
-		
-		VkFenceCreateInfo fenceInfo{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
-		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-		VK_CHECK(vulkan, device.vkCreateFence(device.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -134,12 +124,11 @@ void devkBuffer::TransferToDevice(devkCommandBuffer &commandBuffer){
 }
 
 void devkBuffer::TransferToDevice(devkCommandPool &pool){
-	Wait(true);
+	Wait();
 	
 	pCommandBuffer = pool.GetCommandBuffer();
 	pCommandBuffer->Begin();
 	TransferToDevice(pCommandBuffer);
-	pCommandBuffer->End();
 	pCommandBuffer->Submit();
 }
 
@@ -152,12 +141,11 @@ void devkBuffer::FetchFromDevice(devkCommandBuffer &commandBuffer){
 }
 
 void devkBuffer::FetchFromDevice(devkCommandPool &pool){
-	Wait(true);
+	Wait();
 	
 	pCommandBuffer = pool.GetCommandBuffer();
 	pCommandBuffer->Begin();
 	FetchFromDevice(pCommandBuffer);
-	pCommandBuffer->End();
 	pCommandBuffer->Submit();
 }
 
@@ -175,7 +163,7 @@ void devkBuffer::GetData(void *data, uint32_t offset, uint32_t size){
 	DEASSERT_TRUE(offset + size <= pSize)
 	DEASSERT_NOTNULL(data)
 	
-	Wait(true);
+	Wait();
 	
 	VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
 	const bool whole = offset == 0 && size == pSize;
@@ -202,21 +190,10 @@ void devkBuffer::GetData(void *data, uint32_t offset, uint32_t size){
 	memcpy(data, mapped, size);
 }
 
-void devkBuffer::Wait(bool reset){
+void devkBuffer::Wait(){
 	if(pCommandBuffer){
 		pCommandBuffer->Wait();
 		pCommandBuffer = nullptr;
-		
-	}else if(pFenceActive){
-		VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
-		VkDevice const device = pDevice.GetDevice();
-		
-		VK_CHECK(vulkan, pDevice.vkWaitForFences(device, 1, &pFence, VK_TRUE, UINT64_MAX));
-		
-		if(reset){
-			VK_CHECK(vulkan, pDevice.vkResetFences(device, 1, &pFence));
-			pFenceActive = false;
-		}
 	}
 }
 
@@ -228,11 +205,7 @@ void devkBuffer::Wait(bool reset){
 void devkBuffer::pCleanUp(){
 	VkDevice const device = pDevice.GetDevice();
 	
-	Wait(false);
-	
-	if(pFence){
-		pDevice.vkDestroyFence(device, pFence, VK_NULL_HANDLE);
-	}
+	Wait();
 	
 	if(pBuffer){
 		pDevice.vkDestroyBuffer(device, pBuffer, VK_NULL_HANDLE);
