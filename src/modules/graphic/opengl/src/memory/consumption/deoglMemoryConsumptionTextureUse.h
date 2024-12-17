@@ -31,7 +31,11 @@
 
 
 class deoglMemoryConsumptionTexture;
+#ifdef BACKEND_OPENGL
 class deoglCapsTextureFormat;
+#elif defined BACKEND_VULKAN
+class devkFormat;
+#endif
 
 
 /**
@@ -76,6 +80,7 @@ public:
 	/** Set consumption. */
 	void Set( unsigned long long consumption, bool depth, bool compressed );
 	
+#ifdef BACKEND_OPENGL
 	/** Set compressed consumption. */
 	void SetCompressed( unsigned long long consumption, const deoglCapsTextureFormat &format );
 	
@@ -86,6 +91,17 @@ public:
 	/** Calculate base uncompressed consumption. */
 	unsigned long long BaseConsumption( const deoglCapsTextureFormat &format,
 		int width, int height, int depth ) const;
+	
+#elif defined BACKEND_VULKAN
+	/** Set compressed consumption. */
+	void SetCompressed(unsigned long long consumption, const devkFormat &format);
+	
+	/** Set uncompressed consumption. */
+	void SetUncompressed(const devkFormat &format, int width, int height, int depth, int mipMapLevels);
+	
+	/** Calculate base uncompressed consumption. */
+	unsigned long long BaseConsumption(const devkFormat &format, int width, int height, int depth) const;
+#endif
 	
 	/** Calculate mip mapped uncompressed consumption. */
 	unsigned long long MipMappedConsumption( int levels, int width, int height,

@@ -42,6 +42,9 @@ class deoglRenderThread;
 class deoglPixelBuffer;
 class deoglCapsTextureFormat;
 
+#ifdef BACKEND_VULKAN
+class devkCommandBuffer;
+#endif
 
 
 /**
@@ -228,12 +231,16 @@ public:
 	/** Set depth texture format suitable for attaching as FBO render target. */
 	void SetDepthFormat(bool packedStencil, bool useFloat);
 	
+#ifdef BACKEND_OPENGL
 	/** Set debug object label. */
 	void SetDebugObjectLabel(const char *name);
+#endif
 	/*@}*/
 	
 private:
+#ifdef BACKEND_OPENGL
 	void pUpdateDebugObjectLabel();
+#endif
 };
 
 #endif

@@ -205,6 +205,7 @@ public:
 	
 	/** Device. */
 	inline VkDevice GetDevice() const{ return pDevice; }
+	inline operator VkDevice() const{ return pDevice; }
 	
 	/** Descriptor set layout manager. */
 	inline devkDescriptorSetLayoutManager &GetDescriptorSetLayoutManager(){ return pDescriptorSetLayoutManager; }

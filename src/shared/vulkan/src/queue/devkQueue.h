@@ -25,12 +25,12 @@
 #ifndef _DEVKQUEUE_H_
 #define _DEVKQUEUE_H_
 
-#include "devkCommandPool.h"
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 
 class devkDevice;
+class devkCommandPool;
 
 
 /**
@@ -46,6 +46,7 @@ public:
 private:
 	devkDevice &pDevice;
 	uint32_t pFamily;
+	uint32_t pIndex;
 	
 	VkQueue pQueue;
 	
@@ -54,11 +55,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create queue. */
-	devkQueue( devkDevice &device, uint32_t family, VkQueue queue );
+	devkQueue(devkDevice &device, uint32_t family, uint32_t index, VkQueue queue);
 	
 protected:
 	/** Clean up queue. */
-	virtual ~devkQueue();
+	~devkQueue() override;
 	/*@}*/
 	
 	
@@ -72,11 +73,15 @@ public:
 	/** Family. */
 	inline uint32_t GetFamily() const{ return pFamily; }
 	
+	/** Index. */
+	inline uint32_t GetIndex() const{ return pIndex; }
+	
 	/** Queue. */
 	inline VkQueue GetQueue() const{ return pQueue; }
+	inline operator VkQueue() const{ return pQueue; }
 	
 	/** Create command pool compatible with this queue and all queues of the same family. */
-	devkCommandPool::Ref CreateCommandPool();
+	deTObjectReference<devkCommandPool> CreateCommandPool();
 	
 	/** Wait for queue to be idle. */
 	void WaitIdle();

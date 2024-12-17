@@ -1119,6 +1119,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pGI = new deoglGI( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
 	
+#ifdef BACKEND_OPENGL
 	// load vulkan and create device if supported
 	try{
 		pVulkan.TakeOver( new deSharedVulkan( pOgl ) );
@@ -1130,6 +1131,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		pVulkanDevice = nullptr;
 		pVulkan = nullptr;
 	}
+#endif
 	
 #ifdef DO_VULKAN_TEST
 	if( pVulkan ){
@@ -1146,7 +1148,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		}
 		decTimer timer;
 		VKTLOG( bufferInput->SetData( bufferInputData ), "Buffer SetData")
-		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "Buffer TransferToDevice")
+		VKTLOG( bufferInput->TransferToDevice(commandPool), "Buffer TransferToDevice")
 		VKTLOG( bufferInput->Wait(), "Buffer Wait")
 		
 		devkDescriptorSetLayoutConfiguration dslSSBOConfig;
@@ -1249,10 +1251,10 @@ void deoglRenderThread::pInitThreadPhase4(){
 		VKTLOG( cmdbuf->BindDescriptorSet( 0, dsSSBO ), "CmdBuf BindDescriptorSet")
 		VKTLOG( cmdbuf->DispatchCompute( shaderConfig.valueCount, 1, 1 ), "CmdBuf DispatchCompute")
 		VKTLOG( cmdbuf->BarrierShaderTransfer( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierHost")
-		VKTLOG( cmdbuf->ReadBuffer( bufferInput ), "CmdBuf ReadBuffer")
+		VKTLOG( bufferInput->FetchFromDevice(cmdbuf), "CmdBuf ReadBuffer")
 		VKTLOG( cmdbuf->BarrierTransferHost( bufferInput ), "CmdBuf BarrierTransferHost")
 		VKTLOG( cmdbuf->End(), "CmdBuf End")
-		VKTLOG( cmdbuf->Submit( queue ), "CmdBuf Submit")
+		VKTLOG( cmdbuf->Submit(), "CmdBuf Submit")
 		
 		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait")
 		
@@ -1422,7 +1424,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		bufferInput.TakeOver( devkBuffer::Ref::New( new devkBuffer( pVulkanDevice,
 			sizeof( vertices ), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT ) ) );
 		VKTLOG( bufferInput->SetData( vertices ), "Buffer SetData" )
-		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "Buffer TransferToDevice" )
+		VKTLOG( bufferInput->TransferToDevice(commandPool), "Buffer TransferToDevice" )
 		VKTLOG( bufferInput->Wait(), "Buffer Wait" )
 		
 		pipelineConfig = devkPipelineConfiguration();
@@ -1448,11 +1450,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 		VKTLOG( cmdbuf->BindVertexBuffer( 0, bufferInput ), "CmdBuf BindVertexBuffer" )
 		VKTLOG( cmdbuf->Draw( 3, 1 ), "CmdBuf Draw" )
 		VKTLOG( cmdbuf->EndRenderPass(), "CmdBuf EndRenderPass" )
-		VKTLOG( cmdbuf->BarrierShaderTransfer( image, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT ), "CmdBuf BarrierHost" )
-		VKTLOG( cmdbuf->ReadImage( image ), "CmdBuf ReadImage" )
-		VKTLOG( cmdbuf->BarrierTransferHost( image ), "CmdBuf BarrierTransferHost" )
+		VKTLOG( image->BarrierShaderTransfer(cmdbuf, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT), "CmdBuf BarrierHost" )
+		VKTLOG( image->FetchFromDevice(cmdbuf), "CmdBuf ReadImage" )
+		VKTLOG( image->BarrierTransferHost(cmdbuf), "CmdBuf BarrierTransferHost" )
 		VKTLOG( cmdbuf->End(), "CmdBuf End" )
-		VKTLOG( cmdbuf->Submit( queue ), "CmdBuf Submit" )
+		VKTLOG( cmdbuf->Submit(), "CmdBuf Submit" )
 		
 		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait" )
 		
@@ -2574,8 +2576,10 @@ void deoglRenderThread::pCleanUpThread(){
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		
+#ifdef BACKEND_OPENGL
 		pVulkanDevice = nullptr;
 		pVulkan = nullptr;
+#endif
 		
 		deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
 		dilist.RemoveIfPresent( pDebugInfoModule );

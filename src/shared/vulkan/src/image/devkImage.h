@@ -27,12 +27,12 @@
 
 #include "devkImageConfiguration.h"
 #include "../devkBasics.h"
-#include "../queue/devkCommandPool.h"
+#include "../queue/devkCommandBuffer.h"
 
 #include <dragengine/deObject.h>
 
 class devkDevice;
-class devkQueue;
+class devkCommandPool;
 
 
 /**
@@ -58,8 +58,7 @@ protected:
 	
 	VkFence pFence;
 	bool pFenceActive;
-	devkCommandPool::Ref pCommandPool;
-	VkCommandBuffer pCommand;
+	devkCommandBuffer::Ref pCommandBuffer;
 	
 	
 	
@@ -101,10 +100,34 @@ public:
 	
 	/**
 	 * Transfer data from host memory to device memory.
+	 */
+	void TransferToDevice(devkCommandBuffer &commandBuffer);
+	
+	/**
+	 * Transfer data from host memory to device memory.
 	 * \note Calls Wait() before starting the transfer.
 	 * \note After call exist Wait() has to be called before using buffer.
 	 */
-	void TransferToDevice( devkCommandPool *pool, devkQueue &queue );
+	void TransferToDevice(devkCommandPool &pool);
+	
+	/**
+	 * Transfer data from device memory to host memory.
+	 */
+	void FetchFromDevice(devkCommandBuffer &commandBuffer);
+	
+	/**
+	 * Transfer data from device memory to host memory.
+	 * \note Calls Wait() before starting the transfer.
+	 * \note After call exist Wait() has to be called before using buffer.
+	 */
+	void FetchFromDevice(devkCommandPool &pool);
+	
+	/**
+	 * Generate mipmap levels on device memoty.
+	 * \note Calls Wait() before starting the transfer.
+	 * \note After call exist Wait() has to be called before using buffer.
+	 */
+	void GenerateMipMaps(devkCommandPool &pool);
 	
 	/** Copy data from host memory. */
 	void GetData( void *data );
@@ -116,13 +139,36 @@ public:
 	 * If fence is active wait for fence to be signaled.
 	 * \param[in] reset If true reset fence and set it inactive after wait finished.
 	 */
-	void Wait( bool reset = false );
+	void Wait(bool reset = true);
 	
 	/** Drop resources used to transfer data if present. */
 	void DropTransferResources();
 	
 	/** Ensure host buffer exists. */
 	void EnsureHostBuffer();
+	
+	
+	
+	/** Add image memory barrier to transition image layout ignoring old content. */
+	void BarrierLayoutTransition(devkCommandBuffer &commandBuffer, VkImageLayout newLayout);
+	
+	/** Add image memory barrier to transition image layout retaining old content. */
+	void BarrierLayoutTransition(devkCommandBuffer &commandBuffer,
+		VkImageLayout oldLayout, VkImageLayout newLayout);
+	
+	/** Add image memory barrier. */
+	void Barrier(devkCommandBuffer &commandBuffer, VkAccessFlags sourceAccessMask,
+		VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask,
+		VkPipelineStageFlags destStageMask);
+	
+	/** Add image memory barrier between host writing and shader reading. */
+	void BarrierHostShader(devkCommandBuffer &commandBuffer, VkPipelineStageFlags destStageMask);
+	
+	/** Add image memory barrier between shader writing and transfer reading. */
+	void BarrierShaderTransfer(devkCommandBuffer &commandBuffer, VkPipelineStageFlags srcStageMask);
+	
+	/** Add image memory barrier between transfer writing and host reading. */
+	void BarrierTransferHost(devkCommandBuffer &commandBuffer);
 	/*@}*/
 	
 	

@@ -9,8 +9,8 @@
                 "${workspaceFolder}/../../../../../testing/include"
             ],
             "defines": [
-                "BACKEND_OPENGL=1",
-                // "BACKEND_VULKAN=1",
+                // "BACKEND_OPENGL=1",
+                "BACKEND_VULKAN=1",
                 "DS_MODULE_VERSION=\"9999\"",
                 "MOD_ENTRY_POINT_ATTR="
             ],

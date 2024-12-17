@@ -37,7 +37,6 @@ class devkDevice;
 class devkBuffer;
 class devkPipeline;
 class devkDescriptorSet;
-class devkQueue;
 class devkRenderPass;
 class devkFramebuffer;
 class devkImage;
@@ -71,11 +70,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create command buffer. */
-	devkCommandBuffer( devkCommandPool &pool );
+	devkCommandBuffer(devkCommandPool &pool);
 	
 protected:
 	/** Clean up command buffer. */
-	virtual ~devkCommandBuffer();
+	~devkCommandBuffer() override;
 	/*@}*/
 	
 	
@@ -88,89 +87,70 @@ public:
 	
 	/** Command buffer. */
 	inline VkCommandBuffer GetBuffer() const{ return pBuffer; }
-	
+	inline operator VkCommandBuffer() const{ return pBuffer; }
 	
 	
 	/** Begin recording command buffer. */
 	void Begin();
 	
+	/** Command buffer is recording. */
+	inline bool GetRecording() const{ return pRecording; }
+	
 	/** Add buffer memory barrier. */
-	void Barrier( const devkBuffer &buffer, bool useDeviceBuffer, VkAccessFlags sourceAccessMask,
-		VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask );
+	void Barrier(const devkBuffer &buffer, bool useDeviceBuffer, VkAccessFlags sourceAccessMask,
+		VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask);
 	
 	/** Add buffer memory barrier between host writing and shader reading. */
-	void BarrierHostShader( const devkBuffer &buffer, VkPipelineStageFlags destStageMask );
+	void BarrierHostShader(const devkBuffer &buffer, VkPipelineStageFlags destStageMask);
 	
 	/** Add buffer memory barrier between shader writing and transfer reading. */
-	void BarrierShaderTransfer( const devkBuffer &buffer, VkPipelineStageFlags srcStageMask );
+	void BarrierShaderTransfer(const devkBuffer &buffer, VkPipelineStageFlags srcStageMask);
 	
 	/** Add buffer memory barrier between transfer writing and host reading. */
-	void BarrierTransferHost( const devkBuffer &buffer );
-	
-	/** Add image memory barrier. */
-	void Barrier( const devkImage &image, VkAccessFlags sourceAccessMask, VkAccessFlags destAccessMask,
-		VkPipelineStageFlags sourceStageMask, VkPipelineStageFlags destStageMask );
-	
-	/** Add image memory barrier between host writing and shader reading. */
-	void BarrierHostShader( const devkImage &image, VkPipelineStageFlags destStageMask );
-	
-	/** Add image memory barrier between shader writing and transfer reading. */
-	void BarrierShaderTransfer( const devkImage &image, VkPipelineStageFlags srcStageMask );
-	
-	/** Add image memory barrier between transfer writing and host reading. */
-	void BarrierTransferHost( const devkImage &image );
+	void BarrierTransferHost(const devkBuffer &buffer);
 	
 	/** Bind pipeline. */
-	void BindPipeline( const devkPipeline &pipeline );
+	void BindPipeline(const devkPipeline &pipeline);
 	
 	/** Bind descriptor set. */
-	void BindDescriptorSet( int bindPoint, const devkDescriptorSet &descriptorSet );
+	void BindDescriptorSet(int bindPoint, const devkDescriptorSet &descriptorSet);
 	
 	/** Bind vertex buffers. */
-	void BindVertexBuffer( int bindPoint, const devkBuffer &buffer, int offset = 0 );
+	void BindVertexBuffer(int bindPoint, const devkBuffer &buffer, int offset = 0);
 	
 	/** Dispatch compute shader. */
-	void DispatchCompute( const decPoint3 &group );
-	void DispatchCompute( int groupX, int groupY, int groupZ );
+	void DispatchCompute(const decPoint3 &group);
+	void DispatchCompute(int groupX, int groupY, int groupZ);
 	
 	/** Begin render pass. */
-	void BeginRenderPass( const devkRenderPass &renderPass, const devkFramebuffer &framebuffer );
+	void BeginRenderPass(const devkRenderPass &renderPass, const devkFramebuffer &framebuffer);
 	
-	void BeginRenderPass( const devkRenderPass &renderPass, const devkFramebuffer &framebuffer,
-		const decPoint &position, const decPoint &size );
+	void BeginRenderPass(const devkRenderPass &renderPass, const devkFramebuffer &framebuffer,
+		const decPoint &position, const decPoint &size);
 	
 	/** Set stencil compare mask. */
-	void SetStencilCompareMask( uint32_t front );
-	void SetStencilCompareMask( uint32_t front, uint32_t back );
+	void SetStencilCompareMask(uint32_t front);
+	void SetStencilCompareMask(uint32_t front, uint32_t back);
 	
 	/** Set stencil write mask. */
-	void SetStencilWriteMask( uint32_t front );
-	void SetStencilWriteMask( uint32_t front, uint32_t back );
+	void SetStencilWriteMask(uint32_t front);
+	void SetStencilWriteMask(uint32_t front, uint32_t back);
 	
 	/** Set stencil reference. */
-	void SetStencilReference( uint32_t front );
-	void SetStencilReference( uint32_t front, uint32_t back );
+	void SetStencilReference(uint32_t front);
+	void SetStencilReference(uint32_t front, uint32_t back);
 	
 	/** Draw. */
-	void Draw( int vertexCount, int instanceCount, int firstVertex = 0, int firstInstance = 0 );
+	void Draw(int vertexCount, int instanceCount, int firstVertex = 0, int firstInstance = 0);
 	
 	/** End render pass. */
 	void EndRenderPass();
-	
-	/** Write buffer data from host memory to device memory. */
-	void WriteBuffer( const devkBuffer &buffer );
-	
-	/** Read buffer data from device memory to host memory. */
-	void ReadBuffer( const devkBuffer &buffer );
-	
-	/** Read image data from device memory to host memory. */
-	void ReadImage( devkImage &image );
 	
 	/** End recording command buffer. */
 	void End();
 	
 	/** Submit to queue. */
-	void Submit( devkQueue &queue );
+	void Submit();
 	
 	
 	
@@ -178,13 +158,13 @@ public:
 	 * Check if fence is signaled.
 	 * \param[in] reset If true reset fence and set it inactive after wait finished.
 	 */
-	bool IsFinished( bool reset = false );
+	bool IsFinished(bool reset = false);
 	
 	/**
 	 * If fence is active wait for fence to be signaled.
 	 * \param[in] reset If true reset fence and set it inactive after wait finished.
 	 */
-	void Wait( bool reset = false );
+	void Wait(bool reset = true);
 	
 	/** Return to pool. */
 	void ReturnToPool();

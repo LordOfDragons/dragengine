@@ -28,8 +28,15 @@
 #include "../deoglBasics.h"
 
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-#include <GL/glx.h>
-#include "../extensions/glxext.h"
+#ifdef BACKEND_OPENGL
+	#include <GL/glx.h>
+	#include "../extensions/glxext.h"
+#elif defined BACKEND_VULKAN
+	#include <deSharedVulkan.h>
+	#include <devkDevice.h>
+	#include <queue/devkCommandPool.h>
+	#include <queue/devkQueue.h>
+#endif
 class deOSUnix;
 #endif
 
@@ -106,12 +113,25 @@ private:
 	Display *pDisplay;
 	int pScreen;
 	
+#ifdef BACKEND_OPENGL
 	GLXContext pContext;
 	GLXContext pLoaderContext;
+#elif defined BACKEND_VULKAN
+	deSharedVulkan::Ref pVulkan;
+	devkDevice::Ref pDevice;
+	devkQueue *pQueueGraphic;
+	devkQueue *pQueueCompute;
+	devkQueue *pQueueTransfer;
+	devkCommandPool::Ref pCommandPoolGraphic;
+	devkCommandPool::Ref pCommandPoolCompute;
+	devkCommandPool::Ref pCommandPoolTransfer;
+#endif
 	
 	Colormap pColMap;
 	XVisualInfo *pVisInfo;
+#ifdef BACKEND_OPENGL
 	GLXFBConfig pBestFBConfig;
+#endif
 	
 	Atom pAtomProtocols;
 	Atom pAtomDeleteWindow;
@@ -201,11 +221,13 @@ public:
 	/** Application is activated. */
 	inline bool GetAppActivated() const{ return pAppActivated; }
 	
+#ifdef BACKEND_OPENGL
 	/** Special call for module to get a function pointer before extensions can be properly initialized. */
 	void *GetFunctionPointer( const char *funcName );
+#endif
 	
 	
-
+	
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	/** OS Unix. */
 	inline deOSUnix *GetOSUnix(){ return pOSUnix; }
@@ -219,6 +241,7 @@ public:
 	/** Main thread display. */
 	Display *GetMainThreadDisplay() const;
 	
+#ifdef BACKEND_OPENGL
 	/** Unix best framebuffer configuration. */
 	inline GLXFBConfig &GetBestFBConfig(){ return pBestFBConfig; }
 	inline const GLXFBConfig &GetBestFBConfig() const{ return pBestFBConfig; }
@@ -228,6 +251,24 @@ public:
 	
 	/** Loader context. */
 	inline GLXContext GetLoaderContext() const{ return pLoaderContext; }
+	
+#elif defined BACKEND_VULKAN
+	/** Vulkan. */
+	inline deSharedVulkan &GetVulkan() const{ return pVulkan; }
+	
+	/** Vulkan device. */
+	inline devkDevice &GetDevice() const{ return pDevice; }
+	
+	/** queues. */
+	inline devkQueue &GetQueueGraphic() const{ return *pQueueGraphic; }
+	inline devkQueue &GetQueueCompute() const{ return *pQueueCompute; }
+	inline devkQueue &GetQueueTransfer() const{ return *pQueueTransfer; }
+	
+	/** Command pools. */
+	inline devkCommandPool &GetCommandPoolGraphic() const{ return pCommandPoolGraphic; }
+	inline devkCommandPool &GetCommandPoolCompute() const{ return pCommandPoolCompute; }
+	inline devkCommandPool &GetCommandPoolTransfer() const{ return pCommandPoolTransfer; }
+#endif
 	
 	/** Atoms. */
 	inline Atom GetAtomProtocols() const{ return pAtomProtocols; }
@@ -322,12 +363,14 @@ public:
 private:
 	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	void pOpenDisplay();
-	void pChooseVisual();
+#ifdef BACKEND_OPENGL
 	void pPrintVisualInfo();
 	void pChooseFBConfig();
+	void pChooseVisual();
+#endif
 	void pCreateColorMap();
 	void pCreateAtoms();
-	void pCreateGLContext();
+	void pCreateContext();
 	void pFreeContext();
 	void pFreeVisualInfo();
 	void pCloseDisplay();
@@ -339,20 +382,20 @@ private:
 	#endif
 	
 	#ifdef OS_BEOS
-	void pCreateGLContext();
+	void pCreateContext();
 	void pFreeContext();
 	#endif
 	
 	#ifdef OS_W32
 	void pRegisterWindowClass();
-	void pCreateGLContext();
+	void pCreateContext();
 	void pUnregisterWindowClass();
 	void pFreeContext();
 	#endif
 	
 	#ifdef OS_MACOS
-	void pCreateGLContext();
-	void pGLContextMakeCurrent( NSView *view );
+	void pCreateContext();
+	void pContextMakeCurrent( NSView *view );
 	void pFreeContext();
 	#endif
 };

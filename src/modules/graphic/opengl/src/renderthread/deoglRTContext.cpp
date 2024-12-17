@@ -33,7 +33,9 @@
 #include "../deGraphicOpenGl.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../canvas/deoglCanvasView.h"
-#include "../extensions/deoglExtensions.h"
+#ifdef BACKEND_OPENGL
+	#include "../extensions/deoglExtensions.h"
+#endif
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
 
@@ -47,7 +49,9 @@
 
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <dragengine/app/deOSUnix.h>
-#include "../extensions/deoglXExtResult.h"
+#ifdef BACKEND_OPENGL
+	#include "../extensions/deoglXExtResult.h"
+#endif
 #endif
 
 #ifdef OS_ANDROID
@@ -122,8 +126,10 @@ pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
 pDisplay( NULL ),
 pScreen( 0 ),
 
+#ifdef BACKEND_OPENGL
 pContext( nullptr ),
 pLoaderContext( nullptr ),
+#endif
 
 pColMap( 0 ),
 pVisInfo( NULL ),
@@ -190,11 +196,13 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 	
 	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pOpenDisplay();
+	#ifdef BACKEND_OPENGL
 	pChooseVisual();
 	pChooseFBConfig();
+	#endif
 	pCreateColorMap();
 	pCreateAtoms();
-	pCreateGLContext();
+	pCreateContext();
 	#endif
 	
 	#ifdef OS_ANDROID
@@ -202,11 +210,11 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 	#endif
 	
 	#ifdef OS_BEOS
-	pCreateGLContext();
+	pCreateContext();
 	#endif
 	
 	#ifdef OS_MACOS
-	pCreateGLContext();
+	pCreateContext();
 	#endif
 	
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 2 Exiting" );
@@ -277,7 +285,7 @@ void deoglRTContext::InitPhase4( deRenderWindow *renderWindow ){
 	ActivateRRenderWindow( ( ( deoglRenderWindow* )renderWindow->GetPeerGraphic() )->GetRRenderWindow() );
 	
 	#ifdef OS_W32
-	pCreateGLContext();
+	pCreateContext();
 	#endif
 	
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 4 Exiting" );
@@ -385,8 +393,10 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 	
 	if( rrenderWindow ){
 		#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+		#ifdef BACKEND_OPENGL
 // 		printf( "glXMakeCurrent(%lu,%p) previous(%lu,%p)\n", rrenderWindow->GetWindow(), pContext, glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, rrenderWindow->GetWindow(), pContext ) );
+		#endif
 		#endif
 		
 		#ifdef OS_ANDROID
@@ -400,7 +410,7 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		#endif
 		
 		#ifdef OS_MACOS
-		pGLContextMakeCurrent( rrenderWindow->GetView() );
+		pContextMakeCurrent( rrenderWindow->GetView() );
 		#endif
 		
 		#ifdef OS_W32
@@ -411,19 +421,23 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		#endif
 		
 		#ifndef OS_BEOS
+		#ifdef BACKEND_OPENGL
 		if( pLoaderContext ){
 			// this check is required for windows to work correctly because on windows the window
 			// is activated before the loader context is created which would cause problems
 			pRenderThread.GetLoaderThread().EnableContext( true );
 		}
 		#endif
+		#endif
 		
 	}else{
 		pRenderThread.GetLoaderThread().EnableContext( false );
 		
 		#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+		#ifdef BACKEND_OPENGL
 // 		printf( "glXMakeCurrent(clear) previous(%lu,%p)\n", glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, None, NULL ) );
+		#endif
 		#endif
 		
 		#ifdef OS_ANDROID
@@ -453,6 +467,7 @@ bool deoglRTContext::GetUserRequestedQuit(){
 
 
 
+#ifdef BACKEND_OPENGL
 void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	// linux
 	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
@@ -485,7 +500,7 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	return ( void* )wglGetProcAddress( funcName );
 	#endif
 }
-
+#endif
 
 
 #ifdef OS_ANDROID
@@ -714,6 +729,8 @@ void deoglRTContext::ProcessEventLoop(){
 	}
 }
 
+#ifdef BACKEND_OPENGL
+
 void deoglRTContext::pPrintVisualInfo(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	int value;
@@ -859,6 +876,8 @@ void deoglRTContext::pChooseVisual(){
 	}
 }
 
+#endif
+
 void deoglRTContext::pCreateColorMap(){
 	Window rootWindow = RootWindow( pDisplay, pVisInfo->screen );
 	
@@ -870,9 +889,10 @@ void deoglRTContext::pCreateAtoms(){
 	pAtomDeleteWindow = XInternAtom( pDisplay, "WM_DELETE_WINDOW", False );
 }
 
-void deoglRTContext::pCreateGLContext(){
+void deoglRTContext::pCreateContext(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	
+#ifdef BACKEND_OPENGL
 	// create render context. try new version first then the old one if not possible
 	// NOTE it is important to try to find first the "ARB" version of the function.
 	//      some driver implementations have bugged "No-ARB" version of the function
@@ -960,6 +980,20 @@ void deoglRTContext::pCreateGLContext(){
 		logger.LogError( "No matching direct rendering context found!" );
 		DETHROW( deeInvalidAction );
 	}
+	
+#elif defined BACKEND_VULKAN
+	logger.LogInfo("Creating Vulkan device");
+	pVulkan.TakeOver(new deSharedVulkan(pRenderThread.GetOgl()));
+	pDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
+	
+	pQueueGraphic = &pDevice->GetGraphicQueue();
+	pQueueCompute = &pDevice->GetComputeQueue();
+	pQueueTransfer = &pDevice->GetTransferQueue();
+	
+	pCommandPoolGraphic = pQueueGraphic->CreateCommandPool();
+	pCommandPoolCompute = pQueueCompute->CreateCommandPool();
+	pCommandPoolTransfer = pQueueTransfer->CreateCommandPool();
+#endif
 }
 
 void deoglRTContext::pFreeContext(){
@@ -967,6 +1001,7 @@ void deoglRTContext::pFreeContext(){
 		return;
 	}
 	
+#ifdef BACKEND_OPENGL
 	if( pLoaderContext ){
 		glXDestroyContext( pDisplay, pLoaderContext );
 		pLoaderContext = nullptr;
@@ -976,6 +1011,11 @@ void deoglRTContext::pFreeContext(){
 		glXDestroyContext( pDisplay, pContext );
 		pContext = nullptr;
 	}
+	
+#elif defined BACKEND_VULKAN
+	pDevice = nullptr;
+	pVulkan = nullptr;
+#endif
 }
 
 void deoglRTContext::pFreeVisualInfo(){
@@ -1090,7 +1130,7 @@ void deoglRTContext::pCloseDisplay(){
 #ifdef OS_BEOS
 
 
-void deoglRTContext::pCreateGLContext(){
+void deoglRTContext::pCreateContext(){
 	// done by deoglRRenderWindow. BGLView is the context
 }
 
@@ -1127,7 +1167,7 @@ void deoglRTContext::pRegisterWindowClass(){
 	}
 }
 
-void deoglRTContext::pCreateGLContext(){
+void deoglRTContext::pCreateContext(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	
 	// create render context. on windows obtaining function pointers only works if a context has

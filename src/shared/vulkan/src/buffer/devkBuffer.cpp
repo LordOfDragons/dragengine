@@ -38,34 +38,33 @@
 // class devkBuffer
 /////////////////////
 
-devkBuffer::devkBuffer( devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage ) :
-pDevice( device ),
-pSize( ( uint32_t )size ),
-pUsage( usage ),
-pBuffer( VK_NULL_HANDLE ),
-pBufferHost( VK_NULL_HANDLE ),
-pFence( VK_NULL_HANDLE ),
-pFenceActive( false ),
-pCommand( VK_NULL_HANDLE )
+devkBuffer::devkBuffer(devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage) :
+pDevice(device),
+pSize((uint32_t)size),
+pUsage(usage),
+pBuffer(VK_NULL_HANDLE),
+pBufferHost(VK_NULL_HANDLE),
+pFence(VK_NULL_HANDLE),
+pFenceActive(false)
 {
-	if( size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "size" );
+	if(size < 0){
+		DETHROW_INFO(deeInvalidParam, "size");
 	}
 	
 	try{
-		pCreateBuffer( VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, size );
+		pCreateBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &pBufferHost, &pBufferHostMemory, size);
 		
-		pCreateBuffer( usage | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &pBuffer, &pBufferMemory, size );
+		pCreateBuffer(usage | VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &pBuffer, &pBufferMemory, size);
 		
-		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
+		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan());
 		
 		VkFenceCreateInfo fenceInfo{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
-		VK_CHECK( vulkan, device.vkCreateFence( device.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence ) );
+		VK_CHECK(vulkan, device.vkCreateFence(device.GetDevice(), &fenceInfo, VK_NULL_HANDLE, &pFence));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -80,48 +79,41 @@ devkBuffer::~devkBuffer(){
 // Management
 ///////////////
 
-void devkBuffer::SetData( const void *data ){
-	SetData( data, 0, pSize );
+void devkBuffer::SetData(const void *data){
+	SetData(data, 0, pSize);
 }
 
-void devkBuffer::SetData( const void *data, uint32_t offset, uint32_t size ){
-	if( offset < 0 ){
-		DETHROW_INFO( deeInvalidParam, "offset < 0" );
-	}
-	if( size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "size < 0" );
-	}
-	if( size == 0 ){
+void devkBuffer::SetData(const void *data, uint32_t offset, uint32_t size){
+	DEASSERT_TRUE(offset >= 0)
+	DEASSERT_TRUE(size >= 0)
+	if(size == 0){
 		return;
 	}
-	if( offset + size > pSize ){
-		DETHROW_INFO( deeInvalidParam, "offset + size > bufferSize" );
-	}
-	if( ! data ){
-		DETHROW_INFO( deeNullPointer, "data" );
-	}
 	
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
+	DEASSERT_TRUE(offset + size <= pSize)
+	DEASSERT_NOTNULL(data)
+	
+	VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
 	VkDevice const device = pDevice.GetDevice();
 	const bool whole = offset == 0 && size == pSize;
 	void *mapped = nullptr;
 	
-	if( whole ){
-		VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped ) );
+	if(whole){
+		VK_CHECK(vulkan, pDevice.vkMapMemory(device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped));
 		
 	}else{
-		VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, offset, size, 0, &mapped ) );
+		VK_CHECK(vulkan, pDevice.vkMapMemory(device, pBufferHostMemory, offset, size, 0, &mapped));
 	}
-	const devkGuardUnmapBuffer guardUnmapBuffer( pDevice, pBufferHostMemory );
+	const devkGuardUnmapBuffer guardUnmapBuffer(pDevice, pBufferHostMemory);
 	
-	memcpy( mapped, data, size );
+	memcpy(mapped, data, size);
 	
 	VkMappedMemoryRange mappedRange;
-	memset( &mappedRange, 0, sizeof( mappedRange ) );
+	memset(&mappedRange, 0, sizeof(mappedRange));
 	mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
 	mappedRange.memory = pBufferHostMemory;
 	
-	if( whole ){
+	if(whole){
 		mappedRange.offset = 0;
 		mappedRange.size = VK_WHOLE_SIZE;
 		
@@ -130,82 +122,73 @@ void devkBuffer::SetData( const void *data, uint32_t offset, uint32_t size ){
 		mappedRange.size = size;
 	}
 	
-	pDevice.vkFlushMappedMemoryRanges( device, 1, &mappedRange );
+	pDevice.vkFlushMappedMemoryRanges(device, 1, &mappedRange);
 }
 
-void devkBuffer::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
-	if( ! pool ){
-		DETHROW_INFO( deeNullPointer, "pool" );
-	}
+void devkBuffer::TransferToDevice(devkCommandBuffer &commandBuffer){
+	DEASSERT_TRUE(commandBuffer.GetRecording())
 	
-	Wait( true );
-	
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
-	VkDevice const device = pDevice.GetDevice();
-	
-	pFenceActive = false;
-	VK_CHECK( vulkan, pDevice.vkResetFences( device, 1, &pFence ) );
-	
-	VkCommandBufferAllocateInfo allocInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
-	allocInfo.commandPool = pool->GetPool();
-	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandBufferCount = 1;
-	
-	VkCommandBuffer command;
-	VK_CHECK( vulkan, pDevice.vkAllocateCommandBuffers( device, &allocInfo, &command ) );
-	pCommandPool = pool;
-	
-	VkCommandBufferBeginInfo commandInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
-	VK_CHECK( vulkan, pDevice.vkBeginCommandBuffer( command, &commandInfo ) );
-	
-	VkBufferCopy copyRegion{};
-	copyRegion.size = pSize;
-	pDevice.vkCmdCopyBuffer( command, pBufferHost, pBuffer, 1, &copyRegion );
-	VK_CHECK( vulkan, pDevice.vkEndCommandBuffer( command ) );
-	
-	VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &command;
-	
-	VK_CHECK( vulkan, pDevice.vkQueueSubmit( queue.GetQueue(), 1, &submitInfo, pFence ) );
-	pFenceActive = true;
+	VkBufferCopy copy{};
+	copy.size = pSize;
+	pDevice.vkCmdCopyBuffer(commandBuffer, pBufferHost, pBuffer, 1, &copy);
 }
 
-void devkBuffer::GetData( void *data ){
-	GetData( data, 0, pSize );
+void devkBuffer::TransferToDevice(devkCommandPool &pool){
+	Wait(true);
+	
+	pCommandBuffer = pool.GetCommandBuffer();
+	pCommandBuffer->Begin();
+	TransferToDevice(pCommandBuffer);
+	pCommandBuffer->End();
+	pCommandBuffer->Submit();
 }
 
-void devkBuffer::GetData( void *data, uint32_t offset, uint32_t size ){
-	if( offset < 0 ){
-		DETHROW_INFO( deeInvalidParam, "offset < 0" );
-	}
-	if( size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "size < 0" );
-	}
-	if( size == 0 ){
+void devkBuffer::FetchFromDevice(devkCommandBuffer &commandBuffer){
+	DEASSERT_TRUE(commandBuffer.GetRecording())
+	
+	VkBufferCopy copy{};
+	copy.size = pSize;
+	pDevice.vkCmdCopyBuffer(commandBuffer, pBuffer, pBufferHost, 1, &copy);
+}
+
+void devkBuffer::FetchFromDevice(devkCommandPool &pool){
+	Wait(true);
+	
+	pCommandBuffer = pool.GetCommandBuffer();
+	pCommandBuffer->Begin();
+	FetchFromDevice(pCommandBuffer);
+	pCommandBuffer->End();
+	pCommandBuffer->Submit();
+}
+
+void devkBuffer::GetData(void *data){
+	GetData(data, 0, pSize);
+}
+
+void devkBuffer::GetData(void *data, uint32_t offset, uint32_t size){
+	DEASSERT_TRUE(offset >= 0)
+	DEASSERT_TRUE(size >= 0)
+	if(size == 0){
 		return;
 	}
-	if( offset + size > pSize ){
-		DETHROW_INFO( deeInvalidParam, "offset + size > bufferSize" );
-	}
-	if( ! data ){
-		DETHROW_INFO( deeNullPointer, "data" );
-	}
 	
-	Wait( true );
+	DEASSERT_TRUE(offset + size <= pSize)
+	DEASSERT_NOTNULL(data)
 	
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
+	Wait(true);
+	
+	VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
 	const bool whole = offset == 0 && size == pSize;
 	VkDevice const device = pDevice.GetDevice();
 	
 	void *mapped = nullptr;
-	VK_CHECK( vulkan, pDevice.vkMapMemory( device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped ) );
-	const devkGuardUnmapBuffer guardUnmapBuffer( pDevice, pBufferHostMemory );
+	VK_CHECK(vulkan, pDevice.vkMapMemory(device, pBufferHostMemory, 0, VK_WHOLE_SIZE, 0, &mapped));
+	const devkGuardUnmapBuffer guardUnmapBuffer(pDevice, pBufferHostMemory);
 	
 	VkMappedMemoryRange mappedRange{VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE};
 	mappedRange.memory = pBufferHostMemory;
 	
-	if( whole ){
+	if(whole){
 		mappedRange.offset = 0;
 		mappedRange.size = VK_WHOLE_SIZE;
 		
@@ -214,24 +197,26 @@ void devkBuffer::GetData( void *data, uint32_t offset, uint32_t size ){
 		mappedRange.size = size;
 	}
 	
-	VK_CHECK( vulkan, pDevice.vkInvalidateMappedMemoryRanges( device, 1, &mappedRange ) );
+	VK_CHECK(vulkan, pDevice.vkInvalidateMappedMemoryRanges(device, 1, &mappedRange));
 	
-	memcpy( data, mapped, size );
+	memcpy(data, mapped, size);
 }
 
-void devkBuffer::Wait( bool reset ){
-	if( ! pFenceActive ){
-		return;
-	}
-	
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
-	VkDevice const device = pDevice.GetDevice();
-	
-	VK_CHECK( vulkan, pDevice.vkWaitForFences( device, 1, &pFence, VK_TRUE, UINT64_MAX ) );
-	
-	if( reset ){
-		VK_CHECK( vulkan, pDevice.vkResetFences( device, 1, &pFence ) );
-		pFenceActive = false;
+void devkBuffer::Wait(bool reset){
+	if(pCommandBuffer){
+		pCommandBuffer->Wait();
+		pCommandBuffer = nullptr;
+		
+	}else if(pFenceActive){
+		VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
+		VkDevice const device = pDevice.GetDevice();
+		
+		VK_CHECK(vulkan, pDevice.vkWaitForFences(device, 1, &pFence, VK_TRUE, UINT64_MAX));
+		
+		if(reset){
+			VK_CHECK(vulkan, pDevice.vkResetFences(device, 1, &pFence));
+			pFenceActive = false;
+		}
 	}
 }
 
@@ -243,33 +228,30 @@ void devkBuffer::Wait( bool reset ){
 void devkBuffer::pCleanUp(){
 	VkDevice const device = pDevice.GetDevice();
 	
-	Wait();
+	Wait(false);
 	
-	if( pCommand && pCommandPool ){
-		pDevice.vkFreeCommandBuffers( device, pCommandPool->GetPool(), 1, &pCommand );
-	}
-	if( pFence ){
-		pDevice.vkDestroyFence( device, pFence, VK_NULL_HANDLE );
+	if(pFence){
+		pDevice.vkDestroyFence(device, pFence, VK_NULL_HANDLE);
 	}
 	
-	if( pBuffer ){
-		pDevice.vkDestroyBuffer( device, pBuffer, VK_NULL_HANDLE );
+	if(pBuffer){
+		pDevice.vkDestroyBuffer(device, pBuffer, VK_NULL_HANDLE);
 	}
-	if( pBufferMemory ){
-		pDevice.vkFreeMemory( device, pBufferMemory, VK_NULL_HANDLE );
+	if(pBufferMemory){
+		pDevice.vkFreeMemory(device, pBufferMemory, VK_NULL_HANDLE);
 	}
 	
-	if( pBufferHost ){
-		pDevice.vkDestroyBuffer( device, pBufferHost, VK_NULL_HANDLE );
+	if(pBufferHost){
+		pDevice.vkDestroyBuffer(device, pBufferHost, VK_NULL_HANDLE);
 	}
-	if( pBufferHostMemory ){
-		pDevice.vkFreeMemory( device, pBufferHostMemory, VK_NULL_HANDLE );
+	if(pBufferHostMemory){
+		pDevice.vkFreeMemory(device, pBufferHostMemory, VK_NULL_HANDLE);
 	}
 }
 
-void devkBuffer::pCreateBuffer( VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
-VkBuffer* buffer, VkDeviceMemory *memory, VkDeviceSize size ){
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
+void devkBuffer::pCreateBuffer(VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryProperty,
+VkBuffer* buffer, VkDeviceMemory *memory, VkDeviceSize size){
+	VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
 	VkDevice const device = pDevice.GetDevice();
 	
 	// create buffer handle
@@ -277,16 +259,16 @@ VkBuffer* buffer, VkDeviceMemory *memory, VkDeviceSize size ){
 	bufferInfo.usage = usage;
 	bufferInfo.size = size;
 	bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	VK_CHECK( vulkan, pDevice.vkCreateBuffer( device, &bufferInfo, VK_NULL_HANDLE, buffer ) );
+	VK_CHECK(vulkan, pDevice.vkCreateBuffer(device, &bufferInfo, VK_NULL_HANDLE, buffer));
 	
 	// create the memory backing up the buffer handle
 	VkMemoryAllocateInfo allocInfo{VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
 	
 	VkMemoryRequirements memoryRequirements;
-	pDevice.vkGetBufferMemoryRequirements( device, *buffer, &memoryRequirements );
+	pDevice.vkGetBufferMemoryRequirements(device, *buffer, &memoryRequirements);
 	allocInfo.allocationSize = memoryRequirements.size;
-	allocInfo.memoryTypeIndex = pDevice.IndexOfMemoryType( memoryProperty, memoryRequirements );
+	allocInfo.memoryTypeIndex = pDevice.IndexOfMemoryType(memoryProperty, memoryRequirements);
 	
-	VK_CHECK( vulkan, pDevice.vkAllocateMemory( device, &allocInfo, VK_NULL_HANDLE, memory ) );
-	VK_CHECK( vulkan, pDevice.vkBindBufferMemory( device, *buffer, *memory, 0 ) );
+	VK_CHECK(vulkan, pDevice.vkAllocateMemory(device, &allocInfo, VK_NULL_HANDLE, memory));
+	VK_CHECK(vulkan, pDevice.vkBindBufferMemory(device, *buffer, *memory, 0));
 }

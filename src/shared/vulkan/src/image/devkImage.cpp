@@ -30,6 +30,7 @@
 #include "../devkInstance.h"
 #include "../deSharedVulkan.h"
 #include "../buffer/devkGuardUnmapBuffer.h"
+#include "../queue/devkCommandBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
@@ -47,8 +48,7 @@ pMemory( VK_NULL_HANDLE ),
 pBufferHost( VK_NULL_HANDLE ),
 pBufferHostMemory( VK_NULL_HANDLE ),
 pFence( VK_NULL_HANDLE ),
-pFenceActive( false ),
-pCommand( VK_NULL_HANDLE )
+pFenceActive( false )
 {
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
@@ -154,71 +154,158 @@ void devkImage::SetData( const void *data, uint32_t offset, uint32_t size ){
 	pDevice.vkFlushMappedMemoryRanges( device, 1, &mappedRange );
 }
 
-void devkImage::TransferToDevice( devkCommandPool *pool, devkQueue &queue ){
-	if( ! pool ){
-		DETHROW_INFO( deeNullPointer, "pool" );
-	}
-	if( ! pBufferHost || ! pBufferHostMemory ){
-		DETHROW_INFO( deeNullPointer, "bufferHost" );
-	}
+void devkImage::TransferToDevice(devkCommandBuffer &commandBuffer){
+	DEASSERT_NOTNULL(pBufferHost)
+	DEASSERT_NOTNULL(pBufferHostMemory)
+	DEASSERT_TRUE(commandBuffer.GetRecording())
 	
-	Wait( true );
+	VkBufferImageCopy copy{};
 	
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
-	VkDevice const device = pDevice.GetDevice();
-	
-	pFenceActive = false;
-	if( ! pFence ){
-		pCreateFence();
-	}
-	VK_CHECK( vulkan, pDevice.vkResetFences( device, 1, &pFence ) );
-	
-	VkCommandBufferAllocateInfo allocInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
-	allocInfo.commandPool = pool->GetPool();
-	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	allocInfo.commandBufferCount = 1;
-	
-	VkCommandBuffer command;
-	VK_CHECK( vulkan, pDevice.vkAllocateCommandBuffers( device, &allocInfo, &command ) );
-	pCommandPool = pool;
-	
-	VkCommandBufferBeginInfo commandInfo{VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
-	VK_CHECK( vulkan, pDevice.vkBeginCommandBuffer( command, &commandInfo ) );
-	
-	VkBufferImageCopy copyRegion{};
-	copyRegion.bufferOffset = 0;
-	copyRegion.bufferRowLength = 0;
-	copyRegion.bufferImageHeight = 0;
-	
-	if( pConfiguration.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT ){
-		copyRegion.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
-		copyRegion.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+	if(pConfiguration.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT){
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
 		
 	}else{
-		copyRegion.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
 	}
 	
-	copyRegion.imageSubresource.mipLevel = 0;
-	copyRegion.imageSubresource.baseArrayLayer = 0;
-	copyRegion.imageSubresource.layerCount = pConfiguration.GetLayerCount();
+	copy.imageSubresource.layerCount = pConfiguration.GetLayerCount();
 	
-	copyRegion.imageOffset.x = 0;
-	copyRegion.imageOffset.y = 0;
-	copyRegion.imageOffset.z = 0;
-	copyRegion.imageExtent.width = pConfiguration.GetSize().x;
-	copyRegion.imageExtent.height = pConfiguration.GetSize().y;
-	copyRegion.imageExtent.depth = pConfiguration.GetSize().z;
+	copy.imageExtent.width = pConfiguration.GetSize().x;
+	copy.imageExtent.height = pConfiguration.GetSize().y;
+	copy.imageExtent.depth = pConfiguration.GetSize().z;
 	
-	pDevice.vkCmdCopyBufferToImage( command, pBufferHost, pImage,
-		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyRegion );
-	VK_CHECK( vulkan, pDevice.vkEndCommandBuffer( command ) );
+	EnsureHostBuffer();
 	
-	VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &command;
+	pDevice.vkCmdCopyBufferToImage(commandBuffer.GetBuffer(), pBufferHost, pImage,
+		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
+}
+
+void devkImage::TransferToDevice(devkCommandPool &pool){
+	Wait(true);
 	
-	VK_CHECK( vulkan, pDevice.vkQueueSubmit( queue.GetQueue(), 1, &submitInfo, pFence ) );
-	pFenceActive = true;
+	pCommandBuffer = pool.GetCommandBuffer();
+	pCommandBuffer->Begin();
+	TransferToDevice(pCommandBuffer);
+	pCommandBuffer->End();
+	pCommandBuffer->Submit();
+}
+
+void devkImage::FetchFromDevice(devkCommandPool &pool){
+	Wait(true);
+	
+	pCommandBuffer = pool.GetCommandBuffer();
+	pCommandBuffer->Begin();
+	FetchFromDevice(pCommandBuffer);
+	pCommandBuffer->End();
+	pCommandBuffer->Submit();
+}
+
+void devkImage::FetchFromDevice(devkCommandBuffer &commandBuffer){
+	DEASSERT_TRUE(commandBuffer.GetRecording())
+	
+	VkBufferImageCopy copy{};
+	
+	if(pConfiguration.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT){
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		
+	}else{
+		copy.imageSubresource.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
+	}
+	
+	copy.imageSubresource.layerCount = pConfiguration.GetLayerCount();
+	
+	copy.imageExtent.width = pConfiguration.GetSize().x;
+	copy.imageExtent.height = pConfiguration.GetSize().y;
+	copy.imageExtent.depth = pConfiguration.GetSize().z;
+	
+	EnsureHostBuffer();
+	
+	pDevice.vkCmdCopyImageToBuffer(commandBuffer.GetBuffer(), pImage,
+		VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, pBufferHost, 1, &copy);
+}
+
+void devkImage::GenerateMipMaps(devkCommandPool &pool){
+	Wait(true);
+	
+	pCommandBuffer = pool.GetCommandBuffer();
+	pCommandBuffer->Begin();
+	
+	BarrierLayoutTransition(pCommandBuffer, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	
+	VkImageMemoryBarrier barrier{VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
+	barrier.image = pImage;
+	barrier.dstQueueFamilyIndex = barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	barrier.subresourceRange.layerCount = 1;
+	barrier.subresourceRange.levelCount = 1;
+	
+	VkImageBlit blit{};
+	blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	blit.srcSubresource.layerCount = 1;
+	blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	blit.dstSubresource.layerCount = 1;
+	
+	const int levelCount = pConfiguration.GetMipMapCount();
+	int mipWidth = pConfiguration.GetSize().x;
+	int mipHeight = pConfiguration.GetSize().y;
+	int i;
+	
+	for(i=1; i<levelCount; i++){
+		// transition layout
+		barrier.subresourceRange.baseMipLevel = i - 1;
+		barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+		barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+		
+		pDevice.vkCmdPipelineBarrier(*pCommandBuffer,
+			VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+			0, 0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
+		
+		// blit
+		blit.srcOffsets[1] = {mipWidth, mipHeight, 1};
+		blit.srcSubresource.mipLevel = i - 1;
+		blit.dstOffsets[1] = {mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1};
+		blit.dstSubresource.mipLevel = i;
+		
+		pDevice.vkCmdBlitImage(*pCommandBuffer, pImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+			pImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &blit, VK_FILTER_LINEAR);
+		
+		// transition layout
+		barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+		barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		barrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+		
+		pDevice.vkCmdPipelineBarrier(*pCommandBuffer,
+			VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+			0, 0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
+		
+		// next round
+		if(mipWidth > 1){
+			mipWidth /= 2;
+		}
+		if(mipHeight > 1){
+			mipHeight /= 2;
+		}
+	}
+	
+	// final barrier
+	barrier.subresourceRange.baseMipLevel = levelCount - 1;
+	barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+	barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+	barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+	
+	pDevice.vkCmdPipelineBarrier(*pCommandBuffer,
+		VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0,
+		0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
+	
+	// submit command
+	pCommandBuffer->End();
+	pCommandBuffer->Submit();
 }
 
 void devkImage::GetData( void *data ){
@@ -245,7 +332,7 @@ void devkImage::GetData( void *data, uint32_t offset, uint32_t size ){
 		DETHROW_INFO( deeNullPointer, "bufferHost" );
 	}
 	
-	Wait( true );
+	Wait(true);
 	
 	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
 	const bool whole = offset == 0 && size == pImageSize;
@@ -273,49 +360,45 @@ void devkImage::GetData( void *data, uint32_t offset, uint32_t size ){
 }
 
 void devkImage::Wait( bool reset ){
-	if( ! pFenceActive || ! pFence ){
-		return;
-	}
-	
-	VK_IF_CHECK( deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan() );
-	VkDevice const device = pDevice.GetDevice();
-	
-	VK_CHECK( vulkan, pDevice.vkWaitForFences( device, 1, &pFence, VK_TRUE, UINT64_MAX ) );
-	
-	if( reset ){
-		VK_CHECK( vulkan, pDevice.vkResetFences( device, 1, &pFence ) );
-		pFenceActive = false;
+	if(pCommandBuffer){
+		pCommandBuffer->Wait();
+		pCommandBuffer = nullptr;
+		
+	}else if(pFenceActive && pFence){
+		VK_IF_CHECK(deSharedVulkan &vulkan = pDevice.GetInstance().GetVulkan());
+		VkDevice const device = pDevice.GetDevice();
+		
+		VK_CHECK(vulkan, pDevice.vkWaitForFences(device, 1, &pFence, VK_TRUE, UINT64_MAX));
+		
+		if(reset){
+			VK_CHECK(vulkan, pDevice.vkResetFences(device, 1, &pFence));
+			pFenceActive = false;
+		}
 	}
 }
 
 void devkImage::DropTransferResources(){
-	Wait();
+	Wait(false);
 	
 	VkDevice const device = pDevice.GetDevice();
 	
-	if( pCommand && pCommandPool ){
-		pDevice.vkFreeCommandBuffers( device, pCommandPool->GetPool(), 1, &pCommand );
-	}
-	pCommand = VK_NULL_HANDLE;
-	pCommandPool = nullptr;
-	
-	if( pFence ){
-		pDevice.vkDestroyFence( device, pFence, VK_NULL_HANDLE );
+	if(pFence){
+		pDevice.vkDestroyFence(device, pFence, VK_NULL_HANDLE);
 		pFence = VK_NULL_HANDLE;
 	}
 	
-	if( pBufferHost ){
-		pDevice.vkDestroyBuffer( device, pBufferHost, VK_NULL_HANDLE );
+	if(pBufferHost){
+		pDevice.vkDestroyBuffer(device, pBufferHost, VK_NULL_HANDLE);
 		pBufferHost = VK_NULL_HANDLE;
 	}
-	if( pBufferHostMemory ){
-		pDevice.vkFreeMemory( device, pBufferHostMemory, VK_NULL_HANDLE );
+	if(pBufferHostMemory){
+		pDevice.vkFreeMemory(device, pBufferHostMemory, VK_NULL_HANDLE);
 		pBufferHostMemory = VK_NULL_HANDLE;
 	}
 }
 
 void devkImage::EnsureHostBuffer(){
-	Wait();
+	Wait(false);
 	
 	if( ! pBufferHostMemory ){
 		pCreateBuffer( VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -323,6 +406,96 @@ void devkImage::EnsureHostBuffer(){
 	}
 }
 
+void devkImage::BarrierLayoutTransition(devkCommandBuffer &commandBuffer, VkImageLayout newLayout){
+	BarrierLayoutTransition(commandBuffer, VK_IMAGE_LAYOUT_UNDEFINED, newLayout);
+}
+
+void devkImage::BarrierLayoutTransition(devkCommandBuffer &commandBuffer,
+VkImageLayout oldLayout, VkImageLayout newLayout){
+	DEASSERT_TRUE(commandBuffer.GetRecording())
+	
+	VkImageMemoryBarrier barrier{VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
+	barrier.image = pImage;
+	barrier.dstQueueFamilyIndex = barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	barrier.oldLayout = oldLayout;
+	barrier.newLayout = newLayout;
+	barrier.subresourceRange.levelCount = pConfiguration.GetMipMapCount();
+	barrier.subresourceRange.layerCount = pConfiguration.GetLayerCount();
+	
+	if(pConfiguration.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT){
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		
+	}else{
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
+	}
+	
+	VkPipelineStageFlags sourceStage, destinationStage;
+	
+	if(oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL){
+		barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		
+		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+		destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		
+	}else if(oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
+	&& newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL){
+		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+		
+		sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		
+	}else{
+		DETHROW_INFO(deeInvalidParam, "Unsupported layout transition");
+	}
+	
+	pDevice.vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage,
+		0, 0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
+}
+
+void devkImage::Barrier(devkCommandBuffer &commandBuffer, VkAccessFlags sourceAccessMask,
+VkAccessFlags destAccessMask, VkPipelineStageFlags sourceStageMask,
+VkPipelineStageFlags destStageMask){
+	DEASSERT_TRUE(commandBuffer.GetRecording())
+	
+	VkImageMemoryBarrier barrier{VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
+	barrier.image = pImage;
+	barrier.srcAccessMask = sourceAccessMask;
+	barrier.dstAccessMask = destAccessMask;
+	barrier.dstQueueFamilyIndex = barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	barrier.newLayout = barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+	barrier.subresourceRange.levelCount = pConfiguration.GetMipMapCount();
+	barrier.subresourceRange.layerCount = pConfiguration.GetLayerCount();
+	
+	if(pConfiguration.GetFlags() & VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT){
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		
+	}else{
+		barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_COLOR_BIT;
+	}
+	
+	pDevice.vkCmdPipelineBarrier(commandBuffer, sourceStageMask, destStageMask,
+		0, 0, VK_NULL_HANDLE, 0, VK_NULL_HANDLE, 1, &barrier);
+}
+
+void devkImage::BarrierHostShader(devkCommandBuffer &commandBuffer,
+VkPipelineStageFlags destStageMask){
+	Barrier(commandBuffer, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+		VK_PIPELINE_STAGE_HOST_BIT, destStageMask);
+}
+
+void devkImage::BarrierShaderTransfer(devkCommandBuffer &commandBuffer,
+VkPipelineStageFlags srcStageMask){
+	Barrier(commandBuffer, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT,
+		srcStageMask, VK_PIPELINE_STAGE_TRANSFER_BIT);
+}
+
+void devkImage::BarrierTransferHost(devkCommandBuffer &commandBuffer){
+	Barrier(commandBuffer, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_HOST_READ_BIT,
+		VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_HOST_BIT);
+}
 
 
 // Private Functions
@@ -331,13 +504,10 @@ void devkImage::EnsureHostBuffer(){
 void devkImage::pCleanUp(){
 	VkDevice const device = pDevice.GetDevice();
 	
-	Wait();
+	Wait(false);
 	
-	if( pCommand && pCommandPool ){
-		pDevice.vkFreeCommandBuffers( device, pCommandPool->GetPool(), 1, &pCommand );
-	}
-	if( pFence ){
-		pDevice.vkDestroyFence( device, pFence, VK_NULL_HANDLE );
+	if(pFence){
+		pDevice.vkDestroyFence(device, pFence, VK_NULL_HANDLE);
 	}
 	
 	if( pImage ){

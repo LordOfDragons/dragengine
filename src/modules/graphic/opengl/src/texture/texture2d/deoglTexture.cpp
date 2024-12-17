@@ -35,12 +35,14 @@
 #include "../../memory/deoglMemoryManager.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
+#include "../../renderthread/deoglRTContext.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDebug.h"
 
 #ifdef BACKEND_OPENGL
 #elif defined BACKEND_VULKAN
 #include <devkFormat.h>
+#include <queue/devkCommandBuffer.h>
 #endif
 
 #ifdef OS_ANDROID
@@ -121,11 +123,11 @@ void deoglTexture::SetFormat(const devkFormat *format){
 }
 
 void deoglTexture::SetFormatMappingByNumber(devkDevice::eFormats format){
-	SetFormat(pRenderThread.GetVulkanDevice()->GetUseTexFormat(format));
+	SetFormat(pRenderThread.GetContext().GetDevice().GetUseTexFormat(format));
 }
 
 void deoglTexture::SetFormatFBOByNumber(devkDevice::eFormats format){
-	SetFormat(pRenderThread.GetVulkanDevice()->GetUseFboFormat(format));
+	SetFormat(pRenderThread.GetContext().GetDevice().GetUseFboFormat(format));
 }
 
 #endif
@@ -167,6 +169,7 @@ void deoglTexture::SetMipMapLevelCount(int count){
 
 
 void deoglTexture::CreateTexture(){
+#ifdef BACKEND_OPENGL
 	if(pTexture){
 		return;
 	}
@@ -257,8 +260,46 @@ void deoglTexture::CreateTexture(){
 	pOgl->LogInfoFormat("Texture %p: compressed=%i", this, result);
 	*/
 	
+#elif defined BACKEND_VULKAN
+	if(pImage){
+		return;
+	}
+	
+	devkImageConfiguration config;
+	config.Set2D(pSize, pFormat->GetFormat());
+	
+	if(pFormat->GetIsDepth() || pFormat->GetIsDepthFloat() || pFormat->GetIsStencil()){
+		config.EnableDepthStencilAttachment(true);
+		
+	}else{
+		config.EnableColorAttachment(true);
+		config.EnableTransferSource(true);
+		config.EnableTransferDestination(true);
+	}
+	
+	if(pMipMapped){
+		int i, count = pMipMapLevelCount;
+		decPoint size(pSize);
+		
+		if(count == 0){
+			count = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
+		}
+		
+		for(i=0; i<count; i++){
+			size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
+		}
+		
+		pRealMipMapLevelCount = count;
+		config.SetMipMapCount(count);
+	}
+	
+	pImage.TakeOver(new devkImage(pRenderThread.GetContext().GetDevice(), config));
+#endif
+	
 	UpdateMemoryUsage();
+#ifdef BACKEND_OPENGL
 	pUpdateDebugObjectLabel();
+#endif
 }
 
 void deoglTexture::DestroyTexture(){
@@ -298,15 +339,16 @@ void deoglTexture::SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelB
 	DEASSERT_TRUE(layer >= 0)
 	DEASSERT_TRUE(layer < pixelBuffer.GetDepth())
 	
-	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-	
 	CreateTexture();
-	tsmgr.EnableBareTexture(0, *this);
-	
-	OGL_CHECK(pRenderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 	
 	const char * const pixelBufferData = (const char *)pixelBuffer.GetPointer()
 		+ pixelBuffer.GetLayerStride() * layer;
+	
+#ifdef BACKEND_OPENGL
+	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+	tsmgr.EnableBareTexture(0, *this);
+	
+	OGL_CHECK(pRenderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 	
 	if(pixelBuffer.GetCompressed()){
 		OGL_CHECK(pRenderThread, pglCompressedTexImage2D(GL_TEXTURE_2D, level, pFormat->GetFormat(),
@@ -333,6 +375,11 @@ void deoglTexture::SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelB
 	OGL_CHECK(pRenderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
 	
 	tsmgr.DisableStage(0);
+	
+#elif defined BACKEND_VULKAN
+	pImage->SetData(pixelBufferData, pixelBuffer.GetLayerStride() * layer,
+		pixelBuffer.GetLayerStride());
+#endif
 }
 
 void deoglTexture::GetPixels(deoglPixelBuffer &pixelBuffer) const{
@@ -343,6 +390,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	int width, height;
 	GetLevelSize(level, width, height);
 	
+#ifdef BACKEND_OPENGL
 	/*if(pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != 1){
 		pRenderThread.GetLogger().LogInfoFormat("PROBLEM! level=%d width(%d=%d) height(%d=%d) depth(%d)",
 			level, pixelBuffer.GetWidth(), width, pixelBuffer.GetHeight(), height, pixelBuffer.GetDepth());
@@ -501,6 +549,14 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 	tsmgr.DisableStage(0);
 #endif
+
+#elif defined BACKEND_VULKAN
+	if(!pImage){
+		return;
+	}
+	
+	pImage->GetData(pixelBuffer.GetPointer(), 0, pixelBuffer.GetLayerStride());
+#endif
 }
 
 
@@ -525,11 +581,16 @@ void deoglTexture::CreateMipMaps(){
 		return;
 	}
 	
+#ifdef BACKEND_OPENGL
 	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	
 	tsmgr.EnableBareTexture(0, *this);
 	pglGenerateMipmap(GL_TEXTURE_2D);
 	tsmgr.DisableStage(0);
+	
+#elif defined BACKEND_VULKAN
+	pImage->GenerateMipMaps(pRenderThread.GetContext().GetCommandPoolGraphic());
+#endif
 }
 
 
@@ -555,6 +616,7 @@ int width, int height, int srcX, int srcY, int destX, int destY){
 	
 	CreateTexture();
 	
+#ifdef BACKEND_OPENGL
 	if(withMipMaps && texture.GetMipMapped() && pMipMapped){
 		const int srcMipMapLevelCount = texture.GetRealMipMapLevelCount();
 		int i, mipMapLevelCount;
@@ -598,6 +660,14 @@ int width, int height, int srcX, int srcY, int destX, int destY){
 			DETHROW(deeInvalidParam);
 		}
 	}
+	
+#elif defined BACKEND_VULKAN
+	if(withMipMaps && texture.GetMipMapped() && pMipMapped){
+		
+	}else{
+		
+	}
+#endif
 }
 
 
@@ -605,6 +675,7 @@ int width, int height, int srcX, int srcY, int destX, int destY){
 void deoglTexture::UpdateMemoryUsage(){
 	pMemUse.Clear();
 	
+#ifdef BACKEND_OPENGL
 	if(! pTexture || ! pFormat){
 		return;
 	}
@@ -637,6 +708,38 @@ void deoglTexture::UpdateMemoryUsage(){
 		}
 		
 		tsmgr.DisableStage(0);
+		
+	}else{
+		pMemUse.SetUncompressed(*pFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
+	}
+#endif
+	
+#elif defined BACKEND_VULKAN
+	if(!pImage || !pFormat){
+		return;
+	}
+	
+	if(pFormat->GetIsCompressed()){
+		/*
+		GLint isReallyCompressed = 0;
+		OGL_CHECK(pRenderThread, glGetTexLevelParameteriv(GL_TEXTURE_2D,
+			0, GL_TEXTURE_COMPRESSED, &isReallyCompressed));
+		
+		if(isReallyCompressed){
+			unsigned long consumption = 0ull;
+			GLint compressedSize, l;
+			for(l=0; l<pRealMipMapLevelCount; l++){
+				OGL_CHECK(pRenderThread, glGetTexLevelParameteriv(GL_TEXTURE_2D, l,
+					GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize));
+				consumption += (unsigned long long)compressedSize;
+			}
+			
+			pMemUse.SetCompressed(consumption, *pFormat);
+			
+		}else{
+			pMemUse.SetUncompressed(*pFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
+		}
+		*/
 		
 	}else{
 		pMemUse.SetUncompressed(*pFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
@@ -923,13 +1026,21 @@ void deoglTexture::SetDepthFormat(bool packedStencil, bool useFloat){
 	}
 }
 
+#ifdef BACKEND_OPENGL
 void deoglTexture::SetDebugObjectLabel(const char *name){
 	pDebugObjectLabel.Format("2D: %s", name);
 	if(pTexture){
 		pUpdateDebugObjectLabel();
 	}
 }
+#endif
 
+
+// Private Functions
+//////////////////////
+
+#ifdef BACKEND_OPENGL
 void deoglTexture::pUpdateDebugObjectLabel(){
 	pRenderThread.GetDebug().SetDebugObjectLabel(GL_TEXTURE, pTexture, pDebugObjectLabel);
 }
+#endif

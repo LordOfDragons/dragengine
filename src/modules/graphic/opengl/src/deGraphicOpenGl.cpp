@@ -599,6 +599,7 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	#elif defined OS_UNIX
 	const deoglRTContext &context = pRenderThread->GetContext();
 	
+#ifdef BACKEND_OPENGL
 	connection.opengl.display = context.GetDisplay();
 	connection.opengl.visualid = context.GetVisualInfo()->visualid;
 	connection.opengl.glxFBConfig = context.GetBestFBConfig();
@@ -607,6 +608,14 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	if( context.GetActiveRRenderWindow() ){
 		connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
 	}
+	
+#elif defined BACKEND_VULKAN
+	connection.vulkan.instance = context.GetVulkan().GetInstance().GetInstance();
+	connection.vulkan.device = context.GetDevice().GetDevice();
+	connection.vulkan.physicalDevice = context.GetDevice().GetPhysicalDevice();
+	connection.vulkan.queueIndex = context.GetQueueGraphic().GetIndex();
+	connection.vulkan.queueFamilyIndex = context.GetQueueGraphic().GetFamily();
+#endif
 	
 	#elif defined OS_W32
 	const deoglRTContext &context = pRenderThread->GetContext();

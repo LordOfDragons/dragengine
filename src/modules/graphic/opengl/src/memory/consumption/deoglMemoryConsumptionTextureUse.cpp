@@ -26,7 +26,11 @@
 
 #include "deoglMemoryConsumptionTexture.h"
 #include "deoglMemoryConsumptionTextureUse.h"
+#ifdef BACKEND_OPENGL
 #include "../../capabilities/deoglCapsTextureFormat.h"
+#elif defined BACKEND_VULKAN
+#include <devkFormat.h>
+#endif
 
 
 // Class deoglMemoryConsumptionTextureUse
@@ -90,6 +94,7 @@ void deoglMemoryConsumptionTextureUse::Set( unsigned long long consumption, bool
 	}
 }
 
+#ifdef BACKEND_OPENGL
 void deoglMemoryConsumptionTextureUse::SetCompressed( unsigned long long consumption,
 const deoglCapsTextureFormat& format ){
 	Set( consumption, format.GetIsDepth() || format.GetIsDepthFloat(), true );
@@ -117,6 +122,35 @@ const deoglCapsTextureFormat &format, int width, int height, int depth ) const{
 	
 	return consumption;
 }
+
+#elif defined BACKEND_VULKAN
+void deoglMemoryConsumptionTextureUse::SetCompressed(
+unsigned long long consumption, const devkFormat &format){
+	Set(consumption, format.GetIsDepth() || format.GetIsDepthFloat(), true);
+}
+
+void deoglMemoryConsumptionTextureUse::SetUncompressed(const devkFormat &format,
+int width, int height, int depth, int mipMapLevels){
+	unsigned long long consumption = BaseConsumption(format, width, height, depth);
+	if(mipMapLevels > 0){
+		consumption = MipMappedConsumption(mipMapLevels, width, height, consumption);
+	}
+	Set(consumption, format.GetIsDepth() || format.GetIsDepthFloat(), false);
+}
+
+unsigned long long deoglMemoryConsumptionTextureUse::BaseConsumption(const devkFormat &format,
+int width, int height, int depth) const{
+	unsigned long long consumption = (unsigned long long)width
+		* (unsigned long long)height * (unsigned long long)depth;
+	
+	consumption *= (unsigned long long)(format.GetBitsPerPixel() >> 3);
+	if((format.GetBitsPerPixel() & 0x7) > 0){
+		consumption >>= 1ull;
+	}
+	
+	return consumption;
+}
+#endif
 
 unsigned long long deoglMemoryConsumptionTextureUse::MipMappedConsumption(
 int levels, int width, int height, unsigned long long baseConsumption ) const{

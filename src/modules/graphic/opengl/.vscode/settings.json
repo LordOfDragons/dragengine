@@ -1,0 +1,12 @@
+{
+    "C_Cpp.files.exclude": {
+        "**/.vscode": true,
+        "**/.vs": true,
+        "data": true,
+        "doc": true,
+        "unused": true
+    },
+    "files.exclude": {
+        "build": true
+    }
+}

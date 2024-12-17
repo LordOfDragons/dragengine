@@ -25,7 +25,7 @@
 #ifndef _DEVKCOMMANDPOOL_H_
 #define _DEVKCOMMANDPOOL_H_
 
-#include "../devkBasics.h"
+#include "devkQueue.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectLinkedList.h>
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	devkDevice &pDevice;
+	const devkQueue::Ref pQueue;
 	
 	VkCommandPool pPool;
 	decObjectLinkedList pFreeCommandBuffers;
@@ -55,11 +55,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create command pool. */
-	devkCommandPool( devkDevice &device, uint32_t queueFamily );
+	devkCommandPool(const devkQueue::Ref &queue);
 	
 protected:
 	/** Clean up queue. */
-	virtual ~devkCommandPool();
+	~devkCommandPool() override;
 	/*@}*/
 	
 	
@@ -67,17 +67,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Device. */
-	inline devkDevice &GetDevice() const{ return pDevice; }
+	/** Queue. */
+	inline const devkQueue::Ref &GetQueue() const{ return pQueue; }
 	
 	/** Command pool. */
 	inline VkCommandPool GetPool() const{ return pPool; }
+	inline operator VkCommandPool() const{ return pPool; }
 	
 	/** Get next free command buffer. */
 	devkCommandBuffer *GetCommandBuffer();
 	
 	/** Return command buffer to pool. */
-	void ReturnCommandBuffer( devkCommandBuffer *commandBuffer );
+	void ReturnCommandBuffer(devkCommandBuffer *commandBuffer);
 	/*@}*/
 	
 	

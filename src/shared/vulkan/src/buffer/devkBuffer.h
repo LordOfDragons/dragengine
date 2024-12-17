@@ -26,12 +26,12 @@
 #define _DEVKBUFFER_H_
 
 #include "../devkBasics.h"
-#include "../queue/devkCommandPool.h"
+#include "../queue/devkCommandBuffer.h"
 
 #include <dragengine/deObject.h>
 
 class devkDevice;
-class devkQueue;
+class devkCommandPool;
 
 
 /**
@@ -60,8 +60,7 @@ private:
 	
 	VkFence pFence;
 	bool pFenceActive;
-	devkCommandPool::Ref pCommandPool;
-	VkCommandBuffer pCommand;
+	devkCommandBuffer::Ref pCommandBuffer;
 	
 	
 	
@@ -83,7 +82,7 @@ public:
 	devkBuffer( devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage );
 	
 protected:
-	/** Clean up queue. */
+	/** Clean up buffer. */
 	virtual ~devkBuffer();
 	/*@}*/
 	
@@ -115,10 +114,27 @@ public:
 	
 	/**
 	 * Transfer data from host memory to device memory.
+	 */
+	void TransferToDevice(devkCommandBuffer &commandBuffer);
+	
+	/**
+	 * Transfer data from host memory to device memory.
 	 * \note Calls Wait() before starting the transfer.
 	 * \note After call exist Wait() has to be called before using buffer.
 	 */
-	void TransferToDevice( devkCommandPool *pool, devkQueue &queue );
+	void TransferToDevice(devkCommandPool &pool);
+	
+	/**
+	 * Transfer data from device memory to host memory.
+	 */
+	void FetchFromDevice(devkCommandBuffer &commandBuffer);
+	
+	/**
+	 * Transfer data from device memory to host memory.
+	 * \note Calls Wait() before starting the transfer.
+	 * \note After call exist Wait() has to be called before using buffer.
+	 */
+	void FetchFromDevice(devkCommandPool &pool);
 	
 	/** Copy data from host memory. */
 	void GetData( void *data );
@@ -130,7 +146,7 @@ public:
 	 * If fence is active wait for fence to be signaled.
 	 * \param[in] reset If true reset fence and set it inactive after wait finished.
 	 */
-	void Wait( bool reset = false );
+	void Wait(bool reset = true);
 	/*@}*/
 	
 	
@@ -143,4 +159,3 @@ private:
 };
 
 #endif
-
