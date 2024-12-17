@@ -145,7 +145,15 @@ envLibrary.Clean(library, ['install', 'build', srcdir])
 
 cpppath = [
 	envLibrary.Dir('install/static/inc'),
-	envLibrary.Dir('install/header_only/linux')]
+	envLibrary.Dir('install/header_only/linux'),
+	envLibrary.Dir('install/header_only/common'),
+	envLibrary.Dir('install/header_only/common/modio/core'),
+	envLibrary.Dir('install/header_only/common/modio/core/entities'),
+	envLibrary.Dir('install/header_only/common/modio/detail'),
+	envLibrary.Dir('install/header_only/common/modio/detail/userdata'),
+	envLibrary.Dir('install/header_only/common/modio/detail/compression/zip'),
+	envLibrary.Dir('install/header_only/linux'),
+	envLibrary.Dir('install/header_only/ext')]
 if depUring:
 	cpppath.extend(depUring['cpppath'])
 

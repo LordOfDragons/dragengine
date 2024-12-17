@@ -25,12 +25,6 @@ pathModule = '{}/modules/service/modio/{}'.format(envModule.subst(envModule['pat
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 
-# modio is not c++20 conform and causes build failures
-# envModule.Append(CXXFLAGS = ['-Wno-error=template-id-cdtor'])
-# envModule.Append(CXXFLAGS = ['-Wno-error=attributes'])
-envModule.Append(CXXFLAGS = ['-Wno-template-id-cdtor'])
-envModule.Append(CXXFLAGS = ['-Wno-attributes'])
-
 # determine the source files
 sources = []
 headers = []
