@@ -312,7 +312,7 @@ void deoglTexture::SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelB
 		OGL_CHECK(pRenderThread, pglCompressedTexImage2D(GL_TEXTURE_2D, level, pFormat->GetFormat(),
 			width, height, 0, pixelBuffer.GetImageSize(), (const GLvoid *)pixelBufferData));
 		//OGL_CHECK(pRenderThread, pglCompressedTexSubImage2D(GL_TEXTURE_2D, level, 0, 0, width, height,
-		//	pGlFormat->GetFormat(), pixels.GetImageSize(), (const GLvoid *)pixelBufferData));
+		//	pFormat->GetFormat(), pixels.GetImageSize(), (const GLvoid *)pixelBufferData));
 		
 	}else{
 #ifdef OS_ANDROID
@@ -456,7 +456,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 		
 		const GLenum buffers[1] = { GL_NONE };
 		OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
-		if(pGlFormat->GetIsDepth()){
+		if(pFormat->GetIsDepth()){
 			fbo->AttachDepthTextureLevel((deoglTexture*)this, level);
 			OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 			
@@ -610,7 +610,7 @@ void deoglTexture::UpdateMemoryUsage(){
 	}
 	
 #ifdef OS_ANDROID
-	pMemUse.SetUncompressed(*pGlFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
+	pMemUse.SetUncompressed(*pFormat, pSize.x, pSize.y, 1, pRealMipMapLevelCount);
 	
 #else
 	if(pFormat->GetIsCompressed()){
