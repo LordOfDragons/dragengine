@@ -167,6 +167,11 @@ jobs:
       
       - name: Build
         run: |
+          # modio service is build ahead with reduced parallel building due to modio sdk
+          # being so hard on the RAM it can cause the build to fail due to memory problems
+          scons -j 4 srv_modio
+          
+          # the rest can be build full throttle
           scons -j 14 archive installer
       
       - name: Perform CodeQL Analysis
