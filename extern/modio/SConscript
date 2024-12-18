@@ -126,7 +126,8 @@ with open(envLibrary.File('header_file_list/modio').srcnode().abspath, 'r', enco
 patches = [] # create with 'diff -rupN original_sources patches_sources'
 envLibrary.Append(PATCHES = [])
 
-globFiles(envLibrary, os.path.join('patches'), '*.patch', patches, recursive=False)
+globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+globFiles(envLibrary, os.path.join('patches', libVersion), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 library = envLibrary.Command(targets, nodeArtifacts,
