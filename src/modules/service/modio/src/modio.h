@@ -43,7 +43,7 @@
 	#pragma GCC diagnostic ignored "-Wattributes"
 #endif
 
-// #define MODIO_SEPARATE_COMPILATION
+#define MODIO_SEPARATE_COMPILATION
 #define MODIO_NO_DEPRECATED
 
 // broken pragmas. on some compilers not even silenceable with
