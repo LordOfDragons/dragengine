@@ -4,5 +4,20 @@
 		"scripts"
 	],
 	"python.REPL.enableREPLSmartSend": false,
-	"cmake.ignoreCMakeListsMissing": true
+	"cmake.ignoreCMakeListsMissing": true,
+	"C_Cpp.files.exclude": {
+		"**/.vscode": true,
+		"**/.vs": true,
+		"data": true,
+		"doc": true,
+		"igde": true,
+		"kate_syntax": true,
+		"kdev_lang_dscript": true,
+		"original": true,
+		"scripts": true,
+		"unused": true
+	},
+	"files.exclude": {
+		"build": true
+	}
 }

@@ -3,8 +3,9 @@
 		"**/.vscode": true,
 		"**/.vs": true,
 		"data": true,
-		"doc": true,
-		"unused": true
+		"man": true,
+		"shared/data": true,
+		"shared/original": true,
 	},
 	"files.exclude": {
 		"build": true

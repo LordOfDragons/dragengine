@@ -3,8 +3,8 @@
 		"**/.vscode": true,
 		"**/.vs": true,
 		"data": true,
-		"doc": true,
-		"unused": true
+		"icons": true,
+		"man": true
 	},
 	"files.exclude": {
 		"build": true
