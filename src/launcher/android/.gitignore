@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+app/src/main/jniLibs/*/libdelauncher.so
+app/src/main/jniLibs/*/libdragengine.so
+app/src/main/assets/dragengine.zip

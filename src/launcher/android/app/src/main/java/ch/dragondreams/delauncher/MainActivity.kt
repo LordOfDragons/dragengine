@@ -1,6 +1,7 @@
 package ch.dragondreams.delauncher
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -10,8 +11,12 @@ import android.view.Menu
 import android.view.MenuItem
 import ch.dragondreams.delauncher.ui.main.SectionsPagerAdapter
 import ch.dragondreams.delauncher.databinding.ActivityMainBinding
+import ch.dragondreams.delauncher.launcher.DragengineLauncher
+import kotlin.time.TimeSource
 
 class MainActivity : AppCompatActivity() {
+
+    private val TAG: String = "MainActivity"
 
     private lateinit var binding: ActivityMainBinding
 
@@ -26,5 +31,16 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
+
+        // testing
+        try {
+            Log.i(TAG, "onCreate: Test create launcher")
+            val timer = TimeSource.Monotonic.markNow()
+            val dl: DragengineLauncher = DragengineLauncher(this)
+            Log.i(TAG, "onCreate: Test create launcher finished in "
+                    + timer.elapsedNow().inWholeMilliseconds + "ms")
+        }catch (e: Exception) {
+            Log.e(TAG, "onCreate: Test create launcher", e)
+        }
     }
 }
