@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DELauncher</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_games">Games</string>
+    <string name="tab_profiles">Profiles</string>
+    <string name="tab_logs">Logs</string>
+</resources>
