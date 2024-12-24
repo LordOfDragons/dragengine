@@ -54,7 +54,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragInitEngine"
-            android:name="ch.dragondreams.delauncher.InitEngineFragment"
+            android:name="ch.dragondreams.delauncher.ui.main.FragmentInitEngine"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

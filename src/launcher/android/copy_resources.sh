@@ -27,5 +27,7 @@ du -sb app/src/main/assets/dragengine | cut -f1 >app/src/main/assets/dragengine-
 ( cd $TARGET_DIR && zip -r ../dragengine.zip * )
 rm -rf $TARGET_DIR
 
-# store information
-git rev-parse HEAD >app/src/main/assets/dragengine-commithash
+# store information.
+# version can be '1.24-commithash' or 'date' or something unique
+#git rev-parse HEAD >app/src/main/assets/dragengine-version
+date >app/src/main/assets/dragengine-version

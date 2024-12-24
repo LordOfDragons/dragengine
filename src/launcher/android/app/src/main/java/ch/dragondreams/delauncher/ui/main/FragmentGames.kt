@@ -1,4 +1,4 @@
-package ch.dragondreams.delauncher
+package ch.dragondreams.delauncher.ui.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.placeholder.PlaceholderContent
 
 /**

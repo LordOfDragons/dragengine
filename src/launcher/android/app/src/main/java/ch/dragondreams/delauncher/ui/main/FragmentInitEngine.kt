@@ -1,20 +1,20 @@
-package ch.dragondreams.delauncher
+package ch.dragondreams.delauncher.ui.main
 
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import kotlin.math.roundToInt
 
-class InitEngineFragment : Fragment() {
+class FragmentInitEngine : Fragment() {
     interface Interface {
         fun getLauncher(): DragengineLauncher
     }
@@ -44,12 +44,12 @@ class InitEngineFragment : Fragment() {
                     }
                     DragengineLauncher.State.EngineReady -> {
                         val t = parentFragmentManager.beginTransaction()
-                        t.hide(this@InitEngineFragment)
+                        t.hide(this@FragmentInitEngine)
                         t.commit()
                     }
                     else -> {}
                 }
-                handler.postDelayed(this, 250)
+                handler.postDelayed(this, 150)
             }
         })
     }

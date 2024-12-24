@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.zip.ZipInputStream
 import kotlin.concurrent.Volatile
@@ -60,7 +61,7 @@ class DragengineLauncher(context: Context) {
     private val tag: String = "DragengineLauncher"
 
     val pathEngine: File = File(context.filesDir, "dragengine")
-    var commitHash = ""
+    var version = ""
         private set
 
     /**
@@ -124,18 +125,17 @@ class DragengineLauncher(context: Context) {
         Log.i(tag, "verifyEngineInstallation")
         setState(State.VerifyEngineInstallation)
 
-        var h = context.assets.open("dragengine-commithash").use {
-                s -> s.readBytes().decodeToString()
-        }
-        if (h[h.length - 1] == '\n') {
-            h = h.substring(0, h.length - 1)
-        }
-        commitHash = h
-        Log.i(tag, "verifyEngineInstallation: commithash $commitHash")
+        val versionInstalled = getEngineVersionInstalled(context)
+        val versionInstall = getEngineVersionInstall(context)
+        Log.i(tag, "verifyEngineInstallation: version '$versionInstall' installed '$versionInstalled'")
 
-        // TODO
+        if (versionInstall == versionInstalled) {
+            loadLibraries()
 
-        installEngine(context)
+        } else {
+            installEngine(context)
+            updateEngineVersionInstalled(context, versionInstall)
+        }
     }
 
     private fun installEngine(context: Context) {
@@ -158,6 +158,51 @@ class DragengineLauncher(context: Context) {
         loadLibraries()
     }
 
+    private fun getEngineVersionInstall(context: Context): String {
+        var v = context.assets.open("dragengine-version").use {
+            s -> s.readBytes().decodeToString()
+        }
+        if (v[v.length - 1] == '\n') {
+            v = v.substring(0, v.length - 1)
+        }
+        return v
+    }
+
+    private fun getEngineVersionInstalled(context: Context): String {
+        val file = File(context.filesDir, "dragengine-version")
+        if (!file.exists()) {
+            return ""
+        }
+
+        var v = FileInputStream(file).use { s ->
+            s.readBytes().decodeToString()
+        }
+        if (v[v.length - 1] == '\n') {
+            v = v.substring(0, v.length - 1)
+        }
+        return v
+    }
+
+    private fun updateEngineVersionInstalled(context: Context, version: String) {
+        val file = File(context.filesDir, "dragengine-version")
+        FileOutputStream(file).use { fos ->
+            fos.write(version.encodeToByteArray())
+            fos.flush()
+        }
+
+        this.version = version
+    }
+
+    private fun getEngineArchiveSize(context: Context): Long {
+        var t = context.assets.open("dragengine-filesize").use {
+                s -> s.readBytes().decodeToString()
+        }
+        if (t[t.length - 1] == '\n') {
+            t = t.substring(0, t.length - 1)
+        }
+        return t.toLong()
+    }
+
     private fun deleteDirectory(directory: File) {
         if (directory.exists() && directory.isDirectory) {
             directory.listFiles()?.forEach { file ->
@@ -176,14 +221,7 @@ class DragengineLauncher(context: Context) {
             targetPath.mkdir()
         }
 
-        // get file size
-        var t = context.assets.open("dragengine-filesize").use {
-                s -> s.readBytes().decodeToString()
-        }
-        if (t[t.length - 1] == '\n') {
-            t = t.substring(0, t.length - 1)
-        }
-        val archiveSize = t.toLong()
+        val archiveSize = getEngineArchiveSize(context)
 
         // extract files
         val timer = TimeSource.Monotonic.markNow()

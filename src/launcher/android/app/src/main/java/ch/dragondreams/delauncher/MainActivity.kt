@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import ch.dragondreams.delauncher.ui.main.SectionsPagerAdapter
 import ch.dragondreams.delauncher.databinding.ActivityMainBinding
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
-import kotlin.math.roundToInt
+import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
 
-class MainActivity : AppCompatActivity(), InitEngineFragment.Interface {
+class MainActivity : AppCompatActivity(), FragmentInitEngine.Interface {
     class TestListener : DragengineLauncher.DefaultListener() {
         private val tag: String = "MainActivity.TestListener"
 

@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import ch.dragondreams.delauncher.FragmentGames
 import ch.dragondreams.delauncher.R
-import kotlinx.coroutines.selects.select
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_games,
