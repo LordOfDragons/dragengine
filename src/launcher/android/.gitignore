@@ -16,3 +16,5 @@ local.properties
 app/src/main/jniLibs/*/libdelauncher.so
 app/src/main/jniLibs/*/libdragengine.so
 app/src/main/assets/dragengine.zip
+app/src/main/assets/dragengine-commithash
+app/src/main/assets/dragengine-filesize

@@ -21,6 +21,11 @@ rm -rf $TARGET_DIR/share/deigde
 rm -rf $TARGET_DIR/share/katepart5
 rm -rf $TARGET_DIR/share/mime
 
+du -sb app/src/main/assets/dragengine | cut -f1 >app/src/main/assets/dragengine-filesize
+
 # zip asset
 ( cd $TARGET_DIR && zip -r ../dragengine.zip * )
 rm -rf $TARGET_DIR
+
+# store information
+git rev-parse HEAD >app/src/main/assets/dragengine-commithash

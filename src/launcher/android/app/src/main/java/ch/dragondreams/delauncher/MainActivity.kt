@@ -12,16 +12,33 @@ import android.view.MenuItem
 import ch.dragondreams.delauncher.ui.main.SectionsPagerAdapter
 import ch.dragondreams.delauncher.databinding.ActivityMainBinding
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlin.math.floor
+import kotlin.math.roundToInt
 import kotlin.time.TimeSource
 
 class MainActivity : AppCompatActivity() {
+    class TestListener : DragengineLauncher.DefaultListener() {
+        private val TAG: String = "MainActivity.TestListener"
+
+        override fun stateChanged(launcher: DragengineLauncher) {
+            Log.i(TAG, "stateChanged: " + launcher.state)
+        }
+    }
 
     private val TAG: String = "MainActivity"
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var launcher: DragengineLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        launcher = DragengineLauncher(this)
+        launcher.addListener(TestListener())
+        GlobalScope.launch{ testCheckProgress() }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -31,16 +48,20 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
+    }
 
-        // testing
-        try {
-            Log.i(TAG, "onCreate: Test create launcher")
-            val timer = TimeSource.Monotonic.markNow()
-            val dl: DragengineLauncher = DragengineLauncher(this)
-            Log.i(TAG, "onCreate: Test create launcher finished in "
-                    + timer.elapsedNow().inWholeMilliseconds + "ms")
-        }catch (e: Exception) {
-            Log.e(TAG, "onCreate: Test create launcher", e)
+    private fun testCheckProgress() {
+        while (true) {
+            when(launcher.state) {
+                DragengineLauncher.State.InstallEngine -> {
+                    Log.i(TAG, "testCheckProgress: " + (launcher.progressInstallEngine * 100.0).roundToInt() + "%")
+                }
+                DragengineLauncher.State.InstallEngineFailed -> return
+                DragengineLauncher.State.LoadLibrariesFailed -> return
+                DragengineLauncher.State.EngineReady -> return
+                else -> {}
+            }
+            Thread.sleep(250)
         }
     }
 }
