@@ -45,6 +45,7 @@
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLoggerChain.h>
 #include <dragengine/logger/deLoggerConsole.h>
+#include <dragengine/logger/deLoggerConsoleColor.h>
 #include <dragengine/logger/deLoggerFile.h>
 
 #ifdef OS_W32
