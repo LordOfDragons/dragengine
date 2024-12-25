@@ -1072,10 +1072,10 @@ void deoglRTContext::pInitDisplay(){
 	// set buffer geometry
 	EGLint format;
 	eglGetConfigAttrib( pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format );
-	ANativeWindow_setBuffersGeometry( &pOSAndroid->GetNativeWindow(), 0, 0, format );
+	ANativeWindow_setBuffersGeometry( pOSAndroid->GetNativeWindow(), 0, 0, format );
 	
 	// create surface
-	pSurface = eglCreateWindowSurface( pDisplay, pConfig, &pOSAndroid->GetNativeWindow(), NULL );
+	pSurface = eglCreateWindowSurface( pDisplay, pConfig, pOSAndroid->GetNativeWindow(), NULL );
 	if( pSurface == EGL_NO_SURFACE ){
 		DETHROW( deeInvalidParam );
 	}

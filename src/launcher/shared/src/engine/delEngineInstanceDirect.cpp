@@ -99,7 +99,7 @@
 
 
 // Class delEngineInstanceDirect::Factory
-/////////////////////////////////////////////
+///////////////////////////////////////////
 
 delEngineInstanceDirect::Factory::Factory( deLogger *engineLogger ) :
 pEngineLogger( engineLogger ),
@@ -117,18 +117,27 @@ void delEngineInstanceDirect::Factory::SetUseConsole( bool useConsole ){
 	pUseConsole = useConsole;
 }
 
+#ifdef OS_ANDROID
+void delEngineInstanceDirect::Factory::SetConfig(const deOSAndroid::sConfig &config){
+	pConfig = config;
+}
+#endif
+
 delEngineInstance *delEngineInstanceDirect::Factory::CreateEngineInstance(
-delLauncher &launcher, const char *logfile ){
-	delEngineInstanceDirect * const instance = new delEngineInstanceDirect( launcher, logfile );
-	instance->SetEngineLogger( pEngineLogger );
-	instance->SetUseConsole( pUseConsole );
+delLauncher &launcher, const char *logfile){
+	delEngineInstanceDirect * const instance = new delEngineInstanceDirect(launcher, logfile);
+	instance->SetEngineLogger(pEngineLogger);
+	instance->SetUseConsole(pUseConsole);
+#ifdef OS_ANDROID
+	instance->SetConfig(pConfig);
+#endif
 	return instance;
 }
 
 
 
 // Class delEngineInstanceDirect
-////////////////////////////////////
+//////////////////////////////////
 
 // Constructors and Destructors
 /////////////////////////////////
@@ -159,7 +168,11 @@ void delEngineInstanceDirect::SetEngineLogger( deLogger *logger ){
 	pEngineLogger = logger;
 }
 
-
+#ifdef OS_ANDROID
+void delEngineInstanceDirect::SetConfig(const deOSAndroid::sConfig &config){
+	pConfig = config;
+}
+#endif
 
 bool delEngineInstanceDirect::IsEngineRunning() const{
 	return pEngineRunning;
@@ -205,6 +218,9 @@ bool delEngineInstanceDirect::StartEngine(){
 			#ifdef OS_BEOS
 			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS BeOS" );
 			os = new deOSBeOS();
+			#elif defined OS_ANDROID
+				pLogger->LogInfo(GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Android");
+				os = new deOSAndroid(pConfig);
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
 				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Unix" );

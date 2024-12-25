@@ -61,7 +61,10 @@ class DragengineLauncher(context: Context) {
     private val tag: String = "DragengineLauncher"
 
     val pathEngine: File = File(context.filesDir, "dragengine")
-    var version = ""
+    val pathConfig: File = File(context.filesDir, "dragengine-config")
+    val pathCache: File = File(context.cacheDir, "dragengine")
+
+    var engineVersion = ""
         private set
 
     /**
@@ -190,7 +193,7 @@ class DragengineLauncher(context: Context) {
             fos.flush()
         }
 
-        this.version = version
+        this.engineVersion = version
     }
 
     private fun getEngineArchiveSize(context: Context): Long {

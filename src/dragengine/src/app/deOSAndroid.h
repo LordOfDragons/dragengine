@@ -30,6 +30,7 @@
 #ifdef OS_ANDROID
 
 #include "deOS.h"
+#include "../common/string/decString.h"
 
 struct ANativeActivity;
 struct AConfiguration;
@@ -42,12 +43,47 @@ struct ANativeWindow;
  * \brief Android operating system.
  */
 class deOSAndroid : public deOS{
+public:
+	/**
+	 * \brief Application configuration.
+	 */
+	struct sConfig{
+		ANativeActivity *activity = nullptr;
+		AConfiguration *config = nullptr;
+		ALooper *looper = nullptr;
+		AInputQueue *inputQueue = nullptr;
+		ANativeWindow *nativeWindow = nullptr;
+		
+		/**
+		 * \brief Path to game engine installation directory.
+		 * 
+		 * Typically this is File(context.filesDir, "dragengine").absolutePath .
+		 */
+		decString pathEngine;
+		
+		/**
+		 * \brief Path to user configuration directory.
+		 * 
+		 * This directory includes engine configuration, game configurations and log files.
+		 * 
+		 * Typically this is File(context.filesDir, "dragengine-config").absolutePath
+		 * or File(context.getExternalFilesDir(null), "dragengine-config").absolutePath .
+		 */
+		decString pathConfig;
+		
+		/**
+		 * \brief Path to cache directory.
+		 * 
+		 * Typically this is File(context.cachedir, "dragengine").absolutePath
+		 * or File(context.externalCacheDir, "dragengine").absolutePath .
+		 */
+		decString pathCache;
+	};
+	
+	
+	
 private:
-	ANativeActivity &pActivity;
-	AConfiguration &pConfig;
-	ALooper &pLooper;
-	AInputQueue &pInputQueue;
-	ANativeWindow &pNativeWindow;
+	const sConfig pConfig;
 	
 	int pScreenWidth;
 	int pScreenHeight;
@@ -64,8 +100,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new android operating system object. */
-	deOSAndroid( ANativeActivity &activity, AConfiguration &config,
-	ALooper &looper, AInputQueue &inputQueue, ANativeWindow &nativeWindow );
+	deOSAndroid(const sConfig &config);
 	
 	/** \brief Clean up the android operating system object. */
 	virtual ~deOSAndroid();
@@ -181,19 +216,19 @@ public:
 	/** \name Android related */
 	/*@{*/
 	/** \brief Native activity. */
-	inline ANativeActivity &GetActivity() const{ return pActivity; }
+	inline ANativeActivity *GetActivity() const{ return pConfig.activity; }
 	
 	/** \brief Configuration. */
-	inline AConfiguration &GetConfig() const{ return pConfig; }
+	inline AConfiguration *GetConfig() const{ return pConfig.config; }
 	
 	/** \brief Looper. */
-	inline ALooper &GetLooper() const{ return pLooper; }
+	inline ALooper *GetLooper() const{ return pConfig.looper; }
 	
 	/** \brief Input queue. */
-	inline AInputQueue &GetInputQueue() const{ return pInputQueue; }
+	inline AInputQueue *GetInputQueue() const{ return pConfig.inputQueue; }
 	
 	/** \brief Window. */
-	inline ANativeWindow &GetNativeWindow() const{ return pNativeWindow; }
+	inline ANativeWindow *GetNativeWindow() const{ return pConfig.nativeWindow; }
 	
 	
 	

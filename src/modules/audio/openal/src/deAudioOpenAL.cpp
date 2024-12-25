@@ -180,7 +180,7 @@ bool deAudioOpenAL::Init( deMicrophone *activeMic ){
 	try{
 		// on android set VM for the contrib android library
 		#ifdef OS_ANDROID
-		android_openal_setjavavm( GetGameEngine()->GetOS()->CastToOSAndroid()->GetActivity().vm );
+		android_openal_setjavavm( GetGameEngine()->GetOS()->CastToOSAndroid()->GetActivity()->vm );
 		#endif
 		
 		deoalLSConfiguration( *this, *pConfiguration ).LoadConfig();

@@ -52,27 +52,30 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deOSAndroid::deOSAndroid( ANativeActivity &activity, AConfiguration &config,
-ALooper &looper, AInputQueue &inputQueue, ANativeWindow &nativeWindow ) :
-pActivity( activity ),
-pConfig( config ),
-pLooper( looper ),
-pInputQueue( inputQueue ),
-pNativeWindow( nativeWindow ),
-
-pScreenWidth( 800 ),
-pScreenHeight( 600 ),
-pScreenRefreshRate( 30 ),
-pCurWindow( NULL ),
-pHostingMainWindow( NULL ),
-pHostingRenderWindow( NULL ),
-pAppHasFocus( false ),
-pAppFrozen( false )
+deOSAndroid::deOSAndroid(const sConfig &config) :
+pConfig(config),
+pScreenWidth(800),
+pScreenHeight(600),
+pScreenRefreshRate(30),
+pCurWindow(nullptr),
+pHostingMainWindow(nullptr),
+pHostingRenderWindow(nullptr),
+pAppHasFocus(false),
+pAppFrozen(false)
 {
+	DEASSERT_NOTNULL(config.activity)
+	DEASSERT_NOTNULL(config.config)
+	DEASSERT_NOTNULL(config.inputQueue)
+	DEASSERT_NOTNULL(config.looper)
+	DEASSERT_NOTNULL(config.nativeWindow)
+	DEASSERT_FALSE(config.pathCache.IsEmpty())
+	DEASSERT_FALSE(config.pathConfig.IsEmpty())
+	DEASSERT_FALSE(config.pathEngine.IsEmpty())
+	
 	try{
 		pGetOSParameters();
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -88,72 +91,53 @@ deOSAndroid::~deOSAndroid(){
 ///////////////
 
 decString deOSAndroid::GetPathEngine(){
-	//return decString( DE_ENGINE_PATH );
+	//return decString(DE_ENGINE_PATH);
 	decString path;
-	path.Format( "%s/%s/lib/dragengine", pActivity.internalDataPath, ANDROID_JNIDIR );
+	path.Format("%s/lib/dragengine", pConfig.pathEngine.GetString());
 	return path;
 }
 
 decString deOSAndroid::GetPathShare(){
-	//return decString( DE_SHARE_PATH );
+	//return decString(DE_SHARE_PATH);
 	decString path;
-	path.Format( "%s/%s/share/dragengine", pActivity.internalDataPath, ANDROID_JNIDIR );
+	path.Format("%s/share/dragengine", pConfig.pathEngine.GetString());
 	return path;
 }
 
 decString deOSAndroid::GetPathSystemConfig(){
-	//return decString( DE_CONFIG_PATH );
+	//return decString(DE_CONFIG_PATH);
 	decString path;
-	path.Format( "%s/%s/etc/dragengine", pActivity.internalDataPath, ANDROID_JNIDIR );
+	path.Format("%s/etc/dragengine", pConfig.pathEngine.GetString());
 	return path;
 }
 
 decString deOSAndroid::GetPathUserConfig(){
-	decString path;
-	//path.Format( "%s/user/config/dragengine", pActivity.internalDataPath );
-	path.Format( "%s/config", pActivity.externalDataPath );
-	return path;
+	return pConfig.pathConfig;
 }
 
 decString deOSAndroid::GetPathUserCache(){
-	decString path;
-	//path.Format( "%s/user/dragengine/cache", pActivity.internalDataPath );
-	
-	// temporary to check out files. later on it has to go into the application
-	// cache path but this one needs JNI to be found which is stupid. it is
-	// the directory 'cache' right next to 'files'. internalDataPath points
-	// though right into 'files' so 'cache' would be '../cache'
-	path.Format( "%s/cache", pActivity.externalDataPath );
-	
-	return path;
+	return pConfig.pathCache;
 }
 
 decString deOSAndroid::GetPathUserCapture(){
 	decString path;
-	//path.Format( "%s/user/dragengine/cache", pActivity.internalDataPath );
-	
-	// temporary to check out files. later on it has to go into the application
-	// cache path but this one needs JNI to be found which is stupid. it is
-	// the directory 'cache' right next to 'files'. internalDataPath points
-	// though right into 'files' so 'cache' would be '../cache'
-	path.Format( "%s/capture", pActivity.externalDataPath );
-	
+	path.Format("%s/capture", pConfig.pathCache.GetString());
 	return path;
 }
 
-void deOSAndroid::ProcessEventLoop( bool sendToInputModule ){
+void deOSAndroid::ProcessEventLoop(bool sendToInputModule){
 	// not supported yet
-	pScreenWidth = ANativeWindow_getWidth( &pNativeWindow );
-	pScreenHeight = ANativeWindow_getHeight( &pNativeWindow );
+	pScreenWidth = ANativeWindow_getWidth(pConfig.nativeWindow);
+	pScreenHeight = ANativeWindow_getHeight(pConfig.nativeWindow);
 }
 
 decString deOSAndroid::GetUserLocaleLanguage(){
-	const char * const l = setlocale( LC_ALL, nullptr );
-	if( l ){
-		const decString ls( l );
-		const int deli = ls.Find( '_' );
-		if( deli != -1 ){
-			return ls.GetLeft( deli ).GetLower();
+	const char * const l = setlocale(LC_ALL, nullptr);
+	if(l){
+		const decString ls(l);
+		const int deli = ls.Find('_');
+		if(deli != -1){
+			return ls.GetLeft(deli).GetLower();
 			
 		}else{
 			return ls.GetLower();
@@ -163,17 +147,17 @@ decString deOSAndroid::GetUserLocaleLanguage(){
 }
 
 decString deOSAndroid::GetUserLocaleTerritory(){
-	const char * const l = setlocale( LC_ALL, nullptr );
-	if( l ){
-		const decString ls( l );
-		const int deli = ls.Find( '_' );
-		if( deli != -1 ){
-			const int deli2 = ls.Find( '.', deli + 1 );
-			if( deli2 != -1 ){
-				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+	const char * const l = setlocale(LC_ALL, nullptr);
+	if(l){
+		const decString ls(l);
+		const int deli = ls.Find('_');
+		if(deli != -1){
+			const int deli2 = ls.Find('.', deli + 1);
+			if(deli2 != -1){
+				return ls.GetMiddle(deli + 1, deli2).GetLower();
 				
 			}else{
-				return ls.GetMiddle( deli + 1 ).GetLower();
+				return ls.GetMiddle(deli + 1).GetLower();
 			}
 			
 		}else{
@@ -192,33 +176,33 @@ int deOSAndroid::GetDisplayCount(){
 	return 1;
 }
 
-decPoint deOSAndroid::GetDisplayCurrentResolution( int display ){
-	DEASSERT_TRUE( display == 0 )
+decPoint deOSAndroid::GetDisplayCurrentResolution(int display){
+	DEASSERT_TRUE(display == 0)
 	
-	return decPoint( pScreenWidth, pScreenHeight );
+	return decPoint(pScreenWidth, pScreenHeight);
 }
 
-int deOSAndroid::GetDisplayCurrentRefreshRate( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSAndroid::GetDisplayCurrentRefreshRate(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return pScreenRefreshRate;
 }
 
-int deOSAndroid::GetDisplayResolutionCount( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSAndroid::GetDisplayResolutionCount(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return 1;
 }
 
-decPoint deOSAndroid::GetDisplayResolution( int display, int resolution ){
-	DEASSERT_TRUE( display == 0 )
-	DEASSERT_TRUE( resolution == 0 )
+decPoint deOSAndroid::GetDisplayResolution(int display, int resolution){
+	DEASSERT_TRUE(display == 0)
+	DEASSERT_TRUE(resolution == 0)
 	
-	return decPoint( pScreenWidth, pScreenHeight );
+	return decPoint(pScreenWidth, pScreenHeight);
 }
 
-int deOSAndroid::GetDisplayCurrentScaleFactor( int display ){
-	DEASSERT_TRUE( display == 0 )
+int deOSAndroid::GetDisplayCurrentScaleFactor(int display){
+	DEASSERT_TRUE(display == 0)
 	
 	return 100;
 }
@@ -237,33 +221,33 @@ deOSAndroid *deOSAndroid::CastToOSAndroid(){
 // Android related
 ////////////////////
 
-void deOSAndroid::SetWindow( void *wnd ){
+void deOSAndroid::SetWindow(void *wnd){
 	pCurWindow = wnd;
 }
 
-void deOSAndroid::SetHostingMainWindow( void *window ){
+void deOSAndroid::SetHostingMainWindow(void *window){
 	pHostingMainWindow = window;
 }
 
-void deOSAndroid::SetHostingRenderWindow( void *window ){
+void deOSAndroid::SetHostingRenderWindow(void *window){
 	pHostingRenderWindow = window;
 }
 
 bool deOSAndroid::HasHostingMainWindow() const{
-	return pHostingMainWindow != NULL;
+	return pHostingMainWindow != nullptr;
 }
 
 bool deOSAndroid::HasHostingRenderWindow() const{
-	return pHostingRenderWindow != NULL;
+	return pHostingRenderWindow != nullptr;
 }
 
 
 
-void deOSAndroid::SetAppHasFocus( bool appHasFocus ){
+void deOSAndroid::SetAppHasFocus(bool appHasFocus){
 	pAppHasFocus = appHasFocus;
 }
 
-void deOSAndroid::SetAppFrozen( bool frozen ){
+void deOSAndroid::SetAppFrozen(bool frozen){
 	pAppFrozen = frozen;
 }
 
@@ -282,8 +266,8 @@ void deOSAndroid::pGetOSParameters(){
 	// not matching. could be used to increase performance by rendering to a smaller window buffer with automatic
 	// upscaling
 	// format = { WINDOW_FORMAT_RGBA_8888 = 1, WINDOW_FORMAT_RGBX_8888 = 2, WINDOW_FORMAT_RGB_565 = 4 }
-	pScreenWidth = ANativeWindow_getWidth( &pNativeWindow );
-	pScreenHeight = ANativeWindow_getHeight( &pNativeWindow );
+	pScreenWidth = ANativeWindow_getWidth(pConfig.nativeWindow);
+	pScreenHeight = ANativeWindow_getHeight(pConfig.nativeWindow);
 	
 	// update window flags in case the engine ran in the mean time altering them.
 	// first parameter adds flags while second one removes flags
@@ -299,38 +283,39 @@ void deOSAndroid::pGetOSParameters(){
 	// 
 	// AWINDOW_FLAG_FULLSCREEN
 	//   hide status bars and alike
-	ANativeActivity_setWindowFlags( &pActivity, AWINDOW_FLAG_KEEP_SCREEN_ON | AWINDOW_FLAG_FULLSCREEN, 0);
+	ANativeActivity_setWindowFlags(pConfig.activity,
+		AWINDOW_FLAG_KEEP_SCREEN_ON | AWINDOW_FLAG_FULLSCREEN, 0);
 	
 	// get refresh rate. requires JNI to get the desired value. can be fetched once and stored
 	// we assume jni env is already attached by the caller. doing so again here is a no-op but
 	// we still get the current thread jni pointer. we do not detach since this is the job
 	// of the caller
-	JNIEnv *env = NULL;
-	pActivity.vm->AttachCurrentThread( &env, 0 );
+	JNIEnv *env = nullptr;
+	pConfig.activity->vm->AttachCurrentThread(&env, 0);
 	
 	// WindowManager windowManager = (WindowManager)pActivity.getSystemService(Context.WINDOW_SERVICE);
-	jclass clsContext = env->FindClass( "android/content/Context" );
-	jfieldID fldWindowService = env->GetStaticFieldID( clsContext, "WINDOW_SERVICE", "Ljava/lang/String;");
-	jobject objWindowService = env->GetStaticObjectField( clsContext, fldWindowService );
+	jclass clsContext = env->FindClass("android/content/Context");
+	jfieldID fldWindowService = env->GetStaticFieldID(clsContext, "WINDOW_SERVICE", "Ljava/lang/String;");
+	jobject objWindowService = env->GetStaticObjectField(clsContext, fldWindowService);
 	
-	jobject objActivity = pActivity.clazz;
-	jclass clsActivity = env->GetObjectClass( objActivity );
-	jmethodID metGetSystemService = env->GetMethodID( clsActivity, "getSystemService",
-		"(Ljava/lang/String;)Ljava/lang/Object;" );
-	jobject objWindowManager = env->CallObjectMethod( objActivity, metGetSystemService, objWindowService );
+	jobject objActivity = pConfig.activity->clazz;
+	jclass clsActivity = env->GetObjectClass(objActivity);
+	jmethodID metGetSystemService = env->GetMethodID(clsActivity, "getSystemService",
+		"(Ljava/lang/String;)Ljava/lang/Object;");
+	jobject objWindowManager = env->CallObjectMethod(objActivity, metGetSystemService, objWindowService);
 	
-	jclass clsWindowManager = env->GetObjectClass( objWindowManager );
-	jmethodID metGetDefaultDisplay = env->GetMethodID( clsWindowManager,
-		"getDefaultDisplay", "()Landroid/view/Display;" );
-	jobject objDisplay = env->CallObjectMethod( objWindowManager, metGetDefaultDisplay );
+	jclass clsWindowManager = env->GetObjectClass(objWindowManager);
+	jmethodID metGetDefaultDisplay = env->GetMethodID(clsWindowManager,
+		"getDefaultDisplay", "()Landroid/view/Display;");
+	jobject objDisplay = env->CallObjectMethod(objWindowManager, metGetDefaultDisplay);
 	
 	// float refreshRating = display.getRefreshRate(); // in hertz
-	jclass clsDisplay = env->GetObjectClass( objDisplay );
-	jmethodID metGetRefreshRate = env->GetMethodID( clsDisplay, "getRefreshRate", "()F" );
-	pScreenRefreshRate = ( int )( env->CallFloatMethod( objDisplay, metGetRefreshRate ) + 0.1f );
+	jclass clsDisplay = env->GetObjectClass(objDisplay);
+	jmethodID metGetRefreshRate = env->GetMethodID(clsDisplay, "getRefreshRate", "()F");
+	pScreenRefreshRate = (int)(env->CallFloatMethod(objDisplay, metGetRefreshRate) + 0.1f);
 	
 	// init locale
-	setlocale( LC_ALL, "" );
+	setlocale(LC_ALL, "");
 }
 
 #endif

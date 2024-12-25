@@ -29,6 +29,10 @@
 
 #include <dragengine/logger/deLogger.h>
 
+#ifdef OS_ANDROID
+#include <dragengine/app/deOSAndroid.h>
+#endif
+
 class deEngine;
 
 
@@ -43,6 +47,9 @@ public:
 	private:
 		deLogger::Ref pEngineLogger;
 		bool pUseConsole;
+#ifdef OS_ANDROID
+		deOSAndroid::sConfig pConfig;
+#endif
 		
 	public:
 		/** \brief Type holding strong reference. */
@@ -70,6 +77,14 @@ public:
 		
 		/** \brief Create engine instance. */
 		virtual delEngineInstance *CreateEngineInstance( delLauncher &launcher, const char *logFile );
+		
+#ifdef OS_ANDROID
+		/** \brief Configuration to use for creating OS instance. */
+		inline const deOSAndroid::sConfig &GetConfig() const{ return pConfig; }
+		
+		/** \brief Set configuration to use for creating OS instance. */
+		void SetConfig(const deOSAndroid::sConfig &config);
+#endif
 	};
 	
 	
@@ -80,6 +95,9 @@ private:
 	bool pGameRunning;
 	deLogger::Ref pLogger;
 	deLogger::Ref pEngineLogger;
+#ifdef OS_ANDROID
+	deOSAndroid::sConfig pConfig;
+#endif
 	
 	
 	
@@ -113,6 +131,14 @@ public:
 	
 	/** \brief Set logger to use for new engine or nullptr to use engine instance logger. */
 	void SetEngineLogger( deLogger *logger );
+		
+#ifdef OS_ANDROID
+	/** \brief Configuration to use for creating OS instance. */
+	inline const deOSAndroid::sConfig &GetConfig() const{ return pConfig; }
+	
+	/** \brief Set configuration to use for creating OS instance. */
+	void SetConfig(const deOSAndroid::sConfig &config);
+#endif
 	
 	
 	

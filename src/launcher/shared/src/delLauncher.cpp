@@ -28,7 +28,13 @@
 #include <string.h>
 
 #include "delLauncher.h"
+
+#ifdef OS_ANDROID
+#include "engine/delEngineInstanceDirect.h"
+#else
 #include "engine/delEngineInstanceThreaded.h"
+#endif
+
 #include "game/delGame.h"
 #include "game/icon/delGameIcon.h"
 #include "game/profile/delGameProfile.h"
@@ -56,7 +62,11 @@ pLogSource( loggerSource ),
 pEngine( *this, engineLogFileTitle ),
 pGameManager( *this ),
 pPatchManager( *this ),
+#ifdef OS_ANDROID
+pEngineInstanceFactory(delEngineInstance::Factory::Ref::New(new delEngineInstanceDirect::Factory))
+#else
 pEngineInstanceFactory( delEngineInstance::Factory::Ref::New( new delEngineInstanceThreaded::Factory ) )
+#endif
 {
 	try{
 		pLogger.TakeOver( new deLoggerChain );
