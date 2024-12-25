@@ -22,6 +22,13 @@
  * SOFTWARE.
  */
 
+#ifndef _ANDROIDFIX_H_
+#define _ANDROIDFIX_H_
+
+#include <dragengine/dragengine_configuration.h>
+
+#ifdef OS_ANDROID
+
 // Bridges between android EGL and GL. In android EGL not all extension data
 // is provided as is the case in GL since most things are core. This is
 // something that has to be fixed some time later. for the time being though
@@ -597,3 +604,6 @@ typedef void (EGLAPIENTRYP PFNGLPROGRAMUNIFORMHANDLEUI64VARBPROC) (GLuint progra
 typedef void (EGLAPIENTRYP PFNGLVERTEXATTRIBL1UI64ARBPROC) (GLuint index, GLuint64EXT x);
 typedef void (EGLAPIENTRYP PFNGLVERTEXATTRIBL1UI64VARBPROC) (GLuint index, const GLuint64EXT *v);
 typedef void (EGLAPIENTRYP PFNGLGETVERTEXATTRIBLUI64VARBPROC) (GLuint index, GLenum pname, GLuint64EXT *params);
+
+#endif // OS_ANDROID
+#endif // _ANDROIDFIX_H_

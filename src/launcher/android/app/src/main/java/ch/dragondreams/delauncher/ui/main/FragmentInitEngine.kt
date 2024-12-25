@@ -46,6 +46,9 @@ class FragmentInitEngine : Fragment() {
                     DragengineLauncher.State.LoadLibrariesFailed -> {
                         labProgress?.text = "ERROR Load"
                     }
+                    DragengineLauncher.State.CreateGlueLauncherFailed -> {
+                        labProgress?.text = "ERROR Glue"
+                    }
                     DragengineLauncher.State.EngineReady -> {
                         val t = parentFragmentManager.beginTransaction()
                         t.hide(this@FragmentInitEngine)

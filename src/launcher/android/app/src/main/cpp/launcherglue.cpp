@@ -4,18 +4,6 @@
 
 #include <delauncher/delLauncher.h>
 
-struct GlueLauncherConfig {
-    jstring loggerSource;
-    jstring engineLogFileTitle;
-    jstring pathLauncher;
-    jstring pathLauncherGames;
-    jstring pathLauncherConfig;
-    jstring pathEngine;
-    jstring pathEngineConfig;
-    jstring pathEngineCache;
-    jobject surface;
-};
-
 static void jstringToDEString(JNIEnv *env, const jstring in, decString &out){
     const char * const ns = env->GetStringUTFChars(in, 0);
     out = ns;
@@ -37,10 +25,12 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved){
     return JNI_VERSION_1_4;
 }
 
+//#include <android/log.h>
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_ch_dragondreams_delauncher_launcher_DragengineLauncher_00024GlueLauncher_createLauncher(
         JNIEnv *env, jobject thiz, jobject config) {
+    //__android_log_print(ANDROID_LOG_ERROR, "GlueLauncher", "Checkpoint %d", __LINE__);
     jclass clsConfig = env->GetObjectClass(config);
 
     delLauncher::sConfig delConfig{};
@@ -60,11 +50,25 @@ Java_ch_dragondreams_delauncher_launcher_DragengineLauncher_00024GlueLauncher_cr
     {
         jfieldID fid = env->GetFieldID(clsConfig, "surface", "Landroid/view/SurfaceView;");
         auto js = reinterpret_cast<jobject>(env->GetObjectField(config, fid));
-        delConfig.osConfig.nativeWindow = ANativeWindow_fromSurface(env, js);
+        if(js) {
+            delConfig.osConfig.nativeWindow = ANativeWindow_fromSurface(env, js);
+        }
         //ANativeWindow_release();
     }
 
-    return (jlong)(intptr_t)new delLauncher(delConfig);
+    env->DeleteLocalRef(clsConfig);
+
+    delLauncher *launcher = nullptr;
+    try {
+        launcher = new delLauncher(delConfig);
+        launcher->AddFileLogger("delauncher");
+        launcher->Prepare();
+        return (jlong)(intptr_t)launcher;
+
+    } catch(...) {
+        delete launcher;
+        throw;
+    }
 }
 
 extern "C"

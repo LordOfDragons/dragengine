@@ -1043,6 +1043,8 @@ void deoglRTContext::pInitDisplay(){
 		return;
 	}
 	
+	DEASSERT_NULL(pOSAndroid->GetNativeWindow())
+	
 	// initialize display
 	if( pDisplay == EGL_NO_DISPLAY ){
 		pRenderThread.GetLogger().LogInfo( "Init display" );

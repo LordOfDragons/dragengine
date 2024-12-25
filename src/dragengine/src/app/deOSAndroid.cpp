@@ -63,7 +63,6 @@ pAppHasFocus(false),
 pAppFrozen(false)
 {
 	DEASSERT_NOTNULL(config.javavm)
-	DEASSERT_NOTNULL(config.nativeWindow)
 	DEASSERT_FALSE(config.pathCache.IsEmpty())
 	DEASSERT_FALSE(config.pathConfig.IsEmpty())
 	DEASSERT_FALSE(config.pathEngine.IsEmpty())
@@ -123,8 +122,12 @@ decString deOSAndroid::GetPathUserCapture(){
 
 void deOSAndroid::ProcessEventLoop(bool sendToInputModule){
 	// not supported yet
-	pScreenWidth = ANativeWindow_getWidth(pConfig.nativeWindow);
-	pScreenHeight = ANativeWindow_getHeight(pConfig.nativeWindow);
+	/*
+	if(pConfig.nativeWindow){
+		pScreenWidth = ANativeWindow_getWidth(pConfig.nativeWindow);
+		pScreenHeight = ANativeWindow_getHeight(pConfig.nativeWindow);
+	}
+	*/
 }
 
 decString deOSAndroid::GetUserLocaleLanguage(){
@@ -262,8 +265,12 @@ void deOSAndroid::pGetOSParameters(){
 	// not matching. could be used to increase performance by rendering to a smaller window buffer with automatic
 	// upscaling
 	// format = { WINDOW_FORMAT_RGBA_8888 = 1, WINDOW_FORMAT_RGBX_8888 = 2, WINDOW_FORMAT_RGB_565 = 4 }
-	pScreenWidth = ANativeWindow_getWidth(pConfig.nativeWindow);
-	pScreenHeight = ANativeWindow_getHeight(pConfig.nativeWindow);
+	/*
+	if(pConfig.nativeWindow){
+		pScreenWidth = ANativeWindow_getWidth(pConfig.nativeWindow);
+		pScreenHeight = ANativeWindow_getHeight(pConfig.nativeWindow);
+	}
+	*/
 	
 	// update window flags in case the engine ran in the mean time altering them.
 	// first parameter adds flags while second one removes flags
@@ -320,6 +327,23 @@ void deOSAndroid::pGetOSParameters(){
 	jclass clsDisplay = env->GetObjectClass(objDisplay);
 	jmethodID metGetRefreshRate = env->GetMethodID(clsDisplay, "getRefreshRate", "()F");
 	pScreenRefreshRate = (int)(env->CallFloatMethod(objDisplay, metGetRefreshRate) + 0.1f);
+	
+	// display resolution
+	jclass clsPoint = env->FindClass("android/graphics/Point");
+	
+	jmethodID metPointConstr = env->GetMethodID(clsPoint, "<init>", "()V");
+	jobject objPoint = env->NewObject(clsPoint, metPointConstr);
+	
+	jmethodID metGetSize = env->GetMethodID(clsDisplay, "getSize", "(Landroid/graphics/Point;)V");
+	env->CallVoidMethod(objDisplay, metGetSize, objPoint);
+	
+	pScreenWidth = env->GetIntField(objPoint, env->GetFieldID(clsPoint, "x", "I"));
+	pScreenHeight = env->GetIntField(objPoint, env->GetFieldID(clsPoint, "y", "I"));
+	
+	env->DeleteLocalRef(objPoint);
+	env->DeleteLocalRef(clsDisplay);
+	env->DeleteLocalRef(clsWindowManager);
+	env->DeleteLocalRef(clsContext);
 	}
 	
 	// init locale

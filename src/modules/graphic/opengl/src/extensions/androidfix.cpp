@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #ifdef OS_ANDROID
 
 #include <stdlib.h>
@@ -29,7 +31,7 @@
 
 #include <dragengine/common/exceptions.h>
 
-#include "deoglGL.h"
+#include "../deoglGL.h"
 
 
 

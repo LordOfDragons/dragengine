@@ -54,12 +54,22 @@ class DragengineLauncher(context: Context) {
         LoadLibrariesFailed,
 
         /**
+         * Create glue launcher instance.
+         */
+        CreateGlueLauncher,
+
+        /**
+         * Create glue launcher instance failed.
+         */
+        CreateGlueLauncherFailed,
+
+        /**
          * Game engine is installed and ready to be used.
          */
         EngineReady
     }
 
-    class GlueLauncher(owner: DragengineLauncher, view: SurfaceView) {
+    class GlueLauncher(owner: DragengineLauncher, view: SurfaceView?) {
         private var nativeLauncher: Long = 0L
 
         private data class GlueLauncherConfig(
@@ -71,7 +81,7 @@ class DragengineLauncher(context: Context) {
             val pathEngine: String,
             val pathEngineConfig: String,
             val pathEngineCache: String,
-            val surface: SurfaceView
+            val surface: SurfaceView?
         )
 
         private external fun createLauncher(config: GlueLauncherConfig): Long
@@ -88,7 +98,7 @@ class DragengineLauncher(context: Context) {
                     owner.pathEngine.absolutePath,
                     owner.pathEngineConfig.absolutePath,
                     owner.pathEngineCache.absolutePath,
-                    view))
+                    null))
         }
 
         fun dispose() {
@@ -101,14 +111,18 @@ class DragengineLauncher(context: Context) {
     private val tag = "DragengineLauncher"
 
     val pathEngine = File(context.filesDir, "dragengine")
-    val pathEngineConfig = File(context.filesDir, "dragengine-config")
+    //val pathEngineConfig = File(context.filesDir, "dragengine-config")
+    val pathEngineConfig = File(context.getExternalFilesDir(null)!!, "dragengine-config")
     val pathEngineCache = File(context.cacheDir, "dragengine")
     val pathLauncher = File(context.filesDir, "delauncher")
-    val pathLauncherConfig = File(context.filesDir, "delauncher-config")
+    //val pathLauncherConfig = File(context.filesDir, "delauncher-config")
+    val pathLauncherConfig = File(context.getExternalFilesDir(null)!!, "delauncher-config")
     val pathLauncherGames = File(context.filesDir, "delauncher-games")
 
     var engineVersion = ""
         private set
+
+    private var launcher: GlueLauncher? = null
 
     /**
      * State of launcher.
@@ -130,11 +144,14 @@ class DragengineLauncher(context: Context) {
     private val crscope = CoroutineScope(Dispatchers.IO)
 
     init {
-        crscope.launch { verifyEngineInstallation(context) }
+        crscope.launch {
+            verifyEngineInstallation(context)
+        }
     }
 
     fun dispose() {
-
+        launcher?.dispose()
+        launcher = null
     }
 
 
@@ -329,6 +346,22 @@ class DragengineLauncher(context: Context) {
         } catch (e: Exception) {
             Log.e(tag, "loadLibraries: Failed", e)
             setState(State.LoadLibrariesFailed)
+            return
+        }
+
+        createGlueLauncher()
+    }
+
+    private fun createGlueLauncher() {
+        Log.i(tag, "createGlueLauncher")
+        setState(State.CreateGlueLauncher)
+
+        try {
+            launcher = GlueLauncher(this, null)
+
+        } catch (e: Exception) {
+            Log.e(tag, "createGlueLauncher: Failed", e)
+            setState(State.CreateGlueLauncherFailed)
             return
         }
 

@@ -73,7 +73,6 @@ pPatchManager(*this)
 	DEASSERT_FALSE(config.pathLauncher.IsEmpty())
 	
 	DEASSERT_NOTNULL(config.osConfig.javavm)
-	DEASSERT_NOTNULL(config.osConfig.nativeWindow)
 	DEASSERT_FALSE(config.osConfig.pathCache.IsEmpty())
 	DEASSERT_FALSE(config.osConfig.pathConfig.IsEmpty())
 	DEASSERT_FALSE(config.osConfig.pathEngine.IsEmpty())
