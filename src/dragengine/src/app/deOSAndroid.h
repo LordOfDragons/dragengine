@@ -29,10 +29,11 @@
 
 #ifdef OS_ANDROID
 
+#include <jni.h>
+
 #include "deOS.h"
 #include "../common/string/decString.h"
 
-struct ANativeActivity;
 struct AConfiguration;
 struct ALooper;
 struct AInputQueue;
@@ -48,10 +49,8 @@ public:
 	 * \brief Application configuration.
 	 */
 	struct sConfig{
-		ANativeActivity *activity = nullptr;
-		AConfiguration *config = nullptr;
-		ALooper *looper = nullptr;
-		AInputQueue *inputQueue = nullptr;
+		JavaVM *javavm = nullptr;
+		
 		ANativeWindow *nativeWindow = nullptr;
 		
 		/**
@@ -215,17 +214,8 @@ public:
 	
 	/** \name Android related */
 	/*@{*/
-	/** \brief Native activity. */
-	inline ANativeActivity *GetActivity() const{ return pConfig.activity; }
-	
-	/** \brief Configuration. */
-	inline AConfiguration *GetConfig() const{ return pConfig.config; }
-	
-	/** \brief Looper. */
-	inline ALooper *GetLooper() const{ return pConfig.looper; }
-	
-	/** \brief Input queue. */
-	inline AInputQueue *GetInputQueue() const{ return pConfig.inputQueue; }
+	/** \brief Java VM. */
+	inline JavaVM *GetJavaVM() const{ return pConfig.javavm; }
 	
 	/** \brief Window. */
 	inline ANativeWindow *GetNativeWindow() const{ return pConfig.nativeWindow; }

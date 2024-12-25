@@ -2,6 +2,7 @@ package ch.dragondreams.delauncher.launcher
 
 import android.content.Context
 import android.util.Log
+import android.view.SurfaceView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,11 +59,53 @@ class DragengineLauncher(context: Context) {
         EngineReady
     }
 
-    private val tag: String = "DragengineLauncher"
+    class GlueLauncher(owner: DragengineLauncher, view: SurfaceView) {
+        private var nativeLauncher: Long = 0L
 
-    val pathEngine: File = File(context.filesDir, "dragengine")
-    val pathConfig: File = File(context.filesDir, "dragengine-config")
-    val pathCache: File = File(context.cacheDir, "dragengine")
+        private data class GlueLauncherConfig(
+            val loggerSource: String,
+            val engineLogFileTitle: String,
+            val pathLauncher: String,
+            val pathLauncherGames: String,
+            val pathLauncherConfig: String,
+            val pathEngine: String,
+            val pathEngineConfig: String,
+            val pathEngineCache: String,
+            val surface: SurfaceView
+        )
+
+        private external fun createLauncher(config: GlueLauncherConfig): Long
+        private external fun destroyLauncher(launcher: Long)
+
+        init {
+            nativeLauncher = createLauncher(
+                GlueLauncherConfig(
+                    "Launcher",
+                    "launcher-engine",
+                    owner.pathLauncher.absolutePath,
+                    owner.pathLauncherGames.absolutePath,
+                    owner.pathLauncherConfig.absolutePath,
+                    owner.pathEngine.absolutePath,
+                    owner.pathEngineConfig.absolutePath,
+                    owner.pathEngineCache.absolutePath,
+                    view))
+        }
+
+        fun dispose() {
+            if (nativeLauncher != 0L){
+                destroyLauncher(nativeLauncher)
+            }
+        }
+    }
+
+    private val tag = "DragengineLauncher"
+
+    val pathEngine = File(context.filesDir, "dragengine")
+    val pathEngineConfig = File(context.filesDir, "dragengine-config")
+    val pathEngineCache = File(context.cacheDir, "dragengine")
+    val pathLauncher = File(context.filesDir, "delauncher")
+    val pathLauncherConfig = File(context.filesDir, "delauncher-config")
+    val pathLauncherGames = File(context.filesDir, "delauncher-games")
 
     var engineVersion = ""
         private set
@@ -88,6 +131,10 @@ class DragengineLauncher(context: Context) {
 
     init {
         crscope.launch { verifyEngineInstallation(context) }
+    }
+
+    fun dispose() {
+
     }
 
 

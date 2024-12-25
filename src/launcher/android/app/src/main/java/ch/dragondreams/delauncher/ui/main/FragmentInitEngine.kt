@@ -30,6 +30,10 @@ class FragmentInitEngine : Fragment() {
 
         handler.post(object: Runnable {
             override fun run() {
+                if (!isAdded) {
+                    return
+                }
+
                 when(launcher?.state ?: DragengineLauncher.State.EngineReady) {
                     DragengineLauncher.State.InstallEngine -> {
                         val progress = ((launcher?.progressInstallEngine ?: 0.0) * 100.0).roundToInt()

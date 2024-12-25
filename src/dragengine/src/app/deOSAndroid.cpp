@@ -34,15 +34,14 @@
 #include <locale.h>
 #include <sys/time.h>
 
-#include <android/configuration.h>
-#include <android/looper.h>
-#include <android/native_activity.h>
-#include <android/window.h>
-#include <jni.h>
-
 #include "deOSAndroid.h"
 #include "../deEngine.h"
 #include "../common/exceptions.h"
+
+#include <android/configuration.h>
+#include <android/looper.h>
+#include <android/window.h>
+#include <android/native_window.h>
 
 
 
@@ -63,10 +62,7 @@ pHostingRenderWindow(nullptr),
 pAppHasFocus(false),
 pAppFrozen(false)
 {
-	DEASSERT_NOTNULL(config.activity)
-	DEASSERT_NOTNULL(config.config)
-	DEASSERT_NOTNULL(config.inputQueue)
-	DEASSERT_NOTNULL(config.looper)
+	DEASSERT_NOTNULL(config.javavm)
 	DEASSERT_NOTNULL(config.nativeWindow)
 	DEASSERT_FALSE(config.pathCache.IsEmpty())
 	DEASSERT_FALSE(config.pathConfig.IsEmpty())
@@ -283,26 +279,37 @@ void deOSAndroid::pGetOSParameters(){
 	// 
 	// AWINDOW_FLAG_FULLSCREEN
 	//   hide status bars and alike
+	/*
 	ANativeActivity_setWindowFlags(pConfig.activity,
 		AWINDOW_FLAG_KEEP_SCREEN_ON | AWINDOW_FLAG_FULLSCREEN, 0);
+	*/
 	
 	// get refresh rate. requires JNI to get the desired value. can be fetched once and stored
 	// we assume jni env is already attached by the caller. doing so again here is a no-op but
 	// we still get the current thread jni pointer. we do not detach since this is the job
 	// of the caller
 	JNIEnv *env = nullptr;
-	pConfig.activity->vm->AttachCurrentThread(&env, 0);
+	pConfig.javavm->AttachCurrentThread(&env, 0);
+	
+	{
+	// get application context
+	jclass clsActivityThread = env->FindClass("android/app/ActivityThread");
+	jmethodID metCurrentActivityThread = env->GetStaticMethodID(clsActivityThread,
+		"currentActivityThread", "()Landroid/app/ActivityThread;");
+	jobject objActivityThread = env->CallStaticObjectMethod(clsActivityThread, metCurrentActivityThread);
+	
+	jmethodID metGetApplication = env->GetMethodID(clsActivityThread,
+		"getApplication", "()Landroid/app/Application;");
+	jobject objContext = env->CallObjectMethod(objActivityThread, metGetApplication);
 	
 	// WindowManager windowManager = (WindowManager)pActivity.getSystemService(Context.WINDOW_SERVICE);
-	jclass clsContext = env->FindClass("android/content/Context");
+	jclass clsContext = env->GetObjectClass(objContext);
 	jfieldID fldWindowService = env->GetStaticFieldID(clsContext, "WINDOW_SERVICE", "Ljava/lang/String;");
 	jobject objWindowService = env->GetStaticObjectField(clsContext, fldWindowService);
 	
-	jobject objActivity = pConfig.activity->clazz;
-	jclass clsActivity = env->GetObjectClass(objActivity);
-	jmethodID metGetSystemService = env->GetMethodID(clsActivity, "getSystemService",
+	jmethodID metGetSystemService = env->GetMethodID(clsContext, "getSystemService",
 		"(Ljava/lang/String;)Ljava/lang/Object;");
-	jobject objWindowManager = env->CallObjectMethod(objActivity, metGetSystemService, objWindowService);
+	jobject objWindowManager = env->CallObjectMethod(objContext, metGetSystemService, objWindowService);
 	
 	jclass clsWindowManager = env->GetObjectClass(objWindowManager);
 	jmethodID metGetDefaultDisplay = env->GetMethodID(clsWindowManager,
@@ -313,6 +320,7 @@ void deOSAndroid::pGetOSParameters(){
 	jclass clsDisplay = env->GetObjectClass(objDisplay);
 	jmethodID metGetRefreshRate = env->GetMethodID(clsDisplay, "getRefreshRate", "()F");
 	pScreenRefreshRate = (int)(env->CallFloatMethod(objDisplay, metGetRefreshRate) + 0.1f);
+	}
 	
 	// init locale
 	setlocale(LC_ALL, "");

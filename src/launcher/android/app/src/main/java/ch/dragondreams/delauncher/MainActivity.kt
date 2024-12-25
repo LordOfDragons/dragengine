@@ -22,17 +22,20 @@ class MainActivity : AppCompatActivity(), FragmentInitEngine.Interface {
     private val tag: String = "MainActivity"
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var launcher: DragengineLauncher
+    private var launcher: DragengineLauncher? = null
 
     override fun getLauncher(): DragengineLauncher {
-        return launcher
+        if (launcher == null) {
+            launcher = DragengineLauncher(this)
+            launcher!!.addListener(TestListener())
+        }
+        return launcher!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        launcher = DragengineLauncher(this)
-        launcher.addListener(TestListener())
+        getLauncher() // force create launcher if not created already
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -42,5 +45,12 @@ class MainActivity : AppCompatActivity(), FragmentInitEngine.Interface {
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = binding.tabs
         tabs.setupWithViewPager(viewPager)
+    }
+
+    override fun onDestroy() {
+        launcher?.dispose()
+        launcher = null
+
+        super.onDestroy()
     }
 }

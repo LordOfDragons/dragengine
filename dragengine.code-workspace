@@ -25,6 +25,10 @@
 			"path": "src/modules/input/xsystem"
 		},
 		{
+			"name": "android",
+			"path": "src/modules/input/android"
+		},
+		{
 			"name": "steamsdk",
 			"path": "src/modules/service/steamsdk"
 		},
@@ -61,6 +65,7 @@
 			"path": "src/tools/blender/dragengine-import-export"
 		},
 		{
+			"name": "vulkan",
 			"path": "src/shared/vulkan"
 		}
 	],
