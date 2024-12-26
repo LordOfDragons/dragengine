@@ -46,7 +46,7 @@ class FragmentInitEngine : Fragment() {
                     DragengineLauncher.State.LoadLibrariesFailed -> {
                         labProgress?.text = "ERROR Load"
                     }
-                    DragengineLauncher.State.CreateGlueLauncherFailed -> {
+                    DragengineLauncher.State.CreateInternalLauncherFailed -> {
                         labProgress?.text = "ERROR Glue"
                     }
                     DragengineLauncher.State.EngineReady -> {
