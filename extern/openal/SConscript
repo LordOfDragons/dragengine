@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-oalversion = '1.22.2'
+oalversion = '1.24.1'
 
 if envLibrary['platform_android'] != 'no' and False:
 	srcdir = 'android-libopenalsoft-1.0.0'
@@ -34,7 +34,7 @@ else:
 	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openal${LIBSUFFIX}')
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'openal', 'lib_openal_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'openal', 'lib_openal_fetch')
 
 # check if system openal is present
 hasSystemOpenAL = False
