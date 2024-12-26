@@ -1,0 +1,296 @@
+#include "JniHelper.h"
+#include <dragengine/common/exceptions.h>
+#include <android/log.h>
+
+// JniClass
+//////////////
+
+JniClass::JniClass(JNIEnv *env, const char *name) :
+pEnv(env),
+pName(name),
+pClass(env->FindClass(name)),
+pMethodNew(0)
+{
+    DEASSERT_NOTNULL(pClass)
+}
+
+JniClass::JniClass(JNIEnv *env, jclass clazz, const char *name) :
+pEnv(env),
+pName(name),
+pClass(clazz),
+pMethodNew(0)
+{
+    DEASSERT_NOTNULL(clazz)
+}
+
+JniFieldString JniClass::GetFieldString(const char *name) const {
+    return JniFieldString(pEnv, pClass, name);
+}
+
+JniFieldInt JniClass::GetFieldInt(const char *name) const {
+    return JniFieldInt(pEnv, pClass, name);
+}
+
+JniFieldFloat JniClass::GetFieldFloat(const char *name) const {
+    return JniFieldFloat(pEnv, pClass, name);
+}
+
+JniFieldBool JniClass::GetFieldBool(const char *name) const {
+    return JniFieldBool(pEnv, pClass, name);
+}
+
+JniFieldObject JniClass::GetFieldObject(const char *name, const char *itemSig) const {
+    return JniFieldObject(pEnv, pClass, name, itemSig);
+}
+
+JniFieldObject JniClass::GetFieldObject(const char *name, const JniClass &itemClass) const {
+    decString itemSig;
+    itemSig.Format("L%s;", itemClass.GetName().GetString());
+    return JniFieldObject(pEnv, pClass, name, itemSig);
+}
+
+JniFieldObjectArray JniClass::GetFieldObjectArray(const char *name, const char *itemSig) const {
+    return JniFieldObjectArray(pEnv, pClass, name, itemSig);
+}
+
+JniFieldObjectArray JniClass::GetFieldObjectArray(const char *name, const JniClass &itemClass) const {
+    decString itemSig;
+    itemSig.Format("[L%s;", itemClass.GetName().GetString());
+    return JniFieldObjectArray(pEnv, pClass, name, itemSig);
+}
+
+JniObject JniClass::New(){
+    if(!pMethodNew) {
+        pMethodNew = pEnv->GetMethodID(pClass, "<init>", "()V");
+    }
+    return JniObject(pEnv, pEnv->NewObject(pClass, pMethodNew));
+}
+
+// JniObjectClass
+///////////////////
+
+JniObjectClass::JniObjectClass(JNIEnv *env, jobject object) :
+JniClass(env, env->GetObjectClass(object), "java/lang/Object")
+{
+    // segfaults all the time. stupid JVM U_U
+    /*
+    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d %p", __LINE__, pClass);
+    jmethodID metGetClass = env->GetMethodID(pClass, "getClass", "()Ljava/lang/Class;");
+    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d", __LINE__);
+    jobject objClass = env->CallObjectMethod(object, metGetClass);
+    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d", __LINE__);
+
+    jclass clsClass = env->GetObjectClass(objClass);
+    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d", __LINE__);
+    jmethodID metGetName = env->GetMethodID(clsClass, "getName", "()Ljava/lang/String;");
+    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d", __LINE__);
+
+    pName = JniHelpers(env).convertString(reinterpret_cast<jstring>(
+            env->CallObjectMethod(objClass, metGetName)));
+    */
+}
+
+JniObjectClass::~JniObjectClass() {
+    if(pClass){
+        //pEnv->DeleteLocalRef(pClass); // segfaults... why?!
+    }
+}
+
+
+// JniField
+///////////////
+
+JniField::JniField(JNIEnv *env, jclass clazz, const char *name, const char *signature) :
+pEnv(env),
+pClass(clazz),
+pId(env->GetFieldID(clazz, name, signature))
+{
+    DEASSERT_NOTNULL(pId)
+}
+
+
+// JniString
+//////////////
+
+JniFieldString::JniFieldString(JNIEnv *env, jclass clazz, const char *name) :
+JniField(env, clazz, name, "Ljava/lang/String;"){
+}
+
+decString JniFieldString::Get(jobject object) const {
+    return JniHelpers(pEnv).convertString(reinterpret_cast<jstring>(
+        pEnv->GetObjectField(object, pId)));
+}
+
+void JniFieldString::Set(jobject object, const decString &value) const {
+    pEnv->SetObjectField(object, pId, JniHelpers(pEnv).convertString(value));
+}
+
+decUnicodeString JniFieldString::GetUnicode(jobject object) const {
+    return JniHelpers(pEnv).convertUnicodeString(reinterpret_cast<jstring>(
+         pEnv->GetObjectField(object, pId)));
+}
+
+void JniFieldString::Set(jobject object, const decUnicodeString &value) const {
+    pEnv->SetObjectField(object, pId, JniHelpers(pEnv).convertUnicodeString(value));
+}
+
+
+// JniFieldInt
+////////////////
+
+JniFieldInt::JniFieldInt(JNIEnv *env, jclass clazz, const char *name) :
+JniField(env, clazz, name, "I"){
+}
+
+int JniFieldInt::Get(jobject object) const {
+    return pEnv->GetIntField(object, pId);
+}
+
+void JniFieldInt::Set(jobject object, int value) const {
+    pEnv->SetIntField(object, pId, value);
+}
+
+
+// JniFieldFloat
+//////////////////
+
+JniFieldFloat::JniFieldFloat(JNIEnv *env, jclass clazz, const char *name) :
+JniField(env, clazz, name, "F"){
+}
+
+float JniFieldFloat::Get(jobject object) const {
+    return pEnv->GetFloatField(object, pId);
+}
+
+void JniFieldFloat::Set(jobject object, float value) const {
+    pEnv->SetFloatField(object, pId, value);
+}
+
+
+// JniFieldBool
+/////////////////
+
+JniFieldBool::JniFieldBool(JNIEnv *env, jclass clazz, const char *name) :
+JniField(env, clazz, name, "Z"){
+}
+
+bool JniFieldBool::Get(jobject object) const {
+    return pEnv->GetBooleanField(object, pId);
+}
+
+void JniFieldBool::Set(jobject object, bool value) const {
+    pEnv->SetBooleanField(object, pId, value);
+}
+
+
+// JniFieldObject
+///////////////////
+
+JniFieldObject::JniFieldObject(JNIEnv *env, jclass clazz, const char *name, const char *itemSig) :
+JniField(env, clazz, name, itemSig){
+}
+
+jobject JniFieldObject::Get(jobject object) const {
+    return pEnv->GetObjectField(object, pId);
+}
+
+void JniFieldObject::Set(jobject object, jobject value) const {
+    pEnv->SetObjectField(object, pId, value);
+}
+
+
+// JniFieldObjectArray
+////////////////////////
+
+JniFieldObjectArray::JniFieldObjectArray(JNIEnv *env, jclass clazz, const char *name, const char *itemSig) :
+JniField(env, clazz, name, itemSig){
+}
+
+jobjectArray JniFieldObjectArray::Get(jobject object) const {
+    return reinterpret_cast<jobjectArray>(pEnv->GetObjectField(object, pId));
+}
+
+void JniFieldObjectArray::Set(jobject object, jobjectArray value) const {
+    pEnv->SetObjectField(object, pId, value);
+}
+
+
+// JniObject
+//////////////
+
+JniObject::JniObject(JNIEnv *env, jobject object) :
+pEnv(env),
+pObject(object)
+{
+    DEASSERT_NOTNULL(object)
+}
+
+JniObject::~JniObject(){
+    if(pObject){
+        pEnv->DeleteLocalRef(pObject);
+    }
+}
+
+JniObject::JniObject(const JniObject &object) :
+pEnv(object.pEnv),
+pObject(object.pObject)
+{
+    pEnv->NewLocalRef(pObject);
+}
+
+jobject JniObject::ReturnValue() {
+    jobject object = pObject;
+    pObject = nullptr;
+    return object;
+}
+
+
+// JniObjectArray
+///////////////////
+
+JniObjectArray::JniObjectArray(JNIEnv *env, jobject object) :
+JniObject(env, object){
+}
+
+JniObjectArray::JniObjectArray(JNIEnv *env, jclass itemClass, int itemCount) :
+JniObject(env, env->NewObjectArray(itemCount, itemClass, nullptr)){
+}
+
+JniObjectArray::JniObjectArray(const JniObjectArray &object) :
+JniObject(object){
+}
+
+void JniObjectArray::SetAt(int index, jobject object) const{
+    pEnv->SetObjectArrayElement(reinterpret_cast<jobjectArray>(pObject), index, object);
+}
+
+jobjectArray JniObjectArray::ReturnArray() {
+    return reinterpret_cast<jobjectArray>(ReturnValue());
+}
+
+
+// JniHelpers
+///////////////
+
+JniHelpers::JniHelpers(JNIEnv *env) :
+pEnv(env){
+}
+
+decString JniHelpers::convertString(jstring in) {
+    const char * const ns = pEnv->GetStringUTFChars(in, 0);
+    const decString out(ns);
+    pEnv->ReleaseStringUTFChars(in, ns);
+    return out;
+}
+
+jstring JniHelpers::convertString(const decString &in) {
+    return pEnv->NewStringUTF(in);
+}
+
+decUnicodeString JniHelpers::convertUnicodeString(jstring in) {
+    return decUnicodeString::NewFromUTF8(convertString(in));
+}
+
+jstring JniHelpers::convertUnicodeString(const decUnicodeString &in) {
+    return convertString(in.ToUTF8());
+}

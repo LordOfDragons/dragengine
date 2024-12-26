@@ -27,7 +27,8 @@ project("launcherglue")
 # used in the AndroidManifest.xml file.
 add_library(${CMAKE_PROJECT_NAME} SHARED
     # List C/C++ source files with relative paths to this CMakeLists.txt.
-        launcherglue.cpp)
+        GlueLauncher.cpp
+        JniHelper.cpp)
 
 include_directories("${CMAKE_SOURCE_DIR}/../../../../../shared/build/include"
     "${CMAKE_SOURCE_DIR}/../../../../../../dragengine/build/include")
