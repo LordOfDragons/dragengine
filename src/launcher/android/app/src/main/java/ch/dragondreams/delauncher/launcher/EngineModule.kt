@@ -52,4 +52,33 @@ class EngineModule {
     var libFileHashIs = ""
     var libFileEntryPoint = ""
     var parameters: Array<EngineModuleParameter> = emptyArray()
+
+    companion object {
+        val mapTypeName: Map<Type, String> = mapOf(
+            Type.Unknown to "Unknown",
+            Type.Graphic to "Graphic",
+            Type.Audio to "Audio",
+            Type.Input to "Input",
+            Type.Network to "Network",
+            Type.Physics to "Physics",
+            Type.Image to "Image",
+            Type.Video to "Video",
+            Type.Script to "Script",
+            Type.Model to "Model",
+            Type.Rig to "Rig",
+            Type.Skin to "Skin",
+            Type.Animation to "Animation",
+            Type.Font to "Font",
+            Type.CrashRecovery to "Crash Recovery",
+            Type.LanguagePack to "Language Pack",
+            Type.Animator to "Animator",
+            Type.Sound to "Sound",
+            Type.AI to "AI",
+            Type.OcclusionMesh to "Occlusion Mesh",
+            Type.Synthesizer to "Synthesizer",
+            Type.Archive to "Archive",
+            Type.VR to "VR",
+            Type.Service to "Service"
+        )
+    }
 }

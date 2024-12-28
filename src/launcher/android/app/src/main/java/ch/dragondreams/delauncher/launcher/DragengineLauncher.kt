@@ -18,11 +18,14 @@ class DragengineLauncher(context: Context) {
     interface Listener {
         /** State changed. */
         fun stateChanged(launcher: DragengineLauncher)
+
+        /** Engine modules changed. */
+        fun engineModulesChanged(launcher: DragengineLauncher)
     }
 
     open class DefaultListener : Listener {
-        override fun stateChanged(launcher: DragengineLauncher) {
-        }
+        override fun stateChanged(launcher: DragengineLauncher) { }
+        override fun engineModulesChanged(launcher: DragengineLauncher) { }
     }
 
     enum class State {
@@ -82,6 +85,7 @@ class DragengineLauncher(context: Context) {
 
     var engineVersion = ""
         private set
+    val engineModules: MutableList<EngineModule> = ArrayList()
 
     private var launcher: Launcher? = null
 
@@ -99,7 +103,7 @@ class DragengineLauncher(context: Context) {
     @Volatile
     var progressInstallEngine: Double = 0.0
 
-    private var listeners: List<Listener> = ArrayList()
+    private var listeners: MutableList<Listener> = ArrayList()
     private var listenersLocked: Int = 0
 
     private val crscope = CoroutineScope(Dispatchers.IO)
@@ -321,9 +325,19 @@ class DragengineLauncher(context: Context) {
         try {
             launcher = Launcher(this, null)
 
-            val modules = launcher.getEngineModules()
-            Log.i(tag, "createGlueLauncher: Engine modules: ${modules.size}")
-            modules.forEach { m ->
+            engineModules.clear()
+            engineModules.addAll(launcher.getEngineModules())
+
+            try {
+                listenersLocked++
+                Log.i(tag, "notifyEngineModulesChanged: ${listeners.size} ${listenersLocked}")
+                listeners.forEach { each -> each.engineModulesChanged(this) }
+            } finally {
+                listenersLocked--
+            }
+
+            Log.i(tag, "createGlueLauncher: Engine modules: ${engineModules.size}")
+            engineModules.forEach { m ->
                 Log.i(tag, "createGlueLauncher: - ${m.name} (${m.type.name}) ${m.isFallback} '${m.author}'")
                 m.parameters.forEach { p ->
                     Log.i(tag, "createGlueLauncher: -> ${p.index} '${p.value}': '${p.info.name}' (${p.info.type}) [${p.info.minValue} ${p.info.maxValue}]")

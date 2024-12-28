@@ -24,7 +24,7 @@ rm -rf $TARGET_DIR/share/mime
 du -sb app/src/main/assets/dragengine | cut -f1 >app/src/main/assets/dragengine-filesize
 
 # zip asset
-( cd $TARGET_DIR && zip -r ../dragengine.zip * )
+( cd $TARGET_DIR && rm -f ../dragengine.zip && zip -r ../dragengine.zip * )
 rm -rf $TARGET_DIR
 
 # store information.

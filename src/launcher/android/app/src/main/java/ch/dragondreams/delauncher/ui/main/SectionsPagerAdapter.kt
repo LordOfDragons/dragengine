@@ -8,8 +8,8 @@ import ch.dragondreams.delauncher.R
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_games,
-    R.string.tab_profiles,
-    R.string.tab_logs
+    R.string.tab_engine,
+    R.string.tab_settings
 )
 
 /**
@@ -22,6 +22,7 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
     override fun getItem(position: Int): Fragment {
         return when(position) {
             0 -> FragmentGames.newInstance();
+            1 -> FragmentEngine.newInstance();
             else -> PlaceholderFragment.newInstance(position + 1)
         }
     }

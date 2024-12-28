@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import ch.dragondreams.delauncher.databinding.FragmentGameBinding
 
 import ch.dragondreams.delauncher.placeholder.PlaceholderContent.PlaceholderItem
 import ch.dragondreams.delauncher.databinding.FragmentGamesBinding
@@ -19,7 +20,7 @@ class GamesRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return ViewHolder(
-            FragmentGamesBinding.inflate(
+            FragmentGameBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -36,9 +37,9 @@ class GamesRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: FragmentGamesBinding) : RecyclerView.ViewHolder(binding.root) {
-        val idView: TextView = binding.itemNumber
-        val contentView: TextView = binding.content
+    inner class ViewHolder(binding: FragmentGameBinding) : RecyclerView.ViewHolder(binding.root) {
+        val idView: TextView = binding.name
+        val contentView: TextView = binding.version
 
         override fun toString(): String {
             return super.toString() + " '" + contentView.text + "'"
