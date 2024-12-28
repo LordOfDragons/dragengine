@@ -6,6 +6,21 @@
     <string name="tab_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="lab_install_update_dragengine" >Install/Update\nDrag[en]gine</string>
-    <string name="lab_install_engine_progress" >%1$d%%</string>
+    <string name="lab_install_update_dragengine">Install/Update\nDrag[en]gine</string>
+    <string name="lab_install_engine_progress">%1$d%%</string>
+    <string name="form_label_name">Name:</string>
+    <string name="form_label_type">Type:</string>
+    <string name="form_label_description">Description:</string>
+    <string name="form_label_author">Author:</string>
+    <string name="form_label_version">Version:</string>
+    <string name="form_label_file_pattern">File Pattern:</string>
+    <string name="form_label_priority">Priority:</string>
+    <string name="form_label_fallback">Fallback:</string>
+    <string name="form_label_status">Status:</string>
+    <string name="form_label_error_code">Error Code:</string>
+    <string name="form_label_library_file_size">Library File Size:</string>
+    <string name="form_label_library_file_hash">Library File Hash:</string>
+    <string name="label_close">Close</string>
+    <string name="form_label_dragengine_version">Drag[en]gine Version:</string>
+    <string name="form_label_game_engine_modules">Game Engine Modules:</string>
 </resources>

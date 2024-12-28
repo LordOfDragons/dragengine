@@ -15,14 +15,14 @@ class MainActivity : AppCompatActivity(),
     FragmentInitEngine.Interface,
     FragmentEngine.Interface {
     class TestListener : DragengineLauncher.DefaultListener() {
-        private val tag: String = "MainActivity.TestListener"
-
         override fun stateChanged(launcher: DragengineLauncher) {
-            Log.i(tag, "stateChanged: " + launcher.state)
+            Log.i(TAG, "stateChanged: " + launcher.state)
+        }
+
+        companion object {
+            private const val TAG: String = "MainActivity.TestListener"
         }
     }
-
-    private val tag: String = "MainActivity"
 
     private lateinit var binding: ActivityMainBinding
     private var launcher: DragengineLauncher? = null
@@ -55,5 +55,9 @@ class MainActivity : AppCompatActivity(),
         launcher = null
 
         super.onDestroy()
+    }
+
+    companion object {
+        private val TAG: String = "MainActivity"
     }
 }

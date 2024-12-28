@@ -80,5 +80,11 @@ class EngineModule {
             Type.VR to "VR",
             Type.Service to "Service"
         )
+
+        val mapStatusName: Map<Status, String> = mapOf(
+            Status.Ready to "Ready",
+            Status.NotTested to "Not Tested",
+            Status.Broken to "Broken"
+        )
     }
 }

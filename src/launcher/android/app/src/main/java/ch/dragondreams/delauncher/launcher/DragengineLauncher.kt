@@ -72,8 +72,6 @@ class DragengineLauncher(context: Context) {
         EngineReady
     }
 
-    private val tag = "DragengineLauncher"
-
     val pathEngine = File(context.filesDir, "dragengine")
     //val pathEngineConfig = File(context.filesDir, "dragengine-config")
     val pathEngineConfig = File(context.getExternalFilesDir(null)!!, "dragengine-config")
@@ -154,35 +152,35 @@ class DragengineLauncher(context: Context) {
     }
 
     private fun verifyEngineInstallation(context: Context) {
-        Log.i(tag, "verifyEngineInstallation")
+        Log.i(TAG, "verifyEngineInstallation")
         setState(State.VerifyEngineInstallation)
 
         val versionInstalled = getEngineVersionInstalled(context)
-        val versionInstall = getEngineVersionInstall(context)
-        Log.i(tag, "verifyEngineInstallation: version '$versionInstall' installed '$versionInstalled'")
+        engineVersion = getEngineVersionInstall(context)
+        Log.i(TAG, "verifyEngineInstallation: version '$engineVersion' installed '$versionInstalled'")
 
-        if (versionInstall == versionInstalled) {
+        if (engineVersion == versionInstalled) {
             loadLibraries()
 
         } else {
             installEngine(context)
-            updateEngineVersionInstalled(context, versionInstall)
+            updateEngineVersionInstalled(context, engineVersion)
         }
     }
 
     private fun installEngine(context: Context) {
-        Log.i(tag, "installEngine")
+        Log.i(TAG, "installEngine")
         setState(State.InstallEngine)
 
         try {
-            Log.i(tag, "installEngine: delete old engine")
+            Log.i(TAG, "installEngine: delete old engine")
             deleteDirectory(pathEngine)
 
-            Log.i(tag, "installEngine: unpack engine")
+            Log.i(TAG, "installEngine: unpack engine")
             unpackEngine(context, pathEngine)
 
         } catch (e: Exception) {
-            Log.e(tag, "installEngine: Failed", e)
+            Log.e(TAG, "installEngine: Failed", e)
             setState(State.InstallEngineFailed)
             return
         }
@@ -221,8 +219,6 @@ class DragengineLauncher(context: Context) {
             fos.write(version.encodeToByteArray())
             fos.flush()
         }
-
-        this.engineVersion = version
     }
 
     private fun getEngineArchiveSize(context: Context): Long {
@@ -295,12 +291,12 @@ class DragengineLauncher(context: Context) {
                 }
             }
         }
-        Log.i(tag, "unzipAsset: Entries extracted in "
+        Log.i(TAG, "unzipAsset: Entries extracted in "
                 + timer.elapsedNow().inWholeMilliseconds + "ms")
     }
 
     private fun loadLibraries() {
-        Log.i(tag, "loadLibraries")
+        Log.i(TAG, "loadLibraries")
         setState(State.LoadLibraries)
 
         try {
@@ -309,7 +305,7 @@ class DragengineLauncher(context: Context) {
             System.loadLibrary("launcherinternal")
 
         } catch (e: Exception) {
-            Log.e(tag, "loadLibraries: Failed", e)
+            Log.e(TAG, "loadLibraries: Failed", e)
             setState(State.LoadLibrariesFailed)
             return
         }
@@ -318,7 +314,7 @@ class DragengineLauncher(context: Context) {
     }
 
     private fun createInternalLauncher() {
-        Log.i(tag, "createGlueLauncher")
+        Log.i(TAG, "createGlueLauncher")
         setState(State.CreateInternalLauncher)
 
         var launcher: Launcher? = null
@@ -330,32 +326,36 @@ class DragengineLauncher(context: Context) {
 
             try {
                 listenersLocked++
-                Log.i(tag, "notifyEngineModulesChanged: ${listeners.size} ${listenersLocked}")
+                Log.i(TAG, "notifyEngineModulesChanged: ${listeners.size} ${listenersLocked}")
                 listeners.forEach { each -> each.engineModulesChanged(this) }
             } finally {
                 listenersLocked--
             }
 
-            Log.i(tag, "createGlueLauncher: Engine modules: ${engineModules.size}")
+            Log.i(TAG, "createGlueLauncher: Engine modules: ${engineModules.size}")
             engineModules.forEach { m ->
-                Log.i(tag, "createGlueLauncher: - ${m.name} (${m.type.name}) ${m.isFallback} '${m.author}'")
+                Log.i(TAG, "createGlueLauncher: - ${m.name} (${m.type.name}) ${m.isFallback} '${m.author}'")
                 m.parameters.forEach { p ->
-                    Log.i(tag, "createGlueLauncher: -> ${p.index} '${p.value}': '${p.info.name}' (${p.info.type}) [${p.info.minValue} ${p.info.maxValue}]")
+                    Log.i(TAG, "createGlueLauncher: -> ${p.index} '${p.value}': '${p.info.name}' (${p.info.type}) [${p.info.minValue} ${p.info.maxValue}]")
                     p.info.selectionEntries.forEach { e ->
-                        Log.i(tag, "createGlueLauncher:    {=} '${e.displayName}' -> '${e.value}'")
+                        Log.i(TAG, "createGlueLauncher:    {=} '${e.displayName}' -> '${e.value}'")
                     }
                 }
             }
 
         } catch (e: Exception) {
-            Log.e(tag, "createGlueLauncher: Failed", e)
+            Log.e(TAG, "createGlueLauncher: Failed", e)
             setState(State.CreateInternalLauncherFailed)
             launcher?.dispose()
             return
         }
 
         this.launcher = launcher
-        Log.i(tag, "game engine ready")
+        Log.i(TAG, "game engine ready")
         setState(State.EngineReady)
+    }
+
+    companion object {
+        private const val TAG = "DragengineLauncher"
     }
 }
