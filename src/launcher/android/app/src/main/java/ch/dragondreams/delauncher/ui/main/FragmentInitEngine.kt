@@ -30,7 +30,7 @@ class FragmentInitEngine : Fragment() {
 
         handler.post(object: Runnable {
             override fun run() {
-                if (!isAdded) {
+                if (!isAdded || launcher == null) {
                     return
                 }
 
@@ -61,8 +61,15 @@ class FragmentInitEngine : Fragment() {
         })
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        handler.removeCallbacksAndMessages(null)
+        launcher = null
+    }
+
     override fun onDetach() {
         super.onDetach()
+        handler.removeCallbacksAndMessages(null)
         launcher = null
     }
 

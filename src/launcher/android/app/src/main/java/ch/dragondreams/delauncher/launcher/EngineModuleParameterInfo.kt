@@ -61,7 +61,7 @@ class EngineModuleParameterInfo {
     var minValue = 0.0
     var maxValue = 0.0
     var valueStepSize = 0.0
-    var selectionEntries: Array<SelectionEntry> = emptyArray()
+    val selectionEntries: MutableList<SelectionEntry> = ArrayList()
     var category = Category.Basic
     var displayName = ""
     var defaultValue = ""

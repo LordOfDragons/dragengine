@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">DELauncher</string>
-    <string name="title_activity_main">Drag[en]gine Launcher</string>
+    <string name="application_label">Drag[en]gine Launcher</string>
     <string name="tab_games">Games</string>
     <string name="tab_engine">Engine</string>
     <string name="tab_settings">Settings</string>

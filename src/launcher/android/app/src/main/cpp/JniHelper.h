@@ -14,9 +14,12 @@ class JniFieldFloat;
 class JniFieldBool;
 class JniFieldObject;
 class JniFieldObjectArray;
+class JniFieldByteArray;
 class JniObject;
 
-/**getClass
+#define JPATH_BASE "ch/dragondreams/delauncher/launcher/internal/"
+
+/**
  * Global class.
  */
 class JniClass{
@@ -44,6 +47,7 @@ public:
     JniFieldObject GetFieldObject(const char *name, const JniClass &itemClass) const;
     JniFieldObjectArray GetFieldObjectArray(const char *name, const char *itemSig) const;
     JniFieldObjectArray GetFieldObjectArray(const char *name, const JniClass &itemClass) const;
+    JniFieldByteArray GetFieldByteArray(const char *name) const;
 
     /**
      * Create instance of class using default constructor.
@@ -148,6 +152,17 @@ public:
 };
 
 /**
+ * Byte array class field.
+ */
+class JniFieldByteArray : public JniField{
+public:
+    JniFieldByteArray(JNIEnv *env, jclass clazz, const char *name);
+
+    jbyteArray Get(jobject object) const;
+    void Set(jobject object, jbyteArray value) const;
+};
+
+/**
  * Held object. Released in destructor.
  */
 class JniObject{
@@ -177,6 +192,23 @@ public:
 
     void SetAt(int index, jobject object) const;
     jobjectArray ReturnArray();
+};
+
+/**
+ * Held array object. Released in destructor.
+ */
+class JniByteArray : public JniObject{
+private:
+    int pSize;
+
+public:
+    JniByteArray(JNIEnv *env, int size);
+    explicit JniByteArray(const JniByteArray &object);
+
+    inline operator jbyteArray() const{ return reinterpret_cast<jbyteArray>(pObject); }
+
+    void Set(const void *data) const;
+    jbyteArray ReturnArray();
 };
 
 /**

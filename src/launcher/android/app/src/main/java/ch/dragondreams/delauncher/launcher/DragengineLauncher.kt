@@ -21,11 +21,15 @@ class DragengineLauncher(context: Context) {
 
         /** Engine modules changed. */
         fun engineModulesChanged(launcher: DragengineLauncher)
+
+        /** Games changed. */
+        fun gamesChanged(launcher: DragengineLauncher)
     }
 
     open class DefaultListener : Listener {
         override fun stateChanged(launcher: DragengineLauncher) { }
         override fun engineModulesChanged(launcher: DragengineLauncher) { }
+        override fun gamesChanged(launcher: DragengineLauncher) { }
     }
 
     enum class State {
@@ -84,6 +88,7 @@ class DragengineLauncher(context: Context) {
     var engineVersion = ""
         private set
     val engineModules: MutableList<EngineModule> = ArrayList()
+    val games: MutableList<Game> = ArrayList()
 
     private var launcher: Launcher? = null
 
@@ -323,6 +328,9 @@ class DragengineLauncher(context: Context) {
 
             engineModules.clear()
             engineModules.addAll(launcher.getEngineModules())
+
+            games.clear()
+            games.addAll(launcher.getGames())
 
             try {
                 listenersLocked++

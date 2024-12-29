@@ -24,46 +24,51 @@ pMethodNew(0)
 }
 
 JniFieldString JniClass::GetFieldString(const char *name) const {
-    return JniFieldString(pEnv, pClass, name);
+    return {pEnv, pClass, name};
 }
 
 JniFieldInt JniClass::GetFieldInt(const char *name) const {
-    return JniFieldInt(pEnv, pClass, name);
+    return {pEnv, pClass, name};
 }
 
 JniFieldFloat JniClass::GetFieldFloat(const char *name) const {
-    return JniFieldFloat(pEnv, pClass, name);
+    return {pEnv, pClass, name};
 }
 
 JniFieldBool JniClass::GetFieldBool(const char *name) const {
-    return JniFieldBool(pEnv, pClass, name);
+    return {pEnv, pClass, name};
 }
 
 JniFieldObject JniClass::GetFieldObject(const char *name, const char *itemSig) const {
-    return JniFieldObject(pEnv, pClass, name, itemSig);
+    return {pEnv, pClass, name, itemSig};
 }
 
 JniFieldObject JniClass::GetFieldObject(const char *name, const JniClass &itemClass) const {
     decString itemSig;
     itemSig.Format("L%s;", itemClass.GetName().GetString());
-    return JniFieldObject(pEnv, pClass, name, itemSig);
+    return {pEnv, pClass, name, itemSig};
 }
 
 JniFieldObjectArray JniClass::GetFieldObjectArray(const char *name, const char *itemSig) const {
-    return JniFieldObjectArray(pEnv, pClass, name, itemSig);
+    return {pEnv, pClass, name, itemSig};
 }
 
 JniFieldObjectArray JniClass::GetFieldObjectArray(const char *name, const JniClass &itemClass) const {
     decString itemSig;
     itemSig.Format("[L%s;", itemClass.GetName().GetString());
-    return JniFieldObjectArray(pEnv, pClass, name, itemSig);
+    return {pEnv, pClass, name, itemSig};
 }
+
+JniFieldByteArray JniClass::GetFieldByteArray(const char *name) const {
+    return {pEnv, pClass, name};
+}
+
 
 JniObject JniClass::New(){
     if(!pMethodNew) {
         pMethodNew = pEnv->GetMethodID(pClass, "<init>", "()V");
     }
-    return JniObject(pEnv, pEnv->NewObject(pClass, pMethodNew));
+    return {pEnv, pEnv->NewObject(pClass, pMethodNew)};
 }
 
 // JniObjectClass
@@ -215,6 +220,22 @@ void JniFieldObjectArray::Set(jobject object, jobjectArray value) const {
 }
 
 
+// JniFieldByteArray
+//////////////////////
+
+JniFieldByteArray::JniFieldByteArray(JNIEnv *env, jclass clazz, const char *name) :
+JniField(env, clazz, name, "[B"){
+}
+
+jbyteArray JniFieldByteArray::Get(jobject object) const {
+    return reinterpret_cast<jbyteArray>(pEnv->GetObjectField(object, pId));
+}
+
+void JniFieldByteArray::Set(jobject object, jbyteArray value) const {
+    pEnv->SetObjectField(object, pId, value);
+}
+
+
 // JniObject
 //////////////
 
@@ -256,9 +277,7 @@ JniObjectArray::JniObjectArray(JNIEnv *env, jclass itemClass, int itemCount) :
 JniObject(env, env->NewObjectArray(itemCount, itemClass, nullptr)){
 }
 
-JniObjectArray::JniObjectArray(const JniObjectArray &object) :
-JniObject(object){
-}
+JniObjectArray::JniObjectArray(const JniObjectArray &object) = default;
 
 void JniObjectArray::SetAt(int index, jobject object) const{
     pEnv->SetObjectArrayElement(reinterpret_cast<jobjectArray>(pObject), index, object);
@@ -266,6 +285,25 @@ void JniObjectArray::SetAt(int index, jobject object) const{
 
 jobjectArray JniObjectArray::ReturnArray() {
     return reinterpret_cast<jobjectArray>(ReturnValue());
+}
+
+
+// JniByteArray
+/////////////////
+
+JniByteArray::JniByteArray(JNIEnv *env, int size) :
+JniObject(env, env->NewByteArray(size)),
+pSize(size){
+}
+
+JniByteArray::JniByteArray(const JniByteArray &object) = default;
+
+void JniByteArray::Set(const void *data) const{
+    pEnv->SetByteArrayRegion(reinterpret_cast<jbyteArray>(pObject), 0, pSize, (const jbyte*)data);
+}
+
+jbyteArray JniByteArray::ReturnArray() {
+    return reinterpret_cast<jbyteArray>(ReturnValue());
 }
 
 
@@ -277,7 +315,7 @@ pEnv(env){
 }
 
 decString JniHelpers::convertString(jstring in) {
-    const char * const ns = pEnv->GetStringUTFChars(in, 0);
+    const char * const ns = pEnv->GetStringUTFChars(in, nullptr);
     const decString out(ns);
     pEnv->ReleaseStringUTFChars(in, ns);
     return out;

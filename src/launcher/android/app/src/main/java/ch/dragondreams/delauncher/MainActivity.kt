@@ -9,11 +9,13 @@ import ch.dragondreams.delauncher.ui.main.SectionsPagerAdapter
 import ch.dragondreams.delauncher.databinding.ActivityMainBinding
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.ui.main.FragmentEngine
+import ch.dragondreams.delauncher.ui.main.FragmentGames
 import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
 
 class MainActivity : AppCompatActivity(),
     FragmentInitEngine.Interface,
-    FragmentEngine.Interface {
+    FragmentEngine.Interface,
+    FragmentGames.Interface {
     class TestListener : DragengineLauncher.DefaultListener() {
         override fun stateChanged(launcher: DragengineLauncher) {
             Log.i(TAG, "stateChanged: " + launcher.state)

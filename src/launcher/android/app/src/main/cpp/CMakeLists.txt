@@ -28,7 +28,9 @@ project("launcherinternal")
 add_library(${CMAKE_PROJECT_NAME} SHARED
     # List C/C++ source files with relative paths to this CMakeLists.txt.
         Launcher.cpp
-        JniHelper.cpp)
+        JniHelper.cpp
+        EngineModule.cpp
+        Game.cpp)
 
 include_directories("${CMAKE_SOURCE_DIR}/../../../../../shared/build/include"
     "${CMAKE_SOURCE_DIR}/../../../../../../dragengine/build/include")

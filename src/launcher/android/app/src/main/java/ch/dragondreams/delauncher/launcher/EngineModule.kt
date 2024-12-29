@@ -51,7 +51,7 @@ class EngineModule {
     var libFileHashShould = ""
     var libFileHashIs = ""
     var libFileEntryPoint = ""
-    var parameters: Array<EngineModuleParameter> = emptyArray()
+    val parameters: MutableList<EngineModuleParameter> = ArrayList()
 
     companion object {
         val mapTypeName: Map<Type, String> = mapOf(
