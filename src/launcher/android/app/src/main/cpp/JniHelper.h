@@ -2,6 +2,7 @@
 #define DELAUNCHER_JNIHELPER_H
 
 #include <jni.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
@@ -212,6 +213,23 @@ public:
 };
 
 /**
+ * Held array object. Released in destructor.
+ */
+class JniLongArray : public JniObject{
+private:
+    int pSize;
+
+public:
+    JniLongArray(JNIEnv *env, int size);
+    explicit JniLongArray(const JniLongArray &object);
+
+    inline operator jlongArray() const{ return reinterpret_cast<jlongArray>(pObject); }
+
+    void SetAt(int index, jlong value) const;
+    jlongArray ReturnArray();
+};
+
+/**
  * Helpers
  */
 class JniHelpers{
@@ -232,6 +250,11 @@ public:
      */
     decUnicodeString convertUnicodeString(jstring in);
     jstring convertUnicodeString(const decUnicodeString &in);
+
+    /**
+     * Throw Drag[en]gine exception as java exception.
+     */
+    void throwException(const deException &exception);
 };
 
 #endif //DELAUNCHER_JNIHELPER_H

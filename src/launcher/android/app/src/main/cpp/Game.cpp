@@ -4,7 +4,7 @@
 #include <delauncher/game/icon/delGameIcon.h>
 #include <delauncher/game/fileformat/delFileFormat.h>
 
-Game::Game(JNIEnv *env) :
+GameInfo::GameInfo(JNIEnv *env) :
 pEnv(env),
 
 pClsFormat(env, JPATH_BASE "GameFileFormat"),
@@ -17,7 +17,7 @@ pFldIconSize(pClsIcon.GetFieldInt("size")),
 pFldIconPath(pClsIcon.GetFieldString("path")),
 pFldIconContent(pClsIcon.GetFieldByteArray("content")),
 
-pClsGame(env, JPATH_BASE "Game"),
+pClsGame(env, JPATH_BASE "GameInfo"),
 pFldGameIdentifier(pClsGame.GetFieldString("identifier")),
 pFldGameAliasIdentifier(pClsGame.GetFieldString("aliasIdentifier")),
 pFldGameTitle(pClsGame.GetFieldString("title")),
@@ -36,20 +36,7 @@ pFldGamePathCapture(pClsGame.GetFieldString("pathCapture")),
 pFldGameRunArguments(pClsGame.GetFieldString("runArguments")){
 }
 
-jobjectArray Game::Convert(const delGameList &games) {
-    const int gameCount = games.GetCount();
-    int i;
-
-    JniObjectArray objGames(pEnv, pClsGame, gameCount);
-
-    for (i=0; i<gameCount; i++) {
-        objGames.SetAt(i, Convert(*games.GetAt(i)));
-    }
-
-    return objGames.ReturnArray();
-}
-
-jobject Game::Convert(const delGame &game) {
+jobject GameInfo::Convert(const delGame &game) {
     const delGameIconList &icons = game.GetIcons();
     const int iconCount = icons.GetCount();
     const JniObjectArray objIcons(pEnv, pClsIcon, iconCount);
@@ -100,4 +87,51 @@ jobject Game::Convert(const delGame &game) {
     pFldGameRunArguments.Set(objGame, game.GetRunArguments());
 
     return objGame.ReturnValue();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameRelease(JNIEnv *env, jobject thiz, jlong pgame){
+    delete (delGame::Ref*)pgame;
+}
+
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameGetInfo(
+JNIEnv *env, jobject thiz, jlong pgame){
+    const delGame &game = *((delGame::Ref*)pgame);
+    return GameInfo(env).Convert(game);
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameReference(
+JNIEnv *env, jobject thiz, jlong pgame){
+    const delGame::Ref &game = *((delGame::Ref*)pgame);
+    return (jlong)(intptr_t)(new delGame::Ref(game));
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameLoadConfig(
+JNIEnv *env, jobject thiz, jlong pgame) {
+    JniHelpers h(env);
+    try {
+        const delGame::Ref &game = *((delGame::Ref*)pgame);
+        game->LoadConfig();
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameVerifyRequirements(
+JNIEnv *env, jobject thiz, jlong pgame) {
+    JniHelpers h(env);
+    try {
+        const delGame::Ref &game = *((delGame::Ref*)pgame);
+        game->VerifyRequirements();
+    }catch(const deException &e){
+        h.throwException(e);
+    }
 }

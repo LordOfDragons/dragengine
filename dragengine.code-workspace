@@ -45,6 +45,10 @@
 			"path": "src/launcher/shared"
 		},
 		{
+			"name": "console",
+			"path": "src/launcher/console"
+		},
+		{
 			"name": "gui",
 			"path": "src/launcher/gui"
 		},

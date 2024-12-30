@@ -70,3 +70,15 @@ void delEngineInstance::SetUseConsole( bool useConsole ){
 void delEngineInstance::BeosMessageReceived( BMessage *message ){
 }
 #endif
+
+#ifdef OS_ANDROID
+void delEngineInstance::ReadDelgaGameDefsVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, decStringList &list){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::ReadDelgaFilesVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &filesContent ){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+#endif

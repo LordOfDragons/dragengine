@@ -4,12 +4,44 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.io.File
+import ch.dragondreams.delauncher.launcher.DragengineLauncher
+import ch.dragondreams.delauncher.launcher.Game
+import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
 
-class RunDelgaActivity : AppCompatActivity() {
+class RunDelgaActivity : AppCompatActivity(),
+    FragmentInitEngine.Interface {
+
+    class RunLauncherListener(
+        private val activity: RunDelgaActivity
+    ) : DragengineLauncher.DefaultListener() {
+        override fun stateChanged(launcher: DragengineLauncher) {
+            Log.i(TAG, "stateChanged: " + launcher.state)
+            if (launcher.state == DragengineLauncher.State.EngineReady) {
+                activity.onEngineReady()
+            }
+        }
+    }
+
+    enum class State {
+        InitEngine,
+        RunGame
+    }
+
+    private var launcher: DragengineLauncher? = null
+    private var state = State.InitEngine
+    private var delgaGames: MutableList<Game> = mutableListOf()
+    private var delgaGame: Game? = null
+
+    override fun getLauncher(): DragengineLauncher {
+        if (launcher == null) {
+            launcher = DragengineLauncher(this)
+            launcher!!.addListener(RunLauncherListener(this))
+        }
+        return launcher!!
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -20,7 +52,7 @@ class RunDelgaActivity : AppCompatActivity() {
             insets
         }
 
-        Log.i(TAG, listOf("processIntentLaunchDelga:",
+        Log.i(TAG, listOf("RunDelgaActivity:",
             "action='${intent.action}'",
             "type='${intent.type}'",
             "scheme='${intent.scheme}'",
@@ -28,11 +60,33 @@ class RunDelgaActivity : AppCompatActivity() {
 
         if (intent.action == "ch.dragondreams.delauncher.LAUNCH_DELGA"
             || intent.action == "android.intent.action.VIEW") {
-            processIntentLaunchDelga()
+            getLauncher() // force create launcher if not created already
 
         } else {
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        delgaGame?.dispose()
+        delgaGame = null
+
+        delgaGames.forEach { g -> g.dispose() }
+        delgaGames.clear()
+
+        launcher?.dispose()
+        launcher = null
+
+        super.onDestroy()
+    }
+
+    private fun onEngineReady() {
+        if (state != State.InitEngine) {
+            return
+        }
+
+        state = State.RunGame
+        processIntentLaunchDelga()
     }
 
     private fun processIntentLaunchDelga() {
@@ -48,36 +102,111 @@ class RunDelgaActivity : AppCompatActivity() {
         }
         */
 
+        var pathDelga: String? = null
+
         when (intent.data?.scheme) {
             "content" -> {
-                contentResolver.openFileDescriptor(intent.data!!, "r").use { pfd ->
-                    val fd = pfd?.fd
-                    Log.i(TAG, "processIntentLaunchDelga: file descriptor $fd")
+                contentResolver.openAssetFileDescriptor(intent.data!!, "r").use { afd ->
+                    if (afd == null) {
+                        Log.e(TAG, "processIntentLaunchDelga: AssetFileDescriptor is null")
+                        finish()
+                        return
+                    }
+
+                    val startOffset = afd.startOffset
+                    val length = afd.length
+                    Log.e(TAG, "processIntentLaunchDelga: startOffset=${afd.startOffset} length=${afd.length}")
+
+                    val fd = afd.parcelFileDescriptor?.detachFd()
+                    if (fd == null) {
+                        Log.e(TAG, "processIntentLaunchDelga: Can not detach file descriptor")
+                        finish()
+                        return
+                    }
+
+                    try {
+                        launcher!!.vfsContainerAddFd("/$VFS_FDS_DELGA_FILENAME", fd, startOffset.toInt(), length.toInt())
+                    }catch (e: Exception){
+                        Log.e(TAG, "processIntentLaunchDelga: Failed adding VFS container", e)
+                        finish()
+                        return
+                    }
+
+                    Log.i(TAG, "processIntentLaunchDelga: VFS container added")
+                    pathDelga = VFS_FDS_DELGA_PATH
                 }
             }
 
             "file" -> {
-                val path = intent.data?.toFile()
-                if (path == null) {
-                    finish()
-                    return
-                }
+                contentResolver.openFileDescriptor(intent.data!!, "r").use { pfd ->
+                    if (pfd == null) {
+                        Log.e(TAG, "processIntentLaunchDelga: ParcelFileDescriptor is null")
+                        finish()
+                        return
+                    }
 
-                Log.i(TAG, "processIntentLaunchDelga: $path")
-                path.inputStream().use { s ->
-                    Log.i(TAG, "processIntentLaunchDelga: stream $s")
+                    val length = pfd.statSize
+                    Log.e(TAG, "processIntentLaunchDelga: length=${length}")
+
+                    val fd = pfd.detachFd()
+
+                    try {
+                        launcher!!.vfsContainerAddFd("/$VFS_FDS_DELGA_FILENAME", fd, 0, length.toInt())
+                    }catch (e: Exception){
+                        Log.e(TAG, "processIntentLaunchDelga: Failed adding VFS container", e)
+                        finish()
+                        return
+                    }
+
+                    Log.i(TAG, "processIntentLaunchDelga: VFS container added")
+                    pathDelga = VFS_FDS_DELGA_PATH
                 }
             }
 
             else -> {
+                Log.e(TAG, "processIntentLaunchDelga: Unsupported scheme")
                 finish()
             }
         }
 
+        if (pathDelga == null) {
+            Log.e(TAG, "processIntentLaunchDelga: DELGA path is null")
+            finish()
+            return
+        }
 
+        delgaGames.forEach { g -> g.dispose() }
+        delgaGames.clear()
+        delgaGames.addAll(launcher!!.readDelgaGames(pathDelga!!))
+        Log.i(TAG, "processIntentLaunchDelga: DELGA loaded")
+
+        if (delgaGames.isEmpty()) {
+            Log.e(TAG, "processIntentLaunchDelga: No game definition found in DELGA file")
+            finish()
+            return
+        }
+
+        delgaGames.subList(1, delgaGames.size).forEach { g -> g.dispose() }
+
+        delgaGame?.dispose()
+        delgaGame = delgaGames[0].reference()
+
+        // load configuration if the game is not installed. this allows to keep the parameter
+        // changes alive done by the player inside the game
+        val identifier = delgaGame!!.identifier
+        if (launcher!!.games.find { g -> g.identifier == identifier } == null) {
+            delgaGame?.loadConfig()
+        }
+
+        delgaGame?.verifyRequirements()
+
+        delgaGame?.dispose()
     }
 
     companion object {
         const val TAG = "RunDelgaActivity"
+        private const val VFS_FDS_PATH = "/fds"
+        private const val VFS_FDS_DELGA_FILENAME = "game.delga"
+        private const val VFS_FDS_DELGA_PATH = "$VFS_FDS_PATH/$VFS_FDS_DELGA_FILENAME"
     }
 }

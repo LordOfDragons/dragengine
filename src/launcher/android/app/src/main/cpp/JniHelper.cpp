@@ -307,6 +307,25 @@ jbyteArray JniByteArray::ReturnArray() {
 }
 
 
+// JniLongArray
+/////////////////
+
+JniLongArray::JniLongArray(JNIEnv *env, int size) :
+JniObject(env, env->NewLongArray(size)),
+pSize(size){
+}
+
+JniLongArray::JniLongArray(const JniLongArray &object) = default;
+
+void JniLongArray::SetAt(int index, jlong value) const{
+    pEnv->SetLongArrayRegion(reinterpret_cast<jlongArray>(pObject), index, 1, &value);
+}
+
+jlongArray JniLongArray::ReturnArray() {
+    return reinterpret_cast<jlongArray>(ReturnValue());
+}
+
+
 // JniHelpers
 ///////////////
 
@@ -331,4 +350,21 @@ decUnicodeString JniHelpers::convertUnicodeString(jstring in) {
 
 jstring JniHelpers::convertUnicodeString(const decUnicodeString &in) {
     return convertString(in.ToUTF8());
+}
+
+void JniHelpers::throwException(const deException &exception){
+    jclass exClass;
+    const char * const className = "java/lang/RuntimeException";
+
+    exClass = pEnv->FindClass(className);
+    DEASSERT_NOTNULL(exClass)
+
+    const decStringList lines(exception.FormatOutput());
+    const int count = lines.GetCount();
+    int i;
+    for(i=0; i<count; i++){
+        __android_log_print(ANDROID_LOG_ERROR, "Launcher", "%s", lines.GetAt(i).GetString());
+    }
+
+    pEnv->ThrowNew(exClass, exception.GetDescription().GetString());
 }

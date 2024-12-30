@@ -34,6 +34,10 @@
 #include <MessageQueue.h>
 #endif
 
+#ifdef OS_ANDROID
+#include <dragengine/filesystem/deVFSContainer.h>
+#endif
+
 class delEngineModule;
 class delLauncher;
 class decStringList;
@@ -284,6 +288,24 @@ public:
 	 * Required for direct engine instance on BeOS only.
 	 */
 	virtual void BeosMessageReceived( BMessage *message );
+#endif
+	
+#ifdef OS_ANDROID
+	/**
+	 * \brief Read game definitions from DELGA file using VFS container.
+	 * 
+	 * Replaces \em list with content of all found files.
+	 */
+	virtual void ReadDelgaGameDefsVfs(const deVFSContainer::Ref &container,
+		const char *delgaFile, decStringList &list);
+	
+	/**
+	 * \brief Read files from DELGA file file using VFS container.
+	 * 
+	 * Stores content of files to \em filesContent as instances of decMemoryFile.
+	 */
+	virtual void ReadDelgaFilesVfs(const deVFSContainer::Ref &container, const char *delgaFile,
+		const decStringList &filenames, decObjectOrderedSet &filesContent);
 #endif
 	/*@}*/
 };

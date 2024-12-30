@@ -915,3 +915,88 @@ void delEngineInstanceDirect::BeosMessageReceived( BMessage *message ){
 	}
 }
 #endif
+
+#ifdef OS_ANDROID
+void delEngineInstanceDirect::ReadDelgaGameDefsVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, decStringList &list){
+	DEASSERT_NOTNULL(delgaFile)
+	
+	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+		"Processing ReadDelgaGameDefsVfs (delgaFile=%s)", delgaFile);
+	DEASSERT_NOTNULL(pEngine)
+	
+	deArchiveManager &amgr = *pEngine->GetArchiveManager();
+	const decPath pathRoot(decPath::CreatePathUnix("/"));
+	
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	delgaVfs->AddContainer(container);
+	
+	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")));
+	
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	vfs->AddContainer(deArchiveContainer::Ref::New(
+		amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	
+	deCollectFileSearchVisitor collect("*.degame", true);
+	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
+	const dePathList &files = collect.GetFiles();
+	const int fileCount = files.GetCount();
+	decString gameDef;
+	int i;
+	
+	for(i=0; i<fileCount; i++){
+		const decPath &path = files.GetAt(i);
+		
+		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+			vfs->OpenFileForReading(path)));
+		const int size = reader->GetLength();
+		gameDef.Set(' ', size);
+		reader->Read((void*)gameDef.GetString(), size);
+		
+		list.Add(gameDef);
+	}
+}
+
+void delEngineInstanceDirect::ReadDelgaFilesVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &filesContent ){
+	DEASSERT_NOTNULL(delgaFile)
+	
+	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
+		"Processing ReadDelgaFilesVfs (delgaFile=%s)", delgaFile);
+	DEASSERT_NOTNULL(pEngine)
+	
+	const int fileCount = filenames.GetCount();
+	filesContent.RemoveAll();
+	if(fileCount == 0){
+		return;
+	}
+	
+	// open delga file
+	deArchiveManager &amgr = *pEngine->GetArchiveManager();
+	const decPath pathRoot(decPath::CreatePathUnix("/"));
+	
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	delgaVfs->AddContainer(container);
+	
+	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")));
+	
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	
+	// read files
+	int i;
+	
+	for( i=0; i<fileCount; i++ ){
+		const decString &filename = filenames.GetAt( i );
+		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+			vfs->OpenFileForReading(decPath::CreatePathUnix(filename))));
+		const int size = reader->GetLength();
+		
+		const decMemoryFile::Ref content(decMemoryFile::Ref::New(new decMemoryFile(filename)));
+		content->Resize(size);
+		reader->Read(content->GetPointer(), size);
+		
+		filesContent.Add(content);
+	}
+}
+#endif

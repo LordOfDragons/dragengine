@@ -312,7 +312,26 @@ public:
 	 * Required for direct engine instance on BeOS only.
 	 */
 	void BeosMessageReceived( BMessage *message ) override;
-#endif	/*@}*/
+#endif
+	
+#ifdef OS_ANDROID
+	/**
+	 * \brief Read game definitions from DELGA file using VFS container.
+	 * 
+	 * Replaces \em list with content of all found files.
+	 */
+	void ReadDelgaGameDefsVfs(const deVFSContainer::Ref &container,
+		const char *delgaFile, decStringList &list) override;
+	
+	/**
+	 * \brief Read files from DELGA file file using VFS container.
+	 * 
+	 * Stores content of files to \em filesContent as instances of decMemoryFile.
+	 */
+	void ReadDelgaFilesVfs(const deVFSContainer::Ref &container, const char *delgaFile,
+		const decStringList &filenames, decObjectOrderedSet &filesContent) override;
+#endif
+/*@}*/
 };
 
 #endif

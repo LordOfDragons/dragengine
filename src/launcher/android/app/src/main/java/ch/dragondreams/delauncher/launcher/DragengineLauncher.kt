@@ -46,7 +46,7 @@ class DragengineLauncher(context: Context) {
         InstallEngine,
 
         /**
-         * Installing/updating game engine failed. Game engine is not ready to be used.
+         * Installing/updating game engine failed. GameInfo engine is not ready to be used.
          */
         InstallEngineFailed,
 
@@ -71,7 +71,7 @@ class DragengineLauncher(context: Context) {
         CreateInternalLauncherFailed,
 
         /**
-         * Game engine is installed and ready to be used.
+         * GameInfo engine is installed and ready to be used.
          */
         EngineReady
     }
@@ -118,10 +118,35 @@ class DragengineLauncher(context: Context) {
     }
 
     fun dispose() {
+        games.forEach { g -> g.dispose() }
+        games.clear()
+
         launcher?.dispose()
         launcher = null
     }
 
+
+    /**
+     * Add native file descriptor as path to VFS. File descriptor will be closed
+     * upon removal from VFS. Path is added to VFS under "/fds".
+     */
+    fun vfsContainerAddFd(path: String, fd: Int, offset: Int, length: Int) {
+        launcher?.vfsContainerAddFd(path, fd, offset, length)
+    }
+
+    /**
+     * Remove native file descriptor from VFS. File descriptor will be closed.
+     */
+    fun vfsContainerRemoveFd(path: String) {
+        launcher?.vfsContainerRemoveFd(path)
+    }
+
+    /**
+     * Read game definitions from DELGA file.
+     */
+    fun readDelgaGames(path: String): List<Game> {
+        return launcher?.readDelgaGames(path) ?: emptyList()
+    }
 
     /** Add listener. */
     @Synchronized
@@ -329,6 +354,7 @@ class DragengineLauncher(context: Context) {
             engineModules.clear()
             engineModules.addAll(launcher.getEngineModules())
 
+            games.forEach { g -> g.dispose() }
             games.clear()
             games.addAll(launcher.getGames())
 

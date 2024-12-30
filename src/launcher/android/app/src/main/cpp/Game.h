@@ -6,7 +6,7 @@
 class delGame;
 class delGameList;
 
-class Game {
+class GameInfo {
 private:
     JNIEnv *pEnv;
 
@@ -39,9 +39,8 @@ private:
     const JniFieldString pFldGameRunArguments;
 
 public:
-    explicit Game(JNIEnv *env);
+    explicit GameInfo(JNIEnv *env);
 
-    jobjectArray Convert(const delGameList &games);
     jobject Convert(const delGame &game);
 };
 

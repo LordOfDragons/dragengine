@@ -32,6 +32,10 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/deModuleSystem.h>
 
+#ifdef OS_ANDROID
+#include <dragengine/filesystem/deVFSContainer.h>
+#endif
+
 class delLauncher;
 class delGameList;
 class delPatchList;
@@ -171,6 +175,12 @@ public:
 	
 	/** \brief Read game patch definitions from DELGA file. */
 	void ReadDelgaPatchDefs( delEngineInstance &instance, const char *filename, delPatchList &list );
+	
+#ifdef OS_ANDROID
+	/** \brief Read game definitions from DELGA file using VFS container. */
+	void ReadDelgaGameDefsVfs(delEngineInstance &instance, const deVFSContainer::Ref &container,
+		const char *filename, delGameList &list);
+#endif
 	
 	
 	
