@@ -135,7 +135,6 @@ JNIEnv *env, jobject thiz, jlong plauncher) {
     }
 }
 
-#include <dragengine/common/file/decBaseFileReader.h>
 extern "C"
 JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_Launcher_vfsContainerAddFd(

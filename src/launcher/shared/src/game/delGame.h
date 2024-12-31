@@ -270,6 +270,9 @@ public:
 	/** \brief Set if script module is found. */
 	void SetScriptModuleFound( bool found );
 	
+	/** \brief Found script module version. */
+	inline const decString &GetScriptModuleFoundVersion() const{ return pScriptModuleFoundVersion; }
+	
 	/** \brief Game is up to date. */
 	inline bool GetGameUpToDate() const{ return pGameUpToDate; }
 	

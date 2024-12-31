@@ -1,11 +1,12 @@
 package ch.dragondreams.delauncher.launcher
 
-import android.graphics.Point
 import ch.dragondreams.delauncher.launcher.internal.Game
 
 class Game(
     private val nativeGame: Game
 ) {
+    private var nativeGameRefCount: Int = 0
+
     var identifier = ""
     var aliasIdentifier = ""
     var title = ""
@@ -42,15 +43,18 @@ class Game(
     }
 
     fun dispose(){
-        nativeGame.dispose()
+        if(nativeGameRefCount-- == 0) {
+            nativeGame.dispose()
+        }
     }
 
     fun updateInfo(){
-        nativeGame.update(this)
+        nativeGame.updateInfo(this)
     }
 
     fun reference(): ch.dragondreams.delauncher.launcher.Game {
-        return Game(nativeGame.reference())
+        nativeGameRefCount++
+        return this
     }
 
     fun loadConfig() {
@@ -59,5 +63,9 @@ class Game(
 
     fun verifyRequirements() {
         nativeGame.verifyRequirements()
+    }
+
+    fun updateStatus() {
+        nativeGame.updateStatus(this)
     }
 }

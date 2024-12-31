@@ -33,6 +33,7 @@ class RunDelgaActivity : AppCompatActivity(),
     private var state = State.InitEngine
     private var delgaGames: MutableList<Game> = mutableListOf()
     private var delgaGame: Game? = null
+    private var delgaPath: String? = null
 
     override fun getLauncher(): DragengineLauncher {
         if (launcher == null) {
@@ -102,38 +103,49 @@ class RunDelgaActivity : AppCompatActivity(),
         }
         */
 
-        var pathDelga: String? = null
+        if (!locateGame()) {
+            finish()
+            return
+        }
 
+        delgaGame?.dispose()
+    }
+
+    private fun locateGame(): Boolean {
         when (intent.data?.scheme) {
             "content" -> {
                 contentResolver.openAssetFileDescriptor(intent.data!!, "r").use { afd ->
                     if (afd == null) {
                         Log.e(TAG, "processIntentLaunchDelga: AssetFileDescriptor is null")
-                        finish()
-                        return
+                        return false
                     }
 
                     val startOffset = afd.startOffset
                     val length = afd.length
-                    Log.e(TAG, "processIntentLaunchDelga: startOffset=${afd.startOffset} length=${afd.length}")
+                    Log.e(TAG,
+                        "processIntentLaunchDelga: startOffset=${afd.startOffset} length=${afd.length}"
+                    )
 
                     val fd = afd.parcelFileDescriptor?.detachFd()
                     if (fd == null) {
                         Log.e(TAG, "processIntentLaunchDelga: Can not detach file descriptor")
-                        finish()
-                        return
+                        return false
                     }
 
                     try {
-                        launcher!!.vfsContainerAddFd("/$VFS_FDS_DELGA_FILENAME", fd, startOffset.toInt(), length.toInt())
-                    }catch (e: Exception){
+                        launcher!!.vfsContainerAddFd(
+                            "/$VFS_FDS_DELGA_FILENAME",
+                            fd,
+                            startOffset.toInt(),
+                            length.toInt()
+                        )
+                    } catch (e: Exception) {
                         Log.e(TAG, "processIntentLaunchDelga: Failed adding VFS container", e)
-                        finish()
-                        return
+                        return false
                     }
 
                     Log.i(TAG, "processIntentLaunchDelga: VFS container added")
-                    pathDelga = VFS_FDS_DELGA_PATH
+                    delgaPath = VFS_FDS_DELGA_PATH
                 }
             }
 
@@ -141,8 +153,7 @@ class RunDelgaActivity : AppCompatActivity(),
                 contentResolver.openFileDescriptor(intent.data!!, "r").use { pfd ->
                     if (pfd == null) {
                         Log.e(TAG, "processIntentLaunchDelga: ParcelFileDescriptor is null")
-                        finish()
-                        return
+                        return false
                     }
 
                     val length = pfd.statSize
@@ -151,39 +162,41 @@ class RunDelgaActivity : AppCompatActivity(),
                     val fd = pfd.detachFd()
 
                     try {
-                        launcher!!.vfsContainerAddFd("/$VFS_FDS_DELGA_FILENAME", fd, 0, length.toInt())
-                    }catch (e: Exception){
+                        launcher!!.vfsContainerAddFd(
+                            "/$VFS_FDS_DELGA_FILENAME",
+                            fd,
+                            0,
+                            length.toInt()
+                        )
+                    } catch (e: Exception) {
                         Log.e(TAG, "processIntentLaunchDelga: Failed adding VFS container", e)
-                        finish()
-                        return
+                        return false
                     }
 
                     Log.i(TAG, "processIntentLaunchDelga: VFS container added")
-                    pathDelga = VFS_FDS_DELGA_PATH
+                    delgaPath = VFS_FDS_DELGA_PATH
                 }
             }
 
             else -> {
                 Log.e(TAG, "processIntentLaunchDelga: Unsupported scheme")
-                finish()
+                return false
             }
         }
 
-        if (pathDelga == null) {
+        if (delgaPath == null) {
             Log.e(TAG, "processIntentLaunchDelga: DELGA path is null")
-            finish()
-            return
+            return false
         }
 
         delgaGames.forEach { g -> g.dispose() }
         delgaGames.clear()
-        delgaGames.addAll(launcher!!.readDelgaGames(pathDelga!!))
+        delgaGames.addAll(launcher!!.readDelgaGames(delgaPath!!))
         Log.i(TAG, "processIntentLaunchDelga: DELGA loaded")
 
         if (delgaGames.isEmpty()) {
             Log.e(TAG, "processIntentLaunchDelga: No game definition found in DELGA file")
-            finish()
-            return
+            return false
         }
 
         delgaGames.subList(1, delgaGames.size).forEach { g -> g.dispose() }
@@ -199,8 +212,9 @@ class RunDelgaActivity : AppCompatActivity(),
         }
 
         delgaGame?.verifyRequirements()
-
-        delgaGame?.dispose()
+        delgaGame?.updateStatus()
+        Log.i(TAG, "processIntentLaunchDelga: DELGA status ${delgaGame?.canRun}")
+        return true
     }
 
     companion object {

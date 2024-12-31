@@ -91,7 +91,8 @@ jobject GameInfo::Convert(const delGame &game) {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_ch_dragondreams_delauncher_launcher_internal_Game_gameRelease(JNIEnv *env, jobject thiz, jlong pgame){
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameRelease(
+JNIEnv *env, jobject thiz, jlong pgame){
     delete (delGame::Ref*)pgame;
 }
 
@@ -99,16 +100,13 @@ extern "C"
 JNIEXPORT jobject JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_Game_gameGetInfo(
 JNIEnv *env, jobject thiz, jlong pgame){
-    const delGame &game = *((delGame::Ref*)pgame);
-    return GameInfo(env).Convert(game);
-}
-
-extern "C"
-JNIEXPORT jlong JNICALL
-Java_ch_dragondreams_delauncher_launcher_internal_Game_gameReference(
-JNIEnv *env, jobject thiz, jlong pgame){
-    const delGame::Ref &game = *((delGame::Ref*)pgame);
-    return (jlong)(intptr_t)(new delGame::Ref(game));
+    JniHelpers h(env);
+    try {
+        const delGame &game = *((delGame::Ref*)pgame);
+        return GameInfo(env).Convert(game);
+    }catch(const deException &e){
+        h.throwException(e);
+    }
 }
 
 extern "C"
@@ -131,6 +129,40 @@ JNIEnv *env, jobject thiz, jlong pgame) {
     try {
         const delGame::Ref &game = *((delGame::Ref*)pgame);
         game->VerifyRequirements();
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+
+GameStatus::GameStatus(JNIEnv *env) :
+pEnv(env),
+
+pClsStatus(env, JPATH_BASE "GameStatus"),
+pFldAllFormatsSupported(pClsStatus.GetFieldBool("allFormatsSupported")),
+pFldScriptModuleFound(pClsStatus.GetFieldBool("scriptModuleFound")),
+pFldScriptModuleFoundVersion(pClsStatus.GetFieldString("scriptModuleFoundVersion")),
+pFldGameUpToDate(pClsStatus.GetFieldBool("gameUpToDate")),
+pFldCanRun(pClsStatus.GetFieldBool("canRun")){
+}
+
+jobject GameStatus::Convert(const delGame &game){
+    JniObject objStatus(pClsStatus.New());
+    pFldAllFormatsSupported.Set(objStatus, game.GetAllFormatsSupported());
+    pFldScriptModuleFound.Set(objStatus, game.GetScriptModuleFound());
+    pFldScriptModuleFoundVersion.Set(objStatus, game.GetScriptModuleFoundVersion());
+    pFldGameUpToDate.Set(objStatus, game.GetGameUpToDate());
+    pFldCanRun.Set(objStatus, game.GetCanRun());
+    return objStatus.ReturnValue();
+}
+
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameGetStatus(
+JNIEnv *env, jobject thiz, jlong pgame) {
+    JniHelpers h(env);
+    try {
+        const delGame::Ref &game = *((delGame::Ref*)pgame);
+        return GameStatus(env).Convert(game);
     }catch(const deException &e){
         h.throwException(e);
     }

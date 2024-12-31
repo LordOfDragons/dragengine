@@ -44,4 +44,22 @@ public:
     jobject Convert(const delGame &game);
 };
 
+
+class GameStatus {
+private:
+    JNIEnv *pEnv;
+
+    JniClass pClsStatus;
+    const JniFieldBool pFldAllFormatsSupported;
+    const JniFieldBool pFldScriptModuleFound;
+    const JniFieldString pFldScriptModuleFoundVersion;
+    const JniFieldBool pFldGameUpToDate;
+    const JniFieldBool pFldCanRun;
+
+public:
+    explicit GameStatus(JNIEnv *env);
+
+    jobject Convert(const delGame &game);
+};
+
 #endif //DELAUNCHER_GAME_H
