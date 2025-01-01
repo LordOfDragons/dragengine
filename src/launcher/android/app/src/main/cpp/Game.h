@@ -75,6 +75,7 @@ public:
     explicit GameConfig(JNIEnv *env);
 
     jobject Convert(const delGame &game);
+    void Store(jobject objConfig, delGame &game);
 };
 
 #endif //DELAUNCHER_GAME_H

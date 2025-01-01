@@ -54,7 +54,7 @@ class GameProfile private constructor(
     private var refcount: Int = 1
 
     init {
-        updateInfo()
+        updateConfig()
         updateStatus()
     }
 
@@ -63,8 +63,12 @@ class GameProfile private constructor(
         nativeProfile.dispose()
     }
 
-    fun updateInfo(){
-        nativeProfile.updateInfo(this)
+    fun updateConfig(){
+        nativeProfile.updateConfig(this)
+    }
+
+    fun storeConfig(){
+        nativeProfile.storeConfig(this)
     }
 
     fun updateStatus(){

@@ -357,6 +357,7 @@ class RunDelgaActivity : AppCompatActivity(),
         if(profile == null){
             profile = GameProfile.copyInstance(runParams.gameProfile!!)
             game.customProfile = profile
+            game.storeConfig()
         }
 
         // update custom profile

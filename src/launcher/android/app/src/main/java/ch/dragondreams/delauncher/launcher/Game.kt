@@ -31,13 +31,13 @@ class Game(
      * Custom profile. If you store the object for later use call GameProfile.retain()
      * and GameProfile.release() upon dropping the object.
      *
-     * Assigning a non-null profile calls GameProfile.retain() and GameProfile.release()
-     * itself.
+     * Assigning a non-null profile calls GameProfile.retain() and GameProfile.release().
+     *
+     * Call storeConfig() after changing value.
      */
     var customProfile: GameProfile? = null
         set(value) {
             if(value != field) {
-                nativeGame.setCustomProfile(value?.nativeProfile)
                 field?.release()
                 field = value?.retain()
             }
@@ -47,13 +47,13 @@ class Game(
      * Active profile. If you store the object for later use call GameProfile.retain()
      *      * and GameProfile.release() upon dropping the object.
      *
-     * Assigning a non-null profile calls GameProfile.retain() and GameProfile.release()
-     * itself.
+     * Assigning a non-null profile calls GameProfile.retain() and GameProfile.release().
+     *
+     * Call storeConfig() after changing value.
      */
     var activeProfile: GameProfile? = null
         set(value) {
             if(value != field) {
-                nativeGame.setActiveProfile(value?.nativeProfile)
                 field?.release()
                 field = value?.retain()
             }
@@ -88,6 +88,10 @@ class Game(
 
     fun loadConfig() {
         nativeGame.loadConfig()
+    }
+
+    fun storeConfig() {
+        nativeGame.storeConfig(this)
     }
 
     fun verifyRequirements() {

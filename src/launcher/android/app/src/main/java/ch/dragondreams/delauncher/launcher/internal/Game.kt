@@ -13,8 +13,7 @@ class Game(
     private external fun gameVerifyRequirements(game: Long)
     private external fun gameGetStatus(game: Long): GameStatus
     private external fun gameGetConfig(game: Long): GameConfig
-    private external fun gameSetCustomProfile(game: Long, profile: Long)
-    private external fun gameSetActiveProfile(game: Long, profile: Long)
+    private external fun gameSetConfig(game: Long, config: GameConfig)
 
     fun dispose() {
         if (nativeRefCount-- == 0 && nativeGame != 0L){
@@ -47,11 +46,10 @@ class Game(
         gameGetConfig(nativeGame).update(game)
     }
 
-    fun setCustomProfile(profile: GameProfile?){
-        gameSetCustomProfile(nativeGame, profile?.nativeProfile ?: 0L)
-    }
-
-    fun setActiveProfile(profile: GameProfile?){
-        gameSetActiveProfile(nativeGame, profile?.nativeProfile ?: 0L)
+    fun storeConfig(game: Game){
+        var config = GameConfig()
+        config.customProfile = game.customProfile?.nativeProfile?.nativeProfile ?: 0L
+        config.activeProfile = game.activeProfile?.nativeProfile?.nativeProfile ?: 0L
+        gameSetConfig(nativeGame, config)
     }
 }

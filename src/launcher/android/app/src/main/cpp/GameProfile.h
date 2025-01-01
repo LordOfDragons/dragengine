@@ -5,7 +5,7 @@
 
 class delGameProfile;
 
-class GameProfileInfo {
+class GameProfileConfig {
     JNIEnv *pEnv;
 
     JniClass pClsParameter;
@@ -53,9 +53,10 @@ class GameProfileInfo {
     const JniFieldBool pFldProfileReplaceRunArgs;
 
 public:
-    explicit GameProfileInfo(JNIEnv *env);
+    explicit GameProfileConfig(JNIEnv *env);
 
     jobject Convert(const delGameProfile &profile);
+    void Store(jobject objConfig, delGameProfile &profile);
 };
 
 class GameProfileStatus{

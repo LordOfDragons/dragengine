@@ -5,10 +5,10 @@
 #include <delauncher/game/profile/delGPMParameter.h>
 #include <delauncher/game/profile/delGPModule.h>
 
-// GameProfileInfo
+// GameProfileConfig
 ////////////////////
 
-GameProfileInfo::GameProfileInfo(JNIEnv *env) :
+GameProfileConfig::GameProfileConfig(JNIEnv *env) :
 pEnv(env),
 
 pClsParameter(env, JPATH_BASE "GameProfileModuleParameter"),
@@ -23,7 +23,7 @@ pClsModuleVersion(env, JPATH_BASE "GameProfileModuleVersion"),
 pFldModVerName(pClsModuleVersion.GetFieldString("name")),
 pFldModVerVersion(pClsModuleVersion.GetFieldString("version")),
 
-pClsProfile(env, JPATH_BASE "GameProfileInfo"),
+pClsProfile(env, JPATH_BASE "GameProfileConfig"),
 pFldProfileName(pClsProfile.GetFieldString("name")),
 
 pFldProfileModuleGraphic(pClsProfile.GetFieldString("moduleGraphic")),
@@ -56,7 +56,7 @@ pFldProfileRunArgs(pClsProfile.GetFieldString("runArgs")),
 pFldProfileReplaceRunArgs(pClsProfile.GetFieldBool("replaceRunArgs")){
 }
 
-jobject GameProfileInfo::Convert(const delGameProfile &profile) {
+jobject GameProfileConfig::Convert(const delGameProfile &profile) {
     const delGPModuleList &modules = profile.GetModules();
     const int moduleCount = modules.GetCount();
     const JniObjectArray objModules(pEnv, pClsModule, moduleCount);
@@ -126,6 +126,66 @@ jobject GameProfileInfo::Convert(const delGameProfile &profile) {
     return objProfile.ReturnValue();
 }
 
+void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
+    profile.SetName(pFldProfileName.Get(objConfig));
+    profile.SetModuleGraphic(pFldProfileModuleGraphic.Get(objConfig));
+    profile.SetModuleInput(pFldProfileModuleInput.Get(objConfig));
+    profile.SetModulePhysics(pFldProfileModulePhysics.Get(objConfig));
+    profile.SetModuleAnimator(pFldProfileModuleAnimator.Get(objConfig));
+    profile.SetModuleAI(pFldProfileModuleAI.Get(objConfig));
+    profile.SetModuleCrashRecovery(pFldProfileModuleCrashRecovery.Get(objConfig));
+    profile.SetModuleAudio(pFldProfileModuleAudio.Get(objConfig));
+    profile.SetModuleSynthesizer(pFldProfileModuleSynthesizer.Get(objConfig));
+    profile.SetModuleNetwork(pFldProfileModuleNetwork.Get(objConfig));
+    profile.SetModuleVR(pFldProfileModuleVR.Get(objConfig));
+
+    profile.SetModuleGraphicVersion(pFldProfileModuleGraphicVersion.Get(objConfig));
+    profile.SetModuleInputVersion(pFldProfileModuleInputVersion.Get(objConfig));
+    profile.SetModulePhysicsVersion(pFldProfileModulePhysicsVersion.Get(objConfig));
+    profile.SetModuleAnimatorVersion(pFldProfileModuleAnimatorVersion.Get(objConfig));
+    profile.SetModuleAIVersion(pFldProfileModuleAIVersion.Get(objConfig));
+    profile.SetModuleCrashRecoveryVersion(pFldProfileModuleCrashRecoveryVersion.Get(objConfig));
+    profile.SetModuleAudioVersion(pFldProfileModuleAudioVersion.Get(objConfig));
+    profile.SetModuleSynthesizerVersion(pFldProfileModuleSynthesizerVersion.Get(objConfig));
+    profile.SetModuleNetworkVersion(pFldProfileModuleNetworkVersion.Get(objConfig));
+    profile.SetModuleVRVersion(pFldProfileModuleVRVersion.Get(objConfig));
+
+    const JniObjectArray objDisModVers(pEnv, pFldProfileDisableModuleVersions.Get(objConfig));
+    const int disObjVersCount = objDisModVers.GetCount();
+    int i;
+    for(i=0; i<disObjVersCount; i++){
+        jobject objVer = objDisModVers.GetAt(i);
+        delGPDisableModuleVersion * const ver = new delGPDisableModuleVersion;
+        ver->SetName(pFldModVerName.Get(objVer));
+        ver->SetVersion(pFldModVerVersion.Get(objVer));
+        profile.GetDisableModuleVersions().Add(ver);
+    }
+
+    const JniObjectArray objMods(pEnv, pFldProfileModules.Get(objConfig));
+    const int modCount = objMods.GetCount();
+    for(i=0; i<disObjVersCount; i++) {
+        jobject objMod = objMods.GetAt(i);
+        delGPModule * const mod = new delGPModule;
+        mod->SetName(pFldModuleName.Get(objMod));
+
+        JniObjectArray objParams(pEnv, pFldModuleParameters.Get(objMod));
+        const int paramCount = objParams.GetCount();
+        int j;
+        for(j=0; j<paramCount; j++){
+            jobject objParam = objParams.GetAt(j);
+            delGPMParameter * const param = new delGPMParameter;
+            param->SetName(pFldParamName.Get(objParam));
+            param->SetValue(pFldParamValue.Get(objParam));
+            mod->GetParameters().Add(param);
+        }
+
+        profile.GetModules().Add(mod);
+    }
+
+    profile.SetRunArguments(pFldProfileRunArgs.Get(objConfig));
+    profile.SetReplaceRunArguments(pFldProfileReplaceRunArgs.Get(objConfig));
+}
+
 
 // GameProfileStatus
 //////////////////////
@@ -153,15 +213,27 @@ JNIEnv *env, jobject thiz, jlong pprofile){
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileGetInfo(
+Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileGetConfig(
 JNIEnv *env, jobject thiz, jlong pprofile){
     JniHelpers h(env);
     try {
         const delGameProfile &profile = *((delGameProfile*)pprofile);
-        return GameProfileInfo(env).Convert(profile);
+        return GameProfileConfig(env).Convert(profile);
     }catch(const deException &e){
         h.throwException(e);
         return nullptr; // keep compiler happy. code never gets here
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_gameProfileSetConfig(
+JNIEnv *env, jobject thiz, jlong pprofile, jobject pconfig) {
+    JniHelpers h(env);
+    try {
+        GameProfileConfig(env).Store(pconfig, *((delGameProfile*)pprofile));
+    }catch(const deException &e){
+        h.throwException(e);
     }
 }
 
@@ -191,6 +263,7 @@ JNIEnv *env, jobject thiz){
         return 0; // keep compiler happy. code never gets here
     }
 }
+
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_GameProfile_00024Companion_gameProfileCopy(

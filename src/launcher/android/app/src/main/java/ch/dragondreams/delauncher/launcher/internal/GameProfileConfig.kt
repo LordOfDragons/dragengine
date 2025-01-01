@@ -2,7 +2,7 @@ package ch.dragondreams.delauncher.launcher.internal
 
 import ch.dragondreams.delauncher.launcher.GameProfile
 
-data class GameProfileInfo(
+data class GameProfileConfig(
     var name: String = "",
 
     var moduleGraphic: String = "",

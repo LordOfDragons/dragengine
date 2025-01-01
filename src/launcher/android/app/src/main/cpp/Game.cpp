@@ -191,6 +191,11 @@ jobject GameConfig::Convert(const delGame &game){
     return objConfig.ReturnValue();
 }
 
+void GameConfig::Store(jobject objConfig, delGame &game){
+    game.SetCustomProfile((delGameProfile*)pFldCustomProfile.Get(objConfig));
+    game.SetActiveProfile((delGameProfile*)pFldActiveProfile.Get(objConfig));
+}
+
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_Game_gameGetConfig(
@@ -206,22 +211,11 @@ JNIEnv *env, jobject thiz, jlong pgame){
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_ch_dragondreams_delauncher_launcher_internal_Game_gameSetCustomProfile(
-JNIEnv *env, jobject thiz, jlong pgame, jlong pprofile){
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameSetConfig(
+JNIEnv *env, jobject thiz, jlong pgame, jobject pconfig){
     JniHelpers h(env);
     try {
-        ((delGame*)pgame)->SetCustomProfile((delGameProfile*)pprofile);
-    }catch(const deException &e){
-        h.throwException(e);
-    }
-}
-extern "C"
-JNIEXPORT void JNICALL
-Java_ch_dragondreams_delauncher_launcher_internal_Game_gameSetActiveProfile(
-JNIEnv *env, jobject thiz, jlong pgame, jlong pprofile){
-    JniHelpers h(env);
-    try {
-        ((delGame*)pgame)->SetActiveProfile((delGameProfile*)pprofile);
+        GameConfig(env).Store(pconfig, *((delGame*)pgame));
     }catch(const deException &e){
         h.throwException(e);
     }

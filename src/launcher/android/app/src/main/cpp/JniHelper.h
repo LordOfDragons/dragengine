@@ -197,13 +197,18 @@ public:
  * Held array object. Released in destructor.
  */
 class JniObjectArray : public JniObject{
+private:
+    int pCount;
+
 public:
     JniObjectArray(JNIEnv *env, jclass itemClass, int itemCount);
-    JniObjectArray(JNIEnv *env, jobject object);
+    JniObjectArray(JNIEnv *env, jobjectArray object);
     explicit JniObjectArray(const JniObjectArray &object);
 
     inline operator jobjectArray() const{ return reinterpret_cast<jobjectArray>(pObject); }
 
+    [[nodiscard]] inline int GetCount() const{ return pCount; }
+    jobject GetAt(int index) const;
     void SetAt(int index, jobject object) const;
     jobjectArray ReturnArray();
 };

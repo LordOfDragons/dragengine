@@ -289,15 +289,23 @@ jobject JniObject::ReturnValue() {
 // JniObjectArray
 ///////////////////
 
-JniObjectArray::JniObjectArray(JNIEnv *env, jobject object) :
-JniObject(env, object){
+JniObjectArray::JniObjectArray(JNIEnv *env, jobjectArray object) :
+JniObject(env, object),
+pCount(env->GetArrayLength(object)){
 }
 
 JniObjectArray::JniObjectArray(JNIEnv *env, jclass itemClass, int itemCount) :
-JniObject(env, env->NewObjectArray(itemCount, itemClass, nullptr)){
+JniObject(env, env->NewObjectArray(itemCount, itemClass, nullptr)),
+pCount(itemCount){
 }
 
 JniObjectArray::JniObjectArray(const JniObjectArray &object) = default;
+
+jobject JniObjectArray::GetAt(int index) const{
+    DEASSERT_TRUE(index >= 0)
+    DEASSERT_TRUE(index < pCount)
+    return pEnv->GetObjectArrayElement(reinterpret_cast<jobjectArray>(pObject), (jsize)index);
+}
 
 void JniObjectArray::SetAt(int index, jobject object) const{
     pEnv->SetObjectArrayElement(reinterpret_cast<jobjectArray>(pObject), index, object);
