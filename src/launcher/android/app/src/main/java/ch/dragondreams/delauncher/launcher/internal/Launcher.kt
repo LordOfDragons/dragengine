@@ -3,6 +3,7 @@ package ch.dragondreams.delauncher.launcher.internal
 import android.view.SurfaceView
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.EngineModule
+import ch.dragondreams.delauncher.launcher.GameProfile
 
 class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
     private var nativeLauncher: Long = 0L
@@ -12,9 +13,14 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
     private external fun getEngineModules(launcher: Long):
             Array<ch.dragondreams.delauncher.launcher.internal.EngineModule>
     private external fun getGames(launcher: Long): LongArray
+    private external fun getGameProfiles(launcher: Long): LongArray
+    private external fun getDefaultProfile(launcher: Long): Long
+    private external fun getActiveProfile(launcher: Long): Long
+    private external fun setActiveProfile(launcher: Long, profile: Long)
     private external fun vfsContainerAddFd(launcher: Long, path: String, fd: Int, offset: Int, length: Int)
     private external fun vfsContainerRemoveFd(launcher: Long, path: String)
     private external fun readDelgaGames(launcher: Long, path: String): LongArray
+    private external fun isModuleSingleType(type: Int): Boolean
 
     init {
         nativeLauncher = createLauncher(
@@ -65,5 +71,34 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
             games.add(ch.dragondreams.delauncher.launcher.Game(Game(g)))
         }
         return games
+    }
+
+    fun isModuleSingleType(type: EngineModule.Type): Boolean {
+        return isModuleSingleType(ch.dragondreams.delauncher.launcher.internal.EngineModule.mapTypeInv[type]!!)
+    }
+
+    fun getGameProfiles(): List<GameProfile> {
+        val profiles = mutableListOf<GameProfile>()
+        getGameProfiles(nativeLauncher).forEach { p ->
+            profiles.add(GameProfile.getInstance(
+                ch.dragondreams.delauncher.launcher.internal.GameProfile.getInstance(p))!!)
+        }
+        return profiles
+    }
+
+    fun getDefaultProfile(): GameProfile? {
+        return GameProfile.getInstance(
+            ch.dragondreams.delauncher.launcher.internal.GameProfile.getInstance(
+                getDefaultProfile(nativeLauncher)))
+    }
+
+    fun getActiveProfile(): GameProfile? {
+        return GameProfile.getInstance(
+            ch.dragondreams.delauncher.launcher.internal.GameProfile.getInstance(
+                getActiveProfile(nativeLauncher)))
+    }
+
+    fun setActiveProfile(profile: GameProfile?){
+        setActiveProfile(nativeLauncher, profile?.nativeProfile?.nativeProfile ?: 0L)
     }
 }

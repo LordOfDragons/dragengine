@@ -93,7 +93,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_Game_gameRelease(
 JNIEnv *env, jobject thiz, jlong pgame){
-    delete (delGame::Ref*)pgame;
+    ((delGame*)pgame)->FreeReference();
 }
 
 extern "C"
@@ -102,10 +102,11 @@ Java_ch_dragondreams_delauncher_launcher_internal_Game_gameGetInfo(
 JNIEnv *env, jobject thiz, jlong pgame){
     JniHelpers h(env);
     try {
-        const delGame &game = *((delGame::Ref*)pgame);
+        const delGame &game = *((delGame*)pgame);
         return GameInfo(env).Convert(game);
     }catch(const deException &e){
         h.throwException(e);
+        return nullptr; // keep compiler happy. code never gets here
     }
 }
 
@@ -115,8 +116,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_Game_gameLoadConfig(
 JNIEnv *env, jobject thiz, jlong pgame) {
     JniHelpers h(env);
     try {
-        const delGame::Ref &game = *((delGame::Ref*)pgame);
-        game->LoadConfig();
+        ((delGame*)pgame)->LoadConfig();
     }catch(const deException &e){
         h.throwException(e);
     }
@@ -127,22 +127,25 @@ Java_ch_dragondreams_delauncher_launcher_internal_Game_gameVerifyRequirements(
 JNIEnv *env, jobject thiz, jlong pgame) {
     JniHelpers h(env);
     try {
-        const delGame::Ref &game = *((delGame::Ref*)pgame);
-        game->VerifyRequirements();
+        ((delGame*)pgame)->VerifyRequirements();
     }catch(const deException &e){
         h.throwException(e);
     }
 }
 
-GameStatus::GameStatus(JNIEnv *env) :
-pEnv(env),
 
-pClsStatus(env, JPATH_BASE "GameStatus"),
-pFldAllFormatsSupported(pClsStatus.GetFieldBool("allFormatsSupported")),
-pFldScriptModuleFound(pClsStatus.GetFieldBool("scriptModuleFound")),
-pFldScriptModuleFoundVersion(pClsStatus.GetFieldString("scriptModuleFoundVersion")),
-pFldGameUpToDate(pClsStatus.GetFieldBool("gameUpToDate")),
-pFldCanRun(pClsStatus.GetFieldBool("canRun")){
+// GameStatus
+///////////////
+
+GameStatus::GameStatus(JNIEnv *env) :
+        pEnv(env),
+
+        pClsStatus(env, JPATH_BASE "GameStatus"),
+        pFldAllFormatsSupported(pClsStatus.GetFieldBool("allFormatsSupported")),
+        pFldScriptModuleFound(pClsStatus.GetFieldBool("scriptModuleFound")),
+        pFldScriptModuleFoundVersion(pClsStatus.GetFieldString("scriptModuleFoundVersion")),
+        pFldGameUpToDate(pClsStatus.GetFieldBool("gameUpToDate")),
+        pFldCanRun(pClsStatus.GetFieldBool("canRun")){
 }
 
 jobject GameStatus::Convert(const delGame &game){
@@ -161,8 +164,64 @@ Java_ch_dragondreams_delauncher_launcher_internal_Game_gameGetStatus(
 JNIEnv *env, jobject thiz, jlong pgame) {
     JniHelpers h(env);
     try {
-        const delGame::Ref &game = *((delGame::Ref*)pgame);
+        const delGame &game = *((delGame*)pgame);
         return GameStatus(env).Convert(game);
+    }catch(const deException &e){
+        h.throwException(e);
+        return nullptr; // keep compiler happy. code never gets here
+    }
+}
+
+
+// GameConfig
+///////////////
+
+GameConfig::GameConfig(JNIEnv *env) :
+pEnv(env),
+
+pClsConfig(env, JPATH_BASE "GameConfig"),
+pFldCustomProfile(pClsConfig.GetFieldPointer("customProfile")),
+pFldActiveProfile(pClsConfig.GetFieldPointer("activeProfile")){
+}
+
+jobject GameConfig::Convert(const delGame &game){
+    JniObject objConfig(pClsConfig.New());
+    pFldCustomProfile.Set(objConfig, game.GetCustomProfile());
+    pFldActiveProfile.Set(objConfig, game.GetActiveProfile());
+    return objConfig.ReturnValue();
+}
+
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameGetConfig(
+JNIEnv *env, jobject thiz, jlong pgame){
+    JniHelpers h(env);
+    try {
+        return GameConfig(env).Convert(*((delGame*)pgame));
+    }catch(const deException &e){
+        h.throwException(e);
+        return nullptr; // keep compiler happy. code never gets here
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameSetCustomProfile(
+JNIEnv *env, jobject thiz, jlong pgame, jlong pprofile){
+    JniHelpers h(env);
+    try {
+        ((delGame*)pgame)->SetCustomProfile((delGameProfile*)pprofile);
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameSetActiveProfile(
+JNIEnv *env, jobject thiz, jlong pgame, jlong pprofile){
+    JniHelpers h(env);
+    try {
+        ((delGame*)pgame)->SetActiveProfile((delGameProfile*)pprofile);
     }catch(const deException &e){
         h.throwException(e);
     }

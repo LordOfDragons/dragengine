@@ -7,7 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
+import ch.dragondreams.delauncher.launcher.EngineModule
+import ch.dragondreams.delauncher.launcher.EngineModuleParameter
 import ch.dragondreams.delauncher.launcher.Game
+import ch.dragondreams.delauncher.launcher.GameProfile
+import ch.dragondreams.delauncher.launcher.GameRunParams
 import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
 
 class RunDelgaActivity : AppCompatActivity(),
@@ -34,6 +38,10 @@ class RunDelgaActivity : AppCompatActivity(),
     private var delgaGames: MutableList<Game> = mutableListOf()
     private var delgaGame: Game? = null
     private var delgaPath: String? = null
+    private var hasPatchIdentifier = false
+    private var patchIdentifier: String? = null
+    private val moduleParameters: MutableList<EngineModuleParameter> = mutableListOf()
+    private var runParams: GameRunParams = GameRunParams()
 
     override fun getLauncher(): DragengineLauncher {
         if (launcher == null) {
@@ -103,9 +111,18 @@ class RunDelgaActivity : AppCompatActivity(),
         }
         */
 
-        if (!locateGame()) {
+        if(!locateGame()){
             finish()
             return
+        }
+
+        if(delgaGame?.canRun != true){
+            logProblems()
+            return
+        }
+
+        if(!locateProfile()){
+            return;
         }
 
         delgaGame?.dispose()
@@ -211,10 +228,142 @@ class RunDelgaActivity : AppCompatActivity(),
             delgaGame?.loadConfig()
         }
 
+        delgaGame?.updateConfig()
         delgaGame?.verifyRequirements()
         delgaGame?.updateStatus()
         Log.i(TAG, "processIntentLaunchDelga: DELGA status ${delgaGame?.canRun}")
         return true
+    }
+
+    private fun logProblems() {
+        val game = delgaGame!!
+        val launcher = launcher!!
+
+        Log.i(TAG, "logProblems: Game '${game.aliasIdentifier}'(${game.identifier}) has the following problems:")
+        game.fileFormats.forEach { f ->
+            if(!f.supported){
+                if(launcher.isModuleSingleType(f.type)){
+                    Log.i(TAG, "logProblems: - File Format '${f.pattern}' defines single type ${EngineModule.mapTypeName[f.type]}")
+                }else{
+                    Log.i(TAG, "logProblems: - File Format '${f.pattern}' is not supported by any loaded modules")
+                }
+            }
+        }
+        if(!game.scriptModuleFound){
+            printModuleProblem(game.scriptModule, EngineModule.Type.Script);
+        }
+    }
+
+    private fun printModuleProblem(name: String, type: EngineModule.Type) {
+        val module = launcher?.engineModules?.find { m -> m.name == name }
+        val typeName = EngineModule.mapTypeName[type]
+
+        if(module == null){
+            Log.i(TAG, "printModuleProblem: - $typeName module '$name' does not exist")
+
+        }else if(module.type != type){
+            Log.i(TAG, "printModuleProblem: - Module '$name' is not a $typeName module")
+
+        }else if(module.status != EngineModule.Status.Ready){
+            val errorCode = EngineModule.mapErrorCode[module.errorCode]
+            val reason = EngineModule.mapErrorText[errorCode] ?: "Unknown problem"
+            Log.i(TAG, "printModuleProblem: - $typeName module '${name}' is not working ($reason)")
+        }
+    }
+
+    private fun locateProfile(): Boolean{
+        val game = delgaGame!!
+
+        // locate the profile to run
+        var profile: GameProfile? = null
+
+        profile = game.getProfileToUse(launcher!!)
+        if(profile == null){
+            Log.e(TAG, "locateProfile: No game profile found")
+            return false
+        }
+
+        if(!profile.valid){
+            printProfileProblems(profile)
+            return false
+        }
+
+        // determine patch to use
+        if(delgaGame!!.useCustomPatch.isNotEmpty()){
+            hasPatchIdentifier = true
+            patchIdentifier = game.useCustomPatch
+
+        }else if(!delgaGame!!.useLatestPatch){
+            hasPatchIdentifier = true
+            patchIdentifier = null
+        }
+
+        // udpate the run parameters
+        runParams.gameProfile = profile
+
+        /*
+        var error: String
+        if(!runParams.findPatches(delgaGame, delgaGame.useLatestPatch, pPatchIdentifier, error)){
+            logger.LogError( LOGSOURCE, error.GetString() );
+            return false;
+        }
+        */
+
+        updateRunArguments()
+        applyCustomModuleParameters(); // potentially changes game profile set in run parameters
+        return true;
+    }
+
+    private fun printProfileProblems(profile: GameProfile){
+        Log.i(TAG, "printProfileProblems: Profile '${profile.name}' has the following problems:")
+        printModuleProblem(profile.moduleGraphic, EngineModule.Type.Graphic)
+        printModuleProblem(profile.moduleInput, EngineModule.Type.Input)
+        printModuleProblem(profile.modulePhysics, EngineModule.Type.Physics)
+        printModuleProblem(profile.moduleAnimator, EngineModule.Type.Animator)
+        printModuleProblem(profile.moduleAI, EngineModule.Type.AI)
+        printModuleProblem(profile.moduleCrashRecovery, EngineModule.Type.CrashRecovery)
+        printModuleProblem(profile.moduleAudio, EngineModule.Type.Audio)
+        printModuleProblem(profile.moduleSynthesizer, EngineModule.Type.Synthesizer)
+        printModuleProblem(profile.moduleNetwork, EngineModule.Type.Network)
+        printModuleProblem(profile.moduleVR, EngineModule.Type.VR)
+    }
+
+    private fun updateRunArguments(){
+        val profile = runParams.gameProfile!!
+        var arguments: String = ""
+
+        if(profile.replaceRunArguments){
+            arguments = profile.runArguments
+        }else{
+            arguments = delgaGame!!.runArguments
+            if(arguments.isNotEmpty()){
+                arguments += " "
+            }
+            arguments += profile.runArguments
+        }
+
+        runParams.runArguments = arguments
+    }
+
+    private fun applyCustomModuleParameters(){
+        if(moduleParameters.isEmpty()){
+            return
+        }
+
+        // ensure custom profile exists and is initialized with profile used to run the game
+        val game = delgaGame!!
+        var profile: GameProfile? = game.customProfile
+
+        if(profile == null){
+            profile = GameProfile.copyInstance(runParams.gameProfile!!)
+            game.customProfile = profile
+        }
+
+        // update custom profile
+        //TODO: profile->GetModules().Update( *pModuleParameters );
+
+        // use custom profile
+        runParams.gameProfile = profile
     }
 
     companion object {

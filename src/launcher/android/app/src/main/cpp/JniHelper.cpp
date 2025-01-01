@@ -31,6 +31,10 @@ JniFieldInt JniClass::GetFieldInt(const char *name) const {
     return {pEnv, pClass, name};
 }
 
+JniFieldPointer JniClass::GetFieldPointer(const char *name) const {
+    return {pEnv, pClass, name};
+}
+
 JniFieldFloat JniClass::GetFieldFloat(const char *name) const {
     return {pEnv, pClass, name};
 }
@@ -156,6 +160,22 @@ void JniFieldInt::Set(jobject object, int value) const {
 }
 
 
+// JniFieldPointer
+////////////////////
+
+JniFieldPointer::JniFieldPointer(JNIEnv *env, jclass clazz, const char *name) :
+JniField(env, clazz, name, "J"){
+}
+
+void *JniFieldPointer::Get(jobject object) const {
+    return (void*)(intptr_t)pEnv->GetLongField(object, pId);
+}
+
+void JniFieldPointer::Set(jobject object, void *value) const {
+    pEnv->SetLongField(object, pId, (jlong)(intptr_t)value);
+}
+
+
 // JniFieldFloat
 //////////////////
 
@@ -180,11 +200,11 @@ JniField(env, clazz, name, "Z"){
 }
 
 bool JniFieldBool::Get(jobject object) const {
-    return pEnv->GetBooleanField(object, pId);
+    return pEnv->GetBooleanField(object, pId) == JNI_TRUE;
 }
 
 void JniFieldBool::Set(jobject object, bool value) const {
-    pEnv->SetBooleanField(object, pId, value);
+    pEnv->SetBooleanField(object, pId, value ? JNI_TRUE : JNI_FALSE);
 }
 
 

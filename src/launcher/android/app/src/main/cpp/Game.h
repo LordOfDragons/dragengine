@@ -4,7 +4,6 @@
 #include "JniHelper.h"
 
 class delGame;
-class delGameList;
 
 class GameInfo {
 private:
@@ -58,6 +57,22 @@ private:
 
 public:
     explicit GameStatus(JNIEnv *env);
+
+    jobject Convert(const delGame &game);
+};
+
+
+
+class GameConfig {
+private:
+    JNIEnv *pEnv;
+
+    JniClass pClsConfig;
+    const JniFieldPointer pFldCustomProfile;
+    const JniFieldPointer pFldActiveProfile;
+
+public:
+    explicit GameConfig(JNIEnv *env);
 
     jobject Convert(const delGame &game);
 };

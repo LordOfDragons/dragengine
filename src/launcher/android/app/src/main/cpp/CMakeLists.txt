@@ -31,6 +31,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         JniHelper.cpp
         EngineModule.cpp
         Game.cpp
+        GameProfile.cpp
         FDFileReader.cpp
         FDVFSContainer.cpp)
 

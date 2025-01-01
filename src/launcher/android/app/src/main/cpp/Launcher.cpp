@@ -87,6 +87,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_Launcher_createLauncher(
         return (jlong)(intptr_t)(new Launcher(delConfig));
     }catch(const deException &e){
         h.throwException(e);
+        return 0; // keep compiler happy. code never gets here
     }
 }
 
@@ -111,6 +112,7 @@ Java_ch_dragondreams_delauncher_launcher_internal_Launcher_getEngineModules(JNIE
         return EngineModule(env).Convert(launcher.GetEngine().GetModules());
     }catch(const deException &e){
         h.throwException(e);
+        return nullptr; // keep compiler happy. code never gets here
     }
 }
 
@@ -127,11 +129,14 @@ JNIEnv *env, jobject thiz, jlong plauncher) {
 
         JniLongArray objGames(env, gameCount);
         for (i=0; i<gameCount; i++) {
-            objGames.SetAt(i, (jlong)(intptr_t)new delGame::Ref(games.GetAt(i)));
+            delGame * const game = games.GetAt(i);
+            game->AddReference();
+            objGames.SetAt(i, (jlong)(intptr_t)game);
         }
         return objGames.ReturnArray();
     }catch(const deException &e){
         h.throwException(e);
+        return nullptr; // keep compiler happy. code never gets here
     }
 }
 
@@ -177,9 +182,91 @@ JNIEnv *env, jobject thiz, jlong plauncher, jstring path){
 
         JniLongArray objGames(env, gameCount);
         for (i=0; i<gameCount; i++) {
-            objGames.SetAt(i, (jlong)(intptr_t)new delGame::Ref(games.GetAt(i)));
+            delGame * const game = games.GetAt(i);
+            game->AddReference();
+            objGames.SetAt(i, (jlong)(intptr_t)game);
         }
         return objGames.ReturnArray();
+    }catch(const deException &e){
+        h.throwException(e);
+        return nullptr; // keep compiler happy. code never gets here
+    }
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_isModuleSingleType(
+JNIEnv *env, jobject thiz, jint type){
+    return deModuleSystem::IsSingleType((deModuleSystem::eModuleTypes)type) ? JNI_TRUE : JNI_FALSE;
+}
+extern "C"
+JNIEXPORT jlongArray JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_getGameProfiles(
+JNIEnv *env, jobject thiz, jlong plauncher){
+    JniHelpers h(env);
+    try {
+        const Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
+        const delGameProfileList &profiles = launcher.GetGameManager().GetProfiles();
+        const int profileCount = profiles.GetCount();
+        int i;
+
+        JniLongArray objProfiles(env, profileCount);
+        for (i=0; i<profileCount; i++) {
+            delGameProfile * const profile = profiles.GetAt(i);
+            profile->AddReference();
+            objProfiles.SetAt(i, (jlong)(intptr_t)profile);
+        }
+        return objProfiles.ReturnArray();
+    }catch(const deException &e){
+        h.throwException(e);
+        return nullptr; // keep compiler happy. code never gets here
+    }
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_getDefaultProfile(
+JNIEnv *env, jobject thiz, jlong plauncher){
+    JniHelpers h(env);
+    try {
+        const Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
+        delGameProfile * const profile = launcher.GetGameManager().GetDefaultProfile();
+        if(profile){
+            profile->AddReference();
+        }
+        return (jlong)(intptr_t)profile;
+    }catch(const deException &e){
+        h.throwException(e);
+        return 0; // keep compiler happy. code never gets here
+    }
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_getActiveProfile(
+JNIEnv *env, jobject thiz, jlong plauncher){
+    JniHelpers h(env);
+    try {
+        const Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
+        delGameProfile * const profile = launcher.GetGameManager().GetActiveProfile();
+        if(profile){
+            profile->AddReference();
+        }
+        return (jlong)(intptr_t)profile;
+    }catch(const deException &e){
+        h.throwException(e);
+        return 0; // keep compiler happy. code never gets here
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_setActiveProfile(
+JNIEnv *env, jobject thiz, jlong plauncher, jlong pprofile){
+    JniHelpers h(env);
+    try {
+        Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
+        delGameProfile * const profile = (delGameProfile*)(intptr_t)pprofile;
+        launcher.GetGameManager().SetActiveProfile(profile);
     }catch(const deException &e){
         h.throwException(e);
     }

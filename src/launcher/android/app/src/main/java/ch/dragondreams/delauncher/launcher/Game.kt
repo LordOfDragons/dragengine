@@ -5,8 +5,6 @@ import ch.dragondreams.delauncher.launcher.internal.Game
 class Game(
     private val nativeGame: Game
 ) {
-    private var nativeGameRefCount: Int = 0
-
     var identifier = ""
     var aliasIdentifier = ""
     var title = ""
@@ -29,8 +27,37 @@ class Game(
     var gameUpToDate = false
     var canRun = false
 
-    //var customProfile: GameProfile? = null
-    //var activeProfile: GameProfile? = null
+    /**
+     * Custom profile. If you store the object for later use call GameProfile.retain()
+     * and GameProfile.release() upon dropping the object.
+     *
+     * Assigning a non-null profile calls GameProfile.retain() and GameProfile.release()
+     * itself.
+     */
+    var customProfile: GameProfile? = null
+        set(value) {
+            if(value != field) {
+                nativeGame.setCustomProfile(value?.nativeProfile)
+                field?.release()
+                field = value?.retain()
+            }
+        }
+
+    /**
+     * Active profile. If you store the object for later use call GameProfile.retain()
+     *      * and GameProfile.release() upon dropping the object.
+     *
+     * Assigning a non-null profile calls GameProfile.retain() and GameProfile.release()
+     * itself.
+     */
+    var activeProfile: GameProfile? = null
+        set(value) {
+            if(value != field) {
+                nativeGame.setActiveProfile(value?.nativeProfile)
+                field?.release()
+                field = value?.retain()
+            }
+        }
 
     var runArguments = ""
 
@@ -40,12 +67,14 @@ class Game(
 
     init {
         updateInfo()
+        updateConfig()
     }
 
     fun dispose(){
-        if(nativeGameRefCount-- == 0) {
-            nativeGame.dispose()
-        }
+        activeProfile = null
+        customProfile = null
+
+        nativeGame.dispose()
     }
 
     fun updateInfo(){
@@ -53,7 +82,7 @@ class Game(
     }
 
     fun reference(): ch.dragondreams.delauncher.launcher.Game {
-        nativeGameRefCount++
+        nativeGame.addReference()
         return this
     }
 
@@ -67,5 +96,19 @@ class Game(
 
     fun updateStatus() {
         nativeGame.updateStatus(this)
+        customProfile?.updateStatus()
+        activeProfile?.updateStatus()
+    }
+
+    fun updateConfig() {
+        nativeGame.updateConfig(this)
+    }
+
+    /** \brief Profile to use. */
+    fun getProfileToUse(launcher: DragengineLauncher): GameProfile?{
+        return activeProfile
+            ?: customProfile
+            ?: launcher.activeProfile
+            ?: launcher.defaultProfile;
     }
 }

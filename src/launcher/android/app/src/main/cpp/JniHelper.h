@@ -11,6 +11,7 @@ class JniClass;
 class JniField;
 class JniFieldString;
 class JniFieldInt;
+class JniFieldPointer;
 class JniFieldFloat;
 class JniFieldBool;
 class JniFieldObject;
@@ -42,6 +43,7 @@ public:
 
     JniFieldString GetFieldString(const char *name) const;
     JniFieldInt GetFieldInt(const char *name) const;
+    JniFieldPointer GetFieldPointer(const char *name) const;
     JniFieldFloat GetFieldFloat(const char *name) const;
     JniFieldBool GetFieldBool(const char *name) const;
     JniFieldObject GetFieldObject(const char *name, const char *itemSig) const;
@@ -106,6 +108,17 @@ public:
 
     int Get(jobject object) const;
     void Set(jobject object, int value) const;
+};
+
+/**
+ * Pointer class field.
+ */
+class JniFieldPointer : public JniField{
+public:
+    JniFieldPointer(JNIEnv *env, jclass clazz, const char *name);
+
+    void *Get(jobject object) const;
+    void Set(jobject object, void *value) const;
 };
 
 /**

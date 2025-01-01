@@ -72,6 +72,10 @@ data class EngineModule(
             22 to EngineModule.Type.VR,
             23 to EngineModule.Type.Service)
 
+        val mapTypeInv: Map<EngineModule.Type, Int> = buildMap {
+            mapType.forEach { e -> put(e.value, e.key) }
+        }
+
         val mapStatus: Map<Int, EngineModule.Status> = mapOf(
             0 to EngineModule.Status.Ready,
             1 to EngineModule.Status.NotTested,

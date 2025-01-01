@@ -34,6 +34,18 @@ class EngineModule {
         Broken
     };
 
+    enum class ErrorCode{
+        Success,
+        CreateModuleFailed,
+        LibFileNotFound,
+        LibFileNotRegularFile,
+        LibFileSizeMismatch,
+        LibFileCheckSumMismatch,
+        LibFileOpenFailed,
+        LibFileEntryPointNotFound,
+        LibFileCreateModuleFailed
+    };
+
     var type = Type.Unknown
     var name = ""
     var description = ""
@@ -86,5 +98,34 @@ class EngineModule {
             Status.NotTested to "Not Tested",
             Status.Broken to "Broken"
         )
+
+        val mapErrorCode: Map<Int, ErrorCode> = mapOf(
+            0 to ErrorCode.Success,
+            1 to ErrorCode.CreateModuleFailed,
+            10 to ErrorCode.LibFileNotFound,
+            11 to ErrorCode.LibFileNotRegularFile,
+            12 to ErrorCode.LibFileSizeMismatch,
+            13 to ErrorCode.LibFileCheckSumMismatch,
+            14 to ErrorCode.LibFileOpenFailed,
+            15 to ErrorCode.LibFileEntryPointNotFound,
+            16 to ErrorCode.LibFileCreateModuleFailed)
+
+        val mapErrorText: Map<ErrorCode, String> = mapOf(
+            ErrorCode.CreateModuleFailed to
+                "Creating module failed",
+            ErrorCode.LibFileNotFound to
+                "Module library file could not be found",
+            ErrorCode.LibFileNotRegularFile to
+                "Module library file is not a regular library file",
+            ErrorCode.LibFileSizeMismatch to
+                "Size of the module library file does not match the size in the module definition",
+            ErrorCode.LibFileCheckSumMismatch to
+                "Checksum of the module library file does not match the checksum in the module definition",
+            ErrorCode.LibFileOpenFailed to
+                "Module library file could not be opened",
+            ErrorCode.LibFileEntryPointNotFound to
+                "Entry point function specified in the module definition could not be found in the library file",
+            ErrorCode.LibFileCreateModuleFailed to
+                "Creating the module using the entry point function failed")
     }
 }

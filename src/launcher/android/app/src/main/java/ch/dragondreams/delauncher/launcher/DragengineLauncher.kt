@@ -24,12 +24,16 @@ class DragengineLauncher(context: Context) {
 
         /** Games changed. */
         fun gamesChanged(launcher: DragengineLauncher)
+
+        /** Game profiles changed. */
+        fun gameProfilesChanged(launcher: DragengineLauncher)
     }
 
     open class DefaultListener : Listener {
         override fun stateChanged(launcher: DragengineLauncher) { }
         override fun engineModulesChanged(launcher: DragengineLauncher) { }
         override fun gamesChanged(launcher: DragengineLauncher) { }
+        override fun gameProfilesChanged(launcher: DragengineLauncher) { }
     }
 
     enum class State {
@@ -87,8 +91,21 @@ class DragengineLauncher(context: Context) {
 
     var engineVersion = ""
         private set
-    val engineModules: MutableList<EngineModule> = ArrayList()
-    val games: MutableList<Game> = ArrayList()
+    val engineModules: MutableList<EngineModule> = mutableListOf()
+    val games: MutableList<Game> = mutableListOf()
+    val gameProfiles: MutableList<GameProfile> = mutableListOf()
+
+    /** Default game profile. */
+    var defaultProfile: GameProfile? = null
+        private set
+
+    /** Active profile. */
+    var activeProfile: GameProfile? = null
+        set(value) {
+            launcher!!.setActiveProfile(value)
+            field = value
+        }
+
 
     private var launcher: Launcher? = null
 
@@ -118,6 +135,15 @@ class DragengineLauncher(context: Context) {
     }
 
     fun dispose() {
+        activeProfile?.release()
+        activeProfile = null
+
+        defaultProfile?.release()
+        defaultProfile = null
+
+        gameProfiles.forEach { p -> p.release() }
+        gameProfiles.clear()
+
         games.forEach { g -> g.dispose() }
         games.clear()
 
@@ -146,6 +172,13 @@ class DragengineLauncher(context: Context) {
      */
     fun readDelgaGames(path: String): List<Game> {
         return launcher?.readDelgaGames(path) ?: emptyList()
+    }
+
+    /**
+     * Game engine module type is single type.
+     */
+    fun isModuleSingleType(type: EngineModule.Type): Boolean {
+        return launcher?.isModuleSingleType(type) == true
     }
 
     /** Add listener. */
@@ -347,16 +380,25 @@ class DragengineLauncher(context: Context) {
         Log.i(TAG, "createGlueLauncher")
         setState(State.CreateInternalLauncher)
 
-        var launcher: Launcher? = null
         try {
             launcher = Launcher(this, null)
 
             engineModules.clear()
-            engineModules.addAll(launcher.getEngineModules())
+            engineModules.addAll(launcher!!.getEngineModules())
 
             games.forEach { g -> g.dispose() }
             games.clear()
-            games.addAll(launcher.getGames())
+            games.addAll(launcher!!.getGames())
+
+            gameProfiles.forEach { p -> p.release() }
+            gameProfiles.clear()
+            gameProfiles.addAll(launcher!!.getGameProfiles())
+
+            defaultProfile?.release()
+            defaultProfile = launcher!!.getDefaultProfile()
+
+            activeProfile?.release()
+            activeProfile = launcher!!.getDefaultProfile()
 
             try {
                 listenersLocked++
@@ -381,10 +423,10 @@ class DragengineLauncher(context: Context) {
             Log.e(TAG, "createGlueLauncher: Failed", e)
             setState(State.CreateInternalLauncherFailed)
             launcher?.dispose()
+            launcher = null
             return
         }
 
-        this.launcher = launcher
         Log.i(TAG, "game engine ready")
         setState(State.EngineReady)
     }
