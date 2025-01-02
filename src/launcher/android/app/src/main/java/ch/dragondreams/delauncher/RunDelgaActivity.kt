@@ -61,7 +61,7 @@ class RunDelgaActivity : AppCompatActivity(),
             insets
         }
 
-        Log.i(TAG, listOf("RunDelgaActivity:",
+        logInfo("RunDelgaActivity", listOf(
             "action='${intent.action}'",
             "type='${intent.type}'",
             "scheme='${intent.scheme}'",
@@ -122,10 +122,10 @@ class RunDelgaActivity : AppCompatActivity(),
         }
 
         if(!locateProfile()){
-            return;
+            return
         }
 
-        delgaGame?.dispose()
+        startGame()
     }
 
     private fun locateGame(): Boolean {
@@ -133,19 +133,21 @@ class RunDelgaActivity : AppCompatActivity(),
             "content" -> {
                 contentResolver.openAssetFileDescriptor(intent.data!!, "r").use { afd ->
                     if (afd == null) {
-                        Log.e(TAG, "processIntentLaunchDelga: AssetFileDescriptor is null")
+                        logError("processIntentLaunchDelga",
+                            "AssetFileDescriptor is null")
                         return false
                     }
 
                     val startOffset = afd.startOffset
                     val length = afd.length
-                    Log.e(TAG,
-                        "processIntentLaunchDelga: startOffset=${afd.startOffset} length=${afd.length}"
+                    logError("processIntentLaunchDelga",
+                        "startOffset=${afd.startOffset} length=${afd.length}"
                     )
 
                     val fd = afd.parcelFileDescriptor?.detachFd()
                     if (fd == null) {
-                        Log.e(TAG, "processIntentLaunchDelga: Can not detach file descriptor")
+                        logError("processIntentLaunchDelga",
+                            "Can not detach file descriptor")
                         return false
                     }
 
@@ -157,11 +159,13 @@ class RunDelgaActivity : AppCompatActivity(),
                             length.toInt()
                         )
                     } catch (e: Exception) {
-                        Log.e(TAG, "processIntentLaunchDelga: Failed adding VFS container", e)
+                        logError("processIntentLaunchDelga",
+                            "Failed adding VFS container", e)
                         return false
                     }
 
-                    Log.i(TAG, "processIntentLaunchDelga: VFS container added")
+                    logInfo("processIntentLaunchDelga",
+                        "VFS container added")
                     delgaPath = VFS_FDS_DELGA_PATH
                 }
             }
@@ -169,12 +173,13 @@ class RunDelgaActivity : AppCompatActivity(),
             "file" -> {
                 contentResolver.openFileDescriptor(intent.data!!, "r").use { pfd ->
                     if (pfd == null) {
-                        Log.e(TAG, "processIntentLaunchDelga: ParcelFileDescriptor is null")
+                        logError("processIntentLaunchDelga",
+                            "ParcelFileDescriptor is null")
                         return false
                     }
 
                     val length = pfd.statSize
-                    Log.e(TAG, "processIntentLaunchDelga: length=${length}")
+                    logError("processIntentLaunchDelga", "length=${length}")
 
                     val fd = pfd.detachFd()
 
@@ -186,33 +191,35 @@ class RunDelgaActivity : AppCompatActivity(),
                             length.toInt()
                         )
                     } catch (e: Exception) {
-                        Log.e(TAG, "processIntentLaunchDelga: Failed adding VFS container", e)
+                        logError("processIntentLaunchDelga",
+                            "Failed adding VFS container", e)
                         return false
                     }
 
-                    Log.i(TAG, "processIntentLaunchDelga: VFS container added")
+                    logInfo("processIntentLaunchDelga", "VFS container added")
                     delgaPath = VFS_FDS_DELGA_PATH
                 }
             }
 
             else -> {
-                Log.e(TAG, "processIntentLaunchDelga: Unsupported scheme")
+                logError("processIntentLaunchDelga", "Unsupported scheme")
                 return false
             }
         }
 
         if (delgaPath == null) {
-            Log.e(TAG, "processIntentLaunchDelga: DELGA path is null")
+            logError("processIntentLaunchDelga", "DELGA path is null")
             return false
         }
 
         delgaGames.forEach { g -> g.dispose() }
         delgaGames.clear()
         delgaGames.addAll(launcher!!.readDelgaGames(delgaPath!!))
-        Log.i(TAG, "processIntentLaunchDelga: DELGA loaded")
+        logInfo("processIntentLaunchDelga", "DELGA loaded")
 
         if (delgaGames.isEmpty()) {
-            Log.e(TAG, "processIntentLaunchDelga: No game definition found in DELGA file")
+            logError("processIntentLaunchDelga",
+                "No game definition found in DELGA file")
             return false
         }
 
@@ -231,7 +238,8 @@ class RunDelgaActivity : AppCompatActivity(),
         delgaGame?.updateConfig()
         delgaGame?.verifyRequirements()
         delgaGame?.updateStatus()
-        Log.i(TAG, "processIntentLaunchDelga: DELGA status ${delgaGame?.canRun}")
+        logInfo("processIntentLaunchDelga",
+            "DELGA status ${delgaGame?.canRun}")
         return true
     }
 
@@ -239,13 +247,16 @@ class RunDelgaActivity : AppCompatActivity(),
         val game = delgaGame!!
         val launcher = launcher!!
 
-        Log.i(TAG, "logProblems: Game '${game.aliasIdentifier}'(${game.identifier}) has the following problems:")
+        logInfo("logProblems",
+            "Game '${game.aliasIdentifier}'(${game.identifier}) has the following problems:")
         game.fileFormats.forEach { f ->
             if(!f.supported){
                 if(launcher.isModuleSingleType(f.type)){
-                    Log.i(TAG, "logProblems: - File Format '${f.pattern}' defines single type ${EngineModule.mapTypeName[f.type]}")
+                    logInfo("logProblems",
+                        "- File Format '${f.pattern}' defines single type ${EngineModule.mapTypeName[f.type]}")
                 }else{
-                    Log.i(TAG, "logProblems: - File Format '${f.pattern}' is not supported by any loaded modules")
+                    logInfo("logProblems",
+                        "- File Format '${f.pattern}' is not supported by any loaded modules")
                 }
             }
         }
@@ -259,15 +270,18 @@ class RunDelgaActivity : AppCompatActivity(),
         val typeName = EngineModule.mapTypeName[type]
 
         if(module == null){
-            Log.i(TAG, "printModuleProblem: - $typeName module '$name' does not exist")
+            logInfo("printModuleProblem",
+                "$typeName module '$name' does not exist")
 
         }else if(module.type != type){
-            Log.i(TAG, "printModuleProblem: - Module '$name' is not a $typeName module")
+            logInfo("printModuleProblem",
+                "- Module '$name' is not a $typeName module")
 
         }else if(module.status != EngineModule.Status.Ready){
             val errorCode = EngineModule.mapErrorCode[module.errorCode]
             val reason = EngineModule.mapErrorText[errorCode] ?: "Unknown problem"
-            Log.i(TAG, "printModuleProblem: - $typeName module '${name}' is not working ($reason)")
+            logInfo("printModuleProblem",
+                "- $typeName module '${name}' is not working ($reason)")
         }
     }
 
@@ -279,7 +293,7 @@ class RunDelgaActivity : AppCompatActivity(),
 
         profile = game.getProfileToUse(launcher!!)
         if(profile == null){
-            Log.e(TAG, "locateProfile: No game profile found")
+            logError("locateProfile", "No game profile found")
             return false
         }
 
@@ -315,7 +329,8 @@ class RunDelgaActivity : AppCompatActivity(),
     }
 
     private fun printProfileProblems(profile: GameProfile){
-        Log.i(TAG, "printProfileProblems: Profile '${profile.name}' has the following problems:")
+        logInfo("printProfileProblems",
+            "Profile '${profile.name}' has the following problems:")
         printModuleProblem(profile.moduleGraphic, EngineModule.Type.Graphic)
         printModuleProblem(profile.moduleInput, EngineModule.Type.Input)
         printModuleProblem(profile.modulePhysics, EngineModule.Type.Physics)
@@ -365,6 +380,39 @@ class RunDelgaActivity : AppCompatActivity(),
 
         // use custom profile
         runParams.gameProfile = profile
+    }
+
+    private fun startGame() {
+        // start the game
+        logInfo("startGame",
+            "Cache application ID = '${delgaGame?.identifier}'")
+        logInfo("startGame",
+            "Starting game '${delgaGame?.title}' using profile '${runParams.gameProfile?.name}'");
+
+        /*
+        const delEngineInstanceDirect::Factory::Ref factory(
+                delEngineInstanceDirect::Factory::Ref::New(
+                    new delEngineInstanceDirect::Factory( engineLogger ) ) );
+         */
+    }
+
+    private fun logError(function: String, message: String){
+        val m = "$function: $message"
+        Log.e(TAG, m)
+        launcher?.logError(m)
+    }
+
+    private fun logError(function: String, message: String, exception: Exception){
+        val m = "$function: $message"
+        Log.e(TAG, m, exception)
+        launcher?.logError(listOf(m, exception.toString(),
+            exception.stackTraceToString()).joinToString("\n"))
+    }
+
+    private fun logInfo(function: String, message: String){
+        val m = "$function: $message"
+        Log.i(TAG, m)
+        launcher?.logInfo(m)
     }
 
     companion object {

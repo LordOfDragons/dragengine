@@ -431,6 +431,18 @@ class DragengineLauncher(context: Context) {
         setState(State.EngineReady)
     }
 
+    fun logInfo(message: String){
+        launcher?.logInfo(message)
+    }
+
+    fun logWarn(message: String){
+        launcher?.logWarn(message)
+    }
+
+    fun logError(message: String){
+        launcher?.logError(message)
+    }
+
     companion object {
         private const val TAG = "DragengineLauncher"
     }

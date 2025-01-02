@@ -271,3 +271,44 @@ JNIEnv *env, jobject thiz, jlong plauncher, jlong pprofile){
         h.throwException(e);
     }
 }
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_logInfo(
+JNIEnv *env, jobject thiz, jlong plauncher, jstring message){
+    JniHelpers h(env);
+    try {
+        Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
+        launcher.GetLogger()->LogInfo("DELauncherAndroid", h.convertString(message));
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_logWarn(
+JNIEnv *env, jobject thiz, jlong plauncher, jstring message){
+    JniHelpers h(env);
+    try {
+        Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
+        launcher.GetLogger()->LogWarn("DELauncherAndroid", h.convertString(message));
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_logError(
+JNIEnv *env, jobject thiz, jlong plauncher, jstring message){
+    JniHelpers h(env);
+    try {
+        Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
+        launcher.GetLogger()->LogError("DELauncherAndroid", h.convertString(message));
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
