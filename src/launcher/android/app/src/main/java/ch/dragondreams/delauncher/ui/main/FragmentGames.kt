@@ -73,7 +73,6 @@ class FragmentGames : Fragment() {
         }
 
         view.findViewById<Button>(R.id.buttonTest).setOnClickListener {
-            val l = launcher!!
             Log.i(TAG, "onCreateView: ")
 
             val basePath = File(requireContext().filesDir, "test")

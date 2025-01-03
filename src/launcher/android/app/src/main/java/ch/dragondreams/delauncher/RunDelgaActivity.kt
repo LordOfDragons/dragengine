@@ -1,20 +1,22 @@
 package ch.dragondreams.delauncher
 
+import android.R
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.EngineModule
 import ch.dragondreams.delauncher.launcher.EngineModuleParameter
 import ch.dragondreams.delauncher.launcher.Game
 import ch.dragondreams.delauncher.launcher.GameProfile
 import ch.dragondreams.delauncher.launcher.GameRunParams
+import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
+import ch.dragondreams.delauncher.launcher.internal.RunGameHandler
 import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
+import com.google.androidgamesdk.GameActivity
+import java.lang.System.loadLibrary
 
-class RunDelgaActivity : AppCompatActivity(),
+
+class RunDelgaActivity : GameActivity(),
     FragmentInitEngine.Interface {
 
     class RunLauncherListener(
@@ -52,7 +54,9 @@ class RunDelgaActivity : AppCompatActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        loadLibrary("game_activity_adapter")
         super.onCreate(savedInstanceState)
+        /*
         enableEdgeToEdge()
         setContentView(R.layout.activity_run_delga)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -60,6 +64,7 @@ class RunDelgaActivity : AppCompatActivity(),
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        */
 
         logInfo("RunDelgaActivity", listOf(
             "action='${intent.action}'",
@@ -71,12 +76,17 @@ class RunDelgaActivity : AppCompatActivity(),
             || intent.action == "android.intent.action.VIEW") {
             getLauncher() // force create launcher if not created already
 
+            supportFragmentManager.beginTransaction()
+                .add(R.id.content, FragmentInitEngine()).commit()
+
         } else {
             finish()
         }
     }
 
     override fun onDestroy() {
+        GameActivityAdapter().setHandler(0L)
+
         delgaGame?.dispose()
         delgaGame = null
 
@@ -140,7 +150,7 @@ class RunDelgaActivity : AppCompatActivity(),
 
                     val startOffset = afd.startOffset
                     val length = afd.length
-                    logError("processIntentLaunchDelga",
+                    logInfo("processIntentLaunchDelga",
                         "startOffset=${afd.startOffset} length=${afd.length}"
                     )
 
@@ -289,7 +299,7 @@ class RunDelgaActivity : AppCompatActivity(),
         val game = delgaGame!!
 
         // locate the profile to run
-        var profile: GameProfile? = null
+        var profile: GameProfile?
 
         profile = game.getProfileToUse(launcher!!)
         if(profile == null){
@@ -345,7 +355,7 @@ class RunDelgaActivity : AppCompatActivity(),
 
     private fun updateRunArguments(){
         val profile = runParams.gameProfile!!
-        var arguments: String = ""
+        var arguments: String
 
         if(profile.replaceRunArguments){
             arguments = profile.runArguments
@@ -383,11 +393,17 @@ class RunDelgaActivity : AppCompatActivity(),
     }
 
     private fun startGame() {
+        val game = delgaGame!!
+
         // start the game
         logInfo("startGame",
-            "Cache application ID = '${delgaGame?.identifier}'")
+            "Cache application ID = '${game.identifier}'")
         logInfo("startGame",
-            "Starting game '${delgaGame?.title}' using profile '${runParams.gameProfile?.name}'");
+            "Starting game '${game.title}' using profile '${runParams.gameProfile?.name}'");
+
+        loadLibrary("run_game_handler")
+        GameActivityAdapter().setHandler(RunGameHandler().createHandler(
+            game.nativeGame, runParams.toNative()))
 
         /*
         const delEngineInstanceDirect::Factory::Ref factory(

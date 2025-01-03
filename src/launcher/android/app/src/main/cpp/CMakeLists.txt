@@ -46,3 +46,47 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libdragengine.so
     android
     log)
+
+
+
+# GameActivity adapter
+find_package(game-activity REQUIRED CONFIG)
+
+get_target_property(game-activity-include
+        game-activity::game-activity
+        INTERFACE_INCLUDE_DIRECTORIES)
+
+include_directories(${game-activity-include})
+
+set(CMAKE_SHARED_LINKER_FLAGS
+    "${CMAKE_SHARED_LINKER_FLAGS} -u \
+    Java_com_google_androidgamesdk_GameActivity_initializeNativeCode")
+
+add_library("game_activity_adapter" SHARED
+    game_activity_adapter.cpp
+)
+
+target_link_libraries("game_activity_adapter"
+    game-activity::game-activity_static
+    android
+    log)
+
+
+
+# RunGameHandler
+add_library("run_game_handler" SHARED
+    JniHelper.cpp
+    RunGameHandler.cpp
+    GameRunParams.cpp
+)
+
+include_directories(
+        ${game-activity-include}
+        "${CMAKE_SOURCE_DIR}/../../../../../shared/build/include"
+        "${CMAKE_SOURCE_DIR}/../../../../../../dragengine/build/include")
+
+target_link_libraries("run_game_handler"
+    ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libdelauncher.so
+    ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libdragengine.so
+    android
+    log)

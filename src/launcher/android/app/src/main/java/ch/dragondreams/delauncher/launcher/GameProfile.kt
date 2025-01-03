@@ -77,7 +77,6 @@ class GameProfile private constructor(
 
     fun retain(): ch.dragondreams.delauncher.launcher.GameProfile {
         refcount++
-        nativeProfile.addReference()
         return this
     }
 

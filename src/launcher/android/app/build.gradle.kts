@@ -44,6 +44,11 @@ android {
     }
     buildFeatures {
         viewBinding = true
+
+        // To use the Android Frame Pacing or Android Performance Tuner libraries, enable
+        // native dependencies to be imported. Libraries will be made available to your CMake build
+        // as packages named "games-frame-pacing" and "games-performance-tuner".
+        prefab = true
     }
     externalNativeBuild {
         cmake {
@@ -64,6 +69,11 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.games.activity)
+    implementation(libs.androidx.games.controller)
+    implementation(libs.androidx.games.frame.pacing)
+    implementation(libs.androidx.games.memory.advice)
+    implementation(libs.androidx.games.performance.tuner)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

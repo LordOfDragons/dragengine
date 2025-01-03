@@ -5,7 +5,7 @@ import ch.dragondreams.delauncher.launcher.GameProfile
 class GameProfile private constructor(
     val nativeProfile: Long = 0L
 ){
-    private var nativeRefCount: Int = 0
+    private var nativeRefCount: Int = 1
 
     private external fun gameProfileRelease(game: Long)
     private external fun gameProfileGetConfig(game: Long): GameProfileConfig
@@ -17,10 +17,6 @@ class GameProfile private constructor(
             gameProfileRelease(nativeProfile)
             dropInstance(nativeProfile)
         }
-    }
-
-    fun addReference() {
-        nativeRefCount++
     }
 
     fun updateConfig(profile: GameProfile){
@@ -98,7 +94,9 @@ class GameProfile private constructor(
             var profile: ch.dragondreams.delauncher.launcher.internal.GameProfile? = null
             if(nativeProfile != 0L) {
                 profile = mapProfiles[nativeProfile]
-                if (profile == null) {
+                if (profile != null) {
+                    profile.nativeRefCount++
+                }else{
                     profile = GameProfile(nativeProfile)
                     mapProfiles[nativeProfile] = profile
                 }

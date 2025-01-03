@@ -3,7 +3,7 @@ package ch.dragondreams.delauncher.launcher
 import ch.dragondreams.delauncher.launcher.internal.Game
 
 class Game(
-    private val nativeGame: Game
+    val nativeGame: Game
 ) {
     var identifier = ""
     var aliasIdentifier = ""
