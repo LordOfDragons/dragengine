@@ -1,29 +1,24 @@
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 #include <cstdint>
 #include <mutex>
+#include <dragengine/common/exceptions.h>
 #include "GameActivityHandler.h"
 
-static class GameActivityAdapter{
+static class GameActivityAdapter : public BaseGameActivityAdapter{
 private:
     android_app *pApp = nullptr;
     std::mutex pMutex;
-
     GameActivityHandler *pHandler = nullptr;
-    bool pHandlerChanged = false;
 
 public:
     GameActivityAdapter() = default;
-    ~GameActivityAdapter(){
+    ~GameActivityAdapter() override{
         SetHandler(nullptr);
     }
 
     void SetHandler(GameActivityHandler *handler){
         std::lock_guard guard(pMutex);
-        if(pHandler){
-            delete pHandler;
-        }
         pHandler = (GameActivityHandler*)(intptr_t)handler;
-        pHandlerChanged = true;
     }
 
     void GameLoop(android_app *app){
@@ -36,19 +31,10 @@ public:
             int events;
             android_poll_source *source;
 
-            // check for handler changed. calls Activated() on the handler
-            {
-                std::lock_guard guard(pMutex);
-                pCheckHandlerChanged();
-            }
-
             // mHasFocus && mIsVisible && mHasWindow => timeoutMillis = 0
             // otherwise => timeoutMillis = -1
             while((ALooper_pollOnce(0, nullptr, &events, (void**)&source)) >= 0){
                 std::lock_guard guard(pMutex);
-
-                // check for handler changed. calls Activated() on the handler
-                pCheckHandlerChanged();
 
                 // process message
                 if(source){
@@ -58,12 +44,27 @@ public:
                     return;
                 }
             }
+
+            std::lock_guard guard(pMutex);
+            if(pHandler){
+                pHandler->FrameUpdate(*this);
+            }
         }
 
         app->textInputState = 0;
         app->onAppCmd = nullptr;
         app->userData = nullptr;
         pApp = nullptr;
+    }
+
+    ANativeWindow * GetNativeWindow() override{
+        return pApp ? pApp->window : nullptr;
+    }
+
+    void QuitActivity() override{
+        if(pApp) {
+            GameActivity_finish(pApp->activity);
+        }
     }
 
 private:
@@ -75,18 +76,7 @@ private:
         // callback is triggered while the mutex is held
         //std::lock_guard guard(pMutex);
         if(pHandler){
-            pHandler->Command(pApp, cmd);
-        }
-    }
-
-    void pCheckHandlerChanged(){
-        if(!pHandlerChanged) {
-            return;
-        }
-        pHandlerChanged = false;
-
-        if(pHandler){
-            pHandler->Activated();
+            pHandler->Command(*this, cmd);
         }
     }
 } vState;

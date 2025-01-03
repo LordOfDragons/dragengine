@@ -151,6 +151,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+#ifdef OS_ANDROID
+	/** \brief Configuration. */
+	inline const sConfig &GetConfig() const{ return pConfig; }
+#endif
+	
 	/** \brief System config path. */
 	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
 	

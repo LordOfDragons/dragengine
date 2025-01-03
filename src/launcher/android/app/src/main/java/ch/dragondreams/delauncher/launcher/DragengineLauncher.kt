@@ -2,6 +2,7 @@ package ch.dragondreams.delauncher.launcher
 
 import android.content.Context
 import android.util.Log
+import android.view.SurfaceView
 import ch.dragondreams.delauncher.launcher.internal.Launcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +15,10 @@ import kotlin.concurrent.Volatile
 import kotlin.math.min
 import kotlin.time.TimeSource
 
-class DragengineLauncher(context: Context) {
+class DragengineLauncher(
+    val context: Context,
+    val view: SurfaceView?
+) {
     interface Listener {
         /** State changed. */
         fun stateChanged(launcher: DragengineLauncher)
@@ -107,7 +111,8 @@ class DragengineLauncher(context: Context) {
         }
 
 
-    private var launcher: Launcher? = null
+    var launcher: Launcher? = null
+        private set
 
     /**
      * State of launcher.
@@ -144,7 +149,7 @@ class DragengineLauncher(context: Context) {
         gameProfiles.forEach { p -> p.release() }
         gameProfiles.clear()
 
-        games.forEach { g -> g.dispose() }
+        games.forEach { g -> g.release() }
         games.clear()
 
         launcher?.dispose()
@@ -377,16 +382,16 @@ class DragengineLauncher(context: Context) {
     }
 
     private fun createInternalLauncher() {
-        Log.i(TAG, "createGlueLauncher")
+        Log.i(TAG, "createInternalLauncher")
         setState(State.CreateInternalLauncher)
 
         try {
-            launcher = Launcher(this, null)
+            launcher = Launcher(this, view)
 
             engineModules.clear()
             engineModules.addAll(launcher!!.getEngineModules())
 
-            games.forEach { g -> g.dispose() }
+            games.forEach { g -> g.release() }
             games.clear()
             games.addAll(launcher!!.getGames())
 
@@ -408,16 +413,18 @@ class DragengineLauncher(context: Context) {
                 listenersLocked--
             }
 
-            Log.i(TAG, "createGlueLauncher: Engine modules: ${engineModules.size}")
+            /*
+            Log.i(TAG, "createInternalLauncher: Engine modules: ${engineModules.size}")
             engineModules.forEach { m ->
-                Log.i(TAG, "createGlueLauncher: - ${m.name} (${m.type.name}) ${m.isFallback} '${m.author}'")
+                Log.i(TAG, "createInternalLauncher: - ${m.name} (${m.type.name}) ${m.isFallback} '${m.author}'")
                 m.parameters.forEach { p ->
-                    Log.i(TAG, "createGlueLauncher: -> ${p.index} '${p.value}': '${p.info.name}' (${p.info.type}) [${p.info.minValue} ${p.info.maxValue}]")
+                    Log.i(TAG, "createInternalLauncher: -> ${p.index} '${p.value}': '${p.info.name}' (${p.info.type}) [${p.info.minValue} ${p.info.maxValue}]")
                     p.info.selectionEntries.forEach { e ->
-                        Log.i(TAG, "createGlueLauncher:    {=} '${e.displayName}' -> '${e.value}'")
+                        Log.i(TAG, "createInternalLauncher:    {=} '${e.displayName}' -> '${e.value}'")
                     }
                 }
             }
+            */
 
         } catch (e: Exception) {
             Log.e(TAG, "createGlueLauncher: Failed", e)

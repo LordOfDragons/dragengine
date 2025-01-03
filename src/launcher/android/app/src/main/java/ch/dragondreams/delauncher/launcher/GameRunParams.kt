@@ -12,12 +12,16 @@ class GameRunParams{
         }
 
     var runArguments: String = ""
+    var width: Int = 0
+    var height: Int = 0
     val patches: MutableList<String> = mutableListOf()
 
     fun toNative(): GameRunParams{
         val params = GameRunParams()
-        params.gameProfile = gameProfile?.nativeProfile
+        params.gameProfile = gameProfile?.nativeProfile?.nativeProfile ?: 0L
         params.runArguments = runArguments
+        params.width = width
+        params.height = height
         return params
     }
 }

@@ -2,7 +2,7 @@ package ch.dragondreams.delauncher.launcher
 
 import ch.dragondreams.delauncher.launcher.internal.Game
 
-class Game(
+class Game private constructor(
     val nativeGame: Game
 ) {
     var identifier = ""
@@ -65,15 +65,18 @@ class Game(
     var useCustomPatch = ""
     //var localPatches: MutableList<GamePatch> = ArrayList()
 
+    private var refcount: Int = 1
+
     init {
         updateInfo()
         updateConfig()
     }
 
-    fun dispose(){
+    private fun dispose(){
         activeProfile = null
         customProfile = null
 
+        dropInstance(nativeGame)
         nativeGame.dispose()
     }
 
@@ -81,9 +84,16 @@ class Game(
         nativeGame.updateInfo(this)
     }
 
-    fun reference(): ch.dragondreams.delauncher.launcher.Game {
-        nativeGame.addReference()
+    fun retain(): ch.dragondreams.delauncher.launcher.Game {
+        refcount++
         return this
+    }
+
+    fun release(){
+        refcount--;
+        if(refcount == 0){
+            dispose()
+        }
     }
 
     fun loadConfig() {
@@ -114,5 +124,25 @@ class Game(
             ?: customProfile
             ?: launcher.activeProfile
             ?: launcher.defaultProfile;
+    }
+
+    companion object {
+        private val mapGames: MutableMap<Game, ch.dragondreams.delauncher.launcher.Game> = mutableMapOf()
+
+        fun getInstance(nativeGame: Game?): ch.dragondreams.delauncher.launcher.Game?{
+            var game: ch.dragondreams.delauncher.launcher.Game? = null
+            if(nativeGame != null) {
+                game = mapGames[nativeGame]
+                if (game == null) {
+                    game = Game(nativeGame)
+                    mapGames[nativeGame] = game
+                }
+            }
+            return game
+        }
+
+        private fun dropInstance(nativeGame: Game){
+            mapGames.remove(nativeGame)
+        }
     }
 }

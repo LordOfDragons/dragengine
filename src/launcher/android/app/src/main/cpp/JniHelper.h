@@ -273,6 +273,11 @@ public:
      * Throw Drag[en]gine exception as java exception.
      */
     void throwException(const deException &exception);
+
+    /**
+     * Log Drag[en]gine exception.
+     */
+    static void logException(const deException &exception);
 };
 
 #endif //DELAUNCHER_JNIHELPER_H

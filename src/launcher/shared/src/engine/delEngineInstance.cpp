@@ -81,4 +81,13 @@ void delEngineInstance::ReadDelgaFilesVfs(const deVFSContainer::Ref &container,
 const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &filesContent ){
 	DETHROW_INFO(deeInvalidAction, "not supported");
 }
+
+void delEngineInstance::VFSAddDelgaFileVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::RunSingleFrameUpdate(){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
 #endif

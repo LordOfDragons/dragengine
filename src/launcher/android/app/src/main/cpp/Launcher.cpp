@@ -5,7 +5,6 @@
 #include <android/native_window_jni.h>
 #include <android/log.h>
 
-#include <delauncher/delLauncher.h>
 #include <delauncher/engine/modules/delEngineModule.h>
 #include <delauncher/engine/modules/parameter/delEMParameter.h>
 #include <delauncher/game/delGame.h>
@@ -15,7 +14,7 @@
 #include "JniHelper.h"
 #include "EngineModule.h"
 #include "Game.h"
-#include "FDVFSContainer.h"
+#include "Launcher.h"
 
 static JavaVM *vJavaVM = nullptr;
 
@@ -24,34 +23,32 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved){
     return JNI_VERSION_1_6;
 }
 
-class Launcher : public delLauncher{
-private:
-    FDVFSContainer::Ref pFDContainer;
+Launcher::Launcher(const sConfig &config) : delLauncher(config),
+pFDContainer(FDVFSContainer::Ref::New(new FDVFSContainer(
+    decPath::CreatePathUnix("/fds"))))
+{
+    AddFileLogger("delauncher");
+    Prepare();
+}
 
-public:
-    explicit Launcher(const sConfig &config) : delLauncher(config),
-    pFDContainer(FDVFSContainer::Ref::New(new FDVFSContainer(
-        decPath::CreatePathUnix("/fds"))))
-    {
-        AddFileLogger("delauncher");
-        Prepare();
+delGameList Launcher::ReadDelgaGames(const decString &path){
+    delGameList games;
+    const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
+            GetEngineInstanceFactory().CreateEngineInstance(
+                    *this, GetEngine().GetLogFile())));
+    instance->StartEngine();
+    instance->LoadModules();
+
+    GetEngine().ReadDelgaGameDefsVfs(instance,
+        deVFSContainer::Ref(pFDContainer), path, games);
+    return games;
+}
+
+Launcher::~Launcher(){
+    if(GetConfig().osConfig.nativeWindow){
+        ANativeWindow_release(GetConfig().osConfig.nativeWindow);
     }
-
-    [[nodiscard]] inline const FDVFSContainer::Ref &GetFDContainer() const{ return pFDContainer; }
-
-    delGameList ReadDelgaGames(const decString &path){
-        delGameList games;
-        const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-                GetEngineInstanceFactory().CreateEngineInstance(
-                        *this, GetEngine().GetLogFile())));
-        instance->StartEngine();
-        instance->LoadModules();
-
-        GetEngine().ReadDelgaGameDefsVfs(instance,
-            deVFSContainer::Ref(pFDContainer), path, games);
-        return games;
-    }
-};
+}
 
 extern "C"
 JNIEXPORT jlong JNICALL
@@ -76,12 +73,13 @@ Java_ch_dragondreams_delauncher_launcher_internal_Launcher_createLauncher(
         delConfig.osConfig.javavm = vJavaVM;
 
         {
-            const JniFieldObject fid(env, clsConfig, "surface", "Landroid/view/SurfaceView;");
-            auto js = fid.Get(config);
-            if(js) {
-                delConfig.osConfig.nativeWindow = ANativeWindow_fromSurface(env, js);
+            jobject objView = clsConfig.GetFieldObject("surface",
+                "Landroid/view/Surface;").Get(config);
+            __android_log_print(ANDROID_LOG_ERROR, "createLauncher", "objView=%p", objView);
+            if(objView) {
+                delConfig.osConfig.nativeWindow = ANativeWindow_fromSurface(env, objView);
+                DEASSERT_NOTNULL(delConfig.osConfig.nativeWindow)
             }
-            //ANativeWindow_release();
         }
 
         return (jlong)(intptr_t)(new Launcher(delConfig));

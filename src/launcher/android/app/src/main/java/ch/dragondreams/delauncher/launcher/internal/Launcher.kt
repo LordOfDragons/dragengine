@@ -6,7 +6,8 @@ import ch.dragondreams.delauncher.launcher.EngineModule
 import ch.dragondreams.delauncher.launcher.GameProfile
 
 class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
-    private var nativeLauncher: Long = 0L
+    var nativeLauncher: Long = 0L
+        private set
 
     private external fun createLauncher(config: LauncherConfig): Long
     private external fun destroyLauncher(launcher: Long)
@@ -36,7 +37,8 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
                 owner.pathEngine.absolutePath,
                 owner.pathEngineConfig.absolutePath,
                 owner.pathEngineCache.absolutePath,
-                null)
+                view?.holder?.surface
+            )
         )
     }
 
@@ -55,7 +57,7 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
     fun getGames(): List<ch.dragondreams.delauncher.launcher.Game> {
         val games = mutableListOf<ch.dragondreams.delauncher.launcher.Game>()
         getGames(nativeLauncher).forEach { g ->
-            games.add(ch.dragondreams.delauncher.launcher.Game(Game(g)))
+            games.add(ch.dragondreams.delauncher.launcher.Game.getInstance(Game.getInstance(g))!!)
         }
         return games
     }
@@ -71,7 +73,7 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
     fun readDelgaGames(path: String): List<ch.dragondreams.delauncher.launcher.Game> {
         val games = mutableListOf<ch.dragondreams.delauncher.launcher.Game>()
         readDelgaGames(nativeLauncher, path).forEach { g ->
-            games.add(ch.dragondreams.delauncher.launcher.Game(Game(g)))
+            games.add(ch.dragondreams.delauncher.launcher.Game.getInstance(Game.getInstance(g))!!)
         }
         return games
     }

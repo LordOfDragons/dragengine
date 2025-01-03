@@ -118,6 +118,9 @@ private:
 	decUuid pUseCustomPatch;
 	delPatchList pLocalPatches;
 	
+#ifdef OS_ANDROID
+	deVFSContainer::Ref pVFSDelgaContainer;
+#endif
 	
 	
 public:
@@ -342,6 +345,16 @@ public:
 	 */
 	inline delPatchList &GetLocalPatches(){ return pLocalPatches; }
 	inline const delPatchList &GetLocalPatches() const{ return pLocalPatches; }
+	
+	
+	
+#ifdef OS_ANDROID
+	/** \brief DELGA VFS container. */
+	inline const deVFSContainer::Ref &GetVFSDelgaContainer() const{ return pVFSDelgaContainer; }
+	
+	/** \brief Set DELGA VFS container. */
+	void SetVFSDelgaContainer(const deVFSContainer::Ref &container);
+#endif
 	
 	
 	

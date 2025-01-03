@@ -733,39 +733,202 @@ bool deEngine::Run( const char *scriptDirectory, const char *gameObject ){
 	return Run( scriptDirectory, "", gameObject );
 }
 
-bool deEngine::Run( const char *scriptDirectory, const char *scriptVersion, const char *gameObject ){
-	if( ! scriptDirectory || ! scriptVersion ){
-		DETHROW( deeInvalidParam );
+bool deEngine::Run(const char *scriptDirectory, const char *scriptVersion, const char *gameObject){
+	if(!StartRun(scriptDirectory, scriptVersion, gameObject)){
+		return false;
 	}
 	
-	deScriptingSystem &scrSys = *GetScriptingSystem();
-	deInputSystem &inpSys = *GetInputSystem();
-	deVRSystem &vrSys = *GetVRSystem();
+	while(!pRequestQuit){
+		if(!ProcessEvents()){
+			pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
+			if(!RecoverFromError() || !ResumeRun()){
+				return false;
+			}
+			continue;
+		}
+		
+		if(pRequestQuit){
+			break;
+		}
+		
+DEBUG_RESET_TIMERS;
+		UpdateElapsedTime();
+		
+		if(!RunSingleFrame()){
+			pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
+			if(!RecoverFromError() || !ResumeRun()){
+				return false;
+			}
+		}
+DEBUG_PRINT_TIMER_TOTAL( "Run: Cycle" );
+	}
 	
-	bool keepRunning = true;
+	return StopRun();
+}
+
+void deEngine::ResetTimers(){
+	pFrameTimer->Reset();
+	pElapsedTime = 0.0f;
+	pAccumElapsedTime = 0.0f;
+}
+
+
+
+void deEngine::UpdateElapsedTime(){
+	pElapsedTime = pAccumElapsedTime + pFrameTimer->GetElapsedTime();
+	if( pElapsedTime < 1.0f / 200.0f ){ // frame limit
+		pAccumElapsedTime = pElapsedTime;
+		return;
+	}
+	
+	pAccumElapsedTime = 0.0f;
+	pUpdateFPSRate();
+}
+
+bool deEngine::RunSingleFrame(){
+	if( pElapsedTime < 1.0f / 200.0f ){ // frame limit
+		return true;
+	}
+	
+	try{
+		deScriptingSystem &scrSys = *GetScriptingSystem();
+		deGraphicSystem &graSys = *GetGraphicSystem();
+		deNetworkSystem &netSys = *GetNetworkSystem();
+		deAudioSystem &audSys = *GetAudioSystem();
+		deInputSystem &inpSys = *GetInputSystem();
+		deInputEventQueue &eventQueue = inpSys.GetEventQueue();
+		deInputEventQueue &vrEventQueue = GetVRSystem()->GetEventQueue();
+		int i, count;
+		
+		// print out fps
+	//	pLogger->LogInfoFormat( LOGGING_NAME, "fps=%i elapsedTime=%f.", (int)(1.0f / pElapsedTime), pElapsedTime );
+		
+		// process inputs
+		count = eventQueue.GetEventCount();
+		for( i=0; i<count; i++ ){
+			const deInputEvent &event = eventQueue.GetEventAt( i );
+			if( inpSys.DropEvent( event ) ){
+				continue;
+			}
+			scrSys.SendEvent( ( deInputEvent* )&event );
+			if( pScriptFailed ){
+				deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
+					nullptr, "deEngine::RunDoSingleFrame", __LINE__ );
+				tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+				eventQueue.RemoveAllEvents();
+				return false;
+			}
+		}
+		eventQueue.RemoveAllEvents();
+	DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
+		
+		// process vr inputs
+		count = vrEventQueue.GetEventCount();
+		for( i=0; i<count; i++ ){
+			const deInputEvent &event = vrEventQueue.GetEventAt( i );
+			if( inpSys.DropEvent( event ) ){
+				continue;
+			}
+			scrSys.SendEvent( ( deInputEvent* )&event );
+			if( pScriptFailed ){
+				deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
+					nullptr, "deEngine::RunDoSingleFrame", __LINE__ );
+				tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+				vrEventQueue.RemoveAllEvents();
+				return false;
+			}
+		}
+		vrEventQueue.RemoveAllEvents();
+	DEBUG_PRINT_TIMER( "DoFrame: Process VR events" );
+		
+		// process service events
+		GetServiceManager()->FrameUpdate();
+		
+		// frame update
+		pParallelProcessing->Update();
+		scrSys.OnFrameUpdate();
+	DEBUG_PRINT_TIMER( "DoFrame: Script OnFrameUpdate" );
+		if( pScriptFailed ){
+			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
+				nullptr, "deEngine::RunDoSingleFrame", __LINE__ );
+			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+			return false;
+		}
+		
+		// process sound
+		audSys.ProcessAudio();
+	DEBUG_PRINT_TIMER( "DoFrame: Process audio" );
+		
+		// process network
+		netSys.ProcessNetwork();
+	DEBUG_PRINT_TIMER( "DoFrame: Process network" );
+		
+		// draw screen
+		pParallelProcessing->Update();
+		graSys.RenderWindows();
+	DEBUG_PRINT_TIMER( "DoFrame: Render windows" );
+		
+		// check for problems
+		if( pScriptFailed ){
+			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint(
+				nullptr, "deEngine::RunDoSingleFrame", __LINE__ );
+			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
+			return false;
+		}
+		
+	}catch( const deException &e ){
+		pLogger->LogException("GameEngine", e);
+		
+		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
+		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
+			nullptr, "deEngine::Run", __LINE__);
+		
+		const decStringList &backtrace = e.GetBacktrace();
+		const int btcount = backtrace.GetCount();
+		int i;
+		
+		for(i=0; i<btcount; i++){
+			decString bttext;
+			bttext.Format("Backtrace %i", i + 1);
+			tracePoint->AddValue(bttext, backtrace.GetAt(i));
+		}
+		return false;
+	}
+	
+	return true;
+}
+
+bool deEngine::StartRun(const char *scriptDirectory, const char *scriptVersion,
+const char *gameObject){
+	DEASSERT_NOTNULL(scriptDirectory)
+	DEASSERT_NOTNULL(scriptVersion)
+	
+	deScriptingSystem &scrSys = *GetScriptingSystem();
 	bool hasErrors = true;
 	int i;
 	
-	pLogger->LogInfoFormat( LOGGING_NAME, "Detected CPU Cores: %d",
-		pParallelProcessing->GetCoreCount() );
-	pLogger->LogInfoFormat( LOGGING_NAME, "Parallel Processing Threads: %d",
-		pParallelProcessing->GetThreadCount() );
+	pLogger->LogInfoFormat(LOGGING_NAME, "Detected CPU Cores: %d",
+		pParallelProcessing->GetCoreCount());
+	pLogger->LogInfoFormat(LOGGING_NAME, "Parallel Processing Threads: %d",
+		pParallelProcessing->GetThreadCount());
 	
 	if( true ){
-		pLogger->LogInfoFormat( LOGGING_NAME, "Screen Size is %dx%d.",
-			pOS->GetDisplayCurrentResolution( 0 ).x, pOS->GetDisplayCurrentResolution( 0 ).y );
+		pLogger->LogInfoFormat(LOGGING_NAME, "Screen Size is %dx%d.",
+			pOS->GetDisplayCurrentResolution(0).x,
+			pOS->GetDisplayCurrentResolution(0).y);
 		
 		const int displayCount = pOS->GetDisplayCount();
-		pLogger->LogInfo( LOGGING_NAME, "Display Information:" );
-		for( i=0; i<displayCount; i++ ){
-			const decPoint &currentResolution = pOS->GetDisplayCurrentResolution( i );
-			const int resolutionCount = pOS->GetDisplayResolutionCount( i );
+		pLogger->LogInfo(LOGGING_NAME, "Display Information:");
+		for(i=0; i<displayCount; i++){
+			const decPoint &currentResolution = pOS->GetDisplayCurrentResolution(i);
+			const int resolutionCount = pOS->GetDisplayResolutionCount(i);
 			int j;
-			pLogger->LogInfoFormat( LOGGING_NAME, "- Display %d, Current Resolution %dx%d:",
-				i, currentResolution.x, currentResolution.y );
-			for( j=0; j<resolutionCount; j++ ){
-				const decPoint &resolution = pOS->GetDisplayResolution( i, j );
-				pLogger->LogInfoFormat( LOGGING_NAME, "  - Resolution %d: %dx%d", j, resolution.x, resolution.y );
+			pLogger->LogInfoFormat(LOGGING_NAME, "- Display %d, Current Resolution %dx%d:",
+				i, currentResolution.x, currentResolution.y);
+			for(j=0; j<resolutionCount; j++){
+				const decPoint &resolution = pOS->GetDisplayResolution(i, j);
+				pLogger->LogInfoFormat(LOGGING_NAME,
+					"  - Resolution %d: %dx%d", j, resolution.x, resolution.y);
 			}
 		}
 	}
@@ -828,199 +991,150 @@ bool deEngine::Run( const char *scriptDirectory, const char *scriptVersion, cons
 		
 		// if there are errors try a recovery
 		if( hasErrors ){
-			if( ! pRecoverFromError() ) return false;
+			return false;
 		}
 	}
 	
 	// reset time
 	ResetTimers();
 	
-	// run engine
-	while( keepRunning ){
-		// reset some crash recovery variables. this is old stuff and will
-		// vanish soon.
-		pScriptFailed = false;
-		pSystemFailed = false;
-		
-		// protecting the running engine using our crash recovery module.
-		try{
-			// init the game if not done already
-			scrSys.InitGame();
-			
-			if( pScriptFailed || pSystemFailed ){
-				pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
-				pRecoverFromError();
-				return false;
-			}
-			
-			// clear all event queues
-			inpSys.ClearEventQueues();
-			
-			// run the engine loop
-			while( keepRunning ){
-DEBUG_RESET_TIMERS;
-				// process event loop and check for quit
-				pOS->ProcessEventLoop( true );
-				if( pRequestQuit ){
-					keepRunning = false;
-					break;
-				}
-				
-				// process input module events into engine events
-				inpSys.GetActiveModule()->ProcessEvents();
-DEBUG_PRINT_TIMER( "Run: Process input events" );
-				
-				vrSys.ProcessEvents();
-DEBUG_PRINT_TIMER( "Run: Process VR events" );
-				
-				// render frame
-				UpdateElapsedTime();
-				RunSingleFrame();
-				
-				// check for errors
-				if( pScriptFailed || pSystemFailed ){
-					pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
-					
-					if( ! pRecoverFromError() ) return false;
-					
-					scrSys.InitGame();
-					inpSys.ClearEventQueues();
-				}
-DEBUG_PRINT_TIMER_TOTAL( "Run: Cycle" );
-			}
-			
-		}catch( const deException &e ){
-			pLogger->LogException( "GameEngine", e );
-			
-			pErrorTrace->AddAndSetIfEmpty( e.GetName(), NULL, e.GetFile(), e.GetLine() );
-			deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::Run", __LINE__ );
-			
-			const decStringList &backtrace = e.GetBacktrace();
-			const int btcount = backtrace.GetCount();
-			
-			for( i=0; i<btcount; i++ ){
-				decString bttext;
-				bttext.Format( "Backtrace %i", i + 1 );
-				tracePoint->AddValue( bttext, backtrace.GetAt( i ) );
-			}
-			
-			if( ! pRecoverFromError() ){
-				return false;
-			}
-		}
-	}
+	// resume running init game is required
+	return ResumeRun();
+}
+
+bool deEngine::ResumeRun(){
+	deScriptingSystem &scrSys = *GetScriptingSystem();
+	deInputSystem &inpSys = *GetInputSystem();
 	
+	// reset some crash recovery variables. this is old stuff and will vanish soon
+	pScriptFailed = false;
+	pSystemFailed = false;
+	
+	try{
+		// init the game if not done already
+		scrSys.InitGame();
+		
+		if(pScriptFailed || pSystemFailed){
+			pErrorTrace->AddPoint(nullptr, "deEngine::Run", __LINE__);
+			return false;
+		}
+		
+		// clear all event queues
+		inpSys.ClearEventQueues();
+		return true;
+		
+	}catch(const deException &e){
+		pLogger->LogException("GameEngine", e);
+		
+		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
+		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
+			nullptr, "deEngine::ResumeRun", __LINE__);
+		
+		const decStringList &backtrace = e.GetBacktrace();
+		const int btcount = backtrace.GetCount();
+		int i;
+		
+		for(i=0; i<btcount; i++){
+			decString bttext;
+			bttext.Format("Backtrace %i", i + 1);
+			tracePoint->AddValue(bttext, backtrace.GetAt(i));
+		}
+		return false;
+	}
+}
+
+bool deEngine::StopRun(){
 	// exit the game if it is running
-	scrSys.ExitGame();
+	GetScriptingSystem()->ExitGame();
 	
 	// stop systems
 	return pStopSystems();
 }
 
-void deEngine::ResetTimers(){
-	pFrameTimer->Reset();
-	pElapsedTime = 0.0f;
-	pAccumElapsedTime = 0.0f;
+bool deEngine::RecoverFromError(){
+	deCrashRecoverySystem *crSys = GetCrashRecoverySystem();
+	
+	// pause parallel processing
+	pParallelProcessing->Pause();
+	
+	// should the crash recovery system be stopped start it
+	if( ! crSys->GetIsRunning() ){
+		// test if we can start the crash recovery system can be started
+		if( ! crSys->CanStart() ){
+			pLogger->LogErrorFormat( LOGGING_NAME, "Crash Recovery System is not ready to start. Can not recover." );
+			pStopSystems();
+			return false;
+		}
+		
+		// try to start the crash recovery system
+		try{
+			crSys->Start();
+			
+		}catch( const deException &e ){
+			pLogger->LogException( LOGGING_NAME, e );
+			pLogger->LogErrorFormat( LOGGING_NAME, "The Crash Recovery System could not be started. Can not recover." );
+			pStopSystems();
+			return false;
+		}
+	}
+	
+	// run the crash recovery module
+	if( ! crSys->RecoverFromError() ){
+		pLogger->LogErrorFormat( LOGGING_NAME, "The Crash Recovery module could not recover from the error. Shutting now down." );
+		pErrorTrace->Clear();
+		pStopSystems();
+		return false;
+	}
+	
+	// clear the error trace
+	pErrorTrace->Clear();
+	
+	pScriptFailed = false;
+	pSystemFailed = false;
+	
+	// resume parallel processing
+	pParallelProcessing->Resume();
+	
+	// we can continue
+	return true;
 }
 
-
-
-void deEngine::UpdateElapsedTime(){
-	pElapsedTime = pAccumElapsedTime + pFrameTimer->GetElapsedTime();
-	if( pElapsedTime < 1.0f / 200.0f ){ // frame limit
-		pAccumElapsedTime = pElapsedTime;
-		return;
-	}
-	
-	pAccumElapsedTime = 0.0f;
-	pUpdateFPSRate();
-}
-
-void deEngine::RunSingleFrame(){
-	if( pElapsedTime < 1.0f / 200.0f ){ // frame limit
-		return;
-	}
-	
-	deScriptingSystem &scrSys = *GetScriptingSystem();
-	deGraphicSystem &graSys = *GetGraphicSystem();
-	deNetworkSystem &netSys = *GetNetworkSystem();
-	deAudioSystem &audSys = *GetAudioSystem();
-	deInputSystem &inpSys = *GetInputSystem();
-	deInputEventQueue &eventQueue = inpSys.GetEventQueue();
-	deInputEventQueue &vrEventQueue = GetVRSystem()->GetEventQueue();
-	int i, count;
-	
-	// print out fps
-//	pLogger->LogInfoFormat( LOGGING_NAME, "fps=%i elapsedTime=%f.", (int)(1.0f / pElapsedTime), pElapsedTime );
-	
-	// process inputs
-	count = eventQueue.GetEventCount();
-	for( i=0; i<count; i++ ){
-		const deInputEvent &event = eventQueue.GetEventAt( i );
-		if( inpSys.DropEvent( event ) ){
-			continue;
+bool deEngine::ProcessEvents(){
+	try{
+DEBUG_RESET_TIMERS;
+		// process event loop and check for quit
+		pOS->ProcessEventLoop(true);
+		if(pRequestQuit){
+			return true;
 		}
-		scrSys.SendEvent( ( deInputEvent* )&event );
-		if( pScriptFailed ){
-			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
-			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
-			eventQueue.RemoveAllEvents();
-			return;
+		
+		// process input module events into engine events
+		GetInputSystem()->GetActiveModule()->ProcessEvents();
+DEBUG_PRINT_TIMER("Run: Process input events");
+		
+		GetVRSystem()->ProcessEvents();
+DEBUG_PRINT_TIMER("Run: Process VR events");
+		
+	}catch(const deException &e){
+		pLogger->LogException("GameEngine", e);
+		
+		pErrorTrace->AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
+		deErrorTracePoint * const tracePoint = pErrorTrace->AddPoint(
+			nullptr, "deEngine::ProcessEvents", __LINE__);
+		
+		const decStringList &backtrace = e.GetBacktrace();
+		const int btcount = backtrace.GetCount();
+		int i;
+		
+		for(i=0; i<btcount; i++){
+			decString bttext;
+			bttext.Format("Backtrace %i", i + 1);
+			tracePoint->AddValue(bttext, backtrace.GetAt(i));
 		}
-	}
-	eventQueue.RemoveAllEvents();
-DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
-	
-	// process vr inputs
-	count = vrEventQueue.GetEventCount();
-	for( i=0; i<count; i++ ){
-		const deInputEvent &event = vrEventQueue.GetEventAt( i );
-		if( inpSys.DropEvent( event ) ){
-			continue;
-		}
-		scrSys.SendEvent( ( deInputEvent* )&event );
-		if( pScriptFailed ){
-			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
-			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
-			vrEventQueue.RemoveAllEvents();
-			return;
-		}
-	}
-	vrEventQueue.RemoveAllEvents();
-DEBUG_PRINT_TIMER( "DoFrame: Process VR events" );
-	
-	// process service events
-	GetServiceManager()->FrameUpdate();
-	
-	// frame update
-	pParallelProcessing->Update();
-	scrSys.OnFrameUpdate();
-DEBUG_PRINT_TIMER( "DoFrame: Script OnFrameUpdate" );
-	if( pScriptFailed ){
-		deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
-		tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
-		return;
+		return false;
 	}
 	
-	// process sound
-	audSys.ProcessAudio();
-DEBUG_PRINT_TIMER( "DoFrame: Process audio" );
-	
-	// process network
-	netSys.ProcessNetwork();
-DEBUG_PRINT_TIMER( "DoFrame: Process network" );
-	
-	// draw screen
-	pParallelProcessing->Update();
-	graSys.RenderWindows();
-DEBUG_PRINT_TIMER( "DoFrame: Render windows" );
-	
-	// check for problems
-	if( pScriptFailed ){
-		deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
-		tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
-		return;
-	}
+	return true;
 }
 
 
@@ -1349,52 +1463,4 @@ bool deEngine::pStopSystems(){
 	}
 	
 	return success;
-}
-
-bool deEngine::pRecoverFromError(){
-	deCrashRecoverySystem *crSys = GetCrashRecoverySystem();
-	
-	// pause parallel processing
-	pParallelProcessing->Pause();
-	
-	// should the crash recovery system be stopped start it
-	if( ! crSys->GetIsRunning() ){
-		// test if we can start the crash recovery system can be started
-		if( ! crSys->CanStart() ){
-			pLogger->LogErrorFormat( LOGGING_NAME, "Crash Recovery System is not ready to start. Can not recover." );
-			pStopSystems();
-			return false;
-		}
-		
-		// try to start the crash recovery system
-		try{
-			crSys->Start();
-			
-		}catch( const deException &e ){
-			pLogger->LogException( LOGGING_NAME, e );
-			pLogger->LogErrorFormat( LOGGING_NAME, "The Crash Recovery System could not be started. Can not recover." );
-			pStopSystems();
-			return false;
-		}
-	}
-	
-	// run the crash recovery module
-	if( ! crSys->RecoverFromError() ){
-		pLogger->LogErrorFormat( LOGGING_NAME, "The Crash Recovery module could not recover from the error. Shutting now down." );
-		pErrorTrace->Clear();
-		pStopSystems();
-		return false;
-	}
-	
-	// clear the error trace
-	pErrorTrace->Clear();
-	
-	pScriptFailed = false;
-	pSystemFailed = false;
-	
-	// resume parallel processing
-	pParallelProcessing->Resume();
-	
-	// we can continue
-	return true;
 }

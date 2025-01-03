@@ -9,9 +9,10 @@ class GameRunParams {
     JNIEnv *pEnv;
 
     JniClass pClsParam;
-    JniClass pClsGameProfile;
-    const JniFieldObject pFldGameProfile;
+    const JniFieldPointer pFldGameProfile;
     const JniFieldString pFldRunArguments;
+    const JniFieldInt pFldWidth;
+    const JniFieldInt pFldHeight;
     //const JniFieldObjectArray pFldPatches;
 
 public:

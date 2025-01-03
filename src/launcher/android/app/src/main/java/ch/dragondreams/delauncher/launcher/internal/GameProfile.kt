@@ -13,7 +13,8 @@ class GameProfile private constructor(
     private external fun gameProfileGetStatus(game: Long): GameProfileStatus
 
     fun dispose() {
-        if (nativeRefCount-- == 0){
+        nativeRefCount--;
+        if (nativeRefCount == 0){
             gameProfileRelease(nativeProfile)
             dropInstance(nativeProfile)
         }

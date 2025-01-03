@@ -1,6 +1,6 @@
 package ch.dragondreams.delauncher.launcher.internal
 
-import android.view.SurfaceView
+import android.view.Surface
 
 data class LauncherConfig(
     var loggerSource: String = "",
@@ -11,5 +11,5 @@ data class LauncherConfig(
     var pathEngine: String = "",
     var pathEngineConfig: String = "",
     var pathEngineCache: String = "",
-    var surface: SurfaceView? = null
+    var surface: Surface? = null
 )

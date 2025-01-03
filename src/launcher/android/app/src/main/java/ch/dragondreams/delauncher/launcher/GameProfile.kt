@@ -81,7 +81,8 @@ class GameProfile private constructor(
     }
 
     fun release(){
-        if(refcount-- == 0){
+        refcount--;
+        if(refcount == 0){
             dispose()
         }
     }

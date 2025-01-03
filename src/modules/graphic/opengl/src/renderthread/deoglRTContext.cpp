@@ -1043,7 +1043,7 @@ void deoglRTContext::pInitDisplay(){
 		return;
 	}
 	
-	DEASSERT_NULL(pOSAndroid->GetNativeWindow())
+	DEASSERT_NOTNULL(pOSAndroid->GetNativeWindow())
 	
 	// initialize display
 	if( pDisplay == EGL_NO_DISPLAY ){
@@ -1057,11 +1057,12 @@ void deoglRTContext::pInitDisplay(){
 		
 		// choose configuration
 		const EGLint attribs[] = {
-			EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, // EGL_OPENGL_ES3_BIT_KHR
+			EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 			EGL_BLUE_SIZE, 8,
 			EGL_GREEN_SIZE, 8,
 			EGL_RED_SIZE, 8,
+			EGL_DEPTH_SIZE, 16,
 			EGL_NONE
 		};
 		EGLint configCount;
@@ -1072,9 +1073,11 @@ void deoglRTContext::pInitDisplay(){
 	}
 	
 	// set buffer geometry
+	/*
 	EGLint format;
 	eglGetConfigAttrib( pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format );
 	ANativeWindow_setBuffersGeometry( pOSAndroid->GetNativeWindow(), 0, 0, format );
+	*/
 	
 	// create surface
 	pSurface = eglCreateWindowSurface( pDisplay, pConfig, pOSAndroid->GetNativeWindow(), NULL );

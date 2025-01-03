@@ -31,6 +31,9 @@
 
 #ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
+#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/string/decStringDictionary.h>
+class deLoadableModule;
 #endif
 
 class deEngine;
@@ -97,6 +100,16 @@ private:
 	deLogger::Ref pEngineLogger;
 #ifdef OS_ANDROID
 	deOSAndroid::sConfig pConfig;
+	
+	class cModuleParamState : public deObject{
+	public:
+		deLoadableModule *module;
+		decStringDictionary parameters;
+		cModuleParamState(deLoadableModule *module);
+	};
+	decObjectList pModuleParamStates;
+	
+	delGPModuleList *pGameCollectChangedParams;
 #endif
 	
 	
@@ -330,6 +343,17 @@ public:
 	 */
 	void ReadDelgaFilesVfs(const deVFSContainer::Ref &container, const char *delgaFile,
 		const decStringList &filenames, decObjectOrderedSet &filesContent) override;
+	
+	/**
+	 * \brief Add DELGA file to virtual file system as root container.
+	 * 
+	 * Container maps the content of \em archivePath into the virtual file system.
+	 */
+	void VFSAddDelgaFileVfs(const deVFSContainer::Ref &container, const char *delgaFile,
+		const char *archivePath, const decStringSet &hiddenPath) override;
+	
+	/** \brief Run single game frame update. */
+	void RunSingleFrameUpdate() override;
 #endif
 /*@}*/
 };

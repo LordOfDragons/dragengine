@@ -8,9 +8,10 @@ GameRunParams::GameRunParams(JNIEnv *env) :
 pEnv(env),
 
 pClsParam(env, JPATH_BASE "GameRunParams"),
-pClsGameProfile(env, JPATH_BASE "GameProfile"),
-pFldGameProfile(pClsParam.GetFieldObject("gameProfile", pClsGameProfile)),
-pFldRunArguments(pClsParam.GetFieldString("runArguments"))
+pFldGameProfile(pClsParam.GetFieldPointer("gameProfile")),
+pFldRunArguments(pClsParam.GetFieldString("runArguments")),
+pFldWidth(pClsParam.GetFieldInt("width")),
+pFldHeight(pClsParam.GetFieldInt("height"))
 //pFldPatches(pClsParam.GetFieldObjectArray("patches", "]Ljava/lang/String;"))
 {
 }
@@ -19,6 +20,9 @@ delGameRunParams GameRunParams::FromNative(jobject objParams) {
     delGameRunParams params;
     params.SetGameProfile((delGameProfile*)pFldGameProfile.Get(objParams));
     params.SetRunArguments(pFldRunArguments.Get(objParams));
+    params.SetWidth(pFldWidth.Get(objParams));
+    params.SetHeight(pFldHeight.Get(objParams));
+    params.SetFullScreen(true);
     /*
     const JniObjectArray objPatches(env, pFldPatches.Get(objParams));
     const int patchCount = objPatches.GetCount();

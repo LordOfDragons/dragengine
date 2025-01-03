@@ -561,16 +561,14 @@ public:
 	 * \brief Run single frame update.
 	 * 
 	 * Used by launchers taking control of the entire engine run-time instead of handing it
-	 * off using the Run function. In particular this does (in this order):<br/>
-	 * <ul>
-	 * <li>Send input events to the active scripting module.</li>
-	 * <li>Update the engine resource loader.</li>
-	 * <li>Call OnFrameUpdate function on the active scripting module.</li>
-	 * <li>Process audio using the active audio module.</li>
-	 * <li>Process networking using the active network module.</li>
-	 * <li>Call BeginFrame on the active graphic module.</li>
-	 * <li>Call EndFrame on the active graphic module.</li>
-	 * </ul>
+	 * off using the Run function. In particular this does (in this order):
+	 * - Send input events to the active scripting module.
+	 * - Update the engine resource loader.
+	 * - Call OnFrameUpdate function on the active scripting module.
+	 * - Process audio using the active audio module.
+	 * - Process networking using the active network module.
+	 * - Call BeginFrame on the active graphic module.
+	 * - Call EndFrame on the active graphic module.
 	 * 
 	 * On errors the processing exits the function immediately. Check if GetScriptFailed
 	 * or GetSystemFailed returns true and enter error handling if this is the case.
@@ -579,8 +577,77 @@ public:
 	 * \note The frame rate is capped at 200 Hz to avoid very small time steps in case
 	 * the main thread components run fast. This frame rate limit is indepedent of frame
 	 * rate limits imposed by engine modules.
+	 * 
+	 * \returns true if the game engine started successfully or false if an error occurred.
+	 *          In case of error run RecoverFromError() or handle it on your own.
 	 */
-	void RunSingleFrame();
+	bool RunSingleFrame();
+	
+	/**
+	 * \brief Start running engine.
+	 * 
+	 * For use by launcher taking control of the entire engine run-time instead of handling
+	 * it off using the Run function. In particular this does (in this order):
+	 * - Log run parameters for debuggin
+	 * - Start systems
+	 * - Reset elapsed timer
+	 *
+	 * \param scriptDir Directory relative to data directory containing the script files for your game.
+	 * \param scriptVersion Script version the application has been written against.
+	 * \param gameObject Initial game object to create. Script module specific value.
+	 *                   Usually a class or function name to use to create the game object
+	 * \returns true if the game engine started successfully or false if an error occurred.
+	 *          In case of error run RecoverFromError() or handle it on your own.
+	 */
+	bool StartRun(const char *scriptDirectory, const char *scriptVersion, const char *gameObject);
+	
+	/**
+	 * \brief Resume running engine after a crash recovery attempt.
+	 * 
+	 * For use by launcher taking control of the entire engine run-time instead of handling
+	 * it off using the Run function. In particular this does (in this order):
+	 * - Init game (script module) if not required
+	 * - Clear event queue
+	 * 
+	 * \returns true if the game engine started successfully or false if an error occured.
+	 *          In case of error run RecoverFromError() or handle it on your own.
+	 */
+	bool ResumeRun();
+	
+	/**
+	 * \brief Stop running engine after game exited.
+	 * 
+	 * For use by launcher taking control of the entire engine run-time instead of handling
+	 * it off using the Run function. In particular this does (in this order):
+	 * - Exit the game if it is still running
+	 * - Stop systems
+	 * 
+	 * \returns true if the game engine started successfully or false if an unrecoverable error
+	 *          occurred. In addition exceptions can be thrown.
+	 */
+	bool StopRun();
+	
+	/**
+	 * \brief Try recover from error.
+	 * 
+	 * For use by launcher taking control of the entire engine run-time instead of handling
+	 * it off using the Run function. Blocks until crash recovery finished.
+	 * 
+	 * \returns true if recovery succeeded or false if game has to be aborted.
+	 */
+	bool RecoverFromError();
+	
+	/**
+	 * \brief Process events.
+	 * 
+	 * For use by launcher taking control of the entire engine run-time instead of handling
+	 * it off using the Run function.
+	 * 
+	 * \returns true if recovery succeeded or false if game has to be aborted.
+	 * 
+	 * \note After returning true check GetQuitRequest() is true to exit game.
+	 */
+	bool ProcessEvents();
 	/*@}*/
 	
 	
@@ -593,7 +660,6 @@ private:
 	void pUpdateFPSRate();
 	bool pClearPermanents();
 	bool pStopSystems();
-	bool pRecoverFromError();
 };
 
 #endif

@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun getLauncher(): DragengineLauncher {
         if (launcher == null) {
-            launcher = DragengineLauncher(this)
+            launcher = DragengineLauncher(this, null)
             launcher!!.addListener(TestListener())
         }
         return launcher!!

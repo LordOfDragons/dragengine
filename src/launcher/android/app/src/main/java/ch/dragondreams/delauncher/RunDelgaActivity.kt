@@ -1,8 +1,8 @@
 package ch.dragondreams.delauncher
 
-import android.R
 import android.os.Bundle
 import android.util.Log
+import android.view.SurfaceHolder
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.EngineModule
 import ch.dragondreams.delauncher.launcher.EngineModuleParameter
@@ -44,10 +44,11 @@ class RunDelgaActivity : GameActivity(),
     private var patchIdentifier: String? = null
     private val moduleParameters: MutableList<EngineModuleParameter> = mutableListOf()
     private var runParams: GameRunParams = GameRunParams()
+    private var runGameHandler: RunGameHandler? = null
 
     override fun getLauncher(): DragengineLauncher {
         if (launcher == null) {
-            launcher = DragengineLauncher(this)
+            launcher = DragengineLauncher(this, mSurfaceView)
             launcher!!.addListener(RunLauncherListener(this))
         }
         return launcher!!
@@ -74,10 +75,19 @@ class RunDelgaActivity : GameActivity(),
 
         if (intent.action == "ch.dragondreams.delauncher.LAUNCH_DELGA"
             || intent.action == "android.intent.action.VIEW") {
-            getLauncher() // force create launcher if not created already
+            mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
+                override fun surfaceCreated(holder: SurfaceHolder){
+                    getLauncher() // force create launcher if not created already
+                    supportFragmentManager.beginTransaction()
+                        .add(android.R.id.content, FragmentInitEngine()).commit()
+                }
 
-            supportFragmentManager.beginTransaction()
-                .add(R.id.content, FragmentInitEngine()).commit()
+                override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int){
+                }
+
+                override fun surfaceDestroyed(holder: SurfaceHolder){
+                }
+            })
 
         } else {
             finish()
@@ -86,11 +96,13 @@ class RunDelgaActivity : GameActivity(),
 
     override fun onDestroy() {
         GameActivityAdapter().setHandler(0L)
+        runGameHandler?.dispose()
+        runGameHandler = null
 
-        delgaGame?.dispose()
+        delgaGame?.release()
         delgaGame = null
 
-        delgaGames.forEach { g -> g.dispose() }
+        delgaGames.forEach { g -> g.release() }
         delgaGames.clear()
 
         launcher?.dispose()
@@ -222,7 +234,7 @@ class RunDelgaActivity : GameActivity(),
             return false
         }
 
-        delgaGames.forEach { g -> g.dispose() }
+        delgaGames.forEach { g -> g.release() }
         delgaGames.clear()
         delgaGames.addAll(launcher!!.readDelgaGames(delgaPath!!))
         logInfo("processIntentLaunchDelga", "DELGA loaded")
@@ -233,10 +245,11 @@ class RunDelgaActivity : GameActivity(),
             return false
         }
 
-        delgaGames.subList(1, delgaGames.size).forEach { g -> g.dispose() }
+        delgaGame?.release()
+        delgaGame = delgaGames[0].retain()
 
-        delgaGame?.dispose()
-        delgaGame = delgaGames[0].reference()
+        delgaGames.forEach { g -> g.release() }
+        delgaGames.clear()
 
         // load configuration if the game is not installed. this allows to keep the parameter
         // changes alive done by the player inside the game
@@ -324,6 +337,8 @@ class RunDelgaActivity : GameActivity(),
 
         // udpate the run parameters
         runParams.gameProfile = profile
+        runParams.width = mSurfaceView.width
+        runParams.height = mSurfaceView.height
 
         /*
         var error: String
@@ -402,8 +417,8 @@ class RunDelgaActivity : GameActivity(),
             "Starting game '${game.title}' using profile '${runParams.gameProfile?.name}'");
 
         loadLibrary("run_game_handler")
-        GameActivityAdapter().setHandler(RunGameHandler().createHandler(
-            game.nativeGame, runParams.toNative()))
+        runGameHandler = RunGameHandler(launcher!!, game, runParams)
+        GameActivityAdapter().setHandler(runGameHandler!!.nativeHandler)
 
         /*
         const delEngineInstanceDirect::Factory::Ref factory(

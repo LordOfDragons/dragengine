@@ -396,3 +396,14 @@ void JniHelpers::throwException(const deException &exception){
 
     pEnv->ThrowNew(exClass, exception.GetDescription().GetString());
 }
+
+void JniHelpers::logException(const deException &exception){
+    __android_log_print(ANDROID_LOG_ERROR, "Launcher", "%s", exception.GetName().GetString());
+
+    const decStringList lines(exception.FormatOutput());
+    const int count = lines.GetCount();
+    int i;
+    for(i=0; i<count; i++){
+        __android_log_print(ANDROID_LOG_ERROR, "Launcher", "%s", lines.GetAt(i).GetString());
+    }
+}

@@ -306,6 +306,17 @@ public:
 	 */
 	virtual void ReadDelgaFilesVfs(const deVFSContainer::Ref &container, const char *delgaFile,
 		const decStringList &filenames, decObjectOrderedSet &filesContent);
+	
+	/**
+	 * \brief Add DELGA file to virtual file system as root container.
+	 * 
+	 * Container maps the content of \em archivePath into the virtual file system.
+	 */
+	virtual void VFSAddDelgaFileVfs(const deVFSContainer::Ref &container,
+		const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath);
+	
+	/** \brief Run single game frame update. */
+	virtual void RunSingleFrameUpdate();
 #endif
 	/*@}*/
 };

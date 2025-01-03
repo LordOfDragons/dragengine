@@ -164,7 +164,8 @@
 			"stdfloat": "cpp",
 			"typeindex": "cpp",
 			"*.ipp": "cpp",
-			"strstream": "cpp"
+			"strstream": "cpp",
+			"text_encoding": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			
