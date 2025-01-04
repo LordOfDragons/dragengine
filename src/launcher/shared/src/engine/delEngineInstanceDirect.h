@@ -29,14 +29,15 @@
 
 #include <dragengine/logger/deLogger.h>
 
-#ifdef OS_ANDROID
-#include <dragengine/app/deOSAndroid.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decStringDictionary.h>
-class deLoadableModule;
+
+#ifdef OS_ANDROID
+#include <dragengine/app/deOSAndroid.h>
 #endif
 
 class deEngine;
+class deLoadableModule;
 
 
 /**
@@ -98,17 +99,17 @@ private:
 	bool pGameRunning;
 	deLogger::Ref pLogger;
 	deLogger::Ref pEngineLogger;
-#ifdef OS_ANDROID
-	deOSAndroid::sConfig pConfig;
 	
 	class cModuleParamState : public deObject{
 	public:
 		deLoadableModule *module;
 		decStringDictionary parameters;
-		cModuleParamState(deLoadableModule *module);
+		cModuleParamState(deLoadableModule *amodule);
 	};
 	decObjectList pModuleParamStates;
 	
+#ifdef OS_ANDROID
+	deOSAndroid::sConfig pConfig;
 	delGPModuleList *pGameCollectChangedParams;
 #endif
 	

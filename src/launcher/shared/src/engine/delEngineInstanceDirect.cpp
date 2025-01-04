@@ -140,11 +140,9 @@ delLauncher &launcher, const char *logfile){
 // Class delEngineInstanceDirect
 //////////////////////////////////
 
-#ifdef OS_ANDROID
-delEngineInstanceDirect::cModuleParamState::cModuleParamState(deLoadableModule *module) :
-module(module){
+delEngineInstanceDirect::cModuleParamState::cModuleParamState(deLoadableModule *amodule) :
+module(amodule){
 }
-#endif
 
 // Constructors and Destructors
 /////////////////////////////////
@@ -749,29 +747,31 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	
 	// compare module parameters against stored ones
 	if( collectChangedParams ){
-		for( i=0; i<11; i++ ){
-			if( ! moduleState[ i ].module ){
+		for(i=0; i<pModuleParamStates.GetCount(); i++){
+			cModuleParamState &mps = *((cModuleParamState*)pModuleParamStates.GetAt(i));
+			deBaseModule * const module = mps.module->GetModule();
+			if(!module){
 				continue;
 			}
 			
-			const decStringList keys( moduleState[ i ].parameters.GetKeys() );
+			const decStringList keys(mps.parameters.GetKeys());
 			const int count = keys.GetCount();
-			for( j=0; j<count; j++ ){
-				const decString &name = keys.GetAt( j );
-				const decString value( moduleState[ i ].module->GetParameterValue( name ) );
-				if( value == moduleState[ i ].parameters.GetAt( name ) ){
+			for(j=0; j<count; j++){
+				const decString &name = keys.GetAt(j);
+				const decString value(module->GetParameterValue(name));
+				if(value == mps.parameters.GetAt(name)){
 					continue;
 				}
 				
-				const decString &moduleName = moduleState[ i ].module->GetLoadableModule().GetName();
+				const decString &moduleName = module->GetLoadableModule().GetName();
 				
-				delGPModule::Ref module( collectChangedParams->GetNamed( moduleName ) );
-				if( ! module ){
-					module.TakeOver( new delGPModule( moduleName ) );
-					collectChangedParams->Add( module );
+				delGPModule::Ref gpmodule(collectChangedParams->GetNamed(moduleName));
+				if(!gpmodule){
+					gpmodule.TakeOver(new delGPModule(moduleName));
+					collectChangedParams->Add(gpmodule);
 				}
 				
-				module->GetParameters().Add( delGPMParameter::Ref::New( new delGPMParameter( name, value ) ) );
+				gpmodule->GetParameters().Add(delGPMParameter::Ref::New(new delGPMParameter(name, value)));
 			}
 		}
 	}
