@@ -1509,6 +1509,8 @@ void deoglRenderThread::pInitExtensions(){
 	}
 	
 	// enable states never touched again later (and that can not be changed)
+	// NOTE: on android this is always enabled for 3.2
+#ifndef OS_ANDROID
 	if( pExtensions->GetHasSeamlessCubeMap() ){
 		// on nVidia this crashes due to a bug with linear filtering on float textures
 		// TODO is this still affecting the newer driver versions?
@@ -1519,6 +1521,7 @@ void deoglRenderThread::pInitExtensions(){
 			OGL_CHECK( *this, glEnable( GL_TEXTURE_CUBE_MAP_SEAMLESS ) );
 		}
 	}
+#endif
 }
 
 void deoglRenderThread::pInitCapabilities(){

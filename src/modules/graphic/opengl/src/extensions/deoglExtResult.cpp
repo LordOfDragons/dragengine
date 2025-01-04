@@ -76,11 +76,11 @@ GLAPI PFNGLACTIVETEXTUREPROC pglActiveTexture = nullptr;
 
 GLAPI PFNGLCOMPRESSEDTEXIMAGE3DPROC pglCompressedTexImage3D = nullptr;
 GLAPI PFNGLCOMPRESSEDTEXIMAGE2DPROC pglCompressedTexImage2D = nullptr;
-GLAPI PFNGLCOMPRESSEDTEXIMAGE1DPROC pglCompressedTexImage1D = nullptr;
-GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC pglCompressedTexSubImage3D = nullptr;
-GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC pglCompressedTexSubImage2D = nullptr;
-GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC pglCompressedTexSubImage1D = nullptr;
-GLAPI PFNGLGETCOMPRESSEDTEXIMAGEPROC pglGetCompressedTexImage = nullptr;
+// GLAPI PFNGLCOMPRESSEDTEXIMAGE1DPROC pglCompressedTexImage1D = nullptr;
+// GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC pglCompressedTexSubImage3D = nullptr;
+// GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC pglCompressedTexSubImage2D = nullptr;
+// GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC pglCompressedTexSubImage1D = nullptr;
+// GLAPI PFNGLGETCOMPRESSEDTEXIMAGEPROC pglGetCompressedTexImage = nullptr;
 
 
 
@@ -92,7 +92,7 @@ GLAPI PFNGLDELETEBUFFERSPROC pglDeleteBuffers = nullptr;
 GLAPI PFNGLGENBUFFERSPROC pglGenBuffers = nullptr;
 GLAPI PFNGLBUFFERDATAPROC pglBufferData = nullptr;
 GLAPI PFNGLBUFFERSUBDATAPROC pglBufferSubData = nullptr;
-GLAPI PFNGLGETBUFFERSUBDATAPROC pglGetBufferSubData = nullptr;
+// GLAPI PFNGLGETBUFFERSUBDATAPROC pglGetBufferSubData = nullptr;
 GLAPI PFNGLMAPBUFFERPROC pglMapBuffer = nullptr;
 GLAPI PFNGLMAPBUFFERRANGEPROC pglMapBufferRange = nullptr;
 GLAPI PFNGLUNMAPBUFFERPROC pglUnmapBuffer = nullptr;
@@ -114,8 +114,8 @@ GLAPI PFNGLGETQUERYOBJECTUIVPROC pglGetQueryObjectuiv = nullptr;
 ///////////////////////
 
 GLAPI PFNGLSTENCILOPSEPARATEPROC pglStencilOpSeparate = nullptr;
-GLAPI PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate = nullptr;
-GLAPI PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate = nullptr;
+// GLAPI PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate = nullptr;
+// GLAPI PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate = nullptr;
 
 
 
@@ -171,15 +171,15 @@ GLAPI PFNGLUNIFORM1IPROC pglUniform1i = nullptr;
 GLAPI PFNGLUNIFORM2IPROC pglUniform2i = nullptr;
 GLAPI PFNGLUNIFORM3IPROC pglUniform3i = nullptr;
 GLAPI PFNGLUNIFORM4IPROC pglUniform4i = nullptr;
-GLAPI PFNGLUNIFORM1FVPROC pglUniform1fv = nullptr;
-GLAPI PFNGLUNIFORM2FVPROC pglUniform2fv = nullptr;
-GLAPI PFNGLUNIFORM3FVPROC pglUniform3fv = nullptr;
-GLAPI PFNGLUNIFORM4FVPROC pglUniform4fv = nullptr;
-GLAPI PFNGLUNIFORM1IVPROC pglUniform1iv = nullptr;
-GLAPI PFNGLUNIFORM2IVPROC pglUniform2iv = nullptr;
-GLAPI PFNGLUNIFORM3IVPROC pglUniform3iv = nullptr;
-GLAPI PFNGLUNIFORM4IVPROC pglUniform4iv = nullptr;
-GLAPI PFNGLUNIFORMMATRIX2FVPROC pglUniformMatrix2fv = nullptr;
+// GLAPI PFNGLUNIFORM1FVPROC pglUniform1fv = nullptr;
+// GLAPI PFNGLUNIFORM2FVPROC pglUniform2fv = nullptr;
+// GLAPI PFNGLUNIFORM3FVPROC pglUniform3fv = nullptr;
+// GLAPI PFNGLUNIFORM4FVPROC pglUniform4fv = nullptr;
+// GLAPI PFNGLUNIFORM1IVPROC pglUniform1iv = nullptr;
+// GLAPI PFNGLUNIFORM2IVPROC pglUniform2iv = nullptr;
+// GLAPI PFNGLUNIFORM3IVPROC pglUniform3iv = nullptr;
+// GLAPI PFNGLUNIFORM4IVPROC pglUniform4iv = nullptr;
+// GLAPI PFNGLUNIFORMMATRIX2FVPROC pglUniformMatrix2fv = nullptr;
 GLAPI PFNGLUNIFORMMATRIX3FVPROC pglUniformMatrix3fv = nullptr;
 GLAPI PFNGLUNIFORMMATRIX4FVPROC pglUniformMatrix4fv = nullptr;
 // GLAPI PFNGLGETOBJECTPARAMETERIVPROC pglGetObjectParameteriv = nullptr;
@@ -191,11 +191,11 @@ GLAPI PFNGLGETUNIFORMLOCATIONPROC pglGetUniformLocation = nullptr;
 // these are listed in opengl version 2.1 but do not look like belonging directly to an extension
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-GLAPI PFNGLUNIFORMMATRIX2X3FVPROC pglUniformMatrix2x3fv = nullptr;
+// GLAPI PFNGLUNIFORMMATRIX2X3FVPROC pglUniformMatrix2x3fv = nullptr;
 GLAPI PFNGLUNIFORMMATRIX3X2FVPROC pglUniformMatrix3x2fv = nullptr;
-GLAPI PFNGLUNIFORMMATRIX2X4FVPROC pglUniformMatrix2x4fv = nullptr;
-GLAPI PFNGLUNIFORMMATRIX4X2FVPROC pglUniformMatrix4x2fv = nullptr;
-GLAPI PFNGLUNIFORMMATRIX3X4FVPROC pglUniformMatrix3x4fv = nullptr;
+// GLAPI PFNGLUNIFORMMATRIX2X4FVPROC pglUniformMatrix2x4fv = nullptr;
+// GLAPI PFNGLUNIFORMMATRIX4X2FVPROC pglUniformMatrix4x2fv = nullptr;
+// GLAPI PFNGLUNIFORMMATRIX3X4FVPROC pglUniformMatrix3x4fv = nullptr;
 GLAPI PFNGLUNIFORMMATRIX4X3FVPROC pglUniformMatrix4x3fv = nullptr;
 
 
@@ -204,7 +204,7 @@ GLAPI PFNGLUNIFORMMATRIX4X3FVPROC pglUniformMatrix4x3fv = nullptr;
 /////////////////////////////////////////////////////////////////////////////////
 
 GLAPI PFNGLCLEARBUFFERIVPROC pglClearBufferiv = nullptr;
-GLAPI PFNGLCLEARBUFFERUIVPROC pglClearBufferuiv = nullptr;
+// GLAPI PFNGLCLEARBUFFERUIVPROC pglClearBufferuiv = nullptr;
 GLAPI PFNGLCLEARBUFFERFVPROC pglClearBufferfv = nullptr;
 GLAPI PFNGLCLEARBUFFERFIPROC pglClearBufferfi = nullptr;
 GLAPI PFNGLVERTEXATTRIBIPOINTERPROC pglVertexAttribIPointer = nullptr;
@@ -217,7 +217,7 @@ GLAPI PFNGLVERTEXATTRIBIPOINTERPROC pglVertexAttribIPointer = nullptr;
 GLAPI PFNGLFENCESYNCPROC pglFenceSync = nullptr;
 GLAPI PFNGLDELETESYNCPROC pglDeleteSync = nullptr;
 GLAPI PFNGLCLIENTWAITSYNCPROC pglClientWaitSync = nullptr;
-GLAPI PFNGLWAITSYNCPROC pglWaitSync = nullptr;
+// GLAPI PFNGLWAITSYNCPROC pglWaitSync = nullptr;
 
 
 
@@ -225,7 +225,7 @@ GLAPI PFNGLWAITSYNCPROC pglWaitSync = nullptr;
 //////////////////////////////////////////////////////////
 
 GLAPI PFNGLDRAWELEMENTSBASEVERTEXPROC pglDrawElementsBaseVertex = nullptr;
-GLAPI PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC pglDrawRangeElementsBaseVertex = nullptr;
+// GLAPI PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC pglDrawRangeElementsBaseVertex = nullptr;
 GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC pglMultiDrawElementsBaseVertex = nullptr;
 GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC pglDrawElementsInstancedBaseVertex = nullptr;
 
@@ -240,7 +240,7 @@ GLAPI PFNGLDELETESAMPLERSPROC pglDeleteSamplers = nullptr;
 GLAPI PFNGLBINDSAMPLERPROC pglBindSampler = nullptr;
 GLAPI PFNGLSAMPLERPARAMETERIPROC pglSamplerParameteri = nullptr;
 // GLAPI PFNGLSAMPLERPARAMETERIVPROC pglSamplerParameteriv = nullptr;
-GLAPI PFNGLSAMPLERPARAMETERFPROC pglSamplerParameterf = nullptr;
+// GLAPI PFNGLSAMPLERPARAMETERFPROC pglSamplerParameterf = nullptr;
 // GLAPI PFNGLSAMPLERPARAMETERFVPROC pglSamplerParameterfv = nullptr;
 // GLAPI PFNGLSAMPLERPARAMETERIIVPROC pglSamplerParameterIiv = nullptr;
 // GLAPI PFNGLSAMPLERPARAMETERIUIVPROC pglSamplerParameterIuiv = nullptr;
@@ -261,17 +261,17 @@ GLAPI PFNGLFRAMEBUFFERTEXTURELAYERPROC pglFramebufferTextureLayer = nullptr;
 // GL_ARB_framebuffer_object : no opengl version
 //////////////////////////////////////////////////
 
-GLAPI PFNGLBINDRENDERBUFFERPROC pglBindRenderbuffer = nullptr;
-GLAPI PFNGLDELETERENDERBUFFERSPROC pglDeleteRenderbuffers = nullptr;
-GLAPI PFNGLGENRENDERBUFFERSPROC pglGenRenderbuffers = nullptr;
-GLAPI PFNGLRENDERBUFFERSTORAGEPROC pglRenderbufferStorage = nullptr;
+// GLAPI PFNGLBINDRENDERBUFFERPROC pglBindRenderbuffer = nullptr;
+// GLAPI PFNGLDELETERENDERBUFFERSPROC pglDeleteRenderbuffers = nullptr;
+// GLAPI PFNGLGENRENDERBUFFERSPROC pglGenRenderbuffers = nullptr;
+// GLAPI PFNGLRENDERBUFFERSTORAGEPROC pglRenderbufferStorage = nullptr;
 GLAPI PFNGLBINDFRAMEBUFFERPROC pglBindFramebuffer = nullptr;
 GLAPI PFNGLDELETEFRAMEBUFFERSPROC pglDeleteFramebuffers = nullptr;
 GLAPI PFNGLGENFRAMEBUFFERSPROC pglGenFramebuffers = nullptr;
 GLAPI PFNGLCHECKFRAMEBUFFERSTATUSPROC pglCheckFramebufferStatus = nullptr;
 GLAPI PFNGLFRAMEBUFFERTEXTURE2DPROC pglFramebufferTexture2D = nullptr;
-GLAPI PFNGLFRAMEBUFFERTEXTURE3DPROC pglFramebufferTexture3D = nullptr;
-GLAPI PFNGLFRAMEBUFFERRENDERBUFFERPROC pglFramebufferRenderbuffer = nullptr;
+// GLAPI PFNGLFRAMEBUFFERTEXTURE3DPROC pglFramebufferTexture3D = nullptr;
+// GLAPI PFNGLFRAMEBUFFERRENDERBUFFERPROC pglFramebufferRenderbuffer = nullptr;
 GLAPI PFNGLGENERATEMIPMAPPROC pglGenerateMipmap = nullptr;
 GLAPI PFNGLBLITFRAMEBUFFERPROC pglBlitFramebuffer = nullptr;
 GLAPI PFNGLFRAMEBUFFERTEXTUREARBPROC pglFramebufferTexture = nullptr;
@@ -297,7 +297,7 @@ GLAPI PFNGLGENVERTEXARRAYSPROC pglGenVertexArrays = nullptr;
 // GL_EXT_subtexture : no opengl version
 //////////////////////////////////////////
 
-GLAPI PFNGLTEXSUBIMAGE1DEXTPROC pglTexSubImage1D = nullptr;
+// GLAPI PFNGLTEXSUBIMAGE1DEXTPROC pglTexSubImage1D = nullptr;
 GLAPI PFNGLTEXSUBIMAGE2DEXTPROC pglTexSubImage2D = nullptr;
 
 
@@ -323,12 +323,12 @@ GLAPI PFNGLTEXSUBIMAGE2DEXTPROC pglTexSubImage2D = nullptr;
 // GL_EXT_transform_feedback : opengl version 3.0
 ///////////////////////////////////////////////////
 
-GLAPI PFNGLBEGINTRANSFORMFEEDBACKPROC pglBeginTransformFeedback = nullptr;
-GLAPI PFNGLENDTRANSFORMFEEDBACKPROC pglEndTransformFeedback = nullptr;
+// GLAPI PFNGLBEGINTRANSFORMFEEDBACKPROC pglBeginTransformFeedback = nullptr;
+// GLAPI PFNGLENDTRANSFORMFEEDBACKPROC pglEndTransformFeedback = nullptr;
 GLAPI PFNGLBINDBUFFERRANGEPROC pglBindBufferRange = nullptr;
 GLAPI PFNGLBINDBUFFERBASEPROC pglBindBufferBase = nullptr;
 GLAPI PFNGLTRANSFORMFEEDBACKVARYINGSPROC pglTransformFeedbackVaryings = nullptr;
-GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC pglGetTransformFeedbackVarying = nullptr;
+// GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC pglGetTransformFeedbackVarying = nullptr;
 
 
 
@@ -340,10 +340,10 @@ GLAPI PFNGLUNIFORM1UIEXTPROC pglUniform1ui = nullptr;
 GLAPI PFNGLUNIFORM2UIEXTPROC pglUniform2ui = nullptr;
 GLAPI PFNGLUNIFORM3UIEXTPROC pglUniform3ui = nullptr;
 GLAPI PFNGLUNIFORM4UIEXTPROC pglUniform4ui = nullptr;
-GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv = nullptr;
-GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv = nullptr;
-GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv = nullptr;
-GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv = nullptr;
+// GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv = nullptr;
+// GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv = nullptr;
+// GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv = nullptr;
+// GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv = nullptr;
 
 
 
@@ -365,9 +365,9 @@ GLAPI PFNGLTEXBUFFERARBPROC pglTexBuffer = nullptr;
 // GL_ARB_timer_query : opengl version 3.3
 ////////////////////////////////////////////
 
-GLAPI PFNGLQUERYCOUNTERPROC pglQueryCounter = nullptr;
-//GLAPI PFNGLGETQUERYOBJECTI64VPROC pglGetQueryObjecti64v = nullptr;
-GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v = nullptr;
+// GLAPI PFNGLQUERYCOUNTERPROC pglQueryCounter = nullptr;
+// GLAPI PFNGLGETQUERYOBJECTI64VPROC pglGetQueryObjecti64v = nullptr;
+// GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v = nullptr;
 
 
 
@@ -377,7 +377,7 @@ GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v = nullptr;
 // OpenGL version 1.4
 ///////////////////////
 
-GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate = nullptr;
+// GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate = nullptr;
 
 
 
@@ -385,13 +385,14 @@ GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate = nullptr;
 ////////////////////////////////////////////////////
 
 GLAPI PFNGLPATCHPARAMETERIPROC pglPatchParameteri = nullptr;
-GLAPI PFNGLPATCHPARAMETERFVPROC pglPatchParameterfv = nullptr;
+// GLAPI PFNGLPATCHPARAMETERFVPROC pglPatchParameterfv = nullptr;
 
 
 
 // GL_ARB_transform_feedback2 : opengl version 4.0
 ////////////////////////////////////////////////////
 
+/*
 GLAPI PFNGLBINDTRANSFORMFEEDBACKPROC pglBindTransformFeedback = nullptr;
 GLAPI PFNGLDELETETRANSFORMFEEDBACKSPROC pglDeleteTransformFeedbacks = nullptr;
 GLAPI PFNGLGENTRANSFORMFEEDBACKSPROC pglGenTransformFeedbacks = nullptr;
@@ -399,22 +400,24 @@ GLAPI PFNGLISTRANSFORMFEEDBACKPROC pglIsTransformFeedback = nullptr;
 GLAPI PFNGLPAUSETRANSFORMFEEDBACKPROC pglPauseTransformFeedback = nullptr;
 GLAPI PFNGLRESUMETRANSFORMFEEDBACKPROC pglResumeTransformFeedback = nullptr;
 GLAPI PFNGLDRAWTRANSFORMFEEDBACKPROC pglDrawTransformFeedback = nullptr;
-
+*/
 
 
 // GL_ARB_transform_feedback3 : opengl version 4.0
 ////////////////////////////////////////////////////
 
+/*
 GLAPI PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC pglDrawTransformFeedbackStream = nullptr;
 GLAPI PFNGLBEGINQUERYINDEXEDPROC pglBeginQueryIndexed = nullptr;
 GLAPI PFNGLENDQUERYINDEXEDPROC pglEndQueryIndexed = nullptr;
 GLAPI PFNGLGETQUERYINDEXEDIVPROC pglGetQueryIndexediv = nullptr;
-
+*/
 
 
 // GL_ARB_viewport_array : opengl version 4.1
 ///////////////////////////////////////////////
 
+/*
 GLAPI PFNGLVIEWPORTARRAYVPROC pglViewportArrayv = nullptr;
 GLAPI PFNGLVIEWPORTINDEXEDFPROC pglViewportIndexedf = nullptr;
 GLAPI PFNGLVIEWPORTINDEXEDFVPROC pglViewportIndexedfv = nullptr;
@@ -430,15 +433,16 @@ GLAPI PFNGLENABLEINDEXEDEXTPROC pglEnableIndexed = nullptr;
 GLAPI PFNGLDISABLEINDEXEDEXTPROC pglDisableIndexed = nullptr;
 GLAPI PFNGLISENABLEDINDEXEDEXTPROC pglIsEnabledIndexed = nullptr;
 GLAPI PFNGLGETINTEGERINDEXEDVEXTPROC pglGetIntegerIndexedv = nullptr;
-
+*/
 
 
 // GL_ARB_transform_feedback_instanced : opengl version 4.2
 /////////////////////////////////////////////////////////////
 
+/*
 GLAPI PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC pglDrawTransformFeedbackInstanced = nullptr;
 GLAPI PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC pglDrawTransformFeedbackStreamInstanced = nullptr;
-
+*/
 
 
 // GL_ARB_copy_image : opengl version 4.3
@@ -512,7 +516,7 @@ GLAPI PFNGLCLEARBUFFERSUBDATAPROC pglClearBufferSubData = nullptr;
 // GL_ARB_buffer_storage : opengl version 4.3
 ///////////////////////////////////////////////
 
-GLAPI PFNGLBUFFERSTORAGEPROC pglBufferStorage = nullptr;
+// GLAPI PFNGLBUFFERSTORAGEPROC pglBufferStorage = nullptr;
 
 
 
@@ -580,12 +584,12 @@ GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTARBPROC pglMultiDrawElementsIndirectCou
 // GL_ARB_uniform_buffer_object : no opengl version
 /////////////////////////////////////////////////////
 
-GLAPI PFNGLGETUNIFORMINDICESPROC pglGetUniformIndices = nullptr;
-GLAPI PFNGLGETACTIVEUNIFORMSIVPROC pglGetActiveUniformsiv = nullptr;
-GLAPI PFNGLGETACTIVEUNIFORMNAMEPROC pglGetActiveUniformName = nullptr;
+// GLAPI PFNGLGETUNIFORMINDICESPROC pglGetUniformIndices = nullptr;
+// GLAPI PFNGLGETACTIVEUNIFORMSIVPROC pglGetActiveUniformsiv = nullptr;
+// GLAPI PFNGLGETACTIVEUNIFORMNAMEPROC pglGetActiveUniformName = nullptr;
 GLAPI PFNGLGETUNIFORMBLOCKINDEXPROC pglGetUniformBlockIndex = nullptr;
-GLAPI PFNGLGETACTIVEUNIFORMBLOCKIVPROC pglGetActiveUniformBlockiv = nullptr;
-GLAPI PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC pglGetActiveUniformBlockName = nullptr;
+// GLAPI PFNGLGETACTIVEUNIFORMBLOCKIVPROC pglGetActiveUniformBlockiv = nullptr;
+// GLAPI PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC pglGetActiveUniformBlockName = nullptr;
 GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding = nullptr;
 
 
@@ -607,7 +611,7 @@ GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData = nullptr;
 
 GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary = nullptr;
 GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary = nullptr;
-GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri = nullptr;
+// GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri = nullptr;
 
 
 // GL_ARB_separate_shader_objects : no opengl version

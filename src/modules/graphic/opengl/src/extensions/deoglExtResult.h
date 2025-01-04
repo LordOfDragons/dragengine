@@ -206,11 +206,11 @@ extern GLAPI PFNGLACTIVETEXTUREPROC pglActiveTexture;
 
 extern GLAPI PFNGLCOMPRESSEDTEXIMAGE3DPROC pglCompressedTexImage3D;
 extern GLAPI PFNGLCOMPRESSEDTEXIMAGE2DPROC pglCompressedTexImage2D;
-extern GLAPI PFNGLCOMPRESSEDTEXIMAGE1DPROC pglCompressedTexImage1D;
-extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC pglCompressedTexSubImage3D;
-extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC pglCompressedTexSubImage2D;
-extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC pglCompressedTexSubImage1D;
-extern GLAPI PFNGLGETCOMPRESSEDTEXIMAGEPROC pglGetCompressedTexImage;
+// extern GLAPI PFNGLCOMPRESSEDTEXIMAGE1DPROC pglCompressedTexImage1D;
+// extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC pglCompressedTexSubImage3D;
+// extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC pglCompressedTexSubImage2D;
+// extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC pglCompressedTexSubImage1D;
+// extern GLAPI PFNGLGETCOMPRESSEDTEXIMAGEPROC pglGetCompressedTexImage;
 
 
 
@@ -223,7 +223,7 @@ extern GLAPI PFNGLGENBUFFERSPROC pglGenBuffers;
 // extern GLAPI PFNGLISBUFFERPROC pglIsBuffer;
 extern GLAPI PFNGLBUFFERDATAPROC pglBufferData;
 extern GLAPI PFNGLBUFFERSUBDATAPROC pglBufferSubData;
-extern GLAPI PFNGLGETBUFFERSUBDATAPROC pglGetBufferSubData;
+// extern GLAPI PFNGLGETBUFFERSUBDATAPROC pglGetBufferSubData;
 extern GLAPI PFNGLMAPBUFFERPROC pglMapBuffer;
 extern GLAPI PFNGLMAPBUFFERRANGEPROC pglMapBufferRange;
 extern GLAPI PFNGLUNMAPBUFFERPROC pglUnmapBuffer;
@@ -250,8 +250,8 @@ extern GLAPI PFNGLGETQUERYOBJECTUIVPROC pglGetQueryObjectuiv;
 ///////////////////////
 
 extern PFNGLSTENCILOPSEPARATEPROC pglStencilOpSeparate;
-extern PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate;
-extern PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate;
+// extern PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate;
+// extern PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate;
 
 
 
@@ -372,15 +372,15 @@ extern GLAPI PFNGLUNIFORM1IPROC pglUniform1i;
 extern GLAPI PFNGLUNIFORM2IPROC pglUniform2i;
 extern GLAPI PFNGLUNIFORM3IPROC pglUniform3i;
 extern GLAPI PFNGLUNIFORM4IPROC pglUniform4i;
-extern GLAPI PFNGLUNIFORM1FVPROC pglUniform1fv;
-extern GLAPI PFNGLUNIFORM2FVPROC pglUniform2fv;
-extern GLAPI PFNGLUNIFORM3FVPROC pglUniform3fv;
-extern GLAPI PFNGLUNIFORM4FVPROC pglUniform4fv;
-extern GLAPI PFNGLUNIFORM1IVPROC pglUniform1iv;
-extern GLAPI PFNGLUNIFORM2IVPROC pglUniform2iv;
-extern GLAPI PFNGLUNIFORM3IVPROC pglUniform3iv;
-extern GLAPI PFNGLUNIFORM4IVPROC pglUniform4iv;
-extern GLAPI PFNGLUNIFORMMATRIX2FVPROC pglUniformMatrix2fv;
+// extern GLAPI PFNGLUNIFORM1FVPROC pglUniform1fv;
+// extern GLAPI PFNGLUNIFORM2FVPROC pglUniform2fv;
+// extern GLAPI PFNGLUNIFORM3FVPROC pglUniform3fv;
+// extern GLAPI PFNGLUNIFORM4FVPROC pglUniform4fv;
+// extern GLAPI PFNGLUNIFORM1IVPROC pglUniform1iv;
+// extern GLAPI PFNGLUNIFORM2IVPROC pglUniform2iv;
+// extern GLAPI PFNGLUNIFORM3IVPROC pglUniform3iv;
+// extern GLAPI PFNGLUNIFORM4IVPROC pglUniform4iv;
+// extern GLAPI PFNGLUNIFORMMATRIX2FVPROC pglUniformMatrix2fv;
 extern GLAPI PFNGLUNIFORMMATRIX3FVPROC pglUniformMatrix3fv;
 extern GLAPI PFNGLUNIFORMMATRIX4FVPROC pglUniformMatrix4fv;
 // extern GLAPI PFNGLGETOBJECTPARAMETERFVPROC pglGetObjectParameterfv;
@@ -398,11 +398,11 @@ extern GLAPI PFNGLGETUNIFORMLOCATIONPROC pglGetUniformLocation;
 // these are listed in opengl version 2.1 but do not look like belonging directly to an extension
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-extern GLAPI PFNGLUNIFORMMATRIX2X3FVPROC pglUniformMatrix2x3fv;
+// extern GLAPI PFNGLUNIFORMMATRIX2X3FVPROC pglUniformMatrix2x3fv;
 extern GLAPI PFNGLUNIFORMMATRIX3X2FVPROC pglUniformMatrix3x2fv;
-extern GLAPI PFNGLUNIFORMMATRIX2X4FVPROC pglUniformMatrix2x4fv;
-extern GLAPI PFNGLUNIFORMMATRIX4X2FVPROC pglUniformMatrix4x2fv;
-extern GLAPI PFNGLUNIFORMMATRIX3X4FVPROC pglUniformMatrix3x4fv;
+// extern GLAPI PFNGLUNIFORMMATRIX2X4FVPROC pglUniformMatrix2x4fv;
+// extern GLAPI PFNGLUNIFORMMATRIX4X2FVPROC pglUniformMatrix4x2fv;
+// extern GLAPI PFNGLUNIFORMMATRIX3X4FVPROC pglUniformMatrix3x4fv;
 extern GLAPI PFNGLUNIFORMMATRIX4X3FVPROC pglUniformMatrix4x3fv;
 
 
@@ -411,7 +411,7 @@ extern GLAPI PFNGLUNIFORMMATRIX4X3FVPROC pglUniformMatrix4x3fv;
 /////////////////////////////////////////////////////////////////////////////////
 
 extern GLAPI PFNGLCLEARBUFFERIVPROC pglClearBufferiv;
-extern GLAPI PFNGLCLEARBUFFERUIVPROC pglClearBufferuiv;
+// extern GLAPI PFNGLCLEARBUFFERUIVPROC pglClearBufferuiv;
 extern GLAPI PFNGLCLEARBUFFERFVPROC pglClearBufferfv;
 extern GLAPI PFNGLCLEARBUFFERFIPROC pglClearBufferfi;
 
@@ -423,7 +423,7 @@ extern GLAPI PFNGLCLEARBUFFERFIPROC pglClearBufferfi;
 extern GLAPI PFNGLFENCESYNCPROC pglFenceSync;
 extern GLAPI PFNGLDELETESYNCPROC pglDeleteSync;
 extern GLAPI PFNGLCLIENTWAITSYNCPROC pglClientWaitSync;
-extern GLAPI PFNGLWAITSYNCPROC pglWaitSync;
+// extern GLAPI PFNGLWAITSYNCPROC pglWaitSync;
 
 
 
@@ -431,7 +431,7 @@ extern GLAPI PFNGLWAITSYNCPROC pglWaitSync;
 //////////////////////////////////////////////////////////
 
 extern GLAPI PFNGLDRAWELEMENTSBASEVERTEXPROC pglDrawElementsBaseVertex;
-extern GLAPI PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC pglDrawRangeElementsBaseVertex;
+// extern GLAPI PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC pglDrawRangeElementsBaseVertex;
 extern GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC pglDrawElementsInstancedBaseVertex;
 extern GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC pglMultiDrawElementsBaseVertex;
 extern GLAPI PFNGLVERTEXATTRIBIPOINTERPROC pglVertexAttribIPointer;
@@ -447,7 +447,7 @@ extern GLAPI PFNGLDELETESAMPLERSPROC pglDeleteSamplers;
 extern GLAPI PFNGLBINDSAMPLERPROC pglBindSampler;
 extern GLAPI PFNGLSAMPLERPARAMETERIPROC pglSamplerParameteri;
 // extern GLAPI PFNGLSAMPLERPARAMETERIVPROC pglSamplerParameteriv;
-extern GLAPI PFNGLSAMPLERPARAMETERFPROC pglSamplerParameterf;
+// extern GLAPI PFNGLSAMPLERPARAMETERFPROC pglSamplerParameterf;
 // extern GLAPI PFNGLSAMPLERPARAMETERFVPROC pglSamplerParameterfv;
 // extern GLAPI PFNGLSAMPLERPARAMETERIIVPROC pglSamplerParameterIiv;
 // extern GLAPI PFNGLSAMPLERPARAMETERIUIVPROC pglSamplerParameterIuiv;
@@ -469,10 +469,10 @@ extern GLAPI PFNGLFRAMEBUFFERTEXTURELAYERPROC pglFramebufferTextureLayer;
 ///////////////////////////////////////////
 
 // extern GLAPI PFNGLISRENDERBUFFERPROC pglIsRenderbuffer;
-extern GLAPI PFNGLBINDRENDERBUFFERPROC pglBindRenderbuffer;
-extern GLAPI PFNGLDELETERENDERBUFFERSPROC pglDeleteRenderbuffers;
-extern GLAPI PFNGLGENRENDERBUFFERSPROC pglGenRenderbuffers;
-extern GLAPI PFNGLRENDERBUFFERSTORAGEPROC pglRenderbufferStorage;
+// extern GLAPI PFNGLBINDRENDERBUFFERPROC pglBindRenderbuffer;
+// extern GLAPI PFNGLDELETERENDERBUFFERSPROC pglDeleteRenderbuffers;
+// extern GLAPI PFNGLGENRENDERBUFFERSPROC pglGenRenderbuffers;
+// extern GLAPI PFNGLRENDERBUFFERSTORAGEPROC pglRenderbufferStorage;
 // extern GLAPI PFNGLGETRENDERBUFFERPARAMETERIVPROC pglGetRenderbufferParameteriv;
 // extern GLAPI PFNGLISFRAMEBUFFERPROC pglIsFramebuffer;
 extern GLAPI PFNGLBINDFRAMEBUFFERPROC pglBindFramebuffer;
@@ -480,8 +480,8 @@ extern GLAPI PFNGLDELETEFRAMEBUFFERSPROC pglDeleteFramebuffers;
 extern GLAPI PFNGLGENFRAMEBUFFERSPROC pglGenFramebuffers;
 extern GLAPI PFNGLCHECKFRAMEBUFFERSTATUSPROC pglCheckFramebufferStatus;
 extern GLAPI PFNGLFRAMEBUFFERTEXTURE2DPROC pglFramebufferTexture2D;
-extern GLAPI PFNGLFRAMEBUFFERTEXTURE3DPROC pglFramebufferTexture3D;
-extern GLAPI PFNGLFRAMEBUFFERRENDERBUFFERPROC pglFramebufferRenderbuffer;
+// extern GLAPI PFNGLFRAMEBUFFERTEXTURE3DPROC pglFramebufferTexture3D;
+// extern GLAPI PFNGLFRAMEBUFFERRENDERBUFFERPROC pglFramebufferRenderbuffer;
 // extern GLAPI PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC pglGetFramebufferAttachmentParameteriv;
 extern GLAPI PFNGLGENERATEMIPMAPPROC pglGenerateMipmap;
 extern GLAPI PFNGLBLITFRAMEBUFFERPROC pglBlitFramebuffer;
@@ -511,7 +511,7 @@ extern GLAPI PFNGLGENVERTEXARRAYSPROC pglGenVertexArrays;
 // GL_EXT_subtexture : no opengl version
 //////////////////////////////////////////
 
-extern GLAPI PFNGLTEXSUBIMAGE1DEXTPROC pglTexSubImage1D;
+// extern GLAPI PFNGLTEXSUBIMAGE1DEXTPROC pglTexSubImage1D;
 extern GLAPI PFNGLTEXSUBIMAGE2DEXTPROC pglTexSubImage2D;
 
 
@@ -560,13 +560,13 @@ extern GLAPI PFNGLDRAWELEMENTSINSTANCEDARBPROC pglDrawElementsInstanced;
 // GL_EXT_transform_feedback : opengl version 3.0
 ///////////////////////////////////////////////////
 
-extern GLAPI PFNGLBEGINTRANSFORMFEEDBACKPROC pglBeginTransformFeedback;
-extern GLAPI PFNGLENDTRANSFORMFEEDBACKPROC pglEndTransformFeedback;
+// extern GLAPI PFNGLBEGINTRANSFORMFEEDBACKPROC pglBeginTransformFeedback;
+// extern GLAPI PFNGLENDTRANSFORMFEEDBACKPROC pglEndTransformFeedback;
 extern GLAPI PFNGLBINDBUFFERRANGEPROC pglBindBufferRange;
 // extern GLAPI PFNGLBINDBUFFEROFFSETEXTPROC pglBindBufferOffset; // EXT-only
 extern GLAPI PFNGLBINDBUFFERBASEPROC pglBindBufferBase;
 extern GLAPI PFNGLTRANSFORMFEEDBACKVARYINGSPROC pglTransformFeedbackVaryings;
-extern GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC pglGetTransformFeedbackVarying;
+// extern GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC pglGetTransformFeedbackVarying;
 
 
 
@@ -581,10 +581,10 @@ extern GLAPI PFNGLUNIFORM1UIEXTPROC pglUniform1ui;
 extern GLAPI PFNGLUNIFORM2UIEXTPROC pglUniform2ui;
 extern GLAPI PFNGLUNIFORM3UIEXTPROC pglUniform3ui;
 extern GLAPI PFNGLUNIFORM4UIEXTPROC pglUniform4ui;
-extern GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv;
-extern GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv;
-extern GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv;
-extern GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv;
+// extern GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv;
+// extern GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv;
+// extern GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv;
+// extern GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv;
 
 
 
@@ -598,9 +598,9 @@ extern GLAPI PFNGLTEXBUFFERARBPROC pglTexBuffer;
 // GL_ARB_timer_query : opengl version 3.3
 ////////////////////////////////////////////
 
-extern GLAPI PFNGLQUERYCOUNTERPROC pglQueryCounter;
-//extern GLAPI PFNGLGETQUERYOBJECTI64VPROC pglGetQueryObjecti64v;
-extern GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v;
+// extern GLAPI PFNGLQUERYCOUNTERPROC pglQueryCounter;
+// extern GLAPI PFNGLGETQUERYOBJECTI64VPROC pglGetQueryObjecti64v;
+// extern GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v;
 
 
 
@@ -615,7 +615,7 @@ extern GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v;
 // OpenGL version 1.4
 ///////////////////////
 
-extern GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate;
+// extern GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate;
 
 
 
@@ -623,13 +623,14 @@ extern GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate;
 ////////////////////////////////////////////////////
 
 extern GLAPI PFNGLPATCHPARAMETERIPROC pglPatchParameteri;
-extern GLAPI PFNGLPATCHPARAMETERFVPROC pglPatchParameterfv;
+// extern GLAPI PFNGLPATCHPARAMETERFVPROC pglPatchParameterfv;
 
 
 
 // GL_ARB_transform_feedback2 : opengl version 4.0
 ////////////////////////////////////////////////////
 
+/*
 extern GLAPI PFNGLBINDTRANSFORMFEEDBACKPROC pglBindTransformFeedback;
 extern GLAPI PFNGLDELETETRANSFORMFEEDBACKSPROC pglDeleteTransformFeedbacks;
 extern GLAPI PFNGLGENTRANSFORMFEEDBACKSPROC pglGenTransformFeedbacks;
@@ -637,22 +638,24 @@ extern GLAPI PFNGLISTRANSFORMFEEDBACKPROC pglIsTransformFeedback;
 extern GLAPI PFNGLPAUSETRANSFORMFEEDBACKPROC pglPauseTransformFeedback;
 extern GLAPI PFNGLRESUMETRANSFORMFEEDBACKPROC pglResumeTransformFeedback;
 extern GLAPI PFNGLDRAWTRANSFORMFEEDBACKPROC pglDrawTransformFeedback;
-
+*/
 
 
 // GL_ARB_transform_feedback3 : opengl version 4.0
 ////////////////////////////////////////////////////
 
+/*
 extern GLAPI PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC pglDrawTransformFeedbackStream;
 extern GLAPI PFNGLBEGINQUERYINDEXEDPROC pglBeginQueryIndexed;
 extern GLAPI PFNGLENDQUERYINDEXEDPROC pglEndQueryIndexed;
 extern GLAPI PFNGLGETQUERYINDEXEDIVPROC pglGetQueryIndexediv;
-
+*/
 
 
 // GL_ARB_viewport_array : opengl version 4.1
 ///////////////////////////////////////////////
 
+/*
 extern GLAPI PFNGLVIEWPORTARRAYVPROC pglViewportArrayv;
 extern GLAPI PFNGLVIEWPORTINDEXEDFPROC pglViewportIndexedf;
 extern GLAPI PFNGLVIEWPORTINDEXEDFVPROC pglViewportIndexedfv;
@@ -668,15 +671,16 @@ extern GLAPI PFNGLENABLEINDEXEDEXTPROC pglEnableIndexed;
 extern GLAPI PFNGLDISABLEINDEXEDEXTPROC pglDisableIndexed;
 extern GLAPI PFNGLISENABLEDINDEXEDEXTPROC pglIsEnabledIndexed;
 extern GLAPI PFNGLGETINTEGERINDEXEDVEXTPROC pglGetIntegerIndexedv;
-
+*/
 
 
 // GL_ARB_transform_feedback_instanced : opengl version 4.2
 /////////////////////////////////////////////////////////////
 
+/*
 extern GLAPI PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC pglDrawTransformFeedbackInstanced;
 extern GLAPI PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC pglDrawTransformFeedbackStreamInstanced;
-
+*/
 
 
 // GL_ARB_copy_image : opengl version 4.3
@@ -797,7 +801,7 @@ extern GLAPI PFNGLCLEARBUFFERSUBDATAPROC pglClearBufferSubData;
 // GL_ARB_buffer_storage : opengl version 4.3
 ///////////////////////////////////////////////
 
-extern GLAPI PFNGLBUFFERSTORAGEPROC pglBufferStorage;
+// extern GLAPI PFNGLBUFFERSTORAGEPROC pglBufferStorage;
 
 
 
@@ -865,12 +869,12 @@ extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTARBPROC pglMultiDrawElementsIndi
 // GL_ARB_uniform_buffer_object : no opengl version
 /////////////////////////////////////////////////////
 
-extern GLAPI PFNGLGETUNIFORMINDICESPROC pglGetUniformIndices;
-extern GLAPI PFNGLGETACTIVEUNIFORMSIVPROC pglGetActiveUniformsiv;
-extern GLAPI PFNGLGETACTIVEUNIFORMNAMEPROC pglGetActiveUniformName;
+// extern GLAPI PFNGLGETUNIFORMINDICESPROC pglGetUniformIndices;
+// extern GLAPI PFNGLGETACTIVEUNIFORMSIVPROC pglGetActiveUniformsiv;
+// extern GLAPI PFNGLGETACTIVEUNIFORMNAMEPROC pglGetActiveUniformName;
 extern GLAPI PFNGLGETUNIFORMBLOCKINDEXPROC pglGetUniformBlockIndex;
-extern GLAPI PFNGLGETACTIVEUNIFORMBLOCKIVPROC pglGetActiveUniformBlockiv;
-extern GLAPI PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC pglGetActiveUniformBlockName;
+// extern GLAPI PFNGLGETACTIVEUNIFORMBLOCKIVPROC pglGetActiveUniformBlockiv;
+// extern GLAPI PFNGLGETACTIVEUNIFORMBLOCKNAMEPROC pglGetActiveUniformBlockName;
 extern GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding;
 
 
@@ -897,7 +901,7 @@ extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
 
 extern GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary;
 extern GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary;
-extern GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri;
+// extern GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri;
 
 
 

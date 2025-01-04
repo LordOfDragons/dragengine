@@ -479,8 +479,9 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 			
 			pPreparePreprocessor( program.GetDefines() );
 			
-			if( ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader )
-			&& ext.GetGLVersion() < deoglExtensions::evgl4p3 ){
+			if(ext.GetHasExtension(deoglExtensions::ext_ARB_compute_shader)
+			&& (ext.GetGLVersion() < deoglExtensions::evgl4p3
+			|| ext.GetGLESVersion() < deoglExtensions::evgles3p1)){
 				pPreprocessor.SourcesAppend( "#extension GL_ARB_compute_shader : require\n", false );
 			}
 			

@@ -303,8 +303,8 @@ void glTexImage1D( GLenum target, GLint level, GLint internalFormat, GLsizei wid
 void glCompressedTexImage1D( GLenum target, GLint level, GLenum internalformat,
 	GLsizei width, GLint border, GLsizei imageSize, const void *data );
 
-void glTexSubImage1D( GLenum target, GLint level, GLint xoffset, GLsizei width,
-	GLenum format, GLenum type, const void *pixels );
+// void glTexSubImage1D( GLenum target, GLint level, GLint xoffset, GLsizei width,
+// 	GLenum format, GLenum type, const void *pixels );
 
 void glFramebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level );
 
@@ -326,6 +326,11 @@ void glGetQueryObjectui64v( GLuint id, GLenum pname, GLuint64 *params );
 
 void eglShaderStorageBlockBinding( GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding );
 
+void eglClearBufferSubData(GLenum target, GLenum internalformat, GLintptr offset,
+	GLsizeiptr size, GLenum format, GLenum type, const void *data);
+
+void eglMultiDrawElementsBaseVertex(GLenum mode, const GLsizei *count, GLenum type,
+	const GLvoid * const *indices, GLsizei drawcount, const GLint *basevertex);
 
 // these are present in EGL and have to be fixed to be core calls only
 typedef const GLubyte *(EGLAPIENTRYP PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);

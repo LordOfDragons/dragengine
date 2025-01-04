@@ -32,6 +32,8 @@
 #include <dragengine/common/exceptions.h>
 
 #include "../deoglGL.h"
+#include "androidfix.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 
 
@@ -52,8 +54,8 @@ __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name
 	}else if( strcmp( name, "glTexImage1D" ) == 0 ){
 		return (__eglMustCastToProperFunctionPointerType)&glTexImage1D;
 		
-	}else if( strcmp( name, "glTexSubImage1D" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glTexSubImage1D;
+	// }else if( strcmp( name, "glTexSubImage1D" ) == 0 ){
+	// 	return (__eglMustCastToProperFunctionPointerType)&glTexSubImage1D;
 		
 	}else if( strcmp( name, "glCompressedTexImage1D" ) == 0 ){
 		return (__eglMustCastToProperFunctionPointerType)&glCompressedTexImage1D;
@@ -171,11 +173,12 @@ GLint border, GLenum format, GLenum type, const GLvoid *data ){
  * 
  * \note GL_TEXTURE_1D has the same value as _GL_TEXTURE_2D so target can be used as-is.
  */
+/*
 void glTexSubImage1D( GLenum target, GLint level, GLint xoffset, GLsizei width,
 GLenum format, GLenum type, const void *pixels ){
 	pglTexSubImage2D( target, level, xoffset, 0, width, 1, format, type, pixels );
 }
-
+*/
 
 
 /**
@@ -294,6 +297,96 @@ void glGetQueryObjectui64v( GLuint id, GLenum pname, GLuint64 *params ){
  * Set to empty since under OpenGL ES the shader has to set the binding.
  */
 void eglShaderStorageBlockBinding( GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding ){
+}
+
+
+
+static class cTempBuffer{
+private:
+	uint8_t *pData, *pDataEnd;
+	int pSize, pMaxSize;
+	
+public:
+	cTempBuffer() : pData(nullptr), pDataEnd(nullptr), pSize(0), pMaxSize(0){}
+	
+	~cTempBuffer(){
+		if(pData){
+			delete [] pData;
+		}
+	}
+	
+	inline int GetSize() const{ return pSize; }
+	inline uint8_t *GetData() const{ return pData; }
+	
+	void SetSize(int size){
+		DEASSERT_TRUE(size >= 1)
+		if(pData && size <= pMaxSize){
+			pSize = size;
+			pDataEnd = pData + size;
+			return;
+		}
+		
+		if(pData){
+			delete [] pData;
+		}
+		pData = new uint8_t[size];
+		pMaxSize = pSize = size;
+		pDataEnd = pData + size;
+	}
+	
+	void Fill(const uint8_t *data, int size){
+		DEASSERT_TRUE(pSize % size == 0)
+		uint8_t *d = pData;
+		while(d < pDataEnd){
+			memcpy(d, data, size);
+			d += size;
+		}
+	}
+} vTempBuffer;
+
+/**
+ * glClearBufferSubData replacement.
+ */
+void eglClearBufferSubData(GLenum target, GLenum internalformat, GLintptr offset,
+GLsizeiptr size, GLenum format, GLenum type, const void *data){
+	vTempBuffer.SetSize((int)size);
+	
+	switch(format){
+	case GL_RGBA:
+		DEASSERT_TRUE(type == GL_FLOAT)
+		vTempBuffer.Fill((uint8_t*)data, sizeof(GLfloat) * 4);
+		break;
+		
+	case GL_RED:
+		DEASSERT_TRUE(type == GL_FLOAT)
+		vTempBuffer.Fill((uint8_t*)data, sizeof(GLfloat));
+		break;
+		
+	case GL_RGBA_INTEGER:
+		DEASSERT_TRUE(type == GL_UNSIGNED_INT)
+		vTempBuffer.Fill((uint8_t*)data, sizeof(GLuint) * 4);
+		break;
+		
+	case GL_RED_INTEGER:
+		DEASSERT_TRUE(type == GL_UNSIGNED_INT)
+		vTempBuffer.Fill((uint8_t*)data, sizeof(GLuint));
+		break;
+		
+	default:
+		DETHROW_INFO(deeInvalidParam, "unsupported format");
+	}
+	
+	glBufferSubData(target, offset, size, vTempBuffer.GetData());
+}
+
+void eglMultiDrawElementsBaseVertex(GLenum mode, const GLsizei *count, GLenum type,
+const GLvoid *const *indices, GLsizei drawcount, const GLint *basevertex){
+	int i;
+	for(i=0; i<drawcount; i++){
+		if(count[i] > 0){
+			pglDrawElementsBaseVertex(mode, count[i], type, indices[i], basevertex[i]);
+		}
+	}
 }
 
 #endif

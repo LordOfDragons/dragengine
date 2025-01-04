@@ -75,7 +75,6 @@ Java_ch_dragondreams_delauncher_launcher_internal_Launcher_createLauncher(
         {
             jobject objView = clsConfig.GetFieldObject("surface",
                 "Landroid/view/Surface;").Get(config);
-            __android_log_print(ANDROID_LOG_ERROR, "createLauncher", "objView=%p", objView);
             if(objView) {
                 delConfig.osConfig.nativeWindow = ANativeWindow_fromSurface(env, objView);
                 DEASSERT_NOTNULL(delConfig.osConfig.nativeWindow)
