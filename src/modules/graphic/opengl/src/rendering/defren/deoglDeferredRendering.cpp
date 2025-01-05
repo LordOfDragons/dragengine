@@ -1266,7 +1266,12 @@ void deoglDeferredRendering::pCreateTextures(){
 	pTextureTemporary2->SetDebugObjectLabel( "DefRen.Temporary2" );
 	
 	pTextureTemporary3 = new deoglArrayTexture( pRenderThread );
-	pTextureTemporary3->SetFBOFormat( 1, false );
+	if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
+		pTextureTemporary3->SetFBOFormat(4, false);
+		
+	}else{
+		pTextureTemporary3->SetFBOFormat( 1, false );
+	}
 	pTextureTemporary3->SetDebugObjectLabel( "DefRen.Temporary3" );
 	
 	// create color texture

@@ -103,11 +103,11 @@ void deoglTexture::SetFormat(const deoglCapsTextureFormat *format){
 }
 
 void deoglTexture::SetFormatMappingByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber){
-	SetFormat(pRenderThread.GetCapabilities().GetFormats().GetUseTex2DFormatFor(formatNumber));
+	SetFormat(&pRenderThread.GetCapabilities().GetFormats().RequireUseTex2DFormatFor(formatNumber));
 }
 
 void deoglTexture::SetFormatFBOByNumber(deoglCapsFmtSupport::eUseTextureFormats formatNumber){
-	SetFormat(pRenderThread.GetCapabilities().GetFormats().GetUseFBOTex2DFormatFor(formatNumber));
+	SetFormat(&pRenderThread.GetCapabilities().GetFormats().RequireUseFBOTex2DFormatFor(formatNumber));
 }
 
 #elif defined BACKEND_VULKAN
@@ -363,8 +363,10 @@ void deoglTexture::SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelB
 			pixelBuffer.GetGLPixelType(), (const GLvoid *)pixelBufferData);
 		if(glGetError() == GL_INVALID_OPERATION){
 			pRenderThread.GetLogger().LogInfoFormat(
-				"deoglTexture::SetPixelsLevelLayer Failed: size(%d,%d) level=%d pf=%d pt=%d",
-				width, height, level, pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType());
+				"deoglTexture::SetPixelsLevelLayer Failed: size(%d,%d) level=%d f=%s pf=0x%x pt=0x%x",
+				width, height, level, pFormat->GetName().GetString(),
+				pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType());
+			DETHROW(deeInvalidParam);
 		}
 #else
 		OGL_CHECK(pRenderThread, pglTexSubImage2D(GL_TEXTURE_2D, level, 0, 0, width, height,

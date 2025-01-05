@@ -42,9 +42,9 @@ out vec4 outColor;
 
 void main( void ){
 	#ifdef ENVMAP_EQUI
-		ivec2 tc = ivec3( gl_FragCoord.xy );
+		ivec2 tc = ivec2(gl_FragCoord.xy);
 	#else
-		ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
+		ivec3 tc = ivec3(gl_FragCoord.xy, vLayer);
 	#endif
 	
 	outColor = texelFetch( texEmissive, tc, 0 );

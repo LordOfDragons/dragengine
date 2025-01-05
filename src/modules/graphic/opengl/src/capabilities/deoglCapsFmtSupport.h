@@ -190,6 +190,29 @@ public:
 	
 	
 	
+	/** Format to use for texture 2d type or throws exception if not supported. */
+	const deoglCapsTextureFormat &RequireUseTex2DFormatFor(eUseTextureFormats type) const;
+	
+	/** Format to use for texture cube type or throws exception if not supported. */
+	const deoglCapsTextureFormat &RequireUseTexCubeFormatFor(eUseTextureFormats type) const;
+	
+	/** Format to use for array texture type or throws exception if not supported. */
+	const deoglCapsTextureFormat &RequireUseArrayTexFormatFor(eUseTextureFormats type) const;
+	
+	/** Format to use for fbo texture 2d type or throws exception if not supported. */
+	const deoglCapsTextureFormat &RequireUseFBOTex2DFormatFor(eUseTextureFormats type) const;
+	
+	/** Format to use for fbo texture cube type or throws exception if not supported. */
+	const deoglCapsTextureFormat &RequireUseFBOTexCubeFormatFor(eUseTextureFormats type) const;
+	
+	/** Format to use for fbo array texture type or throws exception if not supported. */
+	const deoglCapsTextureFormat &RequireUseFBOArrayTexFormatFor(eUseTextureFormats type) const;
+	
+	
+	/** Get texture format name for logging. */
+	const char *GetTextureFormatName(eUseTextureFormats type) const;
+	
+	
 	/** Detect format support. */
 	void DetectFormats( GLuint fbo );
 	/*@}*/
@@ -216,6 +239,10 @@ private:
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what );
 	bool pTestFBOArrayTexFormat( GLuint fbo, GLint format, GLenum pixelFormat,
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what );
+	
+	const deoglCapsTextureFormat &pRequireFormat(const char *categoryName,
+		eUseTextureFormats type, const deoglCapsTextureFormat **listUse,
+		const deoglCapsTextureFormatList &listSupported) const;
 };
 
 #endif

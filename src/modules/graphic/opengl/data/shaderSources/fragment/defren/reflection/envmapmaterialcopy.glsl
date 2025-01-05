@@ -30,7 +30,7 @@ void main( void ){
 	
 	vec4 diffuse = textureLod( texDiffuse, tc, 0.0 );
 	
-	if( diffuse.a == 0 ){
+	if( diffuse.a == 0.0 ){
 		discard;
 	}
 	

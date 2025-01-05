@@ -485,9 +485,7 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 			
 			pPreparePreprocessor( program.GetDefines() );
 			
-			if(ext.GetHasExtension(deoglExtensions::ext_ARB_compute_shader)
-			&& (ext.GetGLVersion() < deoglExtensions::evgl4p3
-			|| ext.GetGLESVersion() < deoglExtensions::evgles3p1)){
+			if(ext.GetGLVersion() < deoglExtensions::evgl4p3 || ext.GetGLESVersion() < deoglExtensions::evgles3p1){
 				pPreprocessor.SourcesAppend( "#extension GL_ARB_compute_shader : require\n", false );
 			}
 			
@@ -876,6 +874,7 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 		pAfterLinkShader( program, *compiled );
 		
 	}catch( const deException &e ){
+		pLogFailedShaderSources();
 		e.PrintError();
 		if( compiled ){
 			delete compiled;
@@ -1171,11 +1170,15 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 		pPreprocessor.SetSymbol( "HIGHP", "highp" );
 	}
 	
+	if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
+		pPreprocessor.SetSymbol("RESTRICTED_IMAGE_BUFFER_FORMATS", "1");
+	}
+	
 	#ifdef OS_ANDROID
 	pPreprocessor.SetSymbol( "ANDROID", "1" );
 	pPreprocessor.SetSymbol( "OPENGLES", "1" );
 	pPreprocessor.SetSymbol("ARG_SAMP_HIGHP", "highp");
-	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "medp");
+	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "mediump");
 	pPreprocessor.SetSymbol("ARG_SAMP_LOWP", "lowp");
 	//pPreprocessor.SourcesAppend( "float modf( in float x, out float i ){ i=floor(x); return fract(x); }\n" );
 	

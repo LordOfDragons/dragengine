@@ -687,7 +687,7 @@ void main( void ){
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
 	#ifndef GI_RAY
-		if( diffuse.a == 0 ){
+		if( diffuse.a == 0.0 ){
 			outputUnlit();
 			return;
 		}
@@ -696,7 +696,7 @@ void main( void ){
 	// determine position of fragment to light
 	#ifdef GI_RAY
 		vec4 positionDistance = texelFetch( texPosition, tc, 0 );
-		if( positionDistance.a > 9999 ){
+		if( positionDistance.a > 9999.0 ){
 			// ray hits nothing. for sky lights this adds the ambient light contribution.
 			// for all other light sources do not light the ray
 			#ifdef SKY_LIGHT

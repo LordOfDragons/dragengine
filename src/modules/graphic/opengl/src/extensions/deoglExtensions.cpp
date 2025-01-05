@@ -1320,8 +1320,9 @@ void deoglExtensions::pFetchOptionalFunctions(){
 
 void deoglExtensions::pOptionalDisableExtensions(){
 	// ext_ARB_compute_shader without ext_ARB_shader_image_load_store is useless
-	if( ! pglBindImageTexture ){
-		DisableExtension( ext_ARB_compute_shader );
+	if(!pglBindImageTexture){
+		DisableExtension(ext_ARB_compute_shader);
+		pSupportsComputeShader = false;
 	}
 }
 

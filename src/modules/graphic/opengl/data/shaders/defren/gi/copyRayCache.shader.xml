@@ -8,11 +8,13 @@
 	<texture name='texReflectivity' target='3'/>
 	<texture name='texLight' target='4'/>
 	
+	<!-- shader assigned locations
 	<texture name='texCacheDistance' target='0'/>
 	<texture name='texCacheNormal' target='1'/>
 	<texture name='texCacheDiffuse' target='2'/>
 	<texture name='texCacheReflectivity' target='3'/>
 	<texture name='texCacheLight' target='4'/>
+	-->
 	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>

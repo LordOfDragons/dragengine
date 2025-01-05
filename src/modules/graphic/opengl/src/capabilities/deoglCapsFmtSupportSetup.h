@@ -464,8 +464,12 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfDepth16, ettfDepth16 }
 };
 
-#define TEST_FALLBACK_COUNT 7
+#define TEST_FALLBACK_COUNT 11
 static const sTestFallback vTestFallback[ TEST_FALLBACK_COUNT ] = {
+	{ deoglCapsFmtSupport::eutfR8_S, deoglCapsFmtSupport::eutfR8 },
+	{ deoglCapsFmtSupport::eutfRG8_S, deoglCapsFmtSupport::eutfRG8 },
+	{ deoglCapsFmtSupport::eutfRGB8_S, deoglCapsFmtSupport::eutfRGB8 },
+	{ deoglCapsFmtSupport::eutfRGBA8_S, deoglCapsFmtSupport::eutfRGBA8 },
 	{ deoglCapsFmtSupport::eutfR16F, deoglCapsFmtSupport::eutfR32F },
 	{ deoglCapsFmtSupport::eutfRG16F, deoglCapsFmtSupport::eutfRG32F },
 	{ deoglCapsFmtSupport::eutfRGB16F, deoglCapsFmtSupport::eutfRGB32F },

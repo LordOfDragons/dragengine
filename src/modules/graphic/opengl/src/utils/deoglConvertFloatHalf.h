@@ -25,11 +25,12 @@
 #ifndef _DEOGLCONVERTFLOATHALF_H_
 #define _DEOGLCONVERTFLOATHALF_H_
 
+#include <stdint.h>
 
 /**
  * Convert Float to Half and vice verse.
  */
-typedef unsigned short HALF_FLOAT;
+typedef uint16_t HALF_FLOAT;
 
 /**
  * Converts a 32-bit float value to a 16-bit float value suitable for OpenGL 16-bit textures.
@@ -56,10 +57,10 @@ inline HALF_FLOAT quickConvertFloatToHalf( float f ){
 	const unsigned int exp = x & 0x7f800000;
 	
 	if( exp <= 0x38000000 ){
-		return ( ( ( HALF_FLOAT )sign ) << 15 ) | ( HALF_FLOAT )( mantissa >> ( 14 + ( ( 0x38000000 - exp ) >> 23 ) ) );
+		return (((HALF_FLOAT)sign) << 15) | (HALF_FLOAT)(mantissa >> (14 + ((0x38000000 - exp) >> 23)));
 		
 	}else{
-		return ( ( ( HALF_FLOAT )sign ) << 15 ) | ( HALF_FLOAT )( ( exp - 0x38000000 ) >> 13 ) | ( HALF_FLOAT )( mantissa >> 13 );
+		return (((HALF_FLOAT)sign) << 15) | (HALF_FLOAT)((exp - 0x38000000) >> 13) | (HALF_FLOAT)(mantissa >> 13);
 	}
 }
 

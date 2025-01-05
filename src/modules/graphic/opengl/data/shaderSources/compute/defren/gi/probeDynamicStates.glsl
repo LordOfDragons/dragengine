@@ -24,12 +24,12 @@ ivec3 probeIndexToGridCoord( in int index ){
 	return ivec3( index % pGIGridProbeCount.x, index / stride, ( index % stride ) / pGIGridProbeCount.x );
 }
 
-shared ivec4 vFrontFaceCount[ 16 ];
+shared ivec4 vFrontFaceCount[16];
 
 void main( void ){
 	int index = int( gl_WorkGroupID.x );
 	
-	UFCONST vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2;
+	UFCONST vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2.0;
 	ivec2 rayOffset = ivec2( ( index % pGIProbesPerLine ) * pGIRaysPerProbe, index / pGIProbesPerLine );
 	
 	vec3 probePosition = vec3( pGIProbePosition[ index ] );
@@ -56,7 +56,7 @@ void main( void ){
 			
 			vFrontFaceCount[ gl_LocalInvocationIndex / uint( 4 ) ][ gl_LocalInvocationIndex % uint( 4 ) ] =
 				   all( lessThanEqual( vec3( rayPosition.w ), nearGeometryRange ) )
-				&& dot( imageLoad( texNormal, rayTC ).xyz, rayPosition.xyz - probePosition ) < 0
+				&& dot( imageLoad( texNormal, rayTC ).xyz, rayPosition.xyz - probePosition ) < 0.0
 				? 1 : 0;
 		}
 		barrier();
@@ -86,7 +86,7 @@ void main( void ){
 		// [0]+=[8] and update frontFaceCount. we have to make sure all invocations exit
 		// the shader but only 1 updates the buffer
 		
-		if( any( notEqual( vFrontFaceCount[ 0 ] + vFrontFaceCount[ 8 ], uvec4( 0 ) ) ) ){
+		if(any(notEqual(vFrontFaceCount[0] + vFrontFaceCount[8], ivec4(0)))){
 			// front face hit inside required range
 			if( gl_LocalInvocationIndex == uint( 0 ) ){
 				pProbeDynamicStates[ index ] = uint( 0 );

@@ -2,11 +2,13 @@
 <shader>
 	<name>DefRen GI Clear Trace Rays</name>
 	
+	<!-- shader assigned locations
 	<texture name='texPosition' target='0'/>
 	<texture name='texNormal' target='1'/>
 	<texture name='texDiffuse' target='2'/>
 	<texture name='texReflectivity' target='3'/>
 	<texture name='texLight' target='4'/>
+	-->
 	
 	<sourceCode unit='compute'>compute/defren/gi/clearTraceRays.glsl</sourceCode>
 </shader>

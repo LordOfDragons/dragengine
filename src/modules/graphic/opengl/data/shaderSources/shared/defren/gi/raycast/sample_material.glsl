@@ -66,14 +66,14 @@
 	};
 	
 #else
-	uniform usamplerBuffer tboGIRayCastMaterial;
-	uniform samplerBuffer tboGIRayCastMaterial2;
+	uniform highp usamplerBuffer tboGIRayCastMaterial;
+	uniform highp samplerBuffer tboGIRayCastMaterial2;
 #endif
 
 // material atlas textures
-uniform sampler2D tboGIRayCastMaterialDiffuse; // diffuse=rgb, tintMask=a
-uniform sampler2D tboGIRayCastMaterialReflectivity; // reflectivity=rgb, roughness=a
-uniform sampler2D tboGIRayCastMaterialEmissivity; // emissivity=rgb, solidity=a
+uniform lowp sampler2D tboGIRayCastMaterialDiffuse; // diffuse=rgb, tintMask=a
+uniform lowp sampler2D tboGIRayCastMaterialReflectivity; // reflectivity=rgb, roughness=a
+uniform mediump sampler2D tboGIRayCastMaterialEmissivity; // emissivity=rgb, solidity=a
 
 
 // Material parameter flag constants

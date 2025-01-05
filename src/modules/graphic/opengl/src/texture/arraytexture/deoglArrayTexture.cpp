@@ -61,7 +61,8 @@ pSize( 1, 1, 1 ),
 pMemUse( pRenderThread.GetMemoryManager().GetConsumption().textureArray )
 {
 	pTexture = 0;
-	pFormat = renderThread.GetCapabilities().GetFormats().GetUseArrayTexFormatFor( deoglCapsFmtSupport::eutfRGB8 );
+	pFormat = &renderThread.GetCapabilities().GetFormats().
+		RequireUseArrayTexFormatFor(deoglCapsFmtSupport::eutfRGB8);
 	
 	pMipMapLevelCount = 0;
 	pRealMipMapLevelCount = 0;
@@ -106,11 +107,11 @@ void deoglArrayTexture::SetFormat( const deoglCapsTextureFormat *format ){
 }
 
 void deoglArrayTexture::SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber ){
-	SetFormat( pRenderThread.GetCapabilities().GetFormats().GetUseArrayTexFormatFor( formatNumber ) );
+	SetFormat(&pRenderThread.GetCapabilities().GetFormats().RequireUseArrayTexFormatFor(formatNumber));
 }
 
 void deoglArrayTexture::SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber ){
-	SetFormat( pRenderThread.GetCapabilities().GetFormats().GetUseFBOArrayTexFormatFor( formatNumber ) );
+	SetFormat(&pRenderThread.GetCapabilities().GetFormats().RequireUseFBOArrayTexFormatFor(formatNumber));
 }
 
 void deoglArrayTexture::SetMipMapped( bool mipmapped ){

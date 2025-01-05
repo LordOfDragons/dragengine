@@ -61,7 +61,8 @@ pMemUse( pRenderThread.GetMemoryManager().GetConsumption().textureCube )
 	pTexture = 0;
 	
 	pSize = 1;
-	pFormat = renderThread.GetCapabilities().GetFormats().GetUseTexCubeFormatFor( deoglCapsFmtSupport::eutfRGB8 );
+	pFormat = &renderThread.GetCapabilities().GetFormats().
+		RequireUseTexCubeFormatFor(deoglCapsFmtSupport::eutfRGB8);
 	pMipMapLevelCount = 0;
 	pRealMipMapLevelCount = 0;
 	pMipMapped = false;
@@ -99,11 +100,11 @@ void deoglCubeMap::SetFormat( const deoglCapsTextureFormat *format ){
 }
 
 void deoglCubeMap::SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber ){
-	SetFormat( pRenderThread.GetCapabilities().GetFormats().GetUseTexCubeFormatFor( formatNumber ) );
+	SetFormat(&pRenderThread.GetCapabilities().GetFormats().RequireUseTexCubeFormatFor(formatNumber));
 }
 
 void deoglCubeMap::SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber ){
-	SetFormat( pRenderThread.GetCapabilities().GetFormats().GetUseFBOTexCubeFormatFor( formatNumber ) );
+	SetFormat(&pRenderThread.GetCapabilities().GetFormats().RequireUseFBOTexCubeFormatFor(formatNumber));
 }
 
 void deoglCubeMap::SetMipMapped( bool mipmapped ){
@@ -259,8 +260,22 @@ void deoglCubeMap::SetPixelsLevel( int level, const deoglPixelBuffer &pixelBuffe
 			//	pFormat->GetFormat(), faceStride, ( const GLvoid * )( pixelsPtr + faceStride * t ) ) );
 			
 		}else{
+#ifdef OS_ANDROID
+			oglClearError();
+			pglTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, level, 0, 0, size, size,
+				pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(),
+				(const GLvoid *)(pixelsPtr + faceStride * t));
+			if(glGetError() == GL_INVALID_OPERATION){
+				pRenderThread.GetLogger().LogInfoFormat(
+					"deoglCubeMap::SetPixelsLevelLayer Failed: size=%d level=%d f=%s pf=0x%x pt=0x%x",
+					size, level, pFormat->GetName().GetString(),
+					pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType());
+				DETHROW(deeInvalidParam);
+			}
+#else
 			OGL_CHECK( pRenderThread, pglTexSubImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, level, 0, 0, size, size,
 				pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(), ( const GLvoid * )( pixelsPtr + faceStride * t ) ) );
+#endif
 		}
 	}
 	

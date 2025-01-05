@@ -131,7 +131,7 @@ TEX_DATA_TYPE sampleData( vec2 tc ){
 #ifdef DEPTH_DIFFERENCE_WEIGHTING
 void processPixel( in vec2 tc, in float weight, in float refdepth, inout TEX_DATA_TYPE accum, inout float weightSum ){
 	float depth = depthToZ( texDepth, vec3( tc * pTCTransformAlt.xy + pTCTransformAlt.zw, vLayer ), vLayer );
-	weight *= max( 0, 1 - pDepthDifferenceThreshold * abs( depth - refdepth ) );
+	weight *= max( 0.0, 1.0 - pDepthDifferenceThreshold * abs( depth - refdepth ) );
 	accum += sampleData( tc ) * TEX_DATA_TYPE( weight );
 	weightSum += weight;
 }
@@ -146,8 +146,8 @@ void processPixel( in vec2 tc, in float weight, in float refdepth, inout TEX_DAT
 
 void main( void ){
 	TEX_DATA_TYPE accum = sampleData( vTexCoord ) * TEX_DATA_TYPE( pWeights1.x );
-	float refdepth = 0;
-	float weightSum = 1;
+	float refdepth = 0.0;
+	float weightSum = 1.0;
 	
 	#ifdef DEPTH_DIFFERENCE_WEIGHTING
 		refdepth = depthToZ( texDepth, vec3( vTexCoord * pTCTransformAlt.xy + pTCTransformAlt.zw, vLayer ), vLayer );

@@ -5,6 +5,7 @@ precision highp int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
 #include "shared/defren/gi/trace_probe.glsl"
+#include "shared/image_buffer.glsl"
 
 
 layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
@@ -12,9 +13,13 @@ layout(binding=1, rgba8_snorm) uniform readonly mediump image2D texNormal;
 layout(binding=2, rgba16f) uniform readonly mediump image2D texLight;
 
 #ifdef MAP_IRRADIANCE
-	layout(binding=3, rgba16f) uniform mediump image2DArray texProbe;
+	layout(binding=3, rgba16f) uniform readonly mediump image2DArray texProbe_load;
+	layout(binding=3, rgba16f) uniform writeonly mediump image2DArray texProbe_store;
+	#define STORE_RESULT(v) v
 #else
-	layout(binding=3, rg16f) uniform mediump image2DArray texProbe;
+	layout(binding=3, IMG_RG16F_FMT) uniform readonly mediump IMG_R16F_2DARR texProbe_load;
+	layout(binding=3, IMG_RG16F_FMT) uniform writeonly mediump IMG_R16F_2DARR texProbe_store;
+	#define STORE_RESULT(v) IMG_RG16F_STORE(v)
 #endif
 
 
@@ -102,7 +107,7 @@ void main( void ){
 	
 	ivec2 rayOffset = ivec2( ( updateIndex % pGIProbesPerLine ) * pGIRaysPerProbe, updateIndex / pGIProbesPerLine );
 	
-	float blendFactor = ( probeFlags & 1 ) == 1 ? pGIBlendUpdateProbe : 1;
+	float blendFactor = ( probeFlags & 1 ) == 1 ? pGIBlendUpdateProbe : 1.0;
 	
 	int probeIndex = giTraceProbeProbeIndex( updateIndex );
 	ivec3 probeGrid = probeIndexToGridCoord( probeIndex );
@@ -131,7 +136,7 @@ void main( void ){
 	// pixel. for this reason the 0.5 shift is used together with mapProbeSize.
 	vec3 texelDirection = octahedralDecode( ( vec2( tcLocal ) + vec2( 0.5 ) ) * ( 2.0 / float( mapProbeSize ) ) - vec2( 1 ) );
 	
-	float weight, sumWeight = 0;
+	float weight, sumWeight = 0.0;
 	int i;
 	
 	#ifdef MAP_IRRADIANCE
@@ -141,7 +146,7 @@ void main( void ){
 	#endif
 	
 // 	bool tooCloseToSurface = false;
-	float rayBackCount = 0;
+	float rayBackCount = 0.0;
 // 	int rayFrontCount = 0;
 // 	int rayMissCount = 0;
 	
@@ -168,10 +173,10 @@ void main( void ){
 			vRayData[ gl_LocalInvocationIndex ].normal = vec3( imageLoad( texNormal, rayTC ) );
 			vRayData[ gl_LocalInvocationIndex ].rayDirection = pGIRayDirection[ rayIndex ];
 			
-			vRayData[ gl_LocalInvocationIndex ].rayMisses = vRayData[ gl_LocalInvocationIndex ].position.w > 9999;
+			vRayData[ gl_LocalInvocationIndex ].rayMisses = vRayData[ gl_LocalInvocationIndex ].position.w > 9999.0;
 			
 			vRayData[ gl_LocalInvocationIndex ].frontFacing = vRayData[ gl_LocalInvocationIndex ].rayMisses
-				|| dot( vRayData[ gl_LocalInvocationIndex ].normal, vRayData[ gl_LocalInvocationIndex ].rayDirection ) < 0;
+				|| dot( vRayData[ gl_LocalInvocationIndex ].normal, vRayData[ gl_LocalInvocationIndex ].rayDirection ) < 0.0;
 			
 			#ifdef MAP_IRRADIANCE
 				vRayData[ gl_LocalInvocationIndex ].light = vec3( imageLoad( texLight, rayTC ) );
@@ -206,7 +211,7 @@ void main( void ){
 				// ray hits back facing geometry
 				rayMisses = false;
 				frontFacing = false;
-				rayBackCount += 1;
+				rayBackCount += 1.0;
 			}
 			*/
 			
@@ -220,14 +225,14 @@ void main( void ){
 				}
 			#endif
 			
-			rayBackCount += vRayData[ i ].frontFacing ? 0 : 1;
+			rayBackCount += vRayData[ i ].frontFacing ? 0.0 : 1.0;
 			// end of optimized block
 			
 // 			tooCloseToSurface = tooCloseToSurface || rayPosition.w < 0.001;
 			
 			// for dynamic ray-tracing only the pGIRayDirection[i] (see define) can be used
 			//vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
-			weight = max( dot( texelDirection, vRayData[ i ].rayDirection ), 0 );
+			weight = max( dot( texelDirection, vRayData[ i ].rayDirection ), 0.0 );
 			#ifdef MAP_DISTANCE
 				weight = pow( weight, pGIDepthSharpness );
 			#endif
@@ -317,9 +322,9 @@ void main( void ){
 	// blendFactor: 1-hysteresis. modified by update code per-probe
 	
 	#ifdef MAP_IRRADIANCE
-		vec3 prevProbeState = vec3( imageLoad( texProbe, tcSample ) );
+		vec3 prevProbeState = vec3(imageLoad(texProbe_load, tcSample));
 	#else
-		vec2 prevProbeState = vec2( imageLoad( texProbe, tcSample ) );
+		vec2 prevProbeState = IMG_RG16F_LOAD(imageLoad(texProbe_load, tcSample));
 	#endif
 	
 	if( enableProbe ){
@@ -335,9 +340,9 @@ void main( void ){
 			// determine blend factor to use. if the difference between the old and new
 			// irradiance is large switch to blend factor of 1 otherwise use the regular one
 			vec3 lastIrradiance = pow( prevProbeState, vec3( pGIIrradianceGamma ) );
-			vec3 diffIrradiance = abs( newProbeState / max( lastIrradiance, vec3( 0.001 ) ) - 1 );
+			vec3 diffIrradiance = abs( newProbeState / max( lastIrradiance, vec3( 0.001 ) ) - 1.0 );
 			if( max( max( diffIrradiance.x, diffIrradiance.y ), diffIrradiance.z ) > 0.25 ){ // paper probeChangeRatio = 0.25
-				blendFactor = min( blendFactor + 0.75, 1 ); // blend faster
+				blendFactor = min( blendFactor + 0.75, 1.0 ); // blend faster
 			}
 			
 			// in the paper the maximum change is clamped
@@ -364,10 +369,10 @@ void main( void ){
 			//newProbeState = vec2( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance );
 			newProbeState = vec2( 0 );
 		#endif
-		blendFactor = 1;
+		blendFactor = 1.0;
 	}
 	
-// 		blendFactor = 1; // DEBUG
+// 		blendFactor = 1.0; // DEBUG
 // 		blendFactor = pGIBlendUpdateProbe;
 	
 	
@@ -378,7 +383,7 @@ void main( void ){
 		vec4 result = vec4( mix( prevProbeState, newProbeState, blendFactor ), 0, 0 );
 	#endif
 	
-	imageStore( texProbe, tcSample, result );
+	imageStore(texProbe_store, tcSample, STORE_RESULT(result));
 	
 	
 	// update border pixels by copying probe edge pixels. the original paper does not
@@ -410,13 +415,15 @@ void main( void ){
 	ivec2 tcShift = ivec2( isOnEdge.x ? -1 : 1, isOnEdge.z ? -1 : 1 );
 	ivec2 tcFlipped = tcProbe + edgeValues.yy - tcLocal;
 	
-	if( anyOnEdge.x ){
-		imageStore( texProbe, ivec3( tcSample.x + tcShift.x, tcFlipped.y, tcSample.z ), result );
+	if(anyOnEdge.x){
+		imageStore(texProbe_store, ivec3(tcSample.x + tcShift.x, tcFlipped.y, tcSample.z), STORE_RESULT(result));
 	}
-	if( anyOnEdge.y ){
-		imageStore( texProbe, ivec3( tcFlipped.x, tcSample.y + tcShift.y, tcSample.z ), result );
+	
+	if(anyOnEdge.y){
+		imageStore(texProbe_store, ivec3(tcFlipped.x, tcSample.y + tcShift.y, tcSample.z), STORE_RESULT(result));
 	}
-	if( all( anyOnEdge ) ){
-		imageStore( texProbe, ivec3( tcFlipped - tcShift, tcSample.z ), result );
+	
+	if(all(anyOnEdge)){
+		imageStore(texProbe_store, ivec3(tcFlipped - tcShift, tcSample.z), STORE_RESULT(result));
 	}
 }

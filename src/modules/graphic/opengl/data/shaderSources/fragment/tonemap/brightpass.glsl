@@ -28,12 +28,12 @@ void main( void ){
 	vec4 params = texelFetch( texToneMapParams, tcParams, 0 ); // r=avgLum, g=imageKey, b=lwhite, a=brightPassThreshold
 	vec3 color = textureLod( texColor, vec3( vTexCoord, vLayer ), 0.0 ).rgb;
 	
-	float luminance = max( dot( color, lumiFactors ), 0 );
-	float finalLum = max( luminance - params.w, 0 ) * pToneMapBloomStrength;
+	float luminance = max( dot( color, lumiFactors ), 0.0 );
+	float finalLum = max( luminance - params.w, 0.0 ) * pToneMapBloomStrength;
 	outColor = color * vec3( finalLum / ( luminance + epsilon ) );
 	
 	/*
-	float luminance = max( dot( color, lumiFactors ), 0 );
+	float luminance = max( dot( color, lumiFactors ), 0.0 );
 	float finalLum = max( luminance - params.x, 0.0 );
 	outColor = color * vec3( finalLum / ( luminance + epsilon ) );
 	*/

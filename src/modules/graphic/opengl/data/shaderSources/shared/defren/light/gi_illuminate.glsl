@@ -133,7 +133,7 @@ vec4 giIlluminate( in vec3 position, in vec3 normal, in vec3 bendNormal, in int 
 		}
 		
 		// trilinear weights
-		vec3 trilinear = max( mix( vec3( 1.0 ) - alpha, alpha, offset ), 0.001 );
+		vec3 trilinear = max(mix(vec3(1.0) - alpha, alpha, vec3(offset)), 0.001);
 		weight *= trilinear.x * trilinear.y * trilinear.z;
 		
 		// sample irradiance

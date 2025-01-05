@@ -71,7 +71,7 @@ vec3 normalDecodeSphereMap( in vec2 encoded ){
 	vec2 fenc = encoded * vec2( 4 ) - vec2( 2 );
 	float f = dot( fenc, fenc );
 	float g = sqrt( 1.0 - f * 0.25 );
-	return vec3( fenc.xy * vec2( g ), f * 0.5 - 1 );
+	return vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
 }
 
 // load normal from image using sphere map method.

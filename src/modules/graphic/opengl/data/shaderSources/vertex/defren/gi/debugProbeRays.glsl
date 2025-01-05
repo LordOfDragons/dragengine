@@ -47,7 +47,7 @@ void main( void ){
 	
 	vec3 center = pMatrixMV * vec4( position, 1 );
 	
-	vRimThickness = mix( 0.98, 0.5, clamp( center.z / 15, 0, 1 ) );
+	vRimThickness = mix( 0.98, 0.5, clamp( center.z / 15.0, 0.0, 1.0 ) );
 	
 	vColor = vec3( 0 );
 	vColorRim = vec3( 1, 0, 0 );

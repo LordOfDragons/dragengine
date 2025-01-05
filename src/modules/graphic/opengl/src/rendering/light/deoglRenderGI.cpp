@@ -175,6 +175,30 @@ pDebugRayLightIndex( -1 )
 	deoglShaderDefines defines, commonDefines;
 	const deoglShaderSources *sources;
 	
+	// opengl guarantees a minimum of 1024 local invocation size across supported GPUs.
+	// with opengl ES this is not so simple anymore. 512 can very well happen. some systems
+	// report even only 256.
+	//
+	// deoglGITraceRays::pCreateFBORay calculates the texture size like this:
+	// - width = pProbesPerLine * pRaysPerProbe = 8 * (16 or more) = 128
+	// - height = GI_MAX_PROBE_COUNT / pProbesPerLine = 2048 / 8 = 256
+	//
+	// we use here the maximum size fitting into the platform capabilities.
+	// the case for 1024 is the reference case
+	const int maxInvCount = renderThread.GetCapabilities().GetMaxComputeWorkGroupInvocations();
+	if(maxInvCount >= 2048){
+		pClearTraceRayWorkGroupSize.Set(128, 16);
+		
+	}else if(maxInvCount >= 1024){
+		pClearTraceRayWorkGroupSize.Set(128, 8);
+		
+	}else if(maxInvCount >= 512){
+		pClearTraceRayWorkGroupSize.Set(64, 8);
+		
+	}else{
+		pClearTraceRayWorkGroupSize.Set(32, 8);
+	}
+	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
 		
@@ -192,9 +216,12 @@ pDebugRayLightIndex( -1 )
 		
 		// clear trace rays
 		pipconf.Reset();
-		pipconf.SetType( deoglPipelineConfiguration::etCompute );
-		pipconf.SetShader( renderThread, "DefRen GI Clear Trace Rays", defines );
-		pPipelineClearTraceRays = pipelineManager.GetWith( pipconf );
+		pipconf.SetType(deoglPipelineConfiguration::etCompute);
+		defines.SetDefine("LOCAL_SIZE_X", pClearTraceRayWorkGroupSize.x);
+		defines.SetDefine("LOCAL_SIZE_Y", pClearTraceRayWorkGroupSize.y);
+		pipconf.SetShader(renderThread, "DefRen GI Clear Trace Rays", defines);
+		pPipelineClearTraceRays = pipelineManager.GetWith(pipconf);
+		defines.RemoveDefines("LOCAL_SIZE_X", "LOCAL_SIZE_Y");
 		
 		// trace rays
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
@@ -1346,11 +1373,6 @@ void deoglRenderGI::pCreateUBORenderLight(){
 }
 
 void deoglRenderGI::pClearTraceRays( const decPoint &size ){
-	// opengl guarantees a minimum of 1024 local invocation size across supported GPUs.
-	// deoglGITraceRays::pCreateFBORay calculates the texture size like this:
-	// - width = pProbesPerLine * pRaysPerProbe = 8 * (16 or more) = 128
-	// - height = GI_MAX_PROBE_COUNT / pProbesPerLine = 2048 / 8 = 256
-	// we use here a size of 128*8 to get the most out of it
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
@@ -1358,15 +1380,17 @@ void deoglRenderGI::pClearTraceRays( const decPoint &size ){
 	pPipelineClearTraceRays->Activate();
 	
 	ismgr.DisableAllStages();
-	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaWrite );
-	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaWrite );
-	ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
-	ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
-	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable(0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaWrite);
+	ismgr.Enable(1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaWrite);
+	ismgr.Enable(2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite);
+	ismgr.Enable(3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite);
+	ismgr.Enable(4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite);
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( size.x - 1 ) / 128 + 1, ( size.y - 1 ) / 8 + 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
-		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+	OGL_CHECK(renderThread, pglDispatchCompute(
+		(size.x - 1) / pClearTraceRayWorkGroupSize.x + 1,
+		(size.y - 1) / pClearTraceRayWorkGroupSize.y + 1, 1));
+	OGL_CHECK(renderThread, pglMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT));
 	
 	ismgr.DisableAllStages();
 }

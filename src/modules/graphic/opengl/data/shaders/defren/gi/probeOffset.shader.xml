@@ -2,11 +2,13 @@
 <shader>
 	<name>DefRen GI Probe Offset</name>
 	
-	<texture name='texTracePosition' target='0'/>
-	<texture name='texTraceNormal' target='1'/>
+	<!-- shader assigned locations
+	<texture name='texPosition' target='0'/>
+	<texture name='texNormal' target='1'/>
 	<texture name='texCacheDistance' target='2'/>
 	<texture name='texCacheNormal' target='3'/>
 	<texture name='texProbeOffsets' target='4'/>
+	-->
 	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>

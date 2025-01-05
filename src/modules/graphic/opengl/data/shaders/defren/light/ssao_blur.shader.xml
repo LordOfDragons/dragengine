@@ -10,7 +10,9 @@
 	<parameter name='pClamp'/>
 	<parameter name='pDepthDifferenceThreshold'/>
 	
-	<texture name='texDepth' target='0'/>
+	<!-- shader assigned locations
+	<texture name='texData' target='0'/>
+	-->
 	
 	<sourceCode unit='compute'>compute/defren/light/ssao_blur.glsl</sourceCode>
 </shader>

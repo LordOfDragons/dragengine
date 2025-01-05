@@ -1493,15 +1493,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 }
 
 void deoglRenderThread::pInitExtensions(){
-	const deoglConfiguration &configuration = pOgl.GetConfiguration();
-	
 	// load extensions
 	pExtensions = new deoglExtensions( *this );
 	pExtensions->Initialize();
 	
-	//if( configuration.GetDoLogDebug() ){
-		pExtensions->PrintSummary(); // print this always to help debug customer problems
-	//}
+	pExtensions->PrintSummary(); // print this always to help debug customer problems
 	
 	if( ! pExtensions->VerifyPresence() ){
 		DETHROW_INFO( deeInvalidAction,
@@ -1769,7 +1765,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 	}
 	
 #ifdef OS_ANDROID
-	pLogger->LogInfoFormat( "pRenderSingleFrame: %dms", (int )(timer.GetElapsedTime() * 1000.0f) );
+	//pLogger->LogInfoFormat( "pRenderSingleFrame: %dms", (int )(timer.GetElapsedTime() * 1000.0f) );
 	DebugMemoryUsage( "deoglRenderThread::pRenderSingleFrame OUT" );
 #endif
 }

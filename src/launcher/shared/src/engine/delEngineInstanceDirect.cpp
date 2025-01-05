@@ -1089,7 +1089,7 @@ const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath){
 }
 
 void delEngineInstanceDirect::RunSingleFrameUpdate(){
-	DEASSERT_NULL(pEngine)
+	DEASSERT_NOTNULL(pEngine)
 	
 	if(!pEngine->ProcessEvents()){
 		pEngine->GetErrorTrace()->AddPoint(nullptr,

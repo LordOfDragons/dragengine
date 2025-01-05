@@ -291,7 +291,7 @@ inout float closestBorderDistance, inout vec3 closestColor ){
 	float hitDistance;
 	vec4 envMapColor;
 	
-	envMapReflection( index, ARG_SAMP_MEDP samplerEnvMap, position, reflectDir, roughness,
+	envMapReflection( index, samplerEnvMap, position, reflectDir, roughness,
 		envMapColor, envMapWeights, hitDistance, borderDistance );
 	
 	// first order reflection
@@ -465,7 +465,8 @@ inout int priority, inout float closestBorderDistance, inout vec3 closestColor )
 	float envMapWeight;
 	vec3 envMapColor;
 	
-	envMapReflection( index, ARG_SAMP_MEDP samplerEnvMap, position, reflectDir, roughness, envMapColor, envMapWeight, borderDistance );
+	envMapReflection( index, ARG_SAMP_MEDP samplerEnvMap, position, reflectDir,
+		roughness, envMapColor, envMapWeight, borderDistance );
 	
 	if( envMapWeight > 0.0 ){
 		if( weightSum == 0.0 ){

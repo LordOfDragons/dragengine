@@ -31,6 +31,7 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
+#include "../utils/deoglConvertFloatHalf.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -144,10 +145,16 @@ void deoglGIRayCache::pCreateFBO(){
 	
 	// create/resize textures
 	#ifdef GI_USE_RAY_CACHE
-		if( ! pTexDistance.GetTexture() ){
-			pTexDistance.SetFBOFormat( 1, true );
+		if(!pTexDistance.GetTexture()){
+			if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
+				//pTexDistance.SetFBOFormatIntegral(1, 16, true);
+				pTexDistance.SetFBOFormat(4, true);
+				
+			}else{
+				pTexDistance.SetFBOFormat(1, true);
+			}
 		}
-		pTexDistance.SetSize( width, height, pLayerCount );
+		pTexDistance.SetSize(width, height, pLayerCount);
 		pTexDistance.CreateTexture();
 		
 		if( ! pTexNormal.GetTexture() ){
@@ -179,9 +186,20 @@ void deoglGIRayCache::pCreateFBO(){
 	#ifdef GI_USE_RAY_CACHE
 		deoglPixelBuffer::Ref pixbuf;
 		
-		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, pLayerCount ) );
-		pixbuf->SetToFloatColor( 10000.0f, 10000.0f, 10000.0f, 10000.0f );
-		pTexDistance.SetPixels( pixbuf );
+		if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
+			/*
+			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfInt1, width, height, pLayerCount));
+			const HALF_FLOAT hfvalue = convertFloatToHalf(10000.0f);
+			pixbuf->SetToUIntColor(hfvalue, 0, 0, 0);
+			*/
+			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, pLayerCount));
+			pixbuf->SetToFloatColor(10000.0f, 10000.0f, 10000.0f, 10000.0f);
+			
+		}else{
+			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, width, height, pLayerCount));
+			pixbuf->SetToFloatColor(10000.0f, 10000.0f, 10000.0f, 10000.0f);
+		}
+		pTexDistance.SetPixels(pixbuf);
 		
 		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfByte4, width, height, pLayerCount ) );
 		pixbuf->SetToFloatColor( 0.0f, 0.0f, 1.0f, 0.0f );

@@ -52,7 +52,6 @@
 #include "deoglCapsFmtSupportSetup.h"
 
 
-
 // Class deoglCapsFmtSupport
 //////////////////////////////
 
@@ -125,6 +124,49 @@ eUseTextureFormats type ) const{
 		DETHROW( deeInvalidParam );
 	}
 	return pUseFBOArrTexFormats[ type ];
+}
+
+
+
+const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseTex2DFormatFor(
+eUseTextureFormats type) const{
+	return pRequireFormat("Tex2D", type,
+		(const deoglCapsTextureFormat **)&pUseTex2DFormats, pFoundTex2DFormats);
+}
+
+const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseTexCubeFormatFor(
+eUseTextureFormats type) const{
+	return pRequireFormat("TexCube", type,
+		(const deoglCapsTextureFormat **)&pUseTexCubeFormats, pFoundTexCubeFormats);
+}
+
+const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseArrayTexFormatFor(
+eUseTextureFormats type) const{
+	return pRequireFormat("ArrTex", type,
+		(const deoglCapsTextureFormat **)&pUseArrTexFormats, pFoundArrTexFormats);
+}
+
+const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseFBOTex2DFormatFor(
+eUseTextureFormats type) const{
+	return pRequireFormat("FBOTex2D", type,
+		(const deoglCapsTextureFormat **)&pUseFBOTex2DFormats, pFoundFBOTex2DFormats);
+}
+
+const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseFBOTexCubeFormatFor(
+eUseTextureFormats type) const{
+	return pRequireFormat("FBOTexCube", type,
+		(const deoglCapsTextureFormat **)&pUseFBOTexCubeFormats, pFoundFBOTexCubeFormats);
+}
+
+const deoglCapsTextureFormat &deoglCapsFmtSupport::RequireUseFBOArrayTexFormatFor(
+eUseTextureFormats type) const{
+	return pRequireFormat("FBOArrTex", type,
+		(const deoglCapsTextureFormat **)&pUseFBOArrTexFormats, pFoundFBOArrTexFormats);
+}
+
+
+const char *deoglCapsFmtSupport::GetTextureFormatName(eUseTextureFormats type) const{
+	return vTextureFormatNames[type];
 }
 
 
@@ -920,4 +962,29 @@ GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what ){
 	}
 	
 	return errorCode == GL_NO_ERROR;
+}
+
+const deoglCapsTextureFormat &deoglCapsFmtSupport::pRequireFormat(const char *categoryName,
+eUseTextureFormats type, const deoglCapsTextureFormat **listUse,
+const deoglCapsTextureFormatList &listSupported) const{
+	const deoglCapsTextureFormat * const fmt = listUse[type];
+	if(!fmt){
+		decStringList supnames;
+		const int count = listSupported.GetFormatCount();
+		int i;
+		for(i=0; i<count; i++){
+			supnames.Add(listSupported.GetFormatAt(i)->GetName());
+		}
+		
+		deoglRTLogger &logger = pCapabilities.GetRenderThread().GetLogger();
+		
+		decString message;
+		message.Format("%s format not found %s", categoryName, vTextureFormatNames[type]);
+		logger.LogError(message);
+		
+		logger.LogError(decString("Supported: ") + supnames.Join(", "));
+		
+		DETHROW_INFO(deeInvalidParam, message);
+	}
+	return *fmt;
 }

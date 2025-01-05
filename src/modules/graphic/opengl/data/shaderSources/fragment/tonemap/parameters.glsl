@@ -39,9 +39,9 @@ void main( void ){
 	float averageLuminance = exp( dot( avgLums, weightAvgLum ) );
 	vec4 lastParams = texelFetch( texLastParams, tcParameters, 0 );
 	
-	float lwhite = 1; // 1 / ( pToneMapWhiteScale * pToneMapWhiteScale );
+	float lwhite = 1.0; // 1.0 / ( pToneMapWhiteScale * pToneMapWhiteScale );
 	
-	float ckey = 0.18; //0.27; // average constant key: ( 0.18 + 0.36 ) / 2
+	float ckey = 0.18; //0.27; // average constant key: ( 0.18 + 0.36 ) / 2.0
 	
 	// limit the luminance
 	vec2 avglLimits = vec2( pToneMapLowLuminance, pToneMapHighLuminance ) * vec2( ckey );
@@ -54,14 +54,14 @@ void main( void ){
 	if( averageLuminance < lastParams.x ){
 		adaptionFactor * 0.25; // hack: 4 times longer to adapt to darkness than to adapt to lightness
 	}
-	averageLuminance = max( mix( lastParams.x, averageLuminance, clamp( adaptionFactor, 0, 1 ) ), 1e-4 );
+	averageLuminance = max(mix(lastParams.x, averageLuminance, clamp(adaptionFactor, 0.0, 1.0)), 1e-4);
 	
 	// calculate the image key
 //	float key = 1.03 - 2.0 / ( 2.0 + log( averageLuminance + 1.0 ) / log( 10.0 ) ); // paper
 // 	ckey = 1.03 - 3 / ( 3 + log( averageLuminance + 1 ) / log( 10 ) );
 	//float key = max( 0.0, 1.5 - 1.5 / ( averageLuminance * 0.1 + 1.0 ) ) + 0.1; // ogre
 	float maxLum = max( averageLuminance / ckey, 0.01 );
-	float scaleLum = 1 / maxLum;
+	float scaleLum = 1.0 / maxLum;
 	
 	// adjust the image key using the user chosen exposure
 	scaleLum *= pToneMapExposure;
