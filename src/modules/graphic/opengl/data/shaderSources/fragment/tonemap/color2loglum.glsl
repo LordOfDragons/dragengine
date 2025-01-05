@@ -32,10 +32,10 @@ void main( void ){
 // 	values.z = dot( textureLod( texColor, tc1.zw, 0.0 ).rgb, lumiFactors );
 // 	values.w = dot( textureLod( texColor, tc2, 0.0 ).rgb, lumiFactors );
 	
-	values.x = textureLod( texLuminance, vec3( vTexCoord, vLayer ), 0 ).r;
-	values.y = textureLod( texLuminance, vec3( tc1.xy, vLayer ), 0 ).r;
-	values.z = textureLod( texLuminance, vec3( tc1.zw, vLayer ), 0 ).r;
-	values.w = textureLod( texLuminance, vec3( tc2, vLayer ), 0 ).r;
+	values.x = textureLod( texLuminance, vec3( vTexCoord, vLayer ), 0.0 ).r;
+	values.y = textureLod( texLuminance, vec3( tc1.xy, vLayer ), 0.0 ).r;
+	values.z = textureLod( texLuminance, vec3( tc1.zw, vLayer ), 0.0 ).r;
+	values.w = textureLod( texLuminance, vec3( tc2, vLayer ), 0.0 ).r;
 	
 	outLogLum = dot( log( values + epsilon ), weights );
 }

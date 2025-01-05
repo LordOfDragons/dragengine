@@ -26,7 +26,7 @@ const vec2 options = vec2( 2.5, 1.0 ); // m$: 5, 10 // ogre: 2.5, 1
 
 void main( void ){
 	vec4 params = texelFetch( texToneMapParams, tcParams, 0 ); // r=avgLum, g=imageKey, b=lwhite, a=brightPassThreshold
-	vec3 color = textureLod( texColor, vec3( vTexCoord, vLayer ), 0 ).rgb;
+	vec3 color = textureLod( texColor, vec3( vTexCoord, vLayer ), 0.0 ).rgb;
 	
 	float luminance = max( dot( color, lumiFactors ), 0 );
 	float finalLum = max( luminance - params.w, 0 ) * pToneMapBloomStrength;

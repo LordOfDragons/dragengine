@@ -7,9 +7,9 @@ precision highp int;
 
 
 #ifdef MAP_IRRADIANCE
-	layout(binding=0, rgba16f) uniform writeonly restrict image2DArray texProbe;
+	layout(binding=0, rgba16f) uniform writeonly restrict mediump image2DArray texProbe;
 #else
-	layout(binding=0, rg16f) uniform writeonly restrict image2DArray texProbe;
+	layout(binding=0, rg16f) uniform writeonly restrict mediump image2DArray texProbe;
 #endif
 
 

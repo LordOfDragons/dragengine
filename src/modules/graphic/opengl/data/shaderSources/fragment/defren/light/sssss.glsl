@@ -54,7 +54,7 @@ vec3 subSurfaceScattering( in vec3 position, in float tapRadius, in vec3 scatter
 	UFCONST float angleConstant = 6.2831853 * float( pTurnCount ); // pi * 2.0
 	ivec2 tcint = ivec2( gl_FragCoord.xy );
 	
-	vec3 sumLight = textureLod( texLight, vec3( vTexCoord, vLayer ), 0 ).rgb;
+	vec3 sumLight = textureLod( texLight, vec3( vTexCoord, vLayer ), 0.0 ).rgb;
 	vec3 sumWeight = vec3( 1 );
 	
 	vec2 factor1 = vec2( 1, 0.5 ) / vec2( tapCount );
@@ -95,7 +95,7 @@ void main( void ){
 	
 	// if the absorption radius is near zero drop the sss calculation altogether to increase performance
 	if( largestAbsorptionRadius < pDropSubSurfaceThreshold ){
-		outColor = textureLod( texLight, vec3( vTexCoord, vLayer ), 0 ).rgb;
+		outColor = textureLod( texLight, vec3( vTexCoord, vLayer ), 0.0 ).rgb;
 		
 	}else{
 		// determine position of fragment to light
@@ -106,7 +106,7 @@ void main( void ){
 		
 		// if the tap radius is too small drop the sss calculation altogether to increase performance
 		if( tapRadius < pTapDropRadiusThreshold ){
-			outColor = textureLod( texLight, vec3( vTexCoord, vLayer ), 0 ).rgb;
+			outColor = textureLod( texLight, vec3( vTexCoord, vLayer ), 0.0 ).rgb;
 			
 		}else{
 			// calculate the scatter scaling. this is required to scale the sss calculation differently for each component.

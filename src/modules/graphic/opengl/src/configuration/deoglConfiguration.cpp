@@ -196,7 +196,7 @@ pRenderDocMode( false )
 	pEnableRetainImageOptimization = true;
 	
 	// debug
-	pDebugContext = true;
+	// pDebugContext = true; // WARNING! enabling this causes certain shader to compile in 40mins!
 	pDebugNoMessages = false;
 	pLogLevel = ellDebug;
 	

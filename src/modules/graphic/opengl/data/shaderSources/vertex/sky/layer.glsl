@@ -33,7 +33,7 @@ in vec2 inPosition;
 	flat out int vLayer;
 #endif
 
-const float vZFar = -1; // Z value on far clip plane (cleared depth) in NDC
+const float vZFar = -1.0; // Z value on far clip plane (cleared depth) in NDC
 
 void main( void ){
 	gl_Position = vec4( inPosition, vZFar, 1 );

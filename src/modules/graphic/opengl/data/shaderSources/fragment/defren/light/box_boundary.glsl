@@ -46,9 +46,9 @@ out vec3 outMax;
 #ifdef DEPTH_CUBEMAP
 void updateMinMaxFromDepth( in HIGHP samplerCube tex, in vec3 tc, in ivec3 swizzle, in ivec3 flipper ){
 	#ifdef DECODE_IN_DEPTH
-		vec3 position = vec3( dot( textureLod( tex, tc, 0 ).rgb, unpackDepth ) );
+		vec3 position = vec3( dot( textureLod( tex, tc, 0.0 ).rgb, unpackDepth ) );
 	#else
-		vec3 position = vec3( textureLod( tex, tc, 0 ).r );
+		vec3 position = vec3( textureLod( tex, tc, 0.0 ).r );
 	#endif
 	
 	#ifdef SHADOW_INVERSE_DEPTH
@@ -67,7 +67,7 @@ void updateMinMaxFromDepth( in HIGHP samplerCube tex, in vec3 tc, in ivec3 swizz
 	
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	position.xy = vTexCoord * position.zz;
-	position = vec3( position[ swizzle.x ], position[ swizzle.y ], position[ swizzle.z ] ) * flipper;
+	position = vec3( position[ swizzle.x ], position[ swizzle.y ], position[ swizzle.z ] ) * vec3(flipper);
 	position = pMatrixRotation * position;
 	
 	outMin = min( outMin, position );

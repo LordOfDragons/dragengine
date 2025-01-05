@@ -12,14 +12,14 @@ precision highp int;
 
 
 #ifdef WITH_RAY_CACHE
-	layout(binding=2, r16f) uniform readonly image2DArray texCacheDistance;
-	layout(binding=3, rgba8_snorm) uniform readonly image2DArray texCacheNormal;
+	layout(binding=2, r16f) uniform readonly mediump image2DArray texCacheDistance;
+	layout(binding=3, rgba8_snorm) uniform readonly mediump image2DArray texCacheNormal;
 #else
-	layout(binding=0, rgba16f) uniform readonly image2D texPosition;
-	layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
+	layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
+	layout(binding=1, rgba8_snorm) uniform readonly mediump image2D texNormal;
 #endif
 
-layout(binding=4, rgba16f) uniform writeonly restrict image2DArray texProbeOffsets;
+layout(binding=4, rgba16f) uniform writeonly restrict mediump image2DArray texProbeOffsets;
 
 
 struct sProbeOffset {

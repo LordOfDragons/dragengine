@@ -205,15 +205,22 @@ void deoglCapsFmtSupport::pDetectTex2DFormats(){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
-		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
+	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth_Stencil, eutfDepth16 };
 	
-	for( p=0; p<15; p++ ){
+	for( p=0; p<11; p++ ){
 		if( ! pUseTex2DFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for 2D-Textures!",
 				vTextureFormatNames[ required[ p ] ] );
+			
+			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
+			int i;
+			for(i=0; i<pFoundTex2DFormats.GetFormatCount(); i++){
+				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
+					pFoundTex2DFormats.GetFormatAt(i)->GetName().GetString());
+			}
+			
 			DETHROW( deeInvalidParam );
 		}
 	}
@@ -243,14 +250,22 @@ void deoglCapsFmtSupport::pDetectTexCubeFormats(){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 14 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S, eutfDepth, eutfDepth16 };
+	const int required[ 10 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth16 };
 	
-	for( p=0; p<14; p++ ){
+	for( p=0; p<10; p++ ){
 		if( ! pUseTexCubeFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for Cube-Textures!",
 				vTextureFormatNames[ required[ p ] ] );
+			
+			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
+			int i;
+			for(i=0; i<pFoundTexCubeFormats.GetFormatCount(); i++){
+				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
+					pFoundTexCubeFormats.GetFormatAt(i)->GetName().GetString());
+			}
+			
 			DETHROW( deeInvalidParam );
 		}
 	}
@@ -289,6 +304,14 @@ void deoglCapsFmtSupport::pDetectArrayTexFormats(){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for 2D-Array-Textures!",
 				vTextureFormatNames[ required[ p ] ] );
+			
+			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
+			int i;
+			for(i=0; i<pFoundArrTexFormats.GetFormatCount(); i++){
+				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
+					pFoundArrTexFormats.GetFormatAt(i)->GetName().GetString());
+			}
+			
 			DETHROW( deeInvalidParam );
 		}
 	}
@@ -320,15 +343,22 @@ void deoglCapsFmtSupport::pDetectFBOTex2DFormats( GLuint fbo ){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S,
-		eutfDepth, eutfDepth_Stencil, eutfDepth16 };
+	const int required[ 11 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth_Stencil, eutfDepth16 };
 	
 	for( p=0; p<15; p++ ){
 		if( ! pUseFBOTex2DFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO 2D-Textures!",
 				vTextureFormatNames[ required[ p ] ] );
+			
+			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
+			int i;
+			for(i=0; i<pFoundFBOTex2DFormats.GetFormatCount(); i++){
+				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
+					pFoundFBOTex2DFormats.GetFormatAt(i)->GetName().GetString());
+			}
+			
 			DETHROW( deeInvalidParam );
 		}
 	}
@@ -359,14 +389,22 @@ void deoglCapsFmtSupport::pDetectFBOTexCubeFormats( GLuint fbo ){
 	}
 	
 	// verify that all required formats are found
-	const int required[ 15 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
-		eutfRGBA8, eutfRGBA16F, eutfR8_S, eutfRG8_S, eutfRGB8_S, eutfRGBA8_S, eutfDepth, eutfDepth16 };
+	const int required[ 10 ] = { eutfR8, eutfR16F, eutfRG8, eutfRG16F, eutfRGB8, eutfRGB16F,
+		eutfRGBA8, eutfRGBA16F, eutfDepth, eutfDepth16 };
 	
-	for( p=0; p<15; p++ ){
+	for( p=0; p<10; p++ ){
 		if( ! pUseFBOTexCubeFormats[ required[ p ] ] ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO Cube-Textures!",
 				vTextureFormatNames[ required[ p ] ] );
+			
+			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
+			int i;
+			for(i=0; i<pFoundFBOTexCubeFormats.GetFormatCount(); i++){
+				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
+					pFoundFBOTexCubeFormats.GetFormatAt(i)->GetName().GetString());
+			}
+			
 			DETHROW( deeInvalidParam );
 		}
 	}
@@ -407,6 +445,14 @@ void deoglCapsFmtSupport::pDetectFBOArrayTexFormats( GLuint fbo ){
 			pCapabilities.GetRenderThread().GetLogger().LogErrorFormat(
 				"Required format %s not found for FBO 2D-Array-Textures!",
 				vTextureFormatNames[ required[ p ] ] );
+			
+			pCapabilities.GetRenderThread().GetLogger().LogError("Supported formats:");
+			int i;
+			for(i=0; i<pFoundFBOArrTexFormats.GetFormatCount(); i++){
+				pCapabilities.GetRenderThread().GetLogger().LogErrorFormat("- %s",
+					pFoundFBOArrTexFormats.GetFormatAt(i)->GetName().GetString());
+			}
+			
 			DETHROW( deeInvalidParam );
 		}
 	}

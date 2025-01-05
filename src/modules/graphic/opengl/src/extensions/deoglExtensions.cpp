@@ -881,9 +881,10 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// pGetRequiredFunction( (void**)&pglFramebufferRenderbuffer, "glFramebufferRenderbuffer" );
 	pGetRequiredFunction( (void**)&pglGenerateMipmap, "glGenerateMipmap" );
 	pGetRequiredFunction( (void**)&pglBlitFramebuffer, "glBlitFramebuffer" );
-	#ifndef OS_ANDROID
-	pGetRequiredFunction( (void**)&pglFramebufferTexture, "glFramebufferTexture" );
+	#ifdef OS_ANDROID
+	DEASSERT_TRUE(pGLESVersion >= evgles3p2)
 	#endif
+	pGetRequiredFunction( (void**)&pglFramebufferTexture, "glFramebufferTexture" );
 	
 	// GL_ARB_geometry_shader4 : no opengl version
 	

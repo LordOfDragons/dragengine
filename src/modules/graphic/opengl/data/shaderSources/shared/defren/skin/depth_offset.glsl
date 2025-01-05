@@ -22,7 +22,7 @@ void applyDepthOffset( in int layer, in vec3 normal, in bool doubleSided ){
 	float depthSlope = length( normal.xy ) / max( abs( normal.z ), 0.01 );
 	
 	#ifdef DEPTH_ORTHOGONAL
-		bool frontFacing = normal.z < 0 || doubleSided;
+		bool frontFacing = normal.z < 0.0 || doubleSided;
 		vec2 depthOffset = frontFacing ? pDepthOffset[ layer ].xy : pDepthOffset[ layer ].zw;
 	#else
 		vec2 depthOffset = pDepthOffset[ layer ].xy;

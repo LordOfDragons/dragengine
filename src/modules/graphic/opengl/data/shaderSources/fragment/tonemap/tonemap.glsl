@@ -112,7 +112,7 @@ void main( void ){
 //	luminance = luminance / ( 1.0 + luminance );
 	
 	// enhanced reinhard
-// 	color.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0 ).rgb * vec3( pToneMapBloomBlend );
+// 	color.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0.0 ).rgb * vec3( pToneMapBloomBlend );
 // 	
 // 	float luminance = dot( color.rgb, lumiFactors );
 // 	float adjLum = luminance * params.g;
@@ -135,7 +135,7 @@ void main( void ){
 	#endif
 	
 	// bloom
-	outColor.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0 ).rgb * vec3( pToneMapBloomBlend );
+	outColor.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0.0 ).rgb * vec3( pToneMapBloomBlend );
 	
 	// NOTE nice comparison of curves: https://www.shadertoy.com/view/WdjSW3
 	//      the uchimura curve is the only one which has a linear left side. all others try

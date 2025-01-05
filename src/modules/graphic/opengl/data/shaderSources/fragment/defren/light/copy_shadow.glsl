@@ -23,10 +23,10 @@ uniform HIGHP SAMPLER texShadow;
 
 void main(){
 	#ifdef SHADOW_CUBE
-		gl_FragDepth = textureLod( texShadow, vTexCoord, 0 ).r;
+		gl_FragDepth = textureLod( texShadow, vTexCoord, 0.0 ).r;
 		
 		#ifdef COPY_COLOR
-			outColor = textureLod( texColor, vTexCoord, 0 );
+			outColor = textureLod( texColor, vTexCoord, 0.0 );
 		#endif
 		
 	#else

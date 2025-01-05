@@ -1,5 +1,7 @@
 #ifdef GS_INSTANCING
-	#extension GL_ARB_gpu_shader5 : require
+	#ifndef OPENGLES
+		#extension GL_ARB_gpu_shader5 : require
+	#endif
 #endif
 
 // layout definitions

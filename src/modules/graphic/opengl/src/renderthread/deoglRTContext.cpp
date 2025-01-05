@@ -141,6 +141,7 @@ pOSAndroid( renderThread.GetOgl().GetOS()->CastToOSAndroid() ),
 pDisplay( EGL_NO_DISPLAY ),
 pSurface( EGL_NO_SURFACE ),
 pContext( EGL_NO_CONTEXT ),
+pLoaderSurface( EGL_NO_SURFACE ),
 pLoaderContext( EGL_NO_CONTEXT ),
 
 pScreenWidth( 0 ),
@@ -1093,8 +1094,21 @@ void deoglRTContext::pInitDisplay(){
 		};
 		pContext = eglCreateContext( pDisplay, pConfig, NULL, eglAttribList );
 		DEASSERT_FALSE( pContext == EGL_NO_CONTEXT )
-		pLoaderContext = eglCreateContext( pDisplay, pConfig, pContext, eglAttribList );
-		DEASSERT_FALSE( pLoaderContext == EGL_NO_CONTEXT )
+		
+		// loader context needs also an own surface
+		const EGLint eglBufferAttribList[] = {
+			EGL_WIDTH, 8,
+			EGL_HEIGHT, 8,
+			EGL_LARGEST_PBUFFER, EGL_TRUE,
+			EGL_TEXTURE_FORMAT, EGL_TEXTURE_RGB,
+			EGL_TEXTURE_TARGET, EGL_TEXTURE_2D,
+			EGL_NONE
+		};
+		pLoaderSurface = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
+		DEASSERT_FALSE(pLoaderSurface == EGL_NO_SURFACE)
+		
+		pLoaderContext = eglCreateContext(pDisplay, pConfig, pContext, eglAttribList);
+		DEASSERT_FALSE(pLoaderContext == EGL_NO_CONTEXT)
 	}
 	
 	// make surface current. we have to make it current each render loop
@@ -1115,10 +1129,15 @@ void deoglRTContext::pCloseDisplay(){
 	
 	TerminateAppWindow();
 	
-	if( pLoaderContext != EGL_NO_CONTEXT ){
-		eglDestroyContext( pDisplay, pLoaderContext );
+	if(pLoaderContext != EGL_NO_CONTEXT){
+		eglDestroyContext(pDisplay, pLoaderContext);
 		pLoaderContext = EGL_NO_CONTEXT;
 	}
+	if(pLoaderSurface != EGL_NO_SURFACE){
+		eglDestroySurface(pDisplay, pLoaderSurface);
+		pLoaderSurface = EGL_NO_SURFACE;
+	}
+	
 	if( pContext != EGL_NO_CONTEXT ){
 		eglDestroyContext( pDisplay, pContext );
 		pContext = EGL_NO_CONTEXT;

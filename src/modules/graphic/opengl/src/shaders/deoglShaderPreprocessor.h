@@ -183,6 +183,9 @@ public:
 	
 	/** Set symbols from defines. */
 	void SetSymbolsFromDefines( const deoglShaderDefines &defines );
+	
+	/** Set debug log parsing. */
+	void SetDebugLogParsing(bool enable);
 	/*@}*/
 	
 	

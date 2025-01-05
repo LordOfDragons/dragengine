@@ -11,9 +11,9 @@ precision highp int;
 
 
 #ifdef WITH_RAY_CACHE
-	layout(binding=0, r16f) uniform readonly image2DArray texCacheDistance;
+	layout(binding=0, r16f) uniform readonly mediump image2DArray texCacheDistance;
 #else
-	layout(binding=0, rgba16f) uniform readonly image2D texPosition;
+	layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
 #endif
 
 

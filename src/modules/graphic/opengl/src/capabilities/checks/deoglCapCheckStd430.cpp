@@ -80,8 +80,11 @@ void deoglCapCheckStd430::Check(){
 	//    no error std430 is supported otherwise not.
 	
 	deoglRenderThread &renderThread = pCapabilities.GetRenderThread();
-	if( ! renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_compute_shader )
-	|| ! renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+	const deoglExtensions &ext = renderThread.GetExtensions();
+	
+	if(ext.GetGLESVersion() < deoglExtensions::evgles3p1
+	&& (!ext.GetHasExtension(deoglExtensions::ext_ARB_compute_shader)
+	|| !ext.GetHasExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object))){
 		return;
 	}
 	

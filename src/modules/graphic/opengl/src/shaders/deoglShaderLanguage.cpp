@@ -51,8 +51,9 @@
 
 
 #ifdef OS_ANDROID
-//#define PRINT_SHADERS
-//#define PRINT_COMPILING
+// #define PRINT_SHADERS
+// #define PRINT_ALL_SHADERS
+// #define PRINT_COMPILING
 #endif
 
 // #define PRINT_SHADERS
@@ -431,38 +432,43 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 	int i, count;
 	
 	#ifdef PRINT_COMPILING
-	decString debugText( "compiling " );
-	if( scCompute ){
-		debugText.AppendFormat( " comp(%s)", scCompute->GetFilePath() );
+	decString debugText("compiling ");
+	if(scCompute){
+		debugText.AppendFormat(" comp(%s)", scCompute->GetFilePath().GetString());
 	}
-	if( scTessellationControl ){
-		debugText.AppendFormat( " tc(%s)", scTessellationControl->GetFilePath() );
+	if(scTessellationControl){
+		debugText.AppendFormat(" tc(%s)", scTessellationControl->GetFilePath().GetString());
 	}
-	if( scTessellationEvaluation ){
-		debugText.AppendFormat( " te(%s)", scTessellationEvaluation->GetFilePath() );
+	if(scTessellationEvaluation){
+		debugText.AppendFormat(" te(%s)", scTessellationEvaluation->GetFilePath().GetString());
 	}
-	if( scGeometry ){
-		debugText.AppendFormat( " geom(%s)", scGeometry->GetFilePath() );
+	if(scGeometry){
+		debugText.AppendFormat(" geom(%s)", scGeometry->GetFilePath().GetString());
 	}
-	if( scVertex ){
-		debugText.AppendFormat( " vert(%s)", scVertex->GetFilePath() );
+	if(scVertex){
+		debugText.AppendFormat(" vert(%s)", scVertex->GetFilePath().GetString());
 	}
-	if( scFragment ){
-		debugText.AppendFormat( " frag(%s)", scFragment->GetFilePath() );
+	if(scFragment){
+		debugText.AppendFormat(" frag(%s)", scFragment->GetFilePath().GetString());
 	}
-	debugText.Append( " defines(" );
-	for( i=0; i<program.GetDefines().GetDefineCount(); i++ ){
-		if( i > 0 ){
-			debugText.Append( " " );
+	debugText.Append(" defines(");
+	for(i=0; i<program.GetDefines().GetDefineCount(); i++){
+		if(i > 0){
+			debugText.Append(" ");
 		}
-		debugText.AppendFormat( "%s=%s", program.GetDefines().GetDefineNameAt( i ),
-			program.GetDefines().GetDefineValueAt( i ) );
+		debugText.AppendFormat("%s=%s", program.GetDefines().GetDefineNameAt(i).GetString(),
+			program.GetDefines().GetDefineValueAt(i).GetString());
 	}
-	debugText.Append( ")" );
-	pRenderThread.GetLogger().LogInfo( debugText.GetString() );
+	debugText.Append(")");
+	pRenderThread.GetLogger().LogInfo(debugText.GetString());
 	#endif
 	
 	// compile the shader
+	pRenderThread.GetLogger().LogInfoFormat(
+		"ShaderLanguage.CompileShader: Compile shader for '%.50s...'",
+		program.GetCacheId().GetString());
+	decTimer timerCompile;
+	
 	try{
 		compiled = new deoglShaderCompiled( pRenderThread );
 		
@@ -487,6 +493,10 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 			
 			pAppendPreprocessSourcesBuffer( scCompute->GetFilePath(), scCompute->GetSourceCode() );
 			
+			#ifdef PRINT_ALL_SHADERS
+			pRenderThread.GetLogger().LogInfo("COMPILE COMPUTER IN");
+			pRenderThread.GetLogger().LogInfo(pPreprocessor.GetSources());
+			#endif
 			if( ! pCompileObject( handleC ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
 				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
@@ -520,6 +530,10 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 					scTessellationControl->GetSourceCode() );
 			}
 			
+			#ifdef PRINT_ALL_SHADERS
+			pRenderThread.GetLogger().LogInfo("COMPILE TESSELLATION CONTROL IN");
+			pRenderThread.GetLogger().LogInfo(pPreprocessor.GetSources());
+			#endif
 			if( ! pCompileObject( handleTCP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
 				pRenderThread.GetLogger().LogErrorFormat(
@@ -557,6 +571,10 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 					scTessellationEvaluation->GetSourceCode() );
 			}
 			
+			#ifdef PRINT_ALL_SHADERS
+			pRenderThread.GetLogger().LogInfo("COMPILE TESSELLATION EVALUATION IN");
+			pRenderThread.GetLogger().LogInfo(pPreprocessor.GetSources());
+			#endif
 			if( ! pCompileObject( handleTEP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
 				pRenderThread.GetLogger().LogErrorFormat(
@@ -595,8 +613,8 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 			}
 			
 			#ifdef PRINT_ALL_SHADERS
-			pRenderThread.GetLogger().LogInfo( "COMPILE GEOMETRY IN" );
-			pRenderThread.GetLogger().LogInfo( pPreprocessor.GetSources() );
+			pRenderThread.GetLogger().LogInfo("COMPILE GEOMETRY IN");
+			pRenderThread.GetLogger().LogInfo(pPreprocessor.GetSources());
 			#ifdef PRINT_SHADERS_SPECIAL_MODE
 			vSpecialPrintShader.sourceGeometry = pPreprocessor.GetSources();
 			#endif
@@ -650,6 +668,10 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 				vSpecialPrintShader.sourceVertex = pPreprocessor.GetSources();
 				#endif
 			}
+			#endif
+			#ifdef PRINT_ALL_SHADERS
+			pRenderThread.GetLogger().LogInfo("COMPILE VERTEX IN");
+			pRenderThread.GetLogger().LogInfo(pPreprocessor.GetSources());
 			#endif
 			if( ! pCompileObject( handleVP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
@@ -718,6 +740,10 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 				vSpecialPrintShader.sourceFragment = pPreprocessor.GetSources();
 				#endif
 			}
+			#endif
+			#ifdef PRINT_ALL_SHADERS
+			pRenderThread.GetLogger().LogInfo("COMPILE FRAGMENT IN");
+			pRenderThread.GetLogger().LogInfo(pPreprocessor.GetSources());
 			#endif
 			if( ! pCompileObject( handleFP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
@@ -858,6 +884,10 @@ deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &pr
 	}
 	
 	// finished compiling
+	pRenderThread.GetLogger().LogInfoFormat(
+		"ShaderLanguage.CompileShader: Compiled shader for '%.50s...' in %dms",
+		program.GetCacheId().GetString(), (int)(timerCompile.GetElapsedTime() * 1e4f));
+	
 	return compiled;
 }
 
@@ -1045,7 +1075,7 @@ deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &
 		pRenderThread.GetLogger().LogInfoFormat(
 			"ShaderLanguage.CacheLoadShader: Failed loading cached shader '%.50s...'. Cache discarded",
 			program.GetCacheId().GetString() );
-		//pRenderThread.GetLogger().LogException( e ); // do not spam logs. slows things down
+		// pRenderThread.GetLogger().LogException(e); // do not spam logs. slows things down
 		
 		if( compiled ){
 			delete compiled;
@@ -1143,6 +1173,7 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 	
 	#ifdef OS_ANDROID
 	pPreprocessor.SetSymbol( "ANDROID", "1" );
+	pPreprocessor.SetSymbol( "OPENGLES", "1" );
 	//pPreprocessor.SourcesAppend( "float modf( in float x, out float i ){ i=floor(x); return fract(x); }\n" );
 	#endif
 }

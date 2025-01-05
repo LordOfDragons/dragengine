@@ -9,5 +9,5 @@ out vec4 outColor;
 
 
 void main( void ){
-	outColor = pColorTransform * textureLod( texTexture, vTexCoord, 0 ) + pColorTransform2;
+	outColor = pColorTransform * textureLod( texTexture, vTexCoord, 0.0 ) + pColorTransform2;
 }

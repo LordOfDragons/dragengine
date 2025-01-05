@@ -7,8 +7,8 @@ precision highp int;
 #include "shared/defren/gi/trace_probe.glsl"
 
 
-layout(binding=0, rgba16f) uniform readonly image2D texPosition;
-layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
+layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
+layout(binding=1, rgba8_snorm) uniform readonly mediump image2D texNormal;
 
 
 UBOLAYOUT_BIND(0) writeonly restrict buffer ProbeDynamicStates {

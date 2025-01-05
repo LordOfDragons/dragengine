@@ -113,11 +113,11 @@ in vec2 vTexCoord;
 
 #ifdef INPUT_ARRAY_TEXTURES
 TEX_DATA_TYPE sampleData( vec2 tc ){
-	return textureLod( texData, vec3( tc, vLayer ), 0 ) . TEX_DATA_SWIZZLE;
+	return textureLod( texData, vec3( tc, vLayer ), 0.0 ) . TEX_DATA_SWIZZLE;
 }
 #else
 TEX_DATA_TYPE sampleData( vec2 tc ){
-	return textureLod( texData, tc, 0 ) . TEX_DATA_SWIZZLE;
+	return textureLod( texData, tc, 0.0 ) . TEX_DATA_SWIZZLE;
 }
 #endif
 

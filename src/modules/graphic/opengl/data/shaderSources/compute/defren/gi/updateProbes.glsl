@@ -7,14 +7,14 @@ precision highp int;
 #include "shared/defren/gi/trace_probe.glsl"
 
 
-layout(binding=0, rgba16f) uniform readonly image2D texPosition;
-layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
-layout(binding=2, rgba16f) uniform readonly image2D texLight;
+layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
+layout(binding=1, rgba8_snorm) uniform readonly mediump image2D texNormal;
+layout(binding=2, rgba16f) uniform readonly mediump image2D texLight;
 
 #ifdef MAP_IRRADIANCE
-	layout(binding=3, rgba16f) uniform image2DArray texProbe;
+	layout(binding=3, rgba16f) uniform mediump image2DArray texProbe;
 #else
-	layout(binding=3, rg16f) uniform image2DArray texProbe;
+	layout(binding=3, rg16f) uniform mediump image2DArray texProbe;
 #endif
 
 

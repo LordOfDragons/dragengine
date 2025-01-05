@@ -106,7 +106,7 @@ void main( void ){
 	outAO = vec3( 1 );
 	
 	// discard not inizalized fragments (set to 1)
-	if( textureLod( texDiffuse, tc, 0 ).a == 0 ){
+	if( textureLod( texDiffuse, tc, 0.0 ).a == 0 ){
 		//discard;
 		return;
 	}

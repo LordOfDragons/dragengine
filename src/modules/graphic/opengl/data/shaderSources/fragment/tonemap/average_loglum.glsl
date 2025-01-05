@@ -21,10 +21,10 @@ void main( void ){
 	vec4 tc = vTexCoord.sstt + pOffsets;
 	vec4 values;
 	
-	values.x = textureLod( texValues, vec3( tc.xz, vLayer ), 0 ).r; // -u, -v
-	values.y = textureLod( texValues, vec3( tc.yz, vLayer ), 0 ).r; //  u, -v
-	values.z = textureLod( texValues, vec3( tc.xw, vLayer ), 0 ).r; // -u,  v
-	values.w = textureLod( texValues, vec3( tc.yw, vLayer ), 0 ).r; //  u,  v
+	values.x = textureLod( texValues, vec3( tc.xz, vLayer ), 0.0 ).r; // -u, -v
+	values.y = textureLod( texValues, vec3( tc.yz, vLayer ), 0.0 ).r; //  u, -v
+	values.z = textureLod( texValues, vec3( tc.xw, vLayer ), 0.0 ).r; // -u,  v
+	values.w = textureLod( texValues, vec3( tc.yw, vLayer ), 0.0 ).r; //  u,  v
 	
 	outValue = dot( values, weights );
 }

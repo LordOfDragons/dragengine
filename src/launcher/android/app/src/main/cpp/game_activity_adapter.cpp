@@ -9,6 +9,7 @@ private:
     android_app *pApp = nullptr;
     std::mutex pMutex;
     GameActivityHandler *pHandler = nullptr;
+    JNIEnv *pJniEnv = nullptr;
 
 public:
     GameActivityAdapter() = default;
@@ -26,6 +27,8 @@ public:
         app->onAppCmd = pCBOnAppCmd;
         app->textInputState = 0;
         pApp = app;
+
+        app->activity->vm->AttachCurrentThread(&pJniEnv, nullptr);
 
         while(true){
             int events;
@@ -50,6 +53,9 @@ public:
                 pHandler->FrameUpdate(*this);
             }
         }
+
+        app->activity->vm->DetachCurrentThread();
+        pJniEnv = nullptr;
 
         app->textInputState = 0;
         app->onAppCmd = nullptr;

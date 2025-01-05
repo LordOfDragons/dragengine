@@ -99,13 +99,13 @@ deoglLoaderThread::~deoglLoaderThread(){
 
 void deoglLoaderThread::Run(){
 	OGL_INIT_LOADER_THREAD_CHECK
-	pRenderThread.GetLogger().LogInfo( "LoaderThread: Starting" );
+	pRenderThread.GetLogger().LogInfo("LoaderThread: Starting");
 	try{
 		pInit();
 		
-	}catch( const deException & ){
+	}catch(const deException &e){
+		pRenderThread.GetLogger().LogException(e);
 		pShutdown = true;
-		throw;
 	}
 	
 	deoglLoaderThreadTask *task = nullptr;
@@ -260,10 +260,8 @@ void deoglLoaderThread::pInit(){
 	#endif
 	
 	#ifdef OS_ANDROID
-	if( eglMakeCurrent( context.GetDisplay(), context.GetSurface(),
-	context.GetSurface(), context.GetLoaderContext() ) == EGL_FALSE ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE(eglMakeCurrent(context.GetDisplay(), context.GetLoaderSurface(),
+		context.GetLoaderSurface(), context.GetLoaderContext()) == EGL_TRUE)
 	#endif
 	
 	#ifdef OS_MACOS
@@ -285,7 +283,7 @@ void deoglLoaderThread::pCleanUp(){
 	#endif
 	
 	#ifdef OS_ANDROID
-		eglMakeCurrent( pRenderThread.GetContext().GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+		eglMakeCurrent(pRenderThread.GetContext().GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	#endif
 	
 	#ifdef OS_MACOS

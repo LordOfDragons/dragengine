@@ -143,6 +143,7 @@ private:
 	EGLDisplay pDisplay;
 	EGLSurface pSurface;
 	EGLContext pContext;
+	EGLSurface pLoaderSurface;
 	EGLContext pLoaderContext;
 	EGLConfig pConfig;
 	
@@ -290,6 +291,9 @@ public:
 	
 	/** Context. */
 	inline EGLContext GetContext() const{ return pContext; }
+	
+	/** Loader surface. */
+	inline EGLSurface GetLoaderSurface() const{ return pLoaderSurface; }
 	
 	/** Loader context. */
 	inline EGLContext GetLoaderContext() const{ return pLoaderContext; }

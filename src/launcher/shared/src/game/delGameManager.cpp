@@ -92,7 +92,7 @@ void delGameManager::LoadGames( delEngineInstance &instance ){
 		game->SetIdentifier( decUuid( directories.GetAt( i ).GetLastComponent(), false ) );
 		game->LoadConfig();
 		
-		if( ! game->GetDelgaFile().IsEmpty() ){
+		if(!game->GetDelgaFile().IsEmpty()){
 			list.RemoveAll();
 			try{
 				LoadGameFromDisk( instance, game->GetDelgaFile(), list );

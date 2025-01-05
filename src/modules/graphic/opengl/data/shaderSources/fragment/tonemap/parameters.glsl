@@ -20,16 +20,16 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 void main( void ){
 	vec4 avgLums;
 	
-	avgLums.x = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 0 ), 0 ).r; // tc1.s, tc1.t
-	avgLums.y = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 0 ), 0 ).r; // tc1.s, tc2.t
-	avgLums.z = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 0 ), 0 ).r; // tc2.s, tc1.t
-	avgLums.w = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 0 ), 0 ).r; // tc2.s, tc2.t
+	avgLums.x = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 0 ), 0.0 ).r; // tc1.s, tc1.t
+	avgLums.y = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 0 ), 0.0 ).r; // tc1.s, tc2.t
+	avgLums.z = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 0 ), 0.0 ).r; // tc2.s, tc1.t
+	avgLums.w = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 0 ), 0.0 ).r; // tc2.s, tc2.t
 	
 	#ifdef SAMPLE_STEREO
-	avgLums.x += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 1 ), 0 ).r; // tc1.s, tc1.t
-	avgLums.y += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 1 ), 0 ).r; // tc1.s, tc2.t
-	avgLums.z += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 1 ), 0 ).r; // tc2.s, tc1.t
-	avgLums.w += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 1 ), 0 ).r; // tc2.s, tc2.t
+	avgLums.x += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 1 ), 0.0 ).r; // tc1.s, tc1.t
+	avgLums.y += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 1 ), 0.0 ).r; // tc1.s, tc2.t
+	avgLums.z += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 1 ), 0.0 ).r; // tc2.s, tc1.t
+	avgLums.w += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 1 ), 0.0 ).r; // tc2.s, tc2.t
 	avgLums /= vec4( 2 );
 	#endif
 	

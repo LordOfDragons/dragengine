@@ -125,9 +125,9 @@ deoglCapabilities::~deoglCapabilities(){
 
 void deoglCapabilities::DetectCapabilities(){
 	// NOTE not using OGL_CHECK in some places on purpose to not produce misleading error logs
-	#ifdef OS_ANDROID
-	deoglFramebuffer *framebuffer = NULL;
-	#endif
+	// #ifdef OS_ANDROID
+	// deoglFramebuffer *framebuffer = NULL;
+	// #endif
 	
 	deoglExtensions &ext = pRenderThread.GetExtensions();
 	deoglRTLogger &logger = pRenderThread.GetLogger();
@@ -253,13 +253,13 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		pStd430.Check();
 		
-		#ifdef OS_ANDROID
-		framebuffer = new deoglFramebuffer( pRenderThread, false );
-		pAndroidTest( framebuffer );
-		pRenderThread.GetFramebuffer().Activate( NULL );
-		delete framebuffer;
-		framebuffer = NULL;
-		#endif
+		// #ifdef OS_ANDROID
+		// framebuffer = new deoglFramebuffer( pRenderThread, false );
+		// pAndroidTest( framebuffer );
+		// pRenderThread.GetFramebuffer().Activate( NULL );
+		// delete framebuffer;
+		// framebuffer = NULL;
+		// #endif
 		
 		// ensure the color/depth/stencil attachments are unbound
 		OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
@@ -307,12 +307,12 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		pRenderThread.GetDebug().SetEnableHwDebugOutput( true ); // revert back to normal operation
 		
-		#ifdef OS_ANDROID
-		pRenderThread.GetFramebuffer().Activate( NULL );
-		if( framebuffer ){
-			delete framebuffer;
-		}
-		#endif
+		// #ifdef OS_ANDROID
+		// pRenderThread.GetFramebuffer().Activate( NULL );
+		// if( framebuffer ){
+		// 	delete framebuffer;
+		// }
+		// #endif
 		
 		throw;
 	}
