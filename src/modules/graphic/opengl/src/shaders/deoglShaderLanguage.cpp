@@ -1174,7 +1174,15 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 	#ifdef OS_ANDROID
 	pPreprocessor.SetSymbol( "ANDROID", "1" );
 	pPreprocessor.SetSymbol( "OPENGLES", "1" );
+	pPreprocessor.SetSymbol("ARG_SAMP_HIGHP", "highp");
+	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "medp");
+	pPreprocessor.SetSymbol("ARG_SAMP_LOWP", "lowp");
 	//pPreprocessor.SourcesAppend( "float modf( in float x, out float i ){ i=floor(x); return fract(x); }\n" );
+	
+	#else
+	pPreprocessor.SetSymbol("ARG_SAMP_HIGHP", "");
+	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "");
+	pPreprocessor.SetSymbol("ARG_SAMP_LOWP", "");
 	#endif
 }
 

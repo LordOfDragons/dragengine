@@ -133,7 +133,7 @@ const vec2 vOneTwoThird = vec2( 1.0 / 3.0, 2.0 / 3.0 );
 
 // test box against occlusion map
 bool testBox( out float largestSample, in vec2 minExtend, in vec2 maxExtend,
-in float minDepth, in vec2 scaleSize, in float baseLevel, HIGHP sampler2DArray occmap, in int layer ){
+in float minDepth, in vec2 scaleSize, in float baseLevel, ARG_SAMP_HIGHP sampler2DArray occmap, in int layer ){
 	vec2 size = ( maxExtend - minExtend ) * scaleSize;
 	
 	//if( min( size.x, size.y ) < 0.01 ){ //0.1 ){
