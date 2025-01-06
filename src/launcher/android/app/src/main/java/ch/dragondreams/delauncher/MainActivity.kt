@@ -2,20 +2,21 @@ package ch.dragondreams.delauncher
 
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
-import ch.dragondreams.delauncher.ui.main.SectionsPagerAdapter
+import androidx.preference.PreferenceManager
 import ch.dragondreams.delauncher.databinding.ActivityMainBinding
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.ui.main.FragmentEngine
 import ch.dragondreams.delauncher.ui.main.FragmentGames
 import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
+import ch.dragondreams.delauncher.ui.main.FragmentSettings
+import ch.dragondreams.delauncher.ui.main.MainViewPagesAdapter
 
 class MainActivity : AppCompatActivity(),
     FragmentInitEngine.Interface,
     FragmentEngine.Interface,
-    FragmentGames.Interface {
+    FragmentGames.Interface
+{
     class TestListener : DragengineLauncher.DefaultListener() {
         override fun stateChanged(launcher: DragengineLauncher) {
             Log.i(TAG, "stateChanged: " + launcher.state)
@@ -37,6 +38,11 @@ class MainActivity : AppCompatActivity(),
         return launcher!!
     }
 
+    private fun isRemoteLauncherEnabled(): Boolean{
+        return PreferenceManager.getDefaultSharedPreferences(this).
+            getBoolean(FragmentSettings.KEY_REMOTE_LAUNCHER, false)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,11 +51,32 @@ class MainActivity : AppCompatActivity(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = binding.viewPager
-        viewPager.adapter = sectionsPagerAdapter
-        val tabs: TabLayout = binding.tabs
+        val viewPagerAdapter = MainViewPagesAdapter(this, supportFragmentManager)
+        viewPagerAdapter.showRemoteLauncher = isRemoteLauncherEnabled()
+        val viewPager = binding.pagerMain
+        viewPager.adapter = viewPagerAdapter
+        viewPager.setOffscreenPageLimit(3)
+        val tabs = binding.tabs
         tabs.setupWithViewPager(viewPager)
+
+        PreferenceManager.getDefaultSharedPreferences(this).
+            registerOnSharedPreferenceChangeListener { _, key ->
+                if (key == FragmentSettings.KEY_REMOTE_LAUNCHER){
+                    runOnUiThread {
+                        val key = viewPagerAdapter.getKeyAt(tabs.selectedTabPosition)
+
+                        viewPagerAdapter.showRemoteLauncher = isRemoteLauncherEnabled()
+                        for (i in 0..<viewPagerAdapter.count) {
+                            viewPagerAdapter.instantiateItem(viewPager, i)
+                        }
+
+                        val position = viewPagerAdapter.getKeyPosition(key)
+                        if(position != -1) {
+                            tabs.selectTab(tabs.getTabAt(position))
+                        }
+                    }
+                }
+            }
     }
 
     override fun onDestroy() {

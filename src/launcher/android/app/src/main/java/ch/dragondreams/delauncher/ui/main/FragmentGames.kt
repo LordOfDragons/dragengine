@@ -15,12 +15,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.FileProvider
 import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.RunDelgaActivity
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.EngineModule
-import ch.dragondreams.delauncher.placeholder.PlaceholderContent
+import ch.dragondreams.delauncher.launcher.Game
 import ch.dragondreams.delauncher.ui.main.FragmentEngine.Interface
 import ch.dragondreams.delauncher.ui.main.FragmentEngine.ListenChanges
 import java.io.File
@@ -36,17 +37,36 @@ class FragmentGames : Fragment() {
     class ListenChanges(
         private val fragment: FragmentGames
     ) : DragengineLauncher.DefaultListener() {
-        override fun stateChanged(launcher: DragengineLauncher) {
+        override fun engineModulesChanged(launcher: DragengineLauncher) {
             fragment.activity?.runOnUiThread {
-                //fragment.updateDragengineInfo()
+                fragment.updateViewListGamesData()
             }
         }
     }
 
+    class ListListener(
+        private val owner: FragmentGames
+    ) : GamesRecyclerViewAdapter.Listener {
+        override fun onItemClicked(game: Game) {
+            //FragmentEngineModuleInfo(module).show(owner.childFragmentManager, FragmentEngineModuleInfo.TAG)
+        }
+    }
+
+
     private var launcher: DragengineLauncher? = null
-    private var listenChanges: ListenChanges? = null
     private var viewListGames: RecyclerView? = null
-    private var viewListGamesData: MutableList<PlaceholderContent.PlaceholderItem> = ArrayList()
+    private var viewListGamesData: MutableList<Game> = mutableListOf()
+    private var listenChanges: ListenChanges? = null
+
+    fun updateViewListGamesData() {
+        viewListGamesData.clear()
+        if(launcher != null){
+            viewListGamesData.addAll(launcher!!.games.sortedWith(Comparator { a, b ->
+                a.title.compareTo(b.title)
+            }))
+        }
+        viewListGames?.adapter?.notifyDataSetChanged()
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -69,7 +89,7 @@ class FragmentGames : Fragment() {
         viewListGames = view.findViewById(R.id.listGames)
         with(viewListGames!!) {
             layoutManager = LinearLayoutManager(context)
-            adapter = GamesRecyclerViewAdapter(PlaceholderContent.ITEMS)
+            adapter = GamesRecyclerViewAdapter(viewListGamesData, ListListener(this@FragmentGames))
         }
 
         view.findViewById<Button>(R.id.buttonTest).setOnClickListener {
@@ -103,8 +123,5 @@ class FragmentGames : Fragment() {
 
     companion object {
         const val TAG = "FragmentGames"
-
-        @JvmStatic
-        fun newInstance() = FragmentGames()
     }
 }

@@ -54,7 +54,7 @@ class EngineModuleRecyclerViewAdapter(
         }
 
         override fun toString(): String {
-            return super.toString() + " '" + textVersion.text + "'"
+            return super.toString() + " '" + textName.text + "'"
         }
     }
 }

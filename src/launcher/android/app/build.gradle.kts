@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.games.frame.pacing)
     implementation(libs.androidx.games.memory.advice)
     implementation(libs.androidx.games.performance.tuner)
+    implementation(libs.androidx.preference)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

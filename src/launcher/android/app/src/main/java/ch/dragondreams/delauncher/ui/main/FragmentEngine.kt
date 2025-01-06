@@ -45,7 +45,7 @@ class FragmentEngine : Fragment() {
 
     private var launcher: DragengineLauncher? = null
     private var viewListModules: RecyclerView? = null
-    private var viewListModulesData: MutableList<EngineModule> = ArrayList()
+    private var viewListModulesData: MutableList<EngineModule> = mutableListOf()
     private var listenChanges: ListenChanges? = null
 
     fun updateViewListModulesData() {
@@ -98,10 +98,5 @@ class FragmentEngine : Fragment() {
             adapter = EngineModuleRecyclerViewAdapter(viewListModulesData, ListListener(this@FragmentEngine))
         }
         return view
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = FragmentEngine()
     }
 }

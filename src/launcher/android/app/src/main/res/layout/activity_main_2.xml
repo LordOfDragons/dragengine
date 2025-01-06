@@ -56,7 +56,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageDragengine" />
 
         <androidx.viewpager.widget.ViewPager
-            android:id="@+id/view_pager"
+            android:id="@+id/pagerMain"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

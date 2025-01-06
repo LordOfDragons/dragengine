@@ -3,6 +3,7 @@
     <string name="application_label">Drag[en]gine Launcher</string>
     <string name="tab_games">Games</string>
     <string name="tab_engine">Engine</string>
+    <string name="tab_remote_launcher">Remote Launcher</string>
     <string name="tab_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -28,4 +29,30 @@
     <string name="label_close">Close</string>
     <string name="form_label_dragengine_version">Drag[en]gine Version:</string>
     <string name="form_label_game_engine_modules">Game Engine Modules:</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="preference_support">Support</string>
+    <string name="preference_developer">Developer</string>
+    <string name="title_remote_launcher_support">Remote Launcher Support</string>
+    <string name="summary_remote_launcher">Allows connecting to IGDE for remote launching</string>
+    <string name="summary_support_website">Get support on our Website</string>
+    <string name="summary_profiles">Edit profiles for launching games with</string>
+    <string name="title_edit_profiles">Edit Profiles</string>
+    <string name="error_failed_open_url">Failed opening URL</string>
+    <string name="title_error">Error</string>
+    <string name="title_discord_channel">Discord Channel</string>
+    <string name="summary_discord_channel">Get support on our Discord channel</string>
+    <string name="title_support_website">Website</string>
 </resources>
