@@ -209,14 +209,8 @@ void deoglCapabilities::DetectCapabilities(){
 			pNumProgramBinaryFormats = ( int )resultsInt[ 0 ];
 		}
 		
-		try{
-			OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_SIZE, &resultsInt[0]));
-			
-		}catch(const deException &){
-			// this happens on OpenGL ES which for some stupid reason can not do this
-			for(i=0; i<3; i++){
-				OGL_CHECK(pRenderThread, glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, i, &resultsInt[i]));
-			}
+		for(i=0; i<3; i++){
+			OGL_CHECK(pRenderThread, pglGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, i, &resultsInt[i]));
 		}
 		pMaxComputeWorkGroupSize.x = (int)resultsInt[0];
 		pMaxComputeWorkGroupSize.y = (int)resultsInt[1];

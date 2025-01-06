@@ -1510,11 +1510,11 @@ void deoglRenderThread::pInitExtensions(){
 	if( pExtensions->GetHasSeamlessCubeMap() ){
 		// on nVidia this crashes due to a bug with linear filtering on float textures
 		// TODO is this still affecting the newer driver versions?
-		if( configuration.GetDisableCubeMapLinearFiltering() ){
-			OGL_CHECK( *this, glDisable( GL_TEXTURE_CUBE_MAP_SEAMLESS ) );
+		if(pConfiguration.GetDisableCubeMapLinearFiltering()){
+			OGL_CHECK(*this, glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS));
 			
 		}else{
-			OGL_CHECK( *this, glEnable( GL_TEXTURE_CUBE_MAP_SEAMLESS ) );
+			OGL_CHECK(*this, glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS));
 		}
 	}
 #endif

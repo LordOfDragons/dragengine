@@ -251,6 +251,13 @@ GLAPI PFNGLSAMPLERPARAMETERIPROC pglSamplerParameteri = nullptr;
 
 
 
+// OpenGL 3.0
+///////////////
+
+GLAPI PFNGLGETINTEGERI_VPROC pglGetIntegeri_v = nullptr;
+
+
+
 // GL_ARB_array_texture : opengl version 3.0
 //////////////////////////////////////////////
 

@@ -807,6 +807,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// pGetRequiredFunction( (void**)&pglClearBufferuiv, "glClearBufferuiv" );
 	pGetRequiredFunction( (void**)&pglClearBufferfv, "glClearBufferfv" );
 	pGetRequiredFunction( (void**)&pglClearBufferfi, "glClearBufferfi" );
+	pGetRequiredFunction( (void**)&pglGetIntegeri_v, "glGetIntegeri_v" );
 	
 	// GL_EXT_transform_feedback : opengl version 3.0
 	// pGetRequiredFunction( (void**)&pglBeginTransformFeedback, "glBeginTransformFeedback" );
