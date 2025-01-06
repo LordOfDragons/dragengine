@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DELauncher"
         tools:targetApi="31">
+        <activity
+            android:name=".dummy"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -36,7 +39,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".RunDelgaActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
@@ -49,10 +51,12 @@
 			This is the way for applications containing DELGAs to run themselves.
 			The Drag[en]gine distribution contains a ready made JAR that applications
 			can drop into their project and just build using their DELGA.
-			-->
+            -->
             <intent-filter>
                 <action android:name="ch.dragondreams.delauncher.LAUNCH_DELGA" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/dragengine-delga" />
                 <data android:scheme="content" />
                 <data android:host="*" />
@@ -87,28 +91,32 @@
             -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:mimeType="*/*" />
                 <data android:scheme="content" />
                 <data android:host="*" />
                 <data android:pathPattern="/.*\\.delga" />
             </intent-filter>
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:mimeType="*/*" />
                 <data android:scheme="https" />
                 <data android:host="*" />
                 <data android:pathPattern="/.*\\.delga" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:mimeType="*/*" />
                 <data android:scheme="file" />
                 <data android:host="*" />
@@ -116,4 +124,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

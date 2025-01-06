@@ -11,18 +11,33 @@
         android:layout_height="match_parent"
         android:background="?android:attr/colorBackground">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/lab_install_update_dragengine"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            app:layout_constraintBottom_toTopOf="@+id/pbInstallEngineProgress"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="50dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/banner_dragengine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/labState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/lab_verify_dragengine"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintBottom_toTopOf="@+id/pbInstallEngineProgress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         <ProgressBar
             android:id="@+id/pbInstallEngineProgress"
@@ -33,10 +48,11 @@
             android:max="100"
             android:progress="0"
             android:progressDrawable="@drawable/progressbar_circle"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/labState"
             app:layout_constraintVertical_bias="0.5" />
 
         <TextView
@@ -48,5 +64,6 @@
             app:layout_constraintEnd_toEndOf="@+id/pbInstallEngineProgress"
             app:layout_constraintStart_toStartOf="@+id/pbInstallEngineProgress"
             app:layout_constraintTop_toTopOf="@+id/pbInstallEngineProgress" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

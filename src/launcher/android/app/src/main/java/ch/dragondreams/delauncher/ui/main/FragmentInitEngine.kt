@@ -23,6 +23,7 @@ class FragmentInitEngine : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
     private var pbProgress: ProgressBar? = null
     private var labProgress: TextView? = null
+    private var labState: TextView? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -36,20 +37,32 @@ class FragmentInitEngine : Fragment() {
 
                 when(launcher?.state ?: DragengineLauncher.State.EngineReady) {
                     DragengineLauncher.State.InstallEngine -> {
+                        labState?.text = resources.getString(R.string.lab_install_update_dragengine)
                         val progress = ((launcher?.progressInstallEngine ?: 0.0) * 100.0).roundToInt()
                         pbProgress?.progress = progress
+                        pbProgress?.visibility = View.VISIBLE
                         labProgress?.text = resources.getString(R.string.lab_install_engine_progress, progress)
                     }
                     DragengineLauncher.State.InstallEngineFailed -> {
-                        labProgress?.text = "ERROR Install"
+                        labState?.text = resources.getString(R.string.lab_install_dragengine_failed)
+                        pbProgress?.visibility = View.INVISIBLE
+                        labProgress?.text = ""
                     }
                     DragengineLauncher.State.LoadLibrariesFailed -> {
-                        labProgress?.text = "ERROR Load"
+                        labState?.text = resources.getString(R.string.lab_load_libraries_failed)
+                        pbProgress?.visibility = View.INVISIBLE
+                        labProgress?.text = ""
                     }
                     DragengineLauncher.State.CreateInternalLauncherFailed -> {
-                        labProgress?.text = "ERROR Glue"
+                        labState?.text = resources.getString(R.string.lab_create_dragengine_failed)
+                        pbProgress?.visibility = View.INVISIBLE
+                        labProgress?.text = ""
                     }
                     DragengineLauncher.State.EngineReady -> {
+                        labState?.text = resources.getString(R.string.lab_dragengine_ready)
+                        pbProgress?.visibility = View.INVISIBLE
+                        labProgress?.text = ""
+
                         val t = parentFragmentManager.beginTransaction()
                         t.hide(this@FragmentInitEngine)
                         t.commit()
@@ -78,8 +91,16 @@ class FragmentInitEngine : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_init_engine, container, false)
+
+        labState = view.findViewById(R.id.labState)
+        labState?.text = resources.getString(R.string.lab_verify_dragengine)
+
         pbProgress = view.findViewById(R.id.pbInstallEngineProgress)
+        pbProgress?.progress = 0
+        pbProgress?.visibility = View.INVISIBLE
+
         labProgress = view.findViewById(R.id.labInstallEngineProgress)
+        labProgress?.text = ""
         return view
     }
 }
