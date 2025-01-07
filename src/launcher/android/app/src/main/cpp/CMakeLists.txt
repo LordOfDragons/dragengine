@@ -90,3 +90,27 @@ target_link_libraries("run_game_handler"
     ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libdragengine.so
     android
     log)
+
+
+
+# RemoteLauncherHandler
+add_library("remote_launcher_handler" SHARED
+    JniHelper.cpp
+    RemoteLauncherHandler.cpp
+    GameRunParams.cpp
+)
+
+include_directories(
+        ${game-activity-include}
+        "${CMAKE_SOURCE_DIR}/../../../../../shared/build/include"
+        "${CMAKE_SOURCE_DIR}/../../../../../../dragengine/build/include"
+        "${CMAKE_SOURCE_DIR}/../../../../../../../extern/deremotelauncher/build/deremotelauncher-unix-x64-nightly/include",
+        "${CMAKE_SOURCE_DIR}/../../../../../../../extern/denetwork/build/denetworkcpp-android-armv8-nightly/include")
+
+#     ${CMAKE_SOURCE_DIR}/../../../../../../../extern/deremotelauncher/build/deremotelauncher-unix-x64-nightly/lib/libderemotelauncher.a
+target_link_libraries("remote_launcher_handler"
+    ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libdelauncher.so
+    ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libdragengine.so
+    ${CMAKE_SOURCE_DIR}/../../../../../../../extern/denetwork/build/denetworkcpp-android-armv8-nightly/lib/libdenetwork.a
+    android
+    log)

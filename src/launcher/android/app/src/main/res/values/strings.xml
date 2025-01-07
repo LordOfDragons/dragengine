@@ -55,4 +55,11 @@
     <string name="title_discord_channel">Discord Channel</string>
     <string name="summary_discord_channel">Get support on our Discord channel</string>
     <string name="title_support_website">Website</string>
+    <string name="label_host_address">Host Address:</string>
+    <string name="hint_host_name">Host name or IP[:Port]</string>
+    <string name="label_client_name">Client Name:</string>
+    <string name="hint_client_name">Client name displayed in IGDE</string>
+    <string name="button_connect">Connect</string>
+    <string name="button_disconnect">Disconnect</string>
+    <string name="title_activity_remote_launcher">RemoteLauncherActivity</string>
 </resources>

@@ -13,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DELauncher"
         tools:targetApi="31">
+        <activity
+            android:name=".RemoteLauncherActivity"
+            android:exported="false"
+            android:label="@string/title_activity_remote_launcher"
+            android:theme="@style/Theme.DELauncher" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
