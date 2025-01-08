@@ -22,7 +22,7 @@ class JniObject;
 #define JPATH_BASE "ch/dragondreams/delauncher/launcher/internal/"
 
 /**
- * Global class.
+ * Class.
  */
 class JniClass{
 protected:
@@ -30,16 +30,18 @@ protected:
     decString pName;
     jclass pClass;
     jmethodID pMethodNew;
+    bool pGlobalRef;
 
 protected:
-    JniClass(JNIEnv *env, jclass clazz, const char *name);
+    JniClass(JNIEnv *env, jclass clazz, const char *name, bool globalRef);
 
 public:
-    JniClass(JNIEnv *env, const char *name);
+    JniClass(JNIEnv *env, const char *name, bool globalRef = false);
+    void Dispose(JNIEnv *env);
 
     inline operator jclass() const{ return pClass; }
-    inline JNIEnv *GetEnv() const{ return pEnv; }
-    inline const decString &GetName() const{ return pName; }
+    [[nodiscard]] inline JNIEnv *GetEnv() const{ return pEnv; }
+    [[nodiscard]] inline const decString &GetName() const{ return pName; }
 
     JniFieldString GetFieldString(const char *name) const;
     JniFieldInt GetFieldInt(const char *name) const;
@@ -56,6 +58,7 @@ public:
      * Create instance of class using default constructor.
      */
     JniObject New();
+    JniObject New(JNIEnv *env);
 };
 
 /**
@@ -67,7 +70,7 @@ private:
     jclass pClass;
 
 public:
-    explicit JniObjectClass(JNIEnv *env, jobject object);
+    JniObjectClass(JNIEnv *env, jobject object);
     ~JniObjectClass();
 };
 
@@ -96,7 +99,9 @@ public:
     decString Get(jobject object) const;
     decUnicodeString GetUnicode(jobject object) const;
     void Set(jobject object, const decString &value) const;
+    void Set(JNIEnv *env, jobject object, const decString &value) const;
     void Set(jobject object, const decUnicodeString &value) const;
+    void Set(JNIEnv *env, jobject object, const decUnicodeString &value) const;
 };
 
 /**
@@ -191,6 +196,7 @@ public:
 
     inline operator jobject() const{ return pObject; }
     jobject ReturnValue();
+    inline jobject CallArgument() const{ return pObject; }
 };
 
 /**
@@ -261,7 +267,7 @@ public:
      * Convert string.
      */
     decString convertString(jstring in);
-    jstring convertString(const decString &in);
+    jstring convertString(const char *in);
 
     /**
      * Convert unicode string.

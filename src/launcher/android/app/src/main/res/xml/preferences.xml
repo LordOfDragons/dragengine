@@ -18,7 +18,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/preference_developer">
-        <SwitchPreferenceCompat
+        <Preference
             app:key="remote_launcher"
             app:title="@string/title_remote_launcher_support"
             app:summary="@string/summary_remote_launcher"/>

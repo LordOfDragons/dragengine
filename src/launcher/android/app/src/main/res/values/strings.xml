@@ -62,4 +62,11 @@
     <string name="button_connect">Connect</string>
     <string name="button_disconnect">Disconnect</string>
     <string name="title_activity_remote_launcher">RemoteLauncherActivity</string>
+    <string name="error_client_name_empty">Client name can not be empty</string>
+    <string name="error_data_path_empty">Data path can not be empty</string>
+    <string name="error_host_address_empty">Addresss can not be empty</string>
+    <string name="error_connect_failed">Connect failed</string>
+    <string name="error_disconnect_failed">Disconnect failed</string>
+    <string name="message_requires_permission_internet">Connecting to remote host requires Internet Access Permission</string>
+    <string name="message_remote_launch_internet_denied">Permission denied. Remote launching is not possible.</string>
 </resources>

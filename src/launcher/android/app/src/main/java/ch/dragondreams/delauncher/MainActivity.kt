@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import ch.dragondreams.delauncher.RemoteLauncherActivity.Companion
 import ch.dragondreams.delauncher.databinding.ActivityMainBinding
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.ui.main.FragmentEngine
@@ -17,9 +18,13 @@ class MainActivity : AppCompatActivity(),
     FragmentEngine.Interface,
     FragmentGames.Interface
 {
-    class TestListener : DragengineLauncher.DefaultListener() {
+    class LauncherListener : DragengineLauncher.DefaultListener() {
         override fun stateChanged(launcher: DragengineLauncher) {
             Log.i(TAG, "stateChanged: " + launcher.state)
+        }
+
+        override fun launcherCreated(launcher: DragengineLauncher) {
+            launcher.launcher?.addFileLogger("delauncher")
         }
 
         companion object {
@@ -33,7 +38,8 @@ class MainActivity : AppCompatActivity(),
     override fun getLauncher(): DragengineLauncher {
         if (launcher == null) {
             launcher = DragengineLauncher(this, null)
-            launcher!!.addListener(TestListener())
+            launcher?.addListener(LauncherListener())
+            launcher?.initLauncher()
         }
         return launcher!!
     }
@@ -52,31 +58,10 @@ class MainActivity : AppCompatActivity(),
         setContentView(binding.root)
 
         val viewPagerAdapter = MainViewPagesAdapter(this, supportFragmentManager)
-        viewPagerAdapter.showRemoteLauncher = isRemoteLauncherEnabled()
         val viewPager = binding.pagerMain
         viewPager.adapter = viewPagerAdapter
-        viewPager.setOffscreenPageLimit(3)
-        val tabs = binding.tabs
-        tabs.setupWithViewPager(viewPager)
-
-        PreferenceManager.getDefaultSharedPreferences(this).
-            registerOnSharedPreferenceChangeListener { _, key ->
-                if (key == FragmentSettings.KEY_REMOTE_LAUNCHER){
-                    runOnUiThread {
-                        val key = viewPagerAdapter.getKeyAt(tabs.selectedTabPosition)
-
-                        viewPagerAdapter.showRemoteLauncher = isRemoteLauncherEnabled()
-                        for (i in 0..<viewPagerAdapter.count) {
-                            viewPagerAdapter.instantiateItem(viewPager, i)
-                        }
-
-                        val position = viewPagerAdapter.getKeyPosition(key)
-                        if(position != -1) {
-                            tabs.selectTab(tabs.getTabAt(position))
-                        }
-                    }
-                }
-            }
+        viewPager.setOffscreenPageLimit(2)
+        binding.tabs.setupWithViewPager(viewPager)
     }
 
     override fun onDestroy() {

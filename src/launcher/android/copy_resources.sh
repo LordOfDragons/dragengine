@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# ensure deremotelauncher is present
-( cd ../../.. && scons lib_deremotelauncher )
-
-# ensure denetwork is present
-( cd ../../.. && scons lib_denetwork )
+# ensure denetwork and deremotelauncher are present
+( cd ../../.. && scons lib_denetwork lib_deremotelauncher )
 
 # copy libraries
 TARGET_DIR=app/src/main/jniLibs/arm64-v8a

@@ -3,17 +3,11 @@ package ch.dragondreams.delauncher
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
-import ch.dragondreams.delauncher.RunDelgaActivity.Companion
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
-import ch.dragondreams.delauncher.launcher.EngineModule
-import ch.dragondreams.delauncher.launcher.EngineModuleParameter
-import ch.dragondreams.delauncher.launcher.Game
-import ch.dragondreams.delauncher.launcher.GameProfile
-import ch.dragondreams.delauncher.launcher.GameRunParams
 import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
 import ch.dragondreams.delauncher.launcher.internal.RemoteLauncherHandler
-import ch.dragondreams.delauncher.launcher.internal.RunGameHandler
 import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
+import ch.dragondreams.delauncher.ui.main.FragmentRemoteLauncher
 import com.google.androidgamesdk.GameActivity
 import java.lang.System.loadLibrary
 
@@ -29,6 +23,10 @@ class RemoteLauncherActivity : GameActivity(),
                 activity.onEngineReady()
             }
         }
+
+        override fun launcherCreated(launcher: DragengineLauncher) {
+            launcher.launcher?.addFileLogger("deremotelauncher")
+        }
     }
 
     enum class State {
@@ -37,29 +35,44 @@ class RemoteLauncherActivity : GameActivity(),
         RunGame
     }
 
-    private var launcher: DragengineLauncher? = null
+    private val shared = RunGameShared(TAG)
     private var state = State.InitEngine
     private var handler: RemoteLauncherHandler? = null
-    private var runParams: GameRunParams = GameRunParams()
-    private var game: Game? = null
-    private var hasPatchIdentifier = false
-    private var patchIdentifier: String? = null
-    private val moduleParameters: MutableList<EngineModuleParameter> = mutableListOf()
+    private var fragmentMain: FragmentRemoteLauncher? = null
 
     override fun getLauncher(): DragengineLauncher {
-        if (launcher == null) {
-            launcher = DragengineLauncher(this, mSurfaceView)
-            launcher!!.addListener(RemoteLauncherListener(this))
+        if (shared.launcher == null) {
+            shared.launcher = DragengineLauncher(this, mSurfaceView)
+            shared.launcher?.addListener(RemoteLauncherListener(this))
+            shared.launcher?.initLauncher()
         }
-        return launcher!!
+        return shared.launcher!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         loadLibrary("game_activity_adapter")
         super.onCreate(savedInstanceState)
 
+        fragmentMain = FragmentRemoteLauncher()
+        fragmentMain?.shared = shared
+        supportFragmentManager.beginTransaction()
+            .add(android.R.id.content, fragmentMain!!).commit()
+
+        /*
+        if (Build.VERSION.SDK_INT >= 30){
+            window.insetsController
+
+        } else {
+            window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    )
+        }
+        */
+
         mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder){
+                shared.surfaceView = mSurfaceView
                 getLauncher() // force create launcher if not created already
                 supportFragmentManager.beginTransaction()
                     .add(android.R.id.content, FragmentInitEngine()).commit()
@@ -78,9 +91,7 @@ class RemoteLauncherActivity : GameActivity(),
         handler?.dispose()
         handler = null
 
-        launcher?.dispose()
-        launcher = null
-
+        shared.dispose()
         super.onDestroy()
     }
 
@@ -89,6 +100,9 @@ class RemoteLauncherActivity : GameActivity(),
             return
         }
         state = State.Idle
+
+        loadLibrary("remote_launcher_handler")
+        fragmentMain?.engineReady = true
     }
 
     private fun runGame() {
@@ -96,188 +110,34 @@ class RemoteLauncherActivity : GameActivity(),
     }
 
     private fun prepareGame(): Boolean{
-        if(game == null){
+        if(shared.game == null){
             return false
         }
 
-        // load configuration if the game is not installed. this allows to keep the parameter
-        // changes alive done by the player inside the game
-        val identifier = game?.identifier
-        if (launcher!!.games.find { g -> g.identifier == identifier } == null) {
-            game?.loadConfig()
-        }
-
-        game?.updateConfig()
-        game?.verifyRequirements()
-        game?.updateStatus()
-        logInfo("processIntentLaunchDelga", "DELGA status ${game?.canRun}")
+        shared.loadGameConfig()
         return true
-    }
-
-    private fun logProblems() {
-        logInfo("logProblems",
-            "Game '${game?.aliasIdentifier}'(${game?.identifier}) has the following problems:")
-        game!!.fileFormats.forEach { f ->
-            if(!f.supported){
-                if(launcher!!.isModuleSingleType(f.type)){
-                    logInfo("logProblems",
-                        "- File Format '${f.pattern}' defines single type ${EngineModule.mapTypeName[f.type]}")
-                }else{
-                    logInfo("logProblems",
-                        "- File Format '${f.pattern}' is not supported by any loaded modules")
-                }
-            }
-        }
-        if(!game!!.scriptModuleFound){
-            printModuleProblem(game!!.scriptModule, EngineModule.Type.Script);
-        }
-    }
-
-    private fun printModuleProblem(name: String, type: EngineModule.Type) {
-        val module = launcher?.engineModules?.find { m -> m.name == name }
-        val typeName = EngineModule.mapTypeName[type]
-
-        if(module == null){
-            logInfo("printModuleProblem",
-                "$typeName module '$name' does not exist")
-
-        }else if(module.type != type){
-            logInfo("printModuleProblem",
-                "- Module '$name' is not a $typeName module")
-
-        }else if(module.status != EngineModule.Status.Ready){
-            val errorCode = EngineModule.mapErrorCode[module.errorCode]
-            val reason = EngineModule.mapErrorText[errorCode] ?: "Unknown problem"
-            logInfo("printModuleProblem",
-                "- $typeName module '${name}' is not working ($reason)")
-        }
-    }
-
-    private fun locateProfile(): Boolean{
-        // locate the profile to run
-        var profile: GameProfile?
-
-        profile = game?.getProfileToUse(launcher!!)
-        if(profile == null){
-            logError("locateProfile", "No game profile found")
-            return false
-        }
-
-        if(!profile.valid){
-            printProfileProblems(profile)
-            return false
-        }
-
-        // determine patch to use
-        if(game!!.useCustomPatch.isNotEmpty()){
-            hasPatchIdentifier = true
-            patchIdentifier = game?.useCustomPatch
-
-        }else if(!game!!.useLatestPatch){
-            hasPatchIdentifier = true
-            patchIdentifier = null
-        }
-
-        // udpate the run parameters
-        runParams.gameProfile = profile
-        runParams.width = mSurfaceView.width
-        runParams.height = mSurfaceView.height
-
-        /*
-        var error: String
-        if(!runParams.findPatches(delgaGame, delgaGame.useLatestPatch, pPatchIdentifier, error)){
-            logger.LogError( LOGSOURCE, error.GetString() );
-            return false;
-        }
-        */
-
-        updateRunArguments()
-        applyCustomModuleParameters(); // potentially changes game profile set in run parameters
-        return true;
-    }
-
-    private fun printProfileProblems(profile: GameProfile){
-        logInfo("printProfileProblems",
-            "Profile '${profile.name}' has the following problems:")
-        printModuleProblem(profile.moduleGraphic, EngineModule.Type.Graphic)
-        printModuleProblem(profile.moduleInput, EngineModule.Type.Input)
-        printModuleProblem(profile.modulePhysics, EngineModule.Type.Physics)
-        printModuleProblem(profile.moduleAnimator, EngineModule.Type.Animator)
-        printModuleProblem(profile.moduleAI, EngineModule.Type.AI)
-        printModuleProblem(profile.moduleCrashRecovery, EngineModule.Type.CrashRecovery)
-        printModuleProblem(profile.moduleAudio, EngineModule.Type.Audio)
-        printModuleProblem(profile.moduleSynthesizer, EngineModule.Type.Synthesizer)
-        printModuleProblem(profile.moduleNetwork, EngineModule.Type.Network)
-        printModuleProblem(profile.moduleVR, EngineModule.Type.VR)
-    }
-
-    private fun updateRunArguments(){
-        val profile = runParams.gameProfile!!
-        var arguments: String
-
-        if(profile.replaceRunArguments){
-            arguments = profile.runArguments
-        }else{
-            arguments = game!!.runArguments
-            if(arguments.isNotEmpty()){
-                arguments += " "
-            }
-            arguments += profile.runArguments
-        }
-
-        runParams.runArguments = arguments
-    }
-
-    private fun applyCustomModuleParameters(){
-        if(moduleParameters.isEmpty()){
-            return
-        }
-
-        // ensure custom profile exists and is initialized with profile used to run the game
-        var profile: GameProfile? = game?.customProfile
-
-        if(profile == null){
-            profile = GameProfile.copyInstance(runParams.gameProfile!!)
-            game?.customProfile = profile
-            game?.storeConfig()
-        }
-
-        // update custom profile
-        //TODO: profile->GetModules().Update( *pModuleParameters );
-
-        // use custom profile
-        runParams.gameProfile = profile
     }
 
     private fun startGame() {
         // start the game
-        logInfo("startGame",
-            "Cache application ID = '${game?.identifier}'")
-        logInfo("startGame",
-            "Starting game '${game?.title}' using profile '${runParams.gameProfile?.name}'");
+        shared.logInfo("startGame",
+            "Cache application ID = '${shared.game?.identifier}'")
+        shared.logInfo("startGame",
+            "Starting game '${shared.game?.title}' using profile '${shared.runParams.gameProfile?.name}'");
 
-        loadLibrary("run_game_handler")
-        handler = RemoteLauncherHandler(launcher!!)
+        handler = RemoteLauncherHandler(shared.launcher!!)
         GameActivityAdapter().setHandler(handler!!.nativeHandler)
     }
 
-    private fun logError(function: String, message: String){
-        val m = "$function: $message"
-        Log.e(RunDelgaActivity.TAG, m)
-        launcher?.logError(m)
-    }
+    override fun onRequestPermissionsResult(requestCode: Int,
+        permissions: Array<out String>, grantResults: IntArray
+    ) {
+        when(requestCode) {
+            FragmentRemoteLauncher.REQUEST_CODE_PERMISSION_INTERNET ->
+                fragmentMain?.onPermissionResult(requestCode, permissions, grantResults)
 
-    private fun logError(function: String, message: String, exception: Exception){
-        val m = "$function: $message"
-        Log.e(RunDelgaActivity.TAG, m, exception)
-        launcher?.logError(listOf(m, exception.toString(),
-            exception.stackTraceToString()).joinToString("\n"))
-    }
-
-    private fun logInfo(function: String, message: String){
-        val m = "$function: $message"
-        Log.i(RunDelgaActivity.TAG, m)
-        launcher?.logInfo(m)
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
     }
 
     companion object {

@@ -22,6 +22,8 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
     private external fun vfsContainerRemoveFd(launcher: Long, path: String)
     private external fun readDelgaGames(launcher: Long, path: String): LongArray
     private external fun isModuleSingleType(type: Int): Boolean
+    private external fun addFileLogger(launcher: Long, path: String)
+    private external fun prepare(launcher: Long)
     private external fun logInfo(launcher: Long, message: String)
     private external fun logWarn(launcher: Long, message: String)
     private external fun logError(launcher: Long, message: String)
@@ -105,6 +107,14 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
 
     fun setActiveProfile(profile: GameProfile?){
         setActiveProfile(nativeLauncher, profile?.nativeProfile?.nativeProfile ?: 0L)
+    }
+
+    fun addFileLogger(path: String){
+        addFileLogger(nativeLauncher, path)
+    }
+
+    fun prepare(){
+        prepare(nativeLauncher)
     }
 
     fun logInfo(message: String) {

@@ -4,11 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
-import ch.dragondreams.delauncher.launcher.EngineModule
-import ch.dragondreams.delauncher.launcher.EngineModuleParameter
 import ch.dragondreams.delauncher.launcher.Game
-import ch.dragondreams.delauncher.launcher.GameProfile
-import ch.dragondreams.delauncher.launcher.GameRunParams
 import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
 import ch.dragondreams.delauncher.launcher.internal.RunGameHandler
 import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
@@ -28,6 +24,10 @@ class RunDelgaActivity : GameActivity(),
                 activity.onEngineReady()
             }
         }
+
+        override fun launcherCreated(launcher: DragengineLauncher) {
+            launcher.launcher?.addFileLogger("delauncher")
+        }
     }
 
     enum class State {
@@ -35,23 +35,19 @@ class RunDelgaActivity : GameActivity(),
         RunGame
     }
 
-    private var launcher: DragengineLauncher? = null
+    private val shared = RunGameShared(TAG)
     private var state = State.InitEngine
     private var delgaGames: MutableList<Game> = mutableListOf()
-    private var delgaGame: Game? = null
     private var delgaPath: String? = null
-    private var hasPatchIdentifier = false
-    private var patchIdentifier: String? = null
-    private val moduleParameters: MutableList<EngineModuleParameter> = mutableListOf()
-    private var runParams: GameRunParams = GameRunParams()
     private var runGameHandler: RunGameHandler? = null
 
     override fun getLauncher(): DragengineLauncher {
-        if (launcher == null) {
-            launcher = DragengineLauncher(this, mSurfaceView)
-            launcher!!.addListener(RunLauncherListener(this))
+        if (shared.launcher == null) {
+            shared.launcher = DragengineLauncher(this, mSurfaceView)
+            shared.launcher?.addListener(RunLauncherListener(this))
+            shared.launcher?.initLauncher()
         }
-        return launcher!!
+        return shared.launcher!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +63,7 @@ class RunDelgaActivity : GameActivity(),
         }
         */
 
-        logInfo("RunDelgaActivity", listOf(
+        shared.logInfo("RunDelgaActivity", listOf(
             "action='${intent.action}'",
             "type='${intent.type}'",
             "scheme='${intent.scheme}'",
@@ -77,6 +73,7 @@ class RunDelgaActivity : GameActivity(),
             || intent.action == "android.intent.action.VIEW") {
             mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceCreated(holder: SurfaceHolder){
+                    shared.surfaceView = mSurfaceView
                     getLauncher() // force create launcher if not created already
                     supportFragmentManager.beginTransaction()
                         .add(android.R.id.content, FragmentInitEngine()).commit()
@@ -99,15 +96,10 @@ class RunDelgaActivity : GameActivity(),
         runGameHandler?.dispose()
         runGameHandler = null
 
-        delgaGame?.release()
-        delgaGame = null
-
         delgaGames.forEach { g -> g.release() }
         delgaGames.clear()
 
-        launcher?.dispose()
-        launcher = null
-
+        shared.dispose()
         super.onDestroy()
     }
 
@@ -138,12 +130,12 @@ class RunDelgaActivity : GameActivity(),
             return
         }
 
-        if(delgaGame?.canRun != true){
-            logProblems()
+        if(shared.game?.canRun != true){
+            shared.logGameProblems()
             return
         }
 
-        if(!locateProfile()){
+        if(!shared.locateProfile()){
             return
         }
 
@@ -155,38 +147,38 @@ class RunDelgaActivity : GameActivity(),
             "content" -> {
                 contentResolver.openAssetFileDescriptor(intent.data!!, "r").use { afd ->
                     if (afd == null) {
-                        logError("processIntentLaunchDelga",
+                        shared.logError("processIntentLaunchDelga",
                             "AssetFileDescriptor is null")
                         return false
                     }
 
                     val startOffset = afd.startOffset
                     val length = afd.length
-                    logInfo("processIntentLaunchDelga",
+                    shared.logInfo("processIntentLaunchDelga",
                         "startOffset=${afd.startOffset} length=${afd.length}"
                     )
 
                     val fd = afd.parcelFileDescriptor?.detachFd()
                     if (fd == null) {
-                        logError("processIntentLaunchDelga",
+                        shared.logError("processIntentLaunchDelga",
                             "Can not detach file descriptor")
                         return false
                     }
 
                     try {
-                        launcher!!.vfsContainerAddFd(
+                        shared.launcher?.vfsContainerAddFd(
                             "/$VFS_FDS_DELGA_FILENAME",
                             fd,
                             startOffset.toInt(),
                             length.toInt()
                         )
                     } catch (e: Exception) {
-                        logError("processIntentLaunchDelga",
+                        shared.logError("processIntentLaunchDelga",
                             "Failed adding VFS container", e)
                         return false
                     }
 
-                    logInfo("processIntentLaunchDelga",
+                    shared.logInfo("processIntentLaunchDelga",
                         "VFS container added")
                     delgaPath = VFS_FDS_DELGA_PATH
                 }
@@ -195,229 +187,76 @@ class RunDelgaActivity : GameActivity(),
             "file" -> {
                 contentResolver.openFileDescriptor(intent.data!!, "r").use { pfd ->
                     if (pfd == null) {
-                        logError("processIntentLaunchDelga",
+                        shared.logError("processIntentLaunchDelga",
                             "ParcelFileDescriptor is null")
                         return false
                     }
 
                     val length = pfd.statSize
-                    logError("processIntentLaunchDelga", "length=${length}")
+                    shared.logError("processIntentLaunchDelga", "length=${length}")
 
                     val fd = pfd.detachFd()
 
                     try {
-                        launcher!!.vfsContainerAddFd(
+                        shared.launcher?.vfsContainerAddFd(
                             "/$VFS_FDS_DELGA_FILENAME",
                             fd,
                             0,
                             length.toInt()
                         )
                     } catch (e: Exception) {
-                        logError("processIntentLaunchDelga",
+                        shared.logError("processIntentLaunchDelga",
                             "Failed adding VFS container", e)
                         return false
                     }
 
-                    logInfo("processIntentLaunchDelga", "VFS container added")
+                    shared.logInfo("processIntentLaunchDelga", "VFS container added")
                     delgaPath = VFS_FDS_DELGA_PATH
                 }
             }
 
             else -> {
-                logError("processIntentLaunchDelga", "Unsupported scheme")
+                shared.logError("processIntentLaunchDelga", "Unsupported scheme")
                 return false
             }
         }
 
         if (delgaPath == null) {
-            logError("processIntentLaunchDelga", "DELGA path is null")
+            shared.logError("processIntentLaunchDelga", "DELGA path is null")
             return false
         }
 
         delgaGames.forEach { g -> g.release() }
         delgaGames.clear()
-        delgaGames.addAll(launcher!!.readDelgaGames(delgaPath!!))
-        logInfo("processIntentLaunchDelga", "DELGA loaded")
+        delgaGames.addAll(shared.launcher!!.readDelgaGames(delgaPath!!))
+        shared.logInfo("processIntentLaunchDelga", "DELGA loaded")
 
         if (delgaGames.isEmpty()) {
-            logError("processIntentLaunchDelga",
+            shared.logError("processIntentLaunchDelga",
                 "No game definition found in DELGA file")
             return false
         }
 
-        delgaGame?.release()
-        delgaGame = delgaGames[0].retain()
+        shared.game = delgaGames[0]
 
         delgaGames.forEach { g -> g.release() }
         delgaGames.clear()
 
-        // load configuration if the game is not installed. this allows to keep the parameter
-        // changes alive done by the player inside the game
-        val identifier = delgaGame!!.identifier
-        if (launcher!!.games.find { g -> g.identifier == identifier } == null) {
-            delgaGame?.loadConfig()
-        }
-
-        delgaGame?.updateConfig()
-        delgaGame?.verifyRequirements()
-        delgaGame?.updateStatus()
-        logInfo("processIntentLaunchDelga",
-            "DELGA status ${delgaGame?.canRun}")
+        shared.loadGameConfig()
         return true
     }
 
-    private fun logProblems() {
-        val game = delgaGame!!
-        val launcher = launcher!!
-
-        logInfo("logProblems",
-            "Game '${game.aliasIdentifier}'(${game.identifier}) has the following problems:")
-        game.fileFormats.forEach { f ->
-            if(!f.supported){
-                if(launcher.isModuleSingleType(f.type)){
-                    logInfo("logProblems",
-                        "- File Format '${f.pattern}' defines single type ${EngineModule.mapTypeName[f.type]}")
-                }else{
-                    logInfo("logProblems",
-                        "- File Format '${f.pattern}' is not supported by any loaded modules")
-                }
-            }
-        }
-        if(!game.scriptModuleFound){
-            printModuleProblem(game.scriptModule, EngineModule.Type.Script);
-        }
-    }
-
-    private fun printModuleProblem(name: String, type: EngineModule.Type) {
-        val module = launcher?.engineModules?.find { m -> m.name == name }
-        val typeName = EngineModule.mapTypeName[type]
-
-        if(module == null){
-            logInfo("printModuleProblem",
-                "$typeName module '$name' does not exist")
-
-        }else if(module.type != type){
-            logInfo("printModuleProblem",
-                "- Module '$name' is not a $typeName module")
-
-        }else if(module.status != EngineModule.Status.Ready){
-            val errorCode = EngineModule.mapErrorCode[module.errorCode]
-            val reason = EngineModule.mapErrorText[errorCode] ?: "Unknown problem"
-            logInfo("printModuleProblem",
-                "- $typeName module '${name}' is not working ($reason)")
-        }
-    }
-
-    private fun locateProfile(): Boolean{
-        val game = delgaGame!!
-
-        // locate the profile to run
-        var profile: GameProfile?
-
-        profile = game.getProfileToUse(launcher!!)
-        if(profile == null){
-            logError("locateProfile", "No game profile found")
-            return false
-        }
-
-        if(!profile.valid){
-            printProfileProblems(profile)
-            return false
-        }
-
-        // determine patch to use
-        if(delgaGame!!.useCustomPatch.isNotEmpty()){
-            hasPatchIdentifier = true
-            patchIdentifier = game.useCustomPatch
-
-        }else if(!delgaGame!!.useLatestPatch){
-            hasPatchIdentifier = true
-            patchIdentifier = null
-        }
-
-        // udpate the run parameters
-        runParams.gameProfile = profile
-        runParams.width = mSurfaceView.width
-        runParams.height = mSurfaceView.height
-
-        /*
-        var error: String
-        if(!runParams.findPatches(delgaGame, delgaGame.useLatestPatch, pPatchIdentifier, error)){
-            logger.LogError( LOGSOURCE, error.GetString() );
-            return false;
-        }
-        */
-
-        updateRunArguments()
-        applyCustomModuleParameters(); // potentially changes game profile set in run parameters
-        return true;
-    }
-
-    private fun printProfileProblems(profile: GameProfile){
-        logInfo("printProfileProblems",
-            "Profile '${profile.name}' has the following problems:")
-        printModuleProblem(profile.moduleGraphic, EngineModule.Type.Graphic)
-        printModuleProblem(profile.moduleInput, EngineModule.Type.Input)
-        printModuleProblem(profile.modulePhysics, EngineModule.Type.Physics)
-        printModuleProblem(profile.moduleAnimator, EngineModule.Type.Animator)
-        printModuleProblem(profile.moduleAI, EngineModule.Type.AI)
-        printModuleProblem(profile.moduleCrashRecovery, EngineModule.Type.CrashRecovery)
-        printModuleProblem(profile.moduleAudio, EngineModule.Type.Audio)
-        printModuleProblem(profile.moduleSynthesizer, EngineModule.Type.Synthesizer)
-        printModuleProblem(profile.moduleNetwork, EngineModule.Type.Network)
-        printModuleProblem(profile.moduleVR, EngineModule.Type.VR)
-    }
-
-    private fun updateRunArguments(){
-        val profile = runParams.gameProfile!!
-        var arguments: String
-
-        if(profile.replaceRunArguments){
-            arguments = profile.runArguments
-        }else{
-            arguments = delgaGame!!.runArguments
-            if(arguments.isNotEmpty()){
-                arguments += " "
-            }
-            arguments += profile.runArguments
-        }
-
-        runParams.runArguments = arguments
-    }
-
-    private fun applyCustomModuleParameters(){
-        if(moduleParameters.isEmpty()){
-            return
-        }
-
-        // ensure custom profile exists and is initialized with profile used to run the game
-        val game = delgaGame!!
-        var profile: GameProfile? = game.customProfile
-
-        if(profile == null){
-            profile = GameProfile.copyInstance(runParams.gameProfile!!)
-            game.customProfile = profile
-            game.storeConfig()
-        }
-
-        // update custom profile
-        //TODO: profile->GetModules().Update( *pModuleParameters );
-
-        // use custom profile
-        runParams.gameProfile = profile
-    }
-
     private fun startGame() {
-        val game = delgaGame!!
+        val game = shared.game!!
 
         // start the game
-        logInfo("startGame",
+        shared.logInfo("startGame",
             "Cache application ID = '${game.identifier}'")
-        logInfo("startGame",
-            "Starting game '${game.title}' using profile '${runParams.gameProfile?.name}'");
+        shared.logInfo("startGame",
+            "Starting game '${game.title}' using profile '${shared.runParams.gameProfile?.name}'");
 
         loadLibrary("run_game_handler")
-        runGameHandler = RunGameHandler(launcher!!, game, runParams)
+        runGameHandler = RunGameHandler(shared.launcher!!, game, shared.runParams)
         GameActivityAdapter().setHandler(runGameHandler!!.nativeHandler)
 
         /*
@@ -425,25 +264,6 @@ class RunDelgaActivity : GameActivity(),
                 delEngineInstanceDirect::Factory::Ref::New(
                     new delEngineInstanceDirect::Factory( engineLogger ) ) );
          */
-    }
-
-    private fun logError(function: String, message: String){
-        val m = "$function: $message"
-        Log.e(TAG, m)
-        launcher?.logError(m)
-    }
-
-    private fun logError(function: String, message: String, exception: Exception){
-        val m = "$function: $message"
-        Log.e(TAG, m, exception)
-        launcher?.logError(listOf(m, exception.toString(),
-            exception.stackTraceToString()).joinToString("\n"))
-    }
-
-    private fun logInfo(function: String, message: String){
-        val m = "$function: $message"
-        Log.i(TAG, m)
-        launcher?.logInfo(m)
     }
 
     companion object {

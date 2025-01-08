@@ -25,10 +25,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved){
 
 Launcher::Launcher(const sConfig &config) : delLauncher(config),
 pFDContainer(FDVFSContainer::Ref::New(new FDVFSContainer(
-    decPath::CreatePathUnix("/fds"))))
-{
-    AddFileLogger("delauncher");
-    Prepare();
+    decPath::CreatePathUnix("/fds")))){
 }
 
 delGameList Launcher::ReadDelgaGames(const decString &path){
@@ -53,7 +50,7 @@ Launcher::~Launcher(){
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_Launcher_createLauncher(
-        JNIEnv *env, jobject thiz, jobject config) {
+JNIEnv *env, jobject thiz, jobject config) {
     JniHelpers h(env);
     try {
         JniObjectClass clsConfig(env, config);
@@ -305,6 +302,30 @@ JNIEnv *env, jobject thiz, jlong plauncher, jstring message){
     try {
         Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
         launcher.GetLogger()->LogError("DELauncherAndroid", h.convertString(message));
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_addFileLogger(
+JNIEnv *env, jobject thiz, jlong plauncher, jstring ppath){
+    JniHelpers h(env);
+    try {
+        ((Launcher*)(intptr_t)plauncher)->AddFileLogger(h.convertString(ppath));
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_prepare(
+JNIEnv *env, jobject thiz, jlong plauncher){
+    JniHelpers h(env);
+    try {
+        ((Launcher*)(intptr_t)plauncher)->Prepare();
     }catch(const deException &e){
         h.throwException(e);
     }

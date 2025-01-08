@@ -1,7 +1,6 @@
 package ch.dragondreams.delauncher.launcher
 
 import android.content.Context
-import android.util.Log
 import android.view.SurfaceView
 import ch.dragondreams.delauncher.launcher.internal.Launcher
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +30,12 @@ class DragengineLauncher(
 
         /** Game profiles changed. */
         fun gameProfilesChanged(launcher: DragengineLauncher)
+
+        /**
+         * Native launcher created. Caller can add listeners and do other modification
+         * required to be done before launcher is prepared.
+         */
+        fun launcherCreated(launcher: DragengineLauncher)
     }
 
     open class DefaultListener : Listener {
@@ -38,6 +43,7 @@ class DragengineLauncher(
         override fun engineModulesChanged(launcher: DragengineLauncher) { }
         override fun gamesChanged(launcher: DragengineLauncher) { }
         override fun gameProfilesChanged(launcher: DragengineLauncher) { }
+        override fun launcherCreated(launcher: DragengineLauncher) { }
     }
 
     enum class State {
@@ -133,12 +139,6 @@ class DragengineLauncher(
 
     private val crscope = CoroutineScope(Dispatchers.IO)
 
-    init {
-        crscope.launch {
-            verifyEngineInstallation(context)
-        }
-    }
-
     fun dispose() {
         activeProfile?.release()
         activeProfile = null
@@ -156,6 +156,23 @@ class DragengineLauncher(
         launcher = null
     }
 
+
+    /**
+     * Start initializing and creating launcher. Call after adding listeners and
+     * setting parameters required to be done before this process begins.
+     */
+    fun initLauncher() {
+        crscope.launch {
+            verifyEngineInstallation(context)
+        }
+    }
+
+    /**
+     * Add file logger. Path has to be an absolute file path.
+     */
+    fun addFileLogger(path: String){
+        launcher?.addFileLogger(path)
+    }
 
     /**
      * Add native file descriptor as path to VFS. File descriptor will be closed
@@ -387,6 +404,16 @@ class DragengineLauncher(
 
         try {
             launcher = Launcher(this, view)
+
+            try {
+                listenersLocked++
+                logInfo("notifyLauncherCreated: ${listeners.size} ${listenersLocked}")
+                listeners.forEach { each -> each.launcherCreated(this) }
+            } finally {
+                listenersLocked--
+            }
+
+            launcher?.prepare()
 
             engineModules.clear()
             engineModules.addAll(launcher!!.getEngineModules())

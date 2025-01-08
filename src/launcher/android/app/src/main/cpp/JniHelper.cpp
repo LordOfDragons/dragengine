@@ -5,22 +5,38 @@
 // JniClass
 //////////////
 
-JniClass::JniClass(JNIEnv *env, const char *name) :
+JniClass::JniClass(JNIEnv *env, const char *name, bool globalRef) :
 pEnv(env),
 pName(name),
 pClass(env->FindClass(name)),
-pMethodNew(0)
+pMethodNew(0),
+pGlobalRef(globalRef)
 {
     DEASSERT_NOTNULL(pClass)
+    if(globalRef){
+        pClass = (jclass)env->NewGlobalRef(pClass);
+    }
 }
 
-JniClass::JniClass(JNIEnv *env, jclass clazz, const char *name) :
+JniClass::JniClass(JNIEnv *env, jclass clazz, const char *name, bool globalRef) :
 pEnv(env),
 pName(name),
 pClass(clazz),
-pMethodNew(0)
+pMethodNew(0),
+pGlobalRef(globalRef)
 {
-    DEASSERT_NOTNULL(clazz)
+    DEASSERT_NOTNULL(pClass)
+    if(globalRef){
+        pClass = (jclass)env->NewGlobalRef(pClass);
+    }
+}
+
+void JniClass::Dispose(JNIEnv *env) {
+    if(pGlobalRef && pClass){
+        env->DeleteGlobalRef(pClass);
+        pClass = nullptr;
+        pGlobalRef = false;
+    }
 }
 
 JniFieldString JniClass::GetFieldString(const char *name) const {
@@ -69,40 +85,24 @@ JniFieldByteArray JniClass::GetFieldByteArray(const char *name) const {
 
 
 JniObject JniClass::New(){
+    return New(pEnv);
+}
+
+JniObject JniClass::New(JNIEnv *env){
     if(!pMethodNew) {
-        pMethodNew = pEnv->GetMethodID(pClass, "<init>", "()V");
+        pMethodNew = env->GetMethodID(pClass, "<init>", "()V");
     }
-    return {pEnv, pEnv->NewObject(pClass, pMethodNew)};
+    return {env, env->NewObject(pClass, pMethodNew)};
 }
 
 // JniObjectClass
 ///////////////////
 
 JniObjectClass::JniObjectClass(JNIEnv *env, jobject object) :
-JniClass(env, env->GetObjectClass(object), "java/lang/Object")
-{
-    // segfaults all the time. stupid JVM U_U
-    /*
-    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d %p", __LINE__, pClass);
-    jmethodID metGetClass = env->GetMethodID(pClass, "getClass", "()Ljava/lang/Class;");
-    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d", __LINE__);
-    jobject objClass = env->CallObjectMethod(object, metGetClass);
-    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d", __LINE__);
-
-    jclass clsClass = env->GetObjectClass(objClass);
-    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d", __LINE__);
-    jmethodID metGetName = env->GetMethodID(clsClass, "getName", "()Ljava/lang/String;");
-    __android_log_print(ANDROID_LOG_ERROR, "Dummy", "Checkpoint %d", __LINE__);
-
-    pName = JniHelpers(env).convertString(reinterpret_cast<jstring>(
-            env->CallObjectMethod(objClass, metGetName)));
-    */
+JniClass(env, env->GetObjectClass(object), "java/lang/Object", false){
 }
 
 JniObjectClass::~JniObjectClass() {
-    if(pClass){
-        //pEnv->DeleteLocalRef(pClass); // segfaults... why?!
-    }
 }
 
 
@@ -134,6 +134,10 @@ void JniFieldString::Set(jobject object, const decString &value) const {
     pEnv->SetObjectField(object, pId, JniHelpers(pEnv).convertString(value));
 }
 
+void JniFieldString::Set(JNIEnv *env, jobject object, const decString &value) const {
+    env->SetObjectField(object, pId, JniHelpers(env).convertString(value));
+}
+
 decUnicodeString JniFieldString::GetUnicode(jobject object) const {
     return JniHelpers(pEnv).convertUnicodeString(reinterpret_cast<jstring>(
          pEnv->GetObjectField(object, pId)));
@@ -141,6 +145,10 @@ decUnicodeString JniFieldString::GetUnicode(jobject object) const {
 
 void JniFieldString::Set(jobject object, const decUnicodeString &value) const {
     pEnv->SetObjectField(object, pId, JniHelpers(pEnv).convertUnicodeString(value));
+}
+
+void JniFieldString::Set(JNIEnv *env, jobject object, const decUnicodeString &value) const {
+    env->SetObjectField(object, pId, JniHelpers(env).convertUnicodeString(value));
 }
 
 
@@ -267,7 +275,7 @@ pObject(object)
 }
 
 JniObject::~JniObject(){
-    if(pObject){
+    if(pObject) {
         pEnv->DeleteLocalRef(pObject);
     }
 }
@@ -368,7 +376,7 @@ decString JniHelpers::convertString(jstring in) {
     return out;
 }
 
-jstring JniHelpers::convertString(const decString &in) {
+jstring JniHelpers::convertString(const char *in) {
     return pEnv->NewStringUTF(in);
 }
 
