@@ -15,12 +15,7 @@
 #include "JniHelper.h"
 #include "RemoteLauncherClient.h"
 
-JavaVM *vJavaVM = nullptr;
-
-jint JNI_OnLoad(JavaVM *vm, void *reserved){
-    vJavaVM = vm;
-    return JNI_VERSION_1_6;
-}
+extern JavaVM *vJavaVM;
 
 // Class RemoteLauncherClient::ClientLogger
 /////////////////////////////////////////////

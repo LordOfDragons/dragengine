@@ -7,12 +7,8 @@ class RemoteLauncherHandler(
     val launcher: DragengineLauncher,
     game: ch.dragondreams.delauncher.launcher.Game,
     runParams: ch.dragondreams.delauncher.launcher.GameRunParams,
-    listener: Listener
+    listener: RunGameHandler.Listener
 ) {
-    interface Listener {
-        fun stateChanged(state: Int)
-    }
-
     val nativeHandler: Long = createHandler(
         client.nativeClient,
         launcher.launcher!!.nativeLauncher,
@@ -23,7 +19,8 @@ class RemoteLauncherHandler(
     val game: ch.dragondreams.delauncher.launcher.Game = game.retain()
 
     private external fun createHandler(client: Long, launcher: Long, game: Long,
-                                       params: GameRunParams, listener: Listener): Long
+                                       params: GameRunParams,
+                                       listener: RunGameHandler.Listener): Long
     private external fun destroyHandler(handler: Long)
     private external fun getState(handler: Long): Int
     private external fun waitForState(handler: Long, state: Int)

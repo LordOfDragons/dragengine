@@ -10,10 +10,6 @@ private:
     RemoteLauncherClient *pClient;
     deLoggerChain::Ref pEngineLogger;
 
-    JniObject pObjListener;
-    JniObjectClass pClsListener;
-    jmethodID pMetListenerStateChanged;
-
 public:
     RemoteLauncherHandler(JNIEnv *env, RemoteLauncherClient *client, Launcher *launcher,
         delGame *game, const delGameRunParams &params, jobject objListener);
@@ -25,7 +21,6 @@ protected:
     void pInitEngineInstanceFactory(delEngineInstanceDirect::Factory &factory) override;
     void pInitGameForRun() override;
     void pCreateEngineLogger();
-    void pStateChanged() override;
 };
 
 #endif //DELAUNCHER_REMOTELAUNCHERHANDLER_H

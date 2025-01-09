@@ -16,21 +16,11 @@ extern JavaVM *vJavaVM;
 
 RemoteLauncherHandler::RemoteLauncherHandler(JNIEnv *env, RemoteLauncherClient *client,
     Launcher *launcher, delGame *game, const delGameRunParams &params, jobject objListener) :
-RunGameHandler(launcher, game, params),
-pClient(client),
-pObjListener(env, objListener, true),
-pClsListener(pObjListener, true),
-pMetListenerStateChanged(env->GetMethodID(pClsListener, "stateChanged", "(I)V"))
-{
-    DEASSERT_NOTNULL(pMetListenerStateChanged)
+RunGameHandler(env, launcher, game, params, objListener),
+pClient(client){
 }
 
 RemoteLauncherHandler::~RemoteLauncherHandler(){
-    JNIEnv *env = nullptr;
-    vJavaVM->AttachCurrentThread(&env, nullptr);
-
-    pObjListener.Dispose(env);
-    pClsListener.Dispose(env);
 }
 
 void RemoteLauncherHandler::GameExited(BaseGameActivityAdapter &adapter) {
@@ -64,16 +54,6 @@ void RemoteLauncherHandler::pCreateEngineLogger(){
     pEngineLogger->AddLogger(deLogger::Ref::New(
         new deLoggerFile(decBaseFileWriter::Ref::New(
             diskDir->OpenFileForWriting(filePath)))));
-}
-
-void RemoteLauncherHandler::pStateChanged() {
-    if(!pObjListener){
-        return;
-    }
-
-    JNIEnv *env = nullptr;
-    vJavaVM->AttachCurrentThread(&env, nullptr);
-    env->CallVoidMethod(pObjListener, pMetListenerStateChanged, (jint)GetState());
 }
 
 

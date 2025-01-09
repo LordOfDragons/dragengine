@@ -1,8 +1,12 @@
 package ch.dragondreams.delauncher
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.SurfaceHolder
+import android.view.View
+import android.view.WindowManager
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.Game
 import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
@@ -26,6 +30,18 @@ class RunDelgaActivity : GameActivity(),
         }
     }
 
+    class HandlerListener(
+        private val owner: RunDelgaActivity
+    ) : RunGameHandler.Listener{
+        private val handler = Handler(Looper.getMainLooper())
+
+        override fun stateChanged(state: Int) {
+            if(!owner.isDestroyingView) {
+                handler.post { owner.handlerStateChanged(RunGameHandler.mapState[state]!!) }
+            }
+        }
+    }
+
     enum class State {
         InitEngine,
         RunGame
@@ -36,6 +52,8 @@ class RunDelgaActivity : GameActivity(),
     private var delgaGames: MutableList<Game> = mutableListOf()
     private var delgaPath: String? = null
     private var runGameHandler: RunGameHandler? = null
+    @Volatile
+    private var isDestroyingView = false
 
     override fun getLauncher(): DragengineLauncher {
         if (shared.launcher == null) {
@@ -80,6 +98,7 @@ class RunDelgaActivity : GameActivity(),
                 }
 
                 override fun surfaceDestroyed(holder: SurfaceHolder){
+                    stopApplicationWait()
                 }
             })
 
@@ -89,6 +108,9 @@ class RunDelgaActivity : GameActivity(),
     }
 
     override fun onDestroy() {
+        isDestroyingView = true
+        stopApplicationWait()
+
         GameActivityAdapter().setHandler(0L)
         runGameHandler?.dispose()
         runGameHandler = null
@@ -253,8 +275,30 @@ class RunDelgaActivity : GameActivity(),
             "Starting game '${game.title}' using profile '${shared.runParams.gameProfile?.name}'");
 
         loadLibrary("run_game_handler")
-        runGameHandler = RunGameHandler(shared.launcher!!, game, shared.runParams)
+        runGameHandler = RunGameHandler(shared.launcher!!, game,
+            shared.runParams, HandlerListener(this))
         GameActivityAdapter().setHandler(runGameHandler!!.nativeHandler)
+
+        runOnUiThread {
+            //window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            window.decorView.systemUiVisibility += (
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        }
+    }
+
+    fun stopApplicationWait() {
+        shared.logInfo(TAG, "stopApplication")
+        runGameHandler?.stopGame()
+        runGameHandler?.waitForState(RunGameHandler.State.GameStopped)
+    }
+
+    private fun handlerStateChanged(state: RunGameHandler.State) {
+        if(state == RunGameHandler.State.GameStopped){
+            GameActivityAdapter().setHandler(0L)
+            runGameHandler?.dispose()
+            runGameHandler = null
+        }
     }
 
     companion object {

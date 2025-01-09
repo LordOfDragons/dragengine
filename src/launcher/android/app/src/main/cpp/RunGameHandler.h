@@ -23,12 +23,18 @@ protected:
 
     void pSetState(State state);
 
+    JniObject pObjListener;
+    JniObjectClass pClsListener;
+    jmethodID pMetListenerStateChanged;
+
 private:
     std::atomic<State> pState;
     std::atomic<bool> pRequestStopGame;
 
 public:
-    RunGameHandler(Launcher *launcher, delGame *game, const delGameRunParams &params);
+    RunGameHandler(JNIEnv *env, Launcher *launcher, delGame *game,
+       const delGameRunParams &params, jobject objListener);
+    ~RunGameHandler() override;
 
     inline State GetState() const{ return pState; }
 

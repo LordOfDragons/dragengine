@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
@@ -86,7 +87,7 @@ class FragmentRemoteLauncher : Fragment() {
 
     class HandlerListener(
         private val owner: FragmentRemoteLauncher
-    ) : RemoteLauncherHandler.Listener{
+    ) : RunGameHandler.Listener{
         private val handler = Handler(Looper.getMainLooper())
 
         override fun stateChanged(state: Int) {
@@ -454,6 +455,15 @@ class FragmentRemoteLauncher : Fragment() {
         remoteLauncherHandler = RemoteLauncherHandler(
             client!!, l, g, s.runParams, HandlerListener(this))
         GameActivityAdapter().setHandler(remoteLauncherHandler!!.nativeHandler)
+
+        activity?.runOnUiThread {
+            val dv = activity?.window?.decorView
+            if(dv != null){
+                dv.systemUiVisibility += (
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            }
+        }
     }
 
     fun stopApplication() {
@@ -480,6 +490,15 @@ class FragmentRemoteLauncher : Fragment() {
             GameActivityAdapter().setHandler(0L)
             remoteLauncherHandler?.dispose()
             remoteLauncherHandler = null
+
+            activity?.runOnUiThread {
+                val dv = activity?.window?.decorView
+                if(dv != null){
+                    dv.systemUiVisibility -= (
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_FULLSCREEN)
+                }
+            }
         }
     }
 
