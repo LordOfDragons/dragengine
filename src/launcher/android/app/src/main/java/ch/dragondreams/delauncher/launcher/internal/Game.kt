@@ -16,6 +16,7 @@ class Game private constructor(
     private external fun gameSetConfig(game: Long, config: GameConfig)
     private external fun gameLoadStringConfig(game: Long, config: String, launcher: Long)
     private external fun gameSetGameDirectory(game: Long, directory: String)
+    private external fun gameIsRunning(game: Long): Boolean
 
     fun dispose() {
         nativeRefCount--;
@@ -58,6 +59,10 @@ class Game private constructor(
 
     fun setGameDirectory(directory: String){
         gameSetGameDirectory(nativeGame, directory)
+    }
+
+    fun isRunning(): Boolean {
+        return gameIsRunning(nativeGame)
     }
 
     companion object {

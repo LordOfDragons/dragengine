@@ -11,19 +11,23 @@ RunGameHandler::RunGameHandler(Launcher *launcher, delGame *game, const delGameR
 pLauncher(launcher),
 pGame(game),
 pRunParams(params),
-pState(State::startGame)
+pState(State::startGame),
+pRequestStopGame(false)
 {
     DEASSERT_NOTNULL(game)
     DEASSERT_NOTNULL(params.GetGameProfile())
 }
 
-void RunGameHandler::SetState(RunGameHandler::State state) {
-    if(state == pState){
+void RunGameHandler::pSetState(RunGameHandler::State state) {
+    if (state == pState) {
         return;
     }
-
     pState = state;
     pStateChanged();
+}
+
+void RunGameHandler::RequestStopGame(){
+    pRequestStopGame = true;
 }
 
 void RunGameHandler::Command(BaseGameActivityAdapter &adapter, int32_t cmd){
@@ -38,7 +42,13 @@ void RunGameHandler::FrameUpdate(BaseGameActivityAdapter &adapter){
                 break;
 
             case State::gameRunning:
-                ProcessRunning(adapter);
+                if(pRequestStopGame){
+                    pRequestStopGame = false;
+                    StopGame(adapter);
+
+                }else {
+                    ProcessRunning(adapter);
+                }
                 break;
 
             case State::gameStopped:
@@ -52,7 +62,7 @@ void RunGameHandler::FrameUpdate(BaseGameActivityAdapter &adapter){
 
 void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
     __android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "StartGame");
-    SetState(State::gameRunning);
+    pSetState(State::gameRunning);
 
     const delEngineInstanceDirect::Factory::Ref factory(
         delEngineInstanceDirect::Factory::Ref::New(
@@ -70,13 +80,21 @@ void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
 }
 
 void RunGameHandler::ProcessRunning(BaseGameActivityAdapter &adapter){
+    pGame->PulseChecking();
     if(pGame->IsRunning()){
         pGame->GetEngineInstance()->RunSingleFrameUpdate();
 
     }else{
-        SetState(State::gameStopped);
+        pSetState(State::gameStopped);
         GameExited(adapter);
     }
+}
+
+void RunGameHandler::StopGame(BaseGameActivityAdapter &adapter) {
+    if(pGame->IsRunning()) {
+        pGame->StopGame();
+    }
+    pSetState(State::gameStopped);
 }
 
 void RunGameHandler::GameExited(BaseGameActivityAdapter &adapter) {

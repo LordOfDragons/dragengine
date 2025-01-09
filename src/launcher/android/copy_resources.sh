@@ -9,6 +9,9 @@ mkdir -p $TARGET_DIR
 cp ../../dragengine/build/libdragengine.so $TARGET_DIR
 cp ../shared/build/libdelauncher.so $TARGET_DIR
 
+# for sanitizer copy libraries
+#cp ~/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/lib/clang/18/lib/linux/libclang_rt.asan-aarch64-android.so $TARGET_DIR
+
 # copy assets
 TARGET_DIR=app/src/main/assets/dragengine
 SOURCE_DIR=../../../build/release

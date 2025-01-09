@@ -1089,7 +1089,8 @@ const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath){
 }
 
 void delEngineInstanceDirect::RunSingleFrameUpdate(){
-	DEASSERT_NOTNULL(pEngine)
+	//DEASSERT_NOTNULL(pEngine)
+	DEASSERT_TRUE(IsGameRunning())
 	
 	if(!pEngine->ProcessEvents()){
 		pEngine->GetErrorTrace()->AddPoint(nullptr,
@@ -1100,6 +1101,10 @@ void delEngineInstanceDirect::RunSingleFrameUpdate(){
 	
 	if(pEngine->GetQuitRequest()){
 		pLogger->LogInfo(GetLauncher().GetLogSource(), "Game exited");
+		
+		if(!pEngine->StopRun()){
+			pLogger->LogError(GetLauncher().GetLogSource(), "Stop running game failed");
+		}
 		
 		// compare module parameters against stored ones
 		if(pGameCollectChangedParams){

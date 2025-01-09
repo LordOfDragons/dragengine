@@ -15,7 +15,7 @@
 #include "JniHelper.h"
 #include "RemoteLauncherClient.h"
 
-static JavaVM *vJavaVM = nullptr;
+JavaVM *vJavaVM = nullptr;
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved){
     vJavaVM = vm;
@@ -72,7 +72,7 @@ void RemoteLauncherClient::EngineLogger::LogError( const char *source, const cha
 
 RemoteLauncherClient::RemoteLauncherClient(JNIEnv *env, jobject objListener) :
 pObjListener(env, objListener, true),
-pClsListener(env, objListener, true),
+pClsListener(pObjListener, true),
 pMetListenerAddLogs(env->GetMethodID(pClsListener, "addLogs", "(ILjava/lang/String;)V")),
 pMetListenerUpdateUIState(env->GetMethodID(pClsListener, "updateUIState", "()V")),
 pMetListenerRequestProfileNames(env->GetMethodID(pClsListener, "requestProfileNames", "()V")),
@@ -91,6 +91,12 @@ pLastTime(std::chrono::steady_clock::now()),
 pLauncher(nullptr)
 {
     DEASSERT_NOTNULL(pMetListenerAddLogs)
+    DEASSERT_NOTNULL(pMetListenerUpdateUIState)
+    DEASSERT_NOTNULL(pMetListenerRequestProfileNames)
+    DEASSERT_NOTNULL(pMetListenerRequestDefaultProfileName)
+    DEASSERT_NOTNULL(pMetListenerStartApplication)
+    DEASSERT_NOTNULL(pMetListenerStopApplication)
+    DEASSERT_NOTNULL(pMetListenerKillApplication)
 
     pLogger = std::make_shared<ClientLogger>(*this);
     SetLogger(pLogger);
@@ -120,9 +126,13 @@ RemoteLauncherClient::~RemoteLauncherClient(){
     JNIEnv *env = nullptr;
     vJavaVM->AttachCurrentThread(&env, nullptr);
 
+    //__android_log_print(ANDROID_LOG_INFO, "RemoteLauncherClient", "Dispose %d", __LINE__);
     pObjListener.Dispose(env);
+    //__android_log_print(ANDROID_LOG_INFO, "RemoteLauncherClient", "Dispose %d", __LINE__);
     pClsListener.Dispose(env);
+    //__android_log_print(ANDROID_LOG_INFO, "RemoteLauncherClient", "Dispose %d", __LINE__);
     pClsRunParameters.Dispose(env);
+    //__android_log_print(ANDROID_LOG_INFO, "RemoteLauncherClient", "Dispose %d", __LINE__);
 }
 
 void RemoteLauncherClient::SetLauncher(delLauncher *launcher){
@@ -389,3 +399,15 @@ JNIEnv *env, jobject thiz, jlong pclient, jstring pproperty, jstring pvalue){
     }
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherClient_setRunStatus(
+JNIEnv *env, jobject thiz, jlong pclient, jint status){
+    JniHelpers h(env);
+    try {
+        ((RemoteLauncherClient*)pclient)->SetRunStatus(
+            (derlLauncherClient::RunStatus)status);
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}

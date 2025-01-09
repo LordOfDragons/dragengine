@@ -138,6 +138,10 @@ class Game private constructor(
         nativeGame.loadStringConfig(config, launcher.launcher!!)
     }
 
+    fun isRunning():Boolean {
+        return nativeGame.isRunning()
+    }
+
     companion object {
         private val mapGames: MutableMap<Game, ch.dragondreams.delauncher.launcher.Game> = mutableMapOf()
 

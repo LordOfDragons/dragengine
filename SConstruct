@@ -591,15 +591,7 @@ if parent_env['with_debug'] and parent_env['with_sanitize']:
 			'-fsanitize=pointer-overflow',
 			'-fsanitize=builtin'])
 		
-		if parent_env['CROSSCOMPILE_CLANG']:
-			"""
-			unsupported = [
-				'-fsanitize=leak',
-				'-fsanitize=bounds-strict',
-				'-fsanitize=object-size']
-			
-			flags = [f for f in flags if not f in unsupported]
-			"""
+		if parent_env['CROSSCOMPILE_CLANG'] or parent_env['platform_android'] != 'no':
 			flags = ['-fsanitize=address']
 		
 		# newer asan can incorrectly flag warnings causing compilation to fail

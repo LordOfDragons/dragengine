@@ -63,7 +63,7 @@ set(CMAKE_SHARED_LINKER_FLAGS
     Java_com_google_androidgamesdk_GameActivity_initializeNativeCode")
 
 add_library("game_activity_adapter" SHARED
-    game_activity_adapter.cpp
+        GameActivityAdapter.cpp
 )
 
 target_link_libraries("game_activity_adapter"
@@ -116,3 +116,15 @@ target_link_libraries("remote_launcher_handler"
     ${CMAKE_SOURCE_DIR}/../../../../../../../extern/denetwork/build/denetworkcpp-android-armv8-nightly/lib/libdenetwork.a
     android
     log)
+
+
+
+# sanitizer
+#target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+#set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS -fsanitize=address)
+#target_compile_options("game_activity_adapter" PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+#set_target_properties("game_activity_adapter" PROPERTIES LINK_FLAGS -fsanitize=address)
+#target_compile_options("run_game_handler" PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+#set_target_properties("run_game_handler" PROPERTIES LINK_FLAGS -fsanitize=address)
+#target_compile_options("remote_launcher_handler" PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+#set_target_properties("remote_launcher_handler" PROPERTIES LINK_FLAGS -fsanitize=address)

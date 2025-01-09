@@ -6,6 +6,7 @@ class RemoteLauncherClient(
     private val listener: Listener
 ) {
     enum class LogSeverity{ Error, Warning, Info, Debug }
+    enum class RunStatus{ Stopped, Running }
 
     interface Listener {
         fun addLogs(severity: Int, logs: String)
@@ -26,6 +27,7 @@ class RemoteLauncherClient(
     private external fun isDisconnected(client: Long): Boolean
     private external fun setLauncher(client: Long, launcher: Long)
     private external fun sendSystemProperty(client: Long, property: String, value: String)
+    private external fun setRunStatus(client: Long, status: Int)
 
     fun dispose(){
         destroyClient(nativeClient)
@@ -51,6 +53,10 @@ class RemoteLauncherClient(
         sendSystemProperty(nativeClient, property, value)
     }
 
+    fun setRunStatus(status: RunStatus){
+        setRunStatus(nativeClient, mapRunStatus[status]!!)
+    }
+
     /** System property names. */
     class SystemPropertyNames{
         companion object {
@@ -71,5 +77,9 @@ class RemoteLauncherClient(
             1 to LogSeverity.Warning,
             2 to LogSeverity.Info,
             3 to LogSeverity.Debug)
+
+        val mapRunStatus = mapOf(
+            RunStatus.Stopped to 0,
+            RunStatus.Running to 1)
     }
 }

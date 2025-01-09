@@ -102,6 +102,10 @@ JniObjectClass::JniObjectClass(JNIEnv *env, jobject object, bool globalRef) :
 JniClass(env, env->GetObjectClass(object), "java/lang/Object", globalRef){
 }
 
+JniObjectClass::JniObjectClass(const JniObject &object, bool globalRef) :
+JniClass(object.GetEnv(), object.GetEnv()->GetObjectClass(object), "java/lang/Object", globalRef){
+}
+
 JniObjectClass::~JniObjectClass() {
 }
 

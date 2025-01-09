@@ -58,6 +58,7 @@ class RemoteLauncherActivity : GameActivity(),
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder){
+                fragmentMain?.stopApplicationWait()
             }
         })
     }

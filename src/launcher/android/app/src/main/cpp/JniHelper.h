@@ -71,6 +71,7 @@ private:
 
 public:
     JniObjectClass(JNIEnv *env, jobject object, bool globalRef = false);
+    JniObjectClass(const JniObject &object, bool globalRef = false);
     ~JniObjectClass();
 };
 
@@ -196,6 +197,7 @@ public:
     virtual ~JniObject();
     void Dispose(JNIEnv *env);
 
+    inline JNIEnv *GetEnv() const{ return pEnv; }
     inline operator jobject() const{ return pObject; }
     jobject ReturnValue();
     inline jobject CallArgument() const{ return pObject; }

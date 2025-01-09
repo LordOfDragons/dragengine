@@ -84,6 +84,26 @@ class FragmentRemoteLauncher : Fragment() {
         }
     }
 
+    class HandlerListener(
+        private val owner: FragmentRemoteLauncher
+    ) : RemoteLauncherHandler.Listener{
+        private val handler = Handler(Looper.getMainLooper())
+
+        override fun stateChanged(state: Int) {
+            if(!owner.isDestroyingView) {
+                val hstate = RunGameHandler.mapState[state]!!
+
+                if(hstate == RunGameHandler.State.GameRunning) {
+                    owner.client?.setRunStatus(RemoteLauncherClient.RunStatus.Running)
+                }else{
+                    owner.client?.setRunStatus(RemoteLauncherClient.RunStatus.Stopped)
+                }
+
+                handler.post { owner.handlerStateChanged(hstate) }
+            }
+        }
+    }
+
     var engineReady = false
         set(value) {
             if(value == field){
@@ -107,6 +127,7 @@ class FragmentRemoteLauncher : Fragment() {
     private var client: RemoteLauncherClient? = null
     var pathDataDir: String? = null
     private var remoteLauncherHandler: RemoteLauncherHandler? = null
+    @Volatile
     private var isDestroyingView = false
 
     private var editHostAddress: TextView? = null
@@ -170,12 +191,14 @@ class FragmentRemoteLauncher : Fragment() {
 
     override fun onDestroyView() {
         isDestroyingView = true
-
-        //remoteLauncherHandler?.killApplication()
+        stopApplicationWait()
 
         GameActivityAdapter().setHandler(0L)
         remoteLauncherHandler?.dispose()
         remoteLauncherHandler = null
+
+        shared?.dispose()
+        shared = null
 
         client?.dispose()
         client = null
@@ -263,7 +286,7 @@ class FragmentRemoteLauncher : Fragment() {
         }
     }
 
-    private fun updateUIState(){
+    fun updateUIState(){
         if(client?.isDisconnected() != false){ // disconnected or client is null
             editClientName?.isEnabled = true
             editHostAddress?.isEnabled = true
@@ -295,7 +318,7 @@ class FragmentRemoteLauncher : Fragment() {
         t.commit()
     }
 
-    private fun addLogs(severity: RemoteLauncherClient.LogSeverity, logs: String) {
+    fun addLogs(severity: RemoteLauncherClient.LogSeverity, logs: String) {
         if(logs.isEmpty()){
             return
         }
@@ -326,7 +349,7 @@ class FragmentRemoteLauncher : Fragment() {
         }
     }
 
-    private fun updateEditLogs() {
+    fun updateEditLogs() {
         pendingUpdateEditLogs = false
         if(editLogs != null && !isDestroyingView) {
             editLogs?.text = synchronized(logLines) { logLines.joinToString("\n") }
@@ -353,7 +376,7 @@ class FragmentRemoteLauncher : Fragment() {
         }
     }
 
-    private fun requestProfileNames() {
+    fun requestProfileNames() {
         val names = buildList {
             shared?.launcher?.gameProfiles?.forEach {
                 p -> add(p.name)
@@ -364,13 +387,13 @@ class FragmentRemoteLauncher : Fragment() {
             names.joinToString("\n"))
     }
 
-    private fun requestDefaultProfileName() {
+    fun requestDefaultProfileName() {
         client?.sendSystemProperty(
             RemoteLauncherClient.SystemPropertyNames.DEFAULT_PROFILE,
             shared?.launcher?.activeProfile?.name ?: "")
     }
 
-    private fun startApplication(params: RemoteLauncherClientRunParameters) {
+    fun startApplication(params: RemoteLauncherClientRunParameters) {
         if(shared?.launcher?.state != DragengineLauncher.State.EngineReady){
             requireActivity().runOnUiThread {
                 UIHelper.showError(requireActivity(), R.string.message_game_engine_not_ready)
@@ -428,16 +451,36 @@ class FragmentRemoteLauncher : Fragment() {
         s.logInfo("startGame", "Cache application ID = '${g.identifier}'")
         s.logInfo("startGame", "Starting game '${g.title}' using profile '${s.runParams.gameProfile?.name}'");
 
-        remoteLauncherHandler = RemoteLauncherHandler(client!!, l, g, s.runParams)
+        remoteLauncherHandler = RemoteLauncherHandler(
+            client!!, l, g, s.runParams, HandlerListener(this))
         GameActivityAdapter().setHandler(remoteLauncherHandler!!.nativeHandler)
     }
 
-    private fun stopApplication() {
-        Log.i(TAG, "stopApplication")
+    fun stopApplication() {
+        val s = shared!!
+        s.logInfo(TAG, "stopApplication")
+        remoteLauncherHandler?.stopGame()
     }
 
-    private fun killApplication() {
-        Log.i(TAG, "killApplication")
+    fun stopApplicationWait() {
+        val s = shared!!
+        s.logInfo(TAG, "stopApplication")
+        remoteLauncherHandler?.stopGame()
+        remoteLauncherHandler?.waitForState(RunGameHandler.State.GameStopped)
+    }
+
+    fun killApplication() {
+        val s = shared!!
+        s.logInfo(TAG, "killApplication")
+        remoteLauncherHandler?.stopGame()
+    }
+
+    private fun handlerStateChanged(state: RunGameHandler.State) {
+        if(state == RunGameHandler.State.GameStopped){
+            GameActivityAdapter().setHandler(0L)
+            remoteLauncherHandler?.dispose()
+            remoteLauncherHandler = null
+        }
     }
 
     companion object {

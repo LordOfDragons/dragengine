@@ -34,5 +34,9 @@ class RunGameHandler(
             1 to State.GameRunning,
             2 to State.GameStopped
         )
+
+        val mapStateRev = buildMap {
+            mapState.forEach { (k, v) -> put(v, k) }
+        }
     }
 }

@@ -6,31 +6,39 @@
 #include <delauncher/game/delGameRunParams.h>
 #include <delauncher/game/delGame.h>
 #include <deremotelauncher/derlLauncherClient.h>
+#include <dragengine/filesystem/deVFSDiskDirectory.h>
+#include <dragengine/logger/deLoggerFile.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include "RemoteLauncherHandler.h"
 #include "RemoteLauncherClient.h"
 
-RemoteLauncherHandler::RemoteLauncherHandler(RemoteLauncherClient *client,
-    Launcher *launcher, delGame *game, const delGameRunParams &params) :
+extern JavaVM *vJavaVM;
+
+RemoteLauncherHandler::RemoteLauncherHandler(JNIEnv *env, RemoteLauncherClient *client,
+    Launcher *launcher, delGame *game, const delGameRunParams &params, jobject objListener) :
 RunGameHandler(launcher, game, params),
-pClient(client){
+pClient(client),
+pObjListener(env, objListener, true),
+pClsListener(pObjListener, true),
+pMetListenerStateChanged(env->GetMethodID(pClsListener, "stateChanged", "(I)V"))
+{
+    DEASSERT_NOTNULL(pMetListenerStateChanged)
+}
+
+RemoteLauncherHandler::~RemoteLauncherHandler(){
+    JNIEnv *env = nullptr;
+    vJavaVM->AttachCurrentThread(&env, nullptr);
+
+    pObjListener.Dispose(env);
+    pClsListener.Dispose(env);
 }
 
 void RemoteLauncherHandler::GameExited(BaseGameActivityAdapter &adapter) {
 }
 
-void RemoteLauncherHandler::pStateChanged() {
-    switch(GetState()){
-    case State::gameRunning:
-        pClient->SetRunStatus(derlLauncherClient::RunStatus::running);
-        break;
-
-    default:
-        pClient->SetRunStatus(derlLauncherClient::RunStatus::stopped);
-    }
-}
-
 void RemoteLauncherHandler::pInitEngineInstanceFactory(delEngineInstanceDirect::Factory &factory) {
-    factory.SetEngineLogger(pClient->GetEngineLogger());
+    pCreateEngineLogger();
+    factory.SetEngineLogger(pEngineLogger);
 }
 
 void RemoteLauncherHandler::pInitGameForRun() {
@@ -38,18 +46,50 @@ void RemoteLauncherHandler::pInitGameForRun() {
     pGame->SetDelgaFile("");
 }
 
+void RemoteLauncherHandler::pCreateEngineLogger(){
+    pEngineLogger.TakeOver(new deLoggerChain);
+    pEngineLogger->AddLogger(pClient->GetEngineLogger());
+
+    decPath diskPath(decPath::CreatePathNative(pLauncher->GetPathLogs()));
+    diskPath.AddUnixPath(pGame->GetLogFile());
+
+    decPath filePath;
+    filePath.AddComponent(diskPath.GetLastComponent());
+
+    diskPath.RemoveLastComponent();
+
+    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::New(
+        new deVFSDiskDirectory(diskPath)));
+
+    pEngineLogger->AddLogger(deLogger::Ref::New(
+        new deLoggerFile(decBaseFileWriter::Ref::New(
+            diskDir->OpenFileForWriting(filePath)))));
+}
+
+void RemoteLauncherHandler::pStateChanged() {
+    if(!pObjListener){
+        return;
+    }
+
+    JNIEnv *env = nullptr;
+    vJavaVM->AttachCurrentThread(&env, nullptr);
+    env->CallVoidMethod(pObjListener, pMetListenerStateChanged, (jint)GetState());
+}
+
 
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherHandler_createHandler(
-JNIEnv *env, jobject thiz, jlong pclient, jlong plauncher, jlong pgame, jobject pparams) {
+JNIEnv *env, jobject thiz, jlong pclient, jlong plauncher,
+jlong pgame, jobject pparams, jobject plistener) {
     JniHelpers h(env);
     try {
-        return (jlong)(intptr_t)(new RemoteLauncherHandler(
+        return (jlong)(intptr_t)(new RemoteLauncherHandler(env,
                 (RemoteLauncherClient*)(intptr_t)pclient,
                 (Launcher*)(intptr_t)plauncher,
                 (delGame*)(intptr_t)pgame,
-                GameRunParams(env).FromNative(pparams)));
+                GameRunParams(env).FromNative(pparams),
+                plistener));
     }catch(const deException &e){
         h.throwException(e);
         return 0L; // keep compiler happy. code never gets here
@@ -68,4 +108,23 @@ JNIEXPORT jint JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherHandler_getState(
 JNIEnv *env, jobject thiz, jlong phandler){
     return (jint)(((RemoteLauncherHandler*)(intptr_t)phandler)->GetState());
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherHandler_waitForState(
+JNIEnv *env, jobject thiz, jlong phandler, jint pstate){
+    RemoteLauncherHandler &handler = *((RemoteLauncherHandler*)(intptr_t)phandler);
+    const auto state = (RunGameHandler::State)pstate;
+
+    while(handler.GetState() != state){
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherHandler_stopGame(
+JNIEnv *env, jobject thiz, jlong phandler){
+    ((RemoteLauncherHandler*)(intptr_t)phandler)->RequestStopGame();
 }
