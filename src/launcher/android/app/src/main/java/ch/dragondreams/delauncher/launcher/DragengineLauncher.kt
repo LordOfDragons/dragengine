@@ -30,12 +30,6 @@ class DragengineLauncher(
 
         /** Game profiles changed. */
         fun gameProfilesChanged(launcher: DragengineLauncher)
-
-        /**
-         * Native launcher created. Caller can add listeners and do other modification
-         * required to be done before launcher is prepared.
-         */
-        fun launcherCreated(launcher: DragengineLauncher)
     }
 
     open class DefaultListener : Listener {
@@ -43,7 +37,6 @@ class DragengineLauncher(
         override fun engineModulesChanged(launcher: DragengineLauncher) { }
         override fun gamesChanged(launcher: DragengineLauncher) { }
         override fun gameProfilesChanged(launcher: DragengineLauncher) { }
-        override fun launcherCreated(launcher: DragengineLauncher) { }
     }
 
     enum class State {
@@ -134,6 +127,12 @@ class DragengineLauncher(
     @Volatile
     var progressInstallEngine: Double = 0.0
 
+    /**
+     * Filename relative to data directory to log to or null to not log to file.
+     * Default is "delauncher".
+     */
+    var logFilename: String = "delauncher"
+
     private var listeners: MutableList<Listener> = ArrayList()
     private var listenersLocked: Int = 0
 
@@ -201,6 +200,13 @@ class DragengineLauncher(
      */
     fun isModuleSingleType(type: EngineModule.Type): Boolean {
         return launcher?.isModuleSingleType(type) == true
+    }
+
+    /**
+     * Create new game instance.
+     */
+    fun createGame(): Game{
+        return Game.getInstance(launcher?.createGame())!!
     }
 
     /** Add listener. */
@@ -404,15 +410,7 @@ class DragengineLauncher(
 
         try {
             launcher = Launcher(this, view)
-
-            try {
-                listenersLocked++
-                logInfo("notifyLauncherCreated: ${listeners.size} ${listenersLocked}")
-                listeners.forEach { each -> each.launcherCreated(this) }
-            } finally {
-                listenersLocked--
-            }
-
+            launcher?.addFileLogger(logFilename)
             launcher?.prepare()
 
             engineModules.clear()

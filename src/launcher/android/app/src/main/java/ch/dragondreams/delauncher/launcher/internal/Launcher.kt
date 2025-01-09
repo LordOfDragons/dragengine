@@ -27,6 +27,7 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
     private external fun logInfo(launcher: Long, message: String)
     private external fun logWarn(launcher: Long, message: String)
     private external fun logError(launcher: Long, message: String)
+    private external fun createGame(launcher: Long): Long
 
     init {
         nativeLauncher = createLauncher(
@@ -115,6 +116,10 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
 
     fun prepare(){
         prepare(nativeLauncher)
+    }
+
+    fun createGame(): Game{
+        return Game.getInstance(createGame(nativeLauncher))!!
     }
 
     fun logInfo(message: String) {

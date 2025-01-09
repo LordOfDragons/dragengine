@@ -5,81 +5,72 @@
 #include <delauncher/engine/delEngineInstanceDirect.h>
 #include <delauncher/game/delGameRunParams.h>
 #include <delauncher/game/delGame.h>
+#include "RunGameHandler.h"
 
-class RunGameHandler : public GameActivityHandler{
-private:
-    enum class State{
-        startGame,
-        gameRunning,
-        gameStopped
-    };
+RunGameHandler::RunGameHandler(Launcher *launcher, delGame *game, const delGameRunParams &params) :
+pLauncher(launcher),
+pGame(game),
+pRunParams(params),
+pState(State::startGame)
+{
+    DEASSERT_NOTNULL(game)
+    DEASSERT_NOTNULL(params.GetGameProfile())
+}
 
-    Launcher *pLauncher;
-    const delGame::Ref pGame;
-    delGameRunParams pRunParams;
-    State pState;
+void RunGameHandler::Command(BaseGameActivityAdapter &adapter, int32_t cmd){
+    __android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "command %d", (int)cmd);
+}
 
-public:
-    RunGameHandler(Launcher *launcher, delGame *game, const delGameRunParams &params) :
-    pLauncher(launcher),
-    pGame(game),
-    pRunParams(params),
-    pState(State::startGame)
-    {
-        DEASSERT_NOTNULL(game)
-        DEASSERT_NOTNULL(params.GetGameProfile())
-    }
+void RunGameHandler::FrameUpdate(BaseGameActivityAdapter &adapter){
+    try {
+        switch(pState){
+            case State::startGame:
+                StartGame(adapter);
+                break;
 
-    void Command(BaseGameActivityAdapter &adapter, int32_t cmd) override{
-        __android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "command %d", (int)cmd);
-    }
+            case State::gameRunning:
+                ProcessRunning(adapter);
+                break;
 
-    void FrameUpdate(BaseGameActivityAdapter &adapter) override{
-        try {
-            switch(pState){
-                case State::startGame:
-                    StartGame(adapter);
-                    break;
-
-                case State::gameRunning:
-                    ProcessRunning(adapter);
-                    break;
-
-                case State::gameStopped:
-                    break;
-            }
-
-        }catch(const deException &e){
-            JniHelpers::logException(e);
+            case State::gameStopped:
+                break;
         }
+
+    }catch(const deException &e){
+        JniHelpers::logException(e);
     }
+}
 
-    void StartGame(BaseGameActivityAdapter &adapter){
-        __android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "StartGame");
-        pState = State::gameRunning;
+void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
+    __android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "StartGame");
+    pState = State::gameRunning;
 
-        const delEngineInstanceDirect::Factory::Ref factory(
-            delEngineInstanceDirect::Factory::Ref::New(
-                new delEngineInstanceDirect::Factory()));
+    const delEngineInstanceDirect::Factory::Ref factory(
+        delEngineInstanceDirect::Factory::Ref::New(
+            new delEngineInstanceDirect::Factory()));
 
-        deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
-        //osConfig.nativeWindow = adapter.GetNativeWindow();
-        factory->SetConfig(osConfig);
+    deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
+    //osConfig.nativeWindow = adapter.GetNativeWindow();
+    factory->SetConfig(osConfig);
 
-        pGame->SetVFSDelgaContainer((deVFSContainer*)pLauncher->GetFDContainer());
+    pGame->SetVFSDelgaContainer((deVFSContainer*)pLauncher->GetFDContainer());
 
-        pGame->StartGame(pRunParams, factory);
+    pGame->StartGame(pRunParams, factory);
+}
+
+void RunGameHandler::ProcessRunning(BaseGameActivityAdapter &adapter){
+    if(pGame->IsRunning()){
+        pGame->GetEngineInstance()->RunSingleFrameUpdate();
+
+    }else{
+        pState = State::gameStopped;
+        GameExited(adapter);
     }
+}
 
-    void ProcessRunning(BaseGameActivityAdapter &adapter){
-        if(pGame->IsRunning()){
-            pGame->GetEngineInstance()->RunSingleFrameUpdate();
-        }else{
-            pState = State::gameStopped;
-            adapter.QuitActivity();
-        }
-    }
-};
+void RunGameHandler::GameExited(BaseGameActivityAdapter &adapter) {
+    adapter.QuitActivity();
+}
 
 
 extern "C"

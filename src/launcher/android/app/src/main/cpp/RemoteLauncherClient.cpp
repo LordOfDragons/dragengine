@@ -93,8 +93,6 @@ private:
     delLauncher *pLauncher;
     deLogger::Ref pEngineLogger;
 
-    bool pIsRunning;
-
 
 public:
     RemoteLauncherClient(JNIEnv *env, jobject objListener) :
@@ -115,8 +113,7 @@ public:
     pFldRunParametersArguments(pClsRunParameters.GetFieldString("arguments")),
 
     pLastTime(std::chrono::steady_clock::now()),
-    pLauncher(nullptr),
-    pIsRunning(false)
+    pLauncher(nullptr)
     {
         DEASSERT_NOTNULL(pMetListenerAddLogs)
 
@@ -168,10 +165,6 @@ public:
         if(launcher){
             launcher->GetLogger()->AddLogger(pEngineLogger);
         }
-    }
-
-    inline bool IsRunning() const{
-        return pIsRunning;
     }
 
     void AddLogs(denLogger::LogSeverity severity, const std::string &logs) {
@@ -375,19 +368,6 @@ JNIEnv *env, jobject thiz, jlong pclient, jlong plauncher){
         ((RemoteLauncherClient*)pclient)->SetLauncher(((delLauncher*)plauncher));
     }catch(const deException &e){
         h.throwException(e);
-    }
-}
-
-extern "C"
-JNIEXPORT jboolean JNICALL
-Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherClient_isRunning(
-JNIEnv *env, jobject thiz, jlong pclient){
-    JniHelpers h(env);
-    try {
-        return ((RemoteLauncherClient*)pclient)->IsRunning();
-    }catch(const deException &e){
-        h.throwException(e);
-        return false; // keep compiler happy. code never gets here
     }
 }
 

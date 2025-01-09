@@ -17,14 +17,13 @@ class RemoteLauncherClient(
         fun killApplication()
     }
 
-    val nativeClient: Long = createClient(listener)
+    private val nativeClient: Long = createClient(listener)
 
     private external fun createClient(listener: Listener): Long
     private external fun destroyClient(client: Long)
     private external fun connectToHost(client: Long, name: String, pathDataDir: String, address: String)
     private external fun disconnectFromHost(client: Long)
     private external fun isDisconnected(client: Long): Boolean
-    private external fun isRunning(client: Long): Boolean
     private external fun setLauncher(client: Long, launcher: Long)
     private external fun sendSystemProperty(client: Long, property: String, value: String)
 
@@ -44,10 +43,6 @@ class RemoteLauncherClient(
         return isDisconnected(nativeClient)
     }
 
-    fun isRunning(): Boolean{
-        return isRunning(nativeClient)
-    }
-
     fun setLauncher(launcher: DragengineLauncher?){
         setLauncher(nativeClient, launcher?.launcher?.nativeLauncher ?: 0L)
     }
@@ -60,13 +55,13 @@ class RemoteLauncherClient(
     class SystemPropertyNames{
         companion object {
             /** List of supported property names as newline separated string. */
-            const val propertyNames = "properties.names"
+            const val PROPERTY_NAMES = "properties.names"
 
             /** \brief List of available profile names as newline separated string. */
-            const val profileNames = "profiles.names"
+            const val PROFILE_NAMES = "profiles.names"
 
             /** \brief Default profile name. */
-            const val defaultProfile = "profiles.default"
+            const val DEFAULT_PROFILE = "profiles.default"
         }
     }
 

@@ -1,8 +1,12 @@
 #include "Game.h"
+#include <cstring>
+#include <delauncher/delLauncher.h>
 #include <delauncher/game/delGame.h>
 #include <delauncher/game/delGameList.h>
+#include <delauncher/game/delGameXML.h>
 #include <delauncher/game/icon/delGameIcon.h>
 #include <delauncher/game/fileformat/delFileFormat.h>
+#include <dragengine/common/file/decMemoryFileReader.h>
 
 GameInfo::GameInfo(JNIEnv *env) :
 pEnv(env),
@@ -216,6 +220,45 @@ JNIEnv *env, jobject thiz, jlong pgame, jobject pconfig){
     JniHelpers h(env);
     try {
         GameConfig(env).Store(pconfig, *((delGame*)pgame));
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameLoadStringConfig(
+JNIEnv *env, jobject thiz, jlong pgame, jstring pconfig, jlong plauncher){
+    JniHelpers h(env);
+    try {
+        const decString config(h.convertString(pconfig));
+        delLauncher &launcher = *((delLauncher*)plauncher);
+        delGame &game = *((delGame*)pgame);
+
+        {
+            const decMemoryFile::Ref fileGameConfig(decMemoryFile::Ref::New(
+                    new decMemoryFile("game.degame")));
+            fileGameConfig->Resize(config.GetLength());
+            memcpy(fileGameConfig->GetPointer(), config.GetString(), config.GetLength());
+
+            delGameXML gameXml(launcher.GetLogger(), "DELauncher");
+            gameXml.ReadFromFile(decMemoryFileReader::Ref::New(
+                new decMemoryFileReader(fileGameConfig)), game);
+
+            game.SetDefaultLogFile();
+        }
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Game_gameSetGameDirectory(
+JNIEnv *env, jobject thiz, jlong pgame, jstring pdirectory){
+    JniHelpers h(env);
+    try {
+        ((delGame*)pgame)->SetGameDirectory(h.convertString(pdirectory));
     }catch(const deException &e){
         h.throwException(e);
     }

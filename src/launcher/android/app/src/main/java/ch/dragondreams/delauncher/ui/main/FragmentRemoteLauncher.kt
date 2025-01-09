@@ -19,8 +19,11 @@ import androidx.preference.PreferenceManager
 import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.RunGameShared
 import ch.dragondreams.delauncher.UIHelper
+import ch.dragondreams.delauncher.launcher.DragengineLauncher
+import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
 import ch.dragondreams.delauncher.launcher.internal.RemoteLauncherClient
 import ch.dragondreams.delauncher.launcher.internal.RemoteLauncherClientRunParameters
+import ch.dragondreams.delauncher.launcher.internal.RemoteLauncherHandler
 import java.io.File
 import java.time.Instant
 import java.time.ZoneId
@@ -90,6 +93,7 @@ class FragmentRemoteLauncher : Fragment() {
 
     private var client: RemoteLauncherClient? = null
     var pathDataDir: String? = null
+    private var remoteLauncherHandler: RemoteLauncherHandler? = null
 
     private var editHostAddress: TextView? = null
     private var editClientName: TextView? = null
@@ -151,6 +155,10 @@ class FragmentRemoteLauncher : Fragment() {
     }
 
     override fun onDestroyView() {
+        GameActivityAdapter().setHandler(0L)
+        remoteLauncherHandler?.dispose()
+        remoteLauncherHandler = null
+
         client?.dispose()
         client = null
 
@@ -317,18 +325,77 @@ class FragmentRemoteLauncher : Fragment() {
             }
         }
         client?.sendSystemProperty(
-            RemoteLauncherClient.SystemPropertyNames.propertyNames,
+            RemoteLauncherClient.SystemPropertyNames.PROPERTY_NAMES,
             names.joinToString("\n"))
     }
 
     private fun requestDefaultProfileName() {
         client?.sendSystemProperty(
-            RemoteLauncherClient.SystemPropertyNames.defaultProfile,
+            RemoteLauncherClient.SystemPropertyNames.DEFAULT_PROFILE,
             shared?.launcher?.activeProfile?.name ?: "")
     }
 
     private fun startApplication(params: RemoteLauncherClientRunParameters) {
-        Log.i(TAG, "startApplication: ${params.gameConfig.length} '${params.profileName}' '${params.arguments}'")
+        if(shared?.launcher?.state != DragengineLauncher.State.EngineReady){
+            requireActivity().runOnUiThread {
+                UIHelper.showError(requireActivity(), R.string.message_game_engine_not_ready)
+            }
+            return
+        }
+
+        if(remoteLauncherHandler != null){
+            requireActivity().runOnUiThread {
+                UIHelper.showError(requireActivity(), R.string.message_game_running)
+            }
+            return
+        }
+
+        val s = shared!!
+        s.logInfo("startApplication", "Game Config: ${params.gameConfig}")
+
+        val l = s.launcher!!
+        s.game = l.createGame()
+
+        val g = s.game!!
+        g.loadStringConfig(params.gameConfig, l)
+        g.updateInfo()
+        g.updateConfig()
+
+        g.setGameDirectory(pathDataDir!!)
+        g.activeProfile = l.gameProfiles.find { p -> p.name == params.profileName }
+        g.storeConfig()
+
+        if(g.pathConfig.isEmpty()){
+            s.logError("startApplication", "No configuration path specified, ignoring game file.")
+            return
+        }
+        if(g.pathCapture.isEmpty()){
+            s.logError("startApplication", "No capture path specified, ignoring game file.")
+            return
+        }
+
+        s.loadGameConfig()
+
+        if(!g.canRun){
+            s.logGameProblems()
+            return
+        }
+        if(!s.locateProfile()){
+            return
+        }
+
+        if(params.arguments.isNotEmpty()) {
+            if (s.runParams.runArguments.isNotEmpty()) {
+                s.runParams.runArguments += " "
+            }
+            s.runParams.runArguments += params.arguments
+        }
+
+        s.logInfo("startGame", "Cache application ID = '${g.identifier}'")
+        s.logInfo("startGame", "Starting game '${g.title}' using profile '${s.runParams.gameProfile?.name}'");
+
+        remoteLauncherHandler = RemoteLauncherHandler(l, g, s.runParams)
+        GameActivityAdapter().setHandler(remoteLauncherHandler!!.nativeHandler)
     }
 
     private fun stopApplication() {

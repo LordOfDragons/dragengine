@@ -97,6 +97,7 @@ target_link_libraries("run_game_handler"
 add_library("remote_launcher_handler" SHARED
     JniHelper.cpp
     RemoteLauncherHandler.cpp
+    RunGameHandler.cpp
     RemoteLauncherClient.cpp
     GameRunParams.cpp
 )

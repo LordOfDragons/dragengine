@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import ch.dragondreams.delauncher.RemoteLauncherActivity.Companion
 import ch.dragondreams.delauncher.databinding.ActivityMainBinding
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.ui.main.FragmentEngine
@@ -23,10 +22,6 @@ class MainActivity : AppCompatActivity(),
             Log.i(TAG, "stateChanged: " + launcher.state)
         }
 
-        override fun launcherCreated(launcher: DragengineLauncher) {
-            launcher.launcher?.addFileLogger("delauncher")
-        }
-
         companion object {
             private const val TAG: String = "MainActivity.TestListener"
         }
@@ -38,6 +33,7 @@ class MainActivity : AppCompatActivity(),
     override fun getLauncher(): DragengineLauncher {
         if (launcher == null) {
             launcher = DragengineLauncher(this, null)
+            launcher?.logFilename = "delauncher"
             launcher?.addListener(LauncherListener())
             launcher?.initLauncher()
         }

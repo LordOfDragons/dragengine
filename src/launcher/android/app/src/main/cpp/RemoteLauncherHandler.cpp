@@ -6,90 +6,45 @@
 #include <delauncher/game/delGameRunParams.h>
 #include <delauncher/game/delGame.h>
 #include <deremotelauncher/derlLauncherClient.h>
+#include "RemoteLauncherHandler.h"
 
-class RemoteLauncherHandler : public GameActivityHandler{
-private:
-    enum class State{
-        idle,
-        startGame,
-        gameRunning,
-        gameStopped
-    };
+RemoteLauncherHandler::RemoteLauncherHandler(Launcher *launcher, delGame *game, const delGameRunParams &params) :
+RunGameHandler(launcher, game, params)
+{
+}
 
-    Launcher *pLauncher;
-    delGame::Ref pGame;
-    delGameRunParams pRunParams;
-    State pState;
+void RemoteLauncherHandler::StartGame(BaseGameActivityAdapter &adapter){
+    __android_log_print(ANDROID_LOG_INFO, "RemoteLauncherHandler", "StartGame");
+    pState = State::gameRunning;
 
-public:
-    explicit RemoteLauncherHandler(Launcher *launcher) :
-            pLauncher(launcher),
-            pState(State::idle)
-    {
-    }
+    const delEngineInstanceDirect::Factory::Ref factory(
+            delEngineInstanceDirect::Factory::Ref::New(
+                    new delEngineInstanceDirect::Factory()));
 
-    void Command(BaseGameActivityAdapter &adapter, int32_t cmd) override{
-        __android_log_print(ANDROID_LOG_INFO, "RemoteLauncherHandler", "command %d", (int)cmd);
-    }
+    deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
+    factory->SetConfig(osConfig);
 
-    void FrameUpdate(BaseGameActivityAdapter &adapter) override{
-        try {
-            switch(pState){
-                case State::idle:
-                    break;
+    pGame->SetVFSDelgaContainer(nullptr);
+    pGame->SetDelgaFile("");
 
-                case State::startGame:
-                    StartGame(adapter);
-                    break;
+    pGame->StartGame(pRunParams, factory);
+}
 
-                case State::gameRunning:
-                    ProcessRunning(adapter);
-                    break;
-
-                case State::gameStopped:
-                    break;
-            }
-
-        }catch(const deException &e){
-            JniHelpers::logException(e);
-        }
-    }
-
-    void StartGame(BaseGameActivityAdapter &adapter){
-        __android_log_print(ANDROID_LOG_INFO, "RemoteLauncherHandler", "StartGame");
-        pState = State::gameRunning;
-
-        const delEngineInstanceDirect::Factory::Ref factory(
-                delEngineInstanceDirect::Factory::Ref::New(
-                        new delEngineInstanceDirect::Factory()));
-
-        deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
-        //osConfig.nativeWindow = adapter.GetNativeWindow();
-        factory->SetConfig(osConfig);
-
-        pGame->SetVFSDelgaContainer((deVFSContainer*)pLauncher->GetFDContainer());
-
-        pGame->StartGame(pRunParams, factory);
-    }
-
-    void ProcessRunning(BaseGameActivityAdapter &adapter){
-        if(pGame->IsRunning()){
-            pGame->GetEngineInstance()->RunSingleFrameUpdate();
-        }else{
-            pState = State::gameStopped;
-            adapter.QuitActivity();
-        }
-    }
-};
+void RemoteLauncherHandler::GameExited(BaseGameActivityAdapter &adapter) {
+    // notify client about quit
+}
 
 
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherHandler_createHandler(
-JNIEnv *env, jobject thiz, jlong plauncher) {
+        JNIEnv *env, jobject thiz, jlong plauncher, jlong pgame, jobject pparams) {
     JniHelpers h(env);
     try {
-        return (jlong)(intptr_t)(new RemoteLauncherHandler((Launcher*)(intptr_t)plauncher));
+        return (jlong)(intptr_t)(new RemoteLauncherHandler(
+                (Launcher*)(intptr_t)plauncher,
+                (delGame*)(intptr_t)pgame,
+                GameRunParams(env).FromNative(pparams)));
     }catch(const deException &e){
         h.throwException(e);
         return 0L; // keep compiler happy. code never gets here

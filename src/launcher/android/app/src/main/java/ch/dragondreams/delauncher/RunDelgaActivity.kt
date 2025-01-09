@@ -24,10 +24,6 @@ class RunDelgaActivity : GameActivity(),
                 activity.onEngineReady()
             }
         }
-
-        override fun launcherCreated(launcher: DragengineLauncher) {
-            launcher.launcher?.addFileLogger("delauncher")
-        }
     }
 
     enum class State {
@@ -44,6 +40,7 @@ class RunDelgaActivity : GameActivity(),
     override fun getLauncher(): DragengineLauncher {
         if (shared.launcher == null) {
             shared.launcher = DragengineLauncher(this, mSurfaceView)
+            shared.launcher?.logFilename = "delauncher"
             shared.launcher?.addListener(RunLauncherListener(this))
             shared.launcher?.initLauncher()
         }
@@ -258,12 +255,6 @@ class RunDelgaActivity : GameActivity(),
         loadLibrary("run_game_handler")
         runGameHandler = RunGameHandler(shared.launcher!!, game, shared.runParams)
         GameActivityAdapter().setHandler(runGameHandler!!.nativeHandler)
-
-        /*
-        const delEngineInstanceDirect::Factory::Ref factory(
-                delEngineInstanceDirect::Factory::Ref::New(
-                    new delEngineInstanceDirect::Factory( engineLogger ) ) );
-         */
     }
 
     companion object {

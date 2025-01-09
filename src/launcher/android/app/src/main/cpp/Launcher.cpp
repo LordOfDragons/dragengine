@@ -330,3 +330,17 @@ JNIEnv *env, jobject thiz, jlong plauncher){
         h.throwException(e);
     }
 }
+
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_Launcher_createGame(
+JNIEnv *env, jobject thiz, jlong plauncher){
+    JniHelpers h(env);
+    try {
+        delLauncher &launcher = *((Launcher*)(intptr_t)plauncher);
+        return (jlong)(intptr_t)launcher.CreateGame();
+    }catch(const deException &e){
+        h.throwException(e);
+    }
+}

@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.SurfaceHolder
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
-import ch.dragondreams.delauncher.launcher.internal.RemoteLauncherHandler
 import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
 import ch.dragondreams.delauncher.ui.main.FragmentRemoteLauncher
 import com.google.androidgamesdk.GameActivity
@@ -23,26 +22,15 @@ class RemoteLauncherActivity : GameActivity(),
                 activity.onEngineReady()
             }
         }
-
-        override fun launcherCreated(launcher: DragengineLauncher) {
-            launcher.launcher?.addFileLogger("deremotelauncher")
-        }
-    }
-
-    enum class State {
-        InitEngine,
-        Idle,
-        RunGame
     }
 
     private val shared = RunGameShared(TAG)
-    private var state = State.InitEngine
-    private var handler: RemoteLauncherHandler? = null
     private var fragmentMain: FragmentRemoteLauncher? = null
 
     override fun getLauncher(): DragengineLauncher {
         if (shared.launcher == null) {
             shared.launcher = DragengineLauncher(this, mSurfaceView)
+            shared.launcher?.logFilename = "deremotelauncher"
             shared.launcher?.addListener(RemoteLauncherListener(this))
             shared.launcher?.initLauncher()
         }
@@ -57,18 +45,6 @@ class RemoteLauncherActivity : GameActivity(),
         fragmentMain?.shared = shared
         supportFragmentManager.beginTransaction()
             .add(android.R.id.content, fragmentMain!!).commit()
-
-        /*
-        if (Build.VERSION.SDK_INT >= 30){
-            window.insetsController
-
-        } else {
-            window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    )
-        }
-        */
 
         mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder){
@@ -88,45 +64,18 @@ class RemoteLauncherActivity : GameActivity(),
 
     override fun onDestroy() {
         GameActivityAdapter().setHandler(0L)
-        handler?.dispose()
-        handler = null
 
         shared.dispose()
         super.onDestroy()
     }
 
     private fun onEngineReady() {
-        if (state != State.InitEngine) {
+        if (fragmentMain?.engineReady == true) {
             return
         }
-        state = State.Idle
 
         loadLibrary("remote_launcher_handler")
         fragmentMain?.engineReady = true
-    }
-
-    private fun runGame() {
-
-    }
-
-    private fun prepareGame(): Boolean{
-        if(shared.game == null){
-            return false
-        }
-
-        shared.loadGameConfig()
-        return true
-    }
-
-    private fun startGame() {
-        // start the game
-        shared.logInfo("startGame",
-            "Cache application ID = '${shared.game?.identifier}'")
-        shared.logInfo("startGame",
-            "Starting game '${shared.game?.title}' using profile '${shared.runParams.gameProfile?.name}'");
-
-        handler = RemoteLauncherHandler(shared.launcher!!)
-        GameActivityAdapter().setHandler(handler!!.nativeHandler)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,

@@ -14,6 +14,8 @@ class Game private constructor(
     private external fun gameGetStatus(game: Long): GameStatus
     private external fun gameGetConfig(game: Long): GameConfig
     private external fun gameSetConfig(game: Long, config: GameConfig)
+    private external fun gameLoadStringConfig(game: Long, config: String, launcher: Long)
+    private external fun gameSetGameDirectory(game: Long, directory: String)
 
     fun dispose() {
         nativeRefCount--;
@@ -48,6 +50,14 @@ class Game private constructor(
         config.customProfile = game.customProfile?.nativeProfile?.nativeProfile ?: 0L
         config.activeProfile = game.activeProfile?.nativeProfile?.nativeProfile ?: 0L
         gameSetConfig(nativeGame, config)
+    }
+
+    fun loadStringConfig(config: String, launcher: Launcher){
+        gameLoadStringConfig(nativeGame, config, launcher.nativeLauncher)
+    }
+
+    fun setGameDirectory(directory: String){
+        gameSetGameDirectory(nativeGame, directory)
     }
 
     companion object {

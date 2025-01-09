@@ -1,6 +1,7 @@
 package ch.dragondreams.delauncher.launcher
 
 import ch.dragondreams.delauncher.launcher.internal.Game
+import ch.dragondreams.delauncher.launcher.internal.Launcher
 
 class Game private constructor(
     val nativeGame: Game
@@ -104,6 +105,10 @@ class Game private constructor(
         nativeGame.storeConfig(this)
     }
 
+    fun setGameDirectory(directory: String){
+        nativeGame.setGameDirectory(directory)
+    }
+
     fun verifyRequirements() {
         nativeGame.verifyRequirements()
     }
@@ -124,6 +129,13 @@ class Game private constructor(
             ?: customProfile
             ?: launcher.activeProfile
             ?: launcher.defaultProfile;
+    }
+
+    /**
+     * Load configuration from game definition string.
+     */
+    fun loadStringConfig(config: String, launcher: DragengineLauncher){
+        nativeGame.loadStringConfig(config, launcher.launcher!!)
     }
 
     companion object {

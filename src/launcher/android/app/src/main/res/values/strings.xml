@@ -69,4 +69,6 @@
     <string name="error_disconnect_failed">Disconnect failed</string>
     <string name="message_requires_permission_internet">Connecting to remote host requires Internet Access Permission</string>
     <string name="message_remote_launch_internet_denied">Permission denied. Remote launching is not possible.</string>
+    <string name="message_game_engine_not_ready">Game engine not ready</string>
+    <string name="message_game_running">Game is already running</string>
 </resources>
