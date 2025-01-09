@@ -3,19 +3,28 @@ package ch.dragondreams.delauncher.launcher.internal
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 
 class RemoteLauncherHandler(
+    val client: RemoteLauncherClient,
     val launcher: DragengineLauncher,
     game: ch.dragondreams.delauncher.launcher.Game,
-    val runParams: ch.dragondreams.delauncher.launcher.GameRunParams
-){
+    runParams: ch.dragondreams.delauncher.launcher.GameRunParams
+) {
     val nativeHandler: Long = createHandler(
+        client.nativeClient,
         launcher.launcher!!.nativeLauncher,
         game.nativeGame.nativeGame,
         runParams.toNative())
 
-    private external fun createHandler(launcher: Long, game: Long, params: GameRunParams): Long
+    val game: ch.dragondreams.delauncher.launcher.Game = game.retain()
+
+    private external fun createHandler(client: Long, launcher: Long, game: Long, params: GameRunParams): Long
     private external fun destroyHandler(handler: Long)
+    private external fun getState(handler: Long): Int
 
     fun dispose(){
         destroyHandler(nativeHandler)
+    }
+
+    fun getState(): RunGameHandler.State{
+        return RunGameHandler.mapState[getState(nativeHandler)]!!
     }
 }

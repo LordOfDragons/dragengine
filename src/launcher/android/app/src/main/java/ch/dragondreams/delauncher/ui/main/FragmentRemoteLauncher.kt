@@ -24,6 +24,7 @@ import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
 import ch.dragondreams.delauncher.launcher.internal.RemoteLauncherClient
 import ch.dragondreams.delauncher.launcher.internal.RemoteLauncherClientRunParameters
 import ch.dragondreams.delauncher.launcher.internal.RemoteLauncherHandler
+import ch.dragondreams.delauncher.launcher.internal.RunGameHandler
 import java.io.File
 import java.time.Instant
 import java.time.ZoneId
@@ -47,27 +48,39 @@ class FragmentRemoteLauncher : Fragment() {
             // causing FragmentRemoteLauncher.updateUIState() to call
             // RemoteLauncherClient.isDisconnected() which tries to lock an already locked mutex.
             // to avoid this make sure the event is send delayed in all cases
-            handler.post { owner.updateUIState() }
+            if(!owner.isDestroyingView) {
+                handler.post { owner.updateUIState() }
+            }
         }
 
         override fun requestProfileNames() {
-            handler.post { owner.requestProfileNames() }
+            if(!owner.isDestroyingView) {
+                handler.post { owner.requestProfileNames() }
+            }
         }
 
         override fun requestDefaultProfileName() {
-            handler.post { owner.requestDefaultProfileName() }
+            if(!owner.isDestroyingView) {
+                handler.post { owner.requestDefaultProfileName() }
+            }
         }
 
         override fun startApplication(params: RemoteLauncherClientRunParameters) {
-            handler.post { owner.startApplication(params) }
+            if(!owner.isDestroyingView) {
+                handler.post { owner.startApplication(params) }
+            }
         }
 
         override fun stopApplication() {
-            handler.post { owner.stopApplication() }
+            if(!owner.isDestroyingView) {
+                handler.post { owner.stopApplication() }
+            }
         }
 
         override fun killApplication() {
-            handler.post { owner.killApplication() }
+            if(!owner.isDestroyingView) {
+                handler.post { owner.killApplication() }
+            }
         }
     }
 
@@ -94,6 +107,7 @@ class FragmentRemoteLauncher : Fragment() {
     private var client: RemoteLauncherClient? = null
     var pathDataDir: String? = null
     private var remoteLauncherHandler: RemoteLauncherHandler? = null
+    private var isDestroyingView = false
 
     private var editHostAddress: TextView? = null
     private var editClientName: TextView? = null
@@ -155,6 +169,10 @@ class FragmentRemoteLauncher : Fragment() {
     }
 
     override fun onDestroyView() {
+        isDestroyingView = true
+
+        //remoteLauncherHandler?.killApplication()
+
         GameActivityAdapter().setHandler(0L)
         remoteLauncherHandler?.dispose()
         remoteLauncherHandler = null
@@ -258,6 +276,23 @@ class FragmentRemoteLauncher : Fragment() {
         editHostAddress?.isEnabled = false
         buttonConnect?.isEnabled = false
         buttonDisconnect?.isEnabled = true
+
+        updateFragmentVisiblity()
+    }
+
+    private fun updateFragmentVisiblity(){
+        val newVisible = remoteLauncherHandler?.getState() != RunGameHandler.State.GameRunning
+        if(isVisible == newVisible){
+            return
+        }
+
+        val t = parentFragmentManager.beginTransaction()
+        if(newVisible) {
+            t.show(this)
+        }else{
+            t.hide(this)
+        }
+        t.commit()
     }
 
     private fun addLogs(severity: RemoteLauncherClient.LogSeverity, logs: String) {
@@ -286,14 +321,14 @@ class FragmentRemoteLauncher : Fragment() {
             }
         }
 
-        if(!pendingUpdateEditLogs) {
+        if(!pendingUpdateEditLogs && !isDestroyingView) {
             requireActivity().runOnUiThread { updateEditLogs() }
         }
     }
 
     private fun updateEditLogs() {
         pendingUpdateEditLogs = false
-        if(editLogs != null) {
+        if(editLogs != null && !isDestroyingView) {
             editLogs?.text = synchronized(logLines) { logLines.joinToString("\n") }
 
             requireActivity().runOnUiThread {
@@ -362,7 +397,6 @@ class FragmentRemoteLauncher : Fragment() {
         g.updateConfig()
 
         g.setGameDirectory(pathDataDir!!)
-        g.activeProfile = l.gameProfiles.find { p -> p.name == params.profileName }
         g.storeConfig()
 
         if(g.pathConfig.isEmpty()){
@@ -380,21 +414,21 @@ class FragmentRemoteLauncher : Fragment() {
             s.logGameProblems()
             return
         }
-        if(!s.locateProfile()){
+
+        val runProfile = l.gameProfiles.find { p -> p.name == params.profileName }
+        if(!s.locateProfile(runProfile)){
             return
         }
 
         if(params.arguments.isNotEmpty()) {
-            if (s.runParams.runArguments.isNotEmpty()) {
-                s.runParams.runArguments += " "
-            }
+            s.runParams.runArguments += " "
             s.runParams.runArguments += params.arguments
         }
 
         s.logInfo("startGame", "Cache application ID = '${g.identifier}'")
         s.logInfo("startGame", "Starting game '${g.title}' using profile '${s.runParams.gameProfile?.name}'");
 
-        remoteLauncherHandler = RemoteLauncherHandler(l, g, s.runParams)
+        remoteLauncherHandler = RemoteLauncherHandler(client!!, l, g, s.runParams)
         GameActivityAdapter().setHandler(remoteLauncherHandler!!.nativeHandler)
     }
 

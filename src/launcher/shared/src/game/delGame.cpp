@@ -305,7 +305,7 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 	
 	SaveConfig(); // ensure game profile exists
 	
-	if( IsRunning()  ){
+	if( IsRunning() ){
 		DETHROW_INFO( deeInvalidAction, "game is running" );
 	}
 	if( ! pCanRun ){

@@ -27,7 +27,7 @@ pGlobalRef(globalRef)
 {
     DEASSERT_NOTNULL(pClass)
     if(globalRef){
-        pClass = (jclass)env->NewGlobalRef(pClass);
+        pClass = reinterpret_cast<jclass>(env->NewGlobalRef(pClass));
     }
 }
 
@@ -98,8 +98,8 @@ JniObject JniClass::New(JNIEnv *env){
 // JniObjectClass
 ///////////////////
 
-JniObjectClass::JniObjectClass(JNIEnv *env, jobject object) :
-JniClass(env, env->GetObjectClass(object), "java/lang/Object", false){
+JniObjectClass::JniObjectClass(JNIEnv *env, jobject object, bool globalRef) :
+JniClass(env, env->GetObjectClass(object), "java/lang/Object", globalRef){
 }
 
 JniObjectClass::~JniObjectClass() {
@@ -267,17 +267,34 @@ void JniFieldByteArray::Set(jobject object, jbyteArray value) const {
 // JniObject
 //////////////
 
-JniObject::JniObject(JNIEnv *env, jobject object) :
+JniObject::JniObject(JNIEnv *env, jobject object, bool globalRef) :
 pEnv(env),
-pObject(object)
+pObject(object),
+pGlobalRef(globalRef)
 {
     DEASSERT_NOTNULL(object)
+    if(globalRef){
+        pObject = env->NewGlobalRef(pObject);
+    }
 }
 
 JniObject::~JniObject(){
-    if(pObject) {
-        pEnv->DeleteLocalRef(pObject);
+    Dispose(pEnv);
+}
+
+void JniObject::Dispose(JNIEnv *env) {
+    if(!pObject) {
+        return;
     }
+
+    if(pGlobalRef){
+        env->DeleteGlobalRef(pObject);
+        pGlobalRef = false;
+
+    }else{
+        env->DeleteLocalRef(pObject);
+    }
+    pObject = nullptr;
 }
 
 JniObject::JniObject(const JniObject &object) :

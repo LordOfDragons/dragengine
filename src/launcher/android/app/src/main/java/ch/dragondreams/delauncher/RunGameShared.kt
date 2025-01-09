@@ -53,7 +53,7 @@ class RunGameShared(
         val g = game!!
 
         val identifier = g.identifier
-        if (l.games.find { g -> g.identifier == identifier } == null) {
+        if (l.games.find { g2 -> g2.identifier == identifier } == null) {
             g.loadConfig()
         }
 
@@ -64,24 +64,22 @@ class RunGameShared(
     }
 
     /**
-     * Locate game profile to use
+     * Locate game profile to use.
      */
-    fun locateProfile(): Boolean{
+    fun locateProfile(profile: GameProfile?): Boolean{
         val sv = surfaceView!!
         val l = launcher!!
         val g = game!!
 
         // locate the profile to run
-        var profile: GameProfile?
-
-        profile = g.getProfileToUse(l)
-        if(profile == null){
+        val useProfile = profile ?: g.getProfileToUse(l)
+        if(useProfile == null){
             logError("locateProfile", "No game profile found")
             return false
         }
 
-        if(!profile.valid){
-            logProfileProblems(profile)
+        if(!useProfile.valid){
+            logProfileProblems(useProfile)
             return false
         }
 
@@ -96,7 +94,7 @@ class RunGameShared(
         }
 
         // udpate the run parameters
-        runParams.gameProfile = profile
+        runParams.gameProfile = useProfile
         runParams.width = sv.width
         runParams.height = sv.height
 

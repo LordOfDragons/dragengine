@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import ch.dragondreams.delauncher.R
-import ch.dragondreams.delauncher.RemoteLauncherActivity.Companion.TAG
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import kotlin.math.roundToInt
 

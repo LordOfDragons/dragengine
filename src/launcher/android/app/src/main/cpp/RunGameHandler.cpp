@@ -17,6 +17,15 @@ pState(State::startGame)
     DEASSERT_NOTNULL(params.GetGameProfile())
 }
 
+void RunGameHandler::SetState(RunGameHandler::State state) {
+    if(state == pState){
+        return;
+    }
+
+    pState = state;
+    pStateChanged();
+}
+
 void RunGameHandler::Command(BaseGameActivityAdapter &adapter, int32_t cmd){
     __android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "command %d", (int)cmd);
 }
@@ -43,17 +52,19 @@ void RunGameHandler::FrameUpdate(BaseGameActivityAdapter &adapter){
 
 void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
     __android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "StartGame");
-    pState = State::gameRunning;
+    SetState(State::gameRunning);
 
     const delEngineInstanceDirect::Factory::Ref factory(
         delEngineInstanceDirect::Factory::Ref::New(
             new delEngineInstanceDirect::Factory()));
+    pInitEngineInstanceFactory(factory);
 
     deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
     //osConfig.nativeWindow = adapter.GetNativeWindow();
     factory->SetConfig(osConfig);
 
-    pGame->SetVFSDelgaContainer((deVFSContainer*)pLauncher->GetFDContainer());
+    pGame->SetVFSDelgaContainer((deVFSContainer *) pLauncher->GetFDContainer());
+    pInitGameForRun();
 
     pGame->StartGame(pRunParams, factory);
 }
@@ -63,13 +74,22 @@ void RunGameHandler::ProcessRunning(BaseGameActivityAdapter &adapter){
         pGame->GetEngineInstance()->RunSingleFrameUpdate();
 
     }else{
-        pState = State::gameStopped;
+        SetState(State::gameStopped);
         GameExited(adapter);
     }
 }
 
 void RunGameHandler::GameExited(BaseGameActivityAdapter &adapter) {
     adapter.QuitActivity();
+}
+
+void RunGameHandler::pStateChanged() {
+}
+
+void RunGameHandler::pInitEngineInstanceFactory(delEngineInstanceDirect::Factory &factory) {
+}
+
+void RunGameHandler::pInitGameForRun() {
 }
 
 

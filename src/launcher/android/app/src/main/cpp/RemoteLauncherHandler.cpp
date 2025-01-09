@@ -7,41 +7,46 @@
 #include <delauncher/game/delGame.h>
 #include <deremotelauncher/derlLauncherClient.h>
 #include "RemoteLauncherHandler.h"
+#include "RemoteLauncherClient.h"
 
-RemoteLauncherHandler::RemoteLauncherHandler(Launcher *launcher, delGame *game, const delGameRunParams &params) :
-RunGameHandler(launcher, game, params)
-{
-}
-
-void RemoteLauncherHandler::StartGame(BaseGameActivityAdapter &adapter){
-    __android_log_print(ANDROID_LOG_INFO, "RemoteLauncherHandler", "StartGame");
-    pState = State::gameRunning;
-
-    const delEngineInstanceDirect::Factory::Ref factory(
-            delEngineInstanceDirect::Factory::Ref::New(
-                    new delEngineInstanceDirect::Factory()));
-
-    deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
-    factory->SetConfig(osConfig);
-
-    pGame->SetVFSDelgaContainer(nullptr);
-    pGame->SetDelgaFile("");
-
-    pGame->StartGame(pRunParams, factory);
+RemoteLauncherHandler::RemoteLauncherHandler(RemoteLauncherClient *client,
+    Launcher *launcher, delGame *game, const delGameRunParams &params) :
+RunGameHandler(launcher, game, params),
+pClient(client){
 }
 
 void RemoteLauncherHandler::GameExited(BaseGameActivityAdapter &adapter) {
-    // notify client about quit
+}
+
+void RemoteLauncherHandler::pStateChanged() {
+    switch(GetState()){
+    case State::gameRunning:
+        pClient->SetRunStatus(derlLauncherClient::RunStatus::running);
+        break;
+
+    default:
+        pClient->SetRunStatus(derlLauncherClient::RunStatus::stopped);
+    }
+}
+
+void RemoteLauncherHandler::pInitEngineInstanceFactory(delEngineInstanceDirect::Factory &factory) {
+    factory.SetEngineLogger(pClient->GetEngineLogger());
+}
+
+void RemoteLauncherHandler::pInitGameForRun() {
+    pGame->SetVFSDelgaContainer(nullptr);
+    pGame->SetDelgaFile("");
 }
 
 
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherHandler_createHandler(
-        JNIEnv *env, jobject thiz, jlong plauncher, jlong pgame, jobject pparams) {
+JNIEnv *env, jobject thiz, jlong pclient, jlong plauncher, jlong pgame, jobject pparams) {
     JniHelpers h(env);
     try {
         return (jlong)(intptr_t)(new RemoteLauncherHandler(
+                (RemoteLauncherClient*)(intptr_t)pclient,
                 (Launcher*)(intptr_t)plauncher,
                 (delGame*)(intptr_t)pgame,
                 GameRunParams(env).FromNative(pparams)));
@@ -56,4 +61,11 @@ JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherHandler_destroyHandler(
 JNIEnv *env, jobject thiz, jlong phandler){
     delete (RemoteLauncherHandler*)(intptr_t)phandler;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_RemoteLauncherHandler_getState(
+JNIEnv *env, jobject thiz, jlong phandler){
+    return (jint)(((RemoteLauncherHandler*)(intptr_t)phandler)->GetState());
 }

@@ -24,8 +24,8 @@ class UIHelper {
 
         fun showError(activity: Activity, messageId: Int, titleId: Int){
             val builder = AlertDialog.Builder(activity)
-            builder.setMessage(activity.getString(R.string.error_failed_open_url))
-            builder.setTitle(activity.getString(R.string.title_error))
+            builder.setMessage(activity.getString(messageId))
+            builder.setTitle(activity.getString(titleId))
             builder.setCancelable(true) // can close clicking outside dialog
             builder.setPositiveButton(R.string.label_close) { dialog: DialogInterface?, _: Int ->
                 dialog?.cancel()

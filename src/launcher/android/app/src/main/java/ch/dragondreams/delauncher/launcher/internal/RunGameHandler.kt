@@ -5,8 +5,14 @@ import ch.dragondreams.delauncher.launcher.DragengineLauncher
 class RunGameHandler(
     val launcher: DragengineLauncher,
     game: ch.dragondreams.delauncher.launcher.Game,
-    val runParams: ch.dragondreams.delauncher.launcher.GameRunParams
+    runParams: ch.dragondreams.delauncher.launcher.GameRunParams
 ){
+    enum class State{
+        StartGame,
+        GameRunning,
+        GameStopped
+    };
+
     val nativeHandler: Long = createHandler(
         launcher.launcher!!.nativeLauncher,
         game.nativeGame.nativeGame,
@@ -20,5 +26,13 @@ class RunGameHandler(
     fun dispose(){
         destroyHandler(nativeHandler)
         game.release()
+    }
+
+    companion object{
+        val mapState = mapOf(
+            0 to State.StartGame,
+            1 to State.GameRunning,
+            2 to State.GameStopped
+        )
     }
 }

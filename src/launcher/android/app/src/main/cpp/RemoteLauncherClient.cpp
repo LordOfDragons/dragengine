@@ -13,6 +13,7 @@
 #include <dragengine/logger/deLogger.h>
 #include <android/log.h>
 #include "JniHelper.h"
+#include "RemoteLauncherClient.h"
 
 static JavaVM *vJavaVM = nullptr;
 
@@ -21,281 +22,284 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved){
     return JNI_VERSION_1_6;
 }
 
-class RemoteLauncherClient : public derlLauncherClient{
-private:
-    class ClientLogger : public denLogger{
-    private:
-        RemoteLauncherClient &pOwner;
+// Class RemoteLauncherClient::ClientLogger
+/////////////////////////////////////////////
 
-    public:
-        explicit ClientLogger(RemoteLauncherClient &owner) : pOwner(owner){}
-        void Log(LogSeverity severity, const std::string &message) override{
-            pOwner.AddLogs(severity, message);
+RemoteLauncherClient::ClientLogger::ClientLogger(RemoteLauncherClient &owner) :
+pOwner(owner){
+}
+
+void RemoteLauncherClient::ClientLogger::Log(LogSeverity severity, const std::string &message){
+    pOwner.AddLogs(severity, message);
+}
+
+
+// Class RemoteLauncherClient::EngineLogger
+/////////////////////////////////////////////
+
+RemoteLauncherClient::EngineLogger::EngineLogger(RemoteLauncherClient &owner, denLogger &clientLogger) :
+pOwner(owner),
+pClientLogger(clientLogger){
+}
+
+void RemoteLauncherClient::EngineLogger::LogInfo(const char *source, const char *message){
+    std::stringstream ss;
+    ss << "[" << source << "] " << message;
+    pClientLogger.Log(denLogger::LogSeverity::info, ss.str());
+
+    pOwner.SendLog(denLogger::LogSeverity::info, source, message);
+}
+
+void RemoteLauncherClient::EngineLogger::LogWarn(const char *source, const char *message){
+    std::stringstream ss;
+    ss << "[" << source << "] " << message;
+    pClientLogger.Log(denLogger::LogSeverity::warning, ss.str());
+
+    pOwner.SendLog(denLogger::LogSeverity::warning, source, message);
+}
+
+void RemoteLauncherClient::EngineLogger::LogError( const char *source, const char *message ){
+    std::stringstream ss;
+    ss << "[" << source << "] " << message;
+    pClientLogger.Log(denLogger::LogSeverity::error, ss.str());
+
+    pOwner.SendLog(denLogger::LogSeverity::error, source, message);
+}
+
+
+// Class RemoteLauncherClient
+///////////////////////////////
+
+RemoteLauncherClient::RemoteLauncherClient(JNIEnv *env, jobject objListener) :
+pObjListener(env, objListener, true),
+pClsListener(env, objListener, true),
+pMetListenerAddLogs(env->GetMethodID(pClsListener, "addLogs", "(ILjava/lang/String;)V")),
+pMetListenerUpdateUIState(env->GetMethodID(pClsListener, "updateUIState", "()V")),
+pMetListenerRequestProfileNames(env->GetMethodID(pClsListener, "requestProfileNames", "()V")),
+pMetListenerRequestDefaultProfileName(env->GetMethodID(pClsListener, "requestDefaultProfileName", "()V")),
+pMetListenerStartApplication(env->GetMethodID(pClsListener, "startApplication",
+      "(L" JPATH_BASE "RemoteLauncherClientRunParameters;)V")),
+pMetListenerStopApplication(env->GetMethodID(pClsListener, "stopApplication", "()V")),
+pMetListenerKillApplication(env->GetMethodID(pClsListener, "killApplication", "()V")),
+
+pClsRunParameters(env, JPATH_BASE "RemoteLauncherClientRunParameters", true),
+pFldRunParametersGameConfig(pClsRunParameters.GetFieldString("gameConfig")),
+pFldRunParametersProfileName(pClsRunParameters.GetFieldString("profileName")),
+pFldRunParametersArguments(pClsRunParameters.GetFieldString("arguments")),
+
+pLastTime(std::chrono::steady_clock::now()),
+pLauncher(nullptr)
+{
+    DEASSERT_NOTNULL(pMetListenerAddLogs)
+
+    pLogger = std::make_shared<ClientLogger>(*this);
+    SetLogger(pLogger);
+
+    pEngineLogger.TakeOver(new EngineLogger(*this, *pLogger));
+
+    pThreadUpdater = std::make_shared<std::thread>([&](){
+        while(!pExitUpdaterThread){
+            pFrameUpdate();
         }
-    };
+    });
+}
 
-    class EngineLogger : public deLogger{
-    private:
-        RemoteLauncherClient &pOwner;
-        denLogger &pClientLogger;
-
-    public:
-        EngineLogger(RemoteLauncherClient &owner, denLogger &clientLogger) :
-        pOwner(owner), pClientLogger(clientLogger){}
-
-        void LogInfo(const char *source, const char *message) override{
-            std::stringstream ss;
-            ss << "[" << source << "] " << message;
-            pClientLogger.Log(denLogger::LogSeverity::info, ss.str());
-
-            pOwner.SendLog(denLogger::LogSeverity::info, source, message);
-        }
-
-        void LogWarn(const char *source, const char *message) override{
-            std::stringstream ss;
-            ss << "[" << source << "] " << message;
-            pClientLogger.Log(denLogger::LogSeverity::warning, ss.str());
-
-            pOwner.SendLog(denLogger::LogSeverity::warning, source, message);
-        }
-
-        void LogError( const char *source, const char *message ) override{
-            std::stringstream ss;
-            ss << "[" << source << "] " << message;
-            pClientLogger.Log(denLogger::LogSeverity::error, ss.str());
-
-            pOwner.SendLog(denLogger::LogSeverity::error, source, message);
-        }
-    };
-
-    ClientLogger::Ref pLogger;
-    jobject pObjListener;
-    jclass pClsListener;
-    jmethodID pMetListenerAddLogs;
-    jmethodID pMetListenerUpdateUIState;
-    jmethodID pMetListenerRequestProfileNames;
-    jmethodID pMetListenerRequestDefaultProfileName;
-    jmethodID pMetListenerStartApplication;
-    jmethodID pMetListenerStopApplication;
-    jmethodID pMetListenerKillApplication;
-
-    JniClass pClsRunParameters;
-    const JniFieldString pFldRunParametersGameConfig;
-    const JniFieldString pFldRunParametersProfileName;
-    const JniFieldString pFldRunParametersArguments;
-
-    std::chrono::steady_clock::time_point pLastTime;
-
-    std::shared_ptr<std::thread> pThreadUpdater;
-    std::atomic<bool> pExitUpdaterThread = false;
-    std::mutex pMutexClient;
-
-    delLauncher *pLauncher;
-    deLogger::Ref pEngineLogger;
-
-
-public:
-    RemoteLauncherClient(JNIEnv *env, jobject objListener) :
-    pObjListener(env->NewGlobalRef(objListener)),
-    pClsListener(env->GetObjectClass(objListener)),
-    pMetListenerAddLogs(env->GetMethodID(pClsListener, "addLogs", "(ILjava/lang/String;)V")),
-    pMetListenerUpdateUIState(env->GetMethodID(pClsListener, "updateUIState", "()V")),
-    pMetListenerRequestProfileNames(env->GetMethodID(pClsListener, "requestProfileNames", "()V")),
-    pMetListenerRequestDefaultProfileName(env->GetMethodID(pClsListener, "requestDefaultProfileName", "()V")),
-    pMetListenerStartApplication(env->GetMethodID(pClsListener, "startApplication",
-          "(L" JPATH_BASE "RemoteLauncherClientRunParameters;)V")),
-    pMetListenerStopApplication(env->GetMethodID(pClsListener, "stopApplication", "()V")),
-    pMetListenerKillApplication(env->GetMethodID(pClsListener, "killApplication", "()V")),
-
-    pClsRunParameters(env, JPATH_BASE "RemoteLauncherClientRunParameters", true),
-    pFldRunParametersGameConfig(pClsRunParameters.GetFieldString("gameConfig")),
-    pFldRunParametersProfileName(pClsRunParameters.GetFieldString("profileName")),
-    pFldRunParametersArguments(pClsRunParameters.GetFieldString("arguments")),
-
-    pLastTime(std::chrono::steady_clock::now()),
-    pLauncher(nullptr)
-    {
-        DEASSERT_NOTNULL(pMetListenerAddLogs)
-
-        pLogger = std::make_shared<ClientLogger>(*this);
-        SetLogger(pLogger);
-
-        pEngineLogger.TakeOver(new EngineLogger(*this, *pLogger));
-
-        pThreadUpdater = std::make_shared<std::thread>([&](){
-            while(!pExitUpdaterThread){
-                pFrameUpdate();
-            }
-        });
+RemoteLauncherClient::~RemoteLauncherClient(){
+    if(pThreadUpdater){
+        pExitUpdaterThread = true;
+        pThreadUpdater->join();
     }
 
-    ~RemoteLauncherClient() override{
-        if(pThreadUpdater){
-            pExitUpdaterThread = true;
-            pThreadUpdater->join();
-        }
+    StopTaskProcessors();
 
-        StopTaskProcessors();
-
-        if(pEngineLogger && pLauncher && pLauncher->GetLogger()){
-            pLauncher->GetLogger()->RemoveLogger(pEngineLogger);
-            pEngineLogger = nullptr;
-        }
-
-        JNIEnv *env = nullptr;
-        vJavaVM->AttachCurrentThread(&env, nullptr);
-
-        if(pObjListener){
-            env->DeleteGlobalRef(pObjListener);
-        }
-        pClsRunParameters.Dispose(env);
+    if(pEngineLogger && pLauncher && pLauncher->GetLogger()){
+        pLauncher->GetLogger()->RemoveLogger(pEngineLogger);
+        pEngineLogger = nullptr;
     }
 
-    void SetLauncher(delLauncher *launcher){
-        if(launcher == pLauncher){
-            return;
-        }
+    JNIEnv *env = nullptr;
+    vJavaVM->AttachCurrentThread(&env, nullptr);
 
-        if(pLauncher){
-            pLauncher->GetLogger()->RemoveLogger(pEngineLogger);
-        }
+    pObjListener.Dispose(env);
+    pClsListener.Dispose(env);
+    pClsRunParameters.Dispose(env);
+}
 
-        pLauncher = launcher;
-
-        if(launcher){
-            launcher->GetLogger()->AddLogger(pEngineLogger);
-        }
+void RemoteLauncherClient::SetLauncher(delLauncher *launcher){
+    if(launcher == pLauncher){
+        return;
     }
 
-    void AddLogs(denLogger::LogSeverity severity, const std::string &logs) {
-        JNIEnv *env = nullptr;
-        vJavaVM->AttachCurrentThread(&env, nullptr);
-        jstring jlogs = JniHelpers(env).convertString(logs.c_str());
-        env->CallVoidMethod(pObjListener, pMetListenerAddLogs, (jint)severity, jlogs);
-        env->DeleteLocalRef(jlogs);
+    if(pLauncher){
+        pLauncher->GetLogger()->RemoveLogger(pEngineLogger);
     }
 
-    bool IsDisconnected(){
-        const std::lock_guard guard(pMutexClient);
-        return GetConnectionState() == denConnection::ConnectionState::disconnected;
+    pLauncher = launcher;
+
+    if(launcher){
+        launcher->GetLogger()->AddLogger(pEngineLogger);
+    }
+}
+
+void RemoteLauncherClient::AddLogs(denLogger::LogSeverity severity, const std::string &logs){
+    if(!pObjListener){
+        return;
     }
 
-    void ConnectToHost(const char *name, const char *pathDataDir, const char *address){
-        const std::lock_guard guard(pMutexClient);
-        if(GetConnectionState() != denConnection::ConnectionState::disconnected){
-            return;
-        }
+    JNIEnv *env = nullptr;
+    vJavaVM->AttachCurrentThread(&env, nullptr);
+    jstring jlogs = JniHelpers(env).convertString(logs.c_str());
+    env->CallVoidMethod(pObjListener, pMetListenerAddLogs, (jint)severity, jlogs);
+    env->DeleteLocalRef(jlogs);
+}
 
-        SetName(name);
-        SetPathDataDir(pathDataDir);
+bool RemoteLauncherClient::IsDisconnected(){
+    const std::lock_guard guard(pMutexClient);
+    return GetConnectionState() == denConnection::ConnectionState::disconnected;
+}
 
-        ConnectTo(address);
+void RemoteLauncherClient::ConnectToHost(const char *name, const char *pathDataDir, const char *address){
+    const std::lock_guard guard(pMutexClient);
+    if(GetConnectionState() != denConnection::ConnectionState::disconnected){
+        return;
     }
 
-    void DisconnectFromHost(){
-        const std::lock_guard guard(pMutexClient);
-        if(GetConnectionState() != denConnection::ConnectionState::disconnected){
-            Disconnect();
-        }
+    SetName(name);
+    SetPathDataDir(pathDataDir);
+
+    ConnectTo(address);
+}
+
+void RemoteLauncherClient::DisconnectFromHost(){
+    const std::lock_guard guard(pMutexClient);
+    if(GetConnectionState() != denConnection::ConnectionState::disconnected){
+        Disconnect();
     }
+}
 
-    std::unique_ptr<std::string> GetSystemProperty(const std::string &property) override{
-        if(property == derlProtocol::SystemPropertyNames::propertyNames){
-            std::stringstream names;
-            names << derlProtocol::SystemPropertyNames::profileNames << "\n";
-            names << derlProtocol::SystemPropertyNames::defaultProfile;
-            return std::make_unique<std::string>(names.str());
+std::unique_ptr<std::string> RemoteLauncherClient::GetSystemProperty(const std::string &property){
+    if(property == derlProtocol::SystemPropertyNames::propertyNames){
+        std::stringstream names;
+        names << derlProtocol::SystemPropertyNames::profileNames << "\n";
+        names << derlProtocol::SystemPropertyNames::defaultProfile;
+        return std::make_unique<std::string>(names.str());
 
-        }else if(property == derlProtocol::SystemPropertyNames::profileNames){
+    }else if(property == derlProtocol::SystemPropertyNames::profileNames){
+        if(pObjListener) {
             JNIEnv *env = nullptr;
             vJavaVM->AttachCurrentThread(&env, nullptr);
             env->CallVoidMethod(pObjListener, pMetListenerRequestProfileNames);
-            return nullptr;
+        }
+        return nullptr;
 
-        }else if(property == derlProtocol::SystemPropertyNames::defaultProfile){
+    }else if(property == derlProtocol::SystemPropertyNames::defaultProfile){
+        if(pObjListener) {
             JNIEnv *env = nullptr;
             vJavaVM->AttachCurrentThread(&env, nullptr);
             env->CallVoidMethod(pObjListener, pMetListenerRequestDefaultProfileName);
-            return nullptr;
-
-        }else{
-            return std::make_unique<std::string>();
         }
-    }
+        return nullptr;
 
-    void SendSystemProperty(const std::string &property, const std::string &value){
+    }else{
+        return std::make_unique<std::string>();
+    }
+}
+
+void RemoteLauncherClient::SendSystemProperty(const std::string &property, const std::string &value){
+    const std::lock_guard guard(pMutexClient);
+    derlLauncherClient::SendSystemProperty(property, value);
+}
+
+void RemoteLauncherClient::pFrameUpdate(){
+    {
         const std::lock_guard guard(pMutexClient);
-        derlLauncherClient::SendSystemProperty(property, value);
+
+        const std::chrono::steady_clock::time_point now(std::chrono::steady_clock::now());
+        const int64_t elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(now - pLastTime).count();
+        const float elapsed = (float)elapsed_us / 1e6f;
+        pLastTime = now;
+
+        Update(elapsed);
     }
 
-    void pFrameUpdate(){
-        {
-            const std::lock_guard guard(pMutexClient);
+    std::this_thread::yield();
+    //std::this_thread::sleep_for(std::chrono::milliseconds(1));
+}
 
-            const std::chrono::steady_clock::time_point now(std::chrono::steady_clock::now());
-            const int64_t elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(now - pLastTime).count();
-            const float elapsed = (float)elapsed_us / 1e6f;
-            pLastTime = now;
-
-            Update(elapsed);
-        }
-
-        std::this_thread::yield();
-        //std::this_thread::sleep_for(std::chrono::milliseconds(1));
+void RemoteLauncherClient::StartApplication(const derlRunParameters &params){
+    if(!pObjListener){
+        return;
     }
 
-    void StartApplication(const derlRunParameters &params) override{
-        JNIEnv *env = nullptr;
-        vJavaVM->AttachCurrentThread(&env, nullptr);
+    JNIEnv *env = nullptr;
+    vJavaVM->AttachCurrentThread(&env, nullptr);
 
-        const JniObject objParams(pClsRunParameters.New(env));
-        pFldRunParametersGameConfig.Set(env, objParams, params.GetGameConfig().c_str());
-        pFldRunParametersProfileName.Set(env, objParams, params.GetProfileName().c_str());
-        pFldRunParametersArguments.Set(env, objParams, params.GetArguments().c_str());
-        env->CallVoidMethod(pObjListener, pMetListenerStartApplication, objParams.CallArgument());
+    const JniObject objParams(pClsRunParameters.New(env));
+    pFldRunParametersGameConfig.Set(env, objParams, params.GetGameConfig().c_str());
+    pFldRunParametersProfileName.Set(env, objParams, params.GetProfileName().c_str());
+    pFldRunParametersArguments.Set(env, objParams, params.GetArguments().c_str());
+    env->CallVoidMethod(pObjListener, pMetListenerStartApplication, objParams.CallArgument());
+}
+
+void RemoteLauncherClient::StopApplication(){
+    if(!pObjListener){
+        return;
     }
 
-    void StopApplication() override{
-        JNIEnv *env = nullptr;
-        vJavaVM->AttachCurrentThread(&env, nullptr);
-        env->CallVoidMethod(pObjListener, pMetListenerStopApplication);
+    JNIEnv *env = nullptr;
+    vJavaVM->AttachCurrentThread(&env, nullptr);
+    env->CallVoidMethod(pObjListener, pMetListenerStopApplication);
+}
+
+void RemoteLauncherClient::KillApplication(){
+    if(!pObjListener){
+        return;
     }
 
-    void KillApplication() override{
-        JNIEnv *env = nullptr;
-        vJavaVM->AttachCurrentThread(&env, nullptr);
-        env->CallVoidMethod(pObjListener, pMetListenerKillApplication);
+    JNIEnv *env = nullptr;
+    vJavaVM->AttachCurrentThread(&env, nullptr);
+    env->CallVoidMethod(pObjListener, pMetListenerKillApplication);
+}
+
+void RemoteLauncherClient::SetRunStatus(RunStatus status){
+    if(status == GetRunStatus()){
+        return;
     }
 
-    void SetRunStatus(RunStatus status){
-        derlLauncherClient::SetRunStatus(status);
+    derlLauncherClient::SetRunStatus(status);
+    pNotifyUpdateUIState();
+}
+
+void RemoteLauncherClient::SendLog(denLogger::LogSeverity severity, const std::string &source, const std::string &log){
+    const std::lock_guard guard(pMutexClient);
+    derlLauncherClient::SendLog(severity, source, log);
+}
+
+void RemoteLauncherClient::OnConnectionEstablished(){
+    pNotifyUpdateUIState();
+}
+
+void RemoteLauncherClient::OnConnectionFailed(denConnection::ConnectionFailedReason reason){
+    pNotifyUpdateUIState();
+}
+
+void RemoteLauncherClient::OnConnectionClosed(){
+    pNotifyUpdateUIState();
+}
+
+void RemoteLauncherClient::pNotifyUpdateUIState(){
+    if(!pObjListener){
+        return;
     }
 
-    void SendLog(denLogger::LogSeverity severity, const std::string &source, const std::string &log){
-        const std::lock_guard guard(pMutexClient);
-        derlLauncherClient::SendLog(severity, source, log);
-    }
+    JNIEnv *env = nullptr;
+    vJavaVM->AttachCurrentThread(&env, nullptr);
+    env->CallVoidMethod(pObjListener, pMetListenerUpdateUIState);
+}
 
-    void OnConnectionEstablished() override{
-        pNotifyUpdateUIState();
-    }
 
-    void OnConnectionFailed(denConnection::ConnectionFailedReason reason) override{
-        pNotifyUpdateUIState();
-    }
-
-    void OnConnectionClosed() override{
-        pNotifyUpdateUIState();
-    }
-
-private:
-    void pNotifyUpdateUIState(){
-        JNIEnv *env = nullptr;
-        vJavaVM->AttachCurrentThread(&env, nullptr);
-        env->CallVoidMethod(pObjListener, pMetListenerUpdateUIState);
-    }
-};
-
+// JNI Bridge
+///////////////
 
 extern "C"
 JNIEXPORT jlong JNICALL

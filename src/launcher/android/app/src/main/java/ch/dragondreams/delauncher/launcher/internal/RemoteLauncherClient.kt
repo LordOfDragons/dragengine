@@ -17,7 +17,7 @@ class RemoteLauncherClient(
         fun killApplication()
     }
 
-    private val nativeClient: Long = createClient(listener)
+    val nativeClient: Long = createClient(listener)
 
     private external fun createClient(listener: Listener): Long
     private external fun destroyClient(client: Long)

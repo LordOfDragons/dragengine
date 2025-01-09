@@ -132,7 +132,7 @@ class RunDelgaActivity : GameActivity(),
             return
         }
 
-        if(!shared.locateProfile()){
+        if(!shared.locateProfile(null)){
             return
         }
 

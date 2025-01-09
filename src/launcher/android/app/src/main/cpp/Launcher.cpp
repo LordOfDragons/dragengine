@@ -342,5 +342,6 @@ JNIEnv *env, jobject thiz, jlong plauncher){
         return (jlong)(intptr_t)launcher.CreateGame();
     }catch(const deException &e){
         h.throwException(e);
+        return 0; // keep compiler happy. code never gets here
     }
 }
