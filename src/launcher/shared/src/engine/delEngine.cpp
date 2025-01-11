@@ -76,7 +76,7 @@ pLauncher( launcher ),
 pLogFile( decString( logFileTitle ) + ".log" ),
 pResolutionCount( 0 ),
 pResolutions( NULL ),
-pScaleFactor(1.0f){
+pScaleFactor(100){
 }
 
 delEngine::~delEngine(){
@@ -485,7 +485,7 @@ void delEngine::UpdateScaleFactor(delEngineInstance& instance){
 		pLauncher.GetLogger()->LogError(pLauncher.GetLogSource(),
 			"Engine.UpdateScaleFactor failed with exception");
 		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
-		pScaleFactor = 1.0f;
+		pScaleFactor = 100;
 	}
 }
 

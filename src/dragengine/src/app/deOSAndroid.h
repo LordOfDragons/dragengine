@@ -84,6 +84,7 @@ private:
 	int pScreenWidth;
 	int pScreenHeight;
 	int pScreenRefreshRate;
+	int pScaleFactor;
 	void *pCurWindow;
 	void *pHostingMainWindow;
 	void *pHostingRenderWindow;

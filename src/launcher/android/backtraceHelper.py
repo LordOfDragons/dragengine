@@ -14,10 +14,12 @@ with open(sys.argv[1], 'r', encoding='utf-8') as f:
     content = f.readlines()
 
 regexLine = re.compile(
-    r'^(.+)\((\w*)(\+0x[0-9A-Fa-f]+)?\) ?\[(0x[0-9A-Fa-f]+)\].*\n$')
+    r'^.*(\S+) ?\((\w*)(\+0x[0-9A-Fa-f]+)?\) ?\[(0x[0-9A-Fa-f]+)\].*\n$')
 regexLine2 = re.compile(r'^([/A-Za-z0-9-_.]+) ?\[(0x[0-9A-Fa-f]+)\].*\n$')
+regexLine3 = re.compile(r'^.*?([^\s(]+)\s?\(([^+]*)(\+(0x)?[0-9A-Fa-f]+)?\)\s?\n$')
 regexLinePrefix = re.compile(r'^\[[A-Za-z0-9-_.: ]+\] ')
 regexAppPath = re.compile(r'^/data/app/.*/ch\.dragondreams\.delauncher.*/lib/arm64-v8a/')
+regexAppPath2 = re.compile(r'^/data/app/.*/ch\.dragondreams\.delauncher.*!')
 
 def pathrepl(p):
     p = p.replace(
@@ -25,6 +27,10 @@ def pathrepl(p):
         'build/release')
     p = regexAppPath.sub(
         'src/launcher/android/app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib/arm64-v8a/', p)
+    p = regexAppPath2.sub(
+        'src/launcher/android/app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib/arm64-v8a/', p)
+    if p.endswith('.so.1'):
+        p = p[:-2]
     return p
 
 def run_console(*command):
@@ -45,6 +51,7 @@ for line in content:
         line = line[11:]
 
     match = regexLine.match(line)
+    nmdemangle = False
     if match:
         (binary, function, offset, address) = match.groups()
     else:
@@ -54,16 +61,24 @@ for line in content:
             function = ''
             offset = 0
         else:
-            continue
+            match = regexLine3.match(line)
+            if match:
+                (binary, function, offset) = match.groups()[0:3]
+                offset = f'+0x{int(offset[1:]):x}'
+                address = 0
+                nmdemangle = True
+            else:
+                continue
 
     binary = pathrepl(binary)
+    #print([binary, function, offset, address])
 
     if offset:
         offset = int(offset[3:], 16)
         if binary[0] != '/':
             binary = run_console('realpath', binary)
         if function:
-            output = run_console(binnm, binary).split('\n')
+            output = run_console(binnm, '-C' if nmdemangle else '', binary).split('\n')
             for t in output:
                 if function in t:
                     if not t or t[0] == ' ':

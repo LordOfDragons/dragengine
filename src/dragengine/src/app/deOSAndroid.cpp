@@ -37,11 +37,13 @@
 #include "deOSAndroid.h"
 #include "../deEngine.h"
 #include "../common/exceptions.h"
+#include "../logger/deLogger.h"
 
 #include <android/configuration.h>
 #include <android/looper.h>
 #include <android/window.h>
 #include <android/native_window.h>
+#include <android/log.h>
 
 
 
@@ -56,6 +58,7 @@ pConfig(config),
 pScreenWidth(800),
 pScreenHeight(600),
 pScreenRefreshRate(30),
+pScaleFactor(100),
 pCurWindow(nullptr),
 pHostingMainWindow(nullptr),
 pHostingRenderWindow(nullptr),
@@ -202,7 +205,7 @@ decPoint deOSAndroid::GetDisplayResolution(int display, int resolution){
 int deOSAndroid::GetDisplayCurrentScaleFactor(int display){
 	DEASSERT_TRUE(display == 0)
 	
-	return 100;
+	return pScaleFactor;
 }
 
 
@@ -303,6 +306,8 @@ void deOSAndroid::pGetOSParameters(){
 	jmethodID metGetApplication = env->GetMethodID(clsActivityThread,
 		"getApplication", "()Landroid/app/Application;");
 	jobject objContext = env->CallObjectMethod(objActivityThread, metGetApplication);
+	env->DeleteLocalRef(clsActivityThread);
+	env->DeleteLocalRef(objActivityThread);
 	
 	// WindowManager windowManager = (WindowManager)pActivity.getSystemService(Context.WINDOW_SERVICE);
 	jclass clsContext = env->GetObjectClass(objContext);
@@ -312,11 +317,14 @@ void deOSAndroid::pGetOSParameters(){
 	jmethodID metGetSystemService = env->GetMethodID(clsContext, "getSystemService",
 		"(Ljava/lang/String;)Ljava/lang/Object;");
 	jobject objWindowManager = env->CallObjectMethod(objContext, metGetSystemService, objWindowService);
+	env->DeleteLocalRef(objWindowService);
 	
 	jclass clsWindowManager = env->GetObjectClass(objWindowManager);
 	jmethodID metGetDefaultDisplay = env->GetMethodID(clsWindowManager,
 		"getDefaultDisplay", "()Landroid/view/Display;");
 	jobject objDisplay = env->CallObjectMethod(objWindowManager, metGetDefaultDisplay);
+	env->DeleteLocalRef(clsWindowManager);
+	env->DeleteLocalRef(objWindowManager);
 	
 	// float refreshRating = display.getRefreshRate(); // in hertz
 	jclass clsDisplay = env->GetObjectClass(objDisplay);
@@ -331,14 +339,48 @@ void deOSAndroid::pGetOSParameters(){
 	
 	jmethodID metGetSize = env->GetMethodID(clsDisplay, "getSize", "(Landroid/graphics/Point;)V");
 	env->CallVoidMethod(objDisplay, metGetSize, objPoint);
+	env->DeleteLocalRef(objDisplay);
+	env->DeleteLocalRef(clsDisplay);
 	
 	pScreenWidth = env->GetIntField(objPoint, env->GetFieldID(clsPoint, "x", "I"));
 	pScreenHeight = env->GetIntField(objPoint, env->GetFieldID(clsPoint, "y", "I"));
-	
+	env->DeleteLocalRef(clsPoint);
 	env->DeleteLocalRef(objPoint);
-	env->DeleteLocalRef(clsDisplay);
-	env->DeleteLocalRef(clsWindowManager);
+	
+	// dpi
+	// Resources resources = context.getResources();
+	jmethodID metGetResources = env->GetMethodID(clsContext,
+		"getResources", "()Landroid/content/res/Resources;");
+	jobject objResources = env->CallObjectMethod(objContext, metGetResources);
+	
+	// DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+	jclass clsResources = env->GetObjectClass(objResources);
+	
+	jmethodID metGetDisplayMetrics = env->GetMethodID(clsResources,
+		"getDisplayMetrics", "()Landroid/util/DisplayMetrics;");
+	jobject objDisplayMetrics = env->CallObjectMethod(objResources, metGetDisplayMetrics);
+	
+	env->DeleteLocalRef(clsResources);
+	env->DeleteLocalRef(objResources);
+	
+	jclass clsDisplayMetrics = env->GetObjectClass(objDisplayMetrics);
+	
+	const int densityDpi = env->GetIntField(objDisplayMetrics,
+		env->GetFieldID(clsDisplayMetrics, "densityDpi", "I"));
+	
+	env->DeleteLocalRef(clsDisplayMetrics);
+	env->DeleteLocalRef(objDisplayMetrics);
+	
+	const double scale = 100.0 * (double)densityDpi / 160.0; // 160dpi medium screen dpi
+	pScaleFactor = decMath::max((int)(scale / 25.0 + 0.5) * 25, 100);
+	
+	// GetEngine() is nullptr at this point of time
+	__android_log_print(ANDROID_LOG_INFO, "OSAndroid",
+		"densityDpi=%d -> scaleFactor=%d", densityDpi, pScaleFactor);
+	
+	// clean up
 	env->DeleteLocalRef(clsContext);
+	env->DeleteLocalRef(objContext);
 	}
 	
 	// init locale
