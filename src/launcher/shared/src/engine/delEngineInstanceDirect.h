@@ -355,6 +355,15 @@ public:
 	
 	/** \brief Run single game frame update. */
 	void RunSingleFrameUpdate() override;
+	
+	/** \brief App gained/lost focus. */
+	void SetAppActive(bool active) override;
+	
+	/** \brief App paused/resumed. */
+	void SetAppPaused(bool paused) override;
+	
+	/** \brief An event processed by the application event loop. */
+	void InputEvent(const android_input_buffer &inputBuffer) override;
 #endif
 /*@}*/
 };

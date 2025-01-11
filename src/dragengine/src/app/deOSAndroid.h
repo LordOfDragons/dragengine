@@ -34,9 +34,6 @@
 #include "deOS.h"
 #include "../common/string/decString.h"
 
-struct AConfiguration;
-struct ALooper;
-struct AInputQueue;
 struct ANativeWindow;
 
 
@@ -90,7 +87,6 @@ private:
 	void *pCurWindow;
 	void *pHostingMainWindow;
 	void *pHostingRenderWindow;
-	bool pAppHasFocus;
 	bool pAppFrozen;
 	
 	
@@ -274,12 +270,6 @@ public:
 	
 	/** \brief Determine if a hosting render window is set. */
 	bool HasHostingRenderWindow() const;
-	
-	/** \brief Determine if the application has the focus. */
-	inline bool GetAppHasFocus() const{ return pAppHasFocus; }
-	
-	/** \brief Set if the application has the focus. */
-	void SetAppHasFocus( bool appHasFocus );
 	
 	/** \brief Application is frozen. */
 	inline bool GetAppFrozen() const{ return pAppFrozen; }

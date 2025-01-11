@@ -26,11 +26,6 @@ RemoteLauncherHandler::~RemoteLauncherHandler(){
 void RemoteLauncherHandler::GameExited(BaseGameActivityAdapter &adapter) {
 }
 
-void RemoteLauncherHandler::pInitEngineInstanceFactory(delEngineInstanceDirect::Factory &factory) {
-    pCreateEngineLogger();
-    factory.SetEngineLogger(pEngineLogger);
-}
-
 void RemoteLauncherHandler::pInitGameForRun() {
     pGame->SetVFSDelgaContainer(nullptr);
     pGame->SetDelgaFile("");

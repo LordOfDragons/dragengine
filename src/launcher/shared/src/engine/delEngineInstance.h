@@ -36,6 +36,7 @@
 
 #ifdef OS_ANDROID
 #include <dragengine/filesystem/deVFSContainer.h>
+struct android_input_buffer;
 #endif
 
 class delEngineModule;
@@ -317,6 +318,15 @@ public:
 	
 	/** \brief Run single game frame update. */
 	virtual void RunSingleFrameUpdate();
+	
+	/** \brief App gained/lost focus. */
+	virtual void SetAppActive(bool active);
+	
+	/** \brief App paused/resumed. */
+	virtual void SetAppPaused(bool paused);
+	
+	/** \brief An event processed by the application event loop. */
+	virtual void InputEvent(const android_input_buffer &inputBuffer);
 #endif
 	/*@}*/
 };

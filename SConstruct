@@ -776,6 +776,7 @@ extdirs.append('extern/liburing')
 extdirs.append('extern/modio')
 extdirs.append('extern/deremotelauncher')
 extdirs.append('extern/denetwork')
+extdirs.append('extern/agdk')
 
 for extdir in extdirs:
 	SConscript(dirs=extdir, variant_dir='{}/build'.format(extdir),

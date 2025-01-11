@@ -1,5 +1,7 @@
 package ch.dragondreams.delauncher
 
+import android.content.ContentResolver
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +12,7 @@ import android.view.WindowManager
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.Game
 import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
+import ch.dragondreams.delauncher.launcher.internal.Launcher
 import ch.dragondreams.delauncher.launcher.internal.RunGameHandler
 import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
 import com.google.androidgamesdk.GameActivity
@@ -38,6 +41,53 @@ class RunDelgaActivity : GameActivity(),
         override fun stateChanged(state: Int) {
             if(!owner.isDestroyingView) {
                 handler.post { owner.handlerStateChanged(RunGameHandler.mapState[state]!!) }
+            }
+        }
+    }
+
+    class AssetFileDescriptorProducer(
+        private val runGameShared: RunGameShared,
+        private val contentResolver: ContentResolver,
+        private val intent: Intent
+    ) : Launcher.FileDescriptorProducer{
+        override fun produceFileDescriptor(): Int {
+            contentResolver.openAssetFileDescriptor(intent.data!!, "r").use { afd ->
+                if (afd == null) {
+                    runGameShared.logError("produceFileDescriptor",
+                        "AssetFileDescriptor is null")
+                    return 0
+                }
+
+                val fd = afd.parcelFileDescriptor?.detachFd()
+                if (fd == null) {
+                    runGameShared.logError("produceFileDescriptor",
+                        "Can not detach file descriptor")
+                    return 0
+                }
+
+                runGameShared.logInfo("produceFileDescriptor",
+                    "File descriptor created")
+                return fd
+            }
+        }
+    }
+
+    class FileFileDescriptorProducer(
+        private val runGameShared: RunGameShared,
+        private val contentResolver: ContentResolver,
+        private val intent: Intent
+    ) : Launcher.FileDescriptorProducer{
+        override fun produceFileDescriptor(): Int {
+            contentResolver.openFileDescriptor(intent.data!!, "r").use { pfd ->
+                if (pfd == null) {
+                    runGameShared.logError("produceFileDescriptor",
+                        "ParcelFileDescriptor is null")
+                    return 0
+                }
+
+                runGameShared.logInfo("produceFileDescriptor",
+                    "File descriptor created")
+                return pfd.detachFd()
             }
         }
     }
@@ -166,38 +216,31 @@ class RunDelgaActivity : GameActivity(),
             "content" -> {
                 contentResolver.openAssetFileDescriptor(intent.data!!, "r").use { afd ->
                     if (afd == null) {
-                        shared.logError("processIntentLaunchDelga",
+                        shared.logError("locateGame",
                             "AssetFileDescriptor is null")
                         return false
                     }
 
                     val startOffset = afd.startOffset
                     val length = afd.length
-                    shared.logInfo("processIntentLaunchDelga",
+                    shared.logInfo("locateGame",
                         "startOffset=${afd.startOffset} length=${afd.length}"
                     )
-
-                    val fd = afd.parcelFileDescriptor?.detachFd()
-                    if (fd == null) {
-                        shared.logError("processIntentLaunchDelga",
-                            "Can not detach file descriptor")
-                        return false
-                    }
 
                     try {
                         shared.launcher?.vfsContainerAddFd(
                             "/$VFS_FDS_DELGA_FILENAME",
-                            fd,
+                            AssetFileDescriptorProducer(shared, contentResolver, intent),
                             startOffset.toInt(),
                             length.toInt()
                         )
                     } catch (e: Exception) {
-                        shared.logError("processIntentLaunchDelga",
+                        shared.logError("locateGame",
                             "Failed adding VFS container", e)
                         return false
                     }
 
-                    shared.logInfo("processIntentLaunchDelga",
+                    shared.logInfo("locateGame",
                         "VFS container added")
                     delgaPath = VFS_FDS_DELGA_PATH
                 }
@@ -206,52 +249,52 @@ class RunDelgaActivity : GameActivity(),
             "file" -> {
                 contentResolver.openFileDescriptor(intent.data!!, "r").use { pfd ->
                     if (pfd == null) {
-                        shared.logError("processIntentLaunchDelga",
+                        shared.logError("locateGame",
                             "ParcelFileDescriptor is null")
                         return false
                     }
 
                     val length = pfd.statSize
-                    shared.logError("processIntentLaunchDelga", "length=${length}")
+                    shared.logError("locateGame", "length=${length}")
 
                     val fd = pfd.detachFd()
 
                     try {
                         shared.launcher?.vfsContainerAddFd(
                             "/$VFS_FDS_DELGA_FILENAME",
-                            fd,
+                            FileFileDescriptorProducer(shared, contentResolver, intent),
                             0,
                             length.toInt()
                         )
                     } catch (e: Exception) {
-                        shared.logError("processIntentLaunchDelga",
+                        shared.logError("locateGame",
                             "Failed adding VFS container", e)
                         return false
                     }
 
-                    shared.logInfo("processIntentLaunchDelga", "VFS container added")
+                    shared.logInfo("locateGame", "VFS container added")
                     delgaPath = VFS_FDS_DELGA_PATH
                 }
             }
 
             else -> {
-                shared.logError("processIntentLaunchDelga", "Unsupported scheme")
+                shared.logError("locateGame", "Unsupported scheme")
                 return false
             }
         }
 
         if (delgaPath == null) {
-            shared.logError("processIntentLaunchDelga", "DELGA path is null")
+            shared.logError("locateGame", "DELGA path is null")
             return false
         }
 
         delgaGames.forEach { g -> g.release() }
         delgaGames.clear()
         delgaGames.addAll(shared.launcher!!.readDelgaGames(delgaPath!!))
-        shared.logInfo("processIntentLaunchDelga", "DELGA loaded")
+        shared.logInfo("locateGame", "DELGA loaded")
 
         if (delgaGames.isEmpty()) {
-            shared.logError("processIntentLaunchDelga",
+            shared.logError("locateGame",
                 "No game definition found in DELGA file")
             return false
         }

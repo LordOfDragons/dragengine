@@ -11,6 +11,8 @@ protected:
 public:
     virtual ANativeWindow *GetNativeWindow() = 0;
     virtual void QuitActivity() = 0;
+    virtual void EnableFullScreenMode(bool enable) = 0;
+    virtual void GetSavedState(size_t &size, void *&data) = 0;
 };
 
 class GameActivityHandler{
@@ -20,6 +22,7 @@ public:
 
     virtual void Command(BaseGameActivityAdapter &adapter, int32_t cmd) = 0;
     virtual void FrameUpdate(BaseGameActivityAdapter &adapter) = 0;
+    virtual void InputEvent(BaseGameActivityAdapter &adapter, const android_input_buffer &inputBuffer) = 0;
 };
 
 #endif //DELAUNCHER_GAMEACTIVITYHANDLER_H

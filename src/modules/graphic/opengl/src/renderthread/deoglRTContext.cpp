@@ -47,31 +47,27 @@
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_ANDROID
+#include <dragengine/app/deOSAndroid.h>
+#include <android/native_window.h>
+
+#elif defined OS_BEOS
+#include <GLView.h>
+#include <dragengine/app/deOSBeOS.h>
+
+#elif defined OS_MACOS
+#include "../extensions/macosfix.h"
+#include <dragengine/app/deOSMacOS.h>
+
+#elif defined OS_W32
+#include <dragengine/app/deOSWindows.h>
+#include "../extensions/wglext.h"
+
+#elif defined OS_UNIX
 #include <dragengine/app/deOSUnix.h>
 #ifdef BACKEND_OPENGL
 	#include "../extensions/deoglXExtResult.h"
 #endif
-#endif
-
-#ifdef OS_ANDROID
-#include <dragengine/app/deOSAndroid.h>
-#include <android/native_window.h>
-#endif
-
-#ifdef OS_BEOS
-#include <GLView.h>
-#include <dragengine/app/deOSBeOS.h>
-#endif
-
-#ifdef OS_MACOS
-#include "../extensions/macosfix.h"
-#include <dragengine/app/deOSMacOS.h>
-#endif
-
-#ifdef OS_W32
-#include <dragengine/app/deOSWindows.h>
-#include "../extensions/wglext.h"
 #endif
 
 
@@ -146,7 +142,6 @@ pLoaderContext( EGL_NO_CONTEXT ),
 
 pScreenWidth( 0 ),
 pScreenHeight( 0 ),
-pScreenResized( false ),
 #endif
 
 #ifdef OS_BEOS
@@ -506,23 +501,10 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 
 #ifdef OS_ANDROID
 void deoglRTContext::CheckConfigurationChanged(){
-	// check if screen size is still the same. listening to config changed is not going to
-	// work since android delays screen changes for an undefinite time.
-	int width = 0;
-	int height = 0;
-	eglQuerySurface( pDisplay, pSurface, EGL_WIDTH, &width );
-	eglQuerySurface( pDisplay, pSurface, EGL_HEIGHT, &height );
-	
-	if( width != pScreenWidth || height != pScreenHeight ){
-		pRenderThread.GetLogger().LogInfoFormat( "Screen size changed: %ix%i -> %ix%i", pScreenWidth, pScreenHeight, width, height );
-		pScreenWidth = width;
-		pScreenHeight = height;
-		pScreenResized = true;
-	}
-}
-
-void deoglRTContext::ClearScreenResized(){
-	pScreenResized = false;
+	eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &pScreenWidth);
+	eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &pScreenHeight);
+	//pScreenWidth = (int)ANativeWindow_getWidth(pOSAndroid->GetNativeWindow());
+	//pScreenHeight = (int)ANativeWindow_getHeight(pOSAndroid->GetNativeWindow());
 }
 #endif
 
@@ -608,7 +590,7 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	case WM_DPICHANGED:{
 		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
 		const int scaleFactor = 100 * HIWORD(wParam) / USER_DEFAULT_SCREEN_DPI;
-        const RECT &rect = *((RECT*)lParam);
+		const RECT &rect = *((RECT*)lParam);
 		const int count = windows.GetCount();
 		int i;
 

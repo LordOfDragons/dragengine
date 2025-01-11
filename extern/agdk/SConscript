@@ -1,0 +1,54 @@
+import os
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] == 'no':
+	Return()
+
+envLibrary = parent_env.Clone()
+
+srcVersion = '2023.3.0.0'
+sysarch = 'armv8'
+srcdir = 'agdk-{}-{}'.format(sysarch, srcVersion)
+
+libLinkNames = ['game-activity_static', 'game-text-input_static', 'paddleboat_static']
+
+libFileNames = [envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(srcdir, x)) for x in libLinkNames]
+
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'agdk', 'lib_agdk_fetch')
+
+targets = libFileNames[:]
+library = []
+cpppath = []
+libpath = []
+
+def agdkUnpack(target, source, env):
+	untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
+
+with open(envLibrary.File('header_file_list/agdk').srcnode().abspath, 'r') as f:
+	for x in f.readlines():
+		x = x[:-1]
+		x = x.replace('{version}', srcVersion)
+		x = x.replace('{sysarch}', sysarch)
+		targets.append(x)
+
+library = envLibrary.Command(targets, nodeArtifacts,
+	envLibrary.Action(agdkUnpack, 'Unpack AGDK'))[0:len(libFileNames)]
+
+envLibrary.Clean(library, [srcdir])
+
+cpppath.append(envLibrary.Dir(os.path.join(srcdir, 'include')))
+libpath.append(envLibrary.Dir(os.path.join(srcdir, 'lib')))
+
+parent_targets['lib_agdk'] = {
+	'name' : 'Internal Android GDK',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : library,
+	'runtimelibs' : [],
+	'runtimedata' : [],
+	'depends' : parent_env.Alias('lib_agdk', library)}

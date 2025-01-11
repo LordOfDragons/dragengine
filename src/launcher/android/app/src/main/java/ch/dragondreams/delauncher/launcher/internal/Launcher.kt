@@ -6,6 +6,10 @@ import ch.dragondreams.delauncher.launcher.EngineModule
 import ch.dragondreams.delauncher.launcher.GameProfile
 
 class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
+    interface FileDescriptorProducer {
+        fun produceFileDescriptor(): Int
+    }
+
     var nativeLauncher: Long = 0L
         private set
 
@@ -18,7 +22,8 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
     private external fun getDefaultProfile(launcher: Long): Long
     private external fun getActiveProfile(launcher: Long): Long
     private external fun setActiveProfile(launcher: Long, profile: Long)
-    private external fun vfsContainerAddFd(launcher: Long, path: String, fd: Int, offset: Int, length: Int)
+    private external fun vfsContainerAddFd(launcher: Long, path: String,
+           producer: FileDescriptorProducer, offset: Int, length: Int)
     private external fun vfsContainerRemoveFd(launcher: Long, path: String)
     private external fun readDelgaGames(launcher: Long, path: String): LongArray
     private external fun isModuleSingleType(type: Int): Boolean
@@ -65,8 +70,8 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
         return games
     }
 
-    fun vfsContainerAddFd(path: String, fd: Int, offset: Int, length: Int) {
-        vfsContainerAddFd(nativeLauncher, path, fd, offset, length)
+    fun vfsContainerAddFd(path: String, producer: FileDescriptorProducer, offset: Int, length: Int) {
+        vfsContainerAddFd(nativeLauncher, path, producer, offset, length)
     }
 
     fun vfsContainerRemoveFd(path: String) {

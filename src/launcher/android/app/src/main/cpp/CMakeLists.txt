@@ -33,7 +33,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         Game.cpp
         GameProfile.cpp
         FDFileReader.cpp
-        FDVFSContainer.cpp)
+        FDVFSContainer.cpp
+        JniFDProducer.cpp)
 
 include_directories("${CMAKE_SOURCE_DIR}/../../../../../shared/build/include"
     "${CMAKE_SOURCE_DIR}/../../../../../../dragengine/build/include")

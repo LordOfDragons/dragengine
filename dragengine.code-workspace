@@ -29,6 +29,10 @@
 			"path": "src/modules/input/android"
 		},
 		{
+			"name": "delga",
+			"path": "src/modules/archive/delga"
+		},
+		{
 			"name": "steamsdk",
 			"path": "src/modules/service/steamsdk"
 		},
@@ -165,7 +169,8 @@
 			"typeindex": "cpp",
 			"*.ipp": "cpp",
 			"strstream": "cpp",
-			"text_encoding": "cpp"
+			"text_encoding": "cpp",
+			"ios": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			

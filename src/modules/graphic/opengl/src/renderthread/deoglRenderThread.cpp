@@ -671,17 +671,25 @@ void deoglRenderThread::Synchronize(){
 	pLogger->Synchronize(); // send asynchronous logs to game logger
 	
 	#ifdef OS_ANDROID
-	if( pContext->GetScreenResized() ){
-		pContext->ClearScreenResized();
-		
-		deGraphicSystem &graSys = *pOgl.GetGameEngine()->GetGraphicSystem();
-		const int width = pContext->GetScreenWidth();
-		const int height = pContext->GetScreenHeight();
-		
-		graSys.GetRenderWindow()->SetSize( width, height );
-		if( graSys.GetInputOverlayCanvas() ){
-			graSys.GetInputOverlayCanvas()->SetSize( decPoint( width, height ) );
-			pOgl.GetGameEngine()->GetInputSystem()->ScreenSizeChanged();
+	deGraphicSystem &graSys = *pOgl.GetGameEngine()->GetGraphicSystem();
+	if(graSys.GetRenderWindow()){
+		deoglRenderWindow * const oglWindow =
+			(deoglRenderWindow*)graSys.GetRenderWindow()->GetPeerGraphic();
+		if(oglWindow){
+			deoglRRenderWindow * const oglRWindow = oglWindow->GetRRenderWindow();
+			oglRWindow->OnResize(pContext->GetScreenWidth(), pContext->GetScreenHeight());
+			
+			deCanvasView * const iocanvas = graSys.GetInputOverlayCanvas();
+			if(iocanvas){
+				const decPoint size(oglRWindow->GetWidth(), oglRWindow->GetHeight());
+				if(size != iocanvas->GetSize()){
+					iocanvas->SetSize(size);
+					pOgl.GetGameEngine()->GetInputSystem()->ScreenSizeChanged();
+					pOgl.LogInfoFormat(
+						"RenderThread.Synchronize: InputSystem.ScreenSizeChanged (%d,%d)",
+						size.x, size.y);
+				}
+			}
 		}
 	}
 	#endif

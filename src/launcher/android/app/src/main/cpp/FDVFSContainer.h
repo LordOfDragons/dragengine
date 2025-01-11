@@ -5,7 +5,15 @@
 #include <string>
 #include <memory>
 #include <dragengine/filesystem/deVFSContainer.h>
+#include "FDProducer.h"
 
+/**
+ * File descriptor container.
+ *
+ * Each entry is added with a producer subclass able to produce new file descriptor
+ * for the same resource each time called. File descriptor are unique having their
+ * own file position and state.
+ */
 class FDVFSContainer : public deVFSContainer{
 public:
     typedef deTObjectReference<FDVFSContainer> Ref;
@@ -16,19 +24,18 @@ private:
         typedef std::shared_ptr<Entry> Ref;
 
     private:
-        int pFileDescriptor;
+        FDProducer::Ref pProducer;
         int pOffset;
         int pSize;
         TIME_SYSTEM pModidicationTime;
 
     public:
-        Entry(int fd, int offset, int size);
-        ~Entry();
+        Entry(const FDProducer::Ref &producer, int offset, int size);
 
-        inline int GetFileDescriptor() const{ return pFileDescriptor; }
-        inline int GetOffset() const{ return pOffset; }
-        inline int GetSize() const{ return pSize; }
-        inline TIME_SYSTEM GetModificationTime() const{ return pModidicationTime; }
+        inline const FDProducer::Ref &GetProducer() const{ return pProducer; }
+        [[nodiscard]] inline int GetOffset() const{ return pOffset; }
+        [[nodiscard]] inline int GetSize() const{ return pSize; }
+        [[nodiscard]] inline TIME_SYSTEM GetModificationTime() const{ return pModidicationTime; }
     };
 
     typedef std::unordered_map<std::string,Entry::Ref> MapEntries;
@@ -52,9 +59,9 @@ public:
     uint64_t GetFileSize(const decPath &path) override;
     TIME_SYSTEM GetFileModificationTime(const decPath &path) override;
 
-    int GetEntryCount() const;
+    [[nodiscard]] int GetEntryCount() const;
     bool HasEntry(const std::string &path);
-    void AddEntry(const std::string &path, int fileDescriptor, int offset, int size);
+    void AddEntry(const std::string &path, const FDProducer::Ref &producer, int offset, int size);
     void RemoveEntry(const std::string &path);
 };
 

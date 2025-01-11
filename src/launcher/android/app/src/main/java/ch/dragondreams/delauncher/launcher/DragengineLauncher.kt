@@ -177,8 +177,9 @@ class DragengineLauncher(
      * Add native file descriptor as path to VFS. File descriptor will be closed
      * upon removal from VFS. Path is added to VFS under "/fds".
      */
-    fun vfsContainerAddFd(path: String, fd: Int, offset: Int, length: Int) {
-        launcher?.vfsContainerAddFd(path, fd, offset, length)
+    fun vfsContainerAddFd(path: String, producer: Launcher.FileDescriptorProducer,
+                          offset: Int, length: Int) {
+        launcher?.vfsContainerAddFd(path, producer, offset, length)
     }
 
     /**

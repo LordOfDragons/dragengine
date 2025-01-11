@@ -8,7 +8,6 @@ class RemoteLauncherClient;
 class RemoteLauncherHandler : public RunGameHandler{
 private:
     RemoteLauncherClient *pClient;
-    deLoggerChain::Ref pEngineLogger;
 
 public:
     RemoteLauncherHandler(JNIEnv *env, RemoteLauncherClient *client, Launcher *launcher,
@@ -18,9 +17,8 @@ public:
     void GameExited(BaseGameActivityAdapter &adapter) override;
 
 protected:
-    void pInitEngineInstanceFactory(delEngineInstanceDirect::Factory &factory) override;
     void pInitGameForRun() override;
-    void pCreateEngineLogger();
+    void pCreateEngineLogger() override;
 };
 
 #endif //DELAUNCHER_REMOTELAUNCHERHANDLER_H

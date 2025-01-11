@@ -149,7 +149,6 @@ private:
 	
 	int pScreenWidth;
 	int pScreenHeight;
-	bool pScreenResized;
 #endif
 	
 #ifdef OS_BEOS
@@ -309,12 +308,6 @@ public:
 	
 	/** Check if screen configuration changed. */
 	void CheckConfigurationChanged();
-	
-	/** Screen size changed. */
-	inline bool GetScreenResized() const{ return pScreenResized; }
-	
-	/** Clear screen size changed. */
-	void ClearScreenResized();
 	
 	/** Current screen width. */
 	inline int GetScreenWidth() const{ return pScreenWidth; }

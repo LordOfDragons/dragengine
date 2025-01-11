@@ -37,6 +37,9 @@ class deFont;
  * \brief Action button overlay.
  */
 class deaiOverlayActionButton : public deaiOverlay{
+public:
+	typedef deTObjectReference<deaiOverlayActionButton> Ref;
+	
 private:
 	deaiInputBinding pBinding;
 	

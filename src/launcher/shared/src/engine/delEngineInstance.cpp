@@ -90,4 +90,16 @@ const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath){
 void delEngineInstance::RunSingleFrameUpdate(){
 	DETHROW_INFO(deeInvalidAction, "not supported");
 }
+
+void delEngineInstance::SetAppActive(bool gained){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::SetAppPaused(bool paused){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::InputEvent(const android_input_buffer &inputBuffer){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
 #endif

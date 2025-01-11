@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <mutex>
 #include <dragengine/common/exceptions.h>
+#include <android/window.h>
 #include "GameActivityHandler.h"
 
 static class GameActivityAdapter : public BaseGameActivityAdapter{
@@ -30,6 +31,9 @@ public:
 
         app->activity->vm->AttachCurrentThread(&pJniEnv, nullptr);
 
+        // receive all kinds of input events (null filter)
+        android_app_set_motion_event_filter(app, nullptr);
+
         while(true){
             int events;
             android_poll_source *source;
@@ -38,13 +42,24 @@ public:
             // otherwise => timeoutMillis = -1
             while((ALooper_pollOnce(0, nullptr, &events, (void**)&source)) >= 0){
                 std::lock_guard guard(pMutex);
-
-                // process message
                 if(source){
                     source->process(source->app, source);
                 }
                 if(app->destroyRequested){
                     return;
+                }
+            }
+
+            // process pending key and motion events. requires swapping input buffers to
+            // not miss events while processing inputBuffer.
+            android_input_buffer *inputBuffer = android_app_swap_input_buffers(pApp);
+            if(inputBuffer){
+                pHandler->InputEvent(*this, *inputBuffer);
+                if(inputBuffer->keyEventsCount != 0){
+                    android_app_clear_key_events(inputBuffer);
+                }
+                if (inputBuffer->motionEventsCount != 0) {
+                    android_app_clear_motion_events(inputBuffer);
                 }
             }
 
@@ -71,6 +86,25 @@ public:
         if(pApp) {
             GameActivity_finish(pApp->activity);
         }
+    }
+
+    void EnableFullScreenMode(bool enable) override{
+        const int flags = AWINDOW_FLAG_KEEP_SCREEN_ON
+                | AWINDOW_FLAG_TURN_SCREEN_ON
+                | AWINDOW_FLAG_FULLSCREEN
+                | AWINDOW_FLAG_SHOW_WHEN_LOCKED;
+
+        if(enable) {
+            GameActivity_setWindowFlags(pApp->activity, flags, 0);
+
+        }else{
+            GameActivity_setWindowFlags(pApp->activity, 0, flags);
+        }
+    }
+
+    void GetSavedState(size_t &size, void *&data) override{
+        size = pApp->savedStateSize;
+        data = pApp->savedState;
     }
 
 private:

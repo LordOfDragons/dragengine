@@ -59,7 +59,6 @@ pScreenRefreshRate(30),
 pCurWindow(nullptr),
 pHostingMainWindow(nullptr),
 pHostingRenderWindow(nullptr),
-pAppHasFocus(false),
 pAppFrozen(false)
 {
 	DEASSERT_NOTNULL(config.javavm)
@@ -241,10 +240,6 @@ bool deOSAndroid::HasHostingRenderWindow() const{
 }
 
 
-
-void deOSAndroid::SetAppHasFocus(bool appHasFocus){
-	pAppHasFocus = appHasFocus;
-}
 
 void deOSAndroid::SetAppFrozen(bool frozen){
 	pAppFrozen = frozen;

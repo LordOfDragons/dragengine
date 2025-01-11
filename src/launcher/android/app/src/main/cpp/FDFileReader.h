@@ -2,6 +2,7 @@
 #define DELAUNCHER_FDFILEREADER_H
 
 #include <dragengine/common/file/decBaseFileReader.h>
+#include "FDProducer.h"
 
 class FDFileReader : public decBaseFileReader {
 private:
@@ -10,9 +11,11 @@ private:
     long pOffset;
     long pLength;
     TIME_SYSTEM pModificationTime;
+    FDProducer::Ref pProducer;
 
 public:
-    FDFileReader(const char *filename, int fileDescriptor, long offset, long length);
+    FDFileReader(const char *filename, int fileDescriptor, long offset, long length,
+                 const FDProducer::Ref &producer);
 
 protected:
     ~FDFileReader() override;

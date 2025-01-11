@@ -5,6 +5,7 @@
 #include "GameActivityHandler.h"
 #include <delauncher/game/delGame.h>
 #include <delauncher/game/delGameRunParams.h>
+#include <dragengine/common/file/decMemoryFile.h>
 
 class Launcher;
 
@@ -20,6 +21,9 @@ protected:
     Launcher *pLauncher;
     const delGame::Ref pGame;
     delGameRunParams pRunParams;
+    deLoggerChain::Ref pEngineLogger;
+
+    decMemoryFile::Ref pSavedState;
 
     void pSetState(State state);
 
@@ -42,6 +46,7 @@ public:
 
     void Command(BaseGameActivityAdapter &adapter, int32_t cmd) override;
     void FrameUpdate(BaseGameActivityAdapter &adapter) override;
+    void InputEvent(BaseGameActivityAdapter &adapter, const android_input_buffer &inputBuffer) override;
 
     virtual void StartGame(BaseGameActivityAdapter &adapter);
     virtual void ProcessRunning(BaseGameActivityAdapter &adapter);
@@ -52,6 +57,7 @@ protected:
     virtual void pStateChanged();
     virtual void pInitEngineInstanceFactory(delEngineInstanceDirect::Factory &factory);
     virtual void pInitGameForRun();
+    virtual void pCreateEngineLogger();
 };
 
 #endif //DELAUNCHER_RUNGAMEHANDLER_H

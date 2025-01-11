@@ -34,7 +34,9 @@
 #include "../game/profile/delGPModuleList.h"
 #include "../game/profile/delGPMParameter.h"
 
-#if defined OS_BEOS
+#if defined OS_ANDROID
+#	include <dragengine/app/deOSAndroid.h>
+#elif defined OS_BEOS
 #	include <dragengine/app/deOSBeOS.h>
 #	include <dragengine/app/deOSConsole.h>
 #elif defined OS_UNIX
@@ -215,7 +217,9 @@ bool delEngineInstanceDirect::StartEngine(){
 		
 		// create os
 		if( GetUseConsole() ){
-			#ifdef OS_UNIX
+			#ifdef OS_ANDROID
+			DETHROW_INFO(deeInvalidAction, "not supported");
+			#elif defined OS_UNIX
 			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Console (console requested)" );
 			os = new deOSConsole();
 			#elif defined OS_W32
@@ -1153,6 +1157,21 @@ void delEngineInstanceDirect::RunSingleFrameUpdate(){
 		pEngine->GetErrorTrace()->AddPoint(nullptr,
 			"delEngineInstanceDirect::RunSingleFrameUpdate", __LINE__);
 		DEASSERT_TRUE(pEngine->RecoverFromError() && pEngine->ResumeRun())
+	}
+}
+
+void delEngineInstanceDirect::SetAppActive(bool active){
+	((deOSAndroid*)pEngine->GetOS())->SetAppActive(active);
+}
+
+void delEngineInstanceDirect::SetAppPaused(bool paused){
+	((deOSAndroid*)pEngine->GetOS())->SetAppFrozen(paused);
+}
+
+void delEngineInstanceDirect::InputEvent(const android_input_buffer &inputBuffer){
+	deBaseInputModule * const module = pEngine->GetInputSystem()->GetActiveModule();
+	if(module){
+		module->EventLoop(inputBuffer);
 	}
 }
 #endif

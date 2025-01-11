@@ -15,8 +15,9 @@
 #include "EngineModule.h"
 #include "Game.h"
 #include "Launcher.h"
+#include "JniFDProducer.h"
 
-static JavaVM *vJavaVM = nullptr;
+JavaVM *vJavaVM = nullptr;
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved){
     vJavaVM = vm;
@@ -137,12 +138,15 @@ JNIEnv *env, jobject thiz, jlong plauncher) {
 extern "C"
 JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_Launcher_vfsContainerAddFd(
-JNIEnv *env, jobject thiz, jlong plauncher, jstring path, jint fd, jint offset, jint length){
+JNIEnv *env, jobject thiz, jlong plauncher, jstring path,
+jobject pproducer, jint offset, jint length){
     JniHelpers h(env);
     try {
         const Launcher &launcher = *((Launcher *) (intptr_t) plauncher);
         std::string spath(h.convertString(path));
-        launcher.GetFDContainer()->AddEntry(spath, fd, offset, length);
+        launcher.GetFDContainer()->AddEntry(spath,
+            std::make_shared<JniFDProducer>(env, pproducer),
+            offset, length);
     }catch(const deException &e){
         h.throwException(e);
     }

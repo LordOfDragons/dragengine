@@ -7,15 +7,11 @@
 // class FDVFSContainer::Entry
 ////////////////////////////////
 
-FDVFSContainer::Entry::Entry(int fd, int offset, int size) :
-pFileDescriptor(fd),
+FDVFSContainer::Entry::Entry(const FDProducer::Ref &producer, int offset, int size) :
+pProducer(producer),
 pOffset(offset),
 pSize(size),
 pModidicationTime(decDateTime::GetSystemTime()){
-}
-
-FDVFSContainer::Entry::~Entry(){
-    close(pFileDescriptor);
 }
 
 
@@ -48,8 +44,11 @@ decBaseFileReader *FDVFSContainer::OpenFileForReading(const decPath &path) {
     const MapEntries::const_iterator iter(pEntries.find(path.GetPathUnix().GetString()));
     DEASSERT_TRUE(iter != pEntries.cend())
 
-    return new FDFileReader(iter->first.c_str(), iter->second->GetFileDescriptor(),
-                            iter->second->GetOffset(), iter->second->GetSize());
+    const FDProducer::Ref &producer = iter->second->GetProducer();
+    return new FDFileReader(iter->first.c_str(),
+                            producer->CreateFileDescriptor(),
+                            iter->second->GetOffset(),
+                            iter->second->GetSize(), producer);
 }
 
 decBaseFileWriter *FDVFSContainer::OpenFileForWriting(const decPath &path) {
@@ -112,15 +111,15 @@ bool FDVFSContainer::HasEntry(const std::string &path) {
     return pEntries.find(path) != pEntries.cend();
 }
 
-void FDVFSContainer::AddEntry(const std::string &path, int fileDescriptor, int offset, int size){
-    DEASSERT_TRUE(fileDescriptor != 0)
+void FDVFSContainer::AddEntry(const std::string &path, const FDProducer::Ref &producer, int offset, int size){
+    DEASSERT_NOTNULL(producer)
     DEASSERT_TRUE(offset >= 0)
     DEASSERT_TRUE(size >= 0)
     DEASSERT_FALSE(path.empty())
     DEASSERT_TRUE(path[0] == '/')
     DEASSERT_FALSE(path == "/")
     DEASSERT_FALSE(HasEntry(path))
-    pEntries[path] = std::make_shared<Entry>(fileDescriptor, offset, size);
+    pEntries[path] = std::make_shared<Entry>(producer, offset, size);
 }
 
 void FDVFSContainer::RemoveEntry(const std::string &path){

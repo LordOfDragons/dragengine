@@ -7,14 +7,17 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decDateTime.h>
 
-FDFileReader::FDFileReader(const char *filename, int fileDescriptor, long offset, long length) :
+FDFileReader::FDFileReader(const char *filename, int fileDescriptor, long offset,
+                           long length, const FDProducer::Ref &producer) :
 pFilename(filename),
 pFileDescriptor(fileDescriptor),
 pOffset(offset),
 pLength(length),
-pModificationTime(decDateTime::GetSystemTime())
+pModificationTime(decDateTime::GetSystemTime()),
+pProducer(producer)
 {
     DEASSERT_TRUE(fileDescriptor != 0)
+    DEASSERT_NOTNULL(producer)
 
     if(lseek(fileDescriptor, offset, SEEK_SET) == -1){
         DETHROW_INFO(deeReadFile, "file descriptor does not support seeking");
@@ -22,6 +25,7 @@ pModificationTime(decDateTime::GetSystemTime())
 }
 
 FDFileReader::~FDFileReader(){
+    close(pFileDescriptor);
 }
 
 const char *FDFileReader::GetFilename(){
@@ -89,5 +93,6 @@ void FDFileReader::Read(void *buffer, int size){
 
 decBaseFileReader::Ref FDFileReader::Duplicate() {
     return Ref::New(new FDFileReader(GetFilename(),
-        pFileDescriptor, pOffset, pLength));
+        pProducer->CreateFileDescriptor(),
+        pOffset, pLength, pProducer));
 }
