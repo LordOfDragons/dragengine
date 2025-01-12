@@ -47,12 +47,22 @@ android {
             ndk {
                 abiFilters.add("arm64-v8a")
             }
+            externalNativeBuild {
+                cmake {
+                    arguments.add("-DANDROID_FLAVOR=armv8")
+                }
+            }
         }
         create("armv7") {
             dimension = "architecture"
             versionNameSuffix = "-armv7"
             ndk {
                 abiFilters.add("armeabi-v7a")
+            }
+            externalNativeBuild {
+                cmake {
+                    arguments.add("-DANDROID_FLAVOR=armv7")
+                }
             }
         }
     }

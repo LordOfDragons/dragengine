@@ -107,14 +107,14 @@ include_directories(
         ${game-activity-include}
         "${CMAKE_SOURCE_DIR}/../../../../../shared/build/include"
         "${CMAKE_SOURCE_DIR}/../../../../../../dragengine/build/include"
-        "${CMAKE_SOURCE_DIR}/../../../../../../../extern/deremotelauncher/build/deremotelauncher-android-armv8-nightly/include",
-        "${CMAKE_SOURCE_DIR}/../../../../../../../extern/denetwork/build/denetworkcpp-android-armv8-nightly/include")
+        "${CMAKE_SOURCE_DIR}/../../../../../../../extern/deremotelauncher/build/deremotelauncher-android-${ANDROID_FLAVOR}-nightly/include",
+        "${CMAKE_SOURCE_DIR}/../../../../../../../extern/denetwork/build/denetworkcpp-android-${ANDROID_FLAVOR}-nightly/include")
 
 target_link_libraries("remote_launcher_handler"
     ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libdelauncher.so
     ${CMAKE_SOURCE_DIR}/../jniLibs/${CMAKE_ANDROID_ARCH_ABI}/libdragengine.so
-    ${CMAKE_SOURCE_DIR}/../../../../../../../extern/deremotelauncher/build/deremotelauncher-android-armv8-nightly/lib/libderemotelauncher.a
-    ${CMAKE_SOURCE_DIR}/../../../../../../../extern/denetwork/build/denetworkcpp-android-armv8-nightly/lib/libdenetwork.a
+    ${CMAKE_SOURCE_DIR}/../../../../../../../extern/deremotelauncher/build/deremotelauncher-android-${ANDROID_FLAVOR}-nightly/lib/libderemotelauncher.a
+    ${CMAKE_SOURCE_DIR}/../../../../../../../extern/denetwork/build/denetworkcpp-android-${ANDROID_FLAVOR}-nightly/lib/libdenetwork.a
     android
     log)
 

@@ -10,7 +10,7 @@ envLibrary = parent_env.Clone()
 
 srcVersion = 'nightly'
 if envLibrary['platform_android'] != 'no':
-	sysarch = 'android-armv8'
+	sysarch = 'android-{}'.format(envLibrary['platform_android'])
 else:
 	sysarch = 'unix-x64'
 srcdir = 'deremotelauncher-{}-{}'.format(sysarch, srcVersion)
