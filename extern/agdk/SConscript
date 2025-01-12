@@ -12,7 +12,7 @@ if parent_env['platform_android'] == 'no':
 envLibrary = parent_env.Clone()
 
 srcVersion = '2023.3.0.0'
-sysarch = 'armv8'
+sysarch = envLibrary['platform_android']
 srcdir = 'agdk-{}-{}'.format(sysarch, srcVersion)
 
 libLinkNames = ['game-activity_static', 'game-text-input_static', 'paddleboat_static']
