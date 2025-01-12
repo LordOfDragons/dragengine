@@ -282,6 +282,9 @@ params.Add(StringVariable('installer_name_igde',
 params.Add(StringVariable('installer_name_igde_dev',
 	'Installer file name without extension for IGDE Development installer', 'install-deigde-dev'))
 
+params.Add(StringVariable('apk_name_launcher',
+	'Android Launcher APK file name without extension', 'DELauncher'))
+
 
 if parent_env['OSMacOS']:
 	params.Add(TernaryVariable('with_dl', 'Use the dynamic library system'))

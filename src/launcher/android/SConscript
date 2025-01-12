@@ -2,7 +2,7 @@ from SConsCommon import *
 
 import re
 import os
-import zipfile
+import datetime
 
 Import('parent_env parent_targets parent_report')
 
@@ -81,8 +81,12 @@ apkDeps.extend(envLauncher.Command(assetEngineSize, assetFilesEngine.values(),
 
 # asset storing game engine version
 def buildAssetEngineVersion(env, target, source):
+	parts = [envLauncher['version']]
+	now = datetime.datetime.now()
+	parts.append(now.strftime('%Y-%m-%d'))
+	parts.append(now.strftime('%H-%M-%S'))
 	with open(target[0].abspath, 'w') as f:
-		f.write(envLauncher['version'])
+		f.write('_'.join(parts))
 
 assetEngineVersion = assetDir.File('dragengine-version').srcnode()
 apkDeps.extend(envLauncher.Command(assetEngineVersion, assetEngine,
@@ -113,12 +117,15 @@ def gradleBuildApk(env, target, source):
 apk = envLauncher.Command(nodeApk, apkSources,
 	envLauncher.Action(gradleBuildApk, 'Build Android Launcher APK'))
 envLauncher.Depends(apk, apkDeps)
+envLauncher.Clean(apk, 'app/build')
 
-targetBuild = envLauncher.Alias('launcher_android_build', apk)
-envLauncher.Clean(targetBuild, 'app/build')
+apkFilename = '{}-{}-{}.apk'.format(envLauncher['apk_name_launcher'],
+	envLauncher['platform_android'], envLauncher['version'])
+
+finalApk = envLauncher.InstallAs(apkFilename, apk)
+targetBuild = envLauncher.Alias('launcher_android_build', finalApk)
 
 targetInstall = targetBuild
-archive = []
 
 
 # source directory required for special commands
@@ -138,6 +145,5 @@ parent_targets['launcher_android'] = {
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
-	'archive-launcher' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}
