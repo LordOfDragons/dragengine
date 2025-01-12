@@ -114,7 +114,7 @@ jobs:
       
       - name: Init custom.py
         run: |
-          cp ${{ github.workspace }}/.github/workflows/custom_android_aarch64.py custom.py
+          cp ${{ github.workspace }}/.github/workflows/custom_android.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
           sed -i -e "s@{NdkRoot}@$ANDROID_NDK_ROOT@g" custom.py
