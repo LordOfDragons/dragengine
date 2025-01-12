@@ -19,6 +19,12 @@ on:
         type: string
         default: 'X-Y{-Z}'
 
+env:
+  # Android API level:
+  # Android 10: 29
+  # Android 8: 26
+  ANDROID_API_LEVEL: 26
+        
 jobs:
   build_linux:
     uses: ./.github/workflows/build_linux.yml
@@ -64,6 +70,24 @@ jobs:
       buildVersion: ${{ github.event.inputs.version }}
       artifactInstaller: installers-linux-ci
   
+  build_android_armv8:
+    uses: ./.github/workflows/build_android.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: ${{ github.event.inputs.version }}
+      androidArch: 'armv8'
+      androidApiLevel: '$ANDROID_API_LEVEL'
+      artifactArchive: archives-android-armv8
+  
+  build_android_armv7:
+    uses: ./.github/workflows/build_android.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: ${{ github.event.inputs.version }}
+      androidArch: 'armv7'
+      androidApiLevel: '$ANDROID_API_LEVEL'
+      artifactArchive: archives-android-armv7
+  
   build_live:
     needs: [build_linux, build_windows]
     uses: ./.github/workflows/build_live.yml
@@ -93,7 +117,16 @@ jobs:
       artifactResults: testing-results
 
   upload:
-    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live, testing]
+    needs: [
+      build_linux,
+      build_windows,
+      build_windows_installer,
+      build_linux_ci,
+      build_android_armv8,
+      build_android_armv7,
+      build_live,
+      testing]
+    
     runs-on: ubuntu-20.04
     
     steps:

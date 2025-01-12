@@ -22,17 +22,38 @@ android {
             }
         }
         ndk {
-            abiFilters.add("arm64-v8a")
+            abiFilters.clear()
         }
     }
 
     buildTypes {
+        debug {
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    flavorDimensions.add("architecture")
+
+    productFlavors {
+        create("armv8") {
+            dimension = "architecture"
+            versionNameSuffix = "-armv8"
+            ndk {
+                abiFilters.add("arm64-v8a")
+            }
+        }
+        create("armv7") {
+            dimension = "architecture"
+            versionNameSuffix = "-armv7"
+            ndk {
+                abiFilters.add("armeabi-v7a")
+            }
         }
     }
     compileOptions {

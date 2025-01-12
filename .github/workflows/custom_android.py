@@ -8,8 +8,8 @@ with_threads = '14'
 version = '{BuildVersion}'
 
 ndkroot = '{NdkRoot}'
-platform_android = 'armv8'
-apilevel = '29' # Android 10
+platform_android = '{AndroidArch}'
+apilevel = '{AndroidApiLevel}'
 hardfp = True
 
 # external library configuration
@@ -92,13 +92,14 @@ build_editor_world = 'no'
 # archiving
 #############
 archive_format = 'tarbz2'
-archive_name_engine = 'dragengine-{ReleaseVersion}-android64'
-archive_name_engine_dev = 'dragengine-dev-{ReleaseVersion}-android64'
-archive_name_igde = 'deigde-{ReleaseVersion}-android64'
-archive_name_igde_dev = 'deigde-dev-{ReleaseVersion}-android64'
-archive_name_special = 'despecial-{ReleaseVersion}-android64'
-installer_name_engine = 'install-dragengine-{ReleaseVersion}-android64'
-installer_name_engine_dev = 'install-dragengine-dev-{ReleaseVersion}-android64'
-installer_name_igde = 'install-deigde-{ReleaseVersion}-android64'
-installer_name_igde_dev = 'install-deigde-dev-{ReleaseVersion}-android64'
+archive_name_engine = 'dragengine-{ReleaseVersion}-android-{AndroidArch}'
+archive_name_engine_dev = 'dragengine-dev-{ReleaseVersion}-android-{AndroidArch}'
+archive_name_igde = 'deigde-{ReleaseVersion}-android-{AndroidArch}'
+archive_name_igde_dev = 'deigde-dev-{ReleaseVersion}-android-{AndroidArch}'
+archive_name_special = 'despecial-{ReleaseVersion}-android-{AndroidArch}'
+installer_name_engine = 'install-dragengine-{ReleaseVersion}-android-{AndroidArch}'
+installer_name_engine_dev = 'install-dragengine-dev-{ReleaseVersion}-android-{AndroidArch}'
+installer_name_igde = 'install-deigde-{ReleaseVersion}-android-{AndroidArch}'
+installer_name_igde_dev = 'install-deigde-dev-{ReleaseVersion}-android-{AndroidArch}'
+apk_name_launcher = 'DELauncher-{ReleaseVersion}-{AndroidArch}'
 addon_name_blender = 'blender-addon-dragengine'

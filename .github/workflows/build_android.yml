@@ -1,4 +1,4 @@
-name: Build Android Armv7
+name: Build Android AArch64
 
 on:
   workflow_call:
@@ -13,6 +13,14 @@ on:
       buildVersion:
         required: true
         type: string
+      androidArch:
+        required: true
+        type: string
+        default: 'armv8'
+      androidApiLevel:
+        required: true
+        type: string
+        default: '26'
       artifactArchive:
         required: true
         type: string
@@ -37,12 +45,22 @@ on:
         description: 'Build Version'
         required: true
         type: string
-        default: 9999
+        default: '9999'
+      androidArch:
+        description: 'Android Architecture'
+        required: true
+        type: string
+        default: 'armv8'
+      androidApiLevel:
+        description: 'Android API Level'
+        required: true
+        type: string
+        default: '26'
       artifactArchive:
         description: 'Artifact Archive'
         required: true
         type: string
-        default: "archives-android32"
+        default: "archives-android64"
       debugBuild:
         description: 'Debug Build'
         type: boolean
@@ -96,17 +114,19 @@ jobs:
       
       - name: Init custom.py
         run: |
-          cp ${{ github.workspace }}/.github/workflows/custom_android_armv7.py custom.py
+          cp ${{ github.workspace }}/.github/workflows/custom_android_aarch64.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
           sed -i -e "s@{NdkRoot}@$ANDROID_NDK_ROOT@g" custom.py
+          sed -i -e 's/{AndroidArch}/${{ inputs.androidArch }}/g' custom.py
+          sed -i -e 's/{AndroidApiLevel}/${{ inputs.androidApiLevel }}/g' custom.py
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
           scons -j 1 lib_openxr lib_libjpeg lib_libwebm
-          scons -j 14 archive
+          scons -j 14 archive launcher_android
       
       - name: Get current date
         id: date
@@ -117,7 +137,8 @@ jobs:
         with:
           name: ${{ inputs.artifactArchive }}
           path: |
-            archive/build/dragengine-${{ inputs.releaseVersion }}-android32.tar.bz2
-            archive/build/dragengine-dev-${{ inputs.releaseVersion }}-android32.tar.bz2
-            archive/build/despecial-${{ inputs.releaseVersion }}-android32.tar.bz2
+            archive/build/dragengine-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
+            archive/build/dragengine-dev-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
+            archive/build/despecial-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
+            src/launcher/android/build/DELauncher-${{ inputs.releaseVersion }}-${{ inputs.androidArch }}.apk
           if-no-files-found: error

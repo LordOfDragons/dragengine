@@ -18,6 +18,10 @@ if not buildLauncher:
 	Return()
 
 
+# parameters
+jniDir = envLauncher['ANDROID_JNIDIR']
+
+
 # launcher sources (android project)
 apkSources = []
 globFiles(envLauncher, '.', '*', apkSources, recursive=False)
@@ -41,9 +45,9 @@ def installJniLibrary(targetDir, sources):
 apkDeps.extend(parent_targets['lib_deremotelauncher']['depends'])
 apkDeps.extend(parent_targets['lib_denetwork']['depends'])
 
-jniDir = envLauncher.Dir('app/src/main/jniLibs/arm64-v8a').srcnode()
-apkDeps.extend(installJniLibrary(jniDir, parent_targets['delauncher']['library']))
-apkDeps.extend(installJniLibrary(jniDir, parent_targets['dragengine']['library']))
+targetDir = envLauncher.Dir('app/src/main/jniLibs/{}'.format(jniDir)).srcnode()
+apkDeps.extend(installJniLibrary(targetDir, parent_targets['delauncher']['library']))
+apkDeps.extend(installJniLibrary(targetDir, parent_targets['dragengine']['library']))
 
 
 # game engine asset archive
@@ -96,9 +100,13 @@ apkDeps.extend(envLauncher.Command(assetEngineVersion, assetEngine,
 
 # launcher APK
 if envLauncher['with_debug']:
-	apkFilename = 'app/build/outputs/apk/debug/app-debug.apk'
+	apkFilename = os.path.join('app', 'build', 'outputs', 'apk',
+		envLauncher['platform_android'], 'debug',
+		'app-{}-debug.apk'.format(envLauncher['platform_android']))
 else:
-	apkFilename = 'app/build/outputs/apk/release/app-release-unsigned.apk'
+	apkFilename = os.path.join('app', 'build', 'outputs', 'apk',
+		envLauncher['platform_android'], 'release',
+		'app-{}-release-unsigned.apk'.format(envLauncher['platform_android']))
 nodeApk = envLauncher.File(apkFilename).srcnode()
 
 def gradleBuildApk(env, target, source):
@@ -108,10 +116,22 @@ def gradleBuildApk(env, target, source):
 	
 	script.append('export ANDROID_NDK_HOME="{}"'.format(env.subst(env['ndkroot'])))
 	
-	if envLauncher['with_debug']:
-		script.append('./gradlew assembleDebug || exit 1')
+	task = ['assemble']
+	
+	platform = envLauncher['platform_android']
+	if platform == 'armv8':
+		task.append('Armv8')
+	elif platform == 'armv7':
+		task.append('Armv7')
 	else:
-		script.append('./gradlew assembleRelease || exit 1')
+		raise Exception('unsupported platform {}'.format(platform))
+	
+	if envLauncher['with_debug']:
+		task.append('Debug')
+	else:
+		task.append('Release')
+	
+	script.append('./gradlew {} || exit 1'.format(''.join(task)))
 	return 1 if os.system('\n'.join(script)) else None
 
 apk = envLauncher.Command(nodeApk, apkSources,
@@ -119,8 +139,7 @@ apk = envLauncher.Command(nodeApk, apkSources,
 envLauncher.Depends(apk, apkDeps)
 envLauncher.Clean(apk, 'app/build')
 
-apkFilename = '{}-{}-{}.apk'.format(envLauncher['apk_name_launcher'],
-	envLauncher['platform_android'], envLauncher['version'])
+apkFilename = '{}.apk'.format(envLauncher['apk_name_launcher'])
 
 finalApk = envLauncher.InstallAs(apkFilename, apk)
 targetBuild = envLauncher.Alias('launcher_android_build', finalApk)
