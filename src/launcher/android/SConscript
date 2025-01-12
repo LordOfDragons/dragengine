@@ -1,0 +1,143 @@
+from SConsCommon import *
+
+import re
+import os
+import zipfile
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] == 'no':
+	Return()
+
+envLauncher = parent_env.Clone()
+
+buildLauncher = envLauncher['build_launcher_android'] != TernaryVariableNo
+
+parent_report['build Android Launcher'] = 'yes' if buildLauncher else 'no'
+if not buildLauncher:
+	Return()
+
+
+# launcher sources (android project)
+apkSources = []
+globFiles(envLauncher, '.', '*', apkSources, recursive=False)
+globFiles(envLauncher, 'app', '*', apkSources, recursive=False)
+globFiles(envLauncher, 'app/src', '*', apkSources, recursive=True)
+apkSources = [x for x in apkSources if not x.startswith('app/src/main/jniLibs')]
+apkSources = [x for x in apkSources if not x.startswith('app/src/main/assets')]
+
+apkDeps = []
+
+
+# JNI libraries (android project JNI directory)
+def installJniLibrary(targetDir, sources):
+	regexReplace = re.compile(r'\.so[\.\d+]*')
+	targets = []
+	for s in sources:
+		lname = regexReplace.sub('.so', s.name)
+		targets.extend(envLauncher.InstallAs(targetDir.File(lname), s))
+	return targets
+
+apkDeps.extend(parent_targets['lib_deremotelauncher']['depends'])
+apkDeps.extend(parent_targets['lib_denetwork']['depends'])
+
+jniDir = envLauncher.Dir('app/src/main/jniLibs/arm64-v8a').srcnode()
+apkDeps.extend(installJniLibrary(jniDir, parent_targets['delauncher']['library']))
+apkDeps.extend(installJniLibrary(jniDir, parent_targets['dragengine']['library']))
+
+
+# game engine asset archive
+assetDir = envLauncher.Dir('app/src/main/assets').srcnode()
+
+installDir = envLauncher.subst('$prefix')
+assetFilesEngine = {}
+for t in parent_targets.values():
+	if 'archive-engine' in t:
+		for e in t['archive-engine'].items():
+			filename = os.path.relpath(e[0], installDir)
+			if filename.startswith('lib/lib'):
+				continue
+			assetFilesEngine[filename] = e[1]
+
+assetEngine = assetDir.File('dragengine.zip').srcnode()
+apkDeps.extend(envLauncher.Command(assetEngine, assetFilesEngine.values(),
+	envLauncher.Action(ArchiveZip, 'Asset {}'.format(assetEngine.name)),
+	ArchiveFiles = assetFilesEngine))
+
+
+# asset storing unpacked size of game engine
+def buildAssetUnpackedSize(env, target, source):
+	size = 0
+	for f in source:
+		size += os.stat(f.abspath).st_size
+	with open(target[0].abspath, 'w') as f:
+		f.write(str(size))
+
+assetEngineSize = assetDir.File('dragengine-filesize').srcnode()
+apkDeps.extend(envLauncher.Command(assetEngineSize, assetFilesEngine.values(),
+	envLauncher.Action(buildAssetUnpackedSize,
+		'Asset {}'.format(assetEngineSize.name))))
+
+
+# asset storing game engine version
+def buildAssetEngineVersion(env, target, source):
+	with open(target[0].abspath, 'w') as f:
+		f.write(envLauncher['version'])
+
+assetEngineVersion = assetDir.File('dragengine-version').srcnode()
+apkDeps.extend(envLauncher.Command(assetEngineVersion, assetEngine,
+	envLauncher.Action(buildAssetEngineVersion,
+		'Asset {}'.format(assetEngineVersion.name))))
+
+
+# launcher APK
+if envLauncher['with_debug']:
+	apkFilename = 'app/build/outputs/apk/debug/app-debug.apk'
+else:
+	apkFilename = 'app/build/outputs/apk/release/app-release-unsigned.apk'
+nodeApk = envLauncher.File(apkFilename).srcnode()
+
+def gradleBuildApk(env, target, source):
+	buildDir = source[0].get_dir()
+	script = []
+	script.append('cd "{}" || exit 1'.format(buildDir.abspath))
+	
+	script.append('export ANDROID_NDK_HOME="{}"'.format(env.subst(env['ndkroot'])))
+	
+	if envLauncher['with_debug']:
+		script.append('./gradlew assembleDebug || exit 1')
+	else:
+		script.append('./gradlew assembleRelease || exit 1')
+	return 1 if os.system('\n'.join(script)) else None
+
+apk = envLauncher.Command(nodeApk, apkSources,
+	envLauncher.Action(gradleBuildApk, 'Build Android Launcher APK'))
+envLauncher.Depends(apk, apkDeps)
+
+targetBuild = envLauncher.Alias('launcher_android_build', apk)
+envLauncher.Clean(targetBuild, 'app/build')
+
+targetInstall = targetBuild
+archive = []
+
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+
+# cloc
+buildClocBare = BuildCLOC(envLauncher, ['{}/app/src'.format(srcdir)],
+	'{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, apkSources)
+buildCloc = envLauncher.Alias('launcher_android_cloc', buildClocBare)
+
+
+# add the targets to the targets list
+parent_targets['launcher_android'] = {
+	'name' : 'Drag[en]gine Android Launcher',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
+	'archive-launcher' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

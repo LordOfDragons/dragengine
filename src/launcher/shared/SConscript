@@ -148,6 +148,7 @@ parent_targets['delauncher'] = {
 	'libpath' : libpath,
 	'libs' : linklibs,
 	'binlibs' : binlibs,
+	'library': buildLibrary,
 	'build' : targetBuildLib,
 	'install' : targetInstallLib,
 	'install-runtime' : targetInstallLibRuntime,

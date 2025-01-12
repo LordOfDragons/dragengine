@@ -869,7 +869,7 @@ scdirs.append('src/modules/service/modio')
 scdirs.append('src/launcher/shared')
 scdirs.append('src/launcher/console')
 scdirs.append('src/launcher/gui')
-#scdirs.append('src/launcher/android')
+scdirs.append('src/launcher/android')
 scdirs.append('src/launcher/live')
 
 # tests
