@@ -1,4 +1,4 @@
-name: Build Android AArch64
+name: Build Android
 
 on:
   workflow_call:
