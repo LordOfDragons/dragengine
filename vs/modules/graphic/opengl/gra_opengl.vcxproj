@@ -431,6 +431,8 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSourceLocation.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSources.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompiler.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompilerThread.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.h" />
@@ -1053,6 +1055,8 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSourceLocation.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSources.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompiler.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompilerThread.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.cpp" />

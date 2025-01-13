@@ -102,6 +102,9 @@ class deoglRRenderWindow;
  * Operating system specific objects and context.
  */
 class deoglRTContext{
+public:
+	static const int MaxCompileContextCount = 8;
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -116,6 +119,7 @@ private:
 #ifdef BACKEND_OPENGL
 	GLXContext pContext;
 	GLXContext pLoaderContext;
+	GLXContext pCompileContext[MaxCompileContextCount];
 #elif defined BACKEND_VULKAN
 	deSharedVulkan::Ref pVulkan;
 	devkDevice::Ref pDevice;
@@ -145,6 +149,8 @@ private:
 	EGLContext pContext;
 	EGLSurface pLoaderSurface;
 	EGLContext pLoaderContext;
+	EGLSurface pCompileSurface[MaxCompileContextCount];
+	EGLContext pCompileContext[MaxCompileContextCount];
 	EGLConfig pConfig;
 	
 	int pScreenWidth;
@@ -161,6 +167,7 @@ private:
 	NSOpenGLPixelFormat *pPixelFormat;
 	NSOpenGLContext *pContext;
 	NSOpenGLContext *pLoaderContext;
+	NSOpenGLContext *pCompileContext[MaxCompileContextCount];
 #endif
 
 #ifdef OS_W32
@@ -168,6 +175,7 @@ private:
 	deOSWindows *pOSWindows;
 	HGLRC pContext;
 	HGLRC pLoaderContext;
+	HGLRC pCompileContext[MaxCompileContextCount];
 #endif
 	
 	deoglRRenderWindow *pActiveRRenderWindow;
@@ -252,6 +260,9 @@ public:
 	/** Loader context. */
 	inline GLXContext GetLoaderContext() const{ return pLoaderContext; }
 	
+	/** Compile context or nullptr. */
+	inline GLXContext GetCompileContextAt(int index) const{ return pCompileContext[index]; }
+	
 #elif defined BACKEND_VULKAN
 	/** Vulkan. */
 	inline deSharedVulkan &GetVulkan() const{ return pVulkan; }
@@ -297,6 +308,12 @@ public:
 	/** Loader context. */
 	inline EGLContext GetLoaderContext() const{ return pLoaderContext; }
 	
+	/** Compile surface or EGL_NO_SURFACE. */
+	inline EGLSurface GetCompileSurfaceAt(int index) const{ return pCompileSurface[index]; }
+	
+	/** Compile context or EGL_NO_CONTEXT. */
+	inline EGLContext GetCompileContextAt(int index) const{ return pCompileContext[index]; }
+	
 	/** Configuration. */
 	inline const EGLConfig& GetConfig() const{ return pConfig; }
 	
@@ -336,6 +353,9 @@ public:
 	
 	/** Loader context. */
 	inline NSOpenGLContext *GetLoaderContext() const{ return pLoaderContext; }
+	
+	/** Loader context or nullptr. */
+	inline NSOpenGLContext *GetCompileContextAt(int index) const{ return pCompileContext[index]; }
 #endif
 
 #ifdef OS_W32
@@ -350,6 +370,9 @@ public:
 	
 	/** Loader context. */
 	inline HGLRC GetLoaderContext() const{ return pLoaderContext; }
+	
+	/** Compile context or NULL. */
+	inline HGLRC GetCompileContextAt(int index) const{ return pCompileContext[index]; }
 	
 	LRESULT ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam );
 #endif

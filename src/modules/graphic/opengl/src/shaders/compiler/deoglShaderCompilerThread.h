@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,71 +22,66 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLSHADERLANGUAGE_H_
-#define _DEOGLSHADERLANGUAGE_H_
+#ifndef _DEOGLSHADERCOMPILERTHREAD_H_
+#define _DEOGLSHADERCOMPILERTHREAD_H_
+
+#include "deoglShaderPreprocessor.h"
+#include "../deoglBasics.h"
 
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/threading/deMutex.h>
+#include <dragengine/threading/deThread.h>
 
 class deoglShaderDefines;
 class deoglShaderSources;
 class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglRenderThread;
-class deoglShaderCompiler;
+
+#ifdef OS_ANDROID
+class deoglShaderBindingList;
+#endif
+
 
 
 /**
- * Shader Language.
- *
- * A shader language object is responsible for storing all information required
- * for compiling shaders using a specific language as well as handling activation
- * of shaders.
+ * Shader compiler thread.
  */
-class deoglShaderLanguage{
+class deoglShaderCompilerThread : public deThread{
 private:
 	deoglRenderThread &pRenderThread;
+	char *pErrorLog;
+	
+	int pShaderFileNumber;
 	
 	decString pGLSLVersion;
 	decStringList pGLSLExtensions;
 	
 	int pGLSLVersionNumber;
 	
-	deMutex pMutex;
-	int pShaderFileNumber;
-	
-	int pLoadingShaderCount;
 	bool pHasLoadingShader;
-	int pCompilingShaderCount;
+	bool pGuardHasLoadingShader;
 	bool pHasCompilingShader;
+	bool pGuardHasCompilingShader;
 	
-	deoglShaderCompiler *pCompiler;
+	deoglShaderPreprocessor pPreprocessor;
+	deMutex pMutexCompile;
+	deMutex pMutexChecks;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create shader language. */
-	deoglShaderLanguage(deoglRenderThread &renderThread);
-	
-	/** Clean up shader language object. */
-	~deoglShaderLanguage();
+	/** Creates a new shader language object. */
+	deoglShaderCompilerThread( deoglRenderThread &renderThread );
+	/** Cleans up the shader language object. */
+	~deoglShaderCompilerThread();
 	/*@}*/
-	
-	
 	
 	/** \name Management */
 	/*@{*/
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
-	inline const decString &GetGLSLVersion() const{ return pGLSLVersion; }
-	inline const decStringList &GetGLSLExtensions() const{ return pGLSLExtensions; }
-	inline int GetGLSLVersionNumber() const{ return pGLSLVersionNumber; }
-	
-	/** Compile shader from given sources using specified defines. */
-	deoglShaderCompiled *CompileShader(deoglShaderProgram &program);
-	
-	/** Next shader file number. */
-	int NextShaderFileNumber();
+	/** Compieles a shader from the given sources using the specified defines. */
+	deoglShaderCompiled *CompileShader( deoglShaderProgram &program );
 	
 	/**
 	 * Check if shader is loading or has been loaded since the last call.
@@ -99,13 +94,27 @@ public:
 	 * Resets flag if no compiling is in progress right now.
 	 */
 	bool GetHasCompilingShader();
-	
-	/** Internal use only. */
-	void AddLoadingShader();
-	void RemoveLoadingShader();
-	void AddCompilingShader();
-	void RemoveCompilingShader();
 	/*@}*/
+	
+private:
+	deoglShaderCompiled *pCompileShader( deoglShaderProgram &program );
+	void pAfterLinkShader( const deoglShaderProgram &program, deoglShaderCompiled &compiled );
+	deoglShaderCompiled *pCacheLoadShader( deoglShaderProgram &program );
+	void pCacheSaveShader( const deoglShaderProgram &program, const deoglShaderCompiled &compiled );
+	void pPreparePreprocessor( const deoglShaderDefines &defines );
+	
+	#ifdef OS_ANDROID
+	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data, const deoglShaderBindingList *outputList = NULL );
+	#else
+	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data );
+	#endif
+	
+	bool pCompileObject( GLuint handle );
+	bool pLinkShader( GLuint handle );
+	
+	void pOutputShaderToFile( const char *file );
+	void pLogFailedShaderSources();
+	void pPrintErrorLog();
 };
 
 #endif

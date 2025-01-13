@@ -167,6 +167,39 @@ pActiveRRenderWindow( NULL ),
 pUserRequestedQuit( false ),
 pAppActivated( true )
 {
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#ifdef BACKEND_OPENGL
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileContext[i] = nullptr;
+	}
+	#endif
+	#endif
+	
+	#ifdef OS_ANDROID
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileSurface[i] = EGL_NO_SURFACE;
+		pCompileContext[i] = EGL_NO_CONTEXT;
+	}
+	#endif
+	
+	#ifdef OS_BEOS
+	#endif
+	
+	#ifdef OS_MACOS
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileContext[i] = nullptr;
+	}
+	#endif
+	
+	#ifdef OS_W32
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileContext[i] = NULL;
+	}
+	#endif
 }
 
 deoglRTContext::~deoglRTContext(){
@@ -936,6 +969,14 @@ void deoglRTContext::pCreateContext(){
 				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
 					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 				pLoaderContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, pContext, True, contextAttribs );
+				int j;
+				for(j=0; j<MaxCompileContextCount; j++){
+					pCompileContext[j] = pglXCreateContextAttribs(pDisplay, pBestFBConfig, pContext, True, contextAttribs);
+					if(!pCompileContext[j]){
+						break;
+					}
+				}
+				logger.LogInfoFormat("Created %d compile contexts", j);
 				break;
 			}
 			
@@ -948,12 +989,27 @@ void deoglRTContext::pCreateContext(){
 				"Creating OpenGL Context using old method" );
 			pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
 			pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
+			for(i=0; i<MaxCompileContextCount; i++){
+				pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
+				if(!pCompileContext[i]){
+					break;
+				}
+			}
+			logger.LogInfoFormat("Created %d compile contexts", i);
 		}
 		
 	}else{
 		logger.LogInfo( "Creating OpenGL Context using old method" );
 		pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
 		pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
+		int i;
+		for(i=0; i<MaxCompileContextCount; i++){
+			pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
+			if(!pCompileContext[i]){
+				break;
+			}
+		}
+		logger.LogInfoFormat("Created %d compile contexts", i);
 	}
 	
 	DEASSERT_NOTNULL( pContext )
@@ -985,6 +1041,13 @@ void deoglRTContext::pFreeContext(){
 	}
 	
 #ifdef BACKEND_OPENGL
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		if(pCompileContext[i]){
+			glXDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = nullptr;
+		}
+	}
 	if( pLoaderContext ){
 		glXDestroyContext( pDisplay, pLoaderContext );
 		pLoaderContext = nullptr;
@@ -1086,11 +1149,28 @@ void deoglRTContext::pInitDisplay(){
 			EGL_TEXTURE_TARGET, EGL_TEXTURE_2D,
 			EGL_NONE
 		};
+		
 		pLoaderSurface = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
 		DEASSERT_FALSE(pLoaderSurface == EGL_NO_SURFACE)
 		
 		pLoaderContext = eglCreateContext(pDisplay, pConfig, pContext, eglAttribList);
 		DEASSERT_FALSE(pLoaderContext == EGL_NO_CONTEXT)
+		
+		int i;
+		for(i=0; i<MaxCompileContextCount; i++){
+			pCompileContext[i] = eglCreateContext(pDisplay, pConfig, pContext, eglAttribList);
+			if(pCompileContext[i] == EGL_NO_CONTEXT){
+				break;
+			}
+			
+			pCompileSurface[i] = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
+			if(pCompileSurface[i] == EGL_NO_SURFACE){
+				eglDestroyContext(pDisplay, pCompileContext[i]);
+				pCompileContext[i] = EGL_NO_CONTEXT;
+				break;
+			}
+		}
+		pRenderThread.GetLogger().LogInfoFormat("Created %d compile contexts", i);
 	}
 	
 	// make surface current. we have to make it current each render loop
@@ -1110,6 +1190,18 @@ void deoglRTContext::pCloseDisplay(){
 	}
 	
 	TerminateAppWindow();
+	
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		if(pCompileContext[i] != EGL_NO_CONTEXT){
+			eglDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = EGL_NO_CONTEXT;
+		}
+		if(pCompileSurface[i] != EGL_NO_SURFACE){
+			eglDestroySurface(pDisplay, pCompileSurface[i]);
+			pCompileSurface[i] = EGL_NO_SURFACE;
+		}
+	}
 	
 	if(pLoaderContext != EGL_NO_CONTEXT){
 		eglDestroyContext(pDisplay, pLoaderContext);
@@ -1243,6 +1335,14 @@ void deoglRTContext::pCreateContext(){
 				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
 					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 				pLoaderContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs );
+				int j;
+				for(j=0; j<MaxCompileContextCount; j++){
+					pCompileContext[j] = pwglCreateContextAttribs(pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs);
+					if(!pCompileContext[j]){
+						break;
+					}
+				}
+				logger.LogInfoFormat("Created %d compile contexts", j);
 				break;
 			}
 			
@@ -1256,6 +1356,19 @@ void deoglRTContext::pCreateContext(){
 			pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
 			pLoaderContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
 			DEASSERT_TRUE( wglShareLists( pLoaderContext, pContext ) )
+			int i;
+			for(i=0; i<MaxCompileContextCount; i++){
+				pCompileContext[i] = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
+				if(!pCompileContext[i]){
+					break;
+				}
+				if(!wglShareLists(pCompileContext[i], pContext)){
+					wglDeleteContext(pCompileContext[i]);
+					pCompileContext[i] = NULL;
+					break;
+				}
+			}
+			logger.LogInfoFormat("Created %d compile contexts", i);
 		}
 		
 	}else{
@@ -1292,6 +1405,13 @@ void deoglRTContext::pFreeContext(){
 	// destroy render window
 	//pDestroyRenderWindow();
 	
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		if(pCompileContext[i]){
+			wglDeleteContext(pCompileContext[i]);
+			pCompileContext[i] = NULL;
+		}
+	}
 	if( pLoaderContext ){
 		wglDeleteContext( pLoaderContext );
 		pLoaderContext = NULL;
