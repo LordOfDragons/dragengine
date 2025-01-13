@@ -1266,10 +1266,10 @@ bool deoglShaderCompiler::pLinkShader( GLuint handle ){
 }
 
 void deoglShaderCompiler::pOutputShaderToFile(const char *file){
-	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
 	const int number = pLanguage.NextShaderFileNumber();
 	
 #ifdef OS_ANDROID
+	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
 	renderThread.GetLogger().LogErrorFormat("%s_%.3i.shader", file, number);
 	renderThread.GetLogger().LogError(pPreprocessor.GetSources());
 	
