@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/build_linux.yml
     with:
       releaseVersion: nightly
-      buildVersion: 9999
+      buildVersion: '9999'
       artifactArchive: archives-linux
       artifactInstaller: installers-linux
       artifactTools: tools-crossplatform
@@ -32,14 +32,14 @@ jobs:
   #   uses: ./.github/workflows/build_windows.yml
   #   with:
   #     releaseVersion: nightly
-  #     buildVersion: 9999
+  #     buildVersion: '9999'
   #     artifactArchive: archives-windows-mingw
   
   build_windows:
     uses: ./.github/workflows/build_windows_vs.yml
     with:
       releaseVersion: nightly
-      buildVersion: 9999
+      buildVersion: '9999'
       artifactArchive: archives-windows
   
   build_windows_installer:
@@ -54,7 +54,7 @@ jobs:
     uses: ./.github/workflows/build_linux_ci.yml
     with:
       releaseVersion: nightly
-      buildVersion: 9999
+      buildVersion: '9999'
       artifactInstaller: installers-linux-ci
   
   build_android_armv8:
@@ -63,7 +63,7 @@ jobs:
       releaseVersion: nightly
       buildVersion: '9999'
       androidArch: 'armv8'
-      androidApiLevel: '$ANDROID_API_LEVEL'
+      androidApiLevel: $ANDROID_API_LEVEL
       artifactArchive: archives-android-armv8
   
   build_android_armv7:
@@ -72,7 +72,7 @@ jobs:
       releaseVersion: nightly
       buildVersion: '9999'
       androidArch: 'armv7'
-      androidApiLevel: '$ANDROID_API_LEVEL'
+      androidApiLevel: $ANDROID_API_LEVEL
       artifactArchive: archives-android-armv7
   
   build_live:
