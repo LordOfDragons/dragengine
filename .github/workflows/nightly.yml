@@ -63,7 +63,7 @@ jobs:
       releaseVersion: nightly
       buildVersion: '9999'
       androidArch: 'armv8'
-      androidApiLevel: $ANDROID_API_LEVEL
+      androidApiLevel: "$ANDROID_API_LEVEL"
       artifactArchive: archives-android-armv8
   
   build_android_armv7:
@@ -72,7 +72,7 @@ jobs:
       releaseVersion: nightly
       buildVersion: '9999'
       androidArch: 'armv7'
-      androidApiLevel: $ANDROID_API_LEVEL
+      androidApiLevel: "$ANDROID_API_LEVEL"
       artifactArchive: archives-android-armv7
   
   build_live:
