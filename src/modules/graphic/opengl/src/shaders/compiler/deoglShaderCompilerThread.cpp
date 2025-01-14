@@ -101,12 +101,12 @@ void deoglShaderCompilerThread::Run(){
 		
 		if(task){
 			try{
-				const decString &cacheId = ((deoglShaderCompileTask*)task)->GetProgram()->GetCacheId();
-				pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
-					"CompileThread %d: Start task '%.50s...'", pContextIndex, cacheId.GetString());
+				//const decString &cacheId = ((deoglShaderCompileTask*)task)->GetProgram()->GetCacheId();
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Start task '%.50s...'", pContextIndex, cacheId.GetString());
 				task->SetCompiled(pCompiler->CompileShader(*task->GetProgram()));
-				pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
-					"CompileThread %d: Stop task '%.50s...'", pContextIndex, cacheId.GetString());
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Stop task '%.50s...'", pContextIndex, cacheId.GetString());
 				
 			}catch(const deException &e){
 				task->SetCompiled(nullptr); // to be on the safe side

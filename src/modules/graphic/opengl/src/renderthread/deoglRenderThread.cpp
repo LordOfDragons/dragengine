@@ -687,9 +687,6 @@ void deoglRenderThread::Synchronize(){
 				if(size != iocanvas->GetSize()){
 					iocanvas->SetSize(size);
 					pOgl.GetGameEngine()->GetInputSystem()->ScreenSizeChanged();
-					pOgl.LogInfoFormat(
-						"RenderThread.Synchronize: InputSystem.ScreenSizeChanged (%d,%d)",
-						size.x, size.y);
 				}
 			}
 		}
@@ -1132,7 +1129,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	
 	pShader->GetShaderManager().WaitAllProgramsCompiled();
 	pShader->GetShaderManager().GetLanguage()->WaitAllTasksFinished();
-	pLogger->LogInfoFormat("Elapsed Shader Compile/Load: %.0fms", timer.GetElapsedTime() * 1e4f);
+	pLogger->LogInfoFormat("Elapsed Shader Compile/Load: %.0fms", timer.GetElapsedTime() * 1e3f);
 	DEASSERT_FALSE(deoglRenderBase::anyPipelineShaderFailed)
 	
 #ifdef BACKEND_OPENGL

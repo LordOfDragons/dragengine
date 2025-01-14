@@ -795,7 +795,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 	
 	// finished compiling
 	logger.LogInfoFormat("CompileShader %d: Compiled shader for '%.50s...' in %dms", pContextIndex,
-		program.GetCacheId().GetString(), (int)(timerCompile.GetElapsedTime() * 1e4f));
+		program.GetCacheId().GetString(), (int)(timerCompile.GetElapsedTime() * 1e3f));
 	
 	return compiled;
 }
