@@ -169,8 +169,8 @@ void deoglShaderCompilerThread::pActivateContext(){
 		
 #ifdef OS_ANDROID
 		DEASSERT_TRUE(eglMakeCurrent(context.GetDisplay(),
-			context.GetCompilerSurface(pContextIndex),
-			context.GetCompilerSurface(pContextIndex),
+			context.GetCompilerSurfaceAt(pContextIndex),
+			context.GetCompilerSurfaceAt(pContextIndex),
 			context.GetCompileContextAt(pContextIndex)) == EGL_TRUE)
 			
 #elif defined OS_BEOS
@@ -182,7 +182,7 @@ void deoglShaderCompilerThread::pActivateContext(){
 #elif defined OS_W32
 		if(!wglMakeCurrent(context.GetActiveRRenderWindow()->GetWindowDC(),
 		context.GetCompileContextAt(pContextIndex))){
-			pRenderThread.GetLogger().LogErrorFormat(
+			pLanguage.GetRenderThread().GetLogger().LogErrorFormat(
 				"wglMakeCurrent failed (%s:%i): error=0x%lx\n",
 				__FILE__, __LINE__, GetLastError());
 			DETHROW_INFO(deeInvalidAction, "wglMakeCurrent failed");
