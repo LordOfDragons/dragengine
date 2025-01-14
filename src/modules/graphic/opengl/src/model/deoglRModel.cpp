@@ -610,7 +610,7 @@ void deoglRModel::pSaveCached(){
 		writer->WriteVector(pBoneExtends[i].maximum);
 	}
 	
-	//pOgl->LogInfoFormat("Model: '%s' written to cache", pFilename.GetString());
+	// pRenderThread.GetOgl().LogInfoFormat("Model: '%s' written to cache", pFilename.GetString());
 }
 
 void deoglRModel::pCreateImposterBillboard(){

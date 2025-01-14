@@ -1169,9 +1169,16 @@ void delEngineInstanceDirect::SetAppPaused(bool paused){
 }
 
 void delEngineInstanceDirect::InputEvent(const android_input_buffer &inputBuffer){
-	deBaseInputModule * const module = pEngine->GetInputSystem()->GetActiveModule();
-	if(module){
-		module->EventLoop(inputBuffer);
+	const deInputSystem &inpSys = *pEngine->GetInputSystem();
+	if(!inpSys.GetIsRunning()){
+		return;
 	}
+	
+	deBaseInputModule * const module = inpSys.GetActiveModule();
+	if(!module){
+		return;
+	}
+	
+	module->EventLoop(inputBuffer);
 }
 #endif

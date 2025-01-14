@@ -102,12 +102,10 @@ class deoglRRenderWindow;
  * Operating system specific objects and context.
  */
 class deoglRTContext{
-public:
-	static const int MaxCompileContextCount = 8;
-	
 private:
 	deoglRenderThread &pRenderThread;
 	
+	static const int MaxCompileContextCount = 8;
 	int pCompileContextCount;
 	
 	

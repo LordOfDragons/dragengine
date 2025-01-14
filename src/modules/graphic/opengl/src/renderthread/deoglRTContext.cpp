@@ -41,6 +41,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 #include <dragengine/systems/deInputSystem.h>
@@ -910,6 +911,9 @@ void deoglRTContext::pCreateContext(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	
 #ifdef BACKEND_OPENGL
+	const int compileContextCount = decMath::min(MaxCompileContextCount,
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
+	
 	// create render context. try new version first then the old one if not possible
 	// NOTE it is important to try to find first the "ARB" version of the function.
 	//      some driver implementations have bugged "No-ARB" version of the function
@@ -971,7 +975,7 @@ void deoglRTContext::pCreateContext(){
 					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 				pLoaderContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, pContext, True, contextAttribs );
 				int j;
-				for(j=0; j<MaxCompileContextCount; j++){
+				for(j=0; j<compileContextCount; j++){
 					pCompileContext[j] = pglXCreateContextAttribs(pDisplay, pBestFBConfig, pContext, True, contextAttribs);
 					if(!pCompileContext[j]){
 						break;
@@ -991,7 +995,7 @@ void deoglRTContext::pCreateContext(){
 				"Creating OpenGL Context using old method" );
 			pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
 			pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
-			for(i=0; i<MaxCompileContextCount; i++){
+			for(i=0; i<compileContextCount; i++){
 				pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
 				if(!pCompileContext[i]){
 					break;
@@ -1006,7 +1010,7 @@ void deoglRTContext::pCreateContext(){
 		pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
 		pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
 		int i;
-		for(i=0; i<MaxCompileContextCount; i++){
+		for(i=0; i<compileContextCount; i++){
 			pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
 			if(!pCompileContext[i]){
 				break;
@@ -1136,6 +1140,9 @@ void deoglRTContext::pInitDisplay(){
 	}
 	
 	// create context if not existing. it can be kept around while frozen
+	const int compileContextCount = decMath::min(MaxCompileContextCount,
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
+	
 	if( pContext == EGL_NO_CONTEXT ){
 		const EGLint eglAttribList[] = {
 			EGL_CONTEXT_CLIENT_VERSION, 3, // 2,
@@ -1161,7 +1168,7 @@ void deoglRTContext::pInitDisplay(){
 		DEASSERT_FALSE(pLoaderContext == EGL_NO_CONTEXT)
 		
 		int i;
-		for(i=0; i<MaxCompileContextCount; i++){
+		for(i=0; i<compileContextCount; i++){
 			pCompileContext[i] = eglCreateContext(pDisplay, pConfig, pContext, eglAttribList);
 			if(pCompileContext[i] == EGL_NO_CONTEXT){
 				break;
@@ -1273,6 +1280,9 @@ void deoglRTContext::pRegisterWindowClass(){
 void deoglRTContext::pCreateContext(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	
+	const int compileContextCount = decMath::min(MaxCompileContextCount,
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
+	
 	// create render context. on windows obtaining function pointers only works if a context has
 	// been created. unfortunately the wglCreateContextAttribs is such a function pointer so we
 	// need a fake context first before we can obtain that method. for this reason we first
@@ -1341,7 +1351,7 @@ void deoglRTContext::pCreateContext(){
 					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 				pLoaderContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs );
 				int j;
-				for(j=0; j<MaxCompileContextCount; j++){
+				for(j=0; j<compileContextCount; j++){
 					pCompileContext[j] = pwglCreateContextAttribs(pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs);
 					if(!pCompileContext[j]){
 						break;
@@ -1363,7 +1373,7 @@ void deoglRTContext::pCreateContext(){
 			pLoaderContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
 			DEASSERT_TRUE( wglShareLists( pLoaderContext, pContext ) )
 			int i;
-			for(i=0; i<MaxCompileContextCount; i++){
+			for(i=0; i<compileContextCount; i++){
 				pCompileContext[i] = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
 				if(!pCompileContext[i]){
 					break;

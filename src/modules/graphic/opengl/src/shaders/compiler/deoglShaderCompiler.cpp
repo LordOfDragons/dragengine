@@ -1089,8 +1089,13 @@ const deoglShaderCompiled &compiled){
 	try{
 		const cCacheShaderTask::Ref task(cCacheShaderTask::Ref::New(
 			new cCacheShaderTask(renderThread, pContextIndex, program, compiled)));
-		//task->Run();
+#ifdef OS_ANDROID
+		// for some strange reason doing the cache writing in a parallel task is 50% slower
+		// although some writes can be over 1s slow. I have no explanation for this behavior
+		task->Run();
+#else
 		renderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTask(task);
+#endif
 		
 	}catch(const deException &e){
 		logger.LogErrorFormat("ShaderLanguage.CacheSaveShader: Failed caching shader '%.50s...'",
