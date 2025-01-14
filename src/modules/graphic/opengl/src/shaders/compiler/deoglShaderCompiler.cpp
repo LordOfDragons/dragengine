@@ -910,9 +910,9 @@ deoglShaderCompiled *deoglShaderCompiler::pCacheLoadShader(const deoglShaderProg
 	
 	// NOTE we can not put this decision into deoglRTChoices since shaders are compiled already
 	//      during capabilities detection which is before deoglRTChoices is constructed
-	if( ! renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_get_program_binary )
+	if(!renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_ARB_get_program_binary)
 	|| renderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
-	|| program.GetCacheId().IsEmpty() ){
+	|| program.GetCacheId().IsEmpty()){
 		return nullptr;
 	}
 	
@@ -921,76 +921,76 @@ deoglShaderCompiled *deoglShaderCompiler::pCacheLoadShader(const deoglShaderProg
 	deoglCaches &caches = renderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
 	deoglRTLogger &logger = renderThread.GetLogger();
-	
-	caches.Lock();
-	
 	deoglShaderCompiled *compiled = nullptr;
 	
 	try{
-		decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
-			cacheShaders.Read( program.GetCacheId() ) ) );
+		decBaseFileReader::Ref reader;
+		{
+		const deMutexGuard guard(caches.GetMutex());
+		reader.TakeOver(cacheShaders.Read(program.GetCacheId()));
+		}
 		
 		// read parameters
-		if( ! reader ){
-			caches.Unlock();
+		if(!reader){
 			logger.LogInfoFormat(
 				"ShaderLanguage.CacheLoadShader: Cached shader not found for '%.50s...'",
-				program.GetCacheId().GetString() );
+				program.GetCacheId().GetString());
 			return nullptr;
 		}
 		
-		if( reader->ReadByte() != SHADER_CACHE_REVISION ){
+		if(reader->ReadByte() != SHADER_CACHE_REVISION){
 			// cache file outdated
 			reader = nullptr;
-			cacheShaders.Delete( program.GetCacheId() );
-			caches.Unlock();
+			{
+			const deMutexGuard guard(caches.GetMutex());
+			cacheShaders.Delete(program.GetCacheId());
+			}
 			logger.LogInfoFormat(
 				"ShaderLanguage.CacheLoadShader: Cache version changed for '%.50s...'. Cache discarded",
-				program.GetCacheId().GetString() );
+				program.GetCacheId().GetString());
 			return nullptr;
 		}
 		
-		const GLenum format = ( GLenum )reader->ReadUInt();
-		const GLint length = ( GLint )reader->ReadUInt();
+		const GLenum format = (GLenum)reader->ReadUInt();
+		const GLint length = (GLint)reader->ReadUInt();
 		
 		// read binary data
 		decString data;
-		data.Set( ' ', length );
-		reader->Read( ( void* )data.GetString(), length );
+		data.Set(' ', length);
+		reader->Read((void*)data.GetString(), length);
 		
 		// create program using binary data
-		compiled = new deoglShaderCompiled( renderThread );
+		compiled = new deoglShaderCompiled(renderThread);
 		
 		{
 		// this has to be mutex protected since this uses opengl call like pCompileShader()
 		const cOptionalMutexGuard guard(pMutexCompile, pContextIndex == -1);
 		
-		SC_OGL_CHECK( renderThread, pglProgramBinary( compiled->GetHandleShader(),
-			format, data.GetString(), length ) );
+		SC_OGL_CHECK(renderThread, pglProgramBinary(compiled->GetHandleShader(),
+			format, data.GetString(), length));
 		
 		// loading the binary does everything up to the linking step. this also uses
 		// opengl calls and thus has to be mutex protected
-		pAfterLinkShader( program, *compiled );
+		pAfterLinkShader(program, *compiled);
 		}
 		
 		// done
-		reader = nullptr;
-		caches.Unlock();
-		
 // 		logger.LogInfoFormat(
 // 			"ShaderLanguage.CacheLoadShader: Cached shader loaded for '%.50s...'",
-// 			program.GetCacheId().GetString() );
+// 			program.GetCacheId().GetString());
 		
-	}catch( const deException &e ){
-		cacheShaders.Delete( program.GetCacheId() );
-		caches.Unlock();
+	}catch(const deException &e){
+		{
+		const deMutexGuard guard(caches.GetMutex());
+		cacheShaders.Delete(program.GetCacheId());
+		}
 		
 		logger.LogInfoFormat(
 			"ShaderLanguage.CacheLoadShader: Failed loading cached shader '%.50s...'. Cache discarded",
-			program.GetCacheId().GetString() );
+			program.GetCacheId().GetString());
 		// logger.LogException(e); // do not spam logs. slows things down
 		
-		if( compiled ){
+		if(compiled){
 			delete compiled;
 			compiled = nullptr;
 		}
@@ -1006,9 +1006,9 @@ const deoglShaderCompiled &compiled){
 	
 	// NOTE we can not put this decision into deoglRTChoices since shaders are compiled already
 	//      during capabilities detection which is before deoglRTChoices is constructed
-	if( ! renderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_get_program_binary )
+	if(!renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_ARB_get_program_binary)
 	|| renderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
-	|| program.GetCacheId().IsEmpty() ){
+	|| program.GetCacheId().IsEmpty()){
 		return;
 	}
 	
@@ -1016,44 +1016,42 @@ const deoglShaderCompiled &compiled){
 	deoglCaches &caches = renderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
 	
-	caches.Lock();
-	
 	try{
 		// get length of binary data
 		GLint length = 0;
-		SC_OGL_CHECK( renderThread, pglGetProgramiv( handler, GL_PROGRAM_BINARY_LENGTH, &length ) );
-		DEASSERT_TRUE( length > 0 )
+		SC_OGL_CHECK(renderThread, pglGetProgramiv(handler, GL_PROGRAM_BINARY_LENGTH, &length));
+		DEASSERT_TRUE(length > 0)
 		
 		// get binary data
 		decString data;
-		data.Set( ' ', length );
+		data.Set(' ', length);
 		
 		GLenum format = 0;
-		SC_OGL_CHECK( renderThread, pglGetProgramBinary( handler,
-			length, nullptr, &format, ( void* )data.GetString() ) );
+		SC_OGL_CHECK(renderThread, pglGetProgramBinary(handler,
+			length, nullptr, &format, (void*)data.GetString()));
 		
 		// write to cache
 		{
-		const decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New(
-			cacheShaders.Write( program.GetCacheId() ) ) );
-		
-		writer->WriteByte( SHADER_CACHE_REVISION );
-		writer->WriteUInt( format );
-		writer->WriteUInt( length );
-		writer->Write( data.GetString(), length );
+		decBaseFileWriter::Ref writer;
+		{
+		const deMutexGuard guard(caches.GetMutex());
+		writer.TakeOver(cacheShaders.Write(program.GetCacheId()));
 		}
 		
-		caches.Unlock();
+		writer->WriteByte(SHADER_CACHE_REVISION);
+		writer->WriteUInt(format);
+		writer->WriteUInt(length);
+		writer->Write(data.GetString(), length);
+		}
 		
 		logger.LogInfoFormat(
 			"ShaderLanguage.CacheSaveShader: Cached shader '%.50s...', length %d bytes",
-			program.GetCacheId().GetString(), length );
+			program.GetCacheId().GetString(), length);
 		
-	}catch( const deException &e ){
-		caches.Unlock();
+	}catch(const deException &e){
 		logger.LogErrorFormat("ShaderLanguage.CacheSaveShader: Failed caching shader '%.50s...'",
-			program.GetCacheId().GetString() );
-		logger.LogException( e );
+			program.GetCacheId().GetString());
+		logger.LogException(e);
 	}
 }
 

@@ -87,6 +87,7 @@
 #include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVisitorIdentify.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeGroup.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -921,194 +922,199 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 	// try to load caches using the calculated cache ids
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheTextures = caches.GetSkinTextures();
-	decBaseFileReader *reader = NULL;
 	char *verifyData = NULL;
 	int i;
 	
 	const bool enableCacheLogging = ENABLE_CACHE_LOGGING;
 	
-	caches.Lock();
-	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( ! pChannels[ i ] ){
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(!pChannels[i]){
 			continue;
 		}
-		if( pChannels[ i ]->GetCacheID().IsEmpty() ){
+		if(pChannels[i]->GetCacheID().IsEmpty()){
 			continue;
 		}
 		
 		try{
-			reader = cacheTextures.Read( pChannels[ i ]->GetCacheID() );
-			if( ! reader ){
-				if( enableCacheLogging ){
-					pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Cache file absent"
+			decBaseFileReader::Ref reader;
+			{
+			const deMutexGuard guard(caches.GetMutex());
+			reader.TakeOver(cacheTextures.Read(pChannels[i]->GetCacheID()));
+			}
+			if(!reader){
+				if(enableCacheLogging){
+					pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Cache file absent"
 						" (skin='%s' texture='%s' channel='%s' id='%s')",
 						skin.GetFilename().GetString(), pName.GetString(),
-						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-						pChannels[ i ]->GetCacheID().GetString() );
+						deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+						pChannels[i]->GetCacheID().GetString());
 				}
 				continue;
 			}
 			
 			// check cache version in case we upgraded
-			if( reader->ReadByte() != CACHE_FILE_VERSION ){
+			if(reader->ReadByte() != CACHE_FILE_VERSION){
 				// cache file outdated
-				reader->FreeReference();
-				reader = NULL;
-				cacheTextures.Delete( pChannels[ i ]->GetCacheID() );
+				reader = nullptr;
+				{
+				const deMutexGuard guard(caches.GetMutex());
+				cacheTextures.Delete(pChannels[i]->GetCacheID());
+				}
 				
-				if( enableCacheLogging ){
-					pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Old version cache file"
+				if(enableCacheLogging){
+					pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Old version cache file"
 						" (skin='%s' texture='%s' channel='%s' id='%s')",
 						skin.GetFilename().GetString(), pName.GetString(),
-						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-						pChannels[ i ]->GetCacheID().GetString() );
+						deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+						pChannels[i]->GetCacheID().GetString());
 				}
 				
 				continue;
 			}
 			
 			// check source verification data to reject the cached file if the source data changed.
-			const decMemoryFile * const expectedVerify = pChannels[ i ]->GetCacheVerify();
+			const decMemoryFile * const expectedVerify = pChannels[i]->GetCacheVerify();
 			const int verifyLen = reader->ReadInt();
 			bool verified = false;
 			
-			if( expectedVerify && verifyLen == expectedVerify->GetLength() ){
-				if( verifyLen == 0 ){
+			if(expectedVerify && verifyLen == expectedVerify->GetLength()){
+				if(verifyLen == 0){
 					verified = true;
 					
 				}else{
-					verifyData = new char[ verifyLen ];
-					reader->Read( verifyData, verifyLen );
+					verifyData = new char[verifyLen];
+					reader->Read(verifyData, verifyLen);
 					
-					verified = memcmp( verifyData, expectedVerify->GetPointer(), verifyLen ) == 0;
+					verified = memcmp(verifyData, expectedVerify->GetPointer(), verifyLen) == 0;
 					
 					delete [] verifyData;
-					verifyData = NULL;
+					verifyData = nullptr;
 				}
 			}
 			
-			if( ! verified ){
+			if(!verified){
 				// cache file verify size mismatch or sanity check failed
-				reader->FreeReference();
-				reader = NULL;
-				cacheTextures.Delete( pChannels[ i ]->GetCacheID() );
+				reader = nullptr;
+				{
+				const deMutexGuard guard(caches.GetMutex());
+				cacheTextures.Delete(pChannels[i]->GetCacheID());
+				}
 				
-				if( enableCacheLogging ){
-					pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Verify data mismatch"
+				if(enableCacheLogging){
+					pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Verify data mismatch"
 						" (skin='%s' texture='%s' channel='%s' id='%s')",
 						skin.GetFilename().GetString(), pName.GetString(),
-						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-						pChannels[ i ]->GetCacheID().GetString() );
+						deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+						pChannels[i]->GetCacheID().GetString());
 				}
 				
 				continue;
 			}
 			
 			// read pixel buffer
-			const int pixBufCount = ( int )reader->ReadByte();
-			const int width = ( int )reader->ReadShort();
-			const int height = ( int )reader->ReadShort();
-			const int depth = ( int )reader->ReadShort();
-			const deoglPixelBuffer::ePixelFormats pbformat = ( deoglPixelBuffer::ePixelFormats )reader->ReadByte();
+			const int pixBufCount = (int)reader->ReadByte();
+			const int width = (int)reader->ReadShort();
+			const int height = (int)reader->ReadShort();
+			const int depth = (int)reader->ReadShort();
+			const deoglPixelBuffer::ePixelFormats pbformat =
+				(deoglPixelBuffer::ePixelFormats)reader->ReadByte();
 			int j;
 			
-			if( pChannels[ i ]->GetSize() != decPoint3( width, height, depth ) ){
+			if(pChannels[i]->GetSize() != decPoint3(width, height, depth)){
 				// cache file image size mismatch. this can happen for example in editors where the variation
 				// texture property changed. in this case array textures of depth 1 can be cached due to
 				// variation being disabled while the next time variation is enabled and the full depth is
 				// used. also if the user changes module parameters it might be possible the textures sizes
 				// are reduzed resulting in cache files not be valid anymore.
-				reader->FreeReference();
-				reader = NULL;
-				cacheTextures.Delete( pChannels[ i ]->GetCacheID() );
+				reader = nullptr;
+				{
+				const deMutexGuard guard(caches.GetMutex());
+				cacheTextures.Delete(pChannels[i]->GetCacheID());
+				}
 				
-				if( enableCacheLogging ){
-					pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Cached image size mismatch."
+				if(enableCacheLogging){
+					pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Cached image size mismatch."
 						" (skin='%s' texture='%s' channel='%s' id='%s')",
 						skin.GetFilename().GetString(), pName.GetString(),
-						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-						pChannels[ i ]->GetCacheID().GetString() );
+						deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+						pChannels[i]->GetCacheID().GetString());
 				}
 				
 				continue;
 			}
 			
-			const int maxMipMapLevel = decMath::max( pixBufCount - 1, 0 );
+			const int maxMipMapLevel = decMath::max(pixBufCount - 1, 0);
 			
 			int expectedMaxMipMaxLevel = maxMipMapLevel;
-			if( i == deoglSkinChannel::ectSolidity ){
+			if(i == deoglSkinChannel::ectSolidity){
 				expectedMaxMipMaxLevel = decMath::clamp(
-					( int )( floorf( log2f( ( float )( ( height > width ) ? height : width ) ) ) ) - 3, 0, 100 );
+					(int)(floorf(log2f((float)((height > width) ? height : width)))) - 3, 0, 100 );
 			}
 			
-			if( maxMipMapLevel < expectedMaxMipMaxLevel ){
-				reader->FreeReference();
-				reader = NULL;
-				cacheTextures.Delete( pChannels[ i ]->GetCacheID() );
+			if(maxMipMapLevel < expectedMaxMipMaxLevel){
+				reader = nullptr;
+				{
+				const deMutexGuard guard(caches.GetMutex());
+				cacheTextures.Delete(pChannels[i]->GetCacheID());
+				}
 				
-				if( enableCacheLogging ){
-					pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Cached Mip-Map Count lower."
+				if(enableCacheLogging){
+					pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Cached Mip-Map Count lower."
 						" (skin='%s' texture='%s' channel='%s' id='%s')",
 						skin.GetFilename().GetString(), pName.GetString(),
-						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-						pChannels[ i ]->GetCacheID().GetString() );
+						deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+						pChannels[i]->GetCacheID().GetString());
 				}
 				
 				continue;
 			}
 			
-			const deoglPixelBufferMipMap::Ref pixelBufferMipMap( deoglPixelBufferMipMap::Ref::New(
-				new deoglPixelBufferMipMap( pbformat, width, height, depth, maxMipMapLevel ) ) );
+			const deoglPixelBufferMipMap::Ref pixelBufferMipMap(deoglPixelBufferMipMap::Ref::New(
+				new deoglPixelBufferMipMap(pbformat, width, height, depth, maxMipMapLevel)));
 			
-			for( j=0; j<pixBufCount; j++ ){
-				deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer( j );
-				reader->Read( pixelBuffer.GetPointer(), pixelBuffer.GetImageSize() );
+			for(j=0; j<pixBufCount; j++){
+				deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer(j);
+				reader->Read(pixelBuffer.GetPointer(), pixelBuffer.GetImageSize());
 			}
 			
-			if( maxMipMapLevel > expectedMaxMipMaxLevel ){
-				pixelBufferMipMap->ReducePixelBufferCount( maxMipMapLevel - expectedMaxMipMaxLevel );
+			if(maxMipMapLevel > expectedMaxMipMaxLevel){
+				pixelBufferMipMap->ReducePixelBufferCount(maxMipMapLevel - expectedMaxMipMaxLevel);
 			}
 			
-			pChannels[ i ]->SetPixelBufferMipMap( pixelBufferMipMap );
+			pChannels[i]->SetPixelBufferMipMap(pixelBufferMipMap);
 			
 			// done
-			reader->FreeReference();
-			reader = NULL;
-			
-			if( enableCacheLogging ){
-				pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Loaded from cache"
+			if(enableCacheLogging){
+				pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Loaded from cache"
 					" (skin='%s' texture='%s' channel='%s' id='%s')",
 					skin.GetFilename().GetString(), pName.GetString(),
-					deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-					pChannels[ i ]->GetCacheID().GetString() );
+					deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+					pChannels[i]->GetCacheID().GetString());
 			}
 			
-			pChannels[ i ]->SetIsCached( true );
+			pChannels[i]->SetIsCached(true);
 			
-		}catch( const deException & ){
-			if( verifyData ){
+		}catch(const deException &){
+			if(verifyData){
 				delete [] verifyData;
-				verifyData = NULL;
-			}
-			if( reader ){
-				reader->FreeReference();
-				reader = NULL;
+				verifyData = nullptr;
 			}
 			
-			cacheTextures.Delete( pChannels[ i ]->GetCacheID() );
+			{
+			const deMutexGuard guard(caches.GetMutex());
+			cacheTextures.Delete(pChannels[i]->GetCacheID());
+			}
 			
-			if( enableCacheLogging ){
-				pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Cache file damaged, forcing rebuild"
+			if(enableCacheLogging){
+				pRenderThread.GetOgl().LogInfoFormat(
+					"Skin Cache: Cache file damaged, forcing rebuild"
 					" (skin='%s' texture='%s' channel='%s' id='%s')",
 					skin.GetFilename().GetString(), pName.GetString(),
-					deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-					pChannels[ i ]->GetCacheID().GetString() );
+					deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+					pChannels[i]->GetCacheID().GetString());
 			}
 		}
 	}
-	
-	caches.Unlock();
 }
 
 void deoglSkinTexture::pCreateMipMaps(){
@@ -1311,26 +1317,23 @@ void deoglSkinTexture::pCompressTextures( deoglRSkin &skin, const deSkinTexture 
 void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheTextures = caches.GetSkinTextures();
-	decBaseFileWriter *writer = NULL;
 	int i;
 	
 	const bool enableCacheLogging = ENABLE_CACHE_LOGGING;
 	
-	caches.Lock();
-	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
 		try{
-			if( ! pChannels[ i ] ){
+			if(!pChannels[i]){
 				continue;
 			}
-			if( pChannels[ i ]->GetIsCached() ){
+			if(pChannels[i]->GetIsCached()){
 				continue; // has been loaded from cache
 			}
-			if( pChannels[ i ]->GetCacheID().IsEmpty() ){
+			if(pChannels[i]->GetCacheID().IsEmpty()){
 				continue; // do not cache channel
 			}
 			
-			if( pChannels[ i ]->GetImage() && pChannels[ i ]->GetImage()->GetSkinUse() ){
+			if(pChannels[i]->GetImage() && pChannels[i]->GetImage()->GetSkinUse()){
 				// already build by somebody else.
 				// 
 				// this is an optimization. building channels runs potentially parallel to the
@@ -1342,89 +1345,89 @@ void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
 				// we know the textures are going to be dropped right away because somebody else
 				// created them already. dropping the cache id and pixel buffer prevents any
 				// further processing of this channel
-				pChannels[ i ]->SetCacheID( "" );
-				pChannels[ i ]->SetCanBeCached( false );
-				pChannels[ i ]->SetPixelBufferMipMap( NULL );
+				pChannels[i]->SetCacheID("");
+				pChannels[i]->SetCanBeCached(false);
+				pChannels[i]->SetPixelBufferMipMap(nullptr);
 				continue;
 			}
 			
-			writer = cacheTextures.Write( pChannels[ i ]->GetCacheID() );
-			
-			// write cache version
-			writer->WriteByte( CACHE_FILE_VERSION );
-			
-			// write source verification to reject the cached file if the source data changed
-			const decMemoryFile * const verifyData = pChannels[ i ]->GetCacheVerify();
-			if( ! verifyData ){
-				DETHROW( deeInvalidParam );
+			decBaseFileWriter::Ref writer;
+			{
+			const deMutexGuard guard(caches.GetMutex());
+			writer.TakeOver(cacheTextures.Write(pChannels[i]->GetCacheID()));
 			}
 			
-			writer->WriteInt( verifyData->GetLength() );
-			writer->Write( verifyData->GetPointer(), verifyData->GetLength() );
+			// write cache version
+			writer->WriteByte(CACHE_FILE_VERSION);
+			
+			// write source verification to reject the cached file if the source data changed
+			const decMemoryFile * const verifyData = pChannels[i]->GetCacheVerify();
+			if(!verifyData){
+				DETHROW(deeInvalidParam);
+			}
+			
+			writer->WriteInt(verifyData->GetLength());
+			writer->Write(verifyData->GetPointer(), verifyData->GetLength());
 			
 			// write pixel buffer
-			const deoglPixelBufferMipMap * const pixelBufferMipMap = pChannels[ i ]->GetPixelBufferMipMap();
+			const deoglPixelBufferMipMap * const pixelBufferMipMap =
+				pChannels[i]->GetPixelBufferMipMap();
 			
-			if( pixelBufferMipMap ){
+			if(pixelBufferMipMap){
 				const int pixBufCount = pixelBufferMipMap->GetPixelBufferCount();
 				int j;
 				
-				const deoglPixelBuffer &pixelBufferBase = pixelBufferMipMap->GetPixelBuffer( 0 );
-				writer->WriteByte( ( unsigned char )pixBufCount );
-				writer->WriteShort( ( short )pixelBufferBase.GetWidth() );
-				writer->WriteShort( ( short )pixelBufferBase.GetHeight() );
-				writer->WriteShort( ( short )pixelBufferBase.GetDepth() );
-				writer->WriteByte( ( unsigned char )pixelBufferBase.GetFormat() );
+				const deoglPixelBuffer &pixelBufferBase = pixelBufferMipMap->GetPixelBuffer(0);
+				writer->WriteByte((unsigned char)pixBufCount);
+				writer->WriteShort((short)pixelBufferBase.GetWidth());
+				writer->WriteShort((short)pixelBufferBase.GetHeight());
+				writer->WriteShort((short)pixelBufferBase.GetDepth());
+				writer->WriteByte((unsigned char)pixelBufferBase.GetFormat());
 				
-				for( j=0; j<pixBufCount; j++ ){
-					const deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer( j );
-					writer->Write( pixelBuffer.GetPointer(), pixelBuffer.GetImageSize() );
+				for(j=0; j<pixBufCount; j++){
+					const deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer(j);
+					writer->Write(pixelBuffer.GetPointer(), pixelBuffer.GetImageSize());
 				}
 				
 			}else{
 				// this should not happen
-				writer->WriteByte( 0 );
+				writer->WriteByte(0);
 				
-				//if( enableCacheLogging ){
-					pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Pixel buffer missing"
+				//if(enableCacheLogging){
+					pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Pixel buffer missing"
 						" (skin='%s' texture='%s' channel='%s' id='%s')",
 						skin.GetFilename().GetString(), pName.GetString(),
-						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-						pChannels[ i ]->GetCacheID().GetString() );
+						deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+						pChannels[i]->GetCacheID().GetString());
 				//}
 			}
 			
 			// done
-			writer->FreeReference();
-			writer = NULL;
-			
-			if( enableCacheLogging ){
-				pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Written to cache"
+			if(enableCacheLogging){
+				pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Written to cache"
 					" (skin='%s' texture='%s' channel='%s' id='%s')",
 					skin.GetFilename().GetString(), pName.GetString(),
-					deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-					pChannels[ i ]->GetCacheID().GetString() );
+					deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+					pChannels[i]->GetCacheID().GetString());
 			}
 			
-		}catch( const deException & ){
-			if( writer ){
-				writer->FreeReference();
-				writer = NULL;
+		}catch(const deException &){
+			{
+			const deMutexGuard guard(caches.GetMutex());
+			cacheTextures.Delete(pChannels[i]->GetCacheID());
 			}
-			cacheTextures.Delete( pChannels[ i ]->GetCacheID() );
 			
-			if( enableCacheLogging ){
-				pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Written cache file failed"
+			if(enableCacheLogging){
+				pRenderThread.GetOgl().LogInfoFormat("Skin Cache: Written cache file failed"
 					" (skin='%s' texture='%s' channel='%s' id='%s')",
 					skin.GetFilename().GetString(), pName.GetString(),
-					deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
-					pChannels[ i ]->GetCacheID().GetString() );
+					deoglSkinChannel::ChannelNameFor((deoglSkinChannel::eChannelTypes)i),
+					pChannels[i]->GetCacheID().GetString());
 			}
 		}
 	}
 	
-	//cacheTextures.DebugPrint( *pRenderThread.GetOgl().GetGameEngine()->GetLogger(), "OpenGL" );
-	caches.Unlock();
+	//cacheTextures.DebugPrint(*pRenderThread.GetOgl().GetGameEngine()->GetLogger(), "OpenGL");
 }
 
 void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &property ){

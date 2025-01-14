@@ -53,6 +53,7 @@
 #include <dragengine/resources/model/deModelBone.h>
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelVertexPositionSet.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -468,54 +469,57 @@ void deoglRModel::pLoadCached( int lodCount, int boneCount ){
 	deVirtualFileSystem &vfs = *ogl.GetGameEngine()->GetVirtualFileSystem();
 	deoglCaches &caches = ogl.GetCaches();
 	deCacheHelper &cacheModels = caches.GetModels();
-	decBaseFileReader *reader = NULL;
 	decPath path;
 	
-	path.SetFromUnix( pFilename );
-	if( ! vfs.CanReadFile( path ) ){
+	path.SetFromUnix(pFilename);
+	if(!vfs.CanReadFile(path)){
 		return; // without a source file no cache since it is no more unique
 	}
 	
-	caches.Lock();
-	
 	try{
-		reader = cacheModels.Read( pFilename );
+		decBaseFileReader::Ref reader;
+		{
+		const deMutexGuard guard(caches.GetMutex());
+		reader.TakeOver(cacheModels.Read(pFilename));
+		}
 		
-		if( reader ){
-			//ogl.LogInfoFormat( "Model '%s': Load from cache", pFilename.GetString() );
+		if(reader){
+			//ogl.LogInfoFormat("Model '%s': Load from cache", pFilename.GetString());
 			
 			// check cache version in case we upgraded
-			if( reader->ReadByte() != CACHE_VERSION ){
+			if(reader->ReadByte() != CACHE_VERSION){
 				// cache file outdated
-				reader->FreeReference();
-				reader = NULL;
-				cacheModels.Delete( pFilename );
-				ogl.LogInfoFormat( "Model '%s': Cache version changed. Cache discarded",
-					pFilename.GetString() );
-				caches.Unlock();
+				reader = nullptr;
+				{
+				const deMutexGuard guard(caches.GetMutex());
+				cacheModels.Delete(pFilename);
+				}
+				ogl.LogInfoFormat("Model '%s': Cache version changed. Cache discarded",
+					pFilename.GetString());
 				return;
 			}
 			
 			// check file modification times to reject the cached file if the source model changed
-			const TIME_SYSTEM checkTime = ( TIME_SYSTEM )reader->ReadUInt();
-			if( vfs.GetFileModificationTime( path ) != checkTime ){
+			const TIME_SYSTEM checkTime = (TIME_SYSTEM)reader->ReadUInt();
+			if(vfs.GetFileModificationTime(path) != checkTime){
 				// cache file outdated
-				reader->FreeReference();
-				reader = NULL;
-				cacheModels.Delete( pFilename );
-				ogl.LogInfoFormat( "Model '%s': Modification time changed. Cache discarded",
-					pFilename.GetString() );
-				caches.Unlock();
+				reader = nullptr;
+				{
+				const deMutexGuard guard(caches.GetMutex());
+				cacheModels.Delete(pFilename);
+				}
+				ogl.LogInfoFormat("Model '%s': Modification time changed. Cache discarded",
+					pFilename.GetString());
 				return;
 			}
 			
 			// create lods
-			pLODs = new deoglModelLOD*[ lodCount ];
+			pLODs = new deoglModelLOD*[lodCount];
 			
-			for( pLODCount=0; pLODCount<lodCount; pLODCount++ ){
-				pLODs[ pLODCount ] = new deoglModelLOD( *this, pLODCount, *reader );
+			for(pLODCount=0; pLODCount<lodCount; pLODCount++){
+				pLODs[pLODCount] = new deoglModelLOD(*this, pLODCount, *reader);
 				
-				if( pLODs[ pLODCount ]->GetDoubleSided() ){
+				if(pLODs[pLODCount]->GetDoubleSided()){
 					pDoubleSided = true;
 				}
 			}
@@ -526,47 +530,42 @@ void deoglRModel::pLoadCached( int lodCount, int boneCount ){
 			pWeightlessExtends.minimum = reader->ReadVector();
 			pWeightlessExtends.maximum = reader->ReadVector();
 			pHasWeightlessExtends = reader->ReadByte() != 0;
-			if( boneCount > 0 ){
-				pBoneExtends = new sExtends[ boneCount ];
-				for( pBoneCount=0; pBoneCount<boneCount; pBoneCount++ ){
-					pBoneExtends[ pBoneCount ].minimum = reader->ReadVector();
-					pBoneExtends[ pBoneCount ].maximum = reader->ReadVector();
+			if(boneCount > 0){
+				pBoneExtends = new sExtends[boneCount];
+				for(pBoneCount=0; pBoneCount<boneCount; pBoneCount++){
+					pBoneExtends[pBoneCount].minimum = reader->ReadVector();
+					pBoneExtends[pBoneCount].maximum = reader->ReadVector();
 				}
 			}
 			
 			// done
-			reader->FreeReference();
-			reader = NULL;
-			
 			pIsCached = true;
 		}
 		
-		caches.Unlock();
-		
-	}catch( const deException &e ){
-		if( reader ){
-			reader->FreeReference();
+	}catch(const deException &e){
+		{
+		const deMutexGuard guard(caches.GetMutex());
+		cacheModels.Delete(pFilename);
 		}
-		cacheModels.Delete( pFilename );
-		ogl.LogErrorFormat( "Model '%s': Loading Cache failed with exception", pFilename.GetString() );
-		ogl.LogException( e );
-		caches.Unlock();
+		ogl.LogErrorFormat("Model '%s': Loading Cache failed with exception",
+			pFilename.GetString());
+		ogl.LogException(e);
 		pIsCached = false; // safety
 		throw;
 		
-	}catch( ... ){
-		if( reader ){
-			reader->FreeReference();
+	}catch(...){
+		{
+		const deMutexGuard guard(caches.GetMutex());
+		cacheModels.Delete(pFilename);
 		}
-		cacheModels.Delete( pFilename );
-		ogl.LogErrorFormat( "Model '%s': Loading Cache failed with unknown exception", pFilename.GetString() );
-		caches.Unlock();
+		ogl.LogErrorFormat("Model '%s': Loading Cache failed with unknown exception",
+			pFilename.GetString());
 		pIsCached = false; // safety
-		DETHROW( deeInvalidAction );
+		DETHROW(deeInvalidAction);
 	}
 	
-	if( pLODCount == 0 ){ // sanity check
-		DETHROW( deeInvalidParam );
+	if(pLODCount == 0){ // sanity check
+		DETHROW(deeInvalidParam);
 	}
 }
 
@@ -575,57 +574,43 @@ void deoglRModel::pSaveCached(){
 	deVirtualFileSystem &vfs = *ogl.GetGameEngine()->GetVirtualFileSystem();
 	deoglCaches &caches = ogl.GetCaches();
 	deCacheHelper &cacheModels = caches.GetModels();
-	decBaseFileWriter *writer = NULL;
 	decPath path;
 	int i;
 	
-	path.SetFromUnix( pFilename );
-	if( ! vfs.CanReadFile( path ) ){
+	path.SetFromUnix(pFilename);
+	if(!vfs.CanReadFile(path)){
 		return; // without a source file no cache since it is no more unique
 	}
 	
-	caches.Lock();
-	
-	try{
-		writer = cacheModels.Write( pFilename );
-		
-		// write cache version
-		writer->WriteByte( CACHE_VERSION );
-		
-		// write file modification times to reject the cached file if the source model changed
-		writer->WriteUInt( ( unsigned int )vfs.GetFileModificationTime( path ) );
-		
-		// write lods
-		for( i=0; i<pLODCount; i++ ){
-			pLODs[ i ]->SaveToCache( *writer );
-		}
-		
-		// write extends
-		writer->WriteVector( pExtends.minimum );
-		writer->WriteVector( pExtends.maximum );
-		writer->WriteVector( pWeightlessExtends.minimum );
-		writer->WriteVector( pWeightlessExtends.maximum );
-		writer->WriteByte( pHasWeightlessExtends ? 1 : 0 );
-		for( i=0; i<pBoneCount; i++ ){
-			writer->WriteVector( pBoneExtends[ i ].minimum );
-			writer->WriteVector( pBoneExtends[ i ].maximum );
-		}
-		
-		// done
-		writer->FreeReference();
-		writer = NULL;
-		
-		//pOgl->LogInfoFormat( "Model: '%s' written to cache", pFilename.GetString() );
-		
-		caches.Unlock();
-		
-	}catch( const deException & ){
-		if( writer ){
-			writer->FreeReference();
-		}
-		caches.Unlock();
-		throw;
+	decBaseFileWriter::Ref writer;
+	{
+	const deMutexGuard guard(caches.GetMutex());
+	writer.TakeOver(cacheModels.Write(pFilename));
 	}
+	
+	// write cache version
+	writer->WriteByte(CACHE_VERSION);
+	
+	// write file modification times to reject the cached file if the source model changed
+	writer->WriteUInt((unsigned int)vfs.GetFileModificationTime(path));
+	
+	// write lods
+	for(i=0; i<pLODCount; i++){
+		pLODs[i]->SaveToCache(*writer);
+	}
+	
+	// write extends
+	writer->WriteVector(pExtends.minimum);
+	writer->WriteVector(pExtends.maximum);
+	writer->WriteVector(pWeightlessExtends.minimum);
+	writer->WriteVector(pWeightlessExtends.maximum);
+	writer->WriteByte(pHasWeightlessExtends ? 1 : 0);
+	for(i=0; i<pBoneCount; i++){
+		writer->WriteVector(pBoneExtends[i].minimum);
+		writer->WriteVector(pBoneExtends[i].maximum);
+	}
+	
+	//pOgl->LogInfoFormat("Model: '%s' written to cache", pFilename.GetString());
 }
 
 void deoglRModel::pCreateImposterBillboard(){
