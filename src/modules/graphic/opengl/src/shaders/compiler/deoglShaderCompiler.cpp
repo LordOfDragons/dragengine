@@ -1012,6 +1012,7 @@ const deoglShaderCompiled &compiled){
 		return;
 	}
 	
+	decTimer timerElapsed;
 	const GLuint handler = compiled.GetHandleShader();
 	deoglCaches &caches = renderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
@@ -1053,6 +1054,9 @@ const deoglShaderCompiled &compiled){
 			program.GetCacheId().GetString());
 		logger.LogException(e);
 	}
+	
+	logger.LogInfoFormat("CompileShader %d: Shader cached for '%.50s...' in %dms", pContextIndex,
+		program.GetCacheId().GetString(), (int)(timerElapsed.GetElapsedTime() * 1e3f));
 }
 
 void deoglShaderCompiler::pPreparePreprocessor(const deoglShaderDefines &defines){
