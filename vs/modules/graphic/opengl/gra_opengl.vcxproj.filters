@@ -1206,6 +1206,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompileTask.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompiler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -3064,6 +3067,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompileTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompiler.cpp">

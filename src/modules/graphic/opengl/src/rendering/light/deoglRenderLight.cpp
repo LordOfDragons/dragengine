@@ -144,7 +144,6 @@ pRenderTask( NULL ),
 pAddToRenderTask( NULL )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
@@ -176,15 +175,13 @@ pAddToRenderTask( NULL )
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering" );
 	defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSSSSS = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSSSSS, pipconf, sources, defines);
 	
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSSSSSStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSSSSSStereo, pipconf, sources, defines);
 	
 	
 	
@@ -198,16 +195,14 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
 	defines.SetDefines( "FULLSCREENQUAD", "FULLSCREENQUAD_TCTRANSFORM",
 		"NO_POSTRANSFORM", "FULLSCREENQUAD_SCTRANSFORM" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineAOLocal = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineAOLocal, pipconf, sources, defines);
 	
 	// ambient occlusion stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineAOLocalStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineAOLocalStereo, pipconf, sources, defines);
 	
 	
 	
@@ -222,16 +217,14 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "TEX_DATA_SWIZZLE", "g" );
 	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
 	defines.SetDefines( "NO_POSTRANSFORM" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineAOBlur1 = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineAOBlur1, pipconf, sources, defines);
 	
 	// ambient occlusion blur phase 1 stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineAOBlur1Stereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineAOBlur1Stereo, pipconf, sources, defines);
 	
 	
 	// ambient occlusion blur phase 2
@@ -245,16 +238,14 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "TEX_DATA_SIZE", 1 );
 	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
 	defines.SetDefines( "NO_POSTRANSFORM" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineAOBlur2 = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineAOBlur2, pipconf, sources, defines);
 	
 	// ambient occlusion blur phase 2 stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineAOBlur2Stereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineAOBlur2Stereo, pipconf, sources, defines);
 	
 	
 	// ambient occlusion debug
@@ -266,8 +257,7 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "TEXTURELEVEL", 1 );
 	defines.SetDefine( "OUT_COLOR_SIZE", 3 );
 	defines.SetDefine( "TEX_DATA_SWIZZLE", "ggg" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineDebugAO = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineDebugAO, pipconf, sources, defines);
 	
 	
 	
@@ -279,8 +269,7 @@ pAddToRenderTask( NULL )
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen SSAO" );
 	defines.SetDefine( "SSAO_RESOLUTION_COUNT", 1 ); // 1-4
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSSAO = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSSAO, pipconf, sources, defines);
 	*/
 	
 	pipconf.Reset();
@@ -288,12 +277,10 @@ pAddToRenderTask( NULL )
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen SSAO Blur" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSSAOBlur1 = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSSAOBlur1, pipconf, sources, defines);
 	
 	defines.SetDefines( "BLUR_PASS_2" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSSAOBlur2 = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSSAOBlur2, pipconf, sources, defines);
 	
 	
 	// ssao upscale
@@ -303,15 +290,13 @@ pAddToRenderTask( NULL )
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen SSAO Upscale" );
 	defines.SetDefines( "NO_POSTRANSFORM" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSSAOUpscale = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSSAOUpscale, pipconf, sources, defines);
 	
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen SSAO Upscale Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSSAOUpscaleStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSSAOUpscaleStereo, pipconf, sources, defines);
 	
 	
 	
@@ -322,16 +307,14 @@ pAddToRenderTask( NULL )
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineCopyDepth, pipconf, sources, defines);
 	
 	// copy depth stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineCopyDepthStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineCopyDepthStereo, pipconf, sources, defines);
 	
 	
 	

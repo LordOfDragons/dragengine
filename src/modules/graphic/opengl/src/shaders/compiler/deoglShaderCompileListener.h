@@ -22,62 +22,24 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLSHADERCOMPILERTHREAD_H_
-#define _DEOGLSHADERCOMPILERTHREAD_H_
+#ifndef _DEOGLSHADERCOMPILELISTENER_H_
+#define _DEOGLSHADERCOMPILELISTENER_H_
 
-#include <dragengine/threading/deThread.h>
-
-class deoglShaderLanguage;
-class deoglShaderCompiler;
-
+class deoglShaderCompiled;
 
 /**
- * Shader compiler thread.
+ * Shader compile listener.
  */
-class deoglShaderCompilerThread : public deThread{
+class deoglShaderCompileListener{
 public:
-	enum class State{
-		prepare,
-		ready,
-		failed
-	};
+	deoglShaderCompileListener() = default;
+	virtual ~deoglShaderCompileListener() = default;
 	
-private:
-	deoglShaderLanguage &pLanguage;
-	int pContextIndex;
-	deoglShaderCompiler *pCompiler;
-	bool pExitThread;
-	State pState;
-	
-	
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create shader compiler thread. */
-	deoglShaderCompilerThread(deoglShaderLanguage &language, int contextIndex);
-	
-	/** Clean up shader compiler thread. */
-	~deoglShaderCompilerThread();
+	/**
+	 * Compile finished. If compile failed compiled is nullptr.
+	 */
+	virtual void CompileFinished(deoglShaderCompiled *compiled) = 0;
 	/*@}*/
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** Run function of thread. */
-	void Run() override;
-	
-	/** Request thread to exit. */
-	void RequestExit();
-	
-	/** Thread state. */
-	State GetState();
-	/*@}*/
-	
-	
-private:
-	void pCleanUp();
-	void pActivateContext();
-	bool pExitThreadRequested();
 };
 
 #endif

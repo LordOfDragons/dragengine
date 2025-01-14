@@ -179,7 +179,6 @@ deoglRenderBase( renderThread )
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const deoglConfiguration &config = renderThread.GetConfiguration();
 	const deoglExtensions &extensions = renderThread.GetExtensions();
 	deoglShaderDefines defines, commonDefines;
@@ -212,12 +211,10 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		defines.SetDefines( "INPUT_ARRAY_TEXTURE" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyColor = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyColor, pipconf, sources, defines);
 		
 		defines.SetDefines( "MIPMAP" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyColorMipMap = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyColorMipMap, pipconf, sources, defines);
 		
 		defines = commonDefines;
 		defines.SetDefines( "INPUT_ARRAY_TEXTURE" );
@@ -225,12 +222,10 @@ deoglRenderBase( renderThread )
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyColorStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyColorStereo, pipconf, sources, defines);
 		
 		defines.SetDefines( "MIPMAP" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyColorMipMapStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyColorMipMapStereo, pipconf, sources, defines);
 		
 		
 		// min max
@@ -243,13 +238,11 @@ deoglRenderBase( renderThread )
 			defines = commonDefines;
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap 2" );
 			defines.SetDefines( "NO_TEXCOORD", "INITIAL" );
-			pipconf.SetShader( renderThread, sources, defines );
-			pPipelineMinMaxMipMapInitial = pipelineManager.GetWith( pipconf );
+			pAsyncGetPipeline(pPipelineMinMaxMipMapInitial, pipconf, sources, defines);
 			
 			defines = commonDefines;
 			defines.SetDefines( "NO_TEXCOORD", "DOWNSAMPLE" );
-			pipconf.SetShader( renderThread, sources, defines );
-			pPipelineMinMaxMipMapDownsample = pipelineManager.GetWith( pipconf );
+			pAsyncGetPipeline(pPipelineMinMaxMipMapDownsample, pipconf, sources, defines);
 			
 		}else if( deoglDRDepthMinMax::USAGE_VERSION == 1 ){
 			pipconf.SetMasks( true, true, true, false, true );
@@ -258,13 +251,11 @@ deoglRenderBase( renderThread )
 			defines = commonDefines;
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap" );
 			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "FUNC_MIN" );
-			pipconf.SetShader( renderThread, sources, defines );
-			pPipelineMinMaxMipMapMin = pipelineManager.GetWith( pipconf );
+			pAsyncGetPipeline(pPipelineMinMaxMipMapMin, pipconf, sources, defines);
 			
 			defines = commonDefines;
 			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "FUNC_MAX" );
-			pipconf.SetShader( renderThread, sources, defines );
-			pPipelineMinMaxMipMapMax = pipelineManager.GetWith( pipconf );
+			pAsyncGetPipeline(pPipelineMinMaxMipMapMax, pipconf, sources, defines);
 			
 		}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
 			pipconf.SetMasks( true, true, true, false, true );
@@ -273,13 +264,11 @@ deoglRenderBase( renderThread )
 			defines = commonDefines;
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap" );
 			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "SPLIT_VERSION", "SPLIT_SHIFT_TC" );
-			pipconf.SetShader( renderThread, sources, defines );
-			pPipelineMinMaxMipMapInitial = pipelineManager.GetWith( pipconf );
+			pAsyncGetPipeline(pPipelineMinMaxMipMapInitial, pipconf, sources, defines);
 			
 			defines = commonDefines;
 			defines.SetDefines( "NO_TEXCOORD", "SPLIT_VERSION" );
-			pipconf.SetShader( renderThread, sources, defines );
-			pPipelineMinMaxMipMapDownsample = pipelineManager.GetWith( pipconf );
+			pAsyncGetPipeline(pPipelineMinMaxMipMapDownsample, pipconf, sources, defines);
 		}
 		
 		
@@ -328,15 +317,13 @@ deoglRenderBase( renderThread )
 		//defines.SetDefine( "ROUGHNESS_TAPPING", true );
 		
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineScreenSpace = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineScreenSpace, pipconf, sources, defines);
 		
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineScreenSpaceStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineScreenSpaceStereo, pipconf, sources, defines);
 		
 		
 		// apply reflections
@@ -365,8 +352,7 @@ deoglRenderBase( renderThread )
 		}
 		
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineApplyReflections = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineApplyReflections, pipconf, sources, defines);
 		
 		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
@@ -375,8 +361,7 @@ deoglRenderBase( renderThread )
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
 			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineApplyReflectionsStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineApplyReflectionsStereo, pipconf, sources, defines);
 		
 		
 		// copy material
@@ -386,8 +371,7 @@ deoglRenderBase( renderThread )
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen EnvMap Material Copy" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyMaterial = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyMaterial, pipconf, sources, defines);
 		
 		
 		// env map copy
@@ -398,16 +382,14 @@ deoglRenderBase( renderThread )
 		if( pUseEquiEnvMap ){
 			defines.SetDefines( "ENVMAP_EQUI" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineEnvMapCopy = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineEnvMapCopy, pipconf, sources, defines);
 		
 		// env map light gi
 		pipconf.Reset();
 		pipconf.SetMasks( true, true, true, true, false );
 		
 		defines.SetDefines( "WITH_GI" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineEnvMapLightGI = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineEnvMapLightGI, pipconf, sources, defines);
 		
 		
 		// reflection
@@ -428,15 +410,13 @@ deoglRenderBase( renderThread )
 			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineReflection = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineReflection, pipconf, sources, defines);
 		
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineReflectionStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineReflectionStereo, pipconf, sources, defines);
 		
 		
 		// cube map to equi rect map
@@ -445,8 +425,7 @@ deoglRenderBase( renderThread )
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection CubeMap 2 EquiMap" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCubeMap2EquiMap = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCubeMap2EquiMap, pipconf, sources, defines);
 		
 		
 		// build env map
@@ -461,8 +440,7 @@ deoglRenderBase( renderThread )
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBuildEnvMap = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBuildEnvMap, pipconf, sources, defines);
 		
 		
 		// env map mask
@@ -474,8 +452,7 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection EnvMap Mask" );
 		//defines.SetDefines( "FULLSCREENQUAD" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineEnvMapMask = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineEnvMapMask, pipconf, sources, defines);
 		
 		
 		

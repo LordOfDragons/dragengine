@@ -22,62 +22,52 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLSHADERCOMPILERTHREAD_H_
-#define _DEOGLSHADERCOMPILERTHREAD_H_
+#include "deoglShaderCompileTask.h"
+#include "deoglShaderCompileListener.h"
+#include "../deoglShaderCompiled.h"
 
-#include <dragengine/threading/deThread.h>
-
-class deoglShaderLanguage;
-class deoglShaderCompiler;
+#include <dragengine/common/exceptions.h>
 
 
-/**
- * Shader compiler thread.
- */
-class deoglShaderCompilerThread : public deThread{
-public:
-	enum class State{
-		prepare,
-		ready,
-		failed
-	};
-	
-private:
-	deoglShaderLanguage &pLanguage;
-	int pContextIndex;
-	deoglShaderCompiler *pCompiler;
-	bool pExitThread;
-	State pState;
-	
-	
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create shader compiler thread. */
-	deoglShaderCompilerThread(deoglShaderLanguage &language, int contextIndex);
-	
-	/** Clean up shader compiler thread. */
-	~deoglShaderCompilerThread();
-	/*@}*/
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** Run function of thread. */
-	void Run() override;
-	
-	/** Request thread to exit. */
-	void RequestExit();
-	
-	/** Thread state. */
-	State GetState();
-	/*@}*/
-	
-	
-private:
-	void pCleanUp();
-	void pActivateContext();
-	bool pExitThreadRequested();
-};
+// Class deoglShaderCompileTask
+/////////////////////////////////
 
-#endif
+// Constructor, destructor
+////////////////////////////
+
+deoglShaderCompileTask::deoglShaderCompileTask(const deoglShaderProgram *program,
+	deoglShaderCompileListener *listener) :
+pProgram(program),
+pListener(listener),
+pCompiled(nullptr)
+{
+	DEASSERT_NOTNULL(program)
+	DEASSERT_NOTNULL(listener)
+}
+
+deoglShaderCompileTask::~deoglShaderCompileTask(){
+	SetCompiled(nullptr);
+	if(pListener){
+		delete pListener;
+	}
+}
+
+// Management
+///////////////
+
+deoglShaderCompiled *deoglShaderCompileTask::GetCompiled(){
+	deoglShaderCompiled * const compiled = pCompiled;
+	pCompiled = nullptr;
+	return compiled;
+}
+
+void deoglShaderCompileTask::SetCompiled(deoglShaderCompiled *compiled){
+	if(compiled == pCompiled){
+		return;
+	}
+	
+	if(pCompiled){
+		delete pCompiled;
+	}
+	pCompiled = compiled;
+}

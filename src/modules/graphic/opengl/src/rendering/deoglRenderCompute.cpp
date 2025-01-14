@@ -84,7 +84,6 @@ deoglRenderCompute::deoglRenderCompute( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread )
 {
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines, commonDefines;
 	
@@ -167,95 +166,92 @@ deoglRenderBase( renderThread )
 	
 	
 	// update elements
-	pipconf.SetShader( renderThread, "DefRen Plan Update Elements", commonDefines );
-	pPipelineUpdateElements = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineUpdateElements, pipconf,
+		"DefRen Plan Update Elements", commonDefines);
 	
 	
 	// update element geometries
-	pipconf.SetShader( renderThread, "DefRen Plan Update Element Geometries", commonDefines );
-	pPipelineUpdateElementGeometries = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineUpdateElementGeometries, pipconf,
+		"DefRen Plan Update Element Geometries", commonDefines);
 	
 	
 	// cleanup element geometries
-	pipconf.SetShader( renderThread, "DefRen Plan Clear Geometries", commonDefines );
-	pPipelineClearGeometries = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineClearGeometries, pipconf,
+		"DefRen Plan Clear Geometries", commonDefines);
 	
 	
 	// find content
 	defines = commonDefines;
 	
-	// pipconf.SetShader( renderThread, "DefRen Plan FindContent Node", defines );
-	// pPipelineFindContentNode = pipelineManager.GetWith( pipconf );
+	// pAsyncGetPipeline(pPipelineFindContentNode, pipconf, "DefRen Plan FindContent Node", defines);
 	
 	defines.SetDefines( "CULL_VIEW_FRUSTUM" );
 	defines.SetDefines( "CULL_TOO_SMALL" );
-	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
-	pPipelineFindContentElement = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineFindContentElement, pipconf,
+		"DefRen Plan FindContent Element", defines);
 	
 	
 	// find content sky light
 	defines = commonDefines;
 	defines.SetDefines( "CULL_SKY_LIGHT_FRUSTUM" );
-	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
-	pPipelineFindContentSkyLight = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineFindContentSkyLight, pipconf,
+		"DefRen Plan FindContent Element", defines);
 	
 	
 	// find content sky light GI
 	defines = commonDefines;
 	defines.SetDefines( "CULL_SKY_LIGHT_GIBOX" );
-	pipconf.SetShader( renderThread, "DefRen Plan FindContent Element", defines );
-	pPipelineFindContentSkyLightGI = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineFindContentSkyLightGI, pipconf,
+		"DefRen Plan FindContent Element", defines);
 	
 	
 	// find geometries
 	defines = commonDefines;
-	pipconf.SetShader( renderThread, "DefRen Plan Find Geometries", defines );
-	pPipelineFindGeometries = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineFindGeometries, pipconf, "DefRen Plan Find Geometries", defines);
 	
 	defines.SetDefines( "WITH_OCCLUSION" );
-	pipconf.SetShader( renderThread, "DefRen Plan Find Geometries", defines );
-	pPipelineFindGeometriesSkyShadow = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineFindGeometriesSkyShadow, pipconf,
+		"DefRen Plan Find Geometries", defines);
 	
 	
 	// update cull result
 	defines = commonDefines;
-	pipconf.SetShader( renderThread, "DefRen Plan Update Cull Result", defines );
-	pPipelineUpdateCullResultSetOcclusion = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineUpdateCullResultSetOcclusion, pipconf,
+		"DefRen Plan Update Cull Result", defines);
 	
 	defines.SetDefines( "WITH_CALC_LOD" );
-	pipconf.SetShader( renderThread, "DefRen Plan Update Cull Result", defines );
-	pPipelineUpdateCullResultSet = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineUpdateCullResultSet, pipconf,
+		"DefRen Plan Update Cull Result", defines);
 	
 	defines = commonDefines;
 	defines.SetDefines( "CLEAR_CULL_RESULT" );
-	pPipelineUpdateCullResultClear = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineUpdateCullResultClear, pipconf,
+		"DefRen Plan Update Cull Result", defines);
 	
 	
 	// build render task
 	defines = commonDefines;
-	pipconf.SetShader( renderThread, "DefRen Plan Build Render Task", defines );
-	pPipelineBuildRenderTask = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineBuildRenderTask, pipconf, "DefRen Plan Build Render Task", defines);
 	
-	pipconf.SetShader( renderThread, "DefRen Plan Build Render Task Occlusion", defines );
-	pPipelineBuildRenderTaskOcclusion = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineBuildRenderTaskOcclusion, pipconf,
+		"DefRen Plan Build Render Task Occlusion", defines);
 	
 	
 	// sort render task
 	defines = commonDefines;
-	pipconf.SetShader( renderThread, "DefRen Plan Sort Render Task", defines );
-	pPipelineSortRenderTask = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSortRenderTask, pipconf, "DefRen Plan Sort Render Task", defines);
 	
 	
 	// render task sub instance group
 	defines = commonDefines;
-	pipconf.SetShader( renderThread, "DefRen Plan Render Task SubInstGroup Pass 1", defines );
-	pPipelineRenderTaskSubInstGroup[ 0 ] = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineRenderTaskSubInstGroup[0], pipconf,
+		"DefRen Plan Render Task SubInstGroup Pass 1", defines);
 	
-	pipconf.SetShader( renderThread, "DefRen Plan Render Task SubInstGroup Pass 2", defines );
-	pPipelineRenderTaskSubInstGroup[ 1 ] = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineRenderTaskSubInstGroup[1], pipconf,
+		"DefRen Plan Render Task SubInstGroup Pass 2", defines);
 	
-	pipconf.SetShader( renderThread, "DefRen Plan Render Task SubInstGroup Pass 3", defines );
-	pPipelineRenderTaskSubInstGroup[ 2 ] = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineRenderTaskSubInstGroup[2], pipconf,
+		"DefRen Plan Render Task SubInstGroup Pass 3", defines);
 }
 
 deoglRenderCompute::~deoglRenderCompute(){

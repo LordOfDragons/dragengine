@@ -185,7 +185,6 @@ enum eSPBloomDownSample{
 deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
@@ -205,32 +204,28 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineColor2LogLum = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineColor2LogLum, pipconf, sources, defines);
 		
 		// color to loglum stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineColor2LogLumStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineColor2LogLumStereo, pipconf, sources, defines);
 		
 		
 		// average loglum
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineAvgLogLum = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineAvgLogLum, pipconf, sources, defines);
 		
 		// average loglum stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineAvgLogLumStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineAvgLogLumStereo, pipconf, sources, defines);
 		
 		
 		// parameters
@@ -239,12 +234,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Parameters" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineParameters = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineParameters, pipconf, sources, defines);
 		
 		defines.SetDefines( "SAMPLE_STEREO" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineParametersStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineParametersStereo, pipconf, sources, defines);
 		
 		
 		// bright pass
@@ -254,78 +247,68 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBrightPass = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBrightPass, pipconf, sources, defines);
 		
 		
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBrightPassStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBrightPassStereo, pipconf, sources, defines);
 		
 		
 		// bloom downsample
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Down-Sample" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBloomDownSample = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBloomDownSample, pipconf, sources, defines);
 		
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Down-Sample Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBloomDownSampleStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBloomDownSampleStereo, pipconf, sources, defines);
 		
 		
 		// bloom blur
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBloomBlur = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBloomBlur, pipconf, sources, defines);
 		
 		// bloom blur stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBloomBlurStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBloomBlurStereo, pipconf, sources, defines);
 		
 		
 		// bloom add
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Add" );
-		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.EnableBlend( GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR );
 		//pipconf.SetBlendColor( decColor( 0.5f, 0.5f, 0.5f, 0.5f ) );
 		pipconf.SetBlendColor( decColor( 0.75f, 0.75f, 0.75f, 0.75f ) );
-		pPipelineBloomAdd = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBloomAdd, pipconf, sources, defines);
 		
 		// bloom add stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Add Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBloomAddStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBloomAddStereo, pipconf, sources, defines);
 		
 		
 		// tone map
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
-		pipconf.SetShader( renderThread, sources, defines );
 		pipconf.SetEnableBlend( false );
-		pPipelineToneMap = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineToneMap, pipconf, sources, defines);
 		
 		defines.SetDefines( "WITH_TONEMAP_CURVE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineToneMapCustom = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineToneMapCustom, pipconf, sources, defines);
 		defines.RemoveDefines( "WITH_TONEMAP_CURVE" );
 		
 		// tone map stereo
@@ -333,12 +316,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineToneMapStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineToneMapStereo, pipconf, sources, defines);
 		
 		defines.SetDefines( "WITH_TONEMAP_CURVE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineToneMapCustomStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineToneMapCustomStereo, pipconf, sources, defines);
 		defines.RemoveDefines( "WITH_TONEMAP_CURVE" );
 		
 		
@@ -350,16 +331,14 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLdr = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLdr, pipconf, sources, defines);
 		
 		// ldr stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLdrStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLdrStereo, pipconf, sources, defines);
 		
 		
 		// lum prepare
@@ -370,16 +349,14 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLumPrepare = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLumPrepare, pipconf, sources, defines);
 		
 		// lum prepare stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLumPrepareStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLumPrepareStereo, pipconf, sources, defines);
 		
 		
 		pFBOToneMapParams = new deoglFramebuffer( renderThread, false );

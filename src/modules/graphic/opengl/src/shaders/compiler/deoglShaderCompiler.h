@@ -50,10 +50,10 @@ class deoglRenderThread;
 class deoglShaderCompiler{
 private:
 	deoglShaderLanguage &pLanguage;
+	int pContextIndex;
 	char *pErrorLog;
 	deoglShaderPreprocessor pPreprocessor;
 	
-	bool pGuardContext;
 	deMutex pMutexCompile;
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader compiler. */
-	deoglShaderCompiler(deoglShaderLanguage &language, bool guardContext);
+	deoglShaderCompiler(deoglShaderLanguage &language, int contextIndex);
 	
 	/** Clean up shader compiler. */
 	~deoglShaderCompiler();
@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Compile shader from given sources using specified defines. */
-	deoglShaderCompiled *CompileShader(deoglShaderProgram &program);
+	deoglShaderCompiled *CompileShader(const deoglShaderProgram &program);
 	/*@}*/
 	
 	
@@ -80,11 +80,11 @@ public:
 private:
 	void pCleanUp();
 	
-	deoglShaderCompiled *pCompileShader( deoglShaderProgram &program );
-	void pAfterLinkShader( const deoglShaderProgram &program, deoglShaderCompiled &compiled );
-	deoglShaderCompiled *pCacheLoadShader( deoglShaderProgram &program );
-	void pCacheSaveShader( const deoglShaderProgram &program, const deoglShaderCompiled &compiled );
-	void pPreparePreprocessor( const deoglShaderDefines &defines );
+	deoglShaderCompiled *pCompileShader(const deoglShaderProgram &program);
+	void pAfterLinkShader(const deoglShaderProgram &program, deoglShaderCompiled &compiled);
+	deoglShaderCompiled *pCacheLoadShader(const deoglShaderProgram &program);
+	void pCacheSaveShader(const deoglShaderProgram &program, const deoglShaderCompiled &compiled);
+	void pPreparePreprocessor(const deoglShaderDefines &defines);
 	
 	#ifdef OS_ANDROID
 	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data, const deoglShaderBindingList *outputList = NULL );

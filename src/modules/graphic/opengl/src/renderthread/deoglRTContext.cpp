@@ -113,8 +113,9 @@ static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTContext::deoglRTContext( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglRTContext::deoglRTContext(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pCompileContextCount(0),
 
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
@@ -976,7 +977,8 @@ void deoglRTContext::pCreateContext(){
 						break;
 					}
 				}
-				logger.LogInfoFormat("Created %d compile contexts", j);
+				pCompileContextCount = j;
+				logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 				break;
 			}
 			
@@ -995,7 +997,8 @@ void deoglRTContext::pCreateContext(){
 					break;
 				}
 			}
-			logger.LogInfoFormat("Created %d compile contexts", i);
+			pCompileContextCount = i;
+			logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 		}
 		
 	}else{
@@ -1009,7 +1012,8 @@ void deoglRTContext::pCreateContext(){
 				break;
 			}
 		}
-		logger.LogInfoFormat("Created %d compile contexts", i);
+		pCompileContextCount = i;
+		logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 	}
 	
 	DEASSERT_NOTNULL( pContext )
@@ -1042,7 +1046,7 @@ void deoglRTContext::pFreeContext(){
 	
 #ifdef BACKEND_OPENGL
 	int i;
-	for(i=0; i<MaxCompileContextCount; i++){
+	for(i=0; i<pCompileContextCount; i++){
 		if(pCompileContext[i]){
 			glXDestroyContext(pDisplay, pCompileContext[i]);
 			pCompileContext[i] = nullptr;
@@ -1170,7 +1174,8 @@ void deoglRTContext::pInitDisplay(){
 				break;
 			}
 		}
-		pRenderThread.GetLogger().LogInfoFormat("Created %d compile contexts", i);
+		pCompileContextCount = i;
+		pRenderThread.GetLogger().LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 	}
 	
 	// make surface current. we have to make it current each render loop
@@ -1192,7 +1197,7 @@ void deoglRTContext::pCloseDisplay(){
 	TerminateAppWindow();
 	
 	int i;
-	for(i=0; i<MaxCompileContextCount; i++){
+	for(i=0; i<pCompileContextCount; i++){
 		if(pCompileContext[i] != EGL_NO_CONTEXT){
 			eglDestroyContext(pDisplay, pCompileContext[i]);
 			pCompileContext[i] = EGL_NO_CONTEXT;
@@ -1342,7 +1347,8 @@ void deoglRTContext::pCreateContext(){
 						break;
 					}
 				}
-				logger.LogInfoFormat("Created %d compile contexts", j);
+				pCompileContextCount = j;
+				logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 				break;
 			}
 			
@@ -1368,7 +1374,8 @@ void deoglRTContext::pCreateContext(){
 					break;
 				}
 			}
-			logger.LogInfoFormat("Created %d compile contexts", i);
+			pCompileContextCount = i;
+			logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 		}
 		
 	}else{
@@ -1406,7 +1413,7 @@ void deoglRTContext::pFreeContext(){
 	//pDestroyRenderWindow();
 	
 	int i;
-	for(i=0; i<MaxCompileContextCount; i++){
+	for(i=0; i<pCompileContextCount; i++){
 		if(pCompileContext[i]){
 			wglDeleteContext(pCompileContext[i]);
 			pCompileContext[i] = NULL;

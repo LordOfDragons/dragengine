@@ -117,7 +117,6 @@ deoglRenderBase( renderThread )
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
@@ -138,16 +137,14 @@ deoglRenderBase( renderThread )
 	if( useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineCopyDepthColor = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineCopyDepthColor, pipconf, sources, defines);
 	
 	// copy depth color stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineCopyDepthColorStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineCopyDepthColorStereo, pipconf, sources, defines);
 	
 	
 	// copy depth limit
@@ -163,16 +160,14 @@ deoglRenderBase( renderThread )
 	if( ! useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineCopyDepthLimit = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineCopyDepthLimit, pipconf, sources, defines);
 	
 	// copy depth limit stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineCopyDepthLimitStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineCopyDepthLimitStereo, pipconf, sources, defines);
 	
 	
 	// copy color
@@ -183,16 +178,14 @@ deoglRenderBase( renderThread )
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
 	defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineCopyColor = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineCopyColor, pipconf, sources, defines);
 	
 	// copy color stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineCopyColorStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineCopyColorStereo, pipconf, sources, defines);
 }
 
 deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){

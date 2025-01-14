@@ -111,38 +111,32 @@ pTBORenderText2( nullptr ),
 pTBORenderRectangle1( nullptr ),
 pTBORenderRectangle2( nullptr )
 {
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
 		pipconf.Reset();
-		pipconf.SetDepthMask( false );
+		pipconf.SetDepthMask(false);
 		pipconf.EnableBlendBlend();
 		
 		// x-ray
-		pipconf.SetShader( renderThread, "DefRen Debug Color-Only", defines );
-		pPipelineXRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineXRay, pipconf, "DefRen Debug Color-Only", defines);
 		defines.RemoveAllDefines();
 		
 		// texture layer
-		defines.SetDefines( "TEXTURELEVEL" );
-		pipconf.SetShader( renderThread, "Debug Display Texture", defines );
-		pPipelineOutTexLayer = pipelineManager.GetWith( pipconf );
+		defines.SetDefines("TEXTURELEVEL");
+		pAsyncGetPipeline(pPipelineOutTexLayer, pipconf, "Debug Display Texture", defines);
 		
 		// texture array
-		defines.SetDefines( "ARRAYTEXTURE" );
-		pipconf.SetShader( renderThread, "Debug Display Texture", defines );
-		pPipelineOutArrTex = pipelineManager.GetWith( pipconf );
+		defines.SetDefines("ARRAYTEXTURE");
+		pAsyncGetPipeline(pPipelineOutArrTex, pipconf, "Debug Display Texture", defines);
 		defines.RemoveAllDefines();
 		
 		// text
-		pipconf.SetShader( renderThread, "Debug Render Text", defines );
-		pPipelineRenderText = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineRenderText, pipconf, "Debug Render Text", defines);
 		
 		// rectangle
-		pipconf.SetShader( renderThread, "Debug Rectangle", defines );
-		pPipelineRectangle = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineRectangle, pipconf, "Debug Rectangle", defines);
 		
 		
 		

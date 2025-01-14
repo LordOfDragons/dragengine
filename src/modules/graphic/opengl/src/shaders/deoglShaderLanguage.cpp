@@ -36,6 +36,8 @@
 #include "deoglShaderManager.h"
 #include "deoglShaderSourceLocation.h"
 #include "compiler/deoglShaderCompiler.h"
+#include "compiler/deoglShaderCompileListener.h"
+#include "compiler/deoglShaderCompilerThread.h"
 #include "../deoglCaches.h"
 #include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapabilities.h"
@@ -43,6 +45,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTChoices.h"
+#include "../renderthread/deoglRTContext.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -65,7 +68,10 @@ pLoadingShaderCount(0),
 pHasLoadingShader(false),
 pCompilingShaderCount(0),
 pHasCompilingShader(false),
-pCompiler(nullptr)
+pCompiler(nullptr),
+pCompilerThreads(nullptr),
+pCompilerThreadCount(0),
+pCompilingTaskCount(0)
 {
 	deoglExtensions &ext = renderThread.GetExtensions();
 	
@@ -162,12 +168,18 @@ pCompiler(nullptr)
 			pGLSLExtensions.Add( "GL_ARB_shader_atomic_counters" );
 		}
 	}
+	
+	try{
+		pCreateCompileThreads();
+		
+	}catch(const deException &){
+		pCleanUp();
+		throw;
+	}
 }
 
 deoglShaderLanguage::~deoglShaderLanguage(){
-	if(pCompiler){
-		delete pCompiler;
-	}
+	pCleanUp();
 }
 
 
@@ -175,15 +187,52 @@ deoglShaderLanguage::~deoglShaderLanguage(){
 // Management
 ///////////////
 
-deoglShaderCompiled *deoglShaderLanguage::CompileShader(deoglShaderProgram &program){
+deoglShaderCompiled *deoglShaderLanguage::CompileShader(const deoglShaderProgram &program){
 // 	pRenderThread.GetLogger().LogInfoFormat("CompileShader: cacheId='%s' cacheId.len=%d",
 // 		program.GetCacheId().GetString(), program.GetCacheId().GetLength());
 	
 	if(!pCompiler){
-		pCompiler = new deoglShaderCompiler(*this, true);
+		pCompiler = new deoglShaderCompiler(*this, -1);
 	}
 	
 	return pCompiler->CompileShader(program);
+}
+
+void deoglShaderLanguage::CompileShaderAsync(const deoglShaderProgram *program,
+deoglShaderCompileListener *listener){
+	DEASSERT_NOTNULL(listener)
+	DEASSERT_NOTNULL(program)
+	
+	if(pCompilerThreadCount > 0){
+		{
+		const deMutexGuard guard(pMutexTasks);
+		pTasksPending.Add(deObject::Ref::New(new deoglShaderCompileTask(program, listener)));
+		}
+		pSemaphoreNewTasks.Signal();
+		
+	}else{
+		deoglShaderCompiled *compiled = nullptr;
+		try{
+			compiled = CompileShader(*program);
+		}catch(const deException &e){
+			pRenderThread.GetLogger().LogException(e);
+		}
+		
+		try{
+			listener->CompileFinished(compiled);
+		}catch(const deException &e){
+			if(compiled){
+				delete compiled;
+			}
+			pRenderThread.GetLogger().LogException(e);
+		}
+		
+		try{
+			delete listener;
+		}catch(const deException &e){
+			pRenderThread.GetLogger().LogException(e);
+		}
+	}
 }
 
 int deoglShaderLanguage::NextShaderFileNumber(){
@@ -233,5 +282,102 @@ void deoglShaderLanguage::RemoveCompilingShader(){
 	pCompilingShaderCount--;
 }
 
+void deoglShaderLanguage::GetNextTask(deoglShaderCompileTask::Ref &task){
+	const deMutexGuard guard(pMutexTasks);
+	if(pTasksPending.GetCount() > 0){
+		task = (deoglShaderCompileTask*)pTasksPending.GetAt(0);
+		pTasksPending.RemoveFrom(0);
+		pCompilingTaskCount++;
+		
+	}else{
+		task = nullptr;
+	}
+}
+
+void deoglShaderLanguage::FinishTask(deoglShaderCompileTask::Ref &task){
+	try{
+		task->GetListener()->CompileFinished(task->GetCompiled());
+		
+	}catch(const deException &e){
+		pRenderThread.GetLogger().LogException(e);
+	}
+	
+	{
+	const deMutexGuard guard(pMutexTasks);
+	DEASSERT_TRUE(pCompilingTaskCount > 0)
+	pCompilingTaskCount--;
+	task = nullptr;
+	}
+	
+	pSemaphoreTasksFinished.Signal();
+}
+
+void deoglShaderLanguage::WaitForNewTasks(){
+	pSemaphoreNewTasks.Wait();
+}
+
+void deoglShaderLanguage::WaitAllTasksFinished(){
+	while(true){
+		{
+		const deMutexGuard guard(pMutexTasks);
+		if(pCompilingTaskCount == 0 && pTasksPending.GetCount() == 0){
+			break;
+		}
+		}
+		pSemaphoreTasksFinished.Wait();
+	}
+}
+
+
 // Private Functions
 //////////////////////
+
+void deoglShaderLanguage::pCleanUp(){
+	int i;
+	for(i=0; i<pCompilerThreadCount; i++){
+		pCompilerThreads[i]->RequestExit();
+	}
+	
+	pSemaphoreNewTasks.SignalAll();
+	
+	for(i=0; i<pCompilerThreadCount; i++){
+		pRenderThread.GetLogger().LogInfoFormat("Wait exit shader compile thread %d", i);
+		pCompilerThreads[i]->WaitForExit();
+		pRenderThread.GetLogger().LogInfoFormat("Shader compile thread %d exited", i);
+		delete pCompilerThreads[i];
+	}
+	
+	if(pCompiler){
+		delete pCompiler;
+	}
+}
+
+void deoglShaderLanguage::pCreateCompileThreads(){
+	deoglRTContext &context = pRenderThread.GetContext();
+	const int count = context.GetCompileContextCount();
+	if(count == 0){
+		return;
+	}
+	
+	pCompilerThreads = new deoglShaderCompilerThread*[count];
+	
+	int i;
+	for(i=0; i<count; i++){
+		pCompilerThreads[i] = new deoglShaderCompilerThread(*this, i);
+		pCompilerThreadCount = i + 1;
+		pCompilerThreads[i]->Start();
+	}
+	
+	for(i=0; i<count; i++){
+		while(true){
+			const deoglShaderCompilerThread::State state = pCompilerThreads[i]->GetState();
+			DEASSERT_FALSE(state == deoglShaderCompilerThread::State::failed)
+			if(state == deoglShaderCompilerThread::State::ready){
+				break;
+			}
+			
+			decTimer timer;
+			while(timer.PeekElapsedTime() < 0.001f);
+		}
+	}
+}

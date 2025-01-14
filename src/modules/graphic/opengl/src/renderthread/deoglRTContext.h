@@ -108,6 +108,7 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
+	int pCompileContextCount;
 	
 	
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
@@ -233,6 +234,9 @@ public:
 	/** Special call for module to get a function pointer before extensions can be properly initialized. */
 	void *GetFunctionPointer( const char *funcName );
 #endif
+	
+	/** Count of compile contexts. */
+	inline int GetCompileContextCount() const{ return pCompileContextCount; }
 	
 	
 	

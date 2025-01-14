@@ -246,7 +246,6 @@ deoglRTRenderers &renderers ) :
 deoglRenderLightBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	const float smOffsetScale = renderThread.GetConfiguration().GetShadowMapOffsetScale();
 	const float smOffsetBias = renderThread.GetConfiguration().GetShadowMapOffsetBias();
@@ -265,16 +264,13 @@ deoglRenderLightBase( renderThread )
 			defines.SetDefines( "SHADOW_INVERSE_DEPTH" );
 		}
 		defines.SetDefines( "DEPTH_INPUT" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBoxBoundary1 = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBoxBoundary1, pipconf, sources, defines);
 		
 		defines.SetDefines( "AMBIENT_MAP" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBoxBoundary1Ambient = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBoxBoundary1Ambient, pipconf, sources, defines);
 		defines.RemoveAllDefines();
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBoxBoundary2 = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBoxBoundary2, pipconf, sources, defines);
 		defines.RemoveAllDefines();
 		
 		
@@ -288,9 +284,8 @@ deoglRenderLightBase( renderThread )
 		pipconf.EnablePolygonOffset( useInverseDepth ? -smOffsetScale : smOffsetScale, -smOffsetBias );
 		
 		AddSharedSPBDefines( defines );
-		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
-		pipconf.SetSPBInstanceIndexBase( 0 );
-		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
+		pipconf.SetSPBInstanceIndexBase(0);
+		pAsyncGetPipeline(pPipelineOccMap, pipconf, "DefRen Occlusion OccMap", defines, true);
 		defines.RemoveAllDefines();
 		
 		

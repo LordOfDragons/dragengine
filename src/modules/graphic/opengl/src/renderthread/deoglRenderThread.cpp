@@ -65,6 +65,8 @@
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shadow/deoglShadowMapper.h"
+#include "../shaders/deoglShaderLanguage.h"
+#include "../shaders/deoglShaderManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../triangles/deoglTriangleSorter.h"
 #include "../utils/deoglQuickSorter.h"
@@ -1123,9 +1125,15 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pLightBoundarybox = new deoglLightBoundaryMap( *this,
 		deoglShadowMapper::ShadowMapSize( pConfiguration ) >> 1 );
 	
+	decTimer timer;
 	pRenderers = new deoglRTRenderers( *this );
 	pGI = new deoglGI( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
+	
+	pShader->GetShaderManager().WaitAllProgramsCompiled();
+	pShader->GetShaderManager().GetLanguage()->WaitAllTasksFinished();
+	pLogger->LogInfoFormat("Elapsed Shader Compile/Load: %.0fms", timer.GetElapsedTime() * 1e4f);
+	DEASSERT_FALSE(deoglRenderBase::anyPipelineShaderFailed)
 	
 #ifdef BACKEND_OPENGL
 	// load vulkan and create device if supported

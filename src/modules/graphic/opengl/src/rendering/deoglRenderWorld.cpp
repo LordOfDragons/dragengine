@@ -204,8 +204,7 @@ pDebugInfo( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineFinalize = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineFinalize, pipconf, sources, defines);
 		
 		pipconf2 = pipconf;
 		pipconf2.EnableBlendBlend();
@@ -216,8 +215,7 @@ pDebugInfo( renderThread )
 		if( ! useFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineFinalizeStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineFinalizeStereo, pipconf, sources, defines);
 		
 		pipconf2 = pipconf;
 		pipconf2.EnableBlendBlend();
@@ -226,8 +224,7 @@ pDebugInfo( renderThread )
 		// finalize split
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "SPLIT_LAYERS" );
-		pipconf.SetShader( renderThread, "DefRen Finalize Split", defines );
-		pPipelineFinalizeSplit = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineFinalizeSplit, pipconf, "DefRen Finalize Split", defines);
 		
 		
 		

@@ -106,7 +106,6 @@ deoglRenderBase( renderThread ),
 pVertexPositionSetParams( nullptr ),
 pVertexPositionSetParamSize( 0 )
 {
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
@@ -115,23 +114,19 @@ pVertexPositionSetParamSize( 0 )
 		pipconf.SetType( deoglPipelineConfiguration::etCompute );
 		
 		// copy vertices, normals and tangents
-		pipconf.SetShader( renderThread, "DefRen Copy VNT", defines );
-		pPipelineCopyVNT = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyVNT, pipconf, "DefRen Copy VNT", defines);
 		
 		// transform vertices using vertex position set
-		pipconf.SetShader( renderThread, "DefRen VPS Transform VNT", defines );
-		pPipelineVPSTransformVNT = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineVPSTransformVNT, pipconf, "DefRen VPS Transform VNT", defines);
 		
 		// approximate transform vertices, normals and tangents
-		pipconf.SetShader( renderThread, "DefRen Approx Transform VNT", defines );
-		pPipelineApproxTransformVNT = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineApproxTransformVNT, pipconf, "DefRen Approx Transform VNT", defines);
 		
-		defines.SetDefines( "TRANSFORM_INPLACE" );
-		pipconf.SetShader( renderThread, "DefRen Approx Transform VNT", defines );
-		pPipelineApproxTransformVNTInplace = pipelineManager.GetWith( pipconf );
-		defines.RemoveDefines( "TRANSFORM_INPLACE" );
+		defines.SetDefines("TRANSFORM_INPLACE");
+		pAsyncGetPipeline(pPipelineApproxTransformVNTInplace, pipconf, "DefRen Approx Transform VNT", defines);
+		defines.RemoveDefines("TRANSFORM_INPLACE");
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}

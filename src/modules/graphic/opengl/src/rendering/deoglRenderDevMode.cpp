@@ -153,6 +153,7 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines commonDefines, defines;
 	deoglPipelineConfiguration pipconf;
+	const char *sources;
 	
 	pVBOShapes = 0;
 	pVAOShapes = 0;
@@ -168,12 +169,10 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pipconf.EnableBlendBlend();
 		
 		// 2d solid color
-		pipconf.SetShader( renderThread, "2D Solid Color", defines );
-		pPipelineSolidColor2D = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineSolidColor2D, pipconf, "2D Solid Color", defines);
 		
 		// 3d solid color
-		pipconf.SetShader( renderThread, "3D Solid Color", defines );
-		pPipelineSolidColor3D = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineSolidColor3D, pipconf, "3D Solid Color", defines);
 		
 		// shape
 		defines.SetDefines( "WITH_SELECTOR" );
@@ -181,8 +180,7 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		//defines.SetDefines( "WITH_DEPTH" );
-		pipconf.SetShader( renderThread, "DefRen Shape", defines );
-		pPipelineShape = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineShape, pipconf, "DefRen Shape", defines);
 		
 		// shape line
 		pipconf.SetPolygonMode( GL_LINE );
@@ -196,19 +194,18 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pipconf.SetDepthMask( false );
 		pipconf.EnableCulling( false );
 		pipconf.EnableBlendBlend();
-		pipconf.SetShader( renderThread, "DefRen Panel", defines );
-		pPipelineVRDebugPanel = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineVRDebugPanel, pipconf, "DefRen Panel", defines);
 		
 		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
-			pipconf.SetShader( renderThread, "DefRen Panel", defines );
+			sources = "DefRen Panel";
 			
 		}else{
 			defines.SetDefines( "GS_RENDER_STEREO" );
-			pipconf.SetShader( renderThread, "DefRen Panel Stereo", defines );
+			sources = "DefRen Panel Stereo";
 		}
 		
-		pPipelineVRDebugPanelStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineVRDebugPanelStereo, pipconf, sources, defines);
 		
 		
 	}catch( const deException & ){

@@ -22,62 +22,55 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLSHADERCOMPILERTHREAD_H_
-#define _DEOGLSHADERCOMPILERTHREAD_H_
+#ifndef _DEOGLSHADERCOMPILETASK_H_
+#define _DEOGLSHADERCOMPILETASK_H_
 
-#include <dragengine/threading/deThread.h>
+#include <dragengine/deObject.h>
 
-class deoglShaderLanguage;
-class deoglShaderCompiler;
+class deoglShaderProgram;
+class deoglShaderCompiled;
+class deoglShaderCompileListener;
 
 
 /**
  * Shader compiler thread.
  */
-class deoglShaderCompilerThread : public deThread{
+class deoglShaderCompileTask : public deObject{
 public:
-	enum class State{
-		prepare,
-		ready,
-		failed
-	};
+	typedef deTObjectReference<deoglShaderCompileTask> Ref;
+	
 	
 private:
-	deoglShaderLanguage &pLanguage;
-	int pContextIndex;
-	deoglShaderCompiler *pCompiler;
-	bool pExitThread;
-	State pState;
+	const deoglShaderProgram *pProgram;
+	deoglShaderCompileListener *pListener;
+	deoglShaderCompiled *pCompiled;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create shader compiler thread. */
-	deoglShaderCompilerThread(deoglShaderLanguage &language, int contextIndex);
+	/** Create shader compile task. */
+	deoglShaderCompileTask(const deoglShaderProgram *program, deoglShaderCompileListener *listener);
 	
-	/** Clean up shader compiler thread. */
-	~deoglShaderCompilerThread();
+	/** Clean up shader compile task. */
+	~deoglShaderCompileTask() override;
 	/*@}*/
 	
 	
 	/** \name Management */
 	/*@{*/
-	/** Run function of thread. */
-	void Run() override;
+	/** Program to compile. */
+	inline const deoglShaderProgram *GetProgram() const{ return pProgram; }
 	
-	/** Request thread to exit. */
-	void RequestExit();
+	/** Get compiled result from task and set result in task to nullptr. */
+	deoglShaderCompiled *GetCompiled();
 	
-	/** Thread state. */
-	State GetState();
+	/** Set compiled result deleting the existing one if present. */
+	void SetCompiled(deoglShaderCompiled *compiled);
+	
+	/** Listener. */
+	inline deoglShaderCompileListener *GetListener() const{ return pListener; }
 	/*@}*/
-	
-	
-private:
-	void pCleanUp();
-	void pActivateContext();
-	bool pExitThreadRequested();
 };
 
 #endif

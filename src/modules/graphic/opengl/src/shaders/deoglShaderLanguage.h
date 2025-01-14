@@ -25,8 +25,12 @@
 #ifndef _DEOGLSHADERLANGUAGE_H_
 #define _DEOGLSHADERLANGUAGE_H_
 
+#include "compiler/deoglShaderCompileTask.h"
+
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/threading/deMutex.h>
+#include <dragengine/threading/deSemaphore.h>
 
 class deoglShaderDefines;
 class deoglShaderSources;
@@ -34,6 +38,7 @@ class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglRenderThread;
 class deoglShaderCompiler;
+class deoglShaderCompilerThread;
 
 
 /**
@@ -62,6 +67,14 @@ private:
 	
 	deoglShaderCompiler *pCompiler;
 	
+	deoglShaderCompilerThread **pCompilerThreads;
+	int pCompilerThreadCount;
+	
+	decObjectList pTasksPending;
+	int pCompilingTaskCount;
+	deMutex pMutexTasks;
+	deSemaphore pSemaphoreNewTasks, pSemaphoreTasksFinished;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -83,7 +96,10 @@ public:
 	inline int GetGLSLVersionNumber() const{ return pGLSLVersionNumber; }
 	
 	/** Compile shader from given sources using specified defines. */
-	deoglShaderCompiled *CompileShader(deoglShaderProgram &program);
+	deoglShaderCompiled *CompileShader(const deoglShaderProgram &program);
+	
+	/** Asynchronous compile shader from given sources using specified defines. */
+	void CompileShaderAsync(const deoglShaderProgram *program, deoglShaderCompileListener *listener);
 	
 	/** Next shader file number. */
 	int NextShaderFileNumber();
@@ -105,7 +121,24 @@ public:
 	void RemoveLoadingShader();
 	void AddCompilingShader();
 	void RemoveCompilingShader();
+	
+	/** Get next task to compile. Blocks until a task is available or thread has to exit. */
+	void GetNextTask(deoglShaderCompileTask::Ref &task);
+	
+	/** Finish compile task. Sets task to nullptr before returning. */
+	void FinishTask(deoglShaderCompileTask::Ref &task);
+	
+	/** Wait for new tasks to arrive. */
+	void WaitForNewTasks();
+	
+	/** Wait for all tasks to have finished. */
+	void WaitAllTasksFinished();
 	/*@}*/
+	
+	
+private:
+	void pCleanUp();
+	void pCreateCompileThreads();
 };
 
 #endif

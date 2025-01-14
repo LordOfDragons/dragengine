@@ -175,7 +175,6 @@ pAddToRenderTask( NULL )
 	const bool indirectMatrixAccess = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines, commonOccMapDefines;
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
@@ -224,8 +223,7 @@ pAddToRenderTask( NULL )
 				pipconf.EnableCulling( false );
 			}
 			
-			pipconf.SetShader( renderThread, sources, defines );
-			pPipelinesOccMap[ modifiers ] = pipelineManager.GetWith( pipconf, true );
+			pAsyncGetPipeline(pPipelinesOccMap[modifiers], pipconf, sources, defines, true);
 		}
 		
 		
@@ -262,8 +260,7 @@ pAddToRenderTask( NULL )
 				defines.SetDefines( "PERSPECTIVE_TO_LINEAR" );
 			}
 			
-			pipconf.SetShader( renderThread, sources, defines );
-			pPipelinesOccQuery[ modifiers ] = pipelineManager.GetWith( pipconf, true );
+			pAsyncGetPipeline(pPipelinesOccQuery[modifiers], pipconf, sources, defines, true);
 		}
 		
 		
@@ -275,15 +272,13 @@ pAddToRenderTask( NULL )
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineOccMapDownSample = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineOccMapDownSample, pipconf, sources, defines);
 		
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineOccMapDownSampleStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineOccMapDownSampleStereo, pipconf, sources, defines);
 		
 		
 		// occlusion test
@@ -293,30 +288,26 @@ pAddToRenderTask( NULL )
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion Test" );
 		defines.SetDefines( "ENSURE_MIN_SIZE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineOccTest = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineOccTest, pipconf, sources, defines);
 		
 		defines = commonDefines;
 		defines.SetDefines( "ENSURE_MIN_SIZE", "WITH_COMPUTE_RENDER_TASK" );
-		pipconf.SetShader( renderThread, "DefRen Occlusion Test Compute RT", defines );
-		pPipelineOccTestComputeRT = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineOccTestComputeRT, pipconf,
+			"DefRen Occlusion Test Compute RT", defines);
 		
 		// occlusion test transform feedback dual
 		defines = commonDefines;
 		defines.SetDefines( "ENSURE_MIN_SIZE", "DUAL_OCCMAP" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineOccTestDual = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineOccTestDual, pipconf, sources, defines);
 		
 		// occlusion test transform feedback sun
 		defines = commonDefines;
 		defines.SetDefines( "ENSURE_MIN_SIZE", "FRUSTUM_TEST" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineOccTestSun = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineOccTestSun, pipconf, sources, defines);
 		
 		defines = commonDefines;
 		defines.SetDefines( "ENSURE_MIN_SIZE", "FRUSTUM_TEST", "WITH_COMPUTE_RENDER_TASK" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineOccTestSunComputeRT = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineOccTestSunComputeRT, pipconf, sources, defines);
 		
 		
 		

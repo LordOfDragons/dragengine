@@ -62,7 +62,6 @@ deoglRenderBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf, pipconf2;
 	deoglShaderDefines defines, commonDefines;
 	const deoglShaderSources *sources;
@@ -87,25 +86,19 @@ deoglRenderBase( renderThread )
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "VR Hidden Area" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineHiddenAreaClearMask = pipelineManager.GetWith( pipconf );
-		pPipelineHiddenAreaDepth = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineHiddenAreaClearMask, pipconf, sources, defines);
+		pAsyncGetPipeline(pPipelineHiddenAreaDepth, pipconf2, sources, defines);
 		
 		// hidden area stereo left
 		sources = shaderManager.GetSourcesNamed( "VR Hidden Area Stereo" );
 		defines.SetDefine( "RENDER_TO_LAYER", 0 );
-		pipconf.SetShader( renderThread, sources, defines );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineHiddenAreaClearMaskStereoLeft = pipelineManager.GetWith( pipconf );
-		pPipelineHiddenAreaDepthStereoLeft = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineHiddenAreaClearMaskStereoLeft, pipconf, sources, defines);
+		pAsyncGetPipeline(pPipelineHiddenAreaDepthStereoLeft, pipconf2, sources, defines);
 		
 		// hidden area stereo right
 		defines.SetDefine( "RENDER_TO_LAYER", 1 );
-		pipconf.SetShader( renderThread, sources, defines );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineHiddenAreaClearMaskStereoRight = pipelineManager.GetWith( pipconf );
-		pPipelineHiddenAreaDepthStereoRight = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineHiddenAreaClearMaskStereoRight, pipconf, sources, defines);
+		pAsyncGetPipeline(pPipelineHiddenAreaDepthStereoRight, pipconf2, sources, defines);
 		
 	}catch( const deException & ){
 		pCleanUp();

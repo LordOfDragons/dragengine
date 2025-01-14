@@ -164,7 +164,6 @@ pColList2( NULL ),
 
 pSolidShadowMap( NULL )
 {
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
@@ -178,8 +177,7 @@ pSolidShadowMap( NULL )
 		pipconf.SetStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 		pipconf.SetEnableStencilTest( true );
 		
-		pipconf.SetShader( renderThread, "DefRen Clear Depth", defines );
-		pPipelineClearDepth = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineClearDepth, pipconf, "DefRen Clear Depth", defines);
 		
 		
 		// occlusion mesh
@@ -192,9 +190,8 @@ pSolidShadowMap( NULL )
 		defines.SetDefines( "WITH_SHADOWMAP" );
 		defines.SetDefines( "DEPTH_ORTHOGONAL" );
 		defines.SetDefines( "DEPTH_OFFSET" );
-		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
-		pipconf.SetSPBInstanceIndexBase( 0 );
-		pPipelineOccMesh = pipelineManager.GetWith( pipconf, true );
+		pipconf.SetSPBInstanceIndexBase(0);
+		pAsyncGetPipeline(pPipelineOccMesh, pipconf, "DefRen Occlusion OccMap", defines, true);
 		defines.RemoveAllDefines();
 		
 		

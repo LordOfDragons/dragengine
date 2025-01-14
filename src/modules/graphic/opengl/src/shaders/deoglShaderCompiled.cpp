@@ -77,7 +77,7 @@ deoglShaderCompiled::~deoglShaderCompiled(){
 // Management
 ///////////////
 
-void deoglShaderCompiled::Activate(){
+void deoglShaderCompiled::Activate() const{
 	OGL_CHECK( pRenderThread, pglUseProgram( pHandleShader ) );
 }
 

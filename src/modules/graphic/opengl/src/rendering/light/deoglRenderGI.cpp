@@ -210,8 +210,7 @@ pDebugRayLightIndex( -1 )
 		pipconf.SetMasks( true, true, true, true, false );
 		
 		defines = commonDefines;
-		pipconf.SetShader( renderThread, "DefRen GI Resize Materials", defines );
-		pPipelineResizeMaterials = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineResizeMaterials, pipconf, "DefRen GI Resize Materials", defines);
 		
 		
 		// clear trace rays
@@ -219,8 +218,7 @@ pDebugRayLightIndex( -1 )
 		pipconf.SetType(deoglPipelineConfiguration::etCompute);
 		defines.SetDefine("LOCAL_SIZE_X", pClearTraceRayWorkGroupSize.x);
 		defines.SetDefine("LOCAL_SIZE_Y", pClearTraceRayWorkGroupSize.y);
-		pipconf.SetShader(renderThread, "DefRen GI Clear Trace Rays", defines);
-		pPipelineClearTraceRays = pipelineManager.GetWith(pipconf);
+		pAsyncGetPipeline(pPipelineClearTraceRays, pipconf, "DefRen GI Clear Trace Rays", defines);
 		defines.RemoveDefines("LOCAL_SIZE_X", "LOCAL_SIZE_Y");
 		
 		// trace rays
@@ -228,18 +226,15 @@ pDebugRayLightIndex( -1 )
 		#ifdef GI_USE_RAY_CACHE
 			defines.SetDefines( "GI_USE_RAY_CACHE" );
 		#endif
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineTraceRays = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineTraceRays, pipconf, sources, defines);
 		defines.RemoveDefine( "GI_USE_RAY_CACHE" );
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineTraceRaysCache = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineTraceRaysCache, pipconf, sources, defines);
 		
-		pipconf.SetShader( renderThread, "DefRen GI Copy Ray Cache", defines );
-		pPipelineCopyRayCache = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyRayCache, pipconf, "DefRen GI Copy Ray Cache", defines);
 		
-		pipconf.SetShader( renderThread, "DefRen GI Init From Ray Cache", defines );
-		pPipelineInitFromRayCache = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineInitFromRayCache, pipconf,
+			"DefRen GI Init From Ray Cache", defines);
 		
 		
 		// clear probes
@@ -247,13 +242,11 @@ pDebugRayLightIndex( -1 )
 		defines.SetDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
 		
 		defines.SetDefines( "MAP_IRRADIANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineClearProbeIrradiance = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineClearProbeIrradiance, pipconf, sources, defines);
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
 		defines.SetDefines( "MAP_DISTANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineClearProbeDistance = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineClearProbeDistance, pipconf, sources, defines);
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		defines.RemoveDefine( "GI_CLEAR_PROBES_COUNT" );
@@ -263,27 +256,24 @@ pDebugRayLightIndex( -1 )
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
 		
 		defines.SetDefines( "MAP_IRRADIANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineUpdateProbeIrradiance = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineUpdateProbeIrradiance, pipconf, sources, defines);
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
 		defines.SetDefines( "MAP_DISTANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineUpdateProbeDistance = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineUpdateProbeDistance, pipconf, sources, defines);
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		
 		// probe dynamic states
-		pipconf.SetShader( renderThread, "DefRen GI Probe Dynamic States", defines );
-		pPipelineProbeDynamicStates = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineProbeDynamicStates, pipconf,
+			"DefRen GI Probe Dynamic States", defines);
 		
 		
 		// probe offset
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 			defines.SetDefines( "WITH_RAY_CACHE" );
 		}
-		pipconf.SetShader( renderThread, "DefRen GI Probe Offset", defines );
-		pPipelineProbeOffset = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineProbeOffset, pipconf, "DefRen GI Probe Offset", defines);
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		
@@ -291,8 +281,7 @@ pDebugRayLightIndex( -1 )
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 			defines.SetDefines( "WITH_RAY_CACHE" );
 		}
-		pipconf.SetShader( renderThread, "DefRen GI Probe Extends", defines );
-		pPipelineProbeExtends = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineProbeExtends, pipconf, "DefRen GI Probe Extends", defines);
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		
@@ -304,38 +293,30 @@ pDebugRayLightIndex( -1 )
 		pipconf2.SetClipControl( useInverseDepth );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbe = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbe, pipconf2, sources, defines);
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeXRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineDebugProbeXRay, pipconf, sources, defines);
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Offset" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeOffset = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbeOffset, pipconf2, sources, defines);
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeOffsetXRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineDebugProbeOffsetXRay, pipconf, sources, defines);
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Rays" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeRays = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbeRays, pipconf2, sources, defines);
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeRaysXRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineDebugProbeRaysXRay, pipconf, sources, defines);
 		
 		
 		pipconf2.SetEnableDepthTest( false );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeUpdatePass1 = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbeUpdatePass1, pipconf2, sources, defines);
 		
 		defines.SetDefines( "PASS2" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeUpdatePass2 = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbeUpdatePass2, pipconf2, sources, defines);
 		
 		
 		// render light
@@ -348,8 +329,7 @@ pDebugRayLightIndex( -1 )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pipconf.EnableBlendAdd();
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLight = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLight, pipconf, sources, defines);
 		
 		pipconf.EnableBlendTranspAdd();
 		pPipelineLightTransp = pipelineManager.GetWith( pipconf );
@@ -360,8 +340,7 @@ pDebugRayLightIndex( -1 )
 			sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
 		}
 		pipconf.EnableBlendAdd();
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLightStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLightStereo, pipconf, sources, defines);
 		
 		pipconf.EnableBlendTranspAdd();
 		pPipelineLightTranspStereo = pipelineManager.GetWith( pipconf );
@@ -375,8 +354,7 @@ pDebugRayLightIndex( -1 )
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "GI_RAY" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLightGIRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLightGIRay, pipconf, sources, defines);
 		
 		
 		// debug information

@@ -25,14 +25,19 @@
 #ifndef _DEOGLSHADERMANAGER_H_
 #define _DEOGLSHADERMANAGER_H_
 
+#include "deoglShaderProgram.h"
+#include "compiler/deoglShaderCompileListener.h"
+
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/threading/deMutex.h>
+#include <dragengine/threading/deSemaphore.h>
 
 class deoglRenderThread;
 class deoglShaderUnitSourceCode;
-class deoglShaderProgram;
 class deoglShaderDefines;
 class deoglShaderSources;
 class deoglShaderLanguage;
@@ -40,12 +45,43 @@ class deVirtualFileSystem;
 class decPath;
 
 
-
 /**
  * Shader Manager.
  */
 class deoglShaderManager{
+public:
+	class cGetProgramListener{
+	public:
+		cGetProgramListener() = default;
+		virtual ~cGetProgramListener() = default;
+		
+		/** Get program finished. If compile shader failed program is nullptr. */
+		virtual void GetProgramFinished(const deoglShaderProgram *program) = 0;
+		/*@}*/
+	};
+	
+	
 private:
+	class cCompileProgram : public deoglShaderCompileListener{
+	private:
+		deoglShaderManager &pManager;
+		deoglShaderProgram::Ref pProgram;
+		decPointerList pListeners;
+		
+	public:
+		cCompileProgram(deoglShaderManager &manager, const deoglShaderProgram::Ref &program);
+		
+		inline const deoglShaderProgram::Ref &GetProgram() const{ return pProgram; }
+		
+		void AddListener(cGetProgramListener *listener);
+		
+		void CompileFinished(deoglShaderCompiled *compiled) override;
+		/*@}*/
+	};
+	
+	friend class cCompileProgram;
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglShaderLanguage *pLanguage;
@@ -54,11 +90,14 @@ private:
 	decObjectDictionary pSources;
 	decObjectList pPrograms;
 	
+	decPointerList pCompilePrograms;
+	deMutex pMutexCompilePrograms;
+	deSemaphore pSemaphoreCompileFinished;
+	
 	decString pPathShaderSources;
 	decString pPathShaders;
 	
 	decStringList pCacheValidationString;
-	
 	
 	
 public:
@@ -66,9 +105,11 @@ public:
 	/*@{*/
 	/** Creates a new shader manager object. */
 	deoglShaderManager( deoglRenderThread &renderThread );
+	
 	/** Cleans up the shader manager object. */
 	~deoglShaderManager();
 	/*@}*/
+	
 	
 	/** \name Management */
 	/*@{*/
@@ -78,7 +119,6 @@ public:
 	/** Validate caches. */
 	void ValidateCaches();
 	/*@}*/
-	
 	
 	
 	/** \name Unit Source Codes */
@@ -106,7 +146,6 @@ public:
 	/*@}*/
 	
 	
-	
 	/** \name Sources */
 	/*@{*/
 	/** Count of shader sources. */
@@ -129,25 +168,40 @@ public:
 	/*@}*/
 	
 	
-	
 	/** \name Programs */
 	/*@{*/
 	/** Count of programs. */
-	int GetProgramCount() const;
+	int GetProgramCount();
 	
 	/** Program at index. */
-	const deoglShaderProgram *GetProgramAt( int index ) const;
+	const deoglShaderProgram *GetProgramAt(int index);
 	
 	/** Program with sources and defines exists. */
-	bool HasProgramWith( const deoglShaderSources *sources, const deoglShaderDefines &defines ) const;
+	//bool HasProgramWith(const deoglShaderSources *sources, const deoglShaderDefines &defines) const;
 	
 	/** Program with sources and defines. If absent it is first loaded and compiled. */
-	const deoglShaderProgram *GetProgramWith( const deoglShaderSources *sources, const deoglShaderDefines &defines );
+	const deoglShaderProgram *GetProgramWith(const deoglShaderSources *sources,
+		const deoglShaderDefines &defines);
+	
+	/** Asynchronous GetProgramWith(). */
+	void GetProgramWithAsync(const deoglShaderSources *sources,
+		const deoglShaderDefines &defines, cGetProgramListener *listener);
+	
+	/** Wait for all programs to finish compile. */
+	void WaitAllProgramsCompiled();
 	/*@}*/
 	
 	
-	
 private:
+	deoglShaderProgram *pGetProgramWith(const deoglShaderSources *sources,
+		const deoglShaderDefines &defines) const;
+	
+	cCompileProgram *pGetCompilingWith(const deoglShaderSources *sources,
+		const deoglShaderDefines &defines) const;
+	
+	deoglShaderProgram::Ref pCreateProgram(const deoglShaderSources *sources,
+		const deoglShaderDefines &defines);
+	
 	void pLoadUnitSourceCodesIn( const char *directory );
 	void pLoadSourcesIn( const char *directory );
 };
