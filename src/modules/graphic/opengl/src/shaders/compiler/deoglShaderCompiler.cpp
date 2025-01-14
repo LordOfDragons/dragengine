@@ -44,10 +44,12 @@
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTChoices.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/filesystem/deCacheHelper.h>
+#include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/threading/deMutexGuard.h>
 
 
@@ -268,6 +270,78 @@ public:
 
 
 #define SC_OGL_CHECK(renderThread,cmd) OGL_CHECK_WRTC(renderThread, pContextIndex == -1, cmd)
+
+
+// Class deoglShaderCompiler::cCacheShaderTask
+////////////////////////////////////////////////
+
+deoglShaderCompiler::cCacheShaderTask::cCacheShaderTask(deoglRenderThread &renderThread,
+	int contextIndex, const deoglShaderProgram &program, const deoglShaderCompiled &compiled) :
+deParallelTask(&renderThread.GetOgl()),
+pRenderThread(renderThread),
+pContextIndex(contextIndex),
+pCacheId(program.GetCacheId()),
+pLength(0),
+pFormat(0)
+{
+	SetLowPriority(true);
+	
+	const GLuint handler = compiled.GetHandleShader();
+	SC_OGL_CHECK(renderThread, pglGetProgramiv(handler, GL_PROGRAM_BINARY_LENGTH, &pLength));
+	DEASSERT_TRUE(pLength > 0)
+	
+	pData.Set(' ', pLength);
+	
+	SC_OGL_CHECK(renderThread, pglGetProgramBinary(handler,
+		pLength, nullptr, &pFormat, (void*)pData.GetString()));
+}
+
+void deoglShaderCompiler::cCacheShaderTask::Run(){
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
+	deCacheHelper &cacheShaders = caches.GetShaders();
+	decTimer timerElapsed;
+	
+	try{
+		{
+		decBaseFileWriter::Ref writer;
+		{
+		const deMutexGuard guard(caches.GetMutex());
+		writer.TakeOver(cacheShaders.Write(pCacheId));
+		}
+		
+		writer->WriteByte(SHADER_CACHE_REVISION);
+		writer->WriteUInt(pFormat);
+		writer->WriteUInt(pLength);
+		writer->Write(pData.GetString(), pLength);
+		}
+		
+		logger.LogInfoFormat(
+			"ShaderLanguage.CacheSaveShader: Cached shader '%.50s...', length %d bytes",
+			pCacheId.GetString(), pLength);
+		
+	}catch(const deException &e){
+		logger.LogErrorFormat("ShaderLanguage.CacheSaveShader: Failed caching shader '%.50s...'",
+			pCacheId.GetString());
+		logger.LogException(e);
+	}
+	
+	logger.LogInfoFormat("CompileShader %d: Shader cached for '%.50s...' in %dms",
+		pContextIndex, pCacheId.GetString(), (int)(timerElapsed.GetElapsedTime() * 1e3f));
+}
+
+void deoglShaderCompiler::cCacheShaderTask::Finished(){
+}
+
+decString deoglShaderCompiler::cCacheShaderTask::GetDebugName() const{
+	return "OglCacheShader";
+}
+
+decString deoglShaderCompiler::cCacheShaderTask::GetDebugDetails() const{
+	decString details;
+	details.Format("%.50s...", pCacheId.GetString());
+	return details;
+}
 
 
 // Class deoglShaderCompiler
@@ -1012,51 +1086,17 @@ const deoglShaderCompiled &compiled){
 		return;
 	}
 	
-	decTimer timerElapsed;
-	const GLuint handler = compiled.GetHandleShader();
-	deoglCaches &caches = renderThread.GetOgl().GetCaches();
-	deCacheHelper &cacheShaders = caches.GetShaders();
-	
 	try{
-		// get length of binary data
-		GLint length = 0;
-		SC_OGL_CHECK(renderThread, pglGetProgramiv(handler, GL_PROGRAM_BINARY_LENGTH, &length));
-		DEASSERT_TRUE(length > 0)
-		
-		// get binary data
-		decString data;
-		data.Set(' ', length);
-		
-		GLenum format = 0;
-		SC_OGL_CHECK(renderThread, pglGetProgramBinary(handler,
-			length, nullptr, &format, (void*)data.GetString()));
-		
-		// write to cache
-		{
-		decBaseFileWriter::Ref writer;
-		{
-		const deMutexGuard guard(caches.GetMutex());
-		writer.TakeOver(cacheShaders.Write(program.GetCacheId()));
-		}
-		
-		writer->WriteByte(SHADER_CACHE_REVISION);
-		writer->WriteUInt(format);
-		writer->WriteUInt(length);
-		writer->Write(data.GetString(), length);
-		}
-		
-		logger.LogInfoFormat(
-			"ShaderLanguage.CacheSaveShader: Cached shader '%.50s...', length %d bytes",
-			program.GetCacheId().GetString(), length);
+		const cCacheShaderTask::Ref task(cCacheShaderTask::Ref::New(
+			new cCacheShaderTask(renderThread, pContextIndex, program, compiled)));
+		//task->Run();
+		renderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTask(task);
 		
 	}catch(const deException &e){
 		logger.LogErrorFormat("ShaderLanguage.CacheSaveShader: Failed caching shader '%.50s...'",
 			program.GetCacheId().GetString());
 		logger.LogException(e);
 	}
-	
-	logger.LogInfoFormat("CompileShader %d: Shader cached for '%.50s...' in %dms", pContextIndex,
-		program.GetCacheId().GetString(), (int)(timerElapsed.GetElapsedTime() * 1e3f));
 }
 
 void deoglShaderCompiler::pPreparePreprocessor(const deoglShaderDefines &defines){

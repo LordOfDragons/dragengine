@@ -28,7 +28,9 @@
 #include "../deoglShaderPreprocessor.h"
 #include "../../deoglBasics.h"
 
+#include <dragengine/deTObjectReference.h>
 #include <dragengine/threading/deMutex.h>
+#include <dragengine/parallel/deParallelTask.h>
 
 class deoglShaderLanguage;
 
@@ -49,6 +51,32 @@ class deoglRenderThread;
  */
 class deoglShaderCompiler{
 private:
+	class cCacheShaderTask : public deParallelTask{
+	public:
+		typedef deTObjectReference<cCacheShaderTask> Ref;
+		
+	private:
+		deoglRenderThread &pRenderThread;
+		int pContextIndex;
+		decString pCacheId;
+		GLint pLength;
+		GLenum pFormat;
+		decString pData;
+		
+	public:
+		cCacheShaderTask(deoglRenderThread &renderThread, int contextIndex,
+			const deoglShaderProgram &program, const deoglShaderCompiled &compiled);
+		
+		void Run() override;
+		void Finished() override;
+		
+		decString GetDebugName() const override;
+		decString GetDebugDetails() const override;
+	};
+	
+	friend class cCacheShaderTask;
+	
+	
 	deoglShaderLanguage &pLanguage;
 	int pContextIndex;
 	char *pErrorLog;
