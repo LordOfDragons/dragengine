@@ -169,8 +169,8 @@ void deoglShaderCompilerThread::pActivateContext(){
 		
 #ifdef OS_ANDROID
 		DEASSERT_TRUE(eglMakeCurrent(context.GetDisplay(),
-			context.GetCompilerSurfaceAt(pContextIndex),
-			context.GetCompilerSurfaceAt(pContextIndex),
+			context.GetCompileSurfaceAt(pContextIndex),
+			context.GetCompileSurfaceAt(pContextIndex),
 			context.GetCompileContextAt(pContextIndex)) == EGL_TRUE)
 			
 #elif defined OS_BEOS
