@@ -187,8 +187,9 @@ private:
 	void pCreateShapesVAO();
 	void pWorldRenderSize( int &width, int &height ) const;
 	void pActivateVAOShapes();
-	void pCreatePipelines( const deoglPipeline* (&pipelines)[ deoglRCanvas::BlendModeCount ],
-		deoglPipelineConfiguration &config );
+	void pCreatePipelines(const deoglPipeline* (&pipelines)[deoglRCanvas::BlendModeCount],
+		deoglPipelineConfiguration &config, const deoglShaderSources *sources,
+		const deoglShaderDefines &defines);
 };
 
 #endif
