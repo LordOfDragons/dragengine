@@ -272,20 +272,17 @@ public:
 #define SC_OGL_CHECK(renderThread,cmd) OGL_CHECK_WRTC(renderThread, pContextIndex == -1, cmd)
 
 
-// Class deoglShaderCompiler::cCacheShaderTask
-////////////////////////////////////////////////
+// Class deoglShaderCompiler::cCacheShader
+////////////////////////////////////////////
 
-deoglShaderCompiler::cCacheShaderTask::cCacheShaderTask(deoglRenderThread &renderThread,
+deoglShaderCompiler::cCacheShader::cCacheShader(deoglRenderThread &renderThread,
 	int contextIndex, const deoglShaderProgram &program, const deoglShaderCompiled &compiled) :
-deParallelTask(&renderThread.GetOgl()),
 pRenderThread(renderThread),
 pContextIndex(contextIndex),
 pCacheId(program.GetCacheId()),
 pLength(0),
 pFormat(0)
 {
-	SetLowPriority(true);
-	
 	const GLuint handler = compiled.GetHandleShader();
 	SC_OGL_CHECK(renderThread, pglGetProgramiv(handler, GL_PROGRAM_BINARY_LENGTH, &pLength));
 	DEASSERT_TRUE(pLength > 0)
@@ -296,38 +293,52 @@ pFormat(0)
 		pLength, nullptr, &pFormat, (void*)pData.GetString()));
 }
 
-void deoglShaderCompiler::cCacheShaderTask::Run(){
+void deoglShaderCompiler::cCacheShader::Run(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
 	decTimer timerElapsed;
 	
-	try{
-		{
-		decBaseFileWriter::Ref writer;
-		{
-		const deMutexGuard guard(caches.GetMutex());
-		writer.TakeOver(cacheShaders.Write(pCacheId));
-		}
-		
-		writer->WriteByte(SHADER_CACHE_REVISION);
-		writer->WriteUInt(pFormat);
-		writer->WriteUInt(pLength);
-		writer->Write(pData.GetString(), pLength);
-		}
-		
-		logger.LogInfoFormat(
-			"ShaderLanguage.CacheSaveShader: Cached shader '%.50s...', length %d bytes",
-			pCacheId.GetString(), pLength);
-		
-	}catch(const deException &e){
-		logger.LogErrorFormat("ShaderLanguage.CacheSaveShader: Failed caching shader '%.50s...'",
-			pCacheId.GetString());
-		logger.LogException(e);
+	{
+	decBaseFileWriter::Ref writer;
+	{
+	const deMutexGuard guard(caches.GetMutex());
+	writer.TakeOver(cacheShaders.Write(pCacheId));
 	}
 	
-	logger.LogInfoFormat("CompileShader %d: Shader cached for '%.50s...' in %dms",
-		pContextIndex, pCacheId.GetString(), (int)(timerElapsed.GetElapsedTime() * 1e3f));
+	writer->WriteByte(SHADER_CACHE_REVISION);
+	writer->WriteUInt(pFormat);
+	writer->WriteUInt(pLength);
+	writer->Write(pData.GetString(), pLength);
+	}
+	
+	logger.LogInfoFormat(
+		"CompileShader %d: Cached shader '%.50s...' in %dms, length %d bytes", pContextIndex,
+		pCacheId.GetString(), pLength, (int)(timerElapsed.GetElapsedTime() * 1e3f));
+}
+
+
+// Class deoglShaderCompiler::cCacheShaderTask
+////////////////////////////////////////////////
+
+deoglShaderCompiler::cCacheShaderTask::cCacheShaderTask(deoglRenderThread &renderThread,
+	int contextIndex, const deoglShaderProgram &program, const deoglShaderCompiled &compiled) :
+deParallelTask(&renderThread.GetOgl()),
+pCacheShader(renderThread, contextIndex, program, compiled)
+{
+	SetLowPriority(true);
+}
+
+void deoglShaderCompiler::cCacheShaderTask::Run(){
+	try{
+		pCacheShader.Run();
+		
+	}catch(const deException &e){
+		deoglRTLogger &logger = pCacheShader.GetRenderThread().GetLogger();
+		logger.LogErrorFormat("CompileShader %d: Failed caching shader '%.50s...'",
+			pCacheShader.GetContextIndex(), pCacheShader.GetCacheId().GetString());
+		logger.LogException(e);
+	}
 }
 
 void deoglShaderCompiler::cCacheShaderTask::Finished(){
@@ -339,7 +350,7 @@ decString deoglShaderCompiler::cCacheShaderTask::GetDebugName() const{
 
 decString deoglShaderCompiler::cCacheShaderTask::GetDebugDetails() const{
 	decString details;
-	details.Format("%.50s...", pCacheId.GetString());
+	details.Format("%.50s...", pCacheShader.GetCacheId().GetString());
 	return details;
 }
 
@@ -1087,15 +1098,17 @@ const deoglShaderCompiled &compiled){
 	}
 	
 	try{
+		// for some strange reason on android doing cache writing in a parallel task is 50%
+		// slower although some of those cache writes have been measured over 1s. on pc there
+		// is not much of difference. for these reasons parallel cache writing is disabled
+		
+		/*
 		const cCacheShaderTask::Ref task(cCacheShaderTask::Ref::New(
 			new cCacheShaderTask(renderThread, pContextIndex, program, compiled)));
-#ifdef OS_ANDROID
-		// for some strange reason doing the cache writing in a parallel task is 50% slower
-		// although some writes can be over 1s slow. I have no explanation for this behavior
-		task->Run();
-#else
 		renderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTask(task);
-#endif
+		*/
+		
+		cCacheShaderTask(renderThread, pContextIndex, program, compiled).Run();
 		
 	}catch(const deException &e){
 		logger.LogErrorFormat("ShaderLanguage.CacheSaveShader: Failed caching shader '%.50s...'",

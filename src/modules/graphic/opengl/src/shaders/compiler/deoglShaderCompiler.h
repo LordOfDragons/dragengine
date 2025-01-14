@@ -51,10 +51,7 @@ class deoglRenderThread;
  */
 class deoglShaderCompiler{
 private:
-	class cCacheShaderTask : public deParallelTask{
-	public:
-		typedef deTObjectReference<cCacheShaderTask> Ref;
-		
+	class cCacheShader{
 	private:
 		deoglRenderThread &pRenderThread;
 		int pContextIndex;
@@ -62,6 +59,24 @@ private:
 		GLint pLength;
 		GLenum pFormat;
 		decString pData;
+		
+	public:
+		cCacheShader(deoglRenderThread &renderThread, int contextIndex,
+			const deoglShaderProgram &program, const deoglShaderCompiled &compiled);
+		
+		inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+		inline int GetContextIndex() const{ return pContextIndex; }
+		inline const decString &GetCacheId() const{ return pCacheId; }
+		
+		void Run();
+	};
+	
+	class cCacheShaderTask : public deParallelTask{
+	public:
+		typedef deTObjectReference<cCacheShaderTask> Ref;
+		
+	private:
+		cCacheShader pCacheShader;
 		
 	public:
 		cCacheShaderTask(deoglRenderThread &renderThread, int contextIndex,
@@ -73,8 +88,6 @@ private:
 		decString GetDebugName() const override;
 		decString GetDebugDetails() const override;
 	};
-	
-	friend class cCacheShaderTask;
 	
 	
 	deoglShaderLanguage &pLanguage;
