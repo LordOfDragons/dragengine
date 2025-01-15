@@ -86,7 +86,7 @@
 		#endif
 	#endif
 	#ifdef DEPTH_OFFSET
-		flat out bool vTCSDoubleSided;
+		flat out int vTCSDoubleSided;
 		#define vDoubleSided vTCSDoubleSided
 	#endif
 	
@@ -123,7 +123,7 @@
 	#endif
 	
 	#ifdef DEPTH_OFFSET
-		flat out bool vGSDoubleSided;
+		flat out int vGSDoubleSided;
 		#define vDoubleSided vGSDoubleSided
 	#endif
 	
@@ -220,7 +220,7 @@ void main( void ){
 	
 	#ifdef PASS_ON_NEXT_STAGE
 		#ifdef DEPTH_OFFSET
-			vDoubleSided = pDoubleSided;
+			vDoubleSided = pDoubleSided ? 1 : 0;
 		#endif
 		
 	#else

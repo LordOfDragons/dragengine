@@ -80,7 +80,7 @@ layout( triangles, equal_spacing, ccw ) in;
 	#endif
 	
 	#ifdef DEPTH_OFFSET
-		flat out bool vGSDoubleSided;
+		flat out int vGSDoubleSided;
 		#define vDoubleSided vGSDoubleSided
 	#endif
 	
@@ -167,7 +167,7 @@ void main(){
 	
 	#ifdef PASS_ON_NEXT_STAGE
 		#ifdef DEPTH_OFFSET
-			vDoubleSided = pDoubleSided
+			vDoubleSided = pDoubleSided ? 1 : 0;
 		#endif
 		
 	#else
