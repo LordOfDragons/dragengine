@@ -40,7 +40,7 @@
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
-#include "shared/defren/skin/ubo_instance_parameters.glsl"
+// #include "shared/defren/skin/ubo_instance_parameters.glsl"
 
 
 
@@ -77,6 +77,10 @@
 	#endif
 	
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
+#endif
+
+#ifdef DEPTH_OFFSET
+	flat in bool vGSDoubleSided[3];
 #endif
 
 
@@ -195,10 +199,12 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	// depth offset
 	#if defined DEPTH_OFFSET
+		// pDoubleSided is passed on from the vertex shader to avoid requiring SSBO
+		// (ubo_instance_parameters) in geometry shaders for compatibility reasons
 		#ifdef GS_RENDER_CUBE
-			applyDepthOffset( 0, vNormal, pDoubleSided );
+			applyDepthOffset(0, vNormal, vGSDoubleSided[0]);
 		#else
-			applyDepthOffset( layer, vNormal, pDoubleSided );
+			applyDepthOffset(layer, vNormal, vGSDoubleSided[0]);
 		#endif
 	#endif
 	

@@ -111,6 +111,10 @@ NODE_VERTEX_INPUTS
 	#ifdef PROP_FIELD
 // 		out float vTCSRenderCondition;
 	#endif
+	#ifdef DEPTH_OFFSET
+		flat out bool vTCSDoubleSided;
+		#define vDoubleSided vTCSDoubleSided
+	#endif
 	
 #elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	#define PASS_ON_NEXT_STAGE 1
@@ -166,6 +170,11 @@ NODE_VERTEX_INPUTS
 		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			flat out int vGSSPBFlags;
 		#endif
+	#endif
+	
+	#ifdef DEPTH_OFFSET
+		flat out bool vGSDoubleSided;
+		#define vDoubleSided vGSDoubleSided
 	#endif
 	
 #else
@@ -272,7 +281,12 @@ void main( void ){
 		transformNormal( spbIndex );
 	#endif
 	
-	#ifndef PASS_ON_NEXT_STAGE
+	#ifdef PASS_ON_NEXT_STAGE
+		#ifdef DEPTH_OFFSET
+			vDoubleSided = pDoubleSided;
+		#endif
+		
+	#else
 		// reflection directory for environment map reflections
 		#ifdef WITH_REFLECT_DIR
 			#ifdef BILLBOARD

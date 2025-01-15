@@ -85,6 +85,10 @@
 			#define vBitangent vTCSBitangent
 		#endif
 	#endif
+	#ifdef DEPTH_OFFSET
+		flat out bool vTCSDoubleSided;
+		#define vDoubleSided vTCSDoubleSided
+	#endif
 	
 #elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	#define PASS_ON_NEXT_STAGE 1
@@ -116,6 +120,11 @@
 		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
 			flat out int vGSSPBFlags;
 		#endif
+	#endif
+	
+	#ifdef DEPTH_OFFSET
+		flat out bool vGSDoubleSided;
+		#define vDoubleSided vGSDoubleSided
 	#endif
 	
 #else
@@ -209,7 +218,12 @@ void main( void ){
 		#endif
 	#endif
 	
-	#ifndef PASS_ON_NEXT_STAGE
+	#ifdef PASS_ON_NEXT_STAGE
+		#ifdef DEPTH_OFFSET
+			vDoubleSided = pDoubleSided;
+		#endif
+		
+	#else
 		// reflection direction
 		#ifdef WITH_REFLECT_DIR
 			#ifdef BILLBOARD
