@@ -278,7 +278,7 @@ void emitRibbon( in int layer ){
 	}else{
 		ribbonAxis1 /= len;
 	}
-	if( ribbonAxis1.y < 0 ){
+	if(ribbonAxis1.y < 0.0){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
@@ -307,11 +307,11 @@ void emitRibbon( in int layer ){
 	}else{
 		ribbonAxis2 /= len;
 	}
-	if( ribbonAxis1.y < 0 ){
+	if(ribbonAxis1.y < 0.0){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
-	if( dot( vec2( ribbonAxis1 ), vec2( ribbonAxis2 ) ) < 0 ){
+	if(dot(vec2(ribbonAxis1), vec2(ribbonAxis2)) < 0.0){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
