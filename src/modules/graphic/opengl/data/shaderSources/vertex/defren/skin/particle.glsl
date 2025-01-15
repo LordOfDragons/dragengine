@@ -14,6 +14,9 @@ precision highp float;
 precision highp int;
 #endif
 
+#if defined PARTICLE_RIBBON || defined PARTICLE_BEAM
+	#defined HAS_PARTICLE_SHEET_COUNT
+#endif
 
 
 // Uniform Parameters
@@ -23,9 +26,18 @@ precision highp int;
 #include "shared/defren/ubo_render_parameters.glsl"
 #include "shared/defren/skin/ubo_instance_parameters.glsl"
 
+#ifdef HAS_PARTICLE_SHEET_COUNT
+	#include "shared/defren/skin/ubo_texture_parameters.glsl"
+	#include "shared/defren/skin/ubo_dynamic_parameters.glsl"
+#endif
+
 #ifdef SHARED_SPB
 	#include "shared/defren/skin/shared_spb_index.glsl"
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
+#endif
+
+#ifdef HAS_PARTICLE_SHEET_COUNT
+	#include "shared/defren/skin/shared_spb_texture_redirect.glsl"
 #endif
 
 
@@ -70,6 +82,9 @@ out vec4 vParticle1; // red, green, blue, transparency
 	const int inLayer = 0;
 #endif
 
+#ifdef HAS_PARTICLE_SHEET_COUNT
+	flat out int vParticleSheetCount;
+#endif
 
 
 // Constants
@@ -118,6 +133,10 @@ void main( void ){
 	
 	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
+	#endif
+	
+	#ifdef HAS_PARTICLE_SHEET_COUNT
+	vParticleSheetCount = pParticleSheetCount;
 	#endif
 	
 	#ifdef VS_RENDER_STEREO

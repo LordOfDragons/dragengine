@@ -20,6 +20,10 @@
 	layout( triangle_strip, max_vertices=4 ) out;
 #endif
 
+#if defined PARTICLE_RIBBON || defined PARTICLE_BEAM
+	#defined HAS_PARTICLE_SHEET_COUNT
+#endif
+
 
 // Uniform Parameters
 ///////////////////////
@@ -35,6 +39,10 @@
 
 in vec3 vParticle0[ 1 ]; // size, emissivity, rotation
 in vec4 vParticle1[ 1 ]; // red, green, blue, transparency
+
+#ifdef HAS_PARTICLE_SHEET_COUNT
+	flat in int vParticleSheetCount[1];
+#endif
 
 #ifdef SHARED_SPB
 	flat in int vGSSPBIndex[ 1 ];
