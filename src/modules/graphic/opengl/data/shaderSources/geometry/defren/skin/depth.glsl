@@ -80,7 +80,7 @@
 #endif
 
 #ifdef DEPTH_OFFSET
-	flat in bool vGSDoubleSided[3];
+	flat in int vGSDoubleSided[3];
 #endif
 
 
@@ -201,10 +201,12 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	#if defined DEPTH_OFFSET
 		// pDoubleSided is passed on from the vertex shader to avoid requiring SSBO
 		// (ubo_instance_parameters) in geometry shaders for compatibility reasons
+		bool doubleSided = vGSDoubleSided[0] == 1;
+		
 		#ifdef GS_RENDER_CUBE
-			applyDepthOffset(0, vNormal, vGSDoubleSided[0]);
+			applyDepthOffset(0, vNormal, doubleSided);
 		#else
-			applyDepthOffset(layer, vNormal, vGSDoubleSided[0]);
+			applyDepthOffset(layer, vNormal, doubleSided);
 		#endif
 	#endif
 	
