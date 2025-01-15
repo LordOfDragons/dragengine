@@ -47,7 +47,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
-#include "../shaders/deoglShaderLoadingTimeout.h"
+#include "../shaders/deoglBatchedShaderLoading.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/combinedTexture/deoglCombinedTexture.h"
 #include "../skin/combinedTexture/deoglCombinedTextureList.h"

@@ -60,20 +60,20 @@ const char *deoglSTPipelinesDecal::GetDebugName() const{
 // Protected Functions
 ////////////////////////
 
-void deoglSTPipelinesDecal::pPreparePipelines( const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ){
+void deoglSTPipelinesDecal::pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched ){
 	deoglSkinShaderConfig baseShaderConfig;
 	baseShaderConfig.SetSharedSPB( true );
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmDecal );
 	
-	pPrepareGeometry( baseShaderConfig, cinfo, timeout );
-	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, timeout );
-	pPrepareAllDepth( baseShaderConfig, cinfo, timeout );
-	pPrepareAllCounter( baseShaderConfig, cinfo, timeout );
-	// pPrepareMask( baseShaderConfig, cinfo, timeout );
-	pPrepareAllShadow( baseShaderConfig, cinfo, timeout );
-	// pPrepareEnvMap( baseShaderConfig, cinfo, timeout );
-	// pPrepareLuminance( baseShaderConfig, cinfo, timeout );
-	// pPrepareGIMaterial( baseShaderConfig, cinfo, timeout );
+	pPrepareGeometry( baseShaderConfig, cinfo, batched);
+	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
+	// pPrepareMask( baseShaderConfig, cinfo, batched);
+	pPrepareAllShadow( baseShaderConfig, cinfo, batched);
+	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);
+	// pPrepareLuminance( baseShaderConfig, cinfo, batched);
+	// pPrepareGIMaterial( baseShaderConfig, cinfo, batched);
 }
 
 void deoglSTPipelinesDecal::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){

@@ -297,7 +297,9 @@ void deoglShaderCompiler::cCacheShader::Run(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
+#ifdef WITH_DEBUG
 	decTimer timerElapsed;
+#endif
 	
 	{
 	decBaseFileWriter::Ref writer;
@@ -312,9 +314,11 @@ void deoglShaderCompiler::cCacheShader::Run(){
 	writer->Write(pData.GetString(), pLength);
 	}
 	
+#ifdef WITH_DEBUG
 	logger.LogInfoFormat(
 		"CompileShader %d: Cached shader '%.50s...' in %dms, length %d bytes", pContextIndex,
-		pCacheId.GetString(), pLength, (int)(timerElapsed.GetElapsedTime() * 1e3f));
+		pCacheId.GetString(), (int)(timerElapsed.GetElapsedTime() * 1e3f), pLength);
+#endif
 }
 
 
@@ -467,9 +471,11 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 	#endif
 	
 	// compile the shader
+#ifdef WITH_DEBUG
 	logger.LogInfoFormat("CompileShader %d: Compile shader for '%.50s...'", pContextIndex,
 		program.GetCacheId().GetString());
 	decTimer timerCompile;
+#endif
 	
 	try{
 		compiled = new deoglShaderCompiled( renderThread );
@@ -879,8 +885,10 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 	}
 	
 	// finished compiling
+#ifdef WITH_DEBUG
 	logger.LogInfoFormat("CompileShader %d: Compiled shader for '%.50s...' in %dms", pContextIndex,
 		program.GetCacheId().GetString(), (int)(timerCompile.GetElapsedTime() * 1e3f));
+#endif
 	
 	return compiled;
 }

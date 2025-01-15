@@ -57,6 +57,7 @@
 #include "../../texture/texunitsconfig/deoglTexUnitConfig.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -430,6 +431,30 @@ deoglSkinShader::eReflectionTestMode deoglSkinShader::REFLECTION_TEST_MODE = deo
 #endif
 
 
+// Class deoglSkinShader::cPrepareShader
+//////////////////////////////////////////
+
+deoglSkinShader::cPrepareShader::cPrepareShader(deoglSkinShader &shader,
+	cShaderPreparedListener *listener) :
+pShader(shader),
+pListener(listener)
+{
+	DEASSERT_NOTNULL(listener)
+}
+
+void deoglSkinShader::cPrepareShader::CompileFinished(deoglShaderCompiled *compiled){
+	pShader.pShader->SetCompiled(compiled);
+	
+	try{
+		pListener->PrepareShaderFinished(pShader);
+		
+	}catch(const deException &e){
+		pShader.GetRenderThread().GetLogger().LogException(e);
+	}
+	delete pListener;
+}
+
+
 // Class deoglSkinShader
 //////////////////////////
 
@@ -495,13 +520,16 @@ void deoglSkinShader::SetInstanceUniformTarget( deoglSkinShader::eInstanceUnifor
 }
 
 
-
-void deoglSkinShader::PrepareShader(){
-	if( ! pShader ){
-		GenerateShader();
+void deoglSkinShader::PrepareShader(cShaderPreparedListener *listener){
+	if(listener){
+		GenerateShader(listener);
+		
+	}else{
+		if(!pShader){
+			GenerateShader(nullptr);
+		}
 	}
 }
-
 
 
 deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
@@ -1555,7 +1583,7 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 // Shader Generation
 //////////////////////
 
-void deoglSkinShader::GenerateShader(){
+void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 	//deoglSkinShaderManager &ssmgr = pRenderThread.GetShader().GetSkinShaderManager();
 	const deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
@@ -1673,7 +1701,12 @@ void deoglSkinShader::GenerateShader(){
 		pShader->SetCacheId( cacheIdParts.Join( ";" ) );
 		
 		// compile shader
-		pShader->SetCompiled( smgr.GetLanguage()->CompileShader( *pShader ) );
+		if(listener){
+			smgr.GetLanguage()->CompileShaderAsync(pShader, new cPrepareShader(*this, listener));
+			
+		}else{
+			pShader->SetCompiled( smgr.GetLanguage()->CompileShader( *pShader ) );
+		}
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();
@@ -1686,11 +1719,11 @@ void deoglSkinShader::GenerateShader(){
 		}
 		*/
 		
-	}catch( const deException &e ){
-		pRenderThread.GetLogger().LogException( e );
+	}catch(const deException &e){
+		pRenderThread.GetLogger().LogException(e);
 		decString text;
-		pConfig.DebugGetConfigString( text );
-		pRenderThread.GetLogger().LogError( text.GetString() );
+		pConfig.DebugGetConfigString(text);
+		pRenderThread.GetLogger().LogError(text);
 		throw;
 	}
 }

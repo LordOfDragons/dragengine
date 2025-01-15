@@ -28,6 +28,7 @@
 #include "deoglSkinShader.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
@@ -67,14 +68,43 @@ public:
 	
 	const static int UnitSourceCodePathCount = euscpFragmentGIMaterialMap + 1;
 	
+	class cGetShaderListener{
+	public:
+		cGetShaderListener() = default;
+		virtual ~cGetShaderListener() = default;
+		
+		/** Get shader finished. If prepare shader failed shader is nullptr. */
+		virtual void GetShaderFinished(deoglSkinShader *shader) = 0;
+		/*@}*/
+	};
 	
 	
 private:
+	class cPrepareShader : public deoglSkinShader::cShaderPreparedListener{
+	private:
+		deoglSkinShaderManager &pManager;
+		deoglSkinShader::Ref pShader;
+		decPointerList pListeners;
+		
+	public:
+		cPrepareShader(deoglSkinShaderManager &manager, const deoglSkinShader::Ref &shader);
+		
+		inline const deoglSkinShader::Ref &GetShader() const{ return pShader; }
+		
+		void AddListener(cGetShaderListener *listener);
+		
+		void PrepareShaderFinished(deoglSkinShader &shader) override;
+		/*@}*/
+	};
+	
+	friend class cCompileProgram;
+	
+	
 	deoglRenderThread &pRenderThread;
 	decObjectOrderedSet pShaderList;
 	int pMaintananceInterval;
 	deMutex pMutex;
-	
+	decPointerList pPrepareShaders;
 	
 	
 public:
@@ -97,12 +127,20 @@ public:
 	/** Shader with configuration creating it if absent. */
 	deoglSkinShader *GetShaderWith( deoglSkinShaderConfig &configuration );
 	
+	/** Asynchonous shader with configuration creating it if absent. */
+	void GetShaderWithAsync(deoglSkinShaderConfig &configuration, cGetShaderListener *listener);
+	
 	/** Retrieves the number of shaders. */
 	int GetShaderCount();
 	
 	/** Retrieves shader by index. */
 	const deoglSkinShader &GetShaderAt( int index );
 	/*@}*/
+	
+	
+private:
+	deoglSkinShader *pGetShaderWith(const deoglSkinShaderConfig &configuration) const;
+	cPrepareShader *pGetPrepareWith(const deoglSkinShaderConfig &configuration) const;
 };
 
 #endif

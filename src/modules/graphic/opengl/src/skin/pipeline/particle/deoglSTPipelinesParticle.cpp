@@ -61,20 +61,20 @@ const char *deoglSTPipelinesParticle::GetDebugName() const{
 ////////////////////////
 
 void deoglSTPipelinesParticle::pPreparePipelines( const ChannelInfo &cinfo,
-deoglShaderLoadingTimeout &timeout ){
+deoglBatchedShaderLoading &batched ){
 	deoglSkinShaderConfig baseShaderConfig;
 	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmParticle );
 	baseShaderConfig.SetParticleMode( deoglSkinShaderConfig::epmParticle );
 	
-	pPrepareGeometry( baseShaderConfig, cinfo, timeout );
-	pPrepareGeometryDepthTest( baseShaderConfig, cinfo, timeout );
-	pPrepareAllDepth( baseShaderConfig, cinfo, timeout );
-	pPrepareAllCounter( baseShaderConfig, cinfo, timeout );
-	pPrepareMask( baseShaderConfig, cinfo, timeout );
-	pPrepareAllShadow( baseShaderConfig, cinfo, timeout );
-	// pPrepareEnvMap( baseShaderConfig, cinfo, timeout );
-	// pPrepareLuminance( baseShaderConfig, cinfo, timeout );
-	// pPrepareGIMaterial( baseShaderConfig, cinfo, timeout );
+	pPrepareGeometry( baseShaderConfig, cinfo, batched);
+	pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);
+	pPrepareAllDepth( baseShaderConfig, cinfo, batched);
+	pPrepareAllCounter( baseShaderConfig, cinfo, batched);
+	pPrepareMask( baseShaderConfig, cinfo, batched);
+	pPrepareAllShadow( baseShaderConfig, cinfo, batched);
+	// pPrepareEnvMap( baseShaderConfig, cinfo, batched);
+	// pPrepareLuminance( baseShaderConfig, cinfo, batched);
+	// pPrepareGIMaterial( baseShaderConfig, cinfo, batched);
 }
 
 
@@ -133,12 +133,12 @@ void deoglSTPipelinesParticle::pPipelineConfigShadowDistance( deoglPipelineConfi
 
 
 void deoglSTPipelinesParticle::pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &,
-deoglSkinShaderConfig &, const ChannelInfo &, deoglShaderLoadingTimeout & ){
+deoglSkinShaderConfig &, const ChannelInfo &, deoglBatchedShaderLoading & ){
 	// not supported
 }
 
 void deoglSTPipelinesParticle::pPrepareShadowDistanceCube( deoglPipelineConfiguration &,
-deoglSkinShaderConfig &, const ChannelInfo &, deoglShaderLoadingTimeout & ){
+deoglSkinShaderConfig &, const ChannelInfo &, deoglBatchedShaderLoading & ){
 	// not supported
 }
 

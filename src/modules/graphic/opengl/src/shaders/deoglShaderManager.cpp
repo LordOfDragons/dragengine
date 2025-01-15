@@ -110,7 +110,7 @@ void deoglShaderManager::cCompileProgram::CompileFinished(deoglShaderCompiled *c
 		}catch(const deException &e){
 			pManager.pRenderThread.GetLogger().LogException(e);
 		}
-		delete (cGetProgramListener*)listener;
+		delete listener;
 	}
 	pListeners.RemoveAll();
 	}

@@ -22,16 +22,26 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLSHADERLOADINGTIMEOUT_H_
-#define _DEOGLSHADERLOADINGTIMEOUT_H_
+#ifndef _DEOGLBATCHEDSHADERLOADING_H_
+#define _DEOGLBATCHEDSHADERLOADING_H_
+
+#include "deoglShaderManager.h"
+#include "../pipeline/deoglPipelineConfiguration.h"
 
 #include <dragengine/common/utils/decTimer.h>
+#include <dragengine/threading/deMutex.h>
+#include <dragengine/threading/deSemaphore.h>
+
+class deoglRenderThread;
+class deoglPipeline;
 
 
 /**
- * Shader loading timeout. Simplifies tracking timeout for loading shaders.
+ * Batch shader loading.
  * 
- * Top level object creates timeout on stack and hands down the reference.
+ * Top level object creates instance on stack and hands down the reference.
+ * 
+ * \par Timeout Handling
  * 
  * The lowest level shader loading code has to first call CanLoad() to check if the
  * timeout elapsed. This function returns true if either this is the first shader to
@@ -50,31 +60,52 @@
  * one shader has been loaded. This ensure loading never can stall because at least
  * one shader is loaded and no timeout is noticed then.
  */
-class deoglShaderLoadingTimeout{
+class deoglBatchedShaderLoading{
+public:
+	class cBaseGetProgramListener : public deoglShaderManager::cGetProgramListener{
+	protected:
+		deoglBatchedShaderLoading &pBatched;
+		deoglPipelineConfiguration pConfig;
+		
+	public:
+		cBaseGetProgramListener(deoglBatchedShaderLoading &batched,
+			const deoglPipelineConfiguration &config);
+	};
+	
+	
 private:
+	deoglRenderThread &pRenderThread;
+	
 	decTimer pTimer;
 	float pInitialTimeout;
 	float pTimeout;
 	bool pFirst;
 	bool pTimedOut;
 	
+	bool pAsyncCompile;
+	
+	int pPendingCompiles, pFailedCompiles;
+	deMutex pMutexCompiles;
+	deSemaphore pSemaphoreCompileFinished;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader loading timeout. */
-	deoglShaderLoadingTimeout( float timeout );
+	deoglBatchedShaderLoading(deoglRenderThread &renderThread, float timeout, bool asyncCompile);
 	
 	/** Clean up shader loading timeout. */
-	~deoglShaderLoadingTimeout();
+	~deoglBatchedShaderLoading();
 	/*@}*/
-	
 	
 	
 public:
 	/** \name Management */
 	/*@{*/
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
 	/** Initial timeout. */
 	inline float GetInitialTimeout() const{ return pInitialTimeout; }
 	
@@ -85,7 +116,10 @@ public:
 	inline bool TimedOut() const{ return pTimedOut; }
 	
 	/** Timeout not elapsed. */
-	inline bool NotTimedOut() const{ return ! pTimedOut; }
+	inline bool NotTimedOut() const{ return !pTimedOut; }
+	
+	/** Use asynchronous compile. */
+	inline bool GetAsyncCompile() const{ return pAsyncCompile; }
 	
 	/** First. */
 	inline bool First() const{ return pFirst; }
@@ -95,6 +129,22 @@ public:
 	
 	/** Shader loaded. */
 	void Loaded();
+	
+	
+	/** Increment pending compile by one. */
+	void AddPendingCompile();
+	
+	/**
+	 * Wait until all compile have finished or async is false.
+	 * Throws exception if any compile failed.
+	 */
+	void WaitAllCompileFinished();
+	
+	/**
+	 * Finish pending compile. Decrements pending compile count by one. If success is false
+	 * also increments failed compile count by one.
+	 */
+	void FinishCompile(bool success);
 	/*@}*/
 };
 

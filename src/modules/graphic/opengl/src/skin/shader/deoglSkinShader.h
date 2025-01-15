@@ -30,6 +30,7 @@
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
+#include "../../shaders/compiler/deoglShaderCompileListener.h"
 
 #include <dragengine/deObject.h>
 
@@ -41,7 +42,6 @@ class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitConfig;
 class deoglShaderParameterBlock;
-
 
 
 /**
@@ -295,7 +295,31 @@ public:
 		essboTextureParameters
 	};
 	
+	class cShaderPreparedListener{
+	public:
+		cShaderPreparedListener() = default;
+		virtual ~cShaderPreparedListener() = default;
+		
+		/** Prepare shader finished. If failed shader.GetShader().GetCompiled() is nullptr. */
+		virtual void PrepareShaderFinished(deoglSkinShader &shader) = 0;
+		/*@}*/
+	};
+	
+	
 private:
+	class cPrepareShader : public deoglShaderCompileListener{
+	private:
+		deoglSkinShader &pShader;
+		cShaderPreparedListener *pListener;
+		
+	public:
+		cPrepareShader(deoglSkinShader &shader, cShaderPreparedListener *listener);
+		void CompileFinished(deoglShaderCompiled *compiled) override;
+	};
+	
+	friend class cPrepareShader;
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglSkinShaderConfig pConfig;
@@ -310,6 +334,7 @@ private:
 	
 	deoglShaderSources::Ref pSources;
 	deoglShaderProgram::Ref pShader;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -349,7 +374,7 @@ public:
 	inline int GetTargetDrawIDOffset() const{ return pTargetDrawIDOffset; }
 	
 	/** Prepare shader. For use by deoglSkinShaderManager only. */
-	void PrepareShader();
+	void PrepareShader(cShaderPreparedListener *listener);
 	
 	/** Shader. */
 	inline deoglShaderProgram *GetShader() const{ return pShader; }
@@ -427,10 +452,11 @@ public:
 	
 	
 	
+private:
 	/** \name Shader Generation */
 	/*@{*/
 	/** Generate shader. */
-	void GenerateShader();
+	void GenerateShader(cShaderPreparedListener *listener);
 	/** Generate shader defines. */
 	void GenerateDefines( deoglShaderDefines &defines );
 	/** Generate source code for the vertex unit. */

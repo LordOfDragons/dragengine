@@ -419,7 +419,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglLumimeter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglRLumimeter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglBatchedShaderLoading.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderDefines.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLanguage.h" />
@@ -1044,7 +1044,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglLumimeter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglRLumimeter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglBatchedShaderLoading.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderDefines.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLanguage.cpp" />

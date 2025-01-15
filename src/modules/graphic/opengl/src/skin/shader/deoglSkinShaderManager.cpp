@@ -37,7 +37,6 @@
 #include <dragengine/threading/deMutexGuard.h>
 
 
-
 // Unit Source Code Path
 //////////////////////////
 
@@ -64,6 +63,51 @@ static const char *vUnitSourceCodePath[ deoglSkinShaderManager::UnitSourceCodePa
 	"fragment/defren/gi/materialMap.glsl" // euscpGIMaterialMap
 };
 
+
+// Class deoglSkinShaderManager::cPrepareShader
+/////////////////////////////////////////////////
+
+deoglSkinShaderManager::cPrepareShader::cPrepareShader(
+	deoglSkinShaderManager &manager, const deoglSkinShader::Ref &shader) :
+pManager(manager),
+pShader(shader){
+}
+
+void deoglSkinShaderManager::cPrepareShader::AddListener(cGetShaderListener *listener){
+	DEASSERT_NOTNULL(listener)
+	pListeners.Add(listener);
+}
+
+void deoglSkinShaderManager::cPrepareShader::PrepareShaderFinished(deoglSkinShader &shader){
+	{
+	const deMutexGuard guard(pManager.pMutex);
+	const int index = pManager.pPrepareShaders.IndexOf(this);
+	if(index != -1){
+		pManager.pPrepareShaders.RemoveFrom(index);
+	}
+	
+	deoglSkinShader *useShader = pManager.pGetShaderWith(pShader->GetConfig());
+	if(!useShader && shader.GetShader() && shader.GetShader()->GetCompiled()){
+		useShader = pShader;
+		pManager.pShaderList.Add(pShader);
+	}
+	pShader = nullptr;
+	
+	const int count = pListeners.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		cGetShaderListener * const listener = (cGetShaderListener*)pListeners.GetAt(i);
+		try{
+			listener->GetShaderFinished(useShader);
+			
+		}catch(const deException &e){
+			pManager.pRenderThread.GetLogger().LogException(e);
+		}
+		delete listener;
+	}
+	pListeners.RemoveAll();
+	}
+}
 
 
 // Class deoglSkinShaderManager
@@ -120,8 +164,90 @@ deoglSkinShader *deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &c
 	
 	// make GetShader() to be present. this is a potentially lengthy call if the
 	// shader has to be compiled instead of loaded from cache
-	shader->PrepareShader();
+	shader->PrepareShader(nullptr);
 	
 	pShaderList.Add( shader );
 	return shader;
+}
+
+void deoglSkinShaderManager::GetShaderWithAsync(deoglSkinShaderConfig &configuration,
+cGetShaderListener *listener){
+	DEASSERT_NOTNULL(listener)
+	
+	cPrepareShader *preparing = nullptr;
+	
+	{
+	const deMutexGuard guard(pMutex);
+	configuration.UpdateKey();
+	
+	deoglSkinShader * const foundShader = pGetShaderWith(configuration);
+	if(foundShader){
+		try{
+			listener->GetShaderFinished(foundShader);
+			
+		}catch(const deException &e){
+			pRenderThread.GetLogger().LogException(e);
+		}
+		delete listener;
+		return;
+	}
+	
+	preparing = pGetPrepareWith(configuration);
+	if(preparing){
+		preparing->AddListener(listener);
+		return;
+	}
+	
+	try{
+		preparing = new cPrepareShader(*this, deoglSkinShader::Ref::New(
+			new deoglSkinShader(pRenderThread, configuration)));
+		preparing->AddListener(listener);
+		
+	}catch(const deException &e){
+		pRenderThread.GetLogger().LogException(e);
+		if(preparing){
+			delete preparing;
+		}
+		delete listener;
+		throw;
+	}
+	pPrepareShaders.Add(preparing);
+	}
+	
+	// has to be outside mutex lock since call can immediately call listener which acquires lock
+	preparing->GetShader()->PrepareShader(preparing);
+}
+
+
+// Private Functions
+//////////////////////
+
+deoglSkinShader *deoglSkinShaderManager::pGetShaderWith(
+const deoglSkinShaderConfig &configuration) const{
+	const int count = pShaderList.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglSkinShader * const shader = ( deoglSkinShader* )pShaderList.GetAt( i );
+		if( shader->GetConfig() == configuration ){
+			return shader;
+		}
+	}
+	
+	return nullptr;
+}
+
+deoglSkinShaderManager::cPrepareShader *deoglSkinShaderManager::pGetPrepareWith(
+const deoglSkinShaderConfig &configuration) const{
+	const int count = pPrepareShaders.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		cPrepareShader * const preparing = (cPrepareShader*)pPrepareShaders.GetAt(i);
+		if(preparing->GetShader()->GetConfig() == configuration){
+			return preparing;
+		}
+	}
+	
+	return nullptr;
 }

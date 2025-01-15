@@ -41,7 +41,6 @@ class deoglSkinTexture;
 class deoglDelayedFileWrite;
 class deoglDelayedSaveImage;
 class deoglShaderProgram;
-class deoglShaderLoadingTimeout;
 
 
 

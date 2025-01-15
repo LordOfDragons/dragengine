@@ -55,13 +55,13 @@ public:
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
 	
 	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 };
 
 #endif
