@@ -46,19 +46,22 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	const deoglCapabilities &caps = renderThread.GetCapabilities();
 	const deoglExtensions &ext = renderThread.GetExtensions();
 	
-	#define HASEXT(e) ext.GetHasExtension(deoglExtensions::e)
+	#define HAS_EXT(e) ext.GetHasExtension(deoglExtensions::e)
+	#define HAS_EXT_OR_GLES(e,v) (ext.GetHasExtension(deoglExtensions::e) || ext.GetGLESVersion() >= deoglExtensions:: v)
 	
 	// base-vertex allows to render Shared-VBO instances without needing to pre-offset indices
 	// using the first point of a VBO block. using base-vertex reduces the amount of VBO required.
 	// 
 	// NOTE shared-SPB is not affected by this since it uses instancing.
-	pSharedVBOUseBaseVertex = HASEXT( ext_ARB_draw_elements_base_vertex );
+	pSharedVBOUseBaseVertex = HAS_EXT_OR_GLES(ext_ARB_draw_elements_base_vertex, evgles3p2);
 	//pSharedVBOUseBaseVertex = false;
 	
-	// Use SSBO for rendering if enough SSBO blocks are allowed
-	pUseSSBORender = HASEXT( ext_ARB_shader_storage_buffer_object )
+	// Use SSBO for rendering if enough SSBO blocks are allowed.
+	// NOTE: no geometry shader is currently using SSBO. for this reason it is not required
+	//       for the hardware to support SSBOs in geometry shaders
+	pUseSSBORender = HAS_EXT_OR_GLES(ext_ARB_shader_storage_buffer_object, evgles3p1)
 		&& caps.GetSSBOMaxBlocksVertex() >= 4
-		&& caps.GetSSBOMaxBlocksGeometry() >= 4
+		//&& caps.GetSSBOMaxBlocksGeometry() >= 4
 		&& caps.GetSSBOMaxBlocksFragment() >= 4;
 	
 	// Using SSBOs allows to use a larger number of parameter block per shared SPB than using UBO
@@ -86,38 +89,20 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	// - ARB_shader_draw_parameters (67%): gl_DrawID in vertex shader
 	//   ^== this requires 4.6 core or it will not work
 	pRenderStereoVSLayer =
-		( HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer ) )
-		&& HASEXT( ext_ARB_multi_draw_indirect )
-		&& HASEXT( ext_ARB_draw_elements_base_vertex )
-		&& HASEXT( ext_ARB_shader_draw_parameters );
+		( HAS_EXT( ext_ARB_shader_viewport_layer_array ) || HAS_EXT( ext_AMD_vertex_shader_layer ) )
+		&& HAS_EXT( ext_ARB_multi_draw_indirect )
+		&& HAS_EXT( ext_ARB_draw_elements_base_vertex )
+		&& HAS_EXT( ext_ARB_shader_draw_parameters );
 	
 	// use layer in vertex shaders for fullscreen quad rendering. requires these extensions (% coverage):
 	// - ARB_shader_viewport_layer_array (45%) or AMD_vertex_shader_layer (61%): gl_Layer in vertex shader
 	// - ARB_shader_draw_parameters (67%): gl_DrawID in vertex shader
 	//   ^== this requires 4.6 core or it will not work
 	pRenderFSQuadStereoVSLayer =
-		( HASEXT( ext_ARB_shader_viewport_layer_array ) || HASEXT( ext_AMD_vertex_shader_layer ) )
-		&& HASEXT( ext_ARB_shader_draw_parameters );
+		( HAS_EXT( ext_ARB_shader_viewport_layer_array ) || HAS_EXT( ext_AMD_vertex_shader_layer ) )
+		&& HAS_EXT( ext_ARB_shader_draw_parameters );
 	
-	// transform component vertices on the GPU
-	#ifdef OS_ANDROID
-		// NOTE android OpenGL ES 3.0 does not support texture buffer objects (TBO). as a replacement
-		//      another input VBO can be used (uniform buffers are too small). this requires only
-		//      changing the generation of TBO to be a generation of VBO data instead and changing
-		//      the shader to use VBO input instead of TBO sampling. the VBO requires indexing to
-		//      get the right weights. we use already an index in the model VBO to sample the right
-		//      TBO texel. this indexing though is relative to the vertex but the model VBO is indexed
-		//      relative to face points. this is a problem since it would require storing weight
-		//      matrices per point not per vertex. if this is done it requires a copy of weight data
-		//      to the VBO which would allow to reduce the resolution to 16-bit. all in all tricky
-		//      
-		//      the TBO uses GL_RGBA32F to allow copy the weight matrices right into the texture
-		//      without additional conversion. the same is possible for VBOs.
-		pGPUTransformVertices = egputvNone;
-		
-	#else
-		pGPUTransformVertices = egputvApproximate;
-	#endif
+	pGPUTransformVertices = egputvApproximate;
 	
 	// inverse depth
 	pUseInverseDepth = conf.GetUseInverseDepth();
@@ -143,7 +128,7 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		pClearDepthValueReversed = ( GLfloat )0.0f;
 	}
 	
-	pUseDirectStateAccess = HASEXT( ext_ARB_direct_state_access );
+	pUseDirectStateAccess = HAS_EXT( ext_ARB_direct_state_access );
 
 	// temporary until working properly
 	if( /* HASEXT( ext_ARB_shader_atomic_counter_ops ) && */ pUseSSBORender ){

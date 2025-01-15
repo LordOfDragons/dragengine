@@ -26,6 +26,7 @@
 #include "../deoglRSkin.h"
 #include "../deoglSkinTexture.h"
 #include "../shader/deoglSkinShaderManager.h"
+#include "../../capabilities/deoglCapabilities.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../renderthread/deoglRTShader.h"
@@ -1014,6 +1015,12 @@ deoglBatchedShaderLoading &batched ){
 		
 		// stereo
 		if( modifier & emStereo ){
+#ifdef OS_ANDROID
+			if(renderThread.GetCapabilities().GetSSBOMaxBlocksGeometry() < 1){
+				// android often has no SSBO support on geometry shaders
+				continue;
+			}
+#endif
 			if( renderStereoVSLayer ){
 				if( shaconf.GetGeometryMode() == deoglSkinShaderConfig::egmParticle ){
 					shaconf.SetGSRenderStereo( true );

@@ -172,7 +172,8 @@ void deoglCapabilities::DetectCapabilities(){
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_BUFFER_SIZE, &resultsInt[ 0 ] ) );
 		pTBOMaxSize = ( int )resultsInt[ 0 ];
 		
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object)
+		|| ext.GetGLESVersion() >= deoglExtensions::evgles3p1){
 			if( pglGetInteger64v ){
 				OGL_CHECK( pRenderThread, pglGetInteger64v( GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt64[ 0 ] ) );
 				if( resultsInt64[ 0 ] > 0x7fffffff ){
