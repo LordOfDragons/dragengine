@@ -3,10 +3,18 @@
 layout( points ) in;
 layout( triangle_strip, max_vertices=4 ) out;
 
+#if defined PARTICLE_RIBBON || defined PARTICLE_BEAM
+	#defined HAS_PARTICLE_SHEET_COUNT
+#endif
+
 uniform mat4 pMatrixProj;
 
 in vec3 vParticle0[ 1 ]; // size, emissivity, rotation
 in vec4 vParticle1[ 1 ]; // red, green, blue, transparency
+
+#ifdef HAS_PARTICLE_SHEET_COUNT
+	flat in int vParticleSheetCount[1];
+#endif
 
 out vec2 vTCDiffuse;
 out vec2 vTCNormal;

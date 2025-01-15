@@ -17,7 +17,7 @@
 	layout( lines_adjacency ) in;
 #endif
 
-#define USE_SHEETS 1
+#define USE_SHEETS
 
 #ifdef USE_SHEETS
 	// OpenGL requires these minimum limits: MaxVertices=256, MaxComponents=1024.
@@ -58,9 +58,9 @@
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
-#include "shared/defren/skin/ubo_texture_parameters.glsl"
-#include "shared/defren/skin/ubo_instance_parameters.glsl"
-#include "shared/defren/skin/ubo_dynamic_parameters.glsl"
+// #include "shared/defren/skin/ubo_texture_parameters.glsl"
+// #include "shared/defren/skin/ubo_instance_parameters.glsl"
+// #include "shared/defren/skin/ubo_dynamic_parameters.glsl"
 
 #ifdef NODE_GEOMETRY_UNIFORMS
 NODE_GEOMETRY_UNIFORMS
@@ -73,6 +73,8 @@ NODE_GEOMETRY_UNIFORMS
 
 in vec3 vParticle0[ 4 ]; // size, emissivity, rotation
 in vec4 vParticle1[ 4 ]; // red, green, blue, transparency
+
+flat in int vParticleSheetCount[4];
 
 #ifdef SHARED_SPB
 	flat in int vGSSPBIndex[ 4 ];
@@ -249,7 +251,8 @@ void emitRibbon( in int layer ){
 	#ifdef USE_SHEETS
 		mat3 matRot1, matRot2;
 		//int sheetCount = 3;
-		#define sheetCount pParticleSheetCount
+		// passing through sheet count to avoid using SSBO in geometry shader (pParticleSheetCount)
+		#define sheetCount vParticleSheetCount[0]
 		int s;
 		
 		float rotAngle = pi / float( sheetCount );
