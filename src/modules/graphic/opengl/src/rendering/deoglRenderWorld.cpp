@@ -175,7 +175,6 @@ pAddToRenderTaskParticles( nullptr ),
 pDebugInfo( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool useFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderDefines defines, commonDefines;
 	const deoglShaderSources *sources;
@@ -208,7 +207,7 @@ pDebugInfo( renderThread )
 		
 		pipconf2 = pipconf;
 		pipconf2.EnableBlendBlend();
-		pPipelineFinalizeBlend = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineFinalizeBlend, pipconf2, sources, defines);
 		
 		// finalize stereo
 		defines.SetDefines( useFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
@@ -219,7 +218,7 @@ pDebugInfo( renderThread )
 		
 		pipconf2 = pipconf;
 		pipconf2.EnableBlendBlend();
-		pPipelineFinalizeBlendStereo = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineFinalizeBlendStereo, pipconf2, sources, defines);
 		
 		// finalize split
 		defines = commonDefines;

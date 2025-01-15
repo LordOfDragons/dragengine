@@ -25,10 +25,13 @@
 #ifndef _DEOGLLIGHTSHADERMANAGER_H_
 #define _DEOGLLIGHTSHADERMANAGER_H_
 
+#include "deoglLightShader.h"
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
-class deoglLightShader;
 class deoglLightShaderConfig;
 class deoglShaderUnitSourceCode;
 
@@ -49,10 +52,44 @@ public:
 		EUSCP_COUNT
 	};
 	
+	class cGetShaderListener{
+	public:
+		cGetShaderListener() = default;
+		virtual ~cGetShaderListener() = default;
+		
+		/** Get shader finished. If prepare shader failed shader is nullptr. */
+		virtual void GetShaderFinished(deoglLightShader *shader) = 0;
+		/*@}*/
+	};
+	
+	
 private:
+	class cPrepareShader : public deoglLightShader::cShaderPreparedListener{
+	private:
+		deoglLightShaderManager &pManager;
+		deoglLightShader::Ref pShader;
+		decPointerList pListeners;
+		
+	public:
+		cPrepareShader(deoglLightShaderManager &manager, const deoglLightShader::Ref &shader);
+		
+		inline const deoglLightShader::Ref &GetShader() const{ return pShader; }
+		
+		void AddListener(cGetShaderListener *listener);
+		
+		void PrepareShaderFinished(deoglLightShader &shader) override;
+		/*@}*/
+	};
+	
+	friend class cCompileProgram;
+	
+	
 	deoglRenderThread &pRenderThread;
 	decObjectOrderedSet pShaderList;
 	int pMaintananceInterval;
+	deMutex pMutex;
+	decPointerList pPrepareShaders;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -71,25 +108,20 @@ public:
 	/** Retrieves a unit source code path. */
 	const char *GetUnitSourceCodePath( int unitSourceCodePath ) const;
 	
-	/** Determines if a shader with the given configuration exists. */
-	bool HasShaderWith( deoglLightShaderConfig &configuration ) const;
 	/** Retrieves the shader with the given configuration creating it if not existing. */
 	deoglLightShader *GetShaderWith( deoglLightShaderConfig &configuration );
 	
-	/** Retrieves the number of shaders. */
-	int GetShaderCount() const;
-	/** Retrieves shader by index. */
-	deoglLightShader *GetShaderAt( int index ) const;
-	/** Adds a shader. */
-	void AddShader( deoglLightShader *shader );
-	/** Removes a shader. */
-	void RemoveShader( deoglLightShader *shader );
-	/** Removes all shaders. */
-	void RemoveAllShaders();
+	/** Asynchonous shader with configuration creating it if absent. */
+	void GetShaderWithAsync(deoglLightShaderConfig &configuration, cGetShaderListener *listener);
 	
 	/** Per-frame maintanance call from the graphic module. */
 	void Maintanance();
 	/*@}*/
+	
+	
+private:
+	deoglLightShader *pGetShaderWith(const deoglLightShaderConfig &configuration) const;
+	cPrepareShader *pGetPrepareWith(const deoglLightShaderConfig &configuration) const;
 };
 
 #endif

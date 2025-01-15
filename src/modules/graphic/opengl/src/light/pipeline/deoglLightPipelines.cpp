@@ -69,6 +69,41 @@ static const deoglDebugNamesEnum::sEntry vDebugNamesModifiersEntries[] = {
 const deoglDebugNamesEnumSet deoglLightPipelines::DebugNamesModifiers(
 	"deoglLightPipelines::eModifiers", vDebugNamesModifiersEntries );
 
+
+// Class deoglLightPipelines::cPipelineGetShaderListener
+/////////////////////////////////////////////////////////////////
+
+deoglLightPipelines::cPipelineGetShaderListener::cPipelineGetShaderListener(
+	deoglBatchedShaderLoading &batched, deoglLightPipelines &lightPipelines,
+	eTypes type, int modifier, deoglLightPipeline::Ref &pipeline,
+	const deoglPipelineConfiguration &config) :
+pBatched(batched),
+pLightPipelines(lightPipelines),
+pType(type),
+pModifier(modifier),
+pConfig(config),
+pPipeline(pipeline)
+{
+	batched.AddPendingCompile();
+}
+
+void deoglLightPipelines::cPipelineGetShaderListener::GetShaderFinished(deoglLightShader *shader){
+	if(shader){
+		pConfig.SetShader(shader->GetShader());
+		pPipeline.TakeOver(new deoglLightPipeline(pBatched.GetRenderThread().
+			GetPipelineManager().GetWith(pConfig), shader));
+		
+	}else{
+		pBatched.GetRenderThread().GetLogger().LogErrorFormat("%s::pCreatePipelines(%s, %s)",
+				pLightPipelines.GetDebugName(), DebugNamesTypes.EntryName(pType).GetString(),
+				DebugNamesModifiers.SetName(pModifier).GetString());
+	}
+	
+	pBatched.Loaded();
+	pBatched.FinishCompile(shader != nullptr);
+}
+
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -107,10 +142,14 @@ const deoglLightPipeline &deoglLightPipelines::GetWithRef( eTypes type, int modi
 	}
 }
 
-void deoglLightPipelines::Prepare(){
-	if( ! pPrepared ){
+void deoglLightPipelines::Prepare(deoglBatchedShaderLoading &batched){
+	if( pPrepared ){
+		return;
+	}
+	
+	pPreparePipelines(batched);
+	if(!batched.TimedOut()){
 		pPrepared = true;
-		pPreparePipelines();
 	}
 }
 
@@ -119,8 +158,8 @@ void deoglLightPipelines::Prepare(){
 // Protected Functions
 ////////////////////////
 
-void deoglLightPipelines::pBasePipelineConfig( deoglRenderThread &renderThread,
-deoglPipelineConfiguration &config ){
+void deoglLightPipelines::pBasePipelineConfig(deoglRenderThread &renderThread,
+deoglPipelineConfiguration &config){
 	config.Reset();
 	config.SetMasks( true, true, true, true, false );
 	config.SetEnableScissorTest( true );
@@ -131,15 +170,16 @@ deoglPipelineConfiguration &config ){
 	config.EnableBlendAdd();
 }
 
-void deoglLightPipelines::pBasePipelineConfigGI( deoglPipelineConfiguration &config ){
+void deoglLightPipelines::pBasePipelineConfigGI(deoglPipelineConfiguration &config){
 	config.Reset();
 	config.SetMasks( true, true, true, true, false );
 	config.EnableBlendAdd();
 }
 
-void deoglLightPipelines::pCreatePipelines( deoglRenderThread &renderThread,
+void deoglLightPipelines::pCreatePipelines(deoglRenderThread &renderThread,
 const deoglPipelineConfiguration &basePipelineConfig,
-const deoglLightShaderConfig &baseShaderConfig, deoglLightPipelines::eTypes type, int modifierMask ){
+const deoglLightShaderConfig &baseShaderConfig, deoglLightPipelines::eTypes type,
+int modifierMask, deoglBatchedShaderLoading &batched){
 	deoglLightShaderManager &shaderManager = renderThread.GetShader().GetLightShaderManager();
 	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool renderStereoVSLayer = renderThread.GetChoices().GetRenderStereoVSLayer();
@@ -157,6 +197,10 @@ const deoglLightShaderConfig &baseShaderConfig, deoglLightPipelines::eTypes type
 		// skip unsupported modifiers
 		if( ( modifier & modifierMask ) != modifier ){
 			continue;
+		}
+		
+		if(!batched.CanLoad()){
+			return;
 		}
 		
 		// no ambient
@@ -205,22 +249,30 @@ const deoglLightShaderConfig &baseShaderConfig, deoglLightPipelines::eTypes type
 		}
 		
 		// create shader and pipeline
-		const deoglLightShader::Ref shader(
-			deoglLightShader::Ref::New( shaderManager.GetShaderWith( shaconf ) ) );
-		
-		try{
-			shader->EnsureShaderExists();
+		if(batched.GetAsyncCompile()){
+			shaderManager.GetShaderWithAsync(shaconf, new cPipelineGetShaderListener(
+				batched, *this, type, modifier, pPipelines[type][modifier], pipconf));
 			
-		}catch( ... ){
-			pRenderThread.GetLogger().LogErrorFormat( "%s::pCreatePipelines(%s, %s)",
-				GetDebugName(), DebugNamesTypes.EntryName( type ).GetString(),
-				DebugNamesModifiers.SetName( modifier ).GetString() );
-			throw;
+		}else{
+			deoglLightShader *shader;
+			
+			try{
+				shader = shaderManager.GetShaderWith(shaconf);
+				
+			}catch(...){
+				pRenderThread.GetLogger().LogErrorFormat("%s::pCreatePipelines(%s, %s)",
+					GetDebugName(), DebugNamesTypes.EntryName(type).GetString(),
+					DebugNamesModifiers.SetName(modifier).GetString());
+				batched.Loaded();
+				throw;
+			}
+			
+			pipconf.SetShader(shader->GetShader());
+			
+			pPipelines[type][modifier].TakeOver(new deoglLightPipeline(
+				pipelineManager.GetWith(pipconf), shader));
+			
+			batched.Loaded();
 		}
-		
-		pipconf.SetShader( shader->GetShader() );
-		
-		pPipelines[ type ][ modifier ].TakeOver(
-			new deoglLightPipeline( pipelineManager.GetWith( pipconf ), shader ) );
 	}
 }

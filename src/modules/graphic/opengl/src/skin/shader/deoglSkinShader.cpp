@@ -57,7 +57,6 @@
 #include "../../texture/texunitsconfig/deoglTexUnitConfig.h"
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -1705,7 +1704,7 @@ void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 			smgr.GetLanguage()->CompileShaderAsync(pShader, new cPrepareShader(*this, listener));
 			
 		}else{
-			pShader->SetCompiled( smgr.GetLanguage()->CompileShader( *pShader ) );
+			pShader->SetCompiled(smgr.GetLanguage()->CompileShader(pShader));
 		}
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){

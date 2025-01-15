@@ -164,20 +164,18 @@ const deoglSkinTexturePipeline &deoglSkinTexturePipelines::GetWithRef( eTypes ty
 	}
 }
 
-void deoglSkinTexturePipelines::Prepare( deoglBatchedShaderLoading &batched ){
-	if( pPrepared ){
+void deoglSkinTexturePipelines::Prepare(deoglBatchedShaderLoading &batched){
+	if(pPrepared){
 		return;
 	}
 	
 	ChannelInfo cinfo;
-	pInitChannelInfo( cinfo );
+	pInitChannelInfo(cinfo);
 	
-	pPreparePipelines( cinfo, batched );
-	if( batched.TimedOut() ){
-		return;
+	pPreparePipelines(cinfo, batched);
+	if(!batched.TimedOut()){
+		pPrepared = true;
 	}
-	
-	pPrepared = true;
 }
 
 
@@ -989,7 +987,8 @@ void deoglSkinTexturePipelines::pSetDynamicMask( deoglSkinShaderConfig &config, 
 
 
 
-void deoglSkinTexturePipelines::pCreatePipelines( const deoglPipelineConfiguration &basePipelineConfig,
+void deoglSkinTexturePipelines::pCreatePipelines(
+const deoglPipelineConfiguration &basePipelineConfig,
 const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask,
 deoglBatchedShaderLoading &batched ){
 	const deoglRenderThread &renderThread = pTexture.GetRenderThread();
@@ -1009,7 +1008,7 @@ deoglBatchedShaderLoading &batched ){
 			continue;
 		}
 		
-		if( ! batched.CanLoad() ){
+		if(!batched.CanLoad()){
 			return;
 		}
 		

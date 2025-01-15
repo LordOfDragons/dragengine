@@ -150,7 +150,6 @@ enum eSPPanel{
 ////////////////////////////
 
 deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines commonDefines, defines;
 	deoglPipelineConfiguration pipconf;
 	const char *sources;
@@ -184,7 +183,7 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		
 		// shape line
 		pipconf.SetPolygonMode( GL_LINE );
-		pPipelineShapeLine = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineShapeLine, pipconf, "DefRen Shape", defines);
 		
 		
 		// vr debug overlay

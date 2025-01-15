@@ -133,7 +133,7 @@ public:
 	const deoglSkinTexturePipeline &GetWithRef( eTypes type, int modifiers = 0 ) const;
 	
 	/** Prepare pipelines. */
-	void Prepare( deoglBatchedShaderLoading &batched );
+	void Prepare(deoglBatchedShaderLoading &batched);
 	
 	/** Debug name. */
 	virtual const char *GetDebugName() const = 0;

@@ -59,13 +59,13 @@ public:
 	
 	
 protected:
-	virtual void pPreparePipelines();
+	virtual void pPreparePipelines(deoglBatchedShaderLoading &batched);
 	
 	
 	
 private:
-	void pPrepareNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-		deoglLightShaderConfig &baseShaderConfig );
+	void pPrepareNoShadow(deoglPipelineConfiguration &basePipelineConfig,
+		deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched);
 	
 	void pSetNonGI( deoglLightShaderConfig &shaconf );
 };

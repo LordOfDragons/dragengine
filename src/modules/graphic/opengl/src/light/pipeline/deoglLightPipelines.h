@@ -26,8 +26,10 @@
 #define _DEOGLLIGHTPIPELINES_H_
 
 #include "deoglLightPipeline.h"
+#include "../shader/deoglLightShaderManager.h"
 #include "../../pipeline/deoglPipeline.h"
 #include "../../utils/deoglDebugNamesEnumSet.h"
+#include "../../shaders/deoglBatchedShaderLoading.h"
 
 #include <dragengine/deObject.h>
 
@@ -71,6 +73,24 @@ public:
 	
 	
 protected:
+	class cPipelineGetShaderListener : public deoglLightShaderManager::cGetShaderListener{
+	protected:
+		deoglBatchedShaderLoading &pBatched;
+		deoglLightPipelines &pLightPipelines;
+		eTypes pType;
+		int pModifier;
+		deoglPipelineConfiguration pConfig;
+		deoglLightPipeline::Ref &pPipeline;
+		
+	public:
+		cPipelineGetShaderListener(deoglBatchedShaderLoading &batched,
+			deoglLightPipelines &skinPipelines, eTypes type, int modifier,
+			deoglLightPipeline::Ref &pipeline, const deoglPipelineConfiguration &config);
+		
+		void GetShaderFinished(deoglLightShader *shader) override;
+	};
+	
+	
 	const static int TypeCount = etGIRaySolid2 + 1;
 	const static int ModifiersPerType = emCameraInside << 1;
 	
@@ -103,7 +123,7 @@ public:
 	const deoglLightPipeline &GetWithRef( eTypes type, int modifiers ) const;
 	
 	/** Prepare pipelines. */
-	void Prepare();
+	void Prepare(deoglBatchedShaderLoading &batched);
 	
 	/** Debug name. */
 	virtual const char *GetDebugName() const = 0;
@@ -112,15 +132,17 @@ public:
 	
 	
 protected:
-	virtual void pPreparePipelines() = 0;
+	virtual void pPreparePipelines(deoglBatchedShaderLoading &batched) = 0;
 	
-	virtual void pBasePipelineConfig( deoglRenderThread &renderThread, deoglPipelineConfiguration &config );
+	virtual void pBasePipelineConfig(deoglRenderThread &renderThread,
+		deoglPipelineConfiguration &config);
 	
-	virtual void pBasePipelineConfigGI( deoglPipelineConfiguration &config );
+	virtual void pBasePipelineConfigGI(deoglPipelineConfiguration &config);
 	
-	virtual void pCreatePipelines( deoglRenderThread &renderThread,
+	virtual void pCreatePipelines(deoglRenderThread &renderThread,
 		const deoglPipelineConfiguration &basePipelineConfig,
-		const deoglLightShaderConfig &baseShaderConfig, eTypes type, int modifierMask );
+		const deoglLightShaderConfig &baseShaderConfig, eTypes type, int modifierMask,
+		deoglBatchedShaderLoading &batched);
 };
 
 #endif

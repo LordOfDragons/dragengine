@@ -128,10 +128,22 @@ bool deoglRSkyInstanceLayer::GetHasLightAmbient() const{
 
 
 deoglLightPipelines &deoglRSkyInstanceLayer::GetPipelines(){
-	if( ! pPipelines ){
-		pPipelines.TakeOver( new deoglLightPipelinesSky( *this ) );
-		pPipelines->Prepare();
+	if(pPipelines){
+		return pPipelines;
 	}
+	
+	pPipelines.TakeOver(new deoglLightPipelinesSky(*this));
+	
+	deoglBatchedShaderLoading batched(pInstance.GetRenderThread(), 1000.0f, true);
+	try{
+		pPipelines->Prepare(batched);
+		
+	}catch(const deException &){
+		batched.WaitAllCompileFinished();
+		throw;
+	}
+	
+	batched.WaitAllCompileFinished();
 	return pPipelines;
 }
 

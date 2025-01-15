@@ -136,36 +136,27 @@ const char *deoglSkinShaderManager::GetUnitSourceCodePath( eUnitSourceCodePath u
 
 
 int deoglSkinShaderManager::GetShaderCount(){
-	const deMutexGuard guard( pMutex );
+	const deMutexGuard guard(pMutex);
 	return pShaderList.GetCount();
 }
 
-const deoglSkinShader &deoglSkinShaderManager::GetShaderAt( int index ){
-	const deMutexGuard guard( pMutex );
-	return *( const deoglSkinShader * )pShaderList.GetAt( index );
+const deoglSkinShader &deoglSkinShaderManager::GetShaderAt(int index){
+	const deMutexGuard guard(pMutex);
+	return *(const deoglSkinShader*)pShaderList.GetAt(index);
 }
 
 deoglSkinShader *deoglSkinShaderManager::GetShaderWith( deoglSkinShaderConfig &configuration ){
-	const deMutexGuard guard( pMutex );
-	const int count = pShaderList.GetCount();
-	int i;
-	
+	const deMutexGuard guard(pMutex);
 	configuration.UpdateKey();
 	
-	for( i=0; i<count; i++ ){
-		deoglSkinShader * const shader = ( deoglSkinShader* )pShaderList.GetAt( i );
-		if( shader->GetConfig() == configuration ){
-			return shader;
-		}
+	deoglSkinShader *foundShader = pGetShaderWith(configuration);
+	if(foundShader){
+		return foundShader;
 	}
 	
-	const deoglSkinShader::Ref shader( deoglSkinShader::Ref::New(
-		new deoglSkinShader( pRenderThread, configuration ) ) );
-	
-	// make GetShader() to be present. this is a potentially lengthy call if the
-	// shader has to be compiled instead of loaded from cache
+	const deoglSkinShader::Ref shader(deoglSkinShader::Ref::New(
+		new deoglSkinShader(pRenderThread, configuration)));
 	shader->PrepareShader(nullptr);
-	
 	pShaderList.Add( shader );
 	return shader;
 }

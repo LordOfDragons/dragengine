@@ -36,7 +36,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
-
+#include <dragengine/threading/deMutexGuard.h>
 
 
 // Unit Source Code Path
@@ -55,6 +55,51 @@ static const char *vUnitSourceCodePath[ deoglLightShaderManager::EUSCP_COUNT ] =
 	"fragment/defren/light/light.glsl"
 };
 
+
+// Class deoglLightShaderManager::cPrepareShader
+//////////////////////////////////////////////////
+
+deoglLightShaderManager::cPrepareShader::cPrepareShader(
+	deoglLightShaderManager &manager, const deoglLightShader::Ref &shader) :
+pManager(manager),
+pShader(shader){
+}
+
+void deoglLightShaderManager::cPrepareShader::AddListener(cGetShaderListener *listener){
+	DEASSERT_NOTNULL(listener)
+	pListeners.Add(listener);
+}
+
+void deoglLightShaderManager::cPrepareShader::PrepareShaderFinished(deoglLightShader &shader){
+	{
+	const deMutexGuard guard(pManager.pMutex);
+	const int index = pManager.pPrepareShaders.IndexOf(this);
+	if(index != -1){
+		pManager.pPrepareShaders.RemoveFrom(index);
+	}
+	
+	deoglLightShader *useShader = pManager.pGetShaderWith(pShader->GetConfig());
+	if(!useShader && shader.GetShader() && shader.GetShader()->GetCompiled()){
+		useShader = pShader;
+		pManager.pShaderList.Add(pShader);
+	}
+	pShader = nullptr;
+	
+	const int count = pListeners.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		cGetShaderListener * const listener = (cGetShaderListener*)pListeners.GetAt(i);
+		try{
+			listener->GetShaderFinished(useShader);
+			
+		}catch(const deException &e){
+			pManager.pRenderThread.GetLogger().LogException(e);
+		}
+		delete listener;
+	}
+	pListeners.RemoveAll();
+	}
+}
 
 
 // Class deoglLightShaderManager
@@ -82,8 +127,6 @@ deoglLightShaderManager::~deoglLightShaderManager(){
 				shader.GetRefCount(), text.GetString() );
 		}
 	}
-	
-	RemoveAllShaders();
 }
 
 
@@ -100,78 +143,68 @@ const char *deoglLightShaderManager::GetUnitSourceCodePath( int unitSourceCodePa
 }
 
 
-
-int deoglLightShaderManager::GetShaderCount() const{
-	return pShaderList.GetCount();
-}
-
-deoglLightShader *deoglLightShaderManager::GetShaderAt( int index ) const{
-	return ( deoglLightShader* )pShaderList.GetAt( index );
-}
-
-void deoglLightShaderManager::AddShader( deoglLightShader *shader ){
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
-	pShaderList.Add( shader );
-}
-
-void deoglLightShaderManager::RemoveShader( deoglLightShader *shader ){
-	pShaderList.Remove( shader );
-}
-
-void deoglLightShaderManager::RemoveAllShaders(){
-	pShaderList.RemoveAll();
-}
-
-
-
-bool deoglLightShaderManager::HasShaderWith( deoglLightShaderConfig &configuration ) const{
-	const int count = pShaderList.GetCount();
-	int i;
-	
-	configuration.UpdateKey();
-	
-	for( i=0; i<count; i++ ){
-		const deoglLightShader &shader = *( ( deoglLightShader* )pShaderList.GetAt( i ) );
-		
-		if( shader.GetConfig() == configuration ){
-			return true;
-		}
-	}
-	
-	return false;
-}
-
 deoglLightShader *deoglLightShaderManager::GetShaderWith( deoglLightShaderConfig &configuration ){
-	const int count = pShaderList.GetCount();
-	deoglLightShader *shader = NULL;
-	int i;
-	
+	const deMutexGuard guard(pMutex);
 	configuration.UpdateKey();
 	
-	for( i=0; i<count; i++ ){
-		shader = ( deoglLightShader* )pShaderList.GetAt( i );
-		
-		if( shader->GetConfig() == configuration ){
-			shader->AddReference();
-			return shader;
-		}
+	deoglLightShader *foundShader = pGetShaderWith(configuration);
+	if(foundShader){
+		return foundShader;
 	}
 	
-	shader = NULL;
-	try{
-		shader = new deoglLightShader( pRenderThread, configuration );
-		pShaderList.Add( shader );
-		
-	}catch( const deException & ){
-		if( shader ){
-			shader->FreeReference();
+	const deoglLightShader::Ref shader(deoglLightShader::Ref::New(
+		new deoglLightShader(pRenderThread, configuration)));
+	shader->PrepareShader(nullptr);
+	pShaderList.Add(shader);
+	return shader;
+}
+
+void deoglLightShaderManager::GetShaderWithAsync(deoglLightShaderConfig &configuration,
+cGetShaderListener *listener){
+	DEASSERT_NOTNULL(listener)
+	
+	cPrepareShader *preparing = nullptr;
+	
+	{
+	const deMutexGuard guard(pMutex);
+	configuration.UpdateKey();
+	
+	deoglLightShader * const foundShader = pGetShaderWith(configuration);
+	if(foundShader){
+		try{
+			listener->GetShaderFinished(foundShader);
+			
+		}catch(const deException &e){
+			pRenderThread.GetLogger().LogException(e);
 		}
+		delete listener;
+		return;
+	}
+	
+	preparing = pGetPrepareWith(configuration);
+	if(preparing){
+		preparing->AddListener(listener);
+		return;
+	}
+	
+	try{
+		preparing = new cPrepareShader(*this, deoglLightShader::Ref::New(
+			new deoglLightShader(pRenderThread, configuration)));
+		preparing->AddListener(listener);
+		
+	}catch(const deException &e){
+		pRenderThread.GetLogger().LogException(e);
+		if(preparing){
+			delete preparing;
+		}
+		delete listener;
 		throw;
 	}
+	pPrepareShaders.Add(preparing);
+	}
 	
-	return shader;
+	// has to be outside mutex lock since call can immediately call listener which acquires lock
+	preparing->GetShader()->PrepareShader(preparing);
 }
 
 
@@ -193,4 +226,38 @@ void deoglLightShaderManager::Maintanance(){
 		
 		pMaintananceInterval = 10; // maintenance every 10 frames
 	}
+}
+
+
+// Private Functions
+//////////////////////
+
+deoglLightShader *deoglLightShaderManager::pGetShaderWith(
+const deoglLightShaderConfig &configuration) const{
+	const int count = pShaderList.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		deoglLightShader * const shader = (deoglLightShader*)pShaderList.GetAt(i);
+		if(shader->GetConfig() == configuration){
+			return shader;
+		}
+	}
+	
+	return nullptr;
+}
+
+deoglLightShaderManager::cPrepareShader *deoglLightShaderManager::pGetPrepareWith(
+const deoglLightShaderConfig &configuration) const{
+	const int count = pPrepareShaders.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		cPrepareShader * const preparing = (cPrepareShader*)pPrepareShaders.GetAt(i);
+		if(preparing->GetShader()->GetConfig() == configuration){
+			return preparing;
+		}
+	}
+	
+	return nullptr;
 }

@@ -170,7 +170,6 @@ pDebugRayLightIndex( -1 )
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf, pipconf2;
 	deoglShaderDefines defines, commonDefines;
 	const deoglShaderSources *sources;
@@ -332,7 +331,7 @@ pDebugRayLightIndex( -1 )
 		pAsyncGetPipeline(pPipelineLight, pipconf, sources, defines);
 		
 		pipconf.EnableBlendTranspAdd();
-		pPipelineLightTransp = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLightTransp, pipconf, sources, defines);
 		
 		// render light stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
@@ -343,7 +342,7 @@ pDebugRayLightIndex( -1 )
 		pAsyncGetPipeline(pPipelineLightStereo, pipconf, sources, defines);
 		
 		pipconf.EnableBlendTranspAdd();
-		pPipelineLightTranspStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLightTranspStereo, pipconf, sources, defines);
 		
 		
 		// render light gi ray
