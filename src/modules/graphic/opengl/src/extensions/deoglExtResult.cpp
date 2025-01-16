@@ -77,8 +77,8 @@ GLAPI PFNGLACTIVETEXTUREPROC pglActiveTexture = nullptr;
 GLAPI PFNGLCOMPRESSEDTEXIMAGE3DPROC pglCompressedTexImage3D = nullptr;
 GLAPI PFNGLCOMPRESSEDTEXIMAGE2DPROC pglCompressedTexImage2D = nullptr;
 // GLAPI PFNGLCOMPRESSEDTEXIMAGE1DPROC pglCompressedTexImage1D = nullptr;
-// GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC pglCompressedTexSubImage3D = nullptr;
-// GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC pglCompressedTexSubImage2D = nullptr;
+GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC pglCompressedTexSubImage3D = nullptr;
+GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC pglCompressedTexSubImage2D = nullptr;
 // GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC pglCompressedTexSubImage1D = nullptr;
 // GLAPI PFNGLGETCOMPRESSEDTEXIMAGEPROC pglGetCompressedTexImage = nullptr;
 
@@ -745,5 +745,5 @@ GLAPI PFNGLOBJECTLABELPROC pglObjectLabel = nullptr;
 // GL_ARB_texture_storage : opengl version 4.1 , opengl es version 3.1
 ////////////////////////////////////////////////////////////////////////
 
-GLAPI PFNGLTEXSTORAGE2DPROC pglTexStorage2d = nullptr;
-GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3d = nullptr;
+GLAPI PFNGLTEXSTORAGE2DPROC pglTexStorage2D = nullptr;
+GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3D = nullptr;

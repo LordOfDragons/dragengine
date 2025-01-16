@@ -73,7 +73,7 @@ pFormat(nullptr),
 #endif
 
 pMipMapLevelCount(0),
-pRealMipMapLevelCount(1),
+pRealMipMapLevelCount(0),
 pMipMapped(false),
 pMemUse(pRenderThread.GetMemoryManager().GetConsumption().texture2D)
 {
@@ -187,16 +187,23 @@ void deoglTexture::CreateTexture(){
 	
 	tsmgr.EnableBareTexture(0, *this);
 	
-	if(pglTexStorage2d){
+	if(pglTexStorage2D){
 		if(pMipMapped){
 			pRealMipMapLevelCount = pMipMapLevelCount;
 			if(pRealMipMapLevelCount == 0){
-				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(pSize.x, pSize.y)))) + 1;
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(pSize.x, pSize.y))));
 			}
 		}
 		
-		OGL_CHECK(pRenderThread, pglTexStorage2d(GL_TEXTURE_2D,
-			pRealMipMapLevelCount, glformat, pSize.x, pSize.y));
+		OGL_CHECK(pRenderThread, pglTexStorage2D(GL_TEXTURE_2D,
+			pRealMipMapLevelCount + 1, glformat, pSize.x, pSize.y));
+		
+		/*
+		GLint pvalue;
+		OGL_CHECK(pRenderThread, glGetTexParameteriv(GL_TEXTURE_2D,
+			GL_TEXTURE_IMMUTABLE_FORMAT, &pvalue));
+		DEASSERT_TRUE(pvalue == GL_TRUE)
+		*/
 		
 	}else{
 		OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, 0, glformat,
@@ -208,18 +215,18 @@ void deoglTexture::CreateTexture(){
 			int i;
 			
 			if(pRealMipMapLevelCount == 0){
-				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y)))) + 1;
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
 			}
 			
-			for(i=1; i<pRealMipMapLevelCount; i++){
+			for(i=0; i<pRealMipMapLevelCount; i++){
 				size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
-				OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, i,
+				OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, i + 1,
 					glformat, size.x, size.y, 0, glpixelformat, glpixeltype, NULL));
 			}
 		}
 	}
 	
-	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount - 1));
+	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount));
 	
 	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
@@ -292,7 +299,7 @@ void deoglTexture::CreateTexture(){
 		decPoint size(pSize);
 		
 		if(pRealMipMapLevelCount == 0){
-			pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y)))) + 1;
+			pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
 		}
 		
 		config.SetMipMapCount(pRealMipMapLevelCount);
@@ -356,10 +363,13 @@ void deoglTexture::SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelB
 	OGL_CHECK(pRenderThread, glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 	
 	if(pixelBuffer.GetCompressed()){
-		OGL_CHECK(pRenderThread, pglCompressedTexImage2D(GL_TEXTURE_2D, level, pFormat->GetFormat(),
-			width, height, 0, pixelBuffer.GetImageSize(), (const GLvoid *)pixelBufferData));
-		//OGL_CHECK(pRenderThread, pglCompressedTexSubImage2D(GL_TEXTURE_2D, level, 0, 0, width, height,
-		//	pFormat->GetFormat(), pixels.GetImageSize(), (const GLvoid *)pixelBufferData));
+		// immutable textures allow only glCompressedTexSubImage2D
+		//OGL_CHECK(pRenderThread, pglCompressedTexImage2D(GL_TEXTURE_2D, level,
+		//	pFormat->GetFormat(), width, height, 0, pixelBuffer.GetImageSize(),
+		//	(const GLvoid *)pixelBufferData));
+		OGL_CHECK(pRenderThread, pglCompressedTexSubImage2D(GL_TEXTURE_2D, level,
+			0, 0, width, height, pFormat->GetFormat(), pixelBuffer.GetImageSize(),
+			(const GLvoid*)pixelBufferData));
 		
 	}else{
 #ifdef OS_ANDROID
@@ -374,8 +384,9 @@ void deoglTexture::SetPixelsLevelLayer(int level, const deoglPixelBuffer &pixelB
 			DETHROW(deeInvalidParam);
 		}
 #else
-		OGL_CHECK(pRenderThread, pglTexSubImage2D(GL_TEXTURE_2D, level, 0, 0, width, height,
-			pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(), (const GLvoid *)pixelBufferData));
+		OGL_CHECK(pRenderThread, pglTexSubImage2D(GL_TEXTURE_2D, level, 0, 0,
+			width, height, pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(),
+			(const GLvoid*)pixelBufferData));
 #endif
 	}
 	
@@ -570,7 +581,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 
 void deoglTexture::GetLevelSize(int level, int &width, int &height) const{
 	DEASSERT_TRUE(level >= 0)
-	DEASSERT_TRUE(level < pRealMipMapLevelCount)
+	DEASSERT_TRUE(level <= pRealMipMapLevelCount)
 	
 	int i;
 	
@@ -636,7 +647,7 @@ int width, int height, int srcX, int srcY, int destX, int destY){
 			mipMapLevelCount = srcMipMapLevelCount;
 		}
 		
-		for(i=0; i<mipMapLevelCount; i++){
+		for(i=0; i<=mipMapLevelCount; i++){
 			if(pglCopyImageSubData){
 				pglCopyImageSubData(texture.GetTexture(), GL_TEXTURE_2D, i, srcX, srcY, 0,
 					pTexture, GL_TEXTURE_2D, i, destX, destY, 0, width, height, 1);
@@ -705,7 +716,7 @@ void deoglTexture::UpdateMemoryUsage(){
 		if(isReallyCompressed){
 			unsigned long consumption = 0ull;
 			GLint compressedSize, l;
-			for(l=0; l<pRealMipMapLevelCount; l++){
+			for(l=0; l<=pRealMipMapLevelCount; l++){
 				OGL_CHECK(pRenderThread, glGetTexLevelParameteriv(GL_TEXTURE_2D, l,
 					GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize));
 				consumption += (unsigned long long)compressedSize;
@@ -738,7 +749,7 @@ void deoglTexture::UpdateMemoryUsage(){
 		if(isReallyCompressed){
 			unsigned long consumption = 0ull;
 			GLint compressedSize, l;
-			for(l=0; l<pRealMipMapLevelCount; l++){
+			for(l=0; l<=pRealMipMapLevelCount; l++){
 				OGL_CHECK(pRenderThread, glGetTexLevelParameteriv(GL_TEXTURE_2D, l,
 					GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize));
 				consumption += (unsigned long long)compressedSize;

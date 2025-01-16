@@ -29,6 +29,7 @@
 #include "deoglDeferredRendering.h"
 #include "deoglDRDepthMinMax.h"
 #include "../../capabilities/deoglCapabilities.h"
+#include "../../capabilities/deoglCapsTextureFormat.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../debug/deoglDebugTraceGroup.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"

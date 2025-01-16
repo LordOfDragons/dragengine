@@ -207,8 +207,8 @@ extern GLAPI PFNGLACTIVETEXTUREPROC pglActiveTexture;
 extern GLAPI PFNGLCOMPRESSEDTEXIMAGE3DPROC pglCompressedTexImage3D;
 extern GLAPI PFNGLCOMPRESSEDTEXIMAGE2DPROC pglCompressedTexImage2D;
 // extern GLAPI PFNGLCOMPRESSEDTEXIMAGE1DPROC pglCompressedTexImage1D;
-// extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC pglCompressedTexSubImage3D;
-// extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC pglCompressedTexSubImage2D;
+extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE3DPROC pglCompressedTexSubImage3D;
+extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC pglCompressedTexSubImage2D;
 // extern GLAPI PFNGLCOMPRESSEDTEXSUBIMAGE1DPROC pglCompressedTexSubImage1D;
 // extern GLAPI PFNGLGETCOMPRESSEDTEXIMAGEPROC pglGetCompressedTexImage;
 
@@ -1125,7 +1125,7 @@ extern GLAPI PFNGLOBJECTLABELPROC pglObjectLabel;
 // GL_ARB_texture_storage : opengl version 4.1 , opengl es version 3.1
 ////////////////////////////////////////////////////////////////////////
 
-extern GLAPI PFNGLTEXSTORAGE2DPROC pglTexStorage2d;
-extern GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3d;
+extern GLAPI PFNGLTEXSTORAGE2DPROC pglTexStorage2D;
+extern GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3D;
 
 #endif

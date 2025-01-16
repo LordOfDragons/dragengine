@@ -442,14 +442,14 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfRGBA16I, ettfRGBA16I },
 	{ deoglCapsFmtSupport::eutfRGBA16UI, ettfRGBA16UI },
 	
-	{ deoglCapsFmtSupport::eutfDepth, ettfDepth },
 	{ deoglCapsFmtSupport::eutfDepth, ettfDepth32 },
 	{ deoglCapsFmtSupport::eutfDepth, ettfDepth24 },
 	{ deoglCapsFmtSupport::eutfDepth, ettfDepth16 },
+	{ deoglCapsFmtSupport::eutfDepth, ettfDepth },
 	
-	{ deoglCapsFmtSupport::eutfDepth_Stencil, ettfDepth_Stencil },
 	{ deoglCapsFmtSupport::eutfDepth_Stencil, ettfDepth24_Stencil8 },
 	{ deoglCapsFmtSupport::eutfDepth_Stencil, ettfUnsignedInt_24_8 },
+	{ deoglCapsFmtSupport::eutfDepth_Stencil, ettfDepth_Stencil },
 	
 	{ deoglCapsFmtSupport::eutfDepthF, ettf_Depth_32F },
 	{ deoglCapsFmtSupport::eutfDepthF, ettfNV_Depth_32F },

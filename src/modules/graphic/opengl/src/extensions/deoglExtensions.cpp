@@ -708,8 +708,8 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	#ifndef OS_ANDROID
 	// pGetRequiredFunction( (void**)&pglCompressedTexImage1D, "glCompressedTexImage1D" );
 	#endif
-	// pGetRequiredFunction( (void**)&pglCompressedTexSubImage3D, "glCompressedTexSubImage3D" );
-	// pGetRequiredFunction( (void**)&pglCompressedTexSubImage2D, "glCompressedTexSubImage2D" );
+	pGetRequiredFunction((void**)&pglCompressedTexSubImage3D, "glCompressedTexSubImage3D");
+	pGetRequiredFunction((void**)&pglCompressedTexSubImage2D, "glCompressedTexSubImage2D");
 	#ifndef OS_ANDROID
 	// pGetRequiredFunction( (void**)&pglCompressedTexSubImage1D, "glCompressedTexSubImage1D" );
 	#endif
@@ -1324,8 +1324,8 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	
 	// GL_ARB_texture_storage : opengl version 4.2 , opengl es version 3.1
 	if(pHasExtension[ext_ARB_texture_storage] || pGLESVersion >= evgles3p1){
-		pGetOptionalFunction((void**)&pglTexStorage2d, "glTexStorage2d", ext_ARB_texture_storage);
-		pGetOptionalFunction((void**)&pglTexStorage3d, "glTexStorage3d", ext_ARB_texture_storage);
+		pGetOptionalFunction((void**)&pglTexStorage2D, "glTexStorage2D", ext_ARB_texture_storage);
+		pGetOptionalFunction((void**)&pglTexStorage3D, "glTexStorage3D", ext_ARB_texture_storage);
 	}
 }
 
