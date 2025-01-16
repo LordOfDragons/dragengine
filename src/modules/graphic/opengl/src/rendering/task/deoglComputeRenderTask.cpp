@@ -98,6 +98,11 @@ pSkipSubInstanceGroups( false )
 	pUBOConfig->GetParameterAt( ecpPipelineModifier ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->GetParameterAt( ecpPipelineDoubleSided ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
 	pUBOConfig->GetParameterAt( ecpPipelineSingleSided ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 );
+	pUBOConfig->SetElementCount(8);
+		// ^= hard limit in shader. writing less elements than 8 is valid if higher elements
+		//    are never accessed in the shader. zealous drivers though can consider writing
+		//    less elements than used (even if not used) as an error. to avoid problems the
+		//    element count is set to the maximum possible count
 	pUBOConfig->MapToStd140();
 	
 	pSSBOSteps.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etRead ) );
