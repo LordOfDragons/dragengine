@@ -2601,9 +2601,11 @@ void deoglRenderThread::pCleanUpThread(){
 		pVulkan = nullptr;
 #endif
 		
-		deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
-		dilist.RemoveIfPresent( pDebugInfoModule );
-		dilist.RemoveIfPresent( pDebugInfoFrameLimiter );
+		if(pDebug){
+			deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
+			dilist.RemoveIfPresent(pDebugInfoModule);
+			dilist.RemoveIfPresent(pDebugInfoFrameLimiter);
+		}
 		
 		pDebugInfoModule = nullptr;
 		pDebugInfoThreadMain = nullptr;

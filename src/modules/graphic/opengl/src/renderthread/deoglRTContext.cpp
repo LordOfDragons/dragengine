@@ -1144,12 +1144,20 @@ void deoglRTContext::pInitDisplay(){
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
 	
 	if( pContext == EGL_NO_CONTEXT ){
+		const bool debugContext = pRenderThread.GetConfiguration().GetDebugContext();
+		if(debugContext){
+			//pRenderThread.GetLogger().LogInfo("Enable debug context");
+		}
+		
 		const EGLint eglAttribList[] = {
 			EGL_CONTEXT_CLIENT_VERSION, 3, // 2,
+			// android does not support EGL_CONTEXT_OPENGL_DEBUG although the spec requires it!
+			//EGL_CONTEXT_OPENGL_DEBUG, debugContext ? EGL_TRUE : EGL_FALSE,
 			EGL_NONE
 		};
-		pContext = eglCreateContext( pDisplay, pConfig, NULL, eglAttribList );
-		DEASSERT_FALSE( pContext == EGL_NO_CONTEXT )
+		
+		pContext = eglCreateContext(pDisplay, pConfig, nullptr, eglAttribList);
+		DEASSERT_FALSE(pContext == EGL_NO_CONTEXT)
 		
 		// loader context needs also an own surface
 		const EGLint eglBufferAttribList[] = {

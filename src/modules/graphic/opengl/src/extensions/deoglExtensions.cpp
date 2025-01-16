@@ -1192,7 +1192,10 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_debug_output : no opengl version
-	if( pHasExtension[ ext_KHR_debug ] ){
+	if(pGLESVersion >= evgles3p2){
+		pHasExtension[ext_KHR_debug] = true;
+	}
+	if(pHasExtension[ext_KHR_debug]){
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageControl, "glDebugMessageControl", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageCallback, "glDebugMessageCallback", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglGetDebugMessageLog, "glGetDebugMessageLog", ext_KHR_debug );
