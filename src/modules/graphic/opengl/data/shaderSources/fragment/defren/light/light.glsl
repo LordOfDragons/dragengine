@@ -754,28 +754,28 @@ void main( void ){
 			
 			if( position.z < pLayerBorder.x ){
 				shapos1 = ( pShadowMatrix1[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 0; // layer 0
+				shapos1.p = 0.0; // layer 0
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform.z;
 				#endif
 				
 			}else if( position.z < pLayerBorder.y ){
 				shapos1 = ( pShadowMatrix2[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 1; // layer 1
+				shapos1.p = 1.0; // layer 1
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform.w;
 				#endif
 				
 			}else if( position.z < pLayerBorder.z ){
 				shapos1 = ( pShadowMatrix3[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 2; // layer 2
+				shapos1.p = 2.0; // layer 2
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform2.z;
 				#endif
 				
 			}else{
 				shapos1 = ( pShadowMatrix4[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 3; // layer 3
+				shapos1.p = 3.0; // layer 3
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform2.w;
 				#endif
@@ -913,7 +913,7 @@ void main( void ){
 		#ifdef OPTIMIZE_SHADOW_BACKFACE
 		if( dotval <= shadowThreshold ){
 			#ifdef AMBIENT_LIGHTING
-				shadow = 0;
+				shadow = 0.0;
 			#else
 				#ifdef WITH_SUBSURFACE
 				if( shadowThickness > largestAbsorptionRadius ){
@@ -931,8 +931,8 @@ void main( void ){
 			// force back facing fragments into shadow. not only does this avoid the need to
 			// sample the shadow maps but it also avoids light leaking problems. this does
 			// not affect ambient shadows
-			if( dotval > 0 ){
-				shadow = 1;
+			if(dotval > 0.0){
+				shadow = 1.0;
 		#endif
 			#ifdef TEXTURE_SHADOW1_SOLID
 				#ifdef SMA1_CUBE
@@ -976,7 +976,7 @@ void main( void ){
 				#endif
 			#endif
 			}else{
-				shadow = 0;
+				shadow = 0.0;
 			}
 			
 			#ifdef AMBIENT_LIGHTING

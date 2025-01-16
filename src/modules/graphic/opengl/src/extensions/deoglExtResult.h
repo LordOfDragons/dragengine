@@ -1120,4 +1120,12 @@ extern GLAPI PFNGLPUSHDEBUGGROUPPROC pglPushDebugGroup;
 extern GLAPI PFNGLPOPDEBUGGROUPPROC pglPopDebugGroup;
 extern GLAPI PFNGLOBJECTLABELPROC pglObjectLabel;
 
+
+
+// GL_ARB_texture_storage : opengl version 4.1 , opengl es version 3.1
+////////////////////////////////////////////////////////////////////////
+
+extern GLAPI PFNGLTEXSTORAGE2DPROC pglTexStorage2d;
+extern GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3d;
+
 #endif

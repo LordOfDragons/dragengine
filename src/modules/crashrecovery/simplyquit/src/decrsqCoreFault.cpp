@@ -639,6 +639,10 @@ void decrsqCoreFault::pCleanUp(){
 
 
 void decrsqCoreFault::pRegisterHandlers(){
+#ifdef OS_ANDROID
+	return; // on purpose. we can't get any proper info out of handling the crash ourself on android
+#endif
+
 #ifdef OS_W32
 	#if defined USE_DRMINGW || defined NO_CATCH_CRASH
 		(void)unhandledException;

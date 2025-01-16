@@ -217,9 +217,8 @@ void deoglImageStageManager::DisableAllStages(){
 
 void deoglImageStageManager::BindImage( int stage, GLuint texture, GLenum type,
 int level, int layer, eAccess access, bool layered, GLenum format ){
-	if( stage < 0 || stage >= OGL_MAX_IMAGE_STAGES ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE(stage >= 0)
+	DEASSERT_TRUE(stage < OGL_MAX_IMAGE_STAGES)
 	
 	if( pStages[ stage ].texture == texture
 	&& pStages[ stage ].type == type

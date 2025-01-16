@@ -35,7 +35,6 @@
 #include "../../memory/deoglMemoryManager.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
-#include "../../renderthread/deoglRTContext.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDebug.h"
 
@@ -188,25 +187,36 @@ void deoglTexture::CreateTexture(){
 	
 	tsmgr.EnableBareTexture(0, *this);
 	
-	OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, 0, glformat,
-		pSize.x, pSize.y, 0, glpixelformat, glpixeltype, NULL));
-	
-	if(pMipMapped){
-		int count = pMipMapLevelCount;
-		decPoint size(pSize);
-		int i;
-		
-		if(count == 0){
-			count = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
+	if(pglTexStorage2d){
+		if(pMipMapped){
+			pRealMipMapLevelCount = pMipMapLevelCount;
+			if(pRealMipMapLevelCount == 0){
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(pSize.x, pSize.y))));
+			}
 		}
 		
-		for(i=0; i<count; i++){
-			size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
-			OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, i + 1,
-				glformat, size.x, size.y, 0, glpixelformat, glpixeltype, NULL));
-		}
+		OGL_CHECK(pRenderThread, pglTexStorage2d(GL_TEXTURE_2D,
+			pRealMipMapLevelCount, glformat, pSize.x, pSize.y));
 		
-		pRealMipMapLevelCount = count;
+	}else{
+		OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, 0, glformat,
+			pSize.x, pSize.y, 0, glpixelformat, glpixeltype, NULL));
+		
+		if(pMipMapped){
+			pRealMipMapLevelCount = pMipMapLevelCount;
+			decPoint size(pSize);
+			int i;
+			
+			if(pRealMipMapLevelCount == 0){
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
+			}
+			
+			for(i=0; i<pRealMipMapLevelCount; i++){
+				size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
+				OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, i + 1,
+					glformat, size.x, size.y, 0, glpixelformat, glpixeltype, NULL));
+			}
+		}
 	}
 	
 	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount));

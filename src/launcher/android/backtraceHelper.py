@@ -14,9 +14,10 @@ with open(sys.argv[1], 'r', encoding='utf-8') as f:
     content = f.readlines()
 
 regexLine = re.compile(
-    r'^.*(\S+) ?\((\w*)(\+0x[0-9A-Fa-f]+)?\) ?\[(0x[0-9A-Fa-f]+)\].*\n$')
+    r'^.*?(\S+) ?\((\w*)(\+0x[0-9A-Fa-f]+)?\) ?\[(0x[0-9A-Fa-f]+)\].*\n$')
 regexLine2 = re.compile(r'^([/A-Za-z0-9-_.]+) ?\[(0x[0-9A-Fa-f]+)\].*\n$')
 regexLine3 = re.compile(r'^.*?([^\s(]+)\s?\(([^+]*)(\+(0x)?[0-9A-Fa-f]+)?\)\s?\n$')
+regexLine4 = re.compile(r'^.*?pc\s+([0-9A-Fa-f]+)\s+([^\s]+)\n$')
 regexLinePrefix = re.compile(r'^\[[A-Za-z0-9-_.: ]+\] ')
 regexAppPath = re.compile(r'^/data/app/.*/ch\.dragondreams\.delauncher.*/lib/arm64-v8a/')
 regexAppPath2 = re.compile(r'^/data/app/.*/ch\.dragondreams\.delauncher.*!')
@@ -26,9 +27,9 @@ def pathrepl(p):
         '/data/data/ch.dragondreams.delauncher/files/dragengine',
         'build/release')
     p = regexAppPath.sub(
-        'src/launcher/android/app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib/arm64-v8a/', p)
+        'src/launcher/android/app/build/intermediates/merged_native_libs/armv8Debug/mergeArmv8DebugNativeLibs/out/lib/arm64-v8a/', p)
     p = regexAppPath2.sub(
-        'src/launcher/android/app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib/arm64-v8a/', p)
+        'src/launcher/android/app/build/intermediates/merged_native_libs/armv8Debug/mergeArmv8DebugNativeLibs/out/lib/arm64-v8a/', p)
     if p.endswith('.so.1'):
         p = p[:-2]
     return p
@@ -38,6 +39,12 @@ def run_console(*command):
     while o and o[-1] == '\n':
         o = o[:-1]
     return o
+
+enable_debug_print = False
+
+def debug_print(*items):
+    if enable_debug_print:
+        print(items)
 
 for line in content:
     if line[:3] == 'EE ' or line[:3] == 'WW ' or line[:3] == 'II ':
@@ -50,16 +57,19 @@ for line in content:
     if line[:11] == 'Backtrace: ':
         line = line[11:]
 
+    debug_print(line)
     match = regexLine.match(line)
     nmdemangle = False
     if match:
         (binary, function, offset, address) = match.groups()
+        debug_print('regexLine', binary, function, offset, address)
     else:
         match = regexLine2.match(line)
         if match:
             (binary, address) = match.groups()
             function = ''
             offset = 0
+            debug_print('regexLine2', binary, address)
         else:
             match = regexLine3.match(line)
             if match:
@@ -67,8 +77,17 @@ for line in content:
                 offset = f'+0x{int(offset[1:]):x}'
                 address = 0
                 nmdemangle = True
+                debug_print('regexLine3', binary, function, offset)
             else:
-                continue
+                match = regexLine4.match(line)
+                if match:
+                    (address, binary) = match.groups()
+                    address = f'0x{address}'
+                    function = ''
+                    offset = 0
+                    debug_print('regexLine4', binary, address)
+                else:
+                    continue
 
     binary = pathrepl(binary)
     #print([binary, function, offset, address])

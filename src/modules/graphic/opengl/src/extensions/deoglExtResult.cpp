@@ -739,3 +739,11 @@ GLAPI PFNGLGETVERTEXATTRIBLUI64VARBPROC pglGetVertexAttribLui64vARB = nullptr;
 GLAPI PFNGLPUSHDEBUGGROUPPROC pglPushDebugGroup = nullptr;
 GLAPI PFNGLPOPDEBUGGROUPPROC pglPopDebugGroup = nullptr;
 GLAPI PFNGLOBJECTLABELPROC pglObjectLabel = nullptr;
+
+
+
+// GL_ARB_texture_storage : opengl version 4.1 , opengl es version 3.1
+////////////////////////////////////////////////////////////////////////
+
+GLAPI PFNGLTEXSTORAGE2DPROC pglTexStorage2d = nullptr;
+GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3d = nullptr;

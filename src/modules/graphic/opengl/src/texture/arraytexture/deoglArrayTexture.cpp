@@ -156,35 +156,36 @@ void deoglArrayTexture::CreateTexture(){
 	
 	tsmgr.EnableBareArrayTexture( 0, *this );
 	
-	OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, 0, glformat,
-		pSize.x, pSize.y, pSize.z, 0, glpixelformat, glpixeltype, NULL ) );
-	
-	if( pMipMapped ){
-		int count = pMipMapLevelCount;
-		int height = pSize.y;
-		int width = pSize.x;
-		int i;
-		
-		if( count == 0 ){
-			count = ( int )( floorf( log2f( ( float )( ( height > width ) ? height : width ) ) ) );
+	if(pglTexStorage3d){
+		if(pMipMapped){
+			pRealMipMapLevelCount = pMipMapLevelCount;
+			if(pRealMipMapLevelCount == 0){
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(pSize.x, pSize.y))));
+			}
 		}
 		
-		for( i=0; i<count; i++ ){
-			width >>= 1;
-			height >>= 1;
-			
-			if( width < 1 ){
-				width = 1;
-			}
-			if( height < 1 ){
-				height = 1;
-			}
-			
-			OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, i + 1, glformat,
-				width, height, pSize.z, 0, glpixelformat, glpixeltype, NULL ) );
-		}
+		OGL_CHECK(pRenderThread, pglTexStorage3d(GL_TEXTURE_2D_ARRAY,
+			pRealMipMapLevelCount, glformat, pSize.x, pSize.y, pSize.z));
 		
-		pRealMipMapLevelCount = count;
+	}else{
+		OGL_CHECK(pRenderThread, pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, glformat,
+			pSize.x, pSize.y, pSize.z, 0, glpixelformat, glpixeltype, nullptr));
+		
+		if(pMipMapped){
+			pRealMipMapLevelCount = pMipMapLevelCount;
+			decPoint size(pSize.x, pSize.y);
+			int i;
+			
+			if(pRealMipMapLevelCount == 0){
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
+			}
+			
+			for(i=0; i<pRealMipMapLevelCount; i++){
+				size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
+				OGL_CHECK(pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, i + 1, glformat,
+					size.x, size.y, pSize.z, 0, glpixelformat, glpixeltype, nullptr));
+			}
+		}
 	}
 	
 	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount ) );

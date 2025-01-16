@@ -148,33 +148,40 @@ void deoglCubeMap::CreateCubeMap(){
 	
 	tsmgr.EnableBareCubeMap( 0, *this );
 	
-	for( t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++ ){
-		OGL_CHECK( pRenderThread, glTexImage2D( t, 0, glformat, pSize, pSize,
-			0, glpixelformat, glpixeltype, NULL ) );
-	}
-	
-	if( pMipMapped ){
-		int count = pMipMapLevelCount;
-		int size = pSize;
-		int i;
-		
-		if( count == 0 ){
-			count = ( int )( floorf( log2f( ( float )pSize ) ) );
+	if(pglTexStorage2d){
+		if(pMipMapped){
+			pRealMipMapLevelCount = pMipMapLevelCount;
+			if(pRealMipMapLevelCount == 0){
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)pSize)));
+			}
 		}
 		
-		for( i=0; i<count; i++ ){
-			size >>= 1;
-			if( size < 1 ){
-				size = 1;
+		OGL_CHECK(pRenderThread, pglTexStorage2d(GL_TEXTURE_CUBE_MAP,
+			pRealMipMapLevelCount, glformat, pSize, pSize));
+		
+	}else{
+		for(t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++){
+			OGL_CHECK(pRenderThread, glTexImage2D(t, 0, glformat, pSize, pSize,
+				0, glpixelformat, glpixeltype, nullptr));
+		}
+		
+		if(pMipMapped){
+			pRealMipMapLevelCount = pMipMapLevelCount;
+			int size = pSize;
+			int i;
+			
+			if(pRealMipMapLevelCount == 0){
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)pSize)));
 			}
 			
-			for( t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++ ){
-				OGL_CHECK( pRenderThread, glTexImage2D( t, i + 1, glformat, size, size,
-					0, glpixelformat, glpixeltype, NULL ) );
+			for(i=0; i<pRealMipMapLevelCount; i++){
+				size = decMath::max(size >> 1, 1);
+				for(t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++){
+					OGL_CHECK(pRenderThread, glTexImage2D(t, i + 1, glformat, size, size,
+						0, glpixelformat, glpixeltype, nullptr));
+				}
 			}
 		}
-		
-		pRealMipMapLevelCount = count;
 	}
 	
 	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount ) );

@@ -25,6 +25,10 @@
 			"path": "src/modules/input/xsystem"
 		},
 		{
+			"name": "simplyquit",
+			"path": "src/modules/crashrecovery/simplyquit"
+		},
+		{
 			"name": "android",
 			"path": "src/modules/input/android"
 		},

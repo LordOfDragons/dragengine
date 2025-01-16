@@ -159,6 +159,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_direct_state_access",
 	"GL_ARB_clear_buffer_object",
 	"GL_ARB_buffer_storage",
+	"GL_ARB_texture_storage",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -316,6 +317,9 @@ bool deoglExtensions::VerifyPresence() const{
 	allPresent &= pVerifyExtensionPresent( ext_ARB_buffer_storage );
 #endif
 	// allPresent &= pVerifyExtensionPresent( ext_ARB_gpu_shader_fp64 );
+	if(pGLESVersion < evgles3p1){
+		allPresent &= pVerifyExtensionPresent(ext_ARB_texture_storage);
+	}
 	allPresent &= pSupportsGeometryShader;
 	
 	return allPresent;
@@ -1100,13 +1104,13 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_clear_buffer_object : opengl version 4.3
-	if(pHasExtension[ext_ARB_clear_buffer_object]){
 #ifdef OS_ANDROID
-		pglClearBufferSubData = eglClearBufferSubData;
+	pglClearBufferSubData = eglClearBufferSubData;
 #else
+	if(pHasExtension[ext_ARB_clear_buffer_object]){
 		pGetOptionalFunction((void**)&pglClearBufferSubData, "glClearBufferSubData", ext_ARB_clear_buffer_object);
-#endif
 	}
+#endif
 	
 	// GL_ARB_buffer_storage : opengl version 4.3
 	/*
@@ -1317,6 +1321,12 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pwglSwapInterval, "wglSwapInterval", "wglSwapIntervalEXT", ext_WGL_EXT_swap_control );
 	}
 #endif
+	
+	// GL_ARB_texture_storage : opengl version 4.2 , opengl es version 3.1
+	if(pHasExtension[ext_ARB_texture_storage] || pGLESVersion >= evgles3p1){
+		pGetOptionalFunction((void**)&pglTexStorage2d, "glTexStorage2d", ext_ARB_texture_storage);
+		pGetOptionalFunction((void**)&pglTexStorage3d, "glTexStorage3d", ext_ARB_texture_storage);
+	}
 }
 
 void deoglExtensions::pOptionalDisableExtensions(){
