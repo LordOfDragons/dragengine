@@ -164,8 +164,19 @@ void deoglArrayTexture::CreateTexture(){
 			}
 		}
 		
-		OGL_CHECK(pRenderThread, pglTexStorage3D(GL_TEXTURE_2D_ARRAY,
-			pRealMipMapLevelCount + 1, glformat, pSize.x, pSize.y, pSize.z));
+		try{
+			OGL_CHECK(pRenderThread, pglTexStorage3D(GL_TEXTURE_2D_ARRAY,
+				pRealMipMapLevelCount + 1, glformat, pSize.x, pSize.y, pSize.z));
+		}catch(const deException &){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"glTexStorage3D(Arr2D): levelCount=%d format=%s size=(%d,%d,%d)",
+				pRealMipMapLevelCount + 1, pFormat->GetName().GetString(), pSize.x, pSize.y, pSize.z);
+			pRenderThread.GetLogger().LogErrorFormat("Supported formats: %s",
+				pRenderThread.GetCapabilities().GetFormats().SupportedFormatsArrayTex().GetString());
+			pRenderThread.GetLogger().LogErrorFormat("Supported FBO formats: %s",
+				pRenderThread.GetCapabilities().GetFormats().SupportedFormatsFBOArrayTex().GetString());
+			throw;
+		}
 		
 	}else{
 		OGL_CHECK(pRenderThread, pglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, glformat,

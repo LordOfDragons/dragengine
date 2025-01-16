@@ -156,8 +156,19 @@ void deoglCubeMap::CreateCubeMap(){
 			}
 		}
 		
-		OGL_CHECK(pRenderThread, pglTexStorage2D(GL_TEXTURE_CUBE_MAP,
-			pRealMipMapLevelCount + 1, glformat, pSize, pSize));
+		try{
+			OGL_CHECK(pRenderThread, pglTexStorage2D(GL_TEXTURE_CUBE_MAP,
+				pRealMipMapLevelCount + 1, glformat, pSize, pSize));
+		}catch(const deException &){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"glTexStorage3D(Cube): levelCount=%d format=%s size=%d",
+				pRealMipMapLevelCount + 1, pFormat->GetName().GetString(), pSize);
+			pRenderThread.GetLogger().LogErrorFormat("Supported formats: %s",
+				pRenderThread.GetCapabilities().GetFormats().SupportedFormatsTexCube().GetString());
+			pRenderThread.GetLogger().LogErrorFormat("Supported FBO formats: %s",
+				pRenderThread.GetCapabilities().GetFormats().SupportedFormatsFBOTexCube().GetString());
+			throw;
+		}
 		
 	}else{
 		for(t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++){

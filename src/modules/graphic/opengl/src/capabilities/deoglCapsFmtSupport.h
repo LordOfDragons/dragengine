@@ -28,6 +28,8 @@
 #include "deoglCapsTextureFormatList.h"
 #include "../deoglBasics.h"
 
+#include <dragengine/common/string/decString.h>
+
 class deoglCapabilities;
 class deoglCapsTextureFormat;
 
@@ -215,6 +217,15 @@ public:
 	
 	/** Detect format support. */
 	void DetectFormats( GLuint fbo );
+	
+	
+	/** Supported formats. */
+	decString SupportedFormatsTex2D() const;
+	decString SupportedFormatsTexCube() const;
+	decString SupportedFormatsArrayTex() const;
+	decString SupportedFormatsFBOTex2D() const;
+	decString SupportedFormatsFBOTexCube() const;
+	decString SupportedFormatsFBOArrayTex() const;
 	/*@}*/
 	
 	
@@ -243,6 +254,8 @@ private:
 	const deoglCapsTextureFormat &pRequireFormat(const char *categoryName,
 		eUseTextureFormats type, const deoglCapsTextureFormat **listUse,
 		const deoglCapsTextureFormatList &listSupported) const;
+	
+	decString pSupportedFormats(const deoglCapsTextureFormatList &listSupported) const;
 };
 
 #endif

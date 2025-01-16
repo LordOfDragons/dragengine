@@ -195,8 +195,19 @@ void deoglTexture::CreateTexture(){
 			}
 		}
 		
-		OGL_CHECK(pRenderThread, pglTexStorage2D(GL_TEXTURE_2D,
-			pRealMipMapLevelCount + 1, glformat, pSize.x, pSize.y));
+		try{
+			OGL_CHECK(pRenderThread, pglTexStorage2D(GL_TEXTURE_2D,
+				pRealMipMapLevelCount + 1, glformat, pSize.x, pSize.y));
+		}catch(const deException &){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"glTexStorage2D(2D): levelCount=%d format=%s size=(%d,%d)",
+				pRealMipMapLevelCount + 1, pFormat->GetName().GetString(), pSize.x, pSize.y);
+			pRenderThread.GetLogger().LogErrorFormat("Supported formats: %s",
+				pRenderThread.GetCapabilities().GetFormats().SupportedFormatsTex2D().GetString());
+			pRenderThread.GetLogger().LogErrorFormat("Supported FBO formats: %s",
+				pRenderThread.GetCapabilities().GetFormats().SupportedFormatsFBOTex2D().GetString());
+			throw;
+		}
 		
 		/*
 		GLint pvalue;
