@@ -65,7 +65,7 @@ pMemUse( pRenderThread.GetMemoryManager().GetConsumption().textureArray )
 		RequireUseArrayTexFormatFor(deoglCapsFmtSupport::eutfRGB8);
 	
 	pMipMapLevelCount = 0;
-	pRealMipMapLevelCount = 0;
+	pRealMipMapLevelCount = 1;
 	pMipMapped = false;
 }
 
@@ -160,7 +160,7 @@ void deoglArrayTexture::CreateTexture(){
 		if(pMipMapped){
 			pRealMipMapLevelCount = pMipMapLevelCount;
 			if(pRealMipMapLevelCount == 0){
-				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(pSize.x, pSize.y))));
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(pSize.x, pSize.y)))) + 1;
 			}
 		}
 		
@@ -177,18 +177,18 @@ void deoglArrayTexture::CreateTexture(){
 			int i;
 			
 			if(pRealMipMapLevelCount == 0){
-				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y)))) + 1;
 			}
 			
-			for(i=0; i<pRealMipMapLevelCount; i++){
+			for(i=1; i<pRealMipMapLevelCount; i++){
 				size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
-				OGL_CHECK(pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, i + 1, glformat,
+				OGL_CHECK(pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, i, glformat,
 					size.x, size.y, pSize.z, 0, glpixelformat, glpixeltype, nullptr));
 			}
 		}
 	}
 	
-	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount ) );
+	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount - 1 ) );
 	
 	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR ) );
 	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR ) );
@@ -470,9 +470,8 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 
 
 void deoglArrayTexture::GetLevelSize( int level, int &width, int &height ) const{
-	if( level < 0 || level > pRealMipMapLevelCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE(level >= 0)
+	DEASSERT_TRUE(level < pRealMipMapLevelCount)
 	
 	int i;
 	

@@ -64,7 +64,7 @@ pMemUse( pRenderThread.GetMemoryManager().GetConsumption().textureCube )
 	pFormat = &renderThread.GetCapabilities().GetFormats().
 		RequireUseTexCubeFormatFor(deoglCapsFmtSupport::eutfRGB8);
 	pMipMapLevelCount = 0;
-	pRealMipMapLevelCount = 0;
+	pRealMipMapLevelCount = 1;
 	pMipMapped = false;
 }
 
@@ -152,7 +152,7 @@ void deoglCubeMap::CreateCubeMap(){
 		if(pMipMapped){
 			pRealMipMapLevelCount = pMipMapLevelCount;
 			if(pRealMipMapLevelCount == 0){
-				pRealMipMapLevelCount = (int)(floorf(log2f((float)pSize)));
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)pSize))) + 1;
 			}
 		}
 		
@@ -171,20 +171,20 @@ void deoglCubeMap::CreateCubeMap(){
 			int i;
 			
 			if(pRealMipMapLevelCount == 0){
-				pRealMipMapLevelCount = (int)(floorf(log2f((float)pSize)));
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)pSize))) + 1;
 			}
 			
-			for(i=0; i<pRealMipMapLevelCount; i++){
+			for(i=1; i<pRealMipMapLevelCount; i++){
 				size = decMath::max(size >> 1, 1);
 				for(t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++){
-					OGL_CHECK(pRenderThread, glTexImage2D(t, i + 1, glformat, size, size,
+					OGL_CHECK(pRenderThread, glTexImage2D(t, i, glformat, size, size,
 						0, glpixelformat, glpixeltype, nullptr));
 				}
 			}
 		}
 	}
 	
-	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount ) );
+	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount - 1 ) );
 	
 	if( pRenderThread.GetConfiguration().GetDisableCubeMapLinearFiltering() ){ // true for bugged nvidia drivers
 		OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
@@ -497,9 +497,8 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 
 
 int deoglCubeMap::GetLevelSize( int level ) const{
-	if( level < 0 || level > pRealMipMapLevelCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE(level >= 0)
+	DEASSERT_TRUE(level < pRealMipMapLevelCount)
 	
 	int i, size = pSize;
 	

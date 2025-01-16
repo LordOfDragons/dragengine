@@ -73,7 +73,7 @@ pFormat(nullptr),
 #endif
 
 pMipMapLevelCount(0),
-pRealMipMapLevelCount(0),
+pRealMipMapLevelCount(1),
 pMipMapped(false),
 pMemUse(pRenderThread.GetMemoryManager().GetConsumption().texture2D)
 {
@@ -191,7 +191,7 @@ void deoglTexture::CreateTexture(){
 		if(pMipMapped){
 			pRealMipMapLevelCount = pMipMapLevelCount;
 			if(pRealMipMapLevelCount == 0){
-				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(pSize.x, pSize.y))));
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(pSize.x, pSize.y)))) + 1;
 			}
 		}
 		
@@ -208,18 +208,18 @@ void deoglTexture::CreateTexture(){
 			int i;
 			
 			if(pRealMipMapLevelCount == 0){
-				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y)))) + 1;
 			}
 			
-			for(i=0; i<pRealMipMapLevelCount; i++){
+			for(i=1; i<pRealMipMapLevelCount; i++){
 				size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
-				OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, i + 1,
+				OGL_CHECK(pRenderThread, glTexImage2D(GL_TEXTURE_2D, i,
 					glformat, size.x, size.y, 0, glpixelformat, glpixeltype, NULL));
 			}
 		}
 	}
 	
-	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount));
+	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount - 1));
 	
 	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	OGL_CHECK(pRenderThread, glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
@@ -288,19 +288,14 @@ void deoglTexture::CreateTexture(){
 	}
 	
 	if(pMipMapped){
-		int i, count = pMipMapLevelCount;
+		pRealMipMapLevelCount = pMipMapLevelCount;
 		decPoint size(pSize);
 		
-		if(count == 0){
-			count = (int)(floorf(log2f((float)decMath::max(size.x, size.y))));
+		if(pRealMipMapLevelCount == 0){
+			pRealMipMapLevelCount = (int)(floorf(log2f((float)decMath::max(size.x, size.y)))) + 1;
 		}
 		
-		for(i=0; i<count; i++){
-			size = decPoint(size.x >> 1, size.y >> 1).Largest(decPoint(1, 1));
-		}
-		
-		pRealMipMapLevelCount = count;
-		config.SetMipMapCount(count);
+		config.SetMipMapCount(pRealMipMapLevelCount);
 	}
 	
 	pImage.TakeOver(new devkImage(pRenderThread.GetContext().GetDevice(), config));
@@ -575,7 +570,7 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 
 void deoglTexture::GetLevelSize(int level, int &width, int &height) const{
 	DEASSERT_TRUE(level >= 0)
-	DEASSERT_TRUE(level <= pRealMipMapLevelCount)
+	DEASSERT_TRUE(level < pRealMipMapLevelCount)
 	
 	int i;
 	
