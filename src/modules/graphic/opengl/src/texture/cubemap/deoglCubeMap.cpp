@@ -36,12 +36,12 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDebug.h"
+#include "../../renderthread/deoglRTLogger.h"
 
 #ifdef OS_ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
-#include "../../renderthread/deoglRTLogger.h"
 #endif
 
 #include <dragengine/common/exceptions.h>
