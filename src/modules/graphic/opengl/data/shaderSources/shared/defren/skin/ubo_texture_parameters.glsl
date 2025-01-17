@@ -64,11 +64,7 @@ struct sTextureParameters{
 // it boils down to anything but constants working reliably). SSBOs on the other hand
 // can be of any size
 #ifdef SHARED_SPB_USE_SSBO
-	#ifdef OS_ANDROID
-		UBOLAYOUT_BIND(2) readonly buffer TextureParametersSSBO
-	#else
-		UBOLAYOUT readonly buffer TextureParametersSSBO
-	#endif
+	UBOLAYOUT_BIND(2) readonly buffer TextureParametersSSBO
 #else
 	UBOLAYOUT uniform TextureParameters
 #endif

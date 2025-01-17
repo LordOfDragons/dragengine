@@ -1321,7 +1321,7 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
 	
-	ubo->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	ubo->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	ubo->SetParameterCount( euprlGridCoordUnshift + 1 );
 	ubo->SetElementCount( GI_MAX_CASCADES );
 	

@@ -175,7 +175,7 @@ enum eSPCopyMaterial{
 deoglRenderReflection::deoglRenderReflection( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread )
 {
-	const bool indirectMatrixAccessBug = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken();
+	const bool matrixAccessWorking = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
@@ -457,7 +457,7 @@ deoglRenderBase( renderThread )
 		
 		
 		deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-		ubo->SetRowMajor( ! indirectMatrixAccessBug );
+		ubo->SetRowMajor(matrixAccessWorking);
 		ubo->SetParameterCount( 4 );
 		ubo->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 2, 1, 1 ); // vec2 pBlendFactors
 		ubo->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 1, 1, 1 ); // float pEnvMapLodLevel
@@ -489,7 +489,7 @@ deoglRenderBase( renderThread )
 		
 		
 		ubo.TakeOver( new deoglSPBlockUBO( renderThread ) );
-		ubo->SetRowMajor( ! indirectMatrixAccessBug );
+		ubo->SetRowMajor(matrixAccessWorking);
 		ubo->SetParameterCount( 8 );
 		ubo->GetParameterAt( spbarEnvMapMatrixInfluence ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );
 		ubo->GetParameterAt( spbarEnvMapMatrixReflBox ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 8 );

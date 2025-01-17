@@ -539,7 +539,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &render
 	// method is a static method not an regular method
 	
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( ERUT_COUNT );
 	
 	spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
@@ -625,7 +625,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBOccMap( deoglRenderThread &render
 	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
 	const deoglSPBlockUBO::Ref ompb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-	ompb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	ompb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	ompb->SetParameterCount( 4 );
 	ompb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
 	ompb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
@@ -641,7 +641,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBSpecial( deoglRenderThread &rende
 	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( 1 );
 	
 	spb->GetParameterAt( esutLayerVisibility ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerVisibility
@@ -675,7 +675,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
 	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
-	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
 	
 	int i;

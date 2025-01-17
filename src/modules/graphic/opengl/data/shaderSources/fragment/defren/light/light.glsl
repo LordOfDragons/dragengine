@@ -1270,7 +1270,7 @@ void main( void ){
 			// NOTE this calculation is also no more working with spot cone being potentially
 			//      squashed. the new version uses the same distance calculated for the spot
 			//      cone rejection test above. the GLSL problem stays the same though
-			#ifdef OS_ANDROID
+			#ifdef ANDROID
 				// android GPU drivers tend to be buggy. if pow is used like on PC the shader
 				// linker dead-locks and never returns. the culprit seems to be the pow()
 				// function combined with certain uniform buffer variables. wrapping them in
