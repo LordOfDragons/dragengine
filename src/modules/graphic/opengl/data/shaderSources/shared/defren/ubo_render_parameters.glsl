@@ -1,13 +1,13 @@
 UBOLAYOUT uniform RenderParameters{
 	vec4 pAmbient;
-	mat4x3 pMatrixV[ 6 ];
-	mat4 pMatrixP[ 2 ];
-	mat4 pMatrixVP[ 6 ];
-	mat3 pMatrixVn[ 6 ];
+	mat4x3 pMatrixV[6];
+	mat4 pMatrixP[2];
+	mat4 pMatrixVP[6];
+	mat3 pMatrixVn[6];
 	mat3 pMatrixEnvMap;
-	mat4 pMatrixSkyBody[ 6 ];
-	vec4 pDepthToPosition[ 2 ];
-	vec2 pDepthToPosition2[ 2 ]; // for use by shifted projection matrix
+	mat4 pMatrixSkyBody[6];
+	vec4 pDepthToPosition[2];
+	vec2 pDepthToPosition2[2]; // for use by shifted projection matrix
 	
 	vec2 pDepthTransform; // x=scale, y=offset
 	float pEnvMapLodLevel;
@@ -41,7 +41,7 @@ UBOLAYOUT uniform RenderParameters{
 	// clip plane if used.
 	// xyz: normal
 	// w: distance
-	vec4 pClipPlane[ 2 ];
+	vec4 pClipPlane[2];
 	
 	// screen space conversion parameters
 	// x: scaleU = renderWidth / realTextureWidth
