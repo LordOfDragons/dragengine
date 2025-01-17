@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.0"
+agp = "8.7.3"
 gamesActivity = "3.0.5"
 gamesController = "2.0.2"
 gamesFramePacing = "2.1.2"
