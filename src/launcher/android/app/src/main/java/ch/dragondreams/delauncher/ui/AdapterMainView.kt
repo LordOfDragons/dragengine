@@ -1,12 +1,15 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import ch.dragondreams.delauncher.R
+import ch.dragondreams.delauncher.ui.engine.FragmentEngine
+import ch.dragondreams.delauncher.ui.game.FragmentGames
+import ch.dragondreams.delauncher.ui.settings.FragmentSettings
 
-class MainViewPagesAdapter(private val context: Context, fm: FragmentManager) :
+class AdapterMainView(private val context: Context, fm: FragmentManager) :
     FragmentStatePagerAdapter(fm) {
 
     private val fragments: MutableMap<String,Fragment> = mutableMapOf()

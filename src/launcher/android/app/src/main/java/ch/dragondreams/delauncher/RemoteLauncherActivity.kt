@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.SurfaceHolder
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
-import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
-import ch.dragondreams.delauncher.ui.main.FragmentRemoteLauncher
+import ch.dragondreams.delauncher.ui.FragmentInitEngine
+import ch.dragondreams.delauncher.ui.remote.FragmentRemoteLauncher
 import com.google.androidgamesdk.GameActivity
 import java.lang.System.loadLibrary
 
@@ -26,6 +26,7 @@ class RemoteLauncherActivity : GameActivity(),
 
     private val shared = RunGameShared(TAG)
     private var fragmentMain: FragmentRemoteLauncher? = null
+    private val permissionRequestor: PermissionRequestor = PermissionRequestor()
 
     override fun getLauncher(): DragengineLauncher {
         if (shared.launcher == null) {
@@ -41,7 +42,7 @@ class RemoteLauncherActivity : GameActivity(),
         loadLibrary("game_activity_adapter")
         super.onCreate(savedInstanceState)
 
-        fragmentMain = FragmentRemoteLauncher()
+        fragmentMain = FragmentRemoteLauncher(permissionRequestor)
         fragmentMain?.shared = shared
         supportFragmentManager.beginTransaction()
             .add(android.R.id.content, fragmentMain!!).commit()
@@ -82,11 +83,8 @@ class RemoteLauncherActivity : GameActivity(),
     override fun onRequestPermissionsResult(requestCode: Int,
         permissions: Array<out String>, grantResults: IntArray
     ) {
-        when(requestCode) {
-            FragmentRemoteLauncher.REQUEST_CODE_PERMISSION_INTERNET ->
-                fragmentMain?.onPermissionResult(requestCode, permissions, grantResults)
-
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (!permissionRequestor.onRequestPermissionsResult(requestCode, permissions, grantResults)){
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 

@@ -1,4 +1,4 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui
 
 import android.content.Context
 import android.os.Bundle

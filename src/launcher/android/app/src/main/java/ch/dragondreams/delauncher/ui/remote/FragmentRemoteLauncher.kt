@@ -1,4 +1,4 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui.remote
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,14 +9,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import ch.dragondreams.delauncher.PermissionRequestor
 import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.RunGameShared
 import ch.dragondreams.delauncher.UIHelper
@@ -34,7 +32,9 @@ import java.util.Locale
 import kotlin.concurrent.Volatile
 
 
-class FragmentRemoteLauncher : Fragment() {
+class FragmentRemoteLauncher(
+    private val permissionRequestor: PermissionRequestor
+) : Fragment(), PermissionRequestor.Listener {
     class ClientListener(
         private val owner: FragmentRemoteLauncher
     ) : RemoteLauncherClient.Listener{
@@ -187,10 +187,12 @@ class FragmentRemoteLauncher : Fragment() {
         buttonConnect?.setOnClickListener { onButtonConnect() }
         buttonDisconnect?.setOnClickListener { onButtonDisconnect() }
 
+        permissionRequestor.addListener(REQUEST_CODE_PERMISSION_INTERNET, this)
         return view
     }
 
     override fun onDestroyView() {
+        permissionRequestor.removeListener(REQUEST_CODE_PERMISSION_INTERNET, this)
         isDestroyingView = true
         stopApplicationWait()
 
@@ -208,29 +210,11 @@ class FragmentRemoteLauncher : Fragment() {
     }
 
     private fun onButtonConnect() {
-        when {
-            ContextCompat.checkSelfPermission(requireContext(),
-                android.Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED -> {
-                    connectToHost()
-                }
-
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(), android.Manifest.permission.INTERNET
-            ) -> {
-                requireActivity().runOnUiThread {
-                    UIHelper.showError(requireActivity(), R.string.message_requires_permission_internet)
-                }
-            }
-
-            else -> {
-                // You can directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
-                ActivityCompat.requestPermissions(requireActivity(),
-                    arrayOf(android.Manifest.permission.INTERNET),
-                    REQUEST_CODE_PERMISSION_INTERNET)
-            }
+        permissionRequestor.requiresPermissionInternet(requireActivity(),
+            REQUEST_CODE_PERMISSION_INTERNET,
+            R.string.message_requires_permission_internet_remote) {
+                connectToHost()
         }
-
     }
 
     private fun connectToHost(){
@@ -453,7 +437,8 @@ class FragmentRemoteLauncher : Fragment() {
         s.logInfo("startGame", "Starting game '${g.title}' using profile '${s.runParams.gameProfile?.name}'");
 
         remoteLauncherHandler = RemoteLauncherHandler(
-            client!!, l, g, s.runParams, HandlerListener(this))
+            client!!, l, g, s.runParams, HandlerListener(this)
+        )
         GameActivityAdapter().setHandler(remoteLauncherHandler!!.nativeHandler)
 
         activity?.runOnUiThread {
@@ -508,6 +493,6 @@ class FragmentRemoteLauncher : Fragment() {
         const val PREF_HOST = "remote_launcher_host"
         const val PREF_CLIENT_NAME = "remote_launcher_clientname"
 
-        const val REQUEST_CODE_PERMISSION_INTERNET = 10
+        val REQUEST_CODE_PERMISSION_INTERNET = PermissionRequestor.nextRequestCode()
     }
 }

@@ -1,12 +1,11 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
 
-class PageViewModel : ViewModel() {
+class ModelMainViews : ViewModel() {
 
     private val _index = MutableLiveData<Int>()
     val text: LiveData<String> = _index.map {

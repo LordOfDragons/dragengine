@@ -1,4 +1,4 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui.game
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -12,10 +12,10 @@ import ch.dragondreams.delauncher.databinding.FragmentGameBinding
 import ch.dragondreams.delauncher.launcher.Game
 import ch.dragondreams.delauncher.launcher.GameIcon
 
-class GamesRecyclerViewAdapter(
+class AdapterGames(
     private val entries: MutableList<Game>,
     private val listener: Listener
-) : RecyclerView.Adapter<GamesRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AdapterGames.ViewHolder>() {
     interface Listener {
         fun onItemClicked(game: Game)
     }

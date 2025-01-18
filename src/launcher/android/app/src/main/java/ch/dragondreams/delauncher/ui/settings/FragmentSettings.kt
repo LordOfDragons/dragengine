@@ -1,12 +1,10 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui.settings
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreferenceCompat
-import androidx.viewpager.widget.ViewPager
 import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.RemoteLauncherActivity
 import ch.dragondreams.delauncher.UIHelper

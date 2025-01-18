@@ -27,6 +27,8 @@
     <string name="form_label_library_file_size">Library File Size:</string>
     <string name="form_label_library_file_hash">Library File Hash:</string>
     <string name="label_close">Close</string>
+    <string name="label_delete">Delete</string>
+    <string name="label_cancel">Cancel</string>
     <string name="form_label_dragengine_version">Drag[en]gine Version:</string>
     <string name="form_label_game_engine_modules">Game Engine Modules:</string>
     <!-- Preference Titles -->
@@ -67,8 +69,17 @@
     <string name="error_host_address_empty">Addresss can not be empty</string>
     <string name="error_connect_failed">Connect failed</string>
     <string name="error_disconnect_failed">Disconnect failed</string>
-    <string name="message_requires_permission_internet">Connecting to remote host requires Internet Access Permission</string>
+    <string name="message_requires_permission_internet_remote">Connecting to remote host requires Internet Access Permission</string>
+    <string name="message_requires_permission_internet_download">Download file requires Internet Access Permission</string>
     <string name="message_remote_launch_internet_denied">Permission denied. Remote launching is not possible.</string>
+    <string name="message_download_denied">Permission denied. Download is not possible.</string>
     <string name="message_game_engine_not_ready">Game engine not ready</string>
     <string name="message_game_running">Game is already running</string>
+    <string name="error_download_failed">Download file failed</string>
+    <string name="error_examples_move_file">Failed moving downloaded file to examples directory</string>
+    <string name="message_example_delete_confirm">Delete downloaded example file?</string>
+    <string name="title_example_delete">Delete Example</string>
+    <string name="error_delete_example_file">Failed delete example file</string>
+    <string name="error_example_not_ready">Example has not been downloaded yet.</string>
+    <string name="error_example_run">Failed running example.</string>
 </resources>

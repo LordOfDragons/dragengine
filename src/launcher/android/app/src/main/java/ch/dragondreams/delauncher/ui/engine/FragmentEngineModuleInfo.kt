@@ -1,4 +1,4 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui.engine
 
 import android.os.Bundle
 import android.view.LayoutInflater

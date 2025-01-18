@@ -1,4 +1,4 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui.engine
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,10 +9,10 @@ import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.databinding.FragmentEngineModuleBinding
 import ch.dragondreams.delauncher.launcher.EngineModule
 
-class EngineModuleRecyclerViewAdapter(
+class AdapterEngineModule(
     private val entries: MutableList<EngineModule>,
     private val listener: Listener
-) : RecyclerView.Adapter<EngineModuleRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<AdapterEngineModule.ViewHolder>() {
     interface Listener {
         fun onItemClicked(module: EngineModule)
     }

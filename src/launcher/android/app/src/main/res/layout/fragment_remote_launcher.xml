@@ -7,7 +7,7 @@
     android:background="?android:attr/colorBackground"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".ui.main.FragmentRemoteLauncher">
+    tools:context=".ui.remote.FragmentRemoteLauncher">
 
     <ImageView
         android:id="@+id/imageDragengine"

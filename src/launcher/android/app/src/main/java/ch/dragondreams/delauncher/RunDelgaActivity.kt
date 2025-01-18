@@ -8,13 +8,12 @@ import android.os.Looper
 import android.util.Log
 import android.view.SurfaceHolder
 import android.view.View
-import android.view.WindowManager
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.Game
 import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
 import ch.dragondreams.delauncher.launcher.internal.Launcher
 import ch.dragondreams.delauncher.launcher.internal.RunGameHandler
-import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
+import ch.dragondreams.delauncher.ui.FragmentInitEngine
 import com.google.androidgamesdk.GameActivity
 import java.lang.System.loadLibrary
 

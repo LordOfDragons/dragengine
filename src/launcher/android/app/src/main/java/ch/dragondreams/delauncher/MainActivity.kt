@@ -6,16 +6,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import ch.dragondreams.delauncher.databinding.ActivityMainBinding
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
-import ch.dragondreams.delauncher.ui.main.FragmentEngine
-import ch.dragondreams.delauncher.ui.main.FragmentGames
-import ch.dragondreams.delauncher.ui.main.FragmentInitEngine
-import ch.dragondreams.delauncher.ui.main.FragmentSettings
-import ch.dragondreams.delauncher.ui.main.MainViewPagesAdapter
+import ch.dragondreams.delauncher.ui.AdapterMainView
+import ch.dragondreams.delauncher.ui.FragmentInitEngine
+import ch.dragondreams.delauncher.ui.engine.FragmentEngine
+import ch.dragondreams.delauncher.ui.game.FragmentGames
+import ch.dragondreams.delauncher.ui.settings.FragmentSettings
 
 class MainActivity : AppCompatActivity(),
     FragmentInitEngine.Interface,
     FragmentEngine.Interface,
-    FragmentGames.Interface
+    FragmentGames.Interface,
+    PermissionRequestor.Interface
 {
     class LauncherListener : DragengineLauncher.DefaultListener() {
         override fun stateChanged(launcher: DragengineLauncher) {
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityMainBinding
     private var launcher: DragengineLauncher? = null
+    private val permissionRequestor: PermissionRequestor = PermissionRequestor()
 
     override fun getLauncher(): DragengineLauncher {
         if (launcher == null) {
@@ -38,6 +40,10 @@ class MainActivity : AppCompatActivity(),
             launcher?.initLauncher()
         }
         return launcher!!
+    }
+
+    override fun getPermissionRequestor(): PermissionRequestor {
+        return permissionRequestor
     }
 
     private fun isRemoteLauncherEnabled(): Boolean{
@@ -53,7 +59,7 @@ class MainActivity : AppCompatActivity(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewPagerAdapter = MainViewPagesAdapter(this, supportFragmentManager)
+        val viewPagerAdapter = AdapterMainView(this, supportFragmentManager)
         val viewPager = binding.pagerMain
         viewPager.adapter = viewPagerAdapter
         viewPager.setOffscreenPageLimit(2)
@@ -65,6 +71,14 @@ class MainActivity : AppCompatActivity(),
         launcher = null
 
         super.onDestroy()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+        permissions: Array<out String>, grantResults: IntArray
+    ) {
+        if (!permissionRequestor.onRequestPermissionsResult(requestCode, permissions, grantResults)){
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
     }
 
     companion object {

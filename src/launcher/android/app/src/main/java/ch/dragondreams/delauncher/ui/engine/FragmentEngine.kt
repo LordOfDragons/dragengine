@@ -1,4 +1,4 @@
-package ch.dragondreams.delauncher.ui.main
+package ch.dragondreams.delauncher.ui.engine
 
 import android.content.Context
 import android.os.Bundle
@@ -36,9 +36,11 @@ class FragmentEngine : Fragment() {
 
     class ListListener(
         private val owner: FragmentEngine
-    ) : EngineModuleRecyclerViewAdapter.Listener {
+    ) : AdapterEngineModule.Listener {
         override fun onItemClicked(module: EngineModule) {
-            FragmentEngineModuleInfo(module).show(owner.childFragmentManager, FragmentEngineModuleInfo.TAG)
+            FragmentEngineModuleInfo(module).show(owner.childFragmentManager,
+                FragmentEngineModuleInfo.TAG
+            )
         }
     }
 
@@ -95,7 +97,7 @@ class FragmentEngine : Fragment() {
         viewListModules = view.findViewById(R.id.listEngineModules)
         with(viewListModules!!) {
             layoutManager = LinearLayoutManager(context)
-            adapter = EngineModuleRecyclerViewAdapter(viewListModulesData, ListListener(this@FragmentEngine))
+            adapter = AdapterEngineModule(viewListModulesData, ListListener(this@FragmentEngine))
         }
         return view
     }
