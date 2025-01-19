@@ -133,7 +133,7 @@ def gradleBuildApk(env, target, source):
 	
 	arguments = []
 	arguments.append(''.join(task))
-	arguments.append('-Pbuild.version.code={}'.format(envLauncher['android_version_code']))
+	arguments.append('-Pbuild.version.code="{}"'.format(envLauncher['android_version_code']))
 	arguments.append('-Pbuild.version.name="{}-{}"'.format(
 		envLauncher['version'], envLauncher['android_version_code']))
 	

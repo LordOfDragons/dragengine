@@ -12,7 +12,7 @@ android {
         minSdk = 26
         targetSdk = 34
 
-        versionCode = findProperty("build.version.code") as Int? ?: 99999
+        versionCode = (findProperty("build.version.code") as String? ?: "99999").toInt()
         versionName = findProperty("build.version.name") as String? ?: "99999"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
