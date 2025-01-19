@@ -142,8 +142,53 @@ envLauncher.Clean(apk, 'app/build')
 apkFilename = '{}.apk'.format(envLauncher['apk_name_launcher'])
 
 finalApk = envLauncher.InstallAs(apkFilename, apk)
-targetBuild = envLauncher.Alias('launcher_android_build', finalApk)
 
+
+# app bundle
+if envLauncher['with_debug']:
+	aabFilename = os.path.join('app', 'build', 'outputs', 'bundle',
+		'{}Debug'.format(envLauncher['platform_android']),
+		'app-{}-debug.aab'.format(envLauncher['platform_android']))
+else:
+	aabFilename = os.path.join('app', 'build', 'outputs', 'bundle',
+		'{}Release'.format(envLauncher['platform_android']),
+		'app-{}-release.aab'.format(envLauncher['platform_android']))
+nodeAab = envLauncher.File(aabFilename).srcnode()
+
+def gradleBuildAab(env, target, source):
+	buildDir = source[0].get_dir()
+	script = []
+	script.append('cd "{}" || exit 1'.format(buildDir.abspath))
+	
+	task = ['bundle']
+	
+	platform = envLauncher['platform_android']
+	if platform == 'armv8':
+		task.append('Armv8')
+	elif platform == 'armv7':
+		task.append('Armv7')
+	else:
+		raise Exception('unsupported platform {}'.format(platform))
+	
+	if envLauncher['with_debug']:
+		task.append('Debug')
+	else:
+		task.append('Release')
+	
+	script.append('./gradlew {} || exit 1'.format(''.join(task)))
+	return 1 if os.system('\n'.join(script)) else None
+
+aab = envLauncher.Command(nodeAab, apkSources,
+	envLauncher.Action(gradleBuildAab, 'Build Android Launcher Bundle'))
+envLauncher.Depends(aab, apk)
+
+aabFilename = '{}.aab'.format(envLauncher['apk_name_launcher'])
+
+finalAab = envLauncher.InstallAs(aabFilename, aab)
+
+
+# targets
+targetBuild = envLauncher.Alias('launcher_android_build', [finalApk, finalAab])
 targetInstall = targetBuild
 
 

@@ -93,7 +93,10 @@ public:
             // not miss events while processing inputBuffer.
             android_input_buffer *inputBuffer = android_app_swap_input_buffers(pApp);
             if(inputBuffer){
-                pHandler->InputEvent(*this, *inputBuffer);
+                if(pHandler) {
+                    pHandler->InputEvent(*this, *inputBuffer);
+                }
+
                 if(inputBuffer->keyEventsCount != 0){
                     android_app_clear_key_events(inputBuffer);
                 }
@@ -107,8 +110,9 @@ public:
             while(!pCustomEvents.empty()){
                 if(pHandler){
                     pHandler->ProcessCustomEvent(*this, pCustomEvents.front());
-                    pCustomEvents.pop();
                 }
+
+                pCustomEvents.pop();
             }
 
             if(pHandler){

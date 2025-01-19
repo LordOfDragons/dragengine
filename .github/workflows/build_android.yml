@@ -141,4 +141,5 @@ jobs:
             archive/build/dragengine-dev-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
             archive/build/despecial-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
             src/launcher/android/build/DELauncher-${{ inputs.releaseVersion }}-${{ inputs.androidArch }}.apk
+            src/launcher/android/build/DELauncher-${{ inputs.releaseVersion }}-${{ inputs.androidArch }}.aab
           if-no-files-found: error
