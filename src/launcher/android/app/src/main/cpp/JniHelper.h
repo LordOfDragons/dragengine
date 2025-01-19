@@ -2,6 +2,7 @@
 #define DELAUNCHER_JNIHELPER_H
 
 #include <jni.h>
+#include <stdexcept>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -288,6 +289,11 @@ public:
      * Log Drag[en]gine exception.
      */
     static void logException(const deException &exception);
+
+    /**
+     * Throw Drag[en]gine exception as java exception.
+     */
+    void throwException(const std::exception &exception);
 };
 
 #endif //DELAUNCHER_JNIHELPER_H

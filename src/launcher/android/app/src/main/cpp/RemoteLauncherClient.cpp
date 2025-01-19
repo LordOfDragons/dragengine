@@ -316,6 +316,9 @@ JNIEnv *env, jobject thiz, jobject objListener){
     }catch(const deException &e){
         h.throwException(e);
         return 0L; // keep compiler happy. code never gets here
+    }catch(const std::exception &e){
+        h.throwException(e);
+        return 0L; // keep compiler happy. code never gets here
     }
 }
 
@@ -340,6 +343,8 @@ jstring pname, jstring ppathDataDir, jstring paddress){
         client.ConnectToHost(name, pathDataDir, address);
     }catch(const deException &e){
         h.throwException(e);
+    }catch(const std::exception &e){
+        h.throwException(e);
     }
 }
 
@@ -351,6 +356,8 @@ JNIEnv *env, jobject thiz, jlong pclient){
     try {
         ((RemoteLauncherClient*)pclient)->DisconnectFromHost();
     }catch(const deException &e){
+        h.throwException(e);
+    }catch(const std::exception &e){
         h.throwException(e);
     }
 }
@@ -365,6 +372,9 @@ JNIEnv *env, jobject thiz, jlong pclient){
     }catch(const deException &e){
         h.throwException(e);
         return false; // keep compiler happy. code never gets here
+    }catch(const std::exception &e){
+        h.throwException(e);
+        return false; // keep compiler happy. code never gets here
     }
 }
 
@@ -376,6 +386,8 @@ JNIEnv *env, jobject thiz, jlong pclient, jlong plauncher){
     try {
         ((RemoteLauncherClient*)pclient)->SetLauncher(((delLauncher*)plauncher));
     }catch(const deException &e){
+        h.throwException(e);
+    }catch(const std::exception &e){
         h.throwException(e);
     }
 }
@@ -391,6 +403,8 @@ JNIEnv *env, jobject thiz, jlong pclient, jstring pproperty, jstring pvalue){
         ((RemoteLauncherClient*)pclient)->SendSystemProperty(property, value);
     }catch(const deException &e){
         h.throwException(e);
+    }catch(const std::exception &e){
+        h.throwException(e);
     }
 }
 
@@ -403,6 +417,8 @@ JNIEnv *env, jobject thiz, jlong pclient, jint status){
         ((RemoteLauncherClient*)pclient)->SetRunStatus(
             (derlLauncherClient::RunStatus)status);
     }catch(const deException &e){
+        h.throwException(e);
+    }catch(const std::exception &e){
         h.throwException(e);
     }
 }

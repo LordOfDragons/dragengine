@@ -436,3 +436,13 @@ void JniHelpers::logException(const deException &exception){
         __android_log_print(ANDROID_LOG_ERROR, "Launcher", "%s", lines.GetAt(i).GetString());
     }
 }
+
+void JniHelpers::throwException(const std::exception &exception){
+    jclass exClass;
+    const char * const className = "java/lang/RuntimeException";
+
+    exClass = pEnv->FindClass(className);
+    DEASSERT_NOTNULL(exClass)
+
+    pEnv->ThrowNew(exClass, exception.what());
+}
