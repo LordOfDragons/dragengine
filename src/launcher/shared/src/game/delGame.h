@@ -36,6 +36,7 @@
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/utils/decUuid.h>
 
@@ -117,6 +118,8 @@ private:
 	bool pUseLatestPatch;
 	decUuid pUseCustomPatch;
 	delPatchList pLocalPatches;
+	
+	decStringDictionary pCustomProperties;
 	
 #ifdef OS_ANDROID
 	deVFSContainer::Ref pVFSDelgaContainer;
@@ -345,6 +348,16 @@ public:
 	 */
 	inline delPatchList &GetLocalPatches(){ return pLocalPatches; }
 	inline const delPatchList &GetLocalPatches() const{ return pLocalPatches; }
+	
+	/**
+	 * \brief Custom properties.
+	 * \version 1.25
+	 * 
+	 * Allows launchers to store custom properties. To avoid name classes best prefix the
+	 * property names like "launcher-name:"
+	 */
+	inline decStringDictionary &GetCustomProperties(){ return pCustomProperties; }
+	inline const decStringDictionary &GetCustomProperties() const{ return pCustomProperties; }
 	
 	
 	

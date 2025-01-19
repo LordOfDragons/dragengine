@@ -1,7 +1,9 @@
 package ch.dragondreams.delauncher.ui.game
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +12,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ch.dragondreams.delauncher.MainActivity.Companion.examples
 import ch.dragondreams.delauncher.R
+import ch.dragondreams.delauncher.RunDelgaActivity
+import ch.dragondreams.delauncher.UIHelper
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.Game
+
 
 /**
  * A fragment representing a list of Items.
@@ -36,7 +42,35 @@ class FragmentGames : Fragment() {
         private val owner: FragmentGames
     ) : AdapterGames.Listener {
         override fun onItemClicked(game: Game) {
+            Log.i(TAG, "onItemClicked: '${game.identifier}' -> '${game.customProperties[Game.PROPERTY_OWNER_PACKAGE]}'")
             //FragmentEngineModuleInfo(module).show(owner.childFragmentManager, FragmentEngineModuleInfo.TAG)
+
+            val ownerPackage = game.customProperties[Game.PROPERTY_OWNER_PACKAGE]
+            if (ownerPackage != null) {
+                if (ownerPackage == owner.requireActivity().packageName) {
+                    examples.find { e -> e.gameId == game.identifier }?.run(owner.requireActivity())
+                    return
+                }
+
+                var intent = owner.requireActivity().packageManager.getLaunchIntentForPackage(ownerPackage)
+                Log.i(TAG, "intent: $intent")
+
+                if (intent == null) {
+                    intent = Intent(Intent.ACTION_MAIN)
+                    intent.setClassName(ownerPackage, "${ownerPackage}.MainActivity")
+                }
+
+                intent.putExtra(RunDelgaActivity.EXTRA_GAME_ID, game.identifier)
+                try {
+                    owner.requireActivity().startActivity(intent)
+                } catch (e: Exception) {
+                    if (e.message != null) {
+                        UIHelper.showError(owner.requireActivity(), e.message!!)
+                    } else {
+                        UIHelper.showError(owner.requireActivity(), R.string.error_example_run)
+                    }
+                }
+            }
         }
     }
 

@@ -11,8 +11,8 @@ android {
         applicationId = "ch.dragondreams.delauncher"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 25
+        versionName = "1.25"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -73,6 +73,12 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    androidResources {
+        noCompress.add(".delga")
+        noCompress.add(".zip")
+    }
+
     buildFeatures {
         viewBinding = true
 

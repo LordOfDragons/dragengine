@@ -50,6 +50,11 @@ class Game private constructor(
         val config = GameConfig()
         config.customProfile = game.customProfile?.nativeProfile?.nativeProfile ?: 0L
         config.activeProfile = game.activeProfile?.nativeProfile?.nativeProfile ?: 0L
+        config.customProperties = buildList {
+            game.customProperties.forEach { e ->
+                add(GameConfigCustomProperty(e.key, e.value))
+            }
+        }.toTypedArray()
         gameSetConfig(nativeGame, config)
     }
 

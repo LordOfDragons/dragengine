@@ -183,21 +183,53 @@ JNIEnv *env, jobject thiz, jlong pgame) {
 GameConfig::GameConfig(JNIEnv *env) :
 pEnv(env),
 
+pClsCustomProperty(env, JPATH_BASE "GameConfigCustomProperty"),
+pFldCustomPropertyKey(pClsCustomProperty.GetFieldString("key")),
+pFldCustomPropertyValue(pClsCustomProperty.GetFieldString("value")),
+
 pClsConfig(env, JPATH_BASE "GameConfig"),
 pFldCustomProfile(pClsConfig.GetFieldPointer("customProfile")),
-pFldActiveProfile(pClsConfig.GetFieldPointer("activeProfile")){
+pFldActiveProfile(pClsConfig.GetFieldPointer("activeProfile")),
+pFldCustomProperties(pClsConfig.GetFieldObjectArray(
+    "customProperties", pClsCustomProperty)){
 }
 
 jobject GameConfig::Convert(const delGame &game){
+    const decStringDictionary &customProperties = game.GetCustomProperties();
+    const int cpropCount = customProperties.GetCount();
+    const JniObjectArray objCProps(pEnv, pClsCustomProperty, cpropCount);
+    if(cpropCount > 0) {
+        const decStringList keys(customProperties.GetKeys());
+        int i;
+        for (i=0; i<cpropCount; i++){
+            const decString &key = keys[i];
+            const JniObject objCProp(pClsCustomProperty.New());
+            pFldCustomPropertyKey.Set(objCProp, key);
+            pFldCustomPropertyValue.Set(objCProp, customProperties[key]);
+            objCProps.SetAt(i, objCProp);
+        }
+    }
+
     JniObject objConfig(pClsConfig.New());
     pFldCustomProfile.Set(objConfig, game.GetCustomProfile());
     pFldActiveProfile.Set(objConfig, game.GetActiveProfile());
+    pFldCustomProperties.Set(objConfig, objCProps);
     return objConfig.ReturnValue();
 }
 
 void GameConfig::Store(jobject objConfig, delGame &game){
     game.SetCustomProfile((delGameProfile*)pFldCustomProfile.Get(objConfig));
     game.SetActiveProfile((delGameProfile*)pFldActiveProfile.Get(objConfig));
+
+    decStringDictionary &customProperties = game.GetCustomProperties();
+    const JniObjectArray objCProps(pEnv, pFldCustomProperties.Get(objConfig));
+    const int cpropCount = objCProps.GetCount();
+    int i;
+    for(i=0; i<cpropCount; i++){
+        jobject objCProp = objCProps.GetAt(i);
+        customProperties.SetAt(pFldCustomPropertyKey.Get(objCProp),
+           pFldCustomPropertyValue.Get(objCProp));
+    }
 }
 
 extern "C"

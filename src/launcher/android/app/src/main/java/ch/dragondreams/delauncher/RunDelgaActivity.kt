@@ -117,15 +117,6 @@ class RunDelgaActivity : GameActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         loadLibrary("game_activity_adapter")
         super.onCreate(savedInstanceState)
-        /*
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_run_delga)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        */
 
         shared.logInfo("RunDelgaActivity", listOf(
             "action='${intent.action}'",
@@ -133,7 +124,7 @@ class RunDelgaActivity : GameActivity(),
             "scheme='${intent.scheme}'",
             "data='${intent.data}'").joinToString(" "))
 
-        if (intent.action == "ch.dragondreams.delauncher.LAUNCH_DELGA"
+        if (intent.action == ACTION_LAUNCH_DELGA
             || intent.action == "android.intent.action.VIEW") {
             mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceCreated(holder: SurfaceHolder){
@@ -304,6 +295,13 @@ class RunDelgaActivity : GameActivity(),
         delgaGames.clear()
 
         shared.loadGameConfig()
+
+        val ownerPackage = intent.getStringExtra(EXTRA_OWNER_PACKAGE)
+        if (ownerPackage != null) {
+            shared.game?.customProperties?.put(Game.PROPERTY_OWNER_PACKAGE, ownerPackage)
+            shared.game?.storeConfig()
+        }
+
         return true
     }
 
@@ -348,5 +346,12 @@ class RunDelgaActivity : GameActivity(),
         private const val VFS_FDS_PATH = "/fds"
         private const val VFS_FDS_DELGA_FILENAME = "game.delga"
         private const val VFS_FDS_DELGA_PATH = "$VFS_FDS_PATH/$VFS_FDS_DELGA_FILENAME"
+
+        const val ACTION_LAUNCH_DELGA = "ch.dragondreams.delauncher.LAUNCH_DELGA"
+
+        const val EXTRA_OWNER_PACKAGE = "ownerPackage"
+        const val EXTRA_GAME_ID = "launchDelga.gameId"
+
+        const val MIME_TYPE_DELGA = "application/dragengine-delga"
     }
 }

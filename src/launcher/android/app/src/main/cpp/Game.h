@@ -67,9 +67,14 @@ class GameConfig {
 private:
     JNIEnv *pEnv;
 
+    JniClass pClsCustomProperty;
+    const JniFieldString pFldCustomPropertyKey;
+    const JniFieldString pFldCustomPropertyValue;
+
     JniClass pClsConfig;
     const JniFieldPointer pFldCustomProfile;
     const JniFieldPointer pFldActiveProfile;
+    const JniFieldObjectArray pFldCustomProperties;
 
 public:
     explicit GameConfig(JNIEnv *env);

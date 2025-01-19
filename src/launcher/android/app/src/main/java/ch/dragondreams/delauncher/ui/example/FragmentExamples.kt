@@ -1,16 +1,14 @@
 package ch.dragondreams.delauncher.ui.example
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import ch.dragondreams.delauncher.FileDownloader
+import ch.dragondreams.delauncher.MainActivity
 import ch.dragondreams.delauncher.PermissionRequestor
 import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.UIHelper
@@ -22,7 +20,7 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
         private val owner: FragmentExamples
     ) : AdapterExample.Listener {
         override fun onItemClick(example: Example) {
-            owner.runExample(example)
+            example.run(owner.requireActivity())
         }
 
         override fun onButtonDownload(example: Example) {
@@ -103,12 +101,6 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
         }
     }
 
-    private val examples = listOf(
-        Example("UI Example", "${BASE_URL}/DSTestProject.delga"),
-        Example("3D Example", "${BASE_URL}/DEExampleApp.delga"),
-        Example("Audio Example", "${BASE_URL}/DEAudioTest.delga")
-    )
-
     private var adapterExample: AdapterExample? = null
 
     override fun onCreateView(
@@ -120,7 +112,7 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
             (context as PermissionRequestor.Interface).getPermissionRequestor().addListener(
                 REQUEST_CODE_PERMISSION_INTERNET, this)
             initExamples()
-            adapterExample = AdapterExample(examples, ExampleListener(this))
+            adapterExample = AdapterExample(MainActivity.examples, ExampleListener(this))
             view.adapter = adapterExample
         }
         return view
@@ -145,7 +137,7 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
         val pathExamples = getExamplesDir()
         val pathDownload = getDownloadDir()
 
-        examples.forEach { e ->
+        MainActivity.examples.forEach { e ->
             e.pathInstalled = File(pathExamples, e.delgaFilename)
             e.pathDownloading = File(pathDownload, e.delgaFilename)
             e.updateState()
@@ -153,7 +145,7 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
     }
 
     private fun exampleUpdateUi(example: Example) {
-        adapterExample?.notifyItemChanged(examples.indexOf(example))
+        adapterExample?.notifyItemChanged(MainActivity.examples.indexOf(example))
     }
 
     private fun downloadExample(example: Example) {
@@ -206,40 +198,6 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
         }
     }
 
-    private fun runExample(example: Example) {
-        if (example.state != Example.State.Ready) {
-            requireActivity().runOnUiThread {
-                UIHelper.showError(requireActivity(), R.string.error_example_not_ready)
-            }
-            return
-        }
-
-        val intent = Intent()
-        intent.action = "ch.dragondreams.delauncher.LAUNCH_DELGA"
-        intent.setDataAndType(
-            FileProvider.getUriForFile(
-                requireContext().applicationContext,
-                requireContext().applicationContext.packageName + ".provider",
-                example.pathInstalled!!),
-            "application/dragengine-delga")
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.putExtra("DELGA_SELECTOR", example.delgaFilename)
-
-        //Log.i(TAG, "onCreateView: intent '${intent.action}' '${intent.categories}' '${intent.data}'")
-
-        try {
-            startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            requireActivity().runOnUiThread {
-                if (e.message != null) {
-                    UIHelper.showError(requireActivity(), e.message!!)
-                } else {
-                    UIHelper.showError(requireActivity(), R.string.error_example_run)
-                }
-            }
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int,
         permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
@@ -257,8 +215,6 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
     }
 
     companion object{
-        private val BASE_URL = "https://github.com/LordOfDragons/deexamples/releases/latest/download"
-
         val REQUEST_CODE_PERMISSION_INTERNET = PermissionRequestor.nextRequestCode()
     }
 }

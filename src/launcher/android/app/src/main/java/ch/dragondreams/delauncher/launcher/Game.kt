@@ -1,7 +1,6 @@
 package ch.dragondreams.delauncher.launcher
 
 import ch.dragondreams.delauncher.launcher.internal.Game
-import ch.dragondreams.delauncher.launcher.internal.Launcher
 
 class Game private constructor(
     val nativeGame: Game
@@ -65,6 +64,8 @@ class Game private constructor(
     var useLatestPatch = false
     var useCustomPatch = ""
     //var localPatches: MutableList<GamePatch> = ArrayList()
+
+    var customProperties: MutableMap<String, String> = mutableMapOf()
 
     private var refcount: Int = 1
 
@@ -160,5 +161,7 @@ class Game private constructor(
         private fun dropInstance(nativeGame: Game){
             mapGames.remove(nativeGame)
         }
+
+        const val PROPERTY_OWNER_PACKAGE = "android:ownerPackage"
     }
 }

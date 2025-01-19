@@ -159,6 +159,23 @@ void delGameConfigXML::pWriteConfig( decXmlWriter &writer, const delGame &game )
 		}
 	}
 	
+	const decStringDictionary &customProperties = game.GetCustomProperties();
+	if(customProperties.GetCount() > 0){
+		const decStringList keys(customProperties.GetKeys());
+		const int count = keys.GetCount();
+		int i;
+		
+		for(i=0; i<count; i++){
+			const decString &key = keys.GetAt(i);
+			
+			writer.WriteOpeningTagStart("customProperty");
+			writer.WriteAttributeString("name", key);
+			writer.WriteOpeningTagEnd(false, false);
+			writer.WriteTextString(customProperties.GetAt(key));
+			writer.WriteClosingTag("customProperty", false);
+		}
+	}
+	
 	writer.WriteClosingTag( "gameConfig", true );
 }
 
@@ -254,6 +271,9 @@ void delGameConfigXML::pReadConfig( const decXmlElementTag &root, delGame &game 
 					GetLogger()->LogException( GetLoggerSource(), e );
 				}
 			}
+			
+		}else if(tagName == "customProperty"){
+			game.GetCustomProperties().SetAt(GetAttributeString(*tag, "name"), GetCDataString(*tag));
 		}
 	}
 }
