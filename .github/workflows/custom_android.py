@@ -102,4 +102,5 @@ installer_name_engine_dev = 'install-dragengine-dev-{ReleaseVersion}-android-{An
 installer_name_igde = 'install-deigde-{ReleaseVersion}-android-{AndroidArch}'
 installer_name_igde_dev = 'install-deigde-dev-{ReleaseVersion}-android-{AndroidArch}'
 apk_name_launcher = 'DELauncher-{ReleaseVersion}-{AndroidArch}'
+android_version_code = '{AndroidVersionCode}'
 addon_name_blender = 'blender-addon-dragengine'

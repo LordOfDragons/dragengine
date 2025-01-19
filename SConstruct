@@ -284,6 +284,7 @@ params.Add(StringVariable('installer_name_igde_dev',
 
 params.Add(StringVariable('apk_name_launcher',
 	'Android Launcher APK file name without extension', 'DELauncher'))
+params.Add(StringVariable('android_version_code', 'Android version code', '99999'))
 
 
 if parent_env['OSMacOS']:

@@ -11,8 +11,9 @@ android {
         applicationId = "ch.dragondreams.delauncher"
         minSdk = 26
         targetSdk = 34
-        versionCode = 25
-        versionName = "1.25"
+
+        versionCode = findProperty("build.version.code") as Int? ?: 99999
+        versionName = findProperty("build.version.name") as String? ?: "99999"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {

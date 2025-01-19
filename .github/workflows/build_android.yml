@@ -120,6 +120,7 @@ jobs:
           sed -i -e "s@{NdkRoot}@$ANDROID_NDK_ROOT@g" custom.py
           sed -i -e 's/{AndroidArch}/${{ inputs.androidArch }}/g' custom.py
           sed -i -e 's/{AndroidApiLevel}/${{ inputs.androidApiLevel }}/g' custom.py
+          sed -i -e 's/{AndroidVersionCode}/${{ github.run_number }}/g' custom.py
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
