@@ -13,7 +13,7 @@ class GameProfile private constructor(
     private external fun gameProfileGetStatus(game: Long): GameProfileStatus
 
     fun dispose() {
-        nativeRefCount--;
+        nativeRefCount--
         if (nativeRefCount == 0){
             gameProfileRelease(nativeProfile)
             dropInstance(nativeProfile)
@@ -50,7 +50,7 @@ class GameProfile private constructor(
         config.moduleNetworkVersion = profile.moduleNetworkVersion
         config.moduleVRVersion = profile.moduleVRVersion
 
-        config.disableModuleVersions = buildList<GameProfileModuleVersion> {
+        config.disableModuleVersions = buildList {
             profile.disableModuleVersions.forEach { e ->
                 val version = GameProfileModuleVersion()
                 version.name = e.key
@@ -59,11 +59,11 @@ class GameProfile private constructor(
             }
         }.toTypedArray()
 
-        config.modules = buildList<GameProfileModule> {
+        config.modules = buildList {
             profile.modules.forEach { m ->
                 val module = GameProfileModule()
                 module.name = m.name
-                module.parameters = buildList<GameProfileModuleParameter> {
+                module.parameters = buildList {
                     m.parameters.forEach { p ->
                         val param = GameProfileModuleParameter()
                         param.name = p.key

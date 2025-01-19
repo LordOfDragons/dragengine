@@ -53,7 +53,7 @@ class FragmentEngine : Fragment() {
     fun updateViewListModulesData() {
         viewListModulesData.clear()
         if(launcher != null) {
-            viewListModulesData.addAll(launcher!!.engineModules.sortedWith(Comparator { a, b ->
+            viewListModulesData.addAll(launcher!!.engineModules.sortedWith { a, b ->
                 if (a.status == EngineModule.Status.Ready) {
                     if (b.status == EngineModule.Status.Ready) {
                         a.name.compareTo(b.name)
@@ -67,7 +67,7 @@ class FragmentEngine : Fragment() {
                         a.name.compareTo(b.name)
                     }
                 }
-            }))
+            })
         }
         viewListModules?.adapter?.notifyDataSetChanged()
     }

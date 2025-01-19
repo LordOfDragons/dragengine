@@ -20,6 +20,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="50dp"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/description_dragengine_logo"
             android:scaleType="centerInside"
             android:src="@drawable/banner_dragengine"
             app:layout_constraintEnd_toEndOf="parent"

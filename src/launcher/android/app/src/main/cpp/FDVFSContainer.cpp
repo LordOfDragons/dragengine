@@ -18,8 +18,7 @@ pModidicationTime(decDateTime::GetSystemTime()){
 // class FDVFSContainer
 /////////////////////////
 
-FDVFSContainer::FDVFSContainer(){
-}
+FDVFSContainer::FDVFSContainer() = default;
 
 FDVFSContainer::FDVFSContainer(const decPath &rootPath) : deVFSContainer(rootPath){
 }

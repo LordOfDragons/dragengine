@@ -5,8 +5,6 @@
 //////////////////
 
 GameRunParams::GameRunParams(JNIEnv *env) :
-pEnv(env),
-
 pClsParam(env, JPATH_BASE "GameRunParams"),
 pFldGameProfile(pClsParam.GetFieldPointer("gameProfile")),
 pFldRunArguments(pClsParam.GetFieldString("runArguments")),

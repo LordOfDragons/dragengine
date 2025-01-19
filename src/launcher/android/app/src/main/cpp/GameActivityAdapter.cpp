@@ -30,7 +30,7 @@ private:
 public:
     GameActivityAdapter() :
     pClsCustomEvent(nullptr),
-    pFldCustomEventType(0){
+    pFldCustomEventType(nullptr){
     }
 
     ~GameActivityAdapter() override{

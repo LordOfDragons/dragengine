@@ -82,4 +82,12 @@
     <string name="error_delete_example_file">Failed delete example file</string>
     <string name="error_example_not_ready">Example has not been downloaded yet.</string>
     <string name="error_example_run">Failed running example.</string>
+    <string name="description_download_example">Download Example</string>
+    <string name="description_delete_example">Delete Example</string>
+    <string name="description_dragengine_logo">Drag[en]gine Logo</string>
+    <string name="description_module_state_icon">Module State Icon</string>
+    <string name="description_game_icon">Game Icon</string>
+    <string name="label_examples">Examples</string>
+    <string name="label_remote_launcher">Remote Launcher</string>
+    <string name="label_logs">Logs</string>
 </resources>

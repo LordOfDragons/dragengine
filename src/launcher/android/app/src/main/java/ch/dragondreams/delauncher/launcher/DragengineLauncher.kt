@@ -433,7 +433,7 @@ class DragengineLauncher(
 
             try {
                 listenersLocked++
-                logInfo("notifyEngineModulesChanged: ${listeners.size} ${listenersLocked}")
+                logInfo("notifyEngineModulesChanged: ${listeners.size} $listenersLocked")
                 listeners.forEach { each -> each.engineModulesChanged(this) }
             } finally {
                 listenersLocked--

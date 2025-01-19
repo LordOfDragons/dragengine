@@ -32,7 +32,7 @@ class EngineModule {
         Ready,
         NotTested,
         Broken
-    };
+    }
 
     enum class ErrorCode{
         Success,
@@ -44,7 +44,7 @@ class EngineModule {
         LibFileOpenFailed,
         LibFileEntryPointNotFound,
         LibFileCreateModuleFailed
-    };
+    }
 
     var type = Type.Unknown
     var name = ""

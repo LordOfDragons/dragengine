@@ -263,7 +263,7 @@ JNIEnv *env, jobject thiz, jlong plauncher, jlong pprofile){
     JniHelpers h(env);
     try {
         Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
-        delGameProfile * const profile = (delGameProfile*)(intptr_t)pprofile;
+        auto * const profile = (delGameProfile*)(intptr_t)pprofile;
         launcher.GetGameManager().SetActiveProfile(profile);
     }catch(const deException &e){
         h.throwException(e);

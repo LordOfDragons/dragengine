@@ -20,4 +20,24 @@ data class GameConfig(
             }
         }.toMutableMap()
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GameConfig
+
+        if (customProfile != other.customProfile) return false
+        if (activeProfile != other.activeProfile) return false
+        if (!customProperties.contentEquals(other.customProperties)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = customProfile.hashCode()
+        result = 31 * result + activeProfile.hashCode()
+        result = 31 * result + customProperties.contentHashCode()
+        return result
+    }
 }

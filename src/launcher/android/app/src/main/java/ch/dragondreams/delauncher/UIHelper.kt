@@ -18,7 +18,7 @@ class UIHelper {
             try{
                 activity.startActivity(intent)
             }catch (e: Exception){
-                UIHelper.showError(activity, R.string.error_failed_open_url)
+                showError(activity, R.string.error_failed_open_url)
             }
         }
 

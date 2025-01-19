@@ -41,9 +41,9 @@ class Example(
 
     fun updateState() {
         state = if (pathInstalled?.exists() == true) {
-            Example.State.Ready
+            State.Ready
         } else {
-            Example.State.NotReady
+            State.NotReady
         }
     }
 

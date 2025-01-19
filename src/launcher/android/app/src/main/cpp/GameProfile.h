@@ -60,8 +60,6 @@ public:
 };
 
 class GameProfileStatus{
-    JNIEnv *pEnv;
-
     JniClass pClsStatus;
     const JniFieldBool pFldValid;
 

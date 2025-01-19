@@ -6,8 +6,6 @@
 class delGameRunParams;
 
 class GameRunParams {
-    JNIEnv *pEnv;
-
     JniClass pClsParam;
     const JniFieldPointer pFldGameProfile;
     const JniFieldString pFldRunArguments;

@@ -29,6 +29,40 @@ data class EngineModuleParameterInfo(
         return info
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ch.dragondreams.delauncher.launcher.internal.EngineModuleParameterInfo
+
+        if (type != other.type) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (minValue != other.minValue) return false
+        if (maxValue != other.maxValue) return false
+        if (valueStepSize != other.valueStepSize) return false
+        if (!selectionEntries.contentEquals(other.selectionEntries)) return false
+        if (category != other.category) return false
+        if (displayName != other.displayName) return false
+        if (defaultValue != other.defaultValue) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = type
+        result = 31 * result + name.hashCode()
+        result = 31 * result + description.hashCode()
+        result = 31 * result + minValue.hashCode()
+        result = 31 * result + maxValue.hashCode()
+        result = 31 * result + valueStepSize.hashCode()
+        result = 31 * result + selectionEntries.contentHashCode()
+        result = 31 * result + category
+        result = 31 * result + displayName.hashCode()
+        result = 31 * result + defaultValue.hashCode()
+        return result
+    }
+
     companion object {
         val mapType: Map<Int, EngineModuleParameterInfo.Type> = mapOf(
             0 to EngineModuleParameterInfo.Type.Boolean,

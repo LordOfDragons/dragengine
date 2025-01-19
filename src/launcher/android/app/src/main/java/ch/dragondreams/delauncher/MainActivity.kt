@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(),
     companion object {
         private const val TAG: String = "MainActivity"
 
-        private val EXAMPLES_BASE_URL = "https://github.com/LordOfDragons/deexamples/releases/latest/download"
+        private const val EXAMPLES_BASE_URL = "https://github.com/LordOfDragons/deexamples/releases/latest/download"
 
         val examples = listOf(
             Example("UI Example",

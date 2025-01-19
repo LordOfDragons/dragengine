@@ -57,7 +57,7 @@ class Launcher(owner: DragengineLauncher, view: SurfaceView?)  {
     }
 
     fun getEngineModules(): List<EngineModule>{
-        val modules = mutableListOf<EngineModule>();
+        val modules = mutableListOf<EngineModule>()
         getEngineModules(nativeLauncher).forEach { m -> modules.add(m.convert()) }
         return modules
     }

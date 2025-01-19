@@ -243,7 +243,7 @@ class FragmentRemoteLauncher(
         }
 
         try{
-            client?.connectToHost(clientName, pathDataDir, address);
+            client?.connectToHost(clientName, pathDataDir, address)
         }catch(e: Exception){
             shared?.logError("onButtonConnect", "Connect failed", e)
             requireActivity().runOnUiThread {
@@ -258,7 +258,7 @@ class FragmentRemoteLauncher(
 
     private fun onButtonDisconnect(){
         try{
-            client?.disconnectFromHost();
+            client?.disconnectFromHost()
         }catch(e: Exception){
             shared?.logError("onButtonConnect", "Connect failed", e)
             requireActivity().runOnUiThread {
@@ -434,7 +434,7 @@ class FragmentRemoteLauncher(
         }
 
         s.logInfo("startGame", "Cache application ID = '${g.identifier}'")
-        s.logInfo("startGame", "Starting game '${g.title}' using profile '${s.runParams.gameProfile?.name}'");
+        s.logInfo("startGame", "Starting game '${g.title}' using profile '${s.runParams.gameProfile?.name}'")
 
         remoteLauncherHandler = RemoteLauncherHandler(
             client!!, l, g, s.runParams, HandlerListener(this)

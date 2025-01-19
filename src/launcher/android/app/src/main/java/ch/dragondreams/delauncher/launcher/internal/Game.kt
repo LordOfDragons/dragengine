@@ -19,7 +19,7 @@ class Game private constructor(
     private external fun gameIsRunning(game: Long): Boolean
 
     fun dispose() {
-        nativeRefCount--;
+        nativeRefCount--
         if (nativeRefCount == 0){
             gameRelease(nativeGame)
             dropInstance(nativeGame)

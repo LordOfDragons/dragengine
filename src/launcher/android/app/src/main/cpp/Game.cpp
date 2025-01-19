@@ -302,28 +302,3 @@ Java_ch_dragondreams_delauncher_launcher_internal_Game_gameIsRunning(
 JNIEnv *env, jobject thiz, jlong pgame){
     return ((delGame*)pgame)->IsRunning();
 }
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_ch_dragondreams_delauncher_launcher_internal_Game_gameStopGame(
-JNIEnv *env, jobject thiz, jlong pgame){
-    JniHelpers h(env);
-    try {
-        ((delGame*)pgame)->StopGame();
-    }catch(const deException &e){
-        h.throwException(e);
-    }
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-Java_ch_dragondreams_delauncher_launcher_internal_Game_gameKillGame(
-JNIEnv *env, jobject thiz, jlong pgame){
-    JniHelpers h(env);
-    try {
-        ((delGame*)pgame)->KillGame();
-    }catch(const deException &e){
-        h.throwException(e);
-    }
-}
-

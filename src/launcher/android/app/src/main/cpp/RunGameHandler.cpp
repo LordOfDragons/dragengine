@@ -21,8 +21,6 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved){
     return JNI_VERSION_1_6;
 }
 
-#define LOGSOURCE "RunGameHandler"
-
 RunGameHandler::RunGameHandler(JNIEnv *env, Launcher *launcher, delGame *game,
     const delGameRunParams &params, jobject objListener) :
 pLauncher(launcher),

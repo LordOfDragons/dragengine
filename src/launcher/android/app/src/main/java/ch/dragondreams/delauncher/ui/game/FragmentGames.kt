@@ -83,9 +83,9 @@ class FragmentGames : Fragment() {
     fun updateViewListGamesData() {
         viewListGamesData.clear()
         if(launcher != null){
-            viewListGamesData.addAll(launcher!!.games.sortedWith(Comparator { a, b ->
+            viewListGamesData.addAll(launcher!!.games.sortedWith { a, b ->
                 a.title.compareTo(b.title)
-            }))
+            })
         }
         viewListGames?.adapter?.notifyDataSetChanged()
     }

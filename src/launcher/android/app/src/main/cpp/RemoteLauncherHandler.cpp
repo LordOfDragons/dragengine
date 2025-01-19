@@ -20,8 +20,7 @@ RunGameHandler(env, launcher, game, params, objListener),
 pClient(client){
 }
 
-RemoteLauncherHandler::~RemoteLauncherHandler(){
-}
+RemoteLauncherHandler::~RemoteLauncherHandler() = default;
 
 void RemoteLauncherHandler::GameExited(BaseGameActivityAdapter &adapter) {
 }

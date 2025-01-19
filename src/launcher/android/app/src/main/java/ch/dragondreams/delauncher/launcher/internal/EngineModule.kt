@@ -45,6 +45,56 @@ data class EngineModule(
         return module
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ch.dragondreams.delauncher.launcher.internal.EngineModule
+
+        if (type != other.type) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (author != other.author) return false
+        if (version != other.version) return false
+        if (dirName != other.dirName) return false
+        if (pattern != other.pattern) return false
+        if (priority != other.priority) return false
+        if (isFallback != other.isFallback) return false
+        if (status != other.status) return false
+        if (errorCode != other.errorCode) return false
+        if (libFileName != other.libFileName) return false
+        if (libFileSizeShould != other.libFileSizeShould) return false
+        if (libFileSizeIs != other.libFileSizeIs) return false
+        if (libFileHashShould != other.libFileHashShould) return false
+        if (libFileHashIs != other.libFileHashIs) return false
+        if (libFileEntryPoint != other.libFileEntryPoint) return false
+        if (!parameters.contentEquals(other.parameters)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = type
+        result = 31 * result + name.hashCode()
+        result = 31 * result + description.hashCode()
+        result = 31 * result + author.hashCode()
+        result = 31 * result + version.hashCode()
+        result = 31 * result + dirName.hashCode()
+        result = 31 * result + pattern.hashCode()
+        result = 31 * result + priority
+        result = 31 * result + isFallback.hashCode()
+        result = 31 * result + status
+        result = 31 * result + errorCode
+        result = 31 * result + libFileName.hashCode()
+        result = 31 * result + libFileSizeShould
+        result = 31 * result + libFileSizeIs
+        result = 31 * result + libFileHashShould.hashCode()
+        result = 31 * result + libFileHashIs.hashCode()
+        result = 31 * result + libFileEntryPoint.hashCode()
+        result = 31 * result + parameters.contentHashCode()
+        return result
+    }
+
     companion object {
         val mapType: Map<Int, EngineModule.Type> = mapOf(
             0 to EngineModule.Type.Unknown,

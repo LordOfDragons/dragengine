@@ -93,7 +93,7 @@ class RunGameShared(
             patchIdentifier = null
         }
 
-        // udpate the run parameters
+        // update the run parameters
         runParams.gameProfile = useProfile
         runParams.width = sv.width
         runParams.height = sv.height
@@ -180,7 +180,7 @@ class RunGameShared(
             }
         }
         if(!g.scriptModuleFound){
-            logModuleProblems(g.scriptModule, EngineModule.Type.Script);
+            logModuleProblems(g.scriptModule, EngineModule.Type.Script)
         }
     }
 

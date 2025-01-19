@@ -9,7 +9,7 @@ JniClass::JniClass(JNIEnv *env, const char *name, bool globalRef) :
 pEnv(env),
 pName(name),
 pClass(env->FindClass(name)),
-pMethodNew(0),
+pMethodNew(nullptr),
 pGlobalRef(globalRef)
 {
     DEASSERT_NOTNULL(pClass)
@@ -22,7 +22,7 @@ JniClass::JniClass(JNIEnv *env, jclass clazz, const char *name, bool globalRef) 
 pEnv(env),
 pName(name),
 pClass(clazz),
-pMethodNew(0),
+pMethodNew(nullptr),
 pGlobalRef(globalRef)
 {
     DEASSERT_NOTNULL(pClass)
@@ -106,8 +106,7 @@ JniObjectClass::JniObjectClass(const JniObject &object, bool globalRef) :
 JniClass(object.GetEnv(), object.GetEnv()->GetObjectClass(object), "java/lang/Object", globalRef){
 }
 
-JniObjectClass::~JniObjectClass() {
-}
+JniObjectClass::~JniObjectClass() = default;
 
 
 // JniField
@@ -115,7 +114,6 @@ JniObjectClass::~JniObjectClass() {
 
 JniField::JniField(JNIEnv *env, jclass clazz, const char *name, const char *signature) :
 pEnv(env),
-pClass(clazz),
 pId(env->GetFieldID(clazz, name, signature))
 {
     DEASSERT_NOTNULL(pId)

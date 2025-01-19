@@ -155,7 +155,7 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
     int i;
     for(i=0; i<disObjVersCount; i++){
         jobject objVer = objDisModVers.GetAt(i);
-        delGPDisableModuleVersion * const ver = new delGPDisableModuleVersion;
+        auto * const ver = new delGPDisableModuleVersion;
         ver->SetName(pFldModVerName.Get(objVer));
         ver->SetVersion(pFldModVerVersion.Get(objVer));
         profile.GetDisableModuleVersions().Add(ver);
@@ -163,9 +163,9 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
 
     const JniObjectArray objMods(pEnv, pFldProfileModules.Get(objConfig));
     const int modCount = objMods.GetCount();
-    for(i=0; i<disObjVersCount; i++) {
+    for(i=0; i<modCount; i++) {
         jobject objMod = objMods.GetAt(i);
-        delGPModule * const mod = new delGPModule;
+        auto * const mod = new delGPModule;
         mod->SetName(pFldModuleName.Get(objMod));
 
         JniObjectArray objParams(pEnv, pFldModuleParameters.Get(objMod));
@@ -173,7 +173,7 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
         int j;
         for(j=0; j<paramCount; j++){
             jobject objParam = objParams.GetAt(j);
-            delGPMParameter * const param = new delGPMParameter;
+            auto * const param = new delGPMParameter;
             param->SetName(pFldParamName.Get(objParam));
             param->SetValue(pFldParamValue.Get(objParam));
             mod->GetParameters().Add(param);
@@ -191,8 +191,6 @@ void GameProfileConfig::Store(jobject objConfig, delGameProfile &profile) {
 //////////////////////
 
 GameProfileStatus::GameProfileStatus(JNIEnv *env) :
-pEnv(env),
-
 pClsStatus(env, JPATH_BASE "GameProfileStatus"),
 pFldValid(pClsStatus.GetFieldBool("valid")){
 }

@@ -248,8 +248,6 @@ class RunDelgaActivity : GameActivity(),
                     val length = pfd.statSize
                     shared.logError("locateGame", "length=${length}")
 
-                    val fd = pfd.detachFd()
-
                     try {
                         shared.launcher?.vfsContainerAddFd(
                             "/$VFS_FDS_DELGA_FILENAME",
@@ -313,7 +311,7 @@ class RunDelgaActivity : GameActivity(),
         shared.logInfo("startGame",
             "Cache application ID = '${game.identifier}'")
         shared.logInfo("startGame",
-            "Starting game '${game.title}' using profile '${shared.runParams.gameProfile?.name}'");
+            "Starting game '${game.title}' using profile '${shared.runParams.gameProfile?.name}'")
 
         loadLibrary("run_game_handler")
         runGameHandler = RunGameHandler(shared.launcher!!, game,

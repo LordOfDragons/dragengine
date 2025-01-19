@@ -92,7 +92,7 @@ class Game private constructor(
     }
 
     fun release(){
-        refcount--;
+        refcount--
         if(refcount == 0){
             dispose()
         }
@@ -129,7 +129,7 @@ class Game private constructor(
         return activeProfile
             ?: customProfile
             ?: launcher.activeProfile
-            ?: launcher.defaultProfile;
+            ?: launcher.defaultProfile
     }
 
     /**

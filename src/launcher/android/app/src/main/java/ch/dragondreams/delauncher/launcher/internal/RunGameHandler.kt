@@ -12,7 +12,7 @@ class RunGameHandler(
         StartGame,
         GameRunning,
         GameStopped
-    };
+    }
 
     interface Listener {
         fun stateChanged(state: Int)
