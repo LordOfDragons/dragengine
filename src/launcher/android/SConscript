@@ -118,7 +118,7 @@ def gradleBuildApk(env, target, source):
 	
 	task = ['assemble']
 	
-	platform = envLauncher['platform_android']
+	platform = env['platform_android']
 	if platform == 'armv8':
 		task.append('Armv8')
 	elif platform == 'armv7':
@@ -126,18 +126,20 @@ def gradleBuildApk(env, target, source):
 	else:
 		raise Exception('unsupported platform {}'.format(platform))
 	
-	if envLauncher['with_debug']:
+	if env['with_debug']:
 		task.append('Debug')
 	else:
 		task.append('Release')
 	
 	arguments = []
 	arguments.append(''.join(task))
-	arguments.append('-Pbuild.version.code="{}"'.format(envLauncher['android_version_code']))
-	arguments.append('-Pbuild.version.name="{}-{}"'.format(
-		envLauncher['version'], envLauncher['android_version_code']))
+	arguments.append('-Pbuild.version.code="{}"'.format(env['android_version_code']))
+	arguments.append('-Pbuild.version.name="{}-{}"'.format(env['version'], env['android_version_code']))
 	
 	script.append('./gradlew {} || exit 1'.format(' '.join(arguments)))
+	print('*** SCRIPT DEBUG ***')
+	print('\n'.join(script))
+	print('*** SCRIPT DEBUG ***')
 	return 1 if os.system('\n'.join(script)) else None
 
 apk = envLauncher.Command(nodeApk, apkSources,
@@ -168,7 +170,7 @@ def gradleBuildAab(env, target, source):
 	
 	task = ['bundle']
 	
-	platform = envLauncher['platform_android']
+	platform = env['platform_android']
 	if platform == 'armv8':
 		task.append('Armv8')
 	elif platform == 'armv7':
@@ -176,7 +178,7 @@ def gradleBuildAab(env, target, source):
 	else:
 		raise Exception('unsupported platform {}'.format(platform))
 	
-	if envLauncher['with_debug']:
+	if env['with_debug']:
 		task.append('Debug')
 	else:
 		task.append('Release')
