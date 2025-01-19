@@ -21,6 +21,9 @@ if not buildLauncher:
 # parameters
 jniDir = envLauncher['ANDROID_JNIDIR']
 
+buildVersionCode = envLauncher['android_version_code']
+buildVersionName = '{}-{}'.format(envLauncher['version'], envLauncher['android_version_code'])
+
 
 # launcher sources (android project)
 apkSources = []
@@ -133,8 +136,8 @@ def gradleBuildApk(env, target, source):
 	
 	arguments = []
 	arguments.append(''.join(task))
-	arguments.append('-Pbuild.version.code="{}"'.format(env['android_version_code']))
-	arguments.append('-Pbuild.version.name="{}-{}"'.format(env['version'], env['android_version_code']))
+	arguments.append('-Pbuild.version.code="{}"'.format(buildVersionCode))
+	arguments.append('-Pbuild.version.name="{}"'.format(buildVersionName))
 	
 	script.append('./gradlew {} || exit 1'.format(' '.join(arguments)))
 	print('*** SCRIPT DEBUG ***')
@@ -183,7 +186,12 @@ def gradleBuildAab(env, target, source):
 	else:
 		task.append('Release')
 	
-	script.append('./gradlew {} || exit 1'.format(''.join(task)))
+	arguments = []
+	arguments.append(''.join(task))
+	arguments.append('-Pbuild.version.code="{}"'.format(buildVersionCode))
+	arguments.append('-Pbuild.version.name="{}"'.format(buildVersionName))
+	
+	script.append('./gradlew {} || exit 1'.format(' '.join(arguments)))
 	return 1 if os.system('\n'.join(script)) else None
 
 aab = envLauncher.Command(nodeAab, apkSources,
