@@ -536,10 +536,23 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 
 #ifdef OS_ANDROID
 void deoglRTContext::CheckConfigurationChanged(){
-	eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &pScreenWidth);
-	eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &pScreenHeight);
-	//pScreenWidth = (int)ANativeWindow_getWidth(pOSAndroid->GetNativeWindow());
-	//pScreenHeight = (int)ANativeWindow_getHeight(pOSAndroid->GetNativeWindow());
+	const decBoundary &contentRect = pOSAndroid->GetContentRect();
+	
+	const int width = contentRect.x2 - contentRect.x1;
+	const int height = contentRect.y2 - contentRect.y1;
+	
+	if(width > 0 || height > 0){
+		pScreenWidth = width;
+		pScreenHeight = height;
+		
+	}else{
+		// initial situation where content area is not known yet. use screen instead
+		eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &pScreenWidth);
+		eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &pScreenHeight);
+		
+		//pScreenWidth = (int)ANativeWindow_getWidth(pOSAndroid->GetNativeWindow());
+		//pScreenHeight = (int)ANativeWindow_getHeight(pOSAndroid->GetNativeWindow());
+	}
 }
 #endif
 

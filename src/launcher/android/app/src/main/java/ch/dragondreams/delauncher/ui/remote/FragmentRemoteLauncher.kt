@@ -442,11 +442,8 @@ class FragmentRemoteLauncher(
         GameActivityAdapter().setHandler(remoteLauncherHandler!!.nativeHandler)
 
         activity?.runOnUiThread {
-            val dv = activity?.window?.decorView
-            if(dv != null){
-                dv.systemUiVisibility += (
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            if (activity != null) {
+                UIHelper.enableSystemUIBars(requireActivity().window, false)
             }
         }
     }
@@ -477,11 +474,8 @@ class FragmentRemoteLauncher(
             remoteLauncherHandler = null
 
             activity?.runOnUiThread {
-                val dv = activity?.window?.decorView
-                if(dv != null){
-                    dv.systemUiVisibility -= (
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_FULLSCREEN)
+                if (activity != null) {
+                    UIHelper.enableSystemUIBars(requireActivity().window, true)
                 }
             }
         }

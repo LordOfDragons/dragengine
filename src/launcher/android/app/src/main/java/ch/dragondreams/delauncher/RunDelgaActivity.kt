@@ -7,7 +7,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.SurfaceHolder
-import android.view.View
+import androidx.activity.addCallback
+import ch.dragondreams.delauncher.launcher.CustomEvent
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.Game
 import ch.dragondreams.delauncher.launcher.internal.GameActivityAdapter
@@ -320,10 +321,13 @@ class RunDelgaActivity : GameActivity(),
         GameActivityAdapter().setHandler(runGameHandler!!.nativeHandler)
 
         runOnUiThread {
-            //window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            window.decorView.systemUiVisibility += (
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            onBackPressedDispatcher.addCallback(this) {
+                val event = CustomEvent()
+                event.type = CustomEvent.Type.BackButton
+                GameActivityAdapter().sendCustomEvent(event.convert())
+            }
+
+            UIHelper.enableSystemUIBars(window, false)
         }
     }
 

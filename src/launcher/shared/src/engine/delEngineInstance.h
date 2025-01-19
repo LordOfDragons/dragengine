@@ -325,6 +325,9 @@ public:
 	/** \brief App paused/resumed. */
 	virtual void SetAppPaused(bool paused);
 	
+	/** \brief Update content rect. */
+	virtual void UpdateContentRect(const decBoundary &contentRect);
+	
 	/** \brief An event processed by the application event loop. */
 	virtual void InputEvent(const android_input_buffer &inputBuffer);
 #endif

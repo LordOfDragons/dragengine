@@ -4,7 +4,11 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.view.Window
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 class UIHelper {
     companion object{
@@ -64,6 +68,32 @@ class UIHelper {
                 code(false)
             }
             builder.create().show()
+        }
+
+        fun enableSystemUIBars(window: Window, enable: Boolean) {
+            /*
+            if (enable) {
+                //window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                window.decorView.systemUiVisibility -= (
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            } else {
+                //window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                window.decorView.systemUiVisibility += (
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            }
+            */
+
+            val wic = WindowCompat.getInsetsController(window, window.decorView)
+            if (enable) {
+                wic.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+                wic.show(WindowInsetsCompat.Type.systemBars())
+
+            } else {
+                wic.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                wic.hide(WindowInsetsCompat.Type.systemBars())
+            }
         }
     }
 }

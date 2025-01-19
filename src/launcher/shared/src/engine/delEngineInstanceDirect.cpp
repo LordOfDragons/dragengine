@@ -1168,6 +1168,10 @@ void delEngineInstanceDirect::SetAppPaused(bool paused){
 	((deOSAndroid*)pEngine->GetOS())->SetAppFrozen(paused);
 }
 
+void delEngineInstanceDirect::UpdateContentRect(const decBoundary &contentRect){
+	((deOSAndroid*)pEngine->GetOS())->SetContentRect(contentRect);
+}
+
 void delEngineInstanceDirect::InputEvent(const android_input_buffer &inputBuffer){
 	const deInputSystem &inpSys = *pEngine->GetInputSystem();
 	if(!inpSys.GetIsRunning()){

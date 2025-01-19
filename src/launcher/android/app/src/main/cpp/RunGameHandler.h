@@ -47,6 +47,7 @@ public:
     void Command(BaseGameActivityAdapter &adapter, int32_t cmd) override;
     void FrameUpdate(BaseGameActivityAdapter &adapter) override;
     void InputEvent(BaseGameActivityAdapter &adapter, const android_input_buffer &inputBuffer) override;
+    void ProcessCustomEvent(BaseGameActivityAdapter &adapter, const CustomEvent &event) override;
 
     virtual void StartGame(BaseGameActivityAdapter &adapter);
     virtual void ProcessRunning(BaseGameActivityAdapter &adapter);

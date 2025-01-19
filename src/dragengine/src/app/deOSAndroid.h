@@ -33,6 +33,7 @@
 
 #include "deOS.h"
 #include "../common/string/decString.h"
+#include "../common/math/decMath.h"
 
 struct ANativeWindow;
 
@@ -89,6 +90,7 @@ private:
 	void *pHostingMainWindow;
 	void *pHostingRenderWindow;
 	bool pAppFrozen;
+	decBoundary pContentRect;
 	
 	
 	
@@ -277,6 +279,12 @@ public:
 	
 	/** \brief Set if application is frozen. */
 	void SetAppFrozen( bool frozen );
+	
+	/** \brief Content area. */
+	inline const decBoundary &GetContentRect() const{ return pContentRect; }
+	
+	/** \brief Set content area. */
+	void SetContentRect(const decBoundary &rect);
 	/*@}*/
 	
 	

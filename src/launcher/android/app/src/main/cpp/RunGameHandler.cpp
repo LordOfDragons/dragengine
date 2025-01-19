@@ -201,6 +201,11 @@ void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
 void RunGameHandler::ProcessRunning(BaseGameActivityAdapter &adapter){
     pGame->PulseChecking();
     if(pGame->IsRunning()){
+        const ARect &contentRect = adapter.GetContentRect();
+        pGame->GetEngineInstance()->UpdateContentRect(decBoundary(
+                contentRect.left, contentRect.top,
+                contentRect.right, contentRect.bottom));
+
         pGame->GetEngineInstance()->RunSingleFrameUpdate();
 
     }else{
@@ -217,7 +222,7 @@ void RunGameHandler::StopGame(BaseGameActivityAdapter &adapter) {
 }
 
 void RunGameHandler::GameExited(BaseGameActivityAdapter &adapter) {
-    adapter.QuitActivity();
+    adapter.FinishActivity();
 }
 
 void RunGameHandler::pStateChanged() {
@@ -262,6 +267,15 @@ void RunGameHandler::pCreateEngineLogger() {
     pEngineLogger->AddLogger(deLogger::Ref::New(
             new deLoggerFile(decBaseFileWriter::Ref::New(
                     diskDir->OpenFileForWriting(filePath)))));
+}
+
+void RunGameHandler::ProcessCustomEvent(BaseGameActivityAdapter &adapter, const CustomEvent &event){
+    switch(event.type){
+    case CustomEvent::Type::backButton:
+        //__android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "custom event back button");
+        adapter.FinishActivity();
+        break;
+    }
 }
 
 

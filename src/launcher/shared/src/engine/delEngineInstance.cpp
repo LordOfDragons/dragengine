@@ -99,6 +99,10 @@ void delEngineInstance::SetAppPaused(bool paused){
 	DETHROW_INFO(deeInvalidAction, "not supported");
 }
 
+void delEngineInstance::UpdateContentRect(const decBoundary &contentRect){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
 void delEngineInstance::InputEvent(const android_input_buffer &inputBuffer){
 	DETHROW_INFO(deeInvalidAction, "not supported");
 }

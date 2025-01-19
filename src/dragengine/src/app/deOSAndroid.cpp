@@ -217,8 +217,6 @@ deOSAndroid *deOSAndroid::CastToOSAndroid(){
 	return this;
 }
 
-
-
 // Android related
 ////////////////////
 
@@ -246,6 +244,10 @@ bool deOSAndroid::HasHostingRenderWindow() const{
 
 void deOSAndroid::SetAppFrozen(bool frozen){
 	pAppFrozen = frozen;
+}
+
+void deOSAndroid::SetContentRect(const decBoundary &rect){
+	pContentRect = rect;
 }
 
 

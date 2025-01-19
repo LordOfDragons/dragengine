@@ -1,26 +1,65 @@
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 #include <cstdint>
 #include <mutex>
+#include <queue>
 #include <dragengine/common/exceptions.h>
 #include <android/window.h>
 #include "GameActivityHandler.h"
+#include "CustomEvent.h"
 
-static class GameActivityAdapter : public BaseGameActivityAdapter{
+JavaVM *vJavaVM = nullptr;
+
+jint JNI_OnLoad(JavaVM *vm, void *reserved){
+    vJavaVM = vm;
+    return JNI_VERSION_1_6;
+}
+
+#define JPATH_BASE "ch/dragondreams/delauncher/launcher/internal/"
+
+class GameActivityAdapter : public BaseGameActivityAdapter{
 private:
     android_app *pApp = nullptr;
     std::mutex pMutex;
     GameActivityHandler *pHandler = nullptr;
     JNIEnv *pJniEnv = nullptr;
+    std::queue<CustomEvent> pCustomEvents;
+
+    jclass pClsCustomEvent;
+    jfieldID pFldCustomEventType;
 
 public:
-    GameActivityAdapter() = default;
+    GameActivityAdapter() :
+    pClsCustomEvent(nullptr),
+    pFldCustomEventType(0){
+    }
+
     ~GameActivityAdapter() override{
+        JNIEnv *env = nullptr;
+        vJavaVM->AttachCurrentThread(&env, nullptr);
+
         SetHandler(nullptr);
+
+        if(pClsCustomEvent) {
+            env->DeleteGlobalRef(pClsCustomEvent);
+        }
     }
 
     void SetHandler(GameActivityHandler *handler){
         std::lock_guard guard(pMutex);
         pHandler = (GameActivityHandler*)(intptr_t)handler;
+    }
+
+    void SendCustomEvent(JNIEnv *env, jobject objEvent){
+        if(!pClsCustomEvent){
+            pClsCustomEvent = (jclass)env->NewGlobalRef(env->FindClass(JPATH_BASE "CustomEvent"));
+            pFldCustomEventType = env->GetFieldID(pClsCustomEvent, "type", "I");
+        }
+
+        CustomEvent event;
+        event.type = (CustomEvent::Type)env->GetIntField(objEvent, pFldCustomEventType);
+
+        const std::lock_guard guard(pMutex);
+        pCustomEvents.push(event);
     }
 
     void GameLoop(android_app *app){
@@ -63,7 +102,15 @@ public:
                 }
             }
 
+            // process custom events
             std::lock_guard guard(pMutex);
+            while(!pCustomEvents.empty()){
+                if(pHandler){
+                    pHandler->ProcessCustomEvent(*this, pCustomEvents.front());
+                    pCustomEvents.pop();
+                }
+            }
+
             if(pHandler){
                 pHandler->FrameUpdate(*this);
             }
@@ -82,7 +129,12 @@ public:
         return pApp ? pApp->window : nullptr;
     }
 
-    void QuitActivity() override{
+    const ARect & GetContentRect() override{
+        static const ARect dummyRect{};
+        return pApp ? pApp->contentRect : dummyRect;
+    }
+
+    void FinishActivity() override{
         if(pApp) {
             GameActivity_finish(pApp->activity);
         }
@@ -130,4 +182,11 @@ JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_GameActivityAdapter_setHandler(
 JNIEnv *env, jobject thiz, jlong handler){
     vState.SetHandler((GameActivityHandler*)(intptr_t)handler);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_ch_dragondreams_delauncher_launcher_internal_GameActivityAdapter_sendCustomEvent(
+JNIEnv *env, jobject thiz, jobject pevent){
+    vState.SendCustomEvent(env, pevent);
 }

@@ -362,6 +362,9 @@ public:
 	/** \brief App paused/resumed. */
 	void SetAppPaused(bool paused) override;
 	
+	/** \brief Update content rect. */
+	void UpdateContentRect(const decBoundary &contentRect) override;
+	
 	/** \brief An event processed by the application event loop. */
 	void InputEvent(const android_input_buffer &inputBuffer) override;
 #endif
