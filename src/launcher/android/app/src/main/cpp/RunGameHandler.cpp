@@ -249,6 +249,15 @@ void RunGameHandler::InputEvent(BaseGameActivityAdapter &adapter, const android_
     }
 }
 
+void RunGameHandler::ProcessCustomEvent(BaseGameActivityAdapter &adapter, const CustomEvent &event){
+    switch(event.type){
+        case CustomEvent::Type::backButton:
+            //__android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "custom event back button");
+            adapter.FinishActivity();
+            break;
+    }
+}
+
 void RunGameHandler::pCreateEngineLogger() {
     pEngineLogger.TakeOver(new deLoggerChain);
     pEngineLogger->AddLogger(deLogger::Ref::New(new deLoggerConsole));
@@ -267,15 +276,6 @@ void RunGameHandler::pCreateEngineLogger() {
     pEngineLogger->AddLogger(deLogger::Ref::New(
             new deLoggerFile(decBaseFileWriter::Ref::New(
                     diskDir->OpenFileForWriting(filePath)))));
-}
-
-void RunGameHandler::ProcessCustomEvent(BaseGameActivityAdapter &adapter, const CustomEvent &event){
-    switch(event.type){
-    case CustomEvent::Type::backButton:
-        //__android_log_print(ANDROID_LOG_INFO, "RunGameHandler", "custom event back button");
-        adapter.FinishActivity();
-        break;
-    }
 }
 
 

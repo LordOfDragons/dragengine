@@ -168,6 +168,18 @@ class RunDelgaActivity : GameActivity(),
             return
         }
 
+        /*
+        window.decorView.setOnApplyWindowInsetsListener { _: View?, insets: WindowInsets ->
+            val systemBarsInsets = insets.getInsets(WindowInsets.Type.systemBars())
+            val statusBarHeight: Int = systemBarsInsets.top
+            val navigationBarHeight: Int = systemBarsInsets.bottom
+
+            // Pass these values to your native code
+            sendInsetsToNative(statusBarHeight, navigationBarHeight)
+            insets
+        }
+        */
+
         state = State.RunGame
         processIntentLaunchDelga()
     }

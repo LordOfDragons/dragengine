@@ -720,7 +720,9 @@ void deAndroidInput::pCenterPointer(){
 }
 
 decPoint deAndroidInput::pPointerPosition(const GameActivityPointerAxes &pointer) const{
-	return decPoint((int)(pointer.rawX + 0.5f), (int)(pointer.rawY + 0.5f));
+	// rawX and rawY seems to miss system bar offsets. the axis values seem to include them
+	//return decPoint((int)(pointer.rawX + 0.5f), (int)(pointer.rawY + 0.5f));
+	return decPoint((int)(pointer.axisValues[0] + 0.5f), (int)(pointer.axisValues[1] + 0.5f));
 }
 
 int deAndroidInput::pModifiersFromMetaState(int32_t metaState) const{
