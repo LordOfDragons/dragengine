@@ -17,6 +17,10 @@
 			"path": "src/modules/audio/openal"
 		},
 		{
+			"name": "openxr",
+			"path": "src/modules/vr/openxr"
+		},
+		{
 			"name": "basic",
 			"path": "src/modules/network/basic"
 		},
