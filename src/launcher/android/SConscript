@@ -140,9 +140,6 @@ def gradleBuildApk(env, target, source):
 	arguments.append('-Pbuild.version.name="{}"'.format(buildVersionName))
 	
 	script.append('./gradlew {} || exit 1'.format(' '.join(arguments)))
-	print('*** SCRIPT DEBUG ***')
-	print('\n'.join(script))
-	print('*** SCRIPT DEBUG ***')
 	return 1 if os.system('\n'.join(script)) else None
 
 apk = envLauncher.Command(nodeApk, apkSources,
