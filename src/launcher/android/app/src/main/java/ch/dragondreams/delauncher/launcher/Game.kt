@@ -147,15 +147,9 @@ class Game private constructor(
         private val mapGames: MutableMap<Game, ch.dragondreams.delauncher.launcher.Game> = mutableMapOf()
 
         fun getInstance(nativeGame: Game?): ch.dragondreams.delauncher.launcher.Game?{
-            var game: ch.dragondreams.delauncher.launcher.Game? = null
-            if(nativeGame != null) {
-                game = mapGames[nativeGame]
-                if (game == null) {
-                    game = Game(nativeGame)
-                    mapGames[nativeGame] = game
-                }
-            }
-            return game
+            return nativeGame?.let { ng ->
+                mapGames[ng] ?:
+                Game(ng).apply { mapGames[ng] = this } }
         }
 
         private fun dropInstance(nativeGame: Game){

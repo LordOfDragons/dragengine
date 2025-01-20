@@ -91,15 +91,9 @@ class GameProfile private constructor(
         private val mapProfiles: MutableMap<GameProfile, ch.dragondreams.delauncher.launcher.GameProfile> = mutableMapOf()
 
         fun getInstance(nativeProfile: GameProfile?): ch.dragondreams.delauncher.launcher.GameProfile?{
-            var profile: ch.dragondreams.delauncher.launcher.GameProfile? = null
-            if(nativeProfile != null) {
-                profile = mapProfiles[nativeProfile]
-                if (profile == null) {
-                    profile = GameProfile(nativeProfile)
-                    mapProfiles[nativeProfile] = profile
-                }
-            }
-            return profile
+            return nativeProfile?.let { np ->
+                mapProfiles[np] ?:
+                GameProfile(np).apply { mapProfiles[np] = this } }
         }
 
         fun createInstance(): ch.dragondreams.delauncher.launcher.GameProfile{

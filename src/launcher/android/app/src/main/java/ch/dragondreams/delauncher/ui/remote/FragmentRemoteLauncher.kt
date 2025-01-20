@@ -336,12 +336,13 @@ class FragmentRemoteLauncher(
 
     fun updateEditLogs() {
         pendingUpdateEditLogs = false
-        if(editLogs != null && !isDestroyingView) {
-            editLogs?.text = synchronized(logLines) { logLines.joinToString("\n") }
+        editLogs?.let { e ->
+            if (!isDestroyingView) {
+                e.text = synchronized(logLines) { logLines.joinToString("\n") }
 
-            requireActivity().runOnUiThread {
-                val e = editLogs!!
-                e.scrollTo(0, e.layout.getLineTop(e.lineCount) - e.height)
+                requireActivity().runOnUiThread {
+                    e.scrollTo(0, e.layout.getLineTop(e.lineCount) - e.height)
+                }
             }
         }
     }
@@ -386,7 +387,7 @@ class FragmentRemoteLauncher(
             return
         }
 
-        if(remoteLauncherHandler != null){
+        remoteLauncherHandler?.let { _ ->
             requireActivity().runOnUiThread {
                 UIHelper.showError(requireActivity(), R.string.message_game_running)
             }
@@ -437,14 +438,11 @@ class FragmentRemoteLauncher(
         s.logInfo("startGame", "Starting game '${g.title}' using profile '${s.runParams.gameProfile?.name}'")
 
         remoteLauncherHandler = RemoteLauncherHandler(
-            client!!, l, g, s.runParams, HandlerListener(this)
-        )
+            client!!, l, g, s.runParams, HandlerListener(this))
         GameActivityAdapter().setHandler(remoteLauncherHandler!!.nativeHandler)
 
         activity?.runOnUiThread {
-            if (activity != null) {
-                UIHelper.enableSystemUIBars(requireActivity().window, false)
-            }
+            activity?.window?.let { w -> UIHelper.enableSystemUIBars(w, false) }
         }
     }
 
@@ -474,9 +472,7 @@ class FragmentRemoteLauncher(
             remoteLauncherHandler = null
 
             activity?.runOnUiThread {
-                if (activity != null) {
-                    UIHelper.enableSystemUIBars(requireActivity().window, true)
-                }
+                activity?.window?.let { w -> UIHelper.enableSystemUIBars(w, true) }
             }
         }
     }

@@ -84,12 +84,12 @@ class DragengineLauncher(
     }
 
     val pathEngine = File(context.filesDir, "dragengine")
-    //val pathEngineConfig = File(context.filesDir, "dragengine-config")
-    val pathEngineConfig = File(context.getExternalFilesDir(null)!!, "dragengine-config")
+    val pathEngineConfig = File(context.filesDir, "dragengine-config")
+    //val pathEngineConfig = File(context.getExternalFilesDir(null)!!, "dragengine-config")
     val pathEngineCache = File(context.cacheDir, "dragengine")
     val pathLauncher = File(context.filesDir, "delauncher")
-    //val pathLauncherConfig = File(context.filesDir, "delauncher-config")
-    val pathLauncherConfig = File(context.getExternalFilesDir(null)!!, "delauncher-config")
+    val pathLauncherConfig = File(context.filesDir, "delauncher-config")
+    //val pathLauncherConfig = File(context.getExternalFilesDir(null)!!, "delauncher-config")
     val pathLauncherGames = File(context.filesDir, "delauncher-games")
 
     var engineVersion = ""
@@ -433,8 +433,10 @@ class DragengineLauncher(
 
             try {
                 listenersLocked++
-                logInfo("notifyEngineModulesChanged: ${listeners.size} $listenersLocked")
-                listeners.forEach { each -> each.engineModulesChanged(this) }
+                listeners.forEach { each ->
+                    each.engineModulesChanged(this)
+                    each.gamesChanged(this)
+                }
             } finally {
                 listenersLocked--
             }

@@ -90,4 +90,12 @@
     <string name="label_examples">Examples</string>
     <string name="label_remote_launcher">Remote Launcher</string>
     <string name="label_logs">Logs</string>
+    <string name="label_play">Play</string>
+    <string name="label_information">Information</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_share_logs">Share Logs</string>
+    <string name="label_support">Support</string>
+    <string name="message_run_game_unknown_source">Don\'t know how to run this game. Launch it from the respective App to update run information.</string>
+    <string name="message_fail_create_log_zip">Failed collecting log files into zip archive.</string>
+    <string name="message_failed_sharing_logs">Failed sharing logs</string>
 </resources>

@@ -156,7 +156,13 @@ void delGameManager::ApplyProfileChanges(){
 	}
 }
 
-void delGameManager::LoadGameFromDisk( delEngineInstance &instance, const decString &path, delGameList &list ){
+void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decString &path, delGameList &list){
+#ifdef OS_ANDROID
+	if(path.BeginsWith("/fds/")){
+		return; // shared files can not be read so do not spam the logs
+	}
+#endif
+	
 	deLogger &logger = *pLauncher.GetLogger();
 	delGameXML gameXML( &logger, pLauncher.GetLogSource() );
 	

@@ -229,29 +229,18 @@ class RunGameShared(
 
     fun logError(function: String, message: String){
         val m = "$function: $message"
-        if(launcher != null){
-            launcher?.logError(m)
-        }else {
-            Log.e(loggerTag, m)
-        }
+        launcher?.logError(m) ?: Log.e(loggerTag, m)
     }
 
     fun logError(function: String, message: String, exception: Exception){
         val m = "$function: $message"
-        if(launcher != null){
-            launcher?.logError(listOf(m, exception.toString(),
-                exception.stackTraceToString()).joinToString("\n"))
-        }else{
-            Log.e(loggerTag, m, exception)
-        }
+        launcher?.logError(listOf(m, exception.toString(),
+            exception.stackTraceToString()).joinToString("\n"))
+                ?: Log.e(loggerTag, m, exception)
     }
 
     fun logInfo(function: String, message: String){
         val m = "$function: $message"
-        if(launcher != null){
-            launcher?.logInfo(m)
-        }else{
-            Log.i(loggerTag, m)
-        }
+        launcher?.logInfo(m) ?: Log.i(loggerTag, m)
     }
 }

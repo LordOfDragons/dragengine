@@ -46,14 +46,8 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
                 example.moveDownloadToInstalled()
             } catch (e: Exception) {
                 owner.requireActivity().runOnUiThread {
-                    if (e.message != null) {
-                        UIHelper.showError(owner.requireActivity(), e.message!!)
-                    } else {
-                        UIHelper.showError(
-                            owner.requireActivity(),
-                            R.string.error_examples_move_file
-                        )
-                    }
+                    e.message?.let { m -> UIHelper.showError(owner.requireActivity(), m) }
+                        ?: UIHelper.showError(owner.requireActivity(), R.string.error_examples_move_file)
                 }
             }
 
@@ -71,11 +65,8 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
 
             owner.requireActivity().runOnUiThread {
                 updateUI()
-                if (exception.message != null) {
-                    UIHelper.showError(owner.requireActivity(), exception.message!!)
-                } else {
-                    UIHelper.showError(owner.requireActivity(), R.string.error_download_failed)
-                }
+                exception.message?.let { m -> UIHelper.showError(owner.requireActivity(), m) }
+                    ?: UIHelper.showError(owner.requireActivity(), R.string.error_download_failed)
             }
         }
 
@@ -154,9 +145,7 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
             else -> {}
         }
 
-        if (example.downloader != null) {
-            return
-        }
+        example.downloader?.let { _ -> return }
 
         (requireContext() as PermissionRequestor.Interface).getPermissionRequestor().requiresPermissionInternet(
             requireActivity(), FragmentRemoteLauncher.REQUEST_CODE_PERMISSION_INTERNET,
@@ -184,11 +173,8 @@ class FragmentExamples : Fragment(), PermissionRequestor.Listener {
                     try {
                         example.deleteInstalledFile()
                     } catch (e: Exception) {
-                        if (e.message != null) {
-                            UIHelper.showError(requireActivity(), e.message!!)
-                        } else {
-                            UIHelper.showError(requireActivity(), R.string.error_delete_example_file)
-                        }
+                        e.message?.let { m -> UIHelper.showError(requireActivity(), m) }
+                            ?: UIHelper.showError(requireActivity(), R.string.error_delete_example_file)
                     }
                     example.updateState()
                     requireActivity().runOnUiThread {

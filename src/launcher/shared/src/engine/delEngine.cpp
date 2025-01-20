@@ -498,10 +498,10 @@ void delEngine::ReadDelgaGameDefs( delEngineInstance &instance, const char *file
 	try{
 		instance.ReadDelgaGameDefs( filename, fileContents );
 		
-	}catch( const deException &e ){
-		pLauncher.GetLogger()->LogError( pLauncher.GetLogSource(),
-			"Engine.ReadDelgaGameDefs failed with exception" );
-		pLauncher.GetLogger()->LogException( pLauncher.GetLogSource(), e );
+	}catch(const deException &e){
+		pLauncher.GetLogger()->LogError(pLauncher.GetLogSource(),
+			"Engine.ReadDelgaGameDefs failed with exception");
+		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
 	}
 	
 	// parse file contents into game instances

@@ -86,25 +86,23 @@ class Example(
             return false
         }
 
-        val intent = Intent()
-        intent.action = RunDelgaActivity.ACTION_LAUNCH_DELGA
-        intent.setDataAndType(
-            FileProvider.getUriForFile(activity,
-                "${activity.packageName}.provider", pathInstalled!!),
-            RunDelgaActivity.MIME_TYPE_DELGA)
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.putExtra(RunDelgaActivity.EXTRA_OWNER_PACKAGE, activity.packageName)
-        intent.putExtra(RunDelgaActivity.EXTRA_GAME_ID, gameId)
+        val intent = Intent().apply {
+            action = RunDelgaActivity.ACTION_LAUNCH_DELGA
+            setDataAndType(
+                FileProvider.getUriForFile(activity,
+                    "${activity.packageName}.provider", pathInstalled!!),
+                RunDelgaActivity.MIME_TYPE_DELGA)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(RunDelgaActivity.EXTRA_OWNER_PACKAGE, activity.packageName)
+            putExtra(RunDelgaActivity.EXTRA_GAME_ID, gameId)
+        }
 
         try {
             activity.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             activity.runOnUiThread {
-                if (e.message != null) {
-                    UIHelper.showError(activity, e.message!!)
-                } else {
-                    UIHelper.showError(activity, R.string.error_example_run)
-                }
+                e.message?.let { m -> UIHelper.showError(activity, m) }
+                    ?: UIHelper.showError(activity, R.string.error_example_run)
             }
             return false
         }

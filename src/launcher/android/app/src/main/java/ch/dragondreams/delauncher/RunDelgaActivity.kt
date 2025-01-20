@@ -295,10 +295,11 @@ class RunDelgaActivity : GameActivity(),
 
         shared.loadGameConfig()
 
-        val ownerPackage = intent.getStringExtra(EXTRA_OWNER_PACKAGE)
-        if (ownerPackage != null) {
-            shared.game?.customProperties?.put(Game.PROPERTY_OWNER_PACKAGE, ownerPackage)
-            shared.game?.storeConfig()
+        intent.getStringExtra(EXTRA_OWNER_PACKAGE)?.let { p ->
+            shared.game?.let { g ->
+                g.customProperties[Game.PROPERTY_OWNER_PACKAGE] = p
+                g.storeConfig()
+            }
         }
 
         return true

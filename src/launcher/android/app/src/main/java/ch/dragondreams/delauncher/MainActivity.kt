@@ -81,9 +81,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun processIntentExtras(): Boolean {
-        val gameId = intent.getStringExtra(RunDelgaActivity.EXTRA_GAME_ID)
-        if (gameId != null) {
-            return examples.find { e -> e.gameId == gameId }?.run(this) == true
+        intent.getStringExtra(RunDelgaActivity.EXTRA_GAME_ID)?.let { id ->
+            return examples.find { e -> e.gameId == id }?.run(this) == true
         }
 
         return false

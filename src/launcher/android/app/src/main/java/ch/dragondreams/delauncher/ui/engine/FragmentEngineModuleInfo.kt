@@ -18,11 +18,10 @@ class FragmentEngineModuleInfo(
 
     override fun onStart() {
         super.onStart()
-        val dialog = dialog
-        if (dialog != null) {
+        dialog?.window?.let { w ->
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val height = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window!!.setLayout(width, height)
+            w.setLayout(width, height)
         }
     }
 

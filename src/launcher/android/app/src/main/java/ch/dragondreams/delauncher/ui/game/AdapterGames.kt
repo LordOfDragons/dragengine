@@ -2,11 +2,12 @@ package ch.dragondreams.delauncher.ui.game
 
 import android.graphics.Bitmap
 import android.util.Log
-import androidx.recyclerview.widget.RecyclerView
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import ch.dragondreams.delauncher.R
 import ch.dragondreams.delauncher.databinding.FragmentGameBinding
 import ch.dragondreams.delauncher.launcher.Game
@@ -18,6 +19,7 @@ class AdapterGames(
 ) : RecyclerView.Adapter<AdapterGames.ViewHolder>() {
     interface Listener {
         fun onItemClicked(game: Game)
+        fun onCreateContextMenu(game: Game, menu: ContextMenu)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,10 +40,9 @@ class AdapterGames(
         // or whatever. using the creator for the time being
         holder.textInfo.text = item.creator
 
-        val bitmap: Bitmap? = largestGameIconBitmap(item)
-        if(bitmap != null){
-            holder.imageLogo.setImageBitmap(bitmap)
-        }else {
+        largestGameIconBitmap(item)?.let { b ->
+            holder.imageLogo.setImageBitmap(b)
+        } ?: {
             holder.imageLogo.setImageResource(R.drawable.image_unknown)
         }
     }
@@ -76,6 +77,9 @@ class AdapterGames(
         init {
             binding.root.setOnClickListener {
                 listener.onItemClicked(entries[bindingAdapterPosition])
+            }
+            binding.root.setOnCreateContextMenuListener { menu, _, _ ->
+                listener.onCreateContextMenu(entries[bindingAdapterPosition], menu)
             }
         }
 

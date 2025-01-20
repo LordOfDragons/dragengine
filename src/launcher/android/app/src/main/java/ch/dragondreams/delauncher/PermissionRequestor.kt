@@ -47,18 +47,13 @@ class PermissionRequestor {
     fun onRequestPermissionsResult(requestCode: Int,
                                    permissions: Array<out String>,
                                    grantResults: IntArray): Boolean {
-        val ll = listeners[requestCode]
-        ll?.forEach {
-            l -> l.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
-        return ll != null
+        return listeners[requestCode]?.forEach { l ->
+            l.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        } != null
     }
 
     fun addListener(requestCode: Int, listener: Listener) {
-        val ll = listeners[requestCode]
-        if (ll != null) {
-            ll.add(listener)
-        } else {
+        listeners[requestCode]?.add(listener) ?: {
             listeners[requestCode] = mutableListOf(listener)
         }
     }
