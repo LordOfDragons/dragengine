@@ -112,6 +112,13 @@ jobs:
             libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
             flex bison gettext doxygen
       
+      - name: Generate build number
+        id: buildnumber
+        uses: onyxmueller/build-tag-number@v1
+        with:
+          token: ${{ secrets.github_token }}
+          prefix: android
+      
       - name: Init custom.py
         run: |
           cp ${{ github.workspace }}/.github/workflows/custom_android.py custom.py
@@ -120,7 +127,7 @@ jobs:
           sed -i -e "s@{NdkRoot}@$ANDROID_NDK_ROOT@g" custom.py
           sed -i -e 's/{AndroidArch}/${{ inputs.androidArch }}/g' custom.py
           sed -i -e 's/{AndroidApiLevel}/${{ inputs.androidApiLevel }}/g' custom.py
-          sed -i -e 's/{AndroidVersionCode}/${{ github.run_id }}/g' custom.py
+          sed -i -e 's/{AndroidVersionCode}/${{ steps.buildnumber.outputs.build_number }}/g' custom.py
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake
