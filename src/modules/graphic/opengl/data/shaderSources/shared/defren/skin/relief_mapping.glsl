@@ -6,7 +6,7 @@ void reliefMapping( inout vec2 tc, in vec3 normal ){
 	
 	// transform the view vector into the relief coordinate system
 	int i;
-	float scaleZ = 1 / max( pHeightRemap.x, 0.001 );
+	float scaleZ = 1.0 / max(pHeightRemap.x, 0.001);
 	vec3 direction = vec3(
 		dot( vTangent, vReflectDir ),
 		dot( vBitangent, vReflectDir ),
@@ -19,8 +19,8 @@ void reliefMapping( inout vec2 tc, in vec3 normal ){
 		// 50.0 * ( vReflectDir.z - 1.0 ) / 20.0
 		// f1 = 50.0 / 20.0 = 2.5
 		// f2 = 50.0 * -1.0 / 20.0 = -2.5
-		int linearStepCount = clamp( 50 - int( vReflectDir.z * 2.5 - 2.5 ), 1, 50 );
-		direction /= linearStepCount;
+		int linearStepCount = clamp(50 - int(vReflectDir.z * 2.5 - 2.5), 1, 50);
+		direction /= float(linearStepCount);
 	#endif
 	
 	// find first point of intersection
@@ -28,7 +28,7 @@ void reliefMapping( inout vec2 tc, in vec3 normal ){
 		vec3 end = vec3( tc, 1 ); // top
 		for( i=0; i<linearStepCount; i++ ){
 			end += direction;
-			if( texture( texHeight, end.st ).r > end.z ){
+			if(textureLod(texHeight, end.st, 0.0).r > end.z){
 				break; // ran below surface
 			}
 		}
@@ -38,7 +38,7 @@ void reliefMapping( inout vec2 tc, in vec3 normal ){
 		float rayRatio = length( direction.xy );
 		vec3 end = vec3( tc, 1 ); // top
 		for( i=0; i<coneStepCount; i++ ){
-			vec2 tap = texture( texHeight, end.st ).rg;
+			vec2 tap = textureLod(texHeight, end.st, 0.0).rg;
 			end += direction * ( tap.y * clamp( end.z - tap.x, 0, 1 ) / max( rayRatio + tap.y, 0.001 ) );
 		}
 	#endif
@@ -49,7 +49,7 @@ void reliefMapping( inout vec2 tc, in vec3 normal ){
 	for( i=0; i<binaryStepCount; i++ ){
 		direction *= vec3( 0.5 );
 		vec3 test = begin + direction;
-		if( texture( texHeight, test.st ).r > test.z ){
+		if(textureLod(texHeight, test.st, 0.0).r > test.z){
 			end = test;
 		}else{
 			begin = test;

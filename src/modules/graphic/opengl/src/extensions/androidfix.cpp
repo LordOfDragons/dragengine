@@ -36,61 +36,6 @@
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 
-
-/**
- * Wraps eglGetProcAddress returning replacement functions if not found.
- */
-__eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name ){
-	// find native method
-	__eglMustCastToProperFunctionPointerType address = eglGetProcAddress( name );
-	if( address ){
-		return address;
-	}
-	
-	// return replacement if existing otherwise return NULL
-	if( strcmp( name, "glGetBufferSubData" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glGetBufferSubData;
-		
-	}else if( strcmp( name, "glTexImage1D" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glTexImage1D;
-		
-	// }else if( strcmp( name, "glTexSubImage1D" ) == 0 ){
-	// 	return (__eglMustCastToProperFunctionPointerType)&glTexSubImage1D;
-		
-	}else if( strcmp( name, "glCompressedTexImage1D" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glCompressedTexImage1D;
-		
-// 	}else if( strcmp( name, "glFramebufferTexture" ) == 0 ){
-// 		return (__eglMustCastToProperFunctionPointerType)&glFramebufferTexture;
-		
-	}else if( strcmp( name, "glBindFragDataLocation" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glBindFragDataLocation;
-		
-	}else if( strcmp( name, "glTexBuffer" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glTexBuffer;
-		
-	}else if( strcmp( name, "glDrawElementsBaseVertex" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glDrawElementsBaseVertex;
-		
-	}else if( strcmp( name, "glDrawRangeElementsBaseVertex" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glDrawRangeElementsBaseVertex;
-		
-	}else if( strcmp( name, "glDrawElementsInstancedBaseVertex" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glDrawElementsInstancedBaseVertex;
-		
-	}else if( strcmp( name, "glQueryCounter" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glQueryCounter;
-		
-	}else if( strcmp( name, "glGetQueryObjectui64v" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glGetQueryObjectui64v;
-		
-	}else{
-		return NULL;
-	}
-}
-
-
-
 /**
  * glGetTexImage replacement.
  * 
@@ -386,6 +331,86 @@ const GLvoid *const *indices, GLsizei drawcount, const GLint *basevertex){
 		if(count[i] > 0){
 			pglDrawElementsBaseVertex(mode, count[i], type, indices[i], basevertex[i]);
 		}
+	}
+}
+
+void eglMultiDrawArrays(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawcount){
+	DEASSERT_NOTNULL(first)
+	DEASSERT_NOTNULL(count)
+	
+	GLsizei i;
+	for(i=0; i<drawcount; i++){
+		glDrawArrays(mode, first[i], count[i]);
+	}
+}
+
+void eglMultiDrawElements(GLenum mode, const GLsizei *count, GLenum type,
+const void * const *indices, GLsizei drawcount){
+	DEASSERT_NOTNULL(count)
+	DEASSERT_NOTNULL(indices)
+	
+	GLsizei i;
+	for(i=0; i<drawcount; i++){
+		glDrawElements(mode, count[i], type, indices[i]);
+	}
+}
+
+
+/**
+ * Wraps eglGetProcAddress returning replacement functions if not found.
+ */
+__eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name ){
+	// find native method
+	__eglMustCastToProperFunctionPointerType address = eglGetProcAddress( name );
+	if( address ){
+		return address;
+	}
+	
+	// return replacement if existing otherwise return NULL
+	if( strcmp( name, "glGetBufferSubData" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glGetBufferSubData;
+		
+	}else if( strcmp( name, "glTexImage1D" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glTexImage1D;
+		
+	// }else if( strcmp( name, "glTexSubImage1D" ) == 0 ){
+	// 	return (__eglMustCastToProperFunctionPointerType)&glTexSubImage1D;
+		
+	}else if( strcmp( name, "glCompressedTexImage1D" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glCompressedTexImage1D;
+		
+// 	}else if( strcmp( name, "glFramebufferTexture" ) == 0 ){
+// 		return (__eglMustCastToProperFunctionPointerType)&glFramebufferTexture;
+		
+	}else if( strcmp( name, "glBindFragDataLocation" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glBindFragDataLocation;
+		
+	}else if( strcmp( name, "glTexBuffer" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glTexBuffer;
+		
+	}else if( strcmp( name, "glDrawElementsBaseVertex" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glDrawElementsBaseVertex;
+		
+	}else if( strcmp( name, "glDrawRangeElementsBaseVertex" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glDrawRangeElementsBaseVertex;
+		
+	}else if( strcmp( name, "glDrawElementsInstancedBaseVertex" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glDrawElementsInstancedBaseVertex;
+		
+	}else if( strcmp( name, "glQueryCounter" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glQueryCounter;
+		
+	}else if( strcmp( name, "glGetQueryObjectui64v" ) == 0 ){
+		return (__eglMustCastToProperFunctionPointerType)&glGetQueryObjectui64v;
+		
+	}else if(strcmp(name, "glMultiDrawArrays") == 0){
+		return (__eglMustCastToProperFunctionPointerType)&eglMultiDrawArrays;
+		
+	}else if(strcmp(name, "glMultiDrawElements") == 0){
+		return (__eglMustCastToProperFunctionPointerType)&eglMultiDrawElements;
+		
+	}else{
+		return nullptr;
 	}
 }
 

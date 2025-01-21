@@ -936,9 +936,9 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
 	
 	// no opengl version: 2.0 stuff
-	// !!! OS_ANDROID => these two calls do not exist and have to be emulated
-	pGetRequiredFunction( (void**)&pglMultiDrawArrays, "glMultiDrawArrays" );
-	pGetRequiredFunction( (void**)&pglMultiDrawElements, "glMultiDrawElements" );
+	// opengl es is missing these functions. emulated in androidfix.cpp
+	pGetRequiredFunction((void**)&pglMultiDrawArrays, "glMultiDrawArrays");
+	pGetRequiredFunction((void**)&pglMultiDrawElements, "glMultiDrawElements");
 	
 	// GL_ARB_copy_buffer : no opengl version
 	#ifdef OS_ANDROID

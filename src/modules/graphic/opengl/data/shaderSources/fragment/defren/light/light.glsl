@@ -726,7 +726,7 @@ void main( void ){
 		float dist = length( lightDir );
 		
 		// discard if pre-lit (length = 0) or outside the light range
-		if( dist == 0 || dist > pLightRange ){
+		if(dist == 0.0 || dist > pLightRange){
 			outputUnlit();
 			return;
 		}
@@ -1054,20 +1054,20 @@ void main( void ){
 				#ifdef TEXTURE_SHADOW1_TRANSPARENT
 					#ifdef SMA1_CUBE
 						transpShadow = evaluateShadowCube( texShadow1TransparentDepth, pShadow1Transparent, shapos1 );
-						transpColor = texture( texShadow1TransparentColor, shapos1.stp );
+						transpColor = textureLod(texShadow1TransparentColor, shapos1.stp, 0.0);
 					#else
 						transpShadow = evaluateShadow2D( texShadow1TransparentDepth, pShadow1Transparent, ES2D( shapos1 ) );
-						transpColor = texture( texShadow1TransparentColor, shapos1.st );
+						transpColor = textureLod(texShadow1TransparentColor, shapos1.st, 0.0);
 					#endif
 					shadowColor *= mix( vec3( 1.0 ), transpColor.rgb, vec3( ( 1.0 - transpShadow ) * transpColor.a ) );
 				#endif
 				#ifdef TEXTURE_SHADOW2_TRANSPARENT
 					#ifdef SMA2_CUBE
 						transpShadow = evaluateShadowCube( texShadow2TransparentDepth, pShadow2Transparent, shapos2 );
-						transpColor = texture( texShadow2TransparentColor, shapos2.stp );
+						transpColor = textureLod(texShadow2TransparentColor, shapos2.stp, 0.0);
 					#else
 						transpShadow = evaluateShadow2D( texShadow2TransparentDepth, pShadow2Transparent, ES2D( shapos2 ) );
-						transpColor = texture( texShadow2TransparentColor, shapos2.st );
+						transpColor = textureLod(texShadow2TransparentColor, shapos2.st, 0.0);
 					#endif
 					shadowColor *= mix( vec3( 1.0 ), transpColor.rgb, vec3( ( 1.0 - transpShadow ) * transpColor.a ) );
 				#endif
