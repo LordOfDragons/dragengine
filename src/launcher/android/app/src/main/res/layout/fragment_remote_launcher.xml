@@ -121,6 +121,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
+        android:contentDescription="@string/label_logs"
         android:fadeScrollbars="false"
         android:hint="@string/label_logs"
         android:scrollbarAlwaysDrawVerticalTrack="true"
