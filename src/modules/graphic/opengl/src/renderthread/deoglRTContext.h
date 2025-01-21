@@ -105,7 +105,7 @@ class deoglRTContext{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	static const int MaxCompileContextCount = 4; //8;
+	static const int MaxCompileContextCount = 8;
 	int pCompileContextCount;
 	
 	
