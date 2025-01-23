@@ -13,12 +13,9 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-oalversion = '1.24.1'
+oalversion = '1.24.2'
 
-if envLibrary['platform_android'] != 'no' and False:
-	srcdir = 'android-libopenalsoft-1.0.0'
-else:
-	srcdir = 'openal-soft-{}'.format(oalversion)
+srcdir = 'openal-soft-{}'.format(oalversion)
 
 if envLibrary['OSWindows']:
 	libFileName = 'bin/OpenAL32.dll'
