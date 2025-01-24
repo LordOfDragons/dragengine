@@ -69,6 +69,7 @@ class CActionActorSpeak extends ConversationAction
 	var Array pEyesLookAts
 	var bool pUseSpeechAnimation
 	var float pMinSpeechTime
+	var float pMissingPhonemeLength
 	
 	
 	
@@ -81,7 +82,8 @@ class CActionActorSpeak extends ConversationAction
 		pHeadLookAts = Array.new()
 		pEyesLookAts = Array.new()
 		pUseSpeechAnimation = true
-		pMinSpeechTime = 0.0
+		pMinSpeechTime = 0
+		pMissingPhonemeLength = 0.08
 	end
 	
 	/** \brief Read from file. */
@@ -239,6 +241,22 @@ class CActionActorSpeak extends ConversationAction
 		pMinSpeechTime = DEMath.max(minSpeechTime, 0.0)
 	end
 	
+	/**
+	 * \brief Length to use for missing phoneme.
+	 * \version 1.25
+	 */
+	func float getMissingPhonemeLength()
+		return pMissingPhonemeLength
+	end
+	
+	/**
+	 * \brief Set length to use for missing phoneme.
+	 * \version 1.25
+	 */
+	func void setMissingPhonemeLength(float length)
+		pMissingPhonemeLength = DEMath.max(length, 0.001)
+	end
+	
 	
 	
 	/** \brief Visits all words. */
@@ -252,6 +270,14 @@ class CActionActorSpeak extends ConversationAction
 			throw EInvalidParam.new()
 		end
 		pWords.add(word)
+	end
+	
+	/**
+	 * \brief Remove all words.
+	 * \version 1.25
+	 */
+	func void removeAllWords()
+		pWords.removeAll()
 	end
 	
 	
@@ -269,6 +295,14 @@ class CActionActorSpeak extends ConversationAction
 		pFacePoses.add(facePose)
 	end
 	
+	/**
+	 * \brief Remove all face poses.
+	 * \version 1.25
+	 */
+	func void removeAllFacePoses()
+		pFacePoses.removeAll()
+	end
+	
 	
 	
 	/** \brief Visits all gestures. */
@@ -282,6 +316,14 @@ class CActionActorSpeak extends ConversationAction
 			throw EInvalidParam.new()
 		end
 		pGestures.add(gesture)
+	end
+	
+	/**
+	 * \brief Remove all gestues.
+	 * \version 1.25
+	 */
+	func void removeAllGestures()
+		pGestures.removeAll()
 	end
 	
 	
@@ -299,6 +341,14 @@ class CActionActorSpeak extends ConversationAction
 		pBodyLookAts.add(lookAt)
 	end
 	
+	/**
+	 * \brief Remove all body look-at.
+	 * \version 1.25
+	 */
+	func void removeAllBodyLookAt()
+		pBodyLookAts.removeAll()
+	end
+	
 	
 	
 	/** \brief Visits all head look-ats. */
@@ -314,6 +364,14 @@ class CActionActorSpeak extends ConversationAction
 		pHeadLookAts.add(lookAt)
 	end
 	
+	/**
+	 * \brief Remove all head look-at.
+	 * \version 1.25
+	 */
+	func void removeAllHeadLookAt()
+		pHeadLookAts.removeAll()
+	end
+	
 	
 	
 	/** \brief Visits all eyes look-ats. */
@@ -327,6 +385,14 @@ class CActionActorSpeak extends ConversationAction
 			throw EInvalidParam.new()
 		end
 		pEyesLookAts.add(lookAt)
+	end
+	
+	/**
+	 * \brief Remove all eye look-at.
+	 * \version 1.25
+	 */
+	func void removeAllEyeLookAt()
+		pEyesLookAts.removeAll()
 	end
 	
 	
@@ -389,7 +455,7 @@ class CActionActorSpeak extends ConversationAction
 		end
 		
 		if sound == null
-			return 0.0
+			return 0
 		end
 		
 		playVoiceAudio(actor, sound)
@@ -402,11 +468,11 @@ class CActionActorSpeak extends ConversationAction
 	 */
 	func float executeSpeechAnimation(ConversationPlayback playback, ConversationActor actor)
 		if pWords.getCount() == 0
-			return 0.0
+			return 0
 		end
 		
 		var SpeechAnimationPlayback speechPlayback = actor.getSpeechAnimationPlayback()
-		var float sanimLength = 0.0
+		var float sanimLength = 0
 		
 		if speechPlayback == null or speechPlayback.getSpeechAnimation() == null
 			var int count = pWords.getCount()
@@ -442,7 +508,7 @@ class CActionActorSpeak extends ConversationAction
 				if pauseLen > 0.01
 					// add pause. if the pause is added as single empty phoneme a long pause
 					// leads to strange gaping motion. this is due to blending from phoneme
-					// to phoneme. this is counteded by adding short empty phoneme at the
+					// to phoneme. this is countered by adding short empty phoneme at the
 					// appropriate end to protect the long pause
 					if word == wordFirst
 						if pauseLen > 0.15
@@ -490,13 +556,13 @@ class CActionActorSpeak extends ConversationAction
 				else
 					phonetics = saword.getPhonetics()
 					length = phonetics.getLength()
-					scaling = 0.0
+					scaling = 0
 					
 					for i = 0 to length
 						saphoneme = sanimation.getPhonemeWithIPA(phonetics.getCharacterAt(i))
 						
 						if saphoneme == null
-							scaling += 0.08
+							scaling += pMissingPhonemeLength
 							
 						else
 							scaling += saphoneme.getLength()
@@ -510,7 +576,7 @@ class CActionActorSpeak extends ConversationAction
 						saphoneme = sanimation.getPhonemeWithIPA(phonetics.getCharacterAt(i))
 						
 						if saphoneme == null
-							speechPlayback.addPhoneme(null, 0.08 * scaling)
+							speechPlayback.addPhoneme(null, pMissingPhonemeLength * scaling)
 							
 						else
 							speechPlayback.addPhoneme(saphoneme, saphoneme.getLength() * scaling)

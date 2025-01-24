@@ -1,0 +1,159 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.ConversationSystem
+
+
+/**
+ * \brief Simple conversation action.
+ * \version 1.25
+ * 
+ * Defines an action in a snippet. Most of the time actions are actor and speak type.
+ */
+class SimpleConversationAction
+	/**
+	 * \brief Action type.
+	 */
+	enum Type
+		/**
+		 * \brief Switch actor.
+		 * 
+		 * Activates the camera assigned to the actor. This action does not yet make the actor
+		 * speak. It only sets up the camera and parameters for upcoming speak actions.
+		 * 
+		 * Uses getTarget() as identifier into the SimpleConversation actor list.
+		 */
+		actor
+		
+		/**
+		 * \brief Actor speaking.
+		 * 
+		 * Speaks text with the parameters of the last activated actor. All speak actions
+		 * up to the next actor, camera, or command action are played back as one
+		 * \ref CActionActorSpeak.
+		 */
+		speak
+		
+		/**
+		 * \brief Play gesture.
+		 * 
+		 * Adds gesture to chain of speak actions. The gesture is inserted to play at the
+		 * time location of all previous speak actions summed together.
+		 * 
+		 * Uses getTarget() as gesture identifier into the currently active ConversationActor.
+		 */
+		gesture
+		
+		/**
+		 * \brief Game or actor command.
+		 * 
+		 * Uses getTarget() as identifier into the SimpleConversation command list.
+		 */
+		command
+	end
+	
+	
+	var Type pType
+	var StringID pTarget
+	var UnicodeString pText, pAnimText
+	
+	
+	/** \brief Create simple conversation action. */
+	func new(Type type)
+		if type == null
+			throw ENullPointer.new("type")
+		end
+		pType = type
+	end
+	
+	/** \brief Create copy of simple conversation action. */
+	func new(SimpleConversationAction action)
+		pType = action.pType
+		pTarget = action.pTarget
+		pText = action.pText
+		pAnimText = action.pAnimText
+	end
+	
+	
+	/** \brief Type. */
+	func Type getType()
+		return pType
+	end
+	
+	/**
+	 * \brief Target.
+	 * 
+	 * - \ref Type#speak: Identifier of actor or null to stick to the active one.
+	 * - \ref Type#gesture: Identifier of gesture.
+	 * - other types: Not used and is null
+	 */
+	func StringID getTarget()
+		return pTarget
+	end
+	
+	/**
+	 * \brief Set target.
+	 * \see #getTarget()
+	 */
+	func void setTarget(StringID target)
+		pTarget = target
+	end
+	
+	/**
+	 * \brief Text.
+	 * 
+	 * Used for \ref Type#speak type only otherwise null.
+	 */
+	func UnicodeString getText()
+		return pText
+	end
+	
+	/**
+	 * \brief Set text.
+	 * \see #getText()
+	 */
+	func void setText(UnicodeString text)
+		pText = text
+	end
+	
+	/**
+	 * \brief Speech animation text or null.
+	 * 
+	 * Used for \ref Type#speak type only otherwise null. If not null this is the text used
+	 * for doing speech animation while \ref #getText() is used for the text box display.
+	 * This is used if \ref #getText() representing tag resolved text. Such text does not
+	 * make sense for speech animation. The speech animation text fixes this.
+	 */
+	func UnicodeString getAnimText()
+		return pAnimText
+	end
+	
+	/**
+	 * \brief Set speech animation text or null.
+	 * \see #getAnimText()
+	 */
+	func void setAnimText(UnicodeString text)
+		pAnimText = text
+	end
+end

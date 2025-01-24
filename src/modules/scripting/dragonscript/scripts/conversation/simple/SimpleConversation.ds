@@ -1,0 +1,228 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.ConversationSystem
+
+
+/**
+ * \brief Simple conversation.
+ * \version 1.25
+ * 
+ * Simple conversations allow to define quickly a conversation for use with the conversation
+ * system which is based on a simplified XML file. Regular conversations are powerful but
+ * can be tedious and time consuming for simple conversations which are not important nor
+ * complex. In a simple conversation the actors and the text they are speaking is mainly
+ * defined. Between switching actors talking random camera shot changes are added. Furthermore
+ * simple gestures can be easily defined right inside the text. See
+ * \ref LoadSave.LoadSimpleConversation for an example XML definition.
+ */
+class SimpleConversation
+	var String pPathFile
+	var Dictionary pCameras, pActors, pCommands, pSnippets
+	
+	
+	/** \brief Create simple conversation. */
+	func new(String pathFile)
+		pPathFile = pathFile
+		pCameras = Dictionary.new()
+		pActors = Dictionary.new()
+		pCommands = Dictionary.new()
+		pSnippets = Dictionary.new()
+	end
+	
+	/** \brief Create deep copy of simple conversation. */
+	func new(SimpleConversation conversation)
+		pPathFile = conversation.pPathFile
+		pCameras = conversation.pCameras.map(block SimpleConversationCamera each
+			return SimpleConversationCamera.new(each)
+		end)
+		pActors = conversation.pActors.map(block SimpleConversationActor each
+			return SimpleConversationActor.new(each)
+		end)
+		pCommands = conversation.pCommands.map(block SimpleConversationCommand each
+			return SimpleConversationCommand.new(each)
+		end)
+		pSnippets = conversation.pSnippets.map(block SimpleConversationSnippet each
+			return SimpleConversationSnippet.new(each)
+		end)
+	end
+	
+	
+	/** \brief Path simple conversation has been loaded from or null if manually build. */
+	func String getPathFile()
+		return pPathFile
+	end
+	
+	
+	/** \brief Count of cameras. */
+	func int getCameraCount()
+		return pCameras.getCount()
+	end
+	
+	/** \brief Camera with identifier or null. */
+	func SimpleConversationCamera getCameraWith(StringID identifier)
+		return pCameras.getAt(identifier, null) cast SimpleConversationCamera
+	end
+	
+	/**
+	 * \brief Visit cameras with block.
+	 * 
+	 * Block is required to have signature void(SimpleConversationCamera camera) or
+	 * void(int index, SimpleConversationCamera camera).
+	 */
+	func void forEachCamera(Block ablock)
+		pCameras.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Add camera.
+	 * 
+	 * If camera with same name exists it is replaced.
+	 */
+	func void addCamera(SimpleConversationCamera camera)
+		if camera == null
+			throw ENullPointer.new("camera")
+		end
+		pCameras.setAt(camera.getId(), camera)
+	end
+	
+	
+	/** \brief Count of actors. */
+	func int getActorCount()
+		return pActors.getCount()
+	end
+	
+	/** \brief Actor with identifier or null. */
+	func SimpleConversationActor getActorWith(StringID identifier)
+		return pActors.getAt(identifier, null) cast SimpleConversationActor
+	end
+	
+	/**
+	 * \brief Visit actors with block.
+	 * 
+	 * Block is required to have signature void(SimpleConversationActor actor) or
+	 * void(int index, SimpleConversationActor actor).
+	 */
+	func void forEachActor(Block ablock)
+		pActors.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Add actor.
+	 * 
+	 * If actor with same name exists it is replaced.
+	 */
+	func void addActor(SimpleConversationActor actor)
+		if actor == null
+			throw ENullPointer.new("actor")
+		end
+		pActors.setAt(actor.getId(), actor)
+	end
+	
+	
+	/** \brief Count of commands. */
+	func int getCommandCount()
+		return pCommands.getCount()
+	end
+	
+	/** \brief Command with identifier or null. */
+	func SimpleConversationCommand getCommandWith(StringID identifier)
+		return pCommands.getAt(identifier, null) cast SimpleConversationCommand
+	end
+	
+	/**
+	 * \brief Visit commands with block.
+	 * 
+	 * Block is required to have signature void(SimpleConversationCommand command) or
+	 * void(int index, SimpleConversationCommand command).
+	 */
+	func void forEachCommand(Block ablock)
+		pCommands.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Add command.
+	 * 
+	 * If command with same name exists it is replaced.
+	 */
+	func void addCommand(SimpleConversationCommand command)
+		if command == null
+			throw ENullPointer.new("command")
+		end
+		pCommands.setAt(command.getId(), command)
+	end
+	
+	
+	/** \brief Count of snippets. */
+	func int getSnippetCount()
+		return pSnippets.getCount()
+	end
+	
+	/** \brief Snippet with identifier or null. */
+	func SimpleConversationSnippet getSnippetWith(StringID identifier)
+		return pSnippets.getAt(identifier, null) cast SimpleConversationSnippet
+	end
+	
+	/**
+	 * \brief Visit snippets with block.
+	 * 
+	 * Block is required to have signature void(SimpleConversationSnippet snippet) or
+	 * void(int index, SimpleConversationSnippet snippet).
+	 */
+	func void forEachSnippet(Block ablock)
+		pSnippets.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Add snippet.
+	 * 
+	 * If snippet with same name exists it is replaced.
+	 */
+	func void addSnippet(SimpleConversationSnippet snippet)
+		if snippet == null
+			throw ENullPointer.new("snippet")
+		end
+		pSnippets.setAt(snippet.getId(), snippet)
+	end
+	
+	
+	/**
+	 * \brief Import simple conversation.
+	 * \warning Imported elements are shared. Do not change them.
+	 */
+	func void import(SimpleConversation conversation)
+		conversation.forEachCamera(block SimpleConversationCamera each
+			pCameras.setAt(each.getId(), each)
+		end)
+		conversation.forEachActor(block SimpleConversationActor each
+			pActors.setAt(each.getId(), each)
+		end)
+		conversation.forEachCommand(block SimpleConversationCommand each
+			pCommands.setAt(each.getId(), each)
+		end)
+		conversation.forEachSnippet(block SimpleConversationSnippet each
+			pSnippets.setAt(each.getId(), each)
+		end)
+	end
+end

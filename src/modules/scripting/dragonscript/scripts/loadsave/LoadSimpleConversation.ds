@@ -1,0 +1,370 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Utils
+pin Dragengine.XML
+pin Dragengine.Gui.Events
+
+/**
+ * \brief Load simple conversation from XML file.
+ * \version 1.25
+ * \see SimpleConversation
+ * 
+ * The following example shows how a simple conversation definition looks like:
+ * 
+ * \code{.xml}
+ * <simpleConversation>
+ *   <!-- Import another simple conversation. Typically used to share basic configs -->
+ *   <import>shared.desconvo</import>
+ * 
+ *   <!-- Camera configurations -->
+ *   <camera id='left'>
+ *      <!-- Randomly picks an entry from all presents tags -->
+ *      <delay>0.25</delay> <!-- action delay to assign -->
+ * 
+ *      <!-- Play specific camera shot. Use cameraTarget and lookAtTarget
+ *           if required by selected camera shot -->
+ *      <cameraShot cameraTarget='...' lookAtTarget='...'>ots medium left</cameraShot>
+ * 
+ *      <!-- Run snippet with topic from topic group -->
+ *      <snippet group='dynamic cameras'>dynamic camera left</snippet>
+ * 
+ *      <!-- Run game command -->
+ *      <command>dynamic camera left</command>
+ * 
+ *      <!-- Run actor command -->
+ *      <command actor='player'>dynamic camera left</command>
+ *   </camera>
+ * 
+ *   <!-- Initial configuration for 'actor' tags -->
+ *   <actor id='player'>
+ *      <actorId>player</actorId> <!-- ConversationActor id or alias -->
+ *      <camera>left</camera>
+ *      <delay>0.25</delay> <!-- action delay to assign -->
+ *      <prolongLastGesture>0.25</prolongLastGesture> <!-- prolong last gesture to look better -->
+ *   </actor>
+ * 
+ *   <actor id='player.think'>
+ *      <actorId>player</actorId>
+ *      <camera>left</camera>
+ *      <style>think</style>
+ *      <useSpeechAnimation>false</useSpeechAnimation>
+ * 
+ *      <!-- Multiple gestures can be defined played one after the other -->
+ *      <gesture>begin think</gesture>
+ *      <gesture>loop think</gesture>
+ *   </actor>
+ * 
+ *   <actor id='npc'>
+ *      <actorId>npc</actorId>
+ *      <camera>right</camera>
+ *   </actor>
+ * 
+ *   <!-- Commands for 'command' tags. Can be game or actor command. -->
+ *   <command id='show hint use smartphone'>
+ *      <actorId>player</actorId> <!-- ConversationActor id or alias or null -->
+ *      <command>showHint useSmartphone</command>
+ *   </actor>
+ * 
+ *   <!-- Conversation snippets. These can be trigged using their id.
+ *   Content works like HTML text with tags triggering changes. -->
+ *   <snippet id='example convo'>
+ *      <actor id='player'/>
+ *         <gesture id='hello'/> Hi there <tag anim='somebody'>{npcName}</tag>! How are you?
+ *      <actor id='npc'/>
+ *         <gesture id='hello'/> Oh, hi there.<br/>
+ *         I didn't notice you coming in?<br/>
+ *         Have you read my eMail?
+ *      <actor id='player.think'/>
+ *         EMail? I guess I should check my smartphone.
+ *      <command id='show hint use smartphone'/>
+ * 
+ *      <!--
+ *      Some tags support a condensed form to make the conversation easier to read
+ * 
+ *      <actor id='player'/> = <a i='player'/>
+ *      <gesture id='hello'/> = <g i='hello'/>
+ *      <tag anim='somebody'>{npcName}</tag> = <t a='somebody'>{npcName}</t>
+ *      -->
+ *   </snippet>
+ * </simleConversation>
+ * \endcode
+ */
+class LoadSimpleConversation extends BaseXmlLoader
+	var Dictionary pConversations
+	
+	
+	/** \brief Create loader. */
+	func new(Console console) this(console, "LoadSimpleConversation")
+	end
+	
+	/** \brief Create loader. */
+	func new(Console console, String name) super(console, name)
+		pConversations = Dictionary.new()
+	end
+	
+	
+	/**
+	 * \brief Load simple conversation from file.
+	 * \warning Loaded simple conversation is shared. Do not change it.
+	 */
+	func SimpleConversation loadFromFile(String filename)
+		var SimpleConversation conversation =\
+			pConversations.getAt(filename, null) cast SimpleConversation
+		if conversation != null
+			return conversation
+		end
+		
+		return loadAndParseRootTag(filename, "simpleConversation", block EasyXMLElement root
+			conversation = SimpleConversation.new(filename)
+			readConversation(root, conversation, File.new(filename).getParent().getPath())
+			pConversations.setAt(filename, conversation)
+			return conversation
+		end) cast SimpleConversation
+	end
+	
+	/**
+	 * \brief Load simple conversations from file matching pattern.
+	 * \warning Loaded simple conversations are shared. Do not change it.
+	 * 
+	 * Scans directory files for files matching pattern. Matching files are loaded using
+	 * \ref #loadFromFile(). Loaded simple conversations are then added to the list.
+	 */
+	func void loadWithPattern(Array list, String directory, String pattern, bool recursive)
+		FileSystem.searchFiles(directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern(File.new(each).getName(), pattern)
+				list.add(loadFromFile(each))
+			end
+			return true
+		end)
+	end
+	
+	
+	protected func void readConversation(EasyXMLElement root, SimpleConversation conversation, String basePath)
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("import")
+				var String filename = element.getFirstCData()
+				try
+					conversation.import(loadFromFile(File.absolutePath(filename, basePath).getPath()))
+					
+				catch Exception e
+					logLoadFileFailed(element, filename)
+					throw
+				end
+				
+			elif tagName.equals("camera")
+				conversation.addCamera(readCamera(element))
+				
+			elif tagName.equals("actor")
+				conversation.addActor(readActor(element))
+				
+			elif tagName.equals("command")
+				conversation.addCommand(readCommand(element))
+				
+			elif tagName.equals("snippet")
+				conversation.addSnippet(readSnippet(element))
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+	end
+	
+	protected func SimpleConversationCamera readCamera(EasyXMLElement root)
+		var SimpleConversationCamera camera = SimpleConversationCamera.new(\
+			StringID.new(root.getAttributeNamed("id")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("cameraShot")
+				var SimpleConversationCameraShot shot = SimpleConversationCameraShot.new(\
+					SimpleConversationCameraShot.Type.cameraShot)
+				shot.setTarget(StringID.new(element.getFirstCData()))
+				
+				if element.hasAttributeNamed("cameraTarget")
+					shot.setCameraTarget(StringID.new(element.getAttributeNamed("cameraTarget")))
+				end
+				
+				if element.hasAttributeNamed("lookAtTarget")
+					shot.setLookAtTarget(StringID.new(element.getAttributeNamed("lookAtTarget")))
+				end
+				
+				camera.addShot(shot)
+				
+			elif tagName.equals("snippet")
+				var SimpleConversationCameraShot shot = SimpleConversationCameraShot.new(\
+					SimpleConversationCameraShot.Type.snippet)
+				shot.setTarget(StringID.new(element.getFirstCData()))
+				shot.setSubTarget(StringID.new(element.getAttributeNamed("group")))
+				camera.addShot(shot)
+				
+			elif tagName.equals("command")
+				var SimpleConversationCameraShot shot = SimpleConversationCameraShot.new(\
+					SimpleConversationCameraShot.Type.command)
+				if element.hasAttributeNamed("actor")
+					shot.setTarget(StringID.new(element.getAttributeNamed("actor")))
+				end
+				shot.setCommand(element.getFirstCData())
+				camera.addShot(shot)
+				
+			elif tagName.equals("delay")
+				camera.setDelay(element.getFirstCDataFloat())
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return camera
+	end
+	
+	protected func SimpleConversationActor readActor(EasyXMLElement root)
+		var SimpleConversationActor actor = SimpleConversationActor.new(\
+			StringID.new(root.getAttributeNamed("id")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actorId")
+				actor.setActorId(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("camera")
+				actor.setCamera(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("style")
+				actor.setStyle(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("gesture")
+				actor.addGesture(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("delay")
+				actor.setDelay(element.getFirstCDataFloat())
+				
+			elif tagName.equals("prolongLastGesture")
+				actor.setProlongLastGesture(element.getFirstCDataFloat())
+				
+			elif tagName.equals("useSpeechAnimation")
+				actor.setUseSpeechAnimation(element.getFirstCDataBool())
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return actor
+	end
+	
+	protected func SimpleConversationCommand readCommand(EasyXMLElement root)
+		var SimpleConversationCommand command = SimpleConversationCommand.new(\
+			StringID.new(root.getAttributeNamed("id")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actorId")
+				command.setActorId(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("command")
+				command.setCommand(element.getFirstCData())
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return command
+	end
+	
+	protected func SimpleConversationSnippet readSnippet(EasyXMLElement root)
+		var SimpleConversationSnippet snippet = SimpleConversationSnippet.new(\
+			StringID.new(root.getAttributeNamed("id")))
+		var SimpleConversationAction action
+		
+		var int i, count = root.getElementCount()
+		var EasyXMLElement element
+		var String tagName, text
+		
+		for i = 0 to count
+			element = root.getElementAt(i)
+			
+			select element.getType()
+			case EasyXMLElementType.tag
+				tagName = element.getTagName()
+				if tagName.equals("actor")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
+					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("gesture")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.gesture)
+					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("command")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.command)
+					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("br")
+					snippet.addAction(SimpleConversationAction.new(SimpleConversationAction.Type.actor))
+					
+				elif tagName.equals("tag")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
+					action.setText(UnicodeString.newFromUTF8(element.getFirstCData()))
+					action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("anim")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("a")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
+					action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("g")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.gesture)
+					action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("t")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
+					action.setText(UnicodeString.newFromUTF8(element.getFirstCData()))
+					action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("a")))
+					snippet.addAction(action)
+					
+				else
+					logUnknownTag(element)
+				end
+				
+			case EasyXMLElementType.cdata
+				text = element.getCDataContent().trimBoth()
+				if text.empty()
+					continue
+				end
+				
+				action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
+				action.setText(UnicodeString.newFromUTF8(text))
+				snippet.addAction(action)
+			end
+		end
+		
+		return snippet
+	end
+end

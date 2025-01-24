@@ -66,6 +66,7 @@ class Loaders
 	var LoadBorder pBorder
 	var LoadCanvasCreator pCanvasCreator
 	var LoadConversation pConversation
+	var LoadSimpleConversation pSimpleConversation
 	var LoadDecoration pDecoration
 	var LoadMousePointer pMousePointer
 	var LoadWidgetDesigner pWidgetDesigner
@@ -104,6 +105,7 @@ class Loaders
 		pBorder = LoadBorder.new(console)
 		pCanvasCreator = LoadCanvasCreator.new(console)
 		pConversation = LoadConversation.new(console)
+		pSimpleConversation = LoadSimpleConversation.new(console)
 		pDecoration = LoadDecoration.new(console)
 		pMousePointer = LoadMousePointer.new(console)
 		pWidgetDesigner = LoadWidgetDesigner.new(console)
@@ -185,6 +187,14 @@ class Loaders
 	/** \brief Conversation loader. */
 	func LoadConversation getConversation()
 		return pConversation
+	end
+	
+	/**
+	 * \brief Simple conversation loader.
+	 * \version 1.25
+	 */
+	func LoadSimpleConversation getSimpleConversation()
+		return pSimpleConversation
 	end
 	
 	/** \brief Decoration loader. */
