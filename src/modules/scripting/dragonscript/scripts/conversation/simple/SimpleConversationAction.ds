@@ -68,15 +68,83 @@ class SimpleConversationAction
 		/**
 		 * \brief Game or actor command.
 		 * 
-		 * Uses getTarget() as identifier into the SimpleConversation command list.
+		 * Uses getName() as command. If getTarget() is not null sends an actor command to
+		 * the actor id or alias matching getTarget(). If getTarget() is null sends a game command.
 		 */
 		command
+		
+		/** \brief Stop topic. */
+		stopTopic
+		
+		/** \brief Stop conversation. */
+		stopConversation
+		
+		/**
+		 * \brief Set conversation variable.
+		 * 
+		 * Uses getName() as variable name, getValue() as value and getMode() as operator
+		 * to apply. If getTarget() is not null sets conversation actor parameter instead.
+		 * Allowed modes for variables are \ref CActionSetVariable.Operator .
+		 * Allowed modes for parameters are \ref CActionSetActorParameter.Operator .
+		 */
+		variable
+		
+		/**
+		 * \brief Manipulate trigger.
+		 * 
+		 * Uses getTarget() as trigger name and getMode() as action to apply.\
+		 * Allowed modes are \ref CActionTrigger.Action .
+		 */
+		trigger
+		
+		/**
+		 * \brief If condition run simple snippet.
+		 * 
+		 * Uses getTarget() as snippet to run if condition is fulfilled.
+		 * Uses getName() as variable/parameter/trigger/condition name to compare/evaluate.
+		 * Uses getValue() as variable/parameter/condition value. For condition value of 1
+		 * means true and value of 0 means false.
+		 * Uses getMode() for variable/parameter/trigger. For variables allowed modes are
+		 * \ref CConditionVariable.Operator . For parameters allowed modes are
+		 * \ref CConditionActorParameter.Operator . For trigger allowed modes are
+		 * \ref CConditionTrigger.TestMode .
+		 */
+		condIf
+		
+		/**
+		 * \brief Elif condition run simple snippet.
+		 * \see #condIf
+		 */
+		condElif
+		
+		/**
+		 * \brief Else condition run simple snippet.
+		 * 
+		 * Uses getTarget() as snippet to run if all previous conditions are not fulfilled.
+		 */
+		condElse
+	end
+	
+	/** \brief Condition. */
+	enum Condition
+		/** Compare variable or actor parameter value. */
+		variable
+		
+		/** Evaluate game or actor condition */
+		condition
+		
+		/** Trigger state. */
+		trigger
 	end
 	
 	
 	var Type pType
-	var StringID pTarget
+	var StringID pTarget, pActor
 	var UnicodeString pText, pAnimText
+	var String pName
+	var int pValue
+	var Enumeration pMode
+	var Condition pCondition
 	
 	
 	/** \brief Create simple conversation action. */
@@ -93,6 +161,10 @@ class SimpleConversationAction
 		pTarget = action.pTarget
 		pText = action.pText
 		pAnimText = action.pAnimText
+		pName = action.pName
+		pValue = action.pValue
+		pMode = action.pMode
+		pCondition = action.pCondition
 	end
 	
 	
@@ -104,8 +176,9 @@ class SimpleConversationAction
 	/**
 	 * \brief Target.
 	 * 
-	 * - \ref Type#speak: Identifier of actor or null to stick to the active one.
 	 * - \ref Type#gesture: Identifier of gesture.
+	 * - \ref Type#trigger: Idenfitier or trigger.
+	 * - \ref Type#snippetIf: Snippet to run if condition is fulfilled.
 	 * - other types: Not used and is null
 	 */
 	func StringID getTarget()
@@ -118,6 +191,26 @@ class SimpleConversationAction
 	 */
 	func void setTarget(StringID target)
 		pTarget = target
+	end
+	
+	/**
+	 * \brief Actor identifier or alias.
+	 * 
+	 * - \ref Type#speak: Identifier of actor or null to stick to the active one.
+	 * - \ref Type#command: Identifier of actor or null for game command.
+	 * - \ref Type#variable: Idenfitier or alias of actor to set parameter instead of variable.
+	 * - other types: Not used and is null
+	 */
+	func StringID getActor()
+		return pActor
+	end
+	
+	/**
+	 * \brief Set actor identifier or alias.
+	 * \see #getActorId()
+	 */
+	func void setActor(StringID actor)
+		pActor = actor
 	end
 	
 	/**
@@ -155,5 +248,77 @@ class SimpleConversationAction
 	 */
 	func void setAnimText(UnicodeString text)
 		pAnimText = text
+	end
+	
+	/**
+	 * \brief Name.
+	 * 
+	 * - \ref Type#command: Command to send.
+	 * - \ref Type#variable: Variable/parameter name.
+	 * - \ref Type#snippetIf: Variable/parameter/condition/trigger name.
+	 * - other types: Not used and is null
+	 */
+	func String getName()
+		return pName
+	end
+	
+	/**
+	 * \brief Set name.
+	 * \see #getName()
+	 */
+	func void setName(String name)
+		pName = name
+	end
+	
+	/**
+	 * \brief Value.
+	 * 
+	 * - \ref Type#variable: Value to set variable/parameter to.
+	 * - other types: Not used and is null
+	 */
+	func int getValue()
+		return pValue
+	end
+	
+	/**
+	 * \brief Set value.
+	 * \see #getValue()
+	 */
+	func void setValue(int value)
+		pValue = value
+	end
+	
+	/** \brief Condition type.
+	 */
+	func Condition getCondition()
+		return pCondition
+	end
+	
+	/** \brief Set condition type. */
+	func void setCondition(Condition condition)
+		pCondition = condition
+	end
+	
+	/**
+	 * \brief Mode.
+	 * 
+	 * - \ref Type#variable: \ref CActionSetVariable.Operator for variables or
+	 *   \ref CActionSetActorParameter.Operator for parameters.
+	 * - \ref Type#trigger: \ref CActionTrigger.Action .
+	 * - \ref Type#snippetIf: \ref CConditionVariable.Operator for variables,
+	 *   \ref CConditionActorParameter.Operator for parameters, \ref ConditionEvaluation
+	 *   for conditions and \ref CConditionTrigger.TestMode for triggers.
+	 * - other types: Not used and is null
+	 */
+	func Enumeration getMode()
+		return pMode
+	end
+	
+	/**
+	 * \brief Set mode.
+	 * \see #getMode()
+	 */
+	func void setMode(Enumeration mode)
+		pMode = mode
 	end
 end

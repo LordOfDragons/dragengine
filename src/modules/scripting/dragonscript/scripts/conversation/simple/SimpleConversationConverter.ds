@@ -72,6 +72,9 @@ class SimpleConversationConverter
 		/** \brief Open actor speak conversation action or null. */
 		public var CActionActorSpeak actionActorSpeak
 		
+		/** \brief Open if-else conversation action or null. */
+		public var CActionIfElse actionIfElse
+		
 		/** \brief Array of \ref Gesture to add to speech. */
 		public var Array gestures
 		
@@ -262,24 +265,42 @@ class SimpleConversationConverter
 				
 			case SimpleConversationAction.Type.command
 				convertCommand(state, each)
+				
+			case SimpleConversationAction.Type.stopTopic
+				convertStopTopic(state, each)
+				
+			case SimpleConversationAction.Type.stopConversation
+				convertStopConversation(state, each)
+				
+			case SimpleConversationAction.Type.variable
+				convertVariable(state, each)
+				
+			case SimpleConversationAction.Type.trigger
+				convertTrigger(state, each)
+				
+			case SimpleConversationAction.Type.condIf, SimpleConversationAction.Type.condElif
+				convertIfElif(state, each)
+				
+			case SimpleConversationAction.Type.condElse
+				convertElse(state, each)
 			end
 		end)
 		
-		closeSpeak(state)
+		closeActions(state)
 	end
 	
 	/**
 	 * \brief Convert actor action.
 	 * 
-	 * Closes open speak action if present. If actor is set adds action for switching camera.
+	 * Closes open actions if present. If actor is set adds action for switching camera.
 	 * Then adds instance of \ref CActionActorSpeak. If actor is not set uses the previous
 	 * CActionActorSpeak actor. The added CActionActorSpeak and the matching conversation
 	 * actor are not present in the state as open speak action. Throws exception if actor is
 	 * not set and no previous CActionActorSpeak is present.
 	 */
 	protected func void convertActor(State state, SimpleConversationAction action)
-		if action.getTarget() != null
-			state.actor = state.simpleConversation.getActorWith(action.getTarget())
+		if action.getActor() != null
+			state.actor = state.simpleConversation.getActorWith(action.getActor())
 			
 			state.conversationActor = state.playback.getActorMatching(state.actor.getActorId())
 			if state.conversationActor == null
@@ -300,7 +321,7 @@ class SimpleConversationConverter
 				+ state.actor.getDelay())
 		end
 		
-		closeSpeak(state)
+		closeActions(state)
 		state.actionActorSpeak = CActionActorSpeak.new()
 		state.actionActorSpeak.setActorID(state.actor.getActorId())
 		state.actionActorSpeak.setDelay(state.actor.getDelay())
@@ -538,26 +559,162 @@ class SimpleConversationConverter
 	/**
 	 * \brief Convert command action.
 	 * 
-	 * Closes open speak action if present. Then adds instance of \ref CActionGameCommand
+	 * Closes open actions if present. Then adds instance of \ref CActionGameCommand
 	 * or \ref CActionActorCommand with 0 delay waiting for speaking actors to finish.
 	 */
 	protected func void convertCommand(State state, SimpleConversationAction action)
-		state.actionActorSpeak = null
+		closeActions(state)
 		
-		var SimpleConversationCommand command =\
-			state.simpleConversation.getCommandWith(action.getTarget())
-		
-		if command.getActorId() != null
+		if action.getActor() != null
 			var CActionActorCommand caction = CActionActorCommand.new()
-			caction.setActorID(command.getActorId())
-			caction.setCommand(command.getCommand())
+			caction.setActorID(state.simpleConversation.getActorWith(action.getActor()).getActorId())
+			caction.setCommand(action.getName())
 			state.actions.add(caction)
 			
 		else
 			var CActionGameCommand caction = CActionGameCommand.new()
-			caction.setCommand(command.getCommand())
+			caction.setCommand(action.getName())
 			state.actions.add(caction)
 		end
+	end
+	
+	/**
+	 * \brief Convert stop topic action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionStopTopic
+	 * with 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertStopTopic(State state, SimpleConversationAction action)
+		closeActions(state)
+		state.actions.add(CActionStopTopic.new())
+	end
+	
+	/**
+	 * \brief Convert stop conversation action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionStopConversation
+	 * with 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertStopConversation(State state, SimpleConversationAction action)
+		closeActions(state)
+		state.actions.add(CActionStopConversation.new())
+	end
+	
+	/**
+	 * \brief Convert set variable action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionSetVariable
+	 * or \ref CActionSetActorParameter depending if \ref SimpleConversationAction#getTarge()
+	 * is null or not. Action is set to use 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertVariable(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		if action.getActor() != null
+			var CActionSetActorParameter caction = CActionSetActorParameter.new()
+			caction.setActorID(action.getActor())
+			caction.setName(action.getName())
+			caction.setValue(action.getValue())
+			caction.setOperator(action.getMode() cast CActionSetActorParameter.Operator)
+			state.actions.add(caction)
+			
+		else
+			var CActionSetVariable caction = CActionSetVariable.new()
+			caction.setName(action.getName())
+			caction.setValue(action.getValue())
+			caction.setOperator(action.getMode() cast CActionSetVariable.Operator)
+			state.actions.add(caction)
+		end
+	end
+	
+	/**
+	 * \brief Convert modify trigger action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionTrigger using
+	 * 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertTrigger(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionTrigger caction = CActionTrigger.new()
+		caction.setName(action.getTarget())
+		caction.setAction(action.getMode() cast CActionTrigger.Action)
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert if/elif action.
+	 * 
+	 * If action is if-type closes open actions if present then adds instance of
+	 * \ref CActionIfElse with using 0 delay waiting for speaking actors to finish.
+	 * Then adds to the open if-else action an instance of \ref CActionIfElseCase
+	 * with the respective condition. Adds to this case actions of the referenced snippet.
+	 */
+	protected func void convertIfElif(State state, SimpleConversationAction action)
+		if action.getType() == SimpleConversationAction.Type.condIf
+			closeActions(state)
+			
+			state.actionIfElse = CActionIfElse.new()
+			state.actions.add(state.actionIfElse)
+		end
+		
+		var CActionIfElseCase ccase = CActionIfElseCase.new()
+		state.actionIfElse.addCase(ccase)
+		
+		select action.getCondition()
+		case SimpleConversationAction.Condition.variable
+			if action.getActor() != null
+				var CConditionActorParameter condition = CConditionActorParameter.new()
+				condition.setActorID(action.getActor())
+				condition.setParameter(action.getName())
+				condition.setOperator(action.getMode() cast CConditionActorParameter.Operator)
+				condition.setTestValue(action.getValue())
+				ccase.setCondition(condition)
+				
+			else
+				var CConditionVariable condition = CConditionVariable.new()
+				condition.setVariable(action.getName())
+				condition.setOperator(action.getMode() cast CConditionVariable.Operator)
+				condition.setTestValue(action.getValue())
+				ccase.setCondition(condition)
+			end
+			
+		case SimpleConversationAction.Condition.trigger
+			var CConditionTrigger condition = CConditionTrigger.new()
+			condition.setTrigger(StringID.new(action.getName()))
+			condition.setTestMode(action.getMode() cast CConditionTrigger.TestMode)
+			ccase.setCondition(condition)
+			
+		case SimpleConversationAction.Condition.condition
+			if action.getActor() != null
+				var CConditionActorCommand condition = CConditionActorCommand.new()
+				condition.setActorID(action.getActor())
+				condition.setCommand(action.getName())
+				condition.setNegate(action.getValue() == 0)
+				ccase.setCondition(condition)
+				
+			else
+				var CConditionGameCommand condition = CConditionGameCommand.new()
+				condition.setCommand(action.getName())
+				condition.setNegate(action.getValue() == 0)
+				ccase.setCondition(condition)
+			end
+		end
+		
+		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+			state.simpleConversation, state.playback, ccase.getActions())
+	end
+	
+	/**
+	 * \brief Convert else action.
+	 * 
+	 * Adds to the else-actions of open if-else action the referenced snippet.
+	 * Then closes the open if-else action.
+	 */
+	protected func void convertElse(State state, SimpleConversationAction action)
+		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+			state.simpleConversation, state.playback, state.actionIfElse.getElseActions())
+		closeActions(state)
 	end
 	
 	/**
@@ -574,5 +731,11 @@ class SimpleConversationConverter
 		state.gestureTime = 0
 		state.gestures.removeAll()
 		state.clearGestures = false
+	end
+	
+	/** \brief Close open conversation actions if present. */
+	protected func void closeActions(State state)
+		closeSpeak(state)
+		state.actionIfElse = null
 	end
 end

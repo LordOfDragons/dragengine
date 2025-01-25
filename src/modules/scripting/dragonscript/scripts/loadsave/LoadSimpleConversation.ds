@@ -28,6 +28,7 @@ pin Dragengine.ConversationSystem
 pin Dragengine.Utils
 pin Dragengine.XML
 pin Dragengine.Gui.Events
+pin Dragengine.Scenery
 
 /**
  * \brief Load simple conversation from XML file.
@@ -84,12 +85,6 @@ pin Dragengine.Gui.Events
  *      <camera>right</camera>
  *   </actor>
  * 
- *   <!-- Commands for 'command' tags. Can be game or actor command. -->
- *   <command id='show hint use smartphone'>
- *      <actorId>player</actorId> <!-- ConversationActor id or alias or null -->
- *      <command>showHint useSmartphone</command>
- *   </actor>
- * 
  *   <!-- Conversation snippets. These can be trigged using their id.
  *   Content works like HTML text with tags triggering changes. -->
  *   <snippet id='example convo'>
@@ -101,7 +96,36 @@ pin Dragengine.Gui.Events
  *         Have you read my eMail?
  *      <actor id='player.think'/>
  *         EMail? I guess I should check my smartphone.
- *      <command id='show hint use smartphone'/>
+ *      <command actor='player'>showHint useSmartphone</command>
+ *         <!-- without actor='player' this is a game command -->
+ * 
+ *      <!-- more supported tags
+ *      <stopTopic/>
+ *      <stopConversation/>
+ *      <variable name='my variable'>2</variable>
+ *         value can be prefixed with '+' to increment, '-' to decrement
+ *         and '~' to randomize between 0 and value inclusive.
+ *         if actor='player' is present actor parameter is set instead of variable
+ *      <trigger name='my trigger'>fire</variable>
+ *         value can be fire, reset, pulse and fullReset.
+ * 
+ *      <if variable='variable name' test='=2'>snippet to run</if>
+ *      <if actor='player' parameter='parameter name' test='=2'>snippet to run</if>
+ *         test can be prefixed with '=', '!=', '<', '<=', '>' or '>='.
+ *         if prefixed operator is absent '=' is used.
+ *      <if trigger='trigger name' test='fired'>snippet to run</if>
+ *         test can be fired, notFired, everFired, neverFired.
+ *         if test attribute is absent 'fired' is used.
+ *      <if condition='game condition' test='true'>snippet to run</if>
+ *         test can be true or false. default is test='true'
+ *      <if actor='player' condition='actor condition' test='true'>snippet to run</if>
+ *         test can be true or false.
+ *         if test attribute is absent 'fired' is used.
+ * 
+ *      <elif ...> same as <if ...> but adds another case to the previous <if>
+ * 
+ *      <else>snippet to run</else>
+ *      -->
  * 
  *      <!--
  *      Some tags support a condensed form to make the conversation easier to read
@@ -181,9 +205,6 @@ class LoadSimpleConversation extends BaseXmlLoader
 				
 			elif tagName.equals("actor")
 				conversation.addActor(readActor(element))
-				
-			elif tagName.equals("command")
-				conversation.addCommand(readCommand(element))
 				
 			elif tagName.equals("snippet")
 				conversation.addSnippet(readSnippet(element))
@@ -275,25 +296,6 @@ class LoadSimpleConversation extends BaseXmlLoader
 		return actor
 	end
 	
-	protected func SimpleConversationCommand readCommand(EasyXMLElement root)
-		var SimpleConversationCommand command = SimpleConversationCommand.new(\
-			StringID.new(root.getAttributeNamed("id")))
-		
-		root.forEachTag(block EasyXMLElement element, String tagName
-			if tagName.equals("actorId")
-				command.setActorId(StringID.new(element.getFirstCData()))
-				
-			elif tagName.equals("command")
-				command.setCommand(element.getFirstCData())
-				
-			else
-				logUnknownTag(element)
-			end
-		end)
-		
-		return command
-	end
-	
 	protected func SimpleConversationSnippet readSnippet(EasyXMLElement root)
 		var SimpleConversationSnippet snippet = SimpleConversationSnippet.new(\
 			StringID.new(root.getAttributeNamed("id")))
@@ -302,6 +304,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 		var int i, count = root.getElementCount()
 		var EasyXMLElement element
 		var String tagName, text
+		var byte character
 		
 		for i = 0 to count
 			element = root.getElementAt(i)
@@ -311,7 +314,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 				tagName = element.getTagName()
 				if tagName.equals("actor")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
-					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					action.setActor(StringID.new(element.getAttributeNamed("id")))
 					snippet.addAction(action)
 					
 				elif tagName.equals("gesture")
@@ -321,7 +324,10 @@ class LoadSimpleConversation extends BaseXmlLoader
 					
 				elif tagName.equals("command")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.command)
-					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					if element.hasAttributeNamed("actor")
+						action.setActor(StringID.new(element.getAttributeNamed("actor")))
+					end
+					action.setName(element.getFirstCData())
 					snippet.addAction(action)
 					
 				elif tagName.equals("br")
@@ -333,9 +339,196 @@ class LoadSimpleConversation extends BaseXmlLoader
 					action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("anim")))
 					snippet.addAction(action)
 					
+				elif tagName.equals("stopTopic")
+					snippet.addAction(SimpleConversationAction.new(\
+						SimpleConversationAction.Type.stopTopic))
+					
+				elif tagName.equals("stopConversation")
+					snippet.addAction(SimpleConversationAction.new(\
+						SimpleConversationAction.Type.stopConversation))
+					
+				elif tagName.equals("variable")
+					text = element.getFirstCData()
+					character = text.getAt(0)
+					
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.variable)
+					action.setName(element.getAttributeNamed("name"))
+					
+					if element.hasAttributeNamed("actor")
+						action.setActor(StringID.new(element.getAttributeNamed("actor")))
+						
+						select character
+						case '+'
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CActionSetActorParameter.Operator.increment)
+							
+						case '-'
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CActionSetActorParameter.Operator.decrement)
+							
+						case '~'
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CActionSetActorParameter.Operator.random)
+							
+						else
+							action.setValue(text.toInt())
+							action.setMode(CActionSetActorParameter.Operator.set)
+						end
+						
+					else
+						select character
+						case '+'
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CActionSetVariable.Operator.increment)
+							
+						case '-'
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CActionSetVariable.Operator.decrement)
+							
+						case '~'
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CActionSetVariable.Operator.random)
+							
+						else
+							action.setValue(text.toInt())
+							action.setMode(CActionSetVariable.Operator.set)
+						end
+					end
+					
+					snippet.addAction(action)
+					
+				elif tagName.equals("trigger")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.trigger)
+					action.setTarget(StringID.new(element.getAttributeNamed("name")))
+					
+					text = element.getFirstCData()
+					action.setMode(CActionTrigger.Action.named(text))
+					if action.getMode() == null
+						logInvalidValue(element, text)
+						throw EInvalidParam.new("invalid value: " + text)
+					end
+					
+					snippet.addAction(action)
+					
+				elif tagName.equals("if") or tagName.equals("elif")
+					action = SimpleConversationAction.new(tagName.equals("if")\
+						if SimpleConversationAction.Type.condIf\
+						else SimpleConversationAction.Type.condElif)
+					action.setTarget(StringID.new(element.getFirstCData()))
+					
+					if element.hasAttributeNamed("variable")
+						action.setCondition(SimpleConversationAction.Condition.variable)
+						action.setName(element.getAttributeNamed("variable"))
+						
+						text = element.getAttributeNamed("test")
+						if text.startsWith("!=")
+							action.setValue(text.substring(2).toInt())
+							action.setMode(CConditionVariable.Operator.notEqual)
+							
+						elif text.startsWith("<=")
+							action.setValue(text.substring(2).toInt())
+							action.setMode(CConditionVariable.Operator.lessThanOrEqual)
+							
+						elif text.startsWith(">=")
+							action.setValue(text.substring(2).toInt())
+							action.setMode(CConditionVariable.Operator.greaterThanOrEqual)
+							
+						elif text.startsWith("=")
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CConditionVariable.Operator.equal)
+							
+						elif text.startsWith("<")
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CConditionVariable.Operator.lessThan)
+							
+						elif text.startsWith(">")
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CConditionVariable.Operator.greaterThan)
+							
+						else
+							action.setValue(text.toInt())
+							action.setMode(CConditionVariable.Operator.equal)
+						end
+						
+					elif element.hasAttributeNamed("parameter")
+						action.setCondition(SimpleConversationAction.Condition.variable)
+						action.setName(element.getAttributeNamed("parameter"))
+						action.setActor(StringID.new(element.getAttributeNamed("actor")))
+						
+						text = element.getAttributeNamed("test")
+						if text.startsWith("!=")
+							action.setValue(text.substring(2).toInt())
+							action.setMode(CConditionActorParameter.Operator.notEqual)
+							
+						elif text.startsWith("<=")
+							action.setValue(text.substring(2).toInt())
+							action.setMode(CConditionActorParameter.Operator.lessThanOrEqual)
+							
+						elif text.startsWith(">=")
+							action.setValue(text.substring(2).toInt())
+							action.setMode(CConditionActorParameter.Operator.greaterThanOrEqual)
+							
+						elif text.startsWith("=")
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CConditionActorParameter.Operator.equal)
+							
+						elif text.startsWith("<")
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CConditionActorParameter.Operator.lessThan)
+							
+						elif text.startsWith(">")
+							action.setValue(text.substring(1).toInt())
+							action.setMode(CConditionActorParameter.Operator.greaterThan)
+							
+						else
+							action.setValue(text.toInt())
+							action.setMode(CConditionActorParameter.Operator.equal)
+						end
+						
+					elif element.hasAttributeNamed("trigger")
+						action.setCondition(SimpleConversationAction.Condition.trigger)
+						action.setName(element.getAttributeNamed("trigger"))
+						action.setMode(CConditionTrigger.TestMode.named(element.getAttributeNamed("test")))
+						
+					elif element.hasAttributeNamed("condition")
+						action.setCondition(SimpleConversationAction.Condition.condition)
+						action.setName(element.getAttributeNamed("condition"))
+						if element.hasAttributeNamed("actor")
+							action.setActor(StringID.new(element.getAttributeNamed("actor")))
+						end
+						
+						if element.hasAttributeNamed("test")
+							text = element.getAttributeNamed("test")
+							if text.equals("true")
+								action.setValue(1)
+								
+							elif text.equals("false")
+								action.setValue(0)
+								
+							else
+								logInvalidValue(element, text)
+								throw EInvalidParam.new("invalid value: " + text)
+							end
+							
+						else
+							action.setValue(1)
+						end
+						
+					else
+						logMissingAttribute(element, "variable, parameter, trigger or condition")
+						throw EInvalidParam.new("missing attribute")
+					end
+					
+					snippet.addAction(action)
+					
+				elif tagName.equals("else")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.condElse)
+					action.setTarget(StringID.new(element.getFirstCData()))
+					snippet.addAction(action)
+					
 				elif tagName.equals("a")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
-					action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					action.setActor(StringID.new(element.getAttributeNamed("i")))
 					snippet.addAction(action)
 					
 				elif tagName.equals("g")

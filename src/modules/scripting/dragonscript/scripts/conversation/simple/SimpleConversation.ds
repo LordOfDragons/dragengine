@@ -39,7 +39,7 @@ namespace Dragengine.ConversationSystem
  */
 class SimpleConversation
 	var String pPathFile
-	var Dictionary pCameras, pActors, pCommands, pSnippets
+	var Dictionary pCameras, pActors, pSnippets
 	
 	
 	/** \brief Create simple conversation. */
@@ -47,7 +47,6 @@ class SimpleConversation
 		pPathFile = pathFile
 		pCameras = Dictionary.new()
 		pActors = Dictionary.new()
-		pCommands = Dictionary.new()
 		pSnippets = Dictionary.new()
 	end
 	
@@ -59,9 +58,6 @@ class SimpleConversation
 		end)
 		pActors = conversation.pActors.map(block SimpleConversationActor each
 			return SimpleConversationActor.new(each)
-		end)
-		pCommands = conversation.pCommands.map(block SimpleConversationCommand each
-			return SimpleConversationCommand.new(each)
 		end)
 		pSnippets = conversation.pSnippets.map(block SimpleConversationSnippet each
 			return SimpleConversationSnippet.new(each)
@@ -141,39 +137,6 @@ class SimpleConversation
 	end
 	
 	
-	/** \brief Count of commands. */
-	func int getCommandCount()
-		return pCommands.getCount()
-	end
-	
-	/** \brief Command with identifier or null. */
-	func SimpleConversationCommand getCommandWith(StringID identifier)
-		return pCommands.getAt(identifier, null) cast SimpleConversationCommand
-	end
-	
-	/**
-	 * \brief Visit commands with block.
-	 * 
-	 * Block is required to have signature void(SimpleConversationCommand command) or
-	 * void(int index, SimpleConversationCommand command).
-	 */
-	func void forEachCommand(Block ablock)
-		pCommands.forEachValue(ablock)
-	end
-	
-	/**
-	 * \brief Add command.
-	 * 
-	 * If command with same name exists it is replaced.
-	 */
-	func void addCommand(SimpleConversationCommand command)
-		if command == null
-			throw ENullPointer.new("command")
-		end
-		pCommands.setAt(command.getId(), command)
-	end
-	
-	
 	/** \brief Count of snippets. */
 	func int getSnippetCount()
 		return pSnippets.getCount()
@@ -217,9 +180,6 @@ class SimpleConversation
 		end)
 		conversation.forEachActor(block SimpleConversationActor each
 			pActors.setAt(each.getId(), each)
-		end)
-		conversation.forEachCommand(block SimpleConversationCommand each
-			pCommands.setAt(each.getId(), each)
 		end)
 		conversation.forEachSnippet(block SimpleConversationSnippet each
 			pSnippets.setAt(each.getId(), each)
