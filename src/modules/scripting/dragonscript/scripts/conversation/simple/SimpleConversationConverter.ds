@@ -647,8 +647,8 @@ class SimpleConversationConverter
 	 * 
 	 * If action is if-type closes open actions if present then adds instance of
 	 * \ref CActionIfElse with using 0 delay waiting for speaking actors to finish.
-	 * Then adds to the open if-else action an instance of \ref CActionIfElseCase
-	 * with the respective condition. Adds to this case actions of the referenced snippet.
+	 * Then adds converted conditions to the open if-else action. Then adds to this
+	 * case actions of the referenced snippet.
 	 */
 	protected func void convertIfElif(State state, SimpleConversationAction action)
 		if action.getType() == SimpleConversationAction.Type.condIf
@@ -661,48 +661,66 @@ class SimpleConversationConverter
 		var CActionIfElseCase ccase = CActionIfElseCase.new()
 		state.actionIfElse.addCase(ccase)
 		
-		select action.getCondition()
-		case SimpleConversationAction.Condition.variable
-			if action.getActor() != null
-				var CConditionActorParameter condition = CConditionActorParameter.new()
-				condition.setActorID(action.getActor())
-				condition.setParameter(action.getName())
-				condition.setOperator(action.getMode() cast CConditionActorParameter.Operator)
-				condition.setTestValue(action.getValue())
-				ccase.setCondition(condition)
-				
-			else
-				var CConditionVariable condition = CConditionVariable.new()
-				condition.setVariable(action.getName())
-				condition.setOperator(action.getMode() cast CConditionVariable.Operator)
-				condition.setTestValue(action.getValue())
-				ccase.setCondition(condition)
-			end
-			
-		case SimpleConversationAction.Condition.trigger
-			var CConditionTrigger condition = CConditionTrigger.new()
-			condition.setTrigger(StringID.new(action.getName()))
-			condition.setTestMode(action.getMode() cast CConditionTrigger.TestMode)
-			ccase.setCondition(condition)
-			
-		case SimpleConversationAction.Condition.condition
-			if action.getActor() != null
-				var CConditionActorCommand condition = CConditionActorCommand.new()
-				condition.setActorID(action.getActor())
-				condition.setCommand(action.getName())
-				condition.setNegate(action.getValue() == 0)
-				ccase.setCondition(condition)
-				
-			else
-				var CConditionGameCommand condition = CConditionGameCommand.new()
-				condition.setCommand(action.getName())
-				condition.setNegate(action.getValue() == 0)
-				ccase.setCondition(condition)
-			end
-		end
+		ccase.setCondition(convertCondition(state, action.getCondition()))
 		
 		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
 			state.simpleConversation, state.playback, ccase.getActions())
+	end
+	
+	/**
+	 * \brief Convert condition.
+	 */
+	protected func ConversationCondition convertCondition(State state, SimpleConversationCondition condition)
+		select condition.getType()
+		case SimpleConversationCondition.Type.variable
+			if condition.getActor() != null
+				var CConditionActorParameter ccond = CConditionActorParameter.new()
+				ccond.setActorID(condition.getActor())
+				ccond.setParameter(condition.getName())
+				ccond.setOperator(condition.getMode() cast CConditionActorParameter.Operator)
+				ccond.setTestValue(condition.getValue())
+				return ccond
+				
+			else
+				var CConditionVariable ccond = CConditionVariable.new()
+				ccond.setVariable(condition.getName())
+				ccond.setOperator(condition.getMode() cast CConditionVariable.Operator)
+				ccond.setTestValue(condition.getValue())
+				return ccond
+			end
+			
+		case SimpleConversationCondition.Type.trigger
+			var CConditionTrigger ccond = CConditionTrigger.new()
+			ccond.setTrigger(StringID.new(condition.getName()))
+			ccond.setTestMode(condition.getMode() cast CConditionTrigger.TestMode)
+			return ccond
+			
+		case SimpleConversationCondition.Type.command
+			if condition.getActor() != null
+				var CConditionActorCommand ccond = CConditionActorCommand.new()
+				ccond.setActorID(condition.getActor())
+				ccond.setCommand(condition.getName())
+				ccond.setNegate(condition.getValue() == 0)
+				return ccond
+				
+			else
+				var CConditionGameCommand ccond = CConditionGameCommand.new()
+				ccond.setCommand(condition.getName())
+				ccond.setNegate(condition.getValue() == 0)
+				return ccond
+			end
+			
+		case SimpleConversationCondition.Type.logic
+			var CConditionLogic ccond = CConditionLogic.new()
+			ccond.setOperator(condition.getMode() cast CConditionLogic.Operator)
+			condition.getConditions().forEach(block SimpleConversationCondition each
+				ccond.addCondition(convertCondition(state, each))
+			end)
+			return ccond
+			
+		else
+			throw EInvalidParam.new("condition.getType()")
+		end
 	end
 	
 	/**

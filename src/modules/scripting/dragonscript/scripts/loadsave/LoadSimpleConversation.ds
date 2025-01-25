@@ -96,34 +96,43 @@ pin Dragengine.Scenery
  *         Have you read my eMail?
  *      <actor id='player.think'/>
  *         EMail? I guess I should check my smartphone.
+ *      <command>showHint useSmartphone</command>
  *      <command actor='player'>showHint useSmartphone</command>
- *         <!-- without actor='player' this is a game command -->
+ *         <!-- if attribute actor='player' is present run actor command -->
  * 
  *      <!-- more supported tags
  *      <stopTopic/>
  *      <stopConversation/>
+ * 
  *      <variable name='my variable'>2</variable>
+ *      <variable actor='player' name='my variable'>2</variable>
  *         value can be prefixed with '+' to increment, '-' to decrement
  *         and '~' to randomize between 0 and value inclusive.
- *         if actor='player' is present actor parameter is set instead of variable
+ *         if actor='player' is present actor parameter is set instead of variable.
+ * 
  *      <trigger name='my trigger'>fire</variable>
  *         value can be fire, reset, pulse and fullReset.
  * 
- *      <if variable='variable name' test='=2'>snippet to run</if>
- *      <if actor='player' parameter='parameter name' test='=2'>snippet to run</if>
- *         test can be prefixed with '=', '!=', '<', '<=', '>' or '>='.
- *         if prefixed operator is absent '=' is used.
- *      <if trigger='trigger name' test='fired'>snippet to run</if>
- *         test can be fired, notFired, everFired, neverFired.
- *         if test attribute is absent 'fired' is used.
- *      <if condition='game condition' test='true'>snippet to run</if>
- *         test can be true or false. default is test='true'
- *      <if actor='player' condition='actor condition' test='true'>snippet to run</if>
- *         test can be true or false.
- *         if test attribute is absent 'fired' is used.
- * 
+ *      <if snippet='snippet to run'> ...condition... </if>
+ *         where condition can be:
+ *            <variable name='variable name' test='=2'/>
+ *            <variable actor='player' name='variable name' test='=2'/>
+ *               test can be prefixed with '=', '!=', '<', '<=', '>' or '>='.
+ *               if prefixed operator is absent '=' is used.
+ *               if attribute actor='player' is present test actor parameter.
+ *            <trigger name='trigger name' test='fired'/>
+ *               test can be fired, notFired, everFired, neverFired.
+ *               if test attribute is absent 'fired' is used.
+ *            <command test='true'>game command</command>
+ *            <command actor='player' test='true'>actor command</command>
+ *               test can be true or false. default is test='true'
+ *            <any> ...conditions... </any>
+ *               one or more conditions is fulfilled.
+ *            <all> ...conditions... </all>
+ *               at least one condition is defined and all conditions are fulfilled.
+ *            <none> ....conditions... </none>
+ *               no condition is fulfilled.
  *      <elif ...> same as <if ...> but adds another case to the previous <if>
- * 
  *      <else>snippet to run</else>
  *      -->
  * 
@@ -411,115 +420,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 					snippet.addAction(action)
 					
 				elif tagName.equals("if") or tagName.equals("elif")
-					action = SimpleConversationAction.new(tagName.equals("if")\
-						if SimpleConversationAction.Type.condIf\
-						else SimpleConversationAction.Type.condElif)
-					action.setTarget(StringID.new(element.getFirstCData()))
-					
-					if element.hasAttributeNamed("variable")
-						action.setCondition(SimpleConversationAction.Condition.variable)
-						action.setName(element.getAttributeNamed("variable"))
-						
-						text = element.getAttributeNamed("test")
-						if text.startsWith("!=")
-							action.setValue(text.substring(2).toInt())
-							action.setMode(CConditionVariable.Operator.notEqual)
-							
-						elif text.startsWith("<=")
-							action.setValue(text.substring(2).toInt())
-							action.setMode(CConditionVariable.Operator.lessThanOrEqual)
-							
-						elif text.startsWith(">=")
-							action.setValue(text.substring(2).toInt())
-							action.setMode(CConditionVariable.Operator.greaterThanOrEqual)
-							
-						elif text.startsWith("=")
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CConditionVariable.Operator.equal)
-							
-						elif text.startsWith("<")
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CConditionVariable.Operator.lessThan)
-							
-						elif text.startsWith(">")
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CConditionVariable.Operator.greaterThan)
-							
-						else
-							action.setValue(text.toInt())
-							action.setMode(CConditionVariable.Operator.equal)
-						end
-						
-					elif element.hasAttributeNamed("parameter")
-						action.setCondition(SimpleConversationAction.Condition.variable)
-						action.setName(element.getAttributeNamed("parameter"))
-						action.setActor(StringID.new(element.getAttributeNamed("actor")))
-						
-						text = element.getAttributeNamed("test")
-						if text.startsWith("!=")
-							action.setValue(text.substring(2).toInt())
-							action.setMode(CConditionActorParameter.Operator.notEqual)
-							
-						elif text.startsWith("<=")
-							action.setValue(text.substring(2).toInt())
-							action.setMode(CConditionActorParameter.Operator.lessThanOrEqual)
-							
-						elif text.startsWith(">=")
-							action.setValue(text.substring(2).toInt())
-							action.setMode(CConditionActorParameter.Operator.greaterThanOrEqual)
-							
-						elif text.startsWith("=")
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CConditionActorParameter.Operator.equal)
-							
-						elif text.startsWith("<")
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CConditionActorParameter.Operator.lessThan)
-							
-						elif text.startsWith(">")
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CConditionActorParameter.Operator.greaterThan)
-							
-						else
-							action.setValue(text.toInt())
-							action.setMode(CConditionActorParameter.Operator.equal)
-						end
-						
-					elif element.hasAttributeNamed("trigger")
-						action.setCondition(SimpleConversationAction.Condition.trigger)
-						action.setName(element.getAttributeNamed("trigger"))
-						action.setMode(CConditionTrigger.TestMode.named(element.getAttributeNamed("test")))
-						
-					elif element.hasAttributeNamed("condition")
-						action.setCondition(SimpleConversationAction.Condition.condition)
-						action.setName(element.getAttributeNamed("condition"))
-						if element.hasAttributeNamed("actor")
-							action.setActor(StringID.new(element.getAttributeNamed("actor")))
-						end
-						
-						if element.hasAttributeNamed("test")
-							text = element.getAttributeNamed("test")
-							if text.equals("true")
-								action.setValue(1)
-								
-							elif text.equals("false")
-								action.setValue(0)
-								
-							else
-								logInvalidValue(element, text)
-								throw EInvalidParam.new("invalid value: " + text)
-							end
-							
-						else
-							action.setValue(1)
-						end
-						
-					else
-						logMissingAttribute(element, "variable, parameter, trigger or condition")
-						throw EInvalidParam.new("missing attribute")
-					end
-					
-					snippet.addAction(action)
+					snippet.addAction(readIfElif(element))
 					
 				elif tagName.equals("else")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.condElse)
@@ -559,5 +460,129 @@ class LoadSimpleConversation extends BaseXmlLoader
 		end
 		
 		return snippet
+	end
+	
+	protected func SimpleConversationAction readIfElif(EasyXMLElement root)
+		var SimpleConversationAction action = SimpleConversationAction.new(\
+			root.getTagName().equals("if")\
+				if SimpleConversationAction.Type.condIf\
+				else SimpleConversationAction.Type.condElif)
+		action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			var SimpleConversationCondition condition = readCondition(element)
+			if condition != null
+				if action.getCondition() == null
+					action.setCondition(condition)
+					
+				else
+					logDuplicateObject(element, "condition", "")
+				end
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return action
+	end
+	
+	protected func SimpleConversationCondition readCondition(EasyXMLElement element)
+		var String test, tagName = element.getTagName()
+		var SimpleConversationCondition condition
+		
+		if tagName.equals("variable")
+			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.variable)
+			condition.setName(element.getAttributeNamed("name"))
+			if element.hasAttributeNamed("actor")
+				condition.setActor(StringID.new(element.getAttributeNamed("actor")))
+			end
+			
+			test = element.getAttributeNamed("test")
+			if test.startsWith("!=")
+				condition.setValue(test.substring(2).toInt())
+				condition.setMode(CConditionVariable.Operator.notEqual)
+				
+			elif test.startsWith("<=")
+				condition.setValue(test.substring(2).toInt())
+				condition.setMode(CConditionVariable.Operator.lessThanOrEqual)
+				
+			elif test.startsWith(">=")
+				condition.setValue(test.substring(2).toInt())
+				condition.setMode(CConditionVariable.Operator.greaterThanOrEqual)
+				
+			elif test.startsWith("=")
+				condition.setValue(test.substring(1).toInt())
+				condition.setMode(CConditionVariable.Operator.equal)
+				
+			elif test.startsWith("<")
+				condition.setValue(test.substring(1).toInt())
+				condition.setMode(CConditionVariable.Operator.lessThan)
+				
+			elif test.startsWith(">")
+				condition.setValue(test.substring(1).toInt())
+				condition.setMode(CConditionVariable.Operator.greaterThan)
+				
+			else
+				condition.setValue(test.toInt())
+				condition.setMode(CConditionVariable.Operator.equal)
+			end
+			
+		elif tagName.equals("trigger")
+			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.trigger)
+			condition.setName(element.getAttributeNamed("name"))
+			condition.setMode(CConditionTrigger.TestMode.named(element.getAttributeNamed("test")))
+			
+		elif tagName.equals("command")
+			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.command)
+			condition.setName(element.getFirstCData())
+			if element.hasAttributeNamed("actor")
+				condition.setActor(StringID.new(element.getAttributeNamed("actor")))
+			end
+			
+			if element.hasAttributeNamed("test")
+				test = element.getAttributeNamed("test")
+				if test.equals("true")
+					condition.setValue(1)
+					
+				elif test.equals("false")
+					condition.setValue(0)
+					
+				else
+					logInvalidValue(element, test)
+					throw EInvalidParam.new("invalid value: " + test)
+				end
+				
+			else
+				condition.setValue(1)
+			end
+			
+		else
+			var CConditionLogic.Operator logicOp = CConditionLogic.Operator.named(tagName)
+			if logicOp != null
+				condition = readCondLogic(element)
+			end
+		end
+		
+		return condition
+	end
+	
+	protected func SimpleConversationCondition readCondLogic(EasyXMLElement root)
+		var SimpleConversationCondition condition = SimpleConversationCondition.new(\
+			SimpleConversationCondition.Type.logic)
+		condition.setMode(CConditionLogic.Operator.named(root.getTagName()))
+		condition.setConditions(Array.new())
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			var SimpleConversationCondition child = readCondition(element)
+			if child != null
+				condition.getConditions().add(child)
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return condition
 	end
 end

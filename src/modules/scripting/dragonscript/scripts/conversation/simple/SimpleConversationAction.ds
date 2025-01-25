@@ -101,13 +101,7 @@ class SimpleConversationAction
 		 * \brief If condition run simple snippet.
 		 * 
 		 * Uses getTarget() as snippet to run if condition is fulfilled.
-		 * Uses getName() as variable/parameter/trigger/condition name to compare/evaluate.
-		 * Uses getValue() as variable/parameter/condition value. For condition value of 1
-		 * means true and value of 0 means false.
-		 * Uses getMode() for variable/parameter/trigger. For variables allowed modes are
-		 * \ref CConditionVariable.Operator . For parameters allowed modes are
-		 * \ref CConditionActorParameter.Operator . For trigger allowed modes are
-		 * \ref CConditionTrigger.TestMode .
+		 * Uses getCondition() as Condition to test.
 		 */
 		condIf
 		
@@ -144,7 +138,7 @@ class SimpleConversationAction
 	var String pName
 	var int pValue
 	var Enumeration pMode
-	var Condition pCondition
+	var SimpleConversationCondition pCondition
 	
 	
 	/** \brief Create simple conversation action. */
@@ -159,12 +153,15 @@ class SimpleConversationAction
 	func new(SimpleConversationAction action)
 		pType = action.pType
 		pTarget = action.pTarget
+		pActor = action.pActor
 		pText = action.pText
 		pAnimText = action.pAnimText
 		pName = action.pName
 		pValue = action.pValue
 		pMode = action.pMode
-		pCondition = action.pCondition
+		if action.pCondition != null
+			pCondition = SimpleConversationCondition.new(action.pCondition)
+		end
 	end
 	
 	
@@ -288,14 +285,19 @@ class SimpleConversationAction
 		pValue = value
 	end
 	
-	/** \brief Condition type.
+	/**
+	 * \brief Condition.
+	 * 
+	 * - \ref Type#condIf: Condition.
+	 * - \ref Type#condElif: Condition.
+	 * - other types: Not used and is null
 	 */
-	func Condition getCondition()
+	func SimpleConversationCondition getCondition()
 		return pCondition
 	end
 	
-	/** \brief Set condition type. */
-	func void setCondition(Condition condition)
+	/** \brief Set condition. */
+	func void setCondition(SimpleConversationCondition condition)
 		pCondition = condition
 	end
 	
@@ -305,9 +307,6 @@ class SimpleConversationAction
 	 * - \ref Type#variable: \ref CActionSetVariable.Operator for variables or
 	 *   \ref CActionSetActorParameter.Operator for parameters.
 	 * - \ref Type#trigger: \ref CActionTrigger.Action .
-	 * - \ref Type#snippetIf: \ref CConditionVariable.Operator for variables,
-	 *   \ref CConditionActorParameter.Operator for parameters, \ref ConditionEvaluation
-	 *   for conditions and \ref CConditionTrigger.TestMode for triggers.
 	 * - other types: Not used and is null
 	 */
 	func Enumeration getMode()
