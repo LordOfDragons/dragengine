@@ -75,6 +75,9 @@ class SimpleConversationConverter
 		/** \brief Open if-else conversation action or null. */
 		public var CActionIfElse actionIfElse
 		
+		/** \brief Open player-choice conversation action or null. */
+		public var CActionPlayerChoice actionPlayerChoice
+		
 		/** \brief Array of \ref Gesture to add to speech. */
 		public var Array gestures
 		
@@ -283,6 +286,33 @@ class SimpleConversationConverter
 				
 			case SimpleConversationAction.Type.condElse
 				convertElse(state, each)
+				
+			case SimpleConversationAction.Type.playerChoice
+				convertPlayerChoice(state, each)
+				
+			case SimpleConversationAction.Type.playerChoiceOption
+				convertPlayerChoiceOption(state, each)
+				
+			case SimpleConversationAction.Type.wait
+				convertWait(state, each)
+				
+			case SimpleConversationAction.Type.snippet
+				convertSnippet(state, each)
+				
+			case SimpleConversationAction.Type.music
+				convertMusic(state, each)
+				
+			case SimpleConversationAction.Type.addActor
+				convertAddActor(state, each)
+				
+			case SimpleConversationAction.Type.removeActor
+				convertRemoveActor(state, each)
+				
+			case SimpleConversationAction.Type.addCoordSystem
+				convertAddCoordSystem(state, each)
+				
+			case SimpleConversationAction.Type.removeCoordSystem
+				convertRemoveCoordSystem(state, each)
 			end
 		end)
 		
@@ -299,8 +329,8 @@ class SimpleConversationConverter
 	 * not set and no previous CActionActorSpeak is present.
 	 */
 	protected func void convertActor(State state, SimpleConversationAction action)
-		if action.getActor() != null
-			state.actor = state.simpleConversation.getActorWith(action.getActor())
+		if action.getTarget() != null
+			state.actor = state.simpleConversation.getActorWith(action.getTarget())
 			
 			state.conversationActor = state.playback.getActorMatching(state.actor.getActorId())
 			if state.conversationActor == null
@@ -565,9 +595,9 @@ class SimpleConversationConverter
 	protected func void convertCommand(State state, SimpleConversationAction action)
 		closeActions(state)
 		
-		if action.getActor() != null
+		if action.getTarget() != null
 			var CActionActorCommand caction = CActionActorCommand.new()
-			caction.setActorID(state.simpleConversation.getActorWith(action.getActor()).getActorId())
+			caction.setActorID(state.simpleConversation.getActorWith(action.getTarget()).getActorId())
 			caction.setCommand(action.getName())
 			state.actions.add(caction)
 			
@@ -610,9 +640,9 @@ class SimpleConversationConverter
 	protected func void convertVariable(State state, SimpleConversationAction action)
 		closeActions(state)
 		
-		if action.getActor() != null
+		if action.getTarget() != null
 			var CActionSetActorParameter caction = CActionSetActorParameter.new()
-			caction.setActorID(action.getActor())
+			caction.setActorID(state.simpleConversation.getActorWith(action.getTarget()).getActorId())
 			caction.setName(action.getName())
 			caction.setValue(action.getValue())
 			caction.setOperator(action.getMode() cast CActionSetActorParameter.Operator)
@@ -659,12 +689,10 @@ class SimpleConversationConverter
 		end
 		
 		var CActionIfElseCase ccase = CActionIfElseCase.new()
-		state.actionIfElse.addCase(ccase)
-		
 		ccase.setCondition(convertCondition(state, action.getCondition()))
-		
 		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
 			state.simpleConversation, state.playback, ccase.getActions())
+		state.actionIfElse.addCase(ccase)
 	end
 	
 	/**
@@ -673,9 +701,9 @@ class SimpleConversationConverter
 	protected func ConversationCondition convertCondition(State state, SimpleConversationCondition condition)
 		select condition.getType()
 		case SimpleConversationCondition.Type.variable
-			if condition.getActor() != null
+			if condition.getTarget() != null
 				var CConditionActorParameter ccond = CConditionActorParameter.new()
-				ccond.setActorID(condition.getActor())
+				ccond.setActorID(state.simpleConversation.getActorWith(condition.getTarget()).getActorId())
 				ccond.setParameter(condition.getName())
 				ccond.setOperator(condition.getMode() cast CConditionActorParameter.Operator)
 				ccond.setTestValue(condition.getValue())
@@ -696,9 +724,9 @@ class SimpleConversationConverter
 			return ccond
 			
 		case SimpleConversationCondition.Type.command
-			if condition.getActor() != null
+			if condition.getTarget() != null
 				var CConditionActorCommand ccond = CConditionActorCommand.new()
-				ccond.setActorID(condition.getActor())
+				ccond.setActorID(state.simpleConversation.getActorWith(condition.getTarget()).getActorId())
 				ccond.setCommand(condition.getName())
 				ccond.setNegate(condition.getValue() == 0)
 				return ccond
@@ -736,6 +764,148 @@ class SimpleConversationConverter
 	end
 	
 	/**
+	 * \brief Convert player choice action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionPlayerChoice with
+	 * using 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertPlayerChoice(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		state.actionPlayerChoice = CActionPlayerChoice.new()
+		state.actionPlayerChoice.setVariable(action.getName())
+		state.actions.add(state.actionPlayerChoice)
+	end
+	
+	/**
+	 * \brief Convert player choice option action.
+	 * 
+	 * Adds instance of \ref CActionPlayerChoiceOption to the open player-choice action.
+	 * Then adds to this option actions of the referenced snippet.
+	 */
+	protected func void convertPlayerChoiceOption(State state, SimpleConversationAction action)
+		var CActionPlayerChoiceOption coption = CActionPlayerChoiceOption.new()
+		coption.setText(action.getText())
+		if action.getCondition() != null
+			coption.setCondition(convertCondition(state, action.getCondition()))
+		end
+		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+			state.simpleConversation, state.playback, coption.getActions())
+		state.actionPlayerChoice.addOption(coption)
+	end
+	
+	/**
+	 * \brief Convert wait action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionWait with using
+	 * 0 delay waiting for speaking actors to finish. Then adds to the wait action the
+	 * actions of the referenced snippet.
+	 */
+	protected func void convertWait(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionWait caction = CActionWait.new()
+		caction.setCondition(convertCondition(state, action.getCondition()))
+		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+			state.simpleConversation, state.playback, caction.getActions())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert snippet action.
+	 * 
+	 * Closes open actions if present. If getSubTarget() is null adds referenced snippet
+	 * actions. If getSubTarget() is not null adds \ref CActionSnippet.
+	 */
+	protected func void convertSnippet(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		if action.getSubTarget() != null
+			var CActionSnippet caction = CActionSnippet.new()
+			caction.setGroupID(action.getSubTarget())
+			caction.setTopicID(action.getTarget())
+			state.actions.add(caction)
+			
+		else
+			var State subState = createState()
+			subState.snippet = state.simpleConversation.getSnippetWith(action.getTarget())
+			subState.simpleConversation = state.simpleConversation
+			subState.playback = state.playback
+			subState.conversation = state.playback.getConversation()
+			subState.actions = state.actions
+			
+			convert(subState.snippet, state.simpleConversation, state.playback, state.actions)
+		end
+	end
+	
+	/**
+	 * \brief Convert music action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionMusic.
+	 */
+	protected func void convertMusic(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionMusic caction = CActionMusic.new()
+		caction.setName(action.getName())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert add actor action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionActorAdd.
+	 */
+	protected func void convertAddActor(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionActorAdd caction = CActionActorAdd.new()
+		caction.setActorID(action.getTarget())
+		caction.setAliasID(action.getSubTarget())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert remove actor action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionActorRemove.
+	 */
+	protected func void convertRemoveActor(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionActorRemove caction = CActionActorRemove.new()
+		caction.setActorID(action.getTarget())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert add coordinate system action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionCoordSystemAdd.
+	 */
+	protected func void convertAddCoordSystem(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionCoordSystemAdd caction = CActionCoordSystemAdd.new()
+		caction.setCoordSystemID(action.getTarget())
+		caction.setAliasID(action.getSubTarget())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert remove coordinate system action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionCoordSystemRemove.
+	 */
+	protected func void convertRemoveCoordSystem(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionCoordSystemRemove caction = CActionCoordSystemRemove.new()
+		caction.setCoordSystemID(action.getTarget())
+		state.actions.add(caction)
+	end
+	
+	/**
 	 * \brief Close open actor speak conversation action if present.
 	 * 
 	 * If closing updates last gesture duration if it is a held gesture. Stored actor
@@ -755,5 +925,6 @@ class SimpleConversationConverter
 	protected func void closeActions(State state)
 		closeSpeak(state)
 		state.actionIfElse = null
+		state.actionPlayerChoice = null
 	end
 end

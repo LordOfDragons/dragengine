@@ -33,85 +33,76 @@ pin Dragengine.Utils
  * \brief Action for player choice window entry setting the next conversation actions to run.
  */
 class ConversationPlayerChoice implements ActionListener
-	/** \brief Conversation playback. */
-	private var ConversationPlayback pPlayback
-	
-	/** \brief Layer to go back to. */
-	private var ConversationPlaybackLayer pLayer
-	
-	/** \brief Action iterator to activate. */
-	private var ConversationActionIterator pActionIterator
-	
-	/** \brief Name of variable to set with the selected option or null if not used. */
-	private var String pVariable
-	
-	/** \brief Value to set the variable to. */
-	private var int pValue
+	var ConversationPlayback pPlayback
+	var ConversationPlaybackLayer pLayer
+	var ConversationActionIterator pActionIterator
+	var String pVariable
+	var int pValue
 	
 	
 	
 	/** \brief Create conversation player choice option. */
-	public func new( ConversationPlayback playback, ConversationPlaybackLayer layer, \
-	ConversationActionIterator actionIterator, String variable, int value )
+	func new(ConversationPlayback playback, ConversationPlaybackLayer layer, \
+	ConversationActionIterator actionIterator, String variable, int value)
 		if playback == null or layer == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPlayback = playback
-		this.pLayer = layer
-		this.pActionIterator = actionIterator
-		this.pVariable = variable
-		this.pValue = value
+		pPlayback = playback
+		pLayer = layer
+		pActionIterator = actionIterator
+		pVariable = variable
+		pValue = value
 	end
 	
 	
 	
 	/** \brief Name of variable to set with the selected option or null if not used. */
-	public func String getVariable()
-		return this.pVariable
+	func String getVariable()
+		return pVariable
 	end
 	
 	/** \brief Value to set the variable to. */
-	public func int getValue()
-		return this.pValue
+	func int getValue()
+		return pValue
 	end
 	
 	/** \brief Conversation playback. */
-	public func ConversationPlayback getPlayback()
-		return this.pPlayback
+	func ConversationPlayback getPlayback()
+		return pPlayback
 	end
 	
 	/** \brief Layer to go back to. */
-	public func ConversationPlaybackLayer getLayer()
-		return this.pLayer
+	func ConversationPlaybackLayer getLayer()
+		return pLayer
 	end
 	
 	/** \brief Action iterator or null if not set. */
-	public func ConversationActionIterator getActionIterator()
-		return this.pActionIterator
+	func ConversationActionIterator getActionIterator()
+		return pActionIterator
 	end
 	
 	
 	
 	/** \brief Action fired. */
-	public func void onAction( ActionEvent event )
+	func void onAction(ActionEvent event)
 		// end the player choosing
-		this.pPlayback.getPlayerChoice().endChoosing()
+		pPlayback.getPlayerChoice().endChoosing()
 		
 		// set variable
-		if this.pVariable != null
-			this.pPlayback.setVariable( this.pVariable, this.pValue )
+		if pVariable != null
+			pPlayback.setVariable(pVariable, pValue)
 		end
 		
 		// cancel looping layer and remove all layers below
-		this.pPlayback.cancelLoopingLayer( this.pLayer )
+		pPlayback.cancelLoopingLayer(pLayer)
 		
 		// push option actions to stack or advance to the next action if missing
-		if this.pActionIterator != null
-			this.pPlayback.pushLayer( ConversationPlaybackLayer.new( this.pActionIterator ) )
+		if pActionIterator != null
+			pPlayback.pushLayer(ConversationPlaybackLayer.new(pActionIterator))
 			
 		else
-			this.pPlayback.advanceToNextAction()
+			pPlayback.advanceToNextAction()
 		end
 	end
 end

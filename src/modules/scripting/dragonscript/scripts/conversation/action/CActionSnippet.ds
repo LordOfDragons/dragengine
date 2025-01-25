@@ -52,10 +52,8 @@ class CActionSnippet extends ConversationAction
 	end
 	
 	
-	
 	var StringID pGroupID
 	var StringID pTopicID
-	
 	
 	
 	/** \brief Create conversation action. */

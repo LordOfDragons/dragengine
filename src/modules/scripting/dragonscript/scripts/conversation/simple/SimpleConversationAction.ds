@@ -117,6 +117,74 @@ class SimpleConversationAction
 		 * Uses getTarget() as snippet to run if all previous conditions are not fulfilled.
 		 */
 		condElse
+		
+		/**
+		 * \brief Player choice.
+		 * 
+		 * Uses getName() as variable name to set or null if not required.
+		 */
+		playerChoice
+		
+		/**
+		 * \brief Option to show in a player choice.
+		 * 
+		 * Uses getTarget() as snippet to run if player selects option.
+		 * Uses getCondition() as Condition to test if option should be shown.
+		 */
+		playerChoiceOption
+		
+		/**
+		 * \brief Run simple snippet looping while condition is fulfilled.
+		 * 
+		 * Uses getTarget() as snippet to run while condition is fulfilled.
+		 * Uses getCondition() as Condition to test.
+		 */
+		wait
+		
+		/**
+		 * \brief Run conversation or simple snippet.
+		 * 
+		 * Uses getTarget() as snippet topic or simple snippet (getSubTarget() is null) to run.
+		 * Uses getSubTarget() as snippet topic group to run.
+		 */
+		snippet
+		
+		/**
+		 * \brief Change muisic.
+		 * 
+		 * Uses getName() as music to use.
+		 */
+		music
+		
+		/**
+		 * \brief Add actor.
+		 * 
+		 * Uses getTarget() as identifier of actor to add.
+		 * Uses getSubTarget() as alias to use or null if not set.
+		 */
+		addActor
+		
+		/**
+		 * \brief Remove actor.
+		 * 
+		 * Uses getTarget() as identifier or alias of actor to remove.
+		 */
+		removeActor
+		
+		/**
+		 * \brief Add coordinate system.
+		 * 
+		 * Uses getTarget() as identifier of coordinate system to add.
+		 * Uses getSubTarget() as alias to use or null if not set.
+		 */
+		addCoordSystem
+		
+		/**
+		 * \brief Remove coordinate system.
+		 * 
+		 * Uses getTarget() as identifier or alias of coordinate system to remove.
+		 */
+		removeCoordSystem
 	end
 	
 	/** \brief Condition. */
@@ -133,7 +201,7 @@ class SimpleConversationAction
 	
 	
 	var Type pType
-	var StringID pTarget, pActor
+	var StringID pTarget, pSubTarget
 	var UnicodeString pText, pAnimText
 	var String pName
 	var int pValue
@@ -153,7 +221,7 @@ class SimpleConversationAction
 	func new(SimpleConversationAction action)
 		pType = action.pType
 		pTarget = action.pTarget
-		pActor = action.pActor
+		pSubTarget = action.pSubTarget
 		pText = action.pText
 		pAnimText = action.pAnimText
 		pName = action.pName
@@ -175,7 +243,13 @@ class SimpleConversationAction
 	 * 
 	 * - \ref Type#gesture: Identifier of gesture.
 	 * - \ref Type#trigger: Idenfitier or trigger.
-	 * - \ref Type#snippetIf: Snippet to run if condition is fulfilled.
+	 * - \ref Type#condIf: Snippet to run if condition is fulfilled.
+	 * - \ref Type#playerChoiceOption: Snippet to run if option is selected.
+	 * - \ref Type#wait: Snippet to run while condition is fulfilled.
+	 * - \ref Type#addActor: Identifier of actor to add.
+	 * - \ref Type#removeActor: Identifier or alias of actor to remove.
+	 * - \ref Type#addCoordSystem: Identifier of coordinate system to add.
+	 * - \ref Type#removeCoordSystem: Identifier or alias of coordinate system to remove.
 	 * - other types: Not used and is null
 	 */
 	func StringID getTarget()
@@ -191,23 +265,25 @@ class SimpleConversationAction
 	end
 	
 	/**
-	 * \brief Actor identifier or alias.
+	 * \brief Sub target.
 	 * 
 	 * - \ref Type#speak: Identifier of actor or null to stick to the active one.
 	 * - \ref Type#command: Identifier of actor or null for game command.
 	 * - \ref Type#variable: Idenfitier or alias of actor to set parameter instead of variable.
+	 * - \ref Type#addActor: Alias to assign to added actor or null if not used.
+	 * - \ref Type#addCoordSystem: Alias to assign to added coordinate system or null if not used.
 	 * - other types: Not used and is null
 	 */
-	func StringID getActor()
-		return pActor
+	func StringID getSubTarget()
+		return pSubTarget
 	end
 	
 	/**
-	 * \brief Set actor identifier or alias.
-	 * \see #getActorId()
+	 * \brief Set sub target.
+	 * \see #getSubTarget()
 	 */
-	func void setActor(StringID actor)
-		pActor = actor
+	func void setSubTarget(StringID target)
+		pSubTarget = target
 	end
 	
 	/**
@@ -253,6 +329,8 @@ class SimpleConversationAction
 	 * - \ref Type#command: Command to send.
 	 * - \ref Type#variable: Variable/parameter name.
 	 * - \ref Type#snippetIf: Variable/parameter/condition/trigger name.
+	 * - \ref Type#playerChoice: Variable name or null if not used.
+	 * - \ref Type#music: Name of music to use.
 	 * - other types: Not used and is null
 	 */
 	func String getName()
@@ -290,6 +368,8 @@ class SimpleConversationAction
 	 * 
 	 * - \ref Type#condIf: Condition.
 	 * - \ref Type#condElif: Condition.
+	 * - \ref Type#playerChoiceOption: Condition or null to always show.
+	 * - \ref Type#wait: Condition.
 	 * - other types: Not used and is null
 	 */
 	func SimpleConversationCondition getCondition()

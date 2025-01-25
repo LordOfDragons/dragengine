@@ -38,7 +38,7 @@ class SimpleConversationCondition
 		 * \brief Compare variable or actor parameter value.
 		 * 
 		 * Uses getName() as variable/parameter name to compare.
-		 * Uses getActor() as actor id or alias if present.
+		 * Uses getTarget() as actor id or alias if present.
 		 * Uses getValue() as value to compare against.
 		 * Uses getMode() as comparison operator. Allowed modes are
 		 * \ref CConditionVariable.Operator for variables and
@@ -57,7 +57,7 @@ class SimpleConversationCondition
 		/**
 		 * \brief Evaluate game or actor commandf.
 		 * 
-		 * Uses getActor() as actor id or alias if present.
+		 * Uses getTarget() as actor id or alias if present.
 		 * Uses getName() as command to evaluate.
 		 * Uses getValue() as expected outcome. A value of 1 means true and a value of 0 false.
 		 */
@@ -74,7 +74,7 @@ class SimpleConversationCondition
 	
 	
 	var Type pType
-	var StringID pActor
+	var StringID pTarget
 	var String pName
 	var int pValue
 	var Enumeration pMode
@@ -92,7 +92,7 @@ class SimpleConversationCondition
 	/** \brief Create copy of simple conversation condition. */
 	func new(SimpleConversationCondition condition)
 		pType = condition.pType
-		pActor = condition.pActor
+		pTarget = condition.pTarget
 		pName = condition.pName
 		pValue = condition.pValue
 		pMode = condition.pMode
@@ -116,16 +116,16 @@ class SimpleConversationCondition
 	 * - \ref Type#condition: Identifier of actor or null for game conditioon.
 	 * - other types: Not used and is null
 	 */
-	func StringID getActor()
-		return pActor
+	func StringID getTarget()
+		return pTarget
 	end
 	
 	/**
 	 * \brief Set actor identifier or alias.
-	 * \see #getActorId()
+	 * \see #getTarget()
 	 */
-	func void setActor(StringID actor)
-		pActor = actor
+	func void setTarget(StringID target)
+		pTarget = target
 	end
 	
 	/**

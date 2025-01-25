@@ -104,14 +104,14 @@ pin Dragengine.Scenery
  *      <stopTopic/>
  *      <stopConversation/>
  * 
- *      <variable name='my variable'>2</variable>
- *      <variable actor='player' name='my variable'>2</variable>
+ *      <variable name='my variable' value='2'/>
+ *      <variable actor='player' name='my variable' value='2'/>
  *         value can be prefixed with '+' to increment, '-' to decrement
  *         and '~' to randomize between 0 and value inclusive.
  *         if actor='player' is present actor parameter is set instead of variable.
  * 
- *      <trigger name='my trigger'>fire</variable>
- *         value can be fire, reset, pulse and fullReset.
+ *      <trigger name='my trigger' action='fire'/>
+ *         action can be fire, reset, pulse and fullReset.
  * 
  *      <if snippet='snippet to run'> ...condition... </if>
  *         where condition can be:
@@ -134,6 +134,31 @@ pin Dragengine.Scenery
  *               no condition is fulfilled.
  *      <elif ...> same as <if ...> but adds another case to the previous <if>
  *      <else>snippet to run</else>
+ * 
+ *      <choice variable='variable name to set'/>
+ *         show player choice. attribute variable is optional.
+ *      <option text='text to display' snippet='snippet to run'> ...condition... </option>
+ *         add option. condition is optional. if present shows option if
+ *         fulfilled. condition can be the same as in <if ...>
+ * 
+ *      <wait snippet='snippet to run'> ...condition... </wait>
+ *         run snippet looping while condition is fulfilled
+ * 
+ *      <snippet group='snippet topic group'>snippet topic</snippet>
+ *         run conversation snippet topic
+ * 
+ *      <snippet>snippet identifier</snippet>
+ *         run simple conversation snippet
+ * 
+ *      <music name='music name'/>
+ * 
+ *      <add actor='actor id' alias='alias to assign'/>
+ *      <add coordSystem='coord system id' alias='alias to assign'/>
+ *         add actor or coordinate system. Attribute alias is optional.
+ * 
+ *      <remove actor='actor id or alias'/>
+ *      <remove coordSystem='coord system id or alias'/>
+ *         remove actor or coordinate system.
  *      -->
  * 
  *      <!--
@@ -323,7 +348,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 				tagName = element.getTagName()
 				if tagName.equals("actor")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
-					action.setActor(StringID.new(element.getAttributeNamed("id")))
+					action.setTarget(StringID.new(element.getAttributeNamed("id")))
 					snippet.addAction(action)
 					
 				elif tagName.equals("gesture")
@@ -334,7 +359,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 				elif tagName.equals("command")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.command)
 					if element.hasAttributeNamed("actor")
-						action.setActor(StringID.new(element.getAttributeNamed("actor")))
+						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
 					end
 					action.setName(element.getFirstCData())
 					snippet.addAction(action)
@@ -357,14 +382,14 @@ class LoadSimpleConversation extends BaseXmlLoader
 						SimpleConversationAction.Type.stopConversation))
 					
 				elif tagName.equals("variable")
-					text = element.getFirstCData()
+					text = element.getAttributeNamed("value")
 					character = text.getAt(0)
 					
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.variable)
 					action.setName(element.getAttributeNamed("name"))
 					
 					if element.hasAttributeNamed("actor")
-						action.setActor(StringID.new(element.getAttributeNamed("actor")))
+						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
 						
 						select character
 						case '+'
@@ -410,7 +435,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.trigger)
 					action.setTarget(StringID.new(element.getAttributeNamed("name")))
 					
-					text = element.getFirstCData()
+					text = element.getAttributeNamed("action")
 					action.setMode(CActionTrigger.Action.named(text))
 					if action.getMode() == null
 						logInvalidValue(element, text)
@@ -427,9 +452,69 @@ class LoadSimpleConversation extends BaseXmlLoader
 					action.setTarget(StringID.new(element.getFirstCData()))
 					snippet.addAction(action)
 					
+				elif tagName.equals("choice")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.playerChoice)
+					if element.hasAttributeNamed("variable")
+						action.setName(element.getAttributeNamed("variable"))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("option")
+					snippet.addAction(readOption(element))
+					
+				elif tagName.equals("wait")
+					snippet.addAction(readWait(element))
+					
+				elif tagName.equals("snippet")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.snippet)
+					action.setTarget(StringID.new(element.getFirstCData()))
+					if element.hasAttributeNamed("group")
+						action.setSubTarget(StringID.new(element.getAttributeNamed("group")))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("music")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.music)
+					action.setName(element.getFirstCData())
+					snippet.addAction(action)
+					
+				elif tagName.equals("add")
+					if element.hasAttributeNamed("actor")
+						action = SimpleConversationAction.new(SimpleConversationAction.Type.addActor)
+						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
+						
+					elif element.hasAttributeNamed("coordSystem")
+						action = SimpleConversationAction.new(SimpleConversationAction.Type.addCoordSystem)
+						action.setTarget(StringID.new(element.getAttributeNamed("coordSystem")))
+						
+					else
+						logMissingAttribute(element, "actor or coordSystem")
+						throw EInvalidParam.new("missing attribute 'actor' or 'coordSystem'")
+					end
+					
+					if element.hasAttributeNamed("alias")
+						action.setSubTarget(StringID.new(element.getAttributeNamed("alias")))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("remove")
+					if element.hasAttributeNamed("actor")
+						action = SimpleConversationAction.new(SimpleConversationAction.Type.removeActor)
+						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
+						
+					elif element.hasAttributeNamed("coordSystem")
+						action = SimpleConversationAction.new(SimpleConversationAction.Type.removeCoordSystem)
+						action.setTarget(StringID.new(element.getAttributeNamed("coordSystem")))
+						
+					else
+						logMissingAttribute(element, "actor or coordSystem")
+						throw EInvalidParam.new("missing attribute 'actor' or 'coordSystem'")
+					end
+					snippet.addAction(action)
+					
 				elif tagName.equals("a")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
-					action.setActor(StringID.new(element.getAttributeNamed("i")))
+					action.setTarget(StringID.new(element.getAttributeNamed("i")))
 					snippet.addAction(action)
 					
 				elif tagName.equals("g")
@@ -495,7 +580,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.variable)
 			condition.setName(element.getAttributeNamed("name"))
 			if element.hasAttributeNamed("actor")
-				condition.setActor(StringID.new(element.getAttributeNamed("actor")))
+				condition.setTarget(StringID.new(element.getAttributeNamed("actor")))
 			end
 			
 			test = element.getAttributeNamed("test")
@@ -537,7 +622,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.command)
 			condition.setName(element.getFirstCData())
 			if element.hasAttributeNamed("actor")
-				condition.setActor(StringID.new(element.getAttributeNamed("actor")))
+				condition.setTarget(StringID.new(element.getAttributeNamed("actor")))
 			end
 			
 			if element.hasAttributeNamed("test")
@@ -584,5 +669,52 @@ class LoadSimpleConversation extends BaseXmlLoader
 		end)
 		
 		return condition
+	end
+	
+	protected func SimpleConversationAction readOption(EasyXMLElement root)
+		var SimpleConversationAction action = SimpleConversationAction.new(\
+			SimpleConversationAction.Type.playerChoiceOption)
+		action.setText(UnicodeString.newFromUTF8(root.getAttributeNamed("text")))
+		action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			var SimpleConversationCondition condition = readCondition(element)
+			if condition != null
+				if action.getCondition() == null
+					action.setCondition(condition)
+					
+				else
+					logDuplicateObject(element, "condition", "")
+				end
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return action
+	end
+	
+	protected func SimpleConversationAction readWait(EasyXMLElement root)
+		var SimpleConversationAction action = SimpleConversationAction.new(\
+			SimpleConversationAction.Type.wait)
+		action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			var SimpleConversationCondition condition = readCondition(element)
+			if condition != null
+				if action.getCondition() == null
+					action.setCondition(condition)
+					
+				else
+					logDuplicateObject(element, "condition", "")
+				end
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return action
 	end
 end

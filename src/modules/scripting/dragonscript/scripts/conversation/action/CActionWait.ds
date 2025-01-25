@@ -120,6 +120,14 @@ class CActionWait extends ConversationAction
 		pActions.add(action)
 	end
 	
+	/**
+	 * \brief Wait actions as Array of ConversationAction.
+	 * \version 1.24
+	 */
+	func Array getActions()
+		return pActions
+	end
+	
 	/** \brief Actions to loop while condition is true. */
 	func ConversationActionIterator getIteratorActions()
 		return ConversationActionIterator.new(pActions, 0)
