@@ -413,7 +413,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 			end
 			
 			if pAddPlayer == null
-				playback.setInputProcessor(null)  // allow player to continue give input
+				playback.setInputProcessor(null) // allow player to continue give input
 			end
 			
 			return playback

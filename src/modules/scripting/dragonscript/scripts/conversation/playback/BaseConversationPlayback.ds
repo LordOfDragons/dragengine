@@ -53,7 +53,7 @@ class BaseConversationPlayback extends ConversationPlayback
 		 * \brief Conversation command.
 		 * \param arguments. Array of String tokens parsed from send command.
 		 */
-		func void runCommand( BaseConversationPlayback playback, Array arguments )
+		func void runCommand(BaseConversationPlayback playback, Array arguments)
 	end
 	
 	/**
@@ -65,57 +65,55 @@ class BaseConversationPlayback extends ConversationPlayback
 		 * \brief Evaluate conversation condition.
 		 * \param arguments. Array of String tokens parsed from send command.
 		 */
-		func bool evaluateCondition( BaseConversationPlayback playback, Array arguments )
+		func bool evaluateCondition(BaseConversationPlayback playback, Array arguments)
 	end
 	
 	/** \brief Factory for loading. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "BaseConversationPlayback"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			var BaseConversationPlayback playback = BaseConversationPlayback.new( env, reader )
-			playback.readDelayedFromFile( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			var BaseConversationPlayback playback = BaseConversationPlayback.new(env, reader)
+			playback.readDelayedFromFile(env, reader)
 			return playback
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
+	var CommandLineParser pCommandParser
+	var Dictionary pCommands
+	var Dictionary pConditions
 	
-	private var CommandLineParser pCommandParser
-	private var Dictionary pCommands
-	private var Dictionary pConditions
+	var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
+	var InputProcessor pInputProcessor
 	
-	private var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
-	private var InputProcessor pInputProcessor
-	
-	private var CameraDirector pRestoreCameraDirector
-	private var InputProcessor pRestoreInputProcessor
-	
+	var CameraDirector pRestoreCameraDirector
+	var InputProcessor pRestoreInputProcessor
 	
 	
 	/** \brief Create conversation playback. */
-	public func new( Conversation conversation ) \
-	this( conversation, BaseGameApp.getApp().getPlayerControlledActor() )
+	func new(Conversation conversation) \
+	this(conversation, BaseGameApp.getApp().getPlayerControlledActor())
 	end
 	
 	/** \brief Create conversation playback. */
-	public func new( Conversation conversation, ECBehaviorPlayerControllable.Tracker playerControlledActor ) \
-	super( conversation )
-		this.pCommandParser = CommandLineParser.new()
-		this.pCommands = Dictionary.new()
-		this.pConditions = Dictionary.new()
-		this.pPlayerControlledActor = playerControlledActor
-		this.setSubTitle( BaseGameApp.getApp().getWindowSubTitle() )
-		this.setPlayerChoice( BaseGameApp.getApp().getWindowPlayerChoice() )
-		this.setCameraDirector( this.createCameraDirector() )
-		this.pInputProcessor = this.createInputProcessor()
+	func new(Conversation conversation, ECBehaviorPlayerControllable.Tracker playerControlledActor) \
+	super(conversation)
+		pCommandParser = CommandLineParser.new()
+		pCommands = Dictionary.new()
+		pConditions = Dictionary.new()
+		pPlayerControlledActor = playerControlledActor
+		setSubTitle(BaseGameApp.getApp().getWindowSubTitle())
+		setPlayerChoice(BaseGameApp.getApp().getWindowPlayerChoice())
+		setCameraDirector(createCameraDirector())
+		pInputProcessor = createInputProcessor()
 	end
 	
 	/**
@@ -129,183 +127,177 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * - SubTitle
 	 * - pPlayerChoice
 	 */
-	public func new( PersistencyEnvironment env, FileReader reader ) super( env, reader )
-		this.setSubTitle( BaseGameApp.getApp().getWindowSubTitle() )
-		this.setPlayerChoice( BaseGameApp.getApp().getWindowPlayerChoice() )
-		this.setCameraDirector( this.createCameraDirector() )
-		this.pInputProcessor = this.createInputProcessor()
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
+		setSubTitle(BaseGameApp.getApp().getWindowSubTitle())
+		setPlayerChoice(BaseGameApp.getApp().getWindowPlayerChoice())
+		setCameraDirector(createCameraDirector())
+		pInputProcessor = createInputProcessor()
 	end
 	
 	/** \brief Dispose of conversation playback. */
-	public func void dispose()
+	func void dispose()
 		super.dispose()
 		
-		this.pPlayerControlledActor = null
-		this.pInputProcessor = null
-		this.pRestoreCameraDirector = null
-		this.pRestoreInputProcessor = null
-		this.pConditions = null
-		this.pCommands = null
+		pPlayerControlledActor = null
+		pInputProcessor = null
+		pRestoreCameraDirector = null
+		pRestoreInputProcessor = null
+		pConditions = null
+		pCommands = null
 	end
-	
 	
 	
 	/** \brief Player controlled actor. */
-	public func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
-		return this.pPlayerControlledActor
+	func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
+		return pPlayerControlledActor
 	end
 	
 	/** \brief Input processor or \em null to not change. */
-	public func InputProcessor getInputProcessor()
-		return this.pInputProcessor
+	func InputProcessor getInputProcessor()
+		return pInputProcessor
 	end
 	
 	/** \brief Set input processor or \em null to not change. */
-	public func void setInputProcessor( InputProcessor inputProcessor )
-		this.pInputProcessor = inputProcessor
+	func void setInputProcessor(InputProcessor inputProcessor)
+		pInputProcessor = inputProcessor
 	end
-	
 	
 	
 	/**
 	 * \brief Command parser.
 	 * \version 1.4
 	 */
-	public func CommandLineParser getCommandParser()
-		return this.pCommandParser
+	func CommandLineParser getCommandParser()
+		return pCommandParser
 	end
 	
 	/**
 	 * \brief Set command parser.
 	 * \version 1.4
 	 */
-	public func void setCommandParser( CommandLineParser parser )
+	func void setCommandParser(CommandLineParser parser)
 		if parser == null
 			throw EInvalidParam.new()
 		end
-		this.pCommandParser = parser
+		pCommandParser = parser
 	end
-	
 	
 	
 	/**
 	 * \brief Count of conversation commands.
 	 * \version 1.4
 	 */
-	public func int getCommandCount()
-		return this.pCommands.getCount()
+	func int getCommandCount()
+		return pCommands.getCount()
 	end
 	
 	/**
 	 * \brief Supported command names as Array of String.
 	 * \version 1.4
 	 */
-	public func Array getCommandNames()
-		return this.pCommands.getKeys()
+	func Array getCommandNames()
+		return pCommands.getKeys()
 	end
 	
 	/**
 	 * \brief Named command or null if absent.
 	 * \version 1.4
 	 */
-	public func ConversationCommand getCommandNamed( String name )
-		return this.pCommands.getAt( name, null ) cast ConversationCommand
+	func ConversationCommand getCommandNamed(String name)
+		return pCommands.getAt(name, null) cast ConversationCommand
 	end
 	
 	/**
 	 * \brief Add command replacing command with same name if present.
 	 * \version 1.4
 	 */
-	public func void addCommand( String name, ConversationCommand command )
+	func void addCommand(String name, ConversationCommand command)
 		if name == null or command == null
 			throw EInvalidParam.new()
 		end
-		this.pCommands.setAt( name, command )
+		pCommands.setAt(name, command)
 	end
-	
 	
 	
 	/**
 	 * \brief Count of conversation condition.
 	 * \version 1.4
 	 */
-	public func int getConditionCount()
-		return this.pConditions.getCount()
+	func int getConditionCount()
+		return pConditions.getCount()
 	end
 	
 	/**
 	 * \brief Supported condition names as Array of String.
 	 * \version 1.4
 	 */
-	public func Array getConditionNames()
-		return this.pConditions.getKeys()
+	func Array getConditionNames()
+		return pConditions.getKeys()
 	end
 	
 	/**
 	 * \brief Named condition or null if absent.
 	 * \version 1.4
 	 */
-	public func ConversationCondition getConditionNamed( String name )
-		return this.pConditions.getAt( name, null ) cast ConversationCondition
+	func ConversationCondition getConditionNamed(String name)
+		return pConditions.getAt(name, null) cast ConversationCondition
 	end
 	
 	/**
 	 * \brief Add condition replacing condition with same name if present.
 	 * \version 1.4
 	 */
-	public func void addCondition( String name, ConversationCondition condition )
+	func void addCondition(String name, ConversationCondition condition)
 		if name == null or condition == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.setAt( name, condition )
+		pConditions.setAt(name, condition)
 	end
-	
 	
 	
 	/** \brief Set conversation topic. */
-	public func void setTopic( String idTopicGroup, String idTopic )
-		var Conversation conversation = this.getConversation()
+	func void setTopic(String idTopicGroup, String idTopic)
+		var Conversation conversation = getConversation()
 		
-		var ConversationTopicGroup topicGroup = conversation.getTopicGroupWithID( \
-			StringID.new( idTopicGroup ) )
+		var ConversationTopicGroup topicGroup = conversation.getTopicGroupWithID(\
+			StringID.new(idTopicGroup))
 		if topicGroup == null
-			BaseGameApp.getApp().getConsole().addMessage( \
-				"BaseConversationPlayback.setTopic: Not found '" + idTopicGroup + "' => '" + idTopic )
+			BaseGameApp.getApp().getConsole().addMessage(\
+				"BaseConversationPlayback.setTopic: Not found '" + idTopicGroup + "' => '" + idTopic)
 			throw EInvalidParam.new()
 		end
 		
-		var ConversationTopic topic = topicGroup.getTopicWithID( StringID.new( idTopic ) )
+		var ConversationTopic topic = topicGroup.getTopicWithID(StringID.new(idTopic))
 		
 		if topic == null
-			BaseGameApp.getApp().getConsole().addMessage( \
-				"BaseConversationPlayback.setTopic: Not found '" + idTopicGroup + "' => '" + idTopic )
+			BaseGameApp.getApp().getConsole().addMessage(\
+				"BaseConversationPlayback.setTopic: Not found '" + idTopicGroup + "' => '" + idTopic)
 			throw EInvalidParam.new()
 		end
 		
-		this.setTopic( topicGroup, topic )
+		setTopic(topicGroup, topic)
 	end
 	
 	/** \brief Add actor controlled by player with alias "player". */
-	public func void addPlayerActor()
-		this.addPlayerActor( StringID.new( "player" ) )
+	func void addPlayerActor()
+		addPlayerActor(StringID.new("player"))
 	end
 	
 	/** \brief Add actor controlled by player. */
-	public func void addPlayerActor( StringID alias )
-		this.addActor( ECBehaviorConversationActor.getInstanceIn( \
-			this.pPlayerControlledActor.getActor().getElement() ), alias )
+	func void addPlayerActor(StringID alias)
+		addActor(ECBehaviorConversationActor.getInstanceIn(\
+			pPlayerControlledActor.getActor().getElement()), alias)
 	end
 	
 	/** \brief Add actor. */
-	public func void addActor( BaseActor actor, StringID alias )
-		this.addActor( actor.getConversationActor(), alias )
+	func void addActor(BaseActor actor, StringID alias)
+		addActor(actor.getConversationActor(), alias)
 	end
 	
 	/** \brief Add actor. */
-	public func void addActor( ECBehaviorConversationActor.Instance actor, StringID alias )
-		this.addActor( actor.getConversationActor(), alias )
+	func void addActor(ECBehaviorConversationActor.Instance actor, StringID alias)
+		addActor(actor.getConversationActor(), alias)
 	end
-	
 	
 	
 	/**
@@ -317,9 +309,9 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * Default implementation looks up the identifier in the getConvoActorList() from
 	 * the current GameWorld loaded into WindowGameWorld of BaseGameApp.
 	 */
-	public func ConversationActor loadConversationActor( StringID id )
+	func ConversationActor loadConversationActor(StringID id)
 		return BaseGameApp.getApp().getWindowGameWorld().getGameWorld() \
-			.getConvoActorList().getAt( id )
+			.getConvoActorList().getAt(id)
 	end
 	
 	/**
@@ -331,13 +323,13 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * Default implementation looks up the identifier in the getConvoCoordSystemList() from
 	 * the current GameWorld loaded into WindowGameWorld of BaseGameApp.
 	 */
-	public func ConversationCoordSystem createConversationCoordSystem( StringID id )
+	func ConversationCoordSystem createConversationCoordSystem(StringID id)
 		return BaseGameApp.getApp().getWindowGameWorld().getGameWorld() \
-			.getConvoCoordSystemList().getAt( id )
+			.getConvoCoordSystemList().getAt(id)
 	end
 	
 	/** \brief Trigger table to use. */
-	public func TSTriggerTable getTriggerTable()
+	func TSTriggerTable getTriggerTable()
 		return BaseGameApp.getApp().getTriggerTable()
 	end
 	
@@ -346,8 +338,8 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * 
 	 * Parses command using CommandLineParser into Array of String and calls runCommand()
 	 */
-	public func void gameCommand( String command )
-		this.runCommand( this.pCommandParser.parseCommand( command ) )
+	func void gameCommand(String command)
+		runCommand(pCommandParser.parseCommand(command))
 	end
 	
 	/**
@@ -357,18 +349,18 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * Looks up command to run using first argument. If found runs command using arguments.
 	 * Otherwise throws an exception.
 	 */
-	public func void runCommand( Array arguments )
+	func void runCommand(Array arguments)
 		if arguments.getCount() == 0
-			throw EInvalidParam.new( "arguments is empty" )
+			throw EInvalidParam.new("arguments is empty")
 		end
 		
-		var String name = arguments.getAt( 0 ) cast String
-		var ConversationCommand command = this.pCommands.getAt( name, null ) cast ConversationCommand
+		var String name = arguments.getAt(0) cast String
+		var ConversationCommand command = pCommands.getAt(name, null) cast ConversationCommand
 		if command == null
-			throw EInvalidParam.new( "Command with name '" + name + "' not found" )
+			throw EInvalidParam.new("Command with name '" + name + "' not found")
 		end
 		
-		command.runCommand( this, arguments )
+		command.runCommand(this, arguments)
 	end
 	
 	/**
@@ -376,8 +368,8 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * 
 	 * Parses command using CommandLineParser into Array of String and calls evaluateCondition()
 	 */
-	public func bool conditionGameCommand( String command )
-		return this.evaluateCondition( this.pCommandParser.parseCommand( command ) )
+	func bool conditionGameCommand(String command)
+		return evaluateCondition(pCommandParser.parseCommand(command))
 	end
 	
 	/**
@@ -387,20 +379,19 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * Looks up condition to evaluate using first argument. If found evaluates condition
 	 * using arguments. Otherwise throws an exception.
 	 */
-	public func bool evaluateCondition( Array arguments )
+	func bool evaluateCondition(Array arguments)
 		if arguments.getCount() == 0
-			throw EInvalidParam.new( "arguments is empty" )
+			throw EInvalidParam.new("arguments is empty")
 		end
 		
-		var String name = arguments.getAt( 0 ) cast String
-		var ConversationCondition condition = this.pConditions.getAt( name, null ) cast ConversationCondition
+		var String name = arguments.getAt(0) cast String
+		var ConversationCondition condition = pConditions.getAt(name, null) cast ConversationCondition
 		if condition == null
-			throw EInvalidParam.new( "Condition with name '" + name + "' not found" )
+			throw EInvalidParam.new("Condition with name '" + name + "' not found")
 		end
 		
-		return condition.evaluateCondition( this, arguments )
+		return condition.evaluateCondition(this, arguments)
 	end
-	
 	
 	
 	/**
@@ -408,18 +399,18 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * 
 	 * Called if running state changed to true after sending notifications to listeners.
 	 */
-	public func void onConversationStarted()
-		var ConversationCameraDirector director = this.getCameraDirector()
+	func void onConversationStarted()
+		var ConversationCameraDirector director = getCameraDirector()
 		
 		if director != null
 			var WindowGameWorld window = BaseGameApp.getApp().getWindowGameWorld()
-			this.pRestoreCameraDirector = window.getCameraDirector()
-			window.setCameraDirector( director )
+			pRestoreCameraDirector = window.getCameraDirector()
+			window.setCameraDirector(director)
 		end
 		
-		if this.pInputProcessor != null
-			this.pRestoreInputProcessor = BaseGameApp.getApp().getInputProcessor()
-			BaseGameApp.getApp().setInputProcessor( this.pInputProcessor )
+		if pInputProcessor != null
+			pRestoreInputProcessor = BaseGameApp.getApp().getInputProcessor()
+			BaseGameApp.getApp().setInputProcessor(pInputProcessor)
 		end
 	end
 	
@@ -428,20 +419,19 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * 
 	 * Called if running state changed to false after sending notifications to listeners.
 	 */
-	public func void onConversationStopped()
-		this.removeAllActors()
+	func void onConversationStopped()
+		removeAllActors()
 		
-		if this.pRestoreCameraDirector != null
-			BaseGameApp.getApp().getWindowGameWorld().setCameraDirector( this.pRestoreCameraDirector )
+		if pRestoreCameraDirector != null
+			BaseGameApp.getApp().getWindowGameWorld().setCameraDirector(pRestoreCameraDirector)
 		end
 		
-		if this.pRestoreInputProcessor != null
-			BaseGameApp.getApp().setInputProcessor( this.pRestoreInputProcessor )
+		if pRestoreInputProcessor != null
+			BaseGameApp.getApp().setInputProcessor(pRestoreInputProcessor)
 		end
 		
-		this.dispose()
+		dispose()
 	end
-	
 	
 	
 	/**
@@ -451,7 +441,7 @@ class BaseConversationPlayback extends ConversationPlayback
 	 */
 	protected func ConversationCameraDirector createCameraDirector()
 		var WindowGameWorld window = BaseGameApp.getApp().getWindowGameWorld()
-		return ConversationCameraDirector.new( window.getCamera(), window.getMicrophone() )
+		return ConversationCameraDirector.new(window.getCamera(), window.getMicrophone())
 	end
 	
 	/**
@@ -460,11 +450,10 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * Default implementation creates instance of ConversationInputProcessor.
 	 */
 	protected func InputProcessor createInputProcessor()
-		var ConversationInputProcessor inputProcessor = ConversationInputProcessor.new( this )
-		inputProcessor.setBindingManager( BaseGameApp.getApp().getBindingManager() )
+		var ConversationInputProcessor inputProcessor = ConversationInputProcessor.new(this)
+		inputProcessor.setBindingManager(BaseGameApp.getApp().getBindingManager())
 		return inputProcessor
 	end
-	
 	
 	
 	/**
@@ -477,7 +466,7 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 end
