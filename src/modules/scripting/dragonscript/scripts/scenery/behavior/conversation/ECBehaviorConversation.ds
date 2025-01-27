@@ -118,6 +118,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 		
 		var ECBehaviorConversation pECBehavior
 		var Conversation pConversation
+		var SimpleConversation pSimpleConversation
 		var StringID pAddPlayer
 		var ConversationPlayback pConversationPlayback
 		var ECBehaviorConversationActor.Instance pConversationActor
@@ -142,7 +143,6 @@ class ECBehaviorConversation extends DefaultECBehavior
 		end
 		
 		
-		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
@@ -155,6 +155,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 			pAddPlayer = pECBehavior.getAddPlayer().getValue(stub)
 			
 			pConversation = loadConversation(stub)
+			pSimpleConversation = loadSimpleConversation(stub)
 			
 			pTopicGroup = pECBehavior.getTopicGroup().getValue(stub)
 			pTopic = pECBehavior.getTopic().getValue(stub)
@@ -163,13 +164,19 @@ class ECBehaviorConversation extends DefaultECBehavior
 			pTrigger.addListener(StartConversationListener.new(this))
 		end
 		
-		/**
-		 * \brief Load conversation.
-		 */
+		/** \brief Load conversation. */
 		protected func Conversation loadConversation(StubElement stub)
 			return pECBehavior.getConversation().getConversation(stub, getElement().getClass())
 		end
 		
+		/**
+		 * \brief Load simple conversation or null.
+		 * \version 1.25
+		 */
+		protected func SimpleConversation loadSimpleConversation(StubElement stub)
+			return pECBehavior.getSimpleConversation().getSimpleConversation(\
+				stub, getElement().getClass())
+		end
 		
 		
 		/** \brief Behavior. */
@@ -185,6 +192,22 @@ class ECBehaviorConversation extends DefaultECBehavior
 		/** \brief Set conversation. */
 		protected func void setConversation(Conversation conversation)
 			pConversation = conversation
+		end
+		
+		/**
+		 * \brief Simple conversation.
+		 * \version 1.25
+		 */
+		func SimpleConversation getSimpleConversation()
+			return pSimpleConversation
+		end
+		
+		/**
+		 * \brief Set conversation.
+		 * \version 1.25
+		 */
+		protected func void setSimpleConversation(SimpleConversation simpleConversation)
+			pSimpleConversation = simpleConversation
 		end
 		
 		/** \brief Add player as first actor if identifier is not null. */
@@ -218,12 +241,20 @@ class ECBehaviorConversation extends DefaultECBehavior
 			return pConversationActor
 		end
 		
-		/** \brief Topic group to use for conversation. */
+		/**
+		 * \brief Topic group to use for conversation.
+		 * 
+		 * If null simple conversation has to be set.
+		 */
 		func StringID getTopicGroup()
 			return pTopicGroup
 		end
 		
-		/** \brief Set topic group to use for conversation. */
+		/**
+		 * \brief Set topic group to use for conversation.
+		 * 
+		 * If null simple conversation has to be set.
+		 */
 		protected func void setTopicGroup(StringID id)
 			pTopicGroup = id
 		end
@@ -249,7 +280,6 @@ class ECBehaviorConversation extends DefaultECBehavior
 		end
 		
 		
-		
 		/** \brief Player conversation actor or null if not supported. */
 		func ConversationActor getPlayerConversationActor()
 			var ECBehaviorPlayerControllable.Tracker tracker = pECBehavior.getPlayerControlledActor()
@@ -272,12 +302,10 @@ class ECBehaviorConversation extends DefaultECBehavior
 		end
 		
 		
-		
 		/** \brief Trigger or \em null. */
 		func ECBehaviorTriggered.Instance getTrigger()
 			return pTrigger
 		end
-		
 		
 		
 		/**
@@ -320,28 +348,39 @@ class ECBehaviorConversation extends DefaultECBehavior
 			
 			try
 				var ConversationTopicGroup topicGroup = pConversation.getTopicGroupWithID(pTopicGroup)
-				if topicGroup == null
-					BaseGameApp.getApp().getConsole().addMessage(\
-						"ECBehaviorConversation: Not found '" + pTopicGroup + "' => '" + pTopic)
-					throw EInvalidParam.new()
+				if topicGroup != null
+					var ConversationTopic topic = topicGroup.getTopicWithID(pTopic)
+					if topic == null
+						BaseGameApp.getApp().getConsole().addMessage(\
+							"ECBehaviorConversation: Not found '" + pTopicGroup + "' => '" + pTopic)
+						throw EInvalidParam.new()
+					end
+					
+					playback.setTopic(topicGroup, topic)
+					
+				else
+					if pSimpleConversation == null
+						BaseGameApp.getApp().getConsole().addMessage(\
+							"ECBehaviorConversation: Not found '" + pTopicGroup + "' => '" + pTopic)
+						throw EInvalidParam.new()
+					end
+					
+					var SimpleConversationSnippet snippet = pSimpleConversation.getSnippetWith(pTopic)
+					if snippet == null
+						BaseGameApp.getApp().getConsole().addMessage(\
+							"ECBehaviorConversation: Not found '{}'".format(Array.newWith(pTopic)))
+						throw EInvalidParam.new()
+					end
+					
+					playback.setSimpleSnippet(pECBehavior.getSimpleConversationConverter(),\
+						pSimpleConversation, snippet)
 				end
-				
-				var ConversationTopic topic = topicGroup.getTopicWithID(pTopic)
-				
-				if topic == null
-					BaseGameApp.getApp().getConsole().addMessage(\
-						"ECBehaviorConversation: Not found '" + pTopicGroup + "' => '" + pTopic)
-					throw EInvalidParam.new()
-				end
-				
-				playback.setTopic(topicGroup, topic)
 				
 				if pAddPlayer != null
 					playback.addActor(getPlayerConversationActor(), pAddPlayer)
 				end
 				
-				if pConversationActor != null \
-				and pConversationActor.getConversationActor() != null
+				if pConversationActor != null and pConversationActor.getConversationActor() != null
 					playback.addActor(pConversationActor.getConversationActor())
 				end
 				
@@ -458,16 +497,16 @@ class ECBehaviorConversation extends DefaultECBehavior
 	end
 	
 	
-	
 	var ECBehaviorConversationActor pConversationActor
 	var ECPConversation pConversation
+	var ECPSimpleConversation pSimpleConversation
+	var SimpleConversationConverter pSimpleConversationConverter
 	var ECPStringID pAddPlayer
 	var ECPStringID pTopicGroup
 	var ECPStringID pTopic
 	var ECPBoolean pDirectCamera
 	var ECBehaviorTriggered pTriggered
 	var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
-	
 	
 	
 	/** \brief Create behavior element class. */
@@ -506,10 +545,19 @@ class ECBehaviorConversation extends DefaultECBehavior
 	func new(BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
 	ECBehaviorPlayerControllable.Tracker playerControlledActor, String id, String subID, String prefix) \
 	super(eclass, id)
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pSimpleConversationConverter = app.getSimpleConversationConverter()
+		end
+		
 		pPlayerControlledActor = playerControlledActor
 		
 		pConversation = ECPConversation.new(prefix + "path", loaders.getConversation())
 		eclass.addProperty(pConversation)
+		
+		pSimpleConversation = ECPSimpleConversation.new(\
+			prefix + "pathSimple", loaders.getSimpleConversation())
+		eclass.addProperty(pSimpleConversation)
 		
 		pAddPlayer = ECPStringID.new(prefix + "addPlayer", StringID.new("player"))
 		eclass.addProperty(pAddPlayer)
@@ -536,7 +584,6 @@ class ECBehaviorConversation extends DefaultECBehavior
 	end
 	
 	
-	
 	/** \brief Conversation actor behavior or null if not used. */
 	func ECBehaviorConversationActor getConversationActor()
 		return pConversationActor
@@ -550,6 +597,30 @@ class ECBehaviorConversation extends DefaultECBehavior
 	/** \brief Conversation. */
 	func ECPConversation getConversation()
 		return pConversation
+	end
+	
+	/**
+	 * \brief Simple conversation.
+	 * \version 1.25
+	 */
+	func ECPSimpleConversation getSimpleConversation()
+		return pSimpleConversation
+	end
+	
+	/**
+	 * \brief Simple conversation converter.
+	 * \version 1.25
+	 */
+	func SimpleConversationConverter getSimpleConversationConverter()
+		return pSimpleConversationConverter
+	end
+	
+	/**
+	 * \brief Set smple conversation converter.
+	 * \version 1.25
+	 */
+	func void setSimpleConversationConverter(SimpleConversationConverter converter)
+		pSimpleConversationConverter = converter
 	end
 	
 	/** \brief Add player to conversation with identifier or null otherwise. */
@@ -588,12 +659,10 @@ class ECBehaviorConversation extends DefaultECBehavior
 	end
 	
 	
-	
 	/** \brief Get instance in element from owner element class. */
 	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
-	
 	
 	
 	/**
@@ -619,7 +688,6 @@ class ECBehaviorConversation extends DefaultECBehavior
 			return true
 		end) cast Instance
 	end
-	
 	
 	
 	/** \brief Create Behavior instance. */

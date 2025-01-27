@@ -35,28 +35,25 @@ pin Dragengine.Utils
  * \brief Play back conversation.
  */
 abstract class ConversationPlayback implements Persistable
-	private var Conversation pConversation
-	private var ConversationTopicGroup pTopicGroup
-	private var ConversationTopic pTopic
-	private var Array pActors
-	private var Array pCoordSystems
-	private var ConversationCameraDirector pCameraDirector
-	private var Dictionary pVariables
-	private var Array pLayers
-	private var bool pActionWaiting
-	private var float pActionTime
-	private var bool pRunning
-	private var bool pPaused
-	private var bool pEnableFastForwardSpeaking
-	private var ConversationPlaybackSubTitle pSubTitle
-	private var ConversationPlaybackPlayerChoice pPlayerChoice
-	private var TranslationManager pTranslationManager
-	private var Array pListeners
+	var Conversation pConversation
+	var ConversationTopicGroup pTopicGroup
+	var ConversationTopic pTopic
+	var Array pActors, pCoordSystems
+	var ConversationCameraDirector pCameraDirector
+	var Dictionary pVariables
+	var Array pLayers
+	var bool pActionWaiting
+	var float pActionTime
+	var bool pRunning, pPaused, pEnableFastForwardSpeaking
+	var ConversationPlaybackSubTitle pSubTitle
+	var ConversationPlaybackPlayerChoice pPlayerChoice
+	var TranslationManager pTranslationManager
+	var Array pListeners
 	
 	
 	
 	/** \brief Create conversation playback. */
-	public func new(Conversation conversation)
+	func new(Conversation conversation)
 		if conversation == null
 			throw EInvalidParam.new()
 		end
@@ -66,7 +63,7 @@ abstract class ConversationPlayback implements Persistable
 		pCoordSystems = Array.new()
 		pVariables = Dictionary.new()
 		pLayers = Array.new()
-		pActionTime = 0.0
+		pActionTime = 0
 		pActionWaiting = false
 		pRunning = false
 		pPaused = false
@@ -80,7 +77,7 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Dispose of conversation playback. */
-	public func void dispose()
+	func void dispose()
 		setRunning(false)
 		removeAllLayers()
 		removeAllVariables()
@@ -106,7 +103,7 @@ abstract class ConversationPlayback implements Persistable
 	 * The typical factory call would look like this:
 	 * 
 	 * \code{.ds}
-	 * public func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+	 * func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
 	 *    var MyConversationPlayback playback = MyConversationPlayback.new(env, reader)
 	 *    playback.readDelayedFromFile(env, reader)
 	 *    return playback
@@ -121,7 +118,7 @@ abstract class ConversationPlayback implements Persistable
 	 * Subclass is usually not required to store additional data except initializing
 	 * the above mentioned.
 	 */
-	public func new(PersistencyEnvironment env, FileReader reader)
+	func new(PersistencyEnvironment env, FileReader reader)
 		pActors = Array.new()
 		pCoordSystems = Array.new()
 		pListeners = Array.new()
@@ -189,7 +186,7 @@ abstract class ConversationPlayback implements Persistable
 	 * Call after subclass is properly constructed. Subclass usually does not
 	 * require to overwrite this method.
 	 */
-	public func void readDelayedFromFile(PersistencyEnvironment env, FileReader reader)
+	func void readDelayedFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var ConversationActor actor
@@ -224,22 +221,22 @@ abstract class ConversationPlayback implements Persistable
 	
 	
 	/** \brief Conversation. */
-	public func Conversation getConversation()
+	func Conversation getConversation()
 		return pConversation
 	end
 	
 	/** \brief Topic group being talking about. */
-	public func ConversationTopicGroup getTopicGroup()
+	func ConversationTopicGroup getTopicGroup()
 		return pTopicGroup
 	end
 	
 	/** \brief Topic being talking about. */
-	public func ConversationTopic getTopic()
+	func ConversationTopic getTopic()
 		return pTopic
 	end
 	
 	/** \brief Set topic to talk about. */
-	public func void setTopic(ConversationTopicGroup group, ConversationTopic topic)
+	func void setTopic(ConversationTopicGroup group, ConversationTopic topic)
 		pTopicGroup = group
 		pTopic = topic
 		
@@ -255,14 +252,38 @@ abstract class ConversationPlayback implements Persistable
 		advanceToNextAction()
 	end
 	
+	/**
+	 * \brief Set simple conversation snippet to talk about.
+	 * \version 1.25
+	 * 
+	 * Removes all layers adding layer with converted snippet.
+	 */
+	func void setSimpleSnippet(SimpleConversationConverter converter,\
+	SimpleConversation simpleConversation, SimpleConversationSnippet snippet)
+		pTopicGroup = null
+		pTopic = null
+		
+		removeAllLayers()
+		pActionTime = 0
+		pActionWaiting = true
+		
+		if converter != null and simpleConversation != null and snippet != null
+			converter.convert(snippet, simpleConversation, this)
+			
+		else
+			setPaused(false)
+			setRunning(false)
+		end
+	end
+	
 	/** \brief Playback is running. */
-	public func bool getRunning()
+	func bool getRunning()
 		return pRunning
 	end
 	
 	/** \brief Set if playback is running. */
-	public func void setRunning(bool running)
-		if pTopic == null
+	func void setRunning(bool running)
+		if pTopic == null and pLayers.getCount() == 0
 			running = false
 		end
 		
@@ -273,7 +294,7 @@ abstract class ConversationPlayback implements Persistable
 		pRunning = running
 		
 		if running
-			update(0.0) // ensure first action is activated at the first frame
+			update(0) // ensure first action is activated at the first frame
 			
 		else
 			clearDoneActorSubTitles()
@@ -290,51 +311,51 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Playback is paused. */
-	public func bool getPaused()
+	func bool getPaused()
 		return pPaused
 	end
 	
 	/** \brief Set if playback is paused. */
-	public func void setPaused(bool paused)
+	func void setPaused(bool paused)
 		pPaused = paused
 	end
 	
 	/** \brief Enabling calling fastForwardSpeaking() to be allowed. */
-	public func bool getEnableFastForwardSpeaking()
+	func bool getEnableFastForwardSpeaking()
 		return pEnableFastForwardSpeaking
 	end
 	
 	/** \brief Set if calling fastForwardSpeaking() is allowed. */
-	public func void setEnableFastForwardSpeaking(bool enable)
+	func void setEnableFastForwardSpeaking(bool enable)
 		pEnableFastForwardSpeaking = enable
 	end
 	
 	
 	
 	/** \brief Number of actors. */
-	public func int getActorCount()
+	func int getActorCount()
 		return pActors.getCount()
 	end
 	
 	/** \brief Actor by index. */
-	public func ConversationActor getActorAt(int index)
+	func ConversationActor getActorAt(int index)
 		return pActors.getAt(index) cast ConversationActor
 	end
 	
 	/** \brief Actor with ID or number or null if absent. */
-	public func ConversationActor getActorMatching(StringID id)
+	func ConversationActor getActorMatching(StringID id)
 		return pActors.find(block ConversationActor each
 			return id.equals(each.getAliasID()) or each.getID().equals(id)
 		end) cast ConversationActor
 	end
 	
 	/** \brief Add actor with no alias if absent. */
-	public func void addActor(ConversationActor actor)
+	func void addActor(ConversationActor actor)
 		addActor(actor, null)
 	end
 	
 	/** \brief Add actor with alias if absent. */
-	public func void addActor(ConversationActor actor, StringID alias)
+	func void addActor(ConversationActor actor, StringID alias)
 		if pActors.has(actor)
 			return
 		end
@@ -357,7 +378,7 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Remove actor if present. */
-	public func void removeActor(ConversationActor actor)
+	func void removeActor(ConversationActor actor)
 		if not pActors.has(actor)
 			return
 		end
@@ -370,7 +391,7 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Remove all actors. */
-	public func void removeAllActors()
+	func void removeAllActors()
 		pActors.forEach(block ConversationActor each
 			each.setPlayback(null)
 		end)
@@ -385,7 +406,7 @@ abstract class ConversationPlayback implements Persistable
 	 * not removed from the sub title box. If you want to clear the sub title box call
 	 * getSubTitle().removeAllSubTitleText().
 	 */
-	public func void clearDoneActorSubTitles()
+	func void clearDoneActorSubTitles()
 		pActors.forEach(block ConversationActor each
 			if not each.isSpeaking()
 				each.setSubTitleText(null)
@@ -394,31 +415,31 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Visit actors with block with parameter ConversationActor. */
-	public func void forEachActor(Block ablock)
+	func void forEachActor(Block ablock)
 		pActors.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Number of coordinate systems. */
-	public func int getCoordSystemCount()
+	func int getCoordSystemCount()
 		return pCoordSystems.getCount()
 	end
 	
 	/** \brief Coordinate system with ID or <em null if absent. */
-	public func ConversationCoordSystem getCoordSystemByID(StringID id)
+	func ConversationCoordSystem getCoordSystemByID(StringID id)
 		return pCoordSystems.find(block ConversationCoordSystem each
 			return id.equals(each.getAliasID()) or each.getID().equals(id)
 		end) cast ConversationCoordSystem
 	end
 	
 	/** \brief Add coordinate system without alias if absent. */
-	public func void addCoordSystem(ConversationCoordSystem coordSystem)
+	func void addCoordSystem(ConversationCoordSystem coordSystem)
 		addCoordSystem(coordSystem, null)
 	end
 	
 	/** \brief Add coordinate system with alias if absent. */
-	public func void addCoordSystem(ConversationCoordSystem coordSystem, StringID alias)
+	func void addCoordSystem(ConversationCoordSystem coordSystem, StringID alias)
 		if pCoordSystems.has(coordSystem)
 			return
 		end
@@ -434,80 +455,80 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Remove coordinate system if present. */
-	public func void removeCoordSystem(ConversationCoordSystem coordSystem)
+	func void removeCoordSystem(ConversationCoordSystem coordSystem)
 		if pCoordSystems.has(coordSystem)
 			pCoordSystems.remove(coordSystem)
 		end
 	end
 	
 	/** \brief Remove all coordinate systems. */
-	public func void removeAllCoordSystems()
+	func void removeAllCoordSystems()
 		pCoordSystems.removeAll()
 	end
 	
 	/** \brief Visit coordinate systems with block with parameter ConversationCoordSystem. */
-	public func void forEachCoordSystem(Block ablock)
+	func void forEachCoordSystem(Block ablock)
 		pCoordSystems.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Camera director or \em null. */
-	public func ConversationCameraDirector getCameraDirector()
+	func ConversationCameraDirector getCameraDirector()
 		return pCameraDirector
 	end
 	
 	/** \brief Set camera director or \em null. */
-	public func void setCameraDirector(ConversationCameraDirector director)
+	func void setCameraDirector(ConversationCameraDirector director)
 		pCameraDirector = director
 	end
 	
 	
 	
 	/** \brief Variable is set. */
-	public func bool hasVariable(String name)
+	func bool hasVariable(String name)
 		return pVariables.has(name)
 	end
 	
 	/** \brief Variable value or default value if not set */
-	public func int getVariable(String name, int defaultValue)
+	func int getVariable(String name, int defaultValue)
 		return pVariables.getAt(name, defaultValue) cast int
 	end
 	
 	/** \brief Set variable. */
-	public func void setVariable(String name, int value)
+	func void setVariable(String name, int value)
 		pVariables.setAt(name, value)
 	end
 	
 	/** \brief Remove variable if set. */
-	public func void removeVariable(String name)
+	func void removeVariable(String name)
 		pVariables.removeIfExisting(name)
 	end
 	
 	/** \brief Remove all variables. */
-	public func void removeAllVariables()
+	func void removeAllVariables()
 		pVariables.removeAll()
 	end
 	
 	
 	
 	/** \brief Sub title or \em null. */
-	public func ConversationPlaybackSubTitle getSubTitle()
+	func ConversationPlaybackSubTitle getSubTitle()
 		return pSubTitle
 	end
 	
 	/** \brief Set sub title or \em null. */
-	public func void setSubTitle(ConversationPlaybackSubTitle subTitle)
+	func void setSubTitle(ConversationPlaybackSubTitle subTitle)
 		pSubTitle = subTitle
 	end
 	
 	/** \brief Player choice interface or \em null. */
-	public func ConversationPlaybackPlayerChoice getPlayerChoice()
+	func ConversationPlaybackPlayerChoice getPlayerChoice()
 		return pPlayerChoice
 	end
 	
 	/** \brief Set player choice interface or \em null. */
-	public func void setPlayerChoice(ConversationPlaybackPlayerChoice playerChoice)
+	func void setPlayerChoice(ConversationPlaybackPlayerChoice playerChoice)
 		pPlayerChoice = playerChoice
 	end
 	
@@ -515,7 +536,7 @@ abstract class ConversationPlayback implements Persistable
 	 * \brief Translation manager or null.
 	 * \version 1.16
 	 */
-	public func TranslationManager getTranslationManager()
+	func TranslationManager getTranslationManager()
 		return pTranslationManager
 	end
 	
@@ -523,14 +544,14 @@ abstract class ConversationPlayback implements Persistable
 	 * \brief Set translation manager or null.
 	 * \version 1.16
 	 */
-	public func void setTranslationManager(TranslationManager translationManager)
+	func void setTranslationManager(TranslationManager translationManager)
 		pTranslationManager = translationManager
 	end
 	
 	
 	
 	/** \brief Update playback. */
-	public func void update(float elapsed)
+	func void update(float elapsed)
 		if not pPaused
 			processActions(elapsed, false)
 		end
@@ -541,7 +562,7 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Process actions. */
-	public func void processActions(float elapsed, bool skipDelay)
+	func void processActions(float elapsed, bool skipDelay)
 		// decrement the remaining speech time of all actors
 		pActors.forEach(block ConversationActor each
 			each.decrementRemainingSpeechTime(elapsed)
@@ -658,13 +679,14 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Advance to next action. */
-	public func void advanceToNextAction()
+	func void advanceToNextAction()
 		if pLayers.getCount() == 0
 			if pTopic == null
 				setRunning(false)
 				
 			else
-				var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(pTopic.getIteratorActions())
+				var ConversationPlaybackLayer layer =\
+					ConversationPlaybackLayer.new(pTopic.getIteratorActions())
 				layer.setTopicTopLevel(true)
 				pLayers.add(layer)
 			end
@@ -698,8 +720,8 @@ abstract class ConversationPlayback implements Persistable
 	 * conversation parts are used disabling fast forward speaking should be disabled to avoid
 	 * conversation scripts breaking.
 	 */
-	public func void fastForwardSpeaking()
-		if pTopic == null or not pRunning or not pEnableFastForwardSpeaking
+	func void fastForwardSpeaking()
+		if (pTopic == null and pLayers.getCount() == 0) or not pRunning or not pEnableFastForwardSpeaking
 			return
 		end
 		
@@ -762,7 +784,7 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Cancel looping layer removing all layers below. */
-	public func void cancelLoopingLayer(ConversationPlaybackLayer layer)
+	func void cancelLoopingLayer(ConversationPlaybackLayer layer)
 		var int i
 		
 		for i = pLayers.getCount() - 1 downto 0
@@ -781,17 +803,17 @@ abstract class ConversationPlayback implements Persistable
 	
 	
 	/** \brief Number of layers. */
-	public func int getLayerCount()
+	func int getLayerCount()
 		return pLayers.getCount()
 	end
 	
 	/** \brief Top layer. */
-	public func ConversationPlaybackLayer getTopLayer()
+	func ConversationPlaybackLayer getTopLayer()
 		return pLayers.getAt(pLayers.getCount() - 1) cast ConversationPlaybackLayer
 	end
 	
 	/** \brief Push layer to top of stack. */
-	public func void pushLayer(ConversationPlaybackLayer layer)
+	func void pushLayer(ConversationPlaybackLayer layer)
 		if layer == null
 			throw EInvalidParam.new()
 		end
@@ -799,12 +821,12 @@ abstract class ConversationPlayback implements Persistable
 	end
 	
 	/** \brief Pop top layer off stack. */
-	public func void popLayer()
+	func void popLayer()
 		pLayers.removeFrom(pLayers.getCount() - 1)
 	end
 	
 	/** \brief Next action is present. */
-	public func bool hasNextAction()
+	func bool hasNextAction()
 		return pLayers.getCount() > 0 and getTopLayer().hasNextAction()
 	end
 	
@@ -812,17 +834,17 @@ abstract class ConversationPlayback implements Persistable
 	 * \brief Next action or \em null if top layer is finished.
 	 * \version 1.16
 	 */
-	public func ConversationAction getNextAction()
+	func ConversationAction getNextAction()
 		return hasNextAction() if getTopLayer().getNextAction() else null
 	end
 	
 	/** \brief Remove all layers. */
-	public func void removeAllLayers()
+	func void removeAllLayers()
 		pLayers.removeAll()
 	end
 	
 	/** \brief Stop conversation. */
-	public func void stopConversation()
+	func void stopConversation()
 		pLayers.removeAll()
 		pActionWaiting = false
 		pActionTime = 0
@@ -833,7 +855,7 @@ abstract class ConversationPlayback implements Persistable
 	 * \brief Waiting for action to begin.
 	 * \version 1.16
 	 */
-	public func bool getWaitingForAction()
+	func bool getWaitingForAction()
 		return pActionWaiting
 	end
 	
@@ -841,28 +863,28 @@ abstract class ConversationPlayback implements Persistable
 	 * \brief Elapsed action waiting time in seconds.
 	 * \version 1.16
 	 */
-	public func float getElapsedActionWaiting()
+	func float getElapsedActionWaiting()
 		return pActionTime
 	end
 	
 	
 	
 	/** \brief Add listener. */
-	public func void addListener(ConversationPlaybackListener listener)
+	func void addListener(ConversationPlaybackListener listener)
 		if not pListeners.has(listener)
 			pListeners.add(listener)
 		end
 	end
 	
 	/** \brief Remove listener if present. */
-	public func void removeListener(ConversationPlaybackListener listener)
+	func void removeListener(ConversationPlaybackListener listener)
 		if pListeners.has(listener)
 			pListeners.remove(listener)
 		end
 	end
 	
 	/** \brief Notify listeners running state changed. */
-	public func void notifyRunningChanged()
+	func void notifyRunningChanged()
 		if pListeners == null
 			return // can happen if somebody disposed of us very quickly
 		end
@@ -880,7 +902,7 @@ abstract class ConversationPlayback implements Persistable
 	 * This is used by readFromFile to add actors for playing back the conversation.
 	 * Implement to return the actors matching a conversation identifier.
 	 */
-	abstract public func ConversationActor loadConversationActor(StringID id)
+	abstract func ConversationActor loadConversationActor(StringID id)
 	
 	/**
 	 * \brief Create coordinate system for a conversation identifier.
@@ -889,21 +911,21 @@ abstract class ConversationPlayback implements Persistable
 	 * conversation. Subclass to create the coordinate system matching a
 	 * conversation identifier.
 	 */
-	abstract public func ConversationCoordSystem createConversationCoordSystem(StringID id)
+	abstract func ConversationCoordSystem createConversationCoordSystem(StringID id)
 	
 	/**
 	 * \brief Obtain trigger table to use.
 	 * 
 	 * Implement to return the trigger table.
 	 */
-	abstract public func TSTriggerTable getTriggerTable()
+	abstract func TSTriggerTable getTriggerTable()
 	
 	/**
 	 * \brief Game command send by the conversation script.
 	 * 
 	 * Overwrite to make the game execute the action. The default implementation does nothing.
 	 */
-	public func void gameCommand(String command)
+	func void gameCommand(String command)
 	end
 	
 	/**
@@ -912,7 +934,7 @@ abstract class ConversationPlayback implements Persistable
 	 * Overwrite to make the game evaluate the command returning true or false as result.
 	 * The default implementation returns false.
 	 */
-	public func bool conditionGameCommand(String command)
+	func bool conditionGameCommand(String command)
 		return false
 	end
 	
@@ -921,7 +943,7 @@ abstract class ConversationPlayback implements Persistable
 	 * 
 	 * Overwrite to make the game change music. The default implementation does nothing.
 	 */
-	public func void changeMusic(String music)
+	func void changeMusic(String music)
 	end
 	
 	/**
@@ -929,7 +951,7 @@ abstract class ConversationPlayback implements Persistable
 	 * 
 	 * Called if running state changed to true after sending notifications to listeners.
 	 */
-	public func void onConversationStarted()
+	func void onConversationStarted()
 	end
 	
 	/**
@@ -937,7 +959,7 @@ abstract class ConversationPlayback implements Persistable
 	 * 
 	 * Called if running state changed to false after sending notifications to listeners.
 	 */
-	public func void onConversationStopped()
+	func void onConversationStopped()
 	end
 	
 	
@@ -952,7 +974,7 @@ abstract class ConversationPlayback implements Persistable
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return null
 	end
 	
@@ -963,7 +985,7 @@ abstract class ConversationPlayback implements Persistable
 	 * Subclass has to overwrite writeObjectConstructToFile() and writeObjectDelayedToFile().
 	 * This method should not be changed.
 	 */
-	public func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 		writeObjectConstructToFile(env, writer)
 		writeObjectDelayedToFile(env, writer)
 	end
@@ -977,7 +999,7 @@ abstract class ConversationPlayback implements Persistable
 	 * 
 	 * Subclass usually does not required to overwrite this method.
 	 */
-	public func void writeObjectConstructToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeObjectConstructToFile(PersistencyEnvironment env, FileWriter writer)
 		writer.writeByte(0) // version
 		
 		writer.writeString16(pConversation != null if pConversation.getPathFile() else "")
@@ -1014,7 +1036,7 @@ abstract class ConversationPlayback implements Persistable
 	 * 
 	 * Subclass usually does not required to overwrite this method.
 	 */
-	public func void writeObjectDelayedToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeObjectDelayedToFile(PersistencyEnvironment env, FileWriter writer)
 		writer.writeByte(0) // version
 		
 		writer.writeUShort(pActors.getCount())

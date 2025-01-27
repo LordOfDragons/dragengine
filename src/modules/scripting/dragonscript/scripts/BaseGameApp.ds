@@ -393,6 +393,7 @@ class BaseGameApp extends Game
 	var MutableID pIDGenerator
 	var GlobalEvents pGlobalEvents
 	var BaseGameServices pBaseGameServices
+	var SimpleConversationConverter pSimpleConversationConverter
 	
 	static var BaseGameApp pApp = null
 	
@@ -475,6 +476,7 @@ class BaseGameApp extends Game
 		pTranslationManager = createTranslationManager()
 		EngineTranslations.get() // preload engine translations
 		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
+		pSimpleConversationConverter = createSimpleConversationConverter()
 		
 		loadConfiguration()
 		
@@ -618,6 +620,7 @@ class BaseGameApp extends Game
 		
 		pConsole = null
 		
+		pSimpleConversationConverter = null
 		pTranslationManager = null
 		
 		pApp = null
@@ -738,6 +741,14 @@ class BaseGameApp extends Game
 	/** \brief Translation manager. */
 	func TranslationManager getTranslationManager()
 		return pTranslationManager
+	end
+	
+	/**
+	 * \brief Simple conversation converter.
+	 * \version 1.25
+	 */
+	func SimpleConversationConverter getSimpleConversationConverter()
+		return pSimpleConversationConverter
 	end
 	
 	
@@ -1026,6 +1037,16 @@ class BaseGameApp extends Game
 	 */
 	protected func TranslationManager createTranslationManager()
 		return TranslationManager.new()
+	end
+	
+	/**
+	 * \brief Create simple conversation converter.
+	 * \version 1.25
+	 * 
+	 * Creates instance of SimpleConversationConverter.
+	 */
+	protected func SimpleConversationConverter createSimpleConversationConverter()
+		return SimpleConversationConverter.new()
 	end
 	
 	/**
