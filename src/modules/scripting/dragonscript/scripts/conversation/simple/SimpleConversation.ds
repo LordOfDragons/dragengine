@@ -185,4 +185,90 @@ class SimpleConversation
 			pSnippets.setAt(each.getId(), each)
 		end)
 	end
+	
+	/**
+	 * \brief Import translation simple conversation.
+	 * \warning Imported elements are shared. Do not change them.
+	 * 
+	 * Similar to \ref #import() but used to import a simple conversation containing translations.
+	 * 
+	 * Only snippets are imported with this function. The imported snippets are only used as
+	 * translations to modify the text content of existing snippets. If a snippet exists it is
+	 * first duplicated to allow making changes safely.
+	 * 
+	 * The actions in the snippet are then visited and only actions of type
+	 * \ref SimpleConversationAction.Type#speak are modified. The text content of the respective
+	 * imported snippet speak type action is assigned to the modified action. For this to work
+	 * the translation snippet is required to have the same count of speak type actions in the
+	 * same order. Since only speak type actions are used for translation any other actions are
+	 * ignored. It is thus only required to include the speak type actions in a translation
+	 * snippet. This simplifies the process of creating translation simple conversations.
+	 * 
+	 * Importaint translated text can the done in two modes: partial or full.
+	 * 
+	 * \par Full translation mode
+	 * 
+	 * Full translation assigns translated action text as modified action text and translated
+	 * animation text as modified action animation text. This mode is useful if the
+	 * \ref SpeechAnimations.SpeechAnimation used by the \ref ConversationActor is also translated.
+	 * If this is not the case the translated words are not found and no speech animation can be
+	 * done. If this is the case use partial mode instead.
+	 * 
+	 * \par Partial translation mode
+	 * 
+	 * Partial translation first assigns modified action text to modified action animation text
+	 * if modified action animation text is null. Then translated action text is assigned as
+	 * modified action text. This has the effect that untranslated text is used as animation text
+	 * no matter if manually assigned or not. This ensures that untranslated
+	 * \ref SpeechAnimations.SpeechAnimation keep working with the modified actions while the
+	 * text displayed to the user is translated.
+	 * 
+	 * Using partial translation mode is faster and required less work since only the text has
+	 * to be translated not entire speech animations.
+	 */
+	func void importTranslation(SimpleConversation conversation, bool fullTranslationMode)
+		var StringID id
+		conversation.forEachSnippet(block SimpleConversationSnippet each
+			id = each.getId()
+			pSnippets.setAt(id, translateSnippet(\
+				pSnippets.getAt(id) cast SimpleConversationSnippet, each, fullTranslationMode))
+		end)
+	end
+	
+	/**
+	 * \brief Translate snippet.
+	 * \see #importTranslation(SimpleConversation,bool)
+	 * 
+	 * Returns modified snippet which is a copy of snippet.
+	 */
+	func SimpleConversationSnippet translateSnippet(SimpleConversationSnippet snippet,\
+	SimpleConversationSnippet translated, bool fullTranslationMode)
+		var SimpleConversationSnippet modified = SimpleConversationSnippet.new(snippet)
+		
+		var int indexTra
+		var SimpleConversationAction traAction
+		modified.forEachAction(block SimpleConversationAction modAction
+			if modAction.getType() != SimpleConversationAction.Type.speak
+				return null
+			end
+			
+			while true
+				traAction = translated.getActionAt(indexTra++)
+				if traAction.getType() == SimpleConversationAction.Type.speak
+					break
+				end
+			end
+			
+			if fullTranslationMode
+				modAction.setAnimText(traAction.getAnimText())
+				
+			elif modAction.getAnimText() == null
+				modAction.setAnimText(modAction.getText())
+			end
+			
+			modAction.setText(traAction.getText())
+		end)
+		
+		return modified
+	end
 end
