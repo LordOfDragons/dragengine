@@ -370,7 +370,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 				elif tagName.equals("tag")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
 					action.setText(UnicodeString.newFromUTF8(element.getFirstCData()))
-					action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("anim")))
+					if element.hasAttributeNamed("anim")
+						action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("anim")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("stopTopic")
@@ -525,7 +527,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 				elif tagName.equals("t")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
 					action.setText(UnicodeString.newFromUTF8(element.getFirstCData()))
-					action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("a")))
+					if element.hasAttributeNamed("a")
+						action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("a")))
+					end
 					snippet.addAction(action)
 					
 				else
