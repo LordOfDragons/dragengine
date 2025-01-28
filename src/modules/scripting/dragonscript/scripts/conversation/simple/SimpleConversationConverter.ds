@@ -567,8 +567,10 @@ class SimpleConversationConverter
 		
 		var float availDuration = speechTime - state.gestureTime
 		if availDuration < 0.1
-			//state.gestures.removeAll()
-			//return
+			if endOfSpeech
+				state.gestures.removeAll()
+				return
+			end
 			availDuration = sumDuration
 		end
 		
