@@ -125,7 +125,10 @@ class SimpleConversationConverter
 	var UnicodeString pCharsWordBreak
 	var UnicodeString pCharsPhraseBreak
 	var UnicodeString pCharsSubPhraseBreak
-	var float pPausePhrase, pPauseSubPhrase, pSpeakSpeed, pFacePoseDuration, pLookAtDuration
+	var float pPausePhrase, pPauseSubPhrase
+	var float pSpeakSpeed
+	var float pFacePoseDuration, pLookAtDuration
+	var float pMinGestureDuration, pMinGestureDurationHalf
 	
 	
 	/** \brief Create simple conversation convertor. */
@@ -138,6 +141,8 @@ class SimpleConversationConverter
 		pSpeakSpeed = 1.1
 		pFacePoseDuration = 0.25
 		pLookAtDuration = 0.5
+		pMinGestureDuration = 0.5
+		pMinGestureDurationHalf = pMinGestureDuration / 2
 	end
 	
 	
@@ -265,6 +270,21 @@ class SimpleConversationConverter
 	/** \brief Set look-at duration. */
 	func void setLookAtDuration(float duration)
 		pLookAtDuration = DEMath.max(duration, 0.01)
+	end
+	
+	/**
+	 * \brief Minimum available duration for gesture to start playing.
+	 * 
+	 * Default value is 0.5.
+	 */
+	func float getMinGestureDuration()
+		return pMinGestureDuration
+	end
+	
+	/** \brief Set minimum available duration for gesture to start playing. */
+	func void setMinGestureDuration(float duration)
+		pMinGestureDuration = DEMath.max(duration, 0.01)
+		pMinGestureDurationHalf = pMinGestureDuration / 2
 	end
 	
 	
@@ -510,7 +530,7 @@ class SimpleConversationConverter
 			availDuration = sumDuration
 		end
 		
-		if sumDuration > 0.25 and availDuration < 0.5
+		if sumDuration > pMinGestureDurationHalf and availDuration < pMinGestureDuration
 			state.actionActorSpeak.addGesture(ConversationStrip.new(StringID.new(), 0, availDuration))
 			return
 		end
