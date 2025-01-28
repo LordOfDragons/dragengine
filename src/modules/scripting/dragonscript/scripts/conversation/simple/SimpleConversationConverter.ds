@@ -73,6 +73,9 @@ class SimpleConversationConverter
 		/** \brief Open actor speak conversation action or null. */
 		public var CActionActorSpeak actionActorSpeak
 		
+		/** \brief Speak action counter. */
+		public var int forceCameraShotCounter
+		
 		/** \brief Open if-else conversation action or null. */
 		public var CActionIfElse actionIfElse
 		
@@ -129,6 +132,7 @@ class SimpleConversationConverter
 	var float pSpeakSpeed
 	var float pFacePoseDuration, pLookAtDuration
 	var float pMinGestureDuration, pMinGestureDurationHalf
+	var int pMinSpeakCountCameraChange
 	
 	
 	/** \brief Create simple conversation convertor. */
@@ -143,6 +147,7 @@ class SimpleConversationConverter
 		pLookAtDuration = 0.5
 		pMinGestureDuration = 0.5
 		pMinGestureDurationHalf = pMinGestureDuration / 2
+		pMinSpeakCountCameraChange = 100
 	end
 	
 	
@@ -285,6 +290,24 @@ class SimpleConversationConverter
 	func void setMinGestureDuration(float duration)
 		pMinGestureDuration = DEMath.max(duration, 0.01)
 		pMinGestureDurationHalf = pMinGestureDuration / 2
+	end
+	
+	/**
+	 * \brief Minimum count of actor speaks before switch camera.
+	 * 
+	 * If enabled triggers the camera switch defined in the speaking actor after a set amount
+	 * of speaks have been done. This breaks long sequences of speaks with with random camera
+	 * changes. To disable set count to a high value like 100.
+	 * 
+	 * Default value is 100.
+	 */
+	func float getMinSpeakCountCameraChange()
+		return pMinSpeakCountCameraChange
+	end
+	
+	/** \brief Set minimum count of actor speaks before switch camera. */
+	func void setMinSpeakCountCameraChange(int count)
+		pMinSpeakCountCameraChange = DEMath.max(count, 1)
 	end
 	
 	
@@ -458,6 +481,25 @@ class SimpleConversationConverter
 			if id != null
 				var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
 				convertCamera(state, camera, camera.randomShot())
+				
+			else
+				state.forceCameraShotCounter++
+				if state.forceCameraShotCounter > pMinSpeakCountCameraChange
+					state.forceCameraShotCounter = 1
+				end
+			end
+			
+		else
+			state.forceCameraShotCounter++
+			if state.forceCameraShotCounter > pMinSpeakCountCameraChange
+				var StringID id = state.actor.getCamera()
+				if id != null
+					var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
+					convertCamera(state, camera, camera.randomShot())
+					
+				else
+					state.forceCameraShotCounter = 1
+				end
 			end
 		end
 		
@@ -629,6 +671,7 @@ class SimpleConversationConverter
 	protected func void convertCamera(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		state.actionCameraShot = null
+		state.forceCameraShotCounter = 1
 		
 		select shot.getType()
 		case SimpleConversationCameraShot.Type.cameraShot
