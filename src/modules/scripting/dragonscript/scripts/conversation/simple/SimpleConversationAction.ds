@@ -66,6 +66,26 @@ class SimpleConversationAction
 		gesture
 		
 		/**
+		 * \brief Change face pose.
+		 * 
+		 * Adds face pose to chain of speak actions. The face pose is inserted to play at the
+		 * time location of all previous speak actions summed together.
+		 * 
+		 * Uses getTarget() as gesture identifier into the currently active ConversationActor.
+		 */
+		facePose
+		
+		/**
+		 * \brief Change look-at.
+		 * 
+		 * Adds head and eye look-at to chain of speak actions. The head and eye look-at is
+		 * inserted to play at the time location of all previous speak actions summed together.
+		 * 
+		 * Uses getTarget() as gesture identifier into the currently active ConversationActor.
+		 */
+		lookAt
+		
+		/**
 		 * \brief Game or actor command.
 		 * 
 		 * Uses getName() as command. If getTarget() is not null sends an actor command to
@@ -272,6 +292,8 @@ class SimpleConversationAction
 	 * \brief Target.
 	 * 
 	 * - \ref Type#gesture: Identifier of gesture.
+	 * - \ref Type#facePose: Identifier of face pose.
+	 * - \ref Type#lookAt: Identifier of look-at.
 	 * - \ref Type#trigger: Idenfitier or trigger.
 	 * - \ref Type#condIf: Snippet to run if condition is fulfilled.
 	 * - \ref Type#playerChoiceOption: Snippet to run if option is selected.

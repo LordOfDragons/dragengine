@@ -78,6 +78,12 @@ pin Dragengine.Scenery
  *      <!-- Multiple gestures can be defined played one after the other -->
  *      <gesture>begin think</gesture>
  *      <gesture>loop think</gesture>
+ * 
+ *      <!-- Optional face pose to switch to -->
+ *      <facePose>surprised</facePose>
+ * 
+ *      <!-- Optional look-at to switch to -->
+ *      <lookAt>npc</lookAt>
  *   </actor>
  * 
  *   <actor id='npc'>
@@ -112,6 +118,12 @@ pin Dragengine.Scenery
  *         - wait: Wait for all actors finish speaking and finish waitable actions.
  *         - waitSpeak: Wait for all actors finish speaking.
  *         - noWait: No waiting.
+ * 
+ *      <facePose id='surprised'/>
+ *         Change face pose.
+ * 
+ *      <lookAt id='npc'/>
+ *         Change head and eye look-at.
  * 
  *      <stopTopic/>
  *      <stopConversation/>
@@ -178,6 +190,8 @@ pin Dragengine.Scenery
  * 
  *      <actor id='player'/> = <a i='player'/>
  *      <gesture id='hello'/> = <g i='hello'/>
+ *      <facePose id='surprised'/> = <f i='surprised'/>
+ *      <lookAt id='npc'/> = <l i='npc'/>
  *      <tag anim='somebody'>{npcName}</tag> = <t a='somebody'>{npcName}</t>
  *      <pause>1.5</pause> = <p>1.5</p>
  *      -->
@@ -326,6 +340,12 @@ class LoadSimpleConversation extends BaseXmlLoader
 			elif tagName.equals("gesture")
 				actor.addGesture(StringID.new(element.getFirstCData()))
 				
+			elif tagName.equals("facePose")
+				actor.setFacePose(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("lookAt")
+				actor.setLookAt(StringID.new(element.getFirstCData()))
+				
 			elif tagName.equals("delay")
 				actor.setDelay(element.getFirstCDataFloat())
 				
@@ -367,6 +387,18 @@ class LoadSimpleConversation extends BaseXmlLoader
 				elif tagName.equals("gesture")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.gesture)
 					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("facePose")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.facePose)
+					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("lookAt")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.lookAt)
+					if element.hasAttributeNamed("id")
+						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("command")
@@ -545,6 +577,18 @@ class LoadSimpleConversation extends BaseXmlLoader
 				elif tagName.equals("g")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.gesture)
 					action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("f")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.facePose)
+					action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("l")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.lookAt)
+					if element.hasAttributeNamed("i")
+						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("t")

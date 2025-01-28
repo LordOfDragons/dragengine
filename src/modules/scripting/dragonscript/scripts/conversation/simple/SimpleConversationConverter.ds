@@ -88,6 +88,12 @@ class SimpleConversationConverter
 		/** \brief Current gesture time in seconds. */
 		public var float gestureTime
 		
+		/** \brief Current face pose time in seconds. */
+		public var float facePoseTime
+		
+		/** \brief Current look-at time in seconds. */
+		public var float lookAtTime
+		
 		/** \brief Pause time in seconds to apply to the next action. */
 		public var float pauseTime
 		
@@ -96,6 +102,12 @@ class SimpleConversationConverter
 		
 		/** \brief Clear gestures before adding new gesture. */
 		public var bool clearGestures
+		
+		/** \brief Clear face poses before adding new face pose. */
+		public var bool clearFacePoses
+		
+		/** \brief Clear look-at before adding new look-at. */
+		public var bool clearLookAts
 		
 		/** \brief Open actor speak conversation actor or null. */
 		public var ConversationActor conversationActor
@@ -113,7 +125,7 @@ class SimpleConversationConverter
 	var UnicodeString pCharsWordBreak
 	var UnicodeString pCharsPhraseBreak
 	var UnicodeString pCharsSubPhraseBreak
-	var float pPausePhrase, pPauseSubPhrase
+	var float pPausePhrase, pPauseSubPhrase, pSpeakSpeed, pFacePoseDuration, pLookAtDuration
 	
 	
 	/** \brief Create simple conversation convertor. */
@@ -123,6 +135,9 @@ class SimpleConversationConverter
 		pCharsSubPhraseBreak = UnicodeString.newFromUTF8(",")
 		pPausePhrase = 0.5
 		pPauseSubPhrase = 0.35
+		pSpeakSpeed = 1.1
+		pFacePoseDuration = 0.25
+		pLookAtDuration = 0.5
 	end
 	
 	
@@ -205,6 +220,53 @@ class SimpleConversationConverter
 		pPauseSubPhrase = DEMath.max(seconds, 0.0)
 	end
 	
+	/**
+	 * \brief Speaking speed.
+	 * 
+	 * Larger values slow down speaking which makes it easier for users to read the text.
+	 * A value of 1 equals fast reading. A value of 1.1 is moderate speed. A value of 1.2
+	 * is slow speed. Default value is 1.1 .
+	 */
+	func float getSpeakSpeed()
+		return pSpeakSpeed
+	end
+	
+	/** \brief Set speaking speed. */
+	func void setSpeakSpeed(float speed)
+		pSpeakSpeed = DEMath.max(speed, 0.1)
+	end
+	
+	/**
+	 * \brief Face pose duration.
+	 * 
+	 * Duration in seconds to use for added face poses unless explicitely set. Defines how
+	 * fast the actor blends from the old face pose to the new face pose. Default value is 0.25.
+	 */
+	func float getFacePoseDuration()
+		return pFacePoseDuration
+	end
+	
+	/** \brief Set face pose duration. */
+	func void setFacePoseDuration(float duration)
+		pFacePoseDuration = DEMath.max(duration, 0.01)
+	end
+	
+	/**
+	 * \brief Look-at duration.
+	 * 
+	 * Duration in seconds to use for added look-ats unless explicitely set. Defines how
+	 * fast the actor switches looking direction from old look-at to new look-at.
+	 * Default value is 0.5.
+	 */
+	func float getLookAtDuration()
+		return pLookAtDuration
+	end
+	
+	/** \brief Set look-at duration. */
+	func void setLookAtDuration(float duration)
+		pLookAtDuration = DEMath.max(duration, 0.01)
+	end
+	
 	
 	/**
 	 * \brief Convert snippet adding conversation actions similar to \ref CActionSnippet.
@@ -273,6 +335,12 @@ class SimpleConversationConverter
 				
 			case SimpleConversationAction.Type.gesture
 				convertGesture(state, each)
+				
+			case SimpleConversationAction.Type.facePose
+				convertFacePose(state, each)
+				
+			case SimpleConversationAction.Type.lookAt
+				convertLookAt(state, each)
 				
 			case SimpleConversationAction.Type.command
 				convertCommand(state, each)
@@ -391,10 +459,22 @@ class SimpleConversationConverter
 		state.actionActorSpeak.setUseSpeechAnimation(state.actor.getUseSpeechAnimation())
 		state.actions.add(state.actionActorSpeak)
 		
-		state.actor.forEachGesture(block StringID each
-			convertGesture(state, state.conversation.getGestureNamed(each))
-		end)
-		state.clearGestures = true
+		if state.actor.getGestureCount() > 0
+			state.actor.forEachGesture(block StringID each
+				convertGesture(state, state.conversation.getGestureNamed(each))
+			end)
+			state.clearGestures = true
+		end
+		
+		if state.actor.getFacePose() != null
+			convertFacePose(state, state.conversation.getFacePoseNamed(state.actor.getFacePose()))
+			state.clearFacePoses = true
+		end
+		
+		if state.actor.getLookAt() != null
+			convertLookAt(state, state.conversation.getTargetNamed(state.actor.getLookAt()))
+			state.clearLookAts = true
+		end
 	end
 	
 	/**
@@ -416,16 +496,7 @@ class SimpleConversationConverter
 			return
 		end
 		
-		if state.pauseTime > 0
-			if state.speechAnimation != null
-				state.actionActorSpeak.addWord(ConversationStrip.new(StringID.new(), 0, state.pauseTime))
-			end
-			if state.actionCameraShot != null
-				state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + state.pauseTime)
-			end
-			state.speechTime += state.pauseTime
-			state.pauseTime = 0
-		end
+		applySpeechPause(state)
 		
 		var float speechTime = state.speechTime
 		if endOfSpeech
@@ -455,6 +526,22 @@ class SimpleConversationConverter
 		state.gestures.removeAll()
 	end
 	
+	/** \brief Apply speech pause if present. */
+	protected func void applySpeechPause(State state)
+		if state.pauseTime == 0
+			return
+		end
+		
+		if state.speechAnimation != null
+			state.actionActorSpeak.addWord(ConversationStrip.new(StringID.new(), 0, state.pauseTime))
+		end
+		if state.actionCameraShot != null
+			state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + state.pauseTime)
+		end
+		state.speechTime += state.pauseTime
+		state.pauseTime = 0
+	end
+	
 	/** \brief Add conversation gesture. */
 	protected func void convertGesture(State state, ConversationGesture gesture)
 		if gesture == null
@@ -472,11 +559,50 @@ class SimpleConversationConverter
 			end
 		end
 		
-		//if state.speechTime > state.gestureTime
-			finishOpenGestures(state, false)
-		//end
-		
+		finishOpenGestures(state, false)
 		state.gestures.add(Gesture.new(gesture))
+	end
+	
+	/** \brief Add conversation face pose. */
+	protected func void convertFacePose(State state, ConversationFacePose facePose)
+		if state.clearFacePoses
+			state.clearFacePoses = false
+			state.facePoseTime = 0
+			if state.actionActorSpeak != null
+				state.actionActorSpeak.removeAllFacePoses()
+			end
+		end
+		
+		applySpeechPause(state)
+		
+		var float duration = pFacePoseDuration
+		var float delay = DEMath.max(state.speechTime - state.facePoseTime, 0.0)
+		if state.actionActorSpeak != null
+			state.actionActorSpeak.addFacePose(ConversationStrip.new(\
+				facePose != null if facePose.getName() else StringID.new(), delay, duration))
+		end
+		state.facePoseTime += delay + duration
+	end
+	
+	/** \brief Add conversation look-at. */
+	protected func void convertLookAt(State state, ConversationTarget lookAt)
+		if state.clearLookAts
+			state.clearLookAts = false
+			state.lookAtTime = 0
+			if state.actionActorSpeak != null
+				state.actionActorSpeak.removeAllHeadLookAt()
+			end
+		end
+		
+		applySpeechPause(state)
+		
+		var float duration = pLookAtDuration
+		var float delay = DEMath.max(state.speechTime - state.lookAtTime, 0.0)
+		if state.actionActorSpeak != null
+			state.actionActorSpeak.addHeadLookAt(ConversationStrip.new(\
+				lookAt != null if lookAt.getName() else StringID.new(), delay, duration))
+		end
+		state.lookAtTime += delay + duration
 	end
 	
 	/** \brief Add camera conversation actor. */
@@ -627,6 +753,7 @@ class SimpleConversationConverter
 						notFirstWord = true
 					end
 					
+					wordLen *= pSpeakSpeed
 					state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
 					duration += pauseLen + wordLen
 					
@@ -657,6 +784,16 @@ class SimpleConversationConverter
 	/** \brief Convert gesture action. */
 	protected func void convertGesture(State state, SimpleConversationAction action)
 		convertGesture(state, state.conversation.getGestureNamed(action.getTarget()))
+	end
+	
+	/** \brief Convert face pose action. */
+	protected func void convertFacePose(State state, SimpleConversationAction action)
+		convertFacePose(state, state.conversation.getFacePoseNamed(action.getTarget()))
+	end
+	
+	/** \brief Convert look-at action. */
+	protected func void convertLookAt(State state, SimpleConversationAction action)
+		convertLookAt(state, state.conversation.getTargetNamed(action.getTarget()))
 	end
 	
 	/**
@@ -1046,9 +1183,13 @@ class SimpleConversationConverter
 		state.actionActorSpeak = null
 		state.speechTime = 0
 		state.gestureTime = 0
+		state.facePoseTime = 0
+		state.lookAtTime = 0
 		state.pauseTime = 0
 		state.gestures.removeAll()
 		state.clearGestures = false
+		state.clearFacePoses = false
+		state.clearLookAts = false
 	end
 	
 	/** \brief Close open conversation actions if present. */

@@ -39,6 +39,7 @@ class SimpleConversationActor
 	var float pDelay, pProlongLastGesture
 	var bool pUseSpeechAnimation
 	var Array pGestures
+	var StringID pFacePose, pLookAt
 	
 	
 	/** \brief Create simple conversation camera definition. */
@@ -49,6 +50,7 @@ class SimpleConversationActor
 		
 		pId = id
 		pDelay = 0.25
+		pProlongLastGesture = 0.25
 		pUseSpeechAnimation = true
 		pGestures = Array.new()
 	end
@@ -63,6 +65,8 @@ class SimpleConversationActor
 		pProlongLastGesture = actor.pProlongLastGesture
 		pUseSpeechAnimation = actor.pUseSpeechAnimation
 		pGestures = Array.new(pGestures)
+		pFacePose = actor.pFacePose
+		pLookAt = actor.pLookAt
 	end
 	
 	
@@ -146,16 +150,12 @@ class SimpleConversationActor
 	end
 	
 	
-	/**
-	 * \brief Count of gestures.
-	 */
+	/** \brief Count of gestures. */
 	func int getGestureCount()
 		return pGestures.getCount()
 	end
 	
-	/**
-	 * \brief Gesture at index.
-	 */
+	/** \brief Gesture at index. */
 	func StringID getGestureAt(int index)
 		return pGestures.getAt(index) cast StringID
 	end
@@ -170,13 +170,32 @@ class SimpleConversationActor
 		pGestures.forEach(ablock)
 	end
 	
-	/**
-	 * \brief Add gesture.
-	 */
+	/** \brief Add gesture. */
 	func void addGesture(StringID gesture)
 		if gesture == null
-			throw ENullPointer.new("gesture")
+			throw ENullPointer.new()
 		end
 		pGestures.add(gesture)
+	end
+	
+	
+	/** \brief Face pose or null. */
+	func StringID getFacePose()
+		return pFacePose
+	end
+	
+	/** \brief Set face pose or null. */
+	func void setFacePose(StringID facePose)
+		pFacePose = facePose
+	end
+	
+	/** \brief Look-at or null. */
+	func StringID getLookAt()
+		return pLookAt
+	end
+	
+	/** \brief Set look-at or null. */
+	func void setLookAt(StringID lookAt)
+		pLookAt = lookAt
 	end
 end
