@@ -437,41 +437,38 @@ class LoadSimpleConversation extends BaseXmlLoader
 					
 					if element.hasAttributeNamed("actor")
 						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
-						
-						select character
-						case '+'
-							action.setValue(text.substring(1).toInt())
+					end
+					
+					select character
+					case '+'
+						action.setValue(text.substring(1).toInt())
+						if action.getTarget() != null
 							action.setMode(CActionSetActorParameter.Operator.increment)
-							
-						case '-'
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CActionSetActorParameter.Operator.decrement)
-							
-						case '~'
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CActionSetActorParameter.Operator.random)
-							
 						else
-							action.setValue(text.toInt())
-							action.setMode(CActionSetActorParameter.Operator.set)
+							action.setMode(CActionSetVariable.Operator.increment)
+						end
+						
+					case '-'
+						action.setValue(text.substring(1).toInt())
+						if action.getTarget() != null
+							action.setMode(CActionSetActorParameter.Operator.decrement)
+						else
+							action.setMode(CActionSetVariable.Operator.decrement)
+						end
+						
+					case '~'
+						action.setValue(text.substring(1).toInt())
+						if action.getTarget() != null
+							action.setMode(CActionSetActorParameter.Operator.random)
+						else
+							action.setMode(CActionSetVariable.Operator.random)
 						end
 						
 					else
-						select character
-						case '+'
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CActionSetVariable.Operator.increment)
-							
-						case '-'
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CActionSetVariable.Operator.decrement)
-							
-						case '~'
-							action.setValue(text.substring(1).toInt())
-							action.setMode(CActionSetVariable.Operator.random)
-							
+						action.setValue(text.toInt())
+						if action.getTarget() != null
+							action.setMode(CActionSetActorParameter.Operator.set)
 						else
-							action.setValue(text.toInt())
 							action.setMode(CActionSetVariable.Operator.set)
 						end
 					end
@@ -660,31 +657,59 @@ class LoadSimpleConversation extends BaseXmlLoader
 			test = element.getAttributeNamed("test")
 			if test.startsWith("!=")
 				condition.setValue(test.substring(2).toInt())
-				condition.setMode(CConditionVariable.Operator.notEqual)
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.notEqual)
+				else
+					condition.setMode(CConditionVariable.Operator.notEqual)
+				end
 				
 			elif test.startsWith("<=")
 				condition.setValue(test.substring(2).toInt())
-				condition.setMode(CConditionVariable.Operator.lessThanOrEqual)
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.lessThanOrEqual)
+				else
+					condition.setMode(CConditionVariable.Operator.lessThanOrEqual)
+				end
 				
 			elif test.startsWith(">=")
 				condition.setValue(test.substring(2).toInt())
-				condition.setMode(CConditionVariable.Operator.greaterThanOrEqual)
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.greaterThanOrEqual)
+				else
+					condition.setMode(CConditionVariable.Operator.greaterThanOrEqual)
+				end
 				
 			elif test.startsWith("=")
 				condition.setValue(test.substring(1).toInt())
-				condition.setMode(CConditionVariable.Operator.equal)
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.equal)
+				else
+					condition.setMode(CConditionVariable.Operator.equal)
+				end
 				
 			elif test.startsWith("<")
 				condition.setValue(test.substring(1).toInt())
-				condition.setMode(CConditionVariable.Operator.lessThan)
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.lessThan)
+				else
+					condition.setMode(CConditionVariable.Operator.lessThan)
+				end
 				
 			elif test.startsWith(">")
 				condition.setValue(test.substring(1).toInt())
-				condition.setMode(CConditionVariable.Operator.greaterThan)
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.greaterThan)
+				else
+					condition.setMode(CConditionVariable.Operator.greaterThan)
+				end
 				
 			else
 				condition.setValue(test.toInt())
-				condition.setMode(CConditionVariable.Operator.equal)
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.equal)
+				else
+					condition.setMode(CConditionVariable.Operator.equal)
+				end
 			end
 			
 		elif tagName.equals("trigger")
