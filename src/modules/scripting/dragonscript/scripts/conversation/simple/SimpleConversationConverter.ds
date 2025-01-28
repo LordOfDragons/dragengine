@@ -25,6 +25,7 @@
 namespace Dragengine.ConversationSystem
 pin Dragengine.SpeechAnimations
 pin Dragengine.Gui.Events
+pin Dragengine.Scenery
 
 
 /**
@@ -87,6 +88,12 @@ class SimpleConversationConverter
 		/** \brief Current gesture time in seconds. */
 		public var float gestureTime
 		
+		/** \brief Pause time in seconds to apply to the next action. */
+		public var float pauseTime
+		
+		/** \brief Wait mode to use for next action. */
+		public var SimpleConversationAction.WaitMode waitMode
+		
 		/** \brief Clear gestures before adding new gesture. */
 		public var bool clearGestures
 		
@@ -98,6 +105,7 @@ class SimpleConversationConverter
 		
 		func new()
 			gestures = Array.new()
+			waitMode = SimpleConversationAction.WaitMode.wait
 		end
 	end
 	
@@ -313,10 +321,27 @@ class SimpleConversationConverter
 				
 			case SimpleConversationAction.Type.removeCoordSystem
 				convertRemoveCoordSystem(state, each)
+				
+			case SimpleConversationAction.Type.pause
+				state.pauseTime += each.getDelay()
+				
+			case SimpleConversationAction.Type.changeWaitMode
+				state.waitMode = each.getWaitMode()
 			end
 		end)
 		
 		closeActions(state)
+	end
+	
+	/** \brief Apply wait mode to conversation action. */
+	protected func void applyWaitMode(State state, ConversationAction action)
+		select state.waitMode
+		case SimpleConversationAction.WaitMode.waitSpeak
+			action.setWaitSpeakOnly(true)
+			
+		case SimpleConversationAction.WaitMode.noWait
+			action.setWaitForActor(false)
+		end
 	end
 	
 	/**
@@ -341,20 +366,27 @@ class SimpleConversationConverter
 				state.conversationActor.getSpeechAnimationPlayback()
 			state.speechAnimation = saplayback != null if saplayback.getSpeechAnimation() else null
 			
-			var SimpleConversationCamera camera =\
-				state.simpleConversation.getCameraWith(state.actor.getCamera())
-			convertCamera(state, camera, camera.randomShot())
+			var StringID id = state.actor.getCamera()
+			if id != null
+				var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
+				convertCamera(state, camera, camera.randomShot())
+			end
 		end
 		
+		var float actorDelay = state.actor.getDelay()
+		
 		if state.actionCameraShot != null
-			state.actionCameraShot.setDuration(state.actionCameraShot.getDuration()\
-				+ state.actor.getDelay())
+			state.actionCameraShot.setDelay(state.actionCameraShot.getDelay())
+			state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + actorDelay)
+			state.pauseTime = 0
 		end
 		
 		closeActions(state)
 		state.actionActorSpeak = CActionActorSpeak.new()
+		applyWaitMode(state, state.actionActorSpeak)
 		state.actionActorSpeak.setActorID(state.actor.getActorId())
-		state.actionActorSpeak.setDelay(state.actor.getDelay())
+		state.actionActorSpeak.setDelay(actorDelay + state.pauseTime)
+		state.pauseTime = 0
 		state.actionActorSpeak.setTextBoxTextStyle(state.actor.getStyle())
 		state.actionActorSpeak.setUseSpeechAnimation(state.actor.getUseSpeechAnimation())
 		state.actions.add(state.actionActorSpeak)
@@ -382,6 +414,17 @@ class SimpleConversationConverter
 		if sumDuration < 0.1
 			state.gestures.removeAll()
 			return
+		end
+		
+		if state.pauseTime > 0
+			if state.speechAnimation != null
+				state.actionActorSpeak.addWord(ConversationStrip.new(StringID.new(), 0, state.pauseTime))
+			end
+			if state.actionCameraShot != null
+				state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + state.pauseTime)
+			end
+			state.speechTime += state.pauseTime
+			state.pauseTime = 0
 		end
 		
 		var float speechTime = state.speechTime
@@ -462,7 +505,9 @@ class SimpleConversationConverter
 	protected func void convertCameraShot(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		state.actionCameraShot = CActionCameraShot.new()
-		state.actionCameraShot.setDelay(camera.getDelay())
+		applyWaitMode(state, state.actionCameraShot)
+		state.actionCameraShot.setDelay(camera.getDelay() + state.pauseTime)
+		state.pauseTime = 0
 		state.actionCameraShot.setName(shot.getTarget())
 		state.actionCameraShot.setDuration(1)
 		state.actionCameraShot.setCameraTarget(shot.getCameraTarget())
@@ -474,7 +519,9 @@ class SimpleConversationConverter
 	protected func void convertCameraSnippet(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		var CActionSnippet caction = CActionSnippet.new()
-		caction.setDelay(camera.getDelay())
+		applyWaitMode(state, caction)
+		caction.setDelay(camera.getDelay() + state.pauseTime)
+		state.pauseTime = 0
 		caction.setGroupID(shot.getSubTarget())
 		caction.setTopicID(shot.getTarget())
 		state.actions.add(caction)
@@ -484,7 +531,9 @@ class SimpleConversationConverter
 	protected func void convertCameraGameCommand(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		var CActionGameCommand caction = CActionGameCommand.new()
-		caction.setDelay(camera.getDelay())
+		applyWaitMode(state, caction)
+		caction.setDelay(camera.getDelay() + state.pauseTime)
+		state.pauseTime = 0
 		caction.setCommand(shot.getCommand())
 		state.actions.add(caction)
 	end
@@ -493,7 +542,9 @@ class SimpleConversationConverter
 	protected func void convertCameraActorCommand(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		var CActionActorCommand caction = CActionActorCommand.new()
-		caction.setDelay(camera.getDelay())
+		applyWaitMode(state, caction)
+		caction.setDelay(camera.getDelay() + state.pauseTime)
+		state.pauseTime = 0
 		caction.setActorID(shot.getTarget())
 		caction.setCommand(shot.getCommand())
 		state.actions.add(caction)
@@ -505,75 +556,97 @@ class SimpleConversationConverter
 			return
 		end
 		
-		var UnicodeString tbtext = state.actionActorSpeak.getTextBoxText()
+		if state.pauseTime > 0 and state.speechTime == 0
+			if state.actionCameraShot != null
+				state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + state.pauseTime)
+			end
+			state.actionActorSpeak.setDelay(state.actionActorSpeak.getDelay() + state.pauseTime)
+			state.pauseTime = 0
+		end
+		
 		var UnicodeString text = action.getText()
+		if text != null
+			var UnicodeString t = state.actionActorSpeak.getTextBoxText()
+			state.actionActorSpeak.setTextBoxText(t != null if t + ' ' + text else text)
+		end
 		
-		state.actionActorSpeak.setTextBoxText(tbtext != null if tbtext + ' ' + text else text)
-		
-		if action.getAnimText() != null
-			text = action.getAnimText()
+		var UnicodeString animText = action.getAnimText()
+		if animText != null
+			text = animText
 		end
 		
 		var float duration
 		if state.speechAnimation != null
-			var int wordBegin = -1, len = text.getLength(), lenP1 = len + 1
-			var int c, i, lastBreakChar
-			var float wordLen, pauseLen
-			var bool notFirstWord
-			var StringID id
-			
-			for i = 0 to lenP1
-				if i < len
-					c = text.getCharacterAt(i)
-					if pCharsWordBreak.findCharacter(c, 0) == -1
-						if wordBegin == -1
-							wordBegin = i
+			if text != null
+				var int wordBegin = -1, len = text.getLength(), lenP1 = len + 1
+				var int c, i, lastBreakChar
+				var float wordLen, pauseLen
+				var bool notFirstWord
+				var StringID id
+				
+				for i = 0 to lenP1
+					if i < len
+						c = text.getCharacterAt(i)
+						if pCharsWordBreak.findCharacter(c, 0) == -1
+							if wordBegin == -1
+								wordBegin = i
+							end
+							continue
 						end
+						
+					else
+						c = 0
+					end
+					
+					if wordBegin == -1
+						lastBreakChar = c
 						continue
 					end
 					
-				else
-					c = 0
-				end
-				
-				if wordBegin == -1
-					lastBreakChar = c
-					continue
-				end
-				
-				id = StringID.new(text.getSubString(wordBegin, i - wordBegin).toUTF8())
-				
-				var SpeechAnimationWord saword = state.speechAnimation.getWordNamed(id)
-				if saword != null
-					wordLen = saword.getEstimatedSpeakLength(0.085, state.speechAnimation)
+					id = StringID.new(text.getSubString(wordBegin, i - wordBegin).toUTF8())
 					
-				else
-					wordLen = 0.085 * (i - wordBegin)
-				end
-				
-				pauseLen = 0
-				if notFirstWord
-					if pCharsPhraseBreak.findCharacter(lastBreakChar, 0) != -1
-						pauseLen = pPausePhrase
+					var SpeechAnimationWord saword = state.speechAnimation.getWordNamed(id)
+					if saword != null
+						wordLen = saword.getEstimatedSpeakLength(0.085, state.speechAnimation)
 						
-					elif pCharsSubPhraseBreak.findCharacter(lastBreakChar, 0) != -1
-						pauseLen = pPauseSubPhrase
+					else
+						wordLen = 0.085 * (i - wordBegin)
 					end
 					
-				else
-					notFirstWord = true
+					pauseLen = state.pauseTime
+					state.pauseTime = 0
+					if notFirstWord
+						if pCharsPhraseBreak.findCharacter(lastBreakChar, 0) != -1
+							pauseLen = pPausePhrase
+							
+						elif pCharsSubPhraseBreak.findCharacter(lastBreakChar, 0) != -1
+							pauseLen = pPauseSubPhrase
+						end
+						
+					else
+						notFirstWord = true
+					end
+					
+					state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
+					duration += pauseLen + wordLen
+					
+					lastBreakChar = c
+					wordBegin = -1
 				end
 				
-				state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
-				duration += pauseLen + wordLen
-				
-				lastBreakChar = c
-				wordBegin = -1
+			elif state.pauseTime > 0
+				state.actionActorSpeak.addWord(ConversationStrip.new(StringID.new(), 0, state.pauseTime))
+				state.pauseTime = 0
 			end
 			
 		else
-			duration = text.getLength() * 0.085
+			duration = state.pauseTime
+			state.pauseTime = 0
+			if text != null
+				duration += text.getLength() * 0.085
+			end
 		end
+		
 		state.speechTime += duration
 		
 		if state.actionCameraShot != null
@@ -597,12 +670,18 @@ class SimpleConversationConverter
 		
 		if action.getTarget() != null
 			var CActionActorCommand caction = CActionActorCommand.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
 			caction.setActorID(state.simpleConversation.getActorWith(action.getTarget()).getActorId())
 			caction.setCommand(action.getName())
 			state.actions.add(caction)
 			
 		else
 			var CActionGameCommand caction = CActionGameCommand.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
 			caction.setCommand(action.getName())
 			state.actions.add(caction)
 		end
@@ -616,7 +695,11 @@ class SimpleConversationConverter
 	 */
 	protected func void convertStopTopic(State state, SimpleConversationAction action)
 		closeActions(state)
-		state.actions.add(CActionStopTopic.new())
+		var CActionStopTopic caction = CActionStopTopic.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		state.actions.add(caction)
 	end
 	
 	/**
@@ -627,7 +710,11 @@ class SimpleConversationConverter
 	 */
 	protected func void convertStopConversation(State state, SimpleConversationAction action)
 		closeActions(state)
-		state.actions.add(CActionStopConversation.new())
+		var CActionStopConversation caction = CActionStopConversation.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		state.actions.add(caction)
 	end
 	
 	/**
@@ -642,6 +729,9 @@ class SimpleConversationConverter
 		
 		if action.getTarget() != null
 			var CActionSetActorParameter caction = CActionSetActorParameter.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
 			caction.setActorID(state.simpleConversation.getActorWith(action.getTarget()).getActorId())
 			caction.setName(action.getName())
 			caction.setValue(action.getValue())
@@ -650,6 +740,9 @@ class SimpleConversationConverter
 			
 		else
 			var CActionSetVariable caction = CActionSetVariable.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
 			caction.setName(action.getName())
 			caction.setValue(action.getValue())
 			caction.setOperator(action.getMode() cast CActionSetVariable.Operator)
@@ -667,6 +760,9 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		var CActionTrigger caction = CActionTrigger.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
 		caction.setName(action.getTarget())
 		caction.setAction(action.getMode() cast CActionTrigger.Action)
 		state.actions.add(caction)
@@ -685,6 +781,9 @@ class SimpleConversationConverter
 			closeActions(state)
 			
 			state.actionIfElse = CActionIfElse.new()
+			applyWaitMode(state, state.actionIfElse)
+			state.actionIfElse.setDelay(state.pauseTime)
+			state.pauseTime = 0
 			state.actions.add(state.actionIfElse)
 		end
 		
@@ -773,6 +872,9 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		state.actionPlayerChoice = CActionPlayerChoice.new()
+		applyWaitMode(state, state.actionPlayerChoice)
+		state.actionPlayerChoice.setDelay(state.pauseTime)
+		state.pauseTime = 0
 		state.actionPlayerChoice.setVariable(action.getName())
 		state.actions.add(state.actionPlayerChoice)
 	end
@@ -805,6 +907,9 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		var CActionWait caction = CActionWait.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
 		caction.setCondition(convertCondition(state, action.getCondition()))
 		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
 			state.simpleConversation, state.playback, caction.getActions())
@@ -822,6 +927,9 @@ class SimpleConversationConverter
 		
 		if action.getSubTarget() != null
 			var CActionSnippet caction = CActionSnippet.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
 			caction.setGroupID(action.getSubTarget())
 			caction.setTopicID(action.getTarget())
 			state.actions.add(caction)
@@ -833,6 +941,8 @@ class SimpleConversationConverter
 			subState.playback = state.playback
 			subState.conversation = state.playback.getConversation()
 			subState.actions = state.actions
+			subState.pauseTime = state.pauseTime
+			state.pauseTime = 0
 			
 			convert(subState.snippet, state.simpleConversation, state.playback, state.actions)
 		end
@@ -847,6 +957,9 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		var CActionMusic caction = CActionMusic.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
 		caction.setName(action.getName())
 		state.actions.add(caction)
 	end
@@ -860,6 +973,9 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		var CActionActorAdd caction = CActionActorAdd.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
 		caction.setActorID(action.getTarget())
 		caction.setAliasID(action.getSubTarget())
 		state.actions.add(caction)
@@ -874,6 +990,9 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		var CActionActorRemove caction = CActionActorRemove.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
 		caction.setActorID(action.getTarget())
 		state.actions.add(caction)
 	end
@@ -887,6 +1006,9 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		var CActionCoordSystemAdd caction = CActionCoordSystemAdd.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
 		caction.setCoordSystemID(action.getTarget())
 		caction.setAliasID(action.getSubTarget())
 		state.actions.add(caction)
@@ -901,6 +1023,9 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		var CActionCoordSystemRemove caction = CActionCoordSystemRemove.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
 		caction.setCoordSystemID(action.getTarget())
 		state.actions.add(caction)
 	end
@@ -914,9 +1039,14 @@ class SimpleConversationConverter
 	protected func void closeSpeak(State state)
 		finishOpenGestures(state, true)
 		
+		if state.actionActorSpeak != null and state.speechAnimation == null
+			state.actionActorSpeak.setMinSpeechTime(state.speechTime)
+		end
+		
 		state.actionActorSpeak = null
 		state.speechTime = 0
 		state.gestureTime = 0
+		state.pauseTime = 0
 		state.gestures.removeAll()
 		state.clearGestures = false
 	end

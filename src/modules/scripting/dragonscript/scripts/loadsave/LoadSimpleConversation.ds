@@ -101,6 +101,18 @@ pin Dragengine.Scenery
  *         <!-- if attribute actor='player' is present run actor command -->
  * 
  *      <!-- more supported tags
+ *      <pause>1.5</pause>
+ *         insert a pause:
+ *         - inside text: pause before word
+ *         - at end of text: pause after speaking. useful to elongate gestures
+ *         - before actor or other tags: delay before activating action
+ * 
+ *      <changeWaitMode>mode</changeWaitMode>
+ *         Change wait mode for upcoming actions (default mode 'wait'). Mode can be:
+ *         - wait: Wait for all actors finish speaking and finish waitable actions.
+ *         - waitSpeak: Wait for all actors finish speaking.
+ *         - noWait: No waiting.
+ * 
  *      <stopTopic/>
  *      <stopConversation/>
  * 
@@ -167,6 +179,7 @@ pin Dragengine.Scenery
  *      <actor id='player'/> = <a i='player'/>
  *      <gesture id='hello'/> = <g i='hello'/>
  *      <tag anim='somebody'>{npcName}</tag> = <t a='somebody'>{npcName}</t>
+ *      <pause>1.5</pause> = <p>1.5</p>
  *      -->
  *   </snippet>
  * </simleConversation>
@@ -514,6 +527,16 @@ class LoadSimpleConversation extends BaseXmlLoader
 					end
 					snippet.addAction(action)
 					
+				elif tagName.equals("pause")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.pause)
+					action.setDelay(element.getFirstCDataFloat())
+					snippet.addAction(action)
+					
+				elif tagName.equals("changeWaitMode")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.changeWaitMode)
+					action.setWaitMode(SimpleConversationAction.WaitMode.named(element.getFirstCData()))
+					snippet.addAction(action)
+					
 				elif tagName.equals("a")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
 					action.setTarget(StringID.new(element.getAttributeNamed("i")))
@@ -532,19 +555,22 @@ class LoadSimpleConversation extends BaseXmlLoader
 					end
 					snippet.addAction(action)
 					
+				elif tagName.equals("p")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.pause)
+					action.setDelay(element.getFirstCDataFloat())
+					snippet.addAction(action)
+					
 				else
 					logUnknownTag(element)
 				end
 				
 			case EasyXMLElementType.cdata
 				text = element.getCDataContent().trimBoth()
-				if text.empty()
-					continue
+				if not text.empty()
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
+					action.setText(UnicodeString.newFromUTF8(text))
+					snippet.addAction(action)
 				end
-				
-				action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
-				action.setText(UnicodeString.newFromUTF8(text))
-				snippet.addAction(action)
 			end
 		end
 		

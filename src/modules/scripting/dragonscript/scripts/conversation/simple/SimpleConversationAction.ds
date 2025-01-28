@@ -185,6 +185,20 @@ class SimpleConversationAction
 		 * Uses getTarget() as identifier or alias of coordinate system to remove.
 		 */
 		removeCoordSystem
+		
+		/**
+		 * \brief Pause in seconds.
+		 * 
+		 * Uses getDelay() as delay in seconds.
+		 */
+		pause
+		
+		/**
+		 * \brief Change wait mode.
+		 * 
+		 * Uses getWait() as new wait mode to use.
+		 */
+		changeWaitMode
 	end
 	
 	/** \brief Condition. */
@@ -192,11 +206,23 @@ class SimpleConversationAction
 		/** Compare variable or actor parameter value. */
 		variable
 		
-		/** Evaluate game or actor condition */
+		/** Evaluate game or actor condition. */
 		condition
 		
 		/** Trigger state. */
 		trigger
+	end
+	
+	/** \brief Wait mode. */
+	enum WaitMode
+		/** Wait for all actors finish speaking and finish waitable actions. */
+		wait
+		
+		/** Wait for all actors finish speaking.*/
+		waitSpeak
+		
+		/** No waiting. */
+		noWait
 	end
 	
 	
@@ -205,6 +231,8 @@ class SimpleConversationAction
 	var UnicodeString pText, pAnimText
 	var String pName
 	var int pValue
+	var float pDelay
+	var WaitMode pWaitMode
 	var Enumeration pMode
 	var SimpleConversationCondition pCondition
 	
@@ -226,6 +254,8 @@ class SimpleConversationAction
 		pAnimText = action.pAnimText
 		pName = action.pName
 		pValue = action.pValue
+		pDelay = action.pDelay
+		pWaitMode = action.pWaitMode
 		pMode = action.pMode
 		if action.pCondition != null
 			pCondition = SimpleConversationCondition.new(action.pCondition)
@@ -349,7 +379,7 @@ class SimpleConversationAction
 	 * \brief Value.
 	 * 
 	 * - \ref Type#variable: Value to set variable/parameter to.
-	 * - other types: Not used and is null
+	 * - other types: Not used and is 0
 	 */
 	func int getValue()
 		return pValue
@@ -361,6 +391,42 @@ class SimpleConversationAction
 	 */
 	func void setValue(int value)
 		pValue = value
+	end
+	
+	/**
+	 * \brief Delay in seconds.
+	 * 
+	 * - \ref Type#pause: Delay.
+	 * - other types: Not used and is 0
+	 */
+	func float getDelay()
+		return pDelay
+	end
+	
+	/**
+	 * \brief Set delay in seconds.
+	 * \see #getDelay()
+	 */
+	func void setDelay(float delay)
+		pDelay = DEMath.max(delay, 0.0)
+	end
+	
+	/**
+	 * \brief Wait mode.
+	 * 
+	 * - \ref Type#changeWaitMode: Wait mode to set.
+	 * - other types: Not used and is null
+	 */
+	func WaitMode getWaitMode()
+		return pWaitMode
+	end
+	
+	/**
+	 * \brief Set wait mode.
+	 * \see #getWaitMode()
+	 */
+	func void setWaitMode(WaitMode mode)
+		pWaitMode = mode
 	end
 	
 	/**

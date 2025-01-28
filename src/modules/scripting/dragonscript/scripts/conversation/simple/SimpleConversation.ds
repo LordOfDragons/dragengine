@@ -245,7 +245,7 @@ class SimpleConversation
 	SimpleConversationSnippet translated, bool fullTranslationMode)
 		var SimpleConversationSnippet modified = SimpleConversationSnippet.new(snippet)
 		
-		var int indexTra
+		var int indexTra, countTra = translated.getActionCount()
 		var SimpleConversationAction traAction
 		modified.forEachAction(block SimpleConversationAction modAction
 			if modAction.getType() != SimpleConversationAction.Type.speak
@@ -253,6 +253,10 @@ class SimpleConversation
 			end
 			
 			while true
+				if indexTra >= countTra
+					throw EInvalidParam.new("Text count missmatch ({}): '{}'".format(\
+						Array.newWith(snippet.getId(), modAction.getText())))
+				end
 				traAction = translated.getActionAt(indexTra++)
 				if traAction.getType() == SimpleConversationAction.Type.speak
 					break
