@@ -58,21 +58,10 @@
 #include <dragengine/systems/modules/deModuleParameter.h>
 #include <dragengine/systems/modules/audio/deBaseAudioDecal.h>
 
-
-
 #ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
 #include <android/native_activity.h>
-
-#ifdef __cplusplus
-extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR void android_openal_setjavavm( JavaVM *vm ); // hack to get into the library
-#ifdef  __cplusplus
-}
-#endif
-#endif
-
 
 
 #ifdef __cplusplus
@@ -86,18 +75,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *OpenALCreateModule( deLoadableModule *loadabl
 }
 #endif
 
-deBaseModule *OpenALCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
-	
+deBaseModule *OpenALCreateModule(deLoadableModule *loadableModule){
 	try{
-		module = new deAudioOpenAL( *loadableModule );
-		
-	}catch( const deException & ){
+		return new deAudioOpenAL(*loadableModule);
+	}catch(const deException &){
 	}
-	
-	return module;
+	return nullptr;
 }
-
 
 
 // Class deAudioOpenAL
@@ -178,11 +162,6 @@ bool deAudioOpenAL::Init( deMicrophone *activeMic ){
 	#endif
 	
 	try{
-		// on android set VM for the contrib android library
-		#ifdef OS_ANDROID
-		android_openal_setjavavm(GetGameEngine()->GetOS()->CastToOSAndroid()->GetJavaVM());
-		#endif
-		
 		deoalLSConfiguration( *this, *pConfiguration ).LoadConfig();
 		
 		pAudioThread = new deoalAudioThread( *this );
@@ -215,11 +194,6 @@ void deAudioOpenAL::CleanUp(){
 		delete pDevMode;
 		pDevMode = NULL;
 	}
-	
-	// on android drop vm VM for the contrib android library
-	#ifdef OS_ANDROID
-	android_openal_setjavavm( NULL );
-	#endif
 }
 
 void deAudioOpenAL::ProcessAudio(){
