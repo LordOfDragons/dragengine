@@ -228,10 +228,14 @@ class SimpleConversation
 	 */
 	func void importTranslation(SimpleConversation conversation, bool fullTranslationMode)
 		var StringID id
+		var SimpleConversationSnippet snippet
 		conversation.forEachSnippet(block SimpleConversationSnippet each
 			id = each.getId()
-			pSnippets.setAt(id, translateSnippet(\
-				pSnippets.getAt(id) cast SimpleConversationSnippet, each, fullTranslationMode))
+			snippet = pSnippets.getAt(id, null) cast SimpleConversationSnippet
+			if snippet == null
+				throw EInvalidParam.new("snippet to translate not found: " + id)
+			end
+			pSnippets.setAt(id, translateSnippet(snippet, each, fullTranslationMode))
 		end)
 	end
 	
