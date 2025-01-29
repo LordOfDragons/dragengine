@@ -250,7 +250,7 @@ class SimpleConversationAction
 	var StringID pTarget, pSubTarget
 	var UnicodeString pText, pAnimText
 	var String pName
-	var int pValue
+	var int pValue, pRandom
 	var float pDelay
 	var WaitMode pWaitMode
 	var Enumeration pMode
@@ -274,6 +274,7 @@ class SimpleConversationAction
 		pAnimText = action.pAnimText
 		pName = action.pName
 		pValue = action.pValue
+		pRandom = action.pRandom
 		pDelay = action.pDelay
 		pWaitMode = action.pWaitMode
 		pMode = action.pMode
@@ -413,6 +414,24 @@ class SimpleConversationAction
 	 */
 	func void setValue(int value)
 		pValue = value
+	end
+	
+	/**
+	 * \brief Randomize count or 0 to disable.
+	 * 
+	 * - \ref Type#snippet: Random value in the range 0 to count-1.
+	 * - other types: Not used and is 0
+	 */
+	func int getRandom()
+		return pRandom
+	end
+	
+	/**
+	 * \brief Set randomize count or 0 to disable.
+	 * \see #getRandom()
+	 */
+	func void setRandom(int count)
+		pRandom = count
 	end
 	
 	/**

@@ -1125,28 +1125,78 @@ class SimpleConversationConverter
 	 * actions. If getSubTarget() is not null adds \ref CActionSnippet.
 	 */
 	protected func void convertSnippet(State state, SimpleConversationAction action)
+		var StringID subTarget = action.getSubTarget()
+		
 		closeActions(state)
 		
-		if action.getSubTarget() != null
-			var CActionSnippet caction = CActionSnippet.new()
-			applyWaitMode(state, caction)
-			caction.setDelay(state.pauseTime)
+		if action.getRandom() > 0
+			var int i, count = action.getRandom()
+			var String varName = "_scsr"
+			
+			var CActionSetVariable caSetVar = CActionSetVariable.new()
+			applyWaitMode(state, caSetVar)
+			caSetVar.setDelay(state.pauseTime)
 			state.pauseTime = 0
-			caction.setGroupID(action.getSubTarget())
-			caction.setTopicID(action.getTarget())
-			state.actions.add(caction)
+			caSetVar.setName(varName)
+			caSetVar.setValue(count - 1)
+			caSetVar.setOperator(CActionSetVariable.Operator.random)
+			state.actions.add(caSetVar)
+			
+			var CActionIfElse caIfElse = CActionIfElse.new()
+			caIfElse.setWaitForActor(false)
+			state.actions.add(caIfElse)
+			
+			var CActionIfElseCase caIfCase
+			var CConditionVariable ccVar
+			var String id = action.getTarget().toString()
+			var StringID rid
+			
+			for i = 0 to count
+				ccVar = CConditionVariable.new()
+				ccVar.setVariable(varName)
+				ccVar.setTestValue(i)
+				
+				caIfCase = CActionIfElseCase.new()
+				caIfCase.setCondition(ccVar)
+				caIfElse.addCase(caIfCase)
+				
+				rid = StringID.new(id + i)
+				
+				if subTarget != null
+					var CActionSnippet caSnippet = CActionSnippet.new()
+					caSnippet.setWaitForActor(false)
+					caSnippet.setGroupID(subTarget)
+					caSnippet.setTopicID(rid)
+					caIfCase.getActions().add(caSnippet)
+					
+				else
+					convert(state.simpleConversation.getSnippetWith(rid),\
+						state.simpleConversation, state.playback, caIfCase.getActions())
+				end
+			end
 			
 		else
-			var State subState = createState()
-			subState.snippet = state.simpleConversation.getSnippetWith(action.getTarget())
-			subState.simpleConversation = state.simpleConversation
-			subState.playback = state.playback
-			subState.conversation = state.playback.getConversation()
-			subState.actions = state.actions
-			subState.pauseTime = state.pauseTime
-			state.pauseTime = 0
-			
-			convert(subState.snippet, state.simpleConversation, state.playback, state.actions)
+			if subTarget != null
+				var CActionSnippet caction = CActionSnippet.new()
+				applyWaitMode(state, caction)
+				caction.setDelay(state.pauseTime)
+				state.pauseTime = 0
+				caction.setGroupID(subTarget)
+				caction.setTopicID(action.getTarget())
+				state.actions.add(caction)
+				
+			else
+				var State subState = createState()
+				subState.snippet = state.simpleConversation.getSnippetWith(action.getTarget())
+				subState.simpleConversation = state.simpleConversation
+				subState.playback = state.playback
+				subState.conversation = state.playback.getConversation()
+				subState.actions = state.actions
+				subState.pauseTime = state.pauseTime
+				state.pauseTime = 0
+				
+				convert(subState.snippet, state.simpleConversation, state.playback, state.actions)
+			end
 		end
 	end
 	

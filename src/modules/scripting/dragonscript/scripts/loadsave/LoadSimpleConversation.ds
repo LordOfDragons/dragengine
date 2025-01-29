@@ -168,11 +168,17 @@ pin Dragengine.Scenery
  *      <wait snippet='snippet to run'> ...condition... </wait>
  *         run snippet looping while condition is fulfilled
  * 
- *      <snippet group='snippet topic group'>snippet topic</snippet>
- *         run conversation snippet topic
- * 
  *      <snippet>snippet identifier</snippet>
  *         run simple conversation snippet
+ * 
+ *      <snippet random='3'>snippet identifier|v</snippet>
+ *         run random simple conversation snippet. appends random number in the
+ *         range from 0 to random-1 and appends it to the identifier
+ *         (snippet identifier|v0, snippet identifier|v1, snippet identifier|v2)
+ * 
+ *      <snippet group='snippet topic group'>snippet topic</snippet>
+ *         run conversation snippet topic. supports also 'random' attributes.
+ *         in this case the random value ia appended to the topic identifier.
  * 
  *      <music name='music name'/>
  * 
@@ -514,6 +520,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 					action.setTarget(StringID.new(element.getFirstCData()))
 					if element.hasAttributeNamed("group")
 						action.setSubTarget(StringID.new(element.getAttributeNamed("group")))
+					end
+					if element.hasAttributeNamed("random")
+						action.setRandom(element.getAttributeIntNamed("random"))
 					end
 					snippet.addAction(action)
 					
