@@ -120,7 +120,7 @@ class SimpleConversationConverter
 		
 		func new()
 			gestures = Array.new()
-			waitMode = SimpleConversationAction.WaitMode.wait
+			waitMode = SimpleConversationAction.WaitMode.waitCameraSpeak
 		end
 	end
 	
@@ -455,6 +455,18 @@ class SimpleConversationConverter
 		end
 	end
 	
+	/** \brief Apply camera wait mode to conversation action. */
+	protected func void applyCameraWaitMode(State state, ConversationAction action)
+		select state.waitMode
+		case SimpleConversationAction.WaitMode.waitSpeak,\
+		SimpleConversationAction.WaitMode.waitCameraSpeak
+			action.setWaitSpeakOnly(true)
+			
+		case SimpleConversationAction.WaitMode.noWait
+			action.setWaitForActor(false)
+		end
+	end
+	
 	/**
 	 * \brief Convert actor action.
 	 * 
@@ -696,7 +708,7 @@ class SimpleConversationConverter
 	protected func void convertCameraShot(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		state.actionCameraShot = CActionCameraShot.new()
-		applyWaitMode(state, state.actionCameraShot)
+		applyCameraWaitMode(state, state.actionCameraShot)
 		state.actionCameraShot.setDelay(camera.getDelay() + state.pauseTime)
 		state.pauseTime = 0
 		state.actionCameraShot.setName(shot.getTarget())
@@ -710,7 +722,7 @@ class SimpleConversationConverter
 	protected func void convertCameraSnippet(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		var CActionSnippet caction = CActionSnippet.new()
-		applyWaitMode(state, caction)
+		applyCameraWaitMode(state, caction)
 		caction.setDelay(camera.getDelay() + state.pauseTime)
 		state.pauseTime = 0
 		caction.setGroupID(shot.getSubTarget())
@@ -722,7 +734,7 @@ class SimpleConversationConverter
 	protected func void convertCameraGameCommand(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		var CActionGameCommand caction = CActionGameCommand.new()
-		applyWaitMode(state, caction)
+		applyCameraWaitMode(state, caction)
 		caction.setDelay(camera.getDelay() + state.pauseTime)
 		state.pauseTime = 0
 		caction.setCommand(shot.getCommand())
@@ -733,7 +745,7 @@ class SimpleConversationConverter
 	protected func void convertCameraActorCommand(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot)
 		var CActionActorCommand caction = CActionActorCommand.new()
-		applyWaitMode(state, caction)
+		applyCameraWaitMode(state, caction)
 		caction.setDelay(camera.getDelay() + state.pauseTime)
 		state.pauseTime = 0
 		caction.setActorID(shot.getTarget())
@@ -1170,8 +1182,10 @@ class SimpleConversationConverter
 					caIfCase.getActions().add(caSnippet)
 					
 				else
-					convert(state.simpleConversation.getSnippetWith(rid),\
-						state.simpleConversation, state.playback, caIfCase.getActions())
+					var SimpleConversationSnippet s = state.simpleConversation.getSnippetWith(rid)
+					if s != null
+						convert(s, state.simpleConversation, state.playback, caIfCase.getActions())
+					end
 				end
 			end
 			
@@ -1186,16 +1200,20 @@ class SimpleConversationConverter
 				state.actions.add(caction)
 				
 			else
-				var State subState = createState()
-				subState.snippet = state.simpleConversation.getSnippetWith(action.getTarget())
-				subState.simpleConversation = state.simpleConversation
-				subState.playback = state.playback
-				subState.conversation = state.playback.getConversation()
-				subState.actions = state.actions
-				subState.pauseTime = state.pauseTime
-				state.pauseTime = 0
-				
-				convert(subState.snippet, state.simpleConversation, state.playback, state.actions)
+				var SimpleConversationSnippet s =\
+					state.simpleConversation.getSnippetWith(action.getTarget())
+				if s != null
+					var State subState = createState()
+					subState.snippet = s
+					subState.simpleConversation = state.simpleConversation
+					subState.playback = state.playback
+					subState.conversation = state.playback.getConversation()
+					subState.actions = state.actions
+					subState.pauseTime = state.pauseTime
+					state.pauseTime = 0
+					
+					convert(s, state.simpleConversation, state.playback, state.actions)
+				end
 			end
 		end
 	end
