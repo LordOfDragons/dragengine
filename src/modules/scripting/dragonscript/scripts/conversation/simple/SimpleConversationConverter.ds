@@ -131,11 +131,10 @@ class SimpleConversationConverter
 	end
 	
 	
-	var UnicodeString pCharsWordBreak
-	var UnicodeString pCharsPhraseBreak
-	var UnicodeString pCharsSubPhraseBreak
+	var UnicodeString pCharsWordBreak, pCharsPhraseBreak, pCharsSubPhraseBreak
 	var float pPausePhrase, pPauseSubPhrase
-	var float pSpeakSpeed
+	var float pAverageCharacterLength
+	var float pSpeakSpeed, pElongateSpeak
 	var float pFacePoseDuration, pLookAtDuration
 	var float pMinGestureDuration, pMinGestureDurationHalf
 	var int pMinSpeakCountCameraChange
@@ -148,7 +147,9 @@ class SimpleConversationConverter
 		pCharsSubPhraseBreak = UnicodeString.newFromUTF8(",")
 		pPausePhrase = 0.5
 		pPauseSubPhrase = 0.35
+		pAverageCharacterLength = 0.085
 		pSpeakSpeed = 1.1
+		pElongateSpeak = 0.15
 		pFacePoseDuration = 0.25
 		pLookAtDuration = 0.5
 		pMinGestureDuration = 0.5
@@ -237,11 +238,26 @@ class SimpleConversationConverter
 	end
 	
 	/**
+	 * \brief Average character length.
+	 * 
+	 * Used to estimate the length of a word without speech animation defining the length.
+	 * Default value is 0.085.
+	 */
+	func float getEstimateWordLength()
+		return pAverageCharacterLength
+	end
+	
+	/** \brief Set average character length. */
+	func void setEstimateWordLength(float length)
+		pAverageCharacterLength = DEMath.max(length, 0.01)
+	end
+	
+	/**
 	 * \brief Speaking speed.
 	 * 
 	 * Larger values slow down speaking which makes it easier for users to read the text.
 	 * A value of 1 equals fast reading. A value of 1.1 is moderate speed. A value of 1.2
-	 * is slow speed. Default value is 1.1 .
+	 * is slow speed. Default value is 1.1.
 	 */
 	func float getSpeakSpeed()
 		return pSpeakSpeed
@@ -250,6 +266,23 @@ class SimpleConversationConverter
 	/** \brief Set speaking speed. */
 	func void setSpeakSpeed(float speed)
 		pSpeakSpeed = DEMath.max(speed, 0.1)
+	end
+	
+	/**
+	 * \brief Elongate speaking duration.
+	 * 
+	 * Slows down speaking by elongating the speak duration by a fixed amount of seconds.
+	 * This gives users some time to locate the beginning of the text to read. Combined with
+	 * \ref getSpeakSpeed() this allows to fine tune the speak duration for users with
+	 * different reading speeds. Default value is 0.15.
+	 */
+	func float getElongateSpeak()
+		return pElongateSpeak
+	end
+	
+	/** \brief Set elongate speaking duration. */
+	func void setElongateSpeak(float duration)
+		pElongateSpeak = DEMath.max(duration, 0.0)
 	end
 	
 	/**
@@ -811,10 +844,11 @@ class SimpleConversationConverter
 					
 					var SpeechAnimationWord saword = state.speechAnimation.getWordNamed(id)
 					if saword != null
-						wordLen = saword.getEstimatedSpeakLength(0.085, state.speechAnimation)
+						wordLen = saword.getEstimatedSpeakLength(\
+							pAverageCharacterLength, state.speechAnimation)
 						
 					else
-						wordLen = 0.085 * (i - wordBegin)
+						wordLen = pAverageCharacterLength * (i - wordBegin)
 					end
 					
 					pauseLen = state.pauseTime
@@ -831,7 +865,7 @@ class SimpleConversationConverter
 						notFirstWord = true
 					end
 					
-					wordLen *= pSpeakSpeed
+					wordLen = wordLen * pSpeakSpeed + pElongateSpeak
 					state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
 					duration += pauseLen + wordLen
 					
@@ -848,7 +882,7 @@ class SimpleConversationConverter
 			duration = state.pauseTime
 			state.pauseTime = 0
 			if text != null
-				duration += text.getLength() * 0.085
+				duration += text.getLength() * pAverageCharacterLength
 			end
 		end
 		
