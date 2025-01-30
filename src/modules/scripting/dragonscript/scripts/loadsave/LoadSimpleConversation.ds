@@ -98,6 +98,7 @@ pin Dragengine.Scenery
  *         <gesture id='hello'/> Hi there <tag anim='somebody'>{npcName}</tag>! How are you?
  *      <actor id='npc'/>
  *         <gesture id='hello'/> Oh, hi there.<br/>
+ *            <!-- id can be empty to add an empty gesture with 1s duration -->
  *         I didn't notice you coming in?<br/>
  *         Have you read my eMail?
  *      <actor id='player.think'/>
