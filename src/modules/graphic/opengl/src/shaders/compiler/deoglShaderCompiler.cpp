@@ -493,8 +493,15 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			
 			pPreparePreprocessor( program.GetDefines() );
 			
-			if(ext.GetGLVersion() < deoglExtensions::evgl4p3 || ext.GetGLESVersion() < deoglExtensions::evgles3p1){
-				pPreprocessor.SourcesAppend( "#extension GL_ARB_compute_shader : require\n", false );
+			if(ext.GetGLESVersion() == deoglExtensions::evglesUnsupported){
+				if(ext.GetGLESVersion() < deoglExtensions::evgles3p1){
+					pPreprocessor.SourcesAppend( "#extension GL_ARB_compute_shader : require\n", false );
+				}
+				
+			}else{
+				if(ext.GetGLVersion() < deoglExtensions::evgl4p3){
+					pPreprocessor.SourcesAppend( "#extension GL_ARB_compute_shader : require\n", false );
+				}
 			}
 			
 			pAppendPreprocessSourcesBuffer( scCompute->GetFilePath(), scCompute->GetSourceCode() );
