@@ -238,41 +238,41 @@ deoglRenderThread &renderThread, const char *name){
 	// find native method
 	__eglMustCastToProperFunctionPointerType address = eglGetProcAddress( name );
 	if( address ){
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): native", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): native", name);
 		return address;
 	}
 	
 	// return replacement if existing otherwise return NULL
 	if( strcmp( name, "glGetBufferSubData" ) == 0 ){
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglGetBufferSubData;
 		
 	}else if( strcmp( name, "glBindFragDataLocation" ) == 0 ){
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglBindFragDataLocation;
 		
 	}else if( strcmp( name, "glTexBuffer" ) == 0 ){
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglTexBuffer;
 		
 	}else if(strcmp(name, "glMultiDrawArrays") == 0){
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglMultiDrawArrays;
 		
 	}else if(strcmp(name, "glMultiDrawElements") == 0){
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglMultiDrawElements;
 		
 	}else if(strcmp(name, "glClearBufferSubData") == 0){
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglClearBufferSubData;
 		
 	}else if(strcmp(name, "glMultiDrawElementsBaseVertex") == 0){
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
 		return (__eglMustCastToProperFunctionPointerType)&eglMultiDrawElementsBaseVertex;
 		
 	}else{
-		renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): absent", name);
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): absent", name);
 		return nullptr;
 	}
 }
