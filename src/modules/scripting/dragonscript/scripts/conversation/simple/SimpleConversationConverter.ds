@@ -475,7 +475,7 @@ class SimpleConversationConverter
 			case SimpleConversationAction.Type.pause
 				state.pauseTime += each.getDelay()
 				
-			case SimpleConversationAction.Type.changeWaitMode
+			case SimpleConversationAction.Type.waitMode
 				state.waitMode = each.getWaitMode()
 			end
 		end)

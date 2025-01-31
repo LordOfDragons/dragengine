@@ -114,7 +114,7 @@ pin Dragengine.Scenery
  *         - at end of text: pause after speaking. useful to elongate gestures
  *         - before actor or other tags: delay before activating action
  * 
- *      <changeWaitMode>mode</changeWaitMode>
+ *      <waitMode>mode</waitMode>
  *         Change wait mode for upcoming actions. Mode can be (default waitCameraSpeak):
  *         - wait: Wait for all actors finish speaking and finish waitable actions.
  *         - waitSpeak: Wait for all actors finish speaking.
@@ -573,8 +573,8 @@ class LoadSimpleConversation extends BaseXmlLoader
 					action.setDelay(element.getFirstCDataFloat())
 					snippet.addAction(action)
 					
-				elif tagName.equals("changeWaitMode")
-					action = SimpleConversationAction.new(SimpleConversationAction.Type.changeWaitMode)
+				elif tagName.equals("waitMode")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.waitMode)
 					action.setWaitMode(SimpleConversationAction.WaitMode.named(element.getFirstCData()))
 					snippet.addAction(action)
 					
