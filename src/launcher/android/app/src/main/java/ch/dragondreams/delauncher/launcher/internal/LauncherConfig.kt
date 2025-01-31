@@ -1,5 +1,6 @@
 package ch.dragondreams.delauncher.launcher.internal
 
+import android.app.Activity
 import android.view.Surface
 
 data class LauncherConfig(
@@ -11,5 +12,6 @@ data class LauncherConfig(
     var pathEngine: String = "",
     var pathEngineConfig: String = "",
     var pathEngineCache: String = "",
+    var activity: Activity,
     var surface: Surface? = null
 )

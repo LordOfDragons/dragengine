@@ -48,7 +48,7 @@ public:
 	 */
 	struct sConfig{
 		JavaVM *javavm = nullptr;
-		
+		jobject activity = nullptr;
 		ANativeWindow *nativeWindow = nullptr;
 		
 		/**
@@ -215,6 +215,9 @@ public:
 	/*@{*/
 	/** \brief Java VM. */
 	inline JavaVM *GetJavaVM() const{ return pConfig.javavm; }
+	
+	/** \brief Activity. */
+	inline jobject GetActivity() const{ return pConfig.activity; }
 	
 	/** \brief Window. */
 	inline ANativeWindow *GetNativeWindow() const{ return pConfig.nativeWindow; }

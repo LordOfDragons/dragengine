@@ -43,10 +43,6 @@
 #include "../window/deoglRRenderWindow.h"
 #endif
 
-#ifdef OS_ANDROID
-extern __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name );
-#endif
-
 #ifdef OS_MACOS
 #include "macosfix.h"
 #endif
@@ -966,12 +962,8 @@ void deoglExtensions::pFetchOptionalFunctions(){
 			"glDrawElementsInstancedBaseVertex", ext_ARB_draw_elements_base_vertex);
 		pGetOptionalFunctionArbExt((void**)&pglVertexAttribIPointer,
 			"glVertexAttribIPointer", ext_ARB_draw_elements_base_vertex);
-#ifdef OS_ANDROID
-		pglMultiDrawElementsBaseVertex = eglMultiDrawElementsBaseVertex;
-#else
 		pGetOptionalFunctionArbExt( (void**)&pglMultiDrawElementsBaseVertex,
 			"glMultiDrawElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
-#endif
 	}
 	
 	// GL_ARB_draw_buffers_blend : opengl version 4.0
@@ -1104,13 +1096,9 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_clear_buffer_object : opengl version 4.3
-#ifdef OS_ANDROID
-	pglClearBufferSubData = eglClearBufferSubData;
-#else
-	if(pHasExtension[ext_ARB_clear_buffer_object]){
+	if(pHasExtension[ext_ARB_clear_buffer_object] || pGLESVersion >= evgles3p0){
 		pGetOptionalFunction((void**)&pglClearBufferSubData, "glClearBufferSubData", ext_ARB_clear_buffer_object);
 	}
-#endif
 	
 	// GL_ARB_buffer_storage : opengl version 4.3
 	/*

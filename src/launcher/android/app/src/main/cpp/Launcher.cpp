@@ -70,6 +70,9 @@ JNIEnv *env, jobject thiz, jobject config) {
 
         delConfig.osConfig.javavm = vJavaVM;
 
+        delConfig.osConfig.activity = clsConfig.GetFieldObject("activity",
+           "Landroid/app/Activity;").Get(config);
+
         {
             jobject objView = clsConfig.GetFieldObject("surface",
                 "Landroid/view/Surface;").Get(config);

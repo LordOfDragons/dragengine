@@ -2,6 +2,14 @@ from SConsCommon import *
 
 Import('parent_env parent_targets parent_report')
 
+
+
+#temporary until fixed by Modio team
+if parent_env['platform_android'] != 'no':
+	Return()
+
+
+
 envModule = parent_env.Clone()
 
 buildModule = envModule['build_service_modio'] != TernaryVariableNo

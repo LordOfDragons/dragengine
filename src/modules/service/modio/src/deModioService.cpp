@@ -47,6 +47,10 @@
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/threading/deThreadSafeObjectReference.h>
 
+#ifdef OS_ANDROID
+	#include <dragengine/app/deOSAndroid.h>
+#endif
+
 
 // Class deModioService
 /////////////////////////
@@ -102,6 +106,13 @@ pUpdateProgressInterval( 1.0f )
 	Modio::SetLogCallback( [ this ]( Modio::LogLevel level, const std::string &message ){
 		pOnLogCallback( level, message );
 	});
+	
+#ifdef OS_ANDROID
+	deOSAndroid &osAndroid = *module.GetGameEngine()->GetOS()->CastToOSAndroid();
+	Modio::InitializeAndroidJNI(osAndroid.GetJavaVM(), nullptr);
+	Modio::SetGlobalActivity(osAndroid.GetActivity());
+	Modio::InitializeAndroid();
+#endif
 	
 	Modio::InitializeAsync( options, [ this ]( Modio::ErrorCode ec ){
 		pOnInitialize( ec );

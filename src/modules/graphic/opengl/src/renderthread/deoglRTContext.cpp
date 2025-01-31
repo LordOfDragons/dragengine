@@ -510,7 +510,7 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	
 	// android
 	#ifdef OS_ANDROID
-	return ( void* )androidGetProcAddress( funcName );
+	return ( void* )androidGetProcAddress(pRenderThread, funcName);
 	#endif
 	
 	// beos

@@ -36,7 +36,9 @@
 // version this has to be fixed one way or the other
 
 // android get proc address
-__eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name );
+class deoglRenderThread;
+__eglMustCastToProperFunctionPointerType androidGetProcAddress(
+	deoglRenderThread &renderThread, const char *name);
 
 
 // Types missing from EGL since they are not used
@@ -294,43 +296,6 @@ void glPolygonMode( GLenum face, GLenum mode );
 #define GL_POINT				0x1B00
 #define GL_LINE					0x1B01
 #define GL_FILL					0x1B02
-
-void glGetBufferSubData( GLenum target, GLintptr offset, GLsizeiptr size, void *data );
-
-void glTexImage1D( GLenum target, GLint level, GLint internalFormat, GLsizei width,
-	GLint border, GLenum format, GLenum type, const GLvoid *data );
-
-void glCompressedTexImage1D( GLenum target, GLint level, GLenum internalformat,
-	GLsizei width, GLint border, GLsizei imageSize, const void *data );
-
-// void glTexSubImage1D( GLenum target, GLint level, GLint xoffset, GLsizei width,
-// 	GLenum format, GLenum type, const void *pixels );
-
-void glFramebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level );
-
-void glBindFragDataLocation( GLuint program, GLuint color, const GLchar *name );
-
-void glTexBuffer( GLenum target, GLenum internalformat, GLuint buffer );
-
-void glDrawElementsBaseVertex( GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex );
-
-void glDrawRangeElementsBaseVertex( GLenum mode, GLuint start, GLuint end, GLsizei count,
-	GLenum type, const void *indices, GLint basevertex );
-
-void glDrawElementsInstancedBaseVertex( GLenum mode, GLsizei count, GLenum type,
-	const void *indices, GLsizei instancecount, GLint basevertex );
-
-void glQueryCounter( GLuint id, GLenum target );
-
-void glGetQueryObjectui64v( GLuint id, GLenum pname, GLuint64 *params );
-
-void eglShaderStorageBlockBinding( GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding );
-
-void eglClearBufferSubData(GLenum target, GLenum internalformat, GLintptr offset,
-	GLsizeiptr size, GLenum format, GLenum type, const void *data);
-
-void eglMultiDrawElementsBaseVertex(GLenum mode, const GLsizei *count, GLenum type,
-	const GLvoid * const *indices, GLsizei drawcount, const GLint *basevertex);
 
 // these are present in EGL and have to be fixed to be core calls only
 typedef const GLubyte *(EGLAPIENTRYP PFNGLGETSTRINGIPROC) (GLenum name, GLuint index);

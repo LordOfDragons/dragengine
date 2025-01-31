@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/../../../dragengine/build/include",
                 "${workspaceFolder}/../../../../extern/modio/build/install/static/inc",
-                "${workspaceFolder}/../../../../extern/modio/build/install/header_only/linux"
+                "${workspaceFolder}/../../../../extern/modio/build/install/header_only/linux",
+                "${workspaceFolder}/../../../../extern/modio/build/modio-sdk/platform/android"
             ],
             "defines": [
                 "DS_MODULE_VERSION=\"9999\"",

@@ -52,6 +52,10 @@
 
 #include <modio/ModioSDK.h>
 
+#ifdef OS_ANDROID
+	#include <android/ModioAndroid.h>
+#endif
+
 #ifdef OS_W32
 	#undef DeleteFile
 #endif

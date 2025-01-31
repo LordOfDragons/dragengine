@@ -1,6 +1,6 @@
 package ch.dragondreams.delauncher.launcher
 
-import android.content.Context
+import android.app.Activity
 import android.view.SurfaceView
 import ch.dragondreams.delauncher.launcher.internal.Launcher
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +15,7 @@ import kotlin.math.min
 import kotlin.time.TimeSource
 
 class DragengineLauncher(
-    val context: Context,
+    val activity: Activity,
     val view: SurfaceView?
 ) {
     interface Listener {
@@ -83,14 +83,14 @@ class DragengineLauncher(
         EngineReady
     }
 
-    val pathEngine = File(context.filesDir, "dragengine")
-    val pathEngineConfig = File(context.filesDir, "dragengine-config")
-    //val pathEngineConfig = File(context.getExternalFilesDir(null)!!, "dragengine-config")
-    val pathEngineCache = File(context.cacheDir, "dragengine")
-    val pathLauncher = File(context.filesDir, "delauncher")
-    val pathLauncherConfig = File(context.filesDir, "delauncher-config")
-    //val pathLauncherConfig = File(context.getExternalFilesDir(null)!!, "delauncher-config")
-    val pathLauncherGames = File(context.filesDir, "delauncher-games")
+    val pathEngine = File(activity.filesDir, "dragengine")
+    val pathEngineConfig = File(activity.filesDir, "dragengine-config")
+    //val pathEngineConfig = File(activity.getExternalFilesDir(null)!!, "dragengine-config")
+    val pathEngineCache = File(activity.cacheDir, "dragengine")
+    val pathLauncher = File(activity.filesDir, "delauncher")
+    val pathLauncherConfig = File(activity.filesDir, "delauncher-config")
+    //val pathLauncherConfig = File(activity.getExternalFilesDir(null)!!, "delauncher-config")
+    val pathLauncherGames = File(activity.filesDir, "delauncher-games")
 
     var engineVersion = ""
         private set
@@ -162,7 +162,7 @@ class DragengineLauncher(
      */
     fun initLauncher() {
         crscope.launch {
-            verifyEngineInstallation(context)
+            verifyEngineInstallation()
         }
     }
 
@@ -243,24 +243,24 @@ class DragengineLauncher(
         }
     }
 
-    private fun verifyEngineInstallation(context: Context) {
+    private fun verifyEngineInstallation() {
         logInfo("verifyEngineInstallation")
         setState(State.VerifyEngineInstallation)
 
-        val versionInstalled = getEngineVersionInstalled(context)
-        engineVersion = getEngineVersionInstall(context)
+        val versionInstalled = getEngineVersionInstalled()
+        engineVersion = getEngineVersionInstall()
         logInfo("verifyEngineInstallation: version '$engineVersion' installed '$versionInstalled'")
 
         if (engineVersion == versionInstalled) {
             loadLibraries()
 
         } else {
-            installEngine(context)
-            updateEngineVersionInstalled(context, engineVersion)
+            installEngine()
+            updateEngineVersionInstalled(engineVersion)
         }
     }
 
-    private fun installEngine(context: Context) {
+    private fun installEngine() {
         logInfo("installEngine")
         setState(State.InstallEngine)
 
@@ -269,7 +269,7 @@ class DragengineLauncher(
             deleteDirectory(pathEngine)
 
             logInfo("installEngine: unpack engine")
-            unpackEngine(context, pathEngine)
+            unpackEngine(pathEngine)
 
         } catch (e: Exception) {
             logError("installEngine: Failed", e)
@@ -280,8 +280,8 @@ class DragengineLauncher(
         loadLibraries()
     }
 
-    private fun getEngineVersionInstall(context: Context): String {
-        var v = context.assets.open("dragengine-version").use {
+    private fun getEngineVersionInstall(): String {
+        var v = activity.assets.open("dragengine-version").use {
             s -> s.readBytes().decodeToString()
         }
         if (v[v.length - 1] == '\n') {
@@ -290,8 +290,8 @@ class DragengineLauncher(
         return v
     }
 
-    private fun getEngineVersionInstalled(context: Context): String {
-        val file = File(context.filesDir, "dragengine-version")
+    private fun getEngineVersionInstalled(): String {
+        val file = File(activity.filesDir, "dragengine-version")
         if (!file.exists()) {
             return ""
         }
@@ -305,16 +305,16 @@ class DragengineLauncher(
         return v
     }
 
-    private fun updateEngineVersionInstalled(context: Context, version: String) {
-        val file = File(context.filesDir, "dragengine-version")
+    private fun updateEngineVersionInstalled(version: String) {
+        val file = File(activity.filesDir, "dragengine-version")
         FileOutputStream(file).use { fos ->
             fos.write(version.encodeToByteArray())
             fos.flush()
         }
     }
 
-    private fun getEngineArchiveSize(context: Context): Long {
-        var t = context.assets.open("dragengine-filesize").use {
+    private fun getEngineArchiveSize(): Long {
+        var t = activity.assets.open("dragengine-filesize").use {
                 s -> s.readBytes().decodeToString()
         }
         if (t[t.length - 1] == '\n') {
@@ -336,19 +336,19 @@ class DragengineLauncher(
         }
     }
 
-    private fun unpackEngine(context: Context, targetPath: File) {
+    private fun unpackEngine(targetPath: File) {
         if (!targetPath.exists()) {
             targetPath.mkdir()
         }
 
-        val archiveSize = getEngineArchiveSize(context)
+        val archiveSize = getEngineArchiveSize()
 
         // extract files
         val timer = TimeSource.Monotonic.markNow()
         val progressFactor = if (archiveSize > 0) 1.0 / archiveSize else 0.0
         var bytesProcessed = 0L
 
-        context.assets.open("dragengine.zip").use { s ->
+        activity.assets.open("dragengine.zip").use { s ->
             ZipInputStream(s).use { zis ->
                 val buffer = ByteArray(1024 * 8)
                 var length: Int
@@ -410,7 +410,7 @@ class DragengineLauncher(
         setState(State.CreateInternalLauncher)
 
         try {
-            launcher = Launcher(this, view)
+            launcher = Launcher(this, activity, view)
             launcher?.addFileLogger(logFilename)
             launcher?.prepare()
 
