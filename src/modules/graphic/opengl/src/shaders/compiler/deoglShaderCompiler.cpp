@@ -472,8 +472,11 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 	
 	// compile the shader
 #ifdef WITH_DEBUG
+	{
+	const deMutexGuard guardLogs(pMutexLogging);
 	logger.LogInfoFormat("CompileShader %d: Compile shader for '%.50s...'", pContextIndex,
 		program.GetCacheId().GetString());
+	}
 	decTimer timerCompile;
 #endif
 	
@@ -507,23 +510,31 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			pAppendPreprocessSourcesBuffer( scCompute->GetFilePath(), scCompute->GetSourceCode() );
 			
 			#ifdef PRINT_ALL_SHADERS
+			{
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfo("COMPILE COMPUTER IN");
 			logger.LogInfo(pPreprocessor.GetSources());
+			}
 			#endif
-			if( ! pCompileObject( handleC ) ){
-				logger.LogError( "Shader compilation failed:" );
-				logger.LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
-				
-				logger.LogErrorFormat("  compute unit source code file = %s",
-					scCompute->GetFilePath().GetString() );
-				
-				if( pErrorLog ){
-					logger.LogErrorFormat( "  error log: %s", pErrorLog );
+			const bool result = pCompileObject(handleC);
+			if(!result || pErrorLog){
+				const deMutexGuard guardLogs(pMutexLogging);
+				if(!result){
+					logger.LogError("Shader compilation failed:");
+				}else{
+					logger.LogError("Shader compilation succeeded with logs:");
 				}
-				//pOutputShaderToFile( "failed_compute" );
-				//pPreprocessor.LogSourceLocationMap();
-				pLogFailedShaderSources();
-				DETHROW( deeInvalidParam );
+				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString());
+				logger.LogErrorFormat("  compute unit source code file = %s",
+					scCompute->GetFilePath().GetString());
+				if(pErrorLog){
+					logger.LogErrorFormat("  compile logs: %s", pErrorLog);
+				}
+				if(!result){
+					//pPreprocessor.LogSourceLocationMap();
+					pLogFailedShaderSources();
+					DETHROW(deeInvalidParam);
+				}
 			}
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleC ) );
 		}
@@ -544,25 +555,33 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			}
 			
 			#ifdef PRINT_ALL_SHADERS
+			{
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfo("COMPILE TESSELLATION CONTROL IN");
 			logger.LogInfo(pPreprocessor.GetSources());
+			}
 			#endif
-			if( ! pCompileObject( handleTCP ) ){
-				logger.LogError( "Shader compilation failed:" );
-				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString() );
-				
-				if( scTessellationControl ){
+			const bool result = pCompileObject(handleTCP);
+			if(!result || pErrorLog){
+				const deMutexGuard guardLogs(pMutexLogging);
+				if(!result){
+					logger.LogError("Shader compilation failed:");
+				}else{
+					logger.LogError("Shader compilation succeeded with logs:");
+				}
+				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString());
+				if(scTessellationControl){
 					logger.LogErrorFormat("  tessellation control unit source code file = %s",
-						scTessellationControl->GetFilePath().GetString() );
+						scTessellationControl->GetFilePath().GetString());
 				}
-				
-				if( pErrorLog ){
-					logger.LogErrorFormat( "  error log: %s", pErrorLog );
+				if(pErrorLog){
+					logger.LogErrorFormat("  compile logs: %s", pErrorLog);
 				}
-				//pOutputShaderToFile( "failed_tessellation_control" );
-				//pPreprocessor.LogSourceLocationMap();
-				pLogFailedShaderSources();
-				DETHROW( deeInvalidParam );
+				if(!result){
+					//pPreprocessor.LogSourceLocationMap();
+					pLogFailedShaderSources();
+					DETHROW(deeInvalidParam);
+				}
 			}
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleTCP ) );
 		}
@@ -583,25 +602,33 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			}
 			
 			#ifdef PRINT_ALL_SHADERS
+			{
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfo("COMPILE TESSELLATION EVALUATION IN");
 			logger.LogInfo(pPreprocessor.GetSources());
+			}
 			#endif
-			if( ! pCompileObject( handleTEP ) ){
-				logger.LogError( "Shader compilation failed:" );
-				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString() );
-				
-				if( scTessellationEvaluation ){
+			const bool result = pCompileObject(handleTEP);
+			if(!result || pErrorLog){
+				const deMutexGuard guardLogs(pMutexLogging);
+				if(!result){
+					logger.LogError("Shader compilation failed:");
+				}else{
+					logger.LogError("Shader compilation succeeded with logs:");
+				}
+				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString());
+				if(scTessellationEvaluation){
 					logger.LogErrorFormat("  tessellation evaluation unit source code file = %s",
-						scTessellationEvaluation->GetFilePath().GetString() );
+						scTessellationEvaluation->GetFilePath().GetString());
 				}
-				
-				if( pErrorLog ){
-					logger.LogErrorFormat( "  error log: %s", pErrorLog );
+				if(pErrorLog){
+					logger.LogErrorFormat("  compile logs: %s", pErrorLog);
 				}
-				//pOutputShaderToFile( "failed_tessellation_evaluation" );
-				//pPreprocessor.LogSourceLocationMap();
-				pLogFailedShaderSources();
-				DETHROW( deeInvalidParam );
+				if(!result){
+					//pPreprocessor.LogSourceLocationMap();
+					pLogFailedShaderSources();
+					DETHROW(deeInvalidParam);
+				}
 			}
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleTEP ) );
 		}
@@ -622,31 +649,36 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			}
 			
 			#ifdef PRINT_ALL_SHADERS
+			{
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfo("COMPILE GEOMETRY IN");
 			logger.LogInfo(pPreprocessor.GetSources());
+			}
 			#ifdef PRINT_SHADERS_SPECIAL_MODE
 			vSpecialPrintShader.sourceGeometry = pPreprocessor.GetSources();
 			#endif
 			#endif
-			if( ! pCompileObject( handleGP ) ){
-				logger.LogError( "Shader compilation failed:" );
-				logger.LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
-				
-				if( scGeometry ){
-					logger.LogErrorFormat( "  geometry unit source code file = %s",
-						scGeometry->GetFilePath().GetString() );
-					
+			const bool result = pCompileObject(handleGP);
+			if(!result || pErrorLog){
+				const deMutexGuard guardLogs(pMutexLogging);
+				if(!result){
+					logger.LogError("Shader compilation failed:");
 				}else{
-					logger.LogErrorFormat( "  inline geometry unit source code." );
+					logger.LogError("Shader compilation succeeded with logs:");
 				}
-				
-				if( pErrorLog ){
-					logger.LogErrorFormat( "  error log: %s", pErrorLog );
+				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString());
+				if(scGeometry){
+					logger.LogErrorFormat("  geometry unit source code file = %s",
+						scGeometry->GetFilePath().GetString());
 				}
-				//pOutputShaderToFile( "failed_geometry" );
-				//pPreprocessor.LogSourceLocationMap();
-				pLogFailedShaderSources();
-				DETHROW( deeInvalidParam );
+				if(pErrorLog){
+					logger.LogErrorFormat("  compile logs: %s", pErrorLog);
+				}
+				if(!result){
+					//pPreprocessor.LogSourceLocationMap();
+					pLogFailedShaderSources();
+					DETHROW(deeInvalidParam);
+				}
 			}
 			#ifdef PRINT_ALL_SHADERS
 			logger.LogInfo( "COMPILE GEOMETRY OUT" );
@@ -671,6 +703,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			
 			#ifdef PRINT_SHADERS
 			if( psfMatchesVertex( program ) ){
+				const deMutexGuard guardLogs(pMutexLogging);
 				logger.LogInfo( "COMPILE VERTEX IN" );
 				logger.LogInfo( pPreprocessor.GetSources() );
 				#ifdef PRINT_SHADERS_SPECIAL_MODE
@@ -679,31 +712,37 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			}
 			#endif
 			#ifdef PRINT_ALL_SHADERS
+			{
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfo("COMPILE VERTEX IN");
 			logger.LogInfo(pPreprocessor.GetSources());
+			}
 			#endif
-			if( ! pCompileObject( handleVP ) ){
-				logger.LogError( "Shader compilation failed:" );
-				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString() );
-				
-				if( scVertex ){
-					logger.LogErrorFormat( "  vertex unit source code file = %s",
-						scVertex->GetFilePath().GetString() );
-					
+			const bool result = pCompileObject(handleVP);
+			if(!result || pErrorLog){
+				const deMutexGuard guardLogs(pMutexLogging);
+				if(!result){
+					logger.LogError("Shader compilation failed:");
 				}else{
-					logger.LogErrorFormat( "  inline vertex unit source code." );
+					logger.LogError("Shader compilation succeeded with logs:");
 				}
-				
-				if( pErrorLog ){
-					logger.LogErrorFormat( "  error log: %s", pErrorLog );
+				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString());
+				if(scVertex){
+					logger.LogErrorFormat("  vertex unit source code file = %s",
+						scVertex->GetFilePath().GetString());
 				}
-				//pOutputShaderToFile( "failed_vertex" );
-				//pPreprocessor.LogSourceLocationMap();
-				pLogFailedShaderSources();
-				DETHROW( deeInvalidParam );
+				if(pErrorLog){
+					logger.LogErrorFormat("  compile logs: %s", pErrorLog);
+				}
+				if(!result){
+					//pPreprocessor.LogSourceLocationMap();
+					pLogFailedShaderSources();
+					DETHROW(deeInvalidParam);
+				}
 			}
 			#ifdef PRINT_SHADERS
 			if( psfMatchesVertex( program ) ){
+				const deMutexGuard guardLogs(pMutexLogging);
 				logger.LogInfo( "COMPILE VERTEX OUT" );
 			}
 			#endif
@@ -742,6 +781,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			
 			#ifdef PRINT_SHADERS
 			if( psfMatchesFragment( program ) ){
+				const deMutexGuard guardLogs(pMutexLogging);
 				logger.LogInfo( "COMPILE FRAGMENT IN" );
 				logger.LogInfo( pPreprocessor.GetSources() );
 				#ifdef PRINT_SHADERS_SPECIAL_MODE
@@ -750,31 +790,37 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			}
 			#endif
 			#ifdef PRINT_ALL_SHADERS
+			{
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfo("COMPILE FRAGMENT IN");
 			logger.LogInfo(pPreprocessor.GetSources());
+			}
 			#endif
-			if( ! pCompileObject( handleFP ) ){
-				logger.LogError( "Shader compilation failed:" );
-				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString() );
-				
-				if( scFragment ){
-					logger.LogErrorFormat( "  fragment unit source code file = %s",
-						scFragment->GetFilePath().GetString() );
-					
+			const bool result = pCompileObject(handleFP);
+			if(!result || pErrorLog){
+				const deMutexGuard guardLogs(pMutexLogging);
+				if(!result){
+					logger.LogError("Shader compilation failed:");
 				}else{
-					logger.LogError( "  inline fragment unit source code." );
+					logger.LogError("Shader compilation succeeded with logs:");
 				}
-				
-				if( pErrorLog ){
-					logger.LogErrorFormat( "  error log: %s", pErrorLog );
+				logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString());
+				if(scFragment){
+					logger.LogErrorFormat("  fragment unit source code file = %s",
+						scFragment->GetFilePath().GetString());
 				}
-				//pOutputShaderToFile( "failed_fragment" );
-				//pPreprocessor.LogSourceLocationMap();
-				pLogFailedShaderSources();
-				DETHROW( deeInvalidParam );
+				if(pErrorLog){
+					logger.LogErrorFormat("  compile logs: %s", pErrorLog);
+				}
+				if(!result){
+					//pPreprocessor.LogSourceLocationMap();
+					pLogFailedShaderSources();
+					DETHROW(deeInvalidParam);
+				}
 			}
 			#ifdef PRINT_SHADERS
 			if( psfMatchesFragment( program ) ){
+				const deMutexGuard guardLogs(pMutexLogging);
 				logger.LogInfo( "COMPILE FRAGMENT OUT" );
 			}
 			#endif
@@ -834,48 +880,57 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 		// link the shader
 		#ifdef PRINT_SHADERS
 		if( psfMatchesLink( program ) ){
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfo( "COMPILE LINK IN" );
 			#ifdef PRINT_SHADERS_SPECIAL_MODE
 			vSpecialPrintShader.PrintShader();
 			#endif
 		}
 		#endif
-		if( ! pLinkShader( handleShader ) ){
-			logger.LogErrorFormat("Shader linking failed (%s):", sources.GetFilename().GetString());
-			
-			if( scCompute ){
-				logger.LogErrorFormat( "  compute unit source code file = %s",
-					scCompute->GetFilePath().GetString() );
+		const bool result = pLinkShader(handleShader);
+		if(!result || pErrorLog){
+			const deMutexGuard guardLogs(pMutexLogging);
+			if(!result){
+				logger.LogError("Shader linking failed:");
+			}else{
+				logger.LogError("Shader linking succeeded with logs:");
 			}
-			if( scTessellationControl ){
+			logger.LogErrorFormat("  shader file = %s", sources.GetFilename().GetString());
+			if(scCompute){
+				logger.LogErrorFormat("  compute unit source code file = %s",
+					scCompute->GetFilePath().GetString());
+			}
+			if(scTessellationControl){
 				logger.LogErrorFormat(
 					"  tessellation control unit source code file = %s",
-					scTessellationControl->GetFilePath().GetString() );
+					scTessellationControl->GetFilePath().GetString());
 			}
-			if( scTessellationEvaluation ){
+			if(scTessellationEvaluation){
 				logger.LogErrorFormat("  tessellation evaluation unit source code file = %s",
-					scTessellationEvaluation->GetFilePath().GetString() );
+					scTessellationEvaluation->GetFilePath().GetString());
 			}
-			if( scGeometry ){
-				logger.LogErrorFormat( "  geometry unit source code file = %s",
-					scGeometry->GetFilePath().GetString() );
+			if(scGeometry){
+				logger.LogErrorFormat("  geometry unit source code file = %s",
+					scGeometry->GetFilePath().GetString());
 			}
-			if( scVertex ){
-				logger.LogErrorFormat( "  vertex unit source code file = %s",
-					scVertex->GetFilePath().GetString() );
+			if(scVertex){
+				logger.LogErrorFormat("  vertex unit source code file = %s",
+					scVertex->GetFilePath().GetString());
 			}
-			if( scFragment ){
-				logger.LogErrorFormat( "  fragment unit source code file = %s",
-					scFragment->GetFilePath().GetString() );
+			if(scFragment){
+				logger.LogErrorFormat("  fragment unit source code file = %s",
+					scFragment->GetFilePath().GetString());
 			}
-			if( pErrorLog ){
-				logger.LogErrorFormat( "  error log: %s", pErrorLog );
+			if(pErrorLog){
+				logger.LogErrorFormat("  link logs: %s", pErrorLog);
 			}
-			
-			DETHROW( deeInvalidParam );
+			if(!result){
+				DETHROW(deeInvalidParam);
+			}
 		}
 		#ifdef PRINT_SHADERS
 		if( psfMatchesLink( program ) ){
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfo( "COMPILE LINK OUT" );
 		}
 		#endif
@@ -883,6 +938,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 		pAfterLinkShader( program, *compiled );
 		
 	}catch( const deException &e ){
+		const deMutexGuard guardLogs(pMutexLogging);
 		pLogFailedShaderSources();
 		pLanguage.GetRenderThread().GetLogger().LogException(e);
 		if( compiled ){
@@ -893,8 +949,11 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 	
 	// finished compiling
 #ifdef WITH_DEBUG
+	{
+	const deMutexGuard guardLogs(pMutexLogging);
 	logger.LogInfoFormat("CompileShader %d: Compiled shader for '%.50s...' in %dms", pContextIndex,
 		program.GetCacheId().GetString(), (int)(timerCompile.GetElapsedTime() * 1e3f));
+	}
 #endif
 	
 	return compiled;
@@ -1032,6 +1091,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCacheLoadShader(const deoglShaderProg
 		
 		// read parameters
 		if(!reader){
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfoFormat(
 				"ShaderLanguage.CacheLoadShader: Cached shader not found for '%.50s...'",
 				program.GetCacheId().GetString());
@@ -1045,6 +1105,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCacheLoadShader(const deoglShaderProg
 			const deMutexGuard guard(caches.GetMutex());
 			cacheShaders.Delete(program.GetCacheId());
 			}
+			const deMutexGuard guardLogs(pMutexLogging);
 			logger.LogInfoFormat(
 				"ShaderLanguage.CacheLoadShader: Cache version changed for '%.50s...'. Cache discarded",
 				program.GetCacheId().GetString());
@@ -1085,10 +1146,13 @@ deoglShaderCompiled *deoglShaderCompiler::pCacheLoadShader(const deoglShaderProg
 		cacheShaders.Delete(program.GetCacheId());
 		}
 		
+		{
+		const deMutexGuard guardLogs(pMutexLogging);
 		logger.LogInfoFormat(
 			"ShaderLanguage.CacheLoadShader: Failed loading cached shader '%.50s...'. Cache discarded",
 			program.GetCacheId().GetString());
 		// logger.LogException(e); // do not spam logs. slows things down
+		}
 		
 		if(compiled){
 			delete compiled;
@@ -1126,6 +1190,7 @@ const deoglShaderCompiled &compiled){
 		cCacheShaderTask(renderThread, pContextIndex, program, compiled).Run();
 		
 	}catch(const deException &e){
+		const deMutexGuard guardLogs(pMutexLogging);
 		logger.LogErrorFormat("ShaderLanguage.CacheSaveShader: Failed caching shader '%.50s...'",
 			program.GetCacheId().GetString());
 		logger.LogException(e);
@@ -1286,29 +1351,26 @@ bool deoglShaderCompiler::pCompileObject( GLuint handle ){
 	SC_OGL_CHECK( renderThread, pglCompileShader( handle ) );
 	SC_OGL_CHECK( renderThread, pglGetShaderiv( handle, GL_COMPILE_STATUS, &result ) );
 	
-	if( ! result ){
-		int blen = 0, slen = 0;	
+	if(pErrorLog){
+		delete [] pErrorLog;
+		pErrorLog = nullptr;
+	}
+	
+	int blen = 0, slen = 0;
+	SC_OGL_CHECK(renderThread, pglGetShaderiv(handle, GL_INFO_LOG_LENGTH , &blen));
+	
+	if(blen > 1){
+		pErrorLog = new char[blen + 1];
+		SC_OGL_CHECK(renderThread, pglGetShaderInfoLog(handle, blen, &slen, pErrorLog));
+		pErrorLog[slen] = 0;
 		
-		if( pErrorLog ){
+		if(strncmp(pErrorLog, "Success", 7) == 0){
 			delete [] pErrorLog;
-			pErrorLog = NULL;
-		}
-		
-		SC_OGL_CHECK( renderThread, pglGetShaderiv( handle, GL_INFO_LOG_LENGTH , &blen ) );
-		
-		if( blen > 1 ){
-			pErrorLog = new char[ blen + 1 ];
-			if( ! pErrorLog ) DETHROW( deeOutOfMemory );
-			
-			SC_OGL_CHECK( renderThread, pglGetShaderInfoLog( handle, blen, &slen, pErrorLog ) );
-			
-			pErrorLog[ blen ] = '\0';
-			
-			return false;
+			pErrorLog = nullptr;
 		}
 	}
 	
-	return true;
+	return result == GL_TRUE;
 }
 
 bool deoglShaderCompiler::pLinkShader( GLuint handle ){
@@ -1318,28 +1380,26 @@ bool deoglShaderCompiler::pLinkShader( GLuint handle ){
 	SC_OGL_CHECK( renderThread, pglLinkProgram( handle ) );
 	SC_OGL_CHECK( renderThread, pglGetProgramiv( handle, GL_LINK_STATUS, &result ) );
 	
-	if( ! result ){
-		int blen = 0, slen = 0;	
+	if(pErrorLog){
+		delete [] pErrorLog;
+		pErrorLog = nullptr;
+	}
+	
+	int blen = 0, slen = 0;
+	SC_OGL_CHECK(renderThread, pglGetProgramiv(handle, GL_INFO_LOG_LENGTH , &blen));
+	
+	if(blen > 1){
+		pErrorLog = new char[blen + 1];
+		SC_OGL_CHECK(renderThread, pglGetProgramInfoLog(handle, blen, &slen, pErrorLog));
+		pErrorLog[slen] = 0;
 		
-		if( pErrorLog ){
+		if(strncmp(pErrorLog, "Success", 7) == 0){
 			delete [] pErrorLog;
-			pErrorLog = NULL;
-		}
-		
-		SC_OGL_CHECK( renderThread, pglGetProgramiv( handle, GL_INFO_LOG_LENGTH , &blen ) );
-		
-		if( blen > 1 ){
-			pErrorLog = new char[ blen + 1 ];
-			if( ! blen ) DETHROW( deeOutOfMemory );
-			
-			SC_OGL_CHECK( renderThread, pglGetProgramInfoLog( handle, blen, &slen, pErrorLog ) );
-			pErrorLog[ blen ] = '\0';
-			
-			return false;
+			pErrorLog = nullptr;
 		}
 	}
 	
-	return true;
+	return result == GL_TRUE;
 }
 
 void deoglShaderCompiler::pOutputShaderToFile(const char *file){
@@ -1348,8 +1408,11 @@ void deoglShaderCompiler::pOutputShaderToFile(const char *file){
 #ifdef OS_ANDROID
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
 	deoglRTLogger &logger = renderThread.GetLogger();
+	{
+	const deMutexGuard guardLogs(pMutexLogging);
 	logger.LogErrorFormat("%s_%.3i.shader", file, number);
 	logger.LogError(pPreprocessor.GetSources());
+	}
 	
 #else
 	char buffer[ 256 ];
@@ -1379,6 +1442,7 @@ void deoglShaderCompiler::pOutputShaderToFile(const char *file){
 }
 
 void deoglShaderCompiler::pLogFailedShaderSources(){
+	// do not mutex guard pMutexLogging. caller guards it already
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
 	deoglRTLogger &logger = renderThread.GetLogger();
 	logger.LogErrorFormat("CompileShader %d Failed: >>> Sources >>>", pContextIndex);
@@ -1404,10 +1468,4 @@ void deoglShaderCompiler::pLogFailedShaderSources(){
 	}
 	
 	logger.LogError( "<<< End Sources <<<" );
-}
-
-void deoglShaderCompiler::pPrintErrorLog(){
-	if( pErrorLog ){
-		pLanguage.GetRenderThread().GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
-	}
 }

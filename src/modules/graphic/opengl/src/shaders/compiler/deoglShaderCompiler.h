@@ -95,7 +95,7 @@ private:
 	char *pErrorLog;
 	deoglShaderPreprocessor pPreprocessor;
 	
-	deMutex pMutexCompile;
+	deMutex pMutexCompile, pMutexLogging;
 	
 	
 public:
@@ -138,7 +138,6 @@ private:
 	
 	void pOutputShaderToFile( const char *file );
 	void pLogFailedShaderSources();
-	void pPrintErrorLog();
 };
 
 #endif
