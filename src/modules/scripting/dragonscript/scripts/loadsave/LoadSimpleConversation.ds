@@ -97,9 +97,11 @@ pin Dragengine.Scenery
  *      <actor id='player'/>
  *         <gesture id='hello'/> Hi there <tag anim='somebody'>{npcName}</tag>! How are you?
  *      <actor id='npc'/>
- *         <gesture id='hello'/> Oh, hi there.<br/>
+ *         <gesture id='hello'/> Oh, hi there.<a/>
  *            <!-- id can be empty to add an empty gesture with 1s duration -->
- *         I didn't notice you coming in?<br/>
+ *         I didn't notice you coming in?<a/>
+ *            <!-- empty actor/a tag shows a new text box for the same actor
+ *                 starting with the next line -->
  *         Have you read my eMail?
  *      <actor id='player.think'/>
  *         EMail? I guess I should check my smartphone.
@@ -390,7 +392,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 				tagName = element.getTagName()
 				if tagName.equals("actor")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
-					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					if element.hasAttributeNamed("id")
+						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("gesture")
@@ -417,9 +421,6 @@ class LoadSimpleConversation extends BaseXmlLoader
 					end
 					action.setName(element.getFirstCData())
 					snippet.addAction(action)
-					
-				elif tagName.equals("br")
-					snippet.addAction(SimpleConversationAction.new(SimpleConversationAction.Type.actor))
 					
 				elif tagName.equals("tag")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
@@ -580,7 +581,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 					
 				elif tagName.equals("a")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
-					action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					if element.hasAttributeNamed("i")
+						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("g")

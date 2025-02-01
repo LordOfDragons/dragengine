@@ -816,70 +816,72 @@ class SimpleConversationConverter
 			text = animText
 		end
 		
+		var int len
+		if text != null
+			len = text.getLength()
+		end
+		if len == 0
+			return
+		end
+		
 		var float duration
 		if state.speechAnimation != null
-			if text != null
-				var int wordBegin = -1, len = text.getLength(), lenP1 = len + 1
-				var int c, i, lastBreakChar
-				var float wordLen, pauseLen
-				var bool notFirstWord
-				var StringID id
-				
-				for i = 0 to lenP1
-					if i < len
-						c = text.getCharacterAt(i)
-						if pCharsWordBreak.findCharacter(c, 0) == -1
-							if wordBegin == -1
-								wordBegin = i
-							end
-							continue
+			var int wordBegin = -1, lenP1 = len + 1
+			var int c, i, lastBreakChar
+			var float wordLen, pauseLen
+			var bool notFirstWord
+			var StringID id
+			
+			for i = 0 to lenP1
+				if i < len
+					c = text.getCharacterAt(i)
+					if pCharsWordBreak.findCharacter(c, 0) == -1
+						if wordBegin == -1
+							wordBegin = i
 						end
-						
-					else
-						c = 0
-					end
-					
-					if wordBegin == -1
-						lastBreakChar = c
 						continue
 					end
 					
-					id = StringID.new(text.getSubString(wordBegin, i - wordBegin).toUTF8())
-					
-					var SpeechAnimationWord saword = state.speechAnimation.getWordNamed(id)
-					if saword != null
-						wordLen = saword.getEstimatedSpeakLength(\
-							pAverageCharacterLength, state.speechAnimation)
-						
-					else
-						wordLen = pAverageCharacterLength * (i - wordBegin)
-					end
-					
-					pauseLen = state.pauseTime
-					state.pauseTime = 0
-					if notFirstWord
-						if pCharsPhraseBreak.findCharacter(lastBreakChar, 0) != -1
-							pauseLen = pPausePhrase
-							
-						elif pCharsSubPhraseBreak.findCharacter(lastBreakChar, 0) != -1
-							pauseLen = pPauseSubPhrase
-						end
-						
-					else
-						notFirstWord = true
-					end
-					
-					wordLen = wordLen * pSpeakSpeed + pElongateSpeak
-					state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
-					duration += pauseLen + wordLen
-					
-					lastBreakChar = c
-					wordBegin = -1
+				else
+					c = 0
 				end
 				
-			elif state.pauseTime > 0
-				state.actionActorSpeak.addWord(ConversationStrip.new(StringID.new(), 0, state.pauseTime))
+				if wordBegin == -1
+					lastBreakChar = c
+					continue
+				end
+				
+				id = StringID.new(text.getSubString(wordBegin, i - wordBegin).toUTF8())
+				
+				var SpeechAnimationWord saword = state.speechAnimation.getWordNamed(id)
+				if saword != null
+					wordLen = saword.getEstimatedSpeakLength(\
+						pAverageCharacterLength, state.speechAnimation)
+					
+				else
+					wordLen = pAverageCharacterLength * (i - wordBegin)
+				end
+				
+				pauseLen = state.pauseTime
 				state.pauseTime = 0
+				if notFirstWord
+					if pCharsPhraseBreak.findCharacter(lastBreakChar, 0) != -1
+						pauseLen = pPausePhrase
+						
+					elif pCharsSubPhraseBreak.findCharacter(lastBreakChar, 0) != -1
+						pauseLen = pPauseSubPhrase
+					end
+					
+				else
+					notFirstWord = true
+				end
+				
+				wordLen = wordLen * pSpeakSpeed + pElongateSpeak
+				state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
+				duration += pauseLen + wordLen
+				
+				lastBreakChar = c
+				wordBegin = -1
 			end
 			
 		else

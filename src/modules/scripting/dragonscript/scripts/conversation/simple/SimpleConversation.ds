@@ -191,42 +191,25 @@ class SimpleConversation
 	 * \warning Imported elements are shared. Do not change them.
 	 * 
 	 * Similar to \ref #import() but used to import a simple conversation containing translations.
+	 * If you need to modify more than just replacing the text in the actor text box you have
+	 * to use \ref #import() and duplicate the snippet with the proper translation applied.
 	 * 
 	 * Only snippets are imported with this function. The imported snippets are only used as
-	 * translations to modify the text content of existing snippets. If a snippet exists it is
-	 * first duplicated to allow making changes safely.
+	 * translations to modify the spoken text of existing snippets without changing animations.
+	 * If a snippet exists it is first duplicated to allow making changes safely.
 	 * 
 	 * The actions in the snippet are then visited and only actions of type
-	 * \ref SimpleConversationAction.Type#speak are modified. The text content of the respective
-	 * imported snippet speak type action is assigned to the modified action. For this to work
-	 * the translation snippet is required to have the same count of speak type actions in the
-	 * same order. Since only speak type actions are used for translation any other actions are
-	 * ignored. It is thus only required to include the speak type actions in a translation
-	 * snippet. This simplifies the process of creating translation simple conversations.
-	 * 
-	 * Importaint translated text can the done in two modes: partial or full.
-	 * 
-	 * \par Full translation mode
-	 * 
-	 * Full translation assigns translated action text as modified action text and translated
-	 * animation text as modified action animation text. This mode is useful if the
-	 * \ref SpeechAnimations.SpeechAnimation used by the \ref ConversationActor is also translated.
-	 * If this is not the case the translated words are not found and no speech animation can be
-	 * done. If this is the case use partial mode instead.
-	 * 
-	 * \par Partial translation mode
-	 * 
-	 * Partial translation first assigns modified action text to modified action animation text
-	 * if modified action animation text is null. Then translated action text is assigned as
-	 * modified action text. This has the effect that untranslated text is used as animation text
-	 * no matter if manually assigned or not. This ensures that untranslated
-	 * \ref SpeechAnimations.SpeechAnimation keep working with the modified actions while the
-	 * text displayed to the user is translated.
-	 * 
-	 * Using partial translation mode is faster and required less work since only the text has
-	 * to be translated not entire speech animations.
+	 * \ref SimpleConversationAction.Type#speak are used. The imported speak type actions are
+	 * mapped to consequtive \ref SimpleConversationAction.Type#actor actions. For all speak
+	 * type actions inside an actor group their text is assigned to their animation text unless
+	 * an animation text is already present. This ensures the speech animation still matches.
+	 * The text of the speak type actions is then set to null to prevent them from being added
+	 * to the actor text box. Then the imported speak type action is inserted as first action
+	 * in this group of speak type actions with the animation text set to empty string. This
+	 * way the translated text shows up in the actor text box without affecting speech
+	 * animation nor timings.
 	 */
-	func void importTranslation(SimpleConversation conversation, bool fullTranslationMode)
+	func void importTranslation(SimpleConversation conversation)
 		var StringID id
 		var SimpleConversationSnippet snippet
 		conversation.forEachSnippet(block SimpleConversationSnippet each
@@ -235,46 +218,61 @@ class SimpleConversation
 			if snippet == null
 				throw EInvalidParam.new("snippet to translate not found: " + id)
 			end
-			pSnippets.setAt(id, translateSnippet(snippet, each, fullTranslationMode))
+			pSnippets.setAt(id, translateSnippet(snippet, each))
 		end)
 	end
 	
 	/**
 	 * \brief Translate snippet.
-	 * \see #importTranslation(SimpleConversation,bool)
+	 * \see #importTranslation(SimpleConversation)
 	 * 
 	 * Returns modified snippet which is a copy of snippet.
 	 */
 	func SimpleConversationSnippet translateSnippet(SimpleConversationSnippet snippet,\
-	SimpleConversationSnippet translated, bool fullTranslationMode)
-		var SimpleConversationSnippet modified = SimpleConversationSnippet.new(snippet)
-		
+	SimpleConversationSnippet translated)
+		var SimpleConversationSnippet modified = SimpleConversationSnippet.new(snippet.getId())
 		var int indexTra, countTra = translated.getActionCount()
-		var SimpleConversationAction traAction
-		modified.forEachAction(block SimpleConversationAction modAction
-			if modAction.getType() != SimpleConversationAction.Type.speak
-				return null
-			end
-			
-			while true
-				if indexTra >= countTra
-					throw EInvalidParam.new("Text count missmatch ({}): '{}'".format(\
-						Array.newWith(snippet.getId(), modAction.getText())))
+		var SimpleConversationAction action2
+		var UnicodeString text
+		
+		snippet.forEachAction(block SimpleConversationAction action
+			select action.getType()
+			case SimpleConversationAction.Type.speak
+				if text != null and text.getLength() > 0
+					action2 = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
+					action2.setText(text)
+					action2.setAnimText(UnicodeString.new())
+					modified.addAction(action2)
 				end
-				traAction = translated.getActionAt(indexTra++)
-				if traAction.getType() == SimpleConversationAction.Type.speak
-					break
-				end
-			end
-			
-			if fullTranslationMode
-				modAction.setAnimText(traAction.getAnimText())
+				text = null
 				
-			elif modAction.getAnimText() == null
-				modAction.setAnimText(modAction.getText())
+				action2 = SimpleConversationAction.new(action)
+				if action2.getAnimText() == null
+					action2.setAnimText(action.getText())
+				end
+				action2.setText(null)
+				modified.addAction(action2)
+				
+			case SimpleConversationAction.Type.actor
+				modified.addAction(action)
+				
+				if text == null
+					text = UnicodeString.new()
+					while indexTra < countTra
+						action2 = translated.getActionAt(indexTra++)
+						
+						if action2.getType() == SimpleConversationAction.Type.speak
+							text = text + action2.getText()
+							
+						elif action2.getType() == SimpleConversationAction.Type.actor
+							break
+						end
+					end
+				end
+				
+			else
+				modified.addAction(action)
 			end
-			
-			modAction.setText(traAction.getText())
 		end)
 		
 		return modified
