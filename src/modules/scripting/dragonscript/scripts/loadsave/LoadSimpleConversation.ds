@@ -162,7 +162,7 @@ pin Dragengine.Scenery
  *            <none> ....conditions... </none>
  *               no condition is fulfilled.
  *      <elif ...> same as <if ...> but adds another case to the previous <if>
- *      <else>snippet to run</else>
+ *      <else snippet='snippet to run'/>
  * 
  *      <choice variable='variable name to set'/>
  *         show player choice. attribute variable is optional.
@@ -503,7 +503,7 @@ class LoadSimpleConversation extends BaseXmlLoader
 					
 				elif tagName.equals("else")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.condElse)
-					action.setTarget(StringID.new(element.getFirstCData()))
+					action.setTarget(StringID.new(element.getAttributeNamed("snippet")))
 					snippet.addAction(action)
 					
 				elif tagName.equals("choice")
