@@ -259,6 +259,14 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	
+	/**
+	 * \brief Count of words.
+	 * \version 1.25
+	 */
+	func int getWordCount()
+		return pWords.getCount()
+	end
+	
 	/** \brief Visits all words. */
 	func void forEachWord(Block aBlock)
 		pWords.forEach(aBlock)
@@ -281,6 +289,14 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	
+	
+	/**
+	 * \brief Count of face poses.
+	 * \version 1.25
+	 */
+	func int getFacePoseCount()
+		return pFacePoses.getCount()
+	end
 	
 	/** \brief Visits all face poses. */
 	func void forEachFacePose(Block aBlock)
@@ -305,6 +321,14 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	
+	/**
+	 * \brief Count of gestures.
+	 * \version 1.25
+	 */
+	func int getGestureCount()
+		return pGestures.getCount()
+	end
+	
 	/** \brief Visits all gestures. */
 	func void forEachGesture(Block aBlock)
 		pGestures.forEach(aBlock)
@@ -327,6 +351,14 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	
+	
+	/**
+	 * \brief Count of body look-ats.
+	 * \version 1.25
+	 */
+	func int getBodyLookAtCount()
+		return pBodyLookAts.getCount()
+	end
 	
 	/** \brief Visits all body look-ats. */
 	func void forEachBodyLookAt(Block aBlock)
@@ -351,6 +383,14 @@ class CActionActorSpeak extends ConversationAction
 	
 	
 	
+	/**
+	 * \brief Count of head look-ats.
+	 * \version 1.25
+	 */
+	func int getHeadLookAtCount()
+		return pHeadLookAts.getCount()
+	end
+	
 	/** \brief Visits all head look-ats. */
 	func void forEachHeadLookAt(Block aBlock)
 		pHeadLookAts.forEach(aBlock)
@@ -373,6 +413,14 @@ class CActionActorSpeak extends ConversationAction
 	end
 	
 	
+	
+	/**
+	 * \brief Count of eye look-ats.
+	 * \version 1.25
+	 */
+	func int getEyeLookAtCount()
+		return pEyesLookAts.getCount()
+	end
 	
 	/** \brief Visits all eyes look-ats. */
 	func void forEachEyesLookAt(Block aBlock)

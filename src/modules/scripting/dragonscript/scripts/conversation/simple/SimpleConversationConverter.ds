@@ -595,6 +595,8 @@ class SimpleConversationConverter
 	 * If endOfSpeech is true \ref SimpleConversationActor#getProlongLastGesture() is applied.
 	 */
 	protected func void finishOpenGestures(State state, bool endOfSpeech)
+		applySpeechPause(state)
+		
 		var int count = state.gestures.getCount()
 		if count == 0
 			return
@@ -607,8 +609,6 @@ class SimpleConversationConverter
 			state.gestures.removeAll()
 			return
 		end
-		
-		applySpeechPause(state)
 		
 		var float speechTime = state.speechTime
 		if endOfSpeech
@@ -670,6 +670,10 @@ class SimpleConversationConverter
 		end
 		
 		finishOpenGestures(state, false)
+		if state.speechTime > 0 and state.actionActorSpeak.getGestureCount() == 0
+			state.actionActorSpeak.addGesture(ConversationStrip.new(StringID.new(), 0, state.speechTime))
+			state.gestureTime = state.speechTime
+		end
 		state.gestures.add(Gesture.new(gesture))
 	end
 	
