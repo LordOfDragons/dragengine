@@ -44,6 +44,7 @@ class SimpleConversationCameraShot
 	var Type pType
 	var StringID pTarget, pSubTarget, pCameraTarget, pLookAtTarget
 	var String pCommand
+	var float pDuration
 	
 	
 	/** \brief Create simple conversation camera definition. */
@@ -53,6 +54,7 @@ class SimpleConversationCameraShot
 		end
 		
 		pType = type
+		pDuration = 1
 	end
 	
 	/** \brief Create copy of simple conversation camera definition. */
@@ -63,6 +65,7 @@ class SimpleConversationCameraShot
 		pCameraTarget = shot.pCameraTarget
 		pLookAtTarget = shot.pLookAtTarget
 		pCommand = shot.pCommand
+		pDuration = shot.pDuration
 	end
 	
 	
@@ -166,5 +169,23 @@ class SimpleConversationCameraShot
 	 */
 	func void setCommand(String command)
 		pCommand = command
+	end
+	
+	/**
+	 * \brief Shot duration in seconds.
+	 * 
+	 * Used for \ref Type#cameraShot only otherwise null.
+	 */
+	func float getDuration()
+		return pDuration
+	end
+	
+	/**
+	 * \brief Set shot duration in seconds.
+	 * 
+	 * Used for \ref Type#cameraShot only otherwise null.
+	 */
+	func void setDuration(float duration)
+		pDuration = duration
 	end
 end

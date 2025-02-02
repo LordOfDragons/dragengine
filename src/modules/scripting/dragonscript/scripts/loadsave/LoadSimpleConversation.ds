@@ -49,7 +49,7 @@ pin Dragengine.Scenery
  * 
  *      <!-- Play specific camera shot. Use cameraTarget and lookAtTarget
  *           if required by selected camera shot -->
- *      <cameraShot cameraTarget='...' lookAtTarget='...'>ots medium left</cameraShot>
+ *      <cameraShot cameraTarget='...' lookAtTarget='...' duration='10'>ots medium left</cameraShot>
  * 
  *      <!-- Run snippet with topic from topic group -->
  *      <snippet group='dynamic cameras'>dynamic camera left</snippet>
@@ -171,7 +171,7 @@ pin Dragengine.Scenery
  *         fulfilled. condition can be the same as in <if ...>
  * 
  *      <wait snippet='snippet to run'> ...condition... </wait>
- *         run snippet looping while condition is fulfilled
+ *         run snippet looping while condition is fulfilled. snippet is optional.
  * 
  *      <snippet>snippet identifier</snippet>
  *         run simple conversation snippet
@@ -296,15 +296,15 @@ class LoadSimpleConversation extends BaseXmlLoader
 				var SimpleConversationCameraShot shot = SimpleConversationCameraShot.new(\
 					SimpleConversationCameraShot.Type.cameraShot)
 				shot.setTarget(StringID.new(element.getFirstCData()))
-				
 				if element.hasAttributeNamed("cameraTarget")
 					shot.setCameraTarget(StringID.new(element.getAttributeNamed("cameraTarget")))
 				end
-				
 				if element.hasAttributeNamed("lookAtTarget")
 					shot.setLookAtTarget(StringID.new(element.getAttributeNamed("lookAtTarget")))
 				end
-				
+				if element.hasAttributeNamed("duration")
+					shot.setDuration(element.getAttributeFloatNamed("duration"))
+				end
 				camera.addShot(shot)
 				
 			elif tagName.equals("snippet")
@@ -812,7 +812,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 	protected func SimpleConversationAction readWait(EasyXMLElement root)
 		var SimpleConversationAction action = SimpleConversationAction.new(\
 			SimpleConversationAction.Type.wait)
-		action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		if root.hasAttributeNamed("snippet")
+			action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		end
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			var SimpleConversationCondition condition = readCondition(element)

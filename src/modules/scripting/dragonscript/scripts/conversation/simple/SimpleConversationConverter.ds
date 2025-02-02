@@ -750,7 +750,7 @@ class SimpleConversationConverter
 		state.actionCameraShot.setDelay(camera.getDelay() + state.pauseTime)
 		state.pauseTime = 0
 		state.actionCameraShot.setName(shot.getTarget())
-		state.actionCameraShot.setDuration(1)
+		state.actionCameraShot.setDuration(shot.getDuration())
 		state.actionCameraShot.setCameraTarget(shot.getCameraTarget())
 		state.actionCameraShot.setLookAtTarget(shot.getLookAtTarget())
 		state.actions.add(state.actionCameraShot)
@@ -1166,8 +1166,10 @@ class SimpleConversationConverter
 		caction.setDelay(state.pauseTime)
 		state.pauseTime = 0
 		caction.setCondition(convertCondition(state, action.getCondition()))
-		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
-			state.simpleConversation, state.playback, caction.getActions())
+		if action.getTarget() != null
+			convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+				state.simpleConversation, state.playback, caction.getActions())
+		end
 		state.actions.add(caction)
 	end
 	
