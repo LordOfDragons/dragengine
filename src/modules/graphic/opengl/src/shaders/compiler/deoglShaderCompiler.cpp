@@ -276,8 +276,10 @@ public:
 ////////////////////////////////////////////
 
 deoglShaderCompiler::cCacheShader::cCacheShader(deoglRenderThread &renderThread,
-	int contextIndex, const deoglShaderProgram &program, const deoglShaderCompiled &compiled) :
+	deMutex &mutexLogging, int contextIndex, const deoglShaderProgram &program,
+	const deoglShaderCompiled &compiled) :
 pRenderThread(renderThread),
+pMutexLogging(mutexLogging),
 pContextIndex(contextIndex),
 pCacheId(program.GetCacheId()),
 pLength(0),
@@ -315,6 +317,7 @@ void deoglShaderCompiler::cCacheShader::Run(){
 	}
 	
 #ifdef WITH_DEBUG
+	const deMutexGuard guardLogging(pMutexLogging);
 	logger.LogInfoFormat(
 		"CompileShader %d: Cached shader '%.50s...' in %dms, length %d bytes", pContextIndex,
 		pCacheId.GetString(), (int)(timerElapsed.GetElapsedTime() * 1e3f), pLength);
@@ -326,9 +329,11 @@ void deoglShaderCompiler::cCacheShader::Run(){
 ////////////////////////////////////////////////
 
 deoglShaderCompiler::cCacheShaderTask::cCacheShaderTask(deoglRenderThread &renderThread,
-	int contextIndex, const deoglShaderProgram &program, const deoglShaderCompiled &compiled) :
+	deMutex &mutexLogging, int contextIndex, const deoglShaderProgram &program,
+	const deoglShaderCompiled &compiled) :
 deParallelTask(&renderThread.GetOgl()),
-pCacheShader(renderThread, contextIndex, program, compiled)
+pCacheShader(renderThread, mutexLogging, contextIndex, program, compiled),
+pMutexLogging(mutexLogging)
 {
 	SetLowPriority(true);
 }
@@ -338,6 +343,7 @@ void deoglShaderCompiler::cCacheShaderTask::Run(){
 		pCacheShader.Run();
 		
 	}catch(const deException &e){
+		const deMutexGuard guardLogging(pMutexLogging);
 		deoglRTLogger &logger = pCacheShader.GetRenderThread().GetLogger();
 		logger.LogErrorFormat("CompileShader %d: Failed caching shader '%.50s...'",
 			pCacheShader.GetContextIndex(), pCacheShader.GetCacheId().GetString());
@@ -1187,7 +1193,7 @@ const deoglShaderCompiled &compiled){
 		renderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTask(task);
 		*/
 		
-		cCacheShaderTask(renderThread, pContextIndex, program, compiled).Run();
+		cCacheShaderTask(renderThread, pMutexLogging, pContextIndex, program, compiled).Run();
 		
 	}catch(const deException &e){
 		const deMutexGuard guardLogs(pMutexLogging);

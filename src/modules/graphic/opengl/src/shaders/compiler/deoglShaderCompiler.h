@@ -54,6 +54,7 @@ private:
 	class cCacheShader{
 	private:
 		deoglRenderThread &pRenderThread;
+		deMutex &pMutexLogging;
 		int pContextIndex;
 		decString pCacheId;
 		GLint pLength;
@@ -61,7 +62,7 @@ private:
 		decString pData;
 		
 	public:
-		cCacheShader(deoglRenderThread &renderThread, int contextIndex,
+		cCacheShader(deoglRenderThread &renderThread, deMutex &mutexLogging, int contextIndex,
 			const deoglShaderProgram &program, const deoglShaderCompiled &compiled);
 		
 		inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
@@ -77,9 +78,10 @@ private:
 		
 	private:
 		cCacheShader pCacheShader;
+		deMutex &pMutexLogging;
 		
 	public:
-		cCacheShaderTask(deoglRenderThread &renderThread, int contextIndex,
+		cCacheShaderTask(deoglRenderThread &renderThread, deMutex &mutexLogging, int contextIndex,
 			const deoglShaderProgram &program, const deoglShaderCompiled &compiled);
 		
 		void Run() override;

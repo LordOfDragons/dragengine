@@ -204,9 +204,17 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 		bool doubleSided = vGSDoubleSided[0] == 1;
 		
 		#ifdef GS_RENDER_CUBE
-			applyDepthOffset(0, vNormal, doubleSided);
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(0, vNormal, doubleSided, vPosition.z);
+			#else
+				applyDepthOffset(0, vNormal, doubleSided);
+			#endif
 		#else
-			applyDepthOffset(layer, vNormal, doubleSided);
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(layer, vNormal, doubleSided, vPosition.z);
+			#else
+				applyDepthOffset(layer, vNormal, doubleSided);
+			#endif
 		#endif
 	#endif
 	

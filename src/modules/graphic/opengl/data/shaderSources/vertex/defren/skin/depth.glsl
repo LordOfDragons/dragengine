@@ -270,7 +270,11 @@ void main( void ){
 		
 		// depth offset
 		#ifdef DEPTH_OFFSET
-			applyDepthOffset( inLayer, vNormal, pDoubleSided );
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(inLayer, vNormal, pDoubleSided, vPosition.z);
+			#else
+				applyDepthOffset(inLayer, vNormal, pDoubleSided);
+			#endif
 		#endif
 	#endif
 	

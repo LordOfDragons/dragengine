@@ -1,7 +1,12 @@
 /**
  * Apply depth offset.
  */
-void applyDepthOffset( in int layer, in vec3 normal, in bool doubleSided ){
+#ifdef DEPTH_DISTANCE
+void applyDepthOffset(in int layer, in vec3 normal, in bool doubleSided, inout float positionz)
+#else
+void applyDepthOffset(in int layer, in vec3 normal, in bool doubleSided)
+#endif
+{
 	// WARNING "normal" is NOT a good value for front/back face calculation. this normal is
 	//         not the face normal but a smoothed normal (by normal index). if faces are flat
 	//         with hard edges this will work but for faces with normals shared across (round
@@ -33,21 +38,26 @@ void applyDepthOffset( in int layer, in vec3 normal, in bool doubleSided ){
 	#ifdef DEPTH_ORTHOGONAL
 		gl_Position.z += depthScale + depthOffset.y;
 	#elif defined DEPTH_DISTANCE
-// 		float dotNormal = dot( normal, normalize( vPosition ) );
+// 		float dotNormal = dot( normal, normalize( position ) );
 // 		float scale = depthOffset.x * ( 1 - abs( dotNormal ) );
-		vPosition.z += vPosition.z * depthScale + depthOffset.y;
+		positionz += positionz * depthScale + depthOffset.y;
 	#else
 		gl_Position.z += gl_Position.z * depthScale + gl_Position.w * depthOffset.y;
 	#endif
 }
 
-void applyDepthOffset( in int layer ){
+#ifdef DEPTH_DISTANCE
+void applyDepthOffset(in int layer, inout float positionz)
+#else
+void applyDepthOffset(in int layer)
+#endif
+{
 	float depthBias = pDepthOffset[ layer ].y;
 	
 	#ifdef DEPTH_ORTHOGONAL
 		gl_Position.z += depthBias;
 	#elif defined DEPTH_DISTANCE
-		vPosition.z += depthBias;
+		positionz += depthBias;
 	#else
 		gl_Position.z += gl_Position.w * depthBias;
 	#endif
