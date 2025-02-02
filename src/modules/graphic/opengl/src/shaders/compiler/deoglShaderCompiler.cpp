@@ -1348,12 +1348,10 @@ bool deoglShaderCompiler::pCompileObject( GLuint handle ){
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
 	const char *sources = pPreprocessor.GetSources();
 	int sourcesLen = pPreprocessor.GetSourcesLength();
-	int result;
+	GLint result;
 	
-	// load source
 	SC_OGL_CHECK( renderThread, pglShaderSource( handle, 1, &sources, &sourcesLen ) );
 	
-	// compile source
 	SC_OGL_CHECK( renderThread, pglCompileShader( handle ) );
 	SC_OGL_CHECK( renderThread, pglGetShaderiv( handle, GL_COMPILE_STATUS, &result ) );
 	
@@ -1362,15 +1360,15 @@ bool deoglShaderCompiler::pCompileObject( GLuint handle ){
 		pErrorLog = nullptr;
 	}
 	
-	int blen = 0, slen = 0;
+	GLint blen = 0;
 	SC_OGL_CHECK(renderThread, pglGetShaderiv(handle, GL_INFO_LOG_LENGTH , &blen));
 	
 	if(blen > 1){
 		pErrorLog = new char[blen + 1];
-		SC_OGL_CHECK(renderThread, pglGetShaderInfoLog(handle, blen, &slen, pErrorLog));
-		pErrorLog[slen] = 0;
+		SC_OGL_CHECK(renderThread, pglGetShaderInfoLog(handle, blen, nullptr, pErrorLog));
+		pErrorLog[blen] = 0;
 		
-		if(strncmp(pErrorLog, "Success", 7) == 0){
+		if(result == GL_TRUE && strncmp(pErrorLog, "Success", 7) == 0){
 			delete [] pErrorLog;
 			pErrorLog = nullptr;
 		}
@@ -1381,7 +1379,7 @@ bool deoglShaderCompiler::pCompileObject( GLuint handle ){
 
 bool deoglShaderCompiler::pLinkShader( GLuint handle ){
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
-	int result;
+	GLint result;
 	
 	SC_OGL_CHECK( renderThread, pglLinkProgram( handle ) );
 	SC_OGL_CHECK( renderThread, pglGetProgramiv( handle, GL_LINK_STATUS, &result ) );
@@ -1391,15 +1389,15 @@ bool deoglShaderCompiler::pLinkShader( GLuint handle ){
 		pErrorLog = nullptr;
 	}
 	
-	int blen = 0, slen = 0;
-	SC_OGL_CHECK(renderThread, pglGetProgramiv(handle, GL_INFO_LOG_LENGTH , &blen));
+	GLint blen = 0;
+	SC_OGL_CHECK(renderThread, pglGetProgramiv(handle, GL_INFO_LOG_LENGTH, &blen));
 	
 	if(blen > 1){
 		pErrorLog = new char[blen + 1];
-		SC_OGL_CHECK(renderThread, pglGetProgramInfoLog(handle, blen, &slen, pErrorLog));
-		pErrorLog[slen] = 0;
+		SC_OGL_CHECK(renderThread, pglGetProgramInfoLog(handle, blen, nullptr, pErrorLog));
+		pErrorLog[blen] = 0;
 		
-		if(strncmp(pErrorLog, "Success", 7) == 0){
+		if(result == GL_TRUE && strncmp(pErrorLog, "Success", 7) == 0){
 			delete [] pErrorLog;
 			pErrorLog = nullptr;
 		}
