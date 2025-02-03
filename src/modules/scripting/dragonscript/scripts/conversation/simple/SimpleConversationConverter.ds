@@ -1044,7 +1044,7 @@ class SimpleConversationConverter
 		
 		var CActionIfElseCase ccase = CActionIfElseCase.new()
 		ccase.setCondition(convertCondition(state, action.getCondition()))
-		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+		convert(getSnippetRequired(state, action.getTarget()),\
 			state.simpleConversation, state.playback, ccase.getActions())
 		state.actionIfElse.addCase(ccase)
 	end
@@ -1112,7 +1112,7 @@ class SimpleConversationConverter
 	 * Then closes the open if-else action.
 	 */
 	protected func void convertElse(State state, SimpleConversationAction action)
-		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+		convert(getSnippetRequired(state, action.getTarget()),\
 			state.simpleConversation, state.playback, state.actionIfElse.getElseActions())
 		closeActions(state)
 	end
@@ -1146,7 +1146,7 @@ class SimpleConversationConverter
 		if action.getCondition() != null
 			coption.setCondition(convertCondition(state, action.getCondition()))
 		end
-		convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+		convert(getSnippetRequired(state, action.getTarget()),\
 			state.simpleConversation, state.playback, coption.getActions())
 		state.actionPlayerChoice.addOption(coption)
 	end
@@ -1167,7 +1167,7 @@ class SimpleConversationConverter
 		state.pauseTime = 0
 		caction.setCondition(convertCondition(state, action.getCondition()))
 		if action.getTarget() != null
-			convert(state.simpleConversation.getSnippetWith(action.getTarget()),\
+			convert(getSnippetRequired(state, action.getTarget()),\
 				state.simpleConversation, state.playback, caction.getActions())
 		end
 		state.actions.add(caction)
@@ -1381,5 +1381,15 @@ class SimpleConversationConverter
 		closeSpeak(state)
 		state.actionIfElse = null
 		state.actionPlayerChoice = null
+	end
+	
+	/** \brief Get snippet throw exception if absent. */
+	protected func SimpleConversationSnippet getSnippetRequired(State state, StringID id)
+		var SimpleConversationSnippet s = state.simpleConversation.getSnippetWith(id)
+		if s == null
+			throw EInvalidParam.new("snippet not found: '{}' in '{}'".format(\
+				Array.newWith(id, state.snippet.getId())))
+		end
+		return s
 	end
 end
