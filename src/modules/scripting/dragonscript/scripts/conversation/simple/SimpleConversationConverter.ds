@@ -118,9 +118,6 @@ class SimpleConversationConverter
 		/** \brief Clear look-at before adding new look-at. */
 		public var bool clearLookAts
 		
-		/** \brief Open actor speak conversation actor or null. */
-		public var ConversationActor conversationActor
-		
 		/** \brief Open actor speak speech animation or null. */
 		public var SpeechAnimation speechAnimation
 		
@@ -477,6 +474,9 @@ class SimpleConversationConverter
 				
 			case SimpleConversationAction.Type.waitMode
 				state.waitMode = each.getWaitMode()
+				
+			case SimpleConversationAction.Type.endActorSpeak
+				closeActions(state)
 			end
 		end)
 		
@@ -521,14 +521,14 @@ class SimpleConversationConverter
 		if action.getTarget() != null
 			state.actor = state.simpleConversation.getActorWith(action.getTarget())
 			
-			state.conversationActor = state.playback.getActorMatching(state.actor.getActorId())
-			if state.conversationActor == null
-				throw EInvalidParam.new("conversation actor absent: " + state.actor.getActorId())
+			state.speechAnimation = null
+			var ConversationActor cactor = state.playback.getActorMatching(state.actor.getActorId())
+			if cactor != null
+				var SpeechAnimationPlayback saplayback = cactor.getSpeechAnimationPlayback()
+				if saplayback != null
+					state.speechAnimation = saplayback.getSpeechAnimation()
+				end
 			end
-			
-			var SpeechAnimationPlayback saplayback =\
-				state.conversationActor.getSpeechAnimationPlayback()
-			state.speechAnimation = saplayback != null if saplayback.getSpeechAnimation() else null
 			
 			var StringID id = state.actor.getCamera()
 			if id != null
@@ -643,11 +643,11 @@ class SimpleConversationConverter
 	
 	/** \brief Apply speech pause if present. */
 	protected func void applySpeechPause(State state)
-		if state.pauseTime == 0
+		if state.pauseTime == 0 or state.actionActorSpeak == null
 			return
 		end
 		
-		if state.speechAnimation != null
+		if state.actionActorSpeak != null and state.actionActorSpeak.getUseSpeechAnimation()
 			state.actionActorSpeak.addWord(ConversationStrip.new(StringID.new(), 0, state.pauseTime))
 		end
 		if state.actionCameraShot != null
@@ -825,72 +825,70 @@ class SimpleConversationConverter
 			return
 		end
 		
-		var float duration
-		if state.speechAnimation != null
-			var int wordBegin = -1, lenP1 = len + 1
-			var int c, i, lastBreakChar
-			var float wordLen, pauseLen
-			var bool notFirstWord
-			var StringID id
-			
-			for i = 0 to lenP1
-				if i < len
-					c = text.getCharacterAt(i)
-					if pCharsWordBreak.findCharacter(c, 0) == -1
-						if wordBegin == -1
-							wordBegin = i
-						end
-						continue
+		var bool useSpeechAnimation = state.actionActorSpeak.getUseSpeechAnimation()
+		var int wordBegin = -1, lenP1 = len + 1
+		var float wordLen, pauseLen, duration
+		var SpeechAnimationWord saword
+		var int c, i, lastBreakChar
+		var bool notFirstWord
+		var StringID id
+		
+		for i = 0 to lenP1
+			if i < len
+				c = text.getCharacterAt(i)
+				if pCharsWordBreak.findCharacter(c, 0) == -1
+					if wordBegin == -1
+						wordBegin = i
 					end
-					
-				else
-					c = 0
-				end
-				
-				if wordBegin == -1
-					lastBreakChar = c
 					continue
 				end
 				
-				id = StringID.new(text.getSubString(wordBegin, i - wordBegin).toUTF8())
-				
-				var SpeechAnimationWord saword = state.speechAnimation.getWordNamed(id)
-				if saword != null
-					wordLen = saword.getEstimatedSpeakLength(\
-						pAverageCharacterLength, state.speechAnimation)
-					
-				else
-					wordLen = pAverageCharacterLength * (i - wordBegin)
-				end
-				
-				pauseLen = state.pauseTime
-				state.pauseTime = 0
-				if notFirstWord
-					if pCharsPhraseBreak.findCharacter(lastBreakChar, 0) != -1
-						pauseLen = pPausePhrase
-						
-					elif pCharsSubPhraseBreak.findCharacter(lastBreakChar, 0) != -1
-						pauseLen = pPauseSubPhrase
-					end
-					
-				else
-					notFirstWord = true
-				end
-				
-				wordLen = wordLen * pSpeakSpeed + pElongateSpeak
-				state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
-				duration += pauseLen + wordLen
-				
-				lastBreakChar = c
-				wordBegin = -1
+			else
+				c = 0
 			end
 			
-		else
-			duration = state.pauseTime
-			state.pauseTime = 0
-			if text != null
-				duration += text.getLength() * pAverageCharacterLength
+			if wordBegin == -1
+				lastBreakChar = c
+				continue
 			end
+			
+			id = StringID.new(text.getSubString(wordBegin, i - wordBegin).toUTF8())
+			
+			saword = null
+			if state.speechAnimation != null
+				saword = state.speechAnimation.getWordNamed(id)
+			end
+			
+			if saword != null
+				wordLen = saword.getEstimatedSpeakLength(\
+					pAverageCharacterLength, state.speechAnimation)
+				
+			else
+				wordLen = pAverageCharacterLength * (i - wordBegin)
+			end
+			
+			pauseLen = state.pauseTime
+			state.pauseTime = 0
+			if notFirstWord
+				if pCharsPhraseBreak.findCharacter(lastBreakChar, 0) != -1
+					pauseLen = pPausePhrase
+					
+				elif pCharsSubPhraseBreak.findCharacter(lastBreakChar, 0) != -1
+					pauseLen = pPauseSubPhrase
+				end
+				
+			else
+				notFirstWord = true
+			end
+			
+			wordLen = wordLen * pSpeakSpeed + pElongateSpeak
+			if useSpeechAnimation
+				state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
+			end
+			duration += pauseLen + wordLen
+			
+			lastBreakChar = c
+			wordBegin = -1
 		end
 		
 		state.speechTime += duration
@@ -1362,7 +1360,7 @@ class SimpleConversationConverter
 	protected func void closeSpeak(State state)
 		finishOpenGestures(state, true)
 		
-		if state.actionActorSpeak != null and state.speechAnimation == null
+		if state.actionActorSpeak != null and not state.actionActorSpeak.getUseSpeechAnimation()
 			state.actionActorSpeak.setMinSpeechTime(state.speechTime)
 		end
 		

@@ -219,6 +219,9 @@ class SimpleConversationAction
 		 * Uses getWait() as new wait mode to use.
 		 */
 		waitMode
+		
+		/** \brief Explicitely end actor speak. */
+		endActorSpeak
 	end
 	
 	/** \brief Condition. */
