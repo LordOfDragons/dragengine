@@ -516,6 +516,8 @@ class SimpleConversationConverter
 	 * not set and no previous CActionActorSpeak is present.
 	 */
 	protected func void convertActor(State state, SimpleConversationAction action)
+		closeActions(state)
+		
 		if action.getTarget() != null
 			state.actor = state.simpleConversation.getActorWith(action.getTarget())
 			
@@ -561,7 +563,6 @@ class SimpleConversationConverter
 			state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + actorDelay)
 		end
 		
-		closeActions(state)
 		state.actionActorSpeak = CActionActorSpeak.new()
 		applyWaitMode(state, state.actionActorSpeak)
 		state.actionActorSpeak.setActorID(state.actor.getActorId())
