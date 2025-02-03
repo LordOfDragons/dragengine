@@ -655,6 +655,10 @@ class LoadSimpleConversation extends BaseXmlLoader
 			end
 		end)
 		
+		if action.getCondition() == null
+			logNotSupported(root, "missing condition")
+			throw EInvalidParam.new("missing condition on " + root.getTagName())
+		end
 		return action
 	end
 	
