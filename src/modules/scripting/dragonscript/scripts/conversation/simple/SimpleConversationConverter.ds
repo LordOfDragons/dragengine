@@ -580,12 +580,12 @@ class SimpleConversationConverter
 		end
 		
 		if state.actor.getFacePose() != null
-			convertFacePose(state, state.conversation.getFacePoseNamed(state.actor.getFacePose()))
+			convertFacePose(state, state.conversation.getFacePoseNamed(state.actor.getFacePose()), 0)
 			state.clearFacePoses = true
 		end
 		
 		if state.actor.getLookAt() != null
-			convertLookAt(state, state.conversation.getTargetNamed(state.actor.getLookAt()))
+			convertLookAt(state, state.conversation.getTargetNamed(state.actor.getLookAt()), 0)
 			state.clearLookAts = true
 		end
 	end
@@ -679,7 +679,7 @@ class SimpleConversationConverter
 	end
 	
 	/** \brief Add conversation face pose. */
-	protected func void convertFacePose(State state, ConversationFacePose facePose)
+	protected func void convertFacePose(State state, ConversationFacePose facePose, float duration)
 		if state.clearFacePoses
 			state.clearFacePoses = false
 			state.facePoseTime = 0
@@ -690,7 +690,9 @@ class SimpleConversationConverter
 		
 		applySpeechPause(state)
 		
-		var float duration = pFacePoseDuration
+		if duration == 0
+			duration = pFacePoseDuration
+		end
 		var float delay = DEMath.max(state.speechTime - state.facePoseTime, 0.0)
 		if state.actionActorSpeak != null
 			state.actionActorSpeak.addFacePose(ConversationStrip.new(\
@@ -700,7 +702,7 @@ class SimpleConversationConverter
 	end
 	
 	/** \brief Add conversation look-at. */
-	protected func void convertLookAt(State state, ConversationTarget lookAt)
+	protected func void convertLookAt(State state, ConversationTarget lookAt, float duration)
 		if state.clearLookAts
 			state.clearLookAts = false
 			state.lookAtTime = 0
@@ -711,7 +713,9 @@ class SimpleConversationConverter
 		
 		applySpeechPause(state)
 		
-		var float duration = pLookAtDuration
+		if duration == 0
+			duration = pLookAtDuration
+		end
 		var float delay = DEMath.max(state.speechTime - state.lookAtTime, 0.0)
 		if state.actionActorSpeak != null
 			state.actionActorSpeak.addHeadLookAt(ConversationStrip.new(\
@@ -913,7 +917,7 @@ class SimpleConversationConverter
 		if action.getTarget() != null
 			facePose = state.conversation.getFacePoseNamed(action.getTarget())
 		end
-		convertFacePose(state, facePose)
+		convertFacePose(state, facePose, action.getDuration())
 	end
 	
 	/** \brief Convert look-at action. */
@@ -922,7 +926,7 @@ class SimpleConversationConverter
 		if action.getTarget() != null
 			lookAt = state.conversation.getTargetNamed(action.getTarget())
 		end
-		convertLookAt(state, lookAt)
+		convertLookAt(state, lookAt, action.getDuration())
 	end
 	
 	/**

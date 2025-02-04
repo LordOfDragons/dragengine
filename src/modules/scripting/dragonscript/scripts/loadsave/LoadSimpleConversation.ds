@@ -81,9 +81,11 @@ pin Dragengine.Scenery
  * 
  *      <!-- Optional face pose to switch to -->
  *      <facePose>surprised</facePose>
+ *      <facePose duration='0.5'>surprised</facePose>
  * 
  *      <!-- Optional look-at to switch to -->
  *      <lookAt>npc</lookAt>
+ *      <lookAt duration='1'>npc</lookAt>
  *   </actor>
  * 
  *   <actor id='npc'>
@@ -205,8 +207,8 @@ pin Dragengine.Scenery
  * 
  *      <actor id='player'/> = <a i='player'/>
  *      <gesture id='hello'/> = <g i='hello'/>
- *      <facePose id='surprised'/> = <f i='surprised'/>
- *      <lookAt id='npc'/> = <l i='npc'/>
+ *      <facePose id='surprised' duration='0.5'/> = <f i='surprised' d='0.5'/>
+ *      <lookAt id='npc' duration='1'/> = <l i='npc' d='1'/>
  *      <tag anim='somebody'>{npcName}</tag> = <t a='somebody'>{npcName}</t>
  *      <pause>1.5</pause> = <p>1.5</p>
  *      -->
@@ -413,12 +415,18 @@ class LoadSimpleConversation extends BaseXmlLoader
 					if element.hasAttributeNamed("id")
 						action.setTarget(StringID.new(element.getAttributeNamed("id")))
 					end
+					if element.hasAttributeNamed("duration")
+						action.setDuration(element.getAttributeFloatNamed("duration"))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("lookAt")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.lookAt)
 					if element.hasAttributeNamed("id")
 						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
+					if element.hasAttributeNamed("duration")
+						action.setDuration(element.getAttributeFloatNamed("duration"))
 					end
 					snippet.addAction(action)
 					
@@ -610,12 +618,18 @@ class LoadSimpleConversation extends BaseXmlLoader
 					if element.hasAttributeNamed("i")
 						action.setTarget(StringID.new(element.getAttributeNamed("i")))
 					end
+					if element.hasAttributeNamed("d")
+						action.setDuration(element.getAttributeFloatNamed("d"))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("l")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.lookAt)
 					if element.hasAttributeNamed("i")
 						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
+					if element.hasAttributeNamed("d")
+						action.setDuration(element.getAttributeFloatNamed("d"))
 					end
 					snippet.addAction(action)
 					

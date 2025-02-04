@@ -257,7 +257,7 @@ class SimpleConversationAction
 	var UnicodeString pText, pAnimText
 	var String pName
 	var int pValue, pRandom
-	var float pDelay
+	var float pDelay, pDuration
 	var WaitMode pWaitMode
 	var Enumeration pMode
 	var SimpleConversationCondition pCondition
@@ -282,6 +282,7 @@ class SimpleConversationAction
 		pValue = action.pValue
 		pRandom = action.pRandom
 		pDelay = action.pDelay
+		pDuration = action.pDuration
 		pWaitMode = action.pWaitMode
 		pMode = action.pMode
 		if action.pCondition != null
@@ -456,6 +457,25 @@ class SimpleConversationAction
 	 */
 	func void setDelay(float delay)
 		pDelay = DEMath.max(delay, 0.0)
+	end
+	
+	/**
+	 * \brief Duration in seconds.
+	 * 
+	 * - \ref Type#facePose: Duration or 0 to use default.
+	 * - \ref Type#lookAt: Duration or 0 to use default.
+	 * - other types: Not used and is 0
+	 */
+	func float getDuration()
+		return pDuration
+	end
+	
+	/**
+	 * \brief Set duration in seconds.
+	 * \see #getDuration()
+	 */
+	func void setDuration(float duration)
+		pDuration = DEMath.max(duration, 0.0)
 	end
 	
 	/**
