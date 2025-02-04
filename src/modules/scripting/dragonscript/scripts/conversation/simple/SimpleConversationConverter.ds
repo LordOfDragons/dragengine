@@ -900,17 +900,29 @@ class SimpleConversationConverter
 	
 	/** \brief Convert gesture action. */
 	protected func void convertGesture(State state, SimpleConversationAction action)
-		convertGesture(state, state.conversation.getGestureNamed(action.getTarget()))
+		var ConversationGesture gesture
+		if action.getTarget() != null
+			gesture = state.conversation.getGestureNamed(action.getTarget())
+		end
+		convertGesture(state, gesture)
 	end
 	
 	/** \brief Convert face pose action. */
 	protected func void convertFacePose(State state, SimpleConversationAction action)
-		convertFacePose(state, state.conversation.getFacePoseNamed(action.getTarget()))
+		var ConversationFacePose facePose
+		if action.getTarget() != null
+			facePose = state.conversation.getFacePoseNamed(action.getTarget())
+		end
+		convertFacePose(state, facePose)
 	end
 	
 	/** \brief Convert look-at action. */
 	protected func void convertLookAt(State state, SimpleConversationAction action)
-		convertLookAt(state, state.conversation.getTargetNamed(action.getTarget()))
+		var ConversationTarget lookAt
+		if action.getTarget() != null
+			lookAt = state.conversation.getTargetNamed(action.getTarget())
+		end
+		convertLookAt(state, lookAt)
 	end
 	
 	/**
