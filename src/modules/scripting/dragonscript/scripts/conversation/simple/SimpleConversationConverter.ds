@@ -144,7 +144,7 @@ class SimpleConversationConverter
 		pCharsSubPhraseBreak = UnicodeString.newFromUTF8(",")
 		pPausePhrase = 0.5
 		pPauseSubPhrase = 0.35
-		pAverageCharacterLength = 0.085
+		pAverageCharacterLength = 0.095
 		pSpeakSpeed = 1.1
 		pElongateSpeak = 0.15
 		pFacePoseDuration = 0.25
@@ -238,7 +238,7 @@ class SimpleConversationConverter
 	 * \brief Average character length.
 	 * 
 	 * Used to estimate the length of a word without speech animation defining the length.
-	 * Default value is 0.085.
+	 * Default value is 0.095.
 	 */
 	func float getEstimateWordLength()
 		return pAverageCharacterLength
