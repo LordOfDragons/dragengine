@@ -403,12 +403,16 @@ class LoadSimpleConversation extends BaseXmlLoader
 					
 				elif tagName.equals("gesture")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.gesture)
-					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					if element.hasAttributeNamed("id")
+						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("facePose")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.facePose)
-					action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					if element.hasAttributeNamed("id")
+						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("lookAt")
@@ -596,12 +600,16 @@ class LoadSimpleConversation extends BaseXmlLoader
 					
 				elif tagName.equals("g")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.gesture)
-					action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					if element.hasAttributeNamed("i")
+						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("f")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.facePose)
-					action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					if element.hasAttributeNamed("i")
+						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("l")
