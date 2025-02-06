@@ -167,6 +167,7 @@ pin Dragengine.Scenery
  *               at least one condition is defined and all conditions are fulfilled.
  *            <none> ....conditions... </none>
  *               no condition is fulfilled.
+ *         snippet can be omitted for doing nothing
  *      <elif ...> same as <if ...> but adds another case to the previous <if>
  *      <else snippet='snippet to run'/>
  * 
@@ -668,7 +669,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 			root.getTagName().equals("if")\
 				if SimpleConversationAction.Type.condIf\
 				else SimpleConversationAction.Type.condElif)
-		action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		if root.hasAttributeNamed("snippet")
+			action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		end
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			var SimpleConversationCondition condition = readCondition(element)

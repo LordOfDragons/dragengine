@@ -1059,8 +1059,10 @@ class SimpleConversationConverter
 		
 		var CActionIfElseCase ccase = CActionIfElseCase.new()
 		ccase.setCondition(convertCondition(state, action.getCondition()))
-		convert(getSnippetRequired(state, action.getTarget()),\
-			state.simpleConversation, state.playback, ccase.getActions())
+		if action.getTarget() != null
+			convert(getSnippetRequired(state, action.getTarget()),\
+				state.simpleConversation, state.playback, ccase.getActions())
+		end
 		state.actionIfElse.addCase(ccase)
 	end
 	
