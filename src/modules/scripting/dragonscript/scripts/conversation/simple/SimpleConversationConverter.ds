@@ -520,6 +520,10 @@ class SimpleConversationConverter
 		
 		if action.getTarget() != null
 			state.actor = state.simpleConversation.getActorWith(action.getTarget())
+			if state.actor == null
+				throw EInvalidParam.new("Actor '{}' not found in snippet '{}'".format(\
+					Array.newWith(action.getTarget(), state.snippet.getId())))
+			end
 			
 			state.speechAnimation = null
 			var ConversationActor cactor = state.playback.getActorMatching(state.actor.getActorId())
