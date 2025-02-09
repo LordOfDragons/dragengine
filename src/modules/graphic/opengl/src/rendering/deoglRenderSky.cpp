@@ -212,6 +212,7 @@ deoglRenderBase( renderThread )
 {
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
@@ -221,6 +222,9 @@ deoglRenderBase( renderThread )
 	
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
+	if(useInverseDepth){
+		commonDefines.SetDefines("INVERSE_DEPTH");
+	}
 	
 	pipconf.Reset();
 	pipconf.SetMasks( true, true, true, false, false ); // alpha=false to avoid blended alpha to be written

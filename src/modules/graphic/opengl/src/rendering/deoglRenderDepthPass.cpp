@@ -134,6 +134,9 @@ deoglRenderBase( renderThread )
 	
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
+	if(useInverseDepth){
+		defines.SetDefines("INVERSE_DEPTH");
+	}
 	
 	
 	// depth downsample
@@ -143,9 +146,6 @@ deoglRenderBase( renderThread )
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
-	if( useInverseDepth ){
-		defines.SetDefines( "INVERSE_DEPTH" );
-	}
 	
 	defines.SetDefines( "NO_TEXCOORD" );
 	defines.SetDefines( "USE_MIN_FUNCTION" ); // so it works for SSR. should also work for SSAO
@@ -154,9 +154,6 @@ deoglRenderBase( renderThread )
 	
 	// depth downsample stereo
 	defines = commonDefines;
-	if( useInverseDepth ){
-		defines.SetDefines( "INVERSE_DEPTH" );
-	}
 	defines.SetDefines( "NO_TEXCOORD" );
 	defines.SetDefines( "USE_MIN_FUNCTION" ); // so it works for SSR. should also work for SSAO
 	
