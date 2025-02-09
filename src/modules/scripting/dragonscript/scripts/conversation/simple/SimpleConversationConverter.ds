@@ -41,10 +41,14 @@ class SimpleConversationConverter
 		/** \brief Duration in seconds. */
 		public var float duration
 		
+		/** \brief Hold. */
+		public var bool hold
+		
 		func new(ConversationGesture gesture)
 			if gesture != null
 				id = gesture.getName()
 				duration = gesture.getDuration()
+				hold = gesture.getHold()
 				
 			else
 				id = StringID.new()
@@ -88,8 +92,8 @@ class SimpleConversationConverter
 		/** \brief Open player-choice conversation action or null. */
 		public var CActionPlayerChoice actionPlayerChoice
 		
-		/** \brief Array of \ref Gesture to add to speech. */
-		public var Array gestures
+		/** \brief \ref Gesture to add to speech or null. */
+		public var Gesture gesture
 		
 		/** \brief Current speech time in seconds. */
 		public var float speechTime
@@ -121,9 +125,17 @@ class SimpleConversationConverter
 		/** \brief Open actor speak speech animation or null. */
 		public var SpeechAnimation speechAnimation
 		
+		/**
+		 * \brief Dictionary of known ConversationActor to look up speech animations.
+		 * 
+		 * Maps StringID key (actor identifier or actor alias) to ConversationActor value.
+		 * Dictionary is shared across sub states since it serves only as helper data.
+		 */
+		public var Dictionary conversationActors
+		
 		func new()
-			gestures = Array.new()
 			waitMode = SimpleConversationAction.WaitMode.waitCameraSpeak
+			conversationActors = Dictionary.new()
 		end
 	end
 	
@@ -389,6 +401,12 @@ class SimpleConversationConverter
 		state.playback = playback
 		state.conversation = playback.getConversation()
 		state.actions = actions
+		playback.forEachActor(block ConversationActor each
+			state.conversationActors.setAt(each.getID(), each)
+			if each.getAliasID() != null
+				state.conversationActors.setAt(each.getAliasID(), each)
+			end
+		end)
 		convert(state)
 	end
 	
@@ -526,7 +544,8 @@ class SimpleConversationConverter
 			end
 			
 			state.speechAnimation = null
-			var ConversationActor cactor = state.playback.getActorMatching(state.actor.getActorId())
+			var ConversationActor cactor = state.conversationActors.getAt(\
+				state.actor.getActorId(), null) cast ConversationActor
 			if cactor != null
 				var SpeechAnimationPlayback saplayback = cactor.getSpeechAnimationPlayback()
 				if saplayback != null
@@ -595,23 +614,20 @@ class SimpleConversationConverter
 	end
 	
 	/**
-	 * \brief Add open gestures properly scaled to speech time.
+	 * \brief Add open gesture properly scaled to speech time.
 	 * 
 	 * If endOfSpeech is true \ref SimpleConversationActor#getProlongLastGesture() is applied.
 	 */
-	protected func void finishOpenGestures(State state, bool endOfSpeech)
+	protected func void finishOpenGesture(State state, bool endOfSpeech)
 		applySpeechPause(state)
 		
-		var int count = state.gestures.getCount()
-		if count == 0
+		if state.gesture == null
 			return
 		end
 		
-		var float sumDuration = state.gestures.inject(0.0, block float accum, Gesture each
-			return accum + each.duration
-		end) cast float
-		if sumDuration < 0.1
-			state.gestures.removeAll()
+		var float duration = state.gesture.duration
+		if duration < 0.1
+			state.gesture = null
 			return
 		end
 		
@@ -623,26 +639,28 @@ class SimpleConversationConverter
 		var float availDuration = speechTime - state.gestureTime
 		if availDuration < 0.1
 			if endOfSpeech
-				state.gestures.removeAll()
+				state.gesture = null
 				return
 			end
-			availDuration = sumDuration
+			availDuration = duration
 		end
 		
-		if sumDuration > pMinGestureDurationHalf and availDuration < pMinGestureDuration
-			state.actionActorSpeak.addGesture(ConversationStrip.new(StringID.new(), 0, availDuration))
+		if duration > pMinGestureDurationHalf and availDuration < pMinGestureDuration
+			state.actionActorSpeak.addGesture(ConversationStrip.new(StringID.new(), 0,\
+				state.gesture.hold if duration else availDuration))
 			return
 		end
 		
-		var float scaleDuration = availDuration / sumDuration
+		var float scaleDuration = availDuration / duration
+		if state.gesture.hold
+			scaleDuration = endOfSpeech if 1.0 else DEMath.max(scaleDuration, 1.0)
+		end
 		
-		state.gestures.forEach(block Gesture each
-			state.actionActorSpeak.addGesture(ConversationStrip.new(\
-				each.id, 0, each.duration * scaleDuration))
-		end)
+		state.actionActorSpeak.addGesture(ConversationStrip.new(\
+			state.gesture.id, 0, state.gesture.duration * scaleDuration))
 		
 		state.gestureTime += availDuration
-		state.gestures.removeAll()
+		state.gesture = null
 	end
 	
 	/** \brief Apply speech pause if present. */
@@ -666,7 +684,7 @@ class SimpleConversationConverter
 		if state.clearGestures
 			state.clearGestures = false
 			
-			state.gestures.removeAll()
+			state.gesture = null
 			state.gestureTime = 0
 			
 			if state.actionActorSpeak != null
@@ -674,12 +692,12 @@ class SimpleConversationConverter
 			end
 		end
 		
-		finishOpenGestures(state, false)
+		finishOpenGesture(state, false)
 		if state.speechTime > 0 and state.actionActorSpeak.getGestureCount() == 0
 			state.actionActorSpeak.addGesture(ConversationStrip.new(StringID.new(), 0, state.speechTime))
 			state.gestureTime = state.speechTime
 		end
-		state.gestures.add(Gesture.new(gesture))
+		state.gesture = Gesture.new(gesture)
 	end
 	
 	/** \brief Add conversation face pose. */
@@ -1257,6 +1275,7 @@ class SimpleConversationConverter
 					subState.playback = state.playback
 					subState.conversation = state.playback.getConversation()
 					subState.actions = caIfCase.getActions()
+					subState.conversationActors = state.conversationActors
 					convert(subState)
 				end
 			end
@@ -1285,6 +1304,7 @@ class SimpleConversationConverter
 				subState.conversation = state.playback.getConversation()
 				subState.actions = state.actions
 				subState.pauseTime = state.pauseTime
+				subState.conversationActors = state.conversationActors
 				state.pauseTime = 0
 				convert(subState)
 			end
@@ -1322,6 +1342,14 @@ class SimpleConversationConverter
 		caction.setActorID(action.getTarget())
 		caction.setAliasID(action.getSubTarget())
 		state.actions.add(caction)
+		
+		var ConversationActor cactor = state.playback.loadConversationActor(action.getTarget())
+		if caction != null
+			state.conversationActors.setAt(action.getTarget(), cactor)
+			if action.getSubTarget() != null
+				state.conversationActors.setAt(action.getSubTarget(), cactor)
+			end
+		end
 	end
 	
 	/**
@@ -1380,7 +1408,7 @@ class SimpleConversationConverter
 	 * information linked to speak conversation action are not cleared to reuse them.
 	 */
 	protected func void closeSpeak(State state)
-		finishOpenGestures(state, true)
+		finishOpenGesture(state, true)
 		
 		if state.actionActorSpeak != null and not state.actionActorSpeak.getUseSpeechAnimation()
 			state.actionActorSpeak.setMinSpeechTime(state.speechTime)
@@ -1391,7 +1419,7 @@ class SimpleConversationConverter
 		state.gestureTime = 0
 		state.facePoseTime = 0
 		state.lookAtTime = 0
-		state.gestures.removeAll()
+		state.gesture = null
 		state.clearGestures = false
 		state.clearFacePoses = false
 		state.clearLookAts = false
