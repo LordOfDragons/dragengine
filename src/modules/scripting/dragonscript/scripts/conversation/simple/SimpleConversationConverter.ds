@@ -554,26 +554,11 @@ class SimpleConversationConverter
 		closeActions(state)
 		
 		var StringID target = action.getTarget()
-		var float actorDelay = state.actor.getDelay()
-		
-		select mode
-		case SimpleConversationAction.SpecialMode.noSpeakDelay,\
-			SimpleConversationAction.SpecialMode.noDelay
-				actorDelay = 0
-			
-		case SimpleConversationAction.SpecialMode.noCamera
-			target = null
-			
-		case SimpleConversationAction.SpecialMode.noCameraNoDelay
-			target = null
-			actorDelay = 0
-		end
-		
 		if target != null
-			state.actor = state.simpleConversation.getActorWith(action.getTarget())
+			state.actor = state.simpleConversation.getActorWith(target)
 			if state.actor == null
 				throw EInvalidParam.new("Actor '{}' not found in snippet '{}'".format(\
-					Array.newWith(action.getTarget(), state.snippet.getId())))
+					Array.newWith(target, state.snippet.getId())))
 			end
 			
 			state.speechAnimation = null
@@ -587,11 +572,18 @@ class SimpleConversationConverter
 			end
 			
 			var StringID id = state.actor.getCamera()
+			
+			select mode
+			case SimpleConversationAction.SpecialMode.noCamera,\
+				SimpleConversationAction.SpecialMode.noCameraNoDelay
+					id = null
+			end
+			
 			if id != null
 				var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
 				if camera == null
 					throw EInvalidParam.new("Camera '{}' not found in actor '{}' in snippet '{}'".format(\
-						Array.newWith(id, action.getTarget(), state.snippet.getId())))
+						Array.newWith(id, target, state.snippet.getId())))
 				end
 				convertCamera(state, camera, camera.randomShot(), mode)
 				
@@ -614,6 +606,14 @@ class SimpleConversationConverter
 					state.forceCameraShotCounter = 1
 				end
 			end
+		end
+		
+		var float actorDelay = state.actor.getDelay()
+		select mode
+		case SimpleConversationAction.SpecialMode.noSpeakDelay,\
+			SimpleConversationAction.SpecialMode.noDelay,\
+			SimpleConversationAction.SpecialMode.noCameraNoDelay
+				actorDelay = 0
 		end
 		
 		if state.actionCameraShot != null
