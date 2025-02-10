@@ -259,43 +259,47 @@ void deoglExtensions::Initialize(){
 }
 
 void deoglExtensions::PrintSummary(){
+	deoglRTLogger &l = pRenderThread.GetLogger();
 	int i;
 	
-	pRenderThread.GetLogger().LogInfoFormat( "Vendor: %s (%s)",
-		vVendorNames[ pVendor ], glGetString( GL_VENDOR ) );
+	l.LogInfoFormat("Vendor: %s (%s)", vVendorNames[pVendor], glGetString(GL_VENDOR));
 	
 	#ifdef OS_ANDROID
-		pRenderThread.GetLogger().LogInfoFormat( "Version: %s (%s) [%d, %d]",
-			vGLESVersionNames[ pGLESVersion ], glGetString( GL_VERSION ),
-			pGLVersionMajor, pGLVersionMinor );
+		l.LogInfoFormat("Version: %s (%s) [%d, %d]", vGLESVersionNames[pGLESVersion],
+			glGetString(GL_VERSION), pGLVersionMajor, pGLVersionMinor);
 	#else
-		pRenderThread.GetLogger().LogInfoFormat( "Version: %s (%s) [%d, %d]",
-			vGLVersionNames[ pGLVersion ], glGetString( GL_VERSION ),
-			pGLVersionMajor, pGLVersionMinor );
+		l.LogInfoFormat("Version: %s (%s) [%d, %d]", vGLVersionNames[pGLVersion],
+			glGetString(GL_VERSION), pGLVersionMajor, pGLVersionMinor);
 	#endif
 	
-	pRenderThread.GetLogger().LogInfo( "Supported Extensions:" );
-	for( i=0; i<EXT_COUNT; i++ ){
-		if( pHasExtension[ i ] ){
-			pRenderThread.GetLogger().LogInfoFormat( "- %s", vExtensionNames[ i ] );
+	l.LogInfo("Driver Reported Extensions:");
+	const int count = pStrListExtensions.GetCount();
+	for(i=0; i<count; i++){
+		l.LogInfoFormat("- %s", pStrListExtensions.GetAt(i).GetString());
+	}
+	
+	l.LogInfo("Supported Extensions:");
+	for(i=0; i<EXT_COUNT; i++){
+		if(pHasExtension[i]){
+			l.LogInfoFormat("- %s", vExtensionNames[i]);
 		}
 	}
 	
-	pRenderThread.GetLogger().LogInfo( "Not Supported Extensions:" );
-	for( i=0; i<EXT_COUNT; i++ ){
-		if( ! pHasExtension[ i ] ){
-			pRenderThread.GetLogger().LogInfoFormat( "- %s", vExtensionNames[ i ] );
+	l.LogInfo("Not Supported Extensions:");
+	for(i=0; i<EXT_COUNT; i++){
+		if(!pHasExtension[i]){
+			l.LogInfoFormat("- %s", vExtensionNames[i]);
 		}
 	}
 	
-	pRenderThread.GetLogger().LogInfo( "Extension Choices:" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Has Arry Cube Map: %s", pHasArrayCubeMap ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Has Seamless Cube Map: %s", pHasSeamlessCubeMap ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Has Copy Image: %s", pHasCopyImage ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Supports Vertex Shader Layer: %s", pSupportsVSLayer ? "Yes" : "No" );
+	l.LogInfo("Extension Choices:");
+	l.LogInfoFormat("- Has Arry Cube Map: %s", pHasArrayCubeMap ? "Yes" : "No");
+	l.LogInfoFormat("- Has Seamless Cube Map: %s", pHasSeamlessCubeMap ? "Yes" : "No");
+	l.LogInfoFormat("- Has Copy Image: %s", pHasCopyImage ? "Yes" : "No");
+	l.LogInfoFormat("- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No");
+	l.LogInfoFormat("- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No");
+	l.LogInfoFormat("- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No");
+	l.LogInfoFormat("- Supports Vertex Shader Layer: %s", pSupportsVSLayer ? "Yes" : "No");
 }
 
 bool deoglExtensions::VerifyPresence() const{
@@ -587,6 +591,10 @@ void deoglExtensions::pScanExtensions(){
 	
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pStrListExtensions += decString( strXExtensions ).Split( ' ' );
+#endif
+	
+#ifdef OS_ANDROID
+	pStrListExtensions += decString(strAExtensions).Split(' ');
 #endif
 	
 	pStrListExtensions.SortAscending();
