@@ -572,6 +572,10 @@ class SimpleConversationConverter
 			var StringID id = state.actor.getCamera()
 			if id != null
 				var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
+				if camera == null
+					throw EInvalidParam.new("Camera '{}' not found in actor '{}' in snippet '{}'".format(\
+						Array.newWith(id, action.getTarget(), state.snippet.getId())))
+				end
 				convertCamera(state, camera, camera.randomShot())
 				
 			else
