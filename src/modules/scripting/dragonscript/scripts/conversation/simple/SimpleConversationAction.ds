@@ -251,6 +251,24 @@ class SimpleConversationAction
 		noWait
 	end
 	
+	/** \brief Special mode. */
+	enum SpecialMode
+		/** Use 0 second delay for actor camera change. */
+		noCameraDelay
+		
+		/** Use 0 second delay for actor speak. */
+		noSpeakDelay
+		
+		/** Use 0 second delay for actor camera change and speak. */
+		noDelay
+		
+		/** Do not change camera. */
+		noCamera
+		
+		/** Do not change camera and use 0 second delay for speak. */
+		noCameraNoDelay
+	end
+	
 	
 	var Type pType
 	var StringID pTarget, pSubTarget
@@ -520,6 +538,7 @@ class SimpleConversationAction
 	 * - \ref Type#variable: \ref CActionSetVariable.Operator for variables or
 	 *   \ref CActionSetActorParameter.Operator for parameters.
 	 * - \ref Type#trigger: \ref CActionTrigger.Action .
+	 * - \ref Type#actor: \ref #SpecialMode .
 	 * - other types: Not used and is null
 	 */
 	func Enumeration getMode()

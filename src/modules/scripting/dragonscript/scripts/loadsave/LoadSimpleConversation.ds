@@ -97,6 +97,12 @@ pin Dragengine.Scenery
  *   Content works like HTML text with tags triggering changes. -->
  *   <snippet id='example convo'>
  *      <actor id='player'/>
+ *         <!-- optional attribute mode='mode' with these possible values:
+ *              - noCameraDelay: 0 second delay for camera change only.
+ *              - noSpeakDelay: 0 second delay for speak only.
+ *              - noDelay: 0 second delay for camera change and speak
+ *              - noCamera: No camera change.
+ *              - noCameraNoDelay:: No camera change and 0 second delay. -->
  *         <gesture id='hello'/> Hi there <tag anim='somebody'>{npcName}</tag>! How are you?
  *      <actor id='npc'/>
  *         <gesture id='hello'/> Oh, hi there.<a/>
@@ -206,7 +212,7 @@ pin Dragengine.Scenery
  *      <!--
  *      Some tags support a condensed form to make the conversation easier to read
  * 
- *      <actor id='player'/> = <a i='player'/>
+ *      <actor id='player' mode='mode'/> = <a i='player' m='mode'/>
  *      <gesture id='hello'/> = <g i='hello'/>
  *      <facePose id='surprised' duration='0.5'/> = <f i='surprised' d='0.5'/>
  *      <lookAt id='npc' duration='1'/> = <l i='npc' d='1'/>
@@ -401,6 +407,10 @@ class LoadSimpleConversation extends BaseXmlLoader
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
 					if element.hasAttributeNamed("id")
 						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
+					if element.hasAttributeNamed("mode")
+						action.setMode(SimpleConversationAction.SpecialMode.named(\
+							element.getAttributeNamed("mode")))
 					end
 					snippet.addAction(action)
 					
@@ -604,6 +614,10 @@ class LoadSimpleConversation extends BaseXmlLoader
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
 					if element.hasAttributeNamed("i")
 						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
+					if element.hasAttributeNamed("m")
+						action.setMode(SimpleConversationAction.SpecialMode.named(\
+							element.getAttributeNamed("m")))
 					end
 					snippet.addAction(action)
 					

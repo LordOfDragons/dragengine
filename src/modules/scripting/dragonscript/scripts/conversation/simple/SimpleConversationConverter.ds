@@ -550,9 +550,26 @@ class SimpleConversationConverter
 	 * not set and no previous CActionActorSpeak is present.
 	 */
 	protected func void convertActor(State state, SimpleConversationAction action)
+		var Enumeration mode = action.getMode()
 		closeActions(state)
 		
-		if action.getTarget() != null
+		var StringID target = action.getTarget()
+		var float actorDelay = state.actor.getDelay()
+		
+		select mode
+		case SimpleConversationAction.SpecialMode.noSpeakDelay,\
+			SimpleConversationAction.SpecialMode.noDelay
+				actorDelay = 0
+			
+		case SimpleConversationAction.SpecialMode.noCamera
+			target = null
+			
+		case SimpleConversationAction.SpecialMode.noCameraNoDelay
+			target = null
+			actorDelay = 0
+		end
+		
+		if target != null
 			state.actor = state.simpleConversation.getActorWith(action.getTarget())
 			if state.actor == null
 				throw EInvalidParam.new("Actor '{}' not found in snippet '{}'".format(\
@@ -576,7 +593,7 @@ class SimpleConversationConverter
 					throw EInvalidParam.new("Camera '{}' not found in actor '{}' in snippet '{}'".format(\
 						Array.newWith(id, action.getTarget(), state.snippet.getId())))
 				end
-				convertCamera(state, camera, camera.randomShot())
+				convertCamera(state, camera, camera.randomShot(), mode)
 				
 			else
 				state.forceCameraShotCounter++
@@ -591,15 +608,13 @@ class SimpleConversationConverter
 				var StringID id = state.actor.getCamera()
 				if id != null
 					var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
-					convertCamera(state, camera, camera.randomShot())
+					convertCamera(state, camera, camera.randomShot(), mode)
 					
 				else
 					state.forceCameraShotCounter = 1
 				end
 			end
 		end
-		
-		var float actorDelay = state.actor.getDelay()
 		
 		if state.actionCameraShot != null
 			state.actionCameraShot.setDelay(state.actionCameraShot.getDelay())
@@ -770,33 +785,33 @@ class SimpleConversationConverter
 	
 	/** \brief Add camera conversation actor. */
 	protected func void convertCamera(State state, SimpleConversationCamera camera,\
-	SimpleConversationCameraShot shot)
+	SimpleConversationCameraShot shot, Enumeration mode)
 		state.actionCameraShot = null
 		state.forceCameraShotCounter = 1
 		
 		select shot.getType()
 		case SimpleConversationCameraShot.Type.cameraShot
-			convertCameraShot(state, camera, shot)
+			convertCameraShot(state, camera, shot, mode)
 			
 		case SimpleConversationCameraShot.Type.snippet
-			convertCameraSnippet(state, camera, shot)
+			convertCameraSnippet(state, camera, shot, mode)
 			
 		case SimpleConversationCameraShot.Type.command
 			if shot.getTarget() != null
-				convertCameraActorCommand(state, camera, shot)
+				convertCameraActorCommand(state, camera, shot, mode)
 				
 			else
-				convertCameraGameCommand(state, camera, shot)
+				convertCameraGameCommand(state, camera, shot, mode)
 			end
 		end
 	end
 	
 	/** \brief Add camera conversation actor using camera shot. */
 	protected func void convertCameraShot(State state, SimpleConversationCamera camera,\
-	SimpleConversationCameraShot shot)
+	SimpleConversationCameraShot shot, Enumeration mode)
 		state.actionCameraShot = CActionCameraShot.new()
 		applyCameraWaitMode(state, state.actionCameraShot)
-		state.actionCameraShot.setDelay(camera.getDelay() + state.pauseTime)
+		state.actionCameraShot.setDelay(cameraDelay(state, camera, mode))
 		state.pauseTime = 0
 		state.actionCameraShot.setName(shot.getTarget())
 		state.actionCameraShot.setDuration(shot.getDuration())
@@ -807,10 +822,10 @@ class SimpleConversationConverter
 	
 	/** \brief Add camera conversation actor using snippet. */
 	protected func void convertCameraSnippet(State state, SimpleConversationCamera camera,\
-	SimpleConversationCameraShot shot)
+	SimpleConversationCameraShot shot, Enumeration mode)
 		var CActionSnippet caction = CActionSnippet.new()
 		applyCameraWaitMode(state, caction)
-		caction.setDelay(camera.getDelay() + state.pauseTime)
+		caction.setDelay(cameraDelay(state, camera, mode))
 		state.pauseTime = 0
 		caction.setGroupID(shot.getSubTarget())
 		caction.setTopicID(shot.getTarget())
@@ -819,10 +834,10 @@ class SimpleConversationConverter
 	
 	/** \brief Add camera conversation actor using game command. */
 	protected func void convertCameraGameCommand(State state, SimpleConversationCamera camera,\
-	SimpleConversationCameraShot shot)
+	SimpleConversationCameraShot shot, Enumeration mode)
 		var CActionGameCommand caction = CActionGameCommand.new()
 		applyCameraWaitMode(state, caction)
-		caction.setDelay(camera.getDelay() + state.pauseTime)
+		caction.setDelay(cameraDelay(state, camera, mode))
 		state.pauseTime = 0
 		caction.setCommand(shot.getCommand())
 		state.actions.add(caction)
@@ -830,14 +845,26 @@ class SimpleConversationConverter
 	
 	/** \brief Add camera conversation actor using actor command. */
 	protected func void convertCameraActorCommand(State state, SimpleConversationCamera camera,\
-	SimpleConversationCameraShot shot)
+	SimpleConversationCameraShot shot, Enumeration mode)
 		var CActionActorCommand caction = CActionActorCommand.new()
 		applyCameraWaitMode(state, caction)
-		caction.setDelay(camera.getDelay() + state.pauseTime)
+		caction.setDelay(cameraDelay(state, camera, mode))
 		state.pauseTime = 0
 		caction.setActorID(shot.getTarget())
 		caction.setCommand(shot.getCommand())
 		state.actions.add(caction)
+	end
+	
+	/** \brief Delay to use for camera change. */
+	protected func float cameraDelay(State state, SimpleConversationCamera camera, Enumeration mode)
+		select mode
+		case SimpleConversationAction.SpecialMode.noCameraDelay,\
+			SimpleConversationAction.SpecialMode.noDelay
+				return state.pauseTime
+			
+		else
+			return state.pauseTime + camera.getDelay()
+		end
 	end
 	
 	/** \brief Convert speak action. */
