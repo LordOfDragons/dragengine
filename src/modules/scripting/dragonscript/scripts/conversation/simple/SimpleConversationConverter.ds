@@ -41,7 +41,7 @@ class SimpleConversationConverter
 		/** \brief Duration in seconds. */
 		public var float duration
 		
-		/** \brief Hold. */
+		/** \brief Hold gesture. */
 		public var bool hold
 		
 		func new(ConversationGesture gesture)
@@ -147,6 +147,7 @@ class SimpleConversationConverter
 	var float pFacePoseDuration, pLookAtDuration
 	var float pMinGestureDuration, pMinGestureDurationHalf
 	var int pMinSpeakCountCameraChange
+	var bool pScaleLastGesture
 	
 	
 	/** \brief Create simple conversation convertor. */
@@ -164,6 +165,7 @@ class SimpleConversationConverter
 		pMinGestureDuration = 0.5
 		pMinGestureDurationHalf = pMinGestureDuration / 2
 		pMinSpeakCountCameraChange = 100
+		pScaleLastGesture = true
 	end
 	
 	
@@ -349,13 +351,27 @@ class SimpleConversationConverter
 	 * 
 	 * Default value is 100.
 	 */
-	func float getMinSpeakCountCameraChange()
+	func int getMinSpeakCountCameraChange()
 		return pMinSpeakCountCameraChange
 	end
 	
 	/** \brief Set minimum count of actor speaks before switch camera. */
 	func void setMinSpeakCountCameraChange(int count)
 		pMinSpeakCountCameraChange = DEMath.max(count, 1)
+	end
+	
+	/**
+	 * \brief Scale last gesture to fit speech length.
+	 * 
+	 * Default value is true.
+	 */
+	func bool getScaleLastGesture()
+		return pScaleLastGesture
+	end
+	
+	/** \brief Set scale last gesture to fit speech length. */
+	func void setScaleLastGesture(bool scale)
+		pScaleLastGesture = scale
 	end
 	
 	
@@ -645,15 +661,17 @@ class SimpleConversationConverter
 			availDuration = duration
 		end
 		
+		var bool noScale = state.gesture.hold or (endOfSpeech and not pScaleLastGesture)
+		
 		if duration > pMinGestureDurationHalf and availDuration < pMinGestureDuration
 			state.actionActorSpeak.addGesture(ConversationStrip.new(StringID.new(), 0,\
-				state.gesture.hold if duration else availDuration))
+				noScale if duration else availDuration))
 			return
 		end
 		
 		var float scaleDuration = availDuration / duration
-		if state.gesture.hold
-			scaleDuration = endOfSpeech if 1.0 else DEMath.max(scaleDuration, 1.0)
+		if noScale
+			scaleDuration = 1
 		end
 		
 		state.actionActorSpeak.addGesture(ConversationStrip.new(\
