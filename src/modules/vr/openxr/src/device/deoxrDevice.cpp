@@ -112,7 +112,7 @@ void deoxrDevice::SetDisplayImages( const char *name ){
 	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
-	if( ! name ){
+	if(!name){
 		return;
 	}
 	
@@ -137,6 +137,18 @@ void deoxrDevice::SetDisplayText( const char *text ){
 	pDisplayText = text;
 }
 
+void deoxrDevice::SetVRModel(const deModel::Ref &model){
+	pVRModel = model;
+}
+
+void deoxrDevice::SetVRSkin(const deSkin::Ref &skin){
+	pVRSkin = skin;
+}
+
+void deoxrDevice::SetVRRig(const deRig::Ref &rig){
+	pVRRig = rig;
+}
+
 
 
 int deoxrDevice::GetButtonCount() const{
@@ -144,10 +156,8 @@ int deoxrDevice::GetButtonCount() const{
 }
 
 void deoxrDevice::AddButton( deoxrDeviceButton *button ){
-	if( ! button ){
-		DETHROW( deeNullPointer );
-	}
-	pButtons.Add( button );
+	DEASSERT_NOTNULL(button)
+	pButtons.Add(button);
 }
 
 void deoxrDevice::AddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
@@ -205,10 +215,8 @@ int deoxrDevice::GetAxisCount() const{
 }
 
 void deoxrDevice::AddAxis( deoxrDeviceAxis *axis ){
-	if( ! axis ){
-		DETHROW( deeNullPointer );
-	}
-	pAxes.Add( axis );
+	DEASSERT_NOTNULL(axis)
+	pAxes.Add(axis);
 }
 
 void deoxrDevice::AddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
@@ -330,10 +338,8 @@ int deoxrDevice::GetFeedbackCount() const{
 }
 
 void deoxrDevice::AddFeedback( deoxrDeviceFeedback *feedback ){
-	if( ! feedback ){
-		DETHROW( deeNullPointer );
-	}
-	pFeedbacks.Add( feedback );
+	DEASSERT_NOTNULL(feedback)
+	pFeedbacks.Add(feedback);
 }
 
 deoxrDeviceFeedback *deoxrDevice::GetFeedbackAt( int index ) const{
@@ -360,10 +366,8 @@ int deoxrDevice::GetComponentCount() const{
 }
 
 void deoxrDevice::AddComponent( deoxrDeviceComponent *component ){
-	if( ! component ){
-		DETHROW( deeNullPointer );
-	}
-	pComponents.Add( component );
+	DEASSERT_NOTNULL(component)
+	pComponents.Add(component);
 }
 
 deoxrDeviceComponent *deoxrDevice::AddComponent( deInputDeviceComponent::eComponentTypes type,
@@ -421,20 +425,18 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 	info.SetType( pType );
 	info.SetDisplayImage( pDisplayImage );
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
-		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
+		info.AddDisplayIcon((deImage*)pDisplayIcons.GetAt(i));
 	}
 	info.SetDisplayText( pDisplayText );
 	
-	info.SetDisplayModel( nullptr );
-	info.SetDisplaySkin( nullptr );
+	info.SetDisplayModel(nullptr);
+	info.SetDisplaySkin(nullptr);
+	
+	info.SetVRModel(pVRModel);
+	info.SetVRSkin(pVRSkin);
+	info.SetVRRig(pVRRig);
 	
 	info.SetBoneConfiguration( pBoneConfiguration );
-// 	if( pRenderModel ){
-// 		info.SetVRModel( pRenderModel->GetModel() );
-// 	}
-// 	if( pTextureMap ){
-// 		info.SetVRSkin( pTextureMap->GetSkin() );
-// 	}
 	
 	const int buttonCount = pButtons.GetCount();
 	info.SetButtonCount( buttonCount );

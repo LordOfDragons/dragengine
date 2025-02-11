@@ -94,6 +94,7 @@ private:
 		dsClass *clsImage;
 		dsClass *clsModel;
 		dsClass *clsSkin;
+		dsClass *clsRig;
 		dsClass *clsIDAxis;
 		dsClass *clsIDButton;
 		dsClass *clsIDFeedback;
@@ -105,7 +106,6 @@ private:
 		dsClass *clsVector;
 		dsClass *clsQuaternion;
 		dsClass *clsMatrix;
-		dsClass *clsRig;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -151,8 +151,9 @@ private:
 	DEF_NATFUNC( nfGetSupportsFaceEyeExpressions );
 	DEF_NATFUNC( nfGetSupportsFaceMouthExpressions );
 	DEF_NATFUNC( nfGetHandRig );
-	DEF_NATFUNC( nfGetVRModel );
-	DEF_NATFUNC( nfGetVRSkin );
+	DEF_NATFUNC(nfGetVRModel);
+	DEF_NATFUNC(nfGetVRSkin);
+	DEF_NATFUNC(nfGetVRRig);
 	
 	DEF_NATFUNC( nfIsPresent );
 	

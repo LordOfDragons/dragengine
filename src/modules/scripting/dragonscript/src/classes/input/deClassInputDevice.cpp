@@ -542,6 +542,17 @@ void deClassInputDevice::nfGetVRSkin::RunFunction( dsRunTime *rt, dsValue *mysel
 	ds.GetClassSkin()->PushSkin( rt, device.GetDevice()->GetVRSkin() );
 }
 
+// public func Rig getVRRig()
+deClassInputDevice::nfGetVRRig::nfGetVRRig(const sInitData &init) :
+dsFunction(init.clsInputDevice, "getVRRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
+}
+void deClassInputDevice::nfGetVRRig::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	
+	ds.GetClassRig()->PushRig(rt, device.GetDevice()->GetVRRig());
+}
+
 
 
 // public func bool isPresent()
@@ -782,6 +793,7 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	init.clsImage = pDS.GetClassImage();
 	init.clsModel = pDS.GetClassModel();
 	init.clsSkin = pDS.GetClassSkin();
+	init.clsRig = pDS.GetClassRig();
 	init.clsIDAxis = pDS.GetClassInputDeviceAxis();
 	init.clsIDButton = pDS.GetClassInputDeviceButton();
 	init.clsIDFeedback = pDS.GetClassInputDeviceFeedback();
@@ -793,7 +805,6 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	init.clsVector = pDS.GetClassVector();
 	init.clsQuaternion = pDS.GetClassQuaternion();
 	init.clsMatrix = pDS.GetClassMatrix();
-	init.clsRig = pDS.GetClassRig();
 	
 	AddFunction( new nfDestructor( init ) );
 	
@@ -833,8 +844,9 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetHandRig( init ) );
 	AddFunction( new nfGetSupportsFaceEyeExpressions( init ) );
 	AddFunction( new nfGetSupportsFaceMouthExpressions( init ) );
-	AddFunction( new nfGetVRModel( init ) );
-	AddFunction( new nfGetVRSkin( init ) );
+	AddFunction(new nfGetVRModel(init));
+	AddFunction(new nfGetVRSkin(init));
+	AddFunction(new nfGetVRRig(init));
 	
 	AddFunction( new nfIsPresent( init ) );
 	
