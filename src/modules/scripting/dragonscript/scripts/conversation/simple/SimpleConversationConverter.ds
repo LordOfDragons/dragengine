@@ -863,8 +863,9 @@ class SimpleConversationConverter
 	/** \brief Delay to use for camera change. */
 	protected func float cameraDelay(State state, SimpleConversationCamera camera, Enumeration mode)
 		select mode
-		case SimpleConversationAction.SpecialMode.noCameraDelay,\
-			SimpleConversationAction.SpecialMode.noDelay
+		case SimpleConversationAction.SpecialMode.noDelay,\
+			SimpleConversationAction.SpecialMode.noCameraDelay,\
+			SimpleConversationAction.SpecialMode.noCameraDelayWait
 				return state.pauseTime
 			
 		else
