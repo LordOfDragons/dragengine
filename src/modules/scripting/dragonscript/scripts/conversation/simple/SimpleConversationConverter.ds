@@ -529,13 +529,18 @@ class SimpleConversationConverter
 	end
 	
 	/** \brief Apply camera wait mode to conversation action. */
-	protected func void applyCameraWaitMode(State state, ConversationAction action)
+	protected func void applyCameraWaitMode(State state, ConversationAction action, Enumeration mode)
 		select state.waitMode
 		case SimpleConversationAction.WaitMode.waitSpeak,\
 		SimpleConversationAction.WaitMode.waitCameraSpeak
 			action.setWaitSpeakOnly(true)
 			
 		case SimpleConversationAction.WaitMode.noWait
+			action.setWaitForActor(false)
+		end
+		
+		if mode == SimpleConversationAction.SpecialMode.noCameraDelayWait
+			action.setWaitSpeakOnly(false)
 			action.setWaitForActor(false)
 		end
 	end
@@ -810,7 +815,7 @@ class SimpleConversationConverter
 	protected func void convertCameraShot(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot, Enumeration mode)
 		state.actionCameraShot = CActionCameraShot.new()
-		applyCameraWaitMode(state, state.actionCameraShot)
+		applyCameraWaitMode(state, state.actionCameraShot, mode)
 		state.actionCameraShot.setDelay(cameraDelay(state, camera, mode))
 		state.pauseTime = 0
 		state.actionCameraShot.setName(shot.getTarget())
@@ -824,7 +829,7 @@ class SimpleConversationConverter
 	protected func void convertCameraSnippet(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot, Enumeration mode)
 		var CActionSnippet caction = CActionSnippet.new()
-		applyCameraWaitMode(state, caction)
+		applyCameraWaitMode(state, caction, mode)
 		caction.setDelay(cameraDelay(state, camera, mode))
 		state.pauseTime = 0
 		caction.setGroupID(shot.getSubTarget())
@@ -836,7 +841,7 @@ class SimpleConversationConverter
 	protected func void convertCameraGameCommand(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot, Enumeration mode)
 		var CActionGameCommand caction = CActionGameCommand.new()
-		applyCameraWaitMode(state, caction)
+		applyCameraWaitMode(state, caction, mode)
 		caction.setDelay(cameraDelay(state, camera, mode))
 		state.pauseTime = 0
 		caction.setCommand(shot.getCommand())
@@ -847,7 +852,7 @@ class SimpleConversationConverter
 	protected func void convertCameraActorCommand(State state, SimpleConversationCamera camera,\
 	SimpleConversationCameraShot shot, Enumeration mode)
 		var CActionActorCommand caction = CActionActorCommand.new()
-		applyCameraWaitMode(state, caction)
+		applyCameraWaitMode(state, caction, mode)
 		caction.setDelay(cameraDelay(state, camera, mode))
 		state.pauseTime = 0
 		caction.setActorID(shot.getTarget())
