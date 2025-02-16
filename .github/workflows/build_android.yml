@@ -28,48 +28,9 @@ on:
         required: false
         default: true
         type: boolean
-        
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch'
-        required: false
-        type: string
-        default: master
-      releaseVersion:
-        description: 'Release Version'
+      buildNumber:
         required: true
         type: string
-        default: nightly
-      buildVersion:
-        description: 'Build Version'
-        required: true
-        type: string
-        default: '9999'
-      androidArch:
-        description: 'Android Architecture'
-        required: true
-        type: string
-        default: 'armv8'
-      androidApiLevel:
-        description: 'Android API Level'
-        required: true
-        type: string
-        default: '26'
-      artifactArchive:
-        description: 'Artifact Archive'
-        required: true
-        type: string
-        default: "archives-android64"
-      debugBuild:
-        description: 'Debug Build'
-        type: boolean
-        required: false
-        default: false
-      lfscache:
-        required: false
-        default: true
-        type: boolean
 
 jobs:
   build:
@@ -112,13 +73,6 @@ jobs:
             libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
             flex bison gettext doxygen
       
-      - name: Generate build number
-        id: buildnumber
-        uses: onyxmueller/build-tag-number@v1
-        with:
-          token: ${{ secrets.github_token }}
-          prefix: android
-      
       - name: Init custom.py
         run: |
           cp ${{ github.workspace }}/.github/workflows/custom_android.py custom.py
@@ -127,7 +81,7 @@ jobs:
           sed -i -e "s@{NdkRoot}@$ANDROID_NDK_ROOT@g" custom.py
           sed -i -e 's/{AndroidArch}/${{ inputs.androidArch }}/g' custom.py
           sed -i -e 's/{AndroidApiLevel}/${{ inputs.androidApiLevel }}/g' custom.py
-          sed -i -e 's/{AndroidVersionCode}/${{ steps.buildnumber.outputs.build_number }}/g' custom.py
+          sed -i -e 's/{AndroidVersionCode}/${{ inputs.buildNumber }}/g' custom.py
       
       - name: Build
         # CMake based projects are problem children that like to get stuck forever in CMake

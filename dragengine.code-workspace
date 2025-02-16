@@ -87,6 +87,9 @@
 		{
 			"name": "vulkan",
 			"path": "src/shared/vulkan"
+		},
+		{
+			"path": ".github"
 		}
 	],
 	"settings": {
