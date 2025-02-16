@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../../../dragengine/build/include",
+                "${workspaceFolder}/../../../../../testing/include"
+            ],
+            "defines": [
+                "DS_MODULE_VERSION=\"9999\"",
+                "MOD_ENTRY_POINT_ATTR="
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11"
+        }
+    ],
+    "version": 4
+}

@@ -33,6 +33,10 @@
 			"path": "src/modules/crashrecovery/simplyquit"
 		},
 		{
+			"name": "deanimator",
+			"path": "src/modules/animator/deanimator"
+		},
+		{
 			"name": "deanim",
 			"path": "src/modules/animation/deanim"
 		},
@@ -89,6 +93,7 @@
 			"path": "src/shared/vulkan"
 		},
 		{
+			"name": ".github",
 			"path": ".github"
 		}
 	],
