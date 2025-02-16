@@ -11,12 +11,6 @@ on:
         type: boolean
         default: true
 
-env:
-  # Android API level:
-  # Android 10: 29
-  # Android 8: 26
-  ANDROID_API_LEVEL: 26
-
 jobs:
   generate_buildnumbers:
     runs-on: ubuntu-latest
@@ -79,8 +73,6 @@ jobs:
       releaseVersion: nightly
       buildVersion: '9999'
       androidArch: 'armv8'
-      # not working: ${{ env.ANDROID_API_LEVEL }}
-      androidApiLevel: 26
       artifactArchive: archives-android-armv8
       buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
   
@@ -91,8 +83,6 @@ jobs:
       releaseVersion: nightly
       buildVersion: '9999'
       androidArch: 'armv7'
-      # not working: ${{ env.ANDROID_API_LEVEL }}
-      androidApiLevel: 26
       artifactArchive: archives-android-armv7
       buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
   

@@ -18,8 +18,10 @@ on:
         type: string
         default: 'armv8'
       androidApiLevel:
-        required: true
+        required: false
         type: string
+        # Android 10: 29
+        # Android 8: 26
         default: '26'
       artifactArchive:
         required: true
