@@ -140,10 +140,6 @@ void deInputDevice::SetVRSkin(const deSkin::Ref &skin){
 	pVRSkin = skin;
 }
 
-void deInputDevice::SetVRRig(const deRig::Ref &rig){
-	pVRRig = rig;
-}
-
 
 
 // Buttons

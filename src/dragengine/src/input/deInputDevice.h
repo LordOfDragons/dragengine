@@ -434,9 +434,6 @@ private:
 	/** \brief Skin for VR model or nullptr if not set. */
 	deSkin::Ref pVRSkin;
 	
-	/** \brief Rig for VR model or nullptr if not set. */
-	deRig::Ref pVRRig;
-	
 	
 	
 public:
@@ -626,18 +623,6 @@ public:
 	 * \version 1.6
 	 */
 	void SetVRSkin(const deSkin::Ref &skin);
-	
-	/**
-	 * \brief Rig for VR model or NULL if not set.
-	 * \version 1.6
-	 */
-	inline const deRig::Ref &GetVRRig() const{ return pVRRig; }
-	
-	/**
-	 * \brief Rig for VR model or NULL if not set.
-	 * \version 1.25
-	 */
-	void SetVRRig(const deRig::Ref &rig);
 	/*@}*/
 	
 	

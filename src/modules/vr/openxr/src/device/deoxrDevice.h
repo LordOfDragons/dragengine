@@ -91,10 +91,6 @@ private:
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	
-	deModel::Ref pVRModel;
-	deSkin::Ref pVRSkin;
-	deRig::Ref pVRRig;
-	
 	decObjectOrderedSet pButtons;
 	decObjectOrderedSet pAxes;
 	decObjectOrderedSet pFeedbacks;
@@ -205,24 +201,6 @@ public:
 	/** Set display text. */
 	void SetDisplayText( const char *text );
 	
-	
-	/** VR model. */
-	inline const deModel::Ref &GetVRModel() const{ return pVRModel; }
-	
-	/** Set VR model. */
-	void SetVRModel(const deModel::Ref &model);
-	
-	/** VR skin. */
-	inline const deSkin::Ref &GetVRSkin() const{ return pVRSkin; }
-	
-	/** Set VR skin. */
-	void SetVRSkin(const deSkin::Ref &skin);
-	
-	/** VR rig. */
-	inline const deRig::Ref &GetVRRig() const{ return pVRRig; }
-	
-	/** Set VR rig. */
-	void SetVRRig(const deRig::Ref &rig);
 	
 	
 	/** Bone configuration. */

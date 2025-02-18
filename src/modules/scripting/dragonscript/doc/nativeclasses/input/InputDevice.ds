@@ -203,14 +203,6 @@ class InputDevice
 		return null
 	end
 	
-	/**
-	 * \brief Rig for VR model or null if not set.
-	 * \version 1.25
-	 */
-	func Rig getVRRig()
-		return null
-	end
-	
 	
 	
 	/**

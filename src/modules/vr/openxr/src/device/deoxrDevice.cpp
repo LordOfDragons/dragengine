@@ -137,18 +137,6 @@ void deoxrDevice::SetDisplayText( const char *text ){
 	pDisplayText = text;
 }
 
-void deoxrDevice::SetVRModel(const deModel::Ref &model){
-	pVRModel = model;
-}
-
-void deoxrDevice::SetVRSkin(const deSkin::Ref &skin){
-	pVRSkin = skin;
-}
-
-void deoxrDevice::SetVRRig(const deRig::Ref &rig){
-	pVRRig = rig;
-}
-
 
 
 int deoxrDevice::GetButtonCount() const{
@@ -432,9 +420,8 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 	info.SetDisplayModel(nullptr);
 	info.SetDisplaySkin(nullptr);
 	
-	info.SetVRModel(pVRModel);
-	info.SetVRSkin(pVRSkin);
-	info.SetVRRig(pVRRig);
+	info.SetVRModel(nullptr);
+	info.SetVRSkin(nullptr);
 	
 	info.SetBoneConfiguration( pBoneConfiguration );
 	

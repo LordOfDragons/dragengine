@@ -153,7 +153,6 @@ private:
 	DEF_NATFUNC( nfGetHandRig );
 	DEF_NATFUNC(nfGetVRModel);
 	DEF_NATFUNC(nfGetVRSkin);
-	DEF_NATFUNC(nfGetVRRig);
 	
 	DEF_NATFUNC( nfIsPresent );
 	

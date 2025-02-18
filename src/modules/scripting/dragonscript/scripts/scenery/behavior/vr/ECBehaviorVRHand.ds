@@ -739,26 +739,20 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			
 			var Model model
 			var Skin skin
-			var Rig rig
 			
 			if pUseVendorModel
 				if pInputDevice != null
 					model = pInputDevice.getVRModel()
 					skin = pInputDevice.getVRSkin()
-					rig = pInputDevice.getVRRig()
-					if rig == null
-						rig = pCustomRig
-					end
 				end
 				
 			else
 				model = pCustomModel
 				skin = pCustomSkin
-				rig = pCustomRig
 			end
 			
 			component.setModelAndSkin(model, skin)
-			component.setRig(rig)
+			component.setRig(pCustomRig)
 		end
 		
 		/** \brief Update component visible. */
