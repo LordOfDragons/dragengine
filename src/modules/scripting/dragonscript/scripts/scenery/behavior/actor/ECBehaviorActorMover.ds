@@ -523,6 +523,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pGoalPosition = goal
 			pPath = null
 			pNextPathPoint = 0
+			pNextPlaneNormal = null
 			updateRequiresThinking()
 		end
 		
@@ -631,6 +632,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pGoalDistance = DEMath.max(distance, 0.001)
 			pPause = false
 			pPath = null
+			pNextPathPoint = 0
+			pNextPlaneNormal = null
 			
 			if goal != null
 				bareUpdatePath()
@@ -673,6 +676,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			
 			pPath = null
 			pNextPathPoint = 0
+			pNextPlaneNormal = null
 			pRemainingDistance = 0
 			updateRequiresThinking()
 		end
@@ -758,6 +762,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pointCount = pPath.getCount()
 			if pointCount == 0 or not pPath.getAt(pointCount - 1).equals(goalPosition)
 				pPath.add(goalPosition)
+				pointCount++
 			end
 			
 			if ridableCollider != null
