@@ -55,7 +55,7 @@ class SimpleConversationCondition
 		trigger
 		
 		/**
-		 * \brief Evaluate game or actor commandf.
+		 * \brief Evaluate game or actor command.
 		 * 
 		 * Uses getTarget() as actor id or alias if present.
 		 * Uses getName() as command to evaluate.
@@ -70,6 +70,14 @@ class SimpleConversationCondition
 		 * Uses getMode() as test mode. Allowed modes are \ref CConditionLogic.pOperator .
 		 */
 		logic
+		
+		/**
+		 * \brief Actor is present.
+		 * 
+		 * Uses getTarget() as actor id or alias.
+		 * Uses getValue() as expected outcome. A value of 1 means present and a value of 0 absent.
+		 */
+		hasActor
 	end
 	
 	

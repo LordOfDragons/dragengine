@@ -1194,6 +1194,12 @@ class SimpleConversationConverter
 			end)
 			return ccond
 			
+		case SimpleConversationCondition.Type.hasActor
+			var CConditionHasActor ccond = CConditionHasActor.new()
+			ccond.setActorID(state.simpleConversation.getActorWith(condition.getTarget()).getActorId())
+			ccond.setNegate(condition.getValue() == 0)
+			return ccond
+			
 		else
 			throw EInvalidParam.new("condition.getType()")
 		end

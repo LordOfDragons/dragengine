@@ -167,6 +167,8 @@ pin Dragengine.Scenery
  *            <command test='true'>game command</command>
  *            <command actor='player' test='true'>actor command</command>
  *               test can be true or false. default is test='true'
+ *            <has actor='actor0' test='true'/>
+ *               test if actor is present or absent.
  *            <any> ...conditions... </any>
  *               one or more conditions is fulfilled.
  *            <all> ...conditions... </all>
@@ -789,22 +791,17 @@ class LoadSimpleConversation extends BaseXmlLoader
 			if element.hasAttributeNamed("actor")
 				condition.setTarget(StringID.new(element.getAttributeNamed("actor")))
 			end
+			condition.setValue(convertBoolTestAttribute(element, "test", true))
 			
-			if element.hasAttributeNamed("test")
-				test = element.getAttributeNamed("test")
-				if test.equals("true")
-					condition.setValue(1)
-					
-				elif test.equals("false")
-					condition.setValue(0)
-					
-				else
-					logInvalidValue(element, test)
-					throw EInvalidParam.new("invalid value: " + test)
-				end
+		elif tagName.equals("has")
+			if element.hasAttributeNamed("actor")
+				condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.hasActor)
+				condition.setTarget(StringID.new(element.getAttributeNamed("actor")))
+				condition.setValue(convertBoolTestAttribute(element, "test", true))
 				
 			else
-				condition.setValue(1)
+				logMissingAttribute(element, "actor")
+				throw EInvalidParam.new("missing attribute 'actor'")
 			end
 			
 		else
@@ -815,6 +812,25 @@ class LoadSimpleConversation extends BaseXmlLoader
 		end
 		
 		return condition
+	end
+	
+	protected func int convertBoolTestAttribute(EasyXMLElement element, String attribute, bool defaultValue)
+		if element.hasAttributeNamed(attribute)
+			var String test = element.getAttributeNamed(attribute)
+			if test.equals("true")
+				return 1
+				
+			elif test.equals("false")
+				return 0
+				
+			else
+				logInvalidValue(element, test)
+				throw EInvalidParam.new("invalid value: " + test)
+			end
+			
+		else
+			return defaultValue if 1 else 0
+		end
 	end
 	
 	protected func SimpleConversationCondition readCondLogic(EasyXMLElement root)
