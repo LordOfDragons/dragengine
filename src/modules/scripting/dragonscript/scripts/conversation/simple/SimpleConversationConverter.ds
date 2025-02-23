@@ -914,6 +914,7 @@ class SimpleConversationConverter
 		var bool notFirstWord
 		var StringID id
 		
+		text = text.toLower()
 		for i = 0 to lenP1
 			if i < len
 				c = text.getCharacterAt(i)
