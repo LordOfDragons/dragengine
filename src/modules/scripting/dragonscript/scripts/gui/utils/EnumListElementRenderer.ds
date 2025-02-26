@@ -151,41 +151,83 @@ class EnumListElementRenderer extends DefaultListElementRenderer
 	
 	
 	
+	/**
+	 * \brief Display text for enumeration value.
+	 * \version 1.25
+	 * 
+	 * Widget is used to translate text if no translation manager is assigned to the renderer.
+	 */
+	func String displayTextFor(Widget widget, Enumeration value)
+		var String text = nameFor(value)
+		
+		if text == null and pTranslationPrefix != null
+			var String name = pTranslationPrefix + value.name()
+			var UnicodeString translated
+			
+			if pTranslationManager != null
+				translated = pTranslationManager.translate(name, null)
+				if translated == null
+					translated = EngineTranslations.get().translate(name, null)
+				end
+				
+			else
+				translated = widget.translateEntry(name)
+			end
+			
+			if translated != null
+				text = translated.toUTF8()
+			end
+		end
+		
+		if text == null
+			text = value.name()
+			
+			var int index = text.findReverse('.')
+			if index != -1
+				text = text.substring(index + 1)
+			end
+		end
+		
+		return text
+	end
+	
+	
+	
+	/**
+	 * \brief Set default object from longest enumeration test.
+	 * \version 1.25
+	 * 
+	 * Calculates the length of the text to display for each enumeration constant.
+	 * Assigns the enumeration constant with the largest length as default object.
+	 * 
+	 * Widget is used to translate text if no translation manager is assigned to the renderer.
+	 */
+	func void setDefaultFromLongest(Widget widget, ListModel model)
+		var int i, count = model.getCount()
+		var Enumeration valueLongest, value
+		var int lengthLongest, length
+		
+		for i = 0 to count
+			value = model.getAt(i) cast Enumeration
+			length = UnicodeString.newFromUTF8(displayTextFor(widget, value)).getLength()
+			if valueLongest == null or length > lengthLongest
+				valueLongest = value
+				lengthLongest = length
+			end
+		end
+		
+		setDefaultObject(valueLongest)
+	end
+	
+	
+	
 	/** \brief Update renderer value. */
 	func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
 		var Enumeration value = element cast Enumeration
 		var String text
 		
 		if value != null
-			text = nameFor(value)
-			
-			if text == null and pTranslationPrefix != null
-				var String name = pTranslationPrefix + value.name()
-				var UnicodeString translated
-				
-				if pTranslationManager != null
-					translated = pTranslationManager.translate(name, null)
-					if translated == null
-						translated = EngineTranslations.get().translate(name, null)
-					end
-					
-				else
-					translated = listBox.translateEntry(name)
-				end
-				
-				if translated != null
-					text = translated.toUTF8()
-				end
-			end
-			
-			if text == null
-				text = value.name()
-				
-				var int index = text.findReverse('.')
-				if index != -1
-					text = text.substring(index + 1)
-				end
-			end
+			text = displayTextFor(listBox, value)
 			
 		else
 			text = "<null>"
