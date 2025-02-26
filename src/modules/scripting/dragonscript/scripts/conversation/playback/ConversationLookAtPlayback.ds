@@ -37,27 +37,27 @@ pin Dragengine.LoadSave
 class ConversationLookAtPlayback
 	/** \brief Look-at. */
 	class LookAt
-		private var ConversationPlaybackLookAt pLookAt
-		private var ConversationStrip pStrip
+		var ConversationPlaybackLookAt pLookAt
+		var ConversationStrip pStrip
 		
 		/** \brief Create look-at. */
-		public func new(ConversationPlaybackLookAt lookAt, ConversationStrip strip)
+		func new(ConversationPlaybackLookAt lookAt, ConversationStrip strip)
 			pLookAt = lookAt
 			pStrip = strip
 		end
 		
 		/** \brief Look-at. */
-		public func ConversationPlaybackLookAt getLookAt()
+		func ConversationPlaybackLookAt getLookAt()
 			return pLookAt
 		end
 		
 		/** \brief Strip. */
-		public func ConversationStrip getStrip()
+		func ConversationStrip getStrip()
 			return pStrip
 		end
 		
 		/** \brief Read from file. */
-		static public func LookAt readFromFile(PersistencyEnvironment env, FileReader reader)
+		static func LookAt readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
@@ -76,7 +76,7 @@ class ConversationLookAtPlayback
 		end
 		
 		/** \brief Write to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(1)
@@ -92,20 +92,20 @@ class ConversationLookAtPlayback
 	
 	
 	
-	private var Array pLookAts
-	private var int pPosition
-	private var float pElapsed
-	private var bool pRunning
+	var Array pLookAts
+	var int pPosition
+	var float pElapsed
+	var bool pRunning
 	
-	private var ConversationPlaybackLookAt pLastLookAt
-	private var DVector pLastLookAtPosition
-	private var ConversationPlaybackLookAt pCurLookAt
-	private var DVector pCurLookAtPosition
+	var ConversationPlaybackLookAt pLastLookAt
+	var DVector pLastLookAtPosition
+	var ConversationPlaybackLookAt pCurLookAt
+	var DVector pCurLookAtPosition
 	
 	
 	
 	/** \brief Create look-at playback. */
-	public func new()
+	func new()
 		pLookAts = Array.new()
 		pPosition = 0
 		pElapsed = 0
@@ -115,81 +115,81 @@ class ConversationLookAtPlayback
 	
 	
 	/** \brief A strip is running. */
-	public func bool getRunning()
+	func bool getRunning()
 		return pRunning
 	end
 	
 	/** \brief Elapsed time. */
-	public func float getElapsed()
+	func float getElapsed()
 		return pElapsed
 	end
 	
 	/** \brief Playback position as index of look-at currently being played back. */
-	public func int getPosition()
+	func int getPosition()
 		return pPosition
 	end
 	
 	
 	
 	/** \brief Last look-at to blend from or \em null if not set. */
-	public func ConversationPlaybackLookAt getLastLookAt()
+	func ConversationPlaybackLookAt getLastLookAt()
 		return pLastLookAt
 	end
 	
 	/** \brief Set last look-at to blend from or \em null if not set. */
-	public func void setLastLookAt(ConversationPlaybackLookAt lookAt)
+	func void setLastLookAt(ConversationPlaybackLookAt lookAt)
 		pLastLookAt = lookAt
 	end
 	
 	/** \brief Last look-at position to blend from or \em null if not set. */
-	public func DVector getLastLookAtPosition()
+	func DVector getLastLookAtPosition()
 		return pLastLookAtPosition
 	end
 	
 	/** \brief Set last look-at position to blend from or \em null if not set. */
-	public func void setLastLookAtPosition(DVector position)
+	func void setLastLookAtPosition(DVector position)
 		pLastLookAtPosition = position
 	end
 	
 	/** \brief Current look-at to blend with or \em null if not set. */
-	public func ConversationPlaybackLookAt getCurrentLookAt()
+	func ConversationPlaybackLookAt getCurrentLookAt()
 		return pCurLookAt
 	end
 	
 	/** \brief Set current look-at to blend with or \em null if not set. */
-	public func void setCurrentLookAt(ConversationPlaybackLookAt lookAt)
+	func void setCurrentLookAt(ConversationPlaybackLookAt lookAt)
 		pCurLookAt = lookAt
 	end
 	
 	/** \brief Current look-at position to blend with or \em null if not set. */
-	public func DVector getCurrentLookAtPosition()
+	func DVector getCurrentLookAtPosition()
 		return pCurLookAtPosition
 	end
 	
 	/** \brief Set current look-at position to blend with or \em null if not set. */
-	public func void setCurrentLookAtPosition(DVector position)
+	func void setCurrentLookAtPosition(DVector position)
 		pCurLookAtPosition = position
 	end
 	
 	
 	
 	/** \brief Count of look-ats to play back. */
-	public func int getLookAtCount()
+	func int getLookAtCount()
 		return pLookAts.getCount()
 	end
 	
 	/** \brief Look-at to play back at index. */
-	public func LookAt getLookAtAt(int index)
+	func LookAt getLookAtAt(int index)
 		return pLookAts.getAt(index) cast LookAt
 	end
 	
 	/** \brief Visit look-ats to playback using block with argument LookAt. */
-	public func void forEachLookAts(Block ablock)
+	func void forEachLookAts(Block ablock)
 		pLookAts.forEach(ablock)
 	end
 	
 	/** \brief Remove all look-ats. */
-	public func void removeAllLookAts()
+	func void removeAllLookAts()
 		pLookAts.removeAll()
 		pPosition = 0
 		pElapsed = 0
@@ -199,21 +199,40 @@ class ConversationLookAtPlayback
 		pLastLookAtPosition = pCurLookAtPosition
 	end
 	
+	/**
+	 * \brief Remove all non-playing look-ats.
+	 * \version 1.25
+	 * 
+	 * If not running behaves the same as \ref #removeAllLookAts(). Otherwise removes all
+	 * look-ats except the running one and keep running.
+	 */
+	func void removeNonRunningLookAts()
+		if pRunning and pPosition < pLookAts.getCount()
+			var Object keep = pLookAts.getAt(pPosition)
+			pLookAts.removeAll()
+			pLookAts.add(keep)
+			pPosition = 0
+			
+		else
+			removeAllLookAts()
+		end
+	end
+	
 	/** \brief Add strip. */
-	public func void addLookAt(ConversationPlaybackLookAt lookAt, ConversationStrip strip)
+	func void addLookAt(ConversationPlaybackLookAt lookAt, ConversationStrip strip)
 		pLookAts.add(LookAt.new(lookAt, strip))
 		pRunning = true
 	end
 	
 	/** \brief Add fade out look-at. */
-	public func void addFadeOutLookAt(float transitionTime)
+	func void addFadeOutLookAt(float transitionTime)
 		addLookAt(null, ConversationStrip.new(StringID.new(), 0, transitionTime))
 	end
 	
 	
 	
 	/** \brief Clear current look-at state allowing the actor to take over control. */
-	public func void clearLookAtState()
+	func void clearLookAtState()
 		removeAllLookAts()
 		
 		pLastLookAt = null
@@ -226,7 +245,7 @@ class ConversationLookAtPlayback
 	
 	
 	/** \brief Calculate the inverse matrix. */
-	public func DMatrix getInverseMatrix(ConversationActor actor)
+	func DMatrix getInverseMatrix(ConversationActor actor)
 		return actor.getInverseMatrix()
 	end
 	
@@ -236,7 +255,7 @@ class ConversationLookAtPlayback
 	 * This updates the playback and updates animator instances if required. This does not
 	 * apply the animation yet to allow proper use of state capturing.
 	 */
-	public func void update(ConversationActor actor, float elapsed)
+	func void update(ConversationActor actor, float elapsed)
 		var int lookAtCount = pLookAts.getCount()
 		var float blendFactor = 0
 		
@@ -300,7 +319,7 @@ class ConversationLookAtPlayback
 	 * 
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
-	public func void applyAnimation()
+	func void applyAnimation()
 	end
 	
 	/**
@@ -308,7 +327,7 @@ class ConversationLookAtPlayback
 	 * 
 	 * Default implementation does nothing.
 	 */
-	public func void updateActorLookAt(ConversationActor actor, float blendFactor)
+	func void updateActorLookAt(ConversationActor actor, float blendFactor)
 	end
 	
 	
@@ -320,7 +339,7 @@ class ConversationLookAtPlayback
 	 * restored during readFromFile(). Once all loading is done and the playback is
 	 * present objects this call is used to restore the object links.
 	 */
-	public func void playbackRestoreObjectLinks(ConversationPlayback playback)
+	func void playbackRestoreObjectLinks(ConversationPlayback playback)
 		if pLastLookAt != null
 			pLastLookAt.playbackRestoreObjectLinks(playback)
 		end
@@ -330,7 +349,7 @@ class ConversationLookAtPlayback
 	end
 	
 	/** \brief Read element from a file. */
-	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var PersistencyFlags flags = PersistencyFlags.new(5, reader)
@@ -375,7 +394,7 @@ class ConversationLookAtPlayback
 	end
 	
 	/** \brief Writes to file. */
-	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 		writer.writeByte(0) // version
 		
 		var PersistencyFlags flags = PersistencyFlags.new(5)
