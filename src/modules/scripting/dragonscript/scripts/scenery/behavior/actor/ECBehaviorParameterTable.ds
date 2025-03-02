@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
@@ -80,27 +79,32 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		
 		/** \brief Get boolean parameter value or default value if parameter is not set. */
 		func bool getParameterValue(String parameter, bool defaultValue)
-			return pParameterTable.getAt(parameter).getValue(defaultValue)
+			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
+			return entry != null if entry.getValue(defaultValue) else defaultValue
 		end
 		
 		/** \brief Get integer parameter value or default value if parameter is not set. */
 		func int getParameterValue(String parameter, int defaultValue)
-			return pParameterTable.getAt(parameter).getValue(defaultValue)
+			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
+			return entry != null if entry.getValue(defaultValue) else defaultValue
 		end
 		
 		/** \brief Get floating point parameter value or default value if parameter is not set. */
 		func float getParameterValue(String parameter, float defaultValue)
-			return pParameterTable.getAt(parameter).getValue(defaultValue)
+			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
+			return entry != null if entry.getValue(defaultValue) else defaultValue
 		end
 		
 		/** \brief Get string parameter value or default value if parameter is not set. */
 		func String getParameterValue(String parameter, String defaultValue)
-			return pParameterTable.getAt(parameter).getValue(defaultValue)
+			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
+			return entry != null if entry.getValue(defaultValue) else defaultValue
 		end
 		
 		/** \brief Get persistable parameter value or default value if parameter is not set. */
 		func Persistable getParameterValue(String parameter, Persistable defaultValue)
-			return pParameterTable.getAt(parameter).getValue(defaultValue)
+			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
+			return entry != null if entry.getValue(defaultValue) else defaultValue
 		end
 		
 		
@@ -132,20 +136,23 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		
 		
 		
-		/** \brief Clear parameter value setting it to \em null. */
+		/** \brief Clear parameter value setting it to null. */
 		func void clearParameterValue(String parameter)
-			pParameterTable.getAt(parameter).clearValue()
+			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
+			if entry != null
+				entry.clearValue()
+			end
 		end
 		
 		
 		
-		/** \brief Parameter value is \em null. */
+		/** \brief Parameter value is null. */
 		func bool isParameterNull(String parameter)
 			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
 			return entry == null or entry.isNull()
 		end
 		
-		/** \brief Parameter value is not \em null. */
+		/** \brief Parameter value is not null. */
 		func bool isParameterNotNull(String parameter)
 			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
 			return entry != null and entry.isNotNull()
@@ -196,7 +203,7 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 	
 	
 	/**
-	 * \brief Get behavior in element class or \em null if absent.
+	 * \brief Get behavior in element class or null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorParameterTable.
@@ -208,7 +215,7 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Get instance in element or \em null if absent.
+	 * \brief Get instance in element or null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorParameterTable.Instance .
