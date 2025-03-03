@@ -532,16 +532,18 @@ class SimpleConversationConverter
 	protected func void applyCameraWaitMode(State state, ConversationAction action, Enumeration mode)
 		select state.waitMode
 		case SimpleConversationAction.WaitMode.waitSpeak,\
-		SimpleConversationAction.WaitMode.waitCameraSpeak
-			action.setWaitSpeakOnly(true)
+			SimpleConversationAction.WaitMode.waitCameraSpeak
+				action.setWaitSpeakOnly(true)
 			
 		case SimpleConversationAction.WaitMode.noWait
 			action.setWaitForActor(false)
 		end
 		
-		if mode == SimpleConversationAction.SpecialMode.noCameraDelayWait
-			action.setWaitSpeakOnly(false)
-			action.setWaitForActor(false)
+		select mode
+		case SimpleConversationAction.SpecialMode.noCameraDelayWait,\
+			SimpleConversationAction.SpecialMode.noDelayWait
+				action.setWaitSpeakOnly(false)
+				action.setWaitForActor(false)
 		end
 	end
 	
@@ -864,6 +866,7 @@ class SimpleConversationConverter
 	protected func float cameraDelay(State state, SimpleConversationCamera camera, Enumeration mode)
 		select mode
 		case SimpleConversationAction.SpecialMode.noDelay,\
+			SimpleConversationAction.SpecialMode.noDelayWait,\
 			SimpleConversationAction.SpecialMode.noCameraDelay,\
 			SimpleConversationAction.SpecialMode.noCameraDelayWait
 				return state.pauseTime

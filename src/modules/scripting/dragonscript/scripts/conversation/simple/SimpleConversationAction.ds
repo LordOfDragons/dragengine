@@ -265,6 +265,9 @@ class SimpleConversationAction
 		/** Use 0 second delay for actor camera change and speak. */
 		noDelay
 		
+		/** Use 0 second delay for actor camera change and speak and no waiting. */
+		noDelayWait
+		
 		/** Do not change camera. */
 		noCamera
 		
