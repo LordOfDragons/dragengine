@@ -411,8 +411,12 @@ class LoadSimpleConversation extends BaseXmlLoader
 						action.setTarget(StringID.new(element.getAttributeNamed("id")))
 					end
 					if element.hasAttributeNamed("mode")
-						action.setMode(SimpleConversationAction.SpecialMode.named(\
-							element.getAttributeNamed("mode")))
+						text = element.getAttributeNamed("mode")
+						action.setMode(SimpleConversationAction.SpecialMode.named(text))
+						if action.getMode() == null
+							logInvalidValue(element, text)
+							throw EInvalidParam.new("invalid value: " + text)
+						end
 					end
 					snippet.addAction(action)
 					
@@ -605,7 +609,12 @@ class LoadSimpleConversation extends BaseXmlLoader
 					
 				elif tagName.equals("waitMode")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.waitMode)
-					action.setWaitMode(SimpleConversationAction.WaitMode.named(element.getFirstCData()))
+					text = element.getFirstCData()
+					action.setWaitMode(SimpleConversationAction.WaitMode.named(text))
+					if action.getWaitMode() == null
+						logInvalidValue(element, text)
+						throw EInvalidParam.new("invalid value: " + text)
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("endActorSpeak")
@@ -618,8 +627,12 @@ class LoadSimpleConversation extends BaseXmlLoader
 						action.setTarget(StringID.new(element.getAttributeNamed("i")))
 					end
 					if element.hasAttributeNamed("m")
-						action.setMode(SimpleConversationAction.SpecialMode.named(\
-							element.getAttributeNamed("m")))
+						text = element.getAttributeNamed("m")
+						action.setMode(SimpleConversationAction.SpecialMode.named(text))
+						if action.getMode() == null
+							logInvalidValue(element, text)
+							throw EInvalidParam.new("invalid value: " + text)
+						end
 					end
 					snippet.addAction(action)
 					
@@ -783,7 +796,12 @@ class LoadSimpleConversation extends BaseXmlLoader
 		elif tagName.equals("trigger")
 			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.trigger)
 			condition.setName(element.getAttributeNamed("name"))
-			condition.setMode(CConditionTrigger.TestMode.named(element.getAttributeNamed("test")))
+			test = element.getAttributeNamed("test")
+			condition.setMode(CConditionTrigger.TestMode.named(test))
+			if condition.getMode() == null
+				logInvalidValue(element, test)
+				throw EInvalidParam.new("invalid value: " + test)
+			end
 			
 		elif tagName.equals("command")
 			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.command)
@@ -836,7 +854,12 @@ class LoadSimpleConversation extends BaseXmlLoader
 	protected func SimpleConversationCondition readCondLogic(EasyXMLElement root)
 		var SimpleConversationCondition condition = SimpleConversationCondition.new(\
 			SimpleConversationCondition.Type.logic)
-		condition.setMode(CConditionLogic.Operator.named(root.getTagName()))
+		var String value = root.getTagName()
+		condition.setMode(CConditionLogic.Operator.named(value))
+		if condition.getMode() == null
+			logInvalidValue(root, value)
+			throw EInvalidParam.new("invalid value: " + value)
+		end
 		condition.setConditions(Array.new())
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
