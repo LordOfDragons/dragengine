@@ -90,6 +90,16 @@ class ParameterTable
 		pParameters.remove(name)
 	end
 	
+	/**
+	 * \brief Remove parameter if present.
+	 * \version 1.25
+	 */
+	func void removeIfPresent(String name)
+		if pParameters.has(name)
+			pParameters.remove(name)
+		end
+	end
+	
 	/** \brief Remove all parameters. */
 	func void removeAll()
 		pParameters.removeAll()

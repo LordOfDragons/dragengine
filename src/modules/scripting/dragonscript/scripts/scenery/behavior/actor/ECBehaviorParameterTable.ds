@@ -136,12 +136,20 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		
 		
 		
-		/** \brief Clear parameter value setting it to null. */
+		/** \brief Clear parameter value setting it to null if present. */
 		func void clearParameterValue(String parameter)
 			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
 			if entry != null
 				entry.clearValue()
 			end
+		end
+		
+		/**
+		 * \brief Remove parameter if present.
+		 * \version 1.25
+		 */
+		func void removeParameter(String parameter)
+			pParameterTable.removeIfPresent(parameter)
 		end
 		
 		
