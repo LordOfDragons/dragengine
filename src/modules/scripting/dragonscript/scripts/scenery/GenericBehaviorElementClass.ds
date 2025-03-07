@@ -46,6 +46,6 @@ class GenericBehaviorElementClass extends BehaviorElementClass
 	
 	/** \brief Create copy of element class. */
 	func ElementClass duplicateNamed(String classname)
-		return BaseBillboardClass.new(classname)
+		return GenericBehaviorElementClass.new(classname)
 	end
 end
