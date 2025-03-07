@@ -246,6 +246,9 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			return ECBehaviorActorCutscene.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass))
 		end

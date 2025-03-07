@@ -112,6 +112,9 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			return ECBehaviorMoveOnRail.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String))
 		end

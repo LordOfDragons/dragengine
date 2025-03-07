@@ -120,6 +120,9 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			return ECBehaviorVRHMD.new(eclass, ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
 		end

@@ -176,6 +176,9 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			var ECBehaviorColliderAI behavior = ECBehaviorColliderAI.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass))
 			

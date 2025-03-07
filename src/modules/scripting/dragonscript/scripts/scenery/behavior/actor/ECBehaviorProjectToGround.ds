@@ -117,6 +117,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			var ECBehaviorColliderAI colliderAI = ECBehaviorColliderAI.getBehaviorIn(eclass)
 			if colliderAI != null
 				return ECBehaviorProjectToGround.new(eclass, colliderAI)

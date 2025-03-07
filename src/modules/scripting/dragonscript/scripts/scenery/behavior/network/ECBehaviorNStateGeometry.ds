@@ -70,6 +70,9 @@ class ECBehaviorNStateGeometry extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			var ECBehaviorNStateGeometry behavior = ECBehaviorNStateGeometry.new(eclass,\
 				ECBehaviorNetworkState.getBehaviorIn(eclass))
 			

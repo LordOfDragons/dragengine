@@ -76,6 +76,9 @@ class ECBehaviorSky extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			var ECBehaviorSky behavior = ECBehaviorSky.new(eclass)
 			
 			if parameters.has("layerMask")

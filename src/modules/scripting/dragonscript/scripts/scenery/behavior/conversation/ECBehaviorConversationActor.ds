@@ -376,6 +376,9 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			var ECBehaviorConversationActor behavior = ECBehaviorConversationActor.new(eclass)
 			
 			behavior.setActorAnimated(eclass.sharedFactoryHelper.optionalActorAnimated(eclass, parameters))
