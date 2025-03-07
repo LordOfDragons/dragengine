@@ -26,23 +26,39 @@ namespace Dragengine.Scenery
 
 /**
  * \brief Generic BehaviorElementClass with all supported behavior factories added.
+ * \version 1.25
  * 
  * Add this class in \ref BaseGameApp#createAndAddElementClasses() to allow creating
  * XML element classes supporting adding behaviors inside the XML file itself.
- * Constructor calls \ref #addDefaultBehaviorFactories().
+ * Constructor calls \ref #addBehaviorFactories().
  */
 class GenericBehaviorElementClass extends BehaviorElementClass
 	/**
 	 * \brief Create element class with all behavior factories added.
-	 * 
-	 * Calls \ref #addDefaultBehaviorFactories().
+	 * \see #new(String)
 	 */
 	func new() this("GenericBehaviorElement")
 	end
 	
+	/**
+	 * \brief Create element class with all behavior factories added.
+	 * 
+	 * Calls \ref #addBehaviorFactories().
+	 */
 	func new(String className) super(className)
+		addBehaviorFactories()
+	end
+	
+	
+	/**
+	 * \brief Add behavior factories supported by thie element class.
+	 * 
+	 * Default implementation calls \ref #addDefaultBehaviorFactories().
+	 */
+	func void addBehaviorFactories()
 		addDefaultBehaviorFactories()
 	end
+	
 	
 	/** \brief Create copy of element class. */
 	func ElementClass duplicateNamed(String classname)
