@@ -75,23 +75,10 @@ class ECBCTRRBindings extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var CommandManager commandManager
-			if parameters.has("commandManager")
-				commandManager = getCommandManager(parameters.getAt("commandManager") cast String)
-			end
-			
-			var BindingManager bindingManager
-			if parameters.has("bindingManager")
-				bindingManager = getBindingManager(parameters.getAt("bindingManager") cast String)
-			end
-			
-			var GuiTheme subtitleTheme
-			if parameters.has("subtitleTheme")
-				subtitleTheme = getSubtitleTheme(parameters.getAt("subtitleTheme") cast String)
-			end
-			
 			return ECBCTRRBindings.new(eclass, ECBehaviorConversationActor.getBehaviorIn(eclass),\
-				commandManager, bindingManager, subtitleTheme)
+				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
+				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String),\
+				getSubtitleThemeFor(parameters.getAt("subtitleTheme", "default") cast String))
 		end
 		
 		/**
@@ -100,14 +87,8 @@ class ECBCTRRBindings extends DefaultECBehavior
 		 * Default implementation returns \ref BaseGameApp#getCommandManager() for value 'default'
 		 * and null for all other values. Overwrite to accept other values.
 		 */
-		func CommandManager getCommandManager(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getCommandManager()
-				end
-			end
-			return null
+		func CommandManager getCommandManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.commandManager(value)
 		end
 		
 		/**
@@ -116,14 +97,8 @@ class ECBCTRRBindings extends DefaultECBehavior
 		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
 		 * and null for all other values. Overwrite to accept other values.
 		 */
-		func BindingManager getBindingManager(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getBindingManager()
-				end
-			end
-			return null
+		func BindingManager getBindingManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
 		end
 		
 		/**
@@ -133,20 +108,8 @@ class ECBCTRRBindings extends DefaultECBehavior
 		 * on \ref BaseGameApp#getWindowSubTitle() for value 'default', loads gui theme if value
 		 * begins with 'path:' or null for all other values. Overwrite to accept other values.
 		 */
-		func GuiTheme getSubtitleTheme(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getWindowSubTitle().getGuiTheme()
-				end
-				
-			elif value.startsWith("path:")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getLoaders().getGuiTheme().loadFromFile(value.substring(5))
-				end
-			end
-			return null
+		func GuiTheme getSubtitleThemeFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.subtitleTheme(value)
 		end
 	end
 	

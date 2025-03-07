@@ -180,16 +180,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorVRHand vrHand
-			if parameters.has("vrHand")
-				var String bid = parameters.getAt("vrHand") cast String
-				if bid != null
-					vrHand = ECBehaviorVRHand.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				vrHand = ECBehaviorVRHand.getBehaviorIn(eclass)
-			end
+			var ECBehaviorVRHand vrHand = eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters)
 			
 			var ECBehaviorGrabber behavior
 			if vrHand != null

@@ -68,19 +68,9 @@ class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorComponent component
-			if parameters.has("component")
-				var String bid = parameters.getAt("component") cast String
-				if bid != null
-					component = ECBehaviorComponent.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				component = ECBehaviorComponent.getBehaviorIn(eclass)
-			end
-			
 			var ECBehaviorPlaySoundRandom behavior = ECBehaviorPlaySoundRandom.new(eclass,\
-				component, ECBehaviorCollider.getBehaviorIn(eclass),\
+				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
+				ECBehaviorCollider.getBehaviorIn(eclass),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			if parameters.has("layerMask")

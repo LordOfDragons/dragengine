@@ -378,27 +378,14 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorConversationActor behavior = ECBehaviorConversationActor.new(eclass)
 			
-			var String bid = parameters.getAt("actorAnimated", null) cast String
-			if bid != null
-				behavior.setActorAnimated(ECBehaviorActorAnimated.getBehaviorIn(eclass, bid))
-			end
-			
-			bid = parameters.getAt("animated", null) cast String
-			if bid != null
-				behavior.setAnimated(ECBehaviorAnimated.getBehaviorIn(eclass, bid))
-			end
-			
-			bid = parameters.getAt("twoStateAnimated", null) cast String
-			if bid != null
-				behavior.setTwoStateAnimated(ECBehaviorTwoStateAnimated.getBehaviorIn(eclass, bid))
-			end
-			
+			behavior.setActorAnimated(eclass.sharedFactoryHelper.optionalActorAnimated(eclass, parameters))
+			behavior.setAnimated(eclass.sharedFactoryHelper.optionalAnimated(eclass, parameters))
+			behavior.setTwoStateAnimated(eclass.sharedFactoryHelper.optionalTwoStateAnimated(eclass, parameters))
 			behavior.setLocomotion(ECBehaviorLocomotion.getBehaviorIn(eclass))
 			behavior.setParameterTable(ECBehaviorParameterTable.getBehaviorIn(eclass))
 			
-			var GuiTheme subtitleTheme
 			if parameters.has("subtitleTheme")
-				subtitleTheme = getSubtitleTheme(parameters.getAt("subtitleTheme") cast String)
+				behavior.setSubtitleTheme(getSubtitleThemeFor(parameters.getAt("subtitleTheme") cast String))
 			end
 			
 			return behavior
@@ -411,20 +398,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * on \ref BaseGameApp#getWindowSubTitle() for value 'default', loads gui theme if value
 		 * begins with 'path:' or null for all other values. Overwrite to accept other values.
 		 */
-		func GuiTheme getSubtitleTheme(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getWindowSubTitle().getGuiTheme()
-				end
-				
-			elif value.startsWith("path:")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getLoaders().getGuiTheme().loadFromFile(value.substring(5))
-				end
-			end
-			return null
+		func GuiTheme getSubtitleThemeFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.subtitleTheme(value)
 		end
 	end
 	

@@ -68,6 +68,40 @@ pin Dragengine.Utils
  * This behavior does not require persistable element class (setPersistable).
  */
 class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRHandPointAt
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHandLaserPointer'>
+	 *   <!-- required: use vr hand point at with id. -->
+	 *   <string name='vrHandPointAt'>right</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRHandLaserPointer' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRHandLaserPointer"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorVRHandLaserPointer.new(eclass,\
+				ECBehaviorVRHandPointAt.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief VR Hand Point At listener. */

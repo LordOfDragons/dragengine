@@ -132,6 +132,41 @@ pin Dragengine.Utils
  * \endcode
  */
 class ECBehaviorVRControlDesktop extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRHandPointAt
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRControlDesktop'>
+	 *   <!-- required: use vr hand point at with id -->
+	 *   <string name='vrHandPointAt'>right</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRControlDesktop' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRControlDesktop"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorVRControlDesktop.new(eclass,\
+				ECBehaviorVRHandPointAt.getBehaviorIn(eclass,\
+					parameters.getAt("vrHandPointAt") cast String), id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorVRControlDesktop pECBehavior

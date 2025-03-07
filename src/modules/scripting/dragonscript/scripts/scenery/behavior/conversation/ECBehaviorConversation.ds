@@ -136,12 +136,12 @@ class ECBehaviorConversation extends DefaultECBehavior
 			var ECBehaviorConversation behavior = ECBehaviorConversation.new(\
 				eclass, BaseGameApp.getApp().getLoaders(),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String),\
-				getPlayerControllableActor(parameters.getAt("playerControllableActor", "default") cast String))
+				getPlayerControllableActorFor(parameters.getAt("playerControllableActor", "default") cast String))
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
 			
 			if parameters.has("simpleConversationConverter")
-				behavior.setSimpleConversationConverter(getSimpleConversationConverter(\
+				behavior.setSimpleConversationConverter(getSimpleConversationConverterFor(\
 					parameters.getAt("simpleConversationConverter") cast String))
 			end
 			
@@ -155,13 +155,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 		 * and null for all other values. Overwrite to accept other values.
 		 */
 		func TSTriggerTable getTriggerTableFor(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getTriggerTable()
-				end
-			end
-			return null
+			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 		
 		/**
@@ -170,14 +164,8 @@ class ECBehaviorConversation extends DefaultECBehavior
 		 * Default implementation returns \ref BaseGameApp#getPlayerControlledActor() for value
 		 * 'default' and null for all other values. Overwrite to accept other values.
 		 */
-		func ECBehaviorPlayerControllable.Tracker getPlayerControllableActor(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getPlayerControlledActor()
-				end
-			end
-			return null
+		func ECBehaviorPlayerControllable.Tracker getPlayerControllableActorFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.playerControllableActor(value)
 		end
 		
 		/**
@@ -186,14 +174,8 @@ class ECBehaviorConversation extends DefaultECBehavior
 		 * Default implementation returns \ref BaseGameApp#getSimpleConversationConverter()
 		 * for value 'default' and null for all other values. Overwrite to accept other values.
 		 */
-		func SimpleConversationConverter getSimpleConversationConverter(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getSimpleConversationConverter()
-				end
-			end
-			return null
+		func SimpleConversationConverter getSimpleConversationConverterFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.simpleConversationConverter(value)
 		end
 	end
 	

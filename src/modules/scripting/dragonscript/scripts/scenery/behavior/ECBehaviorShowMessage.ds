@@ -79,13 +79,7 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 		 * and null for all other values. Overwrite to accept other values.
 		 */
 		func TSTriggerTable getTriggerTableFor(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getTriggerTable()
-				end
-			end
-			return null
+			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 		
 		/**

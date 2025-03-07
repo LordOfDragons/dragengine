@@ -1,0 +1,1102 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Utils
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.ConversationSystem
+pin Dragengine.TriggerSystem
+pin Dragengine.Commands
+
+
+/**
+ * \brief Helper class for BehaviorFactor implementations.
+ * \version 1.25
+ */
+class BehaviorFactoryHelper
+	/** \brief Create helper. */
+	func new()
+	end
+	
+	
+	
+	/**
+	 * \ref Component behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorComponent component(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorComponent b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorComponent.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorComponent not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorComponent.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default component behavior using parameter "component".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorComponent defaultComponent(BehaviorElementClass eclass, Dictionary parameters)
+		return component(eclass, parameters, "component", "")
+	end
+	
+	/**
+	 * \ref Optional component behavior using parameter "component".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorComponent optionalComponent(BehaviorElementClass eclass, Dictionary parameters)
+		return component(eclass, parameters, "component", null)
+	end
+	
+	
+	/**
+	 * \ref Actor animated behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorActorAnimated actorAnimated(BehaviorElementClass eclass,\
+	Dictionary parameters, String name, String defaultId)
+		var ECBehaviorActorAnimated b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorActorAnimated.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorActorAnimated not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorActorAnimated.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default actor animated behavior using parameter "actorAnimated".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorActorAnimated defaultActorAnimated(BehaviorElementClass eclass, Dictionary parameters)
+		return actorAnimated(eclass, parameters, "actorAnimated", "")
+	end
+	
+	/**
+	 * \ref Optional actor animated behavior using parameter "actorAnimated".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorActorAnimated optionalActorAnimated(BehaviorElementClass eclass, Dictionary parameters)
+		return actorAnimated(eclass, parameters, "actorAnimated", null)
+	end
+	
+	
+	/**
+	 * \ref Animated behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorAnimated animated(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorAnimated b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorAnimated.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorAnimated not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorAnimated.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default animated behavior using parameter "animated".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorAnimated defaultAnimated(BehaviorElementClass eclass, Dictionary parameters)
+		return animated(eclass, parameters, "animated", "")
+	end
+	
+	/**
+	 * \ref Optional animated behavior using parameter "animated".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorAnimated optionalAnimated(BehaviorElementClass eclass, Dictionary parameters)
+		return animated(eclass, parameters, "animated", null)
+	end
+	
+	
+	/**
+	 * \ref Two state animated behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorTwoStateAnimated twoStateAnimated(BehaviorElementClass eclass,\
+	Dictionary parameters, String name, String defaultId)
+		var ECBehaviorTwoStateAnimated b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorTwoStateAnimated.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorTwoStateAnimated not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorTwoStateAnimated.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default two state animated behavior using parameter "twoStateAnimated".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorTwoStateAnimated defaultTwoStateAnimated(\
+	BehaviorElementClass eclass, Dictionary parameters)
+		return twoStateAnimated(eclass, parameters, "twoStateAnimated", "")
+	end
+	
+	/**
+	 * \ref Optional two state animated behavior using parameter "twoStateAnimated".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorTwoStateAnimated optionalTwoStateAnimated(\
+	BehaviorElementClass eclass, Dictionary parameters)
+		return twoStateAnimated(eclass, parameters, "twoStateAnimated", null)
+	end
+	
+	
+	/**
+	 * \ref Navigator behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorNavigator navigator(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorNavigator b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorNavigator.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorNavigator not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorNavigator.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default navigator behavior using parameter "navigator".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorNavigator defaultNavigator(BehaviorElementClass eclass, Dictionary parameters)
+		return navigator(eclass, parameters, "navigator", "")
+	end
+	
+	/**
+	 * \ref Optional navigator behavior using parameter "navigator".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorNavigator optionalNavigator(BehaviorElementClass eclass, Dictionary parameters)
+		return navigator(eclass, parameters, "navigator", null)
+	end
+	
+	
+	/**
+	 * \ref Behavior tree behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorBehaviorTree behaviorTree(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorBehaviorTree b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorBehaviorTree.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorBehaviorTree not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorBehaviorTree.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default behavior tree behavior using parameter "behaviorTree".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorBehaviorTree defaultBehaviorTree(BehaviorElementClass eclass, Dictionary parameters)
+		return behaviorTree(eclass, parameters, "behaviorTree", "")
+	end
+	
+	/**
+	 * \ref Optional behavior tree behavior using parameter "behaviorTree".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorBehaviorTree optionalBehaviorTree(BehaviorElementClass eclass, Dictionary parameters)
+		return behaviorTree(eclass, parameters, "behaviorTree", null)
+	end
+	
+	
+	/**
+	 * \ref VR hand behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorVRHand vrHand(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorVRHand b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorVRHand.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorVRHand not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorVRHand.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default vr hand behavior using parameter "vrHand".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorVRHand defaultVRHand(BehaviorElementClass eclass, Dictionary parameters)
+		return vrHand(eclass, parameters, "vrHand", "")
+	end
+	
+	/**
+	 * \ref Optional vr hand behavior using parameter "vrHand".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorVRHand optionalVRHand(BehaviorElementClass eclass, Dictionary parameters)
+		return vrHand(eclass, parameters, "vrHand", null)
+	end
+	
+	
+	/**
+	 * \ref Dynamic skin behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorDynamicSkin dynamicSkin(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorDynamicSkin b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorDynamicSkin.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorDynamicSkin not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorDynamicSkin.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default dynamic skin behavior using parameter "dynamicSkin".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorDynamicSkin defaultDynamicSkin(BehaviorElementClass eclass, Dictionary parameters)
+		return dynamicSkin(eclass, parameters, "dynamicSkin", "")
+	end
+	
+	/**
+	 * \ref Optional dynamic skin behavior using parameter "dynamicSkin".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorDynamicSkin optionalDynamicSkin(BehaviorElementClass eclass, Dictionary parameters)
+		return dynamicSkin(eclass, parameters, "dynamicSkin", null)
+	end
+	
+	
+	/**
+	 * \ref Camera behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorCamera camera(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorCamera b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorCamera.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorCamera not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorCamera.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default camera behavior using parameter "camera".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorCamera defaultCamera(BehaviorElementClass eclass, Dictionary parameters)
+		return camera(eclass, parameters, "camera", "")
+	end
+	
+	/**
+	 * \ref Optional camera behavior using parameter "camera".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorCamera optionalCamera(BehaviorElementClass eclass, Dictionary parameters)
+		return camera(eclass, parameters, "camera", null)
+	end
+	
+	
+	/**
+	 * \ref Custom color behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorCustomColor customColor(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorCustomColor b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorCustomColor.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorCustomColor not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorCustomColor.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default custom color behavior using parameter "customColor".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorCustomColor defaultCustomColor(BehaviorElementClass eclass, Dictionary parameters)
+		return customColor(eclass, parameters, "customColor", "")
+	end
+	
+	/**
+	 * \ref Optional custom color behavior using parameter "customColor".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorCustomColor optionalCustomColor(BehaviorElementClass eclass, Dictionary parameters)
+		return customColor(eclass, parameters, "customColor", null)
+	end
+	
+	
+	/**
+	 * \ref Renderable canvas behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorRenderableCanvas renderableCanvas(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorRenderableCanvas b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorRenderableCanvas.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorRenderableCanvas not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorRenderableCanvas.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default renderable canvas behavior using parameter "renderableCanvas".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorRenderableCanvas defaultRenderableCanvas(BehaviorElementClass eclass, Dictionary parameters)
+		return renderableCanvas(eclass, parameters, "renderableCanvas", "")
+	end
+	
+	/**
+	 * \ref Optional renderable canvas behavior using parameter "renderableCanvas".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorRenderableCanvas optionalRenderableCanvas(BehaviorElementClass eclass, Dictionary parameters)
+		return renderableCanvas(eclass, parameters, "renderableCanvas", null)
+	end
+	
+	
+	/**
+	 * \ref Renderable desktop behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorRenderableDesktop renderableDesktop(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorRenderableDesktop b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorRenderableDesktop.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorRenderableDesktop not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorRenderableDesktop.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default renderable desktop behavior using parameter "renderableDesktop".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorRenderableDesktop defaultRenderableDesktop(BehaviorElementClass eclass, Dictionary parameters)
+		return renderableDesktop(eclass, parameters, "renderableDesktop", "")
+	end
+	
+	/**
+	 * \ref Optional renderable desktop behavior using parameter "renderableDesktop".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorRenderableDesktop optionalRenderableDesktop(BehaviorElementClass eclass, Dictionary parameters)
+		return renderableDesktop(eclass, parameters, "renderableDesktop", null)
+	end
+	
+	
+	/**
+	 * \ref Light behavior.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorLight light(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorLight b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorLight.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorLight not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorLight.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default light behavior using parameter "light".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorLight defaultLight(BehaviorElementClass eclass, Dictionary parameters)
+		return light(eclass, parameters, "light", "")
+	end
+	
+	/**
+	 * \ref Optional light behavior using parameter "light".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorLight optionalLight(BehaviorElementClass eclass, Dictionary parameters)
+		return light(eclass, parameters, "light", null)
+	end
+	
+	
+	/**
+	 * \brief Trigger table matching value.
+	 * 
+	 * Returns \ref BaseGameApp#getTriggerTable() for value "default" and null otherwise.
+	 */
+	func TSTriggerTable triggerTable(String value)
+		if value.equals("default")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getTriggerTable()
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Command manager matching value.
+	 * 
+	 * Returns \ref BaseGameApp#getCommandManager() for value "default" and null otherwise.
+	 */
+	func CommandManager commandManager(String value)
+		if value.equals("default")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getCommandManager()
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Binding manager matching value.
+	 * 
+	 * Returns \ref BaseGameApp#getTriggerTable() for value "default" and null otherwise.
+	 */
+	func BindingManager bindingManager(String value)
+		if value.equals("default")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getBindingManager()
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Conversation playback subtitle matching value.
+	 * 
+	 * Returns \ref BaseGameApp#getWindowSubTitle() for value "default" and null otherwise.
+	 */
+	func ConversationPlaybackSubTitle subtitle(String value)
+		if value.equals("default")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getWindowSubTitle()
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Subtitle gui theme matching value.
+	 * 
+	 * Returns \ref WindowSubTitle#getGuiTheme() on \ref BaseGameApp#getWindowSubTitle()
+	 * for value "default". For values starting with "path:" loads gui theme. For all other
+	 * valuers returns null.
+	 */
+	func GuiTheme subtitleTheme(String value)
+		if value.equals("default")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getWindowSubTitle().getGuiTheme()
+			end
+			
+		elif value.startsWith("path:")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getLoaders().getGuiTheme().loadFromFile(value.substring(5))
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Simple conversation converter matching value.
+	 * 
+	 * Returns \ref BaseGameApp#getSimpleConversationConverter() for value "default"
+	 * and null for all other values.
+	 */
+	func SimpleConversationConverter simpleConversationConverter(String value)
+		if value.equals("default")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getSimpleConversationConverter()
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Player controllable actor matching value.
+	 * 
+	 * Returns \ref BaseGameApp#getPlayerControlledActor() for value "default" and null otherwise.
+	 */
+	func ECBehaviorPlayerControllable.Tracker playerControllableActor(String value)
+		if value.equals("default")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getPlayerControlledActor()
+			end
+		end
+		return null
+	end
+	
+	/**
+	 * \brief Translation manager matching value.
+	 * 
+	 * Returns \ref BaseGameApp#getTranslationManager() for value "default" and null otherwise.
+	 */
+	func TranslationManager translationManager(String value)
+		if value.equals("default")
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				return app.getTranslationManager()
+			end
+		end
+		return null
+	end
+	
+	
+	/** \brief Add common behavior factories to element class. */
+	func void addCommonFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorAnchorElement.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorAvoidedByActor.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorBillboard.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorCamera.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorCollider.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorComponent.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorComposed.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorConvoCoordSystem.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorCustomColor.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorDecal.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorEnvMapProbe.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorForceField.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorHitScan.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorLight.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorLightDimmer.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorNavigationBlocker.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorNavigationSpace.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorParticleEmitter.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRandomizeCreation.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRandomizeGeometry.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRidable.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorShowElement.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorShowMessage.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorStateMachine.Factory.new())
+	end
+	
+	/** \brief Add actor behavior factories to element class. */
+	func void addActorFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorActorAIAction.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorActorAnimated.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorActorCutscene.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorActorIK.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorActorMover.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorActorMoverUnstuck.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorActorTransmission.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorAlignActor.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorAvoidCollision.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorBehaviorTree.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorBodyTilting.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorClearPath.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorColliderAI.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorFootSteps.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorLocomotion.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorLookAt.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorNavigator.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorParameterTable.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorProjectToGround.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRideOn.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorStepAside.Factory.new())
+	end
+	
+	/** \brief Add animated behavior factories to element class. */
+	func void addAnimatedFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorAnimated.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorTwoStateAnimated.Factory.new())
+	end
+	
+	/** \brief Add attach behavior factories to element class. */
+	func void addAttachFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorAttachable.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorAttachments.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorAttachSlot.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorAttachToParent.Factory.new())
+	end
+	
+	/** \brief Add behavior tree behavior factories to element class. */
+	func void addBehaviorTreeFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorBehaviorTreeFlags.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorBehaviorTreeTimer.Factory.new())
+	end
+	
+	/** \brief Add conversation behavior factories to element class. */
+	func void addConversationFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBCTRRBindings.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorConversation.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorConversationActor.Factory.new())
+	end
+	
+	/** \brief Add dynamic skin behavior factories to element class. */
+	func void addDynamicSkinFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorAttachDynamicSkin.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorDynamicSkin.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRenderableCamera.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRenderableCanvas.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRenderableCustomColor.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRenderableDesktop.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRenderableLight.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorRenderablePanel.Factory.new())
+	end
+	
+	/** \brief Add effect behavior factories to element class. */
+	func void addEffectFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorOutline.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorSkinSwitcher.Factory.new())
+	end
+	
+	/** \brief Add interaction behavior factories to element class. */
+	func void addInteractionFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorControlDesktop.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorGrabber.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorGrabSpot.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorInteractionSpot.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorInteractPrompt.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorLookedAt.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorOccupier.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorVRHandPointedAt.Factory.new())
+	end
+	
+	/** \brief Add inventory behavior factories to element class. */
+	func void addInventoryFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorInventory.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorStashable.Factory.new())
+	end
+	
+	/** \brief Add network behavior factories to element class. */
+	func void addNetworkFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorNetworkState.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorNStateGeometry.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorNStateLocomotion.Factory.new())
+	end
+	
+	/** \brief Add player behavior factories to element class. */
+	func void addPlayerFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorPlayerControllable.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorPlayerInputCrouch.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorPlayerInputLook.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorPlayerInputMove.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorPlayerInputTurn.Factory.new())
+		// ECBehaviorPlayerInteractPrompt: to use create subclass and implement abstracts
+		// ECBehaviorPlayerLookAtInteractPrompt: to use create subclass and implement abstracts
+	end
+	
+	/** \brief Add sky behavior factories to element class. */
+	func void addSkyFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorDayTimeSky.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorSky.Factory.new())
+	end
+	
+	/** \brief Add sound behavior factories to element class. */
+	func void addSoundFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorAnnouncer.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorHearSounds.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorPlaySound.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorPlaySoundRandom.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorSpeaker.Factory.new())
+	end
+	
+	/** \brief Add trigger behavior factories to element class. */
+	func void addTriggerFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorEvaluate.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorTimer.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorToggle.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorTouching.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorTouchSensor.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorTriggered.Factory.new())
+	end
+	
+	/** \brief Add VR behavior factories to element class. */
+	func void addVRFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorVRControlDesktop.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorVRHand.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorVRHandAction.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorVRHandLaserPointer.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorVRHandPointAt.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorVRHandPose.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorVRHMD.Factory.new())
+		eclass.addBehaviorFactory(ECBehaviorVRPlayspace.Factory.new())
+	end
+	
+	/** \brief Add rail behavior factories to element class. */
+	func void addRailFactories(BehaviorElementClass eclass)
+		eclass.addBehaviorFactory(ECBehaviorMoveOnRail.Factory.new())
+	end
+	
+	/** \brief Add all behavior factories to element class. */
+	func void addAllFactories(BehaviorElementClass eclass)
+		addCommonFactories(eclass)
+		addActorFactories(eclass)
+		addAnimatedFactories(eclass)
+		addAttachFactories(eclass)
+		addBehaviorTreeFactories(eclass)
+		addConversationFactories(eclass)
+		addDynamicSkinFactories(eclass)
+		addEffectFactories(eclass)
+		addInteractionFactories(eclass)
+		addInventoryFactories(eclass)
+		addNetworkFactories(eclass)
+		addPlayerFactories(eclass)
+		addSkyFactories(eclass)
+		addSoundFactories(eclass)
+		addTriggerFactories(eclass)
+		addVRFactories(eclass)
+		addRailFactories(eclass)
+	end
+end

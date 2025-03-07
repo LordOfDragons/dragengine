@@ -118,29 +118,9 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorDynamicSkin dynamicSkin
-			if parameters.has("dynamicSkin")
-				var String bid = parameters.getAt("dynamicSkin") cast String
-				if bid != null
-					dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass)
-			end
-			
-			var ECBehaviorLight light
-			if parameters.has("light")
-				var String bid = parameters.getAt("light") cast String
-				if bid != null
-					light = ECBehaviorLight.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				light = ECBehaviorLight.getBehaviorIn(eclass)
-			end
-			
-			return ECBehaviorRenderableLight.new(eclass, dynamicSkin, light, id)
+			return ECBehaviorRenderableLight.new(eclass,\
+				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters),\
+				eclass.sharedFactoryHelper.defaultLight(eclass, parameters), id)
 		end
 	end
 	

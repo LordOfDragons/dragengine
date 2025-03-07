@@ -92,18 +92,8 @@ class ECBehaviorDecal extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorComponent component
-			if parameters.has("component")
-				var String bid = parameters.getAt("component") cast String
-				if bid != null
-					component = ECBehaviorComponent.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				component = ECBehaviorComponent.getBehaviorIn(eclass)
-			end
-			
-			return ECBehaviorDecal.new(eclass, component, id)
+			return ECBehaviorDecal.new(eclass,\
+				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters), id)
 		end
 	end
 	

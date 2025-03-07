@@ -57,6 +57,42 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 		func BaseVRHandAction createAction(Instance instance)
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRHand
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHandAction'>
+	 *   <!-- required: use vr hand with id. -->
+	 *   <string name='vrHand'>right</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRHandAction' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRHandAction"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorVRHandAction.new(eclass,\
+				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String),\
+				ECBehaviorConversationActor.getBehaviorIn(eclass), id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Hand collider listener forwarding to Action. */

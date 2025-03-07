@@ -150,18 +150,8 @@ class ECBehaviorActorIK extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorActorAnimated actorAnimated
-			if parameters.has("actorAnimated")
-				var String bid = parameters.getAt("actorAnimated") cast String
-				if bid != null
-					actorAnimated = ECBehaviorActorAnimated.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				actorAnimated = ECBehaviorActorAnimated.getBehaviorIn(eclass)
-			end
-			
-			return ECBehaviorActorIK.new(eclass, actorAnimated, id)
+			return ECBehaviorActorIK.new(eclass,\
+				eclass.sharedFactoryHelper.defaultActorAnimated(eclass, parameters), id)
 		end
 	end
 	

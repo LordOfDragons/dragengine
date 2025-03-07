@@ -202,13 +202,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * and null for all other values. Overwrite to accept other values.
 		 */
 		func ConversationPlaybackSubTitle getSubTitleFor(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getWindowSubTitle()
-				end
-			end
-			return null
+			return BehaviorElementClass.sharedFactoryHelper.subtitle(value)
 		end
 	end
 	

@@ -105,8 +105,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \ref 1.25
 	 * 
 	 * Automatically assigns these behaviors if present before adding:
-	 * - Optional: \ref ECBehaviorCollider
-	 * - Optional: \ref ECBehaviorVRHand
+	 * - Optional: \ref ECBehaviorVRHand or \ref ECBehaviorCollider
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
@@ -133,10 +132,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
 			var ECBehaviorAttachSlot behavior = ECBehaviorAttachSlot.new(eclass, collider, id)
 			
-			var String bid = parameters.getAt("vrHand", null) cast String
-			if bid != null
-				behavior.setVRHand(ECBehaviorVRHand.getBehaviorIn(eclass, bid))
-			end
+			behavior.setVRHand(eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters))
 			
 			return behavior
 		end

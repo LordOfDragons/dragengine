@@ -137,6 +137,69 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRPlayspace
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHand'>
+	 *   <!-- required: use BaseGameApp input device type. Constant of InputDeviceType.
+	 *                  use either 'vrRightHand' or 'vrLeftHand'. -->
+	 *   <string name='inputDeviceType'>vrRightHand</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values.
+	 *                  default is 'default' -->
+	 *   <string name='bindingManager'>default</string>
+	 * 
+	 *   <!-- optional: set collision filter. default value '' which means empty category
+	 *                  and full filter. format is '', 'category' or 'category:filter'
+	 *                  where category and filter are a list of bits to set. -->
+	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRHand' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRHand"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorVRHand behavior = ECBehaviorVRHand.new(eclass,\
+				ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
+				InputDeviceType.named(parameters.getAt("inputDeviceType") cast String),\
+				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String), id)
+			
+			if parameters.has("collisionFilter")
+				behavior.getCollider().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
+					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+			end
+			
+			return behavior
+		end
+		
+		/**
+		 * \brief Binding manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getBindingManager() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func BindingManager getBindingManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

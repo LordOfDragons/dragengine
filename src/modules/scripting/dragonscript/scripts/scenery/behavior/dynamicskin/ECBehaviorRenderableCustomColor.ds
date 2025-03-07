@@ -179,44 +179,18 @@ class ECBehaviorRenderableCustomColor extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorCustomColor customColor
-			if parameters.has("customColor")
-				var String bid = parameters.getAt("customColor") cast String
-				if bid != null
-					customColor = ECBehaviorCustomColor.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				customColor = ECBehaviorCustomColor.getBehaviorIn(eclass)
-			end
+			var ECBehaviorCustomColor customColor =\
+				eclass.sharedFactoryHelper.defaultCustomColor(eclass, parameters)
 			
-			var ECBehaviorRenderableCanvas renderableCanvas
-			if parameters.has("renderableCanvas")
-				var String bid = parameters.getAt("renderableCanvas") cast String
-				if bid != null
-					renderableCanvas = ECBehaviorRenderableCanvas.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				renderableCanvas = ECBehaviorRenderableCanvas.getBehaviorIn(eclass)
-			end
+			var ECBehaviorRenderableCanvas renderableCanvas =\
+				eclass.sharedFactoryHelper.defaultRenderableCanvas(eclass, parameters)
 			
 			if renderableCanvas != null
 				return ECBehaviorRenderableCustomColor.new(eclass, customColor, renderableCanvas, id)
 				
 			else
-				var ECBehaviorDynamicSkin dynamicSkin
-				if parameters.has("dynamicSkin")
-					var String bid = parameters.getAt("dynamicSkin") cast String
-					if bid != null
-						dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass, bid)
-					end
-					
-				else
-					dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass)
-				end
-				
-				return ECBehaviorRenderableCustomColor.new(eclass, customColor, dynamicSkin, id)
+				return ECBehaviorRenderableCustomColor.new(eclass, customColor,\
+					eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
 			end
 		end
 	end

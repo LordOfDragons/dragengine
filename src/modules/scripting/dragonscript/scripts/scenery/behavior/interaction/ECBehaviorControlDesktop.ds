@@ -135,18 +135,8 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorRenderableDesktop renderableDesktop
-			if parameters.has("renderableDesktop")
-				var String bid = parameters.getAt("renderableDesktop") cast String
-				if bid != null
-					renderableDesktop = ECBehaviorRenderableDesktop.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				renderableDesktop = ECBehaviorRenderableDesktop.getBehaviorIn(eclass)
-			end
-			
-			return ECBehaviorControlDesktop.new(eclass, renderableDesktop, id)
+			return ECBehaviorControlDesktop.new(eclass,\
+				eclass.sharedFactoryHelper.defaultRenderableDesktop(eclass, parameters), id)
 		end
 	end
 	

@@ -108,16 +108,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var ECBehaviorAvoidCollision behavior = ECBehaviorAvoidCollision.new(eclass,\
 				ECBehaviorActorMover.getBehaviorIn(eclass), ECBehaviorRideOn.getBehaviorIn(eclass))
 			
-			var ECBehaviorBehaviorTree behaviorTree
-			if parameters.has("behaviorTree")
-				var String bid = parameters.getAt("behaviorTree") cast String
-				if bid != null
-					behaviorTree = ECBehaviorBehaviorTree.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				behaviorTree = ECBehaviorBehaviorTree.getBehaviorIn(eclass)
-			end
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
 			
 			if parameters.has("collisionFilter")
 				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\

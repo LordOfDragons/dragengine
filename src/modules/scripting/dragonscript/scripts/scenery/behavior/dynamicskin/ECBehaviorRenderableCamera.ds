@@ -114,29 +114,9 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorDynamicSkin dynamicSkin
-			if parameters.has("dynamicSkin")
-				var String bid = parameters.getAt("dynamicSkin") cast String
-				if bid != null
-					dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass)
-			end
-			
-			var ECBehaviorCamera camera
-			if parameters.has("camera")
-				var String bid = parameters.getAt("camera") cast String
-				if bid != null
-					camera = ECBehaviorCamera.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				camera = ECBehaviorCamera.getBehaviorIn(eclass)
-			end
-			
-			return ECBehaviorRenderableCamera.new(eclass, dynamicSkin, camera, id)
+			return ECBehaviorRenderableCamera.new(eclass,\
+				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters),\
+				eclass.sharedFactoryHelper.defaultCamera(eclass, parameters), id)
 		end
 	end
 	

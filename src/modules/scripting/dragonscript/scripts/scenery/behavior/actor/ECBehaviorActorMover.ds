@@ -408,19 +408,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorNavigator navigator
-			if parameters.has("navigator")
-				var String bid = parameters.getAt("navigator") cast String
-				if bid != null
-					navigator = ECBehaviorNavigator.getBehaviorIn(eclass, bid)
-				end
-				
-			else
-				navigator = ECBehaviorNavigator.getBehaviorIn(eclass)
-			end
-			
 			var ECBehaviorActorMover behavior = ECBehaviorActorMover.new(eclass,\
-				ECBehaviorLocomotion.getBehaviorIn(eclass), navigator,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass),\
+				eclass.sharedFactoryHelper.defaultNavigator(eclass, parameters),\
 				ECBehaviorRideOn.getBehaviorIn(eclass), id)
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))

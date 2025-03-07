@@ -131,13 +131,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 		 * 'default' and null for all other values. Overwrite to accept other values.
 		 */
 		func TranslationManager getTranslationManagerFor(String value)
-			if value.equals("default")
-				var BaseGameApp app = BaseGameApp.getApp()
-				if app != null
-					return app.getTranslationManager()
-				end
-			end
-			return null
+			return BehaviorElementClass.sharedFactoryHelper.translationManager(value)
 		end
 	end
 	

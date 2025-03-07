@@ -139,6 +139,76 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * To use this factory create a subclass and implement \ref #createPromptControllerFactory(),
+	 * \ref #getUiContainer() and \ref #getUiContainerAddSettings().
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorPlayerControllable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlayerInteractPrompt'>
+	 *   <!-- optional: use BaseGameApp command manager. game can add more supported values.
+	 *                  default is 'default' -->
+	 *   <string name='commandManager'>default</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values.
+	 *                  default is 'default' -->
+	 *   <string name='bindingManager'>default</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	abstract class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlayerInteractPrompt"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorPlayerInteractPrompt.new(eclass,\
+				ECBehaviorPlayerControllable.getBehaviorIn(eclass),\
+				createPromptControllerFactory(parameters), getUiContainer(parameters),\
+				getUiContainerAddSettings(parameters),\
+				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
+				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String), id)
+		end
+		
+		/**
+		 * \brief Command manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getCommandManager() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func CommandManager getCommandManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.commandManager(value)
+		end
+		
+		/**
+		 * \brief Binding manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getBindingManager() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func BindingManager getBindingManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
+		end
+		
+		/** \brief Create prompt controller factory. */
+		abstract func PromptControllerFactory createPromptControllerFactory(Dictionary parameters)
+		
+		/** \brief Get UI container. */
+		abstract func Container getUiContainer(Dictionary parameters)
+		
+		/** \brief Get UI container add settings. */
+		abstract func Object getUiContainerAddSettings(Dictionary parameters)
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Player takes control listener. */
