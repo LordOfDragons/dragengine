@@ -51,7 +51,7 @@ class GenericBehaviorElementClass extends BehaviorElementClass
 	
 	
 	/**
-	 * \brief Add behavior factories supported by thie element class.
+	 * \brief Add behavior factories supported by this element class.
 	 * 
 	 * Default implementation calls \ref #addDefaultBehaviorFactories().
 	 */
