@@ -87,6 +87,60 @@ pin Dragengine.Utils
  * - "interactPrompt{(id)}.settings": ECPString
  */
 class ECBehaviorInteractPrompt extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorInteractPrompt'>
+	 *   <!-- optional: use BaseGameApp translation manager.
+	 *                  game can add more supported values. default is 'default' -->
+	 *   <string name='translationManager'>default</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorInteractPrompt' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorInteractPrompt"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorInteractPrompt behavior = ECBehaviorInteractPrompt.new(eclass, id)
+			
+			if parameters.has("translationManager")
+				behavior.setTranslationManager(getTranslationManagerFor(\
+					parameters.getAt("translationManager") cast String))
+			end
+			
+			return behavior
+		end
+		
+		/**
+		 * \brief Translation manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTranslationManager() for value
+		 * 'default' and null for all other values. Overwrite to accept other values.
+		 */
+		func TranslationManager getTranslationManagerFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getTranslationManager()
+				end
+			end
+			return null
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		var ECBehaviorInteractPrompt pECBehavior

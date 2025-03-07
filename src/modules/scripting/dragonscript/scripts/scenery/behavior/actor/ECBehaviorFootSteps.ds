@@ -375,6 +375,29 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	end
 	
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorFootSteps'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorFootSteps"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorFootSteps.new(eclass)
+		end
+	end
+	
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		var ECBehaviorFootSteps pECBehavior

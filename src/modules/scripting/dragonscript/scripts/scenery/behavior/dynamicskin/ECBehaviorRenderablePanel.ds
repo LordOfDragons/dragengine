@@ -120,6 +120,50 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorDynamicSkin
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRenderablePanel'>
+	 *   <!-- optional: use dynamic skin with id instead of empty string -->
+	 *   <string name='dynamicSkin'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorRenderablePanel' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRenderablePanel"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorDynamicSkin dynamicSkin
+			if parameters.has("dynamicSkin")
+				var String bid = parameters.getAt("dynamicSkin") cast String
+				if bid != null
+					dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorRenderablePanel.new(eclass, dynamicSkin, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorRenderablePanel pECBehavior

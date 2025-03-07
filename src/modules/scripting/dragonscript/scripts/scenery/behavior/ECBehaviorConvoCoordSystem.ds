@@ -45,6 +45,31 @@ pin Dragengine.Utils
  * This behavior does require the element class to be persistable (setPersistable).
  */
 class ECBehaviorConvoCoordSystem extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorConvoCoordSystem'/>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorConvoCoordSystem' id='second'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorConvoCoordSystem"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorConvoCoordSystem.new(eclass, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorConvoCoordSystem pECBehavior

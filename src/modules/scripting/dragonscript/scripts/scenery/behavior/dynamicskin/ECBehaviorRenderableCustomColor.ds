@@ -143,6 +143,84 @@ pin Dragengine.Utils
  * This behavior does not require the element class to be persistable (setPersistable).
  */
 class ECBehaviorRenderableCustomColor extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorCustomColor
+	 * - Required: \ref ECBehaviorRenderableCanvas or \ref ECBehaviorDynamicSkin
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRenderableCustomColor'>
+	 *   <!-- optional: use custom color with id instead of empty string -->
+	 *   <string name='customColor'>second</string>
+	 * 
+	 *   <!-- optional: use renderable canvas with id instead of empty string -->
+	 *   <string name='renderableCanvas'>second</string>
+	 * 
+	 *   <!-- optional: use dynamic skin with id instead of empty string -->
+	 *   <string name='dynamicSkin'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorRenderableCustomColor' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRenderableCustomColor"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorCustomColor customColor
+			if parameters.has("customColor")
+				var String bid = parameters.getAt("customColor") cast String
+				if bid != null
+					customColor = ECBehaviorCustomColor.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				customColor = ECBehaviorCustomColor.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorRenderableCanvas renderableCanvas
+			if parameters.has("renderableCanvas")
+				var String bid = parameters.getAt("renderableCanvas") cast String
+				if bid != null
+					renderableCanvas = ECBehaviorRenderableCanvas.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				renderableCanvas = ECBehaviorRenderableCanvas.getBehaviorIn(eclass)
+			end
+			
+			if renderableCanvas != null
+				return ECBehaviorRenderableCustomColor.new(eclass, customColor, renderableCanvas, id)
+				
+			else
+				var ECBehaviorDynamicSkin dynamicSkin
+				if parameters.has("dynamicSkin")
+					var String bid = parameters.getAt("dynamicSkin") cast String
+					if bid != null
+						dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass, bid)
+					end
+					
+				else
+					dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass)
+				end
+				
+				return ECBehaviorRenderableCustomColor.new(eclass, customColor, dynamicSkin, id)
+			end
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Update renderable listener. */

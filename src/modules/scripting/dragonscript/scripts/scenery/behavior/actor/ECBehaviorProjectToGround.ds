@@ -95,6 +95,38 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorColliderAI or \ref ECBehaviorCollider
+	 * - Optional: \ref ECBehaviorComponent
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorProjectToGround'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorProjectToGround"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorColliderAI colliderAI = ECBehaviorColliderAI.getBehaviorIn(eclass)
+			if colliderAI != null
+				return ECBehaviorProjectToGround.new(eclass, colliderAI)
+				
+			else
+				return ECBehaviorProjectToGround.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
+			end
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

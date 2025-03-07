@@ -46,11 +46,16 @@ pin Dragengine.Utils
  * and add all the desired ECBehavior instance. There is no need to subclas BehaviorElement.
  * When creating a new instance the BehaviorElement is filled with ECBehavior created
  * ECBehaviorInstance instances. These provide the actual behavior to the element.
+ * 
+ * Behaviors can also be created and added using XML element classes. Add the factories of
+ * all behavior types allowed to be created using \ref #addBehaviorFactory(). By default no
+ * factory is present disabling support for XML behavior creation.
  */
 class BehaviorElementClass extends ElementClass
 	var Array pBehaviors
 	var Array pPrepareStubBehaviors
 	var Array pPreventCreationBehaviors
+	var Dictionary pBehaviorFactories
 	
 	
 	
@@ -71,6 +76,7 @@ class BehaviorElementClass extends ElementClass
 		pBehaviors = Array.new()
 		pPrepareStubBehaviors = Array.new()
 		pPreventCreationBehaviors = Array.new()
+		pBehaviorFactories = Dictionary.new()
 	end
 	
 	/** \brief Dispose of element class. */
@@ -84,6 +90,7 @@ class BehaviorElementClass extends ElementClass
 		
 		pPrepareStubBehaviors = null
 		pPreventCreationBehaviors = null
+		pBehaviorFactories = null
 		
 		super.dispose()
 	end
@@ -259,6 +266,182 @@ class BehaviorElementClass extends ElementClass
 		return pPreventCreationBehaviors.find(block BehaviorPreventCreation each
 			return each.preventCreation(stub, gameWorld)
 		end) != null
+	end
+	
+	
+	
+	/**
+	 * \brief Add behavior factory replacing factory with same name if present.
+	 * \version 1.25
+	 */
+	func void addBehaviorFactory(BehaviorFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pBehaviorFactories.setAt(factory.factoryId(), factory)
+	end
+	
+	/**
+	 * \brief Remove behavior factory if present.
+	 * \version 1.25
+	 */
+	func void removeBehaviorFactory(String id)
+		pBehaviorFactories.removeIfExisting(id)
+	end
+	
+	/**
+	 * \brief Remove all behavior factories.
+	 * \version 1.25
+	 */
+	func void removeAllBehaviorFactories()
+		pBehaviorFactories.removeAll()
+	end
+	
+	/**
+	 * \brief Add all behavior factories present in the DragonScript module.
+	 * \version 1.25
+	 */
+	func void addDefaultBehaviorFactories()
+		// common
+		addBehaviorFactory(ECBehaviorAnchorElement.Factory.new())
+		addBehaviorFactory(ECBehaviorAvoidedByActor.Factory.new())
+		addBehaviorFactory(ECBehaviorBillboard.Factory.new())
+		addBehaviorFactory(ECBehaviorCamera.Factory.new())
+		addBehaviorFactory(ECBehaviorCollider.Factory.new())
+		addBehaviorFactory(ECBehaviorComponent.Factory.new())
+		addBehaviorFactory(ECBehaviorComposed.Factory.new())
+		addBehaviorFactory(ECBehaviorConvoCoordSystem.Factory.new())
+		addBehaviorFactory(ECBehaviorCustomColor.Factory.new())
+		addBehaviorFactory(ECBehaviorDecal.Factory.new())
+		addBehaviorFactory(ECBehaviorEnvMapProbe.Factory.new())
+		addBehaviorFactory(ECBehaviorForceField.Factory.new())
+		addBehaviorFactory(ECBehaviorHitScan.Factory.new())
+		addBehaviorFactory(ECBehaviorLight.Factory.new())
+		addBehaviorFactory(ECBehaviorLightDimmer.Factory.new())
+		addBehaviorFactory(ECBehaviorNavigationBlocker.Factory.new())
+		addBehaviorFactory(ECBehaviorNavigationSpace.Factory.new())
+		addBehaviorFactory(ECBehaviorParticleEmitter.Factory.new())
+		addBehaviorFactory(ECBehaviorRandomizeCreation.Factory.new())
+		addBehaviorFactory(ECBehaviorRandomizeGeometry.Factory.new())
+		addBehaviorFactory(ECBehaviorRidable.Factory.new())
+		addBehaviorFactory(ECBehaviorShowElement.Factory.new())
+		addBehaviorFactory(ECBehaviorShowMessage.Factory.new())
+		addBehaviorFactory(ECBehaviorStateMachine.Factory.new())
+		
+		// actor
+		addBehaviorFactory(ECBehaviorActorAIAction.Factory.new())
+		addBehaviorFactory(ECBehaviorActorAnimated.Factory.new())
+		addBehaviorFactory(ECBehaviorActorCutscene.Factory.new())
+		addBehaviorFactory(ECBehaviorActorIK.Factory.new())
+		addBehaviorFactory(ECBehaviorActorMover.Factory.new())
+		addBehaviorFactory(ECBehaviorActorMoverUnstuck.Factory.new())
+		addBehaviorFactory(ECBehaviorActorTransmission.Factory.new())
+		addBehaviorFactory(ECBehaviorAlignActor.Factory.new())
+		addBehaviorFactory(ECBehaviorAvoidCollision.Factory.new())
+		addBehaviorFactory(ECBehaviorBehaviorTree.Factory.new())
+		addBehaviorFactory(ECBehaviorBodyTilting.Factory.new())
+		addBehaviorFactory(ECBehaviorClearPath.Factory.new())
+		addBehaviorFactory(ECBehaviorColliderAI.Factory.new())
+		addBehaviorFactory(ECBehaviorFootSteps.Factory.new())
+		addBehaviorFactory(ECBehaviorLocomotion.Factory.new())
+		addBehaviorFactory(ECBehaviorLookAt.Factory.new())
+		addBehaviorFactory(ECBehaviorNavigator.Factory.new())
+		addBehaviorFactory(ECBehaviorParameterTable.Factory.new())
+		addBehaviorFactory(ECBehaviorProjectToGround.Factory.new())
+		addBehaviorFactory(ECBehaviorRideOn.Factory.new())
+		addBehaviorFactory(ECBehaviorStepAside.Factory.new())
+		
+		// animated
+		addBehaviorFactory(ECBehaviorAnimated.Factory.new())
+		addBehaviorFactory(ECBehaviorTwoStateAnimated.Factory.new())
+		
+		// attach
+		addBehaviorFactory(ECBehaviorAttachable.Factory.new())
+		addBehaviorFactory(ECBehaviorAttachments.Factory.new())
+		addBehaviorFactory(ECBehaviorAttachSlot.Factory.new())
+		addBehaviorFactory(ECBehaviorAttachToParent.Factory.new())
+		
+		// behavior tree
+		addBehaviorFactory(ECBehaviorBehaviorTreeFlags.Factory.new())
+		addBehaviorFactory(ECBehaviorBehaviorTreeTimer.Factory.new())
+		
+		// conversation
+		addBehaviorFactory(ECBCTRRBindings.Factory.new())
+		addBehaviorFactory(ECBehaviorConversation.Factory.new())
+		addBehaviorFactory(ECBehaviorConversationActor.Factory.new())
+		
+		// dynamic skin
+		addBehaviorFactory(ECBehaviorAttachDynamicSkin.Factory.new())
+		addBehaviorFactory(ECBehaviorDynamicSkin.Factory.new())
+		addBehaviorFactory(ECBehaviorRenderableCamera.Factory.new())
+		addBehaviorFactory(ECBehaviorRenderableCanvas.Factory.new())
+		addBehaviorFactory(ECBehaviorRenderableCustomColor.Factory.new())
+		addBehaviorFactory(ECBehaviorRenderableDesktop.Factory.new())
+		addBehaviorFactory(ECBehaviorRenderableLight.Factory.new())
+		addBehaviorFactory(ECBehaviorRenderablePanel.Factory.new())
+		
+		// effect
+		addBehaviorFactory(ECBehaviorOutline.Factory.new())
+		addBehaviorFactory(ECBehaviorSkinSwitcher.Factory.new())
+		
+		// interaction
+		addBehaviorFactory(ECBehaviorControlDesktop.Factory.new())
+		addBehaviorFactory(ECBehaviorGrabber.Factory.new())
+		addBehaviorFactory(ECBehaviorGrabSpot.Factory.new())
+		addBehaviorFactory(ECBehaviorInteractionSpot.Factory.new())
+		addBehaviorFactory(ECBehaviorInteractPrompt.Factory.new())
+		addBehaviorFactory(ECBehaviorLookedAt.Factory.new())
+		addBehaviorFactory(ECBehaviorOccupier.Factory.new())
+		addBehaviorFactory(ECBehaviorVRHandPointedAt.Factory.new())
+		
+		// inventory
+		addBehaviorFactory(ECBehaviorInventory.Factory.new())
+		addBehaviorFactory(ECBehaviorStashable.Factory.new())
+		
+		// network
+		addBehaviorFactory(ECBehaviorNetworkState.Factory.new())
+		addBehaviorFactory(ECBehaviorNStateGeometry.Factory.new())
+		addBehaviorFactory(ECBehaviorNStateLocomotion.Factory.new())
+		
+		// player
+		addBehaviorFactory(ECBehaviorPlayerControllable.Factory.new())
+		addBehaviorFactory(ECBehaviorPlayerInputCrouch.Factory.new())
+		addBehaviorFactory(ECBehaviorPlayerInputLook.Factory.new())
+		addBehaviorFactory(ECBehaviorPlayerInputMove.Factory.new())
+		addBehaviorFactory(ECBehaviorPlayerInputTurn.Factory.new())
+		
+		// sky
+		addBehaviorFactory(ECBehaviorDayTimeSky.Factory.new())
+		addBehaviorFactory(ECBehaviorSky.Factory.new())
+		
+		// sound
+		addBehaviorFactory(ECBehaviorAnnouncer.Factory.new())
+		addBehaviorFactory(ECBehaviorHearSounds.Factory.new())
+		addBehaviorFactory(ECBehaviorPlaySound.Factory.new())
+		addBehaviorFactory(ECBehaviorPlaySoundRandom.Factory.new())
+		addBehaviorFactory(ECBehaviorSpeaker.Factory.new())
+		
+		// trigger
+		
+		// vr
+	end
+	
+	/**
+	 * \brief Behavior factory with identifier or null if absent.
+	 * \version 1.25
+	 */
+	func BehaviorFactory getBehaviorFactoryWithId(String id)
+		return pBehaviorFactories.getAt(id, null) cast BehaviorFactory
+	end
+	
+	/**
+	 * \brief Visit behavior factories.
+	 * \version 1.25
+	 * 
+	 * Block receives as only argument \ref BehaviorFactory.
+	 */
+	func void forEachBehaviorFactory(Block ablock)
+		pBehaviorFactories.forEachValue(ablock)
 	end
 	
 	

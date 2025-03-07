@@ -45,6 +45,28 @@ pin Dragengine.Utils
  * This behavior does not require element class to be persistable (setPersistable).
  */
 class ECBehaviorAvoidedByActor extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAvoidedByActor'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAvoidedByActor"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorAvoidedByActor.new(eclass, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		var ECBehaviorAvoidedByActor pECBehavior

@@ -43,6 +43,48 @@ pin Dragengine.TriggerSystem
  * This behavior supports persistable element class (setPersistable).
  */
 class ECBehaviorShowElement extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorShowElement'>
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values. default is 'default' -->
+	 *   <string name='triggerTable'>default</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorShowElement"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorShowElement.new(eclass,\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String))
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func TSTriggerTable getTriggerTableFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getTriggerTable()
+				end
+			end
+			return null
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Change shown listener. */
@@ -184,7 +226,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable(TSTriggerTable triggerTable)
+	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
 	end
 	

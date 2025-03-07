@@ -72,6 +72,50 @@ pin Dragengine.Utils
  * This behavior does require the element class to be persistable (setPersistable).
  */
 class ECBehaviorLightDimmer extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLight
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorLightDimmer'>
+	 *   <!-- optional: use light with id instead of empty string -->
+	 *   <string name='light'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorLightDimmer' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorLightDimmer"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorLight light
+			if parameters.has("light")
+				var String bid = parameters.getAt("light") cast String
+				if bid != null
+					light = ECBehaviorLight.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				light = ECBehaviorLight.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorLightDimmer.new(eclass, light, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Activate listener. */

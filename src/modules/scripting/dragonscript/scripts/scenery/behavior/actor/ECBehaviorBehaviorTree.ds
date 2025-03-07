@@ -276,6 +276,31 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorBehaviorTree'/>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorBehaviorTree' id='second'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorBehaviorTree"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorBehaviorTree.new(eclass, id)
+		end
+	end
+	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance

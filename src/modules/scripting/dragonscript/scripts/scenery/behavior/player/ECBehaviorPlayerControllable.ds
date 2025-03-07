@@ -225,6 +225,56 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlayerControllable'>
+	 *   <!-- optional: use BaseGameApp player controlled actor.
+	 *                  game can add more supported values. default is 'default' -->
+	 *   <string name='playerControlledActor'>default</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlayerControllable"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorPlayerControllable behavior = ECBehaviorPlayerControllable.new(eclass,\
+				getPlayerControlledActorFor(parameters.getAt("playerControlledActor", "default") cast String))
+			
+			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
+			
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func Tracker getPlayerControlledActorFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getPlayerControlledActor()
+				end
+			end
+			return null
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

@@ -60,6 +60,31 @@ pin Dragengine.Utils
  * - ECBehaviorActorMover
  */
 class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorActorMover
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorMoverUnstuck'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorMoverUnstuck"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorActorMoverUnstuck.new(eclass, ECBehaviorActorMover.getBehaviorIn(eclass))
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Listen to actor mover events. */

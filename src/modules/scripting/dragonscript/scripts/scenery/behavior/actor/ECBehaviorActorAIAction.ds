@@ -71,6 +71,36 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		func BaseActorAI createAI( Instance instance )
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorColliderAI
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * - Optional: \ref ECBehaviorPlayerControllable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorAIAction'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorAIAction"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorActorAIAction.new(eclass,\
+				ECBehaviorColliderAI.getBehaviorIn(eclass),\
+				ECBehaviorConversationActor.getBehaviorIn(eclass),\
+				ECBehaviorPlayerControllable.getBehaviorIn(eclass))
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Collider AI listener forwarding to Action/AI. */

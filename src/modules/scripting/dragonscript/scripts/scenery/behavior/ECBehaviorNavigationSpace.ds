@@ -71,6 +71,35 @@ pin Dragengine.Utils
  * This behavior does require the element class to be persistable (setPersistable).
  */
 class ECBehaviorNavigationSpace extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorNavigationSpace'/>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorNavigationSpace' id='second'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorNavigationSpace"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
+			return ECBehaviorNavigationSpace.new(eclass, collider, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorNavigationSpace pECBehavior

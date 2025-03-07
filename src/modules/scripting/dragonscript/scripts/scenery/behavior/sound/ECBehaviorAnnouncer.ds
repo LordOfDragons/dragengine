@@ -114,6 +114,68 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAnnouncer'>
+	 *   <!-- optional: set layer mask (default '2' meaning BaseGameApp.WorldLayerBit.audio).
+	 *                  list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
+	 *   <string name='triggerTable'>default</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorAnnouncer' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAnnouncer"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorAnnouncer behavior = ECBehaviorAnnouncer.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), BaseGameApp.getApp().getLoaders(),\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			if parameters.has("layerMask")
+				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func TSTriggerTable getTriggerTableFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getTriggerTable()
+				end
+			end
+			return null
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Trigger listener to start announcing. */

@@ -121,6 +121,50 @@ pin Dragengine.Utils
  * - actorIK{(id)}.controllerIKElevation: ECBString. Name of IK Elevation Controller
  */
 class ECBehaviorActorIK extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorActorAnimated
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorIK'>
+	 *   <!-- optional: use actor animated with id instead of empty string -->
+	 *   <string name='actorAnimated'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorActorIK' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorIK"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorActorAnimated actorAnimated
+			if parameters.has("actorAnimated")
+				var String bid = parameters.getAt("actorAnimated") cast String
+				if bid != null
+					actorAnimated = ECBehaviorActorAnimated.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				actorAnimated = ECBehaviorActorAnimated.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorActorIK.new(eclass, actorAnimated, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Update controllers listener. */

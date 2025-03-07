@@ -43,6 +43,47 @@ pin Dragengine.Utils
  * This behavior can be present only once in the element class.
  */
 class ECBehaviorNStateGeometry extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorNetworkState
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorNStateGeometry'>
+	 *   <!-- optional: position precision. default is 0.001 -->
+	 *   <float name='precisionPosition'>0.01</float>
+	 * 
+	 *   <!-- optional: orientation precision. default is 0.001 -->
+	 *   <float name='precisionOrientation'>0.01</float>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorNStateGeometry"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorNStateGeometry behavior = ECBehaviorNStateGeometry.new(eclass,\
+				ECBehaviorNetworkState.getBehaviorIn(eclass))
+			
+			if parameters.has("precisionPosition")
+				behavior.setPrecisionPosition((parameters.getAt("precisionPosition") cast String).toFloat())
+			end
+			if parameters.has("precisionOrientation")
+				behavior.setPrecisionOrientation((parameters.getAt("precisionOrientation") cast String).toFloat())
+			end
+			
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Network state listener. */

@@ -77,6 +77,36 @@ pin Dragengine.Scenery
  * This behavior does not require the element class to be persistable (setPersistable).
  */
 class ECBehaviorAttachToParent extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorCollider
+	 * - Optional: \ref ECBehaviorAttachable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorCamera'>
+	 *   <!-- optional: set layer mask (default empty). list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAttachToParent"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorAttachToParent.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass),\
+				ECBehaviorAttachable.getBehaviorIn(eclass))
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Example attach element visitor. */

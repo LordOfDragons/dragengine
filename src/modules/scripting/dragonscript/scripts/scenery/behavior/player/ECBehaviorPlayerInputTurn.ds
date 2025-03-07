@@ -39,6 +39,35 @@ pin Dragengine.Utils
  * This behavior is typically used for vehicle type actors.
  */
 class ECBehaviorPlayerInputTurn extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorLocomotion
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlayerInputTurn'>
+	 *   <!-- optional: set layer mask (default empty). list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlayerInputTurn"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorPlayerInputTurn.new(eclass,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass), id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorPlayerInputTurn pECBehavior

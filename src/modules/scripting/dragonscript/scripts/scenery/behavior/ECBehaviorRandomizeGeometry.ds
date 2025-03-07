@@ -44,6 +44,29 @@ pin Dragengine.Utils
  * Default property prefix is "randomizeGeometry."
  */
 class ECBehaviorRandomizeGeometry extends DefaultECBehavior implements BehaviorPrepareStub
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRandomizeGeometry'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRandomizeGeometry"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorRandomizeGeometry.new(eclass)
+		end
+	end
+	
+	
 	var ECPBoolean pRandomize
 	var ECPVector pMinTranslate, pMaxTranslate
 	var ECPVector pMinRotate, pMaxRotate

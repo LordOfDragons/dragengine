@@ -72,6 +72,47 @@ pin Dragengine.Utils
  * ECBehaviorCamera by adding after the camera behavior one or more camera effect behaviors.
  */
 class ECBehaviorCamera extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorCamera'>
+	 *   <!-- optional: set layer mask (default empty). list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorCamera' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorCamera"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorCamera behavior = ECBehaviorCamera.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), id)
+			
+			if parameters.has("layerMask")
+				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		var ECBehaviorCamera pECBehavior

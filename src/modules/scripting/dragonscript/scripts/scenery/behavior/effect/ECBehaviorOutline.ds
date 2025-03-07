@@ -108,6 +108,51 @@ pin Dragengine.Utils
  * intensity and visiblity state.
  */
 class ECBehaviorOutline extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorComponent
+	 * - Required: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorOutline'>
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorOutline' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorOutline"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorComponent component
+			if parameters.has("component")
+				var String bid = parameters.getAt("component") cast String
+				if bid != null
+					component = ECBehaviorComponent.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				component = ECBehaviorComponent.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorOutline.new(eclass, component, ECBehaviorCollider.getBehaviorIn(eclass), id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorOutline pECBehavior

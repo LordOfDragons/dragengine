@@ -143,6 +143,45 @@ pin Dragengine.Utils
  *              behvaior and if so removes it from the game world and applies the effects.
  */
 class ECBehaviorCollider extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorComponent
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorCollider'>
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorCollider"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorComponent component
+			if parameters.has("component")
+				var String bid = parameters.getAt("component") cast String
+				if bid != null
+					component = ECBehaviorComponent.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				component = ECBehaviorComponent.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorCollider.new(eclass, component)
+		end
+	end
+	
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/**

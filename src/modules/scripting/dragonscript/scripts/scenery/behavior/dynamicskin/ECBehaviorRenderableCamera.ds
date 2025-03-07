@@ -81,6 +81,65 @@ pin Dragengine.Utils
  * This behavior does not require the element class to be persistable (setPersistable).
  */
 class ECBehaviorRenderableCamera extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorDynamicSkin
+	 * - Required: \ref ECBehaviorCamera
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRenderableCamera'>
+	 *   <!-- optional: use dynamic skin with id instead of empty string -->
+	 *   <string name='dynamicSkin'>second</string>
+	 * 
+	 *   <!-- optional: use camera with id instead of empty string -->
+	 *   <string name='camera'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorRenderableCamera' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRenderableCamera"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorDynamicSkin dynamicSkin
+			if parameters.has("dynamicSkin")
+				var String bid = parameters.getAt("dynamicSkin") cast String
+				if bid != null
+					dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorCamera camera
+			if parameters.has("camera")
+				var String bid = parameters.getAt("camera") cast String
+				if bid != null
+					camera = ECBehaviorCamera.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				camera = ECBehaviorCamera.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorRenderableCamera.new(eclass, dynamicSkin, camera, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorRenderableCamera pECBehavior

@@ -39,6 +39,32 @@ pin Dragengine.Utils
  * This behavior supports persistable element class (setPersistable).
  */
 class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorLocomotion
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlayerInputCrouch'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlayerInputCrouch"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorPlayerInputCrouch.new(eclass,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass), id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorPlayerInputCrouch pECBehavior

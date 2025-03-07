@@ -224,6 +224,33 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorCollider
+	 * - Required: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorCutscene'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorCutscene"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorActorCutscene.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass),\
+				ECBehaviorConversationActor.getBehaviorIn(eclass))
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

@@ -49,6 +49,37 @@ pin Dragengine.Utils
  * This behavior supports persistable element class (setPersistable).
  */
 class ECBehaviorLocomotion extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Requuired: \ref ECBehaviorColliderAI or \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorLocomotion'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorLocomotion"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorColliderAI colliderAI = ECBehaviorColliderAI.getBehaviorIn(eclass)
+			if colliderAI != null
+				return ECBehaviorLocomotion.new(eclass, colliderAI)
+				
+			else
+				return ECBehaviorLocomotion.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
+			end
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorLocomotion pECBehavior

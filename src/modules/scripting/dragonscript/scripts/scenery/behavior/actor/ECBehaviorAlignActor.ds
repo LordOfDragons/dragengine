@@ -102,6 +102,33 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLocomotion
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAlignActor'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAlignActor"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorAlignActor.new(eclass, ECBehaviorLocomotion.getBehaviorIn(eclass),\
+				ECBehaviorConversationActor.getBehaviorIn(eclass))
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

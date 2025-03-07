@@ -85,6 +85,65 @@ pin Dragengine.Utils
  * This behavior does not require the element class to be persistable (setPersistable).
  */
 class ECBehaviorRenderableLight extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorDynamicSkin
+	 * - Required: \ref ECBehaviorLight
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRenderableLight'>
+	 *   <!-- optional: use dynamic skin with id instead of empty string -->
+	 *   <string name='dynamicSkin'>second</string>
+	 * 
+	 *   <!-- optional: use light with id instead of empty string -->
+	 *   <string name='light'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorRenderableLight' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRenderableLight"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorDynamicSkin dynamicSkin
+			if parameters.has("dynamicSkin")
+				var String bid = parameters.getAt("dynamicSkin") cast String
+				if bid != null
+					dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorLight light
+			if parameters.has("light")
+				var String bid = parameters.getAt("light") cast String
+				if bid != null
+					light = ECBehaviorLight.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				light = ECBehaviorLight.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorRenderableLight.new(eclass, dynamicSkin, light, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Update renderable listener. */

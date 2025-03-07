@@ -45,95 +45,124 @@ pin Dragengine.Scenery
  * This behavior does not require the element class to be persistable (setPersistable).
  */
 class ECBehaviorAnchorElement extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAnchorElement'>
+	 *   <!-- optional: set property name to use instead of 'anchorID' -->
+	 *   <string name='propertyName'>anchorID</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAnchorElement"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			return ECBehaviorAnchorElement.new(eclass,\
+				parameters.getAt("propertyName", "anchorID") cast String)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorAnchorElement pECBehavior
-		private var StringID pAnchorID
-		private var bool pAnchorAdded
+		var ECBehaviorAnchorElement pECBehavior
+		var StringID pAnchorID
+		var bool pAnchorAdded
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorAnchorElement ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorAnchorElement ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pAnchorID = this.pECBehavior.getAnchorID().getValue( stub )
+		func void init(StubElement stub)
+			pAnchorID = pECBehavior.getAnchorID().getValue(stub)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorAnchorElement getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorAnchorElement getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Anchor name or null to not anchor. */
-		public func StringID getAnchorID()
-			return this.pAnchorID
+		func StringID getAnchorID()
+			return pAnchorID
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
+		func void addToGameWorld()
 			// pAnchorAdded is used to avoid exceptions thrown in removeFromGameWorld
 			// in case adding the anchor here throws an exception (duplicate ID).
 			// this avoids disposing of a game world after an exception ending up in
 			// another exception causing huge leak reports that are useless     
-			if this.pAnchorID != null
-				this.getElement().getGameWorld().getAnchoredElementList() \
-					.add( this.pAnchorID, this.getElement() )
-				this.pAnchorAdded = true
+			if pAnchorID != null
+				getElement().getGameWorld().getAnchoredElementList() \
+					.add(pAnchorID, getElement())
+				pAnchorAdded = true
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			if this.pAnchorAdded
-				this.getElement().getGameWorld().getAnchoredElementList().remove( this.pAnchorID )
-				this.pAnchorAdded = false
+		func void removeFromGameWorld()
+			if pAnchorAdded
+				getElement().getGameWorld().getAnchoredElementList().remove(pAnchorID)
+				pAnchorAdded = false
 			end
 		end
 	end
 	
 	
 	
-	private var ECPStringID pAnchorID
+	var ECPStringID pAnchorID
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, "anchorID" )
+	func new(BehaviorElementClass eclass) this(eclass, "anchorID")
 	end
 	
-	public func new( BehaviorElementClass eclass, String propertyName ) super( eclass )
-		if getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	func new(BehaviorElementClass eclass, String propertyName) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pAnchorID = ECPStringID.new( propertyName )
-		eclass.addProperty( this.pAnchorID )
+		pAnchorID = ECPStringID.new(propertyName)
+		eclass.addProperty(pAnchorID)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Anchor name or empty string to not anchor. */
-	public func ECPStringID getAnchorID()
-		return this.pAnchorID
+	func ECPStringID getAnchorID()
+		return pAnchorID
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -144,10 +173,10 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorAnchorElement getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorAnchorElement each
+	static func ECBehaviorAnchorElement getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorAnchorElement each
 			return true
-		end ) cast ECBehaviorAnchorElement
+		end) cast ECBehaviorAnchorElement
 	end
 	
 	/**
@@ -157,16 +186,16 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	 * of type ECBehaviorAnchorElement.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

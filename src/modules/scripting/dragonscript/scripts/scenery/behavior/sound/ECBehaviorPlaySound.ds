@@ -119,6 +119,83 @@ pin Dragengine.TriggerSystem
  * This behavior does not require the element class to be persistable (setPersistable).
  */
 class ECBehaviorPlaySound extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlaySound'>
+	 *   <!-- optional: set layer mask (default '2' meaning BaseGameApp.WorldLayerBit.audio).
+	 *                  list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * 
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values.
+	 *                  default is 'default' -->
+	 *   <string name='triggerTable'>default</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorPlaySound' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlaySound"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorComponent component
+			if parameters.has("component")
+				var String bid = parameters.getAt("component") cast String
+				if bid != null
+					component = ECBehaviorComponent.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				component = ECBehaviorComponent.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorPlaySound behavior = ECBehaviorPlaySound.new(eclass,\
+				component, ECBehaviorCollider.getBehaviorIn(eclass),\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			if parameters.has("layerMask")
+				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func TSTriggerTable getTriggerTableFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getTriggerTable()
+				end
+			end
+			return null
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Trigger listener to play soubd. */

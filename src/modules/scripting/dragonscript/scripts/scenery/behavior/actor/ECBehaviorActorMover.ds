@@ -376,6 +376,59 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLocomotion
+	 * - Required: \ref ECBehaviorNavigator
+	 * - Optional: \ref ECBehaviorRideOn
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorMover'>
+	 *   <!-- optional: use navigator with id instead of empty string -->
+	 *   <string name='navigator'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorActorMover' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorMover"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorNavigator navigator
+			if parameters.has("navigator")
+				var String bid = parameters.getAt("navigator") cast String
+				if bid != null
+					navigator = ECBehaviorNavigator.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				navigator = ECBehaviorNavigator.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorActorMover behavior = ECBehaviorActorMover.new(eclass,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass), navigator,\
+				ECBehaviorRideOn.getBehaviorIn(eclass), id)
+			
+			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
+			
+			return behavior
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

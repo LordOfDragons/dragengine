@@ -140,6 +140,50 @@ pin Dragengine.Utils
  * \endcode
  */
 class ECBehaviorBehaviorTreeFlags extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorBehaviorTree
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorBehaviorTreeFlags'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorBehaviorTreeFlags' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorBehaviorTreeFlags"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorBehaviorTree behaviorTree
+			if parameters.has("behaviorTree")
+				var String bid = parameters.getAt("behaviorTree") cast String
+				if bid != null
+					behaviorTree = ECBehaviorBehaviorTree.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				behaviorTree = ECBehaviorBehaviorTree.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorBehaviorTreeFlags.new(eclass, behaviorTree, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Behavior tree action "flags.set". */

@@ -44,6 +44,29 @@ pin Dragengine.Utils
  * Default property prefix is "randomizeCreation."
  */
 class ECBehaviorRandomizeCreation extends DefaultECBehavior implements BehaviorPreventCreation
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRandomizeCreation'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRandomizeCreation"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorRandomizeCreation.new(eclass)
+		end
+	end
+	
+	
 	var ECPFloat pProbability
 	
 	

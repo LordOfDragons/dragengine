@@ -161,6 +161,57 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorTransmission'>
+	 *   <!-- optional: use BaseGameApp sub title. game can add more supported values. default is 'default' -->
+	 *   <string name='subTitle'>default</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorTransmission"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorActorTransmission behavior = ECBehaviorActorTransmission.new(eclass,\
+				ECBehaviorConversationActor.getBehaviorIn(eclass))
+			
+			if parameters.has("subTitle")
+				behavior.setSubTitle(getSubTitleFor(parameters.getAt("subTitle") cast String))
+			end
+			
+			return behavior
+		end
+		
+		/**
+		 * \brief Conversation playback subtitle matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getWindowSubTitle() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func ConversationPlaybackSubTitle getSubTitleFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getWindowSubTitle()
+				end
+			end
+			return null
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

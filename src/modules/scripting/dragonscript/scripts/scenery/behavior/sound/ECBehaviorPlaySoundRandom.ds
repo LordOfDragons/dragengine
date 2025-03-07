@@ -42,6 +42,56 @@ pin Dragengine.TriggerSystem
  * This behavior does not require the element class to be persistable (setPersistable).
  */
 class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * \see ECBehaviorPlaySound#Factory
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlaySoundRandom'>
+	 *   ...
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorPlaySoundRandom' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory extends ECBehaviorPlaySound.Factory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlaySoundRandom"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorComponent component
+			if parameters.has("component")
+				var String bid = parameters.getAt("component") cast String
+				if bid != null
+					component = ECBehaviorComponent.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				component = ECBehaviorComponent.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorPlaySoundRandom behavior = ECBehaviorPlaySoundRandom.new(eclass,\
+				component, ECBehaviorCollider.getBehaviorIn(eclass),\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			if parameters.has("layerMask")
+				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends ECBehaviorPlaySound.Instance
 		private var ECBehaviorPlaySoundRandom pECBehaviorRandom

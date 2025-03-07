@@ -96,6 +96,33 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLocomotion
+	 * - Required: \ref ECBehaviorProjectToGround
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRideOn'/>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRideOn"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			return ECBehaviorRideOn.new(eclass, ECBehaviorLocomotion.getBehaviorIn(eclass),\
+				ECBehaviorProjectToGround.getBehaviorIn(eclass))
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

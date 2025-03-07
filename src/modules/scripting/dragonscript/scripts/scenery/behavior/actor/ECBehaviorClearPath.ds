@@ -81,6 +81,48 @@ pin Dragengine.Utils
  * - ECBehaviorLocomotion
  */
 class ECBehaviorClearPath extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLocomotion
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorClearPath'>
+	 *   <!-- optional: set collision filter. default value '3:0 1 2 3' which means
+	 *                  category BaseGameApp.CollisionFilterBit.actorAI
+	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
+	 *                         BaseGameApp.CollisionFilterBit.dynamic,
+	 *                         BaseGameApp.CollisionFilterBit.actorAI.
+	 *                  format is '', 'category' or 'category:filter' where category and filter
+	 *                  are a list of bits to set. -->
+	 *   <string name='collisionFilter'>3:0 1 2 3</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorClearPath"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorClearPath behavior = ECBehaviorClearPath.new(eclass,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass))
+			
+			if parameters.has("collisionFilter")
+				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
+					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+			end
+			
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Visitor for make element clear path. */

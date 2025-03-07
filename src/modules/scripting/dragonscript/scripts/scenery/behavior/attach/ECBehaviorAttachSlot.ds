@@ -100,6 +100,48 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * - Optional: \ref ECBehaviorVRHand
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAttachSlot'>
+	 *   <!-- optional: use vrhand behavior with id -->
+	 *   <string name='vrHand'>right</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorAttachSlot' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAttachSlot"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
+			var ECBehaviorAttachSlot behavior = ECBehaviorAttachSlot.new(eclass, collider, id)
+			
+			var String bid = parameters.getAt("vrHand", null) cast String
+			if bid != null
+				behavior.setVRHand(ECBehaviorVRHand.getBehaviorIn(eclass, bid))
+			end
+			
+			return behavior
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

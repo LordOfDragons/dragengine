@@ -372,7 +372,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 	end
 	
 	/** \brief Set trigger table. */
-	protected func void setTriggerTable(TSTriggerTable triggerTable)
+	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
 	end
 	

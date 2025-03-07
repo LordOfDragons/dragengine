@@ -94,6 +94,50 @@ pin Dragengine.Utils
  */
 class ECBehaviorRenderableDesktop extends DefaultECBehavior
 	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorDynamicSkin
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRenderableDesktop'>
+	 *   <!-- optional: use dynamic skin with id instead of empty string -->
+	 *   <string name='dynamicSkin'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorRenderableDesktop' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRenderableDesktop"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorDynamicSkin dynamicSkin
+			if parameters.has("dynamicSkin")
+				var String bid = parameters.getAt("dynamicSkin") cast String
+				if bid != null
+					dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				dynamicSkin = ECBehaviorDynamicSkin.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorRenderableDesktop.new(eclass, dynamicSkin, id)
+		end
+	end
+	
+	/**
 	 * \brief Create renderable desktop content.
 	 * \version 1.9
 	 */

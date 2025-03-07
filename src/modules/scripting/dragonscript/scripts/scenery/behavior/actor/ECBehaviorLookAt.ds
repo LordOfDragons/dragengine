@@ -103,6 +103,72 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorColliderAI or \ref ECBehaviorCollider
+	 * - Optional: \ref ECBehaviorComponent
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorLookAt'>
+	 *   <!-- optional: set collision filter. default value '3:0 1 2 3' which means
+	 *                  category BaseGameApp.CollisionFilterBit.actorAI
+	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
+	 *                         BaseGameApp.CollisionFilterBit.dynamic,
+	 *                         BaseGameApp.CollisionFilterBit.actorAI.
+	 *                  format is '', 'category' or 'category:filter' where category and filter
+	 *                  are a list of bits to set. -->
+	 *   <string name='collisionFilter'>3:0 1 2 3</string>
+	 * 
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorLookAt"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorComponent component
+			if parameters.has("component")
+				var String bid = parameters.getAt("component") cast String
+				if bid != null
+					component = ECBehaviorComponent.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				component = ECBehaviorComponent.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorLocomotion locomotion = ECBehaviorLocomotion.getBehaviorIn(eclass)
+			var ECBehaviorLookAt behavior
+			
+			var ECBehaviorColliderAI colliderAI = ECBehaviorColliderAI.getBehaviorIn(eclass)
+			if colliderAI != null
+				behavior = ECBehaviorLookAt.new(eclass, colliderAI, component, locomotion)
+				
+			else
+				behavior = ECBehaviorLookAt.new(eclass,\
+					ECBehaviorCollider.getBehaviorIn(eclass), component, locomotion)
+			end
+			
+			if parameters.has("collisionFilter")
+				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
+					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+			end
+			
+			return behavior
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

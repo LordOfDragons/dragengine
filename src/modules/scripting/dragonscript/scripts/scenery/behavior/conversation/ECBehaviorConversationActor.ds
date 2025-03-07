@@ -338,6 +338,96 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorActorAnimated
+	 * - Optional: \ref ECBehaviorAnimated
+	 * - Optional: \ref ECBehaviorTwoStateAnimated
+	 * - Optional: \ref ECBehaviorLocomotion
+	 * - Optional: \ref ECBehaviorParameterTable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorConversationActor'>
+	 *   <!-- optional: use actor animated with id instead of empty string -->
+	 *   <string name='actorAnimated'>second</string>
+	 * 
+	 *   <!-- optional: use animated with id instead of empty string -->
+	 *   <string name='animated'>second</string>
+	 * 
+	 *   <!-- optional: use two state animated with id instead of empty string -->
+	 *   <string name='twoStateAnimated'>second</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp subtitle theme. game can add more supported values.
+	 *                  default is 'default'. also supported is value 'path:/path/to/theme.guitheme' -->
+	 *   <string name='subtitleTheme'>default</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorConversationActor"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorConversationActor behavior = ECBehaviorConversationActor.new(eclass)
+			
+			var String bid = parameters.getAt("actorAnimated", null) cast String
+			if bid != null
+				behavior.setActorAnimated(ECBehaviorActorAnimated.getBehaviorIn(eclass, bid))
+			end
+			
+			bid = parameters.getAt("animated", null) cast String
+			if bid != null
+				behavior.setAnimated(ECBehaviorAnimated.getBehaviorIn(eclass, bid))
+			end
+			
+			bid = parameters.getAt("twoStateAnimated", null) cast String
+			if bid != null
+				behavior.setTwoStateAnimated(ECBehaviorTwoStateAnimated.getBehaviorIn(eclass, bid))
+			end
+			
+			behavior.setLocomotion(ECBehaviorLocomotion.getBehaviorIn(eclass))
+			behavior.setParameterTable(ECBehaviorParameterTable.getBehaviorIn(eclass))
+			
+			var GuiTheme subtitleTheme
+			if parameters.has("subtitleTheme")
+				subtitleTheme = getSubtitleTheme(parameters.getAt("subtitleTheme") cast String)
+			end
+			
+			return behavior
+		end
+		
+		/**
+		 * \brief Subtitle gui theme matching value.
+		 * 
+		 * Default implementation returns \ref WindowSubTitle#getGuiTheme()
+		 * on \ref BaseGameApp#getWindowSubTitle() for value 'default', loads gui theme if value
+		 * begins with 'path:' or null for all other values. Overwrite to accept other values.
+		 */
+		func GuiTheme getSubtitleTheme(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getWindowSubTitle().getGuiTheme()
+				end
+				
+			elif value.startsWith("path:")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getLoaders().getGuiTheme().loadFromFile(value.substring(5))
+				end
+			end
+			return null
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

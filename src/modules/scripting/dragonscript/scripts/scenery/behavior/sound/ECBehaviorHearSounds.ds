@@ -113,6 +113,43 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorHearSounds'>
+	 *   <!-- optional: set layer mask (default '2' meaning BaseGameApp.WorldLayerBit.audio).
+	 *                  list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorHearSounds"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorHearSounds behavior = ECBehaviorHearSounds.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), id)
+			
+			if parameters.has("layerMask")
+				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements SoundLevelMeterListener
 		private class TrackedElement

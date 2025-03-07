@@ -106,6 +106,50 @@ pin Dragengine.Utils
  * This behavior require the element class to be persistable (setPersistable).
  */
 class ECBehaviorControlDesktop extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorRenderableDesktop
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorControlDesktop'>
+	 *   <!-- optional: use renderable desktop with id instead of empty string -->
+	 *   <string name='renderableDesktop'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorControlDesktop' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorControlDesktop"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorRenderableDesktop renderableDesktop
+			if parameters.has("renderableDesktop")
+				var String bid = parameters.getAt("renderableDesktop") cast String
+				if bid != null
+					renderableDesktop = ECBehaviorRenderableDesktop.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				renderableDesktop = ECBehaviorRenderableDesktop.getBehaviorIn(eclass)
+			end
+			
+			return ECBehaviorControlDesktop.new(eclass, renderableDesktop, id)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorControlDesktop pECBehavior

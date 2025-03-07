@@ -144,6 +144,71 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorVRHand or \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorGrabber'>
+	 *   <!-- optional: use vr hand with id instead of empty string -->
+	 *   <string name='vrHand'>right</string>
+	 * 
+	 *   <!-- optional: set collision filter. default value '4:1' which means
+	 *                  category BaseGameApp.CollisionFilterBit.trigger
+	 *                  filter BaseGameApp.CollisionFilterBit.dynamic.
+	 *                  format is '', 'category' or 'category:filter' where category and filter
+	 *                  are a list of bits to set. -->
+	 *   <string name='collisionFilter'>4:1 2</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorGrabber' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorGrabber"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorVRHand vrHand
+			if parameters.has("vrHand")
+				var String bid = parameters.getAt("vrHand") cast String
+				if bid != null
+					vrHand = ECBehaviorVRHand.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				vrHand = ECBehaviorVRHand.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorGrabber behavior
+			if vrHand != null
+				behavior = ECBehaviorGrabber.new(eclass, vrHand, id)
+				
+			else
+				behavior = ECBehaviorGrabber.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
+				
+			end
+			
+			if parameters.has("collisionFilter")
+				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
+					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+			end
+			
+			return behavior
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */

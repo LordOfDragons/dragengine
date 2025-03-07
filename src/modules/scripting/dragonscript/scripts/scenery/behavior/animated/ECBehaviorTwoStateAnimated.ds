@@ -222,6 +222,105 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorComponent
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorTwoStateAnimated'>
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values. default is 'default' -->
+	 *   <string name='triggerTable'>default</string>
+	 * 
+	 *   <!-- optional: name of deactivated controller. default is 'deactivated' -->
+	 *   <string name='controllerNameDeactivated'>deactivated</string>
+	 * 
+	 *   <!-- optional: name of activated controller. default is 'activated' -->
+	 *   <string name='controllerNameActivated'>activated</string>
+	 * 
+	 *   <!-- optional: name of activating controller. default is 'activating' -->
+	 *   <string name='controllerNameActivating'>activating</string>
+	 * 
+	 *   <!-- optional: name of deactivating controller. default is 'deactivating' -->
+	 *   <string name='controllerNameDeactivating'>deactivating</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorTwoStateAnimated' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorTwoStateAnimated"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorComponent component
+			if parameters.has("component")
+				var String bid = parameters.getAt("component") cast String
+				if bid != null
+					component = ECBehaviorComponent.getBehaviorIn(eclass, bid)
+				end
+				
+			else
+				component = ECBehaviorComponent.getBehaviorIn(eclass)
+			end
+			
+			var ECBehaviorTwoStateAnimated behavior = ECBehaviorTwoStateAnimated.new(\
+				eclass, component, BaseGameApp.getApp().getLoaders(),\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			var String value = parameters.getAt("controllerNameDeactivated", null) cast String
+			if value != null
+				behavior.setControllerNameDeactivated(value)
+			end
+			
+			value = parameters.getAt("controllerNameActivated", null) cast String
+			if value != null
+				behavior.setControllerNameActivated(value)
+			end
+			
+			value = parameters.getAt("controllerNameActivating", null) cast String
+			if value != null
+				behavior.setControllerNameActivating(value)
+			end
+			
+			value = parameters.getAt("controllerNameDeactivating", null) cast String
+			if value != null
+				behavior.setControllerNameDeactivating(value)
+			end
+			
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func TSTriggerTable getTriggerTableFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getTriggerTable()
+				end
+			end
+			return null
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */
@@ -1221,7 +1320,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable(TSTriggerTable triggerTable)
+	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
 	end
 	

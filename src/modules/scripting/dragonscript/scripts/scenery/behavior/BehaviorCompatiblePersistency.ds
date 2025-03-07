@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
 
 pin Dragengine.LoadSave
@@ -44,7 +43,7 @@ pin Dragengine.LoadSave
  * They can be written to support reading the behavior data block of the super class they
  * enhance to avoid breaking save files if possible.
  */
-public interface BehaviorCompatiblePersistency
+interface BehaviorCompatiblePersistency
 	/**
 	 * \brief Unique identifier of behavior.
 	 * \version 1.5
@@ -59,11 +58,11 @@ public interface BehaviorCompatiblePersistency
 	 * \brief Behavior supports loading instance data of another behavior.
 	 * \version 1.5
 	 * 
-	 * Returns true if thie behavior supports loading instance data of another behavior
+	 * Returns true if this behavior supports loading instance data of another behavior
 	 * matching behavior identifier. Called for all behaviors if BehaviorElement encountered
 	 * an instance data block with a behavior identifier not matching any behavior instances.
 	 */
-	func bool supportsBehaviorID( String identifier )
+	func bool supportsBehaviorID(String identifier)
 	
 	/**
 	 * \brief Load instance data of another behavior.
@@ -72,6 +71,6 @@ public interface BehaviorCompatiblePersistency
 	 * Called if supportsBehaviorID(String) returns true for \em identifier. BehaviorElement
 	 * requests behavior to load the supported instance data block into \em instance.
 	 */
-	func void loadSupportedData( String identifier, PersistencyEnvironment env, \
-		FileReader reader, ECBehaviorInstance instance )
+	func void loadSupportedData(String identifier, PersistencyEnvironment env,\
+		FileReader reader, ECBehaviorInstance instance)
 end
