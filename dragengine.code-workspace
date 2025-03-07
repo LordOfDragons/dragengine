@@ -81,6 +81,10 @@
 			"path": "src/deigde/editors/conversation"
 		},
 		{
+			"name": "gameDefinition",
+			"path": "src/deigde/editors/gameDefinition"
+		},
+		{
 			"name": "project",
 			"path": "src/deigde/editors/project"
 		},

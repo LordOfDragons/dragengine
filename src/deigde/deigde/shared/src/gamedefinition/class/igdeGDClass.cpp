@@ -262,6 +262,10 @@ void igdeGDClass::SetPreviewImage( deImage *image ){
 	}
 }
 
+void igdeGDClass::SetDefaultInheritPropertyPrefix(const decString &prefix){
+	pDefaultInheritPropertyPrefix = prefix;
+}
+
 void igdeGDClass::SetPathEClass( const decString &pathEClass ){
 	pPathEClass = pathEClass;
 }

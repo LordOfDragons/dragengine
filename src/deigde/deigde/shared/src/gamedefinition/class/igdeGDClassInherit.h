@@ -38,6 +38,12 @@ class igdeGDClassManager;
  * \brief Inherit from another game definition class.
  */
 class DE_DLL_EXPORT igdeGDClassInherit : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDClassInherit> Ref;
+	
+	
+	
 private:
 	decString pName;
 	igdeGDClassReference pClass;

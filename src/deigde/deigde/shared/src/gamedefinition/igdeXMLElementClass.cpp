@@ -79,7 +79,8 @@ igdeXMLElementClass::~igdeXMLElementClass(){
 // Loading
 ////////////
 
-igdeGDClass *igdeXMLElementClass::LoadElementClass( decBaseFileReader &reader, const char *filename ){
+igdeGDClass *igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
+const char *filename, const igdeGDClassManager &classes){
 	try{
 		decXmlDocumentReference document;
 		document.TakeOver( new decXmlDocument );
@@ -94,7 +95,7 @@ igdeGDClass *igdeXMLElementClass::LoadElementClass( decBaseFileReader &reader, c
 			DETHROW( deeInvalidParam );
 		}
 		
-		return pReadElementClass( *root, filename );
+		return pReadElementClass(*root, filename, classes);
 		
 	}catch( const deException &e ){
 		GetLogger()->LogInfoFormat( GetLoggerSource(),
@@ -134,7 +135,7 @@ public:
 			return true;
 		}
 		
-		pClass.TakeOver( pOwner.LoadElementClass( pReader, path.GetPathUnix() ) );
+		pClass.TakeOver( pOwner.LoadElementClass(pReader, path.GetPathUnix(), pClasses));
 		
 		if( pClasses.HasNamed( pClass->GetName() ) ){
 			pLogger.LogInfoFormat( pLoggerSource, "Ignore duplicate element class '%s'",
@@ -260,18 +261,17 @@ decVector4 igdeXMLElementClass::ReadFloatRectArea( const decXmlElementTag &root 
 igdeXMLElementClass::cMap::cMap(){ }
 igdeXMLElementClass::cMap::~cMap(){ }
 
-igdeGDClass *igdeXMLElementClass::pReadElementClass(
-const decXmlElementTag &root, const char *filename ){
+igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root,
+const char *filename, const igdeGDClassManager &classes){
 	decStringDictionary properties;
-	igdeGDClassReference gdClass;
 	deObjectReference refMap;
-	deObjectReference refInherit;
 	int i;
 	
-	gdClass.TakeOver( new igdeGDClass( GetAttributeString( root, "name" ) ) );
-	refInherit.TakeOver( new igdeGDClassInherit( GetAttributeString( root, "class" ) ) );
-	gdClass->AddInheritClass( ( igdeGDClassInherit* )( deObject* )refInherit );
-	gdClass->SetPathEClass( filename );
+	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::New(
+		new igdeGDClass(GetAttributeString(root, "name"))));
+	gdClass->AddInheritClass(igdeGDClassInherit::Ref::New(
+		new igdeGDClassInherit(GetAttributeString(root, "class"))));
+	gdClass->SetPathEClass(filename);
 	
 	decPath basePath( decPath::CreatePathUnix( filename ) );
 	basePath.RemoveLastComponent();
@@ -283,6 +283,31 @@ const decXmlElementTag &root, const char *filename ){
 	for( i=0; i<root.GetElementCount(); i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
 		if( ! tag ){
+			continue;
+		}
+		
+		if(tag->GetName() == "behavior"){
+			const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::New(
+				new igdeGDClassInherit(GetAttributeString(*tag, "type"))));
+			inherit->ResolveClass(classes);
+			
+			if(inherit->GetClass()){
+				decString id;
+				if(HasAttribute(*tag, "id")){
+					id = GetAttributeString(*tag, "id");
+				}
+				
+				const decString &dipp = inherit->GetClass()->GetDefaultInheritPropertyPrefix();
+				const int dippLen = dipp.GetLength();
+				if(!id.IsEmpty() && dippLen > 0 && dipp.GetAt(dippLen - 1) == '.'){
+					inherit->SetPropertyPrefix(dipp.GetLeft(dippLen - 1) + "(" + id + ").");
+					
+				}else{
+					inherit->SetPropertyPrefix(dipp);
+				}
+			}
+			
+			gdClass->AddInheritClass(inherit);
 			continue;
 		}
 		

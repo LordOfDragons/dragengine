@@ -2873,4 +2873,9 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='GenericBehaviorElement'>
+		<description>Generic BehaviorElementClass with all supported behavior factories added.</description>
+		<scaleMode>free</scaleMode>
+		<category>Dragengine</category>
+	</class>
 </gameDefinition>

@@ -433,7 +433,7 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 			pParseClassInherit( *tag, gdClass );
 			
 		}else if( tagName == "defaultInheritPropertyPrefix" ){
-			// used only by game definition editor
+			gdClass->SetDefaultInheritPropertyPrefix(GetCDataString(*tag));
 			
 		}else if( tagName == "hideTag" ){
 			gdClass->GetHideTags().AddTag( GetCDataString( *tag ) );
