@@ -86,8 +86,7 @@ class ECBehaviorBillboard extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
-			return ECBehaviorBillboard.new(eclass, collider, id)
+			return ECBehaviorBillboard.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
 		end
 	end
 	

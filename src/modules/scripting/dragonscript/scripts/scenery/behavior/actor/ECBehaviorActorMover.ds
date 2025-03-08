@@ -392,11 +392,6 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	 *   <!-- optional: use navigator with id instead of empty string -->
 	 *   <string name='navigator'>second</string>
 	 * </behavior>
-	 * 
-	 * <!-- for adding multiple behaviors use unique identifiers -->
-	 * <behavior type='ECBehaviorActorMover' id='second'>
-	 *   ...
-	 * </behavior>
 	 * \endcode
 	 */
 	class Factory implements BehaviorFactory
@@ -408,10 +403,14 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			
 			var ECBehaviorActorMover behavior = ECBehaviorActorMover.new(eclass,\
 				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				eclass.sharedFactoryHelper.defaultNavigator(eclass, parameters),\
-				ECBehaviorRideOn.getBehaviorIn(eclass), id)
+				ECBehaviorRideOn.getBehaviorIn(eclass))
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
 			

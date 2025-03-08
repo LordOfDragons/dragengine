@@ -96,8 +96,10 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorPlayerInputMove.new(eclass,\
-				ECBehaviorLocomotion.getBehaviorIn(eclass), id)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			return ECBehaviorPlayerInputMove.new(eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
 		end
 	end
 	

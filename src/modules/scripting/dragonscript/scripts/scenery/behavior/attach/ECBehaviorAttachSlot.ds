@@ -129,8 +129,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
-			var ECBehaviorAttachSlot behavior = ECBehaviorAttachSlot.new(eclass, collider, id)
+			var ECBehaviorAttachSlot behavior = ECBehaviorAttachSlot.new(\
+				eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
 			behavior.setVRHand(eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters))
 			

@@ -171,12 +171,15 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			return ECBehaviorPlayerInteractPrompt.new(eclass,\
 				ECBehaviorPlayerControllable.getBehaviorIn(eclass),\
 				createPromptControllerFactory(parameters), getUiContainer(parameters),\
 				getUiContainerAddSettings(parameters),\
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
-				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String), id)
+				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
 		end
 		
 		/**

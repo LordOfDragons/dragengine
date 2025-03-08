@@ -73,8 +73,8 @@ class ECBehaviorEnvMapProbe extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
-			var ECBehaviorEnvMapProbe behavior = ECBehaviorEnvMapProbe.new(eclass, collider, id)
+			var ECBehaviorEnvMapProbe behavior = ECBehaviorEnvMapProbe.new(\
+				eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
 			if parameters.has("layerMask")
 				behavior.getEnvMapProbe().setLayerMask(ElementClass.getSharedCodecPropertyString().\

@@ -94,9 +94,6 @@ class ECBehaviorStashable extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorStashable'/>
-	 * 
-	 * <!-- for adding multiple behaviors use unique identifiers -->
-	 * <behavior type='ECBehaviorStashable' id='second'/>
 	 * \endcode
 	 */
 	class Factory implements BehaviorFactory
@@ -108,7 +105,10 @@ class ECBehaviorStashable extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorStashable.new(eclass, id)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			return ECBehaviorStashable.new(eclass)
 		end
 	end
 	

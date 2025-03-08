@@ -96,8 +96,7 @@ class ECBehaviorNavigationBlocker extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
-			return ECBehaviorNavigationBlocker.new(eclass, collider, id)
+			return ECBehaviorNavigationBlocker.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
 		end
 	end
 	

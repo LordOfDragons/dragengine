@@ -63,8 +63,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
-			return ECBehaviorRidable.new(eclass, collider)
+			return ECBehaviorRidable.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 		end
 	end
 	

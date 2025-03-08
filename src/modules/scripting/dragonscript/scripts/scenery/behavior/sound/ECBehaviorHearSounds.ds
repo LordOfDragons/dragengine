@@ -138,8 +138,11 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
 			var ECBehaviorHearSounds behavior = ECBehaviorHearSounds.new(eclass,\
-				ECBehaviorCollider.getBehaviorIn(eclass), id)
+				ECBehaviorCollider.getBehaviorIn(eclass))
 			
 			if parameters.has("layerMask")
 				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\

@@ -95,8 +95,7 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
-			return ECBehaviorNavigationSpace.new(eclass, collider, id)
+			return ECBehaviorNavigationSpace.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
 		end
 	end
 	

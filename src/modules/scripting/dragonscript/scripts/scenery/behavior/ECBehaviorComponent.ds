@@ -123,8 +123,7 @@ class ECBehaviorComponent extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorCollider collider = ECBehaviorCollider.getBehaviorIn(eclass)
-			return ECBehaviorComponent.new(eclass, collider, id)
+			return ECBehaviorComponent.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
 		end
 	end
 	

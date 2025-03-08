@@ -67,7 +67,10 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorDayTimeSky.new(eclass, ECBehaviorSky.getBehaviorIn(eclass), id)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			return ECBehaviorDayTimeSky.new(eclass, ECBehaviorSky.getBehaviorIn(eclass))
 		end
 	end
 	
