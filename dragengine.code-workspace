@@ -85,6 +85,10 @@
 			"path": "src/deigde/editors/gameDefinition"
 		},
 		{
+			"name": "world",
+			"path": "src/deigde/editors/world"
+		},
+		{
 			"name": "project",
 			"path": "src/deigde/editors/project"
 		},

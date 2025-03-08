@@ -2356,8 +2356,8 @@ void igdeWindowMain::pLoadXMLElementClasses( igdeGameProject &gameProject ){
 	for( i=0; i<pathCount; i++ ){
 		const decString &path = pathList.GetAt( i );
 		GetLogger()->LogInfoFormat( LOGSOURCE, "Load XML Element Classes: %s", path.GetString() );
-		loader.LoadElementClasses( *gameProject.GetXMLEClassGameDefinition()->GetClassManager(),
-			vfs, decPath::CreatePathUnix( path ) );
+		loader.LoadElementClasses(*gameProject.GetXMLEClassGameDefinition()->GetClassManager(),
+			vfs, decPath::CreatePathUnix(path));
 	}
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Load XML Element Classes done: %.1fs (%d found)",
 		timer.GetElapsedTime(), gameProject.GetXMLEClassGameDefinition()->GetClassManager()->GetCount() );
@@ -2370,8 +2370,7 @@ void igdeWindowMain::pLoadXMLElementClasses( igdeGameProject &gameProject ){
 	for( i=0; i<count; i++ ){
 		const igdeGDClass &gdClass = *gdClasses.GetAt( i );
 		GetLogger()->LogInfoFormat( LOGSOURCE, "XMLEClass: %s%s", gdClass.GetName().GetString(),
-			gameProject.GetProjectGameDefinition()->GetClassManager()->HasNamed( gdClass.GetName() )
-				? "(existing in project)" : "" );
+			projectClasses.HasNamed( gdClass.GetName() ) ? "(existing in project)" : "" );
 	}
 	*/
 	// DEBUG

@@ -66,12 +66,11 @@ public:
 	/** \name Loading */
 	/*@{*/
 	/** \brief Load XML Element Class. */
-	igdeGDClass *LoadElementClass(decBaseFileReader &reader, const char *filename,
-		const igdeGDClassManager &classes);
+	igdeGDClass *LoadElementClass(decBaseFileReader &reader, const char *filename);
 	
 	/** \brief Load XML Element Classes from directory and add them to game definition. */
-	void LoadElementClasses( igdeGDClassManager &classes, deVirtualFileSystem &vfs,
-		const decPath &directory, const char *pattern = "*.deeclass", bool recursive = true );
+	void LoadElementClasses(igdeGDClassManager &classes, deVirtualFileSystem &vfs,
+		const decPath &directory, const char *pattern = "*.deeclass", bool recursive = true);
 	
 	
 	
@@ -94,8 +93,7 @@ protected:
 	
 	
 private:
-	igdeGDClass *pReadElementClass(const decXmlElementTag &root, const char *filename,
-		const igdeGDClassManager &classes);
+	igdeGDClass *pReadElementClass(const decXmlElementTag &root, const char *filename);
 	bool pReadPropertyValue( const decXmlElementTag &root, decString &value,
 		cMap *map, const char *filename );
 	void pReadList( const decXmlElementTag &root, decStringList &list, const char *filename );

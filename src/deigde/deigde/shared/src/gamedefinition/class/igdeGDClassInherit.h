@@ -48,7 +48,8 @@ private:
 	decString pName;
 	igdeGDClassReference pClass;
 	decString pPropertyPrefix;
-	
+	decString pAutoPropertyPrefixId;
+	bool pUseAutoPropertyPrefixId;
 	
 	
 public:
@@ -86,6 +87,18 @@ public:
 	
 	/** \brief Set prefix to add to properties defined in inherited class. */
 	void SetPropertyPrefix( const char *prefix );
+	
+	/** \brief Auto property prefix ID used only during resolving. */
+	inline const decString &GetAutoPropertyPrefixId() const{ return pAutoPropertyPrefixId; }
+	
+	/** \brief Set auto property prefix ID used only during resolving. */
+	void SetAutoPropertyPrefixId(const char *id);
+	
+	/** \brief Use auto property prefix ID. */
+	inline bool GetUseAutoPropertyPrefixId() const{ return pUseAutoPropertyPrefixId; }
+	
+	/** \brief Set use auto property prefix ID. */
+	void SetUseAutoPropertyPrefixId(bool use);
 	/*@}*/
 };
 

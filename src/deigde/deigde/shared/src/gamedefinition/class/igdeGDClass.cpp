@@ -139,6 +139,7 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 			pInheritClasses.Add( objRef );
 		}
 		
+		pDefaultInheritPropertyPrefix = gdclass.pDefaultInheritPropertyPrefix;
 		pPathEClass = gdclass.pPathEClass;
 		pComponentTextures.SetToDeepCopyFrom( gdclass.pComponentTextures );
 		

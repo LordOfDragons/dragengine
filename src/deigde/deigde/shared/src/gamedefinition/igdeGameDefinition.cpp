@@ -222,7 +222,7 @@ void igdeGameDefinition::FindClasses( deVirtualFileSystem &vfs, igdeGDClassManag
 	for( i=0; i<pathCount; i++ ){
 		const decString &path = pathList.GetAt( i );
 		logger.LogInfoFormat( "IGDE", "Load XML Element Classes: %s", path.GetString() );
-		loader.LoadElementClasses( found, vfs, decPath::CreatePathUnix( path ) );
+		loader.LoadElementClasses(found, vfs, decPath::CreatePathUnix(path));
 	}
 	logger.LogInfoFormat( "IGDE", "Load XML Element Classes done: %.1fs (%d found)",
 		timer.GetElapsedTime(), found.GetCount() );
