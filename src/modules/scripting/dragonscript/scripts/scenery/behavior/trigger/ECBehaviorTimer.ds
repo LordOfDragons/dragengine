@@ -115,6 +115,9 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -125,8 +128,11 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorTimer.new(eclass,\
+			var ECBehaviorTimer behavior = ECBehaviorTimer.new(eclass,\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "timer", id)
+			return behavior
 		end
 		
 		/**

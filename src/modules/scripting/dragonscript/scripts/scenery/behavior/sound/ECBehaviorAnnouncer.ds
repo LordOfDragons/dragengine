@@ -137,6 +137,9 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -156,6 +159,8 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "announcer", id)
 			return behavior
 		end
 		
@@ -421,7 +426,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	/** \brief Create behavior element class. */
 	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable, String id) this(eclass, collider, loaders, triggerTable, \
-	id, id.empty() if "speaker" else "speaker(" + id + ")")
+	id, id.empty() if "announcer" else "announcer(" + id + ")")
 	end
 	
 	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \

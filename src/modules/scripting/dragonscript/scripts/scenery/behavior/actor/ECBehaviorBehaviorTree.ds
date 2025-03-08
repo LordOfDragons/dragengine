@@ -287,6 +287,9 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * <!-- for adding multiple behaviors use unique identifiers -->
 	 * <behavior type='ECBehaviorBehaviorTree' id='second'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -297,7 +300,10 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorBehaviorTree.new(eclass, id)
+			var ECBehaviorBehaviorTree behavior = ECBehaviorBehaviorTree.new(eclass, id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "behaviorTree", id)
+			return behavior
 		end
 	end
 	

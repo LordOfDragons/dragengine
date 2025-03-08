@@ -119,6 +119,9 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -134,6 +137,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			
 			behavior.setVRHand(eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters))
 			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "attachSlot", id)
 			return behavior
 		end
 	end

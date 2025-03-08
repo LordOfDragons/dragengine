@@ -151,6 +151,9 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -161,9 +164,12 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorVRControlDesktop.new(eclass,\
+			var ECBehaviorVRControlDesktop behavior = ECBehaviorVRControlDesktop.new(eclass,\
 				ECBehaviorVRHandPointAt.getBehaviorIn(eclass,\
 					parameters.getAt("vrHandPointAt") cast String), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrControlDesktop", id)
+			return behavior
 		end
 	end
 	

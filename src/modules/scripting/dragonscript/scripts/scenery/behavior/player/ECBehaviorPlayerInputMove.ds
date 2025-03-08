@@ -86,6 +86,9 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorPlayerInputMove'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -99,7 +102,11 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorPlayerInputMove.new(eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
+			var ECBehaviorPlayerInputMove behavior = ECBehaviorPlayerInputMove.new(\
+				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "playerInputMove")
+			return behavior
 		end
 	end
 	

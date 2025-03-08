@@ -108,6 +108,9 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorRideOn'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -121,8 +124,12 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorRideOn.new(eclass, ECBehaviorLocomotion.getBehaviorIn(eclass),\
+			var ECBehaviorRideOn behavior = ECBehaviorRideOn.new(eclass,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				ECBehaviorProjectToGround.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "rideOn")
+			return behavior
 		end
 	end
 	

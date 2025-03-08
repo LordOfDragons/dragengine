@@ -60,6 +60,9 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorLocomotion'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -74,12 +77,16 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorColliderAI colliderAI = ECBehaviorColliderAI.getBehaviorIn(eclass)
+			var ECBehaviorLocomotion behavior
 			if colliderAI != null
-				return ECBehaviorLocomotion.new(eclass, colliderAI)
+				behavior = ECBehaviorLocomotion.new(eclass, colliderAI)
 				
 			else
-				return ECBehaviorLocomotion.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
+				behavior = ECBehaviorLocomotion.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			end
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "locomotion")
+			return behavior
 		end
 	end
 	

@@ -160,6 +160,9 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	 *   <string name='bindingManager'>default</string>
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	abstract class Factory implements BehaviorFactory
 		func new()
@@ -173,13 +176,16 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorPlayerLookAtInteractPrompt.new(eclass,\
-				ECBehaviorPlayerControllable.getBehaviorIn(eclass),\
+			var ECBehaviorPlayerLookAtInteractPrompt behavior = ECBehaviorPlayerLookAtInteractPrompt.new(\
+				eclass, ECBehaviorPlayerControllable.getBehaviorIn(eclass),\
 				ECBehaviorLookAt.getBehaviorIn(eclass),\
 				createPromptControllerFactory(parameters), getUiContainer(parameters),\
 				getUiContainerAddSettings(parameters),\
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "playerLookAtInteractPrompt")
+			return behavior
 		end
 		
 		/**

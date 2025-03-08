@@ -65,6 +65,9 @@ class ECBCTRRBindings extends DefaultECBehavior
 	 *   <string name='subtitleTheme'>default</string>
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -78,10 +81,14 @@ class ECBCTRRBindings extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBCTRRBindings.new(eclass, ECBehaviorConversationActor.getBehaviorIn(eclass),\
+			var ECBCTRRBindings behavior = ECBCTRRBindings.new(eclass,\
+				ECBehaviorConversationActor.getBehaviorIn(eclass),\
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String),\
 				getSubtitleThemeFor(parameters.getAt("subtitleTheme", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "ctrrBindings")
+			return behavior
 		end
 		
 		/**

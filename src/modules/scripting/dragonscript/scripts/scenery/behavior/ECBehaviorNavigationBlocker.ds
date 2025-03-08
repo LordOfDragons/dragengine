@@ -86,6 +86,9 @@ class ECBehaviorNavigationBlocker extends DefaultECBehavior
 	 * <!-- for adding multiple behaviors use unique identifiers -->
 	 * <behavior type='ECBehaviorNavigationBlocker' id='second'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -96,7 +99,11 @@ class ECBehaviorNavigationBlocker extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorNavigationBlocker.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
+			var ECBehaviorNavigationBlocker behavior = ECBehaviorNavigationBlocker.new(\
+				eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "navigationBlocker", id)
+			return behavior
 		end
 	end
 	

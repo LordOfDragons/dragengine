@@ -242,6 +242,9 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * <!-- for adding multiple behaviors use unique identifiers -->
 	 * <behavior type='ECBehaviorComposed' id='second'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -252,7 +255,10 @@ class ECBehaviorComposed extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorComposed.new(eclass, id)
+			var ECBehaviorComposed behavior = ECBehaviorComposed.new(eclass, id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "composed", id)
+			return behavior
 		end
 	end
 	

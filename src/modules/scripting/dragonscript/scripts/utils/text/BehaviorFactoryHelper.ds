@@ -903,6 +903,41 @@ class BehaviorFactoryHelper
 	end
 	
 	
+	/**
+	 * \brief Set parameters as prefixed property.
+	 * 
+	 * Allows to simplify setting properties of a newly added behavior without needing to know
+	 * the property prefix used. Considers all parameters starting with "." to be properties with
+	 * the prefix prepanded to their name. If id is empty string prepends "prefix". Otherwise
+	 * prepends "prefix(id)".
+	 */
+	func void setPropertiesFromParameters(BehaviorElementClass eclass,\
+	Dictionary parameters, String prefix, String id)
+		if parameters.getCount() == 0
+			return
+		end
+		
+		if not id.empty()
+			prefix = prefix + "(" + id + ")"
+		end
+		
+		parameters.forEach(block String key, Object value
+			if key.getAt(0) == '.'
+				eclass.setPropertyValue(prefix + key, value)
+			end
+		end)
+	end
+	
+	func void setPropertiesFromParameters(BehaviorElementClass eclass,\
+	Dictionary parameters, String prefix)
+		setPropertiesFromParameters(eclass, parameters, prefix, "")
+	end
+	
+	func void setPropertiesFromParameters(BehaviorElementClass eclass, Dictionary parameters)
+		setPropertiesFromParameters(eclass, parameters, "", "")
+	end
+	
+	
 	/** \brief Add common behavior factories to element class. */
 	func void addCommonFactories(BehaviorElementClass eclass)
 		eclass.addBehaviorFactory(ECBehaviorAnchorElement.Factory.new())

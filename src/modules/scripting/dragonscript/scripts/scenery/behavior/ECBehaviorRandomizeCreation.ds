@@ -52,6 +52,9 @@ class ECBehaviorRandomizeCreation extends DefaultECBehavior implements BehaviorP
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorRandomizeCreation'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -65,7 +68,10 @@ class ECBehaviorRandomizeCreation extends DefaultECBehavior implements BehaviorP
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorRandomizeCreation.new(eclass)
+			var ECBehaviorRandomizeCreation behavior = ECBehaviorRandomizeCreation.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "randomizeCreation")
+			return behavior
 		end
 	end
 	

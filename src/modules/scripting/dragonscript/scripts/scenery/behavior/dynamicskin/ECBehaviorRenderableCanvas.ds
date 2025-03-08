@@ -101,6 +101,9 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -111,8 +114,11 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorRenderableCanvas.new(eclass,\
+			var ECBehaviorRenderableCanvas behavior = ECBehaviorRenderableCanvas.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "renderableCanvas", id)
+			return behavior
 		end
 	end
 	

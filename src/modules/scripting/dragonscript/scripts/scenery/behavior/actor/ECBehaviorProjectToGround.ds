@@ -107,6 +107,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorProjectToGround'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -121,12 +124,16 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorColliderAI colliderAI = ECBehaviorColliderAI.getBehaviorIn(eclass)
+			var ECBehaviorProjectToGround behavior
 			if colliderAI != null
-				return ECBehaviorProjectToGround.new(eclass, colliderAI)
+				behavior = ECBehaviorProjectToGround.new(eclass, colliderAI)
 				
 			else
-				return ECBehaviorProjectToGround.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
+				behavior = ECBehaviorProjectToGround.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			end
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "projectToGround")
+			return behavior
 		end
 	end
 	

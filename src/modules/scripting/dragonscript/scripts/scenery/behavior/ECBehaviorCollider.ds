@@ -157,6 +157,9 @@ class ECBehaviorCollider extends DefaultECBehavior
 	 *   <string name='component'>second</string>
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -170,8 +173,11 @@ class ECBehaviorCollider extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorCollider.new(eclass,\
+			var ECBehaviorCollider behavior = ECBehaviorCollider.new(eclass,\
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "collider")
+			return behavior
 		end
 	end
 	

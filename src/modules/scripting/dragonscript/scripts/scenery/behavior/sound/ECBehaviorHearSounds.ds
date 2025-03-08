@@ -128,6 +128,9 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 *   <string name='layerMask'>0 1 4</string>
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -149,6 +152,8 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "hearSound")
 			return behavior
 		end
 	end

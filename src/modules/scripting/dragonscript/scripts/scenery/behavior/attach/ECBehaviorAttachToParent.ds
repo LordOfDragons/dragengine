@@ -92,6 +92,9 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	 *   <string name='layerMask'>0 1 4</string>
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -105,8 +108,12 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorAttachToParent.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass),\
+			var ECBehaviorAttachToParent behavior = ECBehaviorAttachToParent.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass),\
 				ECBehaviorAttachable.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "attachToParent")
+			return behavior
 		end
 	end
 	

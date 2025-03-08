@@ -53,6 +53,9 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorAvoidedByActor'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -63,7 +66,10 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorAvoidedByActor.new(eclass, id)
+			var ECBehaviorAvoidedByActor behavior = ECBehaviorAvoidedByActor.new(eclass, id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "avoidedByActor", id)
+			return behavior
 		end
 	end
 	

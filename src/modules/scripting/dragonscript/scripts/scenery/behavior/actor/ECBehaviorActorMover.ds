@@ -393,6 +393,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	 *   <string name='navigator'>second</string>
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -414,6 +417,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
 			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "actorMover")
 			return behavior
 		end
 	end

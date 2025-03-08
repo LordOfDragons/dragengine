@@ -87,6 +87,9 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -97,8 +100,11 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorVRHandLaserPointer.new(eclass,\
+			var ECBehaviorVRHandLaserPointer behavior = ECBehaviorVRHandLaserPointer.new(eclass,\
 				ECBehaviorVRHandPointAt.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrHandLaserPointer", id)
+			return behavior
 		end
 	end
 	

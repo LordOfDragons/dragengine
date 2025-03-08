@@ -78,6 +78,8 @@ class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "playSound", id)
 			return behavior
 		end
 	end

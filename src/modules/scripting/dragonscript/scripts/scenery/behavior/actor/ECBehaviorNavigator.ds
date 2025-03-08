@@ -56,6 +56,9 @@ class ECBehaviorNavigator extends DefaultECBehavior
 	 * <!-- for adding multiple behaviors use unique identifiers -->
 	 * <behavior type='ECBehaviorNavigator' id='second'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -66,7 +69,10 @@ class ECBehaviorNavigator extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorNavigator.new(eclass, id)
+			var ECBehaviorNavigator behavior = ECBehaviorNavigator.new(eclass, id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "navigator", id)
+			return behavior
 		end
 	end
 	

@@ -60,6 +60,9 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorStepAside'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -73,7 +76,11 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorStepAside.new(eclass, ECBehaviorActorMover.getBehaviorIn(eclass))
+			var ECBehaviorStepAside behavior = ECBehaviorStepAside.new(eclass,\
+				ECBehaviorActorMover.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "stepAside")
+			return behavior
 		end
 	end
 	

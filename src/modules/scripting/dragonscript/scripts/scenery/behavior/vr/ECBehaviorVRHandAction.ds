@@ -77,6 +77,9 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -87,9 +90,12 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorVRHandAction.new(eclass,\
+			var ECBehaviorVRHandAction behavior = ECBehaviorVRHandAction.new(eclass,\
 				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrHandAction", id)
+			return behavior
 		end
 	end
 	

@@ -102,6 +102,9 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorVRHandPointedAt'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -115,7 +118,10 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorVRHandPointedAt.new(eclass)
+			var ECBehaviorVRHandPointedAt behavior = ECBehaviorVRHandPointedAt.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrHandPointedAt")
+			return behavior
 		end
 	end
 	

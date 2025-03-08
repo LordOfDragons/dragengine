@@ -383,6 +383,9 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorFootSteps'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -396,7 +399,10 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorFootSteps.new(eclass)
+			var ECBehaviorFootSteps behavior = ECBehaviorFootSteps.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "footSteps")
+			return behavior
 		end
 	end
 	

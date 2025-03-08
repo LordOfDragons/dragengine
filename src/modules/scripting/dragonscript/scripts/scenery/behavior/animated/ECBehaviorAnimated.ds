@@ -208,6 +208,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -225,6 +228,8 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			
 			behavior.setControllerName(parameters.getAt("controllerName", null) cast String)
 			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "animated", id)
 			return behavior
 		end
 		

@@ -108,6 +108,9 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -118,9 +121,12 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorRenderableLight.new(eclass,\
+			var ECBehaviorRenderableLight behavior = ECBehaviorRenderableLight.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters),\
 				eclass.sharedFactoryHelper.defaultLight(eclass, parameters), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "renderableLight", id)
+			return behavior
 		end
 	end
 	

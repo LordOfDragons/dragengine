@@ -50,6 +50,7 @@ private:
 	decString pPropertyPrefix;
 	decString pAutoPropertyPrefixId;
 	bool pUseAutoPropertyPrefixId;
+	decStringDictionary pAutoPrefixProperties;
 	
 	
 public:
@@ -99,6 +100,13 @@ public:
 	
 	/** \brief Set use auto property prefix ID. */
 	void SetUseAutoPropertyPrefixId(bool use);
+	
+	/** \brief Auto prefix propertiues. */
+	decStringDictionary &GetAutoPrefixProperties(){ return pAutoPrefixProperties; }
+	inline const decStringDictionary &GetAutoPrefixProperties() const{ return pAutoPrefixProperties; }
+	
+	/** \brief Add auto prefixed properties to class if possible. */
+	void AddAutoPrefixedPropertiesTo(igdeGDClass &gdclass);
 	/*@}*/
 };
 

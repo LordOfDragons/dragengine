@@ -69,8 +69,7 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorAnchorElement.new(eclass,\
-				parameters.getAt("propertyName", "anchorID") cast String)
+			return ECBehaviorAnchorElement.new(eclass, parameters.getAt("propertyName", "anchorID") cast String)
 		end
 	end
 	

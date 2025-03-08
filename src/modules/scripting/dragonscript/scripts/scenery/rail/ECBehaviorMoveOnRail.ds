@@ -102,6 +102,9 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -115,8 +118,12 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorMoveOnRail.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass),\
+			var ECBehaviorMoveOnRail behavior = ECBehaviorMoveOnRail.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "moveOnRail")
+			return behavior
 		end
 		
 		/**

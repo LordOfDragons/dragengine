@@ -284,13 +284,7 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 		}
 		
 		if(tag->GetName() == "behavior"){
-			const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::New(
-				new igdeGDClassInherit(GetAttributeString(*tag, "type"))));
-			inherit->SetUseAutoPropertyPrefixId(true);
-			if(HasAttribute(*tag, "id")){
-				inherit->SetAutoPropertyPrefixId(GetAttributeString(*tag, "id"));
-			}
-			gdClass->AddInheritClass(inherit);
+			pReadBehavior(*tag, gdClass, filename, basePathStr);
 			continue;
 		}
 		
@@ -316,6 +310,49 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 	
 	gdClass->AddReference(); // caller takes over reference
 	return gdClass;
+}
+
+void igdeXMLElementClass::pReadBehavior(const decXmlElementTag &root,
+igdeGDClass &gdClass, const char *filename, const decString &basePathStr){
+	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::New(
+		new igdeGDClassInherit(GetAttributeString(root, "type"))));
+	inherit->SetUseAutoPropertyPrefixId(true);
+	if(HasAttribute(root, "id")){
+		inherit->SetAutoPropertyPrefixId(GetAttributeString(root, "id"));
+	}
+	
+	decStringDictionary &properties = inherit->GetAutoPrefixProperties();
+	const cMap::Ref map(cMap::Ref::New(new cMap));
+	int i;
+	
+	for( i=0; i<root.GetElementCount(); i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		const decString propertyName(GetAttributeString(*tag, "name"));
+		if(!propertyName.BeginsWith(".")){
+			continue;
+		}
+		
+		decString propertyValue;
+		
+		map->map.RemoveAll();
+		
+		if(!pReadPropertyValue(*tag, propertyValue, map, filename)){
+			continue;
+		}
+		
+		if(propertyName.EndsWith(".textureReplacements")){
+			pProcessTextureReplacements(map, gdClass, basePathStr);
+			
+		}else{
+			properties.SetAt(propertyName.GetMiddle(1), propertyValue);
+		}
+	}
+	
+	gdClass.AddInheritClass(inherit);
 }
 
 bool igdeXMLElementClass::pReadPropertyValue( const decXmlElementTag &root,

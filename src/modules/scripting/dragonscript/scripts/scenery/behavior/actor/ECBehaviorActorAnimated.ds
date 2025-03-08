@@ -127,6 +127,9 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -137,9 +140,12 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorActorAnimated.new(eclass,\
+			var ECBehaviorActorAnimated behavior = ECBehaviorActorAnimated.new(eclass,\
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
 				ECBehaviorLocomotion.getBehaviorIn(eclass), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "actorAnimated", id)
+			return behavior
 		end
 	end
 	

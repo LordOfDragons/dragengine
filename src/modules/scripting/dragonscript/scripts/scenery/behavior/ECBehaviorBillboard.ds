@@ -76,6 +76,9 @@ class ECBehaviorBillboard extends DefaultECBehavior
 	 * <!-- for adding multiple behaviors use unique identifiers -->
 	 * <behavior type='ECBehaviorBillboard' id='second'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -86,7 +89,11 @@ class ECBehaviorBillboard extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			return ECBehaviorBillboard.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
+			var ECBehaviorBillboard behavior = ECBehaviorBillboard.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "billboard", id)
+			return behavior
 		end
 	end
 	

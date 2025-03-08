@@ -77,6 +77,8 @@ public:
 protected:
 	class DE_DLL_EXPORT cMap : public deObject{
 	public:
+		typedef deTObjectReference<cMap> Ref;
+		
 		decString value;
 		decObjectDictionary map;
 		cMap();
@@ -94,6 +96,8 @@ protected:
 	
 private:
 	igdeGDClass *pReadElementClass(const decXmlElementTag &root, const char *filename);
+	void pReadBehavior(const decXmlElementTag &root, igdeGDClass &gdClass,
+		const char *filename, const decString &basePathStr);
 	bool pReadPropertyValue( const decXmlElementTag &root, decString &value,
 		cMap *map, const char *filename );
 	void pReadList( const decXmlElementTag &root, decStringList &list, const char *filename );

@@ -523,6 +523,9 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 	 *   <string name='networkStateTracker'>default</string>
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -536,11 +539,14 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorNetworkState.new(eclass,\
+			var ECBehaviorNetworkState behavior = ECBehaviorNetworkState.new(eclass,\
 				parameters.getAt("requestLinkCode") cast byte,\
 				parameters.getAt("messageCode") cast byte,\
 				getConnectionTrackerFor(parameters.getAt("connectionTracker", "default") cast String),\
 				getNetworkStateTrackerFor(parameters.getAt("networkStateTracker", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "networkState")
+			return behavior
 		end
 		
 		/**

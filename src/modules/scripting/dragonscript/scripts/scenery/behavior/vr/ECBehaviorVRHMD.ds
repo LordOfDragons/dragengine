@@ -110,6 +110,9 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	 *   ...
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -123,8 +126,12 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorVRHMD.new(eclass, ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
+			var ECBehaviorVRHMD behavior = ECBehaviorVRHMD.new(eclass,\
+				ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrhmd")
+			return behavior
 		end
 		
 		/**

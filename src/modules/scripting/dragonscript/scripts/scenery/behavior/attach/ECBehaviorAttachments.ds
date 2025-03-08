@@ -49,6 +49,9 @@ class ECBehaviorAttachments extends DefaultECBehavior
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorAttachments'/>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -62,7 +65,10 @@ class ECBehaviorAttachments extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			return ECBehaviorAttachments.new(eclass)
+			var ECBehaviorAttachments behavior = ECBehaviorAttachments.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "attachments")
+			return behavior
 		end
 	end
 	

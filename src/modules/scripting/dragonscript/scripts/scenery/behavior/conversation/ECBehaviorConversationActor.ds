@@ -366,6 +366,9 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 *   <string name='subtitleTheme'>default</string>
 	 * </behavior>
 	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -391,6 +394,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				behavior.setSubtitleTheme(getSubtitleThemeFor(parameters.getAt("subtitleTheme") cast String))
 			end
 			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "convoActor")
 			return behavior
 		end
 		

@@ -215,7 +215,9 @@ void igdeGDClass::ResolveInheritClasses( const igdeGDClassManager &classManager 
 	const int count = pInheritClasses.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) )->ResolveClass( classManager );
+		igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		inherit.ResolveClass(classManager);
+		inherit.AddAutoPrefixedPropertiesTo(*this);
 	}
 }
 
