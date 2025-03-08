@@ -1611,7 +1611,7 @@
 		<particleEmitter>
 			<link target='path' property='path'/>
 			<link target='attachPosition' property='position'/>
-			<link target='attachRotation' property='rotation'/>
+			<link target='attachRotation' property='orientation'/>
 			<link target='casting' property='casting'/>
 			<trigger target='casting' property='trigger'/>
 		</particleEmitter>
