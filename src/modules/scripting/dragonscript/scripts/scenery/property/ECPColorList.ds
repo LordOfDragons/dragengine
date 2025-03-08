@@ -50,13 +50,16 @@ pin Dragengine.Preloading
  * Alternatively a string can be used with the same content as the stub property value:
  * 
  * \code{.xml}
- * <string name='propertyName'>1,0,0 0,1,0.5 0.25,0.5,1</string>
+ * <string name='propertyName'>"1 0 0" "0 1 0.5" "0.25 0.5 1"</string>
  * \endcode
  * 
- * In stub properties the coding is of the form "r1,g1,b1 r2,g2,b2 ...". The following
- * example defines the same three colors as above in sub property string form:
+ * In stub properties the coding is of the form "color1 color2 ..." where color is encoded as
+ * "r g b". Since both uses space to separate tokens colors have to be wrapped in double quotes.
+ * The following example defines the same three colors as above in sub property string form:
  * 
- * "1,0,0 0,1,0.5 0.25,0.5,1"
+ * \code
+ * "1 0 0" "0 1 0.5" "0.25 0.5 1"
+ * \endcode
  * 
  * Optionally newline can be used instead of whitespace. This can be easier to write with
  * long list of colors.
