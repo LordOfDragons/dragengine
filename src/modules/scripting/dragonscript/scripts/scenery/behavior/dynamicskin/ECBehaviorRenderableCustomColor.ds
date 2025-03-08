@@ -186,11 +186,11 @@ class ECBehaviorRenderableCustomColor extends DefaultECBehavior
 				eclass.sharedFactoryHelper.defaultRenderableCanvas(eclass, parameters)
 			
 			if renderableCanvas != null
-				return ECBehaviorRenderableCustomColor.new(eclass, customColor, renderableCanvas, id)
+				return ECBehaviorRenderableCustomColor.new(eclass, customColor, renderableCanvas, "", id)
 				
 			else
 				return ECBehaviorRenderableCustomColor.new(eclass, customColor,\
-					eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
+					eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), "", id)
 			end
 		end
 	end
