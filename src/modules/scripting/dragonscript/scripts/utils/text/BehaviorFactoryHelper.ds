@@ -938,200 +938,200 @@ class BehaviorFactoryHelper
 	end
 	
 	
-	/** \brief Add common behavior factories to element class. */
-	func void addCommonFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorAnchorElement.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorAvoidedByActor.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorBillboard.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorCamera.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorCollider.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorComponent.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorComposed.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorConvoCoordSystem.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorCustomColor.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorDecal.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorEnvMapProbe.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorForceField.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorHitScan.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorLight.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorLightDimmer.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorNavigationBlocker.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorNavigationSpace.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorParticleEmitter.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRandomizeCreation.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRandomizeGeometry.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRidable.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorShowElement.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorShowMessage.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorStateMachine.Factory.new())
+	/** \brief Add common behavior factories to factory list. */
+	func void addCommonFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorAnchorElement.Factory.new())
+		factories.add(ECBehaviorAvoidedByActor.Factory.new())
+		factories.add(ECBehaviorBillboard.Factory.new())
+		factories.add(ECBehaviorCamera.Factory.new())
+		factories.add(ECBehaviorCollider.Factory.new())
+		factories.add(ECBehaviorComponent.Factory.new())
+		factories.add(ECBehaviorComposed.Factory.new())
+		factories.add(ECBehaviorConvoCoordSystem.Factory.new())
+		factories.add(ECBehaviorCustomColor.Factory.new())
+		factories.add(ECBehaviorDecal.Factory.new())
+		factories.add(ECBehaviorEnvMapProbe.Factory.new())
+		factories.add(ECBehaviorForceField.Factory.new())
+		factories.add(ECBehaviorHitScan.Factory.new())
+		factories.add(ECBehaviorLight.Factory.new())
+		factories.add(ECBehaviorLightDimmer.Factory.new())
+		factories.add(ECBehaviorNavigationBlocker.Factory.new())
+		factories.add(ECBehaviorNavigationSpace.Factory.new())
+		factories.add(ECBehaviorParticleEmitter.Factory.new())
+		factories.add(ECBehaviorRandomizeCreation.Factory.new())
+		factories.add(ECBehaviorRandomizeGeometry.Factory.new())
+		factories.add(ECBehaviorRidable.Factory.new())
+		factories.add(ECBehaviorShowElement.Factory.new())
+		factories.add(ECBehaviorShowMessage.Factory.new())
+		factories.add(ECBehaviorStateMachine.Factory.new())
 	end
 	
-	/** \brief Add actor behavior factories to element class. */
-	func void addActorFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorActorAIAction.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorActorAnimated.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorActorCutscene.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorActorIK.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorActorMover.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorActorMoverUnstuck.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorActorTransmission.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorAlignActor.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorAvoidCollision.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorBehaviorTree.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorBodyTilting.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorClearPath.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorColliderAI.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorFootSteps.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorLocomotion.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorLookAt.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorNavigator.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorParameterTable.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorProjectToGround.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRideOn.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorStepAside.Factory.new())
+	/** \brief Add actor behavior factories to factory list. */
+	func void addActorFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorActorAIAction.Factory.new())
+		factories.add(ECBehaviorActorAnimated.Factory.new())
+		factories.add(ECBehaviorActorCutscene.Factory.new())
+		factories.add(ECBehaviorActorIK.Factory.new())
+		factories.add(ECBehaviorActorMover.Factory.new())
+		factories.add(ECBehaviorActorMoverUnstuck.Factory.new())
+		factories.add(ECBehaviorActorTransmission.Factory.new())
+		factories.add(ECBehaviorAlignActor.Factory.new())
+		factories.add(ECBehaviorAvoidCollision.Factory.new())
+		factories.add(ECBehaviorBehaviorTree.Factory.new())
+		factories.add(ECBehaviorBodyTilting.Factory.new())
+		factories.add(ECBehaviorClearPath.Factory.new())
+		factories.add(ECBehaviorColliderAI.Factory.new())
+		factories.add(ECBehaviorFootSteps.Factory.new())
+		factories.add(ECBehaviorLocomotion.Factory.new())
+		factories.add(ECBehaviorLookAt.Factory.new())
+		factories.add(ECBehaviorNavigator.Factory.new())
+		factories.add(ECBehaviorParameterTable.Factory.new())
+		factories.add(ECBehaviorProjectToGround.Factory.new())
+		factories.add(ECBehaviorRideOn.Factory.new())
+		factories.add(ECBehaviorStepAside.Factory.new())
 	end
 	
-	/** \brief Add animated behavior factories to element class. */
-	func void addAnimatedFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorAnimated.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorTwoStateAnimated.Factory.new())
+	/** \brief Add animated behavior factories to factory list. */
+	func void addAnimatedFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorAnimated.Factory.new())
+		factories.add(ECBehaviorTwoStateAnimated.Factory.new())
 	end
 	
-	/** \brief Add attach behavior factories to element class. */
-	func void addAttachFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorAttachable.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorAttachments.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorAttachSlot.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorAttachToParent.Factory.new())
+	/** \brief Add attach behavior factories to factory list. */
+	func void addAttachFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorAttachable.Factory.new())
+		factories.add(ECBehaviorAttachments.Factory.new())
+		factories.add(ECBehaviorAttachSlot.Factory.new())
+		factories.add(ECBehaviorAttachToParent.Factory.new())
 	end
 	
-	/** \brief Add behavior tree behavior factories to element class. */
-	func void addBehaviorTreeFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorBehaviorTreeFlags.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorBehaviorTreeTimer.Factory.new())
+	/** \brief Add behavior tree behavior factories to factory list. */
+	func void addBehaviorTreeFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorBehaviorTreeFlags.Factory.new())
+		factories.add(ECBehaviorBehaviorTreeTimer.Factory.new())
 	end
 	
-	/** \brief Add conversation behavior factories to element class. */
-	func void addConversationFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBCTRRBindings.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorConversation.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorConversationActor.Factory.new())
+	/** \brief Add conversation behavior factories to factory list. */
+	func void addConversationFactories(BehaviorFactoryList factories)
+		factories.add(ECBCTRRBindings.Factory.new())
+		factories.add(ECBehaviorConversation.Factory.new())
+		factories.add(ECBehaviorConversationActor.Factory.new())
 	end
 	
-	/** \brief Add dynamic skin behavior factories to element class. */
-	func void addDynamicSkinFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorAttachDynamicSkin.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorDynamicSkin.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRenderableCamera.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRenderableCanvas.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRenderableCustomColor.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRenderableDesktop.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRenderableLight.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorRenderablePanel.Factory.new())
+	/** \brief Add dynamic skin behavior factories to factory list. */
+	func void addDynamicSkinFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorAttachDynamicSkin.Factory.new())
+		factories.add(ECBehaviorDynamicSkin.Factory.new())
+		factories.add(ECBehaviorRenderableCamera.Factory.new())
+		factories.add(ECBehaviorRenderableCanvas.Factory.new())
+		factories.add(ECBehaviorRenderableCustomColor.Factory.new())
+		factories.add(ECBehaviorRenderableDesktop.Factory.new())
+		factories.add(ECBehaviorRenderableLight.Factory.new())
+		factories.add(ECBehaviorRenderablePanel.Factory.new())
 	end
 	
-	/** \brief Add effect behavior factories to element class. */
-	func void addEffectFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorOutline.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorSkinSwitcher.Factory.new())
+	/** \brief Add effect behavior factories to factory list. */
+	func void addEffectFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorOutline.Factory.new())
+		factories.add(ECBehaviorSkinSwitcher.Factory.new())
 	end
 	
-	/** \brief Add interaction behavior factories to element class. */
-	func void addInteractionFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorControlDesktop.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorGrabber.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorGrabSpot.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorInteractionSpot.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorInteractPrompt.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorLookedAt.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorOccupier.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorVRHandPointedAt.Factory.new())
+	/** \brief Add interaction behavior factories to factory list. */
+	func void addInteractionFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorControlDesktop.Factory.new())
+		factories.add(ECBehaviorGrabber.Factory.new())
+		factories.add(ECBehaviorGrabSpot.Factory.new())
+		factories.add(ECBehaviorInteractionSpot.Factory.new())
+		factories.add(ECBehaviorInteractPrompt.Factory.new())
+		factories.add(ECBehaviorLookedAt.Factory.new())
+		factories.add(ECBehaviorOccupier.Factory.new())
+		factories.add(ECBehaviorVRHandPointedAt.Factory.new())
 	end
 	
-	/** \brief Add inventory behavior factories to element class. */
-	func void addInventoryFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorInventory.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorStashable.Factory.new())
+	/** \brief Add inventory behavior factories to factory list. */
+	func void addInventoryFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorInventory.Factory.new())
+		factories.add(ECBehaviorStashable.Factory.new())
 	end
 	
-	/** \brief Add network behavior factories to element class. */
-	func void addNetworkFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorNetworkState.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorNStateGeometry.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorNStateLocomotion.Factory.new())
+	/** \brief Add network behavior factories to factory list. */
+	func void addNetworkFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorNetworkState.Factory.new())
+		factories.add(ECBehaviorNStateGeometry.Factory.new())
+		factories.add(ECBehaviorNStateLocomotion.Factory.new())
 	end
 	
-	/** \brief Add player behavior factories to element class. */
-	func void addPlayerFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorPlayerControllable.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorPlayerInputCrouch.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorPlayerInputLook.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorPlayerInputMove.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorPlayerInputTurn.Factory.new())
+	/** \brief Add player behavior factories to factory list. */
+	func void addPlayerFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorPlayerControllable.Factory.new())
+		factories.add(ECBehaviorPlayerInputCrouch.Factory.new())
+		factories.add(ECBehaviorPlayerInputLook.Factory.new())
+		factories.add(ECBehaviorPlayerInputMove.Factory.new())
+		factories.add(ECBehaviorPlayerInputTurn.Factory.new())
 		// ECBehaviorPlayerInteractPrompt: to use create subclass and implement abstracts
 		// ECBehaviorPlayerLookAtInteractPrompt: to use create subclass and implement abstracts
 	end
 	
-	/** \brief Add sky behavior factories to element class. */
-	func void addSkyFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorDayTimeSky.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorSky.Factory.new())
+	/** \brief Add sky behavior factories to factory list. */
+	func void addSkyFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorDayTimeSky.Factory.new())
+		factories.add(ECBehaviorSky.Factory.new())
 	end
 	
-	/** \brief Add sound behavior factories to element class. */
-	func void addSoundFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorAnnouncer.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorHearSounds.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorPlaySound.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorPlaySoundRandom.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorSpeaker.Factory.new())
+	/** \brief Add sound behavior factories to factory list. */
+	func void addSoundFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorAnnouncer.Factory.new())
+		factories.add(ECBehaviorHearSounds.Factory.new())
+		factories.add(ECBehaviorPlaySound.Factory.new())
+		factories.add(ECBehaviorPlaySoundRandom.Factory.new())
+		factories.add(ECBehaviorSpeaker.Factory.new())
 	end
 	
-	/** \brief Add trigger behavior factories to element class. */
-	func void addTriggerFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorEvaluate.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorTimer.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorToggle.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorTouching.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorTouchSensor.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorTriggered.Factory.new())
+	/** \brief Add trigger behavior factories to factory list. */
+	func void addTriggerFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorEvaluate.Factory.new())
+		factories.add(ECBehaviorTimer.Factory.new())
+		factories.add(ECBehaviorToggle.Factory.new())
+		factories.add(ECBehaviorTouching.Factory.new())
+		factories.add(ECBehaviorTouchSensor.Factory.new())
+		factories.add(ECBehaviorTriggered.Factory.new())
 	end
 	
-	/** \brief Add VR behavior factories to element class. */
-	func void addVRFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorVRControlDesktop.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorVRHand.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorVRHandAction.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorVRHandLaserPointer.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorVRHandPointAt.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorVRHandPose.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorVRHMD.Factory.new())
-		eclass.addBehaviorFactory(ECBehaviorVRPlayspace.Factory.new())
+	/** \brief Add VR behavior factories to factory list. */
+	func void addVRFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorVRControlDesktop.Factory.new())
+		factories.add(ECBehaviorVRHand.Factory.new())
+		factories.add(ECBehaviorVRHandAction.Factory.new())
+		factories.add(ECBehaviorVRHandLaserPointer.Factory.new())
+		factories.add(ECBehaviorVRHandPointAt.Factory.new())
+		factories.add(ECBehaviorVRHandPose.Factory.new())
+		factories.add(ECBehaviorVRHMD.Factory.new())
+		factories.add(ECBehaviorVRPlayspace.Factory.new())
 	end
 	
-	/** \brief Add rail behavior factories to element class. */
-	func void addRailFactories(BehaviorElementClass eclass)
-		eclass.addBehaviorFactory(ECBehaviorMoveOnRail.Factory.new())
+	/** \brief Add rail behavior factories to factory list. */
+	func void addRailFactories(BehaviorFactoryList factories)
+		factories.add(ECBehaviorMoveOnRail.Factory.new())
 	end
 	
-	/** \brief Add all behavior factories to element class. */
-	func void addAllFactories(BehaviorElementClass eclass)
-		addCommonFactories(eclass)
-		addActorFactories(eclass)
-		addAnimatedFactories(eclass)
-		addAttachFactories(eclass)
-		addBehaviorTreeFactories(eclass)
-		addConversationFactories(eclass)
-		addDynamicSkinFactories(eclass)
-		addEffectFactories(eclass)
-		addInteractionFactories(eclass)
-		addInventoryFactories(eclass)
-		addNetworkFactories(eclass)
-		addPlayerFactories(eclass)
-		addSkyFactories(eclass)
-		addSoundFactories(eclass)
-		addTriggerFactories(eclass)
-		addVRFactories(eclass)
-		addRailFactories(eclass)
+	/** \brief Add all behavior factories to factory list. */
+	func void addAllFactories(BehaviorFactoryList factories)
+		addCommonFactories(factories)
+		addActorFactories(factories)
+		addAnimatedFactories(factories)
+		addAttachFactories(factories)
+		addBehaviorTreeFactories(factories)
+		addConversationFactories(factories)
+		addDynamicSkinFactories(factories)
+		addEffectFactories(factories)
+		addInteractionFactories(factories)
+		addInventoryFactories(factories)
+		addNetworkFactories(factories)
+		addPlayerFactories(factories)
+		addSkyFactories(factories)
+		addSoundFactories(factories)
+		addTriggerFactories(factories)
+		addVRFactories(factories)
+		addRailFactories(factories)
 	end
 end

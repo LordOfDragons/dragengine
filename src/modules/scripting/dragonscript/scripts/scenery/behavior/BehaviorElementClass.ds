@@ -273,7 +273,7 @@ class BehaviorElementClass extends ElementClass
 	
 	
 	/**
-	 * \brief Add behavior factory replacing factory with same name if present.
+	 * \brief Add behavior factory replacing duplicate if present.
 	 * \version 1.25
 	 */
 	func void addBehaviorFactory(BehaviorFactory factory)
@@ -281,6 +281,16 @@ class BehaviorElementClass extends ElementClass
 			throw ENullPointer.new()
 		end
 		pBehaviorFactories.setAt(factory.factoryId(), factory)
+	end
+	
+	/**
+	 * \brief Add behavior factories replacing duplicates if present.
+	 * \version 1.25
+	 */
+	func void addBehaviorFactories(BehaviorFactoryList factories)
+		factories.forEach(block BehaviorFactory each
+			pBehaviorFactories.setAt(each.factoryId(), each)
+		end)
 	end
 	
 	/**
@@ -302,9 +312,11 @@ class BehaviorElementClass extends ElementClass
 	/**
 	 * \brief Add all behavior factories present in the DragonScript module.
 	 * \version 1.25
+	 * 
+	 * Add \ref BaseGameApp#getBehaviorFactories().
 	 */
 	func void addDefaultBehaviorFactories()
-		sharedFactoryHelper.addAllFactories(this)
+		addBehaviorFactories(BaseGameApp.getApp().getBehaviorFactories())
 	end
 	
 	/**
