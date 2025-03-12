@@ -44,7 +44,7 @@ pin Dragengine.Utils
  * 
  * This behavior does not require persistency.
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:navigation
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_navigator
  */
 class ECBehaviorNavigator extends DefaultECBehavior
 	/**

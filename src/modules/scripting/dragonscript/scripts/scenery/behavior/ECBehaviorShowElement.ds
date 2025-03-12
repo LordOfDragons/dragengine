@@ -41,6 +41,8 @@ pin Dragengine.TriggerSystem
  * Element class properties have the prefix "showElement.". Behavior can be added only once.
  * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_showelement
  */
 class ECBehaviorShowElement extends DefaultECBehavior
 	/**

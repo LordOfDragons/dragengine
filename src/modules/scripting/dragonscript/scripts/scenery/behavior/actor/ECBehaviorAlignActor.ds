@@ -52,6 +52,8 @@ pin Dragengine.Utils
  * During each update step the actor is moved towards the goal position in a straight line.
  * The orientation and looking direction is also adjusted using a blend from the starting
  * values to the final values.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_alignactor
  */
 class ECBehaviorAlignActor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

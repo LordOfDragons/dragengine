@@ -103,6 +103,8 @@ pin Dragengine.Utils
  * Another possibility is to create a behavior attached to the weapon element doing the same.
  * This moves the weapon hit and damage logic to a behavior with the actor only triggering
  * the behavior and having nothing to do with it.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_hitscan
  */
 class ECBehaviorHitScan extends DefaultECBehavior
 	/**

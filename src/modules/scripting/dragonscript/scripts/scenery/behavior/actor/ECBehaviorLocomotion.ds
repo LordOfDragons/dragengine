@@ -53,7 +53,7 @@ pin Dragengine.Utils
  * 
  * This behavior supports persistable element class (setPersistable).
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:locomotion
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_locomotion
  */
 class ECBehaviorLocomotion extends DefaultECBehavior
 	/**

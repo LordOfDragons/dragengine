@@ -119,6 +119,8 @@ pin Dragengine.Utils
  * - actorIK{(id)}.controllerIKDistance: ECBString. Name of IK Distance Controller
  * - actorIK{(id)}.controllerIKAzimuth: ECBString. Name of IK Azimuth Controller
  * - actorIK{(id)}.controllerIKElevation: ECBString. Name of IK Elevation Controller
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actorik
  */
 class ECBehaviorActorIK extends DefaultECBehavior
 	/**

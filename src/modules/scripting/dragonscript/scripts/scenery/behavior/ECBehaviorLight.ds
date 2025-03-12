@@ -93,6 +93,8 @@ pin Dragengine.TriggerSystem
  * modified if custom light handling is enabled.
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_light
  */
 class ECBehaviorLight extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

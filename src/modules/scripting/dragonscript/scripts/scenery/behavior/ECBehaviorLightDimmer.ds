@@ -70,6 +70,8 @@ pin Dragengine.Utils
  * bright intensity in this behavior for the dimming to work correctly.
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lightdimmerr
  */
 class ECBehaviorLightDimmer extends DefaultECBehavior
 	/**

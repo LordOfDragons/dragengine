@@ -69,7 +69,7 @@ pin Dragengine.Utils
  * </action>
  * \endcode
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:colliders
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_avoidcollision
  */
 class ECBehaviorAvoidCollision extends DefaultECBehavior
 	/**

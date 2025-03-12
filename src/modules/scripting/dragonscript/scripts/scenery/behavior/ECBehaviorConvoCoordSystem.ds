@@ -43,6 +43,8 @@ pin Dragengine.Utils
  * no convo coordinate system is created.
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_convocoordsystem
  */
 class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	/**

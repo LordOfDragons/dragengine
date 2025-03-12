@@ -37,6 +37,8 @@ pin Dragengine.Utils
  * Actors will attach using relative mode if ECBehaviorProjectToGround hits this element.
  * 
  * Default property prefix is "ridable."
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_ridable
  */
 class ECBehaviorRidable extends DefaultECBehavior
 	/**

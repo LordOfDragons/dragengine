@@ -73,20 +73,18 @@ pin Dragengine.TriggerSystem
  * 
  * Element class properties have the prefix "customColor{(id)}.".
  * 
- * 
- * 
  * \par Listening
  * 
  * Since this behavior provides no support to apply the chosen color listening is used.
  * Behaviors knowing how to apply the color add a listener and are notified if the color
  * changes.
  * 
- * 
- * 
  * \par Persistency
  * 
  * This behavior supports persistable element class (setPersistable). Persists the selected
  * color.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_customcolor
  */
 class ECBehaviorCustomColor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

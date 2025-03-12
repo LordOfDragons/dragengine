@@ -58,6 +58,8 @@ pin Dragengine.Utils
  * 
  * Requires these behaviors to be present:
  * - ECBehaviorActorMover
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actormoverunstuck
  */
 class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
 	/**

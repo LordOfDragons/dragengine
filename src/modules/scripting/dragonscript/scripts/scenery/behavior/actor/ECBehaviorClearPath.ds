@@ -79,6 +79,8 @@ pin Dragengine.Utils
  * Requires these behaviors to be present:
  * - ECBehaviorColliderAI
  * - ECBehaviorLocomotion
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_clearpath
  */
 class ECBehaviorClearPath extends DefaultECBehavior
 	/**

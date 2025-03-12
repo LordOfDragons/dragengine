@@ -183,6 +183,8 @@ pin Dragengine.Utils
  * 
  * This behavior does require the element class to be persistable (setPersistable) only if
  * the context is run by the behavior itself.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_behaviortree
  */
 class ECBehaviorBehaviorTree extends DefaultECBehavior
 	/**

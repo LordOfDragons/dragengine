@@ -65,6 +65,8 @@ pin Dragengine.Utils
  * 
  * If part has empty string the subtitle is hidden. This allows empty parts to be used
  * to created pauses between parts.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actortransmission
  */
 class ECBehaviorActorTransmission extends DefaultECBehavior
 	/** \brief Immutable transmission part. */

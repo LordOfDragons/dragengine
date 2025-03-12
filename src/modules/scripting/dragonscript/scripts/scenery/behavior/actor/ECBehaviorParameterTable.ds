@@ -36,6 +36,8 @@ pin Dragengine.Utils
  * Adds \ref ParameterTable instance.
  * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_parametertable
  */
 class ECBehaviorParameterTable extends DefaultECBehavior
 	/**

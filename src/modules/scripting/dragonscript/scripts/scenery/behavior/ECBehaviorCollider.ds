@@ -142,7 +142,7 @@ pin Dragengine.Utils
  *              element. it uses getInstanceIn() to check if the hit element has the power up
  *              behvaior and if so removes it from the game world and applies the effects.
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:colliders
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_collider
  */
 class ECBehaviorCollider extends DefaultECBehavior
 	/**

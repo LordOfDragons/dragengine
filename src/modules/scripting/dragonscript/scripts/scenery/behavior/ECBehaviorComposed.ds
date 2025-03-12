@@ -65,6 +65,8 @@ pin Dragengine.Scenery
  * Add ECBehaviorAttachToParent and optionally ECBehaviorAttachable if child element has to
  * be attached to ECBehaviorAttachSlot. To configure the behaviors in the child elements use
  * "properties" in "composed.children" entries.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_composed
  */
 class ECBehaviorComposed extends DefaultECBehavior
 	/** \brief Child element definition. */

@@ -43,6 +43,8 @@ pin Dragengine.Utils
  * The property prefix is "avoidedByActor{(id)}".
  * 
  * This behavior does not require element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_avoidedbyactor
  */
 class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	/**

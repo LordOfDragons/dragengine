@@ -52,7 +52,7 @@ pin Dragengine.Utils
  * Locomotion.ATTR_TILT_OFFSET, Locomotion.ATTR_TILT_VERTICAL and Locomotion.ATTR_TILT_HORIZONTAL
  * for animators supporting tilting.
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:locomotion#body_tilting
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_bodytilting
  */
 class ECBehaviorBodyTilting extends DefaultECBehavior
 	/**

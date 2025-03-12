@@ -61,6 +61,8 @@ pin Dragengine.Utils
  * To apply decal to world elements (like decals loaded with game worlds) use ECBehaviorWorldDecal.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_decal
  */
 class ECBehaviorDecal extends DefaultECBehavior
 	/**

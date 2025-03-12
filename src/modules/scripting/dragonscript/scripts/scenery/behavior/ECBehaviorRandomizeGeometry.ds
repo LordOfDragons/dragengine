@@ -42,6 +42,8 @@ pin Dragengine.Utils
  * while loading a game world.
  * 
  * Default property prefix is "randomizeGeometry."
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_randomizegeometry
  */
 class ECBehaviorRandomizeGeometry extends DefaultECBehavior implements BehaviorPrepareStub
 	/**

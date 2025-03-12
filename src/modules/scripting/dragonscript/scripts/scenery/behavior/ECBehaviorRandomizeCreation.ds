@@ -42,6 +42,8 @@ pin Dragengine.Utils
  * supporting behaviors have potentially modified the \ref StubElement.
  * 
  * Default property prefix is "randomizeCreation."
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_randomizecreation
  */
 class ECBehaviorRandomizeCreation extends DefaultECBehavior implements BehaviorPreventCreation
 	/**

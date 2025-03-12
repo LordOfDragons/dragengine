@@ -52,6 +52,8 @@ pin Dragengine.Utils
  * 
  * If conversation actor is used see ECBehaviorActorMover.ConvoCondition and
  * ECBehaviorActorMover.ConvoCommand for supported syntax.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actormover
  */
 class ECBehaviorActorMover extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

@@ -51,9 +51,7 @@ pin Dragengine.Utils
  * 
  * Element class property prefix is "actorAnimated{(id)}".
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:animators
- * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:editors:animator
- * \see https://developer.dragondreams.ch/wiki/doku.php/tools:blenderexportscripts
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actoranimated
  */
 class ECBehaviorActorAnimated extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

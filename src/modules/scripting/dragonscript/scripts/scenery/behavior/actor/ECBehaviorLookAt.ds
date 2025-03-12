@@ -53,6 +53,8 @@ pin Dragengine.Utils
  * 
  * If the looked at element has ECBehaviorLookedAt instance it will be updated by adding
  * and removing the owner element.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lookat
  */
 class ECBehaviorLookAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

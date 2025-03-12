@@ -43,6 +43,8 @@ pin Dragengine.Scenery
  * than one instance results in an exception thrown.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_anchorelement
  */
 class ECBehaviorAnchorElement extends DefaultECBehavior
 	/**

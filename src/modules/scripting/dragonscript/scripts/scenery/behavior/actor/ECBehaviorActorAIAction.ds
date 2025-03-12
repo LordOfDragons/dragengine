@@ -57,6 +57,8 @@ pin Dragengine.Utils
  * 
  * If conversation actor is used see ECBehaviorActorAIAction.ConvoCondition and
  * ECBehaviorActorAIAction.ConvoCommand for supported syntax.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actoraiaction
  */
 class ECBehaviorActorAIAction extends DefaultECBehavior
 	/** \brief Factory for creating action. */
