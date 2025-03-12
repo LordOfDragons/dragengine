@@ -46,6 +46,8 @@ pin Dragengine.Scenery
  * This behavior requires ECBehaviorCollider to be present.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachable
  */
 class ECBehaviorAttachable extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

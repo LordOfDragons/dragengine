@@ -138,6 +138,8 @@ pin Dragengine.Utils
  *    <condition>flags.state</condition>
  * </action>
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_behaviortreeflags
  */
 class ECBehaviorBehaviorTreeFlags extends DefaultECBehavior
 	/**

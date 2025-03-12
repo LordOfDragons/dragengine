@@ -41,6 +41,8 @@ pin Dragengine.Utils
  * This behavior can be present only once.
  * 
  * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhmd
  */
 class ECBehaviorVRHMD extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -48,7 +50,7 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 		/** \brief HMD attached and ready to use. */
 		func void hmdAttached( Instance instance )
 		
-		/** \brief HMD detached and no more usableuse. */
+		/** \brief HMD detached and no more usable. */
 		func void hmdDetached( Instance instance )
 	end
 	

@@ -47,6 +47,8 @@ pin Dragengine.Utils
  * Requires these behaviors to be present:
  * - ECBehaviorActorMover
  * - ECBehaviorNavigator
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_stepaside
  */
 class ECBehaviorStepAside extends DefaultECBehavior
 	/**

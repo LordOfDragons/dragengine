@@ -75,6 +75,8 @@ pin Dragengine.Scenery
  * than one instance results in an exception thrown.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachtoparent
  */
 class ECBehaviorAttachToParent extends DefaultECBehavior
 	/**
@@ -87,10 +89,7 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorCamera'>
-	 *   <!-- optional: set layer mask (default empty). list of bits to set. -->
-	 *   <string name='layerMask'>0 1 4</string>
-	 * </behavior>
+	 * <behavior type='ECBehaviorCamera'/>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag

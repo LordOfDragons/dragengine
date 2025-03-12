@@ -100,6 +100,8 @@ pin Dragengine.TriggerSystem
  * Element class properties have the prefix "twoStateAnimated{(id)}.".
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_twostateanimated
  */
 class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -113,7 +115,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		/** \brief Start transition from activated state to deactivated state. */
 		func void startDeactivate(Instance instance)
 		
-		/** \brief FInished transition from activated state to deactivated state. */
+		/** \brief Finished transition from activated state to deactivated state. */
 		func void stopDeactivate(Instance instance)
 		
 		/** \brief Update controllers if required. */

@@ -130,6 +130,8 @@ pin Dragengine.Utils
  *    <condition>timer.finished</condition>
  * </action>
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_behaviortreetimer
  */
 class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 	/** \brief Behavior tree Timer. */

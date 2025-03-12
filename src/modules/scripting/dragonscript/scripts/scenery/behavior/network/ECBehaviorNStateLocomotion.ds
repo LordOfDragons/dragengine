@@ -41,6 +41,8 @@ pin Dragengine.Utils
  * No element class properties are added.
  * 
  * This behavior can be present only once in the element class.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_nstatelocomotion
  */
 class ECBehaviorNStateLocomotion extends DefaultECBehavior
 	/**

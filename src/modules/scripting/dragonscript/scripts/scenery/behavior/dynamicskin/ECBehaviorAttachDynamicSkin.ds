@@ -59,6 +59,8 @@ pin Dragengine.Scenery
  * This element behavior can be present multiple times with different identifiers.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachdynamicskin
  */
 class ECBehaviorAttachDynamicSkin extends DefaultECBehavior
 	/**

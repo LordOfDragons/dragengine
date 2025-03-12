@@ -56,10 +56,13 @@ pin Dragengine.Utils
  * your choice.
  * 
  * Behavior supports persistency.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_rideon
  */
 class ECBehaviorRideOn extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
+		/** \brief Ridable changed. */
 		func void ridableChanged(Instance instance)
 	end
 	

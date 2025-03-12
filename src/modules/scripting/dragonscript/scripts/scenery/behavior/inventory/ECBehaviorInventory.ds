@@ -37,6 +37,8 @@ pin Dragengine.Utils
  * Adds inventory where stashable elements can be put into.
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_inventory
  */
 class ECBehaviorInventory extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

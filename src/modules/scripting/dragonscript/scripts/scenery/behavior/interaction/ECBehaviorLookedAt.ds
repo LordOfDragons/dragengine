@@ -42,6 +42,8 @@ pin Dragengine.Scenery
  * the actor elements. The ECBehaviorLookAt behavior provides this functionality.
  * 
  * This behavior supports persistable element classes (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lookedat
  */
 class ECBehaviorLookedAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

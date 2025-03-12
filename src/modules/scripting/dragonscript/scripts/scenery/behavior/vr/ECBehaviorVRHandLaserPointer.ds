@@ -66,6 +66,8 @@ pin Dragengine.Utils
  * The particle emitter is aligned with the test direction.
  * 
  * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandlaserpointer
  */
 class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	/**

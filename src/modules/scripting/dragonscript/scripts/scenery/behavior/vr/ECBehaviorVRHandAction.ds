@@ -49,6 +49,8 @@ pin Dragengine.Utils
  * 
  * Requires these behaviors:
  * - ECBehaviorVRHand
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandaction
  */
 class ECBehaviorVRHandAction extends DefaultECBehavior
 	/** \brief Factory for creating action. */

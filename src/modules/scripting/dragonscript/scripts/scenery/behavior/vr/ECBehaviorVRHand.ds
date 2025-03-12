@@ -54,6 +54,8 @@ pin Dragengine.Utils
  * the collider is set to be a ghost collider suitable for attaching elements without
  * causing interactions with the scene. If you would like to get interaction with the
  * scene set the collision parameters accordingly.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhand
  */
 class ECBehaviorVRHand extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

@@ -57,6 +57,8 @@ pin Dragengine.Utils
  * 
  * If the pointed at element has ECBehaviorVRHandPointedAt instance it will be updated by adding
  * and removing the owner element.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandpointat
  */
 class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

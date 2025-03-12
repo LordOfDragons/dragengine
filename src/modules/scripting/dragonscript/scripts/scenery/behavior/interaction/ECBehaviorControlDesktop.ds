@@ -104,6 +104,8 @@ pin Dragengine.Utils
  * This behavior requires ECBehaviorRenderableDesktop to be present.
  * 
  * This behavior require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_controldesktop
  */
 class ECBehaviorControlDesktop extends DefaultECBehavior
 	/**

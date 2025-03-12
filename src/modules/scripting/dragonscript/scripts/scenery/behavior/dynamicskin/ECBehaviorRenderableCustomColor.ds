@@ -141,6 +141,8 @@ pin Dragengine.Utils
  * \par Persistency
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderablecustomcolor
  */
 class ECBehaviorRenderableCustomColor extends DefaultECBehavior
 	/**

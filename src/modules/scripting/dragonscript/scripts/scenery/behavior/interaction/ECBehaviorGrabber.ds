@@ -56,6 +56,8 @@ pin Dragengine.Scenery
  * This behavior uses no other behaviors.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_grabber
  */
 class ECBehaviorGrabber extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

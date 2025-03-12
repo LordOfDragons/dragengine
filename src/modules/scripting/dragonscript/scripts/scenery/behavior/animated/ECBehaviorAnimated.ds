@@ -102,6 +102,8 @@ pin Dragengine.TriggerSystem
  * \endcode
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_animated
  */
 class ECBehaviorAnimated extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

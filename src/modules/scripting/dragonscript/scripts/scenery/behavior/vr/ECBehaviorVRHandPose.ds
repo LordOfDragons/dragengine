@@ -70,6 +70,8 @@ pin Dragengine.Utils
  * 
  * Requires these behaviors to be present:
  * - ECBehaviorVRHand
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandpose
  */
 class ECBehaviorVRHandPose extends DefaultECBehavior
 	/**

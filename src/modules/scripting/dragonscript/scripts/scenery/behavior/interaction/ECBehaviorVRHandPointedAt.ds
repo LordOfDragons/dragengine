@@ -44,6 +44,8 @@ pin Dragengine.Scenery
  * functionality.
  * 
  * This behavior supports persistable element classes (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandpointedat
  */
 class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

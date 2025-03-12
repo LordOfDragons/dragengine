@@ -124,6 +124,8 @@ pin Dragengine.Utils.StyledText.Definition
  *    <condition>conversationActor.notInConversation</condition>
  * </action>
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_conversationactor
  */
 class ECBehaviorConversationActor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -361,6 +363,15 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 *   <!-- optional: use two state animated with id instead of empty string -->
 	 *   <string name='twoStateAnimated'>second</string>
 	 * 
+	 *   <!-- optional: add behavior trees. default adds behavior tree with empty string if present. -->
+	 *   <list name='behaviorTrees'>
+	 *     <!-- add behavior with empty identifier -->
+	 *     <string/>
+	 *     
+	 *     <!-- add behavior with 'default' identifier -->
+	 *     <string>default</string>
+	 *   </list>
+	 * 
 	 *   <!-- optional: use BaseGameApp subtitle theme. game can add more supported values.
 	 *                  default is 'default'. also supported is value 'path:/path/to/theme.guitheme' -->
 	 *   <string name='subtitleTheme'>default</string>
@@ -389,6 +400,23 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			behavior.setTwoStateAnimated(eclass.sharedFactoryHelper.optionalTwoStateAnimated(eclass, parameters))
 			behavior.setLocomotion(ECBehaviorLocomotion.getBehaviorIn(eclass))
 			behavior.setParameterTable(ECBehaviorParameterTable.getBehaviorIn(eclass))
+			
+			var ECBehaviorBehaviorTree btree
+			if parameters.has("behaviorTrees")
+				(parameters.getAt("behaviorTrees") cast Array).forEach(block String each
+					btree = ECBehaviorBehaviorTree.getBehaviorIn(eclass)
+					if BehaviorTree == null
+						throw EInvalidParam.new("ECBehaviorBehaviorTree not found: " + each)
+					end
+					behavior.addBehaviorTree(btree)
+				end)
+				
+			else
+				btree = ECBehaviorBehaviorTree.getBehaviorIn(eclass)
+				if BehaviorTree != null
+					behavior.addBehaviorTree(btree)
+				end
+			end
 			
 			if parameters.has("subtitleTheme")
 				behavior.setSubtitleTheme(getSubtitleThemeFor(parameters.getAt("subtitleTheme") cast String))

@@ -130,6 +130,8 @@ pin Dragengine.Utils
  *    end
  * end
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrcontroldesktop
  */
 class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	/**

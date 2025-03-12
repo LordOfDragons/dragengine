@@ -37,11 +37,13 @@ pin Dragengine.Utils.StyledText.Definition
 /**
  * \brief Behavior element behavior adding bindings tag resolving using CTRRBinding.
  * 
- * Adds a CTRRBinding rule to ECBehaviorConversation or ECBehaviorConversationActor.
+ * Adds a CTRRBinding rule to ECBehaviorConversationActor.
  * 
  * Element class properties have the prefix "ctrrBinding.".
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_ctrrbindings
  */
 class ECBCTRRBindings extends DefaultECBehavior
 	/**

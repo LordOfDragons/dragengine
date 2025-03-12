@@ -106,6 +106,8 @@ pin Dragengine.Utils
  * 
  * This behavior does support element class to be persistable (setPersistable). Saves color,
  * intensity and visiblity state.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_outline
  */
 class ECBehaviorOutline extends DefaultECBehavior
 	/**

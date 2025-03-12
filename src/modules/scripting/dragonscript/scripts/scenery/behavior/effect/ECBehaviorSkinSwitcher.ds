@@ -131,6 +131,8 @@ pin Dragengine.Utils
  * 
  * This behavior does support element class to be persistable (setPersistable). Saves active
  * skin index.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_skinswitcher
  */
 class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	/**

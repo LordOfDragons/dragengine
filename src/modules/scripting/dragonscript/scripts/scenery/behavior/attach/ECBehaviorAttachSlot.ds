@@ -50,6 +50,8 @@ pin Dragengine.Utils
  * \par 1.9
  * 
  * Added support for ECBehaviorVRHand to be used instead of ECBehaviorCollider.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachslot
  */
 class ECBehaviorAttachSlot extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

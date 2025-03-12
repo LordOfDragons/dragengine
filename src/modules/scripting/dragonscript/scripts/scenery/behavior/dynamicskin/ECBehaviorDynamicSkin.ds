@@ -66,10 +66,11 @@ pin Dragengine.Utils
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
  * 
- * 
  * \todo
  * Add "light id" and "particle emitter id" to allow the dynamic skin to attach also to lights
  * (as light skin) and particle emitters.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_dynamicskin
  */
 class ECBehaviorDynamicSkin extends DefaultECBehavior
 	/**

@@ -85,6 +85,8 @@ pin Dragengine.Utils
  * - "interactPrompt{(id)}.bones": ECPStringList
  * - "interactPrompt{(id)}.maximumDistance": ECPFloat
  * - "interactPrompt{(id)}.settings": ECPString
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_interactprompt
  */
 class ECBehaviorInteractPrompt extends DefaultECBehavior
 	/**

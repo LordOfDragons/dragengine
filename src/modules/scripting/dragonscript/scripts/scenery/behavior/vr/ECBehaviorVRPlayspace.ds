@@ -41,6 +41,8 @@ pin Dragengine.Utils
  * This behavior can be used only once in the behavior element.
  * 
  * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrplayspace
  */
 class ECBehaviorVRPlayspace extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

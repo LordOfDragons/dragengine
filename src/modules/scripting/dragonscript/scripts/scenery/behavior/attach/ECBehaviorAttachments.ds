@@ -39,6 +39,8 @@ pin Dragengine.Scenery
  * game worlds as well as finding specific attached elements. Does not support detaching
  * elements. If the element is disposed all attached elements are disposed too. If you need
  * dynamic attaching use ECBehaviorAttachSlot together with ECBehaviorAttachable.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachments
  */
 class ECBehaviorAttachments extends DefaultECBehavior
 	/**
