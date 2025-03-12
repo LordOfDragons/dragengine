@@ -75,6 +75,9 @@ pin Dragengine.TriggerSystem
  * ECBehaviorParticleEmitter can also use trigger targets so listeners are not always required.
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:particleemitters
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:editors:particleemitter
  */
 class ECBehaviorParticleEmitter extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

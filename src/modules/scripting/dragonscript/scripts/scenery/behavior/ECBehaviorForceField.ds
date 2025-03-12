@@ -92,7 +92,7 @@ pin Dragengine.TriggerSystem
  * behavior is (de)enabled or the element becomes visible the force field parameters are not
  * modified if custom force field handling is enabled.
  * 
- * This behavior does require the element class to be persistable (setPersistable).
+ * This behavior does support element class to be persistable (setPersistable).
  */
 class ECBehaviorForceField extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -171,7 +171,8 @@ class ECBehaviorForceField extends DefaultECBehavior
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
 	 * 
-	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more
+	 *                  supported values. default value is 'default' -->
 	 *   <string name='triggerTable'>default</string>
 	 * 
 	 *   <!-- optional: sync trigger with force field matching identifier -->

@@ -69,6 +69,9 @@ pin Dragengine.Utils
  * Element class properties have the prefix "navigationSpace{(id)}.".
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:navigation
+ * \see https://developer.dragondreams.ch/wiki/doku.php/tools:blenderexportscripts
  */
 class ECBehaviorNavigationSpace extends DefaultECBehavior
 	/**

@@ -41,7 +41,7 @@ class ECComposeNavigationSpace
 	private var ECPNavigationSpace pSpace
 	private var ECPFloat pSnapDistance
 	private var ECPShapeList pBlockerShape
-	private var ECPInteger pBlockingPriority
+	private var ECPInteger pBlockerPriority
 	private var String pPrefix
 	
 	
@@ -74,8 +74,8 @@ class ECComposeNavigationSpace
 			ownerClass.getSharedCodecPropertyString() )
 		ownerClass.addProperty( this.pBlockerShape )
 		
-		this.pBlockingPriority = ECPInteger.new( prefix + "blockerPriority", 0 )
-		ownerClass.addProperty( this.pBlockingPriority )
+		this.pBlockerPriority = ECPInteger.new( prefix + "blockerPriority", 0 )
+		ownerClass.addProperty( this.pBlockerPriority )
 		
 		this.pPrefix = prefix
 	end
@@ -104,7 +104,7 @@ class ECComposeNavigationSpace
 	
 	/** \brief Navigation space blocking priority. */
 	public func ECPInteger getBlockingPriority()
-		return this.pBlockingPriority
+		return this.pBlockerPriority
 	end
 	
 	/** \brief Property prefix. */
@@ -153,7 +153,7 @@ class ECComposeNavigationSpace
 			navigationSpace.setLayer( stub.getPropertyIntFor( \
 				this.pLayer.getName(), this.pLayer.getValue() ) )
 			navigationSpace.setBlockingPriority( stub.getPropertyIntFor( \
-				this.pBlockingPriority.getName(), this.pBlockingPriority.getValue() ) )
+				this.pBlockerPriority.getName(), this.pBlockerPriority.getValue() ) )
 			navigationSpace.setSnapDistance( this.pSnapDistance.getValue() )
 			
 			navigationSpace.setPosition( element.getPosition() )

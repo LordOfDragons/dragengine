@@ -141,6 +141,8 @@ pin Dragengine.Utils
  *              consumed. the second is the touch power up behavior placed on the interacting
  *              element. it uses getInstanceIn() to check if the hit element has the power up
  *              behvaior and if so removes it from the game world and applies the effects.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:colliders
  */
 class ECBehaviorCollider extends DefaultECBehavior
 	/**

@@ -68,6 +68,8 @@ pin Dragengine.Utils
  *    <parameter name='enabled'>true</parameter>
  * </action>
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:colliders
  */
 class ECBehaviorAvoidCollision extends DefaultECBehavior
 	/**

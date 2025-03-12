@@ -70,6 +70,8 @@ pin Dragengine.Utils
  * 
  * Cameras can be equipped with effects modifying the rendering. Effects can be added to
  * ECBehaviorCamera by adding after the camera behavior one or more camera effect behaviors.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:cameratonemap
  */
 class ECBehaviorCamera extends DefaultECBehavior
 	/**

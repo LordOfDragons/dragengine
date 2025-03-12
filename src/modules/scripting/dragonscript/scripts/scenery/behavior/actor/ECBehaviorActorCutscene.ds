@@ -59,6 +59,10 @@ pin Dragengine.Utils
  * Adds these conversation condition and command named "cutscene".
  *
  * Element class property prefix is "cutscene".
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:animators
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:editors:animator
+ * \see https://developer.dragondreams.ch/wiki/doku.php/tools:blenderexportscripts
  */
 class ECBehaviorActorCutscene extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

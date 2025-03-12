@@ -44,12 +44,16 @@ pin Dragengine.Utils
  * 
  * To use this class add these behaviors to the actor:
  * - ECBehaviorComponent
- * - ECBehaviorLocomotion
+ * - ECBehaviorLocomotion (optional)
  * - ECBehaviorActorAnimated
  * 
  * Multiple behaviors can be added to animated different parts of the actor independent.
  * 
  * Element class property prefix is "actorAnimated{(id)}".
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:animators
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:editors:animator
+ * \see https://developer.dragondreams.ch/wiki/doku.php/tools:blenderexportscripts
  */
 class ECBehaviorActorAnimated extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

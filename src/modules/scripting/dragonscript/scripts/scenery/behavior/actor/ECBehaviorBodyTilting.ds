@@ -50,7 +50,9 @@ pin Dragengine.Utils
  * To this behavior add it and either set the class properties or call setShape(), setOrigin()
  * and setDirection() to initialize. Then use Locomotion.addControllerMapping() with
  * Locomotion.ATTR_TILT_OFFSET, Locomotion.ATTR_TILT_VERTICAL and Locomotion.ATTR_TILT_HORIZONTAL
- * for animators supporting tilting
+ * for animators supporting tilting.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:locomotion#body_tilting
  */
 class ECBehaviorBodyTilting extends DefaultECBehavior
 	/**

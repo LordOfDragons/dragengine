@@ -86,10 +86,10 @@ class ECComposeForceField
 			ownerClass.getSharedCodecPropertyString() )
 		ownerClass.addProperty( this.pInfluenceArea )
 		
-		this.pRadius = ECPFloat.new( prefix + "radius", 0, 1 )
+		this.pRadius = ECPFloat.new( prefix + "radius", 0, 0 )
 		ownerClass.addProperty( this.pRadius )
 		
-		this.pExponent = ECPFloat.new( prefix + "exponent", 0, 1 )
+		this.pExponent = ECPFloat.new( prefix + "exponent", 1, 0 )
 		ownerClass.addProperty( this.pExponent )
 		
 		this.pFieldType = ECPEnumeration.new( prefix + "fieldType", \
@@ -103,7 +103,7 @@ class ECComposeForceField
 		this.pDirection = ECPVector.new( prefix + "direction", Vector.new() )
 		ownerClass.addProperty( this.pDirection )
 		
-		this.pForce = ECPFloat.new( prefix + "force", 0, 1 )
+		this.pForce = ECPFloat.new( prefix + "force", 1 )
 		ownerClass.addProperty( this.pForce )
 		
 		this.pFluctuationDirection = ECPFloat.new( prefix + "fluctuationDirection", 0 )
@@ -178,7 +178,7 @@ class ECComposeForceField
 		return this.pPrefix
 	end
 	
-	/** \brief Speaker shape. */
+	/** \brief Shape from which force originates. */
 	public func ECPShapeList getShape()
 		return this.pShape
 	end

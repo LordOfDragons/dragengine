@@ -43,6 +43,8 @@ pin Dragengine.Utils
  * actions.
  * 
  * This behavior does not require persistency.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:navigation
  */
 class ECBehaviorNavigator extends DefaultECBehavior
 	/**

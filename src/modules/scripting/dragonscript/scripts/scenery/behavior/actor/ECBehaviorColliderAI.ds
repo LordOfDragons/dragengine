@@ -52,6 +52,8 @@ pin Dragengine.Utils
  * during postThink().
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/gamedev:colliders
  */
 class ECBehaviorColliderAI extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

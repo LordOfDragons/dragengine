@@ -33,7 +33,7 @@ pin Dragengine.Utils
 /**
  * \brief Behavior element behavior adding parameter table support for actors.
  * 
- * Adds ParameterTable instance.
+ * Adds \ref ParameterTable instance.
  * 
  * This behavior supports persistable element class (setPersistable).
  */

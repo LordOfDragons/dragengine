@@ -46,7 +46,14 @@ pin Dragengine.Utils
  * characters with natural and FPS type movement patterns as well as mechanical locomotion
  * like vehicles.
  * 
+ * Locomotion parameters have to be set on runtime. The behavior itself does not support
+ * initializing locomotion parameters. This is the case since locomotion parameters change a
+ * lot depending on what game situation an actor is located in. Use \ref ECBehaviorActorAIAction,
+ * \ref ECBehaviorStateMachine or \ref ECBehaviorBehaviorTree for this task.
+ * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:locomotion
  */
 class ECBehaviorLocomotion extends DefaultECBehavior
 	/**

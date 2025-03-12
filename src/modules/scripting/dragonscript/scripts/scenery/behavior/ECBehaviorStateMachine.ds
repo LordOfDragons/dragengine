@@ -34,6 +34,7 @@ pin Dragengine.Utils
 
 /**
  * \brief Behavior element behavior adding StateMachine support.
+ * \version 1.3
  * 
  * Loads state machine from file and creates a SMContext. Other behaviors can add actions
  * and conditions to this state machine allowing to compose state machine actions and

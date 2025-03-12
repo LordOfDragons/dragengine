@@ -381,7 +381,10 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorFootSteps'/>
+	 * <behavior type='ECBehaviorFootSteps'>
+	 *   <!-- set if update() is automatically called on postThink(). default is 'true' -->
+	 *   <boolean name='autoUpdate'>false</boolean>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
