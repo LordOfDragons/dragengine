@@ -405,7 +405,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			if parameters.has("behaviorTrees")
 				(parameters.getAt("behaviorTrees") cast Array).forEach(block String each
 					btree = ECBehaviorBehaviorTree.getBehaviorIn(eclass)
-					if BehaviorTree == null
+					if btree == null
 						throw EInvalidParam.new("ECBehaviorBehaviorTree not found: " + each)
 					end
 					behavior.addBehaviorTree(btree)
