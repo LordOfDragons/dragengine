@@ -40,8 +40,7 @@ pin Dragengine.Utils
  * have the CollisionFilterBit.trigger bit cleared. Modify the collision filter to allow other elements
  * to trigger this touch sensor.
  * 
- * Upon being touched the touch sensor notifies the listeners as well as setting a trigger
- * target in case a trigger table is present and the user set a trigger target name,
+ * Upon being touched the touch sensor notifies the listeners.
  * 
  * The TouchSensor resource can be queried for the colliders currently touching it.
  * Furthermore colliders entering and leaving trigger a notification allowing elements
@@ -63,6 +62,8 @@ pin Dragengine.Utils
  * Element class properties have the prefix "touchSensor{(identifier)}.".
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_touchsensor
  */
 class ECBehaviorTouchSensor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

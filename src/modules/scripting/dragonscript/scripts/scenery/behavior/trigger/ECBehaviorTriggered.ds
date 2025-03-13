@@ -48,6 +48,8 @@ pin Dragengine.TriggerSystem
  * Element class property is named "trigger{(id)}".
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_triggered
  */
 class ECBehaviorTriggered extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -125,6 +127,10 @@ class ECBehaviorTriggered extends DefaultECBehavior
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values.
 	 *                  default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: name of trigger property. default is 'trigger' or 'trigger(id)'
+	 *                  depending if id is empty string or not. -->
+	 *   <string name='propertyName'>trigger</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -145,11 +151,15 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
-			var ECBehaviorTriggered behavior = ECBehaviorTriggered.new(eclass,\
-				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "trigger", id)
-			return behavior
+			if parameters.has("propertyName")
+				return ECBehaviorTriggered.new(eclass,\
+					getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String),\
+					id, parameters.getAt("propertyName") cast String)
+				
+			else
+				return ECBehaviorTriggered.new(eclass,\
+					getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			end
 		end
 		
 		/**
