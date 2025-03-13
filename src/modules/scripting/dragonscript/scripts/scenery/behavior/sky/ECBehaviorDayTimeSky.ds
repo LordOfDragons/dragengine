@@ -44,6 +44,8 @@ pin Dragengine.TriggerSystem
  * Element class properties have the prefix "dayTimeSky.".
  * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_daytimesky
  */
 class ECBehaviorDayTimeSky extends DefaultECBehavior
 	/**

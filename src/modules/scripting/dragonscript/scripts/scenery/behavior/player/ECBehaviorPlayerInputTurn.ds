@@ -37,6 +37,8 @@ pin Dragengine.Utils
  * Keeps track of turning player input and applies them to actor locomotion.
  * 
  * This behavior is typically used for vehicle type actors.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerinputturn
  */
 class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	/**
@@ -48,10 +50,7 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorPlayerInputTurn'>
-	 *   <!-- optional: set layer mask (default empty). list of bits to set. -->
-	 *   <string name='layerMask'>0 1 4</string>
-	 * </behavior>
+	 * <behavior type='ECBehaviorPlayerInputTurn'/>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag

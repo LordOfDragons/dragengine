@@ -50,6 +50,8 @@ pin Dragengine.TriggerSystem
  * Element class properties have the prefix "sky.".
  * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_sky
  */
 class ECBehaviorSky extends DefaultECBehavior
 	/**

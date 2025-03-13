@@ -48,6 +48,8 @@ pin Dragengine.Utils
  * - ECBehaviorPlayerControllable.ConvoCommand
  * 
  * See the above mentioned classes for the supported syntax.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playercontrollable
  */
 class ECBehaviorPlayerControllable extends DefaultECBehavior
 	/** \brief Keeps track of the active player actor. */

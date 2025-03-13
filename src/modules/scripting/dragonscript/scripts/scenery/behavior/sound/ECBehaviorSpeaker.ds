@@ -80,6 +80,8 @@ pin Dragengine.TriggerSystem
  * sound is playing. In this case though care has to be taken to be set the curve early enough
  * since audio modules typically render sound into buffered blocks. If the curve is changed too
  * late the changes can be missed or result in strange sound jumping.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_speaker
  */
 class ECBehaviorSpeaker extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

@@ -37,6 +37,8 @@ pin Dragengine.Utils
  * Keeps track of crouching player input and applies them to actor locomotion.
  * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerinputcrouch
  */
 class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	/**

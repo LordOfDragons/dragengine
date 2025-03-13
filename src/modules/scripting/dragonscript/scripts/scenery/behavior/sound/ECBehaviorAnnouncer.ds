@@ -64,6 +64,8 @@ pin Dragengine.TriggerSystem
  * Element class properties have the prefix "announcer{(id)}.".
  * 
  * This behavior does not support persistency (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_announcer
  */
 class ECBehaviorAnnouncer extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */

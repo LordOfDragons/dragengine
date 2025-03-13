@@ -40,6 +40,8 @@ pin Dragengine.TriggerSystem
  * ECBehaviorPlaySound.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playsoundrandom
  */
 class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 	/**

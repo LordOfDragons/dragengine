@@ -60,6 +60,8 @@ pin Dragengine.Utils
  * This behavior is used for player actors only.
  * 
  * Uses property prefix "playerLookAtInteractPrompt."
+ * 
+ * \see 
  */
 class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	/** \brief Interact prompt controller interface. */
@@ -163,6 +165,8 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * 
+	 * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerlookatinteractprompt
 	 */
 	abstract class Factory implements BehaviorFactory
 		func new()

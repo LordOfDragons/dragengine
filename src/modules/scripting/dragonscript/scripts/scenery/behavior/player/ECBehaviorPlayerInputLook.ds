@@ -70,6 +70,8 @@ pin Dragengine.Utils
  * 
  * Using negative factor switches direction. Using negative factor and speed keeps the
  * direction unchanged.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerinputlook
  */
 class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	/**

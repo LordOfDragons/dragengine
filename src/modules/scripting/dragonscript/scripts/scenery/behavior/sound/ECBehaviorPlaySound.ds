@@ -117,6 +117,8 @@ pin Dragengine.TriggerSystem
  * Using a trigger table is usually only useful if the element can be used by mappers.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playsound
  */
 class ECBehaviorPlaySound extends DefaultECBehavior
 	/**

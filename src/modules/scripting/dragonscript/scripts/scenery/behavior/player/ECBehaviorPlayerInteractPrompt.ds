@@ -62,6 +62,8 @@ pin Dragengine.Utils
  * This behavior is used for player actors only.
  * 
  * Uses property prefix "playerInteractPrompt."
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerinteractprompt
  */
 class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	/** \brief Interact prompt controller interface. */
