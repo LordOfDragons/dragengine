@@ -33,6 +33,44 @@ pin Dragengine.Utils
 
 /**
  * \brief Actor element class.
+ * 
+ * \par Behavior XML Element Class.
+ * 
+ * This class can be recreated using \ref GenericBehaviorElementClass and this *.deeclass file:
+ * 
+ * \code{.xml}
+ * <?xml version='1.0' encoding='UTF-8'?>
+ * <elementClass name='MyClass' class='GenericBehaviorElement'>
+ *   <behavior type='ECBehaviorComponent'>
+ *     <!-- actors are best not affecting sound nor showing up in env maps since they
+ *          are dynamic. still doing so is usually expensive for modules to perform -->
+ *     <boolean name='.renderEnvMap'>false</boolean>
+ *     <boolean name='.affectsAudio'>false</boolean>
+ *     <string name='.hintMovement'>dynamic</string>
+ *   </behavior>
+ *   <behavior type='ECBehaviorCollider'/>
+ *   <behavior type='ECBehaviorColliderAI'/>
+ *   <behavior type='ECBehaviorParameterTable'/>
+ *   <behavior type='ECBehaviorProjectToGround'/>
+ *   <behavior type='ECBehaviorLocomotion'/>
+ *   <behavior type='ECBehaviorActorAnimated'/>
+ *   <behavior type='ECBehaviorConversationActor'/>
+ *   <behavior type='ECBCTRRBindings'/>
+ *   <behavior type='ECBehaviorNavigator'/>
+ *   <behavior type='ECBehaviorFootSteps'/>
+ *   <behavior type='ECBehaviorRideOn'/>
+ *   <behavior type='ECBehaviorActorMover'/>
+ *   <behavior type='ECBehaviorAlignActor'/>
+ *   <behavior type='ECBehaviorAvoidedByActor'/>
+ *   <behavior type='ECBehaviorAvoidCollision'/>
+ *   <behavior type='ECBehaviorPlayerInputLook'/>
+ *   <behavior type='ECBehaviorPlayerInputTurn'/>
+ *   <behavior type='ECBehaviorPlayerInputCrouch'/>
+ *   <behavior type='ECBehaviorPlayerInputMove'/>
+ *   <behavior type='ECBehaviorPlayerControllable'/>
+ *   <behavior type='ECBehaviorActorAIAction'/>
+ * </elementClass>
+ * \endcode
  */
 class BaseActorClass extends BehaviorElementClass
 	var ECBehaviorComponent pComponent

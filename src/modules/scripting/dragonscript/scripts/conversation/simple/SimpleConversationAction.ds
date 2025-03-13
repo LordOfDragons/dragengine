@@ -241,10 +241,10 @@ class SimpleConversationAction
 		/** Wait for all actors finish speaking and finish waitable actions. */
 		wait
 		
-		/** Wait for all actors finish speaking.*/
+		/** Wait for all actors finish speaking. */
 		waitSpeak
 		
-		/** Same as \ref #wait but for camera switch in actor action use \ref #waitSpeak.*/
+		/** Same as \ref #wait but for camera switch in actor action use \ref #waitSpeak. */
 		waitCameraSpeak
 		
 		/** No waiting. */
