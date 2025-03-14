@@ -1,0 +1,37 @@
+name: Development Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate_buildnumbers:
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.buildnumber.outputs.build_number }}
+    steps:
+      - name: Generate build number
+        id: buildnumber
+        uses: onyxmueller/build-tag-number@v1
+        with:
+          token: ${{ secrets.github_token }}
+          prefix: github
+  
+  build_android_armv8:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_android.yml
+    with:
+      releaseVersion: development
+      buildVersion: '9999'
+      androidArch: 'armv8'
+      artifactArchive: archives-android-armv8
+      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
+  
+  build_android_armv7:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_android.yml
+    with:
+      releaseVersion: development
+      buildVersion: '9999'
+      androidArch: 'armv7'
+      artifactArchive: archives-android-armv7
+      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}

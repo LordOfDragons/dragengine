@@ -56,9 +56,7 @@ pFramebuffer( VK_NULL_HANDLE )
 		devkDevice &device = renderPass->GetDevice();
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
 		
-		VkFramebufferCreateInfo framebufferInfo;
-		memset( &framebufferInfo, 0, sizeof( framebufferInfo ) );
-		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		VkFramebufferCreateInfo framebufferInfo{VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO};
 		framebufferInfo.renderPass = renderPass->GetRenderPass();
 		framebufferInfo.width = ( uint32_t )configuration.GetSize().x;
 		framebufferInfo.height = ( uint32_t )configuration.GetSize().y;

@@ -1,0 +1,9 @@
+WebP does not support grayscale images. Such images are stored as RGB image instead
+with the same value for each channel. For the Drag[en]gine this is by itself no
+problem but the images are 3 times larger in memory than necessary. The Webp module
+uses a trick to mark images as grayscale to reduce the memory consumption. For this
+add a "UserComment" EXIF tag with the value "dewebp:grayscale". You can add any kind
+of comment as long as it contains this string somewhere. Under Linux you can use
+the following command to achieve this:
+
+exiftool -UserComment="dewebp:grayscale" image.webp

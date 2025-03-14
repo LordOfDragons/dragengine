@@ -29,6 +29,7 @@
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/compiler/deoglShaderCompileListener.h"
 
 #include <dragengine/deObject.h>
 
@@ -135,9 +136,31 @@ public:
 		EUB_COUNT
 	};
 	
+	class cShaderPreparedListener{
+	public:
+		cShaderPreparedListener() = default;
+		virtual ~cShaderPreparedListener() = default;
+		
+		/** Prepare shader finished. If failed shader.GetShader().GetCompiled() is nullptr. */
+		virtual void PrepareShaderFinished(deoglLightShader &shader) = 0;
+		/*@}*/
+	};
 	
 	
-public:
+private:
+	class cPrepareShader : public deoglShaderCompileListener{
+	private:
+		deoglLightShader &pShader;
+		cShaderPreparedListener *pListener;
+		
+	public:
+		cPrepareShader(deoglLightShader &shader, cShaderPreparedListener *listener);
+		void CompileFinished(deoglShaderCompiled *compiled) override;
+	};
+	
+	friend class cPrepareShader;
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	const deoglLightShaderConfig pConfig;
@@ -151,7 +174,6 @@ public:
 	
 	deoglShaderSources::Ref pSources;
 	deoglShaderProgram::Ref pShader;
-	
 	
 	
 public:
@@ -194,11 +216,11 @@ public:
 	/** Index for light parameter uniform target or -1 if not used. */
 	int GetLightUniformTarget( eLightUniformTargets target ) const;
 	
-	/** Ensure shader is created if not existing already. */
-	void EnsureShaderExists();
+	/** Prepare shader if not prepared yet. */
+	void PrepareShader(cShaderPreparedListener *listener);
 	
-	/** Shader generating it if not existing already. */
-	deoglShaderProgram *GetShader();
+	/** Shader or nullptr if not generated yet. */
+	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
 	/** Set index for light parameter uniform target or -1 if not used. */
 	void SetLightUniformTarget( eLightUniformTargets target, int index );
@@ -214,14 +236,12 @@ public:
 	/*@}*/
 	
 	
-	
-	/** \name Shader Generation */
-	/*@{*/
+private:
 	/** Generate shader. */
-	void GenerateShader();
+	void GenerateShader(cShaderPreparedListener *listener);
 	
 	/** Generate shader defines. */
-	void GenerateDefines( deoglShaderDefines &defines );
+	void GenerateDefines(deoglShaderDefines &defines);
 	
 	/** Generate source code for the vertex unit. */
 	void GenerateVertexSC();
@@ -240,7 +260,6 @@ public:
 	
 	/** Init shader parameters. */
 	void InitShaderParameters();
-	/*@}*/
 };
 
 #endif

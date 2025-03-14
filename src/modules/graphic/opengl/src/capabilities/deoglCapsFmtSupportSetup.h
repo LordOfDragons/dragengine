@@ -341,7 +341,7 @@ static const sTestTextureFormat vTestTextureFormats[ ETTF_COUNT ] = { // convert
 	{ GL_STENCIL_INDEX16, GL_STENCIL_INDEX16, GL_UNSIGNED_BYTE, 16, FLAG_STENCIL, "GL_STENCIL_INDEX16", etwStencil }, // ettfStencil16
 };
 
-#define TEST_PROGRAM_COUNT 89
+#define TEST_PROGRAM_COUNT 87
 static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfR8, ettfR8 },
 	{ deoglCapsFmtSupport::eutfR16, ettfR16 },
@@ -442,14 +442,14 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfRGBA16I, ettfRGBA16I },
 	{ deoglCapsFmtSupport::eutfRGBA16UI, ettfRGBA16UI },
 	
-	{ deoglCapsFmtSupport::eutfDepth, ettfDepth },
 	{ deoglCapsFmtSupport::eutfDepth, ettfDepth32 },
 	{ deoglCapsFmtSupport::eutfDepth, ettfDepth24 },
 	{ deoglCapsFmtSupport::eutfDepth, ettfDepth16 },
+	//{ deoglCapsFmtSupport::eutfDepth, ettfDepth },
 	
-	{ deoglCapsFmtSupport::eutfDepth_Stencil, ettfDepth_Stencil },
 	{ deoglCapsFmtSupport::eutfDepth_Stencil, ettfDepth24_Stencil8 },
 	{ deoglCapsFmtSupport::eutfDepth_Stencil, ettfUnsignedInt_24_8 },
+	//{ deoglCapsFmtSupport::eutfDepth_Stencil, ettfDepth_Stencil },
 	
 	{ deoglCapsFmtSupport::eutfDepthF, ettf_Depth_32F },
 	{ deoglCapsFmtSupport::eutfDepthF, ettfNV_Depth_32F },
@@ -464,15 +464,22 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfDepth16, ettfDepth16 }
 };
 
-#define TEST_FALLBACK_COUNT 7
+#define TEST_FALLBACK_COUNT 12
 static const sTestFallback vTestFallback[ TEST_FALLBACK_COUNT ] = {
+	{ deoglCapsFmtSupport::eutfR8_S, deoglCapsFmtSupport::eutfR8 },
+	{ deoglCapsFmtSupport::eutfRG8_S, deoglCapsFmtSupport::eutfRG8 },
+	{ deoglCapsFmtSupport::eutfRGB8_S, deoglCapsFmtSupport::eutfRGB8 },
+	{ deoglCapsFmtSupport::eutfRGBA8_S, deoglCapsFmtSupport::eutfRGBA8 },
+	
 	{ deoglCapsFmtSupport::eutfR16F, deoglCapsFmtSupport::eutfR32F },
 	{ deoglCapsFmtSupport::eutfRG16F, deoglCapsFmtSupport::eutfRG32F },
 	{ deoglCapsFmtSupport::eutfRGB16F, deoglCapsFmtSupport::eutfRGB32F },
 	{ deoglCapsFmtSupport::eutfRGBA16F, deoglCapsFmtSupport::eutfRGBA32F },
-	{ deoglCapsFmtSupport::eutfDepth, deoglCapsFmtSupport::eutfDepth_Stencil }, // some platforms support only combined
-	{ deoglCapsFmtSupport::eutfDepth16, deoglCapsFmtSupport::eutfDepth },
-	{ deoglCapsFmtSupport::eutfDepth16, deoglCapsFmtSupport::eutfDepth_Stencil }, // some platforms support only combined
+	
+	{ deoglCapsFmtSupport::eutfDepth, deoglCapsFmtSupport::eutfDepthF },
+	{ deoglCapsFmtSupport::eutfDepth_Stencil, deoglCapsFmtSupport::eutfDepthF_Stencil },
+	{ deoglCapsFmtSupport::eutfDepth, deoglCapsFmtSupport::eutfDepth_Stencil },
+	{ deoglCapsFmtSupport::eutfDepth16, deoglCapsFmtSupport::eutfDepth }
 };
 
 static const char *vTextureFormatNames[ deoglCapsFmtSupport::UseTextureFormatCount ] = {

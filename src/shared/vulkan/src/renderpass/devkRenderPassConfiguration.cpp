@@ -88,12 +88,8 @@ void devkRenderPassConfiguration::SetAttachmentCount( int count ){
 		return;
 	}
 	
-	pAttachments = new VkAttachmentDescription[ count ];
-	memset( pAttachments, 0, sizeof( VkAttachmentDescription ) * count );
-	
-	pClearValues = new VkClearValue[ count ];
-	memset( pClearValues, 0, sizeof( VkClearAttachment ) * count );
-	
+	pAttachments = new VkAttachmentDescription[ count ]{};
+	pClearValues = new VkClearValue[ count ]{};
 	pAttachmentCount = count;
 }
 
@@ -120,9 +116,7 @@ void devkRenderPassConfiguration::SetAttachmentAt( int index, const VkAttachment
 }
 
 void devkRenderPassConfiguration::SetColorAttachmentAt( int index, VkFormat format, pInType in, eOutType out ){
-	VkAttachmentDescription description;
-	memset( &description, 0, sizeof( description ) );
-	
+	VkAttachmentDescription description{};
 	description.format = format;
 	description.samples = VK_SAMPLE_COUNT_1_BIT;
 	description.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -196,8 +190,7 @@ void devkRenderPassConfiguration::SetClearValueAt( int index, const VkClearValue
 }
 
 void devkRenderPassConfiguration::SetClearValueColorFloatAt( int index, float red, float green, float blue, float alpha ){
-	VkClearValue clear;
-	memset( &clear, 0, sizeof( clear ) );
+	VkClearValue clear{};
 	clear.color.float32[ 0 ] = red;
 	clear.color.float32[ 1 ] = green;
 	clear.color.float32[ 2 ] = blue;
@@ -206,8 +199,7 @@ void devkRenderPassConfiguration::SetClearValueColorFloatAt( int index, float re
 }
 
 void devkRenderPassConfiguration::SetClearValueColorIntAt( int index, int red, int green, int blue, int alpha ){
-	VkClearValue clear;
-	memset( &clear, 0, sizeof( clear ) );
+	VkClearValue clear{};
 	clear.color.int32[ 0 ] = ( int32_t )red;
 	clear.color.int32[ 1 ] = ( int32_t )green;
 	clear.color.int32[ 2 ] = ( int32_t )blue;
@@ -216,8 +208,7 @@ void devkRenderPassConfiguration::SetClearValueColorIntAt( int index, int red, i
 }
 
 void devkRenderPassConfiguration::SetClearValueColorUIntAt( int index, int red, int green, int blue, int alpha ){
-	VkClearValue clear;
-	memset( &clear, 0, sizeof( clear ) );
+	VkClearValue clear{};
 	clear.color.uint32[ 0 ] = ( uint32_t )red;
 	clear.color.uint32[ 1 ] = ( uint32_t )green;
 	clear.color.uint32[ 2 ] = ( uint32_t )blue;
@@ -226,8 +217,7 @@ void devkRenderPassConfiguration::SetClearValueColorUIntAt( int index, int red, 
 }
 
 void devkRenderPassConfiguration::SetClearValueDepthAt( int index, float depth, int stencil ){
-	VkClearValue clear;
-	memset( &clear, 0, sizeof( clear ) );
+	VkClearValue clear{};
 	clear.depthStencil.depth = depth;
 	clear.depthStencil.stencil = ( uint32_t )stencil;
 	SetClearValueAt( index, clear );
@@ -250,8 +240,7 @@ void devkRenderPassConfiguration::SetSubPassCount( int count ){
 		return;
 	}
 	
-	pSubPasses = new sSubPass[ count ];
-	memset( pSubPasses, 0, sizeof( sSubPass ) * count );
+	pSubPasses = new sSubPass[ count ]{};
 	pSubPassCount = count;
 }
 
@@ -279,8 +268,7 @@ void devkRenderPassConfiguration::SetSubPassAt( int index, const sSubPass &subpa
 
 void devkRenderPassConfiguration::SetSubPassAt( int index, int depthStencil, int color1,
 int color2, int color3, int color4, int color5, int color6, int color7, int color8 ){
-	sSubPass subPass;
-	memset( &subPass, 0, sizeof( subPass ) );
+	sSubPass subPass{};
 	subPass.depthStencilAttachment = depthStencil;
 	subPass.colorAttachments[ 0 ] = color1;
 	subPass.colorAttachments[ 1 ] = color2;

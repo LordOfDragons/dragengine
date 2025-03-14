@@ -87,7 +87,9 @@ private:
 	void pCleanUp();
 	void pCreateShapesVAO();
 	void pActivateVAOShapes();
-	void pCreatePipelines( const deoglPipeline* (&pipelines)[ 2 ], deoglPipelineConfiguration &config );
+	void pCreatePipelines(const deoglPipeline* (&pipelines)[2],
+		deoglPipelineConfiguration &config, const deoglShaderSources *sources,
+		const deoglShaderDefines &defines);
 };
 
 #endif

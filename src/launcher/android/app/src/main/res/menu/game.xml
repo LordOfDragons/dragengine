@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItemGameRun"
+        android:title="@string/label_play" />
+    <item
+        android:id="@+id/menuItemGameInfo"
+        android:title="@string/label_information" />
+    <item
+        android:id="@+id/menuItemGameSettings"
+        android:title="@string/label_settings" />
+    <item android:title="@string/label_support" >
+        <menu >
+            <item
+                android:id="@+id/menuItemGameShareLogs"
+                android:title="@string/label_share_logs" />
+        </menu>
+    </item>
+</menu>

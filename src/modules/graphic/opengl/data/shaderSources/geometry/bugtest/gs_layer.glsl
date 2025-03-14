@@ -34,7 +34,9 @@ void main( void ){
 
 /*
 // version with invocation
-#extension GL_ARB_gpu_shader5 : require
+#ifndef OPENGLES
+	#extension GL_ARB_gpu_shader5 : require
+#endif
 
 precision highp float;
 precision highp int;

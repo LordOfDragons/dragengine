@@ -7,11 +7,11 @@
 #ifdef WITH_VARIATIONS
 	// functions are defined right before main due to Shared-SPB support
 	#define SAMPLER_2D sampler2DArray
-	#define TEXTURE(s,tc) textureLod(s, vec3(tc, 0), 0)
+	#define TEXTURE(s,tc) textureLod(s, vec3(tc, 0), 0.0)
 	//#define TEXTURE(s,tc) textureLod(s, tcTexVar(tc, textureSize(s, 0).z, 0))
 #else
 	#define SAMPLER_2D sampler2D
-	#define TEXTURE(s,tc) textureLod(s, tc, 0)
+	#define TEXTURE(s,tc) textureLod(s, tc, 0.0)
 #endif
 
 #ifdef TEXTURE_COLOR

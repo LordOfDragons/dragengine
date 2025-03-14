@@ -332,8 +332,8 @@ void deSemaphore::SignalAll(){
 	#ifdef OS_W32
 	// windows releases only one single thread if any are waiting. to simulate a signal all we have
 	// to call SetEvent multiple times. every time a thread is released the event is automatically
-	// set to not signaled in which case another thread can be potentially releasd. if there are no
-	// more threads waiting the state remains signaled. this is the break condition.
+	// set to not signaled in which case another thread can be potentially released. if there are
+	// no more threads waiting the state remains signaled. this is the break condition.
 	EnterCriticalSection( &pCSWaitCounter );
 	DBGSEMAPHORE( "SignalAll() in" );
 	if( pCounter < 0 ){

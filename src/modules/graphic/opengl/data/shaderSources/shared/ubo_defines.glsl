@@ -17,3 +17,9 @@
 #else
 	#define UFCONST
 #endif
+
+#ifdef OPENGLES
+	#define VARCONST
+#else
+	#define VARCONST const
+#endif

@@ -87,7 +87,7 @@ void transformPosition( out vec3 position, in int spbIndex )
 			
 		#else
 			// create bend matrix
-			vec2 bend = bendState1.xy * vec2( min( pPropFieldParams * length( inPosition ), 1 ) );
+			vec2 bend = bendState1.xy * vec2( min( pPropFieldParams * length( inPosition ), 1.0 ) );
 			vec4 bs = sin( vec4( bend, -bend ) );
 			vec2 bc = cos( bend );
 			mat3 matBend = mat3( bc.y, bs.y, 0, bc.x * bs.w, bc.x * bc.y, bs.x, bs.x * bs.y, bs.z * bc.y, bc.x );

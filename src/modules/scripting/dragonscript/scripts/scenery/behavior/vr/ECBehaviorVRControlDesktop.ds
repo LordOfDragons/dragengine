@@ -130,8 +130,51 @@ pin Dragengine.Utils
  *    end
  * end
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrcontroldesktop
  */
 class ECBehaviorVRControlDesktop extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRHandPointAt
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRControlDesktop'>
+	 *   <!-- required: use vr hand point at with id -->
+	 *   <string name='vrHandPointAt'>right</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRControlDesktop' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRControlDesktop"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorVRControlDesktop behavior = ECBehaviorVRControlDesktop.new(eclass,\
+				ECBehaviorVRHandPointAt.getBehaviorIn(eclass,\
+					parameters.getAt("vrHandPointAt") cast String), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrControlDesktop", id)
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorVRControlDesktop pECBehavior

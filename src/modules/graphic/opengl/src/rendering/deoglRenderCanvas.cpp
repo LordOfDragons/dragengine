@@ -149,30 +149,24 @@ pDebugCountCanvasCanvasView( 0 )
 		
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "Canvas" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasColor, pipconf );
+		pCreatePipelines(pPipelineCanvasColor, pipconf, sources, defines);
 		
 		defines.SetDefines( "WITH_TEXTURE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasImage, pipconf );
+		pCreatePipelines(pPipelineCanvasImage, pipconf, sources, defines);
 		
 		defines = commonDefines;
 		defines.SetDefines( "WITH_MASK" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasColorMask, pipconf );
+		pCreatePipelines(pPipelineCanvasColorMask, pipconf, sources, defines);
 		
 		defines.SetDefines( "WITH_TEXTURE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasImageMask, pipconf );
+		pCreatePipelines(pPipelineCanvasImageMask, pipconf, sources, defines);
 		
 		defines = commonDefines;
 		defines.SetDefines( "WITH_RENDER_WORLD" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasRenderWorld, pipconf );
+		pCreatePipelines(pPipelineCanvasRenderWorld, pipconf, sources, defines);
 		
 		defines.SetDefines( "WITH_MASK" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasRenderWorldMask, pipconf );
+		pCreatePipelines(pPipelineCanvasRenderWorldMask, pipconf, sources, defines);
 		
 		
 		
@@ -317,7 +311,7 @@ void deoglRenderCanvas::DrawCanvasPaint( const deoglRenderCanvasContext &context
 		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
 	}
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterFloat( spcClipRect,
 		( context.GetClipMin().x + 1.0f ) * context.GetClipFactor().x,
@@ -399,7 +393,7 @@ void deoglRenderCanvas::DrawCanvasImage( const deoglRenderCanvasContext &context
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -462,7 +456,7 @@ void deoglRenderCanvas::DrawCanvasCanvasView( const deoglRenderCanvasContext &co
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -520,7 +514,7 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer( const deoglRenderCanvasContext &c
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( canvas.GetSize() ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, canvas.GetTCTransform() );
@@ -586,7 +580,7 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	}
 	
 	// set shader
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	// set color
 	const float transparency = context.GetTransparency();
@@ -776,7 +770,7 @@ const deoglRCanvasRenderWorld &canvas ){
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale( size ) );
 	const float transparency = context.GetTransparency();
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	
@@ -1192,13 +1186,12 @@ void deoglRenderCanvas::pActivateVAOShapes(){
 	pActiveVAO = pVAOShapes;
 }
 
-void deoglRenderCanvas::pCreatePipelines( const deoglPipeline* (&pipelines)[ deoglRCanvas::BlendModeCount ],
-deoglPipelineConfiguration &config ){
-	deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
-	
-	config.EnableBlend( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	pipelines[ deCanvas::ebmBlend ] = pipelineManager.GetWith( config );
+void deoglRenderCanvas::pCreatePipelines(
+const deoglPipeline* (&pipelines)[deoglRCanvas::BlendModeCount], deoglPipelineConfiguration &config,
+const deoglShaderSources *sources, const deoglShaderDefines &defines){
+	config.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	pAsyncGetPipeline(pipelines[deCanvas::ebmBlend], config, sources, defines);
 	
 	config.EnableBlend( GL_SRC_ALPHA , GL_ONE );
-	pipelines[ deCanvas::ebmAdd ] = pipelineManager.GetWith( config );
+	pAsyncGetPipeline(pipelines[deCanvas::ebmAdd], config, sources, defines);
 }

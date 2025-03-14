@@ -3,6 +3,7 @@ precision highp int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
+#include "shared/image_buffer.glsl"
 
 uniform vec4 pTCDataToDepth; // xy=scale, zw=offset
 uniform ivec2 pOffsetRead;
@@ -12,7 +13,8 @@ uniform float pDepthDifferenceThreshold;
 
 uniform HIGHP sampler2DArray texDepth;
 
-layout(binding=0, r8) uniform restrict image2DArray texData;
+layout(binding=0, IMG_R8_FMT) uniform readonly lowp IMG_R8_2DARR texData_load;
+layout(binding=0, IMG_R8_FMT) uniform writeonly lowp IMG_R8_2DARR texData_store;
 
 #ifdef BLUR_PASS_2
 layout( local_size_y=64 ) in;
@@ -43,14 +45,11 @@ shared float vDepth[ 72 ];
 // the sharpness will be reduced a bit. furthermore the values are modified to smear
 // out the ssao a bit to combine better with texture ao
 // 
-const float cGaussWeightCenter = 1;
+const float cGaussWeightCenter = 1.0;
 const vec4 cGaussWeights = vec4( 6.065307e-1, 1.353353e-1, 1.110900e-2, 3.354626e-4 );
 
 const float cGaussWeightCenterModifier = 0.8;
 const vec4 cGaussWeightModifier = vec4( 0.85, 0.9, 0.95, 1 );
-
-const float cWeightCenter = cGaussWeightCenter * cGaussWeightCenterModifier;
-const vec4 cWeights = cGaussWeights * cGaussWeightModifier;
 
 
 #include "shared/defren/depth_to_position.glsl"
@@ -64,6 +63,10 @@ const int cBlurCoord = 0;
 
 
 void main( void ){
+	// constants that glsl does not allow to be global constants
+	float cWeightCenter = cGaussWeightCenter * cGaussWeightCenterModifier;
+	vec4 cWeights = cGaussWeights * cGaussWeightModifier;
+	
 	ivec3 tcCenter = ivec3( gl_GlobalInvocationID );
 	
 	// cooperative read data
@@ -72,7 +75,7 @@ void main( void ){
 	
 	uint index = gl_LocalInvocationIndex;
 	
-	vData[ index ] = float( imageLoad( texData, ivec3( tc.xy + pOffsetRead, tc.z ) ) );
+	vData[index] = float(IMG_R8_LOAD(imageLoad(texData_load, ivec3(tc.xy + pOffsetRead, tc.z))));
 	vDepth[ index ] = depthToZ( texDepth,
 		vec3( vec2( tc.xy ) * pTCDataToDepth.xy + pTCDataToDepth.zw, tc.z ), tc.z );
 	
@@ -80,7 +83,7 @@ void main( void ){
 		tc[ cBlurCoord ] = min( tcCenter[ cBlurCoord ] + 60, pClamp );
 		index += uint( 64 );
 		
-		vData[ index ] = float( imageLoad( texData, ivec3( tc.xy + pOffsetRead, tc.z ) ) );
+		vData[index] = float(IMG_R8_LOAD(imageLoad(texData_load, ivec3(tc.xy + pOffsetRead, tc.z))));
 		vDepth[ index ] = depthToZ( texDepth,
 			vec3( vec2( tc.xy ) * pTCDataToDepth.xy + pTCDataToDepth.zw, tc.z ), tc.z );
 	}
@@ -131,5 +134,5 @@ void main( void ){
 	
 	
 	// finish
-	imageStore( texData, ivec3( tcCenter.xy + pOffsetWrite, tcCenter.z ), vec4( accum / weightSum ) );
+	imageStore(texData_store, ivec3(tcCenter.xy + pOffsetWrite, tcCenter.z), IMG_R8_STORE(accum / weightSum));
 }

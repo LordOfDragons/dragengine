@@ -1,5 +1,7 @@
 #ifdef GS_INSTANCING
-	#extension GL_ARB_gpu_shader5 : require
+	#ifndef OPENGLES
+		#extension GL_ARB_gpu_shader5 : require
+	#endif
 #endif
 
 #include "shared/defren/skin/macros_geometry.glsl"
@@ -38,7 +40,7 @@
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
-#include "shared/defren/skin/ubo_instance_parameters.glsl"
+// #include "shared/defren/skin/ubo_instance_parameters.glsl"
 
 
 
@@ -75,6 +77,10 @@
 	#endif
 	
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
+#endif
+
+#ifdef DEPTH_OFFSET
+	flat in int vGSDoubleSided[3];
 #endif
 
 
@@ -193,10 +199,22 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	
 	// depth offset
 	#if defined DEPTH_OFFSET
+		// pDoubleSided is passed on from the vertex shader to avoid requiring SSBO
+		// (ubo_instance_parameters) in geometry shaders for compatibility reasons
+		bool doubleSided = vGSDoubleSided[0] == 1;
+		
 		#ifdef GS_RENDER_CUBE
-			applyDepthOffset( 0, vNormal, pDoubleSided );
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(0, vNormal, doubleSided, vPosition.z);
+			#else
+				applyDepthOffset(0, vNormal, doubleSided);
+			#endif
 		#else
-			applyDepthOffset( layer, vNormal, pDoubleSided );
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(layer, vNormal, doubleSided, vPosition.z);
+			#else
+				applyDepthOffset(layer, vNormal, doubleSided);
+			#endif
 		#endif
 	#endif
 	

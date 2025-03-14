@@ -128,13 +128,15 @@ deoglRenderBase( renderThread )
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
+	if(useInverseDepth){
+		defines.SetDefines("INVERSE_DEPTH");
+	}
 	
 	
 	// depth downsample
@@ -144,21 +146,14 @@ deoglRenderBase( renderThread )
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample" );
-	if( useInverseDepth ){
-		defines.SetDefines( "INVERSE_DEPTH" );
-	}
 	
 	defines.SetDefines( "NO_TEXCOORD" );
 	defines.SetDefines( "USE_MIN_FUNCTION" ); // so it works for SSR. should also work for SSAO
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineDepthDownsample = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineDepthDownsample, pipconf, sources, defines);
 	
 	
 	// depth downsample stereo
 	defines = commonDefines;
-	if( useInverseDepth ){
-		defines.SetDefines( "INVERSE_DEPTH" );
-	}
 	defines.SetDefines( "NO_TEXCOORD" );
 	defines.SetDefines( "USE_MIN_FUNCTION" ); // so it works for SSR. should also work for SSAO
 	
@@ -167,8 +162,7 @@ deoglRenderBase( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Depth Downsample Stereo" );
 	}
 	
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineDepthDownsampleStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineDepthDownsampleStereo, pipconf, sources, defines);
 }
 
 deoglRenderDepthPass::~deoglRenderDepthPass(){
@@ -518,7 +512,7 @@ DBG_ENTER("DownsampleDepth")
 	pipeline.Activate();
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	tsmgr.EnableArrayTexture( 0, texture, GetSamplerClampNearest() );
 	

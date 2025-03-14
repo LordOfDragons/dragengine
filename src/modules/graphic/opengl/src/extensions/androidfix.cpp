@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <dragengine/dragengine_configuration.h>
+
 #ifdef OS_ANDROID
 
 #include <stdlib.h>
@@ -29,62 +31,11 @@
 
 #include <dragengine/common/exceptions.h>
 
-#include "deoglGL.h"
-
-
-
-/**
- * Wraps eglGetProcAddress returning replacement functions if not found.
- */
-__eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name ){
-	// find native method
-	__eglMustCastToProperFunctionPointerType address = eglGetProcAddress( name );
-	if( address ){
-		return address;
-	}
-	
-	// return replacement if existing otherwise return NULL
-	if( strcmp( name, "glGetBufferSubData" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glGetBufferSubData;
-		
-	}else if( strcmp( name, "glTexImage1D" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glTexImage1D;
-		
-	}else if( strcmp( name, "glTexSubImage1D" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glTexSubImage1D;
-		
-	}else if( strcmp( name, "glCompressedTexImage1D" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glCompressedTexImage1D;
-		
-// 	}else if( strcmp( name, "glFramebufferTexture" ) == 0 ){
-// 		return (__eglMustCastToProperFunctionPointerType)&glFramebufferTexture;
-		
-	}else if( strcmp( name, "glBindFragDataLocation" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glBindFragDataLocation;
-		
-	}else if( strcmp( name, "glTexBuffer" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glTexBuffer;
-		
-	}else if( strcmp( name, "glDrawElementsBaseVertex" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glDrawElementsBaseVertex;
-		
-	}else if( strcmp( name, "glDrawRangeElementsBaseVertex" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glDrawRangeElementsBaseVertex;
-		
-	}else if( strcmp( name, "glDrawElementsInstancedBaseVertex" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glDrawElementsInstancedBaseVertex;
-		
-	}else if( strcmp( name, "glQueryCounter" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glQueryCounter;
-		
-	}else if( strcmp( name, "glGetQueryObjectui64v" ) == 0 ){
-		return (__eglMustCastToProperFunctionPointerType)&glGetQueryObjectui64v;
-		
-	}else{
-		return NULL;
-	}
-}
-
+#include "../deoglGL.h"
+#include "androidfix.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+#include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTLogger.h"
 
 
 /**
@@ -112,8 +63,6 @@ void glGetTexImage( GLenum target, GLint level, GLenum format, GLenum type, GLvo
 	*/
 }
 
-
-
 /**
  * glPolygonMode replacement.
  * 
@@ -124,14 +73,12 @@ void glGetTexImage( GLenum target, GLint level, GLenum format, GLenum type, GLvo
 void glPolygonMode( GLenum face, GLenum mode ){
 }
 
-
-
 /**
  * glGetBufferSubData replacement.
  * 
  * EGL does not have glGetBuffer*. As replacement glMapBufferRange has to be used.
  */
-void glGetBufferSubData( GLenum target, GLintptr offset, GLsizeiptr size, void *data ){
+static void eglGetBufferSubData( GLenum target, GLintptr offset, GLsizeiptr size, void *data ){
 	if( size == 0 ){
 		return;
 	}
@@ -146,73 +93,14 @@ void glGetBufferSubData( GLenum target, GLintptr offset, GLsizeiptr size, void *
 	glUnmapBuffer( target );
 }
 
-
-
-/**
- * glTexImage1D replacement.
- * 
- * 1D textures are not supported under EGL. Replace with a 2D texture variant.
- * 
- * \note GL_TEXTURE_1D has the same value as _GL_TEXTURE_2D so target can be used as-is.
- */
-void glTexImage1D( GLenum target, GLint level, GLint internalFormat, GLsizei width,
-GLint border, GLenum format, GLenum type, const GLvoid *data ){
-	glTexImage2D( target, level, internalFormat, width, 1, border, format, type, data );
-}
-
-
-
-/**
- * glTexSubImage1D replacement.
- * 
- * 1D textures are not supported under EGL. Replace with a 2D texture variant.
- * 
- * \note GL_TEXTURE_1D has the same value as _GL_TEXTURE_2D so target can be used as-is.
- */
-void glTexSubImage1D( GLenum target, GLint level, GLint xoffset, GLsizei width,
-GLenum format, GLenum type, const void *pixels ){
-	pglTexSubImage2D( target, level, xoffset, 0, width, 1, format, type, pixels );
-}
-
-
-
-/**
- * glCompressedTexImage1D replacement.
- * 
- * 1D textures are not supported under EGL. Replace with a 2D texture variant.
- * 
- * \note GL_TEXTURE_1D has the same value as _GL_TEXTURE_2D so target can be used as-is.
- */
-void glCompressedTexImage1D( GLenum target, GLint level, GLenum internalFormat,
-GLsizei width, GLint border, GLsizei imageSize, const void *data ){
-	pglCompressedTexImage2D( target, level, internalFormat, width, 1, border, imageSize, data );
-}
-
-
-
-/**
- * glFramebufferTexture replacement.
- * 
- * Use glFramebufferTexture2D instead which fails if not used on a supported type.
- */
-/*
-void glFramebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level ){
-	glFramebufferTexture2D( target, attachment, GL_TEXTURE_2D, texture, level );
-}
-*/
-
-
-
 /**
  * glBindFragDataLocation replacement.
  * 
  * EGL supports no custom named and placed output variables.
  * Replacement is a no-op. Shaders fix this.
  */
-void glBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ){
+static void eglBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ){
 }
-
-
 
 /**
  * glTexBuffer replacement.
@@ -220,78 +108,173 @@ void glBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ){
  * Supported from 3.1 onwards but android has egl 3.0. for the time being the call
  * is silently ignored. problems have to be fixed once known.
  */
-void glTexBuffer( GLenum target, GLenum internalformat, GLuint buffer ){
+static void eglTexBuffer( GLenum target, GLenum internalformat, GLuint buffer ){
+}
+
+/**
+ * glClearBufferSubData replacement.
+ */
+static class cTempBuffer{
+private:
+	uint8_t *pData, *pDataEnd;
+	int pSize, pMaxSize;
+	
+public:
+	cTempBuffer() : pData(nullptr), pDataEnd(nullptr), pSize(0), pMaxSize(0){}
+	
+	~cTempBuffer(){
+		if(pData){
+			delete [] pData;
+		}
+	}
+	
+	inline int GetSize() const{ return pSize; }
+	inline uint8_t *GetData() const{ return pData; }
+	
+	void SetSize(int size){
+		DEASSERT_TRUE(size >= 1)
+		if(pData && size <= pMaxSize){
+			pSize = size;
+			pDataEnd = pData + size;
+			return;
+		}
+		
+		if(pData){
+			delete [] pData;
+		}
+		pData = new uint8_t[size];
+		pMaxSize = pSize = size;
+		pDataEnd = pData + size;
+	}
+	
+	void Fill(const uint8_t *data, int size){
+		DEASSERT_TRUE(pSize % size == 0)
+		uint8_t *d = pData;
+		while(d < pDataEnd){
+			memcpy(d, data, size);
+			d += size;
+		}
+	}
+} vTempBuffer;
+
+static void eglClearBufferSubData(GLenum target, GLenum internalformat, GLintptr offset,
+GLsizeiptr size, GLenum format, GLenum type, const void *data){
+	vTempBuffer.SetSize((int)size);
+	
+	switch(format){
+	case GL_RGBA:
+		DEASSERT_TRUE(type == GL_FLOAT)
+		vTempBuffer.Fill((uint8_t*)data, sizeof(GLfloat) * 4);
+		break;
+		
+	case GL_RED:
+		DEASSERT_TRUE(type == GL_FLOAT)
+		vTempBuffer.Fill((uint8_t*)data, sizeof(GLfloat));
+		break;
+		
+	case GL_RGBA_INTEGER:
+		DEASSERT_TRUE(type == GL_UNSIGNED_INT)
+		vTempBuffer.Fill((uint8_t*)data, sizeof(GLuint) * 4);
+		break;
+		
+	case GL_RED_INTEGER:
+		DEASSERT_TRUE(type == GL_UNSIGNED_INT)
+		vTempBuffer.Fill((uint8_t*)data, sizeof(GLuint));
+		break;
+		
+	default:
+		DETHROW_INFO(deeInvalidParam, "unsupported format");
+	}
+	
+	glBufferSubData(target, offset, size, vTempBuffer.GetData());
+}
+
+/**
+ * glMultiDrawElementsBaseVertex replacement.
+ */
+static void eglMultiDrawElementsBaseVertex(GLenum mode, const GLsizei *count, GLenum type,
+const GLvoid *const *indices, GLsizei drawcount, const GLint *basevertex){
+	int i;
+	for(i=0; i<drawcount; i++){
+		if(count[i] > 0){
+			pglDrawElementsBaseVertex(mode, count[i], type, indices[i], basevertex[i]);
+		}
+	}
+}
+
+/**
+ * glMultiDrawArrays replacement.
+ */
+static void eglMultiDrawArrays(GLenum mode, const GLint *first, const GLsizei *count, GLsizei drawcount){
+	DEASSERT_NOTNULL(first)
+	DEASSERT_NOTNULL(count)
+	
+	GLsizei i;
+	for(i=0; i<drawcount; i++){
+		glDrawArrays(mode, first[i], count[i]);
+	}
+}
+
+/**
+ * glMultiDrawElements replacement.
+ */
+void eglMultiDrawElements(GLenum mode, const GLsizei *count, GLenum type,
+const void * const *indices, GLsizei drawcount){
+	DEASSERT_NOTNULL(count)
+	DEASSERT_NOTNULL(indices)
+	
+	GLsizei i;
+	for(i=0; i<drawcount; i++){
+		glDrawElements(mode, count[i], type, indices[i]);
+	}
 }
 
 
-
 /**
- * glDrawElementsBaseVertex replacement.
- * 
- * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
- * since it requires modifying the VBO data. the shared vbo shifts the indices into
- * place. this works since vbo data blocks can not be moved (for the time being).
+ * Wraps eglGetProcAddress returning replacement functions if not found.
  */
-void glDrawElementsBaseVertex( GLenum mode, GLsizei count, GLenum type, const void *indices, GLint basevertex ){
-	glDrawElements( mode, count, type, indices );
-}
-
-
-
-/**
- * glDrawRangeElementsBaseVertex replacement.
- * 
- * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
- * since it requires modifying the VBO data. the shared vbo shifts the indices into
- * place. this works since vbo data blocks can not be moved (for the time being).
- */
-void glDrawRangeElementsBaseVertex( GLenum mode, GLuint start, GLuint end, GLsizei count,
-GLenum type, const void *indices, GLint basevertex ){
-	glDrawRangeElements( mode, start, end, count, type, indices );
-}
-
-
-
-/**
- * glDrawElementsInstancedBaseVertex replacement.
- * 
- * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
- * since it requires modifying the VBO data. the shared vbo shifts the indices into
- * place. this works since vbo data blocks can not be moved (for the time being).
- */
-void glDrawElementsInstancedBaseVertex( GLenum mode, GLsizei count, GLenum type,
-const void *indices, GLsizei instancecount, GLint basevertex ){
-	glDrawElementsInstanced( mode, count, type, indices, instancecount );
-}
-
-
-
-/**
- * glQueryCounter replacement.
- * 
- * Not used so simply blanked.
- */
-void glQueryCounter( GLuint id, GLenum target ){
-}
-
-
-
-/**
- * glGetQueryObjectui64v replacement.
- * 
- * Not used so simply blanked.
- */
-void glGetQueryObjectui64v( GLuint id, GLenum pname, GLuint64 *params ){
-}
-
-
-
-/**
- * glShaderStorageBlockBinding replacement.
- * 
- * Set to empty since under OpenGL ES the shader has to set the binding.
- */
-void eglShaderStorageBlockBinding( GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding ){
+__eglMustCastToProperFunctionPointerType androidGetProcAddress(
+deoglRenderThread &renderThread, const char *name){
+	// find native method
+	__eglMustCastToProperFunctionPointerType address = eglGetProcAddress( name );
+	if( address ){
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): native", name);
+		return address;
+	}
+	
+	// return replacement if existing otherwise return NULL
+	if( strcmp( name, "glGetBufferSubData" ) == 0 ){
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		return (__eglMustCastToProperFunctionPointerType)&eglGetBufferSubData;
+		
+	}else if( strcmp( name, "glBindFragDataLocation" ) == 0 ){
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		return (__eglMustCastToProperFunctionPointerType)&eglBindFragDataLocation;
+		
+	}else if( strcmp( name, "glTexBuffer" ) == 0 ){
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		return (__eglMustCastToProperFunctionPointerType)&eglTexBuffer;
+		
+	}else if(strcmp(name, "glMultiDrawArrays") == 0){
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		return (__eglMustCastToProperFunctionPointerType)&eglMultiDrawArrays;
+		
+	}else if(strcmp(name, "glMultiDrawElements") == 0){
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		return (__eglMustCastToProperFunctionPointerType)&eglMultiDrawElements;
+		
+	}else if(strcmp(name, "glClearBufferSubData") == 0){
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		return (__eglMustCastToProperFunctionPointerType)&eglClearBufferSubData;
+		
+	}else if(strcmp(name, "glMultiDrawElementsBaseVertex") == 0){
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): replacement", name);
+		return (__eglMustCastToProperFunctionPointerType)&eglMultiDrawElementsBaseVertex;
+		
+	}else{
+		// renderThread.GetLogger().LogInfoFormat("androidGetProcAddress(%s): absent", name);
+		return nullptr;
+	}
 }
 
 #endif

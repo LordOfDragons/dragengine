@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create guard. */
-	devkGuardUnmapBuffer( devkDevice &device, VkDeviceMemory memory );
+	devkGuardUnmapBuffer(devkDevice &device, VkDeviceMemory memory);
 	
 	/** Clean up guard. */
 	~devkGuardUnmapBuffer();

@@ -49,12 +49,56 @@ pin Dragengine.Utils
  * 
  * Requires these behaviors:
  * - ECBehaviorVRHand
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandaction
  */
 class ECBehaviorVRHandAction extends DefaultECBehavior
 	/** \brief Factory for creating action. */
 	interface ActionFactory
 		/** \brief Create action for behavior instance. */
 		func BaseVRHandAction createAction(Instance instance)
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRHand
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHandAction'>
+	 *   <!-- required: use vr hand with id. -->
+	 *   <string name='vrHand'>right</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRHandAction' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRHandAction"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorVRHandAction behavior = ECBehaviorVRHandAction.new(eclass,\
+				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String),\
+				ECBehaviorConversationActor.getBehaviorIn(eclass), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrHandAction", id)
+			return behavior
+		end
 	end
 	
 	/** \brief Behavior instance. */

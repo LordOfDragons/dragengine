@@ -45,12 +45,11 @@ pLayout( layout )
 		DETHROW_INFO( deeNullPointer, "layout" );
 	}
 	
-	memset( &pPoolSize, 0, sizeof( pPoolSize ) );
+	pPoolSize = {};
 	pPoolSize.type = type;
 	pPoolSize.descriptorCount = 1;
 	
-	memset( &pPoolCreateInfo, 0, sizeof( pPoolCreateInfo ) );
-	pPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	pPoolCreateInfo = {VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
 	pPoolCreateInfo.poolSizeCount = 1;
 	pPoolCreateInfo.pPoolSizes = &pPoolSize;
 	pPoolCreateInfo.maxSets = maxSetCount;

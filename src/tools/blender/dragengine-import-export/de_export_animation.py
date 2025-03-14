@@ -601,8 +601,8 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
             blf.draw(0, move.name)"""
             #Blender.Window.DrawProgressBar(0.2 + progressCounter * 0.8 / countMoves, "Writing Move %s..." % move.name)
             playtime = 0
-            firstFrame = 1
-            lastFrame = 1
+            firstFrame = 10000
+            lastFrame = -10000
             moveBones = []
             moveVpSets = []
             agroups = move.action.groups
@@ -670,7 +670,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
                 move.firstFrame = firstFrame
                 move.lastFrame = lastFrame
             
-            playtime = move.lastFrame - move.firstFrame
+            playtime = max(move.lastFrame - move.firstFrame, 0)
             
             # write move informations
             f.write(struct.pack("<B", len(move.name))) # length name

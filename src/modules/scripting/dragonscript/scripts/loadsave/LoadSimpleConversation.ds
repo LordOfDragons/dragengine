@@ -1,0 +1,737 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Utils
+pin Dragengine.XML
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+/**
+ * \brief Load simple conversation from XML file.
+ * \version 1.25
+ * \see SimpleConversation
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation
+ */
+class LoadSimpleConversation extends BaseXmlLoader
+	var Dictionary pConversations
+	
+	
+	/** \brief Create loader. */
+	func new(Console console) this(console, "LoadSimpleConversation")
+	end
+	
+	/** \brief Create loader. */
+	func new(Console console, String name) super(console, name)
+		pConversations = Dictionary.new()
+	end
+	
+	
+	/**
+	 * \brief Load simple conversation from file.
+	 * \warning Loaded simple conversation is shared. Do not change it.
+	 */
+	func SimpleConversation loadFromFile(String filename)
+		var SimpleConversation conversation =\
+			pConversations.getAt(filename, null) cast SimpleConversation
+		if conversation != null
+			return conversation
+		end
+		
+		return loadAndParseRootTag(filename, "simpleConversation", block EasyXMLElement root
+			conversation = SimpleConversation.new(filename)
+			readConversation(root, conversation, File.new(filename).getParent().getPath())
+			pConversations.setAt(filename, conversation)
+			return conversation
+		end) cast SimpleConversation
+	end
+	
+	/**
+	 * \brief Load simple conversations from file matching pattern.
+	 * \warning Loaded simple conversations are shared. Do not change it.
+	 * 
+	 * Scans directory files for files matching pattern. Matching files are loaded using
+	 * \ref #loadFromFile(). Loaded simple conversations are then added to the list.
+	 */
+	func void loadWithPattern(Array list, String directory, String pattern, bool recursive)
+		FileSystem.searchFiles(directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern(File.new(each).getName(), pattern)
+				list.add(loadFromFile(each))
+			end
+			return true
+		end)
+	end
+	
+	
+	protected func void readConversation(EasyXMLElement root, SimpleConversation conversation, String basePath)
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("import")
+				var String filename = element.getFirstCData()
+				try
+					conversation.import(loadFromFile(File.absolutePath(filename, basePath).getPath()))
+					
+				catch Exception e
+					logLoadFileFailed(element, filename)
+					throw
+				end
+				
+			elif tagName.equals("camera")
+				conversation.addCamera(readCamera(element))
+				
+			elif tagName.equals("actor")
+				conversation.addActor(readActor(element))
+				
+			elif tagName.equals("snippet")
+				conversation.addSnippet(readSnippet(element))
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+	end
+	
+	protected func SimpleConversationCamera readCamera(EasyXMLElement root)
+		var SimpleConversationCamera camera = SimpleConversationCamera.new(\
+			StringID.new(root.getAttributeNamed("id")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("cameraShot")
+				var SimpleConversationCameraShot shot = SimpleConversationCameraShot.new(\
+					SimpleConversationCameraShot.Type.cameraShot)
+				shot.setTarget(StringID.new(element.getFirstCData()))
+				if element.hasAttributeNamed("cameraTarget")
+					shot.setCameraTarget(StringID.new(element.getAttributeNamed("cameraTarget")))
+				end
+				if element.hasAttributeNamed("lookAtTarget")
+					shot.setLookAtTarget(StringID.new(element.getAttributeNamed("lookAtTarget")))
+				end
+				if element.hasAttributeNamed("duration")
+					shot.setDuration(element.getAttributeFloatNamed("duration"))
+				end
+				camera.addShot(shot)
+				
+			elif tagName.equals("snippet")
+				var SimpleConversationCameraShot shot = SimpleConversationCameraShot.new(\
+					SimpleConversationCameraShot.Type.snippet)
+				shot.setTarget(StringID.new(element.getFirstCData()))
+				shot.setSubTarget(StringID.new(element.getAttributeNamed("group")))
+				camera.addShot(shot)
+				
+			elif tagName.equals("command")
+				var SimpleConversationCameraShot shot = SimpleConversationCameraShot.new(\
+					SimpleConversationCameraShot.Type.command)
+				if element.hasAttributeNamed("actor")
+					shot.setTarget(StringID.new(element.getAttributeNamed("actor")))
+				end
+				shot.setCommand(element.getFirstCData())
+				camera.addShot(shot)
+				
+			elif tagName.equals("delay")
+				camera.setDelay(element.getFirstCDataFloat())
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return camera
+	end
+	
+	protected func SimpleConversationActor readActor(EasyXMLElement root)
+		var SimpleConversationActor actor = SimpleConversationActor.new(\
+			StringID.new(root.getAttributeNamed("id")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("actorId")
+				actor.setActorId(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("camera")
+				actor.setCamera(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("style")
+				actor.setStyle(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("gesture")
+				actor.addGesture(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("facePose")
+				actor.setFacePose(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("lookAt")
+				actor.setLookAt(StringID.new(element.getFirstCData()))
+				
+			elif tagName.equals("delay")
+				actor.setDelay(element.getFirstCDataFloat())
+				
+			elif tagName.equals("prolongLastGesture")
+				actor.setProlongLastGesture(element.getFirstCDataFloat())
+				
+			elif tagName.equals("useSpeechAnimation")
+				actor.setUseSpeechAnimation(element.getFirstCDataBool())
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return actor
+	end
+	
+	protected func SimpleConversationSnippet readSnippet(EasyXMLElement root)
+		var SimpleConversationSnippet snippet = SimpleConversationSnippet.new(\
+			StringID.new(root.getAttributeNamed("id")))
+		var SimpleConversationAction action
+		
+		var int i, count = root.getElementCount()
+		var EasyXMLElement element
+		var String tagName, text
+		var byte character
+		
+		for i = 0 to count
+			element = root.getElementAt(i)
+			
+			select element.getType()
+			case EasyXMLElementType.tag
+				tagName = element.getTagName()
+				if tagName.equals("actor")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
+					if element.hasAttributeNamed("id")
+						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
+					if element.hasAttributeNamed("mode")
+						text = element.getAttributeNamed("mode")
+						action.setMode(SimpleConversationAction.SpecialMode.named(text))
+						if action.getMode() == null
+							logInvalidValue(element, text)
+							throw EInvalidParam.new("invalid value: " + text)
+						end
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("gesture")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.gesture)
+					if element.hasAttributeNamed("id")
+						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("facePose")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.facePose)
+					if element.hasAttributeNamed("id")
+						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
+					if element.hasAttributeNamed("duration")
+						action.setDuration(element.getAttributeFloatNamed("duration"))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("lookAt")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.lookAt)
+					if element.hasAttributeNamed("id")
+						action.setTarget(StringID.new(element.getAttributeNamed("id")))
+					end
+					if element.hasAttributeNamed("duration")
+						action.setDuration(element.getAttributeFloatNamed("duration"))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("command")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.command)
+					if element.hasAttributeNamed("actor")
+						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
+					end
+					action.setName(element.getFirstCData())
+					snippet.addAction(action)
+					
+				elif tagName.equals("tag")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
+					action.setText(UnicodeString.newFromUTF8(element.getFirstCData()))
+					if element.hasAttributeNamed("anim")
+						action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("anim")))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("stopTopic")
+					snippet.addAction(SimpleConversationAction.new(\
+						SimpleConversationAction.Type.stopTopic))
+					
+				elif tagName.equals("stopConversation")
+					snippet.addAction(SimpleConversationAction.new(\
+						SimpleConversationAction.Type.stopConversation))
+					
+				elif tagName.equals("variable")
+					text = element.getAttributeNamed("value")
+					character = text.getAt(0)
+					
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.variable)
+					action.setName(element.getAttributeNamed("name"))
+					
+					if element.hasAttributeNamed("actor")
+						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
+					end
+					
+					select character
+					case '+'
+						action.setValue(text.substring(1).toInt())
+						if action.getTarget() != null
+							action.setMode(CActionSetActorParameter.Operator.increment)
+						else
+							action.setMode(CActionSetVariable.Operator.increment)
+						end
+						
+					case '-'
+						action.setValue(text.substring(1).toInt())
+						if action.getTarget() != null
+							action.setMode(CActionSetActorParameter.Operator.decrement)
+						else
+							action.setMode(CActionSetVariable.Operator.decrement)
+						end
+						
+					case '~'
+						action.setValue(text.substring(1).toInt())
+						if action.getTarget() != null
+							action.setMode(CActionSetActorParameter.Operator.random)
+						else
+							action.setMode(CActionSetVariable.Operator.random)
+						end
+						
+					else
+						action.setValue(text.toInt())
+						if action.getTarget() != null
+							action.setMode(CActionSetActorParameter.Operator.set)
+						else
+							action.setMode(CActionSetVariable.Operator.set)
+						end
+					end
+					
+					snippet.addAction(action)
+					
+				elif tagName.equals("trigger")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.trigger)
+					action.setTarget(StringID.new(element.getAttributeNamed("name")))
+					
+					text = element.getAttributeNamed("action")
+					action.setMode(CActionTrigger.Action.named(text))
+					if action.getMode() == null
+						logInvalidValue(element, text)
+						throw EInvalidParam.new("invalid value: " + text)
+					end
+					
+					snippet.addAction(action)
+					
+				elif tagName.equals("if") or tagName.equals("elif")
+					snippet.addAction(readIfElif(element))
+					
+				elif tagName.equals("else")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.condElse)
+					action.setTarget(StringID.new(element.getAttributeNamed("snippet")))
+					snippet.addAction(action)
+					
+				elif tagName.equals("choice")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.playerChoice)
+					if element.hasAttributeNamed("variable")
+						action.setName(element.getAttributeNamed("variable"))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("option")
+					snippet.addAction(readOption(element))
+					
+				elif tagName.equals("wait")
+					snippet.addAction(readWait(element))
+					
+				elif tagName.equals("snippet")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.snippet)
+					action.setTarget(StringID.new(element.getFirstCData()))
+					if element.hasAttributeNamed("group")
+						action.setSubTarget(StringID.new(element.getAttributeNamed("group")))
+					end
+					if element.hasAttributeNamed("random")
+						action.setRandom(element.getAttributeIntNamed("random"))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("music")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.music)
+					action.setName(element.getFirstCData())
+					snippet.addAction(action)
+					
+				elif tagName.equals("add")
+					if element.hasAttributeNamed("actor")
+						action = SimpleConversationAction.new(SimpleConversationAction.Type.addActor)
+						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
+						
+					elif element.hasAttributeNamed("coordSystem")
+						action = SimpleConversationAction.new(SimpleConversationAction.Type.addCoordSystem)
+						action.setTarget(StringID.new(element.getAttributeNamed("coordSystem")))
+						
+					else
+						logMissingAttribute(element, "actor or coordSystem")
+						throw EInvalidParam.new("missing attribute 'actor' or 'coordSystem'")
+					end
+					
+					if element.hasAttributeNamed("alias")
+						action.setSubTarget(StringID.new(element.getAttributeNamed("alias")))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("remove")
+					if element.hasAttributeNamed("actor")
+						action = SimpleConversationAction.new(SimpleConversationAction.Type.removeActor)
+						action.setTarget(StringID.new(element.getAttributeNamed("actor")))
+						
+					elif element.hasAttributeNamed("coordSystem")
+						action = SimpleConversationAction.new(SimpleConversationAction.Type.removeCoordSystem)
+						action.setTarget(StringID.new(element.getAttributeNamed("coordSystem")))
+						
+					else
+						logMissingAttribute(element, "actor or coordSystem")
+						throw EInvalidParam.new("missing attribute 'actor' or 'coordSystem'")
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("pause")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.pause)
+					action.setDelay(element.getFirstCDataFloat())
+					snippet.addAction(action)
+					
+				elif tagName.equals("waitMode")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.waitMode)
+					text = element.getFirstCData()
+					action.setWaitMode(SimpleConversationAction.WaitMode.named(text))
+					if action.getWaitMode() == null
+						logInvalidValue(element, text)
+						throw EInvalidParam.new("invalid value: " + text)
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("endActorSpeak")
+					snippet.addAction(SimpleConversationAction.new(\
+						SimpleConversationAction.Type.endActorSpeak))
+					
+				elif tagName.equals("a")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.actor)
+					if element.hasAttributeNamed("i")
+						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
+					if element.hasAttributeNamed("m")
+						text = element.getAttributeNamed("m")
+						action.setMode(SimpleConversationAction.SpecialMode.named(text))
+						if action.getMode() == null
+							logInvalidValue(element, text)
+							throw EInvalidParam.new("invalid value: " + text)
+						end
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("g")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.gesture)
+					if element.hasAttributeNamed("i")
+						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("f")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.facePose)
+					if element.hasAttributeNamed("i")
+						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
+					if element.hasAttributeNamed("d")
+						action.setDuration(element.getAttributeFloatNamed("d"))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("l")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.lookAt)
+					if element.hasAttributeNamed("i")
+						action.setTarget(StringID.new(element.getAttributeNamed("i")))
+					end
+					if element.hasAttributeNamed("d")
+						action.setDuration(element.getAttributeFloatNamed("d"))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("t")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
+					action.setText(UnicodeString.newFromUTF8(element.getFirstCData()))
+					if element.hasAttributeNamed("a")
+						action.setAnimText(UnicodeString.newFromUTF8(element.getAttributeNamed("a")))
+					end
+					snippet.addAction(action)
+					
+				elif tagName.equals("p")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.pause)
+					action.setDelay(element.getFirstCDataFloat())
+					snippet.addAction(action)
+					
+				else
+					logUnknownTag(element)
+				end
+				
+			case EasyXMLElementType.cdata
+				text = element.getCDataContent().trimBoth()
+				if not text.empty()
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.speak)
+					action.setText(UnicodeString.newFromUTF8(text))
+					snippet.addAction(action)
+				end
+			end
+		end
+		
+		return snippet
+	end
+	
+	protected func SimpleConversationAction readIfElif(EasyXMLElement root)
+		var SimpleConversationAction action = SimpleConversationAction.new(\
+			root.getTagName().equals("if")\
+				if SimpleConversationAction.Type.condIf\
+				else SimpleConversationAction.Type.condElif)
+		if root.hasAttributeNamed("snippet")
+			action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		end
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			var SimpleConversationCondition condition = readCondition(element)
+			if condition != null
+				if action.getCondition() == null
+					action.setCondition(condition)
+					
+				else
+					logDuplicateObject(element, "condition", "")
+				end
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		if action.getCondition() == null
+			printOnConsole(root, "missing condition")
+			throw EInvalidParam.new("missing condition on " + root.getTagName())
+		end
+		return action
+	end
+	
+	protected func SimpleConversationCondition readCondition(EasyXMLElement element)
+		var String test, tagName = element.getTagName()
+		var SimpleConversationCondition condition
+		
+		if tagName.equals("variable")
+			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.variable)
+			condition.setName(element.getAttributeNamed("name"))
+			if element.hasAttributeNamed("actor")
+				condition.setTarget(StringID.new(element.getAttributeNamed("actor")))
+			end
+			
+			test = element.getAttributeNamed("test")
+			if test.startsWith("!=")
+				condition.setValue(test.substring(2).toInt())
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.notEqual)
+				else
+					condition.setMode(CConditionVariable.Operator.notEqual)
+				end
+				
+			elif test.startsWith("<=")
+				condition.setValue(test.substring(2).toInt())
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.lessThanOrEqual)
+				else
+					condition.setMode(CConditionVariable.Operator.lessThanOrEqual)
+				end
+				
+			elif test.startsWith(">=")
+				condition.setValue(test.substring(2).toInt())
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.greaterThanOrEqual)
+				else
+					condition.setMode(CConditionVariable.Operator.greaterThanOrEqual)
+				end
+				
+			elif test.startsWith("=")
+				condition.setValue(test.substring(1).toInt())
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.equal)
+				else
+					condition.setMode(CConditionVariable.Operator.equal)
+				end
+				
+			elif test.startsWith("<")
+				condition.setValue(test.substring(1).toInt())
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.lessThan)
+				else
+					condition.setMode(CConditionVariable.Operator.lessThan)
+				end
+				
+			elif test.startsWith(">")
+				condition.setValue(test.substring(1).toInt())
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.greaterThan)
+				else
+					condition.setMode(CConditionVariable.Operator.greaterThan)
+				end
+				
+			else
+				condition.setValue(test.toInt())
+				if condition.getTarget() != null
+					condition.setMode(CConditionActorParameter.Operator.equal)
+				else
+					condition.setMode(CConditionVariable.Operator.equal)
+				end
+			end
+			
+		elif tagName.equals("trigger")
+			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.trigger)
+			condition.setName(element.getAttributeNamed("name"))
+			test = element.getAttributeNamed("test")
+			condition.setMode(CConditionTrigger.TestMode.named(test))
+			if condition.getMode() == null
+				logInvalidValue(element, test)
+				throw EInvalidParam.new("invalid value: " + test)
+			end
+			
+		elif tagName.equals("command")
+			condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.command)
+			condition.setName(element.getFirstCData())
+			if element.hasAttributeNamed("actor")
+				condition.setTarget(StringID.new(element.getAttributeNamed("actor")))
+			end
+			condition.setValue(convertBoolTestAttribute(element, "test", true))
+			
+		elif tagName.equals("has")
+			if element.hasAttributeNamed("actor")
+				condition = SimpleConversationCondition.new(SimpleConversationCondition.Type.hasActor)
+				condition.setTarget(StringID.new(element.getAttributeNamed("actor")))
+				condition.setValue(convertBoolTestAttribute(element, "test", true))
+				
+			else
+				logMissingAttribute(element, "actor")
+				throw EInvalidParam.new("missing attribute 'actor'")
+			end
+			
+		else
+			var CConditionLogic.Operator logicOp = CConditionLogic.Operator.named(tagName)
+			if logicOp != null
+				condition = readCondLogic(element)
+			end
+		end
+		
+		return condition
+	end
+	
+	protected func int convertBoolTestAttribute(EasyXMLElement element, String attribute, bool defaultValue)
+		if element.hasAttributeNamed(attribute)
+			var String test = element.getAttributeNamed(attribute)
+			if test.equals("true")
+				return 1
+				
+			elif test.equals("false")
+				return 0
+				
+			else
+				logInvalidValue(element, test)
+				throw EInvalidParam.new("invalid value: " + test)
+			end
+			
+		else
+			return defaultValue if 1 else 0
+		end
+	end
+	
+	protected func SimpleConversationCondition readCondLogic(EasyXMLElement root)
+		var SimpleConversationCondition condition = SimpleConversationCondition.new(\
+			SimpleConversationCondition.Type.logic)
+		var String value = root.getTagName()
+		condition.setMode(CConditionLogic.Operator.named(value))
+		if condition.getMode() == null
+			logInvalidValue(root, value)
+			throw EInvalidParam.new("invalid value: " + value)
+		end
+		condition.setConditions(Array.new())
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			var SimpleConversationCondition child = readCondition(element)
+			if child != null
+				condition.getConditions().add(child)
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return condition
+	end
+	
+	protected func SimpleConversationAction readOption(EasyXMLElement root)
+		var SimpleConversationAction action = SimpleConversationAction.new(\
+			SimpleConversationAction.Type.playerChoiceOption)
+		action.setText(UnicodeString.newFromUTF8(root.getAttributeNamed("text")))
+		action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			var SimpleConversationCondition condition = readCondition(element)
+			if condition != null
+				if action.getCondition() == null
+					action.setCondition(condition)
+					
+				else
+					logDuplicateObject(element, "condition", "")
+				end
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return action
+	end
+	
+	protected func SimpleConversationAction readWait(EasyXMLElement root)
+		var SimpleConversationAction action = SimpleConversationAction.new(\
+			SimpleConversationAction.Type.wait)
+		if root.hasAttributeNamed("snippet")
+			action.setTarget(StringID.new(root.getAttributeNamed("snippet")))
+		end
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			var SimpleConversationCondition condition = readCondition(element)
+			if condition != null
+				if action.getCondition() == null
+					action.setCondition(condition)
+					
+				else
+					logDuplicateObject(element, "condition", "")
+				end
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return action
+	end
+end

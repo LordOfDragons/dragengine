@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingHorizontal="4dp"
+    android:paddingVertical="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/labName"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <ImageView
+            android:id="@+id/imgDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_marginStart="8dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/description_download_example"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/download" />
+
+        <ImageView
+            android:id="@+id/imgDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_marginStart="8dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/description_delete_example"
+            app:srcCompat="@drawable/cross_red" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pbDownload"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:indeterminateBehavior="repeat"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/progressbar_hbar" />
+
+</LinearLayout>

@@ -50,7 +50,7 @@ float occlusion( in vec2 tc, in float level, in vec3 position, in vec3 normal ){
 	
 	float slen = max( length( spos ), pSSAOEpsilon );
 	
-	return clamp( mix( 0, ( dot( normal, spos ) / slen ) - pSSAOSelfOcclusion, slen < pTapRadiusInfluence ), 0, 1 );
+	return clamp( mix( 0.0, ( dot( normal, spos ) / slen ) - pSSAOSelfOcclusion, slen < pTapRadiusInfluence ), 0.0, 1.0 );
 }
 
 float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radius, in int tapCount ){
@@ -68,12 +68,12 @@ float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radi
 	// the combination of these prime numbers produces a result that hides the
 	// visible pattern quite well. it looks quite good compared to using a random
 	// texture and has the advantage of not requiring texture sampling
-	float c1 = dot( vec2( tcint % ivec2( 23 ) ), vec2( 21, 19 ) ) * 3;
+	float c1 = dot( vec2( tcint % ivec2( 23 ) ), vec2( 21, 19 ) ) * 3.0;
 	
 	// these are random functions from the internet. the result is though inferior
 	//float c1 = fract(sin(dot(tc, vec2(12.9898, 78.233))) * 43758.5453);
 	
-	float occaccum = 0;
+	float occaccum = 0.0;
 	float v1, v2;
 	float level;
 	vec2 tcoff;
@@ -90,7 +90,7 @@ float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radi
 		occaccum += occlusion( tc + tcoff, level, position, normal );
 	}
 	
-	return clamp( 1.0 - occaccum * pSSAOScale / float( tapCount ), 0, 1 );
+	return clamp( 1.0 - occaccum * pSSAOScale / float( tapCount ), 0.0, 1.0 );
 	//return clamp( 1.0 - occaccum * pSSAOScale / ( float( tapCount ) * pSSAOSelfOcclusion ), 0, 1 );
 	// // this version scales by the self occlusion since with larger self occlusion values images get brighter
 }
@@ -106,7 +106,7 @@ void main( void ){
 	outAO = vec3( 1 );
 	
 	// discard not inizalized fragments (set to 1)
-	if( textureLod( texDiffuse, tc, 0 ).a == 0 ){
+	if( textureLod( texDiffuse, tc, 0.0 ).a == 0.0 ){
 		//discard;
 		return;
 	}

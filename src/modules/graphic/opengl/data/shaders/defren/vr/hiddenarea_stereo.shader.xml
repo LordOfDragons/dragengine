@@ -4,6 +4,8 @@
 	
 	<attribute name='inPosition' target='0'/>
 	
+	<output name='outColor' target='0'/>
+	
 	<sourceCode unit='vertex'>vertex/defren/vr/hiddenarea.glsl</sourceCode>
 	<sourceCode unit='geometry'>geometry/defren/vr/hiddenarea.glsl</sourceCode>
 	<sourceCode unit='fragment'>fragment/defren/vr/hiddenarea.glsl</sourceCode>

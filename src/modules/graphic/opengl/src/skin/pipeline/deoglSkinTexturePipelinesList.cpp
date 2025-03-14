@@ -35,7 +35,7 @@
 #include "particle/deoglSTPipelinesParticleRibbon.h"
 #include "propfield/deoglSTPipelinesPropField.h"
 #include "propfield/deoglSTPipelinesPropFieldImposter.h"
-#include "../../shaders/deoglShaderLoadingTimeout.h"
+#include "../../shaders/deoglBatchedShaderLoading.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -76,11 +76,11 @@ deoglSkinTexturePipelines &deoglSkinTexturePipelinesList::GetAt( ePipelineTypes 
 	return pPipelines[ type ];
 }
 
-void deoglSkinTexturePipelinesList::Prepare( deoglShaderLoadingTimeout &timeout ){
+void deoglSkinTexturePipelinesList::Prepare(deoglBatchedShaderLoading &batched){
 	int i;
-	for( i=0; i<PipelineTypesCount; i++ ){
-		pPipelines[ i ]->Prepare( timeout );
-		if( timeout.TimedOut() ){
+	for(i=0; i<PipelineTypesCount; i++){
+		pPipelines[i]->Prepare(batched);
+		if(batched.TimedOut()){
 			return;
 		}
 	}

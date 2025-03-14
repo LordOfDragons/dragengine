@@ -212,7 +212,7 @@ deoglRenderBase( renderThread )
 {
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
@@ -222,6 +222,9 @@ deoglRenderBase( renderThread )
 	
 	
 	renderThread.GetShader().SetCommonDefines( commonDefines );
+	if(useInverseDepth){
+		commonDefines.SetDefines("INVERSE_DEPTH");
+	}
 	
 	pipconf.Reset();
 	pipconf.SetMasks( true, true, true, false, false ); // alpha=false to avoid blended alpha to be written
@@ -234,48 +237,42 @@ deoglRenderBase( renderThread )
 	// sky sphere
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSkySphere = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSkySphere, pipconf, sources, defines);
 	
 	// sky sphere stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSkySphereStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSkySphereStereo, pipconf, sources, defines);
 	
 	
 	
 	// sky box
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "Sky Sky-Box" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSkyBox = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSkyBox, pipconf, sources, defines);
 	
 	// sky box stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineSkyBoxStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineSkyBoxStereo, pipconf, sources, defines);
 	
 	
 	
 	// sky body
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "Sky Body" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineBody = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineBody, pipconf, sources, defines);
 	
 	// sky body stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineBodyStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineBodyStereo, pipconf, sources, defines);
 }
 
 deoglRenderSky::~deoglRenderSky(){
@@ -449,7 +446,7 @@ int layerIndex, bool first, bool renderIntoEnvMap ){
 		renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	}
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	shader.SetParameterDMatrix3x3( spsphMatrixLayer, instanceLayer.GetMatrix() );
 	shader.SetParameterVector3( spsphLayerPosition, -instanceLayer.GetMatrix().GetPosition() );
 	shader.SetParameterColor4( spsphLayerColor, layerColor );
@@ -514,7 +511,7 @@ deoglRSkyInstance &instance, int layerIndex, bool renderIntoEnvMap ){
 	}
 	
 	// render bodies
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	deoglTexture * const defTexColor = renderThread.GetDefaultTextures().GetColor();
 	deoglTexture * const defTexTransparency = renderThread.GetDefaultTextures().GetTransparency();
 	deoglTexSamplerConfig &tscClampLinear = *renderThread.GetShader()

@@ -15,5 +15,5 @@ out vec3 outAO; // ao, ssao, solidity
 
 
 void main( void ){
-	outAO = vec3( textureLod( texAO, vec3( vTexCoord, vLayer ), 0 ) );
+	outAO = vec3( textureLod( texAO, vec3( vTexCoord, vLayer ), 0.0 ) );
 }

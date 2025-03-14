@@ -57,6 +57,8 @@ pin Dragengine.Utils
  * 
  * If conversation actor is used see ECBehaviorActorAIAction.ConvoCondition and
  * ECBehaviorActorAIAction.ConvoCommand for supported syntax.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actoraiaction
  */
 class ECBehaviorActorAIAction extends DefaultECBehavior
 	/** \brief Factory for creating action. */
@@ -69,6 +71,45 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	interface AIFactory
 		/** \brief Create AI for behavior instance. */
 		func BaseActorAI createAI( Instance instance )
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorColliderAI
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * - Optional: \ref ECBehaviorPlayerControllable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorAIAction'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorAIAction"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorActorAIAction behavior = ECBehaviorActorAIAction.new(eclass,\
+				ECBehaviorColliderAI.getBehaviorIn(eclass),\
+				ECBehaviorConversationActor.getBehaviorIn(eclass),\
+				ECBehaviorPlayerControllable.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "aiAction")
+			return behavior
+		end
 	end
 	
 	/** \brief Behavior instance. */

@@ -164,7 +164,6 @@ pColList2( NULL ),
 
 pSolidShadowMap( NULL )
 {
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
@@ -178,8 +177,7 @@ pSolidShadowMap( NULL )
 		pipconf.SetStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 		pipconf.SetEnableStencilTest( true );
 		
-		pipconf.SetShader( renderThread, "DefRen Clear Depth", defines );
-		pPipelineClearDepth = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineClearDepth, pipconf, "DefRen Clear Depth", defines);
 		
 		
 		// occlusion mesh
@@ -192,9 +190,8 @@ pSolidShadowMap( NULL )
 		defines.SetDefines( "WITH_SHADOWMAP" );
 		defines.SetDefines( "DEPTH_ORTHOGONAL" );
 		defines.SetDefines( "DEPTH_OFFSET" );
-		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap", defines );
-		pipconf.SetSPBInstanceIndexBase( 0 );
-		pPipelineOccMesh = pipelineManager.GetWith( pipconf, true );
+		pipconf.SetSPBInstanceIndexBase(0);
+		pAsyncGetPipeline(pPipelineOccMesh, pipconf, "DefRen Occlusion OccMap", defines, true);
 		defines.RemoveAllDefines();
 		
 		
@@ -923,7 +920,7 @@ void deoglRenderLightSky::RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglS
 		// issues on front facing fragments but makes underground scenes safe
 		if( clearBackFaceFragments ){
 			pPipelineClearDepth->Activate();
-			pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
+			pPipelineClearDepth->GetShader().SetParameterFloat( 0, -1.0f );
 			RenderFullScreenQuadVAO();
 		}
 			SSDTPF("SkyLight %d: Render %dys\n", i, (int)(timer.GetElapsedTime()*1e6f));
@@ -1149,7 +1146,7 @@ deoglRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragments ){
 		// to 0 artifacts for back faces are eliminated altogether. this though won't help with
 		// issues on front facing fragments but makes underground scenes safe
 		pPipelineClearDepth->Activate();
-		pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
+		pPipelineClearDepth->GetShader().SetParameterFloat( 0, -1.0f );
 		RenderFullScreenQuadVAO();
 				SSDTLOG("RenderGIShadowMap BackFaceClear %d", (int)(timer.GetElapsedTime() * 1e6f));
 	}
@@ -1177,7 +1174,7 @@ deoglComputeRenderTask &renderTask, int shadowMapSize, bool clearBackFaceFragmen
 	
 	if( clearBackFaceFragments ){
 		pPipelineClearDepth->Activate();
-		pPipelineClearDepth->GetGlShader().SetParameterFloat( 0, -1.0f );
+		pPipelineClearDepth->GetShader().SetParameterFloat( 0, -1.0f );
 		RenderFullScreenQuadVAO();
 	}
 }

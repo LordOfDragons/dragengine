@@ -1260,17 +1260,25 @@
 				<add name='Dra[en]gine Conversation' pattern='*.deconvo' default='.deconvo'/>
 			</customPathPattern>
 		</property>
+		<property name='pathSimple'>
+			<description>Path to simple conversation resource to load.</description>
+			<type>path</type>
+			<pathPatternType>custom</pathPatternType>
+			<customPathPattern>
+				<add name='Dra[en]gine Simple Conversation' pattern='*.desconvo' default='.desconvo'/>
+			</customPathPattern>
+		</property>
 		<property name='addPlayer'>
 			<description>If not an empty string adds the player actor to the conversation using the value of this property as conversation actor identifier.</description>
 			<type>string</type>
 			<default>player</default>
 		</property>
 		<property name='topicGroup'>
-			<description>Name of topic group to use from the conversation.</description>
+			<description>Name of topic group to use from the conversation. Use empty to use simple conversation snippet.</description>
 			<type>string</type>
 		</property>
 		<property name='topic'>
-			<description>Topic from the topic group specified by "topicGroup" to use.</description>
+			<description>Topic from the topic group specified by "topicGroup" to use. If topic group is empty string name of snippet to use from simple conversation.</description>
 			<type>string</type>
 		</property>
 		<property name='directCamera'>
@@ -1603,7 +1611,7 @@
 		<particleEmitter>
 			<link target='path' property='path'/>
 			<link target='attachPosition' property='position'/>
-			<link target='attachRotation' property='rotation'/>
+			<link target='attachRotation' property='orientation'/>
 			<link target='casting' property='casting'/>
 			<trigger target='casting' property='trigger'/>
 		</particleEmitter>
@@ -2864,5 +2872,10 @@
 			<default>1</default>
 		</property>
 		<category>Dragengine/Behavior</category>
+	</class>
+	<class name='GenericBehaviorElement'>
+		<description>Generic BehaviorElementClass with all supported behavior factories added.</description>
+		<scaleMode>free</scaleMode>
+		<category>Dragengine</category>
 	</class>
 </gameDefinition>

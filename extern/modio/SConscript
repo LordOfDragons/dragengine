@@ -13,6 +13,8 @@ if parent_env['OSBeOS']:
 envLibrary = parent_env.Clone()
 
 # parameters
+libVersion = '2024_11'
+
 srcdir = 'modio-sdk'
 
 libLinkNames = ['modioStatic', 'mbedx509', 'mbedtls', 'mbedcrypto']
@@ -26,7 +28,7 @@ else:
 	staticFileNames = [envLibrary.subst('{}/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(installLibDir, x)) for x in libLinkNames]
 
 depUring = None
-if not envLibrary['OSWindows']:
+if not envLibrary['OSWindows'] and envLibrary['platform_android'] == 'no':
 	depUring = parent_targets['lib_liburing']
 
 libs = libLinkNames[:]
@@ -34,12 +36,11 @@ if depUring:
 	libs.extend(depUring['libs'])
 
 nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	['{}.tar.xz'.format(srcdir), '{}-ext.tar.xz'.format(srcdir)], 'modio', 'lib_modio_fetch')
+	['{}-{}.tar.xz'.format(srcdir, libVersion)], 'modio', 'lib_modio_fetch')
 
 def modioBuild(target, source, env):
 	buildDir = target[0].get_dir().up().up().up()
 	untarArchive(buildDir.abspath, source[0].abspath)
-	untarArchive(buildDir.abspath, source[1].abspath)
 	
 	cmakeSourceDir = buildDir.Dir(srcdir).abspath
 	
@@ -61,7 +62,7 @@ def modioBuild(target, source, env):
 	if env['platform_android'] != 'no':
 		cppflags.append('-Wno-error=unused-but-set-variable')
 		cppflags.append('-Wno-error=documentation')
-
+	
 	script = createScriptHeader(env, deps=deps, cppflags=cppflags, cflags=cppflags)
 	
 	# modio cmake scripts seem to only look at CXXFLAGS not CPPFLAGS
@@ -79,15 +80,26 @@ def modioBuild(target, source, env):
 	cmdline.append('-S "{}"'.format(cmakeSourceDir))
 	cmdline.append('-B "{}"'.format(cmakeBuildDir))
 	
-	if env['OSWindows']:
-		cmdline.append('--preset=win')
+	if env['platform_android'] != 'no':
+		cmdline.append('-DMODIO_PLATFORM="ANDROID"')
+		cmdline.append('-DCMAKE_ANDROID_NDK="{}"'.format(env['ANDROID_NDKROOT']))
+		cmdline.append('-DANDROID_ABI="{}"'.format(env['ANDROID_ABI']))
+		cmdline.append('-DCMAKE_ANDROID_STL_TYPE="c++_shared"')
+		cmdline.append('-DANDROID_PLATFORM="android-{}"'.format(env['ANDROID_APILEVEL']))
 	else:
-		cmdline.append('--preset=linux64')
+		if env['OSWindows']:
+			cmdline.append('--preset=win')
+		else:
+			cmdline.append('--preset=linux64')
+		
+		if 'CROSSCOMPILE_HOST' in env:
+			cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+			cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
 	
-	if 'CROSSCOMPILE_HOST' in env:
-		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
-		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
-	
+	cmdline.append('-DCMAKE_BUILD_TYPE="Release"')
+	cmdline.append('-DEXPECTED_BUILD_TESTS=Off')
+	cmdline.append('-DFETCHCONTENT_FULLY_DISCONNECTED=On')
+  
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
 	script.append('cmake --build "{}" -- -j {} || exit 1'.format(cmakeBuildDir, env['with_threads']))
@@ -110,12 +122,21 @@ def modioBuild(target, source, env):
 		raise Exception('Failed building libmodio')
 
 targets = staticFileNames[:]
-targets.extend(['install/static/inc/modio/ModioSDK.h'])
+
+# after building lib_modio run this from build directory to update header listing
+# find install -name "*.h" -type f >../header_file_list/modio
+# find install -name "*.hpp" -type f >>../header_file_list/modio
+
+with open(envLibrary.File('header_file_list/modio').srcnode().abspath, 'r', encoding='utf-8') as f:
+	targets.extend([x[:-1] for x in f.readlines()])
 
 patches = [] # create with 'diff -rupN original_sources patches_sources'
 envLibrary.Append(PATCHES = [])
 
-globFiles(envLibrary, os.path.join('patches'), '*.patch', patches, recursive=False)
+globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+globFiles(envLibrary, os.path.join('patches', libVersion), '*.patch', patches, recursive=False)
+if envLibrary['platform_android'] != 'no':
+	globFiles(envLibrary, os.path.join('patches', 'android', libVersion), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 library = envLibrary.Command(targets, nodeArtifacts,
@@ -135,7 +156,15 @@ envLibrary.Clean(library, ['install', 'build', srcdir])
 cpppath = [
 	envLibrary.Dir('install/static/inc'),
 	envLibrary.Dir('install/header_only/linux'),
-	]
+	envLibrary.Dir('install/header_only/common'),
+	envLibrary.Dir('install/header_only/common/modio/core'),
+	envLibrary.Dir('install/header_only/common/modio/core/entities'),
+	envLibrary.Dir('install/header_only/common/modio/detail'),
+	envLibrary.Dir('install/header_only/common/modio/detail/userdata'),
+	envLibrary.Dir('install/header_only/common/modio/detail/compression/zip'),
+	envLibrary.Dir('install/header_only/ext')]
+if envLibrary['platform_android'] != 'no':
+	cpppath.append(envLibrary.Dir('modio-sdk/platform/android'))
 if depUring:
 	cpppath.extend(depUring['cpppath'])
 

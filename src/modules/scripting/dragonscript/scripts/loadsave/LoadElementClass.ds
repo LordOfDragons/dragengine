@@ -200,6 +200,9 @@ class LoadElementClass extends BaseXmlLoader
 			if tagName.equals("property")
 				pReadClassPropertyOld(element, baseClassName, eclass)
 				
+			elif tagName.equals("behavior")
+				pReadClassBehavior(element, eclass)
+				
 			else
 				readClassProperty(element, baseClassName, eclass)
 				//logUnknownTag(element)
@@ -227,58 +230,7 @@ class LoadElementClass extends BaseXmlLoader
 			return
 		end
 		
-		var String tagName = tag.getTagName()
-		var Object propValue
-		
-		if tagName.equals("string")
-			propValue = tag.getFirstCData()
-			
-		elif tagName.equals("float")
-			propValue = tag.getFirstCDataFloat()
-			
-		elif tagName.equals("integer")
-			propValue = tag.getFirstCDataInt()
-			
-		elif tagName.equals("boolean")
-			propValue = tag.getFirstCDataBool()
-			
-		elif tagName.equals("vector")
-			propValue = readVector(tag)
-			
-		elif tagName.equals("vector2")
-			propValue = readVector2(tag)
-			
-		elif tagName.equals("point")
-			propValue = readPoint(tag)
-			
-		elif tagName.equals("point3")
-			propValue = readPoint3(tag)
-			
-		elif tagName.equals("borderSize")
-			propValue = readBorderSize(tag)
-			
-		elif tagName.equals("rectArea")
-			propValue = readRectArea(tag)
-			
-		elif tagName.equals("floatRectArea")
-			propValue = readFloatRectArea(tag)
-			
-		elif tagName.equals("color")
-			propValue = readColor(tag)
-			
-		elif tagName.equals("null")
-			propValue = null
-			
-		elif tagName.equals("list")
-			propValue = pReadList(tag)
-			
-		elif tagName.equals("map")
-			propValue = pReadMap(tag)
-			
-		else
-			logUnknownTag(tag)
-			return
-		end
+		var Object propValue = readClassPropertyValue(tag)
 		
 		try
 			eclass.setPropertyValue(propName, propValue)
@@ -294,6 +246,61 @@ class LoadElementClass extends BaseXmlLoader
 			end
 			
 			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Read element class property value. */
+	func Object readClassPropertyValue(EasyXMLElement tag)
+		var String tagName = tag.getTagName()
+		
+		if tagName.equals("string")
+			return tag.getFirstCData()
+			
+		elif tagName.equals("float")
+			return tag.getFirstCDataFloat()
+			
+		elif tagName.equals("integer")
+			return tag.getFirstCDataInt()
+			
+		elif tagName.equals("boolean")
+			return tag.getFirstCDataBool()
+			
+		elif tagName.equals("vector")
+			return readVector(tag)
+			
+		elif tagName.equals("vector2")
+			return readVector2(tag)
+			
+		elif tagName.equals("point")
+			return readPoint(tag)
+			
+		elif tagName.equals("point3")
+			return readPoint3(tag)
+			
+		elif tagName.equals("borderSize")
+			return readBorderSize(tag)
+			
+		elif tagName.equals("rectArea")
+			return readRectArea(tag)
+			
+		elif tagName.equals("floatRectArea")
+			return readFloatRectArea(tag)
+			
+		elif tagName.equals("color")
+			return readColor(tag)
+			
+		elif tagName.equals("null")
+			return null
+			
+		elif tagName.equals("list")
+			return pReadList(tag)
+			
+		elif tagName.equals("map")
+			return pReadMap(tag)
+			
+		else
+			logUnknownTag(tag)
+			throw EInvalidParam.new("Unknown tag name: " + tagName)
 		end
 	end
 	
@@ -324,51 +331,7 @@ class LoadElementClass extends BaseXmlLoader
 			tagName = element.getTagName()
 			
 			if propValue == null
-				if tagName.equals("string")
-					propValue = element.getFirstCData()
-					
-				elif tagName.equals("float")
-					propValue = element.getFirstCDataFloat()
-					
-				elif tagName.equals("integer")
-					propValue = element.getFirstCDataInt()
-					
-				elif tagName.equals("boolean")
-					propValue = element.getFirstCDataBool()
-					
-				elif tagName.equals("vector")
-					propValue = readVector(element)
-					
-				elif tagName.equals("vector2")
-					propValue = readVector2(element)
-					
-				elif tagName.equals("point")
-					propValue = readPoint(element)
-					
-				elif tagName.equals("point3")
-					propValue = readPoint3(element)
-					
-				elif tagName.equals("borderSize")
-					propValue = readBorderSize(element)
-					
-				elif tagName.equals("rectArea")
-					propValue = readRectArea(element)
-					
-				elif tagName.equals("floatRectArea")
-					propValue = readFloatRectArea(element)
-					
-				elif tagName.equals("color")
-					propValue = readColor(element)
-					
-				elif tagName.equals("list")
-					propValue = pReadList(element)
-					
-				elif tagName.equals("map")
-					propValue = pReadMap(element)
-					
-				else
-					logUnknownTag(element)
-				end
+				propValue = readClassPropertyValue(element)
 				
 			else
 				printOnConsole(element, "Only one value allowed for property " + propName + ".")
@@ -394,6 +357,41 @@ class LoadElementClass extends BaseXmlLoader
 			
 			throw EInvalidParam.new()
 		end
+	end
+	
+	/** \brief Read class behavior tag. */
+	private func void pReadClassBehavior(EasyXMLElement root, ElementClass eclass)
+		if not root.hasAttributeNamed("type")
+			logMissingAttribute(root, "type")
+			throw EInvalidParam.new()
+		end
+		var String name, type = root.getAttributeNamed("type")
+		
+		var BehaviorElementClass beclass = eclass cast BehaviorElementClass
+		var BehaviorFactory factory = beclass.getBehaviorFactoryWithId(type)
+		if factory == null
+			var String message = "Behavior factory absent: " + type
+			printOnConsole(root, message)
+			throw EInvalidParam.new(message)
+		end
+		
+		var String id = root.hasAttributeNamed("id") if root.getAttributeNamed("id") else ""
+		var Dictionary parameters = Dictionary.new()
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if not element.hasAttributeNamed("name")
+				logMissingAttribute(element, "name")
+				throw EInvalidParam.new()
+			end
+			name = element.getAttributeNamed("name")
+			if name.empty()
+				logInvalidValue(element, "(name) empty string")
+				throw EInvalidParam.new()
+			end
+			parameters.setAt(name, readClassPropertyValue(element))
+		end)
+		
+		factory.addBehavior(beclass, id, parameters)
 	end
 	
 	/** \brief Parse list tag. */

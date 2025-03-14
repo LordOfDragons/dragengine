@@ -41,8 +41,55 @@ pin Dragengine.TriggerSystem
  * Element class properties have the prefix "showElement.". Behavior can be added only once.
  * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_showelement
  */
 class ECBehaviorShowElement extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorShowElement'>
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values. default is 'default' -->
+	 *   <string name='triggerTable'>default</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorShowElement"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorShowElement behavior = ECBehaviorShowElement.new(eclass,\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "showElement")
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func TSTriggerTable getTriggerTableFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Change shown listener. */
@@ -184,7 +231,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable(TSTriggerTable triggerTable)
+	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
 	end
 	

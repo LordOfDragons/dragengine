@@ -34,7 +34,9 @@
 #include "../game/profile/delGPModuleList.h"
 #include "../game/profile/delGPMParameter.h"
 
-#if defined OS_BEOS
+#if defined OS_ANDROID
+#	include <dragengine/app/deOSAndroid.h>
+#elif defined OS_BEOS
 #	include <dragengine/app/deOSBeOS.h>
 #	include <dragengine/app/deOSConsole.h>
 #elif defined OS_UNIX
@@ -56,6 +58,7 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decUuid.h>
+#include <dragengine/errortracing/deErrorTrace.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
@@ -99,7 +102,7 @@
 
 
 // Class delEngineInstanceDirect::Factory
-/////////////////////////////////////////////
+///////////////////////////////////////////
 
 delEngineInstanceDirect::Factory::Factory( deLogger *engineLogger ) :
 pEngineLogger( engineLogger ),
@@ -117,18 +120,31 @@ void delEngineInstanceDirect::Factory::SetUseConsole( bool useConsole ){
 	pUseConsole = useConsole;
 }
 
+#ifdef OS_ANDROID
+void delEngineInstanceDirect::Factory::SetConfig(const deOSAndroid::sConfig &config){
+	pConfig = config;
+}
+#endif
+
 delEngineInstance *delEngineInstanceDirect::Factory::CreateEngineInstance(
-delLauncher &launcher, const char *logfile ){
-	delEngineInstanceDirect * const instance = new delEngineInstanceDirect( launcher, logfile );
-	instance->SetEngineLogger( pEngineLogger );
-	instance->SetUseConsole( pUseConsole );
+delLauncher &launcher, const char *logfile){
+	delEngineInstanceDirect * const instance = new delEngineInstanceDirect(launcher, logfile);
+	instance->SetEngineLogger(pEngineLogger);
+	instance->SetUseConsole(pUseConsole);
+#ifdef OS_ANDROID
+	instance->SetConfig(pConfig);
+#endif
 	return instance;
 }
 
 
 
 // Class delEngineInstanceDirect
-////////////////////////////////////
+//////////////////////////////////
+
+delEngineInstanceDirect::cModuleParamState::cModuleParamState(deLoadableModule *amodule) :
+module(amodule){
+}
 
 // Constructors and Destructors
 /////////////////////////////////
@@ -138,7 +154,11 @@ delEngineInstance( launcher, logfile ),
 pEngine( nullptr ),
 pEngineRunning( false ),
 pGameRunning( false ),
-pLogger( launcher.GetLogger() ){
+pLogger( launcher.GetLogger() )
+#ifdef OS_ANDROID
+,pGameCollectChangedParams(nullptr)
+#endif
+{
 }
 
 delEngineInstanceDirect::~delEngineInstanceDirect(){
@@ -159,7 +179,11 @@ void delEngineInstanceDirect::SetEngineLogger( deLogger *logger ){
 	pEngineLogger = logger;
 }
 
-
+#ifdef OS_ANDROID
+void delEngineInstanceDirect::SetConfig(const deOSAndroid::sConfig &config){
+	pConfig = config;
+}
+#endif
 
 bool delEngineInstanceDirect::IsEngineRunning() const{
 	return pEngineRunning;
@@ -193,7 +217,9 @@ bool delEngineInstanceDirect::StartEngine(){
 		
 		// create os
 		if( GetUseConsole() ){
-			#ifdef OS_UNIX
+			#ifdef OS_ANDROID
+			DETHROW_INFO(deeInvalidAction, "not supported");
+			#elif defined OS_UNIX
 			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Console (console requested)" );
 			os = new deOSConsole();
 			#elif defined OS_W32
@@ -205,6 +231,9 @@ bool delEngineInstanceDirect::StartEngine(){
 			#ifdef OS_BEOS
 			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS BeOS" );
 			os = new deOSBeOS();
+			#elif defined OS_ANDROID
+				pLogger->LogInfo(GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Android");
+				os = new deOSAndroid(pConfig);
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
 				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Unix" );
@@ -632,36 +661,81 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	}
 	
 	// store single type module parameters to compare after engine exits if user changed them
-	struct sModuleParamState{
-		const deBaseModule *module;
-		decStringDictionary parameters;
-	};
-	sModuleParamState moduleState[ 11 ] = {
-		{ pEngine->GetAISystem()->GetActiveModule() },
-		{ pEngine->GetAnimatorSystem()->GetActiveModule() },
-		{ pEngine->GetAudioSystem()->GetActiveModule() },
-		{ pEngine->GetCrashRecoverySystem()->GetActiveModule() },
-		{ pEngine->GetGraphicSystem()->GetActiveModule() },
-		{ pEngine->GetInputSystem()->GetActiveModule() },
-		{ pEngine->GetNetworkSystem()->GetActiveModule() },
-		{ pEngine->GetPhysicsSystem()->GetActiveModule() },
-		{ pEngine->GetScriptingSystem()->GetActiveModule() },
-		{ pEngine->GetSynthesizerSystem()->GetActiveModule() },
-		{ pEngine->GetVRSystem()->GetActiveModule() } };
+	pModuleParamStates.RemoveAll();
+	if(pEngine->GetAISystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetAISystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetAnimatorSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetAnimatorSystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetAudioSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetAudioSystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetCrashRecoverySystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetCrashRecoverySystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetGraphicSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetGraphicSystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetInputSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetInputSystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetNetworkSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetNetworkSystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetPhysicsSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetPhysicsSystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetScriptingSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetScriptingSystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetSynthesizerSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetSynthesizerSystem()->GetActiveModule()->GetLoadableModule())));
+	}
+	if(pEngine->GetVRSystem()->GetActiveModule()){
+		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
+			&pEngine->GetVRSystem()->GetActiveModule()->GetLoadableModule())));
+	}
 	deModuleParameter moduleParameter;
 	int i, j;
 	
-	for( i=0; i<11; i++ ){
-		if( moduleState[ i ].module ){
-			const int count = moduleState[ i ].module->GetParameterCount();
-			for( j=0; j<count; j++ ){
-				moduleState[ i ].module->GetParameterInfo( j, moduleParameter );
-				moduleState[ i ].parameters.SetAt( moduleParameter.GetName(),
-					moduleState[ i ].module->GetParameterValue( moduleParameter.GetName() ) );
+	for(i=0; i<pModuleParamStates.GetCount(); i++){
+		cModuleParamState &mps = *((cModuleParamState*)pModuleParamStates.GetAt(i));
+		deBaseModule * const module = mps.module->GetModule();
+		if(module){
+			const int count = module->GetParameterCount();
+			for(j=0; j<count; j++){
+				module->GetParameterInfo(j, moduleParameter);
+				mps.parameters.SetAt(moduleParameter.GetName(),
+					module->GetParameterValue(moduleParameter.GetName()));
 			}
 		}
 	}
 	
+#ifdef OS_ANDROID
+	pLogger->LogInfo(GetLauncher().GetLogSource(), "Game started");
+	bool success = true;
+	try{
+		success = pEngine->StartRun(scriptDirectory, scriptVersion, gameObject);
+		pGameCollectChangedParams = collectChangedParams;
+		
+	}catch( const deException &e ){
+		GetLauncher().GetLogger()->LogException(GetLauncher().GetLogSource(), e);
+		success = false;
+	}
+	DEASSERT_TRUE(success)
+	
+#else
 	// run game. this blocks until finished
 	bool success = true;
 	
@@ -677,29 +751,31 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	
 	// compare module parameters against stored ones
 	if( collectChangedParams ){
-		for( i=0; i<11; i++ ){
-			if( ! moduleState[ i ].module ){
+		for(i=0; i<pModuleParamStates.GetCount(); i++){
+			cModuleParamState &mps = *((cModuleParamState*)pModuleParamStates.GetAt(i));
+			deBaseModule * const module = mps.module->GetModule();
+			if(!module){
 				continue;
 			}
 			
-			const decStringList keys( moduleState[ i ].parameters.GetKeys() );
+			const decStringList keys(mps.parameters.GetKeys());
 			const int count = keys.GetCount();
-			for( j=0; j<count; j++ ){
-				const decString &name = keys.GetAt( j );
-				const decString value( moduleState[ i ].module->GetParameterValue( name ) );
-				if( value == moduleState[ i ].parameters.GetAt( name ) ){
+			for(j=0; j<count; j++){
+				const decString &name = keys.GetAt(j);
+				const decString value(module->GetParameterValue(name));
+				if(value == mps.parameters.GetAt(name)){
 					continue;
 				}
 				
-				const decString &moduleName = moduleState[ i ].module->GetLoadableModule().GetName();
+				const decString &moduleName = module->GetLoadableModule().GetName();
 				
-				delGPModule::Ref module( collectChangedParams->GetNamed( moduleName ) );
-				if( ! module ){
-					module.TakeOver( new delGPModule( moduleName ) );
-					collectChangedParams->Add( module );
+				delGPModule::Ref gpmodule(collectChangedParams->GetNamed(moduleName));
+				if(!gpmodule){
+					gpmodule.TakeOver(new delGPModule(moduleName));
+					collectChangedParams->Add(gpmodule);
 				}
 				
-				module->GetParameters().Add( delGPMParameter::Ref::New( new delGPMParameter( name, value ) ) );
+				gpmodule->GetParameters().Add(delGPMParameter::Ref::New(new delGPMParameter(name, value)));
 			}
 		}
 	}
@@ -707,6 +783,7 @@ const char *gameObject, delGPModuleList *collectChangedParams ){
 	// finished
 	pGameRunning = false;
 	DEASSERT_TRUE( success )
+#endif
 }
 
 void delEngineInstanceDirect::StopGame(){
@@ -897,5 +974,215 @@ void delEngineInstanceDirect::BeosMessageReceived( BMessage *message ){
 	if( pEngine ){
 		pEngine->GetOS()->CastToOSBeOS()->MessageReceived( message );
 	}
+}
+#endif
+
+#ifdef OS_ANDROID
+void delEngineInstanceDirect::ReadDelgaGameDefsVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, decStringList &list){
+	DEASSERT_NOTNULL(delgaFile)
+	
+	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+		"Processing ReadDelgaGameDefsVfs (delgaFile=%s)", delgaFile);
+	DEASSERT_NOTNULL(pEngine)
+	
+	deArchiveManager &amgr = *pEngine->GetArchiveManager();
+	const decPath pathRoot(decPath::CreatePathUnix("/"));
+	
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	delgaVfs->AddContainer(container);
+	
+	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")));
+	
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	vfs->AddContainer(deArchiveContainer::Ref::New(
+		amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	
+	deCollectFileSearchVisitor collect("*.degame", true);
+	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
+	const dePathList &files = collect.GetFiles();
+	const int fileCount = files.GetCount();
+	decString gameDef;
+	int i;
+	
+	for(i=0; i<fileCount; i++){
+		const decPath &path = files.GetAt(i);
+		
+		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+			vfs->OpenFileForReading(path)));
+		const int size = reader->GetLength();
+		gameDef.Set(' ', size);
+		reader->Read((void*)gameDef.GetString(), size);
+		
+		list.Add(gameDef);
+	}
+}
+
+void delEngineInstanceDirect::ReadDelgaFilesVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &filesContent ){
+	DEASSERT_NOTNULL(delgaFile)
+	
+	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
+		"Processing ReadDelgaFilesVfs (delgaFile=%s)", delgaFile);
+	DEASSERT_NOTNULL(pEngine)
+	
+	const int fileCount = filenames.GetCount();
+	filesContent.RemoveAll();
+	if(fileCount == 0){
+		return;
+	}
+	
+	// open delga file
+	deArchiveManager &amgr = *pEngine->GetArchiveManager();
+	const decPath pathRoot(decPath::CreatePathUnix("/"));
+	
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	delgaVfs->AddContainer(container);
+	
+	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")));
+	
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	
+	// read files
+	int i;
+	
+	for( i=0; i<fileCount; i++ ){
+		const decString &filename = filenames.GetAt( i );
+		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+			vfs->OpenFileForReading(decPath::CreatePathUnix(filename))));
+		const int size = reader->GetLength();
+		
+		const decMemoryFile::Ref content(decMemoryFile::Ref::New(new decMemoryFile(filename)));
+		content->Resize(size);
+		reader->Read(content->GetPointer(), size);
+		
+		filesContent.Add(content);
+	}
+}
+
+void delEngineInstanceDirect::VFSAddDelgaFileVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath){
+	DEASSERT_NOTNULL(container)
+	DEASSERT_NOTNULL(delgaFile)
+	DEASSERT_NOTNULL(archivePath)
+	
+	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+		"Processing VFSAddDelgaVFS(delgaFile='%s', archivePath=%s, hiddenPath=%d)",
+		delgaFile, archivePath, hiddenPath.GetCount());
+	DEASSERT_NOTNULL(pEngine)
+	
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	delgaVfs->AddContainer(container);
+	
+	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
+	deArchiveManager &amgr = *pEngine->GetArchiveManager();
+	
+	const deArchiveContainer::Ref archiveContainer(deArchiveContainer::Ref::New(
+		amgr.CreateContainer(decPath::CreatePathUnix("/"),
+			deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")),
+			decPath::CreatePathUnix(archivePath))));
+	
+	const int count = hiddenPath.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		archiveContainer->AddHiddenPath(decPath::CreatePathUnix(hiddenPath.GetAt(i)));
+	}
+	
+	vfs.AddContainer(archiveContainer);
+}
+
+void delEngineInstanceDirect::RunSingleFrameUpdate(){
+	//DEASSERT_NOTNULL(pEngine)
+	DEASSERT_TRUE(IsGameRunning())
+	
+	if(!pEngine->ProcessEvents()){
+		pEngine->GetErrorTrace()->AddPoint(nullptr,
+			"delEngineInstanceDirect::RunSingleFrameUpdate", __LINE__);
+		DEASSERT_TRUE(pEngine->RecoverFromError() && pEngine->ResumeRun())
+		return;
+	}
+	
+	if(pEngine->GetQuitRequest()){
+		pLogger->LogInfo(GetLauncher().GetLogSource(), "Game exited");
+		
+		if(!pEngine->StopRun()){
+			pLogger->LogError(GetLauncher().GetLogSource(), "Stop running game failed");
+		}
+		
+		// compare module parameters against stored ones
+		if(pGameCollectChangedParams){
+			pGameCollectChangedParams->RemoveAll();
+			
+			int i, j;
+			for(i=0; i<pModuleParamStates.GetCount(); i++){
+				cModuleParamState &mps = *((cModuleParamState*)pModuleParamStates.GetAt(i));
+				deBaseModule * const module = mps.module->GetModule();
+				if(!module){
+					continue;
+				}
+				
+				const decStringList keys(mps.parameters.GetKeys());
+				const int count = keys.GetCount();
+				for(j=0; j<count; j++){
+					const decString &name = keys.GetAt(j);
+					const decString value(module->GetParameterValue(name));
+					if(value == mps.parameters.GetAt(name)){
+						continue;
+					}
+					
+					const decString &moduleName = module->GetLoadableModule().GetName();
+					
+					delGPModule::Ref gpmodule(pGameCollectChangedParams->GetNamed(moduleName));
+					if(!gpmodule){
+						gpmodule.TakeOver(new delGPModule(moduleName));
+						pGameCollectChangedParams->Add(gpmodule);
+					}
+					
+					gpmodule->GetParameters().Add(delGPMParameter::Ref::New(new delGPMParameter(name, value)));
+				}
+			}
+			
+			pGameCollectChangedParams = nullptr;
+		}
+		
+		// finished
+		pGameRunning = false;
+		return;
+	}
+	
+	pEngine->UpdateElapsedTime();
+	
+	if(!pEngine->RunSingleFrame()){
+		pEngine->GetErrorTrace()->AddPoint(nullptr,
+			"delEngineInstanceDirect::RunSingleFrameUpdate", __LINE__);
+		DEASSERT_TRUE(pEngine->RecoverFromError() && pEngine->ResumeRun())
+	}
+}
+
+void delEngineInstanceDirect::SetAppActive(bool active){
+	((deOSAndroid*)pEngine->GetOS())->SetAppActive(active);
+}
+
+void delEngineInstanceDirect::SetAppPaused(bool paused){
+	((deOSAndroid*)pEngine->GetOS())->SetAppFrozen(paused);
+}
+
+void delEngineInstanceDirect::UpdateContentRect(const decBoundary &contentRect){
+	((deOSAndroid*)pEngine->GetOS())->SetContentRect(contentRect);
+}
+
+void delEngineInstanceDirect::InputEvent(const android_input_buffer &inputBuffer){
+	const deInputSystem &inpSys = *pEngine->GetInputSystem();
+	if(!inpSys.GetIsRunning()){
+		return;
+	}
+	
+	deBaseInputModule * const module = inpSys.GetActiveModule();
+	if(!module){
+		return;
+	}
+	
+	module->EventLoop(inputBuffer);
 }
 #endif

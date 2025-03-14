@@ -41,6 +41,8 @@ pin Dragengine.Utils
  * This behavior can be used only once in the behavior element.
  * 
  * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrplayspace
  */
 class ECBehaviorVRPlayspace extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -81,6 +83,37 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 		/** \brief Create listener. */
 		public func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRPlayspace'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRPlayspace"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorVRPlayspace behavior = ECBehaviorVRPlayspace.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrPlayspace")
+			return behavior
 		end
 	end
 	

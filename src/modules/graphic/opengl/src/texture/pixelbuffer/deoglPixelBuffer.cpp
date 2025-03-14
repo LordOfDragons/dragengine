@@ -29,6 +29,7 @@
 #include "deoglPixelBuffer.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
@@ -121,6 +122,15 @@ deoglPixelBuffer::deoglPixelBuffer( ePixelFormats format, int width, int height,
 		pGLPixelFormat = GL_RGBA;
 		pGLPixelType = GL_FLOAT;
 		
+	}else if( format == epfInt1 ){
+		pUnitSize = 4;
+		pStrideLine = pUnitSize * width;
+		pStrideLayer = pStrideLine * height;
+		pImageSize = pStrideLayer * depth;
+		pCompressed = false;
+		pGLPixelFormat = GL_RED;
+		pGLPixelType = GL_UNSIGNED_INT;
+		
 	}else if( format == epfDepth ){
 		pUnitSize = 4;
 		pStrideLine = pUnitSize * width;
@@ -145,8 +155,8 @@ deoglPixelBuffer::deoglPixelBuffer( ePixelFormats format, int width, int height,
 		pStrideLayer = pStrideLine * height;
 		pImageSize = pStrideLayer * depth;
 		pCompressed = false;
-		pGLPixelFormat = GL_DEPTH_COMPONENT;
-		pGLPixelType = GL_FLOAT;
+		pGLPixelFormat = GL_DEPTH_STENCIL;
+		pGLPixelType = GL_UNSIGNED_INT_24_8;
 		
 	}else if( format == epfDXT1 ){
 		const int blockCountX = ( ( width - 1 ) >> 2 ) + 1;
@@ -272,6 +282,11 @@ deoglPixelBuffer::sFloat4 *deoglPixelBuffer::GetPointerFloat4() const{
 	return ( sFloat4* )pPixels;
 }
 
+deoglPixelBuffer::sInt1 *deoglPixelBuffer::GetPointerInt1() const{
+	DEASSERT_TRUE(pFormat == epfInt1)
+	return (sInt1*)pPixels;
+}
+
 deoglPixelBuffer::sDepth *deoglPixelBuffer::GetPointerDepth() const{
 	if( pFormat != epfDepth ){
 		DETHROW( deeInvalidParam );
@@ -318,15 +333,17 @@ void deoglPixelBuffer::SetToIntColor( int red, int green, int blue, int alpha ){
 	const int pixelcount = pWidth * pHeight * pDepth;
 	int i;
 	
-	if( pFormat == epfByte1 ){
+	switch(pFormat){
+	case epfByte1:{
 		sByte1 * const pixels = ( sByte1* )pPixels;
 		const GLubyte gred = ( GLubyte )red;
 		
 		for( i=0; i<pixelcount; i++ ){
 			pixels[ i ].r = gred;
 		}
+		}break;
 		
-	}else if( pFormat == epfByte2 ){
+	case epfByte2:{
 		sByte2 * const pixels = ( sByte2* )pPixels;
 		const GLubyte gred = ( GLubyte )red;
 		const GLubyte ggreen = ( GLubyte )green;
@@ -335,8 +352,9 @@ void deoglPixelBuffer::SetToIntColor( int red, int green, int blue, int alpha ){
 			pixels[ i ].r = gred;
 			pixels[ i ].g = ggreen;
 		}
+		}break;
 		
-	}else if( pFormat == epfByte3 ){
+	case epfByte3:{
 		sByte3 * const pixels = ( sByte3* )pPixels;
 		const GLubyte gred = ( GLubyte )red;
 		const GLubyte ggreen = ( GLubyte )green;
@@ -347,8 +365,9 @@ void deoglPixelBuffer::SetToIntColor( int red, int green, int blue, int alpha ){
 			pixels[ i ].g = ggreen;
 			pixels[ i ].b = gblue;
 		}
+		}break;
 		
-	}else if( pFormat == epfByte4 ){
+	case epfByte4:{
 		sByte4 * const pixels = ( sByte4* )pPixels;
 		const GLubyte gred = ( GLubyte )red;
 		const GLubyte ggreen = ( GLubyte )green;
@@ -361,16 +380,18 @@ void deoglPixelBuffer::SetToIntColor( int red, int green, int blue, int alpha ){
 			pixels[ i ].b = gblue;
 			pixels[ i ].a = galpha;
 		}
+		}break;
 		
-	}else if( pFormat == epfFloat1 ){
+	case epfFloat1:{
 		sFloat1 * const pixels = ( sFloat1* )pPixels;
 		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
 		
 		for( i=0; i<pixelcount; i++ ){
 			pixels[ i ].r = gred;
 		}
+		}break;
 		
-	}else if( pFormat == epfFloat2 ){
+	case epfFloat2:{
 		sFloat2 * const pixels = ( sFloat2* )pPixels;
 		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
 		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
@@ -379,8 +400,9 @@ void deoglPixelBuffer::SetToIntColor( int red, int green, int blue, int alpha ){
 			pixels[ i ].r = gred;
 			pixels[ i ].g = ggreen;
 		}
+		}break;
 		
-	}else if( pFormat == epfFloat3 ){
+	case epfFloat3:{
 		sFloat3 * const pixels = ( sFloat3* )pPixels;
 		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
 		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
@@ -391,8 +413,9 @@ void deoglPixelBuffer::SetToIntColor( int red, int green, int blue, int alpha ){
 			pixels[ i ].g = ggreen;
 			pixels[ i ].b = gblue;
 		}
+		}break;
 		
-	}else if( pFormat == epfFloat4 ){
+	case epfFloat4:{
 		sFloat4 * const pixels = ( sFloat4* )pPixels;
 		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
 		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
@@ -405,9 +428,134 @@ void deoglPixelBuffer::SetToIntColor( int red, int green, int blue, int alpha ){
 			pixels[ i ].b = gblue;
 			pixels[ i ].a = galpha;
 		}
+		}break;
 		
-	}else{
-		// with the rest not supported
+	case epfInt1:{
+		sInt1 * const pixels = (sInt1*)pPixels;
+		const GLuint gred = (GLuint)red;
+		for(i=0; i<pixelcount; i++){
+			pixels[i].r = gred;
+		}
+		}break;
+		
+	default:
+		DETHROW_INFO(deeInvalidParam, "unsupported format");
+	}
+}
+
+
+
+void deoglPixelBuffer::SetToUIntColor( unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha ){
+	const int pixelcount = pWidth * pHeight * pDepth;
+	int i;
+	
+	switch(pFormat){
+	case epfByte1:{
+		sByte1 * const pixels = ( sByte1* )pPixels;
+		const GLubyte gred = ( GLubyte )red;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+		}
+		}break;
+		
+	case epfByte2:{
+		sByte2 * const pixels = ( sByte2* )pPixels;
+		const GLubyte gred = ( GLubyte )red;
+		const GLubyte ggreen = ( GLubyte )green;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+		}
+		}break;
+		
+	case epfByte3:{
+		sByte3 * const pixels = ( sByte3* )pPixels;
+		const GLubyte gred = ( GLubyte )red;
+		const GLubyte ggreen = ( GLubyte )green;
+		const GLubyte gblue = ( GLubyte )blue;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+		}
+		}break;
+		
+	case epfByte4:{
+		sByte4 * const pixels = ( sByte4* )pPixels;
+		const GLubyte gred = ( GLubyte )red;
+		const GLubyte ggreen = ( GLubyte )green;
+		const GLubyte gblue = ( GLubyte )blue;
+		const GLubyte galpha = ( GLubyte )alpha;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+			pixels[ i ].a = galpha;
+		}
+		}break;
+		
+	case epfFloat1:{
+		sFloat1 * const pixels = ( sFloat1* )pPixels;
+		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+		}
+		}break;
+		
+	case epfFloat2:{
+		sFloat2 * const pixels = ( sFloat2* )pPixels;
+		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
+		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+		}
+		}break;
+		
+	case epfFloat3:{
+		sFloat3 * const pixels = ( sFloat3* )pPixels;
+		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
+		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
+		const GLfloat gblue = ( GLfloat )blue / ( GLfloat )255.0;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+		}
+		}break;
+		
+	case epfFloat4:{
+		sFloat4 * const pixels = ( sFloat4* )pPixels;
+		const GLfloat gred = ( GLfloat )red / ( GLfloat )255.0;
+		const GLfloat ggreen = ( GLfloat )green / ( GLfloat )255.0;
+		const GLfloat gblue = ( GLfloat )blue / ( GLfloat )255.0;
+		const GLfloat galpha = ( GLfloat )alpha / ( GLfloat )255.0;
+		
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].r = gred;
+			pixels[ i ].g = ggreen;
+			pixels[ i ].b = gblue;
+			pixels[ i ].a = galpha;
+		}
+		}break;
+		
+	case epfInt1:{
+		sInt1 * const pixels = (sInt1*)pPixels;
+		const GLuint gred = (GLuint)red;
+		for(i=0; i<pixelcount; i++){
+			pixels[i].r = gred;
+		}
+		}break;
+		
+	default:
+		DETHROW_INFO(deeInvalidParam, "unsupported format");
 	}
 }
 
@@ -415,15 +563,17 @@ void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, floa
 	const int pixelcount = pWidth * pHeight * pDepth;
 	int i;
 	
-	if( pFormat == epfByte1 ){
+	switch(pFormat){
+	case epfByte1:{
 		sByte1 * const pixels = ( sByte1* )pPixels;
 		const GLubyte gred = ( GLubyte )( red * 255.0f );
 		
 		for( i=0; i<pixelcount; i++ ){
 			pixels[ i ].r = gred;
 		}
+		}break;
 		
-	}else if( pFormat == epfByte2 ){
+	case epfByte2:{
 		sByte2 * const pixels = ( sByte2* )pPixels;
 		const GLubyte gred = ( GLubyte )( red * 255.0f );
 		const GLubyte ggreen = ( GLubyte )( green * 255.0f );
@@ -432,8 +582,9 @@ void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, floa
 			pixels[ i ].r = gred;
 			pixels[ i ].g = ggreen;
 		}
+		}break;
 		
-	}else if( pFormat == epfByte3 ){
+	case epfByte3:{
 		sByte3 * const pixels = ( sByte3* )pPixels;
 		const GLubyte gred = ( GLubyte )( red * 255.0f );
 		const GLubyte ggreen = ( GLubyte )( green * 255.0f );
@@ -444,8 +595,9 @@ void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, floa
 			pixels[ i ].g = ggreen;
 			pixels[ i ].b = gblue;
 		}
+		}break;
 		
-	}else if( pFormat == epfByte4 ){
+	case epfByte4:{
 		sByte4 * const pixels = ( sByte4* )pPixels;
 		const GLubyte gred = ( GLubyte )( red * 255.0f );
 		const GLubyte ggreen = ( GLubyte )( green * 255.0f );
@@ -458,16 +610,19 @@ void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, floa
 			pixels[ i ].b = gblue;
 			pixels[ i ].a = galpha;
 		}
+		}break;
 		
-	}else if( pFormat == epfFloat1 || pFormat == epfDepth ){
+	case epfFloat1:
+	case epfDepth:{
 		sFloat1 * const pixels = ( sFloat1* )pPixels;
 		const GLfloat gred = ( GLfloat )red;
 		
 		for( i=0; i<pixelcount; i++ ){
 			pixels[ i ].r = gred;
 		}
+		}break;
 		
-	}else if( pFormat == epfFloat2 ){
+	case epfFloat2:{
 		sFloat2 * const pixels = ( sFloat2* )pPixels;
 		const GLfloat gred = ( GLfloat )red;
 		const GLfloat ggreen = ( GLfloat )green;
@@ -476,8 +631,9 @@ void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, floa
 			pixels[ i ].r = gred;
 			pixels[ i ].g = ggreen;
 		}
+		}break;
 		
-	}else if( pFormat == epfFloat3 ){
+	case epfFloat3:{
 		sFloat3 * const pixels = ( sFloat3* )pPixels;
 		const GLfloat gred = ( GLfloat )red;
 		const GLfloat ggreen = ( GLfloat )green;
@@ -488,8 +644,9 @@ void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, floa
 			pixels[ i ].g = ggreen;
 			pixels[ i ].b = gblue;
 		}
+		}break;
 		
-	}else if( pFormat == epfFloat4 ){
+	case epfFloat4:{
 		sFloat4 * const pixels = ( sFloat4* )pPixels;
 		const GLfloat gred = ( GLfloat )red;
 		const GLfloat ggreen = ( GLfloat )green;
@@ -502,8 +659,37 @@ void deoglPixelBuffer::SetToFloatColor( float red, float green, float blue, floa
 			pixels[ i ].b = gblue;
 			pixels[ i ].a = galpha;
 		}
+		}break;
+		
+	case epfInt1:{
+		sInt1 * const pixels = (sInt1*)pPixels;
+		const GLuint gred = (GLuint)(red * 4294967295.0f);
+		for(i=0; i<pixelcount; i++){
+			pixels[ i ].r = gred;
+		}
+		}break;
+		
+	default:
+		DETHROW_INFO(deeInvalidParam, "unsupported format");
+	}
+}
+
+void deoglPixelBuffer::SetToDepthStencil(float depth, int stencil){
+	const int pixelcount = pWidth * pHeight * pDepth;
+	int i;
+	
+	if(pFormat == epfDepthStencil){
+		const int depthInt = (int)(depth * 16777215.0f);
+		const GLuint depthStencil =
+			(((GLuint)decMath::clamp(depthInt, 0, 16777215)) << 8)
+			| (GLuint)(stencil & 0xff);
+		
+		sDepthStencil * const pixels = (sDepthStencil*)pPixels;
+		for( i=0; i<pixelcount; i++ ){
+			pixels[ i ].depthStencil = depthStencil;
+		}
 		
 	}else{
-		// with the rest not supported
+		DETHROW_INFO(deeInvalidParam, "unsupported format");
 	}
 }

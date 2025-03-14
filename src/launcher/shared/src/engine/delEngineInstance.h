@@ -34,6 +34,11 @@
 #include <MessageQueue.h>
 #endif
 
+#ifdef OS_ANDROID
+#include <dragengine/filesystem/deVFSContainer.h>
+struct android_input_buffer;
+#endif
+
 class delEngineModule;
 class delLauncher;
 class decStringList;
@@ -284,6 +289,47 @@ public:
 	 * Required for direct engine instance on BeOS only.
 	 */
 	virtual void BeosMessageReceived( BMessage *message );
+#endif
+	
+#ifdef OS_ANDROID
+	/**
+	 * \brief Read game definitions from DELGA file using VFS container.
+	 * 
+	 * Replaces \em list with content of all found files.
+	 */
+	virtual void ReadDelgaGameDefsVfs(const deVFSContainer::Ref &container,
+		const char *delgaFile, decStringList &list);
+	
+	/**
+	 * \brief Read files from DELGA file file using VFS container.
+	 * 
+	 * Stores content of files to \em filesContent as instances of decMemoryFile.
+	 */
+	virtual void ReadDelgaFilesVfs(const deVFSContainer::Ref &container, const char *delgaFile,
+		const decStringList &filenames, decObjectOrderedSet &filesContent);
+	
+	/**
+	 * \brief Add DELGA file to virtual file system as root container.
+	 * 
+	 * Container maps the content of \em archivePath into the virtual file system.
+	 */
+	virtual void VFSAddDelgaFileVfs(const deVFSContainer::Ref &container,
+		const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath);
+	
+	/** \brief Run single game frame update. */
+	virtual void RunSingleFrameUpdate();
+	
+	/** \brief App gained/lost focus. */
+	virtual void SetAppActive(bool active);
+	
+	/** \brief App paused/resumed. */
+	virtual void SetAppPaused(bool paused);
+	
+	/** \brief Update content rect. */
+	virtual void UpdateContentRect(const decBoundary &contentRect);
+	
+	/** \brief An event processed by the application event loop. */
+	virtual void InputEvent(const android_input_buffer &inputBuffer);
 #endif
 	/*@}*/
 };

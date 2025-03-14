@@ -85,8 +85,10 @@ if envModule['with_debug']:
 
 appendLibrary(envModule, parent_targets['shared_vulkan'], libs)
 
+envModule.Append(CPPFLAGS = ['-DBACKEND_OPENGL'])
+
 # fetch values in expanded form for later use
-versionString = '1.24'
+versionString = '1.25'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

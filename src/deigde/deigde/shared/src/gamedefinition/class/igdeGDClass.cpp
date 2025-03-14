@@ -139,6 +139,7 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 			pInheritClasses.Add( objRef );
 		}
 		
+		pDefaultInheritPropertyPrefix = gdclass.pDefaultInheritPropertyPrefix;
 		pPathEClass = gdclass.pPathEClass;
 		pComponentTextures.SetToDeepCopyFrom( gdclass.pComponentTextures );
 		
@@ -214,7 +215,9 @@ void igdeGDClass::ResolveInheritClasses( const igdeGDClassManager &classManager 
 	const int count = pInheritClasses.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) )->ResolveClass( classManager );
+		igdeGDClassInherit &inherit = *((igdeGDClassInherit*)pInheritClasses.GetAt(i));
+		inherit.ResolveClass(classManager);
+		inherit.AddAutoPrefixedPropertiesTo(*this);
 	}
 }
 
@@ -260,6 +263,10 @@ void igdeGDClass::SetPreviewImage( deImage *image ){
 	if( image ){
 		image->AddReference();
 	}
+}
+
+void igdeGDClass::SetDefaultInheritPropertyPrefix(const decString &prefix){
+	pDefaultInheritPropertyPrefix = prefix;
 }
 
 void igdeGDClass::SetPathEClass( const decString &pathEClass ){

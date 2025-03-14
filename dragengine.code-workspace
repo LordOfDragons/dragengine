@@ -17,12 +17,36 @@
 			"path": "src/modules/audio/openal"
 		},
 		{
+			"name": "openxr",
+			"path": "src/modules/vr/openxr"
+		},
+		{
 			"name": "basic",
 			"path": "src/modules/network/basic"
 		},
 		{
 			"name": "xsystem",
 			"path": "src/modules/input/xsystem"
+		},
+		{
+			"name": "simplyquit",
+			"path": "src/modules/crashrecovery/simplyquit"
+		},
+		{
+			"name": "deanimator",
+			"path": "src/modules/animator/deanimator"
+		},
+		{
+			"name": "deanim",
+			"path": "src/modules/animation/deanim"
+		},
+		{
+			"name": "android",
+			"path": "src/modules/input/android"
+		},
+		{
+			"name": "delga",
+			"path": "src/modules/archive/delga"
 		},
 		{
 			"name": "steamsdk",
@@ -41,6 +65,10 @@
 			"path": "src/launcher/shared"
 		},
 		{
+			"name": "console",
+			"path": "src/launcher/console"
+		},
+		{
 			"name": "gui",
 			"path": "src/launcher/gui"
 		},
@@ -53,12 +81,31 @@
 			"path": "src/deigde/editors/conversation"
 		},
 		{
+			"name": "gameDefinition",
+			"path": "src/deigde/editors/gameDefinition"
+		},
+		{
+			"name": "world",
+			"path": "src/deigde/editors/world"
+		},
+		{
 			"name": "project",
 			"path": "src/deigde/editors/project"
 		},
 		{
 			"name": "dragengine-import-export",
 			"path": "src/tools/blender/dragengine-import-export"
+		},
+		{
+			"name": "vulkan",
+			"path": "src/shared/vulkan"
+		},
+		{
+			"name": ".github",
+			"path": ".github"
+		},
+		{
+			"path": "detesting"
 		}
 	],
 	"settings": {
@@ -152,7 +199,9 @@
 			"stdfloat": "cpp",
 			"typeindex": "cpp",
 			"*.ipp": "cpp",
-			"strstream": "cpp"
+			"strstream": "cpp",
+			"text_encoding": "cpp",
+			"ios": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			

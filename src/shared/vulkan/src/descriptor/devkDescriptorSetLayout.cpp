@@ -43,13 +43,6 @@ pDevice( device ),
 pConfiguration( configuration ),
 pLayout( VK_NULL_HANDLE )
 {
-	VkDescriptorSetLayoutBinding layoutBindings;
-	memset( &layoutBindings, 0, sizeof( layoutBindings ) );
-	layoutBindings.descriptorType = configuration.GetType();
-	layoutBindings.stageFlags = configuration.GetShaderStageFlags();
-	layoutBindings.binding = 0;
-	layoutBindings.descriptorCount = 1;
-	
 	VkDescriptorSetLayoutBinding *bindings = nullptr;
 	try{
 		if( configuration.GetLayoutBindingCount() > 0 ){
@@ -60,9 +53,7 @@ pLayout( VK_NULL_HANDLE )
 			}
 		}
 		
-		VkDescriptorSetLayoutCreateInfo layout;
-		memset( &layout, 0, sizeof( layout ) );
-		layout.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		VkDescriptorSetLayoutCreateInfo layout{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO};
 		layout.pBindings = bindings;
 		layout.bindingCount = configuration.GetLayoutBindingCount();
 		

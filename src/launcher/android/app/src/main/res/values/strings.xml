@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">DELauncher</string>
+    <string name="application_label">Drag[en]gine Launcher</string>
+    <string name="tab_games">Games</string>
+    <string name="tab_engine">Engine</string>
+    <string name="tab_remote_launcher">Remote Launcher</string>
+    <string name="tab_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lab_verify_dragengine">Verify Drag[en]gine</string>
+    <string name="lab_install_update_dragengine">Install/Update\nDrag[en]gine</string>
+    <string name="lab_install_dragengine_failed">Install/Update Drag[en]gine failed.\nSee logs for more information.</string>
+    <string name="lab_load_libraries_failed">Loading Drag[en]gine libraries failed.\nSee logs for more information.</string>
+    <string name="lab_create_dragengine_failed">Create Drag[en]gine instance failed.\nSee logs for more information.</string>
+    <string name="lab_dragengine_ready">Drag[en]gine Ready.</string>
+    <string name="lab_install_engine_progress">%1$d%%</string>
+    <string name="form_label_name">Name:</string>
+    <string name="form_label_type">Type:</string>
+    <string name="form_label_description">Description:</string>
+    <string name="form_label_author">Author:</string>
+    <string name="form_label_version">Version:</string>
+    <string name="form_label_file_pattern">File Pattern:</string>
+    <string name="form_label_priority">Priority:</string>
+    <string name="form_label_fallback">Fallback:</string>
+    <string name="form_label_status">Status:</string>
+    <string name="form_label_error_code">Error Code:</string>
+    <string name="form_label_library_file_size">Library File Size:</string>
+    <string name="form_label_library_file_hash">Library File Hash:</string>
+    <string name="label_close">Close</string>
+    <string name="label_delete">Delete</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="form_label_dragengine_version">Drag[en]gine Version:</string>
+    <string name="form_label_game_engine_modules">Game Engine Modules:</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="preference_support">Support</string>
+    <string name="preference_developer">Developer</string>
+    <string name="title_remote_launcher_support">Remote Launcher Support</string>
+    <string name="summary_remote_launcher">Allows connecting to IGDE for remote launching</string>
+    <string name="summary_support_website">Get support on our Website</string>
+    <string name="summary_profiles">Edit profiles for launching games with</string>
+    <string name="title_edit_profiles">Edit Profiles</string>
+    <string name="error_failed_open_url">Failed opening URL</string>
+    <string name="title_error">Error</string>
+    <string name="title_discord_channel">Discord Channel</string>
+    <string name="summary_discord_channel">Get support on our Discord channel</string>
+    <string name="title_support_website">Website</string>
+    <string name="label_host_address">Host Address:</string>
+    <string name="hint_host_name">Host name or IP[:Port]</string>
+    <string name="label_client_name">Client Name:</string>
+    <string name="hint_client_name">Client name displayed in IGDE</string>
+    <string name="button_connect">Connect</string>
+    <string name="button_disconnect">Disconnect</string>
+    <string name="title_activity_remote_launcher">RemoteLauncherActivity</string>
+    <string name="error_client_name_empty">Client name can not be empty</string>
+    <string name="error_data_path_empty">Data path can not be empty</string>
+    <string name="error_host_address_empty">Addresss can not be empty</string>
+    <string name="error_connect_failed">Connect failed</string>
+    <string name="error_disconnect_failed">Disconnect failed</string>
+    <string name="message_requires_permission_internet_remote">Connecting to remote host requires Internet Access Permission</string>
+    <string name="message_requires_permission_internet_download">Download file requires Internet Access Permission</string>
+    <string name="message_remote_launch_internet_denied">Permission denied. Remote launching is not possible.</string>
+    <string name="message_download_denied">Permission denied. Download is not possible.</string>
+    <string name="message_game_engine_not_ready">Game engine not ready</string>
+    <string name="message_game_running">Game is already running</string>
+    <string name="error_download_failed">Download file failed</string>
+    <string name="error_examples_move_file">Failed moving downloaded file to examples directory</string>
+    <string name="message_example_delete_confirm">Delete downloaded example file?</string>
+    <string name="title_example_delete">Delete Example</string>
+    <string name="error_delete_example_file">Failed delete example file</string>
+    <string name="error_example_not_ready">Example has not been downloaded yet.</string>
+    <string name="error_example_run">Failed running example.</string>
+    <string name="description_download_example">Download Example</string>
+    <string name="description_delete_example">Delete Example</string>
+    <string name="description_dragengine_logo">Drag[en]gine Logo</string>
+    <string name="description_module_state_icon">Module State Icon</string>
+    <string name="description_game_icon">Game Icon</string>
+    <string name="label_examples">Examples</string>
+    <string name="label_remote_launcher">Remote Launcher</string>
+    <string name="label_logs">Logs</string>
+    <string name="label_play">Play</string>
+    <string name="label_information">Information</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_share_logs">Share Logs</string>
+    <string name="label_support">Support</string>
+    <string name="message_run_game_unknown_source">Don\'t know how to run this game. Launch it from the respective App to update run information.</string>
+    <string name="message_fail_create_log_zip">Failed collecting log files into zip archive.</string>
+    <string name="message_failed_sharing_logs">Failed sharing logs</string>
+</resources>

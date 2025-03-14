@@ -47,6 +47,10 @@
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/threading/deThreadSafeObjectReference.h>
 
+#ifdef OS_ANDROID
+	#include <dragengine/app/deOSAndroid.h>
+#endif
+
 
 // Class deModioService
 /////////////////////////
@@ -102,6 +106,13 @@ pUpdateProgressInterval( 1.0f )
 	Modio::SetLogCallback( [ this ]( Modio::LogLevel level, const std::string &message ){
 		pOnLogCallback( level, message );
 	});
+	
+#ifdef OS_ANDROID
+	deOSAndroid &osAndroid = *module.GetGameEngine()->GetOS()->CastToOSAndroid();
+	Modio::InitializeAndroidJNI(osAndroid.GetJavaVM(), nullptr);
+	Modio::SetGlobalActivity(osAndroid.GetActivity());
+	Modio::InitializeAndroid();
+#endif
 	
 	Modio::InitializeAsync( options, [ this ]( Modio::ErrorCode ec ){
 		pOnInitialize( ec );
@@ -888,12 +899,12 @@ public:
 deServiceObject::Ref deModioService::ModHasMatchingFiles( const deServiceObject &action ){
 	const decPath directory( decPath::CreatePathUnix( action.GetChildAt( "directory" )->GetString() ) );
 	const bool recursive = action.GetChildAt( "recursive" )->GetBoolean();
-	const deServiceObject &soPatterns = action.GetChildAt( "patterns" );
-	const deServiceObject &soModId = action.GetChildAt( "modId" );
+	const deServiceObject::Ref soPatterns = action.GetChildAt( "patterns" );
+	const deServiceObject::Ref soModId = action.GetChildAt( "modId" );
 	
 	const std::map<Modio::ModID, Modio::ModCollectionEntry> mods( Modio::QueryUserSubscriptions() );
 	const std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter(
-		mods.find( ( Modio::ModID )deMCCommon::ID( soModId ) ) );
+		mods.find( ( Modio::ModID )deMCCommon::ID( *soModId ) ) );
 	if( iter == mods.cend() ){
 		DETHROW_INFO( deeInvalidAction, "Modification not installed" );
 	}
@@ -903,7 +914,7 @@ deServiceObject::Ref deModioService::ModHasMatchingFiles( const deServiceObject 
 			new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
 				decPath::CreatePathNative( iter->second.GetPath().c_str() ), true ) ) );
 		
-		const int count = soPatterns.GetChildCount();
+		const int count = soPatterns->GetChildCount();
 		if( count == 0 ){
 			return deServiceObject::NewBool( false );
 		}
@@ -1481,6 +1492,7 @@ Modio::Optional<Modio::TransactionRecord> record ){
 void deModioService::pOnLogCallback(Modio::LogLevel level, const std::string &message){
 	switch( level ){
 	case Modio::LogLevel::Trace:
+	case Modio::LogLevel::Detailed:
 	case Modio::LogLevel::Info:
 		pModule.LogInfoFormat( "deModioService.pOnLogCallback: %s", message.c_str() );
 		break;

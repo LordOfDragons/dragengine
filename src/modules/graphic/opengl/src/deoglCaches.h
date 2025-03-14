@@ -60,11 +60,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Lock caches. */
-	void Lock();
-	
-	/** Unlock caches. */
-	void Unlock();
+	/** Mutex. */
+	inline deMutex &GetMutex(){ return pMutex; }
 	
 	/** Skin textures cache. */
 	inline deCacheHelper &GetSkinTextures() const{ return *pSkinTextures; }

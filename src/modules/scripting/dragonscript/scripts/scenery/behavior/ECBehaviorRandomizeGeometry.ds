@@ -42,8 +42,42 @@ pin Dragengine.Utils
  * while loading a game world.
  * 
  * Default property prefix is "randomizeGeometry."
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_randomizegeometry
  */
 class ECBehaviorRandomizeGeometry extends DefaultECBehavior implements BehaviorPrepareStub
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRandomizeGeometry'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRandomizeGeometry"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorRandomizeGeometry behavior = ECBehaviorRandomizeGeometry.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "randomizeGeometry")
+			return behavior
+		end
+	end
+	
+	
 	var ECPBoolean pRandomize
 	var ECPVector pMinTranslate, pMaxTranslate
 	var ECPVector pMinRotate, pMaxRotate

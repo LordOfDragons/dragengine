@@ -164,7 +164,7 @@ void dexsiDevice::SetName( const char *name ){
 }
 
 void dexsiDevice::SetDisplayImages( const char *name ){
-	pDisplayImage = NULL;
+	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
 	if( ! name ){

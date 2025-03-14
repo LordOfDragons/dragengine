@@ -54,6 +54,10 @@ class ceCAWait;
  * \details Helper class knowing how to process an action of arbitrary type.
  */
 class cePlaybackProcessAction{
+private:
+	float pMissingPhonemeLength;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

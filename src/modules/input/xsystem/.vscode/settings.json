@@ -1,0 +1,19 @@
+{
+	"C_Cpp.files.exclude": {
+		"**/.vscode": true,
+		"**/.vs": true,
+		"data": true,
+		"original": true
+	},
+	"files.exclude": {
+		"build": true
+	},
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/.hg/store/**": true,
+		"**/build/**": true,
+		"data/**": true,
+		"original/**": true
+	}
+}

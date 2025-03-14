@@ -4,6 +4,7 @@ precision highp int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
 #include "shared/defren/gi/trace_probe.glsl"
+#include "shared/image_buffer.glsl"
 
 #include "shared/octahedral.glsl"
 
@@ -19,14 +20,14 @@ precision highp int;
 
 
 #ifdef GI_RAYCAST_DISTANCE_ONLY
-	layout(binding=0, r16f) uniform writeonly restrict image2D texDistance;
+	layout(binding=0, IMG_R16F_FMT) uniform writeonly restrict mediump IMG_R16F_2D texDistance;
 	
 #else
-	layout(binding=0, rgba16f) uniform writeonly restrict image2D texPosition;
-	layout(binding=1, rgba8_snorm) uniform writeonly restrict image2D texNormal;
-	layout(binding=2, rgba8) uniform writeonly restrict image2D texDiffuse;
-	layout(binding=3, rgba8) uniform writeonly restrict image2D texReflectivity;
-	layout(binding=4, rgba16f) uniform writeonly restrict image2D texLight;
+	layout(binding=0, rgba16f) uniform writeonly restrict mediump image2D texPosition;
+	layout(binding=1, rgba8_snorm) uniform writeonly restrict mediump image2D texNormal;
+	layout(binding=2, rgba8) uniform writeonly restrict lowp image2D texDiffuse;
+	layout(binding=3, rgba8) uniform writeonly restrict lowp image2D texReflectivity;
+	layout(binding=4, rgba16f) uniform writeonly restrict mediump image2D texLight;
 #endif
 
 
@@ -53,10 +54,10 @@ void main( void ){
 	#ifdef GI_RAYCAST_DISTANCE_ONLY
 		if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
 		position + pGIBVHOffset, direction, giRayCastNoHitDistance, result ) ){
-			imageStore( texDistance, tc, vec4( result.distance, 0, 0, 0 ) );
+			imageStore(texDistance, tc, IMG_RG16F_STORE(vec2(result.distance, 0)));
 			
 		}else{
-			imageStore( texDistance, tc, vec4( 10000, 0, 0, 0 ) );
+			imageStore(texDistance, tc, IMG_RG16F_STORE(vec2(10000, 0)));
 		}
 		
 	#else
@@ -94,12 +95,12 @@ void main( void ){
 			// we can not store simply the position here since later code calculates the
 			// ray direction using this hit point. anything can go here in the end
 			resultPosition = position + direction;
-			resultDistance = 10000;
-			resultNormal = vec3( 0, 0, 1 );
-			resultDiffuse = vec3( 1 );
-			resultReflectivity = vec3( 0 );
-			resultRoughness = 1;
-			resultLight = vec3( 0 );
+			resultDistance = 10000.0;
+			resultNormal = vec3(0, 0, 1);
+			resultDiffuse = vec3(1);
+			resultReflectivity = vec3(0);
+			resultRoughness = 1.0;
+			resultLight = vec3(0);
 		}
 		
 		#ifdef GI_USE_RAY_CACHE

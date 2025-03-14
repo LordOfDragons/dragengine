@@ -31,9 +31,16 @@
 
 #elif defined OS_UNIX
 	#pragma GCC diagnostic push
+	
+	// warnings turning into errors
 	#pragma GCC diagnostic ignored "-Wshadow"
 	#pragma GCC diagnostic ignored "-Wsign-compare"
 	#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+	#pragma GCC diagnostic ignored "-Waddress"
+	
+	// modio not being stdc++20 conform causes these errors
+	#pragma GCC diagnostic ignored "-Wtemplate-id-cdtor"
+	#pragma GCC diagnostic ignored "-Wattributes"
 #endif
 
 #define MODIO_SEPARATE_COMPILATION
@@ -44,6 +51,10 @@
 #define MODIO_PRAGMA(Value)
 
 #include <modio/ModioSDK.h>
+
+#ifdef OS_ANDROID
+	#include <android/ModioAndroid.h>
+#endif
 
 #ifdef OS_W32
 	#undef DeleteFile

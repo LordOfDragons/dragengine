@@ -80,7 +80,7 @@
     </CustomBuildAfterTargets>
     <OutDir>$(ProjectDir)\build\install\static\lib\</OutDir>
     <TargetName>modioStatic</TargetName>
-    <PublicIncludeDirectories>$(ProjectDir)\build\install\header_only\ms-common;$(ProjectDir)\build\install\header_only\win32;$(ProjectDir)\build\install\header_only;$(ProjectDir)\build\install\static\inc;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)\build\install\static\inc;$(ProjectDir)\build\install\header_only\linux;$(ProjectDir)\build\install\header_only\common;$(ProjectDir)\build\install\header_only\common\modio\core;$(ProjectDir)\build\install\header_only\common\modio\core\entities;$(ProjectDir)\build\install\header_only\common\modio\detail;$(ProjectDir)\build\install\header_only\common\modio\detail\userdata;$(ProjectDir)\build\install\header_only\common\modio\detail\compression/zip;$(ProjectDir)\build\install\header_only\ext;$(ProjectDir)\build\install\header_only\ms-common;$(ProjectDir)\build\install\header_only\win32;$(PublicIncludeDirectories)</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -88,7 +88,7 @@
     </CustomBuildAfterTargets>
     <OutDir>$(ProjectDir)\build\install\static\lib\</OutDir>
     <TargetName>modioStatic</TargetName>
-    <PublicIncludeDirectories>$(ProjectDir)\build\install\header_only\ms-common;$(ProjectDir)\build\install\header_only\win32;$(ProjectDir)\build\install\header_only;$(ProjectDir)\build\install\static\inc;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)\build\install\static\inc;$(ProjectDir)\build\install\header_only\linux;$(ProjectDir)\build\install\header_only\common;$(ProjectDir)\build\install\header_only\common\modio\core;$(ProjectDir)\build\install\header_only\common\modio\core\entities;$(ProjectDir)\build\install\header_only\common\modio\detail;$(ProjectDir)\build\install\header_only\common\modio\detail\userdata;$(ProjectDir)\build\install\header_only\common\modio\detail\compression/zip;$(ProjectDir)\build\install\header_only\ext;$(ProjectDir)\build\install\header_only\ms-common;$(ProjectDir)\build\install\header_only\win32;$(PublicIncludeDirectories)</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

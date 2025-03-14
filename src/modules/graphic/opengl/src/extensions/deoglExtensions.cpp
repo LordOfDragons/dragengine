@@ -43,10 +43,6 @@
 #include "../window/deoglRRenderWindow.h"
 #endif
 
-#ifdef OS_ANDROID
-extern __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name );
-#endif
-
 #ifdef OS_MACOS
 #include "macosfix.h"
 #endif
@@ -159,6 +155,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_direct_state_access",
 	"GL_ARB_clear_buffer_object",
 	"GL_ARB_buffer_storage",
+	"GL_ARB_texture_storage",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
@@ -262,48 +259,53 @@ void deoglExtensions::Initialize(){
 }
 
 void deoglExtensions::PrintSummary(){
+	deoglRTLogger &l = pRenderThread.GetLogger();
 	int i;
 	
-	pRenderThread.GetLogger().LogInfoFormat( "Vendor: %s (%s)",
-		vVendorNames[ pVendor ], glGetString( GL_VENDOR ) );
+	l.LogInfoFormat("Vendor: %s (%s)", vVendorNames[pVendor], glGetString(GL_VENDOR));
 	
 	#ifdef OS_ANDROID
-		pRenderThread.GetLogger().LogInfoFormat( "Version: %s (%s) [%d, %d]",
-			vGLESVersionNames[ pGLESVersion ], glGetString( GL_VERSION ),
-			pGLVersionMajor, pGLVersionMinor );
+		l.LogInfoFormat("Version: %s (%s) [%d, %d]", vGLESVersionNames[pGLESVersion],
+			glGetString(GL_VERSION), pGLVersionMajor, pGLVersionMinor);
 	#else
-		pRenderThread.GetLogger().LogInfoFormat( "Version: %s (%s) [%d, %d]",
-			vGLVersionNames[ pGLVersion ], glGetString( GL_VERSION ),
-			pGLVersionMajor, pGLVersionMinor );
+		l.LogInfoFormat("Version: %s (%s) [%d, %d]", vGLVersionNames[pGLVersion],
+			glGetString(GL_VERSION), pGLVersionMajor, pGLVersionMinor);
 	#endif
 	
-	pRenderThread.GetLogger().LogInfo( "Supported Extensions:" );
-	for( i=0; i<EXT_COUNT; i++ ){
-		if( pHasExtension[ i ] ){
-			pRenderThread.GetLogger().LogInfoFormat( "- %s", vExtensionNames[ i ] );
+	l.LogInfo("Driver Reported Extensions:");
+	const int count = pStrListExtensions.GetCount();
+	for(i=0; i<count; i++){
+		l.LogInfoFormat("- %s", pStrListExtensions.GetAt(i).GetString());
+	}
+	
+	l.LogInfo("Supported Extensions:");
+	for(i=0; i<EXT_COUNT; i++){
+		if(pHasExtension[i]){
+			l.LogInfoFormat("- %s", vExtensionNames[i]);
 		}
 	}
 	
-	pRenderThread.GetLogger().LogInfo( "Not Supported Extensions:" );
-	for( i=0; i<EXT_COUNT; i++ ){
-		if( ! pHasExtension[ i ] ){
-			pRenderThread.GetLogger().LogInfoFormat( "- %s", vExtensionNames[ i ] );
+	l.LogInfo("Not Supported Extensions:");
+	for(i=0; i<EXT_COUNT; i++){
+		if(!pHasExtension[i]){
+			l.LogInfoFormat("- %s", vExtensionNames[i]);
 		}
 	}
 	
-	pRenderThread.GetLogger().LogInfo( "Extension Choices:" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Has Arry Cube Map: %s", pHasArrayCubeMap ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Has Seamless Cube Map: %s", pHasSeamlessCubeMap ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Has Copy Image: %s", pHasCopyImage ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No" );
-	pRenderThread.GetLogger().LogInfoFormat( "- Supports Vertex Shader Layer: %s", pSupportsVSLayer ? "Yes" : "No" );
+	l.LogInfo("Extension Choices:");
+	l.LogInfoFormat("- Has Arry Cube Map: %s", pHasArrayCubeMap ? "Yes" : "No");
+	l.LogInfoFormat("- Has Seamless Cube Map: %s", pHasSeamlessCubeMap ? "Yes" : "No");
+	l.LogInfoFormat("- Has Copy Image: %s", pHasCopyImage ? "Yes" : "No");
+	l.LogInfoFormat("- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No");
+	l.LogInfoFormat("- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No");
+	l.LogInfoFormat("- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No");
+	l.LogInfoFormat("- Supports Vertex Shader Layer: %s", pSupportsVSLayer ? "Yes" : "No");
 }
 
 bool deoglExtensions::VerifyPresence() const{
 	bool allPresent = pHasRequiredFunctions;
 	
+#ifndef OS_ANDROID
 	allPresent &= pVerifyExtensionPresent( ext_ARB_depth_clamp );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_copy_image, ext_NV_copy_image );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_compute_shader );
@@ -313,7 +315,11 @@ bool deoglExtensions::VerifyPresence() const{
 	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_atomic_counters );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_clear_buffer_object );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_buffer_storage );
+#endif
 	// allPresent &= pVerifyExtensionPresent( ext_ARB_gpu_shader_fp64 );
+	if(pGLESVersion < evgles3p1){
+		allPresent &= pVerifyExtensionPresent(ext_ARB_texture_storage);
+	}
 	allPresent &= pSupportsGeometryShader;
 	
 	return allPresent;
@@ -342,12 +348,12 @@ void deoglExtensions::DisableExtension( eExtensions extension ){
 		break;
 		
 	case ext_ARB_uniform_buffer_object:
-		pglGetUniformIndices = NULL;
-		pglGetActiveUniformsiv = NULL;
-		pglGetActiveUniformName = NULL;
+		// pglGetUniformIndices = NULL;
+		// pglGetActiveUniformsiv = NULL;
+		// pglGetActiveUniformName = NULL;
 		pglGetUniformBlockIndex = NULL;
-		pglGetActiveUniformBlockiv = NULL;
-		pglGetActiveUniformBlockName = NULL;
+		// pglGetActiveUniformBlockiv = NULL;
+		// pglGetActiveUniformBlockName = NULL;
 		pglUniformBlockBinding = NULL;
 		break;
 		
@@ -587,6 +593,10 @@ void deoglExtensions::pScanExtensions(){
 	pStrListExtensions += decString( strXExtensions ).Split( ' ' );
 #endif
 	
+#ifdef OS_ANDROID
+	pStrListExtensions += decString(strAExtensions).Split(' ');
+#endif
+	
 	pStrListExtensions.SortAscending();
 	
 	for( i=0; i<EXT_COUNT; i++ ){
@@ -618,12 +628,14 @@ void deoglExtensions::pScanExtensions(){
 		pHasExtension[ ext_AMD_vertex_shader_layer ] = false;
 	}
 	
-	pHasSeamlessCubeMap = pHasExtension[ ext_ARB_seamless_cube_map ]
+	pHasSeamlessCubeMap = pGLVersion >= evgl3p2
+		|| pHasExtension[ ext_ARB_seamless_cube_map ]
 		|| pHasExtension[ ext_AMD_seamless_cubemap_per_texture ];
 	
 	pHasArrayCubeMap = pHasExtension[ ext_ARB_texture_cube_map_array ];
 	
-	pHasCopyImage = pHasExtension[ ext_ARB_copy_image ]
+	pHasCopyImage = pGLESVersion >= evgles3p2
+		|| pHasExtension[ ext_ARB_copy_image ]
 		|| pHasExtension[ ext_NV_copy_image ];
 	
 	pSupportsGeometryShader = pGLVersion >= evgl3p2
@@ -638,7 +650,7 @@ void deoglExtensions::pScanExtensions(){
 	
 	// "core since" = "4.3". "core in" = "4.6"
 	pSupportsComputeShader = pGLVersion >= evgl4p6
-		|| pGLESVersion >= evgles3p2
+		|| pGLESVersion >= evgles3p1
 		|| pHasExtension[ ext_ARB_compute_shader ];
 	
 	pSupportsVSLayer = pHasExtension[ ext_ARB_shader_viewport_layer_array ]
@@ -698,19 +710,19 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglCompressedTexImage3D, "glCompressedTexImage3D" );
 	pGetRequiredFunction( (void**)&pglCompressedTexImage2D, "glCompressedTexImage2D" );
 	#ifndef OS_ANDROID
-	pGetRequiredFunction( (void**)&pglCompressedTexImage1D, "glCompressedTexImage1D" );
+	// pGetRequiredFunction( (void**)&pglCompressedTexImage1D, "glCompressedTexImage1D" );
 	#endif
-	pGetRequiredFunction( (void**)&pglCompressedTexSubImage3D, "glCompressedTexSubImage3D" );
-	pGetRequiredFunction( (void**)&pglCompressedTexSubImage2D, "glCompressedTexSubImage2D" );
+	pGetRequiredFunction((void**)&pglCompressedTexSubImage3D, "glCompressedTexSubImage3D");
+	pGetRequiredFunction((void**)&pglCompressedTexSubImage2D, "glCompressedTexSubImage2D");
 	#ifndef OS_ANDROID
-	pGetRequiredFunction( (void**)&pglCompressedTexSubImage1D, "glCompressedTexSubImage1D" );
+	// pGetRequiredFunction( (void**)&pglCompressedTexSubImage1D, "glCompressedTexSubImage1D" );
 	#endif
 	#ifndef OS_ANDROID
-	pGetRequiredFunction( (void**)&pglGetCompressedTexImage, "glGetCompressedTexImage" );
+	// pGetRequiredFunction( (void**)&pglGetCompressedTexImage, "glGetCompressedTexImage" );
 	#endif
 	
 	// opengl version 1.4
-	pGetRequiredFunction( (void**)&pglBlendFuncSeparate, "glBlendFuncSeparate" );
+	// pGetRequiredFunction( (void**)&pglBlendFuncSeparate, "glBlendFuncSeparate" );
 	
 	// GL_ARB_vertex_buffer_object . opengl version 1.5
 	pGetRequiredFunction( (void**)&pglBindBuffer, "glBindBuffer" );
@@ -718,7 +730,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglGenBuffers, "glGenBuffers" );
 	pGetRequiredFunction( (void**)&pglBufferData, "glBufferData" );
 	pGetRequiredFunction( (void**)&pglBufferSubData, "glBufferSubData" );
-	pGetRequiredFunction( (void**)&pglGetBufferSubData, "glGetBufferSubData" );
+	// pGetRequiredFunction( (void**)&pglGetBufferSubData, "glGetBufferSubData" );
 	#ifndef OS_ANDROID
 	pGetRequiredFunction( (void**)&pglMapBuffer, "glMapBuffer" );
 	#endif
@@ -734,8 +746,8 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	
 	// opengl version 2.0
 	pGetRequiredFunction( (void**)&pglStencilOpSeparate, "glStencilOpSeparate" );
-	pGetRequiredFunction( (void**)&pglStencilFuncSeparate, "glStencilFuncSeparate" );
-	pGetRequiredFunction( (void**)&pglStencilMaskSeparate, "glStencilMaskSeparate" );
+	// pGetRequiredFunction( (void**)&pglStencilFuncSeparate, "glStencilFuncSeparate" );
+	// pGetRequiredFunction( (void**)&pglStencilMaskSeparate, "glStencilMaskSeparate" );
 	
 	// GL_ARB_vertex_program . opengl version 2.0
 	pGetRequiredFunction( (void**)&pglVertexAttribPointer, "glVertexAttribPointer" );
@@ -775,15 +787,15 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglUniform2i, "glUniform2i" );
 	pGetRequiredFunction( (void**)&pglUniform3i, "glUniform3i" );
 	pGetRequiredFunction( (void**)&pglUniform4i, "glUniform4i" );
-	pGetRequiredFunction( (void**)&pglUniform1fv, "glUniform1fv" );
-	pGetRequiredFunction( (void**)&pglUniform2fv, "glUniform2fv" );
-	pGetRequiredFunction( (void**)&pglUniform3fv, "glUniform3fv" );
-	pGetRequiredFunction( (void**)&pglUniform4fv, "glUniform4fv" );
-	pGetRequiredFunction( (void**)&pglUniform1iv, "glUniform1iv" );
-	pGetRequiredFunction( (void**)&pglUniform2iv, "glUniform2iv" );
-	pGetRequiredFunction( (void**)&pglUniform3iv, "glUniform3iv" );
-	pGetRequiredFunction( (void**)&pglUniform4iv, "glUniform4iv" );
-	pGetRequiredFunction( (void**)&pglUniformMatrix2fv, "glUniformMatrix2fv" );
+	// pGetRequiredFunction( (void**)&pglUniform1fv, "glUniform1fv" );
+	// pGetRequiredFunction( (void**)&pglUniform2fv, "glUniform2fv" );
+	// pGetRequiredFunction( (void**)&pglUniform3fv, "glUniform3fv" );
+	// pGetRequiredFunction( (void**)&pglUniform4fv, "glUniform4fv" );
+	// pGetRequiredFunction( (void**)&pglUniform1iv, "glUniform1iv" );
+	// pGetRequiredFunction( (void**)&pglUniform2iv, "glUniform2iv" );
+	// pGetRequiredFunction( (void**)&pglUniform3iv, "glUniform3iv" );
+	// pGetRequiredFunction( (void**)&pglUniform4iv, "glUniform4iv" );
+	// pGetRequiredFunction( (void**)&pglUniformMatrix2fv, "glUniformMatrix2fv" );
 	pGetRequiredFunction( (void**)&pglUniformMatrix3fv, "glUniformMatrix3fv" );
 	pGetRequiredFunction( (void**)&pglUniformMatrix4fv, "glUniformMatrix4fv" );
 // 	pGetRequiredFunction( (void**)&pglGetObjectParameteriv, "glGetObjectParameteriv" );
@@ -791,26 +803,27 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglGetUniformLocation, "glGetUniformLocation" );
 	
 	// these are listed in opengl version 2.1 but do not look like belonging directly to an extension
-	pGetRequiredFunction( (void**)&pglUniformMatrix2x3fv, "glUniformMatrix2x3fv" );
+	// pGetRequiredFunction( (void**)&pglUniformMatrix2x3fv, "glUniformMatrix2x3fv" );
 	pGetRequiredFunction( (void**)&pglUniformMatrix3x2fv, "glUniformMatrix3x2fv" );
-	pGetRequiredFunction( (void**)&pglUniformMatrix2x4fv, "glUniformMatrix2x4fv" );
-	pGetRequiredFunction( (void**)&pglUniformMatrix4x2fv, "glUniformMatrix4x2fv" );
-	pGetRequiredFunction( (void**)&pglUniformMatrix3x4fv, "glUniformMatrix3x4fv" );
+	// pGetRequiredFunction( (void**)&pglUniformMatrix2x4fv, "glUniformMatrix2x4fv" );
+	// pGetRequiredFunction( (void**)&pglUniformMatrix4x2fv, "glUniformMatrix4x2fv" );
+	// pGetRequiredFunction( (void**)&pglUniformMatrix3x4fv, "glUniformMatrix3x4fv" );
 	pGetRequiredFunction( (void**)&pglUniformMatrix4x3fv, "glUniformMatrix4x3fv" );
 	
 	// these are listed in opengl version 3.0 but do not have an extension assigned
 	pGetRequiredFunction( (void**)&pglClearBufferiv, "glClearBufferiv" );
-	pGetRequiredFunction( (void**)&pglClearBufferuiv, "glClearBufferuiv" );
+	// pGetRequiredFunction( (void**)&pglClearBufferuiv, "glClearBufferuiv" );
 	pGetRequiredFunction( (void**)&pglClearBufferfv, "glClearBufferfv" );
 	pGetRequiredFunction( (void**)&pglClearBufferfi, "glClearBufferfi" );
+	pGetRequiredFunction( (void**)&pglGetIntegeri_v, "glGetIntegeri_v" );
 	
 	// GL_EXT_transform_feedback : opengl version 3.0
-	pGetRequiredFunction( (void**)&pglBeginTransformFeedback, "glBeginTransformFeedback" );
-	pGetRequiredFunction( (void**)&pglEndTransformFeedback, "glEndTransformFeedback" );
+	// pGetRequiredFunction( (void**)&pglBeginTransformFeedback, "glBeginTransformFeedback" );
+	// pGetRequiredFunction( (void**)&pglEndTransformFeedback, "glEndTransformFeedback" );
 	pGetRequiredFunction( (void**)&pglBindBufferRange, "glBindBufferRange" );
 	pGetRequiredFunction( (void**)&pglBindBufferBase, "glBindBufferBase" );
 	pGetRequiredFunction( (void**)&pglTransformFeedbackVaryings, "glTransformFeedbackVaryings" );
-	pGetRequiredFunction( (void**)&pglGetTransformFeedbackVarying, "glGetTransformFeedbackVarying" );
+	// pGetRequiredFunction( (void**)&pglGetTransformFeedbackVarying, "glGetTransformFeedbackVarying" );
 	
 	// GL_EXT_gpu_shader4 : opengl version 3.0
 	pGetRequiredFunction( (void**)&pglBindFragDataLocation, "glBindFragDataLocation" );
@@ -818,10 +831,10 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglUniform2ui, "glUniform2ui" );
 	pGetRequiredFunction( (void**)&pglUniform3ui, "glUniform3ui" );
 	pGetRequiredFunction( (void**)&pglUniform4ui, "glUniform4ui" );
-	pGetRequiredFunction( (void**)&pglUniform1uiv, "glUniform1uiv" );
-	pGetRequiredFunction( (void**)&pglUniform2uiv, "glUniform2uiv" );
-	pGetRequiredFunction( (void**)&pglUniform3uiv, "glUniform3uiv" );
-	pGetRequiredFunction( (void**)&pglUniform4uiv, "glUniform4uiv" );
+	// pGetRequiredFunction( (void**)&pglUniform1uiv, "glUniform1uiv" );
+	// pGetRequiredFunction( (void**)&pglUniform2uiv, "glUniform2uiv" );
+	// pGetRequiredFunction( (void**)&pglUniform3uiv, "glUniform3uiv" );
+	// pGetRequiredFunction( (void**)&pglUniform4uiv, "glUniform4uiv" );
 	
 	// GL_EXT_texture_array : opengl version 3.0
 	pGetRequiredFunction( (void**)&pglFramebufferTextureLayer, "glFramebufferTextureLayer" );
@@ -834,52 +847,53 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglTexBuffer, "glTexBuffer" );
 	
 	// GL_ARB_uniform_buffer_object : opengl version 3.1
-	pGetRequiredFunction( (void**)&pglGetUniformIndices, "glGetUniformIndices" );
-	pGetRequiredFunction( (void**)&pglGetActiveUniformsiv, "glGetActiveUniformsiv" );
+	// pGetRequiredFunction( (void**)&pglGetUniformIndices, "glGetUniformIndices" );
+	// pGetRequiredFunction( (void**)&pglGetActiveUniformsiv, "glGetActiveUniformsiv" );
 	#ifndef OS_ANDROID
-	pGetRequiredFunction( (void**)&pglGetActiveUniformName, "glGetActiveUniformName" );
+	// pGetRequiredFunction( (void**)&pglGetActiveUniformName, "glGetActiveUniformName" );
 	#endif
 	pGetRequiredFunction( (void**)&pglGetUniformBlockIndex, "glGetUniformBlockIndex" );
-	pGetRequiredFunction( (void**)&pglGetActiveUniformBlockiv, "glGetActiveUniformBlockiv" );
-	pGetRequiredFunction( (void**)&pglGetActiveUniformBlockName, "glGetActiveUniformBlockName" );
+	// pGetRequiredFunction( (void**)&pglGetActiveUniformBlockiv, "glGetActiveUniformBlockiv" );
+	// pGetRequiredFunction( (void**)&pglGetActiveUniformBlockName, "glGetActiveUniformBlockName" );
 	pGetRequiredFunction( (void**)&pglUniformBlockBinding, "glUniformBlockBinding" );
 	
 	// OpenGL 3.2 core stuff
 	pGetRequiredFunction( (void**)&pglFenceSync, "glFenceSync" );
 	pGetRequiredFunction( (void**)&pglDeleteSync, "glDeleteSync" );
 	pGetRequiredFunction( (void**)&pglClientWaitSync, "glClientWaitSync" );
-	pGetRequiredFunction( (void**)&pglWaitSync, "glWaitSync" );
+	// pGetRequiredFunction( (void**)&pglWaitSync, "glWaitSync" );
 	
 	// GL_ARB_timer_query : opengl version 3.3
-	pGetRequiredFunction( (void**)&pglQueryCounter, "glQueryCounter" );
-	pGetRequiredFunction( (void**)&pglGetQueryObjectui64v, "glGetQueryObjectui64v" );
+	// pGetRequiredFunction( (void**)&pglQueryCounter, "glQueryCounter" );
+	// pGetRequiredFunction( (void**)&pglGetQueryObjectui64v, "glGetQueryObjectui64v" );
 	
 	// GL_ARB_sampler_objects : opengl version 3.3
 	pGetRequiredFunction( (void**)&pglGenSamplers, "glGenSamplers" );
 	pGetRequiredFunction( (void**)&pglDeleteSamplers, "glDeleteSamplers" );
 	pGetRequiredFunction( (void**)&pglBindSampler, "glBindSampler" );
 	pGetRequiredFunction( (void**)&pglSamplerParameteri, "glSamplerParameteri" );
-	pGetRequiredFunction( (void**)&pglSamplerParameterf, "glSamplerParameterf" );
+	// pGetRequiredFunction( (void**)&pglSamplerParameterf, "glSamplerParameterf" );
 	
 	// GL_ARB_framebuffer_object : no opengl version
-	pGetRequiredFunction( (void**)&pglBindRenderbuffer, "glBindRenderbuffer" );
-	pGetRequiredFunction( (void**)&pglDeleteRenderbuffers, "glDeleteRenderbuffers" );
-	pGetRequiredFunction( (void**)&pglGenRenderbuffers, "glGenRenderbuffers" );
-	pGetRequiredFunction( (void**)&pglRenderbufferStorage, "glRenderbufferStorage" );
+	// pGetRequiredFunction( (void**)&pglBindRenderbuffer, "glBindRenderbuffer" );
+	// pGetRequiredFunction( (void**)&pglDeleteRenderbuffers, "glDeleteRenderbuffers" );
+	// pGetRequiredFunction( (void**)&pglGenRenderbuffers, "glGenRenderbuffers" );
+	// pGetRequiredFunction( (void**)&pglRenderbufferStorage, "glRenderbufferStorage" );
 	pGetRequiredFunction( (void**)&pglBindFramebuffer, "glBindFramebuffer" );
 	pGetRequiredFunction( (void**)&pglDeleteFramebuffers, "glDeleteFramebuffers" );
 	pGetRequiredFunction( (void**)&pglGenFramebuffers, "glGenFramebuffers" );
 	pGetRequiredFunction( (void**)&pglCheckFramebufferStatus, "glCheckFramebufferStatus" );
 	pGetRequiredFunction( (void**)&pglFramebufferTexture2D, "glFramebufferTexture2D" );
 	#ifndef OS_ANDROID
-	pGetRequiredFunction( (void**)&pglFramebufferTexture3D, "glFramebufferTexture3D" );
+	// pGetRequiredFunction( (void**)&pglFramebufferTexture3D, "glFramebufferTexture3D" );
 	#endif
-	pGetRequiredFunction( (void**)&pglFramebufferRenderbuffer, "glFramebufferRenderbuffer" );
+	// pGetRequiredFunction( (void**)&pglFramebufferRenderbuffer, "glFramebufferRenderbuffer" );
 	pGetRequiredFunction( (void**)&pglGenerateMipmap, "glGenerateMipmap" );
 	pGetRequiredFunction( (void**)&pglBlitFramebuffer, "glBlitFramebuffer" );
-	#ifndef OS_ANDROID
-	pGetRequiredFunction( (void**)&pglFramebufferTexture, "glFramebufferTexture" );
+	#ifdef OS_ANDROID
+	DEASSERT_TRUE(pGLESVersion >= evgles3p2)
 	#endif
+	pGetRequiredFunction( (void**)&pglFramebufferTexture, "glFramebufferTexture" );
 	
 	// GL_ARB_geometry_shader4 : no opengl version
 	
@@ -891,11 +905,13 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglGenVertexArrays, "glGenVertexArrays" );
 	
 	// GL_EXT_subtexture : no opengl version
+	/*
 	#ifdef OS_W32
 	pglTexSubImage1D = &glTexSubImage1D;
 	#elif ! defined OS_ANDROID
 	pGetRequiredFunction( (void**)&pglTexSubImage1D, "glTexSubImage1D" );
 	#endif
+	*/
 	
 	#ifdef OS_W32
 	pglTexSubImage2D = glTexSubImage2D;
@@ -909,24 +925,29 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	
 	// GL_ARB_compute_shader : opengl version 4.3
 	#ifdef OS_ANDROID
-	if( ! pSupportsComputeShader ){
-		DETHROW_INFO( deeInvalidParam, "Computer Shader support missing" );
+	if(!pSupportsComputeShader){
+		DETHROW_INFO(deeInvalidParam, "Computer Shader support missing");
 	}
-	pglDispatchCompute = glDispatchCompute;
-	pglDispatchComputeIndirect = glDispatchComputeIndirect;
-	#else
+	DEASSERT_TRUE(pGLESVersion >= evgles3p1)
+	#endif
 	pGetRequiredFunction( (void**)&pglDispatchCompute, "glDispatchCompute" );
 	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
-	#endif
 	
 	// memory barrier required by compute shaders
+	#ifdef OS_ANDROID
+	DEASSERT_TRUE(pGLESVersion >= evgles3p1)
+	#endif
 	pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
 	
 	// no opengl version: 2.0 stuff
-	pGetRequiredFunction( (void**)&pglMultiDrawArrays, "glMultiDrawArrays" );
-	pGetRequiredFunction( (void**)&pglMultiDrawElements, "glMultiDrawElements" );
+	// opengl es is missing these functions. emulated in androidfix.cpp
+	pGetRequiredFunction((void**)&pglMultiDrawArrays, "glMultiDrawArrays");
+	pGetRequiredFunction((void**)&pglMultiDrawElements, "glMultiDrawElements");
 	
 	// GL_ARB_copy_buffer : no opengl version
+	#ifdef OS_ANDROID
+	DEASSERT_TRUE(pGLESVersion >= evgles3p0)
+	#endif
 	pGetRequiredFunction( (void**)&pglCopyBufferSubData, "glCopyBufferSubData" );
 }
 
@@ -936,20 +957,21 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// Replace: pGetOptionalFunction( (void**)&p\1, "\1", "\1ARB", ext_XXX );
 	
 	// GL_ARB_draw_elements_base_vertex : opengl version 3.2 / opengl es version 3.2
-	if( pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p2 ){
-		pHasExtension[ ext_ARB_draw_elements_base_vertex ] = ! pDisableExtension[ ext_ARB_draw_elements_base_vertex ];
+	if(pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p2){
+		pHasExtension[ext_ARB_draw_elements_base_vertex] =
+			!pDisableExtension[ext_ARB_draw_elements_base_vertex];
 	}
-	if( pHasExtension[ ext_ARB_draw_elements_base_vertex ] ){
-		pGetOptionalFunctionArbExt( (void**)&pglDrawElementsBaseVertex,
-			"glDrawElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
-		pGetOptionalFunctionArbExt( (void**)&pglDrawRangeElementsBaseVertex,
-			"glDrawRangeElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
-		pGetOptionalFunctionArbExt( (void**)&pglDrawElementsInstancedBaseVertex,
-			"glDrawElementsInstancedBaseVertex", ext_ARB_draw_elements_base_vertex );
+	if(pHasExtension[ ext_ARB_draw_elements_base_vertex ]){
+		pGetOptionalFunctionArbExt((void**)&pglDrawElementsBaseVertex,
+			"glDrawElementsBaseVertex", ext_ARB_draw_elements_base_vertex);
+		// pGetOptionalFunctionArbExt((void**)&pglDrawRangeElementsBaseVertex,
+		// 	"glDrawRangeElementsBaseVertex", ext_ARB_draw_elements_base_vertex);
+		pGetOptionalFunctionArbExt((void**)&pglDrawElementsInstancedBaseVertex,
+			"glDrawElementsInstancedBaseVertex", ext_ARB_draw_elements_base_vertex);
+		pGetOptionalFunctionArbExt((void**)&pglVertexAttribIPointer,
+			"glVertexAttribIPointer", ext_ARB_draw_elements_base_vertex);
 		pGetOptionalFunctionArbExt( (void**)&pglMultiDrawElementsBaseVertex,
 			"glMultiDrawElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
-		pGetOptionalFunctionArbExt( (void**)&pglVertexAttribIPointer,
-			"glVertexAttribIPointer", ext_ARB_draw_elements_base_vertex );
 	}
 	
 	// GL_ARB_draw_buffers_blend : opengl version 4.0
@@ -957,13 +979,20 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_tessellation_shader : opengl version 4.0
-	if( pHasExtension[ ext_ARB_tessellation_shader ] ){
-		pGetOptionalFunctionArbExt( (void**)&pglPatchParameteri, "glPatchParameteri", ext_ARB_tessellation_shader );
-		pGetOptionalFunctionArbExt( (void**)&pglPatchParameterfv, "glPatchParameterfv", ext_ARB_tessellation_shader );
+	if(pGLESVersion >= evgles3p2){
+		pHasExtension[ext_ARB_tessellation_shader] = true;
+	}
+	if(pHasExtension[ext_ARB_tessellation_shader]){
+		pGetOptionalFunctionArbExt((void**)&pglPatchParameteri, "glPatchParameteri", ext_ARB_tessellation_shader);
+		// pGetOptionalFunctionArbExt((void**)&pglPatchParameterfv, "glPatchParameterfv", ext_ARB_tessellation_shader);
 	}
 	
 	// GL_EXT_transform_feedback2 : opengl version 4.0
-	if( pHasExtension[ ext_ARB_transform_feedback2 ] ){
+	/*
+	if(pGLESVersion >= evgles3p0){
+		pHasExtension[ext_ARB_transform_feedback2] = true;
+	}
+	if(pHasExtension[ext_ARB_transform_feedback2]){
 		pGetOptionalFunctionArbExt( (void**)&pglBindTransformFeedback, "glBindTransformFeedback",  ext_ARB_transform_feedback2 );
 		pGetOptionalFunctionArbExt( (void**)&pglDeleteTransformFeedbacks, "glDeleteTransformFeedbacks", ext_ARB_transform_feedback2 );
 		pGetOptionalFunctionArbExt( (void**)&pglGenTransformFeedbacks, "glGenTransformFeedbacks", ext_ARB_transform_feedback2 );
@@ -972,16 +1001,20 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunctionArbExt( (void**)&pglResumeTransformFeedback, "glResumeTransformFeedback", ext_ARB_transform_feedback2 );
 		pGetOptionalFunctionArbExt( (void**)&pglDrawTransformFeedback, "glDrawTransformFeedback", ext_ARB_transform_feedback2 );
 	}
+	*/
 	
 	// GL_EXT_transform_feedback3 : opengl version 4.0
+	/*
 	if( pHasExtension[ ext_ARB_transform_feedback3 ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglDrawTransformFeedbackStream, "glDrawTransformFeedbackStream", ext_ARB_transform_feedback3 );
 		pGetOptionalFunctionArbExt( (void**)&pglBeginQueryIndexed, "glBeginQueryIndexed", ext_ARB_transform_feedback3 );
 		pGetOptionalFunctionArbExt( (void**)&pglEndQueryIndexed, "glEndQueryIndexed", ext_ARB_transform_feedback3 );
 		pGetOptionalFunctionArbExt( (void**)&pglGetQueryIndexediv, "glGetQueryIndexediv", ext_ARB_transform_feedback3 );
 	}
+	*/
 	
 	// GL_ARB_viewport_array : opengl version 4.1
+	/*
 	if( pHasExtension[ ext_ARB_viewport_array ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglViewportArrayv, "glViewportArrayv", ext_ARB_viewport_array );
 		pGetOptionalFunctionArbExt( (void**)&pglViewportIndexedf, "glViewportIndexedf", ext_ARB_viewport_array );
@@ -1000,24 +1033,33 @@ void deoglExtensions::pFetchOptionalFunctions(){
 // 		pGetOptionalFunctionArbExt( (void**)&pglIsEnabledIndexed, "glIsEnabledIndexed", ext_ARB_viewport_array );
 // 		pGetOptionalFunctionArbExt( (void**)&pglGetIntegerIndexedv, "glGetIntegerIndexedv", ext_ARB_viewport_array );
 	}
+	*/
 	
 	// GL_ARB_get_program_binar : opengl version 4.1
-	if( pHasExtension[ ext_ARB_get_program_binary ] ){
-		pGetOptionalFunctionArbExt( (void**)&pglGetProgramBinary, "glGetProgramBinary", ext_ARB_get_program_binary );
-		pGetOptionalFunctionArbExt( (void**)&pglProgramBinary, "glProgramBinary", ext_ARB_get_program_binary );
-		pGetOptionalFunctionArbExt( (void**)&pglProgramParameteri, "glProgramParameteri", ext_ARB_get_program_binary );
+	if(pGLESVersion >= evgles3p0){
+		pHasExtension[ext_ARB_get_program_binary] = true;
+	}
+	if(pHasExtension[ext_ARB_get_program_binary]){
+		pGetOptionalFunctionArbExt((void**)&pglGetProgramBinary, "glGetProgramBinary", ext_ARB_get_program_binary);
+		pGetOptionalFunctionArbExt((void**)&pglProgramBinary, "glProgramBinary", ext_ARB_get_program_binary);
+		// pGetOptionalFunctionArbExt((void**)&pglProgramParameteri, "glProgramParameteri", ext_ARB_get_program_binary);
 	}
 	
 	// GL_EXT_transform_feedback_instanced : opengl version 4.2
+	/*
 	if( pHasExtension[ ext_ARB_transform_feedback_instanced ] ){
 		pGetOptionalFunctionArbExt( (void**)&pglDrawTransformFeedbackInstanced,
 			"glDrawTransformFeedbackInstanced", ext_ARB_transform_feedback_instanced );
 		pGetOptionalFunctionArbExt( (void**)&pglDrawTransformFeedbackStreamInstanced,
 			"glDrawTransformFeedbackStreamInstanced", ext_ARB_transform_feedback_instanced );
 	}
+	*/
 	
 	// GL_ARB_copy_image : opengl version 4.3
-	if( pHasExtension[ ext_ARB_copy_image ] ){
+	if(pGLESVersion >= evgles3p2){
+		pHasExtension[ext_ARB_copy_image] = true;
+	}
+	if(pHasExtension[ext_ARB_copy_image]){
 		pGetOptionalFunctionArbExt( (void**)&pglCopyImageSubData, "glCopyImageSubData", ext_ARB_copy_image );
 	}
 	
@@ -1027,32 +1069,30 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_shader_storage_buffer_object : opengl version 4.3
-	pHasExtension[ ext_ARB_shader_storage_buffer_object ] &= ! pDisableExtension[ ext_ARB_shader_storage_buffer_object ];
-	if( pHasExtension[ ext_ARB_shader_storage_buffer_object ] ){
-		#ifdef OS_ANDROID
-		pglShaderStorageBlockBinding = eglShaderStorageBlockBinding;
-		#else
+	pHasExtension[ext_ARB_shader_storage_buffer_object] &=
+		!pDisableExtension[ext_ARB_shader_storage_buffer_object];
+	if(pHasExtension[ext_ARB_shader_storage_buffer_object]){
 		pGetOptionalFunction( (void**)&pglShaderStorageBlockBinding,
 			"glShaderStorageBlockBinding", ext_ARB_shader_storage_buffer_object );
-		#endif
 	}
 	
 	// GL_ARB_program_interface_query : opengl version 4.3
-	pHasExtension[ ext_ARB_program_interface_query ] &= ! pDisableExtension[ ext_ARB_program_interface_query ];
-	if( pHasExtension[ ext_ARB_program_interface_query ] ){
-		#ifdef OS_ANDROID
-		pglGetProgramInterfaceiv = glGetProgramInterfaceiv;
-		pglGetProgramResourceIndex = glGetProgramResourceIndex;
-		#else
+	if(pGLESVersion >= evgles3p1){
+		pHasExtension[ext_ARB_program_interface_query] = true;
+	}
+	pHasExtension[ext_ARB_program_interface_query] &= !pDisableExtension[ext_ARB_program_interface_query];
+	if(pHasExtension[ext_ARB_program_interface_query]){
 		pGetOptionalFunction( (void**)&pglGetProgramInterfaceiv,
 			"glGetProgramInterfaceiv", ext_ARB_program_interface_query );
 		pGetOptionalFunction( (void**)&pglGetProgramResourceIndex,
 			"glGetProgramResourceIndex", ext_ARB_program_interface_query );
-		#endif
 	}
 	
 	// GL_ARB_draw_indirect : opengl version 4.3
-	if( pHasExtension[ ext_ARB_draw_indirect ] ){
+	if(pGLESVersion >= evgles3p1){
+		pHasExtension[ext_ARB_draw_indirect] = true;
+	}
+	if(pHasExtension[ext_ARB_draw_indirect]){
 		pGetOptionalFunction( (void**)&pglDrawArraysIndirect, "glDrawArraysIndirect", ext_ARB_draw_indirect );
 		pGetOptionalFunction( (void**)&pglDrawElementsIndirect, "glDrawElementsIndirect", ext_ARB_draw_indirect );
 	}
@@ -1064,14 +1104,16 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_clear_buffer_object : opengl version 4.3
-	if( pHasExtension[ ext_ARB_clear_buffer_object ] ){
-		pGetOptionalFunction( (void**)&pglClearBufferSubData, "glClearBufferSubData", ext_ARB_clear_buffer_object );
+	if(pHasExtension[ext_ARB_clear_buffer_object] || pGLESVersion >= evgles3p0){
+		pGetOptionalFunction((void**)&pglClearBufferSubData, "glClearBufferSubData", ext_ARB_clear_buffer_object);
 	}
 	
 	// GL_ARB_buffer_storage : opengl version 4.3
+	/*
 	if( pHasExtension[ ext_ARB_buffer_storage ] ){
 		pGetOptionalFunction( (void**)&pglBufferStorage, "glBufferStorage", ext_ARB_buffer_storage );
 	}
+	*/
 	
 	// GL_ARB_direct_state_access : opengl version 4.4
 	if( pHasExtension[ ext_ARB_direct_state_access ] ){
@@ -1146,7 +1188,10 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_debug_output : no opengl version
-	if( pHasExtension[ ext_KHR_debug ] ){
+	if(pGLESVersion >= evgles3p2){
+		pHasExtension[ext_KHR_debug] = true;
+	}
+	if(pHasExtension[ext_KHR_debug]){
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageControl, "glDebugMessageControl", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageCallback, "glDebugMessageCallback", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglGetDebugMessageLog, "glGetDebugMessageLog", ext_KHR_debug );
@@ -1215,8 +1260,11 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_shader_image_load_store : 4.6
-	if( pHasExtension[ ext_ARB_shader_image_load_store ] ){
-		pGetOptionalFunction( (void**)&pglBindImageTexture, "glBindImageTexture", ext_ARB_shader_image_load_store );
+	if(pGLESVersion >= evgles3p1){
+		pHasExtension[ext_ARB_shader_image_load_store] = true;
+	}
+	if(pHasExtension[ext_ARB_shader_image_load_store]){
+		pGetOptionalFunction((void**)&pglBindImageTexture, "glBindImageTexture", ext_ARB_shader_image_load_store);
 	}
 	
 	// GL_NV_texture_barrier : no opengl version
@@ -1232,13 +1280,13 @@ void deoglExtensions::pFetchOptionalFunctions(){
 // 	}
 	
 	// OpenGL 4.3 : no extension
-	if( pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p0 ){
-		pGetRequiredFunction( (void**)&pglInvalidateFramebuffer, "glInvalidateFramebuffer" );
+	if(pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p0){
+		pGetRequiredFunction((void**)&pglInvalidateFramebuffer, "glInvalidateFramebuffer");
 	}
 	
 	// OpenGL 3.2 : no extension
-	if( pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p0 ){
-		pGetRequiredFunction( (void**)&pglGetInteger64v, "glGetInteger64v" );
+	if(pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p0){
+		pGetRequiredFunction((void**)&pglGetInteger64v, "glGetInteger64v");
 	}
 	
 	// GL_ARB_bindless_texture : opengl version 4.6
@@ -1272,12 +1320,19 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pwglSwapInterval, "wglSwapInterval", "wglSwapIntervalEXT", ext_WGL_EXT_swap_control );
 	}
 #endif
+	
+	// GL_ARB_texture_storage : opengl version 4.2 , opengl es version 3.1
+	if(pHasExtension[ext_ARB_texture_storage] || pGLESVersion >= evgles3p1){
+		pGetOptionalFunction((void**)&pglTexStorage2D, "glTexStorage2D", ext_ARB_texture_storage);
+		pGetOptionalFunction((void**)&pglTexStorage3D, "glTexStorage3D", ext_ARB_texture_storage);
+	}
 }
 
 void deoglExtensions::pOptionalDisableExtensions(){
 	// ext_ARB_compute_shader without ext_ARB_shader_image_load_store is useless
-	if( ! pglBindImageTexture ){
-		DisableExtension( ext_ARB_compute_shader );
+	if(!pglBindImageTexture){
+		DisableExtension(ext_ARB_compute_shader);
+		pSupportsComputeShader = false;
 	}
 }
 

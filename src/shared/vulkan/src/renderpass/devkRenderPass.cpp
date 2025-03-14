@@ -90,9 +90,7 @@ pRenderPass( VK_NULL_HANDLE )
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan(); )
 		
-		VkRenderPassCreateInfo renderPassInfo;
-		memset( &renderPassInfo, 0, sizeof( renderPassInfo ) );
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		VkRenderPassCreateInfo renderPassInfo{VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO};
 		
 		// attachments we can use directly
 		renderPassInfo.attachmentCount = attachmentCount;
@@ -105,15 +103,13 @@ pRenderPass( VK_NULL_HANDLE )
 		// sub pass maximum color attachments: 8
 		// sub pass maximum depth/stencil attachments: 1
 		const int maxAttRef = subPassCount * ( 8 + 1 );
-		attRef = new VkAttachmentReference[ maxAttRef ]; // max 8 color + 1 depth/stencil
-		memset( attRef, 0, sizeof( VkAttachmentReference ) * maxAttRef );
+		attRef = new VkAttachmentReference[ maxAttRef ]{}; // max 8 color + 1 depth/stencil
 		
 		if( attachmentCount > 0 ){
 			attPreserve = new uint32_t[ attachmentCount ];
 		}
 		
-		subPassInfo = new VkSubpassDescription[ subPassCount ];
-		memset( subPassInfo, 0, sizeof( VkSubpassDescription ) * subPassCount );
+		subPassInfo = new VkSubpassDescription[ subPassCount ]{};
 		
 		// init sub pass configuration
 		for( i=0; i<subPassCount; i++ ){

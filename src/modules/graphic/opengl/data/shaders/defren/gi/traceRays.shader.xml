@@ -16,12 +16,14 @@
 	<texture name='tboGIRayCastMaterialEmissivity' target='11'/>
 	<texture name='texGIRayCastDistanceLimit' target='12'/>
 	
+	<!-- shader assigned locations
 	<texture name='texDistance' target='0'/>
 	<texture name='texPosition' target='0'/>
 	<texture name='texNormal' target='1'/>
 	<texture name='texDiffuse' target='2'/>
 	<texture name='texReflectivity' target='3'/>
 	<texture name='texLight' target='4'/>
+	-->
 	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>

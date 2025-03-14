@@ -35,6 +35,10 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLoggerChain.h>
 
+#ifdef OS_ANDROID
+#include <dragengine/app/deOSAndroid.h>
+#endif
+
 class delGameIcon;
 
 
@@ -48,7 +52,60 @@ class delGameIcon;
  * Launchers can subclass to overwrite hooks to customize the launching process.
  */
 class DE_DLL_EXPORT delLauncher{
+public:
+#ifdef OS_ANDROID
+	/**
+	 * \brief Configuration.
+	 */
+	struct sConfig{
+		/**
+		 * \brief Logger source.
+		 */
+		decString loggerSource = "Launcher";
+		
+		/**
+		 * \brief Engine log file title.
+		 */
+		decString engineLogFileTitle = "launcher-engine";
+		
+		/**
+		 * \brief Path to launcher installation directory.
+		 * 
+		 * Typically this is File(context.filesDir, "delauncher").absolutePath .
+		 */
+		decString pathLauncher;
+		
+		/**
+		 * \brief Path to games directory.
+		 * 
+		 * Typically this is File(context.filesDir, "delauncher-games").absolutePath .
+		 */
+		decString pathGames;
+		
+		/**
+		 * \brief Path to user configuration directory.
+		 * 
+		 * This directory includes launcher configurations and log files.
+		 * 
+		 * Typically this is File(context.filesDir, "delauncher-config").absolutePath
+		 * or File(context.getExternalFilesDir(null), "delauncher-config").absolutePath .
+		 */
+		decString pathConfig;
+		
+		/**
+		 * \brief OS configuration.
+		 */
+		deOSAndroid::sConfig osConfig;
+	};
+#endif
+	
+	
+	
 private:
+#ifdef OS_ANDROID
+	const sConfig pConfig;
+#endif
+	
 	decString pPathConfigSystem;
 	decString pPathConfigUser;
 	decString pPathShares;
@@ -80,7 +137,11 @@ public:
 	 * - "/data" : GetPathShares(), read-write
 	 * - "/logs" : GetPathLogs(), read-write
 	 */
+#ifdef OS_ANDROID
+	delLauncher(const sConfig &config);
+#else
 	delLauncher( const char *loggerSource = "Launcher", const char *engineLogFileTitle = "launcher-engine" );
+#endif
 	
 	/** \brief Clean up launcher support. */
 	virtual ~delLauncher();
@@ -90,6 +151,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+#ifdef OS_ANDROID
+	/** \brief Configuration. */
+	inline const sConfig &GetConfig() const{ return pConfig; }
+#endif
+	
 	/** \brief System config path. */
 	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
 	

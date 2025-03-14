@@ -66,17 +66,19 @@ public:
 	/** \name Loading */
 	/*@{*/
 	/** \brief Load XML Element Class. */
-	igdeGDClass *LoadElementClass( decBaseFileReader &reader, const char *filename );
+	igdeGDClass *LoadElementClass(decBaseFileReader &reader, const char *filename);
 	
 	/** \brief Load XML Element Classes from directory and add them to game definition. */
-	void LoadElementClasses( igdeGDClassManager &classes, deVirtualFileSystem &vfs,
-		const decPath &directory, const char *pattern = "*.deeclass", bool recursive = true );
+	void LoadElementClasses(igdeGDClassManager &classes, deVirtualFileSystem &vfs,
+		const decPath &directory, const char *pattern = "*.deeclass", bool recursive = true);
 	
 	
 	
 protected:
 	class DE_DLL_EXPORT cMap : public deObject{
 	public:
+		typedef deTObjectReference<cMap> Ref;
+		
 		decString value;
 		decObjectDictionary map;
 		cMap();
@@ -93,7 +95,9 @@ protected:
 	
 	
 private:
-	igdeGDClass *pReadElementClass( const decXmlElementTag &root, const char *filename );
+	igdeGDClass *pReadElementClass(const decXmlElementTag &root, const char *filename);
+	void pReadBehavior(const decXmlElementTag &root, igdeGDClass &gdClass,
+		const char *filename, const decString &basePathStr);
 	bool pReadPropertyValue( const decXmlElementTag &root, decString &value,
 		cMap *map, const char *filename );
 	void pReadList( const decXmlElementTag &root, decStringList &list, const char *filename );

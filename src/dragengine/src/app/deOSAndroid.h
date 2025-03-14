@@ -29,12 +29,12 @@
 
 #ifdef OS_ANDROID
 
-#include "deOS.h"
+#include <jni.h>
 
-struct ANativeActivity;
-struct AConfiguration;
-struct ALooper;
-struct AInputQueue;
+#include "deOS.h"
+#include "../common/string/decString.h"
+#include "../common/math/decMath.h"
+
 struct ANativeWindow;
 
 
@@ -42,21 +42,55 @@ struct ANativeWindow;
  * \brief Android operating system.
  */
 class deOSAndroid : public deOS{
+public:
+	/**
+	 * \brief Application configuration.
+	 */
+	struct sConfig{
+		JavaVM *javavm = nullptr;
+		jobject activity = nullptr;
+		ANativeWindow *nativeWindow = nullptr;
+		
+		/**
+		 * \brief Path to game engine installation directory.
+		 * 
+		 * Typically this is File(context.filesDir, "dragengine").absolutePath .
+		 */
+		decString pathEngine;
+		
+		/**
+		 * \brief Path to user configuration directory.
+		 * 
+		 * This directory includes engine configuration, game configurations and log files.
+		 * 
+		 * Typically this is File(context.filesDir, "dragengine-config").absolutePath
+		 * or File(context.getExternalFilesDir(null), "dragengine-config").absolutePath .
+		 */
+		decString pathConfig;
+		
+		/**
+		 * \brief Path to cache directory.
+		 * 
+		 * Typically this is File(context.cachedir, "dragengine").absolutePath
+		 * or File(context.externalCacheDir, "dragengine").absolutePath .
+		 */
+		decString pathCache;
+	};
+	
+	
+	
 private:
-	ANativeActivity &pActivity;
-	AConfiguration &pConfig;
-	ALooper &pLooper;
-	AInputQueue &pInputQueue;
-	ANativeWindow &pNativeWindow;
+	const sConfig pConfig;
 	
 	int pScreenWidth;
 	int pScreenHeight;
 	int pScreenRefreshRate;
+	int pScaleFactor;
 	void *pCurWindow;
 	void *pHostingMainWindow;
 	void *pHostingRenderWindow;
-	bool pAppHasFocus;
 	bool pAppFrozen;
+	decBoundary pContentRect;
 	
 	
 	
@@ -64,8 +98,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new android operating system object. */
-	deOSAndroid( ANativeActivity &activity, AConfiguration &config,
-	ALooper &looper, AInputQueue &inputQueue, ANativeWindow &nativeWindow );
+	deOSAndroid(const sConfig &config);
 	
 	/** \brief Clean up the android operating system object. */
 	virtual ~deOSAndroid();
@@ -180,20 +213,14 @@ public:
 	
 	/** \name Android related */
 	/*@{*/
-	/** \brief Native activity. */
-	inline ANativeActivity &GetActivity() const{ return pActivity; }
+	/** \brief Java VM. */
+	inline JavaVM *GetJavaVM() const{ return pConfig.javavm; }
 	
-	/** \brief Configuration. */
-	inline AConfiguration &GetConfig() const{ return pConfig; }
-	
-	/** \brief Looper. */
-	inline ALooper &GetLooper() const{ return pLooper; }
-	
-	/** \brief Input queue. */
-	inline AInputQueue &GetInputQueue() const{ return pInputQueue; }
+	/** \brief Activity. */
+	inline jobject GetActivity() const{ return pConfig.activity; }
 	
 	/** \brief Window. */
-	inline ANativeWindow &GetNativeWindow() const{ return pNativeWindow; }
+	inline ANativeWindow *GetNativeWindow() const{ return pConfig.nativeWindow; }
 	
 	
 	
@@ -250,17 +277,17 @@ public:
 	/** \brief Determine if a hosting render window is set. */
 	bool HasHostingRenderWindow() const;
 	
-	/** \brief Determine if the application has the focus. */
-	inline bool GetAppHasFocus() const{ return pAppHasFocus; }
-	
-	/** \brief Set if the application has the focus. */
-	void SetAppHasFocus( bool appHasFocus );
-	
 	/** \brief Application is frozen. */
 	inline bool GetAppFrozen() const{ return pAppFrozen; }
 	
 	/** \brief Set if application is frozen. */
 	void SetAppFrozen( bool frozen );
+	
+	/** \brief Content area. */
+	inline const decBoundary &GetContentRect() const{ return pContentRect; }
+	
+	/** \brief Set content area. */
+	void SetContentRect(const decBoundary &rect);
 	/*@}*/
 	
 	

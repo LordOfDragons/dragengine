@@ -248,7 +248,6 @@ pVBOCopyShadow( 0 ),
 pVAOCopyShadow( nullptr )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	const float smOffsetScale = renderThread.GetConfiguration().GetShadowMapOffsetScale();
@@ -268,16 +267,13 @@ pVAOCopyShadow( nullptr )
 		
 		defines.SetDefines( "DEPTH_INPUT" );
 		defines.SetDefines( "DEPTH_CUBEMAP" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBoxBoundary1 = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBoxBoundary1, pipconf, sources, defines);
 		
 		defines.SetDefines( "AMBIENT_MAP" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBoxBoundary1Ambient = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBoxBoundary1Ambient, pipconf, sources, defines);
 		defines.RemoveAllDefines();
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineBoxBoundary2 = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineBoxBoundary2, pipconf, sources, defines);
 		defines.RemoveAllDefines();
 		
 		
@@ -294,9 +290,8 @@ pVAOCopyShadow( nullptr )
 		AddSharedSPBDefines( defines );
 		defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
 		
-		pipconf.SetShader( renderThread, "DefRen Occlusion OccMap Cube", defines );
-		pipconf.SetSPBInstanceIndexBase( 0 );
-		pPipelineOccMap = pipelineManager.GetWith( pipconf, true );
+		pipconf.SetSPBInstanceIndexBase(0);
+		pAsyncGetPipeline(pPipelineOccMap, pipconf, "DefRen Occlusion OccMap Cube", defines, true);
 		defines.RemoveAllDefines();
 		
 		
@@ -319,8 +314,7 @@ pVAOCopyShadow( nullptr )
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow GS" );
 		}
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineCopyDepth = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyDepth, pipconf, sources, defines);
 		defines.RemoveAllDefines();
 		
 		
@@ -539,11 +533,11 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	
 	if( useAmbient && scambient.GetStaticCubeMap() ){
 		pPipelineBoxBoundary1Ambient->Activate();
-		shader = &pPipelineBoxBoundary1Ambient->GetGlShader();
+		shader = &pPipelineBoxBoundary1Ambient->GetShader();
 		
 	}else{
 		pPipelineBoxBoundary1->Activate();
-		shader = &pPipelineBoxBoundary1->GetGlShader();
+		shader = &pPipelineBoxBoundary1->GetShader();
 	}
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
@@ -574,7 +568,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 	// down sampling to 1x1 using mip map levels
 	pPipelineBoxBoundary2->Activate();
 	
-	pPipelineBoxBoundary2->GetGlShader().SetParameterFloat( spbbQuadParams, 1.0f, 1.0f, 0.0f, 0.0f );
+	pPipelineBoxBoundary2->GetShader().SetParameterFloat( spbbQuadParams, 1.0f, 1.0f, 0.0f, 0.0f );
 	
 	tsmgr.EnableTexture( 0, *boundaryMap.GetTextureMin(), GetSamplerClampNearest() );
 	tsmgr.EnableTexture( 1, *boundaryMap.GetTextureMax(), GetSamplerClampNearest() );
@@ -588,7 +582,7 @@ void deoglRenderLightPoint::CalculateBoxBoundary( deoglRenderPlanLight &planLigh
 		
 		renderThread.GetFramebuffer().Activate( boundaryMap.GetFBOAt( mipMapLevel ) );
 		
-		pPipelineBoxBoundary2->GetGlShader().SetParameterInt( spbbMipMapLevel, mipMapLevel - 1 );
+		pPipelineBoxBoundary2->GetShader().SetParameterInt( spbbMipMapLevel, mipMapLevel - 1 );
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		//ogl.LogInfoFormat( "BoxBoundary %p Step2 size(%i) mipMaplevel(%i)", &light, size, mipMapLevel );

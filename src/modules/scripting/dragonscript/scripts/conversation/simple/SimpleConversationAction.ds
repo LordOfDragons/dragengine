@@ -1,0 +1,561 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.ConversationSystem
+
+
+/**
+ * \brief Simple conversation action.
+ * \version 1.25
+ * 
+ * Defines an action in a snippet. Most of the time actions are actor and speak type.
+ */
+class SimpleConversationAction
+	/**
+	 * \brief Action type.
+	 */
+	enum Type
+		/**
+		 * \brief Switch actor.
+		 * 
+		 * Activates the camera assigned to the actor. This action does not yet make the actor
+		 * speak. It only sets up the camera and parameters for upcoming speak actions.
+		 * 
+		 * Uses getTarget() as identifier into the SimpleConversation actor list.
+		 */
+		actor
+		
+		/**
+		 * \brief Actor speaking.
+		 * 
+		 * Speaks text with the parameters of the last activated actor. All speak actions
+		 * up to the next actor, camera, or command action are played back as one
+		 * \ref CActionActorSpeak.
+		 */
+		speak
+		
+		/**
+		 * \brief Play gesture.
+		 * 
+		 * Adds gesture to chain of speak actions. The gesture is inserted to play at the
+		 * time location of all previous speak actions summed together.
+		 * 
+		 * Uses getTarget() as gesture identifier into the currently active ConversationActor.
+		 */
+		gesture
+		
+		/**
+		 * \brief Change face pose.
+		 * 
+		 * Adds face pose to chain of speak actions. The face pose is inserted to play at the
+		 * time location of all previous speak actions summed together.
+		 * 
+		 * Uses getTarget() as gesture identifier into the currently active ConversationActor.
+		 */
+		facePose
+		
+		/**
+		 * \brief Change look-at.
+		 * 
+		 * Adds head and eye look-at to chain of speak actions. The head and eye look-at is
+		 * inserted to play at the time location of all previous speak actions summed together.
+		 * 
+		 * Uses getTarget() as gesture identifier into the currently active ConversationActor.
+		 */
+		lookAt
+		
+		/**
+		 * \brief Game or actor command.
+		 * 
+		 * Uses getName() as command. If getTarget() is not null sends an actor command to
+		 * the actor id or alias matching getTarget(). If getTarget() is null sends a game command.
+		 */
+		command
+		
+		/** \brief Stop topic. */
+		stopTopic
+		
+		/** \brief Stop conversation. */
+		stopConversation
+		
+		/**
+		 * \brief Set conversation variable.
+		 * 
+		 * Uses getName() as variable name, getValue() as value and getMode() as operator
+		 * to apply. If getTarget() is not null sets conversation actor parameter instead.
+		 * Allowed modes for variables are \ref CActionSetVariable.Operator .
+		 * Allowed modes for parameters are \ref CActionSetActorParameter.Operator .
+		 */
+		variable
+		
+		/**
+		 * \brief Manipulate trigger.
+		 * 
+		 * Uses getTarget() as trigger name and getMode() as action to apply.\
+		 * Allowed modes are \ref CActionTrigger.Action .
+		 */
+		trigger
+		
+		/**
+		 * \brief If condition run simple snippet.
+		 * 
+		 * Uses getTarget() as snippet to run if condition is fulfilled.
+		 * Uses getCondition() as Condition to test.
+		 */
+		condIf
+		
+		/**
+		 * \brief Elif condition run simple snippet.
+		 * \see #condIf
+		 */
+		condElif
+		
+		/**
+		 * \brief Else condition run simple snippet.
+		 * 
+		 * Uses getTarget() as snippet to run if all previous conditions are not fulfilled.
+		 */
+		condElse
+		
+		/**
+		 * \brief Player choice.
+		 * 
+		 * Uses getName() as variable name to set or null if not required.
+		 */
+		playerChoice
+		
+		/**
+		 * \brief Option to show in a player choice.
+		 * 
+		 * Uses getTarget() as snippet to run if player selects option.
+		 * Uses getCondition() as Condition to test if option should be shown.
+		 */
+		playerChoiceOption
+		
+		/**
+		 * \brief Run simple snippet looping while condition is fulfilled.
+		 * 
+		 * Uses getTarget() as snippet to run while condition is fulfilled.
+		 * Uses getCondition() as Condition to test.
+		 */
+		wait
+		
+		/**
+		 * \brief Run conversation or simple snippet.
+		 * 
+		 * Uses getTarget() as snippet topic or simple snippet (getSubTarget() is null) to run.
+		 * Uses getSubTarget() as snippet topic group to run.
+		 */
+		snippet
+		
+		/**
+		 * \brief Change muisic.
+		 * 
+		 * Uses getName() as music to use.
+		 */
+		music
+		
+		/**
+		 * \brief Add actor.
+		 * 
+		 * Uses getTarget() as identifier of actor to add.
+		 * Uses getSubTarget() as alias to use or null if not set.
+		 */
+		addActor
+		
+		/**
+		 * \brief Remove actor.
+		 * 
+		 * Uses getTarget() as identifier or alias of actor to remove.
+		 */
+		removeActor
+		
+		/**
+		 * \brief Add coordinate system.
+		 * 
+		 * Uses getTarget() as identifier of coordinate system to add.
+		 * Uses getSubTarget() as alias to use or null if not set.
+		 */
+		addCoordSystem
+		
+		/**
+		 * \brief Remove coordinate system.
+		 * 
+		 * Uses getTarget() as identifier or alias of coordinate system to remove.
+		 */
+		removeCoordSystem
+		
+		/**
+		 * \brief Pause in seconds.
+		 * 
+		 * Uses getDelay() as delay in seconds.
+		 */
+		pause
+		
+		/**
+		 * \brief Change wait mode.
+		 * 
+		 * Uses getWait() as new wait mode to use.
+		 */
+		waitMode
+		
+		/** \brief Explicitely end actor speak. */
+		endActorSpeak
+	end
+	
+	/** \brief Condition. */
+	enum Condition
+		/** Compare variable or actor parameter value. */
+		variable
+		
+		/** Evaluate game or actor condition. */
+		condition
+		
+		/** Trigger state. */
+		trigger
+	end
+	
+	/** \brief Wait mode. */
+	enum WaitMode
+		/** Wait for all actors finish speaking and finish waitable actions. */
+		wait
+		
+		/** Wait for all actors finish speaking. */
+		waitSpeak
+		
+		/** Same as \ref #wait but for camera switch in actor action use \ref #waitSpeak. */
+		waitCameraSpeak
+		
+		/** No waiting. */
+		noWait
+	end
+	
+	/** \brief Special mode. */
+	enum SpecialMode
+		/** Use 0 second delay for actor camera change. */
+		noCameraDelay
+		
+		/** Use 0 second delay for actor camera change and no waiting. */
+		noCameraDelayWait
+		
+		/** Use 0 second delay for actor speak. */
+		noSpeakDelay
+		
+		/** Use 0 second delay for actor camera change and speak. */
+		noDelay
+		
+		/** Use 0 second delay for actor camera change and speak and no waiting. */
+		noDelayWait
+		
+		/** Do not change camera. */
+		noCamera
+		
+		/** Do not change camera and use 0 second delay for speak. */
+		noCameraNoDelay
+	end
+	
+	
+	var Type pType
+	var StringID pTarget, pSubTarget
+	var UnicodeString pText, pAnimText
+	var String pName
+	var int pValue, pRandom
+	var float pDelay, pDuration
+	var WaitMode pWaitMode
+	var Enumeration pMode
+	var SimpleConversationCondition pCondition
+	
+	
+	/** \brief Create simple conversation action. */
+	func new(Type type)
+		if type == null
+			throw ENullPointer.new("type")
+		end
+		pType = type
+	end
+	
+	/** \brief Create copy of simple conversation action. */
+	func new(SimpleConversationAction action)
+		pType = action.pType
+		pTarget = action.pTarget
+		pSubTarget = action.pSubTarget
+		pText = action.pText
+		pAnimText = action.pAnimText
+		pName = action.pName
+		pValue = action.pValue
+		pRandom = action.pRandom
+		pDelay = action.pDelay
+		pDuration = action.pDuration
+		pWaitMode = action.pWaitMode
+		pMode = action.pMode
+		if action.pCondition != null
+			pCondition = SimpleConversationCondition.new(action.pCondition)
+		end
+	end
+	
+	
+	/** \brief Type. */
+	func Type getType()
+		return pType
+	end
+	
+	/**
+	 * \brief Target.
+	 * 
+	 * - \ref Type#gesture: Identifier of gesture.
+	 * - \ref Type#facePose: Identifier of face pose.
+	 * - \ref Type#lookAt: Identifier of look-at.
+	 * - \ref Type#trigger: Idenfitier or trigger.
+	 * - \ref Type#condIf: Snippet to run if condition is fulfilled.
+	 * - \ref Type#playerChoiceOption: Snippet to run if option is selected.
+	 * - \ref Type#wait: Snippet to run while condition is fulfilled.
+	 * - \ref Type#addActor: Identifier of actor to add.
+	 * - \ref Type#removeActor: Identifier or alias of actor to remove.
+	 * - \ref Type#addCoordSystem: Identifier of coordinate system to add.
+	 * - \ref Type#removeCoordSystem: Identifier or alias of coordinate system to remove.
+	 * - other types: Not used and is null
+	 */
+	func StringID getTarget()
+		return pTarget
+	end
+	
+	/**
+	 * \brief Set target.
+	 * \see #getTarget()
+	 */
+	func void setTarget(StringID target)
+		pTarget = target
+	end
+	
+	/**
+	 * \brief Sub target.
+	 * 
+	 * - \ref Type#speak: Identifier of actor or null to stick to the active one.
+	 * - \ref Type#command: Identifier of actor or null for game command.
+	 * - \ref Type#variable: Idenfitier or alias of actor to set parameter instead of variable.
+	 * - \ref Type#addActor: Alias to assign to added actor or null if not used.
+	 * - \ref Type#addCoordSystem: Alias to assign to added coordinate system or null if not used.
+	 * - other types: Not used and is null
+	 */
+	func StringID getSubTarget()
+		return pSubTarget
+	end
+	
+	/**
+	 * \brief Set sub target.
+	 * \see #getSubTarget()
+	 */
+	func void setSubTarget(StringID target)
+		pSubTarget = target
+	end
+	
+	/**
+	 * \brief Text.
+	 * 
+	 * Used for \ref Type#speak type only otherwise null.
+	 */
+	func UnicodeString getText()
+		return pText
+	end
+	
+	/**
+	 * \brief Set text.
+	 * \see #getText()
+	 */
+	func void setText(UnicodeString text)
+		pText = text
+	end
+	
+	/**
+	 * \brief Speech animation text or null.
+	 * 
+	 * Used for \ref Type#speak type only otherwise null. If not null this is the text used
+	 * for doing speech animation while \ref #getText() is used for the text box display.
+	 * This is used if \ref #getText() representing tag resolved text. Such text does not
+	 * make sense for speech animation. The speech animation text fixes this.
+	 */
+	func UnicodeString getAnimText()
+		return pAnimText
+	end
+	
+	/**
+	 * \brief Set speech animation text or null.
+	 * \see #getAnimText()
+	 */
+	func void setAnimText(UnicodeString text)
+		pAnimText = text
+	end
+	
+	/**
+	 * \brief Name.
+	 * 
+	 * - \ref Type#command: Command to send.
+	 * - \ref Type#variable: Variable/parameter name.
+	 * - \ref Type#snippetIf: Variable/parameter/condition/trigger name.
+	 * - \ref Type#playerChoice: Variable name or null if not used.
+	 * - \ref Type#music: Name of music to use.
+	 * - other types: Not used and is null
+	 */
+	func String getName()
+		return pName
+	end
+	
+	/**
+	 * \brief Set name.
+	 * \see #getName()
+	 */
+	func void setName(String name)
+		pName = name
+	end
+	
+	/**
+	 * \brief Value.
+	 * 
+	 * - \ref Type#variable: Value to set variable/parameter to.
+	 * - other types: Not used and is 0
+	 */
+	func int getValue()
+		return pValue
+	end
+	
+	/**
+	 * \brief Set value.
+	 * \see #getValue()
+	 */
+	func void setValue(int value)
+		pValue = value
+	end
+	
+	/**
+	 * \brief Randomize count or 0 to disable.
+	 * 
+	 * - \ref Type#snippet: Random value in the range 0 to count-1.
+	 * - other types: Not used and is 0
+	 */
+	func int getRandom()
+		return pRandom
+	end
+	
+	/**
+	 * \brief Set randomize count or 0 to disable.
+	 * \see #getRandom()
+	 */
+	func void setRandom(int count)
+		pRandom = count
+	end
+	
+	/**
+	 * \brief Delay in seconds.
+	 * 
+	 * - \ref Type#pause: Delay.
+	 * - other types: Not used and is 0
+	 */
+	func float getDelay()
+		return pDelay
+	end
+	
+	/**
+	 * \brief Set delay in seconds.
+	 * \see #getDelay()
+	 */
+	func void setDelay(float delay)
+		pDelay = DEMath.max(delay, 0.0)
+	end
+	
+	/**
+	 * \brief Duration in seconds.
+	 * 
+	 * - \ref Type#facePose: Duration or 0 to use default.
+	 * - \ref Type#lookAt: Duration or 0 to use default.
+	 * - other types: Not used and is 0
+	 */
+	func float getDuration()
+		return pDuration
+	end
+	
+	/**
+	 * \brief Set duration in seconds.
+	 * \see #getDuration()
+	 */
+	func void setDuration(float duration)
+		pDuration = DEMath.max(duration, 0.0)
+	end
+	
+	/**
+	 * \brief Wait mode.
+	 * 
+	 * - \ref Type#changeWaitMode: Wait mode to set.
+	 * - other types: Not used and is null
+	 */
+	func WaitMode getWaitMode()
+		return pWaitMode
+	end
+	
+	/**
+	 * \brief Set wait mode.
+	 * \see #getWaitMode()
+	 */
+	func void setWaitMode(WaitMode mode)
+		pWaitMode = mode
+	end
+	
+	/**
+	 * \brief Condition.
+	 * 
+	 * - \ref Type#condIf: Condition.
+	 * - \ref Type#condElif: Condition.
+	 * - \ref Type#playerChoiceOption: Condition or null to always show.
+	 * - \ref Type#wait: Condition.
+	 * - other types: Not used and is null
+	 */
+	func SimpleConversationCondition getCondition()
+		return pCondition
+	end
+	
+	/** \brief Set condition. */
+	func void setCondition(SimpleConversationCondition condition)
+		pCondition = condition
+	end
+	
+	/**
+	 * \brief Mode.
+	 * 
+	 * - \ref Type#variable: \ref CActionSetVariable.Operator for variables or
+	 *   \ref CActionSetActorParameter.Operator for parameters.
+	 * - \ref Type#trigger: \ref CActionTrigger.Action .
+	 * - \ref Type#actor: \ref #SpecialMode .
+	 * - other types: Not used and is null
+	 */
+	func Enumeration getMode()
+		return pMode
+	end
+	
+	/**
+	 * \brief Set mode.
+	 * \see #getMode()
+	 */
+	func void setMode(Enumeration mode)
+		pMode = mode
+	end
+end

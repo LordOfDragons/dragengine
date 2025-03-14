@@ -35,6 +35,9 @@ class deCanvasImage;
  * \brief Circle pad overlay.
  */
 class deaiOverlayCirclePad : public deaiOverlay{
+public:
+	typedef deTObjectReference<deaiOverlayCirclePad> Ref;
+	
 private:
 	deaiInputBinding pAxisLeftRight;
 	deaiInputBinding pAxisUpDown;

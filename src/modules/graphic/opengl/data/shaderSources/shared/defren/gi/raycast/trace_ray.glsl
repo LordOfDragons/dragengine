@@ -72,15 +72,15 @@
 };
 	
 #else
-	uniform samplerBuffer tboGIRayCastNodeBox;
-	uniform usamplerBuffer tboGIRayCastIndex;
-	uniform usamplerBuffer tboGIRayCastInstance;
-	uniform samplerBuffer tboGIRayCastMatrix;
-	uniform usamplerBuffer tboGIRayCastFace;
-	uniform samplerBuffer tboGIRayCastVertex;
+	uniform highp samplerBuffer tboGIRayCastNodeBox;
+	uniform highp usamplerBuffer tboGIRayCastIndex;
+	uniform highp usamplerBuffer tboGIRayCastInstance;
+	uniform highp samplerBuffer tboGIRayCastMatrix;
+	uniform highp usamplerBuffer tboGIRayCastFace;
+	uniform highp samplerBuffer tboGIRayCastVertex;
 
 	#ifndef GI_RAYCAST_DISTANCE_ONLY
-		uniform samplerBuffer tboGIRayCastTexCoord;
+		uniform mediump samplerBuffer tboGIRayCastTexCoord;
 	#endif
 #endif
 

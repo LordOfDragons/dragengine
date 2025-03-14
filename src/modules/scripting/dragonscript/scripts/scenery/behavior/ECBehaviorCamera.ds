@@ -70,8 +70,56 @@ pin Dragengine.Utils
  * 
  * Cameras can be equipped with effects modifying the rendering. Effects can be added to
  * ECBehaviorCamera by adding after the camera behavior one or more camera effect behaviors.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_camera
  */
 class ECBehaviorCamera extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorCamera'>
+	 *   <!-- optional: set layer mask (default empty). list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorCamera' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorCamera"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorCamera behavior = ECBehaviorCamera.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), id)
+			
+			if parameters.has("layerMask")
+				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "camera", id)
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		var ECBehaviorCamera pECBehavior

@@ -430,6 +430,30 @@ deoglSkinShader::eReflectionTestMode deoglSkinShader::REFLECTION_TEST_MODE = deo
 #endif
 
 
+// Class deoglSkinShader::cPrepareShader
+//////////////////////////////////////////
+
+deoglSkinShader::cPrepareShader::cPrepareShader(deoglSkinShader &shader,
+	cShaderPreparedListener *listener) :
+pShader(shader),
+pListener(listener)
+{
+	DEASSERT_NOTNULL(listener)
+}
+
+void deoglSkinShader::cPrepareShader::CompileFinished(deoglShaderCompiled *compiled){
+	pShader.pShader->SetCompiled(compiled);
+	
+	try{
+		pListener->PrepareShaderFinished(pShader);
+		
+	}catch(const deException &e){
+		pShader.GetRenderThread().GetLogger().LogException(e);
+	}
+	delete pListener;
+}
+
+
 // Class deoglSkinShader
 //////////////////////////
 
@@ -495,13 +519,16 @@ void deoglSkinShader::SetInstanceUniformTarget( deoglSkinShader::eInstanceUnifor
 }
 
 
-
-void deoglSkinShader::PrepareShader(){
-	if( ! pShader ){
-		GenerateShader();
+void deoglSkinShader::PrepareShader(cShaderPreparedListener *listener){
+	if(listener){
+		GenerateShader(listener);
+		
+	}else{
+		if(!pShader){
+			GenerateShader(nullptr);
+		}
 	}
 }
-
 
 
 deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &renderThread ){
@@ -512,7 +539,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBRender( deoglRenderThread &render
 	// method is a static method not an regular method
 	
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( ERUT_COUNT );
 	
 	spb->GetParameterAt( erutAmbient ).SetAll( deoglSPBParameter::evtFloat, 4, 1, 1 ); // vec4
@@ -598,7 +625,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBOccMap( deoglRenderThread &render
 	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
 	const deoglSPBlockUBO::Ref ompb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-	ompb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	ompb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	ompb->SetParameterCount( 4 );
 	ompb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 4, 6 ); // mat4 pMatrixVP[ 6 ]
 	ompb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 6 ); // mat4x3 pMatrixV[ 6 ]
@@ -614,7 +641,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBSpecial( deoglRenderThread &rende
 	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( 1 );
 	
 	spb->GetParameterAt( esutLayerVisibility ).SetAll( deoglSPBParameter::evtInt, 1, 1, 1 ); // int pLayerVisibility
@@ -648,7 +675,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
 	DEASSERT_NOTNULL( pglUniformBlockBinding )
 	
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
-	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
 	
 	int i;
@@ -1555,7 +1582,7 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 // Shader Generation
 //////////////////////
 
-void deoglSkinShader::GenerateShader(){
+void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 	//deoglSkinShaderManager &ssmgr = pRenderThread.GetShader().GetSkinShaderManager();
 	const deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
@@ -1673,7 +1700,12 @@ void deoglSkinShader::GenerateShader(){
 		pShader->SetCacheId( cacheIdParts.Join( ";" ) );
 		
 		// compile shader
-		pShader->SetCompiled( smgr.GetLanguage()->CompileShader( *pShader ) );
+		if(listener){
+			smgr.GetLanguage()->CompileShaderAsync(pShader, new cPrepareShader(*this, listener));
+			
+		}else{
+			pShader->SetCompiled(smgr.GetLanguage()->CompileShader(pShader));
+		}
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();
@@ -1686,11 +1718,11 @@ void deoglSkinShader::GenerateShader(){
 		}
 		*/
 		
-	}catch( const deException &e ){
-		pRenderThread.GetLogger().LogException( e );
+	}catch(const deException &e){
+		pRenderThread.GetLogger().LogException(e);
 		decString text;
-		pConfig.DebugGetConfigString( text );
-		pRenderThread.GetLogger().LogError( text.GetString() );
+		pConfig.DebugGetConfigString(text);
+		pRenderThread.GetLogger().LogError(text);
 		throw;
 	}
 }

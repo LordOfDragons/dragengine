@@ -52,7 +52,7 @@ public:
 	devkImageConfiguration();
 	
 	/** Create copy of image configuration. */
-	devkImageConfiguration( const devkImageConfiguration &configuration );
+	devkImageConfiguration(const devkImageConfiguration &configuration);
 	
 	/** Clean up image configuration. */
 	~devkImageConfiguration();
@@ -66,66 +66,66 @@ public:
 	inline VkImageType GetType() const{ return pType; }
 	
 	/** Set type. */
-	void SetType( VkImageType type );
+	void SetType(VkImageType type);
 	
 	/** Size. */
 	inline const decPoint3 &GetSize() const{ return pSize; }
 	
 	/** Set size. */
-	void SetSize( const decPoint3 &size );
+	void SetSize(const decPoint3 &size);
 	
 	/** Format. */
 	inline VkFormat GetFormat() const{ return pFormat; }
 	
 	/** Set format. */
-	void SetFormat( VkFormat format );
+	void SetFormat(VkFormat format);
 	
 	/** Layer count. */
 	inline int GetLayerCount() const{ return pLayerCount; }
 	
 	/** Set layer count. */
-	void SetLayerCount( int count );
+	void SetLayerCount(int count);
 	
 	/** Mip map count. */
 	inline int GetMipMapCount() const{ return pMipMapCount; }
 	
 	/** set mip map count. */
-	void SetMipMapCount( int count );
+	void SetMipMapCount(int count);
 	
 	/** Flags. */
 	inline VkImageCreateFlags GetFlags() const{ return pFlags; }
 	
 	/** Set flags. */
-	void SetFlags( VkImageCreateFlags flags );
+	void SetFlags(VkImageCreateFlags flags);
 	
 	/** Samples. */
 	inline VkSampleCountFlagBits GetSamples() const{ return pSamples; }
 	
 	/** Set samples. */
-	void SetSamples( VkSampleCountFlagBits samples );
+	void SetSamples(VkSampleCountFlagBits samples);
 	
 	/** Usage. */
 	inline VkImageUsageFlags GetUsage() const{ return pUsage; }
 	
 	/** Set usage. */
-	void SetUsage( VkImageUsageFlags usage );
+	void SetUsage(VkImageUsageFlags usage);
 	
 	
 	
 	/** Set 2D image. */
-	void Set2D( const decPoint &size, VkFormat format );
+	void Set2D(const decPoint &size, VkFormat format);
 	
 	/** Set 3D image. */
-	void Set3D( const decPoint3 &size, VkFormat format );
+	void Set3D(const decPoint3 &size, VkFormat format);
 	
 	/** Set Cube image. */
-	void SetCube( int size, VkFormat format );
+	void SetCube(int size, VkFormat format);
 	
 	/** Set 2D Array image. */
-	void Set2DArray( const decPoint &size, int layerCount, VkFormat format );
+	void Set2DArray(const decPoint &size, int layerCount, VkFormat format);
 	
 	/** Set Cube Array image. */
-	void SetCubeArray( int size, int layerCount, VkFormat format );
+	void SetCubeArray(int size, int layerCount, VkFormat format);
 	
 	
 	
@@ -133,25 +133,25 @@ public:
 	void DisableAll();
 	
 	/** Enable/disable usage source/destination transfer. */
-	void EnableTransfer( bool enable );
+	void EnableTransfer(bool enable);
 	
 	/** Enable/disable usage source transfer. */
-	void EnableTransferSource( bool enable );
+	void EnableTransferSource(bool enable);
 	
 	/** Enable/disable usage destination transfer. */
-	void EnableTransferDestination( bool enable );
+	void EnableTransferDestination(bool enable);
 	
 	/** Enable/disable usage sampled. */
-	void EnableSampled( bool enable );
+	void EnableSampled(bool enable);
 	
 	/** Enable/disable usage storage. */
-	void EnableStorage( bool enable );
+	void EnableStorage(bool enable);
 	
 	/** Enable/disable usage color attachment. */
-	void EnableColorAttachment( bool enable );
+	void EnableColorAttachment(bool enable);
 	
 	/** Enable/disable usage depth/stencil attachment. */
-	void EnableDepthStencilAttachment( bool enable );
+	void EnableDepthStencilAttachment(bool enable);
 	/*@}*/
 	
 	
@@ -159,10 +159,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Configurations are equal. */
-	bool operator==( const devkImageConfiguration &configuration ) const;
+	bool operator==(const devkImageConfiguration &configuration) const;
 	
 	/** Copy configuration. */
-	devkImageConfiguration &operator=( const devkImageConfiguration &configuration );
+	devkImageConfiguration &operator=(const devkImageConfiguration &configuration);
 	/*@}*/
 };
 

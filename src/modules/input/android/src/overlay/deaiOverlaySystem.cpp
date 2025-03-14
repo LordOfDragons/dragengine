@@ -55,9 +55,6 @@ pAndroidInput( androidInput ),
 pCanvas( NULL ),
 pInHorizontalMode( false )
 {
-	deaiOverlayActionButton *actionButton = NULL;
-	deaiOverlayCirclePad *circlePad = NULL;
-	
 	decPoint screenSize( androidInput.GetScreenSize() );
 	pInHorizontalMode = screenSize.x > screenSize.y;
 	if( pInHorizontalMode ){
@@ -70,143 +67,122 @@ pInHorizontalMode( false )
 		pCanvas = androidInput.GetGameEngine()->GetCanvasManager()->CreateCanvasView();
 		pCanvas->SetSize( screenSize );
 		
+#if 0
 		const deaiDeviceMouse &mouse = *androidInput.GetDevices().GetMouse();
 		const deaiDeviceKeyboard &keyboard = *androidInput.GetDevices().GetKeyboard();
 		
-		circlePad = new deaiOverlayCirclePad( androidInput );
-		circlePad->SetKeyCodeLeft( deaiInputBinding( keyboard.GetID(),
-			keyboard.GetButtonAt( keyboard.IndexOfButtonWithKeyCode(
-				deInputEvent::ekcY ) ).GetID() ) );
-		circlePad->SetKeyCodeUp( deaiInputBinding( keyboard.GetID(),
-			keyboard.GetButtonAt( keyboard.IndexOfButtonWithKeyCode(
-				deInputEvent::ekcD ) ).GetID() ) );
-		circlePad->SetKeyCodeRight( deaiInputBinding( keyboard.GetID(),
-			keyboard.GetButtonAt( keyboard.IndexOfButtonWithKeyCode(
-				deInputEvent::ekcV ) ).GetID() ) );
-		circlePad->SetKeyCodeDown( deaiInputBinding( keyboard.GetID(),
-			keyboard.GetButtonAt( keyboard.IndexOfButtonWithKeyCode(
-				deInputEvent::ekcC ) ).GetID() ) );
-		circlePad->SetLayoutHorizontal( deaiLayout(
-			decPoint( 20, screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().y ),
-			circlePad->GetLayoutHorizontal().GetSize() ) );
-		circlePad->SetLayoutVertical( deaiLayout(
-			decPoint( 20, screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().y ),
-			circlePad->GetLayoutHorizontal().GetSize() ) );
-		pCanvas->AddCanvas( circlePad->GetCanvas() );
-		pOverlays.Add( circlePad );
-		circlePad->FreeReference();
-		circlePad = NULL;
+		deaiOverlayActionButton::Ref actionButton;
+		deaiOverlayCirclePad::Ref circlePad;
 		
-		circlePad = new deaiOverlayCirclePad( androidInput );
-		circlePad->SetAxisLeftRight( deaiInputBinding( mouse.GetID(),
-			mouse.GetAxisAt( 0 ).GetID(), false ) ); // mouse left-right
-		circlePad->SetAxisUpDown( deaiInputBinding( mouse.GetID(),
-			mouse.GetAxisAt( 1 ).GetID(), true ) ); // mouse up-down
-		circlePad->SetLayoutHorizontal( deaiLayout(
-			decPoint( screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().x,
-				screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().y ),
-			circlePad->GetLayoutHorizontal().GetSize() ) );
-		circlePad->SetLayoutVertical( deaiLayout(
-			decPoint( screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().x,
-				screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().y ),
-			circlePad->GetLayoutHorizontal().GetSize() ) );
-		pCanvas->AddCanvas( circlePad->GetCanvas() );
-		pOverlays.Add( circlePad );
-		circlePad->FreeReference();
-		circlePad = NULL;
+		circlePad.TakeOver(new deaiOverlayCirclePad(androidInput));
+		circlePad->SetKeyCodeLeft(deaiInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcY)).GetID()));
+		circlePad->SetKeyCodeUp(deaiInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcD)).GetID()));
+		circlePad->SetKeyCodeRight(deaiInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcV)).GetID()));
+		circlePad->SetKeyCodeDown(deaiInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcC)).GetID()));
+		circlePad->SetLayoutHorizontal(deaiLayout(decPoint(20,
+				screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().y),
+			circlePad->GetLayoutHorizontal().GetSize()));
+		circlePad->SetLayoutVertical(deaiLayout(decPoint(20,
+				screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().y),
+			circlePad->GetLayoutHorizontal().GetSize()));
+		pCanvas->AddCanvas(circlePad->GetCanvas());
+		pOverlays.Add(circlePad);
 		
-		actionButton = new deaiOverlayActionButton( androidInput );
-		actionButton->SetBinding( deaiInputBinding( mouse.GetID(),
-			mouse.GetButtonAt( 0 ).GetID() ) ); // left mouse button
-		actionButton->SetText( "LMB" );
-		actionButton->SetColor( decColor( 1.0f, 0.0f, 0.0f ) );
-		actionButton->SetLayoutHorizontal( deaiLayout(
-			decPoint( screenSize.y - 416, screenSize.x - 512 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		actionButton->SetLayoutVertical( deaiLayout(
-			decPoint( screenSize.x - 416, screenSize.y - 512 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		pCanvas->AddCanvas( actionButton->GetCanvas() );
-		pOverlays.Add( actionButton );
-		actionButton->FreeReference();
-		actionButton = NULL;
+		circlePad.TakeOver(new deaiOverlayCirclePad(androidInput));
+		circlePad->SetAxisLeftRight(deaiInputBinding(mouse.GetID(),
+			mouse.GetAxisAt(0).GetID(), false)); // mouse left-right
+		circlePad->SetAxisUpDown(deaiInputBinding(mouse.GetID(),
+			mouse.GetAxisAt(1).GetID(), true)); // mouse up-down
+		circlePad->SetLayoutHorizontal(deaiLayout(decPoint(
+				screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().x,
+				screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().y),
+			circlePad->GetLayoutHorizontal().GetSize()));
+		circlePad->SetLayoutVertical( deaiLayout(decPoint(
+				screenSize.x - 20 - circlePad->GetLayoutHorizontal().GetSize().x,
+				screenSize.y - 20 - circlePad->GetLayoutHorizontal().GetSize().y),
+			circlePad->GetLayoutHorizontal().GetSize()));
+		pCanvas->AddCanvas(circlePad->GetCanvas());
+		pOverlays.Add(circlePad);
 		
-		actionButton = new deaiOverlayActionButton( androidInput );
-		actionButton->SetBinding( deaiInputBinding( mouse.GetID(),
-			mouse.GetButtonAt( 1 ).GetID() ) ); // right mouse button
-		actionButton->SetText( "RMB" );
-		actionButton->SetColor( decColor( 1.0f, 0.0f, 0.0f ) );
-		actionButton->SetLayoutHorizontal( deaiLayout(
-			decPoint( screenSize.y - 142, screenSize.x - 512 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		actionButton->SetLayoutVertical( deaiLayout(
-			decPoint( screenSize.x - 142, screenSize.y - 512 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		pCanvas->AddCanvas( actionButton->GetCanvas() );
-		pOverlays.Add( actionButton );
-		actionButton->FreeReference();
-		actionButton = NULL;
+		actionButton.TakeOver(new deaiOverlayActionButton(androidInput));
+		actionButton->SetBinding(deaiInputBinding(mouse.GetID(),
+			mouse.GetButtonAt(0).GetID())); // left mouse button
+		actionButton->SetText("LMB");
+		actionButton->SetColor(decColor(1.0f, 0.0f, 0.0f));
+		actionButton->SetLayoutHorizontal(deaiLayout(decPoint(
+				screenSize.y - 416, screenSize.x - 512),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		actionButton->SetLayoutVertical(deaiLayout(decPoint(
+				screenSize.x - 416, screenSize.y - 512),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		pCanvas->AddCanvas(actionButton->GetCanvas());
+		pOverlays.Add(actionButton);
 		
-		actionButton = new deaiOverlayActionButton( androidInput );
-		actionButton->SetBinding( deaiInputBinding( mouse.GetID(),
-			mouse.GetButtonAt( 2 ).GetID() ) ); // middle mouse button
-		actionButton->SetText( "MMB" );
-		actionButton->SetColor( decColor( 1.0f, 0.0f, 0.0f ) );
-		actionButton->SetLayoutHorizontal( deaiLayout(
-			decPoint( screenSize.y - 278, screenSize.x - 543 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		actionButton->SetLayoutVertical( deaiLayout(
-			decPoint( screenSize.x - 278, screenSize.y - 543 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		pCanvas->AddCanvas( actionButton->GetCanvas() );
-		pOverlays.Add( actionButton );
-		actionButton->FreeReference();
-		actionButton = NULL;
+		actionButton.TakeOver(new deaiOverlayActionButton(androidInput));
+		actionButton->SetBinding(deaiInputBinding(mouse.GetID(),
+			mouse.GetButtonAt(1).GetID())); // right mouse button
+		actionButton->SetText("RMB");
+		actionButton->SetColor(decColor(1.0f, 0.0f, 0.0f));
+		actionButton->SetLayoutHorizontal(deaiLayout(decPoint(
+				screenSize.y - 142, screenSize.x - 512),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		actionButton->SetLayoutVertical(deaiLayout(decPoint(
+				screenSize.x - 142, screenSize.y - 512),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		pCanvas->AddCanvas(actionButton->GetCanvas());
+		pOverlays.Add(actionButton);
 		
-		actionButton = new deaiOverlayActionButton( androidInput );
-		actionButton->SetBinding( deaiInputBinding( keyboard.GetID(),
-			keyboard.GetButtonAt( keyboard.IndexOfButtonWithKeyCode(
-				deInputEvent::ekcQ ) ).GetID() ) );
-		actionButton->SetText( "Quit" );
-		actionButton->SetColor( decColor( 0.0f, 0.5f, 1.0f ) );
-		actionButton->SetLayoutHorizontal( deaiLayout(
-			decPoint( screenSize.y - 517, screenSize.x - 390 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		actionButton->SetLayoutVertical( deaiLayout(
-			decPoint( screenSize.x - 517, screenSize.y - 390 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		pCanvas->AddCanvas( actionButton->GetCanvas() );
-		pOverlays.Add( actionButton );
-		actionButton->FreeReference();
-		actionButton = NULL;
+		actionButton.TakeOver(new deaiOverlayActionButton(androidInput));
+		actionButton->SetBinding(deaiInputBinding(mouse.GetID(),
+			mouse.GetButtonAt(2).GetID())); // middle mouse button
+		actionButton->SetText("MMB");
+		actionButton->SetColor(decColor(1.0f, 0.0f, 0.0f));
+		actionButton->SetLayoutHorizontal(deaiLayout(decPoint(
+				screenSize.y - 278, screenSize.x - 543),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		actionButton->SetLayoutVertical(deaiLayout(decPoint(
+				screenSize.x - 278, screenSize.y - 543),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		pCanvas->AddCanvas(actionButton->GetCanvas());
+		pOverlays.Add(actionButton);
 		
-		actionButton = new deaiOverlayActionButton( androidInput );
-		actionButton->SetBinding( deaiInputBinding( keyboard.GetID(),
-			keyboard.GetButtonAt( keyboard.IndexOfButtonWithKeyCode(
-				deInputEvent::ekcR ) ).GetID() ) );
-		actionButton->SetText( "Debug" );
-		actionButton->SetColor( decColor( 0.0f, 0.5f, 1.0f ) );
-		actionButton->SetLayoutHorizontal( deaiLayout(
-			decPoint( screenSize.y - 544, screenSize.x - 239 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		actionButton->SetLayoutVertical( deaiLayout(
-			decPoint( screenSize.x - 544, screenSize.y - 239 ),
-			actionButton->GetLayoutHorizontal().GetSize() ) );
-		pCanvas->AddCanvas( actionButton->GetCanvas() );
-		pOverlays.Add( actionButton );
-		actionButton->FreeReference();
-		actionButton = NULL;
+		actionButton.TakeOver(new deaiOverlayActionButton(androidInput));
+		actionButton->SetBinding(deaiInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcQ)).GetID()));
+		actionButton->SetText("Quit");
+		actionButton->SetColor(decColor(0.0f, 0.5f, 1.0f));
+		actionButton->SetLayoutHorizontal(deaiLayout(decPoint(
+				screenSize.y - 517, screenSize.x - 390),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		actionButton->SetLayoutVertical(deaiLayout(decPoint(
+				screenSize.x - 517, screenSize.y - 390),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		pCanvas->AddCanvas(actionButton->GetCanvas());
+		pOverlays.Add(actionButton);
+		
+		actionButton.TakeOver(new deaiOverlayActionButton(androidInput));
+		actionButton->SetBinding(deaiInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
+			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcR)).GetID()));
+		actionButton->SetText("Debug");
+		actionButton->SetColor(decColor(0.0f, 0.5f, 1.0f));
+		actionButton->SetLayoutHorizontal(deaiLayout(decPoint(
+				screenSize.y - 544, screenSize.x - 239),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		actionButton->SetLayoutVertical(deaiLayout(decPoint(
+				screenSize.x - 544, screenSize.y - 239),
+			actionButton->GetLayoutHorizontal().GetSize()));
+		pCanvas->AddCanvas(actionButton->GetCanvas());
+		pOverlays.Add(actionButton);
+#endif
 		
 		UpdateBindingIndices();
 		UpdateFromLayout();
 		
-	}catch( const deException & ){
-		if( actionButton ){
-			actionButton->FreeReference();
-		}
-		if( circlePad ){
-			circlePad->FreeReference();
-		}
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}

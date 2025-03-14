@@ -4,20 +4,20 @@
 // load normal from sampler using direct method.
 // use this method for RGB16F, RGB32F, RGB8_SNORM or RGB16_SNORM textures.
 // normal is potentially not normalized.
-vec3 normalLoadDirect( in sampler2D sampler, in ivec2 texCoord ){
+vec3 normalLoadDirect( in ARG_SAMP_MEDP sampler2D sampler, in ivec2 texCoord ){
 	return vec3( texelFetch( sampler, texCoord, 0 ) );
 }
 
-vec3 normalLoadDirect( in sampler2DArray sampler, in ivec3 texCoord ){
+vec3 normalLoadDirect( in ARG_SAMP_MEDP sampler2DArray sampler, in ivec3 texCoord ){
 	return vec3( texelFetch( sampler, texCoord, 0 ) );
 }
 
-vec3 normalLoadDirect( in sampler2D sampler, in vec2 texCoord ){
-	return vec3( textureLod( sampler, texCoord, 0 ) );
+vec3 normalLoadDirect( in ARG_SAMP_MEDP sampler2D sampler, in vec2 texCoord ){
+	return vec3( textureLod( sampler, texCoord, 0.0 ) );
 }
 
-vec3 normalLoadDirect( in sampler2DArray sampler, in vec3 texCoord ){
-	return vec3( textureLod( sampler, texCoord, 0 ) );
+vec3 normalLoadDirect( in ARG_SAMP_MEDP sampler2DArray sampler, in vec3 texCoord ){
+	return vec3( textureLod( sampler, texCoord, 0.0 ) );
 }
 
 
@@ -31,20 +31,20 @@ vec3 normalDecodeShiftedFloat( in vec3 encoded ){
 // load normal from sampler using shifted floating point method.
 // use this method for RGB16F, RGB32F, RGB8_SNORM or RGB16_SNORM textures.
 // normal is potentially not normalized.
-vec3 normalLoadShiftedFloat( in sampler2D sampler, in ivec2 texCoord ){
+vec3 normalLoadShiftedFloat( in ARG_SAMP_MEDP sampler2D sampler, in ivec2 texCoord ){
 	return normalDecodeShiftedFloat( vec3( texelFetch( sampler, texCoord, 0 ) ) );
 }
 
-vec3 normalLoadShiftedFloat( in sampler2DArray sampler, in ivec3 texCoord ){
+vec3 normalLoadShiftedFloat( in ARG_SAMP_MEDP sampler2DArray sampler, in ivec3 texCoord ){
 	return normalDecodeShiftedFloat( vec3( texelFetch( sampler, texCoord, 0 ) ) );
 }
 
-vec3 normalLoadShiftedFloat( in sampler2D sampler, in vec2 texCoord ){
-	return normalDecodeShiftedFloat( vec3( textureLod( sampler, texCoord, 0 ) ) );
+vec3 normalLoadShiftedFloat( in ARG_SAMP_MEDP sampler2D sampler, in vec2 texCoord ){
+	return normalDecodeShiftedFloat( vec3( textureLod( sampler, texCoord, 0.0 ) ) );
 }
 
-vec3 normalLoadShiftedFloat( in sampler2DArray sampler, in vec3 texCoord ){
-	return normalDecodeShiftedFloat( vec3( textureLod( sampler, texCoord, 0 ) ) );
+vec3 normalLoadShiftedFloat( in ARG_SAMP_MEDP sampler2DArray sampler, in vec3 texCoord ){
+	return normalDecodeShiftedFloat( vec3( textureLod( sampler, texCoord, 0.0 ) ) );
 }
 
 // encode normal using shifted floating point method.
@@ -64,20 +64,20 @@ vec3 normalDecodeShiftedInt( in vec3 encoded ){
 
 // load normal from sampler using shifted integer method.
 // use this method for RGB8 or RGB16 textures.
-vec3 normalLoadShiftedInt( in sampler2D sampler, in ivec2 texCoord ){
+vec3 normalLoadShiftedInt( in ARG_SAMP_MEDP sampler2D sampler, in ivec2 texCoord ){
 	return normalDecodeShiftedInt( vec3( texelFetch( sampler, texCoord, 0 ) ) );
 }
 
-vec3 normalLoadShiftedInt( in sampler2DArray sampler, in ivec3 texCoord ){
+vec3 normalLoadShiftedInt( in ARG_SAMP_MEDP sampler2DArray sampler, in ivec3 texCoord ){
 	return normalDecodeShiftedInt( vec3( texelFetch( sampler, texCoord, 0 ) ) );
 }
 
-vec3 normalLoadShiftedInt( in sampler2D sampler, in vec2 texCoord ){
-	return normalDecodeShiftedInt( vec3( textureLod( sampler, texCoord, 0 ) ) );
+vec3 normalLoadShiftedInt( in ARG_SAMP_MEDP sampler2D sampler, in vec2 texCoord ){
+	return normalDecodeShiftedInt( vec3( textureLod( sampler, texCoord, 0.0 ) ) );
 }
 
-vec3 normalLoadShiftedInt( in sampler2DArray sampler, in vec3 texCoord ){
-	return normalDecodeShiftedInt( vec3( textureLod( sampler, texCoord, 0 ) ) );
+vec3 normalLoadShiftedInt( in ARG_SAMP_MEDP sampler2DArray sampler, in vec3 texCoord ){
+	return normalDecodeShiftedInt( vec3( textureLod( sampler, texCoord, 0.0 ) ) );
 }
 
 // encode normal using shifted integer method.
@@ -93,27 +93,27 @@ vec3 normalEncodeShiftedInt( in vec3 normal ){
 vec3 normalDecodeSphereMap( in vec2 encoded ){
 	vec2 fenc = encoded * vec2( 4 ) - vec2( 2 );
 	float f = dot( fenc, fenc );
-	float g = sqrt( 1 - f * 0.25 );
-	return vec3( fenc.xy * vec2( g ), f * 0.5 - 1 );
+	float g = sqrt( 1.0 - f * 0.25 );
+	return vec3( fenc.xy * vec2( g ), f * 0.5 - 1.0 );
 }
 
 // load normal from sampler using sphere map method.
 // use this method for RG8 or RG16 textures.
 // normal is potentially not normalized.
-vec3 normalLoadSphereMap( in sampler2D sampler, in ivec2 texCoord ){
+vec3 normalLoadSphereMap( in ARG_SAMP_MEDP sampler2D sampler, in ivec2 texCoord ){
 	return normalDecodeSphereMap( vec2( texelFetch( sampler, texCoord, 0 ) ) );
 }
 
-vec3 normalLoadSphereMap( in sampler2DArray sampler, in ivec3 texCoord ){
+vec3 normalLoadSphereMap( in ARG_SAMP_MEDP sampler2DArray sampler, in ivec3 texCoord ){
 	return normalDecodeSphereMap( vec2( texelFetch( sampler, texCoord, 0 ) ) );
 }
 
-vec3 normalLoadSphereMap( in sampler2D sampler, in vec2 texCoord ){
-	return normalDecodeSphereMap( vec2( textureLod( sampler, texCoord, 0 ) ) );
+vec3 normalLoadSphereMap( in ARG_SAMP_MEDP sampler2D sampler, in vec2 texCoord ){
+	return normalDecodeSphereMap( vec2( textureLod( sampler, texCoord, 0.0 ) ) );
 }
 
-vec3 normalLoadSphereMap( in sampler2DArray sampler, in vec3 texCoord ){
-	return normalDecodeSphereMap( vec2( textureLod( sampler, texCoord, 0 ) ) );
+vec3 normalLoadSphereMap( in ARG_SAMP_MEDP sampler2DArray sampler, in vec3 texCoord ){
+	return normalDecodeSphereMap( vec2( textureLod( sampler, texCoord, 0.0 ) ) );
 }
 
 // encode normal using sphere map method.
@@ -135,7 +135,7 @@ vec3 sanitizeNormal( in vec3 normal ){
 // - MATERIAL_NORMAL_DEC_SPHEREMAP: normalLoadSphere
 // - none of the above: normalLoadDirect
 // normal is potentially not normalized.
-vec3 normalLoadMaterial( in sampler2D sampler, in ivec2 texCoord ){
+vec3 normalLoadMaterial( in ARG_SAMP_MEDP sampler2D sampler, in ivec2 texCoord ){
 	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
 	return normalLoadShiftedFloat( sampler, texCoord );
 	
@@ -150,7 +150,7 @@ vec3 normalLoadMaterial( in sampler2D sampler, in ivec2 texCoord ){
 	#endif
 }
 
-vec3 normalLoadMaterial( in sampler2DArray sampler, in ivec3 texCoord ){
+vec3 normalLoadMaterial( in ARG_SAMP_MEDP sampler2DArray sampler, in ivec3 texCoord ){
 	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
 	return normalLoadShiftedFloat( sampler, texCoord );
 	
@@ -165,7 +165,7 @@ vec3 normalLoadMaterial( in sampler2DArray sampler, in ivec3 texCoord ){
 	#endif
 }
 
-vec3 normalLoadMaterial( in sampler2D sampler, in vec2 texCoord ){
+vec3 normalLoadMaterial( in ARG_SAMP_MEDP sampler2D sampler, in vec2 texCoord ){
 	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
 	return normalLoadShiftedFloat( sampler, texCoord );
 	
@@ -180,7 +180,7 @@ vec3 normalLoadMaterial( in sampler2D sampler, in vec2 texCoord ){
 	#endif
 }
 
-vec3 normalLoadMaterial( in sampler2DArray sampler, in vec3 texCoord ){
+vec3 normalLoadMaterial( in ARG_SAMP_MEDP sampler2DArray sampler, in vec3 texCoord ){
 	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
 	return normalLoadShiftedFloat( sampler, texCoord );
 	

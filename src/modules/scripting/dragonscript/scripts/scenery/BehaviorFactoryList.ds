@@ -1,0 +1,136 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+/**
+ * \brief List of behavior factories.
+ * \version 1.25
+ * 
+ * Behavior factories allow generic \ref BehaviorElementClass to be created using XML element
+ * class files (*.deeclass) where not only element class properties can be defined but also
+ * behaviors added.
+ */
+class BehaviorFactoryList
+	var Dictionary pFactories
+	
+	
+	/** \brief Create factory list. */
+	func new()
+		pFactories = Dictionary.new()
+	end
+	
+	/** \brief Create copy of factory list. */
+	func new(BehaviorFactoryList list)
+		pFactories = Dictionary.new(list.pFactories)
+	end
+	
+	
+	/** \brief Count of factories. */
+	func int getCount()
+		return pFactories.getCount()
+	end
+	
+	/** \brief Factory with identifier or \em null if absent. */
+	func BehaviorFactory getWithId(String id)
+		return pFactories.getAt(id, null) cast BehaviorFactory
+	end
+	
+	/** \brief Factory with identifier is present. */
+	func bool hasWithId(String id)
+		return pFactories.has(id)
+	end
+	
+	/** \brief Add factory. */
+	func void add(BehaviorFactory factory)
+		if pFactories.has(factory.factoryId())
+			throw EInvalidParam.new("Duplicate factory: " + factory.factoryId())
+		end
+		pFactories.setAt(factory.factoryId(), factory)
+	end
+	
+	/** \brief Add factory replacing duplicate if present. */
+	func void addReplace(BehaviorFactory factory)
+		pFactories.setAt(factory.factoryId(), factory)
+	end
+	
+	/** \brief Add all factories from list. */
+	func void addAll(BehaviorFactoryList list)
+		list.pFactories.forEachKey(block String key
+			if pFactories.has(key)
+				throw EInvalidParam.new("Duplicate factory: " + key)
+			end
+		end)
+		
+		list.pFactories.forEach(block String key, BehaviorFactory factory
+			pFactories.setAt(key, factory)
+		end)
+	end
+	
+	/** \brief Add all factories from list replacing duplicates if present. */
+	func void addAllReplace(BehaviorFactoryList list)
+		list.pFactories.forEach(block String key, BehaviorFactory factory
+			pFactories.setAt(key, factory)
+		end)
+	end
+	
+	/** \brief Remove factory. */
+	func void remove(BehaviorFactory factory)
+		pFactories.remove(factory.factoryId())
+	end
+	
+	/** \brief Remove factory if present. */
+	func void removeWithId(String id)
+		pFactories.removeIfExisting(id)
+	end
+	
+	/** \brief Remove all factories. */
+	func void removeAll()
+		pFactories.removeAll()
+	end
+	
+	/**
+	 * \brief Visit factories using block.
+	 * 
+	 * Block parameter \ref BehaviorFactory.
+	 */
+	func void forEach(Block ablock)
+		pFactories.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Find factory using block.
+	 * 
+	 * Block parameter \ref BehaviorFactory and returns true if found.
+	 */
+	func BehaviorFactory find(Block ablock)
+		return pFactories.find(block String key, BehaviorFactory value
+			return ablock.run(value)
+		end) cast BehaviorFactory
+	end
+end

@@ -62,6 +62,8 @@ pin Dragengine.Utils
  * This behavior is used for player actors only.
  * 
  * Uses property prefix "playerInteractPrompt."
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerinteractprompt
  */
 class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	/** \brief Interact prompt controller interface. */
@@ -137,6 +139,85 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * To use this factory create a subclass and implement \ref #createPromptControllerFactory(),
+	 * \ref #getUiContainer() and \ref #getUiContainerAddSettings().
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorPlayerControllable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlayerInteractPrompt'>
+	 *   <!-- optional: use BaseGameApp command manager. game can add more supported values.
+	 *                  default is 'default' -->
+	 *   <string name='commandManager'>default</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values.
+	 *                  default is 'default' -->
+	 *   <string name='bindingManager'>default</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	abstract class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlayerInteractPrompt"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorPlayerInteractPrompt behavior = ECBehaviorPlayerInteractPrompt.new(eclass,\
+				ECBehaviorPlayerControllable.getBehaviorIn(eclass),\
+				createPromptControllerFactory(parameters), getUiContainer(parameters),\
+				getUiContainerAddSettings(parameters),\
+				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
+				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "playerInteractPrompt")
+			return behavior
+		end
+		
+		/**
+		 * \brief Command manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getCommandManager() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func CommandManager getCommandManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.commandManager(value)
+		end
+		
+		/**
+		 * \brief Binding manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getBindingManager() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func BindingManager getBindingManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
+		end
+		
+		/** \brief Create prompt controller factory. */
+		abstract func PromptControllerFactory createPromptControllerFactory(Dictionary parameters)
+		
+		/** \brief Get UI container. */
+		abstract func Container getUiContainer(Dictionary parameters)
+		
+		/** \brief Get UI container add settings. */
+		abstract func Object getUiContainerAddSettings(Dictionary parameters)
 	end
 	
 	/** \brief Behavior instance. */

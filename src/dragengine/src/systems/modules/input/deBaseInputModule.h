@@ -41,12 +41,12 @@ class deInputDevice;
 class deInputDevicePose;
 class deInputEvent;
 
-#ifdef OS_ANDROID
-struct AInputEvent;
-#endif
-
 #ifdef OS_BEOS
 class BMessage;
+#endif
+
+#ifdef OS_ANDROID
+struct android_input_buffer;
 #endif
 
 #ifdef OS_MACOS
@@ -235,25 +235,17 @@ public:
 	virtual void AppActivationChanged();
 	
 	/** \brief An event processed by the application event loop. */
-	#if defined OS_UNIX && defined HAS_LIB_X11
-	virtual void EventLoop( XEvent &event );
-	#endif
-	
-	#ifdef OS_W32
-	virtual void EventLoop( const MSG &message );
-	#endif
-	
-	#ifdef OS_ANDROID
-	virtual void EventLoop( const AInputEvent &event );
-	#endif
-	
-	#ifdef OS_BEOS
+#ifdef OS_ANDROID
+	virtual void EventLoop(const android_input_buffer &inputBuffer);
+#elif defined OS_BEOS
 	virtual void EventLoop( const BMessage &message );
-	#endif
-	
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	virtual void EventLoop( const NSEvent &event );
-	#endif
+#elif defined OS_UNIX && defined HAS_LIB_X11
+	virtual void EventLoop( XEvent &event );
+#elif defined OS_W32
+	virtual void EventLoop( const MSG &message );
+#endif
 	/*@}*/
 };
 

@@ -47,9 +47,39 @@
 #include <dragengine/common/exceptions.h>
 
 
+#define USE_ASYNC_PIPELINE_GET_PROGRAM 1
+
+
+// Class deoglRenderBase::cPipelineGetProgramListener
+///////////////////////////////////////////////////////
+
+deoglRenderBase::cPipelineGetProgramListener::cPipelineGetProgramListener(
+deoglRenderThread &renderThread, const deoglPipeline *&pipeline,
+const deoglPipelineConfiguration &config, bool assignRTSIndex) :
+pRenderThread(renderThread),
+pConfig(config),
+pPipeline(pipeline),
+pAssignRTSIndex(assignRTSIndex){
+}
+
+void deoglRenderBase::cPipelineGetProgramListener::GetProgramFinished(
+const deoglShaderProgram *program){
+	if(!program){
+		anyPipelineShaderFailed = true;
+		return;
+	}
+	
+	pConfig.SetShader(program);
+	pPipeline = pRenderThread.GetPipelineManager().GetWith(pConfig, pAssignRTSIndex);
+}
+
+
 
 // Class deoglRenderBase
 //////////////////////////
+
+bool deoglRenderBase::anyPipelineShaderFailed = false;
+
 
 // Constructor, destructor
 ////////////////////////////
@@ -322,6 +352,40 @@ void deoglRenderBase::AddTopLevelDebugInfo(){
 }
 
 void deoglRenderBase::DevModeDebugInfoChanged(){
+}
+
+
+// Protected Functions
+////////////////////////
+
+void deoglRenderBase::pAsyncGetPipeline(const deoglPipeline *&pipeline,
+deoglPipelineConfiguration &config, const char *sources,
+const deoglShaderDefines &defines, bool assignRTSIndex){
+#ifdef USE_ASYNC_PIPELINE_GET_PROGRAM
+	deoglShaderManager &sm = pRenderThread.GetShader().GetShaderManager();
+	sm.GetProgramWithAsync(sm.GetSourcesNamed(sources), defines,
+		new cPipelineGetProgramListener(pRenderThread, pipeline, config, assignRTSIndex));
+	
+#else
+	config.SetShader(pRenderThread, sources, defines);
+	pipeline = pRenderThread.GetPipelineManager().GetWith(config,
+		config.GetSPBInstanceIndexBase() != -1);
+#endif
+}
+
+void deoglRenderBase::pAsyncGetPipeline(const deoglPipeline *&pipeline,
+deoglPipelineConfiguration &config, const deoglShaderSources *sources,
+const deoglShaderDefines &defines, bool assignRTSIndex){
+#ifdef USE_ASYNC_PIPELINE_GET_PROGRAM
+	deoglShaderManager &sm = pRenderThread.GetShader().GetShaderManager();
+	sm.GetProgramWithAsync(sources, defines,
+		new cPipelineGetProgramListener(pRenderThread, pipeline, config, assignRTSIndex));
+	
+#else
+	config.SetShader(pRenderThread, sources, defines);
+	pipeline = pRenderThread.GetPipelineManager().GetWith(config,
+		config.GetSPBInstanceIndexBase() != -1);
+#endif
 }
 
 

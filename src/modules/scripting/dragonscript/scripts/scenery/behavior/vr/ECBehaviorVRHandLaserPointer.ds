@@ -66,8 +66,50 @@ pin Dragengine.Utils
  * The particle emitter is aligned with the test direction.
  * 
  * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandlaserpointer
  */
 class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRHandPointAt
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHandLaserPointer'>
+	 *   <!-- required: use vr hand point at with id. -->
+	 *   <string name='vrHandPointAt'>right</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRHandLaserPointer' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRHandLaserPointer"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorVRHandLaserPointer behavior = ECBehaviorVRHandLaserPointer.new(eclass,\
+				ECBehaviorVRHandPointAt.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrHandLaserPointer", id)
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief VR Hand Point At listener. */

@@ -46,11 +46,18 @@ pin Dragengine.Utils
  * and add all the desired ECBehavior instance. There is no need to subclas BehaviorElement.
  * When creating a new instance the BehaviorElement is filled with ECBehavior created
  * ECBehaviorInstance instances. These provide the actual behavior to the element.
+ * 
+ * Behaviors can also be created and added using XML element classes. Add the factories of
+ * all behavior types allowed to be created using \ref #addBehaviorFactory(). By default no
+ * factory is present disabling support for XML behavior creation.
  */
 class BehaviorElementClass extends ElementClass
 	var Array pBehaviors
 	var Array pPrepareStubBehaviors
 	var Array pPreventCreationBehaviors
+	var Dictionary pBehaviorFactories
+	
+	public static var BehaviorFactoryHelper sharedFactoryHelper = BehaviorFactoryHelper.new()
 	
 	
 	
@@ -71,6 +78,7 @@ class BehaviorElementClass extends ElementClass
 		pBehaviors = Array.new()
 		pPrepareStubBehaviors = Array.new()
 		pPreventCreationBehaviors = Array.new()
+		pBehaviorFactories = Dictionary.new()
 	end
 	
 	/** \brief Dispose of element class. */
@@ -84,6 +92,7 @@ class BehaviorElementClass extends ElementClass
 		
 		pPrepareStubBehaviors = null
 		pPreventCreationBehaviors = null
+		pBehaviorFactories = null
 		
 		super.dispose()
 	end
@@ -259,6 +268,73 @@ class BehaviorElementClass extends ElementClass
 		return pPreventCreationBehaviors.find(block BehaviorPreventCreation each
 			return each.preventCreation(stub, gameWorld)
 		end) != null
+	end
+	
+	
+	
+	/**
+	 * \brief Add behavior factory replacing duplicate if present.
+	 * \version 1.25
+	 */
+	func void addBehaviorFactory(BehaviorFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pBehaviorFactories.setAt(factory.factoryId(), factory)
+	end
+	
+	/**
+	 * \brief Add behavior factories replacing duplicates if present.
+	 * \version 1.25
+	 */
+	func void addBehaviorFactories(BehaviorFactoryList factories)
+		factories.forEach(block BehaviorFactory each
+			pBehaviorFactories.setAt(each.factoryId(), each)
+		end)
+	end
+	
+	/**
+	 * \brief Remove behavior factory if present.
+	 * \version 1.25
+	 */
+	func void removeBehaviorFactory(String id)
+		pBehaviorFactories.removeIfExisting(id)
+	end
+	
+	/**
+	 * \brief Remove all behavior factories.
+	 * \version 1.25
+	 */
+	func void removeAllBehaviorFactories()
+		pBehaviorFactories.removeAll()
+	end
+	
+	/**
+	 * \brief Add all behavior factories present in the DragonScript module.
+	 * \version 1.25
+	 * 
+	 * Add \ref BaseGameApp#getBehaviorFactories().
+	 */
+	func void addDefaultBehaviorFactories()
+		addBehaviorFactories(BaseGameApp.getApp().getBehaviorFactories())
+	end
+	
+	/**
+	 * \brief Behavior factory with identifier or null if absent.
+	 * \version 1.25
+	 */
+	func BehaviorFactory getBehaviorFactoryWithId(String id)
+		return pBehaviorFactories.getAt(id, null) cast BehaviorFactory
+	end
+	
+	/**
+	 * \brief Visit behavior factories.
+	 * \version 1.25
+	 * 
+	 * Block receives as only argument \ref BehaviorFactory.
+	 */
+	func void forEachBehaviorFactory(Block ablock)
+		pBehaviorFactories.forEachValue(ablock)
 	end
 	
 	

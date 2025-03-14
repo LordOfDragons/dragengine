@@ -66,12 +66,53 @@ pin Dragengine.Utils
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
  * 
- * 
  * \todo
  * Add "light id" and "particle emitter id" to allow the dynamic skin to attach also to lights
  * (as light skin) and particle emitters.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_dynamicskin
  */
 class ECBehaviorDynamicSkin extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorComponent
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorCamera'>
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorCamera' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorDynamicSkin"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorDynamicSkin behavior = ECBehaviorDynamicSkin.new(eclass,\
+				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "dynamicSkin", id)
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorDynamicSkin pECBehavior

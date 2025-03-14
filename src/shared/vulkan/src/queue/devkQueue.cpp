@@ -28,6 +28,7 @@
 #include "devkQueue.h"
 #include "../devkDevice.h"
 #include "../devkInstance.h"
+#include "../queue/devkCommandPool.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
@@ -36,21 +37,13 @@
 // class devkQueue
 ////////////////////
 
-devkQueue::devkQueue( devkDevice &device, uint32_t family, VkQueue queue ) :
-pDevice( device ),
-pFamily( family ),
-pQueue( queue )
+devkQueue::devkQueue(devkDevice &device, uint32_t family, uint32_t index, VkQueue queue) :
+pDevice(device),
+pFamily(family),
+pIndex(index),
+pQueue(queue)
 {
-	if( ! queue ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	try{
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	DEASSERT_NOTNULL(queue )
 }
 
 devkQueue::~devkQueue(){
@@ -63,11 +56,11 @@ devkQueue::~devkQueue(){
 ///////////////
 
 devkCommandPool::Ref devkQueue::CreateCommandPool(){
-	return devkCommandPool::Ref::New( new devkCommandPool( pDevice, pFamily ) );
+	return devkCommandPool::Ref::New(new devkCommandPool(Ref(this)));
 }
 
 void devkQueue::WaitIdle(){
-	VK_CHECK( pDevice.GetInstance().GetVulkan(), pDevice.vkQueueWaitIdle( pQueue ) );
+	VK_CHECK(pDevice.GetInstance().GetVulkan(), pDevice.vkQueueWaitIdle(pQueue));
 }
 
 

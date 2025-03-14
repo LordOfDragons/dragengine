@@ -66,6 +66,8 @@ pin Dragengine.Utils
  * This behavior does not require the element class to be persistable (setPersistable).
  * 
  * This behavior can be present only once in the element class.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_networkstate
  */
 class ECBehaviorNetworkState extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -500,6 +502,85 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 			if not this.pInstance.getReadOnly()
 				this.pInstance.getNetworkState().setValueQuaternionAt( this.pIndex, this.getUpdateValue() )
 			end
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorNetworkState'>
+	 *   <!-- required: request link code (in the range from 0 to 255 inclusive) -->
+	 *   <integer name='requestLinkCode'>1</integer>
+	 * 
+	 *   <!-- required: message code (in the range from 0 to 255 inclusive) -->
+	 *   <integer name='messageCode'>2</integer>
+	 * 
+	 *   <!-- optional: use BaseGameApp connection tracker. game can add more supported values -->
+	 *   <string name='connectionTracker'>default</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp network state tracker. game can add more supported values -->
+	 *   <string name='networkStateTracker'>default</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorNetworkState"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorNetworkState behavior = ECBehaviorNetworkState.new(eclass,\
+				parameters.getAt("requestLinkCode") cast byte,\
+				parameters.getAt("messageCode") cast byte,\
+				getConnectionTrackerFor(parameters.getAt("connectionTracker", "default") cast String),\
+				getNetworkStateTrackerFor(parameters.getAt("networkStateTracker", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "networkState")
+			return behavior
+		end
+		
+		/**
+		 * \brief Connection tracker matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getConnectionTracker() for value
+		 * 'default' and null for all other values. Overwrite to accept other values.
+		 */
+		func ConnectionTracker getConnectionTrackerFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getConnectionTracker()
+				end
+			end
+			return null
+		end
+		
+		/**
+		 * \brief Network state tracker matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getNetworkStateTracker() for value
+		 * 'default' and null for all other values. Overwrite to accept other values.
+		 */
+		func NetworkStateTracker getNetworkStateTrackerFor(String value)
+			if value.equals("default")
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					return app.getNetworkStateTracker()
+				end
+			end
+			return null
 		end
 	end
 	

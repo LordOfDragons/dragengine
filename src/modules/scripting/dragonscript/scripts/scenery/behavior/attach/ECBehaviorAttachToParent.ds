@@ -75,8 +75,47 @@ pin Dragengine.Scenery
  * than one instance results in an exception thrown.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachtoparent
  */
 class ECBehaviorAttachToParent extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorCollider
+	 * - Optional: \ref ECBehaviorAttachable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorCamera'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAttachToParent"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorAttachToParent behavior = ECBehaviorAttachToParent.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass),\
+				ECBehaviorAttachable.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "attachToParent")
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Example attach element visitor. */

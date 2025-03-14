@@ -35,23 +35,23 @@ pin Dragengine.Utils
  * Speech animation Phoneme.
  */
 class SpeechAnimationPhoneme
-	private var int pIPA
-	private var float pLength
-	private var String pMoveName
-	private var String pVertexPositionSet
-	private var int pController
+	var int pIPA
+	var float pLength
+	var String pMoveName
+	var String pVertexPositionSet
+	var int pController
 	
 	
 	
 	/** \brief Create speech animation phoneme. */
-	public func new(int ipa, float length, String moveName) this(ipa, length, moveName, "")
+	func new(int ipa, float length, String moveName) this(ipa, length, moveName, "")
 	end
 	
 	/**
 	 * \brief Create speech animation phoneme.
 	 * \version 1.17
 	 */
-	public func new(int ipa, float length, String moveName, String vertexPositionSet)
+	func new(int ipa, float length, String moveName, String vertexPositionSet)
 		if moveName == null
 			throw ENullPointer.new("moveName")
 		end
@@ -69,17 +69,17 @@ class SpeechAnimationPhoneme
 	
 	
 	/** \brief IPA symbol. */
-	public func int getIPA()
+	func int getIPA()
 		return pIPA
 	end
 	
-	/** \brief Length. */
-	public func float getLength()
+	/** \brief Length in seconds. */
+	func float getLength()
 		return pLength
 	end
 	
 	/** \brief Move name. */
-	public func String getMoveName()
+	func String getMoveName()
 		return pMoveName
 	end
 	
@@ -87,17 +87,17 @@ class SpeechAnimationPhoneme
 	 * \brief Vertex position set.
 	 * \version 1.17
 	 */
-	public func String getVertexPositionSet()
+	func String getVertexPositionSet()
 		return pVertexPositionSet
 	end
 	
 	/** \brief Animator controller index or -1 if not assigned. */
-	public func int getController()
+	func int getController()
 		return pController
 	end
 	
 	/** \brief Set animator controller index or -1 if not assigned. */
-	public func void setController(int controller)
+	func void setController(int controller)
 		pController = controller
 	end
 end

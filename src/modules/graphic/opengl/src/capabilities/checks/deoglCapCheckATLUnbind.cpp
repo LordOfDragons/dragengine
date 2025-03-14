@@ -87,7 +87,8 @@ void deoglCapCheckATLUnbind::Check( GLuint fbo ){
 #if 0
 // Example bug test.
 void deoglCapCheckATLUnbind::pTestBugExample( GLuint fbo ){
-	const deoglCapsTextureFormat &texformat = *pFormats.GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfR16 );
+	const deoglCapsTextureFormat &texformat =
+		pFormats.RequireUseFBOTex2DFormatFor(deoglCapsFmtSupport::eutfR16);
 	GLuint texture = 0;
 	
 	// generate test texture

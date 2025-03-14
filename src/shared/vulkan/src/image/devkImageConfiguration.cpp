@@ -34,17 +34,17 @@
 /////////////////////////////////
 
 devkImageConfiguration::devkImageConfiguration() :
-pType( VK_IMAGE_TYPE_2D ),
-pSize( 1, 1, 1 ),
-pLayerCount( 1 ),
-pMipMapCount( 1 ),
-pFormat( VK_FORMAT_R8G8B8A8_UINT ),
-pFlags( 0 ),
-pSamples( VK_SAMPLE_COUNT_1_BIT ),
-pUsage( VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT ){
+pType(VK_IMAGE_TYPE_2D),
+pSize(1, 1, 1),
+pLayerCount(1),
+pMipMapCount(1),
+pFormat(VK_FORMAT_R8G8B8A8_UINT),
+pFlags(0),
+pSamples(VK_SAMPLE_COUNT_1_BIT),
+pUsage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT){
 }
 
-devkImageConfiguration::devkImageConfiguration( const devkImageConfiguration &configuration ){
+devkImageConfiguration::devkImageConfiguration(const devkImageConfiguration &configuration){
 	*this = configuration;
 }
 
@@ -56,55 +56,55 @@ devkImageConfiguration::~devkImageConfiguration(){
 // Management
 ///////////////
 
-void devkImageConfiguration::SetType( VkImageType type ){
+void devkImageConfiguration::SetType(VkImageType type){
 	pType = type;
 }
 
-void devkImageConfiguration::SetSize( const decPoint3 &size ){
-	if( ! ( size >= decPoint3( 1, 1, 1 ) ) ){
-		DETHROW( deeInvalidParam );
+void devkImageConfiguration::SetSize(const decPoint3 &size){
+	if(! (size >= decPoint3(1, 1, 1))){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pSize = size;
 }
 
-void devkImageConfiguration::SetLayerCount( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void devkImageConfiguration::SetLayerCount(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pLayerCount = count;
 }
 
-void devkImageConfiguration::SetMipMapCount( int count ){
-	if( count < 1 ){
-		DETHROW( deeInvalidParam );
+void devkImageConfiguration::SetMipMapCount(int count){
+	if(count < 1){
+		DETHROW(deeInvalidParam);
 	}
 	
 	pMipMapCount = count;
 }
 
-void devkImageConfiguration::SetFormat( VkFormat format ){
+void devkImageConfiguration::SetFormat(VkFormat format){
 	pFormat = format;
 }
 
-void devkImageConfiguration::SetFlags( VkImageCreateFlags flags ){
+void devkImageConfiguration::SetFlags(VkImageCreateFlags flags){
 	pFlags = flags;
 }
 
-void devkImageConfiguration::SetSamples( VkSampleCountFlagBits samples ){
+void devkImageConfiguration::SetSamples(VkSampleCountFlagBits samples){
 	pSamples = samples;
 }
 
-void devkImageConfiguration::SetUsage( VkImageUsageFlags usage ){
+void devkImageConfiguration::SetUsage(VkImageUsageFlags usage){
 	pUsage = usage;
 }
 
 
 
-void devkImageConfiguration::Set2D( const decPoint &size, VkFormat format ){
-	SetSize( decPoint3( size.x, size.y, 1 ) );
-	SetFormat( format );
+void devkImageConfiguration::Set2D(const decPoint &size, VkFormat format){
+	SetSize(decPoint3(size.x, size.y, 1));
+	SetFormat(format);
 	
 	pType = VK_IMAGE_TYPE_2D;
 	pLayerCount = 1;
@@ -114,9 +114,9 @@ void devkImageConfiguration::Set2D( const decPoint &size, VkFormat format ){
 	pUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 }
 
-void devkImageConfiguration::Set3D( const decPoint3 &size, VkFormat format ){
-	SetSize( size );
-	SetFormat( format );
+void devkImageConfiguration::Set3D(const decPoint3 &size, VkFormat format){
+	SetSize(size);
+	SetFormat(format);
 	
 	pType = VK_IMAGE_TYPE_3D;
 	pLayerCount = 1;
@@ -126,9 +126,9 @@ void devkImageConfiguration::Set3D( const decPoint3 &size, VkFormat format ){
 	pUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 }
 
-void devkImageConfiguration::SetCube( int size, VkFormat format ){
-	SetSize( decPoint3( size, size, 1 ) );
-	SetFormat( format );
+void devkImageConfiguration::SetCube(int size, VkFormat format){
+	SetSize(decPoint3(size, size, 1));
+	SetFormat(format);
 	
 	pType = VK_IMAGE_TYPE_2D;
 	pLayerCount = 6;
@@ -138,10 +138,10 @@ void devkImageConfiguration::SetCube( int size, VkFormat format ){
 	pUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 }
 
-void devkImageConfiguration::Set2DArray( const decPoint &size, int layerCount, VkFormat format ){
-	SetSize( decPoint3( size.x, size.y, 1 ) );
-	SetLayerCount( layerCount );
-	SetFormat( format );
+void devkImageConfiguration::Set2DArray(const decPoint &size, int layerCount, VkFormat format){
+	SetSize(decPoint3(size.x, size.y, 1));
+	SetLayerCount(layerCount);
+	SetFormat(format);
 	
 	pType = VK_IMAGE_TYPE_2D;
 	pMipMapCount = 1;
@@ -150,10 +150,10 @@ void devkImageConfiguration::Set2DArray( const decPoint &size, int layerCount, V
 	pUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 }
 
-void devkImageConfiguration::SetCubeArray( int size, int layerCount, VkFormat format ){
-	SetSize( decPoint3( size, size, 1 ) );
-	SetLayerCount( 6 * layerCount );
-	SetFormat( format );
+void devkImageConfiguration::SetCubeArray(int size, int layerCount, VkFormat format){
+	SetSize(decPoint3(size, size, 1));
+	SetLayerCount(6 * layerCount);
+	SetFormat(format);
 	
 	pType = VK_IMAGE_TYPE_2D;
 	pMipMapCount = 1;
@@ -168,17 +168,17 @@ void devkImageConfiguration::DisableAll(){
 	pUsage = 0;
 }
 
-void devkImageConfiguration::EnableTransfer( bool enable ){
-	if( enable ){
+void devkImageConfiguration::EnableTransfer(bool enable){
+	if(enable){
 		pUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		
 	}else{
-		pUsage &= ~( VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT );
+		pUsage &= ~(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
 	}
 }
 
-void devkImageConfiguration::EnableTransferSource( bool enable ){
-	if( enable ){
+void devkImageConfiguration::EnableTransferSource(bool enable){
+	if(enable){
 		pUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 		
 	}else{
@@ -186,8 +186,8 @@ void devkImageConfiguration::EnableTransferSource( bool enable ){
 	}
 }
 
-void devkImageConfiguration::EnableTransferDestination( bool enable ){
-	if( enable ){
+void devkImageConfiguration::EnableTransferDestination(bool enable){
+	if(enable){
 		pUsage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		
 	}else{
@@ -195,8 +195,8 @@ void devkImageConfiguration::EnableTransferDestination( bool enable ){
 	}
 }
 
-void devkImageConfiguration::EnableSampled( bool enable ){
-	if( enable ){
+void devkImageConfiguration::EnableSampled(bool enable){
+	if(enable){
 		pUsage |= VK_IMAGE_USAGE_SAMPLED_BIT;
 		
 	}else{
@@ -204,8 +204,8 @@ void devkImageConfiguration::EnableSampled( bool enable ){
 	}
 }
 
-void devkImageConfiguration::EnableStorage( bool enable ){
-	if( enable ){
+void devkImageConfiguration::EnableStorage(bool enable){
+	if(enable){
 		pUsage |= VK_IMAGE_USAGE_STORAGE_BIT;
 		
 	}else{
@@ -213,8 +213,8 @@ void devkImageConfiguration::EnableStorage( bool enable ){
 	}
 }
 
-void devkImageConfiguration::EnableColorAttachment( bool enable ){
-	if( enable ){
+void devkImageConfiguration::EnableColorAttachment(bool enable){
+	if(enable){
 		pUsage &= ~VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 		pUsage |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		
@@ -223,8 +223,8 @@ void devkImageConfiguration::EnableColorAttachment( bool enable ){
 	}
 }
 
-void devkImageConfiguration::EnableDepthStencilAttachment( bool enable ){
-	if( enable ){
+void devkImageConfiguration::EnableDepthStencilAttachment(bool enable){
+	if(enable){
 		pUsage &= ~VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 		pUsage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 		
@@ -238,7 +238,7 @@ void devkImageConfiguration::EnableDepthStencilAttachment( bool enable ){
 // Operators
 //////////////
 
-bool devkImageConfiguration::operator==( const devkImageConfiguration &configuration ) const{
+bool devkImageConfiguration::operator==(const devkImageConfiguration &configuration) const{
 	return pType == configuration.pType
 		&& pSize == configuration.pSize
 		&& pLayerCount == configuration.pLayerCount
@@ -249,7 +249,7 @@ bool devkImageConfiguration::operator==( const devkImageConfiguration &configura
 		&& pUsage == configuration.pUsage;
 }
 
-devkImageConfiguration &devkImageConfiguration::operator=( const devkImageConfiguration &configuration ){
+devkImageConfiguration &devkImageConfiguration::operator=(const devkImageConfiguration &configuration){
 	pType = configuration.pType;
 	pSize = configuration.pSize;
 	pLayerCount = configuration.pLayerCount;

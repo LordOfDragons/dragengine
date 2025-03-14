@@ -42,8 +42,42 @@ pin Dragengine.Utils
  * supporting behaviors have potentially modified the \ref StubElement.
  * 
  * Default property prefix is "randomizeCreation."
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_randomizecreation
  */
 class ECBehaviorRandomizeCreation extends DefaultECBehavior implements BehaviorPreventCreation
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRandomizeCreation'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRandomizeCreation"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorRandomizeCreation behavior = ECBehaviorRandomizeCreation.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "randomizeCreation")
+			return behavior
+		end
+	end
+	
+	
 	var ECPFloat pProbability
 	
 	
@@ -65,7 +99,7 @@ class ECBehaviorRandomizeCreation extends DefaultECBehavior implements BehaviorP
 	 * Probability the element is created. Property name is "probability".
 	 * Default value is 1. Minimum value is 0. Minimum value is 1.
 	 */
-	func ECPFloat getPrrobability()
+	func ECPFloat getProbability()
 		return pProbability
 	end
 	

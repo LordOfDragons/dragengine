@@ -38,37 +38,38 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglPipeline::deoglPipeline( deoglRenderThread &renderThread,
-	const deoglPipelineConfiguration &configuration ) :
-pRenderThread( renderThread ),
-pRTSIndex( -1 ),
-pGlConfiguration( nullptr ),
-pVkPipeline( nullptr )
+#ifdef BACKEND_OPENGL
+deoglPipeline::deoglPipeline(deoglRenderThread &renderThread,
+	const deoglPipelineConfiguration &configuration) :
+pRenderThread(renderThread),
+pRTSIndex(-1),
+pConfiguration(nullptr)
 {
 	try{
-		pGlConfiguration = new deoglPipelineConfiguration( configuration );
+		pConfiguration = new deoglPipelineConfiguration(configuration);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-deoglPipeline::deoglPipeline( deoglRenderThread &renderThread,
-	const devkPipelineConfiguration &configuration ) :
-pRenderThread( renderThread ),
-pRTSIndex( -1 ),
-pGlConfiguration( nullptr ),
-pVkPipeline( nullptr )
+#elif defined BACKEND_VULKAN
+deoglPipeline::deoglPipeline(deoglRenderThread &renderThread,
+	const devkPipelineConfiguration &configuration) :
+pRenderThread(renderThread),
+pRTSIndex(-1),
+pPipeline(nullptr)
 {
 	try{
-		pVkPipeline = renderThread.GetVulkanDevice()->GetPipelineManager().GetWith( configuration );
+		pPipeline = renderThread.GetVulkanDevice()->GetPipelineManager().GetWith(configuration);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
+#endif
 
 deoglPipeline::~deoglPipeline(){
 	pCleanUp();
@@ -79,26 +80,23 @@ deoglPipeline::~deoglPipeline(){
 // Management
 ///////////////
 
-const deoglPipelineConfiguration &deoglPipeline::GetGlConfiguration() const{
-	DEASSERT_NOTNULL( pGlConfiguration )
-	return *pGlConfiguration;
+#ifdef BACKEND_OPENGL
+deoglShaderCompiled &deoglPipeline::GetShader() const{
+	return *pConfiguration->GetShaderRef().GetCompiled();
 }
-
-deoglShaderCompiled &deoglPipeline::GetGlShader() const{
-	return *GetGlConfiguration().GetShaderRef().GetCompiled();
-}
+#endif
 
 void deoglPipeline::SetRTSIndex( int index ){
 	pRTSIndex = index;
 }
 
 void deoglPipeline::Activate() const{
-	if( pGlConfiguration ){
-		pGlConfiguration->Activate( pRenderThread );
-		
-	}else if( pVkPipeline ){
-		DETHROW_INFO( deeInvalidAction, "missing implementation" );
-	}
+#ifdef BACKEND_OPENGL
+	pConfiguration->Activate(pRenderThread);
+	
+#elif defined BACKEND_VULKAN
+	DETHROW_INFO(deeInvalidAction, "missing implementation");
+#endif
 }
 
 
@@ -107,9 +105,13 @@ void deoglPipeline::Activate() const{
 //////////////////////
 
 void deoglPipeline::pCleanUp(){
+#ifdef BACKEND_OPENGL
 	// opengl: delete has to be done from render thread
-	
-	if( pGlConfiguration ){
-		delete pGlConfiguration;
+	if(pConfiguration){
+		delete pConfiguration;
 	}
+	
+#elif defined BACKEND_VULKAN
+	pPipeline = nullptr;
+#endif
 }

@@ -2,7 +2,9 @@
 <shader>
 	<name>DefRen GI Clear Probes</name>
 	
+	<!-- shader assigned locations
 	<texture name='texProbe' target='0'/>
+	-->
 	
 	<uniformBlock name='GIClearParameters' target='0'/>
 	<uniformBlock name='GIParameters' target='1'/>

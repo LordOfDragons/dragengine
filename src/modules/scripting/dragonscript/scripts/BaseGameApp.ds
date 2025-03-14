@@ -374,6 +374,7 @@ class BaseGameApp extends Game
 	var Desktop pDesktop
 	var TranslationManager pTranslationManager
 	var InputProcessor pInputProcessor
+	var BehaviorFactoryList pBehaviorFactories
 	var ElementClassList pElementClassList
 	var CommandManager pCommandManager
 	var ConsoleCommandList pConsoleCommands
@@ -393,6 +394,7 @@ class BaseGameApp extends Game
 	var MutableID pIDGenerator
 	var GlobalEvents pGlobalEvents
 	var BaseGameServices pBaseGameServices
+	var SimpleConversationConverter pSimpleConversationConverter
 	
 	static var BaseGameApp pApp = null
 	
@@ -475,6 +477,7 @@ class BaseGameApp extends Game
 		pTranslationManager = createTranslationManager()
 		EngineTranslations.get() // preload engine translations
 		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
+		pSimpleConversationConverter = createSimpleConversationConverter()
 		
 		loadConfiguration()
 		
@@ -540,6 +543,9 @@ class BaseGameApp extends Game
 		loadBindings()
 		pBindingManager.addListener(AttachDeviceDefaultBindings.new())
 		
+		pBehaviorFactories = BehaviorFactoryList.new()
+		createAndAddBehaviorFactories()
+		
 		pElementClassList = ElementClassList.new()
 		createAndAddElementClasses()
 		pLoaders.getWorld().setElementClassList(pElementClassList)
@@ -560,6 +566,8 @@ class BaseGameApp extends Game
 		if pElementClassList != null
 			pElementClassList.dispose()
 		end
+		
+		pBehaviorFactories = null
 		
 		if pGameWorldLoader != null
 			cancelLoadGameWorld()
@@ -618,6 +626,7 @@ class BaseGameApp extends Game
 		
 		pConsole = null
 		
+		pSimpleConversationConverter = null
 		pTranslationManager = null
 		
 		pApp = null
@@ -740,6 +749,14 @@ class BaseGameApp extends Game
 		return pTranslationManager
 	end
 	
+	/**
+	 * \brief Simple conversation converter.
+	 * \version 1.25
+	 */
+	func SimpleConversationConverter getSimpleConversationConverter()
+		return pSimpleConversationConverter
+	end
+	
 	
 	
 	/** \brief Desktop widget. */
@@ -778,6 +795,14 @@ class BaseGameApp extends Game
 	end
 	
 	
+	
+	/**
+	 * \brief Behavior factories.
+	 * \version 1.25
+	 */
+	func BehaviorFactoryList getBehaviorFactories()
+		return pBehaviorFactories
+	end
 	
 	/** \brief Element classes list. */
 	func ElementClassList getElementClassList()
@@ -1029,6 +1054,16 @@ class BaseGameApp extends Game
 	end
 	
 	/**
+	 * \brief Create simple conversation converter.
+	 * \version 1.25
+	 * 
+	 * Creates instance of SimpleConversationConverter.
+	 */
+	protected func SimpleConversationConverter createSimpleConversationConverter()
+		return SimpleConversationConverter.new()
+	end
+	
+	/**
 	 * \brief Base game services.
 	 */
 	func BaseGameServices getBaseGameServices()
@@ -1221,10 +1256,24 @@ class BaseGameApp extends Game
 	end
 	
 	/**
+	 * \brief Create behavior factories adding them to the factory list.
+	 * 
+	 * Behavior factories allow generic \ref BehaviorElementClass to be created using XML element
+	 * class files (*.deeclass) where not only element class properties can be defined but
+	 * also behaviors added. \ref #getBehaviorFactories() is used by
+	 * \ref GenericBehaviorElementClass to set the initial list of allowed factories.
+	 * Default uses \ref BehaviorFactoryHelper#addAllFactories() to populate the list.
+	 */
+	protected func void createAndAddBehaviorFactories()
+		BehaviorElementClass.sharedFactoryHelper.addAllFactories(pBehaviorFactories)
+	end
+	
+	/**
 	 * \brief Create element classes and add them to element class list.
 	 * 
 	 * Element classes list contains all element classes world files are allowed to be used.
 	 * Default implementation creates and adds these element classes:
+	 * - GenericBehaviorElementClass named "GenericBehaviorElement"
 	 * - AnimatedElementClass named "AnimatedElement"
 	 * - AttachableBaseLightClass named "AttachableBaseLight"
 	 * - AttachableBaseSpeakerClass named "AttachableBaseSpeaker"
@@ -1266,6 +1315,7 @@ class BaseGameApp extends Game
 	protected func void createAndAddElementClasses()
 		pElementClassList.add(IgnoreElementClass.new("VirtualElement"))
 		pElementClassList.add(IgnoreElementClass.new("MapperNote"))
+		pElementClassList.add(GenericBehaviorElementClass.new())
 		pElementClassList.add(SimpleElementClass.new(pLoaders))
 		pElementClassList.add(PhysicsElementClass.new())
 		pElementClassList.add(AnimatedElementClass.new(pLoaders, pTriggerTable))

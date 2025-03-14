@@ -41,6 +41,8 @@ pin Dragengine.Utils
  * This behavior can be present only once.
  * 
  * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhmd
  */
 class ECBehaviorVRHMD extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -48,7 +50,7 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 		/** \brief HMD attached and ready to use. */
 		func void hmdAttached( Instance instance )
 		
-		/** \brief HMD detached and no more usableuse. */
+		/** \brief HMD detached and no more usable. */
 		func void hmdDetached( Instance instance )
 	end
 	
@@ -88,6 +90,60 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 		/** \brief Create listener. */
 		public func Listener createListener( Instance instance )
 			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRPlayspace
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHMD'>
+	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values -->
+	 *   <string name='bindingManager'>default</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRHMD' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRHMD"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorVRHMD behavior = ECBehaviorVRHMD.new(eclass,\
+				ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
+				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrhmd")
+			return behavior
+		end
+		
+		/**
+		 * \brief Binding manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getBindingManager() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func BindingManager getBindingManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
 		end
 	end
 	

@@ -288,19 +288,13 @@ void devkInstance::pCreateInstance( bool enableValidationLayers ){
 	pVulkan.GetModule().LogInfo( "Create Vulkan Instance" );
 	
 	// set up application information
-	VkApplicationInfo appInfo;
-	memset( &appInfo, 0, sizeof( appInfo ) );
-	
-	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+	VkApplicationInfo appInfo{VK_STRUCTURE_TYPE_APPLICATION_INFO};
 	appInfo.pApplicationName = "Drag[en]gine";
 	appInfo.pEngineName = "Drag[en]gine";
 	appInfo.apiVersion = VK_API_VERSION_1_0;
 	
 	// create instance
-	VkInstanceCreateInfo instanceCreateInfo;
-	memset( &instanceCreateInfo, 0, sizeof( instanceCreateInfo ) );
-	
-	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+	VkInstanceCreateInfo instanceCreateInfo{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
 	instanceCreateInfo.pApplicationInfo = &appInfo;
 	
 	// detect extensions and layers

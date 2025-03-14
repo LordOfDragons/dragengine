@@ -46,7 +46,7 @@ pin Dragengine.TriggerSystem
  * 
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       ECBehaviorParticleEmitter.new(this)
  *       ECBehaviorParticleEmitter.new(this, "subParticleEmitter")
  *    end
@@ -75,6 +75,8 @@ pin Dragengine.TriggerSystem
  * ECBehaviorParticleEmitter can also use trigger targets so listeners are not always required.
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_particleemitter
  */
 class ECBehaviorParticleEmitter extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -101,19 +103,19 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Start casting particles. */
-		public func void startCasting(Instance instance)
+		func void startCasting(Instance instance)
 		end
 		
 		/** \brief Stop casting particles. */
-		public func void stopCasting(Instance instance)
+		func void stopCasting(Instance instance)
 		end
 		
 		/** \brief Last particle of a burst emission died. */
-		public func void lastParticleDied(Instance instance)
+		func void lastParticleDied(Instance instance)
 		end
 		
 		/**
@@ -125,7 +127,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		 * 
 		 * The default implementation does not change \em collisionInfo.
 		 */
-		public func void particleResponse(Instance instance, CollisionInfo collisionInfo)
+		func void particleResponse(Instance instance, CollisionInfo collisionInfo)
 		end
 	end
 	
@@ -137,10 +139,10 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -148,8 +150,86 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorParticleEmitter'>
+	 *   <!-- optional: set collision filter. default value '5:0 1 2 6' which means
+	 *                  category BaseGameApp.CollisionFilterBit.particle
+	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
+	 *                         BaseGameApp.CollisionFilterBit.dynamic,
+	 *                         BaseGameApp.CollisionFilterBit.actor,
+	 *                         BaseGameApp.CollisionFilterBit.forceField.
+	 *                  format is '', 'category' or 'category:filter' where category and filter
+	 *                  are a list of bits to set. -->
+	 *   <string name='collisionFilter'>5:0 1 2 6</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
+	 *   <string name='triggerTable'>default</string>
+	 * 
+	 *   <!-- optional: sync trigger with particle emitter matching identifier -->
+	 *   <string name='syncTrigger'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorParticleEmitter' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorParticleEmitter"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorParticleEmitter behavior = ECBehaviorParticleEmitter.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), BaseGameApp.getApp().getLoaders(),\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			if parameters.has("collisionFilter")
+				behavior.getParticleEmitter().getCollisionFilter().setCollisionFilter(\
+					ElementClass.getSharedCodecPropertyString().decodeCollisionFilter(\
+						parameters.getAt("collisionFilter") cast String))
+			end
+			
+			if parameters.has("syncTrigger")
+				var String bid = parameters.getAt("syncTrigger") cast String
+				if bid != null
+					behavior.setSyncTrigger(ECBehaviorParticleEmitter.getBehaviorIn(eclass, bid))
+				end
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "particleEmitter", id)
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func TSTriggerTable getTriggerTableFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 	end
 	
@@ -157,52 +237,52 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Trigger listener to toggle particle emitter casting state. */
 		public class CastingListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
 				pInstance.setCasting(true)
 			end
 			
-			public func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
+			func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
 				pInstance.setCasting(false)
 			end
 		end
 		
 		/** \brief Particle listener. */
 		protected class ParticleListener implements ParticleEmitterInstanceListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void lastParticleDied(ParticleEmitterInstance instance)
+			func void lastParticleDied(ParticleEmitterInstance instance)
 				pInstance.notifyLastParticleDied()
 			end
 			
-			public func void collisionResponse(ParticleEmitterInstance instance, CollisionInfo collisionInfo)
+			func void collisionResponse(ParticleEmitterInstance instance, CollisionInfo collisionInfo)
 				pInstance.notifyParticleResponse(collisionInfo)
 			end
 		end
 		
-		private var ECBehaviorParticleEmitter pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
-		private var bool pCasting
-		private var ParticleEmitterInstance pParticleEmitterInstance
-		private var ECBehaviorTriggered.Instance pTrigger
-		private var TSTriggerTable pTriggerTable
-		private var TSNamedTriggerTarget pTargetCasting
-		private var TSNamedTriggerTarget pTargetLastParticleDied
-		private var Array pListeners
+		var ECBehaviorParticleEmitter pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var bool pCasting
+		var ParticleEmitterInstance pParticleEmitterInstance
+		var ECBehaviorTriggered.Instance pTrigger
+		var TSTriggerTable pTriggerTable
+		var TSNamedTriggerTarget pTargetCasting
+		var TSNamedTriggerTarget pTargetLastParticleDied
+		var Array pListeners
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorParticleEmitter ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorParticleEmitter ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pCasting = false
 			pListeners = Array.new()
@@ -212,7 +292,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			if pParticleEmitterInstance != null
 				pParticleEmitterInstance.setListener(null)
 				pParticleEmitterInstance.removeAllIgnoreColliders()
@@ -229,7 +309,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			if pECBehavior.getCollider() != null
 				pCollider = pECBehavior.getCollider().instance(getElement())
 			end
@@ -299,34 +379,34 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorParticleEmitter getECBehavior()
+		func ECBehaviorParticleEmitter getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Collider behavior or null if not attached. */
-		public func ECBehaviorCollider.Instance getCollider()
+		func ECBehaviorCollider.Instance getCollider()
 			return pCollider
 		end
 		
 		/** \brief Trigger casting or \em null. */
-		public func ECBehaviorTriggered.Instance getTrigger()
+		func ECBehaviorTriggered.Instance getTrigger()
 			return pTrigger
 		end
 		
 		/** \brief Particle emitter instance or null if not created. */
-		public func ParticleEmitterInstance getParticleEmitterInstance()
+		func ParticleEmitterInstance getParticleEmitterInstance()
 			return pParticleEmitterInstance
 		end
 		
 		
 		
 		/** \brief Particle emitter instance is casting particles. */
-		public func bool getCasting()
+		func bool getCasting()
 			return pCasting
 		end
 		
 		/** \brief Set if particle emitter instance is casting particles. */
-		public func void setCasting(bool casting)
+		func void setCasting(bool casting)
 			if casting == pCasting
 				return
 			end
@@ -353,24 +433,24 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** \brief Toggle particle emitter instance casting state. */
-		public func void toggle()
+		func void toggle()
 			setCasting(not pCasting)
 		end
 		
 		/** \brief Trigger target reflecting casting state. */
-		public func TSNamedTriggerTarget getTargetCasting()
+		func TSNamedTriggerTarget getTargetCasting()
 			return pTargetCasting
 		end
 		
 		/** \brief Trigger target pulsed if particles died. */
-		public func TSNamedTriggerTarget getTargetLastParticleDied()
+		func TSNamedTriggerTarget getTargetLastParticleDied()
 			return pTargetLastParticleDied
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -378,12 +458,12 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		/** \brief Notify listeners last particle died. */
-		public func void notifyLastParticleDied()
+		func void notifyLastParticleDied()
 			pTargetLastParticleDied.pulse()
 			pListeners.forEach(block Listener each
 				each.lastParticleDied(this)
@@ -391,7 +471,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** \brief Notify listeners to calculate custom particle response. */
-		public func void notifyParticleResponse(CollisionInfo collisionInfo)
+		func void notifyParticleResponse(CollisionInfo collisionInfo)
 			pListeners.forEach(block Listener each
 				each.particleResponse(this, collisionInfo)
 			end)
@@ -400,14 +480,14 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		
 		
 		/** \brief State changed (visble, touchable). */
-		public func void stateChanged()
+		func void stateChanged()
 			if pParticleEmitterInstance != null
 				pParticleEmitterInstance.setEnableCasting(pCasting and getElement().getVisible())
 			end
 		end
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
+		func void addToGameWorld()
 			if pParticleEmitterInstance != null
 				getElement().getGameWorld().getWorld().addParticleEmitter(pParticleEmitterInstance)
 			end
@@ -424,7 +504,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
+		func void removeFromGameWorld()
 			if pParticleEmitterInstance != null
 				getElement().getGameWorld().getWorld().removeParticleEmitter(pParticleEmitterInstance)
 			end
@@ -436,7 +516,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
@@ -448,7 +528,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** Writes the element to a file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(1)
@@ -459,15 +539,15 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorCollider pCollider
-	private var ECComposeParticleEmitter pParticleEmitter
-	private var ECComposeAttachResource pAttach
-	private var ECBehaviorTriggered pTrigger
-	private var ECBehaviorParticleEmitter pSyncTrigger
-	private var ECPString pTargetCasting
-	private var ECPString pTargetLastParticleDied
-	private var TSTriggerTable pTriggerTable
-	private var Array pListenerFactories
+	var ECBehaviorCollider pCollider
+	var ECComposeParticleEmitter pParticleEmitter
+	var ECComposeAttachResource pAttach
+	var ECBehaviorTriggered pTrigger
+	var ECBehaviorParticleEmitter pSyncTrigger
+	var ECPString pTargetCasting
+	var ECPString pTargetLastParticleDied
+	var TSTriggerTable pTriggerTable
+	var Array pListenerFactories
 	
 	
 	
@@ -476,29 +556,29 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em collider.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
 	this(eclass, collider, BaseGameApp.getApp().getLoaders(), null)
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
 	this(eclass, collider, BaseGameApp.getApp().getLoaders(), null, id)
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable) this(eclass, collider, loaders, triggerTable, "")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable, String id) this(eclass, collider, loaders, triggerTable, id, \
 		id.empty() if "particleEmitter" else "particleEmitter(" + id + ")")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	Loaders loaders, TSTriggerTable triggerTable, String id, String subID) \
 	this(eclass, collider, loaders, triggerTable, id, subID, subID + ".")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable, String id, String subID, String prefix) super(eclass, id)
 		pCollider = collider
 		pTriggerTable = triggerTable
@@ -519,7 +599,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pCollider = null
 		pSyncTrigger = null
 		pListenerFactories = null
@@ -529,57 +609,57 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	
 	/** \brief Collider behavior or null to not attach. */
-	public func ECBehaviorCollider getCollider()
+	func ECBehaviorCollider getCollider()
 		return pCollider
 	end
 	
 	/** \brief Composeable particle emitter for element class. */
-	public func ECComposeParticleEmitter getParticleEmitter()
+	func ECComposeParticleEmitter getParticleEmitter()
 		return pParticleEmitter
 	end
 	
 	/** \brief Attach resource. */
-	public func ECComposeAttachResource getAttach()
+	func ECComposeAttachResource getAttach()
 		return pAttach
 	end
 	
 	/** \brief Trigger casting. */
-	public func ECBehaviorTriggered getTrigger()
+	func ECBehaviorTriggered getTrigger()
 		return pTrigger
 	end
 	
 	/** \brief ECBehaviorParticleEmitter to synchronize triggers with or \em null to disable. */
-	public func ECBehaviorParticleEmitter getSyncTrigger()
+	func ECBehaviorParticleEmitter getSyncTrigger()
 		return pSyncTrigger
 	end
 	
 	/** \brief Set ECBehaviorParticleEmitter to synchronize triggers with or \em null to disable. */
-	public func void setSyncTrigger(ECBehaviorParticleEmitter behavior)
+	func void setSyncTrigger(ECBehaviorParticleEmitter behavior)
 		pSyncTrigger = behavior
 	end
 	
 	/** \brief Target casting. */
-	public func ECPString getTargetCasting()
+	func ECPString getTargetCasting()
 		return pTargetCasting
 	end
 	
 	/** \brief Target last particle died. */
-	public func ECPString getTargetLastParticleDied()
+	func ECPString getTargetLastParticleDied()
 		return pTargetLastParticleDied
 	end
 	
 	/** \brief Trigger table or \em null if not used. */
-	public func TSTriggerTable getTriggerTable()
+	func TSTriggerTable getTriggerTable()
 		return pTriggerTable
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable(TSTriggerTable triggerTable)
+	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -591,17 +671,17 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -610,7 +690,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -622,7 +702,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorParticleEmitter getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorParticleEmitter getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorParticleEmitter each
 			return true
 		end) cast ECBehaviorParticleEmitter
@@ -634,7 +714,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorParticleEmitter with specific identifier.
 	 */
-	static public func ECBehaviorParticleEmitter getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorParticleEmitter getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorParticleEmitter each
 			return each.getID().equals(id)
 		end) cast ECBehaviorParticleEmitter
@@ -646,7 +726,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * Returns list contains ECBehaviorParticleEmitter behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorParticleEmitter each
 			return true
 		end)
@@ -661,7 +741,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * of type ECBehaviorParticleEmitter.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -673,7 +753,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorParticleEmitter.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -685,7 +765,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * Returns list contains ECBehaviorParticleEmitter.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -694,7 +774,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

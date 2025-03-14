@@ -91,8 +91,50 @@ pin Dragengine.Utils
  * Element class properties have the prefix "renderableDesktop{(id)}.".
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderabledesktop
  */
 class ECBehaviorRenderableDesktop extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorDynamicSkin
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRenderableDesktop'>
+	 *   <!-- optional: use dynamic skin with id instead of empty string -->
+	 *   <string name='dynamicSkin'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorRenderableDesktop' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRenderableDesktop"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorRenderableDesktop behavior = ECBehaviorRenderableDesktop.new(eclass,\
+				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "renderableDesktop", id)
+			return behavior
+		end
+	end
+	
 	/**
 	 * \brief Create renderable desktop content.
 	 * \version 1.9

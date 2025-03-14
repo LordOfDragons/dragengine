@@ -1,7 +1,7 @@
 from SConsCommon import *
 
 # import whatever is given by the parent builder
-Import( 'parent_env parent_targets parent_report' )
+Import('parent_env parent_targets parent_report')
 
 # setup the environment matching the OS
 envModule = parent_env.Clone()
@@ -11,11 +11,11 @@ libs = []
 # do configure stuff
 buildModule = False
 
-if envModule[ 'platform_android' ] != 'no' and envModule[ 'build_input_android' ] != TernaryVariableNo:
+if envModule['platform_android'] != 'no' and envModule['build_input_android'] != TernaryVariableNo:
 	buildModule = True
 
 # build module if requested
-parent_report[ 'build Android Input Module' ] = 'yes' if buildModule else 'no'
+parent_report['build Android Input Module'] = 'yes' if buildModule else 'no'
 if not buildModule:
 	Return()
 
@@ -24,76 +24,78 @@ versionString = '1.0'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
-pathConfig = '{}/modules/input/androidinput/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
-pathModule = '{}/modules/input/androidinput/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
-pathShared = '{}/modules/input/androidinput/{}'.format( envModule.subst( envModule[ 'path_de_share' ] ), versionString )
+pathConfig = '{}/modules/input/androidinput/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
+pathModule = '{}/modules/input/androidinput/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
+pathShared = '{}/modules/input/androidinput/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
 
-envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
-envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 
 # determine the source files
 sources = []
 headers = []
 datafiles = []
 
-globFiles( envModule, 'src', '*.cpp', sources )
-globFiles( envModule, 'src', '*.h', headers )
-globFiles( envModule, 'data', '*', datafiles )
+globFiles(envModule, 'src', '*.cpp', sources)
+globFiles(envModule, 'src', '*.h', headers)
+globFiles(envModule, 'data', '*', datafiles)
 
 # setup the builders
-objects = [ envModule.SharedObject( s ) for s in sources ]
+objects = [envModule.SharedObject(s) for s in sources]
 
-libs.extend( envModule[ 'ANDROID_LIBS' ] )
+libs.extend(envModule['ANDROID_LIBS'])
 
-appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
+appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['lib_agdk'], libs)
 
-library = envModule.LoadableModule( target='inpandroid', source=objects, LIBS=libs )
-targetBuild = envModule.Alias( 'inp_android_build', library )
+
+library = envModule.LoadableModule(target='inpandroid', source=objects, LIBS=libs)
+targetBuild = envModule.Alias('inp_android_build', library)
 
 install = []
 archive = {}
 for l in library:
-	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
-		install.append( envModule.Install( pathModule, l ) )
-		archive[ os.path.join( pathModule, l.name ) ] = l
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
 
 manifestUpdates = [
-	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
-	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
 	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
-manifest = envModule.File( 'src/module.xml' )
-updateManifest = envModule.Command( manifest, manifest.srcnode(),
-	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
+manifest = envModule.File('src/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
 Depends(updateManifest, 'SConscript')
 
-install.append( envModule.Install( pathModule, updateManifest ) )
-archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 cutlen = len('data/')
 for d in datafiles:
-	install.append( envModule.InstallAs( os.path.join( pathShared, d[cutlen:] ), d ) )
-	archive[ os.path.join( pathShared, d[cutlen:] ) ] = envModule.File( d ).srcnode()
+	install.append(envModule.InstallAs(os.path.join(pathShared, d[cutlen:]), d))
+	archive[os.path.join(pathShared, d[cutlen:])] = envModule.File(d).srcnode()
 
-targetInstall = envModule.Alias( 'inp_android', install )
+targetInstall = envModule.Alias('inp_android', install)
 
 # source directory required for special commands
-srcdir =  Dir( '.' ).srcnode().abspath
+srcdir =  Dir('.').srcnode().abspath
 
 # cloc
-buildClocBare = BuildCLOC( envModule, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
-Depends( buildClocBare, sources )
-Depends( buildClocBare, headers )
-buildCloc = envModule.Alias( 'inp_android_cloc', buildClocBare )
+buildClocBare = BuildCLOC(envModule, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envModule.Alias('inp_android_cloc', buildClocBare)
 
 # add the targets to the targets list
-parent_targets[ 'inp_android' ] = {
+parent_targets['inp_android'] = {
 	'name' : 'Android Input Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine': archive,
 	'cloc' : buildCloc,
-	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

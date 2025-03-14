@@ -69,7 +69,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Activates the program. */
-	void Activate();
+	void Activate() const;
 	
 	/** Create compute program if not existing. */
 	void CreateComputeProgram();

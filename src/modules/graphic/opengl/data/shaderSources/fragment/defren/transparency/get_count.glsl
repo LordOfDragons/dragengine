@@ -16,5 +16,5 @@ void main( void ){
 	if( int( texelFetch( texValues, ivec3( 0, 0, vLayer ), 0 ).r * 255.1 ) <= int( gl_FragCoord.x ) ){
 		discard;
 	}
-	outDummy = 1;
+	outDummy = 1.0;
 }

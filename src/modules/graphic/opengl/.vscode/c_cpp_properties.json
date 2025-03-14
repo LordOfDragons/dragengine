@@ -9,8 +9,11 @@
                 "${workspaceFolder}/../../../../../testing/include"
             ],
             "defines": [
+                "BACKEND_OPENGL=1",
+                //"BACKEND_VULKAN=1",
                 "DS_MODULE_VERSION=\"9999\"",
-                "MOD_ENTRY_POINT_ATTR="
+                "MOD_ENTRY_POINT_ATTR=",
+                "WITH_DEBUG=1"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11"

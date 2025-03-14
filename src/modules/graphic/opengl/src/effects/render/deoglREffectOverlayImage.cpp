@@ -176,7 +176,7 @@ void deoglREffectOverlayImage::Render( deoglRenderPlan &plan ){
 	
 	// [-1,1] * su/2 + su/2 = [0,su]
 	// [-1,1] * sv/2 + sv/2 = [0,sv]
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	shader.SetParameterFloat( speGamma, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, OGL_RENDER_GAMMA, 1.0 );
 	shader.SetParameterFloat( speColor, 1.0f, 1.0f, 1.0f, pTransparency );
 	

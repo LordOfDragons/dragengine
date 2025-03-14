@@ -2,7 +2,7 @@ name: Nightly
 
 on:
   schedule:
-    - cron:  '0 3 * * *'
+    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       codeql:
@@ -12,11 +12,24 @@ on:
         default: true
 
 jobs:
+  generate_buildnumbers:
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.buildnumber.outputs.build_number }}
+    steps:
+      - name: Generate build number
+        id: buildnumber
+        uses: onyxmueller/build-tag-number@v1
+        with:
+          token: ${{ secrets.github_token }}
+          prefix: github
+  
   build_linux:
+    needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_linux.yml
     with:
       releaseVersion: nightly
-      buildVersion: 9999
+      buildVersion: '9999'
       artifactArchive: archives-linux
       artifactInstaller: installers-linux
       artifactTools: tools-crossplatform
@@ -26,14 +39,15 @@ jobs:
   #   uses: ./.github/workflows/build_windows.yml
   #   with:
   #     releaseVersion: nightly
-  #     buildVersion: 9999
+  #     buildVersion: '9999'
   #     artifactArchive: archives-windows-mingw
   
   build_windows:
+    needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_windows_vs.yml
     with:
       releaseVersion: nightly
-      buildVersion: 9999
+      buildVersion: '9999'
       artifactArchive: archives-windows
   
   build_windows_installer:
@@ -45,25 +59,32 @@ jobs:
       artifactInstaller: installers-windows
   
   build_linux_ci:
+    needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_linux_ci.yml
     with:
       releaseVersion: nightly
-      buildVersion: 9999
+      buildVersion: '9999'
       artifactInstaller: installers-linux-ci
   
-  build_android64:
-    uses: ./.github/workflows/build_android_aarch64.yml
+  build_android_armv8:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_android.yml
     with:
       releaseVersion: nightly
-      buildVersion: 9999
-      artifactArchive: archives-android64
+      buildVersion: '9999'
+      androidArch: 'armv8'
+      artifactArchive: archives-android-armv8
+      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
   
-  build_android32:
-    uses: ./.github/workflows/build_android_armv7.yml
+  build_android_armv7:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_android.yml
     with:
       releaseVersion: nightly
-      buildVersion: 9999
-      artifactArchive: archives-android32
+      buildVersion: '9999'
+      androidArch: 'armv7'
+      artifactArchive: archives-android-armv7
+      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
   
   build_live:
     needs: [build_linux, build_windows]
@@ -92,7 +113,15 @@ jobs:
       artifactResults: testing-results
   
   upload:
-    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live, testing]
+    needs: [
+      build_linux,
+      build_windows,
+      build_windows_installer,
+      build_linux_ci,
+      build_android_armv8,
+      build_android_armv7,
+      build_live,
+      testing]
     runs-on: ubuntu-latest
     
     steps:
@@ -143,28 +172,28 @@ jobs:
           cd repackage
 
           tar -xjf ../dragengine-dev-nightly-linux64.tar.bz2
-          mv usr sdk
+          mv usr dragengine-sdk
           rm ../dragengine-dev-nightly-linux64.tar.bz2
-          tar -cjf ../dragengine-dev-nightly-linux64.tar.bz2 sdk
-          rm -rf sdk
+          tar -cjf ../dragengine-dev-nightly-linux64.tar.bz2 dragengine-sdk
+          rm -rf dragengine-sdk
 
           tar -xjf ../deigde-dev-nightly-linux64.tar.bz2
-          mv usr sdk
+          mv usr deigde-sdk
           rm ../deigde-dev-nightly-linux64.tar.bz2
-          tar -cjf ../deigde-dev-nightly-linux64.tar.bz2 sdk
-          rm -rf sdk
+          tar -cjf ../deigde-dev-nightly-linux64.tar.bz2 deigde-sdk
+          rm -rf deigde-sdk
 
           unzip -q ../dragengine-sdk-nightly-windows64.zip
-          mv @ProgramFiles/Dragengine/SDK .
+          mv @ProgramFiles/Dragengine/SDK DragengineSDK
           rm ../dragengine-sdk-nightly-windows64.zip
-          zip -qr ../dragengine-sdk-nightly-windows64.zip SDK
-          rm -rf SDK
+          zip -qr ../dragengine-sdk-nightly-windows64.zip DragengineSDK
+          rm -rf DragengineSDK
 
           unzip -q ../deigde-sdk-nightly-windows64.zip
-          mv @ProgramFiles/DEIGDE/SDK .
+          mv @ProgramFiles/DEIGDE/SDK DEIGDESDK
           rm ../deigde-sdk-nightly-windows64.zip
-          zip -qr ../deigde-sdk-nightly-windows64.zip SDK
-          rm -rf SDK
+          zip -qr ../deigde-sdk-nightly-windows64.zip DEIGDESDK
+          rm -rf DEIGDESDK
 
           cd ..
           rm -rf repackage

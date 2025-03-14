@@ -88,6 +88,8 @@ pin Dragengine.Utils
  * renderable CanvasView as input using a ColorMatrix to convert the transparency
  * to a grayscale image. This can then be used to create transparent HUD displays
  * or holographic displays with fully or partiall transparent content.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderablepanel
  */
 class ECBehaviorRenderablePanel extends DefaultECBehavior
 	/**
@@ -117,6 +119,46 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 		/** \brief Create content. */
 		public func void createContent(Instance instance)
 			pBlock.run(instance)
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorDynamicSkin
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRenderablePanel'>
+	 *   <!-- optional: use dynamic skin with id instead of empty string -->
+	 *   <string name='dynamicSkin'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorRenderablePanel' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRenderablePanel"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorRenderablePanel behavior = ECBehaviorRenderablePanel.new(eclass,\
+				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "renderablePanel", id)
+			return behavior
 		end
 	end
 	

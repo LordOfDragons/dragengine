@@ -97,8 +97,73 @@ pin Dragengine.Utils
  * Element class properties have the prefix "component{(id)}.".
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_component
  */
 class ECBehaviorComponent extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorComponent'>
+	 *   <!-- optional: set layer mask as list of bits to set. default is '0' which means
+	 *                  BaseGameApp.WorldLayerBit.default -->
+	 *   <string name='layerMask'>0 1</string>
+	 * 
+	 *   <!-- optional: set render env map layer mask as list of bits to set. default is '1'
+	 *                  which means BaseGameApp.WorldLayerBit.envmap . if 'renderEnvMap' is
+	 *                  true this layer mask is OR combined with 'layerMask' -->
+	 *   <string name='layerMaskRenderEnvMap'>0 1</string>
+	 * 
+	 *   <!-- optional: set audio layer mask as list of bits to set. default is '2' which
+	 *                  means BaseGameApp.WorldLayerBit.audio . if 'affectsAudio' is
+	 *                  true this layer mask is OR combined with 'layerMask' -->
+	 *   <string name='layerMaskAffectsAudio'>0 1</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorComponent' id='second'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorComponent"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorComponent behavior = ECBehaviorComponent.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "component", id)
+			
+			if parameters.has("layerMask")
+				behavior.getComponent().setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			if parameters.has("layerMaskRenderEnvMap")
+				behavior.getComponent().setLayerMaskRenderEnvMap(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMaskRenderEnvMap") cast String))
+			end
+			if parameters.has("layerMaskAffectsAudio")
+				behavior.getComponent().setLayerMaskAffectsAudio(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMaskAffectsAudio") cast String))
+			end
+			
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorComponent pECBehavior

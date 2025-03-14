@@ -86,27 +86,19 @@ void deBaseInputModule::CaptureInputDevicesChanged(){
 void deBaseInputModule::AppActivationChanged(){
 }
 
-#if defined OS_UNIX && defined HAS_LIB_X11
+#ifdef OS_ANDROID
+void deBaseInputModule::EventLoop(const android_input_buffer &inputBuffer){
+}
+#elif defined OS_BEOS
+void deBaseInputModule::EventLoop(const BMessage&){
+}
+#elif defined OS_MACOS
+void deBaseInputModule::EventLoop( const NSEvent& ){
+}
+#elif defined OS_UNIX && defined HAS_LIB_X11
 void deBaseInputModule::EventLoop( XEvent& ){
 }
-#endif
-
-#ifdef OS_W32
+#elif defined OS_W32
 void deBaseInputModule::EventLoop( const MSG& ){
-}
-#endif
-
-#ifdef OS_ANDROID
-void deBaseInputModule::EventLoop( const AInputEvent& ){
-}
-#endif
-	
-#ifdef OS_BEOS
-void deBaseInputModule::EventLoop( const BMessage& ){
-}
-#endif
-	
-#ifdef OS_MACOS
-void deBaseInputModule::EventLoop( const NSEvent& ){
 }
 #endif

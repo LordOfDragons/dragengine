@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="Profiles">
+        <Preference
+            app:key="profiles"
+            app:title="@string/title_edit_profiles"
+            app:summary="@string/summary_profiles"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/preference_support">
+        <Preference
+            app:key="support_discord"
+            app:title="@string/title_discord_channel"
+            app:summary="@string/summary_discord_channel"/>
+        <Preference
+            app:key="support_website"
+            app:title="@string/title_support_website"
+            app:summary="@string/summary_support_website"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/preference_developer">
+        <Preference
+            app:key="remote_launcher"
+            app:title="@string/title_remote_launcher_support"
+            app:summary="@string/summary_remote_launcher"/>
+    </PreferenceCategory>
+</PreferenceScreen>

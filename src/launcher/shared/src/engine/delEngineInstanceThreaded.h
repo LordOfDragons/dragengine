@@ -25,6 +25,10 @@
 #ifndef _DELENGINEINSTANCETHREADED_H_
 #define _DELENGINEINSTANCETHREADED_H_
 
+#include <dragengine/dragengine_configuration.h>
+
+#ifndef OS_ANDROID
+
 #include "delEngineInstance.h"
 
 #ifdef OS_W32
@@ -323,3 +327,5 @@ public:
 };
 
 #endif
+
+#endif // OS_ANDROID

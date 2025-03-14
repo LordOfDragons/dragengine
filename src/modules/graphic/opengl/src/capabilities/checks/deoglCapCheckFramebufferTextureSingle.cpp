@@ -81,8 +81,8 @@ void deoglCapCheckFramebufferTextureSingle::Check( GLuint fbo ){
 	
 	deoglRenderThread &renderThread = pCapabilities.GetRenderThread();
 	
-	const deoglCapsTextureFormat &texformat = *pCapabilities.GetFormats()
-		.GetUseFBOArrayTexFormatFor( deoglCapsFmtSupport::eutfDepth );
+	const deoglCapsTextureFormat &texformat = pCapabilities.GetFormats()
+		.RequireUseFBOArrayTexFormatFor(deoglCapsFmtSupport::eutfDepth);
 	GLfloat pixels[ 1 ] = { 0.0f };
 	GLuint texture = 0;
 	

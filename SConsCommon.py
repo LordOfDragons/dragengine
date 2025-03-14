@@ -7,6 +7,8 @@ import subprocess
 import hashlib
 import tempfile
 import tarfile
+import zipfile
+import re
 
 import SCons
 
@@ -528,3 +530,52 @@ def BuildCLOCSummary(env, reports, targetCSV = 'clocsummary.csv'):
 		return None
 	
 	return env.Command(targetCSV, reports, build)
+
+# Archiving
+reWindowsDrive = re.compile('^([A-Z]:[/\\\\])|([A-Z][A-Z0-9]*//)', re.I)
+
+def NormalizePath(path):
+	path = os.path.normpath(path)
+	
+	path = os.path.splitdrive(path)[1] # return (drive, tail)
+	
+	# for cross compiling splitdrive wont work since python is compiled for
+	# the host system and os.path methods work with host system parameters.
+	# use a simple regular expression check to see if we need to cut the
+	# start of the string
+	match = reWindowsDrive.match(path)
+	if match:
+		path = path[match.end():]
+	elif path[0] == '/':
+		path = path[1:]  # no root path in archives
+	
+	return path
+
+def ArchiveTarBz2(env, target, source):
+	with tarfile.open(target[0].abspath, 'w:bz2', dereference=True) as arcfile:
+		for path, node in env['ArchiveFiles'].items():
+			# NOTE gettarinfo uses os.stat instead of os.lstat and thus fails to detect links
+			if os.path.islink(node.abspath):
+				info = tarfile.TarInfo(NormalizePath(path))
+				info.type = tarfile.SYMTYPE
+				info.linkname = os.readlink(node.abspath)
+				info.uid = 0
+				info.gid = 0
+				info.uname = 'root'
+				info.gname = 'root'
+				arcfile.addfile(info)
+			else:
+				info = arcfile.gettarinfo(node.abspath, NormalizePath(path))
+				info.uid = 0
+				info.gid = 0
+				info.uname = 'root'
+				info.gname = 'root'
+				with open(node.abspath, 'rb') as nf:
+					arcfile.addfile(info, nf)
+
+def ArchiveZip(env, target, source):
+	with zipfile.ZipFile(target[0].abspath, 'w',
+			compression=zipfile.ZIP_DEFLATED,
+			compresslevel=9) as arcfile:
+		for path, node in env['ArchiveFiles'].items():
+			arcfile.write(node.abspath, NormalizePath(path))

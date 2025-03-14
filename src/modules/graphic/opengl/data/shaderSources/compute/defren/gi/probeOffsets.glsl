@@ -5,6 +5,7 @@ precision highp int;
 #include "shared/defren/gi/ubo_gi.glsl"
 #include "shared/defren/gi/probe_flags.glsl"
 #include "shared/defren/gi/trace_probe.glsl"
+#include "shared/image_buffer.glsl"
 
 #ifdef WITH_RAY_CACHE
 	#include "shared/defren/gi/raycast/ray_cache.glsl"
@@ -12,14 +13,14 @@ precision highp int;
 
 
 #ifdef WITH_RAY_CACHE
-	layout(binding=2, r16f) uniform readonly image2DArray texCacheDistance;
-	layout(binding=3, rgba8_snorm) uniform readonly image2DArray texCacheNormal;
+	layout(binding=2, IMG_R16F_FMT) uniform readonly mediump IMG_R16F_2DARR texCacheDistance;
+	layout(binding=3, rgba8_snorm) uniform readonly mediump image2DArray texCacheNormal;
 #else
-	layout(binding=0, rgba16f) uniform readonly image2D texPosition;
-	layout(binding=1, rgba8_snorm) uniform readonly image2D texNormal;
+	layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
+	layout(binding=1, rgba8_snorm) uniform readonly mediump image2D texNormal;
 #endif
 
-layout(binding=4, rgba16f) uniform writeonly restrict image2DArray texProbeOffsets;
+layout(binding=4, rgba16f) uniform writeonly restrict mediump image2DArray texProbeOffsets;
 
 
 struct sProbeOffset {
@@ -87,7 +88,7 @@ void main( void ){
 	
 	
 	// parameters
-	UFCONST vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2;
+	UFCONST vec3 nearGeometryRange = pGIGridProbeSpacing + pGIMoveMaxOffset * 2.0;
 	
 	vec3 probePosition = pGIProbePosition[ index ].xyz;
 	
@@ -101,7 +102,7 @@ void main( void ){
 	
 	
 	// calculate probe offset
-	float closestFrontfaceDistance = 10000;
+	float closestFrontfaceDistance = 10000.0;
 	ivec3 counts = ivec3( 0 );
 	vec3 probeOffset = vec3( 0 );
 	
@@ -132,7 +133,7 @@ void main( void ){
 		if( rayIndex < pGIRaysPerProbe ){
 			#ifdef WITH_RAY_CACHE
 				ivec3 rayTC = ivec3( rayOffset + ivec2( rayIndex, 0 ), pGICascade );
-				float rayDistance = imageLoad( texCacheDistance, rayTC ).r;
+				float rayDistance = IMG_R16F_LOAD(imageLoad(texCacheDistance, rayTC));
 				
 			#else
 				ivec2 rayTC = rayOffset + ivec2( rayIndex, 0 );
@@ -142,12 +143,12 @@ void main( void ){
 			
 			vRayData[ gl_LocalInvocationIndex ].counts = ivec3( 1, 0, 0 );
 			vRayData[ gl_LocalInvocationIndex ].probeOffset = vec3( 0 );
-			vRayData[ gl_LocalInvocationIndex ].closestFrontfaceDistance = 10000;
+			vRayData[ gl_LocalInvocationIndex ].closestFrontfaceDistance = 10000.0;
 			vRayData[ gl_LocalInvocationIndex ].closestBackFace = vec4( 10000 );
 				// ^== very large to force disable if no good hit found
 	
 			
-			if( rayDistance < 9999 ){
+			if( rayDistance < 9999.0 ){
 				// if larger ray misses and we do not move. since we have to hit the barrier
 				// we can not use continue here to skip the loop run
 				
@@ -161,7 +162,7 @@ void main( void ){
 				
 				float distToSurface = dot( hitNormal, rayDirection );
 				
-				if( distToSurface < 0 ){
+				if( distToSurface < 0.0 ){
 					vRayData[ gl_LocalInvocationIndex ].frontfaceCount = 1;
 					vRayData[ gl_LocalInvocationIndex ].closestFrontfaceDistance = rayDistance;
 					
@@ -182,7 +183,7 @@ void main( void ){
 						// offset = rayDirection / rayLength * (rayLength - pGIMoveMinDistToSurface)
 						// offset = rayDirection * ((rayLength - pGIMoveMinDistToSurface) / rayLength)
 						vRayData[ gl_LocalInvocationIndex ].probeOffset =
-							rayDirection * ( 1 - pGIMoveMinDistToSurface / rayDistance );
+							rayDirection * ( 1.0 - pGIMoveMinDistToSurface / rayDistance );
 					}
 				
 				}else{
@@ -205,7 +206,7 @@ void main( void ){
 					//vec3 direction = rayDirection + hitNormal * pGIMoveMinDistToSurface;
 					vec3 direction = rayDirection + hitNormal * 0.05; //0.01;
 					
-					if( length( ( prevOffset + direction ) * moveMaxOffsetFactor ) < 1 ){
+					if( length( ( prevOffset + direction ) * moveMaxOffsetFactor ) < 1.0 ){
 						// consider backface ray only if not leaving allowed area
 						vRayData[ gl_LocalInvocationIndex ].closestBackFace = vec4( direction, rayDistance );
 					}
@@ -259,14 +260,14 @@ void main( void ){
 		
 	}else if( countOffsets > 0 ){
 		// front faces are hit
-		probeOffset /= countOffsets;
+		probeOffset /= float(countOffsets);
 		
 		// averaging the offsets has the tendency to shorten the offset if multiple
 		// rays contribute. reduce this effect by enlaring the offset with larger
 		// counts. a base scaling is always applied to reduce the chance of moving
 		// the probe again in the future
-		//probeOffset *= 1 + 0.05 * ( countOffsets - 1 );
-		probeOffset *= 1 + 0.05 * countOffsets;
+		//probeOffset *= 1.0 + 0.05 * float(countOffsets - 1);
+		probeOffset *= 1.0 + 0.05 * float(countOffsets);
 	}
 	
 	// position used for ray tracing contains the previous update probe offset.
@@ -308,11 +309,11 @@ void main( void ){
 		
 	}else{
 		float gridOffsetLen = length( gridOffset );
-		if( gridOffsetLen > 1 ){
+		if( gridOffsetLen > 1.0 ){
 			// offset due to frontface hit would move outside allowed range.
 			// clamp the offset to the allowed range.
 			if( gridOffsetLen > 0.001 ){
-				probeOffset *= min( gridOffsetLen, 1 ) / gridOffsetLen;
+				probeOffset *= min( gridOffsetLen, 1.0 ) / gridOffsetLen;
 			}
 		}
 	}

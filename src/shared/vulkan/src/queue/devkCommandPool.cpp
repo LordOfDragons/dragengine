@@ -37,23 +37,21 @@
 // class devkCommandPool
 //////////////////////////
 
-devkCommandPool::devkCommandPool( devkDevice &device, uint32_t queueFamily ) :
-pDevice( device ),
-pPool( VK_NULL_HANDLE )
+devkCommandPool::devkCommandPool(const devkQueue::Ref &queue) :
+pQueue(queue),
+pPool(VK_NULL_HANDLE)
 {
 	try{
-		VK_IF_CHECK( deSharedVulkan &vulkan = device.GetInstance().GetVulkan() );
+		devkDevice &device = queue->GetDevice();
+		VK_IF_CHECK(deSharedVulkan &vulkan = device.GetInstance().GetVulkan());
 		
-		VkCommandPoolCreateInfo info;
-		memset( &info, 0, sizeof( info ) );
-		
-		info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		info.queueFamilyIndex = queueFamily;
+		VkCommandPoolCreateInfo info{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
+		info.queueFamilyIndex = queue->GetFamily();
 		info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		
-		VK_CHECK( vulkan, device.vkCreateCommandPool( device.GetDevice(), &info, VK_NULL_HANDLE, &pPool ) );
+		VK_CHECK(vulkan, device.vkCreateCommandPool(device, &info, VK_NULL_HANDLE, &pPool));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -74,28 +72,27 @@ devkCommandBuffer *devkCommandPool::GetCommandBuffer(){
 	// if this command buffer is not finished yet all command buffers after it will not
 	// be finished either. this works since submitted command buffers are added to the
 	// end of the list
-	if( pFreeCommandBuffers.GetCount() > 0 ){
-		devkCommandBuffer * const commandBuffer = ( devkCommandBuffer* )pFreeCommandBuffers.GetAt( 0 );
-		if( commandBuffer->IsFinished( true ) ){
+	if(pFreeCommandBuffers.GetCount() > 0){
+		devkCommandBuffer * const commandBuffer =
+			(devkCommandBuffer*)pFreeCommandBuffers.GetAt(0)->GetOwner();
+		if(commandBuffer->IsFinished(true)){
 			commandBuffer->AddReference(); // caller holds reference
-			pFreeCommandBuffers.Remove( &commandBuffer->GetLLPool() );
+			pFreeCommandBuffers.Remove(&commandBuffer->GetLLPool());
 			return commandBuffer;
 		}
 	}
 	
 	// no free command buffer not require waiting. allocate a new one
-	return new devkCommandBuffer( *this );
+	return new devkCommandBuffer(*this);
 }
 
-void devkCommandPool::ReturnCommandBuffer( devkCommandBuffer *commandBuffer ){
-	if( ! commandBuffer ){
-		DETHROW_INFO( deeNullPointer, "commandBuffer" );
-	}
-	if( &commandBuffer->GetPool() != this ){
-		DETHROW_INFO( deeInvalidParam, "commandBuffer pool mismatch" );
+void devkCommandPool::ReturnCommandBuffer(devkCommandBuffer *commandBuffer){
+	DEASSERT_NOTNULL(commandBuffer )
+	if(&commandBuffer->GetPool() != this){
+		DETHROW_INFO(deeInvalidParam, "commandBuffer pool mismatch");
 	}
 	
-	pFreeCommandBuffers.Add( &commandBuffer->GetLLPool() );
+	pFreeCommandBuffers.Add(&commandBuffer->GetLLPool());
 	commandBuffer->FreeReference(); // caller held reference
 }
 
@@ -107,7 +104,7 @@ void devkCommandPool::ReturnCommandBuffer( devkCommandBuffer *commandBuffer ){
 void devkCommandPool::pCleanUp(){
 	pFreeCommandBuffers.RemoveAll();
 	
-	if( pPool ){
-		pDevice.vkDestroyCommandPool( pDevice.GetDevice(), pPool, VK_NULL_HANDLE );
+	if(pPool){
+		pQueue->GetDevice().vkDestroyCommandPool(pQueue->GetDevice(), pPool, VK_NULL_HANDLE);
 	}
 }

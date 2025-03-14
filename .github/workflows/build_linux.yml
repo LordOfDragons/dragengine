@@ -22,6 +22,10 @@ on:
       artifactTools:
         required: true
         type: string
+      debugBuild:
+        type: boolean
+        required: false
+        default: false
       lfscache:
         required: false
         default: true
@@ -30,10 +34,56 @@ on:
         required: false
         default: false
         type: boolean
-
+  
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch'
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        description: 'Release Version'
+        required: true
+        type: string
+        default: nightly
+      buildVersion:
+        description: 'Build Version'
+        required: true
+        type: string
+        default: "9999"
+      artifactArchive:
+        description: 'Artifact Archive'
+        required: true
+        type: string
+        default: "archives-linux"
+      artifactInstaller:
+        description: 'Artifact Installer'
+        required: true
+        type: string
+        default: "installers-linux"
+      artifactTools:
+        description: 'Artifact Tools'
+        required: true
+        type: string
+        default: "tools-crossplatform"
+      debugBuild:
+        description: 'Debug Build'
+        type: boolean
+        required: false
+        default: false
+      lfscache:
+        required: false
+        default: true
+        type: boolean
+      codeql:
+        required: false
+        default: false
+        type: boolean
+      
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     
     steps:
       - uses: actions/checkout@v4
@@ -77,6 +127,7 @@ jobs:
           cp ${{ github.workspace }}/.github/workflows/custom_linux.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
+          sed -i -e 's/{DebugBuild}/${{ inputs.debugBuild }}/g' custom.py
       
       - name: Build external
         # Build first all external libraries. Aboids avoid running CodeQL on them.
@@ -116,6 +167,11 @@ jobs:
       
       - name: Build
         run: |
+          # modio service is build ahead with reduced parallel building due to modio sdk
+          # being so hard on the RAM it can cause the build to fail due to memory problems
+          scons -j 4 srv_modio_build
+          
+          # the rest can be build full throttle
           scons -j 14 archive installer
       
       - name: Perform CodeQL Analysis

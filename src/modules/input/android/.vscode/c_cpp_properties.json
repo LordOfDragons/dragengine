@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../../../dragengine/build/include",
+                "${workspaceFolder}/../../../../extern/agdk/build/agdk-*/include",
+                "${workspaceFolder}/../../../../../testing/include",
+                "~/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include"
+            ],
+            "defines": [
+                "MOD_ENTRY_POINT_ATTR="
+            ],
+            "compilerPath": "/usr/lib/llvm/18/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}

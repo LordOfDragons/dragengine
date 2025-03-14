@@ -51,6 +51,8 @@ pin Dragengine.Utils
  * This behavior uses no other behaviors.
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_grabspot
  */
 class ECBehaviorGrabSpot extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -105,6 +107,56 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		/** \brief Create listener. */
 		public func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorGrabSpot'>
+	 *   <!-- optional: set collision filter. default value '4:1' which means
+	 *                  category BaseGameApp.CollisionFilterBit.trigger
+	 *                  filter BaseGameApp.CollisionFilterBit.dynamic.
+	 *                  format is '', 'category' or 'category:filter' where category and filter
+	 *                  are a list of bits to set. -->
+	 *   <string name='collisionFilter'>4:1 2</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorGrabSpot' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorGrabSpot"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorGrabSpot behavior = ECBehaviorGrabSpot.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), id)
+			
+			if parameters.has("collisionFilter")
+				behavior.getTouchCollider().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
+					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "grabSpot", id)
+			return behavior
 		end
 	end
 	

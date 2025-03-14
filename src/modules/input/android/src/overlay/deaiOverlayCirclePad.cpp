@@ -385,34 +385,33 @@ void deaiOverlayCirclePad::GenerateEvents(){
 		}
 		
 	}else{
-		int dx = 0;
-		int dy = 0;
+		decPoint distance;
 		
 		if( pAxisLeftRight.GetAxisIndex() != -1 ){
 			if( pAxisLeftRight.GetInvertAxis() ){
-				dx = -padPos.x;
+				distance.x = -padPos.x;
 				
 			}else{
-				dx = padPos.x;
+				distance.x = padPos.x;
 			}
 		}
 		
 		if( pAxisUpDown.GetAxisIndex() != -1 ){
 			if( pAxisUpDown.GetInvertAxis() ){
-				dy = -padPos.y;
+				distance.y = -padPos.y;
 				
 			}else{
-				dy = padPos.y;
+				distance.y = padPos.y;
 			}
 		}
 		
 		//androidInput.LogInfoFormat( "addMouseMove %i %i", dx, dy );
 		if( pAxisLeftRight.GetDeviceIndex() == pAxisUpDown.GetDeviceIndex() ){
-			androidInput.AddMouseMove( pAxisLeftRight.GetDeviceIndex(), 0, dx, dy, eventTime );
+			androidInput.AddMouseMove( pAxisLeftRight.GetDeviceIndex(), 0, distance, eventTime );
 			
 		}else{
-			androidInput.AddMouseMove( pAxisLeftRight.GetDeviceIndex(), 0, dx, 0, eventTime );
-			androidInput.AddMouseMove( pAxisUpDown.GetDeviceIndex(), 0, 0, dy, eventTime );
+			androidInput.AddMouseMove( pAxisLeftRight.GetDeviceIndex(), 0, decPoint(distance.x, 0), eventTime );
+			androidInput.AddMouseMove( pAxisUpDown.GetDeviceIndex(), 0, decPoint(0, distance.y), eventTime );
 		}
 	}
 }

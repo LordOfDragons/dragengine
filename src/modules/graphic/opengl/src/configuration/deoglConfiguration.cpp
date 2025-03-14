@@ -162,9 +162,9 @@ pRenderDocMode( false )
 	// unimportant by the high pixel density. hardware scaler could be used but this
 	// would affect also 2D graphics. the default should only cut down on the heavy
 	// processing of 3D graphics while keeping 2D graphics crisp if possible
-	pShadowQuality = esqVeryLow;
-	pOcclusionReduction = 2; //1
-	pRenderDownScale = 2; //1
+	pShadowQuality = esqMedium;
+	// pOcclusionReduction = 2;
+	// pRenderDownScale = 2;
 	
 	pGIQuality = egiqOff;
 	
@@ -177,17 +177,16 @@ pRenderDocMode( false )
 	
 	// ssao pass consumes roughly 9ms. this is roughly 3.5 times the sky render pass.
 	// enabling this effect is reasonable unless performance turns really bad
-	pSSAOEnable = true;
+	// pSSAOEnable = false;
 	
 	// screen space sub surface scattering consumes roughly 2.5ms . this value is
 	// though with no pixels to shader and should be higher if actually used. kept
 	// enabled until further performance values are available
-	//pSSSSSEnable = true;
-	pSSSSSEnable = false; // disabled since 4 draw buffers are not enough to use it
+	// pSSSSSEnable = false; // disabled since 4 draw buffers are not enough to use it
 	
-	// screen space reflection consumes toughly 40ms. this is a major speed killed
+	// screen space reflection consumes toughly 40ms. this is a major speed killer
 	// on android platforms. disabled and not recommended to be used
-	pSSREnable = false; //true
+	// pSSREnable = false;
 	
 	// enable logging by default
 	pLogLevel = ellDebug;
@@ -196,7 +195,7 @@ pRenderDocMode( false )
 	pEnableRetainImageOptimization = true;
 	
 	// debug
-	pDebugContext = true;
+	pDebugContext = true; // temporary until profiles supported
 	pDebugNoMessages = false;
 	pLogLevel = ellDebug;
 	

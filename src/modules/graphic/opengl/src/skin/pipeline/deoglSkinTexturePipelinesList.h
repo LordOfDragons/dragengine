@@ -27,7 +27,7 @@
 
 #include "deoglSkinTexturePipelines.h"
 
-class deoglShaderLoadingTimeout;
+class deoglBatchedShaderLoading;
 
 
 /**
@@ -79,7 +79,7 @@ public:
 	deoglSkinTexturePipelines &GetAt( ePipelineTypes type ) const;
 	
 	/** Prepare all pipelines. */
-	void Prepare( deoglShaderLoadingTimeout &timeout );
+	void Prepare( deoglBatchedShaderLoading &batched );
 	/*@}*/
 };
 

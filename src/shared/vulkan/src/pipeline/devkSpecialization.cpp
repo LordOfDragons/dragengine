@@ -34,33 +34,33 @@
 /////////////////////////////
 
 devkSpecialization::devkSpecialization() :
-pEntries( nullptr ),
-pEntryCount( 0 ),
-pData( nullptr ),
-pDataSize( 0 ){
+pEntries(nullptr),
+pEntryCount(0),
+pData(nullptr),
+pDataSize(0){
 }
 
-devkSpecialization::devkSpecialization( const void* data, int dataSize, int entryCount ) :
-pEntries( nullptr ),
-pEntryCount( 0 ),
-pData( nullptr ),
-pDataSize( 0 )
+devkSpecialization::devkSpecialization(const void* data, int dataSize, int entryCount) :
+pEntries(nullptr),
+pEntryCount(0),
+pData(nullptr),
+pDataSize(0)
 {
 	try{
-		SetEntryCount( entryCount );
-		SetData( data, dataSize );
+		SetEntryCount(entryCount);
+		SetData(data, dataSize);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-devkSpecialization::devkSpecialization( const devkSpecialization &configuration ) :
-pEntries( nullptr ),
-pEntryCount( 0 ),
-pData( nullptr ),
-pDataSize( 0 )
+devkSpecialization::devkSpecialization(const devkSpecialization &configuration) :
+pEntries(nullptr),
+pEntryCount(0),
+pData(nullptr),
+pDataSize(0)
 {
 	*this = configuration;
 }
@@ -74,90 +74,80 @@ devkSpecialization::~devkSpecialization(){
 // Management
 ///////////////
 
-void devkSpecialization::SetEntryCount( int count ){
-	if( count < 0 ){
-		DETHROW_INFO( deeInvalidParam, "count < 0" );
-	}
+void devkSpecialization::SetEntryCount(int count){
+	DEASSERT_TRUE(count >= 0)
 	
-	if( pEntries ){
+	if(pEntries){
 		delete [] pEntries;
 		pEntries = nullptr;
 		pEntryCount = 0;
 	}
 	
-	if( count == 0 ){
+	if(count == 0){
 		return;
 	}
 	
-	pEntries = new VkSpecializationMapEntry[ count ];
-	memset( pEntries, 0, sizeof( VkSpecializationMapEntry ) * count );
+	pEntries = new VkSpecializationMapEntry[ count ]{};
 	pEntryCount = count;
 }
 
-void devkSpecialization::SetEntryAt( int index, const VkSpecializationMapEntry &entry ){
-	if( index < 0 ){
-		DETHROW_INFO( deeInvalidParam, "index < 0" );
-	}
-	if( index >= pEntryCount ){
-		DETHROW_INFO( deeInvalidParam, "index >= entryCount" );
-	}
-	if( entry.constantID < 0 ){
-		DETHROW_INFO( deeInvalidParam, "entry.constantID < 0" );
-	}
-	if( entry.offset < 0 ){
-		DETHROW_INFO( deeInvalidParam, "entry.offset < 0" );
-	}
-	if( entry.size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "entry.size < 0" );
-	}
+const VkSpecializationMapEntry &devkSpecialization::GetEntryAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pEntryCount)
+	
+	return pEntries[index];
+}
+
+void devkSpecialization::SetEntryAt(int index, const VkSpecializationMapEntry &entry){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pEntryCount)
+	DEASSERT_TRUE(entry.constantID >= 0)
+	DEASSERT_TRUE(entry.offset >= 0)
+	DEASSERT_TRUE(entry.size >= 0)
 	
 	pEntries[ index ] = entry;
 }
 
-void devkSpecialization::SetEntryAt( int index, int constantID, int offset, int size ){
+void devkSpecialization::SetEntryAt(int index, int constantID, int offset, int size){
 	VkSpecializationMapEntry entry;
 	entry.constantID = constantID;
 	entry.offset = offset;
 	entry.size = size;
-	SetEntryAt( index, entry );
+	SetEntryAt(index, entry);
 }
 
-void devkSpecialization::SetEntryIntAt( int index, int constantID, int offset ){
-	SetEntryAt( index, constantID, offset, sizeof( int32_t ) );
+void devkSpecialization::SetEntryIntAt(int index, int constantID, int offset){
+	SetEntryAt(index, constantID, offset, sizeof(int32_t));
 }
 
-void devkSpecialization::SetEntryUIntAt( int index, int constantID, int offset ){
-	SetEntryAt( index, constantID, offset, sizeof( uint32_t ) );
+void devkSpecialization::SetEntryUIntAt(int index, int constantID, int offset){
+	SetEntryAt(index, constantID, offset, sizeof(uint32_t));
 }
 
-void devkSpecialization::SetEntryFloatAt( int index, int constantID, int offset ){
-	SetEntryAt( index, constantID, offset, sizeof( float ) );
+void devkSpecialization::SetEntryFloatAt(int index, int constantID, int offset){
+	SetEntryAt(index, constantID, offset, sizeof(float));
 }
 
-void devkSpecialization::SetEntryBoolAt( int index, int constantID, int offset ){
-	SetEntryAt( index, constantID, offset, sizeof( bool ) );
+void devkSpecialization::SetEntryBoolAt(int index, int constantID, int offset){
+	SetEntryAt(index, constantID, offset, sizeof(bool));
 }
 
-void devkSpecialization::SetData( const void *data, int size ){
-	if( size < 0 ){
-		DETHROW_INFO( deeInvalidParam, "size < 0" );
-	}
-	if( size > 0 && ! data ){
-		DETHROW_INFO( deeNullPointer, "data" );
-	}
+void devkSpecialization::SetData(const void *data, int size){
+	DEASSERT_TRUE(size >= 0)
+	DEASSERT_NOTNULL_IF(size > 0, data)
 	
-	if( pData ){
+	if(pData){
 		delete [] pData;
 		pData = nullptr;
 		pDataSize = 0;
 	}
 	
-	if( size == 0 ){
+	if(size == 0){
 		return;
 	}
 	
 	pData = new char[ size ];
-	memcpy( pData, data, size );
+	memcpy(pData, data, size);
 	pDataSize = size;
 }
 
@@ -166,18 +156,18 @@ void devkSpecialization::SetData( const void *data, int size ){
 // Operators
 //////////////
 
-bool devkSpecialization::operator==( const devkSpecialization &configuration ) const{
-	if( pEntryCount != configuration.pEntryCount
+bool devkSpecialization::operator==(const devkSpecialization &configuration) const{
+	if(pEntryCount != configuration.pEntryCount
 	|| pDataSize != configuration.pDataSize
-	|| ( pData && memcmp( pData, configuration.pData, pDataSize ) != 0 ) ){
+	|| (pData && memcmp(pData, configuration.pData, pDataSize) != 0)){
 		return false;
 	}
 	
 	int i;
-	for( i=0; i<pEntryCount; i++ ){
-		if( pEntries[ i ].constantID != configuration.pEntries[ i ].constantID
+	for(i=0; i<pEntryCount; i++){
+		if(pEntries[ i ].constantID != configuration.pEntries[ i ].constantID
 		|| pEntries[ i ].offset != configuration.pEntries[ i ].offset
-		|| pEntries[ i ].size != configuration.pEntries[ i ].size ){
+		|| pEntries[ i ].size != configuration.pEntries[ i ].size){
 			return false;
 		}
 	}
@@ -185,13 +175,13 @@ bool devkSpecialization::operator==( const devkSpecialization &configuration ) c
 }
 
 devkSpecialization &devkSpecialization::operator=(
-const devkSpecialization &configuration ){
-	SetEntryCount( configuration.pEntryCount );
-	if( configuration.pEntryCount > 0 ){
-		memcpy( pEntries, configuration.pEntries,
-			sizeof( VkSpecializationMapEntry ) * configuration.pEntryCount );
+const devkSpecialization &configuration){
+	SetEntryCount(configuration.pEntryCount);
+	if(configuration.pEntryCount > 0){
+		memcpy(pEntries, configuration.pEntries,
+			sizeof(VkSpecializationMapEntry) * configuration.pEntryCount);
 	}
-	SetData( configuration.GetData(), configuration.GetDataSize() );
+	SetData(configuration.GetData(), configuration.GetDataSize());
 	return *this;
 }
 
@@ -201,10 +191,10 @@ const devkSpecialization &configuration ){
 //////////////////////
 
 void devkSpecialization::pCleanUp(){
-	if( pData ){
+	if(pData){
 		delete [] pData;
 	}
-	if( pEntries ){
+	if(pEntries){
 		delete [] pEntries;
 	}
 }

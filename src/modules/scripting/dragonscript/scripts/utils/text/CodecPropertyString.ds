@@ -92,6 +92,8 @@ class CodecPropertyString
 	var byte pEncodeTokenSeparator
 	
 	
+	static fixed var Array pTrueValues = Array.newWith("true", "yes", "1")
+	
 	
 	/** \brief Create codec. */
 	func new()
@@ -185,6 +187,24 @@ class CodecPropertyString
 	 */
 	func void setEncodeTokenSeparator(byte separator)
 		pEncodeTokenSeparator = separator
+	end
+	
+	
+	
+	/**
+	 * \brief Value equals "true", "yes" or "1".
+	 * \version 1.25
+	 */
+	func bool isTrue(String value)
+		return pTrueValues.has(value)
+	end
+	
+	/**
+	 * \brief Value does not equal "true", "yes" or "1".
+	 * \version 1.25
+	 */
+	func bool isFalse(String value)
+		return not pTrueValues.has(value)
 	end
 	
 	
@@ -744,6 +764,47 @@ class CodecPropertyString
 		return shapeList
 	end
 	
+	/**
+	 * \brief Decode \ref LayerMask.
+	 * \version 1.25
+	 * 
+	 * Value is encoded as "bit1 bit2 ... bitN".
+	 */
+	func LayerMask decodeLayerMask(String value)
+		var LayerMask mask = LayerMask.new()
+		value.split(' ').forEach(block String each
+			mask.setBit(each.toInt())
+		end)
+		return mask
+	end
+	
+	/**
+	 * \brief Decode \ref CollisionFilter.
+	 * \version 1.25
+	 * 
+	 * Value is encoded either as "category:filter", "category" or empty string.
+	 * 
+	 * Empty string creates collision filter with empty category and full filter.
+	 * 
+	 * Second form is the same as first form with filter equal to category.
+	 * 
+	 * Category and filter decode the same way as \ref #decodeLayerMask().
+	 */
+	func CollisionFilter decodeCollisionFilter(String value)
+		var Array parts = value.split(':')
+		
+		if parts.getCount() == 0
+			return CollisionFilter.new()
+			
+		elif parts.getCount() == 1
+			return CollisionFilter.new(decodeLayerMask(parts.getAt(0) cast String))
+			
+		else
+			return CollisionFilter.new(decodeLayerMask(\
+				parts.getAt(0) cast String), decodeLayerMask(parts.getAt(1) cast String))
+		end
+	end
+	
 	
 	
 	/** \brief Encode a string list into a property string. */
@@ -929,5 +990,44 @@ class CodecPropertyString
 		end
 		
 		return s
+	end
+	
+	/**
+	 * \brief Encode \ref LayerMask.
+	 * \version 1.25
+	 * \see #decodeLayerMask()
+	 */
+	func String encodeLayerMask(LayerMask mask)
+		var String value = ""
+		var int i
+		for i = 0 to 64
+			if mask.isBitSet(i)
+				if not value.empty()
+					value = value + " "
+				end
+				value = value + i
+			end
+		end
+		return value
+	end
+	
+	/**
+	 * \brief Decode \ref CollisionFilter.
+	 * \version 1.25
+	 * \see #decodeCollisionFilter().
+	 */
+	func String encodeCollisionFilter(CollisionFilter collisionFilter)
+		var LayerMask category = collisionFilter.getCategory()
+		var LayerMask filter = collisionFilter.getFilter()
+		
+		if category.equals(filter)
+			return encodeLayerMask(category)
+			
+		elif category.isEmpty() and (~filter).isEmpty()
+			return ""
+			
+		else
+			return encodeLayerMask(category) + ":" + encodeLayerMask(filter)
+		end
 	end
 end

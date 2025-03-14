@@ -64,6 +64,8 @@ pin Dragengine.TriggerSystem
  * Element class properties have the prefix "announcer{(id)}.".
  * 
  * This behavior does not support persistency (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_announcer
  */
 class ECBehaviorAnnouncer extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -111,6 +113,67 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		/** \brief Create listener. */
 		public func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAnnouncer'>
+	 *   <!-- optional: set layer mask (default '2' meaning BaseGameApp.WorldLayerBit.audio).
+	 *                  list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
+	 *   <string name='triggerTable'>default</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorAnnouncer' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAnnouncer"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorAnnouncer behavior = ECBehaviorAnnouncer.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), BaseGameApp.getApp().getLoaders(),\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			if parameters.has("layerMask")
+				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "announcer", id)
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func TSTriggerTable getTriggerTableFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 	end
 	
@@ -365,7 +428,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	/** \brief Create behavior element class. */
 	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable, String id) this(eclass, collider, loaders, triggerTable, \
-	id, id.empty() if "speaker" else "speaker(" + id + ")")
+	id, id.empty() if "announcer" else "announcer(" + id + ")")
 	end
 	
 	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \

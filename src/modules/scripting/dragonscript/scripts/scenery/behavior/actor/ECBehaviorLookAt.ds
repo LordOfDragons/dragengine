@@ -53,6 +53,8 @@ pin Dragengine.Utils
  * 
  * If the looked at element has ECBehaviorLookedAt instance it will be updated by adding
  * and removing the owner element.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lookat
  */
 class ECBehaviorLookAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -100,6 +102,70 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		/** \brief Create listener. */
 		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorColliderAI or \ref ECBehaviorCollider
+	 * - Optional: \ref ECBehaviorComponent
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorLookAt'>
+	 *   <!-- optional: set collision filter. default value '3:0 1 2 3' which means
+	 *                  category BaseGameApp.CollisionFilterBit.actorAI
+	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
+	 *                         BaseGameApp.CollisionFilterBit.dynamic,
+	 *                         BaseGameApp.CollisionFilterBit.actorAI.
+	 *                  format is '', 'category' or 'category:filter' where category and filter
+	 *                  are a list of bits to set. -->
+	 *   <string name='collisionFilter'>3:0 1 2 3</string>
+	 * 
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorLookAt"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorComponent component = eclass.sharedFactoryHelper.defaultComponent(eclass, parameters)
+			var ECBehaviorLocomotion locomotion = ECBehaviorLocomotion.getBehaviorIn(eclass)
+			var ECBehaviorLookAt behavior
+			
+			var ECBehaviorColliderAI colliderAI = ECBehaviorColliderAI.getBehaviorIn(eclass)
+			if colliderAI != null
+				behavior = ECBehaviorLookAt.new(eclass, colliderAI, component, locomotion)
+				
+			else
+				behavior = ECBehaviorLookAt.new(eclass,\
+					ECBehaviorCollider.getBehaviorIn(eclass), component, locomotion)
+			end
+			
+			if parameters.has("collisionFilter")
+				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
+					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "lookAt")
+			return behavior
 		end
 	end
 	

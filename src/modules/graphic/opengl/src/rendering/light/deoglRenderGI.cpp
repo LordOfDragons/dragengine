@@ -170,10 +170,33 @@ pDebugRayLightIndex( -1 )
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf, pipconf2;
 	deoglShaderDefines defines, commonDefines;
 	const deoglShaderSources *sources;
+	
+	// opengl guarantees a minimum of 1024 local invocation size across supported GPUs.
+	// with opengl ES this is not so simple anymore. 512 can very well happen. some systems
+	// report even only 256.
+	//
+	// deoglGITraceRays::pCreateFBORay calculates the texture size like this:
+	// - width = pProbesPerLine * pRaysPerProbe = 8 * (16 or more) = 128
+	// - height = GI_MAX_PROBE_COUNT / pProbesPerLine = 2048 / 8 = 256
+	//
+	// we use here the maximum size fitting into the platform capabilities.
+	// the case for 1024 is the reference case
+	const int maxInvCount = renderThread.GetCapabilities().GetMaxComputeWorkGroupInvocations();
+	if(maxInvCount >= 2048){
+		pClearTraceRayWorkGroupSize.Set(128, 16);
+		
+	}else if(maxInvCount >= 1024){
+		pClearTraceRayWorkGroupSize.Set(128, 8);
+		
+	}else if(maxInvCount >= 512){
+		pClearTraceRayWorkGroupSize.Set(64, 8);
+		
+	}else{
+		pClearTraceRayWorkGroupSize.Set(32, 8);
+	}
 	
 	try{
 		renderThread.GetShader().SetCommonDefines( commonDefines );
@@ -186,33 +209,31 @@ pDebugRayLightIndex( -1 )
 		pipconf.SetMasks( true, true, true, true, false );
 		
 		defines = commonDefines;
-		pipconf.SetShader( renderThread, "DefRen GI Resize Materials", defines );
-		pPipelineResizeMaterials = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineResizeMaterials, pipconf, "DefRen GI Resize Materials", defines);
 		
 		
 		// clear trace rays
 		pipconf.Reset();
-		pipconf.SetType( deoglPipelineConfiguration::etCompute );
-		pipconf.SetShader( renderThread, "DefRen GI Clear Trace Rays", defines );
-		pPipelineClearTraceRays = pipelineManager.GetWith( pipconf );
+		pipconf.SetType(deoglPipelineConfiguration::etCompute);
+		defines.SetDefine("LOCAL_SIZE_X", pClearTraceRayWorkGroupSize.x);
+		defines.SetDefine("LOCAL_SIZE_Y", pClearTraceRayWorkGroupSize.y);
+		pAsyncGetPipeline(pPipelineClearTraceRays, pipconf, "DefRen GI Clear Trace Rays", defines);
+		defines.RemoveDefines("LOCAL_SIZE_X", "LOCAL_SIZE_Y");
 		
 		// trace rays
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Trace Rays" );
 		#ifdef GI_USE_RAY_CACHE
 			defines.SetDefines( "GI_USE_RAY_CACHE" );
 		#endif
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineTraceRays = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineTraceRays, pipconf, sources, defines);
 		defines.RemoveDefine( "GI_USE_RAY_CACHE" );
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineTraceRaysCache = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineTraceRaysCache, pipconf, sources, defines);
 		
-		pipconf.SetShader( renderThread, "DefRen GI Copy Ray Cache", defines );
-		pPipelineCopyRayCache = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineCopyRayCache, pipconf, "DefRen GI Copy Ray Cache", defines);
 		
-		pipconf.SetShader( renderThread, "DefRen GI Init From Ray Cache", defines );
-		pPipelineInitFromRayCache = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineInitFromRayCache, pipconf,
+			"DefRen GI Init From Ray Cache", defines);
 		
 		
 		// clear probes
@@ -220,13 +241,11 @@ pDebugRayLightIndex( -1 )
 		defines.SetDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
 		
 		defines.SetDefines( "MAP_IRRADIANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineClearProbeIrradiance = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineClearProbeIrradiance, pipconf, sources, defines);
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
 		defines.SetDefines( "MAP_DISTANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineClearProbeDistance = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineClearProbeDistance, pipconf, sources, defines);
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		defines.RemoveDefine( "GI_CLEAR_PROBES_COUNT" );
@@ -236,27 +255,24 @@ pDebugRayLightIndex( -1 )
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
 		
 		defines.SetDefines( "MAP_IRRADIANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineUpdateProbeIrradiance = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineUpdateProbeIrradiance, pipconf, sources, defines);
 		defines.RemoveDefine( "MAP_IRRADIANCE" );
 		
 		defines.SetDefines( "MAP_DISTANCE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineUpdateProbeDistance = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineUpdateProbeDistance, pipconf, sources, defines);
 		defines.RemoveDefine( "MAP_DISTANCE" );
 		
 		
 		// probe dynamic states
-		pipconf.SetShader( renderThread, "DefRen GI Probe Dynamic States", defines );
-		pPipelineProbeDynamicStates = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineProbeDynamicStates, pipconf,
+			"DefRen GI Probe Dynamic States", defines);
 		
 		
 		// probe offset
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 			defines.SetDefines( "WITH_RAY_CACHE" );
 		}
-		pipconf.SetShader( renderThread, "DefRen GI Probe Offset", defines );
-		pPipelineProbeOffset = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineProbeOffset, pipconf, "DefRen GI Probe Offset", defines);
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		
@@ -264,8 +280,7 @@ pDebugRayLightIndex( -1 )
 		if( renderThread.GetChoices().GetGIMoveUsingCache() ){
 			defines.SetDefines( "WITH_RAY_CACHE" );
 		}
-		pipconf.SetShader( renderThread, "DefRen GI Probe Extends", defines );
-		pPipelineProbeExtends = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineProbeExtends, pipconf, "DefRen GI Probe Extends", defines);
 		defines.RemoveDefine( "WITH_RAY_CACHE" );
 		
 		
@@ -277,38 +292,30 @@ pDebugRayLightIndex( -1 )
 		pipconf2.SetClipControl( useInverseDepth );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbe = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbe, pipconf2, sources, defines);
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeXRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineDebugProbeXRay, pipconf, sources, defines);
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Offset" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeOffset = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbeOffset, pipconf2, sources, defines);
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeOffsetXRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineDebugProbeOffsetXRay, pipconf, sources, defines);
 		
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Rays" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeRays = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbeRays, pipconf2, sources, defines);
 		
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeRaysXRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineDebugProbeRaysXRay, pipconf, sources, defines);
 		
 		
 		pipconf2.SetEnableDepthTest( false );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeUpdatePass1 = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbeUpdatePass1, pipconf2, sources, defines);
 		
 		defines.SetDefines( "PASS2" );
-		pipconf2.SetShader( renderThread, sources, defines );
-		pPipelineDebugProbeUpdatePass2 = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineDebugProbeUpdatePass2, pipconf2, sources, defines);
 		
 		
 		// render light
@@ -321,11 +328,10 @@ pDebugRayLightIndex( -1 )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		pipconf.EnableBlendAdd();
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLight = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLight, pipconf, sources, defines);
 		
 		pipconf.EnableBlendTranspAdd();
-		pPipelineLightTransp = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLightTransp, pipconf, sources, defines);
 		
 		// render light stereo
 		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
@@ -333,11 +339,10 @@ pDebugRayLightIndex( -1 )
 			sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
 		}
 		pipconf.EnableBlendAdd();
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLightStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLightStereo, pipconf, sources, defines);
 		
 		pipconf.EnableBlendTranspAdd();
-		pPipelineLightTranspStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLightTranspStereo, pipconf, sources, defines);
 		
 		
 		// render light gi ray
@@ -348,8 +353,7 @@ pDebugRayLightIndex( -1 )
 		sources = shaderManager.GetSourcesNamed( "DefRen Light GI" );
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD", "GI_RAY" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineLightGIRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineLightGIRay, pipconf, sources, defines);
 		
 		
 		// debug information
@@ -691,7 +695,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 		const deoglRenderTaskPipeline &rtpipeline = *renderTask.GetPipelineAt( i );
 		rtpipeline.GetPipeline()->Activate();
 		
-		const deoglShaderCompiled &shader = rtpipeline.GetPipeline()->GetGlShader();
+		const deoglShaderCompiled &shader = rtpipeline.GetPipeline()->GetShader();
 		
 		const int textureCount = rtpipeline.GetTextureCount();
 		for( j=0; j<textureCount; j++ ){
@@ -745,7 +749,7 @@ deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 		materials.GetMaterialMapSize() * materials.GetRowsPerImage() );
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	deoglShaderCompiled &shader = pPipelineResizeMaterials->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineResizeMaterials->GetShader();
 	
 	shader.SetParameterInt( 0, materials.GetMaterialsPerRow(),
 		materials.GetRowsPerImage(), mapsPerRow, rowsPerImage );
@@ -1083,7 +1087,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		pipeline.Activate();
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
-		deoglShaderCompiled &shaderProbe = pipeline.GetGlShader();
+		deoglShaderCompiled &shaderProbe = pipeline.GetShader();
 		shaderProbe.SetParameterDMatrix4x3( spdpMatrixNormal, matrixNormal );
 		shaderProbe.SetParameterDMatrix4x3( spdpMatrixMV, matrixC );
 		shaderProbe.SetParameterDMatrix4x4( spdpMatrixMVP, matrixCP );
@@ -1107,7 +1111,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		pipeline.Activate();
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
-		deoglShaderCompiled &shaderOffset = pipeline.GetGlShader();
+		deoglShaderCompiled &shaderOffset = pipeline.GetShader();
 		shaderOffset.Activate();
 		shaderOffset.SetParameterDMatrix4x4( spdpoMatrixMVP, matrixCP );
 		shaderOffset.SetParameterInt( spdpoGIDebugCascade, cascade.GetIndex() );
@@ -1167,7 +1171,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 			}
 		}
 		
-		deoglShaderCompiled &shaderProbe = pipeline.GetGlShader();
+		deoglShaderCompiled &shaderProbe = pipeline.GetShader();
 		shaderProbe.SetParameterDMatrix4x3( spdprMatrixNormal, matrixNormal );
 		shaderProbe.SetParameterDMatrix4x3( spdprMatrixMV, matrixC );
 		shaderProbe.SetParameterDMatrix4x4( spdprMatrixMVP, matrixCP );
@@ -1217,7 +1221,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		
 		OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 		
-		deoglShaderCompiled &shader2a = pPipelineDebugProbeUpdatePass1->GetGlShader();
+		deoglShaderCompiled &shader2a = pPipelineDebugProbeUpdatePass1->GetShader();
 		shader2a.SetParameterFloat( spdpuPosTransform, scale.x * size.x, scale.y * size.y,
 			scale.x * position.x * 2.0f + offset.x, scale.y * position.y * 2.0f + offset.y );
 		shader2a.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
@@ -1261,7 +1265,7 @@ void deoglRenderGI::RenderDebugOverlay( deoglRenderPlan &plan ){
 		if( giState->GetActiveCascade().GetIndex() == cascade.GetIndex() ){
 			pPipelineDebugProbeUpdatePass2->Activate();
 			
-			deoglShaderCompiled &shader2b = pPipelineDebugProbeUpdatePass2->GetGlShader();
+			deoglShaderCompiled &shader2b = pPipelineDebugProbeUpdatePass2->GetShader();
 			shader2b.SetParameterFloat( spdpuPosTransform, scale.x * 2.0f, scale.y * 2.0f,
 				scale.x * 2.0f * position.x - 1.0f, scale.y * 2.0f * position.y - 1.0f );
 			shader2b.SetParameterFloat( spdpuTCTransform, ( float )size.x * 0.5f, ( float )size.y * -0.5f,
@@ -1317,7 +1321,7 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	deoglRenderThread &renderThread = GetRenderThread();
 	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
 	
-	ubo->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	ubo->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	ubo->SetParameterCount( euprlGridCoordUnshift + 1 );
 	ubo->SetElementCount( GI_MAX_CASCADES );
 	
@@ -1346,11 +1350,6 @@ void deoglRenderGI::pCreateUBORenderLight(){
 }
 
 void deoglRenderGI::pClearTraceRays( const decPoint &size ){
-	// opengl guarantees a minimum of 1024 local invocation size across supported GPUs.
-	// deoglGITraceRays::pCreateFBORay calculates the texture size like this:
-	// - width = pProbesPerLine * pRaysPerProbe = 8 * (16 or more) = 128
-	// - height = GI_MAX_PROBE_COUNT / pProbesPerLine = 2048 / 8 = 256
-	// we use here a size of 128*8 to get the most out of it
 	deoglRenderThread &renderThread = GetRenderThread();
 	deoglImageStageManager &ismgr = renderThread.GetTexture().GetImageStages();
 	deoglGITraceRays &traceRays = renderThread.GetGI().GetTraceRays();
@@ -1358,15 +1357,17 @@ void deoglRenderGI::pClearTraceRays( const decPoint &size ){
 	pPipelineClearTraceRays->Activate();
 	
 	ismgr.DisableAllStages();
-	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaWrite );
-	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaWrite );
-	ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
-	ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
-	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+	ismgr.Enable(0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaWrite);
+	ismgr.Enable(1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaWrite);
+	ismgr.Enable(2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite);
+	ismgr.Enable(3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite);
+	ismgr.Enable(4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite);
 	
-	OGL_CHECK( renderThread, pglDispatchCompute( ( size.x - 1 ) / 128 + 1, ( size.y - 1 ) / 8 + 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
-		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT ) );
+	OGL_CHECK(renderThread, pglDispatchCompute(
+		(size.x - 1) / pClearTraceRayWorkGroupSize.x + 1,
+		(size.y - 1) / pClearTraceRayWorkGroupSize.y + 1, 1));
+	OGL_CHECK(renderThread, pglMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
+		| GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT));
 	
 	ismgr.DisableAllStages();
 }

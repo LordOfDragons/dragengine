@@ -188,7 +188,7 @@ void oglClearError(){
 	while( glGetError() != GL_NO_ERROR );
 }
 
-void dbgCheckOglError( deoglRenderThread&, const char *file, int line ){
+void dbgCheckOglError(deoglRenderThread&, const char *file, int line, bool withRenderThreadCheck){
 	const GLenum err = glGetError();
 	
 	switch( err ){
@@ -220,5 +220,7 @@ void dbgCheckOglError( deoglRenderThread&, const char *file, int line ){
 		}
 	}
 	
-	OGL_ON_RENDER_THREAD
+	if(withRenderThreadCheck){
+		OGL_ON_RENDER_THREAD
+	}
 }

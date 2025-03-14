@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DELauncher"
+        android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="31"
+        android:largeHeap="true">
+        <activity
+            android:name=".RemoteLauncherActivity"
+            android:exported="false"
+            android:label="@string/title_activity_remote_launcher"
+            android:theme="@style/Theme.DELauncher.NoActionBar" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path" />
+        </provider>
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:exported="true"
+            android:label="@string/application_label"
+            android:theme="@style/Theme.DELauncher.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".RunDelgaActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:exported="true"
+            android:label="@string/application_label"
+            android:theme="@style/Theme.DELauncher.NoActionBar">
+
+            <!--
+			Launch archive using direct intent. Allowed only from other apps.
+			This is the way for applications containing DELGAs to run themselves.
+			The Drag[en]gine distribution contains a ready made JAR that applications
+			can drop into their project and just build using their DELGA.
+            -->
+            <intent-filter>
+                <action android:name="ch.dragondreams.delauncher.LAUNCH_DELGA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="application/dragengine-delga" />
+                <data android:scheme="content" />
+                <data android:host="*" />
+                <data android:pathPattern="/.*\\.delga" />
+            </intent-filter>
+
+            <!--
+            Launch archive using other means. This is quite the mess with different apps
+            doing strange things. noteworthy is the handling of type and URI path.
+
+            CX File Explorer does the following:
+            - type: "*/*" or "application/octet-stream"
+            - path: content://com.cxinventor.file.explorer.fileprovider/root/storage/emulated/0/Download/DSTestProject.delga
+            Open a file can be done in two ways and this causes two different types to be
+            used. The URI path is app specific but at last contains the correct filename.
+
+            Google File App does the following:
+            - type: application/octet-stream
+            - path: com.google.android.apps.nbu.files.provider/2/1000000579
+            The main issue here is obfuscating the path in the URI. For defining the intent
+            filter this is a problem since the filter does not match the path. It would be
+            possible to use a match all pattern "/.*" but then the intent matches for every
+            file the user wants to open. For this problem there exists no solution since
+            that app is just brain-dead.
+
+            Due to these peculiarities it is best to match for "*/*" as type (although this
+            is totally broad) and ".delga" as pattern. Not possible to be done differently
+            due to Android design issues.
+
+            NOTE: autoVerify is mandatory for HTTP based intents otherwise forbidden.
+            NOTE: pathSuffix would be a nice tag to use but not supported below api level 31.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="*/*" />
+                <data android:scheme="content" />
+                <data android:host="*" />
+                <data android:pathPattern="/.*\\.delga" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="*/*" />
+                <data android:scheme="https" />
+                <data android:host="*" />
+                <data android:pathPattern="/.*\\.delga" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="*/*" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:pathPattern="/.*\\.delga" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

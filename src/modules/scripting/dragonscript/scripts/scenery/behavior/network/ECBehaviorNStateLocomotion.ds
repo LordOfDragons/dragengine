@@ -41,8 +41,84 @@ pin Dragengine.Utils
  * No element class properties are added.
  * 
  * This behavior can be present only once in the element class.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_nstatelocomotion
  */
 class ECBehaviorNStateLocomotion extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorNetworkState
+	 * - Required: \ref ECBehaviorLocomotion
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorNStateLocomotion'>
+	 *   <!-- optional: orientation precision. default is 1 -->
+	 *   <float name='precisionOrientation'>0.1</float>
+	 * 
+	 *   <!-- optional: looking precision. default is 1 -->
+	 *   <float name='precisionLooking'>0.1</float>
+	 * 
+	 *   <!-- optional: turning speed precision. default is 1 -->
+	 *   <float name='precisionTurningSpeed'>0.1</float>
+	 * 
+	 *   <!-- optional: turn in place precision. default is 1 -->
+	 *   <float name='precisionTurnInPlace'>0.1</float>
+	 * 
+	 *   <!-- optional: linear velocity precision. default is 1 -->
+	 *   <float name='precisionLinearVelocity'>0.1</float>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorNStateLocomotion' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorNStateLocomotion"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorNStateLocomotion behavior = ECBehaviorNStateLocomotion.new(eclass,\
+				ECBehaviorNetworkState.getBehaviorIn(eclass),\
+				ECBehaviorLocomotion.getBehaviorIn(eclass))
+			
+			if parameters.has("precisionOrientation")
+				behavior.setPrecisionOrientation((parameters.getAt("precisionOrientation") cast String).toFloat())
+			end
+			if parameters.has("precisionLooking")
+				behavior.setPrecisionLooking((parameters.getAt("precisionLooking") cast String).toFloat())
+			end
+			if parameters.has("precisionTurningSpeed")
+				behavior.setPrecisionTurningSpeed((parameters.getAt("precisionTurningSpeed") cast String).toFloat())
+			end
+			if parameters.has("precisionTurnInPlace")
+				behavior.setPrecisionTurnIP((parameters.getAt("precisionTurnInPlace") cast String).toFloat())
+			end
+			if parameters.has("precisionLinearVelocity")
+				behavior.setPrecisionLinearVelocity((parameters.getAt("precisionLinearVelocity") cast String).toFloat())
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "nstateLocomotion")
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Network state listener. */

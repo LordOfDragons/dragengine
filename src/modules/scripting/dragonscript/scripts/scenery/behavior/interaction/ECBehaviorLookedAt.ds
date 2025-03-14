@@ -42,6 +42,8 @@ pin Dragengine.Scenery
  * the actor elements. The ECBehaviorLookAt behavior provides this functionality.
  * 
  * This behavior supports persistable element classes (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lookedat
  */
 class ECBehaviorLookedAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -89,6 +91,37 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 		/** \brief Create listener. */
 		public func Listener createListener( Instance instance )
 			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorLookedAt'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorLookedAt"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorLookedAt behavior = ECBehaviorLookedAt.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "lookedAt")
+			return behavior
 		end
 	end
 	

@@ -48,7 +48,7 @@ void main( void ){
 			// ^= z coordinate starts at the bottom (-z axis) but y starts at the top.
 			//    for this reason z coordinate has to be flipped
 		
-		UFCONST vec2 halfProbeStride = vec2( pParams.x * 0.5 );
+		UFCONST vec2 halfProbeStride = vec2(float(pParams.x) * 0.5);
 		
 		tc += inPosition * halfProbeStride + halfProbeStride;
 		

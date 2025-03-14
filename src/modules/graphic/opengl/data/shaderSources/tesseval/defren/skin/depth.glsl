@@ -79,6 +79,11 @@ layout( triangles, equal_spacing, ccw ) in;
 		#endif
 	#endif
 	
+	#ifdef DEPTH_OFFSET
+		flat out int vGSDoubleSided;
+		#define vDoubleSided vGSDoubleSided
+	#endif
+	
 #else
 	#ifdef REQUIRES_TEX_COLOR
 		out vec2 vTCColor;
@@ -160,7 +165,12 @@ void main(){
 		#endif
 	#endif
 	
-	#ifndef PASS_ON_NEXT_STAGE
+	#ifdef PASS_ON_NEXT_STAGE
+		#ifdef DEPTH_OFFSET
+			vDoubleSided = pDoubleSided ? 1 : 0;
+		#endif
+		
+	#else
 		#ifdef REQUIRES_NORMAL
 			#ifdef DEPTH_DISTANCE
 				#ifdef BILLBOARD

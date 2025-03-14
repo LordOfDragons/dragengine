@@ -1,8 +1,8 @@
 //#version 130
 //@@DEFINES@@
 
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform vec4 pClipPlane; // normal.xyz, distance
 

@@ -419,7 +419,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglLumimeter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglRLumimeter.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.h" />
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglBatchedShaderLoading.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderDefines.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLanguage.h" />
@@ -431,6 +431,9 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSourceLocation.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSources.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompileTask.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompiler.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompilerThread.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.h" />
@@ -1041,7 +1044,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglLumimeter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\sensor\deoglRLumimeter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglBatchedShaderLoading.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderDefines.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLanguage.cpp" />
@@ -1053,6 +1056,9 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSourceLocation.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderSources.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompileTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompiler.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompilerThread.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlockList.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglSPBlockMemory.cpp" />
@@ -1431,7 +1437,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);OS_W32;WITH_DEBUG</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);OS_W32;WITH_DEBUG;BACKEND_OPENGL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1455,7 +1461,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);OS_W32</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);OS_W32;BACKEND_OPENGL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1481,7 +1487,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);OS_W32;WITH_DEBUG_CONTEXT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;GRAOPENGL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);OS_W32;WITH_DEBUG_CONTEXT;BACKEND_OPENGL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

@@ -115,22 +115,18 @@ pActiveVAO( 0 )
 		pipconf.EnableBlendBlend();  // this can be dynamic
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "Canvas" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasColor, pipconf );
+		sources = shaderManager.GetSourcesNamed("Canvas");
+		pCreatePipelines(pPipelineCanvasColor, pipconf, sources, defines);
 		
-		defines.SetDefines( "WITH_TEXTURE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasImage, pipconf );
+		defines.SetDefines("WITH_TEXTURE");
+		pCreatePipelines(pPipelineCanvasImage, pipconf, sources, defines);
 		
 		defines = commonDefines;
-		defines.SetDefines( "WITH_MASK" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasColorMask, pipconf );
+		defines.SetDefines("WITH_MASK");
+		pCreatePipelines(pPipelineCanvasColorMask, pipconf, sources, defines);
 		
-		defines.SetDefines( "WITH_TEXTURE" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pCreatePipelines( pPipelineCanvasImageMask, pipconf );
+		defines.SetDefines("WITH_TEXTURE");
+		pCreatePipelines(pPipelineCanvasImageMask, pipconf, sources, defines);
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -183,7 +179,7 @@ void deoglRenderConstructed::DrawNodeShape( const deoglRenderCanvasContext &cont
 		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
 	}
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterFloat( spcClipRect,
 		( context.GetClipMin().x + 1.0f ) * context.GetClipFactor().x,
@@ -257,7 +253,7 @@ void deoglRenderConstructed::DrawNodeImage( const deoglRenderCanvasContext &cont
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale(
 		decVector2( node.GetSize().x, node.GetSize().y ) ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	shader.SetParameterTexMatrix3x2( spcTransform, billboardTransform * context.GetTransform() );
 	shader.SetParameterTexMatrix3x2( spcTCTransform, node.GetTCTransform() );
@@ -314,7 +310,7 @@ void deoglRenderConstructed::DrawNodeText( const deoglRenderCanvasContext &conte
 	}
 	
 	// set shader
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	// set color
 	const float transparency = context.GetTransparency();
@@ -465,12 +461,12 @@ void deoglRenderConstructed::pActivateVAOShapes(){
 	pActiveVAO = pVAOShapes;
 }
 
-void deoglRenderConstructed::pCreatePipelines( const deoglPipeline* (&pipelines)[ 2 ], deoglPipelineConfiguration &config ){
-	deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+void deoglRenderConstructed::pCreatePipelines(const deoglPipeline* (&pipelines)[2],
+deoglPipelineConfiguration &config, const deoglShaderSources *sources,
+const deoglShaderDefines &defines){
+	config.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	pAsyncGetPipeline(pipelines[deSkinPropertyNode::ecmBlend], config, sources, defines);
 	
-	config.EnableBlend( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-	pipelines[ deSkinPropertyNode::ecmBlend ] = pipelineManager.GetWith( config );
-	
-	config.EnableBlend( GL_SRC_ALPHA , GL_ONE );
-	pipelines[ deSkinPropertyNode::ecmOverlay ] = pipelineManager.GetWith( config );
+	config.EnableBlend(GL_SRC_ALPHA , GL_ONE);
+	pAsyncGetPipeline(pipelines[deSkinPropertyNode::ecmOverlay], config, sources, defines);
 }

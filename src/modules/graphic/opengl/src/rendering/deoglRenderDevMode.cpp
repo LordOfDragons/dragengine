@@ -150,9 +150,9 @@ enum eSPPanel{
 ////////////////////////////
 
 deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deoglRenderBase( renderThread ){
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines commonDefines, defines;
 	deoglPipelineConfiguration pipconf;
+	const char *sources;
 	
 	pVBOShapes = 0;
 	pVAOShapes = 0;
@@ -168,12 +168,10 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pipconf.EnableBlendBlend();
 		
 		// 2d solid color
-		pipconf.SetShader( renderThread, "2D Solid Color", defines );
-		pPipelineSolidColor2D = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineSolidColor2D, pipconf, "2D Solid Color", defines);
 		
 		// 3d solid color
-		pipconf.SetShader( renderThread, "3D Solid Color", defines );
-		pPipelineSolidColor3D = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineSolidColor3D, pipconf, "3D Solid Color", defines);
 		
 		// shape
 		defines.SetDefines( "WITH_SELECTOR" );
@@ -181,12 +179,11 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		//defines.SetDefines( "WITH_DEPTH" );
-		pipconf.SetShader( renderThread, "DefRen Shape", defines );
-		pPipelineShape = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineShape, pipconf, "DefRen Shape", defines);
 		
 		// shape line
 		pipconf.SetPolygonMode( GL_LINE );
-		pPipelineShapeLine = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineShapeLine, pipconf, "DefRen Shape", defines);
 		
 		
 		// vr debug overlay
@@ -196,19 +193,18 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pipconf.SetDepthMask( false );
 		pipconf.EnableCulling( false );
 		pipconf.EnableBlendBlend();
-		pipconf.SetShader( renderThread, "DefRen Panel", defines );
-		pPipelineVRDebugPanel = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineVRDebugPanel, pipconf, "DefRen Panel", defines);
 		
 		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			defines.SetDefines( "VS_RENDER_STEREO" );
-			pipconf.SetShader( renderThread, "DefRen Panel", defines );
+			sources = "DefRen Panel";
 			
 		}else{
 			defines.SetDefines( "GS_RENDER_STEREO" );
-			pipconf.SetShader( renderThread, "DefRen Panel Stereo", defines );
+			sources = "DefRen Panel Stereo";
 		}
 		
-		pPipelineVRDebugPanelStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineVRDebugPanelStereo, pipconf, sources, defines);
 		
 		
 	}catch( const deException & ){
@@ -283,7 +279,7 @@ void deoglRenderDevMode::RenderVisComponent( deoglRenderPlan &plan ){
 	int c;
 	
 	pPipelineSolidColor3D->Activate();
-	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -323,7 +319,7 @@ void deoglRenderDevMode::RenderVisLight( deoglRenderPlan &plan ){
 	int l;
 	
 	pPipelineSolidColor3D->Activate();
-	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -366,7 +362,7 @@ void deoglRenderDevMode::RenderComponentLodLevels( deoglRenderPlan &plan ){
 	int c;
 	
 	pPipelineSolidColor3D->Activate();
-	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -412,7 +408,7 @@ void deoglRenderDevMode::RenderHighlightTransparentObjects( deoglRenderPlan &pla
 	int c;
 	
 	pPipelineSolidColor3D->Activate();
-	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -459,7 +455,7 @@ void deoglRenderDevMode::RenderHeightTerrainBoxes( deoglRenderPlan &plan ){
 	int s, c;
 	
 	pPipelineSolidColor3D->Activate();
-	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineSolidColor3D->GetShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -502,7 +498,7 @@ void deoglRenderDevMode::RenderPropFieldInfo( deoglRenderPlan &plan ){
 	int i, j, k;
 	
 	pPipelineSolidColor3D->Activate();
-	deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetGlShader();
+	deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -581,7 +577,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 	int l;
 	
 	pPipelineSolidColor3D->Activate();
-	deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetGlShader();
+	deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetShader();
 	
 	shapeBox.ActivateVAO();
 	
@@ -628,7 +624,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 	if( devMode.GetShowLightVolume() ){
 		// face
 		pPipelineShape->Activate();
-		shader = &pPipelineShape->GetGlShader();
+		shader = &pPipelineShape->GetShader();
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( l=0; l<lightCount; l++ ){
@@ -651,7 +647,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 		
 		// line
 		pPipelineShapeLine->Activate();
-		shader = &pPipelineShapeLine->GetGlShader();
+		shader = &pPipelineShapeLine->GetShader();
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( l=0; l<lightCount; l++ ){
@@ -675,7 +671,7 @@ void deoglRenderDevMode::RenderLightInfos( deoglRenderPlan &plan ){
 	
 	if( devMode.GetShowLightVisualInfo() >= 0 && devMode.GetShowLightVisualInfo() < collideList.GetLightCount() ){
 		pPipelineShape->Activate();
-		shader = &pPipelineShape->GetGlShader();
+		shader = &pPipelineShape->GetShader();
 		
 		const decQuaternion orientationCylinder = decMatrix::CreateRotationX( DEG2RAD * 90.0f ).ToQuaternion();
 		const deoglCollideListLight &cllight = *collideList.GetLightAt( devMode.GetShowLightVisualInfo() );
@@ -811,7 +807,7 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 		deoglDCollisionBox box;
 		
 		pPipelineSolidColor3D->Activate();
-		deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetGlShader();
+		deoglShaderCompiled *shader = &pPipelineSolidColor3D->GetShader();
 		
 		shapeBox.ActivateVAO();
 		
@@ -892,7 +888,7 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 		
 		// fill
 		pPipelineShape->Activate();
-		deoglShaderCompiled *shader = &pPipelineShape->GetGlShader();
+		deoglShaderCompiled *shader = &pPipelineShape->GetShader();
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( i=0; i<envmapCount; i++ ){
@@ -915,7 +911,7 @@ void deoglRenderDevMode::RenderEnvMapInfo( deoglRenderPlan &plan ){
 		
 		// line
 		pPipelineShapeLine->Activate();
-		shader = &pPipelineShapeLine->GetGlShader();
+		shader = &pPipelineShapeLine->GetShader();
 		shader->SetParameterFloat( spsSCToDTC, defren.GetPixelSizeU(), defren.GetPixelSizeV() );
 		
 		for( i=0; i<envmapCount; i++ ){
@@ -1081,7 +1077,7 @@ void deoglRenderDevMode::RenderOverlayInfos( deoglRenderPlan &plan ){
 			? *pPipelineVRDebugPanelStereo : *pPipelineVRDebugPanel;
 		pipeline.Activate();
 		
-		deoglShaderCompiled &shader = pipeline.GetGlShader();
+		deoglShaderCompiled &shader = pipeline.GetShader();
 		shader.SetParameterMatrix4x3( esppMatrixModel, decDMatrix::CreateScale(
 			( double )vr->GetDebugPanelRenderSize().x * 0.5,
 			( double )vr->GetDebugPanelRenderSize().y * 0.5, 1.0 )
@@ -1149,7 +1145,7 @@ void deoglRenderDevMode::RenderHeightTerrainLODLevels( deoglRenderPlan &plan, co
 	
 	// shader
 	pPipelineSolidColor2D->Activate();
-	deoglShaderCompiled &shader = pPipelineSolidColor2D->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineSolidColor2D->GetShader();
 	
 	// render sectors falling into the range
 	for( s=0; s<sectorCount; s++ ){
@@ -1252,7 +1248,7 @@ void deoglRenderDevMode::RenderTraspLevelCount( deoglRenderPlan &plan, const dec
 	int p;
 	
 	pPipelineSolidColor2D->Activate();
-	deoglShaderCompiled &shader = pPipelineSolidColor2D->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineSolidColor2D->GetShader();
 	
 	for( p=0; p<100; p++ ){
 		x1 = position.x + dotWidth * p;

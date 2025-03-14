@@ -32,7 +32,8 @@
 
 #include <android/configuration.h>
 #include <android/native_activity.h>
-#include <android/sensor.h>
+#include <android/input.h>
+#include <game-activity/native_app_glue/android_native_app_glue.h>
 
 class deOSAndroid;
 class deaiOverlaySystem;
@@ -57,8 +58,7 @@ private:
 	int pMouseButtons;
 	bool pIsListening;
 	int pOldThreshold;
-	int pLastMouseX;
-	int pLastMouseY;
+	decPoint pLastMouse;
 	bool *pKeyStates;
 	int pPointerMouse;
 	
@@ -80,7 +80,7 @@ public:
 	deAndroidInput( deLoadableModule &loadableModule );
 	
 	/** \brief Clean up input module. */
-	virtual ~deAndroidInput();
+	~deAndroidInput() override;
 	/*@}*/
 	
 	
@@ -88,10 +88,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Initialize module. */
-	bool Init();
+	bool Init() override;
 	
 	/** \brief Clean up module. */
-	void CleanUp();
+	void CleanUp() override;
 	
 	
 	
@@ -116,34 +116,34 @@ public:
 	/** \name Devices */
 	/*@{*/
 	/** \brief Number of input devices. */
-	virtual int GetDeviceCount();
+	int GetDeviceCount() override;
 	
 	/** \brief Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt( int index );
+	deInputDevice *GetDeviceAt( int index ) override;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	virtual int IndexOfDeviceWithID( const char *id );
+	int IndexOfDeviceWithID( const char *id ) override;
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	virtual int IndexOfButtonWithID( int device, const char *id );
+	int IndexOfButtonWithID( int device, const char *id ) override;
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	virtual int IndexOfAxisWithID( int device, const char *id );
+	int IndexOfAxisWithID( int device, const char *id ) override;
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	virtual int IndexOfFeedbackWithID( int device, const char *id );
+	int IndexOfFeedbackWithID( int device, const char *id ) override;
 	
 	/** \brief Button at index on device at index is pressed down. */
-	virtual bool GetButtonPressed( int device, int button );
+	bool GetButtonPressed( int device, int button ) override;
 	
 	/** \brief Value of axis at index on device at index. */
-	virtual float GetAxisValue( int device, int axis );
+	float GetAxisValue( int device, int axis ) override;
 	
 	/** \brief Value of feedback at index on device at index. */
-	virtual float GetFeedbackValue( int device, int feedback );
+	float GetFeedbackValue( int device, int feedback ) override;
 	
 	/** \brief Set value of feedback at index on device at index. */
-	virtual void SetFeedbackValue( int device, int feedback, float value );
+	void SetFeedbackValue( int device, int feedback, float value ) override;
 	
 	/**
 	 * \brief Index of button best matching key code or -1 if not found.
@@ -156,7 +156,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode );
+	int ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode ) override;
 	
 	/**
 	 * \brief Index of button best matching character or -1 if not found.
@@ -175,7 +175,7 @@ public:
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	virtual int ButtonMatchingKeyChar( int device, int character );
+	int ButtonMatchingKeyChar( int device, int character ) override;
 	/*@}*/
 	
 	
@@ -189,16 +189,16 @@ public:
 	 *          as engine input events You are expected to check message and event queues to
 	 *          deliver system notification (like quitting the game) to the game engine.
 	 */
-	virtual void ProcessEvents();
+	void ProcessEvents() override;
 	
 	/** \brief Clear event queues in case any are used. */
-	virtual void ClearEvents();
+	void ClearEvents() override;
 	
 	/** \brief Notify module screen size changed in case it uses an overlay canvas. */
-	virtual void ScreenSizeChanged();
+	void ScreenSizeChanged() override;
 	
 	/** \brief An event processed by the application event loop. */
-	virtual void EventLoop( const AInputEvent &event );
+	void EventLoop(const android_input_buffer &inputBuffer) override;
 	
 	
 	
@@ -220,7 +220,7 @@ public:
 	void AddMouseRelease( int device, int button, int state, const timeval &eventTime );
 	
 	/** \brief Add mouse move event to game input queue. */
-	void AddMouseMove( int device, int state, int x, int y, const timeval &eventTime );
+	void AddMouseMove(int device, int state, const decPoint &distance, const timeval &eventTime);
 	
 	/** \brief Add axis changed event. */
 	void AddAxisChanged( int device, int axis, float value, const timeval &eventTime );
@@ -235,8 +235,13 @@ public:
 	
 	
 private:
+	timeval pConvertEventTime(int64_t time) const;
+	void pProcessKeyEvent(const GameActivityKeyEvent &event);
+	void pProcessMotionEvent(const GameActivityMotionEvent &event);
+	void pProcessMotionEventTouchScreen(const GameActivityMotionEvent &event);
 	void pCenterPointer();
-	int pModifiersFromEvent( const AInputEvent &event ) const;
+	decPoint pPointerPosition(const GameActivityPointerAxes &pointer) const;
+	int pModifiersFromMetaState(int32_t metaState) const;
 };
 
 #endif

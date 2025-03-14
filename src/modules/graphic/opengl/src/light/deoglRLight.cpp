@@ -730,17 +730,28 @@ void deoglRLight::PrepareForRenderRender( const deoglRenderPlanMasked *renderPla
 
 
 deoglLightPipelines &deoglRLight::GetPipelines(){
-	if( ! pPipelines ){
-		if( pLightType == deLight::eltPoint ){
-			pPipelines.TakeOver( new deoglLightPipelinesPoint( *this ) );
-			
-		}else{
-			pPipelines.TakeOver( new deoglLightPipelinesSpot( *this ) );
-		}
-		pPipelines->Prepare();
+	if(pPipelines){
+		return pPipelines;
 	}
 	
-	return *pPipelines;
+	if(pLightType == deLight::eltPoint){
+		pPipelines.TakeOver(new deoglLightPipelinesPoint(*this));
+		
+	}else{
+		pPipelines.TakeOver(new deoglLightPipelinesSpot(*this));
+	}
+	
+	deoglBatchedShaderLoading batched(pRenderThread, 1000.0f, true);
+	try{
+		pPipelines->Prepare(batched);
+		
+	}catch(const deException &){
+		batched.WaitAllCompileFinished();
+		throw;
+	}
+	
+	batched.WaitAllCompileFinished();
+	return pPipelines;
 }
 
 const deoglSPBlockUBO::Ref &deoglRLight::GetLightParameterBlock(){

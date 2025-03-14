@@ -62,6 +62,8 @@ pin Dragengine.Utils
  * This behavior can be present only one.
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_footsteps
  */
 class ECBehaviorFootSteps extends DefaultECBehavior
 	/**
@@ -371,6 +373,41 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		/** \brief Configuration changed. */
 		func void configurationChanged(Instance instance, Configuration configuration)
+		end
+	end
+	
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorFootSteps'>
+	 *   <!-- set if update() is automatically called on postThink(). default is 'true' -->
+	 *   <boolean name='autoUpdate'>false</boolean>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorFootSteps"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorFootSteps behavior = ECBehaviorFootSteps.new(eclass)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "footSteps")
+			return behavior
 		end
 	end
 	

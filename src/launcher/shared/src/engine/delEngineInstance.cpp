@@ -70,3 +70,40 @@ void delEngineInstance::SetUseConsole( bool useConsole ){
 void delEngineInstance::BeosMessageReceived( BMessage *message ){
 }
 #endif
+
+#ifdef OS_ANDROID
+void delEngineInstance::ReadDelgaGameDefsVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, decStringList &list){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::ReadDelgaFilesVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &filesContent ){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::VFSAddDelgaFileVfs(const deVFSContainer::Ref &container,
+const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::RunSingleFrameUpdate(){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::SetAppActive(bool gained){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::SetAppPaused(bool paused){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::UpdateContentRect(const decBoundary &contentRect){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+
+void delEngineInstance::InputEvent(const android_input_buffer &inputBuffer){
+	DETHROW_INFO(deeInvalidAction, "not supported");
+}
+#endif

@@ -1,0 +1,12 @@
+diff '--color=auto' -rupN modio-sdk/modio/CMakeLists.txt modio-sdk-new/modio/CMakeLists.txt
+--- modio-sdk/modio/CMakeLists.txt	2024-12-16 19:59:09.779964453 +0100
++++ modio-sdk-new/modio/CMakeLists.txt	2024-12-16 20:16:24.857780451 +0100
+@@ -43,8 +43,6 @@ target_sources(${MODIO_TARGET_NAME} INTE
+ 
+ add_public_header(${MODIO_TARGET_NAME} modio/ModioSDK.h)
+ 
+-endif()
+-
+ target_include_directories(${MODIO_TARGET_NAME} INTERFACE ${ModioGeneratedHeaderPath})
+ 
+ target_link_libraries(${MODIO_TARGET_NAME} INTERFACE asio tl::optional platform nlohmann_json function2 concurrentqueue)

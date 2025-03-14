@@ -60,7 +60,7 @@ const char *deoglLightPipelinesPoint::GetDebugName() const{
 // Protected Functions
 /////////////////////////
 
-void deoglLightPipelinesPoint::pPreparePipelines(){
+void deoglLightPipelinesPoint::pPreparePipelines(deoglBatchedShaderLoading &batched){
 	// base pipeline configuration
 	deoglPipelineConfiguration basePipelineConfig;
 	pBasePipelineConfig( pLight.GetRenderThread(), basePipelineConfig );
@@ -74,18 +74,18 @@ void deoglLightPipelinesPoint::pPreparePipelines(){
 	baseShaderConfig.Reset();
 	
 	// create pipelines for each type and all valid modifications
-	pPrepareNoShadow( basePipelineConfig, baseShaderConfig );
-	pPrepareSolid1( basePipelineConfig, baseShaderConfig );
-	pPrepareSolid1Transp1( basePipelineConfig, baseShaderConfig );
-	pPrepareSolid2( basePipelineConfig, baseShaderConfig );
-	pPrepareSolid2Transp1( basePipelineConfig, baseShaderConfig );
-	pPrepareSolid2Transp2( basePipelineConfig, baseShaderConfig );
-	// pPrepareLumSolid1( basePipelineConfig, baseShaderConfig ); // unusued
-	// pPrepareLumSolid2( basePipelineConfig, baseShaderConfig ); // unusued
+	pPrepareNoShadow( basePipelineConfig, baseShaderConfig, batched );
+	pPrepareSolid1( basePipelineConfig, baseShaderConfig, batched );
+	pPrepareSolid1Transp1( basePipelineConfig, baseShaderConfig, batched );
+	pPrepareSolid2( basePipelineConfig, baseShaderConfig, batched );
+	pPrepareSolid2Transp1( basePipelineConfig, baseShaderConfig, batched );
+	pPrepareSolid2Transp2( basePipelineConfig, baseShaderConfig, batched );
+	// pPrepareLumSolid1( basePipelineConfig, baseShaderConfig, batched ); // unusued
+	// pPrepareLumSolid2( basePipelineConfig, baseShaderConfig, batched ); // unusued
 	
-	pPrepareGIRayNoShadow( basePipelineConfigGI, baseShaderConfig );
-	pPrepareGIRaySolid1( basePipelineConfigGI, baseShaderConfig );
-	pPrepareGIRaySolid2( basePipelineConfigGI, baseShaderConfig );
+	pPrepareGIRayNoShadow( basePipelineConfigGI, baseShaderConfig, batched );
+	pPrepareGIRaySolid1( basePipelineConfigGI, baseShaderConfig, batched );
+	pPrepareGIRaySolid2( basePipelineConfigGI, baseShaderConfig, batched );
 }
 
 
@@ -94,62 +94,62 @@ void deoglLightPipelinesPoint::pPreparePipelines(){
 //////////////////////
 
 void deoglLightPipelinesPoint::pPrepareNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseNoShadow( shaconf );
 	pSetPoint( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etNoShadow, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
+		etNoShadow, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareSolid1( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseSolid1( shaconf );
 	pSetPoint( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
+		etSolid1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareSolid1Transp1( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseSolid1Transp1( shaconf );
 	pSetPoint( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid1Transp1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
+		etSolid1Transp1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareSolid2( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseSolid2( shaconf );
 	pSetPoint( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid2, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
+		etSolid2, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareSolid2Transp1( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseSolid2Transp1( shaconf );
 	pSetPoint( shaconf );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid2Transp1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
+		etSolid2Transp1, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareSolid2Transp2( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseSolid2Transp2( shaconf );
@@ -157,11 +157,11 @@ deoglLightShaderConfig &baseShaderConfig ){
 	
 	// TODO too many texture targets
 // 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-// 		etSolid2Transp2, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside );
+// 		etSolid2Transp2, emNoAmbient | emStereo | emTransparent | emFlipCullFace | emCameraInside, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareLumSolid1( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseLumSolid1( shaconf );
@@ -169,11 +169,11 @@ deoglLightShaderConfig &baseShaderConfig ){
 	shaconf.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etLumSolid1, emNoAmbient | emTransparent );
+		etLumSolid1, emNoAmbient | emTransparent, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareLumSolid2( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseLumSolid2( shaconf );
@@ -181,39 +181,39 @@ deoglLightShaderConfig &baseShaderConfig ){
 	shaconf.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
 	
 	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf,
-		etSolid1, emNoAmbient | emTransparent );
+		etSolid1, emNoAmbient | emTransparent, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareGIRayNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseGIRayNoShadow( shaconf );
 	pSetPoint( shaconf );
 	
-	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf, etGIRayNoShadow, 0 );
+	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf, etGIRayNoShadow, 0, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareGIRaySolid1( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseGIRaySolid1( shaconf );
 	pSetPoint( shaconf );
 	shaconf.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
 	
-	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf, etGIRaySolid1, 0 );
+	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf, etGIRaySolid1, 0, batched );
 }
 
 void deoglLightPipelinesPoint::pPrepareGIRaySolid2( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched ){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetBaseGIRaySolid2( shaconf );
 	pSetPoint( shaconf );
 	shaconf.SetShadowTapMode( deoglLightShaderConfig::estmSingle );
 	
-	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf, etGIRaySolid2, 0 );
+	pCreatePipelines( pLight.GetRenderThread(), basePipelineConfig, shaconf, etGIRaySolid2, 0, batched );
 }
 
 

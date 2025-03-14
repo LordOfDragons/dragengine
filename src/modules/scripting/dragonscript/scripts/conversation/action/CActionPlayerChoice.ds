@@ -53,11 +53,9 @@ class CActionPlayerChoice extends ConversationAction
 	end
 	
 	
-	
 	var String pVariable
 	var Array pOptions
 	var Array pActions
-	
 	
 	
 	/** \brief Create conversation action. */

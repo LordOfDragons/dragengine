@@ -87,7 +87,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-cePlaybackProcessAction::cePlaybackProcessAction(){
+cePlaybackProcessAction::cePlaybackProcessAction() :
+pMissingPhonemeLength(0.08f){
 }
 
 cePlaybackProcessAction::~cePlaybackProcessAction(){
@@ -367,7 +368,7 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 						saPhonemeIndex = saPhonemeList.IndexOfIPA( phonetics.GetAt( j ) );
 						
 						if( saPhonemeIndex == -1 ){
-							scaling += 0.1f;
+							scaling += pMissingPhonemeLength;
 							
 						}else{
 							scaling += saPhonemeList.GetAt( saPhonemeIndex )->GetLength();
@@ -381,7 +382,7 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 						saPhonemeIndex = saPhonemeList.IndexOfIPA( phonetics.GetAt( j ) );
 						
 						if( saPhonemeIndex == -1 ){
-							speechAnimation.AddSpeakPhoneme( -1, 0.1f * scaling );
+							speechAnimation.AddSpeakPhoneme( -1, pMissingPhonemeLength * scaling );
 							
 						}else{
 							const ceSAPhoneme &phoneme = *saPhonemeList.GetAt( saPhonemeIndex );

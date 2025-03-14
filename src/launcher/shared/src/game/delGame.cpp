@@ -284,6 +284,14 @@ void delGame::SetUseCustomPatch( const decUuid &patch ){
 
 
 
+#ifdef OS_ANDROID
+void delGame::SetVFSDelgaContainer(const deVFSContainer::Ref &container){
+	pVFSDelgaContainer = container;
+}
+#endif
+
+
+
 bool delGame::IsRunning() const{
 	return pEngineInstance;
 }
@@ -297,7 +305,7 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 	
 	SaveConfig(); // ensure game profile exists
 	
-	if( IsRunning()  ){
+	if( IsRunning() ){
 		DETHROW_INFO( deeInvalidAction, "game is running" );
 	}
 	if( ! pCanRun ){
@@ -352,12 +360,24 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 		pEngineInstance->SetCmdLineArgs( runParams.GetRunArguments() );
 		
 		// set up virtual file system
+#ifdef OS_ANDROID
+		if(pVFSDelgaContainer){
+			pEngineInstance->VFSAddDelgaFileVfs(pVFSDelgaContainer, pDelgaFile, pDataDirectory, {});
+			
+		}else if(pDelgaFile.IsEmpty()){
+			pEngineInstance->VFSAddDiskDir("/", pathDataDir.GetPathNative(), true);
+			
+		}else{
+			pEngineInstance->VFSAddDelgaFile(pDelgaFile, pDataDirectory);
+		}
+#else
 		if( pDelgaFile.IsEmpty() ){
 			pEngineInstance->VFSAddDiskDir( "/", pathDataDir.GetPathNative(), true );
 			
 		}else{
 			pEngineInstance->VFSAddDelgaFile( pDelgaFile, pDataDirectory );
 		}
+#endif
 		
 		int i;
 		for( i=0; i<runParams.GetPatches().GetCount(); i++ ){

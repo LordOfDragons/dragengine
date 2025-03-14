@@ -76,7 +76,7 @@ pLauncher( launcher ),
 pLogFile( decString( logFileTitle ) + ".log" ),
 pResolutionCount( 0 ),
 pResolutions( NULL ),
-pScaleFactor(1.0f){
+pScaleFactor(100){
 }
 
 delEngine::~delEngine(){
@@ -485,7 +485,7 @@ void delEngine::UpdateScaleFactor(delEngineInstance& instance){
 		pLauncher.GetLogger()->LogError(pLauncher.GetLogSource(),
 			"Engine.UpdateScaleFactor failed with exception");
 		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
-		pScaleFactor = 1.0f;
+		pScaleFactor = 100;
 	}
 }
 
@@ -498,10 +498,10 @@ void delEngine::ReadDelgaGameDefs( delEngineInstance &instance, const char *file
 	try{
 		instance.ReadDelgaGameDefs( filename, fileContents );
 		
-	}catch( const deException &e ){
-		pLauncher.GetLogger()->LogError( pLauncher.GetLogSource(),
-			"Engine.ReadDelgaGameDefs failed with exception" );
-		pLauncher.GetLogger()->LogException( pLauncher.GetLogSource(), e );
+	}catch(const deException &e){
+		pLauncher.GetLogger()->LogError(pLauncher.GetLogSource(),
+			"Engine.ReadDelgaGameDefs failed with exception");
+		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
 	}
 	
 	// parse file contents into game instances
@@ -603,6 +603,81 @@ void delEngine::ReadDelgaPatchDefs( delEngineInstance &instance, const char *fil
 		list.Add( patch );
 	}
 }
+
+#ifdef OS_ANDROID
+void delEngine::ReadDelgaGameDefsVfs(delEngineInstance &instance,
+const deVFSContainer::Ref &container, const char *filename, delGameList &list){
+	// read content of all game definition files in delga file
+	decStringList fileContents;
+	
+	try{
+		instance.ReadDelgaGameDefsVfs(container, filename, fileContents);
+		
+	}catch(const deException &e){
+		pLauncher.GetLogger()->LogError(pLauncher.GetLogSource(),
+			"Engine.ReadDelgaGameDefsVfs failed with exception");
+		pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
+	}
+	
+	// parse file contents into game instances
+	list.RemoveAll();
+	
+	const int count = fileContents.GetCount();
+	if(count == 0){
+		return;
+	}
+	
+	delGameXML gameXML(pLauncher.GetLogger(), pLauncher.GetLogSource());
+	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New(
+		new decMemoryFile("DelgaGameDefinition")));
+	int i;
+	
+	for(i=0; i<count; i++){
+		const decString &fileContent = fileContents.GetAt(i);
+		const int lenContent = fileContent.GetLength();
+		
+		memoryFile->Resize(lenContent, false);
+		memcpy(memoryFile->GetPointer(), fileContent.GetString(), lenContent);
+		
+		const delGame::Ref game(delGame::Ref::New(pLauncher.CreateGame()));
+		gameXML.ReadFromFile(decMemoryFileReader::Ref::New(
+			new decMemoryFileReader(memoryFile)), game);
+		
+		game->SetDefaultLogFile();
+		game->SetDelgaFile(filename);
+		
+		list.Add(game);
+		
+		// read icons
+		const delGameIconList &icons = game->GetIcons();
+		const int iconCount = icons.GetCount();
+		int j;
+		
+		for(j=0; j<iconCount; j++){
+			delGameIcon &icon = *icons.GetAt(j);
+			if(icon.GetPath().IsEmpty()){
+				continue;
+			}
+			
+			try{
+				decStringList readFilenames;
+				readFilenames.Add(icon.GetPath());
+				
+				decObjectOrderedSet filesContent;
+				instance.ReadDelgaFilesVfs(container, filename, readFilenames, filesContent);
+				
+				icon.SetContent((decMemoryFile*)filesContent.GetAt(0));
+				
+			}catch(const deException &e){
+				pLauncher.GetLogger()->LogErrorFormat(pLauncher.GetLogSource(),
+					"Exception while reading icon '%s' for game '%s'",
+					icon.GetPath().GetString(), game->GetTitle().ToUTF8().GetString());
+				pLauncher.GetLogger()->LogException(pLauncher.GetLogSource(), e);
+			}
+		}
+	}
+}
+#endif
 
 
 

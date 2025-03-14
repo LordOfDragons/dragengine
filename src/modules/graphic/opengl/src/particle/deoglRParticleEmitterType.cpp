@@ -297,10 +297,22 @@ void deoglRParticleEmitterType::CheckEmitLight( const deParticleEmitterType &typ
 
 
 deoglLightPipelines &deoglRParticleEmitterType::GetPipelines(){
-	if( ! pPipelines ){
-		pPipelines.TakeOver( new deoglLightPipelinesParticle( *this ) );
-		pPipelines->Prepare();
+	if(pPipelines){
+		return pPipelines;
 	}
+	
+	pPipelines.TakeOver(new deoglLightPipelinesParticle(*this));
+	
+	deoglBatchedShaderLoading batched(pEmitter.GetRenderThread(), 1000.0f, true);
+	try{
+		pPipelines->Prepare(batched);
+		
+	}catch(const deException &){
+		batched.WaitAllCompileFinished();
+		throw;
+	}
+	
+	batched.WaitAllCompileFinished();
 	return pPipelines;
 }
 

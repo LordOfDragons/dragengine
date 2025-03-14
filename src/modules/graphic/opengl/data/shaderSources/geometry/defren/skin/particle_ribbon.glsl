@@ -1,5 +1,7 @@
 #ifdef GS_INSTANCING
-	#extension GL_ARB_gpu_shader5 : require
+	#ifndef OPENGLES
+		#extension GL_ARB_gpu_shader5 : require
+	#endif
 #endif
 
 #include "shared/defren/skin/macros_geometry.glsl"
@@ -15,7 +17,7 @@
 	layout( lines_adjacency ) in;
 #endif
 
-#define USE_SHEETS 1
+#define USE_SHEETS
 
 #ifdef USE_SHEETS
 	// OpenGL requires these minimum limits: MaxVertices=256, MaxComponents=1024.
@@ -24,17 +26,27 @@
 	// - opengl internal parameters: 6 components (gl_Position, gl_Layer, gl_PrimitiveID)
 	// hence 29 components in total. this results in the maximum supported vertices of:
 	//   floor(MaxComponents / 29) = 35
-	// sice 4 vertices are required for a full sheet the maximum number of sheets is:
+	// since 4 vertices are required for a full sheet the maximum number of sheets is:
 	//   floor(35 / 4) = 8
-	// and thus maximum number of vertixes 32 (8*4)
+	// and thus maximum number of vertices 32 (8*4)
+	//
+	// this calculation is now more complicated. right now the maximum count of possible
+	// particle parameters is 43. combined with the opengl internal parameters this yields
+	// 49 components. this gives a maximum of floor(MaxComponents / 49) = 20 vertices.
+	// with 4 vertices per sheet this yields floor(20 / 4) = 5. hence the maximum count
+	// of sheets is 5 and the maximum count of vertices 20
+	//
+	// this problem can be solved by moving the calculation of vertices in the beam into
+	// a compute shader filling a VBO. this way all kinds of sheet counts can be done
+	// without even needing a geometry shader to begin with.
 	#ifdef GS_RENDER_STEREO
 		#ifdef GS_INSTANCING
-			layout( triangle_strip, max_vertices=32 ) out;
+			layout( triangle_strip, max_vertices=20 ) out;
 		#else
-			layout( triangle_strip, max_vertices=64 ) out;
+			layout( triangle_strip, max_vertices=40 ) out;
 		#endif
 	#else
-		layout( triangle_strip, max_vertices=32 ) out;
+		layout( triangle_strip, max_vertices=20 ) out;
 	#endif
 	
 #else
@@ -56,9 +68,9 @@
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
-#include "shared/defren/skin/ubo_texture_parameters.glsl"
-#include "shared/defren/skin/ubo_instance_parameters.glsl"
-#include "shared/defren/skin/ubo_dynamic_parameters.glsl"
+// #include "shared/defren/skin/ubo_texture_parameters.glsl"
+// #include "shared/defren/skin/ubo_instance_parameters.glsl"
+// #include "shared/defren/skin/ubo_dynamic_parameters.glsl"
 
 #ifdef NODE_GEOMETRY_UNIFORMS
 NODE_GEOMETRY_UNIFORMS
@@ -71,6 +83,8 @@ NODE_GEOMETRY_UNIFORMS
 
 in vec3 vParticle0[ 4 ]; // size, emissivity, rotation
 in vec4 vParticle1[ 4 ]; // red, green, blue, transparency
+
+flat in int vParticleSheetCount[4];
 
 #ifdef SHARED_SPB
 	flat in int vGSSPBIndex[ 4 ];
@@ -247,7 +261,8 @@ void emitRibbon( in int layer ){
 	#ifdef USE_SHEETS
 		mat3 matRot1, matRot2;
 		//int sheetCount = 3;
-		#define sheetCount pParticleSheetCount
+		// passing through sheet count to avoid using SSBO in geometry shader (pParticleSheetCount)
+		#define sheetCount vParticleSheetCount[0]
 		int s;
 		
 		float rotAngle = pi / float( sheetCount );
@@ -276,7 +291,7 @@ void emitRibbon( in int layer ){
 	}else{
 		ribbonAxis1 /= len;
 	}
-	if( ribbonAxis1.y < 0 ){
+	if(ribbonAxis1.y < 0.0){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
@@ -305,11 +320,11 @@ void emitRibbon( in int layer ){
 	}else{
 		ribbonAxis2 /= len;
 	}
-	if( ribbonAxis1.y < 0 ){
+	if(ribbonAxis1.y < 0.0){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	
-	if( dot( vec2( ribbonAxis1 ), vec2( ribbonAxis2 ) ) < 0 ){
+	if(dot(vec2(ribbonAxis1), vec2(ribbonAxis2)) < 0.0){
 		ribbonAxis1 = -ribbonAxis1;
 	}
 	

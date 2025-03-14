@@ -271,6 +271,21 @@ class Desktop extends Container
 	end
 	
 	/**
+	 * \brief Clear drag window and release mouse capture if drag window is present.
+	 * \version 1.25
+	 */
+	protected func void clearDragWindow()
+		if pDragWindow == null
+			return
+		end
+		
+		requestReleaseMouse(this)
+		
+		pDragArea = Decoration.Area.nothing
+		pDragWindow = null
+	end
+	
+	/**
 	 * \brief Widget accepting input at position.
 	 * \version 1.17
 	 */
@@ -661,6 +676,10 @@ class Desktop extends Container
 		end
 		clearHoverWidget()
 		
+		if pDragWindow == widget
+			clearDragWindow()
+		end
+		
 		super.removeWidget(widget)
 		
 		if getFocusWidget() == null
@@ -673,6 +692,7 @@ class Desktop extends Container
 	func void removeAllWidgets()
 		clearFocusWidget()
 		clearHoverWidget()
+		clearDragWindow()
 		super.removeAllWidgets()
 	end
 	

@@ -1,0 +1,4 @@
+GRAVULKAN {
+  global: VulkanCreateModule;
+  local: *;
+};
