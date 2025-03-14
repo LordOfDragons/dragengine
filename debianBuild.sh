@@ -81,13 +81,13 @@ FILE=`cd .. && dir -1 dragengine_*.orig.tar.gz`
 FILENOEXT=`echo $FILE | sed -e "s/.orig.tar.gz//" | sed -e "s/_/-/"`
 
 gunzip ../dragengine_*.orig.tar.gz || exit 1
+rm -f ../dragengine_*.orig.tar
 tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   extern/eossdk/eossdk.zip \
   extern/eossdk/eossdk_bin_linux.tar.xz \
   `dir -1 extern/fox/fox-*.tar.bz2` \
   `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` \
-  extern/modio/modio-sdk-ext.tar.xz \
-  extern/modio/modio-sdk.tar.xz \
+  `dir -1 extern/modio/modio-sdk-*.tar.xz` \
   `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` \
   `dir -1 extern/steamsdk/steamsdk160.tar.xz` \
   extern/mingw/mingw_stdthreads.tar.bz2 \
