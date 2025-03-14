@@ -86,7 +86,7 @@ class ECComposeForceField
 			ownerClass.getSharedCodecPropertyString() )
 		ownerClass.addProperty( this.pInfluenceArea )
 		
-		this.pRadius = ECPFloat.new( prefix + "radius", 0, 0 )
+		this.pRadius = ECPFloat.new( prefix + "radius", 1, 0 )
 		ownerClass.addProperty( this.pRadius )
 		
 		this.pExponent = ECPFloat.new( prefix + "exponent", 1, 0 )
