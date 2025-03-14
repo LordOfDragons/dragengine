@@ -19,6 +19,8 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLin
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 #endif
 {
+	(void)SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
 	const HANDLE pipeIn = GetStdHandle( STD_INPUT_HANDLE );
 	if( pipeIn == INVALID_HANDLE_VALUE ){
 		return -1;
