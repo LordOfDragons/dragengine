@@ -180,14 +180,35 @@ void deoglShaderCompilerThread::pActivateContext(){
 		//pGLContextMakeCurrent(context.GetActiveRRenderWindow()->GetView());
 			
 #elif defined OS_W32
-		if(!wglMakeCurrent(context.GetActiveRRenderWindow()->GetWindowDC(),
-		context.GetCompileContextAt(pContextIndex))){
+		// on windows make current can randomly fail at times. in this case
+		// retry the make current call after a short wait to see if it fixes
+		// itself. if this goes on for too lang call it quits
+		const int retryCounterMax = 10;
+		const int retryDelayMs = 100;
+		int retryCounter;
+
+		for(retryCounter=0; retryCounter<retryCounterMax; retryCounter++){
+			if(wglMakeCurrent(context.GetActiveRRenderWindow()->GetWindowDC(),
+			context.GetCompileContextAt(pContextIndex))){
+				if(retryCounter > 0){
+					pLanguage.GetRenderThread().GetLogger().LogErrorFormat(
+						"wglMakeCurrent recovered (%s:%i)[%d]: counter=%d\n",
+						__FILE__, __LINE__, pContextIndex, retryCounter);
+				}
+				break;
+			}
+
 			pLanguage.GetRenderThread().GetLogger().LogErrorFormat(
-				"wglMakeCurrent failed (%s:%i): error=0x%lx\n",
-				__FILE__, __LINE__, GetLastError());
+				"wglMakeCurrent failed (%s:%i)[%d]: error=0x%lx, counter=%d\n",
+				__FILE__, __LINE__, pContextIndex, GetLastError(), retryCounter);
+
+			SleepEx(retryDelayMs, false);
+		}
+
+		if(retryCounter == retryCounterMax){
 			DETHROW_INFO(deeInvalidAction, "wglMakeCurrent failed");
 		}
-		
+
 #elif defined OS_UNIX
 		OGL_CHECK_WRTC(pLanguage.GetRenderThread(), pContextIndex == -1,
 			glXMakeCurrent(context.GetDisplay(),
