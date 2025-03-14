@@ -69,12 +69,12 @@ class TSECBForceField extends TestSuite
 			assertEquals(behavior.getForceField().getPrefix(), "forceField.")
 			
 			assertTrue(behavior.getForceField().getInfluenceArea().getShapeList().empty())
-			assertFloatProperty(behavior.getForceField().getRadius(), 0, 1)
-			assertFloatProperty(behavior.getForceField().getExponent(), 0, 1)
+			assertFloatProperty(behavior.getForceField().getRadius(), 1, 0)
+			assertFloatProperty(behavior.getForceField().getExponent(), 1, 0)
 			assertEnumProperty(behavior.getForceField().getFieldType(), ForceFieldType.radial, ForceFieldType.all())
 			assertEnumProperty(behavior.getForceField().getApplicationType(), ForceFieldApplication.direct, ForceFieldApplication.all())
 			assertEquals(behavior.getForceField().getDirection().getVector(), Vector.new())
-			assertFloatProperty(behavior.getForceField().getForce(), 0, 1)
+			assertFloatProperty(behavior.getForceField().getForce(), 1)
 			assertFloatProperty(behavior.getForceField().getFluctuationDirection(), 0)
 			assertFloatProperty(behavior.getForceField().getFluctuationForce(), 0)
 			assertTrue(behavior.getForceField().getEnabled().getValue())
@@ -106,11 +106,11 @@ class TSECBForceField extends TestSuite
 			var ForceField ff = forceField.getForceField()
 			assertNotNull(ff)
 			assertEquals(ff.getCollisionFilter(), TSECBForceField.collisionFilter)
-			assertEquals(ff.getRadius(), 0)
-			assertEquals(ff.getExponent(), 0)
+			assertEquals(ff.getRadius(), 1)
+			assertEquals(ff.getExponent(), 1)
 			assertEquals(ff.getFieldType(), ForceFieldType.radial)
 			assertEquals(ff.getApplicationType(), ForceFieldApplication.direct)
-			assertEquals(ff.getForce(), 0)
+			assertEquals(ff.getForce(), 1)
 			assertEquals(ff.getFluctuationDirection(), 0)
 			assertEquals(ff.getFluctuationForce(), 0)
 			assertTrue(ff.getEnabled())
@@ -149,7 +149,6 @@ class TSECBForceField extends TestSuite
 		protected func bool testBehaviors(TestSuite testSuite)
 			getGameWorld().update(0.01) // required to make physics update attachments
 			
-			var BehaviorElement element = getElement()
 			var DMatrix matrix = DMatrix.newRT(DVector.new(10, 25, 8), DVector.new(0.2, 0.5, 0.7))\
 				* DMatrix.newRT(DVector.new(20, 10, 30), DVector.new(2, 1, 3))
 			

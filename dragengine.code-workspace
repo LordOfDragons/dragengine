@@ -103,6 +103,9 @@
 		{
 			"name": ".github",
 			"path": ".github"
+		},
+		{
+			"path": "detesting"
 		}
 	],
 	"settings": {
