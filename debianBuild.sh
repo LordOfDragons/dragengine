@@ -43,8 +43,7 @@ writeIncludeBinaries() {
   echo "extern/eossdk/eossdk_bin_linux.tar.xz" >>$FILE
   echo `dir -1 extern/fox/fox-*.tar.bz2` >>$FILE
   echo `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` >>$FILE
-  echo "extern/modio/modio-sdk-ext.tar.xz" >>$FILE
-  echo "extern/modio/modio-sdk.tar.xz" >>$FILE
+  echo `dir -1 extern/modio/modio-sdk-*.tar.xz` >>$FILE
   echo `dir -1 extern/openxr/OpenXR-SDK-release-*.tar.xz` >>$FILE
   echo `dir -1 extern/steamsdk/steamsdk160.tar.xz` >>$FILE
   echo "extern/mingw/mingw_stdthreads.tar.bz2" >>$FILE
