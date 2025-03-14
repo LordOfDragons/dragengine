@@ -699,6 +699,7 @@ void deoglDelayedOperations::pProcessModel( deoglRModel &model ){
 	//model.PrintDebugInfo();
 }
 
+#if 0
 void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkinTexture &texture ){
 	decTimer timer;
 	
@@ -882,6 +883,7 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.pGenerateConeMap: Generated cone map in %ims",
 		( int )( timer.GetElapsedTime() * 1000.0f ) );
 }
+#endif
 
 void deoglDelayedOperations::pDeleteOpenGLObjects(){
 	int i;

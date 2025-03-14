@@ -313,7 +313,7 @@ private:
 	void pProcessImage( deoglRImage &image );
 	void pProcessSkin( deoglRSkin &skin );
 	void pProcessModel( deoglRModel &model );
-	void pGenerateConeMap( deoglRSkin &skin, const deoglSkinTexture &texture );
+	//void pGenerateConeMap( deoglRSkin &skin, const deoglSkinTexture &texture );
 	void pDeleteOpenGLObjects();
 };
 

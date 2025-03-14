@@ -1023,8 +1023,10 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pDebug = new deoglRTDebug( *this );
 	pTexture = new deoglRTTexture( *this );
 	pFramebuffer = new deoglRTFramebuffer( *this );
-	pShader = new deoglRTShader( *this );
 	pDelayedOperations = new deoglDelayedOperations( *this );
+		// ^== has to come before RTShader creation since shader compile threads failing
+	    //     can call into delayed operations. if null this can segfault.
+	pShader = new deoglRTShader( *this );
 	pPipelineManager.TakeOver( new deoglPipelineManager( *this ) );
 	
 	pInitCapabilities();

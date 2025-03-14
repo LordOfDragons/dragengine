@@ -232,8 +232,11 @@ void devkDevice::pCreateDevice(){
 	}
 	
 	queueFamilyProperties = new VkQueueFamilyProperties[ queueFamilyCount ];
+	memset(queueFamilyProperties, 0, sizeof(VkQueueFamilyProperties) * queueFamilyCount);
 	
-	pInstance.vkGetPhysicalDeviceQueueFamilyProperties(pPhysicalDevice, &queueFamilyCount, queueFamilyProperties);
+	uint32_t writtenQueueFamilyCount = 0;
+	pInstance.vkGetPhysicalDeviceQueueFamilyProperties(pPhysicalDevice, &writtenQueueFamilyCount, queueFamilyProperties);
+	DEASSERT_TRUE(writtenQueueFamilyCount <= queueFamilyCount)
 	int i;
 	
 	VkDeviceQueueCreateInfo queueCreateInfo[ 3 ]{};
@@ -275,7 +278,7 @@ void devkDevice::pCreateDevice(){
 	}
 	
 	module.LogInfo("Queue Families");
-	for(i=0; i<(int)queueFamilyCount; i++){
+	for(i=0; i<(int)writtenQueueFamilyCount; i++){
 		const VkQueueFlags flags = queueFamilyProperties[ i ].queueFlags;
 		
 		decString text("-");
@@ -430,21 +433,23 @@ void devkDevice::pDetectExtensions(){
 	
 	VkExtensionProperties * const extensions = new VkExtensionProperties[ count ];
 	try{
+		uint32_t writtenCount = 0;
 		VK_CHECK(vulkan, pInstance.vkEnumerateDeviceExtensionProperties(
-			pPhysicalDevice, VK_NULL_HANDLE, &count, extensions));
+			pPhysicalDevice, VK_NULL_HANDLE, &writtenCount, extensions));
+		DEASSERT_TRUE(writtenCount <= count);
 		
 		// report all extensions reported for debug purpose
 		deBaseModule &baseModule = vulkan.GetModule();
 		uint32_t i;
 		
 		baseModule.LogInfo("Device Extensions:");
-		for(i=0; i<count; i++){
+		for(i=0; i<writtenCount; i++){
 			baseModule.LogInfoFormat("- %s: %d", extensions[ i ].extensionName, extensions[ i ].specVersion);
 		}
 		
 		// store supported extensions
 		int j;
-		for(i=0; i<count; i++){
+		for(i=0; i<writtenCount; i++){
 			for(j=0; j<ExtensionCount; j++){
 				if(strcmp(pSupportsExtension[ j ].name, extensions[ i ].extensionName) == 0){
 					pSupportsExtension[ j ].version = extensions[ i ].specVersion;
@@ -478,7 +483,7 @@ void devkDevice::pDetectExtensions(){
 }
 
 void devkDevice::pDetectCapabilities(){
-	pSupportedFormats = new devkFormat[etf_COUNT];
+	pSupportedFormats = new devkFormat[TEST_PROGRAM_COUNT];
 	pSupportedFormatCount = 0;
 	
 	int i;
