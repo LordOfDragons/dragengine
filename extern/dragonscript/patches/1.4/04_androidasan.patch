@@ -1,0 +1,13 @@
+diff '--color=auto' -rupN dragonscript-1.4-cur/SConstruct dragonscript-1.4-new/SConstruct
+--- dragonscript-1.4-cur/SConstruct	2023-01-28 23:41:53.000000000 +0100
++++ dragonscript-1.4-new/SConstruct	2025-01-09 19:16:49.034964737 +0100
+@@ -161,6 +161,9 @@ if globalEnv['with_debug'] and globalEnv
+ 		'-fsanitize=vptr',
+ 		'-fsanitize=pointer-overflow',
+ 		'-fsanitize=builtin'])
++	
++	if globalEnv['TARGET_PLATFORM'] in ['android']:
++		globalEnv.Replace(SANITIZE_FLAGS = ['-fsanitize=address'])
+ 
+ # define the targets array and reports dictionary to be filled
+ parent_targets = {}

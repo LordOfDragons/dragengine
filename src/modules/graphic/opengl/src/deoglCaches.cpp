@@ -72,19 +72,6 @@ deoglCaches::~deoglCaches(){
 
 
 
-// Management
-///////////////
-
-void deoglCaches::Lock(){
-	pMutex.Lock();
-}
-
-void deoglCaches::Unlock(){
-	pMutex.Unlock();
-}
-
-
-
 // Private Functions
 //////////////////////
 

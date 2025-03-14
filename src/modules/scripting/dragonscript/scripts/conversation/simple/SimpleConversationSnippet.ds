@@ -1,0 +1,89 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.ConversationSystem
+
+
+/**
+ * \brief Simple conversation snippet.
+ * \version 1.25
+ */
+class SimpleConversationSnippet
+	var StringID pId
+	var Array pActions
+	
+	
+	/** \brief Create simple conversation snippet. */
+	func new(StringID id)
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		
+		pId = id
+		pActions = Array.new()
+	end
+	
+	/** \brief Create deep copy of simple conversation snippet. */
+	func new(SimpleConversationSnippet snippet)
+		pId = snippet.pId
+		pActions = snippet.pActions.map(block SimpleConversationAction each
+			return SimpleConversationAction.new(each)
+		end)
+	end
+	
+	
+	/** \brief Identifier. */
+	func StringID getId()
+		return pId
+	end
+	
+	
+	/** \brief Count of actions. */
+	func int getActionCount()
+		return pActions.getCount()
+	end
+	
+	/** \brief Action at index. */
+	func SimpleConversationAction getActionAt(int index)
+		return pActions.getAt(index) cast SimpleConversationAction
+	end
+	
+	/**
+	 * \brief Visit actions with block.
+	 * 
+	 * Block is required to have signature void(SimpleConversationAction action) or
+	 * void(int index, SimpleConversationAction action).
+	 */
+	func void forEachAction(Block ablock)
+		pActions.forEach(ablock)
+	end
+	
+	/** \brief Add action. */
+	func void addAction(SimpleConversationAction action)
+		if action == null
+			throw ENullPointer.new("action")
+		end
+		pActions.add(action)
+	end
+end

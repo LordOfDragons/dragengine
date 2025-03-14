@@ -687,7 +687,7 @@ void main( void ){
 	// discard not inizalized fragments or fragements that are not supposed to be lit
 	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
 	#ifndef GI_RAY
-		if( diffuse.a == 0 ){
+		if( diffuse.a == 0.0 ){
 			outputUnlit();
 			return;
 		}
@@ -696,7 +696,7 @@ void main( void ){
 	// determine position of fragment to light
 	#ifdef GI_RAY
 		vec4 positionDistance = texelFetch( texPosition, tc, 0 );
-		if( positionDistance.a > 9999 ){
+		if( positionDistance.a > 9999.0 ){
 			// ray hits nothing. for sky lights this adds the ambient light contribution.
 			// for all other light sources do not light the ray
 			#ifdef SKY_LIGHT
@@ -726,7 +726,7 @@ void main( void ){
 		float dist = length( lightDir );
 		
 		// discard if pre-lit (length = 0) or outside the light range
-		if( dist == 0 || dist > pLightRange ){
+		if(dist == 0.0 || dist > pLightRange){
 			outputUnlit();
 			return;
 		}
@@ -754,28 +754,28 @@ void main( void ){
 			
 			if( position.z < pLayerBorder.x ){
 				shapos1 = ( pShadowMatrix1[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 0; // layer 0
+				shapos1.p = 0.0; // layer 0
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform.z;
 				#endif
 				
 			}else if( position.z < pLayerBorder.y ){
 				shapos1 = ( pShadowMatrix2[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 1; // layer 1
+				shapos1.p = 1.0; // layer 1
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform.w;
 				#endif
 				
 			}else if( position.z < pLayerBorder.z ){
 				shapos1 = ( pShadowMatrix3[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 2; // layer 2
+				shapos1.p = 2.0; // layer 2
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform2.z;
 				#endif
 				
 			}else{
 				shapos1 = ( pShadowMatrix4[ vLayer ] * vec4( position, 1 ) ).stqp; // s(x),t(y),layer,distance(z)
-				shapos1.p = 3; // layer 3
+				shapos1.p = 3.0; // layer 3
 				#ifdef WITH_SUBSURFACE
 				thicknessShadowScale = pShadowDepthTransform2.w;
 				#endif
@@ -913,7 +913,7 @@ void main( void ){
 		#ifdef OPTIMIZE_SHADOW_BACKFACE
 		if( dotval <= shadowThreshold ){
 			#ifdef AMBIENT_LIGHTING
-				shadow = 0;
+				shadow = 0.0;
 			#else
 				#ifdef WITH_SUBSURFACE
 				if( shadowThickness > largestAbsorptionRadius ){
@@ -931,8 +931,8 @@ void main( void ){
 			// force back facing fragments into shadow. not only does this avoid the need to
 			// sample the shadow maps but it also avoids light leaking problems. this does
 			// not affect ambient shadows
-			if( dotval > 0 ){
-				shadow = 1;
+			if(dotval > 0.0){
+				shadow = 1.0;
 		#endif
 			#ifdef TEXTURE_SHADOW1_SOLID
 				#ifdef SMA1_CUBE
@@ -976,7 +976,7 @@ void main( void ){
 				#endif
 			#endif
 			}else{
-				shadow = 0;
+				shadow = 0.0;
 			}
 			
 			#ifdef AMBIENT_LIGHTING
@@ -1054,20 +1054,20 @@ void main( void ){
 				#ifdef TEXTURE_SHADOW1_TRANSPARENT
 					#ifdef SMA1_CUBE
 						transpShadow = evaluateShadowCube( texShadow1TransparentDepth, pShadow1Transparent, shapos1 );
-						transpColor = texture( texShadow1TransparentColor, shapos1.stp );
+						transpColor = textureLod(texShadow1TransparentColor, shapos1.stp, 0.0);
 					#else
 						transpShadow = evaluateShadow2D( texShadow1TransparentDepth, pShadow1Transparent, ES2D( shapos1 ) );
-						transpColor = texture( texShadow1TransparentColor, shapos1.st );
+						transpColor = textureLod(texShadow1TransparentColor, shapos1.st, 0.0);
 					#endif
 					shadowColor *= mix( vec3( 1.0 ), transpColor.rgb, vec3( ( 1.0 - transpShadow ) * transpColor.a ) );
 				#endif
 				#ifdef TEXTURE_SHADOW2_TRANSPARENT
 					#ifdef SMA2_CUBE
 						transpShadow = evaluateShadowCube( texShadow2TransparentDepth, pShadow2Transparent, shapos2 );
-						transpColor = texture( texShadow2TransparentColor, shapos2.stp );
+						transpColor = textureLod(texShadow2TransparentColor, shapos2.stp, 0.0);
 					#else
 						transpShadow = evaluateShadow2D( texShadow2TransparentDepth, pShadow2Transparent, ES2D( shapos2 ) );
-						transpColor = texture( texShadow2TransparentColor, shapos2.st );
+						transpColor = textureLod(texShadow2TransparentColor, shapos2.st, 0.0);
 					#endif
 					shadowColor *= mix( vec3( 1.0 ), transpColor.rgb, vec3( ( 1.0 - transpShadow ) * transpColor.a ) );
 				#endif
@@ -1270,7 +1270,7 @@ void main( void ){
 			// NOTE this calculation is also no more working with spot cone being potentially
 			//      squashed. the new version uses the same distance calculated for the spot
 			//      cone rejection test above. the GLSL problem stays the same though
-			#ifdef OS_ANDROID
+			#ifdef ANDROID
 				// android GPU drivers tend to be buggy. if pow is used like on PC the shader
 				// linker dead-locks and never returns. the culprit seems to be the pow()
 				// function combined with certain uniform buffer variables. wrapping them in

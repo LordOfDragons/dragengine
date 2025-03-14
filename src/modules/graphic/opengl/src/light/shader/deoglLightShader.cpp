@@ -183,6 +183,29 @@ static const sSPBParameterDefinition vLightSPBParamDefs[ deoglLightShader::ELUT_
 #define SHADER_CACHE_REVISION 1
 
 
+// Class deoglLightShader::cPrepareShader
+///////////////////////////////////////////
+
+deoglLightShader::cPrepareShader::cPrepareShader(deoglLightShader &shader,
+	cShaderPreparedListener *listener) :
+pShader(shader),
+pListener(listener)
+{
+	DEASSERT_NOTNULL(listener)
+}
+
+void deoglLightShader::cPrepareShader::CompileFinished(deoglShaderCompiled *compiled){
+	pShader.pShader->SetCompiled(compiled);
+	
+	try{
+		pListener->PrepareShaderFinished(pShader);
+		
+	}catch(const deException &e){
+		pShader.GetRenderThread().GetLogger().LogException(e);
+	}
+	delete pListener;
+}
+
 
 // Class deoglLightShader
 ///////////////////////////
@@ -254,15 +277,15 @@ void deoglLightShader::SetLightUniformTarget( eLightUniformTargets target, int i
 
 
 
-void deoglLightShader::EnsureShaderExists(){
-	if( ! pShader ){
-		GenerateShader();
+void deoglLightShader::PrepareShader(cShaderPreparedListener *listener){
+	if(listener){
+		GenerateShader(listener);
+		
+	}else{
+		if(!pShader){
+			GenerateShader(nullptr);
+		}
 	}
-}
-
-deoglShaderProgram *deoglLightShader::GetShader(){
-	EnsureShaderExists();
-	return pShader;
 }
 
 
@@ -271,7 +294,7 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
 	// this shader parameter block will be optimized. the layout is adapted to
 	// the configuration used for this light shader
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
-	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
 	
 	int i;
@@ -293,7 +316,7 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 	// this shader parameter block will be optimized. the layout is adapted to
 	// the configuration used for this light shader
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
-	spb->SetRowMajor( ! pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( pUsedLightUniformTargetCount );
 	
 	int i;
@@ -313,7 +336,7 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBOccQueryParam( deoglRenderThread &renderThread ){
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
-	spb->SetRowMajor( ! renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() );
+	spb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( 1 );
 	spb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 );
 	spb->MapToStd140();
@@ -326,7 +349,7 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBOccQueryParam( deoglRenderThread
 // Shader Generation
 //////////////////////
 
-void deoglLightShader::GenerateShader(){
+void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 	deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
 	
@@ -401,7 +424,12 @@ void deoglLightShader::GenerateShader(){
 		pShader->SetCacheId( cacheIdParts.Join( ";" ) );
 		
 		// compile shader
-		pShader->SetCompiled( smgr.GetLanguage()->CompileShader( pShader ) );
+		if(listener){
+			smgr.GetLanguage()->CompileShaderAsync(pShader, new cPrepareShader(*this, listener));
+			
+		}else{
+			pShader->SetCompiled(smgr.GetLanguage()->CompileShader(pShader));
+		}
 		/*
 		if( pConfig.GetShaderMode() == deoglLightShaderConfig::esmGeometry ){
 			const int count = pSources->GetParameterCount();

@@ -57,6 +57,8 @@ pin Dragengine.Utils
  * 
  * If the pointed at element has ECBehaviorVRHandPointedAt instance it will be updated by adding
  * and removing the owner element.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandpointat
  */
 class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -111,6 +113,64 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		/** \brief Create listener. */
 		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRHand
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHandPointAt'>
+	 *   <!-- required: use vr hand with id. -->
+	 *   <string name='vrHand'>right</string>
+	 * 
+	 *   <!-- optional: set collision filter. default value '1:0 1 2' which means
+	 *                  category BaseGameApp.CollisionFilterBit.dynamic
+	 *                  filter BaseGameApp.CollisionFilterBit.geometry,
+	 *                         BaseGameApp.CollisionFilterBit.dynamic,
+	 *                         BaseGameApp.CollisionFilterBit.actor.
+	 *                  format is '', 'category' or 'category:filter' where category and filter
+	 *                  are a list of bits to set. -->
+	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRHandPointAt' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorVRHandPointAt"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorVRHandPointAt behavior = ECBehaviorVRHandPointAt.new(eclass,\
+				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
+			
+			behavior.setIgnoreCollider(ECBehaviorCollider.getBehaviorIn(eclass))
+			
+			if parameters.has("collisionFilter")
+				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
+					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "vrHandPointAt", id)
+			return behavior
 		end
 	end
 	

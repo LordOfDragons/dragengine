@@ -54,10 +54,10 @@ public:
 	devkSpecialization();
 	
 	/** Create specialization configuration. */
-	devkSpecialization( const void *data, int dataSize, int entryCount );
+	devkSpecialization(const void *data, int dataSize, int entryCount);
 	
 	/** Create copy of specialization configuration. */
-	devkSpecialization( const devkSpecialization &configuration );
+	devkSpecialization(const devkSpecialization &configuration);
 	
 protected:
 	/** Clean up specialization configuration. */
@@ -73,20 +73,20 @@ public:
 	inline int GetEntryCount() const{ return pEntryCount; }
 	
 	/** Set count of entries. */
-	void SetEntryCount( int count );
+	void SetEntryCount(int count);
 	
 	/** Entry. */
-	inline const VkSpecializationMapEntry &GetEntryAt( int index ) const;
+	const VkSpecializationMapEntry &GetEntryAt(int index) const;
 	
 	/** Set entry. */
-	void SetEntryAt( int index, const VkSpecializationMapEntry &entry );
+	void SetEntryAt(int index, const VkSpecializationMapEntry &entry);
 	
 	/** Set entry. */
-	void SetEntryAt( int index, int constantID, int offset, int size );
-	void SetEntryIntAt( int index, int constantID, int offset );
-	void SetEntryUIntAt( int index, int constantID, int offset );
-	void SetEntryFloatAt( int index, int constantID, int offset );
-	void SetEntryBoolAt( int index, int constantID, int offset );
+	void SetEntryAt(int index, int constantID, int offset, int size);
+	void SetEntryIntAt(int index, int constantID, int offset);
+	void SetEntryUIntAt(int index, int constantID, int offset);
+	void SetEntryFloatAt(int index, int constantID, int offset);
+	void SetEntryBoolAt(int index, int constantID, int offset);
 	
 	/** For devkSpecialization use only. */
 	inline const VkSpecializationMapEntry *GetEntries() const{ return pEntries; }
@@ -98,7 +98,7 @@ public:
 	inline int GetDataSize() const{ return pDataSize; }
 	
 	/** Set data. */
-	void SetData( const void *data, int size );
+	void SetData(const void *data, int size);
 	/*@}*/
 	
 	
@@ -106,10 +106,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** Configurations are equal. */
-	bool operator==( const devkSpecialization &configuration ) const;
+	bool operator==(const devkSpecialization &configuration) const;
 	
 	/** Copy configuration. */
-	devkSpecialization &operator=( const devkSpecialization &configuration );
+	devkSpecialization &operator=(const devkSpecialization &configuration);
 	/*@}*/
 	
 	

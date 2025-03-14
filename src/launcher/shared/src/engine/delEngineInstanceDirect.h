@@ -29,7 +29,15 @@
 
 #include <dragengine/logger/deLogger.h>
 
+#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/string/decStringDictionary.h>
+
+#ifdef OS_ANDROID
+#include <dragengine/app/deOSAndroid.h>
+#endif
+
 class deEngine;
+class deLoadableModule;
 
 
 /**
@@ -43,6 +51,9 @@ public:
 	private:
 		deLogger::Ref pEngineLogger;
 		bool pUseConsole;
+#ifdef OS_ANDROID
+		deOSAndroid::sConfig pConfig;
+#endif
 		
 	public:
 		/** \brief Type holding strong reference. */
@@ -70,6 +81,14 @@ public:
 		
 		/** \brief Create engine instance. */
 		virtual delEngineInstance *CreateEngineInstance( delLauncher &launcher, const char *logFile );
+		
+#ifdef OS_ANDROID
+		/** \brief Configuration to use for creating OS instance. */
+		inline const deOSAndroid::sConfig &GetConfig() const{ return pConfig; }
+		
+		/** \brief Set configuration to use for creating OS instance. */
+		void SetConfig(const deOSAndroid::sConfig &config);
+#endif
 	};
 	
 	
@@ -80,6 +99,19 @@ private:
 	bool pGameRunning;
 	deLogger::Ref pLogger;
 	deLogger::Ref pEngineLogger;
+	
+	class cModuleParamState : public deObject{
+	public:
+		deLoadableModule *module;
+		decStringDictionary parameters;
+		cModuleParamState(deLoadableModule *amodule);
+	};
+	decObjectList pModuleParamStates;
+	
+#ifdef OS_ANDROID
+	deOSAndroid::sConfig pConfig;
+	delGPModuleList *pGameCollectChangedParams;
+#endif
 	
 	
 	
@@ -113,6 +145,14 @@ public:
 	
 	/** \brief Set logger to use for new engine or nullptr to use engine instance logger. */
 	void SetEngineLogger( deLogger *logger );
+		
+#ifdef OS_ANDROID
+	/** \brief Configuration to use for creating OS instance. */
+	inline const deOSAndroid::sConfig &GetConfig() const{ return pConfig; }
+	
+	/** \brief Set configuration to use for creating OS instance. */
+	void SetConfig(const deOSAndroid::sConfig &config);
+#endif
 	
 	
 	
@@ -286,7 +326,49 @@ public:
 	 * Required for direct engine instance on BeOS only.
 	 */
 	void BeosMessageReceived( BMessage *message ) override;
-#endif	/*@}*/
+#endif
+	
+#ifdef OS_ANDROID
+	/**
+	 * \brief Read game definitions from DELGA file using VFS container.
+	 * 
+	 * Replaces \em list with content of all found files.
+	 */
+	void ReadDelgaGameDefsVfs(const deVFSContainer::Ref &container,
+		const char *delgaFile, decStringList &list) override;
+	
+	/**
+	 * \brief Read files from DELGA file file using VFS container.
+	 * 
+	 * Stores content of files to \em filesContent as instances of decMemoryFile.
+	 */
+	void ReadDelgaFilesVfs(const deVFSContainer::Ref &container, const char *delgaFile,
+		const decStringList &filenames, decObjectOrderedSet &filesContent) override;
+	
+	/**
+	 * \brief Add DELGA file to virtual file system as root container.
+	 * 
+	 * Container maps the content of \em archivePath into the virtual file system.
+	 */
+	void VFSAddDelgaFileVfs(const deVFSContainer::Ref &container, const char *delgaFile,
+		const char *archivePath, const decStringSet &hiddenPath) override;
+	
+	/** \brief Run single game frame update. */
+	void RunSingleFrameUpdate() override;
+	
+	/** \brief App gained/lost focus. */
+	void SetAppActive(bool active) override;
+	
+	/** \brief App paused/resumed. */
+	void SetAppPaused(bool paused) override;
+	
+	/** \brief Update content rect. */
+	void UpdateContentRect(const decBoundary &contentRect) override;
+	
+	/** \brief An event processed by the application event loop. */
+	void InputEvent(const android_input_buffer &inputBuffer) override;
+#endif
+/*@}*/
 };
 
 #endif

@@ -59,8 +59,52 @@ pin Dragengine.Scenery
  * This element behavior can be present multiple times with different identifiers.
  * 
  * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachdynamicskin
  */
 class ECBehaviorAttachDynamicSkin extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorComponent
+	 * - Optional: \ref ECBehaviorAttachable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAttachDynamicSkin'>
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorAttachDynamicSkin' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAttachDynamicSkin"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorAttachDynamicSkin behavior = ECBehaviorAttachDynamicSkin.new(eclass,\
+				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
+				ECBehaviorAttachable.getBehaviorIn(eclass), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "attachDynamicSkin", id)
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Attachable listener. */
@@ -177,8 +221,8 @@ class ECBehaviorAttachDynamicSkin extends DefaultECBehavior
 	end
 	
 	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorAttachable attachable, String id ) \
-	this( eclass, component, attachable, id, "attachDynamicSkin." )
+	ECBehaviorAttachable attachable, String id ) this( eclass, component, attachable,\
+	id, id.empty() if "attachDynamicSkin." else "attachDynamicSkin(" + id + ")." )
 	end
 	
 	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \

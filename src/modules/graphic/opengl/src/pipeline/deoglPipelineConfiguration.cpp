@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#ifdef BACKEND_OPENGL
+
 #include <stdio.h>
 #include <string.h>
 
@@ -586,3 +588,5 @@ void deoglPipelineConfiguration::pUpdateStencilSameFrontBack(){
 		&& pStencilOpZFailFront == pStencilOpZFailBack
 		&& pStencilOpZPassFront == pStencilOpZPassBack;
 }
+
+#endif

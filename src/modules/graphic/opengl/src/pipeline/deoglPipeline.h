@@ -25,10 +25,11 @@
 #ifndef _DEOGLPIPELINE_H_
 #define _DEOGLPIPELINE_H_
 
-#include "deoglPipelineConfiguration.h"
-#include "../shaders/deoglShaderProgram.h"
-
-#include <pipeline/devkPipeline.h>
+#ifdef BACKEND_OPENGL
+	#include "deoglPipelineConfiguration.h"
+#elif defined BACKEND_VULKAN
+	#include <pipeline/devkPipeline.h>
+#endif
 
 #include <dragengine/deObject.h>
 
@@ -121,24 +122,25 @@ private:
 	deoglRenderThread &pRenderThread;
 	int pRTSIndex;
 	
-	// opengl
-	const deoglPipelineConfiguration *pGlConfiguration;
-	
-	// vulkan
-	devkPipeline *pVkPipeline;
-	
+#ifdef BACKEND_OPENGL
+	const deoglPipelineConfiguration *pConfiguration;
+#elif defined BACKEND_VULKAN
+	devkPipeline *pPipeline;
+#endif
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create pipeline. */
-	deoglPipeline( deoglRenderThread &renderThread, const deoglPipelineConfiguration &configuration );
-	
-	deoglPipeline( deoglRenderThread &renderThread, const devkPipelineConfiguration &configuration );
+#ifdef BACKEND_OPENGL
+	deoglPipeline(deoglRenderThread &renderThread, const deoglPipelineConfiguration &configuration);
+#elif defined BACKEND_VULKAN
+	deoglPipeline(deoglRenderThread &renderThread, const devkPipelineConfiguration &configuration);
+#endif
 	
 	/** Clean up pipeline. */
-	virtual ~deoglPipeline();
+	~deoglPipeline() override;
 	/*@}*/
 	
 	
@@ -150,16 +152,17 @@ public:
 	
 	
 	
-	/** OpenGL configuration or nullptr if not Vulkan. */
-	const deoglPipelineConfiguration &GetGlConfiguration() const;
+#ifdef BACKEND_OPENGL
+	/** Configuration. */
+	inline const deoglPipelineConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** OpenGL shader program. */
-	deoglShaderCompiled &GetGlShader() const;
+	/** Shader program. */
+	deoglShaderCompiled &GetShader() const;
 	
-	
-	
-	/** Vulkan pipeline. */
+#elif defined BACKEND_VULKAN
+	/** Pipeline. */
 	inline devkPipeline *GetVkPipeline() const{ return pVkPipeline; }
+#endif
 	
 	
 	

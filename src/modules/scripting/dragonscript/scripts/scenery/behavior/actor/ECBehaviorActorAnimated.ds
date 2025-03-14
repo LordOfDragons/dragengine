@@ -44,12 +44,14 @@ pin Dragengine.Utils
  * 
  * To use this class add these behaviors to the actor:
  * - ECBehaviorComponent
- * - ECBehaviorLocomotion
+ * - ECBehaviorLocomotion (optional)
  * - ECBehaviorActorAnimated
  * 
  * Multiple behaviors can be added to animated different parts of the actor independent.
  * 
  * Element class property prefix is "actorAnimated{(id)}".
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actoranimated
  */
 class ECBehaviorActorAnimated extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -104,6 +106,54 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		/** \brief Create listener. */
 		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorComponent
+	 * - Optional: \ref ECBehaviorLocomotion
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorAnimated'>
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorActorAnimated' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Calls \ref ECBehaviorActorAnimated#setDefaultControllerMappings() after creating behavior.
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorAnimated"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorActorAnimated behavior = ECBehaviorActorAnimated.new(eclass,\
+				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
+				ECBehaviorLocomotion.getBehaviorIn(eclass), id)
+			
+			behavior.setDefaultControllerMappings()
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "actorAnimated", id)
+			
+			return behavior
 		end
 	end
 	

@@ -96,7 +96,11 @@ void main( void ){
 		#endif
 		
 		#ifdef DEPTH_OFFSET
-			applyDepthOffset( inLayer );
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(inLayer, vPosition.z);
+			#else
+				applyDepthOffset(inLayer);
+			#endif
 		#endif
 	#endif
 	

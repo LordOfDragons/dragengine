@@ -26,12 +26,12 @@
 #define _DEVKBUFFER_H_
 
 #include "../devkBasics.h"
-#include "../queue/devkCommandPool.h"
+#include "../queue/devkCommandBuffer.h"
 
 #include <dragengine/deObject.h>
 
 class devkDevice;
-class devkQueue;
+class devkCommandPool;
 
 
 /**
@@ -58,10 +58,7 @@ private:
 	VkBuffer pBufferHost;
 	VkDeviceMemory pBufferHostMemory;
 	
-	VkFence pFence;
-	bool pFenceActive;
-	devkCommandPool::Ref pCommandPool;
-	VkCommandBuffer pCommand;
+	devkCommandBuffer::Ref pCommandBuffer;
 	
 	
 	
@@ -83,7 +80,7 @@ public:
 	devkBuffer( devkDevice &device, VkDeviceSize size, VkBufferUsageFlagBits usage );
 	
 protected:
-	/** Clean up queue. */
+	/** Clean up buffer. */
 	virtual ~devkBuffer();
 	/*@}*/
 	
@@ -115,10 +112,13 @@ public:
 	
 	/**
 	 * Transfer data from host memory to device memory.
-	 * \note Calls Wait() before starting the transfer.
-	 * \note After call exist Wait() has to be called before using buffer.
 	 */
-	void TransferToDevice( devkCommandPool *pool, devkQueue &queue );
+	void TransferToDevice(devkCommandBuffer &commandBuffer);
+	
+	/**
+	 * Transfer data from device memory to host memory.
+	 */
+	void FetchFromDevice(devkCommandBuffer &commandBuffer);
 	
 	/** Copy data from host memory. */
 	void GetData( void *data );
@@ -126,11 +126,16 @@ public:
 	/** Copy data from host memory. */
 	void GetData( void *data, uint32_t offset, uint32_t size );
 	
+	/** If command is active wait for command to be signaled. */
+	void Wait();
+	
 	/**
-	 * If fence is active wait for fence to be signaled.
-	 * \param[in] reset If true reset fence and set it inactive after wait finished.
+	 * Begin awaitable command buffer.
+	 * 
+	 * Calls first Wait() to ensure a potential previous command buffer is finished.
+	 * Caller has to fill the command buffer and submit it.
 	 */
-	void Wait( bool reset = false );
+	devkCommandBuffer &BeginCommandBuffer(devkCommandPool &pool);
 	/*@}*/
 	
 	
@@ -143,4 +148,3 @@ private:
 };
 
 #endif
-

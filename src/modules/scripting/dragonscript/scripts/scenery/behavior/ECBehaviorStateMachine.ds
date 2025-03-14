@@ -34,6 +34,7 @@ pin Dragengine.Utils
 
 /**
  * \brief Behavior element behavior adding StateMachine support.
+ * \version 1.3
  * 
  * Loads state machine from file and creates a SMContext. Other behaviors can add actions
  * and conditions to this state machine allowing to compose state machine actions and
@@ -172,6 +173,8 @@ pin Dragengine.Utils
  * 
  * This behavior does require the element class to be persistable (setPersistable) only if
  * the context is run by the behavior itself.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_statemachine
  */
 class ECBehaviorStateMachine extends DefaultECBehavior
 	/** \brief Factory assigining actions and conditions to state machine. */
@@ -195,6 +198,40 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		/** \brief Assign actions and conditions to state machine. */
 		public func void setActionsConditions( Instance instance )
 			this.pBlock.run( instance )
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorStateMachine'/>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorStateMachine' id='second'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorStateMachine"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorStateMachine behavior = ECBehaviorStateMachine.new(eclass, id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "stateMachine", id)
+			return behavior
 		end
 	end
 	

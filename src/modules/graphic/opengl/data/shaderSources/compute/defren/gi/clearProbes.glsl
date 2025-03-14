@@ -4,12 +4,13 @@ precision highp int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
 #include "shared/defren/gi/ubo_clear.glsl"
+#include "shared/image_buffer.glsl"
 
 
 #ifdef MAP_IRRADIANCE
-	layout(binding=0, rgba16f) uniform writeonly restrict image2DArray texProbe;
+	layout(binding=0, rgba16f) uniform writeonly restrict mediump image2DArray texProbe;
 #else
-	layout(binding=0, rg16f) uniform writeonly restrict image2DArray texProbe;
+	layout(binding=0, IMG_RG16F_FMT) uniform writeonly restrict mediump IMG_RG16F_2DARR texProbe;
 #endif
 
 
@@ -50,6 +51,7 @@ void main( void ){
 	#ifdef MAP_IRRADIANCE
 		imageStore( texProbe, tcClear, vec4( 0, 0, 0, 1 ) );
 	#else
-		imageStore( texProbe, tcClear, vec4( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance, 0, 1 ) );
+		imageStore(texProbe, tcClear, IMG_RG16F_STORE(vec2(
+			pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance)));
 	#endif
 }

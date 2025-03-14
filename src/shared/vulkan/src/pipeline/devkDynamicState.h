@@ -72,7 +72,7 @@ public:
 	 * with vkCmdSetLineWidth before any drawing commands that generate line primitives
 	 * for the rasterizer.
 	 */
-	// float lineWidth;
+	// float lineWidth = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_DEPTH_BIAS specifies that the depthBiasConstantFactor, depthBiasClamp
@@ -80,9 +80,9 @@ public:
 	 * and must be set dynamically with vkCmdSetDepthBias before any draws are performed with
 	 * depthBiasEnable in VkPipelineRasterizationStateCreateInfo set to VK_TRUE.
 	 */
-	float depthBiasConstantFactor;
-	float depthBiasClamp;
-	float depthBiasSlopeFactor;
+	float depthBiasConstantFactor = {};
+	float depthBiasClamp = {};
+	float depthBiasSlopeFactor = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_BLEND_CONSTANTS specifies that the blendConstants state in
@@ -91,7 +91,7 @@ public:
 	 * VkPipelineColorBlendAttachmentState member blendEnable set to VK_TRUE and any of the
 	 * blend functions using a constant blend color.
 	 */
-	// float blendConstants[ 4 ];
+	// float blendConstants[ 4 ] = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_DEPTH_BOUNDS specifies that the minDepthBounds and maxDepthBounds states
@@ -99,8 +99,8 @@ public:
 	 * vkCmdSetDepthBounds before any draws are performed with a pipeline state with
 	 * VkPipelineDepthStencilStateCreateInfo member depthBoundsTestEnable set to VK_TRUE.
 	 */
-	// float depthBoundsMin;
-	// float depthBoundsMax;
+	// float depthBoundsMin = {};
+	// float depthBoundsMax = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_STENCIL_COMPARE_MASK specifies that the compareMask state in
@@ -109,8 +109,8 @@ public:
 	 * are performed with a pipeline state with VkPipelineDepthStencilStateCreateInfo
 	 * member stencilTestEnable set to VK_TRUE.
 	 */
-	uint32_t stencilFrontCompareMask;
-	uint32_t stencilBackCompareMask;
+	uint32_t stencilFrontCompareMask = {};
+	uint32_t stencilBackCompareMask = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_STENCIL_WRITE_MASK specifies that the writeMask state in
@@ -119,8 +119,8 @@ public:
 	 * are performed with a pipeline state with VkPipelineDepthStencilStateCreateInfo
 	 * member stencilTestEnable set to VK_TRUE.
 	 */
-	uint32_t stencilFrontWriteMask;
-	uint32_t stencilBackWriteMask;
+	uint32_t stencilFrontWriteMask = {};
+	uint32_t stencilBackWriteMask = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_STENCIL_REFERENCE specifies that the reference state in
@@ -129,8 +129,8 @@ public:
 	 * are performed with a pipeline state with VkPipelineDepthStencilStateCreateInfo
 	 * member stencilTestEnable set to VK_TRUE.
 	 */
-	uint32_t stencilFrontReference;
-	uint32_t stencilBackReference;
+	uint32_t stencilFrontReference = {};
+	uint32_t stencilBackReference = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_CULL_MODE specifies that the cullMode state in
@@ -139,7 +139,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state
 	 */
-	// VkCullModeFlags cullMode;
+	// VkCullModeFlags cullMode = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_FRONT_FACE specifies that the frontFace state in
@@ -148,7 +148,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state
 	 */
-	// VkFrontFace frontFace;
+	// VkFrontFace frontFace = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_DEPTH_TEST_ENABLE specifies that the depthTestEnable state in
@@ -157,7 +157,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state
 	 */
-	// VkBool32 depthTestEnable;
+	// VkBool32 depthTestEnable = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_DEPTH_WRITE_ENABLE specifies that the depthWriteEnable state in
@@ -166,7 +166,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state
 	 */
-	// VkBool32 depthWriteEnable;
+	// VkBool32 depthWriteEnable = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_DEPTH_COMPARE_OP specifies that the depthCompareOp state in
@@ -175,7 +175,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state
 	 */
-	// VkCompareOp depthCompareOp;
+	// VkCompareOp depthCompareOp = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_DEPTH_BOUNDS_TEST_ENABLE specifies that the depthBoundsTestEnable
@@ -184,7 +184,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state
 	 */
-	// VkBool32 depthBoundsTestEnable;
+	// VkBool32 depthBoundsTestEnable = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_STENCIL_TEST_ENABLE specifies that the stencilTestEnable state in
@@ -193,7 +193,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state
 	 */
-	// VkBool32 stencilTestEnable;
+	// VkBool32 stencilTestEnable = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_STENCIL_OP specifies that the failOp, passOp, depthFailOp, and
@@ -204,14 +204,14 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state
 	 */
-	// VkStencilOp stencilFrontFailOp;
-	// VkStencilOp stencilFrontPassOp;
-	// VkStencilOp stencilFrontDepthFailOp;
-	// VkCompareOp stencilFrontCompareOp;
-	// VkStencilOp stencilBackFailOp;
-	// VkStencilOp stencilBackPassOp;
-	// VkStencilOp stencilBackDepthFailOp;
-	// VkCompareOp stencilBackCompareOp;
+	// VkStencilOp stencilFrontFailOp = {};
+	// VkStencilOp stencilFrontPassOp = {};
+	// VkStencilOp stencilFrontDepthFailOp = {};
+	// VkCompareOp stencilFrontCompareOp = {};
+	// VkStencilOp stencilBackFailOp = {};
+	// VkStencilOp stencilBackPassOp = {};
+	// VkStencilOp stencilBackDepthFailOp = {};
+	// VkCompareOp stencilBackCompareOp = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_RASTERIZER_DISCARD_ENABLE specifies that the rasterizerDiscardEnable
@@ -220,7 +220,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state2
 	 */
-	// VkBool32 rasterizerDiscardEnable;
+	// VkBool32 rasterizerDiscardEnable = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_DEPTH_BIAS_ENABLE specifies that the depthBiasEnable state in
@@ -229,7 +229,7 @@ public:
 	 * 
 	 * Version 1.3 or VK_EXT_extended_dynamic_state2
 	 */
-	// VkBool32 depthBiasEnable;
+	// VkBool32 depthBiasEnable = {};
 	
 	/**
 	 * VK_DYNAMIC_STATE_LOGIC_OP_EXT specifies that the logicOp state in
@@ -238,7 +238,7 @@ public:
 	 * 
 	 * VK_EXT_extended_dynamic_state2
 	 */
-	// VkLogicOp logicOp;
+	// VkLogicOp logicOp = {};
 	/*@}*/
 	
 	

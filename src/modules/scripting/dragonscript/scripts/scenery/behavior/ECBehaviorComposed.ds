@@ -65,6 +65,8 @@ pin Dragengine.Scenery
  * Add ECBehaviorAttachToParent and optionally ECBehaviorAttachable if child element has to
  * be attached to ECBehaviorAttachSlot. To configure the behaviors in the child elements use
  * "properties" in "composed.children" entries.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_composed
  */
 class ECBehaviorComposed extends DefaultECBehavior
 	/** \brief Child element definition. */
@@ -228,6 +230,37 @@ class ECBehaviorComposed extends DefaultECBehavior
 				
 				return hasProblems
 			end) cast bool
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorComposed'/>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorComposed' id='second'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorComposed"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorComposed behavior = ECBehaviorComposed.new(eclass, id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "composed", id)
+			return behavior
 		end
 	end
 	

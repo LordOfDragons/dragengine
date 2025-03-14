@@ -65,6 +65,8 @@
 #include "../rendering/task/persistent/deoglPersistentRenderTaskPool.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shadow/deoglShadowMapper.h"
+#include "../shaders/deoglShaderLanguage.h"
+#include "../shaders/deoglShaderManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../triangles/deoglTriangleSorter.h"
 #include "../utils/deoglQuickSorter.h"
@@ -671,17 +673,22 @@ void deoglRenderThread::Synchronize(){
 	pLogger->Synchronize(); // send asynchronous logs to game logger
 	
 	#ifdef OS_ANDROID
-	if( pContext->GetScreenResized() ){
-		pContext->ClearScreenResized();
-		
-		deGraphicSystem &graSys = *pOgl.GetGameEngine()->GetGraphicSystem();
-		const int width = pContext->GetScreenWidth();
-		const int height = pContext->GetScreenHeight();
-		
-		graSys.GetRenderWindow()->SetSize( width, height );
-		if( graSys.GetInputOverlayCanvas() ){
-			graSys.GetInputOverlayCanvas()->SetSize( decPoint( width, height ) );
-			pOgl.GetGameEngine()->GetInputSystem()->ScreenSizeChanged();
+	deGraphicSystem &graSys = *pOgl.GetGameEngine()->GetGraphicSystem();
+	if(graSys.GetRenderWindow()){
+		deoglRenderWindow * const oglWindow =
+			(deoglRenderWindow*)graSys.GetRenderWindow()->GetPeerGraphic();
+		if(oglWindow){
+			deoglRRenderWindow * const oglRWindow = oglWindow->GetRRenderWindow();
+			oglRWindow->OnResize(pContext->GetScreenWidth(), pContext->GetScreenHeight());
+			
+			deCanvasView * const iocanvas = graSys.GetInputOverlayCanvas();
+			if(iocanvas){
+				const decPoint size(oglRWindow->GetWidth(), oglRWindow->GetHeight());
+				if(size != iocanvas->GetSize()){
+					iocanvas->SetSize(size);
+					pOgl.GetGameEngine()->GetInputSystem()->ScreenSizeChanged();
+				}
+			}
 		}
 	}
 	#endif
@@ -1016,8 +1023,10 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pDebug = new deoglRTDebug( *this );
 	pTexture = new deoglRTTexture( *this );
 	pFramebuffer = new deoglRTFramebuffer( *this );
-	pShader = new deoglRTShader( *this );
 	pDelayedOperations = new deoglDelayedOperations( *this );
+		// ^== has to come before RTShader creation since shader compile threads failing
+	    //     can call into delayed operations. if null this can segfault.
+	pShader = new deoglRTShader( *this );
 	pPipelineManager.TakeOver( new deoglPipelineManager( *this ) );
 	
 	pInitCapabilities();
@@ -1115,10 +1124,17 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pLightBoundarybox = new deoglLightBoundaryMap( *this,
 		deoglShadowMapper::ShadowMapSize( pConfiguration ) >> 1 );
 	
+	decTimer timer;
 	pRenderers = new deoglRTRenderers( *this );
 	pGI = new deoglGI( *this );
 	pDefaultTextures = new deoglRTDefaultTextures( *this );
 	
+	pShader->GetShaderManager().WaitAllProgramsCompiled();
+	pShader->GetShaderManager().GetLanguage()->WaitAllTasksFinished();
+	pLogger->LogInfoFormat("Elapsed Shader Compile/Load: %.0fms", timer.GetElapsedTime() * 1e3f);
+	DEASSERT_FALSE(deoglRenderBase::anyPipelineShaderFailed)
+	
+#ifdef BACKEND_OPENGL
 	// load vulkan and create device if supported
 	try{
 		pVulkan.TakeOver( new deSharedVulkan( pOgl ) );
@@ -1130,6 +1146,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		pVulkanDevice = nullptr;
 		pVulkan = nullptr;
 	}
+#endif
 	
 #ifdef DO_VULKAN_TEST
 	if( pVulkan ){
@@ -1146,7 +1163,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 		}
 		decTimer timer;
 		VKTLOG( bufferInput->SetData( bufferInputData ), "Buffer SetData")
-		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "Buffer TransferToDevice")
+		{
+		VKTLOG(devkCommandBuffer &cbuf = bufferInput->BeginCommandBuffer(commandPool), "Buffer BeginCommandBuffer");
+		VKTLOG(bufferInput->TransferToDevice(cbuf), "Buffer TransferToDevice")
+		VKTLOG(cbuf.Submit(), "Buffer Submit");
+		}
 		VKTLOG( bufferInput->Wait(), "Buffer Wait")
 		
 		devkDescriptorSetLayoutConfiguration dslSSBOConfig;
@@ -1249,10 +1270,10 @@ void deoglRenderThread::pInitThreadPhase4(){
 		VKTLOG( cmdbuf->BindDescriptorSet( 0, dsSSBO ), "CmdBuf BindDescriptorSet")
 		VKTLOG( cmdbuf->DispatchCompute( shaderConfig.valueCount, 1, 1 ), "CmdBuf DispatchCompute")
 		VKTLOG( cmdbuf->BarrierShaderTransfer( bufferInput, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT ), "CmdBuf BarrierHost")
-		VKTLOG( cmdbuf->ReadBuffer( bufferInput ), "CmdBuf ReadBuffer")
+		VKTLOG( bufferInput->FetchFromDevice(cmdbuf), "CmdBuf ReadBuffer")
 		VKTLOG( cmdbuf->BarrierTransferHost( bufferInput ), "CmdBuf BarrierTransferHost")
 		VKTLOG( cmdbuf->End(), "CmdBuf End")
-		VKTLOG( cmdbuf->Submit( queue ), "CmdBuf Submit")
+		VKTLOG( cmdbuf->Submit(), "CmdBuf Submit")
 		
 		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait")
 		
@@ -1422,7 +1443,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 		bufferInput.TakeOver( devkBuffer::Ref::New( new devkBuffer( pVulkanDevice,
 			sizeof( vertices ), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT ) ) );
 		VKTLOG( bufferInput->SetData( vertices ), "Buffer SetData" )
-		VKTLOG( bufferInput->TransferToDevice( commandPool, queue ), "Buffer TransferToDevice" )
+		{
+		VKTLOG(devkCommandBuffer &cbuf = bufferInput->BeginCommandBuffer(commandPool), "Buffer BeginCommandBuffer")
+		VKTLOG(bufferInput->TransferToDevice(cbuf), "Buffer TransferToDevice")
+		VKTLOG(cbuf.Submit(), "Buffer Submit");
+		}
 		VKTLOG( bufferInput->Wait(), "Buffer Wait" )
 		
 		pipelineConfig = devkPipelineConfiguration();
@@ -1448,11 +1473,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 		VKTLOG( cmdbuf->BindVertexBuffer( 0, bufferInput ), "CmdBuf BindVertexBuffer" )
 		VKTLOG( cmdbuf->Draw( 3, 1 ), "CmdBuf Draw" )
 		VKTLOG( cmdbuf->EndRenderPass(), "CmdBuf EndRenderPass" )
-		VKTLOG( cmdbuf->BarrierShaderTransfer( image, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT ), "CmdBuf BarrierHost" )
-		VKTLOG( cmdbuf->ReadImage( image ), "CmdBuf ReadImage" )
-		VKTLOG( cmdbuf->BarrierTransferHost( image ), "CmdBuf BarrierTransferHost" )
+		VKTLOG( image->BarrierShaderTransfer(cmdbuf, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT), "CmdBuf BarrierHost" )
+		VKTLOG( image->FetchFromDevice(cmdbuf), "CmdBuf ReadImage" )
+		VKTLOG( image->BarrierTransferHost(cmdbuf), "CmdBuf BarrierTransferHost" )
 		VKTLOG( cmdbuf->End(), "CmdBuf End" )
-		VKTLOG( cmdbuf->Submit( queue ), "CmdBuf Submit" )
+		VKTLOG( cmdbuf->Submit(), "CmdBuf Submit" )
 		
 		VKTLOG( cmdbuf->Wait(), "CmdBuf Wait" )
 		
@@ -1460,7 +1485,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		VKTLOG( image->GetData( imgdata ), "Image GetData" )
 		int x, y;
 		for( y=0; y<32; y++ ){
-			decString string( "Drawn: [" );
+			string = "Drawn: [";
 			for( x=0; x<64; x++ ){
 				string.AppendCharacter( 'a' + ( int )imgdata[ 64 * y + x ].r * 25 / 255 );
 			}
@@ -1483,15 +1508,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 }
 
 void deoglRenderThread::pInitExtensions(){
-	const deoglConfiguration &configuration = pOgl.GetConfiguration();
-	
 	// load extensions
 	pExtensions = new deoglExtensions( *this );
 	pExtensions->Initialize();
 	
-	//if( configuration.GetDoLogDebug() ){
-		pExtensions->PrintSummary(); // print this always to help debug customer problems
-	//}
+	pExtensions->PrintSummary(); // print this always to help debug customer problems
 	
 	if( ! pExtensions->VerifyPresence() ){
 		DETHROW_INFO( deeInvalidAction,
@@ -1499,16 +1520,19 @@ void deoglRenderThread::pInitExtensions(){
 	}
 	
 	// enable states never touched again later (and that can not be changed)
+	// NOTE: on android this is always enabled for 3.2
+#ifndef OS_ANDROID
 	if( pExtensions->GetHasSeamlessCubeMap() ){
 		// on nVidia this crashes due to a bug with linear filtering on float textures
 		// TODO is this still affecting the newer driver versions?
-		if( configuration.GetDisableCubeMapLinearFiltering() ){
-			OGL_CHECK( *this, glDisable( GL_TEXTURE_CUBE_MAP_SEAMLESS ) );
+		if(pConfiguration.GetDisableCubeMapLinearFiltering()){
+			OGL_CHECK(*this, glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS));
 			
 		}else{
-			OGL_CHECK( *this, glEnable( GL_TEXTURE_CUBE_MAP_SEAMLESS ) );
+			OGL_CHECK(*this, glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS));
 		}
 	}
+#endif
 }
 
 void deoglRenderThread::pInitCapabilities(){
@@ -1756,7 +1780,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 	}
 	
 #ifdef OS_ANDROID
-	pLogger->LogInfoFormat( "pRenderSingleFrame: %dms", (int )(timer.GetElapsedTime() * 1000.0f) );
+	//pLogger->LogInfoFormat( "pRenderSingleFrame: %dms", (int )(timer.GetElapsedTime() * 1000.0f) );
 	DebugMemoryUsage( "deoglRenderThread::pRenderSingleFrame OUT" );
 #endif
 }
@@ -2574,12 +2598,16 @@ void deoglRenderThread::pCleanUpThread(){
 		pLogger->LogInfoFormat( "RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f) );
 		#endif
 		
+#ifdef BACKEND_OPENGL
 		pVulkanDevice = nullptr;
 		pVulkan = nullptr;
+#endif
 		
-		deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
-		dilist.RemoveIfPresent( pDebugInfoModule );
-		dilist.RemoveIfPresent( pDebugInfoFrameLimiter );
+		if(pDebug){
+			deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
+			dilist.RemoveIfPresent(pDebugInfoModule);
+			dilist.RemoveIfPresent(pDebugInfoFrameLimiter);
+		}
 		
 		pDebugInfoModule = nullptr;
 		pDebugInfoThreadMain = nullptr;

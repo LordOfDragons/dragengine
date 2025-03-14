@@ -130,10 +130,43 @@ class GameApp extends BaseGameApp
 	end
 	
 	/**
-	 * Create element classes and add them to element class list.
+	 * \brief Create behavior factories adding them to the factory list.
+	 * 
+	 * Behavior factories allow generic \ref BehaviorElementClass to be created using XML element
+	 * class files (*.deeclass) where not only element class properties can be defined but
+	 * also behaviors added. \ref GenericBehaviorElementClass uses the factories added here
+	 * as initial list of allowed factories. See \ref BehaviorFactoryHelper#addAllFactories()
+	 * for the list of factories added by default. Hence by default you can use
+	 * "GenericBehaviorElement" as the jack of all trades class with access to all factories.
+	 * 
+	 * Using \ref GenericBehaviorElementClass is one possibility. Every \ref BehaviorElementClass
+	 * can add supported factories in their constructor. This allows to fine tune for which
+	 * element class which behavior factories are allowed to be used. If you use BehaviorElement
+	 * classes fine tuned in this way it is recommended to either clear
+	 * \ref #getBehaviorFactories() to turn \ref GenericBehaviorElementClass into a simple
+	 * \ref BehaviorElementClass or you remove it as available class in
+	 * \ref #createAndAddElementClasses().
+	 */
+	protected func void createAndAddBehaviorFactories()
+		// Always super-call unless you want to start with an empty factory list
+		super.createAndAddBehaviorFactories()
+		
+		// Add custom behavior factories. See ECBehaviorComponent.Factory for an example on
+		// how a behavior can be added factory support. See ECBehaviorTwoStateAnimated.Factory
+		// for an more complex example using parameters to fine tune behavior construction.
+		var BehaviorFactoryList factories = getBehaviorFactories()
+		//factories.add(MyBehavior.Factory.new())
+	end
+	
+	/**
+	 * \brief Create element classes and add them to element class list.
+	 * 
+	 * Element classes list contains all element classes world files are allowed to be used.
+	 * See \ref BaseGameApp#createAndAddElementClasses for the list of element classes added
+	 * by default. Undesired element classes can be removed and custom ones added.
 	 */
 	protected func void createAndAddElementClasses()
-		// Always super-call
+		// Always super-call unless you want to start with an empty element class list
 		super.createAndAddElementClasses()
 		
 		// Add scripted element classes. These can be used by XML element classes below
@@ -159,9 +192,9 @@ class GameApp extends BaseGameApp
 	 * objects have been initialized before cleaning them up.
 	 */
 	func void cleanUp()
-		// your cleaning up code has to come before the super-call
+		// Your cleaning up code has to come before the super-call
 		
-		// super-call has to come last
+		// Super-call has to come last
 		super.cleanUp()
 	end
 end

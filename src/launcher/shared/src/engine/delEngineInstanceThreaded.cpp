@@ -24,6 +24,8 @@
 
 #include <dragengine/dragengine_configuration.h>
 
+#ifndef OS_ANDROID
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1329,3 +1331,5 @@ const decStringList &filenames, decObjectOrderedSet &filesContent ){
 		filesContent.Add( content );
 	}
 }
+
+#endif // OS_ANDROID

@@ -1170,7 +1170,7 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.h">
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglBatchedShaderLoading.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompilingInfo.h">
@@ -1204,6 +1204,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompileTask.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompiler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompilerThread.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.h">
@@ -3024,7 +3033,7 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderBindingList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderLoadingTimeout.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglBatchedShaderLoading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderCompiled.cpp">
@@ -3058,6 +3067,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\deoglShaderUnitSourceCode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompileTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\compiler\deoglShaderCompilerThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\shaders\paramblock\deoglShaderParameterBlock.cpp">

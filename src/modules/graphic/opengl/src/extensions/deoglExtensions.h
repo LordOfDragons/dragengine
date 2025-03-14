@@ -342,6 +342,7 @@ public:
 		ext_ARB_direct_state_access,
 		ext_ARB_clear_buffer_object,
 		ext_ARB_buffer_storage,
+		ext_ARB_texture_storage,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,

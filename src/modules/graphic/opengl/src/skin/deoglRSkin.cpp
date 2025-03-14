@@ -42,7 +42,7 @@
 #include "../renderthread/deoglLoaderThreadTask.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../shaders/deoglShaderLoadingTimeout.h"
+#include "../shaders/deoglBatchedShaderLoading.h"
 #include "../texture/deoglRImage.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
@@ -327,16 +327,23 @@ void deoglRSkin::FinalizeAsyncResLoading(){
 }
 
 void deoglRSkin::PrepareTexturePipelines(){
-	if( pTexturePipelinesReady ){
+	if(pTexturePipelinesReady){
 		return;
 	}
 	
-	deoglShaderLoadingTimeout timeout( 1000.0f );
-	int i;
-	for( i=0; i<pTextureCount; i++ ){
-		pTextures[ i ]->GetPipelines().Prepare( timeout );
+	deoglBatchedShaderLoading batched(pRenderThread, 1000.0f, true);
+	try{
+		int i;
+		for(i=0; i<pTextureCount; i++){
+			pTextures[i]->GetPipelines().Prepare(batched);
+		}
+		
+	}catch(const deException &){
+		batched.WaitAllCompileFinished();
+		throw;
 	}
 	
+	batched.WaitAllCompileFinished();
 	pTexturePipelinesReady = true;
 }
 

@@ -46,9 +46,57 @@ pin Dragengine.Utils
  * characters with natural and FPS type movement patterns as well as mechanical locomotion
  * like vehicles.
  * 
+ * Locomotion parameters have to be set on runtime. The behavior itself does not support
+ * initializing locomotion parameters. This is the case since locomotion parameters change a
+ * lot depending on what game situation an actor is located in. Use \ref ECBehaviorActorAIAction,
+ * \ref ECBehaviorStateMachine or \ref ECBehaviorBehaviorTree for this task.
+ * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_locomotion
  */
 class ECBehaviorLocomotion extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Requuired: \ref ECBehaviorColliderAI or \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorLocomotion'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorLocomotion"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorColliderAI colliderAI = ECBehaviorColliderAI.getBehaviorIn(eclass)
+			var ECBehaviorLocomotion behavior
+			if colliderAI != null
+				behavior = ECBehaviorLocomotion.new(eclass, colliderAI)
+				
+			else
+				behavior = ECBehaviorLocomotion.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
+			end
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "locomotion")
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorLocomotion pECBehavior

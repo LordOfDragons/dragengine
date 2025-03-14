@@ -20,7 +20,20 @@ on:
         default: 'X-Y{-Z}'
 
 jobs:
+  generate_buildnumbers:
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.buildnumber.outputs.build_number }}
+    steps:
+      - name: Generate build number
+        id: buildnumber
+        uses: onyxmueller/build-tag-number@v1
+        with:
+          token: ${{ secrets.github_token }}
+          prefix: github
+  
   build_linux:
+    needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_linux.yml
     with:
       branch: ${{ github.event.inputs.branch }}
@@ -31,6 +44,7 @@ jobs:
       artifactTools: tools-crossplatform
   
   build_windows:
+    needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_windows_vs.yml
     with:
       branch: ${{ github.event.inputs.branch }}
@@ -57,12 +71,33 @@ jobs:
       artifactMsix: msix-windows
   
   build_linux_ci:
+    needs: [generate_buildnumbers]
     uses: ./.github/workflows/build_linux_ci.yml
     with:
       branch: ${{ github.event.inputs.branch }}
       releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
       artifactInstaller: installers-linux-ci
+  
+  build_android_armv8:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_android.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: ${{ github.event.inputs.version }}
+      androidArch: 'armv8'
+      artifactArchive: archives-android-armv8
+      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
+  
+  build_android_armv7:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_android.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: ${{ github.event.inputs.version }}
+      androidArch: 'armv7'
+      artifactArchive: archives-android-armv7
+      buildNumber: ${{ needs.generate_buildnumbers.outputs.build_number }}
   
   build_live:
     needs: [build_linux, build_windows]
@@ -93,7 +128,16 @@ jobs:
       artifactResults: testing-results
 
   upload:
-    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live, testing]
+    needs: [
+      build_linux,
+      build_windows,
+      build_windows_installer,
+      build_linux_ci,
+      build_android_armv8,
+      build_android_armv7,
+      build_live,
+      testing]
+    
     runs-on: ubuntu-20.04
     
     steps:

@@ -28,6 +28,7 @@
 #include "../deoglBasics.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../pipeline/deoglPipeline.h"
+#include "../shaders/deoglShaderManager.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/deoglSPBSingleUse.h"
@@ -65,6 +66,7 @@ public:
 		float clipDistance;
 	};
 	
+	static bool anyPipelineShaderFailed;
 	
 	
 protected:
@@ -74,6 +76,21 @@ protected:
 	
 	decTimer pDebugTimer[ 4 ];
 	
+	
+private:
+	class cPipelineGetProgramListener : public deoglShaderManager::cGetProgramListener{
+	private:
+		deoglRenderThread &pRenderThread;
+		deoglPipelineConfiguration pConfig;
+		const deoglPipeline *&pPipeline;
+		bool pAssignRTSIndex;
+		
+	public:
+		cPipelineGetProgramListener(deoglRenderThread &renderThread, const deoglPipeline *&pipeline,
+			const deoglPipelineConfiguration &config, bool assignRTSIndex);
+		
+		void GetProgramFinished(const deoglShaderProgram *program) override;
+	};
 	
 	
 public:
@@ -231,6 +248,16 @@ public:
 	
 	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
+	
+	
+	
+protected:
+	void pAsyncGetPipeline(const deoglPipeline *&pipeline, deoglPipelineConfiguration &config,
+		const char *sources, const deoglShaderDefines &defines, bool assignRTSIndex = false);
+	
+	void pAsyncGetPipeline(const deoglPipeline *&pipeline, deoglPipelineConfiguration &config,
+		const deoglShaderSources *sources, const deoglShaderDefines &defines,
+		bool assignRTSIndex = false);
 	
 	
 	

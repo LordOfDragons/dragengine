@@ -1,0 +1,214 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.ConversationSystem
+
+
+/**
+ * \brief Simple conversation condition.
+ * \version 1.25
+ */
+class SimpleConversationCondition
+	/**
+	 * \brief Condition type.
+	 */
+	enum Type
+		/**
+		 * \brief Compare variable or actor parameter value.
+		 * 
+		 * Uses getName() as variable/parameter name to compare.
+		 * Uses getTarget() as actor id or alias if present.
+		 * Uses getValue() as value to compare against.
+		 * Uses getMode() as comparison operator. Allowed modes are
+		 * \ref CConditionVariable.Operator for variables and
+		 * \ref CConditionActorParameter.Operator for actor parameters
+		 */
+		variable
+		
+		/**
+		 * \brief Evaluate trigger state.
+		 * 
+		 * Uses getName() as trigger name to evaluate.
+		 * Uses getMode() as test mode. Allowed modes are \ref CConditionTrigger.TestMode .
+		 */
+		trigger
+		
+		/**
+		 * \brief Evaluate game or actor command.
+		 * 
+		 * Uses getTarget() as actor id or alias if present.
+		 * Uses getName() as command to evaluate.
+		 * Uses getValue() as expected outcome. A value of 1 means true and a value of 0 false.
+		 */
+		command
+		
+		/**
+		 * \brief Evaluate child conditions using logic operator.
+		 * 
+		 * Uses getConditions() as child conditions.
+		 * Uses getMode() as test mode. Allowed modes are \ref CConditionLogic.pOperator .
+		 */
+		logic
+		
+		/**
+		 * \brief Actor is present.
+		 * 
+		 * Uses getTarget() as actor id or alias.
+		 * Uses getValue() as expected outcome. A value of 1 means present and a value of 0 absent.
+		 */
+		hasActor
+	end
+	
+	
+	var Type pType
+	var StringID pTarget
+	var String pName
+	var int pValue
+	var Enumeration pMode
+	var Array pConditions
+	
+	
+	/** \brief Create simple conversation condition. */
+	func new(Type type)
+		if type == null
+			throw ENullPointer.new("type")
+		end
+		pType = type
+	end
+	
+	/** \brief Create copy of simple conversation condition. */
+	func new(SimpleConversationCondition condition)
+		pType = condition.pType
+		pTarget = condition.pTarget
+		pName = condition.pName
+		pValue = condition.pValue
+		pMode = condition.pMode
+		if condition.pConditions != null
+			pConditions = condition.pConditions.map(block SimpleConversationCondition each
+				SimpleConversationCondition.new(each)
+			end)
+		end
+	end
+	
+	
+	/** \brief Type. */
+	func Type getType()
+		return pType
+	end
+	
+	/**
+	 * \brief Actor identifier or alias.
+	 * 
+	 * - \ref Type#variable: Idenfitier or alias of actor if parameter or null if variable.
+	 * - \ref Type#condition: Identifier of actor or null for game conditioon.
+	 * - other types: Not used and is null
+	 */
+	func StringID getTarget()
+		return pTarget
+	end
+	
+	/**
+	 * \brief Set actor identifier or alias.
+	 * \see #getTarget()
+	 */
+	func void setTarget(StringID target)
+		pTarget = target
+	end
+	
+	/**
+	 * \brief Name.
+	 * 
+	 * - \ref Type#variable: Variable/parameter name.
+	 * - \ref Type#trigger: Trigger name.
+	 * - \ref Type#command: Command to send.
+	 */
+	func String getName()
+		return pName
+	end
+	
+	/**
+	 * \brief Set name.
+	 * \see #getName()
+	 */
+	func void setName(String name)
+		pName = name
+	end
+	
+	/**
+	 * \brief Value.
+	 * 
+	 * - \ref Type#variable: Value to set variable/parameter to.
+	 * - other types: Not used and is null
+	 */
+	func int getValue()
+		return pValue
+	end
+	
+	/**
+	 * \brief Set value.
+	 * \see #getValue()
+	 */
+	func void setValue(int value)
+		pValue = value
+	end
+	
+	/**
+	 * \brief Mode.
+	 * 
+	 * - \ref Type#variable: \ref CConditionVariable.Operator for variables or
+	 *   \ref CConditionActorParameter.Operator for parameters.
+	 * - \ref Type#trigger: \ref CConditionTrigger.Action .
+	 * - \ref Type#logic: \ref CConditionLogic.Operator .
+	 * - other types: Not used and is null
+	 */
+	func Enumeration getMode()
+		return pMode
+	end
+	
+	/**
+	 * \brief Set mode.
+	 * \see #getMode()
+	 */
+	func void setMode(Enumeration mode)
+		pMode = mode
+	end
+	
+	/**
+	 * \brief Child conditions or null.
+	 * 
+	 * - \ref Type#logic: Array of SimpleConversationCondition.
+	 * - other types: Not used and is null
+	 */
+	func Array getConditions()
+		return pConditions
+	end
+	
+	/**
+	 * \brief Set conditions or null.
+	 * \see #getConditions()
+	 */
+	func void setConditions(Array conditions)
+		pConditions = conditions
+	end
+end

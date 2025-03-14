@@ -175,7 +175,6 @@ pAddToRenderTaskParticles( nullptr ),
 pDebugInfo( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	const bool useFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderDefines defines, commonDefines;
 	const deoglShaderSources *sources;
@@ -204,30 +203,27 @@ pDebugInfo( renderThread )
 		sources = shaderManager.GetSourcesNamed( "DefRen Finalize" );
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM" );
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineFinalize = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineFinalize, pipconf, sources, defines);
 		
 		pipconf2 = pipconf;
 		pipconf2.EnableBlendBlend();
-		pPipelineFinalizeBlend = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineFinalizeBlend, pipconf2, sources, defines);
 		
 		// finalize stereo
 		defines.SetDefines( useFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 		if( ! useFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
 		}
-		pipconf.SetShader( renderThread, sources, defines );
-		pPipelineFinalizeStereo = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineFinalizeStereo, pipconf, sources, defines);
 		
 		pipconf2 = pipconf;
 		pipconf2.EnableBlendBlend();
-		pPipelineFinalizeBlendStereo = pipelineManager.GetWith( pipconf2 );
+		pAsyncGetPipeline(pPipelineFinalizeBlendStereo, pipconf2, sources, defines);
 		
 		// finalize split
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "SPLIT_LAYERS" );
-		pipconf.SetShader( renderThread, "DefRen Finalize Split", defines );
-		pPipelineFinalizeSplit = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineFinalizeSplit, pipconf, "DefRen Finalize Split", defines);
 		
 		
 		
@@ -575,7 +571,7 @@ DEBUG_RESET_TIMER
 			
 			pRenderPB->Activate();
 			
-			shader = &pipeline.GetGlShader();
+			shader = &pipeline.GetShader();
 			defren.SetShaderParamFSQuad( *shader, spfinTCTransform );
 			shader->SetParameterFloat( spfinGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 			shader->SetParameterFloat( spfinBrightness, 0.0f, 0.0f, 0.0f, 0.0f );
@@ -1187,7 +1183,7 @@ DBG_ENTER("RenderFinalizeFBO")
 	
 	pRenderPB->Activate();
 	
-	deoglShaderCompiled * const shader = &pipeline.GetGlShader();
+	deoglShaderCompiled * const shader = &pipeline.GetShader();
 	
 	if( withGammaCorrection ){
 		const float gamma = 1.0f / ( OGL_RENDER_GAMMA * config.GetGammaCorrection() );
@@ -1274,7 +1270,7 @@ DBG_ENTER("RenderFinalizeContext")
 	
 	pRenderPB->Activate();
 	
-	shader = &pipeline.GetGlShader();
+	shader = &pipeline.GetShader();
 	shader->SetParameterFloat( spfinGamma, gamma, gamma, gamma, 1.0f );
 	shader->SetParameterFloat( spfinBrightness, pbn, pbn, pbn, 0.0f );
 	shader->SetParameterFloat( spfinContrast, contrast, contrast, contrast, 1.0f );

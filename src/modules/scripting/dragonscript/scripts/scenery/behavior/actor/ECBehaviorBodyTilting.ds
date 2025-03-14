@@ -50,9 +50,48 @@ pin Dragengine.Utils
  * To this behavior add it and either set the class properties or call setShape(), setOrigin()
  * and setDirection() to initialize. Then use Locomotion.addControllerMapping() with
  * Locomotion.ATTR_TILT_OFFSET, Locomotion.ATTR_TILT_VERTICAL and Locomotion.ATTR_TILT_HORIZONTAL
- * for animators supporting tilting
+ * for animators supporting tilting.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_bodytilting
  */
 class ECBehaviorBodyTilting extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLocomotion
+	 * - Required: \ref ECBehaviorProjectToGround
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorBodyTilting'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorBodyTilting"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorBodyTilting behavior = ECBehaviorBodyTilting.new(eclass,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass),\
+				ECBehaviorProjectToGround.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "bodyTilting")
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorBodyTilting pECBehavior

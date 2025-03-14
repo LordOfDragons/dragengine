@@ -113,7 +113,6 @@ pCount( 0 )
 {
 	const bool renderFSQuadStereoVSLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
@@ -127,32 +126,28 @@ pCount( 0 )
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count" );
 	defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineTraCountMaxCount = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineTraCountMaxCount, pipconf, sources, defines);
 	
 	// count max count stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineTraCountMaxCountStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineTraCountMaxCountStereo, pipconf, sources, defines);
 	
 	
 	// count get count
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count" );
 	defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineTraCountGetCount = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineTraCountGetCount, pipconf, sources, defines);
 	
 	// count get count stereo
 	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count Stereo" );
 	}
-	pipconf.SetShader( renderThread, sources, defines );
-	pPipelineTraCountGetCountStereo = pipelineManager.GetWith( pipconf );
+	pAsyncGetPipeline(pPipelineTraCountGetCountStereo, pipconf, sources, defines);
 	
 	
 	pOccQuery = new deoglOcclusionQuery( renderThread );
@@ -306,7 +301,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	curWidth = realWidth;
 	curHeight = realHeight;
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	
 	while( curWidth > 1 || curHeight > 1 ){
 		// reduce in x direction

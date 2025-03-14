@@ -37,13 +37,94 @@ pin Dragengine.Utils.StyledText.Definition
 /**
  * \brief Behavior element behavior adding bindings tag resolving using CTRRBinding.
  * 
- * Adds a CTRRBinding rule to ECBehaviorConversation or ECBehaviorConversationActor.
+ * Adds a CTRRBinding rule to ECBehaviorConversationActor.
  * 
  * Element class properties have the prefix "ctrrBinding.".
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_ctrrbindings
  */
 class ECBCTRRBindings extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBCTRRBindings'>
+	 *   <!-- optional: use BaseGameApp command mananager. game can add more supported values. default is 'default' -->
+	 *   <string name='commandManager'>default</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values. default is 'default' -->
+	 *   <string name='bindingManager'>default</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp subtitle theme. game can add more supported values.
+	 *                  default is 'default'. also supported is value 'path:/path/to/theme.guitheme' -->
+	 *   <string name='subtitleTheme'>default</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBCTRRBindings"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBCTRRBindings behavior = ECBCTRRBindings.new(eclass,\
+				ECBehaviorConversationActor.getBehaviorIn(eclass),\
+				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
+				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String),\
+				getSubtitleThemeFor(parameters.getAt("subtitleTheme", "default") cast String))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "ctrrBindings")
+			return behavior
+		end
+		
+		/**
+		 * \brief Command manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getCommandManager() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func CommandManager getCommandManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.commandManager(value)
+		end
+		
+		/**
+		 * \brief Binding manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func BindingManager getBindingManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
+		end
+		
+		/**
+		 * \brief Subtitle gui theme matching value.
+		 * 
+		 * Default implementation returns \ref WindowSubTitle#getGuiTheme()
+		 * on \ref BaseGameApp#getWindowSubTitle() for value 'default', loads gui theme if value
+		 * begins with 'path:' or null for all other values. Overwrite to accept other values.
+		 */
+		func GuiTheme getSubtitleThemeFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.subtitleTheme(value)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBCTRRBindings pECBehavior

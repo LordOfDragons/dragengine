@@ -85,8 +85,63 @@ pin Dragengine.Utils
  * - "interactPrompt{(id)}.bones": ECPStringList
  * - "interactPrompt{(id)}.maximumDistance": ECPFloat
  * - "interactPrompt{(id)}.settings": ECPString
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_interactprompt
  */
 class ECBehaviorInteractPrompt extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorInteractPrompt'>
+	 *   <!-- optional: use BaseGameApp translation manager.
+	 *                  game can add more supported values. default is 'default' -->
+	 *   <string name='translationManager'>default</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorInteractPrompt' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorInteractPrompt"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorInteractPrompt behavior = ECBehaviorInteractPrompt.new(eclass, id)
+			
+			if parameters.has("translationManager")
+				behavior.setTranslationManager(getTranslationManagerFor(\
+					parameters.getAt("translationManager") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "interactPrompt", id)
+			return behavior
+		end
+		
+		/**
+		 * \brief Translation manager matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTranslationManager() for value
+		 * 'default' and null for all other values. Overwrite to accept other values.
+		 */
+		func TranslationManager getTranslationManagerFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.translationManager(value)
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		var ECBehaviorInteractPrompt pECBehavior

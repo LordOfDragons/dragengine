@@ -186,7 +186,7 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	// [0,1] * -strv*sv*2 + strv*sv = [strv*sv,-strv*sv]
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	shader.SetParameterFloat( speDistortTransform, 2.0f * su, -2.0f * sv, -su, sv );
 	
 	// TODO correctly we need an explicite clamp in the shader here since the texture

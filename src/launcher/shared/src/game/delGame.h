@@ -36,6 +36,7 @@
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/utils/decUuid.h>
 
@@ -118,6 +119,11 @@ private:
 	decUuid pUseCustomPatch;
 	delPatchList pLocalPatches;
 	
+	decStringDictionary pCustomProperties;
+	
+#ifdef OS_ANDROID
+	deVFSContainer::Ref pVFSDelgaContainer;
+#endif
 	
 	
 public:
@@ -270,6 +276,9 @@ public:
 	/** \brief Set if script module is found. */
 	void SetScriptModuleFound( bool found );
 	
+	/** \brief Found script module version. */
+	inline const decString &GetScriptModuleFoundVersion() const{ return pScriptModuleFoundVersion; }
+	
 	/** \brief Game is up to date. */
 	inline bool GetGameUpToDate() const{ return pGameUpToDate; }
 	
@@ -339,6 +348,26 @@ public:
 	 */
 	inline delPatchList &GetLocalPatches(){ return pLocalPatches; }
 	inline const delPatchList &GetLocalPatches() const{ return pLocalPatches; }
+	
+	/**
+	 * \brief Custom properties.
+	 * \version 1.25
+	 * 
+	 * Allows launchers to store custom properties. To avoid name classes best prefix the
+	 * property names like "launcher-name:"
+	 */
+	inline decStringDictionary &GetCustomProperties(){ return pCustomProperties; }
+	inline const decStringDictionary &GetCustomProperties() const{ return pCustomProperties; }
+	
+	
+	
+#ifdef OS_ANDROID
+	/** \brief DELGA VFS container. */
+	inline const deVFSContainer::Ref &GetVFSDelgaContainer() const{ return pVFSDelgaContainer; }
+	
+	/** \brief Set DELGA VFS container. */
+	void SetVFSDelgaContainer(const deVFSContainer::Ref &container);
+#endif
 	
 	
 	

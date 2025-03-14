@@ -33,16 +33,13 @@ pin Dragengine.Utils
 /**
  * \brief Behavior for BehaviorElement.
  * 
- * Composable elements are jack of all trade elements that can be build using ECCompose*
- * classes implementing the Composable interface to provide various abilities
- * (or traits). Composable elements are suited for prototyping or rapid development
- * since they require little written code. Building element classes the conventional
- * way though is usually preferred.
- * 
- * Classes implementing this interface have to add element class properties to the target
- * element class during construction time.
+ * Behavior elements are jack of all trade elements that can be build using classes implementing
+ * the ECBehavior interface to provide various abilities (or traits). Behavior elements are suited
+ * for prototyping and rapid development since they require little written code. Classes
+ * implementing this interface have to add element class properties to the target element
+ * class during construction time. Furthermore they can add other ECBehavior instances.
  */
-public interface ECBehavior
+interface ECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 	
@@ -53,8 +50,8 @@ public interface ECBehavior
 	 * \brief Assign instance index.
 	 * \warning For use by BehaviorElementClass only! Do not call yourself!
 	 */
-	func void assignInstanceIndex( int instanceIndex )
+	func void assignInstanceIndex(int instanceIndex)
 	
 	/** \brief Create Behavior instance. */
-	func ECBehaviorInstance createInstance( BehaviorElement element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 end

@@ -28,18 +28,18 @@ void main( void ){
 	// discard rule as lighting shader is using
 	vec3 tc = vec3( vTexCoord, 0 );
 	
-	vec4 diffuse = textureLod( texDiffuse, tc, 0 );
+	vec4 diffuse = textureLod( texDiffuse, tc, 0.0 );
 	
-	if( diffuse.a == 0 ){
+	if( diffuse.a == 0.0 ){
 		discard;
 	}
 	
 	// position is in camera space. transform to target space
-	vec3 position = vec3( textureLod( texDepth, tc, 0 ).r );
+	vec3 position = vec3( textureLod( texDepth, tc, 0.0 ).r );
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	position.xy = ( vScreenCoord + pPosTransform2 ) * pPosTransform.zw * position.zz;
 	
-	outPosition = vec3( pMatrixPosition * vec4( position, /*1*/ textureLod( texDepth, tc, 0 ).r ) );
+	outPosition = vec3( pMatrixPosition * vec4( position, /*1*/ textureLod( texDepth, tc, 0.0 ).r ) );
 	
 	outDiffuse = vec3( diffuse );
 	

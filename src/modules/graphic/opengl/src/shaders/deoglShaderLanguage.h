@@ -25,22 +25,20 @@
 #ifndef _DEOGLSHADERLANGUAGE_H_
 #define _DEOGLSHADERLANGUAGE_H_
 
-#include "deoglShaderPreprocessor.h"
-#include "../deoglBasics.h"
+#include "compiler/deoglShaderCompileTask.h"
 
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/threading/deMutex.h>
+#include <dragengine/threading/deSemaphore.h>
 
 class deoglShaderDefines;
 class deoglShaderSources;
 class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglRenderThread;
-
-#ifdef OS_ANDROID
-class deoglShaderBindingList;
-#endif
-
+class deoglShaderCompiler;
+class deoglShaderCompilerThread;
 
 
 /**
@@ -53,39 +51,58 @@ class deoglShaderBindingList;
 class deoglShaderLanguage{
 private:
 	deoglRenderThread &pRenderThread;
-	char *pErrorLog;
-	
-	int pShaderFileNumber;
 	
 	decString pGLSLVersion;
 	decStringList pGLSLExtensions;
 	
 	int pGLSLVersionNumber;
 	
+	deMutex pMutex;
+	int pShaderFileNumber;
+	
+	int pLoadingShaderCount;
 	bool pHasLoadingShader;
-	bool pGuardHasLoadingShader;
+	int pCompilingShaderCount;
 	bool pHasCompilingShader;
-	bool pGuardHasCompilingShader;
 	
-	deoglShaderPreprocessor pPreprocessor;
-	deMutex pMutexCompile;
-	deMutex pMutexChecks;
+	deoglShaderCompiler *pCompiler;
 	
+	deoglShaderCompilerThread **pCompilerThreads;
+	int pCompilerThreadCount;
+	
+	decObjectList pTasksPending;
+	int pCompilingTaskCount;
+	deMutex pMutexTasks;
+	deSemaphore pSemaphoreNewTasks, pSemaphoreTasksFinished;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new shader language object. */
-	deoglShaderLanguage( deoglRenderThread &renderThread );
-	/** Cleans up the shader language object. */
+	/** Create shader language. */
+	deoglShaderLanguage(deoglRenderThread &renderThread);
+	
+	/** Clean up shader language object. */
 	~deoglShaderLanguage();
 	/*@}*/
 	
+	
+	
 	/** \name Management */
 	/*@{*/
-	/** Compieles a shader from the given sources using the specified defines. */
-	deoglShaderCompiled *CompileShader( deoglShaderProgram &program );
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	inline const decString &GetGLSLVersion() const{ return pGLSLVersion; }
+	inline const decStringList &GetGLSLExtensions() const{ return pGLSLExtensions; }
+	inline int GetGLSLVersionNumber() const{ return pGLSLVersionNumber; }
+	
+	/** Compile shader from given sources using specified defines. */
+	deoglShaderCompiled *CompileShader(const deoglShaderProgram &program);
+	
+	/** Asynchronous compile shader from given sources using specified defines. */
+	void CompileShaderAsync(const deoglShaderProgram *program, deoglShaderCompileListener *listener);
+	
+	/** Next shader file number. */
+	int NextShaderFileNumber();
 	
 	/**
 	 * Check if shader is loading or has been loaded since the last call.
@@ -98,27 +115,30 @@ public:
 	 * Resets flag if no compiling is in progress right now.
 	 */
 	bool GetHasCompilingShader();
+	
+	/** Internal use only. */
+	void AddLoadingShader();
+	void RemoveLoadingShader();
+	void AddCompilingShader();
+	void RemoveCompilingShader();
+	
+	/** Get next task to compile. Blocks until a task is available or thread has to exit. */
+	void GetNextTask(deoglShaderCompileTask::Ref &task);
+	
+	/** Finish compile task. Sets task to nullptr before returning. */
+	void FinishTask(deoglShaderCompileTask::Ref &task);
+	
+	/** Wait for new tasks to arrive. */
+	void WaitForNewTasks();
+	
+	/** Wait for all tasks to have finished. */
+	void WaitAllTasksFinished();
 	/*@}*/
 	
+	
 private:
-	deoglShaderCompiled *pCompileShader( deoglShaderProgram &program );
-	void pAfterLinkShader( const deoglShaderProgram &program, deoglShaderCompiled &compiled );
-	deoglShaderCompiled *pCacheLoadShader( deoglShaderProgram &program );
-	void pCacheSaveShader( const deoglShaderProgram &program, const deoglShaderCompiled &compiled );
-	void pPreparePreprocessor( const deoglShaderDefines &defines );
-	
-	#ifdef OS_ANDROID
-	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data, const deoglShaderBindingList *outputList = NULL );
-	#else
-	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data );
-	#endif
-	
-	bool pCompileObject( GLuint handle );
-	bool pLinkShader( GLuint handle );
-	
-	void pOutputShaderToFile( const char *file );
-	void pLogFailedShaderSources();
-	void pPrintErrorLog();
+	void pCleanUp();
+	void pCreateCompileThreads();
 };
 
 #endif

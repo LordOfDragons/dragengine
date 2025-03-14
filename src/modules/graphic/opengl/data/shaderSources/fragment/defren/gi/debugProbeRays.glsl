@@ -12,7 +12,7 @@ out vec3 outColor;
 
 void main( void ){
 	float radius = length( vTexCoord );
-	if( radius > 1 ){
+	if( radius > 1.0 ){
 		discard; // outside sphere
 	}
 	

@@ -65,7 +65,7 @@ const deoglPipelineConfiguration &configuration, bool assignRTSIndex ){
 	
 	for( i=0; i<count; i++ ){
 		deoglPipeline * const pipeline = ( deoglPipeline* )pPipelines.GetAt( i );
-		if( pipeline->GetGlConfiguration() == configuration ){
+		if( pipeline->GetConfiguration() == configuration ){
 			return pipeline;
 		}
 	}

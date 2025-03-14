@@ -41,6 +41,9 @@
 #include <dragengine/input/deInputDeviceComponent.h>
 #include <dragengine/input/deInputDevicePose.h>
 #include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/rig/deRig.h>
 
 class deoxrDeviceAxis;
 class deoxrDeviceButton;
@@ -197,6 +200,8 @@ public:
 	
 	/** Set display text. */
 	void SetDisplayText( const char *text );
+	
+	
 	
 	/** Bone configuration. */
 	inline deInputDevice::eBoneConfigurations GetBoneConfiguration() const{ return pBoneConfiguration; }

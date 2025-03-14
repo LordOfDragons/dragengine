@@ -1,5 +1,7 @@
 #ifdef GS_INSTANCING
-	#extension GL_ARB_gpu_shader5 : require
+	#ifndef OPENGLES
+		#extension GL_ARB_gpu_shader5 : require
+	#endif
 #endif
 
 // layout definitions
@@ -112,9 +114,17 @@ void emitCorner( in int layer, in vec4 position, in vec4 preTransformedPosition 
 	
 	#if defined DEPTH_OFFSET
 		#ifdef GS_RENDER_CUBE
-			applyDepthOffset( 0 );
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(0, vPosition.z);
+			#else
+				applyDepthOffset(0);
+			#endif
 		#else
-			applyDepthOffset( layer );
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(layer, vPosition.z);
+			#else
+				applyDepthOffset(layer);
+			#endif
 		#endif
 	#endif
 	

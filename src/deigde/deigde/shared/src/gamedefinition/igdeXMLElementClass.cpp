@@ -79,7 +79,8 @@ igdeXMLElementClass::~igdeXMLElementClass(){
 // Loading
 ////////////
 
-igdeGDClass *igdeXMLElementClass::LoadElementClass( decBaseFileReader &reader, const char *filename ){
+igdeGDClass *igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
+const char *filename){
 	try{
 		decXmlDocumentReference document;
 		document.TakeOver( new decXmlDocument );
@@ -94,7 +95,7 @@ igdeGDClass *igdeXMLElementClass::LoadElementClass( decBaseFileReader &reader, c
 			DETHROW( deeInvalidParam );
 		}
 		
-		return pReadElementClass( *root, filename );
+		return pReadElementClass(*root, filename);
 		
 	}catch( const deException &e ){
 		GetLogger()->LogInfoFormat( GetLoggerSource(),
@@ -115,33 +116,32 @@ private:
 	igdeGDClassReference pClass;
 	
 public:
-	igdeXMLElementClassProcessEClasses( igdeXMLElementClass &owner, const char *pattern,
-		igdeGDClassManager &classes, deLogger &logger, const decString &loggerSource ) :
-	pOwner( owner ), pPattern( pattern ), pClasses( classes ),
-	pLogger( logger ), pLoggerSource( loggerSource ){
+	igdeXMLElementClassProcessEClasses(igdeXMLElementClass &owner, const char *pattern,
+		igdeGDClassManager &classes, deLogger &logger, const decString &loggerSource) :
+	pOwner(owner), pPattern(pattern), pClasses(classes), pLogger(logger), pLoggerSource(loggerSource){
 	}
 	
 	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
-		if( ! path.GetLastComponent().MatchesPattern( pPattern ) ){
+		if(!path.GetLastComponent().MatchesPattern(pPattern)){
 			return true;
 		}
 		
 		try{
-			pReader.TakeOver( vfs.OpenFileForReading( path ) );
+			pReader.TakeOver(vfs.OpenFileForReading(path));
 			
-		}catch( const deException &e ){
-			pLogger.LogException( pLoggerSource, e );
+		}catch(const deException &e){
+			pLogger.LogException(pLoggerSource, e);
 			return true;
 		}
 		
-		pClass.TakeOver( pOwner.LoadElementClass( pReader, path.GetPathUnix() ) );
+		pClass.TakeOver(pOwner.LoadElementClass(pReader, path.GetPathUnix()));
 		
-		if( pClasses.HasNamed( pClass->GetName() ) ){
-			pLogger.LogInfoFormat( pLoggerSource, "Ignore duplicate element class '%s'",
-				pClass->GetName().GetString() );
+		if(pClasses.HasNamed(pClass->GetName())){
+			pLogger.LogInfoFormat(pLoggerSource, "Ignore duplicate element class '%s'",
+				pClass->GetName().GetString());
 			
 		}else{
-			pClasses.Add( pClass );
+			pClasses.Add(pClass);
 		}
 		
 		return true;
@@ -153,11 +153,10 @@ public:
 	}
 };
 
-void igdeXMLElementClass::LoadElementClasses( igdeGDClassManager &classes,
-deVirtualFileSystem &vfs, const decPath &directory, const char *pattern, bool recursive ){
-	igdeXMLElementClassProcessEClasses process(
-		*this, pattern, classes, *GetLogger(), GetLoggerSource() );
-	vfs.SearchFiles( directory, process );
+void igdeXMLElementClass::LoadElementClasses(igdeGDClassManager &classes, deVirtualFileSystem &vfs,
+const decPath &directory, const char *pattern, bool recursive){
+	igdeXMLElementClassProcessEClasses process(*this, pattern, classes, *GetLogger(), GetLoggerSource());
+	vfs.SearchFiles(directory, process);
 }
 
 
@@ -260,18 +259,16 @@ decVector4 igdeXMLElementClass::ReadFloatRectArea( const decXmlElementTag &root 
 igdeXMLElementClass::cMap::cMap(){ }
 igdeXMLElementClass::cMap::~cMap(){ }
 
-igdeGDClass *igdeXMLElementClass::pReadElementClass(
-const decXmlElementTag &root, const char *filename ){
+igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root, const char *filename){
 	decStringDictionary properties;
-	igdeGDClassReference gdClass;
 	deObjectReference refMap;
-	deObjectReference refInherit;
 	int i;
 	
-	gdClass.TakeOver( new igdeGDClass( GetAttributeString( root, "name" ) ) );
-	refInherit.TakeOver( new igdeGDClassInherit( GetAttributeString( root, "class" ) ) );
-	gdClass->AddInheritClass( ( igdeGDClassInherit* )( deObject* )refInherit );
-	gdClass->SetPathEClass( filename );
+	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::New(
+		new igdeGDClass(GetAttributeString(root, "name"))));
+	gdClass->AddInheritClass(igdeGDClassInherit::Ref::New(
+		new igdeGDClassInherit(GetAttributeString(root, "class"))));
+	gdClass->SetPathEClass(filename);
 	
 	decPath basePath( decPath::CreatePathUnix( filename ) );
 	basePath.RemoveLastComponent();
@@ -283,6 +280,11 @@ const decXmlElementTag &root, const char *filename ){
 	for( i=0; i<root.GetElementCount(); i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
 		if( ! tag ){
+			continue;
+		}
+		
+		if(tag->GetName() == "behavior"){
+			pReadBehavior(*tag, gdClass, filename, basePathStr);
 			continue;
 		}
 		
@@ -308,6 +310,49 @@ const decXmlElementTag &root, const char *filename ){
 	
 	gdClass->AddReference(); // caller takes over reference
 	return gdClass;
+}
+
+void igdeXMLElementClass::pReadBehavior(const decXmlElementTag &root,
+igdeGDClass &gdClass, const char *filename, const decString &basePathStr){
+	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::New(
+		new igdeGDClassInherit(GetAttributeString(root, "type"))));
+	inherit->SetUseAutoPropertyPrefixId(true);
+	if(HasAttribute(root, "id")){
+		inherit->SetAutoPropertyPrefixId(GetAttributeString(root, "id"));
+	}
+	
+	decStringDictionary &properties = inherit->GetAutoPrefixProperties();
+	const cMap::Ref map(cMap::Ref::New(new cMap));
+	int i;
+	
+	for( i=0; i<root.GetElementCount(); i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		const decString propertyName(GetAttributeString(*tag, "name"));
+		if(!propertyName.BeginsWith(".")){
+			continue;
+		}
+		
+		decString propertyValue;
+		
+		map->map.RemoveAll();
+		
+		if(!pReadPropertyValue(*tag, propertyValue, map, filename)){
+			continue;
+		}
+		
+		if(propertyName.EndsWith(".textureReplacements")){
+			pProcessTextureReplacements(map, gdClass, basePathStr);
+			
+		}else{
+			properties.SetAt(propertyName.GetMiddle(1), propertyValue);
+		}
+	}
+	
+	gdClass.AddInheritClass(inherit);
 }
 
 bool igdeXMLElementClass::pReadPropertyValue( const decXmlElementTag &root,
@@ -356,7 +401,12 @@ decString &value, cMap *map, const char *filename ){
 	}else if( tagName == "color" ){
 		decColor color;
 		pReadECColor( root, color, filename );
-		igdeCodecPropertyString().EncodeColor4( color, value );
+		if(color.a == 1.0f){
+			igdeCodecPropertyString().EncodeColor3(color, value);
+			
+		}else{
+			igdeCodecPropertyString().EncodeColor4(color, value);
+		}
 		
 	}else if( tagName == "null" ){
 		value.Empty();

@@ -50,9 +50,7 @@ pImageView( VK_NULL_HANDLE )
 		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan(); )
 		const devkImageConfiguration &config = image->GetConfiguration();
 		
-		VkImageViewCreateInfo imageViewInfo;
-		memset( &imageViewInfo, 0, sizeof( imageViewInfo ) );
-		imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		VkImageViewCreateInfo imageViewInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 		imageViewInfo.image = image->GetImage();
 		
 		switch( config.GetType() ){
@@ -140,9 +138,7 @@ pImageView( VK_NULL_HANDLE )
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan(); )
 		
-		VkImageViewCreateInfo imageViewInfo;
-		memset( &imageViewInfo, 0, sizeof( imageViewInfo ) );
-		imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		VkImageViewCreateInfo imageViewInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 		imageViewInfo.image = image->GetImage();
 		
 		switch( config.GetType() ){
@@ -229,9 +225,7 @@ pImageView( VK_NULL_HANDLE )
 	try{
 		VK_IF_CHECK( deSharedVulkan &vulkan = image->GetDevice().GetInstance().GetVulkan(); )
 		
-		VkImageViewCreateInfo imageViewInfo;
-		memset( &imageViewInfo, 0, sizeof( imageViewInfo ) );
-		imageViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		VkImageViewCreateInfo imageViewInfo{VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 		imageViewInfo.image = image->GetImage();
 		
 		switch( config.GetType() ){

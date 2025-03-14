@@ -47,6 +47,7 @@
 #include "../utils/collision/deoglCollisionDetection.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
+#include "../utils/deoglConvertFloatHalf.h"
 #include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../shaders/paramblock/deoglSPBMapBufferRead.h"
 
@@ -727,7 +728,13 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 	}
 	
 	if( ! pTexProbeDistance.GetTexture() ){
-		pTexProbeDistance.SetFBOFormat( 2, true );
+		if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
+			// pTexProbeDistance.SetFBOFormatIntegral(1, 32, true);
+			pTexProbeDistance.SetFBOFormat(4, true);
+			
+		}else{
+			pTexProbeDistance.SetFBOFormat(2, true);
+		}
 		pTexProbeDistance.SetSize( ( pSizeTexDistance + 2 ) * pProbeCount.x * pProbeCount.y + 2,
 			( pSizeTexDistance + 2 ) * pProbeCount.z + 2, pCascadeCount );
 		pTexProbeDistance.CreateTexture();
@@ -749,13 +756,33 @@ void deoglGIState::pPrepareProbeTexturesAndFBO(){
 		pixbuf->SetToFloatColor( 0.0f, 0.0f, 0.0f, 0.0f );
 		pTexProbeIrradiance.SetPixels( pixbuf );
 		
-		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat2,
-			pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
-			pTexProbeDistance.GetLayerCount() ) );
-		const GLfloat maxProbeDistance = pCascades[ pCascadeCount - 1]->GetMaxProbeDistance();
-		pixbuf->SetToFloatColor( maxProbeDistance, maxProbeDistance,
-			maxProbeDistance, maxProbeDistance * maxProbeDistance );
-		pTexProbeDistance.SetPixels( pixbuf );
+		if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
+			/*
+			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfInt1,
+				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
+				pTexProbeDistance.GetLayerCount()));
+			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
+			const HALF_FLOAT hfvalue = convertFloatToHalf(maxProbeDistance);
+			const uint32_t value = (((uint32_t)hfvalue) << 16) | (uint32_t)hfvalue;
+			
+			pixbuf->SetToIntColor(value, 0, 0, 0);
+			pTexProbeDistance.SetPixels(pixbuf);
+			*/
+			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4,
+				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
+				pTexProbeDistance.GetLayerCount()));
+			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
+			pixbuf->SetToFloatColor(maxProbeDistance, maxProbeDistance, 0.0f, 0.0f);
+			pTexProbeDistance.SetPixels(pixbuf);
+			
+		}else{
+			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat2,
+				pTexProbeDistance.GetWidth(), pTexProbeDistance.GetHeight(),
+				pTexProbeDistance.GetLayerCount()));
+			const GLfloat maxProbeDistance = pCascades[pCascadeCount - 1]->GetMaxProbeDistance();
+			pixbuf->SetToFloatColor(maxProbeDistance, maxProbeDistance, 0.0f, 0.0f);
+			pTexProbeDistance.SetPixels(pixbuf);
+		}
 		
 		pixbuf.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4,
 			pTexProbeOffset.GetWidth(), pTexProbeOffset.GetHeight(),

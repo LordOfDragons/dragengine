@@ -263,7 +263,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 		const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineDownsampleStereo() : *GetPipelineDownsample();
 		renderWorld.GetRenderPB()->Activate();
 		
-		deoglShaderCompiled &shaderDownsample = pipeline.GetGlShader();
+		deoglShaderCompiled &shaderDownsample = pipeline.GetShader();
 		defren.SetShaderParamFSQuad( shaderDownsample, spedsTCTransform );
 		
 		for( i=0; i<downsampleCount; i++ ){
@@ -314,7 +314,7 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	defren.ActivatePostProcessFBO( false );
 	tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	
-	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	deoglShaderCompiled &shader = pipeline.GetShader();
 	renderWorld.GetRenderPB()->Activate();
 	
 	//defren.SetShaderParamFSQuad( shader, speQuadParams );

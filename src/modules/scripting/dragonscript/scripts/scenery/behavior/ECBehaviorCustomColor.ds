@@ -73,20 +73,18 @@ pin Dragengine.TriggerSystem
  * 
  * Element class properties have the prefix "customColor{(id)}.".
  * 
- * 
- * 
  * \par Listening
  * 
  * Since this behavior provides no support to apply the chosen color listening is used.
  * Behaviors knowing how to apply the color add a listener and are notified if the color
  * changes.
  * 
- * 
- * 
  * \par Persistency
  * 
  * This behavior supports persistable element class (setPersistable). Persists the selected
  * color.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_customcolor
  */
 class ECBehaviorCustomColor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -127,6 +125,37 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 		/** \brief Create listener. */
 		public func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorCustomColor'/>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorCustomColor' id='second'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorCustomColor"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorCustomColor behavior = ECBehaviorCustomColor.new(eclass, id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "customColor", id)
+			return behavior
 		end
 	end
 	

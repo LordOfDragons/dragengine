@@ -111,38 +111,32 @@ pTBORenderText2( nullptr ),
 pTBORenderRectangle1( nullptr ),
 pTBORenderRectangle2( nullptr )
 {
-	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
 	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
 		pipconf.Reset();
-		pipconf.SetDepthMask( false );
+		pipconf.SetDepthMask(false);
 		pipconf.EnableBlendBlend();
 		
 		// x-ray
-		pipconf.SetShader( renderThread, "DefRen Debug Color-Only", defines );
-		pPipelineXRay = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineXRay, pipconf, "DefRen Debug Color-Only", defines);
 		defines.RemoveAllDefines();
 		
 		// texture layer
-		defines.SetDefines( "TEXTURELEVEL" );
-		pipconf.SetShader( renderThread, "Debug Display Texture", defines );
-		pPipelineOutTexLayer = pipelineManager.GetWith( pipconf );
+		defines.SetDefines("TEXTURELEVEL");
+		pAsyncGetPipeline(pPipelineOutTexLayer, pipconf, "Debug Display Texture", defines);
 		
 		// texture array
-		defines.SetDefines( "ARRAYTEXTURE" );
-		pipconf.SetShader( renderThread, "Debug Display Texture", defines );
-		pPipelineOutArrTex = pipelineManager.GetWith( pipconf );
+		defines.SetDefines("ARRAYTEXTURE");
+		pAsyncGetPipeline(pPipelineOutArrTex, pipconf, "Debug Display Texture", defines);
 		defines.RemoveAllDefines();
 		
 		// text
-		pipconf.SetShader( renderThread, "Debug Render Text", defines );
-		pPipelineRenderText = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineRenderText, pipconf, "Debug Render Text", defines);
 		
 		// rectangle
-		pipconf.SetShader( renderThread, "Debug Rectangle", defines );
-		pPipelineRectangle = pipelineManager.GetWith( pipconf );
+		pAsyncGetPipeline(pPipelineRectangle, pipconf, "Debug Rectangle", defines);
 		
 		
 		
@@ -215,7 +209,7 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	// => offset.x = ( tex.width / view.width ) - 1 = scale.x - 1
 	
 	pPipelineOutTexLayer->Activate();
-	deoglShaderCompiled &shader = pPipelineOutTexLayer->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineOutTexLayer->GetShader();
 	
 	shader.SetParameterFloat( spotPosTransform, scaleX, scaleY, scaleX - 1.0f, scaleY - 1.0f );
 	shader.SetParameterFloat( spotTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -283,7 +277,7 @@ deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	// => offset.x = ( tex.width / view.width ) - 1 = scale.x - 1
 	
 	pPipelineOutArrTex->Activate();
-	deoglShaderCompiled &shader = pPipelineOutArrTex->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineOutArrTex->GetShader();
 	
 	shader.SetParameterFloat( spotPosTransform, scaleX, scaleY, scaleX - 1.0f, scaleY - 1.0f );
 	shader.SetParameterFloat( spotTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -342,7 +336,7 @@ void deoglRenderDebug::RenderComponentBox( sRenderParameters &params, deoglRComp
 	decColor edgeColor;
 	
 	pPipelineXRay->Activate();
-	deoglShaderCompiled &shader = pPipelineXRay->GetGlShader();
+	deoglShaderCompiled &shader = pPipelineXRay->GetShader();
 	
 	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	

@@ -151,7 +151,11 @@ void deoglShaderPreprocessor::SourcesAppend( const char *text, bool mapLines ){
 }
 
 void deoglShaderPreprocessor::SourcesAppend( const char *text, int length, bool mapLines ){
-	if( ! pOutputCode ){
+	if(!pOutputCode){
+		if(pDebugLogParsing){
+			pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor:"
+				" suppress line '%s' at %d (output %d)", text, pInputLine, pOutputCode);
+		}
 		return; // for exampe due to #if/#endif hiding code
 	}
 	
@@ -163,6 +167,10 @@ void deoglShaderPreprocessor::SourcesAppend( const char *text, int length, bool 
 		return;
 	}
 	
+	if(pDebugLogParsing){
+		pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor:"
+			" sources append (len %d) at %d (output %d)", length, pInputLine, pOutputCode);
+	}
 	if( pSourcesLen + length > pSourcesSize ){
 		const int newSize = pSourcesLen + length + 1024;  // increment by steps of 1k
 		char * const newSources = ( char* )realloc( pSources, newSize + 1 );
@@ -332,6 +340,10 @@ void deoglShaderPreprocessor::SetSymbolsFromDefines( const deoglShaderDefines &d
 	}
 }
 
+void deoglShaderPreprocessor::SetDebugLogParsing(bool enable){
+	pDebugLogParsing = enable;
+}
+
 
 
 // Private Functions
@@ -348,6 +360,12 @@ void deoglShaderPreprocessor::pProcessSources(){
 	}
 	
 	while( *pInputNext ){
+		if(pDebugLogParsing){
+			pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor:"
+				" next(%c)(%d) at %d (output %d)(begin %d)(empty %d)",
+				*pInputNext, *pInputNext, pInputLine, pOutputCode,
+				(int)(pInputNext - beginLine), emptyLine);
+		}
 		if( *pInputNext == '/' && pInputNext[1] == '/' ){
 			if( pInputNext != beginLine && ! emptyLine ){
 				SourcesAppend( beginLine, ( int )( pInputNext - beginLine ), true );
@@ -381,9 +399,19 @@ void deoglShaderPreprocessor::pProcessSources(){
 			emptyLine = true;
 			
 		}else if( *pInputNext == ' ' || *pInputNext == '\t' ){
+			if(pDebugLogParsing){
+				pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor:"
+					" whitespace(%d) at %d (output %d)(begin %d)(empty %d)",
+					*pInputNext, pInputLine, pOutputCode, (int)(pInputNext - beginLine), emptyLine);
+			}
 			pInputNext++;
 			
 		}else if( *pInputNext == '\n' ){
+			if(pDebugLogParsing){
+				pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor:"
+					" newline at %d (output %d)(begin %d)(empty %d)",
+					pInputLine, pOutputCode, (int)(pInputNext - beginLine), emptyLine);
+			}
 			if( pInputNext != beginLine && ! emptyLine ){
 				SourcesAppend( beginLine, ( int )( pInputNext - beginLine ) + 1, true );
 			}
@@ -394,12 +422,21 @@ void deoglShaderPreprocessor::pProcessSources(){
 			emptyLine = true;
 			
 		}else{
+			if(pDebugLogParsing){
+				pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor:"
+					" text(%c) at %d (output %d)(begin %d)(empty %d)", *pInputNext,
+					pInputLine, pOutputCode, (int)(pInputNext - beginLine), emptyLine);
+			}
 			pInputNext++;
 			directiveAllowed = false;
 			emptyLine = false;
 		}
 	}
 	
+	if(pDebugLogParsing){
+		pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor:"
+			" end at %d (output %d)(begin %d)", pInputLine, pOutputCode, (int)(pInputNext - beginLine));
+	}
 	if( pInputNext != beginLine ){
 		SourcesAppend( beginLine, ( int )( pInputNext - beginLine ), true );
 	}

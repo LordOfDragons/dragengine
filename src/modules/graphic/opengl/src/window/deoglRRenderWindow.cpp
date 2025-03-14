@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "deoglRRenderWindow.h"
+#include "../deGraphicOpenGl.h"
 #include "../canvas/capture/deoglRCaptureCanvas.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../debug/deoglDebugTraceGroup.h"
@@ -39,18 +40,10 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTRenderers.h"
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! OS_MACOS
-#include <dragengine/app/deOSUnix.h>
-#include <X11/Xatom.h>
-#include <X11/Xresource.h>
-#include "../extensions/deoglXExtResult.h"
-#endif
-
 #ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
-#endif
 
-#ifdef OS_BEOS
+#elif defined OS_BEOS
 #include <Window.h>
 #include <DirectWindow.h>
 #include <Cursor.h>
@@ -60,16 +53,20 @@
 #include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 #include "../deGraphicOpenGl.h"
-#endif
 
-#ifdef  OS_W32
+#elif defined OS_MACOS
+#include <dragengine/app/deOSMacOS.h>
+
+#elif defined OS_W32
 #include <stdint.h>
 #include <dragengine/app/deOSWindows.h>
 #include "../extensions/deoglWExtResult.h"
-#endif
 
-#ifdef  OS_MACOS
-#include <dragengine/app/deOSMacOS.h>
+#elif defined OS_UNIX
+#include <dragengine/app/deOSUnix.h>
+#include <X11/Xatom.h>
+#include <X11/Xresource.h>
+#include "../extensions/deoglXExtResult.h"
 #endif
 
 #include <dragengine/common/exceptions.h>
@@ -824,31 +821,34 @@ void deoglRRenderWindow::OnReposition(int x, int y){
 	pNotifyPositionChanged = true;
 }
 
-void deoglRRenderWindow::OnResize( int width, int height ){
-	if( pWidth == 0 || pHeight == 0 ){
+void deoglRRenderWindow::OnResize(int width, int height){
+	// Called from main thread
+	if(pWidth == 0 || pHeight == 0){
 		// due to X restrictions zero sized windows can not be defined so avoid
 		// triggering wrong resize events in this case
 		return;
 	}
 	
-	if( width == pWidth && height == pHeight ){
+	if(width == pWidth && height == pHeight){
 		return;
 	}
 	
 	pWidth = width;
 	pHeight = height;
+	pRenderThread.GetOgl().LogInfoFormat(
+		"RRenderWindow.OnResize: %p (%d,%d)", this, width, height);
 	
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-	#endif
+#ifdef OS_ANDROID
 	
-	#ifdef OS_BEOS
-	#endif
+#elif defined OS_BEOS
 	
-	#ifdef OS_MACOS
-	#endif
+#elif defined OS_MACOS
 	
-	#ifdef OS_W32
-	#endif
+#elif defined OS_W2
+	
+#elif defined OS_UNIX
+	
+#endif
 	
 	pNotifySizeChanged = true;
 }
@@ -1407,8 +1407,18 @@ void deoglRRenderWindow::pSetIcon(){
 
 int deoglRRenderWindow::pGetDisplayScaleFactor(){
 	int scale = 100;
-
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	
+#ifdef OS_ANDROID
+	scale = pRenderThread.GetContext().GetOSAndroid()->GetDisplayCurrentScaleFactor(0);
+	
+#elif defined OS_BEOS
+	
+#elif defined OS_MACOS
+	
+#elif defined OS_W32
+	scale = 100 * GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
+	
+#elif defined OS_UNIX
 	Display * const display = pRenderThread.GetContext().GetDisplay();
 	const char * const resourceString = XResourceManagerString(display);
 	if(!resourceString){
@@ -1427,18 +1437,8 @@ int deoglRRenderWindow::pGetDisplayScaleFactor(){
 	const double scalef = 100.0 * atof(value.addr) / 96.0;
 	scale = decMath::max((int)(scalef / 25.0 + 0.5) * 25, 100);
 #endif
-
-#ifdef OS_BEOS
-#endif
-
-#ifdef OS_MACOS
-#endif
-
-#ifdef OS_W32
-	scale = 100 * GetDpiForWindow(pWindow) / USER_DEFAULT_SCREEN_DPI;
-#endif
-
-    return scale;
+	
+	return scale;
 }
 
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS

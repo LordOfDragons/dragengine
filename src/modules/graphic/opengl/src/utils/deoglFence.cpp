@@ -78,7 +78,7 @@ bool deoglFence::HasFired(){
 		
 	case GL_WAIT_FAILED:
 		pFence = nullptr;
-		dbgCheckOglError( pRenderThread, __FILE__, __LINE__ );
+		dbgCheckOglError(pRenderThread, __FILE__, __LINE__);
 		return true;
 		
 	default:
@@ -106,7 +106,7 @@ void deoglFence::Wait(){
 		
 	case GL_WAIT_FAILED:
 		pFence = nullptr;
-		dbgCheckOglError( pRenderThread, __FILE__, __LINE__ );
+		dbgCheckOglError(pRenderThread, __FILE__, __LINE__);
 		return;
 		
 	default:

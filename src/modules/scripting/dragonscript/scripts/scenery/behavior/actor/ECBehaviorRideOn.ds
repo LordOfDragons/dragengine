@@ -56,10 +56,13 @@ pin Dragengine.Utils
  * your choice.
  * 
  * Behavior supports persistency.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_rideon
  */
 class ECBehaviorRideOn extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
+		/** \brief Ridable changed. */
 		func void ridableChanged(Instance instance)
 	end
 	
@@ -93,6 +96,43 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		/** \brief Create listener. */
 		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLocomotion
+	 * - Required: \ref ECBehaviorProjectToGround
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorRideOn'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorRideOn"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorRideOn behavior = ECBehaviorRideOn.new(eclass,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass),\
+				ECBehaviorProjectToGround.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "rideOn")
+			return behavior
 		end
 	end
 	

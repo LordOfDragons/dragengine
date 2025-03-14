@@ -1,136 +1,226 @@
 from SConsCommon import *
 
-Import( 'parent_env parent_targets parent_report' )
+import re
+import os
+import datetime
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] == 'no':
+	Return()
 
 envLauncher = parent_env.Clone()
 
-buildLauncher = envLauncher[ 'platform_android' ] != 'no' and envLauncher[ 'build_launcher_android' ] != TernaryVariableNo
+buildLauncher = envLauncher['build_launcher_android'] != TernaryVariableNo
 
-parent_report[ 'build Android Launcher' ] = 'yes' if buildLauncher else 'no'
+parent_report['build Android Launcher'] = 'yes' if buildLauncher else 'no'
 if not buildLauncher:
 	Return()
 
-libs = []
-libs.extend( envLauncher[ 'ANDROID_LIBS' ] )
-libs.extend( [ 'dl' ] )
-libs.extend( [ 'GLESv2', 'GLESv1_CM', 'EGL' ] ) # use both or it fails. most probably a fallback strategy of android
 
-libsEngine = []
-appendLibrary( envLauncher, parent_targets[ 'dragengine' ], libsEngine )
-libsEngine.extend( envLauncher[ 'ANDROID_LIBS' ] )
-libsEngine.extend( [ 'dl' ] )
-libsEngine.extend( [ 'GLESv2', 'GLESv1_CM', 'EGL' ] ) # use both or it fails. most probably a fallback strategy of android
+# parameters
+jniDir = envLauncher['ANDROID_JNIDIR']
 
-envLauncher.Append( CPPFLAGS = [ '-DHAS_LIB_DL' ] )
-envLauncher.Append( LINKFLAGS = [ '-s' ] )  # strip unneded
+buildVersionCode = envLauncher['android_version_code']
+buildVersionName = '{}-{}'.format(envLauncher['version'], envLauncher['android_version_code'])
 
-# DEPRECATED write the configuration file required by a few source files
-configFilePath = '{}/src/alconfig.h'.format( Dir( '.' ).srcnode().abspath )
-configFileDefines = {}
-configFileDefines[ 'OS_UNIX' ] = envLauncher[ 'OSPosix' ]
-configFileDefines[ 'OS_W32' ] = envLauncher[ 'OSWindows' ]
 
-if WriteConfigFile( configFilePath, configFileDefines, envLauncher ):
-	Exit( 'Writing configuration file failed' )
+# launcher sources (android project)
+apkSources = []
+globFiles(envLauncher, '.', '*', apkSources, recursive=False)
+globFiles(envLauncher, 'app', '*', apkSources, recursive=False)
+globFiles(envLauncher, 'app/src', '*', apkSources, recursive=True)
+apkSources = [x for x in apkSources if not x.startswith('app/src/main/jniLibs')]
+apkSources = [x for x in apkSources if not x.startswith('app/src/main/assets')]
 
-# fetch values in expanded form for later use
-pathBin = envLauncher.subst( envLauncher[ 'path_launcher_bin' ] )
-pathConfig = envLauncher.subst( envLauncher[ 'path_launcher_config' ] )
-pathData = envLauncher.subst( envLauncher[ 'path_launcher_data' ] )
-pathShare = envLauncher.subst( envLauncher[ 'path_launcher_share' ] )
+apkDeps = []
 
-# minizip special environment
-envMiniZip = envLauncher.Clone()
-envMiniZip.Append( CFLAGS = [ '-DUSE_FILE32API' ] )
-envMiniZip.Append( CFLAGS = [ '-Wno-all', '-Wno-error' ] )
 
-envLauncher.Append( CPPPATH = [ envLauncher.Dir( 'minizip' ).srcnode().abspath ] )
+# JNI libraries (android project JNI directory)
+def installJniLibrary(targetDir, sources):
+	regexReplace = re.compile(r'\.so[\.\d+]*')
+	targets = []
+	for s in sources:
+		lname = regexReplace.sub('.so', s.name)
+		targets.extend(envLauncher.InstallAs(targetDir.File(lname), s))
+	return targets
 
-envLauncher.Append( CPPFLAGS = [ '-DANDROID_ARCH=\\""{}"\\"'.format( envLauncher[ 'platform_android' ] ) ] )
-envLauncher.Append( CPPFLAGS = [ cmdlineDefinePath( envLauncher, 'ANDROID_JNIDIR', envLauncher[ 'ANDROID_JNIDIR' ] ) ] )
+apkDeps.extend(parent_targets['lib_deremotelauncher']['depends'])
+apkDeps.extend(parent_targets['lib_denetwork']['depends'])
 
-# create environment for the progam
-envLauncher.Append( CPPFLAGS = [
-	cmdlineDefinePath( envLauncher, 'LAUNCHER_SHARE_PATH', pathShare ),
-	cmdlineDefinePath( envLauncher, 'LAUNCHER_CONFIG_PATH', pathConfig ) ] )
+targetDir = envLauncher.Dir('app/src/main/jniLibs/{}'.format(jniDir)).srcnode()
+apkDeps.extend(installJniLibrary(targetDir, parent_targets['delauncher']['library']))
+apkDeps.extend(installJniLibrary(targetDir, parent_targets['dragengine']['library']))
 
-envLauncher.Append( CPPPATH = [ envLauncher.Dir( 'src' ).srcnode().abspath ] )
 
-# setup the builders
-sources = []
-headers = []
-globFiles( envLauncher, 'src', '*.cpp', sources )
-globFiles( envLauncher, 'src', '*.h', headers )
+# game engine asset archive
+assetDir = envLauncher.Dir('app/src/main/assets').srcnode()
 
-objects = [ envLauncher.SharedObject( s ) for s in sources ]
-objects.append( envMiniZip.SharedObject( 'minizip/unzip.c' ) )
-objects.append( envMiniZip.SharedObject( 'minizip/ioapi.c' ) )
+installDir = envLauncher.subst('$prefix')
+assetFilesEngine = {}
+for t in parent_targets.values():
+	if 'archive-engine' in t:
+		for e in t['archive-engine'].items():
+			filename = os.path.relpath(e[0], installDir)
+			if filename.startswith('lib/lib'):
+				continue
+			assetFilesEngine[filename] = e[1]
 
-library = envLauncher.SharedLibrary( target='delauncher', source=objects, LIBS=libs )
+assetEngine = assetDir.File('dragengine.zip').srcnode()
+apkDeps.extend(envLauncher.Command(assetEngine, assetFilesEngine.values(),
+	envLauncher.Action(ArchiveZip, 'Asset {}'.format(assetEngine.name)),
+	ArchiveFiles = assetFilesEngine))
 
-install = []
-archive = {}
 
-#install.append( envLauncher.Install( '{}/DEAndroidLauncher/app/src/main/jniLibs/{}'.format(
-#	Dir( '.' ).srcnode().abspath, envLauncher[ 'ANDROID_JNIDIR' ] ), library ) )
+# asset storing unpacked size of game engine
+def buildAssetUnpackedSize(env, target, source):
+	size = 0
+	for f in source:
+		size += os.stat(f.abspath).st_size
+	with open(target[0].abspath, 'w') as f:
+		f.write(str(size))
 
-# engine glue library
-envEngine = envLauncher.Clone()
+assetEngineSize = assetDir.File('dragengine-filesize').srcnode()
+apkDeps.extend(envLauncher.Command(assetEngineSize, assetFilesEngine.values(),
+	envLauncher.Action(buildAssetUnpackedSize,
+		'Asset {}'.format(assetEngineSize.name))))
 
-sourcesEngine = []
-headersEngine = []
-globFiles( envEngine, 'srcengine', '*.cpp', sourcesEngine )
-globFiles( envEngine, 'srcengine', '*.h', headersEngine )
 
-objectsEngine = [ envEngine.SharedObject( s ) for s in sourcesEngine ]
-objectsEngine.append( envMiniZip.SharedObject( 'minizip/unzip.c' ) )
-objectsEngine.append( envMiniZip.SharedObject( 'minizip/ioapi.c' ) )
+# asset storing game engine version
+def buildAssetEngineVersion(env, target, source):
+	parts = [envLauncher['version']]
+	now = datetime.datetime.now()
+	parts.append(now.strftime('%Y-%m-%d'))
+	parts.append(now.strftime('%H-%M-%S'))
+	with open(target[0].abspath, 'w') as f:
+		f.write('_'.join(parts))
 
-libraryEngine = envEngine.SharedLibrary( target='delauncher_engine', source=objectsEngine, LIBS=libsEngine )
+assetEngineVersion = assetDir.File('dragengine-version').srcnode()
+apkDeps.extend(envLauncher.Command(assetEngineVersion, assetEngine,
+	envLauncher.Action(buildAssetEngineVersion,
+		'Asset {}'.format(assetEngineVersion.name))))
 
-pathLibEngine = envEngine.subst( envEngine[ 'path_de_lib' ] )
-install.append( envEngine.Install( pathLibEngine, libraryEngine ) )
-for l in libraryEngine:
-	archive[ os.path.join( pathLibEngine, l.name ) ] = l
 
-# all together is the installation
-targetBuild = envLauncher.Alias( 'lauchner_android_build', library + libraryEngine )
-targetInstall = envLauncher.Alias( 'launcher_android', install )
+# launcher APK
+if envLauncher['with_debug']:
+	apkFilename = os.path.join('app', 'build', 'outputs', 'apk',
+		envLauncher['platform_android'], 'debug',
+		'app-{}-debug.apk'.format(envLauncher['platform_android']))
+else:
+	apkFilename = os.path.join('app', 'build', 'outputs', 'apk',
+		envLauncher['platform_android'], 'release',
+		'app-{}-release-unsigned.apk'.format(envLauncher['platform_android']))
+nodeApk = envLauncher.File(apkFilename).srcnode()
 
-# graddle:
-# cd DEAndroidLauncher
-# ./gradlew assemble
+def gradleBuildApk(env, target, source):
+	buildDir = source[0].get_dir()
+	script = []
+	script.append('cd "{}" || exit 1'.format(buildDir.abspath))
+	
+	script.append('export ANDROID_NDK_HOME="{}"'.format(env.subst(env['ndkroot'])))
+	
+	task = ['assemble']
+	
+	platform = env['platform_android']
+	if platform == 'armv8':
+		task.append('Armv8')
+	elif platform == 'armv7':
+		task.append('Armv7')
+	else:
+		raise Exception('unsupported platform {}'.format(platform))
+	
+	if env['with_debug']:
+		task.append('Debug')
+	else:
+		task.append('Release')
+	
+	arguments = []
+	arguments.append(''.join(task))
+	arguments.append('-Pbuild.version.code="{}"'.format(buildVersionCode))
+	arguments.append('-Pbuild.version.name="{}"'.format(buildVersionName))
+	
+	script.append('./gradlew {} || exit 1'.format(' '.join(arguments)))
+	return 1 if os.system('\n'.join(script)) else None
+
+apk = envLauncher.Command(nodeApk, apkSources,
+	envLauncher.Action(gradleBuildApk, 'Build Android Launcher APK'))
+envLauncher.Depends(apk, apkDeps)
+envLauncher.Clean(apk, 'app/build')
+
+apkFilename = '{}.apk'.format(envLauncher['apk_name_launcher'])
+
+finalApk = envLauncher.InstallAs(apkFilename, apk)
+
+
+# app bundle
+if envLauncher['with_debug']:
+	aabFilename = os.path.join('app', 'build', 'outputs', 'bundle',
+		'{}Debug'.format(envLauncher['platform_android']),
+		'app-{}-debug.aab'.format(envLauncher['platform_android']))
+else:
+	aabFilename = os.path.join('app', 'build', 'outputs', 'bundle',
+		'{}Release'.format(envLauncher['platform_android']),
+		'app-{}-release.aab'.format(envLauncher['platform_android']))
+nodeAab = envLauncher.File(aabFilename).srcnode()
+
+def gradleBuildAab(env, target, source):
+	buildDir = source[0].get_dir()
+	script = []
+	script.append('cd "{}" || exit 1'.format(buildDir.abspath))
+	
+	task = ['bundle']
+	
+	platform = env['platform_android']
+	if platform == 'armv8':
+		task.append('Armv8')
+	elif platform == 'armv7':
+		task.append('Armv7')
+	else:
+		raise Exception('unsupported platform {}'.format(platform))
+	
+	if env['with_debug']:
+		task.append('Debug')
+	else:
+		task.append('Release')
+	
+	arguments = []
+	arguments.append(''.join(task))
+	arguments.append('-Pbuild.version.code="{}"'.format(buildVersionCode))
+	arguments.append('-Pbuild.version.name="{}"'.format(buildVersionName))
+	
+	script.append('./gradlew {} || exit 1'.format(' '.join(arguments)))
+	return 1 if os.system('\n'.join(script)) else None
+
+aab = envLauncher.Command(nodeAab, apkSources,
+	envLauncher.Action(gradleBuildAab, 'Build Android Launcher Bundle'))
+envLauncher.Depends(aab, apk)
+
+aabFilename = '{}.aab'.format(envLauncher['apk_name_launcher'])
+
+finalAab = envLauncher.InstallAs(aabFilename, aab)
+
+
+# targets
+targetBuild = envLauncher.Alias('launcher_android_build', [finalApk, finalAab])
+targetInstall = targetBuild
+
 
 # source directory required for special commands
-srcdir = Dir( '.' ).srcnode().abspath
+srcdir = Dir('.').srcnode().abspath
+
 
 # cloc
-buildClocBare = BuildCLOC( envLauncher, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
-Depends( buildClocBare, [ sources, sourcesEngine ] )
-Depends( buildClocBare, [ headers, headersEngine ] )
-buildCloc = envLauncher.Alias( 'launcher_android_cloc', buildClocBare )
+buildClocBare = BuildCLOC(envLauncher, ['{}/app/src'.format(srcdir)],
+	'{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, apkSources)
+buildCloc = envLauncher.Alias('launcher_android_cloc', buildClocBare)
+
 
 # add the targets to the targets list
-parent_targets[ 'launcher_android' ] = {
+parent_targets['launcher_android'] = {
 	'name' : 'Drag[en]gine Android Launcher',
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
-	'archive-launcher' : archive,
-	'android-libs' : library,
 	'cloc' : buildCloc,
-	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }
-
-# TEST
-"""
-envLauncher.Append(CXXFLAGS = ['-std=c++11'])
-natact = envLauncher.SharedLibrary(
-	target='native-activity',
-	source=[envLauncher.SharedObject(x) for x in [
-		'native-activity/app/src/main/cpp/main.cpp',
-		envLauncher.subst('${ndkroot}/sources/android/native_app_glue/android_native_app_glue.c')]],
-	LIBS=libs)
-natact = envLauncher.Command( envLauncher.File( 'native-activity/app/src/main/jniLibs/armeabi-v7a/libnative-activity.so' ).srcnode(), natact[0],
-		envLauncher.Action( Copy( '$TARGET', '$SOURCE' ), 'Copy' ) )
-test = envLauncher.Alias('android_test', natact)
-"""
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

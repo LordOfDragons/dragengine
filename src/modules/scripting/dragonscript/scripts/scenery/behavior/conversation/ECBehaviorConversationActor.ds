@@ -124,6 +124,8 @@ pin Dragengine.Utils.StyledText.Definition
  *    <condition>conversationActor.notInConversation</condition>
  * </action>
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_conversationactor
  */
 class ECBehaviorConversationActor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -335,6 +337,105 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		public func SubTitleBoxText createSubTitleText(UnicodeString text, StringID style)
 			return pInstance.createSubTitleText(text, style)
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorActorAnimated
+	 * - Optional: \ref ECBehaviorAnimated
+	 * - Optional: \ref ECBehaviorTwoStateAnimated
+	 * - Optional: \ref ECBehaviorLocomotion
+	 * - Optional: \ref ECBehaviorParameterTable
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorConversationActor'>
+	 *   <!-- optional: use actor animated with id instead of empty string -->
+	 *   <string name='actorAnimated'>second</string>
+	 * 
+	 *   <!-- optional: use animated with id instead of empty string -->
+	 *   <string name='animated'>second</string>
+	 * 
+	 *   <!-- optional: use two state animated with id instead of empty string -->
+	 *   <string name='twoStateAnimated'>second</string>
+	 * 
+	 *   <!-- optional: add behavior trees. default adds behavior tree with empty string if present. -->
+	 *   <list name='behaviorTrees'>
+	 *     <!-- add behavior with empty identifier -->
+	 *     <string/>
+	 *     
+	 *     <!-- add behavior with 'default' identifier -->
+	 *     <string>default</string>
+	 *   </list>
+	 * 
+	 *   <!-- optional: use BaseGameApp subtitle theme. game can add more supported values.
+	 *                  default is 'default'. also supported is value 'path:/path/to/theme.guitheme' -->
+	 *   <string name='subtitleTheme'>default</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorConversationActor"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorConversationActor behavior = ECBehaviorConversationActor.new(eclass)
+			
+			behavior.setActorAnimated(eclass.sharedFactoryHelper.optionalActorAnimated(eclass, parameters))
+			behavior.setAnimated(eclass.sharedFactoryHelper.optionalAnimated(eclass, parameters))
+			behavior.setTwoStateAnimated(eclass.sharedFactoryHelper.optionalTwoStateAnimated(eclass, parameters))
+			behavior.setLocomotion(ECBehaviorLocomotion.getBehaviorIn(eclass))
+			behavior.setParameterTable(ECBehaviorParameterTable.getBehaviorIn(eclass))
+			
+			var ECBehaviorBehaviorTree btree
+			if parameters.has("behaviorTrees")
+				(parameters.getAt("behaviorTrees") cast Array).forEach(block String each
+					btree = ECBehaviorBehaviorTree.getBehaviorIn(eclass)
+					if btree == null
+						throw EInvalidParam.new("ECBehaviorBehaviorTree not found: " + each)
+					end
+					behavior.addBehaviorTree(btree)
+				end)
+				
+			else
+				btree = ECBehaviorBehaviorTree.getBehaviorIn(eclass)
+				if btree != null
+					behavior.addBehaviorTree(btree)
+				end
+			end
+			
+			if parameters.has("subtitleTheme")
+				behavior.setSubtitleTheme(getSubtitleThemeFor(parameters.getAt("subtitleTheme") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "convoActor")
+			return behavior
+		end
+		
+		/**
+		 * \brief Subtitle gui theme matching value.
+		 * 
+		 * Default implementation returns \ref WindowSubTitle#getGuiTheme()
+		 * on \ref BaseGameApp#getWindowSubTitle() for value 'default', loads gui theme if value
+		 * begins with 'path:' or null for all other values. Overwrite to accept other values.
+		 */
+		func GuiTheme getSubtitleThemeFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.subtitleTheme(value)
 		end
 	end
 	

@@ -39,6 +39,9 @@ class deCanvasView;
  * \brief Base overlay class.
  */
 class deaiOverlay : public deObject{
+public:
+	typedef deTObjectReference<deaiOverlay> Ref;
+	
 private:
 	deAndroidInput &pAndroidInput;
 	

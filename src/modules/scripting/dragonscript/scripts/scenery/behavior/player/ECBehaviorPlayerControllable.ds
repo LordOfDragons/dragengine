@@ -48,6 +48,8 @@ pin Dragengine.Utils
  * - ECBehaviorPlayerControllable.ConvoCommand
  * 
  * See the above mentioned classes for the supported syntax.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playercontrollable
  */
 class ECBehaviorPlayerControllable extends DefaultECBehavior
 	/** \brief Keeps track of the active player actor. */
@@ -222,6 +224,58 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			else
 				throw EInvalidParam.new( "Unknown action '" + action + "'" )
 			end
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlayerControllable'>
+	 *   <!-- optional: use BaseGameApp player controlled actor.
+	 *                  game can add more supported values. default is 'default' -->
+	 *   <string name='playerControlledActor'>default</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlayerControllable"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorPlayerControllable behavior = ECBehaviorPlayerControllable.new(eclass,\
+				getPlayerControlledActorFor(parameters.getAt("playerControlledActor", "default") cast String))
+			
+			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "playerControllable")
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func Tracker getPlayerControlledActorFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.playerControllableActor(value)
 		end
 	end
 	

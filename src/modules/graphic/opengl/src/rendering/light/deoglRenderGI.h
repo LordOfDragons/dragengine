@@ -73,6 +73,7 @@ private:
 	deoglSPBlockSSBO::Ref pSSBODebugRayLight;
 	int pDebugRayLightIndex;
 	
+	decPoint pClearTraceRayWorkGroupSize;
 	
 	deoglDebugInformation::Ref pDebugInfoGI;
 	deoglDebugInformation::Ref pDebugInfoGITraceRays;

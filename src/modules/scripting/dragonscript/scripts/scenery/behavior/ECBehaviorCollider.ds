@@ -141,8 +141,48 @@ pin Dragengine.Utils
  *              consumed. the second is the touch power up behavior placed on the interacting
  *              element. it uses getInstanceIn() to check if the hit element has the power up
  *              behvaior and if so removes it from the game world and applies the effects.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_collider
  */
 class ECBehaviorCollider extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorComponent
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorCollider'>
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorCollider"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorCollider behavior = ECBehaviorCollider.new(eclass,\
+				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "collider")
+			return behavior
+		end
+	end
+	
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/**

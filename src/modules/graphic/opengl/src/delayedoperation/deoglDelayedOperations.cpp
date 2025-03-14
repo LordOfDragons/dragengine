@@ -47,7 +47,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
-#include "../shaders/deoglShaderLoadingTimeout.h"
+#include "../shaders/deoglBatchedShaderLoading.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/combinedTexture/deoglCombinedTexture.h"
 #include "../skin/combinedTexture/deoglCombinedTextureList.h"
@@ -699,6 +699,7 @@ void deoglDelayedOperations::pProcessModel( deoglRModel &model ){
 	//model.PrintDebugInfo();
 }
 
+#if 0
 void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkinTexture &texture ){
 	decTimer timer;
 	
@@ -882,6 +883,7 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.pGenerateConeMap: Generated cone map in %ims",
 		( int )( timer.GetElapsedTime() * 1000.0f ) );
 }
+#endif
 
 void deoglDelayedOperations::pDeleteOpenGLObjects(){
 	int i;

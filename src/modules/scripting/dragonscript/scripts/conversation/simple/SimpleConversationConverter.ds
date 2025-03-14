@@ -1,0 +1,1509 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.ConversationSystem
+pin Dragengine.SpeechAnimations
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Convert simple conversation snippet into conversation actions.
+ * \version 1.25
+ */
+class SimpleConversationConverter
+	/** \brief Gesture to be added to speech. */
+	protected class Gesture
+		/** \brief Gesture identifier. */
+		public var StringID id
+		
+		/** \brief Duration in seconds. */
+		public var float duration
+		
+		/** \brief Hold gesture. */
+		public var bool hold
+		
+		func new(ConversationGesture gesture)
+			if gesture != null
+				id = gesture.getName()
+				duration = gesture.getDuration()
+				hold = gesture.getHold()
+				
+			else
+				id = StringID.new()
+				duration = 1
+			end
+		end
+	end
+	
+	/** \brief Conversation state. */
+	protected class State
+		/** \brief Snippet to convert. */
+		public var SimpleConversationSnippet snippet
+		
+		/** \brief Simple action the snippet belongs to. */
+		public var SimpleConversation simpleConversation
+		
+		/** \brief Conversation playback. */
+		public var ConversationPlayback playback
+		
+		/** \brief Conversation. */
+		public var Conversation conversation
+		
+		/** \brief Array of ConversationAction to add created actions to. */
+		public var Array actions
+		
+		/** \brief Open camera shot conversation action or null. */
+		public var CActionCameraShot actionCameraShot
+		
+		/** \brief Open actor speak simple conversation actor or null. */
+		public var SimpleConversationActor actor
+		
+		/** \brief Open actor speak conversation action or null. */
+		public var CActionActorSpeak actionActorSpeak
+		
+		/** \brief Speak action counter. */
+		public var int forceCameraShotCounter
+		
+		/** \brief Open if-else conversation action or null. */
+		public var CActionIfElse actionIfElse
+		
+		/** \brief Open player-choice conversation action or null. */
+		public var CActionPlayerChoice actionPlayerChoice
+		
+		/** \brief \ref Gesture to add to speech or null. */
+		public var Gesture gesture
+		
+		/** \brief Current speech time in seconds. */
+		public var float speechTime
+		
+		/** \brief Current gesture time in seconds. */
+		public var float gestureTime
+		
+		/** \brief Current face pose time in seconds. */
+		public var float facePoseTime
+		
+		/** \brief Current look-at time in seconds. */
+		public var float lookAtTime
+		
+		/** \brief Pause time in seconds to apply to the next action. */
+		public var float pauseTime
+		
+		/** \brief Wait mode to use for next action. */
+		public var SimpleConversationAction.WaitMode waitMode
+		
+		/** \brief Clear gestures before adding new gesture. */
+		public var bool clearGestures
+		
+		/** \brief Clear face poses before adding new face pose. */
+		public var bool clearFacePoses
+		
+		/** \brief Clear look-at before adding new look-at. */
+		public var bool clearLookAts
+		
+		/** \brief Open actor speak speech animation or null. */
+		public var SpeechAnimation speechAnimation
+		
+		/**
+		 * \brief Dictionary of known ConversationActor to look up speech animations.
+		 * 
+		 * Maps StringID key (actor identifier or actor alias) to ConversationActor value.
+		 * Dictionary is shared across sub states since it serves only as helper data.
+		 */
+		public var Dictionary conversationActors
+		
+		func new()
+			waitMode = SimpleConversationAction.WaitMode.waitCameraSpeak
+			conversationActors = Dictionary.new()
+		end
+	end
+	
+	
+	var UnicodeString pCharsWordBreak, pCharsPhraseBreak, pCharsSubPhraseBreak
+	var float pPausePhrase, pPauseSubPhrase
+	var float pAverageCharacterLength
+	var float pSpeakSpeed, pElongateSpeak
+	var float pFacePoseDuration, pLookAtDuration
+	var float pMinGestureDuration, pMinGestureDurationHalf
+	var int pMinSpeakCountCameraChange
+	var bool pScaleLastGesture
+	
+	
+	/** \brief Create simple conversation convertor. */
+	func new()
+		pCharsWordBreak = UnicodeString.newFromUTF8(" \t\n\r,.;:\"?!()")
+		pCharsPhraseBreak = UnicodeString.newFromUTF8(".;:?!")
+		pCharsSubPhraseBreak = UnicodeString.newFromUTF8(",")
+		pPausePhrase = 0.5
+		pPauseSubPhrase = 0.35
+		pAverageCharacterLength = 0.095
+		pSpeakSpeed = 1.1
+		pElongateSpeak = 0.15
+		pFacePoseDuration = 0.25
+		pLookAtDuration = 0.5
+		pMinGestureDuration = 0.5
+		pMinGestureDurationHalf = pMinGestureDuration / 2
+		pMinSpeakCountCameraChange = 100
+		pScaleLastGesture = true
+	end
+	
+	
+	/**
+	 * \brief Matching string with characters separating words.
+	 * 
+	 * Default value " \t\n\r,.;:\"?!()".
+	 */
+	func UnicodeString getCharsWordBreak()
+		return pCharsWordBreak
+	end
+	
+	/** \brief Set matching string with characters separating words. */
+	func void setCharsWordBreak(UnicodeString chars)
+		if chars == null
+			throw ENullPointer.new("chars")
+		end
+		pCharsWordBreak = chars
+	end
+	
+	/**
+	 * \brief Matching string with characters separating phrases.
+	 * 
+	 * Default value ".;:?!". Produces a long pause while speaking.
+	 */
+	func UnicodeString getCharsPhraseBreak()
+		return pCharsPhraseBreak
+	end
+	
+	/** \brief Set matching string with characters separating phrases. */
+	func void setCharsPhraseBreak(UnicodeString chars)
+		if chars == null
+			throw ENullPointer.new("chars")
+		end
+		pCharsPhraseBreak = chars
+	end
+	
+	/**
+	 * \brief Matching string with characters separating sub phrases.
+	 * 
+	 * Default value ",". Produces a short pause while speaking.
+	 */
+	func UnicodeString getCharsSubPhraseBreak()
+		return pCharsSubPhraseBreak
+	end
+	
+	/** \brief Set matching string with characters separating sub phrases. */
+	func void setCharsSubPhraseBreak(UnicodeString chars)
+		if chars == null
+			throw ENullPointer.new("chars")
+		end
+		pCharsSubPhraseBreak = chars
+	end
+	
+	/**
+	 * \brief Pause in seconds to insert after a phrase break.
+	 * 
+	 * Default value 0.5 .
+	 */
+	func float getPausePhrase()
+		return pPausePhrase
+	end
+	
+	/** \brief Set pause in seconds to insert after a phrase break. */
+	func void setPausePhrase(float seconds)
+		pPausePhrase = DEMath.max(seconds, 0.0)
+	end
+	
+	/**
+	 * \brief Pause in seconds to insert after a sub phrase break.
+	 * 
+	 * Default value 0.35 .
+	 */
+	func float getPauseSubPhrase()
+		return pPauseSubPhrase
+	end
+	
+	/** \brief Set pause in seconds to insert after a sub phrase break. */
+	func void setPauseSubPhrase(float seconds)
+		pPauseSubPhrase = DEMath.max(seconds, 0.0)
+	end
+	
+	/**
+	 * \brief Average character length.
+	 * 
+	 * Used to estimate the length of a word without speech animation defining the length.
+	 * Default value is 0.095.
+	 */
+	func float getEstimateWordLength()
+		return pAverageCharacterLength
+	end
+	
+	/** \brief Set average character length. */
+	func void setEstimateWordLength(float length)
+		pAverageCharacterLength = DEMath.max(length, 0.01)
+	end
+	
+	/**
+	 * \brief Speaking speed.
+	 * 
+	 * Larger values slow down speaking which makes it easier for users to read the text.
+	 * A value of 1 equals fast reading. A value of 1.1 is moderate speed. A value of 1.2
+	 * is slow speed. Default value is 1.1.
+	 */
+	func float getSpeakSpeed()
+		return pSpeakSpeed
+	end
+	
+	/** \brief Set speaking speed. */
+	func void setSpeakSpeed(float speed)
+		pSpeakSpeed = DEMath.max(speed, 0.1)
+	end
+	
+	/**
+	 * \brief Elongate speaking duration.
+	 * 
+	 * Slows down speaking by elongating the speak duration by a fixed amount of seconds.
+	 * This gives users some time to locate the beginning of the text to read. Combined with
+	 * \ref getSpeakSpeed() this allows to fine tune the speak duration for users with
+	 * different reading speeds. Default value is 0.15.
+	 */
+	func float getElongateSpeak()
+		return pElongateSpeak
+	end
+	
+	/** \brief Set elongate speaking duration. */
+	func void setElongateSpeak(float duration)
+		pElongateSpeak = DEMath.max(duration, 0.0)
+	end
+	
+	/**
+	 * \brief Face pose duration.
+	 * 
+	 * Duration in seconds to use for added face poses unless explicitely set. Defines how
+	 * fast the actor blends from the old face pose to the new face pose. Default value is 0.25.
+	 */
+	func float getFacePoseDuration()
+		return pFacePoseDuration
+	end
+	
+	/** \brief Set face pose duration. */
+	func void setFacePoseDuration(float duration)
+		pFacePoseDuration = DEMath.max(duration, 0.01)
+	end
+	
+	/**
+	 * \brief Look-at duration.
+	 * 
+	 * Duration in seconds to use for added look-ats unless explicitely set. Defines how
+	 * fast the actor switches looking direction from old look-at to new look-at.
+	 * Default value is 0.5.
+	 */
+	func float getLookAtDuration()
+		return pLookAtDuration
+	end
+	
+	/** \brief Set look-at duration. */
+	func void setLookAtDuration(float duration)
+		pLookAtDuration = DEMath.max(duration, 0.01)
+	end
+	
+	/**
+	 * \brief Minimum available duration for gesture to start playing.
+	 * 
+	 * Default value is 0.5.
+	 */
+	func float getMinGestureDuration()
+		return pMinGestureDuration
+	end
+	
+	/** \brief Set minimum available duration for gesture to start playing. */
+	func void setMinGestureDuration(float duration)
+		pMinGestureDuration = DEMath.max(duration, 0.01)
+		pMinGestureDurationHalf = pMinGestureDuration / 2
+	end
+	
+	/**
+	 * \brief Minimum count of actor speaks before switch camera.
+	 * 
+	 * If enabled triggers the camera switch defined in the speaking actor after a set amount
+	 * of speaks have been done. This breaks long sequences of speaks with with random camera
+	 * changes. To disable set count to a high value like 100.
+	 * 
+	 * Default value is 100.
+	 */
+	func int getMinSpeakCountCameraChange()
+		return pMinSpeakCountCameraChange
+	end
+	
+	/** \brief Set minimum count of actor speaks before switch camera. */
+	func void setMinSpeakCountCameraChange(int count)
+		pMinSpeakCountCameraChange = DEMath.max(count, 1)
+	end
+	
+	/**
+	 * \brief Scale last gesture to fit speech length.
+	 * 
+	 * Default value is true.
+	 */
+	func bool getScaleLastGesture()
+		return pScaleLastGesture
+	end
+	
+	/** \brief Set scale last gesture to fit speech length. */
+	func void setScaleLastGesture(bool scale)
+		pScaleLastGesture = scale
+	end
+	
+	
+	/**
+	 * \brief Convert snippet adding conversation actions similar to \ref CActionSnippet.
+	 * 
+	 * Adds \ref ConversationPlaybackLayer to conversation with converted actions.
+	 */
+	func void convert(SimpleConversationSnippet snippet, SimpleConversation simpleConversation,\
+	ConversationPlayback playback)
+		convert(snippet, simpleConversation, playback, true)
+	end
+	
+	/**
+	 * \brief Convert snippet adding conversation actions similar to \ref CActionSnippet.
+	 * 
+	 * Adds \ref ConversationPlaybackLayer to conversation with converted actions. The value
+	 * of advance is used in the \ref ConversationPlaybackLayer constructor to advance the
+	 * actions iterator. Use true for advance unless you can not avoid calling
+	 * \ref ConversationPlayback#advanceToNextAction() later on.
+	 */
+	func void convert(SimpleConversationSnippet snippet, SimpleConversation simpleConversation,\
+	ConversationPlayback playback, bool advance)
+		var Array actions = Array.new()
+		convert(snippet, simpleConversation, playback, actions)
+		
+		var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(\
+			ConversationActionIterator.new(actions, 0), advance)
+		layer.setTopicTopLevel(true)
+		playback.pushLayer(layer)
+	end
+	
+	/**
+	 * \brief Convert snippet adding conversation actions similar to \ref CActionSnippet.
+	 * 
+	 * Adds converted actions to actions array.
+	 */
+	func void convert(SimpleConversationSnippet snippet, SimpleConversation simpleConversation,\
+	ConversationPlayback playback, Array actions)
+		var State state = createState()
+		state.snippet = snippet
+		state.simpleConversation = simpleConversation
+		state.playback = playback
+		state.conversation = playback.getConversation()
+		state.actions = actions
+		playback.forEachActor(block ConversationActor each
+			state.conversationActors.setAt(each.getID(), each)
+			if each.getAliasID() != null
+				state.conversationActors.setAt(each.getAliasID(), each)
+			end
+		end)
+		convert(state)
+	end
+	
+	
+	/**
+	 * \brief Create state used across conversation functions.
+	 * 
+	 * Returns instance of \ref State.
+	 */
+	protected func State createState()
+		return State.new()
+	end
+	
+	/** \brief Convert snippet using state. */
+	protected func void convert(State state)
+		state.snippet.forEachAction(block SimpleConversationAction each
+			select each.getType()
+			case SimpleConversationAction.Type.actor
+				convertActor(state, each)
+				
+			case SimpleConversationAction.Type.speak
+				convertSpeak(state, each)
+				
+			case SimpleConversationAction.Type.gesture
+				convertGesture(state, each)
+				
+			case SimpleConversationAction.Type.facePose
+				convertFacePose(state, each)
+				
+			case SimpleConversationAction.Type.lookAt
+				convertLookAt(state, each)
+				
+			case SimpleConversationAction.Type.command
+				convertCommand(state, each)
+				
+			case SimpleConversationAction.Type.stopTopic
+				convertStopTopic(state, each)
+				
+			case SimpleConversationAction.Type.stopConversation
+				convertStopConversation(state, each)
+				
+			case SimpleConversationAction.Type.variable
+				convertVariable(state, each)
+				
+			case SimpleConversationAction.Type.trigger
+				convertTrigger(state, each)
+				
+			case SimpleConversationAction.Type.condIf, SimpleConversationAction.Type.condElif
+				convertIfElif(state, each)
+				
+			case SimpleConversationAction.Type.condElse
+				convertElse(state, each)
+				
+			case SimpleConversationAction.Type.playerChoice
+				convertPlayerChoice(state, each)
+				
+			case SimpleConversationAction.Type.playerChoiceOption
+				convertPlayerChoiceOption(state, each)
+				
+			case SimpleConversationAction.Type.wait
+				convertWait(state, each)
+				
+			case SimpleConversationAction.Type.snippet
+				convertSnippet(state, each)
+				
+			case SimpleConversationAction.Type.music
+				convertMusic(state, each)
+				
+			case SimpleConversationAction.Type.addActor
+				convertAddActor(state, each)
+				
+			case SimpleConversationAction.Type.removeActor
+				convertRemoveActor(state, each)
+				
+			case SimpleConversationAction.Type.addCoordSystem
+				convertAddCoordSystem(state, each)
+				
+			case SimpleConversationAction.Type.removeCoordSystem
+				convertRemoveCoordSystem(state, each)
+				
+			case SimpleConversationAction.Type.pause
+				state.pauseTime += each.getDelay()
+				
+			case SimpleConversationAction.Type.waitMode
+				state.waitMode = each.getWaitMode()
+				
+			case SimpleConversationAction.Type.endActorSpeak
+				closeActions(state)
+			end
+		end)
+		
+		closeActions(state)
+	end
+	
+	/** \brief Apply wait mode to conversation action. */
+	protected func void applyWaitMode(State state, ConversationAction action)
+		select state.waitMode
+		case SimpleConversationAction.WaitMode.waitSpeak
+			action.setWaitSpeakOnly(true)
+			
+		case SimpleConversationAction.WaitMode.noWait
+			action.setWaitForActor(false)
+		end
+	end
+	
+	/** \brief Apply camera wait mode to conversation action. */
+	protected func void applyCameraWaitMode(State state, ConversationAction action, Enumeration mode)
+		select state.waitMode
+		case SimpleConversationAction.WaitMode.waitSpeak,\
+			SimpleConversationAction.WaitMode.waitCameraSpeak
+				action.setWaitSpeakOnly(true)
+			
+		case SimpleConversationAction.WaitMode.noWait
+			action.setWaitForActor(false)
+		end
+		
+		select mode
+		case SimpleConversationAction.SpecialMode.noCameraDelayWait,\
+			SimpleConversationAction.SpecialMode.noDelayWait
+				action.setWaitSpeakOnly(false)
+				action.setWaitForActor(false)
+		end
+	end
+	
+	/**
+	 * \brief Convert actor action.
+	 * 
+	 * Closes open actions if present. If actor is set adds action for switching camera.
+	 * Then adds instance of \ref CActionActorSpeak. If actor is not set uses the previous
+	 * CActionActorSpeak actor. The added CActionActorSpeak and the matching conversation
+	 * actor are not present in the state as open speak action. Throws exception if actor is
+	 * not set and no previous CActionActorSpeak is present.
+	 */
+	protected func void convertActor(State state, SimpleConversationAction action)
+		var Enumeration mode = action.getMode()
+		closeActions(state)
+		
+		var StringID target = action.getTarget()
+		if target != null
+			state.actor = state.simpleConversation.getActorWith(target)
+			if state.actor == null
+				throw EInvalidParam.new("Actor '{}' not found in snippet '{}'".format(\
+					Array.newWith(target, state.snippet.getId())))
+			end
+			
+			state.speechAnimation = null
+			var ConversationActor cactor = state.conversationActors.getAt(\
+				state.actor.getActorId(), null) cast ConversationActor
+			if cactor != null
+				var SpeechAnimationPlayback saplayback = cactor.getSpeechAnimationPlayback()
+				if saplayback != null
+					state.speechAnimation = saplayback.getSpeechAnimation()
+				end
+			end
+			
+			var StringID id = state.actor.getCamera()
+			
+			select mode
+			case SimpleConversationAction.SpecialMode.noCamera,\
+				SimpleConversationAction.SpecialMode.noCameraNoDelay
+					id = null
+			end
+			
+			if id != null
+				var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
+				if camera == null
+					throw EInvalidParam.new("Camera '{}' not found in actor '{}' in snippet '{}'".format(\
+						Array.newWith(id, target, state.snippet.getId())))
+				end
+				convertCamera(state, camera, camera.randomShot(), mode)
+				
+			else
+				state.forceCameraShotCounter++
+				if state.forceCameraShotCounter > pMinSpeakCountCameraChange
+					state.forceCameraShotCounter = 1
+				end
+			end
+			
+		else
+			state.forceCameraShotCounter++
+			if state.forceCameraShotCounter > pMinSpeakCountCameraChange
+				var StringID id = state.actor.getCamera()
+				if id != null
+					var SimpleConversationCamera camera = state.simpleConversation.getCameraWith(id)
+					convertCamera(state, camera, camera.randomShot(), mode)
+					
+				else
+					state.forceCameraShotCounter = 1
+				end
+			end
+		end
+		
+		var float actorDelay = state.actor.getDelay()
+		select mode
+		case SimpleConversationAction.SpecialMode.noSpeakDelay,\
+			SimpleConversationAction.SpecialMode.noDelay,\
+			SimpleConversationAction.SpecialMode.noCameraNoDelay
+				actorDelay = 0
+		end
+		
+		if state.actionCameraShot != null
+			state.actionCameraShot.setDelay(state.actionCameraShot.getDelay())
+			state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + actorDelay)
+		end
+		
+		state.actionActorSpeak = CActionActorSpeak.new()
+		applyWaitMode(state, state.actionActorSpeak)
+		state.actionActorSpeak.setActorID(state.actor.getActorId())
+		state.actionActorSpeak.setDelay(actorDelay + state.pauseTime)
+		state.pauseTime = 0
+		state.actionActorSpeak.setTextBoxTextStyle(state.actor.getStyle())
+		state.actionActorSpeak.setUseSpeechAnimation(state.actor.getUseSpeechAnimation())
+		state.actions.add(state.actionActorSpeak)
+		
+		if state.actor.getGestureCount() > 0
+			state.actor.forEachGesture(block StringID each
+				convertGesture(state, state.conversation.getGestureNamed(each))
+			end)
+			state.clearGestures = true
+		end
+		
+		if state.actor.getFacePose() != null
+			convertFacePose(state, state.conversation.getFacePoseNamed(state.actor.getFacePose()), 0)
+			state.clearFacePoses = true
+		end
+		
+		if state.actor.getLookAt() != null
+			convertLookAt(state, state.conversation.getTargetNamed(state.actor.getLookAt()), 0)
+			state.clearLookAts = true
+		end
+	end
+	
+	/**
+	 * \brief Add open gesture properly scaled to speech time.
+	 * 
+	 * If endOfSpeech is true \ref SimpleConversationActor#getProlongLastGesture() is applied.
+	 */
+	protected func void finishOpenGesture(State state, bool endOfSpeech)
+		applySpeechPause(state)
+		
+		if state.gesture == null
+			return
+		end
+		
+		var float duration = state.gesture.duration
+		if duration < 0.1
+			state.gesture = null
+			return
+		end
+		
+		var float speechTime = state.speechTime
+		if endOfSpeech
+			speechTime += state.actor.getProlongLastGesture()
+		end
+		
+		var float availDuration = speechTime - state.gestureTime
+		if availDuration < 0.1
+			if endOfSpeech
+				state.gesture = null
+				return
+			end
+			availDuration = duration
+		end
+		
+		var bool noScale = state.gesture.hold or (endOfSpeech and not pScaleLastGesture)
+		
+		if duration > pMinGestureDurationHalf and availDuration < pMinGestureDuration
+			state.actionActorSpeak.addGesture(ConversationStrip.new(StringID.new(), 0,\
+				noScale if duration else availDuration))
+			return
+		end
+		
+		var float scaleDuration = availDuration / duration
+		if noScale
+			scaleDuration = 1
+		end
+		
+		state.actionActorSpeak.addGesture(ConversationStrip.new(\
+			state.gesture.id, 0, state.gesture.duration * scaleDuration))
+		
+		state.gestureTime += availDuration
+		state.gesture = null
+	end
+	
+	/** \brief Apply speech pause if present. */
+	protected func void applySpeechPause(State state)
+		if state.pauseTime == 0 or state.actionActorSpeak == null
+			return
+		end
+		
+		if state.actionActorSpeak != null and state.actionActorSpeak.getUseSpeechAnimation()
+			state.actionActorSpeak.addWord(ConversationStrip.new(StringID.new(), 0, state.pauseTime))
+		end
+		if state.actionCameraShot != null
+			state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + state.pauseTime)
+		end
+		state.speechTime += state.pauseTime
+		state.pauseTime = 0
+	end
+	
+	/** \brief Add conversation gesture. */
+	protected func void convertGesture(State state, ConversationGesture gesture)
+		if state.clearGestures
+			state.clearGestures = false
+			
+			state.gesture = null
+			state.gestureTime = 0
+			
+			if state.actionActorSpeak != null
+				state.actionActorSpeak.removeAllGestures()
+			end
+		end
+		
+		finishOpenGesture(state, false)
+		if state.speechTime > 0 and state.actionActorSpeak.getGestureCount() == 0
+			state.actionActorSpeak.addGesture(ConversationStrip.new(StringID.new(), 0, state.speechTime))
+			state.gestureTime = state.speechTime
+		end
+		state.gesture = Gesture.new(gesture)
+	end
+	
+	/** \brief Add conversation face pose. */
+	protected func void convertFacePose(State state, ConversationFacePose facePose, float duration)
+		if state.clearFacePoses
+			state.clearFacePoses = false
+			state.facePoseTime = 0
+			if state.actionActorSpeak != null
+				state.actionActorSpeak.removeAllFacePoses()
+			end
+		end
+		
+		applySpeechPause(state)
+		
+		if duration == 0
+			duration = pFacePoseDuration
+		end
+		var float delay = DEMath.max(state.speechTime - state.facePoseTime, 0.0)
+		if state.actionActorSpeak != null
+			state.actionActorSpeak.addFacePose(ConversationStrip.new(\
+				facePose != null if facePose.getName() else StringID.new(), delay, duration))
+		end
+		state.facePoseTime += delay + duration
+	end
+	
+	/** \brief Add conversation look-at. */
+	protected func void convertLookAt(State state, ConversationTarget lookAt, float duration)
+		if state.clearLookAts
+			state.clearLookAts = false
+			state.lookAtTime = 0
+			if state.actionActorSpeak != null
+				state.actionActorSpeak.removeAllHeadLookAt()
+			end
+		end
+		
+		applySpeechPause(state)
+		
+		if duration == 0
+			duration = pLookAtDuration
+		end
+		var float delay = DEMath.max(state.speechTime - state.lookAtTime, 0.0)
+		if state.actionActorSpeak != null
+			state.actionActorSpeak.addHeadLookAt(ConversationStrip.new(\
+				lookAt != null if lookAt.getName() else StringID.new(), delay, duration))
+		end
+		state.lookAtTime += delay + duration
+	end
+	
+	/** \brief Add camera conversation actor. */
+	protected func void convertCamera(State state, SimpleConversationCamera camera,\
+	SimpleConversationCameraShot shot, Enumeration mode)
+		state.actionCameraShot = null
+		state.forceCameraShotCounter = 1
+		
+		select shot.getType()
+		case SimpleConversationCameraShot.Type.cameraShot
+			convertCameraShot(state, camera, shot, mode)
+			
+		case SimpleConversationCameraShot.Type.snippet
+			convertCameraSnippet(state, camera, shot, mode)
+			
+		case SimpleConversationCameraShot.Type.command
+			if shot.getTarget() != null
+				convertCameraActorCommand(state, camera, shot, mode)
+				
+			else
+				convertCameraGameCommand(state, camera, shot, mode)
+			end
+		end
+	end
+	
+	/** \brief Add camera conversation actor using camera shot. */
+	protected func void convertCameraShot(State state, SimpleConversationCamera camera,\
+	SimpleConversationCameraShot shot, Enumeration mode)
+		state.actionCameraShot = CActionCameraShot.new()
+		applyCameraWaitMode(state, state.actionCameraShot, mode)
+		state.actionCameraShot.setDelay(cameraDelay(state, camera, mode))
+		state.pauseTime = 0
+		state.actionCameraShot.setName(shot.getTarget())
+		state.actionCameraShot.setDuration(shot.getDuration())
+		state.actionCameraShot.setCameraTarget(shot.getCameraTarget())
+		state.actionCameraShot.setLookAtTarget(shot.getLookAtTarget())
+		state.actions.add(state.actionCameraShot)
+	end
+	
+	/** \brief Add camera conversation actor using snippet. */
+	protected func void convertCameraSnippet(State state, SimpleConversationCamera camera,\
+	SimpleConversationCameraShot shot, Enumeration mode)
+		var CActionSnippet caction = CActionSnippet.new()
+		applyCameraWaitMode(state, caction, mode)
+		caction.setDelay(cameraDelay(state, camera, mode))
+		state.pauseTime = 0
+		caction.setGroupID(shot.getSubTarget())
+		caction.setTopicID(shot.getTarget())
+		state.actions.add(caction)
+	end
+	
+	/** \brief Add camera conversation actor using game command. */
+	protected func void convertCameraGameCommand(State state, SimpleConversationCamera camera,\
+	SimpleConversationCameraShot shot, Enumeration mode)
+		var CActionGameCommand caction = CActionGameCommand.new()
+		applyCameraWaitMode(state, caction, mode)
+		caction.setDelay(cameraDelay(state, camera, mode))
+		state.pauseTime = 0
+		caction.setCommand(shot.getCommand())
+		state.actions.add(caction)
+	end
+	
+	/** \brief Add camera conversation actor using actor command. */
+	protected func void convertCameraActorCommand(State state, SimpleConversationCamera camera,\
+	SimpleConversationCameraShot shot, Enumeration mode)
+		var CActionActorCommand caction = CActionActorCommand.new()
+		applyCameraWaitMode(state, caction, mode)
+		caction.setDelay(cameraDelay(state, camera, mode))
+		state.pauseTime = 0
+		caction.setActorID(shot.getTarget())
+		caction.setCommand(shot.getCommand())
+		state.actions.add(caction)
+	end
+	
+	/** \brief Delay to use for camera change. */
+	protected func float cameraDelay(State state, SimpleConversationCamera camera, Enumeration mode)
+		select mode
+		case SimpleConversationAction.SpecialMode.noDelay,\
+			SimpleConversationAction.SpecialMode.noDelayWait,\
+			SimpleConversationAction.SpecialMode.noCameraDelay,\
+			SimpleConversationAction.SpecialMode.noCameraDelayWait
+				return state.pauseTime
+			
+		else
+			return state.pauseTime + camera.getDelay()
+		end
+	end
+	
+	/** \brief Convert speak action. */
+	protected func void convertSpeak(State state, SimpleConversationAction action)
+		if state.actionActorSpeak == null
+			return
+		end
+		
+		if state.pauseTime > 0 and state.speechTime == 0
+			if state.actionCameraShot != null
+				state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + state.pauseTime)
+			end
+			state.actionActorSpeak.setDelay(state.actionActorSpeak.getDelay() + state.pauseTime)
+			state.pauseTime = 0
+		end
+		
+		var UnicodeString text = action.getText()
+		if text != null
+			var UnicodeString t = state.actionActorSpeak.getTextBoxText()
+			state.actionActorSpeak.setTextBoxText(t != null if t + ' ' + text else text)
+		end
+		
+		var UnicodeString animText = action.getAnimText()
+		if animText != null
+			text = animText
+		end
+		
+		var int len
+		if text != null
+			len = text.getLength()
+		end
+		if len == 0
+			return
+		end
+		
+		var bool useSpeechAnimation = state.actionActorSpeak.getUseSpeechAnimation()
+		var int wordBegin = -1, lenP1 = len + 1
+		var float wordLen, pauseLen, duration
+		var SpeechAnimationWord saword
+		var int c, i, lastBreakChar
+		var bool notFirstWord
+		var StringID id
+		
+		text = text.toLower()
+		for i = 0 to lenP1
+			if i < len
+				c = text.getCharacterAt(i)
+				if pCharsWordBreak.findCharacter(c, 0) == -1
+					if wordBegin == -1
+						wordBegin = i
+					end
+					continue
+				end
+				
+			else
+				c = 0
+			end
+			
+			if wordBegin == -1
+				lastBreakChar = c
+				continue
+			end
+			
+			id = StringID.new(text.getSubString(wordBegin, i - wordBegin).toUTF8())
+			
+			saword = null
+			if state.speechAnimation != null
+				saword = state.speechAnimation.getWordNamed(id)
+			end
+			
+			if saword != null
+				wordLen = saword.getEstimatedSpeakLength(\
+					pAverageCharacterLength, state.speechAnimation)
+				
+			else
+				wordLen = pAverageCharacterLength * (i - wordBegin)
+			end
+			
+			pauseLen = state.pauseTime
+			state.pauseTime = 0
+			if notFirstWord
+				if pCharsPhraseBreak.findCharacter(lastBreakChar, 0) != -1
+					pauseLen = pPausePhrase
+					
+				elif pCharsSubPhraseBreak.findCharacter(lastBreakChar, 0) != -1
+					pauseLen = pPauseSubPhrase
+				end
+				
+			else
+				notFirstWord = true
+			end
+			
+			wordLen = wordLen * pSpeakSpeed + pElongateSpeak
+			if useSpeechAnimation
+				state.actionActorSpeak.addWord(ConversationStrip.new(id, pauseLen, wordLen))
+			end
+			duration += pauseLen + wordLen
+			
+			lastBreakChar = c
+			wordBegin = -1
+		end
+		
+		state.speechTime += duration
+		
+		if state.actionCameraShot != null
+			state.actionCameraShot.setDuration(state.actionCameraShot.getDuration() + duration)
+		end
+	end
+	
+	/** \brief Convert gesture action. */
+	protected func void convertGesture(State state, SimpleConversationAction action)
+		var ConversationGesture gesture
+		if action.getTarget() != null
+			gesture = state.conversation.getGestureNamed(action.getTarget())
+		end
+		convertGesture(state, gesture)
+	end
+	
+	/** \brief Convert face pose action. */
+	protected func void convertFacePose(State state, SimpleConversationAction action)
+		var ConversationFacePose facePose
+		if action.getTarget() != null
+			facePose = state.conversation.getFacePoseNamed(action.getTarget())
+		end
+		convertFacePose(state, facePose, action.getDuration())
+	end
+	
+	/** \brief Convert look-at action. */
+	protected func void convertLookAt(State state, SimpleConversationAction action)
+		var ConversationTarget lookAt
+		if action.getTarget() != null
+			lookAt = state.conversation.getTargetNamed(action.getTarget())
+		end
+		convertLookAt(state, lookAt, action.getDuration())
+	end
+	
+	/**
+	 * \brief Convert command action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionGameCommand
+	 * or \ref CActionActorCommand with 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertCommand(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		if action.getTarget() != null
+			var CActionActorCommand caction = CActionActorCommand.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
+			caction.setActorID(state.simpleConversation.getActorWith(action.getTarget()).getActorId())
+			caction.setCommand(action.getName())
+			state.actions.add(caction)
+			
+		else
+			var CActionGameCommand caction = CActionGameCommand.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
+			caction.setCommand(action.getName())
+			state.actions.add(caction)
+		end
+	end
+	
+	/**
+	 * \brief Convert stop topic action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionStopTopic
+	 * with 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertStopTopic(State state, SimpleConversationAction action)
+		closeActions(state)
+		var CActionStopTopic caction = CActionStopTopic.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert stop conversation action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionStopConversation
+	 * with 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertStopConversation(State state, SimpleConversationAction action)
+		closeActions(state)
+		var CActionStopConversation caction = CActionStopConversation.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert set variable action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionSetVariable
+	 * or \ref CActionSetActorParameter depending if \ref SimpleConversationAction#getTarge()
+	 * is null or not. Action is set to use 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertVariable(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		if action.getTarget() != null
+			var CActionSetActorParameter caction = CActionSetActorParameter.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
+			caction.setActorID(state.simpleConversation.getActorWith(action.getTarget()).getActorId())
+			caction.setName(action.getName())
+			caction.setValue(action.getValue())
+			caction.setOperator(action.getMode() cast CActionSetActorParameter.Operator)
+			state.actions.add(caction)
+			
+		else
+			var CActionSetVariable caction = CActionSetVariable.new()
+			applyWaitMode(state, caction)
+			caction.setDelay(state.pauseTime)
+			state.pauseTime = 0
+			caction.setName(action.getName())
+			caction.setValue(action.getValue())
+			caction.setOperator(action.getMode() cast CActionSetVariable.Operator)
+			state.actions.add(caction)
+		end
+	end
+	
+	/**
+	 * \brief Convert modify trigger action.
+	 * 
+	 * Closes open actions if present. Then adds instance of \ref CActionTrigger using
+	 * 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertTrigger(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionTrigger caction = CActionTrigger.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		caction.setName(action.getTarget())
+		caction.setAction(action.getMode() cast CActionTrigger.Action)
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert if/elif action.
+	 * 
+	 * If action is if-type closes open actions if present then adds instance of
+	 * \ref CActionIfElse with using 0 delay waiting for speaking actors to finish.
+	 * Then adds converted conditions to the open if-else action. Then adds to this
+	 * case actions of the referenced snippet.
+	 */
+	protected func void convertIfElif(State state, SimpleConversationAction action)
+		if action.getType() == SimpleConversationAction.Type.condIf
+			closeActions(state)
+			
+			state.actionIfElse = CActionIfElse.new()
+			applyWaitMode(state, state.actionIfElse)
+			state.actionIfElse.setDelay(state.pauseTime)
+			state.pauseTime = 0
+			state.actions.add(state.actionIfElse)
+		end
+		
+		var CActionIfElseCase ccase = CActionIfElseCase.new()
+		ccase.setCondition(convertCondition(state, action.getCondition()))
+		if action.getTarget() != null
+			convert(getSnippetRequired(state, action.getTarget()),\
+				state.simpleConversation, state.playback, ccase.getActions())
+		end
+		state.actionIfElse.addCase(ccase)
+	end
+	
+	/**
+	 * \brief Convert condition.
+	 */
+	protected func ConversationCondition convertCondition(State state, SimpleConversationCondition condition)
+		select condition.getType()
+		case SimpleConversationCondition.Type.variable
+			if condition.getTarget() != null
+				var CConditionActorParameter ccond = CConditionActorParameter.new()
+				ccond.setActorID(state.simpleConversation.getActorWith(condition.getTarget()).getActorId())
+				ccond.setParameter(condition.getName())
+				ccond.setOperator(condition.getMode() cast CConditionActorParameter.Operator)
+				ccond.setTestValue(condition.getValue())
+				return ccond
+				
+			else
+				var CConditionVariable ccond = CConditionVariable.new()
+				ccond.setVariable(condition.getName())
+				ccond.setOperator(condition.getMode() cast CConditionVariable.Operator)
+				ccond.setTestValue(condition.getValue())
+				return ccond
+			end
+			
+		case SimpleConversationCondition.Type.trigger
+			var CConditionTrigger ccond = CConditionTrigger.new()
+			ccond.setTrigger(StringID.new(condition.getName()))
+			ccond.setTestMode(condition.getMode() cast CConditionTrigger.TestMode)
+			return ccond
+			
+		case SimpleConversationCondition.Type.command
+			if condition.getTarget() != null
+				var CConditionActorCommand ccond = CConditionActorCommand.new()
+				ccond.setActorID(state.simpleConversation.getActorWith(condition.getTarget()).getActorId())
+				ccond.setCommand(condition.getName())
+				ccond.setNegate(condition.getValue() == 0)
+				return ccond
+				
+			else
+				var CConditionGameCommand ccond = CConditionGameCommand.new()
+				ccond.setCommand(condition.getName())
+				ccond.setNegate(condition.getValue() == 0)
+				return ccond
+			end
+			
+		case SimpleConversationCondition.Type.logic
+			var CConditionLogic ccond = CConditionLogic.new()
+			ccond.setOperator(condition.getMode() cast CConditionLogic.Operator)
+			condition.getConditions().forEach(block SimpleConversationCondition each
+				ccond.addCondition(convertCondition(state, each))
+			end)
+			return ccond
+			
+		case SimpleConversationCondition.Type.hasActor
+			var CConditionHasActor ccond = CConditionHasActor.new()
+			ccond.setActorID(state.simpleConversation.getActorWith(condition.getTarget()).getActorId())
+			ccond.setNegate(condition.getValue() == 0)
+			return ccond
+			
+		else
+			throw EInvalidParam.new("condition.getType()")
+		end
+	end
+	
+	/**
+	 * \brief Convert else action.
+	 * 
+	 * Adds to the else-actions of open if-else action the referenced snippet.
+	 * Then closes the open if-else action.
+	 */
+	protected func void convertElse(State state, SimpleConversationAction action)
+		convert(getSnippetRequired(state, action.getTarget()),\
+			state.simpleConversation, state.playback, state.actionIfElse.getElseActions())
+		closeActions(state)
+	end
+	
+	/**
+	 * \brief Convert player choice action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionPlayerChoice with
+	 * using 0 delay waiting for speaking actors to finish.
+	 */
+	protected func void convertPlayerChoice(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		state.actionPlayerChoice = CActionPlayerChoice.new()
+		applyWaitMode(state, state.actionPlayerChoice)
+		state.actionPlayerChoice.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		state.actionPlayerChoice.setVariable(action.getName())
+		state.actions.add(state.actionPlayerChoice)
+	end
+	
+	/**
+	 * \brief Convert player choice option action.
+	 * 
+	 * Adds instance of \ref CActionPlayerChoiceOption to the open player-choice action.
+	 * Then adds to this option actions of the referenced snippet.
+	 */
+	protected func void convertPlayerChoiceOption(State state, SimpleConversationAction action)
+		var CActionPlayerChoiceOption coption = CActionPlayerChoiceOption.new()
+		coption.setText(action.getText())
+		if action.getCondition() != null
+			coption.setCondition(convertCondition(state, action.getCondition()))
+		end
+		convert(getSnippetRequired(state, action.getTarget()),\
+			state.simpleConversation, state.playback, coption.getActions())
+		state.actionPlayerChoice.addOption(coption)
+	end
+	
+	/**
+	 * \brief Convert wait action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionWait with using
+	 * 0 delay waiting for speaking actors to finish. Then adds to the wait action the
+	 * actions of the referenced snippet.
+	 */
+	protected func void convertWait(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionWait caction = CActionWait.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		caction.setCondition(convertCondition(state, action.getCondition()))
+		if action.getTarget() != null
+			convert(getSnippetRequired(state, action.getTarget()),\
+				state.simpleConversation, state.playback, caction.getActions())
+		end
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert snippet action.
+	 * 
+	 * Closes open actions if present. If getSubTarget() is null adds referenced snippet
+	 * actions. If getSubTarget() is not null adds \ref CActionSnippet.
+	 */
+	protected func void convertSnippet(State state, SimpleConversationAction action)
+		var StringID subTarget = action.getSubTarget()
+		
+		closeActions(state)
+		
+		if action.getRandom() > 0
+			var int i, count = action.getRandom()
+			var String varName = "_scsr"
+			
+			var CActionSetVariable caSetVar = CActionSetVariable.new()
+			applyWaitMode(state, caSetVar)
+			caSetVar.setDelay(state.pauseTime)
+			state.pauseTime = 0
+			caSetVar.setName(varName)
+			caSetVar.setValue(count - 1)
+			caSetVar.setOperator(CActionSetVariable.Operator.random)
+			state.actions.add(caSetVar)
+			
+			var CActionIfElse caIfElse = CActionIfElse.new()
+			caIfElse.setWaitForActor(false)
+			state.actions.add(caIfElse)
+			
+			var CActionIfElseCase caIfCase
+			var CConditionVariable ccVar
+			var String id = action.getTarget().toString()
+			var StringID rid
+			
+			for i = 0 to count
+				ccVar = CConditionVariable.new()
+				ccVar.setVariable(varName)
+				ccVar.setTestValue(i)
+				
+				caIfCase = CActionIfElseCase.new()
+				caIfCase.setCondition(ccVar)
+				caIfElse.addCase(caIfCase)
+				
+				rid = StringID.new(id + i)
+				
+				if subTarget != null
+					var CActionSnippet caSnippet = CActionSnippet.new()
+					caSnippet.setWaitForActor(false)
+					caSnippet.setGroupID(subTarget)
+					caSnippet.setTopicID(rid)
+					caIfCase.getActions().add(caSnippet)
+					
+				else
+					var SimpleConversationSnippet s = state.simpleConversation.getSnippetWith(rid)
+					if s == null
+						continue
+					end
+					
+					var State subState = createState()
+					subState.snippet = s
+					subState.simpleConversation = state.simpleConversation
+					subState.playback = state.playback
+					subState.conversation = state.playback.getConversation()
+					subState.actions = caIfCase.getActions()
+					subState.conversationActors = state.conversationActors
+					convert(subState)
+				end
+			end
+			
+		else
+			if subTarget != null
+				var CActionSnippet caction = CActionSnippet.new()
+				applyWaitMode(state, caction)
+				caction.setDelay(state.pauseTime)
+				state.pauseTime = 0
+				caction.setGroupID(subTarget)
+				caction.setTopicID(action.getTarget())
+				state.actions.add(caction)
+				
+			else
+				var SimpleConversationSnippet s =\
+					state.simpleConversation.getSnippetWith(action.getTarget())
+				if s == null
+					return
+				end
+				
+				var State subState = createState()
+				subState.snippet = s
+				subState.simpleConversation = state.simpleConversation
+				subState.playback = state.playback
+				subState.conversation = state.playback.getConversation()
+				subState.actions = state.actions
+				subState.pauseTime = state.pauseTime
+				subState.conversationActors = state.conversationActors
+				state.pauseTime = 0
+				convert(subState)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Convert music action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionMusic.
+	 */
+	protected func void convertMusic(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionMusic caction = CActionMusic.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		caction.setName(action.getName())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert add actor action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionActorAdd.
+	 */
+	protected func void convertAddActor(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionActorAdd caction = CActionActorAdd.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		caction.setActorID(action.getTarget())
+		caction.setAliasID(action.getSubTarget())
+		state.actions.add(caction)
+		
+		var ConversationActor cactor = state.playback.loadConversationActor(action.getTarget())
+		if caction != null
+			state.conversationActors.setAt(action.getTarget(), cactor)
+			if action.getSubTarget() != null
+				state.conversationActors.setAt(action.getSubTarget(), cactor)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Convert remove actor action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionActorRemove.
+	 */
+	protected func void convertRemoveActor(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionActorRemove caction = CActionActorRemove.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		caction.setActorID(action.getTarget())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert add coordinate system action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionCoordSystemAdd.
+	 */
+	protected func void convertAddCoordSystem(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionCoordSystemAdd caction = CActionCoordSystemAdd.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		caction.setCoordSystemID(action.getTarget())
+		caction.setAliasID(action.getSubTarget())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Convert remove coordinate system action.
+	 * 
+	 * Closes open actions if present then adds instance of \ref CActionCoordSystemRemove.
+	 */
+	protected func void convertRemoveCoordSystem(State state, SimpleConversationAction action)
+		closeActions(state)
+		
+		var CActionCoordSystemRemove caction = CActionCoordSystemRemove.new()
+		applyWaitMode(state, caction)
+		caction.setDelay(state.pauseTime)
+		state.pauseTime = 0
+		caction.setCoordSystemID(action.getTarget())
+		state.actions.add(caction)
+	end
+	
+	/**
+	 * \brief Close open actor speak conversation action if present.
+	 * 
+	 * If closing updates last gesture duration if it is a held gesture. Stored actor
+	 * information linked to speak conversation action are not cleared to reuse them.
+	 */
+	protected func void closeSpeak(State state)
+		finishOpenGesture(state, true)
+		
+		if state.actionActorSpeak != null and not state.actionActorSpeak.getUseSpeechAnimation()
+			state.actionActorSpeak.setMinSpeechTime(state.speechTime)
+		end
+		
+		state.actionActorSpeak = null
+		state.speechTime = 0
+		state.gestureTime = 0
+		state.facePoseTime = 0
+		state.lookAtTime = 0
+		state.gesture = null
+		state.clearGestures = false
+		state.clearFacePoses = false
+		state.clearLookAts = false
+	end
+	
+	/** \brief Close open conversation actions if present. */
+	protected func void closeActions(State state)
+		closeSpeak(state)
+		state.actionIfElse = null
+		state.actionPlayerChoice = null
+	end
+	
+	/** \brief Get snippet throw exception if absent. */
+	protected func SimpleConversationSnippet getSnippetRequired(State state, StringID id)
+		var SimpleConversationSnippet s = state.simpleConversation.getSnippetWith(id)
+		if s == null
+			throw EInvalidParam.new("snippet not found: '{}' in '{}'".format(\
+				Array.newWith(id, state.snippet.getId())))
+		end
+		return s
+	end
+end

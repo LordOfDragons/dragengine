@@ -46,14 +46,14 @@ class InputDevice
 	 * 
 	 * Device index is only valid for the matching system.
 	 */
-	public func InputEventSource getSource()
+	func InputEventSource getSource()
 		return null
 	end
 	
 	/**
 	 * \brief Device index.
 	 */
-	public func int getIndex()
+	func int getIndex()
 		return 0
 	end
 	
@@ -65,7 +65,7 @@ class InputDevice
 	 * only letters, numbers and underscores. It is suitable to be combined with
 	 * button or axis identifiers to store them in config files as key bindings.
 	 */
-	public func String getID()
+	func String getID()
 		return null
 	end
 	
@@ -76,22 +76,22 @@ class InputDevice
 	 * name is unique but not guaranteed to stay the same across restarting
 	 * the input module or game engine.
 	 */
-	public func String getName()
+	func String getName()
 		return null
 	end
 	
 	/** \brief Device type. */
-	public func InputDeviceType getType()
+	func InputDeviceType getType()
 		return null
 	end
 	
 	/** \brief Model to represent the device in 3D user interfaces or \em null if not set. */
-	public func Model getDisplayModel()
+	func Model getDisplayModel()
 		return null
 	end
 	
 	/** \brief Skin for display model or \em null if not set. */
-	public func Skin getDisplaySkin()
+	func Skin getDisplaySkin()
 		return null
 	end
 	
@@ -100,12 +100,12 @@ class InputDevice
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	public func Image getDisplayImage()
+	func Image getDisplayImage()
 		return null
 	end
 	
 	/** \brief Count of icons representing the device in bindings. */
-	public func int getDisplayIconCount()
+	func int getDisplayIconCount()
 		return 0
 	end
 	
@@ -114,7 +114,7 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getDisplayIconAt(int index)
+	func Image getDisplayIconAt(int index)
 		return null
 	end
 	
@@ -123,7 +123,7 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getLargestDisplayIconX(int maxWidth)
+	func Image getLargestDisplayIconX(int maxWidth)
 		return null
 	end
 	
@@ -132,12 +132,12 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getLargestDisplayIconY(int maxHeight)
+	func Image getLargestDisplayIconY(int maxHeight)
 		return null
 	end
 	
 	/** \brief Text to display centered across display image or icon. */
-	public func String getDisplayText()
+	func String getDisplayText()
 		return null
 	end
 	
@@ -147,7 +147,7 @@ class InputDevice
 	 * \brief Device bone configuration.
 	 * \version 1.6
 	 */
-	public func InputDeviceBoneConfiguration getBoneConfiguration()
+	func InputDeviceBoneConfiguration getBoneConfiguration()
 		return null
 	end
 	
@@ -159,7 +159,7 @@ class InputDevice
 	 * relative to the last finger segment coordinate frame. These are typically used to
 	 * figure out where finger tips touch objects in the world.
 	 */
-	public func Vector getFingerTipOffset(int index)
+	func Vector getFingerTipOffset(int index)
 		return null
 	end
 	
@@ -167,7 +167,7 @@ class InputDevice
 	 * \brief Hand rig if ebcHand is used.
 	 * \version 1.6
 	 */
-	public func Rig getHandRig()
+	func Rig getHandRig()
 		return null
 	end
 	
@@ -191,7 +191,7 @@ class InputDevice
 	 * \brief Model to represent the device in VR environments or null if not set.
 	 * \version 1.6
 	 */
-	public func Model getVRModel()
+	func Model getVRModel()
 		return null
 	end
 	
@@ -199,7 +199,7 @@ class InputDevice
 	 * \brief Skin for VR model or null if not set.
 	 * \version 1.6
 	 */
-	public func Skin getVRSkin()
+	func Skin getVRSkin()
 		return null
 	end
 	
@@ -212,14 +212,14 @@ class InputDevice
 	 * platform. If absent all values queried from the device are 0 to avoid exceptions
 	 * to be thrown.
 	 */
-	public func bool isPresent()
+	func bool isPresent()
 		return false
 	end
 	
 	
 	
 	/** \brief Number of axes. */
-	public func int getAxisCount()
+	func int getAxisCount()
 		return 0
 	end
 	
@@ -229,14 +229,14 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getAxisCount().
 	 */
-	public func InputDeviceAxis getAxisAt(int index)
+	func InputDeviceAxis getAxisAt(int index)
 		return null
 	end
 	
 	
 	
 	/** \brief Number of buttons. */
-	public func int getButtonCount()
+	func int getButtonCount()
 		return 0
 	end
 	
@@ -246,14 +246,14 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getButtonCount().
 	 */
-	public func InputDeviceButton getButtonAt(int index)
+	func InputDeviceButton getButtonAt(int index)
 		return null
 	end
 	
 	
 	
 	/** \brief Number of feedbacks. */
-	public func int getFeedbackCount()
+	func int getFeedbackCount()
 		return 0
 	end
 	
@@ -263,14 +263,14 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getFeedbackCount().
 	 */
-	public func InputDeviceFeedback getFeedbackAt(int index)
+	func InputDeviceFeedback getFeedbackAt(int index)
 		return null
 	end
 	
 	
 	
 	/** \brief Number of components. */
-	public func int getComponentCount()
+	func int getComponentCount()
 		return 0
 	end
 	
@@ -280,7 +280,7 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getComponentCount().
 	 */
-	public func InputDeviceComponent getComponentAt(int index)
+	func InputDeviceComponent getComponentAt(int index)
 		return null
 	end
 	
@@ -297,7 +297,7 @@ class InputDevice
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	public func int buttonMatchingKeyCode(int keyCode)
+	func int buttonMatchingKeyCode(int keyCode)
 		return 0
 	end
 	
@@ -318,7 +318,7 @@ class InputDevice
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	public func int buttonMatchingKeyChar(int character)
+	func int buttonMatchingKeyChar(int character)
 		return 0
 	end
 	
@@ -329,7 +329,7 @@ class InputDevice
 	 * Same as buttonMatchingKeyChar(int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	public func int buttonMatchingKeyCode(int keyCode, InputEventKeyLocation location)
+	func int buttonMatchingKeyCode(int keyCode, InputEventKeyLocation location)
 		return 0
 	end
 	
@@ -340,41 +340,41 @@ class InputDevice
 	 * Same as buttonMatchingKeyChar(int) but allows to distinguish between multiple
 	 * keys of the same type, for example left and right shift key.
 	 */
-	public func int buttonMatchingKeyChar(int character, InputEventKeyLocation location)
+	func int buttonMatchingKeyChar(int character, InputEventKeyLocation location)
 		return 0
 	end
 	
 	
 	
 	/** \brief Device pose position relative to tracking reference coordinate frame. */
-	public func Vector getDevicePosePosition()
+	func Vector getDevicePosePosition()
 		return null
 	end
 	
 	/** \brief Device pose orientation relative to tracking reference coordinate frame. */
-	public func Quaternion getDevicePoseOrientation()
+	func Quaternion getDevicePoseOrientation()
 		return null
 	end
 	
 	/** \brief Device pose linear velocity relative to tracking reference coordinate frame. */
-	public func Vector getDevicePoseLinearVelocity()
+	func Vector getDevicePoseLinearVelocity()
 		return null
 	end
 	
 	/** \brief Device pose angular velocity relative to tracking reference coordinate frame. */
-	public func Vector getDevicePoseAngularVelocity()
+	func Vector getDevicePoseAngularVelocity()
 		return null
 	end
 	
 	/** \brief Device pose matrix relative to tracking reference coordinate frame. */
-	public func Matrix getDevicePoseMatrix()
+	func Matrix getDevicePoseMatrix()
 		return null
 	end
 	
 	
 	
 	/** \brief Count of device bone pose positions. */
-	public func int getDeviceBonePoseCount()
+	func int getDeviceBonePoseCount()
 		return 0
 	end
 	
@@ -385,7 +385,7 @@ class InputDevice
 	 *                       real hand position. If false remaps the position to simulate
 	 *                       not holding the controller in hand.
 	 */
-	public func Vector getDeviceBonePosePosition(int bone, bool withController)
+	func Vector getDeviceBonePosePosition(int bone, bool withController)
 		return null
 	end
 	
@@ -395,7 +395,7 @@ class InputDevice
 	 *                       real hand position. If false remaps the position to simulate
 	 *                       not holding the controller in hand.
 	 */
-	public func Quaternion getDeviceBonePoseOrientation(int bone, bool withController)
+	func Quaternion getDeviceBonePoseOrientation(int bone, bool withController)
 		return null
 	end
 	
@@ -405,7 +405,7 @@ class InputDevice
 	 *                       real hand position. If false remaps the position to simulate
 	 *                       not holding the controller in hand.
 	 */
-	public func Matrix getDeviceBonePoseMatrix(int bone, bool withController)
+	func Matrix getDeviceBonePoseMatrix(int bone, bool withController)
 		return null
 	end
 	
@@ -414,7 +414,7 @@ class InputDevice
 	/**
 	 * \brief Count of device face expressions.
 	 */
-	public func int getDeviceFaceExpressionCount()
+	func int getDeviceFaceExpressionCount()
 		return 0
 	end
 	
@@ -422,7 +422,7 @@ class InputDevice
 	 * \brief Device face expression.
 	 * \param index Index of face expression. Use InputDeviceFaceExpression constants.
 	 */
-	public func float getDeviceFaceExpressionAt(int index)
+	func float getDeviceFaceExpressionAt(int index)
 		return null
 	end
 	/*@}*/

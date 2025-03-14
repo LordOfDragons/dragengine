@@ -172,12 +172,16 @@ void deAndroidInput::CleanUp(){
 
 
 decPoint deAndroidInput::GetScreenSize() const{
-	if( ! pOSAndroid ){
-		return decPoint( 1024, 768 );
+	const deRenderWindow * const window = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	if(window){
+		return decPoint(window->GetWidth(), window->GetHeight());
 	}
 	
-	const decPoint &res = pOSAndroid->GetDisplayCurrentResolution( 0 );
-	return decPoint( res.x, res.y );
+	if(pOSAndroid){
+		return pOSAndroid->GetDisplayCurrentResolution(0);
+	}
+	
+	return decPoint(640, 1400);
 }
 
 
@@ -295,250 +299,15 @@ void deAndroidInput::ScreenSizeChanged(){
 	pOverlaySystem->ScreenSizeChanged();
 }
 
-void deAndroidInput::EventLoop( const AInputEvent &event ){
-	timeval eventTime;
-	eventTime.tv_sec = 0; //( time_t )( event.xkey.time / 1000 );
-	eventTime.tv_usec = 0; //( suseconds_t )( ( event.xkey.time % 1000 ) * 1000 );
+void deAndroidInput::EventLoop(const android_input_buffer &inputBuffer){
+	uint64_t i;
 	
-	switch( AInputEvent_getType( &event ) ){
-	case AINPUT_EVENT_TYPE_KEY:{
-		const int key = AKeyEvent_getKeyCode( &event );
-		
-		switch( AKeyEvent_getAction( &event ) ){
-		case AKEY_EVENT_ACTION_DOWN:{
-			if( key < 0 || key > 255 ){
-				break;
-			}
-			if( pKeyStates[ key ] ){
-				break;
-			}
-			pKeyStates[ key ] = true;
-			
-			const int button = pDevices->GetKeyboard()->IndexOfButtonWithAICode( key );
-			if( button == -1 ){
-				break;
-			}
-			
-			deaiDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt( button );
-			ab.SetPressed( true );
-			
-			AddKeyPress( pDevices->GetKeyboard()->GetIndex(), button,
-				ab.GetAIChar(), ab.GetKeyCode(), eventTime );
-			}break;
-			
-		case AKEY_EVENT_ACTION_UP:{
-			if( key < 0 || key > 255 ){
-				break;
-			}
-			if( ! pKeyStates[ key ] ){
-				break;
-			}
-			pKeyStates[ key ] = false;
-			
-			const int button = pDevices->GetKeyboard()->IndexOfButtonWithAICode( key );
-			if( button == -1 ){
-				break;
-			}
-			
-			deaiDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt( button );
-			ab.SetPressed( false );
-			
-			AddKeyRelease( pDevices->GetKeyboard()->GetIndex(), button,
-				ab.GetAIChar(), ab.GetKeyCode(), eventTime );
-			}break;
-			
-		case AKEY_EVENT_ACTION_MULTIPLE:
-			 // Multiple duplicate key events have occurred in a row, or a complex string is
-			 // being delivered.  The repeat_count property of the key event contains the number
-			 // of times the given key code should be executed.
-			break;
-			
-		default:
-			break;
-		}
-		}break;
-		
-	case AINPUT_EVENT_TYPE_MOTION:
-		switch( AMotionEvent_getAction( &event ) & AMOTION_EVENT_ACTION_MASK ){
-		case AMOTION_EVENT_ACTION_DOWN:{
-			const int pointerId = AMotionEvent_getPointerId( &event, 0 );
-			const int x = AMotionEvent_getX( &event, 0 );
-			const int y = AMotionEvent_getY( &event, 0 );
-			
-			if( pOverlaySystem->OnTouch( pointerId, decPoint( x, y ) ) ){
-				break;
-			}
-			
-			const int modifiers = pModifiersFromEvent( event );
-			const int dx = x - pLastMouseX;
-			const int dy = y - pLastMouseY;
-			
-			pPointerMouse = pointerId;
-			
-			if( dx != 0 || dy != 0 ){
-				AddMouseMove( pDevices->GetMouse()->GetIndex(), modifiers, dx, dy, eventTime );
-			}
-			
-			//const int buttonstate = AMotionEvent_getButtonState( &event );
-			//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
-			const int button = 0;  // always simulate left button
-			deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt( button );
-			ab.SetPressed( true );
-			
-			AddMousePress( pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime );
-			
-			}break;
-			
-		case AMOTION_EVENT_ACTION_UP:{
-			const int pointerId = AMotionEvent_getPointerId( &event, 0 );
-			
-			pOverlaySystem->OnRelease( pointerId );
-			
-			if( pPointerMouse == -1 ){
-				break;
-			}
-			
-			const int modifiers = pModifiersFromEvent( event );
-			const int x = AMotionEvent_getX( &event, 0 );
-			const int y = AMotionEvent_getY( &event, 0 );
-			const int dx = x - pLastMouseX;
-			const int dy = y - pLastMouseY;
-			
-			if( dx != 0 || dy != 0 ){
-				AddMouseMove( pDevices->GetMouse()->GetIndex(), modifiers, dx, dy, eventTime );
-			}
-			
-			//const int buttonstate = AMotionEvent_getButtonState( &event );
-			//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
-			const int button = 0;  // always simulate left button
-			deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt( button );
-			ab.SetPressed( false );
-			
-			AddMouseRelease( pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime );
-			
-			pPointerMouse = -1;
-			
-			}break;
-			
-		case AMOTION_EVENT_ACTION_MOVE:{ // movement while touching screen
-			const int pointerCount = AMotionEvent_getPointerCount( &event );
-			int i;
-			
-			for( i=0; i<pointerCount; i++ ){
-				const int x = AMotionEvent_getX( &event, i );
-				const int y = AMotionEvent_getY( &event, i );
-				const int pointerId = AMotionEvent_getPointerId( &event, i );
-				
-				pOverlaySystem->OnMove( pointerId, decPoint( x, y ) );
-				
-				if( pointerId != pPointerMouse ){
-					continue;
-				}
-				
-				const int dx = x - pLastMouseX;
-				const int dy = y - pLastMouseY;
-				
-				if( dx != 0 || dy != 0 ){
-					AddMouseMove( pDevices->GetMouse()->GetIndex(),
-						pModifiersFromEvent( event ), dx, dy, eventTime );
-				}
-			}
-			
-			}break;
-			
-		case AMOTION_EVENT_ACTION_HOVER_MOVE: // movement while not touching screen
-			LogInfo( "AMOTION_EVENT_ACTION_HOVER_MOVE" );
-			// these are absolute positions. need to track difference to previous values
-			// most probably has to use AMotionEvent_getHistoricalX, AMotionEvent_getHistoricalY
-			// and AMotionEvent_getHistorySize, whereas history exists only for MOVE not HOVER_MOVE
-			//engine->state.x = AMotionEvent_getX(event, 0);
-			//engine->state.y = AMotionEvent_getY(event, 0);
-			break;
-			
-		case AMOTION_EVENT_ACTION_CANCEL:
-			// gesture stopped. documentation claims this is the same as AMOTION_EVENT_ACTION_UP
-			// but no action should be done like in that case. no idea what this is supposed to mean
-			LogInfo( "AMOTION_EVENT_ACTION_CANCEL" );
-			break;
-			
-		case AMOTION_EVENT_ACTION_OUTSIDE:
-			// movement outside of the screen. can this be called between up and down?
-			LogInfo( "AMOTION_EVENT_ACTION_OUTSIDE" );
-			break;
-			
-		case AMOTION_EVENT_ACTION_POINTER_DOWN:{
-			const int pointerIndex = ( AMotionEvent_getAction( &event ) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK )
-				>> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-			const int pointerId = AMotionEvent_getPointerId( &event, pointerIndex );
-			const int x = AMotionEvent_getX( &event, pointerIndex );
-			const int y = AMotionEvent_getY( &event, pointerIndex );
-			
-			pOverlaySystem->OnTouch( pointerId, decPoint( x, y ) );
-			
-			}break;
-			
-		case AMOTION_EVENT_ACTION_POINTER_UP:{
-			const int pointerIndex = ( AMotionEvent_getAction( &event ) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK )
-				>> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-			const int pointerId = AMotionEvent_getPointerId( &event, pointerIndex );
-			
-			pOverlaySystem->OnRelease( pointerId );
-			
-			if( pointerId != pPointerMouse ){
-				break;
-			}
-			
-			const int modifiers = pModifiersFromEvent( event );
-			const int x = AMotionEvent_getX( &event, pointerIndex );
-			const int y = AMotionEvent_getY( &event, pointerIndex );
-			const int dx = x - pLastMouseX;
-			const int dy = y - pLastMouseY;
-			
-			if( dx != 0 || dy != 0 ){
-				AddMouseMove( pDevices->GetMouse()->GetIndex(), modifiers, dx, dy, eventTime );
-			}
-			
-			//const int buttonstate = AMotionEvent_getButtonState( &event );
-			//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
-			const int button = 0;  // always simulate left button
-			deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt( button );
-			ab.SetPressed( false );
-			
-			AddMouseRelease( pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime );
-			
-			pPointerMouse = -1;
-			
-			}break;
-			
-		case AMOTION_EVENT_ACTION_SCROLL:
-			// The motion event contains relative vertical and/or horizontal scroll offsets.
-			// Use getAxisValue to retrieve the information from AMOTION_EVENT_AXIS_VSCROLL
-			// and AMOTION_EVENT_AXIS_HSCROLL.
-			// The pointer may or may not be down when this event is dispatched.
-			// This action is always delivered to the winder under the pointer, which
-			// may not be the window currently touched.
-			LogInfoFormat( "AMOTION_EVENT_ACTION_SCROLL axisX=%f axisY=%f",
-				AMotionEvent_getAxisValue( &event, AMOTION_EVENT_AXIS_HSCROLL, 0 ),
-				AMotionEvent_getAxisValue( &event, AMOTION_EVENT_AXIS_VSCROLL, 0 ) );
-			break;
-			
-		case AMOTION_EVENT_ACTION_HOVER_ENTER:
-			// not touching but enternig window
-			LogInfo( "AMOTION_EVENT_ACTION_HOVER_ENTER" );
-			break;
-			
-		case AMOTION_EVENT_ACTION_HOVER_EXIT:
-			// not touching but enternig window
-			LogInfo( "AMOTION_EVENT_ACTION_HOVER_EXIT" );
-			break;
-			
-		default:
-			break;
-		}
-		break;
-		
-	default:
-		break;
+	for(i=0; i<inputBuffer.keyEventsCount; i++){
+		pProcessKeyEvent(inputBuffer.keyEvents[i]);
+	}
+	
+	for (i=0; i<inputBuffer.motionEventsCount; ++i){
+		pProcessMotionEvent(inputBuffer.motionEvents[i]);
 	}
 }
 
@@ -616,22 +385,31 @@ const timeval &eventTime ){
 	pMouseButtons &= ~( 1 << button );
 }
 
-void deAndroidInput::AddMouseMove( int device, int state, int x, int y, const timeval &eventTime ){
+void deAndroidInput::AddMouseMove(int device, int state, const decPoint &distance,
+const timeval &eventTime){
 	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
 	deInputEvent event;
 	
-	event.SetType( deInputEvent::eeMouseMove );
-	event.SetDevice( device );
-	event.SetCode( pMouseButtons );
-	event.SetState( 0 ); // code of x axis. y axis has to be code + 1
-	event.SetX( x );
-	event.SetY( y );
-	event.SetTime( eventTime );
-	queue.AddEvent( event );
+	pLastMouse = (pLastMouse + distance).
+		Largest(decPoint()).
+		Smallest(GetScreenSize() - decPoint(1, 1));
 	
-	const decPoint &res = pOSAndroid->GetDisplayCurrentResolution( 0 );
-	pLastMouseX = decMath::clamp( pLastMouseX + x, 0, res.x - 1 );
-	pLastMouseY = decMath::clamp( pLastMouseY + y, 0, res.y - 1 );
+	event.SetType(deInputEvent::eeMouseMove);
+	event.SetDevice(device);
+	event.SetCode(pMouseButtons);
+	event.SetState(0); // code of x axis. y axis has to be code + 1
+	
+	if(GetGameEngine()->GetInputSystem()->GetCaptureInputDevices()){
+		event.SetX(distance.x);
+		event.SetY(distance.y);
+		
+	}else{
+		event.SetX(pLastMouse.x);
+		event.SetY(pLastMouse.y);
+	}
+	
+	event.SetTime(eventTime);
+	queue.AddEvent(event);
 }
 
 void deAndroidInput::AddAxisChanged( int device, int axis, float value, const timeval &eventTime ){
@@ -673,27 +451,290 @@ void deAndroidInput::AddButtonReleased( int device, int button, const timeval &e
 // Private Functions
 //////////////////////
 
+timeval deAndroidInput::pConvertEventTime(int64_t time) const{
+	timeval eventTime{};
+	eventTime.tv_sec = (time_t)(time / (int64_t)1000000000);
+	eventTime.tv_usec = (suseconds_t)((time % (int64_t)1000000000) * (int64_t)1000);
+	return eventTime;
+}
+
+void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
+	bool doController = false;
+	
+	if (doController) {
+		// if(Paddleboat_processGameActivityKeyInputEvent(event, sizeof(GameActivityKeyEvent))){
+		//    return;
+		// }
+	}
+	
+	const timeval eventTime = pConvertEventTime(event.eventTime);
+	const int key = (int)event.keyCode;
+	
+	switch(event.action){
+	case AKEY_EVENT_ACTION_DOWN:{
+		if(key < 0 || key > 255){
+			break;
+		}
+		if(pKeyStates[key]){
+			break;
+		}
+		pKeyStates[key] = true;
+		
+		const int button = pDevices->GetKeyboard()->IndexOfButtonWithAICode(key);
+		if(button == -1){
+			break;
+		}
+		
+		deaiDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		ab.SetPressed(true);
+		
+		AddKeyPress(pDevices->GetKeyboard()->GetIndex(), button,
+			ab.GetAIChar(), ab.GetKeyCode(), eventTime);
+		}break;
+		
+	case AKEY_EVENT_ACTION_UP:{
+		if(key < 0 || key > 255){
+			break;
+		}
+		if(!pKeyStates[key]){
+			break;
+		}
+		pKeyStates[key] = false;
+		
+		const int button = pDevices->GetKeyboard()->IndexOfButtonWithAICode(key);
+		if(button == -1){
+			break;
+		}
+		
+		deaiDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		ab.SetPressed(false);
+		
+		AddKeyRelease(pDevices->GetKeyboard()->GetIndex(), button,
+			ab.GetAIChar(), ab.GetKeyCode(), eventTime);
+		}break;
+		
+	case AKEY_EVENT_ACTION_MULTIPLE:
+		break;
+		
+	default:
+		break;
+	}
+}
+
+void deAndroidInput::pProcessMotionEvent(const GameActivityMotionEvent &event){
+	if(event.pointerCount == 0){
+		return;
+	}
+	
+	switch(event.source){
+	case AINPUT_SOURCE_TOUCHSCREEN:
+		pProcessMotionEventTouchScreen(event);
+		break;
+		
+	default:
+		break;
+	}
+}
+
+void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEvent &event){
+	const timeval eventTime = pConvertEventTime(event.eventTime);
+	const int action = event.action;
+	const int actionMasked = action & AMOTION_EVENT_ACTION_MASK;
+	
+	switch(actionMasked){
+	case AMOTION_EVENT_ACTION_DOWN:{
+		const int pointerId = (int)event.pointers[0].id;
+		const decPoint position(pPointerPosition(event.pointers[0]));
+		LogInfoFormat("DOWN: (%d,%d)", position.x, position.y);
+		if(pOverlaySystem->OnTouch(pointerId, position)){
+			break;
+		}
+		
+		const int modifiers = pModifiersFromMetaState(event.metaState);
+		const decPoint distance(position - pLastMouse);
+		
+		pPointerMouse = pointerId;
+		
+		if(distance != decPoint()){
+			AddMouseMove(pDevices->GetMouse()->GetIndex(), modifiers, distance, eventTime);
+		}
+		
+		//const int buttonstate = AMotionEvent_getButtonState( &event );
+		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
+		const int button = 0; // always simulate left button
+		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		ab.SetPressed(true);
+		
+		AddMousePress(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
+		}break;
+		
+	case AMOTION_EVENT_ACTION_UP:{
+		const int pointerId = (int)event.pointers[0].id;
+		pOverlaySystem->OnRelease(pointerId);
+		
+		if(pPointerMouse == -1){
+			break;
+		}
+		
+		const int modifiers = pModifiersFromMetaState(event.metaState);
+		const decPoint position(pPointerPosition(event.pointers[0]));
+		LogInfoFormat("UP: (%d,%d)", position.x, position.y);
+		const decPoint distance(position - pLastMouse);
+		
+		if(distance != decPoint()){
+			AddMouseMove(pDevices->GetMouse()->GetIndex(), modifiers, distance, eventTime);
+		}
+		
+		//const int buttonstate = AMotionEvent_getButtonState( &event );
+		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
+		const int button = 0; // always simulate left button
+		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		ab.SetPressed(false);
+		
+		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
+		pPointerMouse = -1;
+		}break;
+		
+	case AMOTION_EVENT_ACTION_MOVE:{ // movement while touching screen
+		int i;
+		for(i=0; i<event.pointerCount; i++){
+			const decPoint position(pPointerPosition(event.pointers[i]));
+			const int pointerId = (int)event.pointers[i].id;
+			LogInfoFormat("MOVE[%d:%d]: (%d,%d)", i, pointerId, position.x, position.y);
+			
+			pOverlaySystem->OnMove(pointerId, position);
+			
+			if(pointerId != pPointerMouse){
+				continue;
+			}
+			
+			const decPoint distance(position - pLastMouse);
+			
+			if(distance != decPoint()){
+				const int modifiers = pModifiersFromMetaState(event.metaState);
+				AddMouseMove(pDevices->GetMouse()->GetIndex(), modifiers, distance, eventTime);
+			}
+		}
+		}break;
+		
+	case AMOTION_EVENT_ACTION_HOVER_MOVE: // movement while not touching screen
+		LogInfo("AMOTION_EVENT_ACTION_HOVER_MOVE");
+		// these are absolute positions. need to track difference to previous values
+		// most probably has to use AMotionEvent_getHistoricalX, AMotionEvent_getHistoricalY
+		// and AMotionEvent_getHistorySize, whereas history exists only for MOVE not HOVER_MOVE
+		//engine->state.x = AMotionEvent_getX(event, 0);
+		//engine->state.y = AMotionEvent_getY(event, 0);
+		break;
+		
+	case AMOTION_EVENT_ACTION_CANCEL:
+		// gesture stopped. documentation claims this is the same as AMOTION_EVENT_ACTION_UP
+		// but no action should be done like in that case. no idea what this is supposed to mean
+		LogInfo("AMOTION_EVENT_ACTION_CANCEL");
+		break;
+		
+	case AMOTION_EVENT_ACTION_OUTSIDE:
+		// movement outside of the screen. can this be called between up and down?
+		LogInfo("AMOTION_EVENT_ACTION_OUTSIDE");
+		break;
+		
+	case AMOTION_EVENT_ACTION_POINTER_DOWN:{
+		const int pointerIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)
+			>> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+		if(pointerIndex < 0 || pointerIndex >= GAMEACTIVITY_MAX_NUM_POINTERS_IN_MOTION_EVENT){
+			break;
+		}
+		
+		const int pointerId = (int)event.pointers[pointerIndex].id;
+		const decPoint position(pPointerPosition(event.pointers[pointerIndex]));
+		LogInfoFormat("POINTER-DOWN[%d:%d]: (%d,%d)", pointerIndex, pointerId, position.x, position.y);
+		pOverlaySystem->OnTouch(pointerId, position);
+		}break;
+		
+	case AMOTION_EVENT_ACTION_POINTER_UP:{
+		const int pointerIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK)
+			>> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+		if(pointerIndex < 0 || pointerIndex >= GAMEACTIVITY_MAX_NUM_POINTERS_IN_MOTION_EVENT){
+			break;
+		}
+		
+		const int pointerId = (int)event.pointers[pointerIndex].id;
+		pOverlaySystem->OnRelease(pointerId);
+		
+		if(pointerId != pPointerMouse){
+			break;
+		}
+		
+		const int modifiers = pModifiersFromMetaState(event.metaState);
+		const decPoint position(pPointerPosition(event.pointers[pointerIndex]));
+		LogInfoFormat("POINTER-UP[%d:%d]: (%d,%d)", pointerIndex, pointerId, position.x, position.y);
+		const decPoint distance(position - pLastMouse);
+		
+		if(distance != decPoint()){
+			AddMouseMove(pDevices->GetMouse()->GetIndex(), modifiers, distance, eventTime);
+		}
+		
+		//const int buttonstate = AMotionEvent_getButtonState( &event );
+		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
+		const int button = 0; // always simulate left button
+		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		ab.SetPressed(false);
+		
+		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
+		pPointerMouse = -1;
+		}break;
+		
+	case AMOTION_EVENT_ACTION_SCROLL:
+		// The motion event contains relative vertical and/or horizontal scroll offsets.
+		// Use getAxisValue to retrieve the information from AMOTION_EVENT_AXIS_VSCROLL
+		// and AMOTION_EVENT_AXIS_HSCROLL.
+		// The pointer may or may not be down when this event is dispatched.
+		// This action is always delivered to the winder under the pointer, which
+		// may not be the window currently touched.
+		LogInfoFormat("AMOTION_EVENT_ACTION_SCROLL axisX=%f axisY=%f",
+			event.pointers[0].axisValues[0], event.pointers[0].axisValues[1]);
+		break;
+		
+	case AMOTION_EVENT_ACTION_HOVER_ENTER:
+		// not touching but enternig window
+		LogInfo("AMOTION_EVENT_ACTION_HOVER_ENTER");
+		break;
+		
+	case AMOTION_EVENT_ACTION_HOVER_EXIT:
+		// not touching but enternig window
+		LogInfo("AMOTION_EVENT_ACTION_HOVER_EXIT");
+		break;
+		
+	default:
+		break;
+	}
+}
+
 void deAndroidInput::pCenterPointer(){
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
 	if( ! renderWindow ){
 		return;
 	}
 	
-	pLastMouseX = renderWindow->GetWidth() >> 1;
-	pLastMouseY = renderWindow->GetHeight() >> 1;
+	pLastMouse.x = renderWindow->GetWidth() >> 1;
+	pLastMouse.y = renderWindow->GetHeight() >> 1;
 }
 
-int deAndroidInput::pModifiersFromEvent( const AInputEvent &event ) const{
-	const int metastate = AMotionEvent_getMetaState( &event );
+decPoint deAndroidInput::pPointerPosition(const GameActivityPointerAxes &pointer) const{
+	// rawX and rawY seems to miss system bar offsets. the axis values seem to include them
+	//return decPoint((int)(pointer.rawX + 0.5f), (int)(pointer.rawY + 0.5f));
+	return decPoint((int)(pointer.axisValues[0] + 0.5f), (int)(pointer.axisValues[1] + 0.5f));
+}
+
+int deAndroidInput::pModifiersFromMetaState(int32_t metaState) const{
 	int modifiers = deInputEvent::esmNone;
 	
-	if( ( metastate & AMETA_SHIFT_ON ) ==  AMETA_SHIFT_ON ){
+	if((metaState & AMETA_SHIFT_ON) == AMETA_SHIFT_ON){
 		modifiers |= deInputEvent::esmShift;
 	}
-	if( ( metastate & AMETA_CTRL_ON ) ==  AMETA_CTRL_ON ){
+	if((metaState & AMETA_CTRL_ON) == AMETA_CTRL_ON){
 		modifiers |= deInputEvent::esmControl;
 	}
-	if( ( metastate & AMETA_ALT_ON ) ==  AMETA_ALT_ON ){
+	if((metaState & AMETA_ALT_ON) == AMETA_ALT_ON){
 		modifiers |= deInputEvent::esmAlt;
 	}
 	

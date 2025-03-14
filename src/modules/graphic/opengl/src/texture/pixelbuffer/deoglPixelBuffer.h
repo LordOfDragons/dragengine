@@ -59,6 +59,8 @@ public:
 		epfFloat3,
 		/** 4 component float format (sFloat4). */
 		epfFloat4,
+		/** 1 component integer (32-bit) format (sInt1). */
+		epfInt1,
 		/** Depth format (sDepth). */
 		epfDepth,
 		/** Stencil format (sStencil). */
@@ -123,6 +125,11 @@ public:
 		GLfloat g;
 		GLfloat b;
 		GLfloat a;
+	};
+	
+	/** 1 component integer format. */
+	struct sInt1{
+		GLuint r;
 	};
 	
 	/** Depth format. */
@@ -244,6 +251,8 @@ public:
 	sFloat3 *GetPointerFloat3() const;
 	/** Retrieves the sFloat4 data pointer if the format is epfFloat4 or otherwise throws an exception. */
 	sFloat4 *GetPointerFloat4() const;
+	/** Retrieves the sInt1 data pointer if the format is epfInt1 or otherwise throws an exception. */
+	sInt1 *GetPointerInt1() const;
 	/** Retrieves the sDepth data pointer if the format is epfDepth or otherwise throws an exception. */
 	sDepth *GetPointerDepth() const;
 	/** Retrieves the sStencil data pointer if the format is epfStencil or otherwise throws an exception. */
@@ -258,7 +267,11 @@ public:
 	/** Sets the pixel data to a uniform color. */
 	void SetToIntColor( int red, int green, int blue, int alpha );
 	/** Sets the pixel data to a uniform color. */
+	void SetToUIntColor( unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha );
+	/** Sets the pixel data to a uniform color. */
 	void SetToFloatColor( float red, float green, float blue, float alpha );
+	/** Sets the pixel data to a uniform depth/stencil. */
+	void SetToDepthStencil(float depth, int stencil);
 	
 	/** Retrieves the opengl pixel format required to exchange data with an opengl texture. */
 	inline GLenum GetGLPixelFormat() const{ return pGLPixelFormat; }

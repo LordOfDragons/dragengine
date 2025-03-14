@@ -102,6 +102,8 @@ pin Dragengine.TriggerSystem
  * \endcode
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_animated
  */
 class ECBehaviorAnimated extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -180,6 +182,67 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		/** \brief Create listener. */
 		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorComponent
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAnimated'>
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 * 
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values. default is 'default' -->
+	 *   <string name='triggerTable'>default</string>
+	 * 
+	 *   <!-- optional: use named controller instead of first controller. default is empty string -->
+	 *   <string name='controllerName'>playback</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorAnimated' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAnimated"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorAnimated behavior = ECBehaviorAnimated.new(eclass,\
+				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
+				BaseGameApp.getApp().getLoaders(),\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			behavior.setControllerName(parameters.getAt("controllerName", null) cast String)
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "animated", id)
+			return behavior
+		end
+		
+		/**
+		 * \brief Trigger table matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func TSTriggerTable getTriggerTableFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 	end
 	
@@ -637,7 +700,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable(TSTriggerTable triggerTable)
+	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
 	end
 	

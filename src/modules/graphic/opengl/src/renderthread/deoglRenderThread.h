@@ -32,8 +32,10 @@
 #include "../memory/deoglMemoryManager.h"
 #include "../pipeline/deoglPipelineManager.h"
 
-#include <deSharedVulkan.h>
-#include <devkDevice.h>
+#ifdef BACKEND_OPENGL
+	#include <deSharedVulkan.h>
+	#include <devkDevice.h>
+#endif
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -148,8 +150,10 @@ private:
 	deoglRTUniqueKey *pUniqueKey;
 	deoglOcclusionTestPool *pOcclusionTestPool;
 	
+#ifdef BACKEND_OPENGL
 	deSharedVulkan::Ref pVulkan;
 	devkDevice::Ref pVulkanDevice;
+#endif
 	
 	decTimeHistory pTimeHistoryMain; // main thread
 	decTimeHistory pTimeHistoryRender; // render thread
@@ -382,11 +386,13 @@ public:
 	
 	
 	
+#ifdef BACKEND_OPENGL
 	/** Vulkan if present. */
 	inline deSharedVulkan *GetVulkan() const{ return pVulkan; }
 	
 	/** Vulkan device if present. */
 	inline const devkDevice::Ref &GetVulkanDevice() const{ return pVulkanDevice; }
+#endif
 	
 	
 	

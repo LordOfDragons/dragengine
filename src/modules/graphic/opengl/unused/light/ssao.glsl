@@ -40,7 +40,7 @@ float occlusion( in vec2 tc, in int layer, in float level, in vec3 position, in 
 	
 	float slen = max( length( spos ), pSSAOEpsilon );
 	
-	return clamp( mix( 0, ( dot( normal, spos ) / slen ) - pSSAOSelfOcclusion, slen < pTapRadiusInfluence ), 0, 1 );
+	return clamp( mix( 0.0, ( dot( normal, spos ) / slen ) - pSSAOSelfOcclusion, slen < pTapRadiusInfluence ), 0.0, 1.0 );
 }
 
 
@@ -49,7 +49,7 @@ float screenSpaceAO( in ivec3 fragCoord, in vec2 texCoord, in vec3 position, in 
 	float c1 = dot( vec2( fragCoord % ivec2( 23 ) ), vec2( 21, 19 ) ) * 3;
 	vec2 factor1 = vec2( 1, 0.5 ) / vec2( tapCount );
 	
-	float occaccum = 0;
+	float occaccum = 0.0;
 	int i;
 	
 	for( i=0; i<tapCount; i++ ){
@@ -63,7 +63,7 @@ float screenSpaceAO( in ivec3 fragCoord, in vec2 texCoord, in vec3 position, in 
 		occaccum += occlusion( texCoord + tcoff, fragCoord.z, level, position, normal );
 	}
 	
-	return clamp( 1.0 - occaccum * pSSAOScale / float( tapCount ), 0, 1 );
+	return clamp( 1.0 - occaccum * pSSAOScale / float( tapCount ), 0.0, 1.0 );
 	//return clamp( 1.0 - occaccum * pSSAOScale / ( float( tapCount ) * pSSAOSelfOcclusion ), 0, 1 );
 	// // this version scales by the self occlusion since with larger self occlusion values images get brighter
 }

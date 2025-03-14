@@ -42,7 +42,7 @@ uint calcLodProjection( in uint index ){
 	float elementDistance = dot( center - pCameraPosition, pCameraView ) - radius;
 	
 	uint lodLevel = uint( 0 );
-	if( elementDistance > 1 ){
+	if( elementDistance > 1.0 ){
 		lodLevel = calcLodMaxError( index, pLodFactor[ 0 ] * elementDistance );
 	}
 	return min( lodLevel + pLodOffset, pElement[ index ].highestLod );

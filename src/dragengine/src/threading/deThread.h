@@ -106,6 +106,15 @@ public:
 	
 	
 	
+protected:
+	/**
+	 * \brief State mutex.
+	 * 
+	 * Locked while changing thread state.
+	 */
+	inline deMutex &GetMutexState(){ return pMutexState; }
+	
+	
 private:
 	#if defined OS_UNIX || defined OS_BEOS
 	static void *pThreadRunner( void *parameter );

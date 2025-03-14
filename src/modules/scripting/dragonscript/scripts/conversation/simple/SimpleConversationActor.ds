@@ -1,0 +1,201 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.ConversationSystem
+
+
+/**
+ * \brief Simple conversation actor definition.
+ * \version 1.25
+ * 
+ * Defines initial parameters to use when switching to an actor speaking.
+ */
+class SimpleConversationActor
+	var StringID pId
+	var StringID pActorId
+	var StringID pCamera
+	var StringID pStyle
+	var float pDelay, pProlongLastGesture
+	var bool pUseSpeechAnimation
+	var Array pGestures
+	var StringID pFacePose, pLookAt
+	
+	
+	/** \brief Create simple conversation camera definition. */
+	func new(StringID id)
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		
+		pId = id
+		pDelay = 0.25
+		pProlongLastGesture = 0.25
+		pUseSpeechAnimation = true
+		pGestures = Array.new()
+	end
+	
+	/** \brief Create copy of simple conversation camera definition. */
+	func new(SimpleConversationActor actor)
+		pId = actor.pId
+		pActorId = actor.pActorId
+		pCamera = actor.pCamera
+		pStyle = actor.pStyle
+		pDelay = actor.pDelay
+		pProlongLastGesture = actor.pProlongLastGesture
+		pUseSpeechAnimation = actor.pUseSpeechAnimation
+		pGestures = Array.new(pGestures)
+		pFacePose = actor.pFacePose
+		pLookAt = actor.pLookAt
+	end
+	
+	
+	/** \brief Identifier. */
+	func StringID getId()
+		return pId
+	end
+	
+	/** \brief Conversation actor identifier or alias. */
+	func StringID getActorId()
+		return pActorId
+	end
+	
+	/** \brief Set conversation actor identifier or alias. */
+	func void setActorId(StringID identifier)
+		if identifier == null
+			throw ENullPointer.new("identifier")
+		end
+		pActorId = identifier
+	end
+	
+	/** \brief Identifier of camera to switch to. */
+	func StringID getCamera()
+		return pCamera
+	end
+	
+	/** \brief Set identifier of camera to switch to. */
+	func void setCamera(StringID camera)
+		if camera == null
+			throw ENullPointer.new("camera")
+		end
+		pCamera = camera
+	end
+	
+	/** \brief Text box text style or null. */
+	func StringID getStyle()
+		return pStyle
+	end
+	
+	/** \brief Set text box text style or null. */
+	func void setStyle(StringID style)
+		pStyle = style
+	end
+	
+	/**
+	 * \brief Delay in seconds before activating action.
+	 * 
+	 * Default value is 0.25.
+	 */
+	func float getDelay()
+		return pDelay
+	end
+	
+	/** \brief Set delay in seconds before activating action. */
+	func void setDelay(float seconds)
+		pDelay = DEMath.max(seconds, 0.0)
+	end
+	
+	/**
+	 * \brief Amount of seconds to prolong last gesture beyond end of speech.
+	 * 
+	 * Default value is 0.25.
+	 */
+	func float getProlongLastGesture()
+		return pProlongLastGesture
+	end
+	
+	/** \brief Set amount of seconds to prolong last gesture beyond end of speech. */
+	func void setProlongLastGesture(float seconds)
+		pProlongLastGesture = DEMath.max(seconds, 0.0)
+	end
+	
+	/** \brief Speech animation is used for this action. */
+	func bool getUseSpeechAnimation()
+		return pUseSpeechAnimation
+	end
+	
+	/** \brief Set if speech animation is used for this action. */
+	func void setUseSpeechAnimation(bool useSpeechAnimation)
+		pUseSpeechAnimation = useSpeechAnimation
+	end
+	
+	
+	/** \brief Count of gestures. */
+	func int getGestureCount()
+		return pGestures.getCount()
+	end
+	
+	/** \brief Gesture at index. */
+	func StringID getGestureAt(int index)
+		return pGestures.getAt(index) cast StringID
+	end
+	
+	/**
+	 * \brief Visit gestures with block.
+	 * 
+	 * Block is required to have signature void(StringID gesture) or
+	 * void(int index, StringID gesture).
+	 */
+	func void forEachGesture(Block ablock)
+		pGestures.forEach(ablock)
+	end
+	
+	/** \brief Add gesture. */
+	func void addGesture(StringID gesture)
+		if gesture == null
+			throw ENullPointer.new()
+		end
+		pGestures.add(gesture)
+	end
+	
+	
+	/** \brief Face pose or null. */
+	func StringID getFacePose()
+		return pFacePose
+	end
+	
+	/** \brief Set face pose or null. */
+	func void setFacePose(StringID facePose)
+		pFacePose = facePose
+	end
+	
+	/** \brief Look-at or null. */
+	func StringID getLookAt()
+		return pLookAt
+	end
+	
+	/** \brief Set look-at or null. */
+	func void setLookAt(StringID lookAt)
+		pLookAt = lookAt
+	end
+end

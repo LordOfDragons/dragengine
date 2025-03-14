@@ -1,0 +1,20 @@
+{
+	"dragonscriptLanguage.scriptDirectories": [
+		"data/scripts"
+	],
+	"files.exclude": {
+		"build": true,
+		"cache": true,
+		"distribute": true,
+		"local": true
+	},
+	"files.watcherExclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/.hg/store/**": true,
+		"**/build/**": true,
+		"cache/**": true,
+		"distribute/**": true,
+		"local/**": true
+	}
+}

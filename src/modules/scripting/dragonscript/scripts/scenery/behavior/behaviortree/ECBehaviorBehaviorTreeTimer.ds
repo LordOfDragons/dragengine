@@ -130,6 +130,8 @@ pin Dragengine.Utils
  *    <condition>timer.finished</condition>
  * </action>
  * \endcode
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_behaviortreetimer
  */
 class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 	/** \brief Behavior tree Timer. */
@@ -194,6 +196,46 @@ class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 		/** \brief Remaining time is larger than 0. */
 		func bool hasNotElapsed()
 			return pRemaining > 0
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorBehaviorTree
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorBehaviorTreeTimer'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorBehaviorTreeTimer' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorBehaviorTreeTimer"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorBehaviorTreeTimer behavior = ECBehaviorBehaviorTreeTimer.new(eclass,\
+				eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "behaviorTreeTimer", id)
+			return behavior
 		end
 	end
 	

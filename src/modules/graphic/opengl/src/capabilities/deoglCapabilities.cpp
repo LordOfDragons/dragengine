@@ -66,13 +66,15 @@ pUBOOffsetAlignment( 4 ),
 pGeometryShaderMaxVertices( 0 ),
 pGeometryShaderMaxComponents( 0 ),
 pNumProgramBinaryFormats( 0 ),
+pMaxComputeWorkGroupInvocations(0),
 
 pATLUnbind( *this ),
 pUBOIndirectMatrixAccess( *this ),
 pClearEntireArrayTexture( *this ),
 pUBODirectLinkDeadloop( *this ),
 pFramebufferTextureSingle( *this ),
-pStd430( *this )
+pStd430( *this ),
+pRestrictedImageBufferFormats(false)
 {
 	const GLfloat fsquad[ 12 ] = {
 		0.0f, 1.0f,
@@ -125,15 +127,16 @@ deoglCapabilities::~deoglCapabilities(){
 
 void deoglCapabilities::DetectCapabilities(){
 	// NOTE not using OGL_CHECK in some places on purpose to not produce misleading error logs
-	#ifdef OS_ANDROID
-	deoglFramebuffer *framebuffer = NULL;
-	#endif
+	// #ifdef OS_ANDROID
+	// deoglFramebuffer *framebuffer = NULL;
+	// #endif
 	
 	deoglExtensions &ext = pRenderThread.GetExtensions();
 	deoglRTLogger &logger = pRenderThread.GetLogger();
-	GLint64 resultsInt64[ 2 ];
-	GLint resultsInt[ 2 ];
+	GLint64 resultsInt64[1];
+	GLint resultsInt[3];
 	GLuint fbo = 0;
+	int i;
 	
 	OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 ) );
 	
@@ -169,7 +172,8 @@ void deoglCapabilities::DetectCapabilities(){
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_BUFFER_SIZE, &resultsInt[ 0 ] ) );
 		pTBOMaxSize = ( int )resultsInt[ 0 ];
 		
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object)
+		|| ext.GetGLESVersion() >= deoglExtensions::evgles3p1){
 			if( pglGetInteger64v ){
 				OGL_CHECK( pRenderThread, pglGetInteger64v( GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt64[ 0 ] ) );
 				if( resultsInt64[ 0 ] > 0x7fffffff ){
@@ -191,10 +195,8 @@ void deoglCapabilities::DetectCapabilities(){
 			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
 			pSSBOMaxBlocksGeometry = ( int )resultsInt[ 0 ];
 			
-			if( ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader ) ){
-				OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
-				pSSBOMaxBlocksCompute = ( int )resultsInt[ 0 ];
-			}
+			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
+			pSSBOMaxBlocksCompute = ( int )resultsInt[ 0 ];
 		}
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_OUTPUT_VERTICES, &resultsInt[ 0 ] ) );
@@ -202,33 +204,45 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &resultsInt[ 0 ] ) );
 		pGeometryShaderMaxComponents = ( int )resultsInt[ 0 ];
-			
+		
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_get_program_binary ) ){
 			OGL_CHECK( pRenderThread, glGetIntegerv( GL_NUM_PROGRAM_BINARY_FORMATS, &resultsInt[ 0 ] ) );
 			pNumProgramBinaryFormats = ( int )resultsInt[ 0 ];
 		}
 		
-		// report capabilities
-		if( true ){
-			logger.LogInfo( "Capabilities:" );
-			logger.LogInfoFormat( "- Maximum texture size = %d", pMaxTextureSize );
-			logger.LogInfoFormat( "- Maximum 3D texture size = %d", pMax3DTextureSize );
-			logger.LogInfoFormat( "- Maximum draw buffers = %d", pMaxDrawBuffers );
-			logger.LogInfoFormat( "- UBO Maximum Bindings = %d", maxUBOBindings );
-			logger.LogInfoFormat( "- UBO Maximum Block Size = %d", pUBOMaxSize );
-			logger.LogInfoFormat( "- UBO Buffer Offset Alignment = %d", pUBOOffsetAlignment );
-			logger.LogInfoFormat( "- TBO Maximum Size = %d", pTBOMaxSize );
-			logger.LogInfoFormat( "- SSBO Maximum Size = %d", pSSBOMaxSize );
-			logger.LogInfoFormat( "- Count program binary formats = %d", pNumProgramBinaryFormats );
-			logger.LogInfo( "- SSBO Maximum Blocks Shader:" );
-			logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
-			logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );
-			logger.LogInfoFormat( "  - Fragment = %d", pSSBOMaxBlocksFragment );
-			logger.LogInfoFormat( "  - Compute = %d", pSSBOMaxBlocksCompute );
-			logger.LogInfo( "- Geometry Shader:" );
-			logger.LogInfoFormat( "  - Max Vertices = %d", pGeometryShaderMaxVertices );
-			logger.LogInfoFormat( "  - Max Components = %d", pGeometryShaderMaxComponents );
+		for(i=0; i<3; i++){
+			OGL_CHECK(pRenderThread, pglGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, i, &resultsInt[i]));
 		}
+		pMaxComputeWorkGroupSize.x = (int)resultsInt[0];
+		pMaxComputeWorkGroupSize.y = (int)resultsInt[1];
+		pMaxComputeWorkGroupSize.z = (int)resultsInt[2];
+		
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &resultsInt[0]));
+		pMaxComputeWorkGroupInvocations = (int)resultsInt[0];
+		
+		// report capabilities
+		logger.LogInfo( "Capabilities:" );
+		logger.LogInfoFormat( "- Maximum texture size = %d", pMaxTextureSize );
+		logger.LogInfoFormat( "- Maximum 3D texture size = %d", pMax3DTextureSize );
+		logger.LogInfoFormat( "- Maximum draw buffers = %d", pMaxDrawBuffers );
+		logger.LogInfoFormat( "- UBO Maximum Bindings = %d", maxUBOBindings );
+		logger.LogInfoFormat( "- UBO Maximum Block Size = %d", pUBOMaxSize );
+		logger.LogInfoFormat( "- UBO Buffer Offset Alignment = %d", pUBOOffsetAlignment );
+		logger.LogInfoFormat( "- TBO Maximum Size = %d", pTBOMaxSize );
+		logger.LogInfoFormat( "- SSBO Maximum Size = %d", pSSBOMaxSize );
+		logger.LogInfoFormat( "- Count program binary formats = %d", pNumProgramBinaryFormats );
+		logger.LogInfo( "- SSBO Maximum Blocks Shader:" );
+		logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
+		logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );
+		logger.LogInfoFormat( "  - Fragment = %d", pSSBOMaxBlocksFragment );
+		logger.LogInfoFormat( "  - Compute = %d", pSSBOMaxBlocksCompute );
+		logger.LogInfo( "- Geometry Shader:" );
+		logger.LogInfoFormat( "  - Max Vertices = %d", pGeometryShaderMaxVertices );
+		logger.LogInfoFormat( "  - Max Components = %d", pGeometryShaderMaxComponents );
+		logger.LogInfo( "- Compute Shader:" );
+		logger.LogInfoFormat("  - Max Work Group Size = x=%d y=%d z=%d",
+			pMaxComputeWorkGroupSize.x, pMaxComputeWorkGroupSize.y, pMaxComputeWorkGroupSize.z);
+		logger.LogInfoFormat("  - Max Work Group Invocations = %d", pMaxComputeWorkGroupInvocations);
 		
 		// hard fail if certain bugs are present we can not fix
 		if( ( pUBOOffsetAlignment % 4 ) != 0 ){
@@ -237,9 +251,8 @@ void deoglCapabilities::DetectCapabilities(){
 		}
 		
 		// disable extensions with troubles
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object )
-		&& ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader )
-		&& pSSBOMaxBlocksCompute < 4 ){
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object)
+		&& pSSBOMaxBlocksCompute < 4){
 			logger.LogWarn( "Capabilities: SSBO does not support at least 4 compute SSBO blocks. Disable SSBO Support." );
 			ext.DisableExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object );
 		}
@@ -253,13 +266,17 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		pStd430.Check();
 		
-		#ifdef OS_ANDROID
-		framebuffer = new deoglFramebuffer( pRenderThread, false );
-		pAndroidTest( framebuffer );
-		pRenderThread.GetFramebuffer().Activate( NULL );
-		delete framebuffer;
-		framebuffer = NULL;
-		#endif
+#ifdef OS_ANDROID
+		pRestrictedImageBufferFormats = true;
+#endif
+		
+		// #ifdef OS_ANDROID
+		// framebuffer = new deoglFramebuffer( pRenderThread, false );
+		// pAndroidTest( framebuffer );
+		// pRenderThread.GetFramebuffer().Activate( NULL );
+		// delete framebuffer;
+		// framebuffer = NULL;
+		// #endif
 		
 		// ensure the color/depth/stencil attachments are unbound
 		OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
@@ -307,12 +324,12 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		pRenderThread.GetDebug().SetEnableHwDebugOutput( true ); // revert back to normal operation
 		
-		#ifdef OS_ANDROID
-		pRenderThread.GetFramebuffer().Activate( NULL );
-		if( framebuffer ){
-			delete framebuffer;
-		}
-		#endif
+		// #ifdef OS_ANDROID
+		// pRenderThread.GetFramebuffer().Activate( NULL );
+		// if( framebuffer ){
+		// 	delete framebuffer;
+		// }
+		// #endif
 		
 		throw;
 	}
@@ -321,6 +338,11 @@ void deoglCapabilities::DetectCapabilities(){
 bool deoglCapabilities::Verify() const{
 	if( pStd430.Broken() ){
 		pRenderThread.GetLogger().LogError( "Std430 Layout Not Supported" );
+		return false;
+	}
+	
+	if(pMaxComputeWorkGroupInvocations < 256){
+		pRenderThread.GetLogger().LogError("Max compute work group invocations too low");
 		return false;
 	}
 	

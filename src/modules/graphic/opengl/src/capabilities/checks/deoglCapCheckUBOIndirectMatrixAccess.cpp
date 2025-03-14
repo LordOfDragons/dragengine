@@ -150,6 +150,15 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 				"Driver Bug (Android, ES 3.0 detected)!" );
 			return;
 		}
+		
+		// newer OpenGL ES does not crash the compiler in this case but can produce
+		// broken shaders due to accessing row-major matrices incorrectly. relieably
+		// testing this with this bug test does not seem to work. for this reason
+		// row-major is disabled on android to be on the safe side
+		pWorking = false;
+		renderThread.GetLogger().LogWarn("Capabilities: UBO Indirect Matrix Access: "
+			"Driver Bug (Android detected)!");
+		return;
 	#endif
 	
 	const deoglCapsTextureFormat &texformat = *pCapabilities.GetFormats()

@@ -42,9 +42,9 @@ float uchimura(float x, float P, float a, float m, float l, float c, float b) {
 	float C2 = (a * P) / (P - S1);
 	float CP = -C2 / P;
 	
-	float w0 = 1 - smoothstep(0, m, x);
+	float w0 = 1.0 - smoothstep(0.0, m, x);
 	float w2 = step(m + l0, x);
-	float w1 = 1 - w0 - w2;
+	float w1 = 1.0 - w0 - w2;
 	
 	float T = m * pow(x / m, c) + b;
 	float S = P - (P - S1) * exp(CP * (x - S0));
@@ -60,9 +60,9 @@ float uchimuraModified(float x, float p, float m, float c) {
 	float C2 = p / (p - S01);
 	float CP = -C2 / p;
 	
-	float w0 = 1 - smoothstep(0, m, x);
+	float w0 = 1.0 - smoothstep(0.0, m, x);
 	float w2 = step(m + l0, x);
-	float w1 = 1 - w0 - w2;
+	float w1 = 1.0 - w0 - w2;
 	
 	float T = m * pow(x / m, c);
 	float S = p - (p - S01) * exp(CP * (x - S01));
@@ -74,24 +74,24 @@ float uchimuraModified(float x, float p, float m, float c) {
 float uchimura(float x) {
 	// original parameters
 	/*
-	const float P = 1.0;  // max display brightness [1..100]
-	const float a = 1.0;  // contrast [0..5]
-	const float m = 0.22; // linear section start [0..1]
-	const float l = 0.4;  // linear section length [0..1]
-	const float c = 1.33; // black [1..3]
-	const float b = 0.0;  // pedestal [0..1]
+	VARCONST float P = 1.0;  // max display brightness [1..100]
+	VARCONST float a = 1.0;  // contrast [0..5]
+	VARCONST float m = 0.22; // linear section start [0..1]
+	VARCONST float l = 0.4;  // linear section length [0..1]
+	VARCONST float c = 1.33; // black [1..3]
+	VARCONST float b = 0.0;  // pedestal [0..1]
 	
 	return uchimura(x, P, a, m, l, c, b);
 	*/
 	
 	// modified parameters to flatten the excessive white curve.
 	// this avoids colors washing out at the top end
-	const float P = 1;  // max display brightness [1..100]
-	const float a = 1;  // contrast [0..5]
-	const float m = 0.1;  // linear section start
-	const float l = 0.4; //0;  // linear section length [0..1]
-	const float c = 1.3;  // black
-	const float b = 0;  // pedestal [0..1]
+	VARCONST float P = 1.0;  // max display brightness [1..100]
+	VARCONST float a = 1.0;  // contrast [0..5]
+	VARCONST float m = 0.1;  // linear section start
+	VARCONST float l = 0.4; //0.0;  // linear section length [0..1]
+	VARCONST float c = 1.3;  // black
+	VARCONST float b = 0.0;  // pedestal [0..1]
 	
 	//return uchimuraModified(x, p, m, c);
 	return uchimura(x, P, a, m, l, c, b);
@@ -112,7 +112,7 @@ void main( void ){
 //	luminance = luminance / ( 1.0 + luminance );
 	
 	// enhanced reinhard
-// 	color.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0 ).rgb * vec3( pToneMapBloomBlend );
+// 	color.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0.0 ).rgb * vec3( pToneMapBloomBlend );
 // 	
 // 	float luminance = dot( color.rgb, lumiFactors );
 // 	float adjLum = luminance * params.g;
@@ -135,7 +135,7 @@ void main( void ){
 	#endif
 	
 	// bloom
-	outColor.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0 ).rgb * vec3( pToneMapBloomBlend );
+	outColor.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0.0 ).rgb * vec3( pToneMapBloomBlend );
 	
 	// NOTE nice comparison of curves: https://www.shadertoy.com/view/WdjSW3
 	//      the uchimura curve is the only one which has a linear left side. all others try

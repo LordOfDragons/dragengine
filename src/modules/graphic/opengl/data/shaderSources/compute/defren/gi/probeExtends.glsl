@@ -4,6 +4,7 @@ precision highp int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
 #include "shared/defren/gi/trace_probe.glsl"
+#include "shared/image_buffer.glsl"
 
 #ifdef WITH_RAY_CACHE
 	#include "shared/defren/gi/raycast/ray_cache.glsl"
@@ -11,9 +12,9 @@ precision highp int;
 
 
 #ifdef WITH_RAY_CACHE
-	layout(binding=0, r16f) uniform readonly image2DArray texCacheDistance;
+	layout(binding=0, IMG_R16F_FMT) uniform readonly mediump IMG_R16F_2DARR texCacheDistance;
 #else
-	layout(binding=0, rgba16f) uniform readonly image2D texPosition;
+	layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
 #endif
 
 
@@ -67,7 +68,8 @@ void main( void ){
 		if( rayIndex < pGIRaysPerProbe ){
 			#ifdef WITH_RAY_CACHE
 				ivec3 rayTC = ivec3( rayOffset + ivec2( rayIndex, 0 ), pGICascade );
-				vec3 position = probePosition + pGIRayDirection[ rayIndex ] * imageLoad( texCacheDistance, rayTC ).r;
+				vec3 position = probePosition + pGIRayDirection[ rayIndex ]
+					* IMG_R16F_LOAD(imageLoad(texCacheDistance, rayTC));
 			#else
 				vec3 position = vec3( imageLoad( texPosition, rayOffset + ivec2( rayIndex, 0 ) ) );
 			#endif
@@ -98,7 +100,8 @@ void main( void ){
 		for(i=0; i<pGIRaysPerProbe; i++){
 			#ifdef WITH_RAY_CACHE
 				ivec3 rayTC = ivec3(rayOffset + ivec2(i,0), pGICascade);
-				vec3 position = probePosition + pGIRayDirection[i] * imageLoad(texCacheDistance, rayTC).r;
+				vec3 position = probePosition + pGIRayDirection[i]
+					* IMG_R16F_LOAD(imageLoad(texCacheDistance, rayTC));
 			#else
 				vec3 position = vec3(imageLoad(texPosition, rayOffset + ivec2(i,0)));
 			#endif

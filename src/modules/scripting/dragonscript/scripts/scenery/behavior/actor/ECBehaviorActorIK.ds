@@ -119,8 +119,50 @@ pin Dragengine.Utils
  * - actorIK{(id)}.controllerIKDistance: ECBString. Name of IK Distance Controller
  * - actorIK{(id)}.controllerIKAzimuth: ECBString. Name of IK Azimuth Controller
  * - actorIK{(id)}.controllerIKElevation: ECBString. Name of IK Elevation Controller
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actorik
  */
 class ECBehaviorActorIK extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorActorAnimated
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorIK'>
+	 *   <!-- optional: use actor animated with id instead of empty string -->
+	 *   <string name='actorAnimated'>second</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorActorIK' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorIK"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorActorIK behavior = ECBehaviorActorIK.new(eclass,\
+				eclass.sharedFactoryHelper.defaultActorAnimated(eclass, parameters), id)
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "actorIK", id)
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Update controllers listener. */

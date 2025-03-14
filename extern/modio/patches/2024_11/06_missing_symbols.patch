@@ -1,0 +1,29 @@
+diff '--color=auto' -rupN modio-sdk/modio/modio/detail/ModioSDKSessionData.ipp modio-sdk-new/modio/modio/detail/ModioSDKSessionData.ipp
+--- modio-sdk/modio/modio/detail/ModioSDKSessionData.ipp	2024-12-16 19:33:42.000000000 +0100
++++ modio-sdk-new/modio/modio/detail/ModioSDKSessionData.ipp	2024-12-18 12:10:18.055019000 +0100
+@@ -19,6 +19,7 @@
+ #include "modio/core/ModioTemporaryModSet.h"
+ #include "modio/detail/HedleyWrapper.h"
+ #include "modio/detail/serialization/ModioTokenSerialization.h"
++#include "modio/detail/serialization/ModioAvatarSerialization.h"
+ #include "modio/detail/serialization/ModioUserDataContainerSerialization.h"
+ 
+ MODIO_DIAGNOSTIC_PUSH
+diff '--color=auto' -rupN modio-sdk/modio/modio/impl/SDKModManagement.ipp modio-sdk-new/modio/modio/impl/SDKModManagement.ipp
+--- modio-sdk/modio/modio/impl/SDKModManagement.ipp	2024-12-16 19:33:42.000000000 +0100
++++ modio-sdk-new/modio/modio/impl/SDKModManagement.ipp	2024-12-18 12:10:04.537943049 +0100
+@@ -36,6 +36,7 @@
+ #include "modio/detail/serialization/ModioModStatsSerialization.h"
+ #include "modio/detail/serialization/ModioProfileMaturitySerialization.h"
+ #include "modio/detail/serialization/ModioResponseErrorSerialization.h"
++#include "modio/detail/serialization/ModioImageSerialization.h"
+ #include "modio/file/ModioFileService.h"
+ #include "modio/impl/SDKPreconditionChecks.h"
+ #include "modio/userdata/ModioUserDataService.h"
+@@ -638,4 +639,4 @@ namespace Modio
+ 		}
+ 	}
+ 
+-} // namespace Modio
+\ No newline at end of file
++} // namespace Modio

@@ -216,6 +216,7 @@ params.Add(TernaryVariable('with_npapisdk', 'Use NPAPI SDK'))
 params.Add(TernaryVariable('build_audio_openal', 'Build OpenAL Audio Module'))
 params.Add(TernaryVariable('build_cr_basic', 'Build Basic Crash-Recovery Module'))
 params.Add(TernaryVariable('build_graphics_opengl', 'Build OpenGL Graphics Module'))
+params.Add(TernaryVariable('build_graphics_vulkan', 'Build Vulkan Graphics Module', False))
 params.Add(TernaryVariable('build_image_png', 'Build PNG Image Module'))
 params.Add(TernaryVariable('build_image_png3d', 'Build PNG-3D Image Module'))
 params.Add(TernaryVariable('build_image_jpeg', 'Build JPEG Image Module'))
@@ -225,7 +226,7 @@ params.Add(TernaryVariable('build_input_w32', 'Build Windows Input Module'))
 params.Add(TernaryVariable('build_input_beos', 'Build BeOS Input Module'))
 params.Add(TernaryVariable('build_input_macos', 'Build MacOS Input Module'))
 params.Add(TernaryVariable('build_input_android', 'Build Android Input Module'))
-params.Add(TernaryVariable('build_physics_bullet', 'Build Bullet Physics Module', True))
+params.Add(TernaryVariable('build_physics_bullet', 'Build Bullet Physics Module'))
 params.Add(TernaryVariable('build_script_ds', 'Build DragonScript Script Module'))
 params.Add(TernaryVariable('build_script_python', 'Build Python Script Module'))
 params.Add(TernaryVariable('build_sound_ogg', 'Build OGG Vorbis Sound Module'))
@@ -280,6 +281,10 @@ params.Add(StringVariable('installer_name_igde',
 	'Installer file name without extension for IGDE installer', 'install-deigde'))
 params.Add(StringVariable('installer_name_igde_dev',
 	'Installer file name without extension for IGDE Development installer', 'install-deigde-dev'))
+
+params.Add(StringVariable('apk_name_launcher',
+	'Android Launcher APK file name without extension', 'DELauncher'))
+params.Add(StringVariable('android_version_code', 'Android version code', '99999'))
 
 
 if parent_env['OSMacOS']:
@@ -590,15 +595,7 @@ if parent_env['with_debug'] and parent_env['with_sanitize']:
 			'-fsanitize=pointer-overflow',
 			'-fsanitize=builtin'])
 		
-		if parent_env['CROSSCOMPILE_CLANG']:
-			"""
-			unsupported = [
-				'-fsanitize=leak',
-				'-fsanitize=bounds-strict',
-				'-fsanitize=object-size']
-			
-			flags = [f for f in flags if not f in unsupported]
-			"""
+		if parent_env['CROSSCOMPILE_CLANG'] or parent_env['platform_android'] != 'no':
 			flags = ['-fsanitize=address']
 		
 		# newer asan can incorrectly flag warnings causing compilation to fail
@@ -783,6 +780,7 @@ extdirs.append('extern/liburing')
 extdirs.append('extern/modio')
 extdirs.append('extern/deremotelauncher')
 extdirs.append('extern/denetwork')
+extdirs.append('extern/agdk')
 
 for extdir in extdirs:
 	SConscript(dirs=extdir, variant_dir='{}/build'.format(extdir),
@@ -817,6 +815,7 @@ scdirs.append('src/modules/font/defont')
 
 scdirs.append('src/modules/graphic/null')
 scdirs.append('src/modules/graphic/opengl')
+scdirs.append('src/modules/graphic/vulkan')
 
 scdirs.append('src/modules/image/png')
 scdirs.append('src/modules/image/png3d')
@@ -874,7 +873,7 @@ scdirs.append('src/modules/service/modio')
 scdirs.append('src/launcher/shared')
 scdirs.append('src/launcher/console')
 scdirs.append('src/launcher/gui')
-#scdirs.append('src/launcher/android')
+scdirs.append('src/launcher/android')
 scdirs.append('src/launcher/live')
 
 # tests

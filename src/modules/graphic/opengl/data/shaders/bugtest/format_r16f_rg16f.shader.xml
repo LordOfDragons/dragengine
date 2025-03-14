@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Test R16F/RG16F Support</name>
+	<sourceCode unit='compute'>compute/bugtest/format_r16f_rg16f.glsl</sourceCode>
+</shader>

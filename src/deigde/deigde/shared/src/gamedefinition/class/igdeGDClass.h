@@ -63,6 +63,9 @@ class deImage;
  */
 class DE_DLL_EXPORT igdeGDClass : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDClass> Ref;
+	
 	/** \brief Scale modes. */
 	enum eScaleModes{
 		/** \brief Fixed size. */
@@ -121,6 +124,7 @@ private:
 	igdeTagManager pPartialHideTags;
 	
 	decObjectOrderedSet pInheritClasses;
+	decString pDefaultInheritPropertyPrefix;
 	
 	decString pPathEClass;
 	igdeGDCCTextureList pComponentTextures;
@@ -236,6 +240,12 @@ public:
 	
 	/** \brief Set preview image or NULL if not created yet. */
 	void SetPreviewImage( deImage *image );
+	
+	/** \brief Default inherit property prefix. */
+	inline const decString &GetDefaultInheritPropertyPrefix() const{ return pDefaultInheritPropertyPrefix; }
+	
+	/** \brief Set default inherit property prefix. */
+	void SetDefaultInheritPropertyPrefix(const decString &prefix);
 	
 	/** \brief Element class path or empty string if defined manually. */
 	inline const decString &GetPathEClass() const{ return pPathEClass; }

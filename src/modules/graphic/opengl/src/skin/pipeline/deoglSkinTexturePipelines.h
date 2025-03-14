@@ -27,12 +27,14 @@
 
 #include "deoglSkinTexturePipeline.h"
 #include "../channel/deoglSkinChannel.h"
+#include "../shader/deoglSkinShaderManager.h"
 #include "../../pipeline/deoglPipeline.h"
 #include "../../utils/deoglDebugNamesEnumSet.h"
+#include "../../shaders/deoglBatchedShaderLoading.h"
 
 #include <dragengine/deObject.h>
 
-class deoglShaderLoadingTimeout;
+class deoglBatchedShaderLoading;
 class deoglSkinTexture;
 class deoglSkinShaderConfig;
 
@@ -80,13 +82,29 @@ public:
 	static const deoglDebugNamesEnumSet DebugNamesModifiers;
 	
 	
-	
 protected:
+	class cPipelineGetShaderListener : public deoglSkinShaderManager::cGetShaderListener{
+	protected:
+		deoglBatchedShaderLoading &pBatched;
+		deoglSkinTexturePipelines &pSkinPipelines;
+		eTypes pType;
+		int pModifier;
+		deoglPipelineConfiguration pConfig;
+		deoglSkinTexturePipeline::Ref &pPipeline;
+		
+	public:
+		cPipelineGetShaderListener(deoglBatchedShaderLoading &batched,
+			deoglSkinTexturePipelines &skinPipelines, eTypes type, int modifier,
+			deoglSkinTexturePipeline::Ref &pipeline, const deoglPipelineConfiguration &config);
+		
+		void GetShaderFinished(deoglSkinShader *shader) override;
+	};
+	
+	
 	const deoglSkinTexture &pTexture;
 	
-	deoglSkinTexturePipeline::Ref pPipelines[ TypeCount ][ ModifiersPerType ];
+	deoglSkinTexturePipeline::Ref pPipelines[TypeCount][ModifiersPerType];
 	bool pPrepared;
-	
 	
 	
 public:
@@ -115,7 +133,7 @@ public:
 	const deoglSkinTexturePipeline &GetWithRef( eTypes type, int modifiers = 0 ) const;
 	
 	/** Prepare pipelines. */
-	void Prepare( deoglShaderLoadingTimeout &timeout );
+	void Prepare(deoglBatchedShaderLoading &batched);
 	
 	/** Debug name. */
 	virtual const char *GetDebugName() const = 0;
@@ -130,82 +148,82 @@ protected:
 	};
 	
 	typedef sChannelInfo ChannelInfo[ deoglSkinChannel::CHANNEL_COUNT ];
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout ) = 0;
+	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched ) = 0;
 	
 	virtual void pPrepareGeometry( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareGeometryDepthTest( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareAllDepth( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareDepth( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareDepthClipPlane( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareDepthReversed( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareDepthClipPlaneReversed( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareAllCounter( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareCounter( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareCounterClipPlane( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareMask( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareAllShadow( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareShadowProjection( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareShadowProjectionCube( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareShadowOrthogonal( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareShadowOrthogonalCascaded( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareShadowDistance( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareShadowDistanceCube( deoglPipelineConfiguration &basePipelineConfig,
 		deoglSkinShaderConfig &baseShaderConfig, const ChannelInfo &cinfo,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareEnvMap( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareLuminance( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pPrepareGIMaterial( deoglSkinShaderConfig &baseShaderConfig,
-		const ChannelInfo &cinfo, deoglShaderLoadingTimeout &timeout );
+		const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
 	
 	virtual void pInitChannelInfo( ChannelInfo &cinfo );
 	
@@ -262,7 +280,7 @@ protected:
 	
 	virtual void pCreatePipelines( const deoglPipelineConfiguration &basePipelineConfig,
 		const deoglSkinShaderConfig &baseShaderConfig, eTypes type, int modifierMask,
-		deoglShaderLoadingTimeout &timeout );
+		deoglBatchedShaderLoading &batched );
 };
 
 #endif

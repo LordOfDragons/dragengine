@@ -87,10 +87,7 @@ void devkDebug::pRegisterReportCallback(){
 		return;
 	}
 	
-	VkDebugReportCallbackCreateInfoEXT info;
-	memset( &info, 0, sizeof( info ) );
-	
-	info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+	VkDebugReportCallbackCreateInfoEXT info{VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT};
 	info.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
 	info.pfnCallback = ( PFN_vkDebugReportCallbackEXT )DebugMessageCallback;
 	info.pUserData = this;

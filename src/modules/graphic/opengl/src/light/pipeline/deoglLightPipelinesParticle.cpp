@@ -61,7 +61,7 @@ const char *deoglLightPipelinesParticle::GetDebugName() const{
 // Protected Functions
 /////////////////////////
 
-void deoglLightPipelinesParticle::pPreparePipelines(){
+void deoglLightPipelinesParticle::pPreparePipelines(deoglBatchedShaderLoading &batched){
 	// base pipeline configuration
 	deoglPipelineConfiguration basePipelineConfig;
 	pBasePipelineConfig( pEmitter.GetEmitter().GetRenderThread(), basePipelineConfig );
@@ -92,7 +92,7 @@ void deoglLightPipelinesParticle::pPreparePipelines(){
 	baseShaderConfig.SetTextureNoise( false );
 	
 	// create pipelines for each type and all valid modifications
-	pPrepareNoShadow( basePipelineConfig, baseShaderConfig );
+	pPrepareNoShadow( basePipelineConfig, baseShaderConfig, batched );
 }
 
 
@@ -100,15 +100,15 @@ void deoglLightPipelinesParticle::pPreparePipelines(){
 // Private Functions
 //////////////////////
 
-void deoglLightPipelinesParticle::pPrepareNoShadow( deoglPipelineConfiguration &basePipelineConfig,
-deoglLightShaderConfig &baseShaderConfig ){
+void deoglLightPipelinesParticle::pPrepareNoShadow(deoglPipelineConfiguration &basePipelineConfig,
+deoglLightShaderConfig &baseShaderConfig, deoglBatchedShaderLoading &batched){
 	deoglLightShaderConfig shaconf( baseShaderConfig );
 	
 	pSetNonGI( shaconf );
 	// shaconf.SetAmbientLighting( true );
 	
 	pCreatePipelines( pEmitter.GetEmitter().GetRenderThread(), basePipelineConfig, shaconf,
-		etNoShadow, emStereo | emTransparent | emFlipCullFace );
+		etNoShadow, emStereo | emTransparent | emFlipCullFace, batched );
 }
 
 

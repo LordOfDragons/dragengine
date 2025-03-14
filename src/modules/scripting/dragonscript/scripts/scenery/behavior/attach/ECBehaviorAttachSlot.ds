@@ -50,6 +50,8 @@ pin Dragengine.Utils
  * \par 1.9
  * 
  * Added support for ECBehaviorVRHand to be used instead of ECBehaviorCollider.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachslot
  */
 class ECBehaviorAttachSlot extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -97,6 +99,49 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		/** \brief Create listener. */
 		public func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorVRHand or \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorAttachSlot'>
+	 *   <!-- optional: use vrhand behavior with id -->
+	 *   <string name='vrHand'>right</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorAttachSlot' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorAttachSlot"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorAttachSlot behavior = ECBehaviorAttachSlot.new(\
+				eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
+			
+			behavior.setVRHand(eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters))
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "attachSlot", id)
+			return behavior
 		end
 	end
 	

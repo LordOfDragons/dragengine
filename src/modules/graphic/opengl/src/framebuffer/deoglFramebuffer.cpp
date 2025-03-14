@@ -557,12 +557,12 @@ void deoglFramebuffer::AttachDepthArrayTextureLevel( deoglArrayTexture *texture,
 	if( pAttDepth.DoesNotMatch( image, eatArrayTexture, level ) ){
 		DetachDepthImage();
 		
-		if( pglFramebufferTexture ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_DEPTH_ATTACHMENT, image, level ) );
+		if(pglFramebufferTexture){
+			OGL_CHECK(pRenderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
+				GL_DEPTH_ATTACHMENT, image, level));
 			
 		}else{
-			DETHROW( deeInvalidAction );
+			DETHROW(deeInvalidAction);
 		}
 		
 		pAttDepth.Set( image, eatArrayTexture, level );
@@ -670,12 +670,12 @@ void deoglFramebuffer::AttachStencilArrayTextureLevel( deoglArrayTexture *textur
 	if( pAttStencil.DoesNotMatch( image, eatArrayTexture, level ) ){
 		DetachStencilImage();
 		
-		if( pglFramebufferTexture ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_STENCIL_ATTACHMENT, image, level ) );
+		if(pglFramebufferTexture){
+			OGL_CHECK(pRenderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
+				GL_STENCIL_ATTACHMENT, image, level));
 			
 		}else{
-			DETHROW( deeInvalidAction );
+			DETHROW(deeInvalidAction);
 		}
 		
 		pAttStencil.Set( image, eatArrayTexture, level );
@@ -817,23 +817,27 @@ static const char * const vAttTypeName[] = {
 	"arrayTexture", "arrayTextureLayer"
 };
 
-void deoglFramebuffer::DebugPrint( const char *prefix ){
+void deoglFramebuffer::DebugPrint(const char *prefix){
 	decString text;
 	int i;
 	
-	pRenderThread.GetLogger().LogInfoFormat( "%s primary=%s size=%dx%d usage=%d",
-		prefix, pPrimary ? "yes" : "no", pUsageWidth, pUsageHeight, pUsageCount );
+	pRenderThread.GetLogger().LogInfoFormat("%s primary=%s size=%dx%d usage=%d",
+		prefix, pPrimary ? "yes" : "no", pUsageWidth, pUsageHeight, pUsageCount);
 	
-	for( i=0; i<FBO_MAX_ATTACHMENT_COUNT; i++ ){
-		pRenderThread.GetLogger().LogInfoFormat( "- AttachmentColor%d: type=%s image=%d layer=%d level=%d",
-			i + 1, vAttTypeName[ pAttColor[ i ].type ], pAttColor[ i ].image, pAttColor[ i ].layer, pAttColor[ i ].level );
+	for(i=0; i<FBO_MAX_ATTACHMENT_COUNT; i++){
+		pRenderThread.GetLogger().LogInfoFormat(
+			"- AttachmentColor%d: type=%s image=%d layer=%d level=%d", i + 1,
+			vAttTypeName[pAttColor[i].type], pAttColor[i].image,
+			pAttColor[i].layer, pAttColor[i].level);
 	}
 	
-	pRenderThread.GetLogger().LogInfoFormat( "- AttachmentDepth: type=%s image=%d layer=%d level=%d",
-		vAttTypeName[ pAttDepth.type ], pAttDepth.image, pAttDepth.layer, pAttDepth.level );
+	pRenderThread.GetLogger().LogInfoFormat(
+		"- AttachmentDepth: type=%s image=%d layer=%d level=%d",
+		vAttTypeName[pAttDepth.type], pAttDepth.image, pAttDepth.layer, pAttDepth.level);
 	
-	pRenderThread.GetLogger().LogInfoFormat( "- AttachmentStencil: type=%s image=%d layer=%d level=%d",
-		vAttTypeName[ pAttStencil.type ], pAttStencil.image, pAttStencil.layer, pAttStencil.level );
+	pRenderThread.GetLogger().LogInfoFormat(
+		"- AttachmentStencil: type=%s image=%d layer=%d level=%d",
+		vAttTypeName[pAttStencil.type], pAttStencil.image, pAttStencil.layer, pAttStencil.level);
 }
 
 void deoglFramebuffer::AddConfigToTrace( deErrorTracePoint &tracePoint ){

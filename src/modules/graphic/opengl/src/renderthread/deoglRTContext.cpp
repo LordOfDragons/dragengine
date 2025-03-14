@@ -33,41 +33,42 @@
 #include "../deGraphicOpenGl.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../canvas/deoglCanvasView.h"
-#include "../extensions/deoglExtensions.h"
+#ifdef BACKEND_OPENGL
+	#include "../extensions/deoglExtensions.h"
+#endif
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 #include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-#include <dragengine/app/deOSUnix.h>
-#include "../extensions/deoglXExtResult.h"
-#endif
-
 #ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
 #include <android/native_window.h>
-#endif
 
-#ifdef OS_BEOS
+#elif defined OS_BEOS
 #include <GLView.h>
 #include <dragengine/app/deOSBeOS.h>
-#endif
 
-#ifdef OS_MACOS
+#elif defined OS_MACOS
 #include "../extensions/macosfix.h"
 #include <dragengine/app/deOSMacOS.h>
-#endif
 
-#ifdef OS_W32
+#elif defined OS_W32
 #include <dragengine/app/deOSWindows.h>
 #include "../extensions/wglext.h"
+
+#elif defined OS_UNIX
+#include <dragengine/app/deOSUnix.h>
+#ifdef BACKEND_OPENGL
+	#include "../extensions/deoglXExtResult.h"
+#endif
 #endif
 
 
@@ -113,8 +114,9 @@ static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
 // Constructor, destructor
 ////////////////////////////
 
-deoglRTContext::deoglRTContext( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
+deoglRTContext::deoglRTContext(deoglRenderThread &renderThread) :
+pRenderThread(renderThread),
+pCompileContextCount(0),
 
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
@@ -122,8 +124,10 @@ pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
 pDisplay( NULL ),
 pScreen( 0 ),
 
+#ifdef BACKEND_OPENGL
 pContext( nullptr ),
 pLoaderContext( nullptr ),
+#endif
 
 pColMap( 0 ),
 pVisInfo( NULL ),
@@ -135,11 +139,11 @@ pOSAndroid( renderThread.GetOgl().GetOS()->CastToOSAndroid() ),
 pDisplay( EGL_NO_DISPLAY ),
 pSurface( EGL_NO_SURFACE ),
 pContext( EGL_NO_CONTEXT ),
+pLoaderSurface( EGL_NO_SURFACE ),
 pLoaderContext( EGL_NO_CONTEXT ),
 
 pScreenWidth( 0 ),
 pScreenHeight( 0 ),
-pScreenResized( false ),
 #endif
 
 #ifdef OS_BEOS
@@ -165,6 +169,39 @@ pActiveRRenderWindow( NULL ),
 pUserRequestedQuit( false ),
 pAppActivated( true )
 {
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#ifdef BACKEND_OPENGL
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileContext[i] = nullptr;
+	}
+	#endif
+	#endif
+	
+	#ifdef OS_ANDROID
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileSurface[i] = EGL_NO_SURFACE;
+		pCompileContext[i] = EGL_NO_CONTEXT;
+	}
+	#endif
+	
+	#ifdef OS_BEOS
+	#endif
+	
+	#ifdef OS_MACOS
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileContext[i] = nullptr;
+	}
+	#endif
+	
+	#ifdef OS_W32
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileContext[i] = NULL;
+	}
+	#endif
 }
 
 deoglRTContext::~deoglRTContext(){
@@ -190,11 +227,13 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 	
 	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pOpenDisplay();
+	#ifdef BACKEND_OPENGL
 	pChooseVisual();
 	pChooseFBConfig();
+	#endif
 	pCreateColorMap();
 	pCreateAtoms();
-	pCreateGLContext();
+	pCreateContext();
 	#endif
 	
 	#ifdef OS_ANDROID
@@ -202,11 +241,11 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 	#endif
 	
 	#ifdef OS_BEOS
-	pCreateGLContext();
+	pCreateContext();
 	#endif
 	
 	#ifdef OS_MACOS
-	pCreateGLContext();
+	pCreateContext();
 	#endif
 	
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 2 Exiting" );
@@ -277,7 +316,7 @@ void deoglRTContext::InitPhase4( deRenderWindow *renderWindow ){
 	ActivateRRenderWindow( ( ( deoglRenderWindow* )renderWindow->GetPeerGraphic() )->GetRRenderWindow() );
 	
 	#ifdef OS_W32
-	pCreateGLContext();
+	pCreateContext();
 	#endif
 	
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 4 Exiting" );
@@ -385,8 +424,10 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 	
 	if( rrenderWindow ){
 		#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+		#ifdef BACKEND_OPENGL
 // 		printf( "glXMakeCurrent(%lu,%p) previous(%lu,%p)\n", rrenderWindow->GetWindow(), pContext, glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, rrenderWindow->GetWindow(), pContext ) );
+		#endif
 		#endif
 		
 		#ifdef OS_ANDROID
@@ -400,7 +441,7 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		#endif
 		
 		#ifdef OS_MACOS
-		pGLContextMakeCurrent( rrenderWindow->GetView() );
+		pContextMakeCurrent( rrenderWindow->GetView() );
 		#endif
 		
 		#ifdef OS_W32
@@ -411,19 +452,23 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		#endif
 		
 		#ifndef OS_BEOS
+		#ifdef BACKEND_OPENGL
 		if( pLoaderContext ){
 			// this check is required for windows to work correctly because on windows the window
 			// is activated before the loader context is created which would cause problems
 			pRenderThread.GetLoaderThread().EnableContext( true );
 		}
 		#endif
+		#endif
 		
 	}else{
 		pRenderThread.GetLoaderThread().EnableContext( false );
 		
 		#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+		#ifdef BACKEND_OPENGL
 // 		printf( "glXMakeCurrent(clear) previous(%lu,%p)\n", glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, None, NULL ) );
+		#endif
 		#endif
 		
 		#ifdef OS_ANDROID
@@ -453,6 +498,7 @@ bool deoglRTContext::GetUserRequestedQuit(){
 
 
 
+#ifdef BACKEND_OPENGL
 void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	// linux
 	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
@@ -464,7 +510,7 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	
 	// android
 	#ifdef OS_ANDROID
-	return ( void* )androidGetProcAddress( funcName );
+	return ( void* )androidGetProcAddress(pRenderThread, funcName);
 	#endif
 	
 	// beos
@@ -485,28 +531,28 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	return ( void* )wglGetProcAddress( funcName );
 	#endif
 }
-
+#endif
 
 
 #ifdef OS_ANDROID
 void deoglRTContext::CheckConfigurationChanged(){
-	// check if screen size is still the same. listening to config changed is not going to
-	// work since android delays screen changes for an undefinite time.
-	int width = 0;
-	int height = 0;
-	eglQuerySurface( pDisplay, pSurface, EGL_WIDTH, &width );
-	eglQuerySurface( pDisplay, pSurface, EGL_HEIGHT, &height );
+	const decBoundary &contentRect = pOSAndroid->GetContentRect();
 	
-	if( width != pScreenWidth || height != pScreenHeight ){
-		pRenderThread.GetLogger().LogInfoFormat( "Screen size changed: %ix%i -> %ix%i", pScreenWidth, pScreenHeight, width, height );
+	const int width = contentRect.x2 - contentRect.x1;
+	const int height = contentRect.y2 - contentRect.y1;
+	
+	if(width > 0 || height > 0){
 		pScreenWidth = width;
 		pScreenHeight = height;
-		pScreenResized = true;
+		
+	}else{
+		// initial situation where content area is not known yet. use screen instead
+		eglQuerySurface(pDisplay, pSurface, EGL_WIDTH, &pScreenWidth);
+		eglQuerySurface(pDisplay, pSurface, EGL_HEIGHT, &pScreenHeight);
+		
+		//pScreenWidth = (int)ANativeWindow_getWidth(pOSAndroid->GetNativeWindow());
+		//pScreenHeight = (int)ANativeWindow_getHeight(pOSAndroid->GetNativeWindow());
 	}
-}
-
-void deoglRTContext::ClearScreenResized(){
-	pScreenResized = false;
 }
 #endif
 
@@ -592,7 +638,7 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	case WM_DPICHANGED:{
 		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
 		const int scaleFactor = 100 * HIWORD(wParam) / USER_DEFAULT_SCREEN_DPI;
-        const RECT &rect = *((RECT*)lParam);
+		const RECT &rect = *((RECT*)lParam);
 		const int count = windows.GetCount();
 		int i;
 
@@ -713,6 +759,8 @@ void deoglRTContext::ProcessEventLoop(){
 		}
 	}
 }
+
+#ifdef BACKEND_OPENGL
 
 void deoglRTContext::pPrintVisualInfo(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
@@ -859,6 +907,8 @@ void deoglRTContext::pChooseVisual(){
 	}
 }
 
+#endif
+
 void deoglRTContext::pCreateColorMap(){
 	Window rootWindow = RootWindow( pDisplay, pVisInfo->screen );
 	
@@ -870,8 +920,12 @@ void deoglRTContext::pCreateAtoms(){
 	pAtomDeleteWindow = XInternAtom( pDisplay, "WM_DELETE_WINDOW", False );
 }
 
-void deoglRTContext::pCreateGLContext(){
+void deoglRTContext::pCreateContext(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
+#ifdef BACKEND_OPENGL
+	const int compileContextCount = decMath::min(MaxCompileContextCount,
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
 	
 	// create render context. try new version first then the old one if not possible
 	// NOTE it is important to try to find first the "ARB" version of the function.
@@ -933,6 +987,15 @@ void deoglRTContext::pCreateGLContext(){
 				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
 					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 				pLoaderContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, pContext, True, contextAttribs );
+				int j;
+				for(j=0; j<compileContextCount; j++){
+					pCompileContext[j] = pglXCreateContextAttribs(pDisplay, pBestFBConfig, pContext, True, contextAttribs);
+					if(!pCompileContext[j]){
+						break;
+					}
+				}
+				pCompileContextCount = j;
+				logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 				break;
 			}
 			
@@ -945,12 +1008,29 @@ void deoglRTContext::pCreateGLContext(){
 				"Creating OpenGL Context using old method" );
 			pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
 			pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
+			for(i=0; i<compileContextCount; i++){
+				pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
+				if(!pCompileContext[i]){
+					break;
+				}
+			}
+			pCompileContextCount = i;
+			logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 		}
 		
 	}else{
 		logger.LogInfo( "Creating OpenGL Context using old method" );
 		pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
 		pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
+		int i;
+		for(i=0; i<compileContextCount; i++){
+			pCompileContext[i] = glXCreateNewContext(pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True);
+			if(!pCompileContext[i]){
+				break;
+			}
+		}
+		pCompileContextCount = i;
+		logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 	}
 	
 	DEASSERT_NOTNULL( pContext )
@@ -960,6 +1040,20 @@ void deoglRTContext::pCreateGLContext(){
 		logger.LogError( "No matching direct rendering context found!" );
 		DETHROW( deeInvalidAction );
 	}
+	
+#elif defined BACKEND_VULKAN
+	logger.LogInfo("Creating Vulkan device");
+	pVulkan.TakeOver(new deSharedVulkan(pRenderThread.GetOgl()));
+	pDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
+	
+	pQueueGraphic = &pDevice->GetGraphicQueue();
+	pQueueCompute = &pDevice->GetComputeQueue();
+	pQueueTransfer = &pDevice->GetTransferQueue();
+	
+	pCommandPoolGraphic = pQueueGraphic->CreateCommandPool();
+	pCommandPoolCompute = pQueueCompute->CreateCommandPool();
+	pCommandPoolTransfer = pQueueTransfer->CreateCommandPool();
+#endif
 }
 
 void deoglRTContext::pFreeContext(){
@@ -967,6 +1061,14 @@ void deoglRTContext::pFreeContext(){
 		return;
 	}
 	
+#ifdef BACKEND_OPENGL
+	int i;
+	for(i=0; i<pCompileContextCount; i++){
+		if(pCompileContext[i]){
+			glXDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = nullptr;
+		}
+	}
 	if( pLoaderContext ){
 		glXDestroyContext( pDisplay, pLoaderContext );
 		pLoaderContext = nullptr;
@@ -976,6 +1078,11 @@ void deoglRTContext::pFreeContext(){
 		glXDestroyContext( pDisplay, pContext );
 		pContext = nullptr;
 	}
+	
+#elif defined BACKEND_VULKAN
+	pDevice = nullptr;
+	pVulkan = nullptr;
+#endif
 }
 
 void deoglRTContext::pFreeVisualInfo(){
@@ -1003,6 +1110,8 @@ void deoglRTContext::pInitDisplay(){
 		return;
 	}
 	
+	DEASSERT_NOTNULL(pOSAndroid->GetNativeWindow())
+	
 	// initialize display
 	if( pDisplay == EGL_NO_DISPLAY ){
 		pRenderThread.GetLogger().LogInfo( "Init display" );
@@ -1015,11 +1124,12 @@ void deoglRTContext::pInitDisplay(){
 		
 		// choose configuration
 		const EGLint attribs[] = {
+			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
 			EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, // EGL_OPENGL_ES3_BIT_KHR
 			EGL_BLUE_SIZE, 8,
 			EGL_GREEN_SIZE, 8,
 			EGL_RED_SIZE, 8,
+			EGL_DEPTH_SIZE, 16,
 			EGL_NONE
 		};
 		EGLint configCount;
@@ -1030,26 +1140,70 @@ void deoglRTContext::pInitDisplay(){
 	}
 	
 	// set buffer geometry
+	/*
 	EGLint format;
 	eglGetConfigAttrib( pDisplay, pConfig, EGL_NATIVE_VISUAL_ID, &format );
-	ANativeWindow_setBuffersGeometry( &pOSAndroid->GetNativeWindow(), 0, 0, format );
+	ANativeWindow_setBuffersGeometry( pOSAndroid->GetNativeWindow(), 0, 0, format );
+	*/
 	
 	// create surface
-	pSurface = eglCreateWindowSurface( pDisplay, pConfig, &pOSAndroid->GetNativeWindow(), NULL );
+	pSurface = eglCreateWindowSurface( pDisplay, pConfig, pOSAndroid->GetNativeWindow(), NULL );
 	if( pSurface == EGL_NO_SURFACE ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	// create context if not existing. it can be kept around while frozen
+	const int compileContextCount = decMath::min(MaxCompileContextCount,
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
+	
 	if( pContext == EGL_NO_CONTEXT ){
+		const bool debugContext = pRenderThread.GetConfiguration().GetDebugContext();
+		if(debugContext){
+			//pRenderThread.GetLogger().LogInfo("Enable debug context");
+		}
+		
 		const EGLint eglAttribList[] = {
 			EGL_CONTEXT_CLIENT_VERSION, 3, // 2,
+			// android does not support EGL_CONTEXT_OPENGL_DEBUG although the spec requires it!
+			//EGL_CONTEXT_OPENGL_DEBUG, debugContext ? EGL_TRUE : EGL_FALSE,
 			EGL_NONE
 		};
-		pContext = eglCreateContext( pDisplay, pConfig, NULL, eglAttribList );
-		DEASSERT_FALSE( pContext == EGL_NO_CONTEXT )
-		pLoaderContext = eglCreateContext( pDisplay, pConfig, pContext, eglAttribList );
-		DEASSERT_FALSE( pLoaderContext == EGL_NO_CONTEXT )
+		
+		pContext = eglCreateContext(pDisplay, pConfig, nullptr, eglAttribList);
+		DEASSERT_FALSE(pContext == EGL_NO_CONTEXT)
+		
+		// loader context needs also an own surface
+		const EGLint eglBufferAttribList[] = {
+			EGL_WIDTH, 8,
+			EGL_HEIGHT, 8,
+			EGL_LARGEST_PBUFFER, EGL_TRUE,
+			EGL_TEXTURE_FORMAT, EGL_TEXTURE_RGB,
+			EGL_TEXTURE_TARGET, EGL_TEXTURE_2D,
+			EGL_NONE
+		};
+		
+		pLoaderSurface = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
+		DEASSERT_FALSE(pLoaderSurface == EGL_NO_SURFACE)
+		
+		pLoaderContext = eglCreateContext(pDisplay, pConfig, pContext, eglAttribList);
+		DEASSERT_FALSE(pLoaderContext == EGL_NO_CONTEXT)
+		
+		int i;
+		for(i=0; i<compileContextCount; i++){
+			pCompileContext[i] = eglCreateContext(pDisplay, pConfig, pContext, eglAttribList);
+			if(pCompileContext[i] == EGL_NO_CONTEXT){
+				break;
+			}
+			
+			pCompileSurface[i] = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
+			if(pCompileSurface[i] == EGL_NO_SURFACE){
+				eglDestroyContext(pDisplay, pCompileContext[i]);
+				pCompileContext[i] = EGL_NO_CONTEXT;
+				break;
+			}
+		}
+		pCompileContextCount = i;
+		pRenderThread.GetLogger().LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 	}
 	
 	// make surface current. we have to make it current each render loop
@@ -1070,10 +1224,27 @@ void deoglRTContext::pCloseDisplay(){
 	
 	TerminateAppWindow();
 	
-	if( pLoaderContext != EGL_NO_CONTEXT ){
-		eglDestroyContext( pDisplay, pLoaderContext );
+	int i;
+	for(i=0; i<pCompileContextCount; i++){
+		if(pCompileContext[i] != EGL_NO_CONTEXT){
+			eglDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = EGL_NO_CONTEXT;
+		}
+		if(pCompileSurface[i] != EGL_NO_SURFACE){
+			eglDestroySurface(pDisplay, pCompileSurface[i]);
+			pCompileSurface[i] = EGL_NO_SURFACE;
+		}
+	}
+	
+	if(pLoaderContext != EGL_NO_CONTEXT){
+		eglDestroyContext(pDisplay, pLoaderContext);
 		pLoaderContext = EGL_NO_CONTEXT;
 	}
+	if(pLoaderSurface != EGL_NO_SURFACE){
+		eglDestroySurface(pDisplay, pLoaderSurface);
+		pLoaderSurface = EGL_NO_SURFACE;
+	}
+	
 	if( pContext != EGL_NO_CONTEXT ){
 		eglDestroyContext( pDisplay, pContext );
 		pContext = EGL_NO_CONTEXT;
@@ -1090,7 +1261,7 @@ void deoglRTContext::pCloseDisplay(){
 #ifdef OS_BEOS
 
 
-void deoglRTContext::pCreateGLContext(){
+void deoglRTContext::pCreateContext(){
 	// done by deoglRRenderWindow. BGLView is the context
 }
 
@@ -1127,8 +1298,11 @@ void deoglRTContext::pRegisterWindowClass(){
 	}
 }
 
-void deoglRTContext::pCreateGLContext(){
+void deoglRTContext::pCreateContext(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
+	const int compileContextCount = decMath::min(MaxCompileContextCount,
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
 	
 	// create render context. on windows obtaining function pointers only works if a context has
 	// been created. unfortunately the wglCreateContextAttribs is such a function pointer so we
@@ -1197,6 +1371,15 @@ void deoglRTContext::pCreateGLContext(){
 				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
 					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 				pLoaderContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs );
+				int j;
+				for(j=0; j<compileContextCount; j++){
+					pCompileContext[j] = pwglCreateContextAttribs(pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs);
+					if(!pCompileContext[j]){
+						break;
+					}
+				}
+				pCompileContextCount = j;
+				logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 				break;
 			}
 			
@@ -1210,6 +1393,20 @@ void deoglRTContext::pCreateGLContext(){
 			pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
 			pLoaderContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
 			DEASSERT_TRUE( wglShareLists( pLoaderContext, pContext ) )
+			int i;
+			for(i=0; i<compileContextCount; i++){
+				pCompileContext[i] = wglCreateContext(pActiveRRenderWindow->GetWindowDC());
+				if(!pCompileContext[i]){
+					break;
+				}
+				if(!wglShareLists(pCompileContext[i], pContext)){
+					wglDeleteContext(pCompileContext[i]);
+					pCompileContext[i] = NULL;
+					break;
+				}
+			}
+			pCompileContextCount = i;
+			logger.LogInfoFormat("Created %d compile contexts", pCompileContextCount);
 		}
 		
 	}else{
@@ -1246,6 +1443,13 @@ void deoglRTContext::pFreeContext(){
 	// destroy render window
 	//pDestroyRenderWindow();
 	
+	int i;
+	for(i=0; i<pCompileContextCount; i++){
+		if(pCompileContext[i]){
+			wglDeleteContext(pCompileContext[i]);
+			pCompileContext[i] = NULL;
+		}
+	}
 	if( pLoaderContext ){
 		wglDeleteContext( pLoaderContext );
 		pLoaderContext = NULL;

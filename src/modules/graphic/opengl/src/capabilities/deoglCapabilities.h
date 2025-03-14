@@ -35,6 +35,8 @@
 #include "checks/deoglCapCheckStd430.h"
 #include "../deoglBasics.h"
 
+#include <dragengine/common/math/decMath.h>
+
 class deoglRenderThread;
 class decUnicodeString;
 class deoglCapsTextureFormat;
@@ -72,6 +74,8 @@ private:
 	int pGeometryShaderMaxVertices;
 	int pGeometryShaderMaxComponents;
 	int pNumProgramBinaryFormats;
+	int pMaxComputeWorkGroupInvocations;
+	decPoint3 pMaxComputeWorkGroupSize;
 	
 	deoglCapCheckATLUnbind pATLUnbind;
 	deoglCapCheckUBOIndirectMatrixAccess pUBOIndirectMatrixAccess;
@@ -79,6 +83,7 @@ private:
 	deoglCapCheckUBODirectLinkDeadloop pUBODirectLinkDeadloop;
 	deoglCapCheckFramebufferTextureSingle pFramebufferTextureSingle;
 	deoglCapCheckStd430 pStd430;
+	bool pRestrictedImageBufferFormats;
 	
 	
 	
@@ -159,6 +164,12 @@ public:
 	/** Count of binary shader formats the driver supports. */
 	inline int GetNumProgramBinaryFormats() const{ return pNumProgramBinaryFormats; }
 	
+	/** Maximum compute work group size. */
+	inline int GetMaxComputeWorkGroupInvocations() const{ return pMaxComputeWorkGroupInvocations; }
+	
+	/** Maximum count of compute work group invocations. */
+	inline const decPoint3 &GetMaxComputeWorkGroupSize() const{ return pMaxComputeWorkGroupSize; }
+	
 	
 	
 	/** Array texture layer check. */
@@ -182,6 +193,9 @@ public:
 	
 	/** Std430 support. */
 	inline const deoglCapCheckStd430 &GetStd430() const{ return pStd430; }
+	
+	/** Restricted image buffer formats. */
+	inline bool GetRestrictedImageBufferFormats() const{ return pRestrictedImageBufferFormats; }
 	
 	/** Tests the hardware for its capabilities. */
 	void DetectCapabilities();

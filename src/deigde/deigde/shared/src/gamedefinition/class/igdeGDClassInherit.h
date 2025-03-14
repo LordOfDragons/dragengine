@@ -38,11 +38,19 @@ class igdeGDClassManager;
  * \brief Inherit from another game definition class.
  */
 class DE_DLL_EXPORT igdeGDClassInherit : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDClassInherit> Ref;
+	
+	
+	
 private:
 	decString pName;
 	igdeGDClassReference pClass;
 	decString pPropertyPrefix;
-	
+	decString pAutoPropertyPrefixId;
+	bool pUseAutoPropertyPrefixId;
+	decStringDictionary pAutoPrefixProperties;
 	
 	
 public:
@@ -80,6 +88,25 @@ public:
 	
 	/** \brief Set prefix to add to properties defined in inherited class. */
 	void SetPropertyPrefix( const char *prefix );
+	
+	/** \brief Auto property prefix ID used only during resolving. */
+	inline const decString &GetAutoPropertyPrefixId() const{ return pAutoPropertyPrefixId; }
+	
+	/** \brief Set auto property prefix ID used only during resolving. */
+	void SetAutoPropertyPrefixId(const char *id);
+	
+	/** \brief Use auto property prefix ID. */
+	inline bool GetUseAutoPropertyPrefixId() const{ return pUseAutoPropertyPrefixId; }
+	
+	/** \brief Set use auto property prefix ID. */
+	void SetUseAutoPropertyPrefixId(bool use);
+	
+	/** \brief Auto prefix propertiues. */
+	decStringDictionary &GetAutoPrefixProperties(){ return pAutoPrefixProperties; }
+	inline const decStringDictionary &GetAutoPrefixProperties() const{ return pAutoPrefixProperties; }
+	
+	/** \brief Add auto prefixed properties to class if possible. */
+	void AddAutoPrefixedPropertiesTo(igdeGDClass &gdclass);
 	/*@}*/
 };
 

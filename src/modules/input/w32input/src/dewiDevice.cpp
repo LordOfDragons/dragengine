@@ -87,7 +87,7 @@ void dewiDevice::SetName( const char *name ){
 }
 
 void dewiDevice::SetDisplayImages( const char *name ){
-	pDisplayImage = NULL;
+	pDisplayImage = nullptr;
 	pDisplayIcons.RemoveAll();
 	
 	if( ! name ){
@@ -312,7 +312,7 @@ void dewiDevice::GetInfo( deInputDevice &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
 	info.SetType( pType );
-	info.SetDisplayImage( pDisplayImage );
+	info.SetDisplayImage(pDisplayImage);
 	for( i=0; i<pDisplayIcons.GetCount(); i++ ){
 		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
 	}

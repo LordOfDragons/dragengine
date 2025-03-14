@@ -30,13 +30,13 @@
 
 
 // class devkGuardUnmapBuffer
-/////////////////////////////
+///////////////////////////////
 
-devkGuardUnmapBuffer::devkGuardUnmapBuffer( devkDevice &device, VkDeviceMemory memory ) :
-pDevice( device ),
-pMemory( memory ){
+devkGuardUnmapBuffer::devkGuardUnmapBuffer(devkDevice &device, VkDeviceMemory memory) :
+pDevice(device),
+pMemory(memory){
 }
 
 devkGuardUnmapBuffer::~devkGuardUnmapBuffer(){
-	pDevice.vkUnmapMemory( pDevice.GetDevice(), pMemory );
+	pDevice.vkUnmapMemory(pDevice.GetDevice(), pMemory);
 }

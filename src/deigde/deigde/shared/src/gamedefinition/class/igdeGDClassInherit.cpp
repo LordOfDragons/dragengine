@@ -40,13 +40,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDClassInherit::igdeGDClassInherit( const char *name ) :
-pName( name ){
+igdeGDClassInherit::igdeGDClassInherit(const char *name) :
+pName(name),
+pUseAutoPropertyPrefixId(false){
 }
 
-igdeGDClassInherit::igdeGDClassInherit( const igdeGDClassInherit &inherit ) :
-pName( inherit.pName ),
-pPropertyPrefix( inherit.pPropertyPrefix ){
+igdeGDClassInherit::igdeGDClassInherit(const igdeGDClassInherit &inherit) :
+pName(inherit.pName),
+pPropertyPrefix(inherit.pPropertyPrefix),
+pAutoPropertyPrefixId(inherit.pAutoPropertyPrefixId),
+pUseAutoPropertyPrefixId(inherit.pUseAutoPropertyPrefixId),
+pAutoPrefixProperties(inherit.pAutoPrefixProperties){
 }
 
 igdeGDClassInherit::~igdeGDClassInherit(){
@@ -57,10 +61,49 @@ igdeGDClassInherit::~igdeGDClassInherit(){
 // Management
 ///////////////
 
-void igdeGDClassInherit::ResolveClass( const igdeGDClassManager &classManager ){
-	pClass = classManager.GetNamed( pName );
+void igdeGDClassInherit::ResolveClass(const igdeGDClassManager &classManager){
+	pClass = classManager.GetNamed(pName);
+	
+	if(pUseAutoPropertyPrefixId && pClass){
+		pUseAutoPropertyPrefixId = false;
+		
+		const decString &dipp = pClass->GetDefaultInheritPropertyPrefix();
+		const int dippLen = dipp.GetLength();
+		if(!pAutoPropertyPrefixId.IsEmpty() && dippLen > 0 && dipp.GetAt(dippLen - 1) == '.'){
+			pPropertyPrefix = dipp.GetLeft(dippLen - 1) + "(" + pAutoPropertyPrefixId + ").";
+			
+		}else{
+			pPropertyPrefix = dipp;
+		}
+	}
 }
 
-void igdeGDClassInherit::SetPropertyPrefix( const char *prefix ){
+void igdeGDClassInherit::SetPropertyPrefix(const char *prefix){
 	pPropertyPrefix = prefix;
+}
+
+void igdeGDClassInherit::SetAutoPropertyPrefixId(const char *id){
+	pAutoPropertyPrefixId = id;
+}
+
+void igdeGDClassInherit::SetUseAutoPropertyPrefixId(bool use){
+	pUseAutoPropertyPrefixId = use;
+}
+
+void igdeGDClassInherit::AddAutoPrefixedPropertiesTo(igdeGDClass &gdclass){
+	if(pUseAutoPropertyPrefixId || pAutoPrefixProperties.GetCount() == 0){
+		return;
+	}
+	
+	decStringDictionary properties(gdclass.GetPropertyValues());
+	const decStringList keys(pAutoPrefixProperties.GetKeys());
+	const int count = keys.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		const decString &key = keys.GetAt(i);
+		properties.SetAt(pPropertyPrefix + key, pAutoPrefixProperties.GetAt(key));
+	}
+	pAutoPrefixProperties.RemoveAll();
+	gdclass.SetPropertyValues(properties);
 }

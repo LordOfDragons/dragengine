@@ -59,6 +59,8 @@ pin Dragengine.Utils
  * Adds these conversation condition and command named "cutscene".
  *
  * Element class property prefix is "cutscene".
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actorcutscene
  */
 class ECBehaviorActorCutscene extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -221,6 +223,43 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			else
 				throw EInvalidParam.new("Unknown action '" + action + "'")
 			end
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorCollider
+	 * - Required: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorCutscene'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorCutscene"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorActorCutscene behavior = ECBehaviorActorCutscene.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass),\
+				ECBehaviorConversationActor.getBehaviorIn(eclass))
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "cutscene")
+			return behavior
 		end
 	end
 	

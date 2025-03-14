@@ -52,6 +52,8 @@ pin Dragengine.Utils
  * 
  * If conversation actor is used see ECBehaviorActorMover.ConvoCondition and
  * ECBehaviorActorMover.ConvoCommand for supported syntax.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actormover
  */
 class ECBehaviorActorMover extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -376,6 +378,53 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 	end
 	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLocomotion
+	 * - Required: \ref ECBehaviorNavigator
+	 * - Optional: \ref ECBehaviorRideOn
+	 * - Optional: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorMover'>
+	 *   <!-- optional: use navigator with id instead of empty string -->
+	 *   <string name='navigator'>second</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorMover"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			
+			var ECBehaviorActorMover behavior = ECBehaviorActorMover.new(eclass,\
+				ECBehaviorLocomotion.getBehaviorIn(eclass),\
+				eclass.sharedFactoryHelper.defaultNavigator(eclass, parameters),\
+				ECBehaviorRideOn.getBehaviorIn(eclass))
+			
+			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "actorMover")
+			return behavior
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */
@@ -523,6 +572,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pGoalPosition = goal
 			pPath = null
 			pNextPathPoint = 0
+			pNextPlaneNormal = null
 			updateRequiresThinking()
 		end
 		
@@ -631,6 +681,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pGoalDistance = DEMath.max(distance, 0.001)
 			pPause = false
 			pPath = null
+			pNextPathPoint = 0
+			pNextPlaneNormal = null
 			
 			if goal != null
 				bareUpdatePath()
@@ -673,6 +725,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			
 			pPath = null
 			pNextPathPoint = 0
+			pNextPlaneNormal = null
 			pRemainingDistance = 0
 			updateRequiresThinking()
 		end
@@ -758,6 +811,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pointCount = pPath.getCount()
 			if pointCount == 0 or not pPath.getAt(pointCount - 1).equals(goalPosition)
 				pPath.add(goalPosition)
+				pointCount++
 			end
 			
 			if ridableCollider != null

@@ -50,64 +50,109 @@ pin Dragengine.TriggerSystem
  * Element class properties have the prefix "sky.".
  * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_sky
  */
 class ECBehaviorSky extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorSky'>
+	 *   <!-- optional: set layer mask (default empty). list of bits to set. -->
+	 *   <string name='layerMask'>0 1 4</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorSky"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorSky behavior = ECBehaviorSky.new(eclass)
+			
+			if parameters.has("layerMask")
+				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
+					decodeLayerMask(parameters.getAt("layerMask") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "sky")
+			return behavior
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorSky pECBehavior
-		private var SkyInstance pSkyInstance
-		private var SkyController pControllerPlayback
+		var ECBehaviorSky pECBehavior
+		var SkyInstance pSkyInstance
+		var SkyController pControllerPlayback
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorSky ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorSky ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var Sky sky = this.pECBehavior.getSky().getSky( stub, this.getElement().getClass() )
+		func void init(StubElement stub)
+			var Sky sky = pECBehavior.getSky().getSky(stub, getElement().getClass())
 			if sky == null
 				return
 			end
 			
-			this.pSkyInstance = SkyInstance.new()
-			this.pSkyInstance.setSky( sky )
-			this.pSkyInstance.setOrder( this.pECBehavior.getOrder().getValue( stub ) )
-			this.pSkyInstance.setLayerMask( this.pECBehavior.getLayerMask() )
+			pSkyInstance = SkyInstance.new()
+			pSkyInstance.setSky(sky)
+			pSkyInstance.setOrder(pECBehavior.getOrder().getValue(stub))
+			pSkyInstance.setLayerMask(pECBehavior.getLayerMask())
 			
-			var String name = this.pECBehavior.getControllerPlayback().getValue( stub )
+			var String name = pECBehavior.getControllerPlayback().getValue(stub)
 			if not name.empty()
-				this.pControllerPlayback = this.pSkyInstance.getControllerNamed( name )
+				pControllerPlayback = pSkyInstance.getControllerNamed(name)
 			end
 			
-			this.setRequiresThink( this.pControllerPlayback != null )
+			setRequiresThink(pControllerPlayback != null)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorSky getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorSky getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Sky instance. */
-		public func SkyInstance getSkyInstance()
-			return this.pSkyInstance
+		func SkyInstance getSkyInstance()
+			return pSkyInstance
 		end
 		
 		/** \brief Playback controller or null if not used. */
-		public func SkyController getControllerPlayback()
-			return this.pControllerPlayback
+		func SkyController getControllerPlayback()
+			return pControllerPlayback
 		end
 		
 		/** \brief Playback time. */
-		public func float getPlaybackTime()
-			if this.pControllerPlayback != null
-				return this.pControllerPlayback.getValue()
+		func float getPlaybackTime()
+			if pControllerPlayback != null
+				return pControllerPlayback.getValue()
 				
 			else
 				return 0
@@ -115,129 +160,129 @@ class ECBehaviorSky extends DefaultECBehavior
 		end
 		
 		/** \brief Set playback time. */
-		public func void setPlaybackTime( float time )
-			if this.pControllerPlayback != null
-				this.pControllerPlayback.setValue( time )
+		func void setPlaybackTime(float time)
+			if pControllerPlayback != null
+				pControllerPlayback.setValue(time)
 			end
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			if this.pSkyInstance != null
-				this.getElement().getGameWorld().getWorld().addSky( this.pSkyInstance )
+		func void addToGameWorld()
+			if pSkyInstance != null
+				getElement().getGameWorld().getWorld().addSky(pSkyInstance)
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			if this.pSkyInstance != null
-				this.getElement().getGameWorld().getWorld().removeSky( this.pSkyInstance )
+		func void removeFromGameWorld()
+			if pSkyInstance != null
+				getElement().getGameWorld().getWorld().removeSky(pSkyInstance)
 			end
 		end
 		
 		/** \brief Think about what to do for the next frame update. */
-		public func void think( float elapsed )
-			if this.pControllerPlayback == null
-				this.pControllerPlayback.increment( elapsed )
+		func void think(float elapsed)
+			if pControllerPlayback == null
+				pControllerPlayback.increment(elapsed)
 			end
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				this.setPlaybackTime( reader.readFloat() )
+				setPlaybackTime(reader.readFloat())
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			writer.writeFloat( this.getPlaybackTime() )
+			writer.writeFloat(getPlaybackTime())
 		end
 	end
 	
 	
 	
-	private var ECPSky pSky
-	private var ECPInteger pOrder
-	private var ECPString pControllerPlayback
-	private var LayerMask pLayerMask
+	var ECPSky pSky
+	var ECPInteger pOrder
+	var ECPString pControllerPlayback
+	var LayerMask pLayerMask
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, BaseGameApp.getApp().getLoaders() )
+	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders())
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String prefix ) \
-	this( eclass, BaseGameApp.getApp().getLoaders(), prefix )
+	func new(BehaviorElementClass eclass, String prefix) \
+	this(eclass, BaseGameApp.getApp().getLoaders(), prefix)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, Loaders loaders) this( eclass, loaders, "sky." )
+	func new(BehaviorElementClass eclass, Loaders loaders) this(eclass, loaders, "sky.")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, Loaders loaders, String prefix ) super( eclass )
-		this.pLayerMask = LayerMask.new()
+	func new(BehaviorElementClass eclass, Loaders loaders, String prefix) super(eclass)
+		pLayerMask = LayerMask.new()
 		
-		this.pSky = ECPSky.new( prefix + "path", loaders.getSky() )
-		eclass.addProperty( this.pSky )
+		pSky = ECPSky.new(prefix + "path", loaders.getSky())
+		eclass.addProperty(pSky)
 		
-		this.pOrder = ECPInteger.new( prefix + "order", 0 )
-		eclass.addProperty( this.pOrder )
+		pOrder = ECPInteger.new(prefix + "order", 0)
+		eclass.addProperty(pOrder)
 		
-		this.pControllerPlayback = ECPString.new( prefix + "controllerPlayback", "" )
-		eclass.addProperty( this.pControllerPlayback )
+		pControllerPlayback = ECPString.new(prefix + "controllerPlayback", "")
+		eclass.addProperty(pControllerPlayback)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Sky resource. */
-	public func ECPSky getSky()
-		return this.pSky
+	func ECPSky getSky()
+		return pSky
 	end
 	
 	/** \brief Order. */
-	public func ECPInteger getOrder()
-		return this.pOrder
+	func ECPInteger getOrder()
+		return pOrder
 	end
 	
 	/** \brief Name of playback controller or empty string if not used. */
-	public func ECPString getControllerPlayback()
-		return this.pControllerPlayback
+	func ECPString getControllerPlayback()
+		return pControllerPlayback
 	end
 	
 	/** \brief Layer mask. */
-	public func LayerMask getLayerMask()
-		return this.pLayerMask
+	func LayerMask getLayerMask()
+		return pLayerMask
 	end
 	
 	/** \brief Set layer mask. */
-	public func void setLayerMask( LayerMask layerMask )
+	func void setLayerMask(LayerMask layerMask)
 		if layerMask == null
 			throw EInvalidParam.new()
 		end
-		this.pLayerMask = layerMask
+		pLayerMask = layerMask
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	/**
@@ -246,10 +291,10 @@ class ECBehaviorSky extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorSky getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorSky each
+	static func ECBehaviorSky getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorSky each
 			return true
-		end ) cast ECBehaviorSky
+		end) cast ECBehaviorSky
 	end
 	
 	/**
@@ -258,16 +303,16 @@ class ECBehaviorSky extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorSky.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

@@ -173,7 +173,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-MOD_ENTRY_POINT_ATTR deBaseModule *OpenGLCreateModule( deLoadableModule *loadableModule );
+#ifdef BACKEND_OPENGL
+MOD_ENTRY_POINT_ATTR deBaseModule *OpenGLCreateModule(deLoadableModule *loadableModule);
+#elif defined BACKEND_VULKAN
+MOD_ENTRY_POINT_ATTR deBaseModule *VulkanCreateModule(deLoadableModule *loadableModule);
+#endif
 #ifdef  __cplusplus
 }
 #endif
@@ -184,17 +188,20 @@ MOD_ENTRY_POINT_ATTR deBaseModule *OpenGLCreateModule( deLoadableModule *loadabl
 // has to be named CreateModule returning deBaseModule.
 // returns NULL on error.
 /////////////////////////////////////////////////////////
-deBaseModule *OpenGLCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
-	try{
-		module = new deGraphicOpenGl( *loadableModule );
-	}catch( const deException &e ){
-		e.PrintError();
-		return NULL;
-	}
-	return module;
-}
 
+#ifdef BACKEND_OPENGL
+deBaseModule *OpenGLCreateModule(deLoadableModule *loadableModule)
+#elif defined BACKEND_VULKAN
+deBaseModule *VulkanCreateModule(deLoadableModule *loadableModule)
+#endif
+{
+	try{
+		return new deGraphicOpenGl(*loadableModule);
+	}catch(const deException &e){
+		e.PrintError();
+		return nullptr;
+	}
+}
 
 
 // Class deGraphicOpenGl
@@ -592,6 +599,7 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	#elif defined OS_UNIX
 	const deoglRTContext &context = pRenderThread->GetContext();
 	
+#ifdef BACKEND_OPENGL
 	connection.opengl.display = context.GetDisplay();
 	connection.opengl.visualid = context.GetVisualInfo()->visualid;
 	connection.opengl.glxFBConfig = context.GetBestFBConfig();
@@ -600,6 +608,14 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	if( context.GetActiveRRenderWindow() ){
 		connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
 	}
+	
+#elif defined BACKEND_VULKAN
+	connection.vulkan.instance = context.GetVulkan().GetInstance().GetInstance();
+	connection.vulkan.device = context.GetDevice().GetDevice();
+	connection.vulkan.physicalDevice = context.GetDevice().GetPhysicalDevice();
+	connection.vulkan.queueIndex = context.GetQueueGraphic().GetIndex();
+	connection.vulkan.queueFamilyIndex = context.GetQueueGraphic().GetFamily();
+#endif
 	
 	#elif defined OS_W32
 	const deoglRTContext &context = pRenderThread->GetContext();

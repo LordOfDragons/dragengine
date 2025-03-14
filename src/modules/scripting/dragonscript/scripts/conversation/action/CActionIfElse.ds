@@ -117,6 +117,11 @@ class CActionIfElse extends ConversationAction
 		pElseActions.add(action)
 	end
 	
+	/** \brief Else actions as Array of ConversationAction. */
+	func Array getElseActions()
+		return pElseActions
+	end
+	
 	/** \brief Else actions iterator. */
 	func ConversationActionIterator getIteratorElseActions()
 		return ConversationActionIterator.new(pElseActions, 0)

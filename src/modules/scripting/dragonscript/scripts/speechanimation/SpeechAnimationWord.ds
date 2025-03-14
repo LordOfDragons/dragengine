@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.SpeechAnimations
 
 pin Dragengine.Gui
@@ -30,37 +29,62 @@ pin Dragengine.Scenery
 pin Dragengine.Utils
 
 
-
 /**
  * Speech animation Word.
  */
 class SpeechAnimationWord
-	/** Unique namel. */
-	private var StringID pName
-	/** Phoneme of the word. */
-	private var UnicodeString pPhonetics
-	
+	var StringID pName
+	var UnicodeString pPhonetics
 	
 	
 	/** Creates a new speech animation phoneme. */
-	public func new( StringID name, UnicodeString phonetics )
+	func new(StringID name, UnicodeString phonetics)
 		if name == null or phonetics == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pName = name
-		this.pPhonetics = phonetics
+		pName = name
+		pPhonetics = phonetics
 	end
 	
 	
-	
-	/** Retrieves the unique name. */
-	public func StringID getName()
-		return this.pName
+	/** Unique name. */
+	func StringID getName()
+		return pName
 	end
 	
-	/** Retrieves the phonetics. */
-	public func UnicodeString getPhonetics()
-		return this.pPhonetics
+	/** Phonetics. */
+	func UnicodeString getPhonetics()
+		return pPhonetics
+	end
+	
+	/**
+	 * \brief Estimates speak length in seconds.
+	 * \version 1.25
+	 * 
+	 * If speechAnimation is null uses count of phonetics multiplied by phoneticLength to
+	 * calculate the estimated length. If SpeeachAnimation is not null uses length of phoneme
+	 * matching phonetics to improve the estimation.
+	 * 
+	 * Using null as speechAnimation is faster. Improved estimation requires properly set
+	 * phoneme speak length.
+	 * 
+	 * Recommended value for phoneticLength is 0.075 .
+	 */
+	func float getEstimatedSpeakLength(float phoneticLength, SpeechAnimation speechAnimation)
+		if speechAnimation == null
+			return phoneticLength * pPhonetics.getLength()
+		end
+		
+		var int i, count = pPhonetics.getLength()
+		var SpeechAnimationPhoneme phoneme
+		var float length
+		
+		for i = 0 to count
+			phoneme = speechAnimation.getPhonemeWithIPA(pPhonetics.getCharacterAt(i))
+			length += phoneme != null if phoneme.getLength() else phoneticLength
+		end
+		
+		return length
 	end
 end

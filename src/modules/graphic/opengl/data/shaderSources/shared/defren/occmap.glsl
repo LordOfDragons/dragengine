@@ -12,11 +12,7 @@
 	};
 	
 	#ifdef SHARED_SPB_USE_SSBO
-		#ifdef OS_ANDROID
-			UBOLAYOUT_BIND(0) readonly buffer OcclusionMeshParametersSSBO
-		#else
-			UBOLAYOUT readonly buffer OcclusionMeshParametersSSBO
-		#endif
+		UBOLAYOUT_BIND(0) readonly buffer OcclusionMeshParametersSSBO
 	#else
 		UBOLAYOUT uniform OcclusionMeshParameters
 	#endif

@@ -2,7 +2,10 @@
 <shader>
 	<name>DefRen GI Probe Extends</name>
 	
-	<texture name='texDistance' target='0'/>
+	<!-- shader assigned locations
+	<texture name='texCacheDistance' target='0'/>
+	<texture name='texPosition' target='0'/>
+	-->
 	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>

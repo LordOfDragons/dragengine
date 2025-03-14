@@ -40,6 +40,8 @@ pin Dragengine.Utils
  * This behavior can be used for human actor and vehicle movement.
  * 
  * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:bahevior_playerinputmove
  */
 class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	/** \brief Locomotion type. */
@@ -73,6 +75,63 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		 * modify the locomotion turning value.
 		 */
 		vehicle
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorLocomotion
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 *   <!-- optional: set locomotion type. default is 'natural'. allowed values are these:
+	 *                  natural: default locomotion working best for actors moving in a
+	 *                           natural way. The actor moves into the direction it is
+	 *                           looking. The body is oriented into the walking
+	 *                           direction if the actor is moving.
+	 *                  fps: configuration useful for FPS type games where the actor is always
+	 *                       oriented into the direction the player is looking. This
+	 *                       configuration typically uses an 8-direction animator representing
+	 *                       the actor moving into any direction relative to the looking direction.
+	 *                  vehicle: configuration useful for vehicle type actors like tanks which
+	 *                           move into the direction their body is oriented while allowing
+	 *                           to freely look around. -->
+	 *   <string name='locomotionType'>natural</string>
+	 * <behavior type='ECBehaviorPlayerInputMove'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorPlayerInputMove"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			
+			var ECBehaviorPlayerInputMove behavior = ECBehaviorPlayerInputMove.new(\
+				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
+			
+			if parameters.has("locomotionType")
+				behavior.setLocomotionType(LocomotionType.named(parameters.getAt("locomotionType") cast String))
+				if behavior.getLocomotionType() == null
+					throw EInvalidParam.new("invalid value for locomotionType: " + parameters.getAt("locomotionType"))
+				end
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "playerInputMove")
+			return behavior
+		end
 	end
 	
 	/** \brief Behavior instance. */
@@ -114,7 +173,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		func new(ECBehaviorPlayerInputMove ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			
-			pLocomotionType = LocomotionType.natural
+			pLocomotionType = ecbehavior.getLocomotionType()
 			pCanMove = true
 			
 			pSpeedFactorWalkForward = 1
@@ -781,6 +840,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	var ECPFloat pSpeedFactorRunBackward
 	var ECPFloat pSpeedFactorRunLeft
 	var ECPFloat pSpeedFactorRunRight
+	var LocomotionType pLocomotionType
 	
 	
 	
@@ -796,6 +856,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		end
 		
 		pLocomotion = locomotion
+		pLocomotionType = LocomotionType.natural
 		
 		pSpeedWalk = ECPFloat.new(prefix + "speedWalk", 1.25, 0)
 		eclass.addProperty(pSpeedWalk)
@@ -891,6 +952,22 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	/** \brief Speed factor run right. */
 	func ECPFloat getSpeedFactorRunRight()
 		return pSpeedFactorRunRight
+	end
+	
+	/**
+	 * \brief Locomotion type.
+	 * \version 1.25
+	 */
+	func LocomotionType getLocomotionType()
+		return pLocomotionType
+	end
+	
+	/**
+	 * \brief Set locomotion type.
+	 * \version 1.25
+	 */
+	func void setLocomotionType(LocomotionType type)
+		pLocomotionType = type
 	end
 	
 	

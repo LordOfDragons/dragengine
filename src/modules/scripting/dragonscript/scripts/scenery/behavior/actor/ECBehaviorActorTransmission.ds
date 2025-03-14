@@ -65,6 +65,8 @@ pin Dragengine.Utils
  * 
  * If part has empty string the subtitle is hidden. This allows empty parts to be used
  * to created pauses between parts.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actortransmission
  */
 class ECBehaviorActorTransmission extends DefaultECBehavior
 	/** \brief Immutable transmission part. */
@@ -158,6 +160,59 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		/** \brief Create listener. */
 		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorConversationActor
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorActorTransmission'>
+	 *   <!-- optional: use BaseGameApp sub title. game can add more supported values. default is 'default' -->
+	 *   <string name='subTitle'>default</string>
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorActorTransmission"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorActorTransmission behavior = ECBehaviorActorTransmission.new(eclass,\
+				ECBehaviorConversationActor.getBehaviorIn(eclass))
+			
+			if parameters.has("subTitle")
+				behavior.setSubTitle(getSubTitleFor(parameters.getAt("subTitle") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "transmission")
+			return behavior
+		end
+		
+		/**
+		 * \brief Conversation playback subtitle matching value.
+		 * 
+		 * Default implementation returns \ref BaseGameApp#getWindowSubTitle() for value 'default'
+		 * and null for all other values. Overwrite to accept other values.
+		 */
+		func ConversationPlaybackSubTitle getSubTitleFor(String value)
+			return BehaviorElementClass.sharedFactoryHelper.subtitle(value)
 		end
 	end
 	

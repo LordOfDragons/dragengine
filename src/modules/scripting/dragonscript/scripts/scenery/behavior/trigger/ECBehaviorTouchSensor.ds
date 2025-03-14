@@ -40,8 +40,7 @@ pin Dragengine.Utils
  * have the CollisionFilterBit.trigger bit cleared. Modify the collision filter to allow other elements
  * to trigger this touch sensor.
  * 
- * Upon being touched the touch sensor notifies the listeners as well as setting a trigger
- * target in case a trigger table is present and the user set a trigger target name,
+ * Upon being touched the touch sensor notifies the listeners.
  * 
  * The TouchSensor resource can be queried for the colliders currently touching it.
  * Furthermore colliders entering and leaving trigger a notification allowing elements
@@ -63,6 +62,8 @@ pin Dragengine.Utils
  * Element class properties have the prefix "touchSensor{(identifier)}.".
  * 
  * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_touchsensor
  */
 class ECBehaviorTouchSensor extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
@@ -147,6 +148,56 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		/** \brief Create listener. */
 		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * \ref 1.25
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorCollider
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorTouchSensor'>
+	 *   <!-- optional: set collision filter. default value '4:3' which means
+	 *                  category BaseGameApp.CollisionFilterBit.trigger
+	 *                  filter BaseGameApp.CollisionFilterBit.actorAI.
+	 *                  format is '', 'category' or 'category:filter' where category and filter
+	 *                  are a list of bits to set. -->
+	 *   <string name='collisionFilter'>3:4 0</string>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorTouchSensor' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorTouchSensor"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorTouchSensor behavior = ECBehaviorTouchSensor.new(eclass,\
+				ECBehaviorCollider.getBehaviorIn(eclass), id)
+			
+			if parameters.has("collisionFilter")
+				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
+					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
+			end
+			
+			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "touchSensor", id)
+			return behavior
 		end
 	end
 	

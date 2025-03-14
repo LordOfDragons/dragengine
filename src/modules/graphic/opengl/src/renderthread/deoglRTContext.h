@@ -28,8 +28,15 @@
 #include "../deoglBasics.h"
 
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-#include <GL/glx.h>
-#include "../extensions/glxext.h"
+#ifdef BACKEND_OPENGL
+	#include <GL/glx.h>
+	#include "../extensions/glxext.h"
+#elif defined BACKEND_VULKAN
+	#include <deSharedVulkan.h>
+	#include <devkDevice.h>
+	#include <queue/devkCommandPool.h>
+	#include <queue/devkQueue.h>
+#endif
 class deOSUnix;
 #endif
 
@@ -98,6 +105,8 @@ class deoglRTContext{
 private:
 	deoglRenderThread &pRenderThread;
 	
+	static const int MaxCompileContextCount = 8;
+	int pCompileContextCount;
 	
 	
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
@@ -106,12 +115,26 @@ private:
 	Display *pDisplay;
 	int pScreen;
 	
+#ifdef BACKEND_OPENGL
 	GLXContext pContext;
 	GLXContext pLoaderContext;
+	GLXContext pCompileContext[MaxCompileContextCount];
+#elif defined BACKEND_VULKAN
+	deSharedVulkan::Ref pVulkan;
+	devkDevice::Ref pDevice;
+	devkQueue *pQueueGraphic;
+	devkQueue *pQueueCompute;
+	devkQueue *pQueueTransfer;
+	devkCommandPool::Ref pCommandPoolGraphic;
+	devkCommandPool::Ref pCommandPoolCompute;
+	devkCommandPool::Ref pCommandPoolTransfer;
+#endif
 	
 	Colormap pColMap;
 	XVisualInfo *pVisInfo;
+#ifdef BACKEND_OPENGL
 	GLXFBConfig pBestFBConfig;
+#endif
 	
 	Atom pAtomProtocols;
 	Atom pAtomDeleteWindow;
@@ -123,12 +146,14 @@ private:
 	EGLDisplay pDisplay;
 	EGLSurface pSurface;
 	EGLContext pContext;
+	EGLSurface pLoaderSurface;
 	EGLContext pLoaderContext;
+	EGLSurface pCompileSurface[MaxCompileContextCount];
+	EGLContext pCompileContext[MaxCompileContextCount];
 	EGLConfig pConfig;
 	
 	int pScreenWidth;
 	int pScreenHeight;
-	bool pScreenResized;
 #endif
 	
 #ifdef OS_BEOS
@@ -141,6 +166,7 @@ private:
 	NSOpenGLPixelFormat *pPixelFormat;
 	NSOpenGLContext *pContext;
 	NSOpenGLContext *pLoaderContext;
+	NSOpenGLContext *pCompileContext[MaxCompileContextCount];
 #endif
 
 #ifdef OS_W32
@@ -148,6 +174,7 @@ private:
 	deOSWindows *pOSWindows;
 	HGLRC pContext;
 	HGLRC pLoaderContext;
+	HGLRC pCompileContext[MaxCompileContextCount];
 #endif
 	
 	deoglRRenderWindow *pActiveRRenderWindow;
@@ -201,11 +228,16 @@ public:
 	/** Application is activated. */
 	inline bool GetAppActivated() const{ return pAppActivated; }
 	
+#ifdef BACKEND_OPENGL
 	/** Special call for module to get a function pointer before extensions can be properly initialized. */
 	void *GetFunctionPointer( const char *funcName );
+#endif
+	
+	/** Count of compile contexts. */
+	inline int GetCompileContextCount() const{ return pCompileContextCount; }
 	
 	
-
+	
 #if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	/** OS Unix. */
 	inline deOSUnix *GetOSUnix(){ return pOSUnix; }
@@ -219,6 +251,7 @@ public:
 	/** Main thread display. */
 	Display *GetMainThreadDisplay() const;
 	
+#ifdef BACKEND_OPENGL
 	/** Unix best framebuffer configuration. */
 	inline GLXFBConfig &GetBestFBConfig(){ return pBestFBConfig; }
 	inline const GLXFBConfig &GetBestFBConfig() const{ return pBestFBConfig; }
@@ -228,6 +261,27 @@ public:
 	
 	/** Loader context. */
 	inline GLXContext GetLoaderContext() const{ return pLoaderContext; }
+	
+	/** Compile context or nullptr. */
+	inline GLXContext GetCompileContextAt(int index) const{ return pCompileContext[index]; }
+	
+#elif defined BACKEND_VULKAN
+	/** Vulkan. */
+	inline deSharedVulkan &GetVulkan() const{ return pVulkan; }
+	
+	/** Vulkan device. */
+	inline devkDevice &GetDevice() const{ return pDevice; }
+	
+	/** queues. */
+	inline devkQueue &GetQueueGraphic() const{ return *pQueueGraphic; }
+	inline devkQueue &GetQueueCompute() const{ return *pQueueCompute; }
+	inline devkQueue &GetQueueTransfer() const{ return *pQueueTransfer; }
+	
+	/** Command pools. */
+	inline devkCommandPool &GetCommandPoolGraphic() const{ return pCommandPoolGraphic; }
+	inline devkCommandPool &GetCommandPoolCompute() const{ return pCommandPoolCompute; }
+	inline devkCommandPool &GetCommandPoolTransfer() const{ return pCommandPoolTransfer; }
+#endif
 	
 	/** Atoms. */
 	inline Atom GetAtomProtocols() const{ return pAtomProtocols; }
@@ -250,8 +304,17 @@ public:
 	/** Context. */
 	inline EGLContext GetContext() const{ return pContext; }
 	
+	/** Loader surface. */
+	inline EGLSurface GetLoaderSurface() const{ return pLoaderSurface; }
+	
 	/** Loader context. */
 	inline EGLContext GetLoaderContext() const{ return pLoaderContext; }
+	
+	/** Compile surface or EGL_NO_SURFACE. */
+	inline EGLSurface GetCompileSurfaceAt(int index) const{ return pCompileSurface[index]; }
+	
+	/** Compile context or EGL_NO_CONTEXT. */
+	inline EGLContext GetCompileContextAt(int index) const{ return pCompileContext[index]; }
 	
 	/** Configuration. */
 	inline const EGLConfig& GetConfig() const{ return pConfig; }
@@ -264,12 +327,6 @@ public:
 	
 	/** Check if screen configuration changed. */
 	void CheckConfigurationChanged();
-	
-	/** Screen size changed. */
-	inline bool GetScreenResized() const{ return pScreenResized; }
-	
-	/** Clear screen size changed. */
-	void ClearScreenResized();
 	
 	/** Current screen width. */
 	inline int GetScreenWidth() const{ return pScreenWidth; }
@@ -298,6 +355,9 @@ public:
 	
 	/** Loader context. */
 	inline NSOpenGLContext *GetLoaderContext() const{ return pLoaderContext; }
+	
+	/** Loader context or nullptr. */
+	inline NSOpenGLContext *GetCompileContextAt(int index) const{ return pCompileContext[index]; }
 #endif
 
 #ifdef OS_W32
@@ -313,6 +373,9 @@ public:
 	/** Loader context. */
 	inline HGLRC GetLoaderContext() const{ return pLoaderContext; }
 	
+	/** Compile context or NULL. */
+	inline HGLRC GetCompileContextAt(int index) const{ return pCompileContext[index]; }
+	
 	LRESULT ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam );
 #endif
 	/*@}*/
@@ -322,12 +385,14 @@ public:
 private:
 	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	void pOpenDisplay();
-	void pChooseVisual();
+#ifdef BACKEND_OPENGL
 	void pPrintVisualInfo();
 	void pChooseFBConfig();
+	void pChooseVisual();
+#endif
 	void pCreateColorMap();
 	void pCreateAtoms();
-	void pCreateGLContext();
+	void pCreateContext();
 	void pFreeContext();
 	void pFreeVisualInfo();
 	void pCloseDisplay();
@@ -339,20 +404,20 @@ private:
 	#endif
 	
 	#ifdef OS_BEOS
-	void pCreateGLContext();
+	void pCreateContext();
 	void pFreeContext();
 	#endif
 	
 	#ifdef OS_W32
 	void pRegisterWindowClass();
-	void pCreateGLContext();
+	void pCreateContext();
 	void pUnregisterWindowClass();
 	void pFreeContext();
 	#endif
 	
 	#ifdef OS_MACOS
-	void pCreateGLContext();
-	void pGLContextMakeCurrent( NSView *view );
+	void pCreateContext();
+	void pContextMakeCurrent( NSView *view );
 	void pFreeContext();
 	#endif
 };

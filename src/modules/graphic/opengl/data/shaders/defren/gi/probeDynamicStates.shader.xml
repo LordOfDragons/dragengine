@@ -2,8 +2,10 @@
 <shader>
 	<name>DefRen GI Probe Dynamic States</name>
 	
+	<!-- shader assigned locations
 	<texture name='texTracePosition' target='0'/>
 	<texture name='texTraceNormal' target='1'/>
+	-->
 	
 	<uniformBlock name='GIParameters' target='1'/>
 	<uniformBlock name='GIProbeIndices' target='2'/>

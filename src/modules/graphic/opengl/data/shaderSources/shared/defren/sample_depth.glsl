@@ -3,7 +3,7 @@
 #endif
 
 // sample depth value
-float sampleDepth( sampler2DArray samplerDepth, in ivec3 texCoord, in int level ){
+float sampleDepth( ARG_SAMP_HIGHP sampler2DArray samplerDepth, in ivec3 texCoord, in int level ){
 	#ifdef DECODE_IN_DEPTH
 		return dot( texelFetch( samplerDepth, texCoord, level ).rgb, _sampleDepth_unpackDepth );
 	#else
@@ -11,11 +11,11 @@ float sampleDepth( sampler2DArray samplerDepth, in ivec3 texCoord, in int level 
 	#endif
 }
 
-float sampleDepth( sampler2DArray samplerDepth, in ivec3 texCoord ){
+float sampleDepth( ARG_SAMP_HIGHP sampler2DArray samplerDepth, in ivec3 texCoord ){
 	return sampleDepth( samplerDepth, texCoord, 0 );
 }
 
-float sampleDepth( sampler2DArray samplerDepth, in vec3 texCoord, in float level ){
+float sampleDepth( ARG_SAMP_HIGHP sampler2DArray samplerDepth, in vec3 texCoord, in float level ){
 	#ifdef DECODE_IN_DEPTH
 		return dot( textureLod( samplerDepth, texCoord, level ).rgb, _sampleDepth_unpackDepth );
 	#else
@@ -23,6 +23,6 @@ float sampleDepth( sampler2DArray samplerDepth, in vec3 texCoord, in float level
 	#endif
 }
 
-float sampleDepth( sampler2DArray samplerDepth, in vec3 texCoord ){
-	return sampleDepth( samplerDepth, texCoord, 0 );
+float sampleDepth( ARG_SAMP_HIGHP sampler2DArray samplerDepth, in vec3 texCoord ){
+	return sampleDepth( samplerDepth, texCoord, 0.0 );
 }

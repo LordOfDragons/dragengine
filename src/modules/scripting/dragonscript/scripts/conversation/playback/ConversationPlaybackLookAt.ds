@@ -36,170 +36,170 @@ pin Dragengine.LoadSave
  * \brief Conversation playback look-at.
  */
 class ConversationPlaybackLookAt
-	private var DVector pPosition
-	private var Quaternion pOrientation
-	private var String pBone
-	private var ConversationActor pActor
-	private var ConversationCoordSystem pCoordSystem
-	private var bool pUsePlaybackCamera
-	private var ConversationCustomTarget pCustomTarget
-	private var DMatrix pLocalMatrix
-	private var ConversationTarget pTarget
+	var DVector pPosition
+	var Quaternion pOrientation
+	var String pBone
+	var ConversationActor pActor
+	var ConversationCoordSystem pCoordSystem
+	var bool pUsePlaybackCamera
+	var ConversationCustomTarget pCustomTarget
+	var DMatrix pLocalMatrix
+	var ConversationTarget pTarget
 	
 	
 	
 	/** \brief Create look-at. */
-	public func new()
-		this.pPosition = DVector.new()
-		this.pOrientation = Quaternion.new()
+	func new()
+		pPosition = DVector.new()
+		pOrientation = Quaternion.new()
 	end
 	
 	/** \brief Create look-at with dynamic conversation target. */
-	public func new( ConversationPlayback playback, ConversationTarget target )
-		this.pTarget = target
+	func new(ConversationPlayback playback, ConversationTarget target)
+		pTarget = target
 		
-		this.pPosition = DVector.new( target.getPosition() )
-		this.pOrientation = target.getOrientation()
-		this.pBone = target.getBone()
+		pPosition = DVector.new(target.getPosition())
+		pOrientation = target.getOrientation()
+		pBone = target.getBone()
 		
 		if target.getCoordSystemID() != null
-			this.pCoordSystem = playback.getCoordSystemByID( target.getCoordSystemID() )
+			pCoordSystem = playback.getCoordSystemByID(target.getCoordSystemID())
 			
 		elif target.getActorID() != null
-			this.pActor = playback.getActorMatching( target.getActorID() )
+			pActor = playback.getActorMatching(target.getActorID())
 			
 		else
-			this.pUsePlaybackCamera = true
+			pUsePlaybackCamera = true
 		end
 	end
 	
 	/** \brief Create look-at relative to custom conversation target. */
-	public func new( ConversationCustomTarget target ) this( target, DVector.new(), Quaternion.new() )
+	func new(ConversationCustomTarget target) this(target, DVector.new(), Quaternion.new())
 	end
 	
 	/** \brief Create look-at relative to custom conversation target. */
-	public func new( ConversationCustomTarget target, DVector displacement ) this( target, displacement, Quaternion.new() )
+	func new(ConversationCustomTarget target, DVector displacement) this(target, displacement, Quaternion.new())
 	end
 	
 	/** \brief Create look-at relative to custom conversation target. */
-	public func new( ConversationCustomTarget target, DVector displacement, Quaternion orientation )
-		this.pCustomTarget = target
-		this.pPosition = displacement
-		this.pOrientation = orientation
+	func new(ConversationCustomTarget target, DVector displacement, Quaternion orientation)
+		pCustomTarget = target
+		pPosition = displacement
+		pOrientation = orientation
 	end
 	
 	
 	
 	/** \brief Position. */
-	public func DVector getPosition()
-		return this.pPosition
+	func DVector getPosition()
+		return pPosition
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( DVector position )
+	func void setPosition(DVector position)
 		if position == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPosition = position
-		this.pLocalMatrix = null
+		pPosition = position
+		pLocalMatrix = null
 	end
 	
 	/** \brief Orientation. */
-	public func Quaternion getOrientation()
-		return this.pOrientation
+	func Quaternion getOrientation()
+		return pOrientation
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Quaternion orientation )
+	func void setOrientation(Quaternion orientation)
 		if orientation == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pOrientation = orientation
-		this.pLocalMatrix = null
+		pOrientation = orientation
+		pLocalMatrix = null
 	end
 	
 	/** \brief Bone or \em null if not used. */
-	public func String getBone()
-		return this.pBone
+	func String getBone()
+		return pBone
 	end
 	
 	/** \brief Set bone or \em null if not used. */
-	public func void setBone( String bone )
-		this.pBone = bone
+	func void setBone(String bone)
+		pBone = bone
 	end
 	
 	/** \brief Actor the look-at is relative to or \em null if in world space. */
-	public func ConversationActor getActor()
-		return this.pActor
+	func ConversationActor getActor()
+		return pActor
 	end
 	
 	/** \brief Set actor the look-at is relative to or null if in world space. */
-	public func void setActor( ConversationActor actor )
-		this.pActor = actor
+	func void setActor(ConversationActor actor)
+		pActor = actor
 	end
 	
 	/** \brief Coordinate system the look-at is relative to or null if in world space. */
-	public func ConversationCoordSystem getCoordSystem()
-		return this.pCoordSystem
+	func ConversationCoordSystem getCoordSystem()
+		return pCoordSystem
 	end
 	
 	/** \brief Set coordinate system the look-at is relative to or null if in world space. */
-	public func void setCoordSystem( ConversationCoordSystem coordSystem )
-		this.pCoordSystem = coordSystem
+	func void setCoordSystem(ConversationCoordSystem coordSystem)
+		pCoordSystem = coordSystem
 	end
 	
 	/** \brief Use playback camera as target. */
-	public func bool getUsePlaybackCamera()
-		return this.pUsePlaybackCamera
+	func bool getUsePlaybackCamera()
+		return pUsePlaybackCamera
 	end
 	
 	/** \brief Set if playback camera is used as target. */
-	public func void setUsePlaybackCamera( bool usePlaybackCamera )
-		this.pUsePlaybackCamera = usePlaybackCamera
+	func void setUsePlaybackCamera(bool usePlaybackCamera)
+		pUsePlaybackCamera = usePlaybackCamera
 	end
 	
 	/** \brief Custom target or \em null if not used. */
-	public func ConversationCustomTarget getCustomTarget()
-		return this.pCustomTarget
+	func ConversationCustomTarget getCustomTarget()
+		return pCustomTarget
 	end
 	
 	/** \brief Set custom target or \em null if not used. */
-	public func void setCustomTarget( ConversationCustomTarget target )
-		this.pCustomTarget = target
+	func void setCustomTarget(ConversationCustomTarget target)
+		pCustomTarget = target
 	end
 	
 	
 	
 	/** \brief Current look-at world matrix. */
-	public func DMatrix getLookAtMatrix( ConversationPlayback playback )
-		if this.pLocalMatrix == null
-			this.pLocalMatrix = DMatrix.newWorld( this.pPosition, this.pOrientation )
+	func DMatrix getLookAtMatrix(ConversationPlayback playback)
+		if pLocalMatrix == null
+			pLocalMatrix = DMatrix.newWorld(pPosition, pOrientation)
 		end
 		
-		var DMatrix matrix = this.pLocalMatrix
+		var DMatrix matrix = pLocalMatrix
 		
-		if this.pUsePlaybackCamera
+		if pUsePlaybackCamera
 			var Camera camera = playback.getCameraDirector().getCamera()
-			matrix = matrix * DMatrix.newWorld( camera.getPosition(), camera.getOrientation() )
+			matrix = matrix * DMatrix.newWorld(camera.getPosition(), camera.getOrientation())
 			
-		elif this.pCustomTarget != null
-			matrix = matrix * this.pCustomTarget.getMatrix()
+		elif pCustomTarget != null
+			matrix = matrix * pCustomTarget.getMatrix()
 			
-		elif this.pCoordSystem != null
-			matrix = matrix * this.pCoordSystem.getMatrix()
+		elif pCoordSystem != null
+			matrix = matrix * pCoordSystem.getMatrix()
 			
-		elif this.pActor != null
-			matrix = matrix * this.pActor.getMatrix( this.pBone )
+		elif pActor != null
+			matrix = matrix * pActor.getMatrix(pBone)
 		end
 		
 		return matrix
 	end
 	
 	/** \brief Current look-at world position. */
-	public func DVector getLookAtPosition( ConversationPlayback playback )
-		return this.getLookAtMatrix( playback ).getPosition()
+	func DVector getLookAtPosition(ConversationPlayback playback)
+		return getLookAtMatrix(playback).getPosition()
 	end
 	
 	
@@ -211,58 +211,58 @@ class ConversationPlaybackLookAt
 	 * restored during readFromFile(). Once all loading is done and the playback is
 	 * present objects this call is used to restore the object links.
 	 */
-	public func void playbackRestoreObjectLinks( ConversationPlayback playback )
-		if this.pTarget == null
+	func void playbackRestoreObjectLinks(ConversationPlayback playback)
+		if pTarget == null
 			return
 		end
 		
-		if this.pTarget.getCoordSystemID() != null
-			this.pCoordSystem = playback.getCoordSystemByID( this.pTarget.getCoordSystemID() )
+		if pTarget.getCoordSystemID() != null
+			pCoordSystem = playback.getCoordSystemByID(pTarget.getCoordSystemID())
 			
-		elif this.pTarget.getActorID() != null
-			this.pActor = playback.getActorMatching( this.pTarget.getActorID() )
+		elif pTarget.getActorID() != null
+			pActor = playback.getActorMatching(pTarget.getActorID())
 		end
 	end
 	
 	/** \brief Read from file. */
-	static public func ConversationPlaybackLookAt readFromFile( PersistencyEnvironment env, FileReader reader )
+	static func ConversationPlaybackLookAt readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
 			var ConversationPlaybackLookAt lookat = ConversationPlaybackLookAt.new()
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-			lookat.pUsePlaybackCamera = flags.getAt( 0 )
+			var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+			lookat.pUsePlaybackCamera = flags.getAt(0)
 			
-			lookat.pPosition = DVector.readFromFile( reader )
-			lookat.pOrientation = Quaternion.readFromFile( reader )
-			lookat.pBone = env.readString8OrNullIfEmpty( reader )
-			lookat.pCustomTarget = env.readObjectOrNull( reader ) cast ConversationCustomTarget
-			if flags.getAt( 1 )
-				lookat.pTarget = ConversationTarget.readFromFile( env, reader )
+			lookat.pPosition = DVector.readFromFile(reader)
+			lookat.pOrientation = Quaternion.readFromFile(reader)
+			lookat.pBone = env.readString8OrNullIfEmpty(reader)
+			lookat.pCustomTarget = env.readObjectOrNull(reader) cast ConversationCustomTarget
+			if flags.getAt(1)
+				lookat.pTarget = ConversationTarget.readFromFile(env, reader)
 			end
 			
 			return lookat
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		var PersistencyFlags flags = PersistencyFlags.new( 2 )
-		flags.setAt( 0, this.pUsePlaybackCamera )
-		flags.setAt( 1, this.pTarget != null )
-		flags.writeToFile( writer )
+		var PersistencyFlags flags = PersistencyFlags.new(2)
+		flags.setAt(0, pUsePlaybackCamera)
+		flags.setAt(1, pTarget != null)
+		flags.writeToFile(writer)
 		
-		this.pPosition.writeToFile( writer )
-		this.pOrientation.writeToFile( writer )
-		env.writeString8OrEmptyIfNull( writer, this.pBone )
-		env.writeObjectOrNull( writer, this.pCustomTarget )
-		if flags.getAt( 1 )
-			this.pTarget.writeToFile( env, writer )
+		pPosition.writeToFile(writer)
+		pOrientation.writeToFile(writer)
+		env.writeString8OrEmptyIfNull(writer, pBone)
+		env.writeObjectOrNull(writer, pCustomTarget)
+		if flags.getAt(1)
+			pTarget.writeToFile(env, writer)
 		end
 	end
 end

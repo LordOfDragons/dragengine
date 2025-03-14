@@ -36,12 +36,12 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDebug.h"
+#include "../../renderthread/deoglRTLogger.h"
 
 #ifdef OS_ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
-#include "../../renderthread/deoglRTLogger.h"
 #endif
 
 #include <dragengine/common/exceptions.h>
@@ -61,7 +61,8 @@ pMemUse( pRenderThread.GetMemoryManager().GetConsumption().textureCube )
 	pTexture = 0;
 	
 	pSize = 1;
-	pFormat = renderThread.GetCapabilities().GetFormats().GetUseTexCubeFormatFor( deoglCapsFmtSupport::eutfRGB8 );
+	pFormat = &renderThread.GetCapabilities().GetFormats().
+		RequireUseTexCubeFormatFor(deoglCapsFmtSupport::eutfRGB8);
 	pMipMapLevelCount = 0;
 	pRealMipMapLevelCount = 0;
 	pMipMapped = false;
@@ -99,11 +100,11 @@ void deoglCubeMap::SetFormat( const deoglCapsTextureFormat *format ){
 }
 
 void deoglCubeMap::SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber ){
-	SetFormat( pRenderThread.GetCapabilities().GetFormats().GetUseTexCubeFormatFor( formatNumber ) );
+	SetFormat(&pRenderThread.GetCapabilities().GetFormats().RequireUseTexCubeFormatFor(formatNumber));
 }
 
 void deoglCubeMap::SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber ){
-	SetFormat( pRenderThread.GetCapabilities().GetFormats().GetUseFBOTexCubeFormatFor( formatNumber ) );
+	SetFormat(&pRenderThread.GetCapabilities().GetFormats().RequireUseFBOTexCubeFormatFor(formatNumber));
 }
 
 void deoglCubeMap::SetMipMapped( bool mipmapped ){
@@ -147,33 +148,51 @@ void deoglCubeMap::CreateCubeMap(){
 	
 	tsmgr.EnableBareCubeMap( 0, *this );
 	
-	for( t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++ ){
-		OGL_CHECK( pRenderThread, glTexImage2D( t, 0, glformat, pSize, pSize,
-			0, glpixelformat, glpixeltype, NULL ) );
-	}
-	
-	if( pMipMapped ){
-		int count = pMipMapLevelCount;
-		int size = pSize;
-		int i;
-		
-		if( count == 0 ){
-			count = ( int )( floorf( log2f( ( float )pSize ) ) );
+	if(pglTexStorage2D){
+		if(pMipMapped){
+			pRealMipMapLevelCount = pMipMapLevelCount;
+			if(pRealMipMapLevelCount == 0){
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)pSize)));
+			}
 		}
 		
-		for( i=0; i<count; i++ ){
-			size >>= 1;
-			if( size < 1 ){
-				size = 1;
+		try{
+			OGL_CHECK(pRenderThread, pglTexStorage2D(GL_TEXTURE_CUBE_MAP,
+				pRealMipMapLevelCount + 1, glformat, pSize, pSize));
+		}catch(const deException &){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"glTexStorage3D(Cube): levelCount=%d format=%s size=%d",
+				pRealMipMapLevelCount + 1, pFormat->GetName().GetString(), pSize);
+			pRenderThread.GetLogger().LogErrorFormat("Supported formats: %s",
+				pRenderThread.GetCapabilities().GetFormats().SupportedFormatsTexCube().GetString());
+			pRenderThread.GetLogger().LogErrorFormat("Supported FBO formats: %s",
+				pRenderThread.GetCapabilities().GetFormats().SupportedFormatsFBOTexCube().GetString());
+			throw;
+		}
+		
+	}else{
+		for(t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++){
+			OGL_CHECK(pRenderThread, glTexImage2D(t, 0, glformat, pSize, pSize,
+				0, glpixelformat, glpixeltype, nullptr));
+		}
+		
+		if(pMipMapped){
+			pRealMipMapLevelCount = pMipMapLevelCount;
+			int size = pSize;
+			int i;
+			
+			if(pRealMipMapLevelCount == 0){
+				pRealMipMapLevelCount = (int)(floorf(log2f((float)pSize)));
 			}
 			
-			for( t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++ ){
-				OGL_CHECK( pRenderThread, glTexImage2D( t, i + 1, glformat, size, size,
-					0, glpixelformat, glpixeltype, NULL ) );
+			for(i=0; i<pRealMipMapLevelCount; i++){
+				size = decMath::max(size >> 1, 1);
+				for(t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++){
+					OGL_CHECK(pRenderThread, glTexImage2D(t, i + 1, glformat, size, size,
+						0, glpixelformat, glpixeltype, nullptr));
+				}
 			}
 		}
-		
-		pRealMipMapLevelCount = count;
 	}
 	
 	OGL_CHECK( pRenderThread, glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, pRealMipMapLevelCount ) );
@@ -251,16 +270,34 @@ void deoglCubeMap::SetPixelsLevel( int level, const deoglPixelBuffer &pixelBuffe
 	
 	OGL_CHECK( pRenderThread, glPixelStorei( GL_UNPACK_ALIGNMENT, 1 ) );
 	
-	for( t=0; t<6; t++ ){
-		if( pixelBuffer.GetCompressed() ){
-			OGL_CHECK( pRenderThread, pglCompressedTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, level, pFormat->GetFormat(),
-				size, size, 0, faceStride, ( const GLvoid * )( pixelsPtr + faceStride * t ) ) );
-			//OGL_CHECK( pRenderThread, pglCompressedTexSubImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, level, 0, 0, size, size,
-			//	pFormat->GetFormat(), faceStride, ( const GLvoid * )( pixelsPtr + faceStride * t ) ) );
+	for(t=0; t<6; t++){
+		if(pixelBuffer.GetCompressed()){
+			// immutable textures allow only glCompressedTexSubImage2D
+			//OGL_CHECK(pRenderThread, pglCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + t,
+			//	level, pFormat->GetFormat(), size, size, 0, faceStride,
+			//	(const GLvoid*)(pixelsPtr + faceStride * t)));
+			OGL_CHECK(pRenderThread, pglCompressedTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + t,
+				level, 0, 0, size, size, pFormat->GetFormat(), faceStride,
+				(const GLvoid*)(pixelsPtr + faceStride * t)));
 			
 		}else{
-			OGL_CHECK( pRenderThread, pglTexSubImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, level, 0, 0, size, size,
-				pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(), ( const GLvoid * )( pixelsPtr + faceStride * t ) ) );
+#ifdef OS_ANDROID
+			oglClearError();
+			pglTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, level, 0, 0, size, size,
+				pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(),
+				(const GLvoid *)(pixelsPtr + faceStride * t));
+			if(glGetError() == GL_INVALID_OPERATION){
+				pRenderThread.GetLogger().LogInfoFormat(
+					"deoglCubeMap::SetPixelsLevelLayer Failed: size=%d level=%d f=%s pf=0x%x pt=0x%x",
+					size, level, pFormat->GetName().GetString(),
+					pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType());
+				DETHROW(deeInvalidParam);
+			}
+#else
+			OGL_CHECK(pRenderThread, pglTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, level,
+				0, 0, size, size, pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(),
+				(const GLvoid*)(pixelsPtr + faceStride * t)));
+#endif
 		}
 	}
 	
@@ -475,9 +512,8 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 
 
 int deoglCubeMap::GetLevelSize( int level ) const{
-	if( level < 0 || level > pRealMipMapLevelCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE(level >= 0)
+	DEASSERT_TRUE(level <= pRealMipMapLevelCount)
 	
 	int i, size = pSize;
 	
@@ -529,7 +565,7 @@ void deoglCubeMap::CopyFrom( const deoglCubeMap &cubemap, bool withMipMaps, int 
 			mipMapLevelCount = srcMipMapLevelCount;
 		}
 		
-		for( i=0; i<mipMapLevelCount; i++ ){
+		for( i=0; i<=mipMapLevelCount; i++ ){
 			if( pglCopyImageSubData ){
 				pglCopyImageSubData( cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, i, srcX, srcY, 0,
 					pTexture, GL_TEXTURE_CUBE_MAP, i, destX, destY, 0, size, size, 6 );
@@ -593,7 +629,7 @@ void deoglCubeMap::UpdateMemoryUsage(){
 			unsigned long consumption = 0ull;
 			GLint t, l, compressedSize;
 			
-			for( l=0; l<pRealMipMapLevelCount; l++ ){
+			for( l=0; l<=pRealMipMapLevelCount; l++ ){
 				for( t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++ ){
 					OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( t, l,
 						GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );

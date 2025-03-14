@@ -34,34 +34,34 @@ pin Dragengine.Utils
  * Speech animation.
  */
 class SpeechAnimation
-	private var String pNeutralMove
-	private var Set pNeutralVertexPositionSets
-	private var Array pPhonemes
-	private var Array pWords
-	private var String pPathAnimation
-	private var String pPathRig
-	private var Animator pAnimator
+	var String pNeutralMove
+	var Set pNeutralVertexPositionSets
+	var Dictionary pPhonemes
+	var Dictionary pWords
+	var String pPathAnimation
+	var String pPathRig
+	var Animator pAnimator
 	
 	
 	
 	/** Create speech animation. */
-	public func new()
+	func new()
 		pNeutralMove = ""
 		pNeutralVertexPositionSets = Set.new()
-		pPhonemes = Array.new()
-		pWords = Array.new()
+		pPhonemes = Dictionary.new()
+		pWords = Dictionary.new()
 		pAnimator = Animator.new()
 	end
 	
 	
 	
 	/** Name of neutral move. */
-	public func String getNeutralMove()
+	func String getNeutralMove()
 		return pNeutralMove
 	end
 	
 	/** Set name of neutral move. */
-	public func void setNeutralMove(String moveName)
+	func void setNeutralMove(String moveName)
 		if moveName == null
 			throw EInvalidParam.new()
 		end
@@ -73,85 +73,89 @@ class SpeechAnimation
 	 * Neutral vertex position sets (Set of String).
 	 * \version 1.17
 	 */
-	public func Set getNeutralVertexPositionSets()
+	func Set getNeutralVertexPositionSets()
 		return pNeutralVertexPositionSets
 	end
 	
 	/** Path to animation or null if not set. */
-	public func String getPathAnimation()
+	func String getPathAnimation()
 		return pPathAnimation
 	end
 	
 	/** Set path to animation or null if not set. */
-	public func void setPathAnimation(String path)
+	func void setPathAnimation(String path)
 		pPathAnimation = path
 	end
 	
 	/** Path to rig or null if not set. */
-	public func String getPathRig()
+	func String getPathRig()
 		return pPathRig
 	end
 	
 	/** Set path to rig or null if not set. */
-	public func void setPathRig(String path)
+	func void setPathRig(String path)
 		pPathRig = path
 	end
 	
 	/** Phoneme with IPA symbol or null if absent. */
-	public func SpeechAnimationPhoneme getPhonemeWithIPA(int ipa)
-		return pPhonemes.find(block SpeechAnimationPhoneme each
-			return each.getIPA() == ipa
-		end) cast SpeechAnimationPhoneme
+	func SpeechAnimationPhoneme getPhonemeWithIPA(int ipa)
+		return pPhonemes.getAt(ipa, null) cast SpeechAnimationPhoneme
 	end
 	
 	/** Add phoneme. */
-	public func void addPhoneme(SpeechAnimationPhoneme phoneme)
-		if getPhonemeWithIPA(phoneme.getIPA()) != null
+	func void addPhoneme(SpeechAnimationPhoneme phoneme)
+		if pPhonemes.has(phoneme.getIPA())
 			throw EInvalidParam.new()
 		end
 		
-		pPhonemes.add(phoneme)
+		pPhonemes.setAt(phoneme.getIPA(), phoneme)
 	end
 	
-	/** Visit phoneme. */
-	public func void forEachPhoneme(Block aBlock)
-		pPhonemes.forEach(aBlock)
+	/**
+	 * Visit phoneme.
+	 * 
+	 * Block receives as argument \ref SpeechAnimationPhoneme.
+	 */
+	func void forEachPhoneme(Block aBlock)
+		pPhonemes.forEachValue(aBlock)
 	end
 	
 	/** Word with name or null if absent. */
-	public func SpeechAnimationWord getWordNamed(StringID name)
-		return pWords.find(block SpeechAnimationWord each
-			return each.getName().equals(name)
-		end) cast SpeechAnimationWord
+	func SpeechAnimationWord getWordNamed(StringID name)
+		return pWords.getAt(name, null) cast SpeechAnimationWord
 	end
 	
 	/** Add word. */
-	public func void addWord(SpeechAnimationWord word)
-		if getWordNamed(word.getName()) != null
+	func void addWord(SpeechAnimationWord word)
+		if pWords.has(word.getName())
 			throw EInvalidParam.new()
 		end
 		
-		pWords.add(word)
+		pWords.setAt(word.getName(), word)
 	end
 	
-	/** Visit word. */
-	public func void forEachWord(Block aBlock)
-		pWords.forEach(aBlock)
+	/**
+	 * Visit word.
+	 * 
+	 * Block receives as argument \ref SpeechAnimationWord.
+	 */
+	func void forEachWord(Block aBlock)
+		pWords.forEachValue(aBlock)
 	end
 	
 	/** Animator. */
-	public func Animator getAnimator()
+	func Animator getAnimator()
 		return pAnimator
 	end
 	
 	/** Build animator. */
-	public func void buildAnimator()
+	func void buildAnimator()
 		var Array visemeMoves = Array.new()
 		var Array visemeVPS = Array.new()
 		var int controllerIndex, offsetVPS
 		
 		// build list of the viseme move names and set the controller indices at the same time
-		pPhonemes.forEach(block SpeechAnimationPhoneme each
+		pPhonemes.forEachValue(block SpeechAnimationPhoneme each
 			if not each.getMoveName().empty() and each.getVertexPositionSet().empty()
 				controllerIndex = visemeMoves.indexOf(each.getMoveName())
 				if controllerIndex == -1
@@ -163,7 +167,7 @@ class SpeechAnimation
 		end)
 		offsetVPS = visemeMoves.getCount()
 		
-		pPhonemes.forEach(block SpeechAnimationPhoneme each
+		pPhonemes.forEachValue(block SpeechAnimationPhoneme each
 			if not each.getVertexPositionSet().empty()
 				controllerIndex = offsetVPS + visemeVPS.indexOf(each.getVertexPositionSet())
 				if controllerIndex < offsetVPS

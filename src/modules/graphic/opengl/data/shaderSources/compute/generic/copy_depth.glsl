@@ -1,7 +1,7 @@
 precision highp float;
 precision highp int;
 
-layout(local_size_x=16, local_size_y=16, local_size_z=1) in;
+layout(local_size_x=16, local_size_y=16) in;
 
 // PROBLEM: compute shaders can not read/write depth images... U_U
 layout(rgba32f, binding=0) uniform restrict readonly image2DArray inDepth;

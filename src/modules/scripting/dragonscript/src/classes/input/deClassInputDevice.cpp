@@ -782,6 +782,7 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	init.clsImage = pDS.GetClassImage();
 	init.clsModel = pDS.GetClassModel();
 	init.clsSkin = pDS.GetClassSkin();
+	init.clsRig = pDS.GetClassRig();
 	init.clsIDAxis = pDS.GetClassInputDeviceAxis();
 	init.clsIDButton = pDS.GetClassInputDeviceButton();
 	init.clsIDFeedback = pDS.GetClassInputDeviceFeedback();
@@ -793,7 +794,6 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	init.clsVector = pDS.GetClassVector();
 	init.clsQuaternion = pDS.GetClassQuaternion();
 	init.clsMatrix = pDS.GetClassMatrix();
-	init.clsRig = pDS.GetClassRig();
 	
 	AddFunction( new nfDestructor( init ) );
 	
@@ -833,8 +833,8 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetHandRig( init ) );
 	AddFunction( new nfGetSupportsFaceEyeExpressions( init ) );
 	AddFunction( new nfGetSupportsFaceMouthExpressions( init ) );
-	AddFunction( new nfGetVRModel( init ) );
-	AddFunction( new nfGetVRSkin( init ) );
+	AddFunction(new nfGetVRModel(init));
+	AddFunction(new nfGetVRSkin(init));
 	
 	AddFunction( new nfIsPresent( init ) );
 	

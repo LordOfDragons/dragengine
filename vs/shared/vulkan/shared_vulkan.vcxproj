@@ -45,6 +45,7 @@
     <ClCompile Include="..\..\..\src\shared\vulkan\src\devkBasics.cpp" />
     <ClCompile Include="..\..\..\src\shared\vulkan\src\devkDebug.cpp" />
     <ClCompile Include="..\..\..\src\shared\vulkan\src\devkDevice.cpp" />
+    <ClCompile Include="..\..\..\src\shared\vulkan\src\devkFormat.cpp" />
     <ClCompile Include="..\..\..\src\shared\vulkan\src\devkGlobalFunctions.cpp" />
     <ClCompile Include="..\..\..\src\shared\vulkan\src\devkInstance.cpp" />
     <ClCompile Include="..\..\..\src\shared\vulkan\src\devkLoader.cpp" />
@@ -82,10 +83,12 @@
     <ClInclude Include="..\..\..\src\shared\vulkan\src\devkBasics.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\devkDebug.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\devkDevice.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkFormat.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\devkFunctionNames.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\devkGlobalFunctions.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\devkInstance.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\devkLoader.h" />
+    <ClInclude Include="..\..\..\src\shared\vulkan\src\devkTestFormatConfig.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\devkTPoolReference.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebuffer.h" />
     <ClInclude Include="..\..\..\src\shared\vulkan\src\framebuffer\devkFramebufferConfiguration.h" />
