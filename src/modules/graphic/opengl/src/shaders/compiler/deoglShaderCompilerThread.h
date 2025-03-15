@@ -27,6 +27,10 @@
 
 #include <dragengine/threading/deThread.h>
 
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#include <GL/glx.h>
+#endif
+
 class deoglShaderLanguage;
 class deoglShaderCompiler;
 
@@ -48,8 +52,10 @@ private:
 	deoglShaderCompiler *pCompiler;
 	bool pExitThread;
 	State pState;
-	
-	
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	Display *pDisplay;
+#endif
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

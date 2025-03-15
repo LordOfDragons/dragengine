@@ -51,6 +51,9 @@ pContextIndex(contextIndex),
 pCompiler(nullptr),
 pExitThread(false),
 pState(State::prepare)
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+, pDisplay(None)
+#endif
 {
 	language.GetRenderThread().GetLogger().LogInfoFormat(
 		"Create shader compiler thread: %d", contextIndex);
@@ -156,8 +159,12 @@ void deoglShaderCompilerThread::pCleanUp(){
 	wglMakeCurrent(NULL, NULL);
 	
 #elif defined OS_UNIX
-	pLanguage.GetRenderThread(), glXMakeCurrent(
-		pLanguage.GetRenderThread().GetContext().GetDisplay(), None, nullptr);
+	if(pDisplay){
+		glXMakeCurrent(pDisplay, None, nullptr);
+		glXDestroyContext(pDisplay, pLanguage.GetRenderThread().GetContext().
+			GetCompileContextAt(pContextIndex));
+	}
+	// glXMakeCurrent(pLanguage.GetRenderThread().GetContext().GetDisplay(), None, nullptr);
 #endif
 }
 
@@ -210,10 +217,27 @@ void deoglShaderCompilerThread::pActivateContext(){
 		}
 
 #elif defined OS_UNIX
+		// on nVidia there can be strange segfaults if using context display connection.
+		// to be on the safe side use a unique display connection.
+		const char *dispName = getenv("DISPLAY");
+		if(!dispName){
+			dispName = "";
+		}
+		pDisplay = XOpenDisplay(dispName);
+		DEASSERT_NOTNULL(pDisplay)
+
+		// on nVidia if glXMakeCurrent fails and glGetError is called this can cause a segfault.
+		// as a work around for this problem use the return code instead.
+		DEASSERT_TRUE(glXMakeCurrent(/*context.GetDisplay()*/ pDisplay,
+			context.GetActiveRRenderWindow()->GetWindow(),
+			context.GetCompileContextAt(pContextIndex)))
+
+		/*
 		OGL_CHECK_WRTC(pLanguage.GetRenderThread(), pContextIndex == -1,
 			glXMakeCurrent(context.GetDisplay(),
 			context.GetActiveRRenderWindow()->GetWindow(),
 			context.GetCompileContextAt(pContextIndex)));
+		*/
 #endif
 	}
 	
