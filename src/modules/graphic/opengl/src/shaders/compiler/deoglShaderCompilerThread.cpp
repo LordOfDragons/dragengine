@@ -216,17 +216,7 @@ void deoglShaderCompilerThread::pActivateContext(){
 			context.GetCompileContextAt(pContextIndex)));
 #endif
 	}
-	
-#ifdef OS_BEOS
-	decString threadName;
-	if(contextIndex > -1){
-		threadName.Format("OGL-ShaderCompiler-%d", contextIndex)
-	}else{
-		threadName = "OGL-ShaderCompiler")
-	}
-	SetName(threadName);
-#endif
-	
+	#ifdef OS_BEOS	decString threadName;	if(pContextIndex > -1){		threadName.Format("OGL-ShaderCompiler-%d", pContextIndex);	}else{		threadName = "OGL-ShaderCompiler";	}	SetName(threadName);#endif	
 	pCompiler = new deoglShaderCompiler(pLanguage, pContextIndex);
 }
 
