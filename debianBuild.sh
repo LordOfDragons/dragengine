@@ -78,12 +78,12 @@ else
 fi
 
 # gbp does not include the downloaded files in the source archive. fix it
-FILE=`cd /sources && dir -1 dragengine_*.orig.tar.gz`
+FILE=`cd .. && dir -1 dragengine_*.orig.tar.gz`
 FILENOEXT=`echo $FILE | sed -e "s/.orig.tar.gz//" | sed -e "s/_/-/"`
 FILETAR="${FILENOEXT}.orig.tar"
 
-gunzip /sources/$FILE || exit 1
-tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf /sources/$FILETAR \
+gunzip ../$FILE || exit 1
+tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILETAR \
   extern/eossdk/eossdk.zip \
   extern/eossdk/eossdk_bin_linux.tar.xz \
   `dir -1 extern/fox/fox-*.tar.bz2` \
@@ -95,7 +95,7 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf /sources/$FILETAR \
   `dir -1 extern/libapng/libpng-*tar.bz2` \
   `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` \
   `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` || exit 1
-gzip /sources/$FILETAR || exit 1
+gzip ../$FILETAR || exit 1
 
 git clean -dfx || exit 1
 
