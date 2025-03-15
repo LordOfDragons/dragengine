@@ -80,8 +80,9 @@ fi
 FILE=`cd .. && dir -1 dragengine_*.orig.tar.gz`
 FILENOEXT=`echo $FILE | sed -e "s/.orig.tar.gz//" | sed -e "s/_/-/"`
 
-gunzip ../dragengine_*.orig.tar.gz || exit 1
-tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
+gunzip ../$FILE || exit 1
+rm -f $FILE
+tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILE \
   extern/eossdk/eossdk.zip \
   extern/eossdk/eossdk_bin_linux.tar.xz \
   `dir -1 extern/fox/fox-*.tar.bz2` \
@@ -93,7 +94,7 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../dragengine_*.orig.tar \
   `dir -1 extern/libapng/libpng-*tar.bz2` \
   `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` \
   `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` || exit 1
-gzip ../dragengine_*.orig.tar || exit 1
+gzip ../$FILE || exit 1
 
 git clean -dfx || exit 1
 
