@@ -669,6 +669,10 @@ void deoglRenderThread::FinalizeAsyncResLoading(){
 	pDelayedOperations->ProcessAsyncResInitOperations();
 }
 
+void deoglRenderThread::RecreatedRes(){
+	pDelayedOperations->ProcessRecreateResOperations();
+}
+
 void deoglRenderThread::Synchronize(){
 	pLogger->Synchronize(); // send asynchronous logs to game logger
 	

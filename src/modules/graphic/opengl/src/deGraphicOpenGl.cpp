@@ -352,6 +352,11 @@ void deGraphicOpenGl::RenderWindows(){
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 	pRenderThread->FinalizeAsyncResLoading();
 // 		LogInfoFormat( "RenderWindows: FinalizeAsyncResLoading = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
+
+	// recreate failed resources
+// 	LogInfoFormat("RenderWindows() %d", __LINE__);
+	pRenderThread->RecreatedRes();
+// 	LogInfoFormat("RenderWindows: RecreatedRes = %d ys", (int)(timer.GetElapsedTime() * 1e6f));
 	
 	// update overlay
 	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();

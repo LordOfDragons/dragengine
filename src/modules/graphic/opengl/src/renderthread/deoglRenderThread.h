@@ -433,6 +433,9 @@ public:
 	/** Finalize asynchronously loaded resources. */
 	void FinalizeAsyncResLoading();
 	
+	/** Recreate failed resources. */
+	void RecreatedRes();
+	
 	/** Synchronize to render next frame. */
 	void Synchronize();
 	

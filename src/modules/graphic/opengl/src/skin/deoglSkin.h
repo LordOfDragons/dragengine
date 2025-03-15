@@ -67,6 +67,10 @@ public:
 	
 	/** Render skin. */
 	inline deoglRSkin *GetRSkin() const{ return pRSkin; }
+
+
+	/** Recreate deoglRSkin. */
+	void RecreateRSkin();
 	/*@}*/
 	
 private:
