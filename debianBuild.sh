@@ -81,7 +81,7 @@ FILE=`cd .. && dir -1 dragengine_*.orig.tar.gz`
 FILENOEXT=`echo $FILE | sed -e "s/.orig.tar.gz//" | sed -e "s/_/-/"`
 
 gunzip ../$FILE || exit 1
-rm -f $FILE
+rm -f ../$FILE
 tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILE \
   extern/eossdk/eossdk.zip \
   extern/eossdk/eossdk_bin_linux.tar.xz \
