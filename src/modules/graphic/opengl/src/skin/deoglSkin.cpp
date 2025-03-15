@@ -40,15 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkin::deoglSkin( deGraphicOpenGl &ogl, const deSkin &skin ) :
-pOgl( ogl ),
-pSkin( skin ),
-pRSkin( NULL )
+deoglSkin::deoglSkin(deGraphicOpenGl &ogl, const deSkin &skin) :
+pOgl(ogl),
+pSkin(skin),
+pRSkin(nullptr)
 {
 	try{
-		pRSkin = new deoglRSkin( ogl.GetRenderThread(), skin );
+		pRSkin = new deoglRSkin(ogl.GetRenderThread(), *this, skin);
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -60,11 +60,26 @@ deoglSkin::~deoglSkin(){
 
 
 
+// Management
+///////////////
+
+void deoglSkin::RecreateRSkin(){
+	if(pRSkin){
+		pRSkin->FreeReference();
+		pRSkin = nullptr;
+	}
+
+	pRSkin = new deoglRSkin(pOgl.GetRenderThread(), *this, pSkin);
+}
+
+
+
 // Private Functions
 //////////////////////
 
 void deoglSkin::pCleanUp(){
-	if( pRSkin ){
+	if(pRSkin){
+		pRSkin->DropOwnerSkin();
 		pRSkin->FreeReference();
 	}
 }

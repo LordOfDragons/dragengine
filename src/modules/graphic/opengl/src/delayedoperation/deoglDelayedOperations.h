@@ -96,6 +96,9 @@ private:
 	bool pHasAsyncResInitOperations;
 	decPointerOrderedSet pAsyncResInitSkinList;
 	decPointerOrderedSet pAsyncResInitFontList;
+
+	deMutex pMutexRecreateRes;
+	decPointerOrderedSet pRecreateSkinList;
 	
 	deMutex pMutexInit;
 	bool pHasInitOperations;
@@ -161,6 +164,17 @@ public:
 	 *          - Render Fonts (deoglRFont)
 	 */
 	void ProcessAsyncResInitOperations();
+	
+
+
+	/**
+	 * Process recreate resource operations (thread-safe).
+	 * \details Called from main thread to recreate failed resources.
+	 *          This is required to deal with accessing render objects in a safe way.
+	 *          Operates on the following lists:
+	 *          - Render Skins (deoglRSkin)
+	 */
+	void ProcessRecreateResOperations();
 	
 	
 	

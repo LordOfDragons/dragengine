@@ -296,7 +296,9 @@ pFormat(0)
 }
 
 void deoglShaderCompiler::cCacheShader::Run(){
+#ifdef WITH_DEBUG
 	deoglRTLogger &logger = pRenderThread.GetLogger();
+#endif
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheShaders = caches.GetShaders();
 #ifdef WITH_DEBUG
