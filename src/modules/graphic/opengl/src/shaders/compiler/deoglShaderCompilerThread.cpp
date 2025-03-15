@@ -161,8 +161,7 @@ void deoglShaderCompilerThread::pCleanUp(){
 #elif defined OS_UNIX
 	if(pDisplay){
 		glXMakeCurrent(pDisplay, None, nullptr);
-		glXDestroyContext(pDisplay, pLanguage.GetRenderThread().GetContext().
-			GetCompileContextAt(pContextIndex));
+		XCloseDisplay(pDisplay);
 	}
 	// glXMakeCurrent(pLanguage.GetRenderThread().GetContext().GetDisplay(), None, nullptr);
 #endif
