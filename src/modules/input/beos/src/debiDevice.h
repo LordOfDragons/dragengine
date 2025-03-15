@@ -26,7 +26,14 @@
 #define _DEBIDEVICE_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>#include <dragengine/common/string/decString.h>#include <dragengine/input/deInputDevice.h>#include <dragengine/resources/image/deImage.h>class deBeOSInput;class debiDeviceAxis;class debiDeviceButton;
+#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/input/deInputDevice.h>
+#include <dragengine/resources/image/deImageReference.h>
+
+class deBeOSInput;
+class debiDeviceAxis;
+class debiDeviceButton;
 class deInputDevice;
 
 
@@ -53,7 +60,14 @@ private:
 	int pIndex;
 	eSources pSource;
 	
-	deInputDevice::eDeviceTypes pType;	decString pID;	decString pName;	deImage::Ref pDisplayImage;	decObjectOrderedSet pDisplayIcons;	decString pDisplayText;		decObjectOrderedSet pButtons;
+	deInputDevice::eDeviceTypes pType;
+	decString pID;
+	decString pName;
+	deImageReference pDisplayImage;
+	decObjectOrderedSet pDisplayIcons;
+	decString pDisplayText;
+	
+	decObjectOrderedSet pButtons;
 	decObjectOrderedSet pAxes;
 	
 	bool pDirtyAxesValues;
@@ -114,7 +128,14 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Set name. */
-	void SetName( const char *name );		/** \brief Display image. */	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }		/** \brief Display icons (deImage*). */	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }	
+	void SetName( const char *name );
+	
+	/** \brief Display image. */
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	
+	/** \brief Display icons (deImage*). */
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	
 	/** \brief Set display image and icons. */
 	void SetDisplayImages( const char *name );
 	

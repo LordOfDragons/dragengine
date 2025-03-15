@@ -293,7 +293,14 @@ pFormat(0)
 	
 	SC_OGL_CHECK(renderThread, pglGetProgramBinary(handler,
 		pLength, nullptr, &pFormat, (void*)pData.GetString()));
-}void deoglShaderCompiler::cCacheShader::Run(){#ifdef WITH_DEBUG	deoglRTLogger &logger = pRenderThread.GetLogger();#endif	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();	deCacheHelper &cacheShaders = caches.GetShaders();#ifdef WITH_DEBUG	decTimer timerElapsed;
+}
+
+void deoglShaderCompiler::cCacheShader::Run(){
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
+	deCacheHelper &cacheShaders = caches.GetShaders();
+#ifdef WITH_DEBUG
+	decTimer timerElapsed;
 #endif
 	
 	{
