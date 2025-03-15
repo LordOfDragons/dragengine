@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deBeOSInput;
 class debiDeviceAxis;
@@ -63,7 +63,7 @@ private:
 	deInputDevice::eDeviceTypes pType;
 	decString pID;
 	decString pName;
-	deImageReference pDisplayImage;
+	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	
@@ -131,7 +131,7 @@ public:
 	void SetName( const char *name );
 	
 	/** \brief Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** \brief Display icons (deImage*). */
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }

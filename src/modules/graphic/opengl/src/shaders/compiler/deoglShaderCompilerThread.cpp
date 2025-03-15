@@ -219,10 +219,10 @@ void deoglShaderCompilerThread::pActivateContext(){
 	
 #ifdef OS_BEOS
 	decString threadName;
-	if(contextIndex > -1){
-		threadName.Format("OGL-ShaderCompiler-%d", contextIndex)
+	if(pContextIndex > -1){
+		threadName.Format("OGL-ShaderCompiler-%d", pContextIndex);
 	}else{
-		threadName = "OGL-ShaderCompiler")
+		threadName = "OGL-ShaderCompiler";
 	}
 	SetName(threadName);
 #endif
