@@ -94,8 +94,7 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf /sources/$FILETAR \
   `dir -1 extern/libapng/libpng-*tar.bz2` \
   `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` \
   `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` || exit 1
-gzip -c /sources/$FILETAR >/sources/$FILE || exit 1
-rm -f /sources/$FILETAR
+gzip -f /sources/$FILETAR || exit 1
 
 git clean -dfx || exit 1
 
