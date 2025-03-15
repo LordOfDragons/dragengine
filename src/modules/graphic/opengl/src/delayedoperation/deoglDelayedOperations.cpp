@@ -51,6 +51,7 @@
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/combinedTexture/deoglCombinedTexture.h"
 #include "../skin/combinedTexture/deoglCombinedTextureList.h"
+#include "../skin/deoglSkin.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
@@ -139,7 +140,7 @@ void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 		( ( deoglRFont* )pAsyncResInitFontList.GetAt( i ) )->FinalizeAsyncResLoading();
 	}
 	pAsyncResInitFontList.RemoveAll();
-	
+
 	// finished
 	pHasAsyncResInitOperations = false;
 }
@@ -178,6 +179,31 @@ void deoglDelayedOperations::RemoveAsyncResInitFont( deoglRFont *font ){
 
 
 
+// Delayed recreate resources
+///////////////////////////////
+
+void deoglDelayedOperations::ProcessRecreateResOperations(){
+	const deMutexGuard guard(pMutexRecreateRes);
+
+	// recreate failed skins.
+	//
+	// NOTE: if deoglSkin is deleted while deoglRSkin is in the recreate resource list then
+	//       GetOwnerSkin() is set to nullptr (during main thread). these deoglRSkin have to
+	//       be dropped here without doing anything to avoid segfaults (also on main thread).
+	//       since both actions happen on main thread no synchronization is needed.
+	while(pRecreateSkinList.GetCount() > 0){
+		deoglRSkin &skin = *((deoglRSkin*)pRecreateSkinList.GetAt(0));
+		if(skin.GetOwnerSkin()){
+			pRenderThread.GetLogger().LogInfoFormat("DelayedOperations: Recreate skin: %s",
+				skin.GetFilename().GetString());
+			skin.GetOwnerSkin()->RecreateRSkin();
+		}
+		pRecreateSkinList.RemoveFrom(0);
+	}
+}
+
+
+
 // Delayed render thread OpengGL initialization
 /////////////////////////////////////////////////
 
@@ -198,9 +224,10 @@ void deoglDelayedOperations::ProcessInitOperations(){
 	pInitImageList.RemoveAll();
 	
 	// initialize skins
-	while( pInitSkinList.GetCount() > 0 ){
-		pProcessSkin( *( ( deoglRSkin* )pInitSkinList.GetAt( 0 ) ) );
-		pInitSkinList.RemoveFrom( 0 );
+	while(pInitSkinList.GetCount() > 0){
+		deoglRSkin &skin = *((deoglRSkin*)pInitSkinList.GetAt(0)); 
+		pProcessSkin(skin);
+		pInitSkinList.RemoveFrom(0);
 	}
 	
 	// initialize models
@@ -211,7 +238,7 @@ void deoglDelayedOperations::ProcessInitOperations(){
 	pInitModelList.RemoveAll();
 	
 	// finished
-	pHasInitOperations = false;
+	pHasInitOperations = pInitSkinList.GetCount() > 0;
 }
 
 
@@ -573,8 +600,25 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 				}else{
 					if( compressedData ){
 						//pRenderThread.GetLogger().LogInfoFormat( "DelayedOperations texture compressed %s(%i)(%i)\n", skin.GetFilename().GetString(), t, c );
-						for( l=0; l<pixelBufferCount; l++ ){
-							texture->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+						try{
+							for( l=0; l<pixelBufferCount; l++ ){
+								texture->SetPixelsLevel( l, *pixelBufferMipMap->GetPixelBuffer( l ) );
+							}
+
+						}catch(const deException &e){
+							pRenderThread.GetLogger().LogException(e);
+
+							// this situation can happen if an update (typically GPU driver)
+							// causes the compressed texture to be not usable anymore or
+							// otherwise corrupted. drop caches and request skin to be recreated
+							pRenderThread.GetLogger().LogErrorFormat(
+								"DelayedOperations: Create from compressed texture failed. Recreate: %s(%i)(%i)",
+								skin.GetFilename().GetString(), t, c);
+							skin.DropAllCaches();
+							
+							const deMutexGuard guard(pMutexRecreateRes);
+							pRecreateSkinList.Add(&skin);
+							return;
 						}
 						
 					}else{

@@ -793,6 +793,10 @@ public:
 	
 	/** Channel for type is not \em NULL. */
 	bool IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) const;
+
+
+	/** Drop all caches. */
+	void DropAllCaches();
 	/*@}*/
 	
 	

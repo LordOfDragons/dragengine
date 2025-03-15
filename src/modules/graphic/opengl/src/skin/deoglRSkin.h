@@ -33,13 +33,14 @@
 #include <dragengine/common/string/decString.h>
 
 class deoglRenderThread;
+class deoglSkin;
 class deoglSkinTexture;
 class deoglSkinRenderable;
-class deoglVSRetainImageData;
 class deoglSkinBone;
 class deoglSkinMapped;
 class deoglSkinCalculatedProperty;
 class deoglSkinConstructedProperty;
+class deoglVSRetainImageData;
 
 class deSkin;
 
@@ -58,6 +59,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
+	deoglSkin *pOwnerSkin;
 	decString pFilename;
 	
 	deoglSkinTexture **pTextures;
@@ -95,7 +97,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render skin. */
-	deoglRSkin( deoglRenderThread &renderThread, const deSkin &Skin );
+	deoglRSkin( deoglRenderThread &renderThread, deoglSkin &owner, const deSkin &Skin );
 	
 	/** Clean up render skin. */
 	virtual ~deoglRSkin();
@@ -111,6 +113,10 @@ public:
 	/** Filename of skin file. */
 	inline const decString &GetFilename() const{ return pFilename; }
 	
+	/** Owner skin. For special use only. */
+	inline deoglSkin *GetOwnerSkin() const{ return pOwnerSkin; }
+	void DropOwnerSkin();
+
 	
 	
 	/**
@@ -236,7 +242,12 @@ public:
 	
 	/** Add bone and returns index. */
 	int AddBone( const char *name );
-	/*@}*/
+
+
+
+	/** Drop all caches. */
+	void DropAllCaches();
+ 	/*@}*/
 	
 	
 	

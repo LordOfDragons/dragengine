@@ -83,9 +83,9 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-deoglRSkin::deoglRSkin( deoglRenderThread &renderThread, const deSkin &skin ) :
+deoglRSkin::deoglRSkin( deoglRenderThread &renderThread, deoglSkin &owner, const deSkin &skin ) :
 pRenderThread( renderThread ),
-
+pOwnerSkin(&owner),
 pFilename( skin.GetFilename() ),
 
 pTextures( NULL ),
@@ -305,6 +305,10 @@ deoglRSkin::~deoglRSkin(){
 // Management
 ///////////////
 
+void deoglRSkin::DropOwnerSkin(){
+	pOwnerSkin = nullptr;
+}
+
 void deoglRSkin::FinalizeAsyncResLoading(){
 	int i;
 	for( i=0; i<pTextureCount; i++ ){
@@ -487,6 +491,15 @@ int deoglRSkin::AddBone( const char *name ){
 
 
 
+void deoglRSkin::DropAllCaches(){
+	int i;
+	for(i=0; i<pTextureCount; i++){
+		pTextures[i]->DropAllCaches();
+	}
+}
+
+
+
 // Private Functions
 //////////////////////
 
@@ -496,8 +509,9 @@ void deoglRSkin::pCleanUp(){
 		pVSRetainImageData = nullptr;
 	}
 	
-	pRenderThread.GetDelayedOperations().RemoveInitSkin( this );
-	pRenderThread.GetDelayedOperations().RemoveAsyncResInitSkin( this );
+	deoglDelayedOperations &delop = pRenderThread.GetDelayedOperations();
+	delop.RemoveInitSkin(this);
+	delop.RemoveAsyncResInitSkin(this);
 	
 	if( pTextures ){
 		int i;

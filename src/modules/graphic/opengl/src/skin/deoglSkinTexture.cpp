@@ -459,6 +459,25 @@ bool deoglSkinTexture::IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) 
 	return pChannels[ type ] != NULL;
 }
 
+void deoglSkinTexture::DropAllCaches(){
+	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
+	deCacheHelper &cacheTextures = caches.GetSkinTextures();
+	int i;
+	
+	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
+		if(!pChannels[i]){
+			continue;
+		}
+		if(pChannels[i]->GetCacheID().IsEmpty()){
+			continue;
+		}
+		
+		const deMutexGuard guard(caches.GetMutex());
+		cacheTextures.Delete(pChannels[i]->GetCacheID());
+		pChannels[i]->SetIsCached(false);
+	}
+}
+
 void deoglSkinTexture::PrepareParamBlock(){
 	if( pSharedSPBElement ){
 		return;
