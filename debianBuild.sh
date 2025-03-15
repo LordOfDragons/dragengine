@@ -80,7 +80,7 @@ fi
 # gbp does not include the downloaded files in the source archive. fix it
 FILE=`cd .. && dir -1 dragengine_*.orig.tar.gz`
 FILENOEXT=`echo $FILE | sed -e "s/.orig.tar.gz//" | sed -e "s/_/-/"`
-FILETAR="${FILENOEXT}.orig.tar"
+FILETAR=`echo $FILE | sed -e "s/.orig.tar.gz/.orig.tar/"`
 
 gunzip ../$FILE || exit 1
 tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILETAR \
