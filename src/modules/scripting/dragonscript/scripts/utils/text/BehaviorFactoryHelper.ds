@@ -925,12 +925,7 @@ class BehaviorFactoryHelper
 		
 		parameters.forEach(block String key, Object value
 			if key.getAt(0) == '.'
-				if hasPrefix
-					eclass.setPropertyValue(prefix + key, value)
-					
-				else
-					eclass.setPropertyValue(key.substring(1), value)
-				end
+				eclass.setPropertyValue(hasPrefix if prefix + key else key.substring(1), value)
 			end
 		end)
 	end
