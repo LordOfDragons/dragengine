@@ -921,9 +921,16 @@ class BehaviorFactoryHelper
 			prefix = prefix + "(" + id + ")"
 		end
 		
+		var bool hasPrefix = not prefix.empty()
+		
 		parameters.forEach(block String key, Object value
 			if key.getAt(0) == '.'
-				eclass.setPropertyValue(prefix + key, value)
+				if hasPrefix
+					eclass.setPropertyValue(prefix + key, value)
+					
+				else
+					eclass.setPropertyValue(key.substring(1), value)
+				end
 			end
 		end)
 	end
