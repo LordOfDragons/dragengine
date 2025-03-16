@@ -89,14 +89,6 @@ class Button extends Container
 	end
 	
 	/**
-	 * \brief Create text and image button.
-	 * \version 1.25
-	 */
-	func new(String text, Image image, String designerSelector, ActionListener action) this(text, image, action)
-		setDesignerSelector(designerSelector)
-	end
-	
-	/**
 	 * Disposes of the widget. This cleans all references and prepars the widget
 	 * for beeing freed. If the widget is already disposed nothing happens.
 	 */
