@@ -56,6 +56,7 @@ class LoadCamera extends BaseXmlLoader
 	 */
 	func CameraDirector loadFromFile(String filename)
 		var CameraDirector director = CameraDirector.new()
+		director.setLayerMask(null) // important or applying parameters changes layer mask
 		loadFromFile(filename, director)
 		return director
 	end
@@ -71,6 +72,7 @@ class LoadCamera extends BaseXmlLoader
 		end
 		
 		cached = CameraDirector.new()
+		cached.setLayerMask(null) // important or applying parameters changes layer mask
 		logLoadingFromFile(filename)
 		loadAndParseRootTag(filename, "camera", block EasyXMLElement root
 			readCamera(root, cached)
