@@ -49,6 +49,10 @@
 			"path": "src/modules/archive/delga"
 		},
 		{
+			"name": "webm",
+			"path": "src/modules/video/webm"
+		},
+		{
 			"name": "steamsdk",
 			"path": "src/modules/service/steamsdk"
 		},
