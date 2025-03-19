@@ -149,7 +149,7 @@ void deoglOcclusionTest::UpdateResults(){
 	
 	for( i=0; i<pInputDataCount; i++ ){
 		if( ! result[ i ] && pInputListeners[ i ] ){
-			//pInputListeners[ i ]->OcclusionTestInvisible();
+			pInputListeners[ i ]->OcclusionTestInvisible();
 		}
 	}
 }
