@@ -34,6 +34,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
 
+#ifdef OS_W32
+#include <dragengine/app/deOSWindows.h>
+#endif
 
 
 // Class deoglConfiguration
@@ -223,6 +226,19 @@ pRenderDocMode( false )
 	const char * const envRenderDocMode = secure_getenv( "DE_OGL_RENDERDOC_MODE" );
 	#endif
 	pRenderDocMode = envRenderDocMode && strcmp( envRenderDocMode, "1" ) == 0;
+	#endif
+	
+	#ifdef OS_W32
+	const int valueSize = 256;
+	char value[valueSize]{};
+	if(GetEnvironmentVariableA("DE_OGL_RENDERDOC_MODE", &value[0], valueSize) > 0){
+		pRenderDocMode = strcmp(value, "1" ) == 0;
+		if(pRenderDocMode){
+			pDebugContext = true;
+			pDebugNoMessages = false;
+			pLogLevel = ellDebug;
+		}
+	}
 	#endif
 }
 
