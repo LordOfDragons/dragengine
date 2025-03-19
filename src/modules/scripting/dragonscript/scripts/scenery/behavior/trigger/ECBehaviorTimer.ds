@@ -110,6 +110,10 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values.
 	 *                  default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -132,6 +136,10 @@ class ECBehaviorTimer extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorTimer behavior = ECBehaviorTimer.new(eclass,\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			behavior.getTriggered().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "timer", id)
 			return behavior
@@ -225,7 +233,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 				return
 			end
 			
-			pTrigger = pECBehavior.getTriggered().instance(getElement())
+			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(getElement())
 			pTrigger.addListener(TimerListener.new(this))
 			
 			pTimeout = pECBehavior.getTimeout().getValue(stub)

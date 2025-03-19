@@ -162,6 +162,14 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='triggerMuted.synchronize'>other</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -190,6 +198,12 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				behavior.getSpeaker().setLayerMask(ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
+			
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
+			
+			behavior.getTriggerMuted().setSynchronize(eclass,\
+				parameters.getAt("triggerMuted.synchronize", null) cast String)
 			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "speaker", id)
@@ -341,7 +355,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				return behavior.instance(element).getTrigger()
 				
 			else
-				return pECBehavior.getTrigger().instance(element)
+				return pECBehavior.getTrigger().synchronizedOrSelf().instance(element)
 			end
 		end
 		
@@ -359,7 +373,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				return behavior.instance(element).getTriggerMuted()
 				
 			else
-				return pECBehavior.getTriggerMuted().instance(element)
+				return pECBehavior.getTriggerMuted().synchronizedOrSelf().instance(element)
 			end
 		end
 		

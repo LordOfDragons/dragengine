@@ -180,6 +180,10 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: sync trigger with particle emitter matching identifier -->
 	 *   <string name='syncTrigger'>second</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -216,6 +220,9 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 					behavior.setSyncTrigger(ECBehaviorParticleEmitter.getBehaviorIn(eclass, bid))
 				end
 			end
+			
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "particleEmitter", id)
@@ -363,7 +370,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				return behavior.instance(element).getTrigger()
 				
 			else
-				return pECBehavior.getTrigger().instance(element)
+				return pECBehavior.getTrigger().synchronizedOrSelf().instance(element)
 			end
 		end
 		

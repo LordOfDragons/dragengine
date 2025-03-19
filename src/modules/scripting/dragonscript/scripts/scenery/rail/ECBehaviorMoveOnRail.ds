@@ -95,6 +95,10 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 	 * <behavior type='ECBehaviorMoveOnRail'>
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -121,6 +125,10 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 			var ECBehaviorMoveOnRail behavior = ECBehaviorMoveOnRail.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String))
+			
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "moveOnRail")
 			return behavior
@@ -220,7 +228,7 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 		
 		/** \brief Get trigger behavior. */
 		protected func ECBehaviorTriggered.Instance getTriggerBehavior()
-			return pECBehavior.getTrigger().instance(getElement())
+			return pECBehavior.getTrigger().synchronizedOrSelf().instance(getElement())
 		end
 		
 		

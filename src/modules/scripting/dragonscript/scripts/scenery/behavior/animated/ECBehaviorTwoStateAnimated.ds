@@ -239,6 +239,10 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values. default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * 
 	 *   <!-- optional: name of deactivated controller. default is 'deactivated' -->
 	 *   <string name='controllerNameDeactivated'>deactivated</string>
@@ -295,6 +299,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			if value != null
 				behavior.setControllerNameDeactivating(value)
 			end
+			
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "twoStateAnimated", id)
@@ -420,7 +427,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			setPlaySpeed(stub.getPropertyFloatFor(pECBehavior.getPlaySpeed().getName(), pPlaySpeed))
 			
 			if pTriggerTable != null
-				pTrigger = pECBehavior.getTrigger().instance(element)
+				pTrigger = pECBehavior.getTrigger().synchronizedOrSelf().instance(element)
 			end
 			
 			pTargetActivated.setName(pECBehavior.getTargetActivated().getValue(stub))

@@ -200,6 +200,10 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values. default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * 
 	 *   <!-- optional: use named controller instead of first controller. default is empty string -->
 	 *   <string name='controllerName'>playback</string>
@@ -229,6 +233,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			behavior.setControllerName(parameters.getAt("controllerName", null) cast String)
+			
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "animated", id)
@@ -322,7 +329,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			end
 			
 			if pTriggerTable != null
-				pTrigger = pECBehavior.getTrigger().instance(element)
+				pTrigger = pECBehavior.getTrigger().synchronizedOrSelf().instance(element)
 				pTrigger.addListener(PlayingListener.new(this))
 				
 				pTargetPlaying.setName(pECBehavior.getTargetPlaying().getValue(stub))

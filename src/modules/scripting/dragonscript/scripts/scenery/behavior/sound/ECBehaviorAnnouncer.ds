@@ -132,6 +132,10 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -160,6 +164,9 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 				behavior.setLayerMask(ElementClass.getSharedCodecPropertyString().\
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
+			
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "announcer", id)
@@ -249,7 +256,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 			speaker.setOwner(element)
 			
 			if pECBehavior.getTriggerTable() != null
-				pTrigger = pECBehavior.getTrigger().instance(element)
+				pTrigger = pECBehavior.getTrigger().synchronizedOrSelf().instance(element)
 				pTrigger.addListener(AnnounceListener.new(this))
 			end
 			
