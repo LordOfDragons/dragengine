@@ -39,10 +39,7 @@ class deoglShaderSources;
 class deoglShaderCompiled;
 class deoglShaderProgram;
 class deoglRenderThread;
-
-#ifdef OS_ANDROID
-	class deoglShaderBindingList;
-#endif
+class deoglShaderBindingList;
 
 
 
@@ -129,11 +126,8 @@ private:
 	void pCacheSaveShader(const deoglShaderProgram &program, const deoglShaderCompiled &compiled);
 	void pPreparePreprocessor(const deoglShaderDefines &defines);
 	
-	#ifdef OS_ANDROID
-	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data, const deoglShaderBindingList *outputList = NULL );
-	#else
-	void pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data );
-	#endif
+	void pAppendPreprocessSourcesBuffer(const char *inputFile, const char *data,
+		const deoglShaderBindingList *outputList = nullptr);
 	
 	bool pCompileObject( GLuint handle );
 	bool pLinkShader( GLuint handle );

@@ -111,7 +111,7 @@ void deoglShaderCompilerThread::Run(){
 				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
 				//	"CompileThread %d: Stop task '%.50s...'", pContextIndex, cacheId.GetString());
 				
-			}catch(const deException &e){
+			}catch(const deException &){
 				task->SetCompiled(nullptr); // to be on the safe side
 			}
 			
