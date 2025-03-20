@@ -587,7 +587,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 1, *defren.GetTextureDiffuse(), GetSamplerClampNearest() );
 	tsmgr.EnableArrayTexture( 2, *defren.GetTextureNormal(), GetSamplerClampNearest() );
 	
@@ -614,7 +614,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	pPipelineSSAOBlur1->Activate();
 	shader = &pPipelineSSAOBlur1->GetShader();
 	
-	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	ismgr.Enable( 0, *defren.GetTextureTemporary3(), 0, deoglImageStageManager::eaReadWrite );
 	
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
