@@ -66,8 +66,8 @@
 	};
 	
 #else
-	uniform highp usamplerBuffer tboGIRayCastMaterial;
-	uniform highp samplerBuffer tboGIRayCastMaterial2;
+	uniform HIGHP usamplerBuffer tboGIRayCastMaterial;
+	uniform HIGHP samplerBuffer tboGIRayCastMaterial2;
 #endif
 
 // material atlas textures

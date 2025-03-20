@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #if defined WITH_TEXTURE || defined WITH_RENDER_WORLD
 #define REQUIRES_TEXTURE 1

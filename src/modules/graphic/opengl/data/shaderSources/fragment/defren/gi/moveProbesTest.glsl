@@ -1,8 +1,8 @@
 // own version of moveProbesTest. tries to move probes using information of all rays
 // instead of only the closest and farthest ones
 
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"

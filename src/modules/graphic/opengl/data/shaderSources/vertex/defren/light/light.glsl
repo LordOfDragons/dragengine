@@ -8,10 +8,8 @@
 	#extension GL_ARB_shader_draw_parameters : require
 #endif
 
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"

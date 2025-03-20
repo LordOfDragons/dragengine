@@ -1,7 +1,7 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
-uniform highp sampler2DArray texColor;
+uniform HIGHP sampler2DArray texColor;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	flat in int vLayer;

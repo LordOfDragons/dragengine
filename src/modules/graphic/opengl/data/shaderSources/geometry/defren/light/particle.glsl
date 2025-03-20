@@ -4,10 +4,8 @@
 	#endif
 #endif
 
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+precision HIGHP float;
+precision HIGHP int;
 
 #ifdef GS_RENDER_STEREO
 	#ifdef GS_INSTANCING

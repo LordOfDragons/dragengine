@@ -1,8 +1,8 @@
-layout(binding=0, rgba16f) uniform writeonly restrict mediump image2D texPosition;
-layout(binding=1, rgba8_snorm) uniform writeonly restrict mediump image2D texNormal;
+layout(binding=0, rgba16f) uniform writeonly restrict HIGHP image2D texPosition;
+layout(binding=1, rgba8_snorm) uniform writeonly restrict HIGHP image2D texNormal;
 layout(binding=2, rgba8) uniform writeonly restrict lowp image2D texDiffuse;
 layout(binding=3, rgba8) uniform writeonly restrict lowp image2D texReflectivity;
-layout(binding=4, rgba16f) uniform writeonly restrict mediump image2D texLight;
+layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texLight;
 
 // desktop can usually do up to 1024 invocation size. on weaker systems like
 // smartphones this can down all the way to 256. using the largest value supported

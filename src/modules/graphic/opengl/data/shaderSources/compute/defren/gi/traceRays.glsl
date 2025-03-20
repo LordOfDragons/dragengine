@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
@@ -20,14 +20,14 @@ precision highp int;
 
 
 #ifdef GI_RAYCAST_DISTANCE_ONLY
-	layout(binding=0, IMG_R16F_FMT) uniform writeonly restrict mediump IMG_R16F_2D texDistance;
+	layout(binding=0, IMG_R16F_FMT) uniform writeonly restrict HIGHP IMG_R16F_2D texDistance;
 	
 #else
-	layout(binding=0, rgba16f) uniform writeonly restrict mediump image2D texPosition;
-	layout(binding=1, rgba8_snorm) uniform writeonly restrict mediump image2D texNormal;
+	layout(binding=0, rgba16f) uniform writeonly restrict HIGHP image2D texPosition;
+	layout(binding=1, rgba8_snorm) uniform writeonly restrict HIGHP image2D texNormal;
 	layout(binding=2, rgba8) uniform writeonly restrict lowp image2D texDiffuse;
 	layout(binding=3, rgba8) uniform writeonly restrict lowp image2D texReflectivity;
-	layout(binding=4, rgba16f) uniform writeonly restrict mediump image2D texLight;
+	layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texLight;
 #endif
 
 

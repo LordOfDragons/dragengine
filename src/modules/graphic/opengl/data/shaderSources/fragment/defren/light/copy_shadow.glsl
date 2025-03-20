@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #ifdef SHADOW_CUBE
 	#define SAMPLER samplerCube

@@ -1,5 +1,5 @@
-precision mediump float;
-precision mediump int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform mediump ivec4 pClampTC; // minU, minV, maxU, maxV
 uniform lowp ivec4 pOffsets1; // off1.x, off1.y, off2.x, off2.y

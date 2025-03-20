@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 layout (std140, row_major) uniform TestParameters{
 	mat4x3 pMatrix1;

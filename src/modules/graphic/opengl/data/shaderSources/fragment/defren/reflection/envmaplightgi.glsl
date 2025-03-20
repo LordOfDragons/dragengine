@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #ifdef WITH_GI
 	#include "shared/ubo_defines.glsl"
