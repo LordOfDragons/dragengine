@@ -13,12 +13,24 @@ layout(binding=1, rgba8_snorm) uniform readonly HIGHP image2D texNormal;
 layout(binding=2, rgba16f) uniform readonly HIGHP image2D texLight;
 
 #ifdef MAP_IRRADIANCE
-	layout(binding=3, rgba16f) uniform readonly HIGHP image2DArray texProbe_load;
-	layout(binding=3, rgba16f) uniform writeonly HIGHP image2DArray texProbe_store;
+	#ifdef ANDROID
+		layout(binding=3, rgba16f) uniform readonly HIGHP image2DArray texProbe_load;
+		layout(binding=3, rgba16f) uniform writeonly HIGHP image2DArray texProbe_store;
+	#else
+		layout(binding=3, rgba16f) uniform HIGHP image2DArray texProbe;
+		#define texProbe_load texProbe
+		#define texProbe_store texProbe
+	#endif
 	#define STORE_RESULT(v) v
 #else
-	layout(binding=3, IMG_RG16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texProbe_load;
-	layout(binding=3, IMG_RG16F_FMT) uniform writeonly HIGHP IMG_R16F_2DARR texProbe_store;
+	#ifdef ANDROID
+		layout(binding=3, IMG_RG16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texProbe_load;
+		layout(binding=3, IMG_RG16F_FMT) uniform writeonly HIGHP IMG_R16F_2DARR texProbe_store;
+	#else
+		layout(binding=3, IMG_RG16F_FMT) uniform HIGHP IMG_R16F_2DARR texProbe;
+		#define texProbe_load texProbe
+		#define texProbe_store texProbe
+	#endif
 	#define STORE_RESULT(v) IMG_RG16F_STORE(v)
 #endif
 
@@ -374,7 +386,6 @@ void main( void ){
 	
 // 		blendFactor = 1.0; // DEBUG
 // 		blendFactor = pGIBlendUpdateProbe;
-	
 	
 	// update probe state
 	#ifdef MAP_IRRADIANCE
