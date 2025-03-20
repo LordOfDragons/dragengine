@@ -763,7 +763,7 @@ deoglRenderTask *renderTask, deoglComputeRenderTask *computeRenderTask ){
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	tsmgr.EnableArrayTexture( 0, *occmap.GetTexture(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 0, *occmap.GetTexture(), GetSamplerClampNearest() );
 	
 	for( i=baselevel+1; i<levelCount; i++ ){
 		width >>= 1;
@@ -923,7 +923,7 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		}
 		shader.SetParameterUInt( spttfbCullFilter, cullFilter );
 		
-		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
 		
 		worldCompute.GetSSBOElements()->Activate( 0 );
 		planCompute.GetSSBOVisibleElements()->Activate( 1 );
@@ -965,7 +965,7 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 			shader.SetParameterMatrix4x4( spttfbMatrixStereo, matrixCameraStereo );
 		}
 		
-		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
 		
 		occlusionTest.GetSSBOInput()->Activate();
 		occlusionTest.GetSSBOResult()->Activate();
@@ -1066,7 +1066,7 @@ const decMatrix &matrixCamera2Stereo ){
 		}
 		shader.SetParameterUInt( spttfbCullFilter, ~0 );
 		
-		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
 		
 		worldCompute.GetSSBOElements()->Activate( 0 );
 		planSkyLight.GetSSBOVisibleElements()->Activate( 1 );
@@ -1116,7 +1116,7 @@ const decMatrix &matrixCamera2Stereo ){
 		}
 		DEBUG_PRINT_TIMER( "Set Uniforms" );
 		
-		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
 		DEBUG_PRINT_TIMER( "Set Texture" );
 		
 		occlusionTest.GetSSBOInput()->Activate();
@@ -1159,8 +1159,8 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 	shader.SetParameterFloat( spttfbClipNear2, clipNear2 );
 	DEBUG_PRINT_TIMER( "Set Uniforms" );
 	
-	tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
-	tsmgr.EnableArrayTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearest() );
 	DEBUG_PRINT_TIMER( "Set Texture" );
 	
 	occlusionTest.GetSSBOInput()->Activate();

@@ -228,7 +228,7 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 		shader.SetParameterFloat( spotGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 	
-	tsmgr.EnableTexture( 0, *texture, GetSamplerClampNearestMipMap() );
+	tsmgr.EnableTexture( 0, *texture, GetSamplerClampNearest() );
 	
 	RenderFullScreenQuadVAO();
 	

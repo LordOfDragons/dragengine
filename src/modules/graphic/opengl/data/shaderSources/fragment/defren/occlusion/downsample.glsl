@@ -1,9 +1,9 @@
-precision mediump float;
-precision mediump int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform int pLevel;
 
-uniform mediump sampler2DArray texSource;
+uniform HIGHP sampler2DArray texSource;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	flat in int vLayer;
