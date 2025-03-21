@@ -34,8 +34,10 @@
 #include "texture2d/deoglRenderableColorTexture.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
+#include "../rendering/defren/deoglDeferredRendering.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/channel/deoglSkinChannel.h"
@@ -177,6 +179,13 @@ deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, eAccess a
 	}
 	
 	Enable( stage, *useTexture, 0, access );
+}
+
+void deoglImageStageManager::EnableRenderDocDebug(int stage, int flag){
+	if((pRenderThread.GetChoices().GetRenderDocDebugFlags() & flag) == flag){
+		Enable(stage, *pRenderThread.GetDeferredRendering().GetTexRenderDocDebug(),
+			0, deoglImageStageManager::eaWrite);
+	}
 }
 
 

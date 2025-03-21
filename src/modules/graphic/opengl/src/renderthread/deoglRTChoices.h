@@ -25,6 +25,8 @@
 #ifndef _DEOGLRRTCHOICES_H_
 #define _DEOGLRRTCHOICES_H_
 
+#include "../deoglBasics.h"
+
 class deoglRenderThread;
 
 
@@ -40,6 +42,8 @@ public:
 		egputvAccurate,
 		egputvApproximate
 	};
+	
+	static const int RenderDocDebugFlagGI = 0x1;
 	
 	
 	
@@ -61,7 +65,8 @@ private:
 	GLfloat pClearDepthValueReversed;
 	bool pUseComputeRenderTask;
 	bool pUseDirectStateAccess;
-
+	int pRenderDocDebugFlags;
+	
 	
 	
 public:
@@ -136,6 +141,9 @@ public:
 	
 	/** Use direct state access. */
 	inline bool GetUseDirectStateAccess() const{ return pUseDirectStateAccess; }
+	
+	/** Render doc debug flags. */
+	inline int GetRenderDocDebugFlags() const{ return pRenderDocDebugFlags; }
 	/*@}*/
 };
 

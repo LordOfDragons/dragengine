@@ -22,6 +22,16 @@ layout(binding=2, rgba16f) uniform readonly mediump image2D texLight;
 	#define STORE_RESULT(v) IMG_RG16F_STORE(v)
 #endif
 
+#ifdef RENDER_DOC_DEBUG_GI
+	layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texRenderDocDebug;
+	void renderDocDebugStore(int index, vec4 value){
+		ivec2 tc = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y * uint(12) + uint(index));
+		if(all(lessThan(tc, ivec2(2048, 1024)))){
+			imageStore(texRenderDocDebug, tc, value);
+		}
+	}
+#endif
+
 
 #ifdef MAP_IRRADIANCE
 	#define mapProbeSize pGIIrradianceMapSize
@@ -111,6 +121,12 @@ void main( void ){
 	
 	int probeIndex = giTraceProbeProbeIndex( updateIndex );
 	ivec3 probeGrid = probeIndexToGridCoord( probeIndex );
+	
+	#ifdef RENDER_DOC_DEBUG_GI
+		renderDocDebugStore(0, vec4(updateIndex, rayOffset, blendFactor));
+		renderDocDebugStore(1, vec4(probePosition, probeFlags));
+		renderDocDebugStore(2, vec4(probeIndex, probeGrid));
+	#endif
 	
 	// map layout: (probeCount.x * probeCount.y) x pGIGridProbeCount.z
 	// 
@@ -327,6 +343,20 @@ void main( void ){
 		vec2 prevProbeState = IMG_RG16F_LOAD(imageLoad(texProbe_load, tcSample));
 	#endif
 	
+	#ifdef RENDER_DOC_DEBUG_GI
+		renderDocDebugStore(3, vec4(tcProbe, tcLocal));
+		renderDocDebugStore(4, vec4(tcSample, 0));
+		renderDocDebugStore(5, vec4(texelDirection, 0));
+		renderDocDebugStore(6, vec4(sumWeight, rayBackCount, enableProbe, 0));
+		#ifdef MAP_IRRADIANCE
+			renderDocDebugStore(7, vec4(newProbeState, 0));
+			renderDocDebugStore(8, vec4(prevProbeState, 0));
+		#else
+			renderDocDebugStore(7, vec4(newProbeState, 0, 0));
+			renderDocDebugStore(8, vec4(prevProbeState, 0, 0));
+		#endif
+	#endif
+	
 	if( enableProbe ){
 		sumWeight = 1.0 / max( sumWeight, epsilon );
 		
@@ -414,6 +444,12 @@ void main( void ){
 	bvec2 anyOnEdge = bvec2( any( isOnEdge.xy ), any( isOnEdge.zw ) );
 	ivec2 tcShift = ivec2( isOnEdge.x ? -1 : 1, isOnEdge.z ? -1 : 1 );
 	ivec2 tcFlipped = tcProbe + edgeValues.yy - tcLocal;
+	
+	#ifdef RENDER_DOC_DEBUG_GI
+		renderDocDebugStore(9, result);
+		renderDocDebugStore(10, vec4(isOnEdge));
+		renderDocDebugStore(11, vec4(tcShift, tcFlipped));
+	#endif
 	
 	if(anyOnEdge.x){
 		imageStore(texProbe_store, ivec3(tcSample.x + tcShift.x, tcFlipped.y, tcSample.z), STORE_RESULT(result));

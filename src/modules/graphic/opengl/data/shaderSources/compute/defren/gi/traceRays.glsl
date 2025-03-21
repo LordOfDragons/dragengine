@@ -10,7 +10,6 @@ precision highp int;
 
 // if GI_RAYCAST_DISTANCE_ONLY is used for occlusion mesh only material casting is not required
 #include "shared/defren/gi/raycast/sample_material.glsl"
-
 #include "shared/defren/gi/raycast/trace_ray.glsl"
 
 #ifdef GI_USE_RAY_CACHE
@@ -28,6 +27,16 @@ precision highp int;
 	layout(binding=2, rgba8) uniform writeonly restrict lowp image2D texDiffuse;
 	layout(binding=3, rgba8) uniform writeonly restrict lowp image2D texReflectivity;
 	layout(binding=4, rgba16f) uniform writeonly restrict mediump image2D texLight;
+#endif
+
+#ifdef RENDER_DOC_DEBUG_GI
+	layout(binding=5, rgba16f) uniform writeonly restrict HIGHP image2D texRenderDocDebug;
+	void renderDocDebugStore(int index, vec4 value){
+		ivec2 tc = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y * uint(8) + uint(index));
+		if(all(lessThan(tc, ivec2(2048, 1024)))){
+			imageStore(texRenderDocDebug, tc, value);
+		}
+	}
 #endif
 
 
@@ -50,6 +59,12 @@ void main( void ){
 	
 	vec3 position = vec3( pGIProbePosition[ updateIndex ] );
 	vec3 direction = pGIRayDirection[ rayIndex ];
+	
+	#ifdef RENDER_DOC_DEBUG_GI
+		renderDocDebugStore(0, vec4(tc, updateIndex, rayIndex));
+		renderDocDebugStore(1, vec4(position, 0));
+		renderDocDebugStore(2, vec4(direction, 0));
+	#endif
 	
 	#ifdef GI_RAYCAST_DISTANCE_ONLY
 		if( pGIBVHInstanceRootNode != -1 && giRayCastTraceInstance( pGIBVHInstanceRootNode,
@@ -89,6 +104,13 @@ void main( void ){
 			
 		}else{
 			#ifdef GI_USE_RAY_CACHE
+				#ifdef RENDER_DOC_DEBUG_GI
+					renderDocDebugStore(3, vec4(-1));
+					renderDocDebugStore(4, vec4(-1));
+					renderDocDebugStore(5, vec4(-1));
+					renderDocDebugStore(6, vec4(-1));
+					renderDocDebugStore(7, vec4(-1));
+				#endif
 				return;
 			#endif
 			
@@ -109,6 +131,14 @@ void main( void ){
 		// sanitize is required here to prevent the blow-up but as long as nobody can
 		// explain to me the reason why this sanitize is kept here
 		resultLight = sanitizeLight( resultLight );
+		#endif
+		
+		#ifdef RENDER_DOC_DEBUG_GI
+			renderDocDebugStore(3, vec4(resultPosition, resultDistance));
+			renderDocDebugStore(4, vec4(resultDiffuse, 0));
+			renderDocDebugStore(5, vec4(resultNormal, 0));
+			renderDocDebugStore(6, vec4(resultReflectivity, resultRoughness));
+			renderDocDebugStore(7, vec4(resultLight, 0));
 		#endif
 		
 		imageStore( texPosition, tc, vec4( resultPosition, resultDistance ) );
