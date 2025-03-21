@@ -18,7 +18,7 @@ layout( triangles, equal_spacing, ccw ) in;
 /////////////
 
 #ifdef TEXTURE_HEIGHT
-	uniform mediump sampler2D texHeight;
+	uniform HIGHP sampler2D texHeight;
 #endif
 
 

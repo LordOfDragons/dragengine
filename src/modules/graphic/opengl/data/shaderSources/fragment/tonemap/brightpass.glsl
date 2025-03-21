@@ -1,11 +1,11 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
 uniform mediump sampler2DArray texColor;
-uniform mediump sampler2D texToneMapParams;
+uniform HIGHP sampler2D texToneMapParams;
 
 in vec2 vTexCoord;
 

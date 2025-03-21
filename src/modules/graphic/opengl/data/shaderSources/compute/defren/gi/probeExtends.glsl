@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
@@ -12,9 +12,9 @@ precision highp int;
 
 
 #ifdef WITH_RAY_CACHE
-	layout(binding=0, IMG_R16F_FMT) uniform readonly mediump IMG_R16F_2DARR texCacheDistance;
+	layout(binding=0, IMG_R16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texCacheDistance;
 #else
-	layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
+	layout(binding=0, rgba16f) uniform readonly HIGHP image2D texPosition;
 #endif
 
 

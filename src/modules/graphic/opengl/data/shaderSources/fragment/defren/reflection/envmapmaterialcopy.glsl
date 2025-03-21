@@ -1,7 +1,5 @@
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+precision HIGHP float;
+precision HIGHP int;
 
 uniform vec4 pPosTransform;
 uniform vec2 pPosTransform2;

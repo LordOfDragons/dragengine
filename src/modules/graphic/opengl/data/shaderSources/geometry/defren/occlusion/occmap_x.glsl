@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 layout( triangles ) in;
 layout( triangle_strip, max_vertices=3 ) out;

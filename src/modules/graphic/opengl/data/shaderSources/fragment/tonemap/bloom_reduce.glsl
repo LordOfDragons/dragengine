@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform ivec4 pParam1; // scale.s, scale.t, offset1.s, offset1.t
 uniform ivec4 pParam2; // offset2.s, offset2.t, offset3.s, offset3.t

@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #if defined( TRANSPARENT ) || defined( DISCARD_HOLES )
 #define _USE_TEXTURE_

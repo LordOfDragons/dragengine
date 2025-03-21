@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
@@ -8,9 +8,9 @@ precision highp int;
 
 
 #ifdef MAP_IRRADIANCE
-	layout(binding=0, rgba16f) uniform writeonly restrict mediump image2DArray texProbe;
+	layout(binding=0, rgba16f) uniform writeonly restrict HIGHP image2DArray texProbe;
 #else
-	layout(binding=0, IMG_RG16F_FMT) uniform writeonly restrict mediump IMG_RG16F_2DARR texProbe;
+	layout(binding=0, IMG_RG16F_FMT) uniform writeonly restrict HIGHP IMG_RG16F_2DARR texProbe;
 #endif
 
 

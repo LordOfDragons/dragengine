@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
@@ -13,14 +13,14 @@ precision highp int;
 
 
 #ifdef WITH_RAY_CACHE
-	layout(binding=2, IMG_R16F_FMT) uniform readonly mediump IMG_R16F_2DARR texCacheDistance;
-	layout(binding=3, rgba8_snorm) uniform readonly mediump image2DArray texCacheNormal;
+	layout(binding=2, IMG_R16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texCacheDistance;
+	layout(binding=3, rgba8_snorm) uniform readonly HIGHP image2DArray texCacheNormal;
 #else
-	layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
-	layout(binding=1, rgba8_snorm) uniform readonly mediump image2D texNormal;
+	layout(binding=0, rgba16f) uniform readonly HIGHP image2D texPosition;
+	layout(binding=1, rgba8_snorm) uniform readonly HIGHP image2D texNormal;
 #endif
 
-layout(binding=4, rgba16f) uniform writeonly restrict mediump image2DArray texProbeOffsets;
+layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2DArray texProbeOffsets;
 
 
 struct sProbeOffset {

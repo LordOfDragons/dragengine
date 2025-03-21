@@ -1,5 +1,5 @@
-precision mediump float;
-precision mediump int;
+precision HIGHP float;
+precision HIGHP int;
 
 // uniform vec4 pOptions; // rows, cols, stepU, stepV
 // uniform vec3 pKernel1;

@@ -1,5 +1,5 @@
-precision mediump float;
-precision mediump int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform vec4 pDistortTransform;
 
