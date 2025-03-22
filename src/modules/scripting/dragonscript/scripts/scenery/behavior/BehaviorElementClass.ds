@@ -52,10 +52,34 @@ pin Dragengine.Utils
  * factory is present disabling support for XML behavior creation.
  */
 class BehaviorElementClass extends ElementClass
+	/**
+	 * \brief XML behavior information required for XML-XML subclassing.
+	 * \version 1.25
+	 */
+	class XmlBehaviorInfo
+		/** Factory matching 'type' attribute. */
+		public var BehaviorFactory factory
+		
+		/** From 'id' attribute. */
+		public var String id
+		
+		/** From parameters defined in tag. */
+		public var Dictionary parameters
+		
+		func new(BehaviorFactory factory, String id, Dictionary parameters)
+			this.factory = factory
+			this.id = id
+			this.parameters = parameters
+		end
+	end
+	
+	
+	
 	var Array pBehaviors
 	var Array pPrepareStubBehaviors
 	var Array pPreventCreationBehaviors
 	var Dictionary pBehaviorFactories
+	var Array pXmlBehaviorsInfo
 	
 	public static var BehaviorFactoryHelper sharedFactoryHelper = BehaviorFactoryHelper.new()
 	
@@ -79,6 +103,7 @@ class BehaviorElementClass extends ElementClass
 		pPrepareStubBehaviors = Array.new()
 		pPreventCreationBehaviors = Array.new()
 		pBehaviorFactories = Dictionary.new()
+		pXmlBehaviorsInfo = Array.new()
 	end
 	
 	/** \brief Dispose of element class. */
@@ -335,6 +360,22 @@ class BehaviorElementClass extends ElementClass
 	 */
 	func void forEachBehaviorFactory(Block ablock)
 		pBehaviorFactories.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Add XML behavior information required for XML-XML subclassing.
+	 * \version 1.25
+	 */
+	func void addXmlBehaviorInfo(BehaviorFactory factory, String id, Dictionary parameters)
+		pXmlBehaviorsInfo.add(XmlBehaviorInfo.new(factory, id, parameters))
+	end
+	
+	/**
+	 * \brief Visit XML behavior info with block with argument \ref XmlBehaviorInfo.
+	 * \version 1.25
+	 */
+	func void forEachXmlBehaviorInfo(Block ablock)
+		pXmlBehaviorsInfo.forEach(ablock)
 	end
 	
 	

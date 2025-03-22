@@ -111,6 +111,9 @@ public:
 		deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture,
 		eAccess access );
 	
+	/** Enable render doc debug texture if debug mode contains flag. */
+	void EnableRenderDocDebug(int stage, int flag);
+	
 	/** Disable stage. */
 	void DisableStage( int stage );
 	

@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 // version with max vertices
 layout( triangles ) in;
@@ -38,8 +38,8 @@ void main( void ){
 	#extension GL_ARB_gpu_shader5 : require
 #endif
 
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 layout( triangles, invocations=6 ) in;
 layout( triangle_strip, max_vertices=3 ) out;

@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #ifdef DEPTH_INPUT
 	uniform vec4 pPosTransform;
@@ -27,8 +27,8 @@ precision highp int;
 		uniform HIGHP sampler2D texDepth;
 	#endif
 #else
-	uniform mediump sampler2D texMin;
-	uniform mediump sampler2D texMax;
+	uniform HIGHP sampler2D texMin;
+	uniform HIGHP sampler2D texMax;
 #endif
 
 in vec2 vTexCoord;

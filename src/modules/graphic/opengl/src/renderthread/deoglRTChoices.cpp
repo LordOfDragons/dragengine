@@ -176,6 +176,9 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	#ifdef OS_W32
 		l.LogInfo( "- Windows: Force disable DSA on SSBO (driver misbehavior)" );
 	#endif
+	
+	pRenderDocDebugFlags = 0;
+	//pRenderDocDebugFlags = RenderDocDebugFlagGI;
 }
 
 deoglRTChoices::~deoglRTChoices(){

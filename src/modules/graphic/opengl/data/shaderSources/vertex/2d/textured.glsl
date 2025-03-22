@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 uniform vec4 pTCTransform; // scaleU, scaleV, offsetU, offsetV

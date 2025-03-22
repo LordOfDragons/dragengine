@@ -1,7 +1,5 @@
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+precision HIGHP float;
+precision HIGHP int;
 
 in vec2 vTexCoord;
 flat in float vRimThickness;

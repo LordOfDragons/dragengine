@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform lowp sampler2D texDiffuse;
 uniform lowp sampler2D texReflectivity;

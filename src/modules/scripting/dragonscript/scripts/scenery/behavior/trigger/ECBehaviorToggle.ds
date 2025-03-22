@@ -96,6 +96,10 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values.
 	 *                  default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -118,6 +122,10 @@ class ECBehaviorToggle extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorToggle behavior = ECBehaviorToggle.new(eclass,\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			behavior.getTriggered().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "toggle", id)
 			return behavior
@@ -186,7 +194,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 				return
 			end
 			
-			this.pTrigger = this.pECBehavior.getTriggered().instance( this.getElement() )
+			this.pTrigger = this.pECBehavior.getTriggered().synchronizedOrSelf().instance( this.getElement() )
 			this.pTrigger.addListener( ToggleListener.new( this ) )
 			
 			this.pStartActivated = this.pECBehavior.getStartActivated().getValue( stub )

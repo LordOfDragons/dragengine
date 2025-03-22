@@ -8,11 +8,8 @@
 	#extension GL_ARB_shader_draw_parameters : require
 #endif
 
-// request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+precision HIGHP float;
+precision HIGHP int;
 
 #if defined PARTICLE_RIBBON || defined PARTICLE_BEAM
 	#defined HAS_PARTICLE_SHEET_COUNT

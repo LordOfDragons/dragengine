@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "deoglRTShader.h"
+#include "deoglRTChoices.h"
 #include "deoglRenderThread.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../extensions/deoglExtensions.h"
@@ -152,6 +153,13 @@ void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
 	
 	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_draw_parameters ) ){
 		defines.SetDefine( "EXT_ARB_SHADER_DRAW_PARAMETERS", true );
+	}
+	
+	const int renderDocDebugFlags = pRenderThread.GetChoices().GetRenderDocDebugFlags();
+	if(renderDocDebugFlags != 0){
+		if(renderDocDebugFlags & deoglRTChoices::RenderDocDebugFlagGI){
+			defines.SetDefine("RENDER_DOC_DEBUG_GI", true);
+		}
 	}
 }
 

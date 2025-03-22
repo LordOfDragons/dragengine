@@ -120,6 +120,10 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values.
 	 *                  default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -142,6 +146,10 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorEvaluate behavior = ECBehaviorEvaluate.new(eclass,\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			behavior.getTriggered().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "evaluate", id)
 			return behavior
@@ -213,7 +221,7 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 				return
 			end
 			
-			pTrigger = pECBehavior.getTriggered().instance(getElement())
+			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(getElement())
 			pTrigger.addListener(EvaluateListener.new(this))
 			
 			pTarget = TSNamedTriggerTarget.new(pECBehavior.getTarget().getValue(stub))

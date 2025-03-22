@@ -54,6 +54,10 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	 * <behavior type='ECBehaviorShowMessage'>
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values. default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * 
 	 *   <!-- optional: use BaseGameApp console. game can add more supported values. default is 'default' -->
 	 *   <string name='console'>default</string>
@@ -78,6 +82,10 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 			var ECBehaviorShowMessage behavior = ECBehaviorShowMessage.new(eclass,\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String),\
 				getConsoleFor(parameters.getAt("console", "default") cast String), id)
+			
+			behavior.getTriggered().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "showMessage", id)
 			return behavior
@@ -152,7 +160,7 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 				return
 			end
 			
-			pTrigger = pECBehavior.getTriggered().instance(getElement())
+			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(getElement())
 			pTrigger.addListener(ShowMessageListener.new(this))
 			
 			pMessage = pECBehavior.getMessage().getValue(stub)

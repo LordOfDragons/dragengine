@@ -115,6 +115,10 @@ class ECBehaviorConversation extends DefaultECBehavior
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values.
 	 *                  default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * 
 	 *   <!-- optional: use BaseGameApp player controllable actor.
 	 *                  game can add more supported values. default is 'default' -->
@@ -154,6 +158,9 @@ class ECBehaviorConversation extends DefaultECBehavior
 				behavior.setSimpleConversationConverter(getSimpleConversationConverterFor(\
 					parameters.getAt("simpleConversationConverter") cast String))
 			end
+			
+			behavior.getTriggered().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "conversation", id)
@@ -251,7 +258,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 			pTopicGroup = pECBehavior.getTopicGroup().getValue(stub)
 			pTopic = pECBehavior.getTopic().getValue(stub)
 			
-			pTrigger = pECBehavior.getTriggered().instance(element)
+			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(element)
 			pTrigger.addListener(StartConversationListener.new(this))
 		end
 		

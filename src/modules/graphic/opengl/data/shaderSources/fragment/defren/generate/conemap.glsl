@@ -1,10 +1,5 @@
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#else
-precision mediump float;
-precision mediump int;
-#endif
+precision HIGHP float;
+precision HIGHP int;
 
 #ifdef WITH_LAYER
 	uniform mediump sampler2DArray texHeight;

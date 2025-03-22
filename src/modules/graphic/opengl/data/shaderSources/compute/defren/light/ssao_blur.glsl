@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
@@ -13,13 +13,19 @@ uniform float pDepthDifferenceThreshold;
 
 uniform HIGHP sampler2DArray texDepth;
 
-layout(binding=0, IMG_R8_FMT) uniform readonly lowp IMG_R8_2DARR texData_load;
-layout(binding=0, IMG_R8_FMT) uniform writeonly lowp IMG_R8_2DARR texData_store;
+#ifdef ANDROID
+	layout(binding=0, IMG_R8_FMT) uniform readonly lowp IMG_R8_2DARR texData_load;
+	layout(binding=0, IMG_R8_FMT) uniform writeonly lowp IMG_R8_2DARR texData_store;
+#else
+	layout(binding=0, IMG_R8_FMT) uniform lowp IMG_R8_2DARR texData;
+	#define texData_load texData
+	#define texData_store texData
+#endif
 
 #ifdef BLUR_PASS_2
-layout( local_size_y=64 ) in;
+	layout( local_size_y=64 ) in;
 #else
-layout( local_size_x=64 ) in;
+	layout( local_size_x=64 ) in;
 #endif
 
 shared float vData[ 72 ];

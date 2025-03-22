@@ -33,8 +33,8 @@
 	uniform lowp sampler2D texHeightMapMask;
 #endif
 #ifdef PROP_FIELD
-	uniform mediump samplerBuffer texSubInstance1;
-	uniform mediump samplerBuffer texSubInstance2;
+	uniform HIGHP samplerBuffer texSubInstance1;
+	uniform HIGHP samplerBuffer texSubInstance2;
 #endif
 
 

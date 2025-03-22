@@ -1,16 +1,16 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
 uniform HIGHP sampler2DArray texDepth;
 uniform lowp sampler2DArray texDiffuse;
-uniform mediump sampler2DArray texSubSurface;
+uniform HIGHP sampler2DArray texSubSurface;
 uniform mediump sampler2DArray texLight;
 
-in mediump vec2 vTexCoord;
-in mediump vec2 vScreenCoord;
+in HIGHP vec2 vTexCoord;
+in HIGHP vec2 vScreenCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	flat in int vLayer;

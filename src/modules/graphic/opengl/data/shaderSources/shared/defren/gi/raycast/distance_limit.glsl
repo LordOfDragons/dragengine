@@ -1,4 +1,4 @@
-uniform mediump sampler2D texGIRayCastDistanceLimit;
+uniform HIGHP sampler2D texGIRayCastDistanceLimit;
 
 // get distance limit for ray
 float giRayCastDistanceLimit( in int instanceID, in int rayIndex ){

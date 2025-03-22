@@ -45,6 +45,7 @@
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglTextureStageManager.h"
+#include "../../texture/texture2d/deoglTexture.h"
 #include "../../texture/arraytexture/deoglArrayTexture.h"
 #include "../../vao/deoglVAO.h"
 
@@ -280,11 +281,12 @@ enum eFBOCopyDepth{
 deoglDeferredRendering::deoglDeferredRendering( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pTextureLuminance( NULL ),
-pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
+pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering ),
 // pTextureLuminanceNormal( NULL ),
 // pTextureLuminanceDepth( NULL ),
 // pFBOLuminance( NULL ),
 // pFBOLuminanceNormal( NULL )
+pTexRenderDocDebug(nullptr)
 {
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	
@@ -427,6 +429,14 @@ pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
 		
 		// enfore a minimum size
 		Resize( 64, 64 );
+		
+		if(renderThread.GetChoices().GetRenderDocDebugFlags() != 0){
+			pTexRenderDocDebug = new deoglTexture(renderThread);
+			pTexRenderDocDebug->SetFBOFormat(4, true);
+			pTexRenderDocDebug->SetSize(2048, 1024);
+			pTexRenderDocDebug->SetMipMapped(false);
+			pTexRenderDocDebug->CreateTexture();
+		}
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -1133,6 +1143,9 @@ void deoglDeferredRendering::SetShaderParamSCToCSP( deoglShaderCompiled &shader,
 //////////////////////
 
 void deoglDeferredRendering::pCleanUp(){
+	if(pTexRenderDocDebug){
+		delete pTexRenderDocDebug;
+	}
 	if( pDepthMinMax ){
 		delete pDepthMinMax;
 	}
