@@ -10,7 +10,7 @@ envLibrary = parent_env.Clone()
 
 srcVersion = 'nightly'
 if envLibrary['platform_android'] != 'no':
-	sysarch = 'android-{}'.format(envLibrary['platform_android'])
+	sysarch = 'android-{}'.format(envLibrary['ANDROID_ARCH_ID'])
 else:
 	sysarch = 'unix-x64'
 srcdir = 'denetworkcpp-{}-{}'.format(sysarch, srcVersion)

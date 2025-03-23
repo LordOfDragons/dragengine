@@ -954,7 +954,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 		
 	}catch( const deException &e ){
 		const deMutexGuard guardLogs(pMutexLogging);
-		pLogFailedShaderSources();
+		//pLogFailedShaderSources();
 		pLanguage.GetRenderThread().GetLogger().LogException(e);
 		if( compiled ){
 			delete compiled;
