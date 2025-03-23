@@ -8,7 +8,6 @@ import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.ui.AdapterMainView
 import ch.dragondreams.delauncher.ui.FragmentInitEngine
 import ch.dragondreams.delauncher.ui.engine.FragmentEngine
-import ch.dragondreams.delauncher.ui.example.Example
 import ch.dragondreams.delauncher.ui.game.FragmentGames
 
 class MainActivity : AppCompatActivity(),
@@ -91,18 +90,6 @@ class MainActivity : AppCompatActivity(),
     companion object {
         private const val TAG: String = "MainActivity"
 
-        private const val EXAMPLES_BASE_URL = "https://github.com/LordOfDragons/deexamples/releases/latest/download"
-
-        val examples = listOf(
-            Example("UI Example",
-                "$EXAMPLES_BASE_URL/DSTestProject.delga",
-                "9febef48-f384-4ca2-899e-ae8efdaf996d"),
-            Example("3D Example",
-                "$EXAMPLES_BASE_URL/DEExampleApp.delga",
-                "73ac1719-c9b2-40c4-8cd7-6efa8f5b63f9"),
-            Example("Audio Example",
-                "$EXAMPLES_BASE_URL/DEAudioTest.delga",
-                "355358e9-d3c2-48d3-bbe7-416d45efd9ed")
-        )
+        val examples = DEBuildInfo.examples
     }
 }
