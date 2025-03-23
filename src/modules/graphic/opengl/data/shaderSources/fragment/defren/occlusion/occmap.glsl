@@ -32,6 +32,10 @@ in vec3 vClipCoord;
 	const int vLayer = 0;
 #endif
 
+#ifdef SHARED_SPB
+	flat in int vSPBIndex;
+#endif
+
 void main( void ){
 	#ifdef USE_CLIP_PLANE
 	if( dot( vClipCoord, pClipPlane[ vLayer ].xyz ) <= pClipPlane[ vLayer ].w ) discard;
