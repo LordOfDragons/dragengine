@@ -36,6 +36,7 @@
 #include "../deoglShaderUnitSourceCode.h"
 #include "../deoglShaderManager.h"
 #include "../deoglShaderSourceLocation.h"
+#include "../deoglShaderPreprocessorSymbol.h"
 #include "../../deoglCaches.h"
 #include "../../deGraphicOpenGl.h"
 #include "../../capabilities/deoglCapabilities.h"
@@ -545,6 +546,10 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 				}
 			}
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleC ) );
+			pLogShaderCompute = pPreprocessor.GetSources();
+			
+		}else{
+			pLogShaderCompute.Empty();
 		}
 		
 		// compile the tessellation control program if existing
@@ -592,6 +597,10 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 				}
 			}
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleTCP ) );
+			pLogShaderTessellationControl = pPreprocessor.GetSources();
+			
+		}else{
+			pLogShaderTessellationControl.Empty();
 		}
 		
 		// compile the tessellation evaluation program if existing
@@ -639,6 +648,10 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 				}
 			}
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleTEP ) );
+			pLogShaderTessellationEvaluation = pPreprocessor.GetSources();
+			
+		}else{
+			pLogShaderTessellationEvaluation.Empty();
 		}
 		
 		// compile the geometry program if existing
@@ -692,6 +705,10 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			logger.LogInfo( "COMPILE GEOMETRY OUT" );
 			#endif
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleGP ) );
+			pLogShaderGeometry = pPreprocessor.GetSources();
+			
+		}else{
+			pLogShaderGeometry.Empty();
 		}
 		
 		// compile the vertex program if existing
@@ -761,6 +778,10 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 // 				pOutputShaderToFile(s);
 // 			}
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleVP ) );
+			pLogShaderVertex = pPreprocessor.GetSources();
+			
+		}else{
+			pLogShaderVertex.Empty();
 		}
 		
 		// compiled the fragment program if existing
@@ -830,6 +851,10 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			}
 			#endif
 			SC_OGL_CHECK( renderThread, pglAttachShader( handleShader, handleFP ) );
+			pLogShaderFragment = pPreprocessor.GetSources();
+			
+		}else{
+			pLogShaderFragment.Empty();
 		}
 		
 		// bind attribute locations. this has to be done before linking according to ogl
@@ -939,6 +964,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			if(pErrorLog){
 				logger.LogErrorFormat("  link logs: %s", pErrorLog);
 			}
+			pLogFailedShader();
 			if(!result){
 				DETHROW(deeInvalidParam);
 			}
@@ -954,11 +980,16 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 		
 	}catch( const deException &e ){
 		const deMutexGuard guardLogs(pMutexLogging);
-		//pLogFailedShaderSources();
 		pLanguage.GetRenderThread().GetLogger().LogException(e);
 		if( compiled ){
 			delete compiled;
 		}
+		pLogShaderCompute.Empty();
+		pLogShaderTessellationControl.Empty();
+		pLogShaderTessellationEvaluation.Empty();
+		pLogShaderVertex.Empty();
+		pLogShaderGeometry.Empty();
+		pLogShaderFragment.Empty();
 		throw;
 	}
 	
@@ -970,6 +1001,13 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 		program.GetCacheId().GetString(), (int)(timerCompile.GetElapsedTime() * 1e3f));
 	}
 #endif
+	
+	pLogShaderCompute.Empty();
+	pLogShaderTessellationControl.Empty();
+	pLogShaderTessellationEvaluation.Empty();
+	pLogShaderVertex.Empty();
+	pLogShaderGeometry.Empty();
+	pLogShaderFragment.Empty();
 	
 	return compiled;
 }
@@ -1493,4 +1531,52 @@ void deoglShaderCompiler::pLogFailedShaderSources(){
 	}
 	
 	logger.LogError( "<<< End Sources <<<" );
+}
+
+void deoglShaderCompiler::pLogFailedSymbols(){
+	// do not mutex guard pMutexLogging. caller guards it already
+	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
+	deoglRTLogger &logger = renderThread.GetLogger();
+	logger.LogErrorFormat("CompileShader %d Failed: >>> Symbols >>>", pContextIndex);
+	
+	const decStringList names(pPreprocessor.GetSymbolNames());
+	const int count = names.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		const decString &name = names.GetAt(i);
+		logger.LogErrorFormat("- %s: '%s'", name.GetString(),
+			pPreprocessor.GetSymbolNamed(name)->GetValue().GetString());
+	}
+}
+
+void deoglShaderCompiler::pLogFailedShader(){
+	// do not mutex guard pMutexLogging. caller guards it already
+	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
+	deoglRTLogger &logger = renderThread.GetLogger();
+	
+	const struct sData{
+		const char *name;
+		const decString *sources;
+	} data[6] = {
+		{"Compute", &pLogShaderCompute},
+		{"Tessellation Control", &pLogShaderTessellationControl},
+		{"Tessellation Evaluation", &pLogShaderTessellationEvaluation},
+		{"Vertex", &pLogShaderVertex},
+		{"Geometry", &pLogShaderGeometry},
+		{"Fragment", &pLogShaderFragment}};
+	
+	logger.LogErrorFormat("CompileShader %d Failed: >>> All Sources >>>", pContextIndex);
+	
+	int i;
+	for(i=0; i<6; i++){
+		if(data[i].sources->IsEmpty()){
+			continue;
+		}
+		
+		logger.LogErrorFormat(">>> %s >>>", data[i].name);
+		logger.LogError(data[i].sources->GetString());
+		logger.LogErrorFormat("<<< End %s <<<", data[i].name);
+	}
+	
+	logger.LogError("<<< End All Sources <<<");
 }
