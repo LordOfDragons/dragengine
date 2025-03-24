@@ -89,13 +89,13 @@ class WindowGameWorld extends Window
 	 * If the loading succeeds the loaded game world is set as world in the window.
 	 * If loading fails null is set as game world in the window.
 	 */
-	public class Loader extends GameWorldLoader
-		private var WindowGameWorld pWindow
+	class Loader extends GameWorldLoader
+		var WindowGameWorld pWindow
 		
 		
 		
 		/** \brief Create game world loader. */
-		public func new(WindowGameWorld window)
+		func new(WindowGameWorld window)
 			if window == null
 				throw EInvalidParam.new()
 			end
@@ -103,7 +103,7 @@ class WindowGameWorld extends Window
 		end
 		
 		/** \brief Create game world loader. */
-		public func new(WindowGameWorld window, Console console, Loaders loaders,\
+		func new(WindowGameWorld window, Console console, Loaders loaders,\
 		ElementClassList elementClassList) this(window, console, loaders, elementClassList, null)
 		end
 		
@@ -111,7 +111,7 @@ class WindowGameWorld extends Window
 		 * \brief Create game world loader.
 		 * \version 1.8
 		 */
-		public func new(WindowGameWorld window, Console console, Loaders loaders,\
+		func new(WindowGameWorld window, Console console, Loaders loaders,\
 		ElementClassList elementClassList, MutableID idGenerator) \
 		super(console, loaders, elementClassList, idGenerator)
 			if window == null
@@ -121,7 +121,7 @@ class WindowGameWorld extends Window
 		end
 		
 		/** \brief Dispose of game world loader to break reference loops. */
-		public func void dispose()
+		func void dispose()
 			super.dispose()
 			pWindow = null
 		end
@@ -129,7 +129,7 @@ class WindowGameWorld extends Window
 		
 		
 		/** \brief Window to update. */
-		public func WindowGameWorld getWindow()
+		func WindowGameWorld getWindow()
 			return pWindow
 		end
 		
@@ -142,7 +142,7 @@ class WindowGameWorld extends Window
 		 * result of loading is provided as parameters. It is safe to dispose() of the
 		 * game loader upon entering this method.
 		 */
-		public func void onLoadWorldFinished()
+		func void onLoadWorldFinished()
 			pWindow.setGameWorld(getStubWorld().getGameWorld())
 		end
 		
@@ -152,34 +152,37 @@ class WindowGameWorld extends Window
 		 * Game loader has been cleaned up before calling this method. It is safe to dispose()
 		 * of the game loader upon entering this method.
 		 */
-		public func void onLoadWorldFailed()
-			pWindow.setGameWorld(null)
+		func void onLoadWorldFailed()
+			// this method can be potentially called after \ref #dispose() is called.
+			// to make sure no exception happens check first if the window is still present
+			if pWindow != null
+				pWindow.setGameWorld(null)
+			end
 		end
 	end
 	
 	
 	
-	private var Console pConsole
-	private var GameWorld pGameWorld
-	private var Camera pCamera
-	private var Microphone pMicrophone
-	private var CameraDirector pCameraDirector
-	private var WorldRenderer pWorldRenderer
-	private var bool pUpdateGameWorld
-	private var bool pUpdateCameraDirector
-	private var bool pActivateMicrophone
-	private var Panel pPanelBorder
-	private var Panel pPanelStack
+	var Console pConsole
+	var GameWorld pGameWorld
+	var Camera pCamera
+	var Microphone pMicrophone
+	var CameraDirector pCameraDirector
+	var WorldRenderer pWorldRenderer
+	var bool pUpdateGameWorld
+	var bool pUpdateCameraDirector
+	var bool pActivateMicrophone
+	var Panel pPanelBorder
+	var Panel pPanelStack
 	
 	
 	
 	/** \brief Create screen sized window using BaseGameApp console. */
-	public func new() this(BaseGameApp.getApp().getConsole())
+	func new() this(BaseGameApp.getApp().getConsole())
 	end
 	
 	/** \brief Create screen sized window. */
-	public func new(Console console) super(0, 0, \
-	GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight())
+	func new(Console console) super(0, 0, GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight())
 		if console == null
 			throw EInvalidParam.new()
 		end
@@ -212,7 +215,7 @@ class WindowGameWorld extends Window
 	end
 	
 	/** \brief Dispose of Widget. */
-	public func void dispose()
+	func void dispose()
 		setGameWorld(null)
 		
 		super.dispose()
@@ -230,12 +233,12 @@ class WindowGameWorld extends Window
 	
 	
 	/** \brief Console object. */
-	public func Console getConsole()
+	func Console getConsole()
 		return pConsole
 	end
 	
 	/** \brief Game world. */
-	public func GameWorld getGameWorld()
+	func GameWorld getGameWorld()
 		return pGameWorld
 	end
 	
@@ -249,7 +252,7 @@ class WindowGameWorld extends Window
 	 * 
 	 * Calls onGameWorldChanged() hoock method if the game world changed.
 	 */
-	public func void setGameWorld(GameWorld gameWorld)
+	func void setGameWorld(GameWorld gameWorld)
 		setGameWorld(gameWorld, true)
 	end
 	
@@ -265,7 +268,7 @@ class WindowGameWorld extends Window
 	 * 
 	 * Calls onGameWorldChanged() hoock method if the game world changed.
 	 */
-	public func void setGameWorld(GameWorld gameWorld, bool dispose)
+	func void setGameWorld(GameWorld gameWorld, bool dispose)
 		if gameWorld == pGameWorld
 			return
 		end
@@ -317,7 +320,7 @@ class WindowGameWorld extends Window
 	end
 	
 	/** \brief World renderer. */
-	public func WorldRenderer getWorldRenderer()
+	func WorldRenderer getWorldRenderer()
 		return pWorldRenderer
 	end
 	
@@ -330,7 +333,7 @@ class WindowGameWorld extends Window
 	 * with (hence not first person shooter type games). Using this panel makes the world
 	 * renderer and widgets stacked over it to occupy the empty space.
 	 */
-	public func Panel getPanelBorder()
+	func Panel getPanelBorder()
 		return pPanelBorder
 	end
 	
@@ -343,22 +346,22 @@ class WindowGameWorld extends Window
 	 * useful for adding widgets that should only cover the world renderer like targeting
 	 * reticules or damage indicators.
 	 */
-	public func Panel getPanelStack()
+	func Panel getPanelStack()
 		return pPanelStack
 	end
 	
 	/** \brief Game camera. */
-	public func Camera getCamera()
+	func Camera getCamera()
 		return pCamera
 	end
 	
 	/** \brief Microphone to hear sound. */
-	public func Microphone getMicrophone()
+	func Microphone getMicrophone()
 		return pMicrophone
 	end
 	
 	/** \brief Camera directory or \em null. */
-	public func CameraDirector getCameraDirector()
+	func CameraDirector getCameraDirector()
 		return pCameraDirector
 	end
 	
@@ -370,7 +373,7 @@ class WindowGameWorld extends Window
 	 * 
 	 * Updates the camera director once if updating camera director is enabled
 	 */
-	public func void setCameraDirector(CameraDirector director)
+	func void setCameraDirector(CameraDirector director)
 		if director == pCameraDirector
 			return
 		end
@@ -395,32 +398,32 @@ class WindowGameWorld extends Window
 	end
 	
 	/** \brief Update game world on frame updates. */
-	public func bool getUpdateGameWorld()
+	func bool getUpdateGameWorld()
 		return pUpdateGameWorld
 	end
 	
 	/** \brief Set update game world on frame updates. */
-	public func void setUpdateGameWorld(bool update)
+	func void setUpdateGameWorld(bool update)
 		pUpdateGameWorld = update
 	end
 	
 	/** \brief Update camera director on frame updates. */
-	public func bool getUpdateCameraDirector()
+	func bool getUpdateCameraDirector()
 		return pUpdateCameraDirector
 	end
 	
 	/** \brief Set update camera director on frame updates. */
-	public func void setUpdateCameraDirector(bool update)
+	func void setUpdateCameraDirector(bool update)
 		pUpdateCameraDirector = update
 	end
 	
 	/** \brief Activate microphone if game world is set. */
-	public func bool getActivateMicrophone()
+	func bool getActivateMicrophone()
 		return pActivateMicrophone
 	end
 	
 	/** \brief Set if microphone is activated if game world is set. */
-	public func void setActivateMicrophone(bool activateMicrophone)
+	func void setActivateMicrophone(bool activateMicrophone)
 		pActivateMicrophone = activateMicrophone
 	end
 	
@@ -430,7 +433,7 @@ class WindowGameWorld extends Window
 	 * \brief Project point from 3d world.
 	 * \version 1.7
 	 */
-	public func Point project(DVector position)
+	func Point project(DVector position)
 		return pWorldRenderer.project(position)
 	end
 	
@@ -438,7 +441,7 @@ class WindowGameWorld extends Window
 	 * \brief Back project position into 3d world.
 	 * \version 1.7
 	 */
-	public func Vector backProject(Point position)
+	func Vector backProject(Point position)
 		return pWorldRenderer.backProject(position)
 	end
 
@@ -450,7 +453,7 @@ class WindowGameWorld extends Window
 	 * Event can originate from any widget inside the window. The event position is converted
 	 * to world renderer coordinate system before calling backProject on world renderer.
 	 */
-	public func Vector backProject(MouseEvent event)
+	func Vector backProject(MouseEvent event)
 		return pWorldRenderer.backProject((event.getSource() cast Widget).getWindowPosition()\
 			+ event.getPosition() - pWorldRenderer.getWindowPosition())
 	end
@@ -462,7 +465,7 @@ class WindowGameWorld extends Window
 	 * 
 	 * \param elapsed Elapsed time as reported by Engine.getElapsedTime().
 	 */
-	public func void onFrameUpdate(float elapsed)
+	func void onFrameUpdate(float elapsed)
 		if pGameWorld == null
 			return
 		end
@@ -479,7 +482,7 @@ class WindowGameWorld extends Window
 	/**
 	 * \brief Game world changed.
 	 */
-	public func void onGameWorldChanged()
+	func void onGameWorldChanged()
 	end
 	
 	/**
@@ -487,7 +490,7 @@ class WindowGameWorld extends Window
 	 * 
 	 * Updates world renderer widget designer selector to "WorldRenderer.{selector}".
 	 */
-	public func void onDesignerSelectorChanged()
+	func void onDesignerSelectorChanged()
 		super.onDesignerSelectorChanged()
 		
 		if pWorldRenderer != null
