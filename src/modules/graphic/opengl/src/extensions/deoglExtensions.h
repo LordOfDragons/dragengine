@@ -357,6 +357,7 @@ public:
 		ext_EXT_subtexture,
 		ext_EXT_texture3D,
 		ext_EXT_texture_array,
+		ext_EXT_texture_cube_map_array,
 		ext_EXT_texture_integer,
 		ext_EXT_texture_object,
 		ext_EXT_transform_feedback,

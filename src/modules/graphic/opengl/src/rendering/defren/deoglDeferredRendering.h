@@ -36,6 +36,7 @@ class deoglDRDepthMinMax;
 class deoglShaderCompiled;
 class deoglSPBlockUBO;
 class deoglArrayTexture;
+class deoglTexture;
 class deoglVAO;
 
 
@@ -107,6 +108,8 @@ private:
 	GLuint pVBOBillboard;
 	deoglVAO *pVAOFullScreenQuad;
 	deoglVAO *pVAOBillboard;
+	
+	deoglTexture *pTexRenderDocDebug;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -345,6 +348,9 @@ public:
 	 * coordinates to camera space coordinates.
 	 */
 	void SetShaderParamSCToCSP( deoglShaderCompiled &shader, int parameter ) const;
+	
+	/** Render doc debug texture. */
+	inline deoglTexture *GetTexRenderDocDebug() const{ return pTexRenderDocDebug; }
 	/*@}*/
 	
 private:

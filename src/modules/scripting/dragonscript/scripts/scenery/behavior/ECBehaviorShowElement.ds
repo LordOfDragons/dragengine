@@ -54,6 +54,10 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	 * <behavior type='ECBehaviorShowElement'>
 	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values. default is 'default' -->
 	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -72,8 +76,13 @@ class ECBehaviorShowElement extends DefaultECBehavior
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
+			
 			var ECBehaviorShowElement behavior = ECBehaviorShowElement.new(eclass,\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String))
+			
+			behavior.getTriggered().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "showElement")
 			return behavior
@@ -139,7 +148,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 				return
 			end
 			
-			pTrigger = pECBehavior.getTriggered().instance(getElement())
+			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(getElement())
 			pTrigger.addListener(ShowElementListener.new(this))
 		end
 		

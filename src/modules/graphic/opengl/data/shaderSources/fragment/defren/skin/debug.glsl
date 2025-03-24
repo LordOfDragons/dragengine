@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 out vec4 outDiffuse; // diffuse.r, diffuse.g, diffuse.b, transparency
 /*

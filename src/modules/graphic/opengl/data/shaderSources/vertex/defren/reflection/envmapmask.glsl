@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform mat4x3 pMatrixMV;
 uniform mat4 pMatrixP;

@@ -170,6 +170,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_EXT_subtexture",
 	"GL_EXT_texture3D",
 	"GL_EXT_texture_array",
+	"GL_EXT_texture_cube_map_array",
 	"GL_EXT_texture_integer",
 	"GL_EXT_texture_object",
 	"GL_EXT_transform_feedback",
@@ -632,7 +633,8 @@ void deoglExtensions::pScanExtensions(){
 		|| pHasExtension[ ext_ARB_seamless_cube_map ]
 		|| pHasExtension[ ext_AMD_seamless_cubemap_per_texture ];
 	
-	pHasArrayCubeMap = pHasExtension[ ext_ARB_texture_cube_map_array ];
+	pHasArrayCubeMap = pHasExtension[ ext_ARB_texture_cube_map_array ]
+		|| pHasExtension[ ext_EXT_texture_cube_map_array ];
 	
 	pHasCopyImage = pGLESVersion >= evgles3p2
 		|| pHasExtension[ ext_ARB_copy_image ]

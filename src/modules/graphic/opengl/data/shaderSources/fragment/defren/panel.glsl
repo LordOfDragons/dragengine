@@ -1,5 +1,5 @@
-uniform highp mat4 pColorTransform;
-uniform highp vec4 pColorTransform2;
+uniform HIGHP mat4 pColorTransform;
+uniform HIGHP vec4 pColorTransform2;
 
 uniform mediump sampler2D texTexture;
 

@@ -1,5 +1,5 @@
-precision mediump float;
-precision mediump int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform mat4 pColorMatrix;
 uniform vec4 pColorOffset;

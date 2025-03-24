@@ -42,6 +42,8 @@
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../texture/texture2d/deoglTexture.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../vao/deoglVAO.h"
 
 #include <dragengine/common/exceptions.h>
@@ -353,6 +355,18 @@ void deoglRenderBase::AddTopLevelDebugInfo(){
 
 void deoglRenderBase::DevModeDebugInfoChanged(){
 }
+
+void deoglRenderBase::ClearRenderDocDebugTexture(){
+	if(pRenderThread.GetChoices().GetRenderDocDebugFlags() != 0){
+		deoglTexture &texture = *pRenderThread.GetDeferredRendering().GetTexRenderDocDebug();
+		const deoglPixelBuffer::Ref pbuf(deoglPixelBuffer::Ref::New(new deoglPixelBuffer(
+			deoglPixelBuffer::epfFloat4, texture.GetWidth(), texture.GetHeight(), 1)));
+		pbuf->SetToFloatColor(0.0f, 0.0f, 0.0f, 0.0f);
+		texture.SetPixels(pbuf);
+		//OGL_CHECK(pRenderThread, pglMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT));
+	}
+}
+
 
 
 // Protected Functions

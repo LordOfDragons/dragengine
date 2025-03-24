@@ -1,7 +1,5 @@
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_gi.glsl"
@@ -28,7 +26,7 @@ UBOLAYOUT_BIND(2) restrict buffer RayData {
 
 #include "shared/defren/gi/raycast/ray_cache.glsl"
 
-uniform mediump sampler2DArray texCacheDistance;
+uniform HIGHP sampler2DArray texCacheDistance;
 uniform mediump sampler2D texLight;
 
 in vec2 inPosition;

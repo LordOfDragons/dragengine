@@ -399,12 +399,12 @@ class CameraDirector
 	
 	
 	
-	/** \brief Layer mask. */
+	/** \brief Layer mask or null if not set. */
 	func LayerMask getLayerMask()
 		return pLayerMask
 	end
 	
-	/** \brief Set layer mask. */
+	/** \brief Set layer mask or null if not set. */
 	func void setLayerMask(LayerMask layerMask)
 		pLayerMask = layerMask
 	end
@@ -510,7 +510,9 @@ class CameraDirector
 		camera.setBloomBlend(pBloomBlend)
 		camera.setToneMapCurve(pToneMapCurve)
 		
-		camera.setLayerMask(pLayerMask)
+		if pLayerMask != null
+			camera.setLayerMask(pLayerMask)
+		end
 	end
 	
 	/**

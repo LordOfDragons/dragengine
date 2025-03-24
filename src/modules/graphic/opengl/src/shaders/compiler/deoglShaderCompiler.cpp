@@ -771,21 +771,18 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 			
 			pPreparePreprocessor( program.GetDefines() );
 			
-			#ifdef OS_ANDROID
-			if( scFragment ){
-				pAppendPreprocessSourcesBuffer( scFragment->GetFilePath(), scFragment->GetSourceCode(), &outputList );
+			// for OS_ANDROID (aka OpenGL ES) we are required to set the location of output variables
+			// in the shader. assigning from source code is not working. for regular OpenGL this works
+			// by assigning from code. unfortunately some AMD windows drivers are buggy and assigning
+			// the location of output variables from code is not working. most probably the bug prevents
+			// the assignement to take any effect. to counter this huge driver bug the location of output
+			// variables is always patched into the sources for all systems.
+			if(scFragment){
+				pAppendPreprocessSourcesBuffer(scFragment->GetFilePath(), scFragment->GetSourceCode(), &outputList);
 				
 			}else{
-				pAppendPreprocessSourcesBuffer( "<inline>", inlscFragment.GetString(), &outputList );
+				pAppendPreprocessSourcesBuffer("<inline>", inlscFragment.GetString(), &outputList);
 			}
-			#else
-			if( scFragment ){
-				pAppendPreprocessSourcesBuffer( scFragment->GetFilePath(), scFragment->GetSourceCode() );
-				
-			}else{
-				pAppendPreprocessSourcesBuffer( "<inline>", inlscFragment.GetString() );
-			}
-			#endif
 			
 			#ifdef PRINT_SHADERS
 			if( psfMatchesFragment( program ) ){
@@ -849,6 +846,15 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 		// bind data locations. this has to be done before linking according to ogl specs.
 		// furthermore the name is not required to exist. if not existing the output is
 		// simple not linked to anything.
+		
+		// for OS_ANDROID (aka OpenGL ES) we are required to set the location of output variables
+		// in the shader. assigning from source code is not working. for regular OpenGL this works
+		// by assigning from code. unfortunately some AMD windows drivers are buggy and assigning
+		// the location of output variables from code is not working. most probably the bug prevents
+		// the assignement to take any effect. to counter this huge driver bug the location of output
+		// variables is always patched into the sources for all systems. hence to avoid potential
+		// bugs-in-bugs do not write the location here
+		/*
 		if( pglBindFragDataLocation ){
 			count = outputList.GetCount();
 			for( i=0; i<count; i++ ){
@@ -856,6 +862,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 					outputList.GetTargetAt( i ), outputList.GetNameAt( i ) ) );
 			}
 		}
+		*/
 		
 		// bind feedback variables. this has to be done before linking according to ogl specs
 		if( pglTransformFeedbackVaryings ){
@@ -947,7 +954,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCompileShader(const deoglShaderProgra
 		
 	}catch( const deException &e ){
 		const deMutexGuard guardLogs(pMutexLogging);
-		pLogFailedShaderSources();
+		//pLogFailedShaderSources();
 		pLanguage.GetRenderThread().GetLogger().LogException(e);
 		if( compiled ){
 			delete compiled;
@@ -1148,7 +1155,7 @@ deoglShaderCompiled *deoglShaderCompiler::pCacheLoadShader(const deoglShaderProg
 // 			"ShaderLanguage.CacheLoadShader: Cached shader loaded for '%.50s...'",
 // 			program.GetCacheId().GetString());
 		
-	}catch(const deException &e){
+	}catch(const deException &){
 		{
 		const deMutexGuard guard(caches.GetMutex());
 		cacheShaders.Delete(program.GetCacheId());
@@ -1256,19 +1263,16 @@ void deoglShaderCompiler::pPreparePreprocessor(const deoglShaderDefines &defines
 
 
 
-#ifdef OS_ANDROID
 void deoglShaderCompiler::pAppendPreprocessSourcesBuffer(
 const char *inputFile, const char *data, const deoglShaderBindingList *outputList ){
-	if( ! outputList ){
-		pPreprocessor.SourcesAppendProcessed( data, inputFile );
+	if(!outputList){
+		pPreprocessor.SourcesAppendProcessed(data, inputFile);
 		return;
 	}
 	
-	const int datalen = strlen( data );
-	int i, start = 0;
+	const int datalen = (int)strlen(data);
+	int tokenStart, delimiter, count, i, start = 0;
 	decString token;
-	int tokenStart;
-	int delimiter;
 	
 	decString tempSources;
 	
@@ -1299,8 +1303,14 @@ const char *inputFile, const char *data, const deoglShaderBindingList *outputLis
 		
 		if( matches ){
 			decString tempTemp;
-			tempTemp.Set( ' ', j - start );
-			strncpy( (char*)tempTemp.GetString(), data + start, j - start );
+			count = j - start;
+			tempTemp.Set(' ', count);
+			#ifdef OS_W32_VS
+				strncpy_s((char*)tempTemp.GetString(), count + 1, data + start, count);
+			#else
+				strncpy((char*)tempTemp.GetString(), data + start, count);
+			#endif
+
 			tempSources += tempTemp;
 			
 			for( tokenStart=delimiter; tokenStart>j; tokenStart-- ){
@@ -1309,8 +1319,13 @@ const char *inputFile, const char *data, const deoglShaderBindingList *outputLis
 				}
 			}
 			
-			token.Set( ' ', delimiter - tokenStart );
-			strncpy( (char*)token.GetString(), data + tokenStart, delimiter - tokenStart );
+			count = delimiter - tokenStart;
+			token.Set(' ', count);
+			#ifdef OS_W32_VS
+				strncpy_s((char*)token.GetString(), count + 1, data + tokenStart, count);
+			#else
+				strncpy((char*)token.GetString(), data + tokenStart, count);
+			#endif
 			
 			const int index = outputList->IndexOfNamed( token );
 			
@@ -1323,8 +1338,13 @@ const char *inputFile, const char *data, const deoglShaderBindingList *outputLis
 			
 			tempSources += token;
 			
-			tempTemp.Set( ' ', delimiter - j );
-			strncpy( (char*)tempTemp.GetString(), data + j, delimiter - j );
+			count = delimiter - j;
+			tempTemp.Set(' ', count);
+			#ifdef OS_W32_VS
+				strncpy_s((char*)tempTemp.GetString(), count + 1, data + j, count);
+			#else
+				strncpy((char*)tempTemp.GetString(), data + j, count);
+			#endif
 			tempSources += tempTemp;
 			
 			i = delimiter;
@@ -1333,18 +1353,17 @@ const char *inputFile, const char *data, const deoglShaderBindingList *outputLis
 	}
 	
 	decString tempTemp;
-	tempTemp.Set( ' ', datalen - start );
-	strncpy( (char*)tempTemp.GetString(), data + start, datalen - start );
+	count = datalen - start;
+	tempTemp.Set(' ', count);
+	#ifdef OS_W32_VS
+		strncpy_s((char*)tempTemp.GetString(), count + 1, data + start, count);
+	#else
+		strncpy((char*)tempTemp.GetString(), data + start, count);
+	#endif
 	tempSources += tempTemp;
 	
 	pPreprocessor.SourcesAppendProcessed( tempSources.GetString(), inputFile );
 }
-
-#else
-void deoglShaderCompiler::pAppendPreprocessSourcesBuffer( const char *inputFile, const char *data ){
-	pPreprocessor.SourcesAppendProcessed( data, inputFile );
-}
-#endif
 
 bool deoglShaderCompiler::pCompileObject( GLuint handle ){
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();

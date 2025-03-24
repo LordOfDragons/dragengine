@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
@@ -9,10 +9,10 @@ uniform vec4 pTCBloomTransform;
 uniform vec2 pTCBloomClamp;
 
 uniform mediump sampler2DArray texColor;
-uniform mediump sampler2D texToneMapParams;
+uniform HIGHP sampler2D texToneMapParams;
 uniform mediump sampler2DArray texBloom;
 #ifdef WITH_TONEMAP_CURVE
-uniform mediump sampler2D texToneMapCurve;
+uniform HIGHP sampler2D texToneMapCurve;
 #endif
 
 in vec2 vTexCoord;

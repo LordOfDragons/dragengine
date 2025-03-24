@@ -249,6 +249,9 @@ public:
 	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	
+	/** Clear render doc debug texture if enabled. */
+	void ClearRenderDocDebugTexture();
+	
 	
 	
 protected:

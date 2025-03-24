@@ -1,22 +1,22 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/gi/ubo_gi.glsl"
 #include "shared/defren/gi/trace_probe.glsl"
 #include "shared/defren/gi/raycast/ray_cache.glsl"
 
-uniform mediump sampler2DArray texCacheDistance;
-uniform mediump sampler2DArray texCacheNormal;
+uniform HIGHP sampler2DArray texCacheDistance;
+uniform HIGHP sampler2DArray texCacheNormal;
 uniform lowp sampler2DArray texCacheDiffuse;
 uniform lowp sampler2DArray texCacheReflectivity;
-uniform mediump sampler2DArray texCacheLight;
+uniform HIGHP sampler2DArray texCacheLight;
 
-layout( binding=0, rgba16f ) uniform writeonly restrict mediump image2D texPosition;
-layout( binding=1, rgba8_snorm ) uniform writeonly restrict mediump image2D texNormal;
+layout( binding=0, rgba16f ) uniform writeonly restrict HIGHP image2D texPosition;
+layout( binding=1, rgba8_snorm ) uniform writeonly restrict HIGHP image2D texNormal;
 layout( binding=2, rgba8 ) uniform writeonly restrict lowp image2D texDiffuse;
 layout( binding=3, rgba8 ) uniform writeonly restrict lowp image2D texReflectivity;
-layout( binding=4, rgba16f ) uniform writeonly restrict mediump image2D texLight;
+layout( binding=4, rgba16f ) uniform writeonly restrict HIGHP image2D texLight;
 
 layout( local_size_x=64 ) in;
 

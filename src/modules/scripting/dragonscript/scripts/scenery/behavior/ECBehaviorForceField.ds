@@ -179,6 +179,10 @@ class ECBehaviorForceField extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: sync trigger with force field matching identifier -->
 	 *   <string name='syncTrigger'>second</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -214,6 +218,9 @@ class ECBehaviorForceField extends DefaultECBehavior
 					behavior.setSyncTrigger(ECBehaviorForceField.getBehaviorIn(eclass, bid))
 				end
 			end
+			
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "forceField", id)
@@ -333,7 +340,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 				return behavior.instance(element).getTrigger()
 				
 			else
-				return pECBehavior.getTrigger().instance(element)
+				return pECBehavior.getTrigger().synchronizedOrSelf().instance(element)
 			end
 		end
 		

@@ -192,6 +192,18 @@ class LoadElementClass extends BaseXmlLoader
 		// if the base element class is an XML element class copy property values.
 		// this is required or XML set element property values are lost
 		if baseEClass.getIsXmlElementClass()
+			// for BehaviorElementClass copy first all XML added behaviors. this is required
+			// since otherwise the properties are missing. this has to come before copy properties
+			if baseEClass castable BehaviorElementClass
+				var BehaviorElementClass baseBEClass = baseEClass cast BehaviorElementClass
+				var BehaviorElementClass beclass = eclass cast BehaviorElementClass
+				
+				baseBEClass.forEachXmlBehaviorInfo(block BehaviorElementClass.XmlBehaviorInfo each
+					each.factory.addBehavior(beclass, each.id, each.parameters)
+					beclass.addXmlBehaviorInfo(each.factory, each.id, each.parameters)
+				end)
+			end
+			
 			eclass.copyPropertyValues(baseEClass)
 		end
 		
@@ -392,6 +404,7 @@ class LoadElementClass extends BaseXmlLoader
 		end)
 		
 		factory.addBehavior(beclass, id, parameters)
+		beclass.addXmlBehaviorInfo(factory, id, parameters)
 	end
 	
 	/** \brief Parse list tag. */

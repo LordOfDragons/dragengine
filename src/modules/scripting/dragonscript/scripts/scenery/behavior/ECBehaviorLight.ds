@@ -174,6 +174,10 @@ class ECBehaviorLight extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: sync trigger with light matching identifier -->
 	 *   <string name='syncTrigger'>second</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
 	 * 
 	 *   <!-- optional: component behaviors not casting shadows. list of behavior identifiers -->
 	 *   <list name='shadowIgnoreComponents'>
@@ -220,6 +224,9 @@ class ECBehaviorLight extends DefaultECBehavior
 					behavior.setSyncTrigger(ECBehaviorLight.getBehaviorIn(eclass, bid))
 				end
 			end
+			
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			if parameters.has("shadowIgnoreComponents")
 				(parameters.getAt("shadowIgnoreComponents") cast Array).forEach(block String each
@@ -363,7 +370,7 @@ class ECBehaviorLight extends DefaultECBehavior
 				return behavior.instance(element).getTrigger()
 				
 			else
-				return pECBehavior.getTrigger().instance(element)
+				return pECBehavior.getTrigger().synchronizedOrSelf().instance(element)
 			end
 		end
 		

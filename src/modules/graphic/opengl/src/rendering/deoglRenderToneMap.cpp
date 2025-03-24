@@ -720,7 +720,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	
 	shader = &pipeline->GetShader();
 	
-	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 0, *defren.GetTextureTemporary1(), GetSamplerClampNearest() );
 	
 	bloomWidth = brightWidth;
 	bloomHeight = brightHeight;
@@ -753,7 +753,7 @@ void deoglRenderToneMap::RenderBloomPass( deoglRenderPlan &plan, int &bloomWidth
 	bloomWidth = brightWidth / ( 1 << topMipMapLevel );
 	bloomHeight = brightHeight / ( 1 << topMipMapLevel );
 	
-	const float levelDiffScale = powf( 2.0f, level - ceil( level ) );
+	const float levelDiffScale = powf( 2.0f, level - ceilf( level ) );
 	
 	
 	for( i=topMipMapLevel; i>=0; i-- ){

@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 
@@ -30,6 +30,10 @@ in vec3 vClipCoord;
 	flat in int vLayer;
 #else
 	const int vLayer = 0;
+#endif
+
+#ifdef SHARED_SPB
+	flat in int vSPBIndex;
 #endif
 
 void main( void ){

@@ -1,8 +1,6 @@
 // request high precision if the graphic card supports this
-#ifdef HIGH_PRECISION
-precision highp float;
-precision highp int;
-#endif
+precision HIGHP float;
+precision HIGHP int;
 
 // Some helper definitions to make the code easier to read. the strange way of defining
 // the tokens is just due to nVidia GLSL compiler failing to support breaking the #if
@@ -88,7 +86,7 @@ precision highp int;
 #endif
 
 #ifdef WITH_SUBSURFACE
-	uniform mediump sampler2DArray texSubSurface;
+	uniform HIGHP sampler2DArray texSubSurface;
 #endif
 #ifdef TEXTURE_SHADOW1_SOLID
 	#ifdef SMA1_CUBE
@@ -157,16 +155,16 @@ precision highp int;
 	
 	#ifdef TEXTURE_SHADOW1_SOLID
 		#ifdef SMA1_CUBE
-			uniform mediump samplerCube texLightDepth1;
+			uniform HIGHP samplerCube texLightDepth1;
 		#else
-			uniform mediump SAMPLER_DEPTH2D texLightDepth1;
+			uniform HIGHP SAMPLER_DEPTH2D texLightDepth1;
 		#endif
 	#endif
 	#ifdef TEXTURE_SHADOW2_SOLID
 		#ifdef SMA2_CUBE
-			uniform mediump samplerCube texLightDepth2;
+			uniform HIGHP samplerCube texLightDepth2;
 		#else
-			uniform mediump SAMPLER_DEPTH2D texLightDepth2;
+			uniform HIGHP SAMPLER_DEPTH2D texLightDepth2;
 		#endif
 	#endif
 #endif
@@ -441,7 +439,7 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 #endif
 
 // for HW_DEPTH_COMPARE mediump is required
-float evaluateShadow2D( in lowp SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DTC position ){
+float evaluateShadow2D( in ARG_SAMP_HIGHP SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DTC position ){
 	vec4 tcoffset;
 	float shadow;
 	
@@ -513,7 +511,7 @@ float evaluateShadow2D( in lowp SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DT
 /////////////////////////////
 
 #ifdef EVALUATE_SHADOWCUBE
-float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, in vec4 position ){
+float evaluateShadowCube( in ARG_SAMP_HIGHP SAMPLER_SHADOWCUBE texsm, in vec3 params, in vec4 position ){
 	float shadow;
 	
 	#ifdef NOISE_TAP
@@ -621,7 +619,7 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 	
 	#ifdef EVALUATE_SHADOW2D
 		#ifdef USE_ARRAY_FORM
-			float thicknessShadow2DArray( in mediump sampler2DArray texsm, in float scale, in vec4 position ){
+			float thicknessShadow2DArray( in ARG_SAMP_HIGHP sampler2DArray texsm, in float scale, in vec4 position ){
 				float thickness = SSSHATEX( texsm, position.stp ) * scale;
 				thickness = position.q * scale - thickness;
 				
@@ -629,7 +627,7 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 				return thickness;
 			}
 		#else
-			float thicknessShadow2D( in mediump sampler2D texsm, in vec3 position ){
+			float thicknessShadow2D( in ARG_SAMP_HIGHP sampler2D texsm, in vec3 position ){
 				float thickness = SSSHATEX( texsm, position.st );
 				thickness = pShadowDepthTransform.z / ( pShadowDepthTransform.w - thickness );
 				thickness = ( pShadowDepthTransform.z / ( pShadowDepthTransform.w - position.p ) ) - thickness;
@@ -641,7 +639,7 @@ float evaluateShadowCube( in mediump SAMPLER_SHADOWCUBE texsm, in vec3 params, i
 	#endif
 	
 	#ifdef EVALUATE_SHADOWCUBE
-	float thicknessShadowCube( in mediump samplerCube texsm, in vec4 position ){
+	float thicknessShadowCube( in ARG_SAMP_HIGHP samplerCube texsm, in vec4 position ){
 		float thickness = SSSHATEX( texsm, position.stp );
 		thickness = thickness * pShadowDepthTransform.z + pShadowDepthTransform.w;
 		thickness = position.q - thickness;

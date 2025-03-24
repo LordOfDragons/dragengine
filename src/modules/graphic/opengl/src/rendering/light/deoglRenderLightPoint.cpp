@@ -265,6 +265,9 @@ pVAOCopyShadow( nullptr )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
+		if(useInverseDepth){
+			defines.SetDefines("SHADOW_INVERSE_DEPTH");
+		}
 		defines.SetDefines( "DEPTH_INPUT" );
 		defines.SetDefines( "DEPTH_CUBEMAP" );
 		pAsyncGetPipeline(pPipelineBoxBoundary1, pipconf, sources, defines);
@@ -1485,7 +1488,7 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 		smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
 	
 	decDMatrix matProj( shadowParams.matrixProjection );
-	if( renderThread.GetChoices().GetUseInverseDepth() ){
+	if( useInverseDepth ){
 		matProj.a34 -= 0.0001f;
 	}
 	

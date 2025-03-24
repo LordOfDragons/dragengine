@@ -1,13 +1,13 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
 uniform vec4 pAvgLogLumTCs; // tc1.s, tc1.t, tc2.s, tc2.t
 
-uniform mediump sampler2DArray texAvgLogLum;
-uniform mediump sampler2D texLastParams;
+uniform HIGHP sampler2DArray texAvgLogLum;
+uniform HIGHP sampler2D texLastParams;
 uniform mediump samplerCube texEnvMap;
 
 out vec4 outParams;

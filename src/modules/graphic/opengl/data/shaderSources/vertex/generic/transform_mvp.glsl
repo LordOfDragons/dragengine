@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform mat4x4 pMatrixMVP; // matrix model-view-projection
 

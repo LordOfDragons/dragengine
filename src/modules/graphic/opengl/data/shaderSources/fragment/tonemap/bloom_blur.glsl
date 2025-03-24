@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 uniform vec4 pOffsets1; // offset1.s, offset1.t, offset2.s, offset2.t
 uniform vec4 pOffsets2; // offset3.s, offset3.t, offset4.s, offset4.t

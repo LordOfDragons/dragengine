@@ -486,6 +486,8 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		ismgr.Enable( 2, rayCache.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 3, rayCache.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 4, rayCache.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+		ClearRenderDocDebugTexture();
+		ismgr.EnableRenderDocDebug(5, deoglRTChoices::RenderDocDebugFlagGI);
 		
 		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
 		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
@@ -538,6 +540,8 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+		ClearRenderDocDebugTexture();
+		ismgr.EnableRenderDocDebug(5, deoglRTChoices::RenderDocDebugFlagGI);
 		
 		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
 		OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
@@ -560,6 +564,8 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
 	ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
 	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
+	ClearRenderDocDebugTexture();
+	ismgr.EnableRenderDocDebug(5, deoglRTChoices::RenderDocDebugFlagGI);
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
@@ -848,6 +854,8 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
 	ismgr.Enable( 2, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaRead );
 	ismgr.Enable( 3, giState->GetTextureProbeIrradiance(), 0, deoglImageStageManager::eaReadWrite );
+	ClearRenderDocDebugTexture();
+	ismgr.EnableRenderDocDebug(4, deoglRTChoices::RenderDocDebugFlagGI);
 	
 	pActivateGIUBOs();
 	
@@ -857,6 +865,7 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	pPipelineUpdateProbeDistance->Activate();
 	
 	ismgr.Enable( 3, giState->GetTextureProbeDistance(), 0, deoglImageStageManager::eaReadWrite );
+	ClearRenderDocDebugTexture();
 	
 	pActivateGIUBOs();
 	

@@ -1,5 +1,5 @@
-precision highp float;
-precision highp int;
+precision HIGHP float;
+precision HIGHP int;
 
 #include "shared/octahedral.glsl"
 #include "shared/ubo_defines.glsl"
@@ -8,18 +8,40 @@ precision highp int;
 #include "shared/image_buffer.glsl"
 
 
-layout(binding=0, rgba16f) uniform readonly mediump image2D texPosition;
-layout(binding=1, rgba8_snorm) uniform readonly mediump image2D texNormal;
-layout(binding=2, rgba16f) uniform readonly mediump image2D texLight;
+layout(binding=0, rgba16f) uniform readonly HIGHP image2D texPosition;
+layout(binding=1, rgba8_snorm) uniform readonly HIGHP image2D texNormal;
+layout(binding=2, rgba16f) uniform readonly HIGHP image2D texLight;
 
 #ifdef MAP_IRRADIANCE
-	layout(binding=3, rgba16f) uniform readonly mediump image2DArray texProbe_load;
-	layout(binding=3, rgba16f) uniform writeonly mediump image2DArray texProbe_store;
+	#ifdef ANDROID
+		layout(binding=3, rgba16f) uniform readonly HIGHP image2DArray texProbe_load;
+		layout(binding=3, rgba16f) uniform writeonly HIGHP image2DArray texProbe_store;
+	#else
+		layout(binding=3, rgba16f) uniform HIGHP image2DArray texProbe;
+		#define texProbe_load texProbe
+		#define texProbe_store texProbe
+	#endif
 	#define STORE_RESULT(v) v
 #else
-	layout(binding=3, IMG_RG16F_FMT) uniform readonly mediump IMG_R16F_2DARR texProbe_load;
-	layout(binding=3, IMG_RG16F_FMT) uniform writeonly mediump IMG_R16F_2DARR texProbe_store;
+	#ifdef ANDROID
+		layout(binding=3, IMG_RG16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texProbe_load;
+		layout(binding=3, IMG_RG16F_FMT) uniform writeonly HIGHP IMG_R16F_2DARR texProbe_store;
+	#else
+		layout(binding=3, IMG_RG16F_FMT) uniform HIGHP IMG_R16F_2DARR texProbe;
+		#define texProbe_load texProbe
+		#define texProbe_store texProbe
+	#endif
 	#define STORE_RESULT(v) IMG_RG16F_STORE(v)
+#endif
+
+#ifdef RENDER_DOC_DEBUG_GI
+	layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texRenderDocDebug;
+	void renderDocDebugStore(int index, vec4 value){
+		ivec2 tc = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y * uint(12) + uint(index));
+		if(all(lessThan(tc, ivec2(2048, 1024)))){
+			imageStore(texRenderDocDebug, tc, value);
+		}
+	}
 #endif
 
 
@@ -111,6 +133,12 @@ void main( void ){
 	
 	int probeIndex = giTraceProbeProbeIndex( updateIndex );
 	ivec3 probeGrid = probeIndexToGridCoord( probeIndex );
+	
+	#ifdef RENDER_DOC_DEBUG_GI
+		renderDocDebugStore(0, vec4(updateIndex, rayOffset, blendFactor));
+		renderDocDebugStore(1, vec4(probePosition, probeFlags));
+		renderDocDebugStore(2, vec4(probeIndex, probeGrid));
+	#endif
 	
 	// map layout: (probeCount.x * probeCount.y) x pGIGridProbeCount.z
 	// 
@@ -327,6 +355,20 @@ void main( void ){
 		vec2 prevProbeState = IMG_RG16F_LOAD(imageLoad(texProbe_load, tcSample));
 	#endif
 	
+	#ifdef RENDER_DOC_DEBUG_GI
+		renderDocDebugStore(3, vec4(tcProbe, tcLocal));
+		renderDocDebugStore(4, vec4(tcSample, 0));
+		renderDocDebugStore(5, vec4(texelDirection, 0));
+		renderDocDebugStore(6, vec4(sumWeight, rayBackCount, enableProbe, 0));
+		#ifdef MAP_IRRADIANCE
+			renderDocDebugStore(7, vec4(newProbeState, 0));
+			renderDocDebugStore(8, vec4(prevProbeState, 0));
+		#else
+			renderDocDebugStore(7, vec4(newProbeState, 0, 0));
+			renderDocDebugStore(8, vec4(prevProbeState, 0, 0));
+		#endif
+	#endif
+	
 	if( enableProbe ){
 		sumWeight = 1.0 / max( sumWeight, epsilon );
 		
@@ -375,7 +417,6 @@ void main( void ){
 // 		blendFactor = 1.0; // DEBUG
 // 		blendFactor = pGIBlendUpdateProbe;
 	
-	
 	// update probe state
 	#ifdef MAP_IRRADIANCE
 		vec4 result = vec4( mix( prevProbeState, newProbeState, blendFactor ), 0 );
@@ -414,6 +455,12 @@ void main( void ){
 	bvec2 anyOnEdge = bvec2( any( isOnEdge.xy ), any( isOnEdge.zw ) );
 	ivec2 tcShift = ivec2( isOnEdge.x ? -1 : 1, isOnEdge.z ? -1 : 1 );
 	ivec2 tcFlipped = tcProbe + edgeValues.yy - tcLocal;
+	
+	#ifdef RENDER_DOC_DEBUG_GI
+		renderDocDebugStore(9, result);
+		renderDocDebugStore(10, vec4(isOnEdge));
+		renderDocDebugStore(11, vec4(tcShift, tcFlipped));
+	#endif
 	
 	if(anyOnEdge.x){
 		imageStore(texProbe_store, ivec3(tcSample.x + tcShift.x, tcFlipped.y, tcSample.z), STORE_RESULT(result));
