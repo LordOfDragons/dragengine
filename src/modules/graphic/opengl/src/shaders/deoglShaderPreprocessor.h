@@ -163,6 +163,9 @@ public:
 	/** Number of symbols. */
 	int GetSymbolCount() const;
 	
+	/** Get symbol names. */
+	decStringList GetSymbolNames() const;
+	
 	/** Named symbol is present. */
 	bool HasSymbolNamed( const char *name ) const;
 	

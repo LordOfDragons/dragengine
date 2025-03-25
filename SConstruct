@@ -157,6 +157,7 @@ params = Variables(['custom.py'])
 params.Add(EnumVariable('platform_android', 'Build for Android platform', 'no', ['no', 'armv7', 'armv8', 'x86', 'quest']))
 params.Add(BoolVariable('with_tests', 'Build engine tests', False))
 params.Add(BoolVariable('with_debug', 'Build with debug symbols for GDB usage', False))
+params.Add(BoolVariable('with_debug_symbols', 'For release build only force debug symbols', False))
 params.Add(BoolVariable('with_warnerrors', 'Treat warnings as errors (dev-builds)', False))
 params.Add(BoolVariable('with_sanitize', 'Enable sanitizing (dev-builds)', False))
 params.Add(BoolVariable('with_sanitize_thread', 'Enable thread sanitizing (dev-builds)', False))
@@ -634,7 +635,8 @@ else:
 	
 	if not parent_env['OSMacOS']:
 		parent_env.Append(MODULE_LINKFLAGS = ['-Wl,--version-script=module.version'])
-		parent_env.Append(MODULE_LINKFLAGS = ['-s'])
+		if not parent_env['with_debug_symbols']:
+			parent_env.Append(MODULE_LINKFLAGS = ['-s'])
 	
 	if parent_env['platform_android'] != 'no':
 		parent_env.Append(MODULE_LINKFLAGS = ['-Wl,--undefined-version'])
@@ -659,7 +661,7 @@ if parent_env['platform_android'] != 'no':
 if not parent_env['with_verbose']:
 	DisableVerboseCompiling(parent_env)
 
-if parent_env['with_debug']:
+if parent_env['with_debug'] or parent_env['with_debug_symbols']:
 	if parent_env['OSWindows']:
 		if parent_env['CROSSCOMPILE_CLANG']:
 			parent_env.Append(CPPFLAGS = ['-g', '-gcodeview'])
@@ -669,7 +671,7 @@ if parent_env['with_debug']:
 	else:
 		parent_env.Append(CPPFLAGS = ['-g'])
 		# mingw produces internal compiler errors on 8.x GCC. disabled until fixed or a check is present
-		parent_env.Append(CPPFLAGS = ['-fno-omit-frame-pointer'])
+		#parent_env.Append(CPPFLAGS = ['-fno-omit-frame-pointer'])
 
 # set flags based on parameters
 if parent_env['platform_android'] == 'no':

@@ -64,6 +64,7 @@ jobs:
     with:
       releaseVersion: nightly
       buildVersion: '9999'
+      artifactArchive: archives-linux-ci
       artifactInstaller: installers-linux-ci
   
   build_android_armv8:
@@ -221,22 +222,24 @@ jobs:
             Changelog: https://dragondreams.ch/?page_id=287
             
             Builds are potentially unstable. Use at own risk.
-          artifacts: >
-            install-dragengine-nightly-linux64.sh,
-            install-dragengine-dev-nightly-linux64.sh,
-            dragengine-nightly-linux64.tar.bz2,
-            dragengine-dev-nightly-linux64.tar.bz2,
-            install-deigde-nightly-linux64.sh,
-            install-deigde-dev-nightly-linux64.sh,
-            deigde-nightly-linux64.tar.bz2,
-            deigde-dev-nightly-linux64.tar.bz2,
-            install-dragengine-nightly-windows64.exe,
-            install-dragengine-sdk-nightly-windows64.exe,
-            dragengine-sdk-nightly-windows64.zip,
-            install-deigde-nightly-windows64.exe,
-            install-deigde-sdk-nightly-windows64.exe,
-            deigde-sdk-nightly-windows64.zip,
-            blender-addon-dragengine-9999.zip,
-            dragengine-live-nightly.zip,
-            install-dragengine-ci-nightly-linux64.sh,
+          artifacts: |
+            install-dragengine-nightly-linux64.sh
+            install-dragengine-dev-nightly-linux64.sh
+            dragengine-nightly-linux64.tar.bz2
+            dragengine-dbg-nightly-linux64.tar.bz2
+            dragengine-dev-nightly-linux64.tar.bz2
+            install-deigde-nightly-linux64.sh
+            install-deigde-dev-nightly-linux64.sh
+            deigde-nightly-linux64.tar.bz2
+            deigde-dbg-nightly-linux64.tar.bz2
+            deigde-dev-nightly-linux64.tar.bz2
+            install-dragengine-nightly-windows64.exe
+            install-dragengine-sdk-nightly-windows64.exe
+            dragengine-sdk-nightly-windows64.zip
+            install-deigde-nightly-windows64.exe
+            install-deigde-sdk-nightly-windows64.exe
+            deigde-sdk-nightly-windows64.zip
+            blender-addon-dragengine-9999.zip
+            dragengine-live-nightly.zip
+            install-dragengine-ci-nightly-linux64.sh
             install-deigde-ci-nightly-linux64.sh

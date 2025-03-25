@@ -92,38 +92,38 @@ class GameWorldLoader
 	/** \brief Frame update listener. */
 	private class FrameUpdater extends FrameUpdateListener
 		/** \brief Game world loader. */
-		private var GameWorldLoader pGameWorldLoader
+		var GameWorldLoader pGameWorldLoader
 		
 		/** \brief Create frame update listener. */
-		public func new(GameWorldLoader gameWorldLoader)
+		func new(GameWorldLoader gameWorldLoader)
 			pGameWorldLoader = gameWorldLoader
 		end
 		
 		/** \brief Do frame update. */
-		public func void frameUpdate(float elapsed)
+		func void frameUpdate(float elapsed)
 			pGameWorldLoader.updateLoading()
 		end
 	end
 	
 	
 	
-	private var Console pConsole
-	private var Loaders pLoaders
-	private var ElementClassList pElementClassList
-	private var DecalBuilder pDecalBuilder
-	private var WindowLoading pWindowLoading
-	private var PreloadManager pPreloadManager
-	private var bool pIgnorePersistableElements
-	private var bool pEnableNetworking
-	private var StubGameWorld pStubWorld
-	private var bool pCleanUpStubWorld
-	private var String pPathWorld
-	private var FrameUpdater pFrameUpdater
-	private var MutableID pIDGenerator
-	private var PersistencyEnvironment pPersistEnvironment
-	private var FileReader pPersistencyReader
+	var Console pConsole
+	var Loaders pLoaders
+	var ElementClassList pElementClassList
+	var DecalBuilder pDecalBuilder
+	var WindowLoading pWindowLoading
+	var PreloadManager pPreloadManager
+	var bool pIgnorePersistableElements
+	var bool pEnableNetworking
+	var StubGameWorld pStubWorld
+	var bool pCleanUpStubWorld
+	var String pPathWorld
+	var FrameUpdater pFrameUpdater
+	var MutableID pIDGenerator
+	var PersistencyEnvironment pPersistEnvironment
+	var FileReader pPersistencyReader
 	
-	private var DebugVerifyStubProperties pDebugVerifyStubProperties
+	var DebugVerifyStubProperties pDebugVerifyStubProperties
 	
 	
 	
@@ -132,7 +132,7 @@ class GameWorldLoader
 	 * 
 	 * Creates a DecalBuilder and an AddDecalVisitor.
 	 */
-	public func new() this(BaseGameApp.getApp().getConsole(), BaseGameApp.getApp().getLoaders(),\
+	func new() this(BaseGameApp.getApp().getConsole(), BaseGameApp.getApp().getLoaders(),\
 	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator())
 	end
 	
@@ -141,7 +141,7 @@ class GameWorldLoader
 	 * 
 	 * Creates a DecalBuilder and an AddDecalVisitor.
 	 */
-	public func new(Console console, Loaders loaders, ElementClassList elementClassList)\
+	func new(Console console, Loaders loaders, ElementClassList elementClassList)\
 	this(console, loaders, elementClassList, null)
 	end
 	
@@ -151,7 +151,7 @@ class GameWorldLoader
 	 * 
 	 * Creates a DecalBuilder and an AddDecalVisitor.
 	 */
-	public func new(Console console, Loaders loaders, ElementClassList elementClassList, MutableID idGenerator)
+	func new(Console console, Loaders loaders, ElementClassList elementClassList, MutableID idGenerator)
 		if console == null or loaders == null or elementClassList == null
 			throw ENullPointer.new("console")
 		end
@@ -177,7 +177,7 @@ class GameWorldLoader
 	end
 	
 	/** \brief Dispose of game world loader to break reference loops. */
-	public func void dispose()
+	func void dispose()
 		stopFrameUpdater()
 		setWindowLoading(null)
 		
@@ -193,22 +193,22 @@ class GameWorldLoader
 	
 	
 	/** \brief Console console. */
-	public func Console getConsole()
+	func Console getConsole()
 		return pConsole
 	end
 	
 	/** \brief Loaders. */
-	public func Loaders getLoaders()
+	func Loaders getLoaders()
 		return pLoaders
 	end
 	
 	/** \brief Element classes list. */
-	public func ElementClassList getElementClassList()
+	func ElementClassList getElementClassList()
 		return pElementClassList
 	end
 	
 	/** \brief Decal builder used for world decals. */
-	public func DecalBuilder getDecalBuilder()
+	func DecalBuilder getDecalBuilder()
 		return pDecalBuilder
 	end
 	
@@ -217,7 +217,7 @@ class GameWorldLoader
 	 * 
 	 * The old decal builder is disposed of if present.
 	 */
-	public func void setDecalBuilder(DecalBuilder decalBuilder)
+	func void setDecalBuilder(DecalBuilder decalBuilder)
 		if decalBuilder == pDecalBuilder
 			return
 		end
@@ -230,12 +230,12 @@ class GameWorldLoader
 	end
 	
 	/** \brief Loading window window. */
-	public func WindowLoading getWindowLoading()
+	func WindowLoading getWindowLoading()
 		return pWindowLoading
 	end
 	
 	/** \brief Set loading window. */
-	public func void setWindowLoading(WindowLoading window)
+	func void setWindowLoading(WindowLoading window)
 		if window == pWindowLoading
 			return
 		end
@@ -248,42 +248,42 @@ class GameWorldLoader
 	end
 	
 	/** \brief Preload manager. */
-	public func PreloadManager getPreloadManager()
+	func PreloadManager getPreloadManager()
 		return pPreloadManager
 	end
 	
 	/** \brief Ignore persistable elements. */
-	public func bool getIgnorePersistableElements()
+	func bool getIgnorePersistableElements()
 		return pIgnorePersistableElements
 	end
 	
 	/** \brief Set if persistable elements are ignored. */
-	public func void setIgnorePersistableElements(bool ignorePersistableElements)
+	func void setIgnorePersistableElements(bool ignorePersistableElements)
 		pIgnorePersistableElements = ignorePersistableElements
 	end
 	
 	/** \brief Enable networking. */
-	public func bool getEnableNetworking()
+	func bool getEnableNetworking()
 		return pEnableNetworking
 	end
 	
 	/** \brief Set if networking is enabled. */
-	public func void setEnableNetworking(bool enable)
+	func void setEnableNetworking(bool enable)
 		pEnableNetworking = enable
 	end
 	
 	/** \brief Game world stub. */
-	public func StubGameWorld getStubWorld()
+	func StubGameWorld getStubWorld()
 		return pStubWorld
 	end
 	
 	/** \brief World file path. */
-	public func String getPathWorld()
+	func String getPathWorld()
 		return pPathWorld
 	end
 	
 	/** \brief Set world file path. */
-	public func void setPathWorld(String path)
+	func void setPathWorld(String path)
 		pPathWorld = path
 	end
 	
@@ -291,7 +291,7 @@ class GameWorldLoader
 	 * \brief ID Generator or null.
 	 * \version 1.8
 	 */
-	public func MutableID getIDGenerator()
+	func MutableID getIDGenerator()
 		return pIDGenerator
 	end
 	
@@ -299,7 +299,7 @@ class GameWorldLoader
 	 * \brief Persistency environment or null.
 	 * \version 1.8
 	 */
-	public func PersistencyEnvironment getPersistencyEnvironment()
+	func PersistencyEnvironment getPersistencyEnvironment()
 		return pPersistEnvironment
 	end
 	
@@ -307,7 +307,7 @@ class GameWorldLoader
 	 * \brief Persistency reader or null.
 	 * \version 1.8
 	 */
-	public func FileReader getPersistencyReader()
+	func FileReader getPersistencyReader()
 		return pPersistencyReader
 	end
 	
@@ -319,7 +319,7 @@ class GameWorldLoader
 	 * 
 	 * \throws EInvalidParam environment or reader is null but not both.
 	 */
-	public func void setPersistency(PersistencyEnvironment environment, FileReader reader)
+	func void setPersistency(PersistencyEnvironment environment, FileReader reader)
 		if (environment == null) != (reader == null)
 			throw EInvalidParam.new("environment or reader is null but not both")
 		end
@@ -331,12 +331,12 @@ class GameWorldLoader
 	
 	
 	/** \brief Debug verify stub properties while loading or null if not used. */
-	public func DebugVerifyStubProperties getDebugVerifyStubProperties()
+	func DebugVerifyStubProperties getDebugVerifyStubProperties()
 		return pDebugVerifyStubProperties
 	end
 	
 	/** \brief Set debug verify stub properties while loading or null if not used. */
-	public func void setDebugVerifyStubProperties(DebugVerifyStubProperties debug)
+	func void setDebugVerifyStubProperties(DebugVerifyStubProperties debug)
 		pDebugVerifyStubProperties = debug
 	end
 	
@@ -347,7 +347,7 @@ class GameWorldLoader
 	 * 
 	 * Set up all required parameters before calling this method, in particular setPathWorld().
 	 */
-	public func void startLoading()
+	func void startLoading()
 		if pPathWorld == null
 			throw EInvalidParam.new()
 		end
@@ -380,7 +380,7 @@ class GameWorldLoader
 	 * 
 	 * For use by FrameUpdater.
 	 */
-	public func void updateLoading()
+	func void updateLoading()
 		var bool preloadProblemsReported = false
 		
 		try
@@ -428,7 +428,7 @@ class GameWorldLoader
 	 * 
 	 * \note This method can be called multiple times.
 	 */
-	public func void cancelLoading()
+	func void cancelLoading()
 		cleanUp()
 		onLoadWorldFailed()
 	end
@@ -695,7 +695,7 @@ class GameWorldLoader
 	 * \code{.ds} BaseGameApp.getApp().finishLoadGameWorld() \endcode
 	 * at the end of the implementation.
 	 */
-	public func void onLoadWorldFinished()
+	func void onLoadWorldFinished()
 	end
 	
 	/**
@@ -710,6 +710,6 @@ class GameWorldLoader
 	 * 
 	 * \note This method can be called multiple times.
 	 */
-	public func void onLoadWorldFailed()
+	func void onLoadWorldFailed()
 	end
 end
