@@ -92,6 +92,12 @@ jobs:
           scons -j 1 lib_openxr lib_libjpeg lib_libwebm
           scons -j 14 archive launcher_android_build
       
+      - name: Debug Symbols
+        run: |
+          ./separateDebugSymbols.sh \
+            archive/build/dragengine-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2 \
+            archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
+      
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
@@ -102,6 +108,7 @@ jobs:
           name: ${{ inputs.artifactArchive }}
           path: |
             archive/build/dragengine-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
+            archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
             archive/build/dragengine-dev-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
             archive/build/despecial-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
             src/launcher/android/build/DELauncher-${{ inputs.releaseVersion }}-${{ inputs.androidArch }}.apk

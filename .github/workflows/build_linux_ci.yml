@@ -13,6 +13,9 @@ on:
       buildVersion:
         required: true
         type: string
+      artifactArchive:
+        required: true
+        type: string
       artifactInstaller:
         required: true
         type: string
@@ -38,6 +41,11 @@ on:
         required: true
         type: string
         default: "9999"
+      artifactArchive:
+        description: 'Artifact Archive'
+        required: true
+        type: string
+        default: "archives-linux"
       artifactInstaller:
         description: 'Artifact Installer'
         required: true
@@ -100,9 +108,30 @@ jobs:
           scons -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm lib_modio
           scons -j 14 archive installer
       
+      - name: Debug Symbols
+        run: |
+          ./separateDebugSymbols.sh \
+            archive/build/dragengine-ci-${{ inputs.releaseVersion }}-linux64.tar.bz2 \
+            archive/build/dragengine-ci-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
+          
+          ./separateDebugSymbols.sh \
+            archive/build/deigde-ci-${{ inputs.releaseVersion }}-linux64.tar.bz2 \
+            archive/build/deigde-ci-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
+      
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+        
+      - name: Store Archives
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifactArchive }}
+          path: |
+            archive/build/dragengine-ci-${{ inputs.releaseVersion }}-linux64.tar.bz2
+            archive/build/dragengine-ci-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
+            archive/build/deigde-ci-${{ inputs.releaseVersion }}-linux64.tar.bz2
+            archive/build/deigde-ci-dbg-${{ inputs.releaseVersion }}-linux64.tar.bz2
+          if-no-files-found: error
         
       - name: Store Installers
         uses: actions/upload-artifact@v4

@@ -3,6 +3,7 @@
 with_tests = 'no'
 with_warnerrors = 'no'
 with_debug = 'no'
+with_debug_symbols = 'yes'
 with_verbose = 'no'
 with_threads = '14'
 version = '{BuildVersion}'
