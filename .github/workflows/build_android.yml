@@ -94,9 +94,24 @@ jobs:
       
       - name: Debug Symbols
         run: |
-          ./separateDebugSymbols.sh \
-            archive/build/dragengine-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2 \
-            archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
+          case ${{ inputs.androidArch }} in
+            armv7)
+              COMPILER="arm-linux-androideabi"
+              ;;
+            armv8|quest)
+              COMPILER="aarch64-linux-android"
+              ;;
+            x86)
+              COMPILER="i686-linux-androideabi"
+              ;;
+          fi
+          
+          COMPILER_PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/$COMPILER"
+          
+          OBJCOPY="$COMPILER_PATH-objcopy" STRIP="$COMPILER_PATH-strip" \
+            ./separateDebugSymbols.sh \
+              archive/build/dragengine-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2 \
+              archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
       
       - name: Get current date
         id: date
