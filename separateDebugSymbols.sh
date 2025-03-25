@@ -42,6 +42,12 @@ for f in `find -name "*.so"`; do
 	chmod -x "$debugPath" || exit 1
 done
 
+echo "*** Update manifest checksums ..."
+for f in `find -name "module.xml"`; do
+	echo "Process $f ..."
+	/usr/bin/python3 "$restoreDir"/updateManifestChecksums.py "$f"
+done
+
 echo "*** Pack $archivePath ..."
 cd "$unpackOrgDir" || exit 1
 tar -cjf "$restoreDir/$archivePath" . || exit 1
