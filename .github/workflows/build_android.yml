@@ -94,19 +94,7 @@ jobs:
       
       - name: Debug Symbols
         run: |
-          case ${{ inputs.androidArch }} in
-            armv7)
-              COMPILER="arm-linux-androideabi"
-              ;;
-            armv8|quest)
-              COMPILER="aarch64-linux-android"
-              ;;
-            x86)
-              COMPILER="i686-linux-androideabi"
-              ;;
-          esac
-          
-          COMPILER_PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/$COMPILER"
+          COMPILER_PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm"
           
           export OBJCOPY="$COMPILER_PATH-objcopy"
           export STRIP="$COMPILER_PATH-strip"
