@@ -93,7 +93,6 @@ jobs:
           scons -j 14 archive launcher_android_build
       
       - name: Debug Symbols
-        # WARNING! no newlines in 'run' or github dies U_U
         run: |
           case ${{ inputs.androidArch }} in
             armv7)
@@ -105,10 +104,13 @@ jobs:
             x86)
               COMPILER="i686-linux-androideabi"
               ;;
-          fi
+          esac
+          
           COMPILER_PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/$COMPILER"
+          
           export OBJCOPY="$COMPILER_PATH-objcopy"
           export STRIP="$COMPILER_PATH-strip"
+          
           ./separateDebugSymbols.sh \
             archive/build/dragengine-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2 \
             archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2
