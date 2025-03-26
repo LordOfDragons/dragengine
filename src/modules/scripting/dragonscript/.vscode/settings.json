@@ -18,7 +18,8 @@
 		"unused": true
 	},
 	"files.exclude": {
-		"build": true
+		"build": true,
+		"doc/script/html": true
 	},
 	"files.watcherExclude": {
 		"**/.git/objects/**": true,

@@ -197,7 +197,7 @@ class GameWorld
 	
 	/**
 	 * \brief Visit behaviors with block.
-	 * \versoin 1.17
+	 * \version 1.17
 	 * 
 	 * Block is required to have one parameter of type GWBehavior or subclass thereof.
 	 * Block is called only for behaviors castable to block parameter type.

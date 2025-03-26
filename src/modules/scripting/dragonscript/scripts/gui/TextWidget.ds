@@ -430,7 +430,7 @@ class TextWidget extends Widget implements TextModelListener
 	
 	/**
 	 * \brief Read only state changed.
-	 * \vrsion 1.7
+	 * \version 1.7
 	 */
 	public func void onReadOnlyChanged()
 	end

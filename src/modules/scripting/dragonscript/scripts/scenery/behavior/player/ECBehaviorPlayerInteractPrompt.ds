@@ -143,7 +143,7 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	
 	/**
 	 * \brief Behavior factory.
-	 * \ref 1.25
+	 * \version 1.25
 	 * 
 	 * To use this factory create a subclass and implement \ref #createPromptControllerFactory(),
 	 * \ref #getUiContainer() and \ref #getUiContainerAddSettings().
