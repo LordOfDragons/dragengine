@@ -44,6 +44,7 @@ public:
 	};
 	
 	static const int RenderDocDebugFlagGI = 0x1;
+	static const int RenderDocDebugFlagOccTest = 0x2;
 	
 	
 	

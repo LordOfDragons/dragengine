@@ -179,6 +179,7 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 	
 	pRenderDocDebugFlags = 0;
 	//pRenderDocDebugFlags = RenderDocDebugFlagGI;
+	//pRenderDocDebugFlags = RenderDocDebugFlagOccTest;
 }
 
 deoglRTChoices::~deoglRTChoices(){

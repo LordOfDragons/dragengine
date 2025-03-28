@@ -9,12 +9,12 @@ uniform HIGHP sampler2DArray texOccMap2;
 uniform uint pInputDataCount;
 uniform mat4 pMatrix; // camera-rotation and projection
 uniform vec2 pScaleSize;
-uniform float pBaseLevel;
+uniform vec2 pBaseTopLevel; // x=base, y=top
 uniform float pClipNear;
 #ifdef DUAL_OCCMAP
 uniform mat4 pMatrix2;
 uniform vec2 pScaleSize2;
-uniform float pBaseLevel2;
+uniform vec2 pBaseTopLevel2; // x=base, y=top
 uniform float pClipNear2;
 #endif
 #ifdef FRUSTUM_TEST
@@ -55,6 +55,16 @@ uniform uint pCullFilter;
 	UBOLAYOUT_BIND(3) writeonly restrict buffer VisibleElementOut {
 		uvec4 pVisibleElementOut[];
 	};
+	
+#ifdef RENDER_DOC_DEBUG_OCCTEST
+	layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texRenderDocDebug;
+	void renderDocDebugStore(int index, vec4 value){
+		ivec2 tc = ivec2(gl_GlobalInvocationID.x, 1023 - index);
+		if(all(lessThan(tc, ivec2(2048, 1024)))){
+			imageStore(texRenderDocDebug, tc, value);
+		}
+	}
+#endif
 	
 	// buffer stores in the first uvec4 the output of the node search pass. the output
 	// of the element search pass is stored in the next uvec4. for this reason the
@@ -104,26 +114,26 @@ const bvec3 vBoxCorner[ 8 ] = bvec3[ 8 ](
 // calculate screen space AABB projection. returns true if all points are in front of near plane
 bool calcScreenAABB( out vec3 minExtend, out vec3 maxExtend, in mat4 matrix,
 in vec3 inputMinExtend, in vec3 inputMaxExtend ){
-	vec4 screen, world = vec4( 1.0 );
+	vec4 screen, world = vec4(1.0);
 	int i;
 	
-	minExtend = vec3( 1.0 );
-	maxExtend = vec3( -1.0 );
+	minExtend = vec3(1.0, 1.0, 1.0);
+	maxExtend = vec3(-1.0, -1.0, 0.0);
 	
-	for( i=0; i<8; i++ ){
-		world.xyz = mix( inputMinExtend, inputMaxExtend, vBoxCorner[ i ] );
+	for(i=0; i<8; i++){
+		world.xyz = mix(inputMinExtend, inputMaxExtend, vBoxCorner[i]);
 		screen = matrix * world;
-		if( screen.z <= 0.0 ){
+		if(screen.z <= 0.0){
 			return false;
 		}
 		screen.xy /= screen.ww;
 		
-		minExtend = min( minExtend, screen.xyz );
-		maxExtend = max( maxExtend, screen.xyz );
+		minExtend = min(minExtend, screen.xyz);
+		maxExtend = max(maxExtend, screen.xyz);
 	}
 	
-	minExtend = max( minExtend, vec3( -1.0 ) );
-	maxExtend = min( maxExtend, vec3( 1.0 ) );
+	minExtend = max(minExtend, vec3(-1.0, -1.0, 0.0));
+	maxExtend = min(maxExtend, vec3(1.0, 1.0, 1.0));
 	return true;
 }
 
@@ -132,8 +142,8 @@ in vec3 inputMinExtend, in vec3 inputMaxExtend ){
 const vec2 vOneTwoThird = vec2( 1.0 / 3.0, 2.0 / 3.0 );
 
 // test box against occlusion map
-bool testBox( out float largestSample, in vec2 minExtend, in vec2 maxExtend,
-in float minDepth, in vec2 scaleSize, in float baseLevel, ARG_SAMP_HIGHP sampler2DArray occmap, in int layer ){
+bool testBox(out float largestSample, in vec2 minExtend, in vec2 maxExtend, in float minDepth,
+in vec2 scaleSize, in vec2 baseTopLevel, ARG_SAMP_HIGHP sampler2DArray occmap, in int layer){
 	vec2 size = ( maxExtend - minExtend ) * scaleSize;
 	
 	//if( min( size.x, size.y ) < 0.01 ){ //0.1 ){
@@ -164,9 +174,33 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, ARG_SAMP_HIGHP sampler
 		// the calculation. for this subtracting log2(3) results in an as optimal usage of
 		// the 4x4 block as reasonable without obtaining incorrect results even in the
 		// worst case.
+		//
+		// unfortunately this is not enough if the tap falls exactly on the worde of a pixel
+		// either the left or right pixel has to be tapped. using the wrong one can result
+		// in wrong results since the tap is up to 1 pixel off. to fix this the minimum and
+		// maximum extends have to be enlarged by half a pixel in the respective direction
+		// to ensure good coverage. in this case the following can happen:
+		// | x % x % x % x |
+		// the % are the original extends falling on the edge of the pixel. if the left extend
+		// is shifted by half a pixel to the side it lands on the left most x tap position.
+		// likewise for the right end % shifted by half a pixel lands on the right side x tap
+		// position. the original box had been only 2 pixel wide to end up with 4 pixels to
+		// tap safely. hence log2(2)=1 is required to get the best lod to sample. the half
+		// pixel is subtracted after choosing the lod level since the size of the half pixel
+		// is different depending on which lod level is chosen
 		float maxSize = max( size.x, size.y );
-		//float level = max( ceil( log2( maxSize ) - baselog ), baseLevel );
-		float level = baseLevel + max( ceil( log2( maxSize ) - baselog ), 0.0 );
+		
+		//float level = max( ceil( log2( maxSize ) - baselog ), baseTopLevel.x );
+		//float level = baseTopLevel.x + max( ceil( log2( maxSize ) - baselog ), 0.0 );
+		// clamp the level to the top level to simplify calculations below
+		float level = min(baseTopLevel.x + max(ceil(log2(maxSize) - 1.0), 0.0), baseTopLevel.y);
+		
+		//vec2 pixelShift = vec2(0.5) / (scaleSize / vec2(pow(2.0, level)));
+		vec2 pixelShift = vec2(0.5 * pow(2.0, level)) / scaleSize;
+		
+		minExtend.xy -= pixelShift;
+		maxExtend.xy += pixelShift;
+		
 		vec4 steps = mix( minExtend.xxyy, maxExtend.xxyy, vOneTwoThird.xyxy );
 		vec4 samples, samplesAll;
 		vec3 tc = vec3( 0, 0, layer );
@@ -184,6 +218,9 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, ARG_SAMP_HIGHP sampler
 		samples.z = textureLod( occmap, tc, level ).x;
 		tc.x = minExtend.x;
 		samples.w = textureLod( occmap, tc, level ).x;
+		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+			renderDocDebugStore(9, samples);
+		#endif
 		samples.xy = max( samples.xy, samples.zw );
 		samplesAll.x = max( samples.x, samples.y );
 		
@@ -195,6 +232,9 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, ARG_SAMP_HIGHP sampler
 		samples.z = textureLod( occmap, tc, level ).x;
 		tc.y = steps.w;
 		samples.w = textureLod( occmap, tc, level ).x;
+		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+			renderDocDebugStore(10, samples);
+		#endif
 		samples.xy = max( samples.xy, samples.zw );
 		samplesAll.y = max( samples.x, samples.y );
 		
@@ -206,6 +246,9 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, ARG_SAMP_HIGHP sampler
 		samples.z = textureLod( occmap, tc, level ).x;
 		tc.y = steps.w;
 		samples.w = textureLod( occmap, tc, level ).x;
+		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+			renderDocDebugStore(11, samples);
+		#endif
 		samples.xy = max( samples.xy, samples.zw );
 		samplesAll.z = max( samples.x, samples.y );
 		
@@ -217,11 +260,23 @@ in float minDepth, in vec2 scaleSize, in float baseLevel, ARG_SAMP_HIGHP sampler
 		samples.z = textureLod( occmap, tc, level ).x;
 		tc.x = maxExtend.x;
 		samples.w = textureLod( occmap, tc, level ).x;
+		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+			renderDocDebugStore(12, samples);
+		#endif
 		samples.xy = max( samples.xy, samples.zw );
 		samplesAll.w = max( samples.x, samples.y );
+		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+			renderDocDebugStore(14, samples);
+		#endif
 		
 		samplesAll.xy = max( samplesAll.xy, samplesAll.zw );
 		largestSample = max( samplesAll.x, samplesAll.y );
+		
+		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+			renderDocDebugStore(5, vec4(size, maxSize, level));
+			renderDocDebugStore(6, vec4(pixelShift, minDepth, largestSample));
+			renderDocDebugStore(7, vec4(minExtend, maxExtend));
+		#endif
 		
 		return minDepth <= largestSample;
 	//}
@@ -233,8 +288,15 @@ const vec2 vOffset = vec2( 0.5 );
 bool occlusionTest( in uint index ){
 	vec3 inMinExtend, inMaxExtend;
 	
+	#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		renderDocDebugStore(0, vec4(index, 0, 0, 0));
+	#endif
+	
 	#ifdef WITH_COMPUTE_RENDER_TASK
 		if( ( pElement[ index ].flags & pCullFilter ) == uint( 0 ) ){
+			#ifdef RENDER_DOC_DEBUG_OCCTEST
+				renderDocDebugStore(0, vec4(index, 1, 0, 0));
+			#endif
 			return true;
 		}
 		
@@ -268,7 +330,20 @@ bool occlusionTest( in uint index ){
 		bool resultStereo = calcScreenAABB( testMinExtendStereo, testMaxExtendStereo, pMatrixStereo, inputMinExtend, inputMaxExtend );
 		result = result | resultStereo;
 	#endif
+	#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		renderDocDebugStore(1, vec4(inputMinExtend, 0));
+		renderDocDebugStore(2, vec4(inputMaxExtend, 0));
+		renderDocDebugStore(3, vec4(testMinExtend, 0));
+		renderDocDebugStore(4, vec4(testMaxExtend, 0));
+		if(length(inputMinExtend - vec3(-7.5, -0.5, -139.25)) < 0.1
+		&& length(inputMaxExtend - vec3(32.5, 18.5, -116)) < 0.1){
+			renderDocDebugStore(16, vec4(1.0));
+		}
+	#endif
 	if( ! result ){
+		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+			renderDocDebugStore(0, vec4(index, 2, 0, 0));
+		#endif
 		return true;
 	}
 	
@@ -303,14 +378,15 @@ bool occlusionTest( in uint index ){
 		vec2 occmapMinExtend = testMinExtend.xy * vScale + vOffset;
 		vec2 occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
 		
-		result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend, testMinExtend.z, pScaleSize, pBaseLevel, texOccMap, 0 );
+		result = testBox(occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
+			testMinExtend.z, pScaleSize, pBaseTopLevel, texOccMap, 0);
 		
 		#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
 			result = result | testBox( occmapMaxDepthStereo, occmapMinExtendStereo,
-				occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize, pBaseLevel, texOccMap, 1 );
+				occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize, pBaseTopLevel2, texOccMap, 1 );
 		#endif
 		
 		if( ! result ){
@@ -324,7 +400,7 @@ bool occlusionTest( in uint index ){
 		
 		if( result ){
 			result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
-				testMinExtend.z, pScaleSize, pBaseLevel, texOccMap, 0 );
+				testMinExtend.z, pScaleSize, pBaseTopLevel, texOccMap, 0 );
 		}
 		
 		#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
@@ -334,12 +410,16 @@ bool occlusionTest( in uint index ){
 			
 			if( resultStereo ){
 				resultStereo = testBox( occmapMaxDepthStereo, occmapMinExtendStereo,
-					occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize, pBaseLevel, texOccMap, 1 );
+					occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize,
+					pBaseTopLevel, texOccMap, 1 );
 			}
 			result = result | resultStereo;
 		#endif
 		
 		if( ! result ){
+			#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+				renderDocDebugStore(0, vec4(index, 3, 0, 0));
+			#endif
 			return false;
 		}
 		
@@ -353,7 +433,7 @@ bool occlusionTest( in uint index ){
 			occmapMinExtend = testMinExtend.xy * vScale + vOffset;
 			occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
 			result = testBox( occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
-				testMinExtend.z, pScaleSize2, pBaseLevel2, texOccMap2, 0 );
+				testMinExtend.z, pScaleSize2, pBaseTopLevel2, texOccMap2, 0 );
 			if( ! result ){
 				return false;
 			}
