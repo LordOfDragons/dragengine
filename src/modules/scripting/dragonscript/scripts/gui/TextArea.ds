@@ -1134,7 +1134,7 @@ class TextArea extends TextWidget implements RangeModelListener
 	
 	/**
 	 * \brief Read only state changed.
-	 * \vesion 1.7
+	 * \version 1.7
 	 */
 // 	public func void onReadOnlyChanged()
 // 		updateCanvasText()

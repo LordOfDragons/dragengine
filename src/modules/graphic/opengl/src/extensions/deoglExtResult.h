@@ -57,6 +57,7 @@
 	#undef __gl3ext_h_
 	#undef EGL_EGLEXT_VERSION
 	#include "egl32.h"
+	#include "eglext.h"
 	#include "egl2ext.h"
 	#include "androidfix.h"
 	#define GLAPI GL_API

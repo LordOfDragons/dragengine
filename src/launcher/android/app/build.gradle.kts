@@ -39,18 +39,18 @@ android {
         }
     }
 
-    flavorDimensions.add("architecture")
+    flavorDimensions += "architecture"
 
     productFlavors {
         create("armv8") {
             dimension = "architecture"
             versionNameSuffix = "-armv8"
             ndk {
-                abiFilters.add("arm64-v8a")
+                abiFilters += "arm64-v8a"
             }
             externalNativeBuild {
                 cmake {
-                    arguments.add("-DANDROID_FLAVOR=armv8")
+                    arguments += "-DANDROID_FLAVOR=armv8"
                 }
             }
         }
@@ -58,11 +58,23 @@ android {
             dimension = "architecture"
             versionNameSuffix = "-armv7"
             ndk {
-                abiFilters.add("armeabi-v7a")
+                abiFilters += "armeabi-v7a"
             }
             externalNativeBuild {
                 cmake {
-                    arguments.add("-DANDROID_FLAVOR=armv7")
+                    arguments += "-DANDROID_FLAVOR=armv7"
+                }
+            }
+        }
+        create("quest") {
+            dimension = "architecture"
+            versionNameSuffix = "-quest"
+            ndk {
+                abiFilters += "arm64-v8a"
+            }
+            externalNativeBuild {
+                cmake {
+                    arguments += "-DANDROID_FLAVOR=armv8"
                 }
             }
         }
@@ -76,8 +88,8 @@ android {
     }
 
     androidResources {
-        noCompress.add(".delga")
-        noCompress.add(".zip")
+        noCompress += ".delga"
+        noCompress += ".zip"
     }
 
     buildFeatures {

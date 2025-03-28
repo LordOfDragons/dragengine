@@ -29,7 +29,7 @@ pin Dragengine.Gui
 
 /**
  * \brief Debug BehaviorVRHandPose.
- * \versoin 1.23
+ * \version 1.23
  * 
  * To use create an instance of DebugBehaviorVRHandPose with the behavior to monitor
  * then call \ref BehaviorElement#addAttachableBehavior().

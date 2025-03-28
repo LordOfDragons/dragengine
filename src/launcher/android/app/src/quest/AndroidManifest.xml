@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="auto" >
+
+    <uses-sdk
+        android:minSdkVersion="29"
+        android:targetSdkVersion="32" />
+
+    <uses-feature
+        android:name="android.hardware.vr.headtracking"
+        android:required="true"
+        android:version="1" />
+
+    <application
+        android:theme="@style/Theme.DELauncher.NoActionBar"
+        tools:replace="android:theme">
+
+        <meta-data
+            android:name="com.oculus.supportedDevices"
+            android:value="quest2|questpro|quest3|quest3s"/>
+
+        <activity
+            android:name=".RemoteLauncherActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:theme="@style/Theme.DELauncher.NoActionBar"
+            tools:replace="android:theme, android:configChanges"
+            android:launchMode="singleTask"
+            android:resizeableActivity="false"
+            android:excludeFromRecents="true" />
+
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:theme="@style/Theme.DELauncher.NoActionBar"
+            tools:replace="android:theme, android:configChanges"
+            android:launchMode="singleTask"
+            android:resizeableActivity="false"
+            android:excludeFromRecents="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <!-- <category android:name="com.oculus.intent.category.VR" /> -->
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".RunDelgaActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:theme="@style/Theme.DELauncher.NoActionBar"
+            tools:replace="android:theme, android:configChanges"
+            android:launchMode="singleTask"
+            android:resizeableActivity="false"
+            android:excludeFromRecents="true" >
+        </activity>
+    </application>
+
+</manifest>

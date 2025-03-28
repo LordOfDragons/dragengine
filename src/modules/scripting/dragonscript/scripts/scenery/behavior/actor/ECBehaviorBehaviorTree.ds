@@ -280,7 +280,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	
 	/**
 	 * \brief Behavior factory.
-	 * \ref 1.25
+	 * \version 1.25
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}

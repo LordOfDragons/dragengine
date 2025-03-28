@@ -12,14 +12,16 @@ def androidUpdateEnv( env ):
 		host = 'arm-linux'
 		fullarch = 'armeabi-v7a'
 		jnidir = 'armeabi-v7a'
+		archid = 'armv7'
 		
-	elif env['platform_android'] == 'armv8':
+	elif env['platform_android'] in ['armv8', 'quest']:
 		compiler = 'aarch64-linux-android{}'.format(env['apilevel'])
 		compiler2 = 'aarch64-linux-android'
 		arch = 'aarch'
 		host = 'aarch64-linux'
 		fullarch = 'arm64-v8a'
 		jnidir = 'arm64-v8a'
+		archid = 'armv8'
 
 	elif env['platform_android'] == 'x86':
 		compiler = 'i686-linux-androideabi{}'.format(env['apilevel'])
@@ -28,6 +30,7 @@ def androidUpdateEnv( env ):
 		host = 'i686-linux'
 		fullarch = 'x86'
 		jnidir = 'x86'
+		archid = 'x86'
 		
 	else:
 		raise SCons.Errors.UserError('Invalid android platform %s'.format(env['platform_android']))
@@ -66,6 +69,7 @@ def androidUpdateEnv( env ):
 	env['ANDROID_HOST'] = host
 	env['ANDROID_JNIDIR'] = jnidir
 	env['ANDROID_ARCH'] = arch
+	env['ANDROID_ARCH_ID'] = archid
 	env['ANDROID_ABI'] = fullarch
 	env['ANDROID_APILEVEL'] = env['apilevel']
 	env['ANDROID_HARDFP'] = env['platform_android'] == 'armv7' and env['hardfp']

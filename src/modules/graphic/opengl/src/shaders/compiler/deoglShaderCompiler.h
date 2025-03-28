@@ -96,6 +96,8 @@ private:
 	
 	deMutex pMutexCompile, pMutexLogging;
 	
+	decString pLogShaderCompute, pLogShaderTessellationControl, pLogShaderTessellationEvaluation;
+	decString pLogShaderVertex, pLogShaderGeometry, pLogShaderFragment;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -134,6 +136,8 @@ private:
 	
 	void pOutputShaderToFile( const char *file );
 	void pLogFailedShaderSources();
+	void pLogFailedSymbols();
+	void pLogFailedShader();
 };
 
 #endif

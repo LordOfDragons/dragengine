@@ -125,7 +125,7 @@ pin Dragengine.Utils
 class ECBehaviorActorIK extends DefaultECBehavior
 	/**
 	 * \brief Behavior factory.
-	 * \ref 1.25
+	 * \version 1.25
 	 * 
 	 * Automatically assigns these behaviors if present before adding:
 	 * - Required: \ref ECBehaviorActorAnimated
@@ -652,7 +652,7 @@ class ECBehaviorActorIK extends DefaultECBehavior
 		
 		/**
 		 * \brief Clear limit orientation.
-		 * \verrsion 1.21
+		 * \version 1.21
 		 */
 		func void clearLimitIKRotation()
 			pLimitIKRotationMin = null

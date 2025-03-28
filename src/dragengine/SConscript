@@ -130,6 +130,8 @@ def buildWriteConfig(source, target, env):
 	configFileDefines['OS_BEOS'] = env['OSBeOS']
 	configFileDefines['OS_MACOS'] = env['OSMacOS']
 	configFileDefines['OS_ANDROID'] = env['platform_android'] != 'no'
+	if env['platform_android'] == 'quest':
+		configFileDefines['OS_ANDROID_QUEST'] = True
 	if env['OSPosix'] or env['OSMacOS']:
 		configFileDefines['HAS_LIB_X11'] = hasX11
 		configFileDefines['HAS_LIB_PTHREAD'] = hasPThreads
@@ -160,8 +162,14 @@ if envDragengine['OSWindows']:
 		cmdlineDefinePath(envDragengine, 'DE_ENGINE_BASE_PATH', pathEngineBase)])
 
 if envDragengine['platform_android'] != 'no':
+	archMap = {
+		'armv7': 'armv7',
+		'armv8': 'armv8',
+		'x86': 'x860',
+		'quest': 'armv8'}
+	
 	envDragengine.Append(CXXFLAGS = [
-		cmdlineDefinePath(envDragengine, 'ANDROID_ARCH', envDragengine['platform_android']),
+		cmdlineDefinePath(envDragengine, 'ANDROID_ARCH', archMap[envDragengine['platform_android']]),
 		cmdlineDefinePath(envDragengine, 'ANDROID_JNIDIR', envDragengine['ANDROID_JNIDIR'])])
 
 if 'mingw' in envDragengine['TOOLS']:

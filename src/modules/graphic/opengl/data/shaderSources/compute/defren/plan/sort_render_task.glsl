@@ -249,8 +249,8 @@ void main( void ){
 	uint t = gl_LocalInvocationID.x;
 	uint offset = pLaneSize * gl_WorkGroupID.x;
 	uint limit = cMaxLaneSize;
-	bvec2 valid;
-	uvec4 i;
+	bvec2 valid = bvec2(false);
+	uvec4 i = uvec4(0);
 	
 	// cooperative copying steps from ssbo into shared memory
 	if( pStage <= esLocalDisperse ){

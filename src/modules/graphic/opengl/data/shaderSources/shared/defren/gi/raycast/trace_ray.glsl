@@ -316,6 +316,7 @@ in float distanceLimit, out GIRayCastResult result ){
 	int curNode = rootNode;
 	
 	result.distance = distanceLimit;
+	result.barycentric = vec3(0); // silence overzealous compiler warnings
 	bool hasHit = false;
 	
 	// shaders run in wavefronts. each wavefront contains a group of threads. all these

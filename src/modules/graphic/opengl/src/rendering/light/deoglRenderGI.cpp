@@ -473,6 +473,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		deoglDebugTraceGroup debugTraceCachStore( debugTraceCacheTrace, "GI.TraceRays.TraceRays.CacheStore" );
 		pPipelineCopyRayCache->Activate();
 		pActivateGIUBOs();
+		ClearRenderDocDebugTexture();
 		
 		tsmgr.EnableTexture( 0, traceRays.GetTexturePosition(), GetSamplerClampNearest() );
 		tsmgr.EnableTexture( 1, traceRays.GetTextureNormal(), GetSamplerClampNearest() );
@@ -486,7 +487,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		ismgr.Enable( 2, rayCache.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 3, rayCache.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 4, rayCache.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
-		ClearRenderDocDebugTexture();
 		ismgr.EnableRenderDocDebug(5, deoglRTChoices::RenderDocDebugFlagGI);
 		
 		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
@@ -526,6 +526,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		deoglDebugTraceGroup debugTrace3( renderThread, "GI.TraceRays.RestoreCache" );
 		pPipelineInitFromRayCache->Activate();
 		pActivateGIUBOs();
+		ClearRenderDocDebugTexture();
 		
 		deoglGIRayCache &rayCache = giState->GetRayCache();
 		tsmgr.EnableArrayTexture( 0, rayCache.GetTextureDistance(), GetSamplerClampNearest() );
@@ -540,7 +541,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 		ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
 		ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
-		ClearRenderDocDebugTexture();
 		ismgr.EnableRenderDocDebug(5, deoglRTChoices::RenderDocDebugFlagGI);
 		
 		OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
@@ -553,6 +553,7 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	
 	pPipelineTraceRays->Activate();
 	pActivateGIUBOs();
+	ClearRenderDocDebugTexture();
 	pInitTraceTextures( bvh );
 	
 	#ifdef GI_USE_RAY_CACHE
@@ -564,7 +565,6 @@ void deoglRenderGI::TraceRays( deoglRenderPlan &plan ){
 	ismgr.Enable( 2, traceRays.GetTextureDiffuse(), 0, deoglImageStageManager::eaWrite );
 	ismgr.Enable( 3, traceRays.GetTextureReflectivity(), 0, deoglImageStageManager::eaWrite );
 	ismgr.Enable( 4, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaWrite );
-	ClearRenderDocDebugTexture();
 	ismgr.EnableRenderDocDebug(5, deoglRTChoices::RenderDocDebugFlagGI);
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( size.x / 64, size.y, 1 ) );
@@ -849,12 +849,12 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	// update irradiance probes. required 1 quadrant to be processed
 	pPipelineUpdateProbeIrradiance->Activate();
 	
+	ClearRenderDocDebugTexture();
 	ismgr.DisableAllStages();
 	ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaRead );
 	ismgr.Enable( 1, traceRays.GetTextureNormal(), 0, deoglImageStageManager::eaRead );
 	ismgr.Enable( 2, traceRays.GetTextureLight(), 0, deoglImageStageManager::eaRead );
 	ismgr.Enable( 3, giState->GetTextureProbeIrradiance(), 0, deoglImageStageManager::eaReadWrite );
-	ClearRenderDocDebugTexture();
 	ismgr.EnableRenderDocDebug(4, deoglRTChoices::RenderDocDebugFlagGI);
 	
 	pActivateGIUBOs();
@@ -864,8 +864,11 @@ void deoglRenderGI::UpdateProbes( deoglRenderPlan &plan ){
 	// update distance probes. requires 4 quadrants to be processed
 	pPipelineUpdateProbeDistance->Activate();
 	
+	if((pRenderThread.GetChoices().GetRenderDocDebugFlags() & deoglRTChoices::RenderDocDebugFlagGI) != 0){
+		ClearRenderDocDebugTexture();
+		ismgr.Enable( 0, traceRays.GetTexturePosition(), 0, deoglImageStageManager::eaRead );
+	}
 	ismgr.Enable( 3, giState->GetTextureProbeDistance(), 0, deoglImageStageManager::eaReadWrite );
-	ClearRenderDocDebugTexture();
 	
 	pActivateGIUBOs();
 	

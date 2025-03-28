@@ -50,7 +50,7 @@ pin Dragengine.TriggerSystem
 class ECBehaviorDayTimeSky extends DefaultECBehavior
 	/**
 	 * \brief Behavior factory.
-	 * \ref 1.25
+	 * \version 1.25
 	 * 
 	 * Automatically assigns these behaviors if present before adding:
 	 * - Required: \ref ECBehaviorSky

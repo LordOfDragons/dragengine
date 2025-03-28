@@ -281,6 +281,10 @@ int deoglShaderPreprocessor::GetSymbolCount() const{
 	return pSymbolTable.GetCount();
 }
 
+decStringList deoglShaderPreprocessor::GetSymbolNames() const{
+	return pSymbolTable.GetKeys();
+}
+
 bool deoglShaderPreprocessor::HasSymbolNamed( const char *name ) const{
 	return pSymbolTable.Has( name );
 }

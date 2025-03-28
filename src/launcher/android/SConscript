@@ -126,6 +126,8 @@ def gradleBuildApk(env, target, source):
 		task.append('Armv8')
 	elif platform == 'armv7':
 		task.append('Armv7')
+	elif platform == 'quest':
+		task.append('Quest')
 	else:
 		raise Exception('unsupported platform {}'.format(platform))
 	
@@ -175,6 +177,8 @@ def gradleBuildAab(env, target, source):
 		task.append('Armv8')
 	elif platform == 'armv7':
 		task.append('Armv7')
+	elif platform == 'quest':
+		task.append('Quest')
 	else:
 		raise Exception('unsupported platform {}'.format(platform))
 	

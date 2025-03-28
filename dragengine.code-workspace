@@ -217,6 +217,7 @@
 		],
 		"C_Cpp.default.defines": [
 			"MOD_ENTRY_POINT_ATTR"
-		]
+		],
+		"git.ignoreLimitWarning": true
 	}
 }

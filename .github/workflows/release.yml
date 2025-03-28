@@ -77,6 +77,7 @@ jobs:
       branch: ${{ github.event.inputs.branch }}
       releaseVersion: ${{ github.event.inputs.version }}
       buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-linux-ci
       artifactInstaller: installers-linux-ci
   
   build_android_armv8:
@@ -253,15 +254,21 @@ jobs:
             - install-deigde-dev-${{ github.event.inputs.version }}-windows64.exe
             - deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
             
+            For Distro maintainers (debug symbols):
+            - dragengine-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2
+            - deigde-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2
+            
             Example projects to learn developing with the Drag[en]gine Game Engine can be found on the Wiki (https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:exampleprojects) and in the DEExamples repository (https://github.com/LordOfDragons/deexamples).
           artifacts: >
             install-dragengine-${{ github.event.inputs.version }}-linux64.sh,
             install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh,
             dragengine-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            dragengine-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2,
             dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2,
             install-deigde-${{ github.event.inputs.version }}-linux64.sh,
             install-deigde-dev-${{ github.event.inputs.version }}-linux64.sh,
             deigde-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            deigde-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2,
             deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2,
             install-dragengine-${{ github.event.inputs.version }}-windows64.exe,
             install-dragengine-sdk-${{ github.event.inputs.version }}-windows64.exe,

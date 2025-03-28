@@ -1110,6 +1110,8 @@ void deoglRTContext::pInitDisplay(){
 		return;
 	}
 	
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
 	DEASSERT_NOTNULL(pOSAndroid->GetNativeWindow())
 	
 	// initialize display
@@ -1157,17 +1159,22 @@ void deoglRTContext::pInitDisplay(){
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
 	
 	if( pContext == EGL_NO_CONTEXT ){
-		const bool debugContext = pRenderThread.GetConfiguration().GetDebugContext();
-		if(debugContext){
-			//pRenderThread.GetLogger().LogInfo("Enable debug context");
+		//EGLint contextFlags = 0;
+		EGLint valUseDebugContext = EGL_FALSE;
+		if( pRenderThread.GetConfiguration().GetDebugContext() ){
+			logger.LogInfo( "Enable debug context" );
+			//contextFlags |= EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR;
+			valUseDebugContext = EGL_TRUE;
 		}
 		
-		const EGLint eglAttribList[] = {
-			EGL_CONTEXT_CLIENT_VERSION, 3, // 2,
-			// android does not support EGL_CONTEXT_OPENGL_DEBUG although the spec requires it!
-			//EGL_CONTEXT_OPENGL_DEBUG, debugContext ? EGL_TRUE : EGL_FALSE,
-			EGL_NONE
-		};
+		EGLint eglAttribList[] = {
+			EGL_CONTEXT_MAJOR_VERSION, 3,
+			EGL_CONTEXT_MINOR_VERSION, 0,
+			//EGL_CONTEXT_OPENGL_PROFILE_MASK, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT,
+			// ^== fails on meta quest
+			EGL_CONTEXT_OPENGL_DEBUG, valUseDebugContext,
+			EGL_NONE, EGL_NONE,
+			EGL_NONE };
 		
 		pContext = eglCreateContext(pDisplay, pConfig, nullptr, eglAttribList);
 		DEASSERT_FALSE(pContext == EGL_NO_CONTEXT)
