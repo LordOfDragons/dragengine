@@ -38,30 +38,30 @@ pin Dragengine.XML
  * Example file:
  * 
  * \code{.xml}
- * &lt;?xml version='1.0' encoding='ISO-8859-1'?&gt;
- * &lt;parameterTree&gt;
- *   &lt;string path='ui/mainMenu/bgImage'&gt;/content/mainMenuBG.png&lt;/string&gt;
- *   &lt;list path='ui/mainMenu/borderColors'&gt;
- *     &lt;color r='1' g='0' b='0'/&gt;
- *     &lt;color r='0' g='1' b='1'/&gt;
- *   &lt;/list&gt;
- * &lt;/parameterTree&gt;
+ * <?xml version='1.0' encoding='ISO-8859-1'?>
+ * <parameterTree>
+ *   <string path='ui/mainMenu/bgImage'>/content/mainMenuBG.png</string>
+ *   <list path='ui/mainMenu/borderColors'>
+ *     <color r='1' g='0' b='0'/>
+ *     <color r='0' g='1' b='1'/>
+ *   </list>
+ * </parameterTree>
  * \endcode
  * 
  * Supported are these tags:
- * - &lt;string&gt;&lt;/string&gt;: UTF8 encoded string value
- * - &lt;float&gt;&lt;/float&gt;: Floating point value
- * - &lt;int&gt;&lt;/int&gt;: Integer value
- * - &lt;bool&gt;&lt;/bool&gt;: Boolean value ("true", "false")
- * - &lt;point x='' y=''/&gt;: 2-Component point (integer)
- * - &lt;point3 x='' y='' z=''/&gt;: 3-Component point (integer)
- * - &lt;vector2 x='' y=''/&gt;: 2-Component vector (float)
- * - &lt;vector x='' y='' z=''/&gt;: 3-Component vector (float)
- * - &lt;borderSize left='' top='' right='' bottom=''/&gt;: BorderSize (int)
- * - &lt;rectArea x1='' y1='' x2='' y2=''/&gt;: RectArea (int)
- * - &lt;floatRectArea x1='' y1='' x2='' y2=''/&gt;: FloatRectArea (float)
- * - &lt;list&gt;&lt;/list&gt;: List of values (anything except &lt;list&gt;)
- * - &lt;null/&gt;: null value
+ * - <string></string>: UTF8 encoded string value
+ * - <float></float>: Floating point value
+ * - <int></int>: Integer value
+ * - <bool></bool>: Boolean value ("true", "false")
+ * - <point x='' y=''/>: 2-Component point (integer)
+ * - <point3 x='' y='' z=''/>: 3-Component point (integer)
+ * - <vector2 x='' y=''/>: 2-Component vector (float)
+ * - <vector x='' y='' z=''/>: 3-Component vector (float)
+ * - <borderSize left='' top='' right='' bottom=''/>: BorderSize (int)
+ * - <rectArea x1='' y1='' x2='' y2=''/>: RectArea (int)
+ * - <floatRectArea x1='' y1='' x2='' y2=''/>: FloatRectArea (float)
+ * - <list></list>: List of values (anything except <list>)
+ * - <null/>: null value
  */
 class LoadParameterTree extends BaseXmlLoader
 	/** \brief Create loader. */

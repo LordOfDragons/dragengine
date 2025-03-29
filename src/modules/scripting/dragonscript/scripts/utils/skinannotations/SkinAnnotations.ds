@@ -34,7 +34,7 @@ pin Dragengine.Gui
  * \brief List of annotations for Skin resources.
  * 
  * Skin resources store texture properties for engine modules to know how to use the skin
- * according to the designer wishes. They though do not contain game sepcific information.
+ * according to the designer wishes. They though do not contain game specific information.
  * While it is possible to assign skin related properties to element classes directly it
  * works only as long as the skins used for the element class are well known. Many world
  * geometry like buildings, rooms or exterior places have skins assigned by the mapper.
@@ -42,7 +42,7 @@ pin Dragengine.Gui
  * the place. In this situation the SkinAnnotations class helps storing game related
  * properties which are linked to Skin resources themselves.
  * 
- * Skin annotations are organized hierarchically by path. See BestMatchTreeList for an
+ * Skin annotations are organized hierarchically by path. See \ref BestMatchTreeList for an
  * explanation of how this process works. What goes for this class annotations for skins
  * can be attached to directories affecting all skin files underneath, individual skin files
  * and also individual textures inside skin files. Annotations can be either retrieved in
@@ -56,11 +56,12 @@ pin Dragengine.Gui
  * - "directory/material.deskin/texture": Applies to only a specific texture inside the skin
  * 
  * Annotations are stored in "*.deskinann" (Drag[en]gine Skin Annotations) and can be loaded
- * using LoadSkinAnnotations. This class provides concenience methods for loading annotations.
+ * using \ref LoadSave.LoadSkinAnnotations. This class provides convenience methods for
+ * loading annotations.
  * 
  * Annotations for skins are stored as dictionary each containing one annotation keyed by name.
- * The value can be any type you want similar ParameterTree class. See LoadSkinAnnotations
- * for the supported tags that you can use in the XML files.
+ * The value can be any type you want similar \ref ParameterTree class. See
+ * \ref LoadSave.LoadSkinAnnotations for the supported tags that you can use in the XML files.
  */
 class SkinAnnotations
 	private var BestMatchTreeList pAnnotations
