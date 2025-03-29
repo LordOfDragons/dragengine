@@ -38,29 +38,29 @@ pin Dragengine.XML
  * Example file:
  * 
  * \code{.xml}
- * &lt;?xml version='1.0' encoding='ISO-8859-1'?&gt;
- * &lt;skinAnnotations&gt;
- *   &lt;string path='materials/asphalt' key='footstep'&gt;asphalt&lt;/string&gt;
- *   &lt;string path='materials/asphalt/wet.deskin' key='footstep'&gt;asphalt-wet&lt;/string&gt;
- *   &lt;float path='models/player/player.deskin/body' key='armor'&gt;0.8&lt;/float&gt;
- * &lt;/skinAnnotations&gt;
+ * <?xml version='1.0' encoding='ISO-8859-1'?>
+ * <skinAnnotations>
+ *   <string path='materials/asphalt' key='footstep'>asphalt</string>
+ *   <string path='materials/asphalt/wet.deskin' key='footstep'>asphalt-wet</string>
+ *   <float path='models/player/player.deskin/body' key='armor'>0.8</float>
+ * </skinAnnotations>
  * \endcode
  * 
  * Supported are these tags:
- * - &lt;string&gt;&lt;/string&gt;: UTF8 encoded string value
- * - &lt;float&gt;&lt;/float&gt;: Floating point value
- * - &lt;integer&gt;&lt;/int&gt;: Integer value
- * - &lt;bool&gt;&lt;/bool&gt;: Boolean value ("true", "false")
- * - &lt;point x='' y=''/&gt;: 2-Component point (integer)
- * - &lt;point3 x='' y='' z=''/&gt;: 3-Component point (integer)
- * - &lt;vector2 x='' y=''/&gt;: 2-Component vector (float)
- * - &lt;vector x='' y='' z=''/&gt;: 3-Component vector (float)
- * - &lt;borderSize left='' top='' right='' bottom=''/&gt;: BorderSize (int)
- * - &lt;rectArea x1='' y1='' x2='' y2=''/&gt;: RectArea (int)
- * - &lt;floatRectArea x1='' y1='' x2='' y2=''/&gt;: FloatRectArea (float)
- * - &lt;list&gt;&lt;/list&gt;: List of values
- * - &lt;map&gt;&lt;/map&gt;: Dictionary of key/value pairs
- * - &lt;null/&gt;: null value
+ * - <string></string>: UTF8 encoded string value
+ * - <float></float>: Floating point value
+ * - <integer></int>: Integer value
+ * - <bool></bool>: Boolean value ("true", "false")
+ * - <point x='' y=''/>: 2-Component point (integer)
+ * - <point3 x='' y='' z=''/>: 3-Component point (integer)
+ * - <vector2 x='' y=''/>: 2-Component vector (float)
+ * - <vector x='' y='' z=''/>: 3-Component vector (float)
+ * - <borderSize left='' top='' right='' bottom=''/>: BorderSize (int)
+ * - <rectArea x1='' y1='' x2='' y2=''/>: RectArea (int)
+ * - <floatRectArea x1='' y1='' x2='' y2=''/>: FloatRectArea (float)
+ * - <list></list>: List of values
+ * - <map></map>: Dictionary of key/value pairs
+ * - <null/>: null value
  */
 class LoadSkinAnnotations extends BaseXmlLoader
 	/** \brief Create loader. */

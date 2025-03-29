@@ -55,13 +55,19 @@ class ParameterTree
 	/**
 	 * \brief Create copy of parameter tree.
 	 * 
-	 * Arrays are duplicated but no value inside since all values stored in the parameter
-	 * tree are considered immutable.
+	 * Arrays and dictionaries are duplicated but no value inside since all values stored in the
+	 * parameter tree are considered immutable. Parameter trees are duplicated.
 	 */
 	func new(ParameterTree tree)
 		pParameters = tree.pParameters.map(block String key, Object value
 			if value castable Array
 				return Array.new(value cast Array)
+				
+			elif value castable Dictionary
+				return Dictionary.new(value cast Dictionary)
+				
+			elif value castable ParameterTree
+				return new(value cast ParameterTree)
 				
 			else
 				return value
@@ -98,7 +104,7 @@ class ParameterTree
 		var String key
 		var int index
 		
-		pParameters.getKeys().forEach(block String each
+		pParameters.forEachKey(block String each
 			if each.startsWith(path)
 				index = each.find(separator, len)
 				if index != -1
@@ -207,12 +213,41 @@ class ParameterTree
 		return pParameters.getAt(path, default) cast Array
 	end
 	
+	/**
+	 * \brief Dictionary value of parameter or default value if absent.
+	 * \version 1.26
+	 */
+	func Dictionary getDictionaryAt(String path, Dictionary default)
+		return pParameters.getAt(path, default) cast Dictionary
+	end
+	
 	/** \brief Tree value of parameter or default value if absent. */
 	func ParameterTree getTreeAt(String path, ParameterTree default)
 		return pParameters.getAt(path, default) cast ParameterTree
 	end
 	
-	/** \brief Set value of parameter. */
+	/**
+	 * \brief Set value of parameter.
+	 * 
+	 * If the parameter tree is not saved all kind of objects can be stored in the parameter tree.
+	 * 
+	 * If the parameter tree is supposed to be saved it can only contain values of these types:
+	 * - \ref String
+	 * - \ref float
+	 * - \ref int
+	 * - \ref bool
+	 * - \ref Point
+	 * - \ref Point3
+	 * - \ref Vector2
+	 * - \ref Vector
+	 * - \ref Color
+	 * - \ref BorderSize
+	 * - \ref RectArea
+	 * - \ref FloatRectArea
+	 * - \ref Array containing only values from this list
+	 * - \ref Dictionary with \ref String key and containing only values from this list
+	 * - \ref ParameterTree containing only values from this list
+	 */
 	func void setAt(String path, Object value)
 		pParameters.setAt(path, value)
 	end
