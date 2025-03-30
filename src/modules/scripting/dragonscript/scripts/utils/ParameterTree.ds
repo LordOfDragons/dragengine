@@ -204,7 +204,7 @@ class ParameterTree
 	end
 	
 	/** \brief FloatRectArea value of parameter or default value if absent. */
-	func FloatRectArea getAt(String path, FloatRectArea default)
+	func FloatRectArea getFloatRectAreaAt(String path, FloatRectArea default)
 		return pParameters.getAt(path, default) cast FloatRectArea
 	end
 	
