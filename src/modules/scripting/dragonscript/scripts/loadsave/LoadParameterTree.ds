@@ -71,6 +71,10 @@ pin Dragengine.XML
  * - <null/>: null value
  * 
  * Inside <map> tag values required the attribute "key='name'".
+ * 
+ * Tags <list>, <map> and <tree> support adding attribute "append='true'". If used the content
+ * is added to an existing list, dictionary or tree. If not existing behaves the sames as not
+ * adding attribute "append='true'".
  */
 class LoadParameterTree extends BaseXmlLoader
 	/** \brief Create loader. */
@@ -129,13 +133,16 @@ class LoadParameterTree extends BaseXmlLoader
 	
 	/** \brief Parse parameter tree tag. */
 	protected func void readParameterTree(EasyXMLElement root, ParameterTree tree, String basePath)
-		var String pathPrefix = ""
+		var String path, pathPrefix = ""
 		if root.hasAttributeNamed("pathPrefix")
 			pathPrefix = root.getAttributeNamed("pathPrefix")
 		end
 		
+		var Object append
 		root.forEachTag(block EasyXMLElement element, String tagName
-			tree.setAt(pathPrefix + element.getAttributeNamed("path"), readValue(element, basePath))
+			path = pathPrefix + element.getAttributeNamed("path")
+			append = element.hasAttributeNamed("append") if tree.getAt(path, null) else null
+			tree.setAt(path, readValue(element, basePath, append))
 		end)
 	end
 	
@@ -143,7 +150,7 @@ class LoadParameterTree extends BaseXmlLoader
 	 * \brief Parse value.
 	 * \version 1.26
 	 */
-	protected func Object readValue(EasyXMLElement element, String basePath)
+	protected func Object readValue(EasyXMLElement element, String basePath, Object append)
 		var String tagName = element.getTagName()
 		
 		if tagName.equals("string")
@@ -186,18 +193,24 @@ class LoadParameterTree extends BaseXmlLoader
 			return null
 			
 		elif tagName.equals("list")
-			return readList(element, basePath)
+			var Array list = append != null if append cast Array else Array.new()
+			readList(element, basePath, list)
+			return list
 			
 		elif tagName.equals("map")
-			return readMap(element, basePath)
+			var Dictionary map = append != null if append cast Dictionary else Dictionary.new()
+			readMap(element, basePath, map)
+			return map
 			
 		elif tagName.equals("tree")
-			var ParameterTree tree = ParameterTree.new()
+			var ParameterTree tree = append != null if append cast ParameterTree else ParameterTree.new()
 			readParameterTree(element, tree, basePath)
 			return tree
 			
 		elif tagName.equals("treeFile")
-			return loadFromFile(File.absolutePath(element.getCDataContent(), basePath).getPath())
+			var ParameterTree tree = append != null if append cast ParameterTree else ParameterTree.new()
+			loadFromFile(File.absolutePath(element.getCDataContent(), basePath).getPath(), tree)
+			return tree
 			
 		else
 			logUnknownTag(element)
@@ -208,26 +221,32 @@ class LoadParameterTree extends BaseXmlLoader
 	/** \brief Parse list tag. */
 	protected func Array readList(EasyXMLElement root, String basePath)
 		var Array list = Array.new()
-		
-		root.forEachTag(block EasyXMLElement element, String tagName
-			list.add(readValue(element, basePath))
-		end)
-		
+		readList(root, basePath, list)
 		return list
+	end
+	
+	/**
+	 * \brief Parse list tag.
+	 * \version 1.26
+	 */
+	protected func void readList(EasyXMLElement root, String basePath, Array list)
+		root.forEachTag(block EasyXMLElement element, String tagName
+			list.add(readValue(element, basePath, null))
+		end)
 	end
 	
 	/**
 	 * \brief Parse map tag.
 	 * \version 1.26
 	 */
-	protected func Dictionary readMap(EasyXMLElement root, String basePath)
-		var Dictionary map = Dictionary.new()
-		
+	protected func void readMap(EasyXMLElement root, String basePath, Dictionary map)
+		var String key
+		var Object append
 		root.forEachTag(block EasyXMLElement element, String tagName
-			map.setAt(element.getAttributeNamed("key"), readValue(element, basePath))
+			key = element.getAttributeNamed("key")
+			append = element.hasAttributeNamed("append") if map.getAt(key, null) else null
+			map.setAt(key, readValue(element, basePath, append))
 		end)
-		
-		return map
 	end
 	
 	
