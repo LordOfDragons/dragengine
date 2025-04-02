@@ -13,6 +13,9 @@ platform_android = '{AndroidArch}'
 apilevel = '{AndroidApiLevel}'
 hardfp = True
 
+# github breaking build system fix
+with_cmake_flags = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
+
 # external library configuration
 ##################################
 with_system_zlib = 'no'

@@ -80,6 +80,9 @@ def modioBuild(target, source, env):
 	cmdline.append('-S "{}"'.format(cmakeSourceDir))
 	cmdline.append('-B "{}"'.format(cmakeBuildDir))
 	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
+	
 	if env['platform_android'] != 'no':
 		cmdline.append('-DMODIO_PLATFORM="ANDROID"')
 		cmdline.append('-DCMAKE_ANDROID_NDK="{}"'.format(env['ANDROID_NDKROOT']))

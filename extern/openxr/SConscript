@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-openxrVersion = '1.1.41'
+openxrVersion = '1.1.46'
 
 srcdir = 'OpenXR-SDK-release-{}'.format(openxrVersion)
 
@@ -84,6 +84,9 @@ def openxrBuild(target, source, env):
 	# is written to 'lib' directory, on others to 'lib64'. this makes it impossible to write an SConscript
 	# that properly tracks this library. using --libdir we force the 'lib' directory name and all is fine
 	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
 	
 	if env['OSWindows'] and not env['CROSSCOMPILE_CLANG']:
 		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')

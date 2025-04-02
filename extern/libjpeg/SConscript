@@ -89,6 +89,8 @@ def jpegBuild(target, source, env):
 	cmdline = []
 	cmdline.append('cmake')
 	cmdline.append('-G"Unix Makefiles"')
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
 	cmdline.append('-DENABLE_SHARED=Off')
 	cmdline.append('-DENABLE_STATIC=On')
 	cmdline.append('-DWITH_TURBOJPEG=Off')

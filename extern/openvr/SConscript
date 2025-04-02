@@ -75,8 +75,9 @@ def openvrBuild(target, source, env):
 	
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
-	# github build fix
-	cmdline.append('-DCMAKE_POLICY_VERSION_MINIMUM=3.5')
+	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
 	
 	if env['OSWindows'] and not env['CROSSCOMPILE_CLANG']:
 		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')

@@ -8,6 +8,9 @@ with_verbose = 'no'
 with_threads = '14'
 version = '{BuildVersion}'
 
+# github breaking build system fix
+with_cmake_flags = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
+
 # external library configuration
 ##################################
 with_system_zlib = 'no'

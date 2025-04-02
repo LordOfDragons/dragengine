@@ -166,6 +166,7 @@ params.Add(BoolVariable('with_ci', 'Build CI', False))
 params.Add(StringVariable('version', 'Version', '9999'))
 params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
 params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))
+params.Add(StringVariable('with_cmake_flags', 'Additional flags for external CMake builds', ''))
 
 params.Add(StringVariable('url_extern_artifacts',
 	'Base URL to download external artifacts from if missing',
@@ -554,6 +555,9 @@ else:
 
 params.Update(parent_env)
 #print(parent_env.Dump())
+
+# external flags
+parent_env.Replace(EXTERN_CMAKE_FLAGS = shlex.split(parent_env['with_cmake_flags']))
 
 # determine sanitize flags to use
 parent_env.Replace(SANITIZE_FLAGS = [])

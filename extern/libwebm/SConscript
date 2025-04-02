@@ -73,6 +73,9 @@ def libwebmBuild(target, source, env):
 	# that properly tracks this library. using --libdir we force the 'lib' directory name and all is fine
 	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
 	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
+	
 	if env['with_debug']:
 		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
 	else:
