@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'libjpeg-turbo-2.0.3'
+srcdir = 'libjpeg-turbo-3.1.0'
 
 libLinkVersion = '62'
 libLinkName = 'jpeg'
