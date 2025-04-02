@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-openvrVersion = '1.16.8'
+openvrVersion = '2.5.1'
 
 srcdir = 'openvr-{}'.format(openvrVersion)
 
@@ -62,16 +62,19 @@ if hasSystemOpenVR:
 	Return()
 
 # build openvr
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'openvr', 'lib_openvr_fetch')
+
 def openvrBuild(target, source, env):
 	buildDir = target[0].get_dir().up()
 	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
 	script = createScriptHeader(env)
 	
-	script.append('cd "{}" || exit 1'.format(buildDir.abspath))
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
-	cmdline.append('-DCMAKE_POLICY_VERSION_MINIMUM=3.5')
 	
 	if env['OSWindows'] and not env['CROSSCOMPILE_CLANG']:
 		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')
@@ -108,12 +111,12 @@ if buildStaticLinking:
 else:
 	targets = [libFileName]
 
-targets.append('include/openvr/openvr_capi.h')
-targets.append('include/openvr/openvr_driver.h')
-targets.append('include/openvr/openvr.h')
+targets.extend([
+	'include/openvr/openvr_capi.h',
+	'include/openvr/openvr_driver.h',
+	'include/openvr/openvr.h'])
 
-library = envLibrary.Command(targets, '{}/CMakeLists.txt'.format(srcdir),
-	envLibrary.Action(openvrBuild, 'Build OpenVR'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(openvrBuild, 'Build OpenVR'))
 
 envLibrary.SideEffect('#notParallelCMake', library)
 
