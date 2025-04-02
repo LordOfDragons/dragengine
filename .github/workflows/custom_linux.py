@@ -5,7 +5,7 @@ with_warnerrors = 'no'
 with_debug = '{DebugBuild}'
 with_debug_symbols = 'yes'
 with_verbose = 'no'
-with_threads = '14'
+with_threads = '4'
 version = '{BuildVersion}'
 
 # github breaking build system fix
