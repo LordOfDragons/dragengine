@@ -167,6 +167,7 @@ params.Add(StringVariable('version', 'Version', '9999'))
 params.Add(StringVariable('force_version', 'Force version (empty to disable)', ''))
 params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))
 params.Add(StringVariable('with_cmake_flags', 'Additional flags for external CMake builds', ''))
+params.Add(StringVariable('with_cmake_c_flags', 'Additional C flags for external CMake builds', ''))
 
 params.Add(StringVariable('url_extern_artifacts',
 	'Base URL to download external artifacts from if missing',
@@ -558,6 +559,10 @@ params.Update(parent_env)
 
 # external flags
 parent_env.Replace(EXTERN_CMAKE_FLAGS = shlex.split(parent_env['with_cmake_flags']))
+parent_env.Replace(EXTERN_CMAKE_C_FLAGS = shlex.split(parent_env['with_cmake_c_flags']))
+
+if parent_env['platform_android'] != 'no':
+	parent_env.Append(EXTERN_CMAKE_C_FLAGS = ['-Wall'])
 
 # determine sanitize flags to use
 parent_env.Replace(SANITIZE_FLAGS = [])

@@ -88,6 +88,10 @@ def openxrBuild(target, source, env):
 	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
 		cmdline.append(x)
 	
+	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
+	if cmakeCFlags:
+		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
+	
 	if env['OSWindows'] and not env['CROSSCOMPILE_CLANG']:
 		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')
 	
@@ -103,7 +107,6 @@ def openxrBuild(target, source, env):
 		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
 		cmdline.append('-DANDROID_TOOLCHAIN=clang')
 		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
-		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
 		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
 	elif 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))

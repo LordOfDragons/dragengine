@@ -15,6 +15,7 @@ hardfp = True
 
 # github breaking build system fix
 with_cmake_flags = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
+with_cmake_c_flags = '-fPIC'
 
 # external library configuration
 ##################################

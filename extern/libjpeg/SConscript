@@ -34,7 +34,7 @@ else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libjpeg', 'lib_libjpeg_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libjpeg', 'lib_libjpeg_fetch')
 
 # check if system libjpeg is present.
 # NOTE some OS have compilers causing errors on the check below because "true" is used.
@@ -89,11 +89,16 @@ def jpegBuild(target, source, env):
 	cmdline = []
 	cmdline.append('cmake')
 	cmdline.append('-G"Unix Makefiles"')
-	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
-		cmdline.append(x)
 	cmdline.append('-DENABLE_SHARED=Off')
 	cmdline.append('-DENABLE_STATIC=On')
 	cmdline.append('-DWITH_TURBOJPEG=Off')
+	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
+	
+	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
+	if cmakeCFlags:
+		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
 	
 	if env['OSWindows']:
 		# libjpeg fails if system name is not this value
@@ -105,7 +110,6 @@ def jpegBuild(target, source, env):
 		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
 		cmdline.append('-DANDROID_TOOLCHAIN=clang')
 		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
-		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
 		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
 		cmdline.append('-DWITH_JAVA=0')
 		cmdline.append('-DREQUIRE_SIMD=1')

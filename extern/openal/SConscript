@@ -96,6 +96,10 @@ def openalBuild(target, source, env):
 	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
 		cmdline.append(x)
 	
+	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
+	if cmakeCFlags:
+		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
+	
 	cmdline.append('-DALSOFT_CONFIG=OFF')
 	cmdline.append('-DALSOFT_HRTF_DEFS=OFF')
 	cmdline.append('-DALSOFT_NO_CONFIG_UTIL=ON')
@@ -140,7 +144,6 @@ def openalBuild(target, source, env):
 		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
 		cmdline.append('-DANDROID_TOOLCHAIN=clang')
 		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
-		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
 		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
 		#cmdline.append('-DCMAKE_SYSTEM_NAME=Linux')
 		#cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=arm')

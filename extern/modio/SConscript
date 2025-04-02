@@ -83,6 +83,10 @@ def modioBuild(target, source, env):
 	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
 		cmdline.append(x)
 	
+	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
+	if cmakeCFlags:
+		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
+	
 	if env['platform_android'] != 'no':
 		cmdline.append('-DMODIO_PLATFORM="ANDROID"')
 		cmdline.append('-DCMAKE_ANDROID_NDK="{}"'.format(env['ANDROID_NDKROOT']))
@@ -102,7 +106,7 @@ def modioBuild(target, source, env):
 	cmdline.append('-DCMAKE_BUILD_TYPE="Release"')
 	cmdline.append('-DEXPECTED_BUILD_TESTS=Off')
 	cmdline.append('-DFETCHCONTENT_FULLY_DISCONNECTED=On')
-  
+	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
 	script.append('cmake --build "{}" -- -j {} || exit 1'.format(cmakeBuildDir, env['with_threads']))
