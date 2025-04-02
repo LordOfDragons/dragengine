@@ -10,7 +10,7 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-$OpenXRVersion = "1.1.38"
+$OpenXRVersion = "1.1.46"
 
 DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "OpenXR-SDK-release-$OpenXRVersion.tar.xz" -UrlPath "openxr"
 
