@@ -105,9 +105,9 @@ def libwebpBuild(target, source, env):
 		raise Exception('Failed building libwebp')
 
 if buildStaticLinking:
-	targets = [staticFileName, staticFileName2]
+	targets = [staticFileName, staticFileName2, staticFileName3]
 else:
-	targets = [libFileName, libFileName2]
+	targets = [libFileName, libFileName2, libFileName3]
 targets.append('include/webp/decode.h')
 targets.append('include/webp/encode.h')
 targets.append('include/webp/types.h')
