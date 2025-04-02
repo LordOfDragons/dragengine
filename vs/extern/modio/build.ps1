@@ -25,9 +25,9 @@ Set-Location $OldPath
 
 $Env:CXXFLAGS = "/DMODIO_SEPARATE_COMPILATION"
 
-cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" --preset=win
+cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" --preset=win -G "Ninja"
 
-cmake --build "$CmakeBuildDir" -- -j 8
+cmake --build "$CmakeBuildDir" -j 8
 
 # modio build script has a bug. if build and install directory are custom
 # the install script tries to access 'cmake_install.cmake' inside 'install dir'
