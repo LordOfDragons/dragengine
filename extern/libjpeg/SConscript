@@ -136,7 +136,6 @@ def jpegBuild(target, source, env):
 	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
 	
 	cmdline.append('"{}"'.format(buildDir.Dir(srcdir).abspath))
-	print("GITHUB-DEBUG: {}".format(' '.join(cmdline)))
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
 	script.append('make -j {} install || exit 1'.format(env['with_threads']))
