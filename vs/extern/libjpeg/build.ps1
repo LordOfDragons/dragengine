@@ -35,7 +35,7 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DWITH_TURBOJPEG=Off `
 	-DCMAKE_SYSTEM_NAME=Windows `
 	-DCMAKE_SYSTEM_PROCESSOR=AMD64 `
-	-DCMAKE_POLICY_VERSION_MINIMUM=3.5
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
 
 cmake --build "$CmakeBuildDir" -j 8 -- /property:Configuration=Release
 
