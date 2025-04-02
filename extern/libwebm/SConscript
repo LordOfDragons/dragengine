@@ -10,7 +10,7 @@ Import('parent_env parent_targets parent_report')
 envLibrary = parent_env.Clone()
 
 # parameters
-libraryVersion = '1.0.0.29'
+libraryVersion = '1.0.0.31'
 
 srcdir = 'libwebm-libwebm-{}'.format(libraryVersion)
 
@@ -22,7 +22,7 @@ else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libwebm', 'lib_libwebm_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libwebm', 'lib_libwebm_fetch')
 
 # check if system libwebm is present
 hasSystemWebm = False
