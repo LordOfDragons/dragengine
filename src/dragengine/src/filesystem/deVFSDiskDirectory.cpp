@@ -294,22 +294,28 @@ void deVFSDiskDirectory::DeleteFile( const decPath &path ){
 	}
 	
 #ifdef OS_W32
-	wchar_t widePath[ MAX_PATH ];
-	deOSWindows::Utf8ToWide( ( pDiskPath + path ).GetPathNative(), widePath, MAX_PATH );
+	wchar_t widePath[MAX_PATH];
+	deOSWindows::Utf8ToWide((pDiskPath + path).GetPathNative(), widePath, MAX_PATH);
 	
 	WIN32_FILE_ATTRIBUTE_DATA fa;
-	if( ! GetFileAttributesExW( widePath, GetFileExInfoStandard, &fa ) ){
-		DETHROW_INFO( deeFileNotFound, ( pDiskPath + path ).GetPathNative() );
+	if(!GetFileAttributesExW(widePath, GetFileExInfoStandard, &fa)){
+		decString message;
+		message.Format("%s: 0x%x", (pDiskPath + path).GetPathNative().GetString(), (int)GetLastError());
+		DETHROW_INFO(deeFileNotFound, message.GetString());
 	}
 	
 	if( ( fa.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) == FILE_ATTRIBUTE_DIRECTORY ){
-		if( _wrmdir( widePath ) != 0 ){
-			DETHROW_INFO( deeWriteFile, ( pDiskPath + path ).GetPathNative() );
+		if(!RemoveDirectoryW(widePath)){
+			decString message;
+			message.Format("%s: 0x%x", (pDiskPath + path).GetPathNative().GetString(), (int)GetLastError());
+			DETHROW_INFO(deeWriteFile, message.GetString());
 		}
 		
 	}else{
-		if( _wunlink( widePath ) != 0 ){
-			DETHROW_INFO( deeWriteFile, ( pDiskPath + path ).GetPathNative() );
+		if(!DeleteFileW(widePath)){
+			decString message;
+			message.Format("%s: 0x%x", (pDiskPath + path).GetPathNative().GetString(), (int)GetLastError());
+			DETHROW_INFO(deeWriteFile, message.GetString());
 		}
 	}
 #else

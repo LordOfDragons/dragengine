@@ -83,6 +83,7 @@
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../texture/deoglImageStageManager.h"
 #include "../vao/deoglVAO.h"
 #include "../world/deoglRWorld.h"
 #include "../utils/collision/deoglCollisionFrustum.h"
@@ -141,11 +142,11 @@ enum eSPTestTFB{
 	spttfInputDataCount,
 	spttfbMatrix,
 	spttfbScaleSize,
-	spttfbBaseLevel,
+	spttfbBaseTopLevel,
 	spttfbClipNear,
 	spttfbMatrix2,
 	spttfbScaleSize2,
-	spttfbBaseLevel2,
+	spttfbBaseTopLevel2,
 	spttfbClipNear2,
 	spttfbFrustumNormal1,
 	spttfbFrustumNormal2,
@@ -443,9 +444,17 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 	const float zscale = 1.0f / ( zfar - znear );
 	const float zoffset = -( znear * zscale );
 	
-	// calculate a small offset to avoid problems of similar depth
-	const float occmapResolution = 1.0f / ( float )( ( 1 << 24 ) - 1 ); // 24-bit depth texture
-	const float occmapBias = 1.0f; // bias by 1 or 2 depth values. 1 should be enough
+	// calculate a small offset to avoid problems of similar depth.
+	// occmap resolution is between 1/(1 << 24) and 1/(1 << 32). with 24bit the resolution on
+	// 300m view distance and 0.01m image distance this is 1.78e-5 (18ym). with 32bit the
+	// resolution is 6.98e-8 (70nm). with a huge view distance of 30km and 0.01m image distance
+	// this would be 1.78e-3 (2mm) for 24bit and 6.98e-6 (7ym) for 32bit. for typical view
+	// distances the resolution is below micro-meter range. even for the huge view distance
+	// the resolution is in the range of a few micro-meters (or 2mm for ancient systems).
+	// this is very small and has no real influence on the result. still a small offset is
+	// kept just in case
+	const float occmapResolution = 1.0f / (float)((1 << 24) - 1);
+	const float occmapBias = 1.0f; // bias by 1 or 2 depth values
 	
 	// update render parameter block
 	const decDMatrix &matrixCamera = plan.GetRefPosCameraMatrix();
@@ -455,7 +464,7 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 		matrixCameraStereo *= plan.GetCameraStereoMatrix();
 	}
 	
-	// linear depth: use non-infinite projection matrix 
+	// linear depth: use non-infinite projection matrix
 	const decDMatrix &matrixProjection = plan.GetFrustumMatrix();
 	pRenderParamBlock = ( deoglSPBlockUBO* )pRenderParamBlockSingleUse->Next();
 	{
@@ -465,10 +474,10 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 		// 2: pTransformZ[ 0 ]
 		pRenderParamBlock->SetParameterDataArrayMat4x4( 0, 0, matrixCamera * matrixProjection );
 		pRenderParamBlock->SetParameterDataArrayMat4x3( 1, 0, matrixCamera );
-		pRenderParamBlock->SetParameterDataArrayVec4( 2, 0, ( float )matrixCamera.a31 * zscale,
-			( float )matrixCamera.a32 * zscale, ( float )matrixCamera.a33 * zscale,
-			( float )matrixCamera.a34 * zscale + occmapResolution * occmapBias );
-		pRenderParamBlock->SetParameterDataVec2( 3, zscale, zoffset + occmapResolution * occmapBias );
+		pRenderParamBlock->SetParameterDataArrayVec4(2, 0, (float)matrixCamera.a31 * zscale,
+			(float)matrixCamera.a32 * zscale, (float)matrixCamera.a33 * zscale,
+			(float)matrixCamera.a34 * zscale + zoffset + occmapResolution * occmapBias);
+		pRenderParamBlock->SetParameterDataVec2(3, zscale, zoffset + occmapResolution * occmapBias);
 		
 		if( mask && mask->GetUseClipPlane() ){
 			pRenderParamBlock->SetParameterDataArrayVec4( 4, 0, mask->GetClipNormal(), mask->GetClipDistance() );
@@ -480,9 +489,9 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 		if( plan.GetRenderStereo() ){
 			pRenderParamBlock->SetParameterDataArrayMat4x4( 0, 1, matrixCameraStereo * matrixProjection );
 			pRenderParamBlock->SetParameterDataArrayMat4x3( 1, 1, matrixCameraStereo );
-			pRenderParamBlock->SetParameterDataArrayVec4( 2, 1, ( float )matrixCameraStereo.a31 * zscale,
-				( float )matrixCameraStereo.a32 * zscale, ( float )matrixCameraStereo.a33 * zscale,
-				( float )matrixCameraStereo.a34 * zscale + occmapResolution * occmapBias );
+			pRenderParamBlock->SetParameterDataArrayVec4(2, 1, (float)matrixCameraStereo.a31 * zscale,
+				(float)matrixCameraStereo.a32 * zscale, (float)matrixCameraStereo.a33 * zscale,
+				(float)matrixCameraStereo.a34 * zscale + zoffset + occmapResolution * occmapBias);
 			
 			if( mask && mask->GetUseClipPlane() ){
 				pRenderParamBlock->SetParameterDataArrayVec4( 4, 1, mask->GetClipNormalStereo(), mask->GetClipDistanceStereo() );
@@ -541,12 +550,14 @@ void deoglRenderOcclusion::RenderTestsCamera( deoglRenderPlan &plan, const deogl
 		testMatrix.a34 = matrixCamera.a34 * zscale + zoffset; // no bias while sampling
 		
 		testMatrixStereo = matrixCameraStereo * matrixProjection;
+		testMatrixStereo.a34 = matrixCameraStereo.a34 * zscale + zoffset; // no bias while sampling
 		
 	}else{
 		testMatrix = matrixCamera.GetRotationMatrix() * matrixProjection;
 		testMatrix.a34 = zoffset; // no bias while sampling
 		
 		testMatrixStereo = matrixCameraStereo.GetRotationMatrix() * matrixProjection;
+		testMatrixStereo.a34 = zoffset; // no bias while sampling
 	}
 	
 	testMatrix.a31 = matrixCamera.a31 * zscale;
@@ -763,6 +774,7 @@ deoglRenderTask *renderTask, deoglComputeRenderTask *computeRenderTask ){
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
+	// not GetSamplerClampNearestMipMap() or AMD windows drivers dies
 	tsmgr.EnableArrayTexture( 0, *occmap.GetTexture(), GetSamplerClampNearest() );
 	
 	for( i=baselevel+1; i<levelCount; i++ ){
@@ -916,20 +928,23 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
 		shader.SetParameterFloat( spttfbScaleSize,
 			( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
-		shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+		shader.SetParameterFloat(spttfbBaseTopLevel,
+			(float)baselevel, (float)(occlusionMap.GetLevelCount() - 1));
 		shader.SetParameterFloat( spttfbClipNear, clipNear );
 		if( plan.GetRenderStereo() ){
 			shader.SetParameterMatrix4x4( spttfbMatrixStereo, matrixCameraStereo );
 		}
 		shader.SetParameterUInt( spttfbCullFilter, cullFilter );
 		
-		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
+		ClearRenderDocDebugTexture();
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
 		worldCompute.GetSSBOElements()->Activate( 0 );
 		planCompute.GetSSBOVisibleElements()->Activate( 1 );
 		renderCompute.GetSSBOCounters()->Activate( 2 );
 		planCompute.GetSSBOVisibleElements2()->Activate( 3 );
 		planCompute.GetSSBOCounters()->ActivateAtomic( 0 );
+		renderThread.GetTexture().GetImageStages().EnableRenderDocDebug(4, deoglRTChoices::RenderDocDebugFlagOccTest);
 		
 		renderCompute.GetSSBOCounters()->ActivateDispatchIndirect();
 		OGL_CHECK( renderThread, pglDispatchComputeIndirect(
@@ -959,13 +974,14 @@ float clipNear, const decMatrix &matrixCamera, const decMatrix &matrixCameraSter
 		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
 		shader.SetParameterFloat( spttfbScaleSize,
 			( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
-		shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+		shader.SetParameterFloat(spttfbBaseTopLevel,
+			(float)baselevel, (float)(occlusionMap.GetLevelCount() - 1));
 		shader.SetParameterFloat( spttfbClipNear, clipNear );
 		if( plan.GetRenderStereo() ){
 			shader.SetParameterMatrix4x4( spttfbMatrixStereo, matrixCameraStereo );
 		}
 		
-		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
 		occlusionTest.GetSSBOInput()->Activate();
 		occlusionTest.GetSSBOResult()->Activate();
@@ -1049,7 +1065,8 @@ const decMatrix &matrixCamera2Stereo ){
 		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
 		shader.SetParameterFloat( spttfbScaleSize,
 			( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
-		shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+		shader.SetParameterFloat(spttfbBaseTopLevel,
+			(float)baselevel, (float)(occlusionMap.GetLevelCount() - 1));
 		shader.SetParameterFloat( spttfbClipNear, clipNear );
 		shader.SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );
 		shader.SetParameterFloat( spttfbClipNear2, clipNear2 );
@@ -1066,7 +1083,7 @@ const decMatrix &matrixCamera2Stereo ){
 		}
 		shader.SetParameterUInt( spttfbCullFilter, ~0 );
 		
-		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		
 		worldCompute.GetSSBOElements()->Activate( 0 );
 		planSkyLight.GetSSBOVisibleElements()->Activate( 1 );
@@ -1099,7 +1116,8 @@ const decMatrix &matrixCamera2Stereo ){
 		shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
 		shader.SetParameterFloat( spttfbScaleSize,
 			( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
-		shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+		shader.SetParameterFloat(spttfbBaseTopLevel,
+			(float)baselevel, (float)(occlusionMap.GetLevelCount() - 1));
 		shader.SetParameterFloat( spttfbClipNear, clipNear );
 		shader.SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );
 		shader.SetParameterFloat( spttfbClipNear2, clipNear2 );
@@ -1116,7 +1134,7 @@ const decMatrix &matrixCamera2Stereo ){
 		}
 		DEBUG_PRINT_TIMER( "Set Uniforms" );
 		
-		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
+		tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
 		DEBUG_PRINT_TIMER( "Set Texture" );
 		
 		occlusionTest.GetSSBOInput()->Activate();
@@ -1151,16 +1169,18 @@ deoglOcclusionMap &occlusionMap2, int baselevel2, float clipNear2, const decMatr
 	shader.SetParameterUInt( spttfInputDataCount, inputDataCount );
 	shader.SetParameterMatrix4x4( spttfbMatrix, matrixCamera );
 	shader.SetParameterFloat( spttfbScaleSize, ( float )occlusionMap.GetWidth(), ( float )occlusionMap.GetHeight() );
-	shader.SetParameterFloat( spttfbBaseLevel, ( float )baselevel );
+	shader.SetParameterFloat(spttfbBaseTopLevel,
+		(float)baselevel, (float)(occlusionMap.GetLevelCount() - 1));
 	shader.SetParameterFloat( spttfbClipNear, clipNear );
 	shader.SetParameterMatrix4x4( spttfbMatrix2, matrixCamera2 );
 	shader.SetParameterFloat( spttfbScaleSize2, ( float )occlusionMap2.GetWidth(), ( float )occlusionMap2.GetHeight() );
-	shader.SetParameterFloat( spttfbBaseLevel2, ( float )baselevel2 );
+	shader.SetParameterFloat(spttfbBaseTopLevel2,
+		(float)baselevel2, (float)(occlusionMap2.GetLevelCount() - 1));
 	shader.SetParameterFloat( spttfbClipNear2, clipNear2 );
 	DEBUG_PRINT_TIMER( "Set Uniforms" );
 	
-	tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearest() );
-	tsmgr.EnableArrayTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearest() );
+	tsmgr.EnableArrayTexture( 0, *occlusionMap.GetTexture(), GetSamplerClampNearestMipMap() );
+	tsmgr.EnableArrayTexture( 1, *occlusionMap2.GetTexture(), GetSamplerClampNearestMipMap() );
 	DEBUG_PRINT_TIMER( "Set Texture" );
 	
 	occlusionTest.GetSSBOInput()->Activate();

@@ -60,10 +60,10 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyPlayerAction extends BAAFirstPersonVR
- *    public func new()
+ *    func new()
  *    end
  *    
- *    public func void playerThink(float elapsed)
+ *    func void playerThink(float elapsed)
  *       super.think(elapsed)
  *       
  *       // Check if right hand controller is pointing at an element
@@ -110,7 +110,7 @@ pin Dragengine.Utils
 class ECBehaviorControlDesktop extends DefaultECBehavior
 	/**
 	 * \brief Behavior factory.
-	 * \ref 1.25
+	 * \version 1.25
 	 * 
 	 * Automatically assigns these behaviors if present before adding:
 	 * - Required: \ref ECBehaviorRenderableDesktop
@@ -150,24 +150,24 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorControlDesktop pECBehavior
-		private var ECBehaviorRenderableDesktop.Instance pRenderableDesktop
-		private var Vector pLowerLeft
-		private var Vector pLowerRight
-		private var Vector pUpperLeft
-		private var String pBone
+		var ECBehaviorControlDesktop pECBehavior
+		var ECBehaviorRenderableDesktop.Instance pRenderableDesktop
+		var Vector pLowerLeft
+		var Vector pLowerRight
+		var Vector pUpperLeft
+		var String pBone
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorControlDesktop ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorControlDesktop ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			
 			pRenderableDesktop = ecbehavior.getRenderableDesktop().instance(element)
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			pRenderableDesktop = null
 			super.dispose()
 		end
@@ -175,48 +175,92 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
 			pLowerLeft = pECBehavior.getLowerLeft().getVector(stub, codec)
 			pLowerRight = pECBehavior.getLowerRight().getVector(stub, codec)
 			pUpperLeft = pECBehavior.getUpperLeft().getVector(stub, codec)
-			pBone = pECBehavior.getBone().getValue(stub)
+			pBone = pECBehavior.getBone().getValueOrEmpty(stub)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorControlDesktop getECBehavior()
+		func ECBehaviorControlDesktop getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Renderable desktop behavior instance. */
-		public func ECBehaviorRenderableDesktop.Instance getRenderableDesktop()
+		func ECBehaviorRenderableDesktop.Instance getRenderableDesktop()
 			return pRenderableDesktop
 		end
 		
 		/** \brief Virtual plane lower left position. */
-		public func Vector getLowerLeft()
+		func Vector getLowerLeft()
 			return pLowerLeft
 		end
 		
+		/**
+		 * \brief Set virtual plane lower left position.
+		 * \version 1.26
+		 */
+		func void setLowerLeft(Vector position)
+			if position == null
+				throw ENullPointer.new()
+			end
+			pLowerLeft = position
+		end
+		
 		/** \brief Virtual plane lower right position. */
-		public func Vector getLowerRight()
+		func Vector getLowerRight()
 			return pLowerRight
 		end
 		
+		/**
+		 * \brief Set virtual plane lower right position.
+		 * \version 1.26
+		 */
+		func void setLowerRight(Vector position)
+			if position == null
+				throw ENullPointer.new()
+			end
+			pLowerRight = position
+		end
+		
 		/** \brief Virtual plane upper left position. */
-		public func Vector getUpperLeft()
+		func Vector getUpperLeft()
 			return pUpperLeft
 		end
 		
+		/**
+		 * \brief Set virtual plane upper left position.
+		 * \version 1.26
+		 */
+		func void setUpperLeft(Vector position)
+			if position == null
+				throw ENullPointer.new()
+			end
+			pUpperLeft = position
+		end
+		
 		/** \brief Bone name or empty string if not set. */
-		public func String getBone()
+		func String getBone()
 			return pBone
 		end
 		
+		/**
+		 * \brief Set bone name or empty string if not set.
+		 * \version 1.26
+		 */
+		func void setBone(String bone)
+			if bone == null
+				throw ENullPointer.new()
+			end
+			pBone = bone
+		end
+		
 		/** \brief Virtual plane matrix in world space. */
-		public func DMatrix getWorldMatrix()
+		func DMatrix getWorldMatrix()
 			var DMatrix matrix = getElement().getElementMatrix()
 			if not pBone.empty()
 				matrix = pRenderableDesktop.getDynamicSkin().getComponent() \
@@ -226,17 +270,17 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		end
 		
 		/** \brief Virtual plane lower left position in world space. */
-		public func DVector getWorldLowerLeft()
+		func DVector getWorldLowerLeft()
 			return getWorldMatrix() * DVector.new(pLowerLeft)
 		end
 		
 		/** \brief Virtual plane lower right position in world space. */
-		public func DVector getWorldLowerRight()
+		func DVector getWorldLowerRight()
 			return getWorldMatrix() * DVector.new(pLowerRight)
 		end
 		
 		/** \brief Virtual plane upper left position in world space. */
-		public func DVector getWorldUpperLeft()
+		func DVector getWorldUpperLeft()
 			return getWorldMatrix() * DVector.new(pUpperLeft)
 		end
 		
@@ -251,7 +295,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * The virtual plane coordinates map the lower left corner to (0,0), the lower right
 		 * corner to (1,0) and the upper left corner to (0,1).
 		 */
-		public func Vector2 planePosition(DVector worldPosition)
+		func Vector2 planePosition(DVector worldPosition)
 			var Vector2 position = planePositionEverywhere(worldPosition)
 			
 			/*
@@ -276,7 +320,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * Returns true if position is inside the inclusive range from (0,0) to (1,1).
 		 */
-		public func bool isInsidePlane(Vector2 position)
+		func bool isInsidePlane(Vector2 position)
 			return position >= Vector2.new() and position <= Vector2.new(1, 1)
 		end
 		
@@ -289,7 +333,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * allows then to provide a reasonable mouse position until the mouse release event
 		 * is simulated
 		 */
-		public func Vector2 planePositionEverywhere(DVector worldPosition)
+		func Vector2 planePositionEverywhere(DVector worldPosition)
 			var DMatrix matrix = getWorldMatrix()
 			var DVector lowerLeft = matrix * DVector.new(pLowerLeft)
 			var DVector lowerRight = matrix * DVector.new(pLowerRight)
@@ -310,7 +354,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * Calculates the intersection point of the ray with the plane. Returns position
 		 * similar to planePositionEverywhere without clamping.
 		 */
-		public func Vector2 planePositionRay(DVector origin, DVector direction)
+		func Vector2 planePositionRay(DVector origin, DVector direction)
 			var DMatrix matrix = getWorldMatrix()
 			
 			var DVector lowerLeft = matrix * DVector.new(pLowerLeft)
@@ -344,7 +388,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * Returned position is clamped to desktop size.
 		 */
-		public func Point planeToDesktop(Vector2 position)
+		func Point planeToDesktop(Vector2 position)
 			var Point size = pRenderableDesktop.getDesktop().getSize()
 			return Vector2.new(position.getX() * size.getX(), (1.0 - position.getY()) * size.getY()) \
 				.round().smallest(size - Point.new(1, 1)).largest(Point.new())
@@ -356,7 +400,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * Convenience method for calling planePosition() then planeToDesktop() if
 		 * virtual plane position is not null.
 		 */
-		public func Point desktopPoint(DVector worldPosition)
+		func Point desktopPoint(DVector worldPosition)
 			var Vector2 position = planePosition(worldPosition)
 			if position == null
 				return null
@@ -370,7 +414,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * Same as desktopPoint() but returns desktop position also if the world position
 		 * is outside the virtual plane. The returned position is clamped to the desktop size.
 		 */
-		public func Point desktopPointEverywhere(DVector worldPosition)
+		func Point desktopPointEverywhere(DVector worldPosition)
 			return planeToDesktop(planePositionEverywhere(worldPosition))
 		end
 		
@@ -381,12 +425,12 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * Same as desktopPoint() but returns desktop position also if the world position
 		 * is outside the virtual plane. The returned position is clamped to the desktop size.
 		 */
-		public func Point desktopPointRay(DVector origin, DVector direction)
+		func Point desktopPointRay(DVector origin, DVector direction)
 			return planeToDesktop(planePositionRay(origin, direction))
 		end
 		
 		/** \brief Move desktop mouse to new position. */
-		public func void moveMouse(Point position)
+		func void moveMouse(Point position)
 			pRenderableDesktop.getDesktop().warpMousePointer(position)
 		end
 		
@@ -398,7 +442,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * Returns true if the world position is inside the virtual plane.
 		 */
-		public func bool moveMouse(DVector worldPosition)
+		func bool moveMouse(DVector worldPosition)
 			var Point point = desktopPoint(worldPosition)
 			if point == null
 				return false
@@ -412,7 +456,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * Same as moveMouse(DVector) but applies also if world position is outside virtual plane.
 		 */
-		public func void moveMouseEverywhere(DVector worldPosition)
+		func void moveMouseEverywhere(DVector worldPosition)
 			moveMouse(desktopPointEverywhere(worldPosition))
 		end
 		
@@ -422,7 +466,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * Same as moveMouse(DVector) but applies also if world position is outside virtual plane.
 		 */
-		public func void moveMouseRay(DVector origin, DVector direction)
+		func void moveMouseRay(DVector origin, DVector direction)
 			moveMouse(desktopPointRay(origin, direction))
 		end
 		
@@ -433,7 +477,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * \param button Button to click. Value from InputEventMouseButton.
 		 */
-		public func void mouseClick(int button)
+		func void mouseClick(int button)
 			var Desktop desktop = pRenderableDesktop.getDesktop()
 			
 			desktop.processEvent(MouseEvent.new(desktop, MouseEvent.idMousePressed, \
@@ -448,7 +492,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * 
 		 * Sends mouse pressed event immediately followed by a mouse release event.
 		 */
-		public func void leftMouseClick()
+		func void leftMouseClick()
 			mouseClick(InputEventMouseButton.left)
 		end
 		
@@ -456,7 +500,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * \brief Simulate mouse button press on desktop at current desktop mouse location.
 		 * \param button Button to press. Value from InputEventMouseButton.
 		 */
-		public func void mousePress(int button)
+		func void mousePress(int button)
 			var Desktop desktop = pRenderableDesktop.getDesktop()
 			
 			desktop.processEvent(MouseEvent.new(desktop, MouseEvent.idMousePressed, \
@@ -466,7 +510,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		/**
 		 * \brief Simulate left mouse button press on desktop at current desktop mouse location.
 		 */
-		public func void leftMousePress()
+		func void leftMousePress()
 			mousePress(InputEventMouseButton.left)
 		end
 		
@@ -474,7 +518,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		 * \brief Simulate mouse button release on desktop at current desktop mouse location.
 		 * \param button Button to release. Value from InputEventMouseButton.
 		 */
-		public func void mouseRelease(int button)
+		func void mouseRelease(int button)
 			var Desktop desktop = pRenderableDesktop.getDesktop()
 			
 			desktop.processEvent(MouseEvent.new(desktop, MouseEvent.idMouseReleased, \
@@ -484,33 +528,33 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		/**
 		 * \brief Simulate left mouse button release on desktop at current desktop mouse location.
 		 */
-		public func void leftMouseRelease()
+		func void leftMouseRelease()
 			mouseRelease(InputEventMouseButton.left)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorRenderableDesktop pRenderableDesktop
-	private var ECPVector pLowerLeft
-	private var ECPVector pLowerRight
-	private var ECPVector pUpperLeft
-	private var ECPString pBone
+	var ECBehaviorRenderableDesktop pRenderableDesktop
+	var ECPVector pLowerLeft
+	var ECPVector pLowerRight
+	var ECPVector pUpperLeft
+	var ECPString pBone
 	
 	
 	
 	/**
 	 * \brief Create behavior element class.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop) \
+	func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop) \
 	this(eclass, renderableDesktop, "")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop, String id) \
+	func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop, String id) \
 	this(eclass, renderableDesktop, id, id.empty() if "controlDesktop." else "controlDesktop(" + id + ").")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop, \
+	func new(BehaviorElementClass eclass, ECBehaviorRenderableDesktop renderableDesktop, \
 	String id, String prefix) super(eclass, id)
 		if renderableDesktop == null
 			throw ENullPointer.new("renderableDesktop")
@@ -534,7 +578,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pRenderableDesktop = null
 		super.dispose()
 	end
@@ -542,34 +586,34 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	
 	
 	/** \brief Renderable desktop behavior. */
-	public func ECBehaviorRenderableDesktop getRenderableDesktop()
+	func ECBehaviorRenderableDesktop getRenderableDesktop()
 		return pRenderableDesktop
 	end
 	
 	/** \brief Virtual plane lower left position. */
-	public func ECPVector getLowerLeft()
+	func ECPVector getLowerLeft()
 		return pLowerLeft
 	end
 	
 	/** \brief Virtual plane lower right position. */
-	public func ECPVector getLowerRight()
+	func ECPVector getLowerRight()
 		return pLowerRight
 	end
 	
 	/** \brief Virtual plane upper left position. */
-	public func ECPVector getUpperLeft()
+	func ECPVector getUpperLeft()
 		return pUpperLeft
 	end
 	
 	/** \brief Bone name or empty string to not use. */
-	public func ECPString getBone()
+	func ECPString getBone()
 		return pBone
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -581,7 +625,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorControlDesktop getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorControlDesktop getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorControlDesktop each
 			return true
 		end) cast ECBehaviorControlDesktop
@@ -593,7 +637,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorControlDesktop with specific identifier.
 	 */
-	static public func ECBehaviorControlDesktop getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorControlDesktop getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorControlDesktop each
 			return each.getID().equals(id)
 		end) cast ECBehaviorControlDesktop
@@ -605,7 +649,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	 * Returns list contains ECBehaviorControlDesktop behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorControlDesktop each
 			return true
 		end)
@@ -620,7 +664,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	 * of type ECBehaviorControlDesktop.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -632,7 +676,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorControlDesktop.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -644,7 +688,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	 * Returns list contains ECBehaviorControlDesktop.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -653,7 +697,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

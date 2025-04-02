@@ -75,7 +75,7 @@ class DynamicSkin
 	
 	/**
 	 * \brief Renderable value or \em null if not set.
-	 * \verrsion 1.20
+	 * \version 1.20
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.value.
 	 */

@@ -8,11 +8,11 @@
 	<parameter name='pInputDataCount'/>
 	<parameter name='pMatrix'/>
 	<parameter name='pScaleSize'/>
-	<parameter name='pBaseLevel'/>
+	<parameter name='pBaseTopLevel'/>
 	<parameter name='pClipNear'/>
 	<parameter name='pMatrix2'/>
 	<parameter name='pScaleSize2'/>
-	<parameter name='pBaseLevel2'/>
+	<parameter name='pBaseTopLevel2'/>
 	<parameter name='pClipNear2'/>
 	<parameter name='pFrustumNormal1'/>
 	<parameter name='pFrustumNormal2'/>

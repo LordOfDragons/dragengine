@@ -110,7 +110,7 @@ class WindowVirtualKeyboard extends Window
 	
 	/**
 	 * \brief Hide keyboard listener.
-	 * \versoin 1.15
+	 * \version 1.15
 	 */
 	class HideVirtualKeyboard extends DefaultMouseListener
 		var WindowVirtualKeyboard pWindow
@@ -592,7 +592,7 @@ class WindowVirtualKeyboard extends Window
 	
 	/**
 	 * \brief Create virtual key widget.
-	 * \versoin 1.15
+	 * \version 1.15
 	 */
 	protected func Widget createVirtualKeyHide(Image image, String designerSuffix)
 		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)

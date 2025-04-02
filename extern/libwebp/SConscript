@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'libwebp-1.2.1'
+srcdir = 'libwebp-1.5.0'
 
 libLinkVersion = '7' # 7.1.2
 libLinkName = 'webp'
@@ -31,7 +31,7 @@ else:
 	staticFileName2 = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName2))
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libwebp', 'lib_libwebp_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libwebp', 'lib_libwebp_fetch')
 
 # check if system libwebp is present
 hasSystemWebp = False
@@ -67,6 +67,8 @@ def libwebpBuild(target, source, env):
 	script = createScriptHeader(env)
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	script.append('./autogen.sh || exit 1')
 	
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	cmdline.append('--enable-silent-rules')

@@ -21,6 +21,13 @@ debugSymbolDir="$tempDir"/debug
 mkdir -p "$debugSymbolDir" || exit 1
 
 cd "$unpackOrgDir" || exit 1
+if [ -z "$OBJCOPY" ]; then
+	OBJCOPY=objcopy
+fi
+if [ -z "$STRIP" ]; then
+	STRIP=strip
+fi
+
 for f in `find -name "*.so"`; do
 	libDir="`dirname "$f"`"
 	libName="`basename "$f"`"
@@ -29,10 +36,16 @@ for f in `find -name "*.so"`; do
 	
 	echo "Process $f ..."
 	mkdir -p "$debugDir" || exit 1
-	objcopy --only-keep-debug "$f" "$debugPath" || exit 1
-	strip --strip-debug --strip-unneeded "$f" || exit 1
-	objcopy --add-gnu-debuglink="$debugPath" "$f" || exit 1
+	$OBJCOPY --only-keep-debug "$f" "$debugPath" || exit 1
+	$STRIP --strip-debug --strip-unneeded "$f" || exit 1
+	$OBJCOPY --add-gnu-debuglink="$debugPath" "$f" || exit 1
 	chmod -x "$debugPath" || exit 1
+done
+
+echo "*** Update manifest checksums ..."
+for f in `find -name "module.xml"`; do
+	echo "Process $f ..."
+	/usr/bin/python3 "$restoreDir"/updateManifestChecksums.py "$f"
 done
 
 echo "*** Pack $archivePath ..."

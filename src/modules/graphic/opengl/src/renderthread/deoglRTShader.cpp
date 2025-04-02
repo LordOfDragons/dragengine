@@ -160,6 +160,9 @@ void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
 		if(renderDocDebugFlags & deoglRTChoices::RenderDocDebugFlagGI){
 			defines.SetDefine("RENDER_DOC_DEBUG_GI", true);
 		}
+		if(renderDocDebugFlags & deoglRTChoices::RenderDocDebugFlagOccTest){
+			defines.SetDefine("RENDER_DOC_DEBUG_OCCTEST", true);
+		}
 	}
 }
 

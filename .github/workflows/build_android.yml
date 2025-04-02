@@ -94,6 +94,11 @@ jobs:
       
       - name: Debug Symbols
         run: |
+          COMPILER_PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm"
+          
+          export OBJCOPY="$COMPILER_PATH-objcopy"
+          export STRIP="$COMPILER_PATH-strip"
+          
           ./separateDebugSymbols.sh \
             archive/build/dragengine-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2 \
             archive/build/dragengine-dbg-${{ inputs.releaseVersion }}-android-${{ inputs.androidArch }}.tar.bz2

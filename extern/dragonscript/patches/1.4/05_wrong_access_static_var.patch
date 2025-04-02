@@ -1,0 +1,13 @@
+diff --git a/src/scriptengine/parser/dspParserCheckCode.cpp b/src/scriptengine/parser/dspParserCheckCode.cpp
+--- a/src/scriptengine/parser/dspParserCheckCode.cpp
++++ b/src/scriptengine/parser/dspParserCheckCode.cpp
+@@ -666,7 +666,8 @@ bool dspParserCheckCode::CanAccessVariable(dsClass *ObjectClass, dsClass *Caller
+ 	dsClass *vOwnerClass = Variable->GetOwnerClass();
+ 	int vLevel;
+ 	// check for direct access (caller owns or inherits variable)
+-	if(ObjectClass->GetSubClassLevel(CallerClass) != -1){
++	//if(ObjectClass->GetSubClassLevel(CallerClass) != -1){
++	if(CallerClass->GetSubClassLevel(ObjectClass) != -1){
+ 		vLevel = CallerClass->GetSubClassLevel(vOwnerClass);
+ 		if(vLevel == -1) DSTHROW(dueInvalidParam);
+ 		if(Variable->GetTypeModifiers() & (DSTM_PUBLIC | DSTM_PROTECTED)) return true;

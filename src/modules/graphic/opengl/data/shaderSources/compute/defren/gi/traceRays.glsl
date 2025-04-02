@@ -56,6 +56,12 @@ void main( void ){
 	
 	int rayIndex = tc.x % pGIRaysPerProbe;
 	GIRayCastResult result;
+	// silence overzealous compiler warnings
+	result.barycentric = vec3(0);
+	result.distance = 10000.0;
+	result.normal = vec3(0, 0, 1);
+	result.face = 0;
+	result.material = 0;
 	
 	vec3 position = vec3( pGIProbePosition[ updateIndex ] );
 	vec3 direction = pGIRayDirection[ rayIndex ];

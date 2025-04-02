@@ -6,12 +6,41 @@
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
-
-$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "libjpeg-turbo-2.0.3-vc64"
+$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libjpeg-turbo-2.0.3-vc64.zip" -UrlPath "libjpeg"
+$LibVersion = "3.1.0"
 
-Expand-Archive -Path "$ProjectDir\libjpeg-turbo-2.0.3-vc64.zip" -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libjpeg-turbo-$LibVersion.tar.xz" -UrlPath "libjpeg"
+
+Expand-TarXz -Path "$ProjectDir\libjpeg-turbo-$LibVersion.tar.xz" -Destination $ExpandedDir
+
+$CmakeSourceDir = "$ExpandedDir\libjpeg-turbo-$LibVersion"
+$CmakeBuildDir = "$ExpandedDir\build"
+$CmakeInstallDir = "$ExpandedDir\install"
+
+# CMAKE_SYSTEM_NAME, CMAKE_SYSTEM_PROCESSOR:
+#   libjpeg fails if system name is not this value
+
+cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
+	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
+	-DCMAKE_BUILD_TYPE=Release `
+	-DENABLE_SHARED=Off `
+	-DENABLE_STATIC=On `
+	-DWITH_TURBOJPEG=Off `
+	-DCMAKE_SYSTEM_NAME=Windows `
+	-DCMAKE_SYSTEM_PROCESSOR=AMD64
+
+cmake --build "$CmakeBuildDir" -j 8 -- /property:Configuration=Release
+
+if (!(Test-Path $CmakeInstallDir)) {
+    New-Item -Path $CmakeInstallDir -ItemType "directory"
+}
+
+Copy-Item "$CmakeBuildDir\cmake_install.cmake" -Destination $CmakeInstallDir -Force
+
+cmake --install "$CmakeInstallDir"
+
+Remove-Item "$CmakeInstallDir\cmake_install.cmake" -Force

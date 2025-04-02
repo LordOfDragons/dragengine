@@ -55,13 +55,19 @@ class ParameterTree
 	/**
 	 * \brief Create copy of parameter tree.
 	 * 
-	 * Arrays are duplicated but no value inside since all values stored in the parameter
-	 * tree are considered immutable.
+	 * Arrays and dictionaries are duplicated but no value inside since all values stored in the
+	 * parameter tree are considered immutable. Parameter trees are duplicated.
 	 */
 	func new(ParameterTree tree)
 		pParameters = tree.pParameters.map(block String key, Object value
 			if value castable Array
 				return Array.new(value cast Array)
+				
+			elif value castable Dictionary
+				return Dictionary.new(value cast Dictionary)
+				
+			elif value castable ParameterTree
+				return new(value cast ParameterTree)
 				
 			else
 				return value
@@ -81,6 +87,35 @@ class ParameterTree
 		return pParameters.getKeys()
 	end
 	
+	/**
+	 * \brief Parameter keys under root path as Array of String using '/' separator.
+	 * \version 1.26
+	 */
+	func Array getRootKeys()
+		return getRootKeys('/')
+	end
+	
+	/**
+	 * \brief Parameter keys under root path as Array of String.
+	 * \version 1.26
+	 */
+	func Array getRootKeys(byte separator)
+		var Array keys = Array.new()
+		var int index
+		
+		pParameters.forEachKey(block String key
+			index = key.find(separator)
+			if index != -1
+				key = key.substring(0, index)
+			end
+			if not keys.has(key)
+				keys.add(key)
+			end
+		end)
+		
+		return keys
+	end
+	
 	/** \brief Parameter keys under path as Array of String using '/' separator. */
 	func Array getKeys(String path)
 		return getKeys(path, '/')
@@ -95,16 +130,15 @@ class ParameterTree
 		end
 		
 		var Array keys = Array.new()
-		var String key
 		var int index
 		
-		pParameters.getKeys().forEach(block String each
-			if each.startsWith(path)
-				index = each.find(separator, len)
+		pParameters.forEachKey(block String key
+			if key.startsWith(path)
+				index = key.find(separator, len)
 				if index != -1
-					key = each.substring(len, index)
+					key = key.substring(len, index)
 				else
-					key = each.substring(len)
+					key = key.substring(len)
 				end
 				if not keys.has(key)
 					keys.add(key)
@@ -198,7 +232,7 @@ class ParameterTree
 	end
 	
 	/** \brief FloatRectArea value of parameter or default value if absent. */
-	func FloatRectArea getAt(String path, FloatRectArea default)
+	func FloatRectArea getFloatRectAreaAt(String path, FloatRectArea default)
 		return pParameters.getAt(path, default) cast FloatRectArea
 	end
 	
@@ -207,12 +241,41 @@ class ParameterTree
 		return pParameters.getAt(path, default) cast Array
 	end
 	
+	/**
+	 * \brief Dictionary value of parameter or default value if absent.
+	 * \version 1.26
+	 */
+	func Dictionary getDictionaryAt(String path, Dictionary default)
+		return pParameters.getAt(path, default) cast Dictionary
+	end
+	
 	/** \brief Tree value of parameter or default value if absent. */
 	func ParameterTree getTreeAt(String path, ParameterTree default)
 		return pParameters.getAt(path, default) cast ParameterTree
 	end
 	
-	/** \brief Set value of parameter. */
+	/**
+	 * \brief Set value of parameter.
+	 * 
+	 * If the parameter tree is not saved all kind of objects can be stored in the parameter tree.
+	 * 
+	 * If the parameter tree is supposed to be saved it can only contain values of these types:
+	 * - \ref String
+	 * - \ref float
+	 * - \ref int
+	 * - \ref bool
+	 * - \ref Point
+	 * - \ref Point3
+	 * - \ref Vector2
+	 * - \ref Vector
+	 * - \ref Color
+	 * - \ref BorderSize
+	 * - \ref RectArea
+	 * - \ref FloatRectArea
+	 * - \ref Array containing only values from this list
+	 * - \ref Dictionary with \ref String key and containing only values from this list
+	 * - \ref ParameterTree containing only values from this list
+	 */
 	func void setAt(String path, Object value)
 		pParameters.setAt(path, value)
 	end

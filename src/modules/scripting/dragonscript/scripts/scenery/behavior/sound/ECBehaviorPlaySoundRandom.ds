@@ -46,7 +46,7 @@ pin Dragengine.TriggerSystem
 class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 	/**
 	 * \brief Behavior factory.
-	 * \ref 1.25
+	 * \version 1.25
 	 * \see ECBehaviorPlaySound#Factory
 	 * 
 	 * Example XML element class:
