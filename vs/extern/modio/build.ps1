@@ -25,7 +25,11 @@ Set-Location $OldPath
 
 $Env:CXXFLAGS = "/DMODIO_SEPARATE_COMPILATION"
 
-cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" --preset=win -G "Ninja"
+# CMAKE_POLICY_VERSION_MINIMUM:
+#   workaround for github build problem
+
+cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" --preset=win `
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
 
 cmake --build "$CmakeBuildDir" -j 8
 
