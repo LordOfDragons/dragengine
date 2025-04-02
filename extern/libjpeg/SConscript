@@ -34,7 +34,7 @@ else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libjpeg', 'lib_libjpeg_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libjpeg', 'lib_libjpeg_fetch')
 
 # check if system libjpeg is present.
 # NOTE some OS have compilers causing errors on the check below because "true" is used.
