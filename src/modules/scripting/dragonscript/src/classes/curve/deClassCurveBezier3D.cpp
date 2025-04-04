@@ -29,12 +29,16 @@
 
 #include "deClassCurveBezier3D.h"
 #include "../math/deClassVector.h"
+#include "../file/deClassFileReader.h"
+#include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
 #include <dragengine/common/curve/decCurveBezier3D.h>
 #include <dragengine/common/curve/decCurveBezier3DPoint.h>
 #include <dragengine/common/curve/decCurveBezier3DEvaluator.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 
 #include <libdscript/exceptions.h>
 
@@ -290,6 +294,38 @@ void deClassCurveBezier3D::nfRemoveAllPoints::RunFunction( dsRunTime *rt, dsValu
 
 
 
+// public func CurveBezierInterpolation getInterpolationMode()
+deClassCurveBezier3D::nfGetInterpolationMode::nfGetInterpolationMode(const sInitData &init) :
+dsFunction(init.clsCBezier3D, "getInterpolationMode", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezierInterpolation){
+}
+void deClassCurveBezier3D::nfGetInterpolationMode::RunFunction(dsRunTime *rt, dsValue *myself){
+	decCurveBezier3D &curve = *((sCBezier3DNatDat*)p_GetNativeData(myself))->curve;
+	
+	rt->PushValue(((deClassCurveBezier3D*)GetOwnerClass())->GetClassCurveBezierInterpolation()
+		->GetVariable(curve.GetInterpolationMode())->GetStaticValue());
+}
+
+// public func void setInterpolationMode(CurveBezierInterpolation mode)
+deClassCurveBezier3D::nfSetInterpolationMode::nfSetInterpolationMode(const sInitData &init) :
+dsFunction(init.clsCBezier3D, "setInterpolationMode", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsCurveBezierInterpolation); // mode
+}
+void deClassCurveBezier3D::nfSetInterpolationMode::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW( dueNullPointer );
+	}
+	
+	decCurveBezier3D &curve = *((sCBezier3DNatDat*)p_GetNativeData(myself))->curve;
+	
+	curve.SetInterpolationMode((decCurveBezier3D::eInterpolationModes)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+			*rt->GetValue(0)->GetRealObject()));
+}
+
+
+
 // public func Vector evaluateAt( int segment, float blend )
 deClassCurveBezier3D::nfEvaluateAt::nfEvaluateAt( const sInitData &init ) : dsFunction( init.clsCBezier3D,
 "evaluateAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVector ){
@@ -320,6 +356,76 @@ void deClassCurveBezier3D::nfEvaluateAt2::RunFunction( dsRunTime *rt, dsValue *m
 	const float blend = modff( curveValue, &segment );
 	
 	ds.GetClassVector()->PushVector( rt, evaluator.EvaluateAt( ( int )segment, blend ) );
+}
+
+
+
+// static public func CurveBezier readFromFile(FileReader reader)
+deClassCurveBezier3D::nfReadFromFile::nfReadFromFile(const sInitData &init) :
+dsFunction(init.clsCBezier3D, "readFromFile", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCBezier3D){
+	p_AddParameter(init.clsFileReader); // reader
+}
+void deClassCurveBezier3D::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassCurveBezier3D &clsCurveBezier3D = *((deClassCurveBezier3D*)GetOwnerClass());
+	const deClassFileReader &clsFileReader = *clsCurveBezier3D.GetDS().GetClassFileReader();
+	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
+	
+	if(!reader){
+		DSTHROW(dueNullPointer);
+	}
+	
+	const int version = reader->ReadByte();
+	decCurveBezier3D curve;
+	uint32_t i, count;
+	
+	switch(version){
+	case 0:
+		curve.SetInterpolationMode((decCurveBezier3D::eInterpolationModes)reader->ReadByte());
+		count = reader->ReadVarUInt();
+		for(i=0; i<count; i++){
+			const decVector point(reader->ReadVector());
+			const decVector handle1(reader->ReadVector());
+			const decVector handle2(reader->ReadVector());
+			curve.AddPoint({point, handle1, handle2});
+		}
+		break;
+		
+	default:
+		DSTHROW(dueInvalidParam);
+	}
+	
+	clsCurveBezier3D.PushCurve(rt, curve);
+}
+
+// public func void writeToFile(FileWriter writer)
+deClassCurveBezier3D::nfWriteToFile::nfWriteToFile(const sInitData &init) :
+dsFunction(init.clsCBezier3D, "writeToFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFileWriter); // writer
+}
+void deClassCurveBezier3D::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decCurveBezier3D &curve = *((sCBezier3DNatDat*)p_GetNativeData(myself))->curve;
+	const deClassCurveBezier3D &clsCurveBezier3D = *((deClassCurveBezier3D*)GetOwnerClass());
+	const deClassFileWriter &clsFileWriter = *clsCurveBezier3D.GetDS().GetClassFileWriter();
+	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
+	
+	if(!writer){
+		DSTHROW(dueNullPointer);
+	}
+	
+	writer->WriteByte(0); // version 0
+	writer->WriteByte((uint8_t)curve.GetInterpolationMode());
+	
+	const int count = curve.GetPointCount();
+	writer->WriteVarUInt((uint32_t)count);
+	
+	int i;
+	for(i=0; i<count; i++){
+		const decCurveBezier3DPoint &point = curve.GetPointAt(i);
+		writer->WriteVector(point.GetPoint());
+		writer->WriteVector(point.GetHandle1());
+		writer->WriteVector(point.GetHandle2());
+	}
 }
 
 
@@ -384,6 +490,8 @@ deClassCurveBezier3D::~deClassCurveBezier3D(){
 void deClassCurveBezier3D::CreateClassMembers( dsEngine *engine ){
 	sInitData init;
 	
+	pClsCurveBezierInterpolation = engine->GetClass("Dragengine.Scenery.CurveBezierInterpolation");
+	
 	// store classes
 	memset( &init, '\0', sizeof( init ) );
 	
@@ -395,6 +503,9 @@ void deClassCurveBezier3D::CreateClassMembers( dsEngine *engine ){
 	init.clsBool = engine->GetClassBool();
 	init.clsObject = engine->GetClassObject();
 	init.clsVector = pDS.GetClassVector();
+	init.clsCurveBezierInterpolation = pClsCurveBezierInterpolation;
+	init.clsFileReader = pDS.GetClassFileReader();
+	init.clsFileWriter = pDS.GetClassFileWriter();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -412,8 +523,14 @@ void deClassCurveBezier3D::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfRemovePointFrom( init ) );
 	AddFunction( new nfRemoveAllPoints( init ) );
 	
+	AddFunction(new nfGetInterpolationMode(init));
+	AddFunction(new nfSetInterpolationMode(init));
+	
 	AddFunction( new nfEvaluateAt( init ) );
 	AddFunction( new nfEvaluateAt2( init ) );
+	
+	AddFunction(new nfReadFromFile(init));
+	AddFunction(new nfWriteToFile(init));
 	
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfEquals( init ) );
@@ -445,8 +562,8 @@ void deClassCurveBezier3D::PushCurve( dsRunTime *rt, const decCurveBezier3D &cur
 	
 	rt->CreateObjectNakedOnStack( this );
 	sCBezier3DNatDat &nd = *( ( sCBezier3DNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
-	nd.curve = NULL;
-	nd.evaluator = NULL;
+	nd.curve = nullptr;
+	nd.evaluator = nullptr;
 	
 	try{
 		nd.curve = new decCurveBezier3D( curve );

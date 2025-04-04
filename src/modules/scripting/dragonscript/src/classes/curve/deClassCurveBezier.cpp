@@ -29,11 +29,15 @@
 
 #include "deClassCurveBezier.h"
 #include "../math/deClassVector2.h"
+#include "../file/deClassFileReader.h"
+#include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/curve/decCurveBezierEvaluator.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>
@@ -376,6 +380,76 @@ void deClassCurveBezier::nfEvaluateAt::RunFunction( dsRunTime *rt, dsValue *myse
 
 
 
+// static public func CurveBezier readFromFile(FileReader reader)
+deClassCurveBezier::nfReadFromFile::nfReadFromFile(const sInitData &init) :
+dsFunction(init.clsCBe, "readFromFile", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCBe){
+	p_AddParameter(init.clsFileReader); // reader
+}
+void deClassCurveBezier::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassCurveBezier &clsCurveBezier = *((deClassCurveBezier*)GetOwnerClass());
+	const deClassFileReader &clsFileReader = *clsCurveBezier.GetDS()->GetClassFileReader();
+	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
+	
+	if(!reader){
+		DSTHROW(dueNullPointer);
+	}
+	
+	const int version = reader->ReadByte();
+	decCurveBezier curve;
+	uint32_t i, count;
+	
+	switch(version){
+	case 0:
+		curve.SetInterpolationMode((decCurveBezier::eInterpolationModes)reader->ReadByte());
+		count = reader->ReadVarUInt();
+		for(i=0; i<count; i++){
+			const decVector2 point(reader->ReadVector2());
+			const decVector2 handle1(reader->ReadVector2());
+			const decVector2 handle2(reader->ReadVector2());
+			curve.AddPoint({point, handle1, handle2});
+		}
+		break;
+		
+	default:
+		DSTHROW(dueInvalidParam);
+	}
+	
+	clsCurveBezier.PushCurve(rt, curve);
+}
+
+// public func void writeToFile(FileWriter writer)
+deClassCurveBezier::nfWriteToFile::nfWriteToFile(const sInitData &init) :
+dsFunction(init.clsCBe, "writeToFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFileWriter); // writer
+}
+void deClassCurveBezier::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const deClassCurveBezier &clsCurveBezier = *((deClassCurveBezier*)GetOwnerClass());
+	const deClassFileWriter &clsFileWriter = *clsCurveBezier.GetDS()->GetClassFileWriter();
+	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
+	
+	if(!writer){
+		DSTHROW(dueNullPointer);
+	}
+	
+	writer->WriteByte(0); // version 0
+	writer->WriteByte((uint8_t)curve.GetInterpolationMode());
+	
+	const int count = curve.GetPointCount();
+	writer->WriteVarUInt((uint32_t)count);
+	
+	int i;
+	for(i=0; i<count; i++){
+		const decCurveBezierPoint &point = curve.GetPointAt(i);
+		writer->WriteVector2(point.GetPoint());
+		writer->WriteVector2(point.GetHandle1());
+		writer->WriteVector2(point.GetHandle2());
+	}
+}
+
+
+
 // public func int hashCode()
 deClassCurveBezier::nfHashCode::nfHashCode( const sInitData &init ) :
 dsFunction( init.clsCBe, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
@@ -479,6 +553,8 @@ void deClassCurveBezier::CreateClassMembers( dsEngine *engine ){
 	init.clsObj = engine->GetClassObject();
 	init.clsVec2 = pDS->GetClassVector2();
 	init.clsCurveBezierInterpolation = pClsCurveBezierInterpolation;
+	init.clsFileReader = pDS->GetClassFileReader();
+	init.clsFileWriter = pDS->GetClassFileWriter();
 	
 	// add constants
 	AddConstant( new dsConstant( "CONSTANT", init.clsInt, decCurveBezier::eimConstant ) );
@@ -510,6 +586,9 @@ void deClassCurveBezier::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfEvaluateAt( init ) );
 	
+	AddFunction(new nfReadFromFile(init));
+	AddFunction(new nfWriteToFile(init));
+	
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfEquals( init ) );
 	
@@ -532,17 +611,10 @@ void deClassCurveBezier::PushCurve( dsRunTime *rt, const decCurveBezier &curve )
 	
 	rt->CreateObjectNakedOnStack( this );
 	sCBeNatDat &nd = *( ( sCBeNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
-	int p, pointCount = curve.GetPointCount();
-	
-	nd.curve = NULL;
+	nd.curve = nullptr;
 	
 	try{
-		nd.curve = new decCurveBezier();
-		
-		for( p=0; p<pointCount; p++ ){
-			nd.curve->AddPoint( curve.GetPointAt( p ) );
-		}
-		nd.curve->SetInterpolationMode( curve.GetInterpolationMode() );
+		nd.curve = new decCurveBezier(curve);
 		
 	}catch( ... ){
 		rt->RemoveValues( 1 ); // remove pushed object

@@ -74,6 +74,8 @@ private:
 		dsClass *clsCBe, *clsVoid, *clsBool, *clsInt, *clsFlt, *clsStr, *clsObj;
 		dsClass *clsVec2;
 		dsClass *clsCurveBezierInterpolation;
+		dsClass *clsFileReader;
+		dsClass *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -104,6 +106,9 @@ private:
 	DEF_NATFUNC( nfSetDefaultBezier );
 	
 	DEF_NATFUNC( nfEvaluateAt );
+	
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
 	DEF_NATFUNC( nfHashCode );
 	DEF_NATFUNC( nfEquals );

@@ -18,11 +18,11 @@ class CurveBezier3D
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create bezier curve. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create copy of bezier curve. */
-	public func new( CurveBezier3D copy )
+	func new(CurveBezier3D copy)
 	end
 	/*@}*/
 	
@@ -31,7 +31,7 @@ class CurveBezier3D
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of points. */
-	public func int getPointCount()
+	func int getPointCount()
 		return 0
 	end
 	
@@ -40,7 +40,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is less than 0.
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
-	public func Vector getPointAt( int position )
+	func Vector getPointAt(int position)
 		return null
 	end
 	
@@ -49,7 +49,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is less than 0.
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
-	public func Vector getHandle1At( int position )
+	func Vector getHandle1At(int position)
 		return null
 	end
 	
@@ -58,7 +58,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is less than 0.
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
-	public func Vector getHandle2At( int position )
+	func Vector getHandle2At(int position)
 		return null
 	end
 	
@@ -68,7 +68,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is less than 0.
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
-	public func void setPointAt( int position, Vector point )
+	func void setPointAt(int position, Vector point)
 	end
 	
 	/**
@@ -76,18 +76,18 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is less than 0.
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
-	public func void setPointAt( int position, Vector point, Vector handle1, Vector handle2 )
+	func void setPointAt(int position, Vector point, Vector handle1, Vector handle2)
 	end
 	
 	/**
 	 * \brief Add point.
 	 * \details Set both handles to \em point.
 	 */
-	public func void addPoint( Vector point )
+	func void addPoint(Vector point)
 	end
 	
 	/** \brief Add point with handles. */
-	public func void addPoint( Vector point, Vector handle1, Vector handle2 )
+	func void addPoint(Vector point, Vector handle1, Vector handle2)
 	end
 	
 	/**
@@ -96,7 +96,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is less than 0.
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount().
 	 */
-	public func void insertPoint( int position, Vector point )
+	func void insertPoint(int position, Vector point)
 	end
 	
 	/**
@@ -104,7 +104,7 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is less than 0.
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount().
 	 */
-	public func void insertPoint( int position, Vector point, Vector handle1, Vector handle2 )
+	func void insertPoint(int position, Vector point, Vector handle1, Vector handle2)
 	end
 	
 	/**
@@ -112,17 +112,35 @@ class CurveBezier3D
 	 * \throws EInvalidParam \em position is less than 0.
 	 * \throws EInvalidParam \em position is larger or equal to getPointCount()-1.
 	 */
-	public func void removePointFrom( int position )
+	func void removePointFrom(int position)
 	end
 	
 	/** \brief Remove all points. */
-	public func void removeAllPoints()
+	func void removeAllPoints()
+	end
+	
+	
+	
+	/**
+	 * \brief Interpolation mode.
+	 * \version 1.26
+	 */
+	func CurveBezierInterpolation getInterpolationMode()
+		return null
+	end
+	
+	/**
+	 * \brief Set interpolation mode.
+	 * \version 1.26
+	 * \throws EInvalidParam \em mode is not a valid value.
+	 */
+	func void setInterpolationMode(CurveBezierInterpolation mode)
 	end
 	
 	
 	
 	/** \brief Evaluate curve at segment position. */
-	public func Vector evaluateAt( int segment, float blend )
+	func Vector evaluateAt(int segment, float blend)
 		return null
 	end
 	
@@ -130,8 +148,28 @@ class CurveBezier3D
 	 * \brief Evaluate curve using curve value.
 	 * \details Curve value composes of segment as integral part and blend factor as fractional part.
 	 */
-	public func Vector evaluateAt( float curveValue )
+	func Vector evaluateAt(float curveValue)
 		return null
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/**
+	 * \brief Read curve from file reader.
+	 * \version 1.26
+	 */
+	static func CurveBezier3D readFromFile(FileReader reader)
+		return null
+	end
+	
+	/**
+	 * \brief Write curve to file writer.
+	 * \version 1.26
+	 */
+	func void writeToFile(FileWriter writer)
 	end
 	/*@}*/
 end
