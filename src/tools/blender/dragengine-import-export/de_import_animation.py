@@ -23,21 +23,15 @@
 #
 
 import bpy
-import blf
-import bgl
-import os
-import re
-import math
 import time
 import struct
-import mathutils
 
 from bpy_extras.io_utils import ImportHelper
 from mathutils import Vector, Matrix, Euler, Quaternion
 
-from .de_math import transformPosition, transformBonePosition, transformPositionInv, transformBonePositionInv
-from .de_math import convertMatrix, convertMatrixBone, ONE_PI
-from .de_math import vector_by_matrix, matrixToEuler, vecLength, vecSub, quatDot, quatNegate
+from .de_math import transformPositionInv, transformBonePositionInv
+from .de_math import convertMatrixBone, ONE_PI
+from .de_math import vector_by_matrix, matrixToEuler
 from .de_configuration import Configuration
 from .de_resources import Mesh, Armature
 from .de_porting import registerClass, matmul
@@ -64,7 +58,8 @@ class OBJECT_OT_ImportAnimation(bpy.types.Operator, ImportHelper):
     #import_move: bpy.props.EnumProperty(items=importActionList)
     import_move: bpy.props.StringProperty(default="")
     
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.mesh = None
         self.armature = None
         self.moves = []

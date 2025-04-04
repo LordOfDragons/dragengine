@@ -50,27 +50,51 @@ class VIEW3D_MT_DragengineExport(bpy.types.Menu):
     bl_label = "Drag[en]gine Resources"
     bl_addon_version = addonVersion
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # has to be done here since otherwise the class is not accessible
+        from .de_export_model import OBJECT_OT_ExportModel
+        from .de_export_rig import OBJECT_OT_ExportRig
+        from .de_export_animation import OBJECT_OT_ExportAnimation
+        from .de_export_navspace import OBJECT_OT_ExportNavigationSpace
+        from .de_export_occmesh import OBJECT_OT_ExportOcclusionMesh
+        from .de_export_config import OBJECT_OT_ExportConfig
+        self.label_model = OBJECT_OT_ExportModel.bl_label
+        self.label_animation = OBJECT_OT_ExportAnimation.bl_label
+        self.label_rig = OBJECT_OT_ExportRig.bl_label
+        self.label_occmesh = OBJECT_OT_ExportOcclusionMesh.bl_label
+        self.label_navspace = OBJECT_OT_ExportNavigationSpace.bl_label
+        self.label_config = OBJECT_OT_ExportConfig.bl_label
+
     def draw(self, context):
         layout = self.layout
         # settings = context.tool_settings
         layout.operator_context = 'INVOKE_REGION_WIN'
-        layout.operator("dragengine.export_model", text=OBJECT_OT_ExportModel.bl_label)
-        layout.operator("dragengine.export_animation", text=OBJECT_OT_ExportAnimation.bl_label)
-        layout.operator("dragengine.export_rig", text=OBJECT_OT_ExportRig.bl_label)
-        layout.operator("dragengine.export_occmesh", text=OBJECT_OT_ExportOcclusionMesh.bl_label)
-        layout.operator("dragengine.export_navspace", text=OBJECT_OT_ExportNavigationSpace.bl_label)
-        layout.operator("dragengine.export_config", text=OBJECT_OT_ExportConfig.bl_label)
+        layout.operator("dragengine.export_model", text=self.label_model)
+        layout.operator("dragengine.export_animation", text=self.label_animation)
+        layout.operator("dragengine.export_rig", text=self.label_rig)
+        layout.operator("dragengine.export_occmesh", text=self.label_occmesh)
+        layout.operator("dragengine.export_navspace", text=self.label_navspace)
+        layout.operator("dragengine.export_config", text=self.label_config)
 
 
 class VIEW3D_MT_DragengineImport(bpy.types.Menu):
     bl_label = "Drag[en]gine Resources"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # has to be done here since otherwise the class is not accessible
+        from .de_import_animation import OBJECT_OT_ImportAnimation
+        from .de_import_rig import OBJECT_OT_ImportRig
+        self.label_animation = OBJECT_OT_ImportAnimation.bl_label
+        self.label_rig = OBJECT_OT_ImportRig.bl_label
+
     def draw(self, context):
         layout = self.layout
         # settings = context.tool_settings
         layout.operator_context = 'INVOKE_REGION_WIN'
-        layout.operator("dragengine.import_animation", text=OBJECT_OT_ImportAnimation.bl_label)
-        layout.operator("dragengine.import_rig", text=OBJECT_OT_ImportRig.bl_label)
+        layout.operator("dragengine.import_animation", text=self.label_animation)
+        layout.operator("dragengine.import_rig", text=self.label_rig)
 
 
 isRegistered = False
