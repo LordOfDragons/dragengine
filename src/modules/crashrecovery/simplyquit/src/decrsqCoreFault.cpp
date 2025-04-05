@@ -33,6 +33,9 @@
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #include <dbghelp.h>
+#include <shellapi.h>
+#include <shlobj.h>
+#include <strsafe.h>
 #endif
 
 #ifdef OS_UNIX
@@ -93,6 +96,176 @@ static sExceptionInfo vExceptionInfo[ EXCEPTION_INFO_COUNT ] = {
 	{ EXCEPTION_STACK_OVERFLOW, "The thread used up its stack." }
 };
 
+static void logStackTraceVS(const _EXCEPTION_POINTERS &ei, HANDLE process, deCRSimplyQuit *module){
+	/*
+	CONTEXT capuredContext;
+	memset(&capuredContext, 0, sizeof(capuredContext));
+	capuredContext.ContextFlags = CONTEXT_FULL;
+	RtlCaptureContext(&capuredContext);
+	CONTEXT &context = capuredContext;
+	*/
+	
+	CONTEXT &context = *ei.ContextRecord;
+	
+	const int symbolBufferLen = sizeof(IMAGEHLP_SYMBOL64) + MAX_SYM_NAME;
+	char * const symbolBuffer = new char[symbolBufferLen + 1];
+	memset(symbolBuffer, 0, symbolBufferLen + 1);
+	PIMAGEHLP_SYMBOL64 const symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer;
+	symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
+	symbol->MaxNameLength = MAX_SYM_NAME;
+
+	const HANDLE thread = GetCurrentThread();
+	DWORD machineType;
+
+	STACKFRAME_EX stack;
+	memset(&stack, 0, sizeof(stack));
+
+	#ifdef _WIN64
+		machineType = IMAGE_FILE_MACHINE_IA64;
+		stack.AddrPC.Offset = context.Rip;
+		stack.AddrPC.Mode = AddrModeFlat;
+		stack.AddrStack.Offset = context.Rsp;
+		stack.AddrStack.Mode = AddrModeFlat;
+		stack.AddrFrame.Offset = context.Rbp;
+		stack.AddrFrame.Mode = AddrModeFlat;
+	#else
+		machineType = IMAGE_FILE_MACHINE_I386;
+		stack.AddrPC.Offset = context.Eip;
+		stack.AddrPC.Mode = AddrModeFlat;
+		stack.AddrStack.Offset = context.Esp;
+		stack.AddrStack.Mode = AddrModeFlat;
+		stack.AddrFrame.Offset = context.Ebp;
+		stack.AddrFrame.Mode = AddrModeFlat;
+	#endif
+	
+	BOOL result;
+	char undecoratedName[256];
+
+	IMAGEHLP_MODULE64 moduleInfo;
+	memset(&moduleInfo, 0, sizeof(moduleInfo));
+	moduleInfo.SizeOfStruct = sizeof(IMAGEHLP_MODULE64);
+
+	char symbolInfoBuffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
+	memset(&symbolInfoBuffer, 0, sizeof(symbolInfoBuffer));
+	PSYMBOL_INFO symbolInfo = (PSYMBOL_INFO)&symbolInfoBuffer;
+	symbolInfo->SizeOfStruct = sizeof(SYMBOL_INFO);
+	symbolInfo->MaxNameLen = MAX_SYM_NAME;
+
+	int i;
+	for(i=0; i<50; i++){
+		result = StackWalkEx(machineType, process, thread, &stack, &context, NULL,
+			SymFunctionTableAccess64, SymGetModuleBase64, NULL, 0);
+		if(!result || !stack.AddrPC.Offset){
+			break;
+		}
+
+		symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
+		symbol->MaxNameLength = 255;
+
+		DWORD64 offsetSymbol = 0;
+		DWORD offsetLine = 0;
+		IMAGEHLP_LINE64 symbolLine = (IMAGEHLP_LINE64)0;
+
+		const void *address = 0;
+		const char *name = "??";
+		const char *sourceFile = "??";
+		int sourceLine = 0;
+
+		if(SymFromAddr(process, stack.AddrPC.Offset, &offsetSymbol, symbolInfo)){
+			address = (void*)symbolInfo->Address;
+			
+			UnDecorateSymbolName(symbolInfo->Name, (PSTR)undecoratedName, sizeof(undecoratedName), UNDNAME_COMPLETE);
+			name = undecoratedName;
+		}
+		/*
+		if(SymGetSymFromAddr64(process, (ULONG64)stack.AddrPC.Offset, &offsetSymbol, symbol)){
+			address = (void*)symbol->Address;
+			//name = symbol->Name;
+
+			UnDecorateSymbolName(symbol->Name, (PSTR)undecoratedName, sizeof(undecoratedName), UNDNAME_COMPLETE);
+			name = undecoratedName;
+		}
+		*/
+
+		if(SymGetLineFromAddr64(process, stack.AddrPC.Offset, &offsetLine, &symbolLine)){
+			sourceLine = (int)symbolLine.LineNumber;
+			sourceFile = symbolLine.FileName;
+		}
+		/*
+		if(SymGetModuleInfo64(process, stack.AddrPC.Offset, &moduleInfo)){
+			sourceFile = moduleInfo.ImageName;
+		}
+		*/
+		
+		if(module){
+			module->LogErrorFormat("%p: %s ; %s:%d", address, name, sourceFile, sourceLine);
+			
+		}else{
+			printf("%p: %s ; %s:%d\n", address, name, sourceFile, sourceLine);
+		}
+	}
+	
+	delete [] symbolBuffer;
+}
+
+static void logStackTrace(HANDLE process, deCRSimplyQuit *module){
+	void *stack[100];
+	unsigned short frames;
+	char symbolData[sizeof(SYMBOL_INFO) + 1024];
+	memset(&symbolData, 0, sizeof(symbolData));
+	
+	void *hack1 = (void*)&symbolData;
+	SYMBOL_INFO symbol = *((SYMBOL_INFO*)hack1);
+	
+	symbol.MaxNameLen = 1020;
+	
+	frames = CaptureStackBackTrace(0, 100, stack, NULL);
+	
+	int i;
+	for(i=0; i<frames; i++){
+		SymFromAddr(process, (DWORD64)stack[i], 0, &symbol);
+		
+		if(module){
+			module->LogErrorFormat(PRId64 "x: %s", symbol.Address, symbol.Name);
+			
+		}else{
+			printf("%p: %s\n", (void*)symbol.Address, (char*)symbol.Name);
+		}
+	}
+}
+
+static void writeMiniDump(_EXCEPTION_POINTERS *ei){
+    BOOL bMiniDumpSuccessful;
+    WCHAR szPath[MAX_PATH]; 
+    WCHAR szFileName[MAX_PATH]; 
+    const WCHAR szAppName[] = L"Dragengine";
+	const WCHAR szVersion[] = L"" MDUMP_VERSION;
+    DWORD dwBufferSize = MAX_PATH;
+    HANDLE hDumpFile;
+    SYSTEMTIME stLocalTime;
+    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
+
+    GetLocalTime(&stLocalTime);
+    GetTempPath(dwBufferSize, szPath);
+
+    StringCchPrintf(szFileName, MAX_PATH, L"%s%s", szPath, szAppName);
+    CreateDirectory(szFileName, NULL);
+
+    StringCchPrintf(szFileName, MAX_PATH, L"%s%s\\%s-%04d%02d%02d-%02d%02d%02d-%ld-%ld.dmp",
+		szPath, szAppName, szVersion, stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
+		stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond,
+		GetCurrentProcessId(), GetCurrentThreadId());
+	hDumpFile = CreateFileW(szFileName, GENERIC_READ|GENERIC_WRITE,
+		FILE_SHARE_WRITE|FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+
+    ExpParam.ThreadId = GetCurrentThreadId();
+    ExpParam.ExceptionPointers = ei;
+    ExpParam.ClientPointers = TRUE;
+
+    bMiniDumpSuccessful = MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(),
+		hDumpFile, MiniDumpWithDataSegs, &ExpParam, NULL, NULL);
+}
+
 static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 	decrsqCoreFault *coreFault = decrsqCoreFault::GetGlobalCoreFault();
 	deCRSimplyQuit *module = NULL;
@@ -125,18 +298,11 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 		}
 	}
 	
-	// stack trace
-	void *stack[ 100 ];
-	unsigned short frames;
-	char symbolData[ sizeof( SYMBOL_INFO ) + 1024 ];
-	memset( &symbolData, 0, sizeof( symbolData ) );
-	
-	void *hack1 = ( void* )&symbolData;
-	SYMBOL_INFO symbol = *( ( SYMBOL_INFO* )hack1 );
-	const HANDLE process = GetCurrentProcess();
-	
-	if( ! SymSetOptions( SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS
-	| SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_CASE_INSENSITIVE | SYMOPT_LOAD_LINES ) ){
+	DWORD symOptions = SYMOPT_LOAD_LINES | SYMOPT_CASE_INSENSITIVE;
+	symOptions |= SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS | SYMOPT_UNDNAME;
+	symOptions |= SYMOPT_INCLUDE_32BIT_MODULES;
+
+	if( ! SymSetOptions( symOptions ) ){
 		if( module ){
 			module->LogError( "Failed calling SymSetOptions\n" );
 		}else{
@@ -144,6 +310,7 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 		}
 	}
 	
+	const HANDLE process = GetCurrentProcess();
 	if( ! SymInitialize( process, NULL, true ) ){
 		if( module ){
 			module->LogError( "Failed calling SymInitialize\n" );
@@ -152,22 +319,18 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 		}
 	}
 	
-	symbol.MaxNameLen = 1020;
-	
-	frames = CaptureStackBackTrace( 0, 100, stack, NULL );
-	
-	for( i=0; i<frames; i++ ){
-		SymFromAddr( process, ( DWORD64 )stack[ i ], 0, &symbol );
-		
-		if( module ){
-			module->LogErrorFormat( "%p: %s", ( void* )symbol.Address, symbol.Name );
-			
-		}else{
-			printf( "%p: %s\n", ( void* )symbol.Address, symbol.Name );
-		}
+	// stack trace
+	#ifdef OS_W32_VS
+	logStackTraceVS(*ei, process, module);
+	#else
+	logStackTrace(process, module);
+	#endif
+
+	if(ei){
+		writeMiniDump(ei);
 	}
-	
-	exit( -1 );
+
+	exit( EXCEPTION_CONTINUE_SEARCH );
 }
 #endif
 
