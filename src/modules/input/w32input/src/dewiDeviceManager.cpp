@@ -280,21 +280,21 @@ void dewiDeviceManager::pCreateControllers(){
 	winrt::init_apartment();
 	
 	const deMutexGuard guard( pMutex );
-	for ( wrgi::RawGameController const& controller : wrgi::RawGameController::RawGameControllers() ) {
-		if( GetWithController( controller ) ){
+	for(wrgi::RawGameController const& controller : wrgi::RawGameController::RawGameControllers()){
+		if(GetWithController(controller)){
 			continue;
 		}
 		
-		const dewiDeviceWinRTController::Ref device( dewiDeviceWinRTController::Ref::New(
-			new dewiDeviceWinRTController( pModule, controller ) ) );
+		const dewiDeviceWinRTController::Ref device(dewiDeviceWinRTController::Ref::New(
+			new dewiDeviceWinRTController(pModule, controller)));
 
-		if( device->GetType() != deInputDevice::edtGeneric ){
-			device->SetIndex( pDevices.GetCount() );
-			pDevices.Add( device );
+		if(device->GetType() != deInputDevice::edtGeneric){
+			device->SetIndex(pDevices.GetCount());
+			pDevices.Add(device);
 		}
 	}
 
-	pEventHandlerController = winrt::make_self<sEventHandlerController>( this );
+	pEventHandlerController = winrt::make_self<sEventHandlerController>(this);
 }
 
 void dewiDeviceManager::pProcessAddRemoveDevices(){
