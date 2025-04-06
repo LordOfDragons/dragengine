@@ -72,7 +72,7 @@ class BestMatchTreeList
 	protected class Entry
 		public var String name
 		public var Object object
-		public var Dictionary entries  //!< Dictionary mapping String to Entry
+		public var Dictionary entries //!< Dictionary mapping String to Entry
 		
 		public func new( String name )
 			this.name = name

@@ -204,7 +204,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H;MDUMP_VERSION="$(BuildVersion)"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -228,7 +228,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H;MDUMP_VERSION="$(BuildVersion)"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -256,7 +256,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;CRBASICRECOVERY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport);WIN32;FOXDLL;HAVE_GL_H;HAVE_GLU_H;HAVE_PNG_H;MDUMP_VERSION="$(BuildVersion)"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

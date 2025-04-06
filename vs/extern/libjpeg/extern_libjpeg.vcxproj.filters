@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\extern\libjpeg\SConscript" />
+    <None Include="build.ps1" />
   </ItemGroup>
 </Project>

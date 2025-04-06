@@ -1000,12 +1000,10 @@ class BaseGameApp extends Game
 		end
 		
 		try
-			pLoaders.getParameterTree().loadFromFile(\
-				pathConfiguration, pConfiguration)
+			pLoaders.getParameterTree().loadFromFile(pathConfiguration, pConfiguration)
 			
 		catch Exception e
-			pConsole.addError("Failed loading configuration file '" \
-				+ pathConfiguration + "'.", e)
+			pConsole.addError("Failed loading configuration file '" + pathConfiguration + "'.", e)
 		end
 		
 		//pConfiguration.log(pConsole, "BaseGameApp.Configuration")

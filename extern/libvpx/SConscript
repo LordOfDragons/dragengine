@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'libvpx-1.12.0'
+srcdir = 'libvpx-1.15.0'
 
 libLinkVersion = '1'
 libLinkName = 'vpx'
@@ -26,7 +26,7 @@ else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libvpx', 'lib_libvpx_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libvpx', 'lib_libvpx_fetch')
 
 # check if system libvpx is present
 hasSystemVpx = False

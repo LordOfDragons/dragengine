@@ -52,8 +52,7 @@ pType( type ),
 #ifdef OS_W32
 pUseDSA(false),
 #else
-pUseDSA(renderThread.HasChoices()
-	&& renderThread.GetChoices().GetUseDirectStateAccess()),
+pUseDSA(renderThread.HasChoices() && renderThread.GetChoices().GetUseDirectStateAccess()),
 #endif
 pSSBO( 0 ),
 pSSBOLocal( 0 ),

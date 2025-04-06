@@ -74,6 +74,9 @@ public:
 	/** \brief Add element. */
 	virtual void AddElement( decXmlElement *element );
 	
+	/** \brief Add element. */
+	virtual void InsertElement(decXmlElement *element, int beforeIndex);
+	
 	/** \brief Remove element. */
 	virtual void RemoveElement( decXmlElement *element );
 	

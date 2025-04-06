@@ -26,27 +26,27 @@ class CurveBezier
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create bezier curve with CurveBezierInterpolation.bezier interpolation. */
-	public func new()
+	func new()
 	end
 	
 	/**
 	 * \brief Create copy of bezier curve.
 	 * \version 1.9
 	 */
-	public func new(CurveBezier bezier)
+	func new(CurveBezier bezier)
 	end
 	
 	/**
 	 * \brief Create bezier curve set to linear mapping from (0,0) to (1,1).
 	 */
-	public static func CurveBezier newDefaultLinear()
+	static func CurveBezier newDefaultLinear()
 		return null
 	end
 	
 	/**
 	 * \brief Create bezier curve set to default bezier curve from (0,0) to (1,1).
 	 */
-	public static func CurveBezier newDefaultBezier()
+	static func CurveBezier newDefaultBezier()
 		return null
 	end
 	/*@}*/
@@ -56,7 +56,7 @@ class CurveBezier
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of points. */
-	public func int getPointCount()
+	func int getPointCount()
 		return 0
 	end
 	
@@ -64,7 +64,7 @@ class CurveBezier
 	 * \brief Point at position.
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
 	 */
-	public func Vector2 getPointAt(int position)
+	func Vector2 getPointAt(int position)
 		return null
 	end
 	
@@ -73,7 +73,7 @@ class CurveBezier
 	 * \version 1.9
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
 	 */
-	public func Vector2 getHandle1At(int position)
+	func Vector2 getHandle1At(int position)
 		return null
 	end
 	
@@ -82,7 +82,7 @@ class CurveBezier
 	 * \version 1.9
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
 	 */
-	public func Vector2 getHandle2At(int position)
+	func Vector2 getHandle2At(int position)
 		return null
 	end
 	
@@ -91,27 +91,27 @@ class CurveBezier
 	 * \details This method can be used to find the interval a point is located in by returning the
 	 *          most prior point. Returns -1 if there are no points satisfying this criteria.
 	 */
-	public func int findPointPriorTo(float coordinate)
+	func int findPointPriorTo(float coordinate)
 		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
-	public func int addPoint(Vector2 point, Vector2 handle1, Vector2 handle2)
+	func int addPoint(Vector2 point, Vector2 handle1, Vector2 handle2)
 		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
-	public func int addPoint(float pointX, float pointY, float handle1X, float handle1Y, float handle2X, float handle2Y)
+	func int addPoint(float pointX, float pointY, float handle1X, float handle1Y, float handle2X, float handle2Y)
 		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
-	public func int addPoint(Vector2 point)
+	func int addPoint(Vector2 point)
 		return 0
 	end
 	
 	/** \brief Add point returning index where it has been added. */
-	public func int addPoint(float pointX, float pointY)
+	func int addPoint(float pointX, float pointY)
 		return 0
 	end
 	
@@ -119,15 +119,15 @@ class CurveBezier
 	 * \brief Remove point from position.
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getPointCount().
 	 */
-	public func void removePointFrom(int position)
+	func void removePointFrom(int position)
 	end
 	
 	/** \brief Remove all points. */
-	public func void removeAllPoints()
+	func void removeAllPoints()
 	end
 	
 	/** \brief Interpolation mode. */
-	public func CurveBezierInterpolation getInterpolationMode()
+	func CurveBezierInterpolation getInterpolationMode()
 		return null
 	end
 	
@@ -135,26 +135,46 @@ class CurveBezier
 	 * \brief Set interpolation mode.
 	 * \throws EInvalidParam \em mode is not a valid value.
 	 */
-	public func void setInterpolationMode(CurveBezierInterpolation mode)
+	func void setInterpolationMode(CurveBezierInterpolation mode)
 	end
 	
 	/**
 	 * \brief Set curve to linear mapping from (0,0) to (1,1).
 	 */
-	public func void setDefaultLinear()
+	func void setDefaultLinear()
 	end
 	
 	/**
 	 * \brief Set curve to default bezier curve from (0,0) to (1,1).
 	 */
-	public func void setDefaultBezier()
+	func void setDefaultBezier()
 	end
 	
 	
 	
 	/** \brief Evaluates curve at position. */
-	public func float evaluateAt(float x)
+	func float evaluateAt(float x)
 		return 0.0
+	end
+	/*@}*/
+	
+	
+	
+	/** \name File Handling */
+	/*@{*/
+	/**
+	 * \brief Read curve from file reader.
+	 * \version 1.26
+	 */
+	static func CurveBezier readFromFile(FileReader reader)
+		return null
+	end
+	
+	/**
+	 * \brief Write curve to file writer.
+	 * \version 1.26
+	 */
+	func void writeToFile(FileWriter writer)
 	end
 	/*@}*/
 end

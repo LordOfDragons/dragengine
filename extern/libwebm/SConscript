@@ -10,7 +10,7 @@ Import('parent_env parent_targets parent_report')
 envLibrary = parent_env.Clone()
 
 # parameters
-libraryVersion = '1.0.0.29'
+libraryVersion = '1.0.0.31'
 
 srcdir = 'libwebm-libwebm-{}'.format(libraryVersion)
 
@@ -22,7 +22,7 @@ else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libwebm', 'lib_libwebm_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'libwebm', 'lib_libwebm_fetch')
 
 # check if system libwebm is present
 hasSystemWebm = False
@@ -73,6 +73,13 @@ def libwebmBuild(target, source, env):
 	# that properly tracks this library. using --libdir we force the 'lib' directory name and all is fine
 	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
 	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
+	
+	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
+	if cmakeCFlags:
+		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
+	
 	if env['with_debug']:
 		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
 	else:
@@ -84,7 +91,6 @@ def libwebmBuild(target, source, env):
 		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
 		cmdline.append('-DANDROID_TOOLCHAIN=clang')
 		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
-		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
 		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
 		
 	elif 'CROSSCOMPILE_HOST' in env:

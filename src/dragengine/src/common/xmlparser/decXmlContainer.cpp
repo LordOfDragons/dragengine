@@ -62,12 +62,17 @@ decXmlElement *decXmlContainer::GetElementAt( int index ) const{
 }
 
 void decXmlContainer::AddElement( decXmlElement *element ){
-	if( ! element ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(element)
 	
 	pElements.Add( element );
 	element->SetParent( this );
+}
+
+void decXmlContainer::InsertElement(decXmlElement *element, int beforeIndex){
+	DEASSERT_NOTNULL(element)
+	
+	pElements.Insert(element, beforeIndex);
+	element->SetParent(this);
 }
 
 void decXmlContainer::RemoveElement( decXmlElement *element ){

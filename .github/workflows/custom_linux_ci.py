@@ -5,9 +5,13 @@ with_warnerrors = 'no'
 with_debug = 'no'
 with_debug_symbols = 'yes'
 with_verbose = 'no'
-with_threads = '14'
+with_threads = '4'
 with_ci = 'yes'
 version = '{BuildVersion}'
+
+# github breaking build system fix
+with_cmake_flags = '-DCMAKE_POLICY_VERSION_MINIMUM=3.5'
+with_cmake_c_flags = '-fPIC'
 
 # external library configuration
 ##################################

@@ -37,6 +37,9 @@ IGDE related (developing games):
   
   When installed from App Store the directory can be located in a different place due to OS restrictions: "%LocalAppData%\Packages\DragonDreams.Dragengine.IGDE_14hw6vre8sh8m\LocalCache\Local\DEIGDE\Logs"
 
+**Crash dumps**
+If crashed on Windows a crash dump is written to the temporary directory. Please attach this one too if present. The file is named "<version>-<year><month><day>-<hour><minute><second>-*.dmp" (for example "1.25-20250405-182531-12345-12345.dmp") and is the most recent file located in the directory "%Temp%\Dragengine".
+
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 

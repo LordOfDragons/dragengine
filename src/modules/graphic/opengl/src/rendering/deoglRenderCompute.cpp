@@ -545,10 +545,11 @@ void deoglRenderCompute::BuildRenderTask( const deoglRenderPlan &plan, deoglComp
 	for( i=0; i<passCount; i++ ){
 		shaderBuild.SetParameterUInt( 0, i );
 		OGL_CHECK( renderThread, pglDispatchComputeIndirect( dispatchOffset ) );
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+			| GL_SHADER_STORAGE_BARRIER_BIT ) );
 	}
 	
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_COMMAND_BARRIER_BIT ) );
 	pSSBOCounters->DeactivateDispatchIndirect();
 	
 	SortRenderTask( renderTask );
@@ -602,7 +603,8 @@ void deoglRenderCompute::BuildRenderTaskSkyShadow( const deoglRenderPlanSkyLight
 	renderTask.GetSSBOCounters()->ActivateAtomic( 0 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( count - 1 ) / 64 + 1, 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+		| GL_SHADER_STORAGE_BARRIER_BIT ) );
 	
 	// pass 2+, other geometry
 	pPipelineBuildRenderTask->Activate();
@@ -625,10 +627,11 @@ void deoglRenderCompute::BuildRenderTaskSkyShadow( const deoglRenderPlanSkyLight
 	for( i=1; i<passCount; i++ ){
 		shaderBuild.SetParameterUInt( 0, i );
 		OGL_CHECK( renderThread, pglDispatchComputeIndirect( dispatchOffset ) );
-		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT ) );
+		OGL_CHECK( renderThread, pglMemoryBarrier( GL_ATOMIC_COUNTER_BARRIER_BIT
+			| GL_SHADER_STORAGE_BARRIER_BIT ) );
 	}
 	
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_COMMAND_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_COMMAND_BARRIER_BIT ) );
 	pSSBOCounters->DeactivateDispatchIndirect();
 	
 	// sort and finish
@@ -716,7 +719,8 @@ void deoglRenderCompute::SortRenderTask( deoglComputeRenderTask &renderTask ){
 	pSSBOCounters->ActivateAtomic( 0 );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute( ( ( maxCount - 1 ) / 64 ) + 1, 1, 1 ) );
-	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT ) );
+	OGL_CHECK( renderThread, pglMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT
+		| GL_ATOMIC_COUNTER_BARRIER_BIT ) );
 	
 	// pass 2
 	deoglDebugTraceGroup dtSubInst2( renderThread, "Pass2" );

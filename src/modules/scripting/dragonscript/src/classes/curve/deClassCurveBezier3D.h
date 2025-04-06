@@ -39,6 +39,7 @@ class deScriptingDragonScript;
 class deClassCurveBezier3D : public dsClass{
 private:
 	deScriptingDragonScript &pDS;
+	dsClass *pClsCurveBezierInterpolation;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -68,6 +69,8 @@ public:
 	
 	/** \brief Push curve. */
 	void PushCurve( dsRunTime *rt, const decCurveBezier3D &curve );
+	
+	inline dsClass *GetClassCurveBezierInterpolation() const{ return pClsCurveBezierInterpolation; }
 	/*@}*/
 	
 	
@@ -82,6 +85,9 @@ private:
 		dsClass *clsString;
 		dsClass *clsObject;
 		dsClass *clsVector;
+		dsClass *clsCurveBezierInterpolation;
+		dsClass *clsFileReader;
+		dsClass *clsFileWriter;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -107,8 +113,14 @@ private:
 	DEF_NATFUNC( nfRemovePointFrom );
 	DEF_NATFUNC( nfRemoveAllPoints );
 	
+	DEF_NATFUNC(nfGetInterpolationMode);
+	DEF_NATFUNC(nfSetInterpolationMode);
+	
 	DEF_NATFUNC( nfEvaluateAt );
 	DEF_NATFUNC( nfEvaluateAt2 );
+	
+	DEF_NATFUNC(nfReadFromFile);
+	DEF_NATFUNC(nfWriteToFile);
 	
 	DEF_NATFUNC( nfHashCode );
 	DEF_NATFUNC( nfEquals );

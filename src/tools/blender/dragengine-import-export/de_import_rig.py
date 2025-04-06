@@ -51,7 +51,8 @@ class OBJECT_OT_ImportRig(bpy.types.Operator, ImportHelper):
 		), name = "Logging", description = "Choose amount of logging", default = '1')
 	bone_length: bpy.props.FloatProperty(name="Bone Length", description="Length of bones", default=0.1, min=0, soft_max=1)
 	
-	def __init__(self):
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
 		self.debugLevel = 1
 		self.boneLength = 0.1
 	
