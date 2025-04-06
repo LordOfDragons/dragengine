@@ -326,6 +326,124 @@ class BehaviorFactoryHelper
 	
 	
 	/**
+	 * \ref NavigationSpace behavior.
+	 * \version 1.26
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorNavigationSpace navigationSpace(BehaviorElementClass eclass,\
+	Dictionary parameters, String name, String defaultId)
+		var ECBehaviorNavigationSpace b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorNavigationSpace.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorNavigationSpace not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorNavigationSpace.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default NavigationSpace behavior using parameter "navigationSpace".
+	 * \version 1.26
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorNavigationSpace defaultNavigationSpace(BehaviorElementClass eclass, Dictionary parameters)
+		return navigationSpace(eclass, parameters, "navigationSpace", "")
+	end
+	
+	/**
+	 * \ref Optional NavigationSpace behavior using parameter "NavigationSpace".
+	 * \version 1.26
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorNavigationSpace optionalNavigationSpace(BehaviorElementClass eclass, Dictionary parameters)
+		return navigationSpace(eclass, parameters, "navigationSpace", null)
+	end
+	
+	
+	/**
+	 * \ref NavigationBlocker behavior.
+	 * \version 1.26
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorNavigationBlocker navigationBlocker(BehaviorElementClass eclass,\
+	Dictionary parameters, String name, String defaultId)
+		var ECBehaviorNavigationBlocker b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorNavigationBlocker.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorNavigationBlocker not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorNavigationBlocker.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default NavigationBlocker behavior using parameter "navigationBlocker".
+	 * \version 1.26
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorNavigationBlocker defaultNavigationBlocker(BehaviorElementClass eclass, Dictionary parameters)
+		return navigationBlocker(eclass, parameters, "navigationBlocker", "")
+	end
+	
+	/**
+	 * \ref Optional NavigationBlocker behavior using parameter "NavigationBlocker".
+	 * \version 1.26
+	 * 
+	 * Parameter can be of string type or null. Throws exception if as parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorNavigationBlocker optionalNavigationBlocker(BehaviorElementClass eclass, Dictionary parameters)
+		return navigationBlocker(eclass, parameters, "navigationBlocker", null)
+	end
+	
+	
+	/**
 	 * \ref Behavior tree behavior.
 	 * 
 	 * Parameter can be of string type or null. Throws exception if as parameter is not null
