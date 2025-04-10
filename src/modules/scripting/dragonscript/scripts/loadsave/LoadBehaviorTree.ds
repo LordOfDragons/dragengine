@@ -77,7 +77,7 @@ class LoadBehaviorTree extends BaseXmlLoader
 				throw EInvalidParam.new()
 			end
 			
-			behaviorTree = BehaviorTree.new()
+			behaviorTree = BehaviorTree.new(filename)
 			readBehaviorTree(root, behaviorTree, File.new(filename).getParent().getPath())
 			
 			pBehaviorTrees.setAt(filename, behaviorTree)

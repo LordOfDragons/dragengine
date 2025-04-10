@@ -496,7 +496,18 @@ class BTContext
 		flags.writeToFile(writer)
 		
 		if pCurrentRule != null
-			writer.writeString8(pCurrentRule.getID())
+			var String id = pCurrentRule.getID()
+			if id == null
+				var Array path = Array.new()
+				var BTRule rule = pCurrentRule
+				while rule != null
+					path.insert(0, rule.getID())
+					rule = rule.getParent()
+				end
+				throw EInvalidParam.new("can not persist behavior tree '{}' with null id rule: {}".\
+					format(Array.newWith(pBehaviorTree.getFilename(), path)))
+			end
+			writer.writeString8(id)
 		end
 	end
 end
