@@ -47,6 +47,7 @@ pin Dragengine.Utils
  */
 class BTRuleAction extends BTRule
 	var String pActionID
+	var bool pDoNoFail
 	
 	
 	
@@ -70,6 +71,22 @@ class BTRuleAction extends BTRule
 		return null
 	end
 	
+	/**
+	 * \brief Return success if action fails.
+	 * \version 1.26
+	 */
+	func bool getDoNotFail()
+		return pDoNoFail
+	end
+	
+	/**
+	 * \brief Set to return success if action fails.
+	 * \version 1.26
+	 */
+	func void setDoNotFail(bool doNotFail)
+		pDoNoFail = doNotFail
+	end
+	
 	
 	
 	/**
@@ -81,7 +98,7 @@ class BTRuleAction extends BTRule
 		var BTAction action = context.getAction(pActionID)
 		
 		if action == null or not evaluateConditions(context)
-			return BTResult.failure
+			return pDoNoFail if BTResult.success else BTResult.failure
 		end
 		
 		var BTResult result = action.runAction(context, getParameters())

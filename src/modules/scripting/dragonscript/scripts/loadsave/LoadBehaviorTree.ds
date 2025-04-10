@@ -212,6 +212,9 @@ class LoadBehaviorTree extends BaseXmlLoader
 	String idPrefix, String parentID)
 		var BTRuleAction rule = BTRuleAction.new(pGetRuleID(root, behaviorTree, idPrefix, parentID),\
 			root.getAttributeNamed("name"))
+		if root.hasAttributeNamed("doNotFail")
+			rule.setDoNotFail(root.getAttributeNamed("doNotFail").equals("true"))
+		end
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if not readRuleCommon(element, rule)
