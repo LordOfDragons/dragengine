@@ -499,11 +499,25 @@ class BTContext
 			var String id = pCurrentRule.getID()
 			if id == null
 				var Array path = Array.new()
-				var BTRule rule = pCurrentRule
+				var BTRule prule, rule = pCurrentRule
+				var int rindex
+				var String extra
+				
 				while rule != null
-					path.insert(0, rule.getID())
-					rule = rule.getParent()
+					prule = rule.getParent()
+					rindex = 0
+					extra = ""
+					if prule != null and prule castable BTRuleList
+						rindex = (prule cast BTRuleList).indexOfRule(rule)
+					end
+					if rule castable BTRuleAction
+						extra = ":" + (rule cast BTRuleAction).getActionID()
+					end
+					path.insert(0, "'{}'({}{})[{}]".format(Array.newWith(\
+						rule.getID(), rule.className().split('.').getAt(-1), extra, rindex)))
+					rule = prule
 				end
+				
 				throw EInvalidParam.new("can not persist behavior tree '{}' with null id rule: {}".\
 					format(Array.newWith(pBehaviorTree.getFilename(), path)))
 			end
