@@ -1,5 +1,6 @@
 from SConsCommon import *
 from SConsPlatformAndroid import androidUpdateEnv
+from SConsPlatformWebWasm import webWasmUpdateEnv
 import shlex
 
 
@@ -155,6 +156,7 @@ if not (parent_env['OSPosix'] or parent_env['OSWindows'] or parent_env['OSBeOS']
 params = Variables(['custom.py'])
 
 params.Add(EnumVariable('platform_android', 'Build for Android platform', 'no', ['no', 'armv7', 'armv8', 'x86', 'quest']))
+params.Add(BoolVariable('platform_webwasm', 'Build for Web WASM platform', False))
 params.Add(BoolVariable('with_tests', 'Build engine tests', False))
 params.Add(BoolVariable('with_debug', 'Build with debug symbols for GDB usage', False))
 params.Add(BoolVariable('with_debug_symbols', 'For release build only force debug symbols', False))
@@ -666,6 +668,10 @@ if parent_env['platform_android'] != 'no':
 
 	androidUpdateEnv(parent_env)
 
+# web wasm
+if parent_env['platform_webwasm']:
+	webWasmUpdateEnv(parent_env)
+
 # disable verbose compile messages if requested
 if not parent_env['with_verbose']:
 	DisableVerboseCompiling(parent_env)
@@ -696,7 +702,8 @@ parent_env.Append(CPPFLAGS = ['-Wshadow', '-Wwrite-strings'])
 # he should know what he is doing so stop breaking builds with non-sense errors.
 # 
 # and to add insult to injury MacOS does not understand the flag. great... just great
-if not parent_env['OSMacOS'] and not parent_env['CROSSCOMPILE_CLANG'] and parent_env['platform_android'] == 'no':
+if (not parent_env['OSMacOS'] and not parent_env['CROSSCOMPILE_CLANG']
+	and parent_env['platform_android'] == 'no' and not parent_env['platform_webwasm']):
 	parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
 
 if parent_env['with_warnerrors']:
@@ -755,6 +762,8 @@ if parent_env['platform_android'] != 'no':
 	parent_report['ndkroot'] = parent_env.subst(parent_env['ndkroot'])
 	parent_report['apilevel'] = parent_env['apilevel']
 	parent_report['hardfp'] = 'yes' if parent_env['hardfp'] else 'no'
+
+parent_report['platform_webwasm'] = 'yes' if parent_env['platform_webwasm'] else 'no'
 
 parent_report['build dragengine tests'] = 'yes' if parent_env['with_tests'] else 'no'
 parent_report['treat warnings as errors'] = 'yes' if parent_env['with_warnerrors'] else 'no'

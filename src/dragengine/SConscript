@@ -130,6 +130,7 @@ def buildWriteConfig(source, target, env):
 	configFileDefines['OS_BEOS'] = env['OSBeOS']
 	configFileDefines['OS_MACOS'] = env['OSMacOS']
 	configFileDefines['OS_ANDROID'] = env['platform_android'] != 'no'
+	configFileDefines['OS_WEBWASM'] = env['platform_webwasm']
 	if env['platform_android'] == 'quest':
 		configFileDefines['OS_ANDROID_QUEST'] = True
 	if env['OSPosix'] or env['OSMacOS']:
