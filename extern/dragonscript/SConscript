@@ -83,7 +83,7 @@ def dragonscriptBuild( target, source, env ):
 			f.write('crosscompile = "android"\n')
 			if env['platform_android'] == 'armv7':
 				f.write('android_arch = "armv7a"\n')
-			elif env['platform_android'] == 'armv8':
+			elif env['platform_android'] in ['armv8', 'quest']:
 				f.write('android_arch = "aarch64"\n')
 			else:
 				f.write('android_arch = "x86"\n')

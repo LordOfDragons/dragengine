@@ -94,7 +94,7 @@ def libtheoraBuild( target, source, env ):
 		cmdline.append( '--enable-static=no' )
 	
 	if 'CROSSCOMPILE_HOST' in env:
-		if env['platform_android'] == 'armv8':
+		if env['platform_android'] in ['armv8', 'quest']:
 			cmdline.append('--host=armv8-android-linux')
 			cmdline.append('--target=armv8-android-linux')
 		else:

@@ -103,7 +103,7 @@ def libvpxBuild(target, source, env):
 			cmdline.append('--target=generic-gnu')
 		elif env['platform_android'] == 'armv7':
 			cmdline.append('--target=armv7-android-gcc')
-		elif env['platform_android'] == 'armv8':
+		elif env['platform_android'] in ['armv8', 'quest']:
 			cmdline.append('--target=arm64-android-gcc')
 
 	script.append('{} || exit 1'.format(' '.join(cmdline)))

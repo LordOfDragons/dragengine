@@ -63,7 +63,10 @@ def libwebmBuild(target, source, env):
 	
 	if env['platform_android'] != 'no':
 		# fix for android ndk 27+ breaking cmake
-		script.append('sed -i -e "s/cmake_minimum_required(VERSION 3.2)/cmake_minimum_required(VERSION 3.5)/" ../libwebm-libwebm-1.0.0.29/CMakeLists.txt')
+		parts = ['sed', '-i', '-e',
+			'"s/cmake_minimum_required(VERSION 3.2)/cmake_minimum_required(VERSION 3.5)/"',
+			'../libwebm-libwebm-{}/CMakeLists.txt'.format(libraryVersion)]
+		script.append(' '.join(parts))
 	
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
