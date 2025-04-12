@@ -71,6 +71,8 @@ def appendLibrary(env, library, libs, withLibs=True):
 		env.Append(LIBPATH = library['libpath'])
 	if 'cppflags' in library:
 		env.Append(CPPFLAGS = library['cppflags'])
+	if 'linkflags' in library:
+		env.Append(LINKFLAGS = library['linkflags'])
 
 # this is a ugly hack but there is no other way to get it working. we have to force
 # the compiler to include the entire content of the static library. if not done like

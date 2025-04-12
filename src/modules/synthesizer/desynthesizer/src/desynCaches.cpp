@@ -46,6 +46,7 @@ desynCaches::desynCaches( deDESynthesizer &dsyn ) :
 pDSyn( dsyn ),
 pSound( NULL )
 {
+	(void)pDSyn;
 	try{
 		pSound = new deCacheHelper( &dsyn.GetVFS(),
 			decPath::CreatePathUnix( "/cache/local/sound" ) );

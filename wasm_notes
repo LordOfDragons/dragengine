@@ -1,0 +1,27 @@
+builds under WASM:
+  emscons scons \
+    ai_deai ani_deanimator anim_deanim anim_fbx \
+    arc_delga aud_null cr_simplyquit dragengine \
+    font_defont gra_null img_ies img_png img_png3d \
+    img_tga img_webp img_webp3d lang_delangpack \
+    mdl_demodel mdl_fbx net_basic occm_deocclusionmesh \
+    phy_bullet rig_derig rig_fbx skin_deskin skin_fbx \
+    snd_ogg synth_desynthesizer vid_apng vid_webm vr_null \
+    aud_openal
+
+not yet building under WASM:
+  emscons scons lib_libjpeg lib_libtheora lib_openxr
+
+will not work under WASM but has replacement:
+  lib_openal -> emscripten internal implementation
+
+gra_opengl
+img_jpeg
+lib_denetwork
+lib_deremotelauncher
+lib_dragonscript
+lib_sndio
+scr_dragonscript
+shared_vulkan
+vid_theora
+vr_openxr

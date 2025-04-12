@@ -10,6 +10,9 @@ Import('parent_env parent_targets parent_report')
 if parent_env['platform_android'] != 'no':
 	Return() # libudev not supported on android
 
+if parent_env['platform_webwasm']:
+	Return()
+
 envLibrary = parent_env.Clone()
 
 # we can not link fox statically since this fails with a design concept present in fox

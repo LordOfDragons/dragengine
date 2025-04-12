@@ -10,6 +10,9 @@ Import('parent_env parent_targets parent_report')
 if parent_env['platform_android'] != 'no':
 	Return()
 
+if parent_env['platform_webwasm']:
+	Return()
+
 if parent_env['OSBeOS']:
 	Return()
 
