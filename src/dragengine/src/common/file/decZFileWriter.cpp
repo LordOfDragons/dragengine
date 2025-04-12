@@ -47,8 +47,6 @@
 ////////////////////////////
 
 decZFileWriter::decZFileWriter( decBaseFileWriter *writer ) :
-pPureMode( false ),
-
 pZStream( NULL ),
 
 pBufferIn( NULL ),
@@ -65,8 +63,6 @@ pBufferOutSize( 0 )
 }
 
 decZFileWriter::decZFileWriter( decBaseFileWriter *writer, bool pureMode ) :
-pPureMode( pureMode ),
-
 pZStream( NULL ),
 
 pBufferIn( NULL ),
