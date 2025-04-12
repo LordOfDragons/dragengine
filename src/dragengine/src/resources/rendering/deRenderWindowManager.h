@@ -68,16 +68,19 @@ public:
 	
 	/** \brief Create render window inside a host window. */
 	#ifdef OS_ANDROID
-	deRenderWindow *CreateRenderWindowInside( void *window );
-	#endif
-	#ifdef OS_BEOS
-	deRenderWindow *CreateRenderWindowInside( BWindow *window );
-	#endif
-	#if defined OS_UNIX && defined HAS_LIB_X11
-	deRenderWindow *CreateRenderWindowInside( Window window );
-	#endif
-	#ifdef OS_W32
-	deRenderWindow *CreateRenderWindowInside( HWND window );
+	deRenderWindow *CreateRenderWindowInside(void *window);
+	
+	#elif defined OS_WEBWASM
+	deRenderWindow *CreateRenderWindowInside(void *window);
+	
+	#elif defined OS_BEOS
+	deRenderWindow *CreateRenderWindowInside(BWindow *window);
+	
+	#elif defined OS_UNIX_X11
+	deRenderWindow *CreateRenderWindowInside(Window window);
+	
+	#elif defined OS_W32
+	deRenderWindow *CreateRenderWindowInside(HWND window);
 	#endif
 	
 	/** \brief Release leaking resources and report them. */

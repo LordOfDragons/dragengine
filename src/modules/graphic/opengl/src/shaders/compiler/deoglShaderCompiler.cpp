@@ -252,11 +252,11 @@ public:
 class cOptionalMutexGuard{
 private:
 	deMutex &pMutex;
-	bool pEnable, pLocked;
+	bool pEnable;
 	
 public:
 	cOptionalMutexGuard(deMutex &mutex, bool enable) :
-	pMutex(mutex), pEnable(enable), pLocked(false){
+	pMutex(mutex), pEnable(enable){
 		if(enable){
 			mutex.Lock();
 		}
@@ -286,6 +286,7 @@ pCacheId(program.GetCacheId()),
 pLength(0),
 pFormat(0)
 {
+	(void)pMutexLogging;
 	const GLuint handler = compiled.GetHandleShader();
 	SC_OGL_CHECK(renderThread, pglGetProgramiv(handler, GL_PROGRAM_BINARY_LENGTH, &pLength));
 	DEASSERT_TRUE(pLength > 0)
@@ -1285,12 +1286,18 @@ void deoglShaderCompiler::pPreparePreprocessor(const deoglShaderDefines &defines
 	}
 	
 	#ifdef OS_ANDROID
-	pPreprocessor.SetSymbol( "ANDROID", "1" );
-	pPreprocessor.SetSymbol( "OPENGLES", "1" );
+	pPreprocessor.SetSymbol("ANDROID", "1");
+	pPreprocessor.SetSymbol("OPENGLES", "1");
 	pPreprocessor.SetSymbol("ARG_SAMP_HIGHP", "highp");
 	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "mediump");
 	pPreprocessor.SetSymbol("ARG_SAMP_LOWP", "lowp");
 	//pPreprocessor.SourcesAppend( "float modf( in float x, out float i ){ i=floor(x); return fract(x); }\n" );
+	
+	#elif defined WITH_OPENGLES
+	pPreprocessor.SetSymbol("OPENGLES", "1");
+	pPreprocessor.SetSymbol("ARG_SAMP_HIGHP", "highp");
+	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "highp");
+	pPreprocessor.SetSymbol("ARG_SAMP_LOWP", "highp");
 	
 	#else
 	pPreprocessor.SetSymbol("ARG_SAMP_HIGHP", "");
@@ -1468,7 +1475,7 @@ bool deoglShaderCompiler::pLinkShader( GLuint handle ){
 void deoglShaderCompiler::pOutputShaderToFile(const char *file){
 	const int number = pLanguage.NextShaderFileNumber();
 	
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
 	deoglRTLogger &logger = renderThread.GetLogger();
 	{

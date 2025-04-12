@@ -32,7 +32,7 @@
 #include "../canvas/deCanvasViewReference.h"
 #include "../../common/string/decString.h"
 
-#if defined OS_UNIX && defined HAS_LIB_X11
+#ifdef OS_UNIX_X11
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #endif
@@ -86,26 +86,31 @@ public:
 	
 	
 private:
-#ifdef OS_ANDROID
+	#ifdef OS_ANDROID
 	void *pHostWindow;
 	void *pWindow;
-#endif
-#ifdef OS_W32
-	HWND pHostWindow;
-	HWND pWindow;
-#endif
-#if defined OS_UNIX && defined HAS_LIB_X11
-	Window pHostWindow;
-	Window pWindow;
-#endif
-#ifdef OS_BEOS
+	
+	#elif defined OS_WEBWASM
+	void *pHostWindow;
+	void *pWindow;
+	
+	#elif defined OS_BEOS
 	BWindow *pHostWindow;
 	BWindow *pWindow;
-#endif
-#ifdef OS_MACOS
+	
+	#elif defined OS_W32
+	HWND pHostWindow;
+	HWND pWindow;
+	
+	#elif defined OS_UNIX_X11
+	Window pHostWindow;
+	Window pWindow;
+	
+	#elif defined OS_MACOS
 	NSWindow *pHostWindow;
 	NSWindow *pWindow;
-#endif
+	#endif
+	
 	decString pTitle;
 	int pX;
 	int pY;
@@ -147,17 +152,20 @@ public:
 	/** \brief Hosting render window or NULL if not set. */
 	#ifdef OS_ANDROID
 	inline void *GetHostWindow() const{ return pHostWindow; }
-	#endif
-	#ifdef OS_W32
-	inline HWND GetHostWindow() const{ return pHostWindow; }
-	#endif
-	#ifdef OS_BEOS
+	
+	#elif defined OS_WEBWASM
+	inline void *GetHostWindow() const{ return pHostWindow; }
+	
+	#elif defined OS_BEOS
 	inline BWindow *GetHostWindow() const{ return pHostWindow; }
-	#endif
-	#ifdef OS_MACOS
+	
+	#elif defined OS_W32
+	inline HWND GetHostWindow() const{ return pHostWindow; }
+	
+	#elif defined OS_MACOS
 	inline NSWindow *GetHostWindow() const{ return pHostWindow; }
-	#endif
-	#if defined OS_UNIX && defined HAS_LIB_X11
+	
+	#elif defined OS_UNIX_X11
 	inline Window GetHostWindow() const{ return pHostWindow; }
 	#endif
 	
@@ -168,35 +176,41 @@ public:
 	 * For this reason for use only by deRenderWindowManager.
 	 */
 	#ifdef OS_ANDROID
-	void SetHostWindow( void *window );
-	#endif
-	#ifdef OS_W32
-	void SetHostWindow( HWND window );
-	#endif
-	#ifdef OS_BEOS
-	void SetHostWindow( BWindow *window );
-	#endif
-	#ifdef OS_MACOS
-	void SetHostWindow( NSWindow *window );
-	#endif
-	#if defined OS_UNIX && defined HAS_LIB_X11
-	void SetHostWindow( Window window );
+	void SetHostWindow(void *window);
+	
+	#elif defined OS_WEBWASM
+	void SetHostWindow(void *window);
+	
+	#elif defined OS_BEOS
+	void SetHostWindow(BWindow *window);
+	
+	#elif defined OS_W32
+	void SetHostWindow(HWND window);
+	
+	#elif defined OS_MACOS
+	void SetHostWindow(NSWindow *window);
+	
+	#elif defined OS_UNIX_X11
+	void SetHostWindow(Window window);
 	#endif
 	
 	/** \brief Render window. */
 	#ifdef OS_ANDROID
 	inline void *GetWindow() const{ return pWindow; }
-	#endif
-	#ifdef OS_W32
+	
+	#elif defined OS_WEBWASM
+	inline void *GetWindow() const{ return pWindow; }
+	
+	#elif defined OS_W32
 	inline HWND GetWindow() const{ return pWindow; }
-	#endif
-	#ifdef OS_BEOS
+	
+	#elif defined OS_BEOS
 	inline BWindow *GetWindow() const{ return pWindow; }
-	#endif
-	#ifdef OS_MACOS
+	
+	#elif defined OS_MACOS
 	inline NSWindow *GetWindow() const{ return pWindow; }
-	#endif
-	#if defined OS_UNIX && defined HAS_LIB_X11
+	
+	#elif defined OS_UNIX_X11
 	inline Window GetWindow() const{ return pWindow; }
 	#endif
 	
@@ -206,19 +220,22 @@ public:
 	 * For use by Graphic Module only.
 	 */
 	#ifdef OS_ANDROID
-	void SetWindow( void *window );
-	#endif
-	#ifdef OS_W32
-	void SetWindow( HWND window );
-	#endif
-	#ifdef OS_BEOS
-	void SetWindow( BWindow *window );
-	#endif
-	#ifdef OS_MACOS
-	void SetWindow( NSWindow *window );
-	#endif
-	#if defined OS_UNIX && defined HAS_LIB_X11
-	void SetWindow( Window window );
+	void SetWindow(void *window);
+	
+	#elif defined OS_WEBWASM
+	void SetWindow(void *window);
+	
+	#elif defined OS_BEOS
+	void SetWindow(BWindow *window);
+	
+	#elif defined OS_W32
+	void SetWindow(HWND window);
+	
+	#elif defined OS_MACOS
+	void SetWindow(NSWindow *window);
+	
+	#elif defined OS_UNIX_X11
+	void SetWindow(Window window);
 	#endif
 	
 	/** \brief X position in pixels. */

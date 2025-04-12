@@ -117,8 +117,6 @@ private:
 	decVector4 pDepthToPositionStereo;
 	decVector2 pDepthToPositionStereo2;
 	decVector2 pDepthSampleOffset;
-	int pViewportX;
-	int pViewportY;
 	int pViewportWidth;
 	int pViewportHeight;
 	float pAspectRatio;

@@ -24,7 +24,7 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 
 #include <stdlib.h>
 #include <string.h>

@@ -78,7 +78,7 @@ pSPBInstanceIndexCount( 0 ),
 pUseSPBInstanceFlags( false ),
 pRenderVSStereo( false ),
 pVBODrawIndirect( 0 ),
-pVBODrawIndirectSize( 0 ),
+//pVBODrawIndirectSize( 0 ),
 
 pPipelineCount( 0 ),
 pHasPipeline( nullptr ),

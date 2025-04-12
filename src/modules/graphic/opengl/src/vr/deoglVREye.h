@@ -77,7 +77,6 @@ private:
 	int pVRViewImageCount;
 	decVector2 pVRViewTCFrom;
 	decVector2 pVRViewTCTo;
-	int pAcquiredVRViewImage;
 	
 	bool pUseGammaCorrection;
 	

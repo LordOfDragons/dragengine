@@ -126,6 +126,12 @@ def buildWriteConfig(source, target, env):
 	configFileDefines = {}
 	configFileDefines['DE_VERSION'] = versionString
 	configFileDefines['OS_UNIX'] = env['OSPosix']
+	configFileDefines['OS_UNIX_X11'] = (env['OSPosix'] and hasX11
+		and not env['OSWindows']
+		and not env['OSBeOS']
+		and not env['OSMacOS']
+		and env['platform_android'] == 'no'
+		and not env['platform_webwasm'])
 	configFileDefines['OS_W32'] = env['OSWindows']
 	configFileDefines['OS_BEOS'] = env['OSBeOS']
 	configFileDefines['OS_MACOS'] = env['OSMacOS']

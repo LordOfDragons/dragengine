@@ -87,6 +87,14 @@ appendLibrary(envModule, parent_targets['shared_vulkan'], libs)
 
 envModule.Append(CPPFLAGS = ['-DBACKEND_OPENGL'])
 
+if envModule['platform_android'] != 'no' or envModule['platform_webwasm']:
+	envModule.Append(CPPFLAGS = ['-DWITH_OPENGLES'])
+
+if envModule['platform_webwasm']:
+	envModule.Append(LINKFLAGS = ['-sMIN_WEBGL_VERSION=2'])
+	envModule.Append(LINKFLAGS = ['-sOFFSCREENCANVAS_SUPPORT'])
+	envModule.Append(LINKFLAGS = ['-sOFFSCREEN_FRAMEBUFFER'])
+
 # fetch values in expanded form for later use
 versionString = '1.25'
 if envModule['force_version']:

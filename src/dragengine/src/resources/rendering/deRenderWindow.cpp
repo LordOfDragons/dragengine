@@ -52,28 +52,28 @@ deRenderWindow::deRenderWindow( deRenderWindowManager *manager ) :
 deResource( manager ),
 
 #ifdef OS_ANDROID
-pHostWindow( NULL ),
-pWindow( NULL ),
-#endif
+pHostWindow(nullptr),
+pWindow(nullptr),
 
-#ifdef OS_W32
-pHostWindow( NULL ),
-pWindow( NULL ),
-#endif
+#elif defined OS_WEBWASM
+pHostWindow(nullptr),
+pWindow(nullptr),
 
-#ifdef OS_BEOS
-pHostWindow( NULL ),
-pWindow( NULL ),
-#endif
+#elif defined OS_BEOS
+pHostWindow(nullptr),
+pWindow(nullptr),
 
-#ifdef OS_MACOS
-pHostWindow( NULL ),
-pWindow( NULL ),
-#endif
+#elif defined OS_W32
+pHostWindow(NULL),
+pWindow(NULL),
 
-#if defined OS_UNIX && defined HAS_LIB_X11
-pHostWindow( 0 ),
-pWindow( 0 ),
+#elif defined OS_MACOS
+pHostWindow(nullptr),
+pWindow(nullptr),
+
+#elif defined OS_UNIX_X11
+pHostWindow(0),
+pWindow(0),
 #endif
 
 pTitle( "Dragengine" ),
@@ -120,27 +120,25 @@ void deRenderWindow::SetHostWindow( void *window ){
 void deRenderWindow::SetWindow( void *window ){
 	pWindow = window;
 }
-#endif
 
-#ifdef OS_W32
-void deRenderWindow::SetHostWindow( HWND window ){
-	if( window == pHostWindow ){
+#elif defined OS_WEBWASM
+void deRenderWindow::SetHostWindow(void *window){
+	if(window == pHostWindow){
 		return;
 	}
 	
 	pHostWindow = window;
 	
-	if( pPeerGraphic ){
+	if(pPeerGraphic){
 		pPeerGraphic->HostWindowChanged();
 	}
 }
 
-void deRenderWindow::SetWindow( HWND window ){
+void deRenderWindow::SetWindow(void *window){
 	pWindow = window;
 }
-#endif
 
-#ifdef OS_BEOS
+#elif defined OS_BEOS
 void deRenderWindow::SetHostWindow( BWindow *window ){
 	if( window == pHostWindow ){
 		return;
@@ -156,9 +154,25 @@ void deRenderWindow::SetHostWindow( BWindow *window ){
 void deRenderWindow::SetWindow( BWindow *window ){
 	pWindow = window;
 }
-#endif
 
-#ifdef OS_MACOS
+#elif defined OS_W32
+void deRenderWindow::SetHostWindow( HWND window ){
+	if( window == pHostWindow ){
+		return;
+	}
+	
+	pHostWindow = window;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->HostWindowChanged();
+	}
+}
+
+void deRenderWindow::SetWindow( HWND window ){
+	pWindow = window;
+}
+
+#elif defined OS_MACOS
 void deRenderWindow::SetHostWindow( NSWindow *window ){
 	if( window == pHostWindow ){
 		return;
@@ -174,9 +188,8 @@ void deRenderWindow::SetHostWindow( NSWindow *window ){
 void deRenderWindow::SetWindow( NSWindow *window ){
 	pWindow = window;
 }
-#endif
 
-#if defined OS_UNIX && defined HAS_LIB_X11
+#elif defined OS_UNIX_X11
 void deRenderWindow::SetHostWindow( Window window ){
 	if( window == pHostWindow ){
 		return;

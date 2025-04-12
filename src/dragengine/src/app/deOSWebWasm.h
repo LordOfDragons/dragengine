@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,54 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOSUNIX_H_
-#define _DEOSUNIX_H_
+#ifndef _DEOSWEBWASM_H_
+#define _DEOSWEBWASM_H_
 
 #include "../dragengine_configuration.h"
 
-#ifdef OS_UNIX_X11
+#ifdef OS_WEBWASM
 
 #include "deOS.h"
-
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
+#include "../common/string/decString.h"
+#include "../common/math/decMath.h"
 
 
 /**
- * \brief Unix operating system.
+ * \brief Web WASM operating system.
  */
-class deOSUnix : public deOS{
+class deOSWebWasm : public deOS{
 private:
-	struct sDisplayInformation{
-		decPoint currentResolution;
-		int currentRefreshRate;
-		decPoint *resolutions;
-		int resolutionCount;
-	};
-	
-	Display *pDisplay;
-	int pScreen;
-	Window pCurWindow;
-	long pEventMask;
-	Window pHostingMainWindow;
-	Window pHostingRenderWindow;
-	
-	sDisplayInformation *pDisplayInformation;
-	int pDisplayCount;
-	decPoint *pDisplayResolutions;
-	int pDisplayResolutionCount;
+	int pScreenWidth;
+	int pScreenHeight;
+	int pScreenRefreshRate;
 	int pScaleFactor;
-	
+	void *pCurWindow;
+	void *pHostingMainWindow;
+	void *pHostingRenderWindow;
+	bool pAppFrozen;
+	decBoundary pContentRect;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new unix operating system object. */
-	deOSUnix();
+	/** \brief Create a new Web WASM operating system object. */
+	deOSWebWasm();
 	
-	/** \brief Clean up the unix operating system object. */
-	virtual ~deOSUnix();
+	/** \brief Clean up the Web WASM operating system object. */
+	virtual ~deOSWebWasm();
 	/*@}*/
 	
 	
@@ -96,25 +84,8 @@ public:
 	
 	/**
 	 * \brief Process all events in the application event queue.
-	 * 
-	 * Certain events are directly processed. If \em sendToInputModule is true
-	 * all events are also send to the active input module. Set \em sendToInputModule
-	 * to false if you want to clear the event queue after a lengthy operation to
-	 * avoid an event flood resulting in strange initial inputs.
 	 */
-	virtual void ProcessEventLoop( bool sendToInputModule );
-	
-	/**
-	 * \brief Current user locale language (ISO 639 language code) in lower case.
-	 * \version 1.16
-	 */
-	virtual decString GetUserLocaleLanguage();
-	
-	/**
-	 * \brief Current user locale territory (ISO 3166 country code) lower case or empty string.
-	 * \version 1.16
-	 */
-	virtual decString GetUserLocaleTerritory();
+	virtual void ProcessEventLoop(bool sendToInputModule);
 	/*@}*/
 	
 	
@@ -127,26 +98,26 @@ public:
 	/**
 	 * \brief Current resolution of display.
 	 * \param display Index of display to get current resolution for.
-	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
-	 *                         GetDisplayCount().
+	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
+	 * than GetDisplayCount().
 	 */
-	virtual decPoint GetDisplayCurrentResolution( int display );
+	virtual decPoint GetDisplayCurrentResolution(int display);
 	
 	/**
 	 * \brief Current refresh rate of display.
 	 * \param display Index of display to get current refresh rate for.
-	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
-	 *                         GetDisplayCount().
+	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
+	 * than GetDisplayCount().
 	 */
-	virtual int GetDisplayCurrentRefreshRate( int display );
+	virtual int GetDisplayCurrentRefreshRate(int display);
 	
 	/**
 	 * \brief Number of resolutions supported on display.
 	 * \param display Index of display to get current resolution for.
-	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater than
-	 *                         GetDisplayCount().
+	 * \throws deeInvalidParam \em display is less than 0 or equal to or greater
+	 * than GetDisplayCount().
 	 */
-	virtual int GetDisplayResolutionCount( int display );
+	virtual int GetDisplayResolutionCount(int display);
 	
 	/**
 	 * \brief Resolution by index for display.
@@ -157,7 +128,19 @@ public:
 	 * \throws deeInvalidParam \em resolution is less than 0 or equal to or greater than
 	 *                         GetDisplayResolutionCount(display).
 	 */
-	virtual decPoint GetDisplayResolution( int display, int resolution );
+	virtual decPoint GetDisplayResolution(int display, int resolution);
+	
+	/**
+	 * \brief Current user locale language (ISO 639 language code) in lower case.
+	 * \version 1.16
+	 */
+	virtual decString GetUserLocaleLanguage();
+	
+	/**
+	 * \brief Current user locale territory (ISO 3166 country code) lower case or empty string.
+	 * \version 1.16
+	 */
+	virtual decString GetUserLocaleTerritory();
 	
 	/**
 	 * \brief Current global scaling factor for display.
@@ -168,7 +151,7 @@ public:
 	 * 
 	 * Value of 100 represents scaling of 100%. Value step size is 25.
 	 */
-	virtual int GetDisplayCurrentScaleFactor( int display );
+	virtual int GetDisplayCurrentScaleFactor(int display);
 	/*@}*/
 	
 	
@@ -176,22 +159,16 @@ public:
 	/** \name Casting */
 	/*@{*/
 	/**
-	 * \brief Cast to deOSUnix.
-	 * \throws deeInvalidParam Not an instance of deOSUnix.
+	 * \brief Cast to deOSWebWasm.
+	 * \throws deeInvalidParam Not an instance of deOSWebWasm.
 	 */
-	virtual deOSUnix *CastToOSUnix();
+	virtual deOSWebWasm *CastToOSWebWasm();
 	/*@}*/
 	
 	
 	
-	/** \name Unix related */
+	/** \name Web WASM related */
 	/*@{*/
-	/** \brief Display used during creation. */
-	inline Display *GetDisplay() const{ return pDisplay; }
-	
-	/** \brief Screen used during creation. */
-	inline int GetScreen() const{ return pScreen; }
-	
 	/**
 	 * \brief Current game window.
 	 * 
@@ -199,7 +176,7 @@ public:
 	 * be some other window. Only one window can be the application window.
 	 * If you need more windows than one parent it to the window you set.
 	 */
-	inline Window GetWindow() const{ return pCurWindow; }
+	inline void *GetWindow() const{ return pCurWindow; }
 	
 	/**
 	 * \brief Set current game window.
@@ -211,24 +188,10 @@ public:
 	 * window as otherwise input modules relying on message or event queues
 	 * will not get them.
 	 */
-	void SetWindow( Window wnd );
-	
-	/**
-	 * \brief Window event mask.
-	 * 
-	 * Set by the input module to receive the events it is interested in.
-	 */
-	inline long GetEventMask() const{ return pEventMask; }
-	
-	/**
-	 * \brief Set event mask to set for all windows.
-	 * 
-	 * The input module sets this value to receive the required events.
-	 */
-	void SetEventMask( long mask );
+	void SetWindow(void *window);
 	
 	/** \brief Hosting main window or 0 if not set. */
-	inline Window GetHostingMainWindow() const{ return pHostingMainWindow; }
+	inline void *GetHostingMainWindow() const{ return pHostingMainWindow; }
 	
 	/**
 	 * \brief Set hosting main window or 0 if not set.
@@ -238,10 +201,10 @@ public:
 	 * window of the hosting application that can be used to obtain visuals
 	 * from. It is not necessary the one rendered into later on.
 	 */
-	void SetHostingMainWindow( Window window );
+	void SetHostingMainWindow(void *window);
 	
 	/** \brief Hosting render window or 0 if not set. */
-	inline Window GetHostingRenderWindow() const{ return pHostingRenderWindow; }
+	inline void *GetHostingRenderWindow() const{ return pHostingRenderWindow; }
 	
 	/**
 	 * \brief Set hosting render window or 0 if not set.
@@ -251,23 +214,32 @@ public:
 	 * window on which the graphic module has to render from now on. This window
 	 * can be the same as the hosting main window but can also be different from it.
 	 */
-	void SetHostingRenderWindow( Window window );
+	void SetHostingRenderWindow(void *window);
 	
 	/** \brief Determine if a hosting main window is set. */
 	bool HasHostingMainWindow() const;
 	
 	/** \brief Determine if a hosting render window is set. */
 	bool HasHostingRenderWindow() const;
+	
+	/** \brief Application is frozen. */
+	inline bool GetAppFrozen() const{ return pAppFrozen; }
+	
+	/** \brief Set if application is frozen. */
+	void SetAppFrozen(bool frozen);
+	
+	/** \brief Content area. */
+	inline const decBoundary &GetContentRect() const{ return pContentRect; }
+	
+	/** \brief Set content area. */
+	void SetContentRect(const decBoundary &rect);
 	/*@}*/
 	
 	
 	
 private:
 	void pCleanUp();
-	void pSetWindowEventMask();
-	decString pGetHomeDirectory();
-	void pGetDisplayInformation();
-	int pGetGlobalScaling() const;
+	void pGetOSParameters();
 };
 
 #endif

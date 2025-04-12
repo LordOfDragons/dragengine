@@ -27,7 +27,7 @@
 
 #include "../dragengine_configuration.h"
 
-#if defined OS_UNIX && defined HAS_LIB_X11
+#ifdef OS_UNIX_X11
 #	include <X11/Xlib.h>
 #	include <X11/Xutil.h>
 #endif
@@ -149,16 +149,16 @@ public:
 	#ifdef OS_ANDROID
 	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
 		const char *title, deImage *icon, void *hostWindow );
-	#endif
-	#ifdef OS_BEOS
+	#elif defined OS_WEBWASM
+	void CreateAndSetHostedRenderWindow(int width, int height, bool fullScreen,
+		const char *title, deImage *icon, void *hostWindow);
+	#elif defined OS_BEOS
 	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
 		const char *title, deImage *icon, BWindow *hostWindow );
-	#endif
-	#if defined OS_UNIX && defined HAS_LIB_X11
+	#elif defined OS_UNIX_X11
 	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
 		const char *title, deImage *icon, Window hostWindow );
-	#endif
-	#ifdef OS_W32
+	#elif defined OS_W32
 	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
 		const char *title, deImage *icon, HWND hostWindow );
 	#endif

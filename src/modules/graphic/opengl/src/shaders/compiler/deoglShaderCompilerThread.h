@@ -27,7 +27,7 @@
 
 #include <dragengine/threading/deThread.h>
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 #include <GL/glx.h>
 #endif
 
@@ -52,7 +52,7 @@ private:
 	deoglShaderCompiler *pCompiler;
 	bool pExitThread;
 	State pState;
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	Display *pDisplay;
 #endif
 

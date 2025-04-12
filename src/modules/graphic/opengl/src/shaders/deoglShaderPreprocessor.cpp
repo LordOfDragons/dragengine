@@ -66,7 +66,7 @@ pResolveSymbolNameLen( 0 ),
 pResolveSymbolNameSize( 200 ),
 
 pDisablePreprocessing( false ),
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 pDebugLogParsing( false )
 #else
 pDebugLogParsing( false )

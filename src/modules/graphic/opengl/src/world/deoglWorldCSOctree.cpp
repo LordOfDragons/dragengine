@@ -76,6 +76,7 @@ pNextElement( 0 ),
 pElementLinks( nullptr ),
 pElementLinkSize( 0 )
 {
+	(void)pRenderThread;
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
 	pSSBONodes.TakeOver( new deoglSPBlockSSBO( renderThread, deoglSPBlockSSBO::etStream ) );
