@@ -57,6 +57,10 @@
 			"path": "src/modules/video/webm"
 		},
 		{
+			"name": "apng",
+			"path": "src/modules/video/apng"
+		},
+		{
 			"name": "steamsdk",
 			"path": "src/modules/service/steamsdk"
 		},
