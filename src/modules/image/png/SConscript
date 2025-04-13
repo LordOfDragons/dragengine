@@ -11,9 +11,11 @@ parent_report[ 'build PNG Image Module' ] = ('yes (internal)' if internalModule 
 if not buildModule:
 	Return()
 
+externLibPng = 'lib_libapng' if internalModule else 'lib_libpng'
+
 libs = []
 appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
-appendLibrary( envModule, parent_targets[ 'lib_libpng' ], libs )
+appendLibrary(envModule, parent_targets[externLibPng], libs)
 
 envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
@@ -47,7 +49,7 @@ if internalModule:
 	targetBuild = parent_env.Alias('img_png_build', library)
 	install.extend(targetBuild)
 	
-	parent_targets['dragengine']['add internal module'](envModule, library, ['lib_libpng'])
+	parent_targets['dragengine']['add internal module'](envModule, library, [externLibPng])
 	
 else:
 	objects = [envModule.SharedObject(s) for s in sources]
@@ -70,7 +72,7 @@ else:
 		{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 	
-	for l in reversed( parent_targets[ 'lib_libpng' ][ 'runtimelibs' ] ):
+	for l in reversed( parent_targets[externLibPng][ 'runtimelibs' ] ):
 		manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
@@ -80,7 +82,7 @@ else:
 		Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 	Depends( updateManifest, library )
 	Depends(updateManifest, 'SConscript')
-	Depends( updateManifest, parent_targets[ 'lib_libpng' ][ 'runtimelibs' ] )
+	Depends( updateManifest, parent_targets[externLibPng][ 'runtimelibs' ] )
 	
 	install.append( envModule.Install( pathModule, updateManifest ) )
 	archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]

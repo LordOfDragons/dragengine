@@ -32,7 +32,6 @@ globFiles( envModule, 'src', '*.cpp', sources )
 globFiles( envModule, 'src', '*.h', headers )
 
 objects = [ envModule.SharedObject( s ) for s in sources ]
-envModule.Depends(objects, parent_targets['lib_libapng']['depends'])
 
 library = envModule.LoadableModule( target='vidapng', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'vid_apng_build', library )
