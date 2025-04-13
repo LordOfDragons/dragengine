@@ -217,6 +217,24 @@ ignoreHeaders.append('src/doxy_main.h')
 headers = [envDragengine.File(h).srcnode() for h in headers if not h in ignoreHeaders]
 headers.extend(targetConfig)
 
+envDragengine['InternalModuleCreateFunctions'] = []
+
+def createInternalModulesBuild(target, source, env):
+	with open(target[0].abspath, 'w') as f:
+		f.write('/* Generated File. Do not edit */\n')
+		for cf in env['InternalModuleCreateFunctions']:
+			f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+		f.write('static deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]{\n')
+		for cf in env['InternalModuleCreateFunctions']:
+			f.write('\t{},\n'.format(cf))
+		f.write('\tnullptr};\n')
+
+targetCreateInternalModules = envDragengine.Command(
+	'deModuleSystem_generated.cpp', targetConfig, envDragengine.Action(
+		createInternalModulesBuild, 'Generate Internal Modules Source'))
+
+envDragengine.Depends('src/systems/deModuleSystem.cpp', targetCreateInternalModules)
+
 objects = [envDragengine.SharedObject(s) for s in sources]
 
 if envDragengine['HostOSWindows']:
@@ -233,6 +251,7 @@ if envDragengine['OSPosix']:
 	envDragengine.Replace(SHLIBVERSION = libVersionString)
 
 envDragengine.Depends(sources, targetConfig)
+
 library = envDragengine.SharedLibrary(target='dragengine', source=objects, LIBS=libs)
 targetBuild = envDragengine.Alias('dragengine_build', library)
 
@@ -332,11 +351,13 @@ if not 'mingw' in envDragengine['TOOLS']:
 	libpath.extend(parent_targets['lib_zlib']['libpath'])
 	binlibs.extend(parent_targets['lib_zlib']['libs'])
 
-def addInternalModule(env, nodes, externLibs):
+def addInternalModule(env, nodes, externLibs, createFunc):
 	libenv = library[0].get_env()
 	
 	for n in nodes:
-		libenv['LINKFLAGS'].extend(['-Wl,--whole-archive', n, '-Wl,--no-whole-archive'])
+		#libenv['LINKFLAGS'].extend(['-Wl,--whole-archive', n, '-Wl,--no-whole-archive'])
+		libenv['LIBS'].append(n)
+	
 	env.Depends(library, nodes)
 	
 	for el in externLibs:
@@ -364,6 +385,10 @@ def addInternalModule(env, nodes, externLibs):
 			for x in elt['linkflags']:
 				if not x in libenv['LINKFLAGS']:
 					libenv['LINKFLAGS'].append(x)
+	
+	libenv['InternalModuleCreateFunctions'].append(createFunc)
+	libenv.Depends(targetCreateInternalModules, nodes)
+	
 	"""
 	print('LIBS: ', libenv['LIBS'])
 	print('LIBPATH: ', libenv['LIBPATH'])

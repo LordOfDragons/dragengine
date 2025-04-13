@@ -37,6 +37,7 @@
 #include <dragengine/systems/deModuleSystem.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -44,7 +45,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *PNGCreateModule( deLoadableModule *loadableMo
 #ifdef __cplusplus
 }
 #endif
-
+#endif
 
 // Entry Point
 ////////////////
@@ -438,6 +439,4 @@ void dePngModuleInternal::CreateModule(){
 deInternalModule *depngRegisterInternalModule(deModuleSystem *system){
 	return new dePngModuleInternal(system);
 }
-
-static bool vDummyRegistered = deModuleSystem::RegisterInternalModule(depngRegisterInternalModule);
 #endif

@@ -53,7 +53,8 @@ if internalModule:
 	targetBuild = parent_env.Alias('img_png_build', library)
 	install.extend(targetBuild)
 	
-	parent_targets['dragengine']['add internal module'](envModule, library, [externLibPng])
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, [externLibPng], 'depngRegisterInternalModule')
 	
 else:
 	objects = [envModule.SharedObject(s) for s in sources]

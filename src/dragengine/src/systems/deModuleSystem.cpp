@@ -714,30 +714,22 @@ bool deModuleSystem::IsSingleType( eModuleTypes type ){
 	}
 }
 
-static decPointerSet &GetInternalModuleFunctions(){
-	static decPointerSet functions;
-	return functions;
-}
-
-bool deModuleSystem::RegisterInternalModule(deModuleSystem::FPRegisterInternalModule fp){
-	GetInternalModuleFunctions().AddIfAbsent((void*)fp);
-	return true;
-}
-
 
 
 // Private Functions
 //////////////////////
 
+#include "deModuleSystem_generated.cpp"
+
 void deModuleSystem::pAddInternalModules(){
-	const decPointerSet &functions = GetInternalModuleFunctions();
-	const int count = functions.GetCount();
 	deLogger &logger = *pEngine->GetLogger();
-	int i;
+	int i = 0;
 	
-	for(i=0; i<count; i++){
+	while(vInternalModuleFunctions[i]){
 		const deInternalModule::Ref module(deInternalModule::Ref::New(
-			((FPRegisterInternalModule)functions.GetAt(i))(this)));
+			vInternalModuleFunctions[i](this)));
+		i++;
+		
 		if(!module){
 			continue;
 		}
