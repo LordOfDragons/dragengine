@@ -354,12 +354,6 @@ if not 'mingw' in envDragengine['TOOLS']:
 def addInternalModule(env, nodes, externLibs, createFunc):
 	libenv = library[0].get_env()
 	
-	for n in nodes:
-		#libenv['LINKFLAGS'].extend(['-Wl,--whole-archive', n, '-Wl,--no-whole-archive'])
-		libenv['LIBS'].append(n)
-	
-	env.Depends(library, nodes)
-	
 	for el in externLibs:
 		elt = parent_targets[el]
 		if 'libs' in elt:
@@ -388,6 +382,12 @@ def addInternalModule(env, nodes, externLibs, createFunc):
 			for x in elt['linkflags']:
 				if not x in libenv['LINKFLAGS']:
 					libenv['LINKFLAGS'].append(x)
+	
+	for n in nodes:
+		#libenv['LINKFLAGS'].extend(['-Wl,--whole-archive', n, '-Wl,--no-whole-archive'])
+		libenv['LIBS'].insert(0, n)
+	
+	env.Depends(library, nodes)
 	
 	libenv['InternalModuleCreateFunctions'].append(createFunc)
 	libenv.Depends(targetCreateInternalModules, nodes)
