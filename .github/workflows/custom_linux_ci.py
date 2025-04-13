@@ -78,6 +78,8 @@ build_guilauncher = 'no'
 build_plugin_npapi = 'no'
 build_launcher_android = 'no'
 
+build_image_png_internal = 'yes'
+
 # IGDE
 ########
 build_igde = 'yes'

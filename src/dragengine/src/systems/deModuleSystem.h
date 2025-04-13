@@ -28,8 +28,9 @@
 #include "../common/collection/decObjectOrderedSet.h"
 
 class deEngine;
-class deLoadableModule;
 class deBaseModule;
+class deInternalModule;
+class deLoadableModule;
 class deVirtualFileSystem;
 
 
@@ -334,12 +335,21 @@ public:
 	 * All others are multiple type.
 	 */
 	static bool IsSingleType( eModuleTypes type );
+	
+	/**
+	 * Register internal module.
+	 * 
+	 * For internal use only!
+	 */
+	typedef deInternalModule* (*FPRegisterInternalModule)(deModuleSystem*);
+	static bool RegisterInternalModule(FPRegisterInternalModule fp);
 	/*@}*/
 	
 	
 	
 private:
-	void pDetectModulesIn( const char *basePath, const char *directory, eModuleTypes type );
+	void pAddInternalModules();
+	void pDetectModulesIn(const char *basePath, const char *directory, eModuleTypes type);
 };
 
 #endif

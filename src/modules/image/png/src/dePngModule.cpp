@@ -34,13 +34,14 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/resources/image/deImage.h>
+#include <dragengine/systems/deModuleSystem.h>
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *PNGCreateModule( deLoadableModule *loadableModule );
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif
 
@@ -49,16 +50,12 @@ MOD_ENTRY_POINT_ATTR deBaseModule *PNGCreateModule( deLoadableModule *loadableMo
 ////////////////
 
 deBaseModule *PNGCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
-	
 	try{
-		module = new dePngModule( *loadableModule );
+		return new dePngModule(*loadableModule);
 		
-	}catch( const deException & ){
-		return NULL;
+	}catch(const deException &){
+		return nullptr;
 	}
-	
-	return module;
 }
 
 
@@ -414,3 +411,33 @@ void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 		throw;
 	}
 }
+
+
+
+#ifdef WITH_INTERNAL_MODULE
+dePngModuleInternal::dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
+	SetName("PNG");
+	SetDescription("Handles images saved in the PNG format (lossless compression).");
+	SetAuthor("Plüss Roland (roland@rptd.ch)");
+	SetVersion(MODULE_VERSION);
+	SetType(deModuleSystem::emtImage);
+	SetDirectoryName("png");
+	GetPatternList().Add(".png");
+	SetDefaultExtension(".png");
+	SetNoCompress(true);
+	SetPriority(1);
+}
+
+void dePngModuleInternal::CreateModule(){
+	SetModule(PNGCreateModule(this));
+	if(!GetModule()){
+		SetErrorCode(eecCreateModuleFailed);
+	}
+}
+
+deInternalModule *depngRegisterInternalModule(deModuleSystem *system){
+	return new dePngModuleInternal(system);
+}
+
+static bool vDummyRegistered = deModuleSystem::RegisterInternalModule(depngRegisterInternalModule);
+#endif

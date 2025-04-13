@@ -244,7 +244,8 @@ for h in headers:
 		h, Copy('$TARGET', '$SOURCE')))
 envDragengine.Depends(library, copyHeaders)
 
-installDevelop = [envDragengine.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
+installHeaders = [envDragengine.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
+installDevelop = installHeaders[:]
 
 installRuntime = []
 
@@ -331,22 +332,64 @@ if not 'mingw' in envDragengine['TOOLS']:
 	libpath.extend(parent_targets['lib_zlib']['libpath'])
 	binlibs.extend(parent_targets['lib_zlib']['libs'])
 
+def addInternalModule(env, nodes, externLibs):
+	libenv = library[0].get_env()
+	
+	for n in nodes:
+		libenv['LINKFLAGS'].extend(['-Wl,--whole-archive', n, '-Wl,--no-whole-archive'])
+	env.Depends(library, nodes)
+	
+	for el in externLibs:
+		elt = parent_targets[el]
+		if 'libs' in elt:
+			libenv['LIBS'].extend(elt['libs'])
+			#binlibs.extend(parent_targets['lib_zlib']['libs'])
+		if 'libpath' in elt:
+			for x in elt['libpath']:
+				if not x in libenv['LIBPATH']:
+					libenv['LIBPATH'].append(x)
+				if not x in libpath:
+					libpath.append(x)
+		if 'cpppath' in elt:
+			for x in elt['cpppath']:
+				if not x in libenv['CPPPATH']:
+					libenv['CPPPATH'].append(x)
+				if not x in cpppath:
+					cpppath.append(x)
+		if 'cppflags' in elt:
+			for x in elt['cppflags']:
+				if not x in libenv['CPPFLAGS']:
+					libenv['CPPFLAGS'].append(x)
+		if 'linkflags' in elt:
+			for x in elt['linkflags']:
+				if not x in libenv['LINKFLAGS']:
+					libenv['LINKFLAGS'].append(x)
+	"""
+	print('LIBS: ', libenv['LIBS'])
+	print('LIBPATH: ', libenv['LIBPATH'])
+	print('CPPPATH: ', libenv['CPPPATH'])
+	print('CPPFLAGS: ', libenv['CPPFLAGS'])
+	print('LINKFLAGS: ', libenv['LINKFLAGS'])
+	"""
+
 parent_targets['dragengine'] = {
-	'name' : 'Drag[en]gine Game Engine',
-	'cpppath' : cpppath,
-	'libpath' : libpath,
-	'binlibs' : binlibs,
-	'libs' : linklibs,
-	'build' : targetBuild,
-	'install' : targetInstall,
-	'install-runtime' : targetInstallRuntime,
-	'install-engine-runtime' : targetInstallRuntime,
-	'library' : library,
-	'archive-engine' : archiveEngine,
-	'archive-engine-develop' : archiveDevelop,
-	'doxygen' : targetDoxygen,
-	'cloc' : targetCloc,
-	'clocReport' : '{}/clocreport.csv'.format(srcdir) }
+	'name': 'Drag[en]gine Game Engine',
+	'cpppath': cpppath,
+	'libpath': libpath,
+	'binlibs': binlibs,
+	'libs': linklibs,
+	'build': targetBuild,
+	'install': targetInstall,
+	'install-runtime': targetInstallRuntime,
+	'install-engine-runtime': targetInstallRuntime,
+	'headers': installHeaders,
+	'library': library,
+	'archive-engine': archiveEngine,
+	'archive-engine-develop': archiveDevelop,
+	'doxygen': targetDoxygen,
+	'cloc': targetCloc,
+	'clocReport': '{}/clocreport.csv'.format(srcdir),
+	'add internal module': addInternalModule}
 
 # report
 if envDragengine['OSPosix'] or envDragengine['OSMacOS']:

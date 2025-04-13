@@ -77,6 +77,8 @@ build_archive_delga = 'yes'
 build_vr_openvr = 'yes'
 build_vr_openxr = 'yes'
 
+build_image_png_internal = 'yes'
+
 # IGDE
 ########
 build_igde = 'no'

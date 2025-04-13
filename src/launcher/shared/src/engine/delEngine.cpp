@@ -125,10 +125,21 @@ void delEngine::SetLogFile( const char *path ){
 
 
 
-void delEngine::ReloadModules(){
+void delEngine::ReloadModules(delEngineInstance &instance){
 	pModules.RemoveAll();
 	
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "loading module list" );
+	deLogger &logger = *pLauncher.GetLogger();
+	
+	instance.GetInternalModules(pModules);
+	const int imcount = pModules.GetCount();
+	int i;
+	
+	for(i=0; i<imcount; i++){
+		logger.LogInfoFormat(pLauncher.GetLogSource(), "Internal module '%s'",
+			pModules.GetAt(i)->GetName().GetString());
+	}
+	
 	AddModulesFrom( "/engine/lib/modules/crashrecovery", deModuleSystem::emtCrashRecovery );
 	AddModulesFrom( "/engine/lib/modules/graphic", deModuleSystem::emtGraphic );
 	AddModulesFrom( "/engine/lib/modules/input", deModuleSystem::emtInput );

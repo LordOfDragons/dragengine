@@ -27,12 +27,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "deModuleSystem.h"
+#include "modules/deBaseModule.h"
+#include "modules/deInternalModule.h"
 #include "modules/deLoadableModule.h"
 #include "modules/deLibraryModule.h"
-#include "modules/deBaseModule.h"
 #include "modules/service/deBaseServiceModule.h"
 #include "../deEngine.h"
 #include "../app/deOS.h"
+#include "../common/collection/decPointerSet.h"
 #include "../common/file/decPath.h"
 #include "../common/exceptions.h"
 #include "../filesystem/dePathList.h"
@@ -113,6 +115,9 @@ void deModuleSystem::DetectModules(){
 	searchPath.AddUnixPath( DEGS_MODULES_PATH );
 	
 	try{
+		logger.LogInfoFormat( LOGSOURCE, "Add internal modules" );
+		pAddInternalModules();
+		
 		logger.LogInfoFormat( LOGSOURCE, "Loading Crash Recovery modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "crashrecovery", emtCrashRecovery );
 		
@@ -709,12 +714,57 @@ bool deModuleSystem::IsSingleType( eModuleTypes type ){
 	}
 }
 
+static decPointerSet &GetInternalModuleFunctions(){
+	static decPointerSet functions;
+	return functions;
+}
+
+bool deModuleSystem::RegisterInternalModule(deModuleSystem::FPRegisterInternalModule fp){
+	GetInternalModuleFunctions().AddIfAbsent((void*)fp);
+	return true;
+}
+
 
 
 // Private Functions
 //////////////////////
 
-void deModuleSystem::pDetectModulesIn( const char *basePath, const char *directory, eModuleTypes type ){
+void deModuleSystem::pAddInternalModules(){
+	const decPointerSet &functions = GetInternalModuleFunctions();
+	const int count = functions.GetCount();
+	deLogger &logger = *pEngine->GetLogger();
+	int i;
+	
+	for(i=0; i<count; i++){
+		const deInternalModule::Ref module(deInternalModule::Ref::New(
+			((FPRegisterInternalModule)functions.GetAt(i))(this)));
+		if(!module){
+			continue;
+		}
+		
+		logger.LogInfoFormat(LOGSOURCE, "- create internal module %s", module->GetName().GetString());
+		
+		try{
+			module->LoadModule();
+			
+			switch(module->GetErrorCode()){
+			case deLoadableModule::eecSuccess:
+				break;
+				
+			case deLibraryModule::eecCreateModuleFailed:
+			default:
+				logger.LogError(LOGSOURCE, "Creating module failed");
+			}
+			
+			AddModule(module);
+			
+		}catch(const deException &e){
+			logger.LogException(LOGSOURCE, e);
+		}
+	}
+}
+
+void deModuleSystem::pDetectModulesIn(const char *basePath, const char *directory, eModuleTypes type){
 	deLogger &logger = *pEngine->GetLogger();
 	decPath searchPath, modulePath;
 	deLibraryModule *module = NULL;

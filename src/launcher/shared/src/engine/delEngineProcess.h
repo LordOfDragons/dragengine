@@ -60,6 +60,9 @@ public:
 		/** \brief Get module status. */
 		eccGetModuleStatus,
 		
+		/** \brief Get internal modules. */
+		eccGetInternalModules,
+		
 		/** \brief Get module parameter list. */
 		eccGetModuleParamList,
 		
@@ -305,6 +308,9 @@ public:
 	
 	/** \brief Command get module status. */
 	void CommandGetModuleStatus();
+	
+	/** \brief Command get internal modules. */
+	void CommandGetInternalModules();
 	
 	/** \brief Command get module parameter list. */
 	void CommandGetModuleParamList();

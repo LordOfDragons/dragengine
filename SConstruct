@@ -223,6 +223,7 @@ params.Add(TernaryVariable('build_cr_basic', 'Build Basic Crash-Recovery Module'
 params.Add(TernaryVariable('build_graphics_opengl', 'Build OpenGL Graphics Module'))
 params.Add(TernaryVariable('build_graphics_vulkan', 'Build Vulkan Graphics Module', False))
 params.Add(TernaryVariable('build_image_png', 'Build PNG Image Module'))
+params.Add(BoolVariable('build_image_png_internal', 'Build PNG Image Module as internal module', False))
 params.Add(TernaryVariable('build_image_png3d', 'Build PNG-3D Image Module'))
 params.Add(TernaryVariable('build_image_jpeg', 'Build JPEG Image Module'))
 params.Add(TernaryVariable('build_image_webp', 'Build WebP Image Module'))

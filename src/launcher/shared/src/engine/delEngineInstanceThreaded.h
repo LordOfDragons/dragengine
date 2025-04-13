@@ -180,6 +180,9 @@ public:
 	/** \brief Load modules. */
 	void LoadModules() override;
 	
+	/** \brief List of internal modules. */
+	void GetInternalModules(delEngineModuleList &list) override;
+	
 	/** \brief Command get module status. */
 	int GetModuleStatus( const char *moduleName, const char *moduleVersion ) override;
 	

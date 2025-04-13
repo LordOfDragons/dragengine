@@ -153,17 +153,17 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		? ( deLoadableModule* )pCBModule->GetSelectedItem()->GetData() : NULL;
 	
 	if( ! loadedModule ){
-		pEditType->SetText( "?" );
-		pEditDescription->SetText( "?" );
-		pEditAuthor->SetText( "?" );
-		pEditVersion->SetText( "?" );
-		pEditPattern->SetText( "?" );
-		pEditDirName->SetText( "?" );
-		pEditStatus->SetText( "?" );
+		pEditType->SetText("");
+		pEditDescription->SetText("");
+		pEditAuthor->SetText("");
+		pEditVersion->SetText("");
+		pEditPattern->SetText("");
+		pEditDirName->SetText("");
+		pEditStatus->SetText("");
 		
-		pEditLibName->SetText( "?" );
-		pEditLibSize->SetText( "?" );
-		pEditLibHash->SetText( "?" );
+		pEditLibName->SetText("");
+		pEditLibSize->SetText("");
+		pEditLibHash->SetText("");
 		
 		pChkFallback->SetChecked( false );
 		return;
@@ -278,9 +278,12 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 	if( loadedModule->IsInternalModule() ){
 		const deInternalModule * const internalModule = loadedModule->CastToInternalModule();
 		
-		pEditLibName->SetText( "?" );
-		pEditLibSize->SetText( "?" );
-		pEditLibHash->SetText( "?" );
+		pEditLibName->SetText("");
+		pEditLibName->SetEnabled(false);
+		pEditLibSize->SetText("");
+		pEditLibSize->SetEnabled(false);
+		pEditLibHash->SetText("");
+		pEditLibHash->SetEnabled(false);
 		
 		switch( internalModule->GetErrorCode() ){
 		case deLoadableModule::eecSuccess:
@@ -299,8 +302,11 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		deLibraryModule * const libraryModule = loadedModule->CastToLibraryModule();
 		
 		pEditLibName->SetText( libraryModule->GetLibFileName() );
+		pEditLibName->SetEnabled(true);
 		pEditLibSize->SetInteger( libraryModule->GetLibFileSize() );
+		pEditLibSize->SetEnabled(true);
 		pEditLibHash->SetText( libraryModule->GetLibFileHash() );
+		pEditLibHash->SetEnabled(true);
 		
 		switch( libraryModule->GetErrorCode() ){
 		case deLoadableModule::eecSuccess:
@@ -344,10 +350,13 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 		}
 		
 	}else{
-		pEditStatus->SetText( "?" );
-		pEditLibName->SetText( "?" );
-		pEditLibSize->SetText( "?" );
-		pEditLibHash->SetText( "?" );
+		pEditStatus->SetText("");
+		pEditLibName->SetText("");
+		pEditLibName->SetEnabled(false);
+		pEditLibSize->SetText("");
+		pEditLibSize->SetEnabled(false);
+		pEditLibHash->SetText("");
+		pEditLibHash->SetEnabled(false);
 	}
 }
 

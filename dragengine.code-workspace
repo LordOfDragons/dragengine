@@ -49,6 +49,10 @@
 			"path": "src/modules/archive/delga"
 		},
 		{
+			"name": "png",
+			"path": "src/modules/image/png"
+		},
+		{
 			"name": "webm",
 			"path": "src/modules/video/webm"
 		},

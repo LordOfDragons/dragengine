@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEPNGMODULE_H_
 #define _DEPNGMODULE_H_
 
-// includes
-#include "dragengine/systems/modules/image/deBaseImageModule.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/image/deBaseImageModule.h>
+#include <dragengine/common/math/decMath.h>
 
-// predefinitions
 
 // image module interface
 class dePngModule : public deBaseImageModule{
@@ -81,6 +78,16 @@ public:
 	virtual void SaveImage( decBaseFileWriter &writer, const deImage &image );
 	/*@}*/
 };
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class dePngModuleInternal : public deInternalModule{
+public:
+	dePngModuleInternal(deModuleSystem *system);
+	void CreateModule() override;
+};
+#endif
 
 // end of include only once
 #endif
