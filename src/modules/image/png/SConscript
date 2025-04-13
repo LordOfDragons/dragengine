@@ -11,6 +11,10 @@ parent_report[ 'build PNG Image Module' ] = ('yes (internal)' if internalModule 
 if not buildModule:
 	Return()
 
+# if this module is compiled as internal module we can not use regular libpng.
+# this is because the APNG video module uses the libapng which is libpng with
+# animation support. this would cause two version of libpng to be linked in at
+# the same time. it is fully fine to use libapng instead of libpng in this case
 externLibPng = 'lib_libapng' if internalModule else 'lib_libpng'
 
 libs = []
