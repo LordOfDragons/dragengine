@@ -65,7 +65,7 @@ build_guilauncher = 'yes'
 build_plugin_npapi = 'no'
 build_launcher_android = 'no'
 build_archive_delga = 'yes'
-build_vr_openvr = 'yes'
+build_vr_openvr = 'no'
 build_vr_openxr = 'yes'
 
 # IGDE
