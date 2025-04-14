@@ -37,6 +37,10 @@
 			"path": "src/modules/crashrecovery/simplyquit"
 		},
 		{
+			"name": "Module Crash-Recovery: BasicQuit",
+			"path": "src/modules/crashrecovery/basicrecovery"
+		},
+		{
 			"name": "Module Font: DEFont",
 			"path": "src/modules/font/defont"
 		},
@@ -203,6 +207,10 @@
 		{
 			"name": "Shared: Vulkan",
 			"path": "src/shared/vulkan"
+		},
+		{
+			"name": "External Dependencies",
+			"path": "extern"
 		},
 		{
 			"name": "Blender: Add-On",
