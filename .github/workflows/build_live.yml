@@ -46,15 +46,15 @@ jobs:
           # going to store this all in a zip file for broader operating system compatbility
           # this would cause the sym-links to turn into copies of the original file which
           # wastes a lot of space
-          LibVersion=`echo "${{ inputs.releaseVersion }}" | sed -e 's/\..*//'`
-          
+          LibFilename=`find build/linux64/lib -regex '^build/linux64/lib/libdelauncher\.so\.[0-9]+$'`
           cp -L build/linux64/lib/libdelauncher.so _temp
           rm build/linux64/lib/libdelauncher.so*
-          mv _temp build/linux64/lib/libdelauncher.so.$LibVersion
+          mv _temp $LibFilename
           
+          LibFilename=`find build/linux64/lib -regex '^build/linux64/lib/libdragengine\.so\.[0-9]+$'`
           cp -L build/linux64/lib/libdragengine.so _temp
           rm build/linux64/lib/libdragengine.so*
-          mv _temp build/linux64/lib/libdragengine.so.$LibVersion
+          mv _temp $LibFilename
       
       - name: Assemble Windows64
         run: |
