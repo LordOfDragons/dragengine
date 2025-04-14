@@ -2293,7 +2293,7 @@ public:
 	demdlModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEModel");
 		SetDescription("Handles models in the binary Drag[en]gine model format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtModel);
 		SetDirectoryName("demodel");

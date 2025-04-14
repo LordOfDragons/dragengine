@@ -557,7 +557,7 @@ public:
 	fbxModelModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXModel");
 		SetDescription("Handles models in the binary FBX format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtModel);
 		SetDirectoryName("fbxmodel");

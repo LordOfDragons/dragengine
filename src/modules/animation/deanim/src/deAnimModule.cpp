@@ -883,7 +883,7 @@ public:
 deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAnim");
 		SetDescription("Handles animations in the binary Drag[en]gine animation format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtAnimation);
 		SetDirectoryName("deanim");

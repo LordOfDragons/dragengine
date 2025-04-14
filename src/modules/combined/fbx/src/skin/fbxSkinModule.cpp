@@ -382,7 +382,7 @@ public:
 	fbxSkinModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXSkin");
 		SetDescription("Handles skins in the binary FBX format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtSkin);
 		SetDirectoryName("fbxskin");

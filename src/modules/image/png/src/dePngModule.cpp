@@ -421,7 +421,7 @@ public:
 	dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("PNG");
 		SetDescription("Handles images saved in the PNG format (lossless compression).");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtImage);
 		SetDirectoryName("png");

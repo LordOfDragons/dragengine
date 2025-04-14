@@ -92,7 +92,7 @@ public:
 	deadModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DELGA");
 		SetDescription("Handles archive in the DELGA format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtArchive);
 		SetDirectoryName("delga");

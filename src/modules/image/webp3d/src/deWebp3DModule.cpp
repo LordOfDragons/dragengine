@@ -118,7 +118,7 @@ public:
 		SetDescription("Handles images saved in the WebP-3D format (lossless and lossy compression).\
 WebP-3D files are actually a tarball with webp images one for each z coordinate in the 3D-image.\
 Files inside the tarball are named zX.webp where X is the z coordinate without leading 0s.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtImage);
 		SetDirectoryName("webp3d");

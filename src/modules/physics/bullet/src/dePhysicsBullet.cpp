@@ -328,7 +328,7 @@ public:
 	depbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Bullet");
 		SetDescription("Provides physical simulation using the free-software Bullet physics library.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtPhysics);
 		SetDirectoryName("bullet");

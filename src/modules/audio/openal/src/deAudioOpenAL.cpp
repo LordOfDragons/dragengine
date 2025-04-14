@@ -355,7 +355,7 @@ public:
 	deoalModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenAL");
 		SetDescription("Ouputs audio using the OpenAL library.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtAudio);
 		SetDirectoryName("openal");

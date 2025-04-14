@@ -112,7 +112,7 @@ public:
 	deIesModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("IES");
 		SetDescription("Handles photometric IES files loading them as Equi-Rectangular 3D images.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtImage);
 		SetDirectoryName("ies");

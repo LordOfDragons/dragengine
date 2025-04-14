@@ -150,7 +150,7 @@ public:
 deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAI");
 		SetDescription("Provides AI support to the engine.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtAI);
 		SetDirectoryName("deai");

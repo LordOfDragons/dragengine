@@ -163,7 +163,7 @@ public:
 	fbxRigModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXRig");
 		SetDescription("Handles rigs in the binary FBX format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtRig);
 		SetDirectoryName("fbxrig");

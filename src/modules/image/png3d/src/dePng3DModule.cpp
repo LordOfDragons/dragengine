@@ -129,7 +129,7 @@ public:
 		SetDescription("Handles images saved in the PNG-3D format (lossless compression). PNG-3D files\
 are actually a tarball with png images one for each z coordinate in the 3D-image. Files\
 inside the tarball are named zX.png where X is the z coordinate without leading 0s.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtImage);
 		SetDirectoryName("png3d");

@@ -178,7 +178,7 @@ public:
 	deanModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("NullAudio");
 		SetDescription("Outputs no audio.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtAudio);
 		SetDirectoryName("null");

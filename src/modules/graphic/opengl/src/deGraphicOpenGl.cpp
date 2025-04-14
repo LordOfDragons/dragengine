@@ -774,7 +774,7 @@ public:
 	deoglModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenGL");
 		SetDescription("Render using OpenGL. Requires OpenGL 3.2 or higher.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtGraphic);
 		SetDirectoryName("opengl");

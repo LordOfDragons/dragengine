@@ -864,7 +864,7 @@ public:
 		SetName("XSystemInput");
 		SetDescription("Processes input using the X-Server of linux Operating systems.\
 Supports Mouse and Keyboard for the time beeing.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtInput);
 		SetDirectoryName("xsystem");

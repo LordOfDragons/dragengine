@@ -471,3 +471,31 @@ void deModio::pUpdateVFS(){
 		pSaveConfig();
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deModioModuleInternal : public deInternalModule{
+public:
+	deModioModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("Modio");
+		SetDescription("Provides access to services provided by Mod.io.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtService);
+		SetDirectoryName("modio");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(ModioCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deModioRegisterInternalModule(deModuleSystem *system){
+	return new deModioModuleInternal(system);
+}
+#endif

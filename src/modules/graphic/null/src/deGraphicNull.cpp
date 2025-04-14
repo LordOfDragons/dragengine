@@ -228,7 +228,7 @@ public:
 		SetName("NullGraphic");
 		SetDescription("Renders nothing at all. Null modules are useful\
 for testing purpose or servers without a graphic system.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtGraphic);
 		SetDirectoryName("null");

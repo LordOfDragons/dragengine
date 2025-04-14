@@ -1662,7 +1662,7 @@ public:
 	desmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DESkin");
 		SetDescription("Handles skins in the XML Drag[en]gine skin format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtSkin);
 		SetDirectoryName("deskin");

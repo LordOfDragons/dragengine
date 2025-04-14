@@ -125,7 +125,7 @@ public:
 	dewebmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("WebM");
 		SetDescription("Handles videos in the WebM format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtVideo);
 		SetDirectoryName("webm");

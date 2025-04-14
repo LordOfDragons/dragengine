@@ -118,7 +118,7 @@ public:
 	dearModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAnimator");
 		SetDescription("Animates components using animator rules.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtAnimator);
 		SetDirectoryName("deanimator");

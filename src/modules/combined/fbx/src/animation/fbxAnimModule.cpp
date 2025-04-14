@@ -278,7 +278,7 @@ public:
 	fbxAnimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXAnim");
 		SetDescription("Handles animations in the binary FBX model format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtAnimation);
 		SetDirectoryName("fbxanim");

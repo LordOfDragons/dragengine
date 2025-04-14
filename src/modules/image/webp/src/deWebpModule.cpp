@@ -205,7 +205,7 @@ public:
 	deWebpModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("WebP");
 		SetDescription("Handles images saved in the WebP format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtImage);
 		SetDirectoryName("webp");

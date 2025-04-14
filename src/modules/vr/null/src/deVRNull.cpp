@@ -209,7 +209,7 @@ public:
 	denvrModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("NullVR");
 		SetDescription("No VR Support.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtVR);
 		SetDirectoryName("null");

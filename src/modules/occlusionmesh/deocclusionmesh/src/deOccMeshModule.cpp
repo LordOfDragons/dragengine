@@ -323,7 +323,7 @@ public:
 	deoccmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEOcclusionMesh");
 		SetDescription("Handles occlusion meshes in the Drag[en]gine occlusion mesh format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtOcclusionMesh);
 		SetDirectoryName("deocclusionmesh");

@@ -112,7 +112,7 @@ public:
 	deapngModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("APNG");
 		SetDescription("Handles videos in the Animated PNG format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtVideo);
 		SetDirectoryName("apng");

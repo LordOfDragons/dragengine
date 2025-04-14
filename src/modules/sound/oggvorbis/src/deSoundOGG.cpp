@@ -201,7 +201,7 @@ public:
 	deoggModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OggVorbis");
 		SetDescription("Handles sounds in ogg vorbis format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtSound);
 		SetDirectoryName("oggvorbis");

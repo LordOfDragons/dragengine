@@ -283,7 +283,7 @@ public:
 	deFontModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEFont");
 		SetDescription("Handles fonts in the XML Drag[en]gine font format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtFont);
 		SetDirectoryName("defont");

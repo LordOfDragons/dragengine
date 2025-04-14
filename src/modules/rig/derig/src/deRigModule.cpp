@@ -1563,7 +1563,7 @@ public:
 	dermModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DERig");
 		SetDescription("Handles rigs in the XML Drag[en]gine rig format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtRig);
 		SetDirectoryName("derig");

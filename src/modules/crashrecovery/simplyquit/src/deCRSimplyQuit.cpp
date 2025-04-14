@@ -162,7 +162,7 @@ public:
 	deCRModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("SimplyQuit");
 		SetDescription("Simply quits the engine gracefully on system failures.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtCrashRecovery);
 		SetDirectoryName("simplyquit");

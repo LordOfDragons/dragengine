@@ -141,7 +141,7 @@ public:
 	dethModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Theora");
 		SetDescription("Handles videos in the theora format.");
-		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtVideo);
 		SetDirectoryName("theora");
