@@ -4,14 +4,15 @@ Import('parent_env parent_targets parent_report')
 
 envModule = parent_env.Clone()
 
-buildModule = envModule['build_image_webp'] != TernaryVariableNo
-parent_report['build WebP-3D Image Module'] = 'yes' if buildModule else 'no'
+buildModule = envModule['build_image_webp3d'] != TernaryVariableNo
+internalModule = envModule['build_image_webp3d_internal']
+parent_report['build WebP-3D Image Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 
 if not buildModule:
 	Return()
 
 libs = []
-appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
 appendLibrary(envModule, parent_targets['lib_libwebp'], libs)
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
@@ -32,43 +33,59 @@ globFiles(envModule, 'src', '*.cpp', sources)
 globFiles(envModule, 'src', '*.h', headers)
 
 # setup the builders
-objects = [envModule.SharedObject(s) for s in sources]
-
-library = envModule.LoadableModule(target='imgwebp3d', source=objects, LIBS=libs)
-targetBuild = parent_env.Alias('img_webp3d_build', library)
-
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith(envModule['SHLIBSUFFIX']):
+
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='imgwebp3d', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('img_webp3d_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, ['lib_libwebp'], 'deWebp3DRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	
+	library = envModule.LoadableModule(target='imgwebp3d', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('img_webp3d_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'imgwebp3d.pdb'))
+		archive['{}/imgwebp3d.pdb'.format(pathPdb)] = envModule.File('imgwebp3d.pdb')
+	
+	manifestUpdates = [
+		{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	for l in reversed(parent_targets['lib_libwebp']['runtimelibs']):
+		manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
-
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'imgwebp3d.pdb'))
-	archive['{}/imgwebp3d.pdb'.format(pathPdb)] = envModule.File('imgwebp3d.pdb')
-
-manifestUpdates = [
-	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
-	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
-	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-for l in reversed(parent_targets['lib_libwebp']['runtimelibs']):
-	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
-	install.append(envModule.Install(pathModule, l))
-	archive[os.path.join(pathModule, l.name)] = l
-
-manifest = envModule.File('src/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-Depends(updateManifest, 'SConscript')
-Depends(updateManifest, parent_targets['lib_libwebp']['runtimelibs'])
-
-install.append(envModule.Install(pathModule, updateManifest))
-archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+	
+	manifest = envModule.File('src/module.xml')
+	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	Depends(updateManifest, library)
+	Depends(updateManifest, 'SConscript')
+	Depends(updateManifest, parent_targets['lib_libwebp']['runtimelibs'])
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 targetInstall = parent_env.Alias('img_webp3d', install)
 

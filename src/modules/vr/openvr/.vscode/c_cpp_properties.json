@@ -5,6 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/../../../dragengine/build/include",
+                "${workspaceFolder}/../../../../extern/openvr/build/include",
                 "${workspaceFolder}/../../../../../testing/include"
             ],
             "defines": [

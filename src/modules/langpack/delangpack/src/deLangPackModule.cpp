@@ -258,7 +258,6 @@ public:
 		SetDirectoryName("delangpack");
 		GetPatternList().Add(".delangpack");
 		SetDefaultExtension(".delangpack");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

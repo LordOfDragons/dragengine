@@ -169,8 +169,8 @@ public:
 		SetDirectoryName("fbxrig");
 		GetPatternList().Add(".fbx");
 		SetDefaultExtension(".fbx");
-		SetNoCompress(true);
 		SetPriority(1);
+		SetNoSaving(true);
 	}
 	
 	void CreateModule() override{

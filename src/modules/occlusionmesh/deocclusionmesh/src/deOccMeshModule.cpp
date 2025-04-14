@@ -329,7 +329,6 @@ public:
 		SetDirectoryName("deocclusionmesh");
 		GetPatternList().Add(".deoccmesh");
 		SetDefaultExtension(".deoccmesh");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

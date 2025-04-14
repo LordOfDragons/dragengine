@@ -2299,7 +2299,6 @@ public:
 		SetDirectoryName("demodel");
 		GetPatternList().Add(".demodel");
 		SetDefaultExtension(".demodel");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

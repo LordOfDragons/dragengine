@@ -53,6 +53,10 @@
 			"path": "src/modules/image/ies"
 		},
 		{
+			"name": "Module Image: JPEG",
+			"path": "src/modules/image/jpeg"
+		},
+		{
 			"name": "Module Image: PNG",
 			"path": "src/modules/image/png"
 		},
@@ -65,8 +69,12 @@
 			"path": "src/modules/image/tga"
 		},
 		{
-			"name": "Module Image: WebM",
-			"path": "src/modules/video/webm"
+			"name": "Module Image: WebP",
+			"path": "src/modules/image/webp"
+		},
+		{
+			"name": "Module Image: WebP3D",
+			"path": "src/modules/image/webp3d"
 		},
 		{
 			"name": "Module Input: Android",
@@ -125,8 +133,24 @@
 			"path": "src/modules/skin/deskin"
 		},
 		{
+			"name": "Module Sound: OGG",
+			"path": "src/modules/sound/oggvorbis"
+		},
+		{
+			"name": "Module Synthesizer: DESynthesizer",
+			"path": "src/modules/synthesizer/desynthesizer"
+		},
+		{
 			"name": "Module Video: Animated PNG",
 			"path": "src/modules/video/apng"
+		},
+		{
+			"name": "Module Video: Theora",
+			"path": "src/modules/video/theora"
+		},
+		{
+			"name": "Module Video: WebM",
+			"path": "src/modules/video/webm"
 		},
 		{
 			"name": "Module VR: Null",

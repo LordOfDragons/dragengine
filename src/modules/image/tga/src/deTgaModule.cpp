@@ -214,7 +214,6 @@ public:
 		SetDirectoryName("tga");
 		GetPatternList().Add(".tga");
 		SetDefaultExtension(".tga");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

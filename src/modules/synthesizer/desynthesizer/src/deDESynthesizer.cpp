@@ -215,3 +215,31 @@ void deDESynthesizer::SendCommand( const decUnicodeArgumentList &command, decUni
 		answer.SetFromUTF8( "Internal Error!" );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class desynModuleInternal : public deInternalModule{
+public:
+	desynModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DESynthesizer");
+		SetDescription("Generate sound using synthesizers.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtSynthesizer);
+		SetDirectoryName("desynthesizer");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DESynthesizerCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *desynRegisterInternalModule(deModuleSystem *system){
+	return new desynModuleInternal(system);
+}
+#endif

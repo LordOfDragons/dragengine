@@ -757,3 +757,31 @@ vr::Hmd_Eye deVROpenVR::ConvertEye( eEye eye ) const{
 		DETHROW( deeInvalidParam );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deovrModuleInternal : public deInternalModule{
+public:
+	deovrModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OpenVR");
+		SetDescription("OpenVR Support.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVR);
+		SetDirectoryName("openvr");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(OpenVRCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deovrRegisterInternalModule(deModuleSystem *system){
+	return new deovrModuleInternal(system);
+}
+#endif

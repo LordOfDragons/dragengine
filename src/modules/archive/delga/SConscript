@@ -5,7 +5,7 @@ Import('parent_env parent_targets parent_report')
 envModule = parent_env.Clone()
 
 buildModule = envModule['build_archive_delga'] != TernaryVariableNo
-internalModule = envModule['build_image_png_internal']
+internalModule = envModule['build_archive_delga_internal']
 parent_report['build DELGA Archive Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 
 if not buildModule:

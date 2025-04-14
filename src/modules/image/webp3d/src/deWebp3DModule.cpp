@@ -107,3 +107,36 @@ void deWebp3DModule::LoadImage( decBaseFileReader &file, deImage &image, deBaseI
 void deWebp3DModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 	deWebp3DTarball( *this ).Save3DImage( file, image );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deWebp3DModuleInternal : public deInternalModule{
+public:
+	deWebp3DModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("WebP-3D");
+		SetDescription("Handles images saved in the WebP-3D format (lossless and lossy compression).\
+WebP-3D files are actually a tarball with webp images one for each z coordinate in the 3D-image.\
+Files inside the tarball are named zX.webp where X is the z coordinate without leading 0s.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("webp3d");
+		GetPatternList().Add(".webp3d");
+		SetDefaultExtension(".webp3d");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(WEBP3DCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deWebp3DRegisterInternalModule(deModuleSystem *system){
+	return new deWebp3DModuleInternal(system);
+}
+#endif

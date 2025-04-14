@@ -1668,7 +1668,6 @@ public:
 		SetDirectoryName("deskin");
 		GetPatternList().Add(".deskin");
 		SetDefaultExtension(".deskin");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

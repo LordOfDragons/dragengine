@@ -6,7 +6,6 @@
 	<version>VERSION</version>
 	<type>OcclusionMesh</type>
 	<pattern>.deoccmesh</pattern>
-	<noCompress/>
 	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>

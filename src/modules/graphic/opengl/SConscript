@@ -54,7 +54,7 @@ if envModule['build_graphics_opengl'] == TernaryVariableYes and not hasOpenGL:
 	Exit('Requested to build OpenGL Graphics Module but OpenGL could not be found or is not usable.')
 
 # build module if requested
-internalModule = envModule['build_image_png_internal']
+internalModule = envModule['build_graphic_opengl_internal']
 parent_report['build OpenGL Graphics Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 
 if not buildModule:

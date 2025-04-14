@@ -192,3 +192,34 @@ void deSoundOGG::SaveSound( decBaseFileWriter &file, const deSound &sound ){
 deBaseSoundDecoder *deSoundOGG::CreateDecoder( decBaseFileReader *reader ){
 	return new deoggSoundDecoder( this, reader );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deoggModuleInternal : public deInternalModule{
+public:
+	deoggModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OggVorbis");
+		SetDescription("Handles sounds in ogg vorbis format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtSound);
+		SetDirectoryName("oggvorbis");
+		GetPatternList().Add(".ogg");
+		SetDefaultExtension(".ogg");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(OGGCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deoggRegisterInternalModule(deModuleSystem *system){
+	return new deoggModuleInternal(system);
+}
+#endif

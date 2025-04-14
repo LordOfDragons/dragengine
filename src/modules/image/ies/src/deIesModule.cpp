@@ -118,7 +118,6 @@ public:
 		SetDirectoryName("ies");
 		GetPatternList().Add(".ies");
 		SetDefaultExtension(".ies");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

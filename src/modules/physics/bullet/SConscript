@@ -12,7 +12,7 @@ libs = []
 buildModule = envModule[ 'build_physics_bullet' ]
 
 # build module if requested
-internalModule = envModule['build_image_png_internal']
+internalModule = envModule['build_physics_bullet_internal']
 parent_report['build Bullet Physics Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 
 if not buildModule:

@@ -289,7 +289,6 @@ public:
 		SetDirectoryName("defont");
 		GetPatternList().Add(".defont");
 		SetDefaultExtension(".defont");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

@@ -334,3 +334,34 @@ void deJpegModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 		throw;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deJpegModuleInternal : public deInternalModule{
+public:
+	deJpegModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("JPEG");
+		SetDescription("Handles images saved in the JPEG format (lossy compression).");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("jpeg");
+		GetPatternList().Add(".jpg");
+		SetDefaultExtension(".jpg");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(JPEGCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deJpegRegisterInternalModule(deModuleSystem *system){
+	return new deJpegModuleInternal(system);
+}
+#endif

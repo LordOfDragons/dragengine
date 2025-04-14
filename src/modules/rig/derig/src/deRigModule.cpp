@@ -1569,7 +1569,6 @@ public:
 		SetDirectoryName("derig");
 		GetPatternList().Add(".derig");
 		SetDefaultExtension(".derig");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

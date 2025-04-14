@@ -889,7 +889,6 @@ deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetDirectoryName("deanim");
 		GetPatternList().Add(".deanim");
 		SetDefaultExtension(".deanim");
-		SetNoCompress(true);
 		SetPriority(1);
 	}
 	

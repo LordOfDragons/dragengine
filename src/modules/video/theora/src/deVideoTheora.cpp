@@ -132,3 +132,34 @@ deBaseVideoAudioDecoder *deVideoTheora::CreateAudioDecoder( decBaseFileReader *r
 		return NULL;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class dethModuleInternal : public deInternalModule{
+public:
+	dethModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("Theora");
+		SetDescription("Handles videos in the theora format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVideo);
+		SetDirectoryName("theora");
+		GetPatternList().Add(".ogv");
+		SetDefaultExtension(".ogv");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(TheoraCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dethRegisterInternalModule(deModuleSystem *system){
+	return new dethModuleInternal(system);
+}
+#endif

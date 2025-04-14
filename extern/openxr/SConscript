@@ -71,7 +71,7 @@ def openxrBuild(target, source, env):
 	#untarArchive(buildDir.Dir(srcdir).abspath,
 	#	env.File('#extern/mingw/mingw_stdthreads.tar.bz2').abspath)
 	
-	script = createScriptHeader(env)
+	script = createScriptHeader(env, deps=[parent_targets['lib_jsoncpp']])
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
 	for p in env['PATCHES']:
@@ -119,9 +119,11 @@ def openxrBuild(target, source, env):
 	cmdline.append('-DBUILD_API_LAYERS=No')
 	cmdline.append('-DBUILD_TESTS=No')
 	cmdline.append('-DBUILD_WITH_STD_FILESYSTEM=No')
-	cmdline.append('-DBUILD_WITH_SYSTEM_JSONCPP=No')
 	cmdline.append('-DBUILD_WITH_WAYLAND_HEADERS=No')
 	cmdline.append('-DBUILD_WITH_XCB_HEADERS=No')
+	
+	# cmdline.append('-DBUILD_WITH_SYSTEM_JSONCPP=Yes') # bugged
+	cmdline.append('-DBUILD_WITH_SYSTEM_JSONCPP=No')
 	
 	cmdline.append('-DDYNAMIC_LOADER={}'.format('No' if buildStaticLinking else 'Yes'))
 	
@@ -157,19 +159,29 @@ targets.extend([
 
 library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(openxrBuild, 'Build OpenXR'))
 
+if parent_targets['lib_jsoncpp']['depends']:
+	envLibrary.Depends(library, parent_targets['lib_jsoncpp']['depends'])
+
 envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_openxr', library)
+
 cpppath = [envLibrary.Dir('include')]
+cpppath.extend(parent_targets['lib_jsoncpp']['cpppath'])
+
+libpath.extend(parent_targets['lib_jsoncpp']['libpath'])
 
 libs = []
 runtimelibs = []
 
 if buildStaticLinking:
 	libs.append(library[0])
+	libs.extend(parent_targets['lib_jsoncpp']['libs'])
 else:
 	libs.append(libLinkName)
 	runtimelibs.append(library[0])
+
+runtimelibs.extend(parent_targets['lib_jsoncpp']['runtimelibs'])
 
 cppflags = []
 

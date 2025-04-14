@@ -9,7 +9,8 @@ envModule = parent_env.Clone()
 useInternalLoader = False
 
 buildModule = envModule['build_vr_openxr' ] != TernaryVariableNo
-parent_report['build OpenXR VR Module' ] = 'yes' if buildModule else 'no'
+internalModule = envModule['build_vr_openxr_internal']
+parent_report['build OpenXR VR Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 
 if not buildModule:
 	Return()
@@ -54,50 +55,69 @@ globFiles(envModule, 'extern', '*.h', headers)
 data = []
 globFiles(envModule, 'data', '*', data)
 
-objects = [envModule.SharedObject(s) for s in sources]
-
 libs = []
-appendLibrary(envModule, parent_targets['dragengine'], libs)
-if not useInternalLoader:
-	appendLibrary( envModule, parent_targets['lib_openxr'], libs)
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
 
-library = envModule.LoadableModule(target='vropenxr', source=objects, LIBS=libs)
-targetBuild = envModule.Alias('vr_openxr_build', library)
+extraLibs = []
+if not useInternalLoader:
+	extraLibs.append('lib_openxr')
+	appendLibrary( envModule, parent_targets['lib_openxr'], libs)
 
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith(envModule['SHLIBSUFFIX']):
-		install.append(envModule.Install(pathModule, l))
-		archive[os.path.join(pathModule, l.name)] = l
 
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'vropenxr.pdb'))
-	archive['{}/vropenxr.pdb'.format(pathPdb)] = envModule.File('vropenxr.pdb')
-
-manifestUpdates = [
-	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
-	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
-	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-if not useInternalLoader:
-	for l in reversed(parent_targets['lib_openxr']['runtimelibs']):
-		manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
-		install.append(envModule.Install(pathModule, l))
-		archive[os.path.join(pathModule, l.name)] = l
-
-manifest = envModule.File('src/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-Depends(updateManifest, 'SConscript')
-if not useInternalLoader:
-	Depends(updateManifest, parent_targets['lib_openxr']['runtimelibs'])
-
-install.append(envModule.Install(pathModule, updateManifest))
-archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='vropenxr', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('vr_openxr_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, extraLibs, 'deoxrRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	
+	library = envModule.LoadableModule(target='vropenxr', source=objects, LIBS=libs)
+	targetBuild = envModule.Alias('vr_openxr_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'vropenxr.pdb'))
+		archive['{}/vropenxr.pdb'.format(pathPdb)] = envModule.File('vropenxr.pdb')
+	
+	manifestUpdates = [
+		{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	if not useInternalLoader:
+		for l in reversed(parent_targets['lib_openxr']['runtimelibs']):
+			manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	manifest = envModule.File('src/module.xml')
+	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	Depends(updateManifest, library)
+	Depends(updateManifest, 'SConscript')
+	if not useInternalLoader:
+		Depends(updateManifest, parent_targets['lib_openxr']['runtimelibs'])
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 for d in data:
 	filename = os.path.join(pathShared, d[5:])

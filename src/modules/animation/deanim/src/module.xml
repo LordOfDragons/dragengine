@@ -6,7 +6,6 @@
 	<version>VERSION</version>
 	<type>Animation</type>
 	<pattern>.deanim</pattern>
-	<noCompress/>
 	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>

@@ -196,3 +196,34 @@ void deWebpModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 		throw;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deWebpModuleInternal : public deInternalModule{
+public:
+	deWebpModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("WebP");
+		SetDescription("Handles images saved in the WebP format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("webp");
+		GetPatternList().Add(".webp");
+		SetDefaultExtension(".webp");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(WebpCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deWebpRegisterInternalModule(deModuleSystem *system){
+	return new deWebpModuleInternal(system);
+}
+#endif

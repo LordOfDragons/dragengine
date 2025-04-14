@@ -1062,3 +1062,31 @@ bool deVROpenXR::pBeginFrame(){
 		return false;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deoxrModuleInternal : public deInternalModule{
+public:
+	deoxrModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OpenXR");
+		SetDescription("OpenXR Support.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVR);
+		SetDirectoryName("openxr");
+		SetPriority(2);
+	}
+	
+	void CreateModule() override{
+		SetModule(OpenXRCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deoxrRegisterInternalModule(deModuleSystem *system){
+	return new deoxrModuleInternal(system);
+}
+#endif
