@@ -874,3 +874,34 @@ void deAnimModule::pWriteKeyframeWeight( decBaseFileWriter &writer, const sConfi
 		writer.WriteShort( ( short )( weight * 1000.0f + 0.5f ) );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deanimModuleInternal : public deInternalModule{
+public:
+deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEAnim");
+		SetDescription("Handles animations in the binary Drag[en]gine animation format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAnimation);
+		SetDirectoryName("deanim");
+		GetPatternList().Add(".deanim");
+		SetDefaultExtension(".deanim");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DEAnimCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deanimRegisterInternalModule(deModuleSystem *system){
+	return new deanimModuleInternal(system);
+}
+#endif

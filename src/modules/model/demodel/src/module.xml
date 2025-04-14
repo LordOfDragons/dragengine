@@ -6,6 +6,7 @@
 	<version>VERSION</version>
 	<type>Model</type>
 	<pattern>.demodel</pattern>
+	<noCompress/>
 	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>

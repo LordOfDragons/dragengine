@@ -243,3 +243,34 @@ void deLangPackModule::pWriteLangPackEntry( decXmlWriter &writer, const deLangua
 	
 	writer.WriteClosingTag( "translation", false );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class delpModuleInternal : public deInternalModule{
+public:
+	delpModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DELangPack");
+		SetDescription("Handles language packs in the XML Drag[en]gine language pack format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtLanguagePack);
+		SetDirectoryName("delangpack");
+		GetPatternList().Add(".delangpack");
+		SetDefaultExtension(".delangpack");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DELangPackCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *delpRegisterInternalModule(deModuleSystem *system){
+	return new delpModuleInternal(system);
+}
+#endif

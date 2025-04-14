@@ -15,6 +15,9 @@ buildModule = False
 if envModule[ 'OSPosix' ]:
 	buildModule = True
 
+internalModule = envModule['build_input_console_internal']
+parent_report['build Input Console Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
+
 if not buildModule:
 	Return()
 
@@ -35,40 +38,56 @@ headers = []
 globFiles( envModule, 'src', '*.cpp', sources )
 globFiles( envModule, 'src', '*.h', headers )
 
-objects = [ envModule.SharedObject( s ) for s in sources ]
-
 libs = []
-appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
-
-library = envModule.LoadableModule( target='inpconsole', source=objects, LIBS=libs )
-targetBuild = envModule.Alias( 'inp_console_build', library )
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
 
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
-		install.append( envModule.Install( pathModule, l ) )
-		archive[ os.path.join( pathModule, l.name ) ] = l
 
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'inpconsole.pdb'))
-	archive['{}/inpconsole.pdb'.format(pathPdb)] = envModule.File('inpconsole.pdb')
-
-manifestUpdates = [
-	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
-	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-manifest = envModule.File( 'src/module.xml' )
-updateManifest = envModule.Command( manifest, manifest.srcnode(),
-	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
-Depends(updateManifest, 'SConscript')
-
-install.append( envModule.Install( pathModule, updateManifest ) )
-archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='inpconsole', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('inp_console_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, [], 'deciRegisterInternalModule')
+	
+else:
+	objects = [ envModule.SharedObject( s ) for s in sources ]
+	
+	library = envModule.LoadableModule( target='inpconsole', source=objects, LIBS=libs )
+	targetBuild = envModule.Alias( 'inp_console_build', library )
+	
+	for l in library:
+		if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+			install.append( envModule.Install( pathModule, l ) )
+			archive[ os.path.join( pathModule, l.name ) ] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'inpconsole.pdb'))
+		archive['{}/inpconsole.pdb'.format(pathPdb)] = envModule.File('inpconsole.pdb')
+	
+	manifestUpdates = [
+		{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+		{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+		{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	manifest = envModule.File( 'src/module.xml' )
+	updateManifest = envModule.Command( manifest, manifest.srcnode(),
+		Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+	Depends( updateManifest, library )
+	Depends(updateManifest, 'SConscript')
+	
+	install.append( envModule.Install( pathModule, updateManifest ) )
+	archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
 
 targetInstall = envModule.Alias( 'inp_console', install )
 

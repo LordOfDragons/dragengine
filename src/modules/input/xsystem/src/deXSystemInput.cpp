@@ -854,3 +854,32 @@ void deXSystemInput::pSetAutoRepeatEnabled( bool enabled ){
 	
 	//XSync( display, False ); // to make sure it is applied
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class dexsiModuleInternal : public deInternalModule{
+public:
+	dexsiModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("XSystemInput");
+		SetDescription("Processes input using the X-Server of linux Operating systems.\
+Supports Mouse and Keyboard for the time beeing.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtInput);
+		SetDirectoryName("xsystem");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(XSysInpCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dexsiRegisterInternalModule(deModuleSystem *system){
+	return new dexsiModuleInternal(system);
+}
+#endif

@@ -548,3 +548,34 @@ void fbxModelModule::pEnsureTextureIndex( deModel &model, int count ){
 		}
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class fbxModelModuleInternal : public deInternalModule{
+public:
+	fbxModelModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("FBXModel");
+		SetDescription("Handles models in the binary FBX format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtModel);
+		SetDirectoryName("fbxmodel");
+		GetPatternList().Add(".fbx");
+		SetDefaultExtension(".fbx");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(FBXModelCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *fbxModelRegisterInternalModule(deModuleSystem *system){
+	return new fbxModelModuleInternal(system);
+}
+#endif

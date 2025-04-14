@@ -274,3 +274,34 @@ void deFontModule::pWriteFont( decXmlWriter& writer, const deFont& font ) {
 	
 	writer.WriteClosingTag( "font", true );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deFontModuleInternal : public deInternalModule{
+public:
+	deFontModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEFont");
+		SetDescription("Handles fonts in the XML Drag[en]gine font format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtFont);
+		SetDirectoryName("defont");
+		GetPatternList().Add(".defont");
+		SetDefaultExtension(".defont");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DEFontCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deFontRegisterInternalModule(deModuleSystem *system){
+	return new deFontModuleInternal(system);
+}
+#endif

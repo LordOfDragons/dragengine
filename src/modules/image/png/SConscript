@@ -6,7 +6,7 @@ envModule = parent_env.Clone()
 
 buildModule = envModule[ 'build_image_png' ] != TernaryVariableNo
 internalModule = envModule['build_image_png_internal']
-parent_report[ 'build PNG Image Module' ] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
+parent_report['build PNG Image Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 
 if not buildModule:
 	Return()

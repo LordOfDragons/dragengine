@@ -199,3 +199,34 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		}
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deTgaModuleInternal : public deInternalModule{
+public:
+	deTgaModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("Targa");
+		SetDescription("Handles images in uncompressed Targe format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("tga");
+		GetPatternList().Add(".tga");
+		SetDefaultExtension(".tga");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(TGACreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deTgaRegisterInternalModule(deModuleSystem *system){
+	return new deTgaModuleInternal(system);
+}
+#endif

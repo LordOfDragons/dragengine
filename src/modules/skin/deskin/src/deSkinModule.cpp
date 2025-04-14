@@ -1653,3 +1653,34 @@ void deSkinModule::pWriteProperty( decXmlWriter &writer, const deSkin &skin, deS
 	
 	property.Visit( writeProperty );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class desmModuleInternal : public deInternalModule{
+public:
+	desmModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DESkin");
+		SetDescription("Handles skins in the XML Drag[en]gine skin format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtSkin);
+		SetDirectoryName("deskin");
+		GetPatternList().Add(".deskin");
+		SetDefaultExtension(".deskin");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DESkinCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *desmRegisterInternalModule(deModuleSystem *system){
+	return new desmModuleInternal(system);
+}
+#endif

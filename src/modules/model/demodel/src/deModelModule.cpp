@@ -2284,3 +2284,34 @@ void deModelModule::pSaveTriangles( decBaseFileWriter &writer, const deModelLOD 
 		}
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class demdlModuleInternal : public deInternalModule{
+public:
+	demdlModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEModel");
+		SetDescription("Handles models in the binary Drag[en]gine model format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtModel);
+		SetDirectoryName("demodel");
+		GetPatternList().Add(".demodel");
+		SetDefaultExtension(".demodel");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DEModelCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *demdlRegisterInternalModule(deModuleSystem *system){
+	return new demdlModuleInternal(system);
+}
+#endif

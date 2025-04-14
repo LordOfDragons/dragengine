@@ -269,3 +269,34 @@ const fbxAnimationMove &loadMove ){
 	
 	move.SetPlaytime( loadMove.FrameToTime( playtime ) );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class fbxAnimModuleInternal : public deInternalModule{
+public:
+	fbxAnimModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("FBXAnim");
+		SetDescription("Handles animations in the binary FBX model format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAnimation);
+		SetDirectoryName("fbxanim");
+		GetPatternList().Add(".fbx");
+		SetDefaultExtension(".fbx");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(FBXAnimCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *fbxAnimRegisterInternalModule(deModuleSystem *system){
+	return new fbxAnimModuleInternal(system);
+}
+#endif

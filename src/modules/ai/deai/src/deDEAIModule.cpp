@@ -141,3 +141,31 @@ void deDEAIModule::SendCommand( const decUnicodeArgumentList &command, decUnicod
 		answer.SetFromUTF8( "Internal Error!" );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deaiModuleInternal : public deInternalModule{
+public:
+deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEAI");
+		SetDescription("Provides AI support to the engine.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAI);
+		SetDirectoryName("deai");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DEAICreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deaiRegisterInternalModule(deModuleSystem *system){
+	return new deaiModuleInternal(system);
+}
+#endif

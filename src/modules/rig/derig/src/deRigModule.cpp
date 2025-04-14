@@ -1554,3 +1554,34 @@ const char *tagName, bool linearConstraint ){
 		writer.WriteClosingTag( tagName );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class dermModuleInternal : public deInternalModule{
+public:
+	dermModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DERig");
+		SetDescription("Handles rigs in the XML Drag[en]gine rig format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtRig);
+		SetDirectoryName("derig");
+		GetPatternList().Add(".derig");
+		SetDefaultExtension(".derig");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DERigCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dermRegisterInternalModule(deModuleSystem *system){
+	return new dermModuleInternal(system);
+}
+#endif

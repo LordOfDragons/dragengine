@@ -413,28 +413,31 @@ void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 	}
 }
 
-
-
 #ifdef WITH_INTERNAL_MODULE
-dePngModuleInternal::dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
-	SetName("PNG");
-	SetDescription("Handles images saved in the PNG format (lossless compression).");
-	SetAuthor("Plüss Roland (roland@rptd.ch)");
-	SetVersion(MODULE_VERSION);
-	SetType(deModuleSystem::emtImage);
-	SetDirectoryName("png");
-	GetPatternList().Add(".png");
-	SetDefaultExtension(".png");
-	SetNoCompress(true);
-	SetPriority(1);
-}
+#include <dragengine/systems/modules/deInternalModule.h>
 
-void dePngModuleInternal::CreateModule(){
-	SetModule(PNGCreateModule(this));
-	if(!GetModule()){
-		SetErrorCode(eecCreateModuleFailed);
+class dePngModuleInternal : public deInternalModule{
+public:
+	dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("PNG");
+		SetDescription("Handles images saved in the PNG format (lossless compression).");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("png");
+		GetPatternList().Add(".png");
+		SetDefaultExtension(".png");
+		SetNoCompress(true);
+		SetPriority(1);
 	}
-}
+	
+	void CreateModule() override{
+		SetModule(PNGCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
 
 deInternalModule *depngRegisterInternalModule(deModuleSystem *system){
 	return new dePngModuleInternal(system);

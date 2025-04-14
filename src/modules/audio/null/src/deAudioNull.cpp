@@ -169,3 +169,32 @@ deBaseAudioSynthesizerInstance *deAudioNull::CreateSynthesizerInstance( deSynthe
 deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain( deHeightTerrain& ){
 	return NULL;
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deanModuleInternal : public deInternalModule{
+public:
+	deanModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("NullAudio");
+		SetDescription("Outputs no audio.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAudio);
+		SetDirectoryName("null");
+		SetPriority(0);
+		SetIsFallback(true);
+	}
+	
+	void CreateModule() override{
+		SetModule(NullAudioCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deanRegisterInternalModule(deModuleSystem *system){
+	return new deanModuleInternal(system);
+}
+#endif

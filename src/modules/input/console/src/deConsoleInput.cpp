@@ -355,3 +355,32 @@ decTimer debugTimer;
 		character = readNextChar();
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deciModuleInternal : public deInternalModule{
+public:
+	deciModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("ConsoleInput");
+		SetDescription("Processes input from a console. Supports only keyboard input.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtInput);
+		SetDirectoryName("console");
+		SetPriority(0);
+		SetIsFallback(true);
+	}
+	
+	void CreateModule() override{
+		SetModule(ConsoleInputCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deciRegisterInternalModule(deModuleSystem *system){
+	return new deciModuleInternal(system);
+}
+#endif

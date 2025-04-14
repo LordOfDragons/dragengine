@@ -373,3 +373,34 @@ void fbxSkinModule::pAddPropertyImage( deSkinTexture &texture, const char *name,
 		throw;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class fbxSkinModuleInternal : public deInternalModule{
+public:
+	fbxSkinModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("FBXSkin");
+		SetDescription("Handles skins in the binary FBX format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtSkin);
+		SetDirectoryName("fbxskin");
+		GetPatternList().Add(".fbx");
+		SetDefaultExtension(".fbx");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(FBXSkinCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *fbxSkinRegisterInternalModule(deModuleSystem *system){
+	return new fbxSkinModuleInternal(system);
+}
+#endif

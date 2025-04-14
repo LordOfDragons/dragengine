@@ -154,3 +154,34 @@ void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 		throw;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class fbxRigModuleInternal : public deInternalModule{
+public:
+	fbxRigModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("FBXRig");
+		SetDescription("Handles rigs in the binary FBX format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtRig);
+		SetDirectoryName("fbxrig");
+		GetPatternList().Add(".fbx");
+		SetDefaultExtension(".fbx");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(FBXRigCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *fbxRigRegisterInternalModule(deModuleSystem *system){
+	return new fbxRigModuleInternal(system);
+}
+#endif

@@ -79,15 +79,5 @@ public:
 	/*@}*/
 };
 
-#ifdef WITH_INTERNAL_MODULE
-#include <dragengine/systems/modules/deInternalModule.h>
-
-class dePngModuleInternal : public deInternalModule{
-public:
-	dePngModuleInternal(deModuleSystem *system);
-	void CreateModule() override;
-};
-#endif
-
 // end of include only once
 #endif

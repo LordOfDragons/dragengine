@@ -566,3 +566,31 @@ void deNetworkBasic::pProcessConnections( float elapsedTime ){
 		connection = connection->GetNextConnection();
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class denbModuleInternal : public deInternalModule{
+public:
+	denbModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("BasicNetwork");
+		SetDescription("Basic network module.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtNetwork);
+		SetDirectoryName("basic");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(BasicNetworkCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *denbRegisterInternalModule(deModuleSystem *system){
+	return new denbModuleInternal(system);
+}
+#endif

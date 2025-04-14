@@ -153,3 +153,32 @@ void deCRSimplyQuit::pPrintTraceValue( int level, deErrorTraceValue *value ){
 		pPrintTraceValue( level + 1, value->GetSubValue( i ) );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deCRModuleInternal : public deInternalModule{
+public:
+	deCRModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("SimplyQuit");
+		SetDescription("Simply quits the engine gracefully on system failures.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtCrashRecovery);
+		SetDirectoryName("simplyquit");
+		SetPriority(0);
+		SetIsFallback(true);
+	}
+	
+	void CreateModule() override{
+		SetModule(SQCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deCRRegisterInternalModule(deModuleSystem *system){
+	return new deCRModuleInternal(system);
+}
+#endif

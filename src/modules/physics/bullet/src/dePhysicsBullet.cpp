@@ -319,3 +319,31 @@ deBasePhysicsParticleEmitterInstance *dePhysicsBullet::CreateParticleEmitterInst
 deBasePhysicsSmokeEmitter *dePhysicsBullet::CreateSmokeEmitter( deSmokeEmitter *smokeEmitter ){
 	return new debpSmokeEmitter( this, smokeEmitter );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class depbModuleInternal : public deInternalModule{
+public:
+	depbModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("Bullet");
+		SetDescription("Provides physical simulation using the free-software Bullet physics library.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtPhysics);
+		SetDirectoryName("bullet");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(BulletCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *depbRegisterInternalModule(deModuleSystem *system){
+	return new depbModuleInternal(system);
+}
+#endif

@@ -109,3 +109,31 @@ deBaseAnimatorAnimation *deDEAnimator::CreateAnimation( deAnimation *animation )
 deBaseAnimatorComponent *deDEAnimator::CreateComponent( deComponent *component ){
 	return new dearComponent( *this, *component );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class dearModuleInternal : public deInternalModule{
+public:
+	dearModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEAnimator");
+		SetDescription("Animates components using animator rules.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAnimator);
+		SetDirectoryName("deanimator");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DEAnimatorCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dearRegisterInternalModule(deModuleSystem *system){
+	return new dearModuleInternal(system);
+}
+#endif

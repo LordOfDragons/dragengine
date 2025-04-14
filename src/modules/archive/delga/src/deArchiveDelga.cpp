@@ -83,3 +83,34 @@ deBaseArchiveContainer *deArchiveDelga::CreateContainer( decBaseFileReader *read
 	DEASSERT_NOTNULL( reader )
 	return new deadContainer( *this, *reader );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deadModuleInternal : public deInternalModule{
+public:
+	deadModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DELGA");
+		SetDescription("Handles archive in the DELGA format.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtArchive);
+		SetDirectoryName("delga");
+		GetPatternList().Add(".delga");
+		SetDefaultExtension(".delga");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DELGACreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deadRegisterInternalModule(deModuleSystem *system){
+	return new deadModuleInternal(system);
+}
+#endif

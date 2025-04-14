@@ -200,3 +200,32 @@ void deVRNull::SubmitOpenGLTexture2D( eEye, void*, const decVector2 &, const dec
 
 void deVRNull::EndFrame(){
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class denvrModuleInternal : public deInternalModule{
+public:
+	denvrModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("NullVR");
+		SetDescription("No VR Support.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVR);
+		SetDirectoryName("null");
+		SetPriority(0);
+		SetIsFallback(true);
+	}
+	
+	void CreateModule() override{
+		SetModule(NullVRCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *denvrRegisterInternalModule(deModuleSystem *system){
+	return new denvrModuleInternal(system);
+}
+#endif
