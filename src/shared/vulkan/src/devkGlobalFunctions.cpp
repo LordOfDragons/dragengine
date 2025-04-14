@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-#include "devkGlobalFunctions.h"
+#include "devkBasics.h"
 
-#define EXPORTED_VULKAN_FUNCTION( name ) PFN_##name name = NULL;
-#define GLOBAL_LEVEL_VULKAN_FUNCTION( name ) PFN_##name name = NULL;
+#define EXPORTED_VULKAN_FUNCTION(name) PFN_##name p##name = nullptr;
+#define GLOBAL_LEVEL_VULKAN_FUNCTION(name) PFN_##name p##name = nullptr;
 
 #include "devkFunctionNames.h"

@@ -765,3 +765,35 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPWireframeMode( *this ) );
 #endif
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deoglModuleInternal : public deInternalModule{
+public:
+	deoglModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OpenGL");
+		SetDescription("Render using OpenGL. Requires OpenGL 3.2 or higher.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtGraphic);
+		SetDirectoryName("opengl");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+#ifdef BACKEND_OPENGL
+		SetModule(OpenGLCreateModule(this));
+		#elif defined BACKEND_VULKAN
+SetModule(VulkanCreateModule(this));
+#endif
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deoglRegisterInternalModule(deModuleSystem *system){
+	return new deoglModuleInternal(system);
+}
+#endif

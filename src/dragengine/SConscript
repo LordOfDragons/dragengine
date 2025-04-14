@@ -351,8 +351,15 @@ if not 'mingw' in envDragengine['TOOLS']:
 	libpath.extend(parent_targets['lib_zlib']['libpath'])
 	binlibs.extend(parent_targets['lib_zlib']['libs'])
 
-def addInternalModule(env, nodes, externLibs, createFunc):
+def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
 	libenv = library[0].get_env()
+	
+	libenv['LIBS'].extend(syslibs)
+	"""
+	for x in reversed(syslibs):
+		if not x in libenv['LIBS']:
+			libenv['LIBS'].insert(0, x)
+	"""
 	
 	for el in externLibs:
 		elt = parent_targets[el]

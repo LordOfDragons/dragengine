@@ -40,13 +40,13 @@ class deoalAudioThread;
 #endif
 
 #ifdef OAL_THREAD_CHECK
-	void dbgInitThreadCheck();
-	#define OAL_INIT_THREAD_CHECK		dbgInitThreadCheck()
-	void dbgInitMainThreadCheck();
-	#define OAL_INIT_MAIN_THREAD_CHECK	dbgInitMainThreadCheck()
+	void oaldbgInitThreadCheck();
+	#define OAL_INIT_THREAD_CHECK		oaldbgInitThreadCheck()
+	void oaldbgInitMainThreadCheck();
+	#define OAL_INIT_MAIN_THREAD_CHECK	oaldbgInitMainThreadCheck()
 	
-	void dbgOnMainThreadCheck();
-	#define OAL_ON_MAIN_THREAD			dbgOnMainThreadCheck();
+	void oaldbgOnMainThreadCheck();
+	#define OAL_ON_MAIN_THREAD			oaldbgOnMainThreadCheck();
 	
 #else
 	#define OAL_INIT_THREAD_CHECK

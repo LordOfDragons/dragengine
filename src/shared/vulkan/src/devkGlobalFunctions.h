@@ -27,8 +27,8 @@
 
 #include "devkBasics.h"
 
-#define EXPORTED_VULKAN_FUNCTION( name ) extern PFN_##name name;
-#define GLOBAL_LEVEL_VULKAN_FUNCTION( name ) extern PFN_##name name;
+#define EXPORTED_VULKAN_FUNCTION(name) extern PFN_##name p##name;
+#define GLOBAL_LEVEL_VULKAN_FUNCTION(name) extern PFN_##name p##name;
 
 #include "devkFunctionNames.h"
 

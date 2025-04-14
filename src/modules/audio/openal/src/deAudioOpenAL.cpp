@@ -346,3 +346,31 @@ void deAudioOpenAL::SendCommand( const decUnicodeArgumentList &command, decUnico
 		answer.SetFromUTF8( "Internal Error!" );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deoalModuleInternal : public deInternalModule{
+public:
+	deoalModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OpenAL");
+		SetDescription("Ouputs audio using the OpenAL library.");
+		SetAuthor("Plüss Roland (roland@rptd.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAudio);
+		SetDirectoryName("openal");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(OpenALCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deoalRegisterInternalModule(deModuleSystem *system){
+	return new deoalModuleInternal(system);
+}
+#endif

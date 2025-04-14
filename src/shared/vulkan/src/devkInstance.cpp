@@ -164,14 +164,14 @@ void devkInstance::pCleanUp(){
 
 void devkInstance::pDetectExtensions(){
 	uint32_t count = 0;
-	VK_CHECK( pVulkan, vkEnumerateInstanceExtensionProperties( VK_NULL_HANDLE, &count, VK_NULL_HANDLE ) );
+	VK_CHECK( pVulkan, pvkEnumerateInstanceExtensionProperties( VK_NULL_HANDLE, &count, VK_NULL_HANDLE ) );
 	if( count == 0 ){
 		return;
 	}
 	
 	VkExtensionProperties * const extensions = new VkExtensionProperties[ count ];
 	try{
-		VK_CHECK( pVulkan, vkEnumerateInstanceExtensionProperties( VK_NULL_HANDLE, &count, extensions ) );
+		VK_CHECK( pVulkan, pvkEnumerateInstanceExtensionProperties( VK_NULL_HANDLE, &count, extensions ) );
 		
 		// report all extensions for debug purpose
 		deBaseModule &baseModule = pVulkan.GetModule();
@@ -220,7 +220,7 @@ void devkInstance::pDetectExtensions(){
 
 void devkInstance::pDetectLayers(){
 	uint32_t count = 0;
-	VK_CHECK( pVulkan, vkEnumerateInstanceLayerProperties( &count, VK_NULL_HANDLE ) );
+	VK_CHECK( pVulkan, pvkEnumerateInstanceLayerProperties( &count, VK_NULL_HANDLE ) );
 	if( count == 0 ){
 		return;
 	}
@@ -228,7 +228,7 @@ void devkInstance::pDetectLayers(){
 	VkLayerProperties *layers = nullptr;
 	try{
 		layers = new VkLayerProperties[ count ];
-		VK_CHECK( pVulkan, vkEnumerateInstanceLayerProperties( &count, layers ) );
+		VK_CHECK( pVulkan, pvkEnumerateInstanceLayerProperties( &count, layers ) );
 		
 		// report all layers for debug purpose
 		deBaseModule &baseModule = pVulkan.GetModule();
@@ -339,12 +339,12 @@ void devkInstance::pCreateInstance( bool enableValidationLayers ){
 	}
 	
 	// create device
-	VK_CHECK( pVulkan, vkCreateInstance( &instanceCreateInfo, VK_NULL_HANDLE, &pInstance ) );
+	VK_CHECK( pVulkan, pvkCreateInstance( &instanceCreateInfo, VK_NULL_HANDLE, &pInstance ) );
 }
 
 void devkInstance::pLoadFunctions(){
 	#define INSTANCE_LEVEL_VULKAN_FUNCTION( name ) \
-		name = ( PFN_##name )vkGetInstanceProcAddr( pInstance, #name ); \
+		name = ( PFN_##name )pvkGetInstanceProcAddr( pInstance, #name ); \
 		if( ! name ){ \
 			DETHROW_INFO( deeInvalidAction, "Instance function " #name " not found" ); \
 		}

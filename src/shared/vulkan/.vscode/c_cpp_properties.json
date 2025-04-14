@@ -9,6 +9,7 @@
                 "${workspaceFolder}/../../../../testing/include"
             ],
             "defines": [
+                "VK_NO_PROTOTYPES="
             ],
             "cStandard": "c11",
             "cppStandard": "c++11"
