@@ -41,6 +41,20 @@ jobs:
           mkdir -p source/linux/special
           tar -xvjf despecial-${{ inputs.releaseVersion }}-linux64.tar.bz2 -C source/linux/special
           cp -a source/linux/special/launchLinux64 build
+          
+          # the linux build contains sym-links for the library files. since we are though
+          # going to store this all in a zip file for broader operating system compatbility
+          # this would cause the sym-links to turn into copies of the original file which
+          # wastes a lot of space
+          LibVersion=`echo "${{ inputs.releaseVersion }}" | sed -e 's/\..*//'`
+          
+          cp -L build/linux64/lib/libdelauncher.so _temp
+          rm build/linux64/lib/libdelauncher.so*
+          mv _temp build/linux64/lib/libdelauncher.so.$LibVersion
+          
+          cp -L build/linux64/lib/libdragengine.so _temp
+          rm build/linux64/lib/libdragengine.so*
+          mv _temp build/linux64/lib/libdragengine.so.$LibVersion
       
       - name: Assemble Windows64
         run: |
