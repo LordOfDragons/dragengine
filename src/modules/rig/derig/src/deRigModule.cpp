@@ -1580,7 +1580,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *dermRegisterInternalModule(deModuleSystem *system){
+deInternalModule *dermRegisterInternalModule(deModuleSystem *system){
 	return new dermModuleInternal(system);
 }
 #endif

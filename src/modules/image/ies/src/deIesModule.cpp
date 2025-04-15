@@ -129,7 +129,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *deIesRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deIesRegisterInternalModule(deModuleSystem *system){
 	return new deIesModuleInternal(system);
 }
 #endif

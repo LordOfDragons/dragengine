@@ -1679,7 +1679,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *desmRegisterInternalModule(deModuleSystem *system){
+deInternalModule *desmRegisterInternalModule(deModuleSystem *system){
 	return new desmModuleInternal(system);
 }
 #endif

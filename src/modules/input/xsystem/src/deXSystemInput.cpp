@@ -879,7 +879,7 @@ Supports Mouse and Keyboard for the time beeing.");
 	}
 };
 
-DE_FUNC_USED deInternalModule *dexsiRegisterInternalModule(deModuleSystem *system){
+deInternalModule *dexsiRegisterInternalModule(deModuleSystem *system){
 	return new dexsiModuleInternal(system);
 }
 #endif

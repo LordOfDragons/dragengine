@@ -1086,7 +1086,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *deoxrRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deoxrRegisterInternalModule(deModuleSystem *system){
 	return new deoxrModuleInternal(system);
 }
 #endif

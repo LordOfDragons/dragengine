@@ -219,7 +219,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *deoggRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deoggRegisterInternalModule(deModuleSystem *system){
 	return new deoggModuleInternal(system);
 }
 #endif

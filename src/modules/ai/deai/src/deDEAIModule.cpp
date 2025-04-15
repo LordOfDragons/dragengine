@@ -165,7 +165,7 @@ deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 	}
 };
 
-DE_FUNC_USED deInternalModule *deaiRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deaiRegisterInternalModule(deModuleSystem *system){
 	return new deaiModuleInternal(system);
 }
 #endif

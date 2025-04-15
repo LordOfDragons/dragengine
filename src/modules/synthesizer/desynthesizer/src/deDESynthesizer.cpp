@@ -239,7 +239,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *desynRegisterInternalModule(deModuleSystem *system){
+deInternalModule *desynRegisterInternalModule(deModuleSystem *system){
 	return new desynModuleInternal(system);
 }
 #endif

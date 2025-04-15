@@ -178,7 +178,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *deCRRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deCRRegisterInternalModule(deModuleSystem *system){
 	return new deCRModuleInternal(system);
 }
 #endif
