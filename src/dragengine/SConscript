@@ -219,6 +219,8 @@ headers = [envDragengine.File(h).srcnode() for h in headers if not h in ignoreHe
 headers.extend(targetConfig)
 
 if envDragengine['with_static_internalmodules']:
+	envDragengine.Append(CPPFLAGS=['-DWITH_STATIC_INTERNALMODULES'])
+	
 	envDragengine['InternalModuleCreateFunctions'] = []
 	
 	def createInternalModulesBuild(target, source, env):
