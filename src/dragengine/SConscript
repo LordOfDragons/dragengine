@@ -411,6 +411,9 @@ if not envDragengine['with_static_internalmodules']:
 	envModules.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 	envModules.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
 	
+	if not envModules['OSMacOS']:
+		envModules.Append(MODULE_LINKFLAGS = ['-Wl,--version-script=modules.version'])
+	
 	modulesObjects = [envModules.SharedObject(envModules.Command(
 		'deInternalModulesMain_generated.cpp', targetConfig, envModules.Action(
 			createInternalModulesBuild, 'Generate Internal Modules Source')))]
