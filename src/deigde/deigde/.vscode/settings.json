@@ -19,5 +19,8 @@
 		"man/**": true,
 		"shared/data/**": true,
 		"shared/original/**": true
-	}
+	},
+	"python.analysis.exclude": [
+		"**"
+	]
 }

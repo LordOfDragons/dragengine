@@ -16,5 +16,8 @@
 		"cache/**": true,
 		"distribute/**": true,
 		"local/**": true
-	}
+	},
+	"python.analysis.exclude": [
+		"**"
+	]
 }

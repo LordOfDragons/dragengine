@@ -11,5 +11,8 @@
 		"**/.git/subtree-cache/**": true,
 		"**/.hg/store/**": true,
 		"**/build/**": true
-	}
+	},
+	"python.analysis.exclude": [
+		"**"
+	]
 }

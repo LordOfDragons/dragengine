@@ -14,5 +14,8 @@
 		"**/build/**": true,
 		"data/**": true,
 		"minizip/**": true
-	}
+	},
+	"python.analysis.exclude": [
+		"**"
+	]
 }

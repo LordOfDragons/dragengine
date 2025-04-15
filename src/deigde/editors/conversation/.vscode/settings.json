@@ -15,5 +15,8 @@
 		"**/build/**": true,
 		"data/**": true,
 		"doc/**": true
-	}
+	},
+	"python.analysis.exclude": [
+		"**"
+	]
 }
