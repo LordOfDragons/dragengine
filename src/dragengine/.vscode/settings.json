@@ -6,8 +6,5 @@
 	},
 	"files.exclude": {
 		"build": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }

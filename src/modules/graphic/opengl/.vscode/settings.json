@@ -17,8 +17,5 @@
 		"data/**": true,
 		"doc/**": true,
 		"unused/**": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }

@@ -32,8 +32,5 @@
 		"kate_syntax/**": true,
 		"kdev_lang_dscript/**": true,
 		"original/**": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }

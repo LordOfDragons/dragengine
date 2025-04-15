@@ -17,8 +17,5 @@
 		"data/**": true,
 		"icons/**": true,
 		"man/**": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }

@@ -13,8 +13,5 @@
 		"**/build/**": true,
 		"minizip/**": true,
 		"clocreport*.csv": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }

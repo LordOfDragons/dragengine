@@ -17,8 +17,5 @@
 		"**/*.tar.xz": true,
 		"**/*.tar.bz2": true,
 		"**/*.zip": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }

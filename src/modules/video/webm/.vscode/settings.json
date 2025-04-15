@@ -12,8 +12,5 @@
 		"**/.hg/store/**": true,
 		"**/build/**": true,
 		"minizip/**": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }

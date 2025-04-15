@@ -12,8 +12,5 @@
 		"**/.hg/store/**": true,
 		"**/build/**": true,
 		"clocreport*.csv": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }

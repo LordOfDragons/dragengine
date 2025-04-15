@@ -13,8 +13,5 @@
 		"**/.hg/store/**": true,
 		"**/build/**": true,
 		"data/**": true
-	},
-	"python.analysis.exclude": [
-		"**"
-	]
+	}
 }
