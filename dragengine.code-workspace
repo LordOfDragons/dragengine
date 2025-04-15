@@ -217,6 +217,10 @@
 			"path": "extern"
 		},
 		{
+			"name": "Windows: Visual Studio",
+			"path": "vs"
+		},
+		{
 			"name": "Blender: Add-On",
 			"path": "src/tools/blender/dragengine-import-export"
 		},
