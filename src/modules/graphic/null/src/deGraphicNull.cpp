@@ -244,7 +244,7 @@ for testing purpose or servers without a graphic system.");
 	}
 };
 
-deInternalModule *degnRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *degnRegisterInternalModule(deModuleSystem *system){
 	return new degnModuleInternal(system);
 }
 #endif

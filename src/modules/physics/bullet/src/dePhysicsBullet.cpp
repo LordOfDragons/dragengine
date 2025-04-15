@@ -343,7 +343,7 @@ public:
 	}
 };
 
-deInternalModule *depbRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *depbRegisterInternalModule(deModuleSystem *system){
 	return new depbModuleInternal(system);
 }
 #endif

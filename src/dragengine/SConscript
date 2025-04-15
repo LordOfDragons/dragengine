@@ -230,13 +230,6 @@ if envDragengine['with_static_internalmodules']:
 			for cf in env['InternalModuleCreateFunctions']:
 				f.write('\t{},\n'.format(cf))
 			f.write('\tnullptr};\n')
-			f.write('// only done so complicated to avoid overzealous compilers remove\n')
-			f.write('// all module code breaking things (looking at you Clang <.=.<)\n')
-			f.write('static const deModuleSystem::FPRegisterInternalModule *vGetInternalModuleFunctions(){\n')
-			for cf in env['InternalModuleCreateFunctions']:
-				f.write('\t(void){};\n'.format(cf))
-			f.write('\treturn (deModuleSystem::FPRegisterInternalModule*)&vInternalModuleFunctions;\n')
-			f.write('}\n')
 	
 	targetCreateInternalModules = envDragengine.Command(
 		'deModuleSystem_generated.cpp', targetConfig, envDragengine.Action(
@@ -431,7 +424,7 @@ if not envDragengine['with_static_internalmodules']:
 	modulesTargetInstall = envModules.Alias('deinternalmodules', modulesInstall)
 
 def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
-	if parent_env['with_static_internalmodules']:
+	if envDragengine['with_static_internalmodules']:
 		targetLibrary = library
 		targetDepend = targetCreateInternalModules
 	else:

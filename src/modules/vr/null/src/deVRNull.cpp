@@ -225,7 +225,7 @@ public:
 	}
 };
 
-deInternalModule *denvrRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *denvrRegisterInternalModule(deModuleSystem *system){
 	return new denvrModuleInternal(system);
 }
 #endif

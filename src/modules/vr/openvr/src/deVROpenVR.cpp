@@ -781,7 +781,7 @@ public:
 	}
 };
 
-deInternalModule *deovrRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deovrRegisterInternalModule(deModuleSystem *system){
 	return new deovrModuleInternal(system);
 }
 #endif

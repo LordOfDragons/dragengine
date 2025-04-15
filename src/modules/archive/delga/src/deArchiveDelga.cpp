@@ -110,7 +110,7 @@ public:
 	}
 };
 
-deInternalModule *deadRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deadRegisterInternalModule(deModuleSystem *system){
 	return new deadModuleInternal(system);
 }
 #endif

@@ -159,7 +159,7 @@ public:
 	}
 };
 
-deInternalModule *dethRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *dethRegisterInternalModule(deModuleSystem *system){
 	return new dethModuleInternal(system);
 }
 #endif

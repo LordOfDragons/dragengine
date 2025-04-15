@@ -269,7 +269,7 @@ public:
 	}
 };
 
-deInternalModule *delpRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *delpRegisterInternalModule(deModuleSystem *system){
 	return new delpModuleInternal(system);
 }
 #endif

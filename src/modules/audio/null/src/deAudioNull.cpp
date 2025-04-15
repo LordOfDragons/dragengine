@@ -194,7 +194,7 @@ public:
 	}
 };
 
-deInternalModule *deanRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deanRegisterInternalModule(deModuleSystem *system){
 	return new deanModuleInternal(system);
 }
 #endif

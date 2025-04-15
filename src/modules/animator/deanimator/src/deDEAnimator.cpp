@@ -133,7 +133,7 @@ public:
 	}
 };
 
-deInternalModule *dearRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *dearRegisterInternalModule(deModuleSystem *system){
 	return new dearModuleInternal(system);
 }
 #endif

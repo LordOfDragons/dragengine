@@ -400,7 +400,7 @@ public:
 	}
 };
 
-deInternalModule *fbxSkinRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *fbxSkinRegisterInternalModule(deModuleSystem *system){
 	return new fbxSkinModuleInternal(system);
 }
 #endif

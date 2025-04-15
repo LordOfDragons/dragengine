@@ -2310,7 +2310,7 @@ public:
 	}
 };
 
-deInternalModule *demdlRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *demdlRegisterInternalModule(deModuleSystem *system){
 	return new demdlModuleInternal(system);
 }
 #endif

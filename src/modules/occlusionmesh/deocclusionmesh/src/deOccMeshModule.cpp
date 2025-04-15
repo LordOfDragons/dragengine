@@ -340,7 +340,7 @@ public:
 	}
 };
 
-deInternalModule *deoccmRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deoccmRegisterInternalModule(deModuleSystem *system){
 	return new deoccmModuleInternal(system);
 }
 #endif

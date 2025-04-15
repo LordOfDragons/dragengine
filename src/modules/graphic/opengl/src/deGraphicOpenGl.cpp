@@ -793,7 +793,7 @@ SetModule(VulkanCreateModule(this));
 	}
 };
 
-deInternalModule *deoglRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deoglRegisterInternalModule(deModuleSystem *system){
 	return new deoglModuleInternal(system);
 }
 #endif
