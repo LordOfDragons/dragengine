@@ -42,7 +42,7 @@
 #endif
 
 #ifdef OS_ANDROID
-	#define DE_FUNC_USED __attribute__((used))
+	#define DE_FUNC_USED __attribute__((used,optnone,weak))
 #else
 	#define DE_FUNC_USED
 #endif
