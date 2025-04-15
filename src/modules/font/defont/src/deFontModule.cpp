@@ -300,7 +300,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *deFontRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deFontRegisterInternalModule(deModuleSystem *system){
 	return new deFontModuleInternal(system);
 }
 #endif

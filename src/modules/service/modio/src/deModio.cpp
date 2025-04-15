@@ -495,7 +495,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *deModioRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deModioRegisterInternalModule(deModuleSystem *system){
 	return new deModioModuleInternal(system);
 }
 #endif

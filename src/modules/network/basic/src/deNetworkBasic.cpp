@@ -590,7 +590,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *denbRegisterInternalModule(deModuleSystem *system){
+deInternalModule *denbRegisterInternalModule(deModuleSystem *system){
 	return new denbModuleInternal(system);
 }
 #endif

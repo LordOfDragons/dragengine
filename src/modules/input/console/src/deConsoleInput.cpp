@@ -380,7 +380,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *deciRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deciRegisterInternalModule(deModuleSystem *system){
 	return new deciModuleInternal(system);
 }
 #endif

@@ -147,7 +147,7 @@ inside the tarball are named zX.png where X is the z coordinate without leading 
 	}
 };
 
-DE_FUNC_USED deInternalModule *depng3DRegisterInternalModule(deModuleSystem *system){
+deInternalModule *depng3DRegisterInternalModule(deModuleSystem *system){
 	return new dePng3DModuleInternal(system);
 }
 #endif

@@ -143,7 +143,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *dewebmRegisterInternalModule(deModuleSystem *system){
+deInternalModule *dewebmRegisterInternalModule(deModuleSystem *system){
 	return new dewebmModuleInternal(system);
 }
 #endif

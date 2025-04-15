@@ -731,7 +731,7 @@ void deModuleSystem::pAddInternalModules(const decPath &pathModules){
 	const deModuleSystem::FPRegisterInternalModule *functions = nullptr;
 	
 #ifdef WITH_STATIC_INTERNALMODULES
-	functions = vInternalModuleFunctions;
+	functions = vGetInternalModuleFunctions();
 #else
 	if(!pInternalModulesLibrary){
 		pInternalModulesLibrary = new deInternalModulesLibrary(*this, pathModules);

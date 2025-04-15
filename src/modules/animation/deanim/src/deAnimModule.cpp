@@ -900,7 +900,7 @@ deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 	}
 };
 
-DE_FUNC_USED deInternalModule *deanimRegisterInternalModule(deModuleSystem *system){
+deInternalModule *deanimRegisterInternalModule(deModuleSystem *system){
 	return new deanimModuleInternal(system);
 }
 #endif

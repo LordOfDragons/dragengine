@@ -181,7 +181,7 @@ public:
 	}
 };
 
-DE_FUNC_USED deInternalModule *fbxRigRegisterInternalModule(deModuleSystem *system){
+deInternalModule *fbxRigRegisterInternalModule(deModuleSystem *system){
 	return new fbxRigModuleInternal(system);
 }
 #endif
