@@ -404,7 +404,7 @@ if not envDragengine['with_static_internalmodules']:
 			f.write('}\n')
 	
 	envModules.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
-	envModules.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+	envModules.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS_NOMODVER'])
 	
 	if not envModules['OSMacOS']:
 		envModules.Append(MODULE_LINKFLAGS = ['-Wl,--version-script=modules.version'])

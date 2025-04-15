@@ -681,6 +681,7 @@ if parent_env['with_debug']:
 		parent_env.Append(CROSSCOMPILE_CPPFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_LINK_FLAGS'])
+	parent_env.Replace(MODULE_LINKFLAGS_NOMODVER=parent_env['MODULE_LINKFLAGS'])
 	
 else:
 	parent_env.Append(MODULE_CPPFLAGS = ['-fvisibility=hidden'])
@@ -688,6 +689,8 @@ else:
 	
 	parent_env.Append(MODULE_CXXFLAGS = ['-fvisibility-inlines-hidden'])
 	parent_env.Append(MODULE_LINKFLAGS = ['-fvisibility-inlines-hidden'])
+	
+	parent_env.Replace(MODULE_LINKFLAGS_NOMODVER=parent_env['MODULE_LINKFLAGS'])
 	
 	if not parent_env['OSMacOS']:
 		parent_env.Append(MODULE_LINKFLAGS = ['-Wl,--version-script=module.version'])
