@@ -196,7 +196,7 @@ public:
 	 * \param[in] os OS object to use. Deleted during destructor.
 	 * \param[in] fileSystem OS file system or NULL if not used.
 	 */
-	deEngine( deOS *os, deVirtualFileSystem *fileSystem = NULL );
+	deEngine( deOS *os, deVirtualFileSystem *fileSystem = nullptr );
 	
 	~deEngine();
 	/*@}*/

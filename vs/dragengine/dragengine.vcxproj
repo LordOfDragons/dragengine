@@ -606,6 +606,7 @@
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\crashrecovery\deBaseCrashRecoveryModule.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\deBaseModule.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\deInternalModule.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\deInternalModulesLibrary.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\deLibraryModule.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\deLoadableModule.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\deLoadableModuleVisitor.cpp" />
@@ -1291,6 +1292,7 @@
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\crashrecovery\deBaseCrashRecoveryModule.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\deBaseModule.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\deInternalModule.h" />
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\deInternalModulesLibrary.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\deLibraryModule.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\deLoadableModule.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\deLoadableModuleVisitor.h" />
@@ -1513,7 +1515,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);WITH_STATIC_INTERNALMODULES</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1530,7 +1532,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);WITH_STATIC_INTERNALMODULES</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1549,7 +1551,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);WITH_STATIC_INTERNALMODULES</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1566,7 +1568,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine";WITH_STATIC_INTERNALMODULES</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1594,7 +1596,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine";WITH_STATIC_INTERNALMODULES</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -1624,7 +1626,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine";WITH_STATIC_INTERNALMODULES</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

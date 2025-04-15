@@ -26,12 +26,14 @@
 #define _DEMODULESYSTEM_H_
 
 #include "../common/collection/decObjectOrderedSet.h"
+#include "../common/file/decPath.h"
 
 class deEngine;
 class deBaseModule;
 class deInternalModule;
 class deLoadableModule;
 class deVirtualFileSystem;
+class deInternalModulesLibrary;
 
 
 // definitions
@@ -159,7 +161,7 @@ public:
 private:
 	deEngine *pEngine;
 	decObjectOrderedSet pModules;
-	
+	deInternalModulesLibrary *pInternalModulesLibrary;
 	
 	
 public:
@@ -348,7 +350,7 @@ public:
 	
 	
 private:
-	void pAddInternalModules();
+	void pAddInternalModules(const decPath &pathModules);
 	void pDetectModulesIn(const char *basePath, const char *directory, eModuleTypes type);
 };
 

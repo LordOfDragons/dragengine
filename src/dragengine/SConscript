@@ -1,4 +1,5 @@
 from SConsCommon import *
+import os
 
 # import whatever is given by the parent builder
 Import('parent_env parent_targets parent_report')
@@ -217,23 +218,24 @@ ignoreHeaders.append('src/doxy_main.h')
 headers = [envDragengine.File(h).srcnode() for h in headers if not h in ignoreHeaders]
 headers.extend(targetConfig)
 
-envDragengine['InternalModuleCreateFunctions'] = []
-
-def createInternalModulesBuild(target, source, env):
-	with open(target[0].abspath, 'w') as f:
-		f.write('/* Generated File. Do not edit */\n')
-		for cf in env['InternalModuleCreateFunctions']:
-			f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
-		f.write('static deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]{\n')
-		for cf in env['InternalModuleCreateFunctions']:
-			f.write('\t{},\n'.format(cf))
-		f.write('\tnullptr};\n')
-
-targetCreateInternalModules = envDragengine.Command(
-	'deModuleSystem_generated.cpp', targetConfig, envDragengine.Action(
-		createInternalModulesBuild, 'Generate Internal Modules Source'))
-
-envDragengine.Depends('src/systems/deModuleSystem.cpp', targetCreateInternalModules)
+if envDragengine['with_static_internalmodules']:
+	envDragengine['InternalModuleCreateFunctions'] = []
+	
+	def createInternalModulesBuild(target, source, env):
+		with open(target[0].abspath, 'w') as f:
+			f.write('/* Generated File. Do not edit */\n')
+			for cf in env['InternalModuleCreateFunctions']:
+				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+			f.write('static deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]{\n')
+			for cf in env['InternalModuleCreateFunctions']:
+				f.write('\t{},\n'.format(cf))
+			f.write('\tnullptr};\n')
+	
+	targetCreateInternalModules = envDragengine.Command(
+		'deModuleSystem_generated.cpp', targetConfig, envDragengine.Action(
+			createInternalModulesBuild, 'Generate Internal Modules Source'))
+	
+	envDragengine.Depends('src/systems/deModuleSystem.cpp', targetCreateInternalModules)
 
 objects = [envDragengine.SharedObject(s) for s in sources]
 
@@ -351,8 +353,85 @@ if not 'mingw' in envDragengine['TOOLS']:
 	libpath.extend(parent_targets['lib_zlib']['libpath'])
 	binlibs.extend(parent_targets['lib_zlib']['libs'])
 
+parent_targets['dragengine'] = {
+	'name': 'Drag[en]gine Game Engine',
+	'cpppath': cpppath,
+	'libpath': libpath,
+	'binlibs': binlibs,
+	'libs': linklibs,
+	'build': targetBuild,
+	'install': targetInstall,
+	'install-runtime': targetInstallRuntime,
+	'install-engine-runtime': targetInstallRuntime,
+	'headers': copyHeaders,
+	'library': library,
+	'archive-engine': archiveEngine,
+	'archive-engine-develop': archiveDevelop,
+	'doxygen': targetDoxygen,
+	'cloc': targetCloc,
+	'clocReport': '{}/clocreport.csv'.format(srcdir)}
+
+# internal module handling
+if not envDragengine['with_static_internalmodules']:
+	envModules = parent_env.Clone()
+	
+	modulesPath = '{}/modules'.format(envModules.subst(envModules['path_de_data']))
+	
+	modulesLibs = []
+	appendLibrary(envModules, parent_targets['dragengine'], modulesLibs)
+	
+	modulesInstall = []
+	modulesArchive = {}
+	
+	envModules['InternalModuleCreateFunctions'] = []
+	
+	def createInternalModulesBuild(target, source, env):
+		with open(target[0].abspath, 'w') as f:
+			f.write('/* Generated File. Do not edit */\n')
+			f.write('#include <dragengine/systems/deModuleSystem.h>\n')
+			for cf in env['InternalModuleCreateFunctions']:
+				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+			f.write('static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]{\n')
+			for cf in env['InternalModuleCreateFunctions']:
+				f.write('\t{},\n'.format(cf))
+			f.write('\tnullptr};\n')
+			f.write('extern "C" {\n')
+			f.write('MOD_ENTRY_POINT_ATTR const deModuleSystem::FPRegisterInternalModule* DEInternalModuleFunctions(){\n')
+			f.write('\treturn (deModuleSystem::FPRegisterInternalModule*)&vInternalModuleFunctions;\n')
+			f.write('}\n')
+			f.write('}\n')
+	
+	envModules.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+	envModules.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+	
+	modulesObjects = [envModules.SharedObject(envModules.Command(
+		'deInternalModulesMain_generated.cpp', targetConfig, envModules.Action(
+			createInternalModulesBuild, 'Generate Internal Modules Source')))]
+	
+	modulesLibrary = envModules.LoadableModule(target='demodules', source=modulesObjects, LIBS=modulesLibs)
+	modulesTargetBuild = envModules.Alias('deinternalmodules_build', modulesLibrary)
+	
+	for l in modulesLibrary:
+		if l.name.endswith(envModules['SHLIBSUFFIX']):
+			modulesInstall.append(envModules.Install(modulesPath, l))
+			modulesArchive[os.path.join(modulesPath, l.name)] = l
+		
+		if envModules['OSWindows'] and envModules['CROSSCOMPILE_CLANG'] and envModules['with_install_pdb']:
+			pathPdb = os.path.join(envModules.subst(envModules['path_pdb']), 'EngineModules')
+			modulesInstall.append(envModules.Install(pathPdb, 'demodules.pdb'))
+			modulesArchive['{}/demodules.pdb'.format(pathPdb)] = envModules.File('demodules.pdb')
+	
+	modulesTargetInstall = envModules.Alias('deinternalmodules', modulesInstall)
+
 def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
-	libenv = library[0].get_env()
+	if env['with_static_internalmodules']:
+		targetLibrary = library
+		targetDepend = targetCreateInternalModules
+	else:
+		targetLibrary = modulesLibrary
+		targetDepend = modulesObjects
+	
+	libenv = targetLibrary[0].get_env()
 	
 	libenv['LIBS'].extend(syslibs)
 	"""
@@ -394,10 +473,10 @@ def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
 		#libenv['LINKFLAGS'].extend(['-Wl,--whole-archive', n, '-Wl,--no-whole-archive'])
 		libenv['LIBS'].insert(0, n)
 	
-	env.Depends(library, nodes)
+	env.Depends(targetLibrary, nodes)
 	
 	libenv['InternalModuleCreateFunctions'].append(createFunc)
-	libenv.Depends(targetCreateInternalModules, nodes)
+	libenv.Depends(targetDepend, nodes)
 	
 	"""
 	print('LIBS: ', libenv['LIBS'])
@@ -407,24 +486,15 @@ def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
 	print('LINKFLAGS: ', libenv['LINKFLAGS'])
 	"""
 
-parent_targets['dragengine'] = {
-	'name': 'Drag[en]gine Game Engine',
-	'cpppath': cpppath,
-	'libpath': libpath,
-	'binlibs': binlibs,
-	'libs': linklibs,
-	'build': targetBuild,
-	'install': targetInstall,
-	'install-runtime': targetInstallRuntime,
-	'install-engine-runtime': targetInstallRuntime,
-	'headers': copyHeaders,
-	'library': library,
-	'archive-engine': archiveEngine,
-	'archive-engine-develop': archiveDevelop,
-	'doxygen': targetDoxygen,
-	'cloc': targetCloc,
-	'clocReport': '{}/clocreport.csv'.format(srcdir),
-	'add internal module': addInternalModule}
+parent_targets['dragengine']['add internal module'] = addInternalModule
+
+if not envDragengine['with_static_internalmodules']:
+	parent_targets['deinternalmodules'] = {
+		'name': 'Drag[en]gine Internal Modules',
+		'build': modulesTargetBuild,
+		'install': modulesTargetInstall,
+		'install-engine-runtime': modulesTargetInstall,
+		'archive-engine': modulesArchive}
 
 # report
 if envDragengine['OSPosix'] or envDragengine['OSMacOS']:

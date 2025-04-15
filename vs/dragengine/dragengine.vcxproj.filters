@@ -1737,6 +1737,9 @@
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\deInternalModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\deInternalModulesLibrary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\deLibraryModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3768,6 +3771,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\deInternalModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\deInternalModulesLibrary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\deLibraryModule.h">

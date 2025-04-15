@@ -29,6 +29,7 @@
 #include "deModuleSystem.h"
 #include "modules/deBaseModule.h"
 #include "modules/deInternalModule.h"
+#include "modules/deInternalModulesLibrary.h"
 #include "modules/deLoadableModule.h"
 #include "modules/deLibraryModule.h"
 #include "modules/service/deBaseServiceModule.h"
@@ -60,12 +61,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deModuleSystem::deModuleSystem( deEngine *engine ){
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pEngine = engine;
+deModuleSystem::deModuleSystem(deEngine *engine) :
+pEngine(engine),
+pInternalModulesLibrary(nullptr)
+{
+	DEASSERT_NOTNULL(engine)
 }
 
 deModuleSystem::~deModuleSystem(){
@@ -100,6 +100,10 @@ deModuleSystem::~deModuleSystem(){
 			logger.LogException( LOGSOURCE, e );
 		}
 	}
+	
+	if(pInternalModulesLibrary){
+		delete pInternalModulesLibrary;
+	}
 }
 
 
@@ -116,7 +120,7 @@ void deModuleSystem::DetectModules(){
 	
 	try{
 		logger.LogInfoFormat( LOGSOURCE, "Add internal modules" );
-		pAddInternalModules();
+		pAddInternalModules(searchPath);
 		
 		logger.LogInfoFormat( LOGSOURCE, "Loading Crash Recovery modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "crashrecovery", emtCrashRecovery );
@@ -719,22 +723,35 @@ bool deModuleSystem::IsSingleType( eModuleTypes type ){
 // Private Functions
 //////////////////////
 
+#ifdef WITH_STATIC_INTERNALMODULES
 #include "deModuleSystem_generated.cpp"
+#endif
 
-void deModuleSystem::pAddInternalModules(){
+void deModuleSystem::pAddInternalModules(const decPath &pathModules){
+	const deModuleSystem::FPRegisterInternalModule *functions = nullptr;
+	
+#ifdef WITH_STATIC_INTERNALMODULES
+	functions = vInternalModuleFunctions;
+#else
+	if(!pInternalModulesLibrary){
+		pInternalModulesLibrary = new deInternalModulesLibrary(*this, pathModules);
+	}
+	functions = pInternalModulesLibrary->GetFunctions();
+#endif
+	
 	deLogger &logger = *pEngine->GetLogger();
 	int i = 0;
 	
-	while(vInternalModuleFunctions[i]){
-		const deInternalModule::Ref module(deInternalModule::Ref::New(
-			vInternalModuleFunctions[i](this)));
-		i++;
+	while(functions[i]){
+		const deInternalModule::Ref module(deInternalModule::Ref::New(functions[i++](this)));
 		
 		if(!module){
 			continue;
 		}
 		
-		logger.LogInfoFormat(LOGSOURCE, "- create internal module %s", module->GetName().GetString());
+		logger.LogInfoFormat(LOGSOURCE, "- create %s module %s %s",
+			GetTypeDirectory(module->GetType()), module->GetName().GetString(),
+			module->GetVersion().GetString());
 		
 		try{
 			module->LoadModule();

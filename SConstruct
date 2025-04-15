@@ -287,6 +287,8 @@ params.Add(BoolVariable('build_vr_null_internal', 'Build Null VR Module as inter
 params.Add(BoolVariable('build_vr_openvr_internal', 'Build OpenVR VR Module as internal module', False))
 params.Add(BoolVariable('build_vr_openxr_internal', 'Build OpenXR VR Module as internal module', True))
 
+params.Add(BoolVariable('with_static_internalmodules', 'Statically link internal modules', False))
+
 params.Add(TernaryVariable('build_igde', 'Build IGDE'))
 params.Add(TernaryVariable('build_editor_animator', 'Build IGDE Animator Editor'))
 params.Add(TernaryVariable('build_editor_conversation', 'Build IGDE Conversation Editor'))
