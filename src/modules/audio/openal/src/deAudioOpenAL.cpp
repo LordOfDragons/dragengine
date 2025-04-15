@@ -370,7 +370,7 @@ public:
 	}
 };
 
-deInternalModule *deoalRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deoalRegisterInternalModule(deModuleSystem *system){
 	return new deoalModuleInternal(system);
 }
 #endif

@@ -130,7 +130,7 @@ public:
 	}
 };
 
-deInternalModule *deapngRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deapngRegisterInternalModule(deModuleSystem *system){
 	return new deapngModuleInternal(system);
 }
 #endif

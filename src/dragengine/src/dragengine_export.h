@@ -41,4 +41,10 @@
 	#define DE_DLL_EXPORT
 #endif
 
+#ifdef OS_ANDROID
+	#define DE_FUNC_USED __attribute__((used))
+#else
+	#define DE_FUNC_USED
+#endif
+
 #endif

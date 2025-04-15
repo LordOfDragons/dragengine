@@ -296,7 +296,7 @@ public:
 	}
 };
 
-deInternalModule *fbxAnimRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *fbxAnimRegisterInternalModule(deModuleSystem *system){
 	return new fbxAnimModuleInternal(system);
 }
 #endif

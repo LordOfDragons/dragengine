@@ -225,7 +225,7 @@ public:
 	}
 };
 
-deInternalModule *deTgaRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deTgaRegisterInternalModule(deModuleSystem *system){
 	return new deTgaModuleInternal(system);
 }
 #endif

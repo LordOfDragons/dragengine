@@ -361,7 +361,7 @@ public:
 	}
 };
 
-deInternalModule *deJpegRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deJpegRegisterInternalModule(deModuleSystem *system){
 	return new deJpegModuleInternal(system);
 }
 #endif

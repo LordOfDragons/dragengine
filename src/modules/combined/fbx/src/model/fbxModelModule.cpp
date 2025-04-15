@@ -575,7 +575,7 @@ public:
 	}
 };
 
-deInternalModule *fbxModelRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *fbxModelRegisterInternalModule(deModuleSystem *system){
 	return new fbxModelModuleInternal(system);
 }
 #endif

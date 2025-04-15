@@ -223,7 +223,7 @@ public:
 	}
 };
 
-deInternalModule *deWebpRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *deWebpRegisterInternalModule(deModuleSystem *system){
 	return new deWebpModuleInternal(system);
 }
 #endif

@@ -439,7 +439,7 @@ public:
 	}
 };
 
-deInternalModule *depngRegisterInternalModule(deModuleSystem *system){
+DE_FUNC_USED deInternalModule *depngRegisterInternalModule(deModuleSystem *system){
 	return new dePngModuleInternal(system);
 }
 #endif
