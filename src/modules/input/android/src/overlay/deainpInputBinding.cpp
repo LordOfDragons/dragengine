@@ -24,32 +24,32 @@
 
 #include <stdlib.h>
 
-#include "deaiInputBinding.h"
+#include "deainpInputBinding.h"
 #include "../deAndroidInput.h"
-#include "../deaiDevice.h"
-#include "../deaiDeviceAxis.h"
-#include "../deaiDeviceButton.h"
-#include "../deaiDeviceManager.h"
+#include "../deainpDevice.h"
+#include "../deainpDeviceAxis.h"
+#include "../deainpDeviceButton.h"
+#include "../deainpDeviceManager.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class deaiInputBinding
+// Class deainpInputBinding
 ///////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiInputBinding::deaiInputBinding() :
+deainpInputBinding::deainpInputBinding() :
 pInvertAxis( false ),
 pDeviceIndex( -1 ),
 pAxisIndex( -1 ),
 pButtonIndex( -1 ){
 }
 
-deaiInputBinding::deaiInputBinding( const char *deviceID, const char *buttonID ) :
+deainpInputBinding::deainpInputBinding( const char *deviceID, const char *buttonID ) :
 pDeviceID( deviceID ),
 pButtonID( buttonID ),
 pInvertAxis( false ),
@@ -58,7 +58,7 @@ pAxisIndex( -1 ),
 pButtonIndex( -1 ){
 }
 
-deaiInputBinding::deaiInputBinding( const char *deviceID, const char *axisID, bool invertAxis ) :
+deainpInputBinding::deainpInputBinding( const char *deviceID, const char *axisID, bool invertAxis ) :
 pDeviceID( deviceID ),
 pAxisID( axisID ),
 pInvertAxis( invertAxis ),
@@ -67,7 +67,7 @@ pAxisIndex( -1 ),
 pButtonIndex( -1 ){
 }
 
-deaiInputBinding::deaiInputBinding( const deaiInputBinding &binding ) :
+deainpInputBinding::deainpInputBinding( const deainpInputBinding &binding ) :
 pDeviceID( binding.pDeviceID ),
 pAxisID( binding.pAxisID ),
 pButtonID( binding.pButtonID ),
@@ -77,7 +77,7 @@ pAxisIndex( binding.pAxisIndex ),
 pButtonIndex( binding.pButtonIndex ){
 }
 
-deaiInputBinding::~deaiInputBinding(){
+deainpInputBinding::~deainpInputBinding(){
 }
 
 
@@ -85,29 +85,29 @@ deaiInputBinding::~deaiInputBinding(){
 // Management
 ///////////////
 
-void deaiInputBinding::SetDeviceID( const char *id ){
+void deainpInputBinding::SetDeviceID( const char *id ){
 	pDeviceID = id;
 }
 
-void deaiInputBinding::SetAxisID( const char *id ){
+void deainpInputBinding::SetAxisID( const char *id ){
 	pAxisID = id;
 }
 
-void deaiInputBinding::SetButtonID( const char *id ){
+void deainpInputBinding::SetButtonID( const char *id ){
 	pButtonID = id;
 }
 
-void deaiInputBinding::SetInvertAxis( bool invertAxis ){
+void deainpInputBinding::SetInvertAxis( bool invertAxis ){
 	pInvertAxis = invertAxis;
 }
 
 
 
-void deaiInputBinding::UpdateIndices( const deaiDeviceManager &devices ){
+void deainpInputBinding::UpdateIndices( const deainpDeviceManager &devices ){
 	pDeviceIndex = devices.IndexOfWithID( pDeviceID );
 	
 	if( pDeviceIndex != -1 ){
-		const deaiDevice &device = *devices.GetAt( pDeviceIndex );
+		const deainpDevice &device = *devices.GetAt( pDeviceIndex );
 		pAxisIndex = device.IndexOfAxisWithID( pAxisID );
 		pButtonIndex = device.IndexOfButtonWithID( pButtonID );
 		
@@ -117,15 +117,15 @@ void deaiInputBinding::UpdateIndices( const deaiDeviceManager &devices ){
 	}
 }
 
-void deaiInputBinding::ChangeButtonState( deAndroidInput &androidInput, bool pressed ) const{
+void deainpInputBinding::ChangeButtonState( deAndroidInput &androidInput, bool pressed ) const{
 	if( pButtonIndex == -1 ){
 		return;
 	}
 	
-	const deaiDevice &device = *androidInput.GetDevices().GetAt( pDeviceIndex );
+	const deainpDevice &device = *androidInput.GetDevices().GetAt( pDeviceIndex );
 	const timeval timestamp = androidInput.TimeValNow();
 	
-	deaiDeviceButton &button = device.GetButtonAt( pButtonIndex );
+	deainpDeviceButton &button = device.GetButtonAt( pButtonIndex );
 	button.SetPressed( pressed );
 	
 	switch( device.GetType() ){
@@ -166,14 +166,14 @@ void deaiInputBinding::ChangeButtonState( deAndroidInput &androidInput, bool pre
 // Operators
 //////////////
 
-bool deaiInputBinding::operator==( const deaiInputBinding &binding ) const{
+bool deainpInputBinding::operator==( const deainpInputBinding &binding ) const{
 	return pDeviceID == binding.pDeviceID
 		&& pAxisID == binding.pAxisID
 		&& pButtonID == binding.pButtonID
 		&& pInvertAxis == binding.pInvertAxis;
 }
 
-deaiInputBinding &deaiInputBinding::operator=( const deaiInputBinding &binding ){
+deainpInputBinding &deainpInputBinding::operator=( const deainpInputBinding &binding ){
 	pDeviceID = binding.pDeviceID;
 	pAxisID = binding.pAxisID;
 	pButtonID = binding.pButtonID;

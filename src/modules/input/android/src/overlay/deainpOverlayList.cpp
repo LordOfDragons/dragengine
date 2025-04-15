@@ -22,32 +22,23 @@
  * SOFTWARE.
  */
 
-#include "deaiLayout.h"
+#include "deainpOverlay.h"
+#include "deainpOverlayList.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class deaiLayout
-/////////////////////
+// Class deainpOverlayList
+//////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiLayout::deaiLayout(){
+deainpOverlayList::deainpOverlayList(){
 }
 
-deaiLayout::deaiLayout( const decPoint &position, const decPoint &size ) :
-pPosition( position ),
-pSize( decPoint().Largest( size ) ){
-}
-
-deaiLayout::deaiLayout( const deaiLayout &copy ) :
-pPosition( copy.pPosition ),
-pSize( copy.pSize ){
-}
-
-deaiLayout::~deaiLayout(){
+deainpOverlayList::~deainpOverlayList(){
 }
 
 
@@ -55,25 +46,22 @@ deaiLayout::~deaiLayout(){
 // Management
 ///////////////
 
-void deaiLayout::SetPosition( const decPoint &position ){
-	pPosition = position;
+int deainpOverlayList::GetCount() const{
+	return pOverlays.GetCount();
 }
 
-void deaiLayout::SetSize( const decPoint &size ){
-	pSize = decPoint().Largest( size );
+deainpOverlay *deainpOverlayList::GetAt( int index ) const{
+	return ( deainpOverlay* )pOverlays.GetAt( index );
 }
 
-
-
-// Operators
-//////////////
-
-bool deaiLayout::operator==( const deaiLayout &layout ) const{
-	return pPosition == layout.pPosition && pSize == layout.pSize;
+void deainpOverlayList::Add( deainpOverlay *overlay ){
+	pOverlays.Add( overlay );
 }
 
-deaiLayout &deaiLayout::operator=( const deaiLayout &layout ){
-	pPosition = layout.pPosition;
-	pSize = layout.pSize;
-	return *this;
+void deainpOverlayList::Remove( deainpOverlay *overlay ){
+	pOverlays.Remove( overlay );
+}
+
+void deainpOverlayList::RemoveAll(){
+	pOverlays.RemoveAll();
 }

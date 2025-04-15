@@ -22,68 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAILAYOUT_H_
-#define _DEAILAYOUT_H_
+#ifndef _DEAINPDEVICEMOUSE_H_
+#define _DEAINPDEVICEMOUSE_H_
 
-#include <dragengine/common/math/decMath.h>
+#include "deainpDevice.h"
 
 
 
 /**
- * \brief Layout properties.
- * 
- * Position is relative to screen. Positive positions are measured from
- * the top-left screen corner. Negative positions are measured from the
- * bottom-right screen corner.
- * 
+ * \brief X-System core mouse input device.
  */
-class deaiLayout{
-private:
-	decPoint pPosition;
-	decPoint pSize;
-	
+class deainpDeviceMouse : public deainpDevice{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create layout. */
-	deaiLayout();
+	/** \brief Create device. */
+	deainpDeviceMouse( deAndroidInput &module );
 	
-	/** \brief Create layout. */
-	deaiLayout( const decPoint &position, const decPoint &size );
-	
-	/** \brief Create copy of layout. */
-	deaiLayout( const deaiLayout &copy );
-	
-	/** \brief Clean up layout. */
-	~deaiLayout();
+protected:
+	/** \brief Clean up device. */
+	virtual ~deainpDeviceMouse();
 	/*@}*/
 	
 	
 	
-	/** \name Management */
+public:
+	/** \name Module Management */
 	/*@{*/
-	/** \brief Position. */
-	inline const decPoint &GetPosition() const{ return pPosition; }
-	
-	/** \brief Set position. */
-	void SetPosition( const decPoint &position );
-	
-	/** \brief Size. */
-	inline const decPoint &GetSize() const{ return pSize; }
-	
-	/** \brief Set size. */
-	void SetSize( const decPoint &size );
-	/*@}*/
-	
-	
-	
-	/** \name Operators */
-	/*@{*/
-	/** \brief Layouts are equal. */
-	bool operator==( const deaiLayout &layout ) const;
-	
-	/** \brief Set from another layout. */
-	deaiLayout &operator=( const deaiLayout &layout );
 	/*@}*/
 };
 

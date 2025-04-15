@@ -22,46 +22,44 @@
  * SOFTWARE.
  */
 
-#include "deaiOverlay.h"
-#include "deaiOverlayList.h"
+#ifndef _DEAINPDEVICEKEYBOARD_H_
+#define _DEAINPDEVICEKEYBOARD_H_
 
-#include <dragengine/common/exceptions.h>
+#include "deainpDevice.h"
 
-
-
-// Class deaiOverlayList
-//////////////////////////
-
-// Constructor, destructor
-////////////////////////////
-
-deaiOverlayList::deaiOverlayList(){
-}
-
-deaiOverlayList::~deaiOverlayList(){
-}
+#include <dragengine/input/deInputEvent.h>
 
 
 
-// Management
-///////////////
+/**
+ * \brief Android keyboard input device.
+ */
+class deainpDeviceKeyboard : public deainpDevice{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create device. */
+	deainpDeviceKeyboard( deAndroidInput &module );
+	
+protected:
+	/** \brief Clean up device. */
+	virtual ~deainpDeviceKeyboard();
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Module Management */
+	/*@{*/
+	/** \brief Get button best matching a character. */
+	int ButtonMatchingKeyChar( int keyChar ) const;
+	/*@}*/
+	
+	
+	
+private:
+	void pSetButtonAt( int index, const char *id, const char *name, int aiCode,
+		deInputEvent::eKeyCodes keyCode, int aiChar, int matchPriority );
+};
 
-int deaiOverlayList::GetCount() const{
-	return pOverlays.GetCount();
-}
-
-deaiOverlay *deaiOverlayList::GetAt( int index ) const{
-	return ( deaiOverlay* )pOverlays.GetAt( index );
-}
-
-void deaiOverlayList::Add( deaiOverlay *overlay ){
-	pOverlays.Add( overlay );
-}
-
-void deaiOverlayList::Remove( deaiOverlay *overlay ){
-	pOverlays.Remove( overlay );
-}
-
-void deaiOverlayList::RemoveAll(){
-	pOverlays.RemoveAll();
-}
+#endif

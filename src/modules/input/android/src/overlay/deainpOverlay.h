@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIOVERLAY_H_
-#define _DEAIOVERLAY_H_
+#ifndef _DEAINPOVERLAY_H_
+#define _DEAINPOVERLAY_H_
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 
-#include "../deaiLayout.h"
+#include "../deainpLayout.h"
 
 
 class deAndroidInput;
@@ -38,9 +38,9 @@ class deCanvasView;
 /**
  * \brief Base overlay class.
  */
-class deaiOverlay : public deObject{
+class deainpOverlay : public deObject{
 public:
-	typedef deTObjectReference<deaiOverlay> Ref;
+	typedef deTObjectReference<deainpOverlay> Ref;
 	
 private:
 	deAndroidInput &pAndroidInput;
@@ -50,8 +50,8 @@ private:
 	int pPointer;
 	decPoint pPointerPosition;
 	
-	deaiLayout pLayoutHorizontal;
-	deaiLayout pLayoutVertical;
+	deainpLayout pLayoutHorizontal;
+	deainpLayout pLayoutVertical;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -60,10 +60,10 @@ public:
 	 * \brief Create overlay.
 	 * \details Initial size is 256x256 with 35% transparency.
 	 */
-	deaiOverlay( deAndroidInput &androidInput );
+	deainpOverlay( deAndroidInput &androidInput );
 	
 	/** \brief Clean up overlay. */
-	virtual ~deaiOverlay();
+	virtual ~deainpOverlay();
 	/*@}*/
 	
 	
@@ -99,16 +99,16 @@ public:
 	
 	
 	/** \brief Horizontal layout. */
-	inline const deaiLayout &GetLayoutHorizontal() const{ return pLayoutHorizontal; }
+	inline const deainpLayout &GetLayoutHorizontal() const{ return pLayoutHorizontal; }
 	
 	/** \brief Set horizontal layout. */
-	void SetLayoutHorizontal( const deaiLayout &layout );
+	void SetLayoutHorizontal( const deainpLayout &layout );
 	
 	/** \brief Vertical layout. */
-	inline const deaiLayout &GetLayoutVertical() const{ return pLayoutVertical; }
+	inline const deainpLayout &GetLayoutVertical() const{ return pLayoutVertical; }
 	
 	/** \brief Set vertical layout. */
-	void SetLayoutVertical( const deaiLayout &layout );
+	void SetLayoutVertical( const deainpLayout &layout );
 	
 	
 	
@@ -119,7 +119,7 @@ public:
 	void UpdateFromVerticalLayout();
 	
 	/** \brief Update from layout. */
-	virtual void UpdateFromLayout( const deaiLayout &layout );
+	virtual void UpdateFromLayout( const deainpLayout &layout );
 	
 	
 	

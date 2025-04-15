@@ -28,11 +28,11 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "deaiDevice.h"
-#include "deaiDeviceAxis.h"
-#include "deaiDeviceButton.h"
-#include "deaiDeviceFeedback.h"
-#include "deaiDeviceManager.h"
+#include "deainpDevice.h"
+#include "deainpDeviceAxis.h"
+#include "deainpDeviceButton.h"
+#include "deainpDeviceFeedback.h"
+#include "deainpDeviceManager.h"
 #include "deAndroidInput.h"
 
 #include <dragengine/deEngine.h>
@@ -45,13 +45,13 @@
 
 
 
-// Class deaiDevice
+// Class deainpDevice
 /////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiDevice::deaiDevice( deAndroidInput &module, eSources source ) :
+deainpDevice::deainpDevice( deAndroidInput &module, eSources source ) :
 pModule( module ),
 pIndex( -1 ),
 pSource( source ),
@@ -67,7 +67,7 @@ pFeedbacks( NULL ),
 pDirtyAxesValues( false ){
 }
 
-deaiDevice::~deaiDevice(){
+deainpDevice::~deainpDevice(){
 	if( pFeedbacks ){
 		delete [] pFeedbacks;
 	}
@@ -84,25 +84,25 @@ deaiDevice::~deaiDevice(){
 // Management
 ///////////////
 
-void deaiDevice::SetIndex( int index ){
+void deainpDevice::SetIndex( int index ){
 	pIndex = index;
 }
 
-void deaiDevice::SetType( deInputDevice::eDeviceTypes type ){
+void deainpDevice::SetType( deInputDevice::eDeviceTypes type ){
 	pType = type;
 }
 
-void deaiDevice::SetID( const char *id ){
+void deainpDevice::SetID( const char *id ){
 	pID = id;
 }
 
-void deaiDevice::SetName( const char *name ){
+void deainpDevice::SetName( const char *name ){
 	pName = name;
 }
 
 
 
-void deaiDevice::SetButtonCount( int count ){
+void deainpDevice::SetButtonCount( int count ){
 	if( pButtons ){
 		delete [] pButtons;
 		pButtons = NULL;
@@ -110,19 +110,19 @@ void deaiDevice::SetButtonCount( int count ){
 	}
 	
 	if( count > 0 ){
-		pButtons = new deaiDeviceButton[ count ];
+		pButtons = new deainpDeviceButton[ count ];
 		pButtonCount = count;
 	}
 }
 
-deaiDeviceButton &deaiDevice::GetButtonAt( int index ) const{
+deainpDeviceButton &deainpDevice::GetButtonAt( int index ) const{
 	if( index < 0 || index >= pButtonCount ){
 		DETHROW( deeInvalidParam );
 	}
 	return pButtons[ index ];
 }
 
-deaiDeviceButton *deaiDevice::GetButtonWithID( const char *id ) const{
+deainpDeviceButton *deainpDevice::GetButtonWithID( const char *id ) const{
 	int i;
 	for( i=0; i<pButtonCount; i++ ){
 		if( pButtons[ i ].GetID() == id ){
@@ -133,7 +133,7 @@ deaiDeviceButton *deaiDevice::GetButtonWithID( const char *id ) const{
 	return NULL;
 }
 
-deaiDeviceButton *deaiDevice::GetButtonWithAICode( int code ) const{
+deainpDeviceButton *deainpDevice::GetButtonWithAICode( int code ) const{
 	int i;
 	for( i=0; i<pButtonCount; i++ ){
 		if( pButtons[ i ].GetAICode() == code ){
@@ -144,7 +144,7 @@ deaiDeviceButton *deaiDevice::GetButtonWithAICode( int code ) const{
 	return NULL;
 }
 
-int deaiDevice::IndexOfButtonWithID( const char *id ) const{
+int deainpDevice::IndexOfButtonWithID( const char *id ) const{
 	int i;
 	for( i=0; i<pButtonCount; i++ ){
 		if( pButtons[ i ].GetID() == id ){
@@ -155,7 +155,7 @@ int deaiDevice::IndexOfButtonWithID( const char *id ) const{
 	return -1;
 }
 
-int deaiDevice::IndexOfButtonWithKeyCode( deInputEvent::eKeyCodes code ) const{
+int deainpDevice::IndexOfButtonWithKeyCode( deInputEvent::eKeyCodes code ) const{
 	int i;
 	for( i=0; i<pButtonCount; i++ ){
 		if( pButtons[ i ].GetKeyCode() == code ){
@@ -166,7 +166,7 @@ int deaiDevice::IndexOfButtonWithKeyCode( deInputEvent::eKeyCodes code ) const{
 	return -1;
 }
 
-int deaiDevice::IndexOfButtonWithAICode( int code ) const{
+int deainpDevice::IndexOfButtonWithAICode( int code ) const{
 	int i;
 	for( i=0; i<pButtonCount; i++ ){
 		if( pButtons[ i ].GetAICode() == code ){
@@ -179,7 +179,7 @@ int deaiDevice::IndexOfButtonWithAICode( int code ) const{
 
 
 
-void deaiDevice::SetAxisCount( int count ){
+void deainpDevice::SetAxisCount( int count ){
 	if( pAxes ){
 		delete [] pAxes;
 		pAxes = NULL;
@@ -187,19 +187,19 @@ void deaiDevice::SetAxisCount( int count ){
 	}
 	
 	if( count > 0 ){
-		pAxes = new deaiDeviceAxis[ count ];
+		pAxes = new deainpDeviceAxis[ count ];
 		pAxisCount = count;
 	}
 }
 
-deaiDeviceAxis &deaiDevice::GetAxisAt( int index ) const{
+deainpDeviceAxis &deainpDevice::GetAxisAt( int index ) const{
 	if( index < 0 || index >= pAxisCount ){
 		DETHROW( deeInvalidParam );
 	}
 	return pAxes[ index ];
 }
 
-deaiDeviceAxis *deaiDevice::GetAxisWithID( const char *id ) const{
+deainpDeviceAxis *deainpDevice::GetAxisWithID( const char *id ) const{
 	int i;
 	
 	for( i=0; i<pAxisCount; i++ ){
@@ -211,7 +211,7 @@ deaiDeviceAxis *deaiDevice::GetAxisWithID( const char *id ) const{
 	return NULL;
 }
 
-deaiDeviceAxis *deaiDevice::GetAxisWithAICode( int code ) const{
+deainpDeviceAxis *deainpDevice::GetAxisWithAICode( int code ) const{
 	int i;
 	for( i=0; i<pAxisCount; i++ ){
 		if( pAxes[ i ].GetAICode() == code ){
@@ -222,7 +222,7 @@ deaiDeviceAxis *deaiDevice::GetAxisWithAICode( int code ) const{
 	return NULL;
 }
 
-int deaiDevice::IndexOfAxisWithID( const char *id ) const{
+int deainpDevice::IndexOfAxisWithID( const char *id ) const{
 	int i;
 	for( i=0; i<pAxisCount; i++ ){
 		if( pAxes[ i ].GetID() == id ){
@@ -233,7 +233,7 @@ int deaiDevice::IndexOfAxisWithID( const char *id ) const{
 	return -1;
 }
 
-int deaiDevice::IndexOfAxisWithAICode( int code ) const{
+int deainpDevice::IndexOfAxisWithAICode( int code ) const{
 	int i;
 	for( i=0; i<pAxisCount; i++ ){
 		if( pAxes[ i ].GetAICode() == code ){
@@ -246,7 +246,7 @@ int deaiDevice::IndexOfAxisWithAICode( int code ) const{
 
 
 
-void deaiDevice::SetFeedbackCount( int count ){
+void deainpDevice::SetFeedbackCount( int count ){
 	if( pFeedbacks ){
 		delete [] pFeedbacks;
 		pFeedbacks = NULL;
@@ -254,19 +254,19 @@ void deaiDevice::SetFeedbackCount( int count ){
 	}
 	
 	if( count > 0 ){
-		pFeedbacks = new deaiDeviceFeedback[ count ];
+		pFeedbacks = new deainpDeviceFeedback[ count ];
 		pFeedbackCount = count;
 	}
 }
 
-deaiDeviceFeedback &deaiDevice::GetFeedbackAt( int index ) const{
+deainpDeviceFeedback &deainpDevice::GetFeedbackAt( int index ) const{
 	if( index < 0 || index >= pFeedbackCount ){
 		DETHROW( deeInvalidParam );
 	}
 	return pFeedbacks[ index ];
 }
 
-deaiDeviceFeedback *deaiDevice::GetFeedbackWithID( const char *id ) const{
+deainpDeviceFeedback *deainpDevice::GetFeedbackWithID( const char *id ) const{
 	int i;
 	for( i=0; i<pFeedbackCount; i++ ){
 		if( pFeedbacks[ i ].GetID() == id ){
@@ -277,7 +277,7 @@ deaiDeviceFeedback *deaiDevice::GetFeedbackWithID( const char *id ) const{
 	return NULL;
 }
 
-int deaiDevice::IndexOfFeedbackWithID( const char *id ) const{
+int deainpDevice::IndexOfFeedbackWithID( const char *id ) const{
 	int i;
 	for( i=0; i<pFeedbackCount; i++ ){
 		if( pFeedbacks[ i ].GetID() == id ){
@@ -290,13 +290,13 @@ int deaiDevice::IndexOfFeedbackWithID( const char *id ) const{
 
 
 
-void deaiDevice::SetDirtyAxesValues( bool dirty ){
+void deainpDevice::SetDirtyAxesValues( bool dirty ){
 	pDirtyAxesValues = dirty;
 }
 
 
 
-void deaiDevice::GetInfo( deInputDevice &info ) const{
+void deainpDevice::GetInfo( deInputDevice &info ) const{
 	int i;
 	
 	info.SetID( pID );
@@ -323,10 +323,10 @@ void deaiDevice::GetInfo( deInputDevice &info ) const{
 	}
 }
 
-void deaiDevice::Update(){
+void deainpDevice::Update(){
 }
 
-void deaiDevice::SendDirtyAxisEvents(){
+void deainpDevice::SendDirtyAxisEvents(){
 	if( ! pDirtyAxesValues ){
 		return;
 	}

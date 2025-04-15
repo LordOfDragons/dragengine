@@ -24,12 +24,12 @@
 
 #include <stdlib.h>
 
-#include "deaiOverlayActionButton.h"
+#include "deainpOverlayActionButton.h"
 #include "../deAndroidInput.h"
-#include "../deaiDeviceButton.h"
-#include "../deaiDeviceKeyboard.h"
-#include "../deaiDeviceMouse.h"
-#include "../deaiDeviceManager.h"
+#include "../deainpDeviceButton.h"
+#include "../deainpDeviceKeyboard.h"
+#include "../deainpDeviceMouse.h"
+#include "../deainpDeviceManager.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -47,14 +47,14 @@
 
 
 
-// Class deaiOverlayActionButton
+// Class deainpOverlayActionButton
 //////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiOverlayActionButton::deaiOverlayActionButton( deAndroidInput &androidInput ) :
-deaiOverlay( androidInput ),
+deainpOverlayActionButton::deainpOverlayActionButton( deAndroidInput &androidInput ) :
+deainpOverlay( androidInput ),
 
 pRadius( 64 ),
 pCenter( 64, 64 ),
@@ -72,8 +72,8 @@ pDirtyLabelSize( true )
 	
 	const decPoint size( pRadius * 2, pRadius * 2 );
 	
-	SetLayoutHorizontal( deaiLayout( decPoint(), size ) );
-	SetLayoutVertical( deaiLayout( decPoint(), size ) );
+	SetLayoutHorizontal( deainpLayout( decPoint(), size ) );
+	SetLayoutVertical( deainpLayout( decPoint(), size ) );
 	
 	try{
 		GetCanvas()->SetSize( size );
@@ -102,7 +102,7 @@ pDirtyLabelSize( true )
 	}
 }
 
-deaiOverlayActionButton::~deaiOverlayActionButton(){
+deainpOverlayActionButton::~deainpOverlayActionButton(){
 	pCleanUp();
 }
 
@@ -111,13 +111,13 @@ deaiOverlayActionButton::~deaiOverlayActionButton(){
 // Management
 ///////////////
 
-void deaiOverlayActionButton::SetBinding( const deaiInputBinding &binding ){
+void deainpOverlayActionButton::SetBinding( const deainpInputBinding &binding ){
 	pBinding = binding;
 }
 
 
 
-void deaiOverlayActionButton::SetRadius( int radius ){
+void deainpOverlayActionButton::SetRadius( int radius ){
 	radius = decMath::max( radius, 0 );
 	if( radius == pRadius ){
 		return;
@@ -131,7 +131,7 @@ void deaiOverlayActionButton::SetRadius( int radius ){
 	// TODO
 }
 
-void deaiOverlayActionButton::SetCenter( const decPoint &center ){
+void deainpOverlayActionButton::SetCenter( const decPoint &center ){
 	if( center == pCenter ){
 		return;
 	}
@@ -143,35 +143,35 @@ void deaiOverlayActionButton::SetCenter( const decPoint &center ){
 
 
 
-const decString &deaiOverlayActionButton::GetText() const{
+const decString &deainpOverlayActionButton::GetText() const{
 	return pCLabel->GetText();
 }
 
-void deaiOverlayActionButton::SetText( const char *text ){
+void deainpOverlayActionButton::SetText( const char *text ){
 	pCLabel->SetText( text );
 	pDirtyLabelSize = true;
 }
 
-const decColor &deaiOverlayActionButton::GetColor() const{
+const decColor &deainpOverlayActionButton::GetColor() const{
 	return pCLabel->GetColor();
 }
 
-void deaiOverlayActionButton::SetColor( const decColor &color ){
+void deainpOverlayActionButton::SetColor( const decColor &color ){
 	pCLabel->SetColor( color );
 }
 
-deFont *deaiOverlayActionButton::GetFont() const{
+deFont *deainpOverlayActionButton::GetFont() const{
 	return pCLabel->GetFont();
 }
 
-void deaiOverlayActionButton::SetFont( deFont *font ){
+void deainpOverlayActionButton::SetFont( deFont *font ){
 	pCLabel->SetFont( font );
 	pDirtyLabelSize = true;
 }
 
 
 
-void deaiOverlayActionButton::SetPressed( bool pressed ){
+void deainpOverlayActionButton::SetPressed( bool pressed ){
 	if( pressed == pPressed ){
 		return;
 	}
@@ -183,15 +183,15 @@ void deaiOverlayActionButton::SetPressed( bool pressed ){
 
 
 
-void deaiOverlayActionButton::UpdateBindingIndices(){
+void deainpOverlayActionButton::UpdateBindingIndices(){
 	pBinding.UpdateIndices( GetAndroidInput().GetDevices() );
 }
 
-void deaiOverlayActionButton::UpdateContent(){
+void deainpOverlayActionButton::UpdateContent(){
 	pUpdateLabelSize();
 }
 
-bool deaiOverlayActionButton::OnTouch( int pointerId, const decPoint &position ){
+bool deainpOverlayActionButton::OnTouch( int pointerId, const decPoint &position ){
 	if( ( int )( ( position - pCenter ).Length() ) > pRadius ){
 		return false;
 	}
@@ -201,7 +201,7 @@ bool deaiOverlayActionButton::OnTouch( int pointerId, const decPoint &position )
 	return true;
 }
 
-void deaiOverlayActionButton::OnMove( const decPoint &position ){
+void deainpOverlayActionButton::OnMove( const decPoint &position ){
 	PointerMove( position );
 	
 	// no. keep the button pressed while moving. otherwise it is annoying if the button
@@ -213,9 +213,9 @@ void deaiOverlayActionButton::OnMove( const decPoint &position ){
 	*/
 }
 
-void deaiOverlayActionButton::OnRelease(){
+void deainpOverlayActionButton::OnRelease(){
 	SetPressed( false );
-	deaiOverlay::OnRelease();
+	deainpOverlay::OnRelease();
 }
 
 
@@ -223,7 +223,7 @@ void deaiOverlayActionButton::OnRelease(){
 // Private Functions
 //////////////////////
 
-void deaiOverlayActionButton::pCleanUp(){
+void deainpOverlayActionButton::pCleanUp(){
 	if( pCLabel ){
 		pCLabel->FreeReference();
 	}
@@ -232,7 +232,7 @@ void deaiOverlayActionButton::pCleanUp(){
 	}
 }
 
-void deaiOverlayActionButton::pUpdateLabelSize(){
+void deainpOverlayActionButton::pUpdateLabelSize(){
 	if( ! pDirtyLabelSize ){
 		return;
 	}

@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIOVERLAYCIRCLEPAD_H_
-#define _DEAIOVERLAYCIRCLEPAD_H_
+#ifndef _DEAINPOVERLAYCIRCLEPAD_H_
+#define _DEAINPOVERLAYCIRCLEPAD_H_
 
-#include "deaiInputBinding.h"
-#include "deaiOverlay.h"
+#include "deainpInputBinding.h"
+#include "deainpOverlay.h"
 
 class deCanvasImage;
 
@@ -34,23 +34,23 @@ class deCanvasImage;
 /**
  * \brief Circle pad overlay.
  */
-class deaiOverlayCirclePad : public deaiOverlay{
+class deainpOverlayCirclePad : public deainpOverlay{
 public:
-	typedef deTObjectReference<deaiOverlayCirclePad> Ref;
+	typedef deTObjectReference<deainpOverlayCirclePad> Ref;
 	
 private:
-	deaiInputBinding pAxisLeftRight;
-	deaiInputBinding pAxisUpDown;
+	deainpInputBinding pAxisLeftRight;
+	deainpInputBinding pAxisUpDown;
 	
-	deaiInputBinding pKeyCodeLeft;
-	deaiInputBinding pKeyCodeUp;
-	deaiInputBinding pKeyCodeRight;
-	deaiInputBinding pKeyCodeDown;
+	deainpInputBinding pKeyCodeLeft;
+	deainpInputBinding pKeyCodeUp;
+	deainpInputBinding pKeyCodeRight;
+	deainpInputBinding pKeyCodeDown;
 	
-	deaiInputBinding pKeyCodeUpLeft;
-	deaiInputBinding pKeyCodeUpRight;
-	deaiInputBinding pKeyCodeDownLeft;
-	deaiInputBinding pKeyCodeDownRight;
+	deainpInputBinding pKeyCodeUpLeft;
+	deainpInputBinding pKeyCodeUpRight;
+	deainpInputBinding pKeyCodeDownLeft;
+	deainpInputBinding pKeyCodeDownRight;
 	
 	bool pPressedLeft;
 	bool pPressedUp;
@@ -77,10 +77,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create overlay circle pad. */
-	deaiOverlayCirclePad( deAndroidInput &androidInput );
+	deainpOverlayCirclePad( deAndroidInput &androidInput );
 	
 	/** \brief Clean up overlay circle pad. */
-	virtual ~deaiOverlayCirclePad();
+	virtual ~deainpOverlayCirclePad();
 	/*@}*/
 	
 	
@@ -88,68 +88,68 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Left-right axis. */
-	inline const deaiInputBinding &GetAxisLeftRight() const{ return pAxisLeftRight; }
+	inline const deainpInputBinding &GetAxisLeftRight() const{ return pAxisLeftRight; }
 	
 	/** \brief Set left-right axis. */
-	void SetAxisLeftRight( const deaiInputBinding &axis );
+	void SetAxisLeftRight( const deainpInputBinding &axis );
 	
 	/** \brief Up-down axis. */
-	inline const deaiInputBinding &GetAxisUpDown() const{ return pAxisUpDown; }
+	inline const deainpInputBinding &GetAxisUpDown() const{ return pAxisUpDown; }
 	
 	/** \brief Set up-down axis. */
-	void SetAxisUpDown( const deaiInputBinding &axis );
+	void SetAxisUpDown( const deainpInputBinding &axis );
 	
 	
 	
 	/** \brief Key binding for left pad press. */
-	inline const deaiInputBinding &GetKeyCodeLeft() const{ return pKeyCodeLeft; }
+	inline const deainpInputBinding &GetKeyCodeLeft() const{ return pKeyCodeLeft; }
 	
 	/** \brief Set key binding for left pad press. */
-	void SetKeyCodeLeft( const deaiInputBinding &binding );
+	void SetKeyCodeLeft( const deainpInputBinding &binding );
 	
 	/** \brief Key binding for up pad press. */
-	inline const deaiInputBinding &GetKeyCodeUp() const{ return pKeyCodeUp; }
+	inline const deainpInputBinding &GetKeyCodeUp() const{ return pKeyCodeUp; }
 	
 	/** \brief Set key binding for up pad press. */
-	void SetKeyCodeUp( const deaiInputBinding &binding );
+	void SetKeyCodeUp( const deainpInputBinding &binding );
 	
 	/** \brief Key binding for right pad press. */
-	inline const deaiInputBinding &GetKeyCodeRight() const{ return pKeyCodeRight; }
+	inline const deainpInputBinding &GetKeyCodeRight() const{ return pKeyCodeRight; }
 	
 	/** \brief Set key binding for right pad press. */
-	void SetKeyCodeRight( const deaiInputBinding &binding );
+	void SetKeyCodeRight( const deainpInputBinding &binding );
 	
 	/** \brief Key binding for down pad press. */
-	inline const deaiInputBinding &GetKeyCodeDown() const{ return pKeyCodeDown; }
+	inline const deainpInputBinding &GetKeyCodeDown() const{ return pKeyCodeDown; }
 	
 	/** \brief Set key binding for down pad press. */
-	void SetKeyCodeDown( const deaiInputBinding &binding );
+	void SetKeyCodeDown( const deainpInputBinding &binding );
 	
 	
 	
 	/** \brief Key binding for up-left pad press or empty to activate up and left binding together. */
-	inline const deaiInputBinding &GetKeyCodeUpLeft() const{ return pKeyCodeUpLeft; }
+	inline const deainpInputBinding &GetKeyCodeUpLeft() const{ return pKeyCodeUpLeft; }
 	
 	/** \brief Set key binding for up-left pad press or empty to activate up and left binding together. */
-	void SetKeyCodeUpLeft( const deaiInputBinding &binding );
+	void SetKeyCodeUpLeft( const deainpInputBinding &binding );
 	
 	/** \brief Key binding for up-right pad press or empty to activate up and right binding together. */
-	inline const deaiInputBinding &GetKeyCodeUpRight() const{ return pKeyCodeUpRight; }
+	inline const deainpInputBinding &GetKeyCodeUpRight() const{ return pKeyCodeUpRight; }
 	
 	/** \brief Set key binding for up-right pad press or empty to activate up and right binding together. */
-	void SetKeyCodeUpRight( const deaiInputBinding &binding );
+	void SetKeyCodeUpRight( const deainpInputBinding &binding );
 	
 	/** \brief Key binding for down-left pad press or empty to activate down and left binding together. */
-	inline const deaiInputBinding &GetKeyCodeDownLeft() const{ return pKeyCodeDownLeft; }
+	inline const deainpInputBinding &GetKeyCodeDownLeft() const{ return pKeyCodeDownLeft; }
 	
 	/** \brief Set key binding for down-left pad press or empty to activate down and left binding together. */
-	void SetKeyCodeDownLeft( const deaiInputBinding &binding );
+	void SetKeyCodeDownLeft( const deainpInputBinding &binding );
 	
 	/** \brief Key binding for down-right pad press or empty to activate down and right binding together. */
-	inline const deaiInputBinding &GetKeyCodeDownRight() const{ return pKeyCodeDownRight; }
+	inline const deainpInputBinding &GetKeyCodeDownRight() const{ return pKeyCodeDownRight; }
 	
 	/** \brief Set key binding for down-right pad press or empty to activate down and right binding together. */
-	void SetKeyCodeDownRight( const deaiInputBinding &binding );
+	void SetKeyCodeDownRight( const deainpInputBinding &binding );
 	
 	
 	

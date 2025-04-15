@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 
-#include "deaiDeviceButton.h"
+#include "deainpDeviceButton.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/input/deInputEvent.h>
@@ -32,13 +32,13 @@
 
 
 
-// Class deaiDeviceButton
+// Class deainpDeviceButton
 ////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiDeviceButton::deaiDeviceButton() :
+deainpDeviceButton::deainpDeviceButton() :
 pPressed( false ),
 pAICode( 0 ),
 pAIChar( 0 ),
@@ -46,7 +46,7 @@ pKeyCode( deInputEvent::ekcUndefined ),
 pMatchPriority( 10 ){
 }
 
-deaiDeviceButton::~deaiDeviceButton(){
+deainpDeviceButton::~deainpDeviceButton(){
 }
 
 
@@ -54,37 +54,37 @@ deaiDeviceButton::~deaiDeviceButton(){
 // Management
 ///////////////
 
-void deaiDeviceButton::SetID( const char *id ){
+void deainpDeviceButton::SetID( const char *id ){
 	pID = id;
 }
 
-void deaiDeviceButton::SetName( const char *name ){
+void deainpDeviceButton::SetName( const char *name ){
 	pName = name;
 }
  
-void deaiDeviceButton::SetPressed( bool pressed ){
+void deainpDeviceButton::SetPressed( bool pressed ){
 	pPressed = pressed;
 }
 
-void deaiDeviceButton::SetAICode( int code ){
+void deainpDeviceButton::SetAICode( int code ){
 	pAICode = code;
 }
 
-void deaiDeviceButton::SetAIChar( int character ){
+void deainpDeviceButton::SetAIChar( int character ){
 	pAIChar = character;
 }
 
-void deaiDeviceButton::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
+void deainpDeviceButton::SetKeyCode( deInputEvent::eKeyCodes keyCode ){
 	pKeyCode = keyCode;
 }
 
-void deaiDeviceButton::SetMatchPriority( int priority ){
+void deainpDeviceButton::SetMatchPriority( int priority ){
 	pMatchPriority = priority;
 }
 
 
 
-void deaiDeviceButton::GetInfo( deInputDeviceButton &info ) const{
+void deainpDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
 }

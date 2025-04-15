@@ -268,6 +268,7 @@ params.Add(BoolVariable('build_image_png3d_internal', 'Build PNG-3D Image Module
 params.Add(BoolVariable('build_image_tga_internal', 'Build Targa Image Module as internal module', True))
 params.Add(BoolVariable('build_image_webp_internal', 'Build WebP Image Module as internal module', True))
 params.Add(BoolVariable('build_image_webp3d_internal', 'Build WebP-3D Image Module as internal module', True))
+params.Add(BoolVariable('build_input_android_internal', 'Build Android Input Module as internal module', True))
 params.Add(BoolVariable('build_input_console_internal', 'Build Console Input Module as internal module', True))
 params.Add(BoolVariable('build_input_x_internal', 'Build X Input Module as internal module', True))
 params.Add(BoolVariable('build_langpack_delangpack_internal', 'Build DELangPack Language Pack Module as internal module', True))

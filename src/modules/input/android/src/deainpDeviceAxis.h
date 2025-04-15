@@ -22,15 +22,15 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIDEVICEAXIS_H_
-#define _DEAIDEVICEAXIS_H_
+#ifndef _DEAINPDEVICEAXIS_H_
+#define _DEAINPDEVICEAXIS_H_
 
 #include <unistd.h>
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceAxis.h>
 
-class deaiDevice;
+class deainpDevice;
 class deInputDeviceAxis;
 
 
@@ -38,7 +38,7 @@ class deInputDeviceAxis;
 /**
  * \brief Android input device axis.
  */
-class deaiDeviceAxis{
+class deainpDeviceAxis{
 private:
 	int pIndex;
 	decString pID;
@@ -64,10 +64,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device axis. */
-	deaiDeviceAxis();
+	deainpDeviceAxis();
 	
 	/** \brief Clean up device axis. */
-	~deaiDeviceAxis();
+	~deainpDeviceAxis();
 	/*@}*/
 	
 	
@@ -157,7 +157,7 @@ public:
 	void GetInfo( deInputDeviceAxis &info ) const;
 	
 	/** \brief Send events if present. */
-	void SendEvents( deaiDevice &device );
+	void SendEvents( deainpDevice &device );
 	/*@}*/
 };
 

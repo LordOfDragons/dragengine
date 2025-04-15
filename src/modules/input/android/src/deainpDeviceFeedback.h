@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIDEVICEFEEDBACK_H_
-#define _DEAIDEVICEFEEDBACK_H_
+#ifndef _DEAINPDEVICEFEEDBACK_H_
+#define _DEAINPDEVICEFEEDBACK_H_
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceFeedback.h>
@@ -35,7 +35,7 @@ class deInputDeviceFeedback;
 /**
  * \brief Android input device feedback.
  */
-class deaiDeviceFeedback{
+class deainpDeviceFeedback{
 private:
 	int pIndex;
 	decString pID;
@@ -54,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device feedback. */
-	deaiDeviceFeedback();
+	deainpDeviceFeedback();
 	
 	/** \brief Clean up device feedback. */
-	~deaiDeviceFeedback();
+	~deainpDeviceFeedback();
 	/*@}*/
 	
 	

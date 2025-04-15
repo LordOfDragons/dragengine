@@ -15,7 +15,8 @@ if envModule['platform_android'] != 'no' and envModule['build_input_android'] !=
 	buildModule = True
 
 # build module if requested
-parent_report['build Android Input Module'] = 'yes' if buildModule else 'no'
+internalModule = envModule['build_image_png_internal']
+parent_report['build Android Input Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 if not buildModule:
 	Return()
 
@@ -41,38 +42,53 @@ globFiles(envModule, 'src', '*.h', headers)
 globFiles(envModule, 'data', '*', datafiles)
 
 # setup the builders
-objects = [envModule.SharedObject(s) for s in sources]
-
 libs.extend(envModule['ANDROID_LIBS'])
 
-appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
 appendLibrary(envModule, parent_targets['lib_agdk'], libs)
-
-
-library = envModule.LoadableModule(target='inpandroid', source=objects, LIBS=libs)
-targetBuild = envModule.Alias('inp_android_build', library)
 
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith(envModule['SHLIBSUFFIX']):
-		install.append(envModule.Install(pathModule, l))
-		archive[os.path.join(pathModule, l.name)] = l
 
-manifestUpdates = [
-	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
-	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
-	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-manifest = envModule.File('src/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-Depends(updateManifest, 'SConscript')
-
-install.append(envModule.Install(pathModule, updateManifest))
-archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='inpandroid', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('inp_android_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, ['lib_agdk'], 'deaiRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	
+	library = envModule.LoadableModule(target='inpandroid', source=objects, LIBS=libs)
+	targetBuild = envModule.Alias('inp_android_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	manifestUpdates = [
+		{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	manifest = envModule.File('src/module.xml')
+	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	Depends(updateManifest, library)
+	Depends(updateManifest, 'SConscript')
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 cutlen = len('data/')
 for d in datafiles:

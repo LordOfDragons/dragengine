@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIDEVICE_H_
-#define _DEAIDEVICE_H_
+#ifndef _DEAINPDEVICE_H_
+#define _DEAINPDEVICE_H_
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -31,9 +31,9 @@
 #include <dragengine/input/deInputEvent.h>
 
 class deAndroidInput;
-class deaiDeviceAxis;
-class deaiDeviceButton;
-class deaiDeviceFeedback;
+class deainpDeviceAxis;
+class deainpDeviceButton;
+class deainpDeviceFeedback;
 class deInputDevice;
 
 
@@ -41,7 +41,7 @@ class deInputDevice;
 /**
  * \brief Android input device.
  */
-class deaiDevice : public deObject{
+class deainpDevice : public deObject{
 public:
 	/** \brief Source identifier. */
 	enum eSources{
@@ -62,13 +62,13 @@ private:
 	decString pName;
 	
 	int pButtonCount;
-	deaiDeviceButton *pButtons;
+	deainpDeviceButton *pButtons;
 	
 	int pAxisCount;
-	deaiDeviceAxis *pAxes;
+	deainpDeviceAxis *pAxes;
 	
 	int pFeedbackCount;
-	deaiDeviceFeedback *pFeedbacks;
+	deainpDeviceFeedback *pFeedbacks;
 	
 	bool pDirtyAxesValues;
 	
@@ -78,11 +78,11 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */
-	deaiDevice( deAndroidInput &module, eSources source );
+	deainpDevice( deAndroidInput &module, eSources source );
 	
 protected:
 	/** \brief Clean up device. */
-	virtual ~deaiDevice();
+	virtual ~deainpDevice();
 	/*@}*/
 	
 	
@@ -131,13 +131,13 @@ public:
 	void SetButtonCount( int count );
 	
 	/** \brief Button at index. */
-	deaiDeviceButton &GetButtonAt( int index ) const;
+	deainpDeviceButton &GetButtonAt( int index ) const;
 	
 	/** \brief Button with identifier or \em NULL if absent. */
-	deaiDeviceButton *GetButtonWithID( const char *id ) const;
+	deainpDeviceButton *GetButtonWithID( const char *id ) const;
 	
 	/** \brief Button with android code or \em NULL if absent. */
-	deaiDeviceButton *GetButtonWithAICode( int code ) const;
+	deainpDeviceButton *GetButtonWithAICode( int code ) const;
 	
 	/** \brief Index of button with identifier or -1 if absent. */
 	int IndexOfButtonWithID( const char *id ) const;
@@ -157,13 +157,13 @@ public:
 	void SetAxisCount( int count );
 	
 	/** \brief Axis at index. */
-	deaiDeviceAxis &GetAxisAt( int index ) const;
+	deainpDeviceAxis &GetAxisAt( int index ) const;
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
-	deaiDeviceAxis *GetAxisWithID( const char *id ) const;
+	deainpDeviceAxis *GetAxisWithID( const char *id ) const;
 	
 	/** \brief Axis with android code or \em NULL if absent. */
-	deaiDeviceAxis *GetAxisWithAICode( int code ) const;
+	deainpDeviceAxis *GetAxisWithAICode( int code ) const;
 	
 	/** \brief Index of axis with identifier or -1 if absent. */
 	int IndexOfAxisWithID( const char *id ) const;
@@ -180,10 +180,10 @@ public:
 	void SetFeedbackCount( int count );
 	
 	/** \brief Feedback at index. */
-	deaiDeviceFeedback &GetFeedbackAt( int index ) const;
+	deainpDeviceFeedback &GetFeedbackAt( int index ) const;
 	
 	/** \brief Feedback with identifier or \em NULL if absent. */
-	deaiDeviceFeedback *GetFeedbackWithID( const char *id ) const;
+	deainpDeviceFeedback *GetFeedbackWithID( const char *id ) const;
 	
 	/** \brief Index of feedback with identifier or -1 if absent. */
 	int IndexOfFeedbackWithID( const char *id ) const;

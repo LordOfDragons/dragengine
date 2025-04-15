@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 
-#include "deaiOverlay.h"
+#include "deainpOverlay.h"
 #include "../deAndroidInput.h"
 
 #include <dragengine/deEngine.h>
@@ -34,13 +34,13 @@
 
 
 
-// Class deaiOverlay
+// Class deainpOverlay
 //////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiOverlay::deaiOverlay( deAndroidInput &androidInput ) :
+deainpOverlay::deainpOverlay( deAndroidInput &androidInput ) :
 pAndroidInput( androidInput ),
 
 pCanvas( NULL ),
@@ -55,7 +55,7 @@ pLayoutVertical( decPoint(), decPoint( 256, 256 ) )
 	pCanvas->SetTransparency( 0.35f ); // 35% coverage
 }
 
-deaiOverlay::~deaiOverlay(){
+deainpOverlay::~deainpOverlay(){
 	if( pCanvas ){
 		pCanvas->FreeReference();
 	}
@@ -66,20 +66,20 @@ deaiOverlay::~deaiOverlay(){
 // Management
 ///////////////
 
-bool deaiOverlay::HasPointer() const{
+bool deainpOverlay::HasPointer() const{
 	return pPointer != -1;
 }
 
-void deaiOverlay::ClearPointer(){
+void deainpOverlay::ClearPointer(){
 	pPointer = -1;
 }
 
-void deaiOverlay::SetPointer( int pointer, const decPoint &position ){
+void deainpOverlay::SetPointer( int pointer, const decPoint &position ){
 	pPointer = pointer;
 	pPointerPosition = position;
 }
 
-decPoint deaiOverlay::PointerMove( const decPoint &position ){
+decPoint deainpOverlay::PointerMove( const decPoint &position ){
 	const decPoint move( position - pPointerPosition );
 	pPointerPosition = position;
 	return move;
@@ -87,14 +87,14 @@ decPoint deaiOverlay::PointerMove( const decPoint &position ){
 
 
 
-void deaiOverlay::SetLayoutHorizontal( const deaiLayout &layout ){
+void deainpOverlay::SetLayoutHorizontal( const deainpLayout &layout ){
 	if( layout == pLayoutHorizontal ){
 		return;
 	}
 	pLayoutHorizontal = layout;
 }
 
-void deaiOverlay::SetLayoutVertical( const deaiLayout &layout ){
+void deainpOverlay::SetLayoutVertical( const deainpLayout &layout ){
 	if( layout == pLayoutVertical ){
 		return;
 	}
@@ -103,34 +103,34 @@ void deaiOverlay::SetLayoutVertical( const deaiLayout &layout ){
 
 
 
-void deaiOverlay::UpdateFromHorizontalLayout(){
+void deainpOverlay::UpdateFromHorizontalLayout(){
 	UpdateFromLayout( pLayoutHorizontal );
 }
 
-void deaiOverlay::UpdateFromVerticalLayout(){
+void deainpOverlay::UpdateFromVerticalLayout(){
 	UpdateFromLayout( pLayoutVertical );
 }
 
-void deaiOverlay::UpdateFromLayout( const deaiLayout &layout ){
+void deainpOverlay::UpdateFromLayout( const deainpLayout &layout ){
 	pCanvas->SetPosition( layout.GetPosition() );
 	pCanvas->SetSize( layout.GetSize() );
 }
 
 
 
-void deaiOverlay::UpdateBindingIndices(){
+void deainpOverlay::UpdateBindingIndices(){
 }
 
-void deaiOverlay::UpdateContent(){
+void deainpOverlay::UpdateContent(){
 }
 
-bool deaiOverlay::OnTouch( int pointerId, const decPoint &position ){
+bool deainpOverlay::OnTouch( int pointerId, const decPoint &position ){
 	return false;
 }
 
-void deaiOverlay::OnMove( const decPoint &position ){
+void deainpOverlay::OnMove( const decPoint &position ){
 }
 
-void deaiOverlay::OnRelease(){
+void deainpOverlay::OnRelease(){
 	ClearPointer();
 }

@@ -24,8 +24,8 @@
 
 #include <stdlib.h>
 
-#include "deaiDevice.h"
-#include "deaiDeviceAxis.h"
+#include "deainpDevice.h"
+#include "deainpDeviceAxis.h"
 #include "deAndroidInput.h"
 
 #include <dragengine/common/exceptions.h>
@@ -33,13 +33,13 @@
 
 
 
-// Class deaiDeviceAxis
+// Class deainpDeviceAxis
 //////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiDeviceAxis::deaiDeviceAxis() :
+deainpDeviceAxis::deainpDeviceAxis() :
 pIndex( -1 ),
 pType( deInputDeviceAxis::eatGeneric ),
 pMinimum( -100 ),
@@ -55,7 +55,7 @@ pChangedValue( 0.0f ),
 pAICode( -1 ){
 }
 
-deaiDeviceAxis::~deaiDeviceAxis(){
+deainpDeviceAxis::~deainpDeviceAxis(){
 }
 
 
@@ -63,50 +63,50 @@ deaiDeviceAxis::~deaiDeviceAxis(){
 // Management
 ///////////////
 
-void deaiDeviceAxis::SetIndex( int index ){
+void deainpDeviceAxis::SetIndex( int index ){
 	pIndex = index;
 }
 
-void deaiDeviceAxis::SetID( const char *id ){
+void deainpDeviceAxis::SetID( const char *id ){
 	pID = id;
 }
 
-void deaiDeviceAxis::SetName( const char *name ){
+void deainpDeviceAxis::SetName( const char *name ){
 	pName = name;
 }
 
-void deaiDeviceAxis::SetType( deInputDeviceAxis::eAxisTypes type ){
+void deainpDeviceAxis::SetType( deInputDeviceAxis::eAxisTypes type ){
 	pType = type;
 }
 
 
-void deaiDeviceAxis::SetMinimum( int minimum ){
+void deainpDeviceAxis::SetMinimum( int minimum ){
 	pMinimum = minimum;
 }
 
-void deaiDeviceAxis::SetMaximum( int maximum ){
+void deainpDeviceAxis::SetMaximum( int maximum ){
 	pMaximum = maximum;
 }
 
-void deaiDeviceAxis::SetFuzz( int fuzz ){
+void deainpDeviceAxis::SetFuzz( int fuzz ){
 	pFuzz = fuzz;
 }
 
-void deaiDeviceAxis::SetFlat( int flat ){
+void deainpDeviceAxis::SetFlat( int flat ){
 	pFlat = flat;
 }
 
-void deaiDeviceAxis::SetAbsolute( bool absolute ){
+void deainpDeviceAxis::SetAbsolute( bool absolute ){
 	pAbsolute = absolute;
 }
 
-void deaiDeviceAxis::SetWheelOtherAxis( bool otherAxis ){
+void deainpDeviceAxis::SetWheelOtherAxis( bool otherAxis ){
 	pWheelOtherAxis = otherAxis;
 }
 
 
 
-void deaiDeviceAxis::SetValue( float value ){
+void deainpDeviceAxis::SetValue( float value ){
 	if( pAbsolute ){
 		value = decMath::clamp( value, -1.0f, 1.0f );
 	}
@@ -115,19 +115,19 @@ void deaiDeviceAxis::SetValue( float value ){
 
 
 
-void deaiDeviceAxis::SetAICode( int code ){
+void deainpDeviceAxis::SetAICode( int code ){
 	pAICode = code;
 }
 
 
 
-void deaiDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
+void deainpDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
 	info.SetType( pType );
 }
 
-void deaiDeviceAxis::SendEvents( deaiDevice &device ){
+void deainpDeviceAxis::SendEvents( deainpDevice &device ){
 	if( pAbsolute ){
 		if( fabsf( pChangedValue - pValue ) < FLOAT_SAFE_EPSILON ){
 			return;

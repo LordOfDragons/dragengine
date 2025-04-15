@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIOVERLAYACTIONBUTTON_H_
-#define _DEAIOVERLAYACTIONBUTTON_H_
+#ifndef _DEAINPOVERLAYACTIONBUTTON_H_
+#define _DEAINPOVERLAYACTIONBUTTON_H_
 
-#include "deaiInputBinding.h"
-#include "deaiOverlay.h"
+#include "deainpInputBinding.h"
+#include "deainpOverlay.h"
 
 class deCanvasImage;
 class deCanvasText;
@@ -36,12 +36,12 @@ class deFont;
 /**
  * \brief Action button overlay.
  */
-class deaiOverlayActionButton : public deaiOverlay{
+class deainpOverlayActionButton : public deainpOverlay{
 public:
-	typedef deTObjectReference<deaiOverlayActionButton> Ref;
+	typedef deTObjectReference<deainpOverlayActionButton> Ref;
 	
 private:
-	deaiInputBinding pBinding;
+	deainpInputBinding pBinding;
 	
 	int pRadius;
 	decPoint pCenter;
@@ -57,10 +57,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create overlay action button. */
-	deaiOverlayActionButton( deAndroidInput &androidInput );
+	deainpOverlayActionButton( deAndroidInput &androidInput );
 	
 	/** \brief Clean up overlay action button. */
-	virtual ~deaiOverlayActionButton();
+	virtual ~deainpOverlayActionButton();
 	/*@}*/
 	
 	
@@ -68,10 +68,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Binding. */
-	inline const deaiInputBinding &GetBinding() const{ return pBinding; }
+	inline const deainpInputBinding &GetBinding() const{ return pBinding; }
 	
 	/** \brief Set binding. */
-	void SetBinding( const deaiInputBinding &binding );
+	void SetBinding( const deainpInputBinding &binding );
 	
 	
 	

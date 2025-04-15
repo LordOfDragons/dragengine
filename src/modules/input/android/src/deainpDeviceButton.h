@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIDEVICEBUTTON_H_
-#define _DEAIDEVICEBUTTON_H_
+#ifndef _DEAINPDEVICEBUTTON_H_
+#define _DEAINPDEVICEBUTTON_H_
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputEvent.h>
@@ -35,7 +35,7 @@ class deInputDeviceButton;
 /**
  * \brief Android input device button.
  */
-class deaiDeviceButton{
+class deainpDeviceButton{
 private:
 	decString pID;
 	decString pName;
@@ -54,10 +54,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device button. */
-	deaiDeviceButton();
+	deainpDeviceButton();
 	
 	/** \brief Clean up device button. */
-	~deaiDeviceButton();
+	~deainpDeviceButton();
 	/*@}*/
 	
 	

@@ -28,11 +28,11 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "deaiDeviceKeyboard.h"
-#include "deaiDeviceAxis.h"
-#include "deaiDeviceButton.h"
-#include "deaiDeviceFeedback.h"
-#include "deaiDeviceManager.h"
+#include "deainpDeviceKeyboard.h"
+#include "deainpDeviceAxis.h"
+#include "deainpDeviceButton.h"
+#include "deainpDeviceFeedback.h"
+#include "deainpDeviceManager.h"
 #include "deAndroidInput.h"
 
 #include <dragengine/deEngine.h>
@@ -45,18 +45,18 @@
 
 
 
-// Class deaiDeviceKeyboard
+// Class deainpDeviceKeyboard
 /////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiDeviceKeyboard::deaiDeviceKeyboard( deAndroidInput &module ) :
-deaiDevice( module, esAndroid )
+deainpDeviceKeyboard::deainpDeviceKeyboard( deAndroidInput &module ) :
+deainpDevice( module, esAndroid )
 {
 	decString string;
 	
-	string.Format( "%s%dkeyboard", AINP_DEVID_PREFIX, deaiDevice::esAndroid );
+	string.Format( "%s%dkeyboard", AINP_DEVID_PREFIX, deainpDevice::esAndroid );
 	SetID( string );
 	SetName( "Keyboard" );
 	SetType( deInputDevice::edtKeyboard );
@@ -334,7 +334,7 @@ deaiDevice( module, esAndroid )
 	//pKeyCodeMappings[ AKEYCODE_MEDIA_AUDIO_TRACK ] = 
 }
 
-deaiDeviceKeyboard::~deaiDeviceKeyboard(){
+deainpDeviceKeyboard::~deainpDeviceKeyboard(){
 }
 
 
@@ -342,7 +342,7 @@ deaiDeviceKeyboard::~deaiDeviceKeyboard(){
 // Management
 ///////////////
 
-int deaiDeviceKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
+int deainpDeviceKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
 	// this task is just a guess so missing a solution is fine
 	const int count = GetButtonCount();
 	int i;
@@ -361,9 +361,9 @@ int deaiDeviceKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
 // Private Functions
 //////////////////////
 
-void deaiDeviceKeyboard::pSetButtonAt( int index, const char *id, const char *name,
+void deainpDeviceKeyboard::pSetButtonAt( int index, const char *id, const char *name,
 int aiCode, deInputEvent::eKeyCodes keyCode, int aiChar, int matchPriority ){
-	deaiDeviceButton &button = GetButtonAt( index );
+	deainpDeviceButton &button = GetButtonAt( index );
 	
 	button.SetID( id );
 	button.SetName( name );

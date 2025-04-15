@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIINPUTBINDING_H_
-#define _DEAIINPUTBINDING_H_
+#ifndef _DEAINPINPUTBINDING_H_
+#define _DEAINPINPUTBINDING_H_
 
 #include <dragengine/common/string/decString.h>
 
-class deaiDeviceManager;
+class deainpDeviceManager;
 class deAndroidInput;
 
 
@@ -35,7 +35,7 @@ class deAndroidInput;
 /**
  * \brief Input binding.
  */
-class deaiInputBinding{
+class deainpInputBinding{
 private:
 	decString pDeviceID;
 	decString pAxisID;
@@ -51,19 +51,19 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create input binding. */
-	deaiInputBinding();
+	deainpInputBinding();
 	
 	/** \brief Create button input binding. */
-	deaiInputBinding( const char *deviceID, const char *buttonID );
+	deainpInputBinding( const char *deviceID, const char *buttonID );
 	
 	/** \brief Create axis input binding. */
-	deaiInputBinding( const char *deviceID, const char *axisID, bool invertAxis );
+	deainpInputBinding( const char *deviceID, const char *axisID, bool invertAxis );
 	
 	/** \brief Create copy of input binding. */
-	deaiInputBinding( const deaiInputBinding &binding );
+	deainpInputBinding( const deainpInputBinding &binding );
 	
 	/** \brief Clean up overlay. */
-	~deaiInputBinding();
+	~deainpInputBinding();
 	/*@}*/
 	
 	
@@ -106,7 +106,7 @@ public:
 	
 	
 	/** \brief Update indices. */
-	void UpdateIndices( const deaiDeviceManager &devices );
+	void UpdateIndices( const deainpDeviceManager &devices );
 	
 	/** \brief Change button state and send event if valid. */
 	void ChangeButtonState( deAndroidInput &androidInput, bool pressed ) const;
@@ -117,10 +117,10 @@ public:
 	/** \name Operators */
 	/*@{*/
 	/** \brief Bindings are equal. */
-	bool operator==( const deaiInputBinding &binding ) const;
+	bool operator==( const deainpInputBinding &binding ) const;
 	
 	/** \brief Assign binding. */
-	deaiInputBinding &operator=( const deaiInputBinding &binding );
+	deainpInputBinding &operator=( const deainpInputBinding &binding );
 	/*@}*/
 };
 

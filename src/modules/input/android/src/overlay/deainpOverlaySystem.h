@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIOVERLAYSYSTEM_H_
-#define _DEAIOVERLAYSYSTEM_H_
+#ifndef _DEAINPOVERLAYSYSTEM_H_
+#define _DEAINPOVERLAYSYSTEM_H_
 
 #include <dragengine/common/math/decMath.h>
 
-#include "deaiOverlayList.h"
+#include "deainpOverlayList.h"
 
 class deAndroidInput;
 class deCanvasView;
@@ -36,11 +36,11 @@ class deCanvasView;
 /**
  * \brief Overlays.
  */
-class deaiOverlaySystem{
+class deainpOverlaySystem{
 private:
 	deAndroidInput &pAndroidInput;
 	
-	deaiOverlayList pOverlays;
+	deainpOverlayList pOverlays;
 	
 	deCanvasView *pCanvas;
 	bool pInHorizontalMode;
@@ -49,10 +49,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create overlays. */
-	deaiOverlaySystem( deAndroidInput &androidInput );
+	deainpOverlaySystem( deAndroidInput &androidInput );
 	
 	/** \brief Clean up overlays. */
-	virtual ~deaiOverlaySystem();
+	virtual ~deainpOverlaySystem();
 	/*@}*/
 	
 	
@@ -60,8 +60,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Overlay list. */
-	deaiOverlayList GetOverlayList(){ return pOverlays; }
-	const deaiOverlayList &GetOverlayList() const{ return pOverlays; }
+	deainpOverlayList GetOverlayList(){ return pOverlays; }
+	const deainpOverlayList &GetOverlayList() const{ return pOverlays; }
 	
 	/** \brief Overlays canvas. */
 	inline deCanvasView *GetCanvas() const{ return pCanvas; }

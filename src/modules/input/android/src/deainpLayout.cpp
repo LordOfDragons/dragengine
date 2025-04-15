@@ -22,51 +22,58 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIOVERLAYLIST_H_
-#define _DEAIOVERLAYLIST_H_
+#include "deainpLayout.h"
 
-#include <dragengine/common/collection/decObjectOrderedSet.h>
-
-class deaiOverlay;
+#include <dragengine/common/exceptions.h>
 
 
 
-/**
- * \brief Overlay list.
- */
-class deaiOverlayList{
-private:
-	decObjectOrderedSet pOverlays;
-	
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** \brief Create list. */
-	deaiOverlayList();
-	
-	/** \brief Clean up list. */
-	~deaiOverlayList();
-	/*@}*/
-	
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** \brief Number of overlays. */
-	int GetCount() const;
-	
-	/** \brief Overlay at index. */
-	deaiOverlay *GetAt( int index ) const;
-	
-	/** \brief Add overlay. */
-	void Add( deaiOverlay *overlay );
-	
-	/** \brief Remove overlay. */
-	void Remove( deaiOverlay *overlay );
-	
-	/** \brief Removes all overlays. */
-	void RemoveAll();
-	/*@}*/
-};
+// Class deainpLayout
+/////////////////////
 
-#endif
+// Constructor, destructor
+////////////////////////////
+
+deainpLayout::deainpLayout(){
+}
+
+deainpLayout::deainpLayout( const decPoint &position, const decPoint &size ) :
+pPosition( position ),
+pSize( decPoint().Largest( size ) ){
+}
+
+deainpLayout::deainpLayout( const deainpLayout &copy ) :
+pPosition( copy.pPosition ),
+pSize( copy.pSize ){
+}
+
+deainpLayout::~deainpLayout(){
+}
+
+
+
+// Management
+///////////////
+
+void deainpLayout::SetPosition( const decPoint &position ){
+	pPosition = position;
+}
+
+void deainpLayout::SetSize( const decPoint &size ){
+	pSize = decPoint().Largest( size );
+}
+
+
+
+// Operators
+//////////////
+
+bool deainpLayout::operator==( const deainpLayout &layout ) const{
+	return pPosition == layout.pPosition && pSize == layout.pSize;
+}
+
+deainpLayout &deainpLayout::operator=( const deainpLayout &layout ){
+	pPosition = layout.pPosition;
+	pSize = layout.pSize;
+	return *this;
+}

@@ -22,44 +22,83 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIDEVICEKEYBOARD_H_
-#define _DEAIDEVICEKEYBOARD_H_
+#ifndef _DEAINPDEVICEMANAGER_H_
+#define _DEAINPDEVICEMANAGER_H_
 
-#include "deaiDevice.h"
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 
-#include <dragengine/input/deInputEvent.h>
+class deAndroidInput;
+class deainpDevice;
+class deainpDeviceMouse;
+class deainpDeviceKeyboard;
 
 
 
 /**
- * \brief Android keyboard input device.
+ * \brief Android input devices.
  */
-class deaiDeviceKeyboard : public deaiDevice{
+class deainpDeviceManager{
+private:
+	deAndroidInput &pModule;
+	
+	decObjectOrderedSet pDevices;
+	
+	deainpDeviceMouse *pMouse;
+	deainpDeviceKeyboard *pKeyboard;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create device. */
-	deaiDeviceKeyboard( deAndroidInput &module );
+	/** \brief Create device list. */
+	deainpDeviceManager( deAndroidInput &module );
 	
-protected:
-	/** \brief Clean up device. */
-	virtual ~deaiDeviceKeyboard();
+	/** \brief Clean up device list. */
+	~deainpDeviceManager();
 	/*@}*/
 	
 	
 	
-public:
 	/** \name Module Management */
 	/*@{*/
-	/** \brief Get button best matching a character. */
-	int ButtonMatchingKeyChar( int keyChar ) const;
+	/** \brief Update list of available devices. */
+	void UpdateDeviceList();
+	
+	
+	
+	/** \brief Number of devices. */
+	int GetCount() const;
+	
+	/** \brief Device at index. */
+	deainpDevice *GetAt( int index ) const;
+	
+	/** \brief Device with identifier or \em NULL if absent. */
+	deainpDevice *GetWithID( const char *id ) const;
+	
+	/** \brief Index of device with identifier or -1 if absent. */
+	int IndexOfWithID( const char *id ) const;
+	
+	
+	
+	/** \brief  mouse device. */
+	inline deainpDeviceMouse *GetMouse() const{ return pMouse; }
+	
+	/** \brief  keyboard device. */
+	inline deainpDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
+	
+	
+	
+	/** \brief Log list of input devices. */
+	void LogDevices();
 	/*@}*/
 	
 	
 	
 private:
-	void pSetButtonAt( int index, const char *id, const char *name, int aiCode,
-		deInputEvent::eKeyCodes keyCode, int aiChar, int matchPriority );
+	void pCleanUp();
+	void pCreateDevices();
 };
 
 #endif
+ 

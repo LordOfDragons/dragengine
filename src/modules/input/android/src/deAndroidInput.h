@@ -36,8 +36,8 @@
 #include <game-activity/native_app_glue/android_native_app_glue.h>
 
 class deOSAndroid;
-class deaiOverlaySystem;
-class deaiDeviceManager;
+class deainpOverlaySystem;
+class deainpDeviceManager;
 class deFont;
 
 
@@ -62,14 +62,14 @@ private:
 	bool *pKeyStates;
 	int pPointerMouse;
 	
-	deaiOverlaySystem *pOverlaySystem;
+	deainpOverlaySystem *pOverlaySystem;
 	
 	deFont *pFontDefault;
 	
 	decTimer pInputTimer;
 	float pElapsedTime;
 	
-	deaiDeviceManager *pDevices;
+	deainpDeviceManager *pDevices;
 	
 	
 	
@@ -99,7 +99,7 @@ public:
 	decPoint GetScreenSize() const;
 	
 	/** \brief Overlay system. */
-	inline deaiOverlaySystem *GetOverlaySystem() const{ return pOverlaySystem; }
+	inline deainpOverlaySystem *GetOverlaySystem() const{ return pOverlaySystem; }
 	
 	/** \brief Default font. */
 	inline deFont *GetDefaultFont() const{ return pFontDefault; }
@@ -108,7 +108,7 @@ public:
 	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
 	/** \brief Devices manager. */
-	inline deaiDeviceManager &GetDevices() const{ return *pDevices; }
+	inline deainpDeviceManager &GetDevices() const{ return *pDevices; }
 	/*@}*/
 	
 	

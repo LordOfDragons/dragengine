@@ -24,12 +24,12 @@
 
 #include <stdlib.h>
 
-#include "deaiOverlayCirclePad.h"
+#include "deainpOverlayCirclePad.h"
 #include "../deAndroidInput.h"
-#include "../deaiDeviceButton.h"
-#include "../deaiDeviceKeyboard.h"
-#include "../deaiDeviceMouse.h"
-#include "../deaiDeviceManager.h"
+#include "../deainpDeviceButton.h"
+#include "../deainpDeviceKeyboard.h"
+#include "../deainpDeviceMouse.h"
+#include "../deainpDeviceManager.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -43,14 +43,14 @@
 
 
 
-// Class deaiOverlayCirclePad
+// Class deainpOverlayCirclePad
 ///////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiOverlayCirclePad::deaiOverlayCirclePad( deAndroidInput &androidInput ) :
-deaiOverlay( androidInput ),
+deainpOverlayCirclePad::deainpOverlayCirclePad( deAndroidInput &androidInput ) :
+deainpOverlay( androidInput ),
 
 pPressedLeft( false ),
 pPressedUp( false ),
@@ -78,8 +78,8 @@ pCImage( NULL )
 	
 	const decPoint size( pPadRadius * 2, pPadRadius * 2 );
 	
-	SetLayoutHorizontal( deaiLayout( decPoint(), size ) );
-	SetLayoutVertical( deaiLayout( decPoint(), size ) );
+	SetLayoutHorizontal( deainpLayout( decPoint(), size ) );
+	SetLayoutVertical( deainpLayout( decPoint(), size ) );
 	
 	try{
 		GetCanvas()->SetSize( size );
@@ -111,7 +111,7 @@ pCImage( NULL )
 	}
 }
 
-deaiOverlayCirclePad::~deaiOverlayCirclePad(){
+deainpOverlayCirclePad::~deainpOverlayCirclePad(){
 	pCleanUp();
 }
 
@@ -120,53 +120,53 @@ deaiOverlayCirclePad::~deaiOverlayCirclePad(){
 // Management
 ///////////////
 
-void deaiOverlayCirclePad::SetAxisLeftRight( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetAxisLeftRight( const deainpInputBinding &binding ){
 	pAxisLeftRight = binding;
 }
 
-void deaiOverlayCirclePad::SetAxisUpDown( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetAxisUpDown( const deainpInputBinding &binding ){
 	pAxisUpDown = binding;
 }
 
 
 
-void deaiOverlayCirclePad::SetKeyCodeLeft( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetKeyCodeLeft( const deainpInputBinding &binding ){
 	pKeyCodeLeft = binding;
 }
 
-void deaiOverlayCirclePad::SetKeyCodeUp( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetKeyCodeUp( const deainpInputBinding &binding ){
 	pKeyCodeUp = binding;
 }
 
-void deaiOverlayCirclePad::SetKeyCodeRight( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetKeyCodeRight( const deainpInputBinding &binding ){
 	pKeyCodeRight = binding;
 }
 
-void deaiOverlayCirclePad::SetKeyCodeDown( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetKeyCodeDown( const deainpInputBinding &binding ){
 	pKeyCodeDown = binding;
 }
 
 
 
-void deaiOverlayCirclePad::SetKeyCodeUpLeft( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetKeyCodeUpLeft( const deainpInputBinding &binding ){
 	pKeyCodeUpLeft = binding;
 }
 
-void deaiOverlayCirclePad::SetKeyCodeUpRight( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetKeyCodeUpRight( const deainpInputBinding &binding ){
 	pKeyCodeUpRight = binding;
 }
 
-void deaiOverlayCirclePad::SetKeyCodeDownLeft( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetKeyCodeDownLeft( const deainpInputBinding &binding ){
 	pKeyCodeDownLeft = binding;
 }
 
-void deaiOverlayCirclePad::SetKeyCodeDownRight( const deaiInputBinding &binding ){
+void deainpOverlayCirclePad::SetKeyCodeDownRight( const deainpInputBinding &binding ){
 	pKeyCodeDownRight = binding;
 }
 
 
 
-void deaiOverlayCirclePad::SetPressedLeft( bool pressed ){
+void deainpOverlayCirclePad::SetPressedLeft( bool pressed ){
 	if( pressed == pPressedLeft ){
 		return;
 	}
@@ -174,7 +174,7 @@ void deaiOverlayCirclePad::SetPressedLeft( bool pressed ){
 	pKeyCodeLeft.ChangeButtonState( GetAndroidInput(), pressed );
 }
 
-void deaiOverlayCirclePad::SetPressedUp( bool pressed ){
+void deainpOverlayCirclePad::SetPressedUp( bool pressed ){
 	if( pressed == pPressedUp ){
 		return;
 	}
@@ -182,7 +182,7 @@ void deaiOverlayCirclePad::SetPressedUp( bool pressed ){
 	pKeyCodeUp.ChangeButtonState( GetAndroidInput(), pressed );
 }
 
-void deaiOverlayCirclePad::SetPressedRight( bool pressed ){
+void deainpOverlayCirclePad::SetPressedRight( bool pressed ){
 	if( pressed == pPressedRight ){
 		return;
 	}
@@ -190,7 +190,7 @@ void deaiOverlayCirclePad::SetPressedRight( bool pressed ){
 	pKeyCodeRight.ChangeButtonState( GetAndroidInput(), pressed );
 }
 
-void deaiOverlayCirclePad::SetPressedDown( bool pressed ){
+void deainpOverlayCirclePad::SetPressedDown( bool pressed ){
 	if( pressed == pPressedDown ){
 		return;
 	}
@@ -200,7 +200,7 @@ void deaiOverlayCirclePad::SetPressedDown( bool pressed ){
 
 
 
-void deaiOverlayCirclePad::SetPressedUpLeft( bool pressed ){
+void deainpOverlayCirclePad::SetPressedUpLeft( bool pressed ){
 	if( pressed == pPressedUpLeft ){
 		return;
 	}
@@ -208,7 +208,7 @@ void deaiOverlayCirclePad::SetPressedUpLeft( bool pressed ){
 	pKeyCodeUpLeft.ChangeButtonState( GetAndroidInput(), pressed );
 }
 
-void deaiOverlayCirclePad::SetPressedUpRight( bool pressed ){
+void deainpOverlayCirclePad::SetPressedUpRight( bool pressed ){
 	if( pressed == pPressedUpRight ){
 		return;
 	}
@@ -216,7 +216,7 @@ void deaiOverlayCirclePad::SetPressedUpRight( bool pressed ){
 	pKeyCodeUpRight.ChangeButtonState( GetAndroidInput(), pressed );
 }
 
-void deaiOverlayCirclePad::SetPressedDownLeft( bool pressed ){
+void deainpOverlayCirclePad::SetPressedDownLeft( bool pressed ){
 	if( pressed == pPressedDownLeft ){
 		return;
 	}
@@ -224,7 +224,7 @@ void deaiOverlayCirclePad::SetPressedDownLeft( bool pressed ){
 	pKeyCodeDownLeft.ChangeButtonState( GetAndroidInput(), pressed );
 }
 
-void deaiOverlayCirclePad::SetPressedDownRight( bool pressed ){
+void deainpOverlayCirclePad::SetPressedDownRight( bool pressed ){
 	if( pressed == pPressedDownRight ){
 		return;
 	}
@@ -234,7 +234,7 @@ void deaiOverlayCirclePad::SetPressedDownRight( bool pressed ){
 
 
 
-void deaiOverlayCirclePad::SetPressedAll( bool left, bool up, bool right, bool down,
+void deainpOverlayCirclePad::SetPressedAll( bool left, bool up, bool right, bool down,
 bool upLeft, bool upRight, bool downLeft, bool downRight ){
 	SetPressedLeft( left );
 	SetPressedUp( up );
@@ -248,7 +248,7 @@ bool upLeft, bool upRight, bool downLeft, bool downRight ){
 
 
 
-void deaiOverlayCirclePad::SetPadRadius( int radius ){
+void deainpOverlayCirclePad::SetPadRadius( int radius ){
 	radius = decMath::max( radius, 0 );
 	if( radius == pPadRadius ){
 		return;
@@ -262,7 +262,7 @@ void deaiOverlayCirclePad::SetPadRadius( int radius ){
 	// TODO
 }
 
-void deaiOverlayCirclePad::SetOuterRadius( float radius ){
+void deainpOverlayCirclePad::SetOuterRadius( float radius ){
 	radius = decMath::clamp( radius, 0.0f, 1.0f );
 	if( fabsf( pOuterRadius - radius ) < FLOAT_SAFE_EPSILON ){
 		return;
@@ -276,7 +276,7 @@ void deaiOverlayCirclePad::SetOuterRadius( float radius ){
 	// TODO
 }
 
-void deaiOverlayCirclePad::SetInnerRadius( float radius ){
+void deainpOverlayCirclePad::SetInnerRadius( float radius ){
 	radius = decMath::clamp( radius, 0.0f, 1.0f );
 	if( fabsf( pInnerRadius - radius ) < FLOAT_SAFE_EPSILON ){
 		return;
@@ -285,7 +285,7 @@ void deaiOverlayCirclePad::SetInnerRadius( float radius ){
 	pInnerRadius = radius;
 }
 
-void deaiOverlayCirclePad::SetCenter( const decPoint &center ){
+void deainpOverlayCirclePad::SetCenter( const decPoint &center ){
 	if( center == pCenter ){
 		return;
 	}
@@ -297,7 +297,7 @@ void deaiOverlayCirclePad::SetCenter( const decPoint &center ){
 
 
 
-void deaiOverlayCirclePad::SetLeftRightPerSecond( float unitsPerSecond ){
+void deainpOverlayCirclePad::SetLeftRightPerSecond( float unitsPerSecond ){
 	unitsPerSecond = decMath::max( unitsPerSecond, 0.0f );
 	if( fabsf( pLeftRightPerSecond - unitsPerSecond ) < FLOAT_SAFE_EPSILON ){
 		return;
@@ -306,7 +306,7 @@ void deaiOverlayCirclePad::SetLeftRightPerSecond( float unitsPerSecond ){
 	pLeftRightPerSecond = unitsPerSecond;
 }
 
-void deaiOverlayCirclePad::SetUpDownPerSecond( float unitsPerSecond ){
+void deainpOverlayCirclePad::SetUpDownPerSecond( float unitsPerSecond ){
 	unitsPerSecond = decMath::max( unitsPerSecond, 0.0f );
 	if( fabsf( pUpDownPerSecond - unitsPerSecond ) < FLOAT_SAFE_EPSILON ){
 		return;
@@ -317,7 +317,7 @@ void deaiOverlayCirclePad::SetUpDownPerSecond( float unitsPerSecond ){
 
 
 
-void deaiOverlayCirclePad::GenerateEvents(){
+void deainpOverlayCirclePad::GenerateEvents(){
 	if( ! HasPointer() ){
 		return;
 	}
@@ -418,8 +418,8 @@ void deaiOverlayCirclePad::GenerateEvents(){
 
 
 
-void deaiOverlayCirclePad::UpdateBindingIndices(){
-	const deaiDeviceManager &devices = GetAndroidInput().GetDevices();
+void deainpOverlayCirclePad::UpdateBindingIndices(){
+	const deainpDeviceManager &devices = GetAndroidInput().GetDevices();
 	
 	pAxisLeftRight.UpdateIndices( devices );
 	pAxisUpDown.UpdateIndices( devices );
@@ -435,14 +435,14 @@ void deaiOverlayCirclePad::UpdateBindingIndices(){
 	pKeyCodeDownRight.UpdateIndices( devices );
 }
 
-void deaiOverlayCirclePad::UpdateContent(){
+void deainpOverlayCirclePad::UpdateContent(){
 	if( ! GetCanvas()->GetParentView() ){
 		return;
 	}
 	GenerateEvents();
 }
 
-bool deaiOverlayCirclePad::OnTouch( int pointerId, const decPoint &position ){
+bool deainpOverlayCirclePad::OnTouch( int pointerId, const decPoint &position ){
 	if( ( int )( ( position - pCenter ).Length() ) > pPadRadius ){
 		return false;
 	}
@@ -451,12 +451,12 @@ bool deaiOverlayCirclePad::OnTouch( int pointerId, const decPoint &position ){
 	return true;
 }
 
-void deaiOverlayCirclePad::OnMove( const decPoint &position ){
+void deainpOverlayCirclePad::OnMove( const decPoint &position ){
 	PointerMove( position );
 }
 
-void deaiOverlayCirclePad::OnRelease(){
-	deaiOverlay::OnRelease();
+void deainpOverlayCirclePad::OnRelease(){
+	deainpOverlay::OnRelease();
 	
 	if( pAxisLeftRight.GetAxisIndex() == -1 && pAxisUpDown.GetAxisIndex() == -1 ){
 		SetPressedAll( false, false, false, false,  false, false, false, false );
@@ -468,7 +468,7 @@ void deaiOverlayCirclePad::OnRelease(){
 // Private Functions
 //////////////////////
 
-void deaiOverlayCirclePad::pCleanUp(){
+void deainpOverlayCirclePad::pCleanUp(){
 	if( pCImage ){
 		pCImage->FreeReference();
 	}

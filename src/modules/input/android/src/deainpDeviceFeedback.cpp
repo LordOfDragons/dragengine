@@ -24,19 +24,19 @@
 
 #include <stdlib.h>
 
-#include "deaiDeviceFeedback.h"
+#include "deainpDeviceFeedback.h"
 
 #include <dragengine/common/exceptions.h>
 
 
 
-// Class deaiDeviceFeedback
+// Class deainpDeviceFeedback
 //////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiDeviceFeedback::deaiDeviceFeedback() :
+deainpDeviceFeedback::deainpDeviceFeedback() :
 pIndex( -1 ),
 pType( deInputDeviceFeedback::eftGeneric ),
 pMaximum( 1 ),
@@ -44,7 +44,7 @@ pValue( 0.0f ),
 pEvdevCode( 0 ){
 }
 
-deaiDeviceFeedback::~deaiDeviceFeedback(){
+deainpDeviceFeedback::~deainpDeviceFeedback(){
 }
 
 
@@ -52,43 +52,43 @@ deaiDeviceFeedback::~deaiDeviceFeedback(){
 // Management
 ///////////////
 
-void deaiDeviceFeedback::SetIndex( int index ){
+void deainpDeviceFeedback::SetIndex( int index ){
 	pIndex = index;
 }
 
-void deaiDeviceFeedback::SetID( const char *id ){
+void deainpDeviceFeedback::SetID( const char *id ){
 	pID = id;
 }
 
-void deaiDeviceFeedback::SetName( const char *name ){
+void deainpDeviceFeedback::SetName( const char *name ){
 	pName = name;
 }
 
-void deaiDeviceFeedback::SetType( deInputDeviceFeedback::eFeedbackTypes type ){
+void deainpDeviceFeedback::SetType( deInputDeviceFeedback::eFeedbackTypes type ){
 	pType = type;
 }
 
 
 
-void deaiDeviceFeedback::SetMaximum( int maximum ){
+void deainpDeviceFeedback::SetMaximum( int maximum ){
 	pMaximum = maximum;
 }
 
 
 
-void deaiDeviceFeedback::SetValue( float value ){
+void deainpDeviceFeedback::SetValue( float value ){
 	pValue = value;
 }
 
 
 
-void deaiDeviceFeedback::SetEvdevCode( int code ){
+void deainpDeviceFeedback::SetEvdevCode( int code ){
 	pEvdevCode = code;
 }
 
 
 
-void deaiDeviceFeedback::GetInfo( deInputDeviceFeedback &info ) const{
+void deainpDeviceFeedback::GetInfo( deInputDeviceFeedback &info ) const{
 	info.SetID( pID );
 	info.SetName( pName );
 	info.SetType( pType );

@@ -28,13 +28,13 @@
 #include <unistd.h>
 
 #include "deAndroidInput.h"
-#include "deaiDevice.h"
-#include "deaiDeviceAxis.h"
-#include "deaiDeviceButton.h"
-#include "deaiDeviceFeedback.h"
-#include "deaiDeviceManager.h"
-#include "deaiDeviceMouse.h"
-#include "deaiDeviceKeyboard.h"
+#include "deainpDevice.h"
+#include "deainpDeviceAxis.h"
+#include "deainpDeviceButton.h"
+#include "deainpDeviceFeedback.h"
+#include "deainpDeviceManager.h"
+#include "deainpDeviceMouse.h"
+#include "deainpDeviceKeyboard.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSAndroid.h>
@@ -45,13 +45,13 @@
 
 
 
-// Class deaiDeviceManager
+// Class deainpDeviceManager
 /////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deaiDeviceManager::deaiDeviceManager( deAndroidInput &module ) :
+deainpDeviceManager::deainpDeviceManager( deAndroidInput &module ) :
 pModule( module ),
 pMouse( NULL ),
 pKeyboard( NULL )
@@ -65,7 +65,7 @@ pKeyboard( NULL )
 	}
 }
 
-deaiDeviceManager::~deaiDeviceManager(){
+deainpDeviceManager::~deainpDeviceManager(){
 	pCleanUp();
 }
 
@@ -74,25 +74,25 @@ deaiDeviceManager::~deaiDeviceManager(){
 // Management
 ///////////////
 
-void deaiDeviceManager::UpdateDeviceList(){
+void deainpDeviceManager::UpdateDeviceList(){
 }
 
 
 
-int deaiDeviceManager::GetCount() const{
+int deainpDeviceManager::GetCount() const{
 	return pDevices.GetCount();
 }
 
-deaiDevice *deaiDeviceManager::GetAt( int index ) const{
-	return ( deaiDevice* )pDevices.GetAt( index );
+deainpDevice *deainpDeviceManager::GetAt( int index ) const{
+	return ( deainpDevice* )pDevices.GetAt( index );
 }
 
-deaiDevice *deaiDeviceManager::GetWithID( const char *id ) const{
+deainpDevice *deainpDeviceManager::GetWithID( const char *id ) const{
 	const int count = pDevices.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		deaiDevice * const device = ( deaiDevice* )pDevices.GetAt( i );
+		deainpDevice * const device = ( deainpDevice* )pDevices.GetAt( i );
 		if( device->GetID() == id ){
 			return device;
 		}
@@ -101,12 +101,12 @@ deaiDevice *deaiDeviceManager::GetWithID( const char *id ) const{
 	return NULL;
 }
 
-int deaiDeviceManager::IndexOfWithID( const char *id ) const{
+int deainpDeviceManager::IndexOfWithID( const char *id ) const{
 	const int count = pDevices.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		deaiDevice * const device = ( deaiDevice* )pDevices.GetAt( i );
+		deainpDevice * const device = ( deainpDevice* )pDevices.GetAt( i );
 		if( device->GetID() == id ){
 			return i;
 		}
@@ -117,14 +117,14 @@ int deaiDeviceManager::IndexOfWithID( const char *id ) const{
 
 
 
-void deaiDeviceManager::LogDevices(){
+void deainpDeviceManager::LogDevices(){
 	const int count = pDevices.GetCount();
 	int i, j;
 	
 	pModule.LogInfo( "Input Devices:" );
 	
 	for( i=0; i<count; i++ ){
-		const deaiDevice &device = *( ( deaiDevice* )pDevices.GetAt( i ) );
+		const deainpDevice &device = *( ( deainpDevice* )pDevices.GetAt( i ) );
 		pModule.LogInfoFormat( "- '%s' (%s) [%d]", device.GetName().GetString(),
 			device.GetID().GetString(), device.GetType() );
 		
@@ -132,7 +132,7 @@ void deaiDeviceManager::LogDevices(){
 		if( axisCount > 0 ){
 			pModule.LogInfo( "  Axes:" );
 			for( j=0; j<axisCount; j++ ){
-				const deaiDeviceAxis &axis = device.GetAxisAt( j );
+				const deainpDeviceAxis &axis = device.GetAxisAt( j );
 				pModule.LogInfoFormat( "    - '%s' (%s) %d .. %d [%d %d]",
 					axis.GetName().GetString(), axis.GetID().GetString(), axis.GetMinimum(),
 					axis.GetMaximum(), axis.GetFuzz(), axis.GetFlat() );
@@ -143,7 +143,7 @@ void deaiDeviceManager::LogDevices(){
 		if( buttonCount > 0 ){
 			pModule.LogInfo( "  Buttons:" );
 			for( j=0; j<buttonCount; j++ ){
-				const deaiDeviceButton &button = device.GetButtonAt( j );
+				const deainpDeviceButton &button = device.GetButtonAt( j );
 				pModule.LogInfoFormat( "    - '%s' (%s) %d => %d",
 					button.GetName().GetString(), button.GetID().GetString(),
 					button.GetAICode(), j );
@@ -157,7 +157,7 @@ void deaiDeviceManager::LogDevices(){
 // Private functions
 //////////////////////
 
-void deaiDeviceManager::pCleanUp(){
+void deainpDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
 	if( pKeyboard ){
 		pKeyboard->FreeReference();
@@ -167,12 +167,12 @@ void deaiDeviceManager::pCleanUp(){
 	}
 }
 
-void deaiDeviceManager::pCreateDevices(){
-	pMouse = new deaiDeviceMouse( pModule );
+void deainpDeviceManager::pCreateDevices(){
+	pMouse = new deainpDeviceMouse( pModule );
 	pMouse->SetIndex( pDevices.GetCount() );
 	pDevices.Add( pMouse );
 	
-	pKeyboard = new deaiDeviceKeyboard( pModule );
+	pKeyboard = new deainpDeviceKeyboard( pModule );
 	pKeyboard->SetIndex( pDevices.GetCount() );
 	pDevices.Add( pKeyboard );
 }

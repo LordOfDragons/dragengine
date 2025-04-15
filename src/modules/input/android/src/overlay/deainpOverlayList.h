@@ -22,83 +22,51 @@
  * SOFTWARE.
  */
 
-#ifndef _DEAIDEVICEMANAGER_H_
-#define _DEAIDEVICEMANAGER_H_
+#ifndef _DEAINPOVERLAYLIST_H_
+#define _DEAINPOVERLAYLIST_H_
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
-class deAndroidInput;
-class deaiDevice;
-class deaiDeviceMouse;
-class deaiDeviceKeyboard;
+class deainpOverlay;
 
 
 
 /**
- * \brief Android input devices.
+ * \brief Overlay list.
  */
-class deaiDeviceManager{
+class deainpOverlayList{
 private:
-	deAndroidInput &pModule;
-	
-	decObjectOrderedSet pDevices;
-	
-	deaiDeviceMouse *pMouse;
-	deaiDeviceKeyboard *pKeyboard;
-	
-	
+	decObjectOrderedSet pOverlays;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create device list. */
-	deaiDeviceManager( deAndroidInput &module );
+	/** \brief Create list. */
+	deainpOverlayList();
 	
-	/** \brief Clean up device list. */
-	~deaiDeviceManager();
+	/** \brief Clean up list. */
+	~deainpOverlayList();
 	/*@}*/
 	
 	
 	
-	/** \name Module Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Update list of available devices. */
-	void UpdateDeviceList();
-	
-	
-	
-	/** \brief Number of devices. */
+	/** \brief Number of overlays. */
 	int GetCount() const;
 	
-	/** \brief Device at index. */
-	deaiDevice *GetAt( int index ) const;
+	/** \brief Overlay at index. */
+	deainpOverlay *GetAt( int index ) const;
 	
-	/** \brief Device with identifier or \em NULL if absent. */
-	deaiDevice *GetWithID( const char *id ) const;
+	/** \brief Add overlay. */
+	void Add( deainpOverlay *overlay );
 	
-	/** \brief Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id ) const;
+	/** \brief Remove overlay. */
+	void Remove( deainpOverlay *overlay );
 	
-	
-	
-	/** \brief  mouse device. */
-	inline deaiDeviceMouse *GetMouse() const{ return pMouse; }
-	
-	/** \brief  keyboard device. */
-	inline deaiDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
-	
-	
-	
-	/** \brief Log list of input devices. */
-	void LogDevices();
+	/** \brief Removes all overlays. */
+	void RemoveAll();
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
-	void pCreateDevices();
 };
 
 #endif
- 
