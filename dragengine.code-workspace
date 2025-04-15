@@ -177,6 +177,10 @@
 			"path": "src/launcher/gui"
 		},
 		{
+			"name": "Launcher: Android",
+			"path": "src/launcher/android"
+		},
+		{
 			"name": "Launcher: Shared",
 			"path": "src/launcher/shared"
 		},

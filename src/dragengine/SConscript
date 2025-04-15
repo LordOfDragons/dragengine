@@ -424,7 +424,7 @@ if not envDragengine['with_static_internalmodules']:
 	modulesTargetInstall = envModules.Alias('deinternalmodules', modulesInstall)
 
 def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
-	if env['with_static_internalmodules']:
+	if parent_env['with_static_internalmodules']:
 		targetLibrary = library
 		targetDepend = targetCreateInternalModules
 	else:
