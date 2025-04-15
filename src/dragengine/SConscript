@@ -416,9 +416,11 @@ if not envDragengine['with_static_internalmodules']:
 	if not envModules['OSMacOS']:
 		envModules.Append(MODULE_LINKFLAGS = ['-Wl,--version-script=modules.version'])
 	
-	modulesObjects = [envModules.SharedObject(envModules.Command(
+	modulesTargetCreateInternalModules = envModules.Command(
 		'deInternalModulesMain_generated.cpp', targetConfig, envModules.Action(
-			createInternalModulesBuild, 'Generate Internal Modules Source')))]
+			createInternalModulesBuild, 'Generate Internal Modules Source'))
+	
+	modulesObjects = [envModules.SharedObject(modulesTargetCreateInternalModules)]
 	
 	modulesLibrary = envModules.LoadableModule(target='demodules', source=modulesObjects, LIBS=modulesLibs)
 	modulesTargetBuild = envModules.Alias('deinternalmodules_build', modulesLibrary)
@@ -439,9 +441,11 @@ def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
 	if parent_env['with_static_internalmodules']:
 		targetLibrary = library
 		targetDepend = targetCreateInternalModules
+		targetCppPath = cpppath
 	else:
 		targetLibrary = modulesLibrary
-		targetDepend = modulesObjects
+		targetDepend = modulesTargetCreateInternalModules
+		targetCppPath = []
 	
 	libenv = targetLibrary[0].get_env()
 	
@@ -470,8 +474,8 @@ def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
 			for x in elt['cpppath']:
 				if not x in libenv['CPPPATH']:
 					libenv['CPPPATH'].append(x)
-				if not x in cpppath:
-					cpppath.append(x)
+				if not x in targetCppPath:
+					targetCppPath.append(x)
 		if 'cppflags' in elt:
 			for x in elt['cppflags']:
 				if not x in libenv['CPPFLAGS']:

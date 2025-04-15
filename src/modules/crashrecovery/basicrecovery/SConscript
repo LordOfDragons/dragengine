@@ -5,13 +5,20 @@ Import( 'parent_env parent_targets parent_report' )
 envModule = parent_env.Clone()
 
 buildModule = envModule[ 'build_cr_basic' ] != TernaryVariableNo
-parent_report[ 'build Basic Crash-Recovery Module' ] = 'yes' if buildModule else 'no'
+internalModule = envModule['build_cr_basic_internal']
+parent_report['build Basic Crash-Recovery Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 if not buildModule or 'lib_fox' not in parent_targets:
 	Return()
 
 libs = []
-appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
-appendLibrary( envModule, parent_targets[ 'lib_fox' ], libs )
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets['lib_fox'], libs)
+
+syslibs = []
+if envModule['OSWindows']:
+	libs.append('imagehlp')
+	syslibs.append('imagehlp')
+
 
 # fetch values in expanded form for later use
 versionString = '1.10'
@@ -37,74 +44,93 @@ globFiles( envModule, 'src', '*.cpp', sources )
 globFiles( envModule, 'src', '*.h', headers )
 
 # setup the builders
-objects = [ envModule.SharedObject( s ) for s in sources ]
-
-if envModule['OSWindows']:
-	# this hack is unfortunatley required for this module. the FOX library seems to
-	# incorrectly use __declspec(dllexport) although it is compiled as static library.
-	# according to https://sourceware.org/binutils/docs-2.24/ld/WIN32.html#WIN32
-	# using __declspec(dllexport) causes auto-exporting like "module.version" to be
-	# disabled. this is the reason why "module.version" fails on this module only.
-	# there are only three solutions to this problem:
-	# 
-	# - fix FOX build to not cause the problem in the first place
-	# - use "-Wl,--export-all-symbols" which overules __declspec(dllexport)
-	# - use a *.DEF file to declare the module to export
-	# 
-	# we are using the *.DEF file for the time being. it does not prevent the exporting
-	# of the FOX symbols but at last fixed the export we need to be present
-	objects.append(envModule.File('crbasicrecovery.def'))
-
-if envModule['OSWindows']:
-	libs.append('imagehlp')
-	if False:
-		envModule.Append(CPPFLAGS = ['-DUSE_DRMINGW'])
-		objects.append('drmingw-0.9.2-win64/lib/libexchndl.a')
-		objects.append('drmingw-0.9.2-win64/lib/libmgwhelp.a')
-		envModule.Append(CPPPATH = ['drmingw-0.9.2-win64/include'])
-	elif False:
-		envModule.Append(CPPFLAGS = ['-DNO_CATCH_CRASH'])
-
-library = envModule.LoadableModule( target='crbasicrecovery', source=objects, LIBS=libs )
-targetBuild = envModule.Alias( 'cr_basic_build', library )
-
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
-		install.append( envModule.Install( pathModule, l ) )
-		archive[ os.path.join( pathModule, l.name ) ] = l
 
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'crbasicrecovery.pdb'))
-	archive['{}/crbasicrecovery.pdb'.format(pathPdb)] = envModule.File('crbasicrecovery.pdb')
-
-manifestUpdates = [
-	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
-	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-if not envModule['OSPosix']:
-	# this is a huge drama. getting duplicate FOX libraries would work with the ldloader
-	# but a static design trick in FOX makes this a segfault. for the time being we force
-	# one single system wide library on linux system. this is NOT according to Drag[en]gine
-	# design  principles but the only way to somehow fix this mess
-	for l in reversed( parent_targets[ 'lib_fox' ][ 'runtimelibs' ] ):
-		manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
-		install.append( envModule.Install( pathModule, l ) )
-		archive[ os.path.join( pathModule, l.name ) ] = l
-
-manifest = envModule.File( 'src/module.xml' )
-updateManifest = envModule.Command( manifest, manifest.srcnode(),
-	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
-Depends(updateManifest, 'SConscript')
-Depends( updateManifest, parent_targets[ 'lib_fox' ][ 'runtimelibs' ] )
-
-install.append( envModule.Install( pathModule, updateManifest ) )
-archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	if envModule['OSWindows']:
+		objects.append(envModule.File('crbasicrecovery.def'))
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='crbasicrecovery', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('cr_basic_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, ['lib_fox'], 'decrbRegisterInternalModule', syslibs=syslibs)
+	
+else:
+	objects = [ envModule.SharedObject( s ) for s in sources ]
+	
+	if envModule['OSWindows']:
+		# this hack is unfortunatley required for this module. the FOX library seems to
+		# incorrectly use __declspec(dllexport) although it is compiled as static library.
+		# according to https://sourceware.org/binutils/docs-2.24/ld/WIN32.html#WIN32
+		# using __declspec(dllexport) causes auto-exporting like "module.version" to be
+		# disabled. this is the reason why "module.version" fails on this module only.
+		# there are only three solutions to this problem:
+		# 
+		# - fix FOX build to not cause the problem in the first place
+		# - use "-Wl,--export-all-symbols" which overules __declspec(dllexport)
+		# - use a *.DEF file to declare the module to export
+		# 
+		# we are using the *.DEF file for the time being. it does not prevent the exporting
+		# of the FOX symbols but at last fixed the export we need to be present
+		objects.append(envModule.File('crbasicrecovery.def'))
+	
+	"""
+	if envModule['OSWindows']:
+		if False:
+			envModule.Append(CPPFLAGS = ['-DUSE_DRMINGW'])
+			objects.append('drmingw-0.9.2-win64/lib/libexchndl.a')
+			objects.append('drmingw-0.9.2-win64/lib/libmgwhelp.a')
+			envModule.Append(CPPPATH = ['drmingw-0.9.2-win64/include'])
+		elif False:
+			envModule.Append(CPPFLAGS = ['-DNO_CATCH_CRASH'])
+	"""
+	
+	library = envModule.LoadableModule( target='crbasicrecovery', source=objects, LIBS=libs )
+	targetBuild = envModule.Alias( 'cr_basic_build', library )
+	
+	for l in library:
+		if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+			install.append( envModule.Install( pathModule, l ) )
+			archive[ os.path.join( pathModule, l.name ) ] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'crbasicrecovery.pdb'))
+		archive['{}/crbasicrecovery.pdb'.format(pathPdb)] = envModule.File('crbasicrecovery.pdb')
+	
+	manifestUpdates = [
+		{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+		{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+		{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	if not envModule['OSPosix']:
+		# this is a huge drama. getting duplicate FOX libraries would work with the ldloader
+		# but a static design trick in FOX makes this a segfault. for the time being we force
+		# one single system wide library on linux system. this is NOT according to Drag[en]gine
+		# design  principles but the only way to somehow fix this mess
+		for l in reversed( parent_targets[ 'lib_fox' ][ 'runtimelibs' ] ):
+			manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
+			install.append( envModule.Install( pathModule, l ) )
+			archive[ os.path.join( pathModule, l.name ) ] = l
+	
+	manifest = envModule.File( 'src/module.xml' )
+	updateManifest = envModule.Command( manifest, manifest.srcnode(),
+		Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+	Depends( updateManifest, library )
+	Depends(updateManifest, 'SConscript')
+	Depends( updateManifest, parent_targets[ 'lib_fox' ][ 'runtimelibs' ] )
+	
+	install.append( envModule.Install( pathModule, updateManifest ) )
+	archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
 
 targetInstall = envModule.Alias( 'cr_basic', install )
 

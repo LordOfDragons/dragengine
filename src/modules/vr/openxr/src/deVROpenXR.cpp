@@ -1072,7 +1072,7 @@ public:
 		SetName("OpenXR");
 		SetDescription("OpenXR Support.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
-		SetVersion(MODULE_VERSION);
+		SetVersion(OXR_MODULE_VERSION);
 		SetType(deModuleSystem::emtVR);
 		SetDirectoryName("openxr");
 		SetPriority(2);

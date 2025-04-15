@@ -15,7 +15,7 @@ if envModule['platform_android'] != 'no' and envModule['build_input_android'] !=
 	buildModule = True
 
 # build module if requested
-internalModule = envModule['build_image_png_internal']
+internalModule = envModule['build_input_android_internal']
 parent_report['build Android Input Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 if not buildModule:
 	Return()
