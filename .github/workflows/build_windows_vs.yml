@@ -114,7 +114,7 @@ jobs:
       
       - name: Archive
         run: |
-          $DistributeDir = "${{ github.workspace }}/vs/x64/${{ inputs.debugBuild && 'Debug' || 'Release' }}/Distribute"
+          $DistributeDir = "${{ github.workspace }}/Distribute"
           Compress-Archive -Path "$DistributeDir/Dragengine/Application/*" -DestinationPath "dragengine-${{ inputs.releaseVersion }}-windows64.zip"
           Compress-Archive -Path "$DistributeDir/Dragengine/SDK/*" -DestinationPath "dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip"
           Compress-Archive -Path "$DistributeDir/Dragengine/Debug/*" -DestinationPath "dragengine-dbg-${{ inputs.releaseVersion }}-windows64.zip"
