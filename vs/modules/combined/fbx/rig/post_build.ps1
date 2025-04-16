@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -11,7 +12,7 @@ $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\..\SCons
 
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEDataModules\rig\fbxrig\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEDataModules\rig\fbxrig\$Version"
     
     Write-Host "FBXRig Module: Copy Module to '$TargetDir'"
     
@@ -27,7 +28,7 @@ if(!$InternalModule)
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\rig\fbxrig\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\rig\fbxrig\$Version"
     Write-Host "FBXRig Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\rig\fbxrig\rigfbx.pdb" -Destination $TargetDir

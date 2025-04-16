@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -11,7 +12,7 @@ $Version = Get-Version -Path "$SourceDir\..\SConscript"
 
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEDataModules\vr\openxr\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEDataModules\vr\openxr\$Version"
     
     Write-Host "OpenXR Module: Copy Module to '$TargetDir'"
     
@@ -22,7 +23,7 @@ if(!$InternalModule)
 }
 
 
-#$DataTargetDir = "$OutputDir\$PathDistDESharesModules\vr\openxr\$Version"
+#$DataTargetDir = "$DistributeDir\$PathDistDESharesModules\vr\openxr\$Version"
 #Write-Host "OpenXR Module: Copy Data to '$DataTargetDir'"
 
 #Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir "$DataTargetDir\data" -Pattern "*"
@@ -31,7 +32,7 @@ if(!$InternalModule)
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\vr\openxr\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\vr\openxr\$Version"
     Write-Host "OpenXR Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\vr\openxr\vropenxr.pdb" -Destination $TargetDir

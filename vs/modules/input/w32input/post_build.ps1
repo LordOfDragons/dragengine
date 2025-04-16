@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -11,7 +12,7 @@ $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscri
 
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEDataModules\input\w32input\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEDataModules\input\w32input\$Version"
     
     Write-Host "Windows Input Module: Copy Module to '$TargetDir'"
     
@@ -24,13 +25,13 @@ if(!$InternalModule)
 }
 
 Copy-Files -SourceDir "$SourceDir\..\data" -Pattern "*"`
-    -TargetDir "$OutputDir\$PathDistDESharesModules\input\w32input\$Version"
+    -TargetDir "$DistributeDir\$PathDistDESharesModules\input\w32input\$Version"
 
 
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\input\w32input\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\input\w32input\$Version"
     Write-Host "Windows Input Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\input\w32input\inpw32.pdb" -Destination $TargetDir

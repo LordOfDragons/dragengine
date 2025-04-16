@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -11,7 +12,7 @@ $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscri
 
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEDataModules\animator\deanimator\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEDataModules\animator\deanimator\$Version"
     
     Write-Host "DEAnimator Module: Copy Module to '$TargetDir'"
     
@@ -27,7 +28,7 @@ if(!$InternalModule)
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\animator\deanimator\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\animator\deanimator\$Version"
     Write-Host "DEAnimator Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\animator\deanimator\anideanimator.pdb" -Destination $TargetDir

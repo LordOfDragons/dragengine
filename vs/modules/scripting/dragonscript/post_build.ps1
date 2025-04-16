@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$true)][string]$RuntimeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
@@ -10,7 +11,7 @@ Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 
-$TargetDir = "$OutputDir\$PathDistDEDataModules\scripting\dragonscript\$Version"
+$TargetDir = "$DistributeDir\$PathDistDEDataModules\scripting\dragonscript\$Version"
 
 if(!$InternalModule)
 {
@@ -25,7 +26,7 @@ if(!$InternalModule)
 }
 
 
-$DataTargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDESharesModules\scripting\dragonscript\$Version"
+$DataTargetDir = Join-Path -Path $DistributeDir -ChildPath "$PathDistDESharesModules\scripting\dragonscript\$Version"
 Write-Host "DragonScript Module: Copy Data to '$DataTargetDir'"
 
 Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\scripts")`
@@ -47,7 +48,7 @@ Copy-Files -SourceDir "$RuntimeDir\dsinstall" -Pattern "*" -TargetDir $RuntimeTa
 
 
 # igde
-$DataTargetDir = "$OutputDir\$PathDistIGDEShares"
+$DataTargetDir = "$DistributeDir\$PathDistIGDEShares"
 Write-Host "DragonScript Module: Copy IGDE Data to '$DataTargetDir'"
 
 $PathModuleShared = "%{DE_SHARE_PATH}\modules\scripting\dragonscript\$Version\data"
@@ -60,7 +61,7 @@ Copy-Files -SourceDir "$SourceDir\..\igde\templates" -TargetDir "$DataTargetDir\
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\scripting\dragonscript\$Version"
+$TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\scripting\dragonscript\$Version"
 Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"
 
 if(!$InternalModule)

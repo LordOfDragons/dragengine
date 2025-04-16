@@ -2,6 +2,7 @@
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$SolutionDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -10,7 +11,7 @@ Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
 # application
 $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscript")
 
-$TargetDir = "$OutputDir\$PathDistDEDataModules\service\eossdk\$Version"
+$TargetDir = "$DistributeDir\$PathDistDEDataModules\service\eossdk\$Version"
 
 Write-Host "EOSSDK Module: Copy Module to '$TargetDir'"
 
@@ -27,7 +28,7 @@ if(!$InternalModule)
 $Library = "$SolutionDir\extern\eossdk\eossdk\bin\EOSSDK-Win64-Shipping.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
-$DataTargetDir = "$OutputDir\$PathDistDESharesModules\service\eossdk\$Version"
+$DataTargetDir = "$DistributeDir\$PathDistDESharesModules\service\eossdk\$Version"
 Write-Host "EOSSDK Module: Copy Data to '$DataTargetDir'"
 
 Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*.*"
@@ -36,7 +37,7 @@ Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\service\eossdk\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\service\eossdk\$Version"
     Write-Host "EOSSDK Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\service\eossdk\srveossdk.pdb" -Destination $TargetDir

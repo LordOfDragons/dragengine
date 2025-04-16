@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -11,7 +12,7 @@ $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\..\SCons
 
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEDataModules\animation\fbxanim\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEDataModules\animation\fbxanim\$Version"
     
     Write-Host "FBXAnim Module: Copy Module to '$TargetDir'"
     
@@ -27,7 +28,7 @@ if(!$InternalModule)
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\animation\fbxanim\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\animation\fbxanim\$Version"
     Write-Host "FBXAnim Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\animation\animfbx\animfbx.pdb" -Destination $TargetDir

@@ -2,6 +2,7 @@
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$SolutionDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -12,7 +13,7 @@ $Version = Get-Version -Path "$SourceDir\..\SConscript"
 
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEDataModules\service\modio\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEDataModules\service\modio\$Version"
     
     Write-Host "Mod.io Module: Copy Module to '$TargetDir'"
     
@@ -24,7 +25,7 @@ if(!$InternalModule)
         -Library $Library -Version $Version
 }
 
-$DataTargetDir = "$OutputDir\$PathDistDESharesModules\service\modio\$Version"
+$DataTargetDir = "$DistributeDir\$PathDistDESharesModules\service\modio\$Version"
 Write-Host "Mod.io Module: Copy Data to '$DataTargetDir'"
 
 # Copy-Files -SourceDir "$SourceDir\..\data" `
@@ -34,7 +35,7 @@ Write-Host "Mod.io Module: Copy Data to '$DataTargetDir'"
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\service\modio\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\service\modio\$Version"
     Write-Host "Mod.io Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\service\modio\srvmodio.pdb" `

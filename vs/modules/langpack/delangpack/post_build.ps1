@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -11,7 +12,7 @@ $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscri
 
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEDataModules\langpack\delangpack\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEDataModules\langpack\delangpack\$Version"
     
     Write-Host "DELangPack Module: Copy Module to '$TargetDir'"
     
@@ -27,7 +28,7 @@ if(!$InternalModule)
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\langpack\delangpack\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\langpack\delangpack\$Version"
     Write-Host "DELangPack Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\langpack\delangpack\langdelangpack.pdb" -Destination $TargetDir

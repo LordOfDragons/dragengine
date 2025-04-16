@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$true)][string]$GrdkDir
 )
 
@@ -13,7 +14,7 @@ $GrdkDir = SanitizeScriptInputPath($GrdkDir)
 # application
 $Version = "1.23"
 
-$TargetDir = "$OutputDir\$PathDistDEDataModules\service\msgdk\$Version"
+$TargetDir = "$DistributeDir\$PathDistDEDataModules\service\msgdk\$Version"
 
 Write-Host "MicrosoftGDK Module: Copy Module to '$TargetDir'"
 
@@ -23,7 +24,7 @@ Install-Files -Path $Library -Destination $TargetDir
 Copy-Manifest -Path "$SourceDir\module.xml" -Destination "$TargetDir\module.xml" `
     -Library $Library -Version $Version
 
-$DataTargetDir = "$OutputDir\$PathDistDESharesModules\service\msgdk\$Version"
+$DataTargetDir = "$DistributeDir\$PathDistDESharesModules\service\msgdk\$Version"
 Write-Host "MicrosoftGDK Module: Copy Data to '$DataTargetDir'"
 
 Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*.*"
@@ -57,7 +58,7 @@ $CopySrcPath = Join-Path -Path $CopySrcPath -ChildPath "libHttpClient.GDK.dll"
 Copy-Item -Path $CopySrcPath -Destination $TargetDir
 
 # debug
-$TargetDir = "$OutputDir\$PathDistDEPdbDataModules\service\msgdk\$Version"
+$TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\service\msgdk\$Version"
 Write-Host "MicrosoftGDK Module: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\de_module\service\msgdk\srvmsgdk.pdb"`

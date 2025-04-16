@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
@@ -11,7 +12,7 @@ $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscri
 
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEDataModules\graphic\opengl\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEDataModules\graphic\opengl\$Version"
     Write-Host "OpenGL Module: Copy Module to '$TargetDir'"
     
     $Library = "$OutputDir\de_module\graphic\opengl\graopengl.dll"
@@ -22,7 +23,7 @@ if(!$InternalModule)
         -Library $Library -Version $Version
 }
 
-$DataTargetDir = "$OutputDir\$PathDistDESharesModules\graphic\opengl\$Version"
+$DataTargetDir = "$DistributeDir\$PathDistDESharesModules\graphic\opengl\$Version"
 Write-Host "OpenGL Module: Copy Data to '$DataTargetDir'"
 
 Copy-Files -SourceDir "$SourceDir\..\data" -Pattern "*" -TargetDir $DataTargetDir
@@ -31,7 +32,7 @@ Copy-Files -SourceDir "$SourceDir\..\data" -Pattern "*" -TargetDir $DataTargetDi
 # debug
 if(!$InternalModule)
 {
-    $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\graphic\opengl\$Version"
+    $TargetDir = "$DistributeDir\$PathDistDEPdbDataModules\graphic\opengl\$Version"
     Write-Host "OpenGL Module: Copy PDBs to '$TargetDir'"
     
     Install-Files -Path "$OutputDir\de_module\graphic\opengl\graopengl.pdb" -Destination $TargetDir

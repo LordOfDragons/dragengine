@@ -1,12 +1,13 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
-    [Parameter(Mandatory=$true)][string]$OutputDir
+    [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir
 )
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
 # application
-$TargetDir = "$OutputDir\$PathDistLive"
+$TargetDir = "$DistributeDir\$PathDistLive"
 Write-Host "Live Launcher: Copy Program to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\launcher\live\LaunchWindows64.exe" -Destination $TargetDir
@@ -19,7 +20,7 @@ Copy-Files -SourceDir "$OutputDir\launcher\live" -TargetDir $TargetDir -Pattern 
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistLivePdb"
+$TargetDir = "$DistributeDir\$PathDistLivePdb"
 Write-Host "Live Launcher: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\launcher\live\LaunchWindows64.pdb" -Destination $TargetDir
