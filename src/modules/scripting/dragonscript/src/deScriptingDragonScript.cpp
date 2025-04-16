@@ -1898,7 +1898,7 @@ void deScriptingDragonScript::pRemoveVFSContainerHideScriptDirectory(){
 	pVFSContainerHideScriptDirectory = nullptr;
 }
 
-void deScriptingDragonScript::pPreprocessEventDpiAware(deInputEvent& event) const{
+void deScriptingDragonScript::pPreprocessEventDpiAware(deInputEvent &event){
 	if(pClsEngine->GetDpiAware()){
 		return;
 	}
@@ -1909,12 +1909,29 @@ void deScriptingDragonScript::pPreprocessEventDpiAware(deInputEvent& event) cons
 	}
 	*/
 
-	if(event.GetType() != deInputEvent::eeMouseMove){
-		return;
-	}
+	switch(event.GetType()){
+	case deInputEvent::eeMouseMove:
+		pPreprocessMouseMoveDpiAware(event);
+		break;
 
-	event.SetX(pClsGraSys->CoordWindows2CanvasAlways(event.GetX()));
-	event.SetY(pClsGraSys->CoordWindows2CanvasAlways(event.GetY()));
+	default:
+		break;
+	}
+}
+
+void deScriptingDragonScript::pPreprocessMouseMoveDpiAware(deInputEvent &event){
+	// due to dpi scaling the mouse movement can drop below 1 but still above 0.
+	// if this is not handled correctly tiny mouse movements drop causing the mouse
+	// pointer to move like sticky glue. to solve this too small changes are
+	// accumulated over time to not drop them
+	pDpiAccumMouseMoved.x += event.GetX();
+	pDpiAccumMouseMoved.y += event.GetY();
+	
+	event.SetX(pClsGraSys->CoordWindows2CanvasAlways(pDpiAccumMouseMoved.x));
+	event.SetY(pClsGraSys->CoordWindows2CanvasAlways(pDpiAccumMouseMoved.y));
+
+	pDpiAccumMouseMoved.x -= pClsGraSys->CoordCanvas2WindowAlways(event.GetX());
+	pDpiAccumMouseMoved.y -= pClsGraSys->CoordCanvas2WindowAlways(event.GetY());
 }
 
 #ifdef WITH_INTERNAL_MODULE
