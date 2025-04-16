@@ -28,6 +28,7 @@
 #include "../deModuleSystem.h"
 #include "../../dragengine_configuration.h"
 #include "../../common/file/decPath.h"
+#include "../../common/collection/decPointerList.h"
 
 #ifdef OS_BEOS
 #include <kernel/image.h>
@@ -49,6 +50,9 @@ private:
 	#elif defined OS_W32
 	HMODULE pLibHandle;
 	#endif
+	
+	decStringList pPreloadLibraryPath;
+	decPointerList pPreloadedLibraries;
 	
 	const deModuleSystem::FPRegisterInternalModule *pFunctions;
 	
@@ -76,6 +80,8 @@ public:
 private:
 	void pCleanUp();
 	void pLoadLibrary(deModuleSystem &modsys, const decPath &path);
+	void pPreloadLibraries(deModuleSystem &modsys, const decPath &pathModules);
+	void pUnloadPreloadedLibraries();
 };
 
 #endif

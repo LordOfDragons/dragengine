@@ -41,7 +41,7 @@ typedef const deModuleSystem::FPRegisterInternalModule* (*FUNC_FUNCTIONS)();
 
 
 // class deLibraryModule
-///////////////////////////
+//////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -65,6 +65,7 @@ pFunctions(nullptr)
 	#endif
 	
 	try{
+		pPreloadLibraries(modsys, pathModules);
 		pLoadLibrary(modsys, pathLibrary);
 		
 	}catch(const deException &){
@@ -91,6 +92,8 @@ void deInternalModulesLibrary::pCleanUp(){
 		FreeLibrary(pLibHandle);
 		#endif
 	}
+	
+	pUnloadPreloadedLibraries();
 }
 
 void deInternalModulesLibrary::pLoadLibrary(deModuleSystem &modsys, const decPath &path){
@@ -179,4 +182,116 @@ void deInternalModulesLibrary::pLoadLibrary(deModuleSystem &modsys, const decPat
 	if(!pFunctions){
 		DETHROW_INFO(deeInvalidAction, "Entry point returned null functions");
 	}
+}
+
+void deInternalModulesLibrary::pPreloadLibraries(deModuleSystem &modsys, const decPath &pathModules){
+#ifdef OS_BEOS
+	deLogger &logger = *modsys.GetEngine()->GetLogger();
+	const int count = pPreloadLibraryPath.GetCount();
+	image_id handleLibrary = 0;
+	decPath path;
+	int i;
+	
+	for(i=0; i<count; i++){
+		const decString &filename = pPreloadLibraryPath.GetAt(i);
+		path = pathModules;
+		path.AddNativePath(filename);
+		
+		handleLibrary = load_add_on(filename);
+		if(!handleLibrary){
+			logger.LogErrorFormat(LOGSOURCE, "Preload %s: load_add_on failed: %s",
+				filename.GetString(), strerror(pLibHandle));
+			DETHROW_INFO(deeInvalidAction, "Failed preloading library");
+		}
+		
+		pPreloadedLibraries.Add((void*)(intptr_t)handleLibrary);
+		handleLibrary = 0;
+		logger.LogInfoFormat(LOGSOURCE, "  - Preloaded %s", filename.GetString());
+	}
+	
+#elif defined OS_W32
+	deLogger &logger = *modsys.GetEngine()->GetLogger();
+	const int count = pPreloadLibraryPath.GetCount();
+	void *handleLibrary = nullptr;
+	HMODULE handleLibrary = NULL;
+	wchar_t widePath[MAX_PATH];
+	decPath path;
+	int i;
+	
+	for(i=0; i<count; i++){
+		const decString &filename = pPreloadLibraryPath.GetAt(i);
+		path = pathModules;
+		path.AddNativePath(filename);
+		
+		deOSWindows::Utf8ToWide(path.GetParent().GetPathNative(), widePath, MAX_PATH);
+		SetDllDirectory(widePath);
+		deOSWindows::Utf8ToWide(path.GetPathNative(), widePath, MAX_PATH);
+		handleLibrary = LoadLibrary(widePath);
+		SetDllDirectory(NULL);
+		
+		if(!handleLibrary){
+			int err = GetLastError();
+			wchar_t messageBuffer[251];
+			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+				NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+				messageBuffer, 250, NULL);
+			
+			logger.LogErrorFormat(LOGSOURCE, "Preload %s: %s (err=%d)",
+				filename.GetString(), deOSWindows::WideToUtf8(messageBuffer).GetString(), err);
+			DETHROW_INFO(deeInvalidAction, "Failed preloading library");
+		}
+		
+		pPreloadedLibraries.Add(handleLibrary);
+		handleLibrary = NULL;
+		logger.LogInfoFormat(LOGSOURCE, "  - Preloaded %s", filename.GetString());
+	}
+	
+#elif defined OS_UNIX
+	deLogger &logger = *modsys.GetEngine()->GetLogger();
+	const int count = pPreloadLibraryPath.GetCount();
+	void *handleLibrary = nullptr;
+	decPath path;
+	int i;
+	
+	for(i=0; i<count; i++){
+		const decString &filename = pPreloadLibraryPath.GetAt(i);
+		path = pathModules;
+		path.AddNativePath(filename);
+		
+		handleLibrary = dlopen(filename, RTLD_NOW);
+		
+		if(!handleLibrary){
+			logger.LogErrorFormat(LOGSOURCE, "Preload %s dlerror: %s.", filename.GetString(), dlerror());
+			DETHROW_INFO(deeInvalidAction, "Failed preloading library");
+		}
+		
+		pPreloadedLibraries.Add(handleLibrary);
+		handleLibrary = nullptr;
+		logger.LogInfoFormat(LOGSOURCE, "  - Preloaded %s", filename.GetString());
+	}
+#endif
+}
+
+void deInternalModulesLibrary::pUnloadPreloadedLibraries(){
+#ifdef OS_BEOS
+	int index = pPreloadedLibraries.GetCount();
+	while(index-- > 0){
+		unload_add_on((image_id)(intptr_t)pPreloadedLibraries.GetAt(index));
+		pPreloadedLibraries.RemoveFrom(index);
+	}
+	
+#elif defined OS_W32
+	int index = pPreloadedLibraries.GetCount();
+	while(index-- > 0){
+		FreeLibrary((HMODULE)pPreloadedLibraries.GetAt(index));
+		pPreloadedLibraries.RemoveFrom(index);
+	}
+	
+#elif defined OS_UNIX
+	int index = pPreloadedLibraries.GetCount();
+	while(index-- > 0){
+		dlclose(pPreloadedLibraries.GetAt(index));
+		pPreloadedLibraries.RemoveFrom(index);
+	}
+#endif
 }
