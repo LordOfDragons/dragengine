@@ -39,7 +39,7 @@
 // class deoxrInstance
 ////////////////////////
 
-#ifndef OXR_MODULE_VERSION
+#ifndef MODULE_VERSION
 #include "module_version.h"
 #endif
 
