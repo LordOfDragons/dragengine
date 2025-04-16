@@ -60,12 +60,14 @@
 // Export definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -877,6 +879,10 @@ void deAnimModule::pWriteKeyframeWeight( decBaseFileWriter &writer, const sConfi
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class deanimModuleInternal : public deInternalModule{
 public:

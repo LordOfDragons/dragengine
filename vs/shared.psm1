@@ -199,6 +199,29 @@ function DownloadArtifact {
 }
 
 
+# Update module version
+# ---------------------
+
+function UpdateModuleVersion {
+    param (
+        [Parameter(Mandatory=$true)][string]$SourceDir
+    )
+    
+    if (Test-Path "$SourceDir\..\SConscript") {
+        $ModuleVersion = Get-Version -Path "$SourceDir\..\SConscript"
+    } elseif (Test-Path "$SourceDir\..\..\SConscript") {
+        $ModuleVersion = Get-Version -Path "$SourceDir\..\..\SConscript"
+    } else {
+        throw "Missing SConscript"
+    }
+    
+    $Content = "#pragma once`r`n" +
+        "#define MODULE_VERSION `"$ModuleVersion`"`r`n"
+    
+    Set-Content -Path "$SourceDir\module_version.h" -Value $Content
+}
+
+
 # Various path constants
 ##########################
 

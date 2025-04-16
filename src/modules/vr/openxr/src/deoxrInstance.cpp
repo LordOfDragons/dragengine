@@ -437,7 +437,7 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	
 	instanceCreateInfo.type = XR_TYPE_INSTANCE_CREATE_INFO;
 	
-	decStringList moduleVersion( decString( OXR_MODULE_VERSION ).Split( '.' ) );
+	decStringList moduleVersion( decString( MODULE_VERSION ).Split( '.' ) );
 	while( moduleVersion.GetCount() < 3 ){
 		moduleVersion.Add( "0" );
 	}

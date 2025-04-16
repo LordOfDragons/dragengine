@@ -251,7 +251,7 @@ void deoglRenderConstructed::DrawNodeImage( const deoglRenderCanvasContext &cont
 		1.0f, 1.0f, 1.0f, transparency ) * context.GetColorTransform() );
 	
 	const decTexMatrix2 billboardTransform( decTexMatrix2::CreateScale(
-		decVector2( node.GetSize().x, node.GetSize().y ) ) );
+		decVector2((float)node.GetSize().x, (float)node.GetSize().y)));
 	
 	deoglShaderCompiled &shader = pipeline.GetShader();
 	

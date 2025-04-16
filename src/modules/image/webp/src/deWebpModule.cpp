@@ -38,12 +38,14 @@
 #include <dragengine/resources/image/deImage.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *WebpCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -199,6 +201,10 @@ void deWebpModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class deWebpModuleInternal : public deInternalModule{
 public:

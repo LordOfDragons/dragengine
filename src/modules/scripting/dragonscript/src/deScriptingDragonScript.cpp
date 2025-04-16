@@ -301,12 +301,14 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DSCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 

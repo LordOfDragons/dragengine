@@ -66,12 +66,14 @@
 #include <dragengine/threading/deMutexGuard.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -1072,7 +1074,7 @@ public:
 		SetName("OpenXR");
 		SetDescription("OpenXR Support.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
-		SetVersion(OXR_MODULE_VERSION);
+		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtVR);
 		SetDirectoryName("openxr");
 		SetPriority(2);

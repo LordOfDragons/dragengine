@@ -41,12 +41,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *TheoraCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *TheoraCreateModule( deLoadableModule *loadableModule ){
@@ -135,6 +137,10 @@ deBaseVideoAudioDecoder *deVideoTheora::CreateAudioDecoder( decBaseFileReader *r
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class dethModuleInternal : public deInternalModule{
 public:

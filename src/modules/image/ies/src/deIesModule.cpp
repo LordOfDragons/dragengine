@@ -36,12 +36,14 @@
 #include <dragengine/resources/image/deImage.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *IESCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -106,6 +108,10 @@ void deIesModule::SaveImage( decBaseFileWriter&, const deImage & ){
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class deIesModuleInternal : public deInternalModule{
 public:

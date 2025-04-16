@@ -52,12 +52,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *FBXRigCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *FBXRigCreateModule( deLoadableModule *loadableModule ){
@@ -157,6 +159,10 @@ void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class fbxRigModuleInternal : public deInternalModule{
 public:

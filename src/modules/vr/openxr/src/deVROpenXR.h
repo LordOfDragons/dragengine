@@ -30,6 +30,10 @@
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 #include <dragengine/threading/deMutex.h>
 
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
 #include "deoxrInstance.h"
 #include "deoxrSystem.h"
 #include "deoxrSession.h"

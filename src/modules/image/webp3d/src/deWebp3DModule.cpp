@@ -40,6 +40,7 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -47,7 +48,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *WEBP3DCreateModule( deLoadableModule *loadabl
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry Point
@@ -110,6 +111,10 @@ void deWebp3DModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class deWebp3DModuleInternal : public deInternalModule{
 public:

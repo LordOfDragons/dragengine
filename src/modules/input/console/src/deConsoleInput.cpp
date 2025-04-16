@@ -49,6 +49,7 @@
 // Export definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -56,7 +57,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *ConsoleInputCreateModule( deLoadableModule *l
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry Function

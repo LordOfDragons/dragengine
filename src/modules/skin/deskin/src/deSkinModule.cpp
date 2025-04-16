@@ -62,12 +62,14 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DESkinCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -1656,6 +1658,10 @@ void deSkinModule::pWriteProperty( decXmlWriter &writer, const deSkin &skin, deS
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class desmModuleInternal : public deInternalModule{
 public:

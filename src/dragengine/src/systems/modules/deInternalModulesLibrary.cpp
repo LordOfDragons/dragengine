@@ -212,7 +212,6 @@ void deInternalModulesLibrary::pPreloadLibraries(deModuleSystem &modsys, const d
 #elif defined OS_W32
 	deLogger &logger = *modsys.GetEngine()->GetLogger();
 	const int count = pPreloadLibraryPath.GetCount();
-	void *handleLibrary = nullptr;
 	HMODULE handleLibrary = NULL;
 	wchar_t widePath[MAX_PATH];
 	decPath path;

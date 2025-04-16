@@ -49,6 +49,7 @@
 // Export definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -56,7 +57,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEFontCreateModule( deLoadableModule *loadabl
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry function
@@ -277,6 +278,10 @@ void deFontModule::pWriteFont( decXmlWriter& writer, const deFont& font ) {
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class deFontModuleInternal : public deInternalModule{
 public:

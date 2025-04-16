@@ -57,12 +57,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *FBXSkinCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *FBXSkinCreateModule( deLoadableModule *loadableModule ){
@@ -376,6 +378,10 @@ void fbxSkinModule::pAddPropertyImage( deSkinTexture &texture, const char *name,
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class fbxSkinModuleInternal : public deInternalModule{
 public:

@@ -64,12 +64,14 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *BulletCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -322,6 +324,10 @@ deBasePhysicsSmokeEmitter *dePhysicsBullet::CreateSmokeEmitter( deSmokeEmitter *
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class depbModuleInternal : public deInternalModule{
 public:

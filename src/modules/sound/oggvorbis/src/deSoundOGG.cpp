@@ -40,12 +40,14 @@
 
 
 // Export Definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *OGGCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -195,6 +197,10 @@ deBaseSoundDecoder *deSoundOGG::CreateDecoder( decBaseFileReader *reader ){
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class deoggModuleInternal : public deInternalModule{
 public:

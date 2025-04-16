@@ -38,6 +38,7 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,6 +46,8 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DELGACreateModule( deLoadableModule *loadable
 #ifdef  __cplusplus
 }
 #endif
+#endif
+
 
 deBaseModule *DELGACreateModule( deLoadableModule *loadableModule ){
 	deBaseModule *module = NULL;
@@ -86,6 +89,10 @@ deBaseArchiveContainer *deArchiveDelga::CreateContainer( decBaseFileReader *read
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class deadModuleInternal : public deInternalModule{
 public:

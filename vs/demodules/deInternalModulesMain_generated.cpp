@@ -17,8 +17,7 @@ extern deInternalModule *deJpegRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deIesRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deWebpRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deWebp3DRegisterInternalModule(deModuleSystem*);
-extern deInternalModule *deciRegisterInternalModule(deModuleSystem*);
-extern deInternalModule *dexsiRegisterInternalModule(deModuleSystem*);
+extern deInternalModule *dewiRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *delpRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *demdlRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *denbRegisterInternalModule(deModuleSystem*);
@@ -57,8 +56,7 @@ static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]
 	deIesRegisterInternalModule,
 	deWebpRegisterInternalModule,
 	deWebp3DRegisterInternalModule,
-	deciRegisterInternalModule,
-	dexsiRegisterInternalModule,
+	dewiRegisterInternalModule,
 	delpRegisterInternalModule,
 	demdlRegisterInternalModule,
 	denbRegisterInternalModule,

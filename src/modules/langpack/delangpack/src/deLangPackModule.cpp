@@ -44,12 +44,14 @@
 #include <dragengine/resources/localization/deLanguagePackEntry.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DELangPackCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -246,6 +248,10 @@ void deLangPackModule::pWriteLangPackEntry( decXmlWriter &writer, const deLangua
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class delpModuleInternal : public deInternalModule{
 public:

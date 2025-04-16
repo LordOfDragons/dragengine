@@ -34,6 +34,7 @@
 // Export definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,7 +42,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *NullGraphicCreateModule( deLoadableModule *lo
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry Function
@@ -221,6 +222,10 @@ deBaseGraphicVideoPlayer *deGraphicNull::CreateVideoPlayer( deVideoPlayer* ){
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
 
 class degnModuleInternal : public deInternalModule{
 public:

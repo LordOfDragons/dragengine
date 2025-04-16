@@ -48,12 +48,14 @@
 // Entry Point
 ////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *W32InputCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *W32InputCreateModule( deLoadableModule *loadableModule ){
@@ -822,3 +824,36 @@ WPARAM deWindowsInput::pMapLeftRightKeys( WPARAM virtKey, LPARAM lParam ) const{
 		return virtKey;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class dewiModuleInternal : public deInternalModule{
+public:
+dewiModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("W32Input");
+		SetDescription("Processes input using the native windows message queue. \
+Supports Mouse and Keyboard for the time beeing.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtInput);
+		SetDirectoryName("w32input");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(W32InputCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dewiRegisterInternalModule(deModuleSystem *system){
+	return new dewiModuleInternal(system);
+}
+#endif

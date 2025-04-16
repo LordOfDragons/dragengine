@@ -416,6 +416,10 @@ void dePngModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
 
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
 class dePngModuleInternal : public deInternalModule{
 public:
 	dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
