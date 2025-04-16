@@ -1,7 +1,8 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
-    [Parameter(Mandatory=$true)][string]$RuntimeDir
+    [Parameter(Mandatory=$true)][string]$RuntimeDir,
+    [Parameter(Mandatory=$false)][switch]$InternalModule = $false
 )
 
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
@@ -11,14 +12,17 @@ $Version = Get-Version -Path (Join-Path -Path $SourceDir -ChildPath "..\SConscri
 
 $TargetDir = "$OutputDir\$PathDistDEDataModules\scripting\dragonscript\$Version"
 
-Write-Host "DragonScript Module: Copy Module to '$TargetDir'"
-
-$Library = "$OutputDir\de_module\scripting\dragonscript\scrdscript.dll"
-Install-Files -Path $Library -Destination $TargetDir
-
-Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
-    -Destination (Join-Path -Path $TargetDir -ChildPath "module.xml")`
-    -Library $Library -Version $Version
+if(!$InternalModule)
+{
+    Write-Host "DragonScript Module: Copy Module to '$TargetDir'"
+    
+    $Library = "$OutputDir\de_module\scripting\dragonscript\scrdscript.dll"
+    Install-Files -Path $Library -Destination $TargetDir
+    
+    Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
+        -Destination (Join-Path -Path $TargetDir -ChildPath "module.xml")`
+        -Library $Library -Version $Version
+}
 
 
 $DataTargetDir = Join-Path -Path $OutputDir -ChildPath "$PathDistDESharesModules\scripting\dragonscript\$Version"
@@ -59,5 +63,8 @@ Copy-Files -SourceDir "$SourceDir\..\igde\templates" -TargetDir "$DataTargetDir\
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\scripting\dragonscript\$Version"
 Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"
 
+if(!$InternalModule)
+{
 Install-Files -Path "$OutputDir\de_module\scripting\dragonscript\scrdscript.pdb" -Destination $TargetDir
+}
 Install-Files "$RuntimeDir\pdb\libdscript.pdb" -Destination $TargetDir
