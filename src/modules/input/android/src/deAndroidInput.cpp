@@ -59,6 +59,8 @@ MOD_ENTRY_POINT_ATTR deBaseModule *AndroidInpCreateModule( deLoadableModule *loa
 #endif
 #endif
 
+// #define DEBUG_LOG_INPUT
+
 
 // Entry point
 ////////////////
@@ -548,7 +550,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 	case AMOTION_EVENT_ACTION_DOWN:{
 		const int pointerId = (int)event.pointers[0].id;
 		const decPoint position(pPointerPosition(event.pointers[0]));
+		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("DOWN: (%d,%d)", position.x, position.y);
+		#endif
 		if(pOverlaySystem->OnTouch(pointerId, position)){
 			break;
 		}
@@ -581,7 +585,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		
 		const int modifiers = pModifiersFromMetaState(event.metaState);
 		const decPoint position(pPointerPosition(event.pointers[0]));
+		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("UP: (%d,%d)", position.x, position.y);
+		#endif
 		const decPoint distance(position - pLastMouse);
 		
 		if(distance != decPoint()){
@@ -603,7 +609,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		for(i=0; i<event.pointerCount; i++){
 			const decPoint position(pPointerPosition(event.pointers[i]));
 			const int pointerId = (int)event.pointers[i].id;
+			#ifdef DEBUG_LOG_INPUT
 			LogInfoFormat("MOVE[%d:%d]: (%d,%d)", i, pointerId, position.x, position.y);
+			#endif
 			
 			pOverlaySystem->OnMove(pointerId, position);
 			
@@ -621,23 +629,37 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		}break;
 		
 	case AMOTION_EVENT_ACTION_HOVER_MOVE: // movement while not touching screen
-		LogInfo("AMOTION_EVENT_ACTION_HOVER_MOVE");
-		// these are absolute positions. need to track difference to previous values
-		// most probably has to use AMotionEvent_getHistoricalX, AMotionEvent_getHistoricalY
-		// and AMotionEvent_getHistorySize, whereas history exists only for MOVE not HOVER_MOVE
-		//engine->state.x = AMotionEvent_getX(event, 0);
-		//engine->state.y = AMotionEvent_getY(event, 0);
+		if(event.pointerCount > 0){
+			const decPoint position(pPointerPosition(event.pointers[0]));
+			#ifdef DEBUG_LOG_INPUT
+			LogInfoFormat("HOVER_MOVE: (%d,%d)", position.x, position.y);
+			#endif
+			
+			pOverlaySystem->OnMove(0, position);
+			
+			const decPoint distance(position - pLastMouse);
+			
+			if(distance != decPoint()){
+				const int modifiers = pModifiersFromMetaState(event.metaState);
+				AddMouseMove(pDevices->GetMouse()->GetIndex(), modifiers, distance, eventTime);
+			}
+			
+		}else{
+			#ifdef DEBUG_LOG_INPUT
+			LogInfo("HOVER_MOVE");
+			#endif
+		}
 		break;
 		
 	case AMOTION_EVENT_ACTION_CANCEL:
 		// gesture stopped. documentation claims this is the same as AMOTION_EVENT_ACTION_UP
 		// but no action should be done like in that case. no idea what this is supposed to mean
-		LogInfo("AMOTION_EVENT_ACTION_CANCEL");
+		LogInfo("CANCEL");
 		break;
 		
 	case AMOTION_EVENT_ACTION_OUTSIDE:
 		// movement outside of the screen. can this be called between up and down?
-		LogInfo("AMOTION_EVENT_ACTION_OUTSIDE");
+		LogInfo("OUTSIDE");
 		break;
 		
 	case AMOTION_EVENT_ACTION_POINTER_DOWN:{
@@ -649,7 +671,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		
 		const int pointerId = (int)event.pointers[pointerIndex].id;
 		const decPoint position(pPointerPosition(event.pointers[pointerIndex]));
+		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("POINTER-DOWN[%d:%d]: (%d,%d)", pointerIndex, pointerId, position.x, position.y);
+		#endif
 		pOverlaySystem->OnTouch(pointerId, position);
 		}break;
 		
@@ -669,7 +693,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		
 		const int modifiers = pModifiersFromMetaState(event.metaState);
 		const decPoint position(pPointerPosition(event.pointers[pointerIndex]));
+		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("POINTER-UP[%d:%d]: (%d,%d)", pointerIndex, pointerId, position.x, position.y);
+		#endif
 		const decPoint distance(position - pLastMouse);
 		
 		if(distance != decPoint()){
@@ -693,18 +719,24 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		// The pointer may or may not be down when this event is dispatched.
 		// This action is always delivered to the winder under the pointer, which
 		// may not be the window currently touched.
-		LogInfoFormat("AMOTION_EVENT_ACTION_SCROLL axisX=%f axisY=%f",
+		LogInfoFormat("SCROLL: axisX=%f axisY=%f",
 			event.pointers[0].axisValues[0], event.pointers[0].axisValues[1]);
+		
+		// note: on quest this is not called
 		break;
 		
 	case AMOTION_EVENT_ACTION_HOVER_ENTER:
 		// not touching but enternig window
-		LogInfo("AMOTION_EVENT_ACTION_HOVER_ENTER");
+		#ifdef DEBUG_LOG_INPUT
+		LogInfo("HOVER_ENTER");
+		#endif
 		break;
 		
 	case AMOTION_EVENT_ACTION_HOVER_EXIT:
 		// not touching but enternig window
-		LogInfo("AMOTION_EVENT_ACTION_HOVER_EXIT");
+		#ifdef DEBUG_LOG_INPUT
+		LogInfo("HOVER_EXIT");
+		#endif
 		break;
 		
 	default:

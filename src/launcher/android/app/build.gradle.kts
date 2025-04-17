@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -106,6 +108,20 @@ android {
             version = "3.22.1"
         }
     }
+}
+
+task(name = "buildEngineAsset", type = Exec::class) {
+    doFirst {
+        println("Build Engine Asset ...")
+    }
+    workingDir("..")
+    executable("./copy_resources.sh")
+}
+
+gradle.projectsEvaluated {
+    tasks.named("generateArmv7DebugAssets").dependsOn("buildEngineAsset")
+    tasks.named("generateArmv8DebugAssets").dependsOn("buildEngineAsset")
+    tasks.named("generateQuestDebugAssets").dependsOn("buildEngineAsset")
 }
 
 dependencies {
