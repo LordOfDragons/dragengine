@@ -155,6 +155,10 @@ void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
 		defines.SetDefine( "EXT_ARB_SHADER_DRAW_PARAMETERS", true );
 	}
 	
+	#ifdef OS_ANDROID_QUEST
+	defines.SetDefines("QUEST_BUG_EMITVERTEX");
+	#endif
+	
 	const int renderDocDebugFlags = pRenderThread.GetChoices().GetRenderDocDebugFlags();
 	if(renderDocDebugFlags != 0){
 		if(renderDocDebugFlags & deoglRTChoices::RenderDocDebugFlagGI){

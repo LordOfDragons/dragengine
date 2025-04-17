@@ -295,9 +295,6 @@ pVAOCopyShadow( nullptr )
 		
 		pipconf.SetSPBInstanceIndexBase(0);
 		pAsyncGetPipeline(pPipelineOccMap, pipconf, "DefRen Occlusion OccMap Cube", defines, true);
-		#ifdef OS_ANDROID_QUEST
-		defines.SetDefines("QUEST_BUG_EMITVERTEX");
-		#endif
 		defines.RemoveAllDefines();
 		
 		
