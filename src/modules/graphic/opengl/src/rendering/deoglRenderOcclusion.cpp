@@ -206,6 +206,9 @@ pAddToRenderTask( NULL )
 				}else{
 					sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
 					defines.SetDefines( "GS_RENDER_STEREO" );
+					#ifdef OS_ANDROID_QUEST
+					defines.SetDefines("QUEST_BUG_EMITVERTEX");
+					#endif
 				}
 				
 			}else{
@@ -247,6 +250,9 @@ pAddToRenderTask( NULL )
 				}else{
 					sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
 					defines.SetDefines( "GS_RENDER_STEREO" );
+					#ifdef OS_ANDROID_QUEST
+					defines.SetDefines("QUEST_BUG_EMITVERTEX");
+					#endif
 				}
 				
 			}else{

@@ -133,7 +133,9 @@ void emitCorner( in int layer, in vec4 position, in vec4 preTransformedPosition 
 	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
+#ifndef QUEST_BUG_EMITVERTEX
 	EmitVertex();
+#endif
 }
 
 void emitCorner( in int layer, in vec4 position ){
@@ -166,6 +168,9 @@ void main( void ){
 			
 			for( i=0; i<3; i++ ){
 				emitCorner( face, gl_in[ i ].gl_Position );
+				#ifdef QUEST_BUG_EMITVERTEX
+				EmitVertex();
+				#endif
 			}
 			EndPrimitive();
 			
@@ -195,6 +200,9 @@ void main( void ){
 		int i;
 		for( i=0; i<3; i++ ){
 			emitCorner( eye, gl_in[ i ].gl_Position );
+			#ifdef QUEST_BUG_EMITVERTEX
+			EmitVertex();
+			#endif
 		}
 		EndPrimitive();
 		
