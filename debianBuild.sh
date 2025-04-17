@@ -8,6 +8,10 @@ for arg in "$*"; do
     buildPackage=true ;;
   --upload-package)
     uploadPackage=true ;;
+  --help|-h)
+    echo './debianBuild [--build-package] [--upload-package] [--help|-h]'
+    exit 0
+    ;;
   esac
 done
 
