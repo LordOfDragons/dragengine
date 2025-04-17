@@ -27,7 +27,7 @@
 
 #include "../dragengine_configuration.h"
 
-#if defined OS_UNIX && defined HAS_LIB_X11
+#ifdef OS_UNIX_X11
 
 #include "deOS.h"
 

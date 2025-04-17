@@ -44,12 +44,14 @@
 #include <dragengine/resources/localization/deLanguagePackEntry.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DELangPackCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -243,3 +245,37 @@ void deLangPackModule::pWriteLangPackEntry( decXmlWriter &writer, const deLangua
 	
 	writer.WriteClosingTag( "translation", false );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class delpModuleInternal : public deInternalModule{
+public:
+	delpModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DELangPack");
+		SetDescription("Handles language packs in the XML Drag[en]gine language pack format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtLanguagePack);
+		SetDirectoryName("delangpack");
+		GetPatternList().Add(".delangpack");
+		SetDefaultExtension(".delangpack");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DELangPackCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *delpRegisterInternalModule(deModuleSystem *system){
+	return new delpModuleInternal(system);
+}
+#endif

@@ -44,12 +44,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DEOccMeshCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *DEOccMeshCreateModule( deLoadableModule *loadableModule ){
@@ -314,3 +316,37 @@ void deOccMeshModule::pLoadFaces( decBaseFileReader &reader, deOcclusionMesh &me
 		DETHROW_INFO( deeInvalidFileFormat, reader.GetFilename() );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deoccmModuleInternal : public deInternalModule{
+public:
+	deoccmModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEOcclusionMesh");
+		SetDescription("Handles occlusion meshes in the Drag[en]gine occlusion mesh format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtOcclusionMesh);
+		SetDirectoryName("deocclusionmesh");
+		GetPatternList().Add(".deoccmesh");
+		SetDefaultExtension(".deoccmesh");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DEOccMeshCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deoccmRegisterInternalModule(deModuleSystem *system){
+	return new deoccmModuleInternal(system);
+}
+#endif

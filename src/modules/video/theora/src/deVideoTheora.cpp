@@ -41,12 +41,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *TheoraCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *TheoraCreateModule( deLoadableModule *loadableModule ){
@@ -132,3 +134,38 @@ deBaseVideoAudioDecoder *deVideoTheora::CreateAudioDecoder( decBaseFileReader *r
 		return NULL;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class dethModuleInternal : public deInternalModule{
+public:
+	dethModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("Theora");
+		SetDescription("Handles videos in the theora format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVideo);
+		SetDirectoryName("theora");
+		GetPatternList().Add(".ogv");
+		SetDefaultExtension(".ogv");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(TheoraCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dethRegisterInternalModule(deModuleSystem *system){
+	return new dethModuleInternal(system);
+}
+#endif

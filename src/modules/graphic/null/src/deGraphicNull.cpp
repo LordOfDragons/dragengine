@@ -34,6 +34,7 @@
 // Export definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,7 +42,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *NullGraphicCreateModule( deLoadableModule *lo
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry Function
@@ -218,3 +219,37 @@ deBaseGraphicVideo *deGraphicNull::CreateVideo( deVideo* ){
 deBaseGraphicVideoPlayer *deGraphicNull::CreateVideoPlayer( deVideoPlayer* ){
 	return NULL;
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class degnModuleInternal : public deInternalModule{
+public:
+	degnModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("NullGraphic");
+		SetDescription("Renders nothing at all. Null modules are useful\
+for testing purpose or servers without a graphic system.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtGraphic);
+		SetDirectoryName("null");
+		SetPriority(0);
+		SetIsFallback(true);
+	}
+	
+	void CreateModule() override{
+		SetModule(NullGraphicCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *degnRegisterInternalModule(deModuleSystem *system){
+	return new degnModuleInternal(system);
+}
+#endif

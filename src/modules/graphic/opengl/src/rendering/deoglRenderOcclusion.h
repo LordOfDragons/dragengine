@@ -64,7 +64,6 @@ private:
 	const deoglPipeline *pPipelineOccTestDual;
 	const deoglPipeline *pPipelineOccTestSun;
 	const deoglPipeline *pPipelineOccTestSunComputeRT;
-	const deoglPipeline *pPipelineOccMapCube;
 	
 	deoglSPBSingleUse::Ref pRenderParamBlockSingleUse;
 	deoglSPBlockUBO::Ref pRenderParamBlock;

@@ -10,3 +10,5 @@ Write-Host "Drag[en]gine: Init configuration header"
 $Content = Get-Content -Raw -Path "dragengine_configuration.h"
 $Content = $Content -creplace "%BuildVersion%","$BuildVersion"
 Set-Content -Path "$SourceDir\dragengine_configuration.h" -Value $Content
+
+Copy-Item "deModuleSystem_generated.cpp" -Destination "$SourceDir\systems"

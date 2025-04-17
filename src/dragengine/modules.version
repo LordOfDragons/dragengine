@@ -1,0 +1,4 @@
+DEModules {
+  global: DEInternalModuleFunctions;
+  local: *;
+};

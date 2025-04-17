@@ -64,6 +64,7 @@
 #endif
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -73,6 +74,7 @@ __attribute__ ((visibility ("default")))
 MOD_ENTRY_POINT_ATTR deBaseModule *OpenALCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *OpenALCreateModule(deLoadableModule *loadableModule){
@@ -346,3 +348,35 @@ void deAudioOpenAL::SendCommand( const decUnicodeArgumentList &command, decUnico
 		answer.SetFromUTF8( "Internal Error!" );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deoalModuleInternal : public deInternalModule{
+public:
+	deoalModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OpenAL");
+		SetDescription("Ouputs audio using the OpenAL library.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAudio);
+		SetDirectoryName("openal");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(OpenALCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deoalRegisterInternalModule(deModuleSystem *system){
+	return new deoalModuleInternal(system);
+}
+#endif

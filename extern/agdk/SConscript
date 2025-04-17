@@ -9,6 +9,9 @@ Import('parent_env parent_targets parent_report')
 if parent_env['platform_android'] == 'no':
 	Return()
 
+if parent_env['platform_webwasm']:
+	Return()
+
 envLibrary = parent_env.Clone()
 
 srcVersion = '2023.3.0.0'

@@ -179,22 +179,28 @@ const char *title, deImage *icon ){
 void deGraphicSystem::CreateAndSetHostedRenderWindow( int width, int height,
 bool fullScreen, const char *title, deImage *icon, BWindow *hostWindow )
 #define IMPLEMENT_CreateAndSetHostedRenderWindow 1
-#endif
-#ifdef OS_ANDROID
+
+#elif defined OS_ANDROID
 void deGraphicSystem::CreateAndSetHostedRenderWindow( int width, int height,
 bool fullScreen, const char *title, deImage *icon, void *hostWindow )
 #define IMPLEMENT_CreateAndSetHostedRenderWindow 1
-#endif
-#if defined OS_UNIX && defined HAS_LIB_X11
+
+#elif defined OS_WEBWASM
+void deGraphicSystem::CreateAndSetHostedRenderWindow(int width, int height,
+bool fullScreen, const char *title, deImage *icon, void *hostWindow)
+#define IMPLEMENT_CreateAndSetHostedRenderWindow 1
+
+#elif defined OS_UNIX_X11
 void deGraphicSystem::CreateAndSetHostedRenderWindow( int width, int height,
 bool fullScreen, const char *title, deImage *icon, Window hostWindow )
 #define IMPLEMENT_CreateAndSetHostedRenderWindow 1
-#endif
-#ifdef OS_W32
+
+#elif defined OS_W32
 void deGraphicSystem::CreateAndSetHostedRenderWindow( int width, int height,
 bool fullScreen, const char *title, deImage *icon, HWND hostWindow )
 #define IMPLEMENT_CreateAndSetHostedRenderWindow 1
 #endif
+
 #ifdef IMPLEMENT_CreateAndSetHostedRenderWindow
 {
 	deRenderWindowReference renderWindow;

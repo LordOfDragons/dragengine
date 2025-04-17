@@ -5,14 +5,21 @@ Import( 'parent_env parent_targets parent_report' )
 envModule = parent_env.Clone()
 
 buildModule = envModule[ 'build_image_png' ] != TernaryVariableNo
-parent_report[ 'build PNG Image Module' ] = 'yes' if buildModule else 'no'
+internalModule = envModule['build_image_png_internal']
+parent_report['build PNG Image Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
 
 if not buildModule:
 	Return()
 
+# if this module is compiled as internal module we can not use regular libpng.
+# this is because the APNG video module uses the libapng which is libpng with
+# animation support. this would cause two version of libpng to be linked in at
+# the same time. it is fully fine to use libapng instead of libpng in this case
+externLibPng = 'lib_libapng' if internalModule else 'lib_libpng'
+
 libs = []
-appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
-appendLibrary( envModule, parent_targets[ 'lib_libpng' ], libs )
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets[externLibPng], libs)
 
 envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
@@ -32,45 +39,60 @@ globFiles( envModule, 'src', '*.cpp', sources )
 globFiles( envModule, 'src', '*.h', headers )
 
 # setup the builders
-objects = [ envModule.SharedObject( s ) for s in sources ]
-
-library = envModule.LoadableModule( target='imgpng', source=objects, LIBS=libs )
-targetBuild = parent_env.Alias( 'img_png_build', library )
-
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='imgpng', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('img_png_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, [externLibPng], 'depngRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	library = envModule.LoadableModule( target='imgpng', source=objects, LIBS=libs )
+	targetBuild = parent_env.Alias( 'img_png_build', library )
+	
+	for l in library:
+		if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
+			install.append( envModule.Install( pathModule, l ) )
+			archive[ os.path.join( pathModule, l.name ) ] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'imgpng.pdb'))
+		archive['{}/imgpng.pdb'.format(pathPdb)] = envModule.File('imgpng.pdb')
+	
+	manifestUpdates = [
+		{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
+		{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
+		{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	for l in reversed( parent_targets[externLibPng][ 'runtimelibs' ] ):
+		manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
+	
+	manifest = envModule.File( 'src/module.xml' )
+	updateManifest = envModule.Command( manifest, manifest.srcnode(),
+		Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
+	Depends( updateManifest, library )
+	Depends(updateManifest, 'SConscript')
+	Depends( updateManifest, parent_targets[externLibPng][ 'runtimelibs' ] )
+	
+	install.append( envModule.Install( pathModule, updateManifest ) )
+	archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
 
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'imgpng.pdb'))
-	archive['{}/imgpng.pdb'.format(pathPdb)] = envModule.File('imgpng.pdb')
-
-manifestUpdates = [
-	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
-	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-for l in reversed( parent_targets[ 'lib_libpng' ][ 'runtimelibs' ] ):
-	manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
-	install.append( envModule.Install( pathModule, l ) )
-	archive[ os.path.join( pathModule, l.name ) ] = l
-
-manifest = envModule.File( 'src/module.xml' )
-updateManifest = envModule.Command( manifest, manifest.srcnode(),
-	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
-Depends(updateManifest, 'SConscript')
-Depends( updateManifest, parent_targets[ 'lib_libpng' ][ 'runtimelibs' ] )
-
-install.append( envModule.Install( pathModule, updateManifest ) )
-archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
-
-targetInstall = parent_env.Alias( 'img_png', install )
+targetInstall = parent_env.Alias('img_png', install)
 
 # source directory required for special commands
 srcdir = Dir( '.' ).srcnode().abspath

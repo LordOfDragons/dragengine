@@ -57,12 +57,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *FBXSkinCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *FBXSkinCreateModule( deLoadableModule *loadableModule ){
@@ -373,3 +375,38 @@ void fbxSkinModule::pAddPropertyImage( deSkinTexture &texture, const char *name,
 		throw;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class fbxSkinModuleInternal : public deInternalModule{
+public:
+	fbxSkinModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("FBXSkin");
+		SetDescription("Handles skins in the binary FBX format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtSkin);
+		SetDirectoryName("fbxskin");
+		GetPatternList().Add(".fbx");
+		SetDefaultExtension(".fbx");
+		SetPriority(1);
+		SetNoSaving(true);
+	}
+	
+	void CreateModule() override{
+		SetModule(FBXSkinCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *fbxSkinRegisterInternalModule(deModuleSystem *system){
+	return new fbxSkinModuleInternal(system);
+}
+#endif

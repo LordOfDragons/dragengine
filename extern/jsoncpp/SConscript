@@ -1,0 +1,165 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+libVersion = '1.9.6'
+srcdir = 'jsoncpp-{}'.format(libVersion)
+
+libLinkVersion = '26'
+libLinkName = 'jsoncpp'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst(
+		'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(
+			libLinkName, libLinkVersion))
+	staticFileName = envLibrary.subst(
+		'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.xz'.format(srcdir), 'jsoncpp', 'lib_jsoncpp_fetch')
+
+hasSystemJsonCpp = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_jsoncpp'] != TernaryVariableNo:
+	hasSystemJsonCpp = conf.CheckLibWithHeader(libLinkName,
+		['jsoncpp/json/json.h'], 'c++', 'Json::Features::all();')
+conf.Finish()
+
+if not hasSystemJsonCpp and envLibrary['with_system_jsoncpp'] == TernaryVariableYes:
+	Exit('Requested to use system jsoncpp but no usable jsoncpp found.')
+
+libs = [libLinkName]
+
+parent_report['use system jsoncpp'] = 'yes' if hasSystemJsonCpp else 'no'
+
+if hasSystemJsonCpp:
+	parent_targets['lib_jsoncpp'] = {
+		'name' : 'Internal JsonCpp library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : []}
+	Return()
+
+# build json cpp
+def jsoncppBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	cmakeBuildDir = buildDir.Dir('build').abspath
+	if not os.path.isdir(cmakeBuildDir):
+		os.mkdir(cmakeBuildDir)
+	
+	cppflags = []
+	script = createScriptHeader(env, cppflags=cppflags)
+	
+	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
+	
+	cmdline = []
+	cmdline.append('cmake')
+	cmdline.append('-G"Unix Makefiles"')
+	cmdline.append('-DBUILD_SHARED_LIBS=Off')
+	cmdline.append('-DBUILD_STATIC_LIBS=On')
+	cmdline.append('-DBUILD_TESTING=Off')
+	cmdline.append('-DJSONCPP_WITH_TESTS=Off')
+	cmdline.append('-DJSONCPP_WITH_EXAMPLES=Off')
+	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
+	
+	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
+	if cmakeCFlags:
+		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
+	
+	if env['OSWindows']:
+		cmdline.append('-DCMAKE_SYSTEM_NAME=Windows')
+		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+	elif env['platform_android'] != 'no':
+		cmdline.append('-DANDROID_ABI="{}"'.format(env['ANDROID_ABI']))
+		cmdline.append('-DANDROID_ARM_MODE="{}"'.format(env['ANDROID_ARCH']))
+		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DANDROID_TOOLCHAIN=clang')
+		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
+		cmdline.append('-DWITH_JAVA=0')
+		cmdline.append('-DREQUIRE_SIMD=1')
+		cmdline.append('-DWITH_SIMD=1')
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+	
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=True')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	cmdline.append('"{}"'.format(buildDir.Dir(srcdir).abspath))
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	# system jsoncpp is installed as 'jsoncpp/json' while building install it as 'json'
+	script.append('mv ../include/json ../include/jsoncpp || exit 1')
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building jsoncpp')
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.extend([
+	'include/jsoncpp/json/allocator.h',
+	'include/jsoncpp/json/assertions.h',
+	'include/jsoncpp/json/config.h',
+	'include/jsoncpp/json/forwards.h',
+	'include/jsoncpp/json/json.h',
+	'include/jsoncpp/json/json_features.h',
+	'include/jsoncpp/json/reader.h',
+	'include/jsoncpp/json/value.h',
+	'include/jsoncpp/json/version.h',
+	'include/jsoncpp/json/writer.h'])
+
+library = envLibrary.Command(targets, nodeArtifacts,
+	envLibrary.Action(jsoncppBuild, 'Build JsonCpp library'))
+
+envLibrary.SideEffect('#notParallelCMake', library)
+
+depends = parent_env.Alias('lib_jsoncpp', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'build', srcdir])
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_jsoncpp'] = {
+	'name' : 'Internal JsonCpp library',
+	'cpppath' : [envLibrary.Dir('include')],
+	'libpath' : [envLibrary.Dir('lib')],
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends}

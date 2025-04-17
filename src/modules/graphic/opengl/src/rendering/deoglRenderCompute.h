@@ -55,7 +55,6 @@ private:
 	const deoglPipeline *pPipelineUpdateElements;
 	const deoglPipeline *pPipelineUpdateElementGeometries;
 	const deoglPipeline *pPipelineClearGeometries;
-	const deoglPipeline *pPipelineFindContentNode;
 	const deoglPipeline *pPipelineFindContentElement;
 	const deoglPipeline *pPipelineFindContentSkyLight;
 	const deoglPipeline *pPipelineFindContentSkyLightGI;

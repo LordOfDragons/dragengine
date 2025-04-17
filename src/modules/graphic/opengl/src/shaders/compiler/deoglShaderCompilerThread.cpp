@@ -51,7 +51,7 @@ pContextIndex(contextIndex),
 pCompiler(nullptr),
 pExitThread(false),
 pState(State::prepare)
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 , pDisplay(None)
 #endif
 {
@@ -150,7 +150,8 @@ void deoglShaderCompilerThread::pCleanUp(){
 	eglMakeCurrent(pLanguage.GetRenderThread().GetContext().GetDisplay(),
 		EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	
-#elif defined OS_BEOS
+#elif defined OS_WEBWASM
+	emscripten_webgl_make_context_current(0);
 	
 #elif defined OS_MACOS
 	pGLContextMakeCurrent(nullptr);
@@ -158,7 +159,7 @@ void deoglShaderCompilerThread::pCleanUp(){
 #elif defined OS_W32
 	wglMakeCurrent(NULL, NULL);
 	
-#elif defined OS_UNIX
+#elif defined OS_UNIX_X11
 	if(pDisplay){
 		glXMakeCurrent(pDisplay, None, nullptr);
 		XCloseDisplay(pDisplay);
@@ -178,8 +179,10 @@ void deoglShaderCompilerThread::pActivateContext(){
 			context.GetCompileSurfaceAt(pContextIndex),
 			context.GetCompileSurfaceAt(pContextIndex),
 			context.GetCompileContextAt(pContextIndex)) == EGL_TRUE)
-			
-#elif defined OS_BEOS
+		
+#elif defined OS_WEBWASM
+		DEASSERT_TRUE(emscripten_webgl_make_context_current(
+			context.GetCompileContextAt(pContextIndex)) == EMSCRIPTEN_RESULT_SUCCESS)
 		
 #elif defined OS_MACOS
 		DETHROW_INFO(deeInvalidAction, "how to do this?")
@@ -215,7 +218,7 @@ void deoglShaderCompilerThread::pActivateContext(){
 			DETHROW_INFO(deeInvalidAction, "wglMakeCurrent failed");
 		}
 
-#elif defined OS_UNIX
+#elif defined OS_UNIX_X11
 		// on nVidia there can be strange segfaults if using context display connection.
 		// to be on the safe side use a unique display connection.
 		const char *dispName = getenv("DISPLAY");

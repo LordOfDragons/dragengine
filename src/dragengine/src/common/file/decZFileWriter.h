@@ -52,7 +52,6 @@ public:
 	
 private:
 	decBaseFileWriter::Ref pWriter;
-	const bool pPureMode;
 	
 	void *pZStream;
 	

@@ -415,7 +415,7 @@ DEBUG_RESET_TIMER
 	
 	// plan transparency. this affects lighting thus it comes earlier than RenderTransparentPasses
 	if( plan.GetHasTransparency() ){
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		plan.PlanTransparency( plan.GetTransparencyLayerCount() );
 		#else
 		plan.PlanTransparency( renderers.GetTransparencyCounter().GetCount() );
@@ -520,7 +520,7 @@ DEBUG_RESET_TIMER
 		
 		// lighting
 		if( plan.GetHasXRayTransparency() ){
-			#ifdef OS_ANDROID
+			#ifdef WITH_OPENGLES
 			plan.PlanTransparency( plan.GetTransparencyLayerCount() );
 			#else
 			plan.PlanTransparency( renderers.GetTransparencyCounter().GetCount() );

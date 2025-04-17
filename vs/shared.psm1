@@ -199,6 +199,29 @@ function DownloadArtifact {
 }
 
 
+# Update module version
+# ---------------------
+
+function UpdateModuleVersion {
+    param (
+        [Parameter(Mandatory=$true)][string]$SourceDir
+    )
+    
+    if (Test-Path "$SourceDir\..\SConscript") {
+        $ModuleVersion = Get-Version -Path "$SourceDir\..\SConscript"
+    } elseif (Test-Path "$SourceDir\..\..\SConscript") {
+        $ModuleVersion = Get-Version -Path "$SourceDir\..\..\SConscript"
+    } else {
+        throw "Missing SConscript"
+    }
+    
+    $Content = "#pragma once`r`n" +
+        "#define MODULE_VERSION `"$ModuleVersion`"`r`n"
+    
+    Set-Content -Path "$SourceDir\module_version.h" -Value $Content
+}
+
+
 # Various path constants
 ##########################
 
@@ -207,7 +230,7 @@ New-Variable -Name UrlExternArtifacts -Scope Global -Option ReadOnly -Force `
 
 
 
-New-Variable -Name PathDistDE -Value "Distribute\Dragengine\Application" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDE -Value "Dragengine\Application" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEBase -Value "$PathDistDE\@ProgramFiles\Dragengine" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEData -Value "$PathDistDEBase\Data" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEDataModules -Value "$PathDistDEData\modules" -Scope Global -Option ReadOnly -Force
@@ -217,12 +240,12 @@ New-Variable -Name PathDistDESystem -Value "$PathDistDE\@System" -Scope Global -
 New-Variable -Name PathDistDELauncherBin -Value "$PathDistDEBase\Launchers\Bin" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDELauncherShares -Value "$PathDistDEBase\Launchers\Share" -Scope Global -Option ReadOnly -Force
 
-New-Variable -Name PathDistDESdk -Value "Distribute\Dragengine\SDK" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDESdk -Value "Dragengine\SDK" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESdkBase -Value "$PathDistDESdk\@ProgramFiles\Dragengine\SDK" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESdkInc -Value "$PathDistDESdkBase\include" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDESdkLib -Value "$PathDistDESdkBase\lib" -Scope Global -Option ReadOnly -Force
 
-New-Variable -Name PathDistDEDebug -Value "Distribute\Dragengine\Debug" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistDEDebug -Value "Dragengine\Debug" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEPdbBase -Value "$PathDistDEDebug\@ProgramFiles\Dragengine" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEPdbData -Value "$PathDistDEPdbBase\Data" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEPdbDataModules -Value "$PathDistDEPdbData\modules" -Scope Global -Option ReadOnly -Force
@@ -231,7 +254,7 @@ New-Variable -Name PathDistDEPdbLauncherBin -Value "$PathDistDEPdbBase\Launchers
 
 
 
-New-Variable -Name PathDistIGDE -Value "Distribute\Igde\Application" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDE -Value "Igde\Application" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEBase -Value "$PathDistIGDE\@ProgramFiles\DEIGDE" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEData -Value "$PathDistIGDEBase\Data" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEDataModules -Value "$PathDistIGDEData\modules" -Scope Global -Option ReadOnly -Force
@@ -240,12 +263,12 @@ New-Variable -Name PathDistIGDESharesModules -Value "$PathDistIGDEShares\modules
 New-Variable -Name PathDistIGDESystem -Value "$PathDistIGDE\@System" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEBin -Value "$PathDistIGDEBase\Bin" -Scope Global -Option ReadOnly -Force
 
-New-Variable -Name PathDistIGDESdk -Value "Distribute\Igde\SDK" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDESdk -Value "Igde\SDK" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDESdkBase -Value "$PathDistIGDESdk\@ProgramFiles\DEIGDE\SDK" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDESdkInc -Value "$PathDistIGDESdkBase\include" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDESdkLib -Value "$PathDistIGDESdkBase\lib" -Scope Global -Option ReadOnly -Force
 
-New-Variable -Name PathDistIGDEDebug -Value "Distribute\Igde\Debug" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistIGDEDebug -Value "Igde\Debug" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEPdbBase -Value "$PathDistIGDEDebug\@ProgramFiles\DEIGDE" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEPdbData -Value "$PathDistIGDEPdbBase\Data" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistIGDEPdbDataModules -Value "$PathDistIGDEPdbData\modules" -Scope Global -Option ReadOnly -Force
@@ -254,5 +277,5 @@ New-Variable -Name PathDistIGDEPdbBin -Value "$PathDistIGDEPdbBase\Bin" -Scope G
 
 
 
-New-Variable -Name PathDistLive -Value "Distribute\Live" -Scope Global -Option ReadOnly -Force
+New-Variable -Name PathDistLive -Value "Live" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistLivePdb -Value "$PathDistLive" -Scope Global -Option ReadOnly -Force

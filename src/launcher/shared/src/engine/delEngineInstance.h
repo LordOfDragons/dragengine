@@ -40,6 +40,7 @@ struct android_input_buffer;
 #endif
 
 class delEngineModule;
+class delEngineModuleList;
 class delLauncher;
 class decStringList;
 class delGPModuleList;
@@ -137,6 +138,9 @@ public:
 	
 	/** \brief Load modules. */
 	virtual void LoadModules() = 0;
+	
+	/** \brief List of internal modules. */
+	virtual void GetInternalModules(delEngineModuleList &list) = 0;
 	
 	/** \brief Command get module status. */
 	virtual int GetModuleStatus( const char *moduleName, const char *moduleVersion ) = 0;

@@ -670,6 +670,41 @@ void delEngineInstanceThreaded::LoadModules(){
 	}
 }
 
+void delEngineInstanceThreaded::GetInternalModules(delEngineModuleList &list){
+	GetLauncher().GetLogger()->LogInfoFormat(GetLauncher().GetLogSource(),
+		"Sending eccGetInternalModules to process %d", (int)pProcessID);
+	
+	WriteUCharToPipe(delEngineProcess::eccGetInternalModules);
+	
+	if(ReadUCharFromPipe() != delEngineProcess::ercSuccess){
+		DETHROW(deeInvalidAction);
+	}
+	
+	const int count = ReadUShortFromPipe();
+	decString string;
+	int i;
+	
+	for(i=0; i<count; i++){
+		const delEngineModule::Ref emod(delEngineModule::Ref::New(new delEngineModule));
+		emod->SetType((deModuleSystem::eModuleTypes)ReadUCharFromPipe());
+		ReadString16FromPipe(string);
+		emod->SetName(string);
+		ReadString16FromPipe(string);
+		emod->SetDescription(decUnicodeString::NewFromUTF8(string));
+		ReadString16FromPipe(string);
+		emod->SetAuthor(decUnicodeString::NewFromUTF8(string));
+		ReadString16FromPipe(string);
+		emod->SetVersion(string);
+		ReadString16FromPipe(string);
+		emod->SetDirectoryName(string);
+		ReadString16FromPipe(string);
+		emod->SetPattern(string);
+		emod->SetPriority(ReadUShortFromPipe());
+		emod->SetIsFallback(ReadUCharFromPipe() != 0);
+		list.Add(emod);
+	}
+}
+
 int delEngineInstanceThreaded::GetModuleStatus( const char *moduleName, const char *moduleVersion ){
 	if( ! moduleName ){
 		DETHROW_INFO( deeNullPointer, "moduleName" );

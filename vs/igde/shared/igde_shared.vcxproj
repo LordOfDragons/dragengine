@@ -992,18 +992,21 @@
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>deigdeshared</TargetName>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\deigdeshared\</OutDir>
+    <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>deigdeshared</TargetName>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\deigdeshared\</OutDir>
+    <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <TargetName>deigdeshared</TargetName>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\deigdeshared\</OutDir>
+    <PublicIncludeDirectories>$(SolutionDir)$(Platform)\$(Configuration)\include</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -1077,7 +1080,7 @@
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -FoxDir "$(SolutionDir)extern\fox\fox-1.7.81-vc64\lib"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -FoxDir "$(SolutionDir)extern\fox\fox-1.7.81-vc64\lib"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -BuildVersion $(BuildVersion)</Command>
@@ -1107,7 +1110,7 @@
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -FoxDir "$(SolutionDir)extern\fox\fox-1.7.81-vc64\lib"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -FoxDir "$(SolutionDir)extern\fox\fox-1.7.81-vc64\lib"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -BuildVersion $(BuildVersion)</Command>
@@ -1137,7 +1140,7 @@
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -FoxDir "$(SolutionDir)extern\fox\fox-1.7.81-vc64\lib"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -FoxDir "$(SolutionDir)extern\fox\fox-1.7.81-vc64\lib"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\shared\src" -BuildVersion $(BuildVersion)</Command>

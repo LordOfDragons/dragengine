@@ -301,12 +301,14 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DSCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -1896,7 +1898,7 @@ void deScriptingDragonScript::pRemoveVFSContainerHideScriptDirectory(){
 	pVFSContainerHideScriptDirectory = nullptr;
 }
 
-void deScriptingDragonScript::pPreprocessEventDpiAware(deInputEvent& event) const{
+void deScriptingDragonScript::pPreprocessEventDpiAware(deInputEvent &event){
 	if(pClsEngine->GetDpiAware()){
 		return;
 	}
@@ -1907,10 +1909,59 @@ void deScriptingDragonScript::pPreprocessEventDpiAware(deInputEvent& event) cons
 	}
 	*/
 
-	if(event.GetType() != deInputEvent::eeMouseMove){
-		return;
-	}
+	switch(event.GetType()){
+	case deInputEvent::eeMouseMove:
+		pPreprocessMouseMoveDpiAware(event);
+		break;
 
-	event.SetX(pClsGraSys->CoordWindows2CanvasAlways(event.GetX()));
-	event.SetY(pClsGraSys->CoordWindows2CanvasAlways(event.GetY()));
+	default:
+		break;
+	}
 }
+
+void deScriptingDragonScript::pPreprocessMouseMoveDpiAware(deInputEvent &event){
+	// due to dpi scaling the mouse movement can drop below 1 but still above 0.
+	// if this is not handled correctly tiny mouse movements drop causing the mouse
+	// pointer to move like sticky glue. to solve this too small changes are
+	// accumulated over time to not drop them
+	pDpiAccumMouseMoved.x += event.GetX();
+	pDpiAccumMouseMoved.y += event.GetY();
+	
+	event.SetX(pClsGraSys->CoordWindows2CanvasAlways(pDpiAccumMouseMoved.x));
+	event.SetY(pClsGraSys->CoordWindows2CanvasAlways(pDpiAccumMouseMoved.y));
+
+	pDpiAccumMouseMoved.x -= pClsGraSys->CoordCanvas2WindowAlways(event.GetX());
+	pDpiAccumMouseMoved.y -= pClsGraSys->CoordCanvas2WindowAlways(event.GetY());
+}
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class dedsModuleInternal : public deInternalModule{
+public:
+	dedsModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DragonScript");
+		SetDescription("Provides access to the Drag[en]gine using the DragonScript\
+scripting language. Loaded by default is a basic script package with\
+mathematical classes. Additional frameworks can be loaded depending\
+on the needs of your game. This is an interprated language hence\
+if you need time critical calculations using another language might be better.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(DS_MODULE_VERSION);
+		SetType(deModuleSystem::emtScript);
+		SetDirectoryName("dragonscript");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DSCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dedsRegisterInternalModule(deModuleSystem *system){
+	return new dedsModuleInternal(system);
+}
+#endif

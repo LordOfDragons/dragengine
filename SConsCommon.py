@@ -61,24 +61,26 @@ def untarArchive(target, source, umask=0o077):
 # library: Library to get parameters from. Has to be a parent_env type target
 #          containing optionally 'libs', 'cppflags', cpppath', 'libpath'.
 # libs: List to appends link libraries to
-def appendLibrary(env, library, libs, withLibs=True):
-	if withLibs:
-		if 'libs' in library:
+def appendLibrary(env, library, libs, withLibs=True, internalModule=False):
+	if not internalModule:
+		if withLibs and 'libs' in library:
 			libs.extend(library['libs'])
+		if 'libpath' in library:
+			env.Append(LIBPATH = library['libpath'])
 	if 'cpppath' in library:
 		env.Append(CPPPATH = library['cpppath'])
-	if 'libpath' in library:
-		env.Append(LIBPATH = library['libpath'])
 	if 'cppflags' in library:
 		env.Append(CPPFLAGS = library['cppflags'])
+	if 'linkflags' in library:
+		env.Append(LINKFLAGS = library['linkflags'])
 
 # this is a ugly hack but there is no other way to get it working. we have to force
 # the compiler to include the entire content of the static library. if not done like
 # this the compiler optimizes out some symbols leading to link errors with users of
 # the shared library. we can though not use the whole-archive for everything
 # otheriwse some other libraries are included in a bad way.
-def appendLibraryWholeStatic(env, library, libs):
-	if 'libs' in library:
+def appendLibraryWholeStatic(env, library, libs, internalModule=False):
+	if not internalModule and 'libs' in library:
 		linkWholeArchive = library['linkWholeArchive'] if 'linkWholeArchive' in library else []
 		for l in library['libs']:
 			if l in linkWholeArchive:

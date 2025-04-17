@@ -113,7 +113,7 @@ void deoglPipelineState::Reset(){
 		pglClipControl( GL_LOWER_LEFT, pClipControl ? GL_ZERO_TO_ONE : GL_NEGATIVE_ONE_TO_ONE );
 	}
 	
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	ENABLE_GL_STATE( pEnableDepthClamp, GL_DEPTH_CLAMP )
 	#endif
 }
@@ -347,7 +347,7 @@ void deoglPipelineState::EnableDepthClamp( bool enable ){
 	
 	pEnableDepthClamp = enable;
 	
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	ENABLE_GL_STATE( enable, GL_DEPTH_CLAMP )
 	#endif
 }

@@ -49,8 +49,6 @@ private:
 	
 	
 	
-	deoglRenderThread &pRenderThread;
-	
 	deoglSPBlockSSBO::Ref pSSBOInput;
 	deoglSPBlockSSBO::Ref pSSBOResult;
 

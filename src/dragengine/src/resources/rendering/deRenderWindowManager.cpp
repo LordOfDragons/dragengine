@@ -80,20 +80,29 @@ deRenderWindow *deRenderWindowManager::CreateRenderWindow(){
 }
 
 #ifdef OS_ANDROID
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside( void *window )
+deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(void *window)
+#define IMPLEMENT_CREATERENDERWINDOWINSIDE
+
+#elif defined OS_WEBWASM
+deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(void *window)
+#define IMPLEMENT_CREATERENDERWINDOWINSIDE
+
+#elif defined OS_BEOS
+deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(BWindow *window)
+#define IMPLEMENT_CREATERENDERWINDOWINSIDE
+
+#elif defined OS_UNIX_X11
+deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(Window window)
+#define IMPLEMENT_CREATERENDERWINDOWINSIDE
+
+#elif defined OS_W32
+deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(HWND window)
+#define IMPLEMENT_CREATERENDERWINDOWINSIDE
 #endif
-#ifdef OS_BEOS
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside( BWindow *window )
-#endif
-#if defined OS_UNIX && defined HAS_LIB_X11
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside( Window window )
-#endif
-#ifdef OS_W32
-deRenderWindow *deRenderWindowManager::CreateRenderWindowInside( HWND window )
-#endif
-#if ( defined OS_UNIX && defined HAS_LIB_X11 ) || defined OS_BEOS || defined OS_W32 || defined OS_ANDROID
+
+#ifdef IMPLEMENT_CREATERENDERWINDOWINSIDE
 {
-	deRenderWindow *renderWindow = NULL;
+	deRenderWindow *renderWindow = nullptr;
 	
 	try{
 		renderWindow = new deRenderWindow( this );

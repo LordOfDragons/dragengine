@@ -10,10 +10,10 @@
 static pthread_t pAudioThreadPid = 0;
 static pthread_t pMainThreadPid = 0;
 
-void dbgInitThreadCheck(){
+void oaldbgInitThreadCheck(){
 	pAudioThreadPid = pthread_self();
 }
-void dbgInitMainThreadCheck(){
+void oaldbgInitMainThreadCheck(){
 	pMainThreadPid = pthread_self();
 }
 #endif
@@ -22,15 +22,15 @@ void dbgInitMainThreadCheck(){
 static DWORD pAudioThreadPid = 0;
 static DWORD pMainThreadPid = 0;
 
-void dbgInitThreadCheck(){
+void oaldbgInitThreadCheck(){
 	pAudioThreadPid = GetCurrentThreadId();
 }
-void dbgInitMainThreadCheck(){
+void oaldbgInitMainThreadCheck(){
 	pMainThreadPid = GetCurrentThreadId();
 }
 #endif
 
-void dbgOnMainThreadCheck(){
+void oaldbgOnMainThreadCheck(){
 	#ifdef OS_UNIX
 	if( pthread_self() != pMainThreadPid ){
 		DETHROW( deeInvalidAction );

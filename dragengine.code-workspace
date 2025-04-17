@@ -1,119 +1,235 @@
 {
 	"folders": [
 		{
-			"name": "dragengine",
+			"name": "Drag[en]gine",
 			"path": "src/dragengine"
 		},
 		{
-			"name": "dragonscript",
-			"path": "src/modules/scripting/dragonscript"
+			"name": "Module AI: DEAI",
+			"path": "src/modules/ai/deai"
 		},
 		{
-			"name": "opengl",
-			"path": "src/modules/graphic/opengl"
-		},
-		{
-			"name": "openal",
-			"path": "src/modules/audio/openal"
-		},
-		{
-			"name": "openxr",
-			"path": "src/modules/vr/openxr"
-		},
-		{
-			"name": "basic",
-			"path": "src/modules/network/basic"
-		},
-		{
-			"name": "xsystem",
-			"path": "src/modules/input/xsystem"
-		},
-		{
-			"name": "simplyquit",
-			"path": "src/modules/crashrecovery/simplyquit"
-		},
-		{
-			"name": "deanimator",
-			"path": "src/modules/animator/deanimator"
-		},
-		{
-			"name": "deanim",
+			"name": "Module Animation: DEAnim",
 			"path": "src/modules/animation/deanim"
 		},
 		{
-			"name": "android",
-			"path": "src/modules/input/android"
+			"name": "Module Animator: DEAnimator",
+			"path": "src/modules/animator/deanimator"
 		},
 		{
-			"name": "delga",
+			"name": "Module Archive: Delga",
 			"path": "src/modules/archive/delga"
 		},
 		{
-			"name": "webm",
-			"path": "src/modules/video/webm"
+			"name": "Module Audio: Null",
+			"path": "src/modules/audio/null"
 		},
 		{
-			"name": "steamsdk",
-			"path": "src/modules/service/steamsdk"
+			"name": "Module Audio: OpenAL",
+			"path": "src/modules/audio/openal"
 		},
 		{
-			"name": "eossdk",
+			"name": "Module Combined: FBX",
+			"path": "src/modules/combined/fbx"
+		},
+		{
+			"name": "Module Crash-Recovery: Simply Quit",
+			"path": "src/modules/crashrecovery/simplyquit"
+		},
+		{
+			"name": "Module Crash-Recovery: BasicQuit",
+			"path": "src/modules/crashrecovery/basicrecovery"
+		},
+		{
+			"name": "Module Font: DEFont",
+			"path": "src/modules/font/defont"
+		},
+		{
+			"name": "Module Graphic: Null",
+			"path": "src/modules/graphic/null"
+		},
+		{
+			"name": "Module Graphic: OpenGL",
+			"path": "src/modules/graphic/opengl"
+		},
+		{
+			"name": "Module Image: IES",
+			"path": "src/modules/image/ies"
+		},
+		{
+			"name": "Module Image: JPEG",
+			"path": "src/modules/image/jpeg"
+		},
+		{
+			"name": "Module Image: PNG",
+			"path": "src/modules/image/png"
+		},
+		{
+			"name": "Module Image: PNG-3D",
+			"path": "src/modules/image/png3d"
+		},
+		{
+			"name": "Module Image: TGA",
+			"path": "src/modules/image/tga"
+		},
+		{
+			"name": "Module Image: WebP",
+			"path": "src/modules/image/webp"
+		},
+		{
+			"name": "Module Image: WebP3D",
+			"path": "src/modules/image/webp3d"
+		},
+		{
+			"name": "Module Input: Android",
+			"path": "src/modules/input/android"
+		},
+		{
+			"name": "Module Input: Console",
+			"path": "src/modules/input/console"
+		},
+		{
+			"name": "Module Input: XSystem",
+			"path": "src/modules/input/xsystem"
+		},
+		{
+			"name": "Module Language-Pack: DELangPack",
+			"path": "src/modules/langpack/delangpack"
+		},
+		{
+			"name": "Module Model: DEModel",
+			"path": "src/modules/model/demodel"
+		},
+		{
+			"name": "Module Network: Basic",
+			"path": "src/modules/network/basic"
+		},
+		{
+			"name": "Module Occlusion-Mesh: DEOcclusionMesh",
+			"path": "src/modules/occlusionmesh/deocclusionmesh"
+		},
+		{
+			"name": "Module Physics: Bullet",
+			"path": "src/modules/physics/bullet"
+		},
+		{
+			"name": "Module Rig: DERig",
+			"path": "src/modules/rig/derig"
+		},
+		{
+			"name": "Module Service: EOS SDK",
 			"path": "src/modules/service/eossdk"
 		},
 		{
-			"name": "modio",
+			"name": "Module Service: Modio",
 			"path": "src/modules/service/modio"
 		},
 		{
-			"name": "shared",
-			"path": "src/launcher/shared"
+			"name": "Module Service: Steam SDK",
+			"path": "src/modules/service/steamsdk"
 		},
 		{
-			"name": "console",
+			"name": "Module Script: DragonScript",
+			"path": "src/modules/scripting/dragonscript"
+		},
+		{
+			"name": "Module Skin: DESkin",
+			"path": "src/modules/skin/deskin"
+		},
+		{
+			"name": "Module Sound: OGG",
+			"path": "src/modules/sound/oggvorbis"
+		},
+		{
+			"name": "Module Synthesizer: DESynthesizer",
+			"path": "src/modules/synthesizer/desynthesizer"
+		},
+		{
+			"name": "Module Video: Animated PNG",
+			"path": "src/modules/video/apng"
+		},
+		{
+			"name": "Module Video: Theora",
+			"path": "src/modules/video/theora"
+		},
+		{
+			"name": "Module Video: WebM",
+			"path": "src/modules/video/webm"
+		},
+		{
+			"name": "Module VR: Null",
+			"path": "src/modules/vr/null"
+		},
+		{
+			"name": "Module VR: OpenVR",
+			"path": "src/modules/vr/openvr"
+		},
+		{
+			"name": "Module VR: OpenXR",
+			"path": "src/modules/vr/openxr"
+		},
+		{
+			"name": "Launcher: Console",
 			"path": "src/launcher/console"
 		},
 		{
-			"name": "gui",
+			"name": "Launcher: GUI",
 			"path": "src/launcher/gui"
 		},
 		{
-			"name": "deigde",
+			"name": "Launcher: Android",
+			"path": "src/launcher/android"
+		},
+		{
+			"name": "Launcher: Shared",
+			"path": "src/launcher/shared"
+		},
+		{
+			"name": "IGDE",
 			"path": "src/deigde/deigde"
 		},
 		{
-			"name": "animator",
+			"name": "Editor: Animator",
 			"path": "src/deigde/editors/animator"
 		},
 		{
-			"name": "conversation",
+			"name": "Editor: Conversation",
 			"path": "src/deigde/editors/conversation"
 		},
 		{
-			"name": "gameDefinition",
+			"name": "Editor: Game Definition",
 			"path": "src/deigde/editors/gameDefinition"
 		},
 		{
-			"name": "world",
-			"path": "src/deigde/editors/world"
-		},
-		{
-			"name": "project",
+			"name": "Editor: Project",
 			"path": "src/deigde/editors/project"
 		},
 		{
-			"name": "dragengine-import-export",
-			"path": "src/tools/blender/dragengine-import-export"
+			"name": "Editor: World",
+			"path": "src/deigde/editors/world"
 		},
 		{
-			"name": "vulkan",
+			"name": "Shared: Vulkan",
 			"path": "src/shared/vulkan"
 		},
 		{
-			"name": ".github",
+			"name": "External Dependencies",
+			"path": "extern"
+		},
+		{
+			"name": "Windows: Visual Studio",
+			"path": "vs"
+		},
+		{
+			"name": "Blender: Add-On",
+			"path": "src/tools/blender/dragengine-import-export"
+		},
+		{
+			"name": "GitHub",
 			"path": ".github"
 		},
 		{
-			"name": "detesting",
+			"name": "Testing",
 			"path": "detesting"
 		}
 	],

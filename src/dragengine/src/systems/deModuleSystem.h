@@ -26,11 +26,14 @@
 #define _DEMODULESYSTEM_H_
 
 #include "../common/collection/decObjectOrderedSet.h"
+#include "../common/file/decPath.h"
 
 class deEngine;
-class deLoadableModule;
 class deBaseModule;
+class deInternalModule;
+class deLoadableModule;
 class deVirtualFileSystem;
+class deInternalModulesLibrary;
 
 
 // definitions
@@ -158,7 +161,7 @@ public:
 private:
 	deEngine *pEngine;
 	decObjectOrderedSet pModules;
-	
+	deInternalModulesLibrary *pInternalModulesLibrary;
 	
 	
 public:
@@ -334,12 +337,21 @@ public:
 	 * All others are multiple type.
 	 */
 	static bool IsSingleType( eModuleTypes type );
+	
+	/**
+	 * Register internal module.
+	 * 
+	 * For internal use only!
+	 */
+	typedef deInternalModule* (*FPRegisterInternalModule)(deModuleSystem*);
+	static bool RegisterInternalModule(FPRegisterInternalModule fp);
 	/*@}*/
 	
 	
 	
 private:
-	void pDetectModulesIn( const char *basePath, const char *directory, eModuleTypes type );
+	void pAddInternalModules(const decPath &pathModules);
+	void pDetectModulesIn(const char *basePath, const char *directory, eModuleTypes type);
 };
 
 #endif

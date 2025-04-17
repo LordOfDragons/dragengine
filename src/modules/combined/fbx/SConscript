@@ -4,7 +4,6 @@ import os
 Import('parent_env parent_targets parent_report')
 
 
-
 # shared
 ##########
 
@@ -12,6 +11,9 @@ envModule = parent_env.Clone()
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+internalModule = envModule['build_comb_fbx_internal']
+parent_report['build FBX modules'] = 'yes (internal)' if internalModule else 'yes'
 
 # fetch values in expanded form for later use
 versionString = '1.20'
@@ -28,7 +30,7 @@ globFiles(envModule, 'src/shared', '*.h', headers)
 objshared = [envModule.SharedObject(s) for s in sources]
 
 libs = []
-appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
 
 envModule.Replace(LIBS = libs)
 
@@ -51,38 +53,55 @@ globFiles(envModule, 'src/model', '*.h', headers)
 clocDepends.extend(sources)
 clocDepends.extend(headers)
 
-objects = [envModule.SharedObject(s) for s in sources]
-objects.extend(objshared)
-
-library = envModule.LoadableModule('mdlfbx', objects)
-targetBuild = envModule.Alias('mdl_fbx_build', library)
-
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith(envModule['SHLIBSUFFIX']):
-		install.append(envModule.Install(pathModule, l))
-		archive[os.path.join(pathModule, l.name)] = l
 
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'mdlfbx.pdb'))
-	archive['{}/mdlfbx.pdb'.format(pathPdb)] = envModule.File('mdlfbx.pdb')
-
-manifestUpdates = [
-	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
-	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
-	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-manifest = envModule.File('src/model/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-Depends(updateManifest, 'SConscript')
-
-install.append(envModule.Install(pathModule, updateManifest))
-archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	objects.extend(objshared)
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='mdlfbx', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('mdl_fbx_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, [], 'fbxModelRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	objects.extend(objshared)
+	
+	library = envModule.LoadableModule('mdlfbx', objects)
+	targetBuild = envModule.Alias('mdl_fbx_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'mdlfbx.pdb'))
+		archive['{}/mdlfbx.pdb'.format(pathPdb)] = envModule.File('mdlfbx.pdb')
+	
+	manifestUpdates = [
+		{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	manifest = envModule.File('src/model/module.xml')
+	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	Depends(updateManifest, library)
+	Depends(updateManifest, 'SConscript')
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 targetInstall = envModule.Alias('mdl_fbx', install)
 
@@ -108,37 +127,53 @@ globFiles(envModule, 'src/rig', '*.h', headers)
 clocDepends.extend(sources)
 clocDepends.extend(headers)
 
-objects = [envModule.SharedObject(s) for s in sources]
-objects.extend(objshared)
-
-library = envModule.LoadableModule('rigfbx', objects)
-targetBuild = envModule.Alias('rig_fbx_build', library)
-
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith(envModule['SHLIBSUFFIX']):
-		install.append(envModule.Install(pathModule, l))
-		archive[os.path.join(pathModule, l.name)] = l
 
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'rigfbx.pdb'))
-	archive['{}/rigfbx.pdb'.format(pathPdb)] = envModule.File('rigfbx.pdb')
-
-manifestUpdates = [
-	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
-	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
-	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-manifest = envModule.File('src/rig/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-
-install.append(envModule.Install(pathModule, updateManifest))
-archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='rigfbx', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('rig_fbx_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, [], 'fbxRigRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	objects.extend(objshared)
+	
+	library = envModule.LoadableModule('rigfbx', objects)
+	targetBuild = envModule.Alias('rig_fbx_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'rigfbx.pdb'))
+		archive['{}/rigfbx.pdb'.format(pathPdb)] = envModule.File('rigfbx.pdb')
+	
+	manifestUpdates = [
+		{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	manifest = envModule.File('src/rig/module.xml')
+	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	Depends(updateManifest, library)
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 targetInstall = envModule.Alias('rig_fbx', install)
 
@@ -164,37 +199,53 @@ globFiles(envModule, 'src/animation', '*.h', headers)
 clocDepends.extend(sources)
 clocDepends.extend(headers)
 
-objects = [envModule.SharedObject(s) for s in sources]
-objects.extend(objshared)
-
-library = envModule.LoadableModule('animfbx', objects)
-targetBuild = envModule.Alias('anim_fbx_build', library)
-
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith(envModule['SHLIBSUFFIX']):
-		install.append(envModule.Install(pathModule, l))
-		archive[os.path.join(pathModule, l.name)] = l
 
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'animfbx.pdb'))
-	archive['{}/animfbx.pdb'.format(pathPdb)] = envModule.File('animfbx.pdb')
-
-manifestUpdates = [
-	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
-	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
-	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-manifest = envModule.File('src/animation/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-
-install.append(envModule.Install(pathModule, updateManifest))
-archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='animfbx', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('anim_fbx_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, [], 'fbxAnimRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	objects.extend(objshared)
+	
+	library = envModule.LoadableModule('animfbx', objects)
+	targetBuild = envModule.Alias('anim_fbx_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'animfbx.pdb'))
+		archive['{}/animfbx.pdb'.format(pathPdb)] = envModule.File('animfbx.pdb')
+	
+	manifestUpdates = [
+		{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	manifest = envModule.File('src/animation/module.xml')
+	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	Depends(updateManifest, library)
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 targetInstall = envModule.Alias('anim_fbx', install)
 
@@ -220,37 +271,53 @@ globFiles(envModule, 'src/skin', '*.h', headers)
 clocDepends.extend(sources)
 clocDepends.extend(headers)
 
-objects = [envModule.SharedObject(s) for s in sources]
-objects.extend(objshared)
-
-library = envModule.LoadableModule('skinfbx', objects)
-targetBuild = envModule.Alias('skin_fbx_build', library)
-
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith(envModule['SHLIBSUFFIX']):
-		install.append(envModule.Install(pathModule, l))
-		archive[os.path.join(pathModule, l.name)] = l
 
-if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
-	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
-	install.append(envModule.Install(pathPdb, 'skinfbx.pdb'))
-	archive['{}/skinfbx.pdb'.format(pathPdb)] = envModule.File('skinfbx.pdb')
-
-manifestUpdates = [
-	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
-	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
-	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-manifest = envModule.File('src/skin/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-
-install.append(envModule.Install(pathModule, updateManifest))
-archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='skinfbx', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('skin_fbx_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, [], 'fbxSkinRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	objects.extend(objshared)
+	
+	library = envModule.LoadableModule('skinfbx', objects)
+	targetBuild = envModule.Alias('skin_fbx_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'skinfbx.pdb'))
+		archive['{}/skinfbx.pdb'.format(pathPdb)] = envModule.File('skinfbx.pdb')
+	
+	manifestUpdates = [
+		{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	manifest = envModule.File('src/skin/module.xml')
+	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	Depends(updateManifest, library)
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 targetInstall = envModule.Alias('skin_fbx', install)
 

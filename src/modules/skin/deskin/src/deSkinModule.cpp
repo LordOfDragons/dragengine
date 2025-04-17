@@ -62,12 +62,14 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DESkinCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -1653,3 +1655,37 @@ void deSkinModule::pWriteProperty( decXmlWriter &writer, const deSkin &skin, deS
 	
 	property.Visit( writeProperty );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class desmModuleInternal : public deInternalModule{
+public:
+	desmModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DESkin");
+		SetDescription("Handles skins in the XML Drag[en]gine skin format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtSkin);
+		SetDirectoryName("deskin");
+		GetPatternList().Add(".deskin");
+		SetDefaultExtension(".deskin");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DESkinCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *desmRegisterInternalModule(deModuleSystem *system){
+	return new desmModuleInternal(system);
+}
+#endif

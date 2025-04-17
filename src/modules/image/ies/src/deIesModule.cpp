@@ -36,12 +36,14 @@
 #include <dragengine/resources/image/deImage.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *IESCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -103,3 +105,37 @@ void deIesModule::SaveImage( decBaseFileWriter&, const deImage & ){
 	// TODO not supported so far
 	DETHROW_INFO( deeInvalidAction, "not supported" );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deIesModuleInternal : public deInternalModule{
+public:
+	deIesModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("IES");
+		SetDescription("Handles photometric IES files loading them as Equi-Rectangular 3D images.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("ies");
+		GetPatternList().Add(".ies");
+		SetDefaultExtension(".ies");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(IESCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deIesRegisterInternalModule(deModuleSystem *system){
+	return new deIesModuleInternal(system);
+}
+#endif

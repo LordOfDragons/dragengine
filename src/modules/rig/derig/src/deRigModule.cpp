@@ -57,6 +57,7 @@
 // Export definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,7 +65,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DERigCreateModule( deLoadableModule *loadable
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry function
@@ -1554,3 +1555,37 @@ const char *tagName, bool linearConstraint ){
 		writer.WriteClosingTag( tagName );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class dermModuleInternal : public deInternalModule{
+public:
+	dermModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DERig");
+		SetDescription("Handles rigs in the XML Drag[en]gine rig format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtRig);
+		SetDirectoryName("derig");
+		GetPatternList().Add(".derig");
+		SetDefaultExtension(".derig");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DERigCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dermRegisterInternalModule(deModuleSystem *system){
+	return new dermModuleInternal(system);
+}
+#endif

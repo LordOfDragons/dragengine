@@ -38,13 +38,9 @@
 #include <strsafe.h>
 #endif
 
-#ifdef OS_UNIX
-#ifndef OS_ANDROID
-#ifndef OS_BEOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
 #include <execinfo.h>
 #include <unistd.h>
-#endif
-#endif
 #endif
 
 #ifdef OS_ANDROID
@@ -405,7 +401,7 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined OS_ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -534,7 +530,7 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined OS_ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -643,7 +639,7 @@ static void signalBusError( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined OS_ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	

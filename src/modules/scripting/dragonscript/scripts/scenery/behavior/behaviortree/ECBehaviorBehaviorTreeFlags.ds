@@ -112,8 +112,8 @@ pin Dragengine.Utils
  * \code{.xml}
  * <action name='flags.check' id='waiting'>
  *    <parameter name='flag'>arrived at target</parameter>
- *    <parameter name='wait'>
- *    <parameter name='reset'>
+ *    <parameter name='wait'/>
+ *    <parameter name='reset'/>
  * </action>
  * \endcode
  * 

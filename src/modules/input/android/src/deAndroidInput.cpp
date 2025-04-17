@@ -28,13 +28,13 @@
 #include <unistd.h>
 
 #include "deAndroidInput.h"
-#include "deaiDevice.h"
-#include "deaiDeviceAxis.h"
-#include "deaiDeviceButton.h"
-#include "deaiDeviceKeyboard.h"
-#include "deaiDeviceMouse.h"
-#include "deaiDeviceManager.h"
-#include "overlay/deaiOverlaySystem.h"
+#include "deainpDevice.h"
+#include "deainpDeviceAxis.h"
+#include "deainpDeviceButton.h"
+#include "deainpDeviceKeyboard.h"
+#include "deainpDeviceMouse.h"
+#include "deainpDeviceManager.h"
+#include "overlay/deainpOverlaySystem.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSAndroid.h>
@@ -49,12 +49,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *AndroidInpCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -119,14 +121,14 @@ bool deAndroidInput::Init(){
 		
 		pKeyStates = new bool[ 256 ];
 		
-		pDevices = new deaiDeviceManager( *this );
+		pDevices = new deainpDeviceManager( *this );
 		pDevices->UpdateDeviceList();
 		pDevices->LogDevices();
 		
 		pCenterPointer();
 		pIsListening = true;
 		
-		pOverlaySystem = new deaiOverlaySystem( *this );
+		pOverlaySystem = new deainpOverlaySystem( *this );
 		GetGameEngine()->GetGraphicSystem()->SetInputOverlayCanvas( pOverlaySystem->GetCanvas() );
 		
 		pInputTimer.Reset();
@@ -243,7 +245,7 @@ void deAndroidInput::SetFeedbackValue( int device, int feedback, float value ){
 }
 
 int deAndroidInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode ){
-	const deaiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
+	const deainpDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
 	if( device != rdevice.GetIndex() ){
 		return -1;
 	}
@@ -254,7 +256,7 @@ int deAndroidInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes k
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const deaiDeviceButton &button = rdevice.GetButtonAt( i );
+		const deainpDeviceButton &button = rdevice.GetButtonAt( i );
 		
 		if( button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority ){
 			bestButton = i;
@@ -266,7 +268,7 @@ int deAndroidInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes k
 }
 
 int deAndroidInput::ButtonMatchingKeyChar( int device, int character ){
-	const deaiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
+	const deainpDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
 	if( device != rdevice.GetIndex() ){
 		return -1;
 	}
@@ -485,7 +487,7 @@ void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
 			break;
 		}
 		
-		deaiDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
 		ab.SetPressed(true);
 		
 		AddKeyPress(pDevices->GetKeyboard()->GetIndex(), button,
@@ -506,7 +508,7 @@ void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
 			break;
 		}
 		
-		deaiDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
 		ab.SetPressed(false);
 		
 		AddKeyRelease(pDevices->GetKeyboard()->GetIndex(), button,
@@ -562,7 +564,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
 		ab.SetPressed(true);
 		
 		AddMousePress(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -588,7 +590,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
 		ab.SetPressed(false);
 		
 		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -676,7 +678,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
 		ab.SetPressed(false);
 		
 		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -740,3 +742,31 @@ int deAndroidInput::pModifiersFromMetaState(int32_t metaState) const{
 	
 	return modifiers;
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deainpModuleInternal : public deInternalModule{
+public:
+	deainpModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("AndroidInput");
+		SetDescription("Processes input of Android Operating systems.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtInput);
+		SetDirectoryName("android");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(AndroidInpCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deainpRegisterInternalModule(deModuleSystem *system){
+	return new deainpModuleInternal(system);
+}
+#endif

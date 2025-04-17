@@ -10,8 +10,9 @@
                 "${workspaceFolder}/../../../../extern/modio/build/modio-sdk/platform/android"
             ],
             "defines": [
-                "DS_MODULE_VERSION=\"9999\"",
-                "MOD_ENTRY_POINT_ATTR="
+                "MODULE_VERSION=\"9999\"",
+                "MOD_ENTRY_POINT_ATTR=",
+                "WITH_INTERNAL_MODULE="
             ],
             "cStandard": "c11",
             "cppStandard": "c++11"

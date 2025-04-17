@@ -57,6 +57,7 @@
 // Export Definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -64,7 +65,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *SPCreateModule( deLoadableModule *loadableMod
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry Function

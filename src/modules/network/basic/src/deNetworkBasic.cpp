@@ -61,6 +61,7 @@
 // Export Definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -68,7 +69,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *BasicNetworkCreateModule( deLoadableModule *l
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry Function
@@ -566,3 +567,35 @@ void deNetworkBasic::pProcessConnections( float elapsedTime ){
 		connection = connection->GetNextConnection();
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class denbModuleInternal : public deInternalModule{
+public:
+	denbModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("BasicNetwork");
+		SetDescription("Basic network module.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtNetwork);
+		SetDirectoryName("basic");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(BasicNetworkCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *denbRegisterInternalModule(deModuleSystem *system){
+	return new denbModuleInternal(system);
+}
+#endif

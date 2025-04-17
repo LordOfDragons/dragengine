@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$true)][string]$BuildVersion
 )
 
@@ -17,7 +18,7 @@ Compress-Archive -Path "$SourceDir\dragengine-import-export" -DestinationPath $A
 
 
 # application
-$DataTargetDir = "$OutputDir\$PathDistIGDEShares\tools"
+$DataTargetDir = "$DistributeDir\$PathDistIGDEShares\tools"
 
 Write-Host "Blender Scripts: Copy to '$DataTargetDir'"
 

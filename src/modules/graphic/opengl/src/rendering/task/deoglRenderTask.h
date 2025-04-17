@@ -85,7 +85,7 @@ private:
 	bool pUseSPBInstanceFlags;
 	bool pRenderVSStereo;
 	GLuint pVBODrawIndirect;
-	int pVBODrawIndirectSize;
+	//int pVBODrawIndirectSize;
 	
 	decPointerList pPipelines;
 	int pPipelineCount;

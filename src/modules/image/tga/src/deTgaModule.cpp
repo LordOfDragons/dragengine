@@ -35,12 +35,14 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *TGACreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -199,3 +201,37 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		}
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deTgaModuleInternal : public deInternalModule{
+public:
+	deTgaModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("Targa");
+		SetDescription("Handles images in uncompressed Targe format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("tga");
+		GetPatternList().Add(".tga");
+		SetDefaultExtension(".tga");
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(TGACreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deTgaRegisterInternalModule(deModuleSystem *system){
+	return new deTgaModuleInternal(system);
+}
+#endif

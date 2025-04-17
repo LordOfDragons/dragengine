@@ -364,7 +364,7 @@ DBG_ENTER_PARAM("deoglRenderTranspCounting::CountTransparency", "%p", mask)
 	
 	// start the occlusion query to determine the count. occlusion queries always have a little
 	// delay so we fetch the result after the solid pass
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 		// OpenGL ES does not support counting queries only any samples passed type queries.
 		// we are forced to do a slower glReadPixels on the last set frame buffer attachment
 		GLbyte queryResult[ 4 ];

@@ -46,7 +46,6 @@
 ////////////////////////////
 
 deoglOcclusionTest::deoglOcclusionTest( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
 pInputListeners( nullptr ),
 pInputData( nullptr ),
 pInputDataCount( 0 ),

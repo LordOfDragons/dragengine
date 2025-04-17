@@ -38,12 +38,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *APNGCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *APNGCreateModule( deLoadableModule *loadableModule ){
@@ -103,3 +105,38 @@ deBaseVideoDecoder *deVideoApng::CreateDecoder( decBaseFileReader *reader ){
 deBaseVideoAudioDecoder *deVideoApng::CreateAudioDecoder( decBaseFileReader* ){
 	return NULL;
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deapngModuleInternal : public deInternalModule{
+public:
+	deapngModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("APNG");
+		SetDescription("Handles videos in the Animated PNG format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVideo);
+		SetDirectoryName("apng");
+		GetPatternList().Add(".apng");
+		SetDefaultExtension(".apng");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(APNGCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deapngRegisterInternalModule(deModuleSystem *system){
+	return new deapngModuleInternal(system);
+}
+#endif

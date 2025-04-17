@@ -38,6 +38,7 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,6 +46,8 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DELGACreateModule( deLoadableModule *loadable
 #ifdef  __cplusplus
 }
 #endif
+#endif
+
 
 deBaseModule *DELGACreateModule( deLoadableModule *loadableModule ){
 	deBaseModule *module = NULL;
@@ -83,3 +86,38 @@ deBaseArchiveContainer *deArchiveDelga::CreateContainer( decBaseFileReader *read
 	DEASSERT_NOTNULL( reader )
 	return new deadContainer( *this, *reader );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deadModuleInternal : public deInternalModule{
+public:
+	deadModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DELGA");
+		SetDescription("Handles archive in the DELGA format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtArchive);
+		SetDirectoryName("delga");
+		GetPatternList().Add(".delga");
+		SetDefaultExtension(".delga");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(DELGACreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deadRegisterInternalModule(deModuleSystem *system){
+	return new deadModuleInternal(system);
+}
+#endif

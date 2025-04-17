@@ -1,5 +1,6 @@
 from SConsCommon import *
 from SConsPlatformAndroid import androidUpdateEnv
+from SConsPlatformWebWasm import webWasmUpdateEnv
 import shlex
 
 
@@ -155,6 +156,7 @@ if not (parent_env['OSPosix'] or parent_env['OSWindows'] or parent_env['OSBeOS']
 params = Variables(['custom.py'])
 
 params.Add(EnumVariable('platform_android', 'Build for Android platform', 'no', ['no', 'armv7', 'armv8', 'x86', 'quest']))
+params.Add(BoolVariable('platform_webwasm', 'Build for Web WASM platform', False))
 params.Add(BoolVariable('with_tests', 'Build engine tests', False))
 params.Add(BoolVariable('with_debug', 'Build with debug symbols for GDB usage', False))
 params.Add(BoolVariable('with_debug_symbols', 'For release build only force debug symbols', False))
@@ -200,6 +202,7 @@ params.Add(TernaryVariable('with_system_libvpx', 'Use System libvpx'))
 params.Add(TernaryVariable('with_system_liburing', 'Use System liburing'))
 params.Add(TernaryVariable('with_system_openvr', 'Use System OpenVR'))
 params.Add(TernaryVariable('with_system_openxr', 'Use System OpenXR'))
+params.Add(TernaryVariable('with_system_jsoncpp', 'Use System JsonCpp'))
 params.Add(PathVariable('with_deremotelauncher_inc',
 	'Path to DERemoteLauncher include files or empty to use system default',
 	'', PathVariable.PathAccept))
@@ -216,34 +219,78 @@ params.Add(PathVariable('with_denetwork_lib',
 params.Add(TernaryVariable('with_opengl', 'Use OpenGL'))
 params.Add(TernaryVariable('with_python', 'Use Python'))
 params.Add(TernaryVariable('with_npapisdk', 'Use NPAPI SDK'))
+
+params.Add(TernaryVariable('build_archive_delga', 'Build DELGA Archive Module'))
 params.Add(TernaryVariable('build_audio_openal', 'Build OpenAL Audio Module'))
 params.Add(TernaryVariable('build_cr_basic', 'Build Basic Crash-Recovery Module'))
 params.Add(TernaryVariable('build_graphics_opengl', 'Build OpenGL Graphics Module'))
 params.Add(TernaryVariable('build_graphics_vulkan', 'Build Vulkan Graphics Module', False))
+params.Add(TernaryVariable('build_guilauncher', 'Build GUI Launcher'))
+params.Add(TernaryVariable('build_image_jpeg', 'Build JPEG Image Module'))
 params.Add(TernaryVariable('build_image_png', 'Build PNG Image Module'))
 params.Add(TernaryVariable('build_image_png3d', 'Build PNG-3D Image Module'))
-params.Add(TernaryVariable('build_image_jpeg', 'Build JPEG Image Module'))
 params.Add(TernaryVariable('build_image_webp', 'Build WebP Image Module'))
-params.Add(TernaryVariable('build_input_x', 'Build X Input Module'))
-params.Add(TernaryVariable('build_input_w32', 'Build Windows Input Module'))
+params.Add(TernaryVariable('build_image_webp3d', 'Build WebP-3D Image Module'))
+params.Add(TernaryVariable('build_input_android', 'Build Android Input Module'))
 params.Add(TernaryVariable('build_input_beos', 'Build BeOS Input Module'))
 params.Add(TernaryVariable('build_input_macos', 'Build MacOS Input Module'))
-params.Add(TernaryVariable('build_input_android', 'Build Android Input Module'))
+params.Add(TernaryVariable('build_input_w32', 'Build Windows Input Module'))
+params.Add(TernaryVariable('build_input_x', 'Build X Input Module'))
+params.Add(TernaryVariable('build_launcher_android', 'Build Android Launcher'))
 params.Add(TernaryVariable('build_physics_bullet', 'Build Bullet Physics Module'))
 params.Add(TernaryVariable('build_script_ds', 'Build DragonScript Script Module'))
 params.Add(TernaryVariable('build_script_python', 'Build Python Script Module'))
-params.Add(TernaryVariable('build_sound_ogg', 'Build OGG Vorbis Sound Module'))
-params.Add(TernaryVariable('build_video_theora', 'Build Theora Video Module'))
-params.Add(TernaryVariable('build_video_apng', 'Build Animated PNG Video Module'))
-params.Add(TernaryVariable('build_video_webm', 'Build WebM Video Module'))
-params.Add(TernaryVariable('build_guilauncher', 'Build GUI Launcher'))
-params.Add(TernaryVariable('build_launcher_android', 'Build Android Launcher'))
-params.Add(TernaryVariable('build_archive_delga', 'Build DELGA Archive Module'))
-params.Add(TernaryVariable('build_vr_openvr', 'Build OpenVR VR Module'))
-params.Add(TernaryVariable('build_vr_openxr', 'Build OpenXR VR Module'))
-params.Add(TernaryVariable('build_service_steamsdk', 'Build SteamSDK Service Module'))
 params.Add(TernaryVariable('build_service_eossdk', 'Build EOS SDK Service Module'))
 params.Add(TernaryVariable('build_service_modio', 'Build ModIO Service Module'))
+params.Add(TernaryVariable('build_service_steamsdk', 'Build SteamSDK Service Module'))
+params.Add(TernaryVariable('build_sound_ogg', 'Build OGG Vorbis Sound Module'))
+params.Add(TernaryVariable('build_video_apng', 'Build Animated PNG Video Module'))
+params.Add(TernaryVariable('build_video_theora', 'Build Theora Video Module'))
+params.Add(TernaryVariable('build_video_webm', 'Build WebM Video Module'))
+params.Add(TernaryVariable('build_vr_openvr', 'Build OpenVR VR Module', False))
+params.Add(TernaryVariable('build_vr_openxr', 'Build OpenXR VR Module'))
+
+params.Add(BoolVariable('build_ai_deai_internal', 'Build Drag[en]gine AI AI Module as internal module', True))
+params.Add(BoolVariable('build_ani_deanimator_internal', 'Build Drag[en]gine Animator Animator Module as internal module', True))
+params.Add(BoolVariable('build_anim_deanim_internal', 'Build Drag[en]gine Animation Animation Module as internal module', True))
+params.Add(BoolVariable('build_archive_delga_internal', 'Build DELGA Ardhive Module as internal module', True))
+params.Add(BoolVariable('build_audio_null_internal', 'Build Null Audio Module as internal module', True))
+params.Add(BoolVariable('build_audio_openal_internal', 'Build OpenAL Audio Module as internal module', True))
+params.Add(BoolVariable('build_comb_fbx_internal', 'Build FBX based modules as internal module', True))
+params.Add(BoolVariable('build_cr_basic_internal', 'Build Basic Crash-Recovery Module as internal module', True))
+params.Add(BoolVariable('build_cr_simplyquit_internal', 'Build SimplyQuit Crash-Recovery Module as internal module', True))
+params.Add(BoolVariable('build_font_defont_internal', 'Build Drag[en]gine Font Font Module as internal module', True))
+params.Add(BoolVariable('build_graphic_null_internal', 'Build Null Graphic Module as internal module', True))
+params.Add(BoolVariable('build_graphic_opengl_internal', 'Build OpenGL Graphic Module as internal module', True))
+params.Add(BoolVariable('build_image_ies_internal', 'Build IES Image Module as internal module', True))
+params.Add(BoolVariable('build_image_jpeg_internal', 'Build JPEG Image Module as internal module', True))
+params.Add(BoolVariable('build_image_png_internal', 'Build PNG Image Module as internal module', True))
+params.Add(BoolVariable('build_image_png3d_internal', 'Build PNG-3D Image Module as internal module', True))
+params.Add(BoolVariable('build_image_tga_internal', 'Build Targa Image Module as internal module', True))
+params.Add(BoolVariable('build_image_webp_internal', 'Build WebP Image Module as internal module', True))
+params.Add(BoolVariable('build_image_webp3d_internal', 'Build WebP-3D Image Module as internal module', True))
+params.Add(BoolVariable('build_input_android_internal', 'Build Android Input Module as internal module', True))
+params.Add(BoolVariable('build_input_console_internal', 'Build Console Input Module as internal module', True))
+params.Add(BoolVariable('build_input_x_internal', 'Build X Input Module as internal module', True))
+params.Add(BoolVariable('build_langpack_delangpack_internal', 'Build DELangPack Language Pack Module as internal module', True))
+params.Add(BoolVariable('build_model_demodel_internal', 'Build Drag[en]gine Model Model Module as internal module', True))
+params.Add(BoolVariable('build_network_basic_internal', 'Build Basic Network Module as internal module', True))
+params.Add(BoolVariable('build_occmesh_deoccmesh_internal', 'Build Drag[en]gine Occlusion Mesh Occlusion Mesh Module as internal module', True))
+params.Add(BoolVariable('build_physics_bullet_internal', 'Build Bullet Physics Module as internal module', True))
+params.Add(BoolVariable('build_rig_derig_internal', 'Build Drag[en]gine Rig Rig Module as internal module', True))
+params.Add(BoolVariable('build_script_ds_internal', 'Build DragonScript Script Module as internal module', False))
+params.Add(BoolVariable('build_service_modio_internal', 'Build Mod.io Service Module as internal module', True))
+params.Add(BoolVariable('build_skin_deskin_internal', 'Build Drag[en]gine Skin Skin Module as internal module', True))
+params.Add(BoolVariable('build_sound_ogg_internal', 'Build OGG Vorbis Sound Module as internal module', True))
+params.Add(BoolVariable('build_synthesizer_desynthesizer_internal', 'Build Drag[en]gine Synthesizer Synthesizer Module as internal module', True))
+params.Add(BoolVariable('build_video_apng_internal', 'Build APNG Video Module as internal module', True))
+params.Add(BoolVariable('build_video_theora_internal', 'Build Theora Video Module as internal module', True))
+params.Add(BoolVariable('build_video_webm_internal', 'Build WebM Video Module as internal module', True))
+params.Add(BoolVariable('build_vr_null_internal', 'Build Null VR Module as internal module', True))
+params.Add(BoolVariable('build_vr_openvr_internal', 'Build OpenVR VR Module as internal module', False))
+params.Add(BoolVariable('build_vr_openxr_internal', 'Build OpenXR VR Module as internal module', True))
+
+params.Add(BoolVariable('with_static_internalmodules', 'Statically link internal modules', False))
 
 params.Add(TernaryVariable('build_igde', 'Build IGDE'))
 params.Add(TernaryVariable('build_editor_animator', 'Build IGDE Animator Editor'))
@@ -634,6 +681,7 @@ if parent_env['with_debug']:
 		parent_env.Append(CROSSCOMPILE_CPPFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_FLAGS'])
 		parent_env.Append(CROSSCOMPILE_LINKFLAGS = parent_env['SANITIZE_LINK_FLAGS'])
+	parent_env.Replace(MODULE_LINKFLAGS_NOMODVER=parent_env['MODULE_LINKFLAGS'])
 	
 else:
 	parent_env.Append(MODULE_CPPFLAGS = ['-fvisibility=hidden'])
@@ -641,6 +689,8 @@ else:
 	
 	parent_env.Append(MODULE_CXXFLAGS = ['-fvisibility-inlines-hidden'])
 	parent_env.Append(MODULE_LINKFLAGS = ['-fvisibility-inlines-hidden'])
+	
+	parent_env.Replace(MODULE_LINKFLAGS_NOMODVER=parent_env['MODULE_LINKFLAGS'])
 	
 	if not parent_env['OSMacOS']:
 		parent_env.Append(MODULE_LINKFLAGS = ['-Wl,--version-script=module.version'])
@@ -665,6 +715,10 @@ if parent_env['platform_android'] != 'no':
 	params.Update(parent_env)
 
 	androidUpdateEnv(parent_env)
+
+# web wasm
+if parent_env['platform_webwasm']:
+	webWasmUpdateEnv(parent_env)
 
 # disable verbose compile messages if requested
 if not parent_env['with_verbose']:
@@ -696,7 +750,8 @@ parent_env.Append(CPPFLAGS = ['-Wshadow', '-Wwrite-strings'])
 # he should know what he is doing so stop breaking builds with non-sense errors.
 # 
 # and to add insult to injury MacOS does not understand the flag. great... just great
-if not parent_env['OSMacOS'] and not parent_env['CROSSCOMPILE_CLANG'] and parent_env['platform_android'] == 'no':
+if (not parent_env['OSMacOS'] and not parent_env['CROSSCOMPILE_CLANG']
+	and parent_env['platform_android'] == 'no' and not parent_env['platform_webwasm']):
 	parent_env.Append(CXXFLAGS = ['-Wno-class-memaccess'])
 
 if parent_env['with_warnerrors']:
@@ -756,6 +811,8 @@ if parent_env['platform_android'] != 'no':
 	parent_report['apilevel'] = parent_env['apilevel']
 	parent_report['hardfp'] = 'yes' if parent_env['hardfp'] else 'no'
 
+parent_report['platform_webwasm'] = 'yes' if parent_env['platform_webwasm'] else 'no'
+
 parent_report['build dragengine tests'] = 'yes' if parent_env['with_tests'] else 'no'
 parent_report['treat warnings as errors'] = 'yes' if parent_env['with_warnerrors'] else 'no'
 parent_report['build with debug symbols'] = 'yes' if parent_env['with_debug'] else 'no'
@@ -772,6 +829,7 @@ extdirs.append('extern/libpng')
 extdirs.append('extern/libapng')
 extdirs.append('extern/libjpeg')
 extdirs.append('extern/sndio')
+extdirs.append('extern/jsoncpp')
 extdirs.append('extern/openal')
 extdirs.append('extern/openvr')
 extdirs.append('extern/libogg')

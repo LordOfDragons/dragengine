@@ -9,10 +9,15 @@ Import('parent_env parent_targets parent_report')
 if parent_env['platform_android'] != 'no':
 	Return()
 
+if parent_env['platform_webwasm']:
+	Return()
+
 if parent_env['OSBeOS']:
 	Return()
 
 envLibrary = parent_env.Clone()
+
+sdkVersion = '1.17.0'
 
 if envLibrary['OSWindows']:
 	libFileName = 'bin/EOSSDK.dll'
@@ -21,8 +26,10 @@ else:
 	libFileName = 'bin/libEOSSDK-Linux-Shipping.so'
 	binFileName = libFileName
 
-nodeArtifacts = envLibrary.DownloadArtifactHelper(
-	['eossdk.zip', 'eossdk_bin_linux.tar.xz'], 'eossdk', 'lib_eossdk_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper([
+	'eossdk-{}.zip'.format(sdkVersion),
+	'eossdk_bin_linux-{}.tar.xz'.format(sdkVersion)],
+	'eossdk', 'lib_eossdk_fetch')
 
 def unpackArchiveFileSdk(target, source, env):
 	buildDir = target[0].get_dir().up()
@@ -32,96 +39,15 @@ def unpackArchiveFileSdk(target, source, env):
 def unpackArchiveFileBin(target, source, env):
 	buildDir = target[0].get_dir().up()
 	untarArchive(buildDir.abspath, source[0].abspath)
-
-	# rename file
-	os.rename(buildDir.Dir('bin').File('libEOSSDK.so').abspath, target[0].abspath)
-
+	
 	# fix permissions to avoid problems while installing files
 	for t in target:
 		if t.name.endswith('.so'):
 			os.chmod(t.abspath, 0o755)
 
 targets = []
-
-targets.extend([
-	'include/eos_achievements_types_deprecated.inl',
-	'include/eos_achievements_types.h',
-	'include/eos_achievements.h',
-	'include/eos_anticheatclient_types_deprecated.inl',
-	'include/eos_anticheatclient_types.h',
-	'include/eos_anticheatclient.h',
-	'include/eos_anticheatcommon_types.h',
-	'include/eos_anticheatserver_types.h',
-	'include/eos_anticheatserver.h',
-	'include/eos_auth_types_deprecated.inl',
-	'include/eos_auth_types.h',
-	'include/eos_auth.h',
-	'include/eos_base.h',
-	'include/eos_common.h',
-	'include/eos_connect_types.h',
-	'include/eos_connect.h',
-	'include/eos_custominvites_types.h',
-	'include/eos_custominvites.h',
-	'include/eos_ecom_types.h',
-	'include/eos_ecom.h',
-	'include/eos_friends_types.h',
-	'include/eos_friends.h',
-	'include/eos_init.h',
-	'include/eos_integratedplatform_types.h',
-	'include/eos_integratedplatform.h',
-	'include/eos_kws_types.h',
-	'include/eos_kws.h',
-	'include/eos_leaderboards_types_deprecated.inl',
-	'include/eos_leaderboards_types.h',
-	'include/eos_leaderboards.h',
-	'include/eos_lobby_types.h',
-	'include/eos_lobby.h',
-	'include/eos_logging.h',
-	'include/eos_metrics_types.h',
-	'include/eos_metrics.h',
-	'include/eos_mods_types.h',
-	'include/eos_mods.h',
-	'include/eos_p2p_types.h',
-	'include/eos_p2p.h',
-	'include/eos_platform_prereqs.h',
-	'include/eos_playerdatastorage_types.h',
-	'include/eos_playerdatastorage.h',
-	'include/eos_presence_types.h',
-	'include/eos_presence.h',
-	'include/eos_progressionsnapshot_types.h',
-	'include/eos_progressionsnapshot.h',
-	'include/eos_reports_types.h',
-	'include/eos_reports.h',
-	'include/eos_result.h',
-	'include/eos_rtc_admin_types.h',
-	'include/eos_rtc_admin.h',
-	'include/eos_rtc_audio_types_deprecated.inl',
-	'include/eos_rtc_audio_types.h',
-	'include/eos_rtc_audio.h',
-	'include/eos_rtc_data_types.h',
-	'include/eos_rtc_data.h',
-	'include/eos_rtc_types.h',
-	'include/eos_rtc.h',
-	'include/eos_sanctions_types.h',
-	'include/eos_sanctions.h',
-	'include/eos_sdk.h',
-	'include/eos_sessions_types.h',
-	'include/eos_sessions.h',
-	'include/eos_stats_types.h',
-	'include/eos_stats.h',
-	'include/eos_titlestorage_types.h',
-	'include/eos_titlestorage.h',
-	'include/eos_types.h',
-	'include/eos_ui_buttons.h',
-	'include/eos_ui_keys.h',
-	'include/eos_ui_types.h',
-	'include/eos_ui.h',
-	'include/eos_userinfo_types.h',
-	'include/eos_userinfo.h',
-	'include/eos_version.h',
-	'include/Linux',
-	'include/Linux/eos_Linux_base.h',
-	'include/Linux/eos_Linux.h'])
+with open(envLibrary.File('header_file_list').srcnode().abspath, 'r') as f:
+	targets.extend([x[:-1] for x in f.readlines()])
 
 sdk = envLibrary.Command(targets, nodeArtifacts[0],
 	envLibrary.Action(unpackArchiveFileSdk, 'Unpack EOS SDK'))

@@ -167,7 +167,7 @@ void delLauncher::Prepare(){
 	
 	pEngine.UpdateResolutions(instance);
 	pEngine.UpdateScaleFactor(instance);
-	pEngine.ReloadModules();
+	pEngine.ReloadModules(instance);
 	pEngine.CheckModules(instance);
 	pEngine.LoadConfig();
 	

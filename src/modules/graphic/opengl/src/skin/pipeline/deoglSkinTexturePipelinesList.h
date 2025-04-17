@@ -54,8 +54,6 @@ public:
 	
 	
 private:
-	const deoglSkinTexture &pTexture;
-	
 	deoglSkinTexturePipelines::Ref pPipelines[ PipelineTypesCount ];
 	
 	

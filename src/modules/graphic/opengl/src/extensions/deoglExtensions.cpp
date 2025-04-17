@@ -33,7 +33,7 @@
 #include "../renderthread/deoglRTContext.h"
 #include "../renderthread/deoglRTLogger.h"
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
 #include <GL/glx.h>
 #include "deoglXExtResult.h"
 #endif
@@ -64,7 +64,7 @@ static const char * const vVendorNames[ deoglExtensions::VendorCount ] = {
 	"Unknown"
 };
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 static const char * const vGLESVersionNames[ deoglExtensions::evglesUnknown + 1 ] = {
 	"<ES 3.0",
 	"ES 3.0",
@@ -265,7 +265,7 @@ void deoglExtensions::PrintSummary(){
 	
 	l.LogInfoFormat("Vendor: %s (%s)", vVendorNames[pVendor], glGetString(GL_VENDOR));
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 		l.LogInfoFormat("Version: %s (%s) [%d, %d]", vGLESVersionNames[pGLESVersion],
 			glGetString(GL_VERSION), pGLVersionMajor, pGLVersionMinor);
 	#else
@@ -306,7 +306,7 @@ void deoglExtensions::PrintSummary(){
 bool deoglExtensions::VerifyPresence() const{
 	bool allPresent = pHasRequiredFunctions;
 	
-#ifndef OS_ANDROID
+#ifndef WITH_OPENGLES
 	allPresent &= pVerifyExtensionPresent( ext_ARB_depth_clamp );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_copy_image, ext_NV_copy_image );
 	allPresent &= pVerifyExtensionPresent( ext_ARB_compute_shader );
@@ -390,7 +390,7 @@ void deoglExtensions::pScanVersion(){
 	glGetIntegerv( GL_MINOR_VERSION, ( GLint* )&pGLVersionMinor );
 	pStrGLVersion = ( const char * )glGetString( GL_VERSION );
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	if( pGLVersionMajor == 3 ){
 		if( pGLVersionMinor <= 0 ){
 			pGLESVersion = evgles3p0;
@@ -481,7 +481,7 @@ void deoglExtensions::pScanVersion(){
 	#endif
 	
 #if 0
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	if( strncmp( pStrGLVersion.GetString(), "3.0", 3 ) == 0 ){
 		pGLESVersion = evgles3p0;
 		
@@ -558,14 +558,13 @@ void deoglExtensions::pScanVersion(){
 }
 
 void deoglExtensions::pScanExtensions(){
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	const char *strXExtensions = ( const char * )glXGetClientString( pRenderThread.GetContext().GetDisplay(), GLX_EXTENSIONS );
 	if( ! strXExtensions ){
 		strXExtensions = "";
 	}
-#endif
 	
-#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 	const char *strAExtensions = ( const char * )eglQueryString( pRenderThread.GetContext().GetDisplay(), EGL_EXTENSIONS );
 	if( ! strAExtensions ){
 		strAExtensions = "";
@@ -590,11 +589,10 @@ void deoglExtensions::pScanExtensions(){
 		}
 	}
 	
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	pStrListExtensions += decString( strXExtensions ).Split( ' ' );
-#endif
 	
-#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 	pStrListExtensions += decString(strAExtensions).Split(' ');
 #endif
 	
@@ -658,7 +656,7 @@ void deoglExtensions::pScanExtensions(){
 	pSupportsVSLayer = pHasExtension[ ext_ARB_shader_viewport_layer_array ]
 		|| pHasExtension[ ext_AMD_vertex_shader_layer ];
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	/*
 	pRenderThread.GetLogger().LogInfo( "Extensions reported by driver:" );
 	for( i=0; i<pStrListExtensions.GetCount(); i++ ){
@@ -711,15 +709,15 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_ARB_texture_compression : opengl version 1.3
 	pGetRequiredFunction( (void**)&pglCompressedTexImage3D, "glCompressedTexImage3D" );
 	pGetRequiredFunction( (void**)&pglCompressedTexImage2D, "glCompressedTexImage2D" );
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	// pGetRequiredFunction( (void**)&pglCompressedTexImage1D, "glCompressedTexImage1D" );
 	#endif
 	pGetRequiredFunction((void**)&pglCompressedTexSubImage3D, "glCompressedTexSubImage3D");
 	pGetRequiredFunction((void**)&pglCompressedTexSubImage2D, "glCompressedTexSubImage2D");
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	// pGetRequiredFunction( (void**)&pglCompressedTexSubImage1D, "glCompressedTexSubImage1D" );
 	#endif
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	// pGetRequiredFunction( (void**)&pglGetCompressedTexImage, "glGetCompressedTexImage" );
 	#endif
 	
@@ -733,7 +731,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglBufferData, "glBufferData" );
 	pGetRequiredFunction( (void**)&pglBufferSubData, "glBufferSubData" );
 	// pGetRequiredFunction( (void**)&pglGetBufferSubData, "glGetBufferSubData" );
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	pGetRequiredFunction( (void**)&pglMapBuffer, "glMapBuffer" );
 	#endif
 	pGetRequiredFunction( (void**)&pglMapBufferRange, "glMapBufferRange" );
@@ -851,7 +849,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_ARB_uniform_buffer_object : opengl version 3.1
 	// pGetRequiredFunction( (void**)&pglGetUniformIndices, "glGetUniformIndices" );
 	// pGetRequiredFunction( (void**)&pglGetActiveUniformsiv, "glGetActiveUniformsiv" );
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	// pGetRequiredFunction( (void**)&pglGetActiveUniformName, "glGetActiveUniformName" );
 	#endif
 	pGetRequiredFunction( (void**)&pglGetUniformBlockIndex, "glGetUniformBlockIndex" );
@@ -886,13 +884,13 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglGenFramebuffers, "glGenFramebuffers" );
 	pGetRequiredFunction( (void**)&pglCheckFramebufferStatus, "glCheckFramebufferStatus" );
 	pGetRequiredFunction( (void**)&pglFramebufferTexture2D, "glFramebufferTexture2D" );
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	// pGetRequiredFunction( (void**)&pglFramebufferTexture3D, "glFramebufferTexture3D" );
 	#endif
 	// pGetRequiredFunction( (void**)&pglFramebufferRenderbuffer, "glFramebufferRenderbuffer" );
 	pGetRequiredFunction( (void**)&pglGenerateMipmap, "glGenerateMipmap" );
 	pGetRequiredFunction( (void**)&pglBlitFramebuffer, "glBlitFramebuffer" );
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	DEASSERT_TRUE(pGLESVersion >= evgles3p2)
 	#endif
 	pGetRequiredFunction( (void**)&pglFramebufferTexture, "glFramebufferTexture" );
@@ -910,7 +908,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	/*
 	#ifdef OS_W32
 	pglTexSubImage1D = &glTexSubImage1D;
-	#elif ! defined OS_ANDROID
+	#elif ! defined WITH_OPENGLES
 	pGetRequiredFunction( (void**)&pglTexSubImage1D, "glTexSubImage1D" );
 	#endif
 	*/
@@ -926,7 +924,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_EXT_texture_object : no opengl version
 	
 	// GL_ARB_compute_shader : opengl version 4.3
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	if(!pSupportsComputeShader){
 		DETHROW_INFO(deeInvalidParam, "Computer Shader support missing");
 	}
@@ -936,7 +934,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
 	
 	// memory barrier required by compute shaders
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	DEASSERT_TRUE(pGLESVersion >= evgles3p1)
 	#endif
 	pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
@@ -947,7 +945,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction((void**)&pglMultiDrawElements, "glMultiDrawElements");
 	
 	// GL_ARB_copy_buffer : no opengl version
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	DEASSERT_TRUE(pGLESVersion >= evgles3p0)
 	#endif
 	pGetRequiredFunction( (void**)&pglCopyBufferSubData, "glCopyBufferSubData" );
@@ -1270,7 +1268,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_NV_texture_barrier : no opengl version
-	#ifndef OS_ANDROID
+	#ifndef WITH_OPENGLES
 	if( pHasExtension[ ext_NV_texture_barrier ] ){
 		pGetOptionalFunction( (void**)&pglTextureBarrier, "glTextureBarrierNV", ext_NV_texture_barrier );
 	}
@@ -1309,7 +1307,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pglGetVertexAttribLui64vARB, "glGetVertexAttribLui64vARB", ext_ARB_bindless_texture );
 	}
 	
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
 	// GLX_EXT_swap_control
 	if( pHasExtension[ ext_GLX_EXT_swap_control ] ){
 		pGetOptionalFunction( (void**)&pglXSwapInterval, "glXSwapInterval", "glXSwapIntervalEXT", ext_GLX_EXT_swap_control );

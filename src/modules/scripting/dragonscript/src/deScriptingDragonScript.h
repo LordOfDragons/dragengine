@@ -483,6 +483,9 @@ private:
 	bool pRestartRequested;
 	
 	deVFSContainer::Ref pVFSContainerHideScriptDirectory;
+
+	// dpi awareness
+	decPoint pDpiAccumMouseMoved;
 	
 public:
 	// constructor, destructor
@@ -841,7 +844,8 @@ private:
 	decString BuildFullName( const dsClass *theClass ) const;
 	void pAddVFSContainerHideScriptDirectory();
 	void pRemoveVFSContainerHideScriptDirectory();
-	void pPreprocessEventDpiAware(deInputEvent &event) const;
+	void pPreprocessEventDpiAware(deInputEvent &event);
+	void pPreprocessMouseMoveDpiAware(deInputEvent &event);
 	
 public:
 	void pAddExceptionTrace( deErrorTracePoint *tracePoint );

@@ -281,7 +281,7 @@ void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum ty
 			pStages[ stage ].type = type;
 		}
 		
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		oglClearError();
 		glBindTexture( type, texture );
 		if(glGetError() == GL_INVALID_ENUM){

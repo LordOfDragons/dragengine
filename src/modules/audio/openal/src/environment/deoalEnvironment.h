@@ -67,7 +67,6 @@ private:
 	float pAttenuationDistanceOffset;
 	decLayerMask pLayerMask;
 	bool pValid;
-	bool pSilent;
 	
 	float pGainLow;
 	float pGainMedium;

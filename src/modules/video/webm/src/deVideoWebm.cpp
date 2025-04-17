@@ -38,12 +38,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *WebmCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *WebmCreateModule( deLoadableModule *loadableModule ){
@@ -116,3 +118,38 @@ deBaseVideoDecoder *deVideoWebm::CreateDecoder( decBaseFileReader *reader ){
 deBaseVideoAudioDecoder *deVideoWebm::CreateAudioDecoder( decBaseFileReader *reader ){
 	return new dewmVideoAudioDecoder( *this, reader );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class dewebmModuleInternal : public deInternalModule{
+public:
+	dewebmModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("WebM");
+		SetDescription("Handles videos in the WebM format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVideo);
+		SetDirectoryName("webm");
+		GetPatternList().Add(".webm");
+		SetDefaultExtension(".webm");
+		SetNoCompress(true);
+		SetPriority(1);
+	}
+	
+	void CreateModule() override{
+		SetModule(WebmCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dewebmRegisterInternalModule(deModuleSystem *system){
+	return new dewebmModuleInternal(system);
+}
+#endif

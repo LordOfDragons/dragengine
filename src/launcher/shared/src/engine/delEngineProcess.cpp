@@ -56,6 +56,7 @@
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
@@ -264,6 +265,11 @@ void delEngineProcess::ReadCommandsFromInPipe(){
 		case eccGetModuleStatus:
 			pLogger->LogInfo( pLogSource, "Received eccGetModuleStatus" );
 			CommandGetModuleStatus();
+			break;
+			
+		case eccGetInternalModules:
+			pLogger->LogInfo( pLogSource, "Received eccGetInternalModules" );
+			CommandGetInternalModules();
 			break;
 			
 		case eccGetModuleParamList:
@@ -583,6 +589,44 @@ void delEngineProcess::CommandGetModuleStatus(){
 	}
 	
 	WriteUCharToPipe( ercFailed );
+}
+
+void delEngineProcess::CommandGetInternalModules(){
+	if(!pEngine){
+		WriteUCharToPipe(ercFailed);
+		return;
+	}
+	
+	const deModuleSystem &modsys = *pEngine->GetModuleSystem();
+	const int count = modsys.GetModuleCount();
+	int i, foundCount = 0;
+	
+	for(i=0; i<count; i++){
+		deLoadableModule &mod = *modsys.GetModuleAt(i);
+		if(mod.IsInternalModule()){
+			foundCount++;
+		}
+	}
+	
+	WriteUCharToPipe(ercSuccess);
+	WriteUShortToPipe(foundCount);
+	
+	for(i=0; i<count; i++){
+		const deLoadableModule &mod = *modsys.GetModuleAt(i);
+		if(!mod.IsInternalModule()){
+			continue;
+		}
+		
+		WriteUCharToPipe((int)mod.GetType());
+		WriteString16ToPipe(mod.GetName());
+		WriteString16ToPipe(mod.GetDescription());
+		WriteString16ToPipe(mod.GetAuthor());
+		WriteString16ToPipe(mod.GetVersion());
+		WriteString16ToPipe(mod.GetDirectoryName());
+		WriteString16ToPipe(mod.GetPatternList().Join(","));
+		WriteUShortToPipe(mod.GetPriority());
+		WriteUCharToPipe(mod.GetIsFallback() ? 1 : 0);
+	}
 }
 
 void delEngineProcess::CommandGetModuleParamList(){

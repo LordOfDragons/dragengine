@@ -47,12 +47,14 @@
 // #include <HIToolbox/Events.h> // not found... damn i love crappy design U_U
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *MacOSInpCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *MacOSInpCreateModule( deLoadableModule *loadableModule ){
