@@ -134,7 +134,8 @@ bool deAndroidInput::Init(){
 		pInputTimer.Reset();
 		pElapsedTime = 0.0f;
 		
-	}catch( const deException & ){
+	}catch( const deException &e ){
+		LogException(e);
 		CleanUp();
 		if( pDevices ){
 			delete pDevices;
@@ -754,7 +755,7 @@ public:
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtInput);
-		SetDirectoryName("android");
+		SetDirectoryName("androidinput");
 		SetPriority(1);
 	}
 	
