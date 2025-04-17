@@ -193,9 +193,10 @@ const char *basePath ){
 			pFonts.Add( font );
 		}
 		
-	}catch( const deException & ){
-		LogErrorFormat( "Loading font '%s' (base path '%s') failed",
-			filename, basePath ? basePath : "" );
+	}catch(const deException &e){
+		LogErrorFormat("Loading font '%s' (base path '%s') failed",
+			filename, basePath ? basePath : "");
+		LogException(e);
 		if( font ){
 			font->FreeReference();
 		}
