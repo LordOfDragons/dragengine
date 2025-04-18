@@ -52,37 +52,65 @@ void emitCorner( in vec3 position, in vec3 range, in int layer ){
 	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
-	EmitVertex();
+	//EmitVertex();
 }
 
-void emitParticle( in int layer ){
+/*
+void emitParticle(in int layer){
 	vec3 position = pMatrixMV[ layer ] * vec4( gl_in[ 0 ].gl_Position.xyz, 1 );
 	vec3 range = vec3( vGSParticleLightRange[ 0 ], -vGSParticleLightRange[ 0 ], 0 );
 	
-	emitCorner( position, range.yyz, layer ); // -range, -range
-	emitCorner( position, range.yxz, layer ); // -range, +range
-	emitCorner( position, range.xyz, layer ); // +range, -range
-	emitCorner( position, range.xxz, layer ); // +range, +range
+	emitCorner(position, range.yyz, layer); // -range, -range
+	emitCorner(position, range.yxz, layer); // -range, +range
+	emitCorner(position, range.xyz, layer); // +range, -range
+	emitCorner(position, range.xxz, layer); // +range, +range
 	
 	EndPrimitive();
 }
+*/
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	vec4 basePos = vec4(gl_in[0].gl_Position.xyz, 1);
+	vec3 range = vec3(vGSParticleLightRange[0], -vGSParticleLightRange[0], 0);
+	
+	
+	int layer;
 	#ifdef GS_RENDER_STEREO
-		int eye;
 		#ifdef GS_INSTANCING
-		eye = gl_InvocationID;
+			layer = gl_InvocationID;
 		#else
-		for( eye=0; eye<2; eye++ ){
+			for(layer=0; layer<2; layer++){ // left and right eye
 		#endif
-			emitParticle( eye );
-		#ifndef GS_INSTANCING
-		}
-		#endif
-		
 	#elif defined VS_RENDER_STEREO
-		emitParticle( vGSLayer[ 0 ] );
+		layer = vGSLayer[0];
 	#else
-		emitParticle( 0 );
+		layer = 0;
+	#endif
+	
+	
+	// emitParticle(layer)
+	vec3 position = pMatrixMV[layer] * basePos;
+	
+	emitCorner(position, range.yyz, layer); // -range, -range
+	EmitVertex();
+	
+	emitCorner(position, range.yxz, layer); // -range, +range
+	EmitVertex();
+	
+	emitCorner(position, range.xyz, layer); // +range, -range
+	EmitVertex();
+	
+	emitCorner(position, range.xxz, layer); // +range, +range
+	EmitVertex();
+	
+	EndPrimitive();
+	// end emitParticle()
+	
+	
+	#ifdef GS_RENDER_STEREO
+		#ifndef GS_INSTANCING
+			}
+		#endif
 	#endif
 }

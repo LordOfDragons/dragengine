@@ -223,7 +223,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
-	EmitVertex();
+	//EmitVertex();
 }
 
 void emitCorner( in int layer, in int corner, in vec4 position ){
@@ -263,6 +263,8 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 #include "shared/defren/skin/ubo_special_parameters.glsl"
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	
 	int face;
 	
 	#ifdef GS_INSTANCING
@@ -315,7 +317,8 @@ void main( void ){
 			// emit triangle
 			int i;
 			for( i=0; i<3; i++ ){
-				emitCorner( face, i, gl_in[ i ].gl_Position );
+				emitCorner(face, i, gl_in[i].gl_Position);
+				EmitVertex();
 			}
 			EndPrimitive();
 			
@@ -338,6 +341,8 @@ void main( void ){
 #ifdef GS_RENDER_CASCADED
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	
 	int cascade;
 	
 	#ifdef GS_INSTANCING
@@ -391,7 +396,8 @@ void main( void ){
 		if( all( lessThan( boxCheck, vec4( 1.0 ) ) ) ){
 			// emit triangle
 			for( i=0; i<3; i++ ){
-				emitCorner( cascade, i, gl_in[ i ].gl_Position, vec4( position[ i ], 1.0 ) );
+				emitCorner(cascade, i, gl_in[i].gl_Position, vec4(position[i], 1.0));
+				EmitVertex();
 			}
 			EndPrimitive();
 		}
@@ -402,11 +408,11 @@ void main( void ){
 			int i;
 			for( i=0; i<3; i++ ){
 				#ifdef BILLBOARD
-					emitCorner( cascade, i, gl_in[ i ].gl_Position, gl_in[ i ].gl_Position );
+				emitCorner(cascade, i, gl_in[i].gl_Position, gl_in[i].gl_Position);
 				#else
-					emitCorner( cascade, i, gl_in[ i ].gl_Position,
-						vec4( pMatrixV[ cascade ] * gl_in[ i ].gl_Position, 1.0 ) );
+				emitCorner(cascade, i, gl_in[i].gl_Position, vec4(pMatrixV[cascade] * gl_in[i].gl_Position, 1));
 				#endif
+				EmitVertex();
 			}
 			EndPrimitive();
 		}
@@ -427,6 +433,8 @@ void main( void ){
 #ifdef GS_RENDER_STEREO
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	
 	int eye;
 	
 	#ifdef GS_INSTANCING
@@ -438,7 +446,8 @@ void main( void ){
 		// emit triangle
 		int i;
 		for( i=0; i<3; i++ ){
-			emitCorner( eye, i, gl_in[ i ].gl_Position );
+			emitCorner(eye, i, gl_in[i].gl_Position);
+			EmitVertex();
 		}
 		EndPrimitive();
 		

@@ -133,9 +133,7 @@ void emitCorner( in int layer, in vec4 position, in vec4 preTransformedPosition 
 	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
-#ifndef QUEST_BUG_EMITVERTEX
-	EmitVertex();
-#endif
+	//EmitVertex();
 }
 
 void emitCorner( in int layer, in vec4 position ){
@@ -149,6 +147,8 @@ void emitCorner( in int layer, in vec4 position ){
 #ifdcef GS_RENDER_CUBE
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	
 	int i, face;
 	
 	#ifdef GS_INSTANCING
@@ -168,9 +168,7 @@ void main( void ){
 			
 			for( i=0; i<3; i++ ){
 				emitCorner( face, gl_in[ i ].gl_Position );
-				#ifdef QUEST_BUG_EMITVERTEX
 				EmitVertex();
-				#endif
 			}
 			EndPrimitive();
 			
@@ -189,6 +187,8 @@ void main( void ){
 #ifdef GS_RENDER_STEREO
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	
 	int eye;
 	
 	#ifdef GS_INSTANCING
@@ -200,9 +200,7 @@ void main( void ){
 		int i;
 		for( i=0; i<3; i++ ){
 			emitCorner( eye, gl_in[ i ].gl_Position );
-			#ifdef QUEST_BUG_EMITVERTEX
 			EmitVertex();
-			#endif
 		}
 		EndPrimitive();
 		

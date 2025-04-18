@@ -132,6 +132,7 @@ const vec2 tc[4] = vec2[4]( vec2(  0.0,  0.0 ), vec2(  0.0,  1.0 ), vec2(  1.0, 
 // Main Function
 //////////////////
 
+/*
 void emitParticle( in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent, in vec3 bitangent ){
 	// z and w stays the same for all vertices
 	vec3 transformed = pMatrixV[ layer ] * gl_in[ 0 ].gl_Position;
@@ -209,8 +210,11 @@ void emitParticle( in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent
 	
 	EndPrimitive();
 }
+*/
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	
 	vec4 tempRotMat; // cos(z), -sin(z), sin(z), cos(z)
 	tempRotMat.xw = cos( vec2( vParticle0[ 0 ].z ) );
 	tempRotMat.yz = sin( vec2( vParticle0[ 0 ].z ) ) * vec2( -1.0, 1.0 );
@@ -235,19 +239,100 @@ void main( void ){
 	int layer;
 	
 	#ifdef GS_INSTANCING
-	layer = gl_InvocationID;
+		layer = gl_InvocationID;
 	#else
-	#ifdef GS_RENDER_STEREO
-		#define LAYER_COUNT 2
-	#else
-		#define LAYER_COUNT 1
+		#ifdef GS_RENDER_STEREO
+			for(layer=0; layer<LAYER_COUNT; layer++){
+		#else
+			layer = 0;
+		#endif
 	#endif
-	for( layer=0; layer<LAYER_COUNT; layer++ ){
-	#endif
+	
+	
+	// emitParticle(layer, rotmat, normal, tangent, bitangent)
+	
+	// z and w stays the same for all vertices
+	vec3 transformed = pMatrixV[ layer ] * gl_in[ 0 ].gl_Position;
+	
+	vec4 position = vec4( transformed, 1 );
+	
+	// emit vertices
+	int i;
+	for( i=0; i<4; i++ ){
+		position.xy = rotmat * bc[i] + transformed.xy;
 		
-		emitParticle( layer, rotmat, normal, tangent, bitangent );
+		gl_Position = pMatrixP[ layer ] * position;
 		
-	#ifndef GS_INSTANCING
+		vTCColor = tc[i];
+		#ifdef SHARED_SPB
+		vSPBIndex = spbIndex;
+		#endif
+		#ifdef TEXTURE_COLOR_TINT_MASK
+			vTCColorTintMask = tc[i];
+		#endif
+		#ifdef TEXTURE_NORMAL
+			vTCNormal = tc[i];
+		#endif
+		#ifdef TEXTURE_REFLECTIVITY
+			vTCReflectivity = tc[i];
+		#endif
+		#ifdef WITH_EMISSIVITY
+			vTCEmissivity = tc[i];
+		#endif
+		#ifdef TEXTURE_REFRACTION_DISTORT
+			vTCRefractionDistort = tc[i];
+		#endif
+		#ifdef TEXTURE_AO
+			vTCAO = tc[i];
+		#endif
+		
+		#ifdef WITH_REFLECT_DIR
+			vReflectDir = vec3( position );
+		#endif
+		#ifdef FADEOUT_RANGE
+			vFadeZ = position.z;
+		#endif
+		#ifdef CLIP_PLANE
+			vClipCoord = vec3( position );
+		#endif
+		#ifdef SKIN_CLIP_PLANE
+			vSkinClipCoord = vec3( position );
+		#endif
+		#ifdef DEPTH_DISTANCE
+			vPosition = vec3( position );
+		#endif
+		
+		vParticleColor = vParticle1[ 0 ];
+		#ifdef WITH_EMISSIVITY
+			vParticleEmissivity = vParticle0[ 0 ].y;
+		#endif
+		
+		vNormal = normal;
+		#ifdef WITH_TANGENT
+			vTangent = tangent;
+		#endif
+		#ifdef WITH_BITANGENT
+			vBitangent = bitangent;
+		#endif
+		
+		#ifdef GS_RENDER_STEREO
+			vLayer = layer;
+		#endif
+		
+		gl_Layer = layer;
+		gl_PrimitiveID = gl_PrimitiveIDIn;
+		
+		EmitVertex();
 	}
+	
+	EndPrimitive();
+	
+	// end emitParticle()
+	
+	
+	#ifndef GS_INSTANCING
+		#ifdef GS_RENDER_STEREO
+			}
+		#endif
 	#endif
 }

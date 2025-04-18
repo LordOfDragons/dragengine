@@ -69,10 +69,12 @@ void emitCorner( in vec4 position, in vec2 tc ){
 	gl_Layer = 0;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
-	EmitVertex();
+	//EmitVertex();
 }
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	
 	// generate billboard
 	mat2 rotmat = mat2(
 		cos( vParticle0[ 0 ].z ), -sin( vParticle0[ 0 ].z ),
@@ -81,16 +83,20 @@ void main( void ){
 	vec2 size = vec2( vParticle0[ 0 ].x );
 	
 	position.xy += rotmat * ( bc1 * size );
-	emitCorner( position, tc1 );
+	emitCorner(position, tc1);
+	EmitVertex();
 	
 	position.xy = gl_in[ 0 ].gl_Position.xy + rotmat * ( bc2 * size );
-	emitCorner( position, tc2 );
+	emitCorner(position, tc2);
+	EmitVertex();
 	
 	position.xy = gl_in[ 0 ].gl_Position.xy + rotmat * ( bc3 * size );
-	emitCorner( position, tc3 );
+	emitCorner(position, tc3);
+	EmitVertex();
 	
 	position.xy = gl_in[ 0 ].gl_Position.xy + rotmat * ( bc4 * size );
-	emitCorner( position, tc4 );
+	emitCorner(position, tc4);
+	EmitVertex();
 	
 	EndPrimitive();
 }

@@ -251,9 +251,10 @@ void emitCorner( in int corner, in vec4 position, in vec3 offset, in vec2 tc, in
 	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
-	EmitVertex();
+	//EmitVertex();
 }
 
+/*
 void emitRibbon( in int layer ){
 	// calculate the ribbon properties
 	vec3 ribbonAxis1, ribbonAxis2;
@@ -346,11 +347,10 @@ void emitRibbon( in int layer ){
 	#ifdef USE_SHEETS
 	for( i=0; i<sheetCount; i++ ){
 	#endif
-		emitCorner( 1, p[ 1 ], -ribbonAxis1, tc1, layer );
-		emitCorner( 2, p[ 2 ], -ribbonAxis2, tc2, layer );
-		emitCorner( 1, p[ 1 ], ribbonAxis1, tc3, layer );
-		emitCorner( 2, p[ 2 ], ribbonAxis2, tc4, layer );
-		
+		emitCorner(1, p[1], -ribbonAxis1, tc1, layer);
+		emitCorner(2, p[2], -ribbonAxis2, tc2, layer);
+		emitCorner(1, p[1], ribbonAxis1, tc3, layer);
+		emitCorner(2, p[2], ribbonAxis2, tc4, layer);
 		EndPrimitive();
 		
 	#ifdef USE_SHEETS
@@ -359,27 +359,143 @@ void emitRibbon( in int layer ){
 	}
 	#endif
 }
-
+*/
 
 
 void main( void ){
-	// emit ribbons
+	// NOTE: quest requires EmitVertex to be called in main()
 	int layer;
 	
 	#ifdef GS_INSTANCING
-	layer = gl_InvocationID;
+		layer = gl_InvocationID;
 	#else
-	#ifdef GS_RENDER_STEREO
-		#define LAYER_COUNT 2
-	#else
-		#define LAYER_COUNT 1
+		#ifdef GS_RENDER_STEREO
+			for(layer=0; layer<2; layer++){
+		#else
+			layer = 0;
+		#endif
 	#endif
-	for( layer=0; layer<LAYER_COUNT; layer++ ){
+	
+	
+	// emitRibbon(layer)
+	
+	// calculate the ribbon properties
+	vec3 ribbonAxis1, ribbonAxis2;
+	
+	#ifdef USE_SHEETS
+		mat3 matRot1, matRot2;
+		//int sheetCount = 3;
+		// passing through sheet count to avoid using SSBO in geometry shader (pParticleSheetCount)
+		#define sheetCount vParticleSheetCount[0]
+		int s;
+		
+		float rotAngle = pi / float( sheetCount );
+		vec3 sSc = vec3( sin( rotAngle ), -sin( rotAngle ), cos( rotAngle ) );
+		vec3 c1 = vec3( 1.0 - sSc.z );
 	#endif
-		
-		emitRibbon( layer );
-		
-	#ifndef GS_INSTANCING
+	
+	// calculate positions
+	vec4 p[ 4 ];
+	int i;
+	
+	for( i=0; i<4; i++ ){
+		p[ i ] = vec4( pMatrixV[ layer ] * gl_in[ i ].gl_Position, 1 );
 	}
+	
+	
+	
+	// calculate first ribbon axis and rotation matrix
+	vec3 up = normalize( vec3( -p[ 1 ] ) );
+	
+	ribbonAxis1 = cross( up, vec3( p[ 2 ] ) - vec3( p[ 0 ] ) );
+	float len = length( ribbonAxis1 );
+	if( len < epsilon ){
+		ribbonAxis1 = vec3( 1, 0, 0 );
+		
+	}else{
+		ribbonAxis1 /= len;
+	}
+	if(ribbonAxis1.y < 0.0){
+		ribbonAxis1 = -ribbonAxis1;
+	}
+	
+	#ifdef USE_SHEETS
+		//vec4 view2 = vec4( cross( ribbonAxis1, up ), 1 );
+		//vec4 view2 = vec4( normalize( cross( vec3( p[ 2 ] ) - vec3( p[ 0 ] ), up ) ), 1 );
+		vec4 view2 = vec4( normalize( vec3( p[ 2 ] ) - vec3( p[ 0 ] ) ), 1 );
+		vec3 v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
+		vec3 v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
+		vec3 v3 = view2.xyz * view2.zzz * c1 + view2.yxw * sSc.xyz;
+		matRot1 = mat3( v1, v2, v3 );
+	#endif
+	
+	ribbonAxis1 *= vec3( vParticle0[ 1 ].x * 0.5 );
+	
+	
+	
+	// calculate second ribbon axis and rotation matrix
+	up = normalize( vec3( -p[ 2 ] ) );
+	
+	ribbonAxis2 = cross( up, vec3( p[ 3 ] ) - vec3( p[ 1 ] ) );
+	len = length( ribbonAxis2 );
+	if( len < epsilon ){
+		ribbonAxis2 = vec3( 1, 0, 0 );
+		
+	}else{
+		ribbonAxis2 /= len;
+	}
+	if(ribbonAxis1.y < 0.0){
+		ribbonAxis1 = -ribbonAxis1;
+	}
+	
+	if(dot(vec2(ribbonAxis1), vec2(ribbonAxis2)) < 0.0){
+		ribbonAxis1 = -ribbonAxis1;
+	}
+	
+	#ifdef USE_SHEETS
+		//view2 = vec4( cross( ribbonAxis2, up ), 1 );
+		//view2 = vec4( normalize( cross( vec3( p[ 3 ] ) - vec3( p[ 1 ] ), up ) ), 1 );
+		view2 = vec4( normalize( vec3( p[ 3 ] ) - vec3( p[ 1 ] ) ), 1 );
+		v1 = view2.xxx * view2.xyz * c1 + view2.wzy * sSc.zxy;
+		v2 = view2.xyy * view2.yyz * c1 + view2.zwx * sSc.yzx;
+		v3 = view2.xyz * view2.zzz * c1 + view2.yxw * sSc.xyz;
+		matRot2 = mat3( v1, v2, v3 );
+	#endif
+	
+	ribbonAxis2 *= vec3( vParticle0[ 2 ].x * 0.5 );
+	
+	
+	
+	// generate billboard(s)
+	#ifdef USE_SHEETS
+	for(i=0; i<sheetCount; i++){
+	#endif
+		emitCorner(1, p[1], -ribbonAxis1, tc1, layer);
+		EmitVertex();
+		
+		emitCorner(2, p[2], -ribbonAxis2, tc2, layer);
+		EmitVertex();
+		
+		emitCorner(1, p[1], ribbonAxis1, tc3, layer);
+		EmitVertex();
+		
+		emitCorner(2, p[2], ribbonAxis2, tc4, layer);
+		EmitVertex();
+		
+		EndPrimitive();
+		
+	#ifdef USE_SHEETS
+		ribbonAxis1 = matRot1 * ribbonAxis1;
+		ribbonAxis2 = matRot2 * ribbonAxis2;
+	}
+	#endif
+	
+	// end emitRibbon()
+	
+	
+	#ifndef GS_INSTANCING
+		#ifdef GS_RENDER_STEREO
+			}
+		#endif
 	#endif
 }

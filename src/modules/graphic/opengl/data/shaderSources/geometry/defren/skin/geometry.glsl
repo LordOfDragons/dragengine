@@ -184,7 +184,7 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	gl_Layer = layer;
 	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
-	EmitVertex();
+	//EmitVertex();
 }
 
 void emitCorner( in int layer, in int corner, in vec4 position ){
@@ -220,6 +220,8 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 #ifdef GS_RENDER_STEREO
 
 void main( void ){
+	// NOTE: quest requires EmitVertex to be called in main()
+	
 // 	if( vGSRenderCondition[ 0 ] >= 5.0 ){
 // 		return;
 // 	}
@@ -234,7 +236,8 @@ void main( void ){
 		
 		int i;
 		for( i=0; i<3; i++ ){
-			emitCorner( eye, i, gl_in[ i ].gl_Position );
+			emitCorner(eye, i, gl_in[i].gl_Position);
+			EmitVertex();
 		}
 		EndPrimitive();
 		
