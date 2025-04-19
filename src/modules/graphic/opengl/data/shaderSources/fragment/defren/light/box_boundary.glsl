@@ -59,7 +59,7 @@ in ivec3 swizzle, in ivec3 flipper, inout vec3 resMin, inout vec3 resMax){
 		// which results in a tiny bounding box around the light center. this is obviously
 		// wrong. to fix this a clear-value is defined by the light source. this value
 		// equals the maximum boundary box and is a safe value
-		if( position.z == 0 ){
+		if(position.z == 0.0){
 			resMin = min(resMin, pClearMinValue);
 			resMax = max(resMax, pClearMaxValue);
 			return;

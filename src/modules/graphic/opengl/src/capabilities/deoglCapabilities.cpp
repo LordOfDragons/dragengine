@@ -205,9 +205,9 @@ void deoglCapabilities::DetectCapabilities(){
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &resultsInt[ 0 ] ) );
 		pGeometryShaderMaxComponents = ( int )resultsInt[ 0 ];
 		
-		if( ext.GetHasExtension( deoglExtensions::ext_ARB_get_program_binary ) ){
-			OGL_CHECK( pRenderThread, glGetIntegerv( GL_NUM_PROGRAM_BINARY_FORMATS, &resultsInt[ 0 ] ) );
-			pNumProgramBinaryFormats = ( int )resultsInt[ 0 ];
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_get_program_binary)){
+			OGL_CHECK(pRenderThread, glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &resultsInt[0]));
+			pNumProgramBinaryFormats = (int)resultsInt[0];
 		}
 		
 		for(i=0; i<3; i++){

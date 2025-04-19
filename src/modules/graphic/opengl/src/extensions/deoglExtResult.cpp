@@ -614,6 +614,7 @@ GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData = nullptr;
 
 
 // GL_ARB_get_program_binary : no opengl version
+// GL_OES_get_program_binary
 //////////////////////////////////////////////////
 
 GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary = nullptr;

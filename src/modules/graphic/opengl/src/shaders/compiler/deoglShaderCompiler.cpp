@@ -1123,9 +1123,23 @@ deoglShaderCompiled *deoglShaderCompiler::pCacheLoadShader(const deoglShaderProg
 	
 	// NOTE we can not put this decision into deoglRTChoices since shaders are compiled already
 	//      during capabilities detection which is before deoglRTChoices is constructed
-	if(!renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_ARB_get_program_binary)
-	|| renderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
-	|| program.GetCacheId().IsEmpty()){
+	if(program.GetCacheId().IsEmpty()){
+		return nullptr;
+	}
+	
+	if(!pglProgramBinary){
+		const deMutexGuard guardLogs(pMutexLogging);
+		renderThread.GetLogger().LogInfoFormat(
+			"ShaderLanguage.CacheLoadShader: ARB_get_program_binary not support: '%.50s...'",
+			program.GetCacheId().GetString());
+		return nullptr;
+	}
+	
+	if(renderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0){
+		const deMutexGuard guardLogs(pMutexLogging);
+		renderThread.GetLogger().LogInfoFormat(
+			"ShaderLanguage.CacheLoadShader: Num program binary formats is 0: '%.50s...'",
+			program.GetCacheId().GetString());
 		return nullptr;
 	}
 	
@@ -1224,8 +1238,7 @@ const deoglShaderCompiled &compiled){
 	
 	// NOTE we can not put this decision into deoglRTChoices since shaders are compiled already
 	//      during capabilities detection which is before deoglRTChoices is constructed
-	if(!renderThread.GetExtensions().GetHasExtension(deoglExtensions::ext_ARB_get_program_binary)
-	|| renderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
+	if(!pglGetProgramBinary || renderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
 	|| program.GetCacheId().IsEmpty()){
 		return;
 	}

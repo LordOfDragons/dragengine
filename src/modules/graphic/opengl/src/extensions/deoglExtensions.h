@@ -348,18 +348,22 @@ public:
 		ext_EXT_blend_equation_separate,
 		ext_EXT_blend_func_separate,
 		ext_EXT_blend_minmax,
+		ext_EXT_buffer_storage,
+		ext_EXT_clip_control,
+		ext_EXT_copy_image,
 		ext_EXT_copy_texture,
+		ext_EXT_depth_clamp,
 		ext_EXT_draw_range_elements,
 		ext_EXT_gpu_shader4,
 		ext_EXT_multi_draw_arrays,
 		ext_EXT_packed_depth_stencil,
 		ext_EXT_polygon_offset,
 		ext_EXT_subtexture,
-		ext_EXT_texture3D,
 		ext_EXT_texture_array,
 		ext_EXT_texture_cube_map_array,
 		ext_EXT_texture_integer,
 		ext_EXT_texture_object,
+		ext_EXT_texture3D,
 		ext_EXT_transform_feedback,
 		
 		ext_AMD_debug_output,
@@ -371,6 +375,7 @@ public:
 		ext_ATI_separate_stencil,
 		
 		ext_NV_copy_image,
+		ext_NV_depth_clamp,
 		ext_NV_packed_depth_stencil,
 		ext_NV_texture_barrier,
 		ext_NV_transform_feedback,
@@ -412,6 +417,7 @@ private:
 	bool pHasArrayCubeMap;
 	bool pHasSeamlessCubeMap;
 	bool pHasCopyImage;
+	bool pHasDepthClamp;
 	bool pSupportsGeometryShader;
 	bool pSupportsGSInstancing;
 	bool pSupportsComputeShader;
@@ -479,6 +485,8 @@ public:
 	inline bool GetHasArrayCubeMap() const{ return pHasArrayCubeMap; }
 	/** Determines if copy image is supported. */
 	inline bool GetHasCopyImage() const{ return pHasCopyImage; }
+	
+	inline bool GetHasDepthClamp() const{ return pHasDepthClamp; }
 	
 	/** Geometry shader is supported. Required so always true. */
 	// inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }

@@ -1145,7 +1145,20 @@ void deoglRTContext::pInitDisplay(){
 	// create surface
 	pSurface = eglCreateWindowSurface( pDisplay, pConfig, pOSAndroid->GetNativeWindow(), NULL );
 	if( pSurface == EGL_NO_SURFACE ){
+#ifdef OS_ANDROID_QUEST
+		// happens if VR-Mode is enabled. in this case we need a small off-screen surface
+		logger.LogInfo("Window surface already connected (VR-Mode). Creating tiny PBuffer surface");
+		const EGLint eglBufferAttribList[]{
+			EGL_WIDTH, 16,
+			EGL_HEIGHT, 16,
+			EGL_NONE
+		};
+		
+		pSurface = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
+		DEASSERT_FALSE(pSurface == EGL_NO_SURFACE)
+#else
 		DETHROW( deeInvalidParam );
+#endif
 	}
 	
 	// create context if not existing. it can be kept around while frozen

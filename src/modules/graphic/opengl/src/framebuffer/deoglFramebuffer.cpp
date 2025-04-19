@@ -28,6 +28,7 @@
 
 #include "deoglFramebuffer.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../capabilities/deoglCapsTextureFormat.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -558,8 +559,19 @@ void deoglFramebuffer::AttachDepthArrayTextureLevel( deoglArrayTexture *texture,
 		DetachDepthImage();
 		
 		if(pglFramebufferTexture){
+#ifdef WITH_OPENGLES
+			try{
+#endif
 			OGL_CHECK(pRenderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT, image, level));
+	#ifdef WITH_OPENGLES
+			}catch(const deException &){
+				pRenderThread.GetLogger().LogInfoFormat(
+					"deoglFramebuffer::AttachDepthArrayTextureLevel Failed: img=%d size(%d,%d) level=%d f=%s",
+					image, texture->GetWidth(), texture->GetHeight(), level, texture->GetFormat()->GetName().GetString());
+				throw;
+			}
+#endif
 			
 		}else{
 			DETHROW(deeInvalidAction);
