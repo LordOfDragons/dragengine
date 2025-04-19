@@ -635,6 +635,10 @@ void deoglExtensions::pScanExtensions(){
 	}
 	
 	// enable extensions included in core versions. mostly a problem on OpenGL ES
+	if(pGLVersion >= evgl2p0){
+		pHasExtension[ext_ARB_vertex_program] = true;
+	}
+	
 	if(pGLESVersion >= evglesUnsupported){
 		pHasExtension[ext_ARB_framebuffer_object] = true;
 		pHasExtension[ext_ARB_multitexture] = true;
