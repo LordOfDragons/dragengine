@@ -334,6 +334,7 @@
 		"C_Cpp.default.defines": [
 			"MOD_ENTRY_POINT_ATTR"
 		],
-		"git.ignoreLimitWarning": true
+		"git.ignoreLimitWarning": true,
+		"java.configuration.updateBuildConfiguration": "disabled"
 	}
 }
