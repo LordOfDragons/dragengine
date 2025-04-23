@@ -1,4 +1,9 @@
-UBOLAYOUT uniform RenderParameters{
+/*
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+*/
+
+UBOLAYOUT_BIND(0) uniform RenderParameters{
 	vec4 pAmbient;
 	mat4x3 pMatrixV[6];
 	mat4 pMatrixP[2];

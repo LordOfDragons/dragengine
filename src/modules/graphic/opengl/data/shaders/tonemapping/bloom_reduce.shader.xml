@@ -7,11 +7,6 @@
 	<parameter name='pParam1'/>
 	<parameter name='pParam2'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/fsquad.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/tonemap/bloom_reduce.glsl</sourceCode>
+	<sourceCode unit='vertex'>V ToneMap Bloom Reduce</sourceCode>
+	<sourceCode unit='fragment'>F ToneMap Bloom Reduce</sourceCode>
 </shader>

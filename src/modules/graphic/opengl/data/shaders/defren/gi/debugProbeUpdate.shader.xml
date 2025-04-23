@@ -4,9 +4,6 @@
 	
 	<texture name='texGIProbeOffset' target='0'/>
 	
-	<uniformBlock name='GIParameters' target='1'/>
-	<uniformBlock name='GIProbeIndices' target='2'/>
-	
 	<parameter name='pPosTransform'/> <!-- 0 -->
 	<parameter name='pTCTransform'/> <!-- 1 -->
 	<parameter name='pGIDebugCascade'/> <!-- 2 -->
@@ -17,10 +14,6 @@
 	<parameter name='pPlaneBottom'/> <!-- 7 -->
 	<parameter name='pPlaneNear'/> <!-- 8 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/gi/debugProbeUpdate.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/gi/debugProbeUpdate.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen GI Debug Probe Update</sourceCode>
+	<sourceCode unit='fragment'>F DefRen GI Debug Probe Update</sourceCode>
 </shader>

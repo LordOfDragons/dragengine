@@ -149,6 +149,7 @@ GLAPI PFNGLDELETEPROGRAMPROC pglDeleteProgram = nullptr; // core only
 GLAPI PFNGLCREATESHADERPROC pglCreateShader = nullptr; // core only
 GLAPI PFNGLCREATEPROGRAMPROC pglCreateProgram = nullptr; // core only
 GLAPI PFNGLATTACHSHADERPROC pglAttachShader = nullptr; // core only
+GLAPI PFNGLDETACHSHADERPROC pglDetachShader = nullptr; // core only
 GLAPI PFNGLUSEPROGRAMPROC pglUseProgram = nullptr; // core only
 GLAPI PFNGLGETSHADERIVPROC pglGetShaderiv = nullptr; // core only
 GLAPI PFNGLGETPROGRAMIVPROC pglGetProgramiv = nullptr; // core only
@@ -748,3 +749,8 @@ GLAPI PFNGLOBJECTLABELPROC pglObjectLabel = nullptr;
 
 GLAPI PFNGLTEXSTORAGE2DPROC pglTexStorage2D = nullptr;
 GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3D = nullptr;
+
+// GL_ARB_parallel_shader_compile, GL_KHR_parallel_shader_compile
+///////////////////////////////////////////////////////////////////
+
+GLAPI PFNGLMAXSHADERCOMPILERTHREADSARBPROC pglMaxShaderCompilerThreads = nullptr;

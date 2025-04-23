@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V Generic FullScreenQuad</name>
+	<stage>vertex</stage>
+	<source>fullscreenquad.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+	<attribute name='inLayer' location='1'/>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+	
+	<define>GEOMETRY_SHADER</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>NO_TEXCOORD</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

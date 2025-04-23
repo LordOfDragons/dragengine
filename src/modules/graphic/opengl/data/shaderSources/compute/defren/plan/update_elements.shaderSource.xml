@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan Update Elements</name>
+	<stage>compute</stage>
+	<source>update_elements.comp.glsl</source>
+	
+	<shaderStorageBlock name='UpdateElement' binding='0'/>
+	<shaderStorageBlock name='Element' binding='1'/>
+</shaderSource>

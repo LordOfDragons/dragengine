@@ -1,3 +1,12 @@
+/*
+	<!-- shared/ubo_defines.glsl -->
+	<!-- system only
+	<define>UBO_IDMATACCBUG</define>
+	<define>USE_UNIFORM_CONST</define>
+	<define>OPENGLES</define>
+	-->
+*/
+
 #ifdef UBO_IDMATACCBUG
 	#define MATRIX_ORDER column_major
 #else

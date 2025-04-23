@@ -4,9 +4,5 @@
 	
 	<parameter name='pParams'/>
 	
-	<shaderStorageBlock name='ModelData' target='0'/>
-	<shaderStorageBlock name='TransformedData' target='1'/>
-	<shaderStorageBlock name='WeightsMatrix' target='2'/>
-	
-	<sourceCode unit='compute'>compute/defren/geometry/approx_transform_vnt.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Approx Transform VNT</sourceCode>
 </shader>

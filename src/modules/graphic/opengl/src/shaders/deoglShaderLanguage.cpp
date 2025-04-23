@@ -32,6 +32,7 @@
 #include "deoglShaderSources.h"
 #include "deoglShaderDefines.h"
 #include "deoglShaderProgram.h"
+#include "deoglShaderProgramUnit.h"
 #include "deoglShaderUnitSourceCode.h"
 #include "deoglShaderManager.h"
 #include "deoglShaderSourceLocation.h"
@@ -54,6 +55,26 @@
 #include <dragengine/threading/deMutexGuard.h>
 
 
+class cOptionalMutexGuard{
+private:
+	deMutex &pMutex;
+	bool pEnable;
+	
+public:
+	cOptionalMutexGuard(deMutex &mutex, bool enable) :
+	pMutex(mutex), pEnable(enable){
+		if(enable){
+			mutex.Lock();
+		}
+	}
+	
+	~cOptionalMutexGuard(){
+		if(pEnable){
+			pMutex.Unlock();
+		}
+	}
+};
+
 
 // Class deoglShaderLanguage
 //////////////////////////////
@@ -71,8 +92,15 @@ pHasCompilingShader(false),
 pCompiler(nullptr),
 pCompilerThreads(nullptr),
 pCompilerThreadCount(0),
-pCompilingTaskCount(0)
+pCompilingTaskCount(0),
+pTotalCompiledUnits(0),
+pTotalCompiledShaders(0)
 {
+	int i;
+	for(i=0; i<6; i++){
+		pTotalCompiledStage[i] = 0;
+	}
+	
 	deoglExtensions &ext = renderThread.GetExtensions();
 	
 	// determine the required shader language version
@@ -170,7 +198,11 @@ pCompilingTaskCount(0)
 	}
 	
 	try{
-		pCreateCompileThreads();
+		pCompiler = new deoglShaderCompiler(*this, -1);
+		
+		//if(!pglMaxShaderCompilerThreads){
+			pCreateCompileThreads();
+		//}
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -179,6 +211,7 @@ pCompilingTaskCount(0)
 }
 
 deoglShaderLanguage::~deoglShaderLanguage(){
+	pLogTotalsLocked();
 	pCleanUp();
 }
 
@@ -187,43 +220,92 @@ deoglShaderLanguage::~deoglShaderLanguage(){
 // Management
 ///////////////
 
-deoglShaderCompiled *deoglShaderLanguage::CompileShader(const deoglShaderProgram &program){
-// 	pRenderThread.GetLogger().LogInfoFormat("CompileShader: cacheId='%s' cacheId.len=%d",
-// 		program.GetCacheId().GetString(), program.GetCacheId().GetLength());
+void deoglShaderLanguage::CompileShader(deoglShaderProgram &program){
+	// pRenderThread.GetLogger().LogInfoFormat("CompileShader: cacheId='%s' cacheId.len=%d",
+	// 	program.GetCacheId().GetString(), program.GetCacheId().GetLength());
+	const deMutexGuard guard(pMutexTasks);
 	
-	if(!pCompiler){
-		pCompiler = new deoglShaderCompiler(*this, -1);
-	}
-	
-	return pCompiler->CompileShader(program);
+	pTotalCompiledShaders++;
+	pCompiler->CompileShader(program);
+	pCompiler->FinishCompileShader(program);
+	pLogTotalsLocked();
 }
 
-void deoglShaderLanguage::CompileShaderAsync(const deoglShaderProgram *program,
+void deoglShaderLanguage::CompileShaderAsync(deoglShaderProgram *program,
 deoglShaderCompileListener *listener){
 	DEASSERT_NOTNULL(listener)
 	DEASSERT_NOTNULL(program)
 	
-	if(pCompilerThreadCount > 0){
+	// pRenderThread.GetLogger().LogInfoFormat("CompileShaderAsync: cacheId='%s' cacheId.len=%d",
+	// 	program->GetCacheId().GetString(), program->GetCacheId().GetLength());
+	
+	deoglShaderProgramUnit * const units[6] = {
+		program->GetUnitCompute(),
+		program->GetUnitVertex(),
+		program->GetUnitTessellationControl(),
+		program->GetUnitTessellationEvaluation(),
+		program->GetUnitGeometry(),
+		program->GetUnitFragment()};
+	int i;
+	
+	if(pCompilerThreadCount > 0 /*|| pglMaxShaderCompilerThreads*/){
 		{
 		const deMutexGuard guard(pMutexTasks);
-		pTasksPending.Add(deObject::Ref::New(new deoglShaderCompileTask(program, listener)));
+		for(i=0; i<6; i++){
+			deoglShaderProgramUnit * const u = units[i];
+			if(!u || u->isCompiling || u->compilingFailed || u->IsCompiled()){
+				continue;
+			}
+			
+			pTotalCompiledUnits++;
+			pTotalCompiledStage[i]++;
+			
+			const deoglShaderCompileUnitTask::Ref task(deoglShaderCompileUnitTask::Ref::New(
+				new deoglShaderCompileUnitTask(u)));
+			pUnitTasksPending.Add(task);
+			
+			// this method can be called from the resource loader thread instead of the render
+			// thread. for this reason CompileShaderUnit() can not be called here. the task
+			// sets a pending flag which causes the compile to be done in the Update() call
+			/*
+			if(pglMaxShaderCompilerThreads){
+				pCompiler->CompileShaderUnit(*u);
+			}
+			*/
+		}
+		
+		pTotalCompiledShaders++;
+		pTasksPending.Add(deoglShaderCompileTask::Ref::New(new deoglShaderCompileTask(program, listener)));
 		}
 		pSemaphoreNewTasks.Signal();
 		
 	}else{
-		deoglShaderCompiled *compiled = nullptr;
 		try{
-			compiled = CompileShader(*program);
+			for(i=0; i<6; i++){
+				deoglShaderProgramUnit * const u = units[i];
+				if(!u || u->compilingFailed || u->IsCompiled()){
+					continue;
+				}
+				
+				pTotalCompiledUnits++;
+				pTotalCompiledStage[i]++;
+				
+				pCompiler->CompileShaderUnit(*u);
+				pCompiler->FinishCompileShaderUnit(*u);
+			}
+			
+			pTotalCompiledShaders++;
+			pCompiler->CompileShader(*program);
+			pCompiler->FinishCompileShader(*program);
+			pLogTotalsLocked();
+			
 		}catch(const deException &e){
 			pRenderThread.GetLogger().LogException(e);
 		}
 		
 		try{
-			listener->CompileFinished(compiled);
+			listener->CompileFinished(program);
 		}catch(const deException &e){
-			if(compiled){
-				delete compiled;
-			}
 			pRenderThread.GetLogger().LogException(e);
 		}
 		
@@ -282,21 +364,36 @@ void deoglShaderLanguage::RemoveCompilingShader(){
 	pCompilingShaderCount--;
 }
 
-void deoglShaderLanguage::GetNextTask(deoglShaderCompileTask::Ref &task){
+void deoglShaderLanguage::GetNextTask(deoglShaderCompileTask::Ref &task,
+deoglShaderCompileUnitTask::Ref &unitTask){
+	task = nullptr;
+	unitTask = nullptr;
+	
 	const deMutexGuard guard(pMutexTasks);
-	if(pTasksPending.GetCount() > 0){
-		task = (deoglShaderCompileTask*)pTasksPending.GetAt(0);
-		pTasksPending.RemoveFrom(0);
+	
+	if(pUnitTasksPending.GetCount() > 0){
+		unitTask = (deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(0);
+		pUnitTasksPending.RemoveFrom(0);
 		pCompilingTaskCount++;
-		
-	}else{
-		task = nullptr;
+		return;
+	}
+	
+	const int count = pTasksPending.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		deoglShaderCompileTask * const candidate = (deoglShaderCompileTask*)pTasksPending.GetAt(i);
+		if(candidate->GetProgram()->CanCompile()){
+			task = candidate;
+			pTasksPending.RemoveFrom(i);
+			pCompilingTaskCount++;
+			return;
+		}
 	}
 }
 
 void deoglShaderLanguage::FinishTask(deoglShaderCompileTask::Ref &task){
 	try{
-		task->GetListener()->CompileFinished(task->GetCompiled());
+		task->GetListener()->CompileFinished(task->GetProgram());
 		
 	}catch(const deException &e){
 		pRenderThread.GetLogger().LogException(e);
@@ -304,12 +401,37 @@ void deoglShaderLanguage::FinishTask(deoglShaderCompileTask::Ref &task){
 	
 	{
 	const deMutexGuard guard(pMutexTasks);
+	
 	DEASSERT_TRUE(pCompilingTaskCount > 0)
 	pCompilingTaskCount--;
+	
 	task = nullptr;
+	
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0){
+		pLogTotalsLocked();
+	}
 	}
 	
 	pSemaphoreTasksFinished.Signal();
+}
+
+void deoglShaderLanguage::FinishTask(deoglShaderCompileUnitTask::Ref &task){
+	{
+	const deMutexGuard guard(pMutexTasks);
+	
+	task->GetUnit()->isCompiling = false;
+	
+	DEASSERT_TRUE(pCompilingTaskCount > 0)
+	pCompilingTaskCount--;
+	
+	task = nullptr;
+	
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0){
+		pLogTotalsLocked();
+	}
+	}
+	
+	pSemaphoreNewTasks.Signal();
 }
 
 void deoglShaderLanguage::WaitForNewTasks(){
@@ -317,14 +439,132 @@ void deoglShaderLanguage::WaitForNewTasks(){
 }
 
 void deoglShaderLanguage::WaitAllTasksFinished(){
-	while(true){
-		{
-		const deMutexGuard guard(pMutexTasks);
-		if(pCompilingTaskCount == 0 && pTasksPending.GetCount() == 0){
-			break;
+	/*
+	if(pglMaxShaderCompilerThreads){
+		int i, count = pUnitTasksPending.GetCount();
+		for(i=0; i<count; i++){
+			deoglShaderCompileUnitTask &task = *((deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(i));
+			pCompiler->FinishCompileShaderUnit(*task.GetUnit());
+			task.GetUnit()->isCompiling = false;
 		}
+		pUnitTasksPending.RemoveAll();
+		
+		count = pTasksPending.GetCount();
+		for(i=0; i<count; i++){
+			deoglShaderCompileTask &task = *((deoglShaderCompileTask*)pTasksPending.GetAt(i));
+			
+			try{
+				pCompiler->FinishCompileShader(*task.GetProgram());
+				
+			}catch(const deException &e){
+				pRenderThread.GetLogger().LogException(e);
+			}
+			
+			try{
+				task.GetListener()->CompileFinished(task.GetProgram());
+				
+			}catch(const deException &e){
+				pRenderThread.GetLogger().LogException(e);
+			}
 		}
-		pSemaphoreTasksFinished.Wait();
+		pTasksPending.RemoveAll();
+		
+		pLogTotalsLocked();
+		
+	}else{
+	*/
+		while(true){
+			{
+			const deMutexGuard guard(pMutexTasks);
+			if(pCompilingTaskCount == 0
+			&& pUnitTasksPending.GetCount() == 0
+			&& pTasksPending.GetCount() == 0){
+				break;
+			}
+			}
+			pSemaphoreTasksFinished.Wait();
+		}
+	//}
+}
+
+void deoglShaderLanguage::Update(){
+	return;
+	if(!pglMaxShaderCompilerThreads){
+		return;
+	}
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0){
+		return;
+	}
+	
+	int i, count = pUnitTasksPending.GetCount();
+	for(i=0; i<count; i++){
+		deoglShaderCompileUnitTask &task = *((deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(i));
+		
+		if(task.pending){
+			task.pending = false;
+			pCompiler->CompileShaderUnit(*task.GetUnit());
+		}
+		
+		if(!pCompiler->HasCompileShaderUnitFinished(*task.GetUnit())){
+			continue;
+		}
+		
+		pCompiler->FinishCompileShaderUnit(*task.GetUnit());
+		task.GetUnit()->isCompiling = false;
+		pUnitTasksPending.RemoveFrom(i);
+		count--;
+		i--;
+	}
+	
+	count = pTasksPending.GetCount();
+	for(i=0; i<count; i++){
+		deoglShaderCompileTask &task = *((deoglShaderCompileTask*)pTasksPending.GetAt(i));
+		deoglShaderProgram &program = *task.GetProgram();
+		
+		if(!program.isCompiling){
+			if(!program.CanCompile()){
+				continue;
+			}
+			
+			program.isCompiling = true;
+			try{
+				pCompiler->CompileShader(program);
+				
+			}catch(const deException &e){
+				pRenderThread.GetLogger().LogException(e);
+				program.isCompiling = false;
+			}
+			
+			if(program.isCompiling){
+				continue;
+			}
+		}
+		
+		if(!pCompiler->HasCompileShaderFinished(*task.GetProgram())){
+			continue;
+		}
+		
+		try{
+			pCompiler->FinishCompileShader(*task.GetProgram());
+			
+		}catch(const deException &e){
+			pRenderThread.GetLogger().LogException(e);
+		}
+		
+		try{
+			task.GetListener()->CompileFinished(task.GetProgram());
+			
+		}catch(const deException &e){
+			pRenderThread.GetLogger().LogException(e);
+		}
+		
+		pTasksPending.RemoveFrom(i);
+		count--;
+		i--;
+	}
+	
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0){
+		pLogTotalsLocked();
 	}
 }
 
@@ -380,4 +620,12 @@ void deoglShaderLanguage::pCreateCompileThreads(){
 			while(timer.PeekElapsedTime() < 0.001f);
 		}
 	}
+}
+
+void deoglShaderLanguage::pLogTotalsLocked(){
+	pRenderThread.GetLogger().LogInfoFormat(
+		"ShaderCompileTotal: shaders=%d units=%d (c=%d v=%d tc=%d te=%d g=%d f=%d)",
+		pTotalCompiledShaders, pTotalCompiledUnits, pTotalCompiledStage[0],
+		pTotalCompiledStage[1], pTotalCompiledStage[2], pTotalCompiledStage[3],
+		pTotalCompiledStage[4], pTotalCompiledStage[5]);
 }

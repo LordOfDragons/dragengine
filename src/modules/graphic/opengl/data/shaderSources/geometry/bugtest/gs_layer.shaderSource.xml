@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>G Test Geometry Shader Layer Bug</name>
+	<stage>geometry</stage>
+	<source>gs_layer.geom.glsl</source>
+</shaderSource>

@@ -2,11 +2,7 @@
 <shader>
 	<name>Test Geometry Shader Layer Bug</name>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/bugtest/gs_layer.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/bugtest/gs_layer.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/bugtest/gs_layer.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Test Geometry Shader Layer Bug</sourceCode>
+	<sourceCode unit='geometry'>G Test Geometry Shader Layer Bug</sourceCode>
+	<sourceCode unit='fragment'>F Test Geometry Shader Layer Bug</sourceCode>
 </shader>

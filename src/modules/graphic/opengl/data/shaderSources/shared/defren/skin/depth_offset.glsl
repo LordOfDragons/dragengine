@@ -1,3 +1,9 @@
+/*
+	<!-- shared/defren/skin/depth_offset.glsl -->
+	<define>DEPTH_DISTANCE</define>
+	<define>DEPTH_ORTHOGONAL</define>
+*/
+
 /**
  * Apply depth offset.
  */

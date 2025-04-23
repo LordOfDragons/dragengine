@@ -1,3 +1,15 @@
+/*
+	<!-- shared/defren/skin/transform_normal.glsl -->
+	<define>BILLBOARD</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>HAS_TESSELLATION_SHADER</define>
+	<define>HEIGHT_MAP</define>
+	<define>PROP_FIELD</define>
+	<define>TEXTURE_NORMAL</define>
+*/
+
 // normal transformation. the result is written to vNormal. if a normal map exists vTangent and vBitangent
 // are also calculated and written.
 #if defined HAS_TESSELLATION_SHADER || defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO

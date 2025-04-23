@@ -4,8 +4,6 @@
 	
 	<texture name='texDepth' target='0'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/shadow/copytex2d.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/shadow/copytex2d.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Shadow Copy Texture2D</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Shadow Copy Texture2D</sourceCode>
 </shader>

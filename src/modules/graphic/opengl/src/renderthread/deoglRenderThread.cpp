@@ -2254,6 +2254,7 @@ void deoglRenderThread::pBeginFrame(){
 	
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
+	pShader->GetShaderManager().Update();
 	
 	#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();

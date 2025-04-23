@@ -27,8 +27,8 @@
 
 #include "deoglShaderCompiled.h"
 #include "deoglShaderProgram.h"
+#include "deoglShaderProgramUnit.h"
 #include "deoglShaderSources.h"
-#include "deoglShaderUnitSourceCode.h"
 #include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTUniqueKey.h"
@@ -37,58 +37,54 @@
 #include <dragengine/common/string/decStringList.h>
 
 
-
 // Class deoglShaderProgram
 /////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, const deoglShaderSources *sources ) :
-pRenderThread( renderThread )
+deoglShaderProgram::deoglShaderProgram(deoglRenderThread &renderThread,
+	const deoglShaderSources *sources) :
+pRenderThread(renderThread),
+pSources(sources),
+pUnitCompute(nullptr),
+pUnitTessellationControl(nullptr),
+pUnitTessellationEvaluation(nullptr),
+pUnitGeometry(nullptr),
+pUnitVertex(nullptr),
+pUnitFragment(nullptr),
+pCompiled(nullptr),
+ready(false),
+isCompiling(false)
 {
-	DEASSERT_NOTNULL( sources )
-	
-	pSCCompute = NULL;
-	pSCTessellationControl = NULL;
-	pSCTessellationEvaluation = NULL;
-	pSCGeometry = NULL;
-	pSCVertex = NULL;
-	pSCFragment = NULL;
-	
-	pCompiled = NULL;
-	pSources = sources;
-	
+	DEASSERT_NOTNULL(sources)
 	pUniqueKey = renderThread.GetUniqueKey().Get();
 }
 
-deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread,
-const deoglShaderSources *sources, const deoglShaderDefines &defines ) :
-pRenderThread( renderThread )
+deoglShaderProgram::deoglShaderProgram(deoglRenderThread &renderThread,
+const deoglShaderSources *sources, const deoglShaderDefines &defines) :
+pRenderThread(renderThread),
+pSources(sources),
+pDefines(defines),
+pUnitCompute(nullptr),
+pUnitTessellationControl(nullptr),
+pUnitTessellationEvaluation(nullptr),
+pUnitGeometry(nullptr),
+pUnitVertex(nullptr),
+pUnitFragment(nullptr),
+pCompiled(nullptr),
+ready(false),
+isCompiling(false)
 {
-	DEASSERT_NOTNULL( sources )
-	
-	pSCCompute = NULL;
-	pSCTessellationControl = NULL;
-	pSCTessellationEvaluation = NULL;
-	pSCGeometry = NULL;
-	pSCVertex = NULL;
-	pSCFragment = NULL;
-	
-	pCompiled = NULL;
-	pSources = sources;
-	
-	pDefines = defines;
-	
+	DEASSERT_NOTNULL(sources)
 	pUniqueKey = renderThread.GetUniqueKey().Get();
 }
 
 deoglShaderProgram::~deoglShaderProgram(){
-	if( pCompiled ){
+	if(pCompiled){
 		delete pCompiled;
 	}
-	
-	pRenderThread.GetUniqueKey().Return( pUniqueKey );
+	pRenderThread.GetUniqueKey().Return(pUniqueKey);
 }
 
 
@@ -96,42 +92,60 @@ deoglShaderProgram::~deoglShaderProgram(){
 // Management
 ///////////////
 
-void deoglShaderProgram::SetCacheId( const decString &id ){
+void deoglShaderProgram::SetCacheId(const decString &id){
 	pCacheId = id;
 }
 
-void deoglShaderProgram::SetComputeSourceCode( deoglShaderUnitSourceCode *sourceCode ){
-	pSCCompute = sourceCode;
+void deoglShaderProgram::SetUnitCompute(deoglShaderProgramUnit *unit){
+	pUnitCompute = unit;
 }
 
-void deoglShaderProgram::SetTessellationControlSourceCode( deoglShaderUnitSourceCode *sourceCode ){
-	pSCTessellationControl = sourceCode;
+void deoglShaderProgram::SetUnitTessellationControl(deoglShaderProgramUnit *unit){
+	pUnitTessellationControl = unit;
 }
 
-void deoglShaderProgram::SetTessellationEvaluationSourceCode( deoglShaderUnitSourceCode *sourceCode ){
-	pSCTessellationEvaluation = sourceCode;
+void deoglShaderProgram::SetUnitTessellationEvaluation(deoglShaderProgramUnit *unit){
+	pUnitTessellationEvaluation = unit;
 }
 
-void deoglShaderProgram::SetGeometrySourceCode( deoglShaderUnitSourceCode *sourceCode ){
-	pSCGeometry = sourceCode;
+void deoglShaderProgram::SetUnitGeometry(deoglShaderProgramUnit *unit){
+	pUnitGeometry = unit;
 }
 
-void deoglShaderProgram::SetVertexSourceCode( deoglShaderUnitSourceCode *sourceCode ){
-	pSCVertex = sourceCode;
+void deoglShaderProgram::SetUnitVertex(deoglShaderProgramUnit *unit){
+	pUnitVertex = unit;
 }
 
-void deoglShaderProgram::SetFragmentSourceCode( deoglShaderUnitSourceCode *sourceCode ){
-	pSCFragment = sourceCode;
+void deoglShaderProgram::SetUnitFragment(deoglShaderProgramUnit *unit){
+	pUnitFragment = unit;
 }
 
-void deoglShaderProgram::SetCompiled( deoglShaderCompiled *compiled ){
-	if( compiled == pCompiled ){
+bool deoglShaderProgram::CanCompile() const{
+	return !(pUnitCompute && pUnitCompute->isCompiling)
+		&& !(pUnitVertex && pUnitVertex->isCompiling)
+		&& !(pUnitGeometry && pUnitGeometry->isCompiling)
+		&& !(pUnitFragment && pUnitFragment->isCompiling)
+		&& !(pUnitTessellationControl && pUnitTessellationControl->isCompiling)
+		&& !(pUnitTessellationEvaluation && pUnitTessellationEvaluation->isCompiling);
+}
+
+void deoglShaderProgram::SetCompiled(deoglShaderCompiled *compiled){
+	if(compiled == pCompiled){
 		return;
 	}
 	
-	if( pCompiled ){
+	if(pCompiled){
 		delete pCompiled;
 	}
-	
 	pCompiled = compiled;
+}
+
+void deoglShaderProgram::MoveCompiled(deoglShaderProgram &program){
+	if(&program == this){
+		return;
+	}
+	
+	SetCompiled(nullptr);
+	pCompiled = program.pCompiled;
+	program.pCompiled = nullptr;
 }

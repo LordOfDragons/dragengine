@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Shadow Point</name>
+	<stage>fragment</stage>
+	<source>distance.frag.glsl</source>
+	
+	<output name='outBuf1' location='0'/>
+	<output name='outBuf2' location='1'/>
+	
+	<define>DEPTH_AS_COLOR</define>
+	<define>DISCARD_HOLES</define>
+	<define>TRANSPARENT</define>
+</shaderSource>

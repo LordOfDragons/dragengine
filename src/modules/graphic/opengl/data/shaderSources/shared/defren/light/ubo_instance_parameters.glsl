@@ -1,4 +1,14 @@
-UBOLAYOUT uniform InstanceParameters{
+/*
+	<!-- shared/defren/light/ubo_instance_parameters.glsl -->
+	<uniformBlock name='InstanceParameters' binding='1'/>
+	
+	<define>PARTICLE_LIGHT</define>
+	<define>SKY_LIGHT</define>
+	<define>TEXTURE_COLOR_CUBEMAP</define>
+	<define>TEXTURE_COLOR_EQUIRECT</define>
+*/
+
+UBOLAYOUT_BIND(1) uniform InstanceParameters{
 	mat4 pMatrixMVP[ 2 ];
 	mat4x3 pMatrixMV[ 2 ];
 	

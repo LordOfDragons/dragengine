@@ -249,17 +249,20 @@ deoglRenderLightBase( renderThread )
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	const float smOffsetScale = renderThread.GetConfiguration().GetShadowMapOffsetScale();
 	const float smOffsetBias = renderThread.GetConfiguration().GetShadowMapOffsetBias();
+	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().SetCommonDefines(commonDefines);
+		
 		// light box boundary
 		pipconf.Reset();
 		pipconf.SetMasks( true, true, true, true, false );
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
+		defines = commonDefines;
 		if( useInverseDepth ){
 			defines.SetDefines( "SHADOW_INVERSE_DEPTH" );
 		}
@@ -268,10 +271,9 @@ deoglRenderLightBase( renderThread )
 		
 		defines.SetDefines( "AMBIENT_MAP" );
 		pAsyncGetPipeline(pPipelineBoxBoundary1Ambient, pipconf, sources, defines);
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		pAsyncGetPipeline(pPipelineBoxBoundary2, pipconf, sources, defines);
-		defines.RemoveAllDefines();
 		
 		
 		
@@ -283,10 +285,10 @@ deoglRenderLightBase( renderThread )
 		pipconf.EnableCulling( false );
 		pipconf.EnablePolygonOffset( useInverseDepth ? -smOffsetScale : smOffsetScale, -smOffsetBias );
 		
+		defines = commonDefines;
 		AddSharedSPBDefines( defines );
 		pipconf.SetSPBInstanceIndexBase(0);
 		pAsyncGetPipeline(pPipelineOccMap, pipconf, "DefRen Occlusion OccMap", defines, true);
-		defines.RemoveAllDefines();
 		
 		
 		

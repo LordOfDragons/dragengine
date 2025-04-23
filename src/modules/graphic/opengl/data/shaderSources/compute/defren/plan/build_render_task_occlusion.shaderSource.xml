@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan Build Render Task Occlusion</name>
+	<stage>compute</stage>
+	<source>build_render_task_occlusion.comp.glsl</source>
+	
+	<uniformBlock name='RenderTaskConfig' binding='0'/>
+	
+	<shaderStorageBlock name='ElementGeometry' binding='0'/>
+	<shaderStorageBlock name='ElementCullResult' binding='1'/>
+	<shaderStorageBlock name='RenderTask' binding='2'/>
+</shaderSource>

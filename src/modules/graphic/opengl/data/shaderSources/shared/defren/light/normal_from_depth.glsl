@@ -1,5 +1,11 @@
 // reconstruct normal from depth buffer
 
+/*
+	<!-- shared/defren/light/normal_from_depth.glsl -->
+	<define>DECODE_IN_DEPTH</define>
+	<define>GI_RAY</define>
+*/
+
 #ifdef DECODE_IN_DEPTH
 	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 #endif

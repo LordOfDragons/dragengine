@@ -194,8 +194,11 @@ pListener(listener)
 	DEASSERT_NOTNULL(listener)
 }
 
-void deoglLightShader::cPrepareShader::CompileFinished(deoglShaderCompiled *compiled){
-	pShader.pShader->SetCompiled(compiled);
+void deoglLightShader::cPrepareShader::CompileFinished(deoglShaderProgram *program){
+	if(program && program->ready){
+		pShader.pShader->MoveCompiled(*program);
+		pShader.pShader->ready = true;
+	}
 	
 	try{
 		pListener->PrepareShaderFinished(pShader);
@@ -370,38 +373,8 @@ void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 		InitShaderParameters();
 		
 		// create shader
-		pShader.TakeOver( new deoglShaderProgram( pRenderThread, pSources, defines ) );
-		
-		// add unit source codes from source files
-		if( ! pSources->GetPathVertexSourceCode().IsEmpty() ){
-			pShader->SetVertexSourceCode( smgr.GetUnitSourceCodeWithPath( pSources->GetPathVertexSourceCode() ) );
-			
-			if( ! pShader->GetVertexSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Light Shader: Vertex source '%s' not found",
-					pSources->GetPathVertexSourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		if( ! pSources->GetPathGeometrySourceCode().IsEmpty() ){
-			pShader->SetGeometrySourceCode( smgr.GetUnitSourceCodeWithPath( pSources->GetPathGeometrySourceCode() ) );
-			
-			if( ! pShader->GetGeometrySourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Light Shader: Geometry source '%s' not found",
-					pSources->GetPathGeometrySourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		if( ! pSources->GetPathFragmentSourceCode().IsEmpty() ){
-			pShader->SetFragmentSourceCode( smgr.GetUnitSourceCodeWithPath( pSources->GetPathFragmentSourceCode() ) );
-			
-			if( ! pShader->GetFragmentSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Light Shader: Fragment source '%s' not found",
-					pSources->GetPathFragmentSourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
+		pShader.TakeOver(new deoglShaderProgram(pRenderThread, pSources, defines));
+		smgr.ResolveProgramUnits(pShader);
 		
 		// cache id
 		decStringList cacheIdParts, cacheIdComponents;
@@ -428,7 +401,7 @@ void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 			smgr.GetLanguage()->CompileShaderAsync(pShader, new cPrepareShader(*this, listener));
 			
 		}else{
-			pShader->SetCompiled(smgr.GetLanguage()->CompileShader(pShader));
+			smgr.GetLanguage()->CompileShader(pShader);
 		}
 		/*
 		if( pConfig.GetShaderMode() == deoglLightShaderConfig::esmGeometry ){
@@ -874,10 +847,7 @@ void deoglLightShader::UpdateUniformTargets(){
 }
 
 void deoglLightShader::InitShaderParameters(){
-	deoglShaderBindingList &uniformBlockList = pSources->GetUniformBlockList();
 	deoglShaderBindingList &textureList = pSources->GetTextureList();
-	deoglShaderBindingList &inputList = pSources->GetAttributeList();
-	deoglShaderBindingList &outputList = pSources->GetOutputList();
 	decStringList &parameterList = pSources->GetParameterList();
 	int i;
 	
@@ -900,34 +870,4 @@ void deoglLightShader::InitShaderParameters(){
 			parameterList.Add( vLightUniformTargetNames[ i ] );
 		}
 	}
-	
-	// inputs
-	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmParticle ){
-		inputList.Add( "inParticle0", 0 );
-		inputList.Add( "inParticle1", 1 );
-		inputList.Add( "inParticle2", 2 ); // unused but does not hurt to define it
-		inputList.Add( "inParticle3", 3 );
-		/*
-		if( pConfig.GetParticleMode() == deoglLightShaderConfig::epmBeam ){
-			inputList.Add( "inParticle4", 4 );
-		}
-		*/
-		
-	}else{
-		inputList.Add( "inPosition", 0 );
-	}
-	
-	// outputs
-	outputList.Add( "outColor", 0 );
-	if( ! pConfig.GetGIRay() ){
-		outputList.Add( "outLuminance", 1 );
-	}
-	if( pConfig.GetSubSurface() ){
-		outputList.Add( "outSubSurface", 2 );
-	}
-	
-	// uniform blocks
-	uniformBlockList.Add( "RenderParameters", eubRenderParameters );
-	uniformBlockList.Add( "InstanceParameters", eubInstanceParameters );
-	uniformBlockList.Add( "LightParameters", eubLightParameters );
 }

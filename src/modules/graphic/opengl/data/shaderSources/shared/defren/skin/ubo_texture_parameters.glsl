@@ -1,3 +1,15 @@
+/*
+	<!-- shared/defren/skin/ubo_texture_parameters.glsl -->
+	<shaderStorageBlock name='TextureParametersSSBO' binding='2'/>
+	<uniformBlock name='TextureParameters' binding='1'/>
+	
+	<!-- system only
+	<define>SHARED_SPB_TEXTURE_PADDING</define>
+	<define>SHARED_SPB_USE_SSBO</define>
+	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>
+	-->
+*/
+
 struct sTextureParameters{
 	// static values for texture properties typically using a texture
 	vec4 valueColorTransparency; // color, transparency
@@ -66,7 +78,7 @@ struct sTextureParameters{
 #ifdef SHARED_SPB_USE_SSBO
 	UBOLAYOUT_BIND(2) readonly buffer TextureParametersSSBO
 #else
-	UBOLAYOUT uniform TextureParameters
+	UBOLAYOUT_BIND(1) uniform TextureParameters
 #endif
 {
 	#ifdef SHARED_SPB_TEXTURE_ARRAY_SIZE

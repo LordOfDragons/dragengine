@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen GI Trace Rays</name>
+	<stage>compute</stage>
+	<source>traceRays.comp.glsl</source>
+	
+	<uniformBlock name='GIParameters' binding='1'/>
+	<uniformBlock name='GIProbeIndices' binding='2'/>
+	<uniformBlock name='GIProbePositions' binding='3'/>
+	<uniformBlock name='GIRayDirections' binding='4'/>
+	
+	<define>GI_USE_RAY_CACHE</define>
+	<define>RENDER_DOC_DEBUG_GI</define>
+	
+	<!-- shared/defren/gi/raycast/trace_ray.glsl -->
+	<define>GI_RAYCAST_USE_SSBO</define>
+	<define>GI_RAYCAST_DISTANCE_ONLY</define>
+	<define>GI_RAYCAST_OCCMESH_ONLY</define>
+	
+	<!-- shared/defren/gi/raycast/sample_material.glsl -->
+	<define>GI_RAYCAST_USE_SSBO</define>
+</shaderSource>

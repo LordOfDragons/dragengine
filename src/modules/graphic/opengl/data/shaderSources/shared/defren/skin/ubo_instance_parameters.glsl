@@ -1,3 +1,23 @@
+/*
+	<!-- shared/defren/skin/ubo_instance_parameters.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='0'/>
+	<uniformBlock name='InstanceParameters' binding='2'/>
+	
+	<define>PARTICLE</define>
+	<define>PARTICLE_RIBBON</define>
+	<define>PARTICLE_BEAM</define>
+	<define>PROP_FIELD</define>
+	<define>HEIGHT_MAP</define>
+	<define>WITH_VARIATIONS</define>
+	
+	<!-- system only
+	<define>SHARED_SPB</define>
+	<define>SHARED_SPB_PADDING</define>
+	<define>SHARED_SPB_USE_SSBO</define>
+	<define>SHARED_SPB_ARRAY_SIZE</define>
+	-->
+*/
+
 #ifdef SHARED_SPB
 
 struct sInstanceParameters{
@@ -86,7 +106,7 @@ struct sInstanceParameters{
 #ifdef SHARED_SPB_USE_SSBO
 	UBOLAYOUT_BIND(0) readonly buffer InstanceParametersSSBO
 #else
-	UBOLAYOUT uniform InstanceParameters
+	UBOLAYOUT_BIND(2) uniform InstanceParameters
 #endif
 {
 	#ifdef SHARED_SPB_ARRAY_SIZE
@@ -100,7 +120,7 @@ struct sInstanceParameters{
 
 #else  // SHARED_SPB
 
-UBOLAYOUT uniform InstanceParameters{
+UBOLAYOUT_BIND(2) uniform InstanceParameters{
 	#ifdef PARTICLE
 		mat4x3 pMatrixModel;
 		vec4 pSamplesParams; // samplesScaleU, samplesOffsetU, samplesScaleV, samplesOffsetV
@@ -199,7 +219,7 @@ UBOLAYOUT uniform InstanceParameters{
 #ifdef PARTICLE
 	const bool pDoubleSided = true;
 	#ifdef WITH_VARIATIONS
-		const vec2 pVariationSeed = vec2( 0.0 );
+		const vec2 pVariationSeed = vec2(0);
 	#endif
 #endif
 

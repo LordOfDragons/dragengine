@@ -314,6 +314,7 @@ public:
 		ext_ARB_multisample,
 		ext_ARB_multitexture,
 		ext_ARB_occlusion_query,
+		ext_ARB_parallel_shader_compile,
 		ext_ARB_program_interface_query,
 		ext_ARB_provoking_vertex,
 		ext_ARB_sampler_objects,
@@ -383,6 +384,7 @@ public:
 		ext_NV_transform_feedback3,
 		
 		ext_KHR_debug,
+		ext_KHR_parallel_shader_compile,
 		
 		ext_GLX_EXT_swap_control,
 		ext_GLX_EXT_swap_control_tear,

@@ -26,6 +26,7 @@
 #define _DEOGLSHADERLANGUAGE_H_
 
 #include "compiler/deoglShaderCompileTask.h"
+#include "compiler/deoglShaderCompileUnitTask.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decStringList.h>
@@ -70,10 +71,12 @@ private:
 	deoglShaderCompilerThread **pCompilerThreads;
 	int pCompilerThreadCount;
 	
-	decObjectList pTasksPending;
+	decObjectList pTasksPending, pUnitTasksPending;
 	int pCompilingTaskCount;
 	deMutex pMutexTasks;
 	deSemaphore pSemaphoreNewTasks, pSemaphoreTasksFinished;
+	
+	int pTotalCompiledUnits, pTotalCompiledStage[6], pTotalCompiledShaders;
 	
 	
 public:
@@ -95,11 +98,13 @@ public:
 	inline const decStringList &GetGLSLExtensions() const{ return pGLSLExtensions; }
 	inline int GetGLSLVersionNumber() const{ return pGLSLVersionNumber; }
 	
-	/** Compile shader from given sources using specified defines. */
-	deoglShaderCompiled *CompileShader(const deoglShaderProgram &program);
+	inline bool HasCompileThreads() const{ return pCompilerThreadCount > 0; }
 	
-	/** Asynchronous compile shader from given sources using specified defines. */
-	void CompileShaderAsync(const deoglShaderProgram *program, deoglShaderCompileListener *listener);
+	/** Compile shader. */
+	void CompileShader(deoglShaderProgram &program);
+	
+	/** Asynchronous compile shader. */
+	void CompileShaderAsync(deoglShaderProgram *program, deoglShaderCompileListener *listener);
 	
 	/** Next shader file number. */
 	int NextShaderFileNumber();
@@ -123,22 +128,27 @@ public:
 	void RemoveCompilingShader();
 	
 	/** Get next task to compile. Blocks until a task is available or thread has to exit. */
-	void GetNextTask(deoglShaderCompileTask::Ref &task);
+	void GetNextTask(deoglShaderCompileTask::Ref &task, deoglShaderCompileUnitTask::Ref &unitTask);
 	
 	/** Finish compile task. Sets task to nullptr before returning. */
 	void FinishTask(deoglShaderCompileTask::Ref &task);
+	void FinishTask(deoglShaderCompileUnitTask::Ref &unitTask);
 	
 	/** Wait for new tasks to arrive. */
 	void WaitForNewTasks();
 	
 	/** Wait for all tasks to have finished. */
 	void WaitAllTasksFinished();
+	
+	/** Update */
+	void Update();
 	/*@}*/
 	
 	
 private:
 	void pCleanUp();
 	void pCreateCompileThreads();
+	void pLogTotalsLocked();
 };
 
 #endif

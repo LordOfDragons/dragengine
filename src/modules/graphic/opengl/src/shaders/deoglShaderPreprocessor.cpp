@@ -568,23 +568,22 @@ void deoglShaderPreprocessor::pProcessDirectiveInclude(){
 		return;
 	}
 	
-	deoglShaderUnitSourceCode * const unitSourceCode = pRenderThread.
-		GetShader().GetShaderManager().GetUnitSourceCodeWithPath( filename );
-	if( ! unitSourceCode ){
-		pRenderThread.GetLogger().LogErrorFormat( "Shader Preprocessor: #include: File not found %s at %s:%d",
-			filename.GetString(), pInputFile != NULL ? pInputFile : "?", pInputLine );
-		DETHROW( deeInvalidParam );
+	const decString *sources = nullptr;
+	if(!pRenderThread.GetShader().GetShaderManager().GetIncludableSources().GetAt(filename, &sources)){
+		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #include: File not found %s at %s:%d",
+			filename.GetString(), pInputFile != NULL ? pInputFile : "?", pInputLine);
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pDebugLogParsing ){
-		pRenderThread.GetLogger().LogInfoFormat( "Shader Preprocessor: #include: Include '%s'", filename.GetString() );
+	if(pDebugLogParsing){
+		pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor: #include: Include '%s'", filename.GetString());
 	}
 	
 	const char * const oldInputNext = pInputNext;
 	const char * const oldInputFile = pInputFile;
 	const int oldInputLine = pInputLine;
 	
-	SourcesAppendProcessed( unitSourceCode->GetSourceCode(), filename, false );
+	SourcesAppendProcessed(*sources, filename, false);
 	
 	pInputNext = oldInputNext;
 	pInputFile = oldInputFile;

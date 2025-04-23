@@ -2,18 +2,12 @@
 <shader>
 	<name>Effect Color Matrix Stereo</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name="texColor" target="0"/>
 	
 	<parameter name="pColorMatrix"/>
 	<parameter name="pColorOffset"/>
 	
-	<attribute name="inPosition" target="0"/>
-	
-	<output name="outColor" target="0"/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
-	<sourceCode unit="fragment">fragment/effect/colormatrix.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
+	<sourceCode unit="fragment">F Effect Color Matrix</sourceCode>
 </shader>

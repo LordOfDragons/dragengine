@@ -81,6 +81,15 @@ void deoglBatchedShaderLoading::Loaded(){
 	pFirst = false;
 }
 
+bool deoglBatchedShaderLoading::AllCompileFinished(){
+	if(pPendingCompiles > 0){
+		return false;
+	}
+	
+	DEASSERT_TRUE(pFailedCompiles == 0)
+	return true;
+}
+
 void deoglBatchedShaderLoading::AddPendingCompile(){
 	const deMutexGuard guard(pMutexCompiles);
 	pPendingCompiles++;

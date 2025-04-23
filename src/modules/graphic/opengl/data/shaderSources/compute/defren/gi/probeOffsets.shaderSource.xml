@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen GI Probe Offset</name>
+	<stage>compute</stage>
+	<source>probeOffsets.comp.glsl</source>
+	
+	<shaderStorageBlock name='ProbeOffset' binding='0'/>
+	<shaderStorageBlock name='ProbeDynamicStates' binding='1'/>
+	
+	<define>WITH_RAY_CACHE</define>
+</shaderSource>

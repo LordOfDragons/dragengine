@@ -1,3 +1,48 @@
+/*
+	<!-- shared/defren/skin/shared_spb_redirect.glsl -->
+	<define>PARTICLE</define>
+	<define>PARTICLE_RIBBON</define>
+	<define>PARTICLE_BEAM</define>
+	<define>PROP_FIELD</define>
+	<define>HEIGHT_MAP</define>
+	<define>WITH_VARIATIONS</define>
+	
+	<define>DYNAMIC_COLOR_TINT</define>
+	<define>DYNAMIC_COLOR_GAMMA</define>
+	<define>DYNAMIC_COLOR_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_TRANSPARENCY_MULTIPLIER</define>
+	<define>DYNAMIC_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_AO_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_HEIGHT_REMAP</define>
+	<define>DYNAMIC_NORMAL_STRENGTH</define>
+	<define>DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_ROUGHNESS_REMAP</define>
+	<define>DYNAMIC_ROUGHNESS_GAMMA</define>
+	<define>DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_REFRACTION_DISTORT_STRENGTH</define>
+	<define>DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_ENVROOM_SIZE</define>
+	<define>DYNAMIC_ENVROOM_OFFSET</define>
+	<define>DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_VARIATION</define>
+	<define>DYNAMIC_REFLECTIVITY_MULTIPLIER</define>
+	<define>DYNAMIC_RIM_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_RIM_ANGLE</define>
+	<define>DYNAMIC_RIM_EXPONENT</define>
+	<define>DYNAMIC_OUTLINE_COLOR</define>
+	<define>DYNAMIC_OUTLINE_COLOR_TINT</define>
+	<define>DYNAMIC_OUTLINE_THICKNESS</define>
+	<define>DYNAMIC_OUTLINE_EMISSIVITY</define>
+	<define>DYNAMIC_OUTLINE_EMISSIVITY_TINT</define>
+	<define>DYNAMIC_OUTLINE_SOLIDITY</define>
+	<define>DYNAMIC_SKIN_CLIP_PLANE</define>
+	<define>DYNAMIC_SKIN_CLIP_PLANE_BORDER</define>
+	
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_CASCADED</define>
+*/
+
 #ifdef PARTICLE
 	#define pMatrixModel pSharedSPB[ spbIndex ].matrixModel
 	#define pSamplesParams pSharedSPB[ spbIndex ].samplesParams
@@ -6,7 +51,7 @@
 		#define pRibbonSheetCount pSharedSPB[ spbIndex ].ribbonSheetCount
 	#endif
 	
-#else  // PARTICLE
+#else // PARTICLE
 	// component properties. the same for all textures in a component
 	#define pMatrixModel pSharedSPB[ spbIndex ].matrixModel
 	#define pMatrixNormal pSharedSPB[ spbIndex ].matrixNormal
@@ -29,7 +74,7 @@
 	// imposter
 	#define pBillboardPosTransform pSharedSPB[ spbIndex ].billboardPosTransform
 	#define pBillboardParams pSharedSPB[ spbIndex ].billboardParams
-#endif  // PARTICLE
+#endif // PARTICLE
 
 #define pIndexSPBTexParams pSharedSPB[ spbIndex ].indexSPBTexParams
 

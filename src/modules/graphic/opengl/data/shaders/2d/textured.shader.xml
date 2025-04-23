@@ -8,11 +8,7 @@
 	<parameter name='pPosTransform'/> <!-- 1 -->
 	<parameter name='pTCTransform'/> <!-- 2 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/2d/textured.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/2d/textured.glsl</sourceCode>
+	<sourceCode unit='vertex'>V 2D Textured</sourceCode>
+	<sourceCode unit='fragment'>F 2D Textured</sourceCode>
 	
 </shader>

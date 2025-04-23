@@ -2,10 +2,6 @@
 <shader>
 	<name>Test Integer Packing</name>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outPacked' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/bugtest/intpacking.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/bugtest/intpacking.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Test Integer Packing</sourceCode>
+	<sourceCode unit='fragment'>F Test Integer Packing</sourceCode>
 </shader>

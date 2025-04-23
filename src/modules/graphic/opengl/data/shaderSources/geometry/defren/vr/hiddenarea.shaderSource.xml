@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>G VR Hidden Area</name>
+	<stage>geometry</stage>
+	<source>hiddenarea.geom.glsl</source>
+	
+	<define>RENDER_TO_LAYER</define>
+</shaderSource>

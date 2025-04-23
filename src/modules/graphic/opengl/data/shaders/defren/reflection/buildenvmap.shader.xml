@@ -11,15 +11,6 @@
 	<parameter name='pBlendWeights'/> <!-- 1 -->
 	<parameter name='pMipMapLevel'/> <!-- 2 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outFace1' target='0'/>
-	<output name='outFace2' target='1'/>
-	<output name='outFace3' target='2'/>
-	<output name='outFace4' target='3'/>
-	<output name='outFace5' target='4'/>
-	<output name='outFace6' target='5'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/fullscreenquad.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/reflection/buildenvmap.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Reflection Build EnvMap</sourceCode>
 </shader>

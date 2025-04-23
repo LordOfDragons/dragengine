@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan Update Element Geometries</name>
+	<stage>compute</stage>
+	<source>update_element_geometries.comp.glsl</source>
+	
+	<shaderStorageBlock name='UpdateElementGeometry' binding='0'/>
+	<shaderStorageBlock name='UpdateIndex' binding='1'/>
+	<shaderStorageBlock name='ElementGeometry' binding='2'/>
+</shaderSource>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan Build Render Task</name>
+	<stage>compute</stage>
+	<source>build_render_task.comp.glsl</source>
+	
+	<uniformBlock name='RenderTaskConfig' binding='0'/>
+	
+	<shaderStorageBlock name='ElementGeometry' binding='0'/>
+	<shaderStorageBlock name='SkinTexturePipelines' binding='1'/>
+	<shaderStorageBlock name='VisibleGeometry' binding='2'/>
+	<shaderStorageBlock name='Counters' binding='3'/>
+	<shaderStorageBlock name='RenderTask' binding='4'/>
+</shaderSource>

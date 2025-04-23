@@ -26,6 +26,7 @@
 #define _DEOGLSHADERDEFINES_H_
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
 
 
 /**
@@ -102,6 +103,9 @@ public:
 	
 	/** Defines are equal. */
 	bool Equals( const deoglShaderDefines &defines ) const;
+	
+	/** Filtered defines are equal. */
+	bool Equals(const deoglShaderDefines &defines, const decStringSet &filter) const;
 	
 	/** Calculate cache id. */
 	decString CalcCacheId() const;

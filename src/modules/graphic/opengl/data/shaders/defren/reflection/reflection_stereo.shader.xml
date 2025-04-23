@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Reflection Stereo</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	<uniformBlock name='EnvMapParameters' target='1'/>
 	
 	<texture name='texDepth' target='0'/>
 	<texture name='texDiffuse' target='1'/>
@@ -14,11 +12,7 @@
 	<texture name='texEnvMapArray' target='6'/>
 	<texture name='texEnvMapSky' target='7'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/reflection/reflection.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Reflection</sourceCode>
 </shader>

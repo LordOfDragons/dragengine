@@ -14,13 +14,6 @@
 	<texture name='texSubSurface' target='2'/>
 	<texture name='texLight' target='3'/>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/light/sssss.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='fragment'>F DefRen ScreenSpace SubSurface Scattering</sourceCode>
 </shader>

@@ -10,12 +10,6 @@
 	<parameter name='pColorTransform'/>
 	<parameter name='pColorTransform2'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inTexCoord' target='4'/>
-	<attribute name='inLayer' target='5'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/panel.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/panel.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Panel</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Panel</sourceCode>
 </shader>

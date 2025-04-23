@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Shape</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texDepth' target='0'/>
 	
 	<parameter name='pMatrixModel'/>
@@ -11,11 +9,6 @@
 	<parameter name='pMatrixModel2'/>
 	<parameter name='pDrawIDOffset'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inSelector' target='1'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/shape.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/generic/color.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Shape</sourceCode>
+	<sourceCode unit='fragment'>F Generic Color</sourceCode>
 </shader>

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V Canvas</name>
+	<stage>vertex</stage>
+	<source>canvas.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+	
+	<define>WITH_TEXTURE</define>
+	<define>WITH_RENDER_WORLD</define>
+	<define>WITH_MASK</define>
+</shaderSource>

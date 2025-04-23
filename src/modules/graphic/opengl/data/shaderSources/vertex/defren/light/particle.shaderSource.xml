@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Light Particle</name>
+	<stage>vertex</stage>
+	<source>particle.vert.glsl</source>
+	
+	<attribute name='inParticle0' location='0'/>
+	<attribute name='inParticle1' location='1'/>
+	<attribute name='inParticle3' location='3'/>
+	<attribute name='inParticle4' location='4'/>
+	
+	<define>VS_RENDER_STEREO</define>
+	
+	<!-- shared/defren/light/ubo_instance_parameters.glsl -->
+	<uniformBlock name='InstanceParameters' binding='1'/>
+	
+	<define>PARTICLE_LIGHT</define>
+	<define>SKY_LIGHT</define>
+	<define>TEXTURE_COLOR_CUBEMAP</define>
+	<define>TEXTURE_COLOR_EQUIRECT</define>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+</shaderSource>

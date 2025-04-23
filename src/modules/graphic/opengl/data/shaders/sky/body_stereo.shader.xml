@@ -2,8 +2,6 @@
 <shader>
 	<name>Sky Body Stereo</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texColor' target='0'/>
 	<texture name='texTransparency' target='1'/>
 	
@@ -11,11 +9,7 @@
 	<parameter name='pColor'/>
 	<parameter name='pMaterialGamma'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/sky/body.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/sky/body.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/sky/body.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Sky Body</sourceCode>
+	<sourceCode unit='geometry'>G Sky Body</sourceCode>
+	<sourceCode unit='fragment'>F Sky Body</sourceCode>
 </shader>

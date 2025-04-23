@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen GI Update Probes</name>
+	<stage>compute</stage>
+	<source>updateProbes.comp.glsl</source>
+	
+	<uniformBlock name='GIParameters' binding='1'/>
+	<uniformBlock name='GIProbeIndices' binding='2'/>
+	<uniformBlock name='GIProbePositions' binding='3'/>
+	<uniformBlock name='GIRayDirections' binding='4'/>
+	
+	<define>MAP_IRRADIANCE</define>
+	<define>MAP_DISTANCE</define>
+	<!-- <define>RENDER_DOC_DEBUG_GI</define> system only -->
+</shaderSource>

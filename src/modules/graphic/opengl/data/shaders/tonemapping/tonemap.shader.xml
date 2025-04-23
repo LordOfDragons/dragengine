@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Tone Mapping</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texColor' target='0'/>
 	<texture name='texToneMapParams' target='1'/>
 	<texture name='texBloom' target='2'/>
@@ -12,11 +10,6 @@
 	<parameter name='pTCBloomTransform'/>
 	<parameter name='pTCBloomClamp'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/tonemap/tonemap.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='fragment'>F ToneMap Tone Mapping</sourceCode>
 </shader>

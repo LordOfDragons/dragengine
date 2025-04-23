@@ -1,4 +1,13 @@
-UBOLAYOUT uniform LightParameters{
+/*
+	<!-- shared/defren/light/ubo_light_parameters.glsl -->
+	<uniformBlock name='LightParameters' binding='2'/>
+	
+	<define>PARTICLE_LIGHT</define>
+	<define>SPOT_LIGHT</define>
+	<define>PROJECTOR_LIGHT</define>
+*/
+
+UBOLAYOUT_BIND(2) uniform LightParameters{
 	#ifndef PARTICLE_LIGHT
 		vec3 pLightColor;
 		

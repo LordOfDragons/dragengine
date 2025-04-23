@@ -6,18 +6,12 @@
 	<texture name='texGIDistance' target='1'/>
 	<texture name='texGIProbeOffset' target='2'/>
 	
-	<uniformBlock name='GIParameters' target='1'/>
-	
 	<parameter name='pMatrixNormal'/> <!-- 0 -->
 	<parameter name='pMatrixMV'/> <!-- 1 -->
 	<parameter name='pMatrixMVP'/> <!-- 2 -->
 	<parameter name='pMatrixP'/> <!-- 3 -->
 	<parameter name='pGIDebugCascade'/> <!-- 4 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/gi/debugProbe.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/gi/debugProbe.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen GI Debug Probe</sourceCode>
+	<sourceCode unit='fragment'>F DefRen GI Debug Probe</sourceCode>
 </shader>

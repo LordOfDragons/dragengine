@@ -265,6 +265,7 @@ pVAOCopyShadow( nullptr )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
+		defines = commonDefines;
 		if(useInverseDepth){
 			defines.SetDefines("SHADOW_INVERSE_DEPTH");
 		}
@@ -274,10 +275,9 @@ pVAOCopyShadow( nullptr )
 		
 		defines.SetDefines( "AMBIENT_MAP" );
 		pAsyncGetPipeline(pPipelineBoxBoundary1Ambient, pipconf, sources, defines);
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		pAsyncGetPipeline(pPipelineBoxBoundary2, pipconf, sources, defines);
-		defines.RemoveAllDefines();
 		
 		
 		
@@ -295,7 +295,6 @@ pVAOCopyShadow( nullptr )
 		
 		pipconf.SetSPBInstanceIndexBase(0);
 		pAsyncGetPipeline(pPipelineOccMap, pipconf, "DefRen Occlusion OccMap Cube", defines, true);
-		defines.RemoveAllDefines();
 		
 		
 		
@@ -318,7 +317,6 @@ pVAOCopyShadow( nullptr )
 		}
 		
 		pAsyncGetPipeline(pPipelineCopyDepth, pipconf, sources, defines);
-		defines.RemoveAllDefines();
 		
 		
 		

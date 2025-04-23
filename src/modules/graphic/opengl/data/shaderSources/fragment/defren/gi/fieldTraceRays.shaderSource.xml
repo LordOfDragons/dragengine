@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen GI Field Trace Rays</name>
+	<stage>fragment</stage>
+	<source>fieldTraceRays.frag.glsl</source>
+	
+	<output name='outResult' location='0'/>
+	
+	<uniformBlock name='GIFieldParameters' binding='0'/>
+</shaderSource>

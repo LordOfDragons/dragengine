@@ -28,9 +28,10 @@
 #include "deoglShaderDefines.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/utils/decTimer.h>
 
 class deoglRenderThread;
-class deoglShaderUnitSourceCode;
+class deoglShaderProgramUnit;
 class deoglShaderSources;
 class deoglShaderCompiled;
 
@@ -52,16 +53,21 @@ private:
 	deoglShaderDefines pDefines;
 	decString pCacheId;
 	
-	deoglShaderUnitSourceCode *pSCCompute;
-	deoglShaderUnitSourceCode *pSCTessellationControl;
-	deoglShaderUnitSourceCode *pSCTessellationEvaluation;
-	deoglShaderUnitSourceCode *pSCGeometry;
-	deoglShaderUnitSourceCode *pSCVertex;
-	deoglShaderUnitSourceCode *pSCFragment;
+	deoglShaderProgramUnit *pUnitCompute;
+	deoglShaderProgramUnit *pUnitTessellationControl;
+	deoglShaderProgramUnit *pUnitTessellationEvaluation;
+	deoglShaderProgramUnit *pUnitGeometry;
+	deoglShaderProgramUnit *pUnitVertex;
+	deoglShaderProgramUnit *pUnitFragment;
 	
 	deoglShaderCompiled *pCompiled;
 	
 	unsigned int pUniqueKey;
+	decTimer pTimerCompile;
+	
+	
+public:
+	bool ready, isCompiling;
 	
 	
 	
@@ -86,10 +92,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the sources. */
+	/** Sources. */
 	inline const deoglShaderSources *GetSources() const{ return pSources; }
 	
-	/** Retrieves the defines. */
+	/** Defines. */
 	inline const deoglShaderDefines &GetDefines() const{ return pDefines; }
 	
 	/** Cache identifier. */
@@ -98,50 +104,59 @@ public:
 	/** Set cache identifier. */
 	void SetCacheId( const decString &id );
 	
-	/** Compute source code or NULL. */
-	inline deoglShaderUnitSourceCode *GetComputeSourceCode() const{ return pSCCompute; }
+	/** Compute unit or nullptr. */
+	inline deoglShaderProgramUnit *GetUnitCompute() const{ return pUnitCompute; }
 	
-	/** Set compute source code or NULL. */
-	void SetComputeSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	/** Set compute unit or nullptr. */
+	void SetUnitCompute(deoglShaderProgramUnit *unit);
 	
-	/** Retrieves the tessellation control source code or NULL if not used. */
-	inline deoglShaderUnitSourceCode *GetTessellationControlSourceCode() const{ return pSCTessellationControl; }
+	/** Tessellation control unit or nullptr. */
+	inline deoglShaderProgramUnit *GetUnitTessellationControl() const{ return pUnitTessellationControl; }
 	
-	/** Sets the tessellation control source code or NULL if not used. */
-	void SetTessellationControlSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	/** Set tessellation control unit or nullptr. */
+	void SetUnitTessellationControl(deoglShaderProgramUnit *unit);
 	
-	/** Retrieves the tessellation evaluation source code or NULL if not used. */
-	inline deoglShaderUnitSourceCode *GetTessellationEvaluationSourceCode() const{ return pSCTessellationEvaluation; }
+	/** Tessellation evaluation unit or nullptr. */
+	inline deoglShaderProgramUnit *GetUnitTessellationEvaluation() const{ return pUnitTessellationEvaluation; }
 	
-	/** Sets the tessellation evaluation source code or NULL if not used. */
-	void SetTessellationEvaluationSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	/** Set tessellation evaluation unit or nullptr. */
+	void SetUnitTessellationEvaluation(deoglShaderProgramUnit *unit);
 	
-	/** Retrieves the geometry source code or NULL if not used. */
-	inline deoglShaderUnitSourceCode *GetGeometrySourceCode() const{ return pSCGeometry; }
+	/** Geometry unit or nullptr. */
+	inline deoglShaderProgramUnit *GetUnitGeometry() const{ return pUnitGeometry; }
 	
-	/** Sets the geometry source code or NULL if not used. */
-	void SetGeometrySourceCode( deoglShaderUnitSourceCode *sourceCode );
+	/** Set geometry unit or nullptr. */
+	void SetUnitGeometry(deoglShaderProgramUnit *unit);
 	
-	/** Retrieves the vertex source code or NULL if not used. */
-	inline deoglShaderUnitSourceCode *GetVertexSourceCode() const{ return pSCVertex; }
+	/** Vertex unit or nullptr. */
+	inline deoglShaderProgramUnit *GetUnitVertex() const{ return pUnitVertex; }
 	
-	/** Sets the vertex source code or NULL if not used. */
-	void SetVertexSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	/** Set vertex unit or nullptr. */
+	void SetUnitVertex(deoglShaderProgramUnit *unit);
 	
-	/** Retrieves the fragment source code or NULL if not used. */
-	inline deoglShaderUnitSourceCode *GetFragmentSourceCode() const{ return pSCFragment; }
+	/** Fragment unit or nullptr. */
+	inline deoglShaderProgramUnit *GetUnitFragment() const{ return pUnitFragment; }
 	
-	/** Sets the fragment source code or NULL if not used. */
-	void SetFragmentSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	/** Set fragment unit or nullptr. */
+	void SetUnitFragment(deoglShaderProgramUnit *unit);
 	
-	/** Retrieves the compiled shader. */
+	/** Shader can compile (all units finished compiling). */
+	bool CanCompile() const;
+	
+	/** Compiled shader or nullptr. */
 	inline deoglShaderCompiled *GetCompiled() const{ return pCompiled; }
 	
-	/** Sets the compiled shader. */
+	/** Set compiled shader or nullptr. */
 	void SetCompiled( deoglShaderCompiled *compiled );
+	
+	/** Move compiled shader or nullptr. */
+	void MoveCompiled(deoglShaderProgram &program);
 	
 	/** Unique key for use with dictionaries. */
 	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	
+	/** Compile timer. */
+	inline decTimer &GetTimerCompile(){ return pTimerCompile; }
 	/*@}*/
 };
 

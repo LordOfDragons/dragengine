@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F Debug Render Text</name>
+	<stage>fragment</stage>
+	<source>renderText.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+</shaderSource>

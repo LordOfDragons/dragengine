@@ -20,6 +20,6 @@ struct sGIParameters{
 	ivec3 gridCoordUnshift;
 };
 
-UBOLAYOUT uniform GIParameters{
+UBOLAYOUT_BIND(1) uniform GIParameters{
 	sGIParameters pGIParams[ GI_MAX_CASCADES ];
 };

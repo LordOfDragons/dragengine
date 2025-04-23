@@ -1,3 +1,8 @@
+/*
+	<!-- shared/defren/sample_depth.glsl -->
+	<define>DECODE_IN_DEPTH</define>
+*/
+
 #ifdef DECODE_IN_DEPTH
 	const vec3 _sampleDepth_unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 #endif

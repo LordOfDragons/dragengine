@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen GI Material Map</name>
+	<stage>fragment</stage>
+	<source>materialMap.frag.glsl</source>
+	
+	<output name='outDiffuse' location='0'/>
+	<output name='outReflectivity' location='1'/>
+	<output name='outEmissivity' location='2'/>
+	
+	<define>WITH_VARIATIONS</define>
+	<define>TEXTURE_COLOR</define>
+	<define>TEXTURE_COLOR_TINT_MASK</define>
+	<define>TEXTURE_EMISSIVITY</define>
+	<define>TEXTURE_ENVROOM</define>
+	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
+	<define>TEXTURE_ENVROOM_MASK</define>
+	<define>TEXTURE_NONPBR_ALBEDO</define>
+	<define>TEXTURE_NONPBR_METALNESS</define>
+	<define>TEXTURE_REFLECTIVITY</define>
+	<define>TEXTURE_ROUGHNESS</define>
+	<define>TEXTURE_SOLIDITY</define>
+	<define>TEXTURE_TRANSPARENCY</define>
+	
+	<!-- shared/defren/skin/macros_geometry.glsl -->
+	<define>DECAL</define>
+	<define>DEPTH_TEST</define>
+	<define>OUTPUT_COLOR</define>
+	<define>SKIN_CLIP_PLANE</define>
+	<define>TEXTURE_EMISSIVITY</define>
+	<define>TEXTURE_ENVMAP</define>
+	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
+	<define>TEXTURE_ENVROOM</define>
+	<define>TEXTURE_HEIGHT</define>
+	<define>TEXTURE_NORMAL</define>
+	<define>TEXTURE_REFLECTIVITY</define>
+	<define>TEXTURE_RENDERCOLOR</define>
+	<define>TEXTURE_RIM_EMISSIVITY</define>
+	<define>TEXTURE_ROUGHNESS</define>
+	<define>TEXTURE_SOLIDITY</define>
+	<define>WITH_OUTLINE</define>
+	<define>WITH_REFLECTION</define>
+	
+	<!-- shared/defren/skin/nonpbr_metalness.glsl -->
+	<define>TEXTURE_NONPBR_ALBEDO</define>
+	<define>TEXTURE_NONPBR_METALNESS</define>
+</shaderSource>

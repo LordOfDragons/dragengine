@@ -1,3 +1,10 @@
+/*
+	<!-- shared/defren/skin/relief_mapping.glsl -->
+	<define>TEXTURE_HEIGHT</define>
+	<define>TEXTURE_NORMAL</define>
+	<define>TEXTURE_ENVMAP</define>
+*/
+
 // calculate new texture coordinates using relief mapping
 #if defined TEXTURE_HEIGHT && defined TEXTURE_NORMAL && defined TEXTURE_ENVMAP
 void reliefMapping( inout vec2 tc, in vec3 normal ){

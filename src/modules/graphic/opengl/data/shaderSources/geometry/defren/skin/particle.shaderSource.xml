@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>G DefRen Skin Particle</name>
+	<stage>geometry</stage>
+	<source>particle.geom.glsl</source>
+	
+	<define>GS_INSTANCING</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>PARTICLE_RIBBON</define>
+	<define>PARTICLE_BEAM</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>TEXTURE_COLOR_TINT_MASK</define>
+	<define>TEXTURE_NORMAL</define>
+	<define>TEXTURE_REFLECTIVITY</define>
+	<define>TEXTURE_REFRACTION_DISTORT</define>
+	<define>TEXTURE_AO</define>
+	<define>CLIP_PLANE</define>
+	<define>SKIN_CLIP_PLANE</define>
+	<define>DEPTH_DISTANCE</define>
+	<define>FADEOUT_RANGE</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+	
+	<!-- shared/defren/skin/macros_geometry.glsl -->
+	<define>DECAL</define>
+	<define>DEPTH_TEST</define>
+	<define>OUTPUT_COLOR</define>
+	<define>SKIN_CLIP_PLANE</define>
+	<define>TEXTURE_EMISSIVITY</define>
+	<define>TEXTURE_ENVMAP</define>
+	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
+	<define>TEXTURE_ENVROOM</define>
+	<define>TEXTURE_HEIGHT</define>
+	<define>TEXTURE_NORMAL</define>
+	<define>TEXTURE_REFLECTIVITY</define>
+	<define>TEXTURE_RENDERCOLOR</define>
+	<define>TEXTURE_RIM_EMISSIVITY</define>
+	<define>TEXTURE_ROUGHNESS</define>
+	<define>TEXTURE_SOLIDITY</define>
+	<define>WITH_OUTLINE</define>
+	<define>WITH_REFLECTION</define>
+	
+	<!-- shared/defren/skin/ubo_instance_parameters.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='0'/>
+	<uniformBlock name='InstanceParameters' binding='2'/>
+	
+	<define>PARTICLE</define>
+	<define>PARTICLE_RIBBON</define>
+	<define>PARTICLE_BEAM</define>
+	<define>PROP_FIELD</define>
+	<define>HEIGHT_MAP</define>
+	<define>WITH_VARIATIONS</define>
+	
+	<!-- shared/defren/skin/shared_spb_redirect.glsl -->
+	<define>PARTICLE</define>
+	<define>PARTICLE_RIBBON</define>
+	<define>PARTICLE_BEAM</define>
+	<define>PROP_FIELD</define>
+	<define>HEIGHT_MAP</define>
+	<define>WITH_VARIATIONS</define>
+	
+	<define>DYNAMIC_COLOR_TINT</define>
+	<define>DYNAMIC_COLOR_GAMMA</define>
+	<define>DYNAMIC_COLOR_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_TRANSPARENCY_MULTIPLIER</define>
+	<define>DYNAMIC_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_AO_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_HEIGHT_REMAP</define>
+	<define>DYNAMIC_NORMAL_STRENGTH</define>
+	<define>DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_ROUGHNESS_REMAP</define>
+	<define>DYNAMIC_ROUGHNESS_GAMMA</define>
+	<define>DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_REFRACTION_DISTORT_STRENGTH</define>
+	<define>DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_ENVROOM_SIZE</define>
+	<define>DYNAMIC_ENVROOM_OFFSET</define>
+	<define>DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_VARIATION</define>
+	<define>DYNAMIC_REFLECTIVITY_MULTIPLIER</define>
+	<define>DYNAMIC_RIM_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_RIM_ANGLE</define>
+	<define>DYNAMIC_RIM_EXPONENT</define>
+	<define>DYNAMIC_OUTLINE_COLOR</define>
+	<define>DYNAMIC_OUTLINE_COLOR_TINT</define>
+	<define>DYNAMIC_OUTLINE_THICKNESS</define>
+	<define>DYNAMIC_OUTLINE_EMISSIVITY</define>
+	<define>DYNAMIC_OUTLINE_EMISSIVITY_TINT</define>
+	<define>DYNAMIC_OUTLINE_SOLIDITY</define>
+	<define>DYNAMIC_SKIN_CLIP_PLANE</define>
+	<define>DYNAMIC_SKIN_CLIP_PLANE_BORDER</define>
+	
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_CASCADED</define>
+	
+	<!-- system only
+	<define>SHARED_SPB</define>
+	
+	-->
+</shaderSource>

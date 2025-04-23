@@ -14,7 +14,7 @@
 	#ifdef SHARED_SPB_USE_SSBO
 		UBOLAYOUT_BIND(0) readonly buffer OcclusionMeshParametersSSBO
 	#else
-		UBOLAYOUT uniform OcclusionMeshParameters
+		UBOLAYOUT_BIND(2) uniform OcclusionMeshParameters
 	#endif
 	{
 		#ifdef SHARED_SPB_ARRAY_SIZE
@@ -25,7 +25,7 @@
 	};
 	
 #else  // SHARED_SPB
-	UBOLAYOUT uniform OcclusionMeshParameters{
+	UBOLAYOUT_BIND(2) uniform OcclusionMeshParameters{
 		mat4x3 pMatrixModel;
 	};
 #endif

@@ -25,8 +25,10 @@
 #include "deoglShaderCompiler.h"
 #include "deoglShaderCompilerThread.h"
 #include "deoglShaderCompileTask.h"
+#include "deoglShaderCompileUnitTask.h"
 #include "../deoglShaderLanguage.h"
 #include "../deoglShaderProgram.h"
+#include "../deoglShaderProgramUnit.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -95,24 +97,47 @@ void deoglShaderCompilerThread::Run(){
 	}
 	
 	deoglShaderCompileTask::Ref task;
+	deoglShaderCompileUnitTask::Ref taskUnit;
+	
 	while(true){
 		if(pExitThreadRequested()){
 			break;
 		}
 		
-		pLanguage.GetNextTask(task);
+		pLanguage.GetNextTask(task, taskUnit);
 		
-		if(task){
+		if(taskUnit){
 			try{
-				//const decString &cacheId = ((deoglShaderCompileTask*)task)->GetProgram()->GetCacheId();
+				//const decString &cacheId = taskUnit->GetUnit()->GetCacheId();
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Start task unit '%.50s...'", pContextIndex, cacheId.GetString());
+				pCompiler->CompileShaderUnit(*taskUnit->GetUnit());
+				pCompiler->FinishCompileShaderUnit(*taskUnit->GetUnit());
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Stop task unit '%.50s...'", pContextIndex, cacheId.GetString());
+				
+			}catch(const deException &){
+				// just in case...
+				taskUnit->GetUnit()->compilingFailed = true;
+				taskUnit->GetUnit()->DropHandle();
+			}
+			
+			pLanguage.FinishTask(taskUnit);
+			
+		}else if(task){
+			deoglShaderProgram &program = *task->GetProgram();
+			try{
+				//const decString &cacheId = task->GetProgram()->GetCacheId();
 				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
 				//	"CompileThread %d: Start task '%.50s...'", pContextIndex, cacheId.GetString());
-				task->SetCompiled(pCompiler->CompileShader(*task->GetProgram()));
+				pCompiler->CompileShader(program);
+				pCompiler->FinishCompileShader(program);
 				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
 				//	"CompileThread %d: Stop task '%.50s...'", pContextIndex, cacheId.GetString());
 				
 			}catch(const deException &){
-				task->SetCompiled(nullptr); // to be on the safe side
+				task->GetProgram()->SetCompiled(nullptr);
+				task->GetProgram()->ready = false;
 			}
 			
 			pLanguage.FinishTask(task);

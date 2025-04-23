@@ -4,8 +4,5 @@
 	
 	<parameter name='pClearGeometryCount'/>
 	
-	<shaderStorageBlock name='ClearGeometry' target='0'/>
-	<shaderStorageBlock name='ElementGeometry' target='1'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/clear_geometries.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan Clear Geometries</sourceCode>
 </shader>

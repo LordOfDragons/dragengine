@@ -1,3 +1,16 @@
+/*
+	<!-- shared/defren/skin/transform_position.glsl -->
+	<define>BILLBOARD</define>
+	<define>BILLBOARD</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>HAS_TESSELLATION_SHADER</define>
+	<define>PROP_FIELD</define>
+	<define>WITH_OUTLINE_THICKNESS_SCREEN</define>
+	<define>WITH_OUTLINE</define>
+*/
+
 // Constants
 //////////////
 

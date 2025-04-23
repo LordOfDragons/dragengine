@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen SSAO Blur</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<parameter name='pTCDataToDepth'/>
 	<parameter name='pOffsetRead'/>
 	<parameter name='pOffsetWrite'/>
@@ -14,5 +12,5 @@
 	<texture name='texData' target='0'/>
 	-->
 	
-	<sourceCode unit='compute'>compute/defren/light/ssao_blur.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen SSAO Blur</sourceCode>
 </shader>

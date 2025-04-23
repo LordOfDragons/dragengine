@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F Test UBO Indirect Matrix Access Bug</name>
+	<stage>fragment</stage>
+	<source>ubo_idmataccess_bug.frag.glsl</source>
+	
+	<uniformBlock name='TestParameters' binding='0'/>
+	
+	<output name='outColor' location='0'/>
+</shaderSource>

@@ -2,9 +2,6 @@
 <shader>
 	<name>DefRen Reflection</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	<uniformBlock name='EnvMapParameters' target='1'/>
-	
 	<texture name='texDepth' target='0'/>
 	<texture name='texDiffuse' target='1'/>
 	<texture name='texNormal' target='2'/>
@@ -14,11 +11,6 @@
 	<texture name='texEnvMapArray' target='6'/>
 	<texture name='texEnvMapSky' target='7'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/reflection/reflection.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Reflection</sourceCode>
 </shader>

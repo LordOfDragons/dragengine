@@ -127,6 +127,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ARB_multisample",
 	"GL_ARB_multitexture",
 	"GL_ARB_occlusion_query",
+	"GL_ARB_parallel_shader_compile",
 	"GL_ARB_program_interface_query",
 	"GL_ARB_provoking_vertex",
 	"GL_ARB_sampler_objects",
@@ -196,6 +197,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_NV_transform_feedback3",
 	
 	"GL_KHR_debug",
+	"GL_KHR_parallel_shader_compile",
 	
 	"GLX_EXT_swap_control",
 	"GLX_EXT_swap_control_tear",
@@ -827,6 +829,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglCreateShader, "glCreateShader" ); // core only
 	pGetRequiredFunction( (void**)&pglCreateProgram, "glCreateProgram" ); // core only
 	pGetRequiredFunction( (void**)&pglAttachShader, "glAttachShader" ); // core only
+	pGetRequiredFunction( (void**)&pglDetachShader, "glDetachShader" ); // core only
 	pGetRequiredFunction( (void**)&pglUseProgram, "glUseProgram" ); // core only
 	pGetRequiredFunction( (void**)&pglGetShaderiv, "glGetShaderiv" ); // core only
 	pGetRequiredFunction( (void**)&pglGetProgramiv, "glGetProgramiv" ); // core only
@@ -1357,6 +1360,16 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	if(pHasExtension[ext_ARB_texture_storage]){
 		pGetOptionalFunction((void**)&pglTexStorage2D, "glTexStorage2D", ext_ARB_texture_storage);
 		pGetOptionalFunction((void**)&pglTexStorage3D, "glTexStorage3D", ext_ARB_texture_storage);
+	}
+	
+	// GL_ARB_parallel_shader_compile, GL_KHR_parallel_shader_compile
+	if(pHasExtension[ext_ARB_parallel_shader_compile]){
+		pGetOptionalFunction((void**)&pglMaxShaderCompilerThreads,
+			"glMaxShaderCompilerThreadsARB", ext_ARB_parallel_shader_compile);
+		
+	}else if(pHasExtension[ext_KHR_parallel_shader_compile]){
+		pGetOptionalFunction((void**)&pglMaxShaderCompilerThreads,
+			"glMaxShaderCompilerThreadsKHR", ext_KHR_parallel_shader_compile);
 	}
 }
 

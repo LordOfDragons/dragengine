@@ -6,11 +6,7 @@
 	
 	<parameter name='pLevel'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/passthrough.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/generic/passthrough_stereo.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/tonemap/bloom_downsample.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic PassThrough</sourceCode>
+	<sourceCode unit='geometry'>G Generic PassThrough Stereo</sourceCode>
+	<sourceCode unit='fragment'>F ToneMap Bloom Down-Sample</sourceCode>
 </shader>

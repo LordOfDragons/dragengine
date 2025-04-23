@@ -4,9 +4,5 @@
 	
 	<parameter name='pUpdateElementGeometryCount'/>
 	
-	<shaderStorageBlock name='UpdateElementGeometry' target='0'/>
-	<shaderStorageBlock name='UpdateIndex' target='1'/>
-	<shaderStorageBlock name='ElementGeometry' target='2'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/update_element_geometries.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan Update Element Geometries</sourceCode>
 </shader>

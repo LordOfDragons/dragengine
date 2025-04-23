@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen GI Init From Ray Cache</name>
+	<stage>compute</stage>
+	<source>initFromRayCache.comp.glsl</source>
+	
+	<uniformBlock name='GIParameters' binding='1'/>
+	<uniformBlock name='GIProbeIndices' binding='2'/>
+	<uniformBlock name='GIProbePositions' binding='3'/>
+	<uniformBlock name='GIRayDirections' binding='4'/>
+</shaderSource>

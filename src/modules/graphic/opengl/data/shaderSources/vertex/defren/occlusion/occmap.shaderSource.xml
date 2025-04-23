@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Occlusion OccMap</name>
+	<stage>vertex</stage>
+	<source>occmap.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+	
+	<uniformBlock name='OcclusionMeshParameters' binding='2'/>
+	
+	<shaderStorageBlock name='OcclusionMeshParametersSSBO' binding='0'/>
+	
+	<define>WITH_SHADOWMAP</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_CUBE_CULLING</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>VS_RENDER_STEREO</define>
+	<define>PERSPECTIVE_TO_LINEAR</define>
+	<define>DEPTH_DISTANCE</define>
+	<define>USE_CLIP_PLANE</define>
+	<define>DEPTH_OFFSET</define>
+	
+	<!-- WARNING! shared SPB can be toggled! -->
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+	
+	<!-- shared/defren/skin/depth_offset.glsl -->
+	<define>DEPTH_DISTANCE</define>
+	<define>DEPTH_ORTHOGONAL</define>
+	
+	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_CASCADED</define>
+	
+	<!-- shared/defren/skin/shared_spb_index.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='1'/>
+	<uniformBlock name='InstanceIndex' binding='4'/>
+	
+	<!-- system only
+	<define>SPB_SSBO_INSTANCE_ARRAY</define>
+	<define>SPB_INSTANCE_ARRAY_SIZE</define>
+	-->
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+</shaderSource>

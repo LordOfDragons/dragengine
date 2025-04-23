@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Copy Shadow</name>
+	<stage>vertex</stage>
+	<source>copy_shadow.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+	<attribute name='inLayer' location='1'/>
+	<attribute name='inTexCoord' location='2'/>
+	
+	<define>SHADOW_CUBE</define>
+	<define>GS_LAYER</define>
+	<define>VS_LAYER</define>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	-->
+</shaderSource>

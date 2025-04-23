@@ -208,6 +208,44 @@ bool deoglShaderDefines::Equals( const deoglShaderDefines &defines ) const{
 	return *this == defines;
 }
 
+bool deoglShaderDefines::Equals(const deoglShaderDefines &defines, const decStringSet &filter) const{
+	const int filterCount = filter.GetCount();
+	if(filterCount == 0){
+		return true;
+	}
+	
+	int i, j;
+	for(i=0; i<filterCount; i++){
+		const decString &name = filter.GetAt(i);
+		
+		const decString *value1 = nullptr;
+		for(j=0; j<pDefineCount; j++){
+			if(name == pDefines[j].name){
+				value1 = &pDefines[j].value;
+				break;
+			}
+		}
+		
+		const decString *value2 = nullptr;
+		for(j=0; j<defines.pDefineCount; j++){
+			if(name == defines.pDefines[j].name){
+				value2 = &defines.pDefines[j].value;
+				break;
+			}
+		}
+		
+		// matches if either both nullptr or both same value
+		if(!(
+			(!value1 && !value2)
+			|| (value1 && value2 && *value1 == *value2)
+		)){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 decString deoglShaderDefines::CalcCacheId() const{
 	decStringList defineNames;
 	int i;

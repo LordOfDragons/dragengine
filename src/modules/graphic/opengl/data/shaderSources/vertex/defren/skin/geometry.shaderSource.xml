@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Skin Geometry</name>
+	<stage>vertex</stage>
+	<source>geometry.vert.glsl</source>
+	
+	<attribute set='1' name='inPosition' location='0'/>
+	<attribute set='1' name='inHeight' location='1'/>
+	<attribute set='1' name='inNormal' location='2'/>
+	
+	<attribute set='2' name='inPosition' location='0'/>
+	<attribute set='2' name='inRealNormal' location='1'/>
+	<attribute set='2' name='inNormal' location='2'/>
+	<attribute set='2' name='inTangent' location='3'/>
+	<attribute set='2' name='inTexCoord' location='4'/>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+	
+	<!-- system only
+	<define>SHARED_SPB</define>
+	<define>SHARED_SPB_PADDING</define>
+	<define>SHARED_SPB_USE_SSBO</define>
+	<define>SHARED_SPB_ARRAY_SIZE</define>
+	-->
+	
+	<define>BILLBOARD</define>
+	<define>DEPTH_OFFSET</define>
+	<define>FADEOUT_RANGE</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>HAS_TESSELLATION_SHADER</define>
+	<define>HEIGHT_MAP</define>
+	<define>PROP_FIELD</define>
+	<define>SKIN_CLIP_PLANE</define>
+	<define>TEXTURE_AO</define>
+	<define>TEXTURE_COLOR_TINT_MASK</define>
+	<define>TEXTURE_NORMAL</define>
+	<define>TEXTURE_REFLECTIVITY</define>
+	<define>TEXTURE_REFRACTION_DISTORT</define>
+	<define>TEXTURE_ROUGHNESS</define>
+	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_STEREO</define>
+	<define>WITH_EMISSIVITY</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+	
+	<!-- shared/defren/skin/macros_geometry.glsl -->
+	<define>DECAL</define>
+	<define>DEPTH_TEST</define>
+	<define>OUTPUT_COLOR</define>
+	<define>SKIN_CLIP_PLANE</define>
+	<define>TEXTURE_EMISSIVITY</define>
+	<define>TEXTURE_ENVMAP</define>
+	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
+	<define>TEXTURE_ENVROOM</define>
+	<define>TEXTURE_HEIGHT</define>
+	<define>TEXTURE_NORMAL</define>
+	<define>TEXTURE_REFLECTIVITY</define>
+	<define>TEXTURE_RENDERCOLOR</define>
+	<define>TEXTURE_RIM_EMISSIVITY</define>
+	<define>TEXTURE_ROUGHNESS</define>
+	<define>TEXTURE_SOLIDITY</define>
+	<define>WITH_OUTLINE</define>
+	<define>WITH_REFLECTION</define>
+	
+	<!-- shared/defren/skin/ubo_instance_parameters.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='0'/>
+	<uniformBlock name='InstanceParameters' binding='2'/>
+	
+	<define>PARTICLE</define>
+	<define>PARTICLE_RIBBON</define>
+	<define>PARTICLE_BEAM</define>
+	<define>PROP_FIELD</define>
+	<define>HEIGHT_MAP</define>
+	<define>WITH_VARIATIONS</define>
+	
+	<!-- shared/defren/skin/shared_spb_index.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='1'/>
+	<uniformBlock name='InstanceIndex' binding='4'/>
+	
+	<!-- system only
+	<define>SPB_SSBO_INSTANCE_ARRAY</define>
+	<define>SPB_INSTANCE_ARRAY_SIZE</define>
+	-->
+	
+	<!-- shared/defren/skin/ubo_texture_parameters.glsl -->
+	<shaderStorageBlock name='TextureParametersSSBO' binding='2'/>
+	<uniformBlock name='TextureParameters' binding='1'/>
+	
+	<!-- system only
+	<define>SHARED_SPB_TEXTURE_PADDING</define>
+	<define>SHARED_SPB_USE_SSBO</define>
+	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>
+	-->
+	
+	<!-- shared/defren/skin/shared_spb_redirect.glsl -->
+	<define>PARTICLE</define>
+	<define>PARTICLE_RIBBON</define>
+	<define>PARTICLE_BEAM</define>
+	<define>PROP_FIELD</define>
+	<define>HEIGHT_MAP</define>
+	<define>WITH_VARIATIONS</define>
+	
+	<define>DYNAMIC_COLOR_TINT</define>
+	<define>DYNAMIC_COLOR_GAMMA</define>
+	<define>DYNAMIC_COLOR_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_TRANSPARENCY_MULTIPLIER</define>
+	<define>DYNAMIC_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_AO_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_HEIGHT_REMAP</define>
+	<define>DYNAMIC_NORMAL_STRENGTH</define>
+	<define>DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_ROUGHNESS_REMAP</define>
+	<define>DYNAMIC_ROUGHNESS_GAMMA</define>
+	<define>DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_REFRACTION_DISTORT_STRENGTH</define>
+	<define>DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_ENVROOM_SIZE</define>
+	<define>DYNAMIC_ENVROOM_OFFSET</define>
+	<define>DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_VARIATION</define>
+	<define>DYNAMIC_REFLECTIVITY_MULTIPLIER</define>
+	<define>DYNAMIC_RIM_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_RIM_ANGLE</define>
+	<define>DYNAMIC_RIM_EXPONENT</define>
+	<define>DYNAMIC_OUTLINE_COLOR</define>
+	<define>DYNAMIC_OUTLINE_COLOR_TINT</define>
+	<define>DYNAMIC_OUTLINE_THICKNESS</define>
+	<define>DYNAMIC_OUTLINE_EMISSIVITY</define>
+	<define>DYNAMIC_OUTLINE_EMISSIVITY_TINT</define>
+	<define>DYNAMIC_OUTLINE_SOLIDITY</define>
+	<define>DYNAMIC_SKIN_CLIP_PLANE</define>
+	<define>DYNAMIC_SKIN_CLIP_PLANE_BORDER</define>
+	
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_CASCADED</define>
+	
+	<!-- shared/defren/skin/ubo_dynamic_parameters.glsl -->
+	<define>DYNAMIC_AO_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_COLOR_GAMMA</define>
+	<define>DYNAMIC_COLOR_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_COLOR_TINT</define>
+	<define>DYNAMIC_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_ENVROOM_OFFSET</define>
+	<define>DYNAMIC_ENVROOM_SIZE</define>
+	<define>DYNAMIC_HEIGHT_REMAP</define>
+	<define>DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_NORMAL_STRENGTH</define>
+	<define>DYNAMIC_OUTLINE_COLOR_TINT</define>
+	<define>DYNAMIC_OUTLINE_COLOR</define>
+	<define>DYNAMIC_OUTLINE_EMISSIVITY_TINT</define>
+	<define>DYNAMIC_OUTLINE_EMISSIVITY</define>
+	<define>DYNAMIC_OUTLINE_SOLIDITY</define>
+	<define>DYNAMIC_OUTLINE_THICKNESS</define>
+	<define>DYNAMIC_REFLECTIVITY_MULTIPLIER</define>
+	<define>DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_REFRACTION_DISTORT_STRENGTH</define>
+	<define>DYNAMIC_RIM_ANGLE</define>
+	<define>DYNAMIC_RIM_EMISSIVITY_INTENSITY</define>
+	<define>DYNAMIC_RIM_EXPONENT</define>
+	<define>DYNAMIC_ROUGHNESS_GAMMA</define>
+	<define>DYNAMIC_ROUGHNESS_REMAP</define>
+	<define>DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_SKIN_CLIP_PLANE_BORDER</define>
+	<define>DYNAMIC_SKIN_CLIP_PLANE</define>
+	<define>DYNAMIC_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_TRANSPARENCY_MULTIPLIER</define>
+	<define>DYNAMIC_VARIATION</define>
+	
+	<!-- shared/defren/skin/transform_position.glsl -->
+	<define>BILLBOARD</define>
+	<define>BILLBOARD</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>HAS_TESSELLATION_SHADER</define>
+	<define>PROP_FIELD</define>
+	<define>WITH_OUTLINE_THICKNESS_SCREEN</define>
+	<define>WITH_OUTLINE</define>
+	
+	<!-- shared/defren/skin/transform_normal.glsl -->
+	<define>BILLBOARD</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>HAS_TESSELLATION_SHADER</define>
+	<define>HEIGHT_MAP</define>
+	<define>PROP_FIELD</define>
+	<define>TEXTURE_NORMAL</define>
+	
+	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_CASCADED</define>
+</shaderSource>

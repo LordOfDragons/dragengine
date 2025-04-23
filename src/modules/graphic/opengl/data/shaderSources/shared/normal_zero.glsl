@@ -1,3 +1,9 @@
+/*
+	<!-- shared/normal_zero.glsl -->
+	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
+	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
+	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
+*/
 
 // zero-normal encoded using respective method. some methods can not represent
 // a true zero normal. in this case (0,0,-1) is used

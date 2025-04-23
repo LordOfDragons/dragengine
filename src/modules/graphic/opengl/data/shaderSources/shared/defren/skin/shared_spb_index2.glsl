@@ -18,6 +18,17 @@
 // of the ivec4. By storing the ivec4 first into a temporary variable (first array access)
 // and then accessing the component out of this temporary variable the problem is solved.
 
+/*
+	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_CASCADED</define>
+	
+	<!-- system only
+	<define>SHARED_SPB</define>
+	<define>SPB_SSBO_INSTANCE_ARRAY</define>
+	-->
+*/
+
 #ifdef SHARED_SPB
 	int spbIndex;
 	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED

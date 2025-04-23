@@ -8,10 +8,6 @@
 	<parameter name='pColor'/> <!-- 1 -->
 	<parameter name='pSCToDTC'/> <!-- 2 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/transform_mvp.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/generic/color.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic TransformMVP</sourceCode>
+	<sourceCode unit='fragment'>F Generic Color</sourceCode>
 </shader>

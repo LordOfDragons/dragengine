@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>G DefRen Light Stereo</name>
+	<stage>geometry</stage>
+	<source>stereo.geom.glsl</source>
+	
+	<define>GS_RENDER_STEREO</define>
+	<define>GS_INSTANCING</define>
+	<define>FULLSCREENQUAD</define>
+	
+	<!-- shared/defren/light/ubo_instance_parameters.glsl -->
+	<uniformBlock name='InstanceParameters' binding='1'/>
+	
+	<define>PARTICLE_LIGHT</define>
+	<define>SKY_LIGHT</define>
+	<define>TEXTURE_COLOR_CUBEMAP</define>
+	<define>TEXTURE_COLOR_EQUIRECT</define>
+</shaderSource>

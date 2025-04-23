@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F Debug Rectangle</name>
+	<stage>fragment</stage>
+	<source>rectangle.frag.glsl</source>
+	
+	<output name="outColor" target="0"/>
+</shaderSource>

@@ -162,9 +162,6 @@ public:
 	void SetShader( deoglRenderThread &renderThread,
 		const char *sources, const deoglShaderDefines &defines );
 	
-	void SetShader( deoglRenderThread &renderThread,
-		const deoglShaderSources *sources, const deoglShaderDefines &defines );
-	
 	
 	
 	/** Color mask. */

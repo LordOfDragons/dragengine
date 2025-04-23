@@ -4,8 +4,5 @@
 	
 	<parameter name='pUpdateElementCount'/>
 	
-	<shaderStorageBlock name='UpdateElement' target='0'/>
-	<shaderStorageBlock name='Element' target='1'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/update_elements.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan Update Elements</sourceCode>
 </shader>
