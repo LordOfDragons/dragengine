@@ -15,7 +15,6 @@
 	<define>VS_RENDER_STEREO</define>
 	<define>WITH_SHADOWMAP</define>
 	
-	<!-- WARNING! shared SPB can be toggled! -->
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->

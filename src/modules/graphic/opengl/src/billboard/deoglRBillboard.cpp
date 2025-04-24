@@ -593,9 +593,9 @@ int element, deoglSkinShader &skinShader ){
 		paramBlock.SetParameterDataMat3x2( target, element, matrix );
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
-	if( target != -1 ){
-		paramBlock.SetParameterDataBool( target, element, true );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutDoubleSided);
+	if(target != -1){
+		paramBlock.SetParameterDataBool(target, element, true);
 	}
 	
 	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );

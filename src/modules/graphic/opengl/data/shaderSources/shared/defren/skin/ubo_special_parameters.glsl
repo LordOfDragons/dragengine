@@ -1,6 +1,8 @@
 /*
 	<!-- shared/defren/skin/ubo_special_parameters.glsl -->
 	<uniformBlock name='SpecialParameters' binding='3'/>
+	
+	<define>SHARED_SPB</define>
 */
 
 #ifdef SHARED_SPB

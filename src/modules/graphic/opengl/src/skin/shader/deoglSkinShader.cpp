@@ -675,8 +675,9 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBTexParam( deoglRenderThread &rend
 }
 
 deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
-	DEASSERT_NOTNULL( pglUniformBlockBinding )
-	
+	DEASSERT_NOTNULL(pglUniformBlockBinding)
+	return CreateLayoutSkinInstanceUBO(pRenderThread);
+	/*
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
@@ -694,6 +695,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
 	spb->MapToStd140();
 	spb->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
 	return spb;
+	*/
 }
 
 deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread ){
@@ -2409,7 +2411,7 @@ void deoglSkinShader::UpdateUniformTargets(){
 	}
 	
 	// shared parameter block support
-	if( pConfig.GetSharedSPB() ){
+	// if( pConfig.GetSharedSPB() ){
 		// re-map instance parameters since the ordering is slightly different
 		int backup[ EIUT_COUNT ];
 		for( i=0; i<EIUT_COUNT; i++ ){
@@ -2422,7 +2424,7 @@ void deoglSkinShader::UpdateUniformTargets(){
 				pInstanceUniformTargets[ vUBOInstParamMap[ i ] ] = i;
 			}
 		}
-	}
+	// }
 }
 
 void deoglSkinShader::InitShaderParameters(){

@@ -20,11 +20,11 @@
 
 /*
 	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>SHARED_SPB</define>
 	<define>GS_RENDER_CUBE</define>
 	<define>GS_RENDER_CASCADED</define>
 	
 	<!-- system only
-	<define>SHARED_SPB</define>
 	<define>SPB_SSBO_INSTANCE_ARRAY</define>
 	-->
 */

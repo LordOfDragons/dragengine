@@ -21,7 +21,9 @@
 	<define>USE_CLIP_PLANE</define>
 	<define>DEPTH_OFFSET</define>
 	
-	<!-- WARNING! shared SPB can be toggled! -->
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/occmap.glsl -->
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
@@ -32,6 +34,7 @@
 	<define>DEPTH_ORTHOGONAL</define>
 	
 	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>SHARED_SPB</define>
 	<define>GS_RENDER_CUBE</define>
 	<define>GS_RENDER_CASCADED</define>
 	

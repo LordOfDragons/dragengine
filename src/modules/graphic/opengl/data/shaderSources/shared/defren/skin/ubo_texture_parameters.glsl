@@ -3,6 +3,8 @@
 	<shaderStorageBlock name='TextureParametersSSBO' binding='2'/>
 	<uniformBlock name='TextureParameters' binding='1'/>
 	
+	<define>SHARED_SPB</define>
+	
 	<!-- system only
 	<define>SHARED_SPB_TEXTURE_PADDING</define>
 	<define>SHARED_SPB_USE_SSBO</define>

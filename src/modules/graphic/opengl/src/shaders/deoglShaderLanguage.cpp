@@ -594,7 +594,7 @@ void deoglShaderLanguage::pCleanUp(){
 
 void deoglShaderLanguage::pCreateCompileThreads(){
 	deoglRTContext &context = pRenderThread.GetContext();
-	const int count = context.GetCompileContextCount();
+	const int count = context.GetCompileContextCount() * 0 + 1;
 	if(count == 0){
 		return;
 	}

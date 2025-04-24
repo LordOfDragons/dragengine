@@ -32,22 +32,13 @@
 	<shaderStorageBlock name='InstanceParametersSSBO' binding='0'/>
 	<uniformBlock name='InstanceParameters' binding='2'/>
 	
-	<define>PARTICLE</define>
-	<define>PARTICLE_RIBBON</define>
-	<define>PARTICLE_BEAM</define>
-	<define>PROP_FIELD</define>
-	<define>HEIGHT_MAP</define>
-	<define>WITH_VARIATIONS</define>
+	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/skin/ubo_texture_parameters.glsl -->
 	<shaderStorageBlock name='TextureParametersSSBO' binding='2'/>
 	<uniformBlock name='TextureParameters' binding='1'/>
 	
-	<!-- system only
-	<define>SHARED_SPB_TEXTURE_PADDING</define>
-	<define>SHARED_SPB_USE_SSBO</define>
-	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>
-	-->
+	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/skin/ubo_dynamic_parameters.glsl -->
 	<define>DYNAMIC_AO_SOLIDITY_MULTIPLIER</define>
@@ -105,6 +96,5 @@
 	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>
 	<define>SHARED_SPB_TEXTURE_PADDING</define>
 	<define>SHARED_SPB_USE_SSBO</define>
-	<define>SHARED_SPB</define>
 	-->
 </shaderSource>

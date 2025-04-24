@@ -2,6 +2,11 @@
 // occlusion map shader sources. the definition part is left out for the
 // includers to define while keeping the rest here
 
+/*
+	<!-- shared/defren/occmap.glsl -->
+	<define>SHARED_SPB</define>
+*/
+
 #ifdef SHARED_SPB
 	struct sOcclusionMeshParameters{
 		mat4x3 pSPBMatrixModel;
