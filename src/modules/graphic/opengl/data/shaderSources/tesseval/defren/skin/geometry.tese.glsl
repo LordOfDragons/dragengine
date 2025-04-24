@@ -13,7 +13,6 @@ layout( triangles, equal_spacing, ccw ) in;
 #include "shared/defren/ubo_render_parameters.glsl"
 #include "shared/defren/skin/ubo_texture_parameters.glsl"
 #include "shared/defren/skin/ubo_instance_parameters.glsl"
-#include "shared/defren/skin/ubo_dynamic_parameters.glsl"
 
 
 

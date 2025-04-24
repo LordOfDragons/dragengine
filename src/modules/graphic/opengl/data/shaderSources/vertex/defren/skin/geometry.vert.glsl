@@ -17,12 +17,12 @@
 #include "shared/defren/ubo_render_parameters.glsl"
 #include "shared/defren/skin/ubo_instance_parameters.glsl"
 #include "shared/defren/skin/ubo_texture_parameters.glsl"
+#include "shared/defren/skin/ubo_dynamic_parameters_vertex.glsl"
 #ifdef SHARED_SPB
 	#include "shared/defren/skin/shared_spb_index.glsl"
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 #include "shared/defren/skin/shared_spb_texture_redirect.glsl"
-#include "shared/defren/skin/ubo_dynamic_parameters.glsl"
 
 
 

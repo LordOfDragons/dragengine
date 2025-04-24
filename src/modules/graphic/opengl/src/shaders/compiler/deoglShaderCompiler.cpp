@@ -515,9 +515,9 @@ void deoglShaderCompiler::pFinishCompileShaderUnit(deoglShaderProgramUnit &unit)
 	if(result && !pErrorLog){
 		#ifdef WITH_DEBUG
 		const deMutexGuard guardLogs(renderThread.GetShader().GetShaderManager().GetMutexLogging());
-		logger.LogInfoFormat("CompileShaderUnit %d: Compiled shader unit for '%s...' in %dms",
+		logger.LogInfoFormat("CompileShaderUnit %d: Compiled shader unit for '%s...' in %.2fms",
 			pContextIndex, unit.GetSources()->GetName().GetString(),
-			(int)(unit.GetTimerCompile().GetElapsedTime() * 1e3f));
+			unit.GetTimerCompile().GetElapsedTime() * 1e3f);
 		#endif
 		return;
 	}
@@ -693,8 +693,8 @@ void deoglShaderCompiler::pFinishCompileShader(deoglShaderProgram &program){
 	#ifdef WITH_DEBUG
 	{
 	const deMutexGuard guardLogs(renderThread.GetShader().GetShaderManager().GetMutexLogging());
-	logger.LogInfoFormat("CompileShader %d: Compiled shader for '%.50s...' in %dms", pContextIndex,
-		program.GetCacheId().GetString(), (int)(program.GetTimerCompile().GetElapsedTime() * 1e3f));
+	logger.LogInfoFormat("CompileShader %d: Compiled shader for '%.50s...' in %.2fms", pContextIndex,
+		program.GetCacheId().GetString(), program.GetTimerCompile().GetElapsedTime() * 1e3f);
 	}
 	#endif
 }

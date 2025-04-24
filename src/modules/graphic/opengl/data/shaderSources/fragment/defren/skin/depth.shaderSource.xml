@@ -4,9 +4,10 @@
 	<stage>fragment</stage>
 	<source>depth.frag.glsl</source>
 	
-	<output name='outConstant' location='0'/>
-	<output name='outColor' location='0'/>
-	<output name='outDepth' location='1'/>
+	<output set='1' name='outConstant' location='0'/>
+	
+	<output set='2' name='outColor' location='0'/>
+	<output set='2' name='outDepth' location='1'/>
 	
 	<define>CLIP_PLANE</define>
 	<define>DEPTH_DISTANCE</define>

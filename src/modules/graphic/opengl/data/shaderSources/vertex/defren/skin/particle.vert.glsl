@@ -25,7 +25,6 @@ precision HIGHP int;
 
 #ifdef HAS_PARTICLE_SHEET_COUNT
 	#include "shared/defren/skin/ubo_texture_parameters.glsl"
-	#include "shared/defren/skin/ubo_dynamic_parameters.glsl"
 #endif
 
 #ifdef SHARED_SPB
@@ -133,7 +132,7 @@ void main( void ){
 	#endif
 	
 	#ifdef HAS_PARTICLE_SHEET_COUNT
-	vParticleSheetCount = pParticleSheetCount;
+	vParticleSheetCount = pTexParticleSheetCount;
 	#endif
 	
 	#ifdef VS_RENDER_STEREO
