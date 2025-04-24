@@ -1135,6 +1135,6 @@ extern GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3D;
 // GL_ARB_parallel_shader_compile, GL_KHR_parallel_shader_compile
 ///////////////////////////////////////////////////////////////////
 
-extern GLAPI PFNGLMAXSHADERCOMPILERTHREADSARBPROC pglMaxShaderCompilerThreads;
+extern GLAPI PFNGLMAXSHADERCOMPILERTHREADSKHRPROC pglMaxShaderCompilerThreads;
 
 #endif

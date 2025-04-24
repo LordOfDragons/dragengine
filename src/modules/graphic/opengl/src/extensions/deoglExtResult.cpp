@@ -753,4 +753,4 @@ GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3D = nullptr;
 // GL_ARB_parallel_shader_compile, GL_KHR_parallel_shader_compile
 ///////////////////////////////////////////////////////////////////
 
-GLAPI PFNGLMAXSHADERCOMPILERTHREADSARBPROC pglMaxShaderCompilerThreads = nullptr;
+GLAPI PFNGLMAXSHADERCOMPILERTHREADSKHRPROC pglMaxShaderCompilerThreads = nullptr;
