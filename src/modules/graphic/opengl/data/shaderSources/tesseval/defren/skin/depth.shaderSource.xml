@@ -5,23 +5,10 @@
 	<source>depth.tese.glsl</source>
 	
 	<define>BILLBOARD</define>
-	<define>CLIP_PLANE</define>
-	<define>DEPTH_DISTANCE</define>
-	<define>DEPTH_OFFSET</define>
-	<define>FADEOUT_RANGE</define>
 	<define>GS_RENDER_CASCADED</define>
 	<define>GS_RENDER_CUBE</define>
 	<define>GS_RENDER_STEREO</define>
-	<define>HEIGHT_MAP</define>
-	<define>SKIN_CLIP_PLANE</define>
-	
-	<define>PARTICLE</define>
-	<define>PROP_FIELD</define>
-	<define>WITH_VARIATIONS</define>
-	
 	<define>TEXTURE_HEIGHT</define>
-	
-	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>
@@ -36,24 +23,8 @@
 	
 	<define>SHARED_SPB</define>
 	
-	<!-- shared/defren/skin/macros_geometry.glsl -->
-	<define>DECAL</define>
-	<define>DEPTH_TEST</define>
-	<define>OUTPUT_COLOR</define>
-	<define>SKIN_CLIP_PLANE</define>
-	<define>TEXTURE_EMISSIVITY</define>
-	<define>TEXTURE_ENVMAP</define>
-	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
-	<define>TEXTURE_ENVROOM</define>
-	<define>TEXTURE_HEIGHT</define>
-	<define>TEXTURE_NORMAL</define>
-	<define>TEXTURE_REFLECTIVITY</define>
-	<define>TEXTURE_RENDERCOLOR</define>
-	<define>TEXTURE_RIM_EMISSIVITY</define>
-	<define>TEXTURE_ROUGHNESS</define>
-	<define>TEXTURE_SOLIDITY</define>
-	<define>WITH_OUTLINE</define>
-	<define>WITH_REFLECTION</define>
+	<!-- shared/defren/skin/ubo_dynamic_parameters_tese.glsl -->
+	<define>DYNAMIC_HEIGHT_REMAP</define>
 	
 	<!-- system only
 	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>

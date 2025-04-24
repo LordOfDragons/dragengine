@@ -60,6 +60,3 @@
 #define pInstOutlineSolidity pSharedSPB[spbIndex].instOutlineSolidity
 #define pInstSkinClipPlane pSharedSPB[spbIndex].instSkinClipPlane
 #define pInstSkinClipPlaneBorder pSharedSPB[spbIndex].instSkinClipPlaneBorder
-
-// redirect flags if used
-#define pLayerVisibility spbFlags

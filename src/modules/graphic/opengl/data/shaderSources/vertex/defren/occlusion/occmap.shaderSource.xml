@@ -35,8 +35,6 @@
 	
 	<!-- shared/defren/skin/shared_spb_index2.glsl -->
 	<define>SHARED_SPB</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_CASCADED</define>
 	
 	<!-- shared/defren/skin/shared_spb_index.glsl -->
 	<shaderStorageBlock name='InstanceParametersSSBO' binding='1'/>

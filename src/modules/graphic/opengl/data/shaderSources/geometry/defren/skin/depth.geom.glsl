@@ -4,127 +4,63 @@
 	#endif
 #endif
 
-#include "shared/defren/skin/macros_geometry.glsl"
-
 // layout definitions
 #ifdef GS_RENDER_CUBE
 	#ifdef GS_INSTANCING
-		layout( triangles, invocations=6 ) in;
-		layout( triangle_strip, max_vertices=3 ) out;
+		layout(triangles, invocations=6) in;
+		layout(triangle_strip, max_vertices=3) out;
 	#else
-		layout( triangles ) in;
-		layout( triangle_strip, max_vertices=18 ) out;
+		layout(triangles) in;
+		layout(triangle_strip, max_vertices=18) out;
 	#endif
 	
 #elif defined GS_RENDER_CASCADED
 	#ifdef GS_INSTANCING
-		layout( triangles, invocations=4 ) in;
-		layout( triangle_strip, max_vertices=3 ) out;
+		layout(triangles, invocations=4) in;
+		layout(triangle_strip, max_vertices=3) out;
 	#else
-		layout( triangles ) in;
-		layout( triangle_strip, max_vertices=12 ) out;
+		layout(triangles) in;
+		layout(triangle_strip, max_vertices=12) out;
 	#endif
 	
 #elif defined GS_RENDER_STEREO
 	#ifdef GS_INSTANCING
-		layout( triangles, invocations=2 ) in;
-		layout( triangle_strip, max_vertices=3 ) out;
+		layout(triangles, invocations=2) in;
+		layout(triangle_strip, max_vertices=3) out;
 	#else
-		layout( triangles ) in;
-		layout( triangle_strip, max_vertices=6 ) out;
+		layout(triangles) in;
+		layout(triangle_strip, max_vertices=6) out;
 	#endif
 #endif
 
-// Uniform Parameters
-///////////////////////
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
-// #include "shared/defren/skin/ubo_instance_parameters.glsl"
 
+in vec2 vGSTCColor[3];
+in float vGSHTMask[3];
+in vec3 vGSNormal[3];
+in vec3 vGSTangent[3];
+in vec3 vGSBitangent[3];
+flat in int vGSDoubleSided[3];
+flat in int vGSSPBIndex[3];
+flat in int vGSSPBFlags[3];
 
+#define spbIndex vGSSPBIndex[0]
+#define spbFlags vGSSPBFlags[0]
 
-// Inputs
-///////////
-
-#if defined DEPTH_OFFSET && ! defined REQUIRES_NORMAL
-	#define REQUIRES_NORMAL
-#endif
-
-#ifdef REQUIRES_TEX_COLOR
-	in vec2 vGSTCColor[ 3 ];
-#endif
-#ifdef HEIGHT_MAP
-	in float vGSHTMask[ 3 ];
-#endif
-#ifdef REQUIRES_NORMAL
-	in vec3 vGSNormal[ 3 ];
-	#ifdef WITH_TANGENT
-		in vec3 vGSTangent[ 3 ];
-	#endif
-	#ifdef WITH_BITANGENT
-		in vec3 vGSBitangent[ 3 ];
-	#endif
-#endif
-
-#ifdef SHARED_SPB
-	flat in int vGSSPBIndex[ 3 ];
-	#define spbIndex vGSSPBIndex[0]
-	
-	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
-		flat in int vGSSPBFlags[ 3 ];
-		#define spbFlags vGSSPBFlags[0]
-	#endif
-	
-	#include "shared/defren/skin/shared_spb_redirect.glsl"
-#endif
-
-#ifdef DEPTH_OFFSET
-	flat in int vGSDoubleSided[3];
-#endif
-
-
-
-// Outputs
-////////////
-
-#ifdef REQUIRES_TEX_COLOR
-	out vec2 vTCColor;
-#endif
-#ifdef CLIP_PLANE
-	out vec3 vClipCoord;
-#endif
-#ifdef SKIN_CLIP_PLANE
-	out vec3 vSkinClipCoord;
-#endif
-#ifdef DEPTH_DISTANCE
-	out vec3 vPosition;
-#endif
-#ifdef HEIGHT_MAP
-	out float vHTMask;
-#endif
-#ifdef REQUIRES_NORMAL
-	out vec3 vNormal;
-	#ifdef WITH_TANGENT
-		out vec3 vTangent;
-	#endif
-	#ifdef WITH_BITANGENT
-		out vec3 vBitangent;
-	#endif
-#endif
-#ifdef WITH_REFLECT_DIR
-	out vec3 vReflectDir;
-#endif
-#ifdef FADEOUT_RANGE
-	out float vFadeZ;
-#endif
-
+out vec2 vTCColor;
+out vec3 vClipCoord;
+out vec3 vSkinClipCoord;
+out vec3 vPosition;
+out float vHTMask;
+out vec3 vNormal;
+out vec3 vTangent;
+out vec3 vBitangent;
+out vec3 vReflectDir;
+out float vFadeZ;
 flat out int vLayer;
-
-#ifdef SHARED_SPB
-	flat out int vSPBIndex;
-#endif
-
+flat out int vSPBIndex;
 
 
 // Layered rendering
@@ -132,72 +68,31 @@ flat out int vLayer;
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 
-#if defined DEPTH_OFFSET
-	#include "shared/defren/skin/depth_offset.glsl"
-#endif
+#include "shared/defren/skin/depth_offset.glsl"
 
-void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition ){
+void emitCorner(in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition){
 	gl_Position = preTransformedPosition;
 	
-	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
+	vTCColor = vGSTCColor[corner];
+	vNormal = normalize(vGSNormal[corner] * pMatrixVn[layer]);
+	vTangent = normalize(vGSTangent[corner] * pMatrixVn[layer]);
+	vBitangent = normalize(vGSBitangent[corner] * pMatrixVn[layer]);
+	vSkinClipCoord = vec3(position);
+	vHTMask = vGSHTMask[corner];
+	
+	#ifdef BILLBOARD
+		vReflectDir = vec3(position);
+		vPosition = vec3(position);
+		vClipCoord = vec3(position);
+		vFadeZ = position.z;
+	#else
+		vReflectDir = pMatrixV[layer] * position;
+		vPosition = pMatrixV[layer] * position;
+		vClipCoord = pMatrixV[layer] * position;
+		vFadeZ = (pMatrixV[layer] * position).z;
 	#endif
 	
-	#ifdef REQUIRES_TEX_COLOR
-		vTCColor = vGSTCColor[ corner ];
-	#endif
-	
-	#ifdef REQUIRES_NORMAL
-		vNormal = normalize( vGSNormal[ corner ] * pMatrixVn[ layer ] );
-		#ifdef WITH_TANGENT
-			vTangent = normalize( vGSTangent[ corner ] * pMatrixVn[ layer ] );
-		#endif
-		#ifdef WITH_BITANGENT
-			vBitangent = normalize( vGSBitangent[ corner ] * pMatrixVn[ layer ] );
-		#endif
-	#endif
-	
-	#ifdef WITH_REFLECT_DIR
-		#ifdef BILLBOARD
-			vReflectDir = vec3( position );
-		#else
-			vReflectDir = pMatrixV[ layer ] * position;
-		#endif
-	#endif
-	
-	#ifdef DEPTH_DISTANCE
-		#ifdef BILLBOARD
-			vPosition = vec3( position );
-		#else
-			vPosition = pMatrixV[ layer ] * position;
-		#endif
-	#endif
-	
-	#ifdef CLIP_PLANE
-		#ifdef BILLBOARD
-			vClipCoord = vec3( position );
-		#else
-			vClipCoord = pMatrixV[ layer ] * position;
-		#endif
-	#endif
-	
-	#ifdef SKIN_CLIP_PLANE
-		vSkinClipCoord = vec3( position );
-	#endif
-	
-	#ifdef FADEOUT_RANGE
-		#ifdef BILLBOARD
-			vFadeZ = position.z;
-		#else
-			vFadeZ = ( pMatrixV[ layer ] * position ).z;
-		#endif
-	#endif
-	
-	#ifdef HEIGHT_MAP
-		vHTMask = vGSHTMask[ corner ];
-	#endif
-	
-	// depth offset
 	#if defined DEPTH_OFFSET
 		// pDoubleSided is passed on from the vertex shader to avoid requiring SSBO
 		// (ubo_instance_parameters) in geometry shaders for compatibility reasons
@@ -226,27 +121,27 @@ void emitCorner( in int layer, in int corner, in vec4 position, in vec4 preTrans
 	//EmitVertex();
 }
 
-void emitCorner( in int layer, in int corner, in vec4 position ){
+void emitCorner(in int layer, in int corner, in vec4 position){
 	vec4 preTransformedPosition;
 	
 	#ifdef BILLBOARD
 		#ifdef GS_RENDER_STEREO
 			// during vertex shader the left view position has been used.
 			// if this is the right view correct the transform
-			if( layer == 1 ){
-				preTransformedPosition = pMatrixP[ layer ] * vec4( pCameraStereoTransform * position, 1 );
+			if(layer == 1){
+				preTransformedPosition = pMatrixP[layer] * vec4(pCameraStereoTransform * position, 1);
 				
 			}else{
-				preTransformedPosition = pMatrixP[ layer ] * position;
+				preTransformedPosition = pMatrixP[layer] * position;
 			}
 		#else
-			preTransformedPosition = pMatrixP[ layer ] * position;
+			preTransformedPosition = pMatrixP[layer] * position;
 		#endif
 	#else
-		preTransformedPosition = pMatrixVP[ layer ] * position;
+		preTransformedPosition = pMatrixVP[layer] * position;
 	#endif
 	
-	emitCorner( layer, corner, position, preTransformedPosition );
+	emitCorner(layer, corner, position, preTransformedPosition);
 }
 
 #endif
@@ -260,9 +155,7 @@ void emitCorner( in int layer, in int corner, in vec4 position ){
 // cube map handling. each triangle is send to one of the cube map faces using
 // appropriate matrix transformation
 
-#include "shared/defren/skin/ubo_special_parameters.glsl"
-
-void main( void ){
+void main(void){
 	// NOTE: quest requires EmitVertex to be called in main()
 	
 	int face;
@@ -270,7 +163,7 @@ void main( void ){
 	#ifdef GS_INSTANCING
 	face = gl_InvocationID;
 	#else
-	for( face=0; face<6; face++ ){
+	for(face=0; face<6; face++){
 	#endif
 		
 		// TODO per-face matrix. has to be applied to pMatrixVP, pMatrixV and pMatrixVn.
@@ -287,23 +180,23 @@ void main( void ){
 		//    as a constant matrix array and should be fast. the result is this:
 		//    
 		//       vPosition = cRotFace[gl_InvocationID] 
-		//          * ( pMatrixV * vec4( gl_in[ i ].gl_Position, 1.0 ) );
+		//          * (pMatrixV * vec4(gl_in[i].gl_Position, 1.0));
 		//    
 		//    works since pMatrixV is max4x3 returning a vec3 and cRotFaceis a mat3
 		//    
 		// pMatrixVn
 		//    works similar to pMatrixV but needs transposed cRotFace to work like this:
 		//    
-		//       vNormal = normalize( ( vGSNormal[ i ] * pMatrixVn )
-		//          * cRotFaceN[gl_InvocationID] );
+		//       vNormal = normalize((vGSNormal[i] * pMatrixVn)
+		//          * cRotFaceN[gl_InvocationID]);
 		// 
 		// pMatrixVP
 		//    can not be done directly since the rotation matrix has to go in between the
 		//    view and projection part. has to be done like this instead:
 		//    
 		//       gl_Position = pMatrixP
-		//          * vec4( cRotFace[gl_InvocationID]
-		//             * ( pMatrixV * vec4( gl_in[ i ].gl_Position ), 1.0 ), 1.0 );
+		//          * vec4(cRotFace[gl_InvocationID]
+		//             * (pMatrixV * vec4(gl_in[i].gl_Position), 1.0), 1.0);
 		
 		#ifdef GS_RENDER_CUBE_CULLING
 		// WARNING! there is a nasty bug in the MESA implementation causing 'continue' to
@@ -311,12 +204,12 @@ void main( void ){
 		//          loop. sometimes continue works but especially here it results in the GPU
 		//          dying horribly. the only working solution is to use the code in a way
 		//          no 'continue' statement is required to be used
-		if( ( pLayerVisibility & ( 1 << face ) ) != 0 ){
+		if((spbFlags & (1 << face)) != 0){
 		#endif
 			
 			// emit triangle
 			int i;
-			for( i=0; i<3; i++ ){
+			for(i=0; i<3; i++){
 				emitCorner(face, i, gl_in[i].gl_Position);
 				EmitVertex();
 			}
@@ -340,7 +233,7 @@ void main( void ){
 
 #ifdef GS_RENDER_CASCADED
 
-void main( void ){
+void main(void){
 	// NOTE: quest requires EmitVertex to be called in main()
 	
 	int cascade;
@@ -348,7 +241,7 @@ void main( void ){
 	#ifdef GS_INSTANCING
 	cascade = gl_InvocationID;
 	#else
-	for( cascade=0; cascade<4; cascade++ ){
+	for(cascade=0; cascade<4; cascade++){
 	#endif
 		
 		// determine if the triangle has to be emitted in this cascade. for this transform
@@ -365,14 +258,14 @@ void main( void ){
 		//          no 'continue' statement is required to be used
 		
 		/*
-		vec3 position[ 3 ];
+		vec3 position[3];
 		int i;
 		
-		for( i=0; i<3; i++ ){
+		for(i=0; i<3; i++){
 			#ifdef BILLBOARD
-			position[ i ] = gl_in[ i ].gl_Position;
+			position[i] = gl_in[i].gl_Position;
 			#else
-			position[ i ] = pMatrixV[ cascade ] * gl_in[ i ].gl_Position;
+			position[i] = pMatrixV[cascade] * gl_in[i].gl_Position;
 			#endif
 		}
 		
@@ -390,12 +283,12 @@ void main( void ){
 		//   -maxExtend < 1 and minExtend < 1
 		//
 		vec4 boxCheck = vec4(
-			 min( min( position[ 0 ].xy, position[ 1 ].xy ), position[ 2 ].xy ),
-			-max( max( position[ 0 ].xy, position[ 1 ].xy ), position[ 2 ].xy ) );
+			 min(min(position[0].xy, position[1].xy), position[2].xy),
+			-max(max(position[0].xy, position[1].xy), position[2].xy));
 		
-		if( all( lessThan( boxCheck, vec4( 1.0 ) ) ) ){
+		if(all(lessThan(boxCheck, vec4(1.0)))){
 			// emit triangle
-			for( i=0; i<3; i++ ){
+			for(i=0; i<3; i++){
 				emitCorner(cascade, i, gl_in[i].gl_Position, vec4(position[i], 1.0));
 				EmitVertex();
 			}
@@ -403,10 +296,10 @@ void main( void ){
 		}
 		*/
 		
-		if( ( pLayerVisibility & ( 1 << cascade ) ) != 0 ){
+		if((spbFlags & (1 << cascade)) != 0){
 			// emit triangle
 			int i;
-			for( i=0; i<3; i++ ){
+			for(i=0; i<3; i++){
 				#ifdef BILLBOARD
 				emitCorner(cascade, i, gl_in[i].gl_Position, gl_in[i].gl_Position);
 				#else
@@ -432,7 +325,7 @@ void main( void ){
 
 #ifdef GS_RENDER_STEREO
 
-void main( void ){
+void main(void){
 	// NOTE: quest requires EmitVertex to be called in main()
 	
 	int eye;
@@ -440,12 +333,12 @@ void main( void ){
 	#ifdef GS_INSTANCING
 	eye = gl_InvocationID;
 	#else
-	for( eye=0; eye<2; eye++ ){
+	for(eye=0; eye<2; eye++){
 	#endif
 		
 		// emit triangle
 		int i;
-		for( i=0; i<3; i++ ){
+		for(i=0; i<3; i++){
 			emitCorner(eye, i, gl_in[i].gl_Position);
 			EmitVertex();
 		}

@@ -21,55 +21,22 @@
 	-->
 	
 	<!-- system only
-	<define>SHARED_SPB</define>
 	<define>SHARED_SPB_PADDING</define>
 	<define>SHARED_SPB_USE_SSBO</define>
 	<define>SHARED_SPB_ARRAY_SIZE</define>
 	-->
 	
 	<define>BILLBOARD</define>
-	<define>DEPTH_OFFSET</define>
-	<define>FADEOUT_RANGE</define>
 	<define>GS_RENDER_CASCADED</define>
 	<define>GS_RENDER_CUBE</define>
 	<define>GS_RENDER_STEREO</define>
 	<define>HAS_TESSELLATION_SHADER</define>
 	<define>HEIGHT_MAP</define>
-	<define>PROP_FIELD</define>
-	<define>SKIN_CLIP_PLANE</define>
-	<define>TEXTURE_AO</define>
-	<define>TEXTURE_COLOR_TINT_MASK</define>
-	<define>TEXTURE_NORMAL</define>
-	<define>TEXTURE_REFLECTIVITY</define>
-	<define>TEXTURE_REFRACTION_DISTORT</define>
-	<define>TEXTURE_ROUGHNESS</define>
 	<define>VS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
-	<define>WITH_EMISSIVITY</define>
-	
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>
-	
-	<!-- shared/defren/skin/macros_geometry.glsl -->
-	<define>DECAL</define>
-	<define>DEPTH_TEST</define>
-	<define>OUTPUT_COLOR</define>
-	<define>SKIN_CLIP_PLANE</define>
-	<define>TEXTURE_EMISSIVITY</define>
-	<define>TEXTURE_ENVMAP</define>
-	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
-	<define>TEXTURE_ENVROOM</define>
-	<define>TEXTURE_HEIGHT</define>
-	<define>TEXTURE_NORMAL</define>
-	<define>TEXTURE_REFLECTIVITY</define>
-	<define>TEXTURE_RENDERCOLOR</define>
-	<define>TEXTURE_RIM_EMISSIVITY</define>
-	<define>TEXTURE_ROUGHNESS</define>
-	<define>TEXTURE_SOLIDITY</define>
-	<define>WITH_OUTLINE</define>
-	<define>WITH_REFLECTION</define>
 	
 	<!-- shared/defren/skin/ubo_instance_parameters.glsl -->
 	<shaderStorageBlock name='InstanceParametersSSBO' binding='0'/>
@@ -97,7 +64,6 @@
 	
 	<!-- shared/defren/skin/transform_position.glsl -->
 	<define>BILLBOARD</define>
-	<define>BILLBOARD</define>
 	<define>GS_RENDER_CASCADED</define>
 	<define>GS_RENDER_CUBE</define>
 	<define>GS_RENDER_STEREO</define>
@@ -114,10 +80,7 @@
 	<define>HAS_TESSELLATION_SHADER</define>
 	<define>HEIGHT_MAP</define>
 	<define>PROP_FIELD</define>
-	<define>TEXTURE_NORMAL</define>
 	
 	<!-- shared/defren/skin/shared_spb_index2.glsl -->
 	<define>SHARED_SPB</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_CASCADED</define>
 </shaderSource>

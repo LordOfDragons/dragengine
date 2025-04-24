@@ -32,6 +32,7 @@ precision HIGHP int;
 	#include "shared/defren/skin/shared_spb_index.glsl"
 	#define pMatrixModel pSharedSPB[ spbIndex ].pSPBMatrixModel
 #endif
+#include "shared/defren/skin/ubo_special_parameters.glsl"
 
 layout(location=0) in vec3 inPosition;
 

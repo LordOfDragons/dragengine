@@ -27,9 +27,7 @@
 	-->
 	
 	<define>HEIGHT_MAP</define>
-	<define>TEXTURE_NORMAL</define>
 	<define>VS_RENDER_STEREO</define>
-	
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/skin/shared_spb_index.glsl -->
@@ -43,6 +41,4 @@
 	
 	<!-- shared/defren/skin/shared_spb_index2.glsl -->
 	<define>SHARED_SPB</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_CASCADED</define>
 </shaderSource>

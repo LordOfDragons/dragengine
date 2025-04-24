@@ -21,10 +21,7 @@
 	<define>SHARED_SPB_ARRAY_SIZE</define>
 	-->
 	
-	<define>PARTICLE_RIBBON</define>
-	<define>PARTICLE_BEAM</define>
 	<define>VS_RENDER_STEREO</define>
-	
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
@@ -53,6 +50,4 @@
 	
 	<!-- shared/defren/skin/shared_spb_index2.glsl -->
 	<define>SHARED_SPB</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_CASCADED</define>
 </shaderSource>

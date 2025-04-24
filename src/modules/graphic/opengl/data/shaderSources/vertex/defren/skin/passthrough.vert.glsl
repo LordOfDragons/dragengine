@@ -19,6 +19,7 @@ precision HIGHP int;
 #ifdef SHARED_SPB
 	#include "shared/defren/skin/shared_spb_index.glsl"
 #endif
+#include "shared/defren/skin/ubo_special_parameters.glsl"
 
 
 
@@ -33,9 +34,7 @@ precision HIGHP int;
 	layout(location=0) in vec3 inPosition;
 	layout(location=1) in vec3 inRealNormal;
 	layout(location=2) in vec3 inNormal;
-	#ifdef TEXTURE_NORMAL
-		layout(location=3) in vec4 inTangent;
-	#endif
+	layout(location=3) in vec4 inTangent;
 	layout(location=4) in vec2 inTexCoord;
 #endif
 
@@ -51,14 +50,12 @@ precision HIGHP int;
 #else
 	out vec3 vInPosition;
 	out vec3 vInNormal;
-	#ifdef TEXTURE_NORMAL
-		out vec4 vInTangent;
-	#endif
+	out vec4 vInTangent;
 	out vec2 vInTexCoord;
 #endif
-#ifdef SHARED_SPB
-	flat out int vSPBIndex;
-#endif
+
+flat out int vSPBIndex;
+flat out int vSPBFlags;
 
 #ifdef VS_RENDER_STEREO
 	uniform int pDrawIDOffset;
@@ -73,7 +70,7 @@ precision HIGHP int;
 // Main Function
 //////////////////
 
-void main( void ){
+void main(void){
 	#include "shared/defren/skin/shared_spb_index2.glsl"
 	
 	vInPosition = inPosition;
@@ -81,15 +78,12 @@ void main( void ){
 	#ifdef HEIGHT_MAP
 		vInHeight = inHeight;
 	#else
-		#ifdef TEXTURE_NORMAL
-			vInTangent = inTangent;
-		#endif
+		vInTangent = inTangent;
 		vInTexCoord = inTexCoord;
 	#endif
 	
-	#ifdef SHARED_SPB
 	vSPBIndex = spbIndex;
-	#endif
+	vSPBFlags = spbFlags;
 	
 	#ifdef VS_RENDER_STEREO
 		gl_Layer = inLayer;

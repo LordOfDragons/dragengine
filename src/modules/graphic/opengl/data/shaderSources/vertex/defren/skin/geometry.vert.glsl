@@ -8,8 +8,6 @@
 	#extension GL_ARB_shader_draw_parameters : require
 #endif
 
-#include "shared/defren/skin/macros_geometry.glsl"
-
 // Uniform Parameters
 ///////////////////////
 
@@ -23,19 +21,17 @@
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 #include "shared/defren/skin/shared_spb_texture_redirect.glsl"
+#include "shared/defren/skin/ubo_special_parameters.glsl"
 
 
 
 // Samplers
 /////////////
 
-#ifdef HEIGHT_MAP
-	uniform lowp sampler2D texHeightMapMask;
-#endif
-#ifdef PROP_FIELD
-	uniform HIGHP samplerBuffer texSubInstance1;
-	uniform HIGHP samplerBuffer texSubInstance2;
-#endif
+uniform lowp sampler2D texHeightMapMask;
+
+uniform HIGHP samplerBuffer texSubInstance1;
+uniform HIGHP samplerBuffer texSubInstance2;
 
 
 
@@ -50,9 +46,7 @@
 	layout(location=0) in vec3 inPosition;
 	layout(location=1) in vec3 inRealNormal;
 	layout(location=2) in vec3 inNormal;
-	#ifdef TEXTURE_NORMAL
-		layout(location=3) in vec4 inTangent;
-	#endif
+	layout(location=3) in vec4 inTangent;
 	layout(location=4) in vec2 inTexCoord;
 #endif
 
@@ -64,159 +58,82 @@
 #ifdef HAS_TESSELLATION_SHADER
 	#define PASS_ON_NEXT_STAGE 1
 	out vec2 vTCSTCColor;
-	#define vTCColor vTCSTCColor
-	#ifdef TEXTURE_COLOR_TINT_MASK
-		out vec2 vTCSTCColorTintMask;
-		#define vTCColorTintMask vTCSTCColorTintMask
-	#endif
-	#ifdef TEXTURE_NORMAL
-		out vec2 vTCSTCNormal;
-		#define vTCNormal vTCSTCNormal
-	#endif
-	#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
-		out vec2 vTCSTCReflectivity;
-		#define vTCReflectivity vTCSTCReflectivity
-	#endif
-	#ifdef WITH_EMISSIVITY
-		out vec2 vTCSTCEmissivity;
-		#define vTCEmissivity vTCSTCEmissivity
-	#endif
-	#ifdef TEXTURE_REFRACTION_DISTORT
-		out vec2 vTCSTCRefractionDistort;
-		#define vTCRefractionDistort vTCSTCRefractionDistort
-	#endif
-	#ifdef TEXTURE_AO
-		out vec2 vTCSTCAO;
-		#define vTCAO vTCSTCAO
-	#endif
-	
+	out vec2 vTCSTCColorTintMask;
+	out vec2 vTCSTCNormal;
+	out vec2 vTCSTCReflectivity;
+	out vec2 vTCSTCEmissivity;
+	out vec2 vTCSTCRefractionDistort;
+	out vec2 vTCSTCAO;
 	out vec3 vTCSNormal;
+	out vec3 vTCSTangent;
+	out vec3 vTCSBitangent;
+	out float vTCSHTMask;
+// 	out float vTCSRenderCondition;
+	flat out int vTCSDoubleSided;
+	
+	#define vTCColor vTCSTCColor
+	#define vTCColorTintMask vTCSTCColorTintMask
+	#define vTCNormal vTCSTCNormal
+	#define vTCReflectivity vTCSTCReflectivity
+	#define vTCEmissivity vTCSTCEmissivity
+	#define vTCRefractionDistort vTCSTCRefractionDistort
+	#define vTCAO vTCSTCAO
 	#define vNormal vTCSNormal
-	#ifdef WITH_TANGENT
-		out vec3 vTCSTangent;
-		#define vTangent vTCSTangent
-	#endif
-	#ifdef WITH_BITANGENT
-		out vec3 vTCSBitangent;
-		#define vBitangent vTCSBitangent
-	#endif
-	#ifdef HEIGHT_MAP
-		out float vTCSHTMask;
-		#define vHTMask vTCSHTMask
-	#endif
-	#ifdef PROP_FIELD
-// 		out float vTCSRenderCondition;
-	#endif
-	#ifdef DEPTH_OFFSET
-		flat out int vTCSDoubleSided;
-		#define vDoubleSided vTCSDoubleSided
-	#endif
+	#define vTangent vTCSTangent
+	#define vBitangent vTCSBitangent
+	#define vHTMask vTCSHTMask
+	#define vDoubleSided vTCSDoubleSided
 	
 #elif defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 	#define PASS_ON_NEXT_STAGE 1
 	out vec2 vGSTCColor;
-	#define vTCColor vGSTCColor
-	#ifdef TEXTURE_COLOR_TINT_MASK
-		out vec2 vGSTCColorTintMask;
-		#define vTCColorTintMask vGSTCColorTintMask
-	#endif
-	#ifdef TEXTURE_NORMAL
-		out vec2 vGSTCNormal;
-		#define vTCNormal vGSTCNormal
-	#endif
-	#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
-		out vec2 vGSTCReflectivity;
-		#define vTCReflectivity vGSTCReflectivity
-	#endif
-	#ifdef WITH_EMISSIVITY
-		out vec2 vGSTCEmissivity;
-		#define vTCEmissivity vGSTCEmissivity
-	#endif
-	#ifdef TEXTURE_REFRACTION_DISTORT
-		out vec2 vGSTCRefractionDistort;
-		#define vTCRefractionDistort vGSTCRefractionDistort
-	#endif
-	#ifdef TEXTURE_AO
-		out vec2 vGSTCAO;
-		#define vTCAO vGSTCAO
-	#endif
-	
+	out vec2 vGSTCColorTintMask;
+	out vec2 vGSTCNormal;
+	out vec2 vGSTCReflectivity;
+	out vec2 vGSTCEmissivity;
+	out vec2 vGSTCRefractionDistort;
+	out vec2 vGSTCAO;
 	out vec3 vGSNormal;
+	out vec3 vGSTangent;
+	out vec3 vGSBitangent;
+	out float vGSHTMask;
+//	out float vGSRenderCondition;
+	flat out int vGSDoubleSided;
+	flat out int vGSSPBIndex;
+	flat out int vGSSPBFlags;
+	
+	#define vTCColor vGSTCColor
+	#define vTCColorTintMask vGSTCColorTintMask
+	#define vTCNormal vGSTCNormal
+	#define vTCReflectivity vGSTCReflectivity
+	#define vTCEmissivity vGSTCEmissivity
+	#define vTCRefractionDistort vGSTCRefractionDistort
+	#define vTCAO vGSTCAO
 	#define vNormal vGSNormal
-	#ifdef WITH_TANGENT
-		out vec3 vGSTangent;
-		#define vTangent vGSTangent
-	#endif
-	#ifdef WITH_BITANGENT
-		out vec3 vGSBitangent;
-		#define vBitangent vGSBitangent
-	#endif
-	#ifdef HEIGHT_MAP
-		out float vGSHTMask;
-		#define vHTMask vGSHTMask
-	#endif
-	#ifdef PROP_FIELD
-// 		out float vGSRenderCondition;
-	#endif
-	
-	#ifdef SHARED_SPB
-		flat out int vGSSPBIndex;
-		#define vSPBIndex vGSSPBIndex
-		
-		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
-			flat out int vGSSPBFlags;
-		#endif
-	#endif
-	
-	#ifdef DEPTH_OFFSET
-		flat out int vGSDoubleSided;
-		#define vDoubleSided vGSDoubleSided
-	#endif
+	#define vTangent vGSTangent
+	#define vBitangent vGSBitangent
+	#define vHTMask vGSHTMask
+	#define vDoubleSided vGSDoubleSided
+	#define vSPBIndex vGSSPBIndex
+	#define vSPBFlags vGSSPBFlags
 	
 #else
 	out vec2 vTCColor;
-	#ifdef TEXTURE_COLOR_TINT_MASK
-		out vec2 vTCColorTintMask;
-	#endif
-	#ifdef TEXTURE_NORMAL
-		out vec2 vTCNormal;
-	#endif
-	#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
-		out vec2 vTCReflectivity;
-	#endif
-	#ifdef WITH_EMISSIVITY
-		out vec2 vTCEmissivity;
-	#endif
-	#ifdef TEXTURE_REFRACTION_DISTORT
-		out vec2 vTCRefractionDistort;
-	#endif
-	#ifdef TEXTURE_AO
-		out vec2 vTCAO;
-	#endif
-	
+	out vec2 vTCColorTintMask;
+	out vec2 vTCNormal;
+	out vec2 vTCReflectivity;
+	out vec2 vTCEmissivity;
+	out vec2 vTCRefractionDistort;
+	out vec2 vTCAO;
 	out vec3 vNormal;
-	#ifdef WITH_TANGENT
-		out vec3 vTangent;
-	#endif
-	#ifdef WITH_BITANGENT
-		out vec3 vBitangent;
-	#endif
-	#ifdef WITH_REFLECT_DIR
-		out vec3 vReflectDir;
-	#endif
-	#ifdef HEIGHT_MAP
-		out float vHTMask;
-	#endif
-	#ifdef FADEOUT_RANGE
-		out float vFadeZ;
-	#endif
-	#ifdef SKIN_CLIP_PLANE
-		out vec3 vSkinClipCoord;
-	#endif
-	
-	#ifdef SHARED_SPB
-		flat out int vSPBIndex;
-	#endif
+	out vec3 vTangent;
+	out vec3 vBitangent;
+	out vec3 vReflectDir;
+	out float vHTMask;
+	out float vFadeZ;
+	out vec3 vSkinClipCoord;
+	flat out int vSPBIndex;
+	flat out int vSPBFlags;
 #endif
 
 #ifdef VS_RENDER_STEREO
@@ -241,88 +158,56 @@ void main( void ){
 	
 	// transform the texture coordinates
 	#ifdef HEIGHT_MAP
-		vec2 tc = pMatrixTexCoord * vec3( inPosition, 1 );
+		vec2 tc = pMatrixTexCoord * vec3(inPosition, 1.0);
 	#else
-		vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1 );
+		vec2 tc = pMatrixTexCoord * vec3(inTexCoord, 1.0);
 	#endif
 	
 	vTCColor = tc; // * pTCTransformColor.xy + pTCTransformColor.zw;
-	#ifdef TEXTURE_COLOR_TINT_MASK
-		vTCColorTintMask = tc; // * pTCTransformColorTintMask.xy + pTCTransformColorTintMask.zw;
-	#endif
-	#ifdef TEXTURE_NORMAL
-		vTCNormal = tc; // * pTCTransformNormal.xy + pTCTransformNormal.zw;
-	#endif
-	#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
-		vTCReflectivity = tc; // * pTCTransformReflectivity.xy + pTCTransformReflectivity.zw;
-	#endif
-	#ifdef WITH_EMISSIVITY
-		vTCEmissivity = tc; // * pTCTransformEmissivity.xy + pTCTransformEmissivity.zw;
-	#endif
-	#ifdef TEXTURE_REFRACTION_DISTORT
-		vTCRefractionDistort = tc; // * pTCTransformRefractionDistort.xy + pTCTransformRefractionDistort.zw;
-	#endif
-	#ifdef TEXTURE_AO
-		vTCAO = tc; // * pTCTransformAO.xy + pTCTransformAO.zw;
-	#endif
+	vTCColorTintMask = tc; // * pTCTransformColorTintMask.xy + pTCTransformColorTintMask.zw;
+	vTCNormal = tc; // * pTCTransformNormal.xy + pTCTransformNormal.zw;
+	vTCReflectivity = tc; // * pTCTransformReflectivity.xy + pTCTransformReflectivity.zw;
+	vTCEmissivity = tc; // * pTCTransformEmissivity.xy + pTCTransformEmissivity.zw;
+	vTCRefractionDistort = tc; // * pTCTransformRefractionDistort.xy + pTCTransformRefractionDistort.zw;
+	vTCAO = tc; // * pTCTransformAO.xy + pTCTransformAO.zw;
 	
 	// transform position and normal
 	vec3 position;
-	#ifdef REQUIRES_TRANSFORM_TRANSFER
-		sTransformTransfer transformTransfer;
-		transformPosition( position, spbIndex, transformTransfer );
-		transformNormal( spbIndex, transformTransfer );
-	#else
-		transformPosition( position, spbIndex );
-		transformNormal( spbIndex );
-	#endif
+	sTransformTransfer transformTransfer;
+	transformPosition(position, spbIndex, transformTransfer);
+	transformNormal(spbIndex, transformTransfer);
 	
 	#ifdef PASS_ON_NEXT_STAGE
-		#ifdef DEPTH_OFFSET
-			vDoubleSided = pDoubleSided ? 1 : 0;
-		#endif
+		vDoubleSided = pDoubleSided ? 1 : 0;
 		
 	#else
-		// reflection directory for environment map reflections
-		#ifdef WITH_REFLECT_DIR
-			#ifdef BILLBOARD
-				vReflectDir = position;
-			#else
-				vReflectDir = pMatrixV[ inLayer ] * vec4( position, 1 );
-			#endif
+		#ifdef BILLBOARD
+			// reflection directory for environment map reflections
+			vReflectDir = position;
+			
+			// fade range requires non-perspective z.
+			// and when we are at it already spare some calculations
+			vFadeZ = position.z;
+		#else
+			vReflectDir = pMatrixV[inLayer] * vec4(position, 1.0);
+			vFadeZ = (pMatrixV[inLayer] * vec4(position, 1.0)).z;
 		#endif
 		
-		// fade range requires non-perspective z. and when we are at it already spare some calculations
-		#ifdef FADEOUT_RANGE
-			#ifdef BILLBOARD
-				vFadeZ = position.z;
-			#else
-				vFadeZ = ( pMatrixV[ inLayer ] * vec4( position, 1 ) ).z;
-			#endif
-		#endif
-		
-		// cliping
-		#ifdef SKIN_CLIP_PLANE
-			#ifdef HEIGHT_MAP
-				vSkinClipCoord = vec3( inPosition.x, inHeight, inPosition.y );
-			#else
-				vSkinClipCoord = vec3( inPosition );
-			#endif
+		#ifdef HEIGHT_MAP
+			vSkinClipCoord = vec3(inPosition.x, inHeight, inPosition.y);
+		#else
+			vSkinClipCoord = vec3(inPosition);
 		#endif
 	#endif
 	
 	// height terrain mask. this can be interpolated since each texel refers to exactly one vertex in the height map
 	#ifdef HEIGHT_MAP
-		//vHTMask = texelFetch( texHeightMapMask, ivec2( inPosition * pHeightTerrainMaskTCTransform + vec2( 0.1 ) ), 0 )[ pHeightTerrainMaskSelector.y ];
-		vHTMask = texture( texHeightMapMask, inPosition * pHeightTerrainMaskTCTransform + vec2( 0.5 ) )[ pHeightTerrainMaskSelector.y ];
+		//vHTMask = texelFetch(texHeightMapMask, ivec2(inPosition * pHeightTerrainMaskTCTransform + vec2(0.1)), 0.0)[pHeightTerrainMaskSelector.y];
+		vHTMask = texture(texHeightMapMask, inPosition * pHeightTerrainMaskTCTransform + vec2(0.5))[pHeightTerrainMaskSelector.y];
 	#endif
 	
-	#ifdef SHARED_SPB
-		vSPBIndex = spbIndex;
-		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
-			vGSSPBFlags = spbFlags;
-		#endif
-	#endif
+	vSPBIndex = spbIndex;
+	vSPBFlags = spbFlags;
 	
 	#ifdef VS_RENDER_STEREO
 		gl_Layer = inLayer;

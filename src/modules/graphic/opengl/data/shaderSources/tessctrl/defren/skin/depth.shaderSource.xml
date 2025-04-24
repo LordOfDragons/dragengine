@@ -3,19 +3,4 @@
 	<name>TC DefRen Skin Depth</name>
 	<stage>tessellateControl</stage>
 	<source>depth.tesc.glsl</source>
-	
-	<define>HEIGHT_MAP</define>
-	
-	<!-- shared/defren/skin/macros_geometry.glsl -->
-	<define>OUTPUT_COLOR</define>
-	<define>TEXTURE_EMISSIVITY</define>
-	<define>TEXTURE_ENVMAP</define>
-	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
-	<define>TEXTURE_ENVROOM</define>
-	<define>TEXTURE_HEIGHT</define>
-	<define>TEXTURE_HEIGHT</define>
-	<define>TEXTURE_NORMAL</define>
-	<define>TEXTURE_RIM_EMISSIVITY</define>
-	<define>TEXTURE_SOLIDITY</define>
-	<define>WITH_REFLECTION</define>
 </shaderSource>
