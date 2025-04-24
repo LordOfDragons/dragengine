@@ -377,7 +377,7 @@ bool deoglShaderCompiler::HasCompileShaderUnitFinished(const deoglShaderProgramU
 	
 	GLint result;
 	SC_OGL_CHECK(pLanguage.GetRenderThread(),
-		pglGetShaderiv(unit.GetHandle(), GL_COMPLETION_STATUS_ARB, &result));
+		pglGetShaderiv(unit.GetHandle(), GL_COMPLETION_STATUS_KHR, &result));
 	return result == GL_TRUE;
 }
 
@@ -425,7 +425,7 @@ bool deoglShaderCompiler::HasCompileShaderFinished(const deoglShaderProgram &pro
 	
 	GLint result;
 	SC_OGL_CHECK(pLanguage.GetRenderThread(), pglGetProgramiv(
-		program.GetCompiled()->GetHandleShader(), GL_COMPLETION_STATUS_ARB, &result));
+		program.GetCompiled()->GetHandleShader(), GL_COMPLETION_STATUS_KHR, &result));
 	return result == GL_TRUE;
 }
 
