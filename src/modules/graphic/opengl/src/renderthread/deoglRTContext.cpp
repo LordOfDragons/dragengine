@@ -493,6 +493,58 @@ bool deoglRTContext::GetUserRequestedQuit(){
 	return requested;
 }
 
+void deoglRTContext::DropCompileContexts(int count){
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
+	int i;
+#ifdef OS_UNIX_X11
+#ifdef BACKEND_OPENGL
+	for(i=count; i<pCompileContextCount; i++){
+		if(pCompileContext[i]){
+			logger.LogInfoFormat("Drop compile context %d", i);
+			glXDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = nullptr;
+		}
+	}
+#endif
+	
+#elif defined OS_ANDROID
+	for(i=count; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i] != EGL_NO_CONTEXT){
+			eglDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = EGL_NO_CONTEXT;
+		}
+		if(pCompileSurface[i] != EGL_NO_SURFACE){
+			eglDestroySurface(pDisplay, pCompileSurface[i]);
+			pCompileSurface[i] = EGL_NO_SURFACE;
+		}
+	}
+	
+#elif defined OS_WEBASM
+	for(i=count; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i]){
+			emscripten_webgl_destroy_context(pCompileContext[i]);
+			pCompileContext[i] = 0;
+		}
+	}
+	
+#elif defined OS_BEOS
+	
+#elif defined OS_MACOS
+	
+#elif defined OS_W32
+	for(i=0; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i]){
+			wglDeleteContext(pCompileContext[i]);
+			pCompileContext[i] = NULL;
+		}
+	}
+#endif
+}
+
 
 
 #ifdef BACKEND_OPENGL

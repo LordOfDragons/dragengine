@@ -239,6 +239,9 @@ public:
 	/** Count of compile contexts. */
 	inline int GetCompileContextCount() const{ return pCompileContextCount; }
 	
+	/** Release all compile contexts above count. */
+	void DropCompileContexts(int count);
+	
 	
 	
 #ifdef OS_UNIX_X11

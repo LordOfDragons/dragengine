@@ -199,10 +199,7 @@ pTotalCompiledShaders(0)
 	
 	try{
 		pCompiler = new deoglShaderCompiler(*this, -1);
-		
-		//if(!pglMaxShaderCompilerThreads){
-			pCreateCompileThreads();
-		//}
+		pCreateCompileThreads();
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -594,18 +591,32 @@ void deoglShaderLanguage::pCleanUp(){
 
 void deoglShaderLanguage::pCreateCompileThreads(){
 	deoglRTContext &context = pRenderThread.GetContext();
-	const int count = context.GetCompileContextCount() * 0 + 1;
+	int count = context.GetCompileContextCount();
 	if(count == 0){
 		return;
+	}
+	
+	if(pglMaxShaderCompilerThreads){
+		count = 1;
 	}
 	
 	pCompilerThreads = new deoglShaderCompilerThread*[count];
 	
 	int i;
-	for(i=0; i<count; i++){
-		pCompilerThreads[i] = new deoglShaderCompilerThread(*this, i);
-		pCompilerThreadCount = i + 1;
-		pCompilerThreads[i]->Start();
+	if(pglMaxShaderCompilerThreads){
+		pCompilerThreads[0] = new deoglShaderCompilerThread(
+			*this, 0, deoglShaderCompilerThread::Type::glparallel);
+		pCompilerThreadCount = 1;
+		pCompilerThreads[0]->Start();
+		pRenderThread.GetContext().DropCompileContexts(1);
+		
+	}else{
+		for(i=0; i<count; i++){
+			pCompilerThreads[i] = new deoglShaderCompilerThread(
+				*this, i, deoglShaderCompilerThread::Type::single);
+			pCompilerThreadCount = i + 1;
+			pCompilerThreads[i]->Start();
+		}
 	}
 	
 	for(i=0; i<count; i++){

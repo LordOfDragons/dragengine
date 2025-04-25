@@ -128,7 +128,8 @@ public:
 	void RemoveCompilingShader();
 	
 	/** Get next task to compile. Blocks until a task is available or thread has to exit. */
-	void GetNextTask(deoglShaderCompileTask::Ref &task, deoglShaderCompileUnitTask::Ref &unitTask);
+	void GetNextTask(deoglShaderCompileTask::Ref &task,
+		deoglShaderCompileUnitTask::Ref &unitTask);
 	
 	/** Finish compile task. Sets task to nullptr before returning. */
 	void FinishTask(deoglShaderCompileTask::Ref &task);
