@@ -311,24 +311,19 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
 }
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
-	// this shader parameter block will be optimized. the layout is adapted to
-	// the configuration used for this light shader
-	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(new deoglSPBlockUBO(pRenderThread)));
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
-	spb->SetParameterCount( pUsedLightUniformTargetCount );
+	spb->SetCompact(false);
+	spb->SetParameterCount(ELUT_COUNT);
 	
 	int i;
-	for( i=0; i<ELUT_COUNT; i++ ){
-		const int target = pLightUniformTargets[ i ];
-		if( target != -1 ){
-			spb->GetParameterAt( target ).SetAll(
-				vLightSPBParamDefs[ i ].dataType, vLightSPBParamDefs[ i ].componentCount,
-				vLightSPBParamDefs[ i ].vectorCount, vLightSPBParamDefs[ i ].arrayCount );
-		}
+	for(i=0; i<ELUT_COUNT; i++){
+		const sSPBParameterDefinition &pdef = vLightSPBParamDefs[i];
+		spb->GetParameterAt(i).SetAll(pdef.dataType, pdef.componentCount, pdef.vectorCount, pdef.arrayCount);
 	}
 	
 	spb->MapToStd140();
-	spb->SetBindingPoint( deoglLightShader::eubLightParameters );
+	spb->SetBindingPoint(deoglLightShader::eubLightParameters);
 	return spb;
 }
 
@@ -845,6 +840,13 @@ void deoglLightShader::UpdateUniformTargets(){
 		pLightUniformTargets[ elutLightSpotFactor ] = pUsedLightUniformTargetCount++;
 		pLightUniformTargets[ elutLightSpotBase ] = pUsedLightUniformTargetCount++;
 		pLightUniformTargets[ elutLightSpotExponent ] = pUsedLightUniformTargetCount++;
+	}
+	
+	// shared parameter block support. re-map since order is fixed
+	for(i=0; i<ELUT_COUNT; i++){
+		if(pLightUniformTargets[i] != -1){
+			pLightUniformTargets[i] = i;
+		}
 	}
 }
 

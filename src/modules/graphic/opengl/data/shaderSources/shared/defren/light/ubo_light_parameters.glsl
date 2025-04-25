@@ -1,31 +1,25 @@
 /*
 	<!-- shared/defren/light/ubo_light_parameters.glsl -->
 	<uniformBlock name='LightParameters' binding='2'/>
-	
-	<define>PARTICLE_LIGHT</define>
-	<define>SPOT_LIGHT</define>
-	<define>PROJECTOR_LIGHT</define>
+*/
+
+/*
+affects:
+S: spot
+PR: projector light
+P: point
+PE: particle
+SL: sky layer
+GI: gi
+~X: all except X
 */
 
 UBOLAYOUT_BIND(2) uniform LightParameters{
-	#ifndef PARTICLE_LIGHT
-		vec3 pLightColor;
-		
-		float pLightRange;
-			// used by:     point, spot
-			// not used by: sky
-		
-		vec3 pLightColorAmbient;
-			// used by:     sky
-			// not used by: point, spot
-		
-		float pLightAmbientRatio;
-			// used by:     point, spot
-			// not used by: sky
-		
-		vec3 pLightColorAmbientGI;
-			// used by:     gi
-	#endif
+	vec3 pLightColor; // ~PE
+	float pLightRange; // P, S, PR
+	vec3 pLightColorAmbient; // SL
+	float pLightAmbientRatio; // P, S, PR
+	vec3 pLightColorAmbientGI; // GI
 	
 	float pLightAttenuationCoefficient;
 	float pLightDampingCoefficient;
@@ -33,9 +27,7 @@ UBOLAYOUT_BIND(2) uniform LightParameters{
 	
 	float pLightImageGamma;
 	
-	#if defined SPOT_LIGHT || defined PROJECTOR_LIGHT
-		float pLightSpotFactor;
-		float pLightSpotBase;
-		float pLightSpotExponent;
-	#endif
+	float pLightSpotFactor; // S, PR
+	float pLightSpotBase; // S, PR
+	float pLightSpotExponent; // S, PR
 };
