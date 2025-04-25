@@ -124,18 +124,23 @@ void deoglShaderPreprocessor::LogSourceLocationMap(){
 	}
 }
 
-const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation( int line ) const{
-	const int count = pSourceLocations.GetCount();
+const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation(int line) const{
+	return ResolveSourceLocation(pSourceLocations, line);
+}
+
+const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation(
+const decObjectList &locations, int line) const{
+	const int count = locations.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deoglShaderSourceLocation * const location = ( deoglShaderSourceLocation* )pSourceLocations.GetAt( i );
-		if( location->GetOutputLine() == line ){
+	for(i=0; i<count; i++){
+		const deoglShaderSourceLocation * const location = (deoglShaderSourceLocation*)locations.GetAt(i);
+		if(location->GetOutputLine() == line){
 			return location;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 

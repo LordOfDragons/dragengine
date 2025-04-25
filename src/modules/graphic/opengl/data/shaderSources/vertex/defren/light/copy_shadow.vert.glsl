@@ -9,32 +9,26 @@ precision mediump float;
 precision mediump int;
 
 layout(location=0) in vec2 inPosition;
-#ifdef SHADOW_CUBE
-	layout(location=1) in int inLayer;
-	layout(location=2) in vec3 inTexCoord;
-#endif
+layout(location=1) in int inLayer;
+layout(location=2) in vec3 inTexCoord;
 
-#ifdef SHADOW_CUBE
-	#ifdef GS_LAYER
-		out vec3 vGSTexCoord;
-		flat out int vGSLayer;
-	#else
-		out vec3 vTexCoord;
-	#endif
+#ifdef GS_LAYER
+	out vec3 vGSTexCoord;
+	flat out int vGSLayer;
+#else
+	out vec3 vTexCoord;
 #endif
 
 void main( void ){
-	gl_Position = vec4( inPosition, 0, 1 );
+	gl_Position = vec4(inPosition, 0.0, 1.0);
 	
-	#ifdef SHADOW_CUBE
-		#ifdef GS_LAYER
-			vGSTexCoord = inTexCoord;
-			vGSLayer = inLayer;
-		#else
-			vTexCoord = inTexCoord;
-			#ifdef VS_LAYER
-				gl_Layer = inLayer;
-			#endif
+	#ifdef GS_LAYER
+		vGSTexCoord = inTexCoord;
+		vGSLayer = inLayer;
+	#else
+		vTexCoord = inTexCoord;
+		#ifdef VS_LAYER
+			gl_Layer = inLayer;
 		#endif
 	#endif
 }

@@ -42,16 +42,16 @@ precision HIGHP int;
 	flat out int vLayer;
 #endif
 
-void main( void ){
+void main(void){
 	#ifdef GS_RENDER_STEREO
-		gl_Position = vec4( inPosition, 0, 1 );
+		gl_Position = vec4(inPosition, 0.0, 1.0);
 	#else
 		#ifdef FULLSCREENQUAD
-			gl_Position = vec4( inPosition, 0, 1 );
+			gl_Position = vec4(inPosition, 0.0, 1.0);
 			vScreenCoord = inPosition;
 		#else
-			gl_Position = pMatrixMVP[ inLayer ] * vec4( inPosition, 1 );
-			vLightVolumePos = pMatrixMV[ inLayer ] * vec4( inPosition, 1 );
+			gl_Position = pMatrixMVP[inLayer] * vec4(inPosition, 1.0);
+			vLightVolumePos = pMatrixMV[inLayer] * vec4(inPosition, 1.0);
 		#endif
 	#endif
 	

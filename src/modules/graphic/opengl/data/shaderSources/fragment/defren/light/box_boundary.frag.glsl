@@ -1,48 +1,34 @@
 precision HIGHP float;
 precision HIGHP int;
 
-#ifdef DEPTH_INPUT
-	uniform vec4 pPosTransform;
-	uniform mat3 pMatrixRotation;
-	uniform vec3 pInitialMinValue;
-	uniform vec3 pInitialMaxValue;
-	uniform vec3 pClearMinValue;
-	uniform vec3 pClearMaxValue;
+uniform vec4 pPosTransform;
+uniform mat3 pMatrixRotation;
+uniform vec3 pInitialMinValue;
+uniform vec3 pInitialMaxValue;
+uniform vec3 pClearMinValue;
+uniform vec3 pClearMaxValue;
+
+uniform int pMipMapLevel;
+
+#ifdef DEPTH_CUBEMAP
+	uniform HIGHP samplerCube texAmbient;
+	uniform HIGHP samplerCube texDepth;
 #else
-	uniform int pMipMapLevel;
+	uniform HIGHP sampler2D texAmbient;
+	uniform HIGHP sampler2D texDepth;
 #endif
 
-#ifdef DEPTH_INPUT
-	#ifdef AMBIENT_MAP
-		#ifdef DEPTH_CUBEMAP
-			uniform HIGHP samplerCube texAmbient;
-		#else
-			uniform HIGHP sampler2D texAmbient;
-		#endif
-	#endif
-	
-	#ifdef DEPTH_CUBEMAP
-		uniform HIGHP samplerCube texDepth;
-	#else
-		uniform HIGHP sampler2D texDepth;
-	#endif
-#else
-	uniform HIGHP sampler2D texMin;
-	uniform HIGHP sampler2D texMax;
-#endif
+uniform HIGHP sampler2D texMin;
+uniform HIGHP sampler2D texMax;
 
 in vec2 vTexCoord;
 
 layout(location=0) out vec3 outMin;
 layout(location=1) out vec3 outMax;
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
+const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 
 
-
-#ifdef DEPTH_INPUT
 #ifdef DEPTH_CUBEMAP
 void updateMinMaxFromDepth(in HIGHP samplerCube tex, in vec3 tc,
 in ivec3 swizzle, in ivec3 flipper, inout vec3 resMin, inout vec3 resMax){
@@ -105,15 +91,11 @@ void updateMinMaxFromDepth(in HIGHP sampler2D tex, in ivec2 tc, inout vec3 resMi
 	resMax = max(resMax, position);
 }
 #endif // DEPTH_CUBEMAP
-#endif // DEPTH_INPUT
 
 
-
-#if defined DEPTH_INPUT && defined DEPTH_CUBEMAP
 const vec2 tcFaceTransform = vec2( 1, -1 );
-#endif
 
-void main( void ){
+void main(void){
 	// min-max of depth input
 	#ifdef DEPTH_INPUT
 		outMin = pInitialMinValue;

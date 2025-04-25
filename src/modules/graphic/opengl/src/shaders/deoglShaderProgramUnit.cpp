@@ -76,3 +76,7 @@ void deoglShaderProgramUnit::DropHandle(){
 void deoglShaderProgramUnit::SetProcessedSources(const decString &code){
 	pProcessedSources = code;
 }
+
+void deoglShaderProgramUnit::SetProcessedSourceLocations(const decObjectList &locations){
+	pProcessedSourceLocations = locations;
+}

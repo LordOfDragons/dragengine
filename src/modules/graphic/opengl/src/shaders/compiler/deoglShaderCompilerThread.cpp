@@ -381,11 +381,11 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 				(deoglShaderCompileUnitTask*)unitTasks.GetAt(i);
 			deoglShaderProgramUnit &unit = *unitTask->GetUnit();
 			
-			if(!pCompiler->HasCompileShaderUnitFinished(unit)){
-				continue;
-			}
-			
 			try{
+				if(!pCompiler->HasCompileShaderUnitFinished(unit)){
+					continue;
+				}
+				
 				pCompiler->FinishCompileShaderUnit(unit);
 				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
 				//	"CompileThread %d: Stop task unit '%.50s...'", pContextIndex, cacheId.GetString());
@@ -409,11 +409,11 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 			deoglShaderCompileTask * const task = (deoglShaderCompileTask*)tasks.GetAt(i);
 			deoglShaderProgram &program = *task->GetProgram();
 			
-			if(!pCompiler->HasCompileShaderFinished(program)){
-				continue;
-			}
-			
 			try{
+				if(!pCompiler->HasCompileShaderFinished(program)){
+					continue;
+				}
+				
 				pCompiler->FinishCompileShader(program);
 				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
 				//	"CompileThread %d: Stop task '%.50s...'", pContextIndex, cacheId.GetString());

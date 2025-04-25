@@ -10,9 +10,4 @@
 	
 	<!-- shared/defren/light/ubo_instance_parameters.glsl -->
 	<uniformBlock name='InstanceParameters' binding='1'/>
-	
-	<define>PARTICLE_LIGHT</define>
-	<define>SKY_LIGHT</define>
-	<define>TEXTURE_COLOR_CUBEMAP</define>
-	<define>TEXTURE_COLOR_EQUIRECT</define>
 </shaderSource>

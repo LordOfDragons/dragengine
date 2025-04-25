@@ -8,7 +8,6 @@
 	<attribute name='inLayer' location='1'/>
 	<attribute name='inTexCoord' location='2'/>
 	
-	<define>SHADOW_CUBE</define>
 	<define>GS_LAYER</define>
 	<define>VS_LAYER</define>
 	

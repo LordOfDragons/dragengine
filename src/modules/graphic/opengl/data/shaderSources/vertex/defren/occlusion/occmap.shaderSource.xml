@@ -16,11 +16,7 @@
 	<define>GS_RENDER_CASCADED</define>
 	<define>GS_RENDER_STEREO</define>
 	<define>VS_RENDER_STEREO</define>
-	<define>PERSPECTIVE_TO_LINEAR</define>
 	<define>DEPTH_DISTANCE</define>
-	<define>USE_CLIP_PLANE</define>
-	<define>DEPTH_OFFSET</define>
-	
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/occmap.glsl -->

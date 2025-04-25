@@ -150,7 +150,7 @@ private:
 	bool pFinishCompileObject(GLuint handle);
 	bool pFinishLinkShader(GLuint handle);
 	
-	void pLogFailedShaderSources();
+	void pLogFailedShaderSources(const deoglShaderProgramUnit &unit);
 	void pLogFailedSymbols();
 	void pLogFailedShader(const deoglShaderProgram &program);
 };

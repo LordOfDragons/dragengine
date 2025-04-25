@@ -1660,11 +1660,11 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	for( cmf=0; cmf<6; cmf++ ){
 		deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
 		
-	renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
-	//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-	// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-	
-	renderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
+		renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
+		//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+		// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
+		
+		renderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
 		renderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * shadowParams.matrixProjection );
 	}
 	}

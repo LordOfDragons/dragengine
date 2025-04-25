@@ -12,11 +12,7 @@
 	<define>GS_RENDER_CASCADED</define>
 	<define>GS_RENDER_STEREO</define>
 	<define>WITH_SHADOWMAP</define>
-	<define>PERSPECTIVE_TO_LINEAR</define>
 	<define>DEPTH_DISTANCE</define>
-	<define>DEPTH_OFFSET</define>
-	<define>USE_CLIP_PLANE</define>
-	
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
@@ -24,9 +20,4 @@
 	
 	<!-- shared/defren/light/ubo_instance_parameters.glsl -->
 	<uniformBlock name='InstanceParameters' binding='1'/>
-	
-	<define>PARTICLE_LIGHT</define>
-	<define>SKY_LIGHT</define>
-	<define>TEXTURE_COLOR_CUBEMAP</define>
-	<define>TEXTURE_COLOR_EQUIRECT</define>
 </shaderSource>

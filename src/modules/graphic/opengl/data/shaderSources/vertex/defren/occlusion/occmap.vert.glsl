@@ -15,51 +15,42 @@ precision HIGHP int;
 
 #ifdef WITH_SHADOWMAP
 	#include "shared/defren/ubo_render_parameters.glsl"
+	const vec4 pTransformZ[6] = vec4[6](vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0));
 	
 #else
 	UBOLAYOUT_BIND(0) uniform RenderParameters{
-		mat4 pMatrixVP[ 6 ];
-		mat4x3 pMatrixV[ 6 ];
-		vec4 pTransformZ[ 6 ];
+		mat4 pMatrixVP[6];
+		mat4x3 pMatrixV[6];
+		vec4 pTransformZ[6];
 		vec2 pZToDepth;
-		vec4 pClipPlane[ 2 ]; // normal.xyz, distance
+		vec4 pClipPlane[2]; // normal.xyz, distance
 	};
+	const vec4 pDepthOffset[4] = vec4[4](vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0));
 #endif
 
 #include "shared/defren/occmap.glsl"
 
 #ifdef SHARED_SPB
 	#include "shared/defren/skin/shared_spb_index.glsl"
-	#define pMatrixModel pSharedSPB[ spbIndex ].pSPBMatrixModel
+	#define pMatrixModel pSharedSPB[spbIndex].pSPBMatrixModel
 #endif
 #include "shared/defren/skin/ubo_special_parameters.glsl"
 
 layout(location=0) in vec3 inPosition;
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
-	#ifdef SHARED_SPB
-		flat out int vGSSPBIndex;
-		#define vSPBIndex vGSSPBIndex
-		
-		#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
-			flat out int vGSSPBFlags;
-		#endif
-	#endif
+	flat out int vGSSPBIndex;
+	flat out int vGSSPBFlags;
+	
+	#define vSPBIndex vGSSPBIndex
+	#define vSPBFlags vGSSPBFlags
 	
 #else
-	#ifdef PERSPECTIVE_TO_LINEAR
-		out float vDepth;
-	#endif
-	#ifdef DEPTH_DISTANCE
-		out vec3 vPosition;
-	#endif
-	#ifdef USE_CLIP_PLANE
-		out vec3 vClipCoord;
-	#endif
-	
-	#ifdef SHARED_SPB
-		flat out int vSPBIndex;
-	#endif
+	out float vDepth;
+	out vec3 vPosition;
+	out vec3 vClipCoord;
+	flat out int vSPBIndex;
+	flat out int vSPBFlags;
 #endif
 
 #ifdef VS_RENDER_STEREO
@@ -72,45 +63,31 @@ layout(location=0) in vec3 inPosition;
 
 #include "shared/defren/sanitize_position.glsl"
 
-#if defined DEPTH_OFFSET && ! defined GS_RENDER_CUBE && ! defined GS_RENDER_CASCADED && ! defined GS_RENDER_STEREO
-	#include "shared/defren/skin/depth_offset.glsl"
-#endif
+#include "shared/defren/skin/depth_offset.glsl"
 
-void main( void ){
+void main(void){
 	#include "shared/defren/skin/shared_spb_index2.glsl"
 	
-	vec4 position = vec4( sanitizePosition( pMatrixModel * vec4( inPosition, 1 ) ), 1 );
+	vec4 position = vec4(sanitizePosition(pMatrixModel * vec4(inPosition, 1)), 1);
 	
 	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 		gl_Position = position;
 		
 	#else
-		gl_Position = pMatrixVP[ inLayer ] * position;
-		#ifdef PERSPECTIVE_TO_LINEAR
-			vDepth = dot( pTransformZ[ inLayer ], position );
-		#endif
-		#ifdef DEPTH_DISTANCE
-			vPosition = pMatrixV[ inLayer ] * position;
-		#endif
-		#ifdef USE_CLIP_PLANE
-			vClipCoord = pMatrixV[ inLayer ] * position;
-		#endif
+		gl_Position = pMatrixVP[inLayer] * position;
+		vDepth = dot(pTransformZ[inLayer], position);
+		vPosition = pMatrixV[inLayer] * position;
+		vClipCoord = pMatrixV[inLayer] * position;
 		
-		#ifdef DEPTH_OFFSET
-			#ifdef DEPTH_DISTANCE
-				applyDepthOffset(inLayer, vPosition.z);
-			#else
-				applyDepthOffset(inLayer);
-			#endif
+		#ifdef DEPTH_DISTANCE
+			applyDepthOffset(inLayer, vPosition.z);
+		#else
+			applyDepthOffset(inLayer);
 		#endif
 	#endif
 	
-	#ifdef SHARED_SPB
-		vSPBIndex = spbIndex;
-		#if defined GS_RENDER_CUBE && defined GS_RENDER_CUBE_CULLING
-			vGSSPBFlags = spbFlags;
-		#endif
-	#endif
+	vSPBIndex = spbIndex;
+	vSPBFlags = spbFlags;
 	
 	#ifdef VS_RENDER_STEREO
 		gl_Layer = inLayer;

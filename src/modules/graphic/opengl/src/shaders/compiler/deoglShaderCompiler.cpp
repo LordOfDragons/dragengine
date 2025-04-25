@@ -498,6 +498,7 @@ void deoglShaderCompiler::pCompileShaderUnit(deoglShaderProgramUnit &unit){
 	PreparePreprocessor(unit.GetDefines());
 	AppendPreprocessSourcesBuffer(sources->GetName(), sources->GetSourceCode());
 	unit.SetProcessedSources(pPreprocessor.GetSources());
+	unit.SetProcessedSourceLocations(pPreprocessor.GetSourceLocations());
 	
 	const char *ssources = pPreprocessor.GetSources();
 	int ssourcesLen = pPreprocessor.GetSourcesLength();
@@ -538,7 +539,7 @@ void deoglShaderCompiler::pFinishCompileShaderUnit(deoglShaderProgramUnit &unit)
 	
 	if(!result){
 		//pPreprocessor.LogSourceLocationMap();
-		pLogFailedShaderSources();
+		pLogFailedShaderSources(unit);
 		unit.DropHandle();
 		unit.compilingFailed = true;
 		DETHROW(deeInvalidParam);
@@ -1025,33 +1026,34 @@ bool deoglShaderCompiler::pFinishLinkShader(GLuint handle){
 	return result == GL_TRUE;
 }
 
-void deoglShaderCompiler::pLogFailedShaderSources(){
+void deoglShaderCompiler::pLogFailedShaderSources(const deoglShaderProgramUnit &unit){
 	// do not mutex guard pMutexLogging. caller guards it already
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
 	deoglRTLogger &logger = renderThread.GetLogger();
 	logger.LogErrorFormat("CompileShader %d Failed: >>> Sources >>>", pContextIndex);
 	
-	const decStringList lines( decString( pPreprocessor.GetSources() ).Split( "\n" ) );
+	const decStringList lines(unit.GetProcessedSources().Split("\n"));
 	int i, count = lines.GetCount();
 	decString lastMapping;
 	
-	for( i=0; i<count; i++ ){
-		const deoglShaderSourceLocation * const location = pPreprocessor.ResolveSourceLocation( i + 1 );
+	for(i=0; i<count; i++){
+		const deoglShaderSourceLocation * const location =
+			pPreprocessor.ResolveSourceLocation(unit.GetProcessedSourceLocations(), i + 1 );
 		int mapLine = -1;
 		
-		if( location ){
+		if(location){
 			mapLine = location->GetInputLine();
 			
-			if( location->GetInputFile() != lastMapping ){
-				logger.LogErrorFormat( "@@@ %s", location->GetInputFile().GetString() );
+			if(location->GetInputFile() != lastMapping){
+				logger.LogErrorFormat("@@@ %s", location->GetInputFile().GetString());
 				lastMapping = location->GetInputFile();
 			}
 		}
 		
-		logger.LogErrorFormat( "%d[%d]: %s", i + 1, mapLine, lines.GetAt( i ).GetString() );
+		logger.LogErrorFormat("%d[%d]: %s", i + 1, mapLine, lines.GetAt(i).GetString());
 	}
 	
-	logger.LogError( "<<< End Sources <<<" );
+	logger.LogError("<<< End Sources <<<");
 }
 
 void deoglShaderCompiler::pLogFailedSymbols(){

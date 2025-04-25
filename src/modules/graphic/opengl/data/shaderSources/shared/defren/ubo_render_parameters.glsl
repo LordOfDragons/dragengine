@@ -46,7 +46,7 @@ UBOLAYOUT_BIND(0) uniform RenderParameters{
 	// clip plane if used.
 	// xyz: normal
 	// w: distance
-	vec4 pClipPlane[2];
+	vec4 pClipPlane[2]; // normal.xyz, distance
 	
 	// screen space conversion parameters
 	// x: scaleU = renderWidth / realTextureWidth
