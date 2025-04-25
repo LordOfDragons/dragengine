@@ -45,6 +45,7 @@ out vec3 vNormal;
 out vec3 vTangent;
 out vec3 vBitangent;
 out vec3 vReflectDir;
+out float vHTMask;
 out float vFadeZ;
 out vec4 vParticleColor; // from curve property
 out float vParticleEmissivity; // from curve property
@@ -81,6 +82,7 @@ void emitParticle(in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent,
 		vTCRefractionDistort = tc[i];
 		vTCAO = tc[i];
 		vReflectDir = vec3(position);
+		vHTMask = 1;
 		vFadeZ = position.z;
 		vClipCoord = vec3(position);
 		vSkinClipCoord = vec3(position);
@@ -153,6 +155,7 @@ void main(void){
 		vTCRefractionDistort = tc[i];
 		vTCAO = tc[i];
 		vReflectDir = vec3(position);
+		vHTMask = 1;
 		vFadeZ = position.z;
 		vClipCoord = vec3(position);
 		vSkinClipCoord = vec3(position);

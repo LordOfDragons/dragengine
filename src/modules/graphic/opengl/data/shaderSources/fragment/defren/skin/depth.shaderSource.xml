@@ -17,25 +17,14 @@
 	<define>DEPTH_TEST</define>
 	<define>ENCODE_OUT_DEPTH</define>
 	<define>FADEOUT_RANGE</define>
-	<define>GS_RENDER_CASCADED</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_STEREO</define>
 	<define>HAS_TESSELLATION_SHADER</define>
-	<define>HEIGHT_MAP</define>
 	<define>INVERSE_DEPTH</define>
 	<define>MASKED_SOLIDITY</define>
 	<define>OUTPUT_COLOR</define>
 	<define>OUTPUT_CONSTANT</define>
-	<define>PARTICLE_BEAM</define>
-	<define>PARTICLE_RIBBON</define>
-	<define>PARTICLE</define>
-	<define>PROP_FIELD</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>TP_NORMAL_STRENGTH</define>
-	<define>VS_RENDER_STEREO</define>
-	<define>WITH_BITANGENT</define>
 	<define>WITH_OUTLINE</define>
-	<define>WITH_TANGENT</define>
 	<define>WITH_VARIATIONS</define>
 	
 	<define>TEXTURE_EMISSIVITY</define>

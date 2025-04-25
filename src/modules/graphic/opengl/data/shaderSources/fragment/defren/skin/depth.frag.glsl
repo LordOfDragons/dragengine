@@ -58,12 +58,6 @@ flat in int vLayer;
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 
-#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	#define vInLayer vLayer
-#else
-	const int vInLayer = 0;
-#endif
-
 #include "shared/defren/skin/shared_spb_texture_redirect.glsl"
 
 
@@ -138,20 +132,20 @@ void main(void){
 	
 	#if defined DEPTH_OFFSET && defined DEPTH_ORTHOGONAL && NEVER_DEFINED
 		/*if(gl_FrontFacing){
-			gl_FragDepth += length(depthDeriv) * pDepthOffset[vInLayer].x + pDepthOffset[vInLayer].y;
+			gl_FragDepth += length(depthDeriv) * pDepthOffset[vLayer].x + pDepthOffset[vLayer].y;
 			
 		}else{
-			gl_FragDepth += length(depthDeriv) * pDepthOffset[vInLayer].z + pDepthOffset[vInLayer].w;
+			gl_FragDepth += length(depthDeriv) * pDepthOffset[vLayer].z + pDepthOffset[vLayer].w;
 		}*/
 		
-		vec2 depthOffset = mix(pDepthOffset[vInLayer].zw, pDepthOffset[vInLayer].xy,
+		vec2 depthOffset = mix(pDepthOffset[vLayer].zw, pDepthOffset[vLayer].xy,
 			bvec2(gl_FrontFacing || pDoubleSided)); // mix(if-false, if-true, condition)
 		gl_FragDepth += length(depthDeriv) * depthOffset.x + depthOffset.y;
 	#endif
 	
 	// discard fragments using the clip plane
 	#ifdef CLIP_PLANE
-		if(dot(vClipCoord, pClipPlane[vInLayer].xyz) <= pClipPlane[vInLayer].w) discard;
+		if(dot(vClipCoord, pClipPlane[vLayer].xyz) <= pClipPlane[vLayer].w) discard;
 	#endif
 	
 	
@@ -293,7 +287,7 @@ void main(void){
 	
 	// discard against previous depth
 	#ifdef DEPTH_TEST
-		float depthTestValue = sampleDepth(texDepthTest, ivec3(gl_FragCoord.xy, vInLayer));
+		float depthTestValue = sampleDepth(texDepthTest, ivec3(gl_FragCoord.xy, vLayer));
 		
 		#ifdef INVERSE_DEPTH
 			#ifdef DEPTH_TEST_LARGER

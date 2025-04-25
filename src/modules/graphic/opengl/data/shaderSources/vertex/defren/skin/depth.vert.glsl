@@ -93,6 +93,8 @@ uniform HIGHP samplerBuffer texSubInstance2;
 	#define vSPBFlags vGSSPBFlags
 	
 #else
+	#define WRITE_VLAYER 1
+	
 	out vec2 vTCColor;
 	out vec3 vClipCoord;
 	out vec3 vSkinClipCoord;
@@ -105,12 +107,12 @@ uniform HIGHP samplerBuffer texSubInstance2;
 	out float vFadeZ;
 	flat out int vSPBIndex;
 	flat out int vSPBFlags;
+	flat out int vLayer;
 #endif
 
 #ifdef VS_RENDER_STEREO
 	uniform int pDrawIDOffset;
 	#define inLayer (gl_DrawID + pDrawIDOffset)
-	flat out int vLayer;
 #else
 	const int inLayer = 0;
 #endif
@@ -184,13 +186,18 @@ void main(void){
 	#ifdef HEIGHT_MAP
 		//vHTMask = texelFetch(texHeightMapMask, ivec2(inPosition * pHeightTerrainMaskTCTransform + vec2(0.1)), 0)[pHeightTerrainMaskSelector.y];
 		vHTMask = texture(texHeightMapMask, inPosition * pHeightTerrainMaskTCTransform + vec2(0.5))[pHeightTerrainMaskSelector.y];
+	#else
+		vHTMask = 1;
 	#endif
 	
 	vSPBIndex = spbIndex;
 	vSPBFlags = spbFlags;
 	
+	#ifdef WRITE_VLAYER
+		vLayer = inLayer;
+	#endif
+	
 	#ifdef VS_RENDER_STEREO
 		gl_Layer = inLayer;
-		vLayer = inLayer;
 	#endif
 }

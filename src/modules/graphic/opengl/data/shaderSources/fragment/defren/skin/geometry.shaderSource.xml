@@ -27,9 +27,7 @@
 	<define>DEPTH_TEST_LARGER</define>
 	<define>DEPTH_TEST</define>
 	<define>FADEOUT_RANGE</define>
-	<define>GS_RENDER_STEREO</define>
 	<define>HAS_TESSELLATION_SHADER</define>
-	<define>HEIGHT_MAP</define>
 	<define>INVERSE_DEPTH</define>
 	<define>LUMINANCE_ONLY</define>
 	<define>MASKED_SOLIDITY</define>
@@ -38,12 +36,7 @@
 	<define>SKIN_CLIP_PLANE</define>
 	<define>SKIN_REFLECTIONS</define>
 	<define>USE_NORMAL_ROUGHNESS_CORRECTION</define>
-	<define>VS_RENDER_STEREO</define>
 	<define>WITH_VARIATIONS</define>
-	
-	<define>PARTICLE_BEAM</define>
-	<define>PARTICLE_RIBBON</define>
-	<define>PROP_FIELD</define>
 	
 	<define>TEXTURE_ABSORPTION</define>
 	<define>TEXTURE_AO</define>

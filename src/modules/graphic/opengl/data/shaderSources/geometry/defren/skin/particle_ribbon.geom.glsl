@@ -87,6 +87,7 @@ out vec3 vNormal;
 out vec3 vTangent;
 out vec3 vBitangent;
 out vec3 vReflectDir;
+out float vHTMask;
 out float vFadeZ;
 out vec4 vParticleColor; // from curve property
 out float vParticleEmissivity; // from curve property
@@ -127,6 +128,7 @@ void emitCorner(in int corner, in vec4 position, in vec3 offset, in vec2 tc, in 
 	vTCRefractionDistort = tc;
 	vTCAO = tc;
 	vReflectDir = vec3(position);
+	vHTMask = 1;
 	vFadeZ = position.z;
 	vClipCoord = vec3(position);
 	vSkinClipCoord = vec3(position);

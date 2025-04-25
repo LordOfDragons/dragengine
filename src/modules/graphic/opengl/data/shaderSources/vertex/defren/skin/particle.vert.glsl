@@ -61,11 +61,11 @@ out vec4 vParticle1; // red, green, blue, transparency
 flat out int vParticleSheetCount;
 flat out int vGSSPBIndex;
 flat out int vGSSPBFlags;
+flat out int vLayer;
 
 #ifdef VS_RENDER_STEREO
 	uniform int pDrawIDOffset;
 	#define inLayer (gl_DrawID + pDrawIDOffset)
-	flat out int vLayer;
 #else
 	const int inLayer = 0;
 #endif
@@ -114,9 +114,9 @@ void main(void){
 	
 	vGSSPBIndex = spbIndex;
 	vGSSPBFlags = spbFlags;
+	vLayer = inLayer;
 	
 	#ifdef VS_RENDER_STEREO
 		gl_Layer = inLayer;
-		vLayer = inLayer;
 	#endif
 }

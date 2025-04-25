@@ -56,11 +56,11 @@ precision HIGHP int;
 
 flat out int vSPBIndex;
 flat out int vSPBFlags;
+flat out int vLayer;
 
 #ifdef VS_RENDER_STEREO
 	uniform int pDrawIDOffset;
 	#define inLayer (gl_DrawID + pDrawIDOffset)
-	flat out int vLayer;
 #else
 	const int inLayer = 0;
 #endif
@@ -84,9 +84,9 @@ void main(void){
 	
 	vSPBIndex = spbIndex;
 	vSPBFlags = spbFlags;
+	vLayer = inLayer;
 	
 	#ifdef VS_RENDER_STEREO
 		gl_Layer = inLayer;
-		vLayer = inLayer;
 	#endif
 }

@@ -73,20 +73,13 @@ in vec3 vSkinClipCoord;
 flat in int vSPBIndex;
 flat in int vLayer;
 
-#ifdef PARTICLE
-	in vec4 vParticleColor; // from curve property
-	in float vParticleEmissivity; // from curve property
-#endif
+in vec4 vParticleColor; // from curve property
+in float vParticleEmissivity; // from curve property
+
+#define spbIndex vSPBIndex
 
 #ifdef SHARED_SPB
-	#define spbIndex vSPBIndex
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
-#endif
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	#define vInLayer vLayer
-#else
-	const int vInLayer = 0;
 #endif
 
 #include "shared/defren/skin/shared_spb_texture_redirect.glsl"
@@ -123,17 +116,9 @@ flat in int vLayer;
 // Includes requiring inputs to be defined
 ////////////////////////////////////////////
 
-#ifndef HAS_TESSELLATION_SHADER
-	#include "shared/defren/skin/relief_mapping.glsl"
-#endif
-
-#if defined TEXTURE_ENVROOM || defined TEXTURE_ENVROOM_EMISSIVITY
-	#include "shared/defren/skin/environment_room.glsl"
-#endif
-
-#if defined TEXTURE_NONPBR_ALBEDO || defined TEXTURE_NONPBR_METALNESS
-	#include "shared/defren/skin/nonpbr_metalness.glsl"
-#endif
+#include "shared/defren/skin/relief_mapping.glsl"
+#include "shared/defren/skin/environment_room.glsl"
+#include "shared/defren/skin/nonpbr_metalness.glsl"
 
 
 
@@ -201,11 +186,9 @@ void main(void){
 	#endif
 	
 	// for height map quickly dicard fragments if the mask is 0
-	#ifdef HEIGHT_MAP
-		if(vHTMask < 0.001){
-			discard;
-		}
-	#endif
+	if(vHTMask < 0.001){
+		discard;
+	}
 	
 	// discard fragments beyond render range
 	/*
@@ -224,9 +207,9 @@ void main(void){
 	// test against depth texture
 	#ifdef DEPTH_TEST
 		#ifdef DECODE_IN_DEPTH
-		float depthTestValue = dot(texelFetch(texDepthTest, ivec3(tc, vInLayer), 0).rgb, unpackDepth);
+		float depthTestValue = dot(texelFetch(texDepthTest, ivec3(tc, vLayer), 0).rgb, unpackDepth);
 		#else
-		float depthTestValue = texelFetch(texDepthTest, ivec3(tc, vInLayer), 0).r;
+		float depthTestValue = texelFetch(texDepthTest, ivec3(tc, vLayer), 0).r;
 		#endif
 		
 		#ifdef INVERSE_DEPTH
@@ -260,54 +243,26 @@ void main(void){
 	// symbols can lead to tricky situations resulting in compilers failing
 	#ifdef HAS_TESSELLATION_SHADER
 		#define tcColor vTCColor
-		#ifdef TEXTURE_COLOR_TINT_MASK
-			#define tcColorTintMask vTCColorTintMask
-		#endif
-		#ifdef TEXTURE_NORMAL
-			#define tcNormal vTCNormal
-		#endif
-		#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
-			#define tcReflectivity vTCReflectivity
-		#endif
-		#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-			#define tcEmissivity vTCEmissivity
-		#endif
-		#ifdef TEXTURE_REFRACTION_DISTORT
-			#define tcRefractionDistort vTCRefractionDistort
-		#endif
-		#ifdef TEXTURE_AO
-			#define tcAO vTCAO
-		#endif
-		#ifdef TEXTURE_ABSORPTION
-			#define tcAbsorption tcColor
-		#endif
-	
+		#define tcColorTintMask vTCColorTintMask
+		#define tcNormal vTCNormal
+		#define tcReflectivity vTCReflectivity
+		#define tcEmissivity vTCEmissivity
+		#define tcRefractionDistort vTCRefractionDistort
+		#define tcAO vTCAO
+		#define tcAbsorption tcColor
+		
 	#else
 		vec2 tcReliefMapped = vTCColor;
 		reliefMapping(tcReliefMapped, realNormal);
 		
 		#define tcColor tcReliefMapped
-		#ifdef TEXTURE_COLOR_TINT_MASK
-			#define tcColorTintMask tcReliefMapped
-		#endif
-		#ifdef TEXTURE_NORMAL
-			#define tcNormal tcReliefMapped
-		#endif
-		#if defined TEXTURE_REFLECTIVITY || defined TEXTURE_ROUGHNESS
-			#define tcReflectivity tcReliefMapped
-		#endif
-		#if defined TEXTURE_EMISSIVITY || defined TEXTURE_RIM_EMISSIVITY
-			#define tcEmissivity tcReliefMapped
-		#endif
-		#ifdef TEXTURE_REFRACTION_DISTORT
-			#define tcRefractionDistort tcReliefMapped
-		#endif
-		#ifdef TEXTURE_AO
-			#define tcAO tcReliefMapped
-		#endif
-		#ifdef TEXTURE_ABSORPTION
-			#define tcAbsorption tcReliefMapped
-		#endif
+		#define tcColorTintMask tcReliefMapped
+		#define tcNormal tcReliefMapped
+		#define tcReflectivity tcReliefMapped
+		#define tcEmissivity tcReliefMapped
+		#define tcRefractionDistort tcReliefMapped
+		#define tcAO tcReliefMapped
+		#define tcAbsorption tcReliefMapped
 	#endif
 	
 	
@@ -406,9 +361,7 @@ void main(void){
 	
 	// for height map adjust alpha value
 	#ifndef LUMINANCE_ONLY
-		#ifdef HEIGHT_MAP
-			color.a *= vHTMask;
-		#endif
+		color.a *= vHTMask;
 	#endif
 	
 	
@@ -591,9 +544,9 @@ void main(void){
 		vec4 renderColor;
 		#if defined TEXTURE_REFRACTION_DISTORT && ! defined WITH_OUTLINE
 			renderColor = textureLod(texRenderColor, vec3(clamp(
-				gl_FragCoord.xy * pScreenSpace.zw + distort, pViewport.xy, pViewport.zw), vInLayer), 0.0);
+				gl_FragCoord.xy * pScreenSpace.zw + distort, pViewport.xy, pViewport.zw), vLayer), 0.0);
 		#else
-			renderColor = texelFetch(texRenderColor, ivec3(tc, vInLayer), 0);
+			renderColor = texelFetch(texRenderColor, ivec3(tc, vLayer), 0);
 		#endif
 		
 		outColor.rgb = mix(renderColor.rgb, outColor.rgb, color.a);
@@ -728,9 +681,7 @@ void main(void){
 		outNormal = realNormal;
 	#endif
 	
-	/* #ifdef HEIGHT_MAP
-		outColor.rgb = vec3(vHTMask);
-	#endif */
+	// outColor.rgb = vec3(vHTMask);
 	
 	
 	
