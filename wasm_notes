@@ -7,7 +7,7 @@ builds under WASM:
     mdl_demodel mdl_fbx net_basic occm_deocclusionmesh \
     phy_bullet rig_derig rig_fbx skin_deskin skin_fbx \
     snd_ogg synth_desynthesizer vid_apng vid_webm vr_null \
-    aud_openal
+    aud_openal gra_opengl
 
 not yet building under WASM:
   emscons scons lib_libjpeg lib_libtheora lib_openxr
@@ -15,10 +15,10 @@ not yet building under WASM:
 will not work under WASM but has replacement:
   lib_openal -> emscripten internal implementation
 
-gra_opengl
+will not work under WASM due to socket restrictions
+  lib_denetwork lib_deremotelauncher
+
 img_jpeg
-lib_denetwork
-lib_deremotelauncher
 lib_dragonscript
 lib_sndio
 scr_dragonscript
