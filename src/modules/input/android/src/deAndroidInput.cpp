@@ -291,7 +291,9 @@ void deAndroidInput::ProcessEvents(){
 	pElapsedTime = decMath::min( pInputTimer.GetElapsedTime(), 0.1f );
 	
 	// update content. this can produce input events for the game engine
-	pOverlaySystem->UpdateContent();
+	if(pOverlaySystem){
+		pOverlaySystem->UpdateContent();
+	}
 }
 
 void deAndroidInput::ClearEvents(){
@@ -301,7 +303,9 @@ void deAndroidInput::ClearEvents(){
 }
 
 void deAndroidInput::ScreenSizeChanged(){
-	pOverlaySystem->ScreenSizeChanged();
+	if(pOverlaySystem){
+		pOverlaySystem->ScreenSizeChanged();
+	}
 }
 
 void deAndroidInput::EventLoop(const android_input_buffer &inputBuffer){
@@ -553,7 +557,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("DOWN: (%d,%d)", position.x, position.y);
 		#endif
-		if(pOverlaySystem->OnTouch(pointerId, position)){
+		if(pOverlaySystem && pOverlaySystem->OnTouch(pointerId, position)){
 			break;
 		}
 		
@@ -577,7 +581,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		
 	case AMOTION_EVENT_ACTION_UP:{
 		const int pointerId = (int)event.pointers[0].id;
-		pOverlaySystem->OnRelease(pointerId);
+		if(pOverlaySystem){
+			pOverlaySystem->OnRelease(pointerId);
+		}
 		
 		if(pPointerMouse == -1){
 			break;
@@ -613,7 +619,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 			LogInfoFormat("MOVE[%d:%d]: (%d,%d)", i, pointerId, position.x, position.y);
 			#endif
 			
-			pOverlaySystem->OnMove(pointerId, position);
+			if(pOverlaySystem){
+				pOverlaySystem->OnMove(pointerId, position);
+			}
 			
 			if(pointerId != pPointerMouse){
 				continue;
@@ -635,7 +643,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 			LogInfoFormat("HOVER_MOVE: (%d,%d)", position.x, position.y);
 			#endif
 			
-			pOverlaySystem->OnMove(0, position);
+			if(pOverlaySystem){
+				pOverlaySystem->OnMove(0, position);
+			}
 			
 			const decPoint distance(position - pLastMouse);
 			
@@ -674,7 +684,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("POINTER-DOWN[%d:%d]: (%d,%d)", pointerIndex, pointerId, position.x, position.y);
 		#endif
-		pOverlaySystem->OnTouch(pointerId, position);
+		if(pOverlaySystem){
+			pOverlaySystem->OnTouch(pointerId, position);
+		}
 		}break;
 		
 	case AMOTION_EVENT_ACTION_POINTER_UP:{
@@ -685,7 +697,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		}
 		
 		const int pointerId = (int)event.pointers[pointerIndex].id;
-		pOverlaySystem->OnRelease(pointerId);
+		if(pOverlaySystem){
+			pOverlaySystem->OnRelease(pointerId);
+		}
 		
 		if(pointerId != pPointerMouse){
 			break;
