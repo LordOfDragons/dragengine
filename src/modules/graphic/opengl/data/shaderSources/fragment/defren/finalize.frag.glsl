@@ -19,7 +19,7 @@ in vec2 vTexCoord;
 	layout(location=0) out vec4 outColor1;
 	layout(location=1) out vec4 outColor2;
 #else
-	layout(location=2) out vec4 outColor;
+	layout(location=0) out vec4 outColor;
 #endif
 
 void main( void ){
