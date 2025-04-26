@@ -31,6 +31,7 @@
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 
 #include "dedsLoadingScreen.h"
+#include "dedsVRPlaceholder.h"
 #include "dedsEngineException.h"
 
 
@@ -459,6 +460,7 @@ private:
 	deClassWorld *pClsWorld;
 	
 	dedsLoadingScreen::Ref pLoadingScreen;
+	dedsVRPlaceholder::Ref pVRPlaceholder;
 	
 	decString pInitScriptDirectory;
 	decString pInitGameObject;
@@ -588,6 +590,9 @@ public:
 	
 	/** Module version. */
 	inline const sModuleVersion &GetCompatibleVersion() const{ return pCompatibleVersion; }
+	
+	/** VR Placeholder or nullptr. */
+	inline const dedsVRPlaceholder::Ref &GetVRPlaceholder() const{ return pVRPlaceholder; }
 	/*@}*/
 	
 	

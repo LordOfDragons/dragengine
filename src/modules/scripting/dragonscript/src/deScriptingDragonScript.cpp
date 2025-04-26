@@ -632,7 +632,9 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		pScriptEngine->SetEngineManager( dsmanager );
 		dsmanager = nullptr;
 		
-		pLoadingScreen.TakeOver( new dedsLoadingScreen( *this ) );
+		pLoadingScreen.TakeOver(new dedsLoadingScreen(*this));
+		
+		// pVRPlaceholder.TakeOver(new dedsVRPlaceholder(*this));
 		
 		pState = esSkipOneFrame;
 		
@@ -684,6 +686,7 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 }
 
 void deScriptingDragonScript::ShutDown(){
+	pVRPlaceholder = nullptr;
 	pLoadingScreen = nullptr;
 	if( ! pScriptEngine ){
 		return;
@@ -894,8 +897,11 @@ extern int timerColliderChanged;
 extern int timerColliderChangedCount;
 #endif
 bool deScriptingDragonScript::OnFrameUpdate(){
-	if( pLoadingScreen ){
+	if(pLoadingScreen){
 		pLoadingScreen->Update();
+	}
+	if(pVRPlaceholder){
+		pVRPlaceholder->Update();
 	}
 	
 	switch( pState ){
@@ -1075,6 +1081,10 @@ bool deScriptingDragonScript::OnResizeRenderWindow(){
 }
 
 bool deScriptingDragonScript::SendEvent(deInputEvent *event){
+	if(pVRPlaceholder){
+		pVRPlaceholder->EventReceived(*event);
+	}
+	
 	if(pState != esReady){
 		return true; // ignore
 	}

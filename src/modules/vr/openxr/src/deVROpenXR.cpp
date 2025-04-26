@@ -373,6 +373,10 @@ void deVROpenXR::StopRuntime(){
 	}
 }
 
+bool deVROpenXR::IsRuntimeRunning(){
+	return pInstance != nullptr;
+}
+
 void deVROpenXR::SetCamera( deCamera *camera ){
 	if( pCamera == camera ){
 		return;

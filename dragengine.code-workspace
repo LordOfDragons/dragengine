@@ -326,7 +326,8 @@
 			"*.ipp": "cpp",
 			"strstream": "cpp",
 			"text_encoding": "cpp",
-			"ios": "cpp"
+			"ios": "cpp",
+			"__config": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			

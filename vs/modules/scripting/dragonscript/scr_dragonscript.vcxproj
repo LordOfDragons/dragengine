@@ -224,6 +224,7 @@
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deClassPathes.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsVRPlaceholder.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsEngineException.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.h" />
@@ -442,6 +443,7 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsVRPlaceholder.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsEngineException.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.cpp" />

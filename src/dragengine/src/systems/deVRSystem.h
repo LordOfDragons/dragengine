@@ -144,6 +144,12 @@ public:
 	 */
 	void StopRuntime();
 	
+	/**
+	 * \brief VR runtime is running.
+	 * \version 1.26
+	 */
+	bool IsRuntimeRunning();
+	
 	/** \brief Camera to render on head mounted display or nullptr. */
 	inline deCamera *GetCamera() const{ return pCamera; }
 	

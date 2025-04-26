@@ -99,6 +99,10 @@ void deVRNull::StartRuntime(){
 void deVRNull::StopRuntime(){
 }
 
+bool deVRNull::IsRuntimeRunning(){
+	return false;
+}
+
 void deVRNull::SetCamera( deCamera* ){
 }
 

@@ -156,6 +156,12 @@ public:
 	virtual void StartRuntime() = 0;
 	
 	/**
+	 * \brief VR runtime is running.
+	 * \version 1.26
+	 */
+	virtual bool IsRuntimeRunning();
+	
+	/**
 	 * \brief Stop VR.
 	 * 
 	 * VR systems typically are required to be activated before they can be used.

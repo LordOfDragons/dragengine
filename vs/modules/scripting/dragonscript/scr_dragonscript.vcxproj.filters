@@ -583,6 +583,9 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsVRPlaceholder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLocomotion.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -1232,6 +1235,9 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsVRPlaceholder.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLocomotion.h">

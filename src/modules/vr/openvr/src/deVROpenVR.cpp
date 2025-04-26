@@ -392,6 +392,10 @@ void deVROpenVR::StopRuntime(){
 	pVRInput = nullptr;
 }
 
+bool deVROpenVR::IsRuntimeRunning(){
+	return pVRSystem != nullptr;
+}
+
 void deVROpenVR::SetCamera( deCamera *camera ){
 	if( pCamera == camera ){
 		return;

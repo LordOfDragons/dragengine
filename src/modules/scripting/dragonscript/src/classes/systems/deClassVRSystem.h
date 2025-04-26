@@ -46,7 +46,6 @@ private:
 	bool pCacheDirty;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
