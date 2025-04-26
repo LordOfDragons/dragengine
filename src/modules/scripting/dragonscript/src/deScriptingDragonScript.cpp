@@ -634,7 +634,9 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		
 		pLoadingScreen.TakeOver(new dedsLoadingScreen(*this));
 		
-		// pVRPlaceholder.TakeOver(new dedsVRPlaceholder(*this));
+#ifdef OS_ANDROID_QUEST
+		pVRPlaceholder.TakeOver(new dedsVRPlaceholder(*this));
+#endif
 		
 		pState = esSkipOneFrame;
 		
