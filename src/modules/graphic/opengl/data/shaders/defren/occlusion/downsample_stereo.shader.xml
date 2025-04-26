@@ -7,6 +7,6 @@
 	<parameter name='pLevel'/>
 	
 	<sourceCode unit='vertex'>V Generic PassThrough</sourceCode>
-	<sourceCode unit='geometry'>G DefRen Occlusion OccMap Down-Sample</sourceCode>
+	<sourceCode unit='geometry'>G Generic PassThrough Stereo</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Occlusion OccMap Down-Sample</sourceCode>
 </shader>

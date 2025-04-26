@@ -313,15 +313,15 @@ void deoglFramebuffer::AttachColorCubeMapFaceLevel( int index, deoglCubeMap *tex
 	if( pAttColor[ index ].DoesNotMatch( image, type, level, face ) ){
 		DetachColorImage( index );
 		
-		if( pglFramebufferTexture2D ){
+		// if( pglFramebufferTexture2D ){
 			// this is the core 4.6 recommended one. use *Face as fallback
 			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + index, targetMap[ type ], image, level ) );
 			
-		}else{
+		/*}else{
 			OGL_CHECK( pRenderThread, pglFramebufferTextureFace( GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + index, image, level, targetMap[ type ] ) );
-		}
+		}*/
 		
 		pAttColor[ index ].Set( image, type, level, face );
 	}
@@ -530,15 +530,15 @@ void deoglFramebuffer::AttachDepthCubeMapFaceLevel( deoglCubeMap *texture, int f
 	if( pAttDepth.DoesNotMatch( image, type, level, face ) ){
 		DetachDepthImage();
 		
-		if( pglFramebufferTexture2D ){
+		// if( pglFramebufferTexture2D ){
 			// this is the core 4.6 recommended one. use *Face as fallback
 			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT, targetMap[ type ], image, level ) );
 			
-		}else{
+		/*}else{
 			OGL_CHECK( pRenderThread, pglFramebufferTextureFace( GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT, image, level, targetMap[ type ] ) );
-		}
+		} */
 		
 		pAttDepth.Set( image, type, level, face );
 	}

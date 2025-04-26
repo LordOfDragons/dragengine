@@ -289,7 +289,7 @@ GLAPI PFNGLFRAMEBUFFERTEXTUREARBPROC pglFramebufferTexture = nullptr;
 // GL_ARB_geometry_shader4 : no opengl version
 ////////////////////////////////////////////////
 
-GLAPI PFNGLFRAMEBUFFERTEXTUREFACEARBPROC pglFramebufferTextureFace = nullptr;
+// GLAPI PFNGLFRAMEBUFFERTEXTUREFACEARBPROC pglFramebufferTextureFace = nullptr;
 
 
 

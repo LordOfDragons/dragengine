@@ -212,10 +212,8 @@
                 <action android:name="ch.dragondreams.delauncher.LAUNCH_DELGA" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <!--
                 <category android:name="com.oculus.intent.category.VR" />
                 <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
-                -->
 
                 <data android:mimeType="application/dragengine-delga" />
                 <data android:scheme="content" />
@@ -228,10 +226,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!--
                 <category android:name="com.oculus.intent.category.VR" />
                 <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
-                -->
 
                 <data android:mimeType="*/*" />
                 <data android:scheme="content" />
@@ -244,10 +240,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!--
                 <category android:name="com.oculus.intent.category.VR" />
                 <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
-                -->
 
                 <data android:mimeType="*/*" />
                 <data android:scheme="https" />
@@ -260,10 +254,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!--
                 <category android:name="com.oculus.intent.category.VR" />
                 <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
-                -->
 
                 <data android:mimeType="*/*" />
                 <data android:scheme="file" />

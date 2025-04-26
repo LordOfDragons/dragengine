@@ -1232,9 +1232,12 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_geometry_shader4 : no opengl version
+	/* not required anymore since glFramebufferTexture2D is mandatory now
 	if( pHasExtension[ ext_ARB_geometry_shader4 ] ){
-		pGetOptionalFunctionArbExt( (void**)&pglFramebufferTextureFace, "glFramebufferTextureFace", ext_ARB_geometry_shader4 );
+		pGetOptionalFunctionArbExt( (void**)&pglFramebufferTextureFace,
+			"glFramebufferTextureFaceARB", ext_ARB_geometry_shader4 );
 	}
+	*/
 	
 	// GL_ARB_texture_multisample : no opengl version
 	

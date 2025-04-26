@@ -503,7 +503,7 @@ extern GLAPI PFNGLFRAMEBUFFERTEXTUREARBPROC pglFramebufferTexture;
 ////////////////////////////////////////////////
 
 // extern GLAPI PFNGLPROGRAMPARAMETERIARBPROC pglProgramParameteri;
-extern GLAPI PFNGLFRAMEBUFFERTEXTUREFACEARBPROC pglFramebufferTextureFace;
+// extern GLAPI PFNGLFRAMEBUFFERTEXTUREFACEARBPROC pglFramebufferTextureFace;
 
 
 

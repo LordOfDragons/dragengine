@@ -82,7 +82,7 @@ void emitParticle(in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent,
 		vTCRefractionDistort = tc[i];
 		vTCAO = tc[i];
 		vReflectDir = vec3(position);
-		vHTMask = 1;
+		vHTMask = 1.0;
 		vFadeZ = position.z;
 		vClipCoord = vec3(position);
 		vSkinClipCoord = vec3(position);
@@ -155,7 +155,7 @@ void main(void){
 		vTCRefractionDistort = tc[i];
 		vTCAO = tc[i];
 		vReflectDir = vec3(position);
-		vHTMask = 1;
+		vHTMask = 1.0;
 		vFadeZ = position.z;
 		vClipCoord = vec3(position);
 		vSkinClipCoord = vec3(position);

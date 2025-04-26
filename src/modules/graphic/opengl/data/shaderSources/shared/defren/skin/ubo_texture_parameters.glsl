@@ -70,7 +70,7 @@ struct sTextureParameters{
 	float texSkinClipPlaneBorder; // clip.plane.border
 	
 	#ifdef SHARED_SPB_TEXTURE_PADDING
-	vec4 padding[SHARED_SPB_TEXTURE_PADDING ;
+	vec4 padding[SHARED_SPB_TEXTURE_PADDING];
 	#endif
 };
 

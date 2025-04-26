@@ -128,7 +128,7 @@ void emitCorner(in int corner, in vec4 position, in vec3 offset, in vec2 tc, in 
 	vTCRefractionDistort = tc;
 	vTCAO = tc;
 	vReflectDir = vec3(position);
-	vHTMask = 1;
+	vHTMask = 1.0;
 	vFadeZ = position.z;
 	vClipCoord = vec3(position);
 	vSkinClipCoord = vec3(position);

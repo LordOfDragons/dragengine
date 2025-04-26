@@ -207,7 +207,7 @@ void main( void ){
 		//vHTMask = texelFetch(texHeightMapMask, ivec2(inPosition * pHeightTerrainMaskTCTransform + vec2(0.1)), 0.0)[pHeightTerrainMaskSelector.y];
 		vHTMask = texture(texHeightMapMask, inPosition * pHeightTerrainMaskTCTransform + vec2(0.5))[pHeightTerrainMaskSelector.y];
 	#else
-		vHTMask = 1;
+		vHTMask = 1.0;
 	#endif
 	
 	vSPBIndex = spbIndex;
