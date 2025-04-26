@@ -6,4 +6,6 @@
 	
 	<define>GS_INSTANCING</define>
 	<define>GS_RENDER_STEREO</define>
+	<define>NO_TEXCOORD</define>
+	<define>FULLSCREENQUAD</define>
 </shaderSource>
