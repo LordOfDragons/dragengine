@@ -599,6 +599,9 @@ void deoglShaderLanguage::pCreateCompileThreads(){
 	if(pglMaxShaderCompilerThreads){
 		count = 1;
 	}
+#ifdef OS_ANDROID_QUEST
+	count = 1;
+#endif
 	
 	pCompilerThreads = new deoglShaderCompilerThread*[count];
 	
