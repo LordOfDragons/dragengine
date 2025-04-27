@@ -653,7 +653,7 @@ void deoglShaderCompiler::pFinishCompileShader(deoglShaderProgram &program){
 		
 		for(retryCounter=0; retryCounter<3; retryCounter++){
 			result = pFinishLinkShader(handleShader);
-			if(!result){
+			if(result){
 				break;
 			}
 			
