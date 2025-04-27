@@ -648,7 +648,24 @@ void deoglShaderCompiler::pFinishCompileShader(deoglShaderProgram &program){
 	int i;
 	
 	try{
-		const bool result = pFinishLinkShader(handleShader);
+		int retryCounter;
+		bool result;
+		
+		for(retryCounter=0; retryCounter<3; retryCounter++){
+			result = pFinishLinkShader(handleShader);
+			if(!result){
+				break;
+			}
+			
+			const deMutexGuard guardLogs(renderThread.GetShader().GetShaderManager().GetMutexLogging());
+			logger.LogErrorFormat("Shader linking failed: retry %d", retryCounter + 1);
+			if(sources.GetName().IsEmpty()){
+				logger.LogErrorFormat("  shader = %s", program.GetCacheId().GetString());
+			}else{
+				logger.LogErrorFormat("  shader = %s", sources.GetName().GetString());
+			}
+		}
+		
 		if(!result || pErrorLog){
 			const deMutexGuard guardLogs(renderThread.GetShader().GetShaderManager().GetMutexLogging());
 			if(!result){
