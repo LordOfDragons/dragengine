@@ -48,8 +48,7 @@ pImageCount( 0 )
 	deVROpenXR &oxr = instance.GetOxr();
 	
 	try{
-		XrSwapchainCreateInfo createInfo;
-		memset( &createInfo, 0, sizeof( createInfo ) );
+		XrSwapchainCreateInfo createInfo{};
 		createInfo.type = XR_TYPE_SWAPCHAIN_CREATE_INFO;
 		createInfo.createFlags = 0;
 		createInfo.usageFlags = XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT;
@@ -60,59 +59,59 @@ pImageCount( 0 )
 		createInfo.arraySize = 1;
 		createInfo.mipCount = 1;
 		
+		const int64_t * const formats = session.GetSwapchainFormats();
+		const int formatCount = session.GetSwapchainFormatCount();
+		int i;
+		
 		switch( session.GetGraphicApi() ){
 		case deoxrSession::egaOpenGL:
-			switch( type ){
+			switch(type){
 			case etColor:
-				if( session.HasSwapchainFormat( deoxrSession::escfGlRgba16f ) ){
-					// seen on SteamVR Windows. OculusVR does not support this
-					oxr.LogInfo( "Using Color Swapchain format GL_RGBA16F" );
-					createInfo.format = deoxrSession::escfGlRgba16f; // GL_RGBA16F
+				for(i=0; !createInfo.format && i<formatCount; i++){
+					switch(formats[i]){
+					case deoxrSession::escfGlRgb8Snorm:
+					case deoxrSession::escfGlRgb16:
+					case deoxrSession::escfGlRgb16Snorm:
+					case deoxrSession::escfGlRgb16f:
+					case deoxrSession::escfGlRgb16i:
+					case deoxrSession::escfGlRgb16ui:
+					case deoxrSession::escfGlR11fG11fB10f:
+					case deoxrSession::escfGlSrgb8:
 					
-				}else if( session.HasSwapchainFormat( deoxrSession::escfGlRgba16Ext ) ){
-					oxr.LogInfo( "Using Color Swapchain format GL_RGBA16_EXT" );
-					createInfo.format = deoxrSession::escfGlRgba16Ext; // GL_RGBA16_EXT
-					
-				}else if( session.HasSwapchainFormat( deoxrSession::escfGlRgb16f ) ){
-					// seen on OculusVR Windows
-					oxr.LogInfo( "Using Color Swapchain format GL_RGB16F" );
-					createInfo.format = deoxrSession::escfGlRgb16f; // GL_RGB16F
-					
-				}else if( session.HasSwapchainFormat( deoxrSession::escfGlR11fG11fB10f ) ){
-					// seen on OculusVR Windows
-					oxr.LogInfo( "Using Color Swapchain format GL_R11F_G11F_B10F" );
-					createInfo.format = deoxrSession::escfGlR11fG11fB10f; // GL_R11F_G11F_B10F
-					
-				}else if( session.HasSwapchainFormat( deoxrSession::escfGlSrgb8Alpha8Ext ) ){
-					// seen on SteamVR Linux and OculusVR Windows
-					oxr.LogInfo( "Using Color Swapchain format GL_SRGB8_ALPHA8_EXT" );
-					createInfo.format = deoxrSession::escfGlSrgb8Alpha8Ext; // GL_SRGB8_ALPHA8_EXT
-					
-				}else if( session.HasSwapchainFormat( deoxrSession::escfGlSrgb8Ext ) ){
-					// seen on SteamVR Linux and OculusVR Windows
-					oxr.LogInfo( "Using Color Swapchain format GL_SRGB8_EXT" );
-					createInfo.format = deoxrSession::escfGlSrgb8Ext; // GL_SRGB8_EXT
-					
-				}else{
-					DETHROW_INFO( deeInvalidParam, "no supported Swapchain format found" );
+					case deoxrSession::escfGlRgba8Snorm:
+					case deoxrSession::escfGlRgba16:
+					case deoxrSession::escfGlRgba16Snorm:
+					case deoxrSession::escfGlRgba16f:
+					case deoxrSession::escfGlRgba16i:
+					case deoxrSession::escfGlRgba16ui:
+					case deoxrSession::escfGlRgb10a2:
+					case deoxrSession::escfGlSrgb8Alpha8:
+						oxr.LogInfoFormat("Using Color Swapchain format %s",
+							session.GetSwapchainFormatNameOpenGL(formats[i], "??"));
+						createInfo.format = formats[i];
+						break;
+						
+					default:
+						break;
+					}
 				}
 				break;
 				
 			case etDepth:
-				if( session.HasSwapchainFormat( deoxrSession::escfGlDepth32F ) ){
-					oxr.LogInfo( "Using Depth Swapchain format GL_DEPTH_COMPONENT32F" );
-					createInfo.format = deoxrSession::escfGlDepth32F; // GL_DEPTH_COMPONENT32F
-					
-				}else if( session.HasSwapchainFormat( deoxrSession::escfGlDepth24 ) ){
-					oxr.LogInfo( "Using Depth Swapchain format GL_DEPTH_COMPONENT24" );
-					createInfo.format = deoxrSession::escfGlDepth24; // GL_DEPTH_COMPONENT24
-					
-				}else if( session.HasSwapchainFormat( deoxrSession::escfGlDepth16 ) ){
-					oxr.LogInfo( "Using Depth Swapchain format GL_DEPTH_COMPONENT16" );
-					createInfo.format = deoxrSession::escfGlDepth16; // GL_DEPTH_COMPONENT16
-					
-				}else{
-					DETHROW_INFO( deeInvalidParam, "no supported Depth Swapchain format found" );
+				for(i=0; !createInfo.format && i<formatCount; i++){
+					switch(formats[i]){
+					case deoxrSession::escfGlDepth16:
+					case deoxrSession::escfGlDepth24:
+					case deoxrSession::escfGlDepth32F:
+					case deoxrSession::escfGlDepth32Stencil8:
+						oxr.LogInfoFormat("Using Depth Swapchain format %s",
+							session.GetSwapchainFormatNameOpenGL(formats[i], "??"));
+						createInfo.format = formats[i];
+						break;
+						
+					default:
+						break;
+					}
 				}
 				break;
 			}
@@ -122,7 +121,11 @@ pImageCount( 0 )
 			DETHROW_INFO( deeInvalidParam, "no graphic api" );
 		}
 		
-		OXR_CHECK( instance.xrCreateSwapchain( session.GetSession(), &createInfo, &pSwapchain ) );
+		if(!createInfo.format){
+			DETHROW_INFO(deeInvalidParam, "no supported Swapchain format found");
+		}
+		
+		OXR_CHECK(instance.xrCreateSwapchain(session.GetSession(), &createInfo, &pSwapchain));
 		
 		pGetImages();
 		

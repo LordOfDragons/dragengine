@@ -49,6 +49,95 @@
 // class deoxrSession
 //////////////////////
 
+static struct sSwapchainFormatName{
+	int64_t format;
+	const char *name;
+};
+
+sSwapchainFormatName vSwapchainFormatNamesOpenGL[]{
+	{0x8054, "GL_RGB16"}, // escfGlRgb16
+	{0x8056, "GL_RGBA4"},
+	{0x8057, "GL_RGB5_A1"},
+	{0x8058, "GL_RGBA8"}, // escfGlRgba8
+	{0x8059, "GL_RGB10_A2"}, // escfGlRgb10a2
+	{0x805b, "GL_RGBA16"}, // escfGlRgba16
+	{0x81A5, "GL_DEPTH_COMPONENT16"}, // escfGlDepth16
+	{0x81A6, "GL_DEPTH_COMPONENT24"}, // escfGlDepth24
+	{0x8229, "GL_R8"},
+	{0x822a, "GL_R16"},
+	{0x822b, "GL_RG8"},
+	{0x822c, "GL_RG16"},
+	{0x822d, "GL_R16F"},
+	{0x822e, "GL_R32F"},
+	{0x822f, "GL_RG16F"},
+	{0x8233, "GL_R16I"},
+	{0x8234, "GL_R16UI"},
+	{0x8239, "GL_RG16I"},
+	{0x823a, "GL_RG16UI"},
+	{0x881a, "GL_RGBA16F"}, // escfGlRgba16f
+	{0x881b, "GL_RGB16F"}, // escfGlRgb16f
+	{0x88f0, "GL_DEPTH24_STENCIL8"},
+	{0x8c3a, "GL_R11F_G11F_B10F"}, // escfGlR11fG11fB10f
+	{0x8c41, "GL_SRGB8"}, // escfGlSrgb8
+	{0x8c43, "GL_SRGB8_ALPHA8"}, // escfGlSrgb8Alpha8
+	{0x8CAC, "GL_DEPTH_COMPONENT32F"}, // escfGlDepth32F
+	{0x8CAD, "GL_DEPTH32F_STENCIL8"}, // escfGlDepth32Stencil8
+	{0x8d64, "GL_ETC1_RGB8"},
+	{0x8d76, "GL_RGBA16UI"}, // escfGlRgba16ui
+	{0x8d77, "GL_RGB16UI"}, // escfGlRgb16ui
+	{0x8d88, "GL_RGBA16I"}, // escfGlRgba16i
+	{0x8d89, "GL_RGB16I"}, // escfGlRgb16i
+	{0x8f94, "GL_R8_SNORM"},
+	{0x8f95, "GL_RG8_SNORM"},
+	{0x8f96, "GL_RGB8_SNORM"}, // escfGlRgb8Snorm
+	{0x8f97, "GL_RGBA8_SNORM"}, // escfGlRgba8Snorm
+	{0x8f98, "GL_R16_SNORM"},
+	{0x8f99, "GL_RG16_SNORM"},
+	{0x8f9a, "GL_RGB16_SNORM"}, // escfGlRgb16Snorm
+	{0x8f9b, "GL_RGBA16_SNORM"}, // escfGlRgba16Snorm
+	{0x8fbd, "GL_SR8"},
+	{0x8fbe, "GL_SRG8"},
+	{0x9270, "GL_COMPRESSED_R11_EAC"},
+	{0x9271, "GL_COMPRESSED_SIGNED_R11_EAC"},
+	{0x9272, "GL_COMPRESSED_RG11_EAC"},
+	{0x9273, "GL_COMPRESSED_SIGNED_RG11_EAC"},
+	{0x9274, "GL_COMPRESSED_RGB8_ETC2"},
+	{0x9275, "GL_COMPRESSED_SRGB8_ETC2"},
+	{0x9276, "GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2"},
+	{0x9277, "GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2"},
+	{0x9278, "GL_COMPRESSED_RGBA8_ETC2_EAC"},
+	{0x9279, "GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC"},
+	{0x93b0, "GL_COMPRESSED_RGBA_ASTC_4x4"},
+	{0x93b1, "GL_COMPRESSED_RGBA_ASTC_5x4"},
+	{0x93b2, "GL_COMPRESSED_RGBA_ASTC_5x5"},
+	{0x93b3, "GL_COMPRESSED_RGBA_ASTC_6x5"},
+	{0x93b4, "GL_COMPRESSED_RGBA_ASTC_6x6"},
+	{0x93b5, "GL_COMPRESSED_RGBA_ASTC_8x5"},
+	{0x93b6, "GL_COMPRESSED_RGBA_ASTC_8x6"},
+	{0x93b7, "GL_COMPRESSED_RGBA_ASTC_8x8"},
+	{0x93b8, "GL_COMPRESSED_RGBA_ASTC_10x5"},
+	{0x93b9, "GL_COMPRESSED_RGBA_ASTC_10x6"},
+	{0x93ba, "GL_COMPRESSED_RGBA_ASTC_10x8"},
+	{0x93bb, "GL_COMPRESSED_RGBA_ASTC_10x10"},
+	{0x93bc, "GL_COMPRESSED_RGBA_ASTC_12x10"},
+	{0x93bd, "GL_COMPRESSED_RGBA_ASTC_12x12"},
+	{0x93d0, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4"},
+	{0x93d1, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4"},
+	{0x93d2, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5"},
+	{0x93d3, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5"},
+	{0x93d4, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6"},
+	{0x93d5, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5"},
+	{0x93d6, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6"},
+	{0x93d7, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8"},
+	{0x93d8, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5"},
+	{0x93d9, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6"},
+	{0x93da, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8"},
+	{0x93db, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10"},
+	{0x93dc, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10"},
+	{0x93dd, "GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12"},
+	{0, nullptr}
+};
+
 deoxrSession::deoxrSession( deoxrSystem &system ) :
 pSystem( system ),
 pGraphicApi( egaHeadless ),
@@ -620,6 +709,17 @@ bool deoxrSession::HasSwapchainFormat( deoxrSession::eSwapchainFormats format ) 
 	return false;
 }
 
+const char *deoxrSession::GetSwapchainFormatNameOpenGL(int64_t format, const char *notFound) const{
+	const sSwapchainFormatName *next = vSwapchainFormatNamesOpenGL;
+	while(next->format){
+		if(next->format == format){
+			return next->name;
+		}
+		next++;
+	}
+	return notFound;
+}
+
 
 
 // Private Functions
@@ -669,21 +769,21 @@ void deoxrSession::pCleanUp(){
 
 void deoxrSession::pEnumSwapchainFormats(){
 	const deoxrInstance &instance = pSystem.GetInstance();
-	instance.GetOxr().LogInfoFormat( "Enumerate Swapchain Formats:" );
+	instance.GetOxr().LogInfoFormat("Enumerate Swapchain Formats:");
 	
 	uint32_t count;
-	OXR_CHECK( instance.xrEnumerateSwapchainFormats( pSession, 0, &count, nullptr ) );
-	if( count == 0 ){
+	OXR_CHECK(instance.xrEnumerateSwapchainFormats(pSession, 0, &count, nullptr));
+	if(count == 0){
 		return;
 	}
 	
-	pSwapchainFormats = new int64_t[ count ];
-	OXR_CHECK( instance.xrEnumerateSwapchainFormats( pSession, count, &count, pSwapchainFormats ) );
+	pSwapchainFormats = new int64_t[count];
+	OXR_CHECK(instance.xrEnumerateSwapchainFormats(pSession, count, &count, pSwapchainFormats));
 	pSwapchainFormatCount = count;
 	
 	uint32_t i;
-	for( i=0; i<count; i++ ){
-		const int format = ( int )pSwapchainFormats[ i ];
-		instance.GetOxr().LogInfoFormat( "- %d (0x%x)", format, format );
+	for(i=0; i<count; i++){
+		const int format = (int)pSwapchainFormats[i];
+		instance.GetOxr().LogInfoFormat("- %s (0x%x)", GetSwapchainFormatNameOpenGL(format, "??"), format);
 	}
 }

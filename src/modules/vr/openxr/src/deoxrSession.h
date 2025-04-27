@@ -54,16 +54,29 @@ public:
 	
 	/** Swap chain formats. */
 	enum eSwapchainFormats{
-		escfGlRgba16Ext = 0x805b, //<! GL_RGBA16_EXT
-		escfGlRgba16f = 0x881a, //<! GL_RGBA16F
+		escfGlRgb8Snorm = 0x8f96, //<! GL_RGB8_SNORM
+		escfGlRgb16 = 0x8054, //<! GL_RGB16
+		escfGlRgb16Snorm = 0x8f9a, //<! GL_RGB16_SNORM
 		escfGlRgb16f = 0x881b, //<! GL_RGB16F
-		escfGlSrgb8Ext = 0x8c41, //<! GL_SRGB8_EXT
-		escfGlSrgb8Alpha8Ext = 0x8c43, //<! GL_SRGB8_ALPHA8_EXT
-		escfGlRgba8Ext = 0x8058, //<! GL_RGBA8_EXT
+		escfGlRgb16i = 0x8d89, //<! GL_RGB16I
+		escfGlRgb16ui = 0x8d77, //<! GL_RGB16UI
 		escfGlR11fG11fB10f = 0x8c3a, //<! GL_R11F_G11F_B10F
+		escfGlSrgb8 = 0x8c41, //<! GL_SRGB8
+		
+		escfGlRgba8 = 0x8058, //<! GL_RGBA8
+		escfGlRgba8Snorm = 0x8f97, //<! GL_RGBA8_SNORM
+		escfGlRgba16 = 0x805b, //<! GL_RGBA16
+		escfGlRgba16Snorm = 0x8f9b, //<! GL_RGBA16_SNORM
+		escfGlRgba16f = 0x881a, //<! GL_RGBA16F
+		escfGlRgba16i = 0x8d88, //<! GL_RGBA16I
+		escfGlRgba16ui = 0x8d76, //<! GL_RGBA16UI
+		escfGlRgb10a2 = 0x8059, //<! GL_RGB10_A2
+		escfGlSrgb8Alpha8 = 0x8c43, //<! GL_SRGB8_ALPHA8
+		
 		escfGlDepth16 = 0x81A5, //<! GL_DEPTH_COMPONENT16
 		escfGlDepth24 = 0x81A6, //<! GL_DEPTH_COMPONENT24
-		escfGlDepth32F = 0x8CAC //<! GL_DEPTH_COMPONENT32F
+		escfGlDepth32F = 0x8CAC, //<! GL_DEPTH_COMPONENT32F
+		escfGlDepth32Stencil8 = 0x8CAD //<! GL_DEPTH32F_STENCIL8
 	};
 	
 	
@@ -257,8 +270,17 @@ public:
 	/** Restore OpenGL current. */
 	void RestoreOpenGLCurrent();
 	
+	/** Count of swap chain formats. */
+	inline int GetSwapchainFormatCount() const{ return pSwapchainFormatCount; }
+	
+	/** Swap chain formats in the the order of runtime preference. */
+	inline const int64_t *GetSwapchainFormats() const{ return pSwapchainFormats; }
+	
 	/** Swapchain format is supported. */
 	bool HasSwapchainFormat( eSwapchainFormats format ) const;
+	
+	/** Swapchain format name or 'notFound'. */
+	const char *GetSwapchainFormatNameOpenGL(int64_t format, const char *notFound = nullptr) const;
 	/*@}*/
 	
 	
