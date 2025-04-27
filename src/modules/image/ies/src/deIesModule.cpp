@@ -125,6 +125,7 @@ public:
 		GetPatternList().Add(".ies");
 		SetDefaultExtension(".ies");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

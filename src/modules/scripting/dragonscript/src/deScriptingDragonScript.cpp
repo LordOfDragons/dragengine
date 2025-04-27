@@ -1953,16 +1953,17 @@ class dedsModuleInternal : public deInternalModule{
 public:
 	dedsModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DragonScript");
-		SetDescription("Provides access to the Drag[en]gine using the DragonScript\
-scripting language. Loaded by default is a basic script package with\
-mathematical classes. Additional frameworks can be loaded depending\
-on the needs of your game. This is an interprated language hence\
+		SetDescription("Provides access to the Drag[en]gine using the DragonScript \
+scripting language. Loaded by default is a basic script package with \
+mathematical classes. Additional frameworks can be loaded depending \
+on the needs of your game. This is an interprated language hence \
 if you need time critical calculations using another language might be better.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(DS_MODULE_VERSION);
 		SetType(deModuleSystem::emtScript);
 		SetDirectoryName("dragonscript");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

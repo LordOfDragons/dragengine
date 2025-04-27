@@ -216,13 +216,14 @@ class decrbModuleInternal : public deInternalModule{
 public:
 	decrbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BasicRecovery");
-		SetDescription("Provides basic crash recovery support using the FOX Toolkit.\
+		SetDescription("Provides basic crash recovery support using the FOX Toolkit. \
 Allows the user to restart failed systems and to change modules.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtCrashRecovery);
 		SetDirectoryName("basicrecovery");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

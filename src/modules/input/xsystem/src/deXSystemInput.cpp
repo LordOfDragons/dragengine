@@ -864,13 +864,14 @@ class dexsiModuleInternal : public deInternalModule{
 public:
 	dexsiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("XSystemInput");
-		SetDescription("Processes input using the X-Server of linux Operating systems.\
+		SetDescription("Processes input using the X-Server of linux Operating systems. \
 Supports Mouse and Keyboard for the time beeing.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtInput);
 		SetDirectoryName("xsystem");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

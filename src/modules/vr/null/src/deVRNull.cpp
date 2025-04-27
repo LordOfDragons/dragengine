@@ -225,6 +225,7 @@ public:
 		SetDirectoryName("null");
 		SetPriority(0);
 		SetIsFallback(true);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

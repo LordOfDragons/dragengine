@@ -585,6 +585,7 @@ public:
 		SetType(deModuleSystem::emtNetwork);
 		SetDirectoryName("basic");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

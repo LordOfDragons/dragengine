@@ -126,6 +126,7 @@ public:
 		SetDefaultExtension(".apng");
 		SetNoCompress(true);
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

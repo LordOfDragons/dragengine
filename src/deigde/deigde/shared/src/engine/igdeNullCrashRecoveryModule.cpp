@@ -47,6 +47,7 @@ deInternalModule( system )
 	SetAuthor( "Plüss Roland" );
 	SetVersion( "1.0" );
 	SetDirectoryName( "NullCrashRecovery" );
+	SetDefaultLoggingName();
 }
 
 igdeNullCrashRecoveryModule::cModule::~cModule(){

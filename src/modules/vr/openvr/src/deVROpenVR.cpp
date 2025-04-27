@@ -777,6 +777,7 @@ public:
 		SetType(deModuleSystem::emtVR);
 		SetDirectoryName("openvr");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

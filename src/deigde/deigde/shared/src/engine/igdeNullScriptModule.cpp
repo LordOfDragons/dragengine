@@ -46,6 +46,7 @@ igdeNullScriptModule::cModule::cModule( deModuleSystem *system ) : deInternalMod
 	SetAuthor( "Plüss Roland" );
 	SetVersion( "1.0" );
 	SetDirectoryName( "NullScript" );
+	SetDefaultLoggingName();
 }
 igdeNullScriptModule::cModule::~cModule(){ }
 void igdeNullScriptModule::cModule::CreateModule(){

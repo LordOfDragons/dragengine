@@ -231,7 +231,7 @@ class degnModuleInternal : public deInternalModule{
 public:
 	degnModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("NullGraphic");
-		SetDescription("Renders nothing at all. Null modules are useful\
+		SetDescription("Renders nothing at all. Null modules are useful \
 for testing purpose or servers without a graphic system.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
@@ -239,6 +239,7 @@ for testing purpose or servers without a graphic system.");
 		SetDirectoryName("null");
 		SetPriority(0);
 		SetIsFallback(true);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

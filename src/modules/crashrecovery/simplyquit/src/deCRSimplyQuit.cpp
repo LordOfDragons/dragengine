@@ -174,6 +174,7 @@ public:
 		SetDirectoryName("simplyquit");
 		SetPriority(0);
 		SetIsFallback(true);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

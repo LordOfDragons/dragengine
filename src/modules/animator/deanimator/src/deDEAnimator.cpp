@@ -129,6 +129,7 @@ public:
 		SetType(deModuleSystem::emtAnimator);
 		SetDirectoryName("deanimator");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

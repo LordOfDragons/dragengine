@@ -339,6 +339,7 @@ public:
 		SetType(deModuleSystem::emtPhysics);
 		SetDirectoryName("bullet");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

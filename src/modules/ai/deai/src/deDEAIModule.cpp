@@ -160,6 +160,7 @@ deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetType(deModuleSystem::emtAI);
 		SetDirectoryName("deai");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

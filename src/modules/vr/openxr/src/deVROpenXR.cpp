@@ -1082,6 +1082,7 @@ public:
 		SetType(deModuleSystem::emtVR);
 		SetDirectoryName("openxr");
 		SetPriority(2);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

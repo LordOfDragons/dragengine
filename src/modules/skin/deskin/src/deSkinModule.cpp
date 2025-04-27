@@ -1675,6 +1675,7 @@ public:
 		GetPatternList().Add(".deskin");
 		SetDefaultExtension(".deskin");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{
