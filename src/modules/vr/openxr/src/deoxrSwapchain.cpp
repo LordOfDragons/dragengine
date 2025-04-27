@@ -42,7 +42,8 @@ pType( type ),
 pSize( size ),
 pSwapchain( XR_NULL_HANDLE ),
 pImages( nullptr ),
-pImageCount( 0 )
+pImageCount( 0 ),
+pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 {
 	deoxrInstance &instance = session.GetSystem().GetInstance();
 	deVROpenXR &oxr = instance.GetOxr();
@@ -71,25 +72,43 @@ pImageCount( 0 )
 					switch(formats[i]){
 #ifndef OS_ANDROID
 					case deoxrSession::escfGlRgb8Snorm:
+						pVRRenderFormat = deBaseVRModule::evrrfRGB8;
+						createInfo.format = formats[i];
+						break;
+						
 					case deoxrSession::escfGlRgb16:
 					case deoxrSession::escfGlRgb16Snorm:
 					case deoxrSession::escfGlRgb16f:
 					case deoxrSession::escfGlRgb16i:
 					case deoxrSession::escfGlRgb16ui:
 					case deoxrSession::escfGlR11fG11fB10f:
+						pVRRenderFormat = deBaseVRModule::evrrfRGB16;
+						createInfo.format = formats[i];
+						break;
+						
 					case deoxrSession::escfGlSrgb8:
+						pVRRenderFormat = deBaseVRModule::evrrfSRGB8;
+						createInfo.format = formats[i];
+						break;
 #endif
 					case deoxrSession::escfGlRgba8:
 					case deoxrSession::escfGlRgba8Snorm:
+						pVRRenderFormat = deBaseVRModule::evrrfRGBA8;
+						createInfo.format = formats[i];
+						break;
+						
 					case deoxrSession::escfGlRgba16:
 					case deoxrSession::escfGlRgba16Snorm:
 					case deoxrSession::escfGlRgba16f:
 					case deoxrSession::escfGlRgba16i:
 					case deoxrSession::escfGlRgba16ui:
 					case deoxrSession::escfGlRgb10a2:
+						pVRRenderFormat = deBaseVRModule::evrrfRGBA16;
+						createInfo.format = formats[i];
+						break;
+						
 					case deoxrSession::escfGlSrgb8Alpha8:
-						oxr.LogInfoFormat("Using Color Swapchain format %s",
-							session.GetSwapchainFormatNameOpenGL(formats[i], "??"));
+						pVRRenderFormat = deBaseVRModule::evrrfSRGBA8;
 						createInfo.format = formats[i];
 						break;
 						
@@ -116,6 +135,11 @@ pImageCount( 0 )
 					}
 				}
 				break;
+			}
+			
+			if(createInfo.format){
+				oxr.LogInfoFormat("Using Color Swapchain format %s",
+					session.GetSwapchainFormatNameOpenGL(createInfo.format, "??"));
 			}
 			break;
 			

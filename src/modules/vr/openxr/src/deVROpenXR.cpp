@@ -663,6 +663,10 @@ decPoint deVROpenXR::GetRenderSize(){
 }
 
 deBaseVRModule::eVRRenderFormat deVROpenXR::GetRenderFormat(){
+	if(pSession && pSession->GetSwapchainRightEye()){
+		return pSession->GetSwapchainRightEye()->GetVRRenderFormat();
+	}
+	
 	// WARNING
 	// 
 	// SteamVR has a huge problem. under windows their OpenXR implementation expects the
