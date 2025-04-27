@@ -600,7 +600,7 @@ void deoglShaderLanguage::pCreateCompileThreads(){
 		count = 1;
 	}
 #ifdef OS_ANDROID_QUEST
-	count = 1;
+	// count = 1;
 #endif
 	
 	pCompilerThreads = new deoglShaderCompilerThread*[count];
