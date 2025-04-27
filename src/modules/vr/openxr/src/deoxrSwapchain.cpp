@@ -69,6 +69,7 @@ pImageCount( 0 )
 			case etColor:
 				for(i=0; !createInfo.format && i<formatCount; i++){
 					switch(formats[i]){
+#ifndef OS_ANDROID
 					case deoxrSession::escfGlRgb8Snorm:
 					case deoxrSession::escfGlRgb16:
 					case deoxrSession::escfGlRgb16Snorm:
@@ -77,7 +78,8 @@ pImageCount( 0 )
 					case deoxrSession::escfGlRgb16ui:
 					case deoxrSession::escfGlR11fG11fB10f:
 					case deoxrSession::escfGlSrgb8:
-					
+#endif
+					case deoxrSession::escfGlRgba8:
 					case deoxrSession::escfGlRgba8Snorm:
 					case deoxrSession::escfGlRgba16:
 					case deoxrSession::escfGlRgba16Snorm:
