@@ -49,12 +49,12 @@
 // class deoxrSession
 //////////////////////
 
-static struct sSwapchainFormatName{
+struct sSwapchainFormatName{
 	int64_t format;
 	const char *name;
 };
 
-sSwapchainFormatName vSwapchainFormatNamesOpenGL[]{
+static sSwapchainFormatName vSwapchainFormatNamesOpenGL[]{
 	{0x8054, "GL_RGB16"}, // escfGlRgb16
 	{0x8056, "GL_RGBA4"},
 	{0x8057, "GL_RGB5_A1"},
