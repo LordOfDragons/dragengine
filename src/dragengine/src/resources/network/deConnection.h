@@ -30,10 +30,6 @@
 #include "../deResource.h"
 #include "../../common/string/decString.h"
 
-#ifdef OS_W32
-#undef SendMessage
-#endif
-
 class deConnectionManager;
 class deServer;
 class deNetworkState;
