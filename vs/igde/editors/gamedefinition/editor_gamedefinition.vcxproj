@@ -89,8 +89,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\snappoint\gdeOCSnapPointList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeaker.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeakerList.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCNavigationWorld.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCNavigationWorldList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorldList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitterList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\property\gdeProperty.cpp" />
