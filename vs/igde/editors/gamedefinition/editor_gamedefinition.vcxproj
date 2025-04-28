@@ -192,11 +192,11 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerCut.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerPaste.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerRemove.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCNavWorldAdd.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCNavWorldCopy.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCNavWorldCut.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCNavWorldPaste.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCNavWorldRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCopy.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCut.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldPaste.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterAdd.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\skin\gdeMASkinAdd.cpp" />
