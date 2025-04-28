@@ -173,6 +173,13 @@ public:
 	virtual void OCSpeakerChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
 	
+	/** \brief Object class worlds changed. */
+	virtual void OCWorldsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	
+	/** \brief Object class world changed. */
+	virtual void OCWorldChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCWorld *world);
+	
 	/** \brief Active object class changed. */
 	virtual void ActiveObjectClassChanged( gdeGameDefinition *gameDefinition );
 	
@@ -208,6 +215,9 @@ public:
 	
 	/** \brief Active object class speaker changed. */
 	virtual void ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition );
+	
+	/** \brief Active object class world changed. */
+	virtual void ActiveOCWorldChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	

@@ -172,4 +172,7 @@ void gdeConfiguration::pReset(){
 	
 	pColorSpeaker.Set( 0.5f, 0.0f, 0.0f, COLOR_ALPHA );
 	pColorSpeakerActive.Set( 0.75f, 0.0f, 0.0f, COLOR_ALPHA_ACTIVE );
+	
+	pColorWorld.Set(0.0f, 0.25f, 1.0f, COLOR_ALPHA);
+	pColorWorldActive.Set(0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE);
 }

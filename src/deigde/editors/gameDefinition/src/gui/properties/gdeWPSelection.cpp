@@ -44,6 +44,7 @@
 #include "selection/gdeWPSOCForceField.h"
 #include "selection/gdeWPSOCSnapPoint.h"
 #include "selection/gdeWPSOCSpeaker.h"
+#include "selection/gdeWPSOCWorld.h"
 #include "selection/gdeWPSParticleEmitter.h"
 #include "selection/gdeWPSSkin.h"
 #include "selection/gdeWPSSky.h"
@@ -77,6 +78,7 @@ enum ePanels{
 	epOCForceField,
 	epOCSnapPoint,
 	epOCSpeaker,
+	epOCWorld,
 	epParticleEmitter,
 	epSkin,
 	epSky
@@ -198,6 +200,9 @@ pModelTreeObjects( NULL )
 	pPanelOCSpeaker.TakeOver( new gdeWPSOCSpeaker( windowProperties ) );
 	pSwitcher->AddChild( pPanelOCSpeaker );
 	
+	pPanelOCWorld.TakeOver(new gdeWPSOCWorld(windowProperties));
+	pSwitcher->AddChild(pPanelOCWorld);
+	
 	pPanelParticleEmitter.TakeOver( new gdeWPSParticleEmitter( windowProperties ) );
 	pSwitcher->AddChild( pPanelParticleEmitter );
 	
@@ -241,6 +246,7 @@ void gdeWPSelection::SetGameDefinition( gdeGameDefinition *gameDefinition ){
 	( ( gdeWPSOCForceField& )( igdeWidget& )pPanelOCForceField ).SetGameDefinition( NULL );
 	( ( gdeWPSOCSnapPoint& )( igdeWidget& )pPanelOCSnapPoint ).SetGameDefinition( NULL );
 	( ( gdeWPSOCSpeaker& )( igdeWidget& )pPanelOCSpeaker ).SetGameDefinition( NULL );
+	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(nullptr);
 	( ( gdeWPSParticleEmitter& )( igdeWidget& )pPanelParticleEmitter ).SetGameDefinition( NULL );
 	( ( gdeWPSSkin& )( igdeWidget& )pPanelSkin ).SetGameDefinition( NULL );
 	( ( gdeWPSSky& )( igdeWidget& )pPanelSky ).SetGameDefinition( NULL );
@@ -277,6 +283,7 @@ void gdeWPSelection::SetGameDefinition( gdeGameDefinition *gameDefinition ){
 	( ( gdeWPSOCForceField& )( igdeWidget& )pPanelOCForceField ).SetGameDefinition( gameDefinition );
 	( ( gdeWPSOCSnapPoint& )( igdeWidget& )pPanelOCSnapPoint ).SetGameDefinition( gameDefinition );
 	( ( gdeWPSOCSpeaker& )( igdeWidget& )pPanelOCSpeaker ).SetGameDefinition( gameDefinition );
+	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(gameDefinition);
 	( ( gdeWPSParticleEmitter& )( igdeWidget& )pPanelParticleEmitter ).SetGameDefinition( gameDefinition );
 	( ( gdeWPSSkin& )( igdeWidget& )pPanelSkin ).SetGameDefinition( gameDefinition );
 	( ( gdeWPSSky& )( igdeWidget& )pPanelSky ).SetGameDefinition( gameDefinition );
@@ -350,6 +357,10 @@ void gdeWPSelection::SelectedObjectChanged(){
 		
 	case gdeGameDefinition::eotOCSpeaker:
 		pSwitcher->SetCurrent( epOCSpeaker );
+		break;
+		
+	case gdeGameDefinition::eotOCWorld:
+		pSwitcher->SetCurrent(epOCWorld);
 		break;
 		
 	case gdeGameDefinition::eotParticleEmitter:

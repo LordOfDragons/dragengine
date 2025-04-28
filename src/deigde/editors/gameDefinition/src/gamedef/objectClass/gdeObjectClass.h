@@ -38,6 +38,7 @@
 #include "forceField/gdeOCForceFieldList.h"
 #include "snappoint/gdeOCSnapPointList.h"
 #include "speaker/gdeOCSpeakerList.h"
+#include "world/gdeOCWorldList.h"
 #include "../property/gdePropertyList.h"
 
 #include <dragengine/deObject.h>
@@ -57,6 +58,9 @@ class gdeOCComponentTexture;
  */
 class gdeObjectClass : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeObjectClass> Ref;
+	
 	/** Scale modes. */
 	enum eScaleModes{
 		/** Fixed size. */
@@ -104,6 +108,7 @@ private:
 	gdeOCSpeakerList pSpeakers;
 	gdeOCNavigationBlockerList pNavigationBlockers;
 	gdeOCNavigationSpaceList pNavigationSpaces;
+	gdeOCWorldList pWorlds;
 	
 	gdeOCComponentTextureList pTextures;
 	deObjectReference pActiveTexture;
@@ -383,6 +388,18 @@ public:
 	
 	/** Notify listeners speaker changed. */
 	void NotifySpeakerChanged( gdeOCSpeaker *speaker );
+	
+	
+	
+	/** Worlds. */
+	inline gdeOCWorldList &GetWorlds(){ return pWorlds; }
+	inline const gdeOCWorldList &GetWorlds() const{ return pWorlds; }
+	
+	/** Notify listeners world changed. */
+	void NotifyWorldsChanged();
+	
+	/** Notify listeners world changed. */
+	void NotifyWorldChanged(gdeOCWorld *world);
 	
 	
 	

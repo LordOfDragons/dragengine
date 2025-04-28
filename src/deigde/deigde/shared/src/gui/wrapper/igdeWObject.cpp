@@ -37,6 +37,7 @@
 #include "object/igdeWOSONavigationSpace.h"
 #include "object/igdeWOSONavigationBlocker.h"
 #include "object/igdeWOSOComponent.h"
+#include "object/igdeWOSOWorld.h"
 #include "../../codec/igdeCodecPropertyString.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../engine/igdeEngineController.h"
@@ -52,6 +53,7 @@
 #include "../../gamedefinition/class/speaker/igdeGDCSpeaker.h"
 #include "../../gamedefinition/class/navspace/igdeGDCNavigationSpace.h"
 #include "../../gamedefinition/class/navblocker/igdeGDCNavigationBlocker.h"
+#include "../../gamedefinition/class/world/igdeGDCWorld.h"
 #include "../../gamedefinition/property/igdeGDProperty.h"
 #include "../../gameproject/igdeGameProject.h"
 #include "../../resourceloader/igdeResourceLoaderListener.h"
@@ -1001,6 +1003,22 @@ void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass 
 				
 			}catch( const deException &e ){
 				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
+		}
+	}
+	
+	// worlds
+	if((filter & igdeGDClass::efsoWorlds) != 0){
+		const igdeGDCWorldList &worlds = gdclass.GetWorldList();
+		const int worldCount = worlds.GetCount();
+		for(i=0; i<worldCount; i++){
+			pAsyncLoadCounter++;
+			try{
+				pSubObjects.Add(deObject::Ref::New(new igdeWOSOWorld(*this, *worlds.GetAt(i), prefix)));
+				
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 				pAsyncLoadCounter--;
 			}
 		}

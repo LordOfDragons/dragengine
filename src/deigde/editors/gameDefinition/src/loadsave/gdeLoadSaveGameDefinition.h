@@ -47,6 +47,7 @@ class gdeOCParticleEmitter;
 class gdeOCForceField;
 class gdeOCSnapPoint;
 class gdeOCSpeaker;
+class gdeOCWorld;
 class gdeObjectClass;
 class gdeParticleEmitter;
 class gdeProperty;
@@ -119,6 +120,7 @@ private:
 	void pReadObjectClassSpeaker( const decXmlElementTag &root, gdeObjectClass &objectClass );
 	void pReadObjectClassNavigationSpace( const decXmlElementTag &root, gdeObjectClass &objectClass );
 	void pReadObjectClassNavigationBlocker( const decXmlElementTag &root, gdeObjectClass &objectClass );
+	void pReadObjectClassWorld(const decXmlElementTag &root, gdeObjectClass &objectClass);
 	void pReadObjectClassTexture( const decXmlElementTag &root, gdeObjectClass &objectClass );
 	void pReadCustomFilePatternList( const decXmlElementTag &root, gdeFilePatternList &list );
 	void pReadParticleEmitter( const decXmlElementTag &root, gdeGameDefinition &gameDefinition );
@@ -143,6 +145,7 @@ private:
 	void pWriteObjectClassEnvMapProbe( decXmlWriter &writer, const gdeOCEnvMapProbe &envMapProbe );
 	void pWriteObjectClassSpeaker( decXmlWriter &writer, const gdeOCSpeaker &speaker );
 	void pWriteObjectClassNavSpace( decXmlWriter &writer, const gdeOCNavigationSpace &navspace );
+	void pWriteObjectClassWorld(decXmlWriter &writer, const gdeOCWorld &world);
 	void pWriteObjectClassNavBlocker( decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker );
 	void pWriteObjectClassTexture( decXmlWriter &writer, const gdeOCComponentTexture &texture );
 	void pWriteLink( decXmlWriter &writer, const decString &link, const char *tagName, const char *target );

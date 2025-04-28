@@ -55,6 +55,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataProperty.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -166,6 +169,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeakerList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorldList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -233,6 +242,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSpeaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSubObject.cpp">
@@ -466,6 +478,21 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerRemove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCopy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterAdd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -604,6 +631,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSubObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -701,6 +731,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeakerListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCWorldListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitter.cpp">
@@ -1486,6 +1522,24 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerTogglePlaying.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCAddWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPropertyName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetRotation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCRemoveWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyAdd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1665,6 +1719,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSpeaker.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCWorld.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataProperty.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1776,6 +1833,12 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeakerList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorld.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorldList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1843,6 +1906,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOWorld.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSubObject.h">
@@ -2076,6 +2142,21 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerRemove.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCopy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCut.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterAdd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2214,6 +2295,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSpeaker.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCWorld.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSubObject.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2311,6 +2395,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeakerListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCWorld.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCWorldListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitter.h">
@@ -3094,6 +3184,24 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerTogglePlaying.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCAddWorld.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPropertyName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetRotation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCRemoveWorld.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyAdd.h">

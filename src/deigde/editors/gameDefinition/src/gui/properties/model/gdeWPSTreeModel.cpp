@@ -51,6 +51,7 @@
 #include "objectClass/gdeWPSTIMOCForceField.h"
 #include "objectClass/gdeWPSTIMOCSnapPoint.h"
 #include "objectClass/gdeWPSTIMOCSpeaker.h"
+#include "objectClass/gdeWPSTIMOCWorld.h"
 #include "particleEmitter/gdeWPSTIMParticleEmitter.h"
 #include "particleEmitter/gdeWPSTIMParticleEmitters.h"
 #include "skin/gdeWPSTIMSkin.h"
@@ -192,6 +193,7 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 	case gdeGameDefinition::eotOCForceField:
 	case gdeGameDefinition::eotOCSnapPoint:
 	case gdeGameDefinition::eotOCSpeaker:
+	case gdeGameDefinition::eotOCWorld:
 		if( ! pGameDefinition->GetActiveObjectClass() ){
 			break;
 		}
@@ -296,6 +298,12 @@ void gdeWPSTreeModel::SetCurrentItemFromGameDef(){
 	case gdeGameDefinition::eotOCSpeaker:
 		if( modelObjectClass && pGameDefinition->GetActiveOCSpeaker() ){
 			model = modelObjectClass->GetChildWith( pGameDefinition->GetActiveOCSpeaker() );
+		}
+		break;
+		
+	case gdeGameDefinition::eotOCWorld:
+		if(modelObjectClass && pGameDefinition->GetActiveOCWorld()){
+			model = modelObjectClass->GetChildWith(pGameDefinition->GetActiveOCWorld());
 		}
 		break;
 		
