@@ -26,10 +26,14 @@
 #define _IGDEWOSOWORLD_H_
 
 #include "igdeWOSubObject.h"
+#include "../../../utils/igdeBaseXML.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 
 class igdeGDCWorld;
+class decXmlElementTag;
 
 
 /**
@@ -42,6 +46,65 @@ public:
 	
 	
 private:
+	class LoadedObjectTexture : public deObject{
+	public:
+		typedef deTObjectReference<LoadedObjectTexture> Ref;
+		
+		const decString name;
+		decString pathSkin;
+		deSkin::Ref skin;
+		int texture;
+		deDynamicSkin::Ref dynamicSkin;
+		decTexMatrix2 tcTransform;
+		
+		LoadedObjectTexture(const decString &name);
+		
+	protected:
+		~LoadedObjectTexture() override = default;
+	};
+	
+	class LoadedObject : public deObject{
+	public:
+		typedef deTObjectReference<LoadedObject> Ref;
+		
+	private:
+		igdeWObject *pWrapper;
+		
+	public:
+		decDMatrix originalMatrix;
+		decObjectOrderedSet textures;
+		
+		LoadedObject(igdeEnvironment &environment);
+		inline igdeWObject &Wrapper(){ return *pWrapper; }
+		
+	protected:
+		~LoadedObject() override;
+	};
+	
+	class LoadXmlWorld : public igdeBaseXML{
+	private:
+		igdeWOSOWorld &pOwner;
+		igdeEnvironment &pEnvironment;
+		
+	public:
+		decObjectOrderedSet objects;
+		
+		LoadXmlWorld(igdeWOSOWorld &owner);
+		void LoadWorld(const decString &path);
+		
+	private:
+		void pReadWorld(const decXmlElementTag &root);
+		
+		void pReadObject(const decXmlElementTag &root, LoadedObject &object);
+		
+		void pReadObjectTexture(const decXmlElementTag &root,
+			LoadedObject &object, LoadedObjectTexture &texture);
+		
+		void pReadObjectTextureTransform(const decXmlElementTag &root,
+			LoadedObject &object, LoadedObjectTexture &texture);
+	};
+	
+	
 	const igdeGDCWorld &pGDWorld;
 	decString pPathWorld;
 	decDVector pPosition;
@@ -71,8 +134,14 @@ public:
 	/** \brief Update visibility. */
 	void UpdateVisibility() override;
 	
+	/** \brief Geometry changed. */
+	void UpdateGeometry() override;
+	
 	/** \brief Visit. */
 	void Visit(igdeWOSOVisitor &visitor) override;
+	
+	/** \brief Add object wrapper. */
+	void AddObject(const LoadedObject::Ref &object);
 	/*@}*/
 	
 	
@@ -82,9 +151,9 @@ protected:
 	
 	
 private:
-	void pLoadWorld(const decString &path);
 	void pUpdateWorld();
 	void pDestroyWorld();
+	void pLoadWorld(const decString &path);
 };
 
 #endif

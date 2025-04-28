@@ -485,7 +485,7 @@ void deoglShaderLanguage::WaitAllTasksFinished(){
 }
 
 void deoglShaderLanguage::Update(){
-	return;
+	return; // yes, this is here on purpose
 	if(!pglMaxShaderCompilerThreads){
 		return;
 	}
