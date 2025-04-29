@@ -216,6 +216,15 @@ public:
 	/** \brief Geometry changed. */
 	void UpdateGeometry() override;
 	
+	/** \brief Collision filter changed. */
+	void UpdateCollisionFilter() override;
+	
+	/** \brief Outline skin changed. */
+	void OutlineSkinChanged() override;
+	
+	/** \brief Collider user pointer changed. */
+	void ColliderUserPointerChanged() override;
+	
 	/** \brief Visit. */
 	void Visit(igdeWOSOVisitor &visitor) override;
 	

@@ -401,9 +401,9 @@ void igdeWOSOWorld::UpdateVisibility(){
 }
 
 void igdeWOSOWorld::UpdateGeometry(){
+	const igdeWObject &w = GetWrapper();
 	const decDMatrix transform(decDMatrix::CreateWorld(pPosition, pOrientation)
-		* decDMatrix::CreateWorld(GetWrapper().GetPosition(),
-			GetWrapper().GetOrientation(), GetWrapper().GetScaling()));
+		* decDMatrix::CreateWorld(w.GetPosition(), w.GetOrientation(), w.GetScaling()));
 	const int count = pChildObjects.GetCount();
 	int i;
 	
@@ -417,6 +417,57 @@ void igdeWOSOWorld::UpdateGeometry(){
 		if(!wo.GetScaling().IsZero()){
 			wo.SetOrientation(matrix.Normalized().ToQuaternion());
 		}
+	}
+}
+
+void igdeWOSOWorld::UpdateCollisionFilter(){
+	const igdeWObject &w = GetWrapper();
+	const decCollisionFilter &cf = w.GetCollisionFilter();
+	const decCollisionFilter &cfFallback = w.GetCollisionFilterFallback();
+	const decCollisionFilter &cfForceFields = w.GetCollisionFilterForceFields();
+	const decCollisionFilter &cfInteract = w.GetCollisionFilterInteract();
+	const decCollisionFilter &cfParticles = w.GetCollisionFilterParticles();
+	int lmAudio = w.GetAudioLayerMask();
+	int lmRender = w.GetRenderLayerMask();
+	const int count = pChildObjects.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
+		igdeWObject &wo = object.GetWrapper();
+		wo.SetCollisionFilter(cf);
+		wo.SetCollisionFilterFallback(cfFallback);
+		wo.SetCollisionFilterForceFields(cfForceFields);
+		wo.SetCollisionFilterInteract(cfInteract);
+		wo.SetCollisionFilterParticles(cfParticles);
+		wo.SetAudioLayerMask(lmAudio);
+		wo.SetRenderLayerMask(lmRender);
+	}
+}
+
+void igdeWOSOWorld::OutlineSkinChanged(){
+	const igdeWObject &w = GetWrapper();
+	deSkin * const skin = w.GetOutlineSkin();
+	const decColor &color = w.GetOutlineColor();
+	const int count = pChildObjects.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
+		igdeWObject &wo = object.GetWrapper();
+		wo.SetOutlineSkin(skin);
+		wo.SetOutlineColor(color);
+	}
+}
+
+void igdeWOSOWorld::ColliderUserPointerChanged(){
+	void * const userPointer = GetWrapper().GetColliderUserPointer();
+	const int count = pChildObjects.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
+		object.GetWrapper().SetColliderUserPointer(userPointer);
 	}
 }
 
@@ -532,6 +583,9 @@ void igdeWOSOWorld::pUpdateWorld(){
 		pPathWorld = pathWorld;
 		
 		UpdateGeometry();
+		UpdateCollisionFilter();
+		OutlineSkinChanged();
+		ColliderUserPointerChanged();
 	}
 }
 

@@ -122,6 +122,9 @@ public:
 	/** \brief Update collider response type. */
 	virtual void UpdateColliderResponseType();
 	
+	/** \brief Collider user pointer changed. */
+	virtual void ColliderUserPointerChanged();
+	
 	/** \brief Frame update. */
 	virtual void Update( float elapsed );
 	
