@@ -178,7 +178,9 @@ LoadedObject &object, LoadedObjectTexture &texture){
 		const decString &tagName = tag->GetName();
 		if(tagName == "skin"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			texture.pathSkin = cdata ? cdata->GetData() : "";
+			if(cdata){
+				texture.pathSkin = cdata->GetData();
+			}
 			
 		}else if(tagName == "transform"){
 			pReadObjectTextureTransform(*tag, object, texture);
