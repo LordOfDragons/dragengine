@@ -164,7 +164,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 * 
 	 * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerlookatinteractprompt
 	 */
