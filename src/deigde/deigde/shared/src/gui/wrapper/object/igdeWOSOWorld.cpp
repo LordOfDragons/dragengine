@@ -35,10 +35,12 @@
 #include "../../../gamedefinition/class/igdeGDClass.h"
 #include "../../../gamedefinition/class/world/igdeGDCWorld.h"
 #include "../../../gameproject/igdeGameProject.h"
+#include "../../../resourceloader/igdeResourceLoaderTask.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
 #include <dragengine/common/xmlparser/decXmlDocumentReference.h>
@@ -48,6 +50,8 @@
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/component/deComponentTexture.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkinManager.h>
 #include <dragengine/resources/skin/dynamic/renderables/deDSRenderableColor.h>
 
@@ -55,24 +59,108 @@
 #define LOGSOURCE "IGDE"
 
 
-// LoadedObjectTexture
+// LoadObjectResources
 ////////////////////////
 
-igdeWOSOWorld::LoadedObjectTexture::LoadedObjectTexture(const decString &aname) :
+igdeWOSOWorld::LoadObjectResources::Texture::Texture(ChildObject &aobject, ChildObjectTexture &atexture) :
+object(&aobject),
+texture(&atexture){
+}
+
+igdeWOSOWorld::LoadObjectResources::LoadObjectResources(igdeWOSOWorld &owner) :
+pOwner(&owner){
+}
+
+void igdeWOSOWorld::LoadObjectResources::Drop(){
+	pOwner = nullptr;
+}
+
+void igdeWOSOWorld::LoadObjectResources::LoadTexture(ChildObject &object, ChildObjectTexture &texture){
+	const decString &path = texture.pathSkin;
+	pTextures.Add(deObject::Ref::New(new Texture(object, texture)));
+	if(!pSkins.Has(path)){
+		pSkins.Add(path);
+		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
+	}
+}
+
+void igdeWOSOWorld::LoadObjectResources::LoadingFinished(
+const igdeResourceLoaderTask &task, deFileResource *resource){
+	const decString &path = task.GetFilename();
+	if(task.GetResourceType() == deResourceLoader::ertSkin && pSkins.Has(path)){
+		pUpdateTextures(path, (deSkin*)resource);
+		pSkins.Remove(path);
+	}
+}
+
+void igdeWOSOWorld::LoadObjectResources::LoadingFailed(const igdeResourceLoaderTask &task){
+	const decString &path = task.GetFilename();
+	if(task.GetResourceType() == deResourceLoader::ertSkin && pSkins.Has(path)){
+		pUpdateTextures(path, nullptr);
+		pSkins.Remove(path);
+	}
+}
+
+void igdeWOSOWorld::LoadObjectResources::pUpdateTextures(const char *path, deSkin *skin){
+	int i, count = pTextures.GetCount();
+	for(i=0; i<count; i++){
+		const Texture &texture = *((Texture*)pTextures.GetAt(i));
+		if(texture.texture->pathSkin != path){
+			continue;
+		}
+		
+		texture.texture->skin = skin;
+		if(skin && pOwner){
+			pOwner->UpdateChildComponentTexture(texture.object, texture.texture);
+		}
+		pTextures.RemoveFrom(i);
+		i--;
+		count--;
+	}
+}
+
+
+// ChildObjectTexture
+///////////////////////
+
+igdeWOSOWorld::ChildObjectTexture::ChildObjectTexture(const decString &aname) :
 name(aname),
-texture(0){
+texture(0),
+hasTCTransform(false){
 }
 
 
-// LoadedObject
-/////////////////
+// ChildObject
+////////////////
 
-igdeWOSOWorld::LoadedObject::LoadedObject(igdeEnvironment &environment) :
-pWrapper(new igdeWObject(environment)){
+igdeWOSOWorld::ChildObject::ChildObject(igdeEnvironment &environment) :
+pWrapper(environment){
 }
 
-igdeWOSOWorld::LoadedObject::~LoadedObject(){
-	delete pWrapper;
+int igdeWOSOWorld::ChildObject::GetTextureCount() const{
+	return pTextures.GetCount();
+}
+
+igdeWOSOWorld::ChildObjectTexture &igdeWOSOWorld::ChildObject::GetTextureAt(int index) const{
+	return *((igdeWOSOWorld::ChildObjectTexture*)pTextures.GetAt(index));
+}
+
+igdeWOSOWorld::ChildObjectTexture *igdeWOSOWorld::ChildObject::GetNamedTexture(const char *name) const{
+	const int count = pTextures.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		igdeWOSOWorld::ChildObjectTexture * const texture =
+			(igdeWOSOWorld::ChildObjectTexture*)pTextures.GetAt(i);
+		if(texture->name == name){
+			return texture;
+		}
+	}
+	return nullptr;
+}
+
+void igdeWOSOWorld::ChildObject::AddTexture(const ChildObjectTexture::Ref &texture){
+	DEASSERT_NOTNULL(texture)
+	pTextures.Add(texture);
 }
 
 
@@ -113,16 +201,16 @@ void igdeWOSOWorld::LoadXmlWorld::pReadWorld(const decXmlElementTag &root){
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "object"){
-			const LoadedObject::Ref object(LoadedObject::Ref::New(new LoadedObject(pEnvironment)));
+			const ChildObject::Ref object(ChildObject::Ref::New(new ChildObject(pEnvironment)));
 			pReadObject(*tag, object);
-			pOwner.AddObject(object);
+			pOwner.AddChildObject(object);
 		}
 	}
 }
 
-void igdeWOSOWorld::LoadXmlWorld::pReadObject(const decXmlElementTag &root, LoadedObject &object){
+void igdeWOSOWorld::LoadXmlWorld::pReadObject(const decXmlElementTag &root, ChildObject &object){
 	const int elementCount = root.GetElementCount();
-	igdeWObject &wo = object.Wrapper();
+	igdeWObject &wo = object.GetWrapper();
 	int i;
 	
 	for(i=0; i<elementCount; i++){
@@ -154,10 +242,10 @@ void igdeWOSOWorld::LoadXmlWorld::pReadObject(const decXmlElementTag &root, Load
 			wo.SetProperty(GetAttributeString(*tag, "key"), ReadMultilineString(*tag));
 			
 		}else if(tagName == "texture"){
-			LoadedObjectTexture::Ref texture(LoadedObjectTexture::Ref::New(
-				new LoadedObjectTexture(GetAttributeString(*tag, "name"))));
+			ChildObjectTexture::Ref texture(ChildObjectTexture::Ref::New(
+				new ChildObjectTexture(GetAttributeString(*tag, "name"))));
 			pReadObjectTexture(*tag, object, texture);
-			object.textures.Add(texture);
+			object.AddTexture(texture);
 		}
 	}
 	
@@ -165,7 +253,7 @@ void igdeWOSOWorld::LoadXmlWorld::pReadObject(const decXmlElementTag &root, Load
 }
 
 void igdeWOSOWorld::LoadXmlWorld::pReadObjectTexture(const decXmlElementTag &root,
-LoadedObject &object, LoadedObjectTexture &texture){
+ChildObject &object, ChildObjectTexture &texture){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -180,6 +268,9 @@ LoadedObject &object, LoadedObjectTexture &texture){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			if(cdata){
 				texture.pathSkin = cdata->GetData();
+				if(!texture.pathSkin.IsEmpty()){
+					pOwner.LoadTextureSkin(object, texture);
+				}
 			}
 			
 		}else if(tagName == "transform"){
@@ -200,7 +291,7 @@ LoadedObject &object, LoadedObjectTexture &texture){
 }
 
 void igdeWOSOWorld::LoadXmlWorld::pReadObjectTextureTransform(const decXmlElementTag &root,
-LoadedObject &object, LoadedObjectTexture &texture){
+ChildObject &object, ChildObjectTexture &texture){
 	const int elementCount = root.GetElementCount();
 	decVector2 translation, scaling(1.0f, 1.0f);
 	float rotation = 0.0f;
@@ -236,6 +327,31 @@ LoadedObject &object, LoadedObjectTexture &texture){
 	texture.tcTransform = decTexMatrix2::CreateScale(scaling)
 		* decTexMatrix2::CreateRotation(rotation)
 		* decTexMatrix2::CreateTranslation(translation);
+	texture.hasTCTransform = true;
+}
+
+
+// Class ChildAsyncFinished
+/////////////////////////////
+
+igdeWOSOWorld::ChildAsyncFinished::ChildAsyncFinished(igdeWOSOWorld &owner) :
+pOwner(owner){
+}
+
+void igdeWOSOWorld::ChildAsyncFinished::LoadFinished(igdeWObject &wrapper, bool succeeded){
+	if(!succeeded){
+		return;
+	}
+	
+	const int count = pOwner.GetChildObjectCount();
+	int i;
+	for(i=0; i<count; i++){
+		ChildObject &child = pOwner.GetChildObjectAt(i);
+		if(&child.GetWrapper() == &wrapper){
+			pOwner.ChildObjectFinishedAsyncLoad(child);
+			return;
+		}
+	}
 }
 
 
@@ -248,13 +364,19 @@ LoadedObject &object, LoadedObjectTexture &texture){
 igdeWOSOWorld::igdeWOSOWorld(igdeWObject &wrapper, const igdeGDCWorld &gdcWorld,
 	const decString &prefix) :
 igdeWOSubObject(wrapper, prefix),
-pGDWorld(gdcWorld)
+pGDWorld(gdcWorld),
+pChildAsyncFinished(*this),
+pLoadObjectResources(LoadObjectResources::Ref::New(new LoadObjectResources(*this)))
 {
 	wrapper.SubObjectFinishedLoading(*this, true);
 }
 
 igdeWOSOWorld::~igdeWOSOWorld(){
 	pDestroyWorld();
+	
+	if(pLoadObjectResources){
+		pLoadObjectResources->Drop();
+	}
 }
 
 
@@ -271,10 +393,10 @@ void igdeWOSOWorld::OnAllSubObjectsFinishedLoading(){
 
 void igdeWOSOWorld::UpdateVisibility(){
 	const bool visible = GetWrapper().GetVisible();
-	const int count = pObjects.GetCount();
+	const int count = pChildObjects.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((LoadedObject*)pObjects.GetAt(i))->Wrapper().SetVisible(visible);
+		((ChildObject*)pChildObjects.GetAt(i))->GetWrapper().SetVisible(visible);
 	}
 }
 
@@ -282,12 +404,12 @@ void igdeWOSOWorld::UpdateGeometry(){
 	const decDMatrix transform(decDMatrix::CreateWorld(pPosition, pOrientation)
 		* decDMatrix::CreateWorld(GetWrapper().GetPosition(),
 			GetWrapper().GetOrientation(), GetWrapper().GetScaling()));
-	const int count = pObjects.GetCount();
+	const int count = pChildObjects.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		LoadedObject &object = *((LoadedObject*)pObjects.GetAt(i));
-		igdeWObject &wo = object.Wrapper();
+		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
+		igdeWObject &wo = object.GetWrapper();
 		const decDMatrix matrix(object.originalMatrix * transform);
 		
 		wo.SetScaling(matrix.GetScale());
@@ -302,16 +424,74 @@ void igdeWOSOWorld::Visit(igdeWOSOVisitor &visitor){
 	visitor.VisitWorld(*this);
 }
 
-void igdeWOSOWorld::AddObject(const LoadedObject::Ref &object){
+
+int igdeWOSOWorld::GetChildObjectCount() const{
+	return pChildObjects.GetCount();
+}
+
+igdeWOSOWorld::ChildObject &igdeWOSOWorld::GetChildObjectAt(int index) const{
+	return *((ChildObject*)pChildObjects.GetAt(index));
+}
+
+void igdeWOSOWorld::AddChildObject(const ChildObject::Ref &object){
 	DEASSERT_NOTNULL(object)
 	
-	object->Wrapper().SetWorld(GetWrapper().GetWorld());
-	pObjects.Add(object);
+	igdeWObject &wo = object->GetWrapper();
+	wo.SetAsyncLoadFinished(&pChildAsyncFinished);
+	wo.SetWorld(GetWrapper().GetWorld());
+	pChildObjects.Add(object);
+}
+
+void igdeWOSOWorld::RemoveAllChildObjects(){
+	const int count = pChildObjects.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		igdeWObject &wo = ((ChildObject*)pChildObjects.GetAt(i))->GetWrapper();
+		wo.SetWorld(nullptr);
+		wo.SetAsyncLoadFinished(nullptr);
+	}
+	
+	pChildObjects.RemoveAll();
+}
+
+void igdeWOSOWorld::ChildObjectFinishedAsyncLoad(ChildObject &object){
+	pUpdateChildComponentTextures(object);
+}
+
+void igdeWOSOWorld::LoadTextureSkin(ChildObject &object, ChildObjectTexture &texture){
+	pLoadObjectResources->LoadTexture(object, texture);
 }
 
 
 // Protected Functions
 ////////////////////////
+
+void igdeWOSOWorld::UpdateChildComponentTexture(ChildObject &object, ChildObjectTexture &texture){
+	igdeWObject &wo = object.GetWrapper();
+	deComponent * const component = wo.GetComponent();
+	if(!component || !component->GetModel()){
+		return;
+	}
+	
+	const deModel * const engModel = component->GetModel();
+	const int index = engModel->IndexOfTextureNamed(texture.name);
+	if(index == -1){
+		return;
+	}
+	
+	deComponentTexture &ctex = component->GetTextureAt(index);
+	if(texture.skin){
+		ctex.SetSkin(texture.skin);
+		ctex.SetTexture(texture.texture);
+	}
+	if(texture.hasTCTransform){
+		ctex.SetTransform(texture.tcTransform);
+	}
+	if(texture.dynamicSkin){
+		ctex.SetDynamicSkin(texture.dynamicSkin);
+	}
+	component->NotifyTextureChanged(index);
+}
 
 void igdeWOSOWorld::AttachToCollider(){
 }
@@ -356,7 +536,7 @@ void igdeWOSOWorld::pUpdateWorld(){
 }
 
 void igdeWOSOWorld::pDestroyWorld(){
-	pObjects.RemoveAll();
+	RemoveAllChildObjects();
 }
 
 void igdeWOSOWorld::pLoadWorld(const decString &path){
@@ -367,4 +547,19 @@ void igdeWOSOWorld::pLoadWorld(const decString &path){
 	}
 	
 	LoadXmlWorld(*this).LoadWorld(path);
+}
+
+void igdeWOSOWorld::pUpdateChildComponentTextures(ChildObject &object){
+	igdeWObject &wo = object.GetWrapper();
+	deComponent * const component = wo.GetComponent();
+	if(!component || !component->GetModel()){
+		return;
+	}
+	
+	const int textureCount = object.GetTextureCount();
+	int i;
+	
+	for(i=0; i<textureCount; i++){
+		UpdateChildComponentTexture(object, object.GetTextureAt(i));
+	}
 }
