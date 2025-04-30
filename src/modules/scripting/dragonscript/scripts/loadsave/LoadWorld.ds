@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.LoadSave
 
 pin Dragengine.LoadSave
@@ -33,7 +32,6 @@ pin Dragengine.Gui
 pin Dragengine.XML
 
 
-
 /**
  * \brief Load world from world XML file.
  * 
@@ -42,34 +40,44 @@ pin Dragengine.XML
  * Although for simple situations this may not be required using MutableID is mandatory.
  */
 class LoadWorld extends BaseXmlLoader
-	private var LoadHeightTerrain pLoadHeightTerrain
-	private var ElementClassList pElementClassList
-	
+	var LoadHeightTerrain pLoadHeightTerrain
+	var ElementClassList pElementClassList
+	var Dictionary pWorlds
 	
 	
 	/** \brief Create loader. */
-	public func new(Console console, LoadHeightTerrain loadHeightTerrainSector) \
+	func new(Console console, LoadHeightTerrain loadHeightTerrainSector) \
 	this(console, "LoadWorld", loadHeightTerrainSector)
 	end
 	
 	/** \brief Create loader. */
-	public func new(Console console, String name, LoadHeightTerrain loadHeightTerrainSector) \
+	func new(Console console, String name, LoadHeightTerrain loadHeightTerrainSector) \
 	super(console, name)
 		if loadHeightTerrainSector == null
 			throw EInvalidParam.new()
 		end
 		pLoadHeightTerrain = loadHeightTerrainSector
+		pWorlds = Dictionary.new()
+	end
+	
+	/**
+	 * \brief Dispose of loader.
+	 * \version 1.26
+	 */
+	func void dispose()
+		pWorlds.forEach(block StubGameWorld each
+			
+		end)
 	end
 	
 	
-	
 	/** Retrieves the element class manager. */
-	public func ElementClassList getElementClassList()
+	func ElementClassList getElementClassList()
 		return pElementClassList
 	end
 	
 	/** Sets the element class manager. */
-	public func void setElementClassList(ElementClassList list)
+	func void setElementClassList(ElementClassList list)
 		if list == null
 			throw EInvalidParam.new()
 		end
@@ -77,17 +85,12 @@ class LoadWorld extends BaseXmlLoader
 	end
 	
 	
-	
-	/**
-	 * \brief Load world file.
-	 * 
-	 * Unique identifiers for new elements are generated using \em idGenerator.
-	 */
-	public func void loadFromFile(StubGameWorld stubWorld, String filename, bool ignorePersistable)
+	/** \brief Load world file. */
+	func void loadFromFile(StubGameWorld stubWorld, String filename, bool ignorePersistable)
 		loadFromFile(stubWorld, filename, ignorePersistable, false)
 	end
 	
-	public func void loadFromFile(StubGameWorld stubWorld, String filename, \
+	func void loadFromFile(StubGameWorld stubWorld, String filename, \
 	bool ignorePersistable, bool enableNetworking)
 		if pLoadHeightTerrain == null
 			throw EInvalidParam.new()
@@ -115,31 +118,55 @@ class LoadWorld extends BaseXmlLoader
 		end
 	end
 	
+	/**
+	 * \brief Load shared world from file.
+	 * \version 1.26
+	 * 
+	 * Loads the world the first time filename is used and stores the resulting \ref StubGameWorld.
+	 * For all subsequent calls with the same filename the same stored \ref StubGameWorld is
+	 * returned. Hence since the returned stub is shared do not modify it. Instead create a new
+	 * \ref StubGameWorld with a new instance of \ref GameWorld with copies of content if required.
+	 * 
+	 * This call includes all world content without filtering.
+	 * 
+	 * Stub does not contain a \ref GameWorld instance since stub must not be created directly.
+	 */
+	func StubGameWorld loadSharedFromFile(String filename)
+		var StubGameWorld stub = pWorlds.getAt(filename, null) cast StubGameWorld
+		if stub == null
+			stub = StubGameWorld.new(null, null)
+			loadFromFile(stub, filename, false, false)
+			pWorlds.setAt(filename, stub)
+		end
+		return stub
+	end
 	
 	
 	/** \brief Parse world tag. */
 	private func void pParseWorld(EasyXMLElement root, StubGameWorld stubWorld, \
 	String filename, bool ignorePersistable, bool enableNetworking)
 		var GameWorld world = stubWorld.getGameWorld()
-		if world == null
-			throw EInvalidParam.new()
-		end
-		
 		try
 			root.forEachTag(block EasyXMLElement element, String tagName
 				if tagName.equals("size")
-					world.getWorld().setSize(readDVector(element))
+					if world != null
+						world.getWorld().setSize(readDVector(element))
+					end
 					
 				elif tagName.equals("gravity")
-					world.getWorld().setGravity(readVector(element))
+					if world != null
+						world.getWorld().setGravity(readVector(element))
+					end
 					
 				elif tagName.equals("nextObjectID")
 					stubWorld.setNextObjectID(UniqueID.newFromHexString(element.getFirstCData()))
 					
 				elif tagName.equals("heightTerrain")
-					var String basePath = File.new(filename).getParent().getPath()
-					var String htpath = element.getFirstCData()
-					pLoadHeightTerrain.loadFromFile(world, File.absolutePath(htpath, basePath).getPath())
+					if world != null
+						var String basePath = File.new(filename).getParent().getPath()
+						var String htpath = element.getFirstCData()
+						pLoadHeightTerrain.loadFromFile(world, File.absolutePath(htpath, basePath).getPath())
+					end
 					
 				elif tagName.equals("property")
 					stubWorld.setPropertyValueFor(element.getAttributeNamed("key"), \
@@ -160,7 +187,9 @@ class LoadWorld extends BaseXmlLoader
 			end)
 			
 		catch Exception e
-			world.dispose()
+			if world != null
+				world.dispose()
+			end
 			throw
 		end
 	end

@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
 
 
@@ -33,7 +32,6 @@ class ElementVisitor
 	/** \brief Create element visitor. */
 	func new()
 	end
-	
 	
 	
 	/** \brief Visit element. */
@@ -151,6 +149,14 @@ class ElementVisitor
 	 */
 	func void visitBaseVRActor(BaseVRActor actor)
 		visitBaseActor(actor)
+	end
+	
+	/**
+	 * \brief Visit base world.
+	 * \version 1.26
+	 */
+	func void visitBaseWorld(BaseWorld world)
+		visitBehaviorElement(world)
 	end
 	
 	/** \brief Visit environment map. */

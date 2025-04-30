@@ -1,0 +1,162 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief World stub element class property for use with XML loading.
+ * 
+ * World stub is set from XML using a path. Loads the world stub during preloading. The value
+ * of the property is then the loaded \ref StubGameWorld. If loading fails null is stored.
+ * 
+ * \warning The returned \ref StubGameWorld is shared. Do not modify it directly. Instead create
+ *          a copy of the stub and all its content before using it.
+ */
+class ECPWorld extends ElementClassProperty
+	var LoadWorld pLoader
+	var String pPath
+	var StubGameWorld pWorldStub
+	var bool pHasPreloaded
+	
+	
+	/** \brief Create property. */
+	func new(String name, LoadWorld loader) this(name, loader, null)
+	end
+	
+	/** \brief Create property with initial path. */
+	func new(String name, LoadWorld loader, String path) super(name)
+		pLoader = loader
+		pPath = path
+	end
+	
+	func void dispose()
+		pWorldStub = null // can contain elements with classes using this property
+		pLoader = null // shared worlds can contain elements with classes using this property
+		super.dispose()
+	end
+	
+	
+	/** \brief World loader. */
+	func LoadWorld getLoader()
+		return pLoader
+	end
+	
+	/** \brief Path to world. */
+	func String getPath()
+		return pPath
+	end
+	
+	/** \brief Set path to world. */
+	func void setPath(String path)
+		pPath = path
+	end
+	
+	/** \brief World stub or \em null if not present. */
+	func StubGameWorld getWorldStub()
+		return pWorldStub
+	end
+	
+	/** \brief Set world stub or \em null if not present. */
+	func void setWorldStub(StubGameWorld stub)
+		pWorldStub = stub
+	end
+	
+	/** \brief Property has been preloaded. */
+	func bool getHasPreloaded()
+		return pHasPreloaded
+	end
+	
+	
+	func void setValue(Object value)
+		pPath = value cast String
+	end
+	
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		var String path = (property cast ECPWorld).pPath
+		if path != null and not path.empty()
+			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
+		end
+	end
+	
+	
+	func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
+			return
+		end
+		
+		pHasPreloaded = true
+		
+		if pPath == null or pPath.empty()
+			return
+		end
+		
+		var String path = File.absolutePath(pPath, elementClass.getBasePath()).getPath()
+		
+		try
+			pWorldStub = pLoader.loadSharedFromFile(path)
+			
+		catch Exception e
+		end
+	end
+	
+	func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pPath != null and not pPath.empty() and pWorldStub == null
+			console.addMessage("Property {}.{}: Failed loading world {}".format(\
+				Array.newWith(elementClass.getClassname(), getName(),\
+					File.absolutePath(pPath, elementClass.getBasePath()).getPath())))
+			return true
+		end
+		return false
+	end
+	
+	
+	/**
+	 * \brief World stub modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored world stub is returned.
+	 * If the named stub property is present it is loaded as world stub.
+	 * 
+	 * \warning The returned \ref StubGameWorld is shared. Do not modify it directly. Instead create
+	 *          a copy of the stub and all its content before using it.
+	 */
+	func StubGameWorld getWorldStub(StubWithProperties stub, ElementClass eclass)
+		var String value = stub.getPropertyValueFor(getName(), "")
+		if value.empty()
+			return pWorldStub
+		end
+		
+		try
+			return pLoader.loadSharedFromFile(value)
+			
+		catch Exception e
+			throw ELoadResourceFailed.new(value, eclass.getClassname())
+		end
+	end
+end
