@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -58,6 +59,9 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
 	 *                  string to not synchronize. default is empty string. -->
 	 *   <string name='trigger.synchronize'>other</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -83,6 +87,8 @@ class ECBehaviorShowElement extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "showElement")
 			return behavior
@@ -101,6 +107,60 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "showElement.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("shown", null)
+				if value != null
+					pInstance.setShown(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "showElement.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check("showElement.", parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt(prefix + "shown", null)
+				if value != null and pInstance.getShown() != value.equals("true")
+					return false
+				end
+				
+				return true
+			end
+		end
+		
 		/** \brief Change shown listener. */
 		class ShowElementListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
@@ -144,12 +204,21 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
-			if pECBehavior.getTriggerTable() == null
-				return
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getTriggerTable() != null
+				pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(element)
+				pTrigger.addListener(ShowElementListener.new(this))
 			end
 			
-			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(getElement())
-			pTrigger.addListener(ShowElementListener.new(this))
+			if pECBehavior.getBehaviorTree() != null
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction("showElement.set", BTASet.new(this))
+				
+				var BTACheck btacheck = BTACheck.new(this)
+				c.setAction("showElement.check", btacheck)
+				c.setCondition("showElement.check", btacheck)
+			end
 		end
 		
 		
@@ -208,6 +277,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	
 	var ECBehaviorTriggered pTriggered
 	var TSTriggerTable pTriggerTable
+	var ECBehaviorBehaviorTree pBehaviorTree
 	
 	
 	
@@ -227,6 +297,12 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		eclass.addBehavior(this)
 	end
 	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pBehaviorTree = null
+		super.dispose()
+	end
+	
 	
 	
 	/** \brief Trigger to show element. */
@@ -242,6 +318,22 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	

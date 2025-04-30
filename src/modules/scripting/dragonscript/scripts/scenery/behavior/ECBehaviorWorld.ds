@@ -60,7 +60,7 @@ pin Dragengine.Utils
  * 
  * This behavior does require the element class to be persistable (setPersistable).
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:bahavior_world
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_world
  */
 class ECBehaviorWorld extends DefaultECBehavior
 	/**
@@ -166,6 +166,7 @@ class ECBehaviorWorld extends DefaultECBehavior
 		bool ignorePersistable, bool enableNetworking)
 			var StubElement stub
 			var DMatrix matrix
+			var Vector scaling
 			
 			pWorldStub.forEachElement(block StubElement each
 				if ignorePersistable and each.getClass().getPersistable()
@@ -180,8 +181,9 @@ class ECBehaviorWorld extends DefaultECBehavior
 				
 				matrix = each.getMatrix() * worldMatrix
 				stub.setPosition(matrix.getPosition())
-				// stub.setScaling(matrix.getScaling())
-				if not stub.getScaling().isZero()
+				scaling = matrix.getScaling().toVector()
+				stub.setScaling(scaling)
+				if not scaling.isZero()
 					stub.setRotation(matrix.normalize().getEulerAngles().toVector())
 				end
 				stub.setEnableNetworking(enableNetworking)

@@ -29,6 +29,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -93,7 +94,7 @@ pin Dragengine.Utils
  *    public var ECBehaviorComponent component
  *    public var ECBehaviorCollider collider
  *    
- *    public func new()
+ *    func new()
  *       component = ECBehaviorComponent.new(this)
  *       collider = ECBehaviorCollider.new(this, component)
  *       ECBehaviorOutline.new(this, component, collider)
@@ -123,6 +124,9 @@ class ECBehaviorOutline extends DefaultECBehavior
 	 * <behavior type='ECBehaviorOutline'>
 	 *   <!-- optional: use component with id instead of empty string -->
 	 *   <string name='component'>second</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -146,6 +150,9 @@ class ECBehaviorOutline extends DefaultECBehavior
 			var ECBehaviorOutline behavior = ECBehaviorOutline.new(eclass,\
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
 				ECBehaviorCollider.getBehaviorIn(eclass), id)
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "outline", id)
 			return behavior
@@ -154,325 +161,426 @@ class ECBehaviorOutline extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorOutline pECBehavior
-		private var Component pComponent
-		private var DynamicSkin pDynamicSkin
-		private var Skin pSkin
-		private var Color pColor
-		private var float pIntensity
-		private var float pThickness
-		private var bool pVisible
+		/**
+		 * \brief Behavior tree action "outline{(id)}.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("visible", null)
+				if value != null
+					pInstance.setVisible(value.equals("true"))
+				end
+				
+				value = parameters.getAt("color", null)
+				if value != null
+					pInstance.setColor(pInstance.getElement().getClass().\
+						getCodecPropertyString().decodeColor3(value cast String))
+				end
+				
+				value = parameters.getAt("intensity", null)
+				if value != null
+					pInstance.setIntensity((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("thickness", null)
+				if value != null
+					pInstance.setThickness((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "outline{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt(prefix + "visible", null)
+				if value != null and pInstance.getVisible() != value.equals("true")
+					return false
+				end
+				
+				return true
+			end
+		end
+		
+		
+		var ECBehaviorOutline pECBehavior
+		var Component pComponent
+		var DynamicSkin pDynamicSkin
+		var Skin pSkin
+		var Color pColor
+		var float pIntensity
+		var float pThickness
+		var bool pVisible
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorOutline ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorOutline ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var BehaviorElement element = this.getElement()
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			var ElementClass eclass = element.getClass()
 			var CodecPropertyString codec = eclass.getSharedCodecPropertyString()
 			
-			var Component component = this.pECBehavior.getComponent().instance( element ).getComponent()
-			this.pSkin = this.pECBehavior.getSkin().getSkin( stub, eclass )
-			this.pColor = this.pECBehavior.getColor().getColor( stub, codec )
-			this.pIntensity = this.pECBehavior.getIntensity().getValue( stub )
-			this.pThickness = this.pECBehavior.getThickness().getValue( stub )
+			var Component component = pECBehavior.getComponent().instance(element).getComponent()
+			pSkin = pECBehavior.getSkin().getSkin(stub, eclass)
+			pColor = pECBehavior.getColor().getColor(stub, codec)
+			pIntensity = pECBehavior.getIntensity().getValue(stub)
+			pThickness = pECBehavior.getThickness().getValue(stub)
 			
-			var Model model = this.pECBehavior.getModel().getModel( stub, eclass )
+			var Model model = pECBehavior.getModel().getModel(stub, eclass)
 			if model == null
 				model = component.getModel()
 			end
 			
-			var Rig rig = this.pECBehavior.getRig().getRig( stub, eclass )
+			var Rig rig = pECBehavior.getRig().getRig(stub, eclass)
 			if rig == null
 				rig = component.getRig()
 			end
 			
-			this.pComponent = Component.new( model, this.pSkin )
-			this.pComponent.setRig( rig )
-			this.pComponent.setLayerMask( component.getLayerMask() )
-			this.pComponent.setVisible( this.pVisible )
-			this.pComponent.setPosition( component.getPosition() )
-			this.pComponent.setOrientation( component.getOrientation() )
-			this.pComponent.setScaling( component.getScaling() )
+			pComponent = Component.new(model, pSkin)
+			pComponent.setRig(rig)
+			pComponent.setLayerMask(component.getLayerMask())
+			pComponent.setVisible(pVisible)
+			pComponent.setPosition(component.getPosition())
+			pComponent.setOrientation(component.getOrientation())
+			pComponent.setScaling(component.getScaling())
 			
-			this.pDynamicSkin = DynamicSkin.new()
-			this.pDynamicSkin.addRenderable( "color", DynamicSkinRenderableType.color )
-			this.pDynamicSkin.setColorAt( 0, this.pColor )
-			this.pDynamicSkin.addRenderable( "intensity", DynamicSkinRenderableType.value )
-			this.pDynamicSkin.setValueAt( 1, this.pIntensity )
-			this.pDynamicSkin.addRenderable( "thickness", DynamicSkinRenderableType.value )
-			this.pDynamicSkin.setValueAt( 2, this.pThickness )
+			pDynamicSkin = DynamicSkin.new()
+			pDynamicSkin.addRenderable("color", DynamicSkinRenderableType.color)
+			pDynamicSkin.setColorAt(0, pColor)
+			pDynamicSkin.addRenderable("intensity", DynamicSkinRenderableType.value)
+			pDynamicSkin.setValueAt(1, pIntensity)
+			pDynamicSkin.addRenderable("thickness", DynamicSkinRenderableType.value)
+			pDynamicSkin.setValueAt(2, pThickness)
 			
-			this.pComponent.setDynamicSkin( this.pDynamicSkin )
+			pComponent.setDynamicSkin(pDynamicSkin)
 			
-			var int i, textureCount = this.pComponent.getTextureCount()
+			var int i, textureCount = pComponent.getTextureCount()
 			for i = 0 to textureCount
-				this.pComponent.setTextureSkinAt( i, this.pSkin, 0 )
+				pComponent.setTextureSkinAt(i, pSkin, 0)
 			end
 			
-			if this.pECBehavior.getCollider() != null
-				var Collider collider = this.pECBehavior.getCollider().instance( element ).getCollider()
+			if pECBehavior.getCollider() != null
+				var Collider collider = pECBehavior.getCollider().instance(element).getCollider()
 				if collider != null
 					if collider castable ColliderRig
-						( collider cast ColliderRig ).attachRig( this.pComponent )
+						(collider cast ColliderRig).attachRig(pComponent)
 						
 					else
-						collider.attachStatic( this.pComponent, Vector.new(), Quaternion.new() )
+						collider.attachStatic(pComponent, Vector.new(), Quaternion.new())
 					end
 				end
+			end
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPropertyNamePrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
 			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorOutline getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorOutline getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Outline component. */
-		public func Component getComponent()
-			return this.pComponent
+		func Component getComponent()
+			return pComponent
 		end
 		
 		/** \brief Dynamic skin. */
-		public func DynamicSkin getDynamicSkin()
-			return this.pDynamicSkin
+		func DynamicSkin getDynamicSkin()
+			return pDynamicSkin
 		end
 		
 		/** \brief Outline skin. */
-		public func Skin getSkin()
-			return this.pSkin
+		func Skin getSkin()
+			return pSkin
 		end
 		
 		/** \brief Set outline skin. */
-		public func void setSkin( Skin skin )
-			this.pComponent.setSkin( skin )
+		func void setSkin(Skin skin)
+			pComponent.setSkin(skin)
 			
-			var int i, textureCount = this.pComponent.getTextureCount()
+			var int i, textureCount = pComponent.getTextureCount()
 			for i = 0 to textureCount
-				this.pComponent.setTextureSkinAt( i, skin, 0 )
+				pComponent.setTextureSkinAt(i, skin, 0)
 			end
 		end
 		
 		/** \brief Outline color. */
-		public func Color getColor()
-			return this.pColor
+		func Color getColor()
+			return pColor
 		end
 		
 		/** \brief Set outline color. */
-		public func void setColor( Color color )
+		func void setColor(Color color)
 			if color == null
 				throw ENullPointer.new()
 			end
 			
-			this.pColor = color
-			this.pDynamicSkin.setColorAt( 0, color )
+			pColor = color
+			pDynamicSkin.setColorAt(0, color)
 		end
 		
 		/** \brief Outline emissivity intensity. */
-		public func float getIntensity()
-			return this.pIntensity
+		func float getIntensity()
+			return pIntensity
 		end
 		
 		/** \brief Set outline emissivity intensity. */
-		public func void setIntensity( float intensity )
-			this.pIntensity = DEMath.max( intensity, 0.0 )
-			this.pDynamicSkin.setValueAt( 1, this.pIntensity )
+		func void setIntensity(float intensity)
+			pIntensity = DEMath.max(intensity, 0.0)
+			pDynamicSkin.setValueAt(1, pIntensity)
 		end
 		
 		/** \brief Outline emissivity thickness. */
-		public func float getThickness()
-			return this.pThickness
+		func float getThickness()
+			return pThickness
 		end
 		
 		/** \brief Set outline emissivity thickness. */
-		public func void setThickness( float thickness )
-			this.pThickness = DEMath.max( thickness, 0.0 )
-			this.pDynamicSkin.setValueAt( 2, this.pThickness )
+		func void setThickness(float thickness)
+			pThickness = DEMath.max(thickness, 0.0)
+			pDynamicSkin.setValueAt(2, pThickness)
 		end
 		
 		/** \brief Outline is visible. */
-		public func bool getVisible()
-			return this.pVisible
+		func bool getVisible()
+			return pVisible
 		end
 		
 		/** \brief Set if outline is visible. */
-		public func void setVisible( bool visible )
-			this.pVisible = visible
-			this.pComponent.setVisible( visible and this.getElement().getVisible() )
+		func void setVisible(bool visible)
+			pVisible = visible
+			pComponent.setVisible(visible and getElement().getVisible())
 		end
 		
 		
 		
 		/** \brief State changed (visble, touchable). */
-		public func void stateChanged()
-			if this.pComponent != null
-				this.pComponent.setVisible( this.pVisible and this.getElement().getVisible() )
+		func void stateChanged()
+			if pComponent != null
+				pComponent.setVisible(pVisible and getElement().getVisible())
 			end
 		end
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			if this.pComponent != null
-				this.getElement().getGameWorld().getWorld().addComponent( this.pComponent )
+		func void addToGameWorld()
+			if pComponent != null
+				getElement().getGameWorld().getWorld().addComponent(pComponent)
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			if this.pComponent != null
-				this.getElement().getGameWorld().getWorld().removeComponent( this.pComponent )
+		func void removeFromGameWorld()
+			if pComponent != null
+				getElement().getGameWorld().getWorld().removeComponent(pComponent)
 			end
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
-				this.setColor( Color.readFromFile( reader ) )
-				this.setIntensity( reader.readFloat() )
-				this.setThickness( reader.readFloat() )
-				this.setVisible( flags.getAt( 0 ) )
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				setColor(Color.readFromFile(reader))
+				setIntensity(reader.readFloat())
+				setThickness(reader.readFloat())
+				setVisible(flags.getAt(0))
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 1 )
-			flags.setAt( 0, this.pVisible )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pVisible)
+			flags.writeToFile(writer)
 			
-			this.pColor.writeToFile( writer )
-			writer.writeFloat( this.pIntensity )
-			writer.writeFloat( this.pThickness )
+			pColor.writeToFile(writer)
+			writer.writeFloat(pIntensity)
+			writer.writeFloat(pThickness)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorComponent pComponent
-	private var ECBehaviorCollider pCollider
-	private var ECPSkin pSkin
-	private var ECPModel pModel
-	private var ECPRig pRig
-	private var ECPColor pColor
-	private var ECPFloat pIntensity
-	private var ECPFloat pThickness
+	var ECBehaviorComponent pComponent
+	var ECBehaviorCollider pCollider
+	var ECPSkin pSkin
+	var ECPModel pModel
+	var ECPRig pRig
+	var ECPColor pColor
+	var ECPFloat pIntensity
+	var ECPFloat pThickness
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPropertyNamePrefix
 	
 	
 	
 	/**
 	 * \brief Create behavior element class.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorCollider collider ) this( eclass, component, collider, "" )
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider) this(eclass, component, collider, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorCollider collider, String id ) super( eclass, id )
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, String id) super(eclass, id)
 		if component == null
-			throw ENullPointer.new( "compoent" )
+			throw ENullPointer.new("compoent")
 		end
 		if collider == null
-			throw ENullPointer.new( "collider" )
+			throw ENullPointer.new("collider")
 		end
 		
 		var String prefix = id.empty() if "outline." else "outline(" + id + ")."
 		
-		this.pComponent = component
-		this.pCollider = collider
+		pPropertyNamePrefix = prefix
+		pComponent = component
+		pCollider = collider
 		
-		this.pSkin = ECPSkin.new( prefix + "skin", "/shareddata/materials/outlined.deskin" )
-		eclass.addProperty( this.pSkin )
+		eclass.addProperty(pSkin = ECPSkin.new(prefix + "skin", "/shareddata/materials/outlined.deskin"))
+		eclass.addProperty(pModel = ECPModel.new(prefix + "model"))
+		eclass.addProperty(pRig = ECPRig.new(prefix + "rig"))
+		eclass.addProperty(pColor = ECPColor.new(prefix + "color", Color.black))
+		eclass.addProperty(pIntensity = ECPFloat.new(prefix + "intensity", 0, 0))
+		eclass.addProperty(pThickness = ECPFloat.new(prefix + "thickness", 0.005, 0))
 		
-		this.pModel = ECPModel.new( prefix + "model" )
-		eclass.addProperty( this.pModel )
-		
-		this.pRig = ECPRig.new( prefix + "rig" )
-		eclass.addProperty( this.pRig )
-		
-		this.pColor = ECPColor.new( prefix + "color", Color.black )
-		eclass.addProperty( this.pColor )
-		
-		this.pIntensity = ECPFloat.new( prefix + "intensity", 0, 0 )
-		eclass.addProperty( this.pIntensity )
-		
-		this.pThickness = ECPFloat.new( prefix + "thickness", 0.005, 0 )
-		eclass.addProperty( this.pThickness )
-		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pCollider = null
-		this.pComponent = null
+	func void dispose()
+		pCollider = null
+		pComponent = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Property name prefix.
+	 * \version 1.26
+	 */
+	func String getPropertyNamePrefix()
+		return pPropertyNamePrefix
+	end
+	
 	/** \brief Component behavior. */
-	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+	func ECBehaviorComponent getComponent()
+		return pComponent
 	end
 	
 	/** \brief Collider behavior. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Skin property. */
-	public func ECPSkin getSkin()
-		return this.pSkin
+	func ECPSkin getSkin()
+		return pSkin
 	end
 	
 	/** \brief Model property. */
-	public func ECPModel getModel()
-		return this.pModel
+	func ECPModel getModel()
+		return pModel
 	end
 	
 	/** \brief Rig property. */
-	public func ECPRig getRig()
-		return this.pRig
+	func ECPRig getRig()
+		return pRig
 	end
 	
 	/** \brief Color property. */
-	public func ECPColor getColor()
-		return this.pColor
+	func ECPColor getColor()
+		return pColor
 	end
 	
 	/** \brief Intensity property. */
-	public func ECPFloat getIntensity()
-		return this.pIntensity
+	func ECPFloat getIntensity()
+		return pIntensity
 	end
 	
 	/** \brief THickness property. */
-	public func ECPFloat getThickness()
-		return this.pThickness
+	func ECPFloat getThickness()
+		return pThickness
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -483,10 +591,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorOutline getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorOutline each
+	static func ECBehaviorOutline getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorOutline each
 			return true
-		end ) cast ECBehaviorOutline
+		end) cast ECBehaviorOutline
 	end
 	
 	/**
@@ -495,10 +603,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorOutline with specific identifier.
 	 */
-	static public func ECBehaviorOutline getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorOutline each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorOutline
+	static func ECBehaviorOutline getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorOutline each
+			return each.getID().equals(id)
+		end) cast ECBehaviorOutline
 	end
 	
 	/**
@@ -507,10 +615,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 	 * Returns list contains ECBehaviorOutline behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorOutline each
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorOutline each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -522,10 +630,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 	 * of type ECBehaviorOutline.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -534,10 +642,10 @@ class ECBehaviorOutline extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorOutline.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -546,16 +654,16 @@ class ECBehaviorOutline extends DefaultECBehavior
 	 * Returns list contains ECBehaviorOutline.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

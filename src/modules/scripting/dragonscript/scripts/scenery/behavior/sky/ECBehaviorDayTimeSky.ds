@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -57,7 +58,10 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorDayTimeSky'/>
+	 * <behavior type='ECBehaviorDayTimeSky'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
@@ -77,6 +81,9 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 			end
 			var ECBehaviorDayTimeSky behavior = ECBehaviorDayTimeSky.new(\
 				eclass, ECBehaviorSky.getBehaviorIn(eclass))
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
 			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "dayTimeSky")
 			return behavior
@@ -85,53 +92,125 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorDayTimeSky pECBehavior
-		private var SkyController pController
-		private var ECBehaviorSky.Instance pSky
+		/**
+		 * \brief Behavior tree action "dayTimeSky.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("time", null)
+				if value != null
+					pInstance.setDayTime((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "dayTimeSky.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "time.less", null)
+				if value != null
+					result &= pInstance.getDayTime() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.greater", null)
+				if value != null
+					result &= pInstance.getDayTime() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		var ECBehaviorDayTimeSky pECBehavior
+		var SkyController pController
+		var ECBehaviorSky.Instance pSky
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorDayTimeSky ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pSky = ecbehavior.getSky().instance( element )
+		func new(ECBehaviorDayTimeSky ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pSky = ecbehavior.getSky().instance(element)
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var SkyInstance skyInstance = this.pSky.getSkyInstance()
+		func void init(StubElement stub)
+			var SkyInstance skyInstance = pSky.getSkyInstance()
 			if skyInstance == null
 				return
 			end
 			
-			this.pController = skyInstance.getControllerNamed( \
-				this.pECBehavior.getController().getValue( stub ) )
+			pController = skyInstance.getControllerNamed(pECBehavior.getController().getValue(stub))
 			
-			this.setDayTime( this.pECBehavior.getDayTime().getValue( stub ) )
+			setDayTime(pECBehavior.getDayTime().getValue(stub))
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPropertyNamePrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorDayTimeSky getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorDayTimeSky getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief ECBehaviorSky instance. */
-		public func ECBehaviorSky.Instance getSky()
-			return this.pSky
+		func ECBehaviorSky.Instance getSky()
+			return pSky
 		end
 		
 		/** \brief Day time controller or null if not found. */
-		public func SkyController getController()
-			return this.pController
+		func SkyController getController()
+			return pController
 		end
 		
 		/** \brief Day time as hour of day in the range from 0 to 24. */
-		public func float getDayTime()
-			if this.pController != null
-				return this.pController.getValue()
+		func float getDayTime()
+			if pController != null
+				return pController.getValue()
 				
 			else
 				return 0
@@ -139,85 +218,117 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 		end
 		
 		/** \brief Set day time as hour of day in the range from 0 to 24. */
-		public func void setDayTime( float time )
-			if this.pController != null
-				this.pController.setValue( time )
+		func void setDayTime(float time)
+			if pController != null
+				pController.setValue(time)
 			end
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				this.setDayTime( reader.readFloat() )
+				setDayTime(reader.readFloat())
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			writer.writeFloat( this.getDayTime() )
+			writer.writeFloat(getDayTime())
 		end
 	end
 	
 	
 	
-	private var ECBehaviorSky pSky
-	private var ECPString pController
-	private var ECPFloat pDayTime
+	var ECBehaviorSky pSky
+	var ECPString pController
+	var ECPFloat pDayTime
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPropertyNamePrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorSky sky ) \
-	this( eclass, sky, "dayTimeSky." )
+	func new(BehaviorElementClass eclass, ECBehaviorSky sky) this(eclass, sky, "dayTimeSky.")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorSky sky, String prefix ) super( eclass )
+	func new(BehaviorElementClass eclass, ECBehaviorSky sky, String prefix) super(eclass)
 		if sky == null
-			throw BERequiresBehaviorException.new( eclass, this, "ECBehaviorSky" )
+			throw BERequiresBehaviorException.new(eclass, this, "ECBehaviorSky")
 		end
 		
-		this.pSky = sky
+		pPropertyNamePrefix = prefix
+		pSky = sky
 		
-		this.pController = ECPString.new( prefix + "controllerDayTime", "daytime" )
-		eclass.addProperty( this.pController )
+		pController = ECPString.new(prefix + "controllerDayTime", "daytime")
+		eclass.addProperty(pController)
 		
-		this.pDayTime = ECPFloat.new( prefix + "dayTime", 10, 0, 24 )
-		eclass.addProperty( this.pDayTime )
+		pDayTime = ECPFloat.new(prefix + "dayTime", 10, 0, 24)
+		eclass.addProperty(pDayTime)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pBehaviorTree = null
+		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Property name prefix.
+	 * \version 1.26
+	 */
+	func String getPropertyNamePrefix()
+		return pPropertyNamePrefix
+	end
 	
 	/** \brief Sky behavior. */
-	public func ECBehaviorSky getSky()
-		return this.pSky
+	func ECBehaviorSky getSky()
+		return pSky
 	end
 	
 	/** \brief Name of day time controller. */
-	public func ECPString getController()
-		return this.pController
+	func ECPString getController()
+		return pController
 	end
 	
 	/** \brief Day time as hour of day in the range from 0 to 24. */
-	public func ECPFloat getDayTime()
-		return this.pDayTime
+	func ECPFloat getDayTime()
+		return pDayTime
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	/**
@@ -226,10 +337,10 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorDayTimeSky getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorDayTimeSky each
+	static func ECBehaviorDayTimeSky getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorDayTimeSky each
 			return true
-		end ) cast ECBehaviorDayTimeSky
+		end) cast ECBehaviorDayTimeSky
 	end
 	
 	/**
@@ -238,16 +349,16 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorDayTimeSky.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end
