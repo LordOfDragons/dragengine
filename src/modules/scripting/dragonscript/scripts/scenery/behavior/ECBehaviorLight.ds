@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -182,6 +183,9 @@ class ECBehaviorLight extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * 
 	 *   <!-- optional: component behaviors not casting shadows. list of behavior identifiers -->
 	 *   <list name='shadowIgnoreComponents'>
@@ -233,6 +237,7 @@ class ECBehaviorLight extends DefaultECBehavior
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			if parameters.has("shadowIgnoreComponents")
 				(parameters.getAt("shadowIgnoreComponents") cast Array).forEach(block String each
@@ -261,14 +266,14 @@ class ECBehaviorLight extends DefaultECBehavior
 		 * \brief Behavior tree action "light{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet implements BTAction
+		class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("activated", null)
@@ -284,7 +289,7 @@ class ECBehaviorLight extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "light{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -293,11 +298,11 @@ class ECBehaviorLight extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -337,6 +342,7 @@ class ECBehaviorLight extends DefaultECBehavior
 		var ECBehaviorTriggered.Instance pTrigger
 		var Array pListeners
 		var bool pCustomLightHandling
+		var SMContext pSMContext
 		
 		
 		
@@ -353,6 +359,7 @@ class ECBehaviorLight extends DefaultECBehavior
 			pTrigger = null
 			pCollider = null
 			pListeners = null
+			pSMContext = null
 			super.dispose()
 		end
 		
@@ -401,6 +408,17 @@ class ECBehaviorLight extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -502,11 +520,17 @@ class ECBehaviorLight extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.lightActivated(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "activated")
+				end
 				
 			else
 				pListeners.forEach(block Listener each
 					each.lightDeactivated(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "deactivated")
+				end
 			end
 		end
 		
@@ -609,6 +633,7 @@ class ECBehaviorLight extends DefaultECBehavior
 	var ECBehaviorLight pSyncTrigger
 	var TSTriggerTable pTriggerTable
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	var Array pShadowIgnoreComponents
 	var Array pListenerFactories
@@ -665,6 +690,7 @@ class ECBehaviorLight extends DefaultECBehavior
 		pShadowIgnoreComponents = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -732,6 +758,22 @@ class ECBehaviorLight extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/**

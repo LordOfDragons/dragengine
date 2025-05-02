@@ -32,6 +32,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -140,6 +141,9 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -173,6 +177,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "announcer", id)
 			return behavior
@@ -195,14 +200,14 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		 * \brief Behavior tree action "announcer{(id)}.announce".
 		 * \version 1.26
 		 */
-		class BTAAnnounce implements BTAction
+		class BTAAnnounce extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				if parameters.has("stop")
 					pInstance.stop()
 					return BTResult.success
@@ -229,7 +234,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "announcer{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -238,11 +243,11 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -277,6 +282,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		var Announcer pAnnouncer
 		var ECBehaviorTriggered.Instance pTrigger
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -295,6 +301,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 			pTrigger = null
 			pCollider = null
 			pListeners = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -348,6 +355,17 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(pnp + "announce", BTAAnnounce.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -405,6 +423,9 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startAnnouncement(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "start")
+			end
 		end
 		
 		/** \brief Stop announcement if playing. */
@@ -419,6 +440,9 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stopAnnouncement(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "stop")
+			end
 		end
 		
 		
@@ -495,6 +519,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	var TSTriggerTable pTriggerTable
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -574,6 +599,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		pCollider = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -686,6 +712,22 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

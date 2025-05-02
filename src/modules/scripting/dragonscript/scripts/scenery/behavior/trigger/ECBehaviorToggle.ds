@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -104,6 +105,9 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -131,6 +135,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "toggle", id)
 			return behavior
@@ -155,14 +160,14 @@ class ECBehaviorToggle extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "toggle{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet implements BTAction
+		class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("target", null)
@@ -192,7 +197,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "toggle{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -201,11 +206,11 @@ class ECBehaviorToggle extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -253,6 +258,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 		var bool pStartActivated
 		var bool pApplyStartActivated
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -268,6 +274,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 			pTarget = null
 			pTrigger = null
 			pListeners = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -300,6 +307,17 @@ class ECBehaviorToggle extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -341,6 +359,10 @@ class ECBehaviorToggle extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.toggled(this)
 			end)
+			
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "toggled")
+			end
 		end
 		
 		
@@ -400,6 +422,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 	var TSTriggerTable pTriggerTable
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -446,6 +469,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 	func void dispose()
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -479,6 +503,11 @@ class ECBehaviorToggle extends DefaultECBehavior
 		return pTriggerTable
 	end
 	
+	/** \brief Set trigger table or \em null if not used. */
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
+	end
+	
 	/**
 	 * \brief Behavior tree or null.
 	 * \version 1.26
@@ -495,9 +524,20 @@ class ECBehaviorToggle extends DefaultECBehavior
 		pBehaviorTree = behaviorTree
 	end
 	
-	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable(TSTriggerTable triggerTable)
-		pTriggerTable = triggerTable
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

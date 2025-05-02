@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -143,6 +144,9 @@ class ECBehaviorTriggered extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -177,6 +181,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 			
 			behavior.setSynchronize(eclass, parameters.getAt("synchronize", null) cast String)
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			return behavior
 		end
@@ -198,7 +203,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "trigger{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -207,11 +212,11 @@ class ECBehaviorTriggered extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -250,6 +255,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		var TSTriggerTable pTriggerTable
 		var Array pListeners
 		var bool pLoading
+		var SMContext pSMContext
 		
 		
 		
@@ -264,6 +270,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		func void dispose()
 			pTriggerExpression = null
 			pListeners = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -295,6 +302,15 @@ class ECBehaviorTriggered extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getTrigger().getName() + "."
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -379,11 +395,17 @@ class ECBehaviorTriggered extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.triggerExpressionTrue(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getTrigger().getName() + "true")
+				end
 				
 			else
 				pListeners.forEach(block Listener each
 					each.triggerExpressionFalse(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getTrigger().getName() + "false")
+				end
 			end
 		end
 		
@@ -442,6 +464,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 	var Array pListenerFactories
 	var ECBehaviorTriggered pSynchronize
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	
 	
 	
@@ -481,6 +504,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		pSynchronize = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -565,6 +589,22 @@ class ECBehaviorTriggered extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

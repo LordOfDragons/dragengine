@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.LoadSave
 pin Dragengine.Utils
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -113,6 +114,9 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	 * <behavior type='ECBehaviorRideOn'>
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -136,6 +140,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				ECBehaviorProjectToGround.getBehaviorIn(eclass))
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "rideOn")
 			return behavior
@@ -150,7 +155,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "rideOn.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -159,11 +164,11 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -217,6 +222,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		var bool pLocked
 		var ElementResolver pElementResolver
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -240,6 +246,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			pLocomotion = null
 			pProjectToGround = null
 			pElementResolver = null
+			pSMContext = null
 			super.dispose()
 		end
 		
@@ -259,6 +266,15 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, prefix)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = "rideOn."
+				pSMContext = pECBehavior.getStateMachine().instance(getElement()).getContext()
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -329,6 +345,9 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.ridableChanged(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(ridable != null if "rideOn.begin" else "rideOn.end")
+			end
 		end
 		
 		/** \brief Actor is riding. */
@@ -542,6 +561,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	var ECBehaviorProjectToGround pProjectToGround
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	
 	
 	
@@ -571,6 +591,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		pProjectToGround = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -600,6 +621,22 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

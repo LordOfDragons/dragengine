@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -130,6 +131,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -158,6 +162,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "grabSpot", id)
 			return behavior
 		end
@@ -171,14 +178,14 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		 * \brief Behavior tree action "grabSpot{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet implements BTAction
+		class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("enabled", null)
@@ -194,14 +201,14 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		 * \brief Behavior tree action "grabSpot{(id)}.release".
 		 * \version 1.26
 		 */
-		class BTARelease implements BTAction
+		class BTARelease extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				pInstance.release()
 				return BTResult.success
 			end
@@ -211,7 +218,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "grabSpot{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -220,11 +227,11 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -254,6 +261,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		var Collider pTouchCollider
 		var bool pEnabled
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -278,6 +286,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 			end
 			pElementResolver = null
 			pCollider = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -317,6 +326,18 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(pnp + "set", BTASet.new(this))
+				pSMContext.setAction(pnp + "release", BTARelease.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -372,6 +393,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + (enabled if "enabled" else "disabled"))
+			end
 		end
 		
 		
@@ -434,6 +458,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.spotGrabbed(this, grabber)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "grabbed")
+			end
 		end
 		
 		/** \brief Release spot if grabbed. */
@@ -449,6 +476,9 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.spotReleased(this, grabber)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "released")
+			end
 		end
 		
 		
@@ -557,6 +587,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	var ECComposeAttachResource pAttachTouchCollider
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -598,6 +629,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 		pListenerFactories = null
 		pCollider = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -640,6 +672,22 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	

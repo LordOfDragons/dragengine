@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -132,6 +133,9 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -159,6 +163,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			end
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "hearSound")
 			return behavior
@@ -171,7 +176,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "hearSound.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -180,11 +185,11 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -249,6 +254,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		var Array pTrackedElements
 		var Array pAudibleElements
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -271,6 +277,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			pTrackedElements = null
 			pCollider = null
 			pListeners = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -302,6 +309,15 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, prefix)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -510,6 +526,9 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 				pListeners.forEach(block Listener listener
 					listener.elementInaudible(this, element)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "inaudible")
+				end
 			end)
 			pAudibleElements = null
 			
@@ -541,6 +560,9 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.elementAudible(this, element)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "audible")
+			end
 		end
 		
 		/** \brief Speaker became inaudible. */
@@ -560,6 +582,9 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.elementInaudible(this, element)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "inaudible")
+			end
 		end
 		
 		
@@ -602,6 +627,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	var LayerMask pLayerMask
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -638,6 +664,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		pCollider = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -695,6 +722,22 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

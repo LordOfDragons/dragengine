@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -111,6 +112,9 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	 * <behavior type='ECBehaviorAttachable'>
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -133,6 +137,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 				ECBehaviorCollider.getBehaviorIn(eclass))
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "attachable")
 			return behavior
@@ -147,14 +152,14 @@ class ECBehaviorAttachable extends DefaultECBehavior
 		 * \brief Behavior tree action "attachable.deatch".
 		 * \version 1.26
 		 */
-		class BTADetach implements BTAction
+		class BTADetach extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				if parameters.has("dispose")
 					pInstance.detachAndDispose()
 					return BTResult.running
@@ -170,7 +175,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "attachable.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -179,11 +184,11 @@ class ECBehaviorAttachable extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -206,6 +211,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 		var ECBehaviorAttachSlot.Instance pAttachSlot
 		var Array pListeners
 		var ElementResolver pElementResolver
+		var SMContext pSMContext
 		
 		
 		
@@ -223,6 +229,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			pListeners = null
 			pCollider = null
 			pElementResolver = null
+			pSMContext = null
 			super.dispose()
 		end
 		
@@ -241,6 +248,17 @@ class ECBehaviorAttachable extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(getElement()).getContext()
+				pSMContext.setAction(pnp + "detach", BTADetach.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -284,6 +302,9 @@ class ECBehaviorAttachable extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.attachableDetached(this, pAttachSlot)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "detached")
+				end
 			end
 			
 			pAttachSlot = attachSlot
@@ -292,6 +313,9 @@ class ECBehaviorAttachable extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.attachableAttached(this, attachSlot)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "attached")
+				end
 			end
 		end
 		
@@ -466,6 +490,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	var ECBehaviorCollider pCollider
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -497,6 +522,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 		pCollider = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -529,6 +555,22 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

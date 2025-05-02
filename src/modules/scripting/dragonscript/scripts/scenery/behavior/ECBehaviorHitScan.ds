@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -133,6 +134,9 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -162,6 +166,9 @@ class ECBehaviorHitScan extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "hitScan", id)
 			return behavior
 		end
@@ -173,14 +180,14 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \brief Behavior tree action "hitScan.start".
 		 * \version 1.26
 		 */
-		class BTAStart implements BTAction
+		class BTAStart extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				var Object value = parameters.getAt("type")
 				if value.equals("circular")
 					pInstance.startCircular(\
@@ -217,14 +224,14 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \brief Behavior tree action "hitScan.stop".
 		 * \version 1.26
 		 */
-		class BTAStop implements BTAction
+		class BTAStop extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				if parameters.has("clear")
 					pInstance.clear()
 					
@@ -239,7 +246,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "hitScan.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -248,11 +255,11 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -314,6 +321,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		var String pBone
 		var Array pTests
 		var float pOffsetByRange
+		var SMContext pSMContext
 		
 		
 		
@@ -330,6 +338,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			pTests = null
 			pCollider = null
 			pComponent = null
+			pSMContext = null
 			super.dispose()
 		end
 		
@@ -365,6 +374,18 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(pnp + "start", BTAStart.new(this))
+				pSMContext.setAction(pnp + "stop", BTAStop.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -746,6 +767,9 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			pTests.forEach(block ColliderCollisionTest each
 				each.setEnabled(false)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "done")
+			end
 		end
 		
 		/** \brief Stop hit scans clearing results as if nothing is hit. */
@@ -878,6 +902,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	var ECPVector pOrientation
 	var ECPString pBone
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -930,6 +955,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		pCollider = null
 		pComponent = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -1007,6 +1033,22 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	

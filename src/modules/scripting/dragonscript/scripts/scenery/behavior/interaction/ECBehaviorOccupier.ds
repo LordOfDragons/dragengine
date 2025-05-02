@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -111,6 +112,9 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * <behavior type='ECBehaviorOccupier'>
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -130,7 +134,10 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorOccupier behavior = ECBehaviorOccupier.new(eclass, id)
+			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "occupier", id)
 			return behavior
 		end
@@ -144,14 +151,14 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		 * \brief Behavior tree action "occupier{(id)}.release".
 		 * \version 1.26
 		 */
-		class BTARelease implements BTAction
+		class BTARelease extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				pInstance.release()
 				return BTResult.success
 			end
@@ -161,7 +168,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "occupier{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -170,11 +177,11 @@ class ECBehaviorOccupier extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -196,6 +203,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		var ECBehaviorInteractionSpot.Instance pInteractionSpot
 		var ElementResolver pElementResolver
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -211,6 +219,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 			
 			pListeners = null
 			pElementResolver = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -230,6 +239,17 @@ class ECBehaviorOccupier extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(getElement()).getContext()
+				pSMContext.setAction(pnp + "release", BTARelease.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -268,6 +288,9 @@ class ECBehaviorOccupier extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.spotReleased(this, pInteractionSpot)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "released")
+				end
 			end
 			
 			pInteractionSpot = interactionSpot
@@ -276,6 +299,9 @@ class ECBehaviorOccupier extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.spotClaimed(this, interactionSpot)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "claimed")
+				end
 			end
 		end
 		
@@ -391,6 +417,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -415,6 +442,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	func void dispose()
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -442,6 +470,22 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

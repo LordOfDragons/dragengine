@@ -32,6 +32,7 @@ pin Dragengine.Utils
 pin Dragengine.TriggerSystem
 pin Dragengine.BehaviorTreeSystem
 pin Dragengine.Gui.Events
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -260,6 +261,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -309,6 +313,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "twoStateAnimated", id)
@@ -342,14 +347,14 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action "twoStateAnimated{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet implements BTAction
+		class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				if parameters.has("activate")
 					pInstance.activate()
 					
@@ -383,7 +388,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "twoStateAnimated{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -392,11 +397,11 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -493,6 +498,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		var Array pListeners
 		
 		var ECBehaviorComponent.Instance pComponent
+		var SMContext pSMContext
 		
 		
 		
@@ -517,6 +523,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pTargetActivating = null
 			pTargetDeactivating = null
 			pListeners = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -554,6 +561,28 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			updateRequiresThink()
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
+			end
 		end
 		
 		/**
@@ -748,6 +777,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					pListeners.forEach(block Listener each
 						each.stopDeactivate(this)
 					end)
+					if pSMContext != null
+						pSMContext.runEvent(pECBehavior.getPrefix() + "stopDeactivate")
+					end
 				end
 			end
 			
@@ -774,6 +806,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startActivate(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "startActivate")
+			end
 		end
 		
 		/**
@@ -811,6 +846,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					pListeners.forEach(block Listener each
 						each.stopActivate(this)
 					end)
+					if pSMContext != null
+						pSMContext.runEvent(pECBehavior.getPrefix() + "stopActivate")
+					end
 				end
 			end
 			
@@ -837,6 +875,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startDeactivate(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "startDeactivate")
+			end
 		end
 		
 		/**
@@ -882,6 +923,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stopActivate(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "stopActivate")
+			end
 			
 			// it is possible a listener switched our state. if this is the case stick with
 			// the new state and do nothing. the listener is responsible for potential problems
@@ -910,6 +954,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startDeactivate(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "startDeactivate")
+			end
 		end
 		
 		/**
@@ -955,6 +1002,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stopDeactivate(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "stopDeactivate")
+			end
 			
 			// it is possible a listener switched our state. if this is the case stick with
 			// the new state and do nothing. the listener is responsible for potential problems
@@ -983,6 +1033,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startActivate(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "startActivate")
+			end
 		end
 		
 		/**
@@ -1020,10 +1073,16 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.startDeactivate(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "startDeactivate")
+				end
 				
 				pListeners.forEach(block Listener each
 					each.stopDeactivate(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "stopDeactivate")
+				end
 			end
 		end
 		
@@ -1063,6 +1122,10 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					each.startActivate(this)
 					each.stopActivate(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "startActivate")
+					pSMContext.runEvent(pECBehavior.getPrefix() + "stopActivate")
+				end
 			end
 		end
 		
@@ -1170,6 +1233,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.stopActivate(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "stopActivate")
+				end
 				
 				if pTrigger != null and not pTrigger.getState(true)
 					deactivate()
@@ -1196,6 +1262,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.stopDeactivate(this)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "stopDeactivate")
+				end
 				
 				if pTrigger != null and pTrigger.getState(false)
 					activate()
@@ -1311,6 +1380,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	var String pControllerNameActivating, pControllerNameDeactivating
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -1374,6 +1444,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		pComponent = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -1500,6 +1571,22 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

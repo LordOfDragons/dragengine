@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -99,6 +100,9 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * <behavior type='ECBehaviorInventory'>
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -118,7 +122,10 @@ class ECBehaviorInventory extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorInventory behavior = ECBehaviorInventory.new(eclass, id)
+			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "inventory", id)
 			return behavior
 		end
@@ -130,7 +137,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "inventory{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -139,11 +146,11 @@ class ECBehaviorInventory extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -181,6 +188,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 		var Array pStashables
 		var ElementResolver pElementResolver
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -207,6 +215,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 			
 			pListeners = null
 			pElementResolver = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -224,6 +233,15 @@ class ECBehaviorInventory extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(getElement()).getContext()
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -316,6 +334,9 @@ class ECBehaviorInventory extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stashableAdded(this, stashable)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "added")
+			end
 		end
 		
 		/** \brief Remove stashable without disposing of it. */
@@ -326,6 +347,9 @@ class ECBehaviorInventory extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stashableRemoved(this, stashable)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "removed")
+			end
 		end
 		
 		/**
@@ -425,6 +449,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 	
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -449,6 +474,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 	func void dispose()
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -482,6 +508,22 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	

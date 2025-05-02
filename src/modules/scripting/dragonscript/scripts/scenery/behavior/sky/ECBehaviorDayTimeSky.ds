@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -61,6 +62,9 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	 * <behavior type='ECBehaviorDayTimeSky'>
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -83,6 +87,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 				eclass, ECBehaviorSky.getBehaviorIn(eclass))
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "dayTimeSky")
 			return behavior
@@ -95,14 +100,14 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 		 * \brief Behavior tree action "dayTimeSky.set".
 		 * \version 1.26
 		 */
-		class BTASet implements BTAction
+		class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("time", null)
@@ -118,7 +123,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "dayTimeSky.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -127,11 +132,11 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -180,6 +185,17 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 			if pECBehavior.getBehaviorTree() != null
 				var String pnp = pECBehavior.getPrefix()
 				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String pnp = pECBehavior.getPrefix()
+				var SMContext c = pECBehavior.getStateMachine().instance(getElement()).getContext()
 				c.setAction(pnp + "set", BTASet.new(this))
 				
 				var String name = pnp + "check"
@@ -250,6 +266,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	var ECPString pController
 	var ECPFloat pDayTime
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -279,6 +296,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -321,6 +339,22 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	

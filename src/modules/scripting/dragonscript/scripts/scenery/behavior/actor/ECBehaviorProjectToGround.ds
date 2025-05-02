@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -111,6 +112,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	 * <behavior type='ECBehaviorProjectToGround'>
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -139,6 +143,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			end
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "projectToGround")
 			return behavior
@@ -153,7 +158,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "projectToGround.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -162,11 +167,11 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -201,6 +206,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		var DVector pGroundedPosition
 		var bool pApplyToActor
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -234,6 +240,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			pColliderAI = null
 			pCollider = null
 			pProjectCollider = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -275,6 +282,15 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, prefix)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(getElement()).getContext()
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -338,6 +354,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + (enabled if "enabled" else "disabled"))
+			end
 		end
 		
 		/** \brief Remove collider collision test from collider. */
@@ -368,6 +387,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.touchesGroundChanged(this)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + (touchesGround if "touch" else "noTouch"))
+			end
 		end
 		
 		/** * \brief Grounded position. */
@@ -658,6 +680,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	var ECPBoolean pApplyToActor
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -707,6 +730,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		pColliderAI = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -749,6 +773,22 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

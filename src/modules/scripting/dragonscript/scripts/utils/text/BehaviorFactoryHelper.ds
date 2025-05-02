@@ -500,6 +500,62 @@ class BehaviorFactoryHelper
 	
 	
 	/**
+	 * \ref Behavior state machine.
+	 * 
+	 * Parameter can be of string type or null. Throws exception if parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 * \param name Name of parameter. Can be absent
+	 * \param defaultId Id to use if parameter is absent. Can be null.
+	 */
+	func ECBehaviorStateMachine stateMachine(BehaviorElementClass eclass, Dictionary parameters,\
+	String name, String defaultId)
+		var ECBehaviorStateMachine b
+		if parameters.has(name)
+			var String id = parameters.getAt(name) cast String
+			if id != null
+				b = ECBehaviorStateMachine.getBehaviorIn(eclass, id)
+				if b == null
+					throw EInvalidParam.new("ECBehaviorStateMachine not found: " + id)
+				end
+			end
+			
+		elif defaultId != null
+			b = ECBehaviorStateMachine.getBehaviorIn(eclass, defaultId)
+		end
+		return b
+	end
+	
+	/**
+	 * \ref Default behavior state machine using parameter "stateMachine".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorStateMachine defaultStateMachine(BehaviorElementClass eclass, Dictionary parameters)
+		return stateMachine(eclass, parameters, "stateMachine", "")
+	end
+	
+	/**
+	 * \ref Optional behavior state machine using parameter "stateMachine".
+	 * 
+	 * Parameter can be of string type or null. Throws exception if parameter is not null
+	 * and the behavior does not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func ECBehaviorStateMachine optionalStateMachine(BehaviorElementClass eclass, Dictionary parameters)
+		return stateMachine(eclass, parameters, "stateMachine", null)
+	end
+	
+	
+	/**
 	 * \ref VR hand behavior.
 	 * 
 	 * Parameter can be of string type or null. Throws exception if parameter is not null

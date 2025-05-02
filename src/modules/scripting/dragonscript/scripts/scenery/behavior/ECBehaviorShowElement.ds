@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -62,6 +63,9 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -88,6 +92,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "showElement")
 			return behavior
@@ -110,14 +115,14 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		 * \brief Behavior tree action "showElement.set".
 		 * \version 1.26
 		 */
-		class BTASet implements BTAction
+		class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("shown", null)
@@ -133,18 +138,18 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "showElement.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check("showElement.", parameters)
 			end
 			
@@ -182,6 +187,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		var ECBehaviorShowElement pECBehavior
 		var ECBehaviorTriggered.Instance pTrigger
 		var bool pShown
+		var SMContext pSMContext
 		
 		
 		
@@ -196,6 +202,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		/** \brief Dispose of composeable instance. */
 		func void dispose()
 			pTrigger = null
+			pSMContext = null
 			super.dispose()
 		end
 		
@@ -217,6 +224,15 @@ class ECBehaviorShowElement extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this)
 				c.setAction("showElement.check", btacheck)
 				c.setCondition("showElement.check", btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction("showElement.set", BTASet.new(this))
+				
+				var BTACheck btacheck = BTACheck.new(this)
+				pSMContext.setAction("showElement.check", btacheck)
+				pSMContext.setCondition("showElement.check", btacheck)
 			end
 		end
 		
@@ -250,6 +266,10 @@ class ECBehaviorShowElement extends DefaultECBehavior
 			var BehaviorElement element = getElement()
 			element.setVisible(shown)
 			element.setTouchable(shown)
+			
+			if pSMContext != null
+				pSMContext.runEvent(shown if "showElement.shown" else "showElement.hidden")
+			end
 		end
 		
 		
@@ -277,6 +297,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	var ECBehaviorTriggered pTriggered
 	var TSTriggerTable pTriggerTable
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	
 	
 	
@@ -299,6 +320,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -333,6 +355,22 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	

@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -171,6 +172,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	 *   
 	 *   <!-- optional: use behavior tree with id instead of empty string -->
 	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -200,6 +204,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			end
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "touchSensor", id)
 			return behavior
@@ -214,14 +219,14 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		 * \brief Behavior tree action "touchSensor{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet implements BTAction
+		class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("enabled", null)
@@ -237,7 +242,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "touchSensor.check".
 		 * \version 1.26
 		 */
-		class BTACheck implements BTAction, BTCondition
+		class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -246,11 +251,11 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(BTContext context, Dictionary parameters)
+			func BTResult runAction(Dictionary parameters)
 				return check("", parameters) if BTResult.success else BTResult.failure
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateCondition(Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -318,6 +323,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		var Array pTrackedElements
 		var Array pTouchingElements
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -338,6 +344,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pTrackedElements = null
 			pCollider = null
 			pListeners = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -371,6 +378,17 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, prefix)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
 			end
 		end
 		
@@ -588,6 +606,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				pListeners.forEach(block Listener listener
 					listener.elementLeft(this, element)
 				end)
+				if pSMContext != null
+					pSMContext.runEvent(pECBehavior.getPrefix() + "left")
+				end
 			end)
 			pTouchingElements = null
 			
@@ -620,6 +641,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.elementEntered(this, element)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "entered")
+			end
 		end
 		
 		/** \brief Collider left sensor shape. */
@@ -639,6 +663,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.elementLeft(this, element)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "left")
+			end
 		end
 		
 		
@@ -682,6 +709,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	var ECComposeAttachResource pAttach
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var String pPrefix
 	
 	
@@ -725,6 +753,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		pCollider = null
 		pListenerFactories = null
 		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
@@ -785,6 +814,22 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	 */
 	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
 		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */
