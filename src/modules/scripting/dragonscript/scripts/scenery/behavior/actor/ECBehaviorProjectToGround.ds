@@ -29,6 +29,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -107,7 +108,10 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorProjectToGround'/>
+	 * <behavior type='ECBehaviorProjectToGround'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
@@ -133,8 +137,10 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			else
 				behavior = ECBehaviorProjectToGround.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			end
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "projectToGround")
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "projectToGround")
 			return behavior
 		end
 	end
@@ -143,6 +149,46 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action/condition "projectToGround.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "ground", null)
+				if value != null
+					result &= (pInstance.getGroundElement() != null) == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorProjectToGround pECBehavior
 		var ECBehaviorColliderAI.Instance pColliderAI
 		var ECBehaviorCollider.Instance pCollider
@@ -221,6 +267,15 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			pProjectCollider.addCollisionTest(pTest)
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		/** \brief Create touch sensor. */
@@ -602,6 +657,8 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	var ECBehaviorCollider pCollider
 	var ECPBoolean pApplyToActor
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
@@ -634,12 +691,12 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pColliderAI = colliderAI
 		pCollider = collider
 		pListenerFactories = Array.new()
 		
-		pApplyToActor = ECPBoolean.new(prefix + "applyToActor", true)
-		eclass.addProperty(pApplyToActor)
+		eclass.addProperty(pApplyToActor = ECPBoolean.new(prefix + "applyToActor", true))
 		
 		eclass.addBehavior(this)
 	end
@@ -649,10 +706,19 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		pCollider = null
 		pColliderAI = null
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief ColliderAI behavior or null. */
 	func ECBehaviorColliderAI getColliderAI()
@@ -667,6 +733,22 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	/** \brief Apply projected position automatically to actor. */
 	func ECPBoolean getApplyToActor()
 		return pApplyToActor
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	/** \brief Add listener factory. */

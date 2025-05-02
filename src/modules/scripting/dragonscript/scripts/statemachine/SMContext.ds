@@ -47,45 +47,29 @@ pin Dragengine.Scenery
  * and writeToFile().
  */
 class SMContext
-	/** \brief State machine. */
-	private var StateMachine pStateMachine
-	
-	/** \brief Conditions as Dictionary of SMCondition. */
-	private var Dictionary pConditions
-	
-	/** \brief Actions as Dictionary of SMAction. */
-	private var Dictionary pActions
-	
-	/** \brief Current state. */
-	private var SMState pCurrentState
-	
-	/** \brief Console or \em null if not wishing to log anything. */
-	private var Console pConsole
-	
-	/** \brief Logging name to tell apart logs. */
-	private var String pLoggingName
-	
-	/** \brief Log state machine steps. */
-	private var bool pLogTransitions
-	
-	/** \brief Log state machine state changes. */
-	private var bool pLogStateChanges
-	
+	var StateMachine pStateMachine
+	var Dictionary pConditions
+	var Dictionary pActions
+	var SMState pCurrentState
+	var Console pConsole
+	var String pLoggingName
+	var bool pLogTransitions
+	var bool pLogStateChanges
 	
 	
 	/** \brief Create state machine context. */
-	public func new( StateMachine stateMachine )
+	func new(StateMachine stateMachine)
 		if stateMachine == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pStateMachine = stateMachine
-		this.pConditions = Dictionary.new()
-		this.pActions = Dictionary.new()
-		this.pCurrentState = stateMachine.getStateAt( stateMachine.getInitialState() )
-		this.pLoggingName = "StateMachine"
-		this.pLogTransitions = false
-		this.pLogStateChanges = false
+		pStateMachine = stateMachine
+		pConditions = Dictionary.new()
+		pActions = Dictionary.new()
+		pCurrentState = stateMachine.getStateAt(stateMachine.getInitialState())
+		pLoggingName = "StateMachine"
+		pLogTransitions = false
+		pLogStateChanges = false
 	end
 	
 	/**
@@ -94,7 +78,7 @@ class SMContext
 	 * Actions are copied as shallow copy. If you need a deep set all actions anew. The state
 	 * of the context is the same as without creating a copy.
 	 */
-	public func new( SMContext context ) this( context, context.pStateMachine )
+	func new(SMContext context) this(context, context.pStateMachine)
 	end
 	
 	/**
@@ -107,130 +91,126 @@ class SMContext
 	 * Whenever a new context is required the base context is copied. This avoids the need
 	 * to assign actions and conditions since they are copied from the base context.
 	 */
-	public func new( SMContext context, StateMachine stateMachine )
+	func new(SMContext context, StateMachine stateMachine)
 		if stateMachine == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pStateMachine = stateMachine
-		this.pConditions = Dictionary.new( context.pConditions )
-		this.pActions = Dictionary.new( context.pActions )
-		this.pCurrentState = stateMachine.getStateAt( stateMachine.getInitialState() )
+		pStateMachine = stateMachine
+		pConditions = Dictionary.new(context.pConditions)
+		pActions = Dictionary.new(context.pActions)
+		pCurrentState = stateMachine.getStateAt(stateMachine.getInitialState())
 		
-		this.pConsole = context.pConsole
-		this.pLoggingName = context.pLoggingName
-		this.pLogTransitions = context.pLogTransitions
-		this.pLogStateChanges = context.pLogStateChanges
+		pConsole = context.pConsole
+		pLoggingName = context.pLoggingName
+		pLogTransitions = context.pLogTransitions
+		pLogStateChanges = context.pLogStateChanges
 	end
-	
 	
 	
 	/** \brief State machine. */
-	public func StateMachine getStateMachine()
-		return this.pStateMachine
+	func StateMachine getStateMachine()
+		return pStateMachine
 	end
-	
 	
 	
 	/** \brief Count of conditions. */
-	public func int getConditionCount()
-		return this.pConditions.getCount()
+	func int getConditionCount()
+		return pConditions.getCount()
 	end
 	
 	/** \brief Condition for name or null if absent. */
-	public func SMCondition getCondition( String name )
-		return this.pConditions.getAt( name, null ) cast SMCondition
+	func SMCondition getCondition(String name)
+		return pConditions.getAt(name, null) cast SMCondition
 	end
 	
 	/** \brief Condition is present. */
-	public func bool hasCondition( String name )
-		return this.pConditions.has( name )
+	func bool hasCondition(String name)
+		return pConditions.has(name)
 	end
 	
 	/** \brief Visit conditions using block with parameters String (name and SMCondition (condition). */
-	public func void forEachCondition( Block ablock )
-		this.pConditions.forEach( ablock )
+	func void forEachCondition(Block ablock)
+		pConditions.forEach(ablock)
 	end
 	
 	/** \brief Set condition for name. */
-	public func void setCondition( String name, SMCondition condition )
+	func void setCondition(String name, SMCondition condition)
 		if name == null or condition == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.setAt( name, condition )
+		pConditions.setAt(name, condition)
 	end
 	
 	/** \brief Set condition for name using block. */
-	public func void setCondition( String name, Block condition )
+	func void setCondition(String name, Block condition)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.setAt( name, SMBlockCondition.new( condition ) )
+		pConditions.setAt(name, SMBlockCondition.new(condition))
 	end
 	
 	/** \brief Remove condition. */
-	public func void removeCondition( String name )
-		this.pConditions.remove( name )
+	func void removeCondition(String name)
+		pConditions.remove(name)
 	end
 	
 	/** \brief Remove all conditions. */
-	public func void removeAllConditions()
-		this.pConditions.removeAll()
+	func void removeAllConditions()
+		pConditions.removeAll()
 	end
-	
 	
 	
 	/** \brief Count of actions. */
-	public func int getActionCount()
-		return this.pActions.getCount()
+	func int getActionCount()
+		return pActions.getCount()
 	end
 	
 	/** \brief Action for name or null if absent. */
-	public func SMAction getAction( String name )
-		return this.pActions.getAt( name, null ) cast SMAction
+	func SMAction getAction(String name)
+		return pActions.getAt(name, null) cast SMAction
 	end
 	
 	/** \brief Action is present. */
-	public func bool hasAction( String name )
-		return this.pActions.has( name )
+	func bool hasAction(String name)
+		return pActions.has(name)
 	end
 	
 	/** \brief Visit actions using block with parameters String (name and SMAction (action). */
-	public func void forEachAction( Block ablock )
-		this.pActions.forEach( ablock )
+	func void forEachAction(Block ablock)
+		pActions.forEach(ablock)
 	end
 	
 	/** \brief Set action for name. */
-	public func void setAction( String name, SMAction action )
+	func void setAction(String name, SMAction action)
 		if name == null or action == null
 			throw EInvalidParam.new()
 		end
-		this.pActions.setAt( name, action )
+		pActions.setAt(name, action)
 	end
 	
 	/** \brief Set action for name using block. */
-	public func void setAction( String name, Block action )
+	func void setAction(String name, Block action)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pActions.setAt( name, SMBlockAction.new( action ) )
+		pActions.setAt(name, SMBlockAction.new(action))
 	end
 	
 	/** \brief Remove action. */
-	public func void removeAction( String name )
-		this.pActions.remove( name )
+	func void removeAction(String name)
+		pActions.remove(name)
 	end
 	
 	/** \brief Remove all actions. */
-	public func void removeAllActions()
-		this.pActions.removeAll()
+	func void removeAllActions()
+		pActions.removeAll()
 	end
 	
 	
-	
 	/** \brief Current state or null if in transition. */
-	public func SMState getCurrentState()
-		return this.pCurrentState
+	func SMState getCurrentState()
+		return pCurrentState
 	end
 	
 	/**
@@ -241,30 +221,30 @@ class SMContext
 	 * 
 	 * Calls onCurrentStateChanged() after all changes are done.
 	 */
-	public func void setCurrentState( SMState state )
-		if this.pCurrentState != null
-			this.pCurrentState.forEachExitAction( block SMStateAction each
-				each.run( this )
-			end )
+	func void setCurrentState(SMState state)
+		if pCurrentState != null
+			pCurrentState.forEachExitAction(block SMStateAction each
+				each.run(this)
+			end)
 		end
 		
-		this.pCurrentState = state
+		pCurrentState = state
 		
 		if state != null
-			state.forEachEnterAction( block SMStateAction each
-				each.run( this )
-			end )
+			state.forEachEnterAction(block SMStateAction each
+				each.run(this)
+			end)
 		end
 		
-		if this.pLogStateChanges and this.pConsole != null
+		if pLogStateChanges and pConsole != null
 			if state != null
-				this.pConsole.addMessage( this.pLoggingName + ": State changed to '" + state.getID() + "'" )
+				pConsole.addMessage(pLoggingName + ": State changed to '" + state.getID() + "'")
 			else
-				this.pConsole.addMessage( this.pLoggingName + ": State changed to (null)" )
+				pConsole.addMessage(pLoggingName + ": State changed to (null)")
 			end
 		end
 		
-		this.onCurrentStateChanged()
+		onCurrentStateChanged()
 	end
 	
 	/**
@@ -275,95 +255,93 @@ class SMContext
 	 * 
 	 * Calls onCurrentStateChanged() after all changes are done.
 	 */
-	public func void setCurrentStateByID( String id )
+	func void setCurrentStateByID(String id)
 		if id != null
-			this.setCurrentState( this.pStateMachine.getStateAt( id ) )
+			setCurrentState(pStateMachine.getStateAt(id))
 			
 		else
-			this.setCurrentState( null )
+			setCurrentState(null)
 		end
 	end
-	
 	
 	
 	/** \brief Console or \em null if not wishing to log anything. */
-	public func Console getConsole()
-		return this.pConsole
+	func Console getConsole()
+		return pConsole
 	end
 	
 	/** \brief Set console or \em null if not wishing to log anything. */
-	public func void setConsole( Console console )
-		this.pConsole = console
+	func void setConsole(Console console)
+		pConsole = console
 	end
 	
 	/** \brief Logging name to tell apart logs. */
-	public func String getLoggingName()
-		return this.pLoggingName
+	func String getLoggingName()
+		return pLoggingName
 	end
 	
 	/** \brief Set logging name to tell apart logs. */
-	public func void setLoggingName( String name )
+	func void setLoggingName(String name)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pLoggingName = name
+		pLoggingName = name
 	end
 	
 	/** \brief Log state machine steps. */
-	public func bool getLogTransitions()
-		return this.pLogTransitions
+	func bool getLogTransitions()
+		return pLogTransitions
 	end
 	
 	/** \brief Set log state machine steps. */
-	public func void setLogTransitions( bool logSteps )
-		this.pLogTransitions = logSteps
+	func void setLogTransitions(bool logSteps)
+		pLogTransitions = logSteps
 	end
 	
 	/** \brief Log state machine state changes. */
-	public func bool getLogStateChanges()
-		return this.pLogStateChanges
+	func bool getLogStateChanges()
+		return pLogStateChanges
 	end
 	
 	/** \brief Set log state machine state changes. */
-	public func void setLogStateChanges( bool logStateChanges )
-		this.pLogStateChanges = logStateChanges
+	func void setLogStateChanges(bool logStateChanges)
+		pLogStateChanges = logStateChanges
 	end
-	
 	
 	
 	/**
 	 * \brief Run event on state machine.
+	 * \returns true if state understands event otherwise false is returned.
 	 */
-	public func void runEvent( String event )
+	func bool runEvent(String event)
 		if event == null
 			throw ENullPointer.new()
 		end
-		if this.pCurrentState == null
-			throw EInvalidParam.new( "in transition" )
+		if pCurrentState == null
+			throw EInvalidParam.new("in transition")
 		end
 		
-		var SMTransition transition = this.pCurrentState.findTransition( block SMTransition each
-			return each.matches( this, event )
-		end )
+		var SMTransition transition = pCurrentState.getTransitionWithEvent(event)
 		
-		if this.pLogTransitions and this.pConsole != null
+		if pLogTransitions and pConsole != null
 			if transition != null
-				this.pConsole.addMessage( "{}: Transition #{} Event '{}' Next State '{}'" \
-					.format( Array.newWith( this.pLoggingName, \
-						this.pCurrentState.indexOfTransition( transition ), \
-						event, transition.getStateID() ) ) )
+				pConsole.addMessage("{}: Transition #{} Event '{}' Next State '{}'" \
+					.format(Array.newWith(pLoggingName, \
+						pCurrentState.indexOfTransition(transition), \
+						event, transition.getStateID())))
 				
 			else
-				this.pConsole.addMessage( "{}: No transition matching event '{}'" \
-					.format( Array.newWith( this.pLoggingName, event ) ) )
+				pConsole.addMessage("{}: No transition matching event '{}'" \
+					.format(Array.newWith(pLoggingName, event)))
 			end
 		end
 		
 		if transition == null
-			throw EInvalidParam.new( "no transition matches '" + event + "' and can run" )
+			return false
 		end
 		
-		transition.run( this )
+		transition.run(this)
+		return true
 	end
 	
 	/**
@@ -371,8 +349,8 @@ class SMContext
 	 * 
 	 * Sets the state machine root state as current state.
 	 */
-	public func void reset()
-		this.pCurrentState = this.pStateMachine.getStateAt( this.pStateMachine.getInitialState() )
+	func void reset()
+		pCurrentState = pStateMachine.getStateAt(pStateMachine.getInitialState())
 	end
 	
 	
@@ -389,28 +367,28 @@ class SMContext
 	
 	
 	/** \brief Read state from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		select reader.readByte() // version
 		case 0
-			var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
-			if flags.getAt( 0 )
-				this.pCurrentState = this.pStateMachine.getStateAt( reader.readString8() )
+			var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+			if flags.getAt(0)
+				pCurrentState = pStateMachine.getStateAt(reader.readString8())
 			end
 			
 		else
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write state to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		var PersistencyFlags flags = PersistencyFlags.new( 1 )
-		flags.setAt( 0, this.pCurrentState != null )
+		var PersistencyFlags flags = PersistencyFlags.new(1)
+		flags.setAt(0, pCurrentState != null)
 		
-		if this.pCurrentState != null
-			writer.writeString8( this.pCurrentState.getID() )
+		if pCurrentState != null
+			writer.writeString8(pCurrentState.getID())
 		end
 	end
 end

@@ -381,12 +381,12 @@ class ECBehaviorForceField extends DefaultECBehavior
 			end
 			
 			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPrefix()
+				var String prefix = pECBehavior.getPrefix()
 				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(pnp + "set", BTASet.new(this))
+				c.setAction(prefix + "set", BTASet.new(this))
 				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
 			end

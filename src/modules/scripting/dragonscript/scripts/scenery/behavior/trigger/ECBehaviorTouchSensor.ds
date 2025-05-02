@@ -29,6 +29,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -167,6 +168,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	 *                  format is '', 'category' or 'category:filter' where category and filter
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>3:4 0</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -195,6 +199,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "touchSensor", id)
 			return behavior
 		end
@@ -204,6 +210,88 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
+		/**
+		 * \brief Behavior tree action "touchSensor{(id)}.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setTouching(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "touchSensor.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getTouching() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "count", null)
+				if value != null
+					result &= pInstance.getTouchingElementCount() == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.not", null)
+				if value != null
+					result &= pInstance.getTouchingElementCount() != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.less", null)
+				if value != null
+					result &= pInstance.getTouchingElementCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.greater", null)
+				if value != null
+					result &= pInstance.getTouchingElementCount() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "player", null)
+				if value != null
+					result &= pInstance.isPlayerTouching() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		private class TrackedElement
 			var Collider pCollider
 			var Element pElement
@@ -258,10 +346,12 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			pTouchSensor = createTouchSensor(stub)
 			
 			if pECBehavior.getCollider() != null
-				pCollider = pECBehavior.getCollider().instance(getElement())
+				pCollider = pECBehavior.getCollider().instance(element)
 			end
 			
 			if pCollider != null and pCollider.getCollider() != null
@@ -271,6 +361,17 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			pTouchSensor.setListener(this)
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		/**
@@ -353,6 +454,33 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		func bool isElementTouching(Element element)
 			prepareTouchingElements()
 			return pTouchingElements.has(element)
+		end
+		
+		/**
+		 * \brief Check if player is touching.
+		 * \version 1.26
+		 * 
+		 * Checks each element in the list of touching elements if it has
+		 * ECBehaviorPlayerControllable and it is the active player actor. If found
+		 * returns the player actor. If not found null is returned.
+		 */
+		func BehaviorElement getPlayerTouching()
+			return pTouchingElements.findCastable(block BehaviorElement each
+				var ECBehaviorPlayerControllable.Instance behavior = \
+					ECBehaviorPlayerControllable.getInstanceIn(each)
+				return behavior != null and behavior.isPlayerControlled()
+			end) cast BehaviorElement
+		end
+		
+		/**
+		 * \brief Player is touching.
+		 * \version 1.26
+		 * 
+		 * Checks each element in the list of touching elements if it has
+		 * ECBehaviorPlayerControllable and it is the active player actor.
+		 */
+		func bool isPlayerTouching()
+			return getPlayerTouching() != null
 		end
 		
 		/** \deprecated Use addTouchingElement(Collider,Element). */
@@ -553,6 +681,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	var ECPBoolean pTouching
 	var ECComposeAttachResource pAttach
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
@@ -571,22 +701,19 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	String id, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pCollider = collider
 		pListenerFactories = Array.new()
 		
-		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())
-		eclass.addProperty(pShape)
+		eclass.addProperty(pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString()))
 		
 		pCollisionFilter = ECComposeCollisionFilter.new()
 		pCollisionFilter.setCollisionFilter(CollisionFilter.new(\
 			LayerMask.newWith(BaseGameApp.CollisionFilterBit.trigger), \
 			LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)))
 		
-		pShapeFromSize = ECPBoolean.new(prefix + "shapeFromSize", false)
-		eclass.addProperty(pShapeFromSize)
-		
-		pTouching = ECPBoolean.new(prefix + "touching", true)
-		eclass.addProperty(pTouching)
+		eclass.addProperty(pShapeFromSize = ECPBoolean.new(prefix + "shapeFromSize", false))
+		eclass.addProperty(pTouching = ECPBoolean.new(prefix + "touching", true))
 		
 		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		
@@ -597,10 +724,19 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	func void dispose()
 		pCollider = null
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Collider behavior or null if not used. */
 	func ECBehaviorCollider getCollider()
@@ -633,6 +769,22 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	 */
 	func ECPBoolean getTouching()
 		return pTouching
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	/** \brief Add listener factory. */

@@ -288,18 +288,15 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 			
 			func BTResult runAction(BTContext context, Dictionary parameters)
-				try
-					pInstance.runEvent(parameters.getAt("id") cast String)
-					
-				catch Exception e
-					return BTResult.failure
+				if pInstance.runEvent(parameters.getAt("id") cast String)
+					return BTResult.success
 				end
-				return BTResult.success
+				return parameters.has("required") if BTResult.failure else BTResult.success
 			end
 		end
 		
 		/**
-		 * \brief Behavior tree action/condition "forceField{(id)}.check".
+		 * \brief Behavior tree action/condition "stateMachine{(id)}.check".
 		 * \version 1.26
 		 */
 		class BTACheck implements BTAction, BTCondition
@@ -320,48 +317,59 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 			
 			func bool check(String prefix, Dictionary parameters)
-				var String state = pInstance.getContext().getCurrentState().getID()
+				var SMState state = pInstance.getContext().getCurrentState()
+				var String stateid = state.getID()
 				var bool result = true
 				var Object value
 				
 				value = parameters.getAt(prefix + "state", null)
 				if value != null
-					result &= state.equals(value cast String)
+					result &= stateid.equals(value cast String)
 				end
 				
 				value = parameters.getAt(prefix + "state.not", null)
 				if value != null
-					result &= not state.equals(value cast String)
+					result &= not stateid.equals(value cast String)
 				end
 				
 				value = parameters.getAt(prefix + "state.starts", null)
 				if value != null
-					result &= state.startsWith(value cast String)
+					result &= stateid.startsWith(value cast String)
 				end
 				
 				value = parameters.getAt(prefix + "state.starts.not", null)
 				if value != null
-					result &= not state.startsWith(value cast String)
+					result &= not stateid.startsWith(value cast String)
 				end
 				
 				value = parameters.getAt(prefix + "state.ends", null)
 				if value != null
-					result &= state.endsWith(value cast String)
+					result &= stateid.endsWith(value cast String)
 				end
 				
 				value = parameters.getAt(prefix + "state.ends.not", null)
 				if value != null
-					result &= not state.endsWith(value cast String)
+					result &= not stateid.endsWith(value cast String)
 				end
 				
 				value = parameters.getAt(prefix + "state.contains", null)
 				if value != null
-					result &= state.findString(value cast String) != -1
+					result &= stateid.findString(value cast String) != -1
 				end
 				
 				value = parameters.getAt(prefix + "state.contains.not", null)
 				if value != null
-					result &= state.findString(value cast String) == -1
+					result &= stateid.findString(value cast String) == -1
+				end
+				
+				value = parameters.getAt(prefix + "event", null)
+				if value != null
+					result &= state.hasTransitionWithEvent(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "event.not", null)
+				if value != null
+					result &= not state.hasTransitionWithEvent(value cast String)
 				end
 				
 				return result
@@ -449,11 +457,14 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		 * \brief Run event on state machine.
 		 * 
 		 * Does nothing if no context is present.
+		 * 
+		 * \returns true if context is present and current state understands event.
 		 */
-		func void runEvent(String event)
-			if pContext != null
-				pContext.runEvent(event)
+		func bool runEvent(String event)
+			if pContext == null
+				return false
 			end
+			return pContext.runEvent(event)
 		end
 		
 		/**

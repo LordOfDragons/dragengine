@@ -29,6 +29,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -128,6 +129,9 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	 *   <!-- optional: set layer mask (default '2' meaning BaseGameApp.WorldLayerBit.audio).
 	 *                  list of bits to set. -->
 	 *   <string name='layerMask'>0 1 4</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -154,6 +158,8 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "hearSound")
 			return behavior
 		end
@@ -161,6 +167,60 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements SoundLevelMeterListener
+		/**
+		 * \brief Behavior tree action/condition "hearSound.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "count", null)
+				if value != null
+					result &= pInstance.getAudibleElementCount() == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.not", null)
+				if value != null
+					result &= pInstance.getAudibleElementCount() != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.less", null)
+				if value != null
+					result &= pInstance.getAudibleElementCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.greater", null)
+				if value != null
+					result &= pInstance.getAudibleElementCount() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "player", null)
+				if value != null
+					result &= pInstance.isPlayerAudible() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		private class TrackedElement
 			var Speaker pSpeaker
 			var Element pElement
@@ -219,8 +279,10 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			if pECBehavior.getCollider() != null
-				pCollider = pECBehavior.getCollider().instance(getElement())
+				pCollider = pECBehavior.getCollider().instance(element)
 			end
 			
 			pSoundLevelMeter = createSoundLevelMeter(stub)
@@ -232,6 +294,15 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			pSoundLevelMeter.setListener(this)
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		/**
@@ -328,6 +399,33 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 		func bool isElementAudible(Element element)
 			prepareAudibleElements()
 			return pAudibleElements.has(element)
+		end
+		
+		/**
+		 * \brief Check if player is audible.
+		 * \version 1.26
+		 * 
+		 * Checks each element in the list of audible elements if it has
+		 * ECBehaviorPlayerControllable and it is the active player actor. If found
+		 * returns the player actor. If not found null is returned.
+		 */
+		func BehaviorElement getPlayerAudible()
+			return pAudibleElements.findCastable(block BehaviorElement each
+				var ECBehaviorPlayerControllable.Instance behavior = \
+					ECBehaviorPlayerControllable.getInstanceIn(each)
+				return behavior != null and behavior.isPlayerControlled()
+			end) cast BehaviorElement
+		end
+		
+		/**
+		 * \brief Player is audible.
+		 * \version 1.26
+		 * 
+		 * Checks each element in the list of audible elements if it has
+		 * ECBehaviorPlayerControllable and it is the active player actor.
+		 */
+		func bool isPlayerAudible()
+			return getPlayerAudible() != null
 		end
 		
 		/** \deprecated Use addAudibleElement(Speaker,Element). */
@@ -503,6 +601,8 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	var ECPFloat pVolumeThreshold
 	var LayerMask pLayerMask
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
@@ -521,14 +621,12 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pCollider = collider
 		pListenerFactories = Array.new()
 		
-		pAudibleDistance = ECPFloat.new(prefix + "audibleDistance", 100, 1)
-		eclass.addProperty(pAudibleDistance)
-		
-		pVolumeThreshold = ECPFloat.new(prefix + "volumeThreshold", 0.01, 0)
-		eclass.addProperty(pVolumeThreshold)
+		eclass.addProperty(pAudibleDistance = ECPFloat.new(prefix + "audibleDistance", 100, 1))
+		eclass.addProperty(pVolumeThreshold = ECPFloat.new(prefix + "volumeThreshold", 0.01, 0))
 		
 		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
 		
@@ -539,10 +637,19 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	func void dispose()
 		pCollider = null
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Collider behavior or null to not attach. */
 	func ECBehaviorCollider getCollider()
@@ -572,6 +679,22 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 	/** \brief Set layer mask. */
 	func void setLayerMask(LayerMask layerMask)
 		pLayerMask = layerMask
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	/** \brief Add listener factory. */

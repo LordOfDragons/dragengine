@@ -30,6 +30,7 @@ pin Dragengine.Preloading
 pin Dragengine.LoadSave
 pin Dragengine.Utils
 pin Dragengine.Scenery
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -49,48 +50,48 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Actor starts looking at element. */
-		func void actorStartsLookingAt( Instance instance, BehaviorElement actor )
+		func void actorStartsLookingAt(Instance instance, BehaviorElement actor)
 		
 		/** \brief Actor stops looking at element. */
-		func void actorStopsLookingAt( Instance instance, BehaviorElement actor )
+		func void actorStopsLookingAt(Instance instance, BehaviorElement actor)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Actor starts looking at element. */
-		public func void actorStartsLookingAt( Instance instance, BehaviorElement actor )
+		func void actorStartsLookingAt(Instance instance, BehaviorElement actor)
 		end
 		
 		/** \brief Actor stops looking at element. */
-		public func void actorStopsLookingAt( Instance instance, BehaviorElement actor )
+		func void actorStopsLookingAt(Instance instance, BehaviorElement actor)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -100,7 +101,10 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorLookedAt'/>
+	 * <behavior type='ECBehaviorLookedAt'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
@@ -119,6 +123,7 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorLookedAt behavior = ECBehaviorLookedAt.new(eclass)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "lookedAt")
 			return behavior
 		end
@@ -126,57 +131,121 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorLookedAt pECBehavior
-		private var ElementResolver pElementResolver
-		private var Array pLookingActors
-		private var Array pListeners
+		/**
+		 * \brief Behavior tree action/condition "lookedAt.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "count", null)
+				if value != null
+					result &= pInstance.getLookingActorCount() == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.not", null)
+				if value != null
+					result &= pInstance.getLookingActorCount() != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.less", null)
+				if value != null
+					result &= pInstance.getLookingActorCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.greater", null)
+				if value != null
+					result &= pInstance.getLookingActorCount() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "player", null)
+				if value != null
+					result &= pInstance.isPlayerLooking() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorLookedAt pECBehavior
+		var ElementResolver pElementResolver
+		var Array pLookingActors
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorLookedAt ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pLookingActors = Array.new()
-			this.pListeners = Array.new()
+		func new(ECBehaviorLookedAt ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pLookingActors = Array.new()
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of inventory. */
-		public func void dispose()
-			this.pListeners = null
-			this.pLookingActors = null
-			this.pElementResolver = null
+		func void dispose()
+			pListeners = null
+			pLookingActors = null
+			pElementResolver = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init( StubElement stub )
-			this.pECBehavior.createListeners( this )
+		func void init(StubElement stub)
+			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = "lookedAt."
+				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorLookedAt getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorLookedAt getECBehavior()
+			return pECBehavior
 		end
 		
 		
 		
 		/** \brief Count of actors looking at element. */
-		public func int getLookingActorCount()
-			return this.pLookingActors.getCount()
+		func int getLookingActorCount()
+			return pLookingActors.getCount()
 		end
 		
 		/** \brief Actor looking at element by index. */
-		public func BehaviorElement getLookingActorAt( int index )
-			return this.pLookingActors.getAt( index ) cast BehaviorElement
+		func BehaviorElement getLookingActorAt(int index)
+			return pLookingActors.getAt(index) cast BehaviorElement
 		end
 		
 		/** \brief Actor is looking at element. */
-		public func bool hasLookingActor( BehaviorElement element )
-			return this.pLookingActors.has( element )
+		func bool hasLookingActor(BehaviorElement element)
+			return pLookingActors.has(element)
 		end
 		
 		/**
@@ -184,8 +253,8 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 		 * 
 		 * Block receives as first argument each element of type BehaviorElement.
 		 */
-		public func void forEachLookingActor( Block ablock )
-			this.pLookingActors.forEach( ablock )
+		func void forEachLookingActor(Block ablock)
+			pLookingActors.forEach(ablock)
 		end
 		
 		/**
@@ -195,8 +264,8 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 		 * to return true if the actor is found otherwise false. Method returns the found
 		 * actor or null if not found.
 		 */
-		public func BehaviorElement findLookingActor( Block ablock )
-			return this.pLookingActors.find( ablock ) cast BehaviorElement
+		func BehaviorElement findLookingActor(Block ablock)
+			return pLookingActors.find(ablock) cast BehaviorElement
 		end
 		
 		/**
@@ -206,12 +275,12 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 		 * ECBehaviorPlayerControllable and it is the active player actor. If found
 		 * returns the player actor. If not found null is returned.
 		 */
-		public func BehaviorElement getPlayerLooking()
-			return this.pLookingActors.find( block BehaviorElement each
+		func BehaviorElement getPlayerLooking()
+			return pLookingActors.find(block BehaviorElement each
 				var ECBehaviorPlayerControllable.Instance behavior = \
-					ECBehaviorPlayerControllable.getInstanceIn( each )
+					ECBehaviorPlayerControllable.getInstanceIn(each)
 				return behavior != null and behavior.isPlayerControlled()
-			end ) cast BehaviorElement
+			end) cast BehaviorElement
 		end
 		
 		/**
@@ -220,8 +289,8 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 		 * Checks each actor in the list of actors looking at the element if it has
 		 * ECBehaviorPlayerControllable and it is the active player actor.
 		 */
-		public func bool isPlayerLooking()
-			return this.getPlayerLooking() != null
+		func bool isPlayerLooking()
+			return getPlayerLooking() != null
 		end
 		
 		/**
@@ -229,20 +298,20 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 		 * 
 		 * If actor is added to the list actorStartsLookingAt() is called on all listeners.
 		 */
-		public func void addLookingActor( BehaviorElement actor )
+		func void addLookingActor(BehaviorElement actor)
 			if actor == null
 				throw ENullPointer.new()
 			end
 			
-			if this.pLookingActors.has( actor )
+			if pLookingActors.has(actor)
 				return
 			end
 			
-			this.pLookingActors.add( actor )
+			pLookingActors.add(actor)
 			
-			this.pListeners.forEach( block Listener each
-				each.actorStartsLookingAt( this, actor )
-			end )
+			pListeners.forEach(block Listener each
+				each.actorStartsLookingAt(this, actor)
+			end)
 		end
 		
 		/**
@@ -250,51 +319,51 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 		 * 
 		 * If actor is removed from list actorStopsLookingAt() is called on all listeners.
 		 */
-		public func void removeLookingActor( BehaviorElement actor )
+		func void removeLookingActor(BehaviorElement actor)
 			if actor == null
 				throw ENullPointer.new()
 			end
 			
-			if not this.pLookingActors.has( actor )
+			if not pLookingActors.has(actor)
 				return
 			end
 			
-			this.pLookingActors.remove( actor )
+			pLookingActors.remove(actor)
 			
-			this.pListeners.forEach( block Listener each
-				each.actorStopsLookingAt( this, actor )
-			end )
+			pListeners.forEach(block Listener each
+				each.actorStopsLookingAt(this, actor)
+			end)
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
-				throw EInvalidParam.new( "listener is null" )
+				throw EInvalidParam.new("listener is null")
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
-			if this.pElementResolver != null
-				this.pElementResolver.resolve( this.getElement().getGameWorld() )
-				this.pElementResolver = null
+		func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
 			end
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var int i, count = reader.readUShort()
@@ -302,61 +371,79 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 					return
 				end
 				
-				this.pElementResolver = ElementResolver.new()
+				pElementResolver = ElementResolver.new()
 				for i = 0 to count
-					this.pElementResolver.add( reader, block BehaviorElement element
-						this.pLookingActors.add( element )
-					end )
+					pElementResolver.add(reader, block BehaviorElement element
+						pLookingActors.add(element)
+					end)
 				end
-				this.setRequiresEnterFrame( true )
+				setRequiresEnterFrame(true)
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			writer.writeUShort( this.pLookingActors.getCount() )
-			this.pLookingActors.forEach( block BehaviorElement each
-				ElementResolver.writeToFile( writer, each )
-			end )
+			writer.writeUShort(pLookingActors.getCount())
+			pLookingActors.forEach(block BehaviorElement each
+				ElementResolver.writeToFile(writer, each)
+			end)
 		end
 	end
 	
 	
 	
-	private var Array pListenerFactories
+	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	func new(BehaviorElementClass eclass) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pListenerFactories = Array.new()
+		pListenerFactories = Array.new()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pListenerFactories = null
+	func void dispose()
+		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -364,27 +451,27 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -395,10 +482,10 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorLookedAt getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorLookedAt each
+	static func ECBehaviorLookedAt getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorLookedAt each
 			return true
-		end ) cast ECBehaviorLookedAt
+		end) cast ECBehaviorLookedAt
 	end
 	
 	/**
@@ -408,16 +495,16 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 	 * of type ECBehaviorLookedAt.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

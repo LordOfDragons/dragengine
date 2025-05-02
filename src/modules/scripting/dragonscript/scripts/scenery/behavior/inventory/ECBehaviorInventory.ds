@@ -29,6 +29,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -44,48 +45,48 @@ class ECBehaviorInventory extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Stashable has been added to inventory. */
-		func void stashableAdded( Instance instance, ECBehaviorStashable.Instance stashable )
+		func void stashableAdded(Instance instance, ECBehaviorStashable.Instance stashable)
 		
 		/** \brief Stashable has been removed from slot. */
-		func void stashableRemoved( Instance instance, ECBehaviorStashable.Instance stashable )
+		func void stashableRemoved(Instance instance, ECBehaviorStashable.Instance stashable)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Stashable has been attached to slot. */
-		public func void stashableAdded( Instance instance, ECBehaviorStashable.Instance stashable )
+		func void stashableAdded(Instance instance, ECBehaviorStashable.Instance stashable)
 		end
 		
 		/** \brief Stashable has been removed from slot. */
-		public func void stashableRemoved( Instance instance, ECBehaviorStashable.Instance stashable )
+		func void stashableRemoved(Instance instance, ECBehaviorStashable.Instance stashable)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -95,7 +96,10 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorInventory'/>
+	 * <behavior type='ECBehaviorInventory'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
 	 * <behavior type='ECBehaviorInventory' id='second'/>
@@ -114,6 +118,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorInventory behavior = ECBehaviorInventory.new(eclass, id)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "inventory", id)
 			return behavior
 		end
@@ -121,37 +126,87 @@ class ECBehaviorInventory extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorInventory pECBehavior
-		private var ECBehaviorStashable.Instance pStashable
-		private var Array pStashables
-		private var ElementResolver pElementResolver
-		private var Array pListeners
+		/**
+		 * \brief Behavior tree action/condition "inventory{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "count", null)
+				if value != null
+					result &= pInstance.getCount() == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.not", null)
+				if value != null
+					result &= pInstance.getCount() != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.less", null)
+				if value != null
+					result &= pInstance.getCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.greater", null)
+				if value != null
+					result &= pInstance.getCount() > (value cast String).toInt()
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorInventory pECBehavior
+		var ECBehaviorStashable.Instance pStashable
+		var Array pStashables
+		var ElementResolver pElementResolver
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorInventory ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pStashables = Array.new()
-			this.pListeners = Array.new()
+		func new(ECBehaviorInventory ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pStashables = Array.new()
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			if this.pStashables != null
-				var int count = this.pStashables.getCount()
+		func void dispose()
+			if pStashables != null
+				var int count = pStashables.getCount()
 				while count > 0
 					count--
-					( this.pStashables.getAt( count ) cast ECBehaviorStashable.Instance ).getElement().safeDispose()
-					if count < this.pStashables.getCount()
-						this.pStashables.removeFrom( count )
+					(pStashables.getAt(count) cast ECBehaviorStashable.Instance).getElement().safeDispose()
+					if count < pStashables.getCount()
+						pStashables.removeFrom(count)
 					end
 				end
-				this.pStashables = null
+				pStashables = null
 			end
 			
-			this.pListeners = null
-			this.pElementResolver = null
+			pListeners = null
+			pElementResolver = null
 			
 			super.dispose()
 		end
@@ -159,32 +214,41 @@ class ECBehaviorInventory extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pECBehavior.createListeners( this )
+		func void init(StubElement stub)
+			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorInventory getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorInventory getECBehavior()
+			return pECBehavior
 		end
 		
 		
 		
 		/** \brief Count of stashables. */
-		public func int getCount()
-			return this.pStashables.getCount()
+		func int getCount()
+			return pStashables.getCount()
 		end
 		
 		/** \brief Stashable at index. */
-		public func ECBehaviorStashable.Instance getAt( int index )
-			return this.pStashables.getAt( index ) cast ECBehaviorStashable.Instance
+		func ECBehaviorStashable.Instance getAt(int index)
+			return pStashables.getAt(index) cast ECBehaviorStashable.Instance
 		end
 		
 		/** \brief Stashable is present. */
-		public func bool has( ECBehaviorStashable.Instance stashable )
-			return this.pStashables.has( stashable )
+		func bool has(ECBehaviorStashable.Instance stashable)
+			return pStashables.has(stashable)
 		end
 		
 		/**
@@ -192,8 +256,8 @@ class ECBehaviorInventory extends DefaultECBehavior
 		 * 
 		 * Block receives as only argument ECBehaviorStashable.Instance stashable.
 		 */
-		public func void forEach( Block ablock )
-			this.pStashables.forEach( ablock )
+		func void forEach(Block ablock)
+			pStashables.forEach(ablock)
 		end
 		
 		/**
@@ -203,8 +267,8 @@ class ECBehaviorInventory extends DefaultECBehavior
 		 * return true to include the stashable in the returned Array of
 		 * ECBehaviorStashable.Instance .
 		 */
-		public func Array collect( Block ablock )
-			return this.pStashables.collect( ablock )
+		func Array collect(Block ablock)
+			return pStashables.collect(ablock)
 		end
 		
 		/**
@@ -213,18 +277,18 @@ class ECBehaviorInventory extends DefaultECBehavior
 		 * Block receives as only argument ECBehaviorStashable.Instance stashable and has to
 		 * return true if the matching stashable is found.
 		 */
-		public func ECBehaviorStashable.Instance find( Block ablock )
-			return this.pStashables.find( ablock ) cast ECBehaviorStashable.Instance
+		func ECBehaviorStashable.Instance find(Block ablock)
+			return pStashables.find(ablock) cast ECBehaviorStashable.Instance
 		end
 		
 		/** \brief Inventory is empty. */
-		public func bool isEmpty()
-			return this.pStashables.getCount() == 0
+		func bool isEmpty()
+			return pStashables.getCount() == 0
 		end
 		
 		/** \brief Inventory is not empty. */
-		public func bool isNotEmpty()
-			return this.pStashables.getCount() > 0
+		func bool isNotEmpty()
+			return pStashables.getCount() > 0
 		end
 		
 		/**
@@ -232,8 +296,8 @@ class ECBehaviorInventory extends DefaultECBehavior
 		 * \retval false Stashable is already in another inventory.
 		 * \retval true Adding is possible
 		 */
-		public func bool canAdd( ECBehaviorStashable.Instance stashable )
-			return this.pStashable == null and not stashable.isStashed()
+		func bool canAdd(ECBehaviorStashable.Instance stashable)
+			return pStashable == null and not stashable.isStashed()
 		end
 		
 		/**
@@ -241,27 +305,27 @@ class ECBehaviorInventory extends DefaultECBehavior
 		 * \throws EInvalidParam \em stashable is \em null.
 		 * \throws EInvalidParam \em stashable is already in another inventory.
 		 */
-		public func void add( ECBehaviorStashable.Instance stashable )
+		func void add(ECBehaviorStashable.Instance stashable)
 			if stashable.isStashed()
-				throw EInvalidParam.new( "stashable is already stashed" )
+				throw EInvalidParam.new("stashable is already stashed")
 			end
 			
-			this.pStashables.add( stashable )
-			stashable.setInventory( this )
+			pStashables.add(stashable)
+			stashable.setInventory(this)
 			
-			this.pListeners.forEach( block Listener each
-				each.stashableAdded( this, stashable )
-			end )
+			pListeners.forEach(block Listener each
+				each.stashableAdded(this, stashable)
+			end)
 		end
 		
 		/** \brief Remove stashable without disposing of it. */
-		public func void remove( ECBehaviorStashable.Instance stashable )
-			this.pStashables.remove( stashable )
-			stashable.setInventory( null )
+		func void remove(ECBehaviorStashable.Instance stashable)
+			pStashables.remove(stashable)
+			stashable.setInventory(null)
 			
-			this.pListeners.forEach( block Listener each
-				each.stashableRemoved( this, stashable )
-			end )
+			pListeners.forEach(block Listener each
+				each.stashableRemoved(this, stashable)
+			end)
 		end
 		
 		/**
@@ -269,136 +333,164 @@ class ECBehaviorInventory extends DefaultECBehavior
 		 * 
 		 * Calls removeFromGameWorldIfPresent() then dispose() on the stashable.
 		 */
-		public func void removeAndDispose( ECBehaviorStashable.Instance stashable )
-			this.remove( stashable )
+		func void removeAndDispose(ECBehaviorStashable.Instance stashable)
+			remove(stashable)
 			stashable.getElement().safeDispose()
 		end
 		
 		/** \brief Element resolver used during loading or \em null if not set. */
-		public func ElementResolver getElementResolver()
-			return this.pElementResolver
+		func ElementResolver getElementResolver()
+			return pElementResolver
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
-				throw EInvalidParam.new( "listener is null" )
+				throw EInvalidParam.new("listener is null")
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
-			if this.pElementResolver != null
-				this.pElementResolver.resolve( this.getElement().getGameWorld() )
-				this.pElementResolver = null
+		func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
 			end
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			var GameWorld gameWorld = this.getElement().getGameWorld()
-			this.pStashables.forEach( block ECBehaviorStashable.Instance each
+		func void addToGameWorld()
+			var GameWorld gameWorld = getElement().getGameWorld()
+			pStashables.forEach(block ECBehaviorStashable.Instance each
 				var BehaviorElement element = each.getElement()
 				if element.getGameWorld() == null
-					gameWorld.addElement( element )
+					gameWorld.addElement(element)
 				end
-			end )
+			end)
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			this.pStashables.forEach( block ECBehaviorStashable.Instance each
+		func void removeFromGameWorld()
+			pStashables.forEach(block ECBehaviorStashable.Instance each
 				each.getElement().removeFromGameWorldIfPresent()
-			end )
+			end)
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var int i, count = reader.readUShort()
 				if count > 0
-					this.pElementResolver = ElementResolver.new()
+					pElementResolver = ElementResolver.new()
 					for i = 0 to count
-						this.pElementResolver.addBehavior( reader, block ECBehaviorStashable.Instance behavior
-							this.add( behavior )
-						end )
+						pElementResolver.addBehavior(reader, block ECBehaviorStashable.Instance behavior
+							add(behavior)
+						end)
 					end
-					this.setRequiresEnterFrame( true )
+					setRequiresEnterFrame(true)
 				end
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			writer.writeUShort( this.pStashables.getCount() )
-			this.pStashables.forEach( block ECBehaviorStashable.Instance each
-				ElementResolver.writeToFileBehavior( writer, each )
-			end )
+			writer.writeUShort(pStashables.getCount())
+			pStashables.forEach(block ECBehaviorStashable.Instance each
+				ElementResolver.writeToFileBehavior(writer, each)
+			end)
 		end
 	end
 	
 	
 	
-	private var Array pListenerFactories
+	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, "" )
+	func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String id ) \
-	this( eclass, id, id.empty() if "inventory." else "inventory(" + id + ")." )
+	func new(BehaviorElementClass eclass, String id) \
+	this(eclass, id, id.empty() if "inventory." else "inventory(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String prefix ) super( eclass, id )
-		this.pListenerFactories = Array.new()
+	func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+		pPrefix = prefix
+		pListenerFactories = Array.new()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pListenerFactories = null
+	func void dispose()
+		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -406,20 +498,20 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
@@ -430,10 +522,10 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorInventory getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorInventory each
+	static func ECBehaviorInventory getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorInventory each
 			return true
-		end ) cast ECBehaviorInventory
+		end) cast ECBehaviorInventory
 	end
 	
 	/**
@@ -442,10 +534,10 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorInventory with specific identifier.
 	 */
-	static public func ECBehaviorInventory getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorInventory each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorInventory
+	static func ECBehaviorInventory getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorInventory each
+			return each.getID().equals(id)
+		end) cast ECBehaviorInventory
 	end
 	
 	/**
@@ -454,10 +546,10 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInventory behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorInventory each
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorInventory each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -469,10 +561,10 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * of type ECBehaviorInventory.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -481,10 +573,10 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorInventory.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -493,16 +585,16 @@ class ECBehaviorInventory extends DefaultECBehavior
 	 * Returns list contains ECBehaviorInventory.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

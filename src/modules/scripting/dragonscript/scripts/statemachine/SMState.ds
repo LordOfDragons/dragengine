@@ -46,18 +46,10 @@ pin Dragengine.Utils
  * Action can have optional condition running them only if the condition evaluates to true.
  */
 class SMState
-	/** \brief Unique state identifier or \em null. */
-	private var String pID
-	
-	/** \brief Enter actions as Array of SMStateAction. */
-	private var Array pEnterActions
-	
-	/** \brief Exit actions as Array of SMStateAction. */
-	private var Array pExitActions
-	
-	/** \brief Transitions as Array of SMTransition. */
-	private var Array pTransitions
-	
+	var String pID
+	var Array pEnterActions
+	var Array pExitActions
+	var Array pTransitions
 	
 	
 	/**
@@ -65,136 +57,150 @@ class SMState
 	 * \param id Identifier or \em null.
 	 * \throws EInvalidParam \em id is empty string.
 	 */
-	public func new( String id )
+	func new(String id)
 		if id != null and id.empty()
 			throw EInvalidParam.new()
 		end
 		
-		this.pID = id
-		this.pEnterActions = Array.new()
-		this.pExitActions = Array.new()
-		this.pTransitions = Array.new()
+		pID = id
+		pEnterActions = Array.new()
+		pExitActions = Array.new()
+		pTransitions = Array.new()
 	end
-	
 	
 	
 	/** \brief Unique state identifier or \em null. */
-	public func String getID()
-		return this.pID
+	func String getID()
+		return pID
 	end
-	
 	
 	
 	/** \brief Count of enter actions. */
-	public func int getEnterActionCount()
-		return this.pEnterActions.getCount()
+	func int getEnterActionCount()
+		return pEnterActions.getCount()
 	end
 	
 	/** \brief Get enter action at index. */
-	public func SMStateAction getEnterActionAt( int index )
-		return this.pEnterActions.getAt( index ) cast SMStateAction
+	func SMStateAction getEnterActionAt(int index)
+		return pEnterActions.getAt(index) cast SMStateAction
 	end
 	
 	/** \brief Index of enter action or -1 if absent. */
-	public func int indexOfEnterAction( SMStateAction action )
-		return this.pEnterActions.indexOf( action )
+	func int indexOfEnterAction(SMStateAction action)
+		return pEnterActions.indexOf(action)
 	end
 	
 	/** \brief Add enter action. */
-	public func void addEnterAction( SMStateAction action )
+	func void addEnterAction(SMStateAction action)
 		if action == null
 			throw EInvalidParam.new()
 		end
-		this.pEnterActions.add( action )
+		pEnterActions.add(action)
 	end
 	
 	/** \brief Visit enter actions with block with parameter SMStateAction. */
-	public func void forEachEnterAction( Block ablock )
-		this.pEnterActions.forEach( ablock )
+	func void forEachEnterAction(Block ablock)
+		pEnterActions.forEach(ablock)
 	end
 	
 	/** \brief Find enter action with block with parameter SMStateAction. */
-	public func SMStateAction findEnterAction( Block ablock )
-		return this.pEnterActions.find( ablock ) cast SMStateAction
+	func SMStateAction findEnterAction(Block ablock)
+		return pEnterActions.find(ablock) cast SMStateAction
 	end
-	
 	
 	
 	/** \brief Count of exit actions. */
-	public func int getExitActionCount()
-		return this.pExitActions.getCount()
+	func int getExitActionCount()
+		return pExitActions.getCount()
 	end
 	
 	/** \brief Get exit action at index. */
-	public func SMStateAction getExitActionAt( int index )
-		return this.pExitActions.getAt( index ) cast SMStateAction
+	func SMStateAction getExitActionAt(int index)
+		return pExitActions.getAt(index) cast SMStateAction
 	end
 	
 	/** \brief Index of exit action or -1 if absent. */
-	public func int indexOfExitAction( SMStateAction action )
-		return this.pExitActions.indexOf( action )
+	func int indexOfExitAction(SMStateAction action)
+		return pExitActions.indexOf(action)
 	end
 	
 	/** \brief Add exit action. */
-	public func void addExitAction( SMStateAction action )
+	func void addExitAction(SMStateAction action)
 		if action == null
 			throw EInvalidParam.new()
 		end
-		this.pExitActions.add( action )
+		pExitActions.add(action)
 	end
 	
 	/** \brief Visit exit actions with block with parameter SMStateAction. */
-	public func void forEachExitAction( Block ablock )
-		this.pExitActions.forEach( ablock )
+	func void forEachExitAction(Block ablock)
+		pExitActions.forEach(ablock)
 	end
 	
 	/** \brief Find exit action with block with parameter SMStateAction. */
-	public func SMStateAction findExitAction( Block ablock )
-		return this.pExitActions.find( ablock ) cast SMStateAction
+	func SMStateAction findExitAction(Block ablock)
+		return pExitActions.find(ablock) cast SMStateAction
 	end
-	
 	
 	
 	/** \brief Count of transitions. */
-	public func int getTransitionCount()
-		return this.pTransitions.getCount()
+	func int getTransitionCount()
+		return pTransitions.getCount()
 	end
 	
 	/** \brief Get transition at index. */
-	public func SMTransition getTransitionAt( int index )
-		return this.pTransitions.getAt( index ) cast SMTransition
+	func SMTransition getTransitionAt(int index)
+		return pTransitions.getAt(index) cast SMTransition
+	end
+	
+	/**
+	 * \brief Get transition with event or null if absent.
+	 * \version 1.26
+	 */
+	func SMTransition getTransitionWithEvent(String event)
+		return pTransitions.find(block SMTransition each
+			return each.getEvent().equals(event)
+		end) cast SMTransition
+	end
+	
+	/**
+	 * \brief Transition with event is present.
+	 * \version 1.26
+	 */
+	func bool hasTransitionWithEvent(String event)
+		return getTransitionWithEvent(event) != null
 	end
 	
 	/** \brief Index of transition or -1 if absent. */
-	public func int indexOfTransition( SMTransition transition )
-		return this.pTransitions.indexOf( transition )
+	func int indexOfTransition(SMTransition transition)
+		return pTransitions.indexOf(transition)
 	end
 	
 	/** \brief Add transition. */
-	public func void addTransition( SMTransition transition )
+	func void addTransition(SMTransition transition)
 		if transition == null
 			throw EInvalidParam.new()
 		end
-		this.pTransitions.add( transition )
+		pTransitions.add(transition)
 	end
 	
 	/** \brief Remove transition. */
-	public func void removeTransition( SMTransition transition )
-		this.pTransitions.remove( transition )
+	func void removeTransition(SMTransition transition)
+		pTransitions.remove(transition)
 	end
 	
 	/** \brief Remove all transitions. */
-	public func void removeAllTransitions()
-		this.pTransitions.removeAll()
+	func void removeAllTransitions()
+		pTransitions.removeAll()
 	end
 	
 	/** \brief Visit transitions with block with parameter SMTransition. */
-	public func void forEachTransition( Block ablock )
-		this.pTransitions.forEach( ablock )
+	func void forEachTransition(Block ablock)
+		pTransitions.forEach(ablock)
 	end
 	
 	/** \brief Find transition with block with parameter SMTransition. */
-	public func SMTransition findTransition( Block ablock )
-		return this.pTransitions.find( ablock ) cast SMTransition
+	func SMTransition findTransition(Block ablock)
+		return pTransitions.find(ablock) cast SMTransition
 	end
 end

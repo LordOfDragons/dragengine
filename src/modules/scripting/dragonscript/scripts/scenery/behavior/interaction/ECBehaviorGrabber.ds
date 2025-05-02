@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -165,6 +166,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	 *                  format is '', 'category' or 'category:filter' where category and filter
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>4:1 2</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -193,13 +197,14 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				
 			else
 				behavior = ECBehaviorGrabber.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
-				
 			end
 			
 			if parameters.has("collisionFilter")
 				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "grabber", id)
 			return behavior
@@ -210,6 +215,85 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
+		/**
+		 * \brief Behavior tree action "grabber{(id)}.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "grabber{(id)}.release".
+		 * \version 1.26
+		 */
+		class BTARelease implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				pInstance.release()
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "grabber{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "grabbing", null)
+				if value != null
+					result &= pInstance.isGrabbing() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		private class TrackedGrabSpot
 			var Collider pCollider
 			var ECBehaviorGrabSpot.Instance pGrabSpot
@@ -272,13 +356,15 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		
 		/** \brief Initialize behavior from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			pTouchSensor = createTouchSensor(stub)
 			
 			if pECBehavior.getVRHand() != null
-				pVRHand = pECBehavior.getVRHand().instance(getElement())
+				pVRHand = pECBehavior.getVRHand().instance(element)
 				
 			elif pECBehavior.getCollider() != null
-				pCollider = pECBehavior.getCollider().instance(getElement())
+				pCollider = pECBehavior.getCollider().instance(element)
 			end
 			
 			if pVRHand != null and pVRHand.getCollider() != null
@@ -291,6 +377,18 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			pTouchSensor.setListener(this)
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				c.setAction(pnp + "release", BTARelease.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		/** \brief Create touch sensor. */
@@ -781,6 +879,8 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	var ECPShapeList pShape
 	var ECComposeAttachResource pAttach
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
@@ -813,6 +913,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	 */
 	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
 	ECBehaviorCollider collider, String id, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pVRHand = vrHand
 		pCollider = collider
 		pListenerFactories = Array.new()
@@ -835,10 +936,19 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		pVRHand = null
 		pCollider = null
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief VR Hand behavior or null if not used. */
 	func ECBehaviorVRHand getVRHand()
@@ -863,6 +973,22 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	/** \brief Touch shape. */
 	func ECPShapeList getShape()
 		return pShape
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	

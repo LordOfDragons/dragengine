@@ -30,6 +30,7 @@ pin Dragengine.Scenery
 pin Dragengine.Preloading
 pin Dragengine.LoadSave
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -109,7 +110,10 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorRideOn'/>
+	 * <behavior type='ECBehaviorRideOn'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
@@ -130,6 +134,9 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			var ECBehaviorRideOn behavior = ECBehaviorRideOn.new(eclass,\
 				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				ECBehaviorProjectToGround.getBehaviorIn(eclass))
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "rideOn")
 			return behavior
 		end
@@ -139,6 +146,40 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action/condition "rideOn.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "ridable", null)
+				if value != null
+					result &= (pInstance.getRidable() != null) == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Update locomotion on collider changed. */
 		protected class UpdateLocomotionListener extends ECBehaviorColliderAI.DefaultListener
 			var Instance pInstance
@@ -210,6 +251,15 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			pProjectToGround.addListener(NoMoreTouchingGround.new(this))
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = "rideOn."
+				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
@@ -265,12 +315,15 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				
 				// apply ridable linear velocity to AI collider
 				pLocomotion.getColliderAI().addLinearVelocity(pRidable.getLinearVelocity())
+				
+				pRidable.removeRideOn(this)
 			end
 			
 			pRidable = ridable
 			
 			if ridable != null
 				ridable.getCollider().getCollider().attachRelativeMovement(colliderAI)
+				ridable.addRideOn(this)
 			end
 			
 			pListeners.forEach(block Listener each
@@ -488,6 +541,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	var ECBehaviorLocomotion pLocomotion
 	var ECBehaviorProjectToGround pProjectToGround
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
 	
 	
 	
@@ -516,6 +570,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		pLocomotion = null
 		pProjectToGround = null
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
@@ -529,6 +584,22 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	/** \brief Project to ground behavior. */
 	func ECBehaviorProjectToGround getProjectToGround()
 		return pProjectToGround
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	/** \brief Add listener factory. */
