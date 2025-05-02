@@ -263,8 +263,7 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "playerControllable")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "playerControllable")
 			return behavior
 		end
 		

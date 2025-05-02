@@ -99,8 +99,7 @@ class ECBehaviorDecal extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorDecal behavior = ECBehaviorDecal.new(eclass,\
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "decal", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "decal", id)
 			return behavior
 		end
 	end

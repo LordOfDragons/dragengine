@@ -156,7 +156,7 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorRenderablePanel behavior = ECBehaviorRenderablePanel.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "renderablePanel", id)
 			return behavior
 		end

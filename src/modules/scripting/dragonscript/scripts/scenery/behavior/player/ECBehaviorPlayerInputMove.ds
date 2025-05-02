@@ -128,8 +128,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				end
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "playerInputMove")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "playerInputMove")
 			return behavior
 		end
 	end

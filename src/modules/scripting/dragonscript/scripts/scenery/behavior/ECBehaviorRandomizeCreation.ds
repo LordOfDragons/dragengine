@@ -71,7 +71,7 @@ class ECBehaviorRandomizeCreation extends DefaultECBehavior implements BehaviorP
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorRandomizeCreation behavior = ECBehaviorRandomizeCreation.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "randomizeCreation")
 			return behavior
 		end

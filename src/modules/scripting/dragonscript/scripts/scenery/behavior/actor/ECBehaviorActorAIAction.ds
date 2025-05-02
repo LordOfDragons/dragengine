@@ -106,8 +106,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				ECBehaviorColliderAI.getBehaviorIn(eclass),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass),\
 				ECBehaviorPlayerControllable.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "aiAction")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "aiAction")
 			return behavior
 		end
 	end

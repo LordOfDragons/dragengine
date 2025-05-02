@@ -86,7 +86,7 @@ class ECBehaviorEnvMapProbe extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "envMapProbe", id)
 			return behavior
 		end

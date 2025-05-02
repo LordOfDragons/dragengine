@@ -193,8 +193,7 @@ class ECBehaviorCollider extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "collider")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "collider")
 			return behavior
 		end
 	end

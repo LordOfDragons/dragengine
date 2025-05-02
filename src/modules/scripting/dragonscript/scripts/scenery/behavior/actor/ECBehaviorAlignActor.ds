@@ -135,8 +135,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			var ECBehaviorAlignActor behavior = ECBehaviorAlignActor.new(eclass,\
 				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "alignActor")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "alignActor")
 			return behavior
 		end
 	end

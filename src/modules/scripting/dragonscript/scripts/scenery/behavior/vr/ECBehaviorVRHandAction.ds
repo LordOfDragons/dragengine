@@ -95,7 +95,7 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 			var ECBehaviorVRHandAction behavior = ECBehaviorVRHandAction.new(eclass,\
 				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "vrHandAction", id)
 			return behavior
 		end

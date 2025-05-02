@@ -126,8 +126,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorOccupier behavior = ECBehaviorOccupier.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "occupier", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "occupier", id)
 			return behavior
 		end
 	end

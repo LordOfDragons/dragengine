@@ -126,7 +126,7 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 					parameters.getAt("translationManager") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "interactPrompt", id)
 			return behavior
 		end

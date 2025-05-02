@@ -419,8 +419,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "actorMover")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "actorMover")
 			return behavior
 		end
 	end

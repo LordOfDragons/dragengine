@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -48,41 +49,41 @@ class ECBehaviorToggle extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Trigger target toggled. */
-		func void toggled( Instance instance )
+		func void toggled(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Trigger target toggled. */
-		public func void toggled( Instance instance )
+		func void toggled(Instance instance)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -100,6 +101,9 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
 	 *                  string to not synchronize. default is empty string. -->
 	 *   <string name='trigger.synchronize'>other</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -126,8 +130,9 @@ class ECBehaviorToggle extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "toggle", id)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "toggle", id)
 			return behavior
 		end
 		
@@ -146,42 +151,123 @@ class ECBehaviorToggle extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		/** \brief Trigger listener. */
-		public class ToggleListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+		/**
+		 * \brief Behavior tree action/condition "toggle{(id)}.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
-				this.pInstance.toggle()
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("target", null)
+				if value != null
+					if value.equals("fire")
+						pInstance.getTarget().fire()
+						
+					elif value.equals("reset")
+						pInstance.getTarget().reset()
+						
+					elif value.equals("fullReset")
+						pInstance.getTarget().reset()
+						
+					elif value.equals("toggle")
+						pInstance.toggle()
+						
+					else
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "toggle{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "trigger", null)
+				if value != null
+					result &= pInstance.getTrigger().getState() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "target.fired", null)
+				if value != null
+					result &= pInstance.getTarget().getFired() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "target.everFired", null)
+				if value != null
+					result &= pInstance.getTarget().getHasFired() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		/** \brief Trigger listener. */
+		public class ToggleListener extends ECBehaviorTriggered.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+				pInstance.toggle()
 			end
 		end
 		
 		
 		
-		private var ECBehaviorToggle pECBehavior
-		private var ECBehaviorTriggered.Instance pTrigger
-		private var TSNamedTriggerTarget pTarget
-		private var bool pStartActivated
-		private var bool pApplyStartActivated
-		private var Array pListeners
+		var ECBehaviorToggle pECBehavior
+		var ECBehaviorTriggered.Instance pTrigger
+		var TSNamedTriggerTarget pTarget
+		var bool pStartActivated
+		var bool pApplyStartActivated
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorToggle ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pListeners = Array.new()
-			this.pApplyStartActivated = true
+		func new(ECBehaviorToggle ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pListeners = Array.new()
+			pApplyStartActivated = true
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			this.pTarget = null
-			this.pTrigger = null
-			this.pListeners = null
+		func void dispose()
+			pTarget = null
+			pTrigger = null
+			pListeners = null
 			
 			super.dispose()
 		end
@@ -189,196 +275,237 @@ class ECBehaviorToggle extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getTriggerTable() == null
+		func void init(StubElement stub)
+			if pECBehavior.getTriggerTable() == null
 				return
 			end
 			
-			this.pTrigger = this.pECBehavior.getTriggered().synchronizedOrSelf().instance( this.getElement() )
-			this.pTrigger.addListener( ToggleListener.new( this ) )
+			var BehaviorElement element = getElement()
 			
-			this.pStartActivated = this.pECBehavior.getStartActivated().getValue( stub )
+			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(element)
+			pTrigger.addListener(ToggleListener.new(this))
 			
-			this.pTarget = TSNamedTriggerTarget.new( this.pECBehavior.getTarget().getValue( stub ) )
+			pStartActivated = pECBehavior.getStartActivated().getValue(stub)
 			
-			this.pECBehavior.createListeners( this )
+			pTarget = TSNamedTriggerTarget.new(pECBehavior.getTarget().getValue(stub))
+			
+			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorToggle getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorToggle getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Trigger or \em null. */
-		public func ECBehaviorTriggered.Instance getTrigger()
-			return this.pTrigger
+		func ECBehaviorTriggered.Instance getTrigger()
+			return pTrigger
 		end
 		
 		/** \brief Trigger target or \em null. */
-		public func TSNamedTriggerTarget getTarget()
-			return this.pTarget
+		func TSNamedTriggerTarget getTarget()
+			return pTarget
 		end
 		
 		/** \brief Initial state of trigger target when behavior is added to trigger table. */
-		public func bool getStartActivated()
-			return this.pStartActivated
+		func bool getStartActivated()
+			return pStartActivated
 		end
 		
 		
 		
 		/** \brief Toggle trigger expression. */
-		public func void toggle()
-			if this.pTarget != null
-				if this.pTarget.getFired()
-					this.pTarget.reset()
+		func void toggle()
+			if pTarget != null
+				if pTarget.getFired()
+					pTarget.reset()
 					
 				else
-					this.pTarget.fire()
+					pTarget.fire()
 				end
 			end
 			
-			this.pListeners.forEach( block Listener each
-				each.toggled( this )
-			end )
+			pListeners.forEach(block Listener each
+				each.toggled(this)
+			end)
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			if this.pTarget == null
+		func void addToGameWorld()
+			if pTarget == null
 				return
 			end
 			
-			this.pTarget.acquireTarget( this.pECBehavior.getTriggerTable() )
+			pTarget.acquireTarget(pECBehavior.getTriggerTable())
 			
-			if this.pApplyStartActivated
-				this.pApplyStartActivated = false
-				if this.pStartActivated
-					this.pTarget.fire()
+			if pApplyStartActivated
+				pApplyStartActivated = false
+				if pStartActivated
+					pTarget.fire()
 				end
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			if this.pTarget != null
-				this.pTarget.dropTarget()
+		func void removeFromGameWorld()
+			if pTarget != null
+				pTarget.dropTarget()
 			end
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			super.readFromFile( env, reader ) // do not remove unless persisting states!
-			this.pApplyStartActivated = false
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			super.readFromFile(env, reader) // do not remove unless persisting states!
+			pApplyStartActivated = false
 		end
 	end
 	
 	
 	
-	private var ECBehaviorTriggered pTriggered
-	private var ECPString pTarget
-	private var ECPBoolean pStartActivated
-	private var TSTriggerTable pTriggerTable
-	private var Array pListenerFactories
+	var ECBehaviorTriggered pTriggered
+	var ECPString pTarget
+	var ECPBoolean pStartActivated
+	var TSTriggerTable pTriggerTable
+	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) \
-	this( eclass, BaseGameApp.getApp().getTriggerTable(), "" )
+	func new(BehaviorElementClass eclass) \
+	this(eclass, BaseGameApp.getApp().getTriggerTable(), "")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id ) \
-	this( eclass, BaseGameApp.getApp().getTriggerTable(), id )
+	func new(BehaviorElementClass eclass, String id) \
+	this(eclass, BaseGameApp.getApp().getTriggerTable(), id)
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable ) \
-	this( eclass, triggerTable, "" )
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable) \
+	this(eclass, triggerTable, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, String id ) \
-	this( eclass, triggerTable, id, id.empty() if "toggle" else "toggle(" + id + ")" )
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String id) \
+	this(eclass, triggerTable, id, id.empty() if "toggle" else "toggle(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, String id, String subID ) \
-	this( eclass, triggerTable, id, subID, subID + "." )
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String id, String subID) \
+	this(eclass, triggerTable, id, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, \
-	String id, String subID, String prefix ) super( eclass, id )
-		this.pTriggerTable = triggerTable
-		this.pListenerFactories = Array.new()
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, \
+	String id, String subID, String prefix) super(eclass, id)
+		pPrefix = prefix
+		pTriggerTable = triggerTable
+		pListenerFactories = Array.new()
 		
-		this.pTriggered = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		
-		this.pTarget = ECPString.new( prefix + "target", null )
-		eclass.addProperty( this.pTarget )
+		pTarget = ECPString.new(prefix + "target", null)
+		eclass.addProperty(pTarget)
 		
-		this.pStartActivated = ECPBoolean.new( prefix + "startActivated", false )
-		eclass.addProperty( this.pStartActivated )
+		pStartActivated = ECPBoolean.new(prefix + "startActivated", false)
+		eclass.addProperty(pStartActivated)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pListenerFactories = null
+	func void dispose()
+		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Trigger to toggle. */
-	public func ECBehaviorTriggered getTriggered()
-		return this.pTriggered
+	func ECBehaviorTriggered getTriggered()
+		return pTriggered
 	end
 	
 	/** \brief Trigger target to operate. */
-	public func ECPString getTarget()
-		return this.pTarget
+	func ECPString getTarget()
+		return pTarget
 	end
 	
 	/** \brief Initial state of trigger target when behavior is added to trigger table. */
-	public func ECPBoolean getStartActivated()
-		return this.pStartActivated
+	func ECPBoolean getStartActivated()
+		return pStartActivated
 	end
 	
 	/** \brief Trigger table or \em null if not used. */
-	public func TSTriggerTable getTriggerTable()
-		return this.pTriggerTable
+	func TSTriggerTable getTriggerTable()
+		return pTriggerTable
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable( TSTriggerTable triggerTable )
-		this.pTriggerTable = triggerTable
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -386,27 +513,27 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -417,10 +544,10 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorToggle getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorToggle each
+	static func ECBehaviorToggle getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorToggle each
 			return true
-		end ) cast ECBehaviorToggle
+		end) cast ECBehaviorToggle
 	end
 	
 	/**
@@ -429,10 +556,10 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorToggle with specific identifier.
 	 */
-	static public func ECBehaviorToggle getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorToggle each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorToggle
+	static func ECBehaviorToggle getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorToggle each
+			return each.getID().equals(id)
+		end) cast ECBehaviorToggle
 	end
 	
 	/**
@@ -441,10 +568,10 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * Returns list contains ECBehaviorToggle behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorToggle each
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorToggle each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -456,10 +583,10 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * of type ECBehaviorToggle.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -468,10 +595,10 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorToggle.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -480,16 +607,16 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * Returns list contains ECBehaviorToggle.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

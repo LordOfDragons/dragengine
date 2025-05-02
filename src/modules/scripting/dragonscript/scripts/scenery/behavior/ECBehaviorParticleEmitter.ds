@@ -230,7 +230,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "particleEmitter", id)
 			return behavior
 		end
@@ -411,7 +411,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			end
 			
 			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPropertyNamePrefix()
+				var String pnp = pECBehavior.getPrefix()
 				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
 				c.setAction(pnp + "set", BTASet.new(this))
 				
@@ -631,7 +631,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	var TSTriggerTable pTriggerTable
 	var Array pListenerFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
-	var String pPropertyNamePrefix
+	var String pPrefix
 	
 	
 	
@@ -664,7 +664,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable, String id, String subID, String prefix) super(eclass, id)
-		pPropertyNamePrefix = prefix
+		pPrefix = prefix
 		pCollider = collider
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
@@ -695,11 +695,11 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	
 	
 	/**
-	 * \brief Property name prefix.
+	 * \brief Prefix.
 	 * \version 1.26
 	 */
-	func String getPropertyNamePrefix()
-		return pPropertyNamePrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	/** \brief Collider behavior or null to not attach. */

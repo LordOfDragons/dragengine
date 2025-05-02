@@ -154,8 +154,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "hearSound")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "hearSound")
 			return behavior
 		end
 	end

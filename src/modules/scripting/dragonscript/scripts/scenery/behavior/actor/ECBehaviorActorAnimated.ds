@@ -150,7 +150,7 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 			
 			behavior.setDefaultControllerMappings()
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "actorAnimated", id)
 			
 			return behavior

@@ -80,8 +80,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			end
 			var ECBehaviorStepAside behavior = ECBehaviorStepAside.new(eclass,\
 				ECBehaviorActorMover.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "stepAside")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "stepAside")
 			return behavior
 		end
 	end

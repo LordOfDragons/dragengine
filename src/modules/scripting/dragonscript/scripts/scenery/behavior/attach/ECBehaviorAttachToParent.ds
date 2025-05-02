@@ -110,7 +110,7 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 			var ECBehaviorAttachToParent behavior = ECBehaviorAttachToParent.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				ECBehaviorAttachable.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "attachToParent")
 			return behavior
 		end

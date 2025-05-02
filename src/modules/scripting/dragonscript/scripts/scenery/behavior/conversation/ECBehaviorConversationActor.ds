@@ -422,8 +422,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				behavior.setSubtitleTheme(getSubtitleThemeFor(parameters.getAt("subtitleTheme") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "convoActor")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "convoActor")
 			return behavior
 		end
 		

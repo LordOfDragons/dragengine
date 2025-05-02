@@ -129,7 +129,7 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorInteractionSpot behavior = ECBehaviorInteractionSpot.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "interactionSpot", id)
 			return behavior
 		end

@@ -195,8 +195,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "touchSensor", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "touchSensor", id)
 			return behavior
 		end
 	end

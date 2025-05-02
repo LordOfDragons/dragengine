@@ -127,8 +127,7 @@ class ECBehaviorClearPath extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "clearPath")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "clearPath")
 			return behavior
 		end
 	end

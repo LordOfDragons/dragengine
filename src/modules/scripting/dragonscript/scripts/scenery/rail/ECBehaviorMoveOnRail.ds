@@ -129,8 +129,7 @@ class ECBehaviorMoveOnRail extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "moveOnRail")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "moveOnRail")
 			return behavior
 		end
 		

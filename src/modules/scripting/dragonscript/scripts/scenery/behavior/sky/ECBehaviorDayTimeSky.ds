@@ -84,8 +84,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "dayTimeSky")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "dayTimeSky")
 			return behavior
 		end
 	end
@@ -179,7 +178,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 			setDayTime(pECBehavior.getDayTime().getValue(stub))
 			
 			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPropertyNamePrefix()
+				var String pnp = pECBehavior.getPrefix()
 				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
 				c.setAction(pnp + "set", BTASet.new(this))
 				
@@ -251,7 +250,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	var ECPString pController
 	var ECPFloat pDayTime
 	var ECBehaviorBehaviorTree pBehaviorTree
-	var String pPropertyNamePrefix
+	var String pPrefix
 	
 	
 	
@@ -265,7 +264,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 			throw BERequiresBehaviorException.new(eclass, this, "ECBehaviorSky")
 		end
 		
-		pPropertyNamePrefix = prefix
+		pPrefix = prefix
 		pSky = sky
 		
 		pController = ECPString.new(prefix + "controllerDayTime", "daytime")
@@ -286,11 +285,11 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	
 	
 	/**
-	 * \brief Property name prefix.
+	 * \brief Prefix.
 	 * \version 1.26
 	 */
-	func String getPropertyNamePrefix()
-		return pPropertyNamePrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	/** \brief Sky behavior. */

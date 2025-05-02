@@ -99,7 +99,7 @@ class ECBehaviorAttachDynamicSkin extends DefaultECBehavior
 			var ECBehaviorAttachDynamicSkin behavior = ECBehaviorAttachDynamicSkin.new(eclass,\
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
 				ECBehaviorAttachable.getBehaviorIn(eclass), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "attachDynamicSkin", id)
 			return behavior
 		end

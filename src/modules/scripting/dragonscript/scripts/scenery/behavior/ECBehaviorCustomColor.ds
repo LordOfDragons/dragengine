@@ -153,7 +153,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorCustomColor behavior = ECBehaviorCustomColor.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "customColor", id)
 			return behavior
 		end

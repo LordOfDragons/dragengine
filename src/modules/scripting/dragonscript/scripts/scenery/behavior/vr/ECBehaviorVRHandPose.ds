@@ -108,7 +108,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorVRHandPose behavior = ECBehaviorVRHandPose.new(eclass,\
 				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "vrHandPose", id)
 			return behavior
 		end

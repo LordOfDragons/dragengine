@@ -257,8 +257,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			var ECBehaviorActorCutscene behavior = ECBehaviorActorCutscene.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "cutscene")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "cutscene")
 			return behavior
 		end
 	end

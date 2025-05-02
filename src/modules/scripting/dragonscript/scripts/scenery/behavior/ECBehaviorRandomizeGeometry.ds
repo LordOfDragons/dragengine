@@ -71,7 +71,7 @@ class ECBehaviorRandomizeGeometry extends DefaultECBehavior implements BehaviorP
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorRandomizeGeometry behavior = ECBehaviorRandomizeGeometry.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "randomizeGeometry")
 			return behavior
 		end

@@ -86,7 +86,7 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "showMessage", id)
 			return behavior
 		end

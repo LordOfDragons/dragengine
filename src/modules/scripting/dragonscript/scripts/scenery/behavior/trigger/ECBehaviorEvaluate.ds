@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -124,6 +125,9 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
 	 *                  string to not synchronize. default is empty string. -->
 	 *   <string name='trigger.synchronize'>other</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -150,8 +154,9 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "evaluate", id)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "evaluate", id)
 			return behavior
 		end
 		
@@ -170,6 +175,50 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action/condition "evaluate{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "trigger", null)
+				if value != null
+					result &= pInstance.getTrigger().getState() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "target.fired", null)
+				if value != null
+					result &= pInstance.getTarget().getFired() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "target.everFired", null)
+				if value != null
+					result &= pInstance.getTarget().getHasFired() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Trigger listener. */
 		public class EvaluateListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
@@ -221,13 +270,24 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 				return
 			end
 			
-			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(getElement())
+			var BehaviorElement element = getElement()
+			
+			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(element)
 			pTrigger.addListener(EvaluateListener.new(this))
 			
 			pTarget = TSNamedTriggerTarget.new(pECBehavior.getTarget().getValue(stub))
 			pPulse = pECBehavior.getPulse().getValue(stub)
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
@@ -332,6 +392,8 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	var ECPBoolean pPulse
 	var TSTriggerTable pTriggerTable
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
@@ -358,6 +420,7 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, \
 	String id, String subID, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pTriggerTable = triggerTable
 		
 		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
@@ -375,10 +438,19 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Trigger to evaluate. */
 	func ECBehaviorTriggered getTriggered()
@@ -403,6 +475,22 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	protected func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	/** \brief Add listener factory. */

@@ -191,8 +191,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrHand", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrHand", id)
 			return behavior
 		end
 		

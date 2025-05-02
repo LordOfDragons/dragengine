@@ -68,8 +68,7 @@ class ECBehaviorAttachments extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorAttachments behavior = ECBehaviorAttachments.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "attachments")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "attachments")
 			return behavior
 		end
 	end

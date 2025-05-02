@@ -114,8 +114,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "camera", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "camera", id)
 			return behavior
 		end
 	end

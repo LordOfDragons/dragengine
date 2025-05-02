@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -207,6 +208,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: use named controller instead of first controller. default is empty string -->
 	 *   <string name='controllerName'>playback</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -237,8 +241,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "animated", id)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "animated", id)
 			return behavior
 		end
 		
@@ -257,6 +262,93 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "animated{(id)}.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("playing", null)
+				if value != null
+					pInstance.setPlaying(value.equals("true"))
+				end
+				
+				value = parameters.getAt("time", null)
+				if value != null
+					pInstance.setTime((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("time.relative", null)
+				if value != null
+					pInstance.setTimeRelative((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "animated{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "playing", null)
+				if value != null
+					result &= pInstance.getPlaying() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "time.less", null)
+				if value != null
+					result &= pInstance.getTime() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.greater", null)
+				if value != null
+					result &= pInstance.getTime() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.relative.less", null)
+				if value != null
+					result &= pInstance.getTimeRelative() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.relative.greater", null)
+				if value != null
+					result &= pInstance.getTimeRelative() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Trigger listener to start playing back. */
 		public class PlayingListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
@@ -347,6 +439,17 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			end
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		/**
@@ -440,6 +543,22 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		/** \brief Set playback time. */
 		func void setTime(float time)
 			pPlayback.setTime(time)
+		end
+		
+		/**
+		 * \brief Relative playback time in the range from 0 to 1.
+		 * \version 1.26
+		 */
+		func float getTimeRelative()
+			return pPlayback.getTimeRelative()
+		end
+		
+		/**
+		 * \brief Set relative playback time in the range from 0 to 1.
+		 * \version 1.26
+		 */
+		func void setTimeRelative(float time)
+			pPlayback.setTimeRelative(time)
 		end
 		
 		/**
@@ -597,6 +716,8 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	var ECPBoolean pApplyPostThink
 	var TSTriggerTable pTriggerTable
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
@@ -637,6 +758,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			throw ENullPointer.new("component")
 		end
 		
+		pPrefix = prefix
 		pComponent = component
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
@@ -658,10 +780,19 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	func void dispose()
 		pComponent = null
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Component behavior to animate. */
 	func ECBehaviorComponent getComponent()
@@ -709,6 +840,22 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	/** \brief Add listener factory. */

@@ -200,8 +200,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 				behavior.setSubTitle(getSubTitleFor(parameters.getAt("subTitle") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "transmission")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "transmission")
 			return behavior
 		end
 		

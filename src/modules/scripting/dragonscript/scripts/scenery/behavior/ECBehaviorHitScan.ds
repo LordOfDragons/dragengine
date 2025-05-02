@@ -29,6 +29,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -129,6 +130,9 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 *                  format is '', 'category' or 'category:filter' where category and filter
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>1:0 1 2</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -158,14 +162,144 @@ class ECBehaviorHitScan extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "hitScan", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "hitScan", id)
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "hitScan.start".
+		 * \version 1.26
+		 */
+		class BTAStart implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value = parameters.getAt("type")
+				if value.equals("circular")
+					pInstance.startCircular(\
+						(parameters.getAt("count") cast String).toInt(),\
+						(parameters.getAt("angle") cast String).toFloat())
+					
+				elif value.equals("cone")
+					pInstance.startCone(\
+						(parameters.getAt("count") cast String).toInt(),\
+						(parameters.getAt("angle") cast String).toFloat())
+					
+				elif value.equals("rectangular")
+					pInstance.startRectangular(\
+						(parameters.getAt("count") cast String).toInt(),\
+						(parameters.getAt("angle.horizontal") cast String).toFloat(),\
+						(parameters.getAt("angle.vertical") cast String).toFloat())
+					
+				elif value.equals("rectangular.uniform")
+					pInstance.startRectangularUniform(\
+						(parameters.getAt("count.columns") cast String).toInt(),\
+						(parameters.getAt("count.rows") cast String).toInt(),\
+						(parameters.getAt("angle.horizontal") cast String).toFloat(),\
+						(parameters.getAt("angle.vertical") cast String).toFloat())
+					
+				else
+					return BTResult.failure
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "hitScan.stop".
+		 * \version 1.26
+		 */
+		class BTAStop implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				if parameters.has("clear")
+					pInstance.clear()
+					
+				else
+					pInstance.stop()
+				end
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "hitScan.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "running", null)
+				if value != null
+					result &= pInstance.isRunning() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "hits", null)
+				if value != null
+					result &= pInstance.getHitCount() == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "hits.not", null)
+				if value != null
+					result &= pInstance.getHitCount() != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "hits.less", null)
+				if value != null
+					result &= pInstance.getHitCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "hits.greater", null)
+				if value != null
+					result &= pInstance.getHitCount() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "hits.percentage.less", null)
+				if value != null
+					result &= pInstance.getHitPercentage() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "hits.percentage.greater", null)
+				if value != null
+					result &= pInstance.getHitPercentage() > (value cast String).toInt()
+				end
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorHitScan pECBehavior
 		var ECBehaviorCollider.Instance pCollider
 		var ECBehaviorComponent.Instance pComponent
@@ -220,6 +354,18 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			
 			pViewMatrix = Matrix.newFromQuaternion(pOrientation)
 			pOffsetByRange = pOffset / pRange
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "start", BTAStart.new(this))
+				c.setAction(pnp + "stop", BTAStop.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
@@ -683,6 +829,31 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			end)
 		end
 		
+		/**
+		 * \brief Count of collsion tests with a hit found.
+		 * \version 1.26
+		 */
+		func int getHitCount()
+			return pTests.count(block ColliderCollisionTest each
+				return each.getHasCollision()
+			end)
+		end
+		
+		/**
+		 * \brief Percentage of collsion tests with a hit found.
+		 * \version 1.26
+		 */
+		func float getHitPercentage()
+			var int count = pTests.getCount()
+			if count == 0
+				return 0
+			end
+			
+			return pTests.count(block ColliderCollisionTest each
+				return each.getHasCollision()
+			end) cast float / count
+		end
+		
 		
 		
 		/**
@@ -706,6 +877,8 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	var ECPVector pDirection
 	var ECPVector pOrientation
 	var ECPString pBone
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
@@ -729,47 +902,46 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			throw ENullPointer.new("collider")
 		end
 		
+		pPrefix = prefix
 		pCollider = collider
 		pComponent = component
 		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
 		
-		var LayerMask cfFilter = LayerMask.new()
-		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
-		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
-		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
+		var LayerMask cfFilter = LayerMask.newWith(\
+			BaseGameApp.CollisionFilterBit.geometry,\
+			BaseGameApp.CollisionFilterBit.dynamic,\
+			BaseGameApp.CollisionFilterBit.actor)
 		
 		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
 		
+		eclass.addProperty(pRange = ECPFloat.new(prefix + "range", 20, 0))
+		eclass.addProperty(pOffset = ECPFloat.new(prefix + "offset", 0, 0))
+		eclass.addProperty(pOrigin = ECPVector.new(prefix + "origin", Vector.new()))
+		eclass.addProperty(pDirection = ECPVector.new(prefix + "direction", Vector.new(0, 0, 1)))
+		eclass.addProperty(pOrientation = ECPVector.new(prefix + "orientation", Vector.new()))
+		eclass.addProperty(pBone = ECPString.new(prefix + "bone", ""))
+		
 		eclass.addBehavior(this)
-		
-		pRange = ECPFloat.new(prefix + "range", 20, 0)
-		eclass.addProperty(pRange)
-		
-		pOffset = ECPFloat.new(prefix + "offset", 0, 0)
-		eclass.addProperty(pOffset)
-		
-		pOrigin = ECPVector.new(prefix + "origin", Vector.new())
-		eclass.addProperty(pOrigin)
-		
-		pDirection = ECPVector.new(prefix + "direction", Vector.new(0, 0, 1))
-		eclass.addProperty(pDirection)
-		
-		pOrientation = ECPVector.new(prefix + "orientation", Vector.new())
-		eclass.addProperty(pOrientation)
-		
-		pBone = ECPString.new(prefix + "bone", "")
-		eclass.addProperty(pBone)
 	end
 	
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pCollider = null
 		pComponent = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Collider behavior or null. */
 	func ECBehaviorCollider getCollider()
@@ -819,6 +991,22 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	/** \brief Test bone. */
 	func ECPString getBone()
 		return pBone
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	

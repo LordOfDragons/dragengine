@@ -133,7 +133,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			else
 				behavior = ECBehaviorProjectToGround.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			end
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "projectToGround")
 			return behavior
 		end

@@ -405,8 +405,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorFootSteps behavior = ECBehaviorFootSteps.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "footSteps")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "footSteps")
 			return behavior
 		end
 	end

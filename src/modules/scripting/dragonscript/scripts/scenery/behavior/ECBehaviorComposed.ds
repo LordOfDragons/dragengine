@@ -258,8 +258,7 @@ class ECBehaviorComposed extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorComposed behavior = ECBehaviorComposed.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "composed", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "composed", id)
 			return behavior
 		end
 	end

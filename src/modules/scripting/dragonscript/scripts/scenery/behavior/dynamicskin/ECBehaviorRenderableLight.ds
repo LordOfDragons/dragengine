@@ -126,7 +126,7 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 			var ECBehaviorRenderableLight behavior = ECBehaviorRenderableLight.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters),\
 				eclass.sharedFactoryHelper.defaultLight(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "renderableLight", id)
 			return behavior
 		end

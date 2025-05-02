@@ -303,7 +303,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorBehaviorTree behavior = ECBehaviorBehaviorTree.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "behaviorTree", id)
 			return behavior
 		end
@@ -315,8 +315,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		var ECBehaviorBehaviorTree pECBehavior
 		var BehaviorTree pBehaviorTree
 		var BTContext pContext
-		var bool pRun
-		var bool pFailed
+		var bool pRun, pFailed
 		var Array pListeners
 		
 		
@@ -596,11 +595,9 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID,\
 	String prefix) super(eclass, id)
-		pBehaviorTree = ECPBehaviorTree.new(prefix + "path", loaders.getBehaviorTree())
-		eclass.addProperty(pBehaviorTree)
-		
-		pRun = ECPBoolean.new(prefix + "run", false)
-		eclass.addProperty(pRun)
+		eclass.addProperty(pBehaviorTree = ECPBehaviorTree.new(\
+			prefix + "path", loaders.getBehaviorTree()))
+		eclass.addProperty(pRun = ECPBoolean.new(prefix + "run", false))
 		
 		pActionConditionFactories = Array.new()
 		pListenerFactories = Array.new()

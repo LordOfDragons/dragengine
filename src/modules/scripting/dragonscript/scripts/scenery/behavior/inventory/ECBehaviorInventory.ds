@@ -114,8 +114,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorInventory behavior = ECBehaviorInventory.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "inventory", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "inventory", id)
 			return behavior
 		end
 	end

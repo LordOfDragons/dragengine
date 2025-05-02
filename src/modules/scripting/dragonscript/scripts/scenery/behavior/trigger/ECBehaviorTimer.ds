@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -60,19 +61,19 @@ class ECBehaviorTimer extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Timer started. */
-		public func void timerStarted(Instance instance)
+		func void timerStarted(Instance instance)
 		end
 		
 		/** \brief Timer elapsed. */
-		public func void timerElapsed(Instance instance)
+		func void timerElapsed(Instance instance)
 		end
 		
 		/** \brief Timer cancelled. */
-		public func void timerCancelled(Instance instance)
+		func void timerCancelled(Instance instance)
 		end
 	end
 	
@@ -84,10 +85,10 @@ class ECBehaviorTimer extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -95,7 +96,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -114,6 +115,9 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
 	 *                  string to not synchronize. default is empty string. -->
 	 *   <string name='trigger.synchronize'>other</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -140,8 +144,9 @@ class ECBehaviorTimer extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "timer", id)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "timer", id)
 			return behavior
 		end
 		
@@ -160,19 +165,133 @@ class ECBehaviorTimer extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		/** \brief Trigger listener. */
-		public class TimerListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+		/**
+		 * \brief Behavior tree action/condition "timer{(id)}.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("target", null)
+				if value != null
+					if value.equals("fire")
+						pInstance.getTarget().fire()
+						
+					elif value.equals("reset")
+						pInstance.getTarget().reset()
+						
+					elif value.equals("fullReset")
+						pInstance.getTarget().reset()
+						
+					else
+						return BTResult.failure
+					end
+				end
+				
+				value = parameters.getAt("timer", null)
+				if value != null
+					if value.equals("arm")
+						pInstance.armTimer()
+						
+					elif value.equals("cancel")
+						pInstance.cancelTimer()
+						
+					elif value.equals("rearm")
+						pInstance.cancelTimer()
+						pInstance.armTimer()
+						
+					elif value.equals("timeout")
+						pInstance.cancelTimer()
+						pInstance.onTimeout()
+						
+					else
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "timer{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "trigger", null)
+				if value != null
+					result &= pInstance.getTrigger().getState() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "target.fired", null)
+				if value != null
+					result &= pInstance.getTarget().getFired() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "target.everFired", null)
+				if value != null
+					result &= pInstance.getTarget().getHasFired() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "running", null)
+				if value != null
+					result &= pInstance.getTimerRunning() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "remaining.less", null)
+				if value != null
+					result &= pInstance.getRemainingTime() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "remaining.greater", null)
+				if value != null
+					result &= pInstance.getRemainingTime() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		/** \brief Trigger listener. */
+		public class TimerListener extends ECBehaviorTriggered.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
 				pInstance.armTimer()
 			end
 			
-			public func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
+			func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
 				if pInstance.getCancelOnReset()
 					pInstance.cancelTimer()
 				end
@@ -181,43 +300,28 @@ class ECBehaviorTimer extends DefaultECBehavior
 		
 		
 		
-		private var ECBehaviorTimer pECBehavior
-		private var ECBehaviorTriggered.Instance pTrigger
-		private var TSNamedTriggerTarget pTarget
-		private var float pTimeout
-		private var float pTimeoutSpread
-		private var bool pTimeoutRearm
-		private var bool pFireOnTimeout
-		private var bool pStartActivated
-		private var bool pFullReset
-		private var bool pPulse
-		private var bool pCancelOnReset
-		private var float pRemainingTime
-		private var bool pTimerRunning
-		private var bool pApplyStartActivated
-		private var Array pListeners
+		var ECBehaviorTimer pECBehavior
+		var ECBehaviorTriggered.Instance pTrigger
+		var TSNamedTriggerTarget pTarget
+		var float pTimeout, pTimeoutSpread
+		var bool pTimeoutRearm, pFireOnTimeout, pStartActivated, pFullReset, pPulse, pCancelOnReset
+		var float pRemainingTime
+		var bool pTimerRunning, pApplyStartActivated
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorTimer ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorTimer ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pTimeout = 1
-			pTimeoutSpread = 0
-			pTimeoutRearm = false
 			pFireOnTimeout = true
-			pFullReset = false
-			pPulse = false
-			pStartActivated = false
-			pCancelOnReset = false
-			pRemainingTime = 0.0
-			pTimerRunning = false
 			pApplyStartActivated = true
 			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			pTarget = null
 			pTrigger = null
 			pListeners = null
@@ -228,12 +332,14 @@ class ECBehaviorTimer extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			if pECBehavior.getTriggerTable() == null
 				return
 			end
 			
-			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(getElement())
+			var BehaviorElement element = getElement()
+			
+			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(element)
 			pTrigger.addListener(TimerListener.new(this))
 			
 			pTimeout = pECBehavior.getTimeout().getValue(stub)
@@ -248,27 +354,38 @@ class ECBehaviorTimer extends DefaultECBehavior
 			pTarget = TSNamedTriggerTarget.new(pECBehavior.getTarget().getValue(stub))
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorTimer getECBehavior()
+		func ECBehaviorTimer getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Trigger or \em null. */
-		public func ECBehaviorTriggered.Instance getTrigger()
+		func ECBehaviorTriggered.Instance getTrigger()
 			return pTrigger
 		end
 		
 		/** \brief Trigger target or \em null. */
-		public func TSNamedTriggerTarget getTarget()
+		func TSNamedTriggerTarget getTarget()
 			return pTarget
 		end
 		
 		/** \brief Time in seconds until target is fired/reset after expression becomes true. */
-		public func float getTimeout()
+		func float getTimeout()
 			return pTimeout
 		end
 		
@@ -280,7 +397,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		 * to spread seconds. Hence random timeout spreads the chosen time above and below the
 		 * regular timeout up to "spread" seconds.
 		 */
-		public func float getTimeoutSpread()
+		func float getTimeoutSpread()
 			return pTimeoutSpread
 		end
 		
@@ -288,17 +405,17 @@ class ECBehaviorTimer extends DefaultECBehavior
 		 * \brief Rearm trigger on timeout if still enabled.
 		 * \version 1.12
 		 */
-		public func bool getTimeoutRearm()
+		func bool getTimeoutRearm()
 			return pTimeoutRearm
 		end
 		
 		/** \brief Target is fired (true) or reset (false) after timeout elapses. */
-		public func bool getFireOnTimeout()
+		func bool getFireOnTimeout()
 			return pFireOnTimeout
 		end
 		
 		/** \brief Full reset target instead of simple reset. */
-		public func bool getFullReset()
+		func bool getFullReset()
 			return pFullReset
 		end
 		
@@ -310,34 +427,34 @@ class ECBehaviorTimer extends DefaultECBehavior
 		 * Using pulse avoids the need to use two TriggerTimer to trigger a target multiple
 		 * times in a row.
 		 */
-		public func bool getPulse()
+		func bool getPulse()
 			return pPulse
 		end
 		
 		/** \brief Trigger starts out activated. */
-		public func bool getStartActivated()
+		func bool getStartActivated()
 			return pStartActivated
 		end
 		
 		/** \brief Trigger timer is cancelled if trigger expression evaluates to false. */
-		public func bool getCancelOnReset()
+		func bool getCancelOnReset()
 			return pCancelOnReset
 		end
 		
 		/** \brief Remaining time until timeout. */
-		public func float getRemainingTime()
+		func float getRemainingTime()
 			return pRemainingTime
 		end
 		
 		/** \brief Timer is running. */
-		public func bool getTimerRunning()
+		func bool getTimerRunning()
 			return pTimerRunning
 		end
 		
 		
 		
 		/** \brief Arm timer if timeout is larger than 0 otherwise operate target immediately. */
-		public func void armTimer()
+		func void armTimer()
 			if pTimerRunning and pRemainingTime > 0
 				return
 			end
@@ -358,7 +475,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		/** \brief Cancel timer if running. */
-		public func void cancelTimer()
+		func void cancelTimer()
 			if not pTimerRunning
 				return
 			end
@@ -373,7 +490,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		/** \brief Operate target after timer elapsed. */
-		public func void onTimeout()
+		func void onTimeout()
 			pRemainingTime = 0
 			pTimerRunning = false
 			setRequiresThink(false)
@@ -417,7 +534,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -425,14 +542,14 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Think about what to do for the next frame update. */
-		public func void think(float elapsed)
+		func void think(float elapsed)
 			if not pTimerRunning
 				return
 			end
@@ -446,7 +563,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
+		func void addToGameWorld()
 			if pTarget == null
 				return
 			end
@@ -463,7 +580,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
+		func void removeFromGameWorld()
 			if pTarget != null
 				pTarget.dropTarget()
 			end
@@ -472,7 +589,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		
 		
 		/** \brief Read behavior instance from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				pApplyStartActivated = false
@@ -486,7 +603,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		/** \brief Write behavior instance to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			writer.writeFloat(pRemainingTime)
@@ -496,44 +613,41 @@ class ECBehaviorTimer extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorTriggered pTriggered
-	private var ECPString pTarget
-	private var ECPFloat pTimeout
-	private var ECPFloat pTimeoutSpread
-	private var ECPBoolean pTimeoutRearm
-	private var ECPBoolean pFireOnTimeout
-	private var ECPBoolean pStartActivated
-	private var ECPBoolean pFullReset
-	private var ECPBoolean pPulse
-	private var ECPBoolean pCancelOnReset
-	private var TSTriggerTable pTriggerTable
-	private var Array pListenerFactories
+	var ECBehaviorTriggered pTriggered
+	var ECPString pTarget
+	var ECPFloat pTimeout, pTimeoutSpread
+	var ECPBoolean pTimeoutRearm, pFireOnTimeout, pStartActivated, pFullReset, pPulse, pCancelOnReset
+	var TSTriggerTable pTriggerTable
+	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass) \
+	func new(BehaviorElementClass eclass) \
 	this(eclass, BaseGameApp.getApp().getTriggerTable(), "")
 	end
 	
-	public func new(BehaviorElementClass eclass, String id) \
+	func new(BehaviorElementClass eclass, String id) \
 	this(eclass, BaseGameApp.getApp().getTriggerTable(), id)
 	end
 	
-	public func new(BehaviorElementClass eclass, TSTriggerTable triggerTable) \
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable) \
 	this(eclass, triggerTable, "")
 	end
 	
-	public func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String id) \
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String id) \
 	this(eclass, triggerTable, id, id.empty() if "timer" else "timer(" + id + ")")
 	end
 	
-	public func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String id, String subID) \
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String id, String subID) \
 	this(eclass, triggerTable, id, subID, subID + ".")
 	end
 	
-	public func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, \
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, \
 	String id, String subID, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
 		
@@ -570,25 +684,34 @@ class ECBehaviorTimer extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Trigger to start timer. */
-	public func ECBehaviorTriggered getTriggered()
+	func ECBehaviorTriggered getTriggered()
 		return pTriggered
 	end
 	
 	/** \brief Trigger target to operate. */
-	public func ECPString getTarget()
+	func ECPString getTarget()
 		return pTarget
 	end
 	
 	/** \brief Time in seconds until target is fired/reset after expression becomes true. */
-	public func ECPFloat getTimeout()
+	func ECPFloat getTimeout()
 		return pTimeout
 	end
 	
@@ -600,7 +723,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * to spread seconds. Hence random timeout spreads the chosen time above and below the
 	 * regular timeout up to "spread" seconds.
 	 */
-	public func ECPFloat getTimeoutSpread()
+	func ECPFloat getTimeoutSpread()
 		return pTimeoutSpread
 	end
 	
@@ -608,17 +731,17 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * \brief Rearm trigger on timeout if still enabled.
 	 * \version 1.12
 	 */
-	public func ECPBoolean getTimeoutRearm()
+	func ECPBoolean getTimeoutRearm()
 		return pTimeoutRearm
 	end
 	
 	/** \brief Target is fired (true) or reset (false) after timeout elapses. */
-	public func ECPBoolean getFireOnTimeout()
+	func ECPBoolean getFireOnTimeout()
 		return pFireOnTimeout
 	end
 	
 	/** \brief Full reset target instead of simple reset. */
-	public func ECPBoolean getFullReset()
+	func ECPBoolean getFullReset()
 		return pFullReset
 	end
 	
@@ -630,22 +753,22 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * Using pulse avoids the need to use two TriggerTimer to trigger a target multiple
 	 * times in a row.
 	 */
-	public func ECPBoolean getPulse()
+	func ECPBoolean getPulse()
 		return pPulse
 	end
 	
 	/** \brief Trigger starts out activated. */
-	public func ECPBoolean getStartActivated()
+	func ECPBoolean getStartActivated()
 		return pStartActivated
 	end
 	
 	/** \brief Trigger timer is cancelled if trigger expression evaluates to false. */
-	public func ECPBoolean getCancelOnReset()
+	func ECPBoolean getCancelOnReset()
 		return pCancelOnReset
 	end
 	
 	/** \brief Trigger table or \em null if not used. */
-	public func TSTriggerTable getTriggerTable()
+	func TSTriggerTable getTriggerTable()
 		return pTriggerTable
 	end
 	
@@ -654,8 +777,24 @@ class ECBehaviorTimer extends DefaultECBehavior
 		pTriggerTable = triggerTable
 	end
 	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -667,17 +806,17 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -686,7 +825,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -698,7 +837,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorTimer getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorTimer getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorTimer each
 			return true
 		end) cast ECBehaviorTimer
@@ -710,7 +849,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorTimer with specific identifier.
 	 */
-	static public func ECBehaviorTimer getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorTimer getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorTimer each
 			return each.getID().equals(id)
 		end) cast ECBehaviorTimer
@@ -722,7 +861,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * Returns list contains ECBehaviorTimer behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorTimer each
 			return true
 		end)
@@ -737,7 +876,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * of type ECBehaviorTimer.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -749,7 +888,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorTimer.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -761,7 +900,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	 * Returns list contains ECBehaviorTimer.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -770,7 +909,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

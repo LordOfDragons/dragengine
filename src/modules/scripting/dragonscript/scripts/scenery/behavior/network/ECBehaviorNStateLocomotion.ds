@@ -113,8 +113,7 @@ class ECBehaviorNStateLocomotion extends DefaultECBehavior
 				behavior.setPrecisionLinearVelocity((parameters.getAt("precisionLinearVelocity") cast String).toFloat())
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "nstateLocomotion")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "nstateLocomotion")
 			return behavior
 		end
 	end

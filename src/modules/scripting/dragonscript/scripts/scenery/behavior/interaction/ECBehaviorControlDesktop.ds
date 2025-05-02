@@ -142,7 +142,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorControlDesktop behavior = ECBehaviorControlDesktop.new(eclass,\
 				eclass.sharedFactoryHelper.defaultRenderableDesktop(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "controlDesktop", id)
 			return behavior
 		end

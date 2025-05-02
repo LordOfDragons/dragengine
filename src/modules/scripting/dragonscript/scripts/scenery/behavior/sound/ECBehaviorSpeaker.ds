@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -43,7 +44,7 @@ pin Dragengine.TriggerSystem
  * 
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       ECBehaviorSpeaker.new(this)
  *       ECBehaviorSpeaker.new(this, "subSpeaker")
  *    end
@@ -102,23 +103,23 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Start playing back. */
-		public func void startPlaying(Instance instance)
+		func void startPlaying(Instance instance)
 		end
 		
 		/** \brief Stop playing. */
-		public func void stopPlaying(Instance instance)
+		func void stopPlaying(Instance instance)
 		end
 		
 		/** \brief Muted. */
-		public func void muted(Instance instance)
+		func void muted(Instance instance)
 		end
 		
 		/** \brief Unmuted. */
-		public func void unmuted(Instance instance)
+		func void unmuted(Instance instance)
 		end
 	end
 	
@@ -130,10 +131,10 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -141,7 +142,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -170,6 +171,9 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
 	 *                  string to not synchronize. default is empty string. -->
 	 *   <string name='triggerMuted.synchronize'>other</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -205,8 +209,9 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 			behavior.getTriggerMuted().setSynchronize(eclass,\
 				parameters.getAt("triggerMuted.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "speaker", id)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "speaker", id)
 			return behavior
 		end
 		
@@ -223,53 +228,120 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		/** \brief Trigger listener to change playing state of speaker. */
-		public class PlayingListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+		/**
+		 * \brief Behavior tree action "speaker{(id)}.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("playing", null)
+				if value != null
+					pInstance.setPlaying(value.equals("true"))
+				end
+				
+				value = parameters.getAt("muted", null)
+				if value != null
+					pInstance.setMuted(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "speaker{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "playing", null)
+				if value != null
+					result &= pInstance.getPlaying() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "muted", null)
+				if value != null
+					result &= pInstance.getMuted() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		/** \brief Trigger listener to change playing state of speaker. */
+		public class PlayingListener extends ECBehaviorTriggered.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
 				pInstance.setPlaying(true)
 			end
 			
-			public func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
+			func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
 				pInstance.setPlaying(false)
 			end
 		end
 		
 		/** \brief Trigger listener to change muted state of speaker. */
 		public class MuteListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
 				pInstance.setMuted(true)
 			end
 			
-			public func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
+			func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
 				pInstance.setMuted(false)
 			end
 		end
 		
-		private var ECBehaviorSpeaker pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
-		private var bool pPlaying
-		private var bool pMuted
-		private var Speaker pSpeaker
-		private var ECBehaviorTriggered.Instance pTrigger
-		private var ECBehaviorTriggered.Instance pTriggerMuted
-		private var Array pListeners
+		var ECBehaviorSpeaker pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var bool pPlaying
+		var bool pMuted
+		var Speaker pSpeaker
+		var ECBehaviorTriggered.Instance pTrigger
+		var ECBehaviorTriggered.Instance pTriggerMuted
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorSpeaker ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorSpeaker ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
 			pPlaying = false
@@ -277,7 +349,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			if pSpeaker != null
 				pSpeaker.setOwner(null)
 				pSpeaker = null
@@ -293,9 +365,11 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			if pECBehavior.getCollider() != null
-				pCollider = pECBehavior.getCollider().instance(getElement())
+				pCollider = pECBehavior.getCollider().instance(element)
 			end
 			
 			pSpeaker = createSpeaker(stub)
@@ -305,7 +379,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 			
 			pECBehavior.createListeners(this)
 			
-			pSpeaker.setOwner(getElement())
+			pSpeaker.setOwner(element)
 			
 			if pECBehavior.getTriggerTable() != null
 				pTrigger = getTriggerBehavior()
@@ -329,6 +403,17 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachSpeaker(stub, pCollider)
+			end
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
 			end
 		end
 		
@@ -398,22 +483,22 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorSpeaker getECBehavior()
+		func ECBehaviorSpeaker getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Speaker. */
-		public func Speaker getSpeaker()
+		func Speaker getSpeaker()
 			return pSpeaker
 		end
 		
 		/** \brief Synthesizer instance or \em null if not used. */
-		public func SynthesizerInstance getSynthesizerInstance()
+		func SynthesizerInstance getSynthesizerInstance()
 			return pSpeaker.getSynthesizer()
 		end
 		
 		/** \brief Snthesizer controller or \em null if not used. */
-		public func SynthesizerController getSynthesizerControllerAt(int index)
+		func SynthesizerController getSynthesizerControllerAt(int index)
 			var SynthesizerInstance synthInst = pSpeaker.getSynthesizer()
 			if synthInst != null
 				return synthInst.getControllerAt(index)
@@ -422,7 +507,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** \brief Named snthesizer controller or \em null if not used. */
-		public func SynthesizerController getSynthesizerControllerNamed(String name)
+		func SynthesizerController getSynthesizerControllerNamed(String name)
 			var SynthesizerInstance synthInst = pSpeaker.getSynthesizer()
 			if synthInst != null
 				return synthInst.getControllerNamed(name)
@@ -433,12 +518,12 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		
 		
 		/** \brief Speaker is playing. */
-		public func bool getPlaying()
+		func bool getPlaying()
 			return pPlaying
 		end
 		
 		/** \brief Set if speaker is playing. */
-		public func void setPlaying(bool playing)
+		func void setPlaying(bool playing)
 			if playing == pPlaying
 				return
 			end
@@ -460,29 +545,29 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** \brief Start playing. */
-		public func void play()
+		func void play()
 			setPlaying(true)
 		end
 		
 		/** \brief Stop playing. */
-		public func void stop()
+		func void stop()
 			setPlaying(false)
 		end
 		
 		/** \brief Toggle speaker playing state. */
-		public func void toggle()
+		func void toggle()
 			setPlaying(not pPlaying)
 		end
 		
 		
 		
 		/** \brief Speaker is muted. */
-		public func bool getMuted()
+		func bool getMuted()
 			return pMuted
 		end
 		
 		/** \brief Set if speaker is muted. */
-		public func void setMuted(bool muted)
+		func void setMuted(bool muted)
 			if muted == pMuted
 				return
 			end
@@ -504,26 +589,26 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** \brief Toggle speaker muted state. */
-		public func void toggleMuted()
+		func void toggleMuted()
 			setMuted(not pMuted)
 		end
 		
 		
 		
 		/** \brief Playing speaker trigger expression or \em null if not used. */
-		public func ECBehaviorTriggered.Instance getTrigger()
+		func ECBehaviorTriggered.Instance getTrigger()
 			return pTrigger
 		end
 		
 		/** \brief Muted speaker trigger expression or \em null if not used. */
-		public func ECBehaviorTriggered.Instance getTriggerMuted()
+		func ECBehaviorTriggered.Instance getTriggerMuted()
 			return pTriggerMuted
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -531,33 +616,33 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief State changed (visble, touchable). */
-		public func void stateChanged()
+		func void stateChanged()
 			if pSpeaker != null
 				pSpeaker.setMuted(pMuted and getElement().getVisible())
 			end
 		end
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
+		func void addToGameWorld()
 			getElement().getGameWorld().getWorld().addSpeaker(pSpeaker)
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
+		func void removeFromGameWorld()
 			getElement().getGameWorld().getWorld().removeSpeaker(pSpeaker)
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
@@ -573,7 +658,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** Writes the element to a file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(2)
@@ -585,14 +670,16 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorCollider pCollider
-	private var ECComposeSpeaker pSpeaker
-	private var ECComposeAttachResource pAttach
-	private var ECBehaviorTriggered pTrigger
-	private var ECBehaviorTriggered pTriggerMuted
-	private var ECBehaviorSpeaker pSyncTrigger
-	private var TSTriggerTable pTriggerTable
-	private var Array pListenerFactories
+	var ECBehaviorCollider pCollider
+	var ECComposeSpeaker pSpeaker
+	var ECComposeAttachResource pAttach
+	var ECBehaviorTriggered pTrigger
+	var ECBehaviorTriggered pTriggerMuted
+	var ECBehaviorSpeaker pSyncTrigger
+	var TSTriggerTable pTriggerTable
+	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
@@ -601,33 +688,34 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * 
 	 * These value are optional and can be null: \em collider.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
 	this(eclass, collider, BaseGameApp.getApp().getLoaders(), null)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
 	this(eclass, collider, BaseGameApp.getApp().getLoaders(), null, id)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable) this(eclass, collider, loaders, triggerTable, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable, String id) this(eclass, collider, loaders, triggerTable, \
 	id, id.empty() if "speaker" else "speaker(" + id + ")")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	Loaders loaders, TSTriggerTable triggerTable, String id, String subID) \
 	this(eclass, collider, loaders, triggerTable, id, subID, subID + ".")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \
 	TSTriggerTable triggerTable, String id, String subID, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pCollider = collider
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
@@ -644,52 +732,61 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pCollider = null
 		pSyncTrigger = null
 		pListenerFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Collider behavior or null to not attach. */
-	public func ECBehaviorCollider getCollider()
+	func ECBehaviorCollider getCollider()
 		return pCollider
 	end
 	
 	/** \brief Composeable speaker for element class. */
-	public func ECComposeSpeaker getSpeaker()
+	func ECComposeSpeaker getSpeaker()
 		return pSpeaker
 	end
 	
 	/** \brief Attach resource. */
-	public func ECComposeAttachResource getAttach()
+	func ECComposeAttachResource getAttach()
 		return pAttach
 	end
 	
 	/** \brief Trigger playing. */
-	public func ECBehaviorTriggered getTrigger()
+	func ECBehaviorTriggered getTrigger()
 		return pTrigger
 	end
 	
 	/** \brief Trigger muted. */
-	public func ECBehaviorTriggered getTriggerMuted()
+	func ECBehaviorTriggered getTriggerMuted()
 		return pTriggerMuted
 	end
 	
 	/** \brief ECBehaviorSpeaker to synchronize triggers with or \em null to disable. */
-	public func ECBehaviorSpeaker getSyncTrigger()
+	func ECBehaviorSpeaker getSyncTrigger()
 		return pSyncTrigger
 	end
 	
 	/** \brief Set ECBehaviorSpeaker to synchronize triggers with or \em null to disable. */
-	public func void setSyncTrigger(ECBehaviorSpeaker behavior)
+	func void setSyncTrigger(ECBehaviorSpeaker behavior)
 		pSyncTrigger = behavior
 	end
 	
 	/** \brief Trigger table or \em null if not used. */
-	public func TSTriggerTable getTriggerTable()
+	func TSTriggerTable getTriggerTable()
 		return pTriggerTable
 	end
 	
@@ -698,8 +795,24 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		pTriggerTable = triggerTable
 	end
 	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -711,17 +824,17 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -734,20 +847,20 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * 
 	 * Helper method to quickly set up playing sound.
 	 */
-	public func void set(String sound, float range, float volume)
+	func void set(String sound, float range, float volume)
 		set(sound, range, volume, Vector.new(), Vector.new(), "")
 	end
 	
-	public func void set(String sound, float range, float volume, Vector position)
+	func void set(String sound, float range, float volume, Vector position)
 		set(sound, range, volume, position, Vector.new(), "")
 	end
 	
-	public func void set(String sound, float range, float volume, Vector position, \
+	func void set(String sound, float range, float volume, Vector position, \
 	Vector orientation)
 		set(sound, range, volume, position, orientation, "")
 	end
 	
-	public func void set(String sound, float range, float volume, Vector position, \
+	func void set(String sound, float range, float volume, Vector position, \
 	Vector orientation, String bone)
 		pSpeaker.getSpeakerType().setValue(SpeakerType.point)
 		pSpeaker.getSound().setPath(sound)
@@ -764,7 +877,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -776,7 +889,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorSpeaker getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorSpeaker getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorSpeaker each
 			return true
 		end) cast ECBehaviorSpeaker
@@ -788,7 +901,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorSpeaker with specific identifier.
 	 */
-	static public func ECBehaviorSpeaker getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorSpeaker getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorSpeaker each
 			return each.getID().equals(id)
 		end) cast ECBehaviorSpeaker
@@ -800,7 +913,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * Returns list contains ECBehaviorSpeaker behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorSpeaker each
 			return true
 		end)
@@ -815,7 +928,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * of type ECBehaviorSpeaker.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -827,7 +940,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorSpeaker.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -839,7 +952,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 * Returns list contains ECBehaviorSpeaker.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -848,7 +961,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

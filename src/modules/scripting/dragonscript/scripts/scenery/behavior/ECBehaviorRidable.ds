@@ -70,8 +70,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 			end
 			var ECBehaviorRidable behavior = ECBehaviorRidable.new(\
 				eclass, ECBehaviorCollider.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "ridable")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "ridable")
 			return behavior
 		end
 	end

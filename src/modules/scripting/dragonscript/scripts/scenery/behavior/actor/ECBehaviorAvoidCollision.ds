@@ -123,8 +123,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "avoidCollision")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "avoidCollision")
 			return behavior
 		end
 	end

@@ -70,7 +70,7 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 			end
 			var ECBehaviorPlayerInputCrouch behavior = ECBehaviorPlayerInputCrouch.new(\
 				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInputCrouch")
 			return behavior
 		end

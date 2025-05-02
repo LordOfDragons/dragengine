@@ -103,7 +103,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 			end
 			var ECBehaviorPlayerInputLook behavior = ECBehaviorPlayerInputLook.new(\
 				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInputLook")
 			return behavior
 		end

@@ -69,7 +69,7 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorAvoidedByActor behavior = ECBehaviorAvoidedByActor.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "avoidedByActor", id)
 			return behavior
 		end

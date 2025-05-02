@@ -118,7 +118,7 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorRenderableCanvas behavior = ECBehaviorRenderableCanvas.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "renderableCanvas", id)
 			return behavior
 		end

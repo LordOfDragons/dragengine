@@ -163,8 +163,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "lookAt")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "lookAt")
 			return behavior
 		end
 	end

@@ -133,6 +133,24 @@ class ECComposeAnimator
 			end
 		end
 		
+		/**
+		 * \brief Relative playback time in the range from 0 to 1.
+		 * \version 1.26
+		 */
+		func float getTimeRelative()
+			return pController != null if pController.getRelativeValue() else 0.0
+		end
+		
+		/**
+		 * \brief Set relative playback time in the range from 0 to 1.
+		 * \version 1.26
+		 */
+		func void setTimeRelative(float time)
+			if pController != null
+				pController.setRelativeValue(time)
+			end
+		end
+		
 		/** \brief Playback is at beginning. */
 		func bool isAtBegin()
 			return pController != null if pController.isAtLower() else true

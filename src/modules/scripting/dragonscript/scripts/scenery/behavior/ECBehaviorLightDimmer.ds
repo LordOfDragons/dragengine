@@ -108,7 +108,7 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorLightDimmer behavior = ECBehaviorLightDimmer.new(eclass,\
 				eclass.sharedFactoryHelper.defaultLight(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "lightDimmer", id)
 			return behavior
 		end

@@ -146,8 +146,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 			var ECBehaviorTouching behavior = ECBehaviorTouching.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "touching", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "touching", id)
 			return behavior
 		end
 		

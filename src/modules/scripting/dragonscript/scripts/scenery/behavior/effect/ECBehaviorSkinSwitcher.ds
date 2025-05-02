@@ -176,8 +176,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "skinSwitcher", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "skinSwitcher", id)
 			return behavior
 		end
 	end
@@ -257,35 +256,44 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 					else
 						result &= pInstance.getActive() == (value cast String).toInt()
 					end
-					
-				else
-					value = parameters.getAt(prefix + "active.less", null)
-					if value != null
-						result &= pInstance.getActive() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "active.not", null)
+				if value != null
+					if value.equals("first")
+						result &= pInstance.getActive() != 0
+						
+					elif value.equals("last")
+						result &= pInstance.getActive() != pInstance.getCount() - 1
 						
 					else
-						value = parameters.getAt(prefix + "active.greater", null)
-						if value != null
-							result &= pInstance.getActive() > (value cast String).toInt()
-						end
+						result &= pInstance.getActive() != (value cast String).toInt()
 					end
+				end
+				
+				value = parameters.getAt(prefix + "active.less", null)
+				if value != null
+					result &= pInstance.getActive() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "active.greater", null)
+				if value != null
+					result &= pInstance.getActive() > (value cast String).toInt()
 				end
 				
 				value = parameters.getAt(prefix + "count", null)
 				if value != null
 					result &= pInstance.getCount() == (value cast String).toInt()
-					
-				else
-					value = parameters.getAt(prefix + "count.less", null)
-					if value != null
-						result &= pInstance.getCount() < (value cast String).toInt()
-						
-					else
-						value = parameters.getAt(prefix + "count.greater", null)
-						if value != null
-							result &= pInstance.getCount() > (value cast String).toInt()
-						end
-					end
+				end
+				
+				value = parameters.getAt(prefix + "count.less", null)
+				if value != null
+					result &= pInstance.getCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.greater", null)
+				if value != null
+					result &= pInstance.getCount() > (value cast String).toInt()
 				end
 				
 				return result
@@ -335,7 +343,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			setActive(pECBehavior.getActive().getValue(stub))
 			
 			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPropertyNamePrefix()
+				var String pnp = pECBehavior.getPrefix()
 				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
 				c.setAction(pnp + "set", BTASet.new(this))
 				
@@ -495,7 +503,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	var ECPBoolean pClamp
 	var ECPInteger pActive
 	var ECBehaviorBehaviorTree pBehaviorTree
-	var String pPropertyNamePrefix
+	var String pPrefix
 	
 	
 	
@@ -519,7 +527,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			throw ENullPointer.new("component")
 		end
 		
-		pPropertyNamePrefix = prefix
+		pPrefix = prefix
 		pComponent = component
 		
 		eclass.addProperty(pTexture = ECPString.new(prefix + "texture", ""))
@@ -540,11 +548,11 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	
 	
 	/**
-	 * \brief Property name prefix.
+	 * \brief Prefix.
 	 * \version 1.26
 	 */
-	func String getPropertyNamePrefix()
-		return pPropertyNamePrefix
+	func String getPrefix()
+		return pPrefix
 	end
 	
 	/** \brief Component behavior. */

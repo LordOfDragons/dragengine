@@ -129,7 +129,7 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorRenderableDesktop behavior = ECBehaviorRenderableDesktop.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "renderableDesktop", id)
 			return behavior
 		end

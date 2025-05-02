@@ -187,7 +187,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 				getUiContainerAddSettings(parameters),\
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerLookAtInteractPrompt")
 			return behavior
 		end

@@ -86,8 +86,7 @@ class ECBehaviorBodyTilting extends DefaultECBehavior
 			var ECBehaviorBodyTilting behavior = ECBehaviorBodyTilting.new(eclass,\
 				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				ECBehaviorProjectToGround.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "bodyTilting")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "bodyTilting")
 			return behavior
 		end
 	end

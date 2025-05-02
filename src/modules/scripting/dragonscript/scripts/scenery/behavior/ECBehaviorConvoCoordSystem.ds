@@ -72,7 +72,7 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorConvoCoordSystem behavior = ECBehaviorConvoCoordSystem.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "convoCoordSystem", id)
 			return behavior
 		end

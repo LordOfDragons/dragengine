@@ -28,6 +28,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -46,7 +47,10 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorParameterTable'/>
+	 * <behavior type='ECBehaviorParameterTable'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
@@ -65,17 +69,106 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorParameterTable behavior = ECBehaviorParameterTable.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "parameterTable")
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "parameterTable")
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "parameterTable.set".
+		 * \version 1.26
+		 */
+		class BTASet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var String name = parameters.getAt("name") cast String
+				var Object value
+				
+				value = parameters.getAt("value", null)
+				if value != null
+					pInstance.setParameterValue(name, (value cast String).toInt())
+				end
+				
+				value = parameters.getAt("value.increment", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
+						+ (value cast String).toInt())
+				end
+				
+				value = parameters.getAt("value.decrement", null)
+				if value != null
+					pInstance.setParameterValue(name, pInstance.getParameterValue(name, 0)\
+						- (value cast String).toInt())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "parameterTable.check".
+		 * \version 1.26
+		 */
+		class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success else BTResult.failure
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var String name = parameters.getAt("name") cast String
+				var int pval = pInstance.getParameterValue(name, 0)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "value", null)
+				if value != null
+					result &= pval == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "value.not", null)
+				if value != null
+					result &= pval != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "value.less", null)
+				if value != null
+					result &= pval < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "value.greater", null)
+				if value != null
+					result &= pval > (value cast String).toInt()
+				end
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorParameterTable pECBehavior
 		var ParameterTable pParameterTable
-		
 		
 		
 		/** \brief Create instance. */
@@ -90,12 +183,21 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		end
 		
 		
-		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
 			pParameterTable = ParameterTable.new()
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
-		
 		
 		
 		/** \brief Behavior. */
@@ -107,7 +209,6 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		func ParameterTable getParameterTable()
 			return pParameterTable
 		end
-		
 		
 		
 		/** \brief Get boolean parameter value or default value if parameter is not set. */
@@ -140,7 +241,6 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 			return entry != null if entry.getValue(defaultValue) else defaultValue
 		end
 		
-		
 	
 		/** \brief Set boolean parameter value. */
 		func void setParameterValue(String parameter, bool value)
@@ -168,7 +268,6 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		end
 		
 		
-		
 		/** \brief Clear parameter value setting it to null if present. */
 		func void clearParameterValue(String parameter)
 			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
@@ -186,7 +285,6 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 		end
 		
 		
-		
 		/** \brief Parameter value is null. */
 		func bool isParameterNull(String parameter)
 			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
@@ -198,7 +296,6 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 			var ParameterTableEntry entry = pParameterTable.getAtOrNull(parameter)
 			return entry != null and entry.isNotNull()
 		end
-		
 		
 		
 		/** \brief Read element from file. */
@@ -221,6 +318,9 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 	end
 	
 	
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
+	
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass) this(eclass, "parameterTable.")
@@ -231,16 +331,46 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
+		
 		eclass.addBehavior(this)
 	end
 	
+	func void dispose()
+		pBehaviorTree = null
+		super.dispose()
+	end
+	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
 	
 	
 	/** \brief Get instance in element from owner element class. */
 	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
-	
 	
 	
 	/**
@@ -266,7 +396,6 @@ class ECBehaviorParameterTable extends DefaultECBehavior
 			return true
 		end) cast Instance
 	end
-	
 	
 	
 	/** \brief Create Behavior instance. */

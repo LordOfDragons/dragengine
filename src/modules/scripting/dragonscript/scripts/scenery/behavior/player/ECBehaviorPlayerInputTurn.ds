@@ -70,7 +70,7 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 			end
 			var ECBehaviorPlayerInputTurn behavior = ECBehaviorPlayerInputTurn.new(\
 				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInputTurn")
 			return behavior
 		end

@@ -121,7 +121,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorVRHandPointedAt behavior = ECBehaviorVRHandPointedAt.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "vrHandPointedAt")
 			return behavior
 		end

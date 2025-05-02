@@ -546,8 +546,7 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 				parameters.getAt("messageCode") cast byte,\
 				getConnectionTrackerFor(parameters.getAt("connectionTracker", "default") cast String),\
 				getNetworkStateTrackerFor(parameters.getAt("networkStateTracker", "default") cast String))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "networkState")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "networkState")
 			return behavior
 		end
 		

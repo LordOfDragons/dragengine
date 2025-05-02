@@ -91,7 +91,7 @@ class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
 			end
 			var ECBehaviorActorMoverUnstuck behavior = ECBehaviorActorMoverUnstuck.new(\
 				eclass, ECBehaviorActorMover.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "actorMoverUnstuck")
 			return behavior
 		end

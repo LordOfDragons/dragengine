@@ -87,8 +87,7 @@ class ECBehaviorWorld extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorWorld behavior = ECBehaviorWorld.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "world", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "world", id)
 			return behavior
 		end
 	end

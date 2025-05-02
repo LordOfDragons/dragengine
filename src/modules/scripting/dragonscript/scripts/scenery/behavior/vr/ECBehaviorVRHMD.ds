@@ -131,8 +131,7 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 			var ECBehaviorVRHMD behavior = ECBehaviorVRHMD.new(eclass,\
 				ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrhmd")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrhmd")
 			return behavior
 		end
 		

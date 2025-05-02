@@ -122,7 +122,7 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 			var ECBehaviorRenderableCamera behavior = ECBehaviorRenderableCamera.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters),\
 				eclass.sharedFactoryHelper.defaultCamera(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "renderableCamera", id)
 			return behavior
 		end

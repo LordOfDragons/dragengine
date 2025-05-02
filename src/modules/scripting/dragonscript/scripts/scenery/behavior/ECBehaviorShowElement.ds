@@ -89,8 +89,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 			
 			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "showElement")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "showElement")
 			return behavior
 		end
 		

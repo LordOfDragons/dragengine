@@ -154,8 +154,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "grabSpot", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "grabSpot", id)
 			return behavior
 		end
 	end

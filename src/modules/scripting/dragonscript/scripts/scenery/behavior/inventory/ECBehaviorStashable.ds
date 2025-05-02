@@ -114,8 +114,7 @@ class ECBehaviorStashable extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorStashable behavior = ECBehaviorStashable.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "stashable")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "stashable")
 			return behavior
 		end
 	end

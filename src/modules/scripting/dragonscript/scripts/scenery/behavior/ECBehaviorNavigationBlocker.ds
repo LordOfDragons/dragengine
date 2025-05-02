@@ -103,7 +103,7 @@ class ECBehaviorNavigationBlocker extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorNavigationBlocker behavior = ECBehaviorNavigationBlocker.new(\
 				eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "navigationBlocker", id)
 			return behavior
 		end

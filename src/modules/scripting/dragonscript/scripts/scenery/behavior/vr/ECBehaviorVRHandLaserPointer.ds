@@ -104,7 +104,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorVRHandLaserPointer behavior = ECBehaviorVRHandLaserPointer.new(eclass,\
 				ECBehaviorVRHandPointAt.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "vrHandLaserPointer", id)
 			return behavior
 		end

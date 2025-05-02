@@ -88,8 +88,7 @@ class ECBCTRRBindings extends DefaultECBehavior
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String),\
 				getSubtitleThemeFor(parameters.getAt("subtitleTheme", "default") cast String))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "ctrrBindings")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "ctrrBindings")
 			return behavior
 		end
 		

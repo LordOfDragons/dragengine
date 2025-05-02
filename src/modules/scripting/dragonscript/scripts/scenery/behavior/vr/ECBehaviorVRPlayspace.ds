@@ -111,8 +111,7 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorVRPlayspace behavior = ECBehaviorVRPlayspace.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrPlayspace")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrPlayspace")
 			return behavior
 		end
 	end

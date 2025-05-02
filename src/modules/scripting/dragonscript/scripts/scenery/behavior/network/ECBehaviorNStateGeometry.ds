@@ -88,8 +88,7 @@ class ECBehaviorNStateGeometry extends DefaultECBehavior
 				behavior.setPrecisionOrientation((parameters.getAt("precisionOrientation") cast String).toFloat())
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "nstateGeometry")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "nstateGeometry")
 			return behavior
 		end
 	end

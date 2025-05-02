@@ -169,7 +169,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 			var ECBehaviorVRControlDesktop behavior = ECBehaviorVRControlDesktop.new(eclass,\
 				ECBehaviorVRHandPointAt.getBehaviorIn(eclass,\
 					parameters.getAt("vrHandPointAt") cast String), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "vrControlDesktop", id)
 			return behavior
 		end

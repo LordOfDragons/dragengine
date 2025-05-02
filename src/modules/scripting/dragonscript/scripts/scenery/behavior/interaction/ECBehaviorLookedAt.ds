@@ -119,8 +119,7 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorLookedAt behavior = ECBehaviorLookedAt.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "lookedAt")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "lookedAt")
 			return behavior
 		end
 	end

@@ -130,8 +130,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			var ECBehaviorRideOn behavior = ECBehaviorRideOn.new(eclass,\
 				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				ECBehaviorProjectToGround.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "rideOn")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "rideOn")
 			return behavior
 		end
 	end
