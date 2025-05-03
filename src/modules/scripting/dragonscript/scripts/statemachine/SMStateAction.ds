@@ -39,56 +39,178 @@ pin Dragengine.Utils
  * For performance reasons the action is looked up once then stored in the state.
  */
 class SMStateAction
-	/** \brief Action identifier. */
-	private var String pActionID
-	
-	/** \brief Action or \em null if not cached. */
-	private var SMAction pAction
-	
-	/** \brief Parameters as Dictionary of type String key and String value. */
-	private var Dictionary pParameters
-	
+	var String pActionID
+	var SMAction pAction
+	var Dictionary pParameters
+	var Array pConditions
+	var Array pResolvedConditions
+	var SMTransition.ConditionMode pConditionMode
 	
 	
 	/** \brief Create behavior tree rule. */
-	public func new( String actionID )
+	func new(String actionID)
 		if actionID == null
-			throw ENullPointer.new()
+			throw ENullPointer.new("actionID")
 		end
-		this.pActionID = actionID
-		this.pParameters = Dictionary.new()
+		
+		pActionID = actionID
+		pParameters = Dictionary.new()
+		pConditions = Array.new()
+		pConditionMode = SMTransition.ConditionMode.allTrue
 	end
-	
 	
 	
 	/** \brief Action identifier. */
-	public func String getActionID()
-		return this.pActionID
+	func String getActionID()
+		return pActionID
 	end
 	
 	/** \brief Action or \em null if not cached. */
-	public func SMAction getAction()
-		return this.pAction
+	func SMAction getAction()
+		return pAction
 	end
 	
 	/**
 	 * \brief Parameters as Dictionary of type String key and String value.
 	 * \warning Do not change the content of the dictionary as it is shared.
 	 */
-	public func Dictionary getParameters()
-		return this.pParameters
+	func Dictionary getParameters()
+		return pParameters
 	end
 	
 	
+	/**
+	 * \brief Count of conditions.
+	 * \version 1.26
+	 */
+	func int getConditionCount()
+		return pConditions.getCount()
+	end
 	
-	/** \brief Run action. */
-	public func void run( SMContext context )
-		if this.pAction == null
-			this.pAction = context.getAction( this.pActionID )
+	/**
+	 * \brief Get condition at index.
+	 * \version 1.26
+	 */
+	func String getConditionAt(int index)
+		return pConditions.getAt(index) cast String
+	end
+	
+	/**
+	 * \brief Add condition.
+	 * \version 1.26
+	 */
+	func void addCondition(String condition)
+		if condition == null
+			throw ENullPointer.new("condition")
 		end
 		
-		if this.pAction != null
-			this.pAction.runAction( context, this.pParameters )
+		pConditions.add(condition)
+		pResolvedConditions = null
+	end
+	
+	/**
+	 * \brief Visit conditions with block with parameter String.
+	 * \version 1.26
+	 */
+	func void forEachCondition(Block ablock)
+		pConditions.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Find condition with block with parameter String.
+	 * \version 1.26
+	 */
+	func String findCondition(Block ablock)
+		return pConditions.find(ablock) cast String
+	end
+	
+	/**
+	 * \brief Condition mode from eConditionModes.
+	 * \version 1.26
+	 */
+	func SMTransition.ConditionMode getConditionMode()
+		return pConditionMode
+	end
+	
+	/**
+	 * \brief Set condition mode from eConditionModes.
+	 * \version 1.26
+	 */
+	func void setConditionMode(SMTransition.ConditionMode mode)
+		if mode == null
+			throw ENullPointer.new("mode")
+		end
+		
+		pConditionMode = mode
+	end
+	
+	/**
+	 * \brief Evaluate all conditions.
+	 * \version 1.25
+	 * 
+	 * If no condition is present \em true is returned.
+	 * 
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	func bool evaluateConditions(SMContext context)
+		if pResolvedConditions == null
+			pResolvedConditions = pConditions.map(block String each
+				return context.getCondition(each)
+			end)
+		end
+		
+		if pResolvedConditions.getCount() == 0
+			return true
+		end
+		
+		select pConditionMode
+		case SMTransition.ConditionMode.allTrue
+			return pResolvedConditions.find(block SMCondition each
+				return each == null or not each.evaluateCondition(context, pParameters)
+			end) == null
+			
+		case SMTransition.ConditionMode.anyTrue
+			return pResolvedConditions.find(block SMCondition each
+				return each != null and each.evaluateCondition(context, pParameters)
+			end) != null
+			
+		case SMTransition.ConditionMode.anyFalse
+			return pResolvedConditions.find(block SMCondition each
+				return each == null or not each.evaluateCondition(context, pParameters)
+			end) != null
+			
+		case SMTransition.ConditionMode.allFalse
+			return pResolvedConditions.find(block SMCondition each
+				return each != null and each.evaluateCondition(context, pParameters)
+			end) == null
+			
+		else
+			return false
+		end
+	end
+	
+	
+	/** \brief Run action. */
+	func void run(SMContext context)
+		if not evaluateConditions(context)
+			if context.getLogActions() and context.getConsole() != null
+				context.getConsole().addMessage("{}: Action '{}' skipped".format(\
+					Array.newWith(context.getLoggingName(), pActionID)))
+			end
+			return
+		end
+		
+		if pAction == null
+			pAction = context.getAction(pActionID)
+		end
+		
+		if context.getLogActions() and context.getConsole() != null
+			context.getConsole().addMessage("{}: Action '{}' run {}".format(\
+				Array.newWith(context.getLoggingName(), pActionID, pAction)))
+		end
+		if pAction != null
+			pAction.runAction(context, pParameters)
 		end
 	end
 end

@@ -54,7 +54,7 @@ pin Dragengine.Utils
  * to an element. Attachable behaviors work similar to behaviors and will be also persisted.
  */
 class BehaviorElement extends Element
-	var Array pInstances, pThinkingInstances
+	var Array pInstances, pThinkingInstances, pPostInitInstances
 	var Array pAttachableBehaviors, pThinkingAttachableBehaviors
 	var bool pRequiresEnterFrame
 	var bool pRequiresThink
@@ -68,6 +68,7 @@ class BehaviorElement extends Element
 	func new(BehaviorElementClass eclass) super(eclass)
 		pInstances = Array.new()
 		pAttachableBehaviors = Array.new()
+		pPostInitInstances = Array.new()
 		pRequiresEnterFrame = false
 		pRequiresThink = false
 		pRequiresAttachToParent = true
@@ -95,6 +96,7 @@ class BehaviorElement extends Element
 		
 		pThinkingAttachableBehaviors = null
 		pThinkingInstances = null
+		pPostInitInstances = null
 		
 		super.dispose()
 	end
@@ -108,6 +110,11 @@ class BehaviorElement extends Element
 		pInstances.forEach(block ECBehaviorInstance each
 			each.init(stub)
 		end)
+		
+		pPostInitInstances.forEach(block BehaviorPostInit each
+			each.postInit(stub)
+		end)
+		pPostInitInstances.removeAll()
 	end
 	
 	
@@ -252,6 +259,21 @@ class BehaviorElement extends Element
 	 */
 	func Array collectAttachableBehaviors(Block ablock)
 		return pAttachableBehaviors.collectCastable(ablock)
+	end
+	
+	
+	
+	/**
+	 * \brief Register behavior instance for post init.
+	 * \version 1.26
+	 * 
+	 * Call this during \ref ECBehaviorInstance#init() to register for a post-init.
+	 */
+	func void registerPostInit(BehaviorPostInit behavior)
+		if behavior == null
+			throw ENullPointer.new("behavior")
+		end
+		pPostInitInstances.add(behavior)
 	end
 	
 	

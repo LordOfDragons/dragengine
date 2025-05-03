@@ -157,7 +157,7 @@ class ECPSimpleConversation extends ElementClassProperty
 			
 		catch Exception e
 			throw ELoadResourceFailed.new(value, "{}: {}".format(\
-				Array.newWith(eclass.getClassname(), e.getReason())))
+				Array.newWith(eclass.getClassname(), e.getReason())), e)
 		end
 	end
 end

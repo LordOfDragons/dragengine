@@ -155,8 +155,8 @@ class ECBehaviorOutline extends DefaultECBehavior
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
 				ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "outline", id)
 			return behavior

@@ -164,7 +164,7 @@ class ECComposeParticleEmitter
 				emitter = this.pParticleEmitter.getLoader().loadFromFile( value )
 				
 			catch Exception e
-				throw ELoadResourceFailed.new( value, element.getClass().getClassname() )
+				throw ELoadResourceFailed.new(value, element.getClass().getClassname(), e)
 			end
 		end
 		

@@ -164,7 +164,7 @@ class ECPFont extends ElementClassProperty implements ResourceListener
 				return Font.new(value, 10)  // dummy height, figure out something better
 				
 			catch Exception e
-				throw ELoadResourceFailed.new(value, eclass.getClassname())
+				throw ELoadResourceFailed.new(value, eclass.getClassname(), e)
 			end
 		end
 	end

@@ -39,51 +39,49 @@ pin Dragengine.XML
  * Returned state machine can thus be shared so do not change it.
  */
 class LoadStateMachine extends BaseXmlLoader
-	/** \brief Dictionary of cached state machines (Dictionary: String -> StateMachine). */
-	private var Dictionary pStateMachines
-	
+	var Dictionary pStateMachines
 	
 	
 	/** \brief Create loader. */
-	public func new( Console console ) this( console, "LoadStateMachine" )
+	func new(Console console) this(console, "LoadStateMachine")
 	end
 	
 	/** \brief Create new loader. */
-	public func new( Console console, String name ) super( console, name )
-		this.pStateMachines = Dictionary.new()
+	func new(Console console, String name) super(console, name)
+		pStateMachines = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Load state machine from file. */
-	public func StateMachine loadFromFile( String filename )
-		var StateMachine stateMachine = this.pStateMachines.getAt( filename, null ) cast StateMachine
+	func StateMachine loadFromFile(String filename)
+		var StateMachine stateMachine = pStateMachines.getAt(filename, null) cast StateMachine
 		if stateMachine != null
 			return stateMachine
 		end
 		
-		this.logLoadingFromFile( filename )
+		logLoadingFromFile(filename)
 		
 		try
-			var EasyXML document = EasyXML.new( filename )
+			var EasyXML document = EasyXML.new(filename)
 			if document.hasParseFailed()
-				this.logParsingFailed( document.getParseLog() )
+				logParsingFailed(document.getParseLog())
 				throw EInvalidParam.new()
 			end
 			
 			var EasyXMLElement root = document.getRootElement()
-			if not root.getTagName().equals( "stateMachine" )
-				this.logUnknownTag( root )
+			if not root.getTagName().equals("stateMachine")
+				logUnknownTag(root)
 				throw EInvalidParam.new()
 			end
 			
-			stateMachine = this.readStateMachine( root )
+			stateMachine = readStateMachine(root)
 			
-			this.pStateMachines.setAt( filename, stateMachine )
+			pStateMachines.setAt(filename, stateMachine)
 			return stateMachine
 			
 		catch Exception e
-			this.logLoadingFailed( filename )
+			logLoadingFailed(filename)
 			throw
 		end
 	end
@@ -91,97 +89,109 @@ class LoadStateMachine extends BaseXmlLoader
 	
 	
 	/** \brief Read state machine tag. */
-	private func StateMachine readStateMachine( EasyXMLElement root )
+	private func StateMachine readStateMachine(EasyXMLElement root)
 		var StateMachine stateMachine = StateMachine.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "initialState" )
-				stateMachine.setInitialState( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("initialState")
+				stateMachine.setInitialState(element.getFirstCData())
 				
-			elif tagName.equals( "state" )
-				stateMachine.addState( this.readState( element ) )
+			elif tagName.equals("state")
+				stateMachine.addState(readState(element))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
-		end )
+		end)
 		
 		return stateMachine
 	end
 	
 	/** \brief Read state tag. */
-	private func SMState readState( EasyXMLElement root )
-		var SMState state = SMState.new( root.getAttributeNamed( "id" ) )
+	private func SMState readState(EasyXMLElement root)
+		var SMState state = SMState.new(root.getAttributeNamed("id"))
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "enterAction" )
-				state.addEnterAction( this.readStateAction( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("enterAction")
+				state.addEnterAction(readStateAction(element))
 				
-			elif tagName.equals( "exitAction" )
-				state.addExitAction( this.readStateAction( element ) )
+			elif tagName.equals("exitAction")
+				state.addExitAction(readStateAction(element))
 				
-			elif tagName.equals( "transition" )
-				state.addTransition( this.readTransition( element ) )
+			elif tagName.equals("transition")
+				state.addTransition(readTransition(element))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
-		end )
+		end)
 		
 		return state
 	end
 	
 	/** \brief Read state action tag. */
-	private func SMStateAction readStateAction( EasyXMLElement root )
-		var SMStateAction action = SMStateAction.new( root.getAttributeNamed( "name" ) )
+	private func SMStateAction readStateAction(EasyXMLElement root)
+		var SMStateAction action = SMStateAction.new(root.getAttributeNamed("name"))
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "parameter" )
-				action.getParameters().setAt( element.getAttributeNamed( "name" ), element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("parameter")
+				action.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
+				
+			elif tagName.equals("condition")
+				action.addCondition(element.getFirstCData())
+				
+			elif tagName.equals("conditionMode")
+				var String value = element.getFirstCData()
+				var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named(value)
+				if mode == null
+					logInvalidValue(element, value)
+					throw EInvalidParam.new()
+				end
+				action.setConditionMode(mode)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
-		end )
+		end)
 		
 		return action
 	end
 	
 	/** \brief Read transition. */
-	private func SMTransition readTransition( EasyXMLElement root )
+	private func SMTransition readTransition(EasyXMLElement root)
 		var String stateId
-		if root.hasAttributeNamed( "state" )
-			stateId = root.getAttributeNamed( "state" )
+		if root.hasAttributeNamed("state")
+			stateId = root.getAttributeNamed("state")
 		end
-		var SMTransition transition = SMTransition.new( root.getAttributeNamed( "event" ), stateId )
+		var SMTransition transition = SMTransition.new(root.getAttributeNamed("event"), stateId)
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "action" )
-				transition.addAction( this.readStateAction( element ) )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("action")
+				transition.addAction(readStateAction(element))
 				
-			elif tagName.equals( "parameter" )
-				transition.getParameters().setAt( element.getAttributeNamed( "name" ), element.getFirstCData() )
+			elif tagName.equals("parameter")
+				transition.getParameters().setAt(element.getAttributeNamed("name"), element.getFirstCData())
 				
-			elif tagName.equals( "condition" )
-				transition.addCondition( element.getFirstCData() )
+			elif tagName.equals("condition")
+				transition.addCondition(element.getFirstCData())
 				
-			elif tagName.equals( "conditionMode" )
+			elif tagName.equals("conditionMode")
 				var String value = element.getFirstCData()
-				var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named( value )
+				var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named(value)
 				if mode == null
-					this.logInvalidValue( element, value )
+					logInvalidValue(element, value)
 					throw EInvalidParam.new()
 				end
-				transition.setConditionMode( mode )
+				transition.setConditionMode(mode)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
-		end )
+		end)
 		
 		return transition
 	end

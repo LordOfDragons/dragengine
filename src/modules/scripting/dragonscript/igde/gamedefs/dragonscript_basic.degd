@@ -2014,6 +2014,10 @@
 				<add name='Dra[en]gine Conversation' pattern='*.desm' default='.desm'/>
 			</customPathPattern>
 		</property>
+		<property name='debug'>
+			<description>Debug mode prefix. If not empty string enables debug mode with prefix to locate log messages easily.</description>
+			<type>string</type>
+		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
 	<class name='ECBehaviorRidable'>

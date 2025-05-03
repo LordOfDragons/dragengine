@@ -232,8 +232,8 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "particleEmitter", id)
@@ -359,7 +359,6 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		/** \brief Create behavior instance. */
 		func new(ECBehaviorParticleEmitter ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
-			pCasting = false
 			pListeners = Array.new()
 			pTriggerTable = ecbehavior.getTriggerTable()
 			pTargetCasting = TSNamedTriggerTarget.new()

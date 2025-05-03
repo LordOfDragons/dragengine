@@ -41,19 +41,20 @@ pin Dragengine.Utils
  * state machine is stored.
  */
 class ECPStateMachine extends ElementClassProperty
-	private var LoadStateMachine pLoader
-	private var String pPath
-	private var StateMachine pStateMachine
-	private var bool pHasPreloaded
+	var LoadStateMachine pLoader
+	var String pPath
+	var StateMachine pStateMachine
+	var bool pHasPreloaded
+	var Exception pException
 	
 	
 	
 	/** \brief Create property. */
-	public func new(String name, LoadStateMachine loader) this(name, loader, null)
+	func new(String name, LoadStateMachine loader) this(name, loader, null)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new(String name, LoadStateMachine loader, String path) super(name)
+	func new(String name, LoadStateMachine loader, String path) super(name)
 		pLoader = loader
 		pPath = path
 	end
@@ -61,39 +62,39 @@ class ECPStateMachine extends ElementClassProperty
 	
 	
 	/** \brief StateMachine loader. */
-	public func LoadStateMachine getLoader()
+	func LoadStateMachine getLoader()
 		return pLoader
 	end
 	
 	/** \brief Path to state machine. */
-	public func String getPath()
+	func String getPath()
 		return pPath
 	end
 	
 	/** \brief Set path to state machine. */
-	public func void setPath(String path)
+	func void setPath(String path)
 		pPath = path
 	end
 	
 	/** \brief StateMachine or \em null if not present. */
-	public func StateMachine getStateMachine()
+	func StateMachine getStateMachine()
 		return pStateMachine
 	end
 	
 	/** \brief Set state machine or \em null if not present. */
-	public func void setStateMachine(StateMachine behaviorTree)
+	func void setStateMachine(StateMachine behaviorTree)
 		pStateMachine = behaviorTree
 	end
 	
 	/** \brief Property has been preloaded. */
-	public func bool getHasPreloaded()
+	func bool getHasPreloaded()
 		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue(Object value)
+	func void setValue(Object value)
 		pPath = value cast String
 	end
 	
@@ -101,7 +102,7 @@ class ECPStateMachine extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
 		var String path = (property cast ECPStateMachine).pPath
 		if path != null and not path.empty()
 			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
@@ -111,7 +112,7 @@ class ECPStateMachine extends ElementClassProperty
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+	func void preloadResources(ElementClass elementClass, PreloadCounter counter)
 		if pHasPreloaded
 			return
 		end
@@ -128,6 +129,7 @@ class ECPStateMachine extends ElementClassProperty
 			pStateMachine = pLoader.loadFromFile(path)
 			
 		catch Exception e
+			pException = e
 		end
 	end
 	
@@ -135,11 +137,11 @@ class ECPStateMachine extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+	func bool logPreloadProblems(ElementClass elementClass, Console console)
 		if pPath != null and not pPath.empty() and pStateMachine == null
-			console.addMessage("Property " + elementClass.getClassname() + "." \
+			console.addError("Property " + elementClass.getClassname() + "." \
 				+ getName() + ": Failed loading state machine " \
-				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath(), pException)
 			return true
 		end
 		return false
@@ -153,7 +155,7 @@ class ECPStateMachine extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored state machine is
 	 * returned. If the named stub property is present it is loaded as state machine resource.
 	 */
-	public func StateMachine getStateMachine(StubWithProperties stub, ElementClass eclass)
+	func StateMachine getStateMachine(StubWithProperties stub, ElementClass eclass)
 		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
 			return pStateMachine
@@ -163,7 +165,7 @@ class ECPStateMachine extends ElementClassProperty
 			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new(value, eclass.getClassname())
+			throw ELoadResourceFailed.new(value, eclass.getClassname(), e)
 		end
 	end
 end

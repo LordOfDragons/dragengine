@@ -48,13 +48,11 @@ pin Dragengine.Scenery
  */
 class SMContext
 	var StateMachine pStateMachine
-	var Dictionary pConditions
-	var Dictionary pActions
+	var Dictionary pConditions, pActions
 	var SMState pCurrentState
 	var Console pConsole
 	var String pLoggingName
-	var bool pLogTransitions
-	var bool pLogStateChanges
+	var bool pLogTransitions, pLogStateChanges, pLogActions
 	
 	
 	/** \brief Create state machine context. */
@@ -68,8 +66,6 @@ class SMContext
 		pActions = Dictionary.new()
 		pCurrentState = stateMachine.getStateAt(stateMachine.getInitialState())
 		pLoggingName = "StateMachine"
-		pLogTransitions = false
-		pLogStateChanges = false
 	end
 	
 	/**
@@ -105,6 +101,11 @@ class SMContext
 		pLoggingName = context.pLoggingName
 		pLogTransitions = context.pLogTransitions
 		pLogStateChanges = context.pLogStateChanges
+		pLogActions = context.pLogActions
+		
+		if pCurrentState == null
+			throw EInvalidParam.new("initial state not found")
+		end
 	end
 	
 	
@@ -222,26 +223,36 @@ class SMContext
 	 * Calls onCurrentStateChanged() after all changes are done.
 	 */
 	func void setCurrentState(SMState state)
+		var bool doLog = pLogStateChanges and pConsole != null
+		
 		if pCurrentState != null
+			if doLog
+				pConsole.addMessage("{}: State '{}' {} exit actions".format(Array.newWith(\
+					pLoggingName, pCurrentState.getID(), pCurrentState.getExitActionCount())))
+			end
+			
 			pCurrentState.forEachExitAction(block SMStateAction each
 				each.run(this)
 			end)
 		end
 		
+		if doLog
+			pConsole.addMessage("{}: State '{}' change to '{}'".format(Array.newWith(\
+				pLoggingName, pCurrentState != null if pCurrentState.getID() else null,\
+				state != null if state.getID() else null)))
+		end
+		
 		pCurrentState = state
 		
 		if state != null
+			if doLog
+				pConsole.addMessage("{}: State '{}' {} enter actions".format(Array.newWith(\
+					pLoggingName, state.getID(), state.getEnterActionCount())))
+			end
+			
 			state.forEachEnterAction(block SMStateAction each
 				each.run(this)
 			end)
-		end
-		
-		if pLogStateChanges and pConsole != null
-			if state != null
-				pConsole.addMessage(pLoggingName + ": State changed to '" + state.getID() + "'")
-			else
-				pConsole.addMessage(pLoggingName + ": State changed to (null)")
-			end
 		end
 		
 		onCurrentStateChanged()
@@ -308,6 +319,19 @@ class SMContext
 		pLogStateChanges = logStateChanges
 	end
 	
+	/**
+	 * \brief Log actions.
+	 * \version 1.26
+	 */
+	func bool getLogActions()
+		return pLogActions
+	end
+	
+	/** \brief Set actions. */
+	func void setLogActions(bool logActions)
+		pLogActions = logActions
+	end
+	
 	
 	/**
 	 * \brief Run event on state machine.
@@ -325,14 +349,13 @@ class SMContext
 		
 		if pLogTransitions and pConsole != null
 			if transition != null
-				pConsole.addMessage("{}: Transition #{} Event '{}' Next State '{}'" \
-					.format(Array.newWith(pLoggingName, \
-						pCurrentState.indexOfTransition(transition), \
-						event, transition.getStateID())))
+				pConsole.addMessage("{}: State '{}' event '{}' transition {} next state '{}'"\
+					.format(Array.newWith(pLoggingName, pCurrentState.getID(), event,\
+						pCurrentState.indexOfTransition(transition), transition.getStateID())))
 				
 			else
-				pConsole.addMessage("{}: No transition matching event '{}'" \
-					.format(Array.newWith(pLoggingName, event)))
+				pConsole.addMessage("{}: State '{}' event '{}' no transition"\
+					.format(Array.newWith(pLoggingName, pCurrentState.getID(), event)))
 			end
 		end
 		

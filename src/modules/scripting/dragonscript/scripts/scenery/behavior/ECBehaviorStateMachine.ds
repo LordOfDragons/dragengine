@@ -234,7 +234,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorStateMachine behavior = ECBehaviorStateMachine.new(eclass, id)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "stateMachine", id)
@@ -244,7 +244,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	
 	
 	/** \brief Behavior instance. */
-	class Instance extends DefaultECBehaviorInstance
+	class Instance extends DefaultECBehaviorInstance implements BehaviorPostInit
 		/**
 		 * \brief Behavior tree action "stateMachine{(id)}.set".
 		 * \version 1.26
@@ -386,6 +386,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		/** \brief Create element. */
 		func new(ECBehaviorStateMachine ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
+			setRequiresEnterFrame(true)
 		end
 		
 		/** \brief Dispose of composeable instance. */
@@ -409,11 +410,21 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 				pContext.setConsole(BaseGameApp.getApp().getConsole())
 			end
 			
+			var String debug = pECBehavior.getDebug().getValueOrNull(stub)
+			if debug != null
+				pContext.setLoggingName(debug)
+				pContext.setLogTransitions(true)
+				pContext.setLogStateChanges(true)
+				pContext.setLogActions(true)
+			end
+			
 			pECBehavior.setActionsConditions(this)
+			
+			var BehaviorElement element = getElement()
 			
 			if pECBehavior.getBehaviorTree() != null
 				var String pnp = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
 				c.setAction(pnp + "set", BTASet.new(this))
 				c.setAction(pnp + "event", BTAEvent.new(this))
 				
@@ -421,6 +432,14 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 				var BTACheck btacheck = BTACheck.new(this, pnp)
 				c.setAction(name, btacheck)
 				c.setCondition(name, btacheck)
+			end
+			
+			element.registerPostInit(this)
+		end
+		
+		func void postInit(StubElement stub)
+			if pContext != null
+				runEvent("init")
 			end
 		end
 		
@@ -528,6 +547,20 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		
 		
 		
+		func void addToGameWorld()
+			runEvent("addToGameWorld")
+		end
+		
+		func void removeFromGameWorld()
+			runEvent("removeFromGameWorld")
+		end
+		
+		func void enterFrame()
+			runEvent("enterFrame")
+		end
+		
+		
+		
 		/** \brief Read element from file. */
 		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
@@ -563,6 +596,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	
 	
 	var ECPStateMachine pStateMachine
+	var ECPString pDebug
 	var Array pActionConditionFactories
 	var ECBehaviorBehaviorTree pBehaviorTree
 	var String pPrefix
@@ -599,8 +633,9 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID, String prefix)\
 	super(eclass, id)
 		pPrefix = prefix
-		pStateMachine = ECPStateMachine.new(prefix + "path", loaders.getStateMachine())
-		eclass.addProperty(pStateMachine)
+		
+		eclass.addProperty(pStateMachine = ECPStateMachine.new(prefix + "path", loaders.getStateMachine()))
+		eclass.addProperty(pDebug = ECPString.new(prefix + "debug", null))
 		
 		pActionConditionFactories = Array.new()
 		
@@ -627,6 +662,16 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	/** \brief State machine. */
 	func ECPStateMachine getStateMachine()
 		return pStateMachine
+	end
+	
+	/**
+	 * \brief Debug mode prefix.
+	 * \version 1.26
+	 * 
+	 * If not empty string enables debug mode with prefix to locate log messages easily.
+	 */
+	func ECPString getDebug()
+		return pDebug
 	end
 	
 	/**

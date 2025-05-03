@@ -156,7 +156,7 @@ class ECPWorld extends ElementClassProperty
 			return pLoader.loadSharedFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new(value, eclass.getClassname())
+			throw ELoadResourceFailed.new(value, eclass.getClassname(), e)
 		end
 	end
 end

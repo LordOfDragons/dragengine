@@ -312,8 +312,8 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.optionalStateMachine(eclass, parameters))
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "twoStateAnimated", id)
@@ -1731,7 +1731,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				animator = pAnimator.getLoader().loadFromFile(value)
 				
 			catch Exception e
-				throw ELoadResourceFailed.new(value, element.getClass().getClassname())
+				throw ELoadResourceFailed.new(value, element.getClass().getClassname(), e)
 			end
 		end
 		
@@ -1742,7 +1742,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				animation = Animation.new(value)
 				
 			catch Exception e
-				throw ELoadResourceFailed.new(value, element.getClass().getClassname())
+				throw ELoadResourceFailed.new(value, element.getClass().getClassname(), e)
 			end
 		end
 		
