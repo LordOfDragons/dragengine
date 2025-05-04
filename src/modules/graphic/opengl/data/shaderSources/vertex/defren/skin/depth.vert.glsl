@@ -175,10 +175,12 @@ void main(void){
 			vSkinClipCoord = vec3(inPosition);
 		#endif
 		
-		#ifdef DEPTH_DISTANCE
-			applyDepthOffset(inLayer, vNormal, pDoubleSided, vPosition.z);
-		#else
-			applyDepthOffset(inLayer, vNormal, pDoubleSided);
+		#if defined DEPTH_OFFSET
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(inLayer, vNormal, pDoubleSided, vPosition.z);
+			#else
+				applyDepthOffset(inLayer, vNormal, pDoubleSided);
+			#endif
 		#endif
 	#endif
 	

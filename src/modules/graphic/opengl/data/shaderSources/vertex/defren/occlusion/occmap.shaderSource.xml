@@ -16,6 +16,7 @@
 	<define>GS_RENDER_CASCADED</define>
 	<define>GS_RENDER_STEREO</define>
 	<define>VS_RENDER_STEREO</define>
+	<define>DEPTH_OFFSET</define>
 	<define>DEPTH_DISTANCE</define>
 	<define>SHARED_SPB</define>
 	

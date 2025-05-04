@@ -84,17 +84,19 @@ void emitCorner(in int layer, in vec4 position, in vec4 preTransformedPosition){
 	vPosition = pMatrixV[layer] * position;
 	vClipCoord = pMatrixV[layer] * position;
 	
-	#ifdef GS_RENDER_CUBE
-		#ifdef DEPTH_DISTANCE
-			applyDepthOffset(0, vPosition.z);
+	#if defined DEPTH_OFFSET
+		#ifdef GS_RENDER_CUBE
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(0, vPosition.z);
+			#else
+				applyDepthOffset(0);
+			#endif
 		#else
-			applyDepthOffset(0);
-		#endif
-	#else
-		#ifdef DEPTH_DISTANCE
-			applyDepthOffset(layer, vPosition.z);
-		#else
-			applyDepthOffset(layer);
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(layer, vPosition.z);
+			#else
+				applyDepthOffset(layer);
+			#endif
 		#endif
 	#endif
 	

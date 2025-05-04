@@ -79,10 +79,12 @@ void main(void){
 		vPosition = pMatrixV[inLayer] * position;
 		vClipCoord = pMatrixV[inLayer] * position;
 		
-		#ifdef DEPTH_DISTANCE
-			applyDepthOffset(inLayer, vPosition.z);
-		#else
-			applyDepthOffset(inLayer);
+		#if defined DEPTH_OFFSET
+			#ifdef DEPTH_DISTANCE
+				applyDepthOffset(inLayer, vPosition.z);
+			#else
+				applyDepthOffset(inLayer);
+			#endif
 		#endif
 	#endif
 	
