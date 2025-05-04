@@ -347,7 +347,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action "twoStateAnimated{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -388,7 +388,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "twoStateAnimated{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -455,7 +455,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener to switch state. */
-		public class SwitchStateListener extends ECBehaviorTriggered.DefaultListener
+		private class SwitchStateListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)

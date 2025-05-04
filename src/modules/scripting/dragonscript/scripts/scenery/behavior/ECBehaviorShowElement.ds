@@ -115,7 +115,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		 * \brief Behavior tree action "showElement.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -138,7 +138,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "showElement.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -167,7 +167,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		end
 		
 		/** \brief Change shown listener. */
-		class ShowElementListener extends ECBehaviorTriggered.DefaultListener
+		private class ShowElementListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)

@@ -254,7 +254,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 		 * \brief Behavior tree action "forceField{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -277,7 +277,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "forceField{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -309,7 +309,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener to enable forceField. */
-		public class ActivateListener extends ECBehaviorTriggered.DefaultListener
+		private class ActivateListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)

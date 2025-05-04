@@ -200,7 +200,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		 * \brief Behavior tree action "announcer{(id)}.announce".
 		 * \version 1.26
 		 */
-		class BTAAnnounce extends BTSMActionCondition
+		private class BTAAnnounce extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -234,7 +234,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "announcer{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -266,7 +266,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener to start announcing. */
-		public class AnnounceListener extends ECBehaviorTriggered.DefaultListener
+		private class AnnounceListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -277,6 +277,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 				pInstance.announce()
 			end
 		end
+		
 		
 		var ECBehaviorAnnouncer pECBehavior
 		var ECBehaviorCollider.Instance pCollider

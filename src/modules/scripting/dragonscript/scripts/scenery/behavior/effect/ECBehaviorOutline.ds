@@ -169,7 +169,7 @@ class ECBehaviorOutline extends DefaultECBehavior
 		 * \brief Behavior tree action "outline{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -208,7 +208,7 @@ class ECBehaviorOutline extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "outline{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

@@ -158,7 +158,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "projectToGround.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

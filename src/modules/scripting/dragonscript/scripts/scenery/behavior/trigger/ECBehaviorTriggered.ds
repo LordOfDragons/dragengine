@@ -203,7 +203,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "trigger{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -235,7 +235,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener. */
-		public class TriggedListener implements TSTriggerListener
+		private class TriggedListener implements TSTriggerListener
 			var Instance pInstance
 			
 			func new(Instance instance)

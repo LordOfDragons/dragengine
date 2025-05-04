@@ -224,7 +224,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		 * \brief Behavior tree action "grabber{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -247,7 +247,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		 * \brief Behavior tree action "grabber{(id)}.release".
 		 * \version 1.26
 		 */
-		class BTARelease extends BTSMActionCondition
+		private class BTARelease extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -264,7 +264,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "grabber{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

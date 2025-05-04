@@ -162,7 +162,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "hearSound.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

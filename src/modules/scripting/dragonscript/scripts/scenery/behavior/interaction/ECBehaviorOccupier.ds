@@ -151,7 +151,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		 * \brief Behavior tree action "occupier{(id)}.release".
 		 * \version 1.26
 		 */
-		class BTARelease extends BTSMActionCondition
+		private class BTARelease extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -168,7 +168,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "occupier{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

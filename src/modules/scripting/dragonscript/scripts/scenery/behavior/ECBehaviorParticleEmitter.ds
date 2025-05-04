@@ -257,7 +257,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		 * \brief Behavior tree action "particleEmitter{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -280,7 +280,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "particleEmitter{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -311,7 +311,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener to toggle particle emitter casting state. */
-		public class CastingListener extends ECBehaviorTriggered.DefaultListener
+		private class CastingListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -328,7 +328,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		end
 		
 		/** \brief Particle listener. */
-		protected class ParticleListener implements ParticleEmitterInstanceListener
+		private class ParticleListener implements ParticleEmitterInstanceListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -343,6 +343,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				pInstance.notifyParticleResponse(collisionInfo)
 			end
 		end
+		
 		
 		var ECBehaviorParticleEmitter pECBehavior
 		var ECBehaviorCollider.Instance pCollider

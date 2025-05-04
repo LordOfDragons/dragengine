@@ -180,7 +180,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \brief Behavior tree action "hitScan.start".
 		 * \version 1.26
 		 */
-		class BTAStart extends BTSMActionCondition
+		private class BTAStart extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -224,7 +224,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \brief Behavior tree action "hitScan.stop".
 		 * \version 1.26
 		 */
-		class BTAStop extends BTSMActionCondition
+		private class BTAStop extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -246,7 +246,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "hitScan.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

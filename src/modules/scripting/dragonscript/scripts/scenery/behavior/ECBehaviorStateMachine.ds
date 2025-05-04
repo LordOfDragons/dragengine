@@ -249,7 +249,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		 * \brief Behavior tree action "stateMachine{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet implements BTAction
+		private class BTASet implements BTAction
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -280,14 +280,14 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		 * \brief Behavior tree action "stateMachine{(id)}.event".
 		 * \version 1.26
 		 */
-		class BTAEvent extends BTSMActionCondition
+		private class BTAEvent implements BTAction
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runAction(BTContext context, Dictionary parameters)
 				if pInstance.runEvent(parameters.getAt("id") cast String)
 					return BTResult.success
 				end
@@ -299,7 +299,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "stateMachine{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck implements BTAction, BTCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -308,12 +308,12 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runAction(BTContext context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			

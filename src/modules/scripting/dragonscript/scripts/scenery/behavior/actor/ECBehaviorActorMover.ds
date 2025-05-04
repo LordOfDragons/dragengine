@@ -442,7 +442,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \brief Behavior tree action "actorMover.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -485,7 +485,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \brief Behavior tree action "actorMover.stop".
 		 * \version 1.26
 		 */
-		class BTAStop extends BTSMActionCondition
+		private class BTAStop extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -502,7 +502,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "actorMover.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -574,7 +574,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		end
 		
 		/** \brief Ridable changed. */
-		protected class RidableChanged extends ECBehaviorRideOn.DefaultListener
+		private class RidableChanged extends ECBehaviorRideOn.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)

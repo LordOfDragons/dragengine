@@ -234,7 +234,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \brief Behavior tree action "actorTransmission.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -257,11 +257,12 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 				return BTResult.success
 			end
 		end
+		
 		/**
 		 * \brief Behavior tree action "actorTransmission.transmission".
 		 * \version 1.26
 		 */
-		class BTATransmission extends BTSMActionCondition
+		private class BTATransmission extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -310,7 +311,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "actorTransmission.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -372,7 +373,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		end
 		
 		/** \brief Wait in conversation if running. */
-		class WaitInConversation extends ECBehaviorConversationActor.DefaultListener
+		private class WaitInConversation extends ECBehaviorConversationActor.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)

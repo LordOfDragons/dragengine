@@ -160,7 +160,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "toggle{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -197,7 +197,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "toggle{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -239,7 +239,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener. */
-		public class ToggleListener extends ECBehaviorTriggered.DefaultListener
+		private class ToggleListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)

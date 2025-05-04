@@ -192,7 +192,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		 * \brief Behavior tree action "skinSwitcher{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -229,7 +229,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "skinSwitcher{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -305,6 +305,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 				return result
 			end
 		end
+		
 		
 		var ECBehaviorSkinSwitcher pECBehavior
 		var ECBehaviorComponent.Instance pComponent

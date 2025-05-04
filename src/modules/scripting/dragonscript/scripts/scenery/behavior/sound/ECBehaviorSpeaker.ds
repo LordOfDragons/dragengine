@@ -237,7 +237,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		 * \brief Behavior tree action "speaker{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -265,7 +265,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "speaker{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -302,7 +302,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener to change playing state of speaker. */
-		public class PlayingListener extends ECBehaviorTriggered.DefaultListener
+		private class PlayingListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -319,7 +319,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener to change muted state of speaker. */
-		public class MuteListener extends ECBehaviorTriggered.DefaultListener
+		private class MuteListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -334,6 +334,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				pInstance.setMuted(false)
 			end
 		end
+		
 		
 		var ECBehaviorSpeaker pECBehavior
 		var ECBehaviorCollider.Instance pCollider

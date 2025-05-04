@@ -137,7 +137,7 @@ class ECBehaviorStashable extends DefaultECBehavior
 		 * \brief Behavior tree action "stashable.remove".
 		 * \version 1.26
 		 */
-		class BTARemove extends BTSMActionCondition
+		private class BTARemove extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -159,7 +159,7 @@ class ECBehaviorStashable extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "stashable.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

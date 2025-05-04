@@ -212,7 +212,7 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action "actorAnimated{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -285,7 +285,7 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "actorAnimated{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

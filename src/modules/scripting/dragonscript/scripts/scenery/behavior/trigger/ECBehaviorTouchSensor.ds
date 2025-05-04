@@ -219,7 +219,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		 * \brief Behavior tree action "touchSensor{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -242,7 +242,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "touchSensor.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			

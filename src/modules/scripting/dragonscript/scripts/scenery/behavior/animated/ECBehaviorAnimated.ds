@@ -271,7 +271,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action "animated{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -304,7 +304,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "animated{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -356,7 +356,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener to start playing back. */
-		public class PlayingListener extends ECBehaviorTriggered.DefaultListener
+		private class PlayingListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)

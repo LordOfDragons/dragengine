@@ -174,7 +174,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "timer{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -229,7 +229,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "timer{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -286,7 +286,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		end
 		
 		/** \brief Trigger listener. */
-		public class TimerListener extends ECBehaviorTriggered.DefaultListener
+		private class TimerListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)

@@ -155,7 +155,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "rideOn.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -187,7 +187,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		end
 		
 		/** \brief Update locomotion on collider changed. */
-		protected class UpdateLocomotionListener extends ECBehaviorColliderAI.DefaultListener
+		private class UpdateLocomotionListener extends ECBehaviorColliderAI.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -200,7 +200,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		end
 		
 		/** \brief Clear ridable and apply ridable velocity if no more touching ground. */
-		class NoMoreTouchingGround extends ECBehaviorProjectToGround.DefaultListener
+		private class NoMoreTouchingGround extends ECBehaviorProjectToGround.DefaultListener
 			protected var Instance pInstance
 			
 			func new(Instance instance)

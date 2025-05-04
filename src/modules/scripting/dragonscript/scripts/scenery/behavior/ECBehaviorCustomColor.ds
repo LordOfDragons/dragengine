@@ -171,11 +171,12 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 	end
 	
 	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
 		/**
 		 * \brief Behavior tree action "customColor{(id)}.set".
 		 * \version 1.26
 		 */
-		class BTASet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -204,7 +205,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 		 * \brief Behavior tree action/condition "customColor{(id)}.check".
 		 * \version 1.26
 		 */
-		class BTACheck extends BTSMActionCondition
+		private class BTACheck extends BTSMActionCondition
 			var Instance pInstance
 			var String pPrefix
 			
@@ -260,7 +261,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 			end
 		end
 		
-	class Instance extends DefaultECBehaviorInstance
+		
 		var ECBehaviorCustomColor pECBehavior
 		var UnicodeString pName
 		var UnicodeString pDescription
