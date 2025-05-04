@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -122,6 +124,33 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	 * <behavior type='ECBehaviorActorAnimated'>
 	 *   <!-- optional: use component with id instead of empty string -->
 	 *   <string name='component'>second</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
+	 *   
+	 *   <!--
+	 *   optional: set controller mapping instead of using default mapping.
+	 *   keys are the controller names and value the LocomotionAttribute constant names.
+	 *   the listing below is equivalent to the default controller mapping.
+	 *   -->
+	 *   <map name='controllerMapping'>
+	 *     <string key='idle'>elapsedTime</string>
+	 *     <string key='look.vertical'>lookVertical</string>
+	 *     <string key='look.horizontal'>lookHorizontal</string>
+	 *     <string key='turn.inPlace'>timeTurnIP</string>
+	 *     <string key='turn.velocity'>turningSpeed</string>
+	 *     <string key='stance'>stance</string>
+	 *     <string key='move.walk'>displacement</string>
+	 *     <string key='move.run'>displacement</string>
+	 *     <string key='move.velocity'>relativeMovingSpeed</string>
+	 *     <string key='tilt.vertical'>tiltVertical</string>
+	 *     <string key='tilt.horizontal'>tiltHorizontal</string>
+	 *     <string key='tilt.offset'>tiltOffset</string>
+	 *     <string key='interaction'>elapsedTime</string>
+	 *   </map>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -130,7 +159,8 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	 * </behavior>
 	 * \endcode
 	 * 
-	 * Calls \ref ECBehaviorActorAnimated#setDefaultControllerMappings() after creating behavior.
+	 * If 'controllerMapping' is not set calls
+	 * \ref ECBehaviorActorAnimated#setDefaultControllerMappings() after creating behavior.
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
@@ -148,7 +178,24 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
 				ECBehaviorLocomotion.getBehaviorIn(eclass), id)
 			
-			behavior.setDefaultControllerMappings()
+			var Object value = parameters.getAt("controllerMapping", null)
+			if value != null
+				var Dictionary mapping = behavior.getControllerMapping()
+				var LocomotionAttribute attr
+				(value cast Dictionary).forEach(block String k, String v
+					attr = LocomotionAttribute.named(v)
+					if attr == null
+						throw EInvalidParam.new("invalid LocomotionAttribute: " + v)
+					end
+					mapping.setAt(k, attr)
+				end)
+				
+			else
+				behavior.setDefaultControllerMappings()
+			end
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "actorAnimated", id)
@@ -161,6 +208,188 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "actorAnimated{(id)}.set".
+		 * \version 1.26
+		 */
+		class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("animator", null)
+				if value != null
+					pInstance.setActiveAnimatorID(value cast String)
+				end
+				
+				value = parameters.getAt("controller.name", null)
+				if value != null
+					var AnimatorController c = pInstance.getControllerNamed(value cast String)
+					if c != null
+						value = parameters.getAt("controller.value", null)
+						if value != null
+							c.setValue((value cast String).toFloat())
+						end
+						
+						value = parameters.getAt("controller.value.increment", null)
+						if value != null
+							c.increment((value cast String).toFloat())
+						end
+						
+						value = parameters.getAt("controller.value.decrement", null)
+						if value != null
+							c.increment(-(value cast String).toFloat())
+						end
+						
+						value = parameters.getAt("controller.value.relative", null)
+						if value != null
+							c.setRelativeValue((value cast String).toFloat())
+						end
+						
+						value = parameters.getAt("controller.value.relative.increment", null)
+						if value != null
+							c.setRelativeValue(c.getRelativeValue() + (value cast String).toFloat())
+						end
+						
+						value = parameters.getAt("controller.value.relative.decrement", null)
+						if value != null
+							c.setRelativeValue(c.getRelativeValue() - (value cast String).toFloat())
+						end
+						
+						value = parameters.getAt("controller.value.lower", null)
+						if value != null
+							c.setToLower()
+						end
+						
+						value = parameters.getAt("controller.value.upper", null)
+						if value != null
+							c.setToUpper()
+						end
+						
+						if parameters.has("controller.value.reverse")
+							c.reverse()
+						end
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "actorAnimated{(id)}.check".
+		 * \version 1.26
+		 */
+		class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateCondition(Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "animator", null)
+				if value != null
+					result &= pInstance.getActiveAnimatorID().equals(value)
+				end
+				
+				value = parameters.getAt(prefix + "animator.not", null)
+				if value != null
+					result &= not pInstance.getActiveAnimatorID().equals(value)
+				end
+				
+				value = parameters.getAt(prefix + "animator.starts", null)
+				if value != null
+					result &= pInstance.getActiveAnimatorID().startsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "animator.starts.not", null)
+				if value != null
+					result &= not pInstance.getActiveAnimatorID().startsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "animator.ends", null)
+				if value != null
+					result &= pInstance.getActiveAnimatorID().endsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "animator.ends.not", null)
+				if value != null
+					result &= not pInstance.getActiveAnimatorID().endsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "animator.contains", null)
+				if value != null
+					result &= pInstance.getActiveAnimatorID().findString(value cast String) != -1
+				end
+				
+				value = parameters.getAt(prefix + "animator.contains.not", null)
+				if value != null
+					result &= pInstance.getActiveAnimatorID().findString(value cast String) == -1
+				end
+				
+				value = parameters.getAt(prefix + "controller.name", null)
+				if value != null
+					var AnimatorController c = pInstance.getControllerNamed(value cast String)
+					if c == null
+						return false
+					end
+					
+					value = parameters.getAt(prefix + "controller.value.less", null)
+					if value != null
+						result &= c.getValue() < (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "controller.value.greater", null)
+					if value != null
+						result &= c.getValue() < (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "controller.value.relative.less", null)
+					if value != null
+						result &= c.getRelativeValue() < (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "controller.value.relative.greater", null)
+					if value != null
+						result &= c.getRelativeValue() > (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "controller.value.atLower", null)
+					if value != null
+						result &= c.isAtLower()
+					end
+					
+					value = parameters.getAt(prefix + "controller.value.atUpper", null)
+					if value != null
+						result &= c.isAtUpper()
+					end
+				end
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorActorAnimated pECBehavior
 		
 		var ECBehaviorComponent.Instance pComponent
@@ -172,6 +401,7 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		var String pActiveAnimatorID
 		
 		var Array pListeners
+		var SMContext pSMContext
 		
 		
 		
@@ -203,18 +433,40 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		/** \brief Initialize behavior from stub. */
 		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
 			
 			if pECBehavior.getLocomotion() != null
 				pLocomotion = pECBehavior.getLocomotion().instance(element)
 			end
 			
-			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
 			pAnimators = pECBehavior.getAnimators().getAnimators(stub, codec)
 			
 			pAnimatorInstance = AnimatorInstance.new()
 			pAnimatorInstance.setComponent(pComponent.getComponent())
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
+			end
 		end
 		
 		
@@ -272,6 +524,10 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.animatorChanged(this)
 			end)
+			
+			if pSMContext != null
+				pSMContext.runEvent("actorAnimated.animator")
+			end
 		end
 		
 		/** \brief Apply animations. */
@@ -403,6 +659,9 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	var ECBehaviorLocomotion pLocomotion
 	var Dictionary pControllerMappings
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
+	var String pPrefix
 	
 	
 	
@@ -449,13 +708,13 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 			throw ENullPointer.new("component")
 		end
 		
+		pPrefix = prefix
 		pComponent = component
 		pLocomotion = locomotion
 		pControllerMappings = Dictionary.new()
 		pListenerFactories = Array.new()
 		
-		pAnimators = ECPAnimatorMap.new(prefix + "animators", loaders.getAnimator())
-		eclass.addProperty(pAnimators)
+		eclass.addProperty(pAnimators = ECPAnimatorMap.new(prefix + "animators", loaders.getAnimator()))
 		
 		eclass.addBehavior(this)
 	end
@@ -465,10 +724,20 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		pComponent = null
 		pLocomotion = null
 		pListenerFactories = null
+		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Animators. */
 	func ECPAnimatorMap getAnimators()
@@ -485,7 +754,7 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		return pLocomotion
 	end
 	
-	/** \brief Controller mapping as Dictionary mapping String name to Locomotion.ATTR_* . */
+	/** \brief Controller mapping as Dictionary mapping String name to \ref LocomotionAttribute. */
 	func Dictionary getControllerMapping()
 		return pControllerMappings
 	end
@@ -494,18 +763,19 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	 * \brief Set default controller mappings.
 	 * 
 	 * Sets dictionary to these values:
-	 * "idle": Locomotion.ATTR_ELAPSED_TIME
-	 * "look.vertical": Locomotion.ATTR_LOOK_VERTICAL
-	 * "look.horizontal": Locomotion.ATTR_LOOK_HORIZONTAL
-	 * "turn.inPlace": Locomotion.ATTR_TIME_TURNIP
-	 * "stance": Locomotion.ATTR_STANCE
-	 * "move.walk": Locomotion.ATTR_DISPLACEMENT
-	 * "move.run": Locomotion.ATTR_DISPLACEMENT
-	 * "move.velocity": Locomotion.ATTR_RELATIVE_MOVING_SPEED
-	 * "tilt.vertical": Locomotion.ATTR_TILT_VERTICAL
-	 * "tilt.horizontal": Locomotion.ATTR_TILT_HORIZONTAL
-	 * "tilt.offset": Locomotion.ATTR_TILT_OFFSET
-	 * "interaction": Locomotion.ATTR_ELAPSED_TIME
+	 * "idle": LocomotionAttribute.elapsedTime
+	 * "look.vertical": LocomotionAttribute.lookVertical
+	 * "look.horizontal": LocomotionAttribute.lookHorizontal
+	 * "turn.inPlace": LocomotionAttribute.timeTurnIP
+	 * "turn.velocity": LocomotionAttribute.turningSpeed
+	 * "stance": LocomotionAttribute.stance
+	 * "move.walk": LocomotionAttribute.displacement
+	 * "move.run": LocomotionAttribute.displacement
+	 * "move.velocity": LocomotionAttribute.relativeMovingSpeed
+	 * "tilt.vertical": LocomotionAttribute.tiltVertical
+	 * "tilt.horizontal": LocomotionAttribute.tiltHorizontal
+	 * "tilt.offset": LocomotionAttribute.tiltOffset
+	 * "interaction": LocomotionAttribute.elapsedTime
 	 */
 	func void setDefaultControllerMappings()
 		pControllerMappings.removeAll()
@@ -522,6 +792,38 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 		pControllerMappings.setAt("tilt.horizontal", LocomotionAttribute.tiltHorizontal)
 		pControllerMappings.setAt("tilt.offset", LocomotionAttribute.tiltOffset)
 		pControllerMappings.setAt("interaction", LocomotionAttribute.elapsedTime)
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	/** \brief Add listener factory. */

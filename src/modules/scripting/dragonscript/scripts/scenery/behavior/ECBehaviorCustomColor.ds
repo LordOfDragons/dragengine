@@ -214,7 +214,8 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 			end
 			
 			func BTResult runAction(Dictionary parameters)
-				return check("", parameters) if BTResult.success else BTResult.failure
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
 			func bool evaluateCondition(Dictionary parameters)
