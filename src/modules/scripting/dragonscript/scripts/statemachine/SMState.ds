@@ -46,7 +46,7 @@ pin Dragengine.Utils
  * Action can have optional condition running them only if the condition evaluates to true.
  */
 class SMState
-	var String pID
+	var String pID, pParentID
 	var Array pEnterActions
 	var Array pExitActions
 	var Array pTransitions
@@ -73,6 +73,48 @@ class SMState
 	func String getID()
 		return pID
 	end
+	
+	
+	/**
+	 * \brief Parent state identifier or \em null.
+	 * \version 1.26
+	 */
+	func String getParentID()
+		return pParentID
+	end
+	
+	/**
+	 * \brief Set parent state identifier or \em null.
+	 * \version 1.26
+	 */
+	func void setParentID(String id)
+		pParentID = id
+	end
+	
+	/**
+	 * \brief Resolve parent state if parent state identifier is not null.
+	 * \version 1.26
+	 * 
+	 * Merge parent state into this state. After merging set parent state identifier to null.
+	 */
+	func void mergeParent(StateMachine stateMachine)
+		if pParentID == null
+			return
+		end
+		
+		var SMState parent = stateMachine.getStateAt(pParentID)
+		if parent == null
+			throw EInvalidParam.new("parent state not found: " + pParentID)
+		end
+		
+		pParentID = null // before mergeParent call to avoid self-recursion mistakes
+		parent.mergeParent(stateMachine)
+		
+		pEnterActions.insertAll(0, parent.pEnterActions)
+		pExitActions.addAll(parent.pExitActions)
+		pTransitions.addAll(parent.pTransitions)
+	end
+	
 	
 	
 	/** \brief Count of enter actions. */
@@ -151,24 +193,6 @@ class SMState
 	/** \brief Get transition at index. */
 	func SMTransition getTransitionAt(int index)
 		return pTransitions.getAt(index) cast SMTransition
-	end
-	
-	/**
-	 * \brief Get transition with event or null if absent.
-	 * \version 1.26
-	 */
-	func SMTransition getTransitionWithEvent(String event)
-		return pTransitions.find(block SMTransition each
-			return each.getEvent().equals(event)
-		end) cast SMTransition
-	end
-	
-	/**
-	 * \brief Transition with event is present.
-	 * \version 1.26
-	 */
-	func bool hasTransitionWithEvent(String event)
-		return getTransitionWithEvent(event) != null
 	end
 	
 	/** \brief Index of transition or -1 if absent. */

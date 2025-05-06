@@ -92,6 +92,7 @@ class BaseActor extends BehaviorElement
 	var ECBehaviorComponent.Instance pComponent
 	var ECBehaviorCollider.Instance pCollider
 	var ECBehaviorColliderAI.Instance pColliderAI
+	var ECBehaviorBehaviorTree.Instance pBehaviorTree
 	var ECBehaviorParameterTable.Instance pParameterTable
 	var ECBehaviorProjectToGround.Instance pProjectToGround
 	var ECBehaviorLocomotion.Instance pLocomotion
@@ -118,6 +119,7 @@ class BaseActor extends BehaviorElement
 		pComponent = eclass.getComponent().instance(this)
 		pCollider = eclass.getCollider().instance(this)
 		pColliderAI = eclass.getColliderAI().instance(this)
+		pBehaviorTree = eclass.getBehaviorTree().instance(this)
 		pParameterTable = eclass.getParameterTable().instance(this)
 		pProjectToGround = eclass.getProjectToGround().instance(this)
 		pLocomotion = eclass.getLocomotion().instance(this)
@@ -222,6 +224,14 @@ class BaseActor extends BehaviorElement
 	/** \brief Collider AI behavior instance. */
 	func ECBehaviorColliderAI.Instance getColliderAI()
 		return pColliderAI
+	end
+	
+	/**
+	 * \brief Behavior tree.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree.Instance getBehaviorTree()
+		return pBehaviorTree
 	end
 	
 	/** \brief Parameter table instance. */

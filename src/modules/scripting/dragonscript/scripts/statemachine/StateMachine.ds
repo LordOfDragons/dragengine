@@ -22,71 +22,120 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.StateMachineSystem
 
 pin Dragengine.Scenery
 pin Dragengine.Utils
 
 
-
 /**
  * \brief State machine.
  */
 class StateMachine
-	/** \brief Dictionary mapping String state identifier to SMState. */
-	private var Dictionary pStates
-	
-	/** \brief Initial state. */
-	private var String pInitialState
+	var Dictionary pStates
+	var String pInitialState
+	var String pFilename
 	
 	
-	
-	/** \brief Create behavior tree. */
-	public func new()
-		this.pStates = Dictionary.new()
+	/** \brief Create state machine. */
+	func new()
+		pStates = Dictionary.new()
 	end
 	
+	/** \brief Create state machine with empty state. */
+	static func StateMachine newEmpty()
+		var StateMachine sm = new()
+		sm.pInitialState = "empty"
+		var SMState state = SMState.new(sm.pInitialState)
+		sm.pStates.setAt(sm.pInitialState, state)
+		return sm
+	end
+	
+	/**
+	 * \brief Create state machine with filename.
+	 * \version 1.26
+	 */
+	func new(String filename) this()
+		pFilename = filename
+	end
 	
 	
 	/** \brief Count of states. */
-	public func int getStateCount()
-		return this.pStates.getCount()
+	func int getStateCount()
+		return pStates.getCount()
 	end
 	
 	/** \brief State with identifier is present. */
-	public func bool hasStateAt( String id )
-		return this.pStates.has( id )
+	func bool hasStateAt(String id)
+		return pStates.has(id)
 	end
 	
 	/** \brief State with identifier or \em null if absent. */
-	public func SMState getStateAt( String id )
-		return this.pStates.getAt( id, null ) cast SMState
+	func SMState getStateAt(String id)
+		return pStates.getAt(id, null) cast SMState
+	end
+	
+	/**
+	 * \brief Visit states with block.
+	 * \version 1.26
+	 * 
+	 * Block has signature (SMState).
+	 */
+	func void forEachState(Block ablock)
+		pStates.forEachValue(ablock)
 	end
 	
 	/**
 	 * \brief Add state.
 	 * \throws EInvalidParam Another state with the same identifier is present.
 	 */
-	public func void addState( SMState state )
+	func void addState(SMState state)
 		if state == null
 			throw ENullPointer.new()
 		end
-		if this.pStates.has( state.getID() )
-			throw EInvalidParam.new( "state id already present" )
+		if pStates.has(state.getID())
+			throw EInvalidParam.new("state id already present")
 		end
-		this.pStates.setAt( state.getID(), state )
+		pStates.setAt(state.getID(), state)
+	end
+	
+	/**
+	 * \brief Remove state.
+	 * \version 1.26
+	 */
+	func void removeState(SMState state)
+		pStates.remove(state.getID())
+	end
+	
+	/**
+	 * \brief Call \ref SMState#mergeParent() on all states.
+	 * \version 1.26
+	 * 
+	 * Calling this method allows states to be defined with parent states to define states faster.
+	 */
+	func void mergeParents()
+		pStates.forEachValue(block SMState each
+			each.mergeParent(this)
+		end)
 	end
 	
 	
 	
 	/** \brief Initial state. */
-	public func String getInitialState()
-		return this.pInitialState
+	func String getInitialState()
+		return pInitialState
 	end
 	
 	/** \brief Set initial state. */
-	public func void setInitialState( String initialState )
-		this.pInitialState = initialState
+	func void setInitialState(String initialState)
+		pInitialState = initialState
+	end
+	
+	/**
+	 * \brief Filename or null.
+	 * \version 1.26
+	 */
+	func String getFilename()
+		return pFilename
 	end
 end

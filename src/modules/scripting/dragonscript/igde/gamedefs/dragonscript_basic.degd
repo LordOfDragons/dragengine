@@ -87,7 +87,7 @@
 		</inherit>
 		<category>Dragengine</category>
 	</class>
-	<class name='BaseActor'>
+	<class name='Actor'>
 		<description>Base class for actors using behaviors.</description>
 		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorComponent'>

@@ -31,6 +31,8 @@ pin Dragengine.LoadSave
 pin Dragengine.Scenery
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -60,7 +62,13 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorStepAside'/>
+	 * <behavior type='ECBehaviorStepAside'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
@@ -80,6 +88,10 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			end
 			var ECBehaviorStepAside behavior = ECBehaviorStepAside.new(eclass,\
 				ECBehaviorActorMover.getBehaviorIn(eclass))
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "stepAside")
 			return behavior
 		end
@@ -87,18 +99,76 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "forceField{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "forceField{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateCondition(Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Step aside result. */
 		class StepAside
-			private var BehaviorElement pElement
-			private var float pSpeed
-			private var DVector pPosition
-			private var DVector pDirection
-			private var DVector pAxisRight
-			private var float pLeft
-			private var float pRight
+			var BehaviorElement pElement
+			var float pSpeed
+			var DVector pPosition
+			var DVector pDirection
+			var DVector pAxisRight
+			var float pLeft
+			var float pRight
 			
 			/** \brief Create step aside result. */
-			public func new(BehaviorElement element, DVector position, DVector direction, float speed)
+			func new(BehaviorElement element, DVector position, DVector direction, float speed)
 				pElement = element
 				pSpeed = speed
 				pPosition = position
@@ -109,54 +179,54 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			
 			
 			/** \brief Element requesting stepping aside. */
-			public func BehaviorElement getElement()
+			func BehaviorElement getElement()
 				return pElement
 			end
 			
 			/** \brief Speed of element. */
-			public func float getSpeed()
+			func float getSpeed()
 				return pSpeed
 			end
 			
 			/** \brief Position of element. */
-			public func DVector getPosition()
+			func DVector getPosition()
 				return pPosition
 			end
 			
 			/** \brief Normalized direction the element is moving. */
-			public func DVector getDirection()
+			func DVector getDirection()
 				return pDirection
 			end
 			
 			/** \brief Normalized right axis perpendicular to up and direction. */
-			public func DVector getAxisRight()
+			func DVector getAxisRight()
 				return pAxisRight
 			end
 			
 			
 			
 			/** \brief Distance in meters to step aside to the left side. */
-			public func float getLeft()
+			func float getLeft()
 				return pLeft
 			end
 			
 			/** \brief Set distance in meters to step aside to the left side. */
-			public func void setLeft(float distance)
+			func void setLeft(float distance)
 				pLeft = distance
 			end
 			
 			/** \brief Distance in meters to step aside to the right side. */
-			public func float getRight()
+			func float getRight()
 				return pRight
 			end
 			
 			/** \brief Set distance in meters to step aside to the right side. */
-			public func void setRight(float distance)
+			func void setRight(float distance)
 				pRight = distance
 			end
 			
 			/** \brief Extend left or right distance if smaller/larger. */
-			public func void extend(float distance, float radius)
+			func void extend(float distance, float radius)
 				pLeft = DEMath.min(pLeft, distance - radius)
 				pRight = DEMath.max(pRight, distance + radius)
 			end
@@ -176,40 +246,41 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			var Side pSide
 			
 			/** \brief Create navigation side result. */
-			public func new(DVector leftPosition, DVector rightPosition, Side side)
+			func new(DVector leftPosition, DVector rightPosition, Side side)
 				pLeftPosition = leftPosition
 				pRightPosition = rightPosition
 				pSide = side
 			end
 			
 			/** \brief Right position. */
-			public func DVector getLeftPosition()
+			func DVector getLeftPosition()
 				return pLeftPosition
 			end
 			
 			/** \brief Right position. */
-			public func DVector getRightPosition()
+			func DVector getRightPosition()
 				return pRightPosition
 			end
 			
 			/** \brief Side to choose. */
-			public func Side getSide()
+			func Side getSide()
 				return pSide
 			end
 		end
 		
 		
 		
-		private var ECBehaviorStepAside pECBehavior
-		private var ECBehaviorActorMover.Instance pActorMover
+		var ECBehaviorStepAside pECBehavior
+		var ECBehaviorActorMover.Instance pActorMover
 		
-		private var float pRadius
-		private var bool pEnabled
+		var float pRadius
+		var bool pEnabled
+		var SMContext pSMContext
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorStepAside ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorStepAside ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			
 			pRadius = 0.4
@@ -219,8 +290,9 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			pActorMover = null
+			pSMContext = null
 			
 			super.dispose()
 		end
@@ -228,42 +300,66 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		
 		
 		/** \brief Initialize from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			pRadius = pECBehavior.getRadius().getValue(stub)
 			pEnabled = pECBehavior.getEnabled().getValue(stub)
+			
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorStepAside getECBehavior()
+		func ECBehaviorStepAside getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Actor mover behavior. */
-		public func ECBehaviorActorMover.Instance getActorMover()
+		func ECBehaviorActorMover.Instance getActorMover()
 			return pActorMover
 		end
 		
 		
 		
 		/** \brief Step aside radius. */
-		public func float getRadius()
+		func float getRadius()
 			return pRadius
 		end
 		
 		/** \brief Set step aside radius. */
-		public func void setRadius(float radius)
+		func void setRadius(float radius)
 			pRadius = DEMath.max(radius, 0.0)
 		end
 		
 		/** \brief Stepping aside is enabled. */
-		public func bool getEnabled()
+		func bool getEnabled()
 			return pEnabled
 		end
 		
 		/** \brief Set if stepping aside is enabled. */
-		public func void setEnabled(bool enabled)
+		func void setEnabled(bool enabled)
 			pEnabled = enabled
 		end
 		
@@ -272,7 +368,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		 * 
 		 * Returns true if behavior is enabled and actor mover has no goal set.
 		 */
-		public func bool canStepAside()
+		func bool canStepAside()
 			return pEnabled and pActorMover.hasNoGoal()
 		end
 		
@@ -281,7 +377,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		 * 
 		 * Returns true if behavior is disabled or actor mover has goal set.
 		 */
-		public func bool canNotStepAside()
+		func bool canNotStepAside()
 			return not pEnabled or pActorMover.hasGoal()
 		end
 		
@@ -301,7 +397,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		 * \param direction Normalized direction the element is moving.
 		 * \param speed Speed in m/s of element.
 		 */
-		public func void stepAsideBehaviorElement(BehaviorElement element, \
+		func void stepAsideBehaviorElement(BehaviorElement element, \
 		DVector position, DVector direction, float speed)
 			if canNotStepAside()
 				return
@@ -323,7 +419,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		 * 
 		 * Updates step aside result with keeping the larger values on each side.
 		 */
-		public func void stepAsideAvoidedByActor(ECBehaviorAvoidedByActor.Instance behavior, StepAside stepAside)
+		func void stepAsideAvoidedByActor(ECBehaviorAvoidedByActor.Instance behavior, StepAside stepAside)
 			if not behavior.shouldBeAvoided()
 				return
 			end
@@ -346,7 +442,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		/**
 		 * \brief Step aside using found left and right distances.
 		 */
-		public func void stepAside(StepAside stepAside)
+		func void stepAside(StepAside stepAside)
 			var DVector actorPosition = pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
 			var DVector axisRight = stepAside.getAxisRight()
 			var float offset = axisRight * (actorPosition - stepAside.getPosition())
@@ -378,6 +474,10 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			if target != null
 				pActorMover.moveTo(target, 0.1)
 			end
+			
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "stepAside")
+			end
 		end
 		
 		/**
@@ -385,7 +485,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		 * 
 		 * Returns result with nearest left and right position still inside navigation space.
 		 */
-		public func NavSideResult bestNavSide(DVector origin, DVector leftPosition, DVector rightPosition)
+		func NavSideResult bestNavSide(DVector origin, DVector leftPosition, DVector rightPosition)
 			var Navigator navigator = pActorMover.getNavigator().getNavigator()
 			
 			var NavigationInfo niOrigin = navigator.nearestPoint(origin, 0.1)
@@ -443,7 +543,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
@@ -455,7 +555,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(1)
@@ -466,18 +566,21 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorActorMover pActorMover
-	private var ECPFloat pRadius
-	private var ECPBoolean pEnabled
+	var ECBehaviorActorMover pActorMover
+	var ECPFloat pRadius
+	var ECPBoolean pEnabled
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover) \
+	func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover) \
 	this(eclass, actorMover, "stepAside.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover, String prefix) super(eclass)
+	func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover, String prefix) super(eclass)
 		if actorMover == null
 			throw ENullPointer.new("actorMover")
 		end
@@ -485,44 +588,84 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pActorMover = actorMover
 		
-		pEnabled = ECPBoolean.new(prefix + "enabled", true)
-		eclass.addProperty(pEnabled)
-		
-		pRadius = ECPFloat.new(prefix + "radius", 0.4, 0)
-		eclass.addProperty(pRadius)
+		eclass.addProperty(pEnabled = ECPBoolean.new(prefix + "enabled", true))
+		eclass.addProperty(pRadius = ECPFloat.new(prefix + "radius", 0.4, 0))
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pActorMover = null
+		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Actor mover behavior. */
-	public func ECBehaviorActorMover getActorMover()
+	func ECBehaviorActorMover getActorMover()
 		return pActorMover
 	end
 	
 	/** \brief Avoid radius. */
-	public func ECPFloat getRadius()
+	func ECPFloat getRadius()
 		return pRadius
 	end
 	
 	/** \brief Behavior is initially enabled. */
-	public func ECPBoolean getEnabled()
+	func ECPBoolean getEnabled()
 		return pEnabled
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -534,7 +677,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorStepAside.
 	 */
-	static public func ECBehaviorStepAside getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorStepAside getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorStepAside each
 			return true
 		end) cast ECBehaviorStepAside
@@ -546,7 +689,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorStepAside.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -555,7 +698,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

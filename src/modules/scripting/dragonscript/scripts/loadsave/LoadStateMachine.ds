@@ -75,7 +75,8 @@ class LoadStateMachine extends BaseXmlLoader
 				throw EInvalidParam.new()
 			end
 			
-			stateMachine = readStateMachine(root)
+			stateMachine = StateMachine.new(filename)
+			readStateMachine(root, stateMachine, File.new(filename).getParent().getPath())
 			
 			pStateMachines.setAt(filename, stateMachine)
 			return stateMachine
@@ -89,8 +90,12 @@ class LoadStateMachine extends BaseXmlLoader
 	
 	
 	/** \brief Read state machine tag. */
-	private func StateMachine readStateMachine(EasyXMLElement root)
-		var StateMachine stateMachine = StateMachine.new()
+	private func void readStateMachine(EasyXMLElement root, StateMachine stateMachine, String basePath)
+		var StateMachine extendStateMachine
+		if root.hasAttributeNamed("extend")
+			extendStateMachine = loadFromFile(File.absolutePath(\
+				root.getAttributeNamed("extend"), basePath).getPath())
+		end
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if tagName.equals("initialState")
@@ -105,12 +110,24 @@ class LoadStateMachine extends BaseXmlLoader
 			end
 		end)
 		
-		return stateMachine
+		if extendStateMachine != null
+			extendStateMachine.forEachState(block SMState each
+				if not stateMachine.hasStateAt(each.getID())
+					stateMachine.addState(each)
+				end
+			end)
+		end
+		
+		stateMachine.mergeParents()
 	end
 	
 	/** \brief Read state tag. */
 	private func SMState readState(EasyXMLElement root)
 		var SMState state = SMState.new(root.getAttributeNamed("id"))
+		
+		if root.hasAttributeNamed("parent")
+			state.setParentID(root.getAttributeNamed("parent"))
+		end
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if tagName.equals("enterAction")

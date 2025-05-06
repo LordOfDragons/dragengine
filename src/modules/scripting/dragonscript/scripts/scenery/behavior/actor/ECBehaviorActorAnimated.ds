@@ -424,6 +424,7 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 			pLocomotion = null
 			pComponent = null
 			pListeners = null
+			pSMContext = null
 			
 			super.dispose()
 		end

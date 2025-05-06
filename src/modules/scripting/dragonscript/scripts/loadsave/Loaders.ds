@@ -354,6 +354,7 @@ class Loaders
 		BAAFirstPerson.Factory.registerFactory(persistency)
 		BAAFirstPersonVR.Factory.registerFactory(persistency)
 		BAAVehicle.Factory.registerFactory(persistency)
+		BAAStateMachine.Factory.registerFactory(persistency)
 		
 		BaseActorAI.Factory.registerFactory(persistency)
 		BAAIBehaviorTree.Factory.registerFactory(persistency)

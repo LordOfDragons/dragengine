@@ -363,16 +363,6 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 					result &= stateid.findString(value cast String) == -1
 				end
 				
-				value = parameters.getAt(prefix + "event", null)
-				if value != null
-					result &= state.hasTransitionWithEvent(value cast String)
-				end
-				
-				value = parameters.getAt(prefix + "event.not", null)
-				if value != null
-					result &= not state.hasTransitionWithEvent(value cast String)
-				end
-				
 				return result
 			end
 		end
@@ -403,7 +393,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		func void init(StubElement stub)
 			pStateMachine = loadStateMachine(stub)
 			if pStateMachine == null
-				return
+				pStateMachine = StateMachine.newEmpty()
 			end
 			
 			pContext = createContext(stub, pStateMachine)
@@ -439,9 +429,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		end
 		
 		func void postInit(StubElement stub)
-			if pContext != null
-				runEvent("init")
-			end
+			runEvent("init")
 		end
 		
 		/** \brief Load state machine. */
@@ -466,7 +454,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			return pStateMachine
 		end
 		
-		/** \brief Context or null if state machine is null. */
+		/** \brief Context. */
 		func SMContext getContext()
 			return pContext
 		end
@@ -475,75 +463,49 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		
 		/**
 		 * \brief Run event on state machine.
-		 * 
-		 * Does nothing if no context is present.
-		 * 
 		 * \returns true if context is present and current state understands event.
 		 */
 		func bool runEvent(String event)
-			if pContext == null
-				return false
-			end
 			return pContext.runEvent(event)
 		end
 		
 		/**
 		 * \brief Reset state machine to initial state.
-		 * 
-		 * Does nothing if no context is present.
 		 */
 		protected func void reset()
-			if pContext != null
-				pContext.reset()
-			end
+			pContext.reset()
 		end
 		
 		/**
 		 * \brief Set action to state machine.
-		 * 
-		 * Does nothing if no context is present.
 		 */
 		func void setAction(String name, SMAction action)
-			if pContext != null
-				pContext.setAction(name, action)
-			end
+			pContext.setAction(name, action)
 		end
 		
 		/**
 		 * \brief Set action to state machine using block.
 		 * 
 		 * Block receives arguments SMContext context and Dictionary parameters.
-		 * 
-		 * Does nothing if no context is present.
 		 */
 		func void setAction(String name, Block actionBlock)
-			if pContext != null
-				pContext.setAction(name, actionBlock)
-			end
+			pContext.setAction(name, actionBlock)
 		end
 		
 		/**
 		 * \brief Set condition to state machine.
-		 * 
-		 * Does nothing if no context is present.
 		 */
 		func void setCondition(String name, SMCondition condition)
-			if pContext != null
-				pContext.setCondition(name, condition)
-			end
+			pContext.setCondition(name, condition)
 		end
 		
 		/**
 		 * \brief Set condition to state machine using block.
 		 * 
 		 * Block receives arguments SMContext context and Dictionary parameters and returns bool.
-		 * 
-		 * Does nothing if no context is present.
 		 */
 		func void setCondition(String name, Block conditionBlock)
-			if pContext != null
-				pContext.setCondition(name, conditionBlock)
-			end
+			pContext.setCondition(name, conditionBlock)
 		end
 		
 		
@@ -569,9 +531,6 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
 				
 				if flags.getAt(0)
-					if pContext == null
-						throw EInvalidParam.new("state machine missing")
-					end
 					pContext.readFromFile(env, reader)
 				end
 				
@@ -585,12 +544,10 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(1)
-			flags.setAt(0, pContext != null)
+			flags.setAt(0, true)
 			flags.writeToFile(writer)
 			
-			if pContext != null
-				pContext.writeToFile(env, writer)
-			end
+			pContext.writeToFile(env, writer)
 		end
 	end
 	

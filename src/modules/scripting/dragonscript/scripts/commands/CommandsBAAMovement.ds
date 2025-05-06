@@ -35,6 +35,136 @@ pin Dragengine.Scenery
  * command to the command manager of a BaseGameApp.
  */
 class CommandsBAAMovement
+	/**
+	 * \brief Bridge from BAAMovement to BAAStateMachineEvent.
+	 * \version 1.26
+	 * 
+	 * Send events match BAAMovement function named with prefix "movement.".
+	 */
+	class StateMachineEventBridge implements BAAMovement
+		var BAAStateMachineEvent pTarget
+		
+		func new(BAAStateMachineEvent target)
+			pTarget = target
+		end
+		
+		func void moveForwardStart()
+			pTarget.sendInputAsEvent("movement.moveForwardStart", null)
+		end
+		
+		func void moveForwardStop()
+			pTarget.sendInputAsEvent("movement.moveForwardStop", null)
+		end
+		
+		func void moveBackwardStart()
+			pTarget.sendInputAsEvent("movement.moveBackwardStart", null)
+		end
+		
+		func void moveBackwardStop()
+			pTarget.sendInputAsEvent("movement.moveBackwardStop", null)
+		end
+		
+		func void moveLeftStart()
+			pTarget.sendInputAsEvent("movement.moveLeftStart", null)
+		end
+		
+		func void moveLeftStop()
+			pTarget.sendInputAsEvent("movement.moveLeftStop", null)
+		end
+		
+		func void moveRightStart()
+			pTarget.sendInputAsEvent("movement.moveRightStart", null)
+		end
+		
+		func void moveRightStop()
+			pTarget.sendInputAsEvent("movement.moveRightStop", null)
+		end
+		
+		func void lookLeftStart()
+			pTarget.sendInputAsEvent("movement.lookLeftStart", null)
+		end
+		
+		func void lookLeftStop()
+			pTarget.sendInputAsEvent("movement.lookLeftStop", null)
+		end
+		
+		func void lookRightStart()
+			pTarget.sendInputAsEvent("movement.lookRightStart", null)
+		end
+		
+		func void lookRightStop()
+			pTarget.sendInputAsEvent("movement.lookRightStop", null)
+		end
+		
+		func void lookUpStart()
+			pTarget.sendInputAsEvent("movement.lookUpStart", null)
+		end
+		
+		func void lookUpStop()
+			pTarget.sendInputAsEvent("movement.lookUpStop", null)
+		end
+		
+		func void lookDownStart()
+			pTarget.sendInputAsEvent("movement.lookDownStart", null)
+		end
+		
+		func void lookDownStop()
+			pTarget.sendInputAsEvent("movement.lookDownStop", null)
+		end
+		
+		func void analogMoveFB(float amount, bool sticky)
+			var Dictionary parameters = Dictionary.new()
+			parameters.setAt("amount", amount.toString())
+			parameters.setAt("sticky", sticky.toString())
+			pTarget.sendInputAsEvent("movement.analogMoveFB", parameters)
+		end
+		
+		func void analogMoveLR(float amount, bool sticky)
+			var Dictionary parameters = Dictionary.new()
+			parameters.setAt("amount", amount.toString())
+			parameters.setAt("sticky", sticky.toString())
+			pTarget.sendInputAsEvent("movement.analogMoveLR", parameters)
+		end
+		
+		func void analogLookLR(float amount, bool sticky)
+			var Dictionary parameters = Dictionary.new()
+			parameters.setAt("amount", amount.toString())
+			parameters.setAt("sticky", sticky.toString())
+			pTarget.sendInputAsEvent("movement.analogLookLR", parameters)
+		end
+		
+		func void analogLookUD(float amount, bool sticky)
+			var Dictionary parameters = Dictionary.new()
+			parameters.setAt("amount", amount.toString())
+			parameters.setAt("sticky", sticky.toString())
+			pTarget.sendInputAsEvent("movement.analogLookUD", parameters)
+		end
+		
+		func void crouchStart()
+			pTarget.sendInputAsEvent("movement.crouchStart", null)
+		end
+		
+		func void crouchStop()
+			pTarget.sendInputAsEvent("movement.crouchStop", null)
+		end
+		
+		func void crouchToggle()
+			pTarget.sendInputAsEvent("movement.crouchToggle", null)
+		end
+		
+		func void runStart()
+			pTarget.sendInputAsEvent("movement.runStart", null)
+		end
+		
+		func void runStop()
+			pTarget.sendInputAsEvent("movement.runStop", null)
+		end
+		
+		func void runToggle()
+			pTarget.sendInputAsEvent("movement.runToggle", null)
+		end
+	end
+	
 	/** \brief Base class operating only on actors with BAAMovement action. */
 	class Base extends Command
 		var ECBehaviorPlayerControllable.Tracker pTracker
@@ -59,12 +189,16 @@ class CommandsBAAMovement
 			
 			var ECBehaviorActorAIAction.Instance aiAction = \
 				ECBehaviorActorAIAction.getInstanceIn(actor.getElement())
-			if aiAction != null and aiAction.getAction() castable BAAMovement
-				return aiAction.getAction() cast BAAMovement
-				
-			else
-				return null
+			if aiAction != null
+				var BaseActorAction action = aiAction.getAction()
+				if action castable BAAMovement
+					return action cast BAAMovement
+					
+				elif action castable BAAStateMachineEvent
+					return StateMachineEventBridge.new(action cast BAAStateMachineEvent)
+				end
 			end
+			return null
 		end
 		
 		func void start()

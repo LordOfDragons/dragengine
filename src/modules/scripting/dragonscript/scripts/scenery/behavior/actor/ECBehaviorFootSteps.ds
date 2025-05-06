@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -114,7 +116,6 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			pRange = DEMath.max(range, 0.0)
 			pRollOff = DEMath.max(rollOff, 0.0)
 			pOffset = offset
-			pLastRandomSound = null
 		end
 		
 		func new(float time, String type) this(time)
@@ -138,6 +139,20 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		func new(float time, WeightedRandomList sounds, float volume, float range, DVector offset, \
 		float rollOff, String type) this(time, sounds, volume, range, offset, rollOff)
 			pType = type
+		end
+		
+		/**
+		 * \brief Create copy of foot step event.
+		 * \version 1.26
+		 */
+		func new(Event event)
+			pTime = event.pTime
+			pSounds = event.pSounds
+			pVolume = event.pVolume
+			pRange = event.pRange
+			pRollOff = event.pRollOff
+			pOffset = event.pOffset
+			pType = event.pType
 		end
 		
 		
@@ -267,6 +282,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		var String pID
 		var Array pEvents
 		var float pInterval
+		var String pControllerName
 		
 		
 		/** \brief Create foot steps configuration. */
@@ -278,6 +294,19 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			pID = id
 			pEvents = Array.new()
 			pInterval = 1
+		end
+		
+		/**
+		 * \brief Create copy of foot steps configuration.
+		 * \version 1.26
+		 */
+		func new(Configuration config)
+			pID = config.pID
+			pEvents = config.pEvents.map(block Event each
+				return Event.new(each)
+			end)
+			pInterval = config.pInterval
+			pControllerName = config.pControllerName
 		end
 		
 		
@@ -348,6 +377,33 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		func void setInterval(float interval)
 			pInterval = DEMath.max(interval, 0.1)
 		end
+		
+		/**
+		 * \brief Name of activate animated controller to use as elapsed time or null.
+		 * \version 1.26
+		 * 
+		 * If name is not null the relative value of the matching named controller from
+		 * ECBehaviorActorAnimated is used as elapsed time. Since relative controller value
+		 * is used time related values in the configuration and events must be in the range
+		 * from 0 to 1. This allows to easily synchronize foot steps to actor animations
+		 * no matter the playtime of each individual animation.
+		 * 
+		 * If the name is null or named controller is absent from ECBehaviorActorAnimated the
+		 * elapsed game time is used instead. In this case time related values in the
+		 * configuration and events are in seconds.
+		 */
+		func String getControllerName()
+			return pControllerName
+		end
+		
+		/**
+		 * \brief Set name of activate animated controller to use as elapsed time or null.
+		 * \version 1.26
+		 * \see #getControllerName()
+		 */
+		func void setControllerName(String name)
+			pControllerName = name
+		end
 	end
 	
 	
@@ -384,6 +440,15 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorFootSteps'>
+	 *   <!-- optional: use actor animated with id instead of empty string -->
+	 *   <string name='actorAnimated'>second</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
+	 *   
 	 *   <!-- set if update() is automatically called on postThink(). default is 'true' -->
 	 *   <boolean name='autoUpdate'>false</boolean>
 	 * </behavior>
@@ -405,6 +470,11 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorFootSteps behavior = ECBehaviorFootSteps.new(eclass)
+			
+			behavior.setActorAnimated(eclass.sharedFactoryHelper.defaultActorAnimated(eclass, parameters))
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "footSteps")
 			return behavior
 		end
@@ -413,7 +483,136 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "forceField{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("configuration", null)
+				if value != null
+					if (value cast String).empty()
+						pInstance.clearActiveConfiguration()
+						
+					else
+						pInstance.setActiveConfigurationWithID(value cast String, false)
+					end
+				end
+				
+				value = parameters.getAt("elapsed", null)
+				if value != null
+					pInstance.setElapsed((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "forceField{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateCondition(Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var String config = pInstance.getActiveConfiguration() != null\
+					if pInstance.getActiveConfiguration().getID() else ""
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "configuration", null)
+				if value != null
+					result &= config.equals(value)
+				end
+				
+				value = parameters.getAt(prefix + "configuration.not", null)
+				if value != null
+					result &= not config.equals(value)
+				end
+				
+				value = parameters.getAt(prefix + "configuration.starts", null)
+				if value != null
+					result &= config.startsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "configuration.starts.not", null)
+				if value != null
+					result &= not config.startsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "configuration.ends", null)
+				if value != null
+					result &= config.endsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "configuration.ends.not", null)
+				if value != null
+					result &= not config.endsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "configuration.contains", null)
+				if value != null
+					result &= config.findString(value cast String) != -1
+				end
+				
+				value = parameters.getAt(prefix + "configuration.contains.not", null)
+				if value != null
+					result &= config.findString(value cast String) == -1
+				end
+				
+				value = parameters.getAt(prefix + "elapsed.less", null)
+				if value != null
+					result &= pInstance.getElapsed() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "elapsed.greater", null)
+				if value != null
+					result &= pInstance.getElapsed() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		private class AnimatorChangedFindController extends ECBehaviorActorAnimated.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void animatorChanged(ECBehaviorActorAnimated.Instance instance)
+				pInstance.findAndStoreControllers()
+			end
+		end
+		
+		
 		var ECBehaviorFootSteps pECBehavior
+		var ECBehaviorActorAnimated.Instance pActorAnimated
 		var Dictionary pConfigurations
 		var Configuration pActiveConfiguration
 		var LayerMask pLayerMask
@@ -421,6 +620,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		var int pNextEvent
 		var bool pAutoUpdate
 		var Array pListeners
+		var SMContext pSMContext
+		var AnimatorController pControllerElapsed
 		
 		
 		
@@ -438,6 +639,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		/** \brief Dispose of composeable instance. */
 		func void dispose()
 			pListeners = null
+			pSMContext = null
+			pActorAnimated = null
 			super.dispose()
 		end
 		
@@ -445,6 +648,33 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getActorAnimated() != null
+				pActorAnimated = pECBehavior.getActorAnimated().instance(element)
+			end
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				pSMContext.setAction(name, btacheck)
+				pSMContext.setCondition(name, btacheck)
+			end
 		end
 		
 		
@@ -563,11 +793,19 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			
 			if resetIfChanged
 				reset()
+				
+			else
+				setElapsed(pElapsed)
 			end
+			
+			findAndStoreControllers()
 			
 			pListeners.forEach(block Listener each
 				each.configurationChanged(this, configuration)
 			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "configuration")
+			end
 			
 			return true
 		end
@@ -591,6 +829,18 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		/** \brief Set elapsed time since start of interval. */
 		func void setElapsed(float elapsed)
 			pElapsed = DEMath.max(elapsed, 0.0)
+			
+			if pActiveConfiguration == null
+				return
+			end
+			
+			var Event event
+			for pNextEvent = 0 to pActiveConfiguration.getEventCount()
+				event = pActiveConfiguration.getEventAt(pNextEvent)
+				if event.getTime() > pElapsed
+					break
+				end
+			end
 		end
 		
 		/** \brief Index of next foot step event. */
@@ -673,6 +923,9 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 					pListeners.forEach(block Listener each
 						each.footStep(this, pActiveConfiguration, event)
 					end)
+					if pSMContext != null
+						pSMContext.runEvent(pECBehavior.getPrefix() + "footStep")
+					end
 				end
 				
 				if pElapsed < interval
@@ -685,6 +938,20 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		
+		/**
+		 * \brief Find and store controllers.
+		 * \version 1.26
+		 */
+		func void findAndStoreControllers()
+			pControllerElapsed = null
+			
+			if pActorAnimated != null and pActiveConfiguration != null
+				if pActiveConfiguration.getControllerName() != null
+					pControllerElapsed = pActorAnimated.getControllerNamed(\
+						pActiveConfiguration.getControllerName())
+				end
+			end
+		end
 		
 		/**
 		 * \brief Play foot step sound.
@@ -737,7 +1004,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		/** \brief Post thinking after physics processing is finished. */
 		func void postThink(float elapsed)
 			if pAutoUpdate
-				update(elapsed)
+				if pControllerElapsed != null
+					update(pControllerElapsed.getRelativeValue(), false)
+					
+				else
+					update(elapsed, true)
+				end
 			end
 		end
 		
@@ -773,6 +1045,10 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	
 	
 	var bool pAutoUpdate
+	var ECBehaviorActorAnimated pActorAnimated
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
+	var String pPrefix
 	
 	
 	
@@ -785,12 +1061,43 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pAutoUpdate = true
 		
 		eclass.addBehavior(this)
 	end
 	
+	func void dispose()
+		pActorAnimated = null
+		pBehaviorTree = null
+		pStateMachine = null
+		super.dispose()
+	end
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/**
+	 * \brief Actor animated behavior or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorActorAnimated getActorAnimated()
+		return pActorAnimated
+	end
+	
+	/**
+	 * \brief Set actor animated behavior or null.
+	 * \version 1.26
+	 */
+	func void setActorAnimated(ECBehaviorActorAnimated actorAnimated)
+		pActorAnimated = actorAnimated
+	end
 	
 	/** \brief Call update() automatically on postThink(). */
 	func bool getAutoUpdate()
@@ -802,6 +1109,37 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		pAutoUpdate = autoUpdate
 	end
 	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
+	end
 	
 	
 	/** \brief Get instance in element from owner element class. */

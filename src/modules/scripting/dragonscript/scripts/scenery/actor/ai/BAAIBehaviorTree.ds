@@ -32,16 +32,27 @@ pin Dragengine.LoadSave
 /**
  * \brief Actor AI using BehaviorTree.
  * 
- * Uses BehaviorTree using BTContext to do AI. For each call to think() the behavior tree
- * is stepped. In case of an exception in the behavior tree the exception is logged and the
- * running of the behavior tree cancelled.
+ * Uses \ref BehaviorTree using \ref BTContext to do AI. For each call to \ref #think() the
+ * behavior tree is stepped. In case of an exception in the behavior tree the exception is
+ * logged and the running of the behavior tree cancelled.
  * 
- * To use this AI set the BTContext subclass set up with the required actions and state
- * initialized to run the behavior tree. Do this after the AI instance is created which
- * can be also due to Persistable interface loading from file reader.
+ * There are two ways to use this AI. The first way is to add a \ref ECBehaviorBehaviorTree#Instance
+ * behavior to the actor element class and assign it to the AI. This will use the context of
+ * the behavior tree behavior. Behavior tree actions and conditions are then easily added by
+ * adding other behaviors providing such actions and conditions.
+ * 
+ * The second way to use this AI requires setting a custom \ref BTContextAI subclass. In this
+ * case you have to add all the required actions and conditions to this context. This is
+ * typically done during construction time or activation time. The advantage here is that you
+ * can create a custom context without sharing (and modifying) the one of
+ * \ref ECBehaviorBehaviorTree#Instance. If both \ref ECBehaviorBehaviorTree#Instance and a
+ * custom contex is set the custom context is used.
+ * 
+ * Which way to use depends on the needs. In general though the first version using
+ * \ref ECBehaviorBehaviorTree#Instance is recommended.
  * 
  * To support behaviors receiving notifications about the state of the context set also
- * the ECBehaviorBehaviorTree used to initialize the context.
+ * the ECBehaviorBehaviorTree#Instance used to initialize the context.
  */
 class BAAIBehaviorTree extends BaseActorAI
 	/**
@@ -129,15 +140,23 @@ class BAAIBehaviorTree extends BaseActorAI
 	
 	
 	var BTContextAI pContext
-	var bool pRunning
-	var bool pPauseInConversation
+	var bool pRunning, pPauseInConversation
 	var ECBehaviorBehaviorTree.Instance pBehaviorBehaviorTree
+	var BehaviorTree pBehaviorTree
 	protected var ECBehaviorConversationActor.Instance conversationActor
-	
+	var String pLoadRuleId
+	var bool pLoadActionFirstRun
 	
 	
 	/** \brief Create actor ai. */
 	func new()
+		pRunning = true
+		pPauseInConversation = true
+	end
+	
+	/** \brief Create actor ai using behavior tree. */
+	func new(BehaviorTree tree) this()
+		pBehaviorTree = tree
 	end
 	
 	/** \brief Create actor ai restoring from file reader. */
@@ -145,13 +164,17 @@ class BAAIBehaviorTree extends BaseActorAI
 		select reader.readByte() // version
 		case 0
 			var PersistencyFlags flags = PersistencyFlags.new(3, reader)
-			var bool hasContext = flags.getAt(0)
-			pRunning = flags.getAt(1)
-			pPauseInConversation = flags.getAt(2)
+			pRunning = flags.getAt(0)
+			pPauseInConversation = flags.getAt(1)
+			pLoadActionFirstRun = flags.getAt(2)
 			
-			if hasContext and pContext != null
-				pContext.readFromFile(env, reader)
+			var String path = env.readString8OrNullIfEmpty(reader)
+			if path != null
+				pBehaviorTree = (env.getVariable(PersistencyEnvironment.varLoadBehaviorTree)\
+					cast LoadBehaviorTree).loadFromFile(path)
 			end
+			
+			pLoadRuleId = env.readString8OrNullIfEmpty(reader)
 			
 		else
 			throw EInvalidParam.new("unsupported version")
@@ -168,19 +191,57 @@ class BAAIBehaviorTree extends BaseActorAI
 	
 	
 	
-	/** \brief Behavior tree context or \em null if not set. */
+	/**
+	 * \brief Behavior tree to use or null.
+	 * \version 1.26
+	 */
+	func BehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree to use or null.
+	 * \version 1.26
+	 * 
+	 * Change affects context only before \ref #activate() has been called.
+	 */
+	func void setBehaviorTree(BehaviorTree tree)
+		pBehaviorTree = tree
+	end
+	
+	/** \brief Custom behavior tree context or \em null if not set. */
 	func BTContextAI getContext()
 		return pContext
 	end
 	
 	/**
-	 * \brief Set behavior tree context or \em null if not set.
+	 * \brief Set custom behavior tree context or \em null if not set.
 	 * 
 	 * If context is not null resetContext() is also called.
 	 */
 	func void setContext(BTContextAI context)
 		pContext = context
 		resetContext()
+	end
+	
+	/**
+	 * \brief Behavior tree context to use or \em null if not set.
+	 * \version 1.26
+	 * 
+	 * If custom context is set returns the value of \ref #getContext(). If
+	 * \ref ECBehaviorBehaviorTree#Instance is set returns
+	 * \ref ECBehaviorBehaviorTree.Instance#getContext(). Otherwise returns null.
+	 */
+	func BTContext getUseContext()
+		if pContext != null
+			return pContext
+			
+		elif pBehaviorBehaviorTree != null
+			return pBehaviorBehaviorTree.getContext()
+			
+		else
+			return null
+		end
 	end
 	
 	/** \brief Behavior tree is running. */
@@ -214,19 +275,20 @@ class BAAIBehaviorTree extends BaseActorAI
 	 * \version 1.19
 	 */
 	func void resetContext()
-		if pContext == null
+		var BTContext context = getUseContext()
+		if context == null
 			return
 		end
 		
-		pContext.reset()
+		context.reset()
 		
 		if pBehaviorBehaviorTree != null
-			pBehaviorBehaviorTree.notifyRestarted(pContext)
+			pBehaviorBehaviorTree.notifyRestarted(context)
 		end
 	end
 	
 	/**
-	 * \brief Behavior behavior tree to send notifications to.
+	 * \brief Behavior behavior tree to use context of and to send notifications to.
 	 * \version 1.19
 	 */
 	func ECBehaviorBehaviorTree.Instance getBehaviorBehaviorTree()
@@ -234,13 +296,42 @@ class BAAIBehaviorTree extends BaseActorAI
 	end
 	
 	/**
-	 * \brief Set behavior behavior tree to send notifications to.
+	 * \brief Set behavior behavior tree to use context of and to send notifications to.
 	 * \version 1.19
 	 */
 	func void setBehaviorBehaviorTree(ECBehaviorBehaviorTree.Instance behavior)
 		pBehaviorBehaviorTree = behavior
 	end
 	
+	
+	
+	func void activate(BehaviorElement actor)
+		super.activate(actor)
+		
+		if pBehaviorTree != null
+			var BTContext context = getUseContext()
+			if context != null
+				context.setBehaviorTree(pBehaviorTree)
+			end
+		end
+	end
+	
+	func void activateWhileLoading(BehaviorElement actor)
+		super.activateWhileLoading(actor)
+		
+		var BTContext context = getUseContext()
+		if context != null
+			if pBehaviorTree != null
+				context.setBehaviorTree(pBehaviorTree)
+			end
+			
+			if pLoadRuleId != null
+				context.setCurrentRuleByID(pLoadRuleId)
+				context.setActionFirstRun(pLoadActionFirstRun)
+				pLoadRuleId = null
+			end
+		end
+	end
 	
 	
 	/**
@@ -258,8 +349,12 @@ class BAAIBehaviorTree extends BaseActorAI
 		else
 			conversationActor = ECBehaviorConversationActor.getInstanceIn(actor)
 		end
+		
+		if pBehaviorBehaviorTree == null
+			pBehaviorBehaviorTree = ECBehaviorBehaviorTree.getInstanceIn(actor)
+		end
 	end
-	 
+	
 	/**
 	 * \brief Thinking.
 	 * 
@@ -272,12 +367,13 @@ class BAAIBehaviorTree extends BaseActorAI
 	 * false and onBehaviorTreeFailed() is called. To run the context again call resetContext().
 	 */
 	func void think(float elapsed)
-		if pContext == null or isControlledByPlayer()
+		var BTContext context = getUseContext()
+		if context == null or isControlledByPlayer()
 			return
 		end
 		
 		if pBehaviorBehaviorTree != null
-			pBehaviorBehaviorTree.notifyUpdate(pContext, elapsed)
+			pBehaviorBehaviorTree.notifyUpdate(context, elapsed)
 		end
 		
 		if not pRunning
@@ -288,10 +384,10 @@ class BAAIBehaviorTree extends BaseActorAI
 		end
 		
 		try
-			if not pContext.stepBehaviorTree()
+			if not context.stepBehaviorTree()
 				setRunning(false)
 				if pBehaviorBehaviorTree != null
-					pBehaviorBehaviorTree.notifyFailed(pContext)
+					pBehaviorBehaviorTree.notifyFailed(context)
 				end
 				onBehaviorTreeFailed(null)
 			end
@@ -299,7 +395,7 @@ class BAAIBehaviorTree extends BaseActorAI
 		catch Exception e
 			setRunning(false)
 			if pBehaviorBehaviorTree != null
-				pBehaviorBehaviorTree.notifyFailed(pContext)
+				pBehaviorBehaviorTree.notifyFailed(context)
 			end
 			onBehaviorTreeFailed(e)
 		end
@@ -336,15 +432,28 @@ class BAAIBehaviorTree extends BaseActorAI
 	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 		super.writeObjectToFile(env, writer)
 		
+		var bool actionFirstRun
+		var String rule
+		
+		if isActive()
+			var BTContext context = getUseContext()
+			if context != null and context.getCurrentRule() != null
+				rule = context.getCurrentRule().getID()
+				actionFirstRun = context.getActionFirstRun()
+			end
+		end
+		
 		writer.writeByte(0) // version
 		
 		var PersistencyFlags flags = PersistencyFlags.new(3)
-		flags.setAt(0, pContext != null)
-		flags.setAt(1, pRunning)
-		flags.setAt(2, pPauseInConversation)
+		flags.setAt(0, pRunning)
+		flags.setAt(1, pPauseInConversation)
+		flags.setAt(2, actionFirstRun)
+		flags.writeToFile(writer)
 		
-		if pContext != null
-			pContext.writeToFile(env, writer)
-		end
+		env.writeString8OrEmptyIfNull(writer,\
+			pBehaviorTree != null if pBehaviorTree.getFilename() else null)
+		
+		env.writeString8OrEmptyIfNull(writer, rule)
 	end
 end

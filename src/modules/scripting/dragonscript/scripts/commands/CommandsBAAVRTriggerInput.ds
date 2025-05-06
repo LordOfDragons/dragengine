@@ -36,6 +36,42 @@ pin Dragengine.Scenery
  * command to the command manager of a BaseGameApp.
  */
 class CommandsBAAVRTriggerInput
+	/**
+	 * \brief Bridge from BAAVRTriggerInput to BAAStateMachineEvent.
+	 * \version 1.26
+	 * 
+	 * Send events match BAAVRTriggerInput function named with prefix "vrTriggerInput.".
+	 */
+	class StateMachineEventBridge implements BAAVRTriggerInput
+		var BAAStateMachineEvent pTarget
+		
+		func new(BAAStateMachineEvent target)
+			pTarget = target
+		end
+		
+		func void triggerTouch()
+			pTarget.sendInputAsEvent("vrTriggerInput.triggerTouch", null)
+		end
+		
+		func void triggerUntouch()
+			pTarget.sendInputAsEvent("vrTriggerInput.triggerUntouch", null)
+		end
+		
+		func void triggerPull()
+			pTarget.sendInputAsEvent("vrTriggerInput.triggerPull", null)
+		end
+		
+		func void triggerRelease()
+			pTarget.sendInputAsEvent("vrTriggerInput.triggerRelease", null)
+		end
+		
+		func void triggerAnalog(float value)
+			var Dictionary parameters = Dictionary.new()
+			parameters.setAt("value", value.toString())
+			pTarget.sendInputAsEvent("vrTriggerInput.triggerAnalog", parameters)
+		end
+	end
+	
 	/** \brief Base class operating only on actors with BAAVRTriggerInput action. */
 	public class TriggerAction extends Command
 		protected var ECBehaviorPlayerControllable.Tracker pTracker

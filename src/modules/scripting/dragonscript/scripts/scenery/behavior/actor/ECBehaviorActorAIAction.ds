@@ -30,6 +30,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -64,13 +66,13 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	/** \brief Factory for creating action. */
 	interface ActionFactory
 		/** \brief Create action for behavior instance. */
-		func BaseActorAction createAction( Instance instance )
+		func BaseActorAction createAction(Instance instance)
 	end
 	
 	/** \brief Factory for creating AI. */
 	interface AIFactory
 		/** \brief Create AI for behavior instance. */
-		func BaseActorAI createAI( Instance instance )
+		func BaseActorAI createAI(Instance instance)
 	end
 	
 	/**
@@ -84,7 +86,13 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorActorAIAction'/>
+	 * <behavior type='ECBehaviorActorAIAction'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
@@ -106,6 +114,10 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				ECBehaviorColliderAI.getBehaviorIn(eclass),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass),\
 				ECBehaviorPlayerControllable.getBehaviorIn(eclass))
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "aiAction")
 			return behavior
 		end
@@ -113,177 +125,256 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "aiAction.set".
+		 * \version 1.26
+		 */
+		private class BTASet implements BTAction, SMAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("ai.behaviorTree", null)
+				if value != null
+					var String basePath = context.getBehaviorTree().getFilename()
+					if basePath != null
+						value = File.absolutePath(value cast String,\
+							File.new(basePath).getParent().getPath()).getPath()
+					end
+					pInstance.setAI(BAAIBehaviorTree.new(pInstance.getECBehavior().\
+						getLoadBehaviorTree().loadFromFile(value cast String)))
+				end
+				
+				value = parameters.getAt("action.stateMachine", null)
+				if value != null
+					var String basePath = context.getBehaviorTree().getFilename()
+					if basePath != null
+						value = File.absolutePath(value cast String,\
+							File.new(basePath).getParent().getPath()).getPath()
+					end
+					pInstance.setAction(BAAStateMachine.new(pInstance.getECBehavior().\
+						getLoadStateMachine().loadFromFile(value cast String)))
+				end
+				
+				return BTResult.success
+			end
+			
+			func void runAction(SMContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("ai.behaviorTree", null)
+				if value != null
+					var String basePath = context.getStateMachine().getFilename()
+					if basePath != null
+						value = File.absolutePath(value cast String,\
+							File.new(basePath).getParent().getPath()).getPath()
+					end
+					pInstance.setAI(BAAIBehaviorTree.new(pInstance.getECBehavior().\
+						getLoadBehaviorTree().loadFromFile(value cast String)))
+				end
+				
+				value = parameters.getAt("action.stateMachine", null)
+				if value != null
+					var String basePath = context.getStateMachine().getFilename()
+					if basePath != null
+						value = File.absolutePath(value cast String,\
+							File.new(basePath).getParent().getPath()).getPath()
+					end
+					pInstance.setAction(BAAStateMachine.new(pInstance.getECBehavior().\
+						getLoadStateMachine().loadFromFile(value cast String)))
+				end
+			end
+		end
+		
 		/** \brief Collider AI listener forwarding to Action/AI. */
-		class ColliderAIListener extends ECBehaviorColliderAI.DefaultListener
-			private var Instance pInstance
+		private class ColliderAIListener extends ECBehaviorColliderAI.DefaultListener
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void collisionResponse( ECBehaviorColliderAI.Instance instance, \
-			Collider collider, CollisionInfo info )
-				if this.pInstance.getAction() != null
-					this.pInstance.getAction().collisionResponse( collider, info )
+			func void collisionResponse(ECBehaviorColliderAI.Instance instance, \
+			Collider collider, CollisionInfo info)
+				if pInstance.getAction() != null
+					pInstance.getAction().collisionResponse(collider, info)
 				end
-				if this.pInstance.getAI() != null
-					this.pInstance.getAI().collision( collider, info )
+				if pInstance.getAI() != null
+					pInstance.getAI().collision(collider, info)
 				end
 			end
 			
-			public func bool canHitCollider( ECBehaviorColliderAI.Instance instance, \
-			Collider collider, Collider hitCollider )
-				return this.pInstance.getAction() != null \
-					and this.pInstance.getAction().canHitCollider( collider, hitCollider )
+			func bool canHitCollider(ECBehaviorColliderAI.Instance instance, \
+			Collider collider, Collider hitCollider)
+				return pInstance.getAction() != null \
+					and pInstance.getAction().canHitCollider(collider, hitCollider)
 			end
 			
-			public func void colliderChanged( ECBehaviorColliderAI.Instance instance, Collider collider )
-				if this.pInstance.getAction() != null
-					this.pInstance.getAction().colliderChanged( collider )
+			func void colliderChanged(ECBehaviorColliderAI.Instance instance, Collider collider)
+				if pInstance.getAction() != null
+					pInstance.getAction().colliderChanged(collider)
 				end
 			end
 		end
 		
 		/** \brief Conversation actor listener forwarding to Action/AI. */
-		class ConvoActorListener extends ECBehaviorConversationActor.DefaultListener
-			private var Instance pInstance
+		private class ConvoActorListener extends ECBehaviorConversationActor.DefaultListener
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func bool wait( ECBehaviorConversationActor.Instance instance )
-				if this.pInstance.getAction() != null
-					return this.pInstance.getAction().conversationWait()
+			func bool wait(ECBehaviorConversationActor.Instance instance)
+				if pInstance.getAction() != null
+					return pInstance.getAction().conversationWait()
 					
 				else
 					return false
 				end
 			end
 			
-			public func void enterConversation( ECBehaviorConversationActor.Instance instance )
-				if this.pInstance.getAI() != null
-					this.pInstance.getAI().enterConversation()
+			func void enterConversation(ECBehaviorConversationActor.Instance instance)
+				if pInstance.getAI() != null
+					pInstance.getAI().enterConversation()
 				end
 			end
 			
-			public func void leaveConversation( ECBehaviorConversationActor.Instance instance )
-				if this.pInstance.getAI() != null
-					this.pInstance.getAI().leaveConversation()
+			func void leaveConversation(ECBehaviorConversationActor.Instance instance)
+				if pInstance.getAI() != null
+					pInstance.getAI().leaveConversation()
 				end
 			end
 		end
 		
 		/** \brief Forward player takes controll to Action/AI. */
-		class PlayerTakeControlListener extends ECBehaviorPlayerControllable.DefaultListener
-			private var Instance pInstance
+		private class PlayerTakeControlListener extends ECBehaviorPlayerControllable.DefaultListener
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void playerTakesControl( ECBehaviorPlayerControllable.Instance instance )
-				if this.pInstance.getAction() != null
-					this.pInstance.getAction().playerTakesControl()
+			func void playerTakesControl(ECBehaviorPlayerControllable.Instance instance)
+				if pInstance.getAction() != null
+					pInstance.getAction().playerTakesControl()
 				end
-				if this.pInstance.getAI() != null
-					this.pInstance.getAI().playerTakesControl()
+				if pInstance.getAI() != null
+					pInstance.getAI().playerTakesControl()
 				end
 			end
 			
-			public func void playerReleasesControl( ECBehaviorPlayerControllable.Instance instance )
-				if this.pInstance.getAction() != null
-					this.pInstance.getAction().playerReleasesControl()
+			func void playerReleasesControl(ECBehaviorPlayerControllable.Instance instance)
+				if pInstance.getAction() != null
+					pInstance.getAction().playerReleasesControl()
 				end
-				if this.pInstance.getAI() != null
-					this.pInstance.getAI().playerReleasesControl()
+				if pInstance.getAI() != null
+					pInstance.getAI().playerReleasesControl()
 				end
 			end
 		end
 		
 		
 		
-		private var ECBehaviorActorAIAction pECBehavior
-		private var ECBehaviorColliderAI.Instance pColliderAI
-		private var ECBehaviorConversationActor.Instance pConversationActor
-		private var ECBehaviorPlayerControllable.Instance pPlayerControllable
+		var ECBehaviorActorAIAction pECBehavior
+		var ECBehaviorColliderAI.Instance pColliderAI
+		var ECBehaviorConversationActor.Instance pConversationActor
+		var ECBehaviorPlayerControllable.Instance pPlayerControllable
 		
-		private var BaseActorAction pAction
-		private var BaseActorAI pAI
-		
+		var BaseActorAction pAction
+		var BaseActorAI pAI
+		var SMContext pSMContext
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorActorAIAction ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorActorAIAction ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
-			this.setRequiresEnterFrame( true )
-			this.setRequiresThink( true )
+			setRequiresEnterFrame(true)
+			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
-			this.setAIAndDispose( null )
-			this.setActionAndDispose( null )
+		func void dispose()
+			setAIAndDispose(null)
+			setActionAndDispose(null)
 			
-			this.pConversationActor = null
-			this.pPlayerControllable = null
-			this.pColliderAI = null
+			pConversationActor = null
+			pPlayerControllable = null
+			pColliderAI = null
+			pSMContext = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init( StubElement stub )
-			var BehaviorElement element = this.getElement()
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			
-			if this.pECBehavior.getColliderAI() != null
-				this.pColliderAI = this.pECBehavior.getColliderAI().instance( element )
+			if pECBehavior.getColliderAI() != null
+				pColliderAI = pECBehavior.getColliderAI().instance(element)
 			end
-			if this.pECBehavior.getConversationActor() != null
-				this.pConversationActor = this.pECBehavior.getConversationActor().instance( element )
+			if pECBehavior.getConversationActor() != null
+				pConversationActor = pECBehavior.getConversationActor().instance(element)
 			end
-			if this.pECBehavior.getPlayerControllable() != null
-				this.pPlayerControllable = this.pECBehavior.getPlayerControllable().instance( element )
-			end
-			
-			if this.pColliderAI != null
-				this.pColliderAI.addListener( ColliderAIListener.new( this ) )
-			end
-			if this.pConversationActor != null
-				this.pConversationActor.addListener( ConvoActorListener.new( this ) )
-			end
-			if this.pPlayerControllable != null
-				this.pPlayerControllable.addListener( PlayerTakeControlListener.new( this ) )
+			if pECBehavior.getPlayerControllable() != null
+				pPlayerControllable = pECBehavior.getPlayerControllable().instance(element)
 			end
 			
-			this.setAction( this.pECBehavior.getActionFactory().createAction( this ) )
-			this.setAI( this.pECBehavior.getAIFactory().createAI( this ) )
+			if pColliderAI != null
+				pColliderAI.addListener(ColliderAIListener.new(this))
+			end
+			if pConversationActor != null
+				pConversationActor.addListener(ConvoActorListener.new(this))
+			end
+			if pPlayerControllable != null
+				pPlayerControllable.addListener(PlayerTakeControlListener.new(this))
+			end
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(prefix + "set", BTASet.new(this))
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = pECBehavior.getPrefix()
+				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
+				pSMContext.setAction(prefix + "set", BTASet.new(this))
+			end
+			
+			setAction(pECBehavior.getActionFactory().createAction(this))
+			setAI(pECBehavior.getAIFactory().createAI(this))
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorActorAIAction getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorActorAIAction getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Conversation actor if present. */
-		public func ECBehaviorConversationActor.Instance getConversationActor()
-			return this.pConversationActor
+		func ECBehaviorConversationActor.Instance getConversationActor()
+			return pConversationActor
 		end
 		
 		/** \brief Player controllable actor if present. */
-		public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
-			return this.pPlayerControllable
+		func ECBehaviorPlayerControllable.Instance getPlayerControllable()
+			return pPlayerControllable
 		end
 		
 		
 		
 		/** \brief Active action or \em null. */
-		public func BaseActorAction getAction()
-			return this.pAction
+		func BaseActorAction getAction()
+			return pAction
 		end
 		
 		/**
@@ -291,19 +382,19 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 * 
 		 * Does not call dispose() on old action if present.
 		 */
-		public func void setAction( BaseActorAction action )
-			if action == this.pAction
+		func void setAction(BaseActorAction action)
+			if action == pAction
 				return
 			end
 			
-			if this.pAction != null
-				this.pAction.deactivate()
+			if pAction != null
+				pAction.deactivate()
 			end
 			
-			this.pAction = action
+			pAction = action
 			
 			if action != null
-				action.activate( this.getElement() )
+				action.activate(getElement())
 			end
 		end
 		
@@ -312,9 +403,11 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 * 
 		 * Calls dispose() on old action if present.
 		 */
-		public func void setActionAndDispose( BaseActorAction action )
-			var BaseActorAction disposeAction = this.pAction
-			this.setAction( null )
+		func void setActionAndDispose(BaseActorAction action)
+			var BaseActorAction disposeAction = pAction
+			
+			setAction(action)
+			
 			if disposeAction != null
 				disposeAction.dispose()
 			end
@@ -323,8 +416,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		
 		
 		/** \brief Active AI or \em null. */
-		public func BaseActorAI getAI()
-			return this.pAI
+		func BaseActorAI getAI()
+			return pAI
 		end
 		
 		/**
@@ -332,19 +425,19 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 * 
 		 * Does not call dispose() on old AI if present.
 		 */
-		public func void setAI( BaseActorAI ai )
-			if ai == this.pAI
+		func void setAI(BaseActorAI ai)
+			if ai == pAI
 				return
 			end
 			
-			if this.pAI != null
-				this.pAI.deactivate()
+			if pAI != null
+				pAI.deactivate()
 			end
 			
-			this.pAI = ai
+			pAI = ai
 			
 			if ai != null
-				ai.activate( this.getElement() )
+				ai.activate(getElement())
 			end
 		end
 		
@@ -353,10 +446,10 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 * 
 		 * Calls dispose() on old AI if present.
 		 */
-		public func void setAIAndDispose( BaseActorAI ai )
-			var BaseActorAI disposeAI = this.pAI
+		func void setAIAndDispose(BaseActorAI ai)
+			var BaseActorAI disposeAI = pAI
 			
-			this.setAI( null )
+			setAI(ai)
 			
 			if disposeAI != null
 				disposeAI.dispose()
@@ -366,12 +459,12 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
-			if this.pAI != null
-				this.pAI.enterFrame()
+		func void enterFrame()
+			if pAI != null
+				pAI.enterFrame()
 			end
-			if this.pAction != null
-				this.pAction.enterFrame()
+			if pAction != null
+				pAction.enterFrame()
 			end
 		end
 		
@@ -383,19 +476,19 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 * BaseActorAI.think() and BaseActorAction.think(). This avoids the need for
 		 * AI and Action to check if they are player controlled or not.
 		 */
-		public func void think( float elapsed )
-			if this.pPlayerControllable.isPlayerControlled()
-				if this.pAction != null
-					this.pAction.playerThink( elapsed )
-					this.pAction.think( elapsed )
+		func void think(float elapsed)
+			if pPlayerControllable.isPlayerControlled()
+				if pAction != null
+					pAction.playerThink(elapsed)
+					pAction.think(elapsed)
 				end
 				
 			else
-				if this.pAI != null
-					this.pAI.think( elapsed )
+				if pAI != null
+					pAI.think(elapsed)
 				end
-				if this.pAction != null
-					this.pAction.think( elapsed )
+				if pAction != null
+					pAction.think(elapsed)
 				end
 			end
 		end
@@ -407,74 +500,79 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 * and BaseActorAction.postThink(float). If actor is not player controlled only
 		 * BaseActorAction.postThink(float) is called.
 		 */
-		public func void postThink( float elapsed )
-			if this.pAction != null
-				if this.pPlayerControllable.isPlayerControlled()
-					this.pAction.playerPostThink( elapsed )
+		func void postThink(float elapsed)
+			if pAction != null
+				if pPlayerControllable.isPlayerControlled()
+					pAction.playerPostThink(elapsed)
 				end
-				this.pAction.postThink( elapsed )
+				pAction.postThink(elapsed)
 			end
 		end
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			if this.pAI != null
-				this.pAI.enteredGameWorld()
+		func void addToGameWorld()
+			if pAI != null
+				pAI.enteredGameWorld()
 			end
-			if this.pAction != null
-				this.pAction.enteredGameWorld()
+			if pAction != null
+				pAction.enteredGameWorld()
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			if this.pAI != null
-				this.pAI.leftGameWorld()
+		func void removeFromGameWorld()
+			if pAI != null
+				pAI.leftGameWorld()
 			end
-			if this.pAction != null
-				this.pAction.leftGameWorld()
+			if pAction != null
+				pAction.leftGameWorld()
 			end
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var BehaviorElement element = this.getElement()
+				var BehaviorElement element = getElement()
 				
-				this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
-				if this.pAI != null
-					this.pAI.activateWhileLoading( element )
+				pAI = env.readObjectOrNull(reader) cast BaseActorAI
+				if pAI != null
+					pAI.activateWhileLoading(element)
 				end
 				
-				this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
-				if this.pAction != null
-					this.pAction.activateWhileLoading( element )
+				pAction = env.readObjectOrNull(reader) cast BaseActorAction
+				if pAction != null
+					pAction.activateWhileLoading(element)
 				end
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			env.writeObjectOrNull( writer, this.pAI )
-			env.writeObjectOrNull( writer, this.pAction )
+			env.writeObjectOrNull(writer, pAI)
+			env.writeObjectOrNull(writer, pAction)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorColliderAI pColliderAI
-	private var ECBehaviorConversationActor pConversationActor
-	private var ECBehaviorPlayerControllable pPlayerControllable
-	private var ActionFactory pActionFactory
-	private var AIFactory pAIFactory
+	var ECBehaviorColliderAI pColliderAI
+	var ECBehaviorConversationActor pConversationActor
+	var ECBehaviorPlayerControllable pPlayerControllable
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
+	var ActionFactory pActionFactory
+	var AIFactory pAIFactory
+	var String pPrefix
+	var LoadBehaviorTree pLoadBehaviorTree
+	var LoadStateMachine pLoadStateMachine
 	
 	
 	
@@ -486,48 +584,67 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * 
 	 * The default Action and AI factory are BAAFirstPerson and BAAIBehaviorTree.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
-	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable ) \
-	this( eclass, colliderAI, conversationActor, playerControllable, "aiAction." )
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable) \
+	this(eclass, colliderAI, conversationActor, playerControllable, "aiAction.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
 	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable, \
-	String prefix ) super( eclass )
-		this.pColliderAI = colliderAI
-		this.pConversationActor = conversationActor
-		this.pPlayerControllable = playerControllable
-		this.pActionFactory = BAAFirstPerson.Factory.new()
-		this.pAIFactory = BAAIBehaviorTree.Factory.new()
+	String prefix) this(eclass, colliderAI, conversationActor, playerControllable,\
+	BaseGameApp.getApp().getLoaders(), prefix)
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable, \
+	Loaders loaders, String prefix) super(eclass)
+		pPrefix = prefix
+		pColliderAI = colliderAI
+		pConversationActor = conversationActor
+		pPlayerControllable = playerControllable
+		pActionFactory = BAAFirstPerson.Factory.new()
+		pAIFactory = BAAIBehaviorTree.Factory.new()
+		pLoadBehaviorTree = loaders.getBehaviorTree()
+		pLoadStateMachine = loaders.getStateMachine()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pColliderAI = null
-		this.pConversationActor = null
-		this.pPlayerControllable = null
-		this.pActionFactory = null
-		this.pAIFactory = null
+	func void dispose()
+		pColliderAI = null
+		pConversationActor = null
+		pPlayerControllable = null
+		pActionFactory = null
+		pAIFactory = null
+		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Collider AI behavior or null. */
-	public func ECBehaviorColliderAI getColliderAI()
-		return this.pColliderAI
+	func ECBehaviorColliderAI getColliderAI()
+		return pColliderAI
 	end
 	
 	/** \brief Set collider AI behavior or null. */
-	public func void setColliderAI( ECBehaviorColliderAI colliderAI )
-		this.pColliderAI = colliderAI
+	func void setColliderAI(ECBehaviorColliderAI colliderAI)
+		pColliderAI = colliderAI
 	end
 	
 	/** \brief Conversation actor behavior or null. */
-	public func ECBehaviorConversationActor getConversationActor()
-		return this.pConversationActor
+	func ECBehaviorConversationActor getConversationActor()
+		return pConversationActor
 	end
 	
 	/**
@@ -535,51 +652,121 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * 
 	 * If set conversation conditions and commands are added.
 	 */
-	public func void setConversationActor( ECBehaviorConversationActor conversationActor )
-		this.pConversationActor = conversationActor
+	func void setConversationActor(ECBehaviorConversationActor conversationActor)
+		pConversationActor = conversationActor
 	end
 	
 	/** \brief Player controllable behavior or null. */
-	public func ECBehaviorPlayerControllable getPlayerControllable()
-		return this.pPlayerControllable
+	func ECBehaviorPlayerControllable getPlayerControllable()
+		return pPlayerControllable
 	end
 	
 	/** \brief Set player controllable behavior or null. */
-	public func void setPlayerControllable( ECBehaviorPlayerControllable playerControllable )
-		this.pPlayerControllable = playerControllable
+	func void setPlayerControllable(ECBehaviorPlayerControllable playerControllable)
+		pPlayerControllable = playerControllable
 	end
 	
 	/** \brief Action factory. */
-	public func ActionFactory getActionFactory()
-		return this.pActionFactory
+	func ActionFactory getActionFactory()
+		return pActionFactory
 	end
 	
 	/** \brief Set action factory. */
-	public func void setActionFactory( ActionFactory factory )
+	func void setActionFactory(ActionFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pActionFactory = factory
+		pActionFactory = factory
 	end
 	
 	/** \brief AI factory. */
-	public func AIFactory getAIFactory()
-		return this.pAIFactory
+	func AIFactory getAIFactory()
+		return pAIFactory
 	end
 	
 	/** \brief Set AI factory. */
-	public func void setAIFactory( AIFactory factory )
+	func void setAIFactory(AIFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pAIFactory = factory
+		pAIFactory = factory
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
+	end
+	
+	/**
+	 * \brief Behavior tree loader.
+	 * \version 1.26
+	 */
+	func LoadBehaviorTree getLoadBehaviorTree()
+		return pLoadBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree loader.
+	 * \version 1.26
+	 */
+	func void setLoadBehaviorTree(LoadBehaviorTree loader)
+		if loader == null
+			throw ENullPointer.new("loader")
+		end
+		pLoadBehaviorTree = loader
+	end
+	
+	/**
+	 * \brief State machine loader.
+	 * \version 1.26
+	 */
+	func LoadStateMachine getLoadStateMachine()
+		return pLoadStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine loader.
+	 * \version 1.26
+	 */
+	func void setLoadStateMachine(LoadStateMachine loader)
+		if loader == null
+			throw ENullPointer.new("loader")
+		end
+		pLoadStateMachine = loader
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -590,10 +777,10 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorActorAIAction.
 	 */
-	static public func ECBehaviorActorAIAction getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorActorAIAction each
+	static func ECBehaviorActorAIAction getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorActorAIAction each
 			return true
-		end ) cast ECBehaviorActorAIAction
+		end) cast ECBehaviorActorAIAction
 	end
 	
 	/**
@@ -602,16 +789,16 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorActorAIAction.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

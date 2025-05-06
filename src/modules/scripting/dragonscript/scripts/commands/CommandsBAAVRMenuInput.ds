@@ -36,6 +36,36 @@ pin Dragengine.Scenery
  * command to the command manager of a BaseGameApp.
  */
 class CommandsBAAVRMenuInput
+	/**
+	 * \brief Bridge from BAAVRMenuInput to BAAStateMachineEvent.
+	 * \version 1.26
+	 * 
+	 * Send events match BAAVRMenuInput function named with prefix "vrMenuInput.".
+	 */
+	class StateMachineEventBridge implements BAAVRMenuInput
+		var BAAStateMachineEvent pTarget
+		
+		func new(BAAStateMachineEvent target)
+			pTarget = target
+		end
+		
+		func void menuTouch()
+			pTarget.sendInputAsEvent("vrMenuInput.menuTouch", null)
+		end
+		
+		func void menuUntouch()
+			pTarget.sendInputAsEvent("vrMenuInput.menuUntouch", null)
+		end
+		
+		func void menuPress()
+			pTarget.sendInputAsEvent("vrMenuInput.menuPress", null)
+		end
+		
+		func void menuRelease()
+			pTarget.sendInputAsEvent("vrMenuInput.menuRelease", null)
+		end
+	end
+	
 	/** \brief Base class operating only on actors with BAAVRMenuInput action. */
 	public class MenuAction extends Command
 		protected var ECBehaviorPlayerControllable.Tracker pTracker
@@ -60,21 +90,25 @@ class CommandsBAAVRMenuInput
 				return null
 			end
 			
-			var ECBehaviorVRHandAction.Instance action
+			var ECBehaviorVRHandAction.Instance vrHandAction
 			
 			if pRightHand
-				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRRightHand)
+				vrHandAction = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRRightHand)
 				
 			else
-				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRLeftHand)
+				vrHandAction = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRLeftHand)
 			end
 			
-			if action != null and action.getAction() castable BAAVRMenuInput
-				return action.getAction() cast BAAVRMenuInput
-				
-			else
-				return null
+			if vrHandAction != null
+				var BaseVRHandAction action = vrHandAction.getAction()
+				if action castable BAAVRMenuInput
+					return action cast BAAVRMenuInput
+					
+				elif action castable BAAStateMachineEvent
+					return StateMachineEventBridge.new(action cast BAAStateMachineEvent)
+				end
 			end
+			return null
 		end
 		
 		public func void touch()

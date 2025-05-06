@@ -114,6 +114,23 @@ class SMContext
 		return pStateMachine
 	end
 	
+	/**
+	 * \brief Set state machine and reset state.
+	 * \version 1.26
+	 * 
+	 * Sets the state machine then calls reset(). If you change the state machine during
+	 * runtime you have to make sure it is also set before readFromFile() is called
+	 * otherwise an exception can be thrown.
+	 */
+	func void setStateMachine(StateMachine stateMachine)
+		if stateMachine == null
+			throw ENullPointer.new("stateMachine")
+		end
+		
+		pStateMachine = stateMachine
+		reset()
+	end
+	
 	
 	/** \brief Count of conditions. */
 	func int getConditionCount()
@@ -275,6 +292,16 @@ class SMContext
 		end
 	end
 	
+	/**
+	 * \brief Set current state by identifier without calling actions or listeners.
+	 * \version 1.26
+	 * 
+	 * For use with loading only. Do not call otherwise.
+	 */
+	func void setOnlyCurrentStateByID(String id)
+		pCurrentState = pStateMachine.getStateAt(id)
+	end
+	
 	
 	/** \brief Console or \em null if not wishing to log anything. */
 	func Console getConsole()
@@ -345,7 +372,9 @@ class SMContext
 			throw EInvalidParam.new("in transition")
 		end
 		
-		var SMTransition transition = pCurrentState.getTransitionWithEvent(event)
+		var SMTransition transition = pCurrentState.findTransition(block SMTransition each
+			return each.matches(this, event)
+		end)
 		
 		if pLogTransitions and pConsole != null
 			if transition != null
