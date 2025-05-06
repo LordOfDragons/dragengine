@@ -917,15 +917,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 						break
 					end
 					pNextEvent++
-					
-					playFootStepSound(event)
-					
-					pListeners.forEach(block Listener each
-						each.footStep(this, pActiveConfiguration, event)
-					end)
-					if pSMContext != null
-						pSMContext.runEvent(pECBehavior.getPrefix() + "footStep")
-					end
+					footStep(pActiveConfiguration, event)
 				end
 				
 				if pElapsed < interval
@@ -934,6 +926,26 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 				
 				pElapsed -= interval
 				pNextEvent = 0
+			end
+		end
+		
+		/**
+		 * \brief Foot step event.
+		 * \version 1.26
+		 * 
+		 * Plays event foot step sound if defined, calls \ref Listener#footStep() and sends
+		 * event "footSteps.footStep" to state machine context if present.
+		 * 
+		 * This function can be called by other behaviors to trigger foot steps.
+		 */
+		func void footStep(Configuration configuration, Event event)
+			playFootStepSound(event)
+			
+			pListeners.forEach(block Listener each
+				each.footStep(this, configuration, event)
+			end)
+			if pSMContext != null
+				pSMContext.runEvent(pECBehavior.getPrefix() + "footStep")
 			end
 		end
 		

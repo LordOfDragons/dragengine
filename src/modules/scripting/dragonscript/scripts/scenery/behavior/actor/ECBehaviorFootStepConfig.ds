@@ -1,0 +1,253 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding a \ref ECBehaviorFootSteps.Configuration.
+ * \version 1.26
+ * 
+ * Adds a single configuration with a list of events. Optionally a list of sounds can be
+ * defined which is assigned to the events. All events share the same sounds and play sound
+ * parameters.
+ * 
+ * Behavior can be added multiple times to add multiple configurations.
+ * 
+ * Requires ECBehaviorFootSteps to be present.
+ * 
+ * This behavior does not require element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_footstepconfig
+ */
+class ECBehaviorFootStepConfig extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Requuired: \ref ECBehaviorFootSteps
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorFootStepConfig'/>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorFootStepConfig' id='second'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorFootStepConfig"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorFootStepConfig behavior = ECBehaviorFootStepConfig.new(\
+				eclass, ECBehaviorFootSteps.getBehaviorIn(eclass), id)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "footStepConfig", id)
+			return behavior
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		var ECBehaviorFootStepConfig pECBehavior
+		
+		
+		/** \brief Create instance. */
+		func new(ECBehaviorFootStepConfig ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+		end
+		
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
+			
+			var ECBehaviorFootSteps.Configuration config = ECBehaviorFootSteps.Configuration.new(\
+				pECBehavior.getConfigId().getValueOrNull(stub))
+			config.setInterval(pECBehavior.getInterval().getValue(stub))
+			config.setControllerName(pECBehavior.getControllerName().getValueOrNull(stub))
+			
+			var float volume = pECBehavior.getVolume().getValue(stub)
+			var float range = pECBehavior.getRange().getValue(stub)
+			var float rollOff = pECBehavior.getRollOff().getValue(stub)
+			var DVector offset = DVector.new(pECBehavior.getOffset().getVector(stub, codec))
+			var String type = pECBehavior.getType().getValue(stub)
+			
+			var WeightedRandomList sounds = WeightedRandomList.new()
+			pECBehavior.getSounds().forEach(block Sound each
+				sounds.add(each, 1)
+			end)
+			
+			pECBehavior.getEventTimes().getList(stub, codec).forEach(block float each
+				config.addEvent(ECBehaviorFootSteps.Event.new(\
+					each, sounds, volume, range, offset, rollOff, type))
+			end)
+			
+			pECBehavior.getFootSteps().instance(element).addConfiguration(config)
+		end
+	end
+	
+	
+	var ECBehaviorFootSteps pFootSteps
+	
+	var ECPSoundList pSounds
+	var ECPFloat pVolume, pRange, pRollOff, pInterval
+	var ECPVector pOffset
+	var ECPString pType, pConfigId, pControllerName
+	var ECPFloatList pEventTimes
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorFootSteps footSteps) this(eclass, footSteps, "")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorFootSteps footSteps, String id)\
+	this(eclass, footSteps, id, id.empty() if "footStepConfig." else "footStepConfig(" + id + ").")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorFootSteps footSteps, String id, String prefix)\
+	super(eclass, id)
+		if footSteps == null
+			throw ENullPointer.new("footSteps")
+		end
+		
+		pFootSteps = footSteps
+		
+		eclass.addProperty(pConfigId = ECPString.new(prefix + "configId", null))
+		eclass.addProperty(pInterval = ECPFloat.new(prefix + "interval", 1))
+		eclass.addProperty(pControllerName = ECPString.new(prefix + "controllerName", null))
+		
+		eclass.addProperty(pSounds = ECPSoundList.new(prefix + "sounds"))
+		eclass.addProperty(pVolume = ECPFloat.new(prefix + "volume", 1, 0))
+		eclass.addProperty(pRange = ECPFloat.new(prefix + "range", 10, 0))
+		eclass.addProperty(pRollOff = ECPFloat.new(prefix + "rollOff", 0.5, 0, 1))
+		eclass.addProperty(pOffset = ECPVector.new(prefix + "offset", Vector.new(0, 0.05, 0)))
+		eclass.addProperty(pType = ECPString.new(prefix + "type", null))
+		eclass.addProperty(pEventTimes = ECPFloatList.new(prefix + "eventTimes"))
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pFootSteps = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Foot steps behavior. */
+	func ECBehaviorFootSteps getFootSteps()
+		return pFootSteps
+	end
+	
+	/** \brief Configuration identifier. */
+	func ECPString getConfigId()
+		return pConfigId
+	end
+	
+	/** \brief Interval between repeating steps in seconds. */
+	func ECPFloat getInterval()
+		return pInterval
+	end
+	
+	/** \brief Optional actor animator controller to use as elapsed seconds. */
+	func ECPString getControllerName()
+		return pControllerName
+	end
+	
+	/** \brief List of sounds to randomly play from. */
+	func ECPSoundList getSounds()
+		return pSounds
+	end
+	
+	/** \brief Volume. */
+	func ECPFloat getVolume()
+		return pVolume
+	end
+	
+	/** \brief Range. */
+	func ECPFloat getRange()
+		return pRange
+	end
+	
+	/** \brief Roll-off. */
+	func ECPFloat getRollOff()
+		return pRollOff
+	end
+	
+	/** \brief Offset of sound play relative to element position. */
+	func ECPVector getOffset()
+		return pOffset
+	end
+	
+	/** \brief Optional type string. */
+	func ECPString getType()
+		return pType
+	end
+	
+	/** \brief Event times in seconds. */
+	func ECPFloatList getEventTimes()
+		return pEventTimes
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/** \brief Get behavior in element class or \em null if absent. */
+	static func ECBehaviorFootStepConfig getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorFootStepConfig each
+			return true
+		end) cast ECBehaviorFootStepConfig
+	end
+	
+	/** \brief Get instance in element or \em null if absent. */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

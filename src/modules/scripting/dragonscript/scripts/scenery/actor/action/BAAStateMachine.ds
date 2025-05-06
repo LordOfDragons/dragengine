@@ -57,6 +57,12 @@ pin Dragengine.StateMachineSystem
  * - cancel
  * 
  * Input events are send to state machine using interface BAAStateMachineEvent.
+ * For further information see the respective bridge classes:
+ * - \ref Commands.CommandsBAAMovement#StateMachineEventBridge
+ * - \ref Commands.CommandsBAAInteract#StateMachineEventBridge
+ * - \ref Commands.CommandsBAAVRGrab#StateMachineEventBridge
+ * - \ref Commands.CommandsBAAVRMenuInput#StateMachineEventBridge
+ * - \ref Commands.CommandsBAAVRTriggerInput#StateMachineEventBridge
  */
 class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	/** \brief Factory for loading actor actions. */

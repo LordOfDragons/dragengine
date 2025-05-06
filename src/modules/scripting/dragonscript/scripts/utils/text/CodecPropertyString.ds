@@ -209,6 +209,26 @@ class CodecPropertyString
 	
 	
 	
+	/**
+	 * \brief Decode property string into a list of floating point values.
+	 * \version 1.26
+	 */
+	func Array decodeFloatList(String string)
+		return string.split(pTokenSeparators).map(block String each
+			return each.toFloat()
+		end)
+	end
+	
+	/**
+	 * \brief Decode property string into a list of integer point values.
+	 * \version 1.26
+	 */
+	func Array decodeIntList(String string)
+		return string.split(pTokenSeparators).map(block String each
+			return each.toInt()
+		end)
+	end
+	
 	/** \brief Decode property string into a fixed sized list of floating point values. */
 	func Array decodeFixedFloatList(String string, int valueCount)
 		var Array list = string.split(pTokenSeparators)
