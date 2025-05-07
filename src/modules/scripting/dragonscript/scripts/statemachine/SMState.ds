@@ -46,10 +46,12 @@ pin Dragengine.Utils
  * Action can have optional condition running them only if the condition evaluates to true.
  */
 class SMState
-	var String pID, pParentID
+	var String pID
 	var Array pEnterActions
 	var Array pExitActions
 	var Array pTransitions
+	var Array pImportStates
+	var String pNextStateID
 	
 	
 	/**
@@ -66,6 +68,21 @@ class SMState
 		pEnterActions = Array.new()
 		pExitActions = Array.new()
 		pTransitions = Array.new()
+		pImportStates = Array.new()
+	end
+	
+	/**
+	 * \brief Create copy of state machine state.
+	 * \version 1.26
+	 * \param state State to copy.
+	 */
+	func new(SMState state)
+		pID = state.pID
+		pEnterActions = Array.new(state.pEnterActions)
+		pExitActions = Array.new(state.pExitActions)
+		pTransitions = Array.new(state.pTransitions)
+		pImportStates = Array.new(state.pImportStates)
+		pNextStateID = state.pNextStateID
 	end
 	
 	
@@ -76,45 +93,70 @@ class SMState
 	
 	
 	/**
-	 * \brief Parent state identifier or \em null.
+	 * \brief Count of states to import.
 	 * \version 1.26
 	 */
-	func String getParentID()
-		return pParentID
+	func int getImportStateCount()
+		return pImportStates.getCount()
 	end
 	
 	/**
-	 * \brief Set parent state identifier or \em null.
+	 * \brief State to import at index.
 	 * \version 1.26
 	 */
-	func void setParentID(String id)
-		pParentID = id
+	func String getImportStateAt(int index)
+		return pImportStates.getAt(index) cast String
 	end
 	
 	/**
-	 * \brief Resolve parent state if parent state identifier is not null.
+	 * \brief Add state to import.
+	 * \version 1.26
+	 */
+	func void addImportState(String id)
+		if id == null
+			throw ENullPointer.new()
+		end
+		pImportStates.add(id)
+	end
+	
+	/**
+	 * \brief Import states.
 	 * \version 1.26
 	 * 
-	 * Merge parent state into this state. After merging set parent state identifier to null.
+	 * Merge states into this state. After merging clear import states list.
 	 */
-	func void mergeParent(StateMachine stateMachine)
-		if pParentID == null
-			return
-		end
-		
-		var SMState parent = stateMachine.getStateAt(pParentID)
-		if parent == null
-			throw EInvalidParam.new("parent state not found: " + pParentID)
-		end
-		
-		pParentID = null // before mergeParent call to avoid self-recursion mistakes
-		parent.mergeParent(stateMachine)
-		
-		pEnterActions.insertAll(0, parent.pEnterActions)
-		pExitActions.addAll(parent.pExitActions)
-		pTransitions.addAll(parent.pTransitions)
+	func void importStates(StateMachine stateMachine)
+		pImportStates.forEach(block String each
+			var SMState state = stateMachine.getStateAt(each)
+			if state == null
+				throw EInvalidParam.new("import state not found: " + each)
+			end
+			
+			state.importStates(stateMachine)
+			
+			pEnterActions.insertAll(0, state.pEnterActions)
+			pExitActions.addAll(state.pExitActions)
+			pTransitions.addAll(state.pTransitions)
+		end)
+		pImportStates.removeAll()
 	end
 	
+	
+	/**
+	 * \brief State to transition to after all enter actions finished or \em null.
+	 * \version 1.26
+	 */
+	func String getNextStateID()
+		return pNextStateID
+	end
+	
+	/**
+	 * \brief Set state to transition to after all enter actions finished or \em null.
+	 * \version 1.26
+	 */
+	func void setNextStateID(String id)
+		pNextStateID = id
+	end
 	
 	
 	/** \brief Count of enter actions. */

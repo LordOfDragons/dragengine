@@ -53,8 +53,7 @@ class SMTransition
 	
 	
 	var String pEvent, pStateID
-	var WeakReference pState
-	var Array pActions, pConditions, pResolvedConditions
+	var Array pActions, pConditions
 	var ConditionMode pConditionMode
 	var Dictionary pParameters
 	
@@ -78,11 +77,25 @@ class SMTransition
 		
 		pEvent = event
 		pStateID = stateID
-		pState = WeakReference.new()
 		pActions = Array.new()
 		pConditions = Array.new()
 		pConditionMode = ConditionMode.allTrue
 		pParameters = Dictionary.new()
+	end
+	
+	/**
+	 * \brief Create copy of state machine transition.
+	 * \version 1.26
+	 */
+	func new(SMTransition transition)
+		pEvent = transition.pEvent
+		pStateID = transition.pStateID
+		pActions = transition.pActions.map(block SMStateAction each
+			return SMStateAction.new(each)
+		end)
+		pConditions = Array.new(transition.pConditions)
+		pConditionMode = transition.pConditionMode
+		pParameters = Dictionary.new(transition.pParameters)
 	end
 	
 	
@@ -94,11 +107,6 @@ class SMTransition
 	/** \brief Identifier of state to switch to or null to stay in the same state. */
 	func String getStateID()
 		return pStateID
-	end
-	
-	/** \brief State to switch to or \em null if not cached. */
-	func SMState getState()
-		return pState.get() cast SMState
 	end
 	
 	
@@ -147,7 +155,6 @@ class SMTransition
 			throw EInvalidParam.new()
 		end
 		pConditions.add(condition)
-		pResolvedConditions = null
 	end
 	
 	/** \brief Visit conditions with block with parameter String. */
@@ -179,35 +186,35 @@ class SMTransition
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
 	func bool evaluateConditions(SMContext context)
-		if pResolvedConditions == null
-			pResolvedConditions = pConditions.map(block String each
-				return context.getCondition(each)
-			end)
-		end
-		
-		if pResolvedConditions.getCount() == 0
+		if pConditions.getCount() == 0
 			return true
 		end
 		
+		var SMCondition condition
+		
 		select pConditionMode
 		case ConditionMode.allTrue
-			return pResolvedConditions.find(block SMCondition each
-				return each == null or not each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
 			end) == null
 			
 		case ConditionMode.anyTrue
-			return pResolvedConditions.find(block SMCondition each
-				return each != null and each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
 			end) != null
 			
 		case ConditionMode.anyFalse
-			return pResolvedConditions.find(block SMCondition each
-				return each == null or not each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
 			end) != null
 			
 		case ConditionMode.allFalse
-			return pResolvedConditions.find(block SMCondition each
-				return each != null and each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
 			end) == null
 			
 		else
@@ -243,14 +250,11 @@ class SMTransition
 			end)
 			
 			// set next state. runs enter state actions
-			var SMState state = pState.get() cast SMState
+			var SMState state = context.getStateMachine().getStateAt(pStateID)
 			if state == null
-				state = context.getStateMachine().getStateAt(pStateID)
-				if state == null
-					throw EInvalidParam.new("unknown state '" + pStateID + "'")
-				end
-				pState.set(state)
+				throw EInvalidParam.new("unknown state '" + pStateID + "'")
 			end
+			
 			context.setCurrentState(state)
 			
 		else

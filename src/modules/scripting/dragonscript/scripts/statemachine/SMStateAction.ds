@@ -35,19 +35,15 @@ pin Dragengine.Utils
  * 
  * SMAction subclasses are created by the game developer and added to the state machine.
  * If state action is run the action is looked up and run.
- * 
- * For performance reasons the action is looked up once then stored in the state.
  */
 class SMStateAction
-	var String pActionID
-	var SMAction pAction
+	var String pActionID, pStateID
 	var Dictionary pParameters
 	var Array pConditions
-	var Array pResolvedConditions
 	var SMTransition.ConditionMode pConditionMode
 	
 	
-	/** \brief Create behavior tree rule. */
+	/** \brief Create state machine action. */
 	func new(String actionID)
 		if actionID == null
 			throw ENullPointer.new("actionID")
@@ -59,15 +55,22 @@ class SMStateAction
 		pConditionMode = SMTransition.ConditionMode.allTrue
 	end
 	
+	/**
+	 * \brief Create copy of state machine action.
+	 * \version 1.26
+	 */
+	func new(SMStateAction action)
+		pActionID = action.pActionID
+		pParameters = Dictionary.new(action.pParameters)
+		pConditions = Array.new(action.pConditions)
+		pConditionMode = action.pConditionMode
+		pStateID = action.pStateID
+	end
+	
 	
 	/** \brief Action identifier. */
 	func String getActionID()
 		return pActionID
-	end
-	
-	/** \brief Action or \em null if not cached. */
-	func SMAction getAction()
-		return pAction
 	end
 	
 	/**
@@ -76,6 +79,22 @@ class SMStateAction
 	 */
 	func Dictionary getParameters()
 		return pParameters
+	end
+	
+	/**
+	 * \brief State to transition to after action finished or \em null.
+	 * \version 1.26
+	 */
+	func String getStateID()
+		return pStateID
+	end
+	
+	/**
+	 * \brief Set state to transition to after action finished or \em null.
+	 * \version 1.26
+	 */
+	func void setStateID(String id)
+		pStateID = id
 	end
 	
 	
@@ -105,7 +124,6 @@ class SMStateAction
 		end
 		
 		pConditions.add(condition)
-		pResolvedConditions = null
 	end
 	
 	/**
@@ -154,35 +172,35 @@ class SMStateAction
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
 	func bool evaluateConditions(SMContext context)
-		if pResolvedConditions == null
-			pResolvedConditions = pConditions.map(block String each
-				return context.getCondition(each)
-			end)
-		end
-		
-		if pResolvedConditions.getCount() == 0
+		if pConditions.getCount() == 0
 			return true
 		end
 		
+		var SMCondition condition
+		
 		select pConditionMode
 		case SMTransition.ConditionMode.allTrue
-			return pResolvedConditions.find(block SMCondition each
-				return each == null or not each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
 			end) == null
 			
 		case SMTransition.ConditionMode.anyTrue
-			return pResolvedConditions.find(block SMCondition each
-				return each != null and each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
 			end) != null
 			
 		case SMTransition.ConditionMode.anyFalse
-			return pResolvedConditions.find(block SMCondition each
-				return each == null or not each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
 			end) != null
 			
 		case SMTransition.ConditionMode.allFalse
-			return pResolvedConditions.find(block SMCondition each
-				return each != null and each.evaluateCondition(context, pParameters)
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
 			end) == null
 			
 		else
@@ -191,26 +209,28 @@ class SMStateAction
 	end
 	
 	
-	/** \brief Run action. */
-	func void run(SMContext context)
+	/**
+	 * \brief Run action.
+	 * \returns true if action ran or false if conditions are not fulfilled.
+	 */
+	func bool run(SMContext context)
 		if not evaluateConditions(context)
 			if context.getLogActions() and context.getConsole() != null
 				context.getConsole().addMessage("{}: Action '{}' skipped".format(\
 					Array.newWith(context.getLoggingName(), pActionID)))
 			end
-			return
-		end
-		
-		if pAction == null
-			pAction = context.getAction(pActionID)
+			return false
 		end
 		
 		if context.getLogActions() and context.getConsole() != null
-			context.getConsole().addMessage("{}: Action '{}' run {}".format(\
-				Array.newWith(context.getLoggingName(), pActionID, pAction)))
+			context.getConsole().addMessage("{}: Action '{}' run".format(\
+				Array.newWith(context.getLoggingName(), pActionID)))
 		end
-		if pAction != null
-			pAction.runAction(context, pParameters)
+		
+		var SMAction action = context.getAction(pActionID)
+		if action != null
+			action.runAction(context, pParameters)
 		end
+		return true
 	end
 end

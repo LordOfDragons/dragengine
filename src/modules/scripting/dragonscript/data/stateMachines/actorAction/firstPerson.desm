@@ -1,0 +1,266 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<stateMachine>
+	<!--
+	State machine providing similar implementation as BAAFirstPerson.
+	
+	To use this state machine as base for your custom state machine extend like this:
+	
+	<stateMachine extend='/shareddata/stateMachines/actorAction/firstPerson.desm'>
+		... your content
+	</stateMachine>
+	
+	Defining states in your custom state machine replace states inherited from
+	the base state machine.
+	
+	The initial state is "created". Upon receiving "activate" or "activateWhileLoading"
+	transitions to "ready" state. This state contains various transitions for events
+	which apply actions but otherwise stay in the "ready" state.
+	-->
+	<initialState>created</initialState>
+	
+	
+	<!--
+	Initial state. Waits for "activate" or "activateWhileLoading" to transition into
+	"activating" or "activatingWhileLoading".
+	-->
+	<state id='created'>
+		<transition event='activate' state='activating'/>
+		<transition event='activateWhileLoading' state='activatingWhileLoading'/>
+	</state>
+	
+	
+	<!--
+	State received "activate" event and is in the process of being activated. This state
+	only runs enter actions then transitions into the "ready" state unless an enter action
+	transitions into a state.
+	-->
+	<state id='activating'>
+		<nextState>ready</nextState>
+	</state>
+	
+	
+	<!--
+	State received "activateWhileLoading" event and is in the process of being activated while
+	loading game. This state only runs enter actions then transitions into the "ready" state
+	unless an enter action transitions into a state.
+	-->
+	<state id='activateWhileLoading'>
+		<nextState>ready</nextState>
+	</state>
+	
+	
+	<!--
+	Handle player movement inputs. Imported by adding this line to your state:
+	<importState>shared.player.movement.move</importState>
+	-->
+	<state id='shared.player.movement.move'>
+		<transition event='movement.move.forward.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='forward'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.forward.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='forward'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.backward.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='backward'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.backward.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='backward'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.left.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='left'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.left.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='left'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.right.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='right'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.right.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='right'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.move.forwardBackward'>
+			<!-- <action name='playerInputMove.set'>
+				not sticky: <parameter name='analog.forwardBackward'>-amount</parameter>
+				sticky: <parameter name='analog.forwardBackward.sticky'>-amount</parameter>
+			</action> -->
+		</transition>
+		
+		<transition event='movement.analog.move.leftRight'>
+			<!-- <action name='playerInputMove.set'>
+				not sticky: <parameter name='analog.leftRight'>amount</parameter>
+				sticky: <parameter name='analog.leftRight.sticky'>amount</parameter>
+			</action> -->
+		</transition>
+	</state>
+	
+	
+	<!--
+	Handle player looking inputs. Imported by adding this line to your state:
+	<importState>shared.player.movement.look</importState>
+	-->
+	<state id='shared.player.movement.look'>
+		<transition event='movement.look.left.start'>
+			<action name='playerInputLook.set'>
+				<parameter name='left'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.left.stop'>
+			<action name='playerInputLook.set'>
+				<parameter name='left'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.right.start'>
+			<action name='playerInputLook.set'>
+				<parameter name='right'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.right.stop'>
+			<action name='playerInputLook.set'>
+				<parameter name='right'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.up.start'>
+			<action name='playerInputLook.set'>
+				<parameter name='up'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.up.stop'>
+			<action name='playerInputLook.set'>
+				<parameter name='up'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.down.start'>
+			<action name='playerInputLook.set'>
+				<parameter name='down'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.down.stop'>
+			<action name='playerInputLook.set'>
+				<parameter name='down'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.look.leftRight'>
+			<!-- <action name='playerInputLook.set'>
+				not sticky: <parameter name='analog.horizontal'>-amount</parameter>
+				sticky: <parameter name='analog.horizontal.sticky'>-amount</parameter>
+			</action> -->
+		</transition>
+		
+		<transition event='movement.analog.look.upDown'>
+			<!-- <action name='playerInputLook.set'>
+				not sticky: <parameter name='analog.vertical'>-amount</parameter>
+				sticky: <parameter name='analog.vertical.sticky'>-amount</parameter>
+			</action> -->
+		</transition>
+	</state>
+	
+	
+	<!--
+	Handle player run input. Imported by adding this line to your state:
+	<importState>shared.player.movement.run</importState>
+	-->
+	<state id='shared.player.movement.run'>
+		<transition event='movement.run.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='run'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.run.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='run'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.run.toggle'>
+			<action name='playerInputMove.set'>
+				<parameter name='run.toggle'/>
+			</action>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Handle player crouch input. Imported by adding this line to your state:
+	<importState>shared.player.movement.crouch</importState>
+	-->
+	<state id='shared.player.movement.crouch'>
+		<transition event='movement.crouch.start'>
+			<action name='playerInputCrouch.set'>
+				<parameter name='crouch'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.crouch.stop'>
+			<action name='playerInputCrouch.set'>
+				<parameter name='crouch'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.crouch.toggle'>
+			<action name='playerInputCrouch.set'>
+				<parameter name='crouch.toggle'/>
+			</action>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Handle BAAMovement interface. Composes of these states:
+	- shared.player.movement.move
+	- shared.player.movement.look
+	- shared.player.movement.run
+	- shared.player.movement.crouch
+	
+	Imported by adding this line to your state:
+	<importState>shared.player.movement</importState>
+	-->
+	<state id='shared.player.movement'>
+		<importState>shared.player.movement.move</importState>
+		<importState>shared.player.movement.look</importState>
+		<importState>shared.player.movement.run</importState>
+		<importState>shared.player.movement.crouch</importState>
+	</state>
+	
+	
+	<!--
+	Activated and ready to run. This is the main state which processes player input by
+	updating respective player input behaviors.
+	-->
+	<state id='ready'>
+		<importState>shared.player.movement</importState>
+	</state>
+	
+</stateMachine>

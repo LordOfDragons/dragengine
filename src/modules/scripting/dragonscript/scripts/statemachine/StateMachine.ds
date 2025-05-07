@@ -108,14 +108,14 @@ class StateMachine
 	end
 	
 	/**
-	 * \brief Call \ref SMState#mergeParent() on all states.
+	 * \brief Call \ref SMState#importStates() on all states.
 	 * \version 1.26
 	 * 
 	 * Calling this method allows states to be defined with parent states to define states faster.
 	 */
-	func void mergeParents()
+	func void importStates()
 		pStates.forEachValue(block SMState each
-			each.mergeParent(this)
+			each.importStates(this)
 		end)
 	end
 	

@@ -260,6 +260,7 @@ class SMContext
 		end
 		
 		pCurrentState = state
+		onCurrentStateChanged()
 		
 		if state != null
 			if doLog
@@ -267,12 +268,28 @@ class SMContext
 					pLoggingName, state.getID(), state.getEnterActionCount())))
 			end
 			
-			state.forEachEnterAction(block SMStateAction each
-				each.run(this)
-			end)
+			if state.findEnterAction(block SMStateAction each
+				if each.run(this) and each.getStateID() != null
+					if doLog
+						pConsole.addMessage("{}: State '{}' enter action '{}' state change to '{}'".format(\
+							Array.newWith(pLoggingName, state.getID(), each.getActionID(), each.getStateID())))
+					end
+					setCurrentStateByID(each.getStateID())
+					return true
+				end
+				return false
+			end) != null
+				return
+			end
+			
+			if state.getNextStateID() != null
+				if doLog
+					pConsole.addMessage("{}: State '{}' auto state change to '{}'".format(\
+						Array.newWith(pLoggingName, state.getID(), state.getNextStateID())))
+				end
+				setCurrentStateByID(state.getNextStateID())
+			end
 		end
-		
-		onCurrentStateChanged()
 	end
 	
 	/**
