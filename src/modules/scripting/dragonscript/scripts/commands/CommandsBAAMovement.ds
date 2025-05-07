@@ -49,119 +49,119 @@ class CommandsBAAMovement
 		end
 		
 		func void moveForwardStart()
-			pTarget.sendInputAsEvent("movement.moveForwardStart", null)
+			pTarget.sendInputAsEvent("movement.move.forward.start", null)
 		end
 		
 		func void moveForwardStop()
-			pTarget.sendInputAsEvent("movement.moveForwardStop", null)
+			pTarget.sendInputAsEvent("movement.move.forward.stop", null)
 		end
 		
 		func void moveBackwardStart()
-			pTarget.sendInputAsEvent("movement.moveBackwardStart", null)
+			pTarget.sendInputAsEvent("movement.move.backward.start", null)
 		end
 		
 		func void moveBackwardStop()
-			pTarget.sendInputAsEvent("movement.moveBackwardStop", null)
+			pTarget.sendInputAsEvent("movement.move.backward.stop", null)
 		end
 		
 		func void moveLeftStart()
-			pTarget.sendInputAsEvent("movement.moveLeftStart", null)
+			pTarget.sendInputAsEvent("movement.move.left.start", null)
 		end
 		
 		func void moveLeftStop()
-			pTarget.sendInputAsEvent("movement.moveLeftStop", null)
+			pTarget.sendInputAsEvent("movement.move.left.stop", null)
 		end
 		
 		func void moveRightStart()
-			pTarget.sendInputAsEvent("movement.moveRightStart", null)
+			pTarget.sendInputAsEvent("movement.move.right.start", null)
 		end
 		
 		func void moveRightStop()
-			pTarget.sendInputAsEvent("movement.moveRightStop", null)
+			pTarget.sendInputAsEvent("movement.move.right.stop", null)
 		end
 		
 		func void lookLeftStart()
-			pTarget.sendInputAsEvent("movement.lookLeftStart", null)
+			pTarget.sendInputAsEvent("movement.look.left.start", null)
 		end
 		
 		func void lookLeftStop()
-			pTarget.sendInputAsEvent("movement.lookLeftStop", null)
+			pTarget.sendInputAsEvent("movement.look.left.stop", null)
 		end
 		
 		func void lookRightStart()
-			pTarget.sendInputAsEvent("movement.lookRightStart", null)
+			pTarget.sendInputAsEvent("movement.look.right.start", null)
 		end
 		
 		func void lookRightStop()
-			pTarget.sendInputAsEvent("movement.lookRightStop", null)
+			pTarget.sendInputAsEvent("movement.look.right.stop", null)
 		end
 		
 		func void lookUpStart()
-			pTarget.sendInputAsEvent("movement.lookUpStart", null)
+			pTarget.sendInputAsEvent("movement.look.up.start", null)
 		end
 		
 		func void lookUpStop()
-			pTarget.sendInputAsEvent("movement.lookUpStop", null)
+			pTarget.sendInputAsEvent("movement.look.up.stop", null)
 		end
 		
 		func void lookDownStart()
-			pTarget.sendInputAsEvent("movement.lookDownStart", null)
+			pTarget.sendInputAsEvent("movement.look.down.start", null)
 		end
 		
 		func void lookDownStop()
-			pTarget.sendInputAsEvent("movement.lookDownStop", null)
+			pTarget.sendInputAsEvent("movement.look.down.stop", null)
 		end
 		
 		func void analogMoveFB(float amount, bool sticky)
 			var Dictionary parameters = Dictionary.new()
 			parameters.setAt("amount", amount.toString())
 			parameters.setAt("sticky", sticky.toString())
-			pTarget.sendInputAsEvent("movement.analogMoveFB", parameters)
+			pTarget.sendInputAsEvent("movement.analog.move.forwardBackward", parameters)
 		end
 		
 		func void analogMoveLR(float amount, bool sticky)
 			var Dictionary parameters = Dictionary.new()
 			parameters.setAt("amount", amount.toString())
 			parameters.setAt("sticky", sticky.toString())
-			pTarget.sendInputAsEvent("movement.analogMoveLR", parameters)
+			pTarget.sendInputAsEvent("movement.analog.move.leftRight", parameters)
 		end
 		
 		func void analogLookLR(float amount, bool sticky)
 			var Dictionary parameters = Dictionary.new()
 			parameters.setAt("amount", amount.toString())
 			parameters.setAt("sticky", sticky.toString())
-			pTarget.sendInputAsEvent("movement.analogLookLR", parameters)
+			pTarget.sendInputAsEvent("movement.analog.look.leftRight", parameters)
 		end
 		
 		func void analogLookUD(float amount, bool sticky)
 			var Dictionary parameters = Dictionary.new()
 			parameters.setAt("amount", amount.toString())
 			parameters.setAt("sticky", sticky.toString())
-			pTarget.sendInputAsEvent("movement.analogLookUD", parameters)
+			pTarget.sendInputAsEvent("movement.analog.look.upDown", parameters)
 		end
 		
 		func void crouchStart()
-			pTarget.sendInputAsEvent("movement.crouchStart", null)
+			pTarget.sendInputAsEvent("movement.crouch.start", null)
 		end
 		
 		func void crouchStop()
-			pTarget.sendInputAsEvent("movement.crouchStop", null)
+			pTarget.sendInputAsEvent("movement.crouch.stop", null)
 		end
 		
 		func void crouchToggle()
-			pTarget.sendInputAsEvent("movement.crouchToggle", null)
+			pTarget.sendInputAsEvent("movement.crouch.toggle", null)
 		end
 		
 		func void runStart()
-			pTarget.sendInputAsEvent("movement.runStart", null)
+			pTarget.sendInputAsEvent("movement.run.start", null)
 		end
 		
 		func void runStop()
-			pTarget.sendInputAsEvent("movement.runStop", null)
+			pTarget.sendInputAsEvent("movement.run.stop", null)
 		end
 		
 		func void runToggle()
-			pTarget.sendInputAsEvent("movement.runToggle", null)
+			pTarget.sendInputAsEvent("movement.run.toggle", null)
 		end
 	end
 	

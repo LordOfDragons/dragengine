@@ -30,6 +30,8 @@ pin Dragengine.Gui.Layouts
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -161,6 +163,12 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values.
 	 *                  default is 'default' -->
 	 *   <string name='bindingManager'>default</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 *   
+	 *   <!-- optional: use state machine with id instead of empty string -->
+	 *   <string name='stateMachine'>second</string>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -185,6 +193,10 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 				getUiContainerAddSettings(parameters),\
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInteractPrompt")
 			return behavior
@@ -222,6 +234,65 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "playerInteractPrompt.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "playerInteractPrompt.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateCondition(Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
 		/** \brief Player takes control listener. */
 		class PlayerTakesControl extends ECBehaviorPlayerControllable.DefaultListener
 			var Instance pInstance
@@ -281,12 +352,36 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			pBindingIconHeight = pECBehavior.getBindingIconHeight().getValue(stub)
 			pTransparency = pECBehavior.getTransparency().getValue(stub)
 			pVisibleIfEmpty = pECBehavior.getVisibleIfEmpty().getValue(stub)
 			pPlayerControllable.addListener(PlayerTakesControl.new(this))
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String prefix = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
+			
+			if pECBehavior.getStateMachine() != null
+				var String prefix = pECBehavior.getPrefix()
+				var SMContext c = pECBehavior.getStateMachine().instance(element).getContext()
+				c.setAction(prefix + "set", BTASet.new(this))
+				
+				var String name = prefix + "check"
+				var BTACheck btacheck = BTACheck.new(this, prefix)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
 		end
 		
 		
@@ -513,6 +608,9 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	var ECPFloat pTransparency
 	var ECPBoolean pVisibleIfEmpty
 	var Array pListenerFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
+	var String pPrefix
 	
 	
 	
@@ -564,6 +662,7 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pPlayerControllable = playerControllable
 		pPromptControllerFactory = promptControllerFactory
 		pUIContainer = uiContainer
@@ -587,10 +686,20 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 		pPromptControllerFactory = null
 		pUIContainer = null
 		pListenerFactories = null
+		pBehaviorTree = null
+		pStateMachine = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Player controllable behavior. */
 	func ECBehaviorPlayerControllable getPlayerControllable()
@@ -670,6 +779,39 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	func ECPBoolean getVisibleIfEmpty()
 		return pVisibleIfEmpty
 	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
+	end
+	
+	/**
+	 * \brief State machine or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine or null.
+	 * \version 1.26
+	 */
+	func void setStateMachine(ECBehaviorStateMachine stateMachine)
+		pStateMachine = stateMachine
+	end
+	
 	
 	/** \brief Add listener factory. */
 	func void addListenerFactory(ListenerFactory factory)
