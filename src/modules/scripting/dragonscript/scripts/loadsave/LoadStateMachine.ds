@@ -102,7 +102,7 @@ class LoadStateMachine extends BaseXmlLoader
 				stateMachine.setInitialState(element.getFirstCData())
 				
 			elif tagName.equals("state")
-				stateMachine.addState(readState(element, extendStateMachine))
+				stateMachine.addState(readState(element, stateMachine, extendStateMachine))
 				
 			else
 				logUnknownTag(element)
@@ -117,12 +117,11 @@ class LoadStateMachine extends BaseXmlLoader
 				end
 			end)
 		end
-		
-		stateMachine.importStates()
 	end
 	
 	/** \brief Read state tag. */
-	private func SMState readState(EasyXMLElement root, StateMachine extendStateMachine)
+	private func SMState readState(EasyXMLElement root, StateMachine stateMachine,\
+	StateMachine extendStateMachine)
 		var SMState state
 		
 		if root.hasAttributeNamed("extend")
@@ -146,7 +145,15 @@ class LoadStateMachine extends BaseXmlLoader
 				state.setNextStateID(element.getFirstCData())
 				
 			elif tagName.equals("importState")
-				state.addImportState(element.getFirstCData())
+				var String id = element.getFirstCData()
+				var SMState importState = stateMachine.getStateAt(id)
+				if importState == null and extendStateMachine != null
+					importState = extendStateMachine.getStateAt(id)
+				end
+				if importState == null
+					throw EInvalidParam.new("import state not found: " + id)
+				end
+				state.importState(importState)
 				
 			else
 				logUnknownTag(element)

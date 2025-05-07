@@ -50,7 +50,6 @@ class SMState
 	var Array pEnterActions
 	var Array pExitActions
 	var Array pTransitions
-	var Array pImportStates
 	var String pNextStateID
 	
 	
@@ -68,7 +67,6 @@ class SMState
 		pEnterActions = Array.new()
 		pExitActions = Array.new()
 		pTransitions = Array.new()
-		pImportStates = Array.new()
 	end
 	
 	/**
@@ -81,7 +79,6 @@ class SMState
 		pEnterActions = Array.new(state.pEnterActions)
 		pExitActions = Array.new(state.pExitActions)
 		pTransitions = Array.new(state.pTransitions)
-		pImportStates = Array.new(state.pImportStates)
 		pNextStateID = state.pNextStateID
 	end
 	
@@ -91,54 +88,14 @@ class SMState
 		return pID
 	end
 	
-	
 	/**
-	 * \brief Count of states to import.
+	 * \brief Import state.
 	 * \version 1.26
 	 */
-	func int getImportStateCount()
-		return pImportStates.getCount()
-	end
-	
-	/**
-	 * \brief State to import at index.
-	 * \version 1.26
-	 */
-	func String getImportStateAt(int index)
-		return pImportStates.getAt(index) cast String
-	end
-	
-	/**
-	 * \brief Add state to import.
-	 * \version 1.26
-	 */
-	func void addImportState(String id)
-		if id == null
-			throw ENullPointer.new()
-		end
-		pImportStates.add(id)
-	end
-	
-	/**
-	 * \brief Import states.
-	 * \version 1.26
-	 * 
-	 * Merge states into this state. After merging clear import states list.
-	 */
-	func void importStates(StateMachine stateMachine)
-		pImportStates.forEach(block String each
-			var SMState state = stateMachine.getStateAt(each)
-			if state == null
-				throw EInvalidParam.new("import state not found: " + each)
-			end
-			
-			state.importStates(stateMachine)
-			
-			pEnterActions.insertAll(0, state.pEnterActions)
-			pExitActions.addAll(state.pExitActions)
-			pTransitions.addAll(state.pTransitions)
-		end)
-		pImportStates.removeAll()
+	func void importState(SMState state)
+		pEnterActions.addAll(state.pEnterActions)
+		pExitActions.addAll(state.pExitActions)
+		pTransitions.addAll(state.pTransitions)
 	end
 	
 	

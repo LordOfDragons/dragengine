@@ -107,18 +107,6 @@ class StateMachine
 		pStates.remove(state.getID())
 	end
 	
-	/**
-	 * \brief Call \ref SMState#importStates() on all states.
-	 * \version 1.26
-	 * 
-	 * Calling this method allows states to be defined with parent states to define states faster.
-	 */
-	func void importStates()
-		pStates.forEachValue(block SMState each
-			each.importStates(this)
-		end)
-	end
-	
 	
 	
 	/** \brief Initial state. */
