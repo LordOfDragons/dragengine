@@ -33,8 +33,7 @@ interface BAAStateMachineEvent
 	/**
 	 * \brief Send input as event to state machine.
 	 * \param event Event to send.
-	 * \param parameters Dictionary of parameters with \ref String key and \ref String value.
-	 *                   Can be null if input has no parameters.
+	 * \param parameter Optional parameter or null.
 	 */
-	func void sendInputAsEvent(String event, Dictionary parameters)
+	func void sendInputAsEvent(String event, Object parameter)
 end

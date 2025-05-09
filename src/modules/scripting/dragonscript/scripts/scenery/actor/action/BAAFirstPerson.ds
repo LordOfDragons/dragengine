@@ -186,7 +186,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 		initPlayerInput()
 		initLocomotion()
 		
-		if isControlledByPlayer() 
+		if isControlledByPlayer()
 			initLocomotionPlayer()
 		end
 	end
@@ -245,7 +245,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - updateLocomotionPost()
 	 */
 	func void postThink(float elapsed)
-		if projectToGround == null
+		if projectToGround == null or not projectToGround.getTouchesGround()
 			colliderAI.setGeometryFromCollider()
 		end
 		
@@ -550,6 +550,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 			colliderAI.setFromLocomotion(locomotion)
 			
 		else
+			colliderAI.setOrientationFromLocomotion(locomotion)
 			colliderAI.applyGravity(elapsed)
 			colliderAI.stopTurning()
 		end

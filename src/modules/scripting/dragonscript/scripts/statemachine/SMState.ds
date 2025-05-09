@@ -96,6 +96,9 @@ class SMState
 		pEnterActions.addAll(state.pEnterActions)
 		pExitActions.addAll(state.pExitActions)
 		pTransitions.addAll(state.pTransitions)
+		if state.pNextStateID != null
+			pNextStateID = state.pNextStateID
+		end
 	end
 	
 	

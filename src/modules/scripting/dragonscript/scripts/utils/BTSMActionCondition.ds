@@ -45,40 +45,44 @@ class BTSMActionCondition implements BTAction, BTCondition, SMAction, SMConditio
 	
 	
 	/**
-	 * \brief Run action.
+	 * \brief Run action shared.
 	 * 
 	 * For state machine use exception is thrown if the returned value is \ref BTResult#failure.
 	 * Default implementation returns \ref BTResult#failure.
+	 * 
+	 * Context which can be either \ref BTContext or \ref SMContext.
 	 */
-	func BTResult runAction(Dictionary parameters)
+	func BTResult runActionShared(Object context, Dictionary parameters)
 		return BTResult.failure
 	end
 	
 	/**
 	 * \brief Evaluate condition.
 	 * 
+	 * Context which can be either \ref BTContext or \ref SMContext.
+	 * 
 	 * Default implementation returns false.
 	 */
-	func bool evaluateCondition(Dictionary parameters)
+	func bool evaluateConditionShared(Object context, Dictionary parameters)
 		return false
 	end
 	
 	
 	func BTResult runAction(BTContext context, Dictionary parameters)
-		return runAction(parameters)
+		return runActionShared(context, parameters)
 	end
 	
 	func void runAction(SMContext context, Dictionary parameters)
-		if runAction(parameters) == BTResult.failure
+		if runActionShared(context, parameters) == BTResult.failure
 			throw EInvalidAction.new("action failed")
 		end
 	end
 	
 	func bool evaluateCondition(BTContext context, Dictionary parameters)
-		return evaluateCondition(parameters)
+		return evaluateConditionShared(context, parameters)
 	end
 	
 	func bool evaluateCondition(SMContext context, Dictionary parameters)
-		return evaluateCondition(parameters)
+		return evaluateConditionShared(context, parameters)
 	end
 end

@@ -91,9 +91,20 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	var SMContext pContext
 	var String pLoadStateId
 	
+	/**
+	 * \brief Property update actor geometry on collider changed.
+	 * 
+	 * For performance reasons updating the actor geometry not done during colliderChanged()
+	 * but during postThink() when project to ground has been done. Between postThink() and
+	 * the next elementThink() actor geometry has to be updated or the actor element matrix
+	 * is out of sync when AI operates on it. This parameter is used to keep track of 
+	 */
+	protected var bool moveIfColliderChanged
+	
 	
 	/** \brief Create actor action. */
 	func new()
+		moveIfColliderChanged = true
 	end
 	
 	/**
@@ -171,7 +182,9 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	
 	
 	func void activate(BehaviorElement actor)
-		super.activate(actor)
+		// super.activate(actor)
+		this.actor = actor
+		initBehaviors()
 		
 		if pStateMachine != null
 			pContext.setStateMachine(pStateMachine)
@@ -181,7 +194,9 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	end
 	
 	func void activateWhileLoading(BehaviorElement actor)
-		super.activateWhileLoading(actor)
+		// super.activateWhileLoading(actor)
+		this.actor = actor
+		initBehaviors()
 		
 		if pStateMachine != null
 			pContext.setStateMachine(pStateMachine)
@@ -216,23 +231,21 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	end
 	
 	func void think(float elapsed)
-		// TODO need a way to query this value. placing it in ECBehaviorActorAIAction seems logic
-		pContext.runEvent("think")
+		moveIfColliderChanged = false
+		pContext.runEvent("think", elapsed)
 	end
 	
 	func void playerThink(float elapsed)
-		// TODO need a way to query this value. placing it in ECBehaviorActorAIAction seems logic
-		pContext.runEvent("playerThink")
+		pContext.runEvent("playerThink", elapsed)
 	end
 	
 	func void postThink(float elapsed)
-		// TODO need a way to query this value. placing it in ECBehaviorActorAIAction seems logic
-		pContext.runEvent("postThink")
+		pContext.runEvent("postThink", elapsed)
+		moveIfColliderChanged = true
 	end
 	
 	func void playerPostThink(float elapsed)
-		// TODO need a way to query this value. placing it in ECBehaviorActorAIAction seems logic
-		pContext.runEvent("playerPostThink")
+		pContext.runEvent("playerPostThink", elapsed)
 	end
 	
 	func void cancel()
@@ -240,29 +253,29 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	end
 	
 	func bool conversationWait()
-		// TODO not an event send to the state machine but requires to store somewhere
-		// the value to return here. placing it in ECBehaviorActorAIAction seems logic
+		// handled by using "action.conversationWait" state machine action
 		return false
 	end
 	
 	
 	func void collisionResponse(Collider owner, CollisionInfo info)
-		// TODO handle this with state machine
+		pContext.runEvent("collisionResponse", info)
 	end
 	
 	func bool canHitCollider(Collider owner, Collider collider)
-		// TODO handle this with state machine
-		return false
+		return true
 	end
 	
 	func void colliderChanged(Collider owner)
-		// TODO handle this with state machine
+		// update actor geometry if between postThink() and next elementThink().
+		if moveIfColliderChanged
+			actor.setGeometry(owner.getPosition(), owner.getOrientation())
+		end
 	end
 	
 	
-	func void sendInputAsEvent(String event, Dictionary parameters)
-		// TODO how to pass parameters
-		pContext.runEvent(event)
+	func void sendInputAsEvent(String event, Object parameter)
+		pContext.runEvent(event, parameter)
 	end
 	
 	

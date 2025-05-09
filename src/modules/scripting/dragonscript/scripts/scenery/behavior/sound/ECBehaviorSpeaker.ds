@@ -173,11 +173,17 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	 *                  string to not synchronize. default is empty string. -->
 	 *   <string name='triggerMuted.synchronize'>other</string>
 	 *   
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -213,8 +219,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 			behavior.getTriggerMuted().setSynchronize(eclass,\
 				parameters.getAt("triggerMuted.synchronize", null) cast String)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "speaker", id)
 			return behavior
@@ -244,7 +249,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("playing", null)
@@ -274,12 +279,12 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -344,7 +349,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		var ECBehaviorTriggered.Instance pTrigger
 		var ECBehaviorTriggered.Instance pTriggerMuted
 		var Array pListeners
-		var SMContext pSMContext
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -366,7 +371,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 			pTriggerMuted = null
 			pCollider = null
 			pListeners = null
-			pSMContext = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -414,26 +419,12 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				attachSpeaker(stub, pCollider)
 			end
 			
-			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(pnp + "set", BTASet.new(this))
-				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String pnp = pECBehavior.getPrefix()
-				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
-				pSMContext.setAction(pnp + "set", BTASet.new(this))
-				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
-				pSMContext.setAction(name, btacheck)
-				pSMContext.setCondition(name, btacheck)
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
 		end
 		
@@ -555,8 +546,8 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.startPlaying(this)
 				end)
-				if pSMContext != null
-					pSMContext.runEvent(pECBehavior.getPrefix() + "start")
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix() + "start")
 				end
 				
 			elif pSpeaker.getLooping()
@@ -564,8 +555,8 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.stopPlaying(this)
 				end)
-				if pSMContext != null
-					pSMContext.runEvent(pECBehavior.getPrefix() + "stop")
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix() + "stop")
 				end
 			end
 		end
@@ -606,16 +597,16 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.muted(this)
 				end)
-				if pSMContext != null
-					pSMContext.runEvent(pECBehavior.getPrefix() + "mute")
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix() + "mute")
 				end
 				
 			else
 				pListeners.forEach(block Listener each
 					each.unmuted(this)
 				end)
-				if pSMContext != null
-					pSMContext.runEvent(pECBehavior.getPrefix() + "unmute")
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix() + "unmute")
 				end
 			end
 		end
@@ -710,8 +701,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	var ECBehaviorSpeaker pSyncTrigger
 	var TSTriggerTable pTriggerTable
 	var Array pListenerFactories
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
 	
@@ -752,6 +742,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		pCollider = collider
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		pSpeaker = ECComposeSpeaker.new(eclass, loaders, prefix)
 		pAttach = ECComposeAttachResource.new(eclass, prefix)
@@ -769,8 +760,7 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 		pCollider = null
 		pSyncTrigger = null
 		pListenerFactories = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -830,35 +820,11 @@ class ECBehaviorSpeaker extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

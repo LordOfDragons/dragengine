@@ -117,11 +117,17 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 *   <!-- optional: use vrhand behavior with id -->
 	 *   <string name='vrHand'>right</string>
 	 *   
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -147,8 +153,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			
 			behavior.setVRHand(eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters))
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "attachSlot", id)
@@ -171,7 +176,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				if parameters.has("dispose")
 					pInstance.detachAndDispose()
 					
@@ -195,12 +200,12 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -232,7 +237,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		
 		var ECBehaviorCollider.Instance pCollider
 		var ECBehaviorVRHand.Instance pVRHand
-		var SMContext pSMContext
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -256,7 +261,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			pElementResolver = null
 			pCollider = null
 			pVRHand = null
-			pSMContext = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -290,26 +295,12 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			
 			pECBehavior.createListeners(this)
 			
-			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(pnp + "detach", BTADetach.new(this))
-				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String pnp = pECBehavior.getPrefix()
-				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
-				pSMContext.setAction(pnp + "detach", BTADetach.new(this))
-				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
-				pSMContext.setAction(name, btacheck)
-				pSMContext.setCondition(name, btacheck)
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix + "detach", BTADetach.new(this))
+				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
 		end
 		
@@ -511,8 +502,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.slotAttached(this, attachable)
 			end)
-			if pSMContext != null
-				pSMContext.runEvent(pECBehavior.getPrefix() + "attached")
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix() + "attached")
 			end
 		end
 		
@@ -611,8 +602,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.slotDetached(this, attachable)
 			end)
-			if pSMContext != null
-				pSMContext.runEvent(pECBehavior.getPrefix() + "detached")
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix() + "detached")
 			end
 		end
 		
@@ -753,8 +744,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	var ECPVector pPosition
 	var ECPVector pOrientation
 	var Array pListenerFactories
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
 	
@@ -800,6 +790,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		pCollider = collider
 		pVRHand = vrHand
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		pBone = ECPString.new(prefix + "bone", "")
 		eclass.addProperty(pBone)
@@ -818,8 +809,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		pCollider = null
 		pVRHand = null
 		pListenerFactories = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -878,35 +868,11 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

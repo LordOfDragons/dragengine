@@ -150,11 +150,17 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	 *   <!-- optional: use component with id instead of empty string -->
 	 *   <string name='component'>second</string>
 	 *   
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -178,8 +184,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			var ECBehaviorSkinSwitcher behavior = ECBehaviorSkinSwitcher.new(eclass,\
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters), id)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "skinSwitcher", id)
 			return behavior
@@ -199,7 +204,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("active", null)
@@ -238,12 +243,12 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -313,7 +318,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		var Array pSkins
 		var bool pClamp
 		var int pActive
-		var SMContext pSMContext
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -330,7 +335,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		/** \brief Dispose of behavior instance. */
 		func void dispose()
 			pComponent = null
-			pSMContext = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -351,26 +356,12 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			pActive = -1
 			setActive(pECBehavior.getActive().getValue(stub))
 			
-			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
-				c.setAction(pnp + "set", BTASet.new(this))
-				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String pnp = pECBehavior.getPrefix()
-				pSMContext = pECBehavior.getStateMachine().instance(getElement()).getContext()
-				pSMContext.setAction(pnp + "set", BTASet.new(this))
-				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
-				pSMContext.setAction(name, btacheck)
-				pSMContext.setCondition(name, btacheck)
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
 		end
 		
@@ -420,8 +411,8 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			setSkin(pSkins.getAt(index) cast Skin)
 			pActive = index
 			
-			if pSMContext != null
-				pSMContext.runEvent(pECBehavior.getPrefix() + "changed")
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix() + "changed")
 			end
 		end
 		
@@ -526,8 +517,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	var ECPSkinList pSkins
 	var ECPBoolean pClamp
 	var ECPInteger pActive
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
 	
@@ -554,6 +544,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		
 		pPrefix = prefix
 		pComponent = component
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addProperty(pTexture = ECPString.new(prefix + "texture", ""))
 		eclass.addProperty(pSkins = ECPSkinList.new(prefix + "skins"))
@@ -566,8 +557,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pComponent = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -615,35 +605,11 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

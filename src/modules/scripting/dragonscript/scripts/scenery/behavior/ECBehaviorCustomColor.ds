@@ -137,11 +137,17 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorCustomColor'>
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -162,8 +168,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorCustomColor behavior = ECBehaviorCustomColor.new(eclass, id)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "customColor", id)
 			return behavior
@@ -183,7 +188,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("color", null)
@@ -214,12 +219,12 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -269,7 +274,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 		var Color pDefaultColor
 		var Color pColor
 		var Array pListeners
-		var SMContext pSMContext
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -283,7 +288,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 		/** \brief Dispose of composeable instance. */
 		func void dispose()
 			pListeners = null
-			pSMContext = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -304,26 +309,12 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 			
 			setColor(pECBehavior.getColor().getColor(stub, codec))
 			
-			if pECBehavior.getBehaviorTree() != null
+			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(prefix + "set", BTASet.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String prefix = pECBehavior.getPrefix()
-				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
-				pSMContext.setAction(prefix + "set", BTASet.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				pSMContext.setAction(name, btacheck)
-				pSMContext.setCondition(name, btacheck)
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
 		end
 		
@@ -447,8 +438,8 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.colorChanged(this)
 			end)
-			if pSMContext != null
-				pSMContext.runEvent(pECBehavior.getPrefix() + "color")
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix() + "color")
 			end
 		end
 		
@@ -514,8 +505,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 	var ECPColor pDefaultColor
 	var ECPColor pColor
 	var Array pListenerFactories
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
 	
@@ -538,6 +528,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 	String prefix) super(eclass, id)
 		pPrefix = prefix
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addProperty(pName = ECPUnicodeString.new(prefix + "name", UnicodeString.new()))
 		eclass.addProperty(pDescription = ECPUnicodeString.new(prefix + "description", UnicodeString.new()))
@@ -551,8 +542,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pListenerFactories = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -592,35 +582,11 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

@@ -50,19 +50,19 @@ class CommandsBAAVRMenuInput
 		end
 		
 		func void menuTouch()
-			pTarget.sendInputAsEvent("vrMenuInput.menuTouch", null)
+			pTarget.sendInputAsEvent("vrMenuInput.touch", null)
 		end
 		
 		func void menuUntouch()
-			pTarget.sendInputAsEvent("vrMenuInput.menuUntouch", null)
+			pTarget.sendInputAsEvent("vrMenuInput.untouch", null)
 		end
 		
 		func void menuPress()
-			pTarget.sendInputAsEvent("vrMenuInput.menuPress", null)
+			pTarget.sendInputAsEvent("vrMenuInput.press", null)
 		end
 		
 		func void menuRelease()
-			pTarget.sendInputAsEvent("vrMenuInput.menuRelease", null)
+			pTarget.sendInputAsEvent("vrMenuInput.release", null)
 		end
 	end
 	

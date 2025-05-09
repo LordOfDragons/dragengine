@@ -98,12 +98,12 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 				return
 			end
 			
-			if pActor != null
-				pActor.notifyPlayerReleasesControl()
-			end
-			
+			var Instance prevActor = pActor
 			pActor = actor
 			
+			if prevActor != null
+				prevActor.notifyPlayerReleasesControl()
+			end
 			if actor != null
 				pActor.notifyPlayerTakesControl()
 			end
@@ -243,11 +243,17 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 	 *                  game can add more supported values. default is 'default' -->
 	 *   <string name='playerControlledActor'>default</string>
 	 *   
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -271,8 +277,7 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "playerControllable")
 			return behavior
@@ -304,7 +309,7 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				pInstance.takeControl()
 				return BTResult.success
 			end
@@ -323,12 +328,12 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -391,26 +396,11 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			
 			pECBehavior.createListeners(this)
 			
-			if pECBehavior.getBehaviorTree() != null
+			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "playerControllable."
-				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(prefix + "takeControl", BTATakeControl.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String prefix = "playerControllable."
-				var SMContext c = pECBehavior.getStateMachine().instance(element).getContext()
-				c.setAction(prefix + "takeControl", BTATakeControl.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix + "takeControl", BTATakeControl.new(this))
+				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 			end
 		end
 		
@@ -483,8 +473,7 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 	var Tracker pTracker
 	var ECBehaviorConversationActor pConversationActor
 	var Array pListenerFactories
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	
 	
 	/** \brief Create behavior element class. */
@@ -502,6 +491,7 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 		
 		pTracker = tracker
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addBehavior(this)
 	end
@@ -510,8 +500,7 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 	func void dispose()
 		pConversationActor = null
 		pListenerFactories = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -545,35 +534,11 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

@@ -49,19 +49,19 @@ class CommandsBAAInteract
 		end
 		
 		func void primaryActionStart()
-			pTarget.sendInputAsEvent("interact.primaryActionStart", null)
+			pTarget.sendInputAsEvent("interact.primary.start", null)
 		end
 		
 		func void primaryActionStop()
-			pTarget.sendInputAsEvent("interact.primaryActionStop", null)
+			pTarget.sendInputAsEvent("interact.primary.stop", null)
 		end
 		
 		func void secondaryActionStart()
-			pTarget.sendInputAsEvent("interact.secondaryActionStart", null)
+			pTarget.sendInputAsEvent("interact.secondary.start", null)
 		end
 		
 		func void secondaryActionStop()
-			pTarget.sendInputAsEvent("interact.secondaryActionStop", null)
+			pTarget.sendInputAsEvent("interact.secondary.stop", null)
 		end
 	end
 	

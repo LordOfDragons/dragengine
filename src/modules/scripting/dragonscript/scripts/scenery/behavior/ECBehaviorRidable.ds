@@ -122,11 +122,17 @@ class ECBehaviorRidable extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorRidable'>
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -148,8 +154,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 			var ECBehaviorRidable behavior = ECBehaviorRidable.new(\
 				eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "ridable")
 			return behavior
@@ -171,12 +176,12 @@ class ECBehaviorRidable extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -219,7 +224,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 		var Array pRideOns
 		var Array pListeners
 		var bool pNotifyListeners
-		var SMContext pSMContext
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -237,7 +242,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 			pCollider = null
 			pRideOns = null
 			pListeners = null
-			pSMContext = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -245,22 +250,11 @@ class ECBehaviorRidable extends DefaultECBehavior
 		func void init(StubElement stub)
 			pECBehavior.createListeners(this)
 			
-			if pECBehavior.getBehaviorTree() != null
+			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "ridable."
-				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String prefix = "ridable."
-				pSMContext = pECBehavior.getStateMachine().instance(getElement()).getContext()
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				pSMContext.setAction(name, btacheck)
-				pSMContext.setCondition(name, btacheck)
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
 		end
 		
@@ -347,8 +341,8 @@ class ECBehaviorRidable extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.beginRiding(this, rideOn)
 				end)
-				if pSMContext != null
-					pSMContext.runEvent("ridable.beginRiding")
+				if pBTSMs != null
+					pBTSMs.runEvent("ridable.beginRiding")
 				end
 			end
 		end
@@ -364,8 +358,8 @@ class ECBehaviorRidable extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.stopRiding(this, rideOn)
 				end)
-				if pSMContext != null
-					pSMContext.runEvent("ridable.stopRiding")
+				if pBTSMs != null
+					pBTSMs.runEvent("ridable.stopRiding")
 				end
 			end
 		end
@@ -418,8 +412,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 	
 	var ECBehaviorCollider pCollider
 	var Array pListenerFactories
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	
 	
 	
@@ -434,6 +427,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 		
 		pCollider = collider
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addBehavior(this)
 	end
@@ -442,8 +436,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 	func void dispose()
 		pCollider = null
 		pListenerFactories = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -455,35 +448,11 @@ class ECBehaviorRidable extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

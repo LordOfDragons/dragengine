@@ -230,6 +230,24 @@ class SMTransition
 		return pParameters
 	end
 	
+	/**
+	 * \brief Import state.
+	 * \version 1.26
+	 * 
+	 * Adds enter and exit actions as transitions actions. If state has next state set it
+	 */
+	func void importState(SMState state)
+		state.forEachEnterAction(block SMStateAction each
+			pActions.add(each)
+		end)
+		state.forEachExitAction(block SMStateAction each
+			pActions.add(each)
+		end)
+		if state.getNextStateID() != null
+			pStateID = state.getNextStateID()
+		end
+	end
+	
 	
 	/**
 	 * \brief Transition matches event and condition is true.
@@ -241,7 +259,8 @@ class SMTransition
 	/** \brief Run transition. */
 	func void run(SMContext context)
 		if pStateID != null
-			// set state to null. runs exit actions and switches context to "in transition" state.
+			// set state to null. runs exit actions and switches context to "in transition"
+			// state. in this state events are delayed until a valid state is set
 			context.setCurrentState(null)
 			
 			// run transition actions

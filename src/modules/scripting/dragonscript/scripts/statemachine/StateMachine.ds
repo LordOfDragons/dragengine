@@ -107,9 +107,20 @@ class StateMachine
 		pStates.remove(state.getID())
 	end
 	
+	/**
+	 * \brief Add state replacing existing one if present.
+	 * \version 1.26
+	 */
+	func void addStateReplace(SMState state)
+		if state == null
+			throw ENullPointer.new()
+		end
+		pStates.setAt(state.getID(), state)
+	end
 	
 	
-	/** \brief Initial state. */
+	
+	/** \brief Initial state or null if not set. */
 	func String getInitialState()
 		return pInitialState
 	end

@@ -45,10 +45,6 @@ class SMStateAction
 	
 	/** \brief Create state machine action. */
 	func new(String actionID)
-		if actionID == null
-			throw ENullPointer.new("actionID")
-		end
-		
 		pActionID = actionID
 		pParameters = Dictionary.new()
 		pConditions = Array.new()
@@ -68,7 +64,7 @@ class SMStateAction
 	end
 	
 	
-	/** \brief Action identifier. */
+	/** \brief Action identifier or null. */
 	func String getActionID()
 		return pActionID
 	end
@@ -216,18 +212,22 @@ class SMStateAction
 	func bool run(SMContext context)
 		if not evaluateConditions(context)
 			if context.getLogActions() and context.getConsole() != null
-				context.getConsole().addMessage("{}: Action '{}' skipped".format(\
-					Array.newWith(context.getLoggingName(), pActionID)))
+				context.getConsole().addMessage("{}: Action '{}' skipped {}".format(\
+					Array.newWith(context.getLoggingName(), pActionID, pParameters)))
 			end
 			return false
 		end
 		
-		if context.getLogActions() and context.getConsole() != null
-			context.getConsole().addMessage("{}: Action '{}' run".format(\
-				Array.newWith(context.getLoggingName(), pActionID)))
+		var SMAction action
+		if pActionID != null
+			action = context.getAction(pActionID)
 		end
 		
-		var SMAction action = context.getAction(pActionID)
+		if context.getLogActions() and context.getConsole() != null
+			context.getConsole().addMessage("{}: Action '{}'({}) run {}".format(\
+				Array.newWith(context.getLoggingName(), pActionID, action, pParameters)))
+		end
+		
 		if action != null
 			action.runAction(context, pParameters)
 		end

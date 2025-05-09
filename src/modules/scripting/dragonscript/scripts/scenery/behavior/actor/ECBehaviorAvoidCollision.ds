@@ -94,11 +94,17 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>3:0 1 2 3</string>
 	 * 
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -120,8 +126,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var ECBehaviorAvoidCollision behavior = ECBehaviorAvoidCollision.new(eclass,\
 				ECBehaviorActorMover.getBehaviorIn(eclass), ECBehaviorRideOn.getBehaviorIn(eclass))
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			if parameters.has("collisionFilter")
 				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
@@ -186,14 +191,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		 * \brief Behavior tree action "avoidCollision.set".
 		 * \version 1.19
 		 */
-		private class BTActionSet extends BTSMActionCondition
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				var Object value = parameters.getAt("waitBehindObstacles", null)
 				if value != null
 					pInstance.setWaitBehindObstacles(value.equals("true"))
@@ -219,7 +224,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				pInstance.clearAvoiding()
 				return BTResult.success
 			end
@@ -238,12 +243,12 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -305,7 +310,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		var float pCheckTimer
 		
 		var ElementResolver pElementResolver
-		var SMContext pSMContext
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -344,7 +349,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			pActorMover = null
 			pElementResolver = null
 			pAvoidElement = null
-			pSMContext = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -396,37 +401,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				pRideOn.addListener(RidableChanged.new(this))
 			end
 			
-			if pECBehavior.getBehaviorTree() != null
-				initBehaviorTree(stub, pECBehavior.getBehaviorTree().instance(element))
-			end
-			
-			if pECBehavior.getStateMachine() != null
+			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
-				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
-				pSMContext.setAction(prefix + "set", BTActionSet.new(this))
-				pSMContext.setAction(prefix + "stop", BTAStop.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				pSMContext.setAction(name, btacheck)
-				pSMContext.setCondition(name, btacheck)
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix + "stop", BTAStop.new(this))
+				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
-		end
-		
-		/**
-		 * \brief Init behavior tree.
-		 * \version 1.19
-		 */
-		protected func void initBehaviorTree(StubElement stub, ECBehaviorBehaviorTree.Instance behavior)
-			var String prefix = pECBehavior.getPrefix()
-			var BTContext c = behavior.getContext()
-			c.setAction(prefix + "set", BTActionSet.new(this))
-			c.setAction(prefix + "stop", BTAStop.new(this))
-			
-			var String name = prefix + "check"
-			var BTACheck btacheck = BTACheck.new(this, prefix)
-			c.setAction(name, btacheck)
-			c.setCondition(name, btacheck)
 		end
 		
 		
@@ -596,8 +578,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			pDeviationAngle = 0
 			pDeviationTime = 0
 			
-			if notify and pSMContext != null
-				pSMContext.runEvent(pECBehavior.getPrefix() + "stop")
+			if notify and pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix() + "stop")
 			end
 		end
 		
@@ -1059,8 +1041,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			pDeviationAngle = movingOrientation + deviationAngle
 			pDeviationTime = DEMath.max(distance / pActorMover.getSpeed(), 1.0)
 			
-			if pSMContext != null
-				pSMContext.runEvent(pECBehavior.getPrefix() + "avoid")
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix() + "avoid")
 			end
 		end
 		
@@ -1207,8 +1189,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			pDeviationAngle = locomotion.getOrientation() + deviationAngle
 			pDeviationTime = pAvoidTimeContactCollision
 			
-			if pSMContext != null
-				pSMContext.runEvent(pECBehavior.getPrefix() + "avoid")
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix() + "avoid")
 			end
 		end
 		
@@ -1270,8 +1252,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 					pDeviationTime = DEMath.random(0.25, 0.5)
 					pSpeedMultiplier = -0.5
 					
-					if pSMContext != null
-						pSMContext.runEvent(pECBehavior.getPrefix() + "avoid")
+					if pBTSMs != null
+						pBTSMs.runEvent(pECBehavior.getPrefix() + "avoid")
 					end
 					return
 				end
@@ -1319,8 +1301,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			pDeviationAngle = movingOrientation + 180
 			pDeviationTime = 0.25
 			
-			if pSMContext != null
-				pSMContext.runEvent(pECBehavior.getPrefix() + "avoid")
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix() + "avoid")
 			end
 		end
 		
@@ -1479,9 +1461,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	var ECComposeCollisionFilter pCollisionFilter
 	var ECBehaviorActorMover pActorMover
 	var ECBehaviorRideOn pRideOn
-	var ECBehaviorBehaviorTree pBehaviorTree
 	var ECPFloat pRadius
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
 	
@@ -1507,6 +1488,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 		pPrefix = prefix
 		pActorMover = actorMover
 		pRideOn = rideOn
+		pBTSMs = ECComposeBTSM.new()
 		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
 		
@@ -1527,8 +1509,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	func void dispose()
 		pActorMover = null
 		pRideOn = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -1563,35 +1544,16 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree behavior or null.
-	 * \version 1.19
-	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree behavior or null.
-	 * \version 1.19
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behavior)
-		pBehaviorTree = behavior
-	end
-	
-	/**
-	 * \brief State machine or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	/** \deprecated Use getBTSMs() \ref ECComposeBTSM#addBehaviorTree(). */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBTSMs.addBehaviorTree(behaviorTree)
 	end
 	
 	

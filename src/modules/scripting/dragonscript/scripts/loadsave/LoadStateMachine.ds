@@ -91,45 +91,35 @@ class LoadStateMachine extends BaseXmlLoader
 	
 	/** \brief Read state machine tag. */
 	private func void readStateMachine(EasyXMLElement root, StateMachine stateMachine, String basePath)
-		var StateMachine extendStateMachine
-		if root.hasAttributeNamed("extend")
-			extendStateMachine = loadFromFile(File.absolutePath(\
-				root.getAttributeNamed("extend"), basePath).getPath())
-		end
-		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if tagName.equals("initialState")
 				stateMachine.setInitialState(element.getFirstCData())
 				
 			elif tagName.equals("state")
-				stateMachine.addState(readState(element, stateMachine, extendStateMachine))
+				stateMachine.addStateReplace(readState(element, stateMachine))
+				
+			elif tagName.equals("import")
+				var StateMachine imported = loadFromFile(\
+					File.absolutePath(element.getFirstCData(), basePath).getPath())
+				
+				if imported.getInitialState() != null
+					stateMachine.setInitialState(imported.getInitialState())
+				end
+				
+				imported.forEachState(block SMState each
+					stateMachine.addStateReplace(each)
+				end)
 				
 			else
 				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
 		end)
-		
-		if extendStateMachine != null
-			extendStateMachine.forEachState(block SMState each
-				if not stateMachine.hasStateAt(each.getID())
-					stateMachine.addState(each)
-				end
-			end)
-		end
 	end
 	
 	/** \brief Read state tag. */
-	private func SMState readState(EasyXMLElement root, StateMachine stateMachine,\
-	StateMachine extendStateMachine)
-		var SMState state
-		
-		if root.hasAttributeNamed("extend")
-			state = SMState.new(extendStateMachine.getStateAt(root.getAttributeNamed("extend")))
-			
-		else
-			state = SMState.new(root.getAttributeNamed("id"))
-		end
+	private func SMState readState(EasyXMLElement root, StateMachine stateMachine)
+		var SMState state = SMState.new(root.getAttributeNamed("id"))
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if tagName.equals("enterAction")
@@ -139,17 +129,14 @@ class LoadStateMachine extends BaseXmlLoader
 				state.addExitAction(readStateAction(element))
 				
 			elif tagName.equals("transition")
-				state.addTransition(readTransition(element))
+				state.addTransition(readTransition(element, stateMachine))
 				
 			elif tagName.equals("nextState")
 				state.setNextStateID(element.getFirstCData())
 				
-			elif tagName.equals("importState")
+			elif tagName.equals("import")
 				var String id = element.getFirstCData()
 				var SMState importState = stateMachine.getStateAt(id)
-				if importState == null and extendStateMachine != null
-					importState = extendStateMachine.getStateAt(id)
-				end
 				if importState == null
 					throw EInvalidParam.new("import state not found: " + id)
 				end
@@ -166,7 +153,12 @@ class LoadStateMachine extends BaseXmlLoader
 	
 	/** \brief Read state action tag. */
 	private func SMStateAction readStateAction(EasyXMLElement root)
-		var SMStateAction action = SMStateAction.new(root.getAttributeNamed("name"))
+		var String id
+		if root.hasAttributeNamed("name")
+			id = root.getAttributeNamed("name")
+		end
+		
+		var SMStateAction action = SMStateAction.new(id)
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if tagName.equals("parameter")
@@ -197,7 +189,7 @@ class LoadStateMachine extends BaseXmlLoader
 	end
 	
 	/** \brief Read transition. */
-	private func SMTransition readTransition(EasyXMLElement root)
+	private func SMTransition readTransition(EasyXMLElement root, StateMachine stateMachine)
 		var String stateId
 		if root.hasAttributeNamed("state")
 			stateId = root.getAttributeNamed("state")
@@ -222,6 +214,14 @@ class LoadStateMachine extends BaseXmlLoader
 					throw EInvalidParam.new()
 				end
 				transition.setConditionMode(mode)
+				
+			elif tagName.equals("import")
+				var String id = element.getFirstCData()
+				var SMState importState = stateMachine.getStateAt(id)
+				if importState == null
+					throw EInvalidParam.new("import state not found: " + id)
+				end
+				transition.importState(importState)
 				
 			else
 				logUnknownTag(element)

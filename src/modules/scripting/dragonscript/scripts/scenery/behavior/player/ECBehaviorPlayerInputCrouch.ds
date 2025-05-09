@@ -53,11 +53,17 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorPlayerInputCrouch'>
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -79,8 +85,7 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 			var ECBehaviorPlayerInputCrouch behavior = ECBehaviorPlayerInputCrouch.new(\
 				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInputCrouch")
@@ -101,7 +106,7 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				var Object value
 				
 				if parameters.has("reset")
@@ -136,6 +141,26 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Behavior tree action "playerInputCrouch.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("locomotion")
+					pInstance.updateLocomotion((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
 		 * \brief Behavior tree action/condition "playerInputCrouch.check".
 		 * \version 1.26
 		 */
@@ -148,12 +173,12 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -216,26 +241,12 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 				pLocomotion = pECBehavior.getLocomotion().instance(element)
 			end
 			
-			if pECBehavior.getBehaviorTree() != null
+			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(prefix + "set", BTASet.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String prefix = pECBehavior.getPrefix()
-				var SMContext c = pECBehavior.getStateMachine().instance(element).getContext()
-				c.setAction(prefix + "set", BTASet.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix + "set", BTASet.new(this))
+				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 			end
 		end
 		
@@ -360,8 +371,7 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	
 	
 	var ECBehaviorLocomotion pLocomotion
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
 	
@@ -379,6 +389,7 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 		
 		pPrefix = prefix
 		pLocomotion = locomotion
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addBehavior(this)
 	end
@@ -386,8 +397,7 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pLocomotion = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -406,35 +416,11 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

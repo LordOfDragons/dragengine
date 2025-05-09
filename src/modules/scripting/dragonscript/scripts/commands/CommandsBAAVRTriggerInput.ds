@@ -50,25 +50,23 @@ class CommandsBAAVRTriggerInput
 		end
 		
 		func void triggerTouch()
-			pTarget.sendInputAsEvent("vrTriggerInput.triggerTouch", null)
+			pTarget.sendInputAsEvent("vrTriggerInput.touch", null)
 		end
 		
 		func void triggerUntouch()
-			pTarget.sendInputAsEvent("vrTriggerInput.triggerUntouch", null)
+			pTarget.sendInputAsEvent("vrTriggerInput.untouch", null)
 		end
 		
 		func void triggerPull()
-			pTarget.sendInputAsEvent("vrTriggerInput.triggerPull", null)
+			pTarget.sendInputAsEvent("vrTriggerInput.pull", null)
 		end
 		
 		func void triggerRelease()
-			pTarget.sendInputAsEvent("vrTriggerInput.triggerRelease", null)
+			pTarget.sendInputAsEvent("vrTriggerInput.release", null)
 		end
 		
 		func void triggerAnalog(float value)
-			var Dictionary parameters = Dictionary.new()
-			parameters.setAt("value", value.toString())
-			pTarget.sendInputAsEvent("vrTriggerInput.triggerAnalog", parameters)
+			pTarget.sendInputAsEvent("vrTriggerInput.analog", value)
 		end
 	end
 	

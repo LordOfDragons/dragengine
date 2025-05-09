@@ -113,31 +113,39 @@ class CommandsBAAMovement
 		end
 		
 		func void analogMoveFB(float amount, bool sticky)
-			var Dictionary parameters = Dictionary.new()
-			parameters.setAt("amount", amount.toString())
-			parameters.setAt("sticky", sticky.toString())
-			pTarget.sendInputAsEvent("movement.analog.move.forwardBackward", parameters)
+			if sticky
+				pTarget.sendInputAsEvent("movement.analog.move.forwardBackward.sticky", amount)
+				
+			else
+				pTarget.sendInputAsEvent("movement.analog.move.forwardBackward", amount)
+			end
 		end
 		
 		func void analogMoveLR(float amount, bool sticky)
-			var Dictionary parameters = Dictionary.new()
-			parameters.setAt("amount", amount.toString())
-			parameters.setAt("sticky", sticky.toString())
-			pTarget.sendInputAsEvent("movement.analog.move.leftRight", parameters)
+			if sticky
+				pTarget.sendInputAsEvent("movement.analog.move.leftRight.sticky", amount)
+				
+			else
+				pTarget.sendInputAsEvent("movement.analog.move.leftRight", amount)
+			end
 		end
 		
 		func void analogLookLR(float amount, bool sticky)
-			var Dictionary parameters = Dictionary.new()
-			parameters.setAt("amount", amount.toString())
-			parameters.setAt("sticky", sticky.toString())
-			pTarget.sendInputAsEvent("movement.analog.look.leftRight", parameters)
+			if sticky
+				pTarget.sendInputAsEvent("movement.analog.look.leftRight.sticky", amount)
+				
+			else
+				pTarget.sendInputAsEvent("movement.analog.look.leftRight", amount)
+			end
 		end
 		
 		func void analogLookUD(float amount, bool sticky)
-			var Dictionary parameters = Dictionary.new()
-			parameters.setAt("amount", amount.toString())
-			parameters.setAt("sticky", sticky.toString())
-			pTarget.sendInputAsEvent("movement.analog.look.upDown", parameters)
+			if sticky
+				pTarget.sendInputAsEvent("movement.analog.look.upDown.sticky", amount)
+				
+			else
+				pTarget.sendInputAsEvent("movement.analog.look.upDown", amount)
+			end
 		end
 		
 		func void crouchStart()

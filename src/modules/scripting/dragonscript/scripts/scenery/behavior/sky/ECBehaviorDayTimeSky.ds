@@ -60,11 +60,17 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorDayTimeSky'>
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -86,8 +92,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 			var ECBehaviorDayTimeSky behavior = ECBehaviorDayTimeSky.new(\
 				eclass, ECBehaviorSky.getBehaviorIn(eclass))
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "dayTimeSky")
 			return behavior
@@ -107,7 +112,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				var Object value
 				
 				value = parameters.getAt("time", null)
@@ -132,12 +137,12 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -184,26 +189,11 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 			
 			setDayTime(pECBehavior.getDayTime().getValue(stub))
 			
-			if pECBehavior.getBehaviorTree() != null
-				var String pnp = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(getElement()).getContext()
-				c.setAction(pnp + "set", BTASet.new(this))
-				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String pnp = pECBehavior.getPrefix()
-				var SMContext c = pECBehavior.getStateMachine().instance(getElement()).getContext()
-				c.setAction(pnp + "set", BTASet.new(this))
-				
-				var String name = pnp + "check"
-				var BTACheck btacheck = BTACheck.new(this, pnp)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix + "set", BTASet.new(this))
+				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 			end
 		end
 		
@@ -267,8 +257,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	var ECBehaviorSky pSky
 	var ECPString pController
 	var ECPFloat pDayTime
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
 	
@@ -285,6 +274,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 		
 		pPrefix = prefix
 		pSky = sky
+		pBTSMs = ECComposeBTSM.new()
 		
 		pController = ECPString.new(prefix + "controllerDayTime", "daytime")
 		eclass.addProperty(pController)
@@ -297,8 +287,7 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	
 	/** \brief Dispose of behavior. */
 	func void dispose()
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -328,35 +317,11 @@ class ECBehaviorDayTimeSky extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

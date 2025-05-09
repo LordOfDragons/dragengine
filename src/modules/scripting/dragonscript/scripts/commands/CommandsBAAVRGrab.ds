@@ -57,15 +57,11 @@ class CommandsBAAVRGrab
 		end
 		
 		func void grabAnalog(float value)
-			var Dictionary parameters = Dictionary.new()
-			parameters.setAt("value", value.toString())
-			pTarget.sendInputAsEvent("vrGrab.grabAnalog", parameters)
+			pTarget.sendInputAsEvent("vrGrab.grab.analog", value)
 		end
 		
 		func void squeeze(float value)
-			var Dictionary parameters = Dictionary.new()
-			parameters.setAt("value", value.toString())
-			pTarget.sendInputAsEvent("vrGrab.squeeze", parameters)
+			pTarget.sendInputAsEvent("vrGrab.squeeze", value)
 		end
 	end
 	

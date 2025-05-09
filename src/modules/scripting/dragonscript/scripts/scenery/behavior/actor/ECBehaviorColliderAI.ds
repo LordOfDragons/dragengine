@@ -29,6 +29,9 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
+pin Dragengine.Animators
 
 
 /**
@@ -166,6 +169,18 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	 *                  format is '', 'category' or 'category:filter' where category and filter
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>3:0 1 2 3 4</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -192,6 +207,8 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "colliderAI")
 			return behavior
 		end
@@ -199,6 +216,123 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements ColliderListener
+		/**
+		 * \brief Behavior tree action "colliderAI.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.getCollider().setEnabled(value.equals("true"))
+				end
+				
+				value = parameters.getAt("gravity", null)
+				if value != null
+					pInstance.setGravity(pInstance.getElement().getClass().\
+						getCodecPropertyString().decodeVector(value cast String))
+				end
+				
+				value = parameters.getAt("shape", null)
+				if value != null
+					if value.equals("humanoid")
+						pInstance.setShapeHumanoid(\
+							(parameters.getAt("shape.radius") cast String).toFloat(),\
+							(parameters.getAt("shape.height") cast String).toFloat())
+						
+					else
+						return BTResult.failure
+					end
+				end
+				
+				if parameters.has("gravity.apply")
+					pInstance.applyGravity((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				value = parameters.getAt("geometryFromCollider", null)
+				if value != null
+					pInstance.setGeometryFromCollider()
+				end
+				
+				if parameters.has("stop.turning")
+					pInstance.stopTurning()
+				end
+				
+				if parameters.has("stop.moving")
+					pInstance.stopMoving()
+				end
+				
+				return BTResult.success
+			end
+		end
+		/**
+		 * \brief Behavior tree action "colliderAI.collision".
+		 * \version 1.26
+		 */
+		private class BTACollision extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("stop")
+					pInstance.responseStop()
+				end
+				
+				if parameters.has("sliding")
+					pInstance.responseSliding((context cast SMContext).getEventParameter() cast CollisionInfo)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "colliderAI.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getCollider().getEnabled() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorColliderAI pECBehavior
 		var ECBehaviorCollider.Instance pBaseCollider
 		var ColliderVolume pCollider
@@ -248,6 +382,14 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 			end
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix + "set", BTASet.new(this))
+				btsms.addAllAction(prefix + "collision", BTACollision.new(this))
+				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+			end
 		end
 		
 		/**
@@ -392,6 +534,34 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 			setFromLocomotion(behavior.getLocomotion())
 		end
 		
+		/** \brief Set orientation from locomotion. */
+		func void setOrientationFromLocomotion(Locomotion locomotion)
+			pCollider.setOrientation(locomotion.getOrientationQuaternion())
+		end
+		
+		/** \brief Set orientation from locomotion. */
+		func void setOrientationFromLocomotion(ECBehaviorLocomotion.Instance behavior)
+			setOrientationFromLocomotion(behavior.getLocomotion())
+		end
+		
+		
+		/**
+		 * \brief Apply stop collision response.
+		 * \version 1.26
+		 */
+		func void responseStop()
+			pCollider.setLinearVelocity(Vector.new())
+		end
+		
+		/**
+		 * \brief Apply sliding collision response.
+		 * \version 1.26
+		 */
+		func void responseSliding(CollisionInfo info)
+			var Vector velocity = pCollider.getLinearVelocity()
+			var Vector normal = info.getNormal()
+			pCollider.setLinearVelocity(velocity - normal * (normal * velocity))
+		end
 		
 		
 		/** \brief Add listener. */
@@ -493,6 +663,8 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	var ECBehaviorCollider pBaseCollider
 	var ECComposeCollisionFilter pCollisionFilter
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -510,8 +682,11 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pBaseCollider = baseCollider
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		var ECComposeCollider ccollider = pBaseCollider.getCollider()
 		ccollider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
@@ -536,10 +711,19 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	func void dispose()
 		pBaseCollider = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Base collider behavior. */
 	func ECBehaviorCollider getBaseCollider()
@@ -549,6 +733,14 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	/** \brief Collision filter for AI collider. */
 	func ECComposeCollisionFilter getCollisionFilter()
 		return pCollisionFilter
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

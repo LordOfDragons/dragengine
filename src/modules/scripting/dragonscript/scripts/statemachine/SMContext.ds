@@ -47,12 +47,25 @@ pin Dragengine.Scenery
  * and writeToFile().
  */
 class SMContext
+	private class DelayedEvent
+		public var String event
+		public var Object parameter
+		
+		func new(String event, Object parameter)
+			this.event = event
+			this.parameter = parameter
+		end
+	end
+	
+	
 	var StateMachine pStateMachine
 	var Dictionary pConditions, pActions
 	var SMState pCurrentState
 	var Console pConsole
 	var String pLoggingName
 	var bool pLogTransitions, pLogStateChanges, pLogActions
+	var Object pEventParameter
+	var Array pDelayedEvents
 	
 	
 	/** \brief Create state machine context. */
@@ -255,8 +268,8 @@ class SMContext
 		
 		if doLog
 			pConsole.addMessage("{}: State '{}' change to '{}'".format(Array.newWith(\
-				pLoggingName, pCurrentState != null if pCurrentState.getID() else null,\
-				state != null if state.getID() else null)))
+				pLoggingName, pCurrentState != null if pCurrentState.getID() else "<in transition>",\
+				state != null if state.getID() else "<in transition>")))
 		end
 		
 		pCurrentState = state
@@ -290,6 +303,14 @@ class SMContext
 				setCurrentStateByID(state.getNextStateID())
 			end
 		end
+		
+		if state != null and pDelayedEvents != null
+			if doLog
+				pConsole.addMessage("{}: State '{}' run delayed {} events".format(\
+					Array.newWith(pLoggingName, state.getID(), pDelayedEvents.getCount())))
+			end
+			runDelayedEvents()
+		end
 	end
 	
 	/**
@@ -301,12 +322,7 @@ class SMContext
 	 * Calls onCurrentStateChanged() after all changes are done.
 	 */
 	func void setCurrentStateByID(String id)
-		if id != null
-			setCurrentState(pStateMachine.getStateAt(id))
-			
-		else
-			setCurrentState(null)
-		end
+		setCurrentState(id != null if pStateMachine.getStateAt(id) else null)
 	end
 	
 	/**
@@ -378,22 +394,48 @@ class SMContext
 	
 	
 	/**
-	 * \brief Run event on state machine.
-	 * \returns true if state understands event otherwise false is returned.
+	 * \brief Event parameter or null.
+	 * \version 1.26
 	 */
-	func bool runEvent(String event)
+	func Object getEventParameter()
+		return pEventParameter
+	end
+	
+	/**
+	 * \brief Run event on state machine.
+	 */
+	func void runEvent(String event)
+		runEvent(event, null)
+	end
+	
+	/**
+	 * \brief Run event on state machine with parameter.
+	 */
+	func void runEvent(String event, Object parameter)
 		if event == null
 			throw ENullPointer.new()
 		end
+		
+		var bool doLog = pLogStateChanges and pConsole != null
+		
 		if pCurrentState == null
-			throw EInvalidParam.new("in transition")
+			if doLog
+				pConsole.addMessage("{}: Event '{}' while in transition -> delayed"\
+					.format(Array.newWith(pLoggingName, event)))
+			end
+			
+			if pDelayedEvents == null
+				pDelayedEvents = Array.new()
+			end
+			pDelayedEvents.add(DelayedEvent.new(event, parameter))
+			return
 		end
 		
 		var SMTransition transition = pCurrentState.findTransition(block SMTransition each
 			return each.matches(this, event)
 		end)
 		
-		if pLogTransitions and pConsole != null
+		if doLog
 			if transition != null
 				pConsole.addMessage("{}: State '{}' event '{}' transition {} next state '{}'"\
 					.format(Array.newWith(pLoggingName, pCurrentState.getID(), event,\
@@ -406,11 +448,22 @@ class SMContext
 		end
 		
 		if transition == null
-			return false
+			return
 		end
 		
+		pEventParameter = parameter
 		transition.run(this)
-		return true
+		pEventParameter = null
+		return
+	end
+	
+	private func void runDelayedEvents()
+		var Array events = pDelayedEvents
+		pDelayedEvents = null
+		
+		events.forEach(block DelayedEvent each
+			runEvent(each.event, each.parameter)
+		end)
 	end
 	
 	/**

@@ -288,10 +288,8 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 			
 			func BTResult runAction(BTContext context, Dictionary parameters)
-				if pInstance.runEvent(parameters.getAt("id") cast String)
-					return BTResult.success
-				end
-				return parameters.has("required") if BTResult.failure else BTResult.success
+				pInstance.runEvent(parameters.getAt("id") cast String)
+				return BTResult.success
 			end
 		end
 		
@@ -463,10 +461,9 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		
 		/**
 		 * \brief Run event on state machine.
-		 * \returns true if context is present and current state understands event.
 		 */
-		func bool runEvent(String event)
-			return pContext.runEvent(event)
+		func void runEvent(String event)
+			pContext.runEvent(event)
 		end
 		
 		/**

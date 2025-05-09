@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <stateMachine>
 	<!--
-	State machine providing similar implementation as BAAFirstPerson.
+	State machine providing similar implementation as BAAVehicle.
 	
 	To use this state machine in your custom state machine import it like this:
 	
 	<stateMachine>
-		<import>/shareddata/stateMachines/actorAction/firstPerson.desm</import>
+		<import>/shareddata/stateMachines/actorAction/vehicle.desm</import>
 		... your content
 	</stateMachine>
 	
@@ -43,7 +43,7 @@
 		as long as their parameter names are unique
 		-->
 		<enterAction name='playerInputMove.set'>
-			<parameter name='locomotion.type'>natural</parameter>
+			<parameter name='locomotion.type'>vehicle</parameter>
 		</enterAction>
 		
 		<!--
@@ -54,14 +54,15 @@
 		are unique
 		-->
 		<enterAction name='locomotion.set'>
-			<parameter name='preset'>human</parameter>
+			<parameter name='preset'>vehicle</parameter>
 			<parameter name='preset.averageSpeed'>playerInputMove.speedWalk</parameter>
 		</enterAction>
 		
 		<!--
 		If actor is player controlled modify the locomotion parameters to be better suited
-		for direct player input
+		for direct player input. In the case of vehicle type there are no differences
 		-->
+		<!--
 		<enterAction name='locomotion.set'>
 			<condition>playerControllable.check</condition>
 			<parameter name='playerControllable.playerControlled'>true</parameter>
@@ -70,6 +71,7 @@
 			<parameter name='adjust.horizontal.time'>0</parameter>
 			<parameter name='adjust.linear.velocity.time'>0.5</parameter>
 		</enterAction>
+		-->
 	</state>
 	
 	
@@ -103,25 +105,25 @@
 		</transition>
 		
 		<transition event='movement.move.left.start'>
-			<action name='playerInputMove.set'>
+			<action name='playerInputTurn.set'>
 				<parameter name='left'>true</parameter>
 			</action>
 		</transition>
 		
 		<transition event='movement.move.left.stop'>
-			<action name='playerInputMove.set'>
+			<action name='playerInputTurn.set'>
 				<parameter name='left'>false</parameter>
 			</action>
 		</transition>
 		
 		<transition event='movement.move.right.start'>
-			<action name='playerInputMove.set'>
+			<action name='playerInputTurn.set'>
 				<parameter name='right'>true</parameter>
 			</action>
 		</transition>
 		
 		<transition event='movement.move.right.stop'>
-			<action name='playerInputMove.set'>
+			<action name='playerInputTurn.set'>
 				<parameter name='right'>false</parameter>
 			</action>
 		</transition>
@@ -139,14 +141,14 @@
 		</transition>
 		
 		<transition event='movement.analog.move.leftRight'>
-			<action name='playerInputMove.set'>
-				<parameter name='analog.leftRight'>eventParam</parameter>
+			<action name='playerInputTurn.set'>
+				<parameter name='analog'>eventParam</parameter>
 			</action>
 		</transition>
 		
 		<transition event='movement.analog.move.leftRight-sticky'>
-			<action name='playerInputMove.set'>
-				<parameter name='analog.leftRight.sticky'>eventParam</parameter>
+			<action name='playerInputTurn.set'>
+				<parameter name='analog.sticky'>eventParam</parameter>
 			</action>
 		</transition>
 	</state>
@@ -236,7 +238,6 @@
 	- shared.player.movement.move
 	- shared.player.movement.look
 	- shared.player.movement.run
-	- shared.player.movement.crouch
 	
 	Imported by adding this line to your state or transition:
 	<import>shared.player.movement</import>
@@ -245,12 +246,11 @@
 		<import>shared.player.movement.move</import>
 		<import>shared.player.movement.look</import>
 		<import>shared.player.movement.run</import>
-		<import>shared.player.movement.crouch</import>
 	</state>
 	
 	
 	<!--
-	Update locomotion with player input look, crouch and move during player thinking.
+	Update locomotion with player input look, turn and move during player thinking.
 	
 	Imported by adding this line to your state or transition:
 	<import>shared.update.player.locomotion</import>
@@ -260,7 +260,7 @@
 			<parameter name='locomotion'/>
 		</enterAction>
 		
-		<enterAction name='playerInputCrouch.update'>
+		<enterAction name='playerInputTurn.update'>
 			<parameter name='locomotion'/>
 		</enterAction>
 		
@@ -469,7 +469,7 @@
 		
 		<transition event='think'>
 			<import>shared.update.locomotion</import>
-			<import>shared.update.collider.falling.turn</import>
+			<import>shared.update.collider.falling</import>
 			<import>shared.update.animators</import>
 		</transition>
 		

@@ -63,6 +63,7 @@ static inline float climFromAdjustTime( float adjustTime ){
 
 dedsLocomotion::dedsLocomotion() :
 pCanTurn( true ),
+pAlwaysLimitLeftRight(false),
 
 pLimitLookUp( 90.0f ),
 pLimitLookDown( -90.0f ),
@@ -157,6 +158,10 @@ dedsLocomotion::~dedsLocomotion(){
 
 void dedsLocomotion::SetCanTurn( bool canTurn ){
 	pCanTurn = canTurn;
+}
+
+void dedsLocomotion::SetAlwaysLimitLeftRight(bool alwaysLimitLeftRight){
+	pAlwaysLimitLeftRight = alwaysLimitLeftRight;
 }
 
 
@@ -836,7 +841,7 @@ void dedsLocomotion::UpdateOrientationNotMoving( float elapsed, float &adjustOri
 void dedsLocomotion::CheckLookingRangeViolation( float &adjustOrientation ){
 	// if we can turn the body keep the looking always inside the limits.
 	// if leaving adjust the adjustOrientation to satisfy the limits again.
-	if( pCanTurn ){
+	if(pCanTurn && !pAlwaysLimitLeftRight){
 		if( pLookHorizontal.GetGoal() - adjustOrientation > pLimitLookRight ){
 			adjustOrientation = pLookHorizontal.GetGoal() - pLimitLookRight;
 			

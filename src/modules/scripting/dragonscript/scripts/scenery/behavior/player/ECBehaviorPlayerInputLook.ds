@@ -86,11 +86,17 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorPlayerInputLook'>
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -112,8 +118,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 			var ECBehaviorPlayerInputLook behavior = ECBehaviorPlayerInputLook.new(\
 				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInputLook")
@@ -134,7 +139,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				pInstance = instance
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				var Object value
 				
 				if parameters.has("reset")
@@ -184,7 +189,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				
 				value = parameters.getAt("analog.horizontal", null)
 				if value != null
-					pInstance.setAnalogLookHorizontal((value cast String).toFloat())
+					pInstance.setAnalogLookHorizontal(parseAnalogValue(context, value cast String))
 				end
 				
 				value = parameters.getAt("analog.horizontal.factor", null)
@@ -194,7 +199,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				
 				value = parameters.getAt("analog.horizontal.sticky", null)
 				if value != null
-					pInstance.setAnalogLookHorizontalSticky((value cast String).toFloat())
+					pInstance.setAnalogLookHorizontalSticky(parseAnalogValue(context, value cast String))
 				end
 				
 				value = parameters.getAt("speed.vertical", null)
@@ -204,7 +209,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				
 				value = parameters.getAt("analog.vertical", null)
 				if value != null
-					pInstance.setAnalogLookVertical((value cast String).toFloat())
+					pInstance.setAnalogLookVertical(parseAnalogValue(context, value cast String))
 				end
 				
 				value = parameters.getAt("analog.vertical.factor", null)
@@ -214,7 +219,39 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				
 				value = parameters.getAt("analog.vertical.sticky", null)
 				if value != null
-					pInstance.setAnalogLookVerticalSticky((value cast String).toFloat())
+					pInstance.setAnalogLookVerticalSticky(parseAnalogValue(context, value cast String))
+				end
+				
+				return BTResult.success
+			end
+			
+			private func float parseAnalogValue(Object context, String value)
+				if value.equals("eventParam")
+					return (context cast SMContext).getEventParameter() cast float
+					
+				elif value.equals("-eventParam")
+					return -((context cast SMContext).getEventParameter() cast float)
+					
+				else
+					return (value cast String).toFloat()
+				end
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "playerInputLook.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("locomotion")
+					pInstance.updateLocomotion((context cast SMContext).getEventParameter() cast float)
 				end
 				
 				return BTResult.success
@@ -234,12 +271,12 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				pPrefix = prefix
 			end
 			
-			func BTResult runAction(Dictionary parameters)
+			func BTResult runActionShared(Object context, Dictionary parameters)
 				return check("", parameters) if BTResult.success\
 					else (parameters.has("wait") if BTResult.running else BTResult.failure)
 			end
 			
-			func bool evaluateCondition(Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return check(pPrefix, parameters)
 			end
 			
@@ -402,26 +439,12 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				pLocomotion = pECBehavior.getLocomotion().instance(element)
 			end
 			
-			if pECBehavior.getBehaviorTree() != null
+			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(prefix + "set", BTASet.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String prefix = pECBehavior.getPrefix()
-				var SMContext c = pECBehavior.getStateMachine().instance(element).getContext()
-				c.setAction(prefix + "set", BTASet.new(this))
-				
-				var String name = prefix + "check"
-				var BTACheck btacheck = BTACheck.new(this, prefix)
-				c.setAction(name, btacheck)
-				c.setCondition(name, btacheck)
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix + "set", BTASet.new(this))
+				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 			end
 		end
 		
@@ -654,6 +677,11 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 			
 			var float deltaHorizontal = calculateLookHorizontal(elapsed)
 			var float deltaVertical = calculateLookVertical(elapsed)
+			
+			if BaseGameApp.getApp() != null and BaseGameApp.getApp().getInverseLookVertical()
+				deltaVertical = -deltaVertical
+			end
+			
 			pLocomotion.applyLookAround(deltaHorizontal, deltaVertical)
 		end
 		
@@ -691,8 +719,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	var ECPFloat pSpeedLookVertical
 	var ECPFloat pAnalogFactorLookHorizontal
 	var ECPFloat pAnalogFactorLookVertical
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
 	
@@ -710,6 +737,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		pPrefix = prefix
 		pLocomotion = locomotion
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addProperty(pSpeedLookHorizontal = ECPFloat.new(prefix + "speedLookHorizontal", 45, 0))
 		eclass.addProperty(pSpeedLookVertical = ECPFloat.new(prefix + "speedLookVertical", 45, 0))
@@ -722,8 +750,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pLocomotion = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -763,35 +790,11 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

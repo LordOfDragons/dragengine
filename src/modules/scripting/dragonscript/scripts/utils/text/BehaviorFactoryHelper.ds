@@ -498,6 +498,34 @@ class BehaviorFactoryHelper
 		return behaviorTree(eclass, parameters, "behaviorTree", null)
 	end
 	
+	/**
+	 * \ref All behavior tree behaviors using parameter "behaviorTrees".
+	 * 
+	 * Parameter is of list type. Throws exception if one or more behaviors do not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func void allBehaviorTrees(ECComposeBTSM btsm, BehaviorElementClass eclass, Dictionary parameters)
+		var ECBehaviorBehaviorTree b
+		if parameters.has("behaviorTrees")
+			(parameters.getAt("behaviorTrees") cast Array).forEach(block String each
+				if each != null
+					b = ECBehaviorBehaviorTree.getBehaviorIn(eclass, each)
+					if b == null
+						throw EInvalidParam.new("ECBehaviorBehaviorTree not found: " + each)
+					end
+					btsm.addBehaviorTree(b)
+				end
+			end)
+			
+		else
+			eclass.forEachBehavior(block ECBehaviorBehaviorTree each
+				btsm.addBehaviorTree(each)
+			end)
+		end
+	end
+	
 	
 	/**
 	 * \ref Behavior state machine.
@@ -552,6 +580,43 @@ class BehaviorFactoryHelper
 	 */
 	func ECBehaviorStateMachine optionalStateMachine(BehaviorElementClass eclass, Dictionary parameters)
 		return stateMachine(eclass, parameters, "stateMachine", null)
+	end
+	
+	/**
+	 * \ref All state machine behaviors using parameter "stateMachines".
+	 * 
+	 * Parameter is of list type. Throws exception if one or more behaviors do not exist.
+	 * 
+	 * \param eclass Element class to look up behavior in.
+	 * \param parameters \ref Dictionary of \ref String key and \ref String value.
+	 */
+	func void allStateMachines(ECComposeBTSM btsm, BehaviorElementClass eclass, Dictionary parameters)
+		var ECBehaviorStateMachine b
+		if parameters.has("stateMachines")
+			(parameters.getAt("stateMachines") cast Array).forEach(block String each
+				if each != null
+					b = ECBehaviorStateMachine.getBehaviorIn(eclass, each)
+					if b == null
+						throw EInvalidParam.new("ECBehaviorStateMachine not found: " + each)
+					end
+					btsm.addStateMachine(b)
+				end
+			end)
+			
+		else
+			eclass.forEachBehavior(block ECBehaviorStateMachine each
+				btsm.addStateMachine(each)
+			end)
+		end
+	end
+	
+	
+	/**
+	 * \ref All behavior tree and state machine behaviors using parameter "behaviorTrees" and "stateMachines".
+	 */
+	func void allBTSM(ECComposeBTSM btsm, BehaviorElementClass eclass, Dictionary parameters)
+		allBehaviorTrees(btsm, eclass, parameters)
+		allStateMachines(btsm, eclass, parameters)
 	end
 	
 	

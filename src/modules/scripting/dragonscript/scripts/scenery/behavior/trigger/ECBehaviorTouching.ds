@@ -150,8 +150,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
-			behavior.getTouchSensor().setBehaviorTree(\
-				eclass.sharedFactoryHelper.optionalBehaviorTree(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getTouchSensor().getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "touching", id)
 			return behavior

@@ -42,6 +42,8 @@ pin Dragengine.BehaviorTreeSystem
  * \code{.xml}
  * <?xml version='1.0' encoding='UTF-8'?>
  * <elementClass name='MyClass' class='GenericBehaviorElement'>
+ *   <behavior type='ECBehaviorBehaviorTree'/>
+ *   <behavior type='ECBehaviorStateMachine'/>
  *   <behavior type='ECBehaviorComponent'>
  *     <!-- actors are best not affecting sound nor showing up in env maps since they
  *          are dynamic. still doing so is usually expensive for modules to perform -->
@@ -51,8 +53,6 @@ pin Dragengine.BehaviorTreeSystem
  *   </behavior>
  *   <behavior type='ECBehaviorCollider'/>
  *   <behavior type='ECBehaviorColliderAI'/>
- *   <behavior type='ECBehaviorBehaviorTree'/>
- *   <behavior type='ECBehaviorStateMachine'/>
  *   <behavior type='ECBehaviorParameterTable'/>
  *   <behavior type='ECBehaviorProjectToGround'/>
  *   <behavior type='ECBehaviorLocomotion'/>
@@ -76,11 +76,11 @@ pin Dragengine.BehaviorTreeSystem
  * \endcode
  */
 class BaseActorClass extends BehaviorElementClass
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var ECBehaviorStateMachine pStateMachine
 	var ECBehaviorComponent pComponent
 	var ECBehaviorCollider pCollider
 	var ECBehaviorColliderAI pColliderAI
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
 	var ECBehaviorParameterTable pParameterTable
 	var ECBehaviorProjectToGround pProjectToGround
 	var ECBehaviorLocomotion pLocomotion
@@ -121,6 +121,11 @@ class BaseActorClass extends BehaviorElementClass
 	/** \brief Create element class. */
 	func new(String className, Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker) \
 	super(className)
+		pBehaviorTree = ECBehaviorBehaviorTree.new(this)
+		
+		pStateMachine = ECBehaviorStateMachine.new(this)
+		pStateMachine.setBehaviorTree(pBehaviorTree)
+		
 		pComponent = ECBehaviorComponent.new(this, null)
 		
 		// collider
@@ -141,33 +146,26 @@ class BaseActorClass extends BehaviorElementClass
 		
 		// add behaviors
 		pColliderAI = ECBehaviorColliderAI.new(this, pCollider)
-		
-		pBehaviorTree = ECBehaviorBehaviorTree.new(this)
-		
-		pStateMachine = ECBehaviorStateMachine.new(this)
-		pStateMachine.setBehaviorTree(pBehaviorTree)
+		pColliderAI.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pParameterTable = ECBehaviorParameterTable.new(this)
-		pParameterTable.setBehaviorTree(pBehaviorTree)
-		pParameterTable.setStateMachine(pStateMachine)
+		pParameterTable.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pProjectToGround = ECBehaviorProjectToGround.new(this, pColliderAI)
-		pProjectToGround.setBehaviorTree(pBehaviorTree)
-		pProjectToGround.setStateMachine(pStateMachine)
+		pProjectToGround.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pLocomotion = ECBehaviorLocomotion.new(this, pColliderAI)
-		// pLocomotion.setBehaviorTree(pBehaviorTree)
-		// pLocomotion.setStateMachine(pStateMachine)
+		pLocomotion.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pActorAnimated = ECBehaviorActorAnimated.new(this, pComponent, pLocomotion)
 		pActorAnimated.setDefaultControllerMappings()
-		pActorAnimated.setBehaviorTree(pBehaviorTree)
-		pActorAnimated.setStateMachine(pStateMachine)
+		pActorAnimated.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pConversationActor = ECBehaviorConversationActor.new(this)
 		pConversationActor.setActorAnimated(pActorAnimated)
 		pConversationActor.setLocomotion(pLocomotion)
 		pConversationActor.setParameterTable(pParameterTable)
+		pConversationActor.getBTSM().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pCTRRBindings = ECBCTRRBindings.new(this, pConversationActor)
 		
@@ -175,43 +173,44 @@ class BaseActorClass extends BehaviorElementClass
 		
 		pFootSteps = ECBehaviorFootSteps.new(this)
 		pFootSteps.setActorAnimated(pActorAnimated)
-		pFootSteps.setBehaviorTree(pBehaviorTree)
-		pFootSteps.setStateMachine(pStateMachine)
+		pFootSteps.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pRideOn = ECBehaviorRideOn.new(this, pLocomotion, pProjectToGround)
-		pRideOn.setBehaviorTree(pBehaviorTree)
-		pRideOn.setStateMachine(pStateMachine)
+		pRideOn.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pActorMover = ECBehaviorActorMover.new(this, pLocomotion, pNavigator, pRideOn)
 		pActorMover.setConversationActor(pConversationActor)
-		pActorMover.setBehaviorTree(pBehaviorTree)
-		pActorMover.setStateMachine(pStateMachine)
+		pActorMover.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pAlignActor = ECBehaviorAlignActor.new(this, pLocomotion, pConversationActor)
-		// pAlignActor.setBehaviorTree(pBehaviorTree)
-		// pAlignActor.setStateMachine(pStateMachine)
+		// pAlignActor.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pAvoidedByActor = ECBehaviorAvoidedByActor.new(this)
 		
 		pAvoidCollision = ECBehaviorAvoidCollision.new(this, pActorMover, pRideOn)
-		pAvoidCollision.setBehaviorTree(pBehaviorTree)
-		pAvoidCollision.setStateMachine(pStateMachine)
+		pAvoidCollision.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pPlayerInputLook = ECBehaviorPlayerInputLook.new(this, pLocomotion)
+		pPlayerInputLook.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
+		
 		pPlayerInputTurn = ECBehaviorPlayerInputTurn.new(this, pLocomotion)
+		pPlayerInputTurn.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
+		
 		pPlayerInputCrouch = ECBehaviorPlayerInputCrouch.new(this, pLocomotion)
+		pPlayerInputCrouch.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
+		
 		pPlayerInputMove = ECBehaviorPlayerInputMove.new(this, pLocomotion)
+		pPlayerInputMove.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		// actor can be controlled by player
 		pPlayerControllable = ECBehaviorPlayerControllable.new(this, tracker)
 		pPlayerControllable.setConversationActor(pConversationActor)
-		// pPlayerControllable.setBehaviorTree(pBehaviorTree)
+		pPlayerControllable.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		// AI and action support
 		pAIAction = ECBehaviorActorAIAction.new(this, pColliderAI,\
 			pConversationActor, pPlayerControllable)
-		pAIAction.setBehaviorTree(pBehaviorTree)
-		pAIAction.setStateMachine(pStateMachine)
+		pAIAction.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		// actors are best not affecting sound nor showing up in env maps since they
 		// are dynamic. still doing so is usually expensive for modules to perform. 
@@ -224,6 +223,22 @@ class BaseActorClass extends BehaviorElementClass
 	end
 	
 	
+	
+	/**
+	 * \brief Behavior tree.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief State machine.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine getStateMachine()
+		return pStateMachine
+	end
 	
 	/** \brief Component behavior. */
 	func ECBehaviorComponent getComponent()
@@ -238,14 +253,6 @@ class BaseActorClass extends BehaviorElementClass
 	/** \brief Collider AI behavior. */
 	func ECBehaviorColliderAI getColliderAI()
 		return pColliderAI
-	end
-	
-	/**
-	 * \brief Behavior tree.
-	 * \version 1.26
-	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
 	end
 	
 	/** \brief Parameter table behavior. */

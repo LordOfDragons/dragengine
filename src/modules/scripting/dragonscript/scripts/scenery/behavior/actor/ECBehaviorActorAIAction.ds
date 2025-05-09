@@ -87,11 +87,17 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorActorAIAction'>
-	 *   <!-- optional: use behavior tree with id instead of empty string -->
-	 *   <string name='behaviorTree'>second</string>
-	 *   
-	 *   <!-- optional: use state machine with id instead of empty string -->
-	 *   <string name='stateMachine'>second</string>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
@@ -115,8 +121,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				ECBehaviorConversationActor.getBehaviorIn(eclass),\
 				ECBehaviorPlayerControllable.getBehaviorIn(eclass))
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
-			behavior.setStateMachine(eclass.sharedFactoryHelper.defaultStateMachine(eclass, parameters))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "aiAction")
 			return behavior
@@ -129,7 +134,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 * \brief Behavior tree action "aiAction.set".
 		 * \version 1.26
 		 */
-		private class BTASet implements BTAction, SMAction
+		private class BTASet extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -161,6 +166,11 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 						getLoadStateMachine().loadFromFile(value cast String)))
 				end
 				
+				value = parameters.getAt("action.conversationWait", null)
+				if value != null
+					pInstance.setActionConversationWait(value.equals("true"))
+				end
+				
 				return BTResult.success
 			end
 			
@@ -190,6 +200,73 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				end
 			end
 		end
+		
+		/**
+		 * \brief Behavior tree action "aiAction.notify".
+		 * \version 1.26
+		 */
+		private class BTANotify extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("ai.actionFinished", null)
+				if value != null
+					if value.equals("success")
+						pInstance.aiActionSuccess()
+						
+					elif value.equals("failure")
+						pInstance.aiActionFailure()
+						
+					else
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "aiAction.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "action.conversationWait", null)
+				if value != null
+					result &= pInstance.getActionConversationWait() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		
 		/** \brief Collider AI listener forwarding to Action/AI. */
 		private class ColliderAIListener extends ECBehaviorColliderAI.DefaultListener
@@ -231,7 +308,10 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			end
 			
 			func bool wait(ECBehaviorConversationActor.Instance instance)
-				if pInstance.getAction() != null
+				if pInstance.getActionConversationWait()
+					return true
+					
+				elif pInstance.getAction() != null
 					return pInstance.getAction().conversationWait()
 					
 				else
@@ -288,7 +368,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		
 		var BaseActorAction pAction
 		var BaseActorAI pAI
-		var SMContext pSMContext
+		var ECComposeBTSM.Instance pBTSMs
+		var bool pActionConversationWait
 		
 		
 		/** \brief Create behavior instance. */
@@ -307,7 +388,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			pConversationActor = null
 			pPlayerControllable = null
 			pColliderAI = null
-			pSMContext = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -337,16 +418,13 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				pPlayerControllable.addListener(PlayerTakeControlListener.new(this))
 			end
 			
-			if pECBehavior.getBehaviorTree() != null
+			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
-				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
-				c.setAction(prefix + "set", BTASet.new(this))
-			end
-			
-			if pECBehavior.getStateMachine() != null
-				var String prefix = pECBehavior.getPrefix()
-				pSMContext = pECBehavior.getStateMachine().instance(element).getContext()
-				pSMContext.setAction(prefix + "set", BTASet.new(this))
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix + "notify", BTANotify.new(this))
+				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
 			
 			setAction(pECBehavior.getActionFactory().createAction(this))
@@ -392,6 +470,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			end
 			
 			pAction = action
+			pActionConversationWait = false
 			
 			if action != null
 				action.activate(getElement())
@@ -413,6 +492,23 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			end
 		end
 		
+		/**
+		 * \brief Action causes conversation to wait.
+		 * \version 1.26
+		 */
+		public func bool getActionConversationWait()
+			return pActionConversationWait
+		end
+		
+		/**
+		 * \brief Set if action causes conversation to wait.
+		 * \version 1.26
+		 * 
+		 * Reset to false when action is changed.
+		 */
+		func void setActionConversationWait(bool wait)
+			pActionConversationWait = wait
+		end
 		
 		
 		/** \brief Active AI or \em null. */
@@ -453,6 +549,41 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			
 			if disposeAI != null
 				disposeAI.dispose()
+			end
+		end
+		
+		
+		
+		/**
+		 * \brief Notify actor AI active action failed.
+		 * \version 1.26
+		 * 
+		 * Calls actionFailed() on actor AI if all of these conditions apply:
+		 * - Actor is not player controlled
+		 * - Actor AI is not null
+		 */
+		func void aiActionFailure()
+			if pPlayerControllable != null and pPlayerControllable.isPlayerControlled()
+				return
+			end
+			if pAI != null
+				pAI.actionFailed()
+			end
+		end
+		
+		/**
+		 * \brief Notify actor AI this action failed.
+		 * 
+		 * Calls actionFinished() on actor AI if all of these conditions apply:
+		 * - Actor is not player controlled
+		 * - Actor AI is not null
+		 */
+		public func void aiActionSuccess()
+			if pPlayerControllable != null and pPlayerControllable.isPlayerControlled()
+				return
+			end
+			if pAI != null
+				pAI.actionFinished()
 			end
 		end
 		
@@ -535,26 +666,40 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var BehaviorElement element = getElement()
+				readFromFileV0(env, reader)
 				
-				pAI = env.readObjectOrNull(reader) cast BaseActorAI
-				if pAI != null
-					pAI.activateWhileLoading(element)
-				end
+			case 1
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				pActionConversationWait = flags.getAt(0)
 				
-				pAction = env.readObjectOrNull(reader) cast BaseActorAction
-				if pAction != null
-					pAction.activateWhileLoading(element)
-				end
+				readFromFileV0(env, reader)
 				
 			else
 				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
+		private func void readFromFileV0(PersistencyEnvironment env, FileReader reader)
+			var BehaviorElement element = getElement()
+			
+			pAI = env.readObjectOrNull(reader) cast BaseActorAI
+			if pAI != null
+				pAI.activateWhileLoading(element)
+			end
+			
+			pAction = env.readObjectOrNull(reader) cast BaseActorAction
+			if pAction != null
+				pAction.activateWhileLoading(element)
+			end
+		end
+		
 		/** \brief Write behavior to file. */
 		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
-			writer.writeByte(0) // version
+			writer.writeByte(1)
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pActionConversationWait)
+			flags.writeToFile(writer)
 			
 			env.writeObjectOrNull(writer, pAI)
 			env.writeObjectOrNull(writer, pAction)
@@ -566,8 +711,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	var ECBehaviorColliderAI pColliderAI
 	var ECBehaviorConversationActor pConversationActor
 	var ECBehaviorPlayerControllable pPlayerControllable
-	var ECBehaviorBehaviorTree pBehaviorTree
-	var ECBehaviorStateMachine pStateMachine
+	var ECComposeBTSM pBTSMs
 	var ActionFactory pActionFactory
 	var AIFactory pAIFactory
 	var String pPrefix
@@ -606,6 +750,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		pAIFactory = BAAIBehaviorTree.Factory.new()
 		pLoadBehaviorTree = loaders.getBehaviorTree()
 		pLoadStateMachine = loaders.getStateMachine()
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addBehavior(this)
 	end
@@ -617,8 +762,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		pPlayerControllable = null
 		pActionFactory = null
 		pAIFactory = null
-		pBehaviorTree = null
-		pStateMachine = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -693,35 +837,11 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Behavior tree or null.
+	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
-	func ECBehaviorBehaviorTree getBehaviorTree()
-		return pBehaviorTree
-	end
-	
-	/**
-	 * \brief Set behavior tree or null.
-	 * \version 1.26
-	 */
-	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
-		pBehaviorTree = behaviorTree
-	end
-	
-	/**
-	 * \brief State machine or null.
-	 * \version 1.26
-	 */
-	func ECBehaviorStateMachine getStateMachine()
-		return pStateMachine
-	end
-	
-	/**
-	 * \brief Set state machine or null.
-	 * \version 1.26
-	 */
-	func void setStateMachine(ECBehaviorStateMachine stateMachine)
-		pStateMachine = stateMachine
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/**
