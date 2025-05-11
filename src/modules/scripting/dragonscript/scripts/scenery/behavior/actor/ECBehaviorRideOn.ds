@@ -522,7 +522,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				
 				if flags.getAt(1)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorRidable.Instance ridable
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorRidable.Instance ridable
 						setRidable(ridable)
 					end)
 					setRequiresEnterFrame(true)

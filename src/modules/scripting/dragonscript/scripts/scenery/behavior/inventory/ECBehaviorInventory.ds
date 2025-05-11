@@ -417,8 +417,10 @@ class ECBehaviorInventory extends DefaultECBehavior
 				if count > 0
 					pElementResolver = ElementResolver.new()
 					for i = 0 to count
-						pElementResolver.addBehavior(reader, block ECBehaviorStashable.Instance behavior
-							add(behavior)
+						pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorStashable.Instance behavior
+							if behavior != null
+								add(behavior)
+							end
 						end)
 					end
 					setRequiresEnterFrame(true)

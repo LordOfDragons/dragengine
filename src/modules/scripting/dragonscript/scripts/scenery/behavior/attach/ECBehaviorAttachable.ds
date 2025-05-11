@@ -451,9 +451,11 @@ class ECBehaviorAttachable extends DefaultECBehavior
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
 				if flags.getAt(0)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorAttachSlot.Instance slot
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorAttachSlot.Instance slot
 						pAttachSlot = slot
-						getElement().setParent(slot.getElement())
+						if slot != null
+							getElement().setParent(slot.getElement())
+						end
 					end)
 					setRequiresEnterFrame(true)
 				end

@@ -1484,9 +1484,11 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				
 				if flags.getAt(5)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorRidable.Instance behavior
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorRidable.Instance behavior
 						pRidable = behavior
-						pRidableCollider = behavior.getCollider()
+						if behavior != null
+							pRidableCollider = behavior.getCollider()
+						end
 					end)
 					setRequiresEnterFrame(true)
 				end

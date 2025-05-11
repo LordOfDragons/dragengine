@@ -545,7 +545,7 @@ class ECBehaviorGrabSpot extends DefaultECBehavior
 				
 				if flags.getAt(1)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorGrabber.Instance grabber
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorGrabber.Instance grabber
 						pGrabber = grabber
 					end)
 					setRequiresEnterFrame(true)

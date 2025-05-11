@@ -17,11 +17,11 @@ class UniqueID
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create unique id with value 0. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create unique id with value. */
-	public func new( int value )
+	func new(int value)
 	end
 	/*@}*/
 	
@@ -30,7 +30,7 @@ class UniqueID
 	/** \name Management */
 	/*@{*/
 	/** \brief Bit count. */
-	public func int getBitCount()
+	func int getBitCount()
 		return 0
 	end
 	
@@ -38,26 +38,42 @@ class UniqueID
 	 * \brief Byte at position in LSB.
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getBitCount().
 	 */
-	public func int getByteAt( int position )
+	func int getByteAt(int position)
 		return 0
 	end
 	
 	
 	
 	/** \brief Hex string representation. */
-	public func String toHexString()
+	func String toHexString()
 		return null
 	end
 	
 	/** \brief Unique id from hex string. */
-	static public func UniqueID newFromHexString( String string )
+	static func UniqueID newFromHexString(String string)
 		return null
+	end
+	
+	/**
+	 * \brief ID is 0.
+	 * \version 1.26
+	 */
+	func bool zero()
+		return false
+	end
+	
+	/**
+	 * \brief ID is not 0.
+	 * \version 1.26
+	 */
+	func bool notZero()
+		return false
 	end
 	
 	
 	
 	/** \brief String representation of unique id. */
-	public func String toString()
+	func String toString()
 		return null
 	end
 	
@@ -66,7 +82,7 @@ class UniqueID
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type UniqueID and both IDs are equal.
 	 */
-	public func bool equals( Object other )
+	func bool equals(Object other)
 		return false
 	end
 	
@@ -77,7 +93,7 @@ class UniqueID
 	 * \retval <0 Object comes before \em obj.
 	 * \retval >0 Object comes after \em obj.
 	 */
-	public func int compare( Object obj )
+	func int compare(Object obj)
 		return 0
 	end
 	
@@ -85,7 +101,7 @@ class UniqueID
 	 * \brief Hash code for use as dictionary keys.
 	 * \details Implements Object.hashCode().
 	 */
-	public func int hashCode()
+	func int hashCode()
 		return 0
 	end
 	/*@}*/
@@ -95,12 +111,12 @@ class UniqueID
 	/** \name File Handling */
 	/*@{*/
 	/** \brief Read unique id from a file reader. */
-	static public func UniqueID readFromFile( FileReader reader )
+	static func UniqueID readFromFile(FileReader reader)
 		return null
 	end
 	
 	/** \brief Write unique id to a file writer. */
-	public func void writeToFile( FileWriter writer )
+	func void writeToFile(FileWriter writer)
 	end
 	/*@}*/
 	
@@ -109,42 +125,42 @@ class UniqueID
 	/** \name Operators */
 	/*@{*/
 	/** \brief UniqueID incremented by value. */
-	public func UniqueID +( int value )
+	func UniqueID +(int value)
 		return null
 	end
 	
 	/** \brief UniqueID incremented by another UniqueID. */
-	public func UniqueID +( UniqueID id )
+	func UniqueID +(UniqueID id)
 		return null
 	end
 	
 	/** \brief UniqueID decremented by value. */
-	public func UniqueID -( int value )
+	func UniqueID -(int value)
 		return null
 	end
 	
 	/** \brief UniqueID decremented by another UniqueID. */
-	public func UniqueID -( UniqueID id )
+	func UniqueID -(UniqueID id)
 		return null
 	end
 	
 	/** \brief ID is less than another ID. */
-	public func bool <( UniqueID id )
+	func bool <(UniqueID id)
 		return false
 	end
 	
 	/** \brief ID is less than or equal to another ID. */
-	public func bool <=( UniqueID id )
+	func bool <=(UniqueID id)
 		return false
 	end
 	
 	/** \brief ID is greater than another ID. */
-	public func bool >( UniqueID id )
+	func bool >(UniqueID id)
 		return false
 	end
 	
 	/** \brief ID is greater than or equal to another ID. */
-	public func bool >=( UniqueID id )
+	func bool >=(UniqueID id)
 		return false
 	end
 	/*@}*/

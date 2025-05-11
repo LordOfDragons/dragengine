@@ -436,7 +436,7 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 				
 				if flags.getAt(0)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorOccupier.Instance occupier
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorOccupier.Instance occupier
 						pOccupier = occupier
 					end)
 					setRequiresEnterFrame(true)

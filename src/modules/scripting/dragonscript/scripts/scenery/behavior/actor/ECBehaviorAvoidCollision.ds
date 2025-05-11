@@ -1417,7 +1417,7 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 				
 				if flags.getAt(2)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorRidable.Instance behavior
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorRidable.Instance behavior
 						pRidable = behavior
 					end)
 					setRequiresEnterFrame(true)

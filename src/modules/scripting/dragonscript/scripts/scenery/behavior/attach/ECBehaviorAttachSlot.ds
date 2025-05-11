@@ -706,8 +706,10 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 					var Quaternion orientation = Quaternion.readFromFile(reader)
 					
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorAttachable.Instance attachable
-						attachAttachable(attachable, position, orientation)
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorAttachable.Instance attachable
+						if attachable != null
+							attachAttachable(attachable, position, orientation)
+						end
 						pAttachable = attachable
 						pAttachablePosition = position
 						pAttachableOrientation = orientation
