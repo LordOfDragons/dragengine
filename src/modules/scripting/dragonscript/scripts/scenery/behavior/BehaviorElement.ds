@@ -672,25 +672,19 @@ class BehaviorElement extends Element
 	
 	private func void readFromFileV1(PersistencyEnvironment env, FileReader reader)
 		var BehaviorElementClass eclass = getClass() cast BehaviorElementClass
-		
-		var Dictionary map = Dictionary.new()
-		pInstances.forEach(block int index, ECBehaviorInstance each
-			map.setAt((eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency).getBehaviorID(), each)
-		end)
-		
 		var int i, dataLength, count = reader.readShort()
-		var ECBehaviorInstance instance
+		var ECBehavior behavior
 		var String identifier
 		//var int nextPosition
 		
 		for i = 0 to count
 			identifier = reader.readString8()
-			instance = map.getAt(identifier, null) cast ECBehaviorInstance
+			behavior = eclass.getBehaviorWithId(identifier)
 			dataLength = reader.readInt()
 			
-			if instance != null
+			if behavior != null
 				//nextPosition = reader.getPosition() + dataLength
-				instance.readFromFile(env, reader)
+				(pInstances.getAt(behavior.getInstanceIndex()) cast ECBehaviorInstance).readFromFile(env, reader)
 				/*
 				if reader.getPosition() != nextPosition
 					throw EInvalidAction.new("next file position mismatch after reading behavior " + identifier)
