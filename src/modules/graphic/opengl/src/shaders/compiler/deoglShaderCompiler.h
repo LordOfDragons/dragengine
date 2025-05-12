@@ -119,6 +119,9 @@ public:
 	/** Finish compile shader unit. */
 	void FinishCompileShaderUnit(deoglShaderProgramUnit &unit);
 	
+	/** Load cached shader. */
+	void LoadCachedShader(deoglShaderProgram &program);
+	
 	/** Compile shader. */
 	void CompileShader(deoglShaderProgram &program);
 	

@@ -396,10 +396,13 @@ void deoglShaderCompiler::FinishCompileShaderUnit(deoglShaderProgramUnit &unit){
 	pLanguage.RemoveCompilingShader();
 }
 
+void deoglShaderCompiler::LoadCachedShader(deoglShaderProgram &program){
+	pCacheLoadShader(program);
+}
+
 void deoglShaderCompiler::CompileShader(deoglShaderProgram &program){
 // 	renderThread.GetLogger().LogInfoFormat("CompileShader: cacheId='%s' cacheId.len=%d",
 // 		program.GetCacheId().GetString(), program.GetCacheId().GetLength());
-	pCacheLoadShader(program);
 	if(program.ready){
 		return;
 	}

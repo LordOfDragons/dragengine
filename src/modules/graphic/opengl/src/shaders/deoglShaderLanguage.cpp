@@ -223,7 +223,10 @@ void deoglShaderLanguage::CompileShader(deoglShaderProgram &program){
 	const deMutexGuard guard(pMutexTasks);
 	
 	pTotalCompiledShaders++;
-	pCompiler->CompileShader(program);
+	pCompiler->LoadCachedShader(program);
+	if(!program.ready){
+		pCompiler->CompileShader(program);
+	}
 	pCompiler->FinishCompileShader(program);
 	pLogTotalsLocked();
 }
@@ -248,51 +251,30 @@ deoglShaderCompileListener *listener){
 	if(pCompilerThreadCount > 0 /*|| pglMaxShaderCompilerThreads*/){
 		{
 		const deMutexGuard guard(pMutexTasks);
-		for(i=0; i<6; i++){
-			deoglShaderProgramUnit * const u = units[i];
-			if(!u || u->isCompiling || u->compilingFailed || u->IsCompiled()){
-				continue;
-			}
-			
-			pTotalCompiledUnits++;
-			pTotalCompiledStage[i]++;
-			
-			const deoglShaderCompileUnitTask::Ref task(deoglShaderCompileUnitTask::Ref::New(
-				new deoglShaderCompileUnitTask(u)));
-			pUnitTasksPending.Add(task);
-			
-			// this method can be called from the resource loader thread instead of the render
-			// thread. for this reason CompileShaderUnit() can not be called here. the task
-			// sets a pending flag which causes the compile to be done in the Update() call
-			/*
-			if(pglMaxShaderCompilerThreads){
-				pCompiler->CompileShaderUnit(*u);
-			}
-			*/
-		}
-		
-		pTotalCompiledShaders++;
-		pTasksPending.Add(deoglShaderCompileTask::Ref::New(new deoglShaderCompileTask(program, listener)));
+		pLoadTasksPending.Add(deoglShaderLoadTask::Ref::New(new deoglShaderLoadTask(program, listener)));
 		}
 		pSemaphoreNewTasks.Signal();
 		
 	}else{
 		try{
-			for(i=0; i<6; i++){
-				deoglShaderProgramUnit * const u = units[i];
-				if(!u || u->compilingFailed || u->IsCompiled()){
-					continue;
+			pCompiler->LoadCachedShader(*program);
+			if(!program->ready){
+				for(i=0; i<6; i++){
+					deoglShaderProgramUnit * const u = units[i];
+					if(!u || u->compilingFailed || u->IsCompiled()){
+						continue;
+					}
+					
+					pTotalCompiledUnits++;
+					pTotalCompiledStage[i]++;
+					
+					pCompiler->CompileShaderUnit(*u);
+					pCompiler->FinishCompileShaderUnit(*u);
 				}
 				
-				pTotalCompiledUnits++;
-				pTotalCompiledStage[i]++;
-				
-				pCompiler->CompileShaderUnit(*u);
-				pCompiler->FinishCompileShaderUnit(*u);
+				pTotalCompiledShaders++;
+				pCompiler->CompileShader(*program);
 			}
-			
-			pTotalCompiledShaders++;
-			pCompiler->CompileShader(*program);
 			pCompiler->FinishCompileShader(*program);
 			pLogTotalsLocked();
 			
@@ -362,11 +344,19 @@ void deoglShaderLanguage::RemoveCompilingShader(){
 }
 
 void deoglShaderLanguage::GetNextTask(deoglShaderCompileTask::Ref &task,
-deoglShaderCompileUnitTask::Ref &unitTask){
+deoglShaderCompileUnitTask::Ref &unitTask, deoglShaderLoadTask::Ref &loadTask){
 	task = nullptr;
 	unitTask = nullptr;
+	loadTask = nullptr;
 	
 	const deMutexGuard guard(pMutexTasks);
+	
+	if(pLoadTasksPending.GetCount() > 0){
+		loadTask = (deoglShaderLoadTask*)pLoadTasksPending.GetAt(0);
+		pLoadTasksPending.RemoveFrom(0);
+		pCompilingTaskCount++;
+		return;
+	}
 	
 	if(pUnitTasksPending.GetCount() > 0){
 		unitTask = (deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(0);
@@ -404,7 +394,8 @@ void deoglShaderLanguage::FinishTask(deoglShaderCompileTask::Ref &task){
 	
 	task = nullptr;
 	
-	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0){
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0
+	&& pLoadTasksPending.GetCount() == 0){
 		pLogTotalsLocked();
 	}
 	}
@@ -423,7 +414,76 @@ void deoglShaderLanguage::FinishTask(deoglShaderCompileUnitTask::Ref &task){
 	
 	task = nullptr;
 	
-	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0){
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0
+	&& pLoadTasksPending.GetCount() == 0){
+		pLogTotalsLocked();
+	}
+	}
+	
+	pSemaphoreNewTasks.Signal();
+}
+
+void deoglShaderLanguage::FinishTask(deoglShaderLoadTask::Ref &task){
+	const bool ready = task->GetProgram()->ready;
+	
+	if(ready){
+		try{
+			task->GetListener()->CompileFinished(task->GetProgram());
+			
+		}catch(const deException &e){
+			pRenderThread.GetLogger().LogException(e);
+		}
+	}
+	
+	{
+	const deMutexGuard guard(pMutexTasks);
+	
+	if(!ready){
+		deoglShaderProgram * const program = task->GetProgram();
+		
+		deoglShaderProgramUnit * const units[6] = {
+			program->GetUnitCompute(),
+			program->GetUnitVertex(),
+			program->GetUnitTessellationControl(),
+			program->GetUnitTessellationEvaluation(),
+			program->GetUnitGeometry(),
+			program->GetUnitFragment()};
+		int i;
+		
+		for(i=0; i<6; i++){
+			deoglShaderProgramUnit * const u = units[i];
+			if(!u || u->isCompiling || u->compilingFailed || u->IsCompiled()){
+				continue;
+			}
+			
+			pTotalCompiledUnits++;
+			pTotalCompiledStage[i]++;
+			
+			pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::New(
+				new deoglShaderCompileUnitTask(u)));
+			
+			// this method can be called from the resource loader thread instead of the render
+			// thread. for this reason CompileShaderUnit() can not be called here. the task
+			// sets a pending flag which causes the compile to be done in the Update() call
+			/*
+			if(pglMaxShaderCompilerThreads){
+				pCompiler->CompileShaderUnit(*u);
+			}
+			*/
+		}
+		
+		pTotalCompiledShaders++;
+		pTasksPending.Add(deoglShaderCompileTask::Ref::New(
+			new deoglShaderCompileTask(program, task->TakeOutListener())));
+	}
+	
+	DEASSERT_TRUE(pCompilingTaskCount > 0)
+	pCompilingTaskCount--;
+	
+	task = nullptr;
+	
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0
+	&& pLoadTasksPending.GetCount() == 0){
 		pLogTotalsLocked();
 	}
 	}
@@ -473,9 +533,8 @@ void deoglShaderLanguage::WaitAllTasksFinished(){
 		while(true){
 			{
 			const deMutexGuard guard(pMutexTasks);
-			if(pCompilingTaskCount == 0
-			&& pUnitTasksPending.GetCount() == 0
-			&& pTasksPending.GetCount() == 0){
+			if(pCompilingTaskCount == 0 && pUnitTasksPending.GetCount() == 0
+			&& pTasksPending.GetCount() == 0 && pLoadTasksPending.GetCount() == 0){
 				break;
 			}
 			}
@@ -489,11 +548,59 @@ void deoglShaderLanguage::Update(){
 	if(!pglMaxShaderCompilerThreads){
 		return;
 	}
-	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0){
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0
+	&& pLoadTasksPending.GetCount() == 0){
 		return;
 	}
 	
-	int i, count = pUnitTasksPending.GetCount();
+	int i, count = pLoadTasksPending.GetCount();
+	for(i=0; i<count; i++){
+		deoglShaderLoadTask &task = *((deoglShaderLoadTask*)pLoadTasksPending.GetAt(i));
+		deoglShaderProgram * const program = task.GetProgram();
+		
+		try{
+			pCompiler->LoadCachedShader(*program);
+			if(program->ready){
+				task.GetListener()->CompileFinished(program);
+				
+			}else{
+				deoglShaderProgramUnit * const units[6] = {
+					program->GetUnitCompute(),
+					program->GetUnitVertex(),
+					program->GetUnitTessellationControl(),
+					program->GetUnitTessellationEvaluation(),
+					program->GetUnitGeometry(),
+					program->GetUnitFragment()};
+				int j;
+				
+				for(j=0; j<6; j++){
+					deoglShaderProgramUnit * const u = units[j];
+					if(!u || u->isCompiling || u->compilingFailed || u->IsCompiled()){
+						continue;
+					}
+					
+					pTotalCompiledUnits++;
+					pTotalCompiledStage[j]++;
+					
+					pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::New(
+						new deoglShaderCompileUnitTask(u)));
+				}
+				
+				pTotalCompiledShaders++;
+				pTasksPending.Add(deoglShaderCompileTask::Ref::New(
+					new deoglShaderCompileTask(program, task.TakeOutListener())));
+			}
+			
+		}catch(const deException &e){
+			pRenderThread.GetLogger().LogException(e);
+		}
+		
+		pLoadTasksPending.RemoveFrom(i);
+		count--;
+		i--;
+	}
+	
+	count = pUnitTasksPending.GetCount();
 	for(i=0; i<count; i++){
 		deoglShaderCompileUnitTask &task = *((deoglShaderCompileUnitTask*)pUnitTasksPending.GetAt(i));
 		
@@ -525,7 +632,10 @@ void deoglShaderLanguage::Update(){
 			
 			program.isCompiling = true;
 			try{
-				pCompiler->CompileShader(program);
+				pCompiler->LoadCachedShader(program);
+				if(!program.ready){
+					pCompiler->CompileShader(program);
+				}
 				
 			}catch(const deException &e){
 				pRenderThread.GetLogger().LogException(e);
@@ -560,7 +670,8 @@ void deoglShaderLanguage::Update(){
 		i--;
 	}
 	
-	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0){
+	if(pUnitTasksPending.GetCount() == 0 && pTasksPending.GetCount() == 0
+	&& pLoadTasksPending.GetCount() == 0){
 		pLogTotalsLocked();
 	}
 }

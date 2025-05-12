@@ -27,6 +27,7 @@
 
 #include "compiler/deoglShaderCompileTask.h"
 #include "compiler/deoglShaderCompileUnitTask.h"
+#include "compiler/deoglShaderLoadTask.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decStringList.h>
@@ -71,7 +72,7 @@ private:
 	deoglShaderCompilerThread **pCompilerThreads;
 	int pCompilerThreadCount;
 	
-	decObjectList pTasksPending, pUnitTasksPending;
+	decObjectList pTasksPending, pUnitTasksPending, pLoadTasksPending;
 	int pCompilingTaskCount;
 	deMutex pMutexTasks;
 	deSemaphore pSemaphoreNewTasks, pSemaphoreTasksFinished;
@@ -129,11 +130,12 @@ public:
 	
 	/** Get next task to compile. Blocks until a task is available or thread has to exit. */
 	void GetNextTask(deoglShaderCompileTask::Ref &task,
-		deoglShaderCompileUnitTask::Ref &unitTask);
+		deoglShaderCompileUnitTask::Ref &unitTask, deoglShaderLoadTask::Ref &loadTask);
 	
 	/** Finish compile task. Sets task to nullptr before returning. */
 	void FinishTask(deoglShaderCompileTask::Ref &task);
 	void FinishTask(deoglShaderCompileUnitTask::Ref &unitTask);
+	void FinishTask(deoglShaderLoadTask::Ref &loadTask);
 	
 	/** Wait for new tasks to arrive. */
 	void WaitForNewTasks();

@@ -26,6 +26,7 @@
 #include "deoglShaderCompilerThread.h"
 #include "deoglShaderCompileTask.h"
 #include "deoglShaderCompileUnitTask.h"
+#include "deoglShaderLoadTask.h"
 #include "../deoglShaderLanguage.h"
 #include "../deoglShaderProgram.h"
 #include "../deoglShaderProgramUnit.h"
@@ -264,9 +265,22 @@ void deoglShaderCompilerThread::pRunSingle(){
 		
 		deoglShaderCompileTask::Ref task;
 		deoglShaderCompileUnitTask::Ref unitTask;
-		pLanguage.GetNextTask(task, unitTask);
+		deoglShaderLoadTask::Ref loadTask;
+		pLanguage.GetNextTask(task, unitTask, loadTask);
 		
-		if(unitTask){
+		if(loadTask){
+			deoglShaderProgram &program = *loadTask->GetProgram();
+			try{
+				pCompiler->LoadCachedShader(program);
+				
+			}catch(const deException &){
+				program.SetCompiled(nullptr);
+				program.ready = false;
+			}
+			
+			pLanguage.FinishTask(loadTask);
+			
+		}else if(unitTask){
 			deoglShaderProgramUnit &unit = *unitTask->GetUnit();
 			try{
 				//const decString &cacheId = unit.GetCacheId();
@@ -326,9 +340,21 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 		while(true){
 			deoglShaderCompileTask::Ref task;
 			deoglShaderCompileUnitTask::Ref unitTask;
-			pLanguage.GetNextTask(task, unitTask);
+			deoglShaderLoadTask::Ref loadTask;
+			pLanguage.GetNextTask(task, unitTask, loadTask);
 			
-			if(unitTask){
+			if(loadTask){
+				deoglShaderProgram &program = *loadTask->GetProgram();
+				try{
+					pCompiler->LoadCachedShader(program);
+					
+				}catch(const deException &){
+					program.SetCompiled(nullptr);
+					program.ready = false;
+				}
+				pLanguage.FinishTask(loadTask);
+				
+			}else if(unitTask){
 				deoglShaderProgramUnit &unit = *unitTask->GetUnit();
 				try{
 					//const decString &cacheId = unit.GetCacheId();
@@ -377,8 +403,7 @@ void deoglShaderCompilerThread::pRunGLParallel(){
 		// process all finished unit tasks
 		count = unitTasks.GetCount();
 		for(i=0; i<count; i++){
-			deoglShaderCompileUnitTask * const unitTask =
-				(deoglShaderCompileUnitTask*)unitTasks.GetAt(i);
+			deoglShaderCompileUnitTask * const unitTask = (deoglShaderCompileUnitTask*)unitTasks.GetAt(i);
 			deoglShaderProgramUnit &unit = *unitTask->GetUnit();
 			
 			try{
