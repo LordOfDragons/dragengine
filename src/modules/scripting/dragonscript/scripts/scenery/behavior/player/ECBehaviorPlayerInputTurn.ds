@@ -138,7 +138,7 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 				
 				value = parameters.getAt("analog", null)
 				if value != null
-					pInstance.setAnalogTurnHorizontal(parseAnalogValue(context, value cast String))
+					pInstance.addAnalogTurnHorizontal(parseAnalogValue(context, value cast String))
 				end
 				
 				value = parameters.getAt("analog.sticky", null)
@@ -376,6 +376,14 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 		/** \brief Set analog turn left right. */
 		func void setAnalogTurnHorizontal(float value)
 			pAnalogTurnHorizontal = value
+		end
+		
+		/**
+		 * \brief Set analog turn left right.
+		 * \version 1.26
+		 */
+		func void addAnalogTurnHorizontal(float value)
+			pAnalogTurnHorizontal += value
 		end
 		
 		/** \brief Sticky analog turn left right. */

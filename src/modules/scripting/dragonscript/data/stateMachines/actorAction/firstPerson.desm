@@ -391,30 +391,22 @@
 		<!--
 		Post think on frame update for player controlled actor only. Does nothing.
 		-->
-		<!--
-		<transition event='playerPostThink'/>
-		-->
+		<!-- <transition event='playerPostThink'/> -->
 		
 		<!--
 		Element entered game world. Does nothing.
 		-->
-		<!--
-		<transition event='enteredGameWorld'/>
-		-->
+		<!-- <transition event='enteredGameWorld'/> -->
 		
 		<!--
 		Element left game world. Does nothing.
 		-->
-		<!--
-		<transition event='leftGameWorld'/>
-		-->
+		<!-- <transition event='leftGameWorld'/> -->
 		
 		<!--
 		First frame update after element entered game world. Does nothing.
 		-->
-		<!--
-		<transition event='enterFrame'/>
-		-->
+		<!-- <transition event='enterFrame'/> -->
 		
 		<!--
 		Actor is requested to cancel action the next time possible.
@@ -576,13 +568,13 @@
 		<!--
 		While controlled by actor mover do nothing during player thinking.
 		-->
-		<transition event='playerThink'/>
+		<!-- <transition event='playerThink'/> -->
 		
 		<transition event='postThink'>
 			<import>shared.postUpdate</import>
 		</transition>
 		
-		<transition event='playerPostThink'/>
+		<!-- <transition event='playerPostThink'/> -->
 		
 		<transition event='cancel'>
 			<import>shared.aiFailed</import>

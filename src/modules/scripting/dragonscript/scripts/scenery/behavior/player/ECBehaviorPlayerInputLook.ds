@@ -189,7 +189,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				
 				value = parameters.getAt("analog.horizontal", null)
 				if value != null
-					pInstance.setAnalogLookHorizontal(parseAnalogValue(context, value cast String))
+					pInstance.addAnalogLookHorizontal(parseAnalogValue(context, value cast String))
 				end
 				
 				value = parameters.getAt("analog.horizontal.factor", null)
@@ -209,7 +209,7 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				
 				value = parameters.getAt("analog.vertical", null)
 				if value != null
-					pInstance.setAnalogLookVertical(parseAnalogValue(context, value cast String))
+					pInstance.addAnalogLookVertical(parseAnalogValue(context, value cast String))
 				end
 				
 				value = parameters.getAt("analog.vertical.factor", null)
@@ -552,6 +552,14 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 			pAnalogLookHorizontal = value
 		end
 		
+		/**
+		 * \brief Add analog look left right.
+		 * \version 1.26
+		 */
+		func void addAnalogLookHorizontal(float value)
+			pAnalogLookHorizontal += value
+		end
+		
 		/** \brief Analog look up down. */
 		func float getAnalogLookVertical()
 			return pAnalogLookVertical
@@ -560,6 +568,14 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		/** \brief Set analog look up down. */
 		func void setAnalogLookVertical(float value)
 			pAnalogLookVertical = value
+		end
+		
+		/**
+		 * \brief Add analog look up down.
+		 * \version 1.26
+		 */
+		func void addAnalogLookVertical(float value)
+			pAnalogLookVertical += value
 		end
 		
 		/** \brief Analog Look left right factor relative to left right input speed. */

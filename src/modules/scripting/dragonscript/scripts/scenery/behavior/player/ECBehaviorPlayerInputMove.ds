@@ -219,7 +219,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				
 				value = parameters.getAt("analog.forwardBackward", null)
 				if value != null
-					pInstance.setAnalogMoveForwardBackward(parseAnalogValue(context, value cast String))
+					pInstance.addAnalogMoveForwardBackward(parseAnalogValue(context, value cast String))
 				end
 				
 				value = parameters.getAt("analog.forwardBackward.sticky", null)
@@ -229,7 +229,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				
 				value = parameters.getAt("analog.leftRight", null)
 				if value != null
-					pInstance.setAnalogMoveLeftRight(parseAnalogValue(context, value cast String))
+					pInstance.addAnalogMoveLeftRight(parseAnalogValue(context, value cast String))
 				end
 				
 				value = parameters.getAt("analog.leftRight.sticky", null)
@@ -777,6 +777,14 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			pAnalogMoveForwardBackward = value
 		end
 		
+		/**
+		 * \brief Set analog move forward backward.
+		 * \version 1.26
+		 */
+		func void addAnalogMoveForwardBackward(float value)
+			pAnalogMoveForwardBackward += value
+		end
+		
 		/** \brief Analog move left right. */
 		func float getAnalogMoveLeftRight()
 			return pAnalogMoveLeftRight
@@ -785,6 +793,14 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		/** \brief Set analog move left right. */
 		func void setAnalogMoveLeftRight(float value)
 			pAnalogMoveLeftRight = value
+		end
+		
+		/**
+		 * \brief Add analog move left right.
+		 * \version 1.26
+		 */
+		func void addAnalogMoveLeftRight(float value)
+			pAnalogMoveLeftRight += value
 		end
 		
 		/** \brief Sticky analog move forward backward. */
