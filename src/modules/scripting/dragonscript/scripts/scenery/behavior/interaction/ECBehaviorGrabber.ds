@@ -934,13 +934,11 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand)\
-	this(eclass, vrHand, "grabber.")
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand) this(eclass, vrHand, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass, ECBehaviorCollider collider)\
-	this(eclass, collider, "grabber.")
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) this(eclass, collider, "")
 	end
 	
 	/** \brief Create behavior element class. */

@@ -188,7 +188,7 @@ class BaseActorClass extends BehaviorElementClass
 		pActorMover.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pAlignActor = ECBehaviorAlignActor.new(this, pLocomotion, pConversationActor)
-		// pAlignActor.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
+		pAlignActor.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pAvoidedByActor = ECBehaviorAvoidedByActor.new(this)
 		

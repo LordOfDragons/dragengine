@@ -184,7 +184,8 @@ class ECBehaviorOccupier extends DefaultECBehavior
 				
 				value = parameters.getAt("claim", null)
 				if value != null
-					var ECBehaviorInteractionSpot.Instance ispot = getInteractionElementISpot(value)
+					var ECBehaviorInteractionSpot.Instance ispot = getInteractionElementISpot(\
+						value, parameters.getAt("claim.id", ""))
 					if ispot == null or not ispot.canClaim(pInstance)
 						return BTResult.failure
 					end
@@ -240,14 +241,24 @@ class ECBehaviorOccupier extends DefaultECBehavior
 				return BTResult.success
 			end
 			
-			func ECBehaviorInteractionSpot.Instance getInteractionElementISpot(Object id)
+			func ECBehaviorInteractionSpot.Instance getInteractionElementISpot(Object id, Object ispotId)
 				var ECBehaviorInteractionElement.Instance ie =\
 					ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), id cast String)
-				if ie == null or ie.getInteractionElementBehavior() == null\
-				or not ie.getInteractionElementBehavior() castable ECBehaviorInteractionSpot.Instance
+				if ie == null
 					return null
 				end
-				return ie.getInteractionElementBehavior() cast ECBehaviorInteractionSpot.Instance
+				
+				var ECBehaviorInstance behavior = ie.getInteractionElementBehavior()
+				if behavior != null and behavior castable ECBehaviorInteractionSpot.Instance
+					return behavior cast ECBehaviorInteractionSpot.Instance
+				end
+				
+				var BehaviorElement element = ie.getInteractionElement()
+				if element == null
+					return null
+				end
+				
+				return ECBehaviorInteractionSpot.getInstanceIn(element, ispotId cast String)
 			end
 		end
 		
@@ -496,7 +507,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) this(eclass, "occupier.")
+	func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
 	/** \brief Create behavior element class. */
