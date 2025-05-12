@@ -282,6 +282,216 @@
 	
 	
 	<!--
+	Base thinking for ground movemement.
+	
+	Imported by adding this line to your "think" transition:
+	<import>shared.think.ground</import>
+	-->
+	<state id='shared.think.ground'>
+		<!--
+		Imports "shared.update.locomotion", "shared.update.collider.ground"
+		and "shared.update.animators"
+		-->
+		<import>shared.update.locomotion</import>
+		<import>shared.update.collider.ground</import>
+		<import>shared.update.animators</import>
+	</state>
+	
+	
+	<!--
+	Base thinking for falling movemement.
+	
+	Imported by adding this line to your "think" transition:
+	<import>shared.think.falling</import>
+	-->
+	<state id='shared.think.falling'>
+		<!--
+		Think on frame update. Applies necessary actions and stays in this state.
+		Imports "shared.update.locomotion", "shared.update.collider.ground"
+		and "shared.update.animators"
+		-->
+		<import>shared.update.locomotion</import>
+		<import>shared.update.collider.falling.turn</import>
+		<import>shared.update.animators</import>
+	</state>
+	
+	
+	<!--
+	Basic state content for actors. Import this into your custom states to get basic actor
+	handling for both stationary and moving actors. This does not include player handling.
+	
+	Defines these transitions: think, postThink, cancel and collisionResponse
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.ground</import>
+	-->
+	<state id='shared.state.ground'>
+		<!--
+		Think on frame update. Applies necessary actions and stays in this state.
+		Imports "shared.update.locomotion", "shared.update.collider.ground"
+		and "shared.update.animators"
+		-->
+		<transition event='think'>
+			<import>shared.think.ground</import>
+		</transition>
+		
+		<!--
+		Post think on frame update. Applies necessary actions and stays in this state.
+		Imports "shared.postUpdate"
+		-->
+		<transition event='postThink'>
+			<import>shared.postUpdate</import>
+		</transition>
+		
+		<!--
+		Actor is requested to cancel action the next time possible.
+		
+		Import "shared.aiActionFailed" to notify AI about action having failed.
+		-->
+		<transition event='cancel'>
+			<import>shared.aiFailed</import>
+		</transition>
+		
+		<!--
+		Collision detected of actor AI collider. Applies sliding collision response
+		and stays in this state. The event parameter is an instance of CollisionInfo.
+		
+		Imports "shared.collision.sliding"
+		-->
+		<transition event='collisionResponse'>
+			<import>shared.collision.sliding</import>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Basic state content for player controlled actors. Applies player input like looking
+	around and moving the actor.
+	
+	Defines these transitions: think, playerThink, postThink, cancel, collisionResponse,
+	playerTakesControl and playerReleasesControl.
+	
+	This state includes "shared.state.ground" and "shared.player.movement".
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.ground.player</import>
+	-->
+	<state id='shared.state.ground.player'>
+		<!--
+		Handle player movement commands including moving, looking around, run and crouch toggling.
+		-->
+		<import>shared.player.movement</import>
+		
+		<!--
+		Player takes control of actor. Applies necessary actions and stays in this state.
+		-->
+		<transition event='playerTakesControl'>
+			<!--
+			Typically player input and locomotion has to be setup again similar to "activate"
+			-->
+			<import>shared.init.inputLocomotion</import>
+			<import>shared.init.inputLocomotion.player</import>
+		</transition>
+		
+		<!--
+		Player releases control of actor. Applies necessary actions and stays in this state.
+		Same behavior as "playerTakesControl" so we can copy the import from there
+		-->
+		<transition event='playerReleasesControl'>
+			<import>shared.init.inputLocomotion</import>
+		</transition>
+		<!--
+		Think on frame update for player controlled actor only.
+		
+		Do transition applying necessary actions and staying in this state.
+		Imports "shared.update.player.locomotion"
+		-->
+		<transition event='playerThink'>
+			<import>shared.update.player.locomotion</import>
+		</transition>
+		
+		<!--
+		Post think on frame update for player controlled actor only. Does nothing.
+		-->
+		<!-- <transition event='playerPostThink'/> -->
+		
+		<!--
+		Basic state content for actors
+		-->
+		<import>shared.state.ground</import>
+	</state>
+	
+	
+	<!--
+	Basic state content for falling actors. Import this into your custom states to get
+	basic actor handling for falling actors. This does not include player handling.
+	
+	Defines these transitions: think, postThink, cancel and collisionResponse
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.falling</import>
+	-->
+	<state id='shared.state.falling'>
+		<transition event='think'>
+			<import>shared.think.falling</import>
+		</transition>
+		
+		<transition event='postThink'>
+			<import>shared.postUpdate</import>
+		</transition>
+		
+		<transition event='cancel'>
+			<import>shared.aiFailed</import>
+		</transition>
+		
+		<!--
+		Collision detected of actor AI collider. Applies sliding collision response
+		then checks if the actor is touching ground. The event parameter is an instance
+		of CollisionInfo. If touching ground a "projectToGround.touch" event will be
+		send so we stay in this state.
+		
+		Imports "shared.collision.sliding" and "shared.collision.landing"
+		-->
+		<transition event='collisionResponse'>
+			<import>shared.collision.sliding</import>
+			<import>shared.collision.landing</import>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Basic state content for falling player controlled actors. Applies player input like
+	looking around without moving the actor.
+	
+	Defines these transitions: think, playerThink, postThink, cancel, collisionResponse,
+	playerTakesControl and playerReleasesControl.
+	
+	This state includes "shared.state.falling" and "shared.player.movement".
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.falling.player</import>
+	-->
+	<state id='shared.state.falling.player'>
+		<import>shared.player.movement</import>
+		
+		<transition event='playerTakesControl'>
+			<import>shared.init.inputLocomotion</import>
+			<import>shared.init.inputLocomotion.player</import>
+		</transition>
+		
+		<transition event='playerReleasesControl'>
+			<import>shared.init.inputLocomotion</import>
+		</transition>
+		
+		<transition event='playerThink'>
+			<import>shared.update.player.locomotion</import>
+		</transition>
+		
+		<import>shared.state.falling</import>
+	</state>
+	
+	
+	<!--
 	Initial state. Waits for "activate" or "activateWhileLoading" to transition into "ground" state.
 	-->
 	<state id='created'>
@@ -329,97 +539,6 @@
 			<state>actorMover</state>
 		</enterAction>
 		
-		
-		<!--
-		Handle player movement commands including moving, looking around, run and crouch toggling.
-		-->
-		<import>shared.player.movement</import>
-		
-		<!--
-		Player takes control of actor. Applies necessary actions and stays in this state.
-		-->
-		<transition event='playerTakesControl'>
-			<!--
-			Typically player input and locomotion has to be setup again similar to "activate"
-			-->
-			<import>shared.init.inputLocomotion</import>
-			<import>shared.init.inputLocomotion.player</import>
-		</transition>
-		
-		<!--
-		Player releases control of actor. Applies necessary actions and stays in this state.
-		Same behavior as "playerTakesControl" so we can copy the import from there
-		-->
-		<transition event='playerReleasesControl'>
-			<import>shared.init.inputLocomotion</import>
-		</transition>
-		
-		<!--
-		Think on frame update. Applies necessary actions and stays in this state.
-		Imports "shared.update.locomotion", "shared.update.collider.ground"
-		and "shared.update.animators"
-		-->
-		<transition event='think'>
-			<import>shared.update.locomotion</import>
-			<import>shared.update.collider.ground</import>
-			<import>shared.update.animators</import>
-		</transition>
-		
-		<!--
-		Think on frame update for player controlled actor only.
-		
-		Do transition applying necessary actions and staying in this state.
-		Imports "shared.update.player.locomotion"
-		-->
-		<transition event='playerThink'>
-			<import>shared.update.player.locomotion</import>
-		</transition>
-		
-		<!--
-		Post think on frame update. Applies necessary actions and stays in this state.
-		Imports "shared.postUpdate"
-		-->
-		<transition event='postThink'>
-			<import>shared.postUpdate</import>
-		</transition>
-		
-		<!--
-		Post think on frame update for player controlled actor only. Does nothing.
-		-->
-		<!--
-		<transition event='playerPostThink'/>
-		-->
-		
-		<!--
-		Element entered game world. Does nothing.
-		-->
-		<!--
-		<transition event='enteredGameWorld'/>
-		-->
-		
-		<!--
-		Element left game world. Does nothing.
-		-->
-		<!--
-		<transition event='leftGameWorld'/>
-		-->
-		
-		<!--
-		First frame update after element entered game world. Does nothing.
-		-->
-		<!--
-		<transition event='enterFrame'/>
-		-->
-		
-		<!--
-		Actor is requested to cancel action the next time possible.
-		
-		Import "shared.aiActionFailed" to notify AI about action having failed.
-		-->
-		<transition event='cancel'>
-			<import>shared.aiFailed</import>
-		</transition>
-		
 		<!--
 		About using BaseActorAction.conversationWait(). This function returns true if
 		conversation actions have to wait for this action to finish. Using the state
@@ -433,15 +552,6 @@
 		This state is reset to false whenever the current action is changed
 		-->
 		
-		<!--
-		Collision detected of actor AI collider. Applies sliding collision response
-		and stays in this state. The event parameter is an instance of CollisionInfo.
-		
-		Imports "shared.collision.sliding"
-		-->
-		<transition event='collisionResponse'>
-			<import>shared.collision.sliding</import>
-		</transition>
 		
 		<!--
 		Actor begins falling. Send by ECBehaviorProjectToGround if the actor is detected
@@ -458,6 +568,27 @@
 		Switches to "actorMover" state.
 		-->
 		<transition event='actorMover.start' state='actorMover'/>
+		
+		<!--
+		Element entered game world. Does nothing.
+		-->
+		<!-- <transition event='enteredGameWorld'/> -->
+		
+		<!--
+		Element left game world. Does nothing.
+		-->
+		<!-- <transition event='leftGameWorld'/> -->
+		
+		<!--
+		First frame update after element entered game world. Does nothing.
+		-->
+		<!-- <transition event='enterFrame'/> -->
+		
+		
+		<!--
+		Basic state content for player controlled actors
+		-->
+		<import>shared.state.ground.player</import>
 	</state>
 	
 	
@@ -478,53 +609,6 @@
 		</enterAction>
 		
 		
-		<import>shared.player.movement</import>
-		
-		<transition event='playerTakesControl'>
-			<import>shared.init.inputLocomotion</import>
-			<import>shared.init.inputLocomotion.player</import>
-		</transition>
-		
-		<transition event='playerReleasesControl'>
-			<import>shared.init.inputLocomotion</import>
-		</transition>
-		
-		<transition event='think'>
-			<import>shared.update.locomotion</import>
-			<import>shared.update.collider.falling</import>
-			<import>shared.update.animators</import>
-		</transition>
-		
-		<transition event='playerThink'>
-			<import>shared.update.player.locomotion</import>
-		</transition>
-		
-		<transition event='postThink'>
-			<import>shared.postUpdate</import>
-		</transition>
-		
-		<transition event='playerPostThink'/>
-		<transition event='enteredGameWorld'/>
-		<transition event='leftGameWorld'/>
-		<transition event='enterFrame'/>
-		
-		<transition event='cancel'>
-			<import>shared.aiFailed</import>
-		</transition>
-		
-		<!--
-		Collision detected of actor AI collider. Applies sliding collision response
-		then checks if the actor is touching ground. The event parameter is an instance
-		of CollisionInfo. If touching ground a "projectToGround.touch" event will be
-		send so we stay in this state.
-		
-		Imports "shared.collision.sliding" and "shared.collision.landing"
-		-->
-		<transition event='collisionResponse'>
-			<import>shared.collision.sliding</import>
-			<import>shared.collision.landing</import>
-		</transition>
-		
 		<!--
 		Actor hits ground. Send by ECBehaviorProjectToGround if the actor is detected
 		to be touching ground.
@@ -532,6 +616,9 @@
 		Switches to "ground" state.
 		-->
 		<transition event='projectToGround.touch' state='ground'/>
+		
+		
+		<import>shared.state.falling.player</import>
 	</state>
 	
 	
@@ -551,48 +638,12 @@
 		</enterAction>
 		
 		
-		<import>shared.player.movement</import>
-		
-		<transition event='playerTakesControl'>
-			<import>shared.init.inputLocomotion</import>
-			<import>shared.init.inputLocomotion.player</import>
-		</transition>
-		
-		<transition event='playerReleasesControl'>
-			<import>shared.init.inputLocomotion</import>
-		</transition>
-		
-		<transition event='think'>
-			<import>shared.update.locomotion</import>
-			<import>shared.update.collider.ground</import>
-			<import>shared.update.animators</import>
-		</transition>
-		
 		<!--
 		While controlled by actor mover do nothing during player thinking.
 		-->
 		<transition event='playerThink'/>
 		
-		<transition event='postThink'>
-			<import>shared.postUpdate</import>
-		</transition>
 		
-		<transition event='playerPostThink'/>
-		
-		<transition event='cancel'>
-			<import>shared.aiFailed</import>
-		</transition>
-		
-		<transition event='collisionResponse'>
-			<import>shared.collision.sliding</import>
-		</transition>
-		
-		<!--
-		Actor starts being moved by ECBehaviorActorMover. Send by ECBehaviorActorMover
-		if a goal is set to move to.
-		
-		Switches to "actorMover" state.
-		-->
-		<transition event='actorMover.start' state='actorMover'/>
+		<import>shared.state.ground.player</import>
 	</state>
 </stateMachine>
