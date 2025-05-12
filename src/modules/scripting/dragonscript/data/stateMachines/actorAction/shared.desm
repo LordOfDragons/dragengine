@@ -118,7 +118,7 @@
 		<!--
 		Apply gravity
 		-->
-		<enterAction name='colliderAI.set'>
+		<enterAction name='colliderAI.update'>
 			<parameter name='gravity.apply'/>
 			<parameter name='stop.turning'/>
 		</enterAction>
@@ -135,7 +135,7 @@
 		<!--
 		Apply gravity
 		-->
-		<enterAction name='colliderAI.set'>
+		<enterAction name='colliderAI.update'>
 			<parameter name='gravity.apply'/>
 			<parameter name='stop.turning'/>
 		</enterAction>
@@ -153,7 +153,7 @@
 			<parameter name='animator'/>
 		</enterAction>
 		
-		<enterAction name='actorAnimated.set'>
+		<enterAction name='actorAnimated.update'>
 			<parameter name='notifyControllersChanged'/>
 			<parameter name='apply'/>
 		</enterAction>
@@ -238,7 +238,7 @@
 	<import>shared.aiFinished</import>
 	-->
 	<state id='shared.aiFinished'>
-		<enterAction name='aiAction.notify'>
+		<enterAction name='aiAction.update'>
 			<parameter name='ai.actionFinished'>success</parameter>
 		</enterAction>
 	</state>
@@ -253,7 +253,7 @@
 	<import>shared.aiFailed</import>
 	-->
 	<state id='shared.aiFailed'>
-		<enterAction name='aiAction.notify'>
+		<enterAction name='aiAction.update'>
 			<parameter name='ai.actionFinished'>failure</parameter>
 		</enterAction>
 	</state>

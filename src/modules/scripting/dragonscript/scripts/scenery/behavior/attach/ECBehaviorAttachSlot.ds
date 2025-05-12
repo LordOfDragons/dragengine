@@ -166,10 +166,10 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "attachSlot{(id)}.detach".
+		 * \brief Behavior tree action/condition "attachSlot{(id)}.update".
 		 * \version 1.26
 		 */
-		private class BTADetach extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -177,12 +177,34 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				if parameters.has("dispose")
-					pInstance.detachAndDispose()
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var ECBehaviorAttachable.Instance attachable = pInstance.getAttachable()
+					if attachable == null
+						return BTResult.failure
+					end
 					
-				else
-					pInstance.detach()
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(attachable)
 				end
+				
+				value = parameters.getAt("detach", null)
+				if value != null
+					if value.equals("dispose")
+						pInstance.detachAndDispose()
+						
+					else
+						pInstance.detach()
+					end
+				end
+				
 				return BTResult.success
 			end
 		end
@@ -298,7 +320,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "detach", BTADetach.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

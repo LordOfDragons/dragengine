@@ -202,10 +202,10 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "announcer{(id)}.announce".
+		 * \brief Behavior tree action "announcer{(id)}.update".
 		 * \version 1.26
 		 */
-		private class BTAAnnounce extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -356,7 +356,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "announce", BTAAnnounce.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

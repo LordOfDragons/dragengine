@@ -253,6 +253,24 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 					end
 				end
 				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "colliderAI.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
 				if parameters.has("gravity.apply")
 					pInstance.applyGravity((context cast SMContext).getEventParameter() cast float)
 				end
@@ -273,6 +291,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 				return BTResult.success
 			end
 		end
+		
 		/**
 		 * \brief Behavior tree action "colliderAI.collision".
 		 * \version 1.26
@@ -387,6 +406,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 				var String prefix = pECBehavior.getPrefix()
 				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
 				btsms.addAllAction(prefix + "set", BTASet.new(this))
+				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
 				btsms.addAllAction(prefix + "collision", BTACollision.new(this))
 				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 			end

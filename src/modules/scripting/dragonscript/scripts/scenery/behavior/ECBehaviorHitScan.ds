@@ -182,10 +182,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "hitScan.start".
+		 * \brief Behavior tree action/condition "hitScan.update".
 		 * \version 1.26
 		 */
-		private class BTAStart extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -193,56 +193,48 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				var Object value = parameters.getAt("type")
-				if value.equals("circular")
-					pInstance.startCircular(\
-						(parameters.getAt("count") cast String).toInt(),\
-						(parameters.getAt("angle") cast String).toFloat())
-					
-				elif value.equals("cone")
-					pInstance.startCone(\
-						(parameters.getAt("count") cast String).toInt(),\
-						(parameters.getAt("angle") cast String).toFloat())
-					
-				elif value.equals("rectangular")
-					pInstance.startRectangular(\
-						(parameters.getAt("count") cast String).toInt(),\
-						(parameters.getAt("angle.horizontal") cast String).toFloat(),\
-						(parameters.getAt("angle.vertical") cast String).toFloat())
-					
-				elif value.equals("rectangular.uniform")
-					pInstance.startRectangularUniform(\
-						(parameters.getAt("count.columns") cast String).toInt(),\
-						(parameters.getAt("count.rows") cast String).toInt(),\
-						(parameters.getAt("angle.horizontal") cast String).toFloat(),\
-						(parameters.getAt("angle.vertical") cast String).toFloat())
-					
-				else
-					return BTResult.failure
+				var Object value
+				
+				value = parameters.getAt("start", null)
+				if value != null
+					if value.equals("circular")
+						pInstance.startCircular(\
+							(parameters.getAt("count") cast String).toInt(),\
+							(parameters.getAt("angle") cast String).toFloat())
+						
+					elif value.equals("cone")
+						pInstance.startCone(\
+							(parameters.getAt("count") cast String).toInt(),\
+							(parameters.getAt("angle") cast String).toFloat())
+						
+					elif value.equals("rectangular")
+						pInstance.startRectangular(\
+							(parameters.getAt("count") cast String).toInt(),\
+							(parameters.getAt("angle.horizontal") cast String).toFloat(),\
+							(parameters.getAt("angle.vertical") cast String).toFloat())
+						
+					elif value.equals("rectangular.uniform")
+						pInstance.startRectangularUniform(\
+							(parameters.getAt("count.columns") cast String).toInt(),\
+							(parameters.getAt("count.rows") cast String).toInt(),\
+							(parameters.getAt("angle.horizontal") cast String).toFloat(),\
+							(parameters.getAt("angle.vertical") cast String).toFloat())
+						
+					else
+						return BTResult.failure
+					end
 				end
 				
-				return BTResult.success
-			end
-		end
-		
-		/**
-		 * \brief Behavior tree action "hitScan.stop".
-		 * \version 1.26
-		 */
-		private class BTAStop extends BTSMActionCondition
-			var Instance pInstance
-			
-			func new(Instance instance)
-				pInstance = instance
-			end
-			
-			func BTResult runActionShared(Object context, Dictionary parameters)
-				if parameters.has("clear")
-					pInstance.clear()
-					
-				else
-					pInstance.stop()
+				value = parameters.getAt("stop", null)
+				if value != null
+					if value.equals("clear")
+						pInstance.clear()
+						
+					else
+						pInstance.stop()
+					end
 				end
+				
 				return BTResult.success
 			end
 		end
@@ -373,8 +365,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "start", BTAStart.new(this))
-				pBTSMs.addAllAction(prefix + "stop", BTAStop.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

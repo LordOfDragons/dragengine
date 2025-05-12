@@ -1,0 +1,601 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
+pin Dragengine.ConversationSystem
+
+
+/**
+ * \brief Behavior element behavior adding support to store an interaction element.
+ * \version 1.26
+ * 
+ * This behavior allows to store for a longer time an element found by another behavior.
+ * For example ECBehaviorLookAt is able to locate an element. By storing this element
+ * in this behavior another behavior, state machine or behavior tree can use this found
+ * element to interact with it.
+ * 
+ * This behavior is able to persist and restore the element. This is though only possible
+ * as long as the element is part of a game world. Hence while leaving a game world the
+ * interact element is cleared. It is also possible the element is stored longer than it
+ * exists in the game world. After loading it is thus possible the interact element can
+ * not be resolved. Behaviors, state machines and behavior trees using this interact
+ * element behavior have to be prepared for the interact element to be null after loading.
+ * 
+ * This behavior can be added multiple times to keep track of multiple interact elements.
+ * 
+ * Element class properties have the prefix "interactionElement{(id)}.".
+ * 
+ * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_interactionelement
+ */
+class ECBehaviorInteractionElement extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Optional: \ref ECBehaviorBehaviorTree
+	 * - Optional: \ref ECBehaviorStateMachine
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorInteractionElement'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorInteractionElement' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorInteractionElement"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorInteractionElement behavior = ECBehaviorInteractionElement.new(eclass, id)
+			
+			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
+				eclass, parameters, "interactionElement", id)
+			return behavior
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Behavior tree action "interactionElement{(id)}.update". */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getInteractionElement(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				value = parameters.getAt("assign", null)
+				if value != null
+					var Instance other = ECBehaviorInteractionElement.getInstanceIn(\
+						pInstance.getElement(), value cast String)
+					if other == null
+						return BTResult.failure
+					end
+					
+					if other.getInteractionElementBehavior() != null
+						pInstance.setInteractionBehavior(other.getInteractionElementBehavior())
+						
+					else
+						pInstance.setInteractionElement(other.getInteractionElement())
+					end
+				end
+				
+				if parameters.has("clear")
+					pInstance.clear()
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action/condition "interactionElement{(id)}.check". */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "set", null)
+				if value != null
+					result &= pInstance.isSet() == value.equals("true")
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getInteractionElement(),\
+					parameters, prefix + "interact.", pInstance.getElement())
+				
+				return result
+			end
+		end
+		
+		/**
+		 * \brief Conversation command/condition.
+		 * 
+		 * \par Commands
+		 * 
+		 * interactionElement interact <name> {<parameter>}
+		 *   Interact with interaction element if stored
+		 * 
+		 * \par Conditions
+		 * 
+		 * interactionElement hasQuery <name>
+		 *   Named interact is present in interaction element if stored
+		 * 
+		 * interactionElement query <name> {<parameter>}
+		 *   Query interact with interaction element if stored
+		 */
+		class CCInteract implements ECBehaviorConversationActor.ConversationCommand,\
+		ECBehaviorConversationActor.ConversationCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void runCommand(ECBehaviorConversationActor.Instance instance, Array arguments)
+				var Object action = arguments.getAt(1)
+				
+				if action.equals("interact")
+					runInteract(instance, arguments)
+					
+				else
+					throw EInvalidParam.new("Unknown action: " + action)
+				end
+			end
+			
+			func void runInteract(ECBehaviorConversationActor.Instance instance, Array arguments)
+				if pInstance.getInteractionElement() == null
+					return
+				end
+				
+				var ECBehaviorInteraction.Instance behavior =\
+					ECBehaviorInteraction.getInstanceIn(pInstance.getInteractionElement())
+				if behavior == null
+					return
+				end
+				
+				behavior.interact(arguments.getAt(2) cast String,\
+					arguments.slice(3), pInstance.getElement())
+			end
+			
+			func bool evaluateCondition(ECBehaviorConversationActor.Instance instance, Array arguments)
+				var Object action = arguments.getAt(1)
+				
+				if action.equals("hasQuery")
+					return evaluateHasQuery(instance, arguments)
+					
+				elif action.equals("query")
+					return evaluateQuery(instance, arguments)
+					
+				else
+					throw EInvalidParam.new("Unknown action: " + action)
+				end
+			end
+			
+			func bool evaluateHasQuery(ECBehaviorConversationActor.Instance instance, Array arguments)
+				if pInstance.getInteractionElement() == null
+					return false
+				end
+				
+				var ECBehaviorInteraction.Instance behavior =\
+					ECBehaviorInteraction.getInstanceIn(pInstance.getInteractionElement())
+				if behavior == null
+					return false
+				end
+				
+				return behavior.hasInteractionAt(arguments.getAt(2) cast String)
+			end
+			
+			func bool evaluateQuery(ECBehaviorConversationActor.Instance instance, Array arguments)
+				if pInstance.getInteractionElement() == null
+					return false
+				end
+				
+				var ECBehaviorInteraction.Instance behavior =\
+					ECBehaviorInteraction.getInstanceIn(pInstance.getInteractionElement())
+				if behavior == null
+					return false
+				end
+				
+				return behavior.interact(arguments.getAt(2) cast String,\
+					arguments.slice(3), pInstance.getElement())
+			end
+		end
+		
+		
+		var ECBehaviorInteractionElement pECBehavior
+		var BehaviorElement pInteractionElement
+		var ECBehaviorInstance pInteractionElementBehavior
+		var ElementResolver pElementResolver
+		
+		
+		/** \brief Create behavior instance. */
+		func new(ECBehaviorInteractionElement ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		func void dispose()
+			pInteractionElement = null
+			pInteractionElementBehavior = null
+			pElementResolver = null
+			super.dispose()
+		end
+		
+		
+		/** \brief Initialize element from stub. */
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getConversationActor() != null
+				var ECBehaviorConversationActor.Instance ca = pECBehavior.getConversationActor().instance(element)
+				var String name = pECBehavior.getPrefix().substring(0, -1)
+				
+				var CCInteract ac = CCInteract.new(this)
+				ca.addCondition(name, ac)
+				ca.addCommand(name, ac)
+			end
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+			end
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorInteractionElement getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Element resolver used during loading or \em null if not set. */
+		func ElementResolver getElementResolver()
+			return pElementResolver
+		end
+		
+		/** \brief Interact element or null. */
+		func BehaviorElement getInteractionElement()
+			return pInteractionElement
+		end
+		
+		/** \brief Interact element behavior or null. */
+		func ECBehaviorInstance getInteractionElementBehavior()
+			return pInteractionElementBehavior
+		end
+		
+		/** \brief Set interact element or null. */
+		func void setInteractionElement(BehaviorElement element)
+			pInteractionElement = element
+			pInteractionElementBehavior = null
+		end
+		
+		func void setInteractionBehavior(ECBehaviorInstance instance)
+			pInteractionElement = instance != null if instance.getElement() else null
+			pInteractionElementBehavior = instance
+		end
+		
+		/** \brief Set interect element to null */
+		func void clear()
+			pInteractionElement = null
+			pInteractionElementBehavior = null
+		end
+		
+		/** \brief Interact element is set. */
+		func bool isSet()
+			return pInteractionElement != null
+		end
+		
+		/** \brief Interact element is not set. */
+		func bool isNotSet()
+			return pInteractionElement == null
+		end
+		
+		/** \brief Interaction element is present and supports interaction. */
+		func bool hasInteract(String name)
+			if pInteractionElement == null
+				return false
+			end
+			
+			var ECBehaviorInteraction.Instance behavior = ECBehaviorInteraction.getInstanceIn(pInteractionElement)
+			return behavior != null and behavior.hasInteractionAt(name)
+		end
+		
+		/** \brief Interaction element is present, has interaction and interaction returns true. */
+		func bool interact(String name, Array parameters, BehaviorElement source)
+			if pInteractionElement == null
+				return false
+			end
+			
+			var ECBehaviorInteraction.Instance behavior = ECBehaviorInteraction.getInstanceIn(pInteractionElement)
+			return behavior != null and behavior.interact(name, parameters, source)
+		end
+		
+		
+		/** \brief Frame update started. */
+		func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
+			end
+		end
+		
+		func void removeFromGameWorld()
+			pInteractionElement = null
+			pInteractionElementBehavior = null
+			super.removeFromGameWorld()
+		end
+		
+		
+		/** \brief Read element from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte()
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+				var bool hasElement = flags.getAt(0)
+				var bool hasBehavior = flags.getAt(1)
+				
+				if hasElement or hasBehavior
+					pElementResolver = ElementResolver.new()
+					setRequiresEnterFrame(true)
+				end
+				
+				if hasElement
+					pElementResolver.addAllowFail(reader, block BehaviorElement element
+						pInteractionElement = element
+					end)
+				end
+				if hasBehavior
+					pElementResolver.addAllowFail(reader, block BehaviorElement element
+						pInteractionElement = element
+					end)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write element to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0)
+			
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pInteractionElement != null)
+			flags.setAt(1, pInteractionElementBehavior != null)
+			flags.writeToFile(writer)
+			
+			if pInteractionElement != null
+				ElementResolver.writeToFile(writer, pInteractionElement)
+			end
+			if pInteractionElementBehavior != null
+				ElementResolver.writeToFileBehavior(writer, pInteractionElementBehavior)
+			end
+		end
+	end
+	
+	
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
+	var ECBehaviorConversationActor pConversationActor
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass) this(eclass, "")
+	end
+	
+	func new(BehaviorElementClass eclass, String id) this(eclass, id,\
+	id.empty() if "interactionElement." else "interactionElement(" + id + ").")
+	end
+	
+	func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+		pPrefix = prefix
+		pBTSMs = ECComposeBTSM.new()
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pBTSMs = null
+		pConversationActor = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Compose behavior trees and state machines. */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
+	/** \brief Conversation actor behavior or null. */
+	func ECBehaviorConversationActor getConversationActor()
+		return pConversationActor
+	end
+	
+	/**
+	 * \brief Set conversation actor or null.
+	 * 
+	 * If set conversation conditions and commands are added.
+	 */
+	func void setConversationActor(ECBehaviorConversationActor conversationActor)
+		pConversationActor = conversationActor
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static func ECBehaviorInteractionElement getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorInteractionElement each
+			return true
+		end) cast ECBehaviorInteractionElement
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorInteractionElement with specific identifier.
+	 */
+	static func ECBehaviorInteractionElement getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorInteractionElement each
+			return each.getID().equals(id)
+		end) cast ECBehaviorInteractionElement
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorInteractionElement behaviors in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorInteractionElement each
+			return true
+		end)
+	end
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorInteractionElement.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorInteractionElement.Instance with specific identifier.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorInteractionElement.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

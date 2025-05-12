@@ -32,6 +32,8 @@
 	<!--
 	Common player input and locomotion set up for human actors.
 	<import>shared.init.inputLocomotion</import>
+	
+	Also import "shared.init.inputLocomotion.player" to apply player controlled modifications
 	-->
 	<state id='shared.init.inputLocomotion'>
 		<!--
@@ -57,7 +59,15 @@
 			<parameter name='preset'>human</parameter>
 			<parameter name='preset.averageSpeed'>playerInputMove.speedWalk</parameter>
 		</enterAction>
-		
+	</state>
+	
+	
+	<!--
+	Modify player input and locomotion if actor is player controlled.
+	Apply this after "shared.init.inputLocomotion".
+	<import>shared.init.inputLocomotion.player</import>
+	-->
+	<state id='shared.init.inputLocomotion.player'>
 		<!--
 		If actor is player controlled modify the locomotion parameters to be better suited
 		for direct player input
@@ -68,7 +78,7 @@
 			
 			<parameter name='adjust.vertical.time'>0</parameter>
 			<parameter name='adjust.horizontal.time'>0</parameter>
-			<parameter name='adjust.linear.velocity.time'>0.5</parameter>
+			<parameter name='adjust.linearVelocity.time'>0.5</parameter>
 		</enterAction>
 	</state>
 	
@@ -271,7 +281,7 @@
 	
 	
 	<!--
-	Initial state. Waits for "activate" or "activateWhileLoading" to transition into "ground" state.
+	Initial state. Waits for "activate" to transition into "ground" state.
 	-->
 	<state id='created'>
 		<transition event='activate' state='ground'>
@@ -285,11 +295,18 @@
 			then manually adjust specific values.
 			-->
 			<import>shared.init.inputLocomotion</import>
-		</transition>
-		
-		<transition event='activateWhileLoading' state='ground'>
+			<import>shared.init.inputLocomotion.player</import>
 		</transition>
 	</state>
+	
+	
+	<!--
+	Note about loading.
+	
+	While loading the state machine is not sent the "activate" event but the "activateWhileLoading".
+	While "activate" can only be sent to the initial state (here "created") the
+	"activateWhileLoading" event is send to whatever state the state machine is in after loading.
+	-->
 	
 	
 	<!--
@@ -331,6 +348,7 @@
 			Typically player input and locomotion has to be setup again similar to "activate"
 			-->
 			<import>shared.init.inputLocomotion</import>
+			<import>shared.init.inputLocomotion.player</import>
 		</transition>
 		
 		<!--
@@ -373,22 +391,30 @@
 		<!--
 		Post think on frame update for player controlled actor only. Does nothing.
 		-->
+		<!--
 		<transition event='playerPostThink'/>
+		-->
 		
 		<!--
 		Element entered game world. Does nothing.
 		-->
+		<!--
 		<transition event='enteredGameWorld'/>
+		-->
 		
 		<!--
 		Element left game world. Does nothing.
 		-->
+		<!--
 		<transition event='leftGameWorld'/>
+		-->
 		
 		<!--
 		First frame update after element entered game world. Does nothing.
 		-->
+		<!--
 		<transition event='enterFrame'/>
+		-->
 		
 		<!--
 		Actor is requested to cancel action the next time possible.
@@ -461,6 +487,7 @@
 		
 		<transition event='playerTakesControl'>
 			<import>shared.init.inputLocomotion</import>
+			<import>shared.init.inputLocomotion.player</import>
 		</transition>
 		
 		<transition event='playerReleasesControl'>
@@ -533,6 +560,7 @@
 		
 		<transition event='playerTakesControl'>
 			<import>shared.init.inputLocomotion</import>
+			<import>shared.init.inputLocomotion.player</import>
 		</transition>
 		
 		<transition event='playerReleasesControl'>

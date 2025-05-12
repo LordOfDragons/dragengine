@@ -202,10 +202,10 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Behavior tree action "aiAction.notify".
+		 * \brief Behavior tree action "aiAction.update".
 		 * \version 1.26
 		 */
-		private class BTANotify extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -422,7 +422,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
 				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllAction(prefix + "notify", BTANotify.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

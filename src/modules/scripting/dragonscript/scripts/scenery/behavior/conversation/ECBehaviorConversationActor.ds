@@ -549,6 +549,10 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 					pInstance.applyAnimations()
 				end
 				
+				if parameters.has("headLookAt.clear")
+					pInstance.getConversationActor().getHeadLookAtPlayback().clearLookAtState()
+				end
+				
 				return BTResult.success
 			end
 		end
@@ -671,9 +675,9 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			if pECBehavior.getBTSM().hasAny()
 				var String prefix = "conversationActor."
 				var ECComposeBTSM.Instance helper = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSM())
+				helper.addAllAction(prefix + "update", BTAUpdate.new(this))
 				helper.addAllCondition(prefix + "inConversation", BTCInConversation.new(this))
 				helper.addAllCondition(prefix + "notInConversation", BTCNotInConversation.new(this))
-				helper.addAllCondition(prefix + "update", BTAUpdate.new(this))
 			end
 		end
 		

@@ -299,10 +299,10 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "playerControllable.takeControl".
+		 * \brief Behavior tree action "playerControllable.update".
 		 * \version 1.26
 		 */
-		private class BTATakeControl extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -310,7 +310,10 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				pInstance.takeControl()
+				if parameters.has("takeControl")
+					pInstance.takeControl()
+				end
+				
 				return BTResult.success
 			end
 		end
@@ -399,7 +402,7 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "playerControllable."
 				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				btsms.addAllAction(prefix + "takeControl", BTATakeControl.new(this))
+				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
 				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 			end
 		end

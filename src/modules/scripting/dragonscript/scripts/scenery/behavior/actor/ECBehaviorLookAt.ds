@@ -189,6 +189,49 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
+		 * \brief Behavior tree action/condition "lookAt.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var BehaviorElement lookAtElement = pInstance.getLookAtBehaviorElement()
+					if lookAtElement == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionElement(lookAtElement)
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getLookAtBehaviorElement(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
 		 * \brief Behavior tree action/condition "lookAt.check".
 		 * \version 1.26
 		 */
@@ -238,6 +281,10 @@ class ECBehaviorLookAt extends DefaultECBehavior
 				if value != null
 					result &= pInstance.isLookAtPlayer() == value.equals("true")
 				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(\
+					pInstance.getLookAtBehaviorElement(), parameters, prefix + "interact.",\
+					pInstance.getElement())
 				
 				return result
 			end
@@ -355,6 +402,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

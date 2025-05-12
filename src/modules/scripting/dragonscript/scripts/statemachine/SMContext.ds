@@ -472,7 +472,8 @@ class SMContext
 	 * Sets the state machine root state as current state.
 	 */
 	func void reset()
-		pCurrentState = pStateMachine.getStateAt(pStateMachine.getInitialState())
+		pCurrentState = null
+		setCurrentState(pStateMachine.getStateAt(pStateMachine.getInitialState()))
 	end
 	
 	

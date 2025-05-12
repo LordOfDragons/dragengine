@@ -93,6 +93,10 @@ class SMState
 	 * \version 1.26
 	 */
 	func void importState(SMState state)
+		if state == this
+			throw EInvalidParam.new("can not import state into itself")
+		end
+		
 		pEnterActions.addAll(state.pEnterActions)
 		pExitActions.addAll(state.pExitActions)
 		pTransitions.addAll(state.pTransitions)

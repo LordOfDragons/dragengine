@@ -153,10 +153,10 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "occupier{(id)}.release".
+		 * \brief Behavior tree action/condition "occupier{(id)}.update".
 		 * \version 1.26
 		 */
-		private class BTARelease extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -164,8 +164,90 @@ class ECBehaviorOccupier extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				pInstance.release()
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var ECBehaviorInteractionSpot.Instance ispot = pInstance.getInteractionSpot()
+					if ispot == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(ispot)
+				end
+				
+				value = parameters.getAt("claim", null)
+				if value != null
+					var ECBehaviorInteractionSpot.Instance ispot = getInteractionElementISpot(value)
+					if ispot == null or not ispot.canClaim(pInstance)
+						return BTResult.failure
+					end
+					
+					pInstance.release()
+					ispot.claim(pInstance)
+				end
+				
+				value = parameters.getAt("move", null)
+				if value != null
+					var ECBehaviorInteractionSpot.Instance ispot = pInstance.getInteractionSpot()
+					if ispot == null
+						return BTResult.failure
+					end
+					
+					var DVector position = ispot.getWorldMatrix().getPosition()
+					var ECBehaviorActorMover.Instance actorMover =\
+						ECBehaviorActorMover.getInstanceIn(pInstance.getElement())
+					
+					value = parameters.getAt("move.distance", null)
+					if value != null
+						actorMover.moveTo(position, (value cast String).toFloat())
+						
+					else
+						actorMover.moveTo(position)
+					end
+				end
+				
+				value = parameters.getAt("align", null)
+				if value != null
+					var ECBehaviorInteractionSpot.Instance ispot = pInstance.getInteractionSpot()
+					if ispot == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorAlignActor.Instance alignActor =\
+						ECBehaviorAlignActor.getInstanceIn(pInstance.getElement())
+					
+					alignActor.setTarget(ispot.getElement(), DVector.new(ispot.getPosition()),\
+						ispot.getOrientation().getEulerAngles().getY())
+					
+					if ispot.getLookAt() != null
+						alignActor.setLookAt(ispot.getLookAtWorld())
+					end
+					
+					alignActor.startAligning()
+				end
+				
+				if parameters.has("release")
+					pInstance.release()
+				end
+				
 				return BTResult.success
+			end
+			
+			func ECBehaviorInteractionSpot.Instance getInteractionElementISpot(Object id)
+				var ECBehaviorInteractionElement.Instance ie =\
+					ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), id cast String)
+				if ie == null or ie.getInteractionElementBehavior() == null\
+				or not ie.getInteractionElementBehavior() castable ECBehaviorInteractionSpot.Instance
+					return null
+				end
+				return ie.getInteractionElementBehavior() cast ECBehaviorInteractionSpot.Instance
 			end
 		end
 		
@@ -239,7 +321,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "release", BTARelease.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

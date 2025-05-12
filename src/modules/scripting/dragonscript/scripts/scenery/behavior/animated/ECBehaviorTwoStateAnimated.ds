@@ -349,10 +349,10 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Behavior tree action "twoStateAnimated{(id)}.set".
+		 * \brief Behavior tree action "twoStateAnimated{(id)}.update".
 		 * \version 1.26
 		 */
-		private class BTASet extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -571,7 +571,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

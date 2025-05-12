@@ -188,6 +188,40 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		end
 		
 		/**
+		 * \brief Behavior tree action "projectToGround.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var BehaviorElement groundElement = pInstance.getGroundBehaviorElement()
+					if groundElement == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionElement(groundElement)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
 		 * \brief Behavior tree action/condition "projectToGround.check".
 		 * \version 1.26
 		 */
@@ -225,7 +259,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 				
 				value = parameters.getAt(prefix + "ground.element", null)
 				if value != null
-					result &= (pInstance.getGroundElement() != null) == value.equals("true")
+					result &= (pInstance.getGroundBehaviorElement() != null) == value.equals("true")
 				end
 				
 				value = parameters.getAt(prefix + "hitAngle.less", null)
@@ -338,6 +372,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
 				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
@@ -583,7 +618,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			return position
 		end
 		
-		/** \brief Ground collider or \em null. */
+		/** \brief Ground collider or null. */
 		func Collider getGroundCollider()
 			if pTouchesGround and pTest.getHasCollision()
 				return pTest.hitCollider(0)
@@ -594,27 +629,41 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Ground element or \em null.
+		 * \brief Ground element or null.
 		 * 
-		 * If last ground collider is not \em null and collider owner is castable to Element
-		 * returns the owner element. Otherwise \em null is returned.
+		 * If last ground collider is not null and collider owner is castable to Element
+		 * returns the owner element. Otherwise null is returned.
 		 */
 		func Element getGroundElement()
 			var Collider collider = getGroundCollider()
-			if collider == null
-				return null
+			if collider != null
+				var Object owner = collider.getOwner()
+				if owner castable Element
+					return owner cast Element
+				end
 			end
-			
-			var Object owner = collider.getOwner()
-			if owner castable Element
-				return owner cast Element
-				
-			else
-				return null
-			end
+			return null
 		end
 		
-		/** \brief Ground collision information or \em null. */
+		/**
+		 * \brief Ground behavior element or null.
+		 * \version 1.26
+		 * 
+		 * If last ground collider is not null and collider owner is castable to
+		 * BehaviorElement returns the owner element. Otherwise null is returned.
+		 */
+		func BehaviorElement getGroundBehaviorElement()
+			var Collider collider = getGroundCollider()
+			if collider != null
+				var Object owner = collider.getOwner()
+				if owner castable BehaviorElement
+					return owner cast BehaviorElement
+				end
+			end
+			return null
+		end
+		
+		/** \brief Ground collision information or null. */
 		func CollisionInfo getGroundCollisionInfo()
 			if pTouchesGround and pTest.getHasCollision()
 				return pTest.getCollisionAt(0)
@@ -880,7 +929,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	
 	
 	/**
-	 * \brief Get behavior in element class or \em null if absent.
+	 * \brief Get behavior in element class or null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorProjectToGround.
@@ -892,7 +941,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Get instance in element or \em null if absent.
+	 * \brief Get instance in element or null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorProjectToGround.Instance .

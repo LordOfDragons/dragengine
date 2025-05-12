@@ -157,10 +157,10 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "interactionSpot{(id)}.release".
+		 * \brief Behavior tree action/condition "interactionSpot{(id)}.update".
 		 * \version 1.26
 		 */
-		private class BTARelease extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -168,7 +168,28 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				pInstance.release()
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var ECBehaviorOccupier.Instance occupier = pInstance.getOccupier()
+					if occupier == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(occupier)
+				end
+				
+				if parameters.has("release")
+					pInstance.release()
+				end
+				
 				return BTResult.success
 			end
 		end
@@ -255,7 +276,7 @@ class ECBehaviorInteractionSpot extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "release", BTARelease.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end

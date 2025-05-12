@@ -320,12 +320,12 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 				
 				// LinearVelocity -> Vector
 				
-				value = parameters.getAt("adjust.linear.velocity.time", null)
+				value = parameters.getAt("adjust.linearVelocity.time", null)
 				if value != null
 					l.setAdjustTimeLinearVelocity((value cast String).toFloat())
 				end
 				
-				value = parameters.getAt("adjust.linear.velocity.range", null)
+				value = parameters.getAt("adjust.linearVelocity.range", null)
 				if value != null
 					l.setAdjustRangeLinearVelocity((value cast String).toFloat())
 				end
@@ -931,22 +931,22 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 				
 				// LinearVelocity -> Vector
 				
-				value = parameters.getAt(prefix + "adjust.linear.velocity.time.less", null)
+				value = parameters.getAt(prefix + "adjust.linearVelocity.time.less", null)
 				if value != null
 					result &= l.getAdjustTimeLinearVelocity() < (value cast String).toFloat()
 				end
 				
-				value = parameters.getAt(prefix + "adjust.linear.velocity.time.greater", null)
+				value = parameters.getAt(prefix + "adjust.linearVelocity.time.greater", null)
 				if value != null
 					result &= l.getAdjustTimeLinearVelocity() > (value cast String).toFloat()
 				end
 				
-				value = parameters.getAt(prefix + "adjust.linear.velocity.range.less", null)
+				value = parameters.getAt(prefix + "adjust.linearVelocity.range.less", null)
 				if value != null
 					result &= l.getAdjustRangeLinearVelocity() < (value cast String).toFloat()
 				end
 				
-				value = parameters.getAt(prefix + "adjust.linear.velocity.range.greater", null)
+				value = parameters.getAt(prefix + "adjust.linearVelocity.range.greater", null)
 				if value != null
 					result &= l.getAdjustRangeLinearVelocity() > (value cast String).toFloat()
 				end

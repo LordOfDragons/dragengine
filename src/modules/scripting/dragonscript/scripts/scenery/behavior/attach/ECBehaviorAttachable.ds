@@ -154,10 +154,10 @@ class ECBehaviorAttachable extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "attachable.deatch".
+		 * \brief Behavior tree action/condition "attachable.update".
 		 * \version 1.26
 		 */
-		private class BTADetach extends BTSMActionCondition
+		private class BTAUpdate extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -165,14 +165,34 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			end
 			
 			func BTResult runActionShared(Object context, Dictionary parameters)
-				if parameters.has("dispose")
-					pInstance.detachAndDispose()
-					return BTResult.running
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var ECBehaviorAttachSlot.Instance attachSlot = pInstance.getAttachSlot()
+					if attachSlot == null
+						return BTResult.failure
+					end
 					
-				else
-					pInstance.detach()
-					return BTResult.success
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(attachSlot)
 				end
+				
+				value = parameters.getAt("detach", null)
+				if value != null
+					if value.equals("dispose")
+						pInstance.detachAndDispose()
+						return BTResult.running
+					end
+					pInstance.detach()
+				end
+				
+				return BTResult.success
 			end
 		end
 		
@@ -248,7 +268,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "detach", BTADetach.new(this))
+				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
 				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
