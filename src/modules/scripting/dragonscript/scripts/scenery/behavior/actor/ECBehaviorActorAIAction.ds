@@ -432,8 +432,19 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 			
-			setAction(pECBehavior.getActionFactory().createAction(this))
-			setAI(pECBehavior.getAIFactory().createAI(this))
+			var ActionFactory actionFactory = pECBehavior.getActionFactory()
+			var String factoryName = pECBehavior.getAction().getValueOrNull(stub)
+			if factoryName != null
+				actionFactory = pECBehavior.getPersistency().getFactoryNamed(factoryName) cast ActionFactory
+			end
+			setAction(actionFactory.createAction(this))
+			
+			var AIFactory aiFactory = pECBehavior.getAIFactory()
+			factoryName = pECBehavior.getAI().getValueOrNull(stub)
+			if factoryName != null
+				aiFactory = pECBehavior.getPersistency().getFactoryNamed(factoryName) cast AIFactory
+			end
+			setAI(aiFactory.createAI(this))
 		end
 		
 		
@@ -719,9 +730,11 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	var ECComposeBTSM pBTSMs
 	var ActionFactory pActionFactory
 	var AIFactory pAIFactory
+	var ECPString pAction, pAI
 	var String pPrefix
 	var LoadBehaviorTree pLoadBehaviorTree
 	var LoadStateMachine pLoadStateMachine
+	var Persistency pPersistency
 	
 	
 	
@@ -751,9 +764,14 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		
 		var BaseGameApp app = BaseGameApp.getApp()
 		if app != null
-			pLoadBehaviorTree = app.getLoaders().getBehaviorTree()
-			pLoadStateMachine = app.getLoaders().getStateMachine()
+			var Loaders loaders = app.getLoaders()
+			pLoadBehaviorTree = loaders.getBehaviorTree()
+			pLoadStateMachine = loaders.getStateMachine()
+			pPersistency = loaders.getPersistency()
 		end
+		
+		eclass.addProperty(pAction = ECPString.new(prefix + "action", null))
+		eclass.addProperty(pAI = ECPString.new(prefix + "ai", null))
 		
 		eclass.addBehavior(this)
 	end
@@ -826,6 +844,14 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		pActionFactory = factory
 	end
 	
+	/**
+	 * \brief Action to use instead of factory action.
+	 * \version 1.26
+	 */
+	func ECPString getAction()
+		return pAction
+	end
+	
 	/** \brief AI factory. */
 	func AIFactory getAIFactory()
 		return pAIFactory
@@ -837,6 +863,14 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			throw ENullPointer.new()
 		end
 		pAIFactory = factory
+	end
+	
+	/**
+	 * \brief AI to use instead of factory AI.
+	 * \version 1.26
+	 */
+	func ECPString getAI()
+		return pAI
 	end
 	
 	/**
@@ -883,6 +917,25 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			throw ENullPointer.new("loader")
 		end
 		pLoadStateMachine = loader
+	end
+	
+	/**
+	 * \brief Persistency used to create action.
+	 * \version 1.26
+	 */
+	func Persistency getPersistency()
+		return pPersistency
+	end
+	
+	/**
+	 * \brief Set persistency used to create action.
+	 * \version 1.26
+	 */
+	func void setPersistency(Persistency persistency)
+		if persistency == null
+			throw ENullPointer.new()
+		end
+		pPersistency = persistency
 	end
 	
 	

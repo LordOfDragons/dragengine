@@ -349,12 +349,15 @@ class Loaders
 		// gui
 		SubTitleBoxTextBorder.Factory.registerFactory(persistency)
 		
-		// scenery
+		// actions
 		BaseActorAction.Factory.registerFactory(persistency)
 		BAAFirstPerson.Factory.registerFactory(persistency)
 		BAAFirstPersonVR.Factory.registerFactory(persistency)
 		BAAVehicle.Factory.registerFactory(persistency)
 		BAAStateMachine.Factory.registerFactory(persistency)
+		
+		BaseVRHandAction.Factory.registerFactory(persistency)
+		BAAVRHandStateMachine.Factory.registerFactory(persistency)
 		
 		BaseActorAI.Factory.registerFactory(persistency)
 		BAAIBehaviorTree.Factory.registerFactory(persistency)

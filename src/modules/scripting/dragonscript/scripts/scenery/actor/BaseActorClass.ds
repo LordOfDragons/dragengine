@@ -43,7 +43,9 @@ pin Dragengine.BehaviorTreeSystem
  * <?xml version='1.0' encoding='UTF-8'?>
  * <elementClass name='MyClass' class='GenericBehaviorElement'>
  *   <behavior type='ECBehaviorBehaviorTree'/>
- *   <behavior type='ECBehaviorStateMachine'/>
+ *   <behavior type='ECBehaviorStateMachine'>
+ *     <string name='.path'>/shareddata/stateMachines/actorAction/firstPerson.desm</string>
+ *   </behavior>
  *   <behavior type='ECBehaviorInteractionElement'/>
  *   <behavior type='ECBehaviorComponent'>
  *     <!-- actors are best not affecting sound nor showing up in env maps since they
@@ -72,7 +74,16 @@ pin Dragengine.BehaviorTreeSystem
  *   <behavior type='ECBehaviorPlayerInputCrouch'/>
  *   <behavior type='ECBehaviorPlayerInputMove'/>
  *   <behavior type='ECBehaviorPlayerControllable'/>
- *   <behavior type='ECBehaviorActorAIAction'/>
+ *   <behavior type='ECBehaviorActorAIAction'>
+ *     <string name='.action'>BAAStateMachine</string>
+ *   </behavior>
+ * </elementClass>
+ * \endcode
+ * 
+ * It is though usually easier to use the class directly and extend it:
+ * \code{.xml}
+ * <?xml version='1.0' encoding='UTF-8'?>
+ * <elementClass name='MyClass' class='Actor'>
  * </elementClass>
  * \endcode
  */

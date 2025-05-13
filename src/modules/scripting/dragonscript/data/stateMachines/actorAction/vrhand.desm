@@ -26,7 +26,7 @@
 	<!--
 	Import shared state machine states.
 	-->
-	<import>/shareddata/stateMachines/actorAction/shared.desm</import>
+	<import>shared.desm</import>
 
 	
 	<!--

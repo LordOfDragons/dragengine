@@ -302,7 +302,12 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 			
-			setAction(pECBehavior.getActionFactory().createAction(this))
+			var ActionFactory factory = pECBehavior.getActionFactory()
+			var String factoryName = pECBehavior.getAction().getValueOrNull(stub)
+			if factoryName != null
+				factory = pECBehavior.getPersistency().getFactoryNamed(factoryName) cast ActionFactory
+			end
+			setAction(factory.createAction(this))
 		end
 		
 		
@@ -467,10 +472,11 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 	var ECBehaviorVRHand pVRHand
 	var ECBehaviorConversationActor pConversationActor
 	var ActionFactory pActionFactory
+	var ECPString pAction
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	var LoadStateMachine pLoadStateMachine
-	
+	var Persistency pPersistency
 	
 	
 	/**
@@ -499,8 +505,12 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 		
 		var BaseGameApp app = BaseGameApp.getApp()
 		if app != null
-			pLoadStateMachine = app.getLoaders().getStateMachine()
+			var Loaders loaders = app.getLoaders()
+			pLoadStateMachine = loaders.getStateMachine()
+			pPersistency = loaders.getPersistency()
 		end
+		
+		eclass.addProperty(pAction = ECPString.new(prefix + "action", null))
 		
 		eclass.addBehavior(this)
 	end
@@ -562,6 +572,14 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 	end
 	
 	/**
+	 * \brief Action to use instead of factory action.
+	 * \version 1.26
+	 */
+	func ECPString getAction()
+		return pAction
+	end
+	
+	/**
 	 * \brief Compose behavior trees and state machines.
 	 * \version 1.26
 	 */
@@ -583,9 +601,28 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 	 */
 	func void setLoadStateMachine(LoadStateMachine loader)
 		if loader == null
-			throw ENullPointer.new("loader")
+			throw ENullPointer.new()
 		end
 		pLoadStateMachine = loader
+	end
+	
+	/**
+	 * \brief Persistency used to create action.
+	 * \version 1.26
+	 */
+	func Persistency getPersistency()
+		return pPersistency
+	end
+	
+	/**
+	 * \brief Set persistency used to create action.
+	 * \version 1.26
+	 */
+	func void setPersistency(Persistency persistency)
+		if persistency == null
+			throw ENullPointer.new()
+		end
+		pPersistency = persistency
 	end
 	
 	

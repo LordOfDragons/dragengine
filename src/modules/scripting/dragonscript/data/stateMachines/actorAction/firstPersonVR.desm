@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <stateMachine>
 	<!--
-	State machine providing similar implementation as BAAVehicle.
+	State machine providing similar implementation as BAAFirstPersonVR.
 	
 	To use this state machine in your custom state machine import it like this:
 	
 	<stateMachine>
-		<import>/shareddata/stateMachines/actorAction/vehicle.desm</import>
+		<import>/shareddata/stateMachines/actorAction/firstPersonVR.desm</import>
 		... your content
 	</stateMachine>
 	
@@ -20,7 +20,6 @@
 	transitions to "ground" state. This state contains various transitions for events
 	which apply actions but otherwise stay in the "ground" state.
 	-->
-	<initialState>created</initialState>
 	
 	
 	<!--
@@ -43,9 +42,18 @@
 		to change the locomotion type depending on the action, for example while driving a
 		vehicle instead of walking on foot. Multiple parameters can be set with the same action
 		as long as their parameter names are unique
+		
+		For VR using FPS type is better than natural type which firstPerson.desm is using
 		-->
 		<enterAction name='playerInputMove.set'>
-			<parameter name='locomotion.type'>vehicle</parameter>
+			<parameter name='locomotion.type'>fps</parameter>
+		</enterAction>
+		
+		<!--
+		No crouching for VR since this happens automatically
+		-->
+		<enterAction name='playerInputCrouch.set'>
+			<parameter name='canCrouch'>false</parameter>
 		</enterAction>
 		
 		<!--
@@ -56,33 +64,38 @@
 		are unique
 		-->
 		<enterAction name='locomotion.set'>
-			<parameter name='preset'>vehicle</parameter>
+			<parameter name='preset'>human</parameter>
 			<parameter name='preset.averageSpeed'>playerInputMove.speedWalk</parameter>
+			
+			<!--
+			Since we use ECBehaviorPlayerInputMove.LocomotionType.fps we should disable
+			turn-in-place support. The two settings are not inherently incompatible but
+			but for FPS locomotion use turning in-place can produce some funky results
+			-->
+			<parameter name='can.turn.inplace'>false</parameter>
 		</enterAction>
 	</state>
 	
 	
 	<!--
-	Modify player input and locomotion set up for human actors if actor is player controlled.
-	Import after "shared.init.inputLocomotion".
-	
+	Modify player input and locomotion if actor is player controlled.
+	Apply this after "shared.init.inputLocomotion".
 	<import>shared.init.inputLocomotion.player</import>
 	-->
 	<state id='shared.init.inputLocomotion.player'>
 		<!--
 		If actor is player controlled modify the locomotion parameters to be better suited
-		for direct player input. In the case of vehicle type there are no differences
+		for direct player input
 		-->
-		<!--
 		<enterAction name='locomotion.set'>
 			<condition>playerControllable.check</condition>
 			<parameter name='playerControllable.playerControlled'>true</parameter>
 			
 			<parameter name='adjust.vertical.time'>0</parameter>
 			<parameter name='adjust.horizontal.time'>0</parameter>
-			<parameter name='adjust.linearVelocity.time'>0.5</parameter>
+			<parameter name='adjust.orientation.time'>1</parameter>
+			<parameter name='adjust.linearVelocity.time'>1</parameter>
 		</enterAction>
-		-->
 	</state>
 	
 	
@@ -116,25 +129,25 @@
 		</transition>
 		
 		<transition event='movement.move.left.start'>
-			<action name='playerInputTurn.set'>
+			<action name='playerInputMove.set'>
 				<parameter name='left'>true</parameter>
 			</action>
 		</transition>
 		
 		<transition event='movement.move.left.stop'>
-			<action name='playerInputTurn.set'>
+			<action name='playerInputMove.set'>
 				<parameter name='left'>false</parameter>
 			</action>
 		</transition>
 		
 		<transition event='movement.move.right.start'>
-			<action name='playerInputTurn.set'>
+			<action name='playerInputMove.set'>
 				<parameter name='right'>true</parameter>
 			</action>
 		</transition>
 		
 		<transition event='movement.move.right.stop'>
-			<action name='playerInputTurn.set'>
+			<action name='playerInputMove.set'>
 				<parameter name='right'>false</parameter>
 			</action>
 		</transition>
@@ -152,93 +165,14 @@
 		</transition>
 		
 		<transition event='movement.analog.move.leftRight'>
-			<action name='playerInputTurn.set'>
-				<parameter name='analog'>eventParam</parameter>
+			<action name='playerInputMove.set'>
+				<parameter name='analog.leftRight'>eventParam</parameter>
 			</action>
 		</transition>
 		
 		<transition event='movement.analog.move.leftRight-sticky'>
-			<action name='playerInputTurn.set'>
-				<parameter name='analog.sticky'>eventParam</parameter>
-			</action>
-		</transition>
-	</state>
-	
-	
-	<!--
-	Handle player looking inputs. Imported by adding this line to your state or transition:
-	<import>shared.player.movement.look</import>
-	-->
-	<state id='shared.player.movement.look'>
-		<transition event='movement.look.left.start'>
-			<action name='playerInputLook.set'>
-				<parameter name='left'>true</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.look.left.stop'>
-			<action name='playerInputLook.set'>
-				<parameter name='left'>false</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.look.right.start'>
-			<action name='playerInputLook.set'>
-				<parameter name='right'>true</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.look.right.stop'>
-			<action name='playerInputLook.set'>
-				<parameter name='right'>false</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.look.up.start'>
-			<action name='playerInputLook.set'>
-				<parameter name='up'>true</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.look.up.stop'>
-			<action name='playerInputLook.set'>
-				<parameter name='up'>false</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.look.down.start'>
-			<action name='playerInputLook.set'>
-				<parameter name='down'>true</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.look.down.stop'>
-			<action name='playerInputLook.set'>
-				<parameter name='down'>false</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.analog.look.leftRight'>
-			<action name='playerInputLook.set'>
-				<parameter name='analog.horizontal'>-eventParam</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.analog.look.leftRight.sticky'>
-			<action name='playerInputLook.set'>
-				<parameter name='analog.horizontal.sticky'>-eventParam</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.analog.look.upDown'>
-			<action name='playerInputLook.set'>
-				<parameter name='analog.vertical'>-eventParam</parameter>
-			</action>
-		</transition>
-		
-		<transition event='movement.analog.look.upDown.sticky'>
-			<action name='playerInputLook.set'>
-				<parameter name='analog.vertical.sticky'>-eventParam</parameter>
+			<action name='playerInputMove.set'>
+				<parameter name='analog.leftRight.sticky'>eventParam</parameter>
 			</action>
 		</transition>
 	</state>
@@ -247,7 +181,6 @@
 	<!--
 	Handle BAAMovement interface. Composes of these states:
 	- shared.player.movement.move
-	- shared.player.movement.look
 	- shared.player.movement.run
 	
 	Imported by adding this line to your state or transition:
@@ -255,26 +188,17 @@
 	-->
 	<state id='shared.player.movement'>
 		<import>shared.player.movement.move</import>
-		<import>shared.player.movement.look</import>
 		<import>shared.player.movement.run</import>
 	</state>
 	
 	
 	<!--
-	Update locomotion with player input look, turn and move during player thinking.
+	Update locomotion with player input look, crouch and move during player thinking.
 	
 	Imported by adding this line to your state or transition:
 	<import>shared.update.player.locomotion</import>
 	-->
 	<state id='shared.update.player.locomotion'>
-		<enterAction name='playerInputLook.update'>
-			<parameter name='locomotion'/>
-		</enterAction>
-		
-		<enterAction name='playerInputTurn.update'>
-			<parameter name='locomotion'/>
-		</enterAction>
-		
 		<enterAction name='playerInputMove.update'>
 			<parameter name='locomotion'/>
 		</enterAction>
@@ -301,12 +225,11 @@
 	<!--
 	Base thinking for falling movemement.
 	
-	Imported by adding this line to your "think" transition:
+	Imported by adding this line to your "think" transition":
 	<import>shared.think.falling</import>
 	-->
 	<state id='shared.think.falling'>
 		<!--
-		Think on frame update. Applies necessary actions and stays in this state.
 		Imports "shared.update.locomotion", "shared.update.collider.ground"
 		and "shared.update.animators"
 		-->
@@ -433,7 +356,7 @@
 	-->
 	<state id='shared.state.falling'>
 		<transition event='think'>
-			<import>shared.think.falling</import>
+			<import>shared.think.falling</import>>
 		</transition>
 		
 		<transition event='postThink'>
@@ -492,7 +415,7 @@
 	
 	
 	<!--
-	Initial state. Waits for "activate" or "activateWhileLoading" to transition into "ground" state.
+	Initial state. Waits for "activate" to transition into "ground" state.
 	-->
 	<state id='created'>
 		<transition event='activate' state='ground'>
@@ -508,10 +431,16 @@
 			<import>shared.init.inputLocomotion</import>
 			<import>shared.init.inputLocomotion.player</import>
 		</transition>
-		
-		<transition event='activateWhileLoading' state='ground'>
-		</transition>
 	</state>
+	
+	
+	<!--
+	Note about loading.
+	
+	While loading the state machine is not sent the "activate" event but the "activateWhileLoading".
+	While "activate" can only be sent to the initial state (here "created") the
+	"activateWhileLoading" event is send to whatever state the state machine is in after loading.
+	-->
 	
 	
 	<!--

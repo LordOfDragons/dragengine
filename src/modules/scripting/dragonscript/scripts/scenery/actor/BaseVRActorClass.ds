@@ -35,6 +35,188 @@ pin Dragengine.Utils
  * \version 1.6
  * 
  * Extends BaseActorClass with VR behaviors.
+ * 
+ * \par Behavior XML Element Class.
+ * 
+ * This class can be recreated using \ref GenericBehaviorElementClass and this *.deeclass file:
+ * 
+ * \code{.xml}
+ * <?xml version='1.0' encoding='UTF-8'?>
+ * <elementClass name='MyClass' class='GenericBehaviorElement'>
+ *   <behavior type='ECBehaviorBehaviorTree'/>
+ *   <behavior type='ECBehaviorStateMachine'>
+ *     <string name='.path'>/shareddata/stateMachines/actorAction/firstPersonVR.desm</string>
+ *   </behavior>
+ *   <behavior type='ECBehaviorInteractionElement'/>
+ *   <behavior type='ECBehaviorComponent'>
+ *     <!-- actors are best not affecting sound nor showing up in env maps since they
+ *          are dynamic. still doing so is usually expensive for modules to perform -->
+ *     <boolean name='.renderEnvMap'>false</boolean>
+ *     <boolean name='.affectsAudio'>false</boolean>
+ *     <string name='.hintMovement'>dynamic</string>
+ *   </behavior>
+ *   <behavior type='ECBehaviorCollider'/>
+ *   <behavior type='ECBehaviorColliderAI'/>
+ *   <behavior type='ECBehaviorParameterTable'/>
+ *   <behavior type='ECBehaviorProjectToGround'/>
+ *   <behavior type='ECBehaviorLocomotion'/>
+ *   <behavior type='ECBehaviorActorAnimated'/>
+ *   <behavior type='ECBehaviorConversationActor'/>
+ *   <behavior type='ECBCTRRBindings'/>
+ *   <behavior type='ECBehaviorNavigator'/>
+ *   <behavior type='ECBehaviorFootSteps'/>
+ *   <behavior type='ECBehaviorRideOn'/>
+ *   <behavior type='ECBehaviorActorMover'/>
+ *   <behavior type='ECBehaviorAlignActor'/>
+ *   <behavior type='ECBehaviorAvoidedByActor'/>
+ *   <behavior type='ECBehaviorAvoidCollision'/>
+ *   <behavior type='ECBehaviorPlayerInputLook'>
+ *     <float name='.speedLookHorizontal'>90</float>
+ *   </behavior>
+ *   <behavior type='ECBehaviorPlayerInputTurn'/>
+ *   <behavior type='ECBehaviorPlayerInputCrouch'/>
+ *   <behavior type='ECBehaviorPlayerInputMove'/>
+ *   <behavior type='ECBehaviorPlayerControllable'/>
+ *   <behavior type='ECBehaviorActorAIAction'>
+ *     <string name='.action'>BAAStateMachine</string>
+ *   </behavior>
+ *   
+ *   <!--
+ *   The alias mappings are required to make actions/conditions visible to VR Hand
+ *   specific state machines as "#thisHand" and "#otherHand" identifier in addition to their
+ *   real identifiers. See "data/stateMachines/actorAction/vrhand.desm" for information
+ *   -->
+ *   <behavior type='ECBehaviorStateMachine' id='vrHandRight'>
+ *     <string name='.path'>/shareddata/stateMachines/actorAction/vrhand.desm</string>
+ *   </behavior>
+ *   <behavior type='ECBehaviorStateMachine' id='vrHandLeft'>
+ *     <string name='.path'>/shareddata/stateMachines/actorAction/vrhand.desm</string>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRPlayspace'/>
+ *   <behavior type='ECBehaviorVRHMD'/>
+ *   <behavior type='ECBehaviorVRHand' id='right'>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandRight'>vrHand(#thisHand).</string>
+ *       <string key='vrHandLeft'>vrHand(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHand' id='left'>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandLeft'>vrHand(#thisHand).</string>
+ *       <string key='vrHandRight'>vrHand(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHandPointAt' id='right'>
+ *     <vector name='.origin' x='0' y='0.07' z='0.07'/>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandRight'>vrHandPointAt(#thisHand).</string>
+ *       <string key='vrHandLeft'>vrHandPointAt(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHandPointAt' id='left'>
+ *     <vector name='.origin' x='0' y='0.07' z='0.07'/>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandLeft'>vrHandPointAt(#thisHand).</string>
+ *       <string key='vrHandRight'>vrHandPointAt(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHandLaserPointer' id='right'>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandRight'>vrHandLaserPointer(#thisHand).</string>
+ *       <string key='vrHandLeft'>vrHandLaserPointer(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHandLaserPointer' id='left'>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandLeft'>vrHandLaserPointer(#thisHand).</string>
+ *       <string key='vrHandRight'>vrHandLaserPointer(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorGrabber' id='vrHandRight'>
+ *     <string name='.shape'>sphere:radius,0.05</string>
+ *     <vector name='.position' x='-0.02' y='-0.058' z='-0.076'/>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandRight'>grabber(#thisHand).</string>
+ *       <string key='vrHandLeft'>grabber(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorGrabber' id='vrHandLeft'>
+ *     <string name='.shape'>sphere:radius,0.05</string>
+ *     <vector name='.position' x='-0.02' y='-0.058' z='-0.076'/>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandLeft'>grabber(#thisHand).</string>
+ *       <string key='vrHandRight'>grabber(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorAttachSlot' id='vrHandRight'>
+ *     <vector name='.position' x='0' y='-0.058' z='-0.078'/>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandRight'>attachSlot(#thisHand).</string>
+ *       <string key='vrHandLeft'>attachSlot(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorAttachSlot' id='vrHandLeft'>
+ *     <vector name='.position' x='0' y='-0.058' z='-0.078'/>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandLeft'>attachSlot(#thisHand).</string>
+ *       <string key='vrHandRight'>attachSlot(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHandPose' id='vrHandRight'>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandRight'>vrHandPose(#thisHand).</string>
+ *       <string key='vrHandLeft'>vrHandPose(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHandPose' id='vrHandLeft'>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandLeft'>vrHandPose(#thisHand).</string>
+ *       <string key='vrHandRight'>vrHandPose(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorActorAnimated' id='vrHandRight'>
+ *     <map name='controllerMapping'>
+ *       <string key='idle'>elapsedTime</string>
+ *       <string key='interaction'>elapsedTime</string>
+ *     </map>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandRight'>vrHandPose(#thisHand).</string>
+ *       <string key='vrHandLeft'>vrHandPose(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorActorAnimated' id='vrHandLeft'>
+ *     <map name='controllerMapping'>
+ *       <string key='idle'>elapsedTime</string>
+ *       <string key='interaction'>elapsedTime</string>
+ *     </map>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandLeft'>vrHandPose(#thisHand).</string>
+ *       <string key='vrHandRight'>vrHandPose(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHandAction' id='right'>
+ *     <string name='.action'>BAAVRHandStateMachine</string>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandRight'>vrHandAction(#thisHand).</string>
+ *       <string key='vrHandLeft'>vrHandAction(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ *   <behavior type='ECBehaviorVRHandAction' id='left'>
+ *     <string name='.action'>BAAVRHandStateMachine</string>
+ *     <map name='.btsmAlias'>
+ *       <string key='vrHandLeft'>vrHandAction(#thisHand).</string>
+ *       <string key='vrHandRight'>vrHandAction(#otherHand).</string>
+ *     </map>
+ *   </behavior>
+ * </elementClass>
+ * \endcode
+ * 
+ * It is though usually easier to use the class directly and extend it:
+ * \code{.xml}
+ * <?xml version='1.0' encoding='UTF-8'?>
+ * <elementClass name='MyClass' class='VRActor'>
+ * </elementClass>
+ * \endcode
  */
 class BaseVRActorClass extends BaseActorClass
 	/**
