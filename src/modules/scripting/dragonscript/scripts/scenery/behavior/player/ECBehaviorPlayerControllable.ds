@@ -402,8 +402,8 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "playerControllable."
 				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
-				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 		end
 		

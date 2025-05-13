@@ -183,6 +183,15 @@ class ECBehaviorAttachable extends DefaultECBehavior
 					interactionElement.setInteractionBehavior(attachSlot)
 				end
 				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getAttachSlot(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
 				value = parameters.getAt("detach", null)
 				if value != null
 					if value.equals("dispose")
@@ -227,6 +236,9 @@ class ECBehaviorAttachable extends DefaultECBehavior
 					result &= pInstance.isAttached() == value.equals("true")
 				end
 				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getAttachSlot(),\
+					parameters, prefix + "interact.", pInstance.getElement())
+				
 				return result
 			end
 		end
@@ -268,8 +280,8 @@ class ECBehaviorAttachable extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -315,7 +327,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 					each.attachableDetached(this, pAttachSlot)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "detached")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "detached")
 				end
 			end
 			
@@ -326,7 +338,7 @@ class ECBehaviorAttachable extends DefaultECBehavior
 					each.attachableAttached(this, attachSlot)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "attached")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "attached")
 				end
 			end
 		end

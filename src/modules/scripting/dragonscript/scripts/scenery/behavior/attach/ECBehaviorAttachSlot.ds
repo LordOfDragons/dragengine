@@ -195,6 +195,15 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 					interactionElement.setInteractionBehavior(attachable)
 				end
 				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getAttachable(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
 				value = parameters.getAt("detach", null)
 				if value != null
 					if value.equals("dispose")
@@ -239,6 +248,9 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 				if value != null
 					result &= pInstance.isEmpty() == value.equals("true")
 				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getAttachable(),\
+					parameters, prefix + "interact.", pInstance.getElement())
 				
 				return result
 			end
@@ -320,8 +332,8 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -525,7 +537,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 				each.slotAttached(this, attachable)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "attached")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "attached")
 			end
 		end
 		
@@ -625,7 +637,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 				each.slotDetached(this, attachable)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "detached")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "detached")
 			end
 		end
 		
@@ -814,7 +826,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		pCollider = collider
 		pVRHand = vrHand
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pBone = ECPString.new(prefix + "bone", "")
 		eclass.addProperty(pBone)

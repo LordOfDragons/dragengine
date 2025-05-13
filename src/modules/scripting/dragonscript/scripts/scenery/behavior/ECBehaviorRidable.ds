@@ -253,7 +253,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "ridable."
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -342,7 +342,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 					each.beginRiding(this, rideOn)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent("ridable.beginRiding")
+					pBTSMs.runEvent("ridable.", "beginRiding")
 				end
 			end
 		end
@@ -359,7 +359,7 @@ class ECBehaviorRidable extends DefaultECBehavior
 					each.stopRiding(this, rideOn)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent("ridable.stopRiding")
+					pBTSMs.runEvent("ridable.", "stopRiding")
 				end
 			end
 		end

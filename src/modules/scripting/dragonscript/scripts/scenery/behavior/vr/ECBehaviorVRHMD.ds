@@ -30,6 +30,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -48,48 +49,48 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief HMD attached and ready to use. */
-		func void hmdAttached( Instance instance )
+		func void hmdAttached(Instance instance)
 		
 		/** \brief HMD detached and no more usable. */
-		func void hmdDetached( Instance instance )
+		func void hmdDetached(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief HMD attached and ready to use. */
-		public func void hmdAttached( Instance instance )
+		func void hmdAttached(Instance instance)
 		end
 		
 		/** \brief HMD detached and no more usableuse. */
-		public func void hmdDetached( Instance instance )
+		func void hmdDetached(Instance instance)
 		end
 	end
 	
 	/** \brief Factory creating listeners. */
 	interface ListenerFactory
 		/** \brief Create listener. */
-		func Listener createListener( Instance instance )
+		func Listener createListener(Instance instance)
 	end
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new( Block blockFactory )
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = blockFactory
+			pBlock = blockFactory
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener( Instance instance )
-			return this.pBlock.run( instance ) cast Listener
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -105,6 +106,18 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	 * <behavior type='ECBehaviorVRHMD'>
 	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values -->
 	 *   <string name='bindingManager'>default</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -131,6 +144,9 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 			var ECBehaviorVRHMD behavior = ECBehaviorVRHMD.new(eclass,\
 				ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrhmd")
 			return behavior
 		end
@@ -150,118 +166,168 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action/condition "forceField{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "attached", null)
+				if value != null
+					result &= pInstance.isAttached() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Controller attach/detach listener. */
 		class AttachDetachListener extends DefaultBindingManagerListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new( Instance instance )
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void deviceAttached( BindingManager manager, InputDevice device )
+			func void deviceAttached(BindingManager manager, InputDevice device)
 				if device.getType() == InputDeviceType.vrHMD
-					this.pInstance.setInputDevice( device )
+					pInstance.setInputDevice(device)
 				end
 			end
 			
-			public func void deviceDetached( BindingManager manager, InputDevice device )
-				if this.pInstance.getInputDevice() == device
-					this.pInstance.setInputDevice( null )
+			func void deviceDetached(BindingManager manager, InputDevice device)
+				if pInstance.getInputDevice() == device
+					pInstance.setInputDevice(null)
 				end
 			end
 			
-			public func void devicesReloaded( BindingManager manager )
+			func void devicesReloaded(BindingManager manager)
 				// temporary
-				this.pInstance.setInputDevice( manager.findDevice( block InputDevice each
+				pInstance.setInputDevice(manager.findDevice(block InputDevice each
 					return each.getType() == InputDeviceType.vrHMD
-				end ) )
+				end))
 			end
 		end
 		
 		
 		
-		private var ECBehaviorVRHMD pECBehavior
-		private var ECBehaviorVRPlayspace.Instance pVRPlayspace
-		private var InputDevice pInputDevice
-		private var Vector pPosition
-		private var Quaternion pOrientation
-		private var Array pListeners
-		private var AttachDetachListener pAttachDetachListener
+		var ECBehaviorVRHMD pECBehavior
+		var ECBehaviorVRPlayspace.Instance pVRPlayspace
+		var InputDevice pInputDevice
+		var Vector pPosition
+		var Quaternion pOrientation
+		var Array pListeners
+		var AttachDetachListener pAttachDetachListener
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorVRHMD ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pPosition = Vector.new()
-			this.pOrientation = Quaternion.new()
-			this.pListeners = Array.new()
-			this.pAttachDetachListener = AttachDetachListener.new( this )
+		func new(ECBehaviorVRHMD ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pPosition = Vector.new()
+			pOrientation = Quaternion.new()
+			pListeners = Array.new()
+			pAttachDetachListener = AttachDetachListener.new(this)
 			
-			this.pVRPlayspace = ecbehavior.getVRPlayspace().instance( element )
+			pVRPlayspace = ecbehavior.getVRPlayspace().instance(element)
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
-			this.pAttachDetachListener = null
-			this.pListeners = null
-			this.pVRPlayspace = null
+		func void dispose()
+			pAttachDetachListener = null
+			pListeners = null
+			pVRPlayspace = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init( StubElement stub )
-			this.pECBehavior.createListeners( this )
+		func void init(StubElement stub)
+			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = "vrhmd."
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorVRHMD getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorVRHMD getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief VR Playspace. */
-		public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
-			return this.pVRPlayspace
+		func ECBehaviorVRPlayspace.Instance getVRPlayspace()
+			return pVRPlayspace
 		end
 		
 		/** \brief Input device or null if detached. */
-		public func InputDevice getInputDevice()
-			return this.pInputDevice
+		func InputDevice getInputDevice()
+			return pInputDevice
 		end
 		
 		/** \brief Set input device or null if detached. */
-		public func void setInputDevice( InputDevice device )
-			if device == this.pInputDevice
+		func void setInputDevice(InputDevice device)
+			if device == pInputDevice
 				return
 			end
 			
-			if this.pInputDevice != null
-				this.pListeners.forEach( block Listener each
-					each.hmdDetached( this )
-				end )
+			if pInputDevice != null
+				pListeners.forEach(block Listener each
+					each.hmdDetached(this)
+				end)
+				if pBTSMs != null
+					pBTSMs.runEvent("vrhmd.", "detached")
+				end
 			end
 			
-			this.pInputDevice = device
+			pInputDevice = device
 			
 			if device != null
-				this.pListeners.forEach( block Listener each
-					each.hmdAttached( this )
-				end )
+				pListeners.forEach(block Listener each
+					each.hmdAttached(this)
+				end)
+				if pBTSMs != null
+					pBTSMs.runEvent("vrhmd.", "attached")
+				end
 			end
 		end
 		
 		/** \brief HMD is attached. */
-		public func bool isAttached()
-			return this.pInputDevice != null
+		func bool isAttached()
+			return pInputDevice != null
 		end
 		
 		/** \brief HMD is detached. */
-		public func bool isDetached()
-			return this.pInputDevice == null
+		func bool isDetached()
+			return pInputDevice == null
 		end
 		
 		
@@ -270,164 +336,175 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 		 * \brief Position.
 		 * \note Position is queried each time the function is called.
 		 */
-		public func DVector getPosition()
-			return this.pVRPlayspace.getMatrix() * DVector.new( this.getPositionPlayspace() )
+		func DVector getPosition()
+			return pVRPlayspace.getMatrix() * DVector.new(getPositionPlayspace())
 		end
 		
 		/**
 		 * \brief Playspace local position.
 		 * \note Position is queried each time the function is called.
 		 */
-		public func Vector getPositionPlayspace()
-			if this.pInputDevice != null
-				this.pPosition = this.pInputDevice.getDevicePosePosition()
+		func Vector getPositionPlayspace()
+			if pInputDevice != null
+				pPosition = pInputDevice.getDevicePosePosition()
 			end
-			return this.pPosition
+			return pPosition
 		end
 		
 		/**
 		 * \brief Orientation.
 		 * \note Orientation is queried each time the function is called.
 		 */
-		public func Quaternion getOrientation()
-			return this.getOrientationPlayspace() * this.pVRPlayspace.getOrientation()
+		func Quaternion getOrientation()
+			return getOrientationPlayspace() * pVRPlayspace.getOrientation()
 		end
 		
 		/**
 		 * \brief Playspace local orientation.
 		 * \note Orientation is queried each time the function is called.
 		 */
-		public func Quaternion getOrientationPlayspace()
-			if this.pInputDevice != null
-				this.pOrientation = this.pInputDevice.getDevicePoseOrientation()
+		func Quaternion getOrientationPlayspace()
+			if pInputDevice != null
+				pOrientation = pInputDevice.getDevicePoseOrientation()
 			end
-			return this.pOrientation
+			return pOrientation
 		end
 		
 		/**
 		 * \brief Matrix.
 		 * \note Position and orientation are queried each time the function is called.
 		 */
-		public func DMatrix getMatrix()
-			return DMatrix.newWorld( this.getPosition(), this.getOrientation() )
+		func DMatrix getMatrix()
+			return DMatrix.newWorld(getPosition(), getOrientation())
 		end
 		
 		/**
 		 * \brief Playspace local matrix.
 		 * \note Position and orientation are queried each time the function is called.
 		 */
-		public func Matrix getMatrixPlayspace()
-			return Matrix.newWorld( this.getPositionPlayspace(), this.getOrientationPlayspace() )
+		func Matrix getMatrixPlayspace()
+			return Matrix.newWorld(getPositionPlayspace(), getOrientationPlayspace())
 		end
 		
 		/**
 		 * \brief Inverse matrix.
 		 * \note Position and orientation are queried each time the function is called.
 		 */
-		public func DMatrix getInverseMatrix()
-			return this.getMatrix().getInverse()
+		func DMatrix getInverseMatrix()
+			return getMatrix().getInverse()
 		end
 		
 		/**
 		 * \brief Inverse playspace local matrix.
 		 * \note Position and orientation are queried each time the function is called.
 		 */
-		public func Matrix getInverseMatrixPlayspace()
-			return this.getMatrixPlayspace().getInverse()
+		func Matrix getInverseMatrixPlayspace()
+			return getMatrixPlayspace().getInverse()
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Element has been added to game world. Start tracking device. */
-		public func void addToGameWorld()
-			var BindingManager bindingManager = this.pECBehavior.getBindingManager()
-			bindingManager.addListener( this.pAttachDetachListener )
+		func void addToGameWorld()
+			var BindingManager bindingManager = pECBehavior.getBindingManager()
+			bindingManager.addListener(pAttachDetachListener)
 			
 			// find device
-			this.setInputDevice( bindingManager.findDevice( block InputDevice each
+			setInputDevice(bindingManager.findDevice(block InputDevice each
 				return each.getType() == InputDeviceType.vrHMD
-			end ) )
+			end))
 		end
 		
 		/** \brief Element has been removed from game world. Stop tracking device. */
-		public func void removeFromGameWorld()
-			this.pECBehavior.getBindingManager().removeListener( this.pAttachDetachListener )
-			this.setInputDevice( null )
+		func void removeFromGameWorld()
+			pECBehavior.getBindingManager().removeListener(pAttachDetachListener)
+			setInputDevice(null)
 		end
 	end
 	
 	
 	
-	private var BindingManager pBindingManager
-	private var ECBehaviorVRPlayspace pVRPlayspace
-	private var Array pListenerFactories
+	var BindingManager pBindingManager
+	var ECBehaviorVRPlayspace pVRPlayspace
+	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace ) \
-	this( eclass, vrPlayspace, BaseGameApp.getApp().getBindingManager() )
+	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace) \
+	this(eclass, vrPlayspace, BaseGameApp.getApp().getBindingManager())
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
-	BindingManager bindingManager ) super( eclass )
+	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
+	BindingManager bindingManager) super(eclass)
 		if vrPlayspace == null
-			throw ENullPointer.new( "vrPlayspace" )
+			throw ENullPointer.new("vrPlayspace")
 		end
 		if bindingManager == null
-			throw ENullPointer.new( "bindingManager" )
+			throw ENullPointer.new("bindingManager")
 		end
 		
-		this.pBindingManager = bindingManager
-		this.pVRPlayspace = vrPlayspace
-		this.pListenerFactories = Array.new()
+		pBindingManager = bindingManager
+		pVRPlayspace = vrPlayspace
+		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pListenerFactories = null
-		this.pVRPlayspace = null
+	func void dispose()
+		pListenerFactories = null
+		pVRPlayspace = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Binding manager. */
-	public func BindingManager getBindingManager()
-		return this.pBindingManager
+	func BindingManager getBindingManager()
+		return pBindingManager
 	end
 	
 	/** \brief VR Playspace behavior. */
-	public func ECBehaviorVRPlayspace getVRPlayspace()
-		return this.pVRPlayspace
+	func ECBehaviorVRPlayspace getVRPlayspace()
+		return pVRPlayspace
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory( ListenerFactory factory )
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pListenerFactories.add( factory )
+		pListenerFactories.add(factory)
 	end
 	
 	/**
@@ -435,27 +512,27 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory( Block blockFactory )
-		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory( Block ablock )
-		this.pListenerFactories.forEach( ablock )
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners( Instance instance )
-		this.pListenerFactories.forEach( block ListenerFactory each
-			instance.addListener( each.createListener( instance ) )
-		end )
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -466,10 +543,10 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHMD.
 	 */
-	static public func ECBehaviorVRHMD getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorVRHMD each
+	static func ECBehaviorVRHMD getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHMD each
 			return true
-		end ) cast ECBehaviorVRHMD
+		end) cast ECBehaviorVRHMD
 	end
 	
 	
@@ -481,16 +558,16 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	 * of type ECBehaviorVRHMD.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

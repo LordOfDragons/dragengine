@@ -168,6 +168,15 @@ class ECBehaviorStashable extends DefaultECBehavior
 					interactionElement.setInteractionBehavior(inventory)
 				end
 				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getInventory(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
 				value = parameters.getAt("remove", null)
 				if value != null
 					if value.equals("dispose")
@@ -211,6 +220,9 @@ class ECBehaviorStashable extends DefaultECBehavior
 				if value != null
 					result &= pInstance.isStashed() == value.equals("true")
 				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getInventory(),\
+					parameters, prefix + "interact.", pInstance.getElement())
 				
 				return result
 			end
@@ -259,8 +271,8 @@ class ECBehaviorStashable extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -315,7 +327,7 @@ class ECBehaviorStashable extends DefaultECBehavior
 					each.removedFromInventory(this, pInventory)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "removed")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "removed")
 				end
 			end
 			
@@ -326,7 +338,7 @@ class ECBehaviorStashable extends DefaultECBehavior
 					each.addedToInventory(this, inventory)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "added")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "added")
 				end
 			end
 		end

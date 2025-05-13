@@ -30,12 +30,10 @@ pin Dragengine.StateMachineSystem
 
 
 /**
- * \brief Base actor action using state machine.
+ * \brief Base VR Hand action using state machine.
  * \version 1.26
  * 
  * This class adds support to send state machine events for inputs for these interfaces:
- * - BAAMovement
- * - BAAInteract
  * - BAAVRGrab
  * - BAAVRMenuInput
  * - BAAVRTriggerInput
@@ -52,37 +50,33 @@ pin Dragengine.StateMachineSystem
  * - playerTakesControl
  * - playerReleasesControl
  * - think
- * - playerThink
- * - postThink
  * - cancel
  * - collisionResponse
  * 
  * Input events are send to state machine using interface BAAStateMachineEvent.
  * For further information see the respective bridge classes:
- * - \ref Commands.CommandsBAAMovement#StateMachineEventBridge
- * - \ref Commands.CommandsBAAInteract#StateMachineEventBridge
  * - \ref Commands.CommandsBAAVRGrab#StateMachineEventBridge
  * - \ref Commands.CommandsBAAVRMenuInput#StateMachineEventBridge
  * - \ref Commands.CommandsBAAVRTriggerInput#StateMachineEventBridge
  */
-class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
+class BAAVRHandStateMachine extends BaseVRHandAction implements BAAStateMachineEvent
 	/** \brief Factory for loading actor actions. */
-	class Factory implements PersistencyFactory, ECBehaviorActorAIAction.ActionFactory
-		public static fixed var String NAME = "BAAStateMachine"
+	class Factory implements PersistencyFactory, ECBehaviorVRHandAction.ActionFactory
+		public static fixed var String NAME = "BAAVRHandStateMachine"
 		
 		func new()
 		end
 		
 		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
-			return BAAStateMachine.new(env, reader)
+			return BAAVRHandStateMachine.new(env, reader)
 		end
 		
 		static func void registerFactory(Persistency persistency)
 			persistency.addFactory(NAME, Factory.new())
 		end
 		
-		func BaseActorAction createAction(ECBehaviorActorAIAction.Instance instance)
-			return BAAStateMachine.new()
+		func BaseVRHandAction createAction(ECBehaviorVRHandAction.Instance instance)
+			return BAAVRHandStateMachine.new()
 		end
 	end
 	
@@ -92,20 +86,9 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	var SMContext pContext
 	var String pLoadStateId
 	
-	/**
-	 * \brief Property update actor geometry on collider changed.
-	 * 
-	 * For performance reasons updating the actor geometry not done during colliderChanged()
-	 * but during postThink() when project to ground has been done. Between postThink() and
-	 * the next elementThink() actor geometry has to be updated or the actor element matrix
-	 * is out of sync when AI operates on it. This parameter is used to keep track of 
-	 */
-	protected var bool moveIfColliderChanged
-	
 	
 	/** \brief Create actor action. */
 	func new()
-		moveIfColliderChanged = true
 	end
 	
 	/**
@@ -187,6 +170,8 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 		this.actor = actor
 		initBehaviors()
 		
+		pIsRightHand = vrHand.getECBehavior().getID().equals(BaseVRActorClass.idVRRightHand)
+		
 		if pStateMachine != null
 			pContext.setStateMachine(pStateMachine)
 		end
@@ -198,6 +183,8 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 		// super.activateWhileLoading(actor)
 		this.actor = actor
 		initBehaviors()
+		
+		pIsRightHand = vrHand.getECBehavior().getID().equals(BaseVRActorClass.idVRRightHand)
 		
 		if pStateMachine != null
 			pContext.setStateMachine(pStateMachine)
@@ -232,21 +219,11 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	end
 	
 	func void think(float elapsed)
-		moveIfColliderChanged = false
 		pContext.runEvent("think", elapsed)
-	end
-	
-	func void playerThink(float elapsed)
-		pContext.runEvent("playerThink", elapsed)
 	end
 	
 	func void postThink(float elapsed)
 		pContext.runEvent("postThink", elapsed)
-		moveIfColliderChanged = true
-	end
-	
-	func void playerPostThink(float elapsed)
-		pContext.runEvent("playerPostThink", elapsed)
 	end
 	
 	func void cancel()
@@ -261,17 +238,6 @@ class BAAStateMachine extends BaseActorAction implements BAAStateMachineEvent
 	
 	func void collisionResponse(Collider owner, CollisionInfo info)
 		pContext.runEvent("collisionResponse", info)
-	end
-	
-	func bool canHitCollider(Collider owner, Collider collider)
-		return true
-	end
-	
-	func void colliderChanged(Collider owner)
-		// update actor geometry if between postThink() and next elementThink().
-		if moveIfColliderChanged
-			actor.setGeometry(owner.getPosition(), owner.getOrientation())
-		end
 	end
 	
 	

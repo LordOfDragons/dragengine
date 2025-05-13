@@ -187,6 +187,10 @@ class ECBehaviorInteraction extends DefaultECBehavior
 		return instance.hasInteractionAt(interaction)
 	end
 	
+	static func bool checkHasInteraction(ECBehaviorInstance behavior, String interaction)
+		return behavior != null if checkHasInteraction(behavior.getElement(), interaction) else false
+	end
+	
 	/**
 	 * \brief Helper function to check for element query interaction result.
 	 * 
@@ -213,6 +217,18 @@ class ECBehaviorInteraction extends DefaultECBehavior
 			if CommandLineParser.new().parseCommand(parameters) else Array.new(), source)
 	end
 	
+	static func bool checkInteraction(ECBehaviorInstance behavior, String interaction,\
+	Array parameters, BehaviorElement source)
+		return behavior != null if checkInteraction(behavior.getElement(),\
+			interaction, parameters, source) else false
+	end
+	
+	static func bool checkInteraction(ECBehaviorInstance behavior, String interaction,\
+	String parameters, BehaviorElement source)
+		return checkInteraction(behavior, interaction, parameters != null\
+			if CommandLineParser.new().parseCommand(parameters) else Array.new(), source)
+	end
+	
 	/**
 	 * \brief Helper function to check for element query interaction.
 	 */
@@ -230,6 +246,26 @@ class ECBehaviorInteraction extends DefaultECBehavior
 		value = parameters.getAt(prefix + "query", null)
 		if value != null
 			result &= checkInteraction(element, parameters.getAt(prefix + "name") cast String,\
+				parameters.getAt(prefix + "parameters", null) cast String, source) == value.equals("true")
+		end
+		
+		return result
+	end
+	
+	static func bool checkInteractionBTSM(ECBehaviorInstance behavior, Dictionary parameters,\
+	String prefix, BehaviorElement source)
+		var bool result = true
+		var Object value
+		
+		value = parameters.getAt(prefix + "has", null)
+		if value != null
+			result &= checkHasInteraction(behavior,\
+				parameters.getAt(prefix + "name") cast String) == value.equals("true")
+		end
+		
+		value = parameters.getAt(prefix + "query", null)
+		if value != null
+			result &= checkInteraction(behavior, parameters.getAt(prefix + "name") cast String,\
 				parameters.getAt(prefix + "parameters", null) cast String, source) == value.equals("true")
 		end
 		

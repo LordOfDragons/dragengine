@@ -326,8 +326,8 @@ class ECBehaviorOutline extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -412,7 +412,7 @@ class ECBehaviorOutline extends DefaultECBehavior
 			pComponent.setVisible(visible and getElement().getVisible())
 			
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + (visible if "visible" else "invisible"))
+				pBTSMs.runEvent(pECBehavior.getPrefix(), visible if "visible" else "invisible")
 			end
 		end
 		
@@ -506,7 +506,7 @@ class ECBehaviorOutline extends DefaultECBehavior
 		pPrefix = prefix
 		pComponent = component
 		pCollider = collider
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addProperty(pSkin = ECPSkin.new(prefix + "skin", "/shareddata/materials/outlined.deskin"))
 		eclass.addProperty(pModel = ECPModel.new(prefix + "model"))

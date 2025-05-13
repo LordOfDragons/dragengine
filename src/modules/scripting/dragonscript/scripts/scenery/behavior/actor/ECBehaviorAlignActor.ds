@@ -313,8 +313,8 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -573,7 +573,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 				each.startAligning(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "start")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "start")
 			end
 		end
 		
@@ -669,7 +669,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 				each.finishedAligning(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "stop")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
 			end
 		end
 		
@@ -765,7 +765,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 				each.finishedAligning(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "stop")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
 			end
 		end
 		

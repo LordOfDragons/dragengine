@@ -323,8 +323,8 @@ class ECBehaviorInteractionElement extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
-				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 		end
 		
@@ -475,7 +475,7 @@ class ECBehaviorInteractionElement extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
 		pPrefix = prefix
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addBehavior(this)
 	end

@@ -232,7 +232,7 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "lookedAt."
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -326,7 +326,7 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 				each.actorStartsLookingAt(this, actor)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent("lookedAt.start")
+				pBTSMs.runEvent("lookedAt.", "start")
 			end
 		end
 		
@@ -350,7 +350,7 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 				each.actorStopsLookingAt(this, actor)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent("lookedAt.stop")
+				pBTSMs.runEvent("lookedAt.", "stop")
 			end
 		end
 		

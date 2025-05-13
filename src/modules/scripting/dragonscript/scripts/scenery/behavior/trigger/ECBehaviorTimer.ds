@@ -371,8 +371,8 @@ class ECBehaviorTimer extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -473,7 +473,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 				each.timerStarted(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "started")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "started")
 			end
 			
 			var float timeout = pTimeout + DEMath.random(-pTimeoutSpread, pTimeoutSpread)
@@ -501,7 +501,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 				each.timerCancelled(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "cancelled")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "cancelled")
 			end
 		end
 		
@@ -542,7 +542,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 				each.timerElapsed(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "elapsed")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "elapsed")
 			end
 			
 			if pTimeoutRearm
@@ -669,7 +669,7 @@ class ECBehaviorTimer extends DefaultECBehavior
 		pPrefix = prefix
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		

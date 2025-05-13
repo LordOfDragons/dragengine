@@ -141,6 +141,17 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				pInstance = instance
 			end
 			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("action.conversationWait", null)
+				if value != null
+					pInstance.setActionConversationWait(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+			
 			func BTResult runAction(BTContext context, Dictionary parameters)
 				var Object value
 				
@@ -166,12 +177,7 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 						getLoadStateMachine().loadFromFile(value cast String)))
 				end
 				
-				value = parameters.getAt("action.conversationWait", null)
-				if value != null
-					pInstance.setActionConversationWait(value.equals("true"))
-				end
-				
-				return BTResult.success
+				return runActionShared(context, parameters)
 			end
 			
 			func void runAction(SMContext context, Dictionary parameters)
@@ -198,6 +204,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 					pInstance.setAction(BAAStateMachine.new(pInstance.getECBehavior().\
 						getLoadStateMachine().loadFromFile(value cast String)))
 				end
+				
+				runActionShared(context, parameters)
 			end
 		end
 		
@@ -368,7 +376,6 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		
 		var BaseActorAction pAction
 		var BaseActorAI pAI
-		var ECComposeBTSM.Instance pBTSMs
 		var bool pActionConversationWait
 		
 		
@@ -388,7 +395,6 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			pConversationActor = null
 			pPlayerControllable = null
 			pColliderAI = null
-			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -420,11 +426,10 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
-				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
-				pBTSMs.dropBTContexts()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 			
 			setAction(pECBehavior.getActionFactory().createAction(this))
@@ -735,22 +740,20 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
 	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable, \
-	String prefix) this(eclass, colliderAI, conversationActor, playerControllable,\
-	BaseGameApp.getApp().getLoaders(), prefix)
-	end
-	
-	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
-	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable, \
-	Loaders loaders, String prefix) super(eclass)
+	String prefix) super(eclass)
 		pPrefix = prefix
 		pColliderAI = colliderAI
 		pConversationActor = conversationActor
 		pPlayerControllable = playerControllable
 		pActionFactory = BAAFirstPerson.Factory.new()
 		pAIFactory = BAAIBehaviorTree.Factory.new()
-		pLoadBehaviorTree = loaders.getBehaviorTree()
-		pLoadStateMachine = loaders.getStateMachine()
 		pBTSMs = ECComposeBTSM.new()
+		
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pLoadBehaviorTree = app.getLoaders().getBehaviorTree()
+			pLoadStateMachine = app.getLoaders().getStateMachine()
+		end
 		
 		eclass.addBehavior(this)
 	end

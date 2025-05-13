@@ -235,7 +235,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -330,7 +330,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 				each.stashableAdded(this, stashable)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "added")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "added")
 			end
 		end
 		
@@ -343,7 +343,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 				each.stashableRemoved(this, stashable)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "removed")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "removed")
 			end
 		end
 		
@@ -462,7 +462,7 @@ class ECBehaviorInventory extends DefaultECBehavior
 	func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
 		pPrefix = prefix
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addBehavior(this)
 	end

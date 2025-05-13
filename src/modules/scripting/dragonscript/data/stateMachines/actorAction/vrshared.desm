@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<stateMachine>
+	<!--
+	State machine containing shared states for use with VR action state machines.
+	
+	To use this state machine in your custom state machine import it like this:
+	
+	<stateMachine>
+		<import>/shareddata/stateMachines/actorAction/vrshared.desm</import>
+		... your content
+	</stateMachine>
+	
+	The "vrhand" state machine import this shared state machine
+	-->
+	
+	
+	<!--
+	Update animators during thinking.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.update.animators</import>
+	-->
+	<state id='shared.update.animators'>
+		<!--
+		Actor action has updated animator controllers already using locomotion
+		-->
+		<enterAction name='vrHandPose(#thisHand).update'>
+			<parameter name='controllers'/>
+			<parameter name='applyAnimations'/>
+		</enterAction>
+		
+		<enterAction name='actorAnimated(#thisHand).update'>
+			<parameter name='notifyControllersChanged'/>
+			<parameter name='apply'/>
+		</enterAction>
+	</state>
+</stateMachine>

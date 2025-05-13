@@ -232,7 +232,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "vrHandPointedAt."
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -326,7 +326,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 				each.handStartsPointingAt(this, hand)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent("vrHandPointedAt.start")
+				pBTSMs.runEvent("vrHandPointedAt.", "start")
 			end
 		end
 		
@@ -350,7 +350,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 				each.handStopsPointingAt(this, hand)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent("vrHandPointedAt.stop")
+				pBTSMs.runEvent("vrHandPointedAt.", "stop")
 			end
 		end
 		

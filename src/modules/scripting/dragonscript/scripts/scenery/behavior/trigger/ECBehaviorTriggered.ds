@@ -304,7 +304,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getTrigger().getName() + "."
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -391,7 +391,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 					each.triggerExpressionTrue(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getTrigger().getName() + "true")
+					pBTSMs.runEvent(pECBehavior.getTrigger().getName() + ".", "true")
 				end
 				
 			else
@@ -399,7 +399,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 					each.triggerExpressionFalse(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getTrigger().getName() + "false")
+					pBTSMs.runEvent(pECBehavior.getTrigger().getName() + ".", "false")
 				end
 			end
 		end
@@ -486,7 +486,7 @@ class ECBehaviorTriggered extends DefaultECBehavior
 	String id, String propertyName) super(eclass, id)
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, propertyName + ".")
 		
 		pTrigger = ECPString.new(propertyName, "")
 		eclass.addProperty(pTrigger)

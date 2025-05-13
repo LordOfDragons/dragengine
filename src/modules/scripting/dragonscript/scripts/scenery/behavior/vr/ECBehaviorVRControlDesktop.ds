@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Scenery
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -54,7 +55,7 @@ pin Dragengine.Utils
  *    protected var ECBehaviorVRControlDesktop.Instance controlDesktop
  *    
  *    // Create action.
- *    public func new()
+ *    func new()
  *    end
  *    
  *    // Init behaviors. This stores aside the behavior matching the VR hand this action belongs to.
@@ -69,7 +70,7 @@ pin Dragengine.Utils
  *    end
  *    
  *    // Activate hand behavior. Enable hand point at to enable controlling desktops.
- *    public func void activate(BehaviorElement actor, ECBehaviorVRHand.Instance vrHand)
+ *    func void activate(BehaviorElement actor, ECBehaviorVRHand.Instance vrHand)
  *       super.activate(actor, vrHand)
  *       
  *       handPointAt.setEnabled(true)
@@ -78,7 +79,7 @@ pin Dragengine.Utils
  *    // Deactivate hand behavior. Disable hand point at and stop interacting with desktop.
  *    // Do not stop interacting here if you want to switch to another action that should
  *    // keep on using the desktop.
- *    public func void deactivate()
+ *    func void deactivate()
  *       controlDesktop.pointAtRelease()
  *       handPointAt.setEnabled(false)
  *       
@@ -88,7 +89,7 @@ pin Dragengine.Utils
  *    // Frame update. Interact with control desktop if pointed at. The if check allows
  *    // to test various possible interactions stopping at the first one that works.
  *    // Make sure super.think(elapsed) is alway called even if exiting early
- *    public func void think(float elapsed)
+ *    func void think(float elapsed)
  *       if controlDesktop.pointAt()
  *          super.think(elapsed)
  *          return
@@ -100,19 +101,19 @@ pin Dragengine.Utils
  *    end
  *    
  *    // Events by BAAVRTriggerInput we do not use for this example but have to be declared.
- *    public func void triggerTouch()
+ *    func void triggerTouch()
  *    end
  *    
- *    public func void triggerUntouch()
+ *    func void triggerUntouch()
  *    end
  *    
- *    public func void triggerAnalog(float value)
+ *    func void triggerAnalog(float value)
  *    end
  *    
  *    // Trigger is pulled. Sends left mouse press to desktop if one is controlled.
  *    // The if check allows to test various possible interactions stopping at the
  *    // first one that works.
- *    public func void triggerPull()
+ *    func void triggerPull()
  *       if controlDesktop.pointAtPull()
  *          return
  *       end
@@ -123,7 +124,7 @@ pin Dragengine.Utils
  *    // Trigger has been released. Sends left mouse release to desktop if one is
  *    // controlled. // The if check allows to test various possible interactions
  *    // stopping at the first one that works.
- *    public func void triggerRelease()
+ *    func void triggerRelease()
  *       if controlDesktop.pointAtRelease()
  *          return
  *       end
@@ -144,6 +145,18 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	 * Example XML element class:
 	 * \code{.xml}
 	 * <behavior type='ECBehaviorVRControlDesktop'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 *   
 	 *   <!-- required: use vr hand point at with id -->
 	 *   <string name='vrHandPointAt'>right</string>
 	 * </behavior>
@@ -169,6 +182,9 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 			var ECBehaviorVRControlDesktop behavior = ECBehaviorVRControlDesktop.new(eclass,\
 				ECBehaviorVRHandPointAt.getBehaviorIn(eclass,\
 					parameters.getAt("vrHandPointAt") cast String), id)
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "vrControlDesktop", id)
 			return behavior
@@ -177,47 +193,138 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorVRControlDesktop pECBehavior
-		private var ECBehaviorVRHandPointAt.Instance pPointAt
-		private var ECBehaviorControlDesktop.Instance pControlDesktop
-		private var bool pTriggerPulled
+		/**
+		 * \brief Behavior tree action "vrControlDesktop{(id)}.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					if pInstance.getControlDesktop() == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(pInstance.getControlDesktop())
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getControlDesktop(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "vrControlDesktop{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "desktop", null)
+				if value != null
+					result &= (pInstance.getControlDesktop() != null) == value.equals("true")
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(\
+					pInstance.getControlDesktop(), parameters, prefix + "interact.",\
+					pInstance.getElement())
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorVRControlDesktop pECBehavior
+		var ECBehaviorVRHandPointAt.Instance pPointAt
+		var ECBehaviorControlDesktop.Instance pControlDesktop
+		var bool pTriggerPulled
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorVRControlDesktop ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorVRControlDesktop ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pPointAt = ecbehavior.getPointAt().instance(element)
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			pControlDesktop = null
 			pPointAt = null
 			super.dispose()
 		end
 		
+		func void init(StubElement stub)
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+			end
+		end
+		
 		
 		
 		/** \brief Behavior instance VR Hand Point At. */
-		public func ECBehaviorVRHandPointAt.Instance getPointAt()
+		func ECBehaviorVRHandPointAt.Instance getPointAt()
 			return pPointAt
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorVRControlDesktop getECBehavior()
+		func ECBehaviorVRControlDesktop getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Desktop currently controlled or null. */
-		public func ECBehaviorControlDesktop.Instance getControlDesktop()
+		func ECBehaviorControlDesktop.Instance getControlDesktop()
 			return pControlDesktop
 		end
 		
 		/** \brief Trigger is pulled. */
-		public func bool getTriggerPulled()
+		func bool getTriggerPulled()
 			return pTriggerPulled
 		end
 		
@@ -232,7 +339,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 		 * \returns true if mouse pointer has been moved. In this case caller should not
 		 *          process other possible interactions.
 		 */
-		public func bool pointAt()
+		func bool pointAt()
 			var DVector hitPoint = pPointAt.getPointAtHitPoint()
 			
 			if pControlDesktop != null
@@ -269,7 +376,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 		 * \returns true if a left mouse button press has been simulated.  In this case
 		 *          caller should not process other possible interactions.
 		 */
-		public func bool pointAtPull()
+		func bool pointAtPull()
 			if not pointAt()
 				return false
 			end
@@ -287,7 +394,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 		 * \returns true if a left mouse button release has been simulated.  In this case
 		 *          caller should not process other possible interactions.
 		 */
-		public func bool pointAtRelease()
+		func bool pointAtRelease()
 			if pControlDesktop == null
 				return false
 			end
@@ -302,56 +409,77 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 		/**
 		 * \brief Trigger pointAtRelease if tracking a control desktop.
 		 */
-		public func void cancel()
+		func void cancel()
 			pointAtRelease()
 		end
 	end
 	
 	
 	
-	private var ECBehaviorVRHandPointAt pPointAt
+	var ECBehaviorVRHandPointAt pPointAt
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt pointAt)\
+	func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt pointAt)\
 	this(eclass, pointAt, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt pointAt, String id) \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt pointAt, String id) \
 	this(eclass, pointAt, id, id.empty() if "vrControlDesktop." else "vrControlDesktop(" + id + ").")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt pointAt, String id, \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt pointAt, String id, \
 	String prefix) super(eclass, id)
 		if pointAt == null
 			throw ENullPointer.new("pointAt")
 		end
 		
+		pPrefix = prefix
 		pPointAt = pointAt
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pPointAt = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief VR Hand point at behavior or null. */
-	public func ECBehaviorVRHandPointAt getPointAt()
+	func ECBehaviorVRHandPointAt getPointAt()
 		return pPointAt
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -363,7 +491,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRControlDesktop.
 	 */
-	static public func ECBehaviorVRControlDesktop getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorVRControlDesktop getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorVRControlDesktop each
 			return true
 		end) cast ECBehaviorVRControlDesktop
@@ -375,7 +503,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRControlDesktop with specific identifier.
 	 */
-	static public func ECBehaviorVRControlDesktop getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorVRControlDesktop getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorVRControlDesktop each
 			return each.getID().equals(id)
 		end) cast ECBehaviorVRControlDesktop
@@ -387,7 +515,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	 * Returns list contains ECBehaviorVRControlDesktop behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorVRControlDesktop each
 			return true
 		end)
@@ -401,7 +529,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorVRControlDesktop.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -413,7 +541,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorRenderableCamera.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -425,7 +553,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderableCamera.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -434,7 +562,7 @@ class ECBehaviorVRControlDesktop extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

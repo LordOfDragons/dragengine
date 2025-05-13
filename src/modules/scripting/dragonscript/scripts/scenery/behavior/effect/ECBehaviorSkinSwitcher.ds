@@ -359,8 +359,8 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -412,7 +412,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			pActive = index
 			
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "changed")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "changed")
 			end
 		end
 		
@@ -544,7 +544,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		
 		pPrefix = prefix
 		pComponent = component
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addProperty(pTexture = ECPString.new(prefix + "texture", ""))
 		eclass.addProperty(pSkins = ECPSkinList.new(prefix + "skins"))

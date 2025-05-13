@@ -157,6 +157,48 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
+		 * \brief Behavior tree action/condition "rideOn.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					if pInstance.getRidable() == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(pInstance.getRidable())
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getRidable(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
 		 * \brief Behavior tree action/condition "rideOn.check".
 		 * \version 1.26
 		 */
@@ -186,6 +228,9 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				if value != null
 					result &= (pInstance.getRidable() != null) == value.equals("true")
 				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getRidable(),\
+					parameters, prefix + "interact.", pInstance.getElement())
 				
 				return result
 			end
@@ -268,7 +313,8 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "rideOn."
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -341,7 +387,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				each.ridableChanged(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(ridable != null if "rideOn.begin" else "rideOn.end")
+				pBTSMs.runEvent("rideOn.", ridable != null if "begin" else "end")
 			end
 		end
 		

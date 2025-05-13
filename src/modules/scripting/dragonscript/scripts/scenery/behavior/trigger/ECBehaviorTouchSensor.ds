@@ -378,8 +378,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -599,7 +599,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 					listener.elementLeft(this, element)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "left")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "left")
 				end
 			end)
 			pTouchingElements = null
@@ -634,7 +634,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				each.elementEntered(this, element)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "entered")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "entered")
 			end
 		end
 		
@@ -656,7 +656,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 				each.elementLeft(this, element)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "left")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "left")
 			end
 		end
 		
@@ -723,7 +723,7 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 		pPrefix = prefix
 		pCollider = collider
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addProperty(pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString()))
 		

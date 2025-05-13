@@ -30,6 +30,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -72,6 +74,18 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 	 * <behavior type='ECBehaviorVRHandAction'>
 	 *   <!-- required: use vr hand with id. -->
 	 *   <string name='vrHand'>right</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -95,6 +109,9 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 			var ECBehaviorVRHandAction behavior = ECBehaviorVRHandAction.new(eclass,\
 				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass), id)
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "vrHandAction", id)
 			return behavior
@@ -103,6 +120,100 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "forceField{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("action.conversationWait", null)
+				if value != null
+					pInstance.setActionConversationWait(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("action.stateMachine", null)
+				if value != null
+					var String basePath = context.getBehaviorTree().getFilename()
+					if basePath != null
+						value = File.absolutePath(value cast String,\
+							File.new(basePath).getParent().getPath()).getPath()
+					end
+					pInstance.setAction(BAAVRHandStateMachine.new(pInstance.getECBehavior().\
+						getLoadStateMachine().loadFromFile(value cast String)))
+				end
+				
+				return runActionShared(context, parameters)
+				
+				return BTResult.success
+			end
+			
+			func void runAction(SMContext context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("action.stateMachine", null)
+				if value != null
+					var String basePath = context.getStateMachine().getFilename()
+					if basePath != null
+						value = File.absolutePath(value cast String,\
+							File.new(basePath).getParent().getPath()).getPath()
+					end
+					pInstance.setAction(BAAVRHandStateMachine.new(pInstance.getECBehavior().\
+						getLoadStateMachine().loadFromFile(value cast String)))
+				end
+				
+				runActionShared(context, parameters)
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "forceField{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "action.conversationWait", null)
+				if value != null
+					result &= pInstance.getActionConversationWait() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Hand collider listener forwarding to Action. */
 		class HandColliderListener extends ECBehaviorVRHand.DefaultCollisionListener
 			var Instance pInstance
@@ -128,7 +239,15 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 			end
 			
 			func bool wait(ECBehaviorConversationActor.Instance instance)
-				return pInstance.getAction() != null and pInstance.getAction().conversationWait()
+				if pInstance.getActionConversationWait()
+					return true
+					
+				elif pInstance.getAction() != null
+					return pInstance.getAction().conversationWait()
+					
+				else
+					return false
+				end
 			end
 		end
 		
@@ -137,6 +256,7 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 		var ECBehaviorVRHand.Instance pVRHand
 		var ECBehaviorConversationActor.Instance pConversationActor
 		
+		var bool pActionConversationWait
 		var BaseVRHandAction pAction
 		
 		
@@ -175,6 +295,13 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 				pConversationActor.addListener(ConvoActorListener.new(this))
 			end
 			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+			end
+			
 			setAction(pECBehavior.getActionFactory().createAction(this))
 		end
 		
@@ -210,6 +337,7 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 			end
 			
 			pAction = action
+			pActionConversationWait = false
 			
 			if action != null
 				action.activate(getElement(), pVRHand)
@@ -229,6 +357,24 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 			if disposeAction != null
 				disposeAction.dispose()
 			end
+		end
+		
+		/**
+		 * \brief Action causes conversation to wait.
+		 * \version 1.26
+		 */
+		public func bool getActionConversationWait()
+			return pActionConversationWait
+		end
+		
+		/**
+		 * \brief Set if action causes conversation to wait.
+		 * \version 1.26
+		 * 
+		 * Reset to false when action is changed.
+		 */
+		func void setActionConversationWait(bool wait)
+			pActionConversationWait = wait
 		end
 		
 		
@@ -282,12 +428,13 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var BehaviorElement element = getElement()
+				readFromFileV0(env, reader)
 				
-				pAction = env.readObjectOrNull(reader) cast BaseVRHandAction
-				if pAction != null
-					pAction.activateWhileLoading(element, pVRHand)
-				end
+			case 1
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				pActionConversationWait = flags.getAt(0)
+				
+				readFromFileV0(env, reader)
 				
 			else
 				throw EInvalidParam.new("unsupported version")
@@ -296,9 +443,20 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 			setRequiresThink(pAction != null)
 		end
 		
+		private func void readFromFileV0(PersistencyEnvironment env, FileReader reader)
+			pAction = env.readObjectOrNull(reader) cast BaseVRHandAction
+			if pAction != null
+				pAction.activateWhileLoading(getElement(), pVRHand)
+			end
+		end
+		
 		/** \brief Write behavior to file. */
 		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
-			writer.writeByte(0) // version
+			writer.writeByte(1)
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pActionConversationWait)
+			flags.writeToFile(writer)
 			
 			env.writeObjectOrNull(writer, pAction)
 		end
@@ -309,6 +467,9 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 	var ECBehaviorVRHand pVRHand
 	var ECBehaviorConversationActor pConversationActor
 	var ActionFactory pActionFactory
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
+	var LoadStateMachine pLoadStateMachine
 	
 	
 	
@@ -330,9 +491,16 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 			throw ENullPointer.new("vrHand")
 		end
 		
+		pPrefix = prefix
 		pVRHand = vrHand
 		pConversationActor = conversationActor
 		pActionFactory = BaseVRHandAction.Factory.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
+		
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pLoadStateMachine = app.getLoaders().getStateMachine()
+		end
 		
 		eclass.addBehavior(this)
 	end
@@ -342,10 +510,19 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 		pVRHand = null
 		pConversationActor = null
 		pActionFactory = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Collider AI behavior or null. */
 	func ECBehaviorVRHand getVRHand()
@@ -382,6 +559,33 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 			throw ENullPointer.new()
 		end
 		pActionFactory = factory
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
+	/**
+	 * \brief State machine loader.
+	 * \version 1.26
+	 */
+	func LoadStateMachine getLoadStateMachine()
+		return pLoadStateMachine
+	end
+	
+	/**
+	 * \brief Set state machine loader.
+	 * \version 1.26
+	 */
+	func void setLoadStateMachine(LoadStateMachine loader)
+		if loader == null
+			throw ENullPointer.new("loader")
+		end
+		pLoadStateMachine = loader
 	end
 	
 	

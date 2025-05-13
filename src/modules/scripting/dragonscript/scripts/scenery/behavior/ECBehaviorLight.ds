@@ -408,8 +408,8 @@ class ECBehaviorLight extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -513,7 +513,7 @@ class ECBehaviorLight extends DefaultECBehavior
 					each.lightActivated(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "activated")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "activated")
 				end
 				
 			else
@@ -521,7 +521,7 @@ class ECBehaviorLight extends DefaultECBehavior
 					each.lightDeactivated(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "deactivated")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "deactivated")
 				end
 			end
 		end
@@ -665,7 +665,7 @@ class ECBehaviorLight extends DefaultECBehavior
 		pTriggerTable = triggerTable
 		pShadowIgnoreComponents = Array.new()
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pLight = ECComposeLight.new(eclass, prefix)
 		pAttach = ECComposeAttachResource.new(eclass, prefix)

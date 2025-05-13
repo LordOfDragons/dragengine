@@ -405,10 +405,10 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				btsms.addAllAction(prefix + "set", BTASet.new(this))
-				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
-				btsms.addAllAction(prefix + "collision", BTACollision.new(this))
-				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllAction(prefix, "collision", BTACollision.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 		end
 		
@@ -705,7 +705,6 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		pPrefix = prefix
 		pBaseCollider = baseCollider
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
 		pBTSMs = ECComposeBTSM.new()
 		
 		var ECComposeCollider ccollider = pBaseCollider.getCollider()

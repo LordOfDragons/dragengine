@@ -426,8 +426,8 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -517,7 +517,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 					each.startCasting(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "startCasting")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startCasting")
 				end
 				
 			else
@@ -525,7 +525,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 					each.stopCasting(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "stopCasting")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopCasting")
 				end
 			end
 		end
@@ -567,7 +567,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 				each.lastParticleDied(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "lastParticleDied")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "lastParticleDied")
 			end
 		end
 		
@@ -600,7 +600,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 					each.startCasting(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "startCasting")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startCasting")
 				end
 			end
 			
@@ -690,7 +690,7 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 		pCollider = collider
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pParticleEmitter = ECComposeParticleEmitter.new(eclass, loaders, prefix)
 		pAttach = ECComposeAttachResource.new(eclass, prefix)

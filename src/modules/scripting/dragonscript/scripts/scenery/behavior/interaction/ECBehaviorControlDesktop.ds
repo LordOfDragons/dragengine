@@ -50,9 +50,6 @@ pin Dragengine.Utils
  * plane corners are relative to the bone. This allows to create desktop input zones
  * which can be displaced.
  * 
- * The behavior can be optionally disabled to allow the input to be available to the
- * player only if certain conditions are fulfilled.
- * 
  * The actor is responsible to move the mouse pointer. This behavior provides convenience
  * methods to do the calculation and updating of the mouse pointer.
  * 

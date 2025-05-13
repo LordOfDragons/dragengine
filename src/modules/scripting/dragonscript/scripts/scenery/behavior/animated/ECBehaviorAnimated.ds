@@ -456,8 +456,8 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -530,7 +530,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 					each.startPlaying(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "startPlaying")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startPlaying")
 				end
 				
 				if pPlayback.getController() == null and not pPlayback.getLooping()
@@ -546,7 +546,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 					each.stopPlaying(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "stopPlaying")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopPlaying")
 				end
 			end
 		end
@@ -636,7 +636,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 					each.startPlaying(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "startPlaying")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startPlaying")
 				end
 			end
 		end
@@ -695,7 +695,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				each.stopPlaying(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "stopPlaying")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stopPlaying")
 			end
 		end
 		
@@ -784,7 +784,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		pComponent = component
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pAnimator = ECComposeAnimator.new(eclass, loaders, prefix)
 		

@@ -314,8 +314,8 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -467,7 +467,7 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			end
 			
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "stepAside")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stepAside")
 			end
 		end
 		

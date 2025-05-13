@@ -662,8 +662,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -795,7 +795,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 				each.configurationChanged(this, configuration)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "configuration")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "configuration")
 			end
 			
 			return true
@@ -936,7 +936,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 				each.footStep(this, configuration, event)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "footStep")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "footStep")
 			end
 		end
 		

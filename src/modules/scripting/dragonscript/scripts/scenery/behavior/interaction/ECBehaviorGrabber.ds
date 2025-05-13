@@ -278,6 +278,15 @@ class ECBehaviorGrabber extends DefaultECBehavior
 					interactionElement.setInteractionBehavior(grabSpot)
 				end
 				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getGrabSpot(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
 				if parameters.has("release")
 					pInstance.release()
 				end
@@ -321,6 +330,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				if value != null
 					result &= pInstance.isGrabbing() == value.equals("true")
 				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getGrabSpot(),\
+					parameters, prefix + "interact.", pInstance.getElement())
 				
 				return result
 			end
@@ -415,9 +427,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -498,7 +510,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				each.enabledChanged(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + (enabled if "enabled" else "disabled"))
+				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
 			end
 		end
 		
@@ -523,7 +535,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 					each.spotReleased(this, pGrabSpot)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "released")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "released")
 				end
 			end
 			
@@ -534,7 +546,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 					each.spotGrabbed(this, grabSpot)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "grabbed")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "grabbed")
 				end
 			end
 		end
@@ -794,7 +806,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 					listener.untouchGrabSpot(this, grabSpot)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "untouch")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "untouch")
 				end
 			end)
 			pTouchingGrabSpots = null
@@ -843,7 +855,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				each.touchGrabSpot(this, grabSpot)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "touch")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "touch")
 			end
 		end
 		
@@ -865,7 +877,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				each.untouchGrabSpot(this, grabSpot)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "untouch")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "untouch")
 			end
 		end
 		
@@ -964,7 +976,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		pVRHand = vrHand
 		pCollider = collider
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())
 		eclass.addProperty(pShape)

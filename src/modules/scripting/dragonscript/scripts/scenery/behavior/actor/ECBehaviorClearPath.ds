@@ -278,7 +278,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		var float pCheckInterval
 		var float pCheckTimer
 		var float pClearPathTime
-		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -302,7 +301,6 @@ class ECBehaviorClearPath extends DefaultECBehavior
 		func void dispose()
 			pLocomotion = null
 			pClearPathElement = null
-			pBTSMs = null
 			
 			pEnabled = false // safety measure
 			
@@ -334,10 +332,9 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
-				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
-				pBTSMs.dropBTContexts()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 		end
 		

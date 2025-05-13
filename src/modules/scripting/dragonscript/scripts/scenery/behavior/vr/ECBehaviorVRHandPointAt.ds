@@ -29,6 +29,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -138,6 +139,18 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	 *                  format is '', 'category' or 'category:filter' where category and filter
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -168,8 +181,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrHandPointAt", id)
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrHandPointAt", id)
 			return behavior
 		end
 	end
@@ -178,6 +192,104 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action/condition "vrHandPointAt{(id)}.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var BehaviorElement lookAtElement = pInstance.getPointAtBehaviorElement()
+					if lookAtElement == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionElement(lookAtElement)
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getPointAtBehaviorElement(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "vrHandPointAt{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "lookAt", null)
+				if value != null
+					result &= pInstance.hasVRHandPointAtElement() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "lookAt.distance.less", null)
+				if value != null
+					result &= pInstance.getPointAtDistance() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "lookAt.distance.greater", null)
+				if value != null
+					result &= pInstance.getPointAtDistance() > (value cast String).toFloat()
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(\
+					pInstance.getPointAtBehaviorElement(), parameters, prefix + "interact.",\
+					pInstance.getElement())
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorVRHandPointAt pECBehavior
 		var ECBehaviorVRHand.Instance pVRHand
 		
@@ -201,6 +313,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		var Collider pPointAtCollider
 		
 		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -220,6 +333,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pVRHand = null
 			pPointAtElement = null
 			pListeners = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -233,7 +347,8 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 				throw EInvalidParam.new()
 			end
 			
-			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			var BehaviorElement element = getElement()
+			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 			
 			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
 			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
@@ -249,7 +364,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			// settings of the collider they are attached to. hence the collider to ignore
 			// has to be added to the vr hand collider
 			if pECBehavior.getIgnoreCollider() != null
-				var Collider ignore = pECBehavior.getIgnoreCollider().instance(getElement()).getCollider()
+				var Collider ignore = pECBehavior.getIgnoreCollider().instance(element).getCollider()
 				if ignore != null
 					collider.addIgnoreCollider(ignore)
 				end
@@ -281,6 +396,14 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pECBehavior.createListeners(this)
 			
 			setRequiresThink(pEnabled)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
@@ -323,6 +446,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
+			end
 		end
 		
 		
@@ -629,6 +755,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.pointAtChanged(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), element != null if "pointAt" else "noPointAt")
+			end
 		end
 		
 		
@@ -670,6 +799,8 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	var ECPString pTestBone
 	var ECComposeCollisionFilter pCollisionFilter
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -685,23 +816,16 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id, \
 	String prefix) super(eclass, id)
+		pPrefix = prefix
 		pVRHand = vrHand
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
-		pRange = ECPFloat.new(prefix + "range", 2, 0)
-		eclass.addProperty(pRange)
-		
-		pOrigin = ECPVector.new(prefix + "origin", Vector.new())
-		eclass.addProperty(pOrigin)
-		
-		pRotation = ECPVector.new(prefix + "rotation", Vector.new())
-		eclass.addProperty(pRotation)
-		
-		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())
-		eclass.addProperty(pShape)
-		
-		pTestBone = ECPString.new(prefix + "bone", null)
-		eclass.addProperty(pTestBone)
+		eclass.addProperty(pRange = ECPFloat.new(prefix + "range", 2, 0))
+		eclass.addProperty(pOrigin = ECPVector.new(prefix + "origin", Vector.new()))
+		eclass.addProperty(pRotation = ECPVector.new(prefix + "rotation", Vector.new()))
+		eclass.addProperty(pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString()))
+		eclass.addProperty(pTestBone = ECPString.new(prefix + "bone", null))
 		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
 		
@@ -720,10 +844,19 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		pIgnoreCollider = null
 		pVRHand = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief VR Hand behavior or null. */
 	func ECBehaviorVRHand getVRHand()
@@ -771,6 +904,14 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 	/** \brief Collision filter for AI collider. */
 	func ECComposeCollisionFilter getCollisionFilter()
 		return pCollisionFilter
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

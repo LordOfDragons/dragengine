@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<stateMachine>
+	<!--
+	State machine providing similar implementation as BaseVRHandAction.
+	
+	To use this state machine in your custom state machine import it like this:
+	
+	<stateMachine>
+		<import>/shareddata/stateMachines/actorAction/vrhand.desm</import>
+		... your content
+	</stateMachine>
+	
+	You can thus import multiple state machines. This allows storing often used states
+	and state templates in separate files for easier reuse.
+	
+	Defining states in your custom state machine replace states inherited from
+	the base state machine.
+	
+	The initial state is "created". Upon receiving "activate" or "activateWhileLoading"
+	transitions to "default" state. This state contains various transitions for events
+	which apply actions but otherwise stay in the "default" state.
+	-->
+	<initialState>created</initialState>
+	
+	
+	<!--
+	Import shared state machine states.
+	-->
+	<import>/shareddata/stateMachines/actorAction/shared.desm</import>
+
+	
+	<!--
+	Base thinking.
+	
+	Imported by adding this line to your "think" transition:
+	<import>shared.think.default</import>
+	-->
+	<state id='shared.think.default'>
+		<!--
+		Imports "shared.update.animators"
+		-->
+		<import>shared.update.animators</import>
+	</state>
+	
+	
+	<!--
+	Basic state content for VR hands.
+	
+	Defines these transitions: postThink, cancel, collisionResponse,
+	playerTakesControl and playerReleasesControl.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.default</import>
+	-->
+	<state id='shared.state.default'>
+		<!--
+		Think on frame update. Applies necessary actions and stays in this state.
+		Imports "shared.update.animators"
+		-->
+		<transition event='think'>
+			<import>shared.think.default</import>
+		</transition>
+		
+		<!--
+		Post think on frame update.
+		-->
+		<!-- <transition event='postThink'/> -->
+		
+		<!--
+		Actor is requested to cancel action the next time possible.
+		-->
+		<!-- <transition event='cancel'/> -->
+		
+		<!--
+		Collision detected of actor hand collider.
+		-->
+		<!-- <transition event='collisionResponse'/> -->
+		
+		<!--
+		Player takes control of actor.
+		-->
+		<!-- <transition event='playerTakesControl'/> -->
+		
+		<!--
+		Player releases control of actor.
+		-->
+		<!-- <transition event='playerReleasesControl'/> -->
+	</state>
+	
+	
+	<!--
+	Initial state. Waits for "activate" to transition into "default" state.
+	-->
+	<state id='created'>
+		<transition event='activate' state='default'>
+			<!--
+			Recommended actions to take:
+			- init animator parameters
+			-->
+		</transition>
+	</state>
+	
+	
+	<!--
+	Note about loading.
+	
+	While loading the state machine is not sent the "activate" event but the "activateWhileLoading".
+	While "activate" can only be sent to the initial state (here "created") the
+	"activateWhileLoading" event is send to whatever state the state machine is in after loading.
+	-->
+	
+	
+	<!--
+	Default state. This is the main state which processes player input.
+	-->
+	<state id='default'>
+		<!--
+		About using BaseActorAction.conversationWait(). This function returns true if
+		conversation actions have to wait for this action to finish. Using the state
+		machine approach this method is not supported. Instead you have to set the
+		conversationWait state using a state machine action like this:
+		
+		<enterAction name='vrHandAction(#thisHand).set'>
+			<parameter name='action.conversationWait'>true</parameter>
+		</enterAction>
+		
+		Here "#thisHand" refers to the vrHandAction behavior connected to the same hand.
+		Using "#otherHand" you can refer to the opposite vrHandAction behavior.
+		This is true for all behaviors linked to a VR hand. If you add your own behaviors
+		to classes you have to explicitely tell them to add themselves with an alias
+		identifier to individual state machines.
+		
+		This state is reset to false whenever the current action is changed
+		-->
+		
+		
+		<!--
+		Element entered game world. Does nothing.
+		-->
+		<!-- <transition event='enteredGameWorld'/> -->
+		
+		<!--
+		Element left game world. Does nothing.
+		-->
+		<!-- <transition event='leftGameWorld'/> -->
+		
+		<!--
+		First frame update after element entered game world. Does nothing.
+		-->
+		<!-- <transition event='enterFrame'/> -->
+		
+		
+		<!--
+		Basic state content for player controlled actors
+		-->
+		<import>shared.state.default</import>
+	</state>
+</stateMachine>

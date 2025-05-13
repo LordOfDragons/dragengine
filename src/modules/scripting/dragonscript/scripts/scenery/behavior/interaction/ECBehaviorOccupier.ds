@@ -182,6 +182,15 @@ class ECBehaviorOccupier extends DefaultECBehavior
 					interactionElement.setInteractionBehavior(ispot)
 				end
 				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getInteractionSpot(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
 				value = parameters.getAt("claim", null)
 				if value != null
 					var ECBehaviorInteractionSpot.Instance ispot = getInteractionElementISpot(\
@@ -293,6 +302,9 @@ class ECBehaviorOccupier extends DefaultECBehavior
 					result &= pInstance.isOccupying() == value.equals("true")
 				end
 				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getInteractionSpot(),\
+					parameters, prefix + "interact.", pInstance.getElement())
+				
 				return result
 			end
 		end
@@ -332,8 +344,8 @@ class ECBehaviorOccupier extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -374,7 +386,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 					each.spotReleased(this, pInteractionSpot)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "released")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "released")
 				end
 			end
 			
@@ -385,7 +397,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 					each.spotClaimed(this, interactionSpot)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "claimed")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "claimed")
 				end
 			end
 		end
@@ -518,7 +530,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
 		pPrefix = prefix
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addBehavior(this)
 	end

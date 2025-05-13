@@ -571,8 +571,8 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -770,7 +770,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 						each.stopDeactivate(this)
 					end)
 					if pBTSMs != null
-						pBTSMs.runEvent(pECBehavior.getPrefix() + "stopDeactivate")
+						pBTSMs.runEvent(pECBehavior.getPrefix(), "stopDeactivate")
 					end
 				end
 			end
@@ -799,7 +799,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				each.startActivate(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "startActivate")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startActivate")
 			end
 		end
 		
@@ -839,7 +839,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 						each.stopActivate(this)
 					end)
 					if pBTSMs != null
-						pBTSMs.runEvent(pECBehavior.getPrefix() + "stopActivate")
+						pBTSMs.runEvent(pECBehavior.getPrefix(), "stopActivate")
 					end
 				end
 			end
@@ -868,7 +868,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				each.startDeactivate(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "startDeactivate")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startDeactivate")
 			end
 		end
 		
@@ -916,7 +916,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				each.stopActivate(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "stopActivate")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stopActivate")
 			end
 			
 			// it is possible a listener switched our state. if this is the case stick with
@@ -947,7 +947,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				each.startDeactivate(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "startDeactivate")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startDeactivate")
 			end
 		end
 		
@@ -995,7 +995,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				each.stopDeactivate(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "stopDeactivate")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stopDeactivate")
 			end
 			
 			// it is possible a listener switched our state. if this is the case stick with
@@ -1026,7 +1026,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				each.startActivate(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "startActivate")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startActivate")
 			end
 		end
 		
@@ -1066,14 +1066,14 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					each.startDeactivate(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "startDeactivate")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startDeactivate")
 				end
 				
 				pListeners.forEach(block Listener each
 					each.stopDeactivate(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "stopDeactivate")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopDeactivate")
 				end
 			end
 		end
@@ -1115,8 +1115,8 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					each.stopActivate(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "startActivate")
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "stopActivate")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startActivate")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopActivate")
 				end
 			end
 		end
@@ -1226,7 +1226,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					each.stopActivate(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "stopActivate")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopActivate")
 				end
 				
 				if pTrigger != null and not pTrigger.getState(true)
@@ -1255,7 +1255,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					each.stopDeactivate(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "stopDeactivate")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopDeactivate")
 				end
 				
 				if pTrigger != null and pTrigger.getState(false)
@@ -1416,7 +1416,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		pControllerNameActivating = "activating"
 		pControllerNameDeactivating = "deactivating"
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addProperty(pAnimator = ECPAnimator.new(prefix + "animator", loaders.getAnimator()))
 		eclass.addProperty(pAnimation = ECPAnimation.new(prefix + "animation"))

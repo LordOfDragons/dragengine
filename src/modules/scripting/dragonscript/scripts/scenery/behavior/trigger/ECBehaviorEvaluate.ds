@@ -296,7 +296,7 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -341,7 +341,7 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 					each.evaluatesTrue(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "true")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "true")
 				end
 				
 			else
@@ -353,7 +353,7 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 					each.evaluatesFalse(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "false")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "false")
 				end
 			end
 		end
@@ -439,7 +439,7 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	String id, String subID, String prefix) super(eclass, id)
 		pPrefix = prefix
 		pTriggerTable = triggerTable
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		pListenerFactories = Array.new()

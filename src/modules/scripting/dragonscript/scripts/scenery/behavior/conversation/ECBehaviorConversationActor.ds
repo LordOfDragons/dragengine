@@ -675,9 +675,9 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			if pECBehavior.getBTSM().hasAny()
 				var String prefix = "conversationActor."
 				var ECComposeBTSM.Instance helper = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSM())
-				helper.addAllAction(prefix + "update", BTAUpdate.new(this))
-				helper.addAllCondition(prefix + "inConversation", BTCInConversation.new(this))
-				helper.addAllCondition(prefix + "notInConversation", BTCNotInConversation.new(this))
+				helper.addAllAction(prefix, "update", BTAUpdate.new(this))
+				helper.addAllCondition(prefix, "inConversation", BTCInConversation.new(this))
+				helper.addAllCondition(prefix, "notInConversation", BTCNotInConversation.new(this))
 			end
 		end
 		

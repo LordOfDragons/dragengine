@@ -396,8 +396,8 @@ class ECBehaviorForceField extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -484,7 +484,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 					each.forceFieldEnabled(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "enabled")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "enabled")
 				end
 				
 			else
@@ -492,7 +492,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 					each.forceFieldDisabled(this)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "disabled")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "disabled")
 				end
 			end
 		end
@@ -634,7 +634,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 		pCollider = collider
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pForceField = ECComposeForceField.new(eclass, prefix)
 		pAttach = ECComposeAttachResource.new(eclass, prefix)

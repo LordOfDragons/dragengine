@@ -1225,9 +1225,9 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 				var String prefix = pECBehavior.getPrefix()
 				var ECComposeBTSM.Instance btsms = \
 					ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				btsms.addAllAction(prefix + "set", BTASet.new(this))
-				btsms.addAllAction(prefix + "update", BTAUpdate.new(this))
-				btsms.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 		end
 		

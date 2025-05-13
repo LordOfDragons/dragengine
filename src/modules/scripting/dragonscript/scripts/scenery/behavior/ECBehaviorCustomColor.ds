@@ -312,8 +312,8 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -439,7 +439,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 				each.colorChanged(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "color")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "color")
 			end
 		end
 		
@@ -528,7 +528,7 @@ class ECBehaviorCustomColor extends DefaultECBehavior
 	String prefix) super(eclass, id)
 		pPrefix = prefix
 		pListenerFactories = Array.new()
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addProperty(pName = ECPUnicodeString.new(prefix + "name", UnicodeString.new()))
 		eclass.addProperty(pDescription = ECPUnicodeString.new(prefix + "description", UnicodeString.new()))

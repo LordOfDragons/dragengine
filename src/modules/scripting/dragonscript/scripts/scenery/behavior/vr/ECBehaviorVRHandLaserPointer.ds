@@ -30,6 +30,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -82,6 +83,18 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	 * <behavior type='ECBehaviorVRHandLaserPointer'>
 	 *   <!-- required: use vr hand point at with id. -->
 	 *   <string name='vrHandPointAt'>right</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -104,6 +117,9 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorVRHandLaserPointer behavior = ECBehaviorVRHandLaserPointer.new(eclass,\
 				ECBehaviorVRHandPointAt.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
 			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "vrHandLaserPointer", id)
 			return behavior
@@ -112,51 +128,165 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		/** \brief VR Hand Point At listener. */
-		class ListenPointAt extends ECBehaviorVRHandPointAt.DefaultListener
-			private var Instance pInstance
+		/**
+		 * \brief Behavior tree action "vrHandLaserPointer{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void enabledChanged(ECBehaviorVRHandPointAt.Instance instance)
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("length", null)
+				if value != null
+					pInstance.setLength((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("intensity", null)
+				if value != null
+					pInstance.setIntensity((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("color", null)
+				if value != null
+					pInstance.setColor(pInstance.getElement().getClass().\
+						getCodecPropertyString().decodeColor3(value cast String))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "vrHandLaserPointer{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "length.less", null)
+				if value != null
+					result &= pInstance.getLength() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "length.greater", null)
+				if value != null
+					result &= pInstance.getLength() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "intensity.less", null)
+				if value != null
+					result &= pInstance.getIntensity() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "intensity.greater", null)
+				if value != null
+					result &= pInstance.getIntensity() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "color.red.less", null)
+				if value != null
+					result &= pInstance.getColor().getRed() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "color.red.greater", null)
+				if value != null
+					result &= pInstance.getColor().getRed() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "color.green.less", null)
+				if value != null
+					result &= pInstance.getColor().getGreen() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "color.green.greater", null)
+				if value != null
+					result &= pInstance.getColor().getGreen() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "color.blue.less", null)
+				if value != null
+					result &= pInstance.getColor().getBlue() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "color.blue.greater", null)
+				if value != null
+					result &= pInstance.getColor().getBlue() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		/** \brief VR Hand Point At listener. */
+		class ListenPointAt extends ECBehaviorVRHandPointAt.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void enabledChanged(ECBehaviorVRHandPointAt.Instance instance)
 				pInstance.updateVisibile()
 			end
 			
-			public func void testParametersChanged(ECBehaviorVRHandPointAt.Instance instance)
+			func void testParametersChanged(ECBehaviorVRHandPointAt.Instance instance)
 				pInstance.updateParameters()
 			end
 		end
 		
 		/** \brief Stop particle at obstacle listener. */
 		class StopAtObstacleListener extends ECBehaviorParticleEmitter.DefaultListener
-			public func new()
+			func new()
 			end
 			
-			public func void particleResponse(ECBehaviorParticleEmitter.Instance instance, CollisionInfo collisionInfo)
+			func void particleResponse(ECBehaviorParticleEmitter.Instance instance, CollisionInfo collisionInfo)
 				collisionInfo.setParticleVelocity(Vector.new())
 			end
 		end
 		
 		
 		
-		private var ECBehaviorVRHandLaserPointer pECBehavior
-		private var ECBehaviorVRHandPointAt.Instance pVRHandPointAt
-		private var ECBehaviorParticleEmitter.Instance pParticleEmitter
-		private var ParticleEmitterController pControllerLength
-		private var ParticleEmitterController pControllerIntensity
-		private var ParticleEmitterController pControllerRed
-		private var ParticleEmitterController pControllerGreen
-		private var ParticleEmitterController pControllerBlue
-		private var float pLength
-		private var float pIntensity
-		private var Color pColor
+		var ECBehaviorVRHandLaserPointer pECBehavior
+		var ECBehaviorVRHandPointAt.Instance pVRHandPointAt
+		var ECBehaviorParticleEmitter.Instance pParticleEmitter
+		var ParticleEmitterController pControllerLength
+		var ParticleEmitterController pControllerIntensity
+		var ParticleEmitterController pControllerRed
+		var ParticleEmitterController pControllerGreen
+		var ParticleEmitterController pControllerBlue
+		var float pLength
+		var float pIntensity
+		var Color pColor
 		
 		
 		
 		/** \brief Create instance. */
-		public func new(ECBehaviorVRHandLaserPointer ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorVRHandLaserPointer ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			
 			// copy the collision filter from the point-at behavior to the particle emitter
@@ -172,7 +302,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
+		func void dispose()
 			pParticleEmitter = null
 			pVRHandPointAt = null
 			super.dispose()
@@ -181,8 +311,9 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init(StubElement stub)
-			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 			
 			pLength = pECBehavior.getLength().getValue(stub)
 			pIntensity = pECBehavior.getIntensity().getValue(stub)
@@ -226,59 +357,66 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 			
 			updateVisibile()
 			updateParameters()
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorVRHandLaserPointer getECBehavior()
+		func ECBehaviorVRHandLaserPointer getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief VR Hand Point At behavior instance. */
-		public func ECBehaviorVRHandPointAt.Instance getVRHandPointAt()
+		func ECBehaviorVRHandPointAt.Instance getVRHandPointAt()
 			return pVRHandPointAt
 		end
 		
 		/** \brief Component behavior instance. */
-		public func ECBehaviorParticleEmitter.Instance getParticleEmitter()
+		func ECBehaviorParticleEmitter.Instance getParticleEmitter()
 			return pParticleEmitter
 		end
 		
 		/** \brief Length controller or null if not found. */
-		public func ParticleEmitterController getControllerLength()
+		func ParticleEmitterController getControllerLength()
 			return pControllerLength
 		end
 		
 		/** \brief Intensity controller or null if not found. */
-		public func ParticleEmitterController getControllerIntensity()
+		func ParticleEmitterController getControllerIntensity()
 			return pControllerIntensity
 		end
 		
 		/** \brief Red color controller or null if not found. */
-		public func ParticleEmitterController getControllerRed()
+		func ParticleEmitterController getControllerRed()
 			return pControllerRed
 		end
 		
 		/** \brief Green color controller or null if not found. */
-		public func ParticleEmitterController getControllerGreen()
+		func ParticleEmitterController getControllerGreen()
 			return pControllerGreen
 		end
 		
 		/** \brief Blue color controller or null if not found. */
-		public func ParticleEmitterController getControllerBlue()
+		func ParticleEmitterController getControllerBlue()
 			return pControllerBlue
 		end
 		
 		
 		
 		/** Length of beam in meters. */
-		public func float getLength()
+		func float getLength()
 			return pLength
 		end
 		
 		/** Set length of beam in meters. */
-		public func void setLength(float length)
+		func void setLength(float length)
 			pLength = DEMath.max(length, 0.0)
 			if pControllerLength != null
 				pControllerLength.setValue(pLength)
@@ -286,12 +424,12 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		end
 		
 		/** Intensity of beam. */
-		public func float getIntensity()
+		func float getIntensity()
 			return pIntensity
 		end
 		
 		/** Set intensity of beam. */
-		public func void setIntensity(float intensity)
+		func void setIntensity(float intensity)
 			pIntensity = DEMath.max(intensity, 0.0)
 			if pControllerIntensity != null
 				pControllerIntensity.setValue(pIntensity)
@@ -299,12 +437,12 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		end
 		
 		/** Color of beam. */
-		public func Color getColor()
+		func Color getColor()
 			return pColor
 		end
 		
 		/** Set color of beam. */
-		public func void setColor(Color color)
+		func void setColor(Color color)
 			if color == null
 				throw ENullPointer.new("color")
 			end
@@ -325,12 +463,12 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		
 		
 		/** State like visiblity changed. */
-		public func void stateChanged()
+		func void stateChanged()
 			updateVisibile()
 		end
 		
 		/** \brief Update component visible. */
-		public func void updateVisibile()
+		func void updateVisibile()
 			var ParticleEmitterInstance pei = pParticleEmitter.getParticleEmitterInstance()
 			if pei == null
 				return
@@ -350,7 +488,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		 * 
 		 * Reattaches the particle emitter instance to line up with the point at test direction.
 		 */
-		public func void updateParameters()
+		func void updateParameters()
 			var ParticleEmitterInstance pei = pParticleEmitter.getParticleEmitterInstance()
 			if pei == null
 				return
@@ -365,7 +503,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile( PersistencyEnvironment env, FileReader reader )
 			select reader.readByte() // version
 			case 0
 				setLength(reader.readFloat())
@@ -378,7 +516,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		func void writeToFile( PersistencyEnvironment env, FileWriter writer )
 			writer.writeByte( 0 ) // version
 			
 			writer.writeFloat(pLength)
@@ -389,42 +527,46 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorVRHandPointAt pVRHandPointAt
-	private var ECBehaviorParticleEmitter pParticleEmitter
-	private var ECPString pControllerLength
-	private var ECPString pControllerIntensity
-	private var ECPString pControllerRed
-	private var ECPString pControllerGreen
-	private var ECPString pControllerBlue
-	private var ECPFloat pLength
-	private var ECPFloat pIntensity
-	private var ECPColor pColor
+	var ECBehaviorVRHandPointAt pVRHandPointAt
+	var ECBehaviorParticleEmitter pParticleEmitter
+	var ECPString pControllerLength
+	var ECPString pControllerIntensity
+	var ECPString pControllerRed
+	var ECPString pControllerGreen
+	var ECPString pControllerBlue
+	var ECPFloat pLength
+	var ECPFloat pIntensity
+	var ECPColor pColor
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt) \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt) \
 	this(eclass, vrHandPointAt, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, String id) \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, String id) \
 	this(eclass, vrHandPointAt, id, id.empty() if "vrHandLaserPointer" else "vrHandLaserPointer(" + id + ")")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, \
 	String id, String subID) this(eclass, vrHandPointAt, id, subID, subID + ".")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHandPointAt vrHandPointAt, \
 	String id, String subID, String prefix) super(eclass, id)
 		if vrHandPointAt == null
 			throw ENullPointer.new("vrHandPointAt")
 		end
 		
+		pPrefix = prefix
 		pVRHandPointAt = vrHandPointAt
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pParticleEmitter = ECBehaviorParticleEmitter.new(eclass, null,\
 			BaseGameApp.getApp().getLoaders(), null, subID, prefix + "particleEmitter.")
@@ -434,95 +576,97 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 		pParticleEmitter.getParticleEmitter().getParticleEmitter().setPath(\
 			"/shareddata/particles/laserpointer/laserpointer.depemit")
 		
-		pControllerLength = ECPString.new(prefix + "controllerLength", "length")
-		eclass.addProperty(pControllerLength)
-		
-		pControllerIntensity = ECPString.new(prefix + "controllerIntensity", "intensity")
-		eclass.addProperty(pControllerIntensity)
-		
-		pControllerRed = ECPString.new(prefix + "controllerRed", "red")
-		eclass.addProperty(pControllerRed)
-		
-		pControllerGreen = ECPString.new(prefix + "controllerGreen", "green")
-		eclass.addProperty(pControllerGreen)
-		
-		pControllerBlue = ECPString.new(prefix + "controllerBlue", "blue")
-		eclass.addProperty(pControllerBlue)
-		
-		pLength = ECPFloat.new(prefix + "length", 10, 0)
-		eclass.addProperty(pLength)
-		
-		pIntensity = ECPFloat.new(prefix + "intensity", 0.4, 0)
-		eclass.addProperty(pIntensity)
-		
-		pColor = ECPColor.new(prefix + "color", Color.new(0, 1, 1))
-		eclass.addProperty(pColor)
+		eclass.addProperty(pControllerLength = ECPString.new(prefix + "controllerLength", "length"))
+		eclass.addProperty(pControllerIntensity = ECPString.new(prefix + "controllerIntensity", "intensity"))
+		eclass.addProperty(pControllerRed = ECPString.new(prefix + "controllerRed", "red"))
+		eclass.addProperty(pControllerGreen = ECPString.new(prefix + "controllerGreen", "green"))
+		eclass.addProperty(pControllerBlue = ECPString.new(prefix + "controllerBlue", "blue"))
+		eclass.addProperty(pLength = ECPFloat.new(prefix + "length", 10, 0))
+		eclass.addProperty(pIntensity = ECPFloat.new(prefix + "intensity", 0.4, 0))
+		eclass.addProperty(pColor = ECPColor.new(prefix + "color", Color.new(0, 1, 1)))
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pVRHandPointAt = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief VR Hand Point At behavior. */
-	public func ECBehaviorVRHandPointAt getVRHandPointAt()
+	func ECBehaviorVRHandPointAt getVRHandPointAt()
 		return pVRHandPointAt
 	end
 	
 	/** \brief Particle emitter behavior. */
-	public func ECBehaviorParticleEmitter getParticleEmitter()
+	func ECBehaviorParticleEmitter getParticleEmitter()
 		return pParticleEmitter
 	end
 	
 	/** \brief Controller length name. */
-	public func ECPString getControllerLength()
+	func ECPString getControllerLength()
 		return pControllerLength
 	end
 	
 	/** \brief Controller intensity name. */
-	public func ECPString getControllerIntensity()
+	func ECPString getControllerIntensity()
 		return pControllerIntensity
 	end
 	
 	/** \brief Controller red name. */
-	public func ECPString getControllerRed()
+	func ECPString getControllerRed()
 		return pControllerRed
 	end
 	
 	/** \brief Controller green name. */
-	public func ECPString getControllerGreen()
+	func ECPString getControllerGreen()
 		return pControllerGreen
 	end
 	
 	/** \brief Controller blue name. */
-	public func ECPString getControllerBlue()
+	func ECPString getControllerBlue()
 		return pControllerBlue
 	end
 	
 	/** \brief Length of beam in meters. */
-	public func ECPFloat getLength()
+	func ECPFloat getLength()
 		return pLength
 	end
 	
 	/** \brief Intensity of beam. */
-	public func ECPFloat getIntensity()
+	func ECPFloat getIntensity()
 		return pIntensity
 	end
 	
 	/** \brief Color of beam. */
-	public func ECPColor getColor()
+	func ECPColor getColor()
 		return pColor
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -534,7 +678,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHandLaserPointer.
 	 */
-	static public func ECBehaviorVRHandLaserPointer getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorVRHandLaserPointer getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorVRHandLaserPointer each
 			return true
 		end) cast ECBehaviorVRHandLaserPointer
@@ -546,7 +690,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHandLaserPointer with specific identifier.
 	 */
-	static public func ECBehaviorVRHandLaserPointer getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorVRHandLaserPointer getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorVRHandLaserPointer each
 			return each.getID().equals(id)
 		end) cast ECBehaviorVRHandLaserPointer
@@ -558,7 +702,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	 * Returns list contains ECBehaviorVRHandLaserPointer behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorVRHandLaserPointer each
 			return true
 		end)
@@ -573,7 +717,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	 * of type ECBehaviorVRHandLaserPointer.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -585,7 +729,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorVRHandLaserPointer.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -597,7 +741,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	 * Returns list contains ECBehaviorVRHandLaserPointer.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -606,7 +750,7 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

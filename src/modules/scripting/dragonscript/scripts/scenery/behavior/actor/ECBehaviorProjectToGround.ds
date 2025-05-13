@@ -217,6 +217,15 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 					interactionElement.setInteractionElement(groundElement)
 				end
 				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getGroundBehaviorElement(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
 				return BTResult.success
 			end
 		end
@@ -279,6 +288,10 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 					result &= pInstance.hitAngle((context cast SMContext).getEventParameter()\
 						cast CollisionInfo) < pInstance.getLandingAngle() == value.equals("true")
 				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(\
+					pInstance.getGroundBehaviorElement(), parameters, prefix + "interact.",\
+					pInstance.getElement())
 				
 				return result
 			end
@@ -371,9 +384,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -439,7 +452,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 				each.enabledChanged(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + (enabled if "enabled" else "disabled"))
+				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
 			end
 		end
 		
@@ -480,7 +493,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 				each.touchesGroundChanged(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + (touchesGround if "touch" else "noTouch"))
+				pBTSMs.runEvent(pECBehavior.getPrefix(), touchesGround if "touch" else "noTouch")
 			end
 		end
 		

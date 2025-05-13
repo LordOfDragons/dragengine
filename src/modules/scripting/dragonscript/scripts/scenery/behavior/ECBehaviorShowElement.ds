@@ -228,8 +228,8 @@ class ECBehaviorShowElement extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = "showElement."
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "set", BTASet.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -266,7 +266,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 			element.setTouchable(shown)
 			
 			if pBTSMs != null
-				pBTSMs.runEvent(shown if "showElement.shown" else "showElement.hidden")
+				pBTSMs.runEvent("showElement.", shown if "shown" else "hidden")
 			end
 		end
 		

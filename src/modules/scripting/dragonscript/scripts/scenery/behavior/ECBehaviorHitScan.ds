@@ -365,8 +365,8 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -750,7 +750,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 				each.setEnabled(false)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "done")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "done")
 			end
 		end
 		
@@ -911,7 +911,7 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		pPrefix = prefix
 		pCollider = collider
 		pComponent = component
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
 		

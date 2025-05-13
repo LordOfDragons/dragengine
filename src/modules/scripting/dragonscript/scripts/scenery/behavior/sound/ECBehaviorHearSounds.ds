@@ -311,7 +311,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -522,7 +522,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 					listener.elementInaudible(this, element)
 				end)
 				if pBTSMs != null
-					pBTSMs.runEvent(pECBehavior.getPrefix() + "inaudible")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "inaudible")
 				end
 			end)
 			pAudibleElements = null
@@ -556,7 +556,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 				each.elementAudible(this, element)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "audible")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "audible")
 			end
 		end
 		
@@ -578,7 +578,7 @@ class ECBehaviorHearSounds extends DefaultECBehavior
 				each.elementInaudible(this, element)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "inaudible")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "inaudible")
 			end
 		end
 		

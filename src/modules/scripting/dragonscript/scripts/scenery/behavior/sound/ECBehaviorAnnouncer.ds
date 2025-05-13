@@ -356,8 +356,8 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 			if pECBehavior.getBTSMs().hasAny()
 				var String prefix = pECBehavior.getPrefix()
 				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
-				pBTSMs.addAllAction(prefix + "update", BTAUpdate.new(this))
-				pBTSMs.addAllActionCondition(prefix + "check", BTACheck.new(this, prefix))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
 			end
 		end
@@ -417,7 +417,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 				each.startAnnouncement(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "start")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "start")
 			end
 		end
 		
@@ -434,7 +434,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 				each.stopAnnouncement(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix() + "stop")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
 			end
 		end
 		
@@ -551,7 +551,7 @@ class ECBehaviorAnnouncer extends DefaultECBehavior
 		pPrefix = prefix
 		pCollider = collider
 		pTriggerTable = triggerTable
-		pBTSMs = ECComposeBTSM.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
 		pListenerFactories = Array.new()
