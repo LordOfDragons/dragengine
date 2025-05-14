@@ -478,7 +478,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 					l.cancelMovement()
 				end
 				if parameters.has("cancel.motion")
-					l.cancelMovement()
+					l.cancelMotion()
 				end
 				if parameters.has("cancel.turn.inplace")
 					l.cancelTurnInPlace()
@@ -500,7 +500,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 				if value != null
 					l.updateLooking((context cast SMContext).getEventParameter() cast float)
 				end
-				
+				1
 				value = parameters.getAt("locomotion", null)
 				if value != null
 					l.updateLocomotion((context cast SMContext).getEventParameter() cast float)
