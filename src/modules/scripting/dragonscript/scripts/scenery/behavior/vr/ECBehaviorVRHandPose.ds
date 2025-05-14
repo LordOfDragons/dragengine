@@ -132,7 +132,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "vrHandPose{(id)}.set".
+		 * \brief Behavior tree action "vrHandPose{(id)}.update".
 		 * \version 1.26
 		 */
 		private class BTAUpdate extends BTSMActionCondition

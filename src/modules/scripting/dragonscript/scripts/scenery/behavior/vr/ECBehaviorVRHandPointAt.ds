@@ -266,17 +266,17 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 					result &= pInstance.getEnabled() == value.equals("true")
 				end
 				
-				value = parameters.getAt(prefix + "lookAt", null)
+				value = parameters.getAt(prefix + "pointAt", null)
 				if value != null
 					result &= pInstance.hasVRHandPointAtElement() == value.equals("true")
 				end
 				
-				value = parameters.getAt(prefix + "lookAt.distance.less", null)
+				value = parameters.getAt(prefix + "pointAt.distance.less", null)
 				if value != null
 					result &= pInstance.getPointAtDistance() < (value cast String).toFloat()
 				end
 				
-				value = parameters.getAt(prefix + "lookAt.distance.greater", null)
+				value = parameters.getAt(prefix + "pointAt.distance.greater", null)
 				if value != null
 					result &= pInstance.getPointAtDistance() > (value cast String).toFloat()
 				end

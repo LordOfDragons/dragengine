@@ -119,11 +119,6 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
 	 *   </list>
 	 * </behavior>
-	 * 
-	 * <!-- for adding multiple behaviors use unique identifiers -->
-	 * <behavior type='ECBehaviorVRHMD' id='second'>
-	 *   ...
-	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
