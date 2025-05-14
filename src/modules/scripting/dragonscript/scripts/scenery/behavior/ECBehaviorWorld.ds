@@ -98,6 +98,7 @@ class ECBehaviorWorld extends DefaultECBehavior
 		var StubGameWorld pWorldStub
 		var DMatrix pWorldMatrix
 		var UniqueID pFirstId
+		var TagResolver pTagResolver
 		
 		
 		/** \brief Create element. */
@@ -107,6 +108,7 @@ class ECBehaviorWorld extends DefaultECBehavior
 		
 		func void dispose()
 			pWorldStub = null
+			pTagResolver = null
 			super.dispose()
 		end
 		
@@ -118,6 +120,18 @@ class ECBehaviorWorld extends DefaultECBehavior
 			pWorldMatrix = DMatrix.newRT(\
 				DVector.new(pECBehavior.getOrientation().getVector(stub, codec)),\
 				DVector.new(pECBehavior.getPosition().getVector(stub, codec)))
+			
+			pTagResolver = TagResolver.new()
+			addTagResolverRules(pTagResolver)
+		end
+		
+		/**
+		 * \brief Add tag resolver rules.
+		 * 
+		 * Adds \ref TRRElement with action "owner".
+		 */
+		protected func void addTagResolverRules(TagResolver resolver)
+			resolver.addRule("owner", TRRElement.new(getElement()))
 		end
 		
 		
@@ -129,6 +143,11 @@ class ECBehaviorWorld extends DefaultECBehavior
 		/** \brief World stub to create content from or null. */
 		func StubGameWorld getWorldStub()
 			return pWorldStub
+		end
+		
+		/** \brief Tag resolver. */
+		func TagResolver getTagResolver()
+			return pTagResolver
 		end
 		
 		
@@ -158,6 +177,7 @@ class ECBehaviorWorld extends DefaultECBehavior
 			end
 			
 			createAndAddWorldElements(gameWorld, worldMatrix, ignorePersistable, enableNetworking)
+			createAndAddWorldDecals(gameWorld, worldMatrix)
 		end
 		
 		/** \brief Add world stub elements to game world. */
@@ -187,16 +207,54 @@ class ECBehaviorWorld extends DefaultECBehavior
 				end
 				stub.setEnableNetworking(enableNetworking)
 				
+				stub.getPropertyKeys().forEach(block String key
+					stub.setPropertyValueFor(key, pTagResolver.resolveTags(\
+						stub.getPropertyValueFor(key, ""), this))
+				end)
+				
 				modifyCreateElementStub(stub)
 				
-				// propReplacer.replaceAll(each, stubCopy)
-				
+				stub.loadResources()
 				stub.createAndAddElement(gameWorld)
 			end)
 		end
 		
 		/** \brief Apply modifications to copied element stub. */
 		protected func void modifyCreateElementStub(StubElement stub)
+		end
+		
+		/** \brief Add world stub decals to game world. */
+		protected func void createAndAddWorldDecals(GameWorld gameWorld, DMatrix worldMatrix)
+			var DecalBuilder builder = pECBehavior.getDecalBuilder()
+			var StubWorldDecal stub
+			var DMatrix matrix
+			var Vector size
+			
+			pWorldStub.forEachWorldDecal(block StubWorldDecal each
+				stub = StubWorldDecal.new(each)
+				
+				matrix = each.getMatrix() * worldMatrix
+				stub.setPosition(matrix.getPosition())
+				size = matrix.getScaling().toVector()
+				stub.setSize(size)
+				if not size.isZero()
+					stub.setRotation(matrix.normalize().getEulerAngles().toVector())
+				end
+				
+				stub.getPropertyKeys().forEach(block String key
+					stub.setPropertyValueFor(key, pTagResolver.resolveTags(\
+						stub.getPropertyValueFor(key, ""), this))
+				end)
+				
+				modifyCreateWorldDecalStub(stub)
+				
+				stub.loadResources()
+				stub.createWorldDecal(gameWorld, builder)
+			end)
+		end
+		
+		/** \brief Apply modifications to copied world decal stub. */
+		protected func void modifyCreateWorldDecalStub(StubWorldDecal stub)
 		end
 		
 		
@@ -232,6 +290,7 @@ class ECBehaviorWorld extends DefaultECBehavior
 	var ECPVector pPosition
 	var ECPVector pOrientation
 	var MutableID pIDGenerator
+	var DecalBuilder pDecalBuilder
 	
 	
 	/** \brief Create behavior element class. */
@@ -258,12 +317,22 @@ class ECBehaviorWorld extends DefaultECBehavior
 		end
 		
 		pIDGenerator = idGenerator
+		pDecalBuilder = DecalBuilder.new()
 		
 		eclass.addProperty(pWorld = ECPWorld.new(prefix + "path", loaders.getWorld()))
 		eclass.addProperty(pPosition = ECPVector.new(prefix + "position", Vector.new()))
 		eclass.addProperty(pOrientation = ECPVector.new(prefix + "orientation", Vector.new()))
 		
 		eclass.addBehavior(this)
+	end
+	
+	func void dispose()
+		if pDecalBuilder != null
+			pDecalBuilder.dispose()
+			pDecalBuilder = null
+		end
+		
+		super.dispose()
 	end
 	
 	
@@ -290,6 +359,28 @@ class ECBehaviorWorld extends DefaultECBehavior
 	/** \brief Set ID Generator. */
 	func void setIDGenerator(MutableID idGenerator)
 		pIDGenerator = idGenerator
+	end
+	
+	/** \brief Decal builder used for world decals. */
+	func DecalBuilder getDecalBuilder()
+		return pDecalBuilder
+	end
+	
+	/**
+	 * \brief Set decal builder used for world decals.
+	 * 
+	 * The old decal builder is disposed of if present.
+	 */
+	func void setDecalBuilder(DecalBuilder decalBuilder)
+		if decalBuilder == pDecalBuilder
+			return
+		end
+		
+		if pDecalBuilder != null
+			pDecalBuilder.dispose()
+		end
+		
+		pDecalBuilder = decalBuilder
 	end
 	
 	

@@ -22,35 +22,32 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Utils
-
 
 
 /**
  * \brief Rule for resolving variables in text.
  * 
  * Supports tags of the form {action:variable name[,default value]}. "action" is the action
- * named used while adding the rule. A typical value to use for action is "var" or "variable".
+ * name used while adding the rule. A typical value to use for action is "var" or "variable".
  * The "variable name" parameter is the name of the variable to look up in the variable table.
  * If the variable is present the value stored in the variable table is returned as resolved
  * text. If the variable is absent the parameter "default value" is returned as resolved
  * text. If the parameter "default value" is absent an empty string is returned as text.
  * The "," separator between variable name and default value can be changed to any other
- * character. This is useful if you need "," for your variable names.
+ * character. This is useful if you need "," for something else than separating parameters.
  * 
- * The variable name can use any character except the default value separator (default ",")
- * and "{" or "}" which are used as tag boundaries. This class is not going to check the
- * names of variables added to the list to follow this rules. If you do not follow this rule
- * the variables will be ignored.
+ * The variable name can use any character except the value separator (default ",") and
+ * "{" or "}" (depending on the settings of \ref TagResolver) which are used as tag boundaries.
+ * This class is not going to check the names of variables added to the list to follow this
+ * rules. If you do not follow this rule the variables will be ignored.
  * 
  * The typical way of using this rule is to store it aside in the scripts using the
- * TagResolver. Before processing text set the variables you want to be used to this rule.
+ * \ref TagResolver. Before processing text set variables you want to be used to this rule.
  */
 class TRRVariable implements TagResolverRule
 	var Dictionary pVariables
 	var byte pSeparatorDefaultValue
-	
 	
 	
 	/** \brief Create resolve variable rule with empty variable table. */
@@ -66,7 +63,6 @@ class TRRVariable implements TagResolverRule
 	end
 	
 	
-	
 	/** \brief Separate character between variable name and default value. */
 	func byte getSeparatorDefaultValue()
 		return pSeparatorDefaultValue
@@ -76,7 +72,6 @@ class TRRVariable implements TagResolverRule
 	func void setSeparatorDefaultValue(byte separator)
 		pSeparatorDefaultValue = separator
 	end
-	
 	
 	
 	/** \brief Count of variables. */
@@ -130,7 +125,6 @@ class TRRVariable implements TagResolverRule
 	func Array getKeys()
 		return pVariables.getKeys()
 	end
-	
 	
 	
 	/**
