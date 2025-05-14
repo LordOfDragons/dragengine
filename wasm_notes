@@ -7,7 +7,7 @@ builds under WASM:
     mdl_demodel mdl_fbx net_basic occm_deocclusionmesh \
     phy_bullet rig_derig rig_fbx skin_deskin skin_fbx \
     snd_ogg synth_desynthesizer vid_apng vid_webm vr_null \
-    aud_openal gra_opengl img_jpeg
+    aud_openal gra_opengl img_jpeg vid_theora
 
 not yet building under WASM:
   emscons scons lib_libtheora lib_openxr
@@ -22,5 +22,4 @@ lib_dragonscript
 lib_sndio
 scr_dragonscript
 shared_vulkan
-vid_theora
 vr_openxr

@@ -97,6 +97,9 @@ def libtheoraBuild( target, source, env ):
 		cmdline.append( '--enable-shared=yes' )
 		cmdline.append( '--enable-static=no' )
 	
+	if env['platform_webwasm']:
+		cmdline.append('--disable-asm')
+	
 	if 'CROSSCOMPILE_HOST' in env:
 		if env['platform_android'] in ['armv8', 'quest']:
 			cmdline.append('--host=armv8-android-linux')
