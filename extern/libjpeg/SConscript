@@ -87,6 +87,8 @@ def jpegBuild(target, source, env):
 		script.append('sed -i -e "s/cmake_minimum_required(VERSION 2.8.12)/cmake_minimum_required(VERSION 3.5)/" ../libjpeg-turbo-2.0.3/CMakeLists.txt')
 	
 	cmdline = []
+	if env['platform_webwasm']:
+		cmdline.append('emcmake')
 	cmdline.append('cmake')
 	cmdline.append('-G"Unix Makefiles"')
 	cmdline.append('-DENABLE_SHARED=Off')
@@ -99,6 +101,9 @@ def jpegBuild(target, source, env):
 	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
 	if cmakeCFlags:
 		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
+	
+	if env['platform_webwasm']:
+		cmdline.append('-DCMAKE_C_FLAGS="-fPIC"')
 	
 	if env['OSWindows']:
 		# libjpeg fails if system name is not this value
@@ -118,7 +123,9 @@ def jpegBuild(target, source, env):
 		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
 		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
 	
-	#cmdline.append('-DWITH_SIMD=0')
+	if env['platform_webwasm']:
+		cmdline.append('-DWITH_SIMD=0')
+	
 	if env['OSBeOS']:
 		pass
 		#cmdline.append('-DWITH_SIMD=0') # otherwise fails to compile on 64-bit
