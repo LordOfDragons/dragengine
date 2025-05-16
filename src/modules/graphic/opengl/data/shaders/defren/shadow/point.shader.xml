@@ -10,13 +10,6 @@
 	<parameter name='pMaterialGamma'/> <!-- 3 -->
 	<parameter name='pOptions'/> <!-- 4 -->
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inTexCoord' target='3'/>
-	<attribute name='inHTHeight' target='4'/>
-	
-	<output name='outBuf1' target='0'/>
-	<output name='outBuf2' target='1'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/shadow/distance.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/shadow/distance.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Shadow Point</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Shadow Point</sourceCode>
 </shader>

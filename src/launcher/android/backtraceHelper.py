@@ -5,6 +5,9 @@ import re
 import sys
 import subprocess
 
+#config = {'target': 'armv8Debug', 'task': 'mergeArmv8DebugNativeLibs'}
+config = {'target': 'questDebug', 'task': 'mergeQuestDebugNativeLibs'}
+
 binbase = os.path.expanduser(
     '~/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin')
 binnm = os.path.join(binbase, 'llvm-nm')
@@ -17,6 +20,7 @@ regexLine = re.compile(
     r'^.*?(\S+) ?\((\w*)(\+0x[0-9A-Fa-f]+)?\) ?\[(0x[0-9A-Fa-f]+)\].*\n$')
 regexLine2 = re.compile(r'^([/A-Za-z0-9-_.]+) ?\[(0x[0-9A-Fa-f]+)\].*\n$')
 regexLine3 = re.compile(r'^.*?([^\s(]+)\s?\(([^+]*)(\+(0x)?[0-9A-Fa-f]+)?\)\s?\n$')
+regexLine3b = re.compile(r'^.*?([^\s(]+)\s?\(offset [^)]+\)\s?\(([^+]*)(\+(0x)?[0-9A-Fa-f]+)?\)\s?\n$')
 regexLine4 = re.compile(r'^.*?pc\s+([0-9A-Fa-f]+)\s+([^\s]+)\n$')
 regexLinePrefix = re.compile(r'^\[[A-Za-z0-9-_.: ]+\] ')
 regexAppPath = re.compile(r'^/data/app/.*/ch\.dragondreams\.delauncher.*/lib/arm64-v8a/')
@@ -27,9 +31,9 @@ def pathrepl(p):
         '/data/data/ch.dragondreams.delauncher/files/dragengine',
         'build/release')
     p = regexAppPath.sub(
-        'src/launcher/android/app/build/intermediates/merged_native_libs/armv8Debug/mergeArmv8DebugNativeLibs/out/lib/arm64-v8a/', p)
+        'src/launcher/android/app/build/intermediates/merged_native_libs/{target}/{task}/out/lib/arm64-v8a/'.format(**config), p)
     p = regexAppPath2.sub(
-        'src/launcher/android/app/build/intermediates/merged_native_libs/armv8Debug/mergeArmv8DebugNativeLibs/out/lib/arm64-v8a/', p)
+        'src/launcher/android/app/build/intermediates/merged_native_libs/{target}/{task}/out/lib/arm64-v8a/'.format(**config), p)
     if p.endswith('.so.1'):
         p = p[:-2]
     return p
@@ -71,23 +75,31 @@ for line in content:
             offset = 0
             debug_print('regexLine2', binary, address)
         else:
-            match = regexLine3.match(line)
+            match = regexLine3b.match(line)
             if match:
                 (binary, function, offset) = match.groups()[0:3]
                 offset = f'+0x{int(offset[1:]):x}'
                 address = 0
                 nmdemangle = True
-                debug_print('regexLine3', binary, function, offset)
+                debug_print('regexLine3b', binary, function, offset)
             else:
-                match = regexLine4.match(line)
+                match = regexLine3.match(line)
                 if match:
-                    (address, binary) = match.groups()
-                    address = f'0x{address}'
-                    function = ''
-                    offset = 0
-                    debug_print('regexLine4', binary, address)
+                    (binary, function, offset) = match.groups()[0:3]
+                    offset = f'+0x{int(offset[1:]):x}'
+                    address = 0
+                    nmdemangle = True
+                    debug_print('regexLine3', binary, function, offset)
                 else:
-                    continue
+                    match = regexLine4.match(line)
+                    if match:
+                        (address, binary) = match.groups()
+                        address = f'0x{address}'
+                        function = ''
+                        offset = 0
+                        debug_print('regexLine4', binary, address)
+                    else:
+                        continue
 
     binary = pathrepl(binary)
     #print([binary, function, offset, address])

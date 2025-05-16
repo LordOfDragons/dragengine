@@ -441,8 +441,11 @@ pListener(listener)
 	DEASSERT_NOTNULL(listener)
 }
 
-void deoglSkinShader::cPrepareShader::CompileFinished(deoglShaderCompiled *compiled){
-	pShader.pShader->SetCompiled(compiled);
+void deoglSkinShader::cPrepareShader::CompileFinished(deoglShaderProgram *program){
+	if(program && program->ready){
+		pShader.pShader->MoveCompiled(*program);
+		pShader.pShader->ready = true;
+	}
 	
 	try{
 		pListener->PrepareShaderFinished(pShader);
@@ -672,8 +675,9 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBTexParam( deoglRenderThread &rend
 }
 
 deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
-	DEASSERT_NOTNULL( pglUniformBlockBinding )
-	
+	DEASSERT_NOTNULL(pglUniformBlockBinding)
+	return CreateLayoutSkinInstanceUBO(pRenderThread);
+	/*
 	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
@@ -691,6 +695,7 @@ deoglSPBlockUBO::Ref deoglSkinShader::CreateSPBInstParam() const{
 	spb->MapToStd140();
 	spb->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
 	return spb;
+	*/
 }
 
 deoglSPBlockUBO::Ref deoglSkinShader::CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread ){
@@ -1584,7 +1589,7 @@ deoglEnvironmentMap *envmapSky, deoglEnvironmentMap *envmap, deoglEnvironmentMap
 
 void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 	//deoglSkinShaderManager &ssmgr = pRenderThread.GetShader().GetSkinShaderManager();
-	const deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
+	deoglShaderManager &smgr = pRenderThread.GetShader().GetShaderManager();
 	deoglShaderDefines defines;
 	
 	pShader = nullptr;
@@ -1606,58 +1611,8 @@ void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 		InitShaderParameters();
 		
 		// create shader
-		pShader.TakeOver( new deoglShaderProgram( pRenderThread, pSources, defines ) );
-		
-		// add unit source codes from source files
-		const decString &pathVSC = pSources->GetPathVertexSourceCode();
-		if( ! pathVSC.IsEmpty() ){
-			pShader->SetVertexSourceCode( smgr.GetUnitSourceCodeWithPath( pathVSC ) );
-			
-			if( ! pShader->GetVertexSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Skin Shader: Vertex source '%s' not found", pathVSC.GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		const decString &pathGSC = pSources->GetPathGeometrySourceCode();
-		if( ! pathGSC.IsEmpty() ){
-			pShader->SetGeometrySourceCode( smgr.GetUnitSourceCodeWithPath( pathGSC ) );
-			
-			if( ! pShader->GetGeometrySourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Skin Shader: Geometry source '%s' not found", pathGSC.GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		const decString &pathFSC = pSources->GetPathFragmentSourceCode();
-		if( ! pathFSC.IsEmpty() ){
-			pShader->SetFragmentSourceCode( smgr.GetUnitSourceCodeWithPath( pathFSC ) );
-			
-			if( ! pShader->GetFragmentSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Skin Shader: Fragment source '%s' not found", pathFSC.GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		const decString &pathTCSC = pSources->GetPathTessellationControlSourceCode();
-		if( ! pathTCSC.IsEmpty() ){
-			pShader->SetTessellationControlSourceCode( smgr.GetUnitSourceCodeWithPath( pathTCSC ) );
-			
-			if( ! pShader->GetTessellationControlSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Skin Shader: Tessellation control source '%s' not found", pathTCSC.GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		const decString &pathTESC = pSources->GetPathTessellationEvaluationSourceCode();
-		if( ! pathTESC.IsEmpty() ){
-			pShader->SetTessellationEvaluationSourceCode( smgr.GetUnitSourceCodeWithPath( pathTESC ) );
-			
-			if( ! pShader->GetTessellationEvaluationSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Skin Shader: Tessellation evaluation source '%s' not found", pathTESC.GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
+		pShader.TakeOver(new deoglShaderProgram(pRenderThread, pSources, defines));
+		smgr.ResolveProgramUnits(pShader);
 		
 		// cache id
 		decStringList cacheIdParts, cacheIdComponents;
@@ -1704,7 +1659,7 @@ void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 			smgr.GetLanguage()->CompileShaderAsync(pShader, new cPrepareShader(*this, listener));
 			
 		}else{
-			pShader->SetCompiled(smgr.GetLanguage()->CompileShader(pShader));
+			smgr.GetLanguage()->CompileShader(pShader);
 		}
 		/*
 		if( pConfig.GetShaderMode() == deoglSkinShaderConfig::esmGeometry ){
@@ -2456,7 +2411,7 @@ void deoglSkinShader::UpdateUniformTargets(){
 	}
 	
 	// shared parameter block support
-	if( pConfig.GetSharedSPB() ){
+	// if( pConfig.GetSharedSPB() ){
 		// re-map instance parameters since the ordering is slightly different
 		int backup[ EIUT_COUNT ];
 		for( i=0; i<EIUT_COUNT; i++ ){
@@ -2469,17 +2424,12 @@ void deoglSkinShader::UpdateUniformTargets(){
 				pInstanceUniformTargets[ vUBOInstParamMap[ i ] ] = i;
 			}
 		}
-	}
+	// }
 }
 
 void deoglSkinShader::InitShaderParameters(){
-	deoglShaderBindingList &shaderStorageBlockList = pSources->GetShaderStorageBlockList();
-	deoglShaderBindingList &uniformBlockList = pSources->GetUniformBlockList();
 	deoglShaderBindingList &textureList = pSources->GetTextureList();
-	deoglShaderBindingList &inputList = pSources->GetAttributeList();
-	deoglShaderBindingList &outputList = pSources->GetOutputList();
 	decStringList &parameterList = pSources->GetParameterList();
-	const deoglSkinShaderConfig::eShaderModes shaderMode = pConfig.GetShaderMode();
 	int i;
 	
 	// texture targets
@@ -2570,91 +2520,4 @@ void deoglSkinShader::InitShaderParameters(){
 		pTargetDrawIDOffset = parameterList.GetCount();
 		parameterList.Add( "pDrawIDOffset" );
 	}
-	
-	// inputs
-	if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmHeightMap ){
-		inputList.Add( "inPosition", 0 );
-		inputList.Add( "inHeight", 1 );
-		inputList.Add( "inNormal", 2 );
-		
-	}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle ){
-		inputList.Add( "inParticle0", 0 );
-		inputList.Add( "inParticle1", 1 );
-		inputList.Add( "inParticle2", 2 );
-		inputList.Add( "inParticle3", 3 );
-		/*
-		if( pConfig.GetParticleMode() == deoglSkinShaderConfig::epmBeam ){
-			inputList.Add( "inParticle4", 4 );
-		}
-		*/
-		
-	}else if( pConfig.GetGIMaterial() ){
-		inputList.Add( "inPosition", 0 );
-		
-	}else{
-		inputList.Add( "inPosition", 0 );
-		inputList.Add( "inRealNormal", 1 );
-		inputList.Add( "inNormal", 2 );
-		inputList.Add( "inTangent", 3 );
-		inputList.Add( "inTexCoord", 4 );
-	}
-	
-	// outputs
-	switch( shaderMode ){
-	case deoglSkinShaderConfig::esmDepth:
-		if( pConfig.GetOutputConstant() ){
-			outputList.Add( "outConstant", 0 );
-			
-		}else if( pConfig.GetOutputColor() ){
-			outputList.Add( "outColor", 0 );
-		}
-		if( pConfig.GetEncodeOutDepth() ){
-			outputList.Add( "outDepth", outputList.GetCount() );
-		}
-		break;
-		
-	default:
-		if( pConfig.GetLuminanceOnly() ){
-			outputList.Add( "outLuminance", 0 );
-			outputList.Add( "outNormal", 1 );
-			
-		}else if( pConfig.GetGIMaterial() ){
-			outputList.Add( "outDiffuse", 0 );
-			outputList.Add( "outReflectivity", 1 );
-			outputList.Add( "outEmissivity", 2 );
-			
-		}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmParticle
-		&& ! GetRenderThread().GetChoices().GetRealTransparentParticles() ){
-			outputList.Add( "outColor", 0 );
-			
-		}else{
-			if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-				outputList.Add( "outDiffuse", 0 );
-				outputList.Add( "outNormal", 1 );
-				outputList.Add( "outReflectivity", 2 );
-				outputList.Add( "outRoughness", 3 );
-				outputList.Add( "outAOSolidity", 4 );
-				outputList.Add( "outSubSurface", 5 );
-				outputList.Add( "outColor", 6 );
-				
-			}else{
-				outputList.Add( "outDiffuse", 0 );
-				outputList.Add( "outNormal", 1 );
-				outputList.Add( "outReflectivity", 2 );
-				outputList.Add( "outColor", 3 );
-			}
-		}
-	}
-	
-	// uniform blocks
-	uniformBlockList.Add( "RenderParameters", eubRenderParameters );
-	uniformBlockList.Add( "TextureParameters", eubTextureParameters );
-	uniformBlockList.Add( "InstanceParameters", eubInstanceParameters );
-	uniformBlockList.Add( "SpecialParameters", eubSpecialParameters );
-	uniformBlockList.Add( "InstanceIndex", eubInstanceIndex );
-	
-	// shader storage blocks
-	shaderStorageBlockList.Add( "InstanceParametersSSBO", essboInstanceParameters );
-	shaderStorageBlockList.Add( "InstanceIndexSSBO", essboInstanceIndex );
-	shaderStorageBlockList.Add( "TextureParametersSSBO", essboTextureParameters );
 }

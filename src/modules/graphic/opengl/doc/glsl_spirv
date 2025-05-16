@@ -1,0 +1,1 @@
+glslang --enhanced-msgs -G --glsl-version 410 compute/bugtest/std430.comp.glsl

@@ -72,7 +72,7 @@ void deoglOcclusionQuery::BeginQuery( eQueryTypes type ){
 		break;
 		
 	case eqtCount:
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		DETHROW( deeInvalidParam );
 		#else
 		ocmgr.EndActiveQuery();
@@ -101,7 +101,7 @@ void deoglOcclusionQuery::EndQuery(){
 		break;
 		
 	case eqtCount:
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		DETHROW( deeInvalidParam );
 		#else
 		OGL_CHECK( pRenderThread, pglEndQuery( GL_SAMPLES_PASSED ) );

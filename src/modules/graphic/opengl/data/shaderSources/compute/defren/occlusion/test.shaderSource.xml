@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Occlusion Test</name>
+	<stage>compute</stage>
+	<source>test.comp.glsl</source>
+	
+	<shaderStorageBlock set='1' name='Element' binding='0'/>
+	<shaderStorageBlock set='1' name='VisibleElement' binding='1'/>
+	<shaderStorageBlock set='1' name='Counters' binding='2'/>
+	<shaderStorageBlock set='1' name='VisibleElementOut' binding='3'/>
+	
+	<shaderStorageBlock set='2' name='InputData' binding='0'/>
+	<shaderStorageBlock set='2' name='ResultData' binding='1'/>
+	
+	<define>DUAL_OCCMAP</define>
+	<define>ENSURE_MIN_SIZE</define>
+	<define>FRUSTUM_TEST</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>RENDER_DOC_DEBUG_OCCTEST</define>
+	<define>VS_RENDER_STEREO</define>
+	<define>WITH_COMPUTE_RENDER_TASK</define>
+	<!-- <define>DUAL_OCCMAP_STEREO</define> never set -->
+	<!-- <define>FRUSTUM_TEST_STEREO</define> never set -->
+</shaderSource>

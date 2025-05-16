@@ -37,12 +37,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimatorCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -109,3 +111,36 @@ deBaseAnimatorAnimation *deDEAnimator::CreateAnimation( deAnimation *animation )
 deBaseAnimatorComponent *deDEAnimator::CreateComponent( deComponent *component ){
 	return new dearComponent( *this, *component );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class dearModuleInternal : public deInternalModule{
+public:
+	dearModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEAnimator");
+		SetDescription("Animates components using animator rules.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAnimator);
+		SetDirectoryName("deanimator");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(DEAnimatorCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *dearRegisterInternalModule(deModuleSystem *system){
+	return new dearModuleInternal(system);
+}
+#endif

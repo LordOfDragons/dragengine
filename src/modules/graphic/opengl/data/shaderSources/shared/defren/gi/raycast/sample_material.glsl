@@ -54,6 +54,11 @@
 //   - pixel 2: texCoordMatrix.row2(rgb) unused(a)
 //   - pixel 3: emissivity(rgb) unused(a)
 
+/*
+	<!-- shared/defren/gi/raycast/sample_material.glsl -->
+	<define>GI_RAYCAST_USE_SSBO</define>
+*/
+
 #ifdef GI_RAYCAST_USE_SSBO
 	struct sGIRayCastMaterial{
 		uvec4 params;

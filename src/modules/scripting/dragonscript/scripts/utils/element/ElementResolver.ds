@@ -131,35 +131,49 @@ class ElementResolver
 	/** \brief Resolve failure. */
 	class ResolveException extends Exception
 		var UniqueID pID
+		var String pBehaviorId
 		
 		/** \brief Create exception. */
 		func new(UniqueID id) super("Failed resolving " + id)
 			pID = id
 		end
 		
+		/**
+		 * \brief Create exception.
+		 * \version 1.26
+		 */
+		func new(UniqueID id, String behaviorId)\
+		super("Failed resolving {} ({})".format(Array.newWith(pID, pBehaviorId)))
+			pID = id
+			pBehaviorId = behaviorId
+		end
+		
 		/** \brief Unique ID failed to resolve. */
 		func UniqueID getID()
 			return pID
 		end
+		
+		/**
+		 * \brief Behavior ID failed to resolve or null.
+		 * \version 1.26
+		 */
+		func String getBehaviorId()
+			return pBehaviorId
+		end
 	end
 	
 	/** \brief Resolve request. */
-	public class Request
+	class Request
 		var UniqueID pID
-		var int pBehaviorInstanceIndex
+		var String pBehaviorId
 		var Block pBlock
 		var bool pAllowFail
 		
-		/** \brief Create request. */
-		func new(UniqueID id, int behaviorInstanceIndex, Block ablock)\
-		this(id, behaviorInstanceIndex, ablock, false)
-		end
-		
 		/**
 		 * \brief Create request.
-		 * \version 1.24
+		 * \version 1.26
 		 */
-		func new(UniqueID id, int behaviorInstanceIndex, Block ablock, bool allowFail)
+		func new(UniqueID id, String behaviorId, Block ablock, bool allowFail)
 			if id == null
 				throw ENullPointer.new("id")
 			end
@@ -168,7 +182,7 @@ class ElementResolver
 			end
 			
 			pID = id
-			pBehaviorInstanceIndex = behaviorInstanceIndex
+			pBehaviorId = behaviorId
 			pBlock = ablock
 			pAllowFail = allowFail
 		end
@@ -178,9 +192,12 @@ class ElementResolver
 			return pID
 		end
 		
-		/** \brief Behavior instance index to resolve or -1. */
-		func int getBehaviorInstanceIndex()
-			return pBehaviorInstanceIndex
+		/**
+		 * \brief Behavior identifier to resolve or null.
+		 * \version 1.26
+		 */
+		func String getBehaviorId()
+			return pBehaviorId
 		end
 		
 		/** \brief Block to call with resolved element. */
@@ -200,9 +217,7 @@ class ElementResolver
 	end
 	
 	
-	
 	var Array pRequests
-	
 	
 	
 	/** \brief Create resolver. */
@@ -219,7 +234,7 @@ class ElementResolver
 	 * element as parameter. If resolving fails \ref ResolveException is thrown.
 	 */
 	func void add(UniqueID id, Block ablock)
-		pRequests.add(Request.new(id, -1, ablock, false))
+		pRequests.add(Request.new(id, null, ablock, false))
 	end
 	
 	/**
@@ -228,7 +243,7 @@ class ElementResolver
 	 * Same as \ref #add(UniqueID,Block) but reads the UniqueID from file reader.
 	 */
 	func void add(FileReader reader, Block ablock)
-		pRequests.add(Request.new(UniqueID.readFromFile(reader), -1, ablock, false))
+		pRequests.add(Request.new(UniqueID.readFromFile(reader), null, ablock, false))
 	end
 	
 	/**
@@ -239,7 +254,7 @@ class ElementResolver
 	 * element as parameter. If resolving fails block is called with null as parameter.
 	 */
 	func void addAllowFail(UniqueID id, Block ablock)
-		pRequests.add(Request.new(id, -1, ablock, true))
+		pRequests.add(Request.new(id, null, ablock, true))
 	end
 	
 	/**
@@ -249,25 +264,20 @@ class ElementResolver
 	 * Same as \ref #addAllowFail(UniqueID,Block) but reads the UniqueID from file reader.
 	 */
 	func void addAllowFail(FileReader reader, Block ablock)
-		pRequests.add(Request.new(UniqueID.readFromFile(reader), -1, ablock, true))
+		pRequests.add(Request.new(UniqueID.readFromFile(reader), null, ablock, true))
 	end
 	
 	/**
 	 * \brief Write parameters to file suitable for add(UniqueID, Block).
+	 * \note Elements with ID 0 will not be restored.
 	 */
-	public static func void writeToFile(FileWriter writer, Element element)
+	static func void writeToFile(FileWriter writer, Element element)
 		element.getID().writeToFile(writer)
 	end
 	
-	/**
-	 * \brief Add resolve request for BehaviorInstance.
-	 * 
-	 * Add request to resolve element by identifier and behavior inside element by instance index.
-	 * Once resolved block is called with resolved behavior instance as parameter. If resolving
-	 * fails \ref ResolveException is thrown.
-	 */
+	/** \deprecated Use \ref #addBehavior(FileReader,Block). */
 	func void addBehavior(UniqueID id, int behaviorInstanceIndex, Block ablock)
-		pRequests.add(Request.new(id, behaviorInstanceIndex, ablock, false))
+		pRequests.add(Request.new(id, "", ablock, false))
 	end
 	
 	/**
@@ -278,20 +288,12 @@ class ElementResolver
 	 */
 	func void addBehavior(FileReader reader, Block ablock)
 		var UniqueID id = UniqueID.readFromFile(reader)
-		var int index = reader.readUShort()
-		pRequests.add(Request.new(id, index, ablock, false))
+		pRequests.add(Request.new(id, reader.readString8(), ablock, false))
 	end
 	
-	/**
-	 * \brief Add resolve request for BehaviorInstance which is allowed to fail.
-	 * \version 1.24
-	 * 
-	 * Add request to resolve element by identifier and behavior inside element by instance index.
-	 * Once resolved block is called with resolved behavior instance as parameter. If resolving
-	 * fails block is called with null as parameter.
-	 */
+	/** \deprecated Use \ref #addBehaviorAllowFail(FileReader,Block). */
 	func void addBehaviorAllowFail(UniqueID id, int behaviorInstanceIndex, Block ablock)
-		pRequests.add(Request.new(id, behaviorInstanceIndex, ablock, true))
+		pRequests.add(Request.new(id, "", ablock, true))
 	end
 	
 	/**
@@ -303,18 +305,21 @@ class ElementResolver
 	 */
 	func void addBehaviorAllowFail(FileReader reader, Block ablock)
 		var UniqueID id = UniqueID.readFromFile(reader)
-		var int index = reader.readUShort()
-		pRequests.add(Request.new(id, index, ablock, true))
+		pRequests.add(Request.new(id, reader.readString8(), ablock, true))
 	end
 	
 	/**
 	 * \brief Write parameters to file suitable for addBehavior(UniqueID, int, Block).
+	 * \note Elements with ID 0 will not be restored.
 	 */
-	public static func void writeToFileBehavior(FileWriter writer, ECBehaviorInstance behaviorInstance)
-		behaviorInstance.getElement().getID().writeToFile(writer)
-		writer.writeUShort(behaviorInstance.getInstanceIndex())
+	static func void writeToFileBehavior(FileWriter writer, ECBehaviorInstance behaviorInstance)
+		var BehaviorElement element = behaviorInstance.getElement()
+		var ECBehavior behavior = (element.getClass() cast BehaviorElementClass).\
+			getBehaviorAt(behaviorInstance.getInstanceIndex())
+		
+		element.getID().writeToFile(writer)
+		writer.writeString8((behavior cast BehaviorCompatiblePersistency).getBehaviorID())
 	end
-	
 	
 	
 	/**
@@ -329,16 +334,33 @@ class ElementResolver
 			throw EInvalidParam.new()
 		end
 		
+		var ECBehavior behavior
+		var String behaviorId
 		var Element element
-		var int index
+		var UniqueID id
 		
 		pRequests.forEach(block Request each
-			element = gameWorld.getElementWithID(each.getID())
+			id = each.getID()
+			if id.zero()
+				return null
+			end
 			
+			element = gameWorld.getElementWithID(id)
 			if element != null
-				index = each.getBehaviorInstanceIndex()
-				if index != -1
-					each.getBlock().run((element cast BehaviorElement).getInstanceAt(index))
+				behaviorId = each.getBehaviorId()
+				if behaviorId != null
+					behavior = (element.getClass() cast BehaviorElementClass).getBehaviorWithId(behaviorId)
+					if behavior == null
+						if each.getAllowFail()
+							each.getBlock().run(null)
+							return null
+							
+						else
+							throw ResolveException.new(id, behaviorId)
+						end
+					end
+					
+					each.getBlock().run((element cast BehaviorElement).getInstanceAt(behavior.getInstanceIndex()))
 					
 				else
 					each.getBlock().run(element)
@@ -349,7 +371,7 @@ class ElementResolver
 					each.getBlock().run(null)
 					
 				else
-					throw ResolveException.new(each.getID())
+					throw ResolveException.new(id)
 				end
 			end
 		end)
@@ -363,31 +385,49 @@ class ElementResolver
 	 * Resolve all requests matching element calling the request blocks with the element
 	 * as parameter. Removes all matching requests after processing them. This method is
 	 * useful to resolve elements outside a game world.
+	 * 
+	 * \note If element has 0 ID it will not be resolved.
 	 */
 	func void resolve(Element element)
 		if element == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new()
 		end
 		
 		var UniqueID id = element.getID()
-		var int index
+		if id.zero()
+			return
+		end
+		
+		var ECBehavior behavior
+		var String behaviorId
 		
 		pRequests.removeIf(block Request each
 			if not each.getID().equals(id)
 				return false
 			end
 			
-			index = each.getBehaviorInstanceIndex()
-			if index != -1
-				each.getBlock().run((element cast BehaviorElement).getInstanceAt(index))
+			behaviorId = each.getBehaviorId()
+			if behaviorId != null
+				behavior = (element.getClass() cast BehaviorElementClass).getBehaviorWithId(behaviorId)
+				if behavior == null
+					if each.getAllowFail()
+						each.getBlock().run(null)
+						return true
+						
+					else
+						throw ResolveException.new(each.getID(), behaviorId)
+					end
+				end
+				
+				each.getBlock().run((element cast BehaviorElement).getInstanceAt(behavior.getInstanceIndex()))
 				
 			else
 				each.getBlock().run(element)
 			end
+			
 			return true
 		end)
 	end
-	
 	
 	
 	/** \brief Number of pending requests. */

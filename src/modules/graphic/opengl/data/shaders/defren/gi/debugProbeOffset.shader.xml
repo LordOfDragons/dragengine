@@ -4,15 +4,9 @@
 	
 	<texture name='texGIProbeOffset' target='0'/>
 	
-	<uniformBlock name='GIParameters' target='1'/>
-	
 	<parameter name='pMatrixMVP'/> <!-- 0 -->
 	<parameter name='pGIDebugCascade'/> <!-- 1 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/gi/debugProbeOffset.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/gi/debugProbeOffset.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen GI Debug Probe Offset</sourceCode>
+	<sourceCode unit='fragment'>F DefRen GI Debug Probe Offset</sourceCode>
 </shader>

@@ -88,6 +88,7 @@ private:
 	igdeCheckBoxReference pChkInheritSOSpeakers;
 	igdeCheckBoxReference pChkInheritSONavigationSpaces;
 	igdeCheckBoxReference pChkInheritSONavigationBlockers;
+	igdeCheckBoxReference pChkInheritSOWorlds;
 	igdeTextFieldReference pEditDefaultInheritPropertyPrefix;
 	
 	igdeWidgetReference pEditProperties;

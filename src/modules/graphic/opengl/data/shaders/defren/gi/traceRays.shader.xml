@@ -25,10 +25,5 @@
 	<texture name='texLight' target='4'/>
 	-->
 	
-	<uniformBlock name='GIParameters' target='1'/>
-	<uniformBlock name='GIProbeIndices' target='2'/>
-	<uniformBlock name='GIProbePositions' target='3'/>
-	<uniformBlock name='GIRayDirections' target='4'/>
-	
-	<sourceCode unit='compute'>compute/defren/gi/traceRays.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen GI Trace Rays</sourceCode>
 </shader>

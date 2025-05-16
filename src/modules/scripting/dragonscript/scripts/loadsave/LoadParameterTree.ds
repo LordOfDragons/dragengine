@@ -52,23 +52,45 @@ pin Dragengine.XML
  * to all "path" attributes as is. This avoids writing the same prefix for all keys.
  * 
  * Supported are these tags:
- * - <string></string>: UTF8 encoded string value
- * - <float></float>: Floating point value
- * - <int></int>: Integer value
- * - <bool></bool>: Boolean value ("true", "false")
- * - <point x='' y=''/>: 2-Component point (integer)
- * - <point3 x='' y='' z=''/>: 3-Component point (integer)
- * - <vector2 x='' y=''/>: 2-Component vector (float)
- * - <vector x='' y='' z=''/>: 3-Component vector (float)
- * - <color r='' g='' b='' a=''/>: Color (float)
- * - <borderSize left='' top='' right='' bottom=''/>: BorderSize (int)
- * - <rectArea x1='' y1='' x2='' y2=''/>: RectArea (int)
- * - <floatRectArea x1='' y1='' x2='' y2=''/>: FloatRectArea (float)
- * - <list></list>: List of values
- * - <map></map>: Map of values
- * - <tree></tree>: Inline parameter tree
- * - <treeFile>filename</treeFile>: Parameter tree loaded from file relative to this file
- * - <null/>: null value
+ * - UTF8 encoded string value: \code{.xml}<string></string>\endcode
+ * - Floating point value: \code{.xml}<float></float>\endcode
+ * - Integer value: \code{.xml}<int></int>\endcode
+ * - Boolean value ("true", "false"): \code{.xml}<bool></bool>\endcode
+ * - 2-Component point (integer): \code{.xml}<point x='' y=''/>\endcode
+ * - 3-Component point (integer): \code{.xml}<point3 x='' y='' z=''/>\endcode
+ * - 2-Component vector (float): \code{.xml}<vector2 x='' y=''/>\endcode
+ * - 3-Component vector (float): \code{.xml}<vector x='' y='' z=''/>\endcode
+ * - Color (float): \code{.xml}<color r='' g='' b='' a=''/>\endcode
+ * - BorderSize (int): \code{.xml}<borderSize left='' top='' right='' bottom=''/>\endcode
+ * - RectArea (int): \code{.xml}<rectArea x1='' y1='' x2='' y2=''/>\endcode
+ * - FloatRectArea (float): \code{.xml}<floatRectArea x1='' y1='' x2='' y2=''/>\endcode
+ * - bezier curve: \code{.xml} <curve>
+ *   <interpolation>mode</interpolation>
+ *   <point>
+ *     <coordinates x='' y=''/>
+ *     <handle1 x='' y=''/> <!-- if not set uses 'coordinates' -->
+ *     <handle2 x='' y=''/> <!-- if not set uses 'coordinates' -->
+ *   </point>
+ * </curve>\endcode
+ * - 3D bezier curve: \code{.xml} <curve3d>
+ *   <interpolation>mode</interpolation>
+ *   <point>
+ *     <coordinates x='' y='' z=''/>
+ *     <handle1 x='' y='' z=''/> <!-- if not set uses 'coordinates' -->
+ *     <handle2 x='' y='' z=''/> <!-- if not set uses 'coordinates' -->
+ *   </point>
+ * </curve3d>\endcode
+ * - List of values: \code{.xml} <list>
+ *   ...
+ * </list>\endcode
+ * - Map of values: \code{.xml} <map>
+ *   ...
+ * </map>\endcode
+ * - Inline parameter tree: \code{.xml} <tree>
+ *   ...
+ * </tree>\endcode
+ * - Parameter tree loaded from file relative to this file: \code{.xml}<treeFile>filename</treeFile>\endcode
+ * - null value: \code{.xml}<null/>\endcode
  * 
  * Inside <map> tag values required the attribute "key='name'".
  * 
@@ -188,6 +210,12 @@ class LoadParameterTree extends BaseXmlLoader
 			
 		elif tagName.equals("color")
 			return readColor(element)
+			
+		elif tagName.equals("curve")
+			return readCurveBezier(element)
+			
+		elif tagName.equals("curve3d")
+			return readCurveBezier3D(element)
 			
 		elif tagName.equals("null")
 			return null
@@ -326,7 +354,6 @@ class LoadParameterTree extends BaseXmlLoader
 			end
 			
 		elif value typeof Vector
-			var Vector vector = value cast Vector
 			tag = root.addTag("vector")
 			if path != null
 				tag.setAttribute("path", path)
@@ -334,12 +361,9 @@ class LoadParameterTree extends BaseXmlLoader
 			elif key != null
 				tag.setAttribute("key", key)
 			end
-			tag.setAttribute("x", vector.getX())
-			tag.setAttribute("y", vector.getY())
-			tag.setAttribute("z", vector.getZ())
+			writeVector(tag, value cast Vector)
 			
 		elif value typeof Vector2
-			var Vector2 vector = value cast Vector2
 			tag = root.addTag("vector2")
 			if path != null
 				tag.setAttribute("path", path)
@@ -347,11 +371,9 @@ class LoadParameterTree extends BaseXmlLoader
 			elif key != null
 				tag.setAttribute("key", key)
 			end
-			tag.setAttribute("x", vector.getX())
-			tag.setAttribute("y", vector.getY())
+			writeVector2(tag, value cast Vector2)
 			
 		elif value typeof Point
-			var Point point = value cast Point
 			tag = root.addTag("point")
 			if path != null
 				tag.setAttribute("path", path)
@@ -359,11 +381,9 @@ class LoadParameterTree extends BaseXmlLoader
 			elif key != null
 				tag.setAttribute("key", key)
 			end
-			tag.setAttribute("x", point.getX())
-			tag.setAttribute("y", point.getY())
+			writePoint(tag, value cast Point)
 			
 		elif value typeof Point3
-			var Point3 point = value cast Point3
 			tag = root.addTag("point3")
 			if path != null
 				tag.setAttribute("path", path)
@@ -371,12 +391,9 @@ class LoadParameterTree extends BaseXmlLoader
 			elif key != null
 				tag.setAttribute("key", key)
 			end
-			tag.setAttribute("x", point.getX())
-			tag.setAttribute("y", point.getY())
-			tag.setAttribute("z", point.getZ())
+			writePoint3(tag, value cast Point3)
 			
 		elif value typeof BorderSize
-			var BorderSize size = value cast BorderSize
 			tag = root.addTag("borderSize")
 			if path != null
 				tag.setAttribute("path", path)
@@ -384,13 +401,9 @@ class LoadParameterTree extends BaseXmlLoader
 			elif key != null
 				tag.setAttribute("key", key)
 			end
-			tag.setAttribute("left", size.getLeft())
-			tag.setAttribute("top", size.getTop())
-			tag.setAttribute("right", size.getRight())
-			tag.setAttribute("bottom", size.getBottom())
+			writeBorderSize(tag, value cast BorderSize)
 			
 		elif value typeof RectArea
-			var RectArea area = value cast RectArea
 			tag = root.addTag("rectArea")
 			if path != null
 				tag.setAttribute("path", path)
@@ -398,13 +411,9 @@ class LoadParameterTree extends BaseXmlLoader
 			elif key != null
 				tag.setAttribute("key", key)
 			end
-			tag.setAttribute("x1", area.getX1())
-			tag.setAttribute("y1", area.getY1())
-			tag.setAttribute("x2", area.getX2())
-			tag.setAttribute("y2", area.getY2())
+			writeRectArea(tag, value cast RectArea)
 			
 		elif value typeof FloatRectArea
-			var FloatRectArea area = value cast FloatRectArea
 			tag = root.addTag("floatRectArea")
 			if path != null
 				tag.setAttribute("path", path)
@@ -412,13 +421,9 @@ class LoadParameterTree extends BaseXmlLoader
 			elif key != null
 				tag.setAttribute("key", key)
 			end
-			tag.setAttribute("x1", area.getX1())
-			tag.setAttribute("y1", area.getY1())
-			tag.setAttribute("x2", area.getX2())
-			tag.setAttribute("y2", area.getY2())
+			writeFloatRectArea(tag, value cast FloatRectArea)
 			
 		elif value typeof Color
-			var Color color = value cast Color
 			tag = root.addTag("color")
 			if path != null
 				tag.setAttribute("path", path)
@@ -426,10 +431,27 @@ class LoadParameterTree extends BaseXmlLoader
 			elif key != null
 				tag.setAttribute("key", key)
 			end
-			tag.setAttribute("r", color.getRed())
-			tag.setAttribute("g", color.getGreen())
-			tag.setAttribute("b", color.getBlue())
-			tag.setAttribute("a", color.getAlpha())
+			writeColor4(tag, value cast Color)
+			
+		elif value typeof CurveBezier
+			tag = root.addTag("curve")
+			if path != null
+				tag.setAttribute("path", path)
+				
+			elif key != null
+				tag.setAttribute("key", key)
+			end
+			writeCurveBezier(tag, value cast CurveBezier)
+			
+		elif value typeof CurveBezier3D
+			tag = root.addTag("curve3d")
+			if path != null
+				tag.setAttribute("path", path)
+				
+			elif key != null
+				tag.setAttribute("key", key)
+			end
+			writeCurveBezier3D(tag, value cast CurveBezier3D)
 			
 		elif value == null
 			tag = root.addTag("null")

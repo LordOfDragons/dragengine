@@ -84,7 +84,7 @@
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/threading/deMutexGuard.h>
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 #include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #endif
@@ -422,7 +422,7 @@ void deoglRenderThread::CleanUp(){
 	}
 }
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 void deoglRenderThread::InitAppWindow(){
 	if( pAsyncRendering ){
 		if( pThreadState != etsWindowDown ){
@@ -621,7 +621,7 @@ void deoglRenderThread::Run(){
 				1.0f / decMath::max( pLastFrameTime, 0.001f ) );
 			*/
 			
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		}else if( pThreadState == etsWindowTerminate ){
 			try{
 				pContext->TerminateAppWindow();
@@ -676,7 +676,7 @@ void deoglRenderThread::RecreatedRes(){
 void deoglRenderThread::Synchronize(){
 	pLogger->Synchronize(); // send asynchronous logs to game logger
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	deGraphicSystem &graSys = *pOgl.GetGameEngine()->GetGraphicSystem();
 	if(graSys.GetRenderWindow()){
 		deoglRenderWindow * const oglWindow =
@@ -1506,7 +1506,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	pTexture->GetStages().DisableAllStages();
 	pPipelineManager->GetState().Reset();
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	DevModeDebugInfoChanged(); // to enable debug stuff if enabled
 	#endif
 }
@@ -1525,7 +1525,7 @@ void deoglRenderThread::pInitExtensions(){
 	
 	// enable states never touched again later (and that can not be changed)
 	// NOTE: on android this is always enabled for 3.2
-#ifndef OS_ANDROID
+#ifndef WITH_OPENGLES
 	if( pExtensions->GetHasSeamlessCubeMap() ){
 		// on nVidia this crashes due to a bug with linear filtering on float textures
 		// TODO is this still affecting the newer driver versions?
@@ -1544,7 +1544,7 @@ void deoglRenderThread::pInitCapabilities(){
 	pCapabilities = new deoglCapabilities( *this );
 	pCapabilities->DetectCapabilities();
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	pLogger->LogInfo( "Hardware information:" );
 	
 	int i, j;
@@ -1639,7 +1639,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		pDebugTimerRenderThread1.Reset();
 		pDebugTimerRenderThread2.Reset();
 	}
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 	DebugMemoryUsage( "deoglRenderThread::pRenderSingleFrame IN" );
 	decTimer timer;
 #endif
@@ -1700,7 +1700,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		// 	pDebugTimeThreadRenderSwap = pDebugTimerRenderThread2.GetElapsedTime();
 		// }
 		
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame ENTER");
 		#endif
 		pBeginFrame();
@@ -1708,7 +1708,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 			pDebugTimeThreadRenderBegin = pDebugTimerRenderThread2.GetElapsedTime();
 			pDebugTimerRenderThread3.Reset();
 		}
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame BeginFrame");
 		#endif
 		
@@ -1717,7 +1717,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderWindows = pDebugTimerRenderThread2.GetElapsedTime();
 		}
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame RenderWindows");
 		#endif
 		
@@ -1725,7 +1725,7 @@ void deoglRenderThread::pRenderSingleFrame(){
 		if( showDebugInfoModule ){
 			pDebugTimeThreadRenderCapture = pDebugTimerRenderThread2.GetElapsedTime();
 		}
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		if( DoesDebugMemoryUsage() ) pLogger->LogInfo("pRenderSingleFrame CaptureCanvas");
 		#endif
 		
@@ -1783,13 +1783,13 @@ void deoglRenderThread::pRenderSingleFrame(){
 		pRenderers->GetCanvas().DebugInfoCanvasUpdate();
 	}
 	
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 	//pLogger->LogInfoFormat( "pRenderSingleFrame: %dms", (int )(timer.GetElapsedTime() * 1000.0f) );
 	DebugMemoryUsage( "deoglRenderThread::pRenderSingleFrame OUT" );
 #endif
 }
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 #include "../texture/texture2d/deoglRenderableColorTextureManager.h"
 #include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
 #include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
@@ -2238,7 +2238,7 @@ void deoglRenderThread::pSwapBuffers(){
 
 void deoglRenderThread::pBeginFrame(){
 	const deoglDebugTraceGroup debugTrace( *this, "BeginFrame" );
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	pContext->CheckConfigurationChanged();
 	#endif
 	
@@ -2254,8 +2254,9 @@ void deoglRenderThread::pBeginFrame(){
 	
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
+	pShader->GetShaderManager().Update();
 	
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined WITH_OPENGLES && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
 	

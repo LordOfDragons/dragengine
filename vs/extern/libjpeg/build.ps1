@@ -1,7 +1,8 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$ProjectDir,
     [Parameter(Mandatory=$true)][string]$SourceDir,
-    [Parameter(Mandatory=$true)][string]$OutputDir
+    [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir
 )
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
@@ -24,6 +25,9 @@ $CmakeInstallDir = "$ExpandedDir\install"
 # CMAKE_SYSTEM_NAME, CMAKE_SYSTEM_PROCESSOR:
 #   libjpeg fails if system name is not this value
 
+# CMAKE_POLICY_VERSION_MINIMUM:
+#   workaround for github build problem
+
 cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DCMAKE_INSTALL_PREFIX="$CmakeInstallDir" `
 	-DCMAKE_BUILD_TYPE=Release `
@@ -31,7 +35,8 @@ cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" `
 	-DENABLE_STATIC=On `
 	-DWITH_TURBOJPEG=Off `
 	-DCMAKE_SYSTEM_NAME=Windows `
-	-DCMAKE_SYSTEM_PROCESSOR=AMD64
+	-DCMAKE_SYSTEM_PROCESSOR=AMD64 `
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
 
 cmake --build "$CmakeBuildDir" -j 8 -- /property:Configuration=Release
 

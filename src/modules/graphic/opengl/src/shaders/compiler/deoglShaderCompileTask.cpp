@@ -24,7 +24,6 @@
 
 #include "deoglShaderCompileTask.h"
 #include "deoglShaderCompileListener.h"
-#include "../deoglShaderCompiled.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -35,18 +34,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderCompileTask::deoglShaderCompileTask(const deoglShaderProgram *program,
+deoglShaderCompileTask::deoglShaderCompileTask(deoglShaderProgram *program,
 	deoglShaderCompileListener *listener) :
 pProgram(program),
-pListener(listener),
-pCompiled(nullptr)
+pListener(listener)
 {
 	DEASSERT_NOTNULL(program)
 	DEASSERT_NOTNULL(listener)
 }
 
 deoglShaderCompileTask::~deoglShaderCompileTask(){
-	SetCompiled(nullptr);
 	if(pListener){
 		delete pListener;
 	}
@@ -54,20 +51,3 @@ deoglShaderCompileTask::~deoglShaderCompileTask(){
 
 // Management
 ///////////////
-
-deoglShaderCompiled *deoglShaderCompileTask::GetCompiled(){
-	deoglShaderCompiled * const compiled = pCompiled;
-	pCompiled = nullptr;
-	return compiled;
-}
-
-void deoglShaderCompileTask::SetCompiled(deoglShaderCompiled *compiled){
-	if(compiled == pCompiled){
-		return;
-	}
-	
-	if(pCompiled){
-		delete pCompiled;
-	}
-	pCompiled = compiled;
-}

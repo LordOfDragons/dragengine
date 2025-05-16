@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEPNGMODULE_H_
 #define _DEPNGMODULE_H_
 
-// includes
-#include "dragengine/systems/modules/image/deBaseImageModule.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/image/deBaseImageModule.h>
+#include <dragengine/common/math/decMath.h>
 
-// predefinitions
 
 // image module interface
 class dePngModule : public deBaseImageModule{

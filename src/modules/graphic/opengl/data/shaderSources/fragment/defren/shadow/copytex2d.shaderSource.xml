@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Shadow Copy Texture2D</name>
+	<stage>fragment</stage>
+	<source>copytex2d.frag.glsl</source>
+</shaderSource>

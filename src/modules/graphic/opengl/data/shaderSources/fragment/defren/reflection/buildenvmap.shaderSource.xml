@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Reflection Build EnvMap</name>
+	<stage>fragment</stage>
+	<source>buildenvmap.frag.glsl</source>
+	
+	<output set='1' name='outColor' location='0'/>
+	
+	<output set='2' name='outFace1' location='0'/>
+	<output set='2' name='outFace2' location='1'/>
+	<output set='2' name='outFace3' location='2'/>
+	<output set='2' name='outFace4' location='3'/>
+	<output set='2' name='outFace5' location='4'/>
+	<output set='2' name='outFace6' location='5'/>
+	
+	<define>ENVMAP_EQUI</define>
+</shaderSource>

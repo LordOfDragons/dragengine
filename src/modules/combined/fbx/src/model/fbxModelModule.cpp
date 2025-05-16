@@ -63,12 +63,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *FBXModelCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *FBXModelCreateModule( deLoadableModule *loadableModule ){
@@ -548,3 +550,39 @@ void fbxModelModule::pEnsureTextureIndex( deModel &model, int count ){
 		}
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class fbxModelModuleInternal : public deInternalModule{
+public:
+	fbxModelModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("FBXModel");
+		SetDescription("Handles models in the binary FBX format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtModel);
+		SetDirectoryName("fbxmodel");
+		GetPatternList().Add(".fbx");
+		SetDefaultExtension(".fbx");
+		SetPriority(1);
+		SetNoSaving(true);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(FBXModelCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *fbxModelRegisterInternalModule(deModuleSystem *system){
+	return new fbxModelModuleInternal(system);
+}
+#endif

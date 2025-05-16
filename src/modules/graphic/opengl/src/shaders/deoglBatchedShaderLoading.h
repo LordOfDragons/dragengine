@@ -130,6 +130,9 @@ public:
 	/** Shader loaded. */
 	void Loaded();
 	
+	/** All pending compiles finished. Throws exception if one compile failed. */
+	bool AllCompileFinished();
+	
 	
 	/** Increment pending compile by one. */
 	void AddPendingCompile();

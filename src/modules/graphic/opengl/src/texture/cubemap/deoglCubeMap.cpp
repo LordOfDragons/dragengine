@@ -38,7 +38,7 @@
 #include "../../renderthread/deoglRTDebug.h"
 #include "../../renderthread/deoglRTLogger.h"
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
@@ -281,7 +281,7 @@ void deoglCubeMap::SetPixelsLevel( int level, const deoglPixelBuffer &pixelBuffe
 				(const GLvoid*)(pixelsPtr + faceStride * t)));
 			
 		}else{
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 			oglClearError();
 			pglTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, level, 0, 0, size, size,
 				pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(),
@@ -320,7 +320,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		return;
 	}
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	// glReadPixels under OpenGL ES does only support GL_RGBA and GL_RGBA_INTEGRAL.
 	// if something else is required (for exampel GL_RGB, GL_RG or GL_RED) we have
 	// to use a temporary texture containing 4 components and copy over from there.
@@ -613,7 +613,7 @@ void deoglCubeMap::UpdateMemoryUsage(){
 		return;
 	}
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	pMemUse.SetUncompressed( *pFormat, pSize, pSize, 6, pRealMipMapLevelCount );
 	
 	#else

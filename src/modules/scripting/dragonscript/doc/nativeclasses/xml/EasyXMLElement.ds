@@ -203,6 +203,19 @@ class EasyXMLElement
 	func void addElement(EasyXMLElement child)
 	end
 	
+	/**
+	 * \brief Insert child element before index.
+	 * \version 1.26
+	 * 
+	 * Elements can only be child of one parent at each time.
+	 * 
+	 * \throws EInvalidParam Element is already a child of another parent.
+	 * \throws EInvalidParam Index is less than 0.
+	 * \throws EInvalidParam Index is larger than or equal to \ref #getElementCount().
+	 */
+	func void insertElement(EasyXMLElement child, int beforeIndex)
+	end
+	
 	/** \brief Remove child element. */
 	func void removeElement(EasyXMLElement child)
 	end

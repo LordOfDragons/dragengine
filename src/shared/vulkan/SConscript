@@ -57,12 +57,13 @@ Depends(buildClocBare, headers)
 buildCloc = envShared.Alias('shared_vulkan_cloc', buildClocBare)
 
 # add the targets to the targets list
-parent_targets['shared_vulkan'] =  {
-	'name' : 'Vulkan Shared',
-	'cpppath' : [
+parent_targets['shared_vulkan'] = {
+	'name': 'Vulkan Shared',
+	'cpppath': [
 		envShared.Dir('src').srcnode(),
 		envShared.Dir('extern/include').srcnode()],
-	'libs' : library,
-	'depends' : parent_env.Alias('shared_vulkan', library),
-	'cloc' : buildCloc,
-	'clocReport' : '{}/clocreport.csv'.format(srcdir) }
+	'cppflags': ['-DVK_NO_PROTOTYPES'],
+	'libs': library,
+	'depends': parent_env.Alias('shared_vulkan', library),
+	'cloc': buildCloc,
+	'clocReport': '{}/clocreport.csv'.format(srcdir) }

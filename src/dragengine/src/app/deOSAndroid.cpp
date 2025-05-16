@@ -373,8 +373,13 @@ void deOSAndroid::pGetOSParameters(){
 	env->DeleteLocalRef(clsDisplayMetrics);
 	env->DeleteLocalRef(objDisplayMetrics);
 	
+#ifdef OS_ANDROID_QUEST
+	// on quest do not scale. value reported for a quest s3 is 200dpi
+	pScaleFactor = 100;
+#else
 	const double scale = 100.0 * (double)densityDpi / 160.0; // 160dpi medium screen dpi
 	pScaleFactor = decMath::max((int)(scale / 25.0 + 0.5) * 25, 100);
+#endif
 	
 	// GetEngine() is nullptr at this point of time
 	__android_log_print(ANDROID_LOG_INFO, "OSAndroid",

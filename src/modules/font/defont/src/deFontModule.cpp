@@ -49,6 +49,7 @@
 // Export definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -56,7 +57,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DEFontCreateModule( deLoadableModule *loadabl
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry function
@@ -274,3 +275,38 @@ void deFontModule::pWriteFont( decXmlWriter& writer, const deFont& font ) {
 	
 	writer.WriteClosingTag( "font", true );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deFontModuleInternal : public deInternalModule{
+public:
+	deFontModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEFont");
+		SetDescription("Handles fonts in the XML Drag[en]gine font format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtFont);
+		SetDirectoryName("defont");
+		GetPatternList().Add(".defont");
+		SetDefaultExtension(".defont");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(DEFontCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deFontRegisterInternalModule(deModuleSystem *system){
+	return new deFontModuleInternal(system);
+}
+#endif

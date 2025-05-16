@@ -480,45 +480,32 @@ class BaseXmlLoader
 	
 	/** Read curve tag. */
 	func CurveBezier readCurveBezier(EasyXMLElement root)
-		var int i, count = root.getElementCount()
 		var CurveBezier curve = CurveBezier.new()
-		var EasyXMLElement element
-		var String tagName
-		
-		for i = 0 to count
-			element = root.getElementAt(i)
-			
-			if element.getType() == EasyXMLElementType.tag
-				tagName = element.getTagName()
-				
-				if tagName.equals("interpolation")
-					var CurveBezierInterpolation interpolation = CurveBezierInterpolation.named(element.getFirstCData())
-					if interpolation != null
-						curve.setInterpolationMode(interpolation)
-						
-					else
-						logInvalidValue(element, element.getFirstCData())
-					end
-					
-				elif tagName.equals("point")
-					readCurveBezierPoint(element, curve)
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("interpolation")
+				var CurveBezierInterpolation interpolation = CurveBezierInterpolation.named(element.getFirstCData())
+				if interpolation != null
+					curve.setInterpolationMode(interpolation)
 					
 				else
-					logUnknownTag(element)
+					logInvalidValue(element, element.getFirstCData())
 				end
+				
+			elif tagName.equals("point")
+				readCurveBezierPoint(element, curve)
+				
+			else
+				logUnknownTag(element)
 			end
-		end
-		
+		end)
 		return curve
 	end
 	
 	/** Read curve point tag. */
 	func void readCurveBezierPoint(EasyXMLElement root, CurveBezier curve)
 		var int i, count = root.getElementCount()
+		var Vector2 coordinates, handle1, handle2
 		var EasyXMLElement element
-		var Vector2 coordinates
-		var Vector2 handle1
-		var Vector2 handle2
 		var String tagName
 		
 		for i = 0 to count
@@ -544,6 +531,78 @@ class BaseXmlLoader
 		
 		if coordinates == null
 			coordinates = Vector2.new()
+		end
+		if handle1 == null
+			handle1 = coordinates
+		end
+		if handle2 == null
+			handle2 = coordinates
+		end
+		
+		curve.addPoint(coordinates, handle1, handle2)
+	end
+	
+	
+	
+	/**
+	 * \brief Read 3D curve tag.
+	 * \version 1.26
+	 */
+	func CurveBezier3D readCurveBezier3D(EasyXMLElement root)
+		var CurveBezier3D curve = CurveBezier3D.new()
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("interpolation")
+				var CurveBezierInterpolation interpolation = CurveBezierInterpolation.named(element.getFirstCData())
+				if interpolation != null
+					curve.setInterpolationMode(interpolation)
+					
+				else
+					logInvalidValue(element, element.getFirstCData())
+				end
+				
+			elif tagName.equals("point")
+				readCurveBezier3DPoint(element, curve)
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		return curve
+	end
+	
+	/**
+	 * \brief Read curve point tag.
+	 * \version 1.26
+	 */
+	func void readCurveBezier3DPoint(EasyXMLElement root, CurveBezier3D curve)
+		var int i, count = root.getElementCount()
+		var Vector coordinates, handle1, handle2
+		var EasyXMLElement element
+		var String tagName
+		
+		for i = 0 to count
+			element = root.getElementAt(i)
+			
+			if element.getType() == EasyXMLElementType.tag
+				tagName = element.getTagName()
+				
+				if tagName.equals("coordinates")
+					coordinates = readVector(element)
+					
+				elif tagName.equals("handle1")
+					handle1 = readVector(element)
+					
+				elif tagName.equals("handle2")
+					handle2 = readVector(element)
+					
+				else
+					logUnknownTag(element)
+				end
+			end
+		end
+		
+		if coordinates == null
+			coordinates = Vector.new()
 		end
 		if handle1 == null
 			handle1 = coordinates
@@ -681,7 +740,14 @@ class BaseXmlLoader
 	 * \version 1.6
 	 */
 	func void writeVector(EasyXMLElement root, String name, Vector vector)
-		var EasyXMLElement tag = root.addTag(name)
+		writeVector(root.addTag(name), vector)
+	end
+	
+	/**
+	 * \brief Write vector tag.
+	 * \version 1.26
+	 */
+	func void writeVector(EasyXMLElement tag, Vector vector)
 		tag.setAttribute("x", vector.getX())
 		tag.setAttribute("y", vector.getY())
 		tag.setAttribute("z", vector.getZ())
@@ -693,7 +759,15 @@ class BaseXmlLoader
 	 * \note This will loose prevision due to converting to float.
 	 */
 	func void writeDVector(EasyXMLElement root, String name, DVector vector)
-		var EasyXMLElement tag = root.addTag(name)
+		writeDVector(root.addTag(name), vector)
+	end
+	
+	/**
+	 * \brief Write vector tag.
+	 * \version 1.26
+	 * \note This will loose prevision due to converting to float.
+	 */
+	func void writeDVector(EasyXMLElement tag, DVector vector)
 		tag.setAttribute("x", vector.getX())
 		tag.setAttribute("y", vector.getY())
 		tag.setAttribute("z", vector.getZ())
@@ -704,7 +778,14 @@ class BaseXmlLoader
 	 * \version 1.6
 	 */
 	func void writeVector2(EasyXMLElement root, String name, Vector2 vector)
-		var EasyXMLElement tag = root.addTag(name)
+		writeVector2(root.addTag(name), vector)
+	end
+	
+	/**
+	 * \brief Write vector2 tag.
+	 * \version 1.26
+	 */
+	func void writeVector2(EasyXMLElement tag, Vector2 vector)
 		tag.setAttribute("x", vector.getX())
 		tag.setAttribute("y", vector.getY())
 	end
@@ -714,7 +795,14 @@ class BaseXmlLoader
 	 * \version 1.6
 	 */
 	func void writeColor3(EasyXMLElement root, String name, Color color)
-		var EasyXMLElement tag = root.addTag(name)
+		writeColor3(root.addTag(name), color)
+	end
+	
+	/**
+	 * \brief Write 3-component color tag using rgb attributes.
+	 * \version 1.26
+	 */
+	func void writeColor3(EasyXMLElement tag, Color color)
 		tag.setAttribute("r", color.getRed())
 		tag.setAttribute("g", color.getGreen())
 		tag.setAttribute("b", color.getBlue())
@@ -725,7 +813,14 @@ class BaseXmlLoader
 	 * \version 1.6
 	 */
 	func void writeColor4(EasyXMLElement root, String name, Color color)
-		var EasyXMLElement tag = root.addTag(name)
+		writeColor4(root.addTag(name), color)
+	end
+	
+	/**
+	 * \brief Write 4-component color tag using rgba attributes.
+	 * \version 1.26
+	 */
+	func void writeColor4(EasyXMLElement tag, Color color)
 		tag.setAttribute("r", color.getRed())
 		tag.setAttribute("g", color.getGreen())
 		tag.setAttribute("b", color.getBlue())
@@ -737,7 +832,14 @@ class BaseXmlLoader
 	 * \version 1.6
 	 */
 	func void writePoint(EasyXMLElement root, String name, Point point)
-		var EasyXMLElement tag = root.addTag(name)
+		writePoint(root.addTag(name), point)
+	end
+	
+	/**
+	 * \brief Write point tag.
+	 * \version 1.26
+	 */
+	func void writePoint(EasyXMLElement tag, Point point)
 		tag.setAttribute("x", point.getX())
 		tag.setAttribute("y", point.getY())
 	end
@@ -747,7 +849,14 @@ class BaseXmlLoader
 	 * \version 1.6
 	 */
 	func void writePoint3(EasyXMLElement root, String name, Point3 point)
-		var EasyXMLElement tag = root.addTag(name)
+		writePoint3(root.addTag(name), point)
+	end
+	
+	/**
+	 * \brief Write point3 tag.
+	 * \version 1.26
+	 */
+	func void writePoint3(EasyXMLElement tag, Point3 point)
 		tag.setAttribute("x", point.getX())
 		tag.setAttribute("y", point.getY())
 		tag.setAttribute("z", point.getZ())
@@ -758,10 +867,15 @@ class BaseXmlLoader
 	 * \version 1.9
 	 */
 	func void writeCurveBezier(EasyXMLElement root, String name, CurveBezier curve)
-		var EasyXMLElement tag = root.addTag(name)
-		
+		writeCurveBezier(root.addTag(name), curve)
+	end
+	
+	/**
+	 * \brief Write bezier curve tag.
+	 * \version 1.26
+	 */
+	func void writeCurveBezier(EasyXMLElement tag, CurveBezier curve)
 		tag.addDataTag("interpolation", curve.getInterpolationMode().name())
-		
 		var int i, count = curve.getPointCount()
 		for i = 0 to count
 			writeCurveBezierPoint(tag, "point", curve, i)
@@ -773,10 +887,55 @@ class BaseXmlLoader
 	 * \version 1.9
 	 */
 	func void writeCurveBezierPoint(EasyXMLElement root, String name, CurveBezier curve, int point)
-		var EasyXMLElement tag = root.addTag(name)
+		writeCurveBezierPoint(root.addTag(name), curve, point)
+	end
+	
+	/**
+	 * \brief Write bezier curve point tag.
+	 * \version 1.26
+	 */
+	func void writeCurveBezierPoint(EasyXMLElement tag, CurveBezier curve, int point)
 		writeVector2(tag, "coordinates", curve.getPointAt(point))
 		writeVector2(tag, "handle1", curve.getHandle1At(point))
 		writeVector2(tag, "handle2", curve.getHandle2At(point))
+	end
+	
+	/**
+	 * \brief Write 3D bezier curve tag.
+	 * \version 1.26
+	 */
+	func void writeCurveBezier3D(EasyXMLElement root, String name, CurveBezier3D curve)
+		writeCurveBezier3D(root.addTag(name), curve)
+	end
+	
+	/**
+	 * \brief Write 3D bezier curve tag.
+	 * \version 1.26
+	 */
+	func void writeCurveBezier3D(EasyXMLElement tag, CurveBezier3D curve)
+		tag.addDataTag("interpolation", curve.getInterpolationMode().name())
+		var int i, count = curve.getPointCount()
+		for i = 0 to count
+			writeCurveBezier3DPoint(tag, "point", curve, i)
+		end
+	end
+	
+	/**
+	 * \brief Write 3D bezier curve point tag.
+	 * \version 1.26
+	 */
+	func void writeCurveBezier3DPoint(EasyXMLElement root, String name, CurveBezier3D curve, int point)
+		writeCurveBezier3DPoint(root.addTag(name), curve, point)
+	end
+	
+	/**
+	 * \brief Write 3D bezier curve point tag.
+	 * \version 1.26
+	 */
+	func void writeCurveBezier3DPoint(EasyXMLElement tag, CurveBezier3D curve, int point)
+		writeVector(tag, "coordinates", curve.getPointAt(point))
+		writeVector(tag, "handle1", curve.getHandle1At(point))
+		writeVector(tag, "handle2", curve.getHandle2At(point))
 	end
 	
 	/**
@@ -784,7 +943,14 @@ class BaseXmlLoader
 	 * \version 1.22
 	 */
 	func void writeRectArea(EasyXMLElement root, String name, RectArea rectArea)
-		var EasyXMLElement tag = root.addTag(name)
+		writeRectArea(root.addTag(name), rectArea)
+	end
+	
+	/**
+	 * \brief Write rectArea tag.
+	 * \version 1.26
+	 */
+	func void writeRectArea(EasyXMLElement tag, RectArea rectArea)
 		tag.setAttribute("x1", rectArea.getX1())
 		tag.setAttribute("y1", rectArea.getY1())
 		tag.setAttribute("x2", rectArea.getX2())
@@ -796,11 +962,37 @@ class BaseXmlLoader
 	 * \version 1.22
 	 */
 	func void writeFloatRectArea(EasyXMLElement root, String name, FloatRectArea rectArea)
-		var EasyXMLElement tag = root.addTag(name)
+		writeFloatRectArea(root.addTag(name), rectArea)
+	end
+	
+	/**
+	 * \brief Write floatRectRea tag.
+	 * \version 1.26
+	 */
+	func void writeFloatRectArea(EasyXMLElement tag, FloatRectArea rectArea)
 		tag.setAttribute("x1", rectArea.getX1())
 		tag.setAttribute("y1", rectArea.getY1())
 		tag.setAttribute("x2", rectArea.getX2())
 		tag.setAttribute("y2", rectArea.getY2())
+	end
+	
+	/**
+	 * \brief Write borderSize tag.
+	 * \version 1.26
+	 */
+	func void writeBorderSize(EasyXMLElement root, String name, BorderSize size)
+		writeBorderSize(root.addTag(name), size)
+	end
+	
+	/**
+	 * \brief Write borderSize tag.
+	 * \version 1.26
+	 */
+	func void writeBorderSize(EasyXMLElement tag, BorderSize size)
+		tag.setAttribute("left", size.getLeft())
+		tag.setAttribute("top", size.getTop())
+		tag.setAttribute("right", size.getRight())
+		tag.setAttribute("bottom", size.getBottom())
 	end
 	
 	

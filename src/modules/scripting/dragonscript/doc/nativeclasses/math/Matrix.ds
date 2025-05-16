@@ -18,100 +18,100 @@ fixed class Matrix
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create identity matrix. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create matrix from values. */
-	public func new(float a11, float a12, float a13, float a14, float a21, float a22, float a23, float a24, float a31, float a32, float a33, float a34)
+	func new(float a11, float a12, float a13, float a14, float a21, float a22, float a23, float a24, float a31, float a32, float a33, float a34)
 	end
 	
 	/** \brief Create translation matrix. */
-	public static func Matrix newTranslation(Vector translation)
+	static func Matrix newTranslation(Vector translation)
 		return null
 	end
 	
 	/** \brief Create translation matrix. */
-	public static func Matrix newTranslation(float tx, float ty, float tz)
+	static func Matrix newTranslation(float tx, float ty, float tz)
 		return null
 	end
 	
 	/** \brief Create scaling matrix. */
-	public static func Matrix newScaling(Vector scaling)
+	static func Matrix newScaling(Vector scaling)
 		return null
 	end
 	
 	/** \brief Create scaling matrix. */
-	public static func Matrix newScaling(float sx, float sy, float sz)
+	static func Matrix newScaling(float sx, float sy, float sz)
 		return null
 	end
 	
 	/** \brief Create rotation around the x axis matrix. */
-	public static func Matrix newRotationX(float rotation)
+	static func Matrix newRotationX(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation around the y axis matrix. */
-	public static func Matrix newRotationY(float rotation)
+	static func Matrix newRotationY(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation around the z axis matrix. */
-	public static func Matrix newRotationZ(float rotation)
+	static func Matrix newRotationZ(float rotation)
 		return null
 	end
 	
 	/** \brief Create rotation matrix. */
-	public static func Matrix newRotation(Vector rotation)
+	static func Matrix newRotation(Vector rotation)
 		return null
 	end
 	
 	/** \brief Create rotation matrix. */
-	public static func Matrix newRotation(float rx, float ry, float rz)
+	static func Matrix newRotation(float rx, float ry, float rz)
 		return null
 	end
 	
 	/** \brief Create rotation matrix. */
-	public static func Matrix newRotationAxis(Vector axis, float rotation)
+	static func Matrix newRotationAxis(Vector axis, float rotation)
 		return null
 	end
 	
 	/** \brief Create scaling-rotation-translation matrix composing of a scaling followed by a rotation and a translation. */
-	public static func Matrix newSRT(Vector scaling, Vector rotation, Vector translation)
+	static func Matrix newSRT(Vector scaling, Vector rotation, Vector translation)
 		return null
 	end
 	
 	/** \brief Create rotation-translation matrix composing of a rotation followed by a translation. */
-	public static func Matrix newRT(Vector rotation, Vector translation)
+	static func Matrix newRT(Vector rotation, Vector translation)
 		return null
 	end
 	
 	/** \brief Create scale-view-up-translation matrix composing of a rotation followed by a world matrix. */
-	public static func Matrix newSVUT(Vector scaling, Vector view, Vector up, Vector translation)
+	static func Matrix newSVUT(Vector scaling, Vector view, Vector up, Vector translation)
 		return null
 	end
 	
 	/** \brief Create view-up matrix. */
-	public static func Matrix newVU(Vector view, Vector up)
+	static func Matrix newVU(Vector view, Vector up)
 		return null
 	end
 	
 	/** \brief Create camera matrix. */
-	public static func Matrix newCamera(Vector position, Vector view, Vector up)
+	static func Matrix newCamera(Vector position, Vector view, Vector up)
 		return null
 	end
 	
 	/** \brief Create world matrix. */
-	public static func Matrix newWorld(Vector position, Vector view, Vector up)
+	static func Matrix newWorld(Vector position, Vector view, Vector up)
 		return null
 	end
 	
 	/** \brief Create world matrix. */
-	public static func Matrix newWorld(Vector position, Quaternion orientation)
+	static func Matrix newWorld(Vector position, Quaternion orientation)
 		return null
 	end
 	
 	/** \brief Create rotation matrix from the given quaternion. */
-	public static func Matrix newFromQuaternion(Quaternion quaternion)
+	static func Matrix newFromQuaternion(Quaternion quaternion)
 		return null
 	end
 	/*@}*/
@@ -125,107 +125,115 @@ fixed class Matrix
 	 * \throws EInvalidParam \em row is less than 0 or larger than 2.
 	 * \throws EInvalidParam \em col is less than 0 or larger than 3.
 	 */
-	public func float getAt(int row, int col)
+	func float getAt(int row, int col)
 		return 0.0
 	end
 	
 	/** \brief Value at (1,1). */
-	public func float get11()
+	func float get11()
 		return 0.0
 	end
 	
 	/** \brief Value at (1,2). */
-	public func float get12()
+	func float get12()
 		return 0.0
 	end
 	
 	/** \brief Value at (1,3). */
-	public func float get13()
+	func float get13()
 		return 0.0
 	end
 	
 	/** \brief Value at (1,4). */
-	public func float get14()
+	func float get14()
 		return 0.0
 	end
 	
 	/** \brief Value at (2,1). */
-	public func float get21()
+	func float get21()
 		return 0.0
 	end
 	
 	/** \brief Value at (2,2). */
-	public func float get22()
+	func float get22()
 		return 0.0
 	end
 	
 	/** \brief Value at (2,3). */
-	public func float get23()
+	func float get23()
 		return 0.0
 	end
 	
 	/** \brief Value at (2,4). */
-	public func float get24()
+	func float get24()
 		return 0.0
 	end
 	
 	/** \brief Value at (3,1). */
-	public func float get31()
+	func float get31()
 		return 0.0
 	end
 	
 	/** \brief Value at (3,2). */
-	public func float get32()
+	func float get32()
 		return 0.0
 	end
 	
 	/** \brief Value at (3,3). */
-	public func float get33()
+	func float get33()
 		return 0.0
 	end
 	
 	/** \brief Value at (3,4). */
-	public func float get34()
+	func float get34()
 		return 0.0
 	end
 	
 	/** \brief Vector composed of the third column. */
-	public func Vector getViewVector()
+	func Vector getViewVector()
 		return null
 	end
 	
 	/** \brief Vector composed of the second column. */
-	public func Vector getUpVector()
+	func Vector getUpVector()
 		return null
 	end
 	
 	/** \brief Vector composed of the first column. */
-	public func Vector getRightVector()
+	func Vector getRightVector()
 		return null
 	end
 	
 	/** \brief Vector composed of the fourth column. */
-	public func Vector getPosition()
+	func Vector getPosition()
 		return null
 	end
 	
 	/** \brief Transform normal by matrix. */
-	public func Vector transformNormal(Vector normal)
+	func Vector transformNormal(Vector normal)
 		return null
 	end
 	
 	/** \brief Euler angles. */
-	public func Vector getEulerAngles()
+	func Vector getEulerAngles()
+		return null
+	end
+	
+	/**
+	 * \brief Scaling.
+	 * \version 1.26
+	 */
+	func Vector getScaling()
 		return null
 	end
 	
 	/** \brief Inverse. */
-	public func Matrix getInverse()
+	func Matrix getInverse()
 		return null
 	end
 	
 	/** \brief Matrix with only the rotational part. */
-	public func Matrix getRotation()
+	func Matrix getRotation()
 		return null
 	end
 	
@@ -243,27 +251,27 @@ fixed class Matrix
 	 * 
 	 * but is safe against 0-scaling. In such a case a 0-rotation matrix is created.
 	 */
-	public func Matrix normalize()
+	func Matrix normalize()
 		return null
 	end
 	
 	/** \brief Quaternion from upper 3x3 matrix. */
-	public func Quaternion toQuaternion()
+	func Quaternion toQuaternion()
 		return null
 	end
 	
 	/** \brief the double precision matrix. */
-	public func DMatrix4 toDMatrix4()
+	func DMatrix4 toDMatrix4()
 		return null
 	end
 	
 	/** \brief the double precision matrix. */
-	public func DMatrix toDMatrix()
+	func DMatrix toDMatrix()
 		return null
 	end
 	
 	/** \brief the single precision matrix. */
-	public func Matrix4 toMatrix4()
+	func Matrix4 toMatrix4()
 		return null
 	end
 	
@@ -274,7 +282,7 @@ fixed class Matrix
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type Matrix and components are equal.
 	*/
-	public func bool equals(Object other)
+	func bool equals(Object other)
 		return false
 	end
 	
@@ -282,7 +290,7 @@ fixed class Matrix
 	 * \brief Hash code for use as dictionary keys.
 	 * \details Implements Object.hashCode().
 	 */
-	public func int hashCode()
+	func int hashCode()
 		return 0
 	end
 	
@@ -290,7 +298,7 @@ fixed class Matrix
 	 * \brief String representation of matrix.
 	 * \details Implements Object.toString()
 	 */
-	public func String toString()
+	func String toString()
 		return null
 	end
 	
@@ -302,7 +310,7 @@ fixed class Matrix
 	 * \param precision Precision in digits in the range from 0 to 9 inclusive.
 	 * \throws EInvalidParam precision is less than 0 or larger than 9.
 	 */
-	public func String toString(int precision)
+	func String toString(int precision)
 		return null
 	end
 	/*@}*/
@@ -312,12 +320,12 @@ fixed class Matrix
 	/** \name File Handling */
 	/*@{*/
 	/** \brief Read matrix from a file reader. */
-	static public func Matrix readFromFile(FileReader reader)
+	static func Matrix readFromFile(FileReader reader)
 		return null
 	end
 	
 	/** \brief Write matrix to a file writer. */
-	public func void writeToFile(FileWriter writer)
+	func void writeToFile(FileWriter writer)
 	end
 	/*@}*/
 	
@@ -326,17 +334,17 @@ fixed class Matrix
 	/** \name Operators */
 	/*@{*/
 	/** \brief Sum of matrix with another Matrix. */
-	public func Matrix +(Matrix matrix)
+	func Matrix +(Matrix matrix)
 		return null
 	end
 	
 	/** \brief Difference of matrix and another Matrix. */
-	public func Matrix -(Matrix matrix)
+	func Matrix -(Matrix matrix)
 		return null
 	end
 	
 	/** \brief Matrix multiplied by a factor. */
-	public func Matrix *(float k)
+	func Matrix *(float k)
 		return null
 	end
 	
@@ -344,17 +352,17 @@ fixed class Matrix
 	 * \brief Matrix divided by a factor.
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
-	public func Matrix /(float k)
+	func Matrix /(float k)
 		return null
 	end
 	
 	/** \brief Matrix multiplied by another Matrix. */
-	public func Matrix *(Matrix matrix)
+	func Matrix *(Matrix matrix)
 		return null
 	end
 	
 	/** \brief Vector transformed by matrix. */
-	public func Vector *(Vector vector)
+	func Vector *(Vector vector)
 		return null
 	end
 	/*@}*/

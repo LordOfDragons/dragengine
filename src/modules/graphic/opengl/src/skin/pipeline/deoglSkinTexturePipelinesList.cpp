@@ -48,9 +48,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglSkinTexturePipelinesList::deoglSkinTexturePipelinesList( const deoglSkinTexture &texture ) :
-pTexture( texture )
-{
+deoglSkinTexturePipelinesList::deoglSkinTexturePipelinesList( const deoglSkinTexture &texture ){
 	pPipelines[ eptComponent ].TakeOver( new deoglSTPipelinesComponent( texture ) );
 	pPipelines[ eptBillboard ].TakeOver( new deoglSTPipelinesBillboard( texture ) );
 	pPipelines[ eptDecal ].TakeOver( new deoglSTPipelinesDecal( texture ) );

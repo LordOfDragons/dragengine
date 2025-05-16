@@ -224,6 +224,7 @@
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deClassPathes.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsVRPlaceholder.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsEngineException.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.h" />
@@ -442,6 +443,7 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsVRPlaceholder.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsEngineException.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.cpp" />
@@ -634,7 +636,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -RuntimeDir "$(SolutionDir)extern\dragonscript\dragonscript-1.4-vc64"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -RuntimeDir "$(SolutionDir)extern\dragonscript\dragonscript-1.4-vc64"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src"</Command>
@@ -662,7 +664,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -RuntimeDir "$(SolutionDir)extern\dragonscript\dragonscript-1.4-vc64"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -RuntimeDir "$(SolutionDir)extern\dragonscript\dragonscript-1.4-vc64"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src"</Command>
@@ -690,7 +692,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -RuntimeDir "$(SolutionDir)extern\dragonscript\dragonscript-1.4-vc64"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -RuntimeDir "$(SolutionDir)extern\dragonscript\dragonscript-1.4-vc64"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\scripting\dragonscript\src"</Command>

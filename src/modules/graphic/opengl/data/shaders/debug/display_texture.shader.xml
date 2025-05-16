@@ -11,10 +11,6 @@
 	<parameter name="pLevel"/> <!-- 4 -->
 	<parameter name="pLayer"/> <!-- 5 -->
 	
-	<attribute name="inPosition" target="0"/>
-	
-	<output name="outColor" target="0"/>
-	
-	<sourceCode unit="vertex">vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit="fragment">fragment/generic/output_texture.glsl</sourceCode>
+	<sourceCode unit="vertex">V Generic ScreenSpace</sourceCode>
+	<sourceCode unit="fragment">F Generic Output Texture</sourceCode>
 </shader>

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Reflection CubeMap 2 EquiMap</name>
+	<stage>vertex</stage>
+	<source>cubemap2equimap.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+</shaderSource>

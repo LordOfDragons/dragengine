@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>G DefRen Skin Depth</name>
+	<stage>geometry</stage>
+	<source>depth.geom.glsl</source>
+	
+	<define>BILLBOARD</define>
+	<define>DEPTH_DISTANCE</define>
+	<define>DEPTH_OFFSET</define>
+	<define>GS_INSTANCING</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE_CULLING</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+	
+	<!-- shared/defren/skin/ubo_special_parameters.glsl -->
+	<uniformBlock name='SpecialParameters' binding='3'/>
+	
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/skin/depth_offset.glsl -->
+	<define>DEPTH_DISTANCE</define>
+	<define>DEPTH_ORTHOGONAL</define>
+</shaderSource>

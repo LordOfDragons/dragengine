@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen GI Probe Extends</name>
+	<stage>compute</stage>
+	<source>probeExtends.comp.glsl</source>
+	
+	<shaderStorageBlock name='ProbeExtends' binding='0'/>
+	
+	<uniformBlock name='GIParameters' binding='1'/>
+	<uniformBlock name='GIProbeIndices' binding='2'/>
+	<uniformBlock name='GIProbePositions' binding='3'/>
+	<uniformBlock name='GIRayDirections' binding='4'/>
+	
+	<define>WITH_RAY_CACHE</define>
+</shaderSource>

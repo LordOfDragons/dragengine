@@ -564,7 +564,7 @@ void devkDevice::pDetectCapabilities(){
 
 void devkDevice::pLoadFunctions(){
 	#define DEVICE_LEVEL_VULKAN_FUNCTION(name) \
-		name = (PFN_##name)vkGetDeviceProcAddr(pDevice, #name); \
+		name = (PFN_##name)pvkGetDeviceProcAddr(pDevice, #name); \
 		if(! name){ \
 			DETHROW_INFO(deeInvalidAction, "Device function " #name " not found"); \
 		}

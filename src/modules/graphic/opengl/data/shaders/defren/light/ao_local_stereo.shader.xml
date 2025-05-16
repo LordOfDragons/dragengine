@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen AmbientOcclusion Local Stereo</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<parameter name='pTCTransform'/>
 	<parameter name='pSCTransform'/>
 	
@@ -11,11 +9,7 @@
 	<texture name='texDiffuse' target='1'/>
 	<texture name='texNormal' target='2'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outAO' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/light/ao_local.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
+	<sourceCode unit='fragment'>F DefRen AmbientOcclusion Local</sourceCode>
 </shader>

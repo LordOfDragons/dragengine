@@ -28,13 +28,13 @@
 #include <unistd.h>
 
 #include "deAndroidInput.h"
-#include "deaiDevice.h"
-#include "deaiDeviceAxis.h"
-#include "deaiDeviceButton.h"
-#include "deaiDeviceKeyboard.h"
-#include "deaiDeviceMouse.h"
-#include "deaiDeviceManager.h"
-#include "overlay/deaiOverlaySystem.h"
+#include "deainpDevice.h"
+#include "deainpDeviceAxis.h"
+#include "deainpDeviceButton.h"
+#include "deainpDeviceKeyboard.h"
+#include "deainpDeviceMouse.h"
+#include "deainpDeviceManager.h"
+#include "overlay/deainpOverlaySystem.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSAndroid.h>
@@ -49,6 +49,7 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -56,6 +57,9 @@ MOD_ENTRY_POINT_ATTR deBaseModule *AndroidInpCreateModule( deLoadableModule *loa
 #ifdef  __cplusplus
 }
 #endif
+#endif
+
+// #define DEBUG_LOG_INPUT
 
 
 // Entry point
@@ -119,20 +123,21 @@ bool deAndroidInput::Init(){
 		
 		pKeyStates = new bool[ 256 ];
 		
-		pDevices = new deaiDeviceManager( *this );
+		pDevices = new deainpDeviceManager( *this );
 		pDevices->UpdateDeviceList();
 		pDevices->LogDevices();
 		
 		pCenterPointer();
 		pIsListening = true;
 		
-		pOverlaySystem = new deaiOverlaySystem( *this );
+		pOverlaySystem = new deainpOverlaySystem( *this );
 		GetGameEngine()->GetGraphicSystem()->SetInputOverlayCanvas( pOverlaySystem->GetCanvas() );
 		
 		pInputTimer.Reset();
 		pElapsedTime = 0.0f;
 		
-	}catch( const deException & ){
+	}catch( const deException &e ){
+		LogException(e);
 		CleanUp();
 		if( pDevices ){
 			delete pDevices;
@@ -243,7 +248,7 @@ void deAndroidInput::SetFeedbackValue( int device, int feedback, float value ){
 }
 
 int deAndroidInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode ){
-	const deaiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
+	const deainpDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
 	if( device != rdevice.GetIndex() ){
 		return -1;
 	}
@@ -254,7 +259,7 @@ int deAndroidInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes k
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const deaiDeviceButton &button = rdevice.GetButtonAt( i );
+		const deainpDeviceButton &button = rdevice.GetButtonAt( i );
 		
 		if( button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority ){
 			bestButton = i;
@@ -266,7 +271,7 @@ int deAndroidInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes k
 }
 
 int deAndroidInput::ButtonMatchingKeyChar( int device, int character ){
-	const deaiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
+	const deainpDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
 	if( device != rdevice.GetIndex() ){
 		return -1;
 	}
@@ -286,7 +291,9 @@ void deAndroidInput::ProcessEvents(){
 	pElapsedTime = decMath::min( pInputTimer.GetElapsedTime(), 0.1f );
 	
 	// update content. this can produce input events for the game engine
-	pOverlaySystem->UpdateContent();
+	if(pOverlaySystem){
+		pOverlaySystem->UpdateContent();
+	}
 }
 
 void deAndroidInput::ClearEvents(){
@@ -296,7 +303,9 @@ void deAndroidInput::ClearEvents(){
 }
 
 void deAndroidInput::ScreenSizeChanged(){
-	pOverlaySystem->ScreenSizeChanged();
+	if(pOverlaySystem){
+		pOverlaySystem->ScreenSizeChanged();
+	}
 }
 
 void deAndroidInput::EventLoop(const android_input_buffer &inputBuffer){
@@ -485,7 +494,7 @@ void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
 			break;
 		}
 		
-		deaiDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
 		ab.SetPressed(true);
 		
 		AddKeyPress(pDevices->GetKeyboard()->GetIndex(), button,
@@ -506,7 +515,7 @@ void deAndroidInput::pProcessKeyEvent(const GameActivityKeyEvent &event){
 			break;
 		}
 		
-		deaiDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetKeyboard()->GetButtonAt(button);
 		ab.SetPressed(false);
 		
 		AddKeyRelease(pDevices->GetKeyboard()->GetIndex(), button,
@@ -545,8 +554,10 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 	case AMOTION_EVENT_ACTION_DOWN:{
 		const int pointerId = (int)event.pointers[0].id;
 		const decPoint position(pPointerPosition(event.pointers[0]));
+		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("DOWN: (%d,%d)", position.x, position.y);
-		if(pOverlaySystem->OnTouch(pointerId, position)){
+		#endif
+		if(pOverlaySystem && pOverlaySystem->OnTouch(pointerId, position)){
 			break;
 		}
 		
@@ -562,7 +573,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
 		ab.SetPressed(true);
 		
 		AddMousePress(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -570,7 +581,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		
 	case AMOTION_EVENT_ACTION_UP:{
 		const int pointerId = (int)event.pointers[0].id;
-		pOverlaySystem->OnRelease(pointerId);
+		if(pOverlaySystem){
+			pOverlaySystem->OnRelease(pointerId);
+		}
 		
 		if(pPointerMouse == -1){
 			break;
@@ -578,7 +591,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		
 		const int modifiers = pModifiersFromMetaState(event.metaState);
 		const decPoint position(pPointerPosition(event.pointers[0]));
+		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("UP: (%d,%d)", position.x, position.y);
+		#endif
 		const decPoint distance(position - pLastMouse);
 		
 		if(distance != decPoint()){
@@ -588,7 +603,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
 		ab.SetPressed(false);
 		
 		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -600,9 +615,13 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		for(i=0; i<event.pointerCount; i++){
 			const decPoint position(pPointerPosition(event.pointers[i]));
 			const int pointerId = (int)event.pointers[i].id;
+			#ifdef DEBUG_LOG_INPUT
 			LogInfoFormat("MOVE[%d:%d]: (%d,%d)", i, pointerId, position.x, position.y);
+			#endif
 			
-			pOverlaySystem->OnMove(pointerId, position);
+			if(pOverlaySystem){
+				pOverlaySystem->OnMove(pointerId, position);
+			}
 			
 			if(pointerId != pPointerMouse){
 				continue;
@@ -618,23 +637,39 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		}break;
 		
 	case AMOTION_EVENT_ACTION_HOVER_MOVE: // movement while not touching screen
-		LogInfo("AMOTION_EVENT_ACTION_HOVER_MOVE");
-		// these are absolute positions. need to track difference to previous values
-		// most probably has to use AMotionEvent_getHistoricalX, AMotionEvent_getHistoricalY
-		// and AMotionEvent_getHistorySize, whereas history exists only for MOVE not HOVER_MOVE
-		//engine->state.x = AMotionEvent_getX(event, 0);
-		//engine->state.y = AMotionEvent_getY(event, 0);
+		if(event.pointerCount > 0){
+			const decPoint position(pPointerPosition(event.pointers[0]));
+			#ifdef DEBUG_LOG_INPUT
+			LogInfoFormat("HOVER_MOVE: (%d,%d)", position.x, position.y);
+			#endif
+			
+			if(pOverlaySystem){
+				pOverlaySystem->OnMove(0, position);
+			}
+			
+			const decPoint distance(position - pLastMouse);
+			
+			if(distance != decPoint()){
+				const int modifiers = pModifiersFromMetaState(event.metaState);
+				AddMouseMove(pDevices->GetMouse()->GetIndex(), modifiers, distance, eventTime);
+			}
+			
+		}else{
+			#ifdef DEBUG_LOG_INPUT
+			LogInfo("HOVER_MOVE");
+			#endif
+		}
 		break;
 		
 	case AMOTION_EVENT_ACTION_CANCEL:
 		// gesture stopped. documentation claims this is the same as AMOTION_EVENT_ACTION_UP
 		// but no action should be done like in that case. no idea what this is supposed to mean
-		LogInfo("AMOTION_EVENT_ACTION_CANCEL");
+		LogInfo("CANCEL");
 		break;
 		
 	case AMOTION_EVENT_ACTION_OUTSIDE:
 		// movement outside of the screen. can this be called between up and down?
-		LogInfo("AMOTION_EVENT_ACTION_OUTSIDE");
+		LogInfo("OUTSIDE");
 		break;
 		
 	case AMOTION_EVENT_ACTION_POINTER_DOWN:{
@@ -646,8 +681,12 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		
 		const int pointerId = (int)event.pointers[pointerIndex].id;
 		const decPoint position(pPointerPosition(event.pointers[pointerIndex]));
+		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("POINTER-DOWN[%d:%d]: (%d,%d)", pointerIndex, pointerId, position.x, position.y);
-		pOverlaySystem->OnTouch(pointerId, position);
+		#endif
+		if(pOverlaySystem){
+			pOverlaySystem->OnTouch(pointerId, position);
+		}
 		}break;
 		
 	case AMOTION_EVENT_ACTION_POINTER_UP:{
@@ -658,7 +697,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		}
 		
 		const int pointerId = (int)event.pointers[pointerIndex].id;
-		pOverlaySystem->OnRelease(pointerId);
+		if(pOverlaySystem){
+			pOverlaySystem->OnRelease(pointerId);
+		}
 		
 		if(pointerId != pPointerMouse){
 			break;
@@ -666,7 +707,9 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		
 		const int modifiers = pModifiersFromMetaState(event.metaState);
 		const decPoint position(pPointerPosition(event.pointers[pointerIndex]));
+		#ifdef DEBUG_LOG_INPUT
 		LogInfoFormat("POINTER-UP[%d:%d]: (%d,%d)", pointerIndex, pointerId, position.x, position.y);
+		#endif
 		const decPoint distance(position - pLastMouse);
 		
 		if(distance != decPoint()){
@@ -676,7 +719,7 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		//const int buttonstate = AMotionEvent_getButtonState( &event );
 		//const int button = pDevices->GetMouse()->IndexOfButtonWithAICode( buttonstate );
 		const int button = 0; // always simulate left button
-		deaiDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
+		deainpDeviceButton &ab = pDevices->GetMouse()->GetButtonAt(button);
 		ab.SetPressed(false);
 		
 		AddMouseRelease(pDevices->GetMouse()->GetIndex(), button, modifiers, eventTime);
@@ -690,18 +733,24 @@ void deAndroidInput::pProcessMotionEventTouchScreen(const GameActivityMotionEven
 		// The pointer may or may not be down when this event is dispatched.
 		// This action is always delivered to the winder under the pointer, which
 		// may not be the window currently touched.
-		LogInfoFormat("AMOTION_EVENT_ACTION_SCROLL axisX=%f axisY=%f",
+		LogInfoFormat("SCROLL: axisX=%f axisY=%f",
 			event.pointers[0].axisValues[0], event.pointers[0].axisValues[1]);
+		
+		// note: on quest this is not called
 		break;
 		
 	case AMOTION_EVENT_ACTION_HOVER_ENTER:
 		// not touching but enternig window
-		LogInfo("AMOTION_EVENT_ACTION_HOVER_ENTER");
+		#ifdef DEBUG_LOG_INPUT
+		LogInfo("HOVER_ENTER");
+		#endif
 		break;
 		
 	case AMOTION_EVENT_ACTION_HOVER_EXIT:
 		// not touching but enternig window
-		LogInfo("AMOTION_EVENT_ACTION_HOVER_EXIT");
+		#ifdef DEBUG_LOG_INPUT
+		LogInfo("HOVER_EXIT");
+		#endif
 		break;
 		
 	default:
@@ -740,3 +789,32 @@ int deAndroidInput::pModifiersFromMetaState(int32_t metaState) const{
 	
 	return modifiers;
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deainpModuleInternal : public deInternalModule{
+public:
+	deainpModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("AndroidInput");
+		SetDescription("Processes input of Android Operating systems.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtInput);
+		SetDirectoryName("androidinput");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(AndroidInpCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deainpRegisterInternalModule(deModuleSystem *system){
+	return new deainpModuleInternal(system);
+}
+#endif

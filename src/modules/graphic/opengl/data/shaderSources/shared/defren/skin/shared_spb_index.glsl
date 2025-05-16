@@ -13,6 +13,17 @@
 // const int pSPBIndex = pSPBInstanceIndex[ gl_InstanceID / 4 ][ gl_InstanceID % 4 ];
 // 
 
+/*
+	<!-- shared/defren/skin/shared_spb_index.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='1'/>
+	<uniformBlock name='InstanceIndex' binding='4'/>
+	
+	<!-- system only
+	<define>SPB_SSBO_INSTANCE_ARRAY</define>
+	<define>SPB_INSTANCE_ARRAY_SIZE</define>
+	-->
+*/
+
 #ifdef SPB_SSBO_INSTANCE_ARRAY
 	#include "shared/defren/plan/render_task.glsl"
 	
@@ -21,7 +32,7 @@
 	};
 	
 #else
-	UBOLAYOUT uniform InstanceIndex{
+	UBOLAYOUT_BIND(4) uniform InstanceIndex{
 		#ifdef SPB_INSTANCE_ARRAY_SIZE
 		ivec4 pSPBInstanceIndex[ SPB_INSTANCE_ARRAY_SIZE ];
 		#else

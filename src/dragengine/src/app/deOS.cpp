@@ -74,25 +74,29 @@ void deOS::SetAppActive( bool active ){
 ////////////
 
 deOSUnix *deOS::CastToOSUnix(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 deOSConsole *deOS::CastToOSConsole(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 deOSWindows *deOS::CastToOSWindows(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 deOSBeOS *deOS::CastToOSBeOS(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }
 
 deOSAndroid *deOS::CastToOSAndroid(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
+}
+
+deOSWebWasm *deOS::CastToOSWebWasm(){
+	DETHROW(deeInvalidParam);
 }
 
 deOSMacOS *deOS::CastToOSMacOS(){
-	DETHROW( deeInvalidParam );
+	DETHROW(deeInvalidParam);
 }

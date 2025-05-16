@@ -194,8 +194,11 @@ pListener(listener)
 	DEASSERT_NOTNULL(listener)
 }
 
-void deoglLightShader::cPrepareShader::CompileFinished(deoglShaderCompiled *compiled){
-	pShader.pShader->SetCompiled(compiled);
+void deoglLightShader::cPrepareShader::CompileFinished(deoglShaderProgram *program){
+	if(program && program->ready){
+		pShader.pShader->MoveCompiled(*program);
+		pShader.pShader->ready = true;
+	}
 	
 	try{
 		pListener->PrepareShaderFinished(pShader);
@@ -291,46 +294,36 @@ void deoglLightShader::PrepareShader(cShaderPreparedListener *listener){
 
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
-	// this shader parameter block will be optimized. the layout is adapted to
-	// the configuration used for this light shader
-	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(new deoglSPBlockUBO(pRenderThread)));
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
-	spb->SetParameterCount( pUsedInstanceUniformTargetCount );
+	spb->SetCompact(false);
+	spb->SetParameterCount(EIUT_COUNT);
 	
 	int i;
-	for( i=0; i<EIUT_COUNT; i++ ){
-		const int target = pInstanceUniformTargets[ i ];
-		if( target != -1 ){
-			spb->GetParameterAt( target ).SetAll(
-				vInstanceSPBParamDefs[ i ].dataType, vInstanceSPBParamDefs[ i ].componentCount,
-				vInstanceSPBParamDefs[ i ].vectorCount, vInstanceSPBParamDefs[ i ].arrayCount );
-		}
+	for(i=0; i<EIUT_COUNT; i++){
+		const sSPBParameterDefinition &pdef = vInstanceSPBParamDefs[i];
+		spb->GetParameterAt(i).SetAll(pdef.dataType, pdef.componentCount, pdef.vectorCount, pdef.arrayCount);
 	}
 	
 	spb->MapToStd140();
-	spb->SetBindingPoint( deoglLightShader::eubInstanceParameters );
+	spb->SetBindingPoint(deoglLightShader::eubInstanceParameters);
 	return spb;
 }
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
-	// this shader parameter block will be optimized. the layout is adapted to
-	// the configuration used for this light shader
-	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(new deoglSPBlockUBO(pRenderThread)));
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
-	spb->SetParameterCount( pUsedLightUniformTargetCount );
+	spb->SetCompact(false);
+	spb->SetParameterCount(ELUT_COUNT);
 	
 	int i;
-	for( i=0; i<ELUT_COUNT; i++ ){
-		const int target = pLightUniformTargets[ i ];
-		if( target != -1 ){
-			spb->GetParameterAt( target ).SetAll(
-				vLightSPBParamDefs[ i ].dataType, vLightSPBParamDefs[ i ].componentCount,
-				vLightSPBParamDefs[ i ].vectorCount, vLightSPBParamDefs[ i ].arrayCount );
-		}
+	for(i=0; i<ELUT_COUNT; i++){
+		const sSPBParameterDefinition &pdef = vLightSPBParamDefs[i];
+		spb->GetParameterAt(i).SetAll(pdef.dataType, pdef.componentCount, pdef.vectorCount, pdef.arrayCount);
 	}
 	
 	spb->MapToStd140();
-	spb->SetBindingPoint( deoglLightShader::eubLightParameters );
+	spb->SetBindingPoint(deoglLightShader::eubLightParameters);
 	return spb;
 }
 
@@ -370,38 +363,8 @@ void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 		InitShaderParameters();
 		
 		// create shader
-		pShader.TakeOver( new deoglShaderProgram( pRenderThread, pSources, defines ) );
-		
-		// add unit source codes from source files
-		if( ! pSources->GetPathVertexSourceCode().IsEmpty() ){
-			pShader->SetVertexSourceCode( smgr.GetUnitSourceCodeWithPath( pSources->GetPathVertexSourceCode() ) );
-			
-			if( ! pShader->GetVertexSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Light Shader: Vertex source '%s' not found",
-					pSources->GetPathVertexSourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		if( ! pSources->GetPathGeometrySourceCode().IsEmpty() ){
-			pShader->SetGeometrySourceCode( smgr.GetUnitSourceCodeWithPath( pSources->GetPathGeometrySourceCode() ) );
-			
-			if( ! pShader->GetGeometrySourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Light Shader: Geometry source '%s' not found",
-					pSources->GetPathGeometrySourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		if( ! pSources->GetPathFragmentSourceCode().IsEmpty() ){
-			pShader->SetFragmentSourceCode( smgr.GetUnitSourceCodeWithPath( pSources->GetPathFragmentSourceCode() ) );
-			
-			if( ! pShader->GetFragmentSourceCode() ){
-				pRenderThread.GetLogger().LogErrorFormat( "Light Shader: Fragment source '%s' not found",
-					pSources->GetPathFragmentSourceCode().GetString() );
-				DETHROW( deeInvalidParam );
-			}
-		}
+		pShader.TakeOver(new deoglShaderProgram(pRenderThread, pSources, defines));
+		smgr.ResolveProgramUnits(pShader);
 		
 		// cache id
 		decStringList cacheIdParts, cacheIdComponents;
@@ -428,7 +391,7 @@ void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 			smgr.GetLanguage()->CompileShaderAsync(pShader, new cPrepareShader(*this, listener));
 			
 		}else{
-			pShader->SetCompiled(smgr.GetLanguage()->CompileShader(pShader));
+			smgr.GetLanguage()->CompileShader(pShader);
 		}
 		/*
 		if( pConfig.GetShaderMode() == deoglLightShaderConfig::esmGeometry ){
@@ -848,6 +811,13 @@ void deoglLightShader::UpdateUniformTargets(){
 		}
 	}
 	
+	// shared parameter block support. re-map since order is fixed
+	for(i=0; i<EIUT_COUNT; i++){
+		if(pInstanceUniformTargets[i] != -1){
+			pInstanceUniformTargets[i] = i;
+		}
+	}
+	
 	// light parameters. this block is guaranteed to work across all possible shader
 	// configurations for a specific light. thus only parameters which depend on the
 	// light configuration are used
@@ -871,13 +841,17 @@ void deoglLightShader::UpdateUniformTargets(){
 		pLightUniformTargets[ elutLightSpotBase ] = pUsedLightUniformTargetCount++;
 		pLightUniformTargets[ elutLightSpotExponent ] = pUsedLightUniformTargetCount++;
 	}
+	
+	// shared parameter block support. re-map since order is fixed
+	for(i=0; i<ELUT_COUNT; i++){
+		if(pLightUniformTargets[i] != -1){
+			pLightUniformTargets[i] = i;
+		}
+	}
 }
 
 void deoglLightShader::InitShaderParameters(){
-	deoglShaderBindingList &uniformBlockList = pSources->GetUniformBlockList();
 	deoglShaderBindingList &textureList = pSources->GetTextureList();
-	deoglShaderBindingList &inputList = pSources->GetAttributeList();
-	deoglShaderBindingList &outputList = pSources->GetOutputList();
 	decStringList &parameterList = pSources->GetParameterList();
 	int i;
 	
@@ -900,34 +874,4 @@ void deoglLightShader::InitShaderParameters(){
 			parameterList.Add( vLightUniformTargetNames[ i ] );
 		}
 	}
-	
-	// inputs
-	if( pConfig.GetLightMode() == deoglLightShaderConfig::elmParticle ){
-		inputList.Add( "inParticle0", 0 );
-		inputList.Add( "inParticle1", 1 );
-		inputList.Add( "inParticle2", 2 ); // unused but does not hurt to define it
-		inputList.Add( "inParticle3", 3 );
-		/*
-		if( pConfig.GetParticleMode() == deoglLightShaderConfig::epmBeam ){
-			inputList.Add( "inParticle4", 4 );
-		}
-		*/
-		
-	}else{
-		inputList.Add( "inPosition", 0 );
-	}
-	
-	// outputs
-	outputList.Add( "outColor", 0 );
-	if( ! pConfig.GetGIRay() ){
-		outputList.Add( "outLuminance", 1 );
-	}
-	if( pConfig.GetSubSurface() ){
-		outputList.Add( "outSubSurface", 2 );
-	}
-	
-	// uniform blocks
-	uniformBlockList.Add( "RenderParameters", eubRenderParameters );
-	uniformBlockList.Add( "InstanceParameters", eubInstanceParameters );
-	uniformBlockList.Add( "LightParameters", eubLightParameters );
 }

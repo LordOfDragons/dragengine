@@ -164,7 +164,7 @@ class ECPSkin extends ElementClassProperty implements ResourceListener
 				return Skin.new(value)
 				
 			catch Exception e
-				throw ELoadResourceFailed.new(value, eclass.getClassname())
+				throw ELoadResourceFailed.new(value, eclass.getClassname(), e)
 			end
 		end
 	end

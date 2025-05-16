@@ -30,6 +30,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -53,7 +54,7 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElementClass extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       var ECBehaviorStateMachine smbehavior = ECBehaviorStateMachine.new(this)
  *       smbehavior.getPath().setValue("/content/myBehavior.desm")
  *       
@@ -71,26 +72,26 @@ pin Dragengine.Utils
  *       class Factory implements ECBehaviorTwoStateAnimated.ActionConditionFactory
  *          public var ECBehaviorStateMachine stateMachine
  *          
- *          public func new(ECBehaviorStateMachine stateMachine)
- *             this.stateMachine = stateMachine
+ *          func new(ECBehaviorStateMachine stateMachine)
+ *             stateMachine = stateMachine
  *          end
  *          
- *          public func ECBehaviorTwoStateAnimated.Listener createListener(ECBehaviorTwoStateAnimated.Instance instance)
+ *          func ECBehaviorTwoStateAnimated.Listener createListener(ECBehaviorTwoStateAnimated.Instance instance)
  *             return MyEventListener.new(stateMachine.instance(instance.getElement()))
  *          end
  *      end
  *      
  *      public var ECBehaviorStateMachine.Instance stateMachine
  *      
- *      public func new(ECBehaviorStateMachine.Instance stateMachine)
- *         this.stateMachine = stateMachine
+ *      func new(ECBehaviorStateMachine.Instance stateMachine)
+ *         stateMachine = stateMachine
  *      end
  *      
- *      public func void stopActivate(ECBehaviorTwoStateAnimated.Instance instance)
+ *      func void stopActivate(ECBehaviorTwoStateAnimated.Instance instance)
  *         stateMachine.runEvent("animated activated")
  *      end
  *      
- *      public func void stopDeactivate(ECBehaviorTwoStateAnimated.Instance instance)
+ *      func void stopDeactivate(ECBehaviorTwoStateAnimated.Instance instance)
  *         stateMachine.runEvent("animated deactivated")
  *      end
  *   end
@@ -108,7 +109,7 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElementClass extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       var ECBehaviorStateMachine smSpecific = ECBehaviorStateMachine.new(this, "specific")
  *       smSpecific.getPath().setValue("/content/mySpecificBehavior.desm")
  *       
@@ -150,23 +151,23 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElementClass extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       var ECBehaviorStateMachine smbehavior = ECBehaviorStateMachine.new(this)
  *       smbehavior.getPath().setValue("/content/mySpecificBehavior.desm")
  *       
  *       // add factory to create actions and conditions later on. this example uses
  *       // a code block for simplicity. using classes implementing ActionConditionFactory
  *       // is preferred since it allows to reuse factories across element classes.
- *       smbehavior.setActionConditionFactory( block ECBehaviorStateMachine.Instance instance
+ *       smbehavior.setActionConditionFactory(block ECBehaviorStateMachine.Instance instance
  *          // add condition evaluating to true if "player.insideZone" trigger is in fired state.
  *          // the condition can be used in the state machine using the name "player is inside zone".
- *          instance.setCondition("player is inside zone", SMConditionTrigger.new( \
+ *          instance.setCondition("player is inside zone", SMConditionTrigger.new(\
  *             "player.insideZone", SMConditionTrigger.TestMode.fired))
  *          
  *          // add action pulsing (fire and immediately reset) "player.damage" trigger.
  *          // the action can be run in the state machine using the name "hurt playe".
  *          instance.setAction("hurt player", SMActionTrigger.new("player.damage", SMActionTrigger.Action.pulse))
- *       end )
+ *       end)
  *    end
  * end
  * \endcode
@@ -180,24 +181,24 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	/** \brief Factory assigining actions and conditions to state machine. */
 	interface ActionConditionFactory
 		/** \brief Assign actions and conditions to state machine. */
-		func void setActionsConditions( Instance instance )
+		func void setActionsConditions(Instance instance)
 	end
 	
 	/** \brief Factory assigining actions and conditions to state machine using a block. */
 	class BlockActionConditionFactory implements ActionConditionFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter. */
-		public func new( Block factoryBlock )
+		func new(Block factoryBlock)
 			if factoryBlock == null
 				throw ENullPointer.new()
 			end
-			this.pBlock = factoryBlock
+			pBlock = factoryBlock
 		end
 		
 		/** \brief Assign actions and conditions to state machine. */
-		public func void setActionsConditions( Instance instance )
-			this.pBlock.run( instance )
+		func void setActionsConditions(Instance instance)
+			pBlock.run(instance)
 		end
 	end
 	
@@ -210,14 +211,17 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorStateMachine'/>
+	 * <behavior type='ECBehaviorStateMachine'>
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
+	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
 	 * <behavior type='ECBehaviorStateMachine' id='second'/>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -229,7 +233,10 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorStateMachine behavior = ECBehaviorStateMachine.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "stateMachine", id)
 			return behavior
 		end
@@ -237,239 +244,413 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	
 	
 	/** \brief Behavior instance. */
-	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorStateMachine pECBehavior
-		private var StateMachine pStateMachine
-		private var SMContext pContext
+	class Instance extends DefaultECBehaviorInstance implements BehaviorPostInit
+		/**
+		 * \brief Behavior tree action "stateMachine{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				var Object value
+				
+				if parameters.has("reset")
+					pInstance.getContext().reset()
+				end
+				
+				value = parameters.getAt("state", null)
+				if value != null
+					var SMState state = pInstance.getStateMachine().getStateAt(value cast String)
+					if state == null
+						return BTResult.failure
+					end
+					pInstance.getContext().setCurrentState(state)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "stateMachine{(id)}.event".
+		 * \version 1.26
+		 */
+		private class BTAEvent implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				pInstance.runEvent(parameters.getAt("id") cast String)
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "stateMachine{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck implements BTAction, BTCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateCondition(BTContext context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var SMState state = pInstance.getContext().getCurrentState()
+				var String stateid = state.getID()
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "state", null)
+				if value != null
+					result &= stateid.equals(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.not", null)
+				if value != null
+					result &= not stateid.equals(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.starts", null)
+				if value != null
+					result &= stateid.startsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.starts.not", null)
+				if value != null
+					result &= not stateid.startsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.ends", null)
+				if value != null
+					result &= stateid.endsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.ends.not", null)
+				if value != null
+					result &= not stateid.endsWith(value cast String)
+				end
+				
+				value = parameters.getAt(prefix + "state.contains", null)
+				if value != null
+					result &= stateid.findString(value cast String) != -1
+				end
+				
+				value = parameters.getAt(prefix + "state.contains.not", null)
+				if value != null
+					result &= stateid.findString(value cast String) == -1
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorStateMachine pECBehavior
+		var StateMachine pStateMachine
+		var SMContext pContext
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorStateMachine ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorStateMachine ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			setRequiresEnterFrame(true)
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			this.pContext = null
-			this.pStateMachine = null
+		func void dispose()
+			pContext = null
+			pStateMachine = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pStateMachine = this.loadStateMachine( stub )
-			if this.pStateMachine == null
-				return
+		func void init(StubElement stub)
+			pStateMachine = loadStateMachine(stub)
+			if pStateMachine == null
+				pStateMachine = StateMachine.newEmpty()
 			end
 			
-			this.pContext = this.createContext( stub, this.pStateMachine )
+			pContext = createContext(stub, pStateMachine)
 			if BaseGameApp.getApp() != null
-				this.pContext.setConsole( BaseGameApp.getApp().getConsole() )
+				pContext.setConsole(BaseGameApp.getApp().getConsole())
 			end
 			
-			this.pECBehavior.setActionsConditions( this )
+			var String debug = pECBehavior.getDebug().getValueOrNull(stub)
+			if debug != null
+				pContext.setLoggingName(debug)
+				pContext.setLogTransitions(true)
+				pContext.setLogStateChanges(true)
+				pContext.setLogActions(true)
+			end
+			
+			pECBehavior.setActionsConditions(this)
+			
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "set", BTASet.new(this))
+				c.setAction(pnp + "event", BTAEvent.new(this))
+				
+				var String name = pnp + "check"
+				var BTACheck btacheck = BTACheck.new(this, pnp)
+				c.setAction(name, btacheck)
+				c.setCondition(name, btacheck)
+			end
+			
+			element.registerPostInit(this)
+		end
+		
+		func void postInit(StubElement stub)
+			runEvent("init")
 		end
 		
 		/** \brief Load state machine. */
-		protected func StateMachine loadStateMachine( StubElement stub )
-			return this.pECBehavior.getStateMachine().getStateMachine( stub, this.getElement().getClass() )
+		protected func StateMachine loadStateMachine(StubElement stub)
+			return pECBehavior.getStateMachine().getStateMachine(stub, getElement().getClass())
 		end
 		
 		/** \brief Create context. */
-		protected func SMContext createContext( StubElement stub, StateMachine stateMachine )
-			return SMContext.new( stateMachine )
+		protected func SMContext createContext(StubElement stub, StateMachine stateMachine)
+			return SMContext.new(stateMachine)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorStateMachine getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorStateMachine getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief State machine or null if not loaded. */
-		public func StateMachine getStateMachine()
-			return this.pStateMachine
+		func StateMachine getStateMachine()
+			return pStateMachine
 		end
 		
-		/** \brief Context or null if state machine is null. */
-		public func SMContext getContext()
-			return this.pContext
+		/** \brief Context. */
+		func SMContext getContext()
+			return pContext
 		end
 		
 		
 		
 		/**
 		 * \brief Run event on state machine.
-		 * 
-		 * Does nothing if no context is present.
 		 */
-		public func void runEvent( String event )
-			if this.pContext != null
-				this.pContext.runEvent( event )
-			end
+		func void runEvent(String event)
+			pContext.runEvent(event)
 		end
 		
 		/**
 		 * \brief Reset state machine to initial state.
-		 * 
-		 * Does nothing if no context is present.
 		 */
 		protected func void reset()
-			if this.pContext != null
-				this.pContext.reset()
-			end
+			pContext.reset()
 		end
 		
 		/**
 		 * \brief Set action to state machine.
-		 * 
-		 * Does nothing if no context is present.
 		 */
-		public func void setAction( String name, SMAction action )
-			if this.pContext != null
-				this.pContext.setAction( name, action )
-			end
+		func void setAction(String name, SMAction action)
+			pContext.setAction(name, action)
 		end
 		
 		/**
 		 * \brief Set action to state machine using block.
 		 * 
 		 * Block receives arguments SMContext context and Dictionary parameters.
-		 * 
-		 * Does nothing if no context is present.
 		 */
-		public func void setAction( String name, Block actionBlock )
-			if this.pContext != null
-				this.pContext.setAction( name, actionBlock )
-			end
+		func void setAction(String name, Block actionBlock)
+			pContext.setAction(name, actionBlock)
 		end
 		
 		/**
 		 * \brief Set condition to state machine.
-		 * 
-		 * Does nothing if no context is present.
 		 */
-		public func void setCondition( String name, SMCondition condition )
-			if this.pContext != null
-				this.pContext.setCondition( name, condition )
-			end
+		func void setCondition(String name, SMCondition condition)
+			pContext.setCondition(name, condition)
 		end
 		
 		/**
 		 * \brief Set condition to state machine using block.
 		 * 
 		 * Block receives arguments SMContext context and Dictionary parameters and returns bool.
-		 * 
-		 * Does nothing if no context is present.
 		 */
-		public func void setCondition( String name, Block conditionBlock )
-			if this.pContext != null
-				this.pContext.setCondition( name, conditionBlock )
-			end
+		func void setCondition(String name, Block conditionBlock)
+			pContext.setCondition(name, conditionBlock)
+		end
+		
+		
+		
+		func void addToGameWorld()
+			runEvent("addToGameWorld")
+		end
+		
+		func void removeFromGameWorld()
+			runEvent("removeFromGameWorld")
+		end
+		
+		func void enterFrame()
+			runEvent("enterFrame")
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
 				
-				if flags.getAt( 0 )
-					if this.pContext == null
-						throw EInvalidParam.new( "state machine missing" )
-					end
-					this.pContext.readFromFile( env, reader )
+				if flags.getAt(0)
+					pContext.readFromFile(env, reader)
 				end
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 1 )
-			flags.setAt( 0, this.pContext != null )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, true)
+			flags.writeToFile(writer)
 			
-			if this.pContext != null
-				this.pContext.writeToFile( env, writer )
-			end
+			pContext.writeToFile(env, writer)
 		end
 	end
 	
 	
 	
-	private var ECPStateMachine pStateMachine
-	private var Array pActionConditionFactories
+	var ECPStateMachine pStateMachine
+	var ECPString pDebug
+	var Array pActionConditionFactories
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) \
-	this( eclass, BaseGameApp.getApp().getLoaders(), "" )
+	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(), "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String id ) \
-	this( eclass, BaseGameApp.getApp().getLoaders(), id )
+	func new(BehaviorElementClass eclass, String id)\
+	this(eclass, BaseGameApp.getApp().getLoaders(), id)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String id, String prefix ) \
-	this( eclass, BaseGameApp.getApp().getLoaders(), id, prefix )
+	func new(BehaviorElementClass eclass, String id, String prefix)\
+	this(eclass, BaseGameApp.getApp().getLoaders(), id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, Loaders loaders ) this( eclass, loaders, "" )
+	func new(BehaviorElementClass eclass, Loaders loaders) this(eclass, loaders, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, Loaders loaders, String id ) \
-	this( eclass, loaders, id, id.empty() if "stateMachine" else "stateMachine(" + id + ")" )
+	func new(BehaviorElementClass eclass, Loaders loaders, String id)\
+	this(eclass, loaders, id, id.empty() if "stateMachine" else "stateMachine(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, Loaders loaders, String id, String subID ) \
-	this( eclass, loaders, id, subID, subID + "." )
+	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID)\
+	this(eclass, loaders, id, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, Loaders loaders, String id, String subID, \
-	String prefix ) super( eclass, id )
-		this.pStateMachine = ECPStateMachine.new( prefix + "path", loaders.getStateMachine() )
-		eclass.addProperty( this.pStateMachine )
+	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID, String prefix)\
+	super(eclass, id)
+		pPrefix = prefix
 		
-		this.pActionConditionFactories = Array.new()
+		eclass.addProperty(pStateMachine = ECPStateMachine.new(prefix + "path", loaders.getStateMachine()))
+		eclass.addProperty(pDebug = ECPString.new(prefix + "debug", null))
 		
-		eclass.addBehavior( this )
+		pActionConditionFactories = Array.new()
+		
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pActionConditionFactories = null
+	func void dispose()
+		pActionConditionFactories = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief State machine. */
-	public func ECPStateMachine getStateMachine()
-		return this.pStateMachine
+	func ECPStateMachine getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Debug mode prefix.
+	 * \version 1.26
+	 * 
+	 * If not empty string enables debug mode with prefix to locate log messages easily.
+	 */
+	func ECPString getDebug()
+		return pDebug
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	/** \brief Add action and condition factory. */
-	public func void addActionConditionFactory( ActionConditionFactory factory )
+	func void addActionConditionFactory(ActionConditionFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
-		this.pActionConditionFactories.add( factory )
+		pActionConditionFactories.add(factory)
 	end
 	
 	/**
@@ -477,27 +658,27 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * 
 	 * This is a convenience method for using BlockActionConditionFactory.
 	 */
-	public func void addActionConditionFactory( Block factory )
-		this.addActionConditionFactory( BlockActionConditionFactory.new( factory ) )
+	func void addActionConditionFactory(Block factory)
+		addActionConditionFactory(BlockActionConditionFactory.new(factory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ActionConditionFactory. */
-	public func void forEachActionConditionFactory( Block ablock )
-		this.pActionConditionFactories.forEach( ablock )
+	func void forEachActionConditionFactory(Block ablock)
+		pActionConditionFactories.forEach(ablock)
 	end
 	
 	/** \brief Assign actions and conditions to behavior instance. */
-	public func void setActionsConditions( Instance instance )
-		this.pActionConditionFactories.forEach( block ActionConditionFactory each
-			each.setActionsConditions( instance )
-		end )
+	func void setActionsConditions(Instance instance)
+		pActionConditionFactories.forEach(block ActionConditionFactory each
+			each.setActionsConditions(instance)
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -508,10 +689,10 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorStateMachine getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorStateMachine each
+	static func ECBehaviorStateMachine getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorStateMachine each
 			return true
-		end ) cast ECBehaviorStateMachine
+		end) cast ECBehaviorStateMachine
 	end
 	
 	/**
@@ -520,10 +701,10 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorStateMachine with specific identifier.
 	 */
-	static public func ECBehaviorStateMachine getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorStateMachine each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorStateMachine
+	static func ECBehaviorStateMachine getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorStateMachine each
+			return each.getID().equals(id)
+		end) cast ECBehaviorStateMachine
 	end
 	
 	/**
@@ -532,10 +713,10 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * Returns list contains ECBehaviorStateMachine behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorStateMachine each
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorStateMachine each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -547,10 +728,10 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * of type ECBehaviorStateMachine.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -559,10 +740,10 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorStateMachine.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -571,16 +752,16 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * Returns list contains ECBehaviorStateMachine.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

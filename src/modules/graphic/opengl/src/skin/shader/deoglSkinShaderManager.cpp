@@ -41,26 +41,26 @@
 //////////////////////////
 
 static const char *vUnitSourceCodePath[ deoglSkinShaderManager::UnitSourceCodePathCount ] = {
-	"vertex/defren/skin/geometry.glsl", // euscpVertexGeometry
-	"vertex/defren/skin/depth.glsl", // euscpVertexDepth
-	"vertex/defren/skin/particle.glsl", // euscpVertexParticle
-	"vertex/defren/skin/passthrough.glsl", // euscpVertexPassThrough
-	"vertex/defren/gi/materialMap.glsl", // euscpGIMaterialMap
+	"V DefRen Skin Geometry", // euscpVertexGeometry
+	"V DefRen Skin Depth", // euscpVertexDepth
+	"V DefRen Skin Particle", // euscpVertexParticle
+	"V DefRen Skin PassThrough", // euscpVertexPassThrough
+	"V DefRen GI Material Map", // euscpGIMaterialMap
 	
-	"geometry/defren/skin/geometry.glsl", // euscpGeometryGeometry
-	"geometry/defren/skin/depth.glsl", // euscpGeometryDepth
-	"geometry/defren/skin/particle.glsl", // euscpGeometryParticle
-	"geometry/defren/skin/particle_ribbon.glsl", // euscpGeometryParticleRibbon
+	"G DefRen Skin Geometry", // euscpGeometryGeometry
+	"G DefRen Skin Depth", // euscpGeometryDepth
+	"G DefRen Skin Particle", // euscpGeometryParticle
+	"G DefRen Skin Particle Ribbon", // euscpGeometryParticleRibbon
 	
-	"tessctrl/defren/skin/geometry.glsl", // euscpTessControlGeometry
-	"tessctrl/defren/skin/depth.glsl", // euscpTessControlDepth
+	"TC DefRen Geometry Depth", // euscpTessControlGeometry
+	"TC DefRen Skin Depth", // euscpTessControlDepth
 	
-	"tesseval/defren/skin/geometry.glsl", // euscpTessEvalGeometry
-	"tesseval/defren/skin/depth.glsl", // euscpTessEvalDepth
+	"TE DefRen Skin Geometry", // euscpTessEvalGeometry
+	"TE DefRen Skin Depth", // euscpTessEvalDepth
 	
-	"fragment/defren/skin/geometry.glsl", // euscpFragmentGeometry
-	"fragment/defren/skin/depth.glsl", // euscpFragmentDepth
-	"fragment/defren/gi/materialMap.glsl" // euscpGIMaterialMap
+	"F DefRen Skin Geometry", // euscpFragmentGeometry
+	"F DefRen Skin Depth", // euscpFragmentDepth
+	"F DefRen GI Material Map" // euscpGIMaterialMap
 };
 
 

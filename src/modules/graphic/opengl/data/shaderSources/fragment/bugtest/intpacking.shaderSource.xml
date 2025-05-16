@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F Test Integer Packing</name>
+	<stage>fragment</stage>
+	<source>intpacking.frag.glsl</source>
+	
+	<output name='outPacked' location='0'/>
+</shaderSource>

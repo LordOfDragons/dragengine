@@ -254,43 +254,44 @@ void deoglLoaderThread::pInit(){
 	deoglRTContext &context = pRenderThread.GetContext();
 	#endif
 	
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-		OGLX_CHECK( pRenderThread, glXMakeCurrent( context.GetDisplay(),
-			context.GetActiveRRenderWindow()->GetWindow(), context.GetLoaderContext() ) );
-	#endif
+	#ifdef OS_UNIX_X11
+	OGLX_CHECK( pRenderThread, glXMakeCurrent( context.GetDisplay(),
+		context.GetActiveRRenderWindow()->GetWindow(), context.GetLoaderContext() ) );
 	
-	#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 	DEASSERT_TRUE(eglMakeCurrent(context.GetDisplay(), context.GetLoaderSurface(),
 		context.GetLoaderSurface(), context.GetLoaderContext()) == EGL_TRUE)
-	#endif
 	
-	#ifdef OS_MACOS
+#elif defined OS_WEBWASM
+	DEASSERT_TRUE(emscripten_webgl_make_context_current(
+		context.GetLoaderContext()) == EMSCRIPTEN_RESULT_SUCCESS)
+	
+#elif defined OS_MACOS
 	pGLContextMakeCurrent( context.GetActiveRRenderWindow()->GetView() );
-	#endif
 	
-	#ifdef OS_W32
+#elif defined OS_W32
 	if( ! wglMakeCurrent( context.GetActiveRRenderWindow()->GetWindowDC(), context.GetLoaderContext() ) ){
 		pRenderThread.GetLogger().LogErrorFormat( "wglMakeCurrent failed (%s:%i): error=0x%lx\n",
 			__FILE__, __LINE__, GetLastError() );
 		DETHROW_INFO( deeInvalidAction, "wglMakeCurrent failed" );
 	}
-	#endif
+#endif
 }
 
 void deoglLoaderThread::pCleanUp(){
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-		OGLX_CHECK( pRenderThread, glXMakeCurrent( pRenderThread.GetContext().GetDisplay(), None, nullptr ) );
-	#endif
+#ifdef OS_UNIX_X11
+	OGLX_CHECK( pRenderThread, glXMakeCurrent( pRenderThread.GetContext().GetDisplay(), None, nullptr ) );
 	
-	#ifdef OS_ANDROID
-		eglMakeCurrent(pRenderThread.GetContext().GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-	#endif
+#elif defined OS_ANDROID
+	eglMakeCurrent(pRenderThread.GetContext().GetDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	
-	#ifdef OS_MACOS
-		pGLContextMakeCurrent( nullptr );
-	#endif
+#elif defined OS_WEBWASM
+	emscripten_webgl_make_context_current(0);
 	
-	#ifdef OS_W32
-		wglMakeCurrent( NULL, NULL );
-	#endif
+#elif defined OS_MACOS
+	pGLContextMakeCurrent( nullptr );
+	
+#elif defined OS_W32
+	wglMakeCurrent( NULL, NULL );
+#endif
 }

@@ -2,17 +2,9 @@
 <shader>
 	<name>DefRen Occlusion OccMap</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	<uniformBlock name='OcclusionMeshParameters' target='2'/>
-	<uniformBlock name='InstanceIndex' target='4'/>
-	
-	<shaderStorageBlock name='OcclusionMeshParametersSSBO' target='0'/>
-	
 	<parameter name='pSPBInstanceIndexBase'/>
 	<parameter name='pDrawIDOffset'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/occlusion/occmap.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/occlusion/occmap.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Occlusion OccMap</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Occlusion OccMap</sourceCode>
 </shader>

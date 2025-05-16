@@ -90,6 +90,12 @@ public:
 	virtual void StopRuntime();
 	
 	/**
+	 * \brief VR runtime is running.
+	 * \version 1.26
+	 */
+	virtual bool IsRuntimeRunning();
+	
+	/**
 	 * Set camera to render on head mounted display.
 	 * 
 	 * If set to nullptr fades back to safe scene as defined by VR Runtime.

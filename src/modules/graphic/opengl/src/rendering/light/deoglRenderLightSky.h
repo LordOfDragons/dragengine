@@ -47,7 +47,7 @@ class deoglSkyLayerGICascade;
 class deoglRenderLightSky : public deoglRenderLightBase{
 private:
 	deoglCollideList *pColList2;
-	const deoglPipeline *pPipelineAO;
+	//const deoglPipeline *pPipelineAO;
 	const deoglPipeline *pPipelineClearDepth;
 	const deoglPipeline *pPipelineOccMesh;
 	

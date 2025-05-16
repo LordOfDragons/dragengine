@@ -42,12 +42,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *BRCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -202,3 +204,37 @@ void deCRBasic::LogTraceSubValues( const deErrorTraceValue &traceValue, const ch
 		LogTraceSubValues( *traceValue.GetSubValue( i ), indent );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class decrbModuleInternal : public deInternalModule{
+public:
+	decrbModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("BasicRecovery");
+		SetDescription("Provides basic crash recovery support using the FOX Toolkit. \
+Allows the user to restart failed systems and to change modules.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtCrashRecovery);
+		SetDirectoryName("basicrecovery");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(BRCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *decrbRegisterInternalModule(deModuleSystem *system){
+	return new decrbModuleInternal(system);
+}
+#endif

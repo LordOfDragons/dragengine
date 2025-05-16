@@ -43,12 +43,14 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *ModioCreateModule( deLoadableModule *loadableModule );
 #ifdef __cplusplus
 }
+#endif
 #endif
 
 
@@ -471,3 +473,36 @@ void deModio::pUpdateVFS(){
 		pSaveConfig();
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deModioModuleInternal : public deInternalModule{
+public:
+	deModioModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("Modio");
+		SetDescription("Provides access to services provided by Mod.io.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtService);
+		SetDirectoryName("modio");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(ModioCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deModioRegisterInternalModule(deModuleSystem *system){
+	return new deModioModuleInternal(system);
+}
+#endif

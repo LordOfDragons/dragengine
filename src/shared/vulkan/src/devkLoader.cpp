@@ -56,28 +56,28 @@ pLibHandle( NULL )
 		
 		// get function pointer query function
 		#ifdef OS_BEOS
-		if( get_image_symbol( pLibHandle, "vkGetInstanceProcAddr", B_SYMBOL_TYPE_TEXT, ( void** )&vkGetInstanceProcAddr ) != B_OK ){
-			vkGetInstanceProcAddr = NULL;
+		if( get_image_symbol( pLibHandle, "vkGetInstanceProcAddr", B_SYMBOL_TYPE_TEXT, ( void** )&pvkGetInstanceProcAddr ) != B_OK ){
+			pvkGetInstanceProcAddr = NULL;
 		}
-		if( get_image_symbol( pLibHandle, "vkGetDeviceProcAddr", B_SYMBOL_TYPE_TEXT, ( void** )&vkGetDeviceProcAddr ) != B_OK ){
-			vkGetDeviceProcAddr = NULL;
+		if( get_image_symbol( pLibHandle, "vkGetDeviceProcAddr", B_SYMBOL_TYPE_TEXT, ( void** )&pvkGetDeviceProcAddr ) != B_OK ){
+			pvkGetDeviceProcAddr = NULL;
 		}
 		#endif
 		
 		#ifdef HAS_LIB_DL
-		vkGetInstanceProcAddr = ( PFN_vkGetInstanceProcAddr )dlsym( pLibHandle, "vkGetInstanceProcAddr" );
-		vkGetDeviceProcAddr = ( PFN_vkGetDeviceProcAddr )dlsym( pLibHandle, "vkGetDeviceProcAddr" );
+		pvkGetInstanceProcAddr = ( PFN_vkGetInstanceProcAddr )dlsym( pLibHandle, "vkGetInstanceProcAddr" );
+		pvkGetDeviceProcAddr = ( PFN_vkGetDeviceProcAddr )dlsym( pLibHandle, "vkGetDeviceProcAddr" );
 		#endif
 		
 		#ifdef OS_W32
-		vkGetInstanceProcAddr = ( PFN_vkGetInstanceProcAddr )GetProcAddress( pLibHandle, "vkGetInstanceProcAddr" );
-		vkGetDeviceProcAddr = ( PFN_vkGetDeviceProcAddr )GetProcAddress( pLibHandle, "vkGetDeviceProcAddr" );
+		pvkGetInstanceProcAddr = ( PFN_vkGetInstanceProcAddr )GetProcAddress( pLibHandle, "vkGetInstanceProcAddr" );
+		pvkGetDeviceProcAddr = ( PFN_vkGetDeviceProcAddr )GetProcAddress( pLibHandle, "vkGetDeviceProcAddr" );
 		#endif
 		
-		if( ! vkGetInstanceProcAddr ){
+		if( ! pvkGetInstanceProcAddr ){
 			DETHROW_INFO( deeInvalidAction, "Function vkGetInstanceProcAddr not found" );
 		}
-		if( ! vkGetDeviceProcAddr ){
+		if( ! pvkGetDeviceProcAddr ){
 			DETHROW_INFO( deeInvalidAction, "Function vkGetDeviceProcAddr not found" );
 		}
 		
@@ -160,10 +160,10 @@ void devkLoader::pLoadVulkan(){
 }
 
 void devkLoader::pLoadFunctions(){
-	#define GLOBAL_LEVEL_VULKAN_FUNCTION( name ) \
-		name = ( PFN_##name )vkGetInstanceProcAddr( NULL, #name ); \
-		if( ! name ){ \
-			DETHROW_INFO( deeInvalidAction, "Function " #name " not found" ); \
+	#define GLOBAL_LEVEL_VULKAN_FUNCTION(name) \
+		p##name = (PFN_##name)pvkGetInstanceProcAddr(NULL, #name); \
+		if(!p##name){ \
+			DETHROW_INFO(deeInvalidAction, "Function " #name " not found"); \
 		}
 	
 	#include "devkFunctionNames.h"

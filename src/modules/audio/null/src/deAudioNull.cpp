@@ -37,12 +37,14 @@
 
 
 // Export Definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *NullAudioCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -169,3 +171,37 @@ deBaseAudioSynthesizerInstance *deAudioNull::CreateSynthesizerInstance( deSynthe
 deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain( deHeightTerrain& ){
 	return NULL;
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deanModuleInternal : public deInternalModule{
+public:
+	deanModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("NullAudio");
+		SetDescription("Outputs no audio.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAudio);
+		SetDirectoryName("null");
+		SetPriority(0);
+		SetIsFallback(true);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(NullAudioCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deanRegisterInternalModule(deModuleSystem *system){
+	return new deanModuleInternal(system);
+}
+#endif

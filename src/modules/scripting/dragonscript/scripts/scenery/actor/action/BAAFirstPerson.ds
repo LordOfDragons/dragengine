@@ -186,7 +186,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 		initPlayerInput()
 		initLocomotion()
 		
-		if isControlledByPlayer() 
+		if isControlledByPlayer()
 			initLocomotionPlayer()
 		end
 	end
@@ -245,7 +245,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * - updateLocomotionPost()
 	 */
 	func void postThink(float elapsed)
-		if projectToGround == null
+		if projectToGround == null or not projectToGround.getTouchesGround()
 			colliderAI.setGeometryFromCollider()
 		end
 		
@@ -302,7 +302,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 			playerInputMove.setAnalogMoveForwardBackwardSticky(-amount)
 			
 		else
-			playerInputMove.setAnalogMoveForwardBackward(-amount)
+			playerInputMove.addAnalogMoveForwardBackward(-amount)
 		end
 	end
 	
@@ -312,7 +312,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 			playerInputMove.setAnalogMoveLeftRightSticky(amount)
 			
 		else
-			playerInputMove.setAnalogMoveLeftRight(amount)
+			playerInputMove.addAnalogMoveLeftRight(amount)
 		end
 	end
 	
@@ -379,7 +379,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 			playerInputLook.setAnalogLookHorizontalSticky(-amount)
 			
 		else
-			playerInputLook.setAnalogLookHorizontal(-amount)
+			playerInputLook.addAnalogLookHorizontal(-amount)
 		end
 	end
 	
@@ -389,7 +389,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 			playerInputLook.setAnalogLookVerticalSticky(-amount)
 			
 		else
-			playerInputLook.setAnalogLookVertical(-amount)
+			playerInputLook.addAnalogLookVertical(-amount)
 		end
 	end
 	
@@ -550,6 +550,7 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 			colliderAI.setFromLocomotion(locomotion)
 			
 		else
+			colliderAI.setOrientationFromLocomotion(locomotion)
 			colliderAI.applyGravity(elapsed)
 			colliderAI.stopTurning()
 		end

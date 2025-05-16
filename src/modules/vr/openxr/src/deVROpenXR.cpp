@@ -66,12 +66,14 @@
 #include <dragengine/threading/deMutexGuard.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *OpenXRCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -371,6 +373,10 @@ void deVROpenXR::StopRuntime(){
 	}
 }
 
+bool deVROpenXR::IsRuntimeRunning(){
+	return pInstance != nullptr;
+}
+
 void deVROpenXR::SetCamera( deCamera *camera ){
 	if( pCamera == camera ){
 		return;
@@ -657,6 +663,10 @@ decPoint deVROpenXR::GetRenderSize(){
 }
 
 deBaseVRModule::eVRRenderFormat deVROpenXR::GetRenderFormat(){
+	if(pSession && pSession->GetSwapchainRightEye()){
+		return pSession->GetSwapchainRightEye()->GetVRRenderFormat();
+	}
+	
 	// WARNING
 	// 
 	// SteamVR has a huge problem. under windows their OpenXR implementation expects the
@@ -1062,3 +1072,32 @@ bool deVROpenXR::pBeginFrame(){
 		return false;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deoxrModuleInternal : public deInternalModule{
+public:
+	deoxrModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OpenXR");
+		SetDescription("OpenXR Support.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVR);
+		SetDirectoryName("openxr");
+		SetPriority(2);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(OpenXRCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deoxrRegisterInternalModule(deModuleSystem *system){
+	return new deoxrModuleInternal(system);
+}
+#endif

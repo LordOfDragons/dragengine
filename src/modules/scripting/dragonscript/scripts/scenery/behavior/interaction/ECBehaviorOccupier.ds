@@ -30,6 +30,8 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -65,15 +67,15 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Occupier claimed interaction spot. */
-		public func void spotClaimed(Instance instance, ECBehaviorInteractionSpot.Instance interactionSpot)
+		func void spotClaimed(Instance instance, ECBehaviorInteractionSpot.Instance interactionSpot)
 		end
 		
 		/** \brief Occupier released interaction spot. */
-		public func void spotReleased(Instance instance, ECBehaviorInteractionSpot.Instance interactionSpot)
+		func void spotReleased(Instance instance, ECBehaviorInteractionSpot.Instance interactionSpot)
 		end
 	end
 	
@@ -85,10 +87,10 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -96,7 +98,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -107,14 +109,26 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorOccupier'/>
+	 * <behavior type='ECBehaviorOccupier'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
 	 * <behavior type='ECBehaviorOccupier' id='second'/>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -126,8 +140,10 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorOccupier behavior = ECBehaviorOccupier.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "occupier", id)
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "occupier", id)
 			return behavior
 		end
 	end
@@ -136,25 +152,185 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorOccupier pECBehavior
-		private var ECBehaviorInteractionSpot.Instance pInteractionSpot
-		private var ElementResolver pElementResolver
-		private var Array pListeners
+		/**
+		 * \brief Behavior tree action/condition "occupier{(id)}.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var ECBehaviorInteractionSpot.Instance ispot = pInstance.getInteractionSpot()
+					if ispot == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(ispot)
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getInteractionSpot(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				value = parameters.getAt("claim", null)
+				if value != null
+					var ECBehaviorInteractionSpot.Instance ispot = getInteractionElementISpot(\
+						value, parameters.getAt("claim.id", ""))
+					if ispot == null or not ispot.canClaim(pInstance)
+						return BTResult.failure
+					end
+					
+					pInstance.release()
+					ispot.claim(pInstance)
+				end
+				
+				value = parameters.getAt("move", null)
+				if value != null
+					var ECBehaviorInteractionSpot.Instance ispot = pInstance.getInteractionSpot()
+					if ispot == null
+						return BTResult.failure
+					end
+					
+					var DVector position = ispot.getWorldMatrix().getPosition()
+					var ECBehaviorActorMover.Instance actorMover =\
+						ECBehaviorActorMover.getInstanceIn(pInstance.getElement())
+					
+					value = parameters.getAt("move.distance", null)
+					if value != null
+						actorMover.moveTo(position, (value cast String).toFloat())
+						
+					else
+						actorMover.moveTo(position)
+					end
+				end
+				
+				value = parameters.getAt("align", null)
+				if value != null
+					var ECBehaviorInteractionSpot.Instance ispot = pInstance.getInteractionSpot()
+					if ispot == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorAlignActor.Instance alignActor =\
+						ECBehaviorAlignActor.getInstanceIn(pInstance.getElement())
+					
+					alignActor.setTarget(ispot.getElement(), DVector.new(ispot.getPosition()),\
+						ispot.getOrientation().getEulerAngles().getY())
+					
+					if ispot.getLookAt() != null
+						alignActor.setLookAt(ispot.getLookAtWorld())
+					end
+					
+					alignActor.startAligning()
+				end
+				
+				if parameters.has("release")
+					pInstance.release()
+				end
+				
+				return BTResult.success
+			end
+			
+			func ECBehaviorInteractionSpot.Instance getInteractionElementISpot(Object id, Object ispotId)
+				var ECBehaviorInteractionElement.Instance ie =\
+					ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), id cast String)
+				if ie == null
+					return null
+				end
+				
+				var ECBehaviorInstance behavior = ie.getInteractionElementBehavior()
+				if behavior != null and behavior castable ECBehaviorInteractionSpot.Instance
+					return behavior cast ECBehaviorInteractionSpot.Instance
+				end
+				
+				var BehaviorElement element = ie.getInteractionElement()
+				if element == null
+					return null
+				end
+				
+				return ECBehaviorInteractionSpot.getInstanceIn(element, ispotId cast String)
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "occupier{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "occupying", null)
+				if value != null
+					result &= pInstance.isOccupying() == value.equals("true")
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getInteractionSpot(),\
+					parameters, prefix + "interact.", pInstance.getElement())
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorOccupier pECBehavior
+		var ECBehaviorInteractionSpot.Instance pInteractionSpot
+		var ElementResolver pElementResolver
+		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorOccupier ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorOccupier ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of claim spot. */
-		public func void dispose()
+		func void dispose()
 			release()
 			
 			pListeners = null
 			pElementResolver = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -162,14 +338,22 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorOccupier getECBehavior()
+		func ECBehaviorOccupier getECBehavior()
 			return pECBehavior
 		end
 		
@@ -177,14 +361,14 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		 * \brief Element resolver used during loading or \em null if not set.
 		 * \version 1.9
 		 */
-		public func ElementResolver getElementResolver()
+		func ElementResolver getElementResolver()
 			return pElementResolver
 		end
 		
 		
 		
 		/** \brief Occupied interaction spot or \em null. */
-		public func ECBehaviorInteractionSpot.Instance getInteractionSpot()
+		func ECBehaviorInteractionSpot.Instance getInteractionSpot()
 			return pInteractionSpot
 		end
 		
@@ -192,7 +376,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		 * \brief Set occupied interaction spot.
 		 * \warning For use by ECBehaviorInteractionSpot only.
 		 */
-		public func void setInteractionSpot(ECBehaviorInteractionSpot.Instance interactionSpot)
+		func void setInteractionSpot(ECBehaviorInteractionSpot.Instance interactionSpot)
 			if interactionSpot == pInteractionSpot
 				return
 			end
@@ -201,6 +385,9 @@ class ECBehaviorOccupier extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.spotReleased(this, pInteractionSpot)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "released")
+				end
 			end
 			
 			pInteractionSpot = interactionSpot
@@ -209,16 +396,19 @@ class ECBehaviorOccupier extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.spotClaimed(this, interactionSpot)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "claimed")
+				end
 			end
 		end
 		
 		/** \brief Element is occupying an interaction spot. */
-		public func bool isOccupying()
+		func bool isOccupying()
 			return pInteractionSpot != null
 		end
 		
 		/** \brief Element is not occupying an interaction spot. */
-		public func bool isNotOccupying()
+		func bool isNotOccupying()
 			return pInteractionSpot == null
 		end
 		
@@ -228,12 +418,12 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		 * \throws EInvalidParam Already occupying an interaction spot.
 		 * \throws EInvalidParam \em spot is not empty.
 		 */
-		public func void claim(ECBehaviorInteractionSpot.Instance spot)
+		func void claim(ECBehaviorInteractionSpot.Instance spot)
 			spot.claim(this)
 		end
 		
 		/** \brief Release interaction spot if occupying one. */
-		public func void release()
+		func void release()
 			if pInteractionSpot != null
 				pInteractionSpot.release()
 			end
@@ -248,7 +438,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		 * 
 		 * \note If the current interaction spot is the same as the new spot nothing is done.
 		 */
-		public func void claimOther(ECBehaviorInteractionSpot.Instance spot)
+		func void claimOther(ECBehaviorInteractionSpot.Instance spot)
 			if spot == pInteractionSpot
 				return
 			end
@@ -263,7 +453,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -271,14 +461,14 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
+		func void enterFrame()
 			if pElementResolver != null
 				pElementResolver.resolve(getElement().getGameWorld())
 				pElementResolver = null
@@ -288,14 +478,14 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
 				
 				if flags.getAt(0)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorInteractionSpot.Instance spot
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorInteractionSpot.Instance spot
 						pInteractionSpot = spot
 					end)
 					setRequiresEnterFrame(true)
@@ -307,7 +497,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(1)
@@ -322,35 +512,56 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	
 	
 	
-	private var Array pListenerFactories
+	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass) this(eclass, "occupier.")
+	func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, String id) \
+	func new(BehaviorElementClass eclass, String id) \
 	this(eclass, id, id.empty() if "occupier." else "occupier(" + id + ").")
 	end
 	
-	public func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+	func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -362,17 +573,17 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -381,7 +592,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -393,7 +604,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorOccupier getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorOccupier getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorOccupier each
 			return true
 		end) cast ECBehaviorOccupier
@@ -405,7 +616,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorOccupier with specific identifier.
 	 */
-	static public func ECBehaviorOccupier getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorOccupier getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorOccupier each
 			return each.getID().equals(id)
 		end) cast ECBehaviorOccupier
@@ -417,7 +628,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * Returns list contains ECBehaviorOccupier behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorOccupier each
 			return true
 		end)
@@ -432,7 +643,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * of type ECBehaviorOccupier.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -444,7 +655,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorOccupier.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -456,7 +667,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	 * Returns list contains ECBehaviorOccupier.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -465,7 +676,7 @@ class ECBehaviorOccupier extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Depth Downsample</name>
+	<stage>fragment</stage>
+	<source>depth_downsample.frag.glsl</source>
+	
+	<output name='outDepth' location='0'/>
+	
+	<define>DECODE_IN_DEPTH</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>INVERSE_DEPTH</define>
+	<define>USE_MIN_FUNCTION</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

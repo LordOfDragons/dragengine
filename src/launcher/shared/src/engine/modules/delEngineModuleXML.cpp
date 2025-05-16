@@ -115,7 +115,11 @@ void delEngineModuleXML::pReadModule( const decXmlElementTag &root, delEngineMod
 			module.SetType( deModuleSystem::GetTypeFromString( GetCDataString( *tag ) ) );
 			
 		}else if( tag->GetName() == "pattern" ){
-			module.SetPattern( GetCDataString( *tag ) );
+			decString pattern(module.GetPattern());
+			if(pattern.IsEmpty()){
+				pattern.AppendCharacter(',');
+			}
+			module.SetPattern(pattern + GetCDataString(*tag));
 			
 		}else if( tag->GetName() == "homepage" ){
 			// no interest in this tag

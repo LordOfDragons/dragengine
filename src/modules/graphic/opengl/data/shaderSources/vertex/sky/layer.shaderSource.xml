@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V Sky Sky-Box</name>
+	<stage>vertex</stage>
+	<source>layer.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+	<attribute name='inLayer' location='1'/>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+	
+	<define>VS_RENDER_STEREO</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>INVERSE_DEPTH</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+</shaderSource>

@@ -130,9 +130,9 @@ deoglRenderBase( renderThread )
 	pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
 	pipconf.EnableDynamicStencilTest();
 	
-	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
+	defines = commonDefines;
 	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
 	if( useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );

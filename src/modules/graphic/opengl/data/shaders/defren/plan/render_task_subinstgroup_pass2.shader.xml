@@ -5,8 +5,5 @@
 	<parameter name='pStage'/>
 	<parameter name='pLaneSize'/>
 	
-	<shaderStorageBlock name='Counters' target='0'/>
-	<shaderStorageBlock name='SubInstGroup' target='1'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/render_task_subinstgroup_pass2.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan Render Task SubInstGroup Pass 2</sourceCode>
 </shader>

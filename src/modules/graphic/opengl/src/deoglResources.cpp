@@ -39,7 +39,9 @@
 ////////////////////////////
 
 deoglResources::deoglResources( deGraphicOpenGl &ogl ) :
-pOgl( ogl ){
+pOgl( ogl )
+{
+	(void)pOgl;
 }
 
 deoglResources::~deoglResources(){

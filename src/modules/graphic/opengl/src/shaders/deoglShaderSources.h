@@ -58,17 +58,8 @@ private:
 	decString pPathSCVertex;
 	decString pPathSCFragment;
 	
-	decString pInlineSCGeometry;
-	decString pInlineSCVertex;
-	decString pInlineSCFragment;
-	
 	deoglShaderBindingList pTextureList;
-	deoglShaderBindingList pAttributeList;
-	deoglShaderBindingList pOutputList;
-	deoglShaderBindingList pUniformBlockList;
-	deoglShaderBindingList pShaderStorageBlockList;
 	decStringList pParameterList;
-	decStringList pFeedbackList;
 	bool pFeedbackInterleaved;
 	
 	
@@ -100,33 +91,10 @@ public:
 	/** Retrieves the texture binding list. */
 	inline deoglShaderBindingList &GetTextureList(){ return pTextureList; }
 	inline const deoglShaderBindingList &GetTextureList() const{ return pTextureList; }
-	/** Retrieves the attribute binding list. */
-	inline deoglShaderBindingList &GetAttributeList(){ return pAttributeList; }
-	inline const deoglShaderBindingList &GetAttributeList() const{ return pAttributeList; }
-	/** Retrieves the output binding list. */
-	inline deoglShaderBindingList &GetOutputList(){ return pOutputList; }
-	inline const deoglShaderBindingList &GetOutputList() const{ return pOutputList; }
-	
-	/** Uniform block binding list. */
-	inline deoglShaderBindingList &GetUniformBlockList(){ return pUniformBlockList; }
-	inline const deoglShaderBindingList &GetUniformBlockList() const{ return pUniformBlockList; }
-	
-	/** Shader storage block binding list. */
-	inline deoglShaderBindingList &GetShaderStorageBlockList(){ return pShaderStorageBlockList; }
-	inline const deoglShaderBindingList &GetShaderStorageBlockList() const{ return pShaderStorageBlockList; }
 	
 	/** Retrieves the parameter list. */
 	inline decStringList &GetParameterList(){ return pParameterList; }
 	inline const decStringList &GetParameterList() const{ return pParameterList; }
-	/** Retrieves the feedback list. */
-	inline decStringList &GetFeedbackList(){ return pFeedbackList; }
-	inline const decStringList &GetFeedbackList() const{ return pFeedbackList; }
-	
-	/** Interleaved feedback mode if true, separated if false. */
-	inline bool GetFeedbackInterleaved() const{ return pFeedbackInterleaved; }
-	
-	/** Set interleaved feedback mode if true, separated if false. */
-	void SetFeedbackInterleaved( bool interleaved );
 	
 	/** Path to compute unit source code file or empty string. */
 	inline const decString &GetPathComputeSourceCode() const{ return pPathSCCompute; }
@@ -156,19 +124,6 @@ public:
 	inline const decString &GetPathFragmentSourceCode() const{ return pPathSCFragment; }
 	/** Sets the path to the fragment unit source code file or an empty string if not used. */
 	void SetPathFragmentSourceCode( const char *path );
-	
-	/** Retrieves the inline geometry unit source code. */
-	inline const decString &GetInlineGeometrySourceCode() const{ return pInlineSCGeometry; }
-	/** Sets the inline geometry unit source code. */
-	void SetInlineGeometrySourceCode( const char *sourceCode );
-	/** Retrieves the inline vertex unit source code. */
-	inline const decString &GetInlineVertexSourceCode() const{ return pInlineSCVertex; }
-	/** Sets the inline vertex unit source code. */
-	void SetInlineVertexSourceCode( const char *sourceCode );
-	/** Retrieves the inline fragment unit source code. */
-	inline const decString &GetInlineFragmentSourceCode() const{ return pInlineSCFragment; }
-	/** Sets the inline fragment unit source code. */
-	void SetInlineFragmentSourceCode( const char *sourceCode );
 	/*@}*/
 	
 private:

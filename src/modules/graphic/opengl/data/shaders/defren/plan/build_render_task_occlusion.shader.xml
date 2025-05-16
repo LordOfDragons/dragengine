@@ -2,11 +2,5 @@
 <shader>
 	<name>DefRen Plan Build Render Task Occlusion</name>
 	
-	<uniformBlock name='RenderTaskConfig' target='0'/>
-	
-	<shaderStorageBlock name='ElementGeometry' target='0'/>
-	<shaderStorageBlock name='ElementCullResult' target='1'/>
-	<shaderStorageBlock name='RenderTask' target='2'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/build_render_task_occlusion.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan Build Render Task Occlusion</sourceCode>
 </shader>

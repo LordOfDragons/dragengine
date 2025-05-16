@@ -16,11 +16,6 @@
 	<parameter name='pClearMinValue'/>
 	<parameter name='pClearMaxValue'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outMin' target='0'/>
-	<output name='outMax' target='1'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/fullscreenquad.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/light/box_boundary.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Light BoxBoundary</sourceCode>
 </shader>

@@ -32,6 +32,7 @@
 #include "deoglShaderCompiled.h"
 #include "deoglShaderLanguage.h"
 #include "deoglShaderUnitSourceCode.h"
+#include "compiler/deoglShaderCompiler.h"
 #include "compiler/deoglShaderCompileListener.h"
 #include "../deGraphicOpenGl.h"
 #include "../deoglCaches.h"
@@ -66,6 +67,9 @@
 #define PRIu64 "I64u"
 #endif
 
+// try to detect problems with shader define filtering
+// #define DEBUG_SHADER_UNIT_DEFINE_FILTERING
+
 
 // Class deoglShaderManager::cCompilingShader
 ///////////////////////////////////////////////
@@ -83,7 +87,7 @@ void deoglShaderManager::cCompileProgram::AddListener(cGetProgramListener *liste
 	pListeners.Add(listener);
 }
 
-void deoglShaderManager::cCompileProgram::CompileFinished(deoglShaderCompiled *compiled){
+void deoglShaderManager::cCompileProgram::CompileFinished(deoglShaderProgram *program){
 	{
 	const deMutexGuard guard(pManager.pMutexCompilePrograms);
 	const int index = pManager.pCompilePrograms.IndexOf(this);
@@ -91,12 +95,13 @@ void deoglShaderManager::cCompileProgram::CompileFinished(deoglShaderCompiled *c
 		pManager.pCompilePrograms.RemoveFrom(index);
 	}
 	
-	deoglShaderProgram *program = pManager.pGetProgramWith(
-		pProgram->GetSources(), pProgram->GetDefines());
-	if(!program && compiled){
-		program = pProgram;
-		pManager.pPrograms.Add(pProgram);
-		program->SetCompiled(compiled);
+	deoglShaderProgram *p = nullptr;
+	if(program && program->ready){
+		p = pManager.pGetProgramWith(program->GetSources(), program->GetDefines());
+		if(!p){
+			p = program;
+			pManager.pPrograms.Add(program);
+		}
 	}
 	pProgram = nullptr;
 	
@@ -105,7 +110,7 @@ void deoglShaderManager::cCompileProgram::CompileFinished(deoglShaderCompiled *c
 	for(i=0; i<count; i++){
 		cGetProgramListener * const listener = (cGetProgramListener*)pListeners.GetAt(i);
 		try{
-			listener->GetProgramFinished(program);
+			listener->GetProgramFinished(p);
 			
 		}catch(const deException &e){
 			pManager.pRenderThread.GetLogger().LogException(e);
@@ -199,6 +204,10 @@ void deoglShaderManager::ValidateCaches(){
 	}
 }
 
+void deoglShaderManager::Update(){
+	pLanguage->Update();
+}
+
 
 
 // Unit Source Codes
@@ -208,37 +217,32 @@ int deoglShaderManager::GetUnitSourceCodeCount() const{
 	return pUnitSourceCodes.GetCount();
 }
 
-bool deoglShaderManager::HasUnitSourceCodeWithPath( const char *filePath ) const{
-	return pUnitSourceCodes.Has( filePath );
+bool deoglShaderManager::HasUnitSourceCodeNamed(const char *name) const{
+	return pUnitSourceCodes.Has(name);
 }
 
-deoglShaderUnitSourceCode *deoglShaderManager::GetUnitSourceCodeWithPath( const char *filePath ) const{
+deoglShaderUnitSourceCode *deoglShaderManager::GetUnitSourceCodeNamed(const char *name) const{
 	deObject *o;
-	return pUnitSourceCodes.GetAt( filePath, &o ) ? ( deoglShaderUnitSourceCode* )o : nullptr;
-}
-
-void deoglShaderManager::AddUnitSourceCode( deoglShaderUnitSourceCode *sourceCode ){
-	DEASSERT_NOTNULL( sourceCode )
-	DEASSERT_FALSE( pUnitSourceCodes.Has( sourceCode->GetFilePath() ) )
-	
-	pUnitSourceCodes.SetAt( sourceCode->GetFilePath(), sourceCode );
+	return pUnitSourceCodes.GetAt(name, &o) ? (deoglShaderUnitSourceCode*)o : nullptr;
 }
 
 void deoglShaderManager::RemoveAllUnitSourceCodes(){
 	pUnitSourceCodes.RemoveAll();
 }
 
-
-
 void deoglShaderManager::LoadUnitSourceCodes(){
 	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
 	const int oldCount = pUnitSourceCodes.GetCount();
+	const int oldCountIncludable = pIncludableSources.GetCount();
 	
-	pLoadUnitSourceCodesIn( "" );
+	pLoadUnitSourceCodesIn("");
+	pLoadIncludableSourcesIn("");
 	
-	if( ogl.GetConfiguration().GetDoLogInfo() ){
-		pRenderThread.GetLogger().LogInfoFormat( "Loaded %d shader unit source codes.", 
-			pUnitSourceCodes.GetCount() - oldCount );
+	if(ogl.GetConfiguration().GetDoLogInfo()){
+		pRenderThread.GetLogger().LogInfoFormat("Loaded %d shader unit source codes.",
+			pUnitSourceCodes.GetCount() - oldCount);
+		pRenderThread.GetLogger().LogInfoFormat("Loaded %d includable sources.",
+			pIncludableSources.GetCount() - oldCountIncludable);
 	}
 }
 
@@ -278,6 +282,20 @@ decObjectList deoglShaderManager::GetSourcesAsList() const{
 
 
 
+// Program Units
+//////////////////
+
+int deoglShaderManager::GetProgramUnitCount(){
+	const deMutexGuard guard(pMutexCompilePrograms);
+	return pProgramUnits.GetCount();
+}
+
+deoglShaderProgramUnit *deoglShaderManager::GetProgramUnitAt(int index){
+	const deMutexGuard guard(pMutexCompilePrograms);
+	return (deoglShaderProgramUnit*)pProgramUnits.GetAt(index);
+}
+
+
 // Programs
 /////////////
 
@@ -291,51 +309,25 @@ const deoglShaderProgram *deoglShaderManager::GetProgramAt( int index ){
 	return (deoglShaderProgram*)pPrograms.GetAt(index);
 }
 
-/*
-bool deoglShaderManager::HasProgramWith(const deoglShaderSources *sources,
-const deoglShaderDefines &defines) const{
-	DEASSERT_NOTNULL(sources)
-	
-	const int count = pPrograms.GetCount();
-	int i;
-	
-	for(i=0; i<count; i++){
-		deoglShaderProgram &program = *(deoglShaderProgram* )pPrograms.GetAt(i);
-		if(sources == program.GetSources() && defines.Equals(program.GetDefines())){
-			return true;
-		}
-	}
-	
-	return false;
-}
-*/
-
 const deoglShaderProgram *deoglShaderManager::GetProgramWith(
 const deoglShaderSources *sources, const deoglShaderDefines &defines){
 	DEASSERT_NOTNULL(sources)
 	DEASSERT_NOTNULL(pLanguage)
 	
-	const deMutexGuard guard(pMutexCompilePrograms);
-	deoglShaderProgram * const foundProgram = pGetProgramWith(sources, defines);
-	if(foundProgram){
-		return foundProgram;
-	}
+	pRenderThread.GetLogger().LogInfoFormat("GetProgramWith(Sync): %s", sources->GetName().GetString());
 	
-	const deoglShaderProgram::Ref program(pCreateProgram(sources, defines));
-	pPrograms.Add(program);
-	
-	deoglShaderCompiled *compiled = nullptr;
-	try{
-		compiled = pLanguage->CompileShader(*program);
-		program->SetCompiled(compiled);
-		
-	}catch(const deException &){
-		if(compiled){
-			delete compiled;
+	class cStoreProgram : public cGetProgramListener{
+		const deoglShaderProgram **pProgram;
+	public:
+		cStoreProgram(const deoglShaderProgram **program) : pProgram(program){}
+		void GetProgramFinished(const deoglShaderProgram *aprogram) override{
+			*pProgram = aprogram;
 		}
-		throw;
-	}
+	};
 	
+	const deoglShaderProgram *program = nullptr;
+	GetProgramWithAsync(sources, defines, new cStoreProgram(&program));
+	WaitAllProgramsCompiled();
 	return program;
 }
 
@@ -345,6 +337,11 @@ const deoglShaderDefines &defines, cGetProgramListener *listener){
 	DEASSERT_NOTNULL(pLanguage)
 	
 	cCompileProgram *compiling = nullptr;
+	
+#ifdef DEBUG_SHADER_UNIT_DEFINE_FILTERING
+	WaitAllProgramsCompiled();
+	pLanguage->WaitAllTasksFinished();
+#endif
 	
 	{
 	const deMutexGuard guard(pMutexCompilePrograms);
@@ -372,6 +369,8 @@ const deoglShaderDefines &defines, cGetProgramListener *listener){
 		compiling->AddListener(listener);
 		
 	}catch(const deException &e){
+		pRenderThread.GetLogger().LogErrorFormat("Prepare shader failed: %s",
+			sources->GetName().GetString());
 		pRenderThread.GetLogger().LogException(e);
 		if(compiling){
 			delete compiling;
@@ -387,20 +386,198 @@ const deoglShaderDefines &defines, cGetProgramListener *listener){
 }
 
 void deoglShaderManager::WaitAllProgramsCompiled(){
-	while(true){
-		{
-		const deMutexGuard guard(pMutexCompilePrograms);
-		if(pCompilePrograms.GetCount() == 0){
-			break;
-		}
-		}
-		pSemaphoreCompileFinished.Wait();
+	if(!pLanguage->HasCompileThreads()){
+		return;
 	}
+	
+	/*
+	if(pglMaxShaderCompilerThreads){
+		while(pCompilePrograms.GetCount() > 0){
+			Update();
+		}
+		
+	}else{
+	*/
+		while(true){
+			{
+			const deMutexGuard guard(pMutexCompilePrograms);
+			if(pCompilePrograms.GetCount() == 0){
+				break;
+			}
+			}
+			pSemaphoreCompileFinished.Wait();
+		}
+	//}
+}
+
+void deoglShaderManager::ResolveProgramUnits(deoglShaderProgram &program){
+#ifdef DEBUG_SHADER_UNIT_DEFINE_FILTERING
+	WaitAllProgramsCompiled();
+	pLanguage->WaitAllTasksFinished();
+#endif
+	
+	const deMutexGuard guard(pMutexCompilePrograms);
+	pResolveProgramUnitsLocked(program);
 }
 
 
 // Private Functions
 //////////////////////
+
+void deoglShaderManager::pResolveProgramUnitsLocked(deoglShaderProgram &program){
+	const deoglShaderSources &sources = *program.GetSources();
+	const deoglShaderDefines &defines = program.GetDefines();
+	
+	if(!sources.GetPathGeometrySourceCode().IsEmpty()){
+		program.SetUnitGeometry(pGetProgramUnitWithLocked(
+			sources.GetPathGeometrySourceCode(), defines));
+		
+		if(!program.GetUnitGeometry()){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Geometry source '%s' not found", sources.GetFilename().GetString(),
+				sources.GetPathGeometrySourceCode().GetString());
+			DETHROW(deeInvalidParam);
+		}
+	}
+	
+	if(!sources.GetPathVertexSourceCode().IsEmpty()){
+		program.SetUnitVertex(pGetProgramUnitWithLocked(
+			sources.GetPathVertexSourceCode(), defines));
+		
+		if(!program.GetUnitVertex()){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Vertex source '%s' not found", sources.GetFilename().GetString(),
+				sources.GetPathVertexSourceCode().GetString());
+			DETHROW(deeInvalidParam);
+		}
+	}
+	
+	if(!sources.GetPathFragmentSourceCode().IsEmpty()){
+		program.SetUnitFragment(pGetProgramUnitWithLocked(
+			sources.GetPathFragmentSourceCode(), defines));
+		
+		if(!program.GetUnitFragment()){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Fragment source '%s' not found", sources.GetFilename().GetString(),
+				sources.GetPathFragmentSourceCode().GetString());
+			DETHROW(deeInvalidParam);
+		}
+	}
+	
+	if(!sources.GetPathComputeSourceCode().IsEmpty()){
+		program.SetUnitCompute(pGetProgramUnitWithLocked(
+			sources.GetPathComputeSourceCode(), defines));
+		
+		if(!program.GetUnitCompute()){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Compute source '%s' not found", sources.GetFilename().GetString(),
+				sources.GetPathComputeSourceCode().GetString());
+			DETHROW(deeInvalidParam);
+		}
+	}
+	
+	if(!sources.GetPathTessellationControlSourceCode().IsEmpty()){
+		program.SetUnitTessellationControl(pGetProgramUnitWithLocked(
+			sources.GetPathTessellationControlSourceCode(), defines));
+		
+		if(!program.GetUnitTessellationControl()){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Tessellation control source '%s' not found",
+				sources.GetFilename().GetString(),
+				sources.GetPathTessellationControlSourceCode().GetString());
+			DETHROW(deeInvalidParam);
+		}
+	}
+	
+	if(!sources.GetPathTessellationEvaluationSourceCode().IsEmpty()){
+		program.SetUnitTessellationEvaluation(pGetProgramUnitWithLocked(
+			sources.GetPathTessellationEvaluationSourceCode(), defines));
+		
+		if(!program.GetUnitTessellationEvaluation()){
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader(%s): Tessellation evaluation source '%s' not found",
+				sources.GetFilename().GetString(),
+				sources.GetPathTessellationEvaluationSourceCode().GetString());
+			DETHROW(deeInvalidParam);
+		}
+	}
+}
+
+deoglShaderProgramUnit *deoglShaderManager::pGetProgramUnitWithLocked(
+const char *name, const deoglShaderDefines &defines){
+	const deoglShaderUnitSourceCode * const sources = GetUnitSourceCodeNamed(name);
+	if(!sources){
+		return nullptr;
+	}
+	
+	deoglShaderProgramUnit * const foundUnit = pGetProgramUnitWith(sources, defines);
+	if(foundUnit){
+#ifdef DEBUG_SHADER_UNIT_DEFINE_FILTERING
+		{
+		deoglShaderCompiler sc(*pLanguage, -1);
+		sc.PreparePreprocessor(defines);
+		sc.AppendPreprocessSourcesBuffer(sources->GetName(), sources->GetSourceCode());
+		
+		decStringList l(decString(sc.GetPreprocessor().GetSources()).Split('\n'));
+		int i=0; bool f=false;
+		for(i=0; i<l.GetCount(); i++){
+			if(l.GetAt(i).BeginsWith("#define ")){
+				l.RemoveFrom(i); i--; f=true;
+			}else if(f) break;
+		}
+		const decString s1(l.Join("\n"));
+		
+		l = foundUnit->GetProcessedSources().Split('\n');
+		i=0; f=false;
+		for(i=0; i<l.GetCount(); i++){
+			if(l.GetAt(i).BeginsWith("#define ")){
+				l.RemoveFrom(i); i--; f=true;
+			}else if(f) break;
+		}
+		const decString s2(l.Join("\n"));
+		
+		if(s1 != s2){
+			const deMutexGuard guardLogging(pMutexLogging);
+			pRenderThread.GetLogger().LogErrorFormat("Shader Unit Problem: %s", name);
+			
+			decString text;
+			int d, defineCount = defines.GetDefineCount();
+			for(d=0; d<defineCount; d++){
+				text.AppendFormat("%s %s=%s", d == 0 ? "" : ",",
+					defines.GetDefineNameAt(d).GetString(), defines.GetDefineValueAt(d).GetString());
+			}
+			pRenderThread.GetLogger().LogErrorFormat("Defines =>%s", text.GetString());
+			
+			text.Empty();
+			defineCount = foundUnit->GetDefines().GetDefineCount();
+			for(d=0; d<defineCount; d++){
+				text.AppendFormat("%s %s=%s", d == 0 ? "" : ",",
+					foundUnit->GetDefines().GetDefineNameAt(d).GetString(),
+					foundUnit->GetDefines().GetDefineValueAt(d).GetString());
+			}
+			pRenderThread.GetLogger().LogErrorFormat("Defines <=%s", text.GetString());
+			
+			text.Empty();
+			defineCount = sources->GetDefines().GetCount();
+			for(d=0; d<defineCount; d++){
+				text.AppendFormat("%s %s", d == 0 ? "" : ",", sources->GetDefines().GetAt(d).GetString());
+			}
+			pRenderThread.GetLogger().LogErrorFormat("Filter:%s", text.GetString());
+			
+			pRenderThread.GetLogger().LogErrorFormat("Sources =>%s", s1.GetString());
+			pRenderThread.GetLogger().LogErrorFormat("Sources <=%s", s2.GetString());
+		}
+		}
+#endif
+		
+		return foundUnit;
+	}
+	
+	const deoglShaderProgramUnit::Ref unit(deoglShaderProgramUnit::Ref::New(
+		new deoglShaderProgramUnit(pRenderThread, sources, defines)));
+	pProgramUnits.Add(unit);
+	return unit;
+}
 
 deoglShaderProgram *deoglShaderManager::pGetProgramWith(
 const deoglShaderSources *sources, const deoglShaderDefines &defines) const{
@@ -438,126 +615,113 @@ const deoglShaderSources *sources, const deoglShaderDefines &defines){
 	const deoglShaderProgram::Ref program(deoglShaderProgram::Ref::New(
 		new deoglShaderProgram(pRenderThread, sources, defines)));
 	
-	if(!sources->GetPathGeometrySourceCode().IsEmpty()){
-		program->SetGeometrySourceCode(GetUnitSourceCodeWithPath(sources->GetPathGeometrySourceCode()));
-		
-		if(!program->GetGeometrySourceCode()){
-			pRenderThread.GetLogger().LogErrorFormat(
-				"Shader(%s): Geometry source '%s' not found", sources->GetFilename().GetString(),
-				sources->GetPathGeometrySourceCode().GetString());
-			DETHROW(deeInvalidParam);
-		}
-	}
-	
-	if(!sources->GetPathVertexSourceCode().IsEmpty()){
-		program->SetVertexSourceCode(GetUnitSourceCodeWithPath(sources->GetPathVertexSourceCode()));
-		
-		if(!program->GetVertexSourceCode()){
-			pRenderThread.GetLogger().LogErrorFormat(
-				"Shader(%s): Vertex source '%s' not found", sources->GetFilename().GetString(),
-				sources->GetPathVertexSourceCode().GetString());
-			DETHROW(deeInvalidParam);
-		}
-	}
-	
-	if(!sources->GetPathFragmentSourceCode().IsEmpty()){
-		program->SetFragmentSourceCode(GetUnitSourceCodeWithPath(sources->GetPathFragmentSourceCode()));
-		
-		if(!program->GetFragmentSourceCode()){
-			pRenderThread.GetLogger().LogErrorFormat(
-				"Shader(%s): Fragment source '%s' not found", sources->GetFilename().GetString(),
-				sources->GetPathFragmentSourceCode().GetString());
-			DETHROW(deeInvalidParam);
-		}
-	}
-	
-	if(!sources->GetPathComputeSourceCode().IsEmpty()){
-		program->SetComputeSourceCode(GetUnitSourceCodeWithPath(sources->GetPathComputeSourceCode()));
-		
-		if(!program->GetComputeSourceCode()){
-			pRenderThread.GetLogger().LogErrorFormat(
-				"Shader(%s): Compute source '%s' not found", sources->GetFilename().GetString(),
-				sources->GetPathComputeSourceCode().GetString());
-			DETHROW(deeInvalidParam);
-		}
-	}
-	
-	if(!sources->GetPathTessellationControlSourceCode().IsEmpty()){
-		program->SetTessellationControlSourceCode(GetUnitSourceCodeWithPath(
-			sources->GetPathTessellationControlSourceCode()));
-		
-		if(!program->GetTessellationControlSourceCode()){
-			pRenderThread.GetLogger().LogErrorFormat(
-				"Shader(%s): Tessellation control source '%s' not found",
-				sources->GetFilename().GetString(),
-				sources->GetPathTessellationControlSourceCode().GetString());
-			DETHROW(deeInvalidParam);
-		}
-	}
-	
-	if(!sources->GetPathTessellationEvaluationSourceCode().IsEmpty()){
-		program->SetTessellationEvaluationSourceCode(GetUnitSourceCodeWithPath(
-			sources->GetPathTessellationEvaluationSourceCode()));
-		
-		if(!program->GetTessellationEvaluationSourceCode()){
-			pRenderThread.GetLogger().LogErrorFormat(
-				"Shader(%s): Tessellation evaluation source '%s' not found",
-				sources->GetFilename().GetString(),
-				sources->GetPathTessellationEvaluationSourceCode().GetString());
-			DETHROW(deeInvalidParam);
-		}
-	}
+	pResolveProgramUnitsLocked(program);
 	
 	decString cacheId;
 	cacheId.Format("shader%d;%s;%s", SHADER_CACHE_REVISION,
-		sources->GetFilename().GetString(), defines.CalcCacheId().GetString());
+		sources->GetName().GetString(), defines.CalcCacheId().GetString());
 	program->SetCacheId(cacheId);
 	
 	return program;
 }
 
-void deoglShaderManager::pLoadUnitSourceCodesIn( const char *directory ){
-	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
-	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
-	decString filename;
-	decPath searchPath;
-	decPath basePath;
+deoglShaderProgramUnit *deoglShaderManager::pGetProgramUnitWith(
+const deoglShaderUnitSourceCode *sources, const deoglShaderDefines &defines) const{
+	const int count = pProgramUnits.GetCount();
 	int i;
 	
-	basePath.SetFromUnix( pPathShaderSources.GetString() );
-	const int basePathLen = ( int )strlen( basePath.GetPathUnix() ) + 1;
+	for(i=0; i<count; i++){
+		deoglShaderProgramUnit * const unit = (deoglShaderProgramUnit*)pProgramUnits.GetAt(i);
+		if(sources == unit->GetSources() && defines.Equals(unit->GetDefines(), sources->GetDefines())){
+			return unit;
+		}
+	}
+	
+	return nullptr;
+}
+
+void deoglShaderManager::pLoadUnitSourceCodesIn(const char *directory){
+	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
+	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
+	decPath searchPath, basePath;
+	decString filename;
+	int i;
+	
+	basePath.SetFromUnix(pPathShaderSources);
+	const int basePathLen = basePath.GetPathUnix().GetLength() + 1;
 	
 	try{
-		deCollectFileSearchVisitor collect( "*.glsl", true );
-		searchPath.SetFrom( basePath );
-		searchPath.AddUnixPath( directory );
-		vfs.SearchFiles( searchPath, collect );
+		deCollectFileSearchVisitor collect("*.shaderSource.xml", true);
+		searchPath.SetFrom(basePath);
+		searchPath.AddUnixPath(directory);
+		vfs.SearchFiles(searchPath, collect);
 		
 		const dePathList &pathList = collect.GetFiles();
 		const int count = pathList.GetCount();
 		decString validationString;
 		
-		for( i=0; i<count; i++ ){
-			const decPath &path = pathList.GetAt( i );
-			filename = path.GetPathUnix().GetMiddle( basePathLen );
-			/*if( ogl.GetConfiguration()->GetDoLogDebug() ){
-				pRenderThread.GetLogger().LogInfoFormat( "Loading shader unit source code %s...", filename );
+		for(i=0; i<count; i++){
+			const decPath &path = pathList.GetAt(i);
+			filename = path.GetPathUnix().GetMiddle(basePathLen);
+			
+			/*if(ogl.GetConfiguration()->GetDoLogDebug()){
+				pRenderThread.GetLogger().LogInfoFormat("Loading shader unit source code %s...", filename);
 			}*/
 			
-			const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
-				vfs.OpenFileForReading( path ) ) );
+			const deoglShaderUnitSourceCode::Ref sources(deoglShaderUnitSourceCode::Ref::New(
+				new deoglShaderUnitSourceCode(ogl, path)));
 			
-			AddUnitSourceCode( deoglShaderUnitSourceCode::Ref::New(
-				new deoglShaderUnitSourceCode( filename, reader ) ) );
+			DEASSERT_FALSE(pUnitSourceCodes.Has(sources->GetName()))
 			
-			validationString.Format( "%s: %" PRIu64, filename.GetString(),
-				( uint64_t )reader->GetModificationTime() );
-			pCacheValidationString.Add( validationString );
+			pUnitSourceCodes.SetAt(sources->GetName(), sources);
+			pCacheValidationString.Add(sources->GetValidationString());
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pRenderThread.GetLogger().LogInfoFormat(
-			"Loading shader unit source code %s failed!", filename.GetString() );
+			"Loading shader unit source code %s failed!", filename.GetString());
+		throw;
+	}
+}
+
+void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
+	deGraphicOpenGl &ogl = pRenderThread.GetOgl();
+	deVirtualFileSystem &vfs = ogl.GetVFS(); // accessed from main thread only
+	decBaseFileReader::Ref reader;
+	decPath searchPath, basePath;
+	decString filename, source;
+	int i;
+	
+	basePath.SetFromUnix(pPathShaderSources);
+	const int basePathLen = basePath.GetPathUnix().GetLength() + 1;
+	
+	try{
+		deCollectFileSearchVisitor collect("*.glsl", true);
+		searchPath.SetFrom(basePath);
+		searchPath.AddUnixPath(directory);
+		vfs.SearchFiles(searchPath, collect);
+		
+		const dePathList &pathList = collect.GetFiles();
+		const int count = pathList.GetCount();
+		
+		for(i=0; i<count; i++){
+			const decPath &path = pathList.GetAt(i);
+			filename = path.GetPathUnix().GetMiddle(basePathLen);
+			
+			/*if(ogl.GetConfiguration()->GetDoLogDebug()){
+				pRenderThread.GetLogger().LogInfoFormat("Loading includable source %s...", filename);
+			}*/
+			
+			reader.TakeOver(vfs.OpenFileForReading(path));
+			const int length = reader->GetLength();
+			source.Set(' ', length);
+			reader->Read((char*)source.GetString(), length);
+			pIncludableSources.SetAt(filename, source);
+		}
+		
+	}catch(const deException &){
+		pRenderThread.GetLogger().LogInfoFormat(
+			"Loading includable source %s failed!", filename.GetString());
 		throw;
 	}
 }

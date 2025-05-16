@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V VR Hidden Area</name>
+	<stage>vertex</stage>
+	<source>hiddenarea.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+	
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

@@ -136,8 +136,48 @@ enum eTestTextureFormats{
 	
 	ettfCompress_Red_RGTC1, // GL_COMPRESSED_RED_RGTC1
 	ettfCompress_Sig_Red_RGTC1, // GL_COMPRESSED_SIGNED_RED_RGTC1
-	ettfCompress_Red_Green_RGTC1, // GL_COMPRESSED_RED_GREEN_RGTC2
-	ettfCompress_Sig_Red_Green_RGTC1, // GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2
+	ettfCompress_Red_Green_RGTC2, // GL_COMPRESSED_RED_GREEN_RGTC2
+	ettfCompress_Sig_Red_Green_RGTC2, // GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2
+	
+	/*
+	OpenGL ES information (https://arm-software.github.io/opengl-es-sdk-for-android/etc_texture.html):
+	GL_COMPRESSED_R11_EAC:
+		11 bits for a single channel. Useful for single channel data where higher
+		than 8 bit precision is needed. For example, heightmaps.
+	
+	GL_COMPRESSED_SIGNED_R11_EAC:
+		Signed version of GL_COMPRESSED_SIGNED_R11_EAC, useful when signed data is needed.
+		
+	GL_COMPRESSED_RG11_EAC:
+		11 bits for two channels. Useful for two channel data where higher than 8 bit
+		precision is needed. For example, normalised bump maps, the third component
+		can be reconstructed from the other two components.
+		
+	GL_COMPRESSED_SIGNED_RG11_EAC:
+		Signed version of GL_COMPRESSED_RG11_EAC, useful when signed data is needed.
+		
+	GL_COMPRESSED_RGB8_ETC2:
+		8 bits for three channels. Useful for normal textures without alpha values.
+		
+	GL_COMPRESSED_SRGB8_ETC2:
+		sRGB version of GL_COMPRESSED_RGB8_ETC2.
+		
+	GL_COMPRESSED_RGBA8_ETC2_EAC:
+		8 bits for four channels. Useful for normal textures with varying alpha values.
+		
+	GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
+		sRGB version of GL_COMPRESSED_RGBA8_ETC2_EAC.
+		
+	GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		8 bits for three channels and a 1 bit alpha channel. Useful for normal textures
+		with binary alpha values.
+		
+	GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		sRGB version of GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2.
+	*/
+	
+	ettfCompress_ETC2_RGB, // GL_COMPRESSED_RGB8_ETC2
+	ettfCompress_ETC2_RGBA, // GL_COMPRESSED_RGBA8_ETC2_EAC
 	
 	// depth formats
 	ettfDepth, // GL_DEPTH_COMPONENT
@@ -316,6 +356,9 @@ static const sTestTextureFormat vTestTextureFormats[ ETTF_COUNT ] = { // convert
 	{ GL_COMPRESSED_RED_GREEN_RGTC2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 16, FLAG_COMPRESSED, "GL_COMPRESSED_RED_GREEN_RGTC2", etwColor }, // ettfCompress_Red_Green_RGTC1
 	{ GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 16, FLAG_COMPRESSED, "GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2", etwColor }, // ettfCompress_Sig_Red_Green_RGTC1
 	
+	{ GL_COMPRESSED_RGB8_ETC2, GL_RGB, GL_UNSIGNED_BYTE, 24, FLAG_COMPRESSED, "GL_COMPRESSED_RGB8_ETC2", etwColor }, // ettfCompress_ETC2_RGB
+	{ GL_COMPRESSED_RGBA8_ETC2_EAC, GL_RGBA, GL_UNSIGNED_BYTE, 32, FLAG_COMPRESSED, "GL_COMPRESSED_RGBA8_ETC2_EAC", etwColor }, // ettfCompress_ETC2_RGBA
+	
 	// depth formats
 	{ GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, 24, FLAG_DEPTH, "GL_DEPTH_COMPONENT", etwDepth }, // ettfDepth
 	{ GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_FLOAT, 16, FLAG_DEPTH, "GL_DEPTH_COMPONENT16", etwDepth }, // ettfDepth16
@@ -370,7 +413,7 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfRG8_S, ettfRG8_S },
 	{ deoglCapsFmtSupport::eutfRG16_S, ettfRG16_S },
 	
-	{ deoglCapsFmtSupport::eutfRG8_C, ettfCompress_Red_Green_RGTC1 },
+	{ deoglCapsFmtSupport::eutfRG8_C, ettfCompress_Red_Green_RGTC2 },
 	{ deoglCapsFmtSupport::eutfRG8_C, ettfCompress_Lum_Alpha_LATC2 },
 //	{ deoglCapsFmtSupport::eutfRG8_C, ettfCompress_RG }, // generic format: potentially problematic
 	{ deoglCapsFmtSupport::eutfRG8_C, ettfRG8 }, // use no compression instead
@@ -395,7 +438,11 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfRGB8_S, ettfRGB8_S },
 	{ deoglCapsFmtSupport::eutfRGB16_S, ettfRGB16_S },
 	
-	{ deoglCapsFmtSupport::eutfRGB8_C, ettfCompress_DXT1_RGB },
+#ifdef WITH_OPENGLES
+	{deoglCapsFmtSupport::eutfRGB8_C, ettfCompress_ETC2_RGB},
+#else
+	{deoglCapsFmtSupport::eutfRGB8_C, ettfCompress_DXT1_RGB},
+#endif
 //	{ deoglCapsFmtSupport::eutfRGB8_C, ettfCompress_RGB }, // generic format: potentially problematic
 	{ deoglCapsFmtSupport::eutfRGB8_C, ettfRGB8 }, // use no compression instead
 	
@@ -424,7 +471,11 @@ static const sTestCase vTestProgram[ TEST_PROGRAM_COUNT ] = {
 	{ deoglCapsFmtSupport::eutfRGBA8_S, ettfRGBA8_S },
 	{ deoglCapsFmtSupport::eutfRGBA16_S, ettfRGBA16_S },
 	
-	{ deoglCapsFmtSupport::eutfRGBA8_C, ettfCompress_DXT3_RGBA },
+	#ifdef WITH_OPENGLES
+	{deoglCapsFmtSupport::eutfRGBA8_C, ettfCompress_ETC2_RGBA},
+#else
+	{deoglCapsFmtSupport::eutfRGBA8_C, ettfCompress_DXT3_RGBA},
+#endif
 //	{ deoglCapsFmtSupport::eutfRGBA8_C, ettfCompress_RGBA }, // generic format: potentially problematic
 	{ deoglCapsFmtSupport::eutfRGBA8_C, ettfRGBA8 }, // use no compression instead
 	

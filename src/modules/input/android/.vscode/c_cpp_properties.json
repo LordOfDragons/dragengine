@@ -10,7 +10,9 @@
                 "~/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include"
             ],
             "defines": [
-                "MOD_ENTRY_POINT_ATTR="
+                "MODULE_VERSION=\"9999\"",
+                "MOD_ENTRY_POINT_ATTR=",
+                "WITH_INTERNAL_MODULE="
             ],
             "compilerPath": "/usr/lib/llvm/18/bin/clang",
             "cStandard": "c17",

@@ -2,11 +2,5 @@
 <shader>
 	<name>DefRen Plan FindContent Node</name>
 	
-	<uniformBlock name='PlanConfig' target='0'/>
-	
-	<shaderStorageBlock name='WorldOctreeNode' target='0'/>
-	<shaderStorageBlock name='Element' target='1'/>
-	<shaderStorageBlock name='SearchNodes' target='2'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/find_content_node.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan FindContent Node</sourceCode>
 </shader>

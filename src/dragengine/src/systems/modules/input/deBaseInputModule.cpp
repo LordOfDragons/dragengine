@@ -89,15 +89,23 @@ void deBaseInputModule::AppActivationChanged(){
 #ifdef OS_ANDROID
 void deBaseInputModule::EventLoop(const android_input_buffer &inputBuffer){
 }
+
+#elif defined OS_WEBWASM
+void deBaseInputModule::EventLoop(const sWebInputEvent &event){
+}
+
 #elif defined OS_BEOS
 void deBaseInputModule::EventLoop(const BMessage&){
 }
+
 #elif defined OS_MACOS
 void deBaseInputModule::EventLoop( const NSEvent& ){
 }
-#elif defined OS_UNIX && defined HAS_LIB_X11
+
+#elif defined OS_UNIX_X11
 void deBaseInputModule::EventLoop( XEvent& ){
 }
+
 #elif defined OS_W32
 void deBaseInputModule::EventLoop( const MSG& ){
 }

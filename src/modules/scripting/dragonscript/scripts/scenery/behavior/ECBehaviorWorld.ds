@@ -1,0 +1,451 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding world support.
+ * \version 1.26
+ * 
+ * Behavior loads world file and adds contained content to the the game world this element
+ * is located in.
+ * 
+ * This behavior can be added multiple times to an element. Each instance loads an own world
+ * and adds its content to the parent world. To distinguish the world behaviors an identifier is
+ * used to retrieve a specific instance. By default world class properties have no prefix.
+ * If the identifier is not empty the world element class properties have the prefix "{id}.".
+ * This can be overwritten if required. Hence to use more than one world use code like this
+ * in your subclass constructor:
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    func new()
+ *       ECBehaviorWorld.new(this)
+ *       ECBehaviorWorld.new(this, "subWorld")
+ *    end
+ * end
+ * \endcode
+ * 
+ * You can now define the parameters to use for both worlds using for example the properties
+ * "path" for the first world and "subWorld.path" for the second world.
+ * 
+ * Element class properties have the prefix "world{(id)}.".
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_world
+ */
+class ECBehaviorWorld extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorWorld'/>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorWorld' id='second'/>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".path").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorWorld"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorWorld behavior = ECBehaviorWorld.new(eclass, id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "world", id)
+			return behavior
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		var ECBehaviorWorld pECBehavior
+		var StubGameWorld pWorldStub
+		var DMatrix pWorldMatrix
+		var UniqueID pFirstId
+		var TagResolver pTagResolver
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorWorld ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+		end
+		
+		func void dispose()
+			pWorldStub = null
+			pTagResolver = null
+			super.dispose()
+		end
+		
+		func void init(StubElement stub)
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			
+			pWorldStub = pECBehavior.getWorld().getWorldStub(stub, getElement().getClass())
+			
+			pWorldMatrix = DMatrix.newRT(\
+				DVector.new(pECBehavior.getOrientation().getVector(stub, codec)),\
+				DVector.new(pECBehavior.getPosition().getVector(stub, codec)))
+			
+			pTagResolver = TagResolver.new()
+			addTagResolverRules(pTagResolver)
+		end
+		
+		/**
+		 * \brief Add tag resolver rules.
+		 * 
+		 * Adds \ref TRRElement with action "owner".
+		 */
+		protected func void addTagResolverRules(TagResolver resolver)
+			resolver.addRule("owner", TRRElement.new(getElement()))
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorWorld getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief World stub to create content from or null. */
+		func StubGameWorld getWorldStub()
+			return pWorldStub
+		end
+		
+		/** \brief Tag resolver. */
+		func TagResolver getTagResolver()
+			return pTagResolver
+		end
+		
+		
+		/** \brief Add element to game world. */
+		func void addToGameWorld()
+			if pWorldStub != null
+				createAndAddWorldContent(getElement().getGameWorld())
+			end
+		end
+		
+		/** \brief Remove element from game world. */
+		func void removeFromGameWorld()
+		end
+		
+		
+		/** \brief Add world stub content to game world. */
+		protected func void createAndAddWorldContent(GameWorld gameWorld)
+			var BehaviorElement element = getElement()
+			var StubElement stub = element.getStub()
+			var DMatrix worldMatrix = pWorldMatrix * element.getElementMatrix()
+			var bool enableNetworking = stub.getEnableNetworking()
+			var bool ignorePersistable = true
+			
+			if pFirstId == null
+				pFirstId = pECBehavior.getIDGenerator().toUniqueID()
+				ignorePersistable = false
+			end
+			
+			createAndAddWorldElements(gameWorld, worldMatrix, ignorePersistable, enableNetworking)
+			createAndAddWorldDecals(gameWorld, worldMatrix)
+		end
+		
+		/** \brief Add world stub elements to game world. */
+		protected func void createAndAddWorldElements(GameWorld gameWorld, DMatrix worldMatrix,\
+		bool ignorePersistable, bool enableNetworking)
+			var StubElement stub
+			var DMatrix matrix
+			var Vector scaling
+			
+			pWorldStub.forEachElement(block StubElement each
+				if ignorePersistable and each.getClass().getPersistable()
+					return null
+				end
+				
+				stub = StubElement.new(each)
+				stub.setID(pFirstId + each.getID())
+				if each.getAttachTo() != null
+					stub.setAttachTo(pFirstId + each.getAttachTo())
+				end
+				
+				matrix = each.getMatrix() * worldMatrix
+				stub.setPosition(matrix.getPosition())
+				scaling = matrix.getScaling().toVector()
+				stub.setScaling(scaling)
+				if not scaling.isZero()
+					stub.setRotation(matrix.normalize().getEulerAngles().toVector())
+				end
+				stub.setEnableNetworking(enableNetworking)
+				
+				stub.getPropertyKeys().forEach(block String key
+					stub.setPropertyValueFor(key, pTagResolver.resolveTags(\
+						stub.getPropertyValueFor(key, ""), this))
+				end)
+				
+				modifyCreateElementStub(stub)
+				
+				stub.loadResources()
+				stub.createAndAddElement(gameWorld)
+			end)
+		end
+		
+		/** \brief Apply modifications to copied element stub. */
+		protected func void modifyCreateElementStub(StubElement stub)
+		end
+		
+		/** \brief Add world stub decals to game world. */
+		protected func void createAndAddWorldDecals(GameWorld gameWorld, DMatrix worldMatrix)
+			var DecalBuilder builder = pECBehavior.getDecalBuilder()
+			var StubWorldDecal stub
+			var DMatrix matrix
+			var Vector size
+			
+			pWorldStub.forEachWorldDecal(block StubWorldDecal each
+				stub = StubWorldDecal.new(each)
+				
+				matrix = each.getMatrix() * worldMatrix
+				stub.setPosition(matrix.getPosition())
+				size = matrix.getScaling().toVector()
+				stub.setSize(size)
+				if not size.isZero()
+					stub.setRotation(matrix.normalize().getEulerAngles().toVector())
+				end
+				
+				stub.getPropertyKeys().forEach(block String key
+					stub.setPropertyValueFor(key, pTagResolver.resolveTags(\
+						stub.getPropertyValueFor(key, ""), this))
+				end)
+				
+				modifyCreateWorldDecalStub(stub)
+				
+				stub.loadResources()
+				stub.createWorldDecal(gameWorld, builder)
+			end)
+		end
+		
+		/** \brief Apply modifications to copied world decal stub. */
+		protected func void modifyCreateWorldDecalStub(StubWorldDecal stub)
+		end
+		
+		
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte()
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				
+				if flags.getAt(0)
+					pFirstId = UniqueID.readFromFile(reader)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0)
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pFirstId != null)
+			flags.writeToFile(writer)
+			
+			if pFirstId != null
+				pFirstId.writeToFile(writer)
+			end
+		end
+	end
+	
+	
+	var ECPWorld pWorld
+	var ECPVector pPosition
+	var ECPVector pOrientation
+	var MutableID pIDGenerator
+	var DecalBuilder pDecalBuilder
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(),\
+	BaseGameApp.getApp().getIDGenerator(), "")
+	end
+	
+	func new(BehaviorElementClass eclass, String id) this(eclass,\
+	BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getIDGenerator(), id)
+	end
+	
+	func new(BehaviorElementClass eclass, Loaders loaders, MutableID idGenerator)\
+	this(eclass, loaders, idGenerator, "")
+	end
+	
+	func new(BehaviorElementClass eclass, Loaders loaders, MutableID idGenerator, String id)\
+	this(eclass, loaders, idGenerator, id, id.empty() if "world." else "world(" + id + ").")
+	end
+	
+	func new(BehaviorElementClass eclass, Loaders loaders, MutableID idGenerator,\
+	String id, String prefix) super(eclass, id)
+		if idGenerator == null
+			throw ENullPointer.new("idGenerator")
+		end
+		
+		pIDGenerator = idGenerator
+		pDecalBuilder = DecalBuilder.new()
+		
+		eclass.addProperty(pWorld = ECPWorld.new(prefix + "path", loaders.getWorld()))
+		eclass.addProperty(pPosition = ECPVector.new(prefix + "position", Vector.new()))
+		eclass.addProperty(pOrientation = ECPVector.new(prefix + "orientation", Vector.new()))
+		
+		eclass.addBehavior(this)
+	end
+	
+	func void dispose()
+		if pDecalBuilder != null
+			pDecalBuilder.dispose()
+			pDecalBuilder = null
+		end
+		
+		super.dispose()
+	end
+	
+	
+	/** \brief World to load. */
+	func ECPWorld getWorld()
+		return pWorld
+	end
+	
+	/** \brief Position. */
+	func ECPVector getPosition()
+		return pPosition
+	end
+	
+	/** \brief Orientation. */
+	func ECPVector getOrientation()
+		return pOrientation
+	end
+	
+	/** \brief ID Generator. */
+	func MutableID getIDGenerator()
+		return pIDGenerator
+	end
+	
+	/** \brief Set ID Generator. */
+	func void setIDGenerator(MutableID idGenerator)
+		pIDGenerator = idGenerator
+	end
+	
+	/** \brief Decal builder used for world decals. */
+	func DecalBuilder getDecalBuilder()
+		return pDecalBuilder
+	end
+	
+	/**
+	 * \brief Set decal builder used for world decals.
+	 * 
+	 * The old decal builder is disposed of if present.
+	 */
+	func void setDecalBuilder(DecalBuilder decalBuilder)
+		if decalBuilder == pDecalBuilder
+			return
+		end
+		
+		if pDecalBuilder != null
+			pDecalBuilder.dispose()
+		end
+		
+		pDecalBuilder = decalBuilder
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/** \brief Get first behavior in element class or \em null if absent. */
+	static func ECBehaviorWorld getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorWorld each
+			return true
+		end) cast ECBehaviorWorld
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 */
+	static func ECBehaviorWorld getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorWorld each
+			return each.getID().equals(id)
+		end) cast ECBehaviorWorld
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returned list contains \ref ECBehaviorWorld in the order they have been added to element.
+	 */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorWorld each
+			return true
+		end)
+	end
+	
+	
+	/** \brief Get first \ref #Instance in element or \em null if absent. */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/** \brief Get \ref #Instance with id in element or \em null if absent. */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all \ref #Instance in element.
+	 * 
+	 * Returned list contains \ref #Instance in the order they have been added to element.
+	 */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

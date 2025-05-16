@@ -1,0 +1,299 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding storing supported interactions.
+ * 
+ * Element class properties have the prefix "interactable.".
+ * 
+ * This behavior uses no other behaviors.
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_interaction
+ */
+class ECBehaviorInteraction extends DefaultECBehavior
+	/** \brief Interaction. */
+	interface Interaction
+		/**
+		 * \brief Interact with behavior.
+		 * 
+		 * This can either change or query the state of a behavior. The return value indicates
+		 * if the interaction is supported and the change succeeded or the queried state applies.
+		 * 
+		 * \param parameters Optional parameters.
+		 * \returns true if interaction is successful. If interaction is a query successfull
+		 *          means the query evaluates to true.
+		 */
+		func bool interact(Instance instance, Array parameters, BehaviorElement source)
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorInteraction'/>
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory implements BehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECBehaviorInteraction"
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			if not id.empty()
+				throw EInvalidParam.new("id is not empty string")
+			end
+			var ECBehaviorInteraction behavior = ECBehaviorInteraction.new(eclass)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "interaction")
+			return behavior
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		var ECBehaviorInteraction pECBehavior
+		var Dictionary pInteractions
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorInteraction ecbehavior, BehaviorElement element) super(element)
+			pInteractions = Dictionary.new()
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pInteractions = null
+			super.dispose()
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorInteraction getECBehavior()
+			return pECBehavior
+		end
+		
+		
+		/** \brief Named interaction is present. */
+		func bool hasInteractionAt(String name)
+			return pInteractions.has(name)
+		end
+		
+		/** \brief Named interaction or null. */
+		func Interaction getInteractionAt(String name)
+			return pInteractions.getAt(name, null) cast Interaction
+		end
+		
+		/**
+		 * \brief Set interaction.
+		 * 
+		 * If interaction with name is present it is replaced.
+		 */
+		func void setInteractionAt(String name, Interaction interaction)
+			if interaction == null
+				throw ENullPointer.new("interaction")
+			end
+			pInteractions.setAt(name, interaction)
+		end
+		
+		/** \brief Remove interaction if present. */
+		func void removeInteraction(String name)
+			pInteractions.removeIfExisting(name)
+		end
+		
+		/** \brief Array of String interaction names. */
+		func Array getInteractionNames()
+			return pInteractions.getKeys()
+		end
+		
+		
+		/**
+		 * \brief Interact with named interaction if present.
+		 * 
+		 * If named interaction is absent false is returned. Otherwise returns the return
+		 * value of running \ref Interaction#interact().
+		 */
+		func bool interact(String name, BehaviorElement source)
+			return interact(name, Array.new(), source)
+		end
+		
+		/**
+		 * \brief Interact with named interaction with parameters if present.
+		 * 
+		 * If named interaction is absent false is returned. Otherwise returns the return
+		 * value of running \ref Interaction#interact().
+		 */
+		func bool interact(String name, Array parameters, BehaviorElement source)
+			var Interaction interaction = pInteractions.getAt(name, null) cast Interaction
+			return interaction != null if interaction.interact(this, parameters, source) else false
+		end
+	end
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass) super(eclass)
+		eclass.addBehavior(this)
+	end
+	
+	
+	/**
+	 * \brief Helper function to check for element supporting interaction.
+	 * 
+	 * Returns true if element is not null, element has behavior instance and instance has
+	 * named interaction.
+	 */
+	static func bool checkHasInteraction(BehaviorElement element, String interaction)
+		if element == null
+			return false
+		end
+		
+		var Instance instance = getInstanceIn(element)
+		if instance == null
+			return false
+		end
+		
+		return instance.hasInteractionAt(interaction)
+	end
+	
+	static func bool checkHasInteraction(ECBehaviorInstance behavior, String interaction)
+		return behavior != null if checkHasInteraction(behavior.getElement(), interaction) else false
+	end
+	
+	/**
+	 * \brief Helper function to check for element query interaction result.
+	 * 
+	 * Returns true if element is not null, element has behavior instance, instance has
+	 * named interaction and interaction returns true.
+	 */
+	static func bool checkInteraction(BehaviorElement element, String interaction,\
+	Array parameters, BehaviorElement source)
+		if element == null
+			return false
+		end
+		
+		var Instance instance = getInstanceIn(element)
+		if instance == null
+			return false
+		end
+		
+		return instance.interact(interaction, parameters, source)
+	end
+	
+	static func bool checkInteraction(BehaviorElement element, String interaction,\
+	String parameters, BehaviorElement source)
+		return checkInteraction(element, interaction, parameters != null\
+			if CommandLineParser.new().parseCommand(parameters) else Array.new(), source)
+	end
+	
+	static func bool checkInteraction(ECBehaviorInstance behavior, String interaction,\
+	Array parameters, BehaviorElement source)
+		return behavior != null if checkInteraction(behavior.getElement(),\
+			interaction, parameters, source) else false
+	end
+	
+	static func bool checkInteraction(ECBehaviorInstance behavior, String interaction,\
+	String parameters, BehaviorElement source)
+		return checkInteraction(behavior, interaction, parameters != null\
+			if CommandLineParser.new().parseCommand(parameters) else Array.new(), source)
+	end
+	
+	/**
+	 * \brief Helper function to check for element query interaction.
+	 */
+	static func bool checkInteractionBTSM(BehaviorElement element, Dictionary parameters,\
+	String prefix, BehaviorElement source)
+		var bool result = true
+		var Object value
+		
+		value = parameters.getAt(prefix + "has", null)
+		if value != null
+			result &= checkHasInteraction(element,\
+				parameters.getAt(prefix + "name") cast String) == value.equals("true")
+		end
+		
+		value = parameters.getAt(prefix + "query", null)
+		if value != null
+			result &= checkInteraction(element, parameters.getAt(prefix + "name") cast String,\
+				parameters.getAt(prefix + "parameters", null) cast String, source) == value.equals("true")
+		end
+		
+		return result
+	end
+	
+	static func bool checkInteractionBTSM(ECBehaviorInstance behavior, Dictionary parameters,\
+	String prefix, BehaviorElement source)
+		var bool result = true
+		var Object value
+		
+		value = parameters.getAt(prefix + "has", null)
+		if value != null
+			result &= checkHasInteraction(behavior,\
+				parameters.getAt(prefix + "name") cast String) == value.equals("true")
+		end
+		
+		value = parameters.getAt(prefix + "query", null)
+		if value != null
+			result &= checkInteraction(behavior, parameters.getAt(prefix + "name") cast String,\
+				parameters.getAt(prefix + "parameters", null) cast String, source) == value.equals("true")
+		end
+		
+		return result
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	/** \brief Get behavior in element class or null if absent. */
+	static func ECBehaviorInteraction getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorInteraction each
+			return true
+		end) cast ECBehaviorInteraction
+	end
+	
+	/** \brief Get instance in element or null if absent. */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

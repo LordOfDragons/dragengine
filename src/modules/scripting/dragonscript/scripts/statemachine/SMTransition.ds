@@ -52,38 +52,17 @@ class SMTransition
 	end
 	
 	
-	
-	/** \brief Identifier of event triggering transition. */
-	private var String pEvent
-	
-	/** \brief Identifier of state to switch to. */
-	private var String pStateID
-	
-	/** \brief State to switch to or \em null if not cached. */
-	private var WeakReference pState
-	
-	/** \brief Actions as Array of SMStateAction. */
-	private var Array pActions
-	
-	/** \brief Conditions as Array of String identifiers. */
-	private var Array pConditions
-	
-	/** \brief Resolved conditions as Array of SMCondition. */
-	private var Array pResolvedConditions
-	
-	/** \brief Condition mode from eConditionModes. */
-	private var ConditionMode pConditionMode
-	
-	/** \brief Parameters as Dictionary of type String key and String value. */
-	private var Dictionary pParameters
-	
+	var String pEvent, pStateID
+	var Array pActions, pConditions
+	var ConditionMode pConditionMode
+	var Dictionary pParameters
 	
 	
 	/**
 	 * \brief Create state machine transition staying in the same state.
 	 * \param event Event to react to.
 	 */
-	public func new( String event ) this( event, null )
+	func new(String event) this(event, null)
 	end
 	
 	/**
@@ -91,105 +70,111 @@ class SMTransition
 	 * \param event Event to react to.
 	 * \param stateID State to switch to or null to stay in the same state.
 	 */
-	public func new( String event, String stateID )
+	func new(String event, String stateID)
 		if event == null
-			throw ENullPointer.new( "event" )
+			throw ENullPointer.new("event")
 		end
-		this.pEvent = event
-		this.pStateID = stateID
-		this.pState = WeakReference.new()
-		this.pActions = Array.new()
-		this.pConditions = Array.new()
-		this.pConditionMode = ConditionMode.allTrue
-		this.pParameters = Dictionary.new()
+		
+		pEvent = event
+		pStateID = stateID
+		pActions = Array.new()
+		pConditions = Array.new()
+		pConditionMode = ConditionMode.allTrue
+		pParameters = Dictionary.new()
 	end
 	
+	/**
+	 * \brief Create copy of state machine transition.
+	 * \version 1.26
+	 */
+	func new(SMTransition transition)
+		pEvent = transition.pEvent
+		pStateID = transition.pStateID
+		pActions = transition.pActions.map(block SMStateAction each
+			return SMStateAction.new(each)
+		end)
+		pConditions = Array.new(transition.pConditions)
+		pConditionMode = transition.pConditionMode
+		pParameters = Dictionary.new(transition.pParameters)
+	end
 	
 	
 	/** \brief Identifier of event triggering transition. */
-	public func String getEvent()
-		return this.pEvent
+	func String getEvent()
+		return pEvent
 	end
 	
 	/** \brief Identifier of state to switch to or null to stay in the same state. */
-	public func String getStateID()
-		return this.pStateID
+	func String getStateID()
+		return pStateID
 	end
-	
-	/** \brief State to switch to or \em null if not cached. */
-	public func SMState getState()
-		return this.pState.get() cast SMState
-	end
-	
 	
 	
 	/** \brief Count of actions. */
-	public func int getActionCount()
-		return this.pActions.getCount()
+	func int getActionCount()
+		return pActions.getCount()
 	end
 	
 	/** \brief Get action at index. */
-	public func SMStateAction getActionAt( int index )
-		return this.pActions.getAt( index ) cast SMStateAction
+	func SMStateAction getActionAt(int index)
+		return pActions.getAt(index) cast SMStateAction
 	end
 	
 	/** \brief Add action. */
-	public func void addAction( SMStateAction action )
+	func void addAction(SMStateAction action)
 		if action == null
 			throw EInvalidParam.new()
 		end
-		this.pActions.add( action )
+		pActions.add(action)
 	end
 	
 	/** \brief Visit actions with block with parameter SMStateAction. */
-	public func void forEachAction( Block ablock )
-		this.pActions.forEach( ablock )
+	func void forEachAction(Block ablock)
+		pActions.forEach(ablock)
 	end
 	
 	/** \brief Find action with block with parameter SMStateAction. */
-	public func SMStateAction findAction( Block ablock )
-		return this.pActions.find( ablock ) cast SMStateAction
+	func SMStateAction findAction(Block ablock)
+		return pActions.find(ablock) cast SMStateAction
 	end
-	
 	
 	
 	/** \brief Count of conditions. */
-	public func int getConditionCount()
-		return this.pConditions.getCount()
+	func int getConditionCount()
+		return pConditions.getCount()
 	end
 	
 	/** \brief Get condition at index. */
-	public func String getConditionAt( int index )
-		return this.pConditions.getAt( index ) cast String
+	func String getConditionAt(int index)
+		return pConditions.getAt(index) cast String
 	end
 	
 	/** \brief Add condition. */
-	public func void addCondition( String condition )
+	func void addCondition(String condition)
 		if condition == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.add( condition )
-		this.pResolvedConditions = null
+		pConditions.add(condition)
 	end
 	
 	/** \brief Visit conditions with block with parameter String. */
-	public func void forEachCondition( Block ablock )
-		this.pConditions.forEach( ablock )
+	func void forEachCondition(Block ablock)
+		pConditions.forEach(ablock)
 	end
 	
 	/** \brief Find condition with block with parameter String. */
-	public func String findCondition( Block ablock )
-		return this.pConditions.find( ablock ) cast String
+	func String findCondition(Block ablock)
+		return pConditions.find(ablock) cast String
 	end
 	
 	/** \brief Condition mode from eConditionModes. */
-	public func ConditionMode getConditionMode()
-		return this.pConditionMode
+	func ConditionMode getConditionMode()
+		return pConditionMode
 	end
 	
 	/** \brief Set condition mode from eConditionModes. */
-	public func void setConditionMode( ConditionMode mode )
-		this.pConditionMode = mode
+	func void setConditionMode(ConditionMode mode)
+		pConditionMode = mode
 	end
 	
 	/**
@@ -200,37 +185,37 @@ class SMTransition
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func bool evaluateConditions( SMContext context )
-		if this.pResolvedConditions == null
-			this.pResolvedConditions = this.pConditions.map( block String each
-				return context.getCondition( each )
-			end )
-		end
-		
-		if this.pResolvedConditions.getCount() == 0
+	func bool evaluateConditions(SMContext context)
+		if pConditions.getCount() == 0
 			return true
 		end
 		
-		select this.pConditionMode
+		var SMCondition condition
+		
+		select pConditionMode
 		case ConditionMode.allTrue
-			return this.pResolvedConditions.find( block SMCondition each
-				return each == null or not each.evaluateCondition( context, this.pParameters )
-			end ) == null
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
+			end) == null
 			
 		case ConditionMode.anyTrue
-			return this.pResolvedConditions.find( block SMCondition each
-				return each != null and each.evaluateCondition( context, this.pParameters )
-			end ) != null
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
+			end) != null
 			
 		case ConditionMode.anyFalse
-			return this.pResolvedConditions.find( block SMCondition each
-				return each == null or not each.evaluateCondition( context, this.pParameters )
-			end ) != null
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition == null or not condition.evaluateCondition(context, pParameters)
+			end) != null
 			
 		case ConditionMode.allFalse
-			return this.pResolvedConditions.find( block SMCondition each
-				return each != null and each.evaluateCondition( context, this.pParameters )
-			end ) == null
+			return pConditions.find(block String each
+				condition = context.getCondition(each)
+				return condition != null and condition.evaluateCondition(context, pParameters)
+			end) == null
 			
 		else
 			return false
@@ -241,46 +226,87 @@ class SMTransition
 	 * \brief Parameters as Dictionary of type String key and String value.
 	 * \warning Do not change the content of the dictionary as it is shared.
 	 */
-	public func Dictionary getParameters()
-		return this.pParameters
+	func Dictionary getParameters()
+		return pParameters
 	end
 	
+	/**
+	 * \brief Import state.
+	 * \version 1.26
+	 * 
+	 * Adds enter and exit actions as transitions actions. If state has next state set it
+	 */
+	func void importState(SMState state)
+		state.forEachEnterAction(block SMStateAction each
+			pActions.add(each)
+		end)
+		state.forEachExitAction(block SMStateAction each
+			pActions.add(each)
+		end)
+		if state.getNextStateID() != null
+			pStateID = state.getNextStateID()
+		end
+	end
 	
 	
 	/**
 	 * \brief Transition matches event and condition is true.
 	 */
-	public func bool matches( SMContext context, String event )
-		return event.equals( this.pEvent ) and this.evaluateConditions( context )
+	func bool matches(SMContext context, String event)
+		return event.equals(pEvent) and evaluateConditions(context)
 	end
 	
 	/** \brief Run transition. */
-	public func void run( SMContext context )
-		if this.pStateID != null
-			// set state to null. runs exit actions and switches context to "in transition" state.
-			context.setCurrentState( null )
+	func void run(SMContext context)
+		if pStateID != null
+			var String nextState = pStateID
+			
+			// set state to null. runs exit actions and switches context to "in transition"
+			// state. in this state events are delayed until a valid state is set
+			context.setCurrentState(null)
 			
 			// run transition actions
-			this.pActions.forEach( block SMStateAction each
-				each.run( context )
-			end )
+			var Object action = pActions.find(block SMStateAction each
+				return each.run(context) and each.getStateID() != null
+			end)
+			if action != null
+				var SMStateAction sa = action cast SMStateAction
+				if context.getLogStateChanges() and context.getConsole() != null
+					context.getConsole().addMessage(\
+						"Transition action '{}' state change to '{}'".format(Array.newWith(\
+							context.getLoggingName(), sa.getActionID(), sa.getStateID())))
+				end
+				nextState = sa.getStateID()
+			end
 			
 			// set next state. runs enter state actions
-			var SMState state = this.pState.get() cast SMState
+			var SMState state = context.getStateMachine().getStateAt(nextState)
 			if state == null
-				state = context.getStateMachine().getStateAt( this.pStateID )
-				if state == null
-					throw EInvalidParam.new( "unknown state '" + this.pStateID + "'" )
-				end
-				this.pState.set( state )
+				throw EInvalidParam.new("unknown state '" + nextState + "'")
 			end
-			context.setCurrentState( state )
+			
+			context.setCurrentState(state)
 			
 		else
 			// only run transition actions
-			this.pActions.forEach( block SMStateAction each
-				each.run( context )
-			end )
+			var Object action = pActions.find(block SMStateAction each
+				return each.run(context) and each.getStateID() != null
+			end)
+			if action != null
+				var SMStateAction sa = action cast SMStateAction
+				if context.getLogStateChanges() and context.getConsole() != null
+					context.getConsole().addMessage(\
+						"Transition action '{}' state change to '{}'".format(Array.newWith(\
+							context.getLoggingName(), sa.getActionID(), sa.getStateID())))
+				end
+				
+				var SMState state = context.getStateMachine().getStateAt(sa.getStateID())
+				if state == null
+					throw EInvalidParam.new("unknown state '" + sa.getStateID() + "'")
+				end
+				
+				context.setCurrentState(state)
+			end
 		end
 	end
 end

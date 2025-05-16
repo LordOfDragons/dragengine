@@ -208,6 +208,12 @@ public:
 	 */
 	virtual void StopRuntime();
 	
+	/**
+	 * \brief VR runtime is running.
+	 * \version 1.26
+	 */
+	virtual bool IsRuntimeRunning();
+	
 	/** Camera or nullptr. */
 	inline deCamera *GetCamera() const{ return pCamera; }
 	

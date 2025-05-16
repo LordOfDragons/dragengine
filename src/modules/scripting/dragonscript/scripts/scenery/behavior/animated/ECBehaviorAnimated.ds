@@ -30,6 +30,8 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -207,6 +209,18 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: use named controller instead of first controller. default is empty string -->
 	 *   <string name='controllerName'>playback</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -216,7 +230,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -237,8 +251,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "animated", id)
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "animated", id)
 			return behavior
 		end
 		
@@ -257,8 +272,96 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "animated{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("playing", null)
+				if value != null
+					pInstance.setPlaying(value.equals("true"))
+				end
+				
+				value = parameters.getAt("time", null)
+				if value != null
+					pInstance.setTime((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("time.relative", null)
+				if value != null
+					pInstance.setTimeRelative((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "animated{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "playing", null)
+				if value != null
+					result &= pInstance.getPlaying() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "time.less", null)
+				if value != null
+					result &= pInstance.getTime() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.greater", null)
+				if value != null
+					result &= pInstance.getTime() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.relative.less", null)
+				if value != null
+					result &= pInstance.getTimeRelative() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.relative.greater", null)
+				if value != null
+					result &= pInstance.getTimeRelative() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Trigger listener to start playing back. */
-		public class PlayingListener extends ECBehaviorTriggered.DefaultListener
+		private class PlayingListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -286,6 +389,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		var Array pListeners
 		
 		var ECBehaviorComponent.Instance pComponent
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -306,6 +410,7 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			pTrigger = null
 			pTargetPlaying = null
 			pListeners = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -347,6 +452,14 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			end
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		/**
@@ -416,6 +529,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.startPlaying(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startPlaying")
+				end
 				
 				if pPlayback.getController() == null and not pPlayback.getLooping()
 					// animator is missing or incorrectly set up while playback is not looping.
@@ -429,6 +545,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.stopPlaying(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopPlaying")
+				end
 			end
 		end
 		
@@ -440,6 +559,22 @@ class ECBehaviorAnimated extends DefaultECBehavior
 		/** \brief Set playback time. */
 		func void setTime(float time)
 			pPlayback.setTime(time)
+		end
+		
+		/**
+		 * \brief Relative playback time in the range from 0 to 1.
+		 * \version 1.26
+		 */
+		func float getTimeRelative()
+			return pPlayback.getTimeRelative()
+		end
+		
+		/**
+		 * \brief Set relative playback time in the range from 0 to 1.
+		 * \version 1.26
+		 */
+		func void setTimeRelative(float time)
+			pPlayback.setTimeRelative(time)
 		end
 		
 		/**
@@ -500,6 +635,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.startPlaying(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startPlaying")
+				end
 			end
 		end
 		
@@ -556,6 +694,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stopPlaying(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stopPlaying")
+			end
 		end
 		
 		
@@ -597,6 +738,8 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	var ECPBoolean pApplyPostThink
 	var TSTriggerTable pTriggerTable
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -637,9 +780,11 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			throw ENullPointer.new("component")
 		end
 		
+		pPrefix = prefix
 		pComponent = component
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pAnimator = ECComposeAnimator.new(eclass, loaders, prefix)
 		
@@ -658,10 +803,19 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	func void dispose()
 		pComponent = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Component behavior to animate. */
 	func ECBehaviorComponent getComponent()
@@ -709,6 +863,14 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

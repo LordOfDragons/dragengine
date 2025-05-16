@@ -32,6 +32,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.SpeechAnimations
 pin Dragengine.Utils.StyledText.Definition
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -172,7 +173,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener2
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/**
@@ -180,16 +181,16 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * Default implementation returns false.
 		 */
-		public func bool wait(Instance instance)
+		func bool wait(Instance instance)
 			return false
 		end
 		
 		/** \brief Actor entered conversation. */
-		public func void enterConversation(Instance instance)
+		func void enterConversation(Instance instance)
 		end
 		
 		/** \brief Actor left conversation. */
-		public func void leaveConversation(Instance instance)
+		func void leaveConversation(Instance instance)
 		end
 		
 		/**
@@ -200,7 +201,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * Default implementation returns \em widget.
 		 */
-		public func SubTitleBoxText modifySubTitleText(Instance instance, \
+		func SubTitleBoxText modifySubTitleText(Instance instance, \
 		SubTitleBoxText widget, UnicodeString text, StringID style)
 			return widget
 		end
@@ -217,7 +218,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * \param action Action starting speech or null if called otherwise.
 		 */
-		public func void beginActorSpeech(Instance instance, CActionActorSpeak action)
+		func void beginActorSpeech(Instance instance, CActionActorSpeak action)
 		end
 	end
 	
@@ -229,10 +230,10 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -240,7 +241,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -265,49 +266,49 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	
 	/** \brief Behavior conversation actor. */
 	public class BehaviorConversationActor extends ConversationActor
-		private var Instance pInstance
+		var Instance pInstance
 		
-		public func new(Instance instance, StringID id) super(id)
+		func new(Instance instance, StringID id) super(id)
 			pInstance = instance
 		end
 		
-		public func void dispose()
+		func void dispose()
 			pInstance = null
 		end
 		
-		public func Instance getInstance()
+		func Instance getInstance()
 			return pInstance
 		end
 		
-		public func bool wait()
+		func bool wait()
 			return pInstance.onWait()
 		end
 		
-		public func void command(String command)
+		func void command(String command)
 			pInstance.runCommand(command)
 		end
 		
-		public func bool conditionCommand(String command)
+		func bool conditionCommand(String command)
 			return pInstance.evaluateCondition(command)
 		end
 		
-		public func void beginActorSpeech(CActionActorSpeak action)
+		func void beginActorSpeech(CActionActorSpeak action)
 			pInstance.onBeginActorSpeech(action)
 		end
 		
-		public func void enterConversation()
+		func void enterConversation()
 			pInstance.onEnterConversation()
 		end
 		
-		public func void leaveConversation()
+		func void leaveConversation()
 			pInstance.onLeaveConversation()
 		end
 		
-		public func DMatrix getMatrix()
+		func DMatrix getMatrix()
 			return pInstance.getElement().getElementMatrix()
 		end
 		
-		public func DMatrix getMatrix(String bone)
+		func DMatrix getMatrix(String bone)
 			var DMatrix matrix = pInstance.getElement().getElementMatrix()
 			if bone != null
 				var ECBehaviorComponent.Instance component = pInstance.getComponent()
@@ -319,11 +320,11 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			return matrix
 		end
 		
-		public func DMatrix getInverseMatrix()
+		func DMatrix getInverseMatrix()
 			return pInstance.getElement().getInverseElementMatrix()
 		end
 		
-		public func DMatrix getInverseMatrix(String bone)
+		func DMatrix getInverseMatrix(String bone)
 			var DMatrix matrix = pInstance.getElement().getInverseElementMatrix()
 			if bone != null
 				var ECBehaviorComponent.Instance component = pInstance.getComponent()
@@ -335,7 +336,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			return matrix
 		end
 		
-		public func SubTitleBoxText createSubTitleText(UnicodeString text, StringID style)
+		func SubTitleBoxText createSubTitleText(UnicodeString text, StringID style)
 			return pInstance.createSubTitleText(text, style)
 		end
 	end
@@ -363,13 +364,16 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 *   <!-- optional: use two state animated with id instead of empty string -->
 	 *   <string name='twoStateAnimated'>second</string>
 	 * 
-	 *   <!-- optional: add behavior trees. default adds behavior tree with empty string if present. -->
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
-	 *     <!-- add behavior with empty identifier -->
-	 *     <string/>
-	 *     
-	 *     <!-- add behavior with 'default' identifier -->
-	 *     <string>default</string>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
 	 *   </list>
 	 * 
 	 *   <!-- optional: use BaseGameApp subtitle theme. game can add more supported values.
@@ -379,7 +383,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -422,8 +426,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				behavior.setSubtitleTheme(getSubtitleThemeFor(parameters.getAt("subtitleTheme") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "convoActor")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "convoActor")
 			return behavior
 		end
 		
@@ -445,109 +448,142 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Actor animated behavior listener. */
 		private class ActorAnimatedListener extends ECBehaviorActorAnimated.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void updateControllers(ECBehaviorActorAnimated.Instance instance, float elapsed)
+			func void updateControllers(ECBehaviorActorAnimated.Instance instance, float elapsed)
 				pInstance.updateAnimators(elapsed, instance.getAnimatorInstance())
 			end
 			
-			public func void animationApplied(ECBehaviorActorAnimated.Instance instance)
+			func void animationApplied(ECBehaviorActorAnimated.Instance instance)
 				pInstance.applyAnimations()
 			end
 		end
 		
 		/** \brief Animated behavior listener. */
 		private class AnimatedListener extends ECBehaviorAnimated.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void updateControllers(ECBehaviorAnimated.Instance instance, float elapsed)
+			func void updateControllers(ECBehaviorAnimated.Instance instance, float elapsed)
 				pInstance.updateLocomotion(elapsed)
 				pInstance.updateAnimators(elapsed, instance.getAnimatorInstance())
 			end
 			
-			public func void animationApplied(ECBehaviorAnimated.Instance instance)
+			func void animationApplied(ECBehaviorAnimated.Instance instance)
 				pInstance.applyAnimations()
 			end
 		end
 		
 		/** \brief Animated behavior listener. */
 		private class TwoStateAnimatedListener extends ECBehaviorTwoStateAnimated.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void updateControllers(ECBehaviorTwoStateAnimated.Instance instance, float elapsed)
+			func void updateControllers(ECBehaviorTwoStateAnimated.Instance instance, float elapsed)
 				pInstance.updateLocomotion(elapsed)
 				pInstance.updateAnimators(elapsed, instance.getAnimatorInstance())
 			end
 			
-			public func void animationApplied(ECBehaviorTwoStateAnimated.Instance instance)
+			func void animationApplied(ECBehaviorTwoStateAnimated.Instance instance)
 				pInstance.applyAnimations()
 			end
 		end
 		
 		/** \brief Behavior tree condition "conversationActor.inConversation". */
-		class BTCInConversation implements BTCondition
+		class BTCInConversation extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return pInstance.isInConversation()
 			end
 		end
 		
 		/** \brief Behavior tree condition "conversationActor.notInConversation". */
-		class BTCNotInConversation implements BTCondition
+		class BTCNotInConversation extends BTSMActionCondition
 			var Instance pInstance
 			
 			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			func bool evaluateCondition(BTContext context, Dictionary parameters)
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
 				return pInstance.isNotInConversation()
 			end
 		end
 		
+		/**
+		 * \brief Behavior tree action/condition "conversationActor.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("locomotion")
+					pInstance.updateLocomotion((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				if parameters.has("clearAllPlayback")
+					pInstance.clearAllPlayback()
+				end
+				
+				if parameters.has("applyAnimations")
+					pInstance.applyAnimations()
+				end
+				
+				if parameters.has("headLookAt.clear")
+					pInstance.getConversationActor().getHeadLookAtPlayback().clearLookAtState()
+				end
+				
+				return BTResult.success
+			end
+		end
 		
-		private var ECBehaviorConversationActor pECBehavior
 		
-		private var ECBehaviorComponent.Instance pComponent
-		private var ECBehaviorParameterTable.Instance pParameterTable
-		private var ECBehaviorActorAnimated.Instance pActorAnimated
-		private var ECBehaviorAnimated.Instance pAnimated
-		private var ECBehaviorTwoStateAnimated.Instance pTwoStateAnimated
-		private var ECBehaviorLocomotion.Instance pLocomotion
 		
-		private var ConversationTagResolver pTagResolver
-		private var CommandLineParser pCommandParser
-		private var GuiTheme pSubtitleTheme
-		private var String pSubtitleSelectorId
-		private var Dictionary pCommands
-		private var Dictionary pConditions
-		private var Dictionary pBoneMappings
-		private var bool pRegisterConversationActor
-		private var BehaviorConversationActor pConversationActor
+		var ECBehaviorConversationActor pECBehavior
 		
-		private var Array pListeners
+		var ECBehaviorComponent.Instance pComponent
+		var ECBehaviorParameterTable.Instance pParameterTable
+		var ECBehaviorActorAnimated.Instance pActorAnimated
+		var ECBehaviorAnimated.Instance pAnimated
+		var ECBehaviorTwoStateAnimated.Instance pTwoStateAnimated
+		var ECBehaviorLocomotion.Instance pLocomotion
+		
+		var ConversationTagResolver pTagResolver
+		var CommandLineParser pCommandParser
+		var GuiTheme pSubtitleTheme
+		var String pSubtitleSelectorId
+		var Dictionary pCommands
+		var Dictionary pConditions
+		var Dictionary pBoneMappings
+		var bool pRegisterConversationActor
+		var BehaviorConversationActor pConversationActor
+		
+		var Array pListeners
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorConversationActor ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorConversationActor ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pSubtitleTheme = ecbehavior.getSubtitleTheme()
 			pCommands = Dictionary.new()
@@ -557,7 +593,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			if pConversationActor != null
 				if pConversationActor.getPlayback() != null
 					pConversationActor.getPlayback().removeActor(pConversationActor)
@@ -590,7 +626,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
 			
 			if pECBehavior.getActorAnimated() != null
@@ -636,11 +672,13 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			
 			pECBehavior.createListeners(this)
 			
-			pECBehavior.forEachBehaviorTree(block ECBehaviorBehaviorTree each
-				var BTContext context = each.instance(element).getContext()
-				context.setCondition("conversationActor.inConversation", BTCInConversation.new(this))
-				context.setCondition("conversationActor.notInConversation", BTCNotInConversation.new(this))
-			end)
+			if pECBehavior.getBTSM().hasAny()
+				var String prefix = "conversationActor."
+				var ECComposeBTSM.Instance helper = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSM())
+				helper.addAllAction(prefix, "update", BTAUpdate.new(this))
+				helper.addAllCondition(prefix, "inConversation", BTCInConversation.new(this))
+				helper.addAllCondition(prefix, "notInConversation", BTCNotInConversation.new(this))
+			end
 		end
 		
 		/** \brief Create conversation actor. */
@@ -708,49 +746,49 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorConversationActor getECBehavior()
+		func ECBehaviorConversationActor getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Component behavior. */
-		public func ECBehaviorComponent.Instance getComponent()
+		func ECBehaviorComponent.Instance getComponent()
 			return pComponent
 		end
 		
 		/** \brief Parameter table behavior or null. */
-		public func ECBehaviorParameterTable.Instance getParameterTable()
+		func ECBehaviorParameterTable.Instance getParameterTable()
 			return pParameterTable
 		end
 		
 		/** \brief Actor animated behavior or null. */
-		public func ECBehaviorActorAnimated.Instance getActorAnimated()
+		func ECBehaviorActorAnimated.Instance getActorAnimated()
 			return pActorAnimated
 		end
 		
 		/** \brief Animated behavior or null. */
-		public func ECBehaviorAnimated.Instance getAnimated()
+		func ECBehaviorAnimated.Instance getAnimated()
 			return pAnimated
 		end
 		
 		/** \brief Two-State Animated behavior or null. */
-		public func ECBehaviorTwoStateAnimated.Instance getTwoStateAnimated()
+		func ECBehaviorTwoStateAnimated.Instance getTwoStateAnimated()
 			return pTwoStateAnimated
 		end
 		
 		/** \brief Locomotion behavior or null. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
+		func ECBehaviorLocomotion.Instance getLocomotion()
 			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Tag resolver. */
-		public func ConversationTagResolver getTagResolver()
+		func ConversationTagResolver getTagResolver()
 			return pTagResolver
 		end
 		
 		/** \brief Set tag resolver. */
-		public func void setTagResolver(ConversationTagResolver resolver)
+		func void setTagResolver(ConversationTagResolver resolver)
 			if resolver == null
 				throw EInvalidParam.new()
 			end
@@ -762,7 +800,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * If \em null uses the playback sub title box gui theme.
 		 */
-		public func GuiTheme getSubtitleTheme()
+		func GuiTheme getSubtitleTheme()
 			return pSubtitleTheme
 		end
 		
@@ -771,7 +809,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * If \em guiTheme is \em null uses the playback sub title box gui theme.
 		 */
-		public func void setSubtitleTheme(GuiTheme guiTheme)
+		func void setSubtitleTheme(GuiTheme guiTheme)
 			pSubtitleTheme = guiTheme
 		end
 		
@@ -784,7 +822,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * - Label.SubTitleBoxText.Text{.<selectorId>}{.<style>}
 		 * - Label.SubTitleBoxText.Name{.<selectorId>}{.<style>}
 		 */
-		public func String getSubtitleSelectorId()
+		func String getSubtitleSelectorId()
 			return pSubtitleSelectorId
 		end
 		
@@ -797,17 +835,17 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * - Label.SubTitleBoxText.Text{.<selectorId>}{.<style>}
 		 * - Label.SubTitleBoxText.Name{.<selectorId>}{.<style>}
 		 */
-		public func void setSubtitleSelectorId(String selectorId)
+		func void setSubtitleSelectorId(String selectorId)
 			pSubtitleSelectorId = selectorId
 		end
 		
 		/** \brief Command parser. */
-		public func CommandLineParser getCommandParser()
+		func CommandLineParser getCommandParser()
 			return pCommandParser
 		end
 		
 		/** \brief Set command parser. */
-		public func void setCommandParser(CommandLineParser parser)
+		func void setCommandParser(CommandLineParser parser)
 			if parser == null
 				throw EInvalidParam.new()
 			end
@@ -815,34 +853,34 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		/** \brief Register conversation actor with game world. */
-		public func bool getRegisterConversationActor()
+		func bool getRegisterConversationActor()
 			return pRegisterConversationActor
 		end
 		
 		/** \brief Conversation actor. */
-		public func ConversationActor getConversationActor()
+		func ConversationActor getConversationActor()
 			return pConversationActor
 		end
 		
 		
 		
 		/** \brief Count of conversation commands. */
-		public func int getCommandCount()
+		func int getCommandCount()
 			return pCommands.getCount()
 		end
 		
 		/** \brief Supported command names as Array of String. */
-		public func Array getCommandNames()
+		func Array getCommandNames()
 			return pCommands.getKeys()
 		end
 		
 		/** \brief Named command or null if absent. */
-		public func ConversationCommand getCommandNamed(String name)
+		func ConversationCommand getCommandNamed(String name)
 			return pCommands.getAt(name, null) cast ConversationCommand
 		end
 		
 		/** \brief Add command replacing command with same name if present. */
-		public func void addCommand(String name, ConversationCommand command)
+		func void addCommand(String name, ConversationCommand command)
 			if name == null or command == null
 				throw EInvalidParam.new()
 			end
@@ -852,22 +890,22 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		
 		/** \brief Count of conversation condition. */
-		public func int getConditionCount()
+		func int getConditionCount()
 			return pConditions.getCount()
 		end
 		
 		/** \brief Supported condition names as Array of String. */
-		public func Array getConditionNames()
+		func Array getConditionNames()
 			return pConditions.getKeys()
 		end
 		
 		/** \brief Named condition or null if absent. */
-		public func ConversationCondition getConditionNamed(String name)
+		func ConversationCondition getConditionNamed(String name)
 			return pConditions.getAt(name, null) cast ConversationCondition
 		end
 		
 		/** \brief Add condition replacing condition with same name if present. */
-		public func void addCondition(String name, ConversationCondition condition)
+		func void addCondition(String name, ConversationCondition condition)
 			if name == null or condition == null
 				throw EInvalidParam.new()
 			end
@@ -880,7 +918,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * \brief Count of bone mappings.
 		 * \version 1.5
 		 */
-		public func int getBoneMappingCount()
+		func int getBoneMappingCount()
 			return pBoneMappings.getCount()
 		end
 		
@@ -888,7 +926,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * \brief Mapped bone or \em bone if no matching mapping is present.
 		 * \version 1.5
 		 */
-		public func String mapBone(String bone)
+		func String mapBone(String bone)
 			return pBoneMappings.getAt(bone, bone) cast String
 		end
 		
@@ -896,7 +934,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * \brief Set bone mapping.
 		 * \version 1.5
 		 */
-		public func void setBoneMapping(String bone, String mappedBone)
+		func void setBoneMapping(String bone, String mappedBone)
 			if bone == null or mappedBone == null
 				throw EInvalidParam.new()
 			end
@@ -907,7 +945,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * \brief Remove bone mapping if present.
 		 * \version 1.5
 		 */
-		public func void removeBoneMapping(String bone)
+		func void removeBoneMapping(String bone)
 			pBoneMappings.removeIfExisting(bone)
 		end
 		
@@ -915,7 +953,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * \brief Remove all bone mappings.
 		 * \version 1.5
 		 */
-		public func void removeAllBoneMappings()
+		func void removeAllBoneMappings()
 			pBoneMappings.removeAll()
 		end
 		
@@ -925,69 +963,69 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * Block receives as first argument String bone and as second String mappedBone.
 		 */
-		public func void forEachBoneMapping(Block ablock)
+		func void forEachBoneMapping(Block ablock)
 			pBoneMappings.forEach(ablock)
 		end
 		
 		
 		
 		/** \brief Clear all playback after adding to game world or spawning. */
-		public func void clearAllPlayback()
+		func void clearAllPlayback()
 			if pConversationActor != null
 				pConversationActor.clearAllPlayback()
 			end
 		end
 		
 		/** \brief Update playback changing locomotion. */
-		public func void updateLocomotion(float elapsed)
+		func void updateLocomotion(float elapsed)
 			if pConversationActor != null
 				pConversationActor.updateBeforeLocomotion(elapsed)
 			end
 		end
 		
 		/** \brief Update playback changing animators. */
-		public func void updateAnimators(float elapsed, ECBehaviorActorAnimated.Instance behavior)
+		func void updateAnimators(float elapsed, ECBehaviorActorAnimated.Instance behavior)
 			updateAnimators(elapsed, behavior.getAnimatorInstance())
 		end
 		
-		public func void updateAnimators(float elapsed, AnimatorInstance sourceAnimatorInstance)
+		func void updateAnimators(float elapsed, AnimatorInstance sourceAnimatorInstance)
 			if pConversationActor != null
 				pConversationActor.updateAfterLocomotion(elapsed, sourceAnimatorInstance)
 			end
 		end
 		
 		/** \brief Apply animations. */
-		public func void applyAnimations()
+		func void applyAnimations()
 			if pConversationActor != null
 				pConversationActor.applyAnimations()
 			end
 		end
 		
 		/** \brief Actor is in a conversation. */
-		public func bool isInConversation()
+		func bool isInConversation()
 			return pConversationActor != null and pConversationActor.getPlayback() != null
 		end
 		
 		/** \brief Actor is not in a conversation. */
-		public func bool isNotInConversation()
+		func bool isNotInConversation()
 			return pConversationActor == null or pConversationActor.getPlayback() == null
 		end
 		
 		
 		
 		/** \brief Ask listeners if conversation actions waiting for actor should block. */
-		public func bool onWait()
+		func bool onWait()
 			return pListeners.find(block Listener each
 				return each.wait(this)
 			end) != null
 		end
 		
 		/** \brief Command send by the conversation script. */
-		public func void runCommand(String command)
+		func void runCommand(String command)
 			runCommand(pCommandParser.parseCommand(command))
 		end
 		
-		public func void runCommand(Array arguments)
+		func void runCommand(Array arguments)
 			if arguments.getCount() == 0
 				throw EInvalidParam.new("arguments is empty")
 			end
@@ -1002,11 +1040,11 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		/** \brief Evaluate condition send by the conversation script. */
-		public func bool evaluateCondition(String command)
+		func bool evaluateCondition(String command)
 			return evaluateCondition(pCommandParser.parseCommand(command))
 		end
 		
-		public func bool evaluateCondition(Array arguments)
+		func bool evaluateCondition(Array arguments)
 			if arguments.getCount() == 0
 				throw EInvalidParam.new("arguments is empty")
 			end
@@ -1032,14 +1070,14 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * \param action Action starting speech or null if called otherwise.
 		 */
-		public func void onBeginActorSpeech(CActionActorSpeak action)
+		func void onBeginActorSpeech(CActionActorSpeak action)
 			pListeners.forEachCastable(block Listener2 each
 				each.beginActorSpeech(this, action)
 			end)
 		end
 		
 		/** \brief Actor entered a conversation. */
-		public func void onEnterConversation()
+		func void onEnterConversation()
 			pListeners.forEach(block Listener each
 				each.enterConversation(this)
 			end)
@@ -1050,7 +1088,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * Calls leaveConversationTasks() then notifies listeners.
 		 */
-		public func void onLeaveConversation()
+		func void onLeaveConversation()
 			leaveConversationTasks()
 			pListeners.forEach(block Listener each
 				each.leaveConversation(this)
@@ -1066,7 +1104,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * - Clear face poses if existing
 		 * - Clear eye look-at playback if existing
 		 */
-		public func void leaveConversationTasks()
+		func void leaveConversationTasks()
 			var SpeechAnimationPlayback sap = pConversationActor.getSpeechAnimationPlayback()
 			if sap != null
 				sap.removeAllPhonemes()
@@ -1093,7 +1131,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * 
 		 * Calls createSubTitleTextWidget() then allows listeners to modify it.
 		 */
-		public func SubTitleBoxText createSubTitleText(UnicodeString text, StringID style)
+		func SubTitleBoxText createSubTitleText(UnicodeString text, StringID style)
 			var ObjectReference stbt = ObjectReference.new(createSubTitleTextWidget(text, style))
 			pListeners.forEach(block Listener each
 				stbt.set(each.modifySubTitleText(this, stbt.get() cast SubTitleBoxText, text, style))
@@ -1113,7 +1151,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		 * \param text Text to speak.
 		 * \param style Identifier of style to adjust font, color or sub title in general.
 		 */
-		public func SubTitleBoxText createSubTitleTextWidget(UnicodeString text, StringID style)
+		func SubTitleBoxText createSubTitleTextWidget(UnicodeString text, StringID style)
 			var String nameUtf8 = pConversationActor.getName().toString()
 			var StyledTextDefinition styledName, styledText
 			var String textUtf8 = text.toString()
@@ -1180,7 +1218,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -1188,14 +1226,14 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Add to game world. */
-		public func void addToGameWorld()
+		func void addToGameWorld()
 			if pConversationActor == null
 				return
 			end
@@ -1207,7 +1245,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		/** \brief Remove from game world. */
-		public func void removeFromGameWorld()
+		func void removeFromGameWorld()
 			if pConversationActor == null
 				return
 			end
@@ -1221,7 +1259,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				pSubtitleSelectorId = reader.readString8()
@@ -1235,7 +1273,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			writer.writeString8(pSubtitleSelectorId)
@@ -1247,29 +1285,29 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	
 	
 	
-	private var ECPStringID pActorId
-	private var ECPStringID pAliasId
-	private var ECPUnicodeString pName
-	private var ECPString pSubtitleSelectorId
-	private var ECPString pHeadRotatorBone
-	private var ECPVector pHeadRotatorOffset
-	private var ECPBoolean pRegisterConversationActor
-	private var ECBehaviorActorAnimated pActorAnimated
-	private var ECBehaviorAnimated pAnimated
-	private var ECBehaviorTwoStateAnimated pTwoStateAnimated
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECBehaviorParameterTable pParameterTable
-	private var GuiTheme pSubtitleTheme
-	private var Array pListenerFactories
-	private var Array pBehaviorTrees
+	var ECPStringID pActorId
+	var ECPStringID pAliasId
+	var ECPUnicodeString pName
+	var ECPString pSubtitleSelectorId
+	var ECPString pHeadRotatorBone
+	var ECPVector pHeadRotatorOffset
+	var ECPBoolean pRegisterConversationActor
+	var ECBehaviorActorAnimated pActorAnimated
+	var ECBehaviorAnimated pAnimated
+	var ECBehaviorTwoStateAnimated pTwoStateAnimated
+	var ECBehaviorLocomotion pLocomotion
+	var ECBehaviorParameterTable pParameterTable
+	var GuiTheme pSubtitleTheme
+	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass) this(eclass, "convoActor.")
+	func new(BehaviorElementClass eclass) this(eclass, "convoActor.")
 	end
 	
-	public func new(BehaviorElementClass eclass, String prefix) super(eclass)
+	func new(BehaviorElementClass eclass, String prefix) super(eclass)
 		if getBehaviorIn(eclass) != null
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
@@ -1280,7 +1318,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		pListenerFactories = Array.new()
-		pBehaviorTrees = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		pActorId = ECPStringID.new(prefix + "id", null)
 		eclass.addProperty(pActorId)
@@ -1307,8 +1345,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		pBehaviorTrees = null
+	func void dispose()
+		pBTSMs = null
 		pActorAnimated = null
 		pAnimated = null
 		pTwoStateAnimated = null
@@ -1321,97 +1359,97 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	
 	
 	/** \brief Actor identifier. */
-	public func ECPStringID getActorId()
+	func ECPStringID getActorId()
 		return pActorId
 	end
 	
 	/** \brief Alias identifier. */
-	public func ECPStringID getAliasId()
+	func ECPStringID getAliasId()
 		return pAliasId
 	end
 	
 	/** \brief Name shown in sub title box. */
-	public func ECPUnicodeString getName()
+	func ECPUnicodeString getName()
 		return pName
 	end
 	
 	/** \brief SUb title style selector ID. */
-	public func ECPString getSubtitleSelectorId()
+	func ECPString getSubtitleSelectorId()
 		return pSubtitleSelectorId
 	end
 	
 	/** \brief Head rotator bone or empty string to not use. */
-	public func ECPString getHeadRotatorBone()
+	func ECPString getHeadRotatorBone()
 		return pHeadRotatorBone
 	end
 	
 	/** \brief Head rotator offset used for Head-Look-At handling. */
-	public func ECPVector getHeadRotatorOffset()
+	func ECPVector getHeadRotatorOffset()
 		return pHeadRotatorOffset
 	end
 	
 	/** \brief Register conversation actor with game world. */
-	public func ECPBoolean getRegisterConversationActor()
+	func ECPBoolean getRegisterConversationActor()
 		return pRegisterConversationActor
 	end
 	
 	/** \brief Attach to actor animated behavior or null. */
-	public func ECBehaviorActorAnimated getActorAnimated()
+	func ECBehaviorActorAnimated getActorAnimated()
 		return pActorAnimated
 	end
 	
 	/** \brief Set actor animated behavior to attach to or null. */
-	public func void setActorAnimated(ECBehaviorActorAnimated actorAnimated)
+	func void setActorAnimated(ECBehaviorActorAnimated actorAnimated)
 		pActorAnimated = actorAnimated
 	end
 	
 	/** \brief Attach to animated behavior or null. */
-	public func ECBehaviorAnimated getAnimated()
+	func ECBehaviorAnimated getAnimated()
 		return pAnimated
 	end
 	
 	/** \brief Set animated behavior to attach to or null. */
-	public func void setAnimated(ECBehaviorAnimated animated)
+	func void setAnimated(ECBehaviorAnimated animated)
 		pAnimated = animated
 	end
 	
 	/** \brief Attach to animated behavior or null. */
-	public func ECBehaviorTwoStateAnimated getTwoStateAnimated()
+	func ECBehaviorTwoStateAnimated getTwoStateAnimated()
 		return pTwoStateAnimated
 	end
 	
 	/** \brief Set animated behavior to attach to or null. */
-	public func void setTwoStateAnimated(ECBehaviorTwoStateAnimated animated)
+	func void setTwoStateAnimated(ECBehaviorTwoStateAnimated animated)
 		pTwoStateAnimated = animated
 	end
 	
 	/** \brief Locomotion behavior or null. */
-	public func ECBehaviorLocomotion getLocomotion()
+	func ECBehaviorLocomotion getLocomotion()
 		return pLocomotion
 	end
 	
 	/** \brief Set locomotion behavior or null. */
-	public func void setLocomotion(ECBehaviorLocomotion locomotion)
+	func void setLocomotion(ECBehaviorLocomotion locomotion)
 		pLocomotion = locomotion
 	end
 	
 	/** \brief Parameter table behavior or null. */
-	public func ECBehaviorParameterTable getParameterTable()
+	func ECBehaviorParameterTable getParameterTable()
 		return pParameterTable
 	end
 	
 	/** \brief Set parameter table behavior or null. */
-	public func void setParameterTable(ECBehaviorParameterTable parameterTable)
+	func void setParameterTable(ECBehaviorParameterTable parameterTable)
 		pParameterTable = parameterTable
 	end
 	
 	/** \brief Gui theme to use for sub title box creation. */
-	public func GuiTheme getSubtitleTheme()
+	func GuiTheme getSubtitleTheme()
 		return pSubtitleTheme
 	end
 	
 	/** \brief Set gui theme to use for sub title box creation. */
-	public func void setSubtitleTheme(GuiTheme guiTheme)
+	func void setSubtitleTheme(GuiTheme guiTheme)
 		pSubtitleTheme = guiTheme
 	end
 	
@@ -1420,10 +1458,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 * \version 1.19
 	 */
 	func void addBehaviorTree(ECBehaviorBehaviorTree behavior)
-		if behavior == null
-			throw ENullPointer.new("behavior")
-		end
-		pBehaviorTrees.add(behavior)
+		pBTSMs.addBehaviorTree(behavior)
 	end
 	
 	/**
@@ -1432,13 +1467,20 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 * \param ablock Block with parameter ECBehaviorBehaviorTree.
 	 */
 	func void forEachBehaviorTree(Block ablock)
-		pBehaviorTrees.forEach(ablock)
+		pBTSMs.forEachBehaviorTree(ablock)
+	end
+	
+	/**
+	 * \brief Composed behavior tree and state machine support.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSM()
+		return pBTSMs
 	end
 	
 	
-	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -1450,17 +1492,17 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -1469,7 +1511,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -1499,7 +1541,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorConversationActor.
 	 */
-	static public func ECBehaviorConversationActor getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorConversationActor getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorConversationActor each
 			return true
 		end) cast ECBehaviorConversationActor
@@ -1511,7 +1553,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorConversationActor.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -1520,7 +1562,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

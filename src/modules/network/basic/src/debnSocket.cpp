@@ -35,20 +35,24 @@
 #include <dragengine/common/exceptions.h>
 
 #ifdef OS_UNIX
-#	include <errno.h>
-#	include <netdb.h>
-#	include <sys/poll.h>
-#	include <ifaddrs.h>
-#	include <net/if.h>
-#	include <unistd.h>
+	#include <errno.h>
+	#include <netdb.h>
+	#ifdef OS_WEBWASM
+		#include <poll.h>
+	#else
+		#include <sys/poll.h>
+	#endif
+	#include <ifaddrs.h>
+	#include <net/if.h>
+	#include <unistd.h>
 #endif
 
 #ifdef OS_BEOS
-#	include <sys/sockio.h>
+	#include <sys/sockio.h>
 #endif
 
 #ifdef OS_W32
-#	include <iphlpapi.h>
+	#include <iphlpapi.h>
 typedef int socklen_t;
 #endif
 

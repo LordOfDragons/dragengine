@@ -91,6 +91,8 @@ private:
 	
 	DEF_NATFUNC( nfToHexString );
 	DEF_NATFUNC( nfNewFromHexString );
+	DEF_NATFUNC(nfZero);
+	DEF_NATFUNC(nfNotZero);
 	
 	DEF_NATFUNC( nfReadFromFile );
 	DEF_NATFUNC( nfWriteToFile );

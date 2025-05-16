@@ -1,4 +1,9 @@
-UBOLAYOUT uniform RenderParameters{
+/*
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+*/
+
+UBOLAYOUT_BIND(0) uniform RenderParameters{
 	vec4 pAmbient;
 	mat4x3 pMatrixV[6];
 	mat4 pMatrixP[2];
@@ -41,7 +46,7 @@ UBOLAYOUT uniform RenderParameters{
 	// clip plane if used.
 	// xyz: normal
 	// w: distance
-	vec4 pClipPlane[2];
+	vec4 pClipPlane[2]; // normal.xyz, distance
 	
 	// screen space conversion parameters
 	// x: scaleU = renderWidth / realTextureWidth

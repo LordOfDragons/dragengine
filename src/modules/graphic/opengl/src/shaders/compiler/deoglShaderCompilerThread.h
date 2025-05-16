@@ -27,7 +27,7 @@
 
 #include <dragengine/threading/deThread.h>
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 #include <GL/glx.h>
 #endif
 
@@ -46,13 +46,19 @@ public:
 		failed
 	};
 	
+	enum class Type{
+		single,
+		glparallel
+	};
+	
 private:
 	deoglShaderLanguage &pLanguage;
 	int pContextIndex;
+	Type pType;
 	deoglShaderCompiler *pCompiler;
 	bool pExitThread;
 	State pState;
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	Display *pDisplay;
 #endif
 
@@ -60,7 +66,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader compiler thread. */
-	deoglShaderCompilerThread(deoglShaderLanguage &language, int contextIndex);
+	deoglShaderCompilerThread(deoglShaderLanguage &language, int contextIndex, Type type);
 	
 	/** Clean up shader compiler thread. */
 	~deoglShaderCompilerThread();
@@ -84,6 +90,8 @@ private:
 	void pCleanUp();
 	void pActivateContext();
 	bool pExitThreadRequested();
+	void pRunSingle();
+	void pRunGLParallel();
 };
 
 #endif

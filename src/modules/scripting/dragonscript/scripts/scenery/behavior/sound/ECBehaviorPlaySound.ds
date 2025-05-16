@@ -30,6 +30,7 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -51,7 +52,7 @@ pin Dragengine.TriggerSystem
  * 
  * \code{.ds}
  * class MyElementClass extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       ECBehaviorPlaySound.new(this, null, null)
  *       ECBehaviorPlaySound.new(this, null, null, "subPlaySound")
  *    end
@@ -78,7 +79,7 @@ pin Dragengine.TriggerSystem
  *    public ECBehaviorPlaySound playSoundOpen
  *    public ECBehaviorPlaySound playSoundClose
  *    
- *    public func new()
+ *    func new()
  *       // create and add play sound behavior for open door sound
  *       playSoundOpen = ECBehaviorPlaySound.new(this, null, null, "open")
  *       playSoundOpen.set("/content/door/open.ogg", 30.0, 0.8, Vector.new(0, 1, 0))
@@ -93,19 +94,19 @@ pin Dragengine.TriggerSystem
  *    public ECBehaviorPlaySound.Instance playSoundOpen
  *    public ECBehaviorPlaySound.Instance playSoundClose
  *    
- *    public func new(DoorClass eclass) super(eclass)
+ *    func new(DoorClass eclass) super(eclass)
  *       // find and store the behavior instances. it is not necessary to store them away
  *       // but doing so is faster especially if playing sound many times and quickly
  *       playSoundOpen = ECBehaviorPlaySound.getInstanceIn(this, null, null, "open")
  *       playSoundClose = ECBehaviorPlaySound.getInstanceIn(this, null, null, "close")
  *    end
  *    
- *    public func void openDoor()
+ *    func void openDoor()
  *       // do what is needed to open the door
  *       playSoundOpen.play()
  *    end
  *    
- *    public func void closeDoor()
+ *    func void closeDoor()
  *       // do what is needed to close the door
  *       playSoundClose.play()
  *    end
@@ -145,6 +146,9 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
 	 *                  string to not synchronize. default is empty string. -->
 	 *   <string name='trigger.synchronize'>other</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -154,7 +158,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -178,8 +182,9 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "playSound", id)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "playSound", id)
 			return behavior
 		end
 		
@@ -196,42 +201,59 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		/** \brief Trigger listener to play soubd. */
-		public class PlayListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+		/**
+		 * \brief Behavior tree action "playSound{(id)}.play".
+		 * \version 1.26
+		 */
+		class BTAPlay implements BTAction
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				pInstance.play()
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Trigger listener to play soubd. */
+		public class PlayListener extends ECBehaviorTriggered.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
 				pInstance.play()
 			end
 		end
 		
 		
 		
-		private var ECBehaviorPlaySound pECBehavior
-		private var ECBehaviorComponent.Instance pComponent
-		private var ECBehaviorCollider.Instance pCollider
-		private var SpeakerType pSpeakerType
-		private var Sound pSound
-		private var float pVolume
-		private var float pRange
-		private var float pRollOff
-		private var float pDistanceOffset
-		private var float pPlaySpeed
-		private var Vector pPosition
-		private var Quaternion pOrientation
-		private var String pBone
-		private var int pBoneIndex
-		private var DMatrix pPlaySoundMatrix
-		private var ECBehaviorTriggered.Instance pTrigger
+		var ECBehaviorPlaySound pECBehavior
+		var ECBehaviorComponent.Instance pComponent
+		var ECBehaviorCollider.Instance pCollider
+		var SpeakerType pSpeakerType
+		var Sound pSound
+		var float pVolume
+		var float pRange
+		var float pRollOff
+		var float pDistanceOffset
+		var float pPlaySpeed
+		var Vector pPosition
+		var Quaternion pOrientation
+		var String pBone
+		var int pBoneIndex
+		var DMatrix pPlaySoundMatrix
+		var ECBehaviorTriggered.Instance pTrigger
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorPlaySound ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorPlaySound ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pBoneIndex = -1
 			
@@ -249,7 +271,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			pTrigger = null
 			pCollider = null
 			pComponent = null
@@ -259,7 +281,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			var BehaviorElement element = getElement()
 			
 			if pECBehavior.getComponent() != null
@@ -274,6 +296,12 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 			if pECBehavior.getTriggerTable() != null
 				pTrigger = pECBehavior.getTrigger().synchronizedOrSelf().instance(getElement())
 				pTrigger.addListener(PlayListener.new(this))
+			end
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "play", BTAPlay.new(this))
 			end
 		end
 		
@@ -330,22 +358,22 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorPlaySound getECBehavior()
+		func ECBehaviorPlaySound getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Component or null if not used. */
-		public func ECBehaviorComponent.Instance getComponent()
+		func ECBehaviorComponent.Instance getComponent()
 			return pComponent
 		end
 		
 		/** \brief Collider or null if not used. */
-		public func ECBehaviorCollider.Instance getCollider()
+		func ECBehaviorCollider.Instance getCollider()
 			return pCollider
 		end
 		
 		/** \brief Speaker type. */
-		public func SpeakerType getSpeakerType()
+		func SpeakerType getSpeakerType()
 			return pSpeakerType
 		end
 		
@@ -355,7 +383,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Sound to play. */
-		public func Sound getSound()
+		func Sound getSound()
 			return pSound
 		end
 		
@@ -365,7 +393,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Volume. */
-		public func float getVolume()
+		func float getVolume()
 			return pVolume
 		end
 		
@@ -375,7 +403,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Range. */
-		public func float getRange()
+		func float getRange()
 			return pRange
 		end
 		
@@ -385,7 +413,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Roll-off factor. */
-		public func float getRollOff()
+		func float getRollOff()
 			return pRollOff
 		end
 		
@@ -402,7 +430,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		 * calculation to make the sound appear coming from far away. Requires increasing the volume
 		 * to compensate for the distance increased attenuation.
 		 */
-		public func float getDistanceOffset()
+		func float getDistanceOffset()
 			return pDistanceOffset
 		end
 		
@@ -414,12 +442,12 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		 * calculation to make the sound appear coming from far away. Requires increasing the volume
 		 * to compensate for the distance increased attenuation.
 		 */
-		public func void setDistanceOffset(float distanceOffset)
+		func void setDistanceOffset(float distanceOffset)
 			pDistanceOffset = DEMath.max(distanceOffset, 0.0)
 		end
 		
 		/** \brief Play speed. */
-		public func float getPlaySpeed()
+		func float getPlaySpeed()
 			return pPlaySpeed
 		end
 		
@@ -429,7 +457,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Relative position. */
-		public func Vector getPosition()
+		func Vector getPosition()
 			return pPosition
 		end
 		
@@ -439,7 +467,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Relative orientation. */
-		public func Quaternion getOrientation()
+		func Quaternion getOrientation()
 			return pOrientation
 		end
 		
@@ -449,7 +477,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Relative bone or \em null. */
-		public func String getBone()
+		func String getBone()
 			return pBone
 		end
 		
@@ -460,19 +488,19 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		end
 		
 		/** \brief Relative bone index. */
-		public func int getBoneIndex()
+		func int getBoneIndex()
 			return pBoneIndex
 		end
 		
 		/** \brief Trigger play or null if not used. */
-		public func ECBehaviorTriggered.Instance getTrigger()
+		func ECBehaviorTriggered.Instance getTrigger()
 			return pTrigger
 		end
 		
 		
 		
 		/** \brief Update bone index. */
-		public func void updateBoneIndex()
+		func void updateBoneIndex()
 			pBoneIndex = -1
 			if pBone == null or pBone.empty() or pComponent == null
 				return
@@ -492,7 +520,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		 * 
 		 * Returns speaker added to game world or null if unable to play sound.
 		 */
-		public func Speaker play()
+		func Speaker play()
 			var BehaviorElement element = getElement()
 			var GameWorld gameWorld = element.getGameWorld()
 			if gameWorld == null
@@ -511,22 +539,23 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorComponent pComponent
-	private var ECBehaviorCollider pCollider
-	private var String pPrefix
-	private var ECPEnumeration pSpeakerType
-	private var ECPSound pSound
-	private var ECPFloat pVolume
-	private var ECPFloat pRange
-	private var ECPFloat pRollOff
-	private var ECPFloat pDistanceOffset
-	private var ECPFloat pPlaySpeed
-	private var ECPVector pPosition
-	private var ECPVector pOrientation
-	private var ECPString pBone
-	private var ECBehaviorTriggered pTrigger
-	private var LayerMask pLayerMask
-	private var TSTriggerTable pTriggerTable
+	var ECBehaviorComponent pComponent
+	var ECBehaviorCollider pCollider
+	var String pPrefix
+	var ECPEnumeration pSpeakerType
+	var ECPSound pSound
+	var ECPFloat pVolume
+	var ECPFloat pRange
+	var ECPFloat pRollOff
+	var ECPFloat pDistanceOffset
+	var ECPFloat pPlaySpeed
+	var ECPVector pPosition
+	var ECPVector pOrientation
+	var ECPString pBone
+	var ECBehaviorTriggered pTrigger
+	var LayerMask pLayerMask
+	var TSTriggerTable pTriggerTable
+	var ECBehaviorBehaviorTree pBehaviorTree
 	
 	
 	
@@ -535,41 +564,41 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em component, \em collider.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider) this(eclass, component, collider, null cast TSTriggerTable, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, String id) \
 	this(eclass, component, collider, null cast TSTriggerTable, id)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, String id, String prefix) \
 	this(eclass, component, collider, null cast TSTriggerTable, id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, TSTriggerTable triggerTable) \
 	this(eclass, component, collider, triggerTable, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id) \
 	this(eclass, component, collider, triggerTable, id, \
 	id.empty() if "playSound" else "playSound(" + id + ")")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id, \
 	String subID) this(eclass, component, collider, triggerTable, id, subID, subID + ".")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id, \
 	String subID, String prefix) super(eclass, id)
 		pComponent = component
@@ -580,35 +609,17 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 		
 		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
 		
-		pSpeakerType = ECPEnumeration.new(prefix + "type", SpeakerType.all(), SpeakerType.point)
-		eclass.addProperty(pSpeakerType)
-		
-		pSound = ECPSound.new(prefix + "sound")
-		eclass.addProperty(pSound)
-		
-		pVolume = ECPFloat.new(prefix + "volume", 1, 0)
-		eclass.addProperty(pVolume)
-		
-		pRange = ECPFloat.new(prefix + "range", 30, 0)
-		eclass.addProperty(pRange)
-		
-		pRollOff = ECPFloat.new(prefix + "rollOff", 1, 0)
-		eclass.addProperty(pRollOff)
-		
-		pDistanceOffset = ECPFloat.new(prefix + "distanceOffset", 0, 0)
-		eclass.addProperty(pDistanceOffset)
-		
-		pPlaySpeed = ECPFloat.new(prefix + "playSpeed", 1)
-		eclass.addProperty(pPlaySpeed)
-		
-		pPosition = ECPVector.new(prefix + "position", Vector.new())
-		eclass.addProperty(pPosition)
-		
-		pOrientation = ECPVector.new(prefix + "orientation", Vector.new())
-		eclass.addProperty(pOrientation)
-		
-		pBone = ECPString.new(prefix + "bone", null)
-		eclass.addProperty(pBone)
+		eclass.addProperty(pSpeakerType = ECPEnumeration.new(\
+			prefix + "type", SpeakerType.all(), SpeakerType.point))
+		eclass.addProperty(pSound = ECPSound.new(prefix + "sound"))
+		eclass.addProperty(pVolume = ECPFloat.new(prefix + "volume", 1, 0))
+		eclass.addProperty(pRange = ECPFloat.new(prefix + "range", 30, 0))
+		eclass.addProperty(pRollOff = ECPFloat.new(prefix + "rollOff", 1, 0))
+		eclass.addProperty(pDistanceOffset = ECPFloat.new(prefix + "distanceOffset", 0, 0))
+		eclass.addProperty(pPlaySpeed = ECPFloat.new(prefix + "playSpeed", 1))
+		eclass.addProperty(pPosition = ECPVector.new(prefix + "position", Vector.new()))
+		eclass.addProperty(pOrientation = ECPVector.new(prefix + "orientation", Vector.new()))
+		eclass.addProperty(pBone = ECPString.new(prefix + "bone", null))
 		
 		pTrigger = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		
@@ -616,51 +627,52 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pComponent = null
 		pCollider = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Component behavior or null if not used. */
-	public func ECBehaviorComponent getComponent()
+	func ECBehaviorComponent getComponent()
 		return pComponent
 	end
 	
 	/** \brief Collider behavior or null if not used. */
-	public func ECBehaviorCollider getCollider()
+	func ECBehaviorCollider getCollider()
 		return pCollider
 	end
 	
 	/** \brief Prefix. */
-	public func String getPrefix()
+	func String getPrefix()
 		return pPrefix
 	end
 	
 	/** \brief Speaker type. */
-	public func ECPEnumeration getSpeakerType()
+	func ECPEnumeration getSpeakerType()
 		return pSpeakerType
 	end
 	
 	/** \brief Speaker sound. */
-	public func ECPSound getSound()
+	func ECPSound getSound()
 		return pSound
 	end
 	
 	/** \brief Speaker volume. */
-	public func ECPFloat getVolume()
+	func ECPFloat getVolume()
 		return pVolume
 	end
 	
 	/** \brief Speaker range. */
-	public func ECPFloat getRange()
+	func ECPFloat getRange()
 		return pRange
 	end
 	
 	/** \brief Half volume distance. */
-	public func ECPFloat getRollOff()
+	func ECPFloat getRollOff()
 		return pRollOff
 	end
 	
@@ -672,42 +684,42 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * calculation to make the sound appear coming from far away. Requires increasing the volume
 	 * to compensate for the distance increased attenuation.
 	 */
-	public func ECPFloat getDistanceOffset()
+	func ECPFloat getDistanceOffset()
 		return pDistanceOffset
 	end
 	
 	/** \brief Play speed. */
-	public func ECPFloat getPlaySpeed()
+	func ECPFloat getPlaySpeed()
 		return pPlaySpeed
 	end
 	
 	/** \brief Position relative to element. */
-	public func ECPVector getPosition()
+	func ECPVector getPosition()
 		return pPosition
 	end
 	
 	/** \brief Orientation relative to element. */
-	public func ECPVector getOrientation()
+	func ECPVector getOrientation()
 		return pOrientation
 	end
 	
 	/** \brief Name of bone to use to \em null if not used. */
-	public func ECPString getBone()
+	func ECPString getBone()
 		return pBone
 	end
 	
 	/** \brief Trigger play sound. */
-	public func ECBehaviorTriggered getTrigger()
+	func ECBehaviorTriggered getTrigger()
 		return pTrigger
 	end
 	
 	/** \brief Layer mask. */
-	public func LayerMask getLayerMask()
+	func LayerMask getLayerMask()
 		return pLayerMask
 	end
 	
 	/** \brief Set layer mask. */
-	public func void setLayerMask(LayerMask layerMask)
+	func void setLayerMask(LayerMask layerMask)
 		if layerMask == null
 			throw EInvalidParam.new()
 		end
@@ -715,13 +727,29 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	end
 	
 	/** \brief Trigger table or \em null if not used. */
-	public func TSTriggerTable getTriggerTable()
+	func TSTriggerTable getTriggerTable()
 		return pTriggerTable
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
 	protected func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	
@@ -731,20 +759,20 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * 
 	 * Helper method to quickly set up playing sound.
 	 */
-	public func void set(String sound, float range, float volume)
+	func void set(String sound, float range, float volume)
 		set(sound, range, volume, Vector.new(), Vector.new(), null)
 	end
 	
-	public func void set(String sound, float range, float volume, Vector position)
+	func void set(String sound, float range, float volume, Vector position)
 		set(sound, range, volume, position, Vector.new(), null)
 	end
 	
-	public func void set(String sound, float range, float volume, Vector position, \
+	func void set(String sound, float range, float volume, Vector position, \
 	Vector orientation)
 		set(sound, range, volume, position, orientation, null)
 	end
 	
-	public func void set(String sound, float range, float volume, Vector position, \
+	func void set(String sound, float range, float volume, Vector position, \
 	Vector orientation, String bone)
 		pSpeakerType.setEnumeration(SpeakerType.point)
 		pSound.setPath(sound)
@@ -761,7 +789,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -773,7 +801,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorPlaySound getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorPlaySound getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorPlaySound each
 			return true
 		end) cast ECBehaviorPlaySound
@@ -785,7 +813,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorPlaySound with specific identifier.
 	 */
-	static public func ECBehaviorPlaySound getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorPlaySound getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorPlaySound each
 			return each.getID().equals(id)
 		end) cast ECBehaviorPlaySound
@@ -797,7 +825,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * Returns list contains ECBehaviorPlaySound behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorPlaySound each
 			return true
 		end)
@@ -812,7 +840,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * of type ECBehaviorPlaySound.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -824,7 +852,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorPlaySound.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -836,7 +864,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	 * Returns list contains ECBehaviorPlaySound.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -845,7 +873,7 @@ class ECBehaviorPlaySound extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

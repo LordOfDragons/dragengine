@@ -35,11 +35,16 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
+#ifdef OS_ANDROID
+#include <dragengine/deEngine.h>
+#include <dragengine/app/deOSAndroid.h>
+#endif
+
 
 // class deoxrInstance
 ////////////////////////
 
-#ifndef OXR_MODULE_VERSION
+#ifndef MODULE_VERSION
 #include "module_version.h"
 #endif
 
@@ -431,13 +436,28 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 	pSupportsLayer[ layerLunarCoreValidation ].enableIfSupported = enableValidationLayers;
 	pSupportsLayer[ layerApiDump ].enableIfSupported = false; //enableValidationLayers;
 	
+#ifdef OS_ANDROID
+	{
+	PFN_xrInitializeLoaderKHR initFunc = nullptr;
+	xrGetInstanceProcAddr(XR_NULL_HANDLE, "xrInitializeLoaderKHR", (PFN_xrVoidFunction*)&initFunc);
+	if(initFunc){
+		pOxr.LogInfo("Initialize Android XR Loader");
+		deOSAndroid &os = *GetOxr().GetGameEngine()->GetOS()->CastToOSAndroid();
+		XrLoaderInitInfoAndroidKHR info{XR_TYPE_LOADER_INIT_INFO_ANDROID_KHR};
+		info.applicationVM = os.GetJavaVM();
+		info.applicationContext = os.GetActivity();
+		initFunc((XrLoaderInitInfoBaseHeaderKHR*)&info);
+	}
+	}
+#endif
+	
 	// create instance
 	XrInstanceCreateInfo instanceCreateInfo;
 	memset( &instanceCreateInfo, 0, sizeof( instanceCreateInfo ) );
 	
 	instanceCreateInfo.type = XR_TYPE_INSTANCE_CREATE_INFO;
 	
-	decStringList moduleVersion( decString( OXR_MODULE_VERSION ).Split( '.' ) );
+	decStringList moduleVersion( decString( MODULE_VERSION ).Split( '.' ) );
 	while( moduleVersion.GetCount() < 3 ){
 		moduleVersion.Add( "0" );
 	}

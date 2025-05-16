@@ -38,6 +38,7 @@ pin Dragengine.Utils
 class BehaviorTree
 	var BTRule pRootRule
 	var Dictionary pRuleMap
+	var String pFilename
 	
 	
 	
@@ -45,6 +46,14 @@ class BehaviorTree
 	func new()
 		pRootRule = BTRuleFailure.new("root")
 		pRuleMap = Dictionary.new()
+	end
+	
+	/**
+	 * \brief Create behavior tree with filename.
+	 * \version 1.26
+	 */
+	func new(String filename) this()
+		pFilename = filename
 	end
 	
 	
@@ -82,5 +91,13 @@ class BehaviorTree
 			throw EInvalidParam.new()
 		end
 		pRuleMap.setAt(rule.getID(), rule)
+	end
+	
+	/**
+	 * \brief Filename or null.
+	 * \version 1.26
+	 */
+	func String getFilename()
+		return pFilename
 	end
 end

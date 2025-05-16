@@ -30,6 +30,8 @@ pin Dragengine.Preloading
 pin Dragengine.LoadSave
 pin Dragengine.Utils
 pin Dragengine.Scenery
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -60,15 +62,15 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Hand starts pointing at element. */
-		public func void handStartsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
+		func void handStartsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
 		end
 		
 		/** \brief Hand stops pointing at element. */
-		public func void handStopsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
+		func void handStopsPointingAt(Instance instance, ECBehaviorVRHandPointAt.Instance hand)
 		end
 	end
 	
@@ -80,10 +82,10 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create fhandy using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -91,7 +93,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -102,11 +104,23 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorVRHandPointedAt'/>
+	 * <behavior type='ECBehaviorVRHandPointedAt'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -121,62 +135,129 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorVRHandPointedAt behavior = ECBehaviorVRHandPointedAt.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrHandPointedAt")
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrHandPointedAt")
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorVRHandPointedAt pECBehavior
-		private var Array pPointingHands
-		private var Array pListeners
+		/**
+		 * \brief Behavior tree action/condition "vrHandPointedAt.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "count", null)
+				if value != null
+					result &= pInstance.getPointingHandCount() == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.not", null)
+				if value != null
+					result &= pInstance.getPointingHandCount() != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.less", null)
+				if value != null
+					result &= pInstance.getPointingHandCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.greater", null)
+				if value != null
+					result &= pInstance.getPointingHandCount() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "player", null)
+				if value != null
+					result &= pInstance.isPlayerPointing() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorVRHandPointedAt pECBehavior
+		var Array pPointingHands
+		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorVRHandPointedAt ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorVRHandPointedAt ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pPointingHands = Array.new()
 			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of inventory. */
-		public func void dispose()
+		func void dispose()
 			pListeners = null
 			pPointingHands = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = "vrHandPointedAt."
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorVRHandPointedAt getECBehavior()
+		func ECBehaviorVRHandPointedAt getECBehavior()
 			return pECBehavior
 		end
 		
 		
 		
 		/** \brief Count of hands pointing at element. */
-		public func int getPointingHandCount()
+		func int getPointingHandCount()
 			return pPointingHands.getCount()
 		end
 		
 		/** \brief Hand pointing at element by index. */
-		public func ECBehaviorVRHandPointAt.Instance getPointingHandAt(int index)
+		func ECBehaviorVRHandPointAt.Instance getPointingHandAt(int index)
 			return pPointingHands.getAt(index) cast ECBehaviorVRHandPointAt.Instance
 		end
 		
 		/** \brief Hand is pointing at element. */
-		public func bool hasPointingHand(ECBehaviorVRHandPointAt.Instance element)
+		func bool hasPointingHand(ECBehaviorVRHandPointAt.Instance element)
 			return pPointingHands.has(element)
 		end
 		
@@ -185,7 +266,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * 
 		 * Block receives as first argument each element of type ECBehaviorVRHandPointAt.Instance.
 		 */
-		public func void forEachPointingHand(Block ablock)
+		func void forEachPointingHand(Block ablock)
 			pPointingHands.forEach(ablock)
 		end
 		
@@ -196,7 +277,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * and has to return true if the hand is found otherwise false. Method returns the found
 		 * hand or null if not found.
 		 */
-		public func ECBehaviorVRHandPointAt.Instance findPointingHand(Block ablock)
+		func ECBehaviorVRHandPointAt.Instance findPointingHand(Block ablock)
 			return pPointingHands.find(ablock) cast ECBehaviorVRHandPointAt.Instance
 		end
 		
@@ -207,7 +288,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * ECBehaviorPlayerControllable and it is the active player hand. If found
 		 * returns the player hand. If not found null is returned.
 		 */
-		public func ECBehaviorVRHandPointAt.Instance getPlayerPointing()
+		func ECBehaviorVRHandPointAt.Instance getPlayerPointing()
 			return pPointingHands.find(block ECBehaviorVRHandPointAt.Instance each
 				var ECBehaviorPlayerControllable.Instance behavior = \
 					ECBehaviorPlayerControllable.getInstanceIn(each.getElement())
@@ -221,7 +302,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * Checks each hand in the list of hands pointing at the element if it has
 		 * ECBehaviorPlayerControllable and it is the active player hand.
 		 */
-		public func bool isPlayerPointing()
+		func bool isPlayerPointing()
 			return getPlayerPointing() != null
 		end
 		
@@ -230,7 +311,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * 
 		 * If hand is added to the list handStartsPointingAt() is called on all listeners.
 		 */
-		public func void addPointingHand(ECBehaviorVRHandPointAt.Instance hand)
+		func void addPointingHand(ECBehaviorVRHandPointAt.Instance hand)
 			if hand == null
 				throw ENullPointer.new()
 			end
@@ -244,6 +325,9 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.handStartsPointingAt(this, hand)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent("vrHandPointedAt.", "start")
+			end
 		end
 		
 		/**
@@ -251,7 +335,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		 * 
 		 * If hand is removed from list handStopsPointingAt() is called on all listeners.
 		 */
-		public func void removePointingHand(ECBehaviorVRHandPointAt.Instance hand)
+		func void removePointingHand(ECBehaviorVRHandPointAt.Instance hand)
 			if hand == null
 				throw ENullPointer.new()
 			end
@@ -265,12 +349,15 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.handStopsPointingAt(this, hand)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent("vrHandPointedAt.", "stop")
+			end
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw ENullPointer.new("listener")
 			end
@@ -278,14 +365,14 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				// 1.11.1 save/restore removed since this makes no sense
@@ -306,7 +393,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			writer.writeUShort(0) // save/restore removed since this makes no sense
@@ -315,31 +402,42 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	
 	
 	
-	private var Array pListenerFactories
+	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass) super(eclass)
+	func new(BehaviorElementClass eclass) super(eclass)
 		if getBehaviorIn(eclass) != null
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
 	
 	/** \brief Add listener fhandy. */
-	public func void addListenerFactory(ListenerFactory fhandy)
+	func void addListenerFactory(ListenerFactory fhandy)
 		if fhandy == null
 			throw ENullPointer.new()
 		end
@@ -351,17 +449,17 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener fhandies with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from fhandies adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -370,7 +468,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -382,7 +480,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorVRHandPointedAt getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorVRHandPointedAt getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorVRHandPointedAt each
 			return true
 		end) cast ECBehaviorVRHandPointedAt
@@ -395,7 +493,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	 * of type ECBehaviorVRHandPointedAt.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -404,7 +502,7 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

@@ -192,7 +192,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <CustomBuildStep>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\deremotelauncher" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\deremotelauncher" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
       <Outputs>$(ProjectDir)DERemoteLauncherSDK\Library\x64\DERemoteLauncher.lib</Outputs>
     </CustomBuildStep>
@@ -223,7 +223,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <CustomBuildStep>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\deremotelauncher" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\deremotelauncher" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
       <Outputs>$(ProjectDir)DERemoteLauncherSDK\Library\x64\DERemoteLauncher.lib</Outputs>
     </CustomBuildStep>
@@ -254,7 +254,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <CustomBuildStep>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\deremotelauncher" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -ProjectDir $(ProjectDir)</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)build.ps1" -SourceDir "$(SolutionDir)..\extern\deremotelauncher" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -ProjectDir $(ProjectDir)</Command>
       <Message>Unpack</Message>
       <Outputs>$(ProjectDir)DERemoteLauncherSDK\Library\x64\DERemoteLauncher.lib</Outputs>
     </CustomBuildStep>

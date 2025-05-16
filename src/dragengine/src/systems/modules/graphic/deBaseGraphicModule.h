@@ -288,7 +288,10 @@ public:
 			void *config; //<! Android: EGLConfig
 			void *context; //<! Android: EGLContext
 			
-			#elif defined OS_UNIX
+			#elif defined OS_WEBWASM
+			void *dummy; //<! avoid empty struct
+			
+			#elif defined OS_UNIX_X11
 			void *display; //<! X11: Display*
 			uint32_t visualid; //<! X11: uint32_t
 			void *glxFBConfig; //<! GLXFBConfig
@@ -298,6 +301,9 @@ public:
 			#elif defined OS_W32
 			void *hDC; // Windows: HDC
 			void *hGLRC; // Windows: HGLRC
+			
+			#else
+			void *dummy; //<! avoid empty struct
 			#endif
 		} opengl;
 		

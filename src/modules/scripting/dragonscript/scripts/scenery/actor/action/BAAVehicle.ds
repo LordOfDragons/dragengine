@@ -262,7 +262,7 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 			this.playerInputMove.setAnalogMoveForwardBackwardSticky( -amount )
 			
 		else
-			this.playerInputMove.setAnalogMoveForwardBackward( -amount )
+			playerInputMove.addAnalogMoveForwardBackward(-amount)
 		end
 	end
 	
@@ -309,7 +309,7 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 			this.playerInputTurn.setAnalogTurnHorizontalSticky( amount )
 			
 		else
-			this.playerInputTurn.setAnalogTurnHorizontal( amount )
+			playerInputTurn.addAnalogTurnHorizontal(amount)
 		end
 	end
 	
@@ -361,7 +361,7 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 			this.playerInputLook.setAnalogLookHorizontalSticky( -amount )
 			
 		else
-			this.playerInputLook.setAnalogLookHorizontal( -amount )
+			this.playerInputLook.addAnalogLookHorizontal( -amount )
 		end
 	end
 	
@@ -371,7 +371,7 @@ class BAAVehicle extends BaseActorAction implements BAAMovement
 			this.playerInputLook.setAnalogLookVerticalSticky( -amount )
 			
 		else
-			this.playerInputLook.setAnalogLookVertical( -amount )
+			this.playerInputLook.addAnalogLookVertical( -amount )
 		end
 	end
 	

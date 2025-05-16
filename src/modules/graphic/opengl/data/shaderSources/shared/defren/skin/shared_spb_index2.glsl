@@ -5,7 +5,7 @@
 // on the tested systems a few exhibit a very annoying and strange bug in the GLSL compiler.
 // If the following code is used:
 // 
-//   spbIndex = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y ];
+//   spbIndex = pSPBInstanceIndex[_spbIndexCoord.x][_spbIndexCoord.y];
 // 
 // garbage is stored in spbIndex instead of the correct value. MESA 18.x seems to be
 // affected by this bug but only on some drivers. It was impossible to create a reliable
@@ -18,41 +18,33 @@
 // of the ivec4. By storing the ivec4 first into a temporary variable (first array access)
 // and then accessing the component out of this temporary variable the problem is solved.
 
-#ifdef SHARED_SPB
-	int spbIndex;
-	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
-	int spbFlags;
-	#endif
+/*
+	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>SHARED_SPB</define>
 	
+	<!-- system only
+	<define>SPB_SSBO_INSTANCE_ARRAY</define>
+	-->
+*/
+
+	int spbIndex = 0, spbFlags = 0;
+#ifdef SHARED_SPB
 	{ // scoping to drop temporary variables freeing registers
 	int _spbIndexIndex = pSPBInstanceIndexBase + gl_InstanceID;
 	
 	#ifdef SPB_SSBO_INSTANCE_ARRAY
-		spbIndex = int( pSPBInstanceIndex[ _spbIndexIndex ].spbInstance ) - 1;
-		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
-			spbFlags = int( pSPBInstanceIndex[ _spbIndexIndex ].specialFlags );
-		#endif
+		spbIndex = int(pSPBInstanceIndex[_spbIndexIndex].spbInstance) - 1;
+		spbFlags = int(pSPBInstanceIndex[_spbIndexIndex].specialFlags);
 		
 	#else
-		#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
-			ivec2 _spbIndexCoord = ivec2( _spbIndexIndex / 2, ( _spbIndexIndex % 2 ) * 2 );
-			//int spbIndex = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y ];
-			//int spbFlags = pSPBInstanceIndex[ _spbIndexCoord.x ][ _spbIndexCoord.y + 1 ];
-			ivec4 _spbTempIndex = pSPBInstanceIndex[ _spbIndexCoord.x ];
-			spbIndex = _spbTempIndex[ _spbIndexCoord.y ];
-			spbFlags = _spbTempIndex[ _spbIndexCoord.y + 1 ];
-			
-		#else
-			//int spbIndex = pSPBInstanceIndex[ _spbIndexIndex / 4 ][ _spbIndexIndex % 4 ];
-			ivec4 _spbTempIndex = pSPBInstanceIndex[ _spbIndexIndex / 4 ];
-			spbIndex = _spbTempIndex[ _spbIndexIndex % 4 ];
-		#endif
+		ivec2 _spbIndexCoord = ivec2(_spbIndexIndex / 2, (_spbIndexIndex % 2) * 2);
+		//int spbIndex = pSPBInstanceIndex[_spbIndexCoord.x][_spbIndexCoord.y];
+		//int spbFlags = pSPBInstanceIndex[_spbIndexCoord.x][_spbIndexCoord.y + 1];
+		ivec4 _spbTempIndex = pSPBInstanceIndex[_spbIndexCoord.x];
+		spbIndex = _spbTempIndex[_spbIndexCoord.y];
+		spbFlags = _spbTempIndex[_spbIndexCoord.y + 1];
 	#endif
 	} // end of scoping
-	
 #else
-	#define spbIndex 0
-	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED
-		#define spbFlags 0
-	#endif
+	spbFlags = pLayerVisibility;
 #endif

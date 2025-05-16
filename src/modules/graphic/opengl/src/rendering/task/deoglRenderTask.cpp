@@ -45,6 +45,7 @@
 #include "../../renderthread/deoglRTChoices.h"
 #include "../../skin/shader/deoglSkinShader.h"
 #include "../../shaders/deoglShaderProgram.h"
+#include "../../shaders/deoglShaderProgramUnit.h"
 #include "../../shaders/deoglShaderUnitSourceCode.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
@@ -78,7 +79,7 @@ pSPBInstanceIndexCount( 0 ),
 pUseSPBInstanceFlags( false ),
 pRenderVSStereo( false ),
 pVBODrawIndirect( 0 ),
-pVBODrawIndirectSize( 0 ),
+//pVBODrawIndirectSize( 0 ),
 
 pPipelineCount( 0 ),
 pHasPipeline( nullptr ),
@@ -393,9 +394,12 @@ void deoglRenderTask::DebugPrint( deoglRTLogger &rtlogger ){
 			pipeline.GetTotalInstanceCount(), pipeline.GetTotalSubInstanceCount() );
 		
 		rtlogger.LogInfo( "  - configuration:" );
-		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode() ? shader.GetVertexSourceCode()->GetFilePath().GetString() : "-" );
-		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode() ? shader.GetGeometrySourceCode()->GetFilePath().GetString() : "-" );
-		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetFragmentSourceCode() ? shader.GetFragmentSourceCode()->GetFilePath().GetString() : "-" );
+		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetUnitVertex()
+			? shader.GetUnitVertex()->GetSources()->GetName().GetString() : "-" );
+		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetUnitGeometry()
+			? shader.GetUnitGeometry()->GetSources()->GetName().GetString() : "-" );
+		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetUnitFragment()
+			? shader.GetUnitFragment()->GetSources()->GetName().GetString() : "-" );
 		
 		text = "    - defines: ";
 		const int defineCount = defines.GetDefineCount();

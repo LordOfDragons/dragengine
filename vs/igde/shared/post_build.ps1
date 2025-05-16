@@ -1,6 +1,7 @@
 ﻿param (
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
+    [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$true)][string]$FoxDir
 )
 
@@ -22,19 +23,19 @@ if (Test-Path $TargetDir) {
 
 
 # application
-$TargetDir = "$OutputDir\$PathDistIGDESystem"
+$TargetDir = "$DistributeDir\$PathDistIGDESystem"
 
 Write-Host "Igde Shared App: Copy Library to '$TargetDir'"
 Install-Files -Path "$OutputDir\deigdeshared\deigdeshared.dll" -Destination $TargetDir
 
-$DataTargetDir = "$OutputDir\$PathDistIGDEShares"
+$DataTargetDir = "$DistributeDir\$PathDistIGDEShares"
 Write-Host "Igde Shared App: Copy Data to '$DataTargetDir'"
 
 Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*"
 
 
 # sdk
-$TargetDir = "$OutputDir\$PathDistIGDESdkInc\deigde"
+$TargetDir = "$DistributeDir\$PathDistIGDESdkInc\deigde"
 if (Test-Path $TargetDir) {
     Remove-Item $TargetDir -Force -Recurse
 }
@@ -42,12 +43,12 @@ if (Test-Path $TargetDir) {
 Write-Host "Igde Shared SDK: Copy Headers to '$TargetDir'"
 Copy-Files -SourceDir $SourceDir -TargetDir $TargetDir -Pattern "*.h"
 
-$TargetDir = "$OutputDir\$PathDistIGDESdkInc\deigde\gui\native"
+$TargetDir = "$DistributeDir\$PathDistIGDESdkInc\deigde\gui\native"
 if (Test-Path $TargetDir) {
     Remove-Item $TargetDir -Force -Recurse
 }
 
-$TargetDir = "$OutputDir\$PathDistIGDESdkLib"
+$TargetDir = "$DistributeDir\$PathDistIGDESdkLib"
 Write-Host "Igde Shared SDK: Copy Libraries to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\deigdeshared\deigdeshared.lib" -Destination $TargetDir
@@ -57,11 +58,11 @@ Install-Files -Path "$OutputDir\deigdeshared\deigdeshared.exp" -Destination $Tar
 # dependencies
 Write-Host "Igde Shared: Copy Dependencies to '$TargetDir'"
 
-Copy-Files -SourceDir $FoxDir -TargetDir "$OutputDir\$PathDistIGDEBin" -Pattern "*.dll"
+Copy-Files -SourceDir $FoxDir -TargetDir "$DistributeDir\$PathDistIGDEBin" -Pattern "*.dll"
 
 
 # debug
-$TargetDir = "$OutputDir\$PathDistIGDEPdbSystem"
+$TargetDir = "$DistributeDir\$PathDistIGDEPdbSystem"
 Write-Host "Igde Shared Debug: Copy PDBs to '$TargetDir'"
 
 Install-Files -Path "$OutputDir\deigdeshared\deigdeshared.pdb" -Destination $TargetDir

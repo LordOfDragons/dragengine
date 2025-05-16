@@ -281,9 +281,9 @@ void deoglHTSTexture::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deo
 		paramBlock.SetParameterDataIVec2( target, 0 /*pIndex >> 2*/, pIndex & 0x3 );
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
-	if( target != -1 ){
-		paramBlock.SetParameterDataBool( target, false );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutDoubleSided);
+	if(target != -1){
+		paramBlock.SetParameterDataBool(target, false);
 	}
 	
 	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );

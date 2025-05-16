@@ -80,6 +80,7 @@ class BehaviorElementClass extends ElementClass
 	var Array pPreventCreationBehaviors
 	var Dictionary pBehaviorFactories
 	var Array pXmlBehaviorsInfo
+	var Dictionary pBehaviorIdMap
 	
 	public static var BehaviorFactoryHelper sharedFactoryHelper = BehaviorFactoryHelper.new()
 	
@@ -108,6 +109,7 @@ class BehaviorElementClass extends ElementClass
 	
 	/** \brief Dispose of element class. */
 	func void dispose()
+		pBehaviorIdMap = null
 		if pBehaviors != null
 			pBehaviors.forEachReverse(block ECBehavior each
 				each.dispose()
@@ -190,6 +192,22 @@ class BehaviorElementClass extends ElementClass
 	 */
 	func void forEachBehaviorDirect(Block ablock)
 		pBehaviors.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Behavior with matching \ref BehaviorCompatiblePersistency#getBehaviorID() or null.
+	 * \version 1.26
+	 * 
+	 * For use with persistency compatible behaviors.
+	 */
+	func ECBehavior getBehaviorWithId(String id)
+		if pBehaviorIdMap == null
+			pBehaviorIdMap = Dictionary.new()
+			pBehaviors.forEach(block BehaviorCompatiblePersistency each
+				pBehaviorIdMap.setAt(each.getBehaviorID(), each)
+			end)
+		end
+		return pBehaviorIdMap.getAt(id, null) cast ECBehavior
 	end
 	
 	

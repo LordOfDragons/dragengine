@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Copy Depth</name>
+	<stage>fragment</stage>
+	<source>copydepth.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+	<output name='outDepth' location='1'/>
+	
+	<define>COPY_COLOR</define>
+	<define>DEPTH_TEST</define>
+	<define>ENCODED_DEPTH</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>SHADOW_INVERSE_DEPTH</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

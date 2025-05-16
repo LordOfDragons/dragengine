@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Copy Color</name>
+	<stage>fragment</stage>
+	<source>copycolor.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+	
+	<define>GS_RENDER_STEREO</define>
+	<define>INPUT_ARRAY_TEXTURE</define>
+	<define>MIPMAP</define>
+	<define>TCCLAMP</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Shadow Point</name>
+	<stage>vertex</stage>
+	<source>distance.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+	<attribute name='inTexCoord' location='3'/>
+	<attribute name='inHTHeight' location='4'/>
+	
+	<define>TRANSPARENT</define>
+	<define>DISCARD_HOLES</define>
+	<define>HEIGHTTERRAIN</define>
+</shaderSource>

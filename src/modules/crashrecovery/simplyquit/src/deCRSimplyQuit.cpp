@@ -38,12 +38,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *SQCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -153,3 +155,37 @@ void deCRSimplyQuit::pPrintTraceValue( int level, deErrorTraceValue *value ){
 		pPrintTraceValue( level + 1, value->GetSubValue( i ) );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deCRModuleInternal : public deInternalModule{
+public:
+	deCRModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("SimplyQuit");
+		SetDescription("Simply quits the engine gracefully on system failures.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtCrashRecovery);
+		SetDirectoryName("simplyquit");
+		SetPriority(0);
+		SetIsFallback(true);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(SQCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deCRRegisterInternalModule(deModuleSystem *system){
+	return new deCRModuleInternal(system);
+}
+#endif

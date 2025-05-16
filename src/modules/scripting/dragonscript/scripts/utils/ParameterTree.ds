@@ -236,6 +236,16 @@ class ParameterTree
 		return pParameters.getAt(path, default) cast FloatRectArea
 	end
 	
+	/** \brief CurveBezier value of parameter or default value if absent. */
+	func CurveBezier getCurveBezierAt(String path, CurveBezier default)
+		return pParameters.getAt(path, default) cast CurveBezier
+	end
+	
+	/** \brief CurveBezier3D value of parameter or default value if absent. */
+	func CurveBezier3D getCurveBezier3DAt(String path, CurveBezier3D default)
+		return pParameters.getAt(path, default) cast CurveBezier3D
+	end
+	
 	/** \brief Array value of parameter or default value if absent. */
 	func Array getArrayAt(String path, Array default)
 		return pParameters.getAt(path, default) cast Array
@@ -272,6 +282,8 @@ class ParameterTree
 	 * - \ref BorderSize
 	 * - \ref RectArea
 	 * - \ref FloatRectArea
+	 * - \ref CurveBezier
+	 * - \ref CurveBezier3D
 	 * - \ref Array containing only values from this list
 	 * - \ref Dictionary with \ref String key and containing only values from this list
 	 * - \ref ParameterTree containing only values from this list

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Occlusion OccMap Down-Sample</name>
+	<stage>fragment</stage>
+	<source>downsample.frag.glsl</source>
+	
+	<define>GS_RENDER_STEREO</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

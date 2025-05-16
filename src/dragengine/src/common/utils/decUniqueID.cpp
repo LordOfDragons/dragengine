@@ -342,6 +342,16 @@ decString decUniqueID::ToHexString() const{
 	return "0";
 }
 
+bool decUniqueID::IsZero() const{
+	int i;
+	for(i=0; i<pByteCount; i++){
+		if(pBytes[i]){
+			return false;
+		}
+	}
+	return true;
+}
+
 
 
 // Operators

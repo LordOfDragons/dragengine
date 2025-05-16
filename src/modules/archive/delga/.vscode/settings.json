@@ -11,6 +11,7 @@
 		"**/.git/subtree-cache/**": true,
 		"**/.hg/store/**": true,
 		"**/build/**": true,
-		"minizip/**": true
+		"minizip/**": true,
+		"clocreport*.csv": true
 	}
 }

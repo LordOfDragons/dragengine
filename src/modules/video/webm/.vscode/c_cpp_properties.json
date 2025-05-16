@@ -5,11 +5,13 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/../../../dragengine/build/include",
+                "${workspaceFolder}/../../../../extern/libwebm/build/include",
                 "${workspaceFolder}/../../../../../testing/include"
             ],
             "defines": [
-                "DS_MODULE_VERSION=\"9999\"",
-                "MOD_ENTRY_POINT_ATTR="
+                "MODULE_VERSION=\"9999\"",
+                "MOD_ENTRY_POINT_ATTR=",
+                "WITH_INTERNAL_MODULE="
             ],
             "cStandard": "c11",
             "cppStandard": "c++11"

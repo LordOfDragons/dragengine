@@ -27,7 +27,7 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 
 // Bridges between android EGL and GL. In android EGL not all extension data
 // is provided as is the case in GL since most things are core. This is
@@ -282,6 +282,8 @@ typedef double GLdouble;
 
 typedef void (EGLAPIENTRYP PFNGLCLIPCONTROLPROC) (GLenum origin, GLenum depth);
 
+
+#define GL_DEPTH_CLAMP                    0x864F
 
 
 // special hack. 1D are not supported by EGL. the functions are replaced with 2D counterparts.
@@ -575,5 +577,5 @@ typedef void (EGLAPIENTRYP PFNGLVERTEXATTRIBL1UI64ARBPROC) (GLuint index, GLuint
 typedef void (EGLAPIENTRYP PFNGLVERTEXATTRIBL1UI64VARBPROC) (GLuint index, const GLuint64EXT *v);
 typedef void (EGLAPIENTRYP PFNGLGETVERTEXATTRIBLUI64VARBPROC) (GLuint index, GLenum pname, GLuint64EXT *params);
 
-#endif // OS_ANDROID
+#endif // WITH_OPENGLES
 #endif // _ANDROIDFIX_H_

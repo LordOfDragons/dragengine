@@ -38,6 +38,7 @@ class deoglShaderDefines;
 class deoglShaderSources;
 class deoglShaderCompiled;
 class deoglShaderProgram;
+class deoglShaderProgramUnit;
 class deoglRenderThread;
 class deoglShaderBindingList;
 
@@ -93,11 +94,7 @@ private:
 	int pContextIndex;
 	char *pErrorLog;
 	deoglShaderPreprocessor pPreprocessor;
-	
-	deMutex pMutexCompile, pMutexLogging;
-	
-	decString pLogShaderCompute, pLogShaderTessellationControl, pLogShaderTessellationEvaluation;
-	decString pLogShaderVertex, pLogShaderGeometry, pLogShaderFragment;
+	deMutex pMutexCompile;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -113,8 +110,30 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Compile shader from given sources using specified defines. */
-	deoglShaderCompiled *CompileShader(const deoglShaderProgram &program);
+	/** Compile shader unit. */
+	void CompileShaderUnit(deoglShaderProgramUnit &unit);
+	
+	/** Has compile shader unit finished. */
+	bool HasCompileShaderUnitFinished(const deoglShaderProgramUnit &unit);
+	
+	/** Finish compile shader unit. */
+	void FinishCompileShaderUnit(deoglShaderProgramUnit &unit);
+	
+	/** Load cached shader. */
+	void LoadCachedShader(deoglShaderProgram &program);
+	
+	/** Compile shader. */
+	void CompileShader(deoglShaderProgram &program);
+	
+	/** Has compile shader finished. */
+	bool HasCompileShaderFinished(const deoglShaderProgram &program);
+	
+	/** Finish compile shader. */
+	void FinishCompileShader(deoglShaderProgram &program);
+	
+	void PreparePreprocessor(const deoglShaderDefines &defines);
+	void AppendPreprocessSourcesBuffer(const char *inputFile, const char *data);
+	inline deoglShaderPreprocessor &GetPreprocessor(){ return pPreprocessor; }
 	/*@}*/
 	
 	
@@ -122,22 +141,21 @@ public:
 private:
 	void pCleanUp();
 	
-	deoglShaderCompiled *pCompileShader(const deoglShaderProgram &program);
-	void pAfterLinkShader(const deoglShaderProgram &program, deoglShaderCompiled &compiled);
-	deoglShaderCompiled *pCacheLoadShader(const deoglShaderProgram &program);
-	void pCacheSaveShader(const deoglShaderProgram &program, const deoglShaderCompiled &compiled);
-	void pPreparePreprocessor(const deoglShaderDefines &defines);
+	void pCompileShaderUnit(deoglShaderProgramUnit &unit);
+	void pFinishCompileShaderUnit(deoglShaderProgramUnit &unit);
+	void pCompileShader(deoglShaderProgram &program);
+	void pFinishCompileShader(deoglShaderProgram &program);
+	void pAfterLinkShader(const deoglShaderProgram &program);
+	void pCacheLoadShader(deoglShaderProgram &program);
+	void pCacheSaveShader(const deoglShaderProgram &program);
+	void pDetachUnits(const deoglShaderProgram &program, GLuint handleShader);
 	
-	void pAppendPreprocessSourcesBuffer(const char *inputFile, const char *data,
-		const deoglShaderBindingList *outputList = nullptr);
+	bool pFinishCompileObject(GLuint handle);
+	bool pFinishLinkShader(GLuint handle);
 	
-	bool pCompileObject( GLuint handle );
-	bool pLinkShader( GLuint handle );
-	
-	void pOutputShaderToFile( const char *file );
-	void pLogFailedShaderSources();
+	void pLogFailedShaderSources(const deoglShaderProgramUnit &unit);
 	void pLogFailedSymbols();
-	void pLogFailedShader();
+	void pLogFailedShader(const deoglShaderProgram &program);
 };
 
 #endif

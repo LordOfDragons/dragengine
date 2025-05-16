@@ -1,6 +1,6 @@
 #include "shared/defren/gi/constants.glsl"
 
-UBOLAYOUT uniform GIParameters{
+UBOLAYOUT_BIND(1) uniform GIParameters{
 	vec2 pGISampleImageScale;
 	int pGIProbeCount;
 	int pGIRaysPerProbe;
@@ -43,10 +43,10 @@ UBOLAYOUT uniform GIParameters{
 	vec3 pGIBVHOffset;
 };
 
-UBOLAYOUT uniform GIProbePositions{
+UBOLAYOUT_BIND(3) uniform GIProbePositions{
 	vec4 pGIProbePosition[ GI_MAX_COUNT_PROBE_POSITIONS ]; // position(xyz), flags(w)
 };
 
-UBOLAYOUT uniform GIRayDirections{
+UBOLAYOUT_BIND(4) uniform GIRayDirections{
 	vec3 pGIRayDirection[ GI_MAX_COUNT_RAY_DIRECTIONS];
 };

@@ -5,8 +5,5 @@
 	<parameter name='pStage'/>
 	<parameter name='pLaneSize'/>
 	
-	<shaderStorageBlock name='Counters' target='0'/>
-	<shaderStorageBlock name='RenderTask' target='1'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/sort_render_task.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan Sort Render Task</sourceCode>
 </shader>

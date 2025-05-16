@@ -55,6 +55,7 @@ pWindowMain( windowMain ){
 	SetVersion( "1.0" );
 	SetDirectoryName( "IGDEScript" );
 	SetPriority( 1000 );
+	SetDefaultLoggingName();
 }
 igdeScriptModule::cModule::~cModule(){ }
 void igdeScriptModule::cModule::CreateModule(){

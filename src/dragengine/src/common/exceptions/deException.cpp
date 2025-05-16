@@ -28,12 +28,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef OS_UNIX
-#ifndef OS_ANDROID
-#ifndef OS_BEOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
 #include <execinfo.h>
-#endif
-#endif
 #endif
 
 #include "deException.h"
@@ -169,7 +165,7 @@ static _Unwind_Reason_Code unwindCallback( struct _Unwind_Context *context, void
 #endif
 
 void deException::pBuildBacktrace(){
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_WEBWASM && ! defined OS_BEOS
 	const int maxFramepointerCount = MAX_BACKTRACE_COUNT + SKIP_SELF_TRACE_COUNT;
 	void *framepointers[ maxFramepointerCount ];
 	const int fpcount = backtrace( framepointers, maxFramepointerCount );

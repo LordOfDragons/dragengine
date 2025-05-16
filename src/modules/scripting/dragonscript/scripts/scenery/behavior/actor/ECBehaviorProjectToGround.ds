@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -107,11 +109,23 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorProjectToGround'/>
+	 * <behavior type='ECBehaviorProjectToGround'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -133,8 +147,10 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			else
 				behavior = ECBehaviorProjectToGround.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			end
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "projectToGround")
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "projectToGround")
 			return behavior
 		end
 	end
@@ -143,6 +159,145 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "projectToGround.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				value = parameters.getAt("ground", null)
+				if value != null
+					pInstance.setTouchesGround(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "projectToGround.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var BehaviorElement groundElement = pInstance.getGroundBehaviorElement()
+					if groundElement == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionElement(groundElement)
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getGroundBehaviorElement(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "projectToGround.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check(context, "", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(context, pPrefix, parameters)
+			end
+			
+			func bool check(Object context, String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "ground", null)
+				if value != null
+					result &= pInstance.getTouchesGround() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "ground.element", null)
+				if value != null
+					result &= (pInstance.getGroundBehaviorElement() != null) == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "hitAngle.less", null)
+				if value != null
+					result &= pInstance.hitAngle((context cast SMContext).getEventParameter()\
+						cast CollisionInfo) < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "hitAngle.greater", null)
+				if value != null
+					result &= pInstance.hitAngle((context cast SMContext).getEventParameter()\
+						cast CollisionInfo) > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "landing", null)
+				if value != null
+					result &= pInstance.hitAngle((context cast SMContext).getEventParameter()\
+						cast CollisionInfo) < pInstance.getLandingAngle() == value.equals("true")
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(\
+					pInstance.getGroundBehaviorElement(), parameters, prefix + "interact.",\
+					pInstance.getElement())
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorProjectToGround pECBehavior
 		var ECBehaviorColliderAI.Instance pColliderAI
 		var ECBehaviorCollider.Instance pCollider
@@ -155,6 +310,8 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		var DVector pGroundedPosition
 		var bool pApplyToActor
 		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
+		var float pLandingAngle
 		
 		
 		
@@ -188,6 +345,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			pColliderAI = null
 			pCollider = null
 			pProjectCollider = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -207,6 +365,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 				throw EInvalidParam.new()
 			end
 			
+			pLandingAngle = pECBehavior.getLandingAngle().getValue(stub)
 			pTouchSensor = createTouchSensor(stub, pProjectCollider)
 			pProjectCollider.attachStatic(pTouchSensor, Vector.new(), Quaternion.new())
 			pTouchSensor.addIgnoreCollider(pProjectCollider)
@@ -221,6 +380,15 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			pProjectCollider.addCollisionTest(pTest)
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		/** \brief Create touch sensor. */
@@ -283,6 +451,17 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
+			end
+		end
+		
+		/**
+		 * \brief Landing angle in degrees.
+		 * \version 1.26
+		 */
+		func float getLandingAngle()
+			return pLandingAngle
 		end
 		
 		/** \brief Remove collider collision test from collider. */
@@ -313,6 +492,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.touchesGroundChanged(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), touchesGround if "touch" else "noTouch")
+			end
 		end
 		
 		/** * \brief Grounded position. */
@@ -449,7 +631,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			return position
 		end
 		
-		/** \brief Ground collider or \em null. */
+		/** \brief Ground collider or null. */
 		func Collider getGroundCollider()
 			if pTouchesGround and pTest.getHasCollision()
 				return pTest.hitCollider(0)
@@ -460,27 +642,41 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Ground element or \em null.
+		 * \brief Ground element or null.
 		 * 
-		 * If last ground collider is not \em null and collider owner is castable to Element
-		 * returns the owner element. Otherwise \em null is returned.
+		 * If last ground collider is not null and collider owner is castable to Element
+		 * returns the owner element. Otherwise null is returned.
 		 */
 		func Element getGroundElement()
 			var Collider collider = getGroundCollider()
-			if collider == null
-				return null
+			if collider != null
+				var Object owner = collider.getOwner()
+				if owner castable Element
+					return owner cast Element
+				end
 			end
-			
-			var Object owner = collider.getOwner()
-			if owner castable Element
-				return owner cast Element
-				
-			else
-				return null
-			end
+			return null
 		end
 		
-		/** \brief Ground collision information or \em null. */
+		/**
+		 * \brief Ground behavior element or null.
+		 * \version 1.26
+		 * 
+		 * If last ground collider is not null and collider owner is castable to
+		 * BehaviorElement returns the owner element. Otherwise null is returned.
+		 */
+		func BehaviorElement getGroundBehaviorElement()
+			var Collider collider = getGroundCollider()
+			if collider != null
+				var Object owner = collider.getOwner()
+				if owner castable BehaviorElement
+					return owner cast BehaviorElement
+				end
+			end
+			return null
+		end
+		
+		/** \brief Ground collision information or null. */
 		func CollisionInfo getGroundCollisionInfo()
 			if pTouchesGround and pTest.getHasCollision()
 				return pTest.getCollisionAt(0)
@@ -488,6 +684,14 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			else
 				return null
 			end
+		end
+		
+		/**
+		 * \brief Angle between collision normal and project to ground direction.
+		 * \version 1.26
+		 */
+		func float hitAngle(CollisionInfo info)
+			return pTest.getDirection().normalize() * info.getNormal()
 		end
 		
 		
@@ -602,6 +806,9 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	var ECBehaviorCollider pCollider
 	var ECPBoolean pApplyToActor
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
+	var ECPFloat pLandingAngle
 	
 	
 	
@@ -634,12 +841,14 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pColliderAI = colliderAI
 		pCollider = collider
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
-		pApplyToActor = ECPBoolean.new(prefix + "applyToActor", true)
-		eclass.addProperty(pApplyToActor)
+		eclass.addProperty(pApplyToActor = ECPBoolean.new(prefix + "applyToActor", true))
+		eclass.addProperty(pLandingAngle = ECPFloat.new(prefix + "landingAngle", 120, 0, 180))
 		
 		eclass.addBehavior(this)
 	end
@@ -649,10 +858,19 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		pCollider = null
 		pColliderAI = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief ColliderAI behavior or null. */
 	func ECBehaviorColliderAI getColliderAI()
@@ -667,6 +885,22 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	/** \brief Apply projected position automatically to actor. */
 	func ECPBoolean getApplyToActor()
 		return pApplyToActor
+	end
+	
+	/**
+	 * \brief Landing angle in degrees.
+	 * \version 1.26
+	 */
+	func ECPFloat getLandingAngle()
+		return pLandingAngle
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */
@@ -708,7 +942,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	
 	
 	/**
-	 * \brief Get behavior in element class or \em null if absent.
+	 * \brief Get behavior in element class or null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorProjectToGround.
@@ -720,7 +954,7 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 	end
 	
 	/**
-	 * \brief Get instance in element or \em null if absent.
+	 * \brief Get instance in element or null if absent.
 	 * 
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorProjectToGround.Instance .

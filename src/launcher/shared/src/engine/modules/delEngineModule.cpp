@@ -37,6 +37,7 @@
 #include <dragengine/extern/sha1/sha1.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/systems/modules/deInternalModule.h>
 
 
 
@@ -58,6 +59,20 @@ pLibFileSizeIs( 0 )
 {
 	pLibFileHashIs.Set( '0', 20 );
 	pLibFileHashShould.Set( '0', 20 );
+}
+
+delEngineModule::delEngineModule(const deInternalModule &module) :
+pType(module.GetType()),
+pName(module.GetName()),
+pDescription(decUnicodeString::NewFromUTF8(module.GetDescription())),
+pAuthor(decUnicodeString::NewFromUTF8(module.GetAuthor())),
+pVersion(module.GetVersion()),
+pDirName(module.GetDirectoryName()),
+pPattern(module.GetPatternList().Join(",")),
+pPriority(module.GetPriority()),
+pIsFallback(module.GetIsFallback()),
+pStatus(emsNotTested),
+pErrorCode(0){
 }
 
 delEngineModule::~delEngineModule(){
@@ -145,15 +160,19 @@ void delEngineModule::SetLibFileEntryPoint( const char *name ){
 }
 
 void delEngineModule::CalcSizeAndHashes( delLauncher &launcher ){
+	pLibFileSizeIs = 0;
+	pLibFileHashIs.Set( '0', 20 );
+	
+	if(pLibFileName.IsEmpty()){
+		return; // internal module
+	}
+	
 	decBaseFileReader::Ref reader;
 	unsigned char buffer[ 4096 ];
 	unsigned int values[ 5 ];
 	decPath path;
 	SHA1 sha1;
 	int i;
-	
-	pLibFileSizeIs = 0;
-	pLibFileHashIs.Set( '0', 20 );
 	
 	try{
 		if( decPath::IsNativePathAbsolute( pLibFileName ) ){

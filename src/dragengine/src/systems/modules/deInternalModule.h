@@ -42,8 +42,11 @@
  * inside the constructor but at last before the module is added to the system.
  */
 class DE_DLL_EXPORT deInternalModule : public deLoadableModule{
-private:
 public:
+	typedef deTObjectReference<deInternalModule> Ref;
+	
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new internal module object. */

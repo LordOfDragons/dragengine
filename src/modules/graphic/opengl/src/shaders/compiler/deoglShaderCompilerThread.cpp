@@ -25,8 +25,11 @@
 #include "deoglShaderCompiler.h"
 #include "deoglShaderCompilerThread.h"
 #include "deoglShaderCompileTask.h"
+#include "deoglShaderCompileUnitTask.h"
+#include "deoglShaderLoadTask.h"
 #include "../deoglShaderLanguage.h"
 #include "../deoglShaderProgram.h"
+#include "../deoglShaderProgramUnit.h"
 #include "../../extensions/deoglExtensions.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
@@ -44,19 +47,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderCompilerThread::deoglShaderCompilerThread(
-	deoglShaderLanguage &language, int contextIndex) :
+deoglShaderCompilerThread::deoglShaderCompilerThread(deoglShaderLanguage &language,
+	int contextIndex, Type type) :
 pLanguage(language),
 pContextIndex(contextIndex),
+pType(type),
 pCompiler(nullptr),
 pExitThread(false),
 pState(State::prepare)
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 , pDisplay(None)
 #endif
 {
+	const char *typeName;
+	switch(type){
+	case Type::single:
+		typeName = "single";
+		break;
+		
+	case Type::glparallel:
+		typeName ="glparallel";
+		break;
+		
+	default:
+		typeName = "?";
+	}
+	
 	language.GetRenderThread().GetLogger().LogInfoFormat(
-		"Create shader compiler thread: %d", contextIndex);
+		"Create shader compiler thread: %d (%s)", contextIndex, typeName);
 	
 	try{
 		pCompiler = new deoglShaderCompiler(language, contextIndex);
@@ -94,36 +112,14 @@ void deoglShaderCompilerThread::Run(){
 	pState = State::ready;
 	}
 	
-	deoglShaderCompileTask::Ref task;
-	while(true){
-		if(pExitThreadRequested()){
-			break;
-		}
+	switch(pType){
+	case Type::single:
+		pRunSingle();
+		break;
 		
-		pLanguage.GetNextTask(task);
-		
-		if(task){
-			try{
-				//const decString &cacheId = ((deoglShaderCompileTask*)task)->GetProgram()->GetCacheId();
-				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
-				//	"CompileThread %d: Start task '%.50s...'", pContextIndex, cacheId.GetString());
-				task->SetCompiled(pCompiler->CompileShader(*task->GetProgram()));
-				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
-				//	"CompileThread %d: Stop task '%.50s...'", pContextIndex, cacheId.GetString());
-				
-			}catch(const deException &){
-				task->SetCompiled(nullptr); // to be on the safe side
-			}
-			
-			pLanguage.FinishTask(task);
-			
-		}else{
-			if(pExitThreadRequested()){
-				break;
-			}
-			
-			pLanguage.WaitForNewTasks();
-		}
+	case Type::glparallel:
+		pRunGLParallel();
+		break;
 	}
 }
 
@@ -150,7 +146,8 @@ void deoglShaderCompilerThread::pCleanUp(){
 	eglMakeCurrent(pLanguage.GetRenderThread().GetContext().GetDisplay(),
 		EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 	
-#elif defined OS_BEOS
+#elif defined OS_WEBWASM
+	emscripten_webgl_make_context_current(0);
 	
 #elif defined OS_MACOS
 	pGLContextMakeCurrent(nullptr);
@@ -158,7 +155,7 @@ void deoglShaderCompilerThread::pCleanUp(){
 #elif defined OS_W32
 	wglMakeCurrent(NULL, NULL);
 	
-#elif defined OS_UNIX
+#elif defined OS_UNIX_X11
 	if(pDisplay){
 		glXMakeCurrent(pDisplay, None, nullptr);
 		XCloseDisplay(pDisplay);
@@ -178,8 +175,10 @@ void deoglShaderCompilerThread::pActivateContext(){
 			context.GetCompileSurfaceAt(pContextIndex),
 			context.GetCompileSurfaceAt(pContextIndex),
 			context.GetCompileContextAt(pContextIndex)) == EGL_TRUE)
-			
-#elif defined OS_BEOS
+		
+#elif defined OS_WEBWASM
+		DEASSERT_TRUE(emscripten_webgl_make_context_current(
+			context.GetCompileContextAt(pContextIndex)) == EMSCRIPTEN_RESULT_SUCCESS)
 		
 #elif defined OS_MACOS
 		DETHROW_INFO(deeInvalidAction, "how to do this?")
@@ -215,7 +214,7 @@ void deoglShaderCompilerThread::pActivateContext(){
 			DETHROW_INFO(deeInvalidAction, "wglMakeCurrent failed");
 		}
 
-#elif defined OS_UNIX
+#elif defined OS_UNIX_X11
 		// on nVidia there can be strange segfaults if using context display connection.
 		// to be on the safe side use a unique display connection.
 		const char *dispName = getenv("DISPLAY");
@@ -256,4 +255,226 @@ void deoglShaderCompilerThread::pActivateContext(){
 bool deoglShaderCompilerThread::pExitThreadRequested(){
 	const deMutexGuard guard(GetMutexState());
 	return pExitThread;
+}
+
+void deoglShaderCompilerThread::pRunSingle(){
+	while(true){
+		if(pExitThreadRequested()){
+			break;
+		}
+		
+		deoglShaderCompileTask::Ref task;
+		deoglShaderCompileUnitTask::Ref unitTask;
+		deoglShaderLoadTask::Ref loadTask;
+		pLanguage.GetNextTask(task, unitTask, loadTask);
+		
+		if(loadTask){
+			deoglShaderProgram &program = *loadTask->GetProgram();
+			try{
+				pCompiler->LoadCachedShader(program);
+				
+			}catch(const deException &){
+				program.SetCompiled(nullptr);
+				program.ready = false;
+			}
+			
+			pLanguage.FinishTask(loadTask);
+			
+		}else if(unitTask){
+			deoglShaderProgramUnit &unit = *unitTask->GetUnit();
+			try{
+				//const decString &cacheId = unit.GetCacheId();
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Start task unit '%.50s...'", pContextIndex, cacheId.GetString());
+				pCompiler->CompileShaderUnit(unit);
+				pCompiler->FinishCompileShaderUnit(unit);
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Stop task unit '%.50s...'", pContextIndex, cacheId.GetString());
+				
+			}catch(const deException &){
+				// just in case...
+				unit.compilingFailed = true;
+				unit.DropHandle();
+			}
+			
+			pLanguage.FinishTask(unitTask);
+			
+		}else if(task){
+			deoglShaderProgram &program = *task->GetProgram();
+			try{
+				//const decString &cacheId = program.GetCacheId();
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Start task '%.50s...'", pContextIndex, cacheId.GetString());
+				pCompiler->CompileShader(program);
+				pCompiler->FinishCompileShader(program);
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Stop task '%.50s...'", pContextIndex, cacheId.GetString());
+				
+			}catch(const deException &){
+				program.SetCompiled(nullptr);
+				program.ready = false;
+			}
+			
+			pLanguage.FinishTask(task);
+			
+		}else{
+			if(pExitThreadRequested()){
+				break;
+			}
+			
+			pLanguage.WaitForNewTasks();
+		}
+	}
+}
+
+void deoglShaderCompilerThread::pRunGLParallel(){
+	decObjectList tasks, unitTasks;
+	int i, count;
+	
+	while(true){
+		if(pExitThreadRequested()){
+			break;
+		}
+		
+		// start compiling all available unit tasks and tasks and store
+		while(true){
+			deoglShaderCompileTask::Ref task;
+			deoglShaderCompileUnitTask::Ref unitTask;
+			deoglShaderLoadTask::Ref loadTask;
+			pLanguage.GetNextTask(task, unitTask, loadTask);
+			
+			if(loadTask){
+				deoglShaderProgram &program = *loadTask->GetProgram();
+				try{
+					pCompiler->LoadCachedShader(program);
+					
+				}catch(const deException &){
+					program.SetCompiled(nullptr);
+					program.ready = false;
+				}
+				pLanguage.FinishTask(loadTask);
+				
+			}else if(unitTask){
+				deoglShaderProgramUnit &unit = *unitTask->GetUnit();
+				try{
+					//const decString &cacheId = unit.GetCacheId();
+					//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+					//	"CompileThread %d: Start task unit '%.50s...'", pContextIndex, cacheId.GetString());
+					pCompiler->CompileShaderUnit(unit);
+					unitTasks.Add(unitTask);
+					
+				}catch(const deException &){
+					// just in case...
+					unit.compilingFailed = true;
+					unit.DropHandle();
+					pLanguage.FinishTask(unitTask);
+				}
+				
+			}else if(task){
+				deoglShaderProgram &program = *task->GetProgram();
+				try{
+					//const decString &cacheId = program.GetCacheId();
+					//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+					//	"CompileThread %d: Start task '%.50s...'", pContextIndex, cacheId.GetString());
+					pCompiler->CompileShader(program);
+					tasks.Add(task);
+					
+				}catch(const deException &){
+					program.SetCompiled(nullptr);
+					program.ready = false;
+					pLanguage.FinishTask(task);
+				}
+				
+			}else{
+				break;
+			}
+		}
+		
+		if(pExitThreadRequested()){
+			break;
+		}
+		
+		// if no unit tasks or tasks are waiting to finish block on the new task semaphore
+		if(unitTasks.GetCount() == 0 && tasks.GetCount() == 0){
+			pLanguage.WaitForNewTasks();
+			continue;
+		}
+		
+		// process all finished unit tasks
+		count = unitTasks.GetCount();
+		for(i=0; i<count; i++){
+			deoglShaderCompileUnitTask * const unitTask = (deoglShaderCompileUnitTask*)unitTasks.GetAt(i);
+			deoglShaderProgramUnit &unit = *unitTask->GetUnit();
+			
+			try{
+				if(!pCompiler->HasCompileShaderUnitFinished(unit)){
+					continue;
+				}
+				
+				pCompiler->FinishCompileShaderUnit(unit);
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Stop task unit '%.50s...'", pContextIndex, cacheId.GetString());
+				
+			}catch(const deException &){
+				// just in case...
+				unit.compilingFailed = true;
+				unit.DropHandle();
+			}
+			
+			deoglShaderCompileUnitTask::Ref guardUnitTask(unitTask);
+			unitTasks.RemoveFrom(i);
+			i--;
+			count--;
+			pLanguage.FinishTask(guardUnitTask);
+		}
+		
+		// process all finished tasks
+		count = tasks.GetCount();
+		for(i=0; i<count; i++){
+			deoglShaderCompileTask * const task = (deoglShaderCompileTask*)tasks.GetAt(i);
+			deoglShaderProgram &program = *task->GetProgram();
+			
+			try{
+				if(!pCompiler->HasCompileShaderFinished(program)){
+					continue;
+				}
+				
+				pCompiler->FinishCompileShader(program);
+				//pLanguage.GetRenderThread().GetLogger().LogInfoFormat(
+				//	"CompileThread %d: Stop task '%.50s...'", pContextIndex, cacheId.GetString());
+				
+			}catch(const deException &){
+				program.SetCompiled(nullptr);
+				program.ready = false;
+			}
+			
+			deoglShaderCompileTask::Ref guardTask(task);
+			tasks.RemoveFrom(i);
+			i--;
+			count--;
+			pLanguage.FinishTask(guardTask);
+		}
+	}
+	
+	// fail all unit tasks we are still holding to
+	count = unitTasks.GetCount();
+	for(i=0; i<count; i++){
+		deoglShaderCompileUnitTask::Ref unitTask((deoglShaderCompileUnitTask*)unitTasks.GetAt(i));
+		deoglShaderProgramUnit &unit = *unitTask->GetUnit();
+		unit.compilingFailed = true;
+		unit.DropHandle();
+		unitTasks.SetAt(i, nullptr);
+		pLanguage.FinishTask(unitTask);
+	}
+	
+	// fail all tasks we are still holding to
+	count = tasks.GetCount();
+	for(i=0; i<count; i++){
+		deoglShaderCompileTask::Ref task((deoglShaderCompileTask*)tasks.GetAt(i));
+		deoglShaderProgram &program = *task->GetProgram();
+		program.SetCompiled(nullptr);
+		program.ready = false;
+		tasks.SetAt(i, nullptr);
+		pLanguage.FinishTask(task);
+	}
 }

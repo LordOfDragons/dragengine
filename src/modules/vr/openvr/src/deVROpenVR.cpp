@@ -44,12 +44,14 @@
 #include <dragengine/threading/deMutexGuard.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *OpenVRCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -388,6 +390,10 @@ void deVROpenVR::StopRuntime(){
 	pVRCompositor = nullptr;
 	pVRRenderModels = nullptr;
 	pVRInput = nullptr;
+}
+
+bool deVROpenVR::IsRuntimeRunning(){
+	return pVRSystem != nullptr;
 }
 
 void deVROpenVR::SetCamera( deCamera *camera ){
@@ -757,3 +763,32 @@ vr::Hmd_Eye deVROpenVR::ConvertEye( eEye eye ) const{
 		DETHROW( deeInvalidParam );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class deovrModuleInternal : public deInternalModule{
+public:
+	deovrModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OpenVR");
+		SetDescription("OpenVR Support.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtVR);
+		SetDirectoryName("openvr");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(OpenVRCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deovrRegisterInternalModule(deModuleSystem *system){
+	return new deovrModuleInternal(system);
+}
+#endif

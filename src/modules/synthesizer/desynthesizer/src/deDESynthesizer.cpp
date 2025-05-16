@@ -48,12 +48,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DESynthesizerCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *DESynthesizerCreateModule( deLoadableModule *loadableModule ){
@@ -215,3 +217,36 @@ void deDESynthesizer::SendCommand( const decUnicodeArgumentList &command, decUni
 		answer.SetFromUTF8( "Internal Error!" );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class desynModuleInternal : public deInternalModule{
+public:
+	desynModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DESynthesizer");
+		SetDescription("Generate sound using synthesizers.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtSynthesizer);
+		SetDirectoryName("desynthesizer");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(DESynthesizerCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *desynRegisterInternalModule(deModuleSystem *system){
+	return new desynModuleInternal(system);
+}
+#endif

@@ -2,19 +2,13 @@
 <shader>
 	<name>ToneMap Color2LogLum Stereo</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<!--<texture name='texColor' target='0'/>-->
 	<texture name='texLuminance' target='0'/>
 	
 	<parameter name='pParam1'/>
 	<parameter name='pParam2'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outLogLum' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/tonemap/color2loglum.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
+	<sourceCode unit='fragment'>F ToneMap Color2LogLum</sourceCode>
 </shader>

@@ -34,14 +34,12 @@
 
 #ifdef OS_W32
 #include "../include_windows.h"
-#endif
 
-#ifdef OS_BEOS
+#elif defined OS_BEOS
 #include <DirectWindow.h>
 #include <GLView.h>
-#endif
 
-#ifdef OS_MACOS
+#elif defined OS_MACOS
 #ifdef __OBJC__
 @class NSWindow;
 @class NSView;
@@ -49,9 +47,8 @@
 class NSWindow;
 class NSView;
 #endif
-#endif
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#elif defined OS_UNIX_X11
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #endif
@@ -67,13 +64,7 @@ class deoglRRenderWindow : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! OS_MACOS
-	Window pHostWindow;
-	Window pWindow;
-	Cursor pNullCursor;
-	#endif
-	
-	#ifdef OS_BEOS
+#ifdef OS_BEOS
 	class cGLView;
 	class cGLWindow;
 	
@@ -111,20 +102,27 @@ private:
 	
 	BWindow *pHostWindow;
 	cGLWindow *pWindow;
-	#endif
 	
-	#ifdef OS_W32
+#elif defined OS_ANDROID
+	
+#elif defined OS_WEBWASM
+	
+#elif defined OS_W32
 	HWND pHostWindow;
 	HWND pWindow;
 	HDC pWindowDC;
 	HICON pWindowIcon;
-	#endif
 	
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	NSWindow *pHostWindow;
 	NSWindow *pWindow;
 	NSView *pView;
-	#endif
+	
+#elif defined OS_UNIX_X11
+	Window pHostWindow;
+	Window pWindow;
+	Cursor pNullCursor;
+#endif
 	
 	int pX;
 	int pY;
@@ -167,39 +165,36 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** OS specific. */
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
-	inline Window GetHostWindow() const{ return pHostWindow; }
-	inline Window GetWindow() const{ return pWindow; }
-	void SetHostWindow( Window window );
-	#endif
-	
-	#ifdef OS_ANDROID
+#if defined  OS_ANDROID || defined OS_WEBWASM
 	inline void *GetHostWindow() const{ return 0; }
 	inline void *GetWindow() const{ return 0; }
 	void SetHostWindow( void *window );
-	#endif
 	
-	#ifdef OS_BEOS
+#elif defined OS_BEOS
 	inline BWindow *GetHostWindow() const{ return pHostWindow; }
 	inline cGLWindow *GetWindow() const{ return pWindow; }
 	void SetHostWindow( BWindow *window );
 	BGLView *GetGLView() const;
-	#endif
 	
-	#ifdef OS_W32
+#elif defined OS_W32
 	inline HWND GetHostWindow() const{ return pHostWindow; }
 	inline HWND GetWindow() const{ return pWindow; }
 	inline HDC GetWindowDC() const{ return pWindowDC; }
 	void SetHostWindow( HWND window );
 	decPoint GetInnerSize() const;
-	#endif
 	
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	inline NSWindow *GetHostWindow() const{ return pHostWindow; }
 	inline NSWindow *GetWindow() const{ return pWindow; }
 	void SetHostWindow( NSWindow *window );
 	inline NSView *GetView() const{ return pView; }
-	#endif
+	
+#elif defined OS_UNIX_X11
+	inline Window GetHostWindow() const{ return pHostWindow; }
+	inline Window GetWindow() const{ return pWindow; }
+	void SetHostWindow( Window window );
+#endif
+	
 	
 	/** X position of the window. */
 	inline int GetX() const{ return pX; }
@@ -292,9 +287,9 @@ public:
 	
 	
 private:
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX_X11
 	void pCreateNullCursor();
-	#endif
+#endif
 	
 	void pDestroyWindow();
 	
@@ -305,7 +300,7 @@ private:
 	void pSetIcon();
 	int pGetDisplayScaleFactor();
 
-	#ifdef OS_MACOS
+#ifdef OS_MACOS
 	void pMacOSCreateWindow();
 	void pMacOSDestroyWindow();
 	void pMacOSSwapBuffers();
@@ -318,7 +313,7 @@ public:
 	void pMacOSDelegateWindowActivated();
 	void pMacOSDelegateWindowDeactivated();
 	void pMacOSDelegateWindowResized();
-	#endif
+#endif
 	
 	void pUpdateVSync();
 };

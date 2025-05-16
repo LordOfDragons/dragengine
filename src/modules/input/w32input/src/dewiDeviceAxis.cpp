@@ -330,14 +330,16 @@ void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
 			reading = ( pMinimum + pMaximum ) / 2;
 		}
 
-	}else if( pIsBatteryLevel ){
-		const wrdp::BatteryReport &report = device.GetBatteryReport();
+	}else if(pIsBatteryLevel){
 		reading = pMaximum;
 
-		if( report.RemainingCapacityInMilliwattHours() && report.FullChargeCapacityInMilliwattHours() ){
-			const float percentage = ( float )report.RemainingCapacityInMilliwattHours().GetInt32()
-				/ ( float )report.FullChargeCapacityInMilliwattHours().GetInt32();
-			reading = ( int )( percentage * ( float )pMaximum );
+		const wrdp::BatteryReport &report = device.GetBatteryReport();
+		if(report){
+			if( report.RemainingCapacityInMilliwattHours() && report.FullChargeCapacityInMilliwattHours() ){
+				const float percentage = ( float )report.RemainingCapacityInMilliwattHours().GetInt32()
+					/ ( float )report.FullChargeCapacityInMilliwattHours().GetInt32();
+				reading = ( int )( percentage * ( float )pMaximum );
+			}
 		}
 
 	}else{

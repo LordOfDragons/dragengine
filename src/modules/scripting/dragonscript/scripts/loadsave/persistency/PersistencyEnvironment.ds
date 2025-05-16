@@ -83,6 +83,30 @@ class PersistencyEnvironment
 	 */
 	public static fixed var String varConvoPlayback = "conversationPlayback"
 	
+	/**
+	 * \brief Variable behavior tree loader.
+	 * 
+	 * Used by some factories to load behavior trees. If variable is not set factories will
+	 * consider loading the resource having failed. Some can cope with this while
+	 * others throw an exception. The following factories are known to use this variable:
+	 * - BAAIBehaviorTree
+	 * 
+	 * If set has to be an instance of LoadBehaviorTree.
+	 */
+	public static fixed var String varLoadBehaviorTree = "loadBehaviorTree"
+	
+	/**
+	 * \brief Variable state machine loader.
+	 * 
+	 * Used by some factories to load state machines. If variable is not set factories will
+	 * consider loading the resource having failed. Some can cope with this while
+	 * others throw an exception. The following factories are known to use this variable:
+	 * - BAAStateMachine
+	 * 
+	 * If set has to be an instance of LoadStateMachine.
+	 */
+	public static fixed var String varLoadStateMachine = "loadStateMachine"
+	
 	
 	
 	/** \brief Persistency with factories. */
@@ -184,6 +208,8 @@ class PersistencyEnvironment
 	func void setCommonVariables(Loaders loaders)
 		pVariables.setAt(varLoadAnimator, loaders.getAnimator())
 		pVariables.setAt(varLoadConversation, loaders.getConversation())
+		pVariables.setAt(varLoadBehaviorTree, loaders.getBehaviorTree())
+		pVariables.setAt(varLoadStateMachine, loaders.getStateMachine())
 	end
 	
 	

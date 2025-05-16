@@ -49,6 +49,7 @@ deBaseVideoDecoder( file ),
 pModule( module ),
 pReader( NULL )
 {
+	(void)pModule;
 	dethInfos infos;
 	
 	try{

@@ -60,12 +60,14 @@
 // Export definition
 //////////////////////
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *DEAnimCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -874,3 +876,38 @@ void deAnimModule::pWriteKeyframeWeight( decBaseFileWriter &writer, const sConfi
 		writer.WriteShort( ( short )( weight * 1000.0f + 0.5f ) );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deanimModuleInternal : public deInternalModule{
+public:
+deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("DEAnim");
+		SetDescription("Handles animations in the binary Drag[en]gine animation format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtAnimation);
+		SetDirectoryName("deanim");
+		GetPatternList().Add(".deanim");
+		SetDefaultExtension(".deanim");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(DEAnimCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deanimRegisterInternalModule(deModuleSystem *system){
+	return new deanimModuleInternal(system);
+}
+#endif

@@ -4,8 +4,6 @@
 	
 	<parameter name='pDepth'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/cleardepth.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/cleardepth.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Clear Depth</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Clear Depth</sourceCode>
 </shader>

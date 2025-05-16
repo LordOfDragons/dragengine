@@ -46,6 +46,7 @@
 #include "../gamedef/objectClass/forceField/gdeOCForceField.h"
 #include "../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 #include "../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../gamedef/particleemitter/gdeParticleEmitter.h"
 #include "../gamedef/property/gdeProperty.h"
 #include "../gamedef/skin/gdeSkin.h"
@@ -383,6 +384,9 @@ void gdeLoadSaveGameDefinition::pReadProperty( const decXmlElementTag &root, gde
 			}else if( type == "camera" ){
 				property.SetPathPatternType( gdeProperty::epptCamera );
 				
+			}else if(type == "world"){
+				property.SetPathPatternType(gdeProperty::epptWorld);
+				
 			}else if( type == "custom" ){
 				property.SetPathPatternType( gdeProperty::epptCustom );
 				
@@ -487,6 +491,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 		}else if( tagName == "navigationBlocker" ){
 			pReadObjectClassNavigationBlocker( *tag, objectClass );
 			
+		}else if(tagName == "world"){
+			pReadObjectClassWorld(*tag, objectClass);
+			
 		}else if( tagName == "texture" ){
 			pReadObjectClassTexture( *tag, objectClass );
 			
@@ -537,6 +544,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 					
 				}else if( key == "navigationBlockers" ){
 					inherit &= ~igdeGDClass::efsoNavigationBlockers;
+					
+				}else if( key == "worlds" ){
+					inherit &= ~igdeGDClass::efsoWorlds;
 				}
 			}
 			
@@ -1797,6 +1807,57 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker( const decXmlE
 	objectClass.GetNavigationBlockers().Add( &navblocker );
 }
 
+void gdeLoadSaveGameDefinition::pReadObjectClassWorld(const decXmlElementTag &root, gdeObjectClass &objectClass){
+	const gdeOCWorld::Ref world(gdeOCWorld::Ref::New(new gdeOCWorld));
+	const int elementCount = root.GetElementCount();
+	int i;
+	
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		const decString &tagName = tag->GetName();
+		
+		if(tagName == "path"){
+			world->SetPath(GetCDataString(*tag));
+			
+		}else if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			world->SetPosition(position);
+			
+		}else if(tagName == "orientation"){
+			decVector orientation;
+			ReadVector(*tag, orientation);
+			world->SetRotation(orientation);
+			
+		}else if(tagName == "link"){
+			const decString &property = GetAttributeString(*tag, "property");
+			const decString &value = GetAttributeString(*tag, "target");
+			
+			if(value == "path"){
+				world->SetPropertyName(gdeOCWorld::epPath, property);
+				
+			}else if(value == "position"){
+				world->SetPropertyName(gdeOCWorld::epPosition, property);
+				
+			}else if(value == "rotation"){
+				world->SetPropertyName(gdeOCWorld::epRotation, property);
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
+		}
+	}
+	
+	objectClass.GetWorlds().Add(world);
+}
+
 void gdeLoadSaveGameDefinition::pReadObjectClassTexture( const decXmlElementTag &root, gdeObjectClass &objectClass ){
 	const char * const name = GetAttributeString( root, "name" );
 	if( objectClass.GetTextures().HasNamed( name ) ){
@@ -2361,6 +2422,9 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoNavigationBlockers ) == 0 ){
 			keys.Append( "navigationBlockers," );
 		}
+		if((objectClass.GetInheritSubObjects() & igdeGDClass::efsoWorlds) == 0){
+			keys.Append("worlds,");
+		}
 		if( ! keys.IsEmpty() ){
 			keys.SetAt( -1, 0 );
 		}
@@ -2454,6 +2518,13 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 	const int navBlockerCount = navBlockers.GetCount();
 	for( i=0; i<navBlockerCount; i++ ){
 		pWriteObjectClassNavBlocker( writer, *navBlockers.GetAt( i ) );
+	}
+	
+	// worlds
+	const gdeOCWorldList &worlds = objectClass.GetWorlds();
+	const int worldCount = worlds.GetCount();
+	for(i=0; i<worldCount; i++){
+		pWriteObjectClassWorld(writer, *worlds.GetAt(i));
 	}
 	
 	// textures
@@ -3416,6 +3487,26 @@ decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker ){
 	writer.WriteClosingTag( "navigationBlocker" );
 }
 
+void gdeLoadSaveGameDefinition::pWriteObjectClassWorld(decXmlWriter &writer, const gdeOCWorld &world){
+	writer.WriteOpeningTag("world");
+	
+	if(!world.GetPath().IsEmpty() ){
+		writer.WriteDataTagString("path", world.GetPath());
+	}
+	if(!world.GetPosition().IsZero()){
+		WriteVector(writer, "position", world.GetPosition());
+	}
+	if(!world.GetRotation().IsZero()){
+		WriteVector(writer, "orientation", world.GetRotation());
+	}
+	
+	pWriteLink(writer, world.GetPropertyName(gdeOCWorld::epPath), "link", "path");
+	pWriteLink(writer, world.GetPropertyName(gdeOCWorld::epPosition), "link", "position");
+	pWriteLink(writer, world.GetPropertyName(gdeOCWorld::epRotation), "link", "rotation");
+	
+	writer.WriteClosingTag("world");
+}
+
 void gdeLoadSaveGameDefinition::pWriteObjectClassTexture( decXmlWriter &writer, const gdeOCComponentTexture &texture ){
 	writer.WriteOpeningTagStart( "texture" );
 	writer.WriteAttributeString( "name", texture.GetName() );
@@ -3723,6 +3814,10 @@ const gdeProperty &property, const char *tagName ){
 			
 		case gdeProperty::epptCamera:
 			writer.WriteDataTagString( "pathPatternType", "camera" );
+			break;
+			
+		case gdeProperty::epptWorld:
+			writer.WriteDataTagString("pathPatternType", "world");
 			break;
 			
 		case gdeProperty::epptCustom:{

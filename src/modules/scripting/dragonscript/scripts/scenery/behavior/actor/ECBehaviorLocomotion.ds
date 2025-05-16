@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -65,11 +67,23 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorLocomotion'/>
+	 * <behavior type='ECBehaviorLocomotion'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -91,23 +105,1083 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 			else
 				behavior = ECBehaviorLocomotion.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			end
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "locomotion")
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "locomotion")
+			
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorLocomotion pECBehavior
-		private var ECBehaviorColliderAI.Instance pColliderAI
-		private var ECBehaviorCollider.Instance pCollider
-		private var Locomotion pLocomotion
+		/**
+		 * \brief Behavior tree action "locomotion.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Locomotion l = pInstance.getLocomotion()
+				var Object value
+				
+				value = parameters.getAt("preset", null)
+				if value != null
+					if value.equals("human")
+						pInstance.initHuman(parseAverageSpeed(context,\
+							parameters.getAt("preset.averageSpeed") cast String))
+						
+					elif value.equals("vehicle")
+						pInstance.initVehicle(parseAverageSpeed(context,\
+							parameters.getAt("preset.averageSpeed") cast String))
+						
+					else
+						return BTResult.failure
+					end
+				end
+				
+				value = parameters.getAt("can.turn", null)
+				if value != null
+					l.setCanTurn(value.equals("true"))
+				end
+				
+				value = parameters.getAt("alwaysLimitLeftRight", null)
+				if value != null
+					l.setAlwaysLimitLeftRight(value.equals("true"))
+				end
+				
+				value = parameters.getAt("limit.look.up", null)
+				if value != null
+					l.setLimitLookUp((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("limit.look.down", null)
+				if value != null
+					l.setLimitLookDown((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.vertical.time", null)
+				if value != null
+					l.setAdjustTimeVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.vertical.range", null)
+				if value != null
+					l.setAdjustRangeVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("look.vertical.goal", null)
+				if value != null
+					l.setLookVerticalGoal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("look.vertical", null)
+				if value != null
+					l.setLookVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("limit.look.left", null)
+				if value != null
+					l.setLimitLookLeft((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("limit.look.right", null)
+				if value != null
+					l.setLimitLookRight((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.horizontal.time", null)
+				if value != null
+					l.setAdjustTimeHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.horizontal.range", null)
+				if value != null
+					l.setAdjustRangeHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("look.horizontal.goal", null)
+				if value != null
+					l.setLookHorizontalGoal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("look.horizontal", null)
+				if value != null
+					l.setLookHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog.vertical", null)
+				if value != null
+					l.setAnalogMovingVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("turn.horizontal", null)
+				if value != null
+					l.setTurnHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.orientation.time", null)
+				if value != null
+					l.setAdjustTimeOrientation((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("orientation", null)
+				if value != null
+					l.setOrientation((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("turn.speed", null)
+				if value != null
+					l.setTurningSpeed((value cast String).toFloat())
+				end
+				
+				// AngularVelocity -> Vector
+				
+				value = parameters.getAt("is.turning.inplace", null)
+				if value != null
+					l.setIsTurningIP(value.equals("true"))
+				end
+				
+				value = parameters.getAt("adjust.turn.inplace.time", null)
+				if value != null
+					l.setAdjustTimeTurnIP((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("turn.inplace", null)
+				if value != null
+					l.setTurnIP((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("reset.time.turn.inplace", null)
+				if value != null
+					l.setResetTimeTurnIP(value.equals("true"))
+				end
+				
+				value = parameters.getAt("reverse.time.turn.inplace", null)
+				if value != null
+					l.setReverseTimeTurnIP(value.equals("true"))
+				end
+				
+				value = parameters.getAt("can.turn.inplace", null)
+				if value != null
+					l.setCanTurnInPlace(value.equals("true"))
+				end
+				
+				value = parameters.getAt("limit.turn.inplace.left", null)
+				if value != null
+					l.setLimitTurnInPlaceLeft((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("limit.turn.inplace.right", null)
+				if value != null
+					l.setLimitTurnInPlaceRight((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.analog.move.horizontal.time", null)
+				if value != null
+					l.setAdjustTimeAnalogMovingHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.analog.move.horizontal.range", null)
+				if value != null
+					l.setAdjustRangeAnalogMovingHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog.move.horizontal.goal", null)
+				if value != null
+					l.setAnalogMovingHorizontalGoal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog.move.horizontal", null)
+				if value != null
+					l.setAnalogMovingHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog.move.speed", null)
+				if value != null
+					l.setAnalogMovingSpeed((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("is.moving", null)
+				if value != null
+					l.setIsMoving(value.equals("true"))
+				end
+				
+				value = parameters.getAt("move.speed", null)
+				if value != null
+					l.setMovingSpeed((value cast String).toFloat())
+				end
+				
+				// LinearVelocity -> Vector
+				
+				value = parameters.getAt("adjust.linearVelocity.time", null)
+				if value != null
+					l.setAdjustTimeLinearVelocity((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.linearVelocity.range", null)
+				if value != null
+					l.setAdjustRangeLinearVelocity((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("move.orientation", null)
+				if value != null
+					l.setMovingOrientation((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("move.direction", null)
+				if value != null
+					l.setMovingDirection((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("reset.time.walk", null)
+				if value != null
+					l.setResetTimeWalk(value.equals("true"))
+				end
+				
+				value = parameters.getAt("adjust.stance.time", null)
+				if value != null
+					l.setAdjustTimeStance((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.stance.range", null)
+				if value != null
+					l.setAdjustRangeStance((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("stance", null)
+				if value != null
+					l.setStance((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("stance.goal", null)
+				if value != null
+					l.setStanceGoal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("can.tilt", null)
+				if value != null
+					l.setCanTilt(value.equals("true"))
+				end
+				
+				value = parameters.getAt("tilt.mode", null)
+				if value != null
+					l.setTiltMode(LocomotionTilt.named(value cast String))
+				end
+				
+				value = parameters.getAt("limit.tilt.up", null)
+				if value != null
+					l.setLimitTiltUp((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("limit.tilt.down", null)
+				if value != null
+					l.setLimitTiltDown((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("tilt.vertical", null)
+				if value != null
+					l.setTiltVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("tilt.vertical.goal", null)
+				if value != null
+					l.setTiltVerticalGoal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.tilt.vertical.time", null)
+				if value != null
+					l.setAdjustTimeTiltVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.tilt.vertical.range", null)
+				if value != null
+					l.setAdjustRangeTiltVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("limit.tilt.left", null)
+				if value != null
+					l.setLimitTiltLeft((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("limit.tilt.right", null)
+				if value != null
+					l.setLimitTiltRight((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("tilt.horizontal", null)
+				if value != null
+					l.setTiltHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("tilt.horizontal.goal", null)
+				if value != null
+					l.setTiltHorizontalGoal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.tilt.horizontal.time", null)
+				if value != null
+					l.setAdjustTimeTiltHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("adjust.tilt.horizontal.range", null)
+				if value != null
+					l.setAdjustRangeTiltHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("tilt.offset", null)
+				if value != null
+					l.setTiltOffset((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+			
+			private func float parseAverageSpeed(Object context, String value)
+				if value.equals("playerInputMove.speedWalk")
+					return ECBehaviorPlayerInputMove.getInstanceIn(pInstance.getElement()).getSpeedWalk()
+					
+				elif value.equals("playerInputMove.speedRun")
+					return ECBehaviorPlayerInputMove.getInstanceIn(pInstance.getElement()).getSpeedRun()
+					
+				else
+					return (value cast String).toFloat()
+				end
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "locomotion.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Locomotion l = pInstance.getLocomotion()
+				var Object value
+				
+				if parameters.has("cancel.input")
+					l.cancelInput()
+				end
+				if parameters.has("cancel.movement")
+					l.cancelMovement()
+				end
+				if parameters.has("cancel.motion")
+					l.cancelMotion()
+				end
+				if parameters.has("cancel.turn.inplace")
+					l.cancelTurnInPlace()
+				end
+				
+				if parameters.has("forceBodyAdjustment")
+					l.forceBodyAdjustment()
+				end
+				
+				if parameters.has("stopMoving")
+					pInstance.stopMoving()
+				end
+				
+				if parameters.has("resetLooking")
+					pInstance.resetLooking()
+				end
+				
+				value = parameters.getAt("looking", null)
+				if value != null
+					l.updateLooking((context cast SMContext).getEventParameter() cast float)
+				end
+				1
+				value = parameters.getAt("locomotion", null)
+				if value != null
+					l.updateLocomotion((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				if parameters.has("isMoving")
+					l.updateIsMoving()
+				end
+				
+				value = parameters.getAt("orientation", null)
+				if value != null
+					l.updateOrientation((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				value = parameters.getAt("linearVelocity", null)
+				if value != null
+					l.updateLinearVelocity((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				value = parameters.getAt("stance", null)
+				if value != null
+					l.updateStance((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				value = parameters.getAt("postLocomotion", null)
+				if value != null
+					l.updatePostLocomotion((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				value = parameters.getAt("tilt", null)
+				if value != null
+					l.updateTilt((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				value = parameters.getAt("animator", null)
+				if value != null
+					l.updateAnimatorInstance((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				if parameters.has("aiCollider")
+					l.updateAICollider()
+				end
+				
+				value = parameters.getAt("adjustOrientation", null)
+				if value != null
+					l.adjustOrientation((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				if parameters.has("applyStates")
+					l.applyStates()
+				end
+				
+				if parameters.has("colliderFromLocomotion.orientation")
+					pInstance.getUseCollider().setOrientation(\
+						pInstance.getLocomotion().getOrientationQuaternion())
+				end
+				
+				if parameters.has("colliderFromLocomotion.linearVelocity")
+					pInstance.getUseCollider().setLinearVelocity(\
+						pInstance.getLocomotion().getLinearVelocity())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "locomotion.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var Locomotion l = pInstance.getLocomotion()
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "can.turn", null)
+				if value != null
+					result &= l.getCanTurn() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "alwaysLimitLeftRight", null)
+				if value != null
+					result &= l.getAlwaysLimitLeftRight() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "limit.look.up.less", null)
+				if value != null
+					result &= l.getLimitLookUp() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.look.up.greater", null)
+				if value != null
+					result &= l.getLimitLookUp() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.look.down.less", null)
+				if value != null
+					result &= l.getLimitLookDown() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.look.down.greater", null)
+				if value != null
+					result &= l.getLimitLookDown() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.vertical.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.vertical.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.vertical.range.less", null)
+				if value != null
+					result &= l.getAdjustRangeVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.vertical.range.greater", null)
+				if value != null
+					result &= l.getAdjustRangeVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "look.vertical.goal.less", null)
+				if value != null
+					result &= l.getLookVerticalGoal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "look.vertical.goal.greater", null)
+				if value != null
+					result &= l.getLookVerticalGoal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "look.vertical.less", null)
+				if value != null
+					result &= l.getLookVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "look.vertical.greater", null)
+				if value != null
+					result &= l.getLookVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.look.left.less", null)
+				if value != null
+					result &= l.getLimitLookLeft() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.look.left.greater", null)
+				if value != null
+					result &= l.getLimitLookLeft() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.look.right.less", null)
+				if value != null
+					result &= l.getLimitLookRight() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.look.right.greater", null)
+				if value != null
+					result &= l.getLimitLookRight() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.horizontal.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.horizontal.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.horizontal.range.less", null)
+				if value != null
+					result &= l.getAdjustRangeHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.horizontal.range.greater", null)
+				if value != null
+					result &= l.getAdjustRangeHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "look.horizontal.goal.less", null)
+				if value != null
+					result &= l.getLookHorizontalGoal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "look.horizontal.goal.greater", null)
+				if value != null
+					result &= l.getLookHorizontalGoal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "look.horizontal.less", null)
+				if value != null
+					result &= l.getLookHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "look.horizontal.greater", null)
+				if value != null
+					result &= l.getLookHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.vertical.less", null)
+				if value != null
+					result &= l.getAnalogMovingVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.vertical.greater", null)
+				if value != null
+					result &= l.getAnalogMovingVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "turn.horizontal.less", null)
+				if value != null
+					result &= l.getTurnHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "turn.horizontal.greater", null)
+				if value != null
+					result &= l.getTurnHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.orientation.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeOrientation() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.orientation.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeOrientation() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "orientation", null)
+				if value != null
+					var float angle = DEMath.fabs(DEMath.normalize(\
+						(value cast String).toFloat() - l.getOrientation(), -180, 180))
+					
+					value = parameters.getAt(prefix + "orientation.less", null)
+					if value != null
+						result &= angle < (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "orientation.greater", null)
+					if value != null
+						result &= angle > (value cast String).toFloat()
+					end
+				end
+				
+				value = parameters.getAt(prefix + "turn.speed.less", null)
+				if value != null
+					result &= l.getTurningSpeed() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "turn.speed.greater", null)
+				if value != null
+					result &= l.getTurningSpeed() > (value cast String).toFloat()
+				end
+				
+				// AngularVelocity -> Vector
+				
+				value = parameters.getAt(prefix + "is.turning.inplace", null)
+				if value != null
+					result &= l.getIsTurningIP() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "adjust.turn.inplace.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeTurnIP() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.turn.inplace.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeTurnIP() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "turn.inplace.less", null)
+				if value != null
+					result &= l.getTurnIP() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "turn.inplace.greater", null)
+				if value != null
+					result &= l.getTurnIP() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "reset.time.turn.inplace", null)
+				if value != null
+					result &= l.getResetTimeTurnIP() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "reverse.time.turn.inplace", null)
+				if value != null
+					result &= l.getReverseTimeTurnIP() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "can.turn.inplace", null)
+				if value != null
+					result &= l.getCanTurnInPlace() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "limit.turn.inplace.left.less", null)
+				if value != null
+					result &= l.getLimitTurnInPlaceLeft() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.turn.inplace.left.greater", null)
+				if value != null
+					result &= l.getLimitTurnInPlaceLeft() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.turn.inplace.right.less", null)
+				if value != null
+					result &= l.getLimitTurnInPlaceRight() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.turn.inplace.right.greater", null)
+				if value != null
+					result &= l.getLimitTurnInPlaceRight() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.analog.move.horizontal.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeAnalogMovingHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.analog.move.horizontal.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeAnalogMovingHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.analog.move.horizontal.range.less", null)
+				if value != null
+					result &= l.getAdjustRangeAnalogMovingHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.analog.move.horizontal.range.greater", null)
+				if value != null
+					result &= l.getAdjustRangeAnalogMovingHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.move.horizontal.goal", null)
+				if value != null
+					var float angle = DEMath.fabs(DEMath.normalize(\
+						(value cast String).toFloat() - l.getAnalogMovingHorizontalGoal(), -180, 180))
+					
+					value = parameters.getAt(prefix + "analog.move.horizontal.goal.less", null)
+					if value != null
+						result &= angle < (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "analog.move.horizontal.goal.greater", null)
+					if value != null
+						result &= angle > (value cast String).toFloat()
+					end
+				end
+				
+				value = parameters.getAt(prefix + "analog.move.horizontal", null)
+				if value != null
+					var float angle = DEMath.fabs(DEMath.normalize(\
+						(value cast String).toFloat() - l.getAnalogMovingHorizontal(), -180, 180))
+					
+					value = parameters.getAt(prefix + "analog.move.horizontal.less", null)
+					if value != null
+						result &= angle < (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "analog.move.horizontal.greater", null)
+					if value != null
+						result &= angle > (value cast String).toFloat()
+					end
+				end
+				
+				value = parameters.getAt(prefix + "analog.move.speed.less", null)
+				if value != null
+					result &= l.getAnalogMovingSpeed() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.move.speed.greater", null)
+				if value != null
+					result &= l.getAnalogMovingSpeed() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "is.moving", null)
+				if value != null
+					result &= l.getIsMoving() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "move.speed.less", null)
+				if value != null
+					result &= l.getMovingSpeed() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "move.speed.greater", null)
+				if value != null
+					result &= l.getMovingSpeed() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "move.speed.absolut.less", null)
+				if value != null
+					result &= l.getAbsMovingSpeed() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "move.speed.absolut.greater", null)
+				if value != null
+					result &= l.getAbsMovingSpeed() > (value cast String).toFloat()
+				end
+				
+				// LinearVelocity -> Vector
+				
+				value = parameters.getAt(prefix + "adjust.linearVelocity.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeLinearVelocity() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.linearVelocity.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeLinearVelocity() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.linearVelocity.range.less", null)
+				if value != null
+					result &= l.getAdjustRangeLinearVelocity() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.linearVelocity.range.greater", null)
+				if value != null
+					result &= l.getAdjustRangeLinearVelocity() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "move.orientation", null)
+				if value != null
+					var float angle = DEMath.fabs(DEMath.normalize(\
+						(value cast String).toFloat() - l.getMovingOrientation(), -180, 180))
+					
+					value = parameters.getAt(prefix + "move.orientation.less", null)
+					if value != null
+						result &= angle < (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "move.orientation.greater", null)
+					if value != null
+						result &= angle > (value cast String).toFloat()
+					end
+				end
+				
+				value = parameters.getAt(prefix + "move.direction.less", null)
+				if value != null
+					result &= l.getMovingDirection() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "move.direction.greater", null)
+				if value != null
+					result &= l.getMovingDirection() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "reset.time.walk", null)
+				if value != null
+					result &= l.getResetTimeWalk() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "adjust.stance.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeStance() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.stance.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeStance() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.stance.range.less", null)
+				if value != null
+					result &= l.getAdjustRangeStance() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.stance.range.greater", null)
+				if value != null
+					result &= l.getAdjustRangeStance() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "stance.less", null)
+				if value != null
+					result &= l.getStance() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "stance.greater", null)
+				if value != null
+					result &= l.getStance() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "stance.goal.less", null)
+				if value != null
+					result &= l.getStanceGoal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "stance.goal.greater", null)
+				if value != null
+					result &= l.getStanceGoal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "can.tilt", null)
+				if value != null
+					result &= l.getCanTilt() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "tilt.mode", null)
+				if value != null
+					result &= l.getTiltMode().name().equals(value)
+				end
+				
+				value = parameters.getAt(prefix + "tilt.mode.not", null)
+				if value != null
+					result &= not l.getTiltMode().name().equals(value)
+				end
+				
+				value = parameters.getAt(prefix + "limit.tilt.up.less", null)
+				if value != null
+					result &= l.getLimitTiltUp() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.tilt.up.greater", null)
+				if value != null
+					result &= l.getLimitTiltUp() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.tilt.down.less", null)
+				if value != null
+					result &= l.getLimitTiltDown() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.tilt.down.greater", null)
+				if value != null
+					result &= l.getLimitTiltDown() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.vertical.less", null)
+				if value != null
+					result &= l.getTiltVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.vertical.greater", null)
+				if value != null
+					result &= l.getTiltVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.vertical.goal.less", null)
+				if value != null
+					result &= l.getTiltVerticalGoal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.vertical.goal.greater", null)
+				if value != null
+					result &= l.getTiltVerticalGoal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.tilt.vertical.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeTiltVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.tilt.vertical.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeTiltVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.tilt.vertical.range.less", null)
+				if value != null
+					result &= l.getAdjustRangeTiltVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.tilt.vertical.range.greater", null)
+				if value != null
+					result &= l.getAdjustRangeTiltVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.tilt.left.less", null)
+				if value != null
+					result &= l.getLimitTiltLeft() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.tilt.left.greater", null)
+				if value != null
+					result &= l.getLimitTiltLeft() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.tilt.right.less", null)
+				if value != null
+					result &= l.getLimitTiltRight() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.tilt.right.greater", null)
+				if value != null
+					result &= l.getLimitTiltRight() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.horizontal.less", null)
+				if value != null
+					result &= l.getTiltHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.horizontal.greater", null)
+				if value != null
+					result &= l.getTiltHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.horizontal.goal.less", null)
+				if value != null
+					result &= l.getTiltHorizontalGoal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.horizontal.goal.greater", null)
+				if value != null
+					result &= l.getTiltHorizontalGoal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.tilt.horizontal.time.less", null)
+				if value != null
+					result &= l.getAdjustTimeTiltHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.tilt.horizontal.time.greater", null)
+				if value != null
+					result &= l.getAdjustTimeTiltHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.tilt.horizontal.range.less", null)
+				if value != null
+					result &= l.getAdjustRangeTiltHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "adjust.tilt.horizontal.range.greater", null)
+				if value != null
+					result &= l.getAdjustRangeTiltHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.offset.less", null)
+				if value != null
+					result &= l.getTiltOffset() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "tilt.offset.greater", null)
+				if value != null
+					result &= l.getTiltOffset() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorLocomotion pECBehavior
+		var ECBehaviorColliderAI.Instance pColliderAI
+		var ECBehaviorCollider.Instance pCollider
+		var Locomotion pLocomotion
+		var Collider pUseCollider
 		
 		
 		
 		/** \brief Create instance. */
-		public func new(ECBehaviorLocomotion ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorLocomotion ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			
 			if ecbehavior.getColliderAI() != null
@@ -119,36 +1193,42 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
+		func void dispose()
 			pColliderAI = null
 			pCollider = null
 			pLocomotion = null
+			pUseCollider = null
 			super.dispose()
 		end
-		
-		
 		
 		/**
 		 * \brief Initialize element from stub.
 		 * 
 		 * Calls initHuman() with a speed of 4.
 		 */
-		public func void init(StubElement stub)
-			var Collider collider
-			
+		func void init(StubElement stub)
 			if pColliderAI != null
-				collider = pColliderAI.getCollider()
+				pUseCollider = pColliderAI.getCollider()
 				
 			else
-				collider = pCollider.getCollider()
+				pUseCollider = pCollider.getCollider()
 			end
 			
 			pLocomotion = createLocomotion(stub)
-			if collider != null
-				pLocomotion.setAICollider(collider)
+			if pUseCollider != null
+				pLocomotion.setAICollider(pUseCollider)
 			end
 			
 			initHuman(4)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = \
+					ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+			end
 		end
 		
 		/**
@@ -163,23 +1243,31 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorLocomotion getECBehavior()
+		func ECBehaviorLocomotion getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief ColliderAI behavior instance or null. */
-		public func ECBehaviorColliderAI.Instance getColliderAI()
+		func ECBehaviorColliderAI.Instance getColliderAI()
 			return pColliderAI
 		end
 		
 		/** \brief Collider behavior instance or null. */
-		public func ECBehaviorCollider.Instance getCollider()
+		func ECBehaviorCollider.Instance getCollider()
 			return pCollider
 		end
 		
 		/** \brief Locomotion. */
-		public func Locomotion getLocomotion()
+		func Locomotion getLocomotion()
 			return pLocomotion
+		end
+		
+		/**
+		 * \brief Collider resource to use.
+		 * \version 1.26
+		 */
+		func Collider getUseCollider()
+			return pUseCollider
 		end
 		
 		
@@ -203,7 +1291,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * \param speed Average speed of actor used to calculate adjustment speed.
 		 *              Using running speed of actor is a good value.
 		 */
-		public func void initHuman(float averageSpeed)
+		func void initHuman(float averageSpeed)
 			pLocomotion.setAdjustRangeLinearVelocity(averageSpeed)
 			pLocomotion.setAdjustTimeAnalogMovingHorizontal(0)
 			
@@ -214,6 +1302,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 			
 			pLocomotion.setCanTurn(true)
 			pLocomotion.setCanTurnInPlace(true)
+			pLocomotion.setAlwaysLimitLeftRight(false)
 			pLocomotion.setTurnAdjustLookHorizontal(true)
 			pLocomotion.setLimitTurnInPlaceLeft(-70)
 			pLocomotion.setLimitTurnInPlaceRight(70)
@@ -250,7 +1339,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * \param speed Average speed of actor used to calculate adjustment speed.
 		 *              Using running speed of actor is a good value.
 		 */
-		public func void initVehicle(float averageSpeed)
+		func void initVehicle(float averageSpeed)
 			pLocomotion.setAdjustRangeLinearVelocity(averageSpeed)
 			pLocomotion.setAdjustTimeAnalogMovingHorizontal(0)
 			
@@ -261,6 +1350,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 			
 			pLocomotion.setCanTurn(true)
 			pLocomotion.setCanTurnInPlace(false)
+			pLocomotion.setAlwaysLimitLeftRight(true)
 			pLocomotion.setTurnAdjustLookHorizontal(false)
 			
 			pLocomotion.setAdjustTimeOrientation(1)
@@ -279,7 +1369,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * 
 		 * Typically called for player controlled actors only.
 		 */
-		public func void applyLookAround(float deltaHorizontal, float deltaVertical)
+		func void applyLookAround(float deltaHorizontal, float deltaVertical)
 			pLocomotion.setLookVerticalGoal(pLocomotion.getLookVerticalGoal() + deltaVertical)
 			pLocomotion.setLookHorizontalGoal(pLocomotion.getLookHorizontalGoal() + deltaHorizontal)
 		end
@@ -289,18 +1379,18 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		/**
 		 * \brief Set locomotion orientation in euler angles in world coordinates.
 		 */
-		public func void setOrientation(float orientation)
+		func void setOrientation(float orientation)
 			pLocomotion.setOrientation(orientation)
 			pLocomotion.setMovingOrientation(orientation)
 		end
 		
 		/** \brief View direction. */
-		public func Vector getViewDirection()
+		func Vector getViewDirection()
 			return getViewMatrix().getViewVector()
 		end
 		
 		/** \brief View matrix. */
-		public func Matrix getViewMatrix()
+		func Matrix getViewMatrix()
 			return Matrix.newRotation(pLocomotion.getLookVertical(), \
 				pLocomotion.getOrientation() + pLocomotion.getLookHorizontal(), 0)
 		end
@@ -314,7 +1404,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * values with the set adjustment velocities. Then Locomotion.updateLocomotion() is
 		 * called to update all the locomotion parameters for later use.
 		 */
-		public func void update(float elapsed)
+		func void update(float elapsed)
 			pLocomotion.updateLooking(elapsed)
 			pLocomotion.updateLocomotion(elapsed)
 		end
@@ -325,7 +1415,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * Calls Locomotion.updateAnimatorInstance() to update animator controller for which
 		 * mappings have been defined.
 		 */
-		public func void updateAnimator(float elapsed)
+		func void updateAnimator(float elapsed)
 			pLocomotion.updateAnimatorInstance(elapsed)
 		end
 		
@@ -338,14 +1428,14 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * Calls Locomotion.updatePostLocomotion() to apply tilting and foot projecting which
 		 * can be done only after physics have been calculated.
 		 */
-		public func void updatePost(float elapsed)
+		func void updatePost(float elapsed)
 			pLocomotion.updatePostLocomotion(elapsed)
 		end
 		
 		/**
 		 * \brief Clear all movement to ensure actor is not unintentially moving.
 		 */
-		public func void stopMoving()
+		func void stopMoving()
 			pLocomotion.applyStates()
 			pLocomotion.cancelMotion()
 		end
@@ -353,7 +1443,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		/**
 		 * \brief Reset looking vertically and horizontally to 0.
 		 */
-		public func void resetLooking()
+		func void resetLooking()
 			pLocomotion.setLookHorizontal(0)
 			pLocomotion.setLookVertical(0)
 			pLocomotion.cancelInput()
@@ -365,11 +1455,10 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * Adjusts locomotion orientation to line up with the actor orientation.
 		 * Moving orientation is kept untouched with moving direction adjusted to be correct.
 		 */
-		public func void setOrientationFromUpAxis()
+		func void setOrientationFromUpAxis()
 			pLocomotion.setOrientation(getElement().getOrientation().getEulerAngles().getY())
 			pLocomotion.setMovingDirection(pLocomotion.getMovingOrientation() - pLocomotion.getOrientation())
 		end
-		
 		
 		
 		/**
@@ -378,14 +1467,14 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		 * Adjusts locomotion orientation to line up with the actor orientation.
 		 * Moving orientation is kept untouched with moving direction adjusted to be correct.
 		 */
-		public func void geometryChanged()
+		func void geometryChanged()
 			setOrientationFromUpAxis()
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				pLocomotion.readFromFile(reader)
@@ -400,7 +1489,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			pLocomotion.writeToFile(writer)
@@ -408,29 +1497,29 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	end
 	
 	
-	
-	private var ECBehaviorColliderAI pColliderAI
-	private var ECBehaviorCollider pCollider
-	
+	var ECBehaviorColliderAI pColliderAI
+	var ECBehaviorCollider pCollider
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI) \
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI) \
 	this(eclass, colliderAI, "locomotion.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
 	this(eclass, collider, "locomotion.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, String prefix) \
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, String prefix) \
 	this(eclass, colliderAI, null, prefix)
 		if colliderAI == null
 			throw ENullPointer.new("colliderAI")
 		end
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String prefix) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String prefix) \
 	this(eclass, null, collider, prefix)
 		if collider == null
 			throw ENullPointer.new("collider")
@@ -443,38 +1532,54 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pColliderAI = colliderAI
 		pCollider = collider
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pCollider = null
 		pColliderAI = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief ColliderAI behavior or null. */
-	public func ECBehaviorColliderAI getColliderAI()
+	func ECBehaviorColliderAI getColliderAI()
 		return pColliderAI
 	end
 	
 	/** \brief Collider behavior or null. */
-	public func ECBehaviorCollider getCollider()
+	func ECBehaviorCollider getCollider()
 		return pCollider
 	end
 	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
-	
 	
 	
 	/**
@@ -483,7 +1588,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorLocomotion.
 	 */
-	static public func ECBehaviorLocomotion getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorLocomotion getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorLocomotion each
 			return true
 		end) cast ECBehaviorLocomotion
@@ -495,7 +1600,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorLocomotion.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -504,7 +1609,7 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

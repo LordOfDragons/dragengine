@@ -54,9 +54,7 @@ typedef int GLint;
 #define GL_COLOR_ATTACHMENT0 0x8CE0
 #define GL_TEXTURE_2D 0x0DE1
 
-#ifdef OS_ANDROID
-	// nothing
-#elif defined OS_UNIX
+#ifdef OS_UNIX_X11
 	typedef GLXDrawable ( *PFNGLXGETCURRENTDRAWABLE )();
 	typedef Bool ( *PFNGLXMAKECURRENT )( Display *dpy, GLXDrawable drawable, GLXContext ctx );
 #elif defined OS_W32
@@ -168,10 +166,7 @@ void deoxrGraphicApiOpenGL::Unload(){
 #endif
 }
 
-#ifdef OS_ANDROID
-	// nothing
-
-#elif defined OS_UNIX
+#ifdef OS_UNIX_X11
 GLXDrawable deoxrGraphicApiOpenGL::GetCurrentDrawable(){
 	if( ! pFuncGetCurrentDrawable ){
 		DETHROW( deeInvalidParam );
@@ -212,7 +207,11 @@ void deoxrGraphicApiOpenGL::pLoadLibrary(){
 	}
 	
 #elif defined HAS_LIB_DL
-	pLibHandle = dlopen( "libGL.so", RTLD_NOW );
+	#ifdef OS_ANDROID
+		pLibHandle = dlopen("libGLESv3.so", RTLD_NOW);
+	#else
+		pLibHandle = dlopen("libGL.so", RTLD_NOW);
+	#endif
 	if( ! pLibHandle ){
 		pOxr.LogErrorFormat( "dlerror: %s.", dlerror() );
 		DETHROW_INFO( deeInvalidAction, "Load OpenGL library failed" );
@@ -236,7 +235,7 @@ void deoxrGraphicApiOpenGL::pLoadLibrary(){
 }
 
 void deoxrGraphicApiOpenGL::pGetFunctions(){
-	#ifdef OS_UNIX
+	#ifdef OS_UNIX_X11
 		pFuncGetCurrentDrawable = pGetFunction( "glXGetCurrentDrawable" );
 		pFuncMakeCurrent = pGetFunction( "glXMakeCurrent" );
 	#elif defined OS_W32

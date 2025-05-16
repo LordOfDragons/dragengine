@@ -96,7 +96,7 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -111,8 +111,7 @@ class ECBehaviorVRPlayspace extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorVRPlayspace behavior = ECBehaviorVRPlayspace.new(eclass)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrPlayspace")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrPlayspace")
 			return behavior
 		end
 	end

@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>G DefRen EnvMap Light GI</name>
+	<stage>geometry</stage>
+	<source>envmaplightgi.geom.glsl</source>
+	
+	<define>GS_INSTANCING</define>
+</shaderSource>

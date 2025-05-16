@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Utils
-
 
 
 /**
@@ -39,5 +37,5 @@ interface TagResolverRule
 	 * \param parameters Parameters inside tag.
 	 * \param context Object in the context of which the resolving is done.
 	 */
-	func String resolveTag( String parameters, Object context )
+	func String resolveTag(String parameters, Object context)
 end

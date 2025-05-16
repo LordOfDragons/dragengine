@@ -5,8 +5,5 @@
 	<parameter name='pParams'/>
 	<parameter name='pWeight'/>
 	
-	<shaderStorageBlock name='VertexPositionSetData' target='0'/>
-	<shaderStorageBlock name='TransformedData' target='1'/>
-	
-	<sourceCode unit='compute'>compute/defren/geometry/vps_transform_vnt.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen VPS Transform VNT</sourceCode>
 </shader>

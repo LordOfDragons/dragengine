@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>G DefRen Skin Geometry</name>
+	<stage>geometry</stage>
+	<source>geometry.geom.glsl</source>
+	
+	<define>GS_INSTANCING</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>BILLBOARD</define>
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+</shaderSource>

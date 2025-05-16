@@ -38,6 +38,7 @@
 #include "gdeWPSTIMOCForceField.h"
 #include "gdeWPSTIMOCSnapPoint.h"
 #include "gdeWPSTIMOCSpeaker.h"
+#include "gdeWPSTIMOCWorld.h"
 #include "../gdeWPSTreeModel.h"
 #include "../../../gdeWindowMain.h"
 #include "../../../../gamedef/gdeGameDefinition.h"
@@ -54,6 +55,7 @@
 #include "../../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 #include "../../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 #include "../../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../../../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../../../../gui/gdeWindowMain.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -251,6 +253,19 @@ gdeWPSTIMOCSpeaker *gdeWPSTIMObjectClass::GetChildWith( gdeOCSpeaker *speaker ) 
 	return NULL;
 }
 
+gdeWPSTIMOCWorld *gdeWPSTIMObjectClass::GetChildWith(gdeOCWorld *world) const{
+	gdeWPSTIMOCSubObject *child = (gdeWPSTIMOCSubObject*)GetFirstChild();
+	
+	while(child){
+		if(child->GetType() == etObjectClassWorld &&
+		pObjectClass->GetWorlds().GetAt(child->GetIndex()) == world){
+			return (gdeWPSTIMOCWorld*)child;
+		}
+		child = (gdeWPSTIMOCSubObject*)child->GetNext();
+	}
+	
+	return nullptr;
+}
 
 
 void gdeWPSTIMObjectClass::NameChanged(){
@@ -393,6 +408,10 @@ void gdeWPSTIMObjectClass::OnContextMenu( igdeMenuCascade &contextMenu ){
 	helper.MenuSeparator( contextMenu );
 	helper.MenuCommand( contextMenu, windowMain.GetActionOCSpeakerAdd() );
 	helper.MenuCommand( contextMenu, windowMain.GetActionOCSpeakerPaste() );
+	
+	helper.MenuSeparator(contextMenu);
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCWorldAdd());
+	helper.MenuCommand(contextMenu, windowMain.GetActionOCWorldPaste());
 }
 
 void gdeWPSTIMObjectClass::SelectBestMatching( const char *string ){
@@ -485,5 +504,12 @@ void gdeWPSTIMObjectClass::pAddSubObjects(){
 	for( i=0; i<speakerCount; i++ ){
 		item.TakeOver( new gdeWPSTIMOCSpeaker( GetTree(), pObjectClass, speakers.GetAt( i ), i ) );
 		AppendModel( item );
+	}
+	
+	const gdeOCWorldList &worlds = pObjectClass->GetWorlds();
+	const int worldCount = worlds.GetCount();
+	for(i=0; i<worldCount; i++){
+		item.TakeOver( new gdeWPSTIMOCWorld(GetTree(), pObjectClass, worlds.GetAt(i), i));
+		AppendModel(item);
 	}
 }

@@ -5,10 +5,6 @@
 	<parameter name='pColor'/> <!-- 0 -->
 	<parameter name='pPosTransform'/> <!-- 1 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/2d/solidcolor.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/2d/solidcolor.glsl</sourceCode>
+	<sourceCode unit='vertex'>V 2D Solid Color</sourceCode>
+	<sourceCode unit='fragment'>F 2D Solid Color</sourceCode>
 </shader>

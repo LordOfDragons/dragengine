@@ -48,6 +48,7 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -55,7 +56,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *JPEGCreateModule( deLoadableModule *loadableM
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry Point
@@ -334,3 +335,39 @@ void deJpegModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 		throw;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deJpegModuleInternal : public deInternalModule{
+public:
+	deJpegModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("JPEG");
+		SetDescription("Handles images saved in the JPEG format (lossy compression).");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("jpeg");
+		GetPatternList().Add(".jpg");
+		SetDefaultExtension(".jpg");
+		SetNoCompress(true);
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(JPEGCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deJpegRegisterInternalModule(deModuleSystem *system){
+	return new deJpegModuleInternal(system);
+}
+#endif

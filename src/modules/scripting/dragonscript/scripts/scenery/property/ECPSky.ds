@@ -40,19 +40,19 @@ pin Dragengine.Utils
  * sky is stored.
  */
 class ECPSky extends ElementClassProperty
-	private var LoadSky pLoader
-	private var String pPath
-	private var Sky pSky
-	private var bool pHasPreloaded
-	
+	var LoadSky pLoader
+	var String pPath
+	var Sky pSky
+	var bool pHasPreloaded
+	var Exception pException
 	
 	
 	/** \brief Create property. */
-	public func new(String name, LoadSky loader) this(name, loader, null)
+	func new(String name, LoadSky loader) this(name, loader, null)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new(String name, LoadSky loader, String path) super(name)
+	func new(String name, LoadSky loader, String path) super(name)
 		pLoader = loader
 		pPath = path
 	end
@@ -60,39 +60,39 @@ class ECPSky extends ElementClassProperty
 	
 	
 	/** \brief Sky loader. */
-	public func LoadSky getLoader()
+	func LoadSky getLoader()
 		return pLoader
 	end
 	
 	/** \brief Path to sky. */
-	public func String getPath()
+	func String getPath()
 		return pPath
 	end
 	
 	/** \brief Set path to sky. */
-	public func void setPath(String path)
+	func void setPath(String path)
 		pPath = path
 	end
 	
 	/** \brief Sky or \em null if not present. */
-	public func Sky getSky()
+	func Sky getSky()
 		return pSky
 	end
 	
 	/** \brief Set sky or \em null if not present. */
-	public func void setSky(Sky sky)
+	func void setSky(Sky sky)
 		pSky = sky
 	end
 	
 	/** \brief Property has been preloaded. */
-	public func bool getHasPreloaded()
+	func bool getHasPreloaded()
 		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue(Object value)
+	func void setValue(Object value)
 		pPath = value cast String
 	end
 	
@@ -100,7 +100,7 @@ class ECPSky extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
 		var String path = (property cast ECPSky).pPath
 		if path != null and not path.empty()
 			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
@@ -110,7 +110,7 @@ class ECPSky extends ElementClassProperty
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+	func void preloadResources(ElementClass elementClass, PreloadCounter counter)
 		if pHasPreloaded
 			return
 		end
@@ -127,6 +127,7 @@ class ECPSky extends ElementClassProperty
 			pSky = pLoader.loadFromFile(path)
 			
 		catch Exception e
+			pException = e
 		end
 	end
 	
@@ -134,11 +135,11 @@ class ECPSky extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+	func bool logPreloadProblems(ElementClass elementClass, Console console)
 		if pPath != null and not pPath.empty() and pSky == null
-			console.addMessage("Property " + elementClass.getClassname() + "." \
+			console.addError("Property " + elementClass.getClassname() + "." \
 				+ getName() + ": Failed loading sky " \
-				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath(), pException)
 			return true
 		end
 		return false
@@ -152,7 +153,7 @@ class ECPSky extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored sky is returned.
 	 * If the named stub property is present it is loaded as sky resource.
 	 */
-	public func Sky getSky(StubWithProperties stub, ElementClass eclass)
+	func Sky getSky(StubWithProperties stub, ElementClass eclass)
 		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
 			return pSky
@@ -162,7 +163,7 @@ class ECPSky extends ElementClassProperty
 			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new(value, eclass.getClassname())
+			throw ELoadResourceFailed.new(value, eclass.getClassname(), e)
 		end
 	end
 end

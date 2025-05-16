@@ -95,7 +95,6 @@ pVRGetViewsBuffer( nullptr ),
 pVRGetViewsBufferSize( 0 ),
 pVRViewImages( nullptr ),
 pVRViewImageCount( 0 ),
-pAcquiredVRViewImage( -1 ),
 pUseGammaCorrection( false ){
 }
 

@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "deoglPipelineState.h"
+#include "../extensions/deoglExtensions.h"
 #include "../renderthread/deoglRenderThread.h"
 
 #include <dragengine/common/exceptions.h>
@@ -112,10 +113,9 @@ void deoglPipelineState::Reset(){
 	if( pglClipControl ){
 		pglClipControl( GL_LOWER_LEFT, pClipControl ? GL_ZERO_TO_ONE : GL_NEGATIVE_ONE_TO_ONE );
 	}
-	
-	#ifndef OS_ANDROID
-	ENABLE_GL_STATE( pEnableDepthClamp, GL_DEPTH_CLAMP )
-	#endif
+	if(pRenderThread.GetExtensions().GetHasDepthClamp()){
+		ENABLE_GL_STATE(pEnableDepthClamp, GL_DEPTH_CLAMP)
+	}
 }
 
 void deoglPipelineState::ColorMask( bool red, bool green, bool blue, bool alpha ){
@@ -347,7 +347,7 @@ void deoglPipelineState::EnableDepthClamp( bool enable ){
 	
 	pEnableDepthClamp = enable;
 	
-	#ifndef OS_ANDROID
-	ENABLE_GL_STATE( enable, GL_DEPTH_CLAMP )
-	#endif
+	if(pRenderThread.GetExtensions().GetHasDepthClamp()){
+		ENABLE_GL_STATE(enable, GL_DEPTH_CLAMP)
+	}
 }

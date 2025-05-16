@@ -1,0 +1,284 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.StateMachineSystem
+pin Dragengine.BehaviorTreeSystem
+
+
+/**
+ * \brief Composable component for element class supporting behavior trees and state machines.
+ * \version 1.26
+ * 
+ * Stores list of ECBehaviorBehaviorTree and ECBehaviorStateMachine behaviors. Also provides
+ * helper methods to add actions and conditions to all behavior trees and state machines.
+ */
+class ECComposeBTSM
+	/** \brief Instance helper. */
+	class Instance
+		private class EntryBT
+			public var BTContext context
+			public var String alias
+			
+			func new(ECBehaviorBehaviorTree behavior, BehaviorElement element, ECPStringMap aliasMap)
+				context = behavior.instance(element).getContext()
+				if aliasMap != null
+					alias = aliasMap.map(behavior.getID())
+				end
+			end
+			
+			func void addAction(String prefix, String name, BTSMActionCondition action)
+				context.setAction(prefix + name, action)
+				if alias != null
+					context.setAction(alias + name, action)
+				end
+			end
+			
+			func void addCondition(String prefix, String name, BTSMActionCondition condition)
+				context.setCondition(prefix + name, condition)
+				if alias != null
+					context.setCondition(alias + name, condition)
+				end
+			end
+			
+			func void addActionCondition(String prefix, String name, BTSMActionCondition actionCondition)
+				context.setAction(prefix + name, actionCondition)
+				context.setCondition(prefix + name, actionCondition)
+				if alias != null
+					context.setAction(alias + name, actionCondition)
+					context.setCondition(alias + name, actionCondition)
+				end
+			end
+		end
+		
+		private class EntrySM
+			public var SMContext context
+			public var String alias
+			
+			func new(ECBehaviorStateMachine behavior, BehaviorElement element, ECPStringMap aliasMap)
+				context = behavior.instance(element).getContext()
+				if aliasMap != null
+					alias = aliasMap.map(behavior.getID())
+				end
+			end
+			
+			func void addAction(String prefix, String name, BTSMActionCondition action)
+				context.setAction(prefix + name, action)
+				if alias != null
+					context.setAction(alias + name, action)
+				end
+			end
+			
+			func void addCondition(String prefix, String name, BTSMActionCondition condition)
+				context.setCondition(prefix + name, condition)
+				if alias != null
+					context.setCondition(alias + name, condition)
+				end
+			end
+			
+			func void addActionCondition(String prefix, String name, BTSMActionCondition actionCondition)
+				context.setAction(prefix + name, actionCondition)
+				context.setCondition(prefix + name, actionCondition)
+				if alias != null
+					context.setAction(alias + name, actionCondition)
+					context.setCondition(alias + name, actionCondition)
+				end
+			end
+		end
+		
+		
+		var Array pBTContexts, pSMContexts
+		
+		
+		/** \brief Create instance helper. */
+		func new(BehaviorElement element, ECComposeBTSM compose)
+			var ECPStringMap aliasMap = compose.getAlias()
+			
+			pBTContexts = Array.new()
+			pSMContexts = Array.new()
+			
+			compose.forEachBehaviorTree(block ECBehaviorBehaviorTree each
+				pBTContexts.add(EntryBT.new(each, element, aliasMap))
+			end)
+			compose.forEachStateMachines(block ECBehaviorStateMachine each
+				pSMContexts.add(EntrySM.new(each, element, aliasMap))
+			end)
+		end
+		
+		
+		/** \brief Add action to all behavior trees and state machines. */
+		func void addAllAction(String prefix, String name, BTSMActionCondition action)
+			pBTContexts.forEach(block EntryBT each
+				each.addAction(prefix, name, action)
+			end)
+			pSMContexts.forEach(block EntrySM each
+				each.addAction(prefix, name, action)
+			end)
+		end
+		
+		/** \brief Add condition to all behavior trees and state machines. */
+		func void addAllCondition(String prefix, String name, BTSMActionCondition condition)
+			pBTContexts.forEach(block EntryBT each
+				each.addCondition(prefix, name, condition)
+			end)
+			pSMContexts.forEach(block EntrySM each
+				each.addCondition(prefix, name, condition)
+			end)
+		end
+		
+		/** \brief Add action/condition to all behavior trees and state machines. */
+		func void addAllActionCondition(String prefix, String name, BTSMActionCondition actionCondition)
+			pBTContexts.forEach(block EntryBT each
+				each.addActionCondition(prefix, name, actionCondition)
+			end)
+			pSMContexts.forEach(block EntrySM each
+				each.addActionCondition(prefix, name, actionCondition)
+			end)
+		end
+		
+		
+		/**
+		 * \brief Drop behavior tree contexts.
+		 * 
+		 * Call this after adding all actions and conditions.
+		 */
+		func void dropBTContexts()
+			pBTContexts = null
+		end
+		
+		
+		/** \brief Run event on all state machine contexts. */
+		func void runEvent(String prefix, String event)
+			runEvent(prefix, event, null)
+		end
+		
+		func void runEvent(String prefix, String event, Object parameter)
+			pSMContexts.forEach(block EntrySM each
+				if each.alias != null
+					each.context.runEvent(each.alias + event, parameter)
+					
+				else
+					each.context.runEvent(prefix + event, parameter)
+				end
+			end)
+		end
+	end
+	
+	
+	var Array pBehaviorTrees, pStateMachines
+	var ECPStringMap pAlias
+	
+	
+	/**
+	 * \brief Create composable element class.
+	 */
+	func new()
+		pBehaviorTrees = Array.new()
+		pStateMachines = Array.new()
+	end
+	
+	func new(BehaviorElementClass eclass, String prefixAliases) this()
+		eclass.addProperty(pAlias = ECPStringMap.new(prefixAliases + "btsmAlias"))
+	end
+	
+	
+	/**
+	 * \brief Alias map or null.
+	 */
+	func ECPStringMap getAlias()
+		return pAlias
+	end
+	
+	/**
+	 * \brief Add alias in the form "aliasPrefix(aliasId).".
+	 */
+	func void addAlias(String btsmId, String aliasPrefix, String aliasId)
+		pAlias.addMapping(btsmId, aliasPrefix + "(" + aliasId + ").")
+	end
+	
+	
+	/**
+	 * \brief Add behavior behavior tree to add actions and conditions to.
+	 */
+	func void addBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		if behaviorTree == null
+			throw ENullPointer.new()
+		end
+		
+		pBehaviorTrees.add(behaviorTree)
+	end
+	
+	/**
+	 * \brief Visit behavior behavior trees to add actions and conditions to.
+	 * \param ablock Block with parameter \ref ECBehaviorBehaviorTree.
+	 */
+	func void forEachBehaviorTree(Block ablock)
+		pBehaviorTrees.forEach(ablock)
+	end
+	
+	
+	/**
+	 * \brief Add behavior state machine to add actions and conditions to.
+	 */
+	func void addStateMachine(ECBehaviorStateMachine stateMachine)
+		if stateMachine == null
+			throw ENullPointer.new()
+		end
+		
+		pStateMachines.add(stateMachine)
+	end
+	
+	/**
+	 * \brief Visit behavior state machines to add actions and conditions to.
+	 * \param ablock Block with parameter \ref ECBehaviorStateMachine.
+	 */
+	func void forEachStateMachines(Block ablock)
+		pStateMachines.forEach(ablock)
+	end
+	
+	
+	/**
+	 * \brief Add behavior behavior tree and state machine to add actions and conditions to.
+	 */
+	func void addBTSM(ECBehaviorBehaviorTree behaviorTree, ECBehaviorStateMachine stateMachine)
+		if behaviorTree == null
+			throw ENullPointer.new("behaviorTree")
+		end
+		if stateMachine == null
+			throw ENullPointer.new("stateMachine")
+		end
+		
+		pBehaviorTrees.add(behaviorTree)
+		pStateMachines.add(stateMachine)
+	end
+	
+	
+	/** \brief At least one behavior tree or state machine is present. */
+	func bool hasAny()
+		return pBehaviorTrees.getCount() > 0 or pStateMachines.getCount() > 0
+	end
+end

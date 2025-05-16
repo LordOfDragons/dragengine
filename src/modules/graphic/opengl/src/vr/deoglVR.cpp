@@ -207,7 +207,7 @@ void deoglVR::WaitBeginFrameFinished(){
 }
 
 void deoglVR::Render(){
-	if( pState != esRender ){
+	if(pState != esRender){
 		return;
 	}
 	
@@ -216,6 +216,9 @@ void deoglVR::Render(){
 	if( ! pCamera.GetPlan().GetWorld() ){
 		return;
 	}
+	
+	// debug only
+	// pCamera.SetCameraMatrices(decDMatrix::CreateCamera(decVector(0,1.8,0), decVector(0,0,1), decVector(0,1,0)));
 	
 	deoglRenderThread &renderThread = pCamera.GetRenderThread();
 	deoglRCanvas * const debugOverlayCanvas = renderThread.GetCanvasDebugOverlay();

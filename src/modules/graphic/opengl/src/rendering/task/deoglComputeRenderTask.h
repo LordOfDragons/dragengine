@@ -156,10 +156,6 @@ private:
 	const deoglPipeline *pPipelineDoubleSided;
 	const deoglPipeline *pPipelineSingleSided;
 	
-	int pFilters;
-	int pFilterMask;
-	int pFiltersMasked;
-	
 	bool pUseSpecialParamBlock;
 	
 	sStep *pSteps;

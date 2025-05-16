@@ -69,7 +69,7 @@ class ECBehaviorBodyTilting extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -86,8 +86,7 @@ class ECBehaviorBodyTilting extends DefaultECBehavior
 			var ECBehaviorBodyTilting behavior = ECBehaviorBodyTilting.new(eclass,\
 				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				ECBehaviorProjectToGround.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "bodyTilting")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "bodyTilting")
 			return behavior
 		end
 	end

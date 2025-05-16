@@ -25,9 +25,13 @@ Set-Location $OldPath
 
 $Env:CXXFLAGS = "/DMODIO_SEPARATE_COMPILATION"
 
-cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" --preset=win
+# CMAKE_POLICY_VERSION_MINIMUM:
+#   workaround for github build problem
 
-cmake --build "$CmakeBuildDir" -- -j 8
+cmake -S "$CmakeSourceDir" -B "$CmakeBuildDir" --preset=win `
+	-DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+
+cmake --build "$CmakeBuildDir" -j 8
 
 # modio build script has a bug. if build and install directory are custom
 # the install script tries to access 'cmake_install.cmake' inside 'install dir'

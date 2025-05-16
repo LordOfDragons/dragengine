@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen GI Material Map</name>
+	<stage>vertex</stage>
+	<source>materialMap.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+</shaderSource>

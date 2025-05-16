@@ -155,7 +155,7 @@ private:
 		
 	public:
 		cPrepareShader(deoglLightShader &shader, cShaderPreparedListener *listener);
-		void CompileFinished(deoglShaderCompiled *compiled) override;
+		void CompileFinished(deoglShaderProgram *program) override;
 	};
 	
 	friend class cPrepareShader;

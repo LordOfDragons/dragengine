@@ -116,7 +116,10 @@ void igdeWOSubObject::UpdateGeometry(){
 void igdeWOSubObject::UpdateColliderResponseType(){
 }
 
-void igdeWOSubObject::Update( float ){
+void igdeWOSubObject::ColliderUserPointerChanged(){
+}
+
+void igdeWOSubObject::Update(float){
 }
 
 void igdeWOSubObject::ResetPhysics(){

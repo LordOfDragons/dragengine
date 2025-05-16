@@ -26,11 +26,13 @@
 #define _DEOGLSHADERMANAGER_H_
 
 #include "deoglShaderProgram.h"
+#include "deoglShaderProgramUnit.h"
 #include "compiler/deoglShaderCompileListener.h"
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/threading/deMutex.h>
@@ -75,7 +77,7 @@ private:
 		
 		void AddListener(cGetProgramListener *listener);
 		
-		void CompileFinished(deoglShaderCompiled *compiled) override;
+		void CompileFinished(deoglShaderProgram *program) override;
 		/*@}*/
 	};
 	
@@ -86,12 +88,12 @@ private:
 	
 	deoglShaderLanguage *pLanguage;
 	
-	decObjectDictionary pUnitSourceCodes;
-	decObjectDictionary pSources;
-	decObjectList pPrograms;
+	decObjectDictionary pUnitSourceCodes, pSources;
+	decStringDictionary pIncludableSources;
+	decObjectList pPrograms, pProgramUnits;
 	
 	decPointerList pCompilePrograms;
-	deMutex pMutexCompilePrograms;
+	deMutex pMutexCompilePrograms, pMutexLogging;
 	deSemaphore pSemaphoreCompileFinished;
 	
 	decString pPathShaderSources;
@@ -118,22 +120,25 @@ public:
 	
 	/** Validate caches. */
 	void ValidateCaches();
+	
+	/** Logging mutex. */
+	inline deMutex &GetMutexLogging(){ return pMutexLogging; }
+	
+	/** Update. */
+	void Update();
 	/*@}*/
 	
 	
 	/** \name Unit Source Codes */
 	/*@{*/
-	/** Retrieves the number of shader unit source codes. */
+	/** Count of shader unit source codes. */
 	int GetUnitSourceCodeCount() const;
 	
-	/** Determines if a shader unit source code with the given file path exists. */
-	bool HasUnitSourceCodeWithPath( const char *filePath ) const;
+	/** Named shader unit source exists. */
+	bool HasUnitSourceCodeNamed(const char *name) const;
 	
-	/** Retrieves the shader unit source code with the given name or NULL if not found. */
-	deoglShaderUnitSourceCode *GetUnitSourceCodeWithPath( const char *filePath ) const;
-	
-	/** Adds a shader unit source code. */
-	void AddUnitSourceCode( deoglShaderUnitSourceCode *sourceCode );
+	/** Named shader unit source code or nullptr. */
+	deoglShaderUnitSourceCode *GetUnitSourceCodeNamed(const char *name) const;
 	
 	/** Removes all shader unit source codes. */
 	void RemoveAllUnitSourceCodes();
@@ -143,6 +148,9 @@ public:
 	 * \details Main thread call. Uses game engine logger to log problems.
 	 */
 	void LoadUnitSourceCodes();
+	
+	/** Includable sources. */
+	inline const decStringDictionary &GetIncludableSources() const{ return pIncludableSources; }
 	/*@}*/
 	
 	
@@ -168,6 +176,16 @@ public:
 	/*@}*/
 	
 	
+	/** \name Program Units */
+	/*@{*/
+	/** Count of program units. */
+	int GetProgramUnitCount();
+	
+	/** Program unit at index. */
+	deoglShaderProgramUnit *GetProgramUnitAt(int index);
+	/*@}*/
+	
+	
 	/** \name Programs */
 	/*@{*/
 	/** Count of programs. */
@@ -175,9 +193,6 @@ public:
 	
 	/** Program at index. */
 	const deoglShaderProgram *GetProgramAt(int index);
-	
-	/** Program with sources and defines exists. */
-	//bool HasProgramWith(const deoglShaderSources *sources, const deoglShaderDefines &defines) const;
 	
 	/** Program with sources and defines. If absent it is first loaded and compiled. */
 	const deoglShaderProgram *GetProgramWith(const deoglShaderSources *sources,
@@ -189,10 +204,18 @@ public:
 	
 	/** Wait for all programs to finish compile. */
 	void WaitAllProgramsCompiled();
+	
+	/** Resolve units in program. */
+	void ResolveProgramUnits(deoglShaderProgram &program);
 	/*@}*/
 	
 	
 private:
+	void pResolveProgramUnitsLocked(deoglShaderProgram &program);
+	
+	deoglShaderProgramUnit *pGetProgramUnitWithLocked(
+		const char *name, const deoglShaderDefines &defines);
+	
 	deoglShaderProgram *pGetProgramWith(const deoglShaderSources *sources,
 		const deoglShaderDefines &defines) const;
 	
@@ -202,7 +225,11 @@ private:
 	deoglShaderProgram::Ref pCreateProgram(const deoglShaderSources *sources,
 		const deoglShaderDefines &defines);
 	
-	void pLoadUnitSourceCodesIn( const char *directory );
+	deoglShaderProgramUnit *pGetProgramUnitWith(const deoglShaderUnitSourceCode *sources,
+		const deoglShaderDefines &defines) const;
+	
+	void pLoadUnitSourceCodesIn(const char *directory);
+	void pLoadIncludableSourcesIn(const char *directory);
 	void pLoadSourcesIn( const char *directory );
 };
 

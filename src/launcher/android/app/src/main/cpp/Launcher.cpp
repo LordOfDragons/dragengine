@@ -29,6 +29,9 @@ pFDContainer(FDVFSContainer::Ref::New(new FDVFSContainer(
     decPath::CreatePathUnix("/fds")))){
 }
 
+Launcher::~Launcher(){
+}
+
 delGameList Launcher::ReadDelgaGames(const decString &path){
     delGameList games;
     const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
@@ -42,9 +45,12 @@ delGameList Launcher::ReadDelgaGames(const decString &path){
     return games;
 }
 
-Launcher::~Launcher(){
+void Launcher::Dispose(JNIEnv *env) {
     if(GetConfig().osConfig.nativeWindow){
         ANativeWindow_release(GetConfig().osConfig.nativeWindow);
+    }
+    if(GetConfig().osConfig.activity){
+        env->DeleteGlobalRef(GetConfig().osConfig.activity);
     }
 }
 
@@ -70,8 +76,9 @@ JNIEnv *env, jobject thiz, jobject config) {
 
         delConfig.osConfig.javavm = vJavaVM;
 
-        delConfig.osConfig.activity = clsConfig.GetFieldObject("activity",
-           "Landroid/app/Activity;").Get(config);
+        // make sure activity jobject is a global reference
+        delConfig.osConfig.activity = clsConfig.GetFieldObject("activity", "Landroid/app/Activity;").Get(config);
+        delConfig.osConfig.activity = env->NewGlobalRef(delConfig.osConfig.activity);
 
         {
             jobject objView = clsConfig.GetFieldObject("surface",
@@ -94,8 +101,10 @@ JNIEXPORT void JNICALL
 Java_ch_dragondreams_delauncher_launcher_internal_Launcher_destroyLauncher(
         JNIEnv *env, jobject thiz, jlong launcher) {
     JniHelpers h(env);
+    Launcher * const plauncher = (Launcher*)(intptr_t)launcher;
     try {
-        delete (Launcher*)(intptr_t)launcher;
+        plauncher->Dispose(env);
+        delete plauncher;
     }catch(const deException &e){
         h.throwException(e);
     }

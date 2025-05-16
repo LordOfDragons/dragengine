@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -66,15 +68,15 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Attachable has been attached to slot. */
-		public func void slotAttached(Instance instance, ECBehaviorAttachable.Instance attachable)
+		func void slotAttached(Instance instance, ECBehaviorAttachable.Instance attachable)
 		end
 		
 		/** \brief Attachable has been removed from slot. */
-		public func void slotDetached(Instance instance, ECBehaviorAttachable.Instance attachable)
+		func void slotDetached(Instance instance, ECBehaviorAttachable.Instance attachable)
 		end
 	end
 	
@@ -86,10 +88,10 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -97,7 +99,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -114,6 +116,18 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * <behavior type='ECBehaviorAttachSlot'>
 	 *   <!-- optional: use vrhand behavior with id -->
 	 *   <string name='vrHand'>right</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -123,7 +137,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -139,7 +153,9 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			
 			behavior.setVRHand(eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters))
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "attachSlot", id)
 			return behavior
 		end
@@ -149,25 +165,118 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorAttachSlot pECBehavior
-		private var String pBone
-		private var Vector pPosition
-		private var Quaternion pOrientation
-		private var Matrix pMatrix
-		private var Matrix pInverseMatrix
-		private var ECBehaviorAttachable.Instance pAttachable
-		private var Vector pAttachablePosition
-		private var Quaternion pAttachableOrientation
-		private var ElementResolver pElementResolver
-		private var Array pListeners
+		/**
+		 * \brief Behavior tree action/condition "attachSlot{(id)}.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var ECBehaviorAttachable.Instance attachable = pInstance.getAttachable()
+					if attachable == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(attachable)
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getAttachable(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				value = parameters.getAt("detach", null)
+				if value != null
+					if value.equals("dispose")
+						pInstance.detachAndDispose()
+						
+					else
+						pInstance.detach()
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
 		
-		private var ECBehaviorCollider.Instance pCollider
-		private var ECBehaviorVRHand.Instance pVRHand
+		/**
+		 * \brief Behavior tree action/condition "attachSlot{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "empty", null)
+				if value != null
+					result &= pInstance.isEmpty() == value.equals("true")
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getAttachable(),\
+					parameters, prefix + "interact.", pInstance.getElement())
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorAttachSlot pECBehavior
+		var String pBone
+		var Vector pPosition
+		var Quaternion pOrientation
+		var Matrix pMatrix
+		var Matrix pInverseMatrix
+		var ECBehaviorAttachable.Instance pAttachable
+		var Vector pAttachablePosition
+		var Quaternion pAttachableOrientation
+		var ElementResolver pElementResolver
+		var Array pListeners
+		
+		var ECBehaviorCollider.Instance pCollider
+		var ECBehaviorVRHand.Instance pVRHand
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorAttachSlot ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorAttachSlot ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pBone = ecbehavior.getBone().getValue()
 			pPosition = ecbehavior.getPosition().getVector()
@@ -176,7 +285,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			if pAttachable != null
 				pAttachable.getElement().safeDispose()
 				pAttachable = null
@@ -186,6 +295,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			pElementResolver = null
 			pCollider = null
 			pVRHand = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -193,15 +303,17 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			if pECBehavior.getVRHand() != null
-				pVRHand = pECBehavior.getVRHand().instance(getElement())
+				pVRHand = pECBehavior.getVRHand().instance(element)
 				
 			elif pECBehavior.getCollider() != null
-				pCollider = pECBehavior.getCollider().instance(getElement())
+				pCollider = pECBehavior.getCollider().instance(element)
 			end
 			
-			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 			
 			pBone = stub.getPropertyValueFor(pECBehavior.getBone().getName(), pBone)
 			
@@ -216,42 +328,50 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			end
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorAttachSlot getECBehavior()
+		func ECBehaviorAttachSlot getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Collider behavior instance or null if not used. */
-		public func ECBehaviorCollider.Instance getCollider()
+		func ECBehaviorCollider.Instance getCollider()
 			return pCollider
 		end
 		
 		/** \brief VR Hand behavior instance or null if not used. */
-		public func ECBehaviorVRHand.Instance getVRHand()
+		func ECBehaviorVRHand.Instance getVRHand()
 			return pVRHand
 		end
 		
 		/** \brief Name of bone to attach to or empty string to attach statically. */
-		public func String getBone()
+		func String getBone()
 			return pBone
 		end
 		
 		/** \brief Position to attach to. */
-		public func Vector getPosition()
+		func Vector getPosition()
 			return pPosition
 		end
 		
 		/** \brief Orientation to attach to. */
-		public func Quaternion getOrientation()
+		func Quaternion getOrientation()
 			return pOrientation
 		end
 		
 		/** \brief Attach slot matrix relative to element or bone. */
-		public func Matrix getMatrix()
+		func Matrix getMatrix()
 			if pMatrix == null
 				pMatrix = Matrix.newWorld(pPosition, pOrientation)
 			end
@@ -259,7 +379,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief Inverse attach slot matrix relative to element or bone. */
-		public func Matrix getInverseMatrix()
+		func Matrix getInverseMatrix()
 			if pInverseMatrix == null
 				pInverseMatrix = getMatrix().getInverse()
 			end
@@ -270,7 +390,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * \brief Attach slot matrix in world space.
 		 * \version 1.9
 		 */
-		public func DMatrix getWorldMatrix()
+		func DMatrix getWorldMatrix()
 			var DMatrix matrix = DMatrix.newWorld(DVector.new(pPosition), pOrientation)
 			
 			var Collider collider = getSlotCollider()
@@ -300,12 +420,12 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * \brief Inverse attach slot matrix in world space.
 		 * \version 1.9
 		 */
-		public func DMatrix getInverseWorldMatrix()
+		func DMatrix getInverseWorldMatrix()
 			return getWorldMatrix().getInverse()
 		end
 		
 		/** \brief Element resolver used during loading or \em null if not set. */
-		public func ElementResolver getElementResolver()
+		func ElementResolver getElementResolver()
 			return pElementResolver
 		end
 		
@@ -315,7 +435,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * 
 		 * Can be ECBehaviorCollider collider, ECBehaviorVRHand collider or null.
 		 */
-		public func Collider getSlotCollider()
+		func Collider getSlotCollider()
 			if pVRHand != null
 				return pVRHand.getCollider()
 				
@@ -330,37 +450,37 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		
 		
 		/** \brief Attached attachable or \em null. */
-		public func ECBehaviorAttachable.Instance getAttachable()
+		func ECBehaviorAttachable.Instance getAttachable()
 			return pAttachable
 		end
 		
 		/** \brief Attachable position or \em null. */
-		public func Vector getAttachablePosition()
+		func Vector getAttachablePosition()
 			return pAttachablePosition
 		end
 		
 		/** \brief Attachable orientation or \em null. */
-		public func Quaternion getAttachableOrientation()
+		func Quaternion getAttachableOrientation()
 			return pAttachableOrientation
 		end
 		
 		/** \brief Slot is empty. */
-		public func bool isEmpty()
+		func bool isEmpty()
 			return pAttachable == null
 		end
 		
 		/** \brief Slot is occupied. */
-		public func bool isNotEmpty()
+		func bool isNotEmpty()
 			return pAttachable != null
 		end
 		
 		/** \brief Element is attached to slot. */
-		public func bool isAttached(BehaviorElement element)
+		func bool isAttached(BehaviorElement element)
 			return pAttachable != null and pAttachable.getElement() == element
 		end
 		
 		/** \brief Element is not attached to slot. */
-		public func bool isNotAttached(BehaviorElement element)
+		func bool isNotAttached(BehaviorElement element)
 			return pAttachable == null or pAttachable.getElement() != element
 		end
 		
@@ -371,7 +491,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * \retval false Attachable Element.getParent() is not null.
 		 * \retval true Attaching is possible
 		 */
-		public func bool canAttach(ECBehaviorAttachable.Instance attachable)
+		func bool canAttach(ECBehaviorAttachable.Instance attachable)
 			return pAttachable == null and not attachable.isAttached() \
 				and attachable.getElement().getParent() == null
 		end
@@ -384,15 +504,15 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * \throws EInvalidParam \em attachable is already attached to another slot.
 		 * \throws EInvalidParam \em attachable Element.getParent() is not null.
 		 */
-		public func void attach(ECBehaviorAttachable.Instance attachable)
+		func void attach(ECBehaviorAttachable.Instance attachable)
 			attach(attachable, Vector.new(), Quaternion.new())
 		end
 		
-		public func void attach(ECBehaviorAttachable.Instance attachable, Vector position)
+		func void attach(ECBehaviorAttachable.Instance attachable, Vector position)
 			attach(attachable, position, Quaternion.new())
 		end
 		
-		public func void attach(ECBehaviorAttachable.Instance attachable, Vector position, Quaternion orientation)
+		func void attach(ECBehaviorAttachable.Instance attachable, Vector position, Quaternion orientation)
 			if pAttachable != null or attachable.isAttached()
 				throw EInvalidParam.new()
 			end
@@ -416,6 +536,9 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.slotAttached(this, attachable)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "attached")
+			end
 		end
 		
 		/**
@@ -425,7 +548,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * \throws EInvalidParam \em attachable is already attached to another slot.
 		 * \throws EInvalidParam \em attachable Element.getParent() is not null.
 		 */
-		public func void attachWorld(ECBehaviorAttachable.Instance attachable)
+		func void attachWorld(ECBehaviorAttachable.Instance attachable)
 			var Matrix matrix = (attachable.getElement().getElementMatrix()\
 				* getInverseWorldMatrix()).toMatrix()
 			attach(attachable, matrix.getPosition(), matrix.toQuaternion())
@@ -494,7 +617,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief Detach attachable if one is attached. */
-		public func void detach()
+		func void detach()
 			if pAttachable == null
 				return
 			end
@@ -513,6 +636,9 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.slotDetached(this, attachable)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "detached")
+			end
 		end
 		
 		/**
@@ -521,7 +647,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * Hook for subclasses to do custom detachment logic. Default implementation detaches
 		 * attachable ECBehaviorCollider from ECBehaviorCollider or ECBehaviorVRHand.
 		 */
-		public func void detachAttachable()
+		func void detachAttachable()
 			if pVRHand != null
 				pVRHand.getCollider().detach(pAttachable.getCollider().getCollider())
 				
@@ -535,7 +661,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		 * 
 		 * Calls removeFromGameWorldIfPresent() then dispose() on the attachable.
 		 */
-		public func void detachAndDispose()
+		func void detachAndDispose()
 			var ECBehaviorAttachable.Instance attachable = pAttachable
 			
 			detach()
@@ -548,7 +674,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -556,14 +682,14 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
+		func void enterFrame()
 			if pElementResolver != null
 				pElementResolver.resolve(getElement().getGameWorld())
 				pElementResolver = null
@@ -571,7 +697,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief State changed (visble, touchable). */
-		public func void stateChanged()
+		func void stateChanged()
 			if pAttachable == null
 				return
 			end
@@ -584,7 +710,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
+		func void addToGameWorld()
 			if pAttachable == null
 				return
 			end
@@ -596,7 +722,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
+		func void removeFromGameWorld()
 			if pAttachable != null
 				pAttachable.getElement().removeFromGameWorldIfPresent()
 			end
@@ -605,7 +731,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
 				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
@@ -614,8 +740,10 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 					var Quaternion orientation = Quaternion.readFromFile(reader)
 					
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorAttachable.Instance attachable
-						attachAttachable(attachable, position, orientation)
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorAttachable.Instance attachable
+						if attachable != null
+							attachAttachable(attachable, position, orientation)
+						end
 						pAttachable = attachable
 						pAttachablePosition = position
 						pAttachableOrientation = orientation
@@ -629,7 +757,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 			writer.writeByte(0) // version
 			
 			var PersistencyFlags flags = PersistencyFlags.new(1)
@@ -646,12 +774,14 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorCollider pCollider
-	private var ECBehaviorVRHand pVRHand
-	private var ECPString pBone
-	private var ECPVector pPosition
-	private var ECPVector pOrientation
-	private var Array pListenerFactories
+	var ECBehaviorCollider pCollider
+	var ECBehaviorVRHand pVRHand
+	var ECPString pBone
+	var ECPVector pPosition
+	var ECPVector pOrientation
+	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -660,7 +790,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em collider.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
 	this(eclass, collider, "")
 	end
 	
@@ -669,7 +799,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em collider.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
 	this(eclass, collider, id, id.empty() if "attachSlot." else "attachSlot(" + id + ").")
 	end
 	
@@ -678,7 +808,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em collider.
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	String id, String prefix) this(eclass, collider, null, id, prefix)
 	end
 	
@@ -690,11 +820,13 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * - collider
 	 * - vrHand
 	 */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider,\
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider,\
 	ECBehaviorVRHand vrHand, String id, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pCollider = collider
 		pVRHand = vrHand
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pBone = ECPString.new(prefix + "bone", "")
 		eclass.addProperty(pBone)
@@ -709,17 +841,26 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pCollider = null
 		pVRHand = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Collider behavior or null if not used. */
-	public func ECBehaviorCollider getCollider()
+	func ECBehaviorCollider getCollider()
 		return pCollider
 	end
 	
@@ -727,7 +868,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \brief Set collider behavior or null if not used.
 	 * \version 1.9
 	 */
-	public func void setCollider(ECBehaviorCollider collider)
+	func void setCollider(ECBehaviorCollider collider)
 		pCollider = collider
 	end
 	
@@ -735,7 +876,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \brief VR Hand behavior or null if not used.
 	 * \version 1.9
 	 */
-	public func ECBehaviorVRHand getVRHand()
+	func ECBehaviorVRHand getVRHand()
 		return pVRHand
 	end
 	
@@ -743,23 +884,31 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \brief Set VR Hand behavior or null if not used.
 	 * \version 1.9
 	 */
-	public func void setVRHand(ECBehaviorVRHand vrHand)
+	func void setVRHand(ECBehaviorVRHand vrHand)
 		pVRHand = vrHand
 	end
 	
 	/** \brief Bone to attach to or empty string to attach to collider. */
-	public func ECPString getBone()
+	func ECPString getBone()
 		return pBone
 	end
 	
 	/** \brief Position to attach to. */
-	public func ECPVector getPosition()
+	func ECPVector getPosition()
 		return pPosition
 	end
 	
 	/** \brief Orientation to attach to. */
-	public func ECPVector getOrientation()
+	func ECPVector getOrientation()
 		return pOrientation
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	
@@ -768,7 +917,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \brief Set attach parameters for static attaching.
 	 * \version 1.10
 	 */
-	public func void setAttachStatic(Vector position, Vector rotation)
+	func void setAttachStatic(Vector position, Vector rotation)
 		pBone.setValue("")
 		pPosition.setVector(position)
 		pOrientation.setVector(rotation)
@@ -778,7 +927,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \brief Set attach parameters for bone attaching using zero position and rotation.
 	 * \version 1.10
 	 */
-	public func void setAttachBone(String bone)
+	func void setAttachBone(String bone)
 		setAttachBone(bone, Vector.new(), Vector.new())
 	end
 	
@@ -786,7 +935,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * \brief Set attach parameters for bone attaching.
 	 * \version 1.10
 	 */
-	public func void setAttachBone(String bone, Vector position, Vector rotation)
+	func void setAttachBone(String bone, Vector position, Vector rotation)
 		pBone.setValue(bone)
 		pPosition.setVector(position)
 		pOrientation.setVector(rotation)
@@ -795,7 +944,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -807,17 +956,17 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -826,7 +975,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -838,7 +987,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorAttachSlot getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorAttachSlot getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorAttachSlot each
 			return true
 		end) cast ECBehaviorAttachSlot
@@ -850,7 +999,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorAttachSlot with specific identifier.
 	 */
-	static public func ECBehaviorAttachSlot getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorAttachSlot getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorAttachSlot each
 			return each.getID().equals(id)
 		end) cast ECBehaviorAttachSlot
@@ -862,7 +1011,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * Returns list contains ECBehaviorAttachSlot behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorAttachSlot each
 			return true
 		end)
@@ -877,7 +1026,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * of type ECBehaviorAttachSlot.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -889,7 +1038,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorAttachSlot.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -901,7 +1050,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * Returns list contains ECBehaviorAttachSlot.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -910,7 +1059,7 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

@@ -41,6 +41,7 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -48,7 +49,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *PNG3DCreateModule( deLoadableModule *loadable
 #ifdef  __cplusplus
 }
 #endif
-
+#endif
 
 
 // Entry Point
@@ -118,3 +119,41 @@ void dePng3DModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 	
 	tarball.Save3DImage( file, image );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class dePng3DModuleInternal : public deInternalModule{
+public:
+	dePng3DModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("PNG-3D");
+		SetDescription("Handles images saved in the PNG-3D format (lossless compression). PNG-3D files \
+are actually a tarball with png images one for each z coordinate in the 3D-image. Files \
+inside the tarball are named zX.png where X is the z coordinate without leading 0s.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("png3d");
+		GetPatternList().Add(".png3d");
+		SetDefaultExtension(".png3d");
+		SetNoCompress(true);
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(PNG3DCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *depng3DRegisterInternalModule(deModuleSystem *system){
+	return new dePng3DModuleInternal(system);
+}
+#endif

@@ -30,23 +30,76 @@ namespace Dragengine
  * \brief Failed loading resource.
  */
 class ELoadResourceFailed extends Exception
-	private var String pPath
-	
+	var String pPath
+	var Exception pException
 	
 	
 	/** \brief Create exception. */
-	public func new( String path ) this( path, "Failed loading resource" )
+	func new(String path) this(path, "Failed loading resource")
 	end
 	
 	/** \brief Create exception. */
-	public func new( String path, String message ) super( message + ": " + path )
-		this.pPath = path
+	func new(String path, String message) super(message + ": " + path)
+		pPath = path
 	end
 	
+	/**
+	 * \brief Create exception.
+	 * \version 1.26
+	 */
+	func new(String path, String message, Exception exception) super(message + ": " + path)
+		pPath = path
+		pException = exception
+	end
 	
 	
 	/** \brief Resource path. */
-	public func String getPath()
-		return this.pPath
+	func String getPath()
+		return pPath
+	end
+	
+	/**
+	 * \brief Exception or null.
+	 * \version 1.26
+	 */
+	func Exception getException()
+		return pException
+	end
+	
+	
+	func void printTrace()
+		if pException != null
+			pException.printTrace()
+		end
+		super.printTrace()
+	end
+	
+	func int getTraceCount()
+		var int count = super.getTraceCount()
+		if pException != null
+			count += pException.getTraceCount()
+		end
+		return count
+	end
+	
+	func String getTraceClass(int index)
+		if pException != null and index >= super.getTraceCount()
+			return pException.getTraceClass(index - super.getTraceCount())
+		end
+		return super.getTraceClass(index)
+	end
+	
+	func String getTraceFunction(int index)
+		if pException != null and index >= super.getTraceCount()
+			return pException.getTraceFunction(index - super.getTraceCount())
+		end
+		return super.getTraceFunction(index)
+	end
+	
+	func int getTraceLine(int index)
+		if pException != null and index >= super.getTraceCount()
+			return pException.getTraceLine(index - super.getTraceCount())
+		end
+		return super.getTraceLine(index)
 	end
 end

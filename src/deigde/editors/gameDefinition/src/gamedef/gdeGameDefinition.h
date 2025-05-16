@@ -33,6 +33,7 @@
 #include "sky/gdeSkyList.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include "objectClass/world/gdeOCWorld.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectSet.h>
@@ -55,6 +56,7 @@ class gdeOCParticleEmitter;
 class gdeOCForceField;
 class gdeOCSnapPoint;
 class gdeOCSpeaker;
+class gdeOCWorld;
 class gdeSkyController;
 
 class igdeWSky;
@@ -124,6 +126,9 @@ public:
 		/** Object class speaker. */
 		eotOCSpeaker,
 		
+		/** Object class world. */
+		eotOCWorld,
+		
 		/** Skin. */
 		eotSkin,
 		
@@ -182,6 +187,7 @@ private:
 	gdeOCForceField *pActiveOCForceField;
 	gdeOCSnapPoint *pActiveOCSnapPoint;
 	gdeOCSpeaker *pActiveOCSpeaker;
+	gdeOCWorld::Ref pActiveOCWorld;
 	decStringSet pClassNameList;
 	
 	gdeParticleEmitterList pParticleEmitters;
@@ -607,6 +613,17 @@ public:
 	
 	/** Active object class speaker is set. */
 	bool HasActiveOCSpeaker() const;
+	
+	
+	
+	/** Active object class world or nullptr if none is active. */
+	inline const gdeOCWorld::Ref &GetActiveOCWorld() const{ return pActiveOCWorld; }
+	
+	/** Set active object class world or nullptr if none is active. */
+	void SetActiveOCWorld(gdeOCWorld *world);
+	
+	/** Active object class world is set. */
+	bool HasActiveOCWorld() const;
 	/*@}*/
 	
 	
@@ -879,6 +896,12 @@ public:
 	/** Notify listeners object class speaker changed. */
 	void NotifyOCSpeakerChanged( gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
 	
+	/** Notify listeners object class world changed. */
+	void NotifyOCWorldsChanged(gdeObjectClass *objectClass);
+	
+	/** Notify listeners object class world changed. */
+	void NotifyOCWorldChanged(gdeObjectClass *objectClass, gdeOCWorld *world);
+	
 	/** Notify listeners object class textures changed. */
 	void NotifyOCTexturesChanged( gdeObjectClass *objectClass );
 	
@@ -923,6 +946,9 @@ public:
 	
 	/** Notify listeners active object class speaker changed. */
 	void NotifyActiveOCSpeakerChanged();
+	
+	/** Notify listeners active object class world changed. */
+	void NotifyActiveOCWorldChanged();
 	
 	
 	

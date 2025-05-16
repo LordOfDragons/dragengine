@@ -35,6 +35,36 @@ pin Dragengine.Scenery
  * command to the command manager of a BaseGameApp.
  */
 class CommandsBAAInteract
+	/**
+	 * \brief Bridge from BAAInteract to BAAStateMachineEvent.
+	 * \version 1.26
+	 * 
+	 * Send events match BAAInteract function named with prefix "interact.".
+	 */
+	class StateMachineEventBridge implements BAAInteract
+		var BAAStateMachineEvent pTarget
+		
+		func new(BAAStateMachineEvent target)
+			pTarget = target
+		end
+		
+		func void primaryActionStart()
+			pTarget.sendInputAsEvent("interact.primary.start", null)
+		end
+		
+		func void primaryActionStop()
+			pTarget.sendInputAsEvent("interact.primary.stop", null)
+		end
+		
+		func void secondaryActionStart()
+			pTarget.sendInputAsEvent("interact.secondary.start", null)
+		end
+		
+		func void secondaryActionStop()
+			pTarget.sendInputAsEvent("interact.secondary.stop", null)
+		end
+	end
+	
 	/** \brief Base class operating only on actors with BAAInteract action. */
 	class Base extends Command
 		var ECBehaviorPlayerControllable.Tracker pTracker
@@ -59,12 +89,16 @@ class CommandsBAAInteract
 			
 			var ECBehaviorActorAIAction.Instance aiAction = \
 				ECBehaviorActorAIAction.getInstanceIn(actor.getElement())
-			if aiAction != null and aiAction.getAction() castable BAAInteract
-				return aiAction.getAction() cast BAAInteract
-				
-			else
-				return null
+			if aiAction != null
+				var BaseActorAction action = aiAction.getAction()
+				if action castable BAAInteract
+					return action cast BAAInteract
+					
+				elif action castable BAAStateMachineEvent
+					return StateMachineEventBridge.new(action cast BAAStateMachineEvent)
+				end
 			end
+			return null
 		end
 		
 		func void start()

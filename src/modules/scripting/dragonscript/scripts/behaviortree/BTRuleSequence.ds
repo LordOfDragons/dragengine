@@ -92,7 +92,7 @@ class BTRuleSequence extends BTRuleList
 		if rule == this
 			// first time the rule is run
 			if getRuleCount() == 0 or not evaluateConditions(context)
-				return pDoNoFail if BTResult.success else BTResult.failure  // context does another step
+				return pDoNoFail if BTResult.success else BTResult.failure // context does another step
 			end
 			
 			context.setCurrentRule(getRuleAt(0))

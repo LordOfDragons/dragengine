@@ -8,7 +8,9 @@
                 "${workspaceFolder}/../../../../../testing/include"
             ],
             "defines": [
+                "MODULE_VERSION=\"9999\"",
                 "MOD_ENTRY_POINT_ATTR=",
+                "WITH_INTERNAL_MODULE=",
                 "OS_POSIX=1"
             ],
             "compilerPath": "/usr/lib/llvm/18/bin/clang",

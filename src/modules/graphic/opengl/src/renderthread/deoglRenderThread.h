@@ -98,7 +98,7 @@ private:
 		etsFinishedRendering,
 		etsCleaningUp,
 		etsFrozen,
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 		etsWindowTerminate,
 		etsWindowDown,
 		etsWindowInit
@@ -315,6 +315,7 @@ public:
 	
 	/** Debug. */
 	inline deoglRTDebug &GetDebug() const{ return *pDebug; }
+	inline bool HasDebug() const{ return pDebug != nullptr; }
 	
 	/** Default textures. */
 	inline deoglRTDefaultTextures &GetDefaultTextures() const{ return *pDefaultTextures; }
@@ -417,7 +418,7 @@ public:
 	/** Clean up. */
 	void CleanUp();
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	/** Application window has been created. */
 	void InitAppWindow();
 	
@@ -498,7 +499,7 @@ public:
 	/** Developer mode debug information changed. */
 	void DevModeDebugInfoChanged();
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	bool DoesDebugMemoryUsage() const;
 	void DebugMemoryUsage( const char *prefix );
 	void DebugMemoryUsageSmall( const char *prefix );

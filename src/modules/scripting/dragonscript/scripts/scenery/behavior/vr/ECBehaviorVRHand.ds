@@ -30,6 +30,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -161,6 +162,18 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 *                  and full filter. format is '', 'category' or 'category:filter'
 	 *                  where category and filter are a list of bits to set. -->
 	 *   <string name='collisionFilter'>6:0 1 2 3 5</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -170,7 +183,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -191,8 +204,9 @@ class ECBehaviorVRHand extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrHand", id)
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrHand", id)
 			return behavior
 		end
 		
@@ -211,6 +225,41 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements ColliderListener
+		/**
+		 * \brief Behavior tree action/condition "forceField{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "attached", null)
+				if value != null
+					result &= pInstance.isAttached() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Controller attach/detach listener. */
 		class AttachDetachListener extends DefaultBindingManagerListener
 			var Instance pInstance
@@ -261,6 +310,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		var Array pCollisionListeners
 		var Vector pDebugPanelPosition
 		var Quaternion pDebugPanelOrientation
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -300,6 +350,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			pListeners = null
 			pComponent = null
 			pVRPlayspace = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -340,6 +391,13 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			pECBehavior.createListeners(this)
 			
 			updateVisibile()
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		/**
@@ -435,6 +493,9 @@ class ECBehaviorVRHand extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.controllerDetached(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "detached")
+				end
 			end
 			
 			pInputDevice = device
@@ -444,6 +505,9 @@ class ECBehaviorVRHand extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.controllerAttached(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "attached")
+				end
 			end
 		end
 		
@@ -882,6 +946,8 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	var ECPBoolean pShowHand
 	var ECComposeCollider pCollider
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -943,18 +1009,17 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			throw ENullPointer.new("bindingManager")
 		end
 		
+		pPrefix = prefix
 		pInputDeviceType = inputDeviceType
 		pBindingManager = bindingManager
 		pVRPlayspace = vrPlayspace
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pComponent = ECBehaviorComponent.new(eclass, null, subID, prefix + "component.")
 		
-		pUseVendorModel = ECPBoolean.new(prefix + "useVendorModel", true)
-		eclass.addProperty(pUseVendorModel)
-		
-		pShowHand = ECPBoolean.new(prefix + "showHand", true)
-		eclass.addProperty(pShowHand)
+		eclass.addProperty(pUseVendorModel = ECPBoolean.new(prefix + "useVendorModel", true))
+		eclass.addProperty(pShowHand = ECPBoolean.new(prefix + "showHand", true))
 		
 		pCollider = ECComposeCollider.new(eclass, prefix + "collider.")
 		setGhost()
@@ -966,10 +1031,19 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	func void dispose()
 		pListenerFactories = null
 		pVRPlayspace = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Input device type. */
 	func InputDeviceType getInputDeviceType()
@@ -1007,6 +1081,14 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 */
 	func ECComposeCollider getCollider()
 		return pCollider
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

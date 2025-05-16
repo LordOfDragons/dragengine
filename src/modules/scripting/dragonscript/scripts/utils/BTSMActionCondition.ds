@@ -1,0 +1,88 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
+
+
+/**
+ * \brief Helper class supporting both behavior tree and state machine actions and conditions.
+ * \version 1.26
+ * 
+ * This class is useful to use the same set of actions and conditions for both behavior
+ * trees and state machines. State machine actions throw an exception if the shared action
+ * returns \ref BTResult#failure.
+ * 
+ * To use actions overwrite \ref #runAction(Dictionary). To use conditions overwrite
+ * \ref #evaluateCondition(Dictionary).
+ */
+class BTSMActionCondition implements BTAction, BTCondition, SMAction, SMCondition
+	/** \brief Create shared behavior tree and state machine action and condition. */
+	func new()
+	end
+	
+	
+	/**
+	 * \brief Run action shared.
+	 * 
+	 * For state machine use exception is thrown if the returned value is \ref BTResult#failure.
+	 * Default implementation returns \ref BTResult#failure.
+	 * 
+	 * Context which can be either \ref BTContext or \ref SMContext.
+	 */
+	func BTResult runActionShared(Object context, Dictionary parameters)
+		return BTResult.failure
+	end
+	
+	/**
+	 * \brief Evaluate condition.
+	 * 
+	 * Context which can be either \ref BTContext or \ref SMContext.
+	 * 
+	 * Default implementation returns false.
+	 */
+	func bool evaluateConditionShared(Object context, Dictionary parameters)
+		return false
+	end
+	
+	
+	func BTResult runAction(BTContext context, Dictionary parameters)
+		return runActionShared(context, parameters)
+	end
+	
+	func void runAction(SMContext context, Dictionary parameters)
+		if runActionShared(context, parameters) == BTResult.failure
+			throw EInvalidAction.new("action failed")
+		end
+	end
+	
+	func bool evaluateCondition(BTContext context, Dictionary parameters)
+		return evaluateConditionShared(context, parameters)
+	end
+	
+	func bool evaluateCondition(SMContext context, Dictionary parameters)
+		return evaluateConditionShared(context, parameters)
+	end
+end

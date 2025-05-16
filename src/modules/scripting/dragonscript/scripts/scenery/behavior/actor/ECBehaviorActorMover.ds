@@ -30,6 +30,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -393,11 +395,23 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	 * <behavior type='ECBehaviorActorMover'>
 	 *   <!-- optional: use navigator with id instead of empty string -->
 	 *   <string name='navigator'>second</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -418,9 +432,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				ECBehaviorRideOn.getBehaviorIn(eclass))
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "actorMover")
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "actorMover")
 			return behavior
 		end
 	end
@@ -429,8 +443,146 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "actorMover.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("limit.turnAngle", null)
+				if value != null
+					pInstance.setLimitTurnAngle((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("limit.turnAngle.enabled", null)
+				if value != null
+					pInstance.setEnableLimitTurnAngle(value.equals("true"))
+				end
+				
+				value = parameters.getAt("speed", null)
+				if value != null
+					pInstance.setSpeed((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("paused", null)
+				if value != null
+					if value.equals("true")
+						pInstance.pauseMoving()
+						
+					else
+						pInstance.continueMoving()
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "actorMover.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("stop")
+					pInstance.stopMoving()
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "actorMover.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "goal", null)
+				if value != null
+					result &= pInstance.hasGoal() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "goal.distance.less", null)
+				if value != null
+					result &= pInstance.getDistanceToGoal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "goal.distance.greater", null)
+				if value != null
+					result &= pInstance.getDistanceToGoal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.turnAngle.enabled", null)
+				if value != null
+					result &= pInstance.getEnableLimitTurnAngle() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "limit.turnAngle.less", null)
+				if value != null
+					result &= pInstance.getLimitTurnAngle() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "limit.turnAngle.greater", null)
+				if value != null
+					result &= pInstance.getLimitTurnAngle() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.less", null)
+				if value != null
+					result &= pInstance.getSpeed() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.greater", null)
+				if value != null
+					result &= pInstance.getSpeed() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "paused", null)
+				if value != null
+					result &= pInstance.getPause() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Ridable changed. */
-		protected class RidableChanged extends ECBehaviorRideOn.DefaultListener
+		private class RidableChanged extends ECBehaviorRideOn.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -468,6 +620,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		
 		var ElementResolver pElementResolver
 		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -495,6 +648,7 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pLocomotion = null
 			pListeners = null
 			pElementResolver = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -523,6 +677,15 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			end
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
@@ -692,6 +855,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.startMoving(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "start")
+				end
 				
 				if pGoalPosition == null or pPath == null
 					return // listener forced stop moving
@@ -718,6 +884,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stopMoving(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
+			end
 			
 			pLocomotion.getLocomotion().setAnalogMovingSpeed(0)
 			
@@ -989,6 +1158,9 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.arrivedAtGoal(this, goalPosition)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "arrived")
+			end
 		end
 		
 		
@@ -1315,9 +1487,11 @@ class ECBehaviorActorMover extends DefaultECBehavior
 				
 				if flags.getAt(5)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorRidable.Instance behavior
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorRidable.Instance behavior
 						pRidable = behavior
-						pRidableCollider = behavior.getCollider()
+						if behavior != null
+							pRidableCollider = behavior.getCollider()
+						end
 					end)
 					setRequiresEnterFrame(true)
 				end
@@ -1380,6 +1554,8 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	var ECBehaviorConversationActor pConversationActor
 	var ECPFloat pSpeed
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -1402,10 +1578,12 @@ class ECBehaviorActorMover extends DefaultECBehavior
 			throw ENullPointer.new("navigator")
 		end
 		
+		pPrefix = prefix
 		pLocomotion = locomotion
 		pNavigator = navigator
 		pRideOn = rideOn
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		pSpeed = ECPFloat.new(prefix + "speed", 1.25, 0)
 		eclass.addProperty(pSpeed)
@@ -1420,10 +1598,19 @@ class ECBehaviorActorMover extends DefaultECBehavior
 		pLocomotion = null
 		pConversationActor = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Locomotion behavior to use. */
 	func ECBehaviorLocomotion getLocomotion()
@@ -1457,6 +1644,14 @@ class ECBehaviorActorMover extends DefaultECBehavior
 	/** \brief Movement speed. */
 	func ECPFloat getSpeed()
 		return pSpeed
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

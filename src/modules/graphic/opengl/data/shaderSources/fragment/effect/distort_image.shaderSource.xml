@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F Effect Distort Image</name>
+	<stage>fragment</stage>
+	<source>distort_image.frag.glsl</source>
+	
+	<output name="outColor" target="0"/>
+	
+	<define>GS_RENDER_STEREO</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

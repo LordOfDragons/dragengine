@@ -21,7 +21,7 @@ static pthread_t pRenderThreadPid = 0;
 static pthread_t pLoaderThreadPid = 0;
 static pthread_t pMainThreadPid = 0;
 
-void dbgInitThreadCheck(){
+void ogldbgInitThreadCheck(){
 	pRenderThreadPid = pthread_self();
 }
 void dbgInitLoaderThreadCheck(){
@@ -30,7 +30,7 @@ void dbgInitLoaderThreadCheck(){
 void dbgExitLoaderThreadCheck(){
 	pLoaderThreadPid = 0;
 }
-void dbgInitMainThreadCheck(){
+void ogldbgInitMainThreadCheck(){
 	pMainThreadPid = pthread_self();
 }
 #endif
@@ -40,7 +40,7 @@ static DWORD pRenderThreadPid = 0;
 static DWORD pLoaderThreadPid = 0;
 static DWORD pMainThreadPid = 0;
 
-void dbgInitThreadCheck(){
+void ogldbgInitThreadCheck(){
 	pRenderThreadPid = GetCurrentThreadId();
 }
 void dbgInitLoaderThreadCheck(){
@@ -49,12 +49,12 @@ void dbgInitLoaderThreadCheck(){
 void dbgExitLoaderThreadCheck(){
 	pLoaderThreadPid = 0;
 }
-void dbgInitMainThreadCheck(){
+void ogldbgInitMainThreadCheck(){
 	pMainThreadPid = GetCurrentThreadId();
 }
 #endif
 
-void dbgOnMainThreadCheck(){
+void ogldbgOnMainThreadCheck(){
 	#ifdef OS_UNIX
 	if( pthread_self() != pMainThreadPid ){
 		DETHROW( deeInvalidAction );

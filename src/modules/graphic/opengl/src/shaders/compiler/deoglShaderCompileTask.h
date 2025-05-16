@@ -28,7 +28,6 @@
 #include <dragengine/deObject.h>
 
 class deoglShaderProgram;
-class deoglShaderCompiled;
 class deoglShaderCompileListener;
 
 
@@ -41,16 +40,15 @@ public:
 	
 	
 private:
-	const deoglShaderProgram *pProgram;
+	deoglShaderProgram *pProgram;
 	deoglShaderCompileListener *pListener;
-	deoglShaderCompiled *pCompiled;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader compile task. */
-	deoglShaderCompileTask(const deoglShaderProgram *program, deoglShaderCompileListener *listener);
+	deoglShaderCompileTask(deoglShaderProgram *program, deoglShaderCompileListener *listener);
 	
 	/** Clean up shader compile task. */
 	~deoglShaderCompileTask() override;
@@ -60,13 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Program to compile. */
-	inline const deoglShaderProgram *GetProgram() const{ return pProgram; }
-	
-	/** Get compiled result from task and set result in task to nullptr. */
-	deoglShaderCompiled *GetCompiled();
-	
-	/** Set compiled result deleting the existing one if present. */
-	void SetCompiled(deoglShaderCompiled *compiled);
+	inline deoglShaderProgram *GetProgram() const{ return pProgram; }
 	
 	/** Listener. */
 	inline deoglShaderCompileListener *GetListener() const{ return pListener; }

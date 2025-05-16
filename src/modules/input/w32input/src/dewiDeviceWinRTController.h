@@ -99,7 +99,7 @@ public:
 	/** Reading time. */
 	inline DWORD GetReadingTime() const{ return pReadingTime; }
 
-	/** Battery report. */
+	/** Battery report. Can be nullptr. */
 	inline const wrdp::BatteryReport &GetBatteryReport() const{ return pBatteryReport; }
 	/*@}*/
 };

@@ -265,6 +265,7 @@ pVAOCopyShadow( nullptr )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen Light BoxBoundary" );
 		
+		defines = commonDefines;
 		if(useInverseDepth){
 			defines.SetDefines("SHADOW_INVERSE_DEPTH");
 		}
@@ -274,10 +275,9 @@ pVAOCopyShadow( nullptr )
 		
 		defines.SetDefines( "AMBIENT_MAP" );
 		pAsyncGetPipeline(pPipelineBoxBoundary1Ambient, pipconf, sources, defines);
-		defines.RemoveAllDefines();
 		
+		defines = commonDefines;
 		pAsyncGetPipeline(pPipelineBoxBoundary2, pipconf, sources, defines);
-		defines.RemoveAllDefines();
 		
 		
 		
@@ -295,7 +295,6 @@ pVAOCopyShadow( nullptr )
 		
 		pipconf.SetSPBInstanceIndexBase(0);
 		pAsyncGetPipeline(pPipelineOccMap, pipconf, "DefRen Occlusion OccMap Cube", defines, true);
-		defines.RemoveAllDefines();
 		
 		
 		
@@ -318,7 +317,6 @@ pVAOCopyShadow( nullptr )
 		}
 		
 		pAsyncGetPipeline(pPipelineCopyDepth, pipconf, sources, defines);
-		defines.RemoveAllDefines();
 		
 		
 		
@@ -1662,11 +1660,11 @@ deoglShadowMapper &shadowMapper, const sShadowParams &shadowParams ){
 	for( cmf=0; cmf<6; cmf++ ){
 		deoglCubeMap::CreateMatrixForFace( matrixCamera, lightPosition, pCubeFaces[ cmf ] );
 		
-	renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
-	//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
-	// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
-	
-	renderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
+		renderParamBlock->SetParameterDataVec2( 3, shadowParams.shadowScale, shadowParams.shadowOffset );
+		//renderParamBlock.SetParameterDataVec4( deoglSkinShader::erutDepthOffset,
+		// 	smOffsetScale, smOffsetBias, -smOffsetScale, -smOffsetBias );
+		
+		renderParamBlock->SetParameterDataArrayMat4x3( 1, cmf, matrixCamera );
 		renderParamBlock->SetParameterDataArrayMat4x4( 0, cmf, matrixCamera * shadowParams.matrixProjection );
 	}
 	}

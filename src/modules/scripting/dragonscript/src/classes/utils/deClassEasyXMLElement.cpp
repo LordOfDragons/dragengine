@@ -878,6 +878,21 @@ void deClassEasyXMLElement::nfAddElement::RunFunction( dsRunTime *rt, dsValue *m
 	element.CastToContainer()->AddElement( child );
 }
 
+// public func void insertElement(EasyXMLElement element, int beforeIndex)
+deClassEasyXMLElement::nfInsertElement::nfInsertElement(const sInitData &init) :
+dsFunction(init.clsXmlElement, "insertElement", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsXmlElement); // element
+	p_AddParameter(init.clsInteger); // beforeIndex
+}
+void deClassEasyXMLElement::nfInsertElement::RunFunction(dsRunTime *rt, dsValue *myself){
+	decXmlElement &element = *(((sXMLElNatDat*)p_GetNativeData(myself))->element);
+	deClassEasyXMLElement * const clsXmlElement = (deClassEasyXMLElement*)GetOwnerClass();
+	
+	decXmlElement * const child = clsXmlElement->GetElement(rt->GetValue(0)->GetRealObject());
+	element.CastToContainer()->InsertElement(child, rt->GetValue(1)->GetInt());
+}
+
 // public func void removeElement( EasyXMLElement element )
 deClassEasyXMLElement::nfRemoveElement::nfRemoveElement( const sInitData &init ) :
 dsFunction( init.clsXmlElement, "removeElement", DSFT_FUNCTION,
@@ -1320,6 +1335,7 @@ void deClassEasyXMLElement::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetElementAt( init ) );
 	AddFunction( new nfHasElement( init ) );
 	AddFunction( new nfAddElement( init ) );
+	AddFunction(new nfInsertElement(init));
 	AddFunction( new nfRemoveElement( init ) );
 	AddFunction( new nfRemoveAllElements( init ) );
 	

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Depth-Only V3</name>
+	<stage>fragment</stage>
+	<source>depth.frag.glsl</source>
+	
+	<output name='outDepth' location='0'/>
+	
+	<define>CLIP_DEPTH</define>
+	<define>ENCODE_DEPTH</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>IGNORE_HOLES</define>
+	<define>INVERSE_DEPTH</define>
+	<define>USE_CLIP_PLANE</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

@@ -244,7 +244,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
-		#ifdef OS_ANDROID
+		#ifdef WITH_OPENGLES
 			OGL_CHECK( renderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
 			OGL_CHECK( renderThread, glReadPixels( 0, 0, 1, 1, texformat.GetPixelFormat(),
 				texformat.GetPixelType(), ( GLvoid* )&result[ 0 ] ) );

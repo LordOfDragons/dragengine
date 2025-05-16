@@ -30,6 +30,8 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -179,6 +181,18 @@ class ECBehaviorForceField extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: sync trigger with force field matching identifier -->
 	 *   <string name='syncTrigger'>second</string>
+	 * 
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 *   
 	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
 	 *                  string to not synchronize. default is empty string. -->
@@ -192,7 +206,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -222,8 +236,9 @@ class ECBehaviorForceField extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "forceField", id)
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "forceField", id)
 			return behavior
 		end
 		
@@ -240,8 +255,66 @@ class ECBehaviorForceField extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "forceField{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "forceField{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Trigger listener to enable forceField. */
-		public class ActivateListener extends ECBehaviorTriggered.DefaultListener
+		private class ActivateListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -264,6 +337,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 		var ECBehaviorTriggered.Instance pTrigger
 		var Array pListeners
 		var bool pCustomForceFieldHandling
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -280,6 +354,7 @@ class ECBehaviorForceField extends DefaultECBehavior
 			pTrigger = null
 			pCollider = null
 			pListeners = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -287,8 +362,10 @@ class ECBehaviorForceField extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			if pECBehavior.getCollider() != null
-				pCollider = pECBehavior.getCollider().instance(getElement())
+				pCollider = pECBehavior.getCollider().instance(element)
 			end
 			
 			pForceField = createForceField(stub)
@@ -314,6 +391,14 @@ class ECBehaviorForceField extends DefaultECBehavior
 			
 			if pCollider != null and pCollider.getCollider() != null
 				attachForceField(stub, pCollider)
+			end
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
 			end
 		end
 		
@@ -398,11 +483,17 @@ class ECBehaviorForceField extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.forceFieldEnabled(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "enabled")
+				end
 				
 			else
 				pListeners.forEach(block Listener each
 					each.forceFieldDisabled(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "disabled")
+				end
 			end
 		end
 		
@@ -505,6 +596,8 @@ class ECBehaviorForceField extends DefaultECBehavior
 	var ECBehaviorForceField pSyncTrigger
 	var TSTriggerTable pTriggerTable
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -537,9 +630,11 @@ class ECBehaviorForceField extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	TSTriggerTable triggerTable, String id, String subID, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pCollider = collider
 		pTriggerTable = triggerTable
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pForceField = ECComposeForceField.new(eclass, prefix)
 		pAttach = ECComposeAttachResource.new(eclass, prefix)
@@ -554,10 +649,19 @@ class ECBehaviorForceField extends DefaultECBehavior
 		pCollider = null
 		pSyncTrigger = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Collider behavior or null to not attach. */
 	func ECBehaviorCollider getCollider()
@@ -597,6 +701,14 @@ class ECBehaviorForceField extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

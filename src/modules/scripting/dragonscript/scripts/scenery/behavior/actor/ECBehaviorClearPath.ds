@@ -31,6 +31,8 @@ pin Dragengine.LoadSave
 pin Dragengine.Scenery
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -101,11 +103,23 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	 *                  format is '', 'category' or 'category:filter' where category and filter
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>3:0 1 2 3</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -127,16 +141,120 @@ class ECBehaviorClearPath extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "clearPath")
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "clearPath")
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "clearPath.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				value = parameters.getAt("check.interval", null)
+				if value != null
+					pInstance.setCheckInterval((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("check.timer", null)
+				if value != null
+					pInstance.setCheckTimer((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("clearPath.time", null)
+				if value != null
+					pInstance.setClearPathTime((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "clearPath.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "check.interval.less", null)
+				if value != null
+					result &= pInstance.getCheckInterval() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "check.interval.greater", null)
+				if value != null
+					result &= pInstance.getCheckInterval() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "check.timer.less", null)
+				if value != null
+					result &= pInstance.getCheckTimer() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "check.timer.greater", null)
+				if value != null
+					result &= pInstance.getCheckTimer() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "clearPath.time.less", null)
+				if value != null
+					result &= pInstance.getClearPathTime() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "clearPath.time.greater", null)
+				if value != null
+					result &= pInstance.getClearPathTime() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Visitor for make element clear path. */
-		protected class ClearPathElement extends ElementVisitor
+		private class ClearPathElement extends ElementVisitor
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -209,6 +327,15 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			pCollisionTest.setEnabled(false)
 			collider.addCollisionTest(pCollisionTest)
 			collider.addIgnoreCollider(pCollisionTest.getCollider())
+			
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+			end
 		end
 		
 		
@@ -503,6 +630,8 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	var ECPBoolean pEnabled
 	var ECPFloat pCheckInterval
 	var ECPFloat pClearPathTime
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -519,7 +648,9 @@ class ECBehaviorClearPath extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pLocomotion = locomotion
+		pBTSMs = ECComposeBTSM.new()
 		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
 		
@@ -545,10 +676,19 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pLocomotion = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Locomotion behavior. */
 	func ECBehaviorLocomotion getLocomotion()
@@ -573,6 +713,14 @@ class ECBehaviorClearPath extends DefaultECBehavior
 	/** \brief Clear path time in seconds indicating how far ahead the actors clear path. */
 	func ECPFloat getClearPathTime()
 		return pClearPathTime
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

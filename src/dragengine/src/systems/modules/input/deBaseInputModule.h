@@ -27,7 +27,7 @@
 
 #include "../../../dragengine_configuration.h"
 
-#if defined OS_UNIX && defined HAS_LIB_X11
+#ifdef OS_UNIX_X11
 #include <X11/Xlib.h>
 #endif
 
@@ -64,6 +64,15 @@ class NSEvent;
  * \brief Base Input Module.
  */
 class DE_DLL_EXPORT deBaseInputModule : public deBaseModule{
+#ifdef OS_WEBWASM
+public:
+	/** \brief Web input information. */
+	struct sWebInputEvent{
+		void *dummy;
+	};
+#endif
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -235,17 +244,24 @@ public:
 	virtual void AppActivationChanged();
 	
 	/** \brief An event processed by the application event loop. */
-#ifdef OS_ANDROID
+	#ifdef OS_ANDROID
 	virtual void EventLoop(const android_input_buffer &inputBuffer);
-#elif defined OS_BEOS
+	
+	#elif defined OS_WEBWASM
+	virtual void EventLoop(const sWebInputEvent &event);
+	
+	#elif defined OS_BEOS
 	virtual void EventLoop( const BMessage &message );
-#elif defined OS_MACOS
+	
+	#elif defined OS_MACOS
 	virtual void EventLoop( const NSEvent &event );
-#elif defined OS_UNIX && defined HAS_LIB_X11
+	
+	#elif defined OS_UNIX_X11
 	virtual void EventLoop( XEvent &event );
-#elif defined OS_W32
+	
+	#elif defined OS_W32
 	virtual void EventLoop( const MSG &message );
-#endif
+	#endif
 	/*@}*/
 };
 

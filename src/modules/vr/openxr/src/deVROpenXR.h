@@ -30,6 +30,10 @@
 #include <dragengine/systems/modules/vr/deBaseVRModule.h>
 #include <dragengine/threading/deMutex.h>
 
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
 #include "deoxrInstance.h"
 #include "deoxrSystem.h"
 #include "deoxrSession.h"
@@ -260,6 +264,12 @@ public:
 	 * stopped at any time.
 	 */
 	virtual void StopRuntime();
+	
+	/**
+	 * \brief VR runtime is running.
+	 * \version 1.26
+	 */
+	virtual bool IsRuntimeRunning();
 	
 	/** Camera or nullptr. */
 	inline deCamera *GetCamera() const{ return pCamera; }

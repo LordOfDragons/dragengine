@@ -14,10 +14,6 @@
 	<parameter name='pTCClamp'/> <!-- 6 -->
 	<parameter name='pTCTransformMask'/> <!-- 7 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/canvas/canvas.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/canvas/canvas.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Canvas</sourceCode>
+	<sourceCode unit='fragment'>F Canvas</sourceCode>
 </shader>

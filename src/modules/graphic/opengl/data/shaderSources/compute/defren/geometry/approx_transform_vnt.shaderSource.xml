@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Approx Transform VNT</name>
+	<stage>compute</stage>
+	<source>approx_transform_vnt.comp.glsl</source>
+	
+	<shaderStorageBlock name='ModelData' binding='0'/>
+	<shaderStorageBlock name='TransformedData' binding='1'/>
+	<shaderStorageBlock name='WeightsMatrix' binding='2'/>
+	
+	<define>TRANSFORM_INPLACE</define>
+</shaderSource>

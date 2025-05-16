@@ -54,6 +54,7 @@ class gdeOCParticleEmitter;
 class gdeOCForceField;
 class gdeOCSnapPoint;
 class gdeOCSpeaker;
+class gdeOCWorld;
 
 class igdeCamera;
 class igdeWDebugDrawerShape;
@@ -93,6 +94,7 @@ private:
 	decObjectList pOCNavBlockers;
 	decObjectList pOCSnapPoints;
 	decObjectList pOCSpeakers;
+	decObjectList pOCWorlds;
 	
 	deDebugDrawerReference pDebugDrawer;
 	
@@ -240,6 +242,12 @@ public:
 	/** \brief Rebuild object class speaker. */
 	void RebuildOCSpeaker( gdeOCSpeaker *ocspeaker );
 	
+	/** \brief Rebuild object class worlds. */
+	void RebuildOCWorlds();
+	
+	/** \brief Rebuild object class worlds. */
+	void RebuildOCWorld(gdeOCWorld *ocworld);
+	
 	
 	
 	/** \brief Show all environment map probes. */
@@ -279,6 +287,7 @@ private:
 	void pInitOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
 	void pInitOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix );
 	void pInitOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCWorlds(const gdeObjectClass &objectClass, const decString &propertyPrefix);
 	void pAddComponentShadowIgnore();
 	void pRebuildOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix );
 	void pRebuildOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix );
@@ -291,6 +300,7 @@ private:
 	void pRebuildOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
 	void pRebuildOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix );
 	void pRebuildOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCWorlds(const gdeObjectClass &objectClass, const decString &propertyPrefix);
 	
 	void pOCReattachAllObjects();
 	

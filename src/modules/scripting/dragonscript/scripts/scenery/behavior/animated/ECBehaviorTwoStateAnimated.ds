@@ -30,6 +30,9 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.Gui.Events
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -255,6 +258,18 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: name of deactivating controller. default is 'deactivating' -->
 	 *   <string name='controllerNameDeactivating'>deactivating</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -264,7 +279,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -303,7 +318,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "twoStateAnimated", id)
 			return behavior
 		end
@@ -331,8 +348,119 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			deactivating
 		end
 		
+		/**
+		 * \brief Behavior tree action "twoStateAnimated{(id)}.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("activate")
+					pInstance.activate()
+					
+				elif parameters.has("deactivate")
+					pInstance.deactivate()
+					
+				elif parameters.has("reverse.activating")
+					pInstance.reverseActivating()
+					
+				elif parameters.has("reverse.deactivating")
+					pInstance.reverseDeactivating()
+					
+				elif parameters.has("set.deactivated")
+					pInstance.setDeactivated()
+					
+				elif parameters.has("set.activating")
+					pInstance.activate(0, true)
+					
+				elif parameters.has("set.activated")
+					pInstance.setActivated()
+					
+				elif parameters.has("set.deactivating")
+					pInstance.deactivate(0, true)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "twoStateAnimated{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "deactivated", null)
+				if value != null
+					return pInstance.isDeactivated() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "activated", null)
+				if value != null
+					return pInstance.isActivated() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "activating", null)
+				if value != null
+					return pInstance.isActivating() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "deactivating", null)
+				if value != null
+					return pInstance.isDeactivating() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "progress.activate.less", null)
+				if value != null
+					result &= pInstance.getPercentageDoneActivate() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "progress.activate.greater", null)
+				if value != null
+					result &= pInstance.getPercentageDoneActivate() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "progress.deactivate.less", null)
+				if value != null
+					result &= pInstance.getPercentageDoneDeactivate() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "progress.deactivate.greater", null)
+				if value != null
+					result &= pInstance.getPercentageDoneDeactivate() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Trigger listener to switch state. */
-		public class SwitchStateListener extends ECBehaviorTriggered.DefaultListener
+		private class SwitchStateListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -376,6 +504,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		var Array pListeners
 		
 		var ECBehaviorComponent.Instance pComponent
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -400,6 +529,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pTargetActivating = null
 			pTargetDeactivating = null
 			pListeners = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -437,6 +567,14 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			updateRequiresThink()
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		/**
@@ -631,6 +769,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					pListeners.forEach(block Listener each
 						each.stopDeactivate(this)
 					end)
+					if pBTSMs != null
+						pBTSMs.runEvent(pECBehavior.getPrefix(), "stopDeactivate")
+					end
 				end
 			end
 			
@@ -657,6 +798,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startActivate(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startActivate")
+			end
 		end
 		
 		/**
@@ -694,6 +838,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					pListeners.forEach(block Listener each
 						each.stopActivate(this)
 					end)
+					if pBTSMs != null
+						pBTSMs.runEvent(pECBehavior.getPrefix(), "stopActivate")
+					end
 				end
 			end
 			
@@ -720,12 +867,15 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startDeactivate(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startDeactivate")
+			end
 		end
 		
 		/**
 		 * \brief Reverse activating.
 		 * 
-		 * If door is activating notifies stopActivate() then startDeactivate() and switches
+		 * If activating notifies stopActivate() then startDeactivate() and switches
 		 * to deactivating with deactivate controller set to mirror activate controller.
 		 * If the animator is properly crafted this allows to reverse the animation while
 		 * in progress for example to simulate a door stop closing because something is
@@ -765,6 +915,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stopActivate(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stopActivate")
+			end
 			
 			// it is possible a listener switched our state. if this is the case stick with
 			// the new state and do nothing. the listener is responsible for potential problems
@@ -793,12 +946,15 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startDeactivate(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startDeactivate")
+			end
 		end
 		
 		/**
 		 * \brief Reverse deactivating.
 		 * 
-		 * If door is deactivating notifies stopDeactivate() and startActivate() and switches
+		 * If deactivating notifies stopDeactivate() and startActivate() and switches
 		 * to activating with activate controller set to mirror deactivate controller.
 		 * If the animator is properly crafted this allows to reverse the animation while
 		 * in progress for example to simulate a door stop closing because something is
@@ -838,6 +994,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.stopDeactivate(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stopDeactivate")
+			end
 			
 			// it is possible a listener switched our state. if this is the case stick with
 			// the new state and do nothing. the listener is responsible for potential problems
@@ -866,6 +1025,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startActivate(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startActivate")
+			end
 		end
 		
 		/**
@@ -903,10 +1065,16 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.startDeactivate(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startDeactivate")
+				end
 				
 				pListeners.forEach(block Listener each
 					each.stopDeactivate(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopDeactivate")
+				end
 			end
 		end
 		
@@ -946,6 +1114,10 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 					each.startActivate(this)
 					each.stopActivate(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "startActivate")
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopActivate")
+				end
 			end
 		end
 		
@@ -1053,6 +1225,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.stopActivate(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopActivate")
+				end
 				
 				if pTrigger != null and not pTrigger.getState(true)
 					deactivate()
@@ -1079,6 +1254,9 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.stopDeactivate(this)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "stopDeactivate")
+				end
 				
 				if pTrigger != null and pTrigger.getState(false)
 					activate()
@@ -1188,15 +1366,13 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	var ECPAnimation pAnimation
 	var ECPFloat pPlaySpeed
 	var ECBehaviorTriggered pTrigger
-	var ECPString pTargetActivated
-	var ECPString pTargetActivating
-	var ECPString pTargetDeactivating
+	var ECPString pTargetActivated, pTargetActivating, pTargetDeactivating
 	var TSTriggerTable pTriggerTable
-	var String pControllerNameDeactivated
-	var String pControllerNameActivated
-	var String pControllerNameActivating
-	var String pControllerNameDeactivating
+	var String pControllerNameDeactivated, pControllerNameActivated
+	var String pControllerNameActivating, pControllerNameDeactivating
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -1232,6 +1408,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			throw ENullPointer.new("component")
 		end
 		
+		pPrefix = prefix
 		pComponent = component
 		pTriggerTable = triggerTable
 		pControllerNameDeactivated = "deactivated"
@@ -1239,26 +1416,17 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		pControllerNameActivating = "activating"
 		pControllerNameDeactivating = "deactivating"
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
-		pAnimator = ECPAnimator.new(prefix + "animator", loaders.getAnimator())
-		eclass.addProperty(pAnimator)
-		
-		pAnimation = ECPAnimation.new(prefix + "animation")
-		eclass.addProperty(pAnimation)
-		
-		pPlaySpeed = ECPFloat.new(prefix + "playSpeed", 1, 0.001)
-		eclass.addProperty(pPlaySpeed)
+		eclass.addProperty(pAnimator = ECPAnimator.new(prefix + "animator", loaders.getAnimator()))
+		eclass.addProperty(pAnimation = ECPAnimation.new(prefix + "animation"))
+		eclass.addProperty(pPlaySpeed = ECPFloat.new(prefix + "playSpeed", 1, 0.001))
 		
 		pTrigger = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		
-		pTargetActivated = ECPString.new(prefix + "targetActivated", "")
-		eclass.addProperty(pTargetActivated)
-		
-		pTargetActivating = ECPString.new(prefix + "targetActivating", "")
-		eclass.addProperty(pTargetActivating)
-		
-		pTargetDeactivating = ECPString.new(prefix + "targetDeactivating", "")
-		eclass.addProperty(pTargetDeactivating)
+		eclass.addProperty(pTargetActivated = ECPString.new(prefix + "targetActivated", ""))
+		eclass.addProperty(pTargetActivating = ECPString.new(prefix + "targetActivating", ""))
+		eclass.addProperty(pTargetDeactivating = ECPString.new(prefix + "targetDeactivating", ""))
 		
 		eclass.addBehavior(this)
 	end
@@ -1267,10 +1435,19 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	func void dispose()
 		pComponent = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Component behavior to animate. */
 	func ECBehaviorComponent getComponent()
@@ -1369,6 +1546,14 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 		pControllerNameActivated = activated
 		pControllerNameActivating = activating
 		pControllerNameDeactivating = deactivating
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */
@@ -1513,7 +1698,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				animator = pAnimator.getLoader().loadFromFile(value)
 				
 			catch Exception e
-				throw ELoadResourceFailed.new(value, element.getClass().getClassname())
+				throw ELoadResourceFailed.new(value, element.getClass().getClassname(), e)
 			end
 		end
 		
@@ -1524,7 +1709,7 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 				animation = Animation.new(value)
 				
 			catch Exception e
-				throw ELoadResourceFailed.new(value, element.getClass().getClassname())
+				throw ELoadResourceFailed.new(value, element.getClass().getClassname(), e)
 			end
 		end
 		

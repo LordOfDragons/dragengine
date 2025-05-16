@@ -147,6 +147,24 @@ void deClassUniqueID::nfNewFromHexString::RunFunction( dsRunTime *rt, dsValue *m
 	clsUID.PushUniqueID( rt, decUniqueID( rt->GetValue( 0 )->GetString() ) );
 }
 
+// func bool zero()
+deClassUniqueID::nfZero::nfZero(const sInitData &init) :
+dsFunction(init.clsUID, "zero", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+void deClassUniqueID::nfZero::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decUniqueID &id = *(((sUIDNatDat*)p_GetNativeData(myself))->id);
+	rt->PushBool(id.IsZero());
+}
+
+// func bool notZero()
+deClassUniqueID::nfNotZero::nfNotZero(const sInitData &init) :
+dsFunction(init.clsUID, "notZero", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+void deClassUniqueID::nfNotZero::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decUniqueID &id = *(((sUIDNatDat*)p_GetNativeData(myself))->id);
+	rt->PushBool(!id.IsZero());
+}
+
 
 
 // File Handling
@@ -461,6 +479,8 @@ void deClassUniqueID::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfToHexString( init ) );
 	AddFunction( new nfNewFromHexString( init ) );
+	AddFunction(new nfZero(init));
+	AddFunction(new nfNotZero(init));
 	
 	AddFunction( new nfReadFromFile( init ) );
 	AddFunction( new nfWriteToFile( init ) );

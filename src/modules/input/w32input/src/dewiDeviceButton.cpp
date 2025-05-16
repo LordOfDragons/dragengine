@@ -174,8 +174,10 @@ void dewiDeviceButton::WinRTReading( dewiDeviceWinRTController &device ){
 	if( pWinRTReadingIndex != -1 ){
 		pressed = device.GetReadingButton( pWinRTReadingIndex );
 
-	}else if( pIsBatteryCharging ){
-		pressed = device.GetBatteryReport().Status() == wrsp::BatteryStatus::Charging;
+	}else if(pIsBatteryCharging){
+		if(device.GetBatteryReport()){
+			pressed = device.GetBatteryReport().Status() == wrsp::BatteryStatus::Charging;
+		}
 	}
 
 	if( pressed ){

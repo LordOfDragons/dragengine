@@ -314,7 +314,7 @@ private:
 		
 	public:
 		cPrepareShader(deoglSkinShader &shader, cShaderPreparedListener *listener);
-		void CompileFinished(deoglShaderCompiled *compiled) override;
+		void CompileFinished(deoglShaderProgram *program) override;
 	};
 	
 	friend class cPrepareShader;

@@ -35,7 +35,7 @@
 #include "../canvas/deoglCanvasView.h"
 #ifdef BACKEND_OPENGL
 	#include "../extensions/deoglExtensions.h"
-#endif
+#endif // BACKEND_OPENGL
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
 
@@ -52,6 +52,9 @@
 #include <dragengine/app/deOSAndroid.h>
 #include <android/native_window.h>
 
+#elif defined OS_WEBWASM
+#include <dragengine/app/deOSWebWasm.h>
+
 #elif defined OS_BEOS
 #include <GLView.h>
 #include <dragengine/app/deOSBeOS.h>
@@ -64,26 +67,25 @@
 #include <dragengine/app/deOSWindows.h>
 #include "../extensions/wglext.h"
 
-#elif defined OS_UNIX
+#elif defined OS_UNIX_X11
 #include <dragengine/app/deOSUnix.h>
 #ifdef BACKEND_OPENGL
 	#include "../extensions/deoglXExtResult.h"
-#endif
-#endif
+#endif // BACKEND_OPENGL
+#endif // OS_*
 
 
 
 // event function (local)
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 /*
 static Bool lfWaitForNotify( Display *d, XEvent *e, char *arg ){
 	return ( e->type == MapNotify ) && ( e->xmap.window == (Window)arg );
 }
 */
-#endif
 
 // dummy window function
-#ifdef OS_W32
+#elif defined OS_W32
 static deoglRTContext *oglW32WndFuncContext = NULL;
 
 static LRESULT CALLBACK oglW32WndFunc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam ){
@@ -94,9 +96,9 @@ static LRESULT CALLBACK oglW32WndFunc( HWND hwnd, UINT message, WPARAM wParam, L
 		return DefWindowProc( hwnd, message, wParam, lParam );
 	}
 }
-#endif
+#endif // OS_*
 
-#ifndef OS_ANDROID
+#ifndef WITH_OPENGLES
 struct sOpenGlVersion{
 	int major;
 	int minor;
@@ -104,7 +106,7 @@ struct sOpenGlVersion{
 static const int vOpenGLVersionCount = 9;
 static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
 	{ 4, 6 }, { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 }, { 3, 2 } };
-#endif
+#endif // WITH_OPENGLES
 
 
 
@@ -118,7 +120,7 @@ deoglRTContext::deoglRTContext(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 pCompileContextCount(0),
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
 
 pDisplay( NULL ),
@@ -127,13 +129,12 @@ pScreen( 0 ),
 #ifdef BACKEND_OPENGL
 pContext( nullptr ),
 pLoaderContext( nullptr ),
-#endif
+#endif // BACKEND_OPENGL
 
 pColMap( 0 ),
 pVisInfo( NULL ),
-#endif
 
-#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 pOSAndroid( renderThread.GetOgl().GetOS()->CastToOSAndroid() ),
 
 pDisplay( EGL_NO_DISPLAY ),
@@ -144,64 +145,68 @@ pLoaderContext( EGL_NO_CONTEXT ),
 
 pScreenWidth( 0 ),
 pScreenHeight( 0 ),
-#endif
 
-#ifdef OS_BEOS
+#elif defined OS_WEBWASM
+pOSWebWasm(renderThread.GetOgl().GetOS()->CastToOSWebWasm()),
+pContext(0),
+pLoaderContext(0),
+pScreenWidth(0),
+pScreenHeight(0),
+
+#elif defined OS_BEOS
 pOSBeOS( renderThread.GetOgl().GetOS()->CastToOSBeOS() ),
 //pContext( NULL ),
-#endif
 
-#ifdef OS_MACOS
+#elif defined OS_MACOS
 pOSMacOS( renderThread.GetOgl().GetOS()->CastToOSMacOS() ),
 pPixelFormat( NULL ),
 pContext( nullptr ),
 pLoaderContext( nullptr ),
-#endif
 
-#ifdef OS_W32
+#elif defined OS_W32
 pWindowClassname( "DEOpenGLWindow" ),
 pOSWindows( renderThread.GetOgl().GetOS()->CastToOSWindows() ),
 pContext( NULL ),
 pLoaderContext( NULL ),
-#endif
+#endif // OS_*
 
 pActiveRRenderWindow( NULL ),
 pUserRequestedQuit( false ),
 pAppActivated( true )
 {
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	#ifdef BACKEND_OPENGL
 	int i;
 	for(i=0; i<MaxCompileContextCount; i++){
 		pCompileContext[i] = nullptr;
 	}
-	#endif
-	#endif
+	#endif // BACKEND_OPENGL
 	
-	#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 	int i;
 	for(i=0; i<MaxCompileContextCount; i++){
 		pCompileSurface[i] = EGL_NO_SURFACE;
 		pCompileContext[i] = EGL_NO_CONTEXT;
 	}
-	#endif
 	
-	#ifdef OS_BEOS
-	#endif
+#elif defined OS_WEBWASM
+	int i;
+	for(i=0; i<MaxCompileContextCount; i++){
+		pCompileContext[i] = 0;
+	}
 	
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	int i;
 	for(i=0; i<MaxCompileContextCount; i++){
 		pCompileContext[i] = nullptr;
 	}
-	#endif
 	
-	#ifdef OS_W32
+#elif defined OS_W32
 	int i;
 	for(i=0; i<MaxCompileContextCount; i++){
 		pCompileContext[i] = NULL;
 	}
-	#endif
+#endif // OS_*
 }
 
 deoglRTContext::~deoglRTContext(){
@@ -225,28 +230,25 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 	//      to be linked to the render thread after prerequisited have been done in the main thread
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 2 Entering" );
 	
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	pOpenDisplay();
 	#ifdef BACKEND_OPENGL
-	pChooseVisual();
-	pChooseFBConfig();
-	#endif
+		pChooseVisual();
+		pChooseFBConfig();
+	#endif // BACKEND_OPENGL
 	pCreateColorMap();
 	pCreateAtoms();
 	pCreateContext();
-	#endif
 	
-	#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 	pInitDisplay();
-	#endif
 	
-	#ifdef OS_BEOS
+#elif defined OS_BEOS
 	pCreateContext();
-	#endif
 	
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	pCreateContext();
-	#endif
+#endif // OS_*
 	
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 2 Exiting" );
 }
@@ -257,9 +259,9 @@ void deoglRTContext::InitPhase3( deRenderWindow *renderWindow ){
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 3 Entering" );
 	
 	// register window class in main thread so the window function is linked to the main thread
-	#ifdef OS_W32
+#ifdef OS_W32
 	pRegisterWindowClass();
-	#endif
+#endif
 	
 	// set the render window. it should not have a peer yet so we create one.
 	// this includes also the attached primary render target. this has to be done in the main
@@ -284,25 +286,21 @@ void deoglRTContext::InitPhase3( deRenderWindow *renderWindow ){
 	}
 	
 	// HACK assign window. the constructor above ensures the window is created
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	pOSUnix->SetWindow( renderWindow->GetWindow() );
-	#endif
 	
-	#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 	//pOSAndroid->SetWindow( renderWindow->GetWindow() );
-	#endif
 	
-	#ifdef OS_BEOS
+#elif defined OS_BEOS
 	pOSBeOS->SetWindow( renderWindow->GetWindow() );
-	#endif
 	
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	pOSMacOS->SetWindow( renderWindow->GetWindow() );
-	#endif
 	
-	#ifdef OS_W32
+#elif defined OS_W32
 	pOSWindows->SetWindow( renderWindow->GetWindow() );
-	#endif
+#endif // OS_*
 	
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 3 Exiting" );
 }
@@ -315,9 +313,9 @@ void deoglRTContext::InitPhase4( deRenderWindow *renderWindow ){
 	// activate render window
 	ActivateRRenderWindow( ( ( deoglRenderWindow* )renderWindow->GetPeerGraphic() )->GetRRenderWindow() );
 	
-	#ifdef OS_W32
+#ifdef OS_W32
 	pCreateContext();
-	#endif
+#endif
 	
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 4 Exiting" );
 }
@@ -340,45 +338,38 @@ void deoglRTContext::CleanUp(){
 	ActivateRRenderWindow( NULL, true );
 	
 	// HACK unassign window
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	pOSUnix->SetWindow( 0 );
-	#endif
 	
-	#ifdef OS_BEOS
+#elif defined OS_BEOS
 	pOSBeOS->SetWindow( NULL );
-	#endif
 	
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	pOSMacOS->SetWindow( NULL );
-	#endif
 	
-	#ifdef OS_W32
+#elif defined OS_W32
 	pOSWindows->SetWindow( NULL );
-	#endif
+#endif // OS_*
 	
 	// free operating system specific objects
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	pFreeContext();
 	pFreeVisualInfo();
 	pCloseDisplay();
-	#endif
 	
-	#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 	pCloseDisplay();
-	#endif
 	
-	#ifdef OS_BEOS
+#elif defined OS_BEOS
 	pFreeContext();
-	#endif
 	
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	pFreeContext();
-	#endif
 	
-	#ifdef OS_W32
+#elif defined OS_W32
 	pFreeContext();
 	pUnregisterWindowClass();
-	#endif
+#endif // OS_*
 }
 
 #ifdef OS_ANDROID
@@ -400,7 +391,14 @@ void deoglRTContext::TerminateAppWindow(){
 	eglDestroySurface( pDisplay, pSurface );
 	pSurface = EGL_NO_SURFACE;
 }
-#endif
+
+#elif defined OS_WEBWASM
+void deoglRTContext::InitAppWindow(){
+}
+
+void deoglRTContext::TerminateAppWindow(){
+}
+#endif // OS_*
 
 
 
@@ -414,79 +412,78 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		return;
 	}
 	
-	#ifdef OS_BEOS
+#ifdef OS_BEOS
 	if( pActiveRRenderWindow ){
 		pActiveRRenderWindow->GetGLView()->UnlockGL();
 	}
-	#endif
+#endif // OS_BEOS
 	
 	pActiveRRenderWindow = rrenderWindow;
 	
 	if( rrenderWindow ){
-		#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 		#ifdef BACKEND_OPENGL
-// 		printf( "glXMakeCurrent(%lu,%p) previous(%lu,%p)\n", rrenderWindow->GetWindow(), pContext, glXGetCurrentDrawable(), glXGetCurrentContext() );
-		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, rrenderWindow->GetWindow(), pContext ) );
-		#endif
-		#endif
+			// printf( "glXMakeCurrent(%lu,%p) previous(%lu,%p)\n", rrenderWindow->GetWindow(), pContext, glXGetCurrentDrawable(), glXGetCurrentContext() );
+			OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, rrenderWindow->GetWindow(), pContext ) );
+		#endif // BACKEND_OPENGL
 		
-		#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 		if( eglMakeCurrent( pDisplay, pSurface, pSurface, pContext ) == EGL_FALSE ){
 			DETHROW( deeInvalidParam );
 		}
-		#endif
 		
-		#ifdef OS_BEOS
+#elif defined OS_WEBWASM
+		DEASSERT_TRUE(emscripten_webgl_make_context_current(pContext) == EMSCRIPTEN_RESULT_SUCCESS)
+		
+#elif defined OS_BEOS
 		rrenderWindow->GetGLView()->LockGL();
-		#endif
 		
-		#ifdef OS_MACOS
+#elif defined OS_MACOS
 		pContextMakeCurrent( rrenderWindow->GetView() );
-		#endif
 		
-		#ifdef OS_W32
+#elif defined OS_W32
 		if( ! wglMakeCurrent( rrenderWindow->GetWindowDC(), pContext ) ){
 			pRenderThread.GetLogger().LogErrorFormat( "wglMakeCurrent failed (%s:%i): error=0x%lx\n",
 				__FILE__, __LINE__, GetLastError() );
 		}
-		#endif
+#endif // OS_*
 		
-		#ifndef OS_BEOS
+#ifndef OS_BEOS
 		#ifdef BACKEND_OPENGL
 		if( pLoaderContext ){
 			// this check is required for windows to work correctly because on windows the window
 			// is activated before the loader context is created which would cause problems
 			pRenderThread.GetLoaderThread().EnableContext( true );
 		}
-		#endif
-		#endif
+		#endif // BACKEND_OPENGL
+#endif // OS_BEOS
 		
 	}else{
 		pRenderThread.GetLoaderThread().EnableContext( false );
 		
-		#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 		#ifdef BACKEND_OPENGL
 // 		printf( "glXMakeCurrent(clear) previous(%lu,%p)\n", glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, None, NULL ) );
-		#endif
-		#endif
+		#endif // BACKEND_OPENGL
 		
-		#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 		if( eglMakeCurrent( pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE ){
 			DETHROW( deeInvalidParam );
 		}
-		#endif
 		
-		#ifdef OS_MACOS
+#elif defined OS_WEBWASM
+		DEASSERT_TRUE(emscripten_webgl_make_context_current(0) == EMSCRIPTEN_RESULT_SUCCESS)
+		
+#elif defined OS_MACOS
 		pGLContextMakeCurrent( NULL );
-		#endif
 		
-		#ifdef OS_W32
+#elif defined OS_W32
 		if( ! wglMakeCurrent( NULL, NULL ) ){
 			pRenderThread.GetLogger().LogErrorFormat( "wglMakeCurrent failed (%s:%i): error=0x%lx\n",
 				__FILE__, __LINE__, GetLastError() );
 		}
-		#endif
+#endif // OS_*
 	}
 }
 
@@ -496,42 +493,85 @@ bool deoglRTContext::GetUserRequestedQuit(){
 	return requested;
 }
 
+void deoglRTContext::DropCompileContexts(int count){
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
+	int i;
+#ifdef OS_UNIX_X11
+#ifdef BACKEND_OPENGL
+	for(i=count; i<pCompileContextCount; i++){
+		if(pCompileContext[i]){
+			logger.LogInfoFormat("Drop compile context %d", i);
+			glXDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = nullptr;
+		}
+	}
+#endif
+	
+#elif defined OS_ANDROID
+	for(i=count; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i] != EGL_NO_CONTEXT){
+			eglDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = EGL_NO_CONTEXT;
+		}
+		if(pCompileSurface[i] != EGL_NO_SURFACE){
+			eglDestroySurface(pDisplay, pCompileSurface[i]);
+			pCompileSurface[i] = EGL_NO_SURFACE;
+		}
+	}
+	
+#elif defined OS_WEBASM
+	for(i=count; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i]){
+			emscripten_webgl_destroy_context(pCompileContext[i]);
+			pCompileContext[i] = 0;
+		}
+	}
+	
+#elif defined OS_BEOS
+	
+#elif defined OS_MACOS
+	
+#elif defined OS_W32
+	for(i=0; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i]){
+			wglDeleteContext(pCompileContext[i]);
+			pCompileContext[i] = NULL;
+		}
+	}
+#endif
+}
+
 
 
 #ifdef BACKEND_OPENGL
 void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	// linux
-	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 	#ifndef HAS_OGL_GETPROC
-	return ( void* )glXGetProcAddressARB( ( const GLubyte * )funcName );
-	#endif
-	return ( void* )glXGetProcAddress( ( const GLubyte * )funcName );
+		return ( void* )glXGetProcAddressARB( ( const GLubyte * )funcName );
+	#else
+		return ( void* )glXGetProcAddress( ( const GLubyte * )funcName );
 	#endif
 	
-	// android
-	#ifdef OS_ANDROID
+#elif defined WITH_OPENGLES
 	return ( void* )androidGetProcAddress(pRenderThread, funcName);
-	#endif
 	
-	// beos
-	#ifdef OS_BEOS
-	if( ! pActiveRRenderWindow ){
-		DETHROW( deeInvalidParam );
-	}
+#elif defined OS_BEOS
+	DEASSERT_NOTNULL( pActiveRRenderWindow )
 	return ( void* )pActiveRRenderWindow->GetGLView()->GetGLProcAddress( funcName );
-	#endif
 	
-	// macos
-	#ifdef OS_MACOS
+#elif defined OS_MACOS
 	return ( void* )macosGetProcAddress( funcName );
-	#endif
 	
-	// windows
-	#ifdef OS_W32
+#elif defined OS_W32
 	return ( void* )wglGetProcAddress( funcName );
-	#endif
+#endif // OS_*
 }
-#endif
+#endif // BACKEND_OPENGL
 
 
 #ifdef OS_ANDROID
@@ -554,11 +594,20 @@ void deoglRTContext::CheckConfigurationChanged(){
 		//pScreenHeight = (int)ANativeWindow_getHeight(pOSAndroid->GetNativeWindow());
 	}
 }
-#endif
 
 
+#elif defined OS_WEBWASM
+void deoglRTContext::CheckConfigurationChanged(){
+	const decBoundary &contentRect = pOSWebWasm->GetContentRect();
+	pScreenWidth = contentRect.x2 - contentRect.x1;
+	pScreenHeight = contentRect.y2 - contentRect.y1;
+	
+	DEASSERT_TRUE(emscripten_webgl_get_drawing_buffer_size(
+		pContext, &pScreenWidth, &pScreenHeight) == EMSCRIPTEN_RESULT_SUCCESS)
+}
 
-#ifdef OS_W32
+
+#elif defined OS_W32
 LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam ){
 	// WARNING send by main thread while processing events
 	
@@ -694,14 +743,14 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	
 	return DefWindowProc( hwnd, message, wParam, lParam );
 }
-#endif
+#endif // OS_*
 
 
 
 // Private Functions
 //////////////////////
 
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#ifdef OS_UNIX_X11
 
 Display *deoglRTContext::GetMainThreadDisplay() const{
 	return pOSUnix->GetDisplay();
@@ -907,7 +956,7 @@ void deoglRTContext::pChooseVisual(){
 	}
 }
 
-#endif
+#endif // BACKEND_OPENGL
 
 void deoglRTContext::pCreateColorMap(){
 	Window rootWindow = RootWindow( pDisplay, pVisInfo->screen );
@@ -1053,7 +1102,7 @@ void deoglRTContext::pCreateContext(){
 	pCommandPoolGraphic = pQueueGraphic->CreateCommandPool();
 	pCommandPoolCompute = pQueueCompute->CreateCommandPool();
 	pCommandPoolTransfer = pQueueTransfer->CreateCommandPool();
-#endif
+#endif // BACKEND_OPENGL
 }
 
 void deoglRTContext::pFreeContext(){
@@ -1082,7 +1131,7 @@ void deoglRTContext::pFreeContext(){
 #elif defined BACKEND_VULKAN
 	pDevice = nullptr;
 	pVulkan = nullptr;
-#endif
+#endif // BACKEND_OPENGL
 }
 
 void deoglRTContext::pFreeVisualInfo(){
@@ -1099,11 +1148,8 @@ void deoglRTContext::pCloseDisplay(){
 	}
 }
 
-#endif
 
-
-
-#ifdef OS_ANDROID
+#elif defined OS_ANDROID
 
 void deoglRTContext::pInitDisplay(){
 	if( pSurface != EGL_NO_SURFACE ){
@@ -1127,7 +1173,7 @@ void deoglRTContext::pInitDisplay(){
 		// choose configuration
 		const EGLint attribs[] = {
 			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
-			EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+			EGL_SURFACE_TYPE, EGL_WINDOW_BIT | EGL_PBUFFER_BIT,
 			EGL_BLUE_SIZE, 8,
 			EGL_GREEN_SIZE, 8,
 			EGL_RED_SIZE, 8,
@@ -1151,7 +1197,20 @@ void deoglRTContext::pInitDisplay(){
 	// create surface
 	pSurface = eglCreateWindowSurface( pDisplay, pConfig, pOSAndroid->GetNativeWindow(), NULL );
 	if( pSurface == EGL_NO_SURFACE ){
+#ifdef OS_ANDROID_QUEST
+		// happens if VR-Mode is enabled. in this case we need a small off-screen surface
+		logger.LogInfo("Window surface already connected (VR-Mode). Creating tiny PBuffer surface");
+		const EGLint eglBufferAttribList[]{
+			EGL_WIDTH, 16,
+			EGL_HEIGHT, 16,
+			EGL_NONE
+		};
+		
+		pSurface = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
+		DEASSERT_FALSE(pSurface == EGL_NO_SURFACE)
+#else
 		DETHROW( deeInvalidParam );
+#endif
 	}
 	
 	// create context if not existing. it can be kept around while frozen
@@ -1176,7 +1235,7 @@ void deoglRTContext::pInitDisplay(){
 			EGL_NONE, EGL_NONE,
 			EGL_NONE };
 		
-		pContext = eglCreateContext(pDisplay, pConfig, nullptr, eglAttribList);
+		pContext = eglCreateContext(pDisplay, pConfig, EGL_NO_CONTEXT, eglAttribList);
 		DEASSERT_FALSE(pContext == EGL_NO_CONTEXT)
 		
 		// loader context needs also an own surface
@@ -1261,12 +1320,120 @@ void deoglRTContext::pCloseDisplay(){
 	pDisplay = EGL_NO_DISPLAY;
 }
 
-#endif
+
+#elif defined OS_WEBWASM
+
+void deoglRTContext::pCreateContext(){
+	if(pContext){
+		return;
+	}
+	
+	pCompileContextCount = decMath::min(MaxCompileContextCount,
+		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
+	
+	if(!pContext){
+		EmscriptenWebGLContextAttributes attrs{};
+		emscripten_webgl_init_context_attributes(&attrs);
+		attrs.alpha = false;
+		attrs.depth = true;
+		attrs.stencil = true;
+		attrs.antialias = false;
+		attrs.premultipliedAlpha = false;
+		attrs.preserveDrawingBuffer = false;
+		attrs.powerPreference = EM_WEBGL_POWER_PREFERENCE_HIGH_PERFORMANCE;
+		attrs.failIfMajorPerformanceCaveat = false;
+		attrs.majorVersion = 2;
+		attrs.minorVersion = 0;
+		attrs.enableExtensionsByDefault = false;
+		attrs.explicitSwapControl = true;
+		attrs.renderViaOffscreenBackBuffer = true;
+		//attrs.proxyContextToMainThread = EMSCRIPTEN_WEBGL_CONTEXT_PROXY_FALLBACK;
+		
+		pContext = emscripten_webgl_create_context("#dragengine", &attrs);
+		DEASSERT_NOTNULL(pContext)
+		
+		// loader and compiler contexts have to be created by the thread using them
+	}
+	
+	DEASSERT_TRUE(emscripten_webgl_make_context_current(pContext) == EMSCRIPTEN_RESULT_SUCCESS)
+	
+	DEASSERT_TRUE(emscripten_webgl_get_drawing_buffer_size(
+		pContext, &pScreenWidth, &pScreenHeight) == EMSCRIPTEN_RESULT_SUCCESS)
+	
+	pRenderThread.GetLogger().LogInfoFormat("Display size %ix%i", pScreenWidth, pScreenHeight);
+}
+
+void deoglRTContext::pFreeContext(){
+	int i;
+	for(i=0; i<pCompileContextCount; i++){
+		if(pCompileContext[i]){
+			emscripten_webgl_destroy_context(pCompileContext[i]);
+			pCompileContext[i] = 0;
+		}
+	}
+	
+	if(pLoaderContext){
+		emscripten_webgl_destroy_context(pLoaderContext);
+		pLoaderContext = 0;
+	}
+	
+	if(pContext){
+		emscripten_webgl_destroy_context(pContext);
+		pContext = 0;
+	}
+}
+
+EMSCRIPTEN_WEBGL_CONTEXT_HANDLE deoglRTContext::GetLoaderContext(){
+	if(!pLoaderContext){
+		EmscriptenWebGLContextAttributes attrs{};
+		emscripten_webgl_init_context_attributes(&attrs);
+		attrs.alpha = false;
+		attrs.depth = false;
+		attrs.stencil = false;
+		attrs.antialias = false;
+		attrs.premultipliedAlpha = false;
+		attrs.preserveDrawingBuffer = false;
+		attrs.powerPreference = EM_WEBGL_POWER_PREFERENCE_LOW_POWER;
+		attrs.failIfMajorPerformanceCaveat = false;
+		attrs.majorVersion = 2;
+		attrs.minorVersion = 0;
+		attrs.enableExtensionsByDefault = false;
+		attrs.explicitSwapControl = true;
+		attrs.renderViaOffscreenBackBuffer = false;
+		
+		pLoaderContext = emscripten_webgl_create_context("#dragengine", &attrs);
+		DEASSERT_NOTNULL(pLoaderContext)
+	}
+	return pLoaderContext;
+}
+
+/** Compile context. */
+EMSCRIPTEN_WEBGL_CONTEXT_HANDLE deoglRTContext::GetCompileContextAt(int index){
+	if(!pCompileContext[index]){
+		EmscriptenWebGLContextAttributes attrs{};
+		emscripten_webgl_init_context_attributes(&attrs);
+		attrs.alpha = false;
+		attrs.depth = false;
+		attrs.stencil = false;
+		attrs.antialias = false;
+		attrs.premultipliedAlpha = false;
+		attrs.preserveDrawingBuffer = false;
+		attrs.powerPreference = EM_WEBGL_POWER_PREFERENCE_LOW_POWER;
+		attrs.failIfMajorPerformanceCaveat = false;
+		attrs.majorVersion = 2;
+		attrs.minorVersion = 0;
+		attrs.enableExtensionsByDefault = false;
+		attrs.explicitSwapControl = true;
+		attrs.renderViaOffscreenBackBuffer = false;
+		
+		pCompileContext[index] = emscripten_webgl_create_context("#dragengine", &attrs);
+		DEASSERT_NOTNULL(pCompileContext[index])
+	}
+	return pCompileContext[index];
+}
 
 
-
-#ifdef OS_BEOS
-
+#elif defined OS_BEOS
 
 void deoglRTContext::pCreateContext(){
 	// done by deoglRRenderWindow. BGLView is the context
@@ -1276,11 +1443,8 @@ void deoglRTContext::pFreeContext(){
 	// done by deoglRRenderWindow. BGLView is the context
 }
 
-#endif
 
-
-
-#ifdef OS_W32
+#elif defined OS_W32
 
 void deoglRTContext::pRegisterWindowClass(){
 	oglW32WndFuncContext = this;
@@ -1468,4 +1632,4 @@ void deoglRTContext::pFreeContext(){
 	}
 }
 
-#endif
+#endif // OS_*

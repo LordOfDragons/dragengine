@@ -111,28 +111,31 @@ pTBORenderText2( nullptr ),
 pTBORenderRectangle1( nullptr ),
 pTBORenderRectangle2( nullptr )
 {
+	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().SetCommonDefines(commonDefines);
+		
 		pipconf.Reset();
 		pipconf.SetDepthMask(false);
 		pipconf.EnableBlendBlend();
 		
 		// x-ray
+		defines = commonDefines;
 		pAsyncGetPipeline(pPipelineXRay, pipconf, "DefRen Debug Color-Only", defines);
-		defines.RemoveAllDefines();
 		
 		// texture layer
+		defines = commonDefines;
 		defines.SetDefines("TEXTURELEVEL");
 		pAsyncGetPipeline(pPipelineOutTexLayer, pipconf, "Debug Display Texture", defines);
 		
 		// texture array
 		defines.SetDefines("ARRAYTEXTURE");
 		pAsyncGetPipeline(pPipelineOutArrTex, pipconf, "Debug Display Texture", defines);
-		defines.RemoveAllDefines();
 		
 		// text
+		defines = commonDefines;
 		pAsyncGetPipeline(pPipelineRenderText, pipconf, "Debug Render Text", defines);
 		
 		// rectangle

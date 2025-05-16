@@ -131,7 +131,7 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -144,8 +144,7 @@ class ECBehaviorComponent extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorComponent behavior = ECBehaviorComponent.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "component", id)
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "component", id)
 			
 			if parameters.has("layerMask")
 				behavior.getComponent().setLayerMask(ElementClass.getSharedCodecPropertyString().\

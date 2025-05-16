@@ -40,6 +40,7 @@
 #include "gdeVAOForceField.h"
 #include "gdeVAOSnapPoint.h"
 #include "gdeVAOSpeaker.h"
+#include "gdeVAOWorld.h"
 #include "../gdeWindowMain.h"
 #include "../../gdEditor.h"
 #include "../../configuration/gdeConfiguration.h"
@@ -58,6 +59,7 @@
 #include "../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 #include "../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 #include "../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../../gamedef/skin/gdeSkin.h"
 
 #include <deigde/engine/igdeEngineController.h>
@@ -280,6 +282,7 @@ void gdeViewActiveObject::ResetCameraPosition(){
 	case gdeGameDefinition::eotOCForceField:
 	case gdeGameDefinition::eotOCSnapPoint:
 	case gdeGameDefinition::eotOCSpeaker:
+	case gdeGameDefinition::eotOCWorld:
 		pCenterOnObjectClass( camera );
 		break;
 		
@@ -310,6 +313,7 @@ void gdeViewActiveObject::ClearResources(){
 	pOCNavSpaces.RemoveAll();
 	pOCSnapPoints.RemoveAll();
 	pOCSpeakers.RemoveAll();
+	pOCWorlds.RemoveAll();
 	
 	pOCComponents.RemoveAll();
 	
@@ -365,6 +369,7 @@ void gdeViewActiveObject::InitSelectedObject(){
 		case gdeGameDefinition::eotOCForceField:
 		case gdeGameDefinition::eotOCSnapPoint:
 		case gdeGameDefinition::eotOCSpeaker:
+		case gdeGameDefinition::eotOCWorld:
 			pInitObjectClass();
 			break;
 			
@@ -442,6 +447,11 @@ void gdeViewActiveObject::SelectedSubObjectChanged(){
 	count = pOCSpeakers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( gdeVAOSpeaker* )pOCSpeakers.GetAt( i ) )->SelectedObjectChanged();
+	}
+	
+	count = pOCWorlds.GetCount();
+	for(i=0; i<count; i++){
+		((gdeVAOWorld*)pOCWorlds.GetAt(i))->SelectedObjectChanged();
 	}
 }
 
@@ -728,6 +738,29 @@ void gdeViewActiveObject::RebuildOCSpeaker( gdeOCSpeaker *ocspeaker ){
 	}
 }
 
+void gdeViewActiveObject::RebuildOCWorlds(){
+	const decObjectList oldWorlds(pOCWorlds);
+	pOCWorlds.RemoveAll();
+	if(pObjectClass){
+		pInitOCWorlds(*pObjectClass, "");
+	}
+}
+
+void gdeViewActiveObject::RebuildOCWorld(gdeOCWorld *ocworld){
+	const int count = pOCWorlds.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		gdeVAOWorld * const vao = (gdeVAOWorld*)pOCWorlds.GetAt(i);
+		if(vao->GetOCWorld() != ocworld){
+			continue;
+		}
+		
+		vao->RebuildResources();
+		break;
+	}
+}
+
 
 
 void gdeViewActiveObject::SetShowEnvMapProbes( bool show ){
@@ -900,6 +933,10 @@ const decString &propertyPrefix, int filter ){
 	&& ( filter & igdeGDClass::efsoSpeakers ) == igdeGDClass::efsoSpeakers ){
 		pInitOCSpeakers( objectClass, propertyPrefix );
 	}
+	if( pOCWorlds.GetCount() == 0
+	&& (filter & igdeGDClass::efsoWorlds) == igdeGDClass::efsoWorlds){
+		pInitOCWorlds(objectClass, propertyPrefix);
+	}
 	
 	if( pGameDefinition ){
 		const gdeOCInheritList inherits = objectClass.GetInherits();
@@ -1046,6 +1083,17 @@ void gdeViewActiveObject::pInitOCSpeakers( const gdeObjectClass &objectClass, co
 	for( i=0; i<count; i++ ){
 		vao.TakeOver( new gdeVAOSpeaker( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
 		pOCSpeakers.Add( vao );
+	}
+}
+
+void gdeViewActiveObject::pInitOCWorlds(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	const gdeOCWorldList &list = objectClass.GetWorlds();
+	const int count = list.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		pOCWorlds.Add(gdeVAOWorld::Ref::New(new gdeVAOWorld(
+			*this, objectClass, propertyPrefix, list.GetAt(i))));
 	}
 }
 
@@ -1237,6 +1285,22 @@ void gdeViewActiveObject::pRebuildOCSpeakers( const gdeObjectClass &objectClass,
 			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass( inherits.GetAt( i )->GetName() );
 			if( ioc ){
 				pRebuildOCSpeakers( *ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix() );
+			}
+		}
+	}
+}
+
+void gdeViewActiveObject::pRebuildOCWorlds(const gdeObjectClass &objectClass, const decString &propertyPrefix){
+	pInitOCWorlds(objectClass, propertyPrefix);
+	
+	if(pGameDefinition){
+		const gdeOCInheritList inherits = objectClass.GetInherits();
+		const int inheritCount = inherits.GetCount();
+		int i;
+		for(i=0; i<inheritCount; i++){
+			const gdeObjectClass * const ioc = pGameDefinition->FindObjectClass(inherits.GetAt(i)->GetName());
+			if(ioc){
+				pRebuildOCWorlds(*ioc, propertyPrefix + ioc->GetDefaultInheritPropertyPrefix());
 			}
 		}
 	}

@@ -853,6 +853,7 @@ pClipboard( NULL )
 	pCBPathPatternType->AddItem( "Font resources", NULL, ( void* )( intptr_t )gdeProperty::epptFont );
 	pCBPathPatternType->AddItem( "Sky resources", NULL, ( void* )( intptr_t )gdeProperty::epptSky );
 	pCBPathPatternType->AddItem( "Camera resources", NULL, ( void* )( intptr_t )gdeProperty::epptCamera );
+	pCBPathPatternType->AddItem("World resources", nullptr, (void*)(intptr_t)gdeProperty::epptWorld);
 	pCBPathPatternType->AddItem( "Custom file pattern", NULL, ( void* )( intptr_t )gdeProperty::epptCustom );
 	
 	helper.FormLineStretchFirst( form, "Custom pattern:", "Custom pattern to edit.", frameLine );

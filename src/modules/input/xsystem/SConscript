@@ -51,7 +51,9 @@ if envModule['build_input_x'] == TernaryVariableYes and (not hasX or not hasXi):
 	Exit('Requested to build X Input Module but X could not be found or is not usable.')
 
 # build module if requested
-parent_report['build X Input Module'] = 'yes' if buildModule else 'no'
+internalModule = envModule['build_input_x_internal']
+parent_report['build X Input Module'] = ('yes (internal)' if internalModule else 'yes') if buildModule else 'no'
+
 if not buildModule:
 	Return()
 
@@ -76,41 +78,57 @@ globFiles(envModule, 'src', '*.h', headers)
 data = []
 globFiles(envModule, 'data', '*', data)
 
-objects = [envModule.SharedObject(s) for s in sources]
-
-appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
 appendLibrary(envModule, parent_targets['lib_libevdev'], libs)
-
-library = envModule.LoadableModule(target='inpxsystem', source=objects, LIBS=libs)
-targetBuild = envModule.Alias('inp_x_build', library)
 
 install = []
 archive = {}
-for l in library:
-	if l.name.endswith(envModule['SHLIBSUFFIX']):
+
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	envModule.Depends(objects, parent_targets['dragengine']['headers'])
+	
+	library = envModule.StaticLibrary(target='inpxsystem', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('inp_x_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, ['lib_libevdev'], 'dexsiRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	
+	library = envModule.LoadableModule(target='inpxsystem', source=objects, LIBS=libs)
+	targetBuild = envModule.Alias('inp_x_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	manifestUpdates = [
+		{ 'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME' },
+		{ 'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE' },
+		{ 'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM' },
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	for l in reversed(parent_targets['lib_libevdev']['runtimelibs']):
+		manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
-
-manifestUpdates = [
-	{ 'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME' },
-	{ 'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM' },
-	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
-
-for l in reversed(parent_targets['lib_libevdev']['runtimelibs']):
-	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
-	install.append(envModule.Install(pathModule, l))
-	archive[os.path.join(pathModule, l.name)] = l
-
-manifest = envModule.File('src/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-Depends(updateManifest, 'SConscript')
-Depends(updateManifest, parent_targets['lib_libevdev']['runtimelibs'])
-
-install.append(envModule.Install(pathModule, updateManifest))
-archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+	
+	manifest = envModule.File('src/module.xml')
+	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	Depends(updateManifest, library)
+	Depends(updateManifest, 'SConscript')
+	Depends(updateManifest, parent_targets['lib_libevdev']['runtimelibs'])
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 for d in data:
 	filename = os.path.join(pathShared, d[5:])

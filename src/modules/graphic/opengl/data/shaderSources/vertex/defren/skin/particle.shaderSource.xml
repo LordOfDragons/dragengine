@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Skin Particle</name>
+	<stage>vertex</stage>
+	<source>particle.vert.glsl</source>
+	
+	<attribute name='inParticle0' location='0'/>
+	<attribute name='inParticle1' location='1'/>
+	<attribute name='inParticle2' location='2'/>
+	<attribute name='inParticle3' location='3'/>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+	
+	<!-- system only
+	<define>SHARED_SPB_PADDING</define>
+	<define>SHARED_SPB_USE_SSBO</define>
+	<define>SHARED_SPB_ARRAY_SIZE</define>
+	-->
+	
+	<define>VS_RENDER_STEREO</define>
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+	
+	<!-- shared/defren/skin/ubo_instance_parameters.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='0'/>
+	<uniformBlock name='InstanceParameters' binding='2'/>
+	
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/skin/shared_spb_index.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='1'/>
+	<uniformBlock name='InstanceIndex' binding='4'/>
+	
+	<!-- system only
+	<define>SPB_SSBO_INSTANCE_ARRAY</define>
+	<define>SPB_INSTANCE_ARRAY_SIZE</define>
+	-->
+	
+	<!-- shared/defren/skin/ubo_texture_parameters.glsl -->
+	<shaderStorageBlock name='TextureParametersSSBO' binding='2'/>
+	<uniformBlock name='TextureParameters' binding='1'/>
+	
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>SHARED_SPB</define>
+</shaderSource>

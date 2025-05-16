@@ -309,7 +309,11 @@ class GameWorld
 		
 		pElements.add(element)
 		element.setGameWorld(this)
-		pElementIDMap.setAt(element.getID(), element)
+		
+		var UniqueID id = element.getID()
+		if id.notZero()
+			pElementIDMap.setAt(id, element)
+		end
 	end
 	
 // 	public static var RuntimeMeter rtm = null
@@ -339,7 +343,11 @@ class GameWorld
 		
 		pElements.remove(element)
 		element.setGameWorld(null)
-		pElementIDMap.removeIfExisting(element.getID())
+		
+		var UniqueID id = element.getID()
+		if id.notZero()
+			pElementIDMap.removeIfExisting(id)
+		end
 		
 		if pThinkers.has(element)
 			BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind thinker")

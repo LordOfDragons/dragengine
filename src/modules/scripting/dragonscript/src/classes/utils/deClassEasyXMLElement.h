@@ -129,6 +129,7 @@ private:
 	DEF_NATFUNC( nfGetElementAt );
 	DEF_NATFUNC( nfHasElement );
 	DEF_NATFUNC( nfAddElement );
+	DEF_NATFUNC(nfInsertElement);
 	DEF_NATFUNC( nfRemoveElement );
 	DEF_NATFUNC( nfRemoveAllElements );
 	

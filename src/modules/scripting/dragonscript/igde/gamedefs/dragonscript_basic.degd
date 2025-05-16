@@ -79,7 +79,15 @@
 		</inherit>
 		<category>Dragengine</category>
 	</class>
-	<class name='BaseActor'>
+	<class name='BaseWorld'>
+		<description>Basic class for elements loading a world file adding the content to the game world.</description>
+		<scaleMode>free</scaleMode>
+		<inherit name='ECBehaviorWorld'>
+			<propertyPrefix>world.</propertyPrefix>
+		</inherit>
+		<category>Dragengine</category>
+	</class>
+	<class name='Actor'>
 		<description>Base class for actors using behaviors.</description>
 		<scaleMode>uniform</scaleMode>
 		<inherit name='ECBehaviorComponent'>
@@ -1983,7 +1991,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Dra[en]gine Conversation' pattern='*.debtree' default='.debtree'/>
+				<add name='Dra[en]gine Behavior Tree' pattern='*.debt' default='.debt'/>
 			</customPathPattern>
 		</property>
 		<property name='run'>
@@ -2003,8 +2011,12 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Dra[en]gine Conversation' pattern='*.desm' default='.desm'/>
+				<add name='Dra[en]gine State Machine' pattern='*.desm' default='.desm'/>
 			</customPathPattern>
+		</property>
+		<property name='debug'>
+			<description>Debug mode prefix. If not empty string enables debug mode with prefix to locate log messages easily.</description>
+			<type>string</type>
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
@@ -2877,5 +2889,30 @@
 		<description>Generic BehaviorElementClass with all supported behavior factories added.</description>
 		<scaleMode>free</scaleMode>
 		<category>Dragengine</category>
+	</class>
+	<class name='ECBehaviorWorld'>
+		<description>Behavior element behavior adding world support.<br/><br/>This behavior uses property prefix "world.". If you use multiple instances of ECBehaviorWorld use unique identifiers like "world(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>world.</defaultInheritPropertyPrefix>
+		<world>
+			<link target='path' property='path'/>
+			<link target='position' property='position'/>
+			<link target='rotation' property='rotation'/>
+		</world>
+		<property name='path'>
+			<description>World file to use instead of the class defined one.</description>
+			<type>path</type>
+			<pathPatternType>world</pathPatternType>
+		</property>
+		<property name='position'>
+			<description>If not empty string use position relative to parent instead of current object coordinate system.</description>
+			<type>vector3</type>
+		</property>
+		<property name='orientation'>
+			<description>If not empty string use orientation in euler angles relative to parent instead of current object coordinate system.</description>
+			<type>vector3</type>
+		</property>
+		<category>Dragengine/Behavior</category>
 	</class>
 </gameDefinition>

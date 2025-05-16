@@ -38,7 +38,7 @@
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTDebug.h"
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
@@ -305,7 +305,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		return;
 	}
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	// glReadPixels under OpenGL ES does only support GL_RGBA and GL_RGBA_INTEGRAL.
 	// if something else is required (for exampel GL_RGB, GL_RG or GL_RED) we have
 	// to use a temporary texture containing 4 components and copy over from there.
@@ -685,7 +685,7 @@ void deoglArrayTexture::UpdateMemoryUsage(){
 		return;
 	}
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	pMemUse.SetUncompressed( *pFormat, pSize.x, pSize.y, pSize.z, pRealMipMapLevelCount );
 	
 	#else

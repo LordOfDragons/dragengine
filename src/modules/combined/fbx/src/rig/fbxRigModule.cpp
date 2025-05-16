@@ -52,12 +52,14 @@
 
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *FBXRigCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 deBaseModule *FBXRigCreateModule( deLoadableModule *loadableModule ){
@@ -154,3 +156,39 @@ void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 		throw;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class fbxRigModuleInternal : public deInternalModule{
+public:
+	fbxRigModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("FBXRig");
+		SetDescription("Handles rigs in the binary FBX format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtRig);
+		SetDirectoryName("fbxrig");
+		GetPatternList().Add(".fbx");
+		SetDefaultExtension(".fbx");
+		SetPriority(1);
+		SetNoSaving(true);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(FBXRigCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *fbxRigRegisterInternalModule(deModuleSystem *system){
+	return new fbxRigModuleInternal(system);
+}
+#endif

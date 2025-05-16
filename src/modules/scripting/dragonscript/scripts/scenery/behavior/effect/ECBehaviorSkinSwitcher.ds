@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -147,6 +149,18 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	 * <behavior type='ECBehaviorSkinSwitcher'>
 	 *   <!-- optional: use component with id instead of empty string -->
 	 *   <string name='component'>second</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -156,7 +170,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -169,20 +183,142 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorSkinSwitcher behavior = ECBehaviorSkinSwitcher.new(eclass,\
 				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "skinSwitcher", id)
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "skinSwitcher", id)
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "skinSwitcher{(id)}.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("active", null)
+				if value != null
+					if value.equals("next")
+						pInstance.activateNext()
+						
+					elif value.equals("previous")
+						pInstance.activatePrevious()
+						
+					elif value.equals("first")
+						pInstance.setActive(0)
+						
+					elif value.equals("last")
+						pInstance.setActive(pInstance.getCount() - 1)
+						
+					else
+						pInstance.setActive((value cast String).toInt())
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "skinSwitcher{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var Object value
+				var bool result
+				
+				value = parameters.getAt(prefix + "active", null)
+				if value != null
+					if value.equals("first")
+						result &= pInstance.getActive() == 0
+						
+					elif value.equals("last")
+						result &= pInstance.getActive() == pInstance.getCount() - 1
+						
+					else
+						result &= pInstance.getActive() == (value cast String).toInt()
+					end
+				end
+				
+				value = parameters.getAt(prefix + "active.not", null)
+				if value != null
+					if value.equals("first")
+						result &= pInstance.getActive() != 0
+						
+					elif value.equals("last")
+						result &= pInstance.getActive() != pInstance.getCount() - 1
+						
+					else
+						result &= pInstance.getActive() != (value cast String).toInt()
+					end
+				end
+				
+				value = parameters.getAt(prefix + "active.less", null)
+				if value != null
+					result &= pInstance.getActive() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "active.greater", null)
+				if value != null
+					result &= pInstance.getActive() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count", null)
+				if value != null
+					result &= pInstance.getCount() == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.less", null)
+				if value != null
+					result &= pInstance.getCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.greater", null)
+				if value != null
+					result &= pInstance.getCount() > (value cast String).toInt()
+				end
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorSkinSwitcher pECBehavior
 		var ECBehaviorComponent.Instance pComponent
 		var String pTexture
 		var Array pSkins
 		var bool pClamp
 		var int pActive
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -199,6 +335,7 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 		/** \brief Dispose of behavior instance. */
 		func void dispose()
 			pComponent = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -218,6 +355,14 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			
 			pActive = -1
 			setActive(pECBehavior.getActive().getValue(stub))
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
@@ -265,6 +410,18 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			
 			setSkin(pSkins.getAt(index) cast Skin)
 			pActive = index
+			
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "changed")
+			end
+		end
+		
+		/**
+		 * \brief Count of skins.
+		 * \version 1.26
+		 */
+		func int getCount()
+			return pSkins.getCount()
 		end
 		
 		/**
@@ -360,6 +517,8 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	var ECPSkinList pSkins
 	var ECPBoolean pClamp
 	var ECPInteger pActive
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -383,7 +542,9 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 			throw ENullPointer.new("component")
 		end
 		
+		pPrefix = prefix
 		pComponent = component
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addProperty(pTexture = ECPString.new(prefix + "texture", ""))
 		eclass.addProperty(pSkins = ECPSkinList.new(prefix + "skins"))
@@ -396,10 +557,19 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pComponent = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Component behavior. */
 	func ECBehaviorComponent getComponent()
@@ -432,6 +602,14 @@ class ECBehaviorSkinSwitcher extends DefaultECBehavior
 	/** \brief Index of initially active skin property. */
 	func ECPInteger getActive()
 		return pActive
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

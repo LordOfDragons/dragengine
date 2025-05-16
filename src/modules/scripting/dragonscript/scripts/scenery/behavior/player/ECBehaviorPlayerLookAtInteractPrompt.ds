@@ -30,6 +30,8 @@ pin Dragengine.Gui.Layouts
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -61,7 +63,7 @@ pin Dragengine.Utils
  * 
  * Uses property prefix "playerLookAtInteractPrompt."
  * 
- * \see 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerlookatinteractprompt
  */
 class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	/** \brief Interact prompt controller interface. */
@@ -160,11 +162,23 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	 *   <!-- optional: use BaseGameApp binding manager. game can add more supported values.
 	 *                  default is 'default' -->
 	 *   <string name='bindingManager'>default</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 * 
 	 * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerlookatinteractprompt
 	 */
@@ -187,7 +201,10 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 				getUiContainerAddSettings(parameters),\
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerLookAtInteractPrompt")
 			return behavior
 		end
@@ -224,6 +241,64 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "playerLookAtInteractPrompt.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "playerLookAtInteractPrompt.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Player takes control listener. */
 		class PlayerTakesControl extends ECBehaviorPlayerControllable.DefaultListener
 			var Instance pInstance
@@ -286,12 +361,21 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			pBindingIconHeight = pECBehavior.getBindingIconHeight().getValue(stub)
 			pTransparency = pECBehavior.getTransparency().getValue(stub)
 			pVisibleIfEmpty = pECBehavior.getVisibleIfEmpty().getValue(stub)
 			pPlayerControllable.addListener(PlayerTakesControl.new(this))
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+			end
 		end
 		
 		
@@ -545,6 +629,8 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	var ECPFloat pTransparency
 	var ECPBoolean pVisibleIfEmpty
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -599,6 +685,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pPlayerControllable = playerControllable
 		pLookAt = lookAt
 		pPromptControllerFactory = promptControllerFactory
@@ -607,6 +694,7 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		pCommandManager = commandManager
 		pBindingManager = bindingManager
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addProperty(pBindingIconHeight = ECPInteger.new(prefix + ".bindingIconHeight", 32, 1))
 		eclass.addProperty(pTransparency = ECPFloat.new(prefix + ".transparency", 1, 0, 1))
@@ -624,10 +712,19 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 		pPromptControllerFactory = null
 		pUIContainer = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Player controllable behavior. */
 	func ECBehaviorPlayerControllable getPlayerControllable()
@@ -712,6 +809,15 @@ class ECBehaviorPlayerLookAtInteractPrompt extends DefaultECBehavior
 	func ECPBoolean getVisibleIfEmpty()
 		return pVisibleIfEmpty
 	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
 	
 	/** \brief Add listener factory. */
 	func void addListenerFactory(ListenerFactory factory)

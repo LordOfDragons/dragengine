@@ -34,6 +34,7 @@
 
 
 class delLauncher;
+class deInternalModule;
 
 
 /**
@@ -90,6 +91,9 @@ public:
 	/*@{*/
 	/** \brief Create engine module. */
 	delEngineModule();
+	
+	/** \brief Create engine module from internal module. */
+	delEngineModule(const deInternalModule &module);
 	
 protected:
 	/** \brief Clean up engine module. */

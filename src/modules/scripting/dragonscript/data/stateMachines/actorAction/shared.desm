@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<stateMachine>
+	<!--
+	State machine containing shared states for use with actor action state machines.
+	
+	To use this state machine in your custom state machine import it like this:
+	
+	<stateMachine>
+		<import>/shareddata/stateMachines/actorAction/shared.desm</import>
+		... your content
+	</stateMachine>
+	
+	The "firstPerson" and "vehicle" state machine import this shared state machine
+	-->
+	
+	
+	<!--
+	Handle player run input. Imported by adding this line to your state or transition:
+	<import>shared.player.movement.run</import>
+	-->
+	<state id='shared.player.movement.run'>
+		<transition event='movement.run.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='run'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.run.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='run'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.run.toggle'>
+			<action name='playerInputMove.set'>
+				<parameter name='run.toggle'/>
+			</action>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Handle player crouch input. Imported by adding this line to your state or transition:
+	<import>shared.player.movement.crouch</import>
+	-->
+	<state id='shared.player.movement.crouch'>
+		<transition event='movement.crouch.start'>
+			<action name='playerInputCrouch.set'>
+				<parameter name='crouch'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.crouch.stop'>
+			<action name='playerInputCrouch.set'>
+				<parameter name='crouch'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.crouch.toggle'>
+			<action name='playerInputCrouch.set'>
+				<parameter name='crouch.toggle'/>
+			</action>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Update locomotion during thinking.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.update.locomotion</import>
+	-->
+	<state id='shared.update.locomotion'>
+		<enterAction name='conversationActor.update'>
+			<parameter name='locomotion'/>
+		</enterAction>
+		
+		<enterAction name='locomotion.update'>
+			<parameter name='looking'/>
+			<parameter name='locomotion'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Update AI collider during thinking while on ground.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.update.collider.ground</import>
+	-->
+	<state id='shared.update.collider.ground'>
+		<!--
+		Applying locomotion to collider to do normal movement.
+		This includes updating orientation and linear velocity of collider.
+		-->
+		<enterAction name='locomotion.update'>
+			<parameter name='colliderFromLocomotion.orientation'/>
+			<parameter name='colliderFromLocomotion.linearVelocity'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Update AI collider during thinking while falling supporting turning mid air.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.update.collider.falling.turn</import>
+	-->
+	<state id='shared.update.collider.falling.turn'>
+		<!--
+		Applying locomotion to collider to do falling movement. This includes only
+		updating orientation allowing actor to turn mid air but not moving
+		-->
+		<enterAction name='locomotion.update'>
+			<parameter name='colliderFromLocomotion.orientation'/>
+		</enterAction>
+		
+		<!--
+		Apply gravity
+		-->
+		<enterAction name='colliderAI.update'>
+			<parameter name='gravity.apply'/>
+			<parameter name='stop.turning'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Update AI collider during thinking while falling without turning mid-air.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.update.collider.falling</import>
+	-->
+	<state id='shared.update.collider.falling'>
+		<!--
+		Apply gravity
+		-->
+		<enterAction name='colliderAI.update'>
+			<parameter name='gravity.apply'/>
+			<parameter name='stop.turning'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Update animators during thinking.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.update.animators</import>
+	-->
+	<state id='shared.update.animators'>
+		<enterAction name='locomotion.update'>
+			<parameter name='animator'/>
+		</enterAction>
+		
+		<enterAction name='actorAnimated.update'>
+			<parameter name='notifyControllersChanged'/>
+			<parameter name='apply'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Post update.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.postUpdate</import>
+	-->
+	<state id='shared.postUpdate'>
+		<enterAction name='locomotion.update'>
+			<parameter name='postLocomotion'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Apply sliding collision response.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.collision.sliding</import>
+	-->
+	<state id='shared.collision.sliding'>
+		<enterAction name='colliderAI.collision'>
+			<parameter name='sliding'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Apply stop collision response. Stops collider moving.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.collision.stop</import>
+	-->
+	<state id='shared.collision.stop'>
+		<enterAction name='colliderAI.collision'>
+			<parameter name='stop'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	If actor lands on ground sets project to ground to touch ground. This will send
+	event "projectToGround.touch" which in turn switches state.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.collision.landing</import>
+	-->
+	<state id='shared.collision.landing'>
+		<enterAction name='projectToGround.set'>
+			<condition>projectToGround.check</condition>
+			<parameter name='projectToGround.landing'>true</parameter>
+			
+			<parameter name='ground'>true</parameter>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Falling collision. Applies sliding collision response.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.collision.ground</import>
+	-->
+	<state id='shared.collision.ground'>
+		<enterAction name='colliderAI.collision'>
+			<parameter name='sliding'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Notify AI instance assigned to actor about action finished successfully.
+	
+	Notification is only send if element is not player controlled.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.aiFinished</import>
+	-->
+	<state id='shared.aiFinished'>
+		<enterAction name='aiAction.update'>
+			<parameter name='ai.actionFinished'>success</parameter>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Notify AI instance assigned to actor about action failed.
+	
+	Notification is only send if element is not player controlled.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.aiFailed</import>
+	-->
+	<state id='shared.aiFailed'>
+		<enterAction name='aiAction.update'>
+			<parameter name='ai.actionFinished'>failure</parameter>
+		</enterAction>
+	</state>
+	
+</stateMachine>

@@ -50,9 +50,6 @@ pin Dragengine.Utils
  * plane corners are relative to the bone. This allows to create desktop input zones
  * which can be displaced.
  * 
- * The behavior can be optionally disabled to allow the input to be available to the
- * player only if certain conditions are fulfilled.
- * 
  * The actor is responsible to move the mouse pointer. This behavior provides convenience
  * methods to do the calculation and updating of the mouse pointer.
  * 
@@ -129,7 +126,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -142,7 +139,7 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorControlDesktop behavior = ECBehaviorControlDesktop.new(eclass,\
 				eclass.sharedFactoryHelper.defaultRenderableDesktop(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "controlDesktop", id)
 			return behavior
 		end

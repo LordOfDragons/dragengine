@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan Render Task SubInstGroup Pass 2</name>
+	<stage>compute</stage>
+	<source>render_task_subinstgroup_pass2.comp.glsl</source>
+	
+	<shaderStorageBlock name='Counters' binding='0'/>
+	<shaderStorageBlock name='SubInstGroup' binding='1'/>
+</shaderSource>

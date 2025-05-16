@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen SSAO Upscale</name>
+	<stage>fragment</stage>
+	<source>ssao_upscale.frag.glsl</source>
+	
+	<output name='outAO' location='0'/>
+	
+	<define>GS_RENDER_STEREO</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

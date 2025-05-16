@@ -31,6 +31,7 @@
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 
 #include "dedsLoadingScreen.h"
+#include "dedsVRPlaceholder.h"
 #include "dedsEngineException.h"
 
 
@@ -459,6 +460,7 @@ private:
 	deClassWorld *pClsWorld;
 	
 	dedsLoadingScreen::Ref pLoadingScreen;
+	dedsVRPlaceholder::Ref pVRPlaceholder;
 	
 	decString pInitScriptDirectory;
 	decString pInitGameObject;
@@ -483,6 +485,9 @@ private:
 	bool pRestartRequested;
 	
 	deVFSContainer::Ref pVFSContainerHideScriptDirectory;
+
+	// dpi awareness
+	decPoint pDpiAccumMouseMoved;
 	
 public:
 	// constructor, destructor
@@ -585,6 +590,9 @@ public:
 	
 	/** Module version. */
 	inline const sModuleVersion &GetCompatibleVersion() const{ return pCompatibleVersion; }
+	
+	/** VR Placeholder or nullptr. */
+	inline const dedsVRPlaceholder::Ref &GetVRPlaceholder() const{ return pVRPlaceholder; }
 	/*@}*/
 	
 	
@@ -841,7 +849,8 @@ private:
 	decString BuildFullName( const dsClass *theClass ) const;
 	void pAddVFSContainerHideScriptDirectory();
 	void pRemoveVFSContainerHideScriptDirectory();
-	void pPreprocessEventDpiAware(deInputEvent &event) const;
+	void pPreprocessEventDpiAware(deInputEvent &event);
+	void pPreprocessMouseMoveDpiAware(deInputEvent &event);
 	
 public:
 	void pAddExceptionTrace( deErrorTracePoint *tracePoint );

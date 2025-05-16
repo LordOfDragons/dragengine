@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V Generic TransformMVP</name>
+	<stage>vertex</stage>
+	<source>transform_mvp.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+</shaderSource>

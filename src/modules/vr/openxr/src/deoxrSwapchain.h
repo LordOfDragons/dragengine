@@ -30,6 +30,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/systems/modules/vr/deBaseVRModule.h>
 
 class deoxrSession;
 
@@ -70,6 +71,7 @@ private:
 	
 	uint32_t pAcquiredImage;
 	
+	deBaseVRModule::eVRRenderFormat pVRRenderFormat;
 	
 	
 public:
@@ -117,6 +119,9 @@ public:
 	
 	/** Acquired image. */
 	inline uint32_t GetAcquiredImage() const{ return pAcquiredImage; }
+	
+	/** VR Render format. */
+	inline deBaseVRModule::eVRRenderFormat GetVRRenderFormat() const{ return pVRRenderFormat; }
 	/*@}*/
 	
 	

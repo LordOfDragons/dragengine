@@ -1,8 +1,15 @@
+/*
+	<!-- shared/defren/skin/ubo_special_parameters.glsl -->
+	<uniformBlock name='SpecialParameters' binding='3'/>
+	
+	<define>SHARED_SPB</define>
+*/
+
 #ifdef SHARED_SPB
 	// values stored in shared instance parameters
 #else
 
-UBOLAYOUT uniform SpecialParameters{
+UBOLAYOUT_BIND(3) uniform SpecialParameters{
 	// for GS_RENDER_CUBE enabled shaders bit flag defines which cube faces
 	// the object is visible on:
 	// 

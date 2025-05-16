@@ -2,11 +2,5 @@
 <shader>
 	<name>DefRen Plan FindContent Element</name>
 	
-	<uniformBlock name='PlanConfig' target='0'/>
-	
-	<shaderStorageBlock name='Element' target='0'/>
-	<shaderStorageBlock name='VisibleElement' target='1'/>
-	<shaderStorageBlock name='ElementCullResult' target='2'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/find_content_element.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan FindContent Element</sourceCode>
 </shader>

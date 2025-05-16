@@ -159,9 +159,9 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	int i, j, k;
 	
 	// reset the file pattern lists
-	for( i=0; i<=efplCamera; i++ ){
-		pFPLOpen[ i ].RemoveAllFilePatterns();
-		pFPLSave[ i ].RemoveAllFilePatterns();
+	for(i=0; i<FilePatternListCount; i++){
+		pFPLOpen[i].RemoveAllFilePatterns();
+		pFPLSave[i].RemoveAllFilePatterns();
 	}
 	
 	// add show-all file patterns to the file pattern lists. these have to come first
@@ -247,6 +247,11 @@ void igdeLoadSaveSystem::UpdatePatternLists(){
 	pAddPattern( pFPLOpen[ efplCamera ], "Camera", "*.decamera", ".decamera" );
 	
 	pAddPattern( pFPLSave[ efplCamera ], "Camera", "*.decamera", ".decamera" );
+	
+	pAddPattern(pFPLOpen[efplWorld], "All formats", "*.deworld", ".deworld");
+	pAddPattern(pFPLOpen[efplWorld], "World", "*.deworld", ".deworld");
+	
+	pAddPattern(pFPLSave[efplWorld], "World", "*.deworld", ".deworld");
 	
 	// game project file list
 	pAddPattern( pFPLOpen[ efplGameProject ], "All formats", "*.degp", "degp" );

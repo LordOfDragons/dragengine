@@ -63,23 +63,29 @@ public:
 		efplAnimator,
 		efplSynthesizer,
 		efplSpeechAnimation,
-		efplCamera
+		efplCamera,
+		efplWorld
 	};
+	
+	static const int FilePatternListCount = efplWorld + 1;
 	
 	/** \brief FOX File pattern lists. */
 	enum eFOXFilePatternLists{
 		effplGameProject
 	};
 	
+	static const int FoxFilePatternListCount = effplGameProject + 1;
+	
+	
 private:
 	igdeWindowMain *pWindowMain;
 	igdeLSGameProject *pLSGameProject;
 	
-	igdeFilePatternList pFPLOpen[ efplCamera + 1 ];
-	igdeFilePatternList pFPLSave[ efplCamera + 1 ];
+	igdeFilePatternList pFPLOpen[FilePatternListCount];
+	igdeFilePatternList pFPLSave[FilePatternListCount];
 	
-	decString pFoxFPLOpen[ effplGameProject + 1 ];
-	decString pFoxFPLSave[ effplGameProject + 1 ];
+	decString pFoxFPLOpen[FoxFilePatternListCount];
+	decString pFoxFPLSave[FoxFilePatternListCount];
 	
 public:
 	/** \name Constructors and Destructors */

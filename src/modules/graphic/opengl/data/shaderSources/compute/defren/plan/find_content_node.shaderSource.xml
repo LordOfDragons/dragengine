@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan FindContent Node</name>
+	<stage>compute</stage>
+	<source>find_content_element.comp.glsl</source>
+	
+	<shaderStorageBlock name='Element' binding='0'/>
+	<shaderStorageBlock name='WorldOctreeNode' binding='1'/>
+	<shaderStorageBlock name='SearchNodes' binding='2'/>
+</shaderSource>

@@ -61,7 +61,8 @@ dewiDevice( module, esWinRTController ),
 pController( controller ),
 pGamepad( wrgi::Gamepad::FromGameController( controller ) ),
 pReadingButtonSize( 0 ),
-pBatteryReport( {} )
+pReadingTime(0),
+pBatteryReport({})
 {
 	decString string;
 
@@ -628,30 +629,32 @@ pBatteryReport( {} )
 
 	// if battery charge is supported add battery level axis
 	const wrdp::BatteryReport batteryReport = controller.TryGetBatteryReport();
-	if( batteryReport.RemainingCapacityInMilliwattHours() && batteryReport.FullChargeCapacityInMilliwattHours() ){
-		const dewiDeviceAxis::Ref axis( dewiDeviceAxis::Ref::New( new dewiDeviceAxis( module ) ) );
-		axis->SetIndex( GetAxisCount() );
-		axis->SetType( deInputDeviceAxis::eatBatteryLevel );
-		axis->SetID( "batlvl" );
-		axis->SetAbsolute( true );
-		axis->SetMinimum( 0 );
-		axis->SetMaximum( 100 );
-		axis->SetName( "Battery Level" );
-		axis->SetDisplayText( "Bat" );
-		axis->SetIsBatteryLevel( true );
+	if(batteryReport){
+		if( batteryReport.RemainingCapacityInMilliwattHours() && batteryReport.FullChargeCapacityInMilliwattHours() ){
+			const dewiDeviceAxis::Ref axis( dewiDeviceAxis::Ref::New( new dewiDeviceAxis( module ) ) );
+			axis->SetIndex( GetAxisCount() );
+			axis->SetType( deInputDeviceAxis::eatBatteryLevel );
+			axis->SetID( "batlvl" );
+			axis->SetAbsolute( true );
+			axis->SetMinimum( 0 );
+			axis->SetMaximum( 100 );
+			axis->SetName( "Battery Level" );
+			axis->SetDisplayText( "Bat" );
+			axis->SetIsBatteryLevel( true );
 
-		AddAxis( axis );
-	}
+			AddAxis( axis );
+		}
 
-	if( batteryReport.Status() != wrsp::BatteryStatus::NotPresent ){
-		const dewiDeviceButton::Ref button( dewiDeviceButton::Ref::New( new dewiDeviceButton( module ) ) );
-		button->SetType( deInputDeviceButton::ebtBatteryCharging );
-		button->SetID( "batcha" );
-		button->SetName( "Battery Charging" );
-		button->SetDisplayText( "BatCh" );
-		button->SetIsBatteryCharging( true );
+		if( batteryReport.Status() != wrsp::BatteryStatus::NotPresent ){
+			const dewiDeviceButton::Ref button( dewiDeviceButton::Ref::New( new dewiDeviceButton( module ) ) );
+			button->SetType( deInputDeviceButton::ebtBatteryCharging );
+			button->SetID( "batcha" );
+			button->SetName( "Battery Charging" );
+			button->SetDisplayText( "BatCh" );
+			button->SetIsBatteryCharging( true );
 
-		AddButton( button );
+			AddButton( button );
+		}
 	}
 
 	// allocate arrays

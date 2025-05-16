@@ -64,12 +64,14 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *BulletCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -319,3 +321,36 @@ deBasePhysicsParticleEmitterInstance *dePhysicsBullet::CreateParticleEmitterInst
 deBasePhysicsSmokeEmitter *dePhysicsBullet::CreateSmokeEmitter( deSmokeEmitter *smokeEmitter ){
 	return new debpSmokeEmitter( this, smokeEmitter );
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class depbModuleInternal : public deInternalModule{
+public:
+	depbModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("Bullet");
+		SetDescription("Provides physical simulation using the free-software Bullet physics library.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtPhysics);
+		SetDirectoryName("bullet");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(BulletCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *depbRegisterInternalModule(deModuleSystem *system){
+	return new depbModuleInternal(system);
+}
+#endif

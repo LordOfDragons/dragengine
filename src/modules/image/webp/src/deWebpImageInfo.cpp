@@ -71,7 +71,7 @@ pHasAlpha( false ),
 		WebPChunkIterator iter = {};
 		if( WebPDemuxGetChunk( demux, "EXIF", 1, &iter ) == 1 ){
 			static const char * const tagGrayscale = "dewebp:grayscale";
-			static const int tagGrayscaleLen = strlen( tagGrayscale );
+			static const int tagGrayscaleLen = (int)strlen(tagGrayscale);
 			
 			const char * const exif = ( const char* )iter.chunk.bytes;
 			const int exifLen = ( int )iter.chunk.size;

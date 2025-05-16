@@ -66,7 +66,7 @@ pResolveSymbolNameLen( 0 ),
 pResolveSymbolNameSize( 200 ),
 
 pDisablePreprocessing( false ),
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 pDebugLogParsing( false )
 #else
 pDebugLogParsing( false )
@@ -124,18 +124,23 @@ void deoglShaderPreprocessor::LogSourceLocationMap(){
 	}
 }
 
-const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation( int line ) const{
-	const int count = pSourceLocations.GetCount();
+const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation(int line) const{
+	return ResolveSourceLocation(pSourceLocations, line);
+}
+
+const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation(
+const decObjectList &locations, int line) const{
+	const int count = locations.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const deoglShaderSourceLocation * const location = ( deoglShaderSourceLocation* )pSourceLocations.GetAt( i );
-		if( location->GetOutputLine() == line ){
+	for(i=0; i<count; i++){
+		const deoglShaderSourceLocation * const location = (deoglShaderSourceLocation*)locations.GetAt(i);
+		if(location->GetOutputLine() == line){
 			return location;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 
@@ -568,23 +573,22 @@ void deoglShaderPreprocessor::pProcessDirectiveInclude(){
 		return;
 	}
 	
-	deoglShaderUnitSourceCode * const unitSourceCode = pRenderThread.
-		GetShader().GetShaderManager().GetUnitSourceCodeWithPath( filename );
-	if( ! unitSourceCode ){
-		pRenderThread.GetLogger().LogErrorFormat( "Shader Preprocessor: #include: File not found %s at %s:%d",
-			filename.GetString(), pInputFile != NULL ? pInputFile : "?", pInputLine );
-		DETHROW( deeInvalidParam );
+	const decString *sources = nullptr;
+	if(!pRenderThread.GetShader().GetShaderManager().GetIncludableSources().GetAt(filename, &sources)){
+		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #include: File not found %s at %s:%d",
+			filename.GetString(), pInputFile != NULL ? pInputFile : "?", pInputLine);
+		DETHROW(deeInvalidParam);
 	}
 	
-	if( pDebugLogParsing ){
-		pRenderThread.GetLogger().LogInfoFormat( "Shader Preprocessor: #include: Include '%s'", filename.GetString() );
+	if(pDebugLogParsing){
+		pRenderThread.GetLogger().LogInfoFormat("Shader Preprocessor: #include: Include '%s'", filename.GetString());
 	}
 	
 	const char * const oldInputNext = pInputNext;
 	const char * const oldInputFile = pInputFile;
 	const int oldInputLine = pInputLine;
 	
-	SourcesAppendProcessed( unitSourceCode->GetSourceCode(), filename, false );
+	SourcesAppendProcessed(*sources, filename, false);
 	
 	pInputNext = oldInputNext;
 	pInputFile = oldInputFile;

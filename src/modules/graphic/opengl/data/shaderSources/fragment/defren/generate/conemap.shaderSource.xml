@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Generate ConeMap</name>
+	<stage>fragment</stage>
+	<source>conemap.frag.glsl</source>
+	
+	<output name='outConeRatio' location='0'/>
+	
+	<define>WITH_LAYER</define>
+</shaderSource>

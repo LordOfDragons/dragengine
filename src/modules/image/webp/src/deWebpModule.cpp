@@ -38,12 +38,14 @@
 #include <dragengine/resources/image/deImage.h>
 
 
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
 MOD_ENTRY_POINT_ATTR deBaseModule *WebpCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -196,3 +198,39 @@ void deWebpModule::SaveImage( decBaseFileWriter &file, const deImage &image ){
 		throw;
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deWebpModuleInternal : public deInternalModule{
+public:
+	deWebpModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("WebP");
+		SetDescription("Handles images saved in the WebP format.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtImage);
+		SetDirectoryName("webp");
+		GetPatternList().Add(".webp");
+		SetDefaultExtension(".webp");
+		SetNoCompress(true);
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(WebpCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deWebpRegisterInternalModule(deModuleSystem *system){
+	return new deWebpModuleInternal(system);
+}
+#endif

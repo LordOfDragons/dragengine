@@ -33,6 +33,7 @@ class deOSConsole;
 class deOSWindows;
 class deOSBeOS;
 class deOSAndroid;
+class deOSWebWasm;
 class deOSMacOS;
 class decString;
 
@@ -205,6 +206,12 @@ public:
 	 * \throws deeInvalidParam Not an instance of deOSAndroid.
 	 */
 	virtual deOSAndroid *CastToOSAndroid();
+	
+	/**
+	 * \brief Cast to deOSWebWasm.
+	 * \throws deeInvalidParam Not an instance of deOSWebWasm.
+	 */
+	virtual deOSWebWasm *CastToOSWebWasm();
 	
 	/**
 	 * \brief Cast to deOSMacOS.

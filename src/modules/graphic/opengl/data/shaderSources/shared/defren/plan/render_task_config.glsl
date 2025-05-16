@@ -28,6 +28,6 @@ struct sRenderTaskConfig{
 
 #define MAX_RENDER_TASK_CONFIG 8
 
-UBOLAYOUT uniform RenderTaskConfig {
+UBOLAYOUT_BIND(0) uniform RenderTaskConfig {
 	sRenderTaskConfig pRenderTaskConfig[ MAX_RENDER_TASK_CONFIG ];
 };

@@ -32,7 +32,7 @@ pin Dragengine.Utils
 /**
  * \brief Base VR Hand action.
  * 
- * Action supports the Persistable interface an can be read from and writen to file writers.
+ * Action supports the Persistable interface and can be read from and writen to file writers.
  */
 class BaseVRHandAction implements Persistable
 	/** \brief Factory for loading actor actions. */
@@ -90,7 +90,7 @@ class BaseVRHandAction implements Persistable
 	/** \brief Behavior VR hand action or \em null. */
 	protected var ECBehaviorVRHandAction.Instance handAction
 	
-	private var bool pIsRightHand
+	protected var bool pIsRightHand
 	
 	
 	

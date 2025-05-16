@@ -170,6 +170,7 @@
 
 
 // export definition
+#ifndef WITH_INTERNAL_MODULE
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -180,6 +181,7 @@ MOD_ENTRY_POINT_ATTR deBaseModule *VulkanCreateModule(deLoadableModule *loadable
 #endif
 #ifdef  __cplusplus
 }
+#endif
 #endif
 
 
@@ -304,7 +306,7 @@ void deGraphicOpenGl::CleanUp(){
 void deGraphicOpenGl::InputOverlayCanvasChanged(){
 }
 
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 /** Application window has been created. */
 void deGraphicOpenGl::InitAppWindow(){
 	if( pConfiguration.GetDoLogInfo() ){
@@ -345,7 +347,7 @@ void deGraphicOpenGl::RenderWindows(){
 	}
 // 		LogInfoFormat( "RenderWindows: MainThreadWaitFinishRendering = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 	pRenderThread->DebugMemoryUsage( "deGraphicOpenGl::RenderWindows ENTER" );
 #endif
 	// finalize asynchronously loaded resources
@@ -408,7 +410,7 @@ void deGraphicOpenGl::RenderWindows(){
 // 	LogInfoFormat( "RenderWindows() %d", __LINE__ );
 // 		LogInfoFormat( "RenderWindows: RenderThread.Sync = %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 // 		timerInBetween.Reset();
-#ifdef OS_ANDROID
+#ifdef WITH_OPENGLES
 	pRenderThread->DebugMemoryUsage( "deGraphicOpenGl::RenderWindows EXIT" );
 #endif
 }
@@ -585,14 +587,13 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	// WARNING should be only called from callback triggered by render thread in other modules
 	OGL_ON_RENDER_THREAD
 	
-	memset( &connection, 0, sizeof( connection ) );
+	connection.opengl = {};
 	
 	if( ! pRenderThread->HasContext() ){
 		return;
 	}
 	
 	#ifdef OS_BEOS
-	connection.opengl.dummy = nullptr;
 	
 	#elif defined OS_ANDROID
 	const deoglRTContext &context = pRenderThread->GetContext();
@@ -601,10 +602,12 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 	connection.opengl.config = context.GetConfig();
 	connection.opengl.context = context.GetContext();
 	
-	#elif defined OS_UNIX
+	#elif defined OS_WEBWASM
+	
+	#elif defined OS_UNIX & defined HAS_LIB_X11
 	const deoglRTContext &context = pRenderThread->GetContext();
 	
-#ifdef BACKEND_OPENGL
+	#ifdef BACKEND_OPENGL
 	connection.opengl.display = context.GetDisplay();
 	connection.opengl.visualid = context.GetVisualInfo()->visualid;
 	connection.opengl.glxFBConfig = context.GetBestFBConfig();
@@ -614,13 +617,13 @@ void deGraphicOpenGl::GetGraphicApiConnection( sGraphicApiConnection &connection
 		connection.opengl.glxDrawable = context.GetActiveRRenderWindow()->GetWindow();
 	}
 	
-#elif defined BACKEND_VULKAN
+	#elif defined BACKEND_VULKAN
 	connection.vulkan.instance = context.GetVulkan().GetInstance().GetInstance();
 	connection.vulkan.device = context.GetDevice().GetDevice();
 	connection.vulkan.physicalDevice = context.GetDevice().GetPhysicalDevice();
 	connection.vulkan.queueIndex = context.GetQueueGraphic().GetIndex();
 	connection.vulkan.queueFamilyIndex = context.GetQueueGraphic().GetFamily();
-#endif
+	#endif
 	
 	#elif defined OS_W32
 	const deoglRTContext &context = pRenderThread->GetContext();
@@ -695,7 +698,7 @@ void deGraphicOpenGl::pLoadConfig(){
 	deoglLSConfiguration loadConfig( *this );
 	loadConfig.LoadConfig( pConfiguration );
 	
-	#ifdef OS_ANDROID
+	#ifdef WITH_OPENGLES
 	pConfiguration.SetLogLevel( deoglConfiguration::ellDebug );
 	#endif
 }
@@ -764,3 +767,40 @@ void deGraphicOpenGl::pCreateParameters() {
 	pParameters.AddParameter( new deoglPWireframeMode( *this ) );
 #endif
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+#ifndef MODULE_VERSION
+#include "module_version.h"
+#endif
+
+class deoglModuleInternal : public deInternalModule{
+public:
+	deoglModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("OpenGL");
+		SetDescription("Render using OpenGL. Requires OpenGL 3.2 or higher.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtGraphic);
+		SetDirectoryName("opengl");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+#ifdef BACKEND_OPENGL
+		SetModule(OpenGLCreateModule(this));
+		#elif defined BACKEND_VULKAN
+SetModule(VulkanCreateModule(this));
+#endif
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *deoglRegisterInternalModule(deModuleSystem *system){
+	return new deoglModuleInternal(system);
+}
+#endif

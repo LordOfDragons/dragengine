@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Clear Depth</name>
+	<stage>fragment</stage>
+	<source>cleardepth.frag.glsl</source>
+</shaderSource>

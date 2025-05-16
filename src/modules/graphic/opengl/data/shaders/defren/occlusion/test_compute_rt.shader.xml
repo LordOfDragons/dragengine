@@ -24,10 +24,5 @@
 	<parameter name='pMatrix2Stereo'/>
 	<parameter name='pCullFilter'/>
 	
-	<shaderStorageBlock name='Element' target='0'/>
-	<shaderStorageBlock name='VisibleElement' target='1'/>
-	<shaderStorageBlock name='Counters' target='2'/>
-	<shaderStorageBlock name='VisibleElementOut' target='3'/>
-	
-	<sourceCode unit='compute'>compute/defren/occlusion/test.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Occlusion Test</sourceCode>
 </shader>

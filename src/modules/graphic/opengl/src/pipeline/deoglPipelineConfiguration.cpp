@@ -153,11 +153,6 @@ const char *sources, const deoglShaderDefines &defines ){
 	SetShader( sm.GetProgramWith( sm.GetSourcesNamed( sources ), defines ) );
 }
 
-void deoglPipelineConfiguration::SetShader( deoglRenderThread &renderThread,
-const deoglShaderSources *sources, const deoglShaderDefines &defines ){
-	SetShader( renderThread.GetShader().GetShaderManager().GetProgramWith( sources, defines ) );
-}
-
 
 
 bool deoglPipelineConfiguration::GetColorMask( int component ) const{
