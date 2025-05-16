@@ -1,0 +1,14 @@
+detesting/data/content/model/box/box2.demodel
+detesting/data/content/model/box/box.demodel
+detesting/data/content/image/icon64.png
+extern/eossdk/eossdk-1.17.0.zip
+extern/eossdk/eossdk_bin_linux-1.17.0.tar.xz
+extern/fox/fox-1.7.67.tar.bz2
+extern/liburing/liburing-liburing-2.6.tar.bz2
+extern/modio/modio-sdk-2024_11.tar.xz
+extern/openxr/OpenXR-SDK-release-1.1.46.tar.xz
+extern/steamsdk/steamsdk160.tar.xz
+extern/mingw/mingw_stdthreads.tar.bz2
+extern/libapng/libpng-1.6.29.tar.bz2
+extern/denetwork/denetworkcpp-unix-x64-nightly.tar.bz2
+extern/deremotelauncher/deremotelauncher-unix-x64-nightly.tar.bz2
