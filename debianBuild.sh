@@ -43,8 +43,8 @@ writeIncludeBinaries() {
   echo "detesting/data/content/model/box/box2.demodel" >$FILE
   echo "detesting/data/content/model/box/box.demodel" >>$FILE
   echo "detesting/data/content/image/icon64.png" >>$FILE
-  echo "extern/eossdk/eossdk.zip" >>$FILE
-  echo "extern/eossdk/eossdk_bin_linux.tar.xz" >>$FILE
+  echo `dir -1 extern/eossdk/eossdk-*.zip` >>$FILE
+  echo `dir -1 extern/eossdk/eossdk_bin_linux-*.tar.xz` >>$FILE
   echo `dir -1 extern/fox/fox-*.tar.bz2` >>$FILE
   echo `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` >>$FILE
   echo `dir -1 extern/modio/modio-sdk-*.tar.xz` >>$FILE
