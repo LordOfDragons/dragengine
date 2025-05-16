@@ -2,8 +2,6 @@
 <shader>
 	<name>Gauss Separable Fixed</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texData' target='0'/>
 	<texture name='texDepth' target='1'/>
 	
@@ -21,11 +19,6 @@
 	<parameter name='pClamp'/>
 	<parameter name='pDepthDifferenceThreshold'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outData' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/generic/gauss_sep_fixed.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='fragment'>F Gauss Separable Fixed</sourceCode>
 </shader>

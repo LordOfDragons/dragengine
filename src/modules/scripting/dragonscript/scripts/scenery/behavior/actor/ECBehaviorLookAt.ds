@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -127,11 +129,23 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: use component with id instead of empty string -->
 	 *   <string name='component'>second</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -163,8 +177,9 @@ class ECBehaviorLookAt extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "lookAt")
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "lookAt")
 			return behavior
 		end
 	end
@@ -173,6 +188,109 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action/condition "lookAt.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var BehaviorElement lookAtElement = pInstance.getLookAtBehaviorElement()
+					if lookAtElement == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionElement(lookAtElement)
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getLookAtBehaviorElement(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "lookAt.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "lookAt", null)
+				if value != null
+					result &= pInstance.hasLookAtElement() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "lookAt.distance.less", null)
+				if value != null
+					result &= pInstance.getLookAtDistance() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "lookAt.distance.greater", null)
+				if value != null
+					result &= pInstance.getLookAtDistance() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "lookAt.player", null)
+				if value != null
+					result &= pInstance.isLookAtPlayer() == value.equals("true")
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(\
+					pInstance.getLookAtBehaviorElement(), parameters, prefix + "interact.",\
+					pInstance.getElement())
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorLookAt pECBehavior
 		var ECBehaviorColliderAI.Instance pColliderAI
 		var ECBehaviorCollider.Instance pCollider
@@ -195,6 +313,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		var DVector pLookAtHitPoint
 		
 		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -223,6 +342,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			pComponent = null
 			pLookAtElement = null
 			pListeners = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -278,6 +398,14 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			collider.addCollisionTest(pTest)
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
@@ -329,6 +457,9 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
+			end
 			
 			setRequiresThink(enabled)
 		end
@@ -466,6 +597,39 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			return pLookAtDirection
 		end
 		
+		/**
+		 * \brief Get player if looked-at.
+		 * \version 1.26
+		 * 
+		 * Returns look-at element if it is present, has ECBehaviorPlayerControllable and
+		 * is the active player actor.
+		 */
+		func BehaviorElement getLookAtPlayer()
+			var BehaviorElement element = getLookAtBehaviorElement()
+			if element == null
+				return null
+			end
+			
+			var ECBehaviorPlayerControllable.Instance behavior = \
+				ECBehaviorPlayerControllable.getInstanceIn(element)
+			if behavior == null or behavior.isNotPlayerControlled()
+				return null
+			end
+			
+			return element
+		end
+		
+		/**
+		 * \brief Check if player is looked at.
+		 * \version 1.26
+		 * 
+		 * Returns true if look-at element is present, has ECBehaviorPlayerControllable and
+		 * is the active player actor.
+		 */
+		func bool isLookAtPlayer()
+			return getLookAtPlayer() != null
+		end
+		
 		
 		
 		/** \brief Add listener. */
@@ -583,6 +747,9 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.lookAtChanged(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), element != null if "lookAt" else "noLookAt")
+			end
 		end
 	end
 	
@@ -597,6 +764,8 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	var ECPString pTestBone
 	var ECComposeCollisionFilter pCollisionFilter
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -638,20 +807,17 @@ class ECBehaviorLookAt extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pColliderAI = colliderAI
 		pCollider = collider
 		pComponent = component
 		pLocomotion = locomotion
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
-		pRange = ECPFloat.new(prefix + "range", 2, 0)
-		eclass.addProperty(pRange)
-		
-		pOrigin = ECPVector.new(prefix + "origin", Vector.new(0, 1.6, 0))
-		eclass.addProperty(pOrigin)
-		
-		pTestBone = ECPString.new(prefix + "bone", null)
-		eclass.addProperty(pTestBone)
+		eclass.addProperty(pRange = ECPFloat.new(prefix + "range", 2, 0))
+		eclass.addProperty(pOrigin = ECPVector.new(prefix + "origin", Vector.new(0, 1.6, 0)))
+		eclass.addProperty(pTestBone = ECPString.new(prefix + "bone", null))
 		
 		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
 		
@@ -672,10 +838,19 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		pComponent = null
 		pLocomotion = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Collider AI behavior or null. */
 	func ECBehaviorColliderAI getColliderAI()
@@ -715,6 +890,14 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	/** \brief Collision filter for AI collider. */
 	func ECComposeCollisionFilter getCollisionFilter()
 		return pCollisionFilter
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

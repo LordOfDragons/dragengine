@@ -39,6 +39,7 @@ class gdeOCParticleEmitter;
 class gdeOCForceField;
 class gdeOCSnapPoint;
 class gdeOCSpeaker;
+class gdeOCWorld;
 class gdeWPSTIMOCBillboard;
 class gdeWPSTIMOCCamera;
 class gdeWPSTIMOCComponent;
@@ -50,6 +51,7 @@ class gdeWPSTIMOCParticleEmitter;
 class gdeWPSTIMOCForceField;
 class gdeWPSTIMOCSnapPoint;
 class gdeWPSTIMOCSpeaker;
+class gdeWPSTIMOCWorld;
 
 
 /**
@@ -113,6 +115,9 @@ public:
 	
 	/** \brief Model with speaker or \em NULL. */
 	gdeWPSTIMOCSpeaker *GetChildWith( gdeOCSpeaker *speaker ) const;
+	
+	/** \brief Model with world or nullptr. */
+	gdeWPSTIMOCWorld *GetChildWith(gdeOCWorld *world) const;
 	
 	
 	

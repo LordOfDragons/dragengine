@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Skin Debug</name>
+	<stage>fragment</stage>
+	<source>debug.frag.glsl</source>
+	
+	<output name='outDiffuse' location='0'/>
+	<!--
+	<output name='outNormal' location='1'/>
+	<output name='outReflectivity' location='2'/>
+	<output name='outRoughness' location='3'/>
+	<output name='outAOSolidity' location='4'/>
+	<output name='outSubSurface' location='5'/>
+	<output name='outColor' location='6'/>
+	-->
+</shaderSource>

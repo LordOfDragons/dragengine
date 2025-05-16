@@ -500,7 +500,17 @@ deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader ){
 		paramBlock.SetParameterDataVec4( target, 0.0f, 0.0f, 1.0f, 0.0f );
 	}
 	
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutDoubleSided);
+	if(target != -1){
+		paramBlock.SetParameterDataBool(target, true);
+	}
+	
 	skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+	
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutVariationSeed);
+	if(target != -1){
+		paramBlock.SetParameterDataVec2(target, 0.0f, 0.0f);
+	}
 	
 	// per texture dynamic texture properties
 	//skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );

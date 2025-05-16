@@ -43,6 +43,7 @@ igdeNullInputModule::cModule::cModule( deModuleSystem *system ) : deInternalModu
 	SetAuthor( "Plüss Roland" );
 	SetVersion( "1.0" );
 	SetDirectoryName( "NullInput" );
+	SetDefaultLoggingName();
 }
 
 igdeNullInputModule::cModule::~cModule(){

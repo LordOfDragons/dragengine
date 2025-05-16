@@ -4,8 +4,5 @@
 	
 	<parameter name='pParams'/>
 	
-	<shaderStorageBlock name='ModelData' target='0'/>
-	<shaderStorageBlock name='TransformedData' target='1'/>
-	
-	<sourceCode unit='compute'>compute/defren/geometry/copy_vnt.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Copy VNT</sourceCode>
 </shader>

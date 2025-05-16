@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen GI Clear Trace Rays</name>
+	<stage>compute</stage>
+	<source>clearTraceRays.comp.glsl</source>
+</shaderSource>

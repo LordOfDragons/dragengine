@@ -2,15 +2,8 @@
 <shader>
 	<name>DefRen Transparency Get Count</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texValues' target='0'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outDummy' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/transparency/get_count.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Transparency Get Count</sourceCode>
 </shader>

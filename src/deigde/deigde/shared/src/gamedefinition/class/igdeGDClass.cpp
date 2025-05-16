@@ -41,6 +41,7 @@
 #include "speaker/igdeGDCSpeaker.h"
 #include "navspace/igdeGDCNavigationSpace.h"
 #include "navblocker/igdeGDCNavigationBlocker.h"
+#include "world/igdeGDCWorld.h"
 #include "../igdeTagManager.h"
 #include "../property/igdeGDProperty.h"
 
@@ -128,6 +129,7 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		pListSpeakers.SetToDeepCopyFrom( gdclass.pListSpeakers );
 		pListNavigationSpaces.SetToDeepCopyFrom( gdclass.pListNavigationSpaces );
 		pListNavigationBlockers.SetToDeepCopyFrom( gdclass.pListNavigationBlockers );
+		pListWorlds.SetToDeepCopyFrom(gdclass.pListWorlds);
 		
 		pHideTags = gdclass.pHideTags;
 		pPartialHideTags = gdclass.pPartialHideTags;
@@ -878,6 +880,64 @@ const decIntList igdeGDClass::GetNavBlockerIndicesWithLinkedProperty( const char
 
 
 
+// Worlds
+///////////
+
+void igdeGDClass::AddWorld(igdeGDCWorld *world){
+	pListWorlds.Add(world);
+}
+
+void igdeGDClass::RemoveWorld(igdeGDCWorld *world){
+	pListWorlds.Remove(world);
+}
+
+void igdeGDClass::RemoveAllWorlds(){
+	pListWorlds.RemoveAll();
+}
+
+bool igdeGDClass::HasWorldLinkedProperty(const char *name) const{
+	const int count = pListWorlds.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		if(pListWorlds.GetAt(i)->HasPropertyWithName(name)){
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+const igdeGDCWorldList igdeGDClass::GetWorldsWithLinkedProperty(const char *name) const{
+	const int count = pListWorlds.GetCount();
+	igdeGDCWorldList list;
+	int i;
+	
+	for(i=0; i<count; i++){
+		if( pListWorlds.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(pListWorlds.GetAt(i));
+		}
+	}
+	
+	return list;
+}
+
+const decIntList igdeGDClass::GetWorldIndicesWithLinkedProperty(const char *name) const{
+	const int count = pListWorlds.GetCount();
+	decIntList list;
+	int i;
+	
+	for(i=0; i<count; i++){
+		if(pListWorlds.GetAt(i)->HasPropertyWithName(name)){
+			list.Add(i);
+		}
+	}
+	
+	return list;
+}
+
+
+
 
 // SnapPoints
 ////////////
@@ -1012,6 +1072,7 @@ void igdeGDClass::pCleanUp(){
 	RemoveAllLights();
 	RemoveAllBillboards();
 	RemoveAllComponents();
+	RemoveAllWorlds();
 	if( pCamera ){
 		delete pCamera;
 	}

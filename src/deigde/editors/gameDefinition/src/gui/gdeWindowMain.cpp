@@ -101,6 +101,11 @@
 #include "menuactions/objectClass/speaker/gdeMAOCSpeakerCut.h"
 #include "menuactions/objectClass/speaker/gdeMAOCSpeakerPaste.h"
 #include "menuactions/objectClass/speaker/gdeMAOCSpeakerRemove.h"
+#include "menuactions/objectClass/world/gdeMAOCWorldAdd.h"
+#include "menuactions/objectClass/world/gdeMAOCWorldCopy.h"
+#include "menuactions/objectClass/world/gdeMAOCWorldCut.h"
+#include "menuactions/objectClass/world/gdeMAOCWorldPaste.h"
+#include "menuactions/objectClass/world/gdeMAOCWorldRemove.h"
 #include "menuactions/particleEmitter/gdeMAParticleEmitterAdd.h"
 #include "menuactions/particleEmitter/gdeMAParticleEmitterRemove.h"
 #include "menuactions/skin/gdeMASkinAdd.h"
@@ -809,6 +814,12 @@ void gdeWindowMain::pCreateActions(){
 	pActionOCSpeakerCut.TakeOver( new gdeMAOCSpeakerCut( *this ) );
 	pActionOCSpeakerPaste.TakeOver( new gdeMAOCSpeakerPaste( *this ) );
 	
+	pActionOCWorldAdd.TakeOver(new gdeMAOCWorldAdd(*this));
+	pActionOCWorldRemove.TakeOver(new gdeMAOCWorldRemove(*this));
+	pActionOCWorldCopy.TakeOver(new gdeMAOCWorldCopy(*this));
+	pActionOCWorldCut.TakeOver(new gdeMAOCWorldCut(*this));
+	pActionOCWorldPaste.TakeOver(new gdeMAOCWorldPaste(*this));
+	
 	pActionParticleEmitterAdd.TakeOver( new gdeMAParticleEmitterAdd( *this ) );
 	pActionParticleEmitterRemove.TakeOver( new gdeMAParticleEmitterRemove( *this ) );
 	
@@ -914,6 +925,12 @@ void gdeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionOCSpeakerCopy );
 	AddUpdateAction( pActionOCSpeakerCut );
 	AddUpdateAction( pActionOCSpeakerPaste );
+	
+	AddUpdateAction(pActionOCWorldAdd);
+	AddUpdateAction(pActionOCWorldRemove);
+	AddUpdateAction(pActionOCWorldCopy);
+	AddUpdateAction(pActionOCWorldCut);
+	AddUpdateAction(pActionOCWorldPaste);
 	
 	AddUpdateAction( pActionParticleEmitterAdd );
 	AddUpdateAction( pActionParticleEmitterRemove );
@@ -1021,6 +1038,7 @@ void gdeWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
 	helper.MenuCommand( menu, pActionOCForceFieldAdd );
 	helper.MenuCommand( menu, pActionOCSnapPointAdd );
 	helper.MenuCommand( menu, pActionOCSpeakerAdd );
+	helper.MenuCommand(menu, pActionOCWorldAdd);
 	
 	helper.MenuCommand( menu, pActionParticleEmitterAdd );
 	helper.MenuCommand( menu, pActionSkinAdd );

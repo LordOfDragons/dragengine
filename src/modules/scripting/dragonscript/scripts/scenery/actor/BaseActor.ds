@@ -89,6 +89,9 @@ pin Dragengine.Utils
  * playerTakesControl() method.
  */
 class BaseActor extends BehaviorElement
+	var ECBehaviorBehaviorTree.Instance pBehaviorTree
+	var ECBehaviorStateMachine.Instance pStateMachine
+	var ECBehaviorInteractionElement.Instance pInteractionElement
 	var ECBehaviorComponent.Instance pComponent
 	var ECBehaviorCollider.Instance pCollider
 	var ECBehaviorColliderAI.Instance pColliderAI
@@ -115,6 +118,9 @@ class BaseActor extends BehaviorElement
 	
 	/** \brief Create element. */
 	func new(BaseActorClass eclass) super(eclass)
+		pBehaviorTree = eclass.getBehaviorTree().instance(this)
+		pStateMachine = eclass.getStateMachine().instance(this)
+		pInteractionElement = eclass.getInteractionElement().instance(this)
 		pComponent = eclass.getComponent().instance(this)
 		pCollider = eclass.getCollider().instance(this)
 		pColliderAI = eclass.getColliderAI().instance(this)
@@ -208,6 +214,30 @@ class BaseActor extends BehaviorElement
 	end
 	
 	
+	
+	/**
+	 * \brief Behavior tree.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree.Instance getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief State machine.
+	 * \version 1.26
+	 */
+	func ECBehaviorStateMachine.Instance getStateMachine()
+		return pStateMachine
+	end
+	
+	/**
+	 * \brief Interact element.
+	 * \version 1.26
+	 */
+	func ECBehaviorInteractionElement.Instance getInteractionElement()
+		return pInteractionElement
+	end
 	
 	/** \brief Component behavio instance. */
 	func ECBehaviorComponent.Instance getComponent()

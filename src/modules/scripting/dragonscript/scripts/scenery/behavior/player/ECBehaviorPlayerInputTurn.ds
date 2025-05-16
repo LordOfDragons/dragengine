@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -50,11 +52,23 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorPlayerInputTurn'/>
+	 * <behavior type='ECBehaviorPlayerInputTurn'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -70,7 +84,10 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 			end
 			var ECBehaviorPlayerInputTurn behavior = ECBehaviorPlayerInputTurn.new(\
 				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInputTurn")
 			return behavior
 		end
@@ -78,159 +95,349 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorPlayerInputTurn pECBehavior
-		private var ECBehaviorLocomotion.Instance pLocomotion
+		/**
+		 * \brief Behavior tree action "playerInputTurn.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				if parameters.has("reset")
+					pInstance.reset()
+				end
+				
+				value = parameters.getAt("left", null)
+				if value != null
+					pInstance.setTurnLeft(value.equals("true"))
+				end
+				
+				if parameters.has("left.toggle")
+					pInstance.toggleTurnLeft()
+				end
+				
+				value = parameters.getAt("right", null)
+				if value != null
+					pInstance.setTurnRight(value.equals("true"))
+				end
+				
+				if parameters.has("right.toggle")
+					pInstance.toggleTurnRight()
+				end
+				
+				value = parameters.getAt("speed", null)
+				if value != null
+					pInstance.setSpeedTurnHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog", null)
+				if value != null
+					pInstance.addAnalogTurnHorizontal(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("analog.sticky", null)
+				if value != null
+					pInstance.setAnalogTurnHorizontalSticky(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("canTurn", null)
+				if value != null
+					pInstance.setCanTurn(value.equals("true"))
+				end
+				
+				if parameters.has("canTurn.toggle")
+					pInstance.toggleCanTurn()
+				end
+				
+				return BTResult.success
+			end
+			
+			private func float parseAnalogValue(Object context, String value)
+				if value.equals("eventParam")
+					return (context cast SMContext).getEventParameter() cast float
+					
+				elif value.equals("-eventParam")
+					return -((context cast SMContext).getEventParameter() cast float)
+					
+				else
+					return (value cast String).toFloat()
+				end
+			end
+		end
 		
-		private var bool pTurnLeft
-		private var bool pTurnRight
-		private var float pSpeedTurnHorizontal
-		private var float pAnalogTurnHorizontal
-		private var float pAnalogTurnHorizontalSticky
-		private var bool pCanTurn
+		/**
+		 * \brief Behavior tree action "playerInputLook.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("locomotion")
+					pInstance.updateLocomotion((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "playerInputTurn.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "left", null)
+				if value != null
+					result &= pInstance.getTurnLeft() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "right", null)
+				if value != null
+					result &= pInstance.getTurnRight() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "speed.less", null)
+				if value != null
+					result &= pInstance.getSpeedTurnHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.greater", null)
+				if value != null
+					result &= pInstance.getSpeedTurnHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.less", null)
+				if value != null
+					result &= pInstance.getAnalogTurnHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.greater", null)
+				if value != null
+					result &= pInstance.getAnalogTurnHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.sticky.less", null)
+				if value != null
+					result &= pInstance.getAnalogTurnHorizontalSticky() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.sticky.greater", null)
+				if value != null
+					result &= pInstance.getAnalogTurnHorizontalSticky() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "canTurn", null)
+				if value != null
+					result &= pInstance.getCanTurn() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorPlayerInputTurn pECBehavior
+		var ECBehaviorLocomotion.Instance pLocomotion
+		
+		var bool pTurnLeft
+		var bool pTurnRight
+		var float pSpeedTurnHorizontal
+		var float pAnalogTurnHorizontal
+		var float pAnalogTurnHorizontalSticky
+		var bool pCanTurn
 		
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorPlayerInputTurn ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorPlayerInputTurn ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
-			this.pSpeedTurnHorizontal = 45
-			this.pCanTurn = true
+			pSpeedTurnHorizontal = 45
+			pCanTurn = true
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
-			this.pLocomotion = null
+		func void dispose()
+			pLocomotion = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pSpeedTurnHorizontal = this.pECBehavior.getSpeedTurnHorizontal().getValue( stub )
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			
-			if this.pECBehavior.getLocomotion() != null
-				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
+			pSpeedTurnHorizontal = pECBehavior.getSpeedTurnHorizontal().getValue(stub)
+			
+			if pECBehavior.getLocomotion() != null
+				pLocomotion = pECBehavior.getLocomotion().instance(element)
+			end
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorPlayerInputTurn getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorPlayerInputTurn getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Locomotion behavior or null if absent. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
-			return this.pLocomotion
+		func ECBehaviorLocomotion.Instance getLocomotion()
+			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Turn left key is pressed. */
-		public func bool getTurnLeft()
-			return this.pTurnLeft
+		func bool getTurnLeft()
+			return pTurnLeft
 		end
 		
 		/** \brief Set if turn left key is pressed. */
-		public func void setTurnLeft( bool pressed )
-			this.pTurnLeft = pressed
+		func void setTurnLeft(bool pressed)
+			pTurnLeft = pressed
 		end
 		
 		/** \brief Toggle turn left key pressed. */
-		public func void toggleTurnLeft()
-			this.pTurnLeft = not this.pTurnLeft
+		func void toggleTurnLeft()
+			pTurnLeft = not pTurnLeft
 		end
 		
 		/** \brief Turn right key is pressed. */
-		public func bool getTurnRight()
-			return this.pTurnRight
+		func bool getTurnRight()
+			return pTurnRight
 		end
 		
 		/** \brief Set if turn right key is pressed. */
-		public func void setTurnRight( bool pressed )
-			this.pTurnRight = pressed
+		func void setTurnRight(bool pressed)
+			pTurnRight = pressed
 		end
 		
 		/** \brief Toggle turn right key pressed. */
-		public func void toggleTurnRight()
-			this.pTurnRight = not this.pTurnRight
+		func void toggleTurnRight()
+			pTurnRight = not pTurnRight
 		end
 		
 		/** \brief Turn left right speed in degrees per second. */
-		public func float getSpeedTurnHorizontal()
-			return this.pSpeedTurnHorizontal
+		func float getSpeedTurnHorizontal()
+			return pSpeedTurnHorizontal
 		end
 		
 		/** \brief Set turn left right speed in degrees per second. */
-		public func void setSpeedTurnHorizontal( float speed )
-			this.pSpeedTurnHorizontal = DEMath.max( speed, 0.0 )
+		func void setSpeedTurnHorizontal(float speed)
+			pSpeedTurnHorizontal = DEMath.max(speed, 0.0)
 		end
 		
 		/** \brief Analog turn left right. */
-		public func float getAnalogTurnHorizontal()
-			return this.pAnalogTurnHorizontal
+		func float getAnalogTurnHorizontal()
+			return pAnalogTurnHorizontal
 		end
 		
 		/** \brief Set analog turn left right. */
-		public func void setAnalogTurnHorizontal( float value )
-			this.pAnalogTurnHorizontal = value
+		func void setAnalogTurnHorizontal(float value)
+			pAnalogTurnHorizontal = value
+		end
+		
+		/**
+		 * \brief Set analog turn left right.
+		 * \version 1.26
+		 */
+		func void addAnalogTurnHorizontal(float value)
+			pAnalogTurnHorizontal += value
 		end
 		
 		/** \brief Sticky analog turn left right. */
-		public func float getAnalogTurnHorizontalSticky()
-			return this.pAnalogTurnHorizontalSticky
+		func float getAnalogTurnHorizontalSticky()
+			return pAnalogTurnHorizontalSticky
 		end
 		
 		/** \brief Set sticky analog turn left right. */
-		public func void setAnalogTurnHorizontalSticky( float value )
-			this.pAnalogTurnHorizontalSticky = value
+		func void setAnalogTurnHorizontalSticky(float value)
+			pAnalogTurnHorizontalSticky = value
 		end
 		
 		/** \brief player can turn. */
-		public func bool getCanTurn()
-			return this.pCanTurn
+		func bool getCanTurn()
+			return pCanTurn
 		end
 		
 		/** \brief Set if player can turn. */
-		public func void setCanTurn( bool canTurn )
-			this.pCanTurn = canTurn
+		func void setCanTurn(bool canTurn)
+			pCanTurn = canTurn
 		end
 		
 		/** \brief Toggle can turn. */
-		public func void toggleCanTurn()
-			this.pCanTurn = not this.pCanTurn
+		func void toggleCanTurn()
+			pCanTurn = not pCanTurn
 		end
 		
 		/** \brief Calculate turn left right value and reset analog input. */
-		public func float calculateTurnHorizontal()
+		func float calculateTurnHorizontal()
 			var float value = 0
 			
-			if this.pCanTurn
-				if this.pTurnLeft
+			if pCanTurn
+				if pTurnLeft
 					value += 1
 				end
-				if this.pTurnRight
+				if pTurnRight
 					value -= 1
 				end
 				
-				value += this.pAnalogTurnHorizontalSticky + this.pAnalogTurnHorizontal
-				this.pAnalogTurnHorizontal = 0
+				value += pAnalogTurnHorizontalSticky + pAnalogTurnHorizontal
+				pAnalogTurnHorizontal = 0
 			end
 			
-			return value * this.pSpeedTurnHorizontal
+			return value * pSpeedTurnHorizontal
 		end
 		
 		
 		
 		/** \brief Reset input. */
-		public func void reset()
-			this.pTurnLeft = false
-			this.pTurnRight = false
-			this.pAnalogTurnHorizontal = 0
-			this.pAnalogTurnHorizontalSticky = 0
+		func void reset()
+			pTurnLeft = false
+			pTurnRight = false
+			pAnalogTurnHorizontal = 0
+			pAnalogTurnHorizontalSticky = 0
 		end
 		
 		
@@ -244,92 +451,113 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 		 * \note This method conflicts with ECBehaviorPlayerInputMove.updateLocomotion() if
 		 *       ECBehaviorPlayerInputMove is set to modify turning.
 		 */
-		public func void updateLocomotion( float elapsed )
-			if this.pLocomotion == null
+		func void updateLocomotion(float elapsed)
+			if pLocomotion == null
 				return
 			end
 			
-			var Locomotion locomotion = this.pLocomotion.getLocomotion()
-			locomotion.setTurnHorizontal( locomotion.getTurnHorizontal() + this.calculateTurnHorizontal() * elapsed )
+			var Locomotion locomotion = pLocomotion.getLocomotion()
+			locomotion.setTurnHorizontal(locomotion.getTurnHorizontal() + calculateTurnHorizontal() * elapsed)
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
-				this.pCanTurn = flags.getAt( 0 )
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				pCanTurn = flags.getAt(0)
 				
-				this.pSpeedTurnHorizontal = reader.readFloat()
+				pSpeedTurnHorizontal = reader.readFloat()
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 1 )
-			flags.setAt( 0, this.pCanTurn )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pCanTurn)
+			flags.writeToFile(writer)
 			
-			writer.writeFloat( this.pSpeedTurnHorizontal )
+			writer.writeFloat(pSpeedTurnHorizontal)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECPFloat pSpeedTurnHorizontal
+	var ECBehaviorLocomotion pLocomotion
+	var ECPFloat pSpeedTurnHorizontal
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion ) \
-	this( eclass, locomotion, "playerInputTurn." )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion) \
+	this(eclass, locomotion, "playerInputTurn.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
-	String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pLocomotion = locomotion
+		pPrefix = prefix
+		pLocomotion = locomotion
+		pBTSMs = ECComposeBTSM.new()
 		
-		this.pSpeedTurnHorizontal = ECPFloat.new( prefix + "speedTurnHorizontal", 45, 0 )
-		eclass.addProperty( this.pSpeedTurnHorizontal )
+		eclass.addProperty(pSpeedTurnHorizontal = ECPFloat.new(prefix + "speedTurnHorizontal", 45, 0))
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pLocomotion = null
+	func void dispose()
+		pLocomotion = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Locomotion behavior or null. */
-	public func ECBehaviorLocomotion getLocomotion()
-		return this.pLocomotion
+	func ECBehaviorLocomotion getLocomotion()
+		return pLocomotion
 	end
 	
 	/** \brief Turn left right speed in degrees per second. */
-	public func ECPFloat getSpeedTurnHorizontal()
-		return this.pSpeedTurnHorizontal
+	func ECPFloat getSpeedTurnHorizontal()
+		return pSpeedTurnHorizontal
 	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -340,10 +568,10 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorPlayerInputTurn.
 	 */
-	static public func ECBehaviorPlayerInputTurn getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorPlayerInputTurn each
+	static func ECBehaviorPlayerInputTurn getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorPlayerInputTurn each
 			return true
-		end ) cast ECBehaviorPlayerInputTurn
+		end) cast ECBehaviorPlayerInputTurn
 	end
 	
 	/**
@@ -352,16 +580,16 @@ class ECBehaviorPlayerInputTurn extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorPlayerInputTurn.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

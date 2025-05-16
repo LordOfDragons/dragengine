@@ -6,10 +6,6 @@
 	<texture name='texGIProbeOffset' target='1'/>
 	<texture name='texLight' target='2'/>
 	
-	<uniformBlock name='GIParameters' target='1'/>
-	<uniformBlock name='RayData' target='2'/>
-	<uniformBlock name='GIRayDirections' target='4'/>
-	
 	<parameter name='pMatrixNormal'/> <!-- 0 -->
 	<parameter name='pMatrixMV'/> <!-- 1 -->
 	<parameter name='pMatrixMVP'/> <!-- 2 -->
@@ -22,10 +18,6 @@
 	<parameter name='pUpdateDataRayOffset'/> <!-- 9 -->
 	<parameter name='pRayDataValid'/> <!-- 10 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/gi/debugProbeRays.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/gi/debugProbeRays.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen GI Debug Probe Rays</sourceCode>
+	<sourceCode unit='fragment'>F DefRen GI Debug Probe Rays</sourceCode>
 </shader>

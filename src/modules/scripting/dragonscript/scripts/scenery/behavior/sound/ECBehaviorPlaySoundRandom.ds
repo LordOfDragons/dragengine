@@ -80,26 +80,30 @@ class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "playSound", id)
+			behavior.getTrigger().setSynchronize(eclass,\
+				parameters.getAt("trigger.synchronize", null) cast String)
+			
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "playSound", id)
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends ECBehaviorPlaySound.Instance
-		private var ECBehaviorPlaySoundRandom pECBehaviorRandom
+		var ECBehaviorPlaySoundRandom pECBehaviorRandom
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorPlaySoundRandom ecbehavior, BehaviorElement element) \
+		func new(ECBehaviorPlaySoundRandom ecbehavior, BehaviorElement element) \
 		super(ecbehavior, element)
 			pECBehaviorRandom = ecbehavior
 		end
 		
 		
 		/** \brief Random sound or \em null if the list is empty. */
-		public func Sound randomSound()
+		func Sound randomSound()
 			return pECBehaviorRandom.getSounds().getRandom()
 		end
 		
@@ -118,45 +122,45 @@ class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 	
 	
 	
-	private var ECPSoundList pSounds
+	var ECPSoundList pSounds
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider) this(eclass, component, collider, null cast TSTriggerTable, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, String id) this(eclass, component, collider, null cast TSTriggerTable, id)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, String id, String prefix) \
 	this(eclass, component, collider, null cast TSTriggerTable, id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, TSTriggerTable triggerTable) \
 	this(eclass, component, collider, triggerTable, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id) \
 	this(eclass, component, collider, triggerTable, id,\
 	id.empty() if "playSound" else "playSound(" + id + ")")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id, String subId) \
 	this(eclass, component, collider, triggerTable, id, subId, subId + ".")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id, String subId, String prefix) \
 	super(eclass, component, collider, triggerTable, id, subId, prefix)
 		pSounds = ECPSoundList.new(prefix + "sounds")
@@ -166,14 +170,14 @@ class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 	
 	
 	/** \brief Speaker sounds. */
-	public func ECPSoundList getSounds()
+	func ECPSoundList getSounds()
 		return pSounds
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

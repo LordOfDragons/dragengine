@@ -11,10 +11,6 @@
 	<parameter name='pStepFactor'/>
 	<parameter name='pLayer'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outConeRatio' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/generate/conemap.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/generate/conemap.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Generate ConeMap</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Generate ConeMap</sourceCode>
 </shader>

@@ -30,6 +30,8 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -58,11 +60,23 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
 	 *                  string to not synchronize. default is empty string. -->
 	 *   <string name='trigger.synchronize'>other</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -83,8 +97,9 @@ class ECBehaviorShowElement extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "showElement")
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "showElement")
 			return behavior
 		end
 		
@@ -101,8 +116,65 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "showElement.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("shown", null)
+				if value != null
+					pInstance.setShown(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "showElement.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt(prefix + "shown", null)
+				if value != null and pInstance.getShown() != value.equals("true")
+					return false
+				end
+				
+				return true
+			end
+		end
+		
 		/** \brief Change shown listener. */
-		class ShowElementListener extends ECBehaviorTriggered.DefaultListener
+		private class ShowElementListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -123,6 +195,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		var ECBehaviorShowElement pECBehavior
 		var ECBehaviorTriggered.Instance pTrigger
 		var bool pShown
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -137,6 +210,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		/** \brief Dispose of composeable instance. */
 		func void dispose()
 			pTrigger = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -144,12 +218,20 @@ class ECBehaviorShowElement extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
-			if pECBehavior.getTriggerTable() == null
-				return
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getTriggerTable() != null
+				pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(element)
+				pTrigger.addListener(ShowElementListener.new(this))
 			end
 			
-			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(getElement())
-			pTrigger.addListener(ShowElementListener.new(this))
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = "showElement."
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
@@ -182,6 +264,10 @@ class ECBehaviorShowElement extends DefaultECBehavior
 			var BehaviorElement element = getElement()
 			element.setVisible(shown)
 			element.setTouchable(shown)
+			
+			if pBTSMs != null
+				pBTSMs.runEvent("showElement.", shown if "shown" else "hidden")
+			end
 		end
 		
 		
@@ -208,6 +294,7 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	
 	var ECBehaviorTriggered pTriggered
 	var TSTriggerTable pTriggerTable
+	var ECComposeBTSM pBTSMs
 	
 	
 	
@@ -221,10 +308,17 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String prefix) super(eclass)
 		pTriggerTable = triggerTable
+		pBTSMs = ECComposeBTSM.new()
 		
 		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, "showElement", prefix + "trigger")
 		
 		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pBTSMs = null
+		super.dispose()
 	end
 	
 	
@@ -242,6 +336,14 @@ class ECBehaviorShowElement extends DefaultECBehavior
 	/** \brief Set trigger table or \em null if not used. */
 	func void setTriggerTable(TSTriggerTable triggerTable)
 		pTriggerTable = triggerTable
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

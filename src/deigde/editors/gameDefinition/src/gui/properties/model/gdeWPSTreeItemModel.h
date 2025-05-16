@@ -70,6 +70,7 @@ public:
 		etObjectClassForceField,
 		etObjectClassSnapPoint,
 		etObjectClassSpeaker,
+		etObjectClassWorld,
 		etParticleEmitters,
 		etParticleEmitter,
 		etSkins,

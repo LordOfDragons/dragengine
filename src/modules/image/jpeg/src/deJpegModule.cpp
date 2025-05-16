@@ -356,6 +356,7 @@ public:
 		SetDefaultExtension(".jpg");
 		SetNoCompress(true);
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

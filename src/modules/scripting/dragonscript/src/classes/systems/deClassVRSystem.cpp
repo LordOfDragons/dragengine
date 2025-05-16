@@ -96,8 +96,15 @@ dsFunction( init.clsVRSystem, "startRuntime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 }
 void deClassVRSystem::nfStartRuntime::RunFunction( dsRunTime*, dsValue* ){
-	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
-	ds.GetGameEngine()->GetVRSystem()->StartRuntime();
+	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
+	
+	if(vrplaceholder){
+		vrplaceholder->SetEnabled(false);
+		
+	}else{
+		ds.GetGameEngine()->GetVRSystem()->StartRuntime();
+	}
 }
 
 // public static func void stopRuntime()
@@ -106,8 +113,15 @@ dsFunction( init.clsVRSystem, "stopRuntime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 }
 void deClassVRSystem::nfStopRuntime::RunFunction( dsRunTime*, dsValue* ){
-	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
-	ds.GetGameEngine()->GetVRSystem()->StopRuntime();
+	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
+	
+	if(vrplaceholder){
+		vrplaceholder->SetEnabled(true);
+		
+	}else{
+		ds.GetGameEngine()->GetVRSystem()->StopRuntime();
+	}
 }
 
 // public static func bool isRuntimeRunning()
@@ -116,8 +130,15 @@ dsFunction( init.clsVRSystem, "isRuntimeRunning", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
 }
 void deClassVRSystem::nfIsRuntimeRunning::RunFunction( dsRunTime *rt, dsValue* ){
-	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
-	rt->PushBool( ds.GetGameEngine()->GetVRSystem()->GetIsRunning() );
+	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
+	
+	if(vrplaceholder && vrplaceholder->GetEnabled()){
+		rt->PushBool(false);
+		
+	}else{
+		rt->PushBool(ds.GetGameEngine()->GetVRSystem()->IsRuntimeRunning());
+	}
 }
 
 // public static func Camera getCamera()
@@ -126,8 +147,15 @@ dsFunction( init.clsVRSystem, "getCamera", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCamera ){
 }
 void deClassVRSystem::nfGetCamera::RunFunction( dsRunTime *rt, dsValue* ){
-	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
-	ds.GetClassCamera()->PushCamera( rt, ds.GetGameEngine()->GetVRSystem()->GetCamera() );
+	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
+	
+	if(vrplaceholder){
+		ds.GetClassCamera()->PushCamera(rt, vrplaceholder->GetCameCamera());
+		
+	}else{
+		ds.GetClassCamera()->PushCamera(rt, ds.GetGameEngine()->GetVRSystem()->GetCamera());
+	}
 }
 
 // public static func void setCamera( Camera camera )
@@ -137,9 +165,17 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 	p_AddParameter( init.clsCamera ); // camera
 }
 void deClassVRSystem::nfSetCamera::RunFunction( dsRunTime *rt, dsValue* ){
-	const deScriptingDragonScript &ds = ( ( deClassVRSystem* )GetOwnerClass() )->GetDS();
-	ds.GetGameEngine()->GetVRSystem()->SetCamera(
-		ds.GetClassCamera()->GetCamera( rt->GetValue( 0 )->GetRealObject() ) );
+	deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
+	
+	deCamera * const camera = ds.GetClassCamera()->GetCamera(rt->GetValue(0)->GetRealObject());
+	
+	if(vrplaceholder){
+		vrplaceholder->SetGameCamera(camera);
+		
+	}else{
+		ds.GetGameEngine()->GetVRSystem()->SetCamera(camera);
+	}
 }
 
 // public static func bool supportsPassthrough()
@@ -464,7 +500,7 @@ void deClassVRSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue* ){
 
 
 // Class deClassVRSystem
-/////////////////////////////
+//////////////////////////
 
 // Constructor, Destructor
 ////////////////////////////

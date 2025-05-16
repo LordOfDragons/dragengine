@@ -132,6 +132,7 @@ private:
 	DEF_NATFUNC( nfGetPosition );
 	DEF_NATFUNC( nfTransformNormal );
 	DEF_NATFUNC( nfGetEulerAngles );
+	DEF_NATFUNC(nfGetScaling);
 	DEF_NATFUNC( nfGetInverse );
 	DEF_NATFUNC( nfGetRotation );
 	DEF_NATFUNC( nfNormalize );

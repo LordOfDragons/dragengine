@@ -114,6 +114,29 @@ void deClassLocomotion::nfSetCanTurn::RunFunction( dsRunTime *rt, dsValue *mysel
 	locomotion.SetCanTurn( rt->GetValue( 0 )->GetBool() );
 }
 
+// public func bool getAlwaysLimitLeftRight()
+deClassLocomotion::nfGetAlwaysLimitLeftRight::nfGetAlwaysLimitLeftRight(const sInitData &init) :
+dsFunction(init.clsLoco, "getAlwaysLimitLeftRight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+
+void deClassLocomotion::nfGetAlwaysLimitLeftRight::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsLocomotion &locomotion = *(((const sLocoNatDat*)p_GetNativeData(myself))->locomotion);
+	
+	rt->PushBool(locomotion.GetAlwaysLimitLeftRight());
+}
+
+// public func void setAlwaysLimitLeftRight(bool alwaysLimitLeftRight)
+deClassLocomotion::nfSetAlwaysLimitLeftRight::nfSetAlwaysLimitLeftRight(const sInitData &init) :
+dsFunction(init.clsLoco, "setAlwaysLimitLeftRight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsBool); // alwaysLimitLeftRight
+}
+
+void deClassLocomotion::nfSetAlwaysLimitLeftRight::RunFunction(dsRunTime *rt, dsValue *myself){
+	dedsLocomotion &locomotion = *(((const sLocoNatDat*)p_GetNativeData(myself))->locomotion);
+	
+	locomotion.SetAlwaysLimitLeftRight(rt->GetValue(0)->GetBool());
+}
+
 
 
 // public func float getLimitLookUp()
@@ -2087,6 +2110,8 @@ void deClassLocomotion::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetCanTurn( init ) );
 	AddFunction( new nfSetCanTurn( init ) );
+	AddFunction(new nfGetAlwaysLimitLeftRight(init));
+	AddFunction(new nfSetAlwaysLimitLeftRight(init));
 	
 	AddFunction( new nfGetLimitLookUp( init ) );
 	AddFunction( new nfSetLimitLookUp( init ) );

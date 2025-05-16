@@ -4,10 +4,5 @@
 	
 	<parameter name='pLodLayer'/>
 	
-	<shaderStorageBlock name='Element' target='0'/>
-	<shaderStorageBlock name='VisibleElement' target='1'/>
-	<shaderStorageBlock name='Counters' target='2'/>
-	<shaderStorageBlock name='ElementCullResult' target='3'/>
-	
-	<sourceCode unit='compute'>compute/defren/plan/update_cull_result.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen Plan Update Cull Result</sourceCode>
 </shader>

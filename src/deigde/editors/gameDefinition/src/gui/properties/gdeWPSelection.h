@@ -67,6 +67,7 @@ private:
 	igdeWidgetReference pPanelOCForceField;
 	igdeWidgetReference pPanelOCSnapPoint;
 	igdeWidgetReference pPanelOCSpeaker;
+	igdeWidgetReference pPanelOCWorld;
 	igdeWidgetReference pPanelParticleEmitter;
 	igdeWidgetReference pPanelSkin;
 	igdeWidgetReference pPanelSky;

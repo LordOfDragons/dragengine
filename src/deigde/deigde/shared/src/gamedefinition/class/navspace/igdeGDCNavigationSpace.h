@@ -76,7 +76,7 @@ public:
 	igdeGDCNavigationSpace();
 	
 	/** \brief Create copy of a game definition class navigation space. */
-	igdeGDCNavigationSpace( const igdeGDCNavigationSpace &speaker );
+	igdeGDCNavigationSpace( const igdeGDCNavigationSpace &space );
 	
 protected:
 	/** \brief Clean up class navigation space. */

@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -86,6 +88,7 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
+	 * <behavior type='ECBehaviorPlayerInputMove'>
 	 *   <!-- optional: set locomotion type. default is 'natural'. allowed values are these:
 	 *                  natural: default locomotion working best for actors moving in a
 	 *                           natural way. The actor moves into the direction it is
@@ -99,11 +102,23 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 *                           move into the direction their body is oriented while allowing
 	 *                           to freely look around. -->
 	 *   <string name='locomotionType'>natural</string>
-	 * <behavior type='ECBehaviorPlayerInputMove'/>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -128,14 +143,456 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				end
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "playerInputMove")
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "playerInputMove")
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "playerInputMove.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("reset", null)
+				if value != null
+					if value.equals("analog")
+						pInstance.resetAnalog()
+						
+					else
+						pInstance.reset()
+					end
+				end
+				
+				value = parameters.getAt("locomotion.type", null)
+				if value != null
+					pInstance.setLocomotionType(LocomotionType.named(value cast String))
+				end
+				
+				value = parameters.getAt("forward", null)
+				if value != null
+					pInstance.setMoveForward(value.equals("true"))
+				end
+				
+				if parameters.has("forward.toggle")
+					pInstance.toggleMoveForward()
+				end
+				
+				value = parameters.getAt("backward", null)
+				if value != null
+					pInstance.setMoveBackward(value.equals("true"))
+				end
+				
+				if parameters.has("backward.toggle")
+					pInstance.toggleMoveBackward()
+				end
+				
+				value = parameters.getAt("left", null)
+				if value != null
+					pInstance.setMoveLeft(value.equals("true"))
+				end
+				
+				if parameters.has("left.toggle")
+					pInstance.toggleMoveLeft()
+				end
+				
+				value = parameters.getAt("right", null)
+				if value != null
+					pInstance.setMoveRight(value.equals("true"))
+				end
+				
+				if parameters.has("right.toggle")
+					pInstance.toggleMoveRight()
+				end
+				
+				value = parameters.getAt("analog.forwardBackward", null)
+				if value != null
+					pInstance.addAnalogMoveForwardBackward(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("analog.forwardBackward.sticky", null)
+				if value != null
+					pInstance.setAnalogMoveForwardBackwardSticky(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("analog.leftRight", null)
+				if value != null
+					pInstance.addAnalogMoveLeftRight(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("analog.leftRight.sticky", null)
+				if value != null
+					pInstance.setAnalogMoveLeftRightSticky(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("canMove", null)
+				if value != null
+					pInstance.setCanMove(value.equals("true"))
+				end
+				
+				if parameters.has("canMove.toggle")
+					pInstance.toggleCanMove()
+				end
+				
+				value = parameters.getAt("run", null)
+				if value != null
+					pInstance.setRun(value.equals("true"))
+				end
+				
+				if parameters.has("run.toggle")
+					pInstance.toggleRun()
+				end
+				
+				value = parameters.getAt("speed.walk", null)
+				if value != null
+					pInstance.setSpeedWalk((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.walk.forward", null)
+				if value != null
+					pInstance.setSpeedFactorWalkForward((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.walk.backward", null)
+				if value != null
+					pInstance.setSpeedFactorWalkBackward((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.walk.left", null)
+				if value != null
+					pInstance.setSpeedFactorWalkLeft((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.walk.right", null)
+				if value != null
+					pInstance.setSpeedFactorWalkRight((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.run", null)
+				if value != null
+					pInstance.setSpeedRun((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.run.forward", null)
+				if value != null
+					pInstance.setSpeedFactorRunForward((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.run.backward", null)
+				if value != null
+					pInstance.setSpeedFactorRunBackward((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.run.left", null)
+				if value != null
+					pInstance.setSpeedFactorRunLeft((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("speed.run.right", null)
+				if value != null
+					pInstance.setSpeedFactorRunRight((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("moving.direction", null)
+				if value != null
+					pInstance.setMovingDirection((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("moving.speed", null)
+				if value != null
+					pInstance.setMovingSpeed((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+			
+			private func float parseAnalogValue(Object context, String value)
+				if value.equals("eventParam")
+					return (context cast SMContext).getEventParameter() cast float
+					
+				elif value.equals("-eventParam")
+					return -((context cast SMContext).getEventParameter() cast float)
+					
+				else
+					return (value cast String).toFloat()
+				end
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "playerInputMove.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("locomotion")
+					pInstance.updateLocomotion((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "playerInputMove.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "locomotion.type", null)
+				if value != null
+					result &= pInstance.getLocomotionType().name().equals(value)
+				end
+				
+				value = parameters.getAt(prefix + "locomotion.type.not", null)
+				if value != null
+					result &= not pInstance.getLocomotionType().name().equals(value)
+				end
+				
+				value = parameters.getAt(prefix + "forward", null)
+				if value != null
+					result &= pInstance.getMoveForward() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "backward", null)
+				if value != null
+					result &= pInstance.getMoveBackward() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "left", null)
+				if value != null
+					result &= pInstance.getMoveLeft() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "right", null)
+				if value != null
+					result &= pInstance.getMoveRight() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "analog.forwardBackward.less", null)
+				if value != null
+					result &= pInstance.getAnalogMoveForwardBackward() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.forwardBackward.greater", null)
+				if value != null
+					result &= pInstance.getAnalogMoveForwardBackward() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.forwardBackward.sticky.less", null)
+				if value != null
+					result &= pInstance.getAnalogMoveForwardBackwardSticky() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.forwardBackward.sticky.greater", null)
+				if value != null
+					result &= pInstance.getAnalogMoveForwardBackwardSticky() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.leftRight.less", null)
+				if value != null
+					result &= pInstance.getAnalogMoveLeftRight() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.leftRight.greater", null)
+				if value != null
+					result &= pInstance.getAnalogMoveLeftRight() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.leftRight.sticky.less", null)
+				if value != null
+					result &= pInstance.getAnalogMoveLeftRightSticky() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.leftRight.sticky.greater", null)
+				if value != null
+					result &= pInstance.getAnalogMoveLeftRightSticky() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "canMove", null)
+				if value != null
+					result &= pInstance.getCanMove() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "moving", null)
+				if value != null
+					result &= pInstance.isMoving() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "run", null)
+				if value != null
+					result &= pInstance.getRun() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.less", null)
+				if value != null
+					result &= pInstance.getSpeedWalk() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.greater", null)
+				if value != null
+					result &= pInstance.getSpeedWalk() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.forward.less", null)
+				if value != null
+					result &= pInstance.getSpeedFactorWalkForward() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.forward.greater", null)
+				if value != null
+					result &= pInstance.getSpeedFactorWalkForward() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.backward.less", null)
+				if value != null
+					result &= pInstance.getSpeedFactorWalkBackward() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.backward.greater", null)
+				if value != null
+					result &= pInstance.getSpeedFactorWalkBackward() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.left.less", null)
+				if value != null
+					result &= pInstance.getSpeedFactorWalkLeft() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.left.greater", null)
+				if value != null
+					result &= pInstance.getSpeedFactorWalkLeft() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.right.less", null)
+				if value != null
+					result &= pInstance.getSpeedFactorWalkRight() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.walk.right.greater", null)
+				if value != null
+					result &= pInstance.getSpeedFactorWalkRight() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.less", null)
+				if value != null
+					result &= pInstance.getSpeedRun() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.greater", null)
+				if value != null
+					result &= pInstance.getSpeedRun() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.forward.less", null)
+				if value != null
+					result &= pInstance.getSpeedFactorRunForward() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.forward.greater", null)
+				if value != null
+					result &= pInstance.getSpeedFactorRunForward() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.backward.less", null)
+				if value != null
+					result &= pInstance.getSpeedFactorRunBackward() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.backward.greater", null)
+				if value != null
+					result &= pInstance.getSpeedFactorRunBackward() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.left.less", null)
+				if value != null
+					result &= pInstance.getSpeedFactorRunLeft() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.left.greater", null)
+				if value != null
+					result &= pInstance.getSpeedFactorRunLeft() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.right.less", null)
+				if value != null
+					result &= pInstance.getSpeedFactorRunRight() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.run.right.greater", null)
+				if value != null
+					result &= pInstance.getSpeedFactorRunRight() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "moving.direction", null)
+				if value != null
+					var float angle = DEMath.fabs(DEMath.normalize(pInstance.getMovingDirection()\
+						- (value cast String).toFloat(), -180, 180))
+					
+					value = parameters.getAt(prefix + "moving.direction.less", null)
+					if value != null
+						result &= angle < (value cast String).toFloat()
+					end
+					
+					value = parameters.getAt(prefix + "moving.direction.greater", null)
+					if value != null
+						result &= angle > (value cast String).toFloat()
+					end
+				end
+				
+				value = parameters.getAt(prefix + "moving.speed.less", null)
+				if value != null
+					result &= pInstance.getMovingSpeed() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "moving.speed.greater", null)
+				if value != null
+					result &= pInstance.getMovingSpeed() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		
 		var ECBehaviorPlayerInputMove pECBehavior
 		var ECBehaviorLocomotion.Instance pLocomotion
 		
@@ -197,8 +654,10 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			if pECBehavior.getLocomotion() != null
-				pLocomotion = pECBehavior.getLocomotion().instance(getElement())
+				pLocomotion = pECBehavior.getLocomotion().instance(element)
 			end
 			
 			pSpeedWalk = pECBehavior.getSpeedWalk().getValue(stub)
@@ -212,6 +671,14 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			pSpeedFactorRunBackward = pECBehavior.getSpeedFactorRunBackward().getValue(stub)
 			pSpeedFactorRunLeft = pECBehavior.getSpeedFactorRunLeft().getValue(stub)
 			pSpeedFactorRunRight = pECBehavior.getSpeedFactorRunRight().getValue(stub)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+			end
 		end
 		
 		
@@ -310,6 +777,14 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			pAnalogMoveForwardBackward = value
 		end
 		
+		/**
+		 * \brief Set analog move forward backward.
+		 * \version 1.26
+		 */
+		func void addAnalogMoveForwardBackward(float value)
+			pAnalogMoveForwardBackward += value
+		end
+		
 		/** \brief Analog move left right. */
 		func float getAnalogMoveLeftRight()
 			return pAnalogMoveLeftRight
@@ -318,6 +793,14 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		/** \brief Set analog move left right. */
 		func void setAnalogMoveLeftRight(float value)
 			pAnalogMoveLeftRight = value
+		end
+		
+		/**
+		 * \brief Add analog move left right.
+		 * \version 1.26
+		 */
+		func void addAnalogMoveLeftRight(float value)
+			pAnalogMoveLeftRight += value
 		end
 		
 		/** \brief Sticky analog move forward backward. */
@@ -841,6 +1324,8 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	var ECPFloat pSpeedFactorRunLeft
 	var ECPFloat pSpeedFactorRunRight
 	var LocomotionType pLocomotionType
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -855,38 +1340,21 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pLocomotion = locomotion
 		pLocomotionType = LocomotionType.natural
+		pBTSMs = ECComposeBTSM.new()
 		
-		pSpeedWalk = ECPFloat.new(prefix + "speedWalk", 1.25, 0)
-		eclass.addProperty(pSpeedWalk)
-		
-		pSpeedRun = ECPFloat.new(prefix + "speedRun", 4, 0)
-		eclass.addProperty(pSpeedRun)
-		
-		pSpeedFactorWalkForward = ECPFloat.new(prefix + "speedFactorWalkForward", 1, 0)
-		eclass.addProperty(pSpeedFactorWalkForward)
-		
-		pSpeedFactorWalkBackward = ECPFloat.new(prefix + "speedFactorWalkBackward", 1, 0)
-		eclass.addProperty(pSpeedFactorWalkBackward)
-		
-		pSpeedFactorWalkLeft = ECPFloat.new(prefix + "speedFactorWalkLeft", 1, 0)
-		eclass.addProperty(pSpeedFactorWalkLeft)
-		
-		pSpeedFactorWalkRight = ECPFloat.new(prefix + "speedFactorWalkRight", 1, 0)
-		eclass.addProperty(pSpeedFactorWalkRight)
-		
-		pSpeedFactorRunForward = ECPFloat.new(prefix + "speedFactorRunForward", 1, 0)
-		eclass.addProperty(pSpeedFactorRunForward)
-		
-		pSpeedFactorRunBackward = ECPFloat.new(prefix + "speedFactorRunBackward", 1, 0)
-		eclass.addProperty(pSpeedFactorRunBackward)
-		
-		pSpeedFactorRunLeft = ECPFloat.new(prefix + "speedFactorRunLeft", 1, 0)
-		eclass.addProperty(pSpeedFactorRunLeft)
-		
-		pSpeedFactorRunRight = ECPFloat.new(prefix + "speedFactorRunRight", 1, 0)
-		eclass.addProperty(pSpeedFactorRunRight)
+		eclass.addProperty(pSpeedWalk = ECPFloat.new(prefix + "speedWalk", 1.25, 0))
+		eclass.addProperty(pSpeedRun = ECPFloat.new(prefix + "speedRun", 4, 0))
+		eclass.addProperty(pSpeedFactorWalkForward = ECPFloat.new(prefix + "speedFactorWalkForward", 1, 0))
+		eclass.addProperty(pSpeedFactorWalkBackward = ECPFloat.new(prefix + "speedFactorWalkBackward", 1, 0))
+		eclass.addProperty(pSpeedFactorWalkLeft = ECPFloat.new(prefix + "speedFactorWalkLeft", 1, 0))
+		eclass.addProperty(pSpeedFactorWalkRight = ECPFloat.new(prefix + "speedFactorWalkRight", 1, 0))
+		eclass.addProperty(pSpeedFactorRunForward = ECPFloat.new(prefix + "speedFactorRunForward", 1, 0))
+		eclass.addProperty(pSpeedFactorRunBackward = ECPFloat.new(prefix + "speedFactorRunBackward", 1, 0))
+		eclass.addProperty(pSpeedFactorRunLeft = ECPFloat.new(prefix + "speedFactorRunLeft", 1, 0))
+		eclass.addProperty(pSpeedFactorRunRight = ECPFloat.new(prefix + "speedFactorRunRight", 1, 0))
 		
 		eclass.addBehavior(this)
 	end
@@ -894,10 +1362,19 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pLocomotion = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Locomotion behavior or null. */
 	func ECBehaviorLocomotion getLocomotion()
@@ -969,6 +1446,15 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	func void setLocomotionType(LocomotionType type)
 		pLocomotionType = type
 	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
 	
 	
 	

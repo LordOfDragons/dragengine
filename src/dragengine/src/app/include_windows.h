@@ -71,6 +71,7 @@
 #undef LoadImage
 #undef RemoveProp
 #undef GetMessage
+#undef SendMessage
 #undef GetProp
 #undef GetClassName
 #undef CreateService

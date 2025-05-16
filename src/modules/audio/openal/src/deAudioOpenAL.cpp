@@ -366,6 +366,7 @@ public:
 		SetType(deModuleSystem::emtAudio);
 		SetDirectoryName("openal");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

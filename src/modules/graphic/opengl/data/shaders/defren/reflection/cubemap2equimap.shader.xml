@@ -6,10 +6,6 @@
 	
 	<parameter name='pLevel'/> <!-- 0 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/reflection/cubemap2equimap.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/reflection/cubemap2equimap.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Reflection CubeMap 2 EquiMap</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Reflection CubeMap 2 EquiMap</sourceCode>
 </shader>

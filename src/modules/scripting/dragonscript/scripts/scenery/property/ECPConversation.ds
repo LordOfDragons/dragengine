@@ -165,7 +165,7 @@ class ECPConversation extends ElementClassProperty
 			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new(value, eclass.getClassname() + ": " + e.getReason())
+			throw ELoadResourceFailed.new(value, eclass.getClassname() + ": " + e.getReason(), e)
 		end
 	end
 end

@@ -230,6 +230,14 @@ void gdeWPSTreeModelListener::OCSpeakersChanged( gdeGameDefinition*, gdeObjectCl
 	}
 }
 
+void gdeWPSTreeModelListener::OCWorldsChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
+		model->SubObjectsChanged();
+		pModel.SetCurrentItemFromGameDef();
+	}
+}
+
 void gdeWPSTreeModelListener::ActiveObjectClassChanged( gdeGameDefinition *gameDefinition ){
 	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotObjectClass ){
 		pModel.SetCurrentItemFromGameDef();
@@ -298,6 +306,12 @@ void gdeWPSTreeModelListener::ActiveOCSnapPointChanged( gdeGameDefinition *gameD
 
 void gdeWPSTreeModelListener::ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition ){
 	if( gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCSnapPoint ){
+		pModel.SetCurrentItemFromGameDef();
+	}
+}
+
+void gdeWPSTreeModelListener::ActiveOCWorldChanged(gdeGameDefinition *gameDefinition){
+	if(gameDefinition->GetSelectedObjectType() == gdeGameDefinition::eotOCWorld){
 		pModel.SetCurrentItemFromGameDef();
 	}
 }

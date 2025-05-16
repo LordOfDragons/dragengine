@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan Clear Geometries</name>
+	<stage>compute</stage>
+	<source>clear_geometries.comp.glsl</source>
+	
+	<shaderStorageBlock name='ClearGeometry' binding='0'/>
+	<shaderStorageBlock name='ElementGeometry' binding='1'/>
+</shaderSource>

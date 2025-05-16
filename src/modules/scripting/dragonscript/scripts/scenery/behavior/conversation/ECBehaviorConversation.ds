@@ -31,6 +31,7 @@ pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.ConversationSystem
 pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -127,6 +128,9 @@ class ECBehaviorConversation extends DefaultECBehavior
 	 *   <!-- optional: use BaseGameApp simple conversation converter.
 	 *                  game can add more supported values. default is 'default' -->
 	 *   <string name='simpleConversationConverter'>default</string>
+	 *   
+	 *   <!-- optional: use behavior tree with id instead of empty string -->
+	 *   <string name='behaviorTree'>second</string>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -136,7 +140,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -162,8 +166,9 @@ class ECBehaviorConversation extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "conversation", id)
+			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "conversation", id)
 			return behavior
 		end
 		
@@ -200,6 +205,28 @@ class ECBehaviorConversation extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "conversation{(id)}.start".
+		 * \version 1.26
+		 */
+		class BTAStart implements BTAction
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runAction(BTContext context, Dictionary parameters)
+				if pInstance.canStartConversation()
+					pInstance.startConversation()
+					return BTResult.success
+					
+				else
+					return BTResult.failure
+				end
+			end
+		end
+		
 		/** \brief Trigger listener to start conversation. */
 		public class StartConversationListener extends ECBehaviorTriggered.DefaultListener
 			var Instance pInstance
@@ -260,6 +287,12 @@ class ECBehaviorConversation extends DefaultECBehavior
 			
 			pTrigger = pECBehavior.getTriggered().synchronizedOrSelf().instance(element)
 			pTrigger.addListener(StartConversationListener.new(this))
+			
+			if pECBehavior.getBehaviorTree() != null
+				var String pnp = pECBehavior.getPrefix()
+				var BTContext c = pECBehavior.getBehaviorTree().instance(element).getContext()
+				c.setAction(pnp + "start", BTAStart.new(this))
+			end
 		end
 		
 		/** \brief Load conversation. */
@@ -605,6 +638,8 @@ class ECBehaviorConversation extends DefaultECBehavior
 	var ECPBoolean pDirectCamera
 	var ECBehaviorTriggered pTriggered
 	var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
+	var ECBehaviorBehaviorTree pBehaviorTree
+	var String pPrefix
 	
 	
 	/** \brief Create behavior element class. */
@@ -648,6 +683,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 			pSimpleConversationConverter = app.getSimpleConversationConverter()
 		end
 		
+		pPrefix = prefix
 		pPlayerControlledActor = playerControlledActor
 		
 		pConversation = ECPConversation.new(prefix + "path", loaders.getConversation())
@@ -678,9 +714,18 @@ class ECBehaviorConversation extends DefaultECBehavior
 	func void dispose()
 		pPlayerControlledActor = null
 		pConversationActor = null
+		pBehaviorTree = null
 		super.dispose()
 	end
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Conversation actor behavior or null if not used. */
 	func ECBehaviorConversationActor getConversationActor()
@@ -754,6 +799,22 @@ class ECBehaviorConversation extends DefaultECBehavior
 	/** \brief Set player controllable tracker or null. */
 	func void setPlayerControlledActor(ECBehaviorPlayerControllable.Tracker playerControlledActor)
 		pPlayerControlledActor = playerControlledActor
+	end
+	
+	/**
+	 * \brief Behavior tree or null.
+	 * \version 1.26
+	 */
+	func ECBehaviorBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree or null.
+	 * \version 1.26
+	 */
+	func void setBehaviorTree(ECBehaviorBehaviorTree behaviorTree)
+		pBehaviorTree = behaviorTree
 	end
 	
 	

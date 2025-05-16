@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>G DefRen Occlusion OccMap</name>
+	<stage>geometry</stage>
+	<source>occmap.geom.glsl</source>
+	
+	<uniformBlock name='OcclusionMeshParameters' binding='2'/>
+	
+	<define>GS_INSTANCING</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_CUBE_CULLING</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>WITH_SHADOWMAP</define>
+	<define>DEPTH_OFFSET</define>
+	<define>DEPTH_DISTANCE</define>
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+	
+	<!-- shared/defren/light/ubo_instance_parameters.glsl -->
+	<uniformBlock name='InstanceParameters' binding='1'/>
+</shaderSource>

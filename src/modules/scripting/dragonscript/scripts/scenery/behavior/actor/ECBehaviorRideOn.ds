@@ -30,6 +30,8 @@ pin Dragengine.Scenery
 pin Dragengine.Preloading
 pin Dragengine.LoadSave
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -109,11 +111,23 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorRideOn'/>
+	 * <behavior type='ECBehaviorRideOn'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -130,8 +144,10 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			var ECBehaviorRideOn behavior = ECBehaviorRideOn.new(eclass,\
 				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				ECBehaviorProjectToGround.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "rideOn")
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "rideOn")
 			return behavior
 		end
 	end
@@ -140,8 +156,88 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action/condition "rideOn.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					if pInstance.getRidable() == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(pInstance.getRidable())
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getRidable(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "rideOn.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "ridable", null)
+				if value != null
+					result &= (pInstance.getRidable() != null) == value.equals("true")
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getRidable(),\
+					parameters, prefix + "interact.", pInstance.getElement())
+				
+				return result
+			end
+		end
+		
 		/** \brief Update locomotion on collider changed. */
-		protected class UpdateLocomotionListener extends ECBehaviorColliderAI.DefaultListener
+		private class UpdateLocomotionListener extends ECBehaviorColliderAI.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -154,7 +250,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		end
 		
 		/** \brief Clear ridable and apply ridable velocity if no more touching ground. */
-		class NoMoreTouchingGround extends ECBehaviorProjectToGround.DefaultListener
+		private class NoMoreTouchingGround extends ECBehaviorProjectToGround.DefaultListener
 			protected var Instance pInstance
 			
 			func new(Instance instance)
@@ -177,6 +273,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		var bool pLocked
 		var ElementResolver pElementResolver
 		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -200,6 +297,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			pLocomotion = null
 			pProjectToGround = null
 			pElementResolver = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
@@ -211,6 +309,14 @@ class ECBehaviorRideOn extends DefaultECBehavior
 			pProjectToGround.addListener(NoMoreTouchingGround.new(this))
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = "rideOn."
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
@@ -266,17 +372,23 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				
 				// apply ridable linear velocity to AI collider
 				pLocomotion.getColliderAI().addLinearVelocity(pRidable.getLinearVelocity())
+				
+				pRidable.removeRideOn(this)
 			end
 			
 			pRidable = ridable
 			
 			if ridable != null
 				ridable.getCollider().getCollider().attachRelativeMovement(colliderAI)
+				ridable.addRideOn(this)
 			end
 			
 			pListeners.forEach(block Listener each
 				each.ridableChanged(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent("rideOn.", ridable != null if "begin" else "end")
+			end
 		end
 		
 		/** \brief Actor is riding. */
@@ -456,7 +568,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 				
 				if flags.getAt(1)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorRidable.Instance ridable
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorRidable.Instance ridable
 						setRidable(ridable)
 					end)
 					setRequiresEnterFrame(true)
@@ -489,6 +601,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	var ECBehaviorLocomotion pLocomotion
 	var ECBehaviorProjectToGround pProjectToGround
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
 	
 	
 	
@@ -508,6 +621,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		pLocomotion = locomotion
 		pProjectToGround = projectToGround
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		eclass.addBehavior(this)
 	end
@@ -517,6 +631,7 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		pLocomotion = null
 		pProjectToGround = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
@@ -530,6 +645,14 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	/** \brief Project to ground behavior. */
 	func ECBehaviorProjectToGround getProjectToGround()
 		return pProjectToGround
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

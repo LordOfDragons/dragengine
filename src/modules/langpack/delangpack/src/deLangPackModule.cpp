@@ -265,6 +265,7 @@ public:
 		GetPatternList().Add(".delangpack");
 		SetDefaultExtension(".delangpack");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

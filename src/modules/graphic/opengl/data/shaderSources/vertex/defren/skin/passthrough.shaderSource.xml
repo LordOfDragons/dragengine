@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Skin PassThrough</name>
+	<stage>vertex</stage>
+	<source>passthrough.vert.glsl</source>
+	
+	<attribute set='1' name='inPosition' location='0'/>
+	<attribute set='1' name='inHeight' location='1'/>
+	<attribute set='1' name='inNormal' location='2'/>
+	
+	<attribute set='2' name='inPosition' location='0'/>
+	<attribute set='2' name='inRealNormal' location='1'/>
+	<attribute set='2' name='inNormal' location='2'/>
+	<attribute set='2' name='inTangent' location='3'/>
+	<attribute set='2' name='inTexCoord' location='4'/>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+	
+	<!-- system only
+	<define>SHARED_SPB_PADDING</define>
+	<define>SHARED_SPB_USE_SSBO</define>
+	<define>SHARED_SPB_ARRAY_SIZE</define>
+	-->
+	
+	<define>HEIGHT_MAP</define>
+	<define>VS_RENDER_STEREO</define>
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/skin/shared_spb_index.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='1'/>
+	<uniformBlock name='InstanceIndex' binding='4'/>
+	
+	<!-- system only
+	<define>SPB_SSBO_INSTANCE_ARRAY</define>
+	<define>SPB_INSTANCE_ARRAY_SIZE</define>
+	-->
+	
+	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>SHARED_SPB</define>
+</shaderSource>

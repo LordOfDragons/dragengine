@@ -164,7 +164,7 @@ class ECPAnimation extends ElementClassProperty implements ResourceListener
 				return Animation.new(value)
 				
 			catch Exception e
-				throw ELoadResourceFailed.new(value, eclass.getClassname())
+				throw ELoadResourceFailed.new(value, eclass.getClassname(), e)
 			end
 		end
 	end

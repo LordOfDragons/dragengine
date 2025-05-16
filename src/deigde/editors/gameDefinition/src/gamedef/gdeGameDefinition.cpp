@@ -672,6 +672,7 @@ void gdeGameDefinition::RemoveObjectClass( gdeObjectClass *objectClass ){
 		SetActiveOCForceField( NULL );
 		SetActiveOCSnapPoint( NULL );
 		SetActiveOCSpeaker( NULL );
+		SetActiveOCWorld(nullptr);
 		
 		if( pObjectClasses.GetCount() == 1 ){
 			SetActiveObjectClass( NULL );
@@ -709,6 +710,7 @@ void gdeGameDefinition::RemoveAllObjectClasses(){
 	SetActiveOCComponent( NULL );
 	SetActiveOCCamera( NULL );
 	SetActiveOCBillboard( NULL );
+	SetActiveOCWorld(nullptr);
 	SetActiveObjectClass( NULL );
 	
 	for( i=0; i<count; i++ ){
@@ -1044,6 +1046,21 @@ void gdeGameDefinition::SetActiveOCSpeaker( gdeOCSpeaker *speaker ){
 	}
 	
 	NotifyActiveOCSpeakerChanged();
+}
+
+
+
+bool gdeGameDefinition::HasActiveOCWorld() const{
+	return pActiveOCWorld != nullptr;
+}
+
+void gdeGameDefinition::SetActiveOCWorld(gdeOCWorld *world){
+	if(pActiveOCWorld == world){
+		return;
+	}
+	
+	pActiveOCWorld = world;
+	NotifyActiveOCWorldChanged();
 }
 
 
@@ -1909,6 +1926,28 @@ void gdeGameDefinition::NotifyOCSpeakerChanged( gdeObjectClass *objectClass, gde
 	SetChanged( true );
 }
 
+void gdeGameDefinition::NotifyOCWorldsChanged(gdeObjectClass *objectClass){
+	const int listenerCount = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCWorldsChanged(this, objectClass);
+	}
+	
+	SetChanged(true);
+}
+
+void gdeGameDefinition::NotifyOCWorldChanged(gdeObjectClass *objectClass, gdeOCWorld *world){
+	const int listenerCount = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->OCWorldChanged(this, objectClass, world);
+	}
+	
+	SetChanged(true);
+}
+
 void gdeGameDefinition::NotifyOCTexturesChanged( gdeObjectClass *objectClass ){
 	const int listenerCount = pListeners.GetCount();
 	int i;
@@ -2045,6 +2084,15 @@ void gdeGameDefinition::NotifyActiveOCSpeakerChanged(){
 	
 	for( i=0; i<listenerCount; i++ ){
 		( ( gdeGameDefinitionListener* )pListeners.GetAt( i ) )->ActiveOCSpeakerChanged( this );
+	}
+}
+
+void gdeGameDefinition::NotifyActiveOCWorldChanged(){
+	const int listenerCount = pListeners.GetCount();
+	int i;
+	
+	for(i=0; i<listenerCount; i++){
+		((gdeGameDefinitionListener*)pListeners.GetAt(i))->ActiveOCWorldChanged(this);
 	}
 }
 

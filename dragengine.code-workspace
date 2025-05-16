@@ -326,7 +326,8 @@
 			"*.ipp": "cpp",
 			"strstream": "cpp",
 			"text_encoding": "cpp",
-			"ios": "cpp"
+			"ios": "cpp",
+			"__config": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			
@@ -334,6 +335,7 @@
 		"C_Cpp.default.defines": [
 			"MOD_ENTRY_POINT_ATTR"
 		],
-		"git.ignoreLimitWarning": true
+		"git.ignoreLimitWarning": true,
+		"java.configuration.updateBuildConfiguration": "disabled"
 	}
 }

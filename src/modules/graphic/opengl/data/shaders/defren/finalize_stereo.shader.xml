@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Finalize Stereo</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texColor' target='0'/>
 	
 	<parameter name='pTCTransform'/>
@@ -11,11 +9,7 @@
 	<parameter name='pBrightness'/>
 	<parameter name='pContrast'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/finalize.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Finalize</sourceCode>
 </shader>

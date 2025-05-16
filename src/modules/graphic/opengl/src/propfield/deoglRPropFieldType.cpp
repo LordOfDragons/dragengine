@@ -548,13 +548,13 @@ void deoglRPropFieldType::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock,
 		paramBlock.SetParameterDataFloat( target, pBendFactor );
 	}
 	
-	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
-	if( target != -1 ){
-		if( pModel ){
-			paramBlock.SetParameterDataBool( target, pModel->GetLODAt( 0 ).GetTextureAt( 0 ).GetDoubleSided() );
+	target = skinShader.GetInstanceUniformTarget(deoglSkinShader::eiutDoubleSided);
+	if(target != -1){
+		if(pModel){
+			paramBlock.SetParameterDataBool(target, pModel->GetLODAt(0).GetTextureAt(0).GetDoubleSided());
 			
 		}else{
-			paramBlock.SetParameterDataBool( target, false );
+			paramBlock.SetParameterDataBool(target, false);
 		}
 	}
 	

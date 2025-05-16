@@ -158,6 +158,9 @@ public:
 		/** \brief Camera. */
 		epptCamera,
 		
+		/** \brief World. */
+		epptWorld,
+		
 		/** \brief Custom file pattern. */
 		epptCustom
 	};

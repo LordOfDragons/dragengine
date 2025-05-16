@@ -86,6 +86,7 @@ gdeObjectClass *gdeBaseMAOCSubObject::GetActiveObjectClass() const{
 	case gdeGameDefinition::eotOCForceField:
 	case gdeGameDefinition::eotOCSnapPoint:
 	case gdeGameDefinition::eotOCSpeaker:
+	case gdeGameDefinition::eotOCWorld:
 		return gameDefinition->GetActiveObjectClass();
 		
 	default:

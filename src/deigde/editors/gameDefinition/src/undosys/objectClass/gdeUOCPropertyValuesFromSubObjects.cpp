@@ -35,6 +35,7 @@
 #include "../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 #include "../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 #include "../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../../gamedef/property/gdeProperty.h"
 
 #include <dragengine/common/exceptions.h>
@@ -402,6 +403,22 @@ igdeCodecPropertyString codec, const gdeOCSpeaker &speaker ){
 	}
 }
 
+static void UpdateWorld(decStringDictionary &values, igdeCodecPropertyString codec, const gdeOCWorld &world ){
+	decString string;
+	
+	if(world.IsPropertySet(gdeOCWorld::epPath)){
+		values.SetAt(world.GetPropertyName(gdeOCWorld::epPath), world.GetPath());
+	}
+	if(world.IsPropertySet(gdeOCWorld::epPosition)){
+		codec.EncodeVector(world.GetPosition(), string);
+		values.SetAt(world.GetPropertyName(gdeOCWorld::epPosition), string);
+	}
+	if(world.IsPropertySet(gdeOCWorld::epRotation)){
+		codec.EncodeVector(world.GetRotation(), string);
+		values.SetAt(world.GetPropertyName(gdeOCWorld::epRotation ), string);
+	}
+}
+
 static decStringDictionary BuildValues( const gdeObjectClass &objectClass ){
 	// build property values
 	decStringDictionary newValues( objectClass.GetPropertyValues() );
@@ -448,6 +465,13 @@ static decStringDictionary BuildValues( const gdeObjectClass &objectClass ){
 	count = speakers.GetCount();
 	for( i=0; i<count; i++ ){
 		UpdateSpeaker( newValues, codec, *speakers.GetAt( i ) );
+	}
+	
+	// worlds
+	const gdeOCWorldList &worlds = objectClass.GetWorlds();
+	count = worlds.GetCount();
+	for(i=0; i<count; i++){
+		UpdateWorld(newValues, codec, *worlds.GetAt(i));
 	}
 	
 	// collect parent property values

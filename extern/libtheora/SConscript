@@ -78,7 +78,11 @@ def libtheoraBuild( target, source, env ):
 	
 	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
 	
-	cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
+	cmdline = []
+	if env['platform_webwasm']:
+		cmdline.append('emconfigure')
+	cmdline.append('./configure')
+	cmdline.append('--prefix="{}"'.format(buildDir.abspath))
 	cmdline.append( '--disable-examples' )
 	cmdline.append( '--disable-sdltest' )
 	cmdline.append( '--disable-vorbistest' )
@@ -92,6 +96,9 @@ def libtheoraBuild( target, source, env ):
 	else:
 		cmdline.append( '--enable-shared=yes' )
 		cmdline.append( '--enable-static=no' )
+	
+	if env['platform_webwasm']:
+		cmdline.append('--disable-asm')
 	
 	if 'CROSSCOMPILE_HOST' in env:
 		if env['platform_android'] in ['armv8', 'quest']:

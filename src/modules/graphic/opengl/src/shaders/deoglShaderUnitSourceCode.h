@@ -26,9 +26,16 @@
 #define _DEOGLSHADERUNITSOURCECODE_H_
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/utils/decDateTime.h>
 #include <dragengine/deObject.h>
 
+#include "../deoglBasics.h"
+
+class deGraphicOpenGl;
 class decBaseFileReader;
+class decXmlElementTag;
+class decPath;
 
 
 /**
@@ -44,35 +51,49 @@ public:
 	typedef deTObjectReference<deoglShaderUnitSourceCode> Ref;
 	
 	
-	
 private:
-	const decString pFilePath;
-	decString pSourceCode;
-	
+	decString pName, pSourceCode, pValidationString;
+	GLenum pStage;
+	decStringSet pDefines;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new source code object reading source code from a file. */
-	deoglShaderUnitSourceCode( const char *filePath, decBaseFileReader &fileReader );
+	/** Create source code. */
+	deoglShaderUnitSourceCode(deGraphicOpenGl &ogl, const decPath &path);
 	
 protected:
 	/** Cleans up the source code object. */
-	virtual ~deoglShaderUnitSourceCode();
+	~deoglShaderUnitSourceCode() override = default;
 	/*@}*/
-	
 	
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the file path. */
-	inline const decString &GetFilePath() const{ return pFilePath; }
-
-	/** Retrieves the source code. */
+	/** Name. */
+	inline const decString &GetName() const{ return pName; }
+	
+	/** Source code. */
 	inline const decString &GetSourceCode() const{ return pSourceCode; }
+	
+	/** Used defines for filtering. */
+	inline const decStringSet &GetDefines() const{ return pDefines; }
+	
+	/** Validation string. */
+	inline const decString &GetValidationString() const{ return pValidationString; }
+	
+	/** Stage. */
+	inline GLenum GetStage() const{ return pStage; }
+	
+	/** Log stage name. */
+	const char *GetLogStageName() const;
 	/*@}*/
+	
+	
+private:
+	const decXmlElementTag *pGetTagAt(const decXmlElementTag &tag, int index) const;
 };
 
 #endif

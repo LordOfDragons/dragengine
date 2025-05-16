@@ -807,6 +807,19 @@ void deClassDMatrix::nfGetEulerAngles::RunFunction( dsRunTime *rt, dsValue *myse
 	clsDVec.PushDVector( rt, matrix.GetEulerAngles() / ( double )DEG2RAD );
 }
 
+// public func DVector getScaling()
+deClassDMatrix::nfGetScaling::nfGetScaling(const sInitData &init) : dsFunction(
+init.clsDMatrix, "getScaling", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
+}
+void deClassDMatrix::nfGetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
+	const decDMatrix &matrix = ((sMatNatDat*)p_GetNativeData(myself))->matrix;
+	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
+	deClassDVector &clsDVec = *ds.GetClassDVector();
+	
+	clsDVec.PushDVector(rt, matrix.GetScale());
+}
+
 // public func DMatrix getInverse()
 deClassDMatrix::nfGetInverse::nfGetInverse( const sInitData &init ) : dsFunction( init.clsDMatrix,
 "getInverse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix ){
@@ -1245,6 +1258,7 @@ void deClassDMatrix::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetPosition( init ) );
 	AddFunction( new nfTransformNormal( init ) );
 	AddFunction( new nfGetEulerAngles( init ) );
+	AddFunction(new nfGetScaling(init));
 	AddFunction( new nfGetInverse( init ) );
 	AddFunction( new nfGetRotation( init ) );
 	AddFunction( new nfNormalize( init ) );

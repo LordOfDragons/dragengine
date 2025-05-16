@@ -46,6 +46,7 @@
 #include "class/speaker/igdeGDCSpeaker.h"
 #include "class/navspace/igdeGDCNavigationSpace.h"
 #include "class/navblocker/igdeGDCNavigationBlocker.h"
+#include "class/world/igdeGDCWorld.h"
 #include "particleemitter/igdeGDParticleEmitter.h"
 #include "property/igdeGDProperty.h"
 #include "skin/igdeGDSkin.h"
@@ -377,6 +378,9 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 		}else if( tagName == "navigationBlocker" ){
 			pParseClassNavigationBlocker( *tag, gdClass );
 			
+		}else if(tagName == "world"){
+			pParseClassWorld(*tag, gdClass);
+			
 		}else if( tagName == "category" ){
 			gdClass->SetCategory( GetCDataString( *tag ) );
 			
@@ -424,6 +428,9 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 					
 				}else if( key == "navigationBlockers" ){
 					filter &= ~igdeGDClass::efsoNavigationBlockers;
+					
+				}else if(key == "worlds"){
+					filter &= ~igdeGDClass::efsoWorlds;
 				}
 			}
 			
@@ -1758,6 +1765,54 @@ void igdeXMLGameDefinition::pParseClassNavigationBlocker( const decXmlElementTag
 	}
 }
 
+void igdeXMLGameDefinition::pParseClassWorld(const decXmlElementTag &root, igdeGDClass &gdclass){
+	const igdeGDCWorld::Ref gdcWorld(igdeGDCWorld::Ref::New(new igdeGDCWorld));
+	int i;
+	
+	for(i=0; i<root.GetElementCount(); i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		const decString &tagName = tag->GetName();
+		if(tagName == "path"){
+			gdcWorld->SetPath(GetCDataString(*tag));
+			
+		}else if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			gdcWorld->SetPosition(position);
+			
+		}else if(tagName == "orientation"){
+			decVector orientation;
+			ReadVector(*tag, orientation);
+			gdcWorld->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			
+		}else if(tagName == "link"){
+			const decString &value = GetAttributeString(*tag, "target");
+			
+			if(value == "path"){
+				gdcWorld->SetPropertyName(igdeGDCWorld::epPath, GetAttributeString(*tag, "property"));
+				
+			}else if(value == "position"){
+				gdcWorld->SetPropertyName(igdeGDCWorld::epPosition, GetAttributeString(*tag, "property"));
+				
+			}else if(value == "rotation"){
+				gdcWorld->SetPropertyName(igdeGDCWorld::epRotation, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
+		}
+	}
+	
+	gdclass.AddWorld(gdcWorld);
+}
+
 void igdeXMLGameDefinition::pParseClassTexture( const decXmlElementTag &root, igdeGDClass &gdclass ){
 	const int elementCount = root.GetElementCount();
 	decStringDictionary properties;
@@ -1958,6 +2013,9 @@ void igdeXMLGameDefinition::pParseProperty( const decXmlElementTag &root, igdeGD
 				
 			}else if( strcmp( type, "camera" ) == 0 ){
 				property.SetPathPatternType( igdeGDProperty::epptCamera );
+				
+			}else if(strcmp(type, "world") == 0){
+				property.SetPathPatternType(igdeGDProperty::epptWorld);
 				
 			}else if( strcmp( type, "custom" ) == 0 ){
 				property.SetPathPatternType( igdeGDProperty::epptCustom );

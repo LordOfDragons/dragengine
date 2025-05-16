@@ -119,6 +119,9 @@ public:
 	
 	/** \brief Convert to hex encoded string. */
 	decString ToHexString() const;
+	
+	/** \brief Id is 0. */
+	bool IsZero() const;
 	/*@}*/
 	
 	

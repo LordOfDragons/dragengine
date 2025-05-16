@@ -10,5 +10,5 @@
 	<texture name='texLight' target='4'/>
 	-->
 	
-	<sourceCode unit='compute'>compute/defren/gi/clearTraceRays.glsl</sourceCode>
+	<sourceCode unit='compute'>C DefRen GI Clear Trace Rays</sourceCode>
 </shader>

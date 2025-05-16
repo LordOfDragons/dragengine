@@ -785,6 +785,7 @@ public:
 		SetType(deModuleSystem::emtGraphic);
 		SetDirectoryName("opengl");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

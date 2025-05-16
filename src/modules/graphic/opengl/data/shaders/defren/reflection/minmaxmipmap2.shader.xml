@@ -7,11 +7,6 @@
 	<parameter name='pTCClamp'/> <!-- 0 -->
 	<parameter name='pMipMapLevel'/> <!-- 1 -->
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outData' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/fullscreenquad.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/reflection/minmaxmipmap2.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Reflection MinMap MipMap 2</sourceCode>
 </shader>

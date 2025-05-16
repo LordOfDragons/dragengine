@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Copy VNT</name>
+	<stage>compute</stage>
+	<source>copy_vnt.comp.glsl</source>
+	
+	<shaderStorageBlock name='ModelData' binding='0'/>
+	<shaderStorageBlock name='TransformedData' binding='1'/>
+</shaderSource>

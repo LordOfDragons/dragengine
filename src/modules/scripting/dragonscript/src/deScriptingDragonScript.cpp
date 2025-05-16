@@ -632,7 +632,11 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		pScriptEngine->SetEngineManager( dsmanager );
 		dsmanager = nullptr;
 		
-		pLoadingScreen.TakeOver( new dedsLoadingScreen( *this ) );
+		pLoadingScreen.TakeOver(new dedsLoadingScreen(*this));
+		
+#ifdef OS_ANDROID_QUEST
+		pVRPlaceholder.TakeOver(new dedsVRPlaceholder(*this));
+#endif
 		
 		pState = esSkipOneFrame;
 		
@@ -684,6 +688,7 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 }
 
 void deScriptingDragonScript::ShutDown(){
+	pVRPlaceholder = nullptr;
 	pLoadingScreen = nullptr;
 	if( ! pScriptEngine ){
 		return;
@@ -894,8 +899,11 @@ extern int timerColliderChanged;
 extern int timerColliderChangedCount;
 #endif
 bool deScriptingDragonScript::OnFrameUpdate(){
-	if( pLoadingScreen ){
+	if(pLoadingScreen){
 		pLoadingScreen->Update();
+	}
+	if(pVRPlaceholder){
+		pVRPlaceholder->Update();
 	}
 	
 	switch( pState ){
@@ -1075,6 +1083,10 @@ bool deScriptingDragonScript::OnResizeRenderWindow(){
 }
 
 bool deScriptingDragonScript::SendEvent(deInputEvent *event){
+	if(pVRPlaceholder){
+		pVRPlaceholder->EventReceived(*event);
+	}
+	
 	if(pState != esReady){
 		return true; // ignore
 	}
@@ -1941,16 +1953,17 @@ class dedsModuleInternal : public deInternalModule{
 public:
 	dedsModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DragonScript");
-		SetDescription("Provides access to the Drag[en]gine using the DragonScript\
-scripting language. Loaded by default is a basic script package with\
-mathematical classes. Additional frameworks can be loaded depending\
-on the needs of your game. This is an interprated language hence\
+		SetDescription("Provides access to the Drag[en]gine using the DragonScript \
+scripting language. Loaded by default is a basic script package with \
+mathematical classes. Additional frameworks can be loaded depending \
+on the needs of your game. This is an interprated language hence \
 if you need time critical calculations using another language might be better.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(DS_MODULE_VERSION);
 		SetType(deModuleSystem::emtScript);
 		SetDirectoryName("dragonscript");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

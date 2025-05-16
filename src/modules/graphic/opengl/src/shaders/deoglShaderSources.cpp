@@ -54,13 +54,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderSources::deoglShaderSources() :
-pFeedbackInterleaved( true ){
+deoglShaderSources::deoglShaderSources(){
 }
 
-deoglShaderSources::deoglShaderSources( deLogger &logger, decBaseFileReader &reader ) :
-pFeedbackInterleaved( true )
-{
+deoglShaderSources::deoglShaderSources( deLogger &logger, decBaseFileReader &reader ){
 	pFilename = reader.GetFilename();
 	
 	decXmlDocumentReference xmlDoc;
@@ -86,10 +83,6 @@ deoglShaderSources::~deoglShaderSources(){
 // Management
 ///////////////
 
-void deoglShaderSources::SetFeedbackInterleaved( bool interleaved ){
-	pFeedbackInterleaved = interleaved;
-}
-
 void deoglShaderSources::SetPathComputeSourceCode( const char *path ){
 	pPathSCCompute = path;
 }
@@ -112,18 +105,6 @@ void deoglShaderSources::SetPathVertexSourceCode( const char *path ){
 
 void deoglShaderSources::SetPathFragmentSourceCode( const char *path ){
 	pPathSCFragment = path;
-}
-
-void deoglShaderSources::SetInlineGeometrySourceCode( const char *sourceCode ){
-	pInlineSCGeometry = sourceCode;
-}
-
-void deoglShaderSources::SetInlineVertexSourceCode( const char *sourceCode ){
-	pInlineSCVertex = sourceCode;
-}
-
-void deoglShaderSources::SetInlineFragmentSourceCode( const char *sourceCode ){
-	pInlineSCFragment = sourceCode;
 }
 
 
@@ -205,78 +186,6 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 			
 			pTextureList.Add( attrName, attribute->GetValue().ToInt() );
 			
-		}else if( strcmp( tag->GetName(), "attribute" ) == 0 ){
-			const decXmlAttValue *attribute = pFindAttribute( *tag, "name" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.attribute(%i:%i): Missing attribute 'name'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			const decString &attrName = attribute->GetValue();
-			
-			attribute = pFindAttribute( *tag, "target" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.attribute(%i:%i): Missing attribute 'target'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			
-			pAttributeList.Add( attrName, attribute->GetValue().ToInt() );
-			
-		}else if( strcmp( tag->GetName(), "output" ) == 0 ){
-			const decXmlAttValue *attribute = pFindAttribute( *tag, "name" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.output(%i:%i): Missing attribute 'name'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			const decString &attrName = attribute->GetValue();
-			
-			attribute = pFindAttribute( *tag, "target" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.output(%i:%i): Missing attribute 'target'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			
-			pOutputList.Add( attrName, attribute->GetValue().ToInt() );
-			
-		}else if( strcmp( tag->GetName(), "uniformBlock" ) == 0 ){
-			const decXmlAttValue *attribute = pFindAttribute( *tag, "name" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.uniformBlock(%i:%i): Missing attribute 'name'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			const decString &attrName = attribute->GetValue();
-			
-			attribute = pFindAttribute( *tag, "target" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.uniformBlock(%i:%i): Missing attribute 'target'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			
-			pUniformBlockList.Add( attrName, attribute->GetValue().ToInt() );
-			
-		}else if( strcmp( tag->GetName(), "shaderStorageBlock" ) == 0 ){
-			const decXmlAttValue *attribute = pFindAttribute( *tag, "name" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.shaderStorageBlock(%i:%i): Missing attribute 'name'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			const decString &attrName = attribute->GetValue();
-			
-			attribute = pFindAttribute( *tag, "target" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.shaderStorageBlock(%i:%i): Missing attribute 'target'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			
-			pShaderStorageBlockList.Add( attrName, attribute->GetValue().ToInt() );
-			
 		}else if( strcmp( tag->GetName(), "parameter" ) == 0 ){
 			const decXmlAttValue *attribute = pFindAttribute( *tag, "name" );
 			if( ! attribute ){
@@ -286,22 +195,6 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 			}
 			
 			pParameterList.Add( attribute->GetValue() );
-			
-		}else if( strcmp( tag->GetName(), "feedback" ) == 0 ){
-			const decXmlAttValue *attribute = pFindAttribute( *tag, "name" );
-			if( ! attribute ){
-				logger.LogErrorFormat( LOGGING_SOURCE, "shader.feedback(%i:%i): Missing attribute 'name'!",
-					tag->GetLineNumber(), tag->GetPositionNumber() );
-				DETHROW( deeInvalidParam );
-			}
-			
-			pFeedbackList.Add( attribute->GetValue() );
-			
-		}else if( strcmp( tag->GetName(), "feedbackInterleaved" ) == 0 ){
-			const decXmlCharacterData * const cdata = tag->GetFirstData();
-			if( cdata ){
-				pFeedbackInterleaved = cdata->GetData() == "true";
-			}
 			
 		}else if( strcmp( tag->GetName(), "sourceCode" ) == 0 ){
 			const decXmlAttValue *attribute = pFindAttribute( *tag, "unit" );

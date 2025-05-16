@@ -890,6 +890,10 @@ void igdeEditPropertyValue::pUpdateEditWidgets(){
 				pPath->SetResourceType( igdeEnvironment::efpltCamera );
 				break;
 				
+			case igdeGDProperty::epptWorld:
+				pPath->SetResourceType(igdeEnvironment::efpltWorld);
+				break;
+				
 			case igdeGDProperty::epptCustom:
 			default:
 				pPath->SetResourceType( igdeEnvironment::efpltAll );

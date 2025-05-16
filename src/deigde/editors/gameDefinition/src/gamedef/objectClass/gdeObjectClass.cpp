@@ -41,6 +41,7 @@
 #include "forceField/gdeOCForceField.h"
 #include "snappoint/gdeOCSnapPoint.h"
 #include "speaker/gdeOCSpeaker.h"
+#include "world/gdeOCWorld.h"
 #include "../gdeGameDefinition.h"
 #include "../property/gdeProperty.h"
 
@@ -169,6 +170,11 @@ pInheritSubObjects( objectClass.pInheritSubObjects )
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCSpeaker( *objectClass.pSpeakers.GetAt( i ) ) );
 			pSpeakers.Add( ( gdeOCSpeaker* )( deObject* )objRef );
+		}
+		
+		count = objectClass.pWorlds.GetCount();
+		for(i=0; i<count; i++){
+			pWorlds.Add(gdeOCWorld::Ref::New(new gdeOCWorld(*objectClass.pWorlds.GetAt(i))));
 		}
 		
 		count = objectClass.pTextures.GetCount();
@@ -526,6 +532,18 @@ void gdeObjectClass::NotifySpeakersChanged(){
 void gdeObjectClass::NotifySpeakerChanged( gdeOCSpeaker *speaker ){
 	if( pGameDefinition ){
 		pGameDefinition->NotifyOCSpeakerChanged( this, speaker );
+	}
+}
+
+void gdeObjectClass::NotifyWorldsChanged(){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCWorldsChanged(this);
+	}
+}
+
+void gdeObjectClass::NotifyWorldChanged(gdeOCWorld *world){
+	if(pGameDefinition){
+		pGameDefinition->NotifyOCWorldChanged(this, world);
 	}
 }
 

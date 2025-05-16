@@ -1,5 +1,15 @@
 // normal encoding and decoding
 
+/*
+	<!-- shared/normal_texture.glsl -->
+	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
+	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
+	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
+	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
+	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
+	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
+*/
+
 
 // load normal from sampler using direct method.
 // use this method for RGB16F, RGB32F, RGB8_SNORM or RGB16_SNORM textures.

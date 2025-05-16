@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -83,11 +85,23 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorPlayerInputLook'/>
+	 * <behavior type='ECBehaviorPlayerInputLook'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -103,7 +117,10 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 			end
 			var ECBehaviorPlayerInputLook behavior = ECBehaviorPlayerInputLook.new(\
 				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInputLook")
 			return behavior
 		end
@@ -111,172 +128,459 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorPlayerInputLook pECBehavior
-		private var ECBehaviorLocomotion.Instance pLocomotion
+		/**
+		 * \brief Behavior tree action "playerInputLook.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				if parameters.has("reset")
+					pInstance.reset()
+				end
+				
+				value = parameters.getAt("left", null)
+				if value != null
+					pInstance.setLookLeft(value.equals("true"))
+				end
+				
+				if parameters.has("left.toggle")
+					pInstance.toggleLookLeft()
+				end
+				
+				value = parameters.getAt("right", null)
+				if value != null
+					pInstance.setLookRight(value.equals("true"))
+				end
+				
+				if parameters.has("right.toggle")
+					pInstance.toggleLookRight()
+				end
+				
+				value = parameters.getAt("up", null)
+				if value != null
+					pInstance.setLookUp(value.equals("true"))
+				end
+				
+				if parameters.has("up.toggle")
+					pInstance.toggleLookUp()
+				end
+				
+				value = parameters.getAt("down", null)
+				if value != null
+					pInstance.setLookDown(value.equals("true"))
+				end
+				
+				if parameters.has("down.toggle")
+					pInstance.toggleLookDown()
+				end
+				
+				value = parameters.getAt("speed.horizontal", null)
+				if value != null
+					pInstance.setSpeedLookHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog.horizontal", null)
+				if value != null
+					pInstance.addAnalogLookHorizontal(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("analog.horizontal.factor", null)
+				if value != null
+					pInstance.setAnalogFactorLookHorizontal((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog.horizontal.sticky", null)
+				if value != null
+					pInstance.setAnalogLookHorizontalSticky(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("speed.vertical", null)
+				if value != null
+					pInstance.setSpeedLookVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog.vertical", null)
+				if value != null
+					pInstance.addAnalogLookVertical(parseAnalogValue(context, value cast String))
+				end
+				
+				value = parameters.getAt("analog.vertical.factor", null)
+				if value != null
+					pInstance.setAnalogFactorLookVertical((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("analog.vertical.sticky", null)
+				if value != null
+					pInstance.setAnalogLookVerticalSticky(parseAnalogValue(context, value cast String))
+				end
+				
+				return BTResult.success
+			end
+			
+			private func float parseAnalogValue(Object context, String value)
+				if value.equals("eventParam")
+					return (context cast SMContext).getEventParameter() cast float
+					
+				elif value.equals("-eventParam")
+					return -((context cast SMContext).getEventParameter() cast float)
+					
+				else
+					return (value cast String).toFloat()
+				end
+			end
+		end
 		
-		private var bool pLookLeft
-		private var bool pLookRight
-		private var bool pLookUp
-		private var bool pLookDown
-		private var float pSpeedLookHorizontal
-		private var float pSpeedLookVertical
-		private var float pAnalogLookHorizontal
-		private var float pAnalogLookVertical
-		private var float pAnalogFactorLookHorizontal
-		private var float pAnalogFactorLookVertical
-		private var float pAnalogLookHorizontalSticky
-		private var float pAnalogLookVerticalSticky
+		/**
+		 * \brief Behavior tree action "playerInputLook.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("locomotion")
+					pInstance.updateLocomotion((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "playerInputLook.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "left", null)
+				if value != null
+					result &= pInstance.getLookLeft() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "right", null)
+				if value != null
+					result &= pInstance.getLookRight() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "up", null)
+				if value != null
+					result &= pInstance.getLookUp() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "down", null)
+				if value != null
+					result &= pInstance.getLookDown() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "speed.horizontal.less", null)
+				if value != null
+					result &= pInstance.getSpeedLookHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.horizontal.greater", null)
+				if value != null
+					result &= pInstance.getSpeedLookHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.horizontal.less", null)
+				if value != null
+					result &= pInstance.getAnalogLookHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.horizontal.greater", null)
+				if value != null
+					result &= pInstance.getAnalogLookHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.horizontal.factor.less", null)
+				if value != null
+					result &= pInstance.getAnalogFactorLookHorizontal() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.horizontal.factor.greater", null)
+				if value != null
+					result &= pInstance.getAnalogFactorLookHorizontal() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.horizontal.sticky.less", null)
+				if value != null
+					result &= pInstance.getAnalogLookHorizontalSticky() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.horizontal.sticky.greater", null)
+				if value != null
+					result &= pInstance.getAnalogLookHorizontalSticky() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.vertical.less", null)
+				if value != null
+					result &= pInstance.getSpeedLookVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "speed.vertical.greater", null)
+				if value != null
+					result &= pInstance.getSpeedLookVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.vertical.less", null)
+				if value != null
+					result &= pInstance.getAnalogLookVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.vertical.greater", null)
+				if value != null
+					result &= pInstance.getAnalogLookVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.vertical.factor.less", null)
+				if value != null
+					result &= pInstance.getAnalogFactorLookVertical() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.vertical.factor.greater", null)
+				if value != null
+					result &= pInstance.getAnalogFactorLookVertical() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.vertical.sticky.less", null)
+				if value != null
+					result &= pInstance.getAnalogLookVerticalSticky() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "analog.vertical.sticky.greater", null)
+				if value != null
+					result &= pInstance.getAnalogLookVerticalSticky() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorPlayerInputLook pECBehavior
+		var ECBehaviorLocomotion.Instance pLocomotion
+		
+		var bool pLookLeft
+		var bool pLookRight
+		var bool pLookUp
+		var bool pLookDown
+		var float pSpeedLookHorizontal
+		var float pSpeedLookVertical
+		var float pAnalogLookHorizontal
+		var float pAnalogLookVertical
+		var float pAnalogFactorLookHorizontal
+		var float pAnalogFactorLookVertical
+		var float pAnalogLookHorizontalSticky
+		var float pAnalogLookVerticalSticky
 		
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorPlayerInputLook ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorPlayerInputLook ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
-			this.pAnalogFactorLookHorizontal = 0.01
-			this.pAnalogFactorLookVertical = 0.01
+			pAnalogFactorLookHorizontal = 0.01
+			pAnalogFactorLookVertical = 0.01
 			
-			this.pSpeedLookHorizontal = 45
-			this.pSpeedLookVertical = 45
+			pSpeedLookHorizontal = 45
+			pSpeedLookVertical = 45
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
-			this.pLocomotion = null
+		func void dispose()
+			pLocomotion = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pSpeedLookHorizontal = this.pECBehavior.getSpeedLookHorizontal().getValue( stub )
-			this.pSpeedLookVertical = this.pECBehavior.getSpeedLookVertical().getValue( stub )
-			this.pAnalogFactorLookHorizontal = this.pECBehavior.getAnalogFactorLookHorizontal().getValue( stub )
-			this.pAnalogFactorLookVertical = this.pECBehavior.getAnalogFactorLookVertical().getValue( stub )
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			
-			if this.pECBehavior.getLocomotion() != null
-				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
+			pSpeedLookHorizontal = pECBehavior.getSpeedLookHorizontal().getValue(stub)
+			pSpeedLookVertical = pECBehavior.getSpeedLookVertical().getValue(stub)
+			pAnalogFactorLookHorizontal = pECBehavior.getAnalogFactorLookHorizontal().getValue(stub)
+			pAnalogFactorLookVertical = pECBehavior.getAnalogFactorLookVertical().getValue(stub)
+			
+			if pECBehavior.getLocomotion() != null
+				pLocomotion = pECBehavior.getLocomotion().instance(element)
+			end
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorPlayerInputLook getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorPlayerInputLook getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Locomotion behavior or null if absent. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
-			return this.pLocomotion
+		func ECBehaviorLocomotion.Instance getLocomotion()
+			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Llook left key is pressed. */
-		public func bool getLookLeft()
-			return this.pLookLeft
+		func bool getLookLeft()
+			return pLookLeft
 		end
 		
 		/** \brief Set if look left key is pressed. */
-		public func void setLookLeft( bool pressed )
-			this.pLookLeft = pressed
+		func void setLookLeft(bool pressed)
+			pLookLeft = pressed
 		end
 		
 		/** \brief Toggle look left key pressed. */
-		public func void toggleLookLeft()
-			this.pLookLeft = not this.pLookLeft
+		func void toggleLookLeft()
+			pLookLeft = not pLookLeft
 		end
 		
 		/** \brief Look right key is pressed. */
-		public func bool getLookRight()
-			return this.pLookRight
+		func bool getLookRight()
+			return pLookRight
 		end
 		
 		/** \brief Set if look right key is pressed. */
-		public func void setLookRight( bool pressed )
-			this.pLookRight = pressed
+		func void setLookRight(bool pressed)
+			pLookRight = pressed
 		end
 		
 		/** \brief Toggle look right key pressed. */
-		public func void toggleLookRight()
-			this.pLookRight = not this.pLookRight
+		func void toggleLookRight()
+			pLookRight = not pLookRight
 		end
 		
 		/** \brief Look up key is pressed. */
-		public func bool getLookUp()
-			return this.pLookUp
+		func bool getLookUp()
+			return pLookUp
 		end
 		
 		/** \brief Set if look up key is pressed. */
-		public func void setLookUp( bool pressed )
-			this.pLookUp = pressed
+		func void setLookUp(bool pressed)
+			pLookUp = pressed
 		end
 		
 		/** \brief Toggle look up key pressed. */
-		public func void toggleLookUp()
-			this.pLookUp = not this.pLookUp
+		func void toggleLookUp()
+			pLookUp = not pLookUp
 		end
 		
 		/** \brief Look down key is pressed. */
-		public func bool getLookDown()
-			return this.pLookDown
+		func bool getLookDown()
+			return pLookDown
 		end
 		
 		/** \brief Set if look down key is pressed. */
-		public func void setLookDown( bool pressed )
-			this.pLookDown = pressed
+		func void setLookDown(bool pressed)
+			pLookDown = pressed
 		end
 		
 		/** \brief Toggle look down key pressed. */
-		public func void toggleLookDown()
-			this.pLookDown = not this.pLookDown
+		func void toggleLookDown()
+			pLookDown = not pLookDown
 		end
 		
 		/** \brief Look left right speed in degrees per second. */
-		public func float getSpeedLookHorizontal()
-			return this.pSpeedLookHorizontal
+		func float getSpeedLookHorizontal()
+			return pSpeedLookHorizontal
 		end
 		
 		/** \brief Set look left right speed in degrees per second. */
-		public func void setSpeedLookHorizontal( float speed )
-			this.pSpeedLookHorizontal = speed
+		func void setSpeedLookHorizontal(float speed)
+			pSpeedLookHorizontal = speed
 		end
 		
 		/** \brief Look up down speed in degrees per second. */
-		public func float getSpeedLookVertical()
-			return this.pSpeedLookVertical
+		func float getSpeedLookVertical()
+			return pSpeedLookVertical
 		end
 		
 		/** \brief Set look up down speed in degrees per second. */
-		public func void setSpeedLookVertical( float speed )
-			this.pSpeedLookVertical = speed
+		func void setSpeedLookVertical(float speed)
+			pSpeedLookVertical = speed
 		end
 		
 		/** \brief Analog look left right. */
-		public func float getAnalogLookHorizontal()
-			return this.pAnalogLookHorizontal
+		func float getAnalogLookHorizontal()
+			return pAnalogLookHorizontal
 		end
 		
 		/** \brief Set analog look left right. */
-		public func void setAnalogLookHorizontal( float value )
-			this.pAnalogLookHorizontal = value
+		func void setAnalogLookHorizontal(float value)
+			pAnalogLookHorizontal = value
+		end
+		
+		/**
+		 * \brief Add analog look left right.
+		 * \version 1.26
+		 */
+		func void addAnalogLookHorizontal(float value)
+			pAnalogLookHorizontal += value
 		end
 		
 		/** \brief Analog look up down. */
-		public func float getAnalogLookVertical()
-			return this.pAnalogLookVertical
+		func float getAnalogLookVertical()
+			return pAnalogLookVertical
 		end
 		
 		/** \brief Set analog look up down. */
-		public func void setAnalogLookVertical( float value )
-			this.pAnalogLookVertical = value
+		func void setAnalogLookVertical(float value)
+			pAnalogLookVertical = value
+		end
+		
+		/**
+		 * \brief Add analog look up down.
+		 * \version 1.26
+		 */
+		func void addAnalogLookVertical(float value)
+			pAnalogLookVertical += value
 		end
 		
 		/** \brief Analog Look left right factor relative to left right input speed. */
-		public func float getAnalogFactorLookHorizontal()
-			return this.pAnalogFactorLookHorizontal
+		func float getAnalogFactorLookHorizontal()
+			return pAnalogFactorLookHorizontal
 		end
 		
 		/**
@@ -284,13 +588,13 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		 * 
 		 * Use negative value to flip analog input direction.
 		 */
-		public func void setAnalogFactorLookHorizontal( float factor )
-			this.pAnalogFactorLookHorizontal = factor
+		func void setAnalogFactorLookHorizontal(float factor)
+			pAnalogFactorLookHorizontal = factor
 		end
 		
 		/** \brief Analog Look up down factor relative to up down input speed. */
-		public func float getAnalogFactorLookVertical()
-			return this.pAnalogFactorLookVertical
+		func float getAnalogFactorLookVertical()
+			return pAnalogFactorLookVertical
 		end
 		
 		/**
@@ -298,64 +602,64 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		 * 
 		 * Use negative value to flip analog input direction.
 		 */
-		public func void setAnalogFactorLookVertical( float factor )
-			this.pAnalogFactorLookVertical = factor
+		func void setAnalogFactorLookVertical(float factor)
+			pAnalogFactorLookVertical = factor
 		end
 		
 		/** \brief Sticky analog look left right. */
-		public func float getAnalogLookHorizontalSticky()
-			return this.pAnalogLookHorizontalSticky
+		func float getAnalogLookHorizontalSticky()
+			return pAnalogLookHorizontalSticky
 		end
 		
 		/** \brief Set sticky analog look left right. */
-		public func void setAnalogLookHorizontalSticky( float value )
-			this.pAnalogLookHorizontalSticky = value
+		func void setAnalogLookHorizontalSticky(float value)
+			pAnalogLookHorizontalSticky = value
 		end
 		
 		/** \brief Sticky analog look up down. */
-		public func float getAnalogLookVerticalSticky()
-			return this.pAnalogLookVerticalSticky
+		func float getAnalogLookVerticalSticky()
+			return pAnalogLookVerticalSticky
 		end
 		
 		/** \brief Set sticky analog look up down. */
-		public func void setAnalogLookVerticalSticky( float value )
-			this.pAnalogLookVerticalSticky = value
+		func void setAnalogLookVerticalSticky(float value)
+			pAnalogLookVerticalSticky = value
 		end
 		
 		
 		
 		/** \brief Calculate look left right delta value and reset analog input. */
-		public func float calculateLookHorizontal( float elapsed )
+		func float calculateLookHorizontal(float elapsed)
 			var float value = 0
 			
-			if this.pLookLeft
-				value += this.pSpeedLookHorizontal * elapsed
+			if pLookLeft
+				value += pSpeedLookHorizontal * elapsed
 			end
-			if this.pLookRight
-				value -= this.pSpeedLookHorizontal * elapsed
+			if pLookRight
+				value -= pSpeedLookHorizontal * elapsed
 			end
 			
-			value += this.pAnalogLookHorizontalSticky * this.pSpeedLookHorizontal * elapsed
-			value += this.pAnalogLookHorizontal * this.pSpeedLookHorizontal * this.pAnalogFactorLookHorizontal
-			this.pAnalogLookHorizontal = 0
+			value += pAnalogLookHorizontalSticky * pSpeedLookHorizontal * elapsed
+			value += pAnalogLookHorizontal * pSpeedLookHorizontal * pAnalogFactorLookHorizontal
+			pAnalogLookHorizontal = 0
 			
 			return value
 		end
 		
 		/** \brief Calculate look up down delta value and reset analog input. */
-		public func float calculateLookVertical( float elapsed )
+		func float calculateLookVertical(float elapsed)
 			var float value = 0
 			
-			if this.pLookUp
-				value += this.pSpeedLookVertical * elapsed
+			if pLookUp
+				value += pSpeedLookVertical * elapsed
 			end
-			if this.pLookDown
-				value -= this.pSpeedLookVertical * elapsed
+			if pLookDown
+				value -= pSpeedLookVertical * elapsed
 			end
 			
-			value += this.pAnalogLookVerticalSticky * this.pSpeedLookVertical * elapsed
-			value += this.pAnalogLookVertical * this.pSpeedLookVertical * this.pAnalogFactorLookVertical
-			this.pAnalogLookVertical = 0
+			value += pAnalogLookVerticalSticky * pSpeedLookVertical * elapsed
+			value += pAnalogLookVertical * pSpeedLookVertical * pAnalogFactorLookVertical
+			pAnalogLookVertical = 0
 			
 			return value
 		end
@@ -363,15 +667,15 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		
 		/** \brief Reset input. */
-		public func void reset()
-			this.pLookLeft = false
-			this.pLookRight = false
-			this.pLookUp = false
-			this.pLookDown = false
-			this.pAnalogLookHorizontal = 0
-			this.pAnalogLookVertical = 0
-			this.pAnalogLookHorizontalSticky = 0
-			this.pAnalogLookVerticalSticky = 0
+		func void reset()
+			pLookLeft = false
+			pLookRight = false
+			pLookUp = false
+			pLookDown = false
+			pAnalogLookHorizontal = 0
+			pAnalogLookVertical = 0
+			pAnalogLookHorizontalSticky = 0
+			pAnalogLookVerticalSticky = 0
 		end
 		
 		
@@ -382,119 +686,139 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		 * Calls calculateLookHorizontal() and calculateLookVertical() to obtain the looking
 		 * changes and applies using ECBehaviorLocomotion.applyLookAround().
 		 */
-		public func void updateLocomotion( float elapsed )
-			if this.pLocomotion == null
+		func void updateLocomotion(float elapsed)
+			if pLocomotion == null
 				return
 			end
 			
-			var float deltaHorizontal = this.calculateLookHorizontal( elapsed )
-			var float deltaVertical = this.calculateLookVertical( elapsed )
-			this.pLocomotion.applyLookAround( deltaHorizontal, deltaVertical )
+			var float deltaHorizontal = calculateLookHorizontal(elapsed)
+			var float deltaVertical = calculateLookVertical(elapsed)
+			
+			if BaseGameApp.getApp() != null and BaseGameApp.getApp().getInverseLookVertical()
+				deltaVertical = -deltaVertical
+			end
+			
+			pLocomotion.applyLookAround(deltaHorizontal, deltaVertical)
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				this.pSpeedLookHorizontal = reader.readFloat()
-				this.pSpeedLookVertical = reader.readFloat()
-				this.pAnalogFactorLookHorizontal = reader.readFloat()
-				this.pAnalogFactorLookVertical = reader.readFloat()
+				pSpeedLookHorizontal = reader.readFloat()
+				pSpeedLookVertical = reader.readFloat()
+				pAnalogFactorLookHorizontal = reader.readFloat()
+				pAnalogFactorLookVertical = reader.readFloat()
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			writer.writeFloat( this.pSpeedLookHorizontal )
-			writer.writeFloat( this.pSpeedLookVertical )
-			writer.writeFloat( this.pAnalogFactorLookHorizontal )
-			writer.writeFloat( this.pAnalogFactorLookVertical )
+			writer.writeFloat(pSpeedLookHorizontal)
+			writer.writeFloat(pSpeedLookVertical)
+			writer.writeFloat(pAnalogFactorLookHorizontal)
+			writer.writeFloat(pAnalogFactorLookVertical)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECPFloat pSpeedLookHorizontal
-	private var ECPFloat pSpeedLookVertical
-	private var ECPFloat pAnalogFactorLookHorizontal
-	private var ECPFloat pAnalogFactorLookVertical
+	var ECBehaviorLocomotion pLocomotion
+	var ECPFloat pSpeedLookHorizontal
+	var ECPFloat pSpeedLookVertical
+	var ECPFloat pAnalogFactorLookHorizontal
+	var ECPFloat pAnalogFactorLookVertical
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion ) \
-	this( eclass, locomotion, "playerInputLook." )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion) \
+	this(eclass, locomotion, "playerInputLook.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
-	String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pLocomotion = locomotion
+		pPrefix = prefix
+		pLocomotion = locomotion
+		pBTSMs = ECComposeBTSM.new()
 		
-		this.pSpeedLookHorizontal = ECPFloat.new( prefix + "speedLookHorizontal", 45, 0 )
-		eclass.addProperty( this.pSpeedLookHorizontal )
+		eclass.addProperty(pSpeedLookHorizontal = ECPFloat.new(prefix + "speedLookHorizontal", 45, 0))
+		eclass.addProperty(pSpeedLookVertical = ECPFloat.new(prefix + "speedLookVertical", 45, 0))
+		eclass.addProperty(pAnalogFactorLookHorizontal = ECPFloat.new(prefix + "analogFactorLookHorizontal", 0.01))
+		eclass.addProperty(pAnalogFactorLookVertical = ECPFloat.new(prefix + "analogFactorLookVertical", 0.01))
 		
-		this.pSpeedLookVertical = ECPFloat.new( prefix + "speedLookVertical", 45, 0 )
-		eclass.addProperty( this.pSpeedLookVertical )
-		
-		this.pAnalogFactorLookHorizontal = ECPFloat.new( prefix + "analogFactorLookHorizontal", 0.01 )
-		eclass.addProperty( this.pAnalogFactorLookHorizontal )
-		
-		this.pAnalogFactorLookVertical = ECPFloat.new( prefix + "analogFactorLookVertical", 0.01 )
-		eclass.addProperty( this.pAnalogFactorLookVertical )
-		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pLocomotion = null
+	func void dispose()
+		pLocomotion = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
+	
 	/** \brief Locomotion behavior or null. */
-	public func ECBehaviorLocomotion getLocomotion()
-		return this.pLocomotion
+	func ECBehaviorLocomotion getLocomotion()
+		return pLocomotion
 	end
 	
 	/** \brief Look left right speed in degrees per second. */
-	public func ECPFloat getSpeedLookHorizontal()
-		return this.pSpeedLookHorizontal
+	func ECPFloat getSpeedLookHorizontal()
+		return pSpeedLookHorizontal
 	end
 	
 	/** \brief Look up down speed in degrees per second. */
-	public func ECPFloat getSpeedLookVertical()
-		return this.pSpeedLookVertical
+	func ECPFloat getSpeedLookVertical()
+		return pSpeedLookVertical
 	end
 	
 	/** \brief Analog Look left right factor relative to left right input speed. */
-	public func ECPFloat getAnalogFactorLookHorizontal()
-		return this.pAnalogFactorLookHorizontal
+	func ECPFloat getAnalogFactorLookHorizontal()
+		return pAnalogFactorLookHorizontal
 	end
 	
 	/** \brief Analog Look up down factor relative to up down input speed. */
-	public func ECPFloat getAnalogFactorLookVertical()
-		return this.pAnalogFactorLookVertical
+	func ECPFloat getAnalogFactorLookVertical()
+		return pAnalogFactorLookVertical
 	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -505,10 +829,10 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorPlayerInputLook.
 	 */
-	static public func ECBehaviorPlayerInputLook getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorPlayerInputLook each
+	static func ECBehaviorPlayerInputLook getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorPlayerInputLook each
 			return true
-		end ) cast ECBehaviorPlayerInputLook
+		end) cast ECBehaviorPlayerInputLook
 	end
 	
 	/**
@@ -517,16 +841,16 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorPlayerInputLook.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

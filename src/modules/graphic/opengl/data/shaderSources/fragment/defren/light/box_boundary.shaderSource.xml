@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Light BoxBoundary</name>
+	<stage>fragment</stage>
+	<source>box_boundary.frag.glsl</source>
+	
+	<output name='outMin' location='0'/>
+	<output name='outMax' location='1'/>
+	
+	<define>AMBIENT_MAP</define>
+	<define>DEPTH_CUBEMAP</define>
+	<define>DEPTH_INPUT</define>
+	<define>DECODE_IN_DEPTH</define>
+	<define>SHADOW_INVERSE_DEPTH</define>
+</shaderSource>

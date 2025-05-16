@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen GI Resize Materials</name>
+	<stage>fragment</stage>
+	<source>resizeMaterials.frag.glsl</source>
+	
+	<output name='outDiffuse' location='0'/>
+	<output name='outReflectivity' location='1'/>
+	<output name='outEmissivity' location='2'/>
+</shaderSource>

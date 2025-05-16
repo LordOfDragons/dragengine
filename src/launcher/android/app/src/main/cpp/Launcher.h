@@ -15,6 +15,8 @@ public:
     [[nodiscard]] inline const FDVFSContainer::Ref &GetFDContainer() const{ return pFDContainer; }
 
     delGameList ReadDelgaGames(const decString &path);
+
+    void Dispose(JNIEnv *env);
 };
 
 #endif //DELAUNCHER_LAUNCHER_H

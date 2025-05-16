@@ -235,6 +235,7 @@ public:
 		SetType(deModuleSystem::emtSynthesizer);
 		SetDirectoryName("desynthesizer");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

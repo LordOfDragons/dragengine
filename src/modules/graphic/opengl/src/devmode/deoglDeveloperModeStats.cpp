@@ -245,14 +245,12 @@ void deoglDeveloperModeStats::CombinedTextures( const decUnicodeArgumentList &co
 
 void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	const decObjectList smsources( pRenderThread.GetShader().GetShaderManager().GetSourcesAsList() );
-	int ss, sst, ssp;
+	int ss;
 	decString text;
 	
 	const int shaderSourcesCount = smsources.GetCount();
 	for( ss=0; ss<shaderSourcesCount; ss++ ){
 		const deoglShaderSources &sources = *( deoglShaderSources* )smsources.GetAt( ss );
-		const deoglShaderBindingList &textureList = sources.GetTextureList();
-		const decStringList &parameterList = sources.GetParameterList();
 		
 		text.Format( "- Shader Sources '%s' ( shader file '%s' ):\n", sources.GetName().GetString(), sources.GetFilename().GetString() );
 		answer.AppendFromUTF8( text.GetString() );
@@ -271,23 +269,6 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 			text.Format( "   - Fragment Source Code = %s\n", sources.GetPathFragmentSourceCode().GetString() );
 			answer.AppendFromUTF8( text.GetString() );
 		}
-		
-		const int shaderSourcesTextureCount = textureList.GetCount();
-		text.Set( "   - Textures:" );
-		for( sst=0; sst<shaderSourcesTextureCount; sst++ ){
-			text.AppendFormat( "%s %s(%d)", sst == 0 ? "" : ",",
-				textureList.GetNameAt( sst ).GetString(), textureList.GetTargetAt( sst ) );
-		}
-		text.Append( "\n" );
-		answer.AppendFromUTF8( text.GetString() );
-		
-		const int shaderSourcesParameterCount = parameterList.GetCount();
-		text.Set( "   - Parameters:" );
-		for( ssp=0; ssp<shaderSourcesParameterCount; ssp++ ){
-			text.AppendFormat( "%s %s", ssp == 0 ? "" : ",", parameterList.GetAt( ssp ).GetString() );
-		}
-		text.Append( "\n" );
-		answer.AppendFromUTF8( text.GetString() );
 	}
 }
 

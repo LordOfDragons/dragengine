@@ -70,7 +70,7 @@ public:
 	};
 	
 private:
-	bool pCanTurn;
+	bool pCanTurn, pAlwaysLimitLeftRight;
 	
 	float pLimitLookUp;
 	float pLimitLookDown;
@@ -157,6 +157,12 @@ public:
 	
 	/** \brief Set if actor can turn. */
 	void SetCanTurn( bool canTurn );
+	
+	/** \brief Look left/right is always limited. */
+	inline bool GetAlwaysLimitLeftRight() const{ return pAlwaysLimitLeftRight; }
+	
+	/** \brief Set if look left/right is always limited. */
+	void SetAlwaysLimitLeftRight(bool alwaysLimitLeftRight);
 	
 	
 	

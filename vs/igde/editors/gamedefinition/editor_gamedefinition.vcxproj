@@ -51,6 +51,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSnapPoint.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfiguration.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfigurationXML.cpp" />
@@ -88,6 +89,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\snappoint\gdeOCSnapPointList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeaker.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeakerList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorldList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitterList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\property\gdeProperty.cpp" />
@@ -111,6 +114,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSnapPoint.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSubObject.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeViewActiveObject.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeViewActiveObjectListener.cpp" />
@@ -188,6 +192,11 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerCut.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerPaste.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCopy.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCut.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldPaste.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterAdd.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\skin\gdeMASkinAdd.cpp" />
@@ -234,6 +243,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSnapPoint.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSpeaker.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSubObject.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\particleEmitter\gdeWPSTIMParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\particleEmitter\gdeWPSTIMParticleEmitters.cpp" />
@@ -267,6 +277,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSnapPointListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeaker.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeakerListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCWorldListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitter.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitterListener.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSkin.cpp" />
@@ -528,6 +540,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetVolume.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerToggleLooping.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerTogglePlaying.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCAddWorld.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPropertyName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetRotation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCRemoveWorld.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyAdd.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyRemove.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPAdd.cpp" />
@@ -589,6 +607,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSnapPoint.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCSpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataOCWorld.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\clipboard\gdeClipboardDataProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfiguration.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\configuration\gdeConfigurationXML.h" />
@@ -626,6 +645,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\snappoint\gdeOCSnapPointList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeaker.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\speaker\gdeOCSpeakerList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorld.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\objectClass\world\gdeOCWorldList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\particleemitter\gdeParticleEmitterList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gamedef\property\gdeProperty.h" />
@@ -649,6 +670,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSnapPoint.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOWorld.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeVAOSubObject.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeViewActiveObject.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\activeobject\gdeViewActiveObjectListener.h" />
@@ -726,6 +748,11 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerCut.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerPaste.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\speaker\gdeMAOCSpeakerRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCopy.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldCut.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldPaste.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\objectClass\world\gdeMAOCWorldRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterAdd.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\particleEmitter\gdeMAParticleEmitterRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\menuactions\skin\gdeMASkinAdd.h" />
@@ -772,6 +799,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSnapPoint.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSpeaker.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCWorld.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\objectClass\gdeWPSTIMOCSubObject.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\particleEmitter\gdeWPSTIMParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\model\particleEmitter\gdeWPSTIMParticleEmitters.h" />
@@ -805,6 +833,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSnapPointListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeaker.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCSpeakerListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCWorld.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSOCWorldListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitter.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSParticleEmitterListener.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\gui\properties\selection\gdeWPSSkin.h" />
@@ -1066,6 +1096,12 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerSetVolume.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerToggleLooping.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\speaker\gdeUOCSpeakerTogglePlaying.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCAddWorld.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPosition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetPropertyName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCWorldSetRotation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\world\gdeUOCRemoveWorld.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyAdd.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTexPropertyRemove.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\texproperty\gdeUOCTPCFPAdd.h" />

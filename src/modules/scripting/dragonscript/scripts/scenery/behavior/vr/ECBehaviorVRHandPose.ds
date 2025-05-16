@@ -30,6 +30,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -86,6 +87,18 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * <behavior type='ECBehaviorVRHandPose'>
 	 *   <!-- required: use vr hand with id. -->
 	 *   <string name='vrHand'>right</string>
+	 * 
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -95,7 +108,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -108,14 +121,40 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorVRHandPose behavior = ECBehaviorVRHandPose.new(eclass,\
 				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrHandPose", id)
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrHandPose", id)
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "vrHandPose{(id)}.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("controllers")
+					pInstance.updateControllers()
+				end
+				
+				if parameters.has("applyAnimations")
+					pInstance.applyAnimations()
+				end
+				
+				return BTResult.success
+			end
+		end
+		
 		protected class Bone
 			public var String bone
 			public var int poseIndex
@@ -239,6 +278,12 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				
 				pControllerEnableFingers = pAnimatorInstance.getControllerAt(pADControllerEnableFingers.getIndex())
 				pADControllerEnableFingers = null
+			end
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
 			end
 		end
 		
@@ -471,6 +516,8 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	var ECPString pBonePinky1, pBonePinky2, pBonePinky3, pBonePinky4
 	var ECPFloat pFingerTipDistance
 	var ECPBoolean pEnabled, pOnlyRotation
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -486,7 +533,9 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id, \
 	String prefix) super(eclass, id)
+		pPrefix = prefix
 		pVRHand = vrHand
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		eclass.addProperty(pBoneOrigin = ECPString.new(prefix + "boneOrigin", "origin"))
 		eclass.addProperty(pBoneWrist = ECPString.new(prefix + "boneWrist", "wrist"))
@@ -532,10 +581,19 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pVRHand = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief VR Hand behavior or null. */
 	func ECBehaviorVRHand getVRHand()
@@ -648,6 +706,14 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Apply only rotation instead of position and rotation. */
 	func ECPBoolean getOnlyRotation()
 		return pOnlyRotation
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

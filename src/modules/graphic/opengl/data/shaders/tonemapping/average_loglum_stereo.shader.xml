@@ -2,18 +2,12 @@
 <shader>
 	<name>ToneMap Average LogLum Stereo</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texValues' target='0'/>
 	
 	<parameter name='pTCTransform'/>
 	<parameter name='pOffsets'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outValue' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/tonemap/average_loglum.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
+	<sourceCode unit='fragment'>F ToneMap Average LogLum</sourceCode>
 </shader>

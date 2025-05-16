@@ -40,19 +40,19 @@ pin Dragengine.Utils
  * synthesizer is stored.
  */
 class ECPSynthesizer extends ElementClassProperty
-	private var LoadSynthesizer pLoader
-	private var String pPath
-	private var Synthesizer pSynthesizer
-	private var bool pHasPreloaded
-	
+	var LoadSynthesizer pLoader
+	var String pPath
+	var Synthesizer pSynthesizer
+	var bool pHasPreloaded
+	var Exception pException
 	
 	
 	/** \brief Create property. */
-	public func new(String name, LoadSynthesizer loader) this(name, loader, null)
+	func new(String name, LoadSynthesizer loader) this(name, loader, null)
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new(String name, LoadSynthesizer loader, String path) super(name)
+	func new(String name, LoadSynthesizer loader, String path) super(name)
 		pLoader = loader
 		pPath = path
 	end
@@ -60,39 +60,39 @@ class ECPSynthesizer extends ElementClassProperty
 	
 	
 	/** \brief Synthesizer loader. */
-	public func LoadSynthesizer getLoader()
+	func LoadSynthesizer getLoader()
 		return pLoader
 	end
 	
 	/** \brief Path to synthesizer. */
-	public func String getPath()
+	func String getPath()
 		return pPath
 	end
 	
 	/** \brief Set path to synthesizer. */
-	public func void setPath(String path)
+	func void setPath(String path)
 		pPath = path
 	end
 	
 	/** \brief Synthesizer or \em null if not present. */
-	public func Synthesizer getSynthesizer()
+	func Synthesizer getSynthesizer()
 		return pSynthesizer
 	end
 	
 	/** \brief Set synthesizer or \em null if not present. */
-	public func void setSynthesizer(Synthesizer synthesizer)
+	func void setSynthesizer(Synthesizer synthesizer)
 		pSynthesizer = synthesizer
 	end
 	
 	/** \brief Property has been preloaded. */
-	public func bool getHasPreloaded()
+	func bool getHasPreloaded()
 		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue(Object value)
+	func void setValue(Object value)
 		pPath = value cast String
 	end
 	
@@ -100,7 +100,7 @@ class ECPSynthesizer extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
 		var String path = (property cast ECPSynthesizer).pPath
 		if path != null and not path.empty()
 			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
@@ -110,7 +110,7 @@ class ECPSynthesizer extends ElementClassProperty
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+	func void preloadResources(ElementClass elementClass, PreloadCounter counter)
 		if pHasPreloaded
 			return
 		end
@@ -127,6 +127,7 @@ class ECPSynthesizer extends ElementClassProperty
 			pSynthesizer = pLoader.loadFromFile(path)
 			
 		catch Exception e
+			pException = e
 		end
 	end
 	
@@ -134,11 +135,11 @@ class ECPSynthesizer extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+	func bool logPreloadProblems(ElementClass elementClass, Console console)
 		if pPath != null and not pPath.empty() and pSynthesizer == null
-			console.addMessage("Property " + elementClass.getClassname() + "." \
+			console.addError("Property " + elementClass.getClassname() + "." \
 				+ getName() + ": Failed loading synthesizer " \
-				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath(), pException)
 			return true
 		end
 		return false
@@ -152,7 +153,7 @@ class ECPSynthesizer extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored synthesizer is returned.
 	 * If the named stub property is present it is loaded as synthesizer resource.
 	 */
-	public func Synthesizer getSynthesizer(StubWithProperties stub, ElementClass eclass)
+	func Synthesizer getSynthesizer(StubWithProperties stub, ElementClass eclass)
 		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
 			return pSynthesizer
@@ -162,7 +163,7 @@ class ECPSynthesizer extends ElementClassProperty
 			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new(value, eclass.getClassname())
+			throw ELoadResourceFailed.new(value, eclass.getClassname(), e)
 		end
 	end
 end

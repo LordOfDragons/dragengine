@@ -373,6 +373,10 @@ void deVROpenXR::StopRuntime(){
 	}
 }
 
+bool deVROpenXR::IsRuntimeRunning(){
+	return pInstance != nullptr;
+}
+
 void deVROpenXR::SetCamera( deCamera *camera ){
 	if( pCamera == camera ){
 		return;
@@ -659,6 +663,10 @@ decPoint deVROpenXR::GetRenderSize(){
 }
 
 deBaseVRModule::eVRRenderFormat deVROpenXR::GetRenderFormat(){
+	if(pSession && pSession->GetSwapchainRightEye()){
+		return pSession->GetSwapchainRightEye()->GetVRRenderFormat();
+	}
+	
 	// WARNING
 	// 
 	// SteamVR has a huge problem. under windows their OpenXR implementation expects the
@@ -1078,6 +1086,7 @@ public:
 		SetType(deModuleSystem::emtVR);
 		SetDirectoryName("openxr");
 		SetPriority(2);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

@@ -38,6 +38,7 @@ class igdeWOSOEnvMapProbe;
 class igdeWOSONavigationSpace;
 class igdeWOSONavigationBlocker;
 class igdeWOSOComponent;
+class igdeWOSOWorld;
 
 
 /**
@@ -87,6 +88,9 @@ public:
 	
 	/** \brief Visit component. */
 	virtual void VisitComponent( igdeWOSOComponent &component );
+	
+	/** \brief Visit world. */
+	virtual void VisitWorld(igdeWOSOWorld &world);
 	/*@}*/
 };
 

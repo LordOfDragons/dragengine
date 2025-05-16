@@ -1,4 +1,4 @@
-UBOLAYOUT uniform GIFieldParameters{
+UBOLAYOUT_BIND(0) uniform GIFieldParameters{
 	int pGIFieldProbeCount;
 	int pGIFieldProbesPerLine;
 	int pGIFieldProbeSize;

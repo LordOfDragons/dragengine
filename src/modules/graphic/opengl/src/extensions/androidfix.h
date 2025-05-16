@@ -283,6 +283,8 @@ typedef double GLdouble;
 typedef void (EGLAPIENTRYP PFNGLCLIPCONTROLPROC) (GLenum origin, GLenum depth);
 
 
+#define GL_DEPTH_CLAMP                    0x864F
+
 
 // special hack. 1D are not supported by EGL. the functions are replaced with 2D counterparts.
 // to allow this hack to work without being noticed the GL_TEXTURE_1D which is missing is

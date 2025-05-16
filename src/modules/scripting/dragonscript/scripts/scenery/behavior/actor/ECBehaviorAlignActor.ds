@@ -30,6 +30,7 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
 
 
 /**
@@ -114,11 +115,23 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorAlignActor'/>
+	 * <behavior type='ECBehaviorAlignActor'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -135,8 +148,10 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			var ECBehaviorAlignActor behavior = ECBehaviorAlignActor.new(eclass,\
 				ECBehaviorLocomotion.getBehaviorIn(eclass),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "alignActor")
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "alignActor")
 			return behavior
 		end
 	end
@@ -145,6 +160,79 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "alignActor.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("clear")
+					pInstance.clearTarget()
+				end
+				
+				if parameters.has("initLocomotionPlayer")
+					pInstance.initLocomotionPlayer()
+				end
+				
+				if parameters.has("cancel")
+					pInstance.cancelAligning()
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "alignActor.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "arrived", null)
+				if value != null
+					result &= pInstance.isAtTarget() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "finished", null)
+				if value != null
+					result &= pInstance.isFinished() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "succeeded", null)
+				if value != null
+					result &= pInstance.hasSucceeded() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
 		class LeaveConversation extends ECBehaviorConversationActor.DefaultListener
 			var Instance pInstance
 			
@@ -178,6 +266,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		
 		var ElementResolver pElementResolver
 		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -198,6 +287,7 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			pLocomotion = null
 			pListeners = null
 			pElementResolver = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -219,6 +309,14 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			end
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
@@ -474,6 +572,9 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.startAligning(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "start")
+			end
 		end
 		
 		/**
@@ -567,6 +668,9 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.finishedAligning(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
+			end
 		end
 		
 		
@@ -660,6 +764,9 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.finishedAligning(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
+			end
 		end
 		
 		
@@ -790,6 +897,8 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	var ECBehaviorConversationActor pConversationActor
 	var ECPFloat pSpeed
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -812,9 +921,11 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
+		pPrefix = prefix
 		pLocomotion = locomotion
 		pConversationActor = conversationActor
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		pSpeed = ECPFloat.new(prefix + "speed", 1.25, 0)
 		eclass.addProperty(pSpeed)
@@ -827,10 +938,19 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 		pLocomotion = null
 		pConversationActor = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Locomotion behavior. */
 	func ECBehaviorLocomotion getLocomotion()
@@ -845,6 +965,14 @@ class ECBehaviorAlignActor extends DefaultECBehavior
 	/** \brief Movement speed. */
 	func ECPFloat getSpeed()
 		return pSpeed
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

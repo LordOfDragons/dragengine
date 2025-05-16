@@ -491,6 +491,7 @@ public:
 		SetType(deModuleSystem::emtService);
 		SetDirectoryName("modio");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

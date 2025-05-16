@@ -2,9 +2,6 @@
 <shader>
 	<name>DefRen EnvMap Light GI</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	<uniformBlock name='GIParameters' target='1'/>
-	
 	<texture name='texPosition' target='0'/>
 	<texture name='texDiffuse' target='1'/>
 	<texture name='texNormal' target='2'/>
@@ -14,11 +11,7 @@
 	<texture name='texGIDistance' target='5'/>
 	<texture name='texGIProbeOffset' target='6'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/reflection/envmaplightgi.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/defren/reflection/envmaplightgi.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/reflection/envmaplightgi.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen EnvMap Light GI</sourceCode>
+	<sourceCode unit='geometry'>G DefRen EnvMap Light GI</sourceCode>
+	<sourceCode unit='fragment'>F DefRen EnvMap Light GI</sourceCode>
 </shader>

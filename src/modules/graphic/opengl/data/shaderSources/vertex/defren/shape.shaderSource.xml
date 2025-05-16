@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Shape</name>
+	<stage>vertex</stage>
+	<source>shape.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+	<attribute name='inSelector' location='1'/>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+	
+	<define>GS_RENDER_STEREO</define>
+	<define>VS_RENDER_STEREO</define>
+	<define>WITH_SELECTOR</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+</shaderSource>

@@ -2,18 +2,11 @@
 <shader>
 	<name>Effect Filter Kernel DownSample</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name="texColor" target="0"/>
 	
 	<parameter name="pTCTransform"/>
 	<parameter name="pTCClamp"/>
 	
-	<attribute name="inPosition" target="0"/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name="outColor" target="0"/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit="fragment">fragment/effect/filter_kernel_downsample.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit="fragment">F Effect Filter Kernel DownSample</sourceCode>
 </shader>

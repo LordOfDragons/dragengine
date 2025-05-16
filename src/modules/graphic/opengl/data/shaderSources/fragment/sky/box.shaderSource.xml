@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F Sky Sky-Box</name>
+	<stage>fragment</stage>
+	<source>box.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+</shaderSource>

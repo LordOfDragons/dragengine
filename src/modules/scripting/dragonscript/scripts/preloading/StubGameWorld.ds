@@ -49,12 +49,10 @@ class StubGameWorld extends StubWithProperties
 	
 	/** \brief Create stub. */
 	func new(GameWorld gameWorld, PreloadCounter parentCounter)
-		if gameWorld == null
-			throw EInvalidParam.new()
-		end
-		
 		pGameWorld = gameWorld
-		gameWorld.setStub(this)
+		if gameWorld != null
+			gameWorld.setStub(this)
+		end
 		
 		pWorldDecals = Array.new()
 		pElements = Array.new()
@@ -77,7 +75,7 @@ class StubGameWorld extends StubWithProperties
 	
 	
 	
-	/** \brief Game world. */
+	/** \brief Game world or null. */
 	func GameWorld getGameWorld()
 		return pGameWorld
 	end
@@ -129,7 +127,7 @@ class StubGameWorld extends StubWithProperties
 				each.createWorldDecal(pGameWorld, builder)
 				
 			catch Exception e
-				console.addMessage("Failed to createWorldDecal decal located at " + each.getPosition())
+				console.addError("Failed to createWorldDecal decal located at " + each.getPosition(), e)
 				throw
 			end
 		end)
@@ -210,9 +208,9 @@ class StubGameWorld extends StubWithProperties
 				each.createAndAddElement(pGameWorld)
 				
 			catch Exception e
-				console.addMessage("Failed to createAndAddElements object with class '" \
+				console.addError("Failed to createAndAddElements object with class '" \
 					+ each.getClass().getClassname() + "' with ID " + each.getID() \
-					+ " located at " + each.getPosition())
+					+ " located at " + each.getPosition(), e)
 				throw
 			end
 		end)
@@ -232,9 +230,9 @@ class StubGameWorld extends StubWithProperties
 				end
 				
 			catch Exception e
-				console.addMessage("Failed to createAndAddNonPersistableElements object with class '" \
+				console.addError("Failed to createAndAddNonPersistableElements object with class '" \
 					+ each.getClass().getClassname() + "' with ID " + each.getID() \
-					+ " located at " + each.getPosition())
+					+ " located at " + each.getPosition(), e)
 				throw
 			end
 		end)
@@ -273,9 +271,9 @@ class StubGameWorld extends StubWithProperties
 				end
 				
 			catch Exception e
-				console.addMessage("Failed to createAndAddPersistableElements object with class '" \
+				console.addError("Failed to createAndAddPersistableElements object with class '" \
 					+ each.getClass().getClassname() + "' with ID " + each.getID() \
-					+ " located at " + each.getPosition())
+					+ " located at " + each.getPosition(), e)
 				throw
 			end
 		end)
@@ -319,9 +317,9 @@ class StubGameWorld extends StubWithProperties
 				end
 				
 			catch Exception e
-				console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
+				console.addError("Failed to loadAndAddPersistableElements object with class '" \
 					+ each.getClass().getClassname() + "' with ID " + each.getID() \
-					+ " located at " + each.getPosition())
+					+ " located at " + each.getPosition(), e)
 				throw
 			end
 		end)
@@ -361,9 +359,9 @@ class StubGameWorld extends StubWithProperties
 				end
 				
 			catch Exception e
-				console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
+				console.addError("Failed to loadAndAddPersistableElements object with class '" \
 					+ stub.getClass().getClassname() + "' with ID " + stub.getID() \
-					+ " located at " + stub.getPosition())
+					+ " located at " + stub.getPosition(), e)
 				
 				elementDataReader.setPosition(0)
 				stub = pGameWorld.onFailLoadAndAddPersistableElements(env, elementDataReader, stub, elementDataSize, e)

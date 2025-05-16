@@ -30,6 +30,8 @@ pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
 pin Dragengine.Scenery
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -165,6 +167,18 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	 *                  format is '', 'category' or 'category:filter' where category and filter
 	 *                  are a list of bits to set. -->
 	 *   <string name='collisionFilter'>4:1 2</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * 
 	 * <!-- for adding multiple behaviors use unique identifiers -->
@@ -174,7 +188,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -193,7 +207,6 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				
 			else
 				behavior = ECBehaviorGrabber.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
-				
 			end
 			
 			if parameters.has("collisionFilter")
@@ -201,8 +214,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "grabber", id)
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "grabber", id)
 			return behavior
 		end
 	end
@@ -211,6 +225,119 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance implements TouchSensorListener
+		/**
+		 * \brief Behavior tree action "grabber{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "grabber{(id)}.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("interactElement.assign", null)
+				if value != null
+					var ECBehaviorGrabSpot.Instance grabSpot = pInstance.getGrabSpot()
+					if grabSpot == null
+						return BTResult.failure
+					end
+					
+					var ECBehaviorInteractionElement.Instance interactionElement =\
+						ECBehaviorInteractionElement.getInstanceIn(pInstance.getElement(), value cast String)
+					if interactionElement == null
+						return BTResult.failure
+					end
+					
+					interactionElement.setInteractionBehavior(grabSpot)
+				end
+				
+				value = parameters.getAt("interact", null)
+				if value != null
+					if not ECBehaviorInteraction.checkInteraction(pInstance.getGrabSpot(),\
+					value cast String, parameters.getAt("interact.parameters", null) cast String,\
+					pInstance.getElement())
+						return BTResult.failure
+					end
+				end
+				
+				if parameters.has("release")
+					pInstance.release()
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "grabber{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "grabbing", null)
+				if value != null
+					result &= pInstance.isGrabbing() == value.equals("true")
+				end
+				
+				result &= ECBehaviorInteraction.checkInteractionBTSM(pInstance.getGrabSpot(),\
+					parameters, prefix + "interact.", pInstance.getElement())
+				
+				return result
+			end
+		end
+		
 		private class TrackedGrabSpot
 			var Collider pCollider
 			var ECBehaviorGrabSpot.Instance pGrabSpot
@@ -241,6 +368,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		var Array pListeners
 		var bool pEnabled
 		var ElementResolver pElementResolver
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -265,6 +393,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			pCollider = null
 			pListeners = null
 			pElementResolver = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -273,13 +402,15 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		
 		/** \brief Initialize behavior from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			pTouchSensor = createTouchSensor(stub)
 			
 			if pECBehavior.getVRHand() != null
-				pVRHand = pECBehavior.getVRHand().instance(getElement())
+				pVRHand = pECBehavior.getVRHand().instance(element)
 				
 			elif pECBehavior.getCollider() != null
-				pCollider = pECBehavior.getCollider().instance(getElement())
+				pCollider = pECBehavior.getCollider().instance(element)
 			end
 			
 			if pVRHand != null and pVRHand.getCollider() != null
@@ -292,6 +423,15 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			pTouchSensor.setListener(this)
 			
 			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		/** \brief Create touch sensor. */
@@ -369,6 +509,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.enabledChanged(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
+			end
 		end
 		
 		
@@ -391,6 +534,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.spotReleased(this, pGrabSpot)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "released")
+				end
 			end
 			
 			pGrabSpot = grabSpot
@@ -399,6 +545,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				pListeners.forEach(block Listener each
 					each.spotGrabbed(this, grabSpot)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "grabbed")
+				end
 			end
 		end
 		
@@ -656,6 +805,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				pListeners.forEach(block Listener listener
 					listener.untouchGrabSpot(this, grabSpot)
 				end)
+				if pBTSMs != null
+					pBTSMs.runEvent(pECBehavior.getPrefix(), "untouch")
+				end
 			end)
 			pTouchingGrabSpots = null
 			
@@ -702,6 +854,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.touchGrabSpot(this, grabSpot)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "touch")
+			end
 		end
 		
 		/** \brief Collider left sensor shape. */
@@ -721,6 +876,9 @@ class ECBehaviorGrabber extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.untouchGrabSpot(this, grabSpot)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "untouch")
+			end
 		end
 		
 		
@@ -748,7 +906,7 @@ class ECBehaviorGrabber extends DefaultECBehavior
 				
 				if flags.getAt(1)
 					pElementResolver = ElementResolver.new()
-					pElementResolver.addBehavior(reader, block ECBehaviorGrabSpot.Instance grabSpot
+					pElementResolver.addBehaviorAllowFail(reader, block ECBehaviorGrabSpot.Instance grabSpot
 						pGrabSpot = grabSpot
 					end)
 					setRequiresEnterFrame(true)
@@ -782,17 +940,17 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	var ECPShapeList pShape
 	var ECComposeAttachResource pAttach
 	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand)\
-	this(eclass, vrHand, "grabber.")
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand) this(eclass, vrHand, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass, ECBehaviorCollider collider)\
-	this(eclass, collider, "grabber.")
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) this(eclass, collider, "")
 	end
 	
 	/** \brief Create behavior element class. */
@@ -814,9 +972,11 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	 */
 	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
 	ECBehaviorCollider collider, String id, String prefix) super(eclass, id)
+		pPrefix = prefix
 		pVRHand = vrHand
 		pCollider = collider
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
 		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())
 		eclass.addProperty(pShape)
@@ -836,10 +996,19 @@ class ECBehaviorGrabber extends DefaultECBehavior
 		pVRHand = null
 		pCollider = null
 		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief VR Hand behavior or null if not used. */
 	func ECBehaviorVRHand getVRHand()
@@ -864,6 +1033,14 @@ class ECBehaviorGrabber extends DefaultECBehavior
 	/** \brief Touch shape. */
 	func ECPShapeList getShape()
 		return pShape
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	

@@ -29,6 +29,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -50,11 +52,23 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorPlayerInputCrouch'/>
+	 * <behavior type='ECBehaviorPlayerInputCrouch'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -70,7 +84,10 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 			end
 			var ECBehaviorPlayerInputCrouch behavior = ECBehaviorPlayerInputCrouch.new(\
 				eclass, ECBehaviorLocomotion.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "playerInputCrouch")
 			return behavior
 		end
@@ -78,193 +95,340 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorPlayerInputCrouch pECBehavior
-		private var ECBehaviorLocomotion.Instance pLocomotion
+		/**
+		 * \brief Behavior tree action "playerInputCrouch.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				if parameters.has("reset")
+					pInstance.reset()
+				end
+				
+				value = parameters.getAt("crouch", null)
+				if value != null
+					pInstance.setCrouch(value.equals("true"))
+				end
+				
+				if parameters.has("crouch.toggle")
+					pInstance.toggleCrouch()
+				end
+				
+				value = parameters.getAt("canCrouch", null)
+				if value != null
+					pInstance.setCanCrouch(value.equals("true"))
+				end
+				
+				if parameters.has("canCrouch.toggle")
+					pInstance.toggleCanCrouch()
+				end
+				
+				value = parameters.getAt("stance", null)
+				if value != null
+					pInstance.setStance((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
 		
-		private var bool pCrouch
-		private var bool pCanCrouch
-		private var float pStance
+		/**
+		 * \brief Behavior tree action "playerInputCrouch.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("locomotion")
+					pInstance.updateLocomotion((context cast SMContext).getEventParameter() cast float)
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "playerInputCrouch.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "crouch", null)
+				if value != null
+					result &= pInstance.getCrouch() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "canCrouch", null)
+				if value != null
+					result &= pInstance.getCanCrouch() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "stance.less", null)
+				if value != null
+					result &= pInstance.getStance() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "stance.greater", null)
+				if value != null
+					result &= pInstance.getStance() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorPlayerInputCrouch pECBehavior
+		var ECBehaviorLocomotion.Instance pLocomotion
+		
+		var bool pCrouch
+		var bool pCanCrouch
+		var float pStance
 		
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorPlayerInputCrouch ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorPlayerInputCrouch ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
-			this.pLocomotion = null
+		func void dispose()
+			pLocomotion = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getLocomotion() != null
-				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getLocomotion() != null
+				pLocomotion = pECBehavior.getLocomotion().instance(element)
+			end
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				var ECComposeBTSM.Instance btsms = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				btsms.addAllAction(prefix, "set", BTASet.new(this))
+				btsms.addAllAction(prefix, "update", BTAUpdate.new(this))
+				btsms.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorPlayerInputCrouch getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorPlayerInputCrouch getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Locomotion behavior or null if absent. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
-			return this.pLocomotion
+		func ECBehaviorLocomotion.Instance getLocomotion()
+			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Player is crouching. */
-		public func bool getCrouch()
-			return this.pCrouch
+		func bool getCrouch()
+			return pCrouch
 		end
 		
 		/** \brief Set if player is crouching. */
-		public func void setCrouch( bool crouch )
-			if this.pCanCrouch
-				this.pCrouch = crouch
-				this.updateStance()
+		func void setCrouch(bool crouch)
+			if pCanCrouch
+				pCrouch = crouch
+				updateStance()
 			end
 		end
 		
 		/** \brief Toggle crouching. */
-		public func void toggleCrouch()
-			if this.pCanCrouch
-				this.pCrouch = not this.pCrouch
-				this.updateStance()
+		func void toggleCrouch()
+			if pCanCrouch
+				pCrouch = not pCrouch
+				updateStance()
 			end
 		end
 		
 		/** \brief Player can change crouch. */
-		public func bool getCanCrouch()
-			return this.pCanCrouch
+		func bool getCanCrouch()
+			return pCanCrouch
 		end
 		
 		/** \brief Set if player can change crouch. */
-		public func void setCanCrouch( bool canChangeCrouch )
-			this.pCanCrouch = canChangeCrouch
+		func void setCanCrouch(bool canChangeCrouch)
+			pCanCrouch = canChangeCrouch
 		end
 		
 		/** \brief Toggle can change crouch. */
-		public func void toggleCanCrouch()
-			this.pCanCrouch = not this.pCanCrouch
+		func void toggleCanCrouch()
+			pCanCrouch = not pCanCrouch
 		end
 		
 		
 		
 		/** \brief Reset input. */
-		public func void reset()
-			this.pCrouch = false
-			this.updateStance()
+		func void reset()
+			pCrouch = false
+			updateStance()
 		end
 		
 		
 		
 		/** \brief Locomotion stance. */
-		public func float getStance()
-			return this.pStance
+		func float getStance()
+			return pStance
 		end
 		
 		/** \brief Set locomotion stance. */
-		public func void setStance( float stance )
-			this.pStance = stance
+		func void setStance(float stance)
+			pStance = stance
 		end
 		
 		/** \brief Update locomotion stance. */
-		public func void updateStance()
-			if this.pCrouch
-				this.pStance = 1
+		func void updateStance()
+			if pCrouch
+				pStance = 1
 				
 			else
-				this.pStance = 0
+				pStance = 0
 			end
 		end
 		
 		
 		
 		/** \brief Update locomotion. */
-		public func void updateLocomotion( float elapsed )
-			if this.pLocomotion != null
-				this.pLocomotion.getLocomotion().setStanceGoal( this.pStance )
+		func void updateLocomotion(float elapsed)
+			if pLocomotion != null
+				pLocomotion.getLocomotion().setStanceGoal(pStance)
 			end
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-				this.pCrouch = flags.getAt( 0 )
-				this.pCanCrouch = flags.getAt( 1 )
-				this.pStance = reader.readFloat()
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+				pCrouch = flags.getAt(0)
+				pCanCrouch = flags.getAt(1)
+				pStance = reader.readFloat()
 				
 			else
-				throw EInvalidParam.new( "unsupported version" )
+				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			writer.writeByte( 0 ) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			var PersistencyFlags flags = PersistencyFlags.new( 2 )
-			flags.setAt( 0, this.pCrouch )
-			flags.setAt( 1, this.pCanCrouch )
-			flags.writeToFile( writer )
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pCrouch)
+			flags.setAt(1, pCanCrouch)
+			flags.writeToFile(writer)
 			
-			writer.writeFloat( this.pStance )
+			writer.writeFloat(pStance)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorLocomotion pLocomotion
+	var ECBehaviorLocomotion pLocomotion
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion ) \
-	this( eclass, locomotion, "playerInputCrouch." )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion) \
+	this(eclass, locomotion, "playerInputCrouch.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
-	String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pLocomotion = locomotion
+		pPrefix = prefix
+		pLocomotion = locomotion
+		pBTSMs = ECComposeBTSM.new()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pLocomotion = null
+	func void dispose()
+		pLocomotion = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Locomotion behavior or null. */
-	public func ECBehaviorLocomotion getLocomotion()
-		return this.pLocomotion
+	func ECBehaviorLocomotion getLocomotion()
+		return pLocomotion
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	
 	
+	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -275,10 +439,10 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorPlayerInputCrouch.
 	 */
-	static public func ECBehaviorPlayerInputCrouch getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorPlayerInputCrouch each
+	static func ECBehaviorPlayerInputCrouch getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorPlayerInputCrouch each
 			return true
-		end ) cast ECBehaviorPlayerInputCrouch
+		end) cast ECBehaviorPlayerInputCrouch
 	end
 	
 	/**
@@ -287,16 +451,16 @@ class ECBehaviorPlayerInputCrouch extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorPlayerInputCrouch.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

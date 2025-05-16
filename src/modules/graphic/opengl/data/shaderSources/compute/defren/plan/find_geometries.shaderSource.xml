@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>C DefRen Plan Find Geometries</name>
+	<stage>compute</stage>
+	<source>find_geometries.comp.glsl</source>
+	
+	<shaderStorageBlock name='ElementGeometry' binding='0'/>
+	<shaderStorageBlock name='ElementCullResult' binding='1'/>
+	<shaderStorageBlock name='VisibleGeometry' binding='2'/>
+	
+	<define>WITH_OCCLUSION</define>
+</shaderSource>

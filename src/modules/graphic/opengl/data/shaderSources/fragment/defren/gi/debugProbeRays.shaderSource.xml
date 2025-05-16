@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen GI Debug Probe Rays</name>
+	<stage>fragment</stage>
+	<source>debugProbeRays.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+	
+	<uniformBlock name='GIRayDirections' binding='4'/>
+</shaderSource>

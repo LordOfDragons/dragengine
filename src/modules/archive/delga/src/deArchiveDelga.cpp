@@ -107,6 +107,7 @@ public:
 		SetDefaultExtension(".delga");
 		SetNoCompress(true);
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

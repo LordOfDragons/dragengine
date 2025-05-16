@@ -28,6 +28,7 @@
 
 #include "deoglFramebuffer.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../capabilities/deoglCapsTextureFormat.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -312,15 +313,15 @@ void deoglFramebuffer::AttachColorCubeMapFaceLevel( int index, deoglCubeMap *tex
 	if( pAttColor[ index ].DoesNotMatch( image, type, level, face ) ){
 		DetachColorImage( index );
 		
-		if( pglFramebufferTexture2D ){
+		// if( pglFramebufferTexture2D ){
 			// this is the core 4.6 recommended one. use *Face as fallback
 			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + index, targetMap[ type ], image, level ) );
 			
-		}else{
+		/*}else{
 			OGL_CHECK( pRenderThread, pglFramebufferTextureFace( GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + index, image, level, targetMap[ type ] ) );
-		}
+		}*/
 		
 		pAttColor[ index ].Set( image, type, level, face );
 	}
@@ -529,15 +530,15 @@ void deoglFramebuffer::AttachDepthCubeMapFaceLevel( deoglCubeMap *texture, int f
 	if( pAttDepth.DoesNotMatch( image, type, level, face ) ){
 		DetachDepthImage();
 		
-		if( pglFramebufferTexture2D ){
+		// if( pglFramebufferTexture2D ){
 			// this is the core 4.6 recommended one. use *Face as fallback
 			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT, targetMap[ type ], image, level ) );
 			
-		}else{
+		/*}else{
 			OGL_CHECK( pRenderThread, pglFramebufferTextureFace( GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT, image, level, targetMap[ type ] ) );
-		}
+		} */
 		
 		pAttDepth.Set( image, type, level, face );
 	}
@@ -558,8 +559,19 @@ void deoglFramebuffer::AttachDepthArrayTextureLevel( deoglArrayTexture *texture,
 		DetachDepthImage();
 		
 		if(pglFramebufferTexture){
+#ifdef WITH_OPENGLES
+			try{
+#endif
 			OGL_CHECK(pRenderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT, image, level));
+	#ifdef WITH_OPENGLES
+			}catch(const deException &){
+				pRenderThread.GetLogger().LogInfoFormat(
+					"deoglFramebuffer::AttachDepthArrayTextureLevel Failed: img=%d size(%d,%d) level=%d f=%s",
+					image, texture->GetWidth(), texture->GetHeight(), level, texture->GetFormat()->GetName().GetString());
+				throw;
+			}
+#endif
 			
 		}else{
 			DETHROW(deeInvalidAction);

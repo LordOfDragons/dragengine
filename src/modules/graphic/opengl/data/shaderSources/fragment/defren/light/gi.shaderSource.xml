@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Light GI</name>
+	<stage>fragment</stage>
+	<source>gi.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+	<output name='outDepth' location='1'/>
+	
+	<uniformBlock name='GIParameters' binding='1'/>
+	<uniformBlock name='GIProbeIndices' binding='2'/>
+	<uniformBlock name='GIProbePositions' binding='3'/>
+	<uniformBlock name='GIRayDirections' binding='4'/>
+	
+	<define>GI_RAY</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>VS_RENDER_STEREO</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+	 
+	<!-- shared/normal_texture.glsl -->
+	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
+	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
+	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
+	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
+	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
+	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
+	
+	<!-- shared/defren/depth_to_position.glsl -->
+	<define>DECODE_IN_DEPTH</define>
+	
+	<!-- shared/defren/light/normal_from_depth.glsl -->
+	<define>DECODE_IN_DEPTH</define>
+	<define>GI_RAY</define>
+</shaderSource>

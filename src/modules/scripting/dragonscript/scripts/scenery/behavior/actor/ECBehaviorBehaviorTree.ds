@@ -57,7 +57,7 @@ pin Dragengine.Utils
  * class MyElementClass extends BehaviorElementClass
  *    func new()
  *       var ECBehaviorBehaviorTree btbehavior = ECBehaviorBehaviorTree.new(this)
- *       btbehavior.getPath().setValue("/content/myBehavior.debtree")
+ *       btbehavior.getPath().setValue("/content/myBehavior.debt")
  *       btbehavior.getRun().setValue(true)
  *       
  *       // here you can add now behaviors adding actions and conditions for
@@ -83,11 +83,11 @@ pin Dragengine.Utils
  * class MyElementClass extends BehaviorElementClass
  *    func new()
  *       var ECBehaviorBehaviorTree btSpecific = ECBehaviorBehaviorTree.new(this, "specific")
- *       btSpecific.getPath().setValue("/content/mySpecificBehavior.debtree")
+ *       btSpecific.getPath().setValue("/content/mySpecificBehavior.debt")
  *       btSpecific.getRun().setValue(true)
  *       
  *       var ECBehaviorBehaviorTree btIdle = ECBehaviorBehaviorTree.new(this, "idle")
- *       btIdle.getPath().setValue("/content/myIdleBehavior.debtree")
+ *       btIdle.getPath().setValue("/content/myIdleBehavior.debt")
  *       btIdle.getRun().setValue(true)
  *       
  *       // here you can add now behaviors adding actions and conditions for both
@@ -121,7 +121,7 @@ pin Dragengine.Utils
  * class MyElementClass extends BehaviorElementClass
  *    func new()
  *       var ECBehaviorBehaviorTree btree = ECBehaviorBehaviorTree.new(this)
- *       btSpecific.getPath().setValue("/content/basic.debtree")
+ *       btSpecific.getPath().setValue("/content/basic.debt")
  *       //btSpecific.getRun().setValue(false) // the default is false
  *       
  *       // here you can add now behaviors adding actions and conditions for both
@@ -133,10 +133,10 @@ pin Dragengine.Utils
  * class MyActorAI extends BAAIBehaviorTree
  *    func new()
  *       // load behavior tree to use. this is not required but allows to use different
- *       // behavior trees for different AI routines. if not used the "/content/basic.debtree"
+ *       // behavior trees for different AI routines. if not used the "/content/basic.debt"
  *       // would be used as defined in MyElementClass.
  *       var BehaviorTree btree = BaseGameApp.getApp().getLoaders() \
- *          .getBehaviorTree().loadFromFile("/content/aiRoutine1.debtree")
+ *          .getBehaviorTree().loadFromFile("/content/aiRoutine1.debt")
  *       
  *       // create context. BAAIBehaviorTree requires a BTContextAI subclass hence we can
  *       // use the ECBehaviorBehaviorTree context directly. if you write your own BaseActorAI
@@ -291,7 +291,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -303,7 +303,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorBehaviorTree behavior = ECBehaviorBehaviorTree.new(eclass, id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "behaviorTree", id)
 			return behavior
 		end
@@ -315,8 +315,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 		var ECBehaviorBehaviorTree pECBehavior
 		var BehaviorTree pBehaviorTree
 		var BTContext pContext
-		var bool pRun
-		var bool pFailed
+		var bool pRun, pFailed
 		var Array pListeners
 		
 		
@@ -596,11 +595,9 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	
 	func new(BehaviorElementClass eclass, Loaders loaders, String id, String subID,\
 	String prefix) super(eclass, id)
-		pBehaviorTree = ECPBehaviorTree.new(prefix + "path", loaders.getBehaviorTree())
-		eclass.addProperty(pBehaviorTree)
-		
-		pRun = ECPBoolean.new(prefix + "run", false)
-		eclass.addProperty(pRun)
+		eclass.addProperty(pBehaviorTree = ECPBehaviorTree.new(\
+			prefix + "path", loaders.getBehaviorTree()))
+		eclass.addProperty(pRun = ECPBoolean.new(prefix + "run", false))
 		
 		pActionConditionFactories = Array.new()
 		pListenerFactories = Array.new()

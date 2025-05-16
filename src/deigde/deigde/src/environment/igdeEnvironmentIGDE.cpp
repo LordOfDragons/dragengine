@@ -169,6 +169,9 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList( eFilePat
 	case efpltCamera:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplCamera );
 		
+	case efpltWorld:
+		return &lssys.GetOpenFilePatternList(igdeLoadSaveSystem::efplWorld);
+		
 	default:
 		DETHROW( deeInvalidParam );
 	}
@@ -231,6 +234,9 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList( eFilePat
 		
 	case efpltCamera:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplCamera );
+		
+	case efpltWorld:
+		return &lssys.GetSaveFilePatternList(igdeLoadSaveSystem::efplWorld);
 		
 	default:
 		DETHROW( deeInvalidParam );

@@ -493,6 +493,58 @@ bool deoglRTContext::GetUserRequestedQuit(){
 	return requested;
 }
 
+void deoglRTContext::DropCompileContexts(int count){
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
+	int i;
+#ifdef OS_UNIX_X11
+#ifdef BACKEND_OPENGL
+	for(i=count; i<pCompileContextCount; i++){
+		if(pCompileContext[i]){
+			logger.LogInfoFormat("Drop compile context %d", i);
+			glXDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = nullptr;
+		}
+	}
+#endif
+	
+#elif defined OS_ANDROID
+	for(i=count; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i] != EGL_NO_CONTEXT){
+			eglDestroyContext(pDisplay, pCompileContext[i]);
+			pCompileContext[i] = EGL_NO_CONTEXT;
+		}
+		if(pCompileSurface[i] != EGL_NO_SURFACE){
+			eglDestroySurface(pDisplay, pCompileSurface[i]);
+			pCompileSurface[i] = EGL_NO_SURFACE;
+		}
+	}
+	
+#elif defined OS_WEBASM
+	for(i=count; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i]){
+			emscripten_webgl_destroy_context(pCompileContext[i]);
+			pCompileContext[i] = 0;
+		}
+	}
+	
+#elif defined OS_BEOS
+	
+#elif defined OS_MACOS
+	
+#elif defined OS_W32
+	for(i=0; i<pCompileContextCount; i++){
+		logger.LogInfoFormat("Drop compile context %d", i);
+		if(pCompileContext[i]){
+			wglDeleteContext(pCompileContext[i]);
+			pCompileContext[i] = NULL;
+		}
+	}
+#endif
+}
+
 
 
 #ifdef BACKEND_OPENGL
@@ -1121,7 +1173,7 @@ void deoglRTContext::pInitDisplay(){
 		// choose configuration
 		const EGLint attribs[] = {
 			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
-			EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+			EGL_SURFACE_TYPE, EGL_WINDOW_BIT | EGL_PBUFFER_BIT,
 			EGL_BLUE_SIZE, 8,
 			EGL_GREEN_SIZE, 8,
 			EGL_RED_SIZE, 8,
@@ -1145,7 +1197,20 @@ void deoglRTContext::pInitDisplay(){
 	// create surface
 	pSurface = eglCreateWindowSurface( pDisplay, pConfig, pOSAndroid->GetNativeWindow(), NULL );
 	if( pSurface == EGL_NO_SURFACE ){
+#ifdef OS_ANDROID_QUEST
+		// happens if VR-Mode is enabled. in this case we need a small off-screen surface
+		logger.LogInfo("Window surface already connected (VR-Mode). Creating tiny PBuffer surface");
+		const EGLint eglBufferAttribList[]{
+			EGL_WIDTH, 16,
+			EGL_HEIGHT, 16,
+			EGL_NONE
+		};
+		
+		pSurface = eglCreatePbufferSurface(pDisplay, pConfig, eglBufferAttribList);
+		DEASSERT_FALSE(pSurface == EGL_NO_SURFACE)
+#else
 		DETHROW( deeInvalidParam );
+#endif
 	}
 	
 	// create context if not existing. it can be kept around while frozen
@@ -1170,7 +1235,7 @@ void deoglRTContext::pInitDisplay(){
 			EGL_NONE, EGL_NONE,
 			EGL_NONE };
 		
-		pContext = eglCreateContext(pDisplay, pConfig, nullptr, eglAttribList);
+		pContext = eglCreateContext(pDisplay, pConfig, EGL_NO_CONTEXT, eglAttribList);
 		DEASSERT_FALSE(pContext == EGL_NO_CONTEXT)
 		
 		// loader context needs also an own surface

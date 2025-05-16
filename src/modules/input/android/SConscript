@@ -62,7 +62,7 @@ if internalModule:
 	install.extend(targetBuild)
 	
 	parent_targets['dragengine']['add internal module'](
-		envModule, library, ['lib_agdk'], 'deaiRegisterInternalModule')
+		envModule, library, ['lib_agdk'], 'deainpRegisterInternalModule')
 	
 else:
 	objects = [envModule.SharedObject(s) for s in sources]

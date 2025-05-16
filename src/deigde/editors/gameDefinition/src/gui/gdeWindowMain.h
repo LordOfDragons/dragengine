@@ -48,6 +48,7 @@ class gdeMAOCNavSpace;
 class gdeMAOCParticleEmitter;
 class gdeMAOCSnapPoint;
 class gdeMAOCSpeaker;
+class gdeMAOCWorld;
 
 class gdeConfiguration;
 class gdeGameDefinition;
@@ -169,6 +170,12 @@ private:
 	igdeActionReference pActionOCSpeakerCopy;
 	igdeActionReference pActionOCSpeakerCut;
 	igdeActionReference pActionOCSpeakerPaste;
+	
+	igdeActionReference pActionOCWorldAdd;
+	igdeActionReference pActionOCWorldRemove;
+	igdeActionReference pActionOCWorldCopy;
+	igdeActionReference pActionOCWorldCut;
+	igdeActionReference pActionOCWorldPaste;
 	
 	igdeActionReference pActionParticleEmitterAdd;
 	igdeActionReference pActionParticleEmitterRemove;
@@ -313,6 +320,12 @@ public:
 	inline igdeAction *GetActionOCSpeakerCopy() const{ return pActionOCSpeakerCopy; }
 	inline igdeAction *GetActionOCSpeakerCut() const{ return pActionOCSpeakerCut; }
 	inline igdeAction *GetActionOCSpeakerPaste() const{ return pActionOCSpeakerPaste; }
+	
+	inline igdeAction *GetActionOCWorldAdd() const{ return pActionOCWorldAdd; }
+	inline igdeAction *GetActionOCWorldRemove() const{ return pActionOCWorldRemove; }
+	inline igdeAction *GetActionOCWorldCopy() const{ return pActionOCWorldCopy; }
+	inline igdeAction *GetActionOCWorldCut() const{ return pActionOCWorldCut; }
+	inline igdeAction *GetActionOCWorldPaste() const{ return pActionOCWorldPaste; }
 	
 	inline igdeAction *GetActionParticleEmitterAdd() const{ return pActionParticleEmitterAdd; }
 	inline igdeAction *GetActionParticleEmitterRemove() const{ return pActionParticleEmitterRemove; }

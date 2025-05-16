@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen Skin Geometry</name>
+	<stage>vertex</stage>
+	<source>geometry.vert.glsl</source>
+	
+	<attribute set='1' name='inPosition' location='0'/>
+	<attribute set='1' name='inHeight' location='1'/>
+	<attribute set='1' name='inNormal' location='2'/>
+	
+	<attribute set='2' name='inPosition' location='0'/>
+	<attribute set='2' name='inRealNormal' location='1'/>
+	<attribute set='2' name='inNormal' location='2'/>
+	<attribute set='2' name='inTangent' location='3'/>
+	<attribute set='2' name='inTexCoord' location='4'/>
+	
+	<!-- system only
+	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>
+	<define>EXT_AMD_VERTEX_SHADER_LAYER</define>
+	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
+	-->
+	
+	<!-- system only
+	<define>SHARED_SPB_PADDING</define>
+	<define>SHARED_SPB_USE_SSBO</define>
+	<define>SHARED_SPB_ARRAY_SIZE</define>
+	-->
+	
+	<define>BILLBOARD</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>HAS_TESSELLATION_SHADER</define>
+	<define>HEIGHT_MAP</define>
+	<define>VS_RENDER_STEREO</define>
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+	
+	<!-- shared/defren/skin/ubo_instance_parameters.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='0'/>
+	<uniformBlock name='InstanceParameters' binding='2'/>
+	
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/skin/shared_spb_index.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='1'/>
+	<uniformBlock name='InstanceIndex' binding='4'/>
+	
+	<!-- system only
+	<define>SPB_SSBO_INSTANCE_ARRAY</define>
+	<define>SPB_INSTANCE_ARRAY_SIZE</define>
+	-->
+	
+	<!-- shared/defren/skin/ubo_texture_parameters.glsl -->
+	<shaderStorageBlock name='TextureParametersSSBO' binding='2'/>
+	<uniformBlock name='TextureParameters' binding='1'/>
+	
+	<define>SHARED_SPB</define>
+	
+	<!-- shared/defren/skin/ubo_dynamic_parameters_vertex.glsl -->
+	<define>DYNAMIC_OUTLINE_THICKNESS</define>
+	
+	<!-- shared/defren/skin/transform_position.glsl -->
+	<define>BILLBOARD</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>HAS_TESSELLATION_SHADER</define>
+	<define>PROP_FIELD</define>
+	<define>WITH_OUTLINE_THICKNESS_SCREEN</define>
+	<define>WITH_OUTLINE</define>
+	
+	<!-- shared/defren/skin/transform_normal.glsl -->
+	<define>BILLBOARD</define>
+	<define>GS_RENDER_CASCADED</define>
+	<define>GS_RENDER_CUBE</define>
+	<define>GS_RENDER_STEREO</define>
+	<define>HAS_TESSELLATION_SHADER</define>
+	<define>HEIGHT_MAP</define>
+	<define>PROP_FIELD</define>
+	
+	<!-- shared/defren/skin/shared_spb_index2.glsl -->
+	<define>SHARED_SPB</define>
+</shaderSource>

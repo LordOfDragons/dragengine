@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V DefRen EnvMap Material Copy</name>
+	<stage>vertex</stage>
+	<source>envmapmaterialcopy.vert.glsl</source>
+	
+	<attribute name='inPosition' location='0'/>
+</shaderSource>

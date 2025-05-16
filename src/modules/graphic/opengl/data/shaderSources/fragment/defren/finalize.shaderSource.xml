@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Finalize</name>
+	<stage>fragment</stage>
+	<source>finalize.frag.glsl</source>
+	
+	<output set='1' name='outColor1' location='0'/>
+	<output set='1' name='outColor2' location='1'/>
+	
+	<output set='2' name='outColor' location='0'/>
+	
+	<define>GS_RENDER_STEREO</define>
+	<define>SPLIT_LAYERS</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

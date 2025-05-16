@@ -141,12 +141,12 @@ void deoglRenderTaskParticles::DebugPrint( deoglRTLogger &rtlogger ){
 		pipeline = step.GetPipeline();
 		rtlogger.LogInfo( "  - configuration:" );
 		const deoglShaderProgram &shader = pipeline->GetConfiguration().GetShaderRef();
-		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetVertexSourceCode()
-			? shader.GetVertexSourceCode()->GetFilePath().GetString() : "-" );
-		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetGeometrySourceCode()
-			? shader.GetGeometrySourceCode()->GetFilePath().GetString() : "-" );
-		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetFragmentSourceCode()
-			? shader.GetFragmentSourceCode()->GetFilePath().GetString() : "-" );
+		rtlogger.LogInfoFormat( "    - vertex %s", shader.GetUnitVertex()
+			? shader.GetUnitVertex()->GetSources()->GetName().GetString() : "-" );
+		rtlogger.LogInfoFormat( "    - geometry %s", shader.GetUnitGeometry()
+			? shader.GetUnitGeometry()->GetSources()->GetName().GetString() : "-" );
+		rtlogger.LogInfoFormat( "    - fragment %s", shader.GetUnitFragment()
+			? shader.GetUnitFragment()->GetSources()->GetName().GetString() : "-" );
 		
 		text = "    - defines: ";
 		const deoglShaderDefines &defines = shader.GetDefines();

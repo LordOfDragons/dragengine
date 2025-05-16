@@ -138,6 +138,12 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\speaker\igdeGDCSpeakerList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorldList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1194,6 +1200,9 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOSpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1425,6 +1434,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\speaker\igdeGDCSpeakerList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorld.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\world\igdeGDCWorldList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGameDefinition.h">
@@ -2487,6 +2502,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOSpeaker.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOWorld.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\wrapper\object\igdeWOSOVisitor.h">

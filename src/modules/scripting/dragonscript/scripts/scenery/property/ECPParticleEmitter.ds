@@ -40,20 +40,20 @@ pin Dragengine.Utils
  * fails null particle emitter is stored.
  */
 class ECPParticleEmitter extends ElementClassProperty
-	private var LoadParticleEmitter pLoader
-	private var String pPath
-	private var ParticleEmitter pParticleEmitter
-	private var bool pHasPreloaded
-	
+	var LoadParticleEmitter pLoader
+	var String pPath
+	var ParticleEmitter pParticleEmitter
+	var bool pHasPreloaded
+	var Exception pException
 	
 	
 	/** \brief Create property. */
-	public func new(String name, LoadParticleEmitter loader) super(name)
+	func new(String name, LoadParticleEmitter loader) super(name)
 		pLoader = loader
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new(String name, LoadParticleEmitter loader, String path) super(name)
+	func new(String name, LoadParticleEmitter loader, String path) super(name)
 		pLoader = loader
 		pPath = path
 	end
@@ -61,39 +61,39 @@ class ECPParticleEmitter extends ElementClassProperty
 	
 	
 	/** \brief Particle emitter loader. */
-	public func LoadParticleEmitter getLoader()
+	func LoadParticleEmitter getLoader()
 		return pLoader
 	end
 	
 	/** \brief Path to particle emitter. */
-	public func String getPath()
+	func String getPath()
 		return pPath
 	end
 	
 	/** \brief Set path to particle emitter. */
-	public func void setPath(String path)
+	func void setPath(String path)
 		pPath = path
 	end
 	
 	/** \brief ParticleEmitter or \em null if not present. */
-	public func ParticleEmitter getParticleEmitter()
+	func ParticleEmitter getParticleEmitter()
 		return pParticleEmitter
 	end
 	
 	/** \brief Set particle emitter or \em null if not present. */
-	public func void setParticleEmitter(ParticleEmitter particleEmitter)
+	func void setParticleEmitter(ParticleEmitter particleEmitter)
 		pParticleEmitter = particleEmitter
 	end
 	
 	/** \brief Property has been preloaded. */
-	public func bool getHasPreloaded()
+	func bool getHasPreloaded()
 		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue(Object value)
+	func void setValue(Object value)
 		pPath = value cast String
 	end
 	
@@ -101,7 +101,7 @@ class ECPParticleEmitter extends ElementClassProperty
 	 * \brief Copy value from another element class property of the same type.
 	 * \version 1.17
 	 */
-	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
 		var String path = (property cast ECPParticleEmitter).pPath
 		if path != null and not path.empty()
 			pPath = File.absolutePath(path, elementClass.getBasePath()).getPath()
@@ -111,7 +111,7 @@ class ECPParticleEmitter extends ElementClassProperty
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+	func void preloadResources(ElementClass elementClass, PreloadCounter counter)
 		if pHasPreloaded
 			return
 		end
@@ -127,6 +127,7 @@ class ECPParticleEmitter extends ElementClassProperty
 				File.absolutePath(pPath, elementClass.getBasePath()).getPath())
 			
 		catch Exception e
+			pException = e
 		end
 	end
 	
@@ -134,11 +135,11 @@ class ECPParticleEmitter extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+	func bool logPreloadProblems(ElementClass elementClass, Console console)
 		if pPath != null and not pPath.empty() and pParticleEmitter == null
-			console.addMessage("Property " + elementClass.getClassname() + "." \
+			console.addError("Property " + elementClass.getClassname() + "." \
 				+ getName() + ": Failed loading particle emitter " \
-				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath())
+				+ File.absolutePath(pPath, elementClass.getBasePath()).getPath(), pException)
 			return true
 		end
 		return false

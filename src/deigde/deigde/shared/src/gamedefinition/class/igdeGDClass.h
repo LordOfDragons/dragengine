@@ -36,6 +36,7 @@
 #include "particleemitter/igdeGDCParticleEmitterList.h"
 #include "forcefield/igdeGDCForceFieldList.h"
 #include "speaker/igdeGDCSpeakerList.h"
+#include "world/igdeGDCWorldList.h"
 #include "../igdeTagManager.h"
 #include "../property/igdeGDPropertyList.h"
 
@@ -89,10 +90,11 @@ public:
 		efsoEnvMapProbes = 0x40,
 		efsoSpeakers = 0x80,
 		efsoNavigationSpaces = 0x100,
-		efsoNavigationBlockers = 0x200
+		efsoNavigationBlockers = 0x200,
+		efsoWorlds = 0x400
 	};
 	
-	static const int FilterSubObjectsAll = 0x3ff;
+	static const int FilterSubObjectsAll = 0x7ff;
 	
 	
 	
@@ -118,6 +120,7 @@ private:
 	igdeGDCSpeakerList pListSpeakers;
 	igdeGDCNavigationSpaceList pListNavigationSpaces;
 	igdeGDCNavigationBlockerList pListNavigationBlockers;
+	igdeGDCWorldList pListWorlds;
 	int pInheritSubObjects;
 	
 	igdeTagManager pHideTags;
@@ -605,6 +608,32 @@ public:
 	
 	/** \brief Retrieves a list of indices of navigation blockers with a named linked property. */
 	const decIntList GetNavBlockerIndicesWithLinkedProperty( const char *name ) const;
+	/*@}*/
+	
+	
+	
+	/** \name Worlds */
+	/*@{*/
+	/** \brief List of worlds. */
+	inline const igdeGDCWorldList &GetWorldList() const{ return pListWorlds; }
+	
+	/** \brief Add world. */
+	void AddWorld(igdeGDCWorld *world);
+	
+	/** \brief Remove world. */
+	void RemoveWorld(igdeGDCWorld *world);
+	
+	/** \brief Removes all worlds. */
+	void RemoveAllWorlds();
+	
+	/** \brief Any world has named linked property. */
+	bool HasWorldLinkedProperty(const char *name) const;
+	
+	/** \brief List of worlds with named linked property. */
+	const igdeGDCWorldList GetWorldsWithLinkedProperty(const char *name) const;
+	
+	/** \brief List of indices of worlds with named linked property. */
+	const decIntList GetWorldIndicesWithLinkedProperty(const char *name) const;
 	/*@}*/
 	
 	

@@ -8,12 +8,6 @@
 	
 	<parameter name='pParameters'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outDiffuse' target='0'/>
-	<output name='outReflectivity' target='1'/>
-	<output name='outEmissivity' target='2'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/gi/resizeMaterials.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/gi/resizeMaterials.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen GI Resize Materials</sourceCode>
+	<sourceCode unit='fragment'>F DefRen GI Resize Materials</sourceCode>
 </shader>

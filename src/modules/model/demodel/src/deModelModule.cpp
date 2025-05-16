@@ -2306,6 +2306,7 @@ public:
 		GetPatternList().Add(".demodel");
 		SetDefaultExtension(".demodel");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

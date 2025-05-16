@@ -108,7 +108,7 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -122,7 +122,7 @@ class ECBehaviorRenderableCamera extends DefaultECBehavior
 			var ECBehaviorRenderableCamera behavior = ECBehaviorRenderableCamera.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters),\
 				eclass.sharedFactoryHelper.defaultCamera(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "renderableCamera", id)
 			return behavior
 		end

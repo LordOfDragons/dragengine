@@ -25,8 +25,6 @@
 #ifndef _DEOGLSHADERCOMPILELISTENER_H_
 #define _DEOGLSHADERCOMPILELISTENER_H_
 
-class deoglShaderCompiled;
-
 /**
  * Shader compile listener.
  */
@@ -35,10 +33,8 @@ public:
 	deoglShaderCompileListener() = default;
 	virtual ~deoglShaderCompileListener() = default;
 	
-	/**
-	 * Compile finished. If compile failed compiled is nullptr.
-	 */
-	virtual void CompileFinished(deoglShaderCompiled *compiled) = 0;
+	/** Compile finished. */
+	virtual void CompileFinished(deoglShaderProgram *program) = 0;
 	/*@}*/
 };
 

@@ -1,0 +1,653 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<stateMachine>
+	<!--
+	State machine providing similar implementation as BAAFirstPerson.
+	
+	To use this state machine in your custom state machine import it like this:
+	
+	<stateMachine>
+		<import>/shareddata/stateMachines/actorAction/firstPerson.desm</import>
+		... your content
+	</stateMachine>
+	
+	You can thus import multiple state machines. This allows storing often used states
+	and state templates in separate files for easier reuse.
+	
+	Defining states in your custom state machine replace states inherited from
+	the base state machine.
+	
+	The initial state is "created". Upon receiving "activate" or "activateWhileLoading"
+	transitions to "ground" state. This state contains various transitions for events
+	which apply actions but otherwise stay in the "ground" state.
+	-->
+	<initialState>created</initialState>
+	
+	
+	<!--
+	Import shared state machine states.
+	-->
+	<import>shared.desm</import>
+	
+	
+	<!--
+	Common player input and locomotion set up for human actors.
+	<import>shared.init.inputLocomotion</import>
+	
+	Also import "shared.init.inputLocomotion.player" to apply player controlled modifications
+	-->
+	<state id='shared.init.inputLocomotion'>
+		<!--
+		Set up player input parameters
+		
+		The locomotion type can be set also in the element class. Doing it here though allows
+		to change the locomotion type depending on the action, for example while driving a
+		vehicle instead of walking on foot. Multiple parameters can be set with the same action
+		as long as their parameter names are unique
+		-->
+		<enterAction name='playerInputMove.set'>
+			<parameter name='locomotion.type'>natural</parameter>
+		</enterAction>
+		
+		<!--
+		Set up locomotion parameters
+		
+		The ECBehaviorLocomotion behavior provides helper functions to init common scenarios.
+		Multiple parameters can be set with the same action as long as their parameter names
+		are unique
+		-->
+		<enterAction name='locomotion.set'>
+			<parameter name='preset'>human</parameter>
+			<parameter name='preset.averageSpeed'>playerInputMove.speedWalk</parameter>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Modify player input and locomotion if actor is player controlled.
+	Apply this after "shared.init.inputLocomotion".
+	<import>shared.init.inputLocomotion.player</import>
+	-->
+	<state id='shared.init.inputLocomotion.player'>
+		<!--
+		If actor is player controlled modify the locomotion parameters to be better suited
+		for direct player input
+		-->
+		<enterAction name='locomotion.set'>
+			<condition>playerControllable.check</condition>
+			<parameter name='playerControllable.playerControlled'>true</parameter>
+			
+			<parameter name='adjust.vertical.time'>0</parameter>
+			<parameter name='adjust.horizontal.time'>0</parameter>
+			<parameter name='adjust.linearVelocity.time'>0.5</parameter>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Handle player movement inputs. Imported by adding this line to your state or transition:
+	<import>shared.player.movement.move</import>
+	-->
+	<state id='shared.player.movement.move'>
+		<transition event='movement.move.forward.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='forward'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.forward.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='forward'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.backward.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='backward'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.backward.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='backward'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.left.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='left'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.left.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='left'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.right.start'>
+			<action name='playerInputMove.set'>
+				<parameter name='right'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.move.right.stop'>
+			<action name='playerInputMove.set'>
+				<parameter name='right'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.move.forwardBackward'>
+			<action name='playerInputMove.set'>
+				<parameter name='analog.forwardBackward'>-eventParam</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.move.forwardBackward.sticky'>
+			<action name='playerInputMove.set'>
+				<parameter name='analog.forwardBackward.sticky'>-eventParam</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.move.leftRight'>
+			<action name='playerInputMove.set'>
+				<parameter name='analog.leftRight'>eventParam</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.move.leftRight-sticky'>
+			<action name='playerInputMove.set'>
+				<parameter name='analog.leftRight.sticky'>eventParam</parameter>
+			</action>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Handle player looking inputs. Imported by adding this line to your state or transition:
+	<import>shared.player.movement.look</import>
+	-->
+	<state id='shared.player.movement.look'>
+		<transition event='movement.look.left.start'>
+			<action name='playerInputLook.set'>
+				<parameter name='left'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.left.stop'>
+			<action name='playerInputLook.set'>
+				<parameter name='left'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.right.start'>
+			<action name='playerInputLook.set'>
+				<parameter name='right'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.right.stop'>
+			<action name='playerInputLook.set'>
+				<parameter name='right'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.up.start'>
+			<action name='playerInputLook.set'>
+				<parameter name='up'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.up.stop'>
+			<action name='playerInputLook.set'>
+				<parameter name='up'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.down.start'>
+			<action name='playerInputLook.set'>
+				<parameter name='down'>true</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.look.down.stop'>
+			<action name='playerInputLook.set'>
+				<parameter name='down'>false</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.look.leftRight'>
+			<action name='playerInputLook.set'>
+				<parameter name='analog.horizontal'>-eventParam</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.look.leftRight.sticky'>
+			<action name='playerInputLook.set'>
+				<parameter name='analog.horizontal.sticky'>-eventParam</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.look.upDown'>
+			<action name='playerInputLook.set'>
+				<parameter name='analog.vertical'>-eventParam</parameter>
+			</action>
+		</transition>
+		
+		<transition event='movement.analog.look.upDown.sticky'>
+			<action name='playerInputLook.set'>
+				<parameter name='analog.vertical.sticky'>-eventParam</parameter>
+			</action>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Handle BAAMovement interface. Composes of these states:
+	- shared.player.movement.move
+	- shared.player.movement.look
+	- shared.player.movement.run
+	- shared.player.movement.crouch
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.player.movement</import>
+	-->
+	<state id='shared.player.movement'>
+		<import>shared.player.movement.move</import>
+		<import>shared.player.movement.look</import>
+		<import>shared.player.movement.run</import>
+		<import>shared.player.movement.crouch</import>
+	</state>
+	
+	
+	<!--
+	Update locomotion with player input look, crouch and move during player thinking.
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.update.player.locomotion</import>
+	-->
+	<state id='shared.update.player.locomotion'>
+		<enterAction name='playerInputLook.update'>
+			<parameter name='locomotion'/>
+		</enterAction>
+		
+		<enterAction name='playerInputCrouch.update'>
+			<parameter name='locomotion'/>
+		</enterAction>
+		
+		<enterAction name='playerInputMove.update'>
+			<parameter name='locomotion'/>
+		</enterAction>
+	</state>
+	
+	
+	<!--
+	Base thinking for ground movemement.
+	
+	Imported by adding this line to your "think" transition:
+	<import>shared.think.ground</import>
+	-->
+	<state id='shared.think.ground'>
+		<!--
+		Imports "shared.update.locomotion", "shared.update.collider.ground"
+		and "shared.update.animators"
+		-->
+		<import>shared.update.locomotion</import>
+		<import>shared.update.collider.ground</import>
+		<import>shared.update.animators</import>
+	</state>
+	
+	
+	<!--
+	Base thinking for falling movemement.
+	
+	Imported by adding this line to your "think" transition":
+	<import>shared.think.falling</import>
+	-->
+	<state id='shared.think.falling'>
+		<!--
+		Imports "shared.update.locomotion", "shared.update.collider.ground"
+		and "shared.update.animators"
+		-->
+		<import>shared.update.locomotion</import>
+		<import>shared.update.collider.falling.turn</import>
+		<import>shared.update.animators</import>
+	</state>
+	
+	
+	<!--
+	Basic state content for actors. Import this into your custom states to get basic actor
+	handling for both stationary and moving actors. This does not include player handling.
+	
+	Defines these transitions: think, postThink, cancel and collisionResponse
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.ground</import>
+	-->
+	<state id='shared.state.ground'>
+		<!--
+		Think on frame update. Applies necessary actions and stays in this state.
+		Imports "shared.update.locomotion", "shared.update.collider.ground"
+		and "shared.update.animators"
+		-->
+		<transition event='think'>
+			<import>shared.think.ground</import>
+		</transition>
+		
+		<!--
+		Post think on frame update. Applies necessary actions and stays in this state.
+		Imports "shared.postUpdate"
+		-->
+		<transition event='postThink'>
+			<import>shared.postUpdate</import>
+		</transition>
+		
+		<!--
+		Actor is requested to cancel action the next time possible.
+		
+		Import "shared.aiActionFailed" to notify AI about action having failed.
+		-->
+		<transition event='cancel'>
+			<import>shared.aiFailed</import>
+		</transition>
+		
+		<!--
+		Collision detected of actor AI collider. Applies sliding collision response
+		and stays in this state. The event parameter is an instance of CollisionInfo.
+		
+		Imports "shared.collision.sliding"
+		-->
+		<transition event='collisionResponse'>
+			<import>shared.collision.sliding</import>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Basic state content for player controlled actors. Applies player input like looking
+	around and moving the actor.
+	
+	Defines these transitions: think, playerThink, postThink, cancel, collisionResponse,
+	playerTakesControl and playerReleasesControl.
+	
+	This state includes "shared.state.ground" and "shared.player.movement".
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.ground.player</import>
+	-->
+	<state id='shared.state.ground.player'>
+		<!--
+		Handle player movement commands including moving, looking around, run and crouch toggling.
+		-->
+		<import>shared.player.movement</import>
+		
+		<!--
+		Player takes control of actor. Applies necessary actions and stays in this state.
+		-->
+		<transition event='playerTakesControl'>
+			<!--
+			Typically player input and locomotion has to be setup again similar to "activate"
+			-->
+			<import>shared.init.inputLocomotion</import>
+			<import>shared.init.inputLocomotion.player</import>
+		</transition>
+		
+		<!--
+		Player releases control of actor. Applies necessary actions and stays in this state.
+		Same behavior as "playerTakesControl" so we can copy the import from there
+		-->
+		<transition event='playerReleasesControl'>
+			<import>shared.init.inputLocomotion</import>
+		</transition>
+		<!--
+		Think on frame update for player controlled actor only.
+		
+		Do transition applying necessary actions and staying in this state.
+		Imports "shared.update.player.locomotion"
+		-->
+		<transition event='playerThink'>
+			<import>shared.update.player.locomotion</import>
+		</transition>
+		
+		<!--
+		Post think on frame update for player controlled actor only. Does nothing.
+		-->
+		<!-- <transition event='playerPostThink'/> -->
+		
+		<!--
+		Basic state content for actors
+		-->
+		<import>shared.state.ground</import>
+	</state>
+	
+	
+	<!--
+	Basic state content for falling actors. Import this into your custom states to get
+	basic actor handling for falling actors. This does not include player handling.
+	
+	Defines these transitions: think, postThink, cancel and collisionResponse
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.falling</import>
+	-->
+	<state id='shared.state.falling'>
+		<transition event='think'>
+			<import>shared.think.falling</import>>
+		</transition>
+		
+		<transition event='postThink'>
+			<import>shared.postUpdate</import>
+		</transition>
+		
+		<transition event='cancel'>
+			<import>shared.aiFailed</import>
+		</transition>
+		
+		<!--
+		Collision detected of actor AI collider. Applies sliding collision response
+		then checks if the actor is touching ground. The event parameter is an instance
+		of CollisionInfo. If touching ground a "projectToGround.touch" event will be
+		send so we stay in this state.
+		
+		Imports "shared.collision.sliding" and "shared.collision.landing"
+		-->
+		<transition event='collisionResponse'>
+			<import>shared.collision.sliding</import>
+			<import>shared.collision.landing</import>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Basic state content for falling player controlled actors. Applies player input like
+	looking around without moving the actor.
+	
+	Defines these transitions: think, playerThink, postThink, cancel, collisionResponse,
+	playerTakesControl and playerReleasesControl.
+	
+	This state includes "shared.state.falling" and "shared.player.movement".
+	
+	Imported by adding this line to your state or transition:
+	<import>shared.state.falling.player</import>
+	-->
+	<state id='shared.state.falling.player'>
+		<import>shared.player.movement</import>
+		
+		<transition event='playerTakesControl'>
+			<import>shared.init.inputLocomotion</import>
+			<import>shared.init.inputLocomotion.player</import>
+		</transition>
+		
+		<transition event='playerReleasesControl'>
+			<import>shared.init.inputLocomotion</import>
+		</transition>
+		
+		<transition event='playerThink'>
+			<import>shared.update.player.locomotion</import>
+		</transition>
+		
+		<import>shared.state.falling</import>
+	</state>
+	
+	
+	<!--
+	Initial state. Waits for "activate" to transition into "ground" state.
+	-->
+	<state id='created'>
+		<transition event='activate' state='ground'>
+			<!--
+			Recommended actions to take:
+			- init player input parameters
+			- init locomotion parameters
+			
+			You can do this manually or by importing "shared.init.inputLocomotion". This state
+			contains comments on how to init these values manually. You can also import the state
+			then manually adjust specific values.
+			-->
+			<import>shared.init.inputLocomotion</import>
+			<import>shared.init.inputLocomotion.player</import>
+		</transition>
+	</state>
+	
+	
+	<!--
+	Note about loading.
+	
+	While loading the state machine is not sent the "activate" event but the "activateWhileLoading".
+	While "activate" can only be sent to the initial state (here "created") the
+	"activateWhileLoading" event is send to whatever state the state machine is in after loading.
+	-->
+	
+	
+	<!--
+	Actor is standing on ground. This is the main state which processes player input by
+	updating respective player input behaviors.
+	-->
+	<state id='ground'>
+		<!--
+		If not touching ground switch to "falling" state.
+		-->
+		<enterAction>
+			<condition>projectToGround.check</condition>
+			<parameter name='projectToGround.ground'>false</parameter>
+			
+			<state>falling</state>
+		</enterAction>
+		
+		<!--
+		If actorMover has goal switch to "actorMover" state.
+		-->
+		<enterAction>
+			<condition>actorMover.check</condition>
+			<parameter name='actorMover.goal'>true</parameter>
+			
+			<state>actorMover</state>
+		</enterAction>
+		
+		<!--
+		About using BaseActorAction.conversationWait(). This function returns true if
+		conversation actions have to wait for this action to finish. Using the state
+		machine approach this method is not supported. Instead you have to set the
+		conversationWait state using a state machine action like this:
+		
+		<enterAction name='aiAction.set'>
+			<parameter name='action.conversationWait'>true</parameter>
+		</enterAction>
+		
+		This state is reset to false whenever the current action is changed
+		-->
+		
+		
+		<!--
+		Actor begins falling. Send by ECBehaviorProjectToGround if the actor is detected
+		to be no more touching ground.
+		
+		Switches to "fallig" state.
+		-->
+		<transition event='projectToGround.noTouch' state='falling'/>
+		
+		<!--
+		Actor starts being moved by ECBehaviorActorMover. Send by ECBehaviorActorMover
+		if a goal is set to move to.
+		
+		Switches to "actorMover" state.
+		-->
+		<transition event='actorMover.start' state='actorMover'/>
+		
+		<!--
+		Element entered game world. Does nothing.
+		-->
+		<!-- <transition event='enteredGameWorld'/> -->
+		
+		<!--
+		Element left game world. Does nothing.
+		-->
+		<!-- <transition event='leftGameWorld'/> -->
+		
+		<!--
+		First frame update after element entered game world. Does nothing.
+		-->
+		<!-- <transition event='enterFrame'/> -->
+		
+		
+		<!--
+		Basic state content for player controlled actors
+		-->
+		<import>shared.state.ground.player</import>
+	</state>
+	
+	
+	<!--
+	Actor is falling. Same as "ground" state but actor can not move out of free will.
+	In particular this means the inputs are still applied to the player input behaviors
+	but the processing of the input behaviors is different.
+	-->
+	<state id='falling'>
+		<!--
+		If touching ground switch to "ground" state.
+		-->
+		<enterAction>
+			<condition>projectToGround.check</condition>
+			<parameter name='projectToGround.ground'>true</parameter>
+			
+			<state>ground</state>
+		</enterAction>
+		
+		
+		<!--
+		Actor hits ground. Send by ECBehaviorProjectToGround if the actor is detected
+		to be touching ground.
+		
+		Switches to "ground" state.
+		-->
+		<transition event='projectToGround.touch' state='ground'/>
+		
+		
+		<import>shared.state.falling.player</import>
+	</state>
+	
+	
+	<!--
+	Actor is moved by ECBehaviorActorMover. Same as "ground" state but certain player
+	inputs are disregarded.
+	-->
+	<state id='actorMover'>
+		<!--
+		If actorMover has no goal set switch to "ground" state.
+		-->
+		<enterAction>
+			<condition>actorMover.check</condition>
+			<parameter name='actorMover.goal'>false</parameter>
+			
+			<state>ground</state>
+		</enterAction>
+		
+		
+		<!--
+		While controlled by actor mover do nothing during player thinking.
+		-->
+		<transition event='playerThink'/>
+		
+		
+		<import>shared.state.ground.player</import>
+	</state>
+</stateMachine>

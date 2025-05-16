@@ -35,6 +35,13 @@
 // - tboGIRayCastTexCoord: RG16F (stride 3 pixel)
 //   stores mesh texture coordinates. same unstrided index as TBOFace.
 
+/*
+	<!-- shared/defren/gi/raycast/trace_ray.glsl -->
+	<define>GI_RAYCAST_USE_SSBO</define>
+	<define>GI_RAYCAST_DISTANCE_ONLY</define>
+	<define>GI_RAYCAST_OCCMESH_ONLY</define>
+*/
+
 #ifdef GI_RAYCAST_USE_SSBO
 	struct sGIRayCastNode{
 		vec3 minExtend;

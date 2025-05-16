@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>V Debug Rectangle</name>
+	<stage>vertex</stage>
+	<source>rectangle.vert.glsl</source>
+	
+	<attribute name="inPosition" target="0"/>
+</shaderSource>

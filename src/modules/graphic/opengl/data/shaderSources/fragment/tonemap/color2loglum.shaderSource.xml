@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F ToneMap Color2LogLum</name>
+	<stage>fragment</stage>
+	<source>color2loglum.frag.glsl</source>
+	
+	<output name='outLogLum' location='0'/>
+	
+	<define>GS_RENDER_STEREO</define>
+	<define>VS_RENDER_STEREO</define>
+</shaderSource>

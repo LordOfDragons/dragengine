@@ -348,6 +348,7 @@ extern GLAPI PFNGLDELETEPROGRAMPROC pglDeleteProgram; // core only
 extern GLAPI PFNGLCREATESHADERPROC pglCreateShader; // core only
 extern GLAPI PFNGLCREATEPROGRAMPROC pglCreateProgram; // core only
 extern GLAPI PFNGLATTACHSHADERPROC pglAttachShader; // core only
+extern GLAPI PFNGLDETACHSHADERPROC pglDetachShader; // core only
 extern GLAPI PFNGLUSEPROGRAMPROC pglUseProgram; // core only
 extern GLAPI PFNGLGETSHADERIVPROC pglGetShaderiv; // core only
 extern GLAPI PFNGLGETPROGRAMIVPROC pglGetProgramiv; // core only
@@ -502,7 +503,7 @@ extern GLAPI PFNGLFRAMEBUFFERTEXTUREARBPROC pglFramebufferTexture;
 ////////////////////////////////////////////////
 
 // extern GLAPI PFNGLPROGRAMPARAMETERIARBPROC pglProgramParameteri;
-extern GLAPI PFNGLFRAMEBUFFERTEXTUREFACEARBPROC pglFramebufferTextureFace;
+// extern GLAPI PFNGLFRAMEBUFFERTEXTUREFACEARBPROC pglFramebufferTextureFace;
 
 
 
@@ -905,6 +906,7 @@ extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
 
 
 // GL_ARB_get_program_binary : no opengl version
+// GL_OES_get_program_binary
 //////////////////////////////////////////////////
 
 extern GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary;
@@ -1128,5 +1130,11 @@ extern GLAPI PFNGLOBJECTLABELPROC pglObjectLabel;
 
 extern GLAPI PFNGLTEXSTORAGE2DPROC pglTexStorage2D;
 extern GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3D;
+
+
+// GL_ARB_parallel_shader_compile, GL_KHR_parallel_shader_compile
+///////////////////////////////////////////////////////////////////
+
+extern GLAPI PFNGLMAXSHADERCOMPILERTHREADSKHRPROC pglMaxShaderCompilerThreads;
 
 #endif

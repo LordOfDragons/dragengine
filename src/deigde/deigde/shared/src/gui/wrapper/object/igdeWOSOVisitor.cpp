@@ -36,6 +36,7 @@
 #include "igdeWOSONavigationSpace.h"
 #include "igdeWOSONavigationBlocker.h"
 #include "igdeWOSOComponent.h"
+#include "igdeWOSOWorld.h"
 
 
 // Class igdeWOSOVisitor
@@ -92,4 +93,8 @@ void igdeWOSOVisitor::VisitNavigationBlocker( igdeWOSONavigationBlocker &navigat
 
 void igdeWOSOVisitor::VisitComponent( igdeWOSOComponent &component ){
 	VisitSubObject( component );
+}
+
+void igdeWOSOVisitor::VisitWorld(igdeWOSOWorld &world){
+	VisitSubObject(world);
 }

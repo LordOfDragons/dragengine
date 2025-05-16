@@ -297,6 +297,25 @@ gdeObjectClass *objectClass, gdeOCSpeaker *speaker ){
 	pView.RebuildOCSpeaker( speaker );
 }
 
+void gdeViewActiveObjectListener::OCWorldsChanged(gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass){
+	if(pGetSSOObjectClass(*gameDefinition) != objectClass){
+		return;
+	}
+	
+	pView.RebuildOCWorlds();
+}
+
+void gdeViewActiveObjectListener::OCWorldChanged(gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass, gdeOCWorld *world){
+	if(pGetSSOObjectClass(*gameDefinition) != objectClass){
+		return;
+	}
+	
+	pView.RebuildOCWorld(world);
+}
+
+
 void gdeViewActiveObjectListener::ActiveObjectClassChanged(
 gdeGameDefinition *gameDefinition ){
 	if( gameDefinition->GetSelectedObjectType() != gdeGameDefinition::eotObjectClass ){
@@ -354,6 +373,10 @@ void gdeViewActiveObjectListener::ActiveOCSnapPointChanged( gdeGameDefinition *g
 
 void gdeViewActiveObjectListener::ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition ){
 	pOCActiveSubObjectChanged( *gameDefinition );
+}
+
+void gdeViewActiveObjectListener::ActiveOCWorldChanged(gdeGameDefinition *gameDefinition){
+	pOCActiveSubObjectChanged(*gameDefinition);
 }
 
 
@@ -465,6 +488,7 @@ const gdeGameDefinition &gameDefinition ) const{
 	case gdeGameDefinition::eotOCParticleEmitter:
 	case gdeGameDefinition::eotOCSnapPoint:
 	case gdeGameDefinition::eotOCSpeaker:
+	case gdeGameDefinition::eotOCWorld:
 		return gameDefinition.GetActiveObjectClass();
 		
 	default:

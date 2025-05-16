@@ -29,6 +29,8 @@ pin Dragengine.LoadSave
 pin Dragengine.Scenery
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -41,6 +43,75 @@ pin Dragengine.Utils
  * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_ridable
  */
 class ECBehaviorRidable extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Ride on instance begins riding. */
+		func void beginRiding(Instance instance, ECBehaviorRideOn.Instance rideOn)
+		
+		/** \brief Ride on instance stops riding. */
+		func void stopRiding(Instance instance, ECBehaviorRideOn.Instance rideOn)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		func new()
+		end
+		
+		/** \brief Ride on instance begins riding. */
+		func void beginRiding(Instance instance, ECBehaviorRideOn.Instance rideOn)
+		end
+		
+		/** \brief Ride on instance stops riding. */
+		func void stopRiding(Instance instance, ECBehaviorRideOn.Instance rideOn)
+		end
+	end
+	
+	/** \brief Implementation of behavior instance listener using BooleanBehaviorListener. */
+	class BooleanListener extends DefaultListener
+		var BooleanBehaviorListener pListener
+		
+		func new(BooleanBehaviorListener listener)
+			pListener = listener
+		end
+		
+		func void elementEntered(Instance instance, Element element)
+			if instance.getRideOnCount() == 1
+				pListener.enabled()
+			end
+		end
+		
+		func void elementLeft(Instance instance, Element element)
+			if instance.getRideOnCount() == 0
+				pListener.disabled()
+			end
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
 	/**
 	 * \brief Behavior factory.
 	 * \version 1.25
@@ -50,11 +121,23 @@ class ECBehaviorRidable extends DefaultECBehavior
 	 * 
 	 * Example XML element class:
 	 * \code{.xml}
-	 * <behavior type='ECBehaviorRidable'/>
+	 * <behavior type='ECBehaviorRidable'>
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -70,89 +153,341 @@ class ECBehaviorRidable extends DefaultECBehavior
 			end
 			var ECBehaviorRidable behavior = ECBehaviorRidable.new(\
 				eclass, ECBehaviorCollider.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "ridable")
+			
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "ridable")
 			return behavior
 		end
 	end
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorRidable pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
+		/**
+		 * \brief Behavior tree action/condition "hearSound.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "count", null)
+				if value != null
+					result &= pInstance.getRideOnCount() == (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.not", null)
+				if value != null
+					result &= pInstance.getRideOnCount() != (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.less", null)
+				if value != null
+					result &= pInstance.getRideOnCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "count.greater", null)
+				if value != null
+					result &= pInstance.getRideOnCount() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "player", null)
+				if value != null
+					result &= pInstance.isPlayerRiding() == value.equals("true")
+				end
+				
+				return result
+			end
+		end
+		
+		
+		var ECBehaviorRidable pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var Array pRideOns
+		var Array pListeners
+		var bool pNotifyListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorRidable ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pCollider = ecbehavior.getCollider().instance( element )
+		func new(ECBehaviorRidable ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pCollider = ecbehavior.getCollider().instance(element)
+			pRideOns = Array.new()
+			pListeners = Array.new()
+			pNotifyListeners = true
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
-			this.pCollider = null
+		func void dispose()
+			pCollider = null
+			pRideOns = null
+			pListeners = null
+			pBTSMs = null
 			super.dispose()
 		end
 		
+		/** \brief Initialize element from stub. */
+		func void init(StubElement stub)
+			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = "ridable."
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
+		end
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorRidable getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorRidable getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Collider behavior. */
-		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+		func ECBehaviorCollider.Instance getCollider()
+			return pCollider
 		end
 		
 		
-		
 		/** \brief Linear velocity of ridable which is collider linear velocity. */
-		public func Vector getLinearVelocity()
-			return this.pCollider.getCollider().getLinearVelocity()
+		func Vector getLinearVelocity()
+			return pCollider.getCollider().getLinearVelocity()
+		end
+		
+		
+		/**
+		 * \brief Count of ride on instances.
+		 * \version 1.26
+		 */
+		func int getRideOnCount()
+			return pRideOns.getCount()
+		end
+		
+		/**
+		 * \brief Ride on instance at index.
+		 * \version 1.26
+		 */
+		func ECBehaviorRideOn.Instance getRideOnAt(int index)
+			return pRideOns.getAt(index) cast ECBehaviorRideOn.Instance
+		end
+		
+		/**
+		 * \brief Ride on instance is present.
+		 * \version 1.26
+		 */
+		func bool hasRideOn(ECBehaviorRideOn.Instance rideOn)
+			return pRideOns.has(rideOn)
+		end
+		
+		/**
+		 * \brief Check if player is riding.
+		 * \version 1.26
+		 * 
+		 * Checks each ride on instance in the list of ride on instances if it has
+		 * ECBehaviorPlayerControllable and it is the active player actor. If found
+		 * returns the player actor. If not found null is returned.
+		 */
+		func ECBehaviorRideOn.Instance getPlayerRiding()
+			return pRideOns.findCastable(block ECBehaviorRideOn.Instance each
+				var ECBehaviorPlayerControllable.Instance behavior = \
+					ECBehaviorPlayerControllable.getInstanceIn(each.getElement())
+				return behavior != null and behavior.isPlayerControlled()
+			end) cast ECBehaviorRideOn.Instance
+		end
+		
+		/**
+		 * \brief Player is riding.
+		 * \version 1.26
+		 * 
+		 * Checks each ride on instances in the list of ride on instance if it has
+		 * ECBehaviorPlayerControllable and it is the active player actor.
+		 */
+		func bool isPlayerRiding()
+			return getPlayerRiding() != null
+		end
+		
+		/**
+		 * \brief Add ride on instance.
+		 * \version 1.26
+		 */
+		func void addRideOn(ECBehaviorRideOn.Instance rideOn)
+			if pRideOns.has(rideOn)
+				throw EInvalidParam.new("rideOn is present")
+			end
+			pRideOns.add(rideOn)
+			
+			if pNotifyListeners
+				pListeners.forEach(block Listener each
+					each.beginRiding(this, rideOn)
+				end)
+				if pBTSMs != null
+					pBTSMs.runEvent("ridable.", "beginRiding")
+				end
+			end
+		end
+		
+		/**
+		 * \brief Remove ride on instance.
+		 * \version 1.26
+		 */
+		func void removeRideOn(ECBehaviorRideOn.Instance rideOn)
+			pRideOns.remove(rideOn)
+			
+			if pNotifyListeners
+				pListeners.forEach(block Listener each
+					each.stopRiding(this, rideOn)
+				end)
+				if pBTSMs != null
+					pBTSMs.runEvent("ridable.", "stopRiding")
+				end
+			end
+		end
+		
+		/**
+		 * \brief Visit ride on instance with block with parameter \ref ECBehaviorRideOn.Instance.
+		 * \version 1.26
+		 */
+		func void forEachRideOn(Block ablock)
+			pRideOns.forEach(ablock)
+		end
+		
+		/**
+		 * \brief Find ride on instance with block with parameter \ref ECBehaviorRideOn.Instance.
+		 * \version 1.26
+		 */
+		func ECBehaviorRideOn.Instance findRideOn(Block ablock)
+			return pRideOns.find(ablock) cast ECBehaviorRideOn.Instance
+		end
+		
+		
+		/** \brief Add listener. */
+		func void addListener(Listener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		func void enterFrame()
+			pNotifyListeners = true
+		end
+		
+		
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			super.readFromFile(env, reader)
+			
+			pNotifyListeners = false
+			setRequiresEnterFrame(true)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorCollider pCollider
+	var ECBehaviorCollider pCollider
+	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
 	
 	
 	
 	/** \brief Create behavior. */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) super( eclass )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) super(eclass)
 		if collider == null
-			throw ENullPointer.new( "collider" )
+			throw ENullPointer.new("collider")
 		end
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pCollider = collider
+		pCollider = collider
+		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pCollider = null
+	func void dispose()
+		pCollider = null
+		pListenerFactories = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Collider behavior. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
+	/** \brief Add listener factory. */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
-	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -163,10 +498,10 @@ class ECBehaviorRidable extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorRidable.
 	 */
-	static public func ECBehaviorRidable getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorRidable each
+	static func ECBehaviorRidable getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorRidable each
 			return true
-		end ) cast ECBehaviorRidable
+		end) cast ECBehaviorRidable
 	end
 	
 	/**
@@ -176,16 +511,16 @@ class ECBehaviorRidable extends DefaultECBehavior
 	 * of type ECBehaviorRidable.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

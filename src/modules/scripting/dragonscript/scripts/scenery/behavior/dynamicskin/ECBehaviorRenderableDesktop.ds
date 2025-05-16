@@ -116,7 +116,7 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -129,7 +129,7 @@ class ECBehaviorRenderableDesktop extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorRenderableDesktop behavior = ECBehaviorRenderableDesktop.new(eclass,\
 				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "renderableDesktop", id)
 			return behavior
 		end

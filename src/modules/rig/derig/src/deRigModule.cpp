@@ -1575,6 +1575,7 @@ public:
 		GetPatternList().Add(".derig");
 		SetDefaultExtension(".derig");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

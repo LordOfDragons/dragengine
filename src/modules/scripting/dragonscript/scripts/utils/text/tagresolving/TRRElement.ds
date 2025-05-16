@@ -1,0 +1,127 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Utils
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+
+
+/**
+ * \brief Rule resolving element data.
+ * \version 1.26
+ * 
+ * Supports the following tags:
+ * 
+ * \par {action:id}
+ * 
+ * Resolves to \ref Element#getID() formatted as "0hID" where ID is hexadecimal.
+ * 
+ * \par {action:class}
+ * 
+ * Resolves to \ref ElementClass#getClassname() of \ref Element#getClass().
+ * 
+ * \par {action:property,name[,defaultValue]}
+ * 
+ * Resolves to \ref StubWithProperties#getPropertyValueFor() of \ref Element#getStub().
+ * If property is absent "defaultValue" is used. If "defaultValue" is absent empty string is used.
+ * 
+ * \par {action:worldProperty,name[,defaultValue]}
+ * 
+ * Resolves to \ref StubWithProperties#getPropertyValueFor() of \ref Element#getGameWorld().
+ * If element is not in a game world or property is absent "defaultValue" is used.
+ * If "defaultValue" is absent empty string is used.
+ */
+class TRRElement implements TagResolverRule
+	var Element pElement
+	var byte pSeparator
+	
+	
+	/** \brief Create resolve rule. */
+	func new(Element element)
+		if element == null
+			throw ENullPointer.new()
+		end
+		
+		pElement = element
+		pSeparator = ','
+	end
+	
+	
+	/** \brief Element. */
+	func Element getElement()
+		return pElement
+	end
+	
+	/** \brief Parameter separate character. */
+	func byte getSeparator()
+		return pSeparator
+	end
+	
+	/** \brief Set parameter separate character. */
+	func void setSeparator(byte separator)
+		pSeparator = separator
+	end
+	
+	
+	func String resolveTag(String parameters, Object context)
+		if parameters.equals("id")
+			return pElement.getID().toString()
+		end
+		
+		if parameters.equals("class")
+			return pElement.getClass().getClassname()
+		end
+		
+		var Array parts = parameters.splitExact(pSeparator)
+		var Object type = parts.getAt(0)
+		var String value
+		
+		if type.equals("property")
+			value = pElement.getStub().getPropertyValueFor(parts.getAt(1) cast String, null)
+			if value != null
+				return value
+			end
+			if parts.getCount() > 2
+				return parts.getAt(2) cast String
+			end
+			return ""
+		end
+		
+		if type.equals("worldProperty")
+			var GameWorld world = pElement.getGameWorld()
+			if world != null
+				value = world.getStub().getPropertyValueFor(parts.getAt(1) cast String, null)
+			end
+			if value != null
+				return value
+			end
+			if parts.getCount() > 2
+				return parts.getAt(2) cast String
+			end
+			return ""
+		end
+		
+		return ""
+	end
+end

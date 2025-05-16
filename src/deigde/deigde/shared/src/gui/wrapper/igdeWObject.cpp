@@ -37,6 +37,7 @@
 #include "object/igdeWOSONavigationSpace.h"
 #include "object/igdeWOSONavigationBlocker.h"
 #include "object/igdeWOSOComponent.h"
+#include "object/igdeWOSOWorld.h"
 #include "../../codec/igdeCodecPropertyString.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../engine/igdeEngineController.h"
@@ -52,6 +53,7 @@
 #include "../../gamedefinition/class/speaker/igdeGDCSpeaker.h"
 #include "../../gamedefinition/class/navspace/igdeGDCNavigationSpace.h"
 #include "../../gamedefinition/class/navblocker/igdeGDCNavigationBlocker.h"
+#include "../../gamedefinition/class/world/igdeGDCWorld.h"
 #include "../../gamedefinition/property/igdeGDProperty.h"
 #include "../../gameproject/igdeGameProject.h"
 #include "../../resourceloader/igdeResourceLoaderListener.h"
@@ -169,6 +171,7 @@ igdeWObject::cAsyncLoadFinished::~cAsyncLoadFinished(){
 
 igdeWObject::igdeWObject( igdeEnvironment &environment ) :
 pEnvironment( environment ),
+pColliderUserPointer(nullptr),
 pScaling( 1.0f, 1.0f, 1.0f ),
 pRenderLayerMask( 0x1 ),
 pRenderEnvMapMask( 0x2 ),
@@ -692,17 +695,24 @@ deComponent *igdeWObject::GetComponent() const{
 	return pColliderComponent ? pColliderComponent->GetComponent() : nullptr;
 }
 
-void igdeWObject::SetColliderUserPointer( void *userPointer ){
-	if( pColliderComponent ){
-		pEnvironment.SetColliderUserPointer( pColliderComponent, userPointer );
+void igdeWObject::SetColliderUserPointer(void *userPointer){
+	if(userPointer == pColliderUserPointer){
+		return;
 	}
-	pEnvironment.SetColliderUserPointer( pColliderFallback, userPointer );
+	
+	pColliderUserPointer = userPointer;
+	if(pColliderComponent){
+		pEnvironment.SetColliderUserPointer(pColliderComponent, userPointer);
+	}
+	pEnvironment.SetColliderUserPointer(pColliderFallback, userPointer);
 	
 	const int count = pCollidersInteraction.GetCount();
 	int i;
-	for( i=0; i<count; i++ ){
-		pEnvironment.SetColliderUserPointer( ( deCollider* ) pCollidersInteraction.GetAt( i ), userPointer );
+	for(i=0; i<count; i++){
+		pEnvironment.SetColliderUserPointer((deCollider*)pCollidersInteraction.GetAt(i), userPointer);
 	}
+	
+	pSubObjectsColliderUserPointerChanged();
 }
 
 void igdeWObject::OnColliderChanged(){
@@ -1006,6 +1016,22 @@ void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass 
 		}
 	}
 	
+	// worlds
+	if((filter & igdeGDClass::efsoWorlds) != 0){
+		const igdeGDCWorldList &worlds = gdclass.GetWorldList();
+		const int worldCount = worlds.GetCount();
+		for(i=0; i<worldCount; i++){
+			pAsyncLoadCounter++;
+			try{
+				pSubObjects.Add(deObject::Ref::New(new igdeWOSOWorld(*this, *worlds.GetAt(i), prefix)));
+				
+			}catch(const deException &e){
+				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
+				pAsyncLoadCounter--;
+			}
+		}
+	}
+	
 	// inherited classes
 	const int inheritCount = gdclass.GetInheritClassCount();
 	filter &= gdclass.GetInheritSubObjects();
@@ -1075,6 +1101,14 @@ void igdeWObject::pSubObjectsUpdateCollisionFilter(){
 	int i;
 	for( i=0; i<count; i++ ){
 		( ( igdeWOSubObject* )pSubObjects.GetAt( i ) )->UpdateCollisionFilter();
+	}
+}
+
+void igdeWObject::pSubObjectsColliderUserPointerChanged(){
+	const int count = pSubObjects.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		((igdeWOSubObject*)pSubObjects.GetAt(i))->ColliderUserPointerChanged();
 	}
 }
 

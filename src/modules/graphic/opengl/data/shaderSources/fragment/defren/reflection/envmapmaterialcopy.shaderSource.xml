@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen EnvMap Material Copy</name>
+	<stage>fragment</stage>
+	<source>envmapmaterialcopy.frag.glsl</source>
+	
+	<output name='outPosition' location='0'/>
+	<output name='outDiffuse' location='1'/>
+	<output name='outNormal' location='2'/>
+	 
+	<!-- shared/normal_texture.glsl -->
+	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
+	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
+	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
+	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
+	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
+	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
+</shaderSource>

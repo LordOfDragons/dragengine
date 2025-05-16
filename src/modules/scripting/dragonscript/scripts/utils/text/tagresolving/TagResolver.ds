@@ -22,108 +22,100 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Utils
-
 
 
 /**
  * \brief Resolve tags in text.
  * 
- * Supports tags of the form {action[:params]} with optional parameters after action.
- * The special tag {{ prints a single { character.
+ * Supports tags of the form "{action[:params]}" with optional parameters after action.
+ * The special tag "{{" prints a single "{" character. Tags can be nested, for example
+ * "{action1:{action2:param}}".
  */
 class TagResolver
-	private var byte pCharTagBegin
-	private var byte pCharTagEnd
-	private var byte pCharDelimiter
-	private var Dictionary pRules
-	private var TagResolverRule pDefaultRule
-	
+	var byte pCharTagBegin, pCharTagEnd, pCharDelimiter
+	var Dictionary pRules
+	var TagResolverRule pDefaultRule
 	
 	
 	/** \brief Create tag resolver. */
-	public func new()
-		this.pCharTagBegin = '{'
-		this.pCharTagEnd = '}'
-		this.pCharDelimiter = ':'
-		this.pRules = Dictionary.new()
+	func new()
+		pCharTagBegin = '{'
+		pCharTagEnd = '}'
+		pCharDelimiter = ':'
+		pRules = Dictionary.new()
 	end
-	
 	
 	
 	/** \brief Character starting tag. */
-	public func byte getCharTagBegin()
-		return this.pCharTagBegin
+	func byte getCharTagBegin()
+		return pCharTagBegin
 	end
 	
 	/** \brief Set character starting tag. */
-	public func void setCharTagBegin( byte character )
-		this.pCharTagBegin = character
+	func void setCharTagBegin(byte character)
+		pCharTagBegin = character
 	end
 	
 	/** \brief Character ending tag. */
-	public func byte getCharTagEnd()
-		return this.pCharTagEnd
+	func byte getCharTagEnd()
+		return pCharTagEnd
 	end
 	
 	/** \brief Set character ending tag. */
-	public func void setCharTagEnd( byte character )
-		this.pCharTagEnd = character
+	func void setCharTagEnd(byte character)
+		pCharTagEnd = character
 	end
 	
 	/** \brief Character separating action from parameters. */
-	public func byte getCharDelimiter()
-		return this.pCharDelimiter
+	func byte getCharDelimiter()
+		return pCharDelimiter
 	end
 	
 	/** \brief Set character separating action from parameters. */
-	public func void setCharDelimiter( byte character )
-		this.pCharDelimiter = character
+	func void setCharDelimiter(byte character)
+		pCharDelimiter = character
 	end
-	
 	
 	
 	/** \brief Number of rules. */
-	public func int getRuleCount()
-		return this.pRules.getCount()
+	func int getRuleCount()
+		return pRules.getCount()
 	end
 	
 	/** \brief Rule matching name or \em null if absent. */
-	public func TagResolverRule getRuleNamed( String name )
-		return this.pRules.getAt( name, null ) cast TagResolverRule
+	func TagResolverRule getRuleNamed(String name)
+		return pRules.getAt(name, null) cast TagResolverRule
 	end
 	
 	/** \brief has rule matching name. */
-	public func bool hasRuleNamed( String name )
-		return this.pRules.has( name )
+	func bool hasRuleNamed(String name)
+		return pRules.has(name)
 	end
 	
 	/** \brief Add rule. */
-	public func void addRule( String name, TagResolverRule rule )
-		if name == null or rule == null or this.pRules.has( name )
+	func void addRule(String name, TagResolverRule rule)
+		if name == null or rule == null or pRules.has(name)
 			throw EInvalidParam.new()
 		end
-		this.pRules.setAt( name, rule )
+		pRules.setAt(name, rule)
 	end
 	
 	/** \brief Remove all rules. */
-	public func void removeAllRules()
-		this.pRules.removeAll()
+	func void removeAllRules()
+		pRules.removeAll()
 	end
-	
 	
 	
 	/** \brief Rule to use if no rule matches or null to return tag unmodified. */
-	public func TagResolverRule getDefaultRule()
-		return this.pDefaultRule
+	func TagResolverRule getDefaultRule()
+		return pDefaultRule
 	end
 	
 	/** \brief Set rule to use if no rule matches or null to return tag unmodified. */
-	public func void setDefaultRule( TagResolverRule rule )
-		this.pDefaultRule = rule
+	func void setDefaultRule(TagResolverRule rule)
+		pDefaultRule = rule
 	end
-	
 	
 	
 	/**
@@ -131,61 +123,77 @@ class TagResolver
 	 * \param text Text to resolve tags in.
 	 * \param context Context in which the solving is done. Passed to rules while resolving.
 	 */
-	public func String resolveTags( String text, Object context )
-		var int tagBegin = text.find( this.pCharTagBegin )
-		var int len = text.getLength()
+	func String resolveTags(String text, Object context)
+		var int tagBegin, tagEnd, checkEnd, checkBegin, actionEnd, nestedCounter
+		var String tagData, tagAction, tagParams, result = ""
+		var int len = text.getLength(), next = 0
 		var TagResolverRule rule
-		var String result = ""
-		var int position = 0
-		var String tagData
-		var String tagAction
-		var String tagParams
-		var int actionEnd
-		var int tagEnd
+		var bool nestedTags
 		
-		while tagBegin != -1
-			if position < tagBegin
-				result = result + text.substring( position, tagBegin )
+		while next < len
+			tagBegin = text.find(pCharTagBegin, next)
+			if tagBegin == -1
+				break
 			end
 			
-			if text.getAt( tagBegin + 1 ) == this.pCharTagBegin
-				result = result + this.pCharTagBegin
-				tagEnd = tagBegin + 1
+			nestedCounter = 1
+			nestedTags = false
+			tagEnd = tagBegin + 1
+			while nestedCounter > 0
+				checkEnd = text.find(pCharTagEnd, tagEnd)
+				if checkEnd == -1
+					break
+				end
+				
+				checkBegin = text.find(pCharTagBegin, tagEnd)
+				if checkBegin != -1 and checkBegin < checkEnd
+					nestedCounter++
+					nestedTags = true
+					tagEnd = checkBegin + 1
+					
+				else
+					nestedCounter--
+					tagEnd = checkEnd + 1
+				end
+			end
+			
+			if nestedCounter > 0
+				break
+			end
+			
+			tagData = text.substring(tagBegin + 1, tagEnd - 1)
+			if nestedTags
+				tagData = resolveTags(tagData, context)
+			end
+			
+			actionEnd = tagData.find(pCharDelimiter)
+			
+			if actionEnd == -1
+				tagAction = tagData
+				tagParams = ""
 				
 			else
-				tagEnd = text.find( this.pCharTagEnd, tagBegin + 1 )
-				tagData = text.substring( tagBegin + 1, tagEnd )
-				actionEnd = tagData.find( this.pCharDelimiter )
-				
-				if actionEnd == -1
-					tagAction = tagData
-					tagParams = ""
-					
-				else
-					tagAction = tagData.substring( 0, actionEnd )
-					tagParams = tagData.substring( actionEnd + 1 )
-				end
-				
-				rule = this.pRules.getAt( tagAction, null ) cast TagResolverRule
-				
-				if rule == null
-					rule = this.pDefaultRule
-				end
-				
-				if rule == null
-					result = result + text.substring( tagBegin, tagEnd + 1 )
-					
-				else
-					result = result + rule.resolveTag( tagParams, context )
-				end
+				tagAction = tagData.substring(0, actionEnd)
+				tagParams = tagData.substring(actionEnd + 1)
 			end
 			
-			position = tagEnd + 1
-			tagBegin = text.find( this.pCharTagBegin, position )
+			rule = pRules.getAt(tagAction, null) cast TagResolverRule
+			if rule == null
+				rule = pDefaultRule
+			end
+			
+			if rule == null
+				result = result + text.substring(next, tagEnd)
+				
+			else
+				result = result + text.substring(next, tagBegin) + rule.resolveTag(tagParams, context)
+			end
+			
+			next = tagEnd
 		end
 		
-		if position < len
-			result = result + text.substring( position )
+		if next < len
+			result = result + text.substring(next)
 		end
 		
 		return result

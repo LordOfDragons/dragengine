@@ -164,10 +164,12 @@ pColList2( NULL ),
 
 pSolidShadowMap( NULL )
 {
+	deoglShaderDefines defines, commonDefines;
 	deoglPipelineConfiguration pipconf;
-	deoglShaderDefines defines;
 	
 	try{
+		renderThread.GetShader().SetCommonDefines(commonDefines);
+		
 		// clear depth
 		pipconf.Reset();
 		pipconf.SetMasks( false, false, false, false, true );
@@ -177,6 +179,7 @@ pSolidShadowMap( NULL )
 		pipconf.SetStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 		pipconf.SetEnableStencilTest( true );
 		
+		defines = commonDefines;
 		pAsyncGetPipeline(pPipelineClearDepth, pipconf, "DefRen Clear Depth", defines);
 		
 		
@@ -192,7 +195,6 @@ pSolidShadowMap( NULL )
 		defines.SetDefines( "DEPTH_OFFSET" );
 		pipconf.SetSPBInstanceIndexBase(0);
 		pAsyncGetPipeline(pPipelineOccMesh, pipconf, "DefRen Occlusion OccMap", defines, true);
-		defines.RemoveAllDefines();
 		
 		
 		

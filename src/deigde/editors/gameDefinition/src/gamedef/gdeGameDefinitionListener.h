@@ -42,6 +42,7 @@ class gdeOCParticleEmitter;
 class gdeOCForceField;
 class gdeOCSnapPoint;
 class gdeOCSpeaker;
+class gdeOCWorld;
 class gdeObjectClass;
 class gdeParticleEmitter;
 class gdeForceField;
@@ -321,6 +322,13 @@ public:
 	/** Object class speaker changed. */
 	virtual void OCSpeakerChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCSpeaker *speaker );
+		
+	/** Object class worlds changed. */
+	virtual void OCWorldsChanged(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	
+	/** Object class world changed. */
+	virtual void OCWorldChanged(gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass, gdeOCWorld *world);
 	
 	/** Object class textures changed. */
 	virtual void OCTexturesChanged( gdeGameDefinition *gameDefinition,
@@ -369,6 +377,9 @@ public:
 	
 	/** Active object class speaker changed. */
 	virtual void ActiveOCSpeakerChanged( gdeGameDefinition *gameDefinition );
+	
+	/** Active object class world changed. */
+	virtual void ActiveOCWorldChanged(gdeGameDefinition *gameDefinition);
 	
 	
 	

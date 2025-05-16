@@ -1234,7 +1234,7 @@ void deoglRRenderWindow::pSetIcon(){
 	
 	ReleaseDC( NULL, hdcScreen );
 	
-	SendMessage( pWindow, WM_SETICON, ICON_BIG, ( LPARAM )pWindowIcon );
+	SendMessageW( pWindow, WM_SETICON, ICON_BIG, ( LPARAM )pWindowIcon );
 	
 	if( oldWindowIcon ){
 		DestroyIcon( oldWindowIcon );

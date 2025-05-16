@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen GI Debug Probe</name>
+	<stage>fragment</stage>
+	<source>debugProbe.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+	
+	<uniformBlock name='GIParameters' binding='1'/>
+</shaderSource>

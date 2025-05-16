@@ -138,16 +138,9 @@ class ECPGuiTheme extends ElementClassProperty
 	 */
 	public func bool logPreloadProblems(ElementClass elementClass, Console console)
 		if pPath != null and not pPath.empty() and pGuiTheme == null
-			var String message = "Property {}.{}: Failed loading gui theme {}".format(\
+			console.addError("Property {}.{}: Failed loading gui theme {}".format(\
 				Array.newWith(elementClass.getClassname(), getName(), \
-					File.absolutePath(pPath, elementClass.getBasePath()).getPath()))
-			
-			if pException != null
-				console.addError(message, pException)
-				
-			else
-				console.addMessage(message)
-			end
+					File.absolutePath(pPath, elementClass.getBasePath()).getPath())), pException)
 			return true
 		end
 		return false
@@ -171,7 +164,7 @@ class ECPGuiTheme extends ElementClassProperty
 			return pLoader.loadFromFile(value)
 			
 		catch Exception e
-			throw ELoadResourceFailed.new(value, eclass.getClassname() + "(" + e + ")")
+			throw ELoadResourceFailed.new(value, eclass.getClassname() + "(" + e + ")", e)
 		end
 	end
 end

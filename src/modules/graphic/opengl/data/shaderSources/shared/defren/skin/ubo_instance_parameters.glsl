@@ -1,24 +1,47 @@
+/*
+	<!-- shared/defren/skin/ubo_instance_parameters.glsl -->
+	<shaderStorageBlock name='InstanceParametersSSBO' binding='0'/>
+	<uniformBlock name='InstanceParameters' binding='2'/>
+	
+	<define>SHARED_SPB</define>
+	
+	<!-- system only
+	<define>SHARED_SPB_PADDING</define>
+	<define>SHARED_SPB_USE_SSBO</define>
+	<define>SHARED_SPB_ARRAY_SIZE</define>
+	-->
+*/
+
+/*
+affects:
+C: component
+B: billboard
+P: particle
+PF: prop field
+H: height map
+*/
+
 #ifdef SHARED_SPB
 
 struct sInstanceParameters{
 	mat4x3 matrixModel;
-	mat3 matrixNormal;  // component
-	mat3x2 matrixTexCoord;  // component
+	mat3 matrixNormal; // C
+	mat3x2 matrixTexCoord; // C
 	
-	vec4 billboardPosTransform; // multiply{X,Y}, offset{X,Y}
-	bvec3 billboardParams; // locked, spherical, sizeFixedToScreen
-	vec4 samplesParams; // particle: scaleU, offsetU, scaleV, offsetV
+	vec4 billboardPosTransform; // B: multiply{X,Y}, offset{X,Y}
+	bvec3 billboardParams; // B: locked, spherical, sizeFixedToScreen
+	vec4 samplesParams; // P: scaleU, offsetU, scaleV, offsetV
 	
-	vec2 heightTerrainMaskTCTransform; // height-map: multiply
-	ivec2 heightTerrainMaskSelector; // height-map: arrayLayer, componentIndex
+	vec2 heightTerrainMaskTCTransform; // H: multiply
+	ivec2 heightTerrainMaskSelector; // H: arrayLayer, componentIndex
 	
-	vec2 variationSeed; // component
-	float burstFactor; // particle
-	int ribbonSheetCount; // particle: ribbon or beam
+	vec2 variationSeed; // C
+	float burstFactor; // P
+	int ribbonSheetCount; // P: ribbon or beam
 	
-	float propFieldParams; // prop-field: bendFactor
-	bool doubleSided; // component
-	float envMapFade; // component
+	float propFieldParams; // PF: bendFactor
+	bool doubleSided; // C
+	float envMapFade; // C
 	int indexSPBTexParams; // shared parameter block index for texture parameters
 	
 	/*
@@ -86,7 +109,7 @@ struct sInstanceParameters{
 #ifdef SHARED_SPB_USE_SSBO
 	UBOLAYOUT_BIND(0) readonly buffer InstanceParametersSSBO
 #else
-	UBOLAYOUT uniform InstanceParameters
+	UBOLAYOUT_BIND(2) uniform InstanceParameters
 #endif
 {
 	#ifdef SHARED_SPB_ARRAY_SIZE
@@ -98,45 +121,29 @@ struct sInstanceParameters{
 
 
 
-#else  // SHARED_SPB
+#else // SHARED_SPB
 
-UBOLAYOUT uniform InstanceParameters{
-	#ifdef PARTICLE
-		mat4x3 pMatrixModel;
-		vec4 pSamplesParams; // samplesScaleU, samplesOffsetU, samplesScaleV, samplesOffsetV
-		float pBurstFactor;
-		#if defined PARTICLE_RIBBON || defined PARTICLE_BEAM
-			int pRibbonSheetCount;
-		#endif
-		
-	#else  // PARTICLE
-		// component properties. the same for all textures in a component
-		mat4x3 pMatrixModel;
-		mat3 pMatrixNormal;
-		
-		// per texture properties. potentially different for each texture in a component
-		mat3x2 pMatrixTexCoord;
-		#ifdef PROP_FIELD
-			float pPropFieldParams; // r=bendFactor
-		#endif
-		#ifdef HEIGHT_MAP
-			vec2 pHeightTerrainMaskTCTransform; // multiply
-			ivec2 pHeightTerrainMaskSelector; // arrayLayer, componentIndex
-		#endif
-		bool pDoubleSided;
-		float pEnvMapFade;
-		#ifdef WITH_VARIATIONS
-			vec2 pVariationSeed;
-		#endif
-		
-		// billboard, imposter
-		vec4 pBillboardPosTransform; // multiplyX, multiplyY, offsetX, offsetY
-		bvec3 pBillboardParams; // locked, spherical, sizeFixedToScreen
-	#endif  // PARTICLE
+UBOLAYOUT_BIND(2) uniform InstanceParameters{
+	mat4x3 pMatrixModel;
+	mat3 pMatrixNormal; // C
+	mat3x2 pMatrixTexCoord; // C
 	
+	vec4 pBillboardPosTransform; // B: multiply{X,Y}, offset{X,Y}
+	bvec3 pBillboardParams; // B: locked, spherical, sizeFixedToScreen
+	vec4 pSamplesParams; // P: scaleU, offsetU, scaleV, offsetV
+	
+	vec2 pHeightTerrainMaskTCTransform; // H: multiply
+	ivec2 pHeightTerrainMaskSelector; // H: arrayLayer, componentIndex
+	
+	vec2 pVariationSeed; // C
+	float pBurstFactor; // P
+	int pRibbonSheetCount; // P: ribbon or beam
+	
+	float pPropFieldParams; // PF: bendFactor
+	bool pDoubleSided; // C
+	float pEnvMapFade; // C
 	int pIndexSPBTexParams; // shared parameter block index for texture parameters
 	
-	// texture coordinate transformations used for dynamic textures only
 	/*
 	vec4 pTCTransformColor;
 	vec4 pTCTransformNormal;
@@ -146,7 +153,6 @@ UBOLAYOUT uniform InstanceParameters{
 	vec4 pTCTransformAO;
 	*/
 	
-	// per texture dynamic texture properties not using textures
 	vec3 pInstColorTint; // color.tint
 	float pInstColorGamma; // color.gamma
 	
@@ -196,11 +202,4 @@ UBOLAYOUT uniform InstanceParameters{
 	float pInstSkinClipPlaneBorder; // clip.plane.border
 };
 
-#ifdef PARTICLE
-	const bool pDoubleSided = true;
-	#ifdef WITH_VARIATIONS
-		const vec2 pVariationSeed = vec2( 0.0 );
-	#endif
-#endif
-
-#endif  // SHARED_SPB
+#endif // SHARED_SPB

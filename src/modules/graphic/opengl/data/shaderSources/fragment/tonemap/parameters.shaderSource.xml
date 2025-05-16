@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F ToneMap Parameters</name>
+	<stage>fragment</stage>
+	<source>parameters.frag.glsl</source>
+	
+	<output name='outParams' location='0'/>
+	
+	<define>SAMPLE_STEREO</define>
+	
+	<!-- shared/defren/ubo_render_parameters.glsl -->
+	<uniformBlock name='RenderParameters' binding='0'/>
+</shaderSource>

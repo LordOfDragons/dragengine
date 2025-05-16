@@ -333,6 +333,16 @@ gdeObjectClass *objectClass, gdeOCSpeaker* ){
 	ObjectClassChanged( gameDefinition, objectClass );
 }
 
+void gdeGameDefinitionListener::OCWorldsChanged(gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass){
+	ObjectClassChanged(gameDefinition, objectClass);
+}
+
+void gdeGameDefinitionListener::OCWorldChanged(gdeGameDefinition *gameDefinition,
+gdeObjectClass *objectClass, gdeOCWorld*){
+	ObjectClassChanged(gameDefinition, objectClass);
+}
+
 void gdeGameDefinitionListener::OCTexturesChanged( gdeGameDefinition *gameDefinition,
 gdeObjectClass *objectClass ){
 	ObjectClassChanged( gameDefinition, objectClass );
@@ -380,6 +390,9 @@ void gdeGameDefinitionListener::ActiveOCSnapPointChanged( gdeGameDefinition* ){
 }
 
 void gdeGameDefinitionListener::ActiveOCSpeakerChanged( gdeGameDefinition* ){
+}
+
+void gdeGameDefinitionListener::ActiveOCWorldChanged(gdeGameDefinition*){
 }
 
 

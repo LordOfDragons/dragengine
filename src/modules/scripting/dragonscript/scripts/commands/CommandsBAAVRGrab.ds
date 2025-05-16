@@ -35,6 +35,36 @@ pin Dragengine.Scenery
  * command to the command manager of a BaseGameApp.
  */
 class CommandsBAAVRGrab
+	/**
+	 * \brief Bridge from BAAVRGrab to BAAStateMachineEvent.
+	 * \version 1.26
+	 * 
+	 * Send events match BAAVRGrab function named with prefix "vrGrab.".
+	 */
+	class StateMachineEventBridge implements BAAVRGrab
+		var BAAStateMachineEvent pTarget
+		
+		func new(BAAStateMachineEvent target)
+			pTarget = target
+		end
+		
+		func void grab()
+			pTarget.sendInputAsEvent("vrGrab.grab", null)
+		end
+		
+		func void ungrab()
+			pTarget.sendInputAsEvent("vrGrab.ungrab", null)
+		end
+		
+		func void grabAnalog(float value)
+			pTarget.sendInputAsEvent("vrGrab.grab.analog", value)
+		end
+		
+		func void squeeze(float value)
+			pTarget.sendInputAsEvent("vrGrab.squeeze", value)
+		end
+	end
+	
 	/** \brief Base class operating only on actors with BAAVRGrab action. */
 	public class Base extends Command
 		protected var ECBehaviorPlayerControllable.Tracker pTracker
@@ -59,21 +89,27 @@ class CommandsBAAVRGrab
 				return null
 			end
 			
-			var ECBehaviorVRHandAction.Instance action
+			var ECBehaviorVRHandAction.Instance vrHandAction
 			
 			if pRightHand
-				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRRightHand)
+				vrHandAction = ECBehaviorVRHandAction.getInstanceIn(\
+					actor.getElement(), BaseVRActorClass.idVRRightHand)
 				
 			else
-				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRLeftHand)
+				vrHandAction = ECBehaviorVRHandAction.getInstanceIn(\
+					actor.getElement(), BaseVRActorClass.idVRLeftHand)
 			end
 			
-			if action != null and action.getAction() castable BAAVRGrab
-				return action.getAction() cast BAAVRGrab
-				
-			else
-				return null
+			if vrHandAction != null
+				var BaseVRHandAction action = vrHandAction.getAction()
+				if action castable BAAVRGrab
+					return action cast BAAVRGrab
+					
+				elif action castable BAAStateMachineEvent
+					return StateMachineEventBridge.new(action cast BAAStateMachineEvent)
+				end
 			end
+			return null
 		end
 		
 		public func void start()

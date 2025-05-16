@@ -30,6 +30,8 @@ pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.StateMachineSystem
 
 
 /**
@@ -175,11 +177,23 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	 * <behavior type='ECBehaviorActorTransmission'>
 	 *   <!-- optional: use BaseGameApp sub title. game can add more supported values. default is 'default' -->
 	 *   <string name='subTitle'>default</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
 	 * </behavior>
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -200,8 +214,9 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 				behavior.setSubTitle(getSubTitleFor(parameters.getAt("subTitle") cast String))
 			end
 			
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "transmission")
+			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "transmission")
 			return behavior
 		end
 		
@@ -220,8 +235,150 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
+		/**
+		 * \brief Behavior tree action "actorTransmission.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("waitInConversation", null)
+				if value != null
+					pInstance.setWaitInConversation(value.equals("true"))
+				end
+				
+				value = parameters.getAt("clearEnterConversation", null)
+				if value != null
+					pInstance.setClearEnterConversation(value.equals("true"))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "actorTransmission.update".
+		 * \version 1.26
+		 */
+		private class BTAUpdate extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				if parameters.has("skip")
+					pInstance.skipPart()
+				end
+				
+				if parameters.has("clear")
+					pInstance.clear()
+				end
+				
+				var Object value
+				
+				value = parameters.getAt("pause", null)
+				if value != null and not (value cast String).empty()
+					pInstance.addPause((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("text", null)
+				if value != null and not (value cast String).empty()
+					var UnicodeString text = UnicodeString.newFromUTF8(value cast String)
+					var float timeout = pInstance.getTimeout()
+					var StringID style = pInstance.getStyle()
+					
+					value = parameters.getAt("text.style", null)
+					if value != null
+						style = StringID.new(value cast String)
+					end
+					
+					value = parameters.getAt("text.timeout", null)
+					if value != null
+						timeout = (value cast String).toFloat()
+					end
+					
+					pInstance.addPart(text, style, timeout)
+				end
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "actorTransmission.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "waitInConversation", null)
+				if value != null
+					result &= pInstance.getWaitInConversation() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "clearEnterConversation", null)
+				if value != null
+					result &= pInstance.getClearEnterConversation() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "running", null)
+				if value != null
+					result &= pInstance.isRunning() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "parts.less", null)
+				if value != null
+					result &= pInstance.getPartCount() < (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "parts.greater", null)
+				if value != null
+					result &= pInstance.getPartCount() > (value cast String).toInt()
+				end
+				
+				value = parameters.getAt(prefix + "remainingDisplayTime.less", null)
+				if value != null
+					result &= pInstance.getRemainingDisplayTime() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "remainingDisplayTime.greater", null)
+				if value != null
+					result &= pInstance.getRemainingDisplayTime() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
 		/** \brief Wait in conversation if running. */
-		class WaitInConversation extends ECBehaviorConversationActor.DefaultListener
+		private class WaitInConversation extends ECBehaviorConversationActor.DefaultListener
 			var Instance pInstance
 			
 			func new(Instance instance)
@@ -258,6 +415,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		var float pRemainingDisplayTime
 		
 		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
 		
 		
 		
@@ -275,6 +433,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		func void dispose()
 			pConversationActor = null
 			pListeners = null
+			pBTSMs = null
 			
 			super.dispose()
 		end
@@ -283,6 +442,8 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		
 		/** \brief Initialize behavior from stub. */
 		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
 			pWaitInConversation = pECBehavior.getWaitInConversation().getValue(stub)
 			pClearEnterConversation = pECBehavior.getClearEnterConversation().getValue(stub)
 			pStyle = pECBehavior.getStyle().getValue(stub)
@@ -290,6 +451,15 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			
 			pECBehavior.createListeners(this)
 			pConversationActor.addListener(WaitInConversation.new(this))
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllAction(prefix, "update", BTAUpdate.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
 		end
 		
 		
@@ -357,6 +527,14 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		/** \brief Transmission is running. */
 		func bool isRunning()
 			return pParts.getCount() > 0 or pRemainingDisplayTime > 0
+		end
+		
+		/**
+		 * \brief Remaining display time of current part in seconds.
+		 * \version 1.26
+		 */
+		func float getRemainingDisplayTime()
+			return pRemainingDisplayTime
 		end
 		
 		/**
@@ -442,6 +620,9 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.transmissionStart(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "start")
+			end
 			
 			displayPart(part)
 		end
@@ -525,6 +706,9 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.partDisplayed(this, part)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "part")
+			end
 		end
 		
 		/**
@@ -614,6 +798,9 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			pListeners.forEach(block Listener each
 				each.transmissionFinished(this)
 			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "finished")
+			end
 		end
 		
 		/** \brief Read behavior from file. */
@@ -687,6 +874,8 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	var ECPFloat pTimeout
 	var Array pListenerFactories
 	var ConversationPlaybackSubTitle pSubTitle
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
 	
 	
 	
@@ -711,9 +900,11 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			throw ENullPointer.new("subTitle")
 		end
 		
+		pPrefix = prefix
 		pConversationActor = conversationActor
 		pSubTitle = subTitle
 		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new()
 		
 		pWaitInConversation = ECPBoolean.new(prefix + "waitInConversation", false)
 		eclass.addProperty(pWaitInConversation)
@@ -735,10 +926,19 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 		pConversationActor = null
 		pListenerFactories = null
 		pSubTitle = null
+		pBTSMs = null
 		super.dispose()
 	end
 	
 	
+	
+	/**
+	 * \brief Prefix.
+	 * \version 1.26
+	 */
+	func String getPrefix()
+		return pPrefix
+	end
 	
 	/** \brief Conversation actor behavior to animate. */
 	func ECBehaviorConversationActor getConversationActor()
@@ -779,6 +979,14 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 			throw ENullPointer.new("subTitle")
 		end
 		pSubTitle = subTitle
+	end
+	
+	/**
+	 * \brief Compose behavior trees and state machines.
+	 * \version 1.26
+	 */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
 	end
 	
 	/** \brief Add listener factory. */

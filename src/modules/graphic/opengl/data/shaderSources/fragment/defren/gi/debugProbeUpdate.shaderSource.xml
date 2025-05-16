@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen GI Debug Probe Update</name>
+	<stage>fragment</stage>
+	<source>debugProbeUpdate.frag.glsl</source>
+	
+	<output name='outColor' location='0'/>
+	
+	<uniformBlock name='GIProbeIndices' binding='2'/>
+	
+	<define>PASS2</define>
+</shaderSource>

@@ -295,6 +295,7 @@ public:
 		GetPatternList().Add(".defont");
 		SetDefaultExtension(".defont");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

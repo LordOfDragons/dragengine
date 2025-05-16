@@ -896,6 +896,7 @@ deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		GetPatternList().Add(".deanim");
 		SetDefaultExtension(".deanim");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

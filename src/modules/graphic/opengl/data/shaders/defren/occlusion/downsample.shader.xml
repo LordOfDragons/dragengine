@@ -6,9 +6,6 @@
 	
 	<parameter name='pLevel'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/passthrough.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/occlusion/downsample.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic PassThrough</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Occlusion OccMap Down-Sample</sourceCode>
 </shader>

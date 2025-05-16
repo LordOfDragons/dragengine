@@ -131,8 +131,8 @@ class dePng3DModuleInternal : public deInternalModule{
 public:
 	dePng3DModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("PNG-3D");
-		SetDescription("Handles images saved in the PNG-3D format (lossless compression). PNG-3D files\
-are actually a tarball with png images one for each z coordinate in the 3D-image. Files\
+		SetDescription("Handles images saved in the PNG-3D format (lossless compression). PNG-3D files \
+are actually a tarball with png images one for each z coordinate in the 3D-image. Files \
 inside the tarball are named zX.png where X is the z coordinate without leading 0s.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
@@ -142,6 +142,7 @@ inside the tarball are named zX.png where X is the z coordinate without leading 
 		SetDefaultExtension(".png3d");
 		SetNoCompress(true);
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

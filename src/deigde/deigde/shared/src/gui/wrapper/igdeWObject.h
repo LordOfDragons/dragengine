@@ -92,6 +92,7 @@ private:
 	deColliderComponent::Ref pColliderComponent;
 	deColliderVolume::Ref pColliderFallback;
 	decObjectSet pCollidersInteraction;
+	void *pColliderUserPointer;
 	
 	deCollider::Ref pParentCollider;
 	decString pAttachToBone;
@@ -326,6 +327,9 @@ public:
 	/** \brief Fallback collider volume. */
 	inline const deColliderVolume::Ref &GetColliderFallback() const{ return pColliderFallback; }
 	
+	/** \brief Collider user pointer. */
+	inline void *GetColliderUserPointer() const{ return pColliderUserPointer; }
+	
 	/** \brief Set collider user pointer for all colliders used. */
 	void SetColliderUserPointer( void *userPointer );
 	
@@ -442,6 +446,7 @@ private:
 	void pSubObjectsUpdateLayerMasks();
 	void pSubObjectsUpdateCollisionFilter();
 	void pSubObjectsAllFinishedLoading();
+	void pSubObjectsColliderUserPointerChanged();
 	void pCheckAsyncLoadFinished();
 	
 	void pUpdateProperties();

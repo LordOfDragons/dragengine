@@ -65,6 +65,8 @@ private:
 	decColor pColorSnapPointActive;
 	decColor pColorSpeaker;
 	decColor pColorSpeakerActive;
+	decColor pColorWorld;
+	decColor pColorWorldActive;
 	
 	bool pPreventSaving;
 	
@@ -170,6 +172,12 @@ public:
 	
 	/** \brief Color of active speaker. */
 	inline const decColor &GetColorSpeakerActive() const{ return pColorSpeakerActive; }
+	
+	/** \brief Color of world. */
+	inline const decColor &GetColorWorld() const{ return pColorWorld; }
+	
+	/** \brief Color of active world. */
+	inline const decColor &GetColorWorldActive() const{ return pColorWorldActive; }
 	
 	
 	

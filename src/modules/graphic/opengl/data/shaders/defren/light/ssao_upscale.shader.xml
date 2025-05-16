@@ -6,11 +6,6 @@
 	
 	<texture name='texAO' target='0'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outAO' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/light/ssao_upscale.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='fragment'>F DefRen SSAO Upscale</sourceCode>
 </shader>

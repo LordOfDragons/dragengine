@@ -315,6 +315,7 @@ public:
 	
 	/** Debug. */
 	inline deoglRTDebug &GetDebug() const{ return *pDebug; }
+	inline bool HasDebug() const{ return pDebug != nullptr; }
 	
 	/** Default textures. */
 	inline deoglRTDefaultTextures &GetDefaultTextures() const{ return *pDefaultTextures; }

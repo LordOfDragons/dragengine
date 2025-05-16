@@ -49,6 +49,10 @@ void deBaseVRModule::RequestFeatureFacialTracking( eFeatureSupportLevel level ){
 	DEASSERT_TRUE( level != efslRequired )
 }
 
+bool deBaseVRModule::IsRuntimeRunning(){
+	return false;
+}
+
 bool deBaseVRModule::SupportsPassthrough(){
 	return false;
 }

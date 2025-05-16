@@ -336,6 +336,7 @@ public:
 		GetPatternList().Add(".deoccmesh");
 		SetDefaultExtension(".deoccmesh");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

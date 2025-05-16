@@ -75,7 +75,7 @@ class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
 	 * \endcode
 	 * 
 	 * Element class properties added by the behavior can also be set directly inside the tag
-	 * be removing the property name prefix and starting with a "." (for exampler ".propertyName").
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
 	class Factory implements BehaviorFactory
 		func new()
@@ -91,7 +91,7 @@ class ECBehaviorActorMoverUnstuck extends DefaultECBehavior
 			end
 			var ECBehaviorActorMoverUnstuck behavior = ECBehaviorActorMoverUnstuck.new(\
 				eclass, ECBehaviorActorMover.getBehaviorIn(eclass))
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
+			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
 				eclass, parameters, "actorMoverUnstuck")
 			return behavior
 		end

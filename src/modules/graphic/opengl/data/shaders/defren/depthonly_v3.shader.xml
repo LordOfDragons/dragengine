@@ -13,12 +13,6 @@
 	<parameter name='pViewport'/> <!-- 5 --> <!-- deprecated -->
 	<parameter name='pPFMatrix'/> <!-- 6 -->
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inTexCoord' target='3'/>
-	<attribute name='inHTHeight' target='4'/>
-	
-	<output name='outDepth' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/geometry/depth.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/geometry/depth.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Depth-Only V3</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Depth-Only V3</sourceCode>
 </shader>

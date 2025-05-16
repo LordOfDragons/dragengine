@@ -74,16 +74,13 @@ public:
 	
 	/** \brief Visit. */
 	virtual void Visit( igdeWOSOVisitor &visitor );
-	
-	/** \brief For internal use only. */
-	void AsyncLoadFinished( bool success );
 	/*@}*/
 	
 	
 	
 protected:
-	void AttachToCollider();
-	void DetachFromCollider();
+	virtual void AttachToCollider();
+	virtual void DetachFromCollider();
 	
 	
 	

@@ -291,6 +291,7 @@ public:
 		SetDefaultExtension(".fbx");
 		SetPriority(1);
 		SetNoSaving(true);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

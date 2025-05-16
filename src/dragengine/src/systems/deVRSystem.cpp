@@ -114,6 +114,14 @@ void deVRSystem::StopRuntime(){
 	pActiveModule->StopRuntime();
 }
 
+bool deVRSystem::IsRuntimeRunning(){
+	if(!GetIsRunning()){
+		DETHROW_INFO(deeInvalidAction, "Module not running");
+	}
+	
+	return pActiveModule->IsRuntimeRunning();
+}
+
 void deVRSystem::SetCamera( deCamera *camera ){
 	if( ! GetIsRunning() ){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );

@@ -6,10 +6,6 @@
 	<texture name='texData1' target='1'/>
 	<texture name='texData2' target='2'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/debug/renderText.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/debug/renderText.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Debug Render Text</sourceCode>
+	<sourceCode unit='fragment'>F Debug Render Text</sourceCode>
 </shader>

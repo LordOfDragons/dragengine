@@ -87,6 +87,7 @@ public:
 		efpltVideo, //<! Video.
 		efpltSpeechAnimation, //<! Speech animation.
 		efpltCamera, //<! Camera file.
+		efpltWorld //<! World file.
 	};
 	
 	/** \brief Stock icons. */

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='gallery'>
+		<image property='color'>color.webp</image>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+	<texture name='sign1'>
+		<image property='color'>../../images/logoDragengine.jpg</image>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+	<texture name='sign2'>
+		<image property='color'>../../images/logoDragengine.jpg</image>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='sound.none'>1</value>
+	</texture>
+</skin>

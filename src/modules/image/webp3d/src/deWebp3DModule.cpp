@@ -120,8 +120,8 @@ class deWebp3DModuleInternal : public deInternalModule{
 public:
 	deWebp3DModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("WebP-3D");
-		SetDescription("Handles images saved in the WebP-3D format (lossless and lossy compression).\
-WebP-3D files are actually a tarball with webp images one for each z coordinate in the 3D-image.\
+		SetDescription("Handles images saved in the WebP-3D format (lossless and lossy compression). \
+WebP-3D files are actually a tarball with webp images one for each z coordinate in the 3D-image. \
 Files inside the tarball are named zX.webp where X is the z coordinate without leading 0s.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
@@ -131,6 +131,7 @@ Files inside the tarball are named zX.webp where X is the z coordinate without l
 		SetDefaultExtension(".webp3d");
 		SetNoCompress(true);
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

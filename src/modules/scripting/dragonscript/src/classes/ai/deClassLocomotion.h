@@ -92,6 +92,8 @@ private:
 	
 	DEF_NATFUNC( nfGetCanTurn );
 	DEF_NATFUNC( nfSetCanTurn );
+	DEF_NATFUNC(nfGetAlwaysLimitLeftRight);
+	DEF_NATFUNC(nfSetAlwaysLimitLeftRight);
 	
 	DEF_NATFUNC( nfGetLimitLookUp );
 	DEF_NATFUNC( nfSetLimitLookUp );

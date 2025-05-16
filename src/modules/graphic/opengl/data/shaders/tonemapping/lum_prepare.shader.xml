@@ -2,15 +2,8 @@
 <shader>
 	<name>ToneMap Luminance Prepare</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texColor' target='0'/>
 	
-	<attribute name='inPosition' target='0'/>
-	<attribute name='inLayer' target='1'/>
-	
-	<output name='outLuminance' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/tonemap/lum_prepare.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
+	<sourceCode unit='fragment'>F ToneMap Luminance Prepare</sourceCode>
 </shader>

@@ -99,7 +99,7 @@ if envModule['platform_webwasm']:
 	envModule.Append(LINKFLAGS = ['-sOFFSCREEN_FRAMEBUFFER'])
 
 # fetch values in expanded form for later use
-versionString = '1.25'
+versionString = '1.26'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

@@ -11,10 +11,6 @@
 	<parameter name='pBlendWeights'/> <!-- 1 -->
 	<parameter name='pMipMapLevel'/> <!-- 2 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/generic/fullscreenquad.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/reflection/buildenvmap.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Reflection Build EnvMap</sourceCode>
 </shader>

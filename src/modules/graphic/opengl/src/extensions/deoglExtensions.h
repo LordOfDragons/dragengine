@@ -288,78 +288,83 @@ public:
 	
 	/** Extensions. */
 	enum eExtensions{
+		ext_ARB_bindless_texture,
+		ext_ARB_buffer_storage,
+		ext_ARB_clear_buffer_object,
+		ext_ARB_clip_control,
+		ext_ARB_compute_shader,
 		ext_ARB_copy_buffer,
 		ext_ARB_copy_image,
 		ext_ARB_debug_output,
-		ext_ARB_draw_buffers,
+		ext_ARB_depth_clamp,
+		ext_ARB_direct_state_access,
 		ext_ARB_draw_buffers_blend,
+		ext_ARB_draw_buffers,
 		ext_ARB_draw_elements_base_vertex,
+		ext_ARB_draw_indirect,
 		ext_ARB_draw_instanced,
+		ext_ARB_fragment_layer_viewport,
 		ext_ARB_framebuffer_object,
 		ext_ARB_geometry_shader4,
-		ext_ARB_gpu_shader5,
 		ext_ARB_get_program_binary,
+		ext_ARB_gpu_shader_fp64,
+		ext_ARB_gpu_shader5,
+		ext_ARB_indirect_parameters,
+		ext_ARB_multi_draw_indirect,
 		ext_ARB_multisample,
 		ext_ARB_multitexture,
 		ext_ARB_occlusion_query,
+		ext_ARB_parallel_shader_compile,
+		ext_ARB_program_interface_query,
 		ext_ARB_provoking_vertex,
 		ext_ARB_sampler_objects,
 		ext_ARB_seamless_cube_map,
 		ext_ARB_separate_shader_objects,
+		ext_ARB_shader_atomic_counter_ops,
+		ext_ARB_shader_atomic_counters,
+		ext_ARB_shader_draw_parameters,
+		ext_ARB_shader_image_load_store,
 		ext_ARB_shader_objects,
+		ext_ARB_shader_storage_buffer_object,
+		ext_ARB_shader_viewport_layer_array,
+		ext_ARB_shading_language_420pack,
 		ext_ARB_tessellation_shader,
 		ext_ARB_texture_buffer_object,
 		ext_ARB_texture_compression,
 		ext_ARB_texture_cube_map_array,
 		ext_ARB_texture_multisample,
+		ext_ARB_texture_storage,
 		ext_ARB_timer_query,
+		ext_ARB_transform_feedback_instanced,
 		ext_ARB_transform_feedback2,
 		ext_ARB_transform_feedback3,
-		ext_ARB_transform_feedback_instanced,
 		ext_ARB_uniform_buffer_object,
 		ext_ARB_vertex_array_object,
 		ext_ARB_vertex_buffer_object,
 		ext_ARB_vertex_program,
 		ext_ARB_vertex_shader,
 		ext_ARB_viewport_array,
-		ext_ARB_clip_control,
-		ext_ARB_shader_storage_buffer_object,
-		ext_ARB_program_interface_query,
-		ext_ARB_shader_image_load_store,
-		ext_ARB_compute_shader,
-		ext_ARB_draw_indirect,
-		ext_ARB_multi_draw_indirect,
-		ext_ARB_indirect_parameters,
-		ext_ARB_bindless_texture,
-		ext_ARB_fragment_layer_viewport,
-		ext_ARB_shader_draw_parameters,
-		ext_ARB_shader_viewport_layer_array,
-		ext_ARB_depth_clamp,
-		ext_ARB_shading_language_420pack,
-		ext_ARB_shader_atomic_counters,
-		ext_ARB_shader_atomic_counter_ops,
-		ext_ARB_gpu_shader_fp64,
-		ext_ARB_direct_state_access,
-		ext_ARB_clear_buffer_object,
-		ext_ARB_buffer_storage,
-		ext_ARB_texture_storage,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,
 		ext_EXT_blend_func_separate,
 		ext_EXT_blend_minmax,
+		ext_EXT_buffer_storage,
+		ext_EXT_clip_control,
+		ext_EXT_copy_image,
 		ext_EXT_copy_texture,
+		ext_EXT_depth_clamp,
 		ext_EXT_draw_range_elements,
 		ext_EXT_gpu_shader4,
 		ext_EXT_multi_draw_arrays,
 		ext_EXT_packed_depth_stencil,
 		ext_EXT_polygon_offset,
 		ext_EXT_subtexture,
-		ext_EXT_texture3D,
 		ext_EXT_texture_array,
 		ext_EXT_texture_cube_map_array,
 		ext_EXT_texture_integer,
 		ext_EXT_texture_object,
+		ext_EXT_texture3D,
 		ext_EXT_transform_feedback,
 		
 		ext_AMD_debug_output,
@@ -371,6 +376,7 @@ public:
 		ext_ATI_separate_stencil,
 		
 		ext_NV_copy_image,
+		ext_NV_depth_clamp,
 		ext_NV_packed_depth_stencil,
 		ext_NV_texture_barrier,
 		ext_NV_transform_feedback,
@@ -378,6 +384,7 @@ public:
 		ext_NV_transform_feedback3,
 		
 		ext_KHR_debug,
+		ext_KHR_parallel_shader_compile,
 		
 		ext_GLX_EXT_swap_control,
 		ext_GLX_EXT_swap_control_tear,
@@ -412,6 +419,7 @@ private:
 	bool pHasArrayCubeMap;
 	bool pHasSeamlessCubeMap;
 	bool pHasCopyImage;
+	bool pHasDepthClamp;
 	bool pSupportsGeometryShader;
 	bool pSupportsGSInstancing;
 	bool pSupportsComputeShader;
@@ -479,6 +487,8 @@ public:
 	inline bool GetHasArrayCubeMap() const{ return pHasArrayCubeMap; }
 	/** Determines if copy image is supported. */
 	inline bool GetHasCopyImage() const{ return pHasCopyImage; }
+	
+	inline bool GetHasDepthClamp() const{ return pHasDepthClamp; }
 	
 	/** Geometry shader is supported. Required so always true. */
 	// inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }

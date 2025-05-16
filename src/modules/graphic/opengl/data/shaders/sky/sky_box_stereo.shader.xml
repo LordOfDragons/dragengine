@@ -2,8 +2,6 @@
 <shader>
 	<name>Sky Sky-Box Stereo</name>
 	
-	<uniformBlock name='RenderParameters' target='0'/>
-	
 	<texture name='texSky' target='0'/>
 	
 	<parameter name='pMatrixLayer'/>
@@ -12,11 +10,7 @@
 	<parameter name='pMaterialGamma'/>
 	<parameter name='pSkyBgColor'/>
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outColor' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/sky/layer.glsl</sourceCode>
-	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/sky/box.glsl</sourceCode>
+	<sourceCode unit='vertex'>V Sky Sky-Box</sourceCode>
+	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
+	<sourceCode unit='fragment'>F Sky Sky-Box</sourceCode>
 </shader>

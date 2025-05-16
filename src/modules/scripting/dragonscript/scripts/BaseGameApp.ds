@@ -1271,31 +1271,32 @@ class BaseGameApp extends Game
 	 * 
 	 * Element classes list contains all element classes world files are allowed to be used.
 	 * Default implementation creates and adds these element classes:
-	 * - GenericBehaviorElementClass named "GenericBehaviorElement"
 	 * - AnimatedElementClass named "AnimatedElement"
-	 * - AttachableBaseLightClass named "AttachableBaseLight"
-	 * - AttachableBaseSpeakerClass named "AttachableBaseSpeaker"
-	 * - AttachableBaseParticleEmitterClass named "AttachableBaseParticleEmitter"
 	 * - AttachableBaseForceFieldClass named "AttachableBaseForceField"
+	 * - AttachableBaseLightClass named "AttachableBaseLight"
+	 * - AttachableBaseParticleEmitterClass named "AttachableBaseParticleEmitter"
+	 * - AttachableBaseSpeakerClass named "AttachableBaseSpeaker"
 	 * - AttachableBillboardClass named "AttachableBillboard"
 	 * - BaseActorClass named "Actor"
-	 * - BaseVRActorClass named "VRActor" (since version 1.6)
-	 * - BaseSpeakerClass named "BaseSpeaker"
+	 * - BaseBillboardClass named "BaseBillboard"
+	 * - BaseForceFieldClass named "BaseForceField"
+	 * - BaseLightClass named "BaseLight"
 	 * - BaseParticleEmitterClass named "BaseParticleEmitter"
 	 * - BaseSkyClass named "BaseSky"
-	 * - BaseLightClass named "BaseLight"
-	 * - BaseForceFieldClass named "BaseForceField"
+	 * - BaseSpeakerClass named "BaseSpeaker"
+	 * - BaseVRActorClass named "VRActor" (since version 1.6)
+	 * - BaseWorldClass named "BaseWorld"
 	 * - EnvironmentMapClass named "EnvironmentMap"
+	 * - GenericBehaviorElementClass named "GenericBehaviorElement"
 	 * - HiddenElementClass named "HiddenElement"
 	 * - IgnoreElementClass named "MapperNote" (helper IGDE class)
 	 * - IgnoreElementClass named "VirtualElement" (helper IGDE class)
 	 * - InfoConvoCoordSystem named "InfoConvoCoordSystem"
+	 * - PhysicsElementClass named "PhysicsElement"
 	 * - RailCornerClass named "RailCorner"
 	 * - RandomElementClass named "RandomElement"
 	 * - SimpleElementClass named "SimpleElement"
-	 * - PhysicsElementClass named "PhysicsElement"
 	 * - SimpleElementOnRailClass named "SimpleElementOnRail"
-	 * - BaseBillboardClass named "BaseBillboard"
 	 * - SpawnPointClass named "SpawnPoint"
 	 * - TriggerConversationClass named "TriggerConversation"
 	 * - TriggerEvaluateClass named "TriggerEvaluate"
@@ -1326,6 +1327,7 @@ class BaseGameApp extends Game
 		pElementClassList.add(BaseSkyClass.new())
 		pElementClassList.add(BaseForceFieldClass.new())
 		pElementClassList.add(BaseBillboardClass.new())
+		pElementClassList.add(BaseWorldClass.new())
 		pElementClassList.add(AttachableBaseLightClass.new())
 		pElementClassList.add(AttachableBaseSpeakerClass.new())
 		pElementClassList.add(AttachableBaseParticleEmitterClass.new())

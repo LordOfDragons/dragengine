@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shaderSource>
+	<name>F DefRen Reflection EnvMap Mask</name>
+	<stage>fragment</stage>
+	<source>envmapmask.frag.glsl</source>
+	
+	<output name='outMask' location='0'/>
+</shaderSource>

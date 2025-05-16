@@ -221,6 +221,7 @@ public:
 		GetPatternList().Add(".tga");
 		SetDefaultExtension(".tga");
 		SetPriority(1);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

@@ -99,6 +99,10 @@ void deVRNull::StartRuntime(){
 void deVRNull::StopRuntime(){
 }
 
+bool deVRNull::IsRuntimeRunning(){
+	return false;
+}
+
 void deVRNull::SetCamera( deCamera* ){
 }
 
@@ -221,6 +225,7 @@ public:
 		SetDirectoryName("null");
 		SetPriority(0);
 		SetIsFallback(true);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

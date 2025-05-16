@@ -371,6 +371,7 @@ public:
 		SetDirectoryName("console");
 		SetPriority(0);
 		SetIsFallback(true);
+		SetDefaultLoggingName();
 	}
 	
 	void CreateModule() override{

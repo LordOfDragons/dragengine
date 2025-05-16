@@ -1210,6 +1210,8 @@ pGameDefinition( NULL )
 		igdeGDClass::efsoNavigationSpaces, "Navigation Spaces", "Inherit navigation spaces" ), true );
 	helper.CheckBox( groupBox, pChkInheritSONavigationBlockers, new cActionInheritSubObjects( *this,
 		igdeGDClass::efsoNavigationBlockers, "Navigation Blockers", "Inherit navigation blockers" ), true );
+	helper.CheckBox(groupBox, pChkInheritSOWorlds, new cActionInheritSubObjects(*this,
+		igdeGDClass::efsoWorlds, "Worlds", "Inherit worlds"), true);
 	
 	
 	// properties
@@ -1463,6 +1465,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pChkInheritSOSpeakers->SetChecked( (iso & igdeGDClass::efsoSpeakers ) != 0 );
 		pChkInheritSONavigationSpaces->SetChecked( (iso & igdeGDClass::efsoNavigationSpaces ) != 0 );
 		pChkInheritSONavigationBlockers->SetChecked( (iso & igdeGDClass::efsoNavigationBlockers ) != 0 );
+		pChkInheritSOWorlds->SetChecked((iso & igdeGDClass::efsoWorlds) != 0);
 		pCBCategory->SetText( objectClass->GetCategory() );
 		pCBCategory->SetInvalidValue( ! pCBCategory->GetText().IsEmpty()
 			&& ! pCBCategory->GetSelectedItem() );
@@ -1488,6 +1491,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pChkInheritSOSpeakers->SetChecked( true );
 		pChkInheritSONavigationSpaces->SetChecked( true );
 		pChkInheritSONavigationBlockers->SetChecked( true );
+		pChkInheritSOWorlds->SetChecked(true);
 		pCBCategory->ClearText();
 		pCBCategory->SetInvalidValue( false );
 		properties.SetPropertyList( NULL );
@@ -1513,6 +1517,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	pChkInheritSOSpeakers->SetEnabled( enabled );
 	pChkInheritSONavigationSpaces->SetEnabled( enabled );
 	pChkInheritSONavigationBlockers->SetEnabled( enabled );
+	pChkInheritSOWorlds->SetEnabled(enabled);
 	pCBCategory->SetEnabled( enabled );
 	pActionPropertyValueSet->Update();
 	

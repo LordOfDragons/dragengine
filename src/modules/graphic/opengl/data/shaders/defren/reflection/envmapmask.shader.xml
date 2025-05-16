@@ -7,10 +7,6 @@
 	<parameter name='pMatrixReflectionBox'/> <!-- 2 -->
 	<parameter name='pMatrixMaskBox'/> <!-- 3 -->
 	
-	<attribute name='inPosition' target='0'/>
-	
-	<output name='outMask' target='0'/>
-	
-	<sourceCode unit='vertex'>vertex/defren/reflection/envmapmask.glsl</sourceCode>
-	<sourceCode unit='fragment'>fragment/defren/reflection/envmapmask.glsl</sourceCode>
+	<sourceCode unit='vertex'>V DefRen Reflection EnvMap Mask</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Reflection EnvMap Mask</sourceCode>
 </shader>

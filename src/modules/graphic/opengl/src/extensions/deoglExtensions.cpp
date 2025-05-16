@@ -101,78 +101,83 @@ static const char * const vGLVersionNames[ deoglExtensions::evglUnknown + 1 ] = 
 // Search: ext([^,]+)
 // Replace: "GL\1"
 static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
+	"GL_ARB_bindless_texture",
+	"GL_ARB_buffer_storage",
+	"GL_ARB_clear_buffer_object",
+	"GL_ARB_clip_control",
+	"GL_ARB_compute_shader",
 	"GL_ARB_copy_buffer",
 	"GL_ARB_copy_image",
 	"GL_ARB_debug_output",
-	"GL_ARB_draw_buffers",
+	"GL_ARB_depth_clamp",
+	"GL_ARB_direct_state_access",
 	"GL_ARB_draw_buffers_blend",
+	"GL_ARB_draw_buffers",
 	"GL_ARB_draw_elements_base_vertex",
+	"GL_ARB_draw_indirect",
 	"GL_ARB_draw_instanced",
+	"GL_ARB_fragment_layer_viewport",
 	"GL_ARB_framebuffer_object",
 	"GL_ARB_geometry_shader4",
-	"GL_ARB_gpu_shader5",
 	"GL_ARB_get_program_binary",
+	"GL_ARB_gpu_shader_fp64",
+	"GL_ARB_gpu_shader5",
+	"GL_ARB_indirect_parameters",
+	"GL_ARB_multi_draw_indirect",
 	"GL_ARB_multisample",
 	"GL_ARB_multitexture",
 	"GL_ARB_occlusion_query",
+	"GL_ARB_parallel_shader_compile",
+	"GL_ARB_program_interface_query",
 	"GL_ARB_provoking_vertex",
 	"GL_ARB_sampler_objects",
 	"GL_ARB_seamless_cube_map",
 	"GL_ARB_separate_shader_objects",
+	"GL_ARB_shader_atomic_counter_ops",
+	"GL_ARB_shader_atomic_counters",
+	"GL_ARB_shader_draw_parameters",
+	"GL_ARB_shader_image_load_store",
 	"GL_ARB_shader_objects",
+	"GL_ARB_shader_storage_buffer_object",
+	"GL_ARB_shader_viewport_layer_array",
+	"GL_ARB_shading_language_420pack",
 	"GL_ARB_tessellation_shader",
 	"GL_ARB_texture_buffer_object",
 	"GL_ARB_texture_compression",
 	"GL_ARB_texture_cube_map_array",
 	"GL_ARB_texture_multisample",
+	"GL_ARB_texture_storage",
 	"GL_ARB_timer_query",
+	"GL_ARB_transform_feedback_instanced",
 	"GL_ARB_transform_feedback2",
 	"GL_ARB_transform_feedback3",
-	"GL_ARB_transform_feedback_instanced",
 	"GL_ARB_uniform_buffer_object",
 	"GL_ARB_vertex_array_object",
 	"GL_ARB_vertex_buffer_object",
 	"GL_ARB_vertex_program",
 	"GL_ARB_vertex_shader",
 	"GL_ARB_viewport_array",
-	"GL_ARB_clip_control",
-	"GL_ARB_shader_storage_buffer_object",
-	"GL_ARB_program_interface_query",
-	"GL_ARB_shader_image_load_store",
-	"GL_ARB_compute_shader",
-	"GL_ARB_draw_indirect",
-	"GL_ARB_multi_draw_indirect",
-	"GL_ARB_indirect_parameters",
-	"GL_ARB_bindless_texture",
-	"GL_ARB_fragment_layer_viewport",
-	"GL_ARB_shader_draw_parameters",
-	"GL_ARB_shader_viewport_layer_array",
-	"GL_ARB_depth_clamp",
-	"GL_ARB_shading_language_420pack",
-	"GL_ARB_shader_atomic_counters",
-	"GL_ARB_shader_atomic_counter_ops",
-	"GL_ARB_gpu_shader_fp64",
-	"GL_ARB_direct_state_access",
-	"GL_ARB_clear_buffer_object",
-	"GL_ARB_buffer_storage",
-	"GL_ARB_texture_storage",
 	
 	"GL_EXT_bindable_uniform",
 	"GL_EXT_blend_equation_separate",
 	"GL_EXT_blend_func_separate",
 	"GL_EXT_blend_minmax",
+	"GL_EXT_buffer_storage",
+	"GL_EXT_clip_control",
+	"GL_EXT_copy_image",
 	"GL_EXT_copy_texture",
+	"GL_EXT_depth_clamp",
 	"GL_EXT_draw_range_elements",
 	"GL_EXT_gpu_shader4",
 	"GL_EXT_multi_draw_arrays",
 	"GL_EXT_packed_depth_stencil",
 	"GL_EXT_polygon_offset",
 	"GL_EXT_subtexture",
-	"GL_EXT_texture3D",
 	"GL_EXT_texture_array",
 	"GL_EXT_texture_cube_map_array",
 	"GL_EXT_texture_integer",
 	"GL_EXT_texture_object",
+	"GL_EXT_texture3D",
 	"GL_EXT_transform_feedback",
 	
 	"GL_AMD_debug_output",
@@ -184,6 +189,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_ATI_separate_stencil",
 	
 	"GL_NV_copy_image",
+	"GL_NV_depth_clamp",
 	"GL_NV_packed_depth_stencil",
 	"GL_NV_texture_barrier",
 	"GL_NV_transform_feedback",
@@ -191,6 +197,7 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GL_NV_transform_feedback3",
 	
 	"GL_KHR_debug",
+	"GL_KHR_parallel_shader_compile",
 	
 	"GLX_EXT_swap_control",
 	"GLX_EXT_swap_control_tear",
@@ -223,6 +230,7 @@ pHasRequiredFunctions( true ),
 pHasArrayCubeMap( false ),
 pHasSeamlessCubeMap( false ),
 pHasCopyImage( false ),
+pHasDepthClamp(false),
 pSupportsGeometryShader( false ),
 pSupportsGSInstancing( false ),
 pSupportsComputeShader( false ),
@@ -297,6 +305,7 @@ void deoglExtensions::PrintSummary(){
 	l.LogInfoFormat("- Has Arry Cube Map: %s", pHasArrayCubeMap ? "Yes" : "No");
 	l.LogInfoFormat("- Has Seamless Cube Map: %s", pHasSeamlessCubeMap ? "Yes" : "No");
 	l.LogInfoFormat("- Has Copy Image: %s", pHasCopyImage ? "Yes" : "No");
+	l.LogInfoFormat("- Has Depth Clamp: %s", pHasDepthClamp ? "Yes" : "No");
 	l.LogInfoFormat("- Supports Geometry Shader: %s", pSupportsGeometryShader ? "Yes" : "No");
 	l.LogInfoFormat("- Supports Geometry Shader Instancing: %s", pSupportsGSInstancing ? "Yes" : "No");
 	l.LogInfoFormat("- Supports Compute Shader: %s", pSupportsComputeShader ? "Yes" : "No");
@@ -306,22 +315,22 @@ void deoglExtensions::PrintSummary(){
 bool deoglExtensions::VerifyPresence() const{
 	bool allPresent = pHasRequiredFunctions;
 	
-#ifndef WITH_OPENGLES
-	allPresent &= pVerifyExtensionPresent( ext_ARB_depth_clamp );
-	allPresent &= pVerifyExtensionPresent( ext_ARB_copy_image, ext_NV_copy_image );
-	allPresent &= pVerifyExtensionPresent( ext_ARB_compute_shader );
-	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_storage_buffer_object );
-	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_image_load_store );
-	allPresent &= pVerifyExtensionPresent( ext_ARB_shading_language_420pack );
-	allPresent &= pVerifyExtensionPresent( ext_ARB_shader_atomic_counters );
-	allPresent &= pVerifyExtensionPresent( ext_ARB_clear_buffer_object );
-	allPresent &= pVerifyExtensionPresent( ext_ARB_buffer_storage );
-#endif
-	// allPresent &= pVerifyExtensionPresent( ext_ARB_gpu_shader_fp64 );
-	if(pGLESVersion < evgles3p1){
-		allPresent &= pVerifyExtensionPresent(ext_ARB_texture_storage);
-	}
+	allPresent &= pSupportsComputeShader;
 	allPresent &= pSupportsGeometryShader;
+	
+	allPresent &= pVerifyExtensionPresent(ext_ARB_depth_clamp, ext_EXT_depth_clamp);
+	//allPresent &= pVerifyExtensionPresent(ext_ARB_copy_image, ext_NV_copy_image, ext_EXT_copy_image);
+	allPresent &= pVerifyExtensionPresent(ext_ARB_shading_language_420pack);
+	allPresent &= pVerifyExtensionPresent(ext_ARB_shader_atomic_counters);
+	allPresent &= pVerifyExtensionPresent(ext_ARB_clear_buffer_object);
+	//allPresent &= pVerifyExtensionPresent(ext_ARB_buffer_storage, ext_EXT_buffer_storage); // not used
+	//allPresent &= pVerifyExtensionPresent(ext_ARB_gpu_shader_fp64);
+	allPresent &= pVerifyExtensionPresent(ext_ARB_texture_storage);
+	//allPresent &= pVerifyExtensionPresent(ext_ARB_shader_storage_buffer_object);
+	
+#ifndef WITH_OPENGLES
+	//allPresent &= pVerifyExtensionPresent(ext_ARB_shader_image_load_store);
+#endif
 	
 	return allPresent;
 }
@@ -627,30 +636,85 @@ void deoglExtensions::pScanExtensions(){
 		pHasExtension[ ext_AMD_vertex_shader_layer ] = false;
 	}
 	
+	// enable extensions included in core versions. mostly a problem on OpenGL ES
+	if(pGLVersion >= evgl2p0){
+		pHasExtension[ext_ARB_vertex_program] = true;
+	}
+	
+	if(pGLESVersion >= evglesUnsupported){
+		pHasExtension[ext_ARB_framebuffer_object] = true;
+		pHasExtension[ext_ARB_multitexture] = true;
+		pHasExtension[ext_ARB_shader_objects] = true;
+		pHasExtension[ext_ARB_vertex_buffer_object] = true;
+		pHasExtension[ext_ARB_vertex_program] = true;
+		pHasExtension[ext_ARB_vertex_shader] = true;
+	}
+	
+	if(pGLESVersion >= evgles3p0){
+		pHasExtension[ext_ARB_clear_buffer_object] = true;
+		pHasExtension[ext_ARB_copy_buffer] = true;
+		pHasExtension[ext_ARB_draw_buffers] = true;
+		pHasExtension[ext_ARB_draw_instanced] = true;
+		pHasExtension[ext_ARB_get_program_binary] = true;
+		pHasExtension[ext_ARB_occlusion_query] = true;
+		pHasExtension[ext_ARB_sampler_objects] = true;
+		pHasExtension[ext_ARB_seamless_cube_map] = true;
+		pHasExtension[ext_ARB_texture_compression] = true;
+		pHasExtension[ext_ARB_texture_cube_map_array] = true;
+		pHasExtension[ext_ARB_texture_storage] = true;
+		pHasExtension[ext_ARB_transform_feedback2] = true;
+		pHasExtension[ext_ARB_uniform_buffer_object] = true;
+		pHasExtension[ext_ARB_vertex_array_object] = true;
+	}
+	
+	if(pGLESVersion >= evgles3p1){
+		pHasExtension[ext_ARB_compute_shader] = true;
+		pHasExtension[ext_ARB_draw_indirect] = true;
+		pHasExtension[ext_ARB_program_interface_query] = true;
+		pHasExtension[ext_ARB_separate_shader_objects] = true;
+		pHasExtension[ext_ARB_shader_atomic_counters] = true;
+		pHasExtension[ext_ARB_shader_image_load_store] = true;
+		pHasExtension[ext_ARB_shading_language_420pack] = true;
+	}
+	
+	if(pGLESVersion >= evgles3p2){
+		pHasExtension[ext_ARB_copy_image] = true;
+		pHasExtension[ext_ARB_draw_buffers_blend] = true;
+		pHasExtension[ext_ARB_draw_elements_base_vertex] = true;
+		pHasExtension[ext_ARB_geometry_shader4] = true;
+		pHasExtension[ext_ARB_gpu_shader5] = true;
+		pHasExtension[ext_ARB_multisample] = true;
+		pHasExtension[ext_ARB_tessellation_shader] = true;
+		pHasExtension[ext_ARB_texture_buffer_object] = true;
+		pHasExtension[ext_KHR_debug] = true;
+	}
+	
+	// checks
 	pHasSeamlessCubeMap = pGLVersion >= evgl3p2
-		|| pHasExtension[ ext_ARB_seamless_cube_map ]
-		|| pHasExtension[ ext_AMD_seamless_cubemap_per_texture ];
+		|| pHasExtension[ext_ARB_seamless_cube_map]
+		|| pHasExtension[ext_AMD_seamless_cubemap_per_texture];
 	
 	pHasArrayCubeMap = pHasExtension[ ext_ARB_texture_cube_map_array ]
 		|| pHasExtension[ ext_EXT_texture_cube_map_array ];
 	
-	pHasCopyImage = pGLESVersion >= evgles3p2
-		|| pHasExtension[ ext_ARB_copy_image ]
-		|| pHasExtension[ ext_NV_copy_image ];
+	pHasCopyImage = pHasExtension[ext_ARB_copy_image]
+		|| pHasExtension[ext_EXT_copy_image]
+		|| pHasExtension[ext_NV_copy_image];
+	
+	pHasDepthClamp = pHasExtension[ext_ARB_depth_clamp]
+		|| pHasExtension[ext_EXT_depth_clamp]
+		|| pHasExtension[ext_NV_depth_clamp];
 	
 	pSupportsGeometryShader = pGLVersion >= evgl3p2
-		|| pGLESVersion >= evgles3p2
 		|| pHasExtension[ ext_ARB_geometry_shader4 ]
 		|| pHasExtension[ ext_EXT_gpu_shader4 ];
 	
 	// "core since" = "4.0". "core in" = "4.6". 4.0 is not working
 	pSupportsGSInstancing = pGLVersion >= evgl4p6
-		|| pGLESVersion >= evgles3p2
 		|| pHasExtension[ ext_ARB_gpu_shader5 ];
 	
 	// "core since" = "4.3". "core in" = "4.6"
 	pSupportsComputeShader = pGLVersion >= evgl4p6
-		|| pGLESVersion >= evgles3p1
 		|| pHasExtension[ ext_ARB_compute_shader ];
 	
 	pSupportsVSLayer = pHasExtension[ ext_ARB_shader_viewport_layer_array ]
@@ -765,6 +829,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglCreateShader, "glCreateShader" ); // core only
 	pGetRequiredFunction( (void**)&pglCreateProgram, "glCreateProgram" ); // core only
 	pGetRequiredFunction( (void**)&pglAttachShader, "glAttachShader" ); // core only
+	pGetRequiredFunction( (void**)&pglDetachShader, "glDetachShader" ); // core only
 	pGetRequiredFunction( (void**)&pglUseProgram, "glUseProgram" ); // core only
 	pGetRequiredFunction( (void**)&pglGetShaderiv, "glGetShaderiv" ); // core only
 	pGetRequiredFunction( (void**)&pglGetProgramiv, "glGetProgramiv" ); // core only
@@ -949,6 +1014,15 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	DEASSERT_TRUE(pGLESVersion >= evgles3p0)
 	#endif
 	pGetRequiredFunction( (void**)&pglCopyBufferSubData, "glCopyBufferSubData" );
+	
+	// OpenGL 4.2 : no extension (moved to required)
+//	pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
+	
+	// OpenGL 4.3 : no extension
+	pGetRequiredFunction((void**)&pglInvalidateFramebuffer, "glInvalidateFramebuffer");
+	
+	// OpenGL 3.2 : no extension
+	pGetRequiredFunction((void**)&pglGetInteger64v, "glGetInteger64v");
 }
 
 void deoglExtensions::pFetchOptionalFunctions(){
@@ -957,7 +1031,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// Replace: pGetOptionalFunction( (void**)&p\1, "\1", "\1ARB", ext_XXX );
 	
 	// GL_ARB_draw_elements_base_vertex : opengl version 3.2 / opengl es version 3.2
-	if(pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p2){
+	if(pGLVersion >= evgl3p2){
 		pHasExtension[ext_ARB_draw_elements_base_vertex] =
 			!pDisableExtension[ext_ARB_draw_elements_base_vertex];
 	}
@@ -974,14 +1048,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 			"glMultiDrawElementsBaseVertex", ext_ARB_draw_elements_base_vertex );
 	}
 	
-	// GL_ARB_draw_buffers_blend : opengl version 4.0
-	if( pHasExtension[ ext_ARB_draw_buffers_blend ] ){
-	}
-	
 	// GL_ARB_tessellation_shader : opengl version 4.0
-	if(pGLESVersion >= evgles3p2){
-		pHasExtension[ext_ARB_tessellation_shader] = true;
-	}
 	if(pHasExtension[ext_ARB_tessellation_shader]){
 		pGetOptionalFunctionArbExt((void**)&pglPatchParameteri, "glPatchParameteri", ext_ARB_tessellation_shader);
 		// pGetOptionalFunctionArbExt((void**)&pglPatchParameterfv, "glPatchParameterfv", ext_ARB_tessellation_shader);
@@ -989,9 +1056,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	
 	// GL_EXT_transform_feedback2 : opengl version 4.0
 	/*
-	if(pGLESVersion >= evgles3p0){
-		pHasExtension[ext_ARB_transform_feedback2] = true;
-	}
 	if(pHasExtension[ext_ARB_transform_feedback2]){
 		pGetOptionalFunctionArbExt( (void**)&pglBindTransformFeedback, "glBindTransformFeedback",  ext_ARB_transform_feedback2 );
 		pGetOptionalFunctionArbExt( (void**)&pglDeleteTransformFeedbacks, "glDeleteTransformFeedbacks", ext_ARB_transform_feedback2 );
@@ -1036,9 +1100,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	*/
 	
 	// GL_ARB_get_program_binar : opengl version 4.1
-	if(pGLESVersion >= evgles3p0){
-		pHasExtension[ext_ARB_get_program_binary] = true;
-	}
 	if(pHasExtension[ext_ARB_get_program_binary]){
 		pGetOptionalFunctionArbExt((void**)&pglGetProgramBinary, "glGetProgramBinary", ext_ARB_get_program_binary);
 		pGetOptionalFunctionArbExt((void**)&pglProgramBinary, "glProgramBinary", ext_ARB_get_program_binary);
@@ -1056,16 +1117,14 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	*/
 	
 	// GL_ARB_copy_image : opengl version 4.3
-	if(pGLESVersion >= evgles3p2){
-		pHasExtension[ext_ARB_copy_image] = true;
-	}
 	if(pHasExtension[ext_ARB_copy_image]){
-		pGetOptionalFunctionArbExt( (void**)&pglCopyImageSubData, "glCopyImageSubData", ext_ARB_copy_image );
-	}
-	
-	// GL_NV_copy_image : opengl version 4.3
-	if( pHasExtension[ ext_NV_copy_image ] ){
-		pGetOptionalFunction( (void**)&pglCopyImageSubDataNV, "glCopyImageSubDataNV", ext_NV_copy_image );
+		pGetOptionalFunctionArbExt((void**)&pglCopyImageSubData, "glCopyImageSubData", ext_ARB_copy_image);
+		
+	}else if(pHasExtension[ext_NV_copy_image]){
+		pGetOptionalFunction((void**)&pglCopyImageSubDataNV, "glCopyImageSubDataNV", ext_NV_copy_image);
+		
+	}else if(pHasExtension[ext_EXT_copy_image]){
+		pGetOptionalFunctionArbExt((void**)&pglCopyImageSubData, "glCopyImageSubDataEXT", ext_EXT_copy_image);
 	}
 	
 	// GL_ARB_shader_storage_buffer_object : opengl version 4.3
@@ -1077,9 +1136,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_program_interface_query : opengl version 4.3
-	if(pGLESVersion >= evgles3p1){
-		pHasExtension[ext_ARB_program_interface_query] = true;
-	}
 	pHasExtension[ext_ARB_program_interface_query] &= !pDisableExtension[ext_ARB_program_interface_query];
 	if(pHasExtension[ext_ARB_program_interface_query]){
 		pGetOptionalFunction( (void**)&pglGetProgramInterfaceiv,
@@ -1089,9 +1145,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_draw_indirect : opengl version 4.3
-	if(pGLESVersion >= evgles3p1){
-		pHasExtension[ext_ARB_draw_indirect] = true;
-	}
 	if(pHasExtension[ext_ARB_draw_indirect]){
 		pGetOptionalFunction( (void**)&pglDrawArraysIndirect, "glDrawArraysIndirect", ext_ARB_draw_indirect );
 		pGetOptionalFunction( (void**)&pglDrawElementsIndirect, "glDrawElementsIndirect", ext_ARB_draw_indirect );
@@ -1104,7 +1157,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_clear_buffer_object : opengl version 4.3
-	if(pHasExtension[ext_ARB_clear_buffer_object] || pGLESVersion >= evgles3p0){
+	if(pHasExtension[ext_ARB_clear_buffer_object]){
 		pGetOptionalFunction((void**)&pglClearBufferSubData, "glClearBufferSubData", ext_ARB_clear_buffer_object);
 	}
 	
@@ -1112,6 +1165,9 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	/*
 	if( pHasExtension[ ext_ARB_buffer_storage ] ){
 		pGetOptionalFunction( (void**)&pglBufferStorage, "glBufferStorage", ext_ARB_buffer_storage );
+		
+	}else if(pHasExtension[ext_EXT_buffer_storage]){
+		pGetOptionalFunction((void**)&pglBufferStorage, "glBufferStorageEXT", ext_EXT_buffer_storage);
 	}
 	*/
 	
@@ -1160,37 +1216,37 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_clip_control : opengl version 4.5
-	if( pHasExtension[ ext_ARB_clip_control ] ){
-		pGetOptionalFunction( (void**)&pglClipControl, "glClipControl", ext_ARB_clip_control );
+	if(pHasExtension[ext_ARB_clip_control]){
+		pGetOptionalFunction((void**)&pglClipControl, "glClipControl", ext_ARB_clip_control);
+		
+	}else if(pHasExtension[ext_EXT_clip_control]){
+		pGetOptionalFunction((void**)&pglClipControl, "glClipControlEXT", ext_EXT_clip_control);
 	}
 	
 	// GL_ARB_indirect_parameters : opengl version 4.6
-	if( pHasExtension[ ext_ARB_indirect_parameters ] ){
-		pGetOptionalFunction( (void**)&pglMultiDrawArraysIndirectCountARB, "glMultiDrawArraysIndirectCountARB", ext_ARB_indirect_parameters );
-		pGetOptionalFunction( (void**)&pglMultiDrawElementsIndirectCountARB, "glMultiDrawElementsIndirectCountARB", ext_ARB_indirect_parameters );
+	if(pHasExtension[ext_ARB_indirect_parameters]){
+		pGetOptionalFunction((void**)&pglMultiDrawArraysIndirectCountARB,
+			"glMultiDrawArraysIndirectCountARB", ext_ARB_indirect_parameters);
+		pGetOptionalFunction((void**)&pglMultiDrawElementsIndirectCountARB,
+			"glMultiDrawElementsIndirectCountARB", ext_ARB_indirect_parameters);
 	}
 	
 	// GL_ARB_geometry_shader4 : no opengl version
+	/* not required anymore since glFramebufferTexture2D is mandatory now
 	if( pHasExtension[ ext_ARB_geometry_shader4 ] ){
-		pGetOptionalFunctionArbExt( (void**)&pglFramebufferTextureFace, "glFramebufferTextureFace", ext_ARB_geometry_shader4 );
+		pGetOptionalFunctionArbExt( (void**)&pglFramebufferTextureFace,
+			"glFramebufferTextureFaceARB", ext_ARB_geometry_shader4 );
 	}
+	*/
 	
 	// GL_ARB_texture_multisample : no opengl version
-	if( pHasExtension[ ext_ARB_texture_multisample ] ){
-	}
 	
 	// GL_ARB_get_program_binary : no opengl version
-	if( pHasExtension[ ext_ARB_get_program_binary ] ){
-	}
+	// GL_OES_get_program_binary
 	
 	// GL_ARB_separate_shader_objects : no opengl version
-	if( pHasExtension[ ext_ARB_separate_shader_objects ] ){
-	}
 	
 	// GL_ARB_debug_output : no opengl version
-	if(pGLESVersion >= evgles3p2){
-		pHasExtension[ext_KHR_debug] = true;
-	}
 	if(pHasExtension[ext_KHR_debug]){
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageControl, "glDebugMessageControl", ext_KHR_debug );
 		pGetOptionalFunctionArbExt( (void**)&pglDebugMessageCallback, "glDebugMessageCallback", ext_KHR_debug );
@@ -1260,9 +1316,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_ARB_shader_image_load_store : 4.6
-	if(pGLESVersion >= evgles3p1){
-		pHasExtension[ext_ARB_shader_image_load_store] = true;
-	}
 	if(pHasExtension[ext_ARB_shader_image_load_store]){
 		pGetOptionalFunction((void**)&pglBindImageTexture, "glBindImageTexture", ext_ARB_shader_image_load_store);
 	}
@@ -1273,21 +1326,6 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pglTextureBarrier, "glTextureBarrierNV", ext_NV_texture_barrier );
 	}
 	#endif
-	
-	// OpenGL 4.2 : no extension (moved to required)
-// 	if( pGLVersion >= evgl4p2 || pGLESVersion >= evgles3p1 ){
-// 		pGetRequiredFunction( (void**)&pglMemoryBarrier, "glMemoryBarrier" );
-// 	}
-	
-	// OpenGL 4.3 : no extension
-	if(pGLVersion >= evgl4p3 || pGLESVersion >= evgles3p0){
-		pGetRequiredFunction((void**)&pglInvalidateFramebuffer, "glInvalidateFramebuffer");
-	}
-	
-	// OpenGL 3.2 : no extension
-	if(pGLVersion >= evgl3p2 || pGLESVersion >= evgles3p0){
-		pGetRequiredFunction((void**)&pglGetInteger64v, "glGetInteger64v");
-	}
 	
 	// GL_ARB_bindless_texture : opengl version 4.6
 	if( pHasExtension[ ext_ARB_bindless_texture ] ){
@@ -1322,9 +1360,19 @@ void deoglExtensions::pFetchOptionalFunctions(){
 #endif
 	
 	// GL_ARB_texture_storage : opengl version 4.2 , opengl es version 3.1
-	if(pHasExtension[ext_ARB_texture_storage] || pGLESVersion >= evgles3p1){
+	if(pHasExtension[ext_ARB_texture_storage]){
 		pGetOptionalFunction((void**)&pglTexStorage2D, "glTexStorage2D", ext_ARB_texture_storage);
 		pGetOptionalFunction((void**)&pglTexStorage3D, "glTexStorage3D", ext_ARB_texture_storage);
+	}
+	
+	// GL_ARB_parallel_shader_compile, GL_KHR_parallel_shader_compile
+	if(pHasExtension[ext_ARB_parallel_shader_compile]){
+		pGetOptionalFunction((void**)&pglMaxShaderCompilerThreads,
+			"glMaxShaderCompilerThreadsARB", ext_ARB_parallel_shader_compile);
+		
+	}else if(pHasExtension[ext_KHR_parallel_shader_compile]){
+		pGetOptionalFunction((void**)&pglMaxShaderCompilerThreads,
+			"glMaxShaderCompilerThreadsKHR", ext_KHR_parallel_shader_compile);
 	}
 }
 

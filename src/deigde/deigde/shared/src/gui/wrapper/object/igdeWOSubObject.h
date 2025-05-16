@@ -46,6 +46,11 @@ class decLayerMask;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSubObject : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSubObject> Ref;
+	
+	
 private:
 	igdeWObject &pWrapper;
 	const decString pPrefix;
@@ -116,6 +121,9 @@ public:
 	
 	/** \brief Update collider response type. */
 	virtual void UpdateColliderResponseType();
+	
+	/** \brief Collider user pointer changed. */
+	virtual void ColliderUserPointerChanged();
 	
 	/** \brief Frame update. */
 	virtual void Update( float elapsed );
