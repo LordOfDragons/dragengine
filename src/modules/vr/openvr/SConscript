@@ -17,7 +17,7 @@ if envModule['OSBeOS'] or envModule['platform_android'] != 'no':
 	Return()
 
 # fetch values in expanded form for later use
-versionString = '1.17'
+versionString = '1.26'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 

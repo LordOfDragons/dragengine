@@ -10,7 +10,7 @@ internalModule = envModule['build_vr_null_internal']
 parent_report['build Null VR Module'] = 'yes (internal)' if internalModule else 'yes'
 
 # fetch values in expanded form for later use
-versionString = '1.17'
+versionString = '1.26'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
