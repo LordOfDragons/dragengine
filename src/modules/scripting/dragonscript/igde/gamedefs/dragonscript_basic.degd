@@ -1991,7 +1991,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Dra[en]gine Conversation' pattern='*.debtree' default='.debtree'/>
+				<add name='Dra[en]gine Behavior Tree' pattern='*.debt' default='.debt'/>
 			</customPathPattern>
 		</property>
 		<property name='run'>
@@ -2011,7 +2011,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Dra[en]gine Conversation' pattern='*.desm' default='.desm'/>
+				<add name='Dra[en]gine State Machine' pattern='*.desm' default='.desm'/>
 			</customPathPattern>
 		</property>
 		<property name='debug'>
