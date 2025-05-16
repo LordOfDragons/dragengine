@@ -259,28 +259,54 @@ class SMTransition
 	/** \brief Run transition. */
 	func void run(SMContext context)
 		if pStateID != null
+			var String nextState = pStateID
+			
 			// set state to null. runs exit actions and switches context to "in transition"
 			// state. in this state events are delayed until a valid state is set
 			context.setCurrentState(null)
 			
 			// run transition actions
-			pActions.forEach(block SMStateAction each
-				each.run(context)
+			var Object action = pActions.find(block SMStateAction each
+				return each.run(context) and each.getStateID() != null
 			end)
+			if action != null
+				var SMStateAction sa = action cast SMStateAction
+				if context.getLogStateChanges() and context.getConsole() != null
+					context.getConsole().addMessage(\
+						"Transition action '{}' state change to '{}'".format(Array.newWith(\
+							context.getLoggingName(), sa.getActionID(), sa.getStateID())))
+				end
+				nextState = sa.getStateID()
+			end
 			
 			// set next state. runs enter state actions
-			var SMState state = context.getStateMachine().getStateAt(pStateID)
+			var SMState state = context.getStateMachine().getStateAt(nextState)
 			if state == null
-				throw EInvalidParam.new("unknown state '" + pStateID + "'")
+				throw EInvalidParam.new("unknown state '" + nextState + "'")
 			end
 			
 			context.setCurrentState(state)
 			
 		else
 			// only run transition actions
-			pActions.forEach(block SMStateAction each
-				each.run(context)
+			var Object action = pActions.find(block SMStateAction each
+				return each.run(context) and each.getStateID() != null
 			end)
+			if action != null
+				var SMStateAction sa = action cast SMStateAction
+				if context.getLogStateChanges() and context.getConsole() != null
+					context.getConsole().addMessage(\
+						"Transition action '{}' state change to '{}'".format(Array.newWith(\
+							context.getLoggingName(), sa.getActionID(), sa.getStateID())))
+				end
+				
+				var SMState state = context.getStateMachine().getStateAt(sa.getStateID())
+				if state == null
+					throw EInvalidParam.new("unknown state '" + sa.getStateID() + "'")
+				end
+				
+				context.setCurrentState(state)
+			end
 		end
 	end
 end
