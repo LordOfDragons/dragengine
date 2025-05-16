@@ -88,8 +88,8 @@ FILETAR=`echo $FILE | sed -e "s/.orig.tar.gz/.orig.tar/"`
 
 gunzip ../$FILE || exit 1
 tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILETAR \
-  extern/eossdk/eossdk.zip \
-  extern/eossdk/eossdk_bin_linux.tar.xz \
+  `dir -1 extern/eossdk/eossdk-*.zip` \
+  `dir -1 extern/eossdk/eossdk_bin_linux-*.tar.xz` \
   `dir -1 extern/fox/fox-*.tar.bz2` \
   `dir -1 extern/liburing/liburing-liburing-*.tar.bz2` \
   `dir -1 extern/modio/modio-sdk-*.tar.xz` \
