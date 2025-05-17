@@ -34,7 +34,7 @@ git clean -dfx || exit 1
 fetchExternals() {
   scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
     lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch \
-    lib_libapng_fetch lib_jsoncpp \
+    lib_libapng_fetch lib_jsoncpp_fetch \
     lib_denetwork_fetch lib_deremotelauncher_fetch || exit 1
 }
 
