@@ -81,8 +81,10 @@ private:
 		meObject &pObject;
 		
 	public:
-		cWOAsyncFinished( meObject &object );
-		virtual void LoadFinished( igdeWObject &wrapper, bool succeeded );
+		cWOAsyncFinished(meObject &object);
+		void LoadFinished(igdeWObject &wrapper, bool succeeded) override;
+		void AnyContentVisibleChanged(igdeWObject &wrapper) override;
+		void ExtendsChanged(igdeWObject &wrapper) override;
 	};
 	
 	class cWOTexture : public deObject{
@@ -324,6 +326,8 @@ public:
 	
 	/** \brief For internal use only. */
 	void WOAsyncFinished();
+	void WOAnyContentVisibleChanged();
+	void WOExtendsChanged();
 	/*@}*/
 	
 	/** \name Decals */
@@ -455,6 +459,7 @@ private:
 	void pUpdateOutline();
 	
 	void pUpdateComponent();
+	void pUpdateBrokenComponent();
 	void pUpdateProperties();
 	
 	void pUpdateCamera();
