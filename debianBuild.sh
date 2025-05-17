@@ -34,7 +34,7 @@ git clean -dfx || exit 1
 fetchExternals() {
   scons lib_eossdk_fetch lib_fox_fetch lib_liburing_fetch \
     lib_modio_fetch lib_openxr_fetch lib_steamsdk_fetch \
-    lib_libapng_fetch \
+    lib_libapng_fetch lib_jsoncpp \
     lib_denetwork_fetch lib_deremotelauncher_fetch || exit 1
 }
 
@@ -54,6 +54,7 @@ writeIncludeBinaries() {
   echo `dir -1 extern/libapng/libpng-*tar.bz2` >>$FILE
   echo `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` >>$FILE
   echo `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` >>$FILE
+  echo `dir -1 extern/jsoncpp/jsoncpp-*.tar.xz` >>$FILE
 }
 
 cleanScons() {
@@ -98,7 +99,8 @@ tar --transform "s@^\(extern.*\)@$FILENOEXT/\\1@" -rf ../$FILETAR \
   extern/mingw/mingw_stdthreads.tar.bz2 \
   `dir -1 extern/libapng/libpng-*tar.bz2` \
   `dir -1 extern/denetwork/denetworkcpp-unix-x64-*.tar.bz2` \
-  `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` || exit 1
+  `dir -1 extern/deremotelauncher/deremotelauncher-unix-x64-*.tar.bz2` \
+  `dir -1 extern/jsoncpp/jsoncpp-*.tar.xz` || exit 1
 gzip ../$FILETAR || exit 1
 
 git clean -dfx || exit 1
