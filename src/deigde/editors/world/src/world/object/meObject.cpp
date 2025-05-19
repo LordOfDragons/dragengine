@@ -902,19 +902,19 @@ void meObject::ShowStateChanged(){
 			pUpdateComponent();
 		}
 		
-		const bool visible = ( pVisible && ( pActive || pSelected ) && modeObj && ! hiddenByTag );
+		const bool visible = pVisible && (pActive || pSelected) && modeObj && !hiddenByTag;
 		
-		pDDSObject->SetVisible( visible );
-		pDDSLightAoE->SetVisible( false ); // visible && pLight
-		pDDSOcclusionMesh->SetVisible(
-			guiParams.GetShowOcclusionMeshes()
-			|| ( visible && guiParams.GetShowOcclusionMeshesSelected() ) );
-		pDDSObjectShapes->SetVisible( pSelected && pVisible && modeObjShape );
-		pDDSListNavSpaces.SetVisibleAll(
-			modeNavSpace
+		pDDSObject->SetVisible(visible);
+		pDDSLightAoE->SetVisible(false); // visible && pLight
+		pDDSOcclusionMesh->SetVisible(guiParams.GetShowOcclusionMeshes()
+			|| (visible && guiParams.GetShowOcclusionMeshesSelected()));
+		pDDSObjectShapes->SetVisible((modeObjShape && pSelected && pVisible)
+			|| guiParams.GetShowShapes()
+			|| (visible && guiParams.GetShowShapesSelected()));
+		pDDSListNavSpaces.SetVisibleAll(modeNavSpace
 			|| guiParams.GetShowNavigationSpaces()
-			|| ( visible && guiParams.GetShowNavigationSpacesSelected() ) );
-		pDDSCoordSysArrows->SetVisible( visible );
+			|| (visible && guiParams.GetShowNavigationSpacesSelected()));
+		pDDSCoordSysArrows->SetVisible(visible);
 	}
 	
 	int i;

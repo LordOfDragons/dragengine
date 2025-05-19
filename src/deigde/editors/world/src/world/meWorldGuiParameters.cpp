@@ -55,6 +55,8 @@ pShowOcclusionMeshes( false ),
 pShowOcclusionMeshesSelected( false ),
 pShowNavigationSpaces( false ),
 pShowNavigationSpacesSelected( false ),
+pShowShapes(false),
+pShowShapesSelected(false),
 
 pHPDrawMode( ehpdmRaise ),
 pHPRadius( 2.5f ),
@@ -230,6 +232,24 @@ void meWorldGuiParameters::SetShowNavigationSpacesSelected( bool show ){
 	}
 	
 	pShowNavigationSpacesSelected = show;
+	pWorld.ElementVisibilityChanged();
+}
+
+void meWorldGuiParameters::SetShowShapes(bool show){
+	if(show == pShowShapes){
+		return;
+	}
+	
+	pShowShapes = show;
+	pWorld.ElementVisibilityChanged();
+}
+
+void meWorldGuiParameters::SetShowShapesSelected(bool show){
+	if(show == pShowShapesSelected){
+		return;
+	}
+	
+	pShowShapesSelected = show;
 	pWorld.ElementVisibilityChanged();
 }
 

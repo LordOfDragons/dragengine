@@ -173,6 +173,8 @@ private:
 	igdeActionReference pActionShowOcclusionMeshesSelected;
 	igdeActionReference pActionShowNavigationSpaces;
 	igdeActionReference pActionShowNavigationSpacesSelected;
+	igdeActionReference pActionShowShapes;
+	igdeActionReference pActionShowShapesSelected;
 	igdeActionReference pActionNavTestLoad;
 	igdeActionReference pActionNavTestSave;
 	
