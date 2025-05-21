@@ -1434,7 +1434,7 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 			pStaticCollisionTestShape = pCreateBPShape(); // take over reference
 		}
 		
-		if( pStaticCollisionTestShape->GetShape() ){
+		if(pStaticCollisionTestShape && pStaticCollisionTestShape->GetShape()){
 			pStaticCollisionTest->setCollisionShape( pStaticCollisionTestShape->GetShape() );
 			
 		}else{
