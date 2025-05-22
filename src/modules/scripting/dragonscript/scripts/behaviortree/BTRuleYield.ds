@@ -44,7 +44,13 @@ class BTRuleYield extends BTRule
 	/** \brief Run action. */
 	func BTResult run(BTContext context)
 		if evaluateConditions(context)
-			return context.getActionFirstRun() if BTResult.running else BTResult.success
+			if context.getActionFirstRun()
+				context.setActionFirstRun(false)
+				return BTResult.running
+				
+			else
+				return BTResult.success
+			end
 			
 		else
 			return BTResult.failure
