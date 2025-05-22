@@ -31,6 +31,7 @@
 #include "../forcefield/debpForceFieldFluctuation.h"
 
 class btGhostObject;
+class btCollisionObject;
 class debpBulletShape;
 class debpColliderBone;
 class debpColliderBones;
@@ -216,14 +217,14 @@ public:
 	debpSweepCollisionTest *GetSweepCollisionTest();
 	
 	/** \brief Static collision test updating it if dirty or null if empty shape. */
-	btGhostObject *GetStaticCollisionTest();
+	btCollisionObject *GetStaticCollisionTest();
 	
 	/**
 	 * \brief Prepared static collision or null if empty shape.
 	 * 
 	 * Same as GetStaticCollisionTest() with calling setWorldTransform().
 	 */
-	btGhostObject *GetStaticCollisionTestPrepare();
+	btCollisionObject *GetStaticCollisionTestPrepare();
 	
 	/** Prepare for static collsion test. Returns true if ready or false if not usable. */
 	bool PrepareStaticCollisionTest() override;

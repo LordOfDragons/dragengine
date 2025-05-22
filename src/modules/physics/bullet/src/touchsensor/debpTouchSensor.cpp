@@ -1168,8 +1168,8 @@ void debpTouchSensor::pColliderHitsLocked(deCollider &collider, deBaseScriptingC
 				continue;
 			}
 			
-			btGhostObject * const go = bpCollider->CastToVolume()->GetStaticCollisionTest();
-			if(!go){
+			btCollisionObject * const co = bpCollider->CastToVolume()->GetStaticCollisionTest();
+			if(!co){
 				continue;
 			}
 			
@@ -1178,8 +1178,8 @@ void debpTouchSensor::pColliderHitsLocked(deCollider &collider, deBaseScriptingC
 				continue;
 			}
 			
-			const btCollisionObjectWrapper ow1(nullptr, go->getCollisionShape(),
-				go, go->getWorldTransform(), -1, -1);
+			const btCollisionObjectWrapper ow1(nullptr, co->getCollisionShape(),
+				co, co->getWorldTransform(), -1, -1);
 			const btCollisionObjectWrapper ow2(nullptr, bpcolobj->getCollisionShape(),
 				bpcolobj, bpcolobj->getWorldTransform(), -1, -1);
 			result.addSingleResult(vDummyManifoldPoint, &ow1, 0, -1, &ow2, 0, cdr.face);

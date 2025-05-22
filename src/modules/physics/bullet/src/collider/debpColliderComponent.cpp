@@ -1071,20 +1071,30 @@ debpSweepCollisionTest *debpColliderComponent::GetSweepCollisionTest(){
 	return pSweepCollisionTest;
 }
 
-btGhostObject *debpColliderComponent::GetStaticCollisionTest(){
+btCollisionObject *debpColliderComponent::GetStaticCollisionTest(){
+	if(pSimplePhyBody && pSimplePhyBody->GetRigidBody()){
+		return pSimplePhyBody->GetRigidBody();
+	}
+	
 	pUpdateStaticCollisionTest();
 	return pStaticCollisionTest->getCollisionShape() ? pStaticCollisionTest : nullptr;
 }
 
-btGhostObject *debpColliderComponent::GetStaticCollisionTestPrepare(){
-	btGhostObject * const go = GetStaticCollisionTest();
-	if(go){
-		go->setWorldTransform(btTransform(
-			{(btScalar)pOrientation.x, (btScalar)pOrientation.y,
-				(btScalar)pOrientation.z, (btScalar)pOrientation.w},
-			{(btScalar)pPosition.x, (btScalar)pPosition.y, (btScalar)pPosition.z}));
+btCollisionObject *debpColliderComponent::GetStaticCollisionTestPrepare(){
+	if(pSimplePhyBody && pSimplePhyBody->GetRigidBody()){
+		return pSimplePhyBody->GetRigidBody();
 	}
-	return go;
+	
+	btCollisionObject * const co = GetStaticCollisionTest();
+	if(!co){
+		return nullptr;
+	}
+	
+	co->setWorldTransform(btTransform(
+		{(btScalar)pOrientation.x, (btScalar)pOrientation.y,
+			(btScalar)pOrientation.z, (btScalar)pOrientation.w},
+		{(btScalar)pPosition.x, (btScalar)pPosition.y, (btScalar)pPosition.z}));
+	return co;
 }
 
 bool debpColliderComponent::PrepareStaticCollisionTest(){

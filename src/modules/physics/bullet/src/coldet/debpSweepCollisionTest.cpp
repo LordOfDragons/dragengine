@@ -216,9 +216,9 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 		const btConvexShape &castShape = *shape.GetShape();
 		
 		if( collider.IsVolume() ){
-			btGhostObject * const go = ((debpColliderVolume&)collider).GetStaticCollisionTest();
-			if(go){
-				SweepTest(*go, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
+			btCollisionObject * const co = ((debpColliderVolume&)collider).GetStaticCollisionTest();
+			if(co){
+				SweepTest(*co, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
 			}
 			
 		}else if( collider.IsComponent() ){
@@ -226,9 +226,9 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 			
 			switch( colliderComponent.GetTestMode() ){
 			case debpColliderComponent::etmRigShape:{
-				btGhostObject * const go = colliderComponent.GetStaticCollisionTest();
-				if(go){
-					SweepTest(*go, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
+				btCollisionObject * const co = colliderComponent.GetStaticCollisionTest();
+				if(co){
+					SweepTest(*co, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
 				}
 				}break;
 				
@@ -238,9 +238,9 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 					const int boneCount = bones.GetBonePhysicsCount();
 					int j;
 					for( j=0; j<boneCount; j++ ){
-						btGhostObject * const go = bones.GetBonePhysicsAt(j).GetStaticCollisionTestPrepare();
-						if(go){
-							SweepTest(*go, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
+						btCollisionObject * const co = bones.GetBonePhysicsAt(j).GetStaticCollisionTestPrepare();
+						if(co){
+							SweepTest(*co, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
 						}
 					}
 				}
@@ -473,17 +473,18 @@ void debpSweepCollisionTest::VisitShapeHull( decShapeHull &hull ){
 // Private functions
 //////////////////////
 
-void debpSweepCollisionTest::SweepTest( btGhostObject &ghostObject, const btVector3 &castShapeAabbMin, 
-const btVector3 &castShapeAabbMax, const btTransform &rfrom, const btTransform &rto,
-const btConvexShape &castShape, debpCollisionWorld::ConvexResultCallback &resultCallback ){
-	btCollisionShape * const staticCollisionShape = ghostObject.getCollisionShape();
+void debpSweepCollisionTest::SweepTest(btCollisionObject &collisionObject,
+const btVector3 &castShapeAabbMin, const btVector3 &castShapeAabbMax,
+const btTransform &rfrom, const btTransform &rto, const btConvexShape &castShape,
+debpCollisionWorld::ConvexResultCallback &resultCallback ){
+	btCollisionShape * const staticCollisionShape = collisionObject.getCollisionShape();
 	if( ! staticCollisionShape ){
 		return;
 	}
 	
 	btVector3 collisionObjectAabbMin;
 	btVector3 collisionObjectAabbMax;
-	staticCollisionShape->getAabb( ghostObject.getWorldTransform(), collisionObjectAabbMin, collisionObjectAabbMax );
+	staticCollisionShape->getAabb( collisionObject.getWorldTransform(), collisionObjectAabbMin, collisionObjectAabbMax );
 	AabbExpand( collisionObjectAabbMin, collisionObjectAabbMax, castShapeAabbMin, castShapeAabbMax );
 	
 	btScalar hitLambda = ( btScalar)1.0; //could use resultCallback.m_closestHitFraction, but needs testing
@@ -492,7 +493,7 @@ const btConvexShape &castShape, debpCollisionWorld::ConvexResultCallback &result
 		return;
 	}
 	
-	const btCollisionObjectWrapper castWrap( 0, staticCollisionShape, &ghostObject, ghostObject.getWorldTransform(), -1, -1 );
+	const btCollisionObjectWrapper castWrap( 0, staticCollisionShape, &collisionObject, collisionObject.getWorldTransform(), -1, -1 );
 	// TODO last parameter is allowPenetration. code shows it is used to reject collision like this:
 	//      if normal * r >= -allowPenetration then no-collision
 	//      maybe this can help to deal with touching collisions at 0-distance causing troubles

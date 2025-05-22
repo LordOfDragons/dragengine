@@ -36,6 +36,7 @@ class debpBulletShape;
 class debpPhysicsBody;
 
 class btGhostObject;
+class btCollisionObject;
 
 class deDebugDrawer;
 class deDebugDrawerShape;
@@ -184,14 +185,14 @@ public:
 	
 	
 	/** Static collision test updating it if dirty or null if empty shape. */
-	btGhostObject *GetStaticCollisionTest();
+	btCollisionObject *GetStaticCollisionTest();
 	
 	/**
 	 * \brief Prepared static collision or null if empty shape.
 	 * 
 	 * Same as GetStaticCollisionTest() with calling setWorldTransform().
 	 */
-	btGhostObject *GetStaticCollisionTestPrepare();
+	btCollisionObject *GetStaticCollisionTestPrepare();
 	
 	/** Requires bone auto-dirty. */
 	bool RequiresAutoDirty() const;

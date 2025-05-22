@@ -230,16 +230,16 @@ void debpCollisionDetection::ColliderHits( debpCollider *collider, debpWorld *wo
 	debpContactResultCallback resultCallback(pColInfo);
 	
 	if(collider->IsVolume()){
-		btGhostObject * const go = collider->CastToVolume()->GetStaticCollisionTestPrepare();
-		if(!go){
+		btCollisionObject * const co = collider->CastToVolume()->GetStaticCollisionTestPrepare();
+		if(!co){
 			return;
 		}
 		
-		resultCallback.SetTestCollider(go, collider, listener);
+		resultCallback.SetTestCollider(co, collider, listener);
 		pColInfo->SetStopTesting(false);
 		
 		//printf( "ColliderHits %p(%p)\n", staticCollisionTest, collider );
-		dynamicsWorld.contactTest(go, resultCallback);
+		dynamicsWorld.contactTest(co, resultCallback);
 	}
 }
 
@@ -1022,19 +1022,19 @@ debpContactResultCallback &result, bool reversedColliders){
 	
 	if(collider1.IsVolume()){
 		debpColliderVolume &cv = *collider1.CastToVolume();
-		btGhostObject * const go = cv.GetStaticCollisionTest();
-		if(!go){
+		btCollisionObject * const co = cv.GetStaticCollisionTest();
+		if(!co){
 			return;
 		}
 		
 		if(collider2.IsVolume()){
-			btGhostObject * const go2 = collider2.CastToVolume()->GetStaticCollisionTest();
-			if(!go2){
+			btCollisionObject * const co2 = collider2.CastToVolume()->GetStaticCollisionTest();
+			if(!co2){
 				return;
 			}
 			
-			result.SetTestCollisionObject(reversedColliders ? go2 : go);
-			contactPairTest(go, go2, result);
+			result.SetTestCollisionObject(reversedColliders ? co2 : co);
+			contactPairTest(co, co2, result);
 			
 		}else if(collider2.IsComponent()){
 			debpColliderComponent &cv2 = *collider2.CastToComponent();
@@ -1045,8 +1045,8 @@ debpContactResultCallback &result, bool reversedColliders){
 			switch(cv2.GetTestMode()){
 			case debpColliderComponent::etmModelStatic:
 			case debpColliderComponent::etmModelDynamic:{
-				btGhostObject * const go2 = cv2.GetStaticCollisionTestPrepare();
-				if(!go2){
+				btCollisionObject * const co2 = cv2.GetStaticCollisionTestPrepare();
+				if(!co2){
 					return;
 				}
 				
@@ -1055,23 +1055,23 @@ debpContactResultCallback &result, bool reversedColliders){
 					return;
 				}
 				
-				result.SetTestCollisionObject(reversedColliders ? go2 : go);
+				result.SetTestCollisionObject(reversedColliders ? co2 : co);
 				
 				const btCollisionObjectWrapper ow1(nullptr,
-					go->getCollisionShape(), go, go->getWorldTransform(), -1, -1);
+					co->getCollisionShape(), co, co->getWorldTransform(), -1, -1);
 				const btCollisionObjectWrapper ow2(nullptr,
-					go2->getCollisionShape(), go2, go2->getWorldTransform(), -1, -1);
+					co2->getCollisionShape(), co2, co2->getWorldTransform(), -1, -1);
 				result.addSingleResult(dummyManifoldPoint, &ow1, 0, -1, &ow2, 0, cdr.face);
 				}break;
 				
 			case debpColliderComponent::etmRigShape:{
-				btGhostObject * const go2 = cv2.GetStaticCollisionTestPrepare();
-				if(!go2){
+				btCollisionObject * const co2 = cv2.GetStaticCollisionTestPrepare();
+				if(!co2){
 					return;
 				}
 				
-				result.SetTestCollisionObject(reversedColliders ? go2 : go);
-				contactPairTest(go, go2, result);
+				result.SetTestCollisionObject(reversedColliders ? co2 : co);
+				contactPairTest(co, co2, result);
 				}break;
 				
 			case debpColliderComponent::etmBoneShape:{
@@ -1083,13 +1083,13 @@ debpContactResultCallback &result, bool reversedColliders){
 				const int boneCount = bones->GetBoneCount();
 				int i;
 				for(i=0; i<boneCount; i++){
-					btGhostObject * const go2 = bones->GetBoneAt(i)->GetStaticCollisionTest();
-					if(!go2){
+					btCollisionObject * const co2 = bones->GetBoneAt(i)->GetStaticCollisionTest();
+					if(!co2){
 						continue;
 					}
 					
-					result.SetTestCollisionObject(reversedColliders ? go2 : go);
-					contactPairTest(go, go2, result);
+					result.SetTestCollisionObject(reversedColliders ? co2 : co);
+					contactPairTest(co, co2, result);
 					if(pColInfo->GetStopTesting()){
 						return;
 					}
@@ -1126,13 +1126,13 @@ debpContactResultCallback &result, bool reversedColliders){
 				const int boneCount = bones->GetBoneCount();
 				int i;
 				for(i=0; i<boneCount; i++){
-					btGhostObject * const go2 = bones->GetBoneAt(i)->GetStaticCollisionTest();
-					if(!go2){
+					btCollisionObject * const co2 = bones->GetBoneAt(i)->GetStaticCollisionTest();
+					if(!co2){
 						continue;
 					}
 					
-					result.SetTestCollisionObject(reversedColliders ? go2 : go);
-					contactPairTest(go, go2, result);
+					result.SetTestCollisionObject(reversedColliders ? co2 : co);
+					contactPairTest(co, co2, result);
 					if(pColInfo->GetStopTesting()){
 						return;
 					}
