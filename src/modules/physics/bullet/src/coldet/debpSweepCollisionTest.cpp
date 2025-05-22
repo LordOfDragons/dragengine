@@ -216,18 +216,21 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 		const btConvexShape &castShape = *shape.GetShape();
 		
 		if( collider.IsVolume() ){
-			debpColliderVolume &colliderVolume = ( debpColliderVolume& )collider;
-			SweepTest( *colliderVolume.GetStaticCollisionTest(), castShapeAabbMin, castShapeAabbMax,
-				rfrom, rto, castShape, resultCallback );
+			btGhostObject * const go = ((debpColliderVolume&)collider).GetStaticCollisionTest();
+			if(go){
+				SweepTest(*go, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
+			}
 			
 		}else if( collider.IsComponent() ){
 			debpColliderComponent &colliderComponent = ( debpColliderComponent& )collider;
 			
 			switch( colliderComponent.GetTestMode() ){
-			case debpColliderComponent::etmRigShape:
-				SweepTest( *colliderComponent.GetStaticCollisionTest(), castShapeAabbMin, castShapeAabbMax,
-					rfrom, rto, castShape, resultCallback );
-				break;
+			case debpColliderComponent::etmRigShape:{
+				btGhostObject * const go = colliderComponent.GetStaticCollisionTest();
+				if(go){
+					SweepTest(*go, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
+				}
+				}break;
 				
 			case debpColliderComponent::etmBoneShape:
 				if( colliderComponent.GetBones() ){
@@ -235,8 +238,10 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 					const int boneCount = bones.GetBonePhysicsCount();
 					int j;
 					for( j=0; j<boneCount; j++ ){
-						SweepTest( *bones.GetBonePhysicsAt( j ).GetStaticCollisionTest(),
-							castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback );
+						btGhostObject * const go = bones.GetBonePhysicsAt(j).GetStaticCollisionTestPrepare();
+						if(go){
+							SweepTest(*go, castShapeAabbMin, castShapeAabbMax, rfrom, rto, castShape, resultCallback);
+						}
 					}
 				}
 				break;

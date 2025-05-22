@@ -57,8 +57,7 @@
 // Constructor, Destructor
 ////////////////////////////
 
-debpSharedCollisionFiltering::debpSharedCollisionFiltering( debpWorld &world ) :
-pWorld( world ){
+debpSharedCollisionFiltering::debpSharedCollisionFiltering(){
 }
 
 debpSharedCollisionFiltering::~debpSharedCollisionFiltering(){

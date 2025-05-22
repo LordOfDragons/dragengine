@@ -742,9 +742,24 @@ debpSweepCollisionTest *debpColliderVolume::GetSweepCollisionTest(){
 	return pSweepCollisionTest;
 }
 
-btGhostObject* debpColliderVolume::GetStaticCollisionTest(){
+btGhostObject *debpColliderVolume::GetStaticCollisionTest(){
 	pUpdateStaticCollisionTest();
-	return pStaticCollisionTest;
+	return pStaticCollisionTest->getCollisionShape() ? pStaticCollisionTest : nullptr;
+}
+
+btGhostObject *debpColliderVolume::GetStaticCollisionTestPrepare(){
+	btGhostObject * const go = GetStaticCollisionTest();
+	if(go){
+		go->setWorldTransform(btTransform(
+			{(btScalar)pOrientation.x, (btScalar)pOrientation.y,
+				(btScalar)pOrientation.z, (btScalar)pOrientation.w},
+			{(btScalar)pPosition.x, (btScalar)pPosition.y, (btScalar)pPosition.z}));
+	}
+	return go;
+}
+
+bool debpColliderVolume::PrepareStaticCollisionTest(){
+	return GetStaticCollisionTestPrepare() != nullptr;
 }
 
 
@@ -1119,15 +1134,12 @@ void debpColliderVolume::RayHits( const decDVector &rayOrigin, const decVector &
 	const btTransform rayFromTrans( btOrientation, btRayFrom );
 	const btTransform rayToTrans( btOrientation, btRayTo );
 	
-	// prepre static collision test to be in the right spot
-	btGhostObject * const staticCollisionTest = GetStaticCollisionTest();
-	const btVector3 btColPos( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z );
-	const btQuaternion btColOrien( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
-		( btScalar )pOrientation.z, ( btScalar )pOrientation.w );
-	staticCollisionTest->setWorldTransform( btTransform( btColOrien, btColPos ) );
-	
 	// do collision test
 	#ifdef BULLET_RAY_CAST_UNSTABLE
+		if(!GetStaticCollisionTestPrepare()){
+			return;
+		}
+		
 		// bullet has a broken ray-box test implementation using Gjk which has a tendency
 		// to miss collisions half of the time. as a quick fix a sweep test is done with
 		// a tiny sphere which yields a comparable result but is not prone to the problem
@@ -1140,6 +1152,11 @@ void debpColliderVolume::RayHits( const decDVector &rayOrigin, const decVector &
 			//      example test if path passes through a collider)
 		
 	#else
+		btGhostObject * const staticCollisionTest = GetStaticCollisionTestPrepare();
+		if(!staticCollisionTest){
+			return;
+		}
+		
 		// update abbbs?
 		debpRayResultCallback result( colinfo );
 		result.SetTestRay( rayOrigin, rayDirection, NULL, 0, listener );
@@ -1152,58 +1169,62 @@ void debpColliderVolume::RayHits( const decDVector &rayOrigin, const decVector &
 
 static btManifoldPoint vDummyManifoldPoint; // Dummy manifold point to be used where bullet requires one but dragengine not
 
-void debpColliderVolume::ColliderHits( deCollider *engCollider, deBaseScriptingCollider *listener ){
-	if( ! engCollider || ! listener ){
-		DETHROW( deeInvalidParam );
+void debpColliderVolume::ColliderHits(deCollider *engCollider, deBaseScriptingCollider *listener){
+	DEASSERT_NOTNULL(engCollider)
+	DEASSERT_NOTNULL(listener)
+	
+	debpCollider &collider = *(debpCollider*)engCollider->GetPeerPhysics();
+	if(!PrepareStaticCollisionTest() || !collider.PrepareStaticCollisionTest()){
+		return;
 	}
 	
-	// prepre static collision test to be in the right spot
-	btGhostObject * const staticCollisionTest = GetStaticCollisionTest();
-	const btVector3 btColPos( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z );
-	const btQuaternion btColOrien( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
-		( btScalar )pOrientation.z, ( btScalar )pOrientation.w );
-	staticCollisionTest->setWorldTransform( btTransform( btColOrien, btColPos ) );
+	debpCollisionDetection &coldet = GetBullet()->GetCollisionDetection();
+	debpContactResultCallback result(coldet.GetCollisionInfo());
+	result.SetTestCollider(&collider, listener);
+	coldet.GetCollisionInfo()->SetStopTesting(false);
+	coldet.ColliderHitsCollider(*this, collider, result);
 	
-	// do collision test
-	
-	// update abbbs?
+	#if 0
+	btGhostObject * const go = GetStaticCollisionTestPrepare();
+	if(!go){
+		return;
+	}
 	
 	debpCollisionDetection &coldet = GetBullet()->GetCollisionDetection();
-	debpCollider * const collider = ( debpCollider* )engCollider->GetPeerPhysics();
-	deCollisionInfo * const colinfo = coldet.GetCollisionInfo();
-	debpCollisionResult coldetResult;
+	debpCollider &collider = *(debpCollider*)engCollider->GetPeerPhysics();
 	
-	debpContactResultCallback result( colinfo );
+	debpContactResultCallback result(coldet.GetCollisionInfo());
+	result.SetTestCollider(go, &collider, listener);
+	coldet.GetCollisionInfo()->SetStopTesting(false);
 	
-	if( collider->IsVolume() ){
-		debpColliderVolume &colliderVolume = *collider->CastToVolume();
-		btGhostObject * const staticCollisionTest = colliderVolume.GetStaticCollisionTest();
+	if(collider.IsVolume()){
+		debpColliderVolume &colliderVolume = *collider.CastToVolume();
+		btGhostObject * const staticCollisionTest2 = colliderVolume.GetStaticCollisionTestPrepare();
+		if(!staticCollisionTest2){
+			return;
+		}
+		
+		GetBullet()->GetCollisionDetection().contactPairTest(go,
+			staticCollisionTest2, result);
+		
+		#if 0
 		const btCollisionObjectWrapper obj0Wrap( NULL, staticCollisionTest->getCollisionShape(),
 			staticCollisionTest, staticCollisionTest->getWorldTransform(), -1, -1 );
-		
-		const decDVector &position = colliderVolume.GetPosition();
-		const btVector3 btposition( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z );
-		
-		const decQuaternion &orientation = colliderVolume.GetOrientation();
-		const btQuaternion btorientation( ( btScalar )orientation.x, ( btScalar )orientation.y,
-			( btScalar )orientation.z, ( btScalar )orientation.w );
-		
-		staticCollisionTest->setWorldTransform( btTransform( btorientation, btposition ) );
-		
-		result.SetTestCollider( staticCollisionTest, collider, listener );
-		colinfo->SetStopTesting( false );
 		
 		collider->UpdateShapes(); // the collider shapes can be messed up. we restore them back to the world relative state
 		
 		btVector3 aabbMin, aabbMax;
-		staticCollisionTest->getCollisionShape()->getAabb( staticCollisionTest->getWorldTransform(), aabbMin, aabbMax );
+		staticCollisionTest2->getCollisionShape()->getAabb( staticCollisionTest2->getWorldTransform(), aabbMin, aabbMax );
 		
+		debpCollisionResult coldetResult;
 		if( coldet.ColliderHitsCollider( collider, this, coldetResult ) ){
-			const btCollisionObjectWrapper obj1Wrap( NULL, staticCollisionTest->getCollisionShape(),
-				staticCollisionTest, staticCollisionTest->getWorldTransform(), -1, -1 );
+			const btCollisionObjectWrapper obj1Wrap( NULL, staticCollisionTest2->getCollisionShape(),
+				staticCollisionTest2, staticCollisionTest2->getWorldTransform(), -1, -1 );
 			result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face );
 		}
+		#endif
 	}
+	#endif
 }
 
 void debpColliderVolume::ColliderMoveHits( deCollider *engCollider, const decVector &displacement, deBaseScriptingCollider *listener ){
@@ -1212,11 +1233,9 @@ void debpColliderVolume::ColliderMoveHits( deCollider *engCollider, const decVec
 	}
 	
 	// prepre static collision test to be in the right spot
-	btGhostObject * const staticCollisionTest = GetStaticCollisionTest();
-	const btVector3 btColPos( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z );
-	const btQuaternion btColOrien( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
-		( btScalar )pOrientation.z, ( btScalar )pOrientation.w );
-	staticCollisionTest->setWorldTransform( btTransform( btColOrien, btColPos ) );
+	if(!GetStaticCollisionTestPrepare()){
+		return;
+	}
 	
 	// do collision test
 	debpCollisionDetection &coldet = GetBullet()->GetCollisionDetection();
@@ -1256,11 +1275,9 @@ void debpColliderVolume::ColliderRotateHits( deCollider *engCollider, const decV
 	}
 	
 	// prepre static collision test to be in the right spot
-	btGhostObject * const staticCollisionTest = GetStaticCollisionTest();
-	const btVector3 btColPos( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z );
-	const btQuaternion btColOrien( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
-		( btScalar )pOrientation.z, ( btScalar )pOrientation.w );
-	staticCollisionTest->setWorldTransform( btTransform( btColOrien, btColPos ) );
+	if(!GetStaticCollisionTestPrepare()){
+		return;
+	}
 	
 	// do collision test
 	debpCollisionDetection &coldet = GetBullet()->GetCollisionDetection();
@@ -1302,11 +1319,9 @@ const decVector &rotation, deBaseScriptingCollider *listener ){
 	}
 	
 	// prepre static collision test to be in the right spot
-	btGhostObject * const staticCollisionTest = GetStaticCollisionTest();
-	const btVector3 btColPos( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z );
-	const btQuaternion btColOrien( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
-		( btScalar )pOrientation.z, ( btScalar )pOrientation.w );
-	staticCollisionTest->setWorldTransform( btTransform( btColOrien, btColPos ) );
+	if(!GetStaticCollisionTestPrepare()){
+		return;
+	}
 	
 	// do collision test
 	debpCollisionDetection &coldet = GetBullet()->GetCollisionDetection();

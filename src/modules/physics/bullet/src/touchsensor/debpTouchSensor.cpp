@@ -792,14 +792,13 @@ void debpTouchSensor::ColliderHits( deCollider *collider, deBaseScriptingCollide
 #ifdef DO_TIMING2
 timer.Reset();
 #endif
-	if( ! collider || ! listener ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(collider)
+	DEASSERT_NOTNULL(listener)
 	
 // 	printf( "touchSensor=%p shape=%p colliderHits pos=(%f,%f,%f)\n", pTouchSensor, this,
 // 		    engCollider->GetPosition().x, engCollider->GetPosition().y, engCollider->GetPosition().z );
 	
-	if( ! pGhostObject->GetGhostObject() ){
+	if(!pGhostObject->GetGhostObject()){
 		return;
 	}
 	
@@ -808,74 +807,7 @@ timer.Reset();
 	pGhostObject->GetDynamicsWorld()->GetDelayedOperation().Lock();
 	
 	try{
-		// update abbbs?
-		
-		debpCollisionDetection &coldet = pBullet.GetCollisionDetection();
-		debpCollider * const bpCollider = ( debpCollider* )collider->GetPeerPhysics();
-		deCollisionInfo * const colinfo = coldet.GetCollisionInfo();
-		debpCollisionResult coldetResult;
-		
-		const btAlignedObjectArray<btCollisionObject*> &colobjs =
-			pGhostObject->GetGhostObject()->getOverlappingPairs();
-		const int colobjCount = colobjs.size();
-		int i;
-		
-		debpTSContactResultCallback result( colinfo, *this );
-		
-		if( bpCollider->IsVolume() ){
-			debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
-			btGhostObject * const staticCollisionTest = colliderVolume.GetStaticCollisionTest();
-			const btCollisionObjectWrapper obj0Wrap( NULL, staticCollisionTest->getCollisionShape(),
-				staticCollisionTest, staticCollisionTest->getWorldTransform(), -1, -1 );
-			
-			const decDVector &position = colliderVolume.GetPosition();
-			const btVector3 btposition( ( btScalar )position.x,
-				( btScalar )position.y, ( btScalar )position.z );
-			
-			const decQuaternion &orientation = colliderVolume.GetOrientation();
-			const btQuaternion btorientation( ( btScalar )orientation.x, ( btScalar )orientation.y,
-				( btScalar )orientation.z, ( btScalar )orientation.w );
-			
-			staticCollisionTest->setWorldTransform( btTransform( btorientation, btposition ) );
-			
-			result.SetTestCollider( staticCollisionTest, bpCollider, listener );
-			colinfo->SetStopTesting( false );
-			
-			bpCollider->UpdateShapes();
-			
-			for( i=0; i<colobjCount; i++ ){
-				btCollisionObject * const bpcolobj = colobjs.at( i );
-				
-				btVector3 aabbMin, aabbMax;
-				bpcolobj->getCollisionShape()->getAabb( bpcolobj->getWorldTransform(), aabbMin, aabbMax );
-				
-				if( result.needsCollision( bpcolobj->getBroadphaseHandle() ) ){
-					const debpCollisionObject &colobj = *( ( debpCollisionObject* )bpcolobj->getUserPointer() );
-					
-					// test against collider
-					if( colobj.IsOwnerCollider() ){
-						if( coldet.ColliderHitsCollider( bpCollider, colobj.GetOwnerCollider(), coldetResult ) ){
-							const btCollisionObjectWrapper obj1Wrap( NULL, bpcolobj->getCollisionShape(), bpcolobj, bpcolobj->getWorldTransform(), -1, -1 );
-							result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face );
-							//if( result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face ) < ( btScalar )0.5 ){
-							//	break;
-							//}
-						}
-						
-					// test against height terrain
-					}else if( colobj.IsOwnerHTSector() ){
-						if( coldet.ColliderHitsHeightTerrain( bpCollider, colobj.GetOwnerHTSector(), coldetResult ) ){
-							const btCollisionObjectWrapper obj1Wrap( NULL, bpcolobj->getCollisionShape(), bpcolobj, bpcolobj->getWorldTransform(), -1, -1 );
-							result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face );
-							//if( result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face ) < ( btScalar )0.5 ){
-							//	break;
-							//}
-						}
-					}
-				}
-			}
-		}
-		
+		pColliderHitsLocked(*collider, *listener);
 		pGhostObject->GetDynamicsWorld()->GetDelayedOperation().Unlock();
 		
 	}catch( const deException & ){
@@ -1197,4 +1129,109 @@ void debpTouchSensor::pClearTracking(){
 	
 	// in the above both can not happen at the same time so GetTrackingTouchSensors() can not
 	// be altered twice by the same collider (which would result in an exception)
+}
+
+void debpTouchSensor::pColliderHitsLocked(deCollider &collider, deBaseScriptingCollider &listener){
+	const btAlignedObjectArray<btCollisionObject*> &colobjs =
+		pGhostObject->GetGhostObject()->getOverlappingPairs();
+	const int colobjCount = colobjs.size();
+	int i;
+	if(colobjCount == 0){
+		return;
+	}
+	
+	debpCollider * const bpCollider = (debpCollider*)collider.GetPeerPhysics();
+	if(!bpCollider->PrepareStaticCollisionTest()){
+		return;
+	}
+	
+	debpCollisionDetection &coldet = pBullet.GetCollisionDetection();
+	deCollisionInfo * const colinfo = coldet.GetCollisionInfo();
+	
+	debpTSContactResultCallback result(colinfo, *this);
+	result.SetTestCollider(bpCollider, &listener);
+	colinfo->SetStopTesting(false);
+	
+	for(i=0; i<colobjCount; i++){
+		btCollisionObject * const bpcolobj = colobjs.at(i);
+		if(!result.needsCollision(bpcolobj->getBroadphaseHandle())){
+			continue;
+		}
+		
+		const debpCollisionObject &colobj = *((debpCollisionObject*)bpcolobj->getUserPointer());
+		
+		if(colobj.IsOwnerCollider()){
+			coldet.ColliderHitsCollider(*bpCollider, *colobj.GetOwnerCollider(), result);
+			
+		}else if(colobj.IsOwnerHTSector()){
+			if(!bpCollider->IsVolume()){
+				continue;
+			}
+			
+			btGhostObject * const go = bpCollider->CastToVolume()->GetStaticCollisionTest();
+			if(!go){
+				continue;
+			}
+			
+			debpCollisionResult cdr;
+			if(!coldet.ColliderHitsHeightTerrain(bpCollider, colobj.GetOwnerHTSector(), cdr)){
+				continue;
+			}
+			
+			const btCollisionObjectWrapper ow1(nullptr, go->getCollisionShape(),
+				go, go->getWorldTransform(), -1, -1);
+			const btCollisionObjectWrapper ow2(nullptr, bpcolobj->getCollisionShape(),
+				bpcolobj, bpcolobj->getWorldTransform(), -1, -1);
+			result.addSingleResult(vDummyManifoldPoint, &ow1, 0, -1, &ow2, 0, cdr.face);
+		}
+	}
+	
+	#if 0
+	if(bpCollider->IsVolume()){
+		debpColliderVolume &colliderVolume = *bpCollider->CastToVolume();
+		btGhostObject * const go = colliderVolume.GetStaticCollisionTestPrepare();
+		if(go){
+			const btCollisionObjectWrapper obj0Wrap( NULL, go->getCollisionShape(),
+				go, go->getWorldTransform(), -1, -1 );
+			
+			result.SetTestCollider( go, bpCollider, listener );
+			colinfo->SetStopTesting( false );
+			
+			bpCollider->UpdateShapes();
+			
+			for( i=0; i<colobjCount; i++ ){
+				btCollisionObject * const bpcolobj = colobjs.at( i );
+				
+				btVector3 aabbMin, aabbMax;
+				bpcolobj->getCollisionShape()->getAabb( bpcolobj->getWorldTransform(), aabbMin, aabbMax );
+				
+				if( result.needsCollision( bpcolobj->getBroadphaseHandle() ) ){
+					const debpCollisionObject &colobj = *( ( debpCollisionObject* )bpcolobj->getUserPointer() );
+					debpCollisionResult coldetResult;
+					
+					// test against collider
+					if( colobj.IsOwnerCollider() ){
+						if( coldet.ColliderHitsCollider( bpCollider, colobj.GetOwnerCollider(), coldetResult ) ){
+							const btCollisionObjectWrapper obj1Wrap( NULL, bpcolobj->getCollisionShape(), bpcolobj, bpcolobj->getWorldTransform(), -1, -1 );
+							result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face );
+							//if( result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face ) < ( btScalar )0.5 ){
+							//	break;
+							//}
+						}
+						
+					// test against height terrain
+					}else if( colobj.IsOwnerHTSector() ){
+						if( coldet.ColliderHitsHeightTerrain( bpCollider, colobj.GetOwnerHTSector(), coldetResult ) ){
+							const btCollisionObjectWrapper obj1Wrap( NULL, bpcolobj->getCollisionShape(), bpcolobj, bpcolobj->getWorldTransform(), -1, -1 );
+							result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face );
+							//if( result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face ) < ( btScalar )0.5 ){
+							//	break;
+							//}
+						}
+					}
+				}
+			}
+		}
+	}
+	#endif
 }

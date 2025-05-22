@@ -308,6 +308,10 @@ public:
 	/** Set update octree processing index or -1 if not registered. */
 	void SetUpdateOctreeIndex( int index );
 	
+	/** Prepare for static collsion test. Returns true if ready or false if not usable. */
+	virtual bool PrepareStaticCollisionTest() = 0;
+	/*@}*/
+	
 	
 	
 	/** @name Attachments */

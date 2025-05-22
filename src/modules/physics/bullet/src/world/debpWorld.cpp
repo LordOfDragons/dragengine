@@ -162,7 +162,7 @@ pProcessingPhysics( false )
 		pColInfo = new deCollisionInfo;
 		pUnstuckCollider = new debpUnstuckCollider( *this );
 		
-		pSharedCollisionFiltering = new debpSharedCollisionFiltering( *this );
+		pSharedCollisionFiltering = new debpSharedCollisionFiltering;
 		
 		// create physics environment
 		//const decDVector &size = world->GetSize();

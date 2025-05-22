@@ -51,11 +51,18 @@
 #include "../terrain/heightmap/debpHTSector.h"
 #include "../shape/debpShape.h"
 #include "../world/debpCollisionWorld.h"
+#include "../world/debpCollisionDispatcher.h"
+#include "../world/debpConstraintSolver.h"
+#include "../world/debpSharedCollisionFiltering.h"
 #include "../world/debpWorld.h"
 
+#include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
+#include "BulletCollision/BroadphaseCollision/btDbvtBroadphase.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
 #include "BulletCollision/CollisionShapes/btSphereShape.h"
+#include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+#include "BulletSoftBody/btDefaultSoftBodySolver.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeSphere.h>
@@ -89,7 +96,14 @@ pBullet( bullet ),
 pRayHackShape( *this ),
 pShapeCollision( bullet ),
 pPointTestShape( NULL ),
-pPointTestBulletColObj( NULL )
+pPointTestBulletColObj( NULL ),
+pSharedCollisionFiltering(nullptr),
+pColConfig(nullptr),
+pColDisp(nullptr),
+pBroadPhase(nullptr),
+pConstraintSolver(nullptr),
+pSoftBodySolver(nullptr),
+pDynWorld(nullptr)
 {
 	(void)pBullet;
 	
@@ -103,9 +117,39 @@ pPointTestBulletColObj( NULL )
 	
 	pPointTestBulletColObj = new btCollisionObject;
 	pPointTestBulletColObj->setCollisionShape( pPointTestShape );
+	
+	pSharedCollisionFiltering = new debpSharedCollisionFiltering;
+	pColConfig = new btSoftBodyRigidBodyCollisionConfiguration;
+	pColDisp = new debpCollisionDispatcher(*pSharedCollisionFiltering, pColConfig);
+	pBroadPhase = new btDbvtBroadphase;
+	pConstraintSolver = new debpConstraintSolver;
+	pSoftBodySolver = new btDefaultSoftBodySolver;
+	pDynWorld = new btSoftRigidDynamicsWorld(pColDisp, pBroadPhase, pConstraintSolver, pColConfig, pSoftBodySolver);
 }
 
 debpCollisionDetection::~debpCollisionDetection(){
+	if(pDynWorld){
+		delete pDynWorld;
+	}
+	if(pSoftBodySolver){
+		delete pSoftBodySolver;
+	}
+	if(pConstraintSolver){
+		delete pConstraintSolver;
+	}
+	if(pBroadPhase){
+		delete pBroadPhase;
+	}
+	if(pSharedCollisionFiltering){
+		delete pSharedCollisionFiltering;
+	}
+	if(pColDisp){
+		delete pColDisp;
+	}
+	if(pColConfig){
+		delete pColConfig;
+	}
+	
 	if( pPointTestBulletColObj ){
 		delete pPointTestBulletColObj;
 	}
@@ -176,36 +220,26 @@ debpWorld &world, const decCollisionFilter &collisionFilter, deBaseScriptingColl
 }
 
 void debpCollisionDetection::ColliderHits( debpCollider *collider, debpWorld *world, deBaseScriptingCollider *listener ){
-	if( ! collider || ! world || ! listener ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(collider)
+	DEASSERT_NOTNULL(world)
+	DEASSERT_NOTNULL(listener )
 	
 	world->UpdateDynWorldAABBs();
 	
 	debpCollisionWorld &dynamicsWorld = *world->GetDynamicsWorld();
-	debpContactResultCallback resultCallback( pColInfo );
+	debpContactResultCallback resultCallback(pColInfo);
 	
-	if( collider->IsVolume() ){
-		debpColliderVolume &colliderVolume = *collider->CastToVolume();
-		btGhostObject * const staticCollisionTest = colliderVolume.GetStaticCollisionTest();
-		if( ! staticCollisionTest->getCollisionShape() ){
-			return; // empty shape
+	if(collider->IsVolume()){
+		btGhostObject * const go = collider->CastToVolume()->GetStaticCollisionTestPrepare();
+		if(!go){
+			return;
 		}
 		
-		const decDVector &position = colliderVolume.GetPosition();
-		const btVector3 btposition( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z );
-		
-		const decQuaternion &orientation = colliderVolume.GetOrientation();
-		const btQuaternion btorientation( ( btScalar )orientation.x, ( btScalar )orientation.y,
-			( btScalar )orientation.z, ( btScalar )orientation.w );
-		
-		staticCollisionTest->setWorldTransform( btTransform( btorientation, btposition ) );
-		
-		resultCallback.SetTestCollider( staticCollisionTest, collider, listener );
-		pColInfo->SetStopTesting( false );
+		resultCallback.SetTestCollider(go, collider, listener);
+		pColInfo->SetStopTesting(false);
 		
 		//printf( "ColliderHits %p(%p)\n", staticCollisionTest, collider );
-		dynamicsWorld.contactTest( staticCollisionTest, resultCallback );
+		dynamicsWorld.contactTest(go, resultCallback);
 	}
 }
 
@@ -912,10 +946,10 @@ debpCollisionResult &result ){
 }
 #endif
 
-bool debpCollisionDetection::ColliderHitsCollider( debpCollider *collider1, debpCollider *collider2, debpCollisionResult &result ){
-	if( ! collider1 || ! collider2 ){
-		DETHROW( deeInvalidParam );
-	}
+bool debpCollisionDetection::ColliderHitsCollider(debpCollider *collider1, debpCollider *collider2,
+debpCollisionResult &result){
+	DEASSERT_NOTNULL(collider1)
+	DEASSERT_NOTNULL(collider2)
 	
 	// TODO this is not good. this uses the outdated dragengine collision routines.
 	//      this test should use the bullet collision testing instead. not sure though
@@ -923,11 +957,11 @@ bool debpCollisionDetection::ColliderHitsCollider( debpCollider *collider1, debp
 	//      of needsCollision() and other stuff. we need to use the right algorithm
 	//      directly it seems
 	
-	if( collider1->IsVolume() ){
-		debpColliderVolume &colliderVolume = *( ( debpColliderVolume* )collider1 );
+	if(collider1->IsVolume()){
+		debpColliderVolume &colliderVolume = *((debpColliderVolume*)collider1);
 		
-		if( collider2->IsVolume() ){
-			if( ColliderVolumeHitsColliderVolume( colliderVolume, *( ( debpColliderVolume* )collider2 ), result ) ){
+		if(collider2->IsVolume()){
+			if(ColliderVolumeHitsColliderVolume(colliderVolume, *((debpColliderVolume*)collider2), result)){
 				result.bone1 = -1;
 				result.bone2 = -1;
 				return true;
@@ -980,6 +1014,164 @@ bool debpCollisionDetection::ColliderHitsCollider( debpCollider *collider1, debp
 	}
 	
 	return false;
+}
+
+void debpCollisionDetection::ColliderHitsCollider(debpCollider &collider1, debpCollider &collider2,
+debpContactResultCallback &result, bool reversedColliders){
+	static btManifoldPoint dummyManifoldPoint;
+	
+	if(collider1.IsVolume()){
+		debpColliderVolume &cv = *collider1.CastToVolume();
+		btGhostObject * const go = cv.GetStaticCollisionTest();
+		if(!go){
+			return;
+		}
+		
+		if(collider2.IsVolume()){
+			btGhostObject * const go2 = collider2.CastToVolume()->GetStaticCollisionTest();
+			if(!go2){
+				return;
+			}
+			
+			result.SetTestCollisionObject(reversedColliders ? go2 : go);
+			contactPairTest(go, go2, result);
+			
+		}else if(collider2.IsComponent()){
+			debpColliderComponent &cv2 = *collider2.CastToComponent();
+			if(!cv2.GetColliderComponent().GetComponent()){
+				return;
+			}
+			
+			switch(cv2.GetTestMode()){
+			case debpColliderComponent::etmModelStatic:
+			case debpColliderComponent::etmModelDynamic:{
+				btGhostObject * const go2 = cv2.GetStaticCollisionTestPrepare();
+				if(!go2){
+					return;
+				}
+				
+				debpCollisionResult cdr;
+				if(!ColliderVolumeHitsColliderComponent(cv, cv2, cdr)){
+					return;
+				}
+				
+				result.SetTestCollisionObject(reversedColliders ? go2 : go);
+				
+				const btCollisionObjectWrapper ow1(nullptr,
+					go->getCollisionShape(), go, go->getWorldTransform(), -1, -1);
+				const btCollisionObjectWrapper ow2(nullptr,
+					go2->getCollisionShape(), go2, go2->getWorldTransform(), -1, -1);
+				result.addSingleResult(dummyManifoldPoint, &ow1, 0, -1, &ow2, 0, cdr.face);
+				}break;
+				
+			case debpColliderComponent::etmRigShape:{
+				btGhostObject * const go2 = cv2.GetStaticCollisionTestPrepare();
+				if(!go2){
+					return;
+				}
+				
+				result.SetTestCollisionObject(reversedColliders ? go2 : go);
+				contactPairTest(go, go2, result);
+				}break;
+				
+			case debpColliderComponent::etmBoneShape:{
+				debpColliderBones * const bones = cv2.GetBones();
+				if(!bones || !bones->UpdateStaticCollisionTests()){
+					return;
+				}
+				
+				const int boneCount = bones->GetBoneCount();
+				int i;
+				for(i=0; i<boneCount; i++){
+					btGhostObject * const go2 = bones->GetBoneAt(i)->GetStaticCollisionTest();
+					if(!go2){
+						continue;
+					}
+					
+					result.SetTestCollisionObject(reversedColliders ? go2 : go);
+					contactPairTest(go, go2, result);
+					if(pColInfo->GetStopTesting()){
+						return;
+					}
+				}
+				}break;
+				
+			default:
+				break;
+			}
+			
+		}else if(collider2.IsRigged()){
+			debpColliderRig &cv2 = *collider2.CastToRigged();
+			if(!cv2.GetColliderRig().GetRig()){
+				return;
+			}
+			
+			switch(cv2.GetTestMode()){
+			case debpColliderRig::etmRigShape:{
+				/*
+				btGhostObject * const go2 = cv2.GetStaticCollisionTestPrepare();
+				if(go2){
+					result.SetTestCollisionObject(reversedColliders ? go2 : go);
+					contactPairTest(go, go2, result);
+				}
+				*/
+				}break;
+				
+			case debpColliderRig::etmBoneShape:{
+				debpColliderBones * const bones = cv2.GetBones();
+				if(!bones || !bones->UpdateStaticCollisionTests()){
+					return;
+				}
+				
+				const int boneCount = bones->GetBoneCount();
+				int i;
+				for(i=0; i<boneCount; i++){
+					btGhostObject * const go2 = bones->GetBoneAt(i)->GetStaticCollisionTest();
+					if(!go2){
+						continue;
+					}
+					
+					result.SetTestCollisionObject(reversedColliders ? go2 : go);
+					contactPairTest(go, go2, result);
+					if(pColInfo->GetStopTesting()){
+						return;
+					}
+				}
+				}break;
+				
+			default:
+				break;
+			}
+		}
+		
+	}else if(collider1.IsComponent()){
+		//debpColliderComponent &cv = *collider1.CastToComponent();
+		
+		if(collider2.IsVolume()){
+			ColliderHitsCollider(collider2, collider1, result, true);
+			
+		}else if(collider2.IsComponent()){
+			/*
+			if(ColliderComponentHitsColliderComponent(colliderComponent, *((debpColliderComponent*)collider2), result)){
+				result.shape1 = -1;
+				result.shape2 = -1;
+				return true;
+			}
+			*/
+			
+		}else if(collider2.IsRigged()){
+			/*
+			if(ColliderComponentHitsColliderRig(colliderComponent, *((debpColliderRig*)collider2), result)){
+				result.shape1 = -1;
+				result.shape2 = -1;
+				return true;
+			}
+			*/
+		}
+		
+	}else if(collider1.IsRigged()){
+		// TODO implement similar to collider component
+	}
 }
 
 #if 0
@@ -2741,3 +2933,40 @@ debpColliderRig &collider2, debpCollisionResult &result ){
 	return false;
 }
 #endif
+
+void debpCollisionDetection::contactPairTest(btCollisionObject *colObjA,
+btCollisionObject *colObjB, btDynamicsWorld::ContactResultCallback& resultCallback){
+	pDynWorld->contactPairTest(colObjA, colObjB, resultCallback);
+}
+
+struct sContactResultBoolean : btManifoldResult{
+	bool hasContact;
+	
+	sContactResultBoolean(const btCollisionObjectWrapper *o0, const btCollisionObjectWrapper *o1) :
+	btManifoldResult(o0, o1), hasContact(false){}
+	
+	void addContactPoint(const btVector3 &, const btVector3 &, btScalar) override{
+		hasContact = true;
+	}
+};
+
+bool debpCollisionDetection::contactPairTest(btCollisionObject *colObjA, btCollisionObject *colObjB){
+	btCollisionObjectWrapper obA( 0, colObjA->getCollisionShape(),
+		colObjA, colObjA->getWorldTransform(), -1, -1 );
+	btCollisionObjectWrapper obB( 0, colObjB->getCollisionShape(),
+		colObjB, colObjB->getWorldTransform(), -1, -1 );
+	
+	btCollisionAlgorithm * const algorithm = pDynWorld->getDispatcher()->findAlgorithm(
+		&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS );
+	
+	if(!algorithm){
+		return false;
+	}
+	
+	sContactResultBoolean result(&obA, &obB);
+	
+	algorithm->processCollision(&obA, &obB, pDynWorld->getDispatchInfo(), &result);
+	algorithm->~btCollisionAlgorithm();
+	pDynWorld->getDispatcher()->freeCollisionAlgorithm(algorithm);
+	return result.hasContact;
+}

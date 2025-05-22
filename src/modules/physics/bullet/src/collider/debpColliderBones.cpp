@@ -1094,17 +1094,13 @@ void debpColliderBones::CalcShapeExtends( decDVector &minExtend, decDVector &max
 
 
 
-void debpColliderBones::UpdateStaticCollisionTests(){
+bool debpColliderBones::UpdateStaticCollisionTests(){
+	bool hasCShapes = false;
 	int i;
-	for( i=0; i<pBonePhysicsCount; i++ ){
-		btGhostObject &staticCollisionTest = *pBonesPhysics[ i ]->GetStaticCollisionTest();
-		const decDVector &position = pBonesPhysics[ i ]->GetPhysicsBody()->GetPosition();
-		const decQuaternion &orientation = pBonesPhysics[ i ]->GetPhysicsBody()->GetOrientation();
-		const btVector3 btColPos( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z );
-		const btQuaternion btColOrien( ( btScalar )orientation.x, ( btScalar )orientation.y,
-			( btScalar )orientation.z, ( btScalar )orientation.w );
-		staticCollisionTest.setWorldTransform( btTransform( btColOrien, btColPos ) );
+	for(i=0; i<pBonePhysicsCount; i++){
+		hasCShapes |= pBonesPhysics[i]->GetStaticCollisionTestPrepare() != nullptr;
 	}
+	return hasCShapes;
 }
 
 

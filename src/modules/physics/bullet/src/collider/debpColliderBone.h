@@ -183,8 +183,15 @@ public:
 	
 	
 	
-	/** Retrieves the static collision test updating it if dirty. */
+	/** Static collision test updating it if dirty or null if empty shape. */
 	btGhostObject *GetStaticCollisionTest();
+	
+	/**
+	 * \brief Prepared static collision or null if empty shape.
+	 * 
+	 * Same as GetStaticCollisionTest() with calling setWorldTransform().
+	 */
+	btGhostObject *GetStaticCollisionTestPrepare();
 	
 	/** Requires bone auto-dirty. */
 	bool RequiresAutoDirty() const;

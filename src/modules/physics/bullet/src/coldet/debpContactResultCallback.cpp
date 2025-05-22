@@ -118,12 +118,8 @@ debpShape *shape, deBaseScriptingCollider *listener ){
 
 void debpContactResultCallback::SetTestCollider( btCollisionObject *collisionObject,
 debpCollider *collider, deBaseScriptingCollider *listener ){
-	if( ! collisionObject ){
-		DETHROW( deeInvalidParam );
-	}
-	if( collider && ! listener ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(collisionObject)
+	DEASSERT_NOTNULL_IF(collider, listener)
 	
 	pCollisionFilter = NULL;
 	pCollisionObject = collisionObject;
@@ -132,10 +128,26 @@ debpCollider *collider, deBaseScriptingCollider *listener ){
 	pListener = listener;
 }
 
+void debpContactResultCallback::SetTestCollider(debpCollider *collider, deBaseScriptingCollider *listener){
+	DEASSERT_NOTNULL_IF(collider, listener)
+	
+	pCollisionFilter = nullptr;
+	pCollisionObject = nullptr;
+	pCollider = collider;
+	pShape = nullptr;
+	pListener = listener;
+}
+
 
 
 void debpContactResultCallback::SetIgnoreMultipleContactPoints( bool ignore ){
 	pIgnoreMultipleContactPoints = ignore;
+}
+
+void debpContactResultCallback::SetTestCollisionObject(btCollisionObject *collisionObject){
+	DEASSERT_NOTNULL(collisionObject)
+	
+	pCollisionObject = collisionObject;
 }
 
 
@@ -204,7 +216,7 @@ bool debpContactResultCallback::needsCollision( btBroadphaseProxy *proxy0 ) cons
 		if( pShape ){
 			// TODO
 			
-		}else if( pCollisionObject ){
+		}else if( pCollider ){
 			deCollider * const engOrgCollider = &pCollider->GetCollider();
 			return cfHT.Collides( engOrgCollider->GetCollisionFilter() );
 			

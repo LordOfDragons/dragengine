@@ -277,6 +277,7 @@ private:
 	void pUpdateExtends();
 	void pCalculateBasicExtends();
 	void pClearTracking();
+	void pColliderHitsLocked(deCollider &collider, deBaseScriptingCollider &listener);
 };
 
 #endif
