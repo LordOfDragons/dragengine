@@ -305,11 +305,20 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		func DMatrix getMatrix()
-			return pInstance.getElement().getElementMatrix()
+			var BehaviorElement element = pInstance.getElement()
+			if element == null
+				return DMatrix.new()
+			end
+			return element.getElementMatrix()
 		end
 		
 		func DMatrix getMatrix(String bone)
-			var DMatrix matrix = pInstance.getElement().getElementMatrix()
+			var BehaviorElement element = pInstance.getElement()
+			if element == null
+				return DMatrix.new()
+			end
+			
+			var DMatrix matrix = element.getElementMatrix()
 			if bone != null
 				var ECBehaviorComponent.Instance component = pInstance.getComponent()
 				if component != null
@@ -321,11 +330,21 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		end
 		
 		func DMatrix getInverseMatrix()
-			return pInstance.getElement().getInverseElementMatrix()
+			var BehaviorElement element = pInstance.getElement()
+			if element == null
+				return DMatrix.new()
+			end
+			
+			return element.getInverseElementMatrix()
 		end
 		
 		func DMatrix getInverseMatrix(String bone)
-			var DMatrix matrix = pInstance.getElement().getInverseElementMatrix()
+			var BehaviorElement element = pInstance.getElement()
+			if element == null
+				return DMatrix.new()
+			end
+			
+			var DMatrix matrix = element.getInverseElementMatrix()
 			if bone != null
 				var ECBehaviorComponent.Instance component = pInstance.getComponent()
 				if component != null
