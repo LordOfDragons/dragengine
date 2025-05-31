@@ -229,6 +229,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 							throw EInvalidParam.new("invalid value: " + text)
 						end
 					end
+					if element.hasAttributeNamed("sound")
+						action.setSound(element.getAttributeNamed("sound"))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("gesture")
@@ -444,6 +447,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 							logInvalidValue(element, text)
 							throw EInvalidParam.new("invalid value: " + text)
 						end
+					end
+					if element.hasAttributeNamed("s")
+						action.setSound(element.getAttributeNamed("s"))
 					end
 					snippet.addAction(action)
 					

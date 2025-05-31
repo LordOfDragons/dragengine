@@ -635,6 +635,7 @@ class SimpleConversationConverter
 		state.pauseTime = 0
 		state.actionActorSpeak.setTextBoxTextStyle(state.actor.getStyle())
 		state.actionActorSpeak.setUseSpeechAnimation(state.actor.getUseSpeechAnimation())
+		state.actionActorSpeak.setPathSound(action.getSound())
 		state.actions.add(state.actionActorSpeak)
 		
 		if state.actor.getGestureCount() > 0

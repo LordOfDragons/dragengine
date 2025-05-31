@@ -279,7 +279,7 @@ class SimpleConversationAction
 	var Type pType
 	var StringID pTarget, pSubTarget
 	var UnicodeString pText, pAnimText
-	var String pName
+	var String pName, pSound
 	var int pValue, pRandom
 	var float pDelay, pDuration
 	var WaitMode pWaitMode
@@ -303,6 +303,7 @@ class SimpleConversationAction
 		pText = action.pText
 		pAnimText = action.pAnimText
 		pName = action.pName
+		pSound = action.pSound
 		pValue = action.pValue
 		pRandom = action.pRandom
 		pDelay = action.pDelay
@@ -557,5 +558,23 @@ class SimpleConversationAction
 	 */
 	func void setMode(Enumeration mode)
 		pMode = mode
+	end
+	
+	/**
+	 * \brief Sound path.
+	 * 
+	 * - \ref Type#actor: Path to sound to play. Typically voice audio.
+	 * - other types: Not used and is null
+	 */
+	func String getSound()
+		return pSound
+	end
+	
+	/**
+	 * \brief Set sound path.
+	 * \see #getSound()
+	 */
+	func void setSound(String sound)
+		pSound = sound
 	end
 end
