@@ -55,7 +55,7 @@ abstract class ConversationPlayback implements Persistable
 	/** \brief Create conversation playback. */
 	func new(Conversation conversation)
 		if conversation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("conversation")
 		end
 		
 		pConversation = conversation
@@ -361,7 +361,7 @@ abstract class ConversationPlayback implements Persistable
 		end
 		
 		if actor.getPlayback() != null
-			throw EInvalidParam.new()
+			throw EInvalidParam.new("Actor already in conversation: " + actor)
 		end
 		
 		pActors.add(actor)
@@ -797,7 +797,7 @@ abstract class ConversationPlayback implements Persistable
 			end
 		end
 		
-		throw EInvalidParam.new()
+		throw EInvalidParam.new("Layer absent")
 	end
 	
 	
@@ -815,7 +815,7 @@ abstract class ConversationPlayback implements Persistable
 	/** \brief Push layer to top of stack. */
 	func void pushLayer(ConversationPlaybackLayer layer)
 		if layer == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("layer")
 		end
 		pLayers.add(layer)
 	end
