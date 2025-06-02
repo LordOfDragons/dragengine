@@ -1,0 +1,1595 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[<pre>
+			Schema for Drag[en]gine Simple Conversation XML files
+			</pre>]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:simpleType name='enum_wait_mode' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Set wait mode. Wait mode is applied to all tags until another wait mode is seta
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='wait'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Wait for all actors finish speaking and finish waitable actions
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='waitSpeak'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Wait for all actors finish speaking
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='waitCameraSpeak'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Same as "wait" but for camera switch in actor action use "waitSpeak"
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noWait'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						No waiting
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='command'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Send game or actor command.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='actor' type='xs:string' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							If attribute is present sends command to actor with id or alias
+							matching attribute value. If absent sends game command
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='add'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Add actor or coordinate system to conversation. Fails if actor or coordinate
+				system is already present in conversation.
+				<br/>
+				<br/>Either "actor" or "coordSystem" have to be defined but not both at the same time.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='actor' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Add actor with matching identifier to conversation.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='coordSystem' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Add coordinate system with matching identifier to conversation.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='alias' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Alias to use for added actor or coordinate system. Typically used to reference
+					the actor or coordinate system using a well known alias no matter what
+					identifier the actor or coordinate system is using.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!-- <xs:assert test='(@actor and not(@coordSystem)) or (not(@actor) and @coordSystem)' /> -->
+	</xs:complexType>
+	
+	<xs:complexType name='remove'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Remove actor or coordinate system from conversation. Fails if actor or coordinate
+				system is not present in conversation.
+				<br/>
+				<br/>Either "actor" or "coordSystem" have to be defined but not both at the same time.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='actor' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Remove actor with matching identifier or alias from conversation.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='coordSystem' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Remove coordinate system with matching identifier or alias from conversation.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!-- <xs:assert test='(@actor and not(@coordSystem)) or (not(@actor) and @coordSystem)' /> -->
+	</xs:complexType>
+	
+	<xs:simpleType name='enum_actor.mode' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Set actor mode
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='noCameraDelay'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Use 0 second delay for actor camera change
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noCameraDelayWait'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Use 0 second delay for actor camera change and no waiting
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noSpeakDelay'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Use 0 second delay for actor speak
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noDelay'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Use 0 second delay for actor camera change and speak
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noDelayWait'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Use 0 second delay for actor camera change and speak and no waiting
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noCamera'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Do not change camera
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='noCameraNoDelay'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Do not change camera and use 0 second delay for speak
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='actorSpeak'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Switch actor.
+				<br/>
+				<br/>Activates the camera assigned to the actor. This action does not yet make the
+				actor speak. It only sets up the camera and parameters for upcoming speak actions.
+				<br/>
+				<br/>Add an empty "<actor/>" to the end of a spoken text line to make the next
+				text line to show as a new dialog box.
+				<br/>
+				<br/>For translation simple conversations omit this tag Instead add an empty
+				"<actor/>" tag at the end of each translation text line to mark the end of line
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='id' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Identifier of "actor" tag defining the parameters to use. If absent the
+					current actor parameters are used.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='mode' type='enum_actor.mode' use='optional'/>
+		<xs:attribute name='sound' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Path to sound file to play
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='actorSpeak_short'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Switch actor (abbreviated version of "actor").
+				<br/>
+				<br/>Activates the camera assigned to the actor. This action does not yet make the
+				actor speak. It only sets up the camera and parameters for upcoming speak actions.
+				<br/>
+				<br/>Add an empty "<a/>" to the end of a spoken text line to make the next
+				text line to show as a new dialog box.
+				<br/>
+				<br/>For translation simple conversations omit this tag Instead add an empty "<a/>"
+				tag at the end of each translation text line to mark the end of line
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='i' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Identifier of "actor" tag defining the parameters to use. If absent the
+					current actor parameters are used.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='m' type='enum_actor.mode' use='optional' />
+		<xs:attribute name='s' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Path to sound file to play
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='gesture'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Play gesture.
+				<br/>
+				<br/>Adds gesture to chain of speak actions. The gesture is inserted to play at the
+				time location of all previous speak actions summed together.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='id' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Identifier of gesture to use looked up in the currently active ConversationActor
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='gesture_short'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Play gesture (abbreviated version of "gesture).
+				<br/>
+				<br/>Adds gesture to chain of speak actions. The gesture is inserted to play at the
+				time location of all previous speak actions summed together.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='i' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Identifier of gesture to use looked up in the currently active ConversationActor
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='lookat'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Change look-at.
+				<br/>
+				<br/>Adds head and eye look-at to chain of speak actions. The head and eye look-at
+				is inserted to play at the time location of all previous speak actions summed together.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='id' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Identifier of look-at to use looked up in the currently active ConversationActor
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='duration' type='xs:decimal' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Duration in seconds to use to switch over to new look-at.
+					If absent uses default duration.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='lookat_short'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Change look-at (abbreviated version of "lookAt").
+				<br/>
+				<br/>Adds head and eye look-at to chain of speak actions. The head and eye look-at
+				is inserted to play at the time location of all previous speak actions summed together.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='i' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Identifier of look-at to use looked up in the currently active ConversationActor
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='d' type='xs:decimal' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Duration in seconds to use to switch over to new look-at.
+					If absent uses default duration.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='facepose'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Change face pose.
+				<br/>
+				<br/>Adds face pose to chain of speak actions. The face pose is inserted to play
+				at the time location of all previous speak actions summed together.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='id' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Identifier of face pose to use looked up in the currently active ConversationActor
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='duration' type='xs:decimal' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Duration in seconds to use to switch over to new look-at.
+					If absent uses default duration.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='facepose_short'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Change face pose (abbreviated version of "facePose").
+				<br/>
+				<br/>Adds face pose to chain of speak actions. The face pose is inserted to play
+				at the time location of all previous speak actions summed together.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='i' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Identifier of face pose to use looked up in the currently active ConversationActor
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='d' type='xs:decimal' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Duration in seconds to use to switch over to new look-at.
+					If absent uses default duration.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='run_snippet'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Run conversation snippet or simple conversation snippet.
+				<br/>
+				<br/>If "group" attribute is used the value of this tag is the topic to run from
+				the conversation group.
+				<br/>
+				<br/>If "group" attribute is absent the value of this tag is the snippet to run
+				from the simple conversation.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='group' type='xs:string' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Identifier of conversation group to look up topic in. If absent simple
+							conversation snippet is used.
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name='random' type='xs:unsignedInt' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Randomly runs a simple conversation snippet. If present the content
+							of the tag is the prefix of the snippet to run. A random number is
+							generated in the range from 0 to attribute value minus 1. The random
+							number is appended to the snippet prefix.
+							<br/>
+							<br/>For example with a random value of 3 the snippet to run would
+							be "snippet_prefix{0|1|2}"
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name='enum_trigger_action' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Trigger action
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='fire'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Fire trigger
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='reset'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Reset trigger
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='pulse'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Fire and immediately reset trigger
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='fullReset'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Fully resets trigger
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='trigger'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Manipulate trigger.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='name' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of trigger to manipulate
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='action' type='enum_trigger_action' use='required' />
+	</xs:complexType>
+	
+	<xs:simpleType name='pause'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Pause in seconds to apply to the next tag.
+				<br/>
+				<br/>To apply the pause to the end of the last spoken text append "endActorSpeak"
+				tag after the pause. This is especially useful if the current "waitMode" is
+				"noWait". In this case the spoken text is prolonged which prolongs also gestures.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='pause_short'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Pause in seconds to apply to the next tag (abbreviated version of "pause").
+				<br/>
+				<br/>To apply the pause to the end of the last spoken text append "endActorSpeak"
+				tag after the pause. This is especially useful if the current "waitMode" is
+				"noWait". In this case the spoken text is prolonged which prolongs also gestures.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal' />
+	</xs:simpleType>
+	
+	<xs:complexType name='endActorSpeak'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Explicitely end actor speak.
+				<br/>
+				<br/>Use after "pause" or "p" tag to apply the pause to the end of the last spoken.
+				This is especially useful if the current "waitMode" is "noWait". In this case the
+				spoken text is prolonged which prolongs also gestures.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	
+	<xs:complexType name='tag'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Speak text containing control commands.
+				<br/>
+				<br/>For translation simple conversations omit this tag and insert the content
+				with control commands directly into the text
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='anim' type='xs:string' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Control commands allow to dynamically generate content for spoken text.
+							Trying to look up text with control commands using actor speech is not
+							going to produce useful results. Instead the value of this attribute
+							is used for actor speech instead of the tag content.
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='tag_short'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Speak text containing control commands (abbreviated version of "tag").
+				<br/>
+				<br/>For translation simple conversations omit this tag and insert the content
+				with control commands directly into the text
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='a' type='xs:string' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Control commands allow to dynamically generate content for spoken text.
+							Trying to look up text with control commands using actor speech is not
+							going to produce useful results. Instead the value of this attribute
+							is used for actor speech instead of the tag content.
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='stopTopic'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Stop topic. Continues conversation with the next conversation action after
+				the action which ran this simple conversation. All tags running a snippet
+				do not count. Hence using "stopTopic" from snippets ran from "if", "elif",
+				"else", "wait" and "snippet" tags jump out until back to a non-simple
+				conversation action.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	
+	<xs:complexType name='stopConversation'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Stop conversation.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	
+	<xs:simpleType name='variable_set_value'>
+		<xs:restriction base='xs:string'>
+			<xs:pattern value='(\+|-|~)?\d+' />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='variable'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Set conversation playback variable or actor parameter.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='actor' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					If attribute is present set parameter of actor with id or alias matching
+					attribute value. If absent set conversation playback variable
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='name' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of conversation playback variable or actor parameter to set
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='value' type='variable_set_value' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Value to assign to conversation playback variable or actor parameter.
+					<br/>
+					<br/>The value is an integer value which can be prefixed with an operator.
+					If no operator is specified assign is used. The following prefixes are supported:
+					<br/>- + : Increment by value
+					<br/>- - : Decrement by value
+					<br/>- ~ : Random value in the range from 0 to attribute value minus 1
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='music'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Switch music to play. Tag content is a game specific music identifier
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string' />
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='condition_command'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Evaluate game or actor condition
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='actor' type='xs:string' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							If attribute is present evaluate condition on actor with id or alias
+							matching attribute value. If absent evaluates game command
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name='test' type='xs:boolean' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Test result required to fulfill condition
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name='enum_trigger_test' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Trigger test mode
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='fired'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Evaluates to true if trigger is in the fired state
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='notFired'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Evaluates to true if trigger is in the reset state
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='everFired'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Evaluates to true if trigger has been fired at least once.
+						Doing a full reset on a trigger clears the ever fired state
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='neverFired'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						Evaluates to true if trigger has never been fired
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='condition_trigger'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Evaluate trigger state
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='name' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of trigger to evaluate
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='test' type='enum_trigger_test' use='required' />
+	</xs:complexType>
+	
+	<xs:simpleType name='variable_test_value'>
+		<xs:restriction base='xs:string'>
+			<xs:pattern value='(!=|&lt;=|>=|=|&lt;|>)?\d+' />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='condition_variable'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Evaluate conversation playback variable state or actor parameter state.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='actor' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					If attribute is present evaluate parameter state of actor with id or alias
+					matching attribute value. If absent evaluate conversation playback variable state
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='name' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of conversation playback variable or actor parameter to evaluate
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='test' type='variable_test_value' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Expected value of conversation playback variable or actor parameter for this
+					condition to evaluate to true. The value is an integer value which can be
+					prefixed with a comparison operator. If no comparison operator is specified
+					equal is used. The following prefixes are supported:
+					<br/>- != : Not equal to value
+					<br/>- <= : Less than or equal to value
+					<br/>- >= : Greater than or equal to value
+					<br/>- = : Equal to value
+					<br/>- < : Less than value
+					<br/>- > : Greater than value
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='condition_all'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Condition evaluating to true if all child conditions evaluate to true
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base='condition_multi'/>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='condition_any'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Condition evaluating to true if one or more child conditions evaluate to true
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base='condition_multi'/>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='condition'>
+		<xs:choice>
+			<xs:element name='all' type='condition_all' />
+			<xs:element name='any' type='condition_any' />
+			<xs:element name='command' type='condition_command' />
+			<xs:element name='trigger' type='condition_trigger' />
+			<xs:element name='variable' type='condition_variable' />
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name='condition_multi'>
+		<xs:sequence>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
+				<xs:element name='all' type='condition_all' />
+				<xs:element name='any' type='condition_any' />
+				<xs:element name='command' type='condition_command' />
+				<xs:element name='trigger' type='condition_trigger' />
+				<xs:element name='variable' type='condition_variable' />
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name='wait'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Run simple conversation snippet looping while condition is true.
+				<br/>
+				<br/>Condition is defined inside tag using a single condition type tag.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base='condition'>
+				<xs:attribute name='snippet' type='xs:string' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							Name of simple conversation snippet to run looping while waiting
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='if'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Run simple conversation snippet if condition is true.
+				<br/>
+				<br/>Condition is defined inside tag using a single condition type tag.
+				<br/>
+				<br/>Can be immediately followed by one or more "elif" tags and an optional "else" tag.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base='condition'>
+				<xs:attribute name='snippet' type='xs:string' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							Name of simple conversation snippet to run
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='elif'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Run simple conversation snippet if another condition is true.
+				<br/>
+				<br/>Condition is defined inside tag using a single condition type tag.
+				<br/>
+				<br/>Has to come immediately after an "if" or "elif" tag. Can be immediately
+				followed by "elif" or "else" tag.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base='condition'>
+				<xs:attribute name='snippet' type='xs:string' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							Name of simple conversation snippet to run
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='else'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Run simple conversation snippet if all other conditions are false.
+				<br/>
+				<br/>Has to come immediately after an "if" or "elif" tag.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='snippet' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of simple conversation snippet to run
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='choice'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Player choice.
+				<br/>
+				<br/>Has to be immediately followed by one or more "option" tags.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='variable' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of conversation playback variable to assign the player choice to.
+					For the first chosen option the value 0 is written. For the second 1
+					and so forth.
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='option'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Player choice option.
+				<br/>
+				<br/>Can to be followed by one or more "option" tags.
+				<br/>
+				<br/>For translation simple conversations omit this tag
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base='condition'>
+				<xs:attribute name='text' type='xs:string' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Text to display to the player to choose this option.
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name='snippet' type='xs:string' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							Name of simple conversation snippet to run if option is selected
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='import'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Import from another simple conversation file.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string' />
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='cameraShot'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Defines a camera shot using a camera shot defined in the parent conversation file.
+				Tag content is the identifier of the camera shot to use
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='cameraTarget' type='xs:string' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Identifier of target defined in the parent conversation file.
+							The camera is positioned at the target.
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name='lookAtTarget' type='xs:string' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Identifier of target defined in the parent conversation file.
+							The camera is pointed at the target.
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name='duration' type='xs:decimal' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Camera shot duration in seconds. Used for camera shots with different
+							start and end parameters (for example for distance to look-at target)
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='cameraShot.snippet'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Conversation snippet or simple conversation snippet to run.
+				<br/>
+				<br/>If "group" attribute is used the value of this tag is the topic to run from
+				the conversation group.
+				<br/>
+				<br/>If "group" attribute is absent the value of this tag is the snippet to run
+				from the simple conversation.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='group' type='xs:string' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Identifier of conversation group to look up topic in. If absent simple
+							conversation snippet is used.
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='cameraShot.command'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Game or actor command to run.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='actor' type='xs:string' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							If attribute is present sends command to actor with id or alias
+							matching attribute value. If absent sends game command
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name='cameraShot.delay'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Delay in seconds to wait before activating camera shot. Default delay is 0.25
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal' />
+	</xs:simpleType>
+	
+	<xs:complexType name='camera'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Define camera shot parameters. Randomly uses one of the child camera shots
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice maxOccurs='unbounded'>
+				<xs:element name='cameraShot' type='cameraShot'/>
+				<xs:element name='snippet' type='cameraShot.snippet'/>
+				<xs:element name='command' type='cameraShot.command'/>
+				<xs:element name='delay' type='cameraShot.delay'/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name='id' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of camera
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:simpleType name='actor.actorId'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Identifier of conversation actor speaking
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='actor.camera'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Name of camera to use
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='actor.style'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Style to use for dialog box. Game specific value
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='actor.gesture'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Gestures to play if "actor" or "a" tag inside "snippet" tags do not define
+				gestures. Typically used for visual novel type game mechanics where actors
+				perform specific gestures whenever they say something in a specific style
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='actor.facePose'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Face pose to use if "actor" or "a" tag inside "snippet" tags do not define
+				face poses. Typically used for visual novel type game mechanics where actors
+				perform specific face pose whenever they say something in a specific style.
+				<br/>
+				<br/>Only one face pose can be defined
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='actor.lookAt'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Face pose to use if "actor" or "a" tag inside "snippet" tags do not define
+				face poses. Typically used for visual novel type game mechanics where actors
+				perform specific face pose whenever they say something in a specific style
+				<br/>
+				<br/>Only one look-at can be defined
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='actor.delay'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Delay in seconds to wait before speaking. Default delay is 0.25
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='actor.prolongLastGesture'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Amount of seconds to prolong last gesture beyond end of speech
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal' />
+	</xs:simpleType>
+	
+	<xs:simpleType name='actor.useSpeechAnimation'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Speech animation is used for this action. Set this to false for thinking
+				actors to prevent them from moving their lips
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:boolean' />
+	</xs:simpleType>
+	
+	<xs:complexType name='actor'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Define actor parameters. Defines what camera shot to use, which conversation
+				actor is speaking and how he is speaking.
+				<br/>
+				<br/>This is like a blueprint for an actor speaking. This avoids the need to
+				duplicate common parameters. Typically you define a couple of variations for
+				the same actor for different speak styles. This can be for example speaking,
+				thinking, shouting, astonished and so forth. Visual novel type games are
+				prime examples of using this kind of mood templating
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice maxOccurs='unbounded'>
+				<xs:element name='actorId' type='actor.actorId'/>
+				<xs:element name='camera' type='actor.camera'/>
+				<xs:element name='style' type='actor.style'/>
+				<xs:element name='gesture' type='actor.gesture'/>
+				<xs:element name='facePose' type='actor.facePose'/>
+				<xs:element name='lookAt' type='actor.lookAt'/>
+				<xs:element name='delay' type='actor.delay'/>
+				<xs:element name='prolongLastGesture' type='actor.prolongLastGesture'/>
+				<xs:element name='useSpeechAnimation' type='actor.useSpeechAnimation'/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name='id' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of actor
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='snippet' mixed='true'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Define simple conversation snippet
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice maxOccurs='unbounded'>
+				<xs:element name='import' type='import' />
+				<xs:element name='waitMode' type='enum_wait_mode' />
+				<xs:element name='add' type='add' />
+				<xs:element name='remove' type='remove' />
+				<xs:sequence>
+					<xs:choice minOccurs='1' maxOccurs='1' >
+						<xs:element name='actor' type='actorSpeak' />
+						<xs:element name='a' type='actorSpeak_short' />
+					</xs:choice>
+					<xs:choice minOccurs='0' maxOccurs='unbounded'>
+						<xs:element name='gesture' type='gesture' />
+						<xs:element name='g' type='gesture_short' />
+						<xs:element name='lookAt' type='lookat' />
+						<xs:element name='l' type='lookat_short' />
+						<xs:element name='facePose' type='facepose' />
+						<xs:element name='f' type='facepose_short' />
+						<xs:element name='tag' type='tag' />
+						<xs:element name='t' type='tag_short' />
+						<xs:element name='actor' type='actorSpeak' />
+						<xs:element name='a' type='actorSpeak_short' />
+						<xs:element name='pause' type='pause' />
+						<xs:element name='p' type='pause_short' />
+					</xs:choice>
+					<xs:element minOccurs='0' maxOccurs='1' name='endActorSpeak' type='endActorSpeak' />
+				</xs:sequence>
+				<xs:element name='pause' type='pause' />
+				<xs:element name='p' type='pause_short' />
+				<xs:element name='command' type='command' />
+				<xs:element name='snippet' type='run_snippet' />
+				<xs:element name='wait' type='wait' />
+				<xs:element name='trigger' type='trigger' />
+				<xs:sequence>
+					<xs:element minOccurs='1' maxOccurs='1' name='if' type='if' />
+					<xs:element minOccurs='0' maxOccurs='unbounded' name='elif' type='elif' />
+					<xs:element minOccurs='0' maxOccurs='1' name='else' type='else' />
+				</xs:sequence>
+				<xs:element name='stopTopic' type='stopTopic' />
+				<xs:element name='stopConversation' type='stopConversation' />
+				<xs:element name='variable' type='variable' />
+				<xs:sequence>
+					<xs:element minOccurs='1' maxOccurs='1' name='choice' type='choice' />
+					<xs:element minOccurs='1' maxOccurs='unbounded' name='option' type='option' />
+				</xs:sequence>
+				<xs:element name='music' type='music' />
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name='id' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of snippet
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='simpleConversation'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Simple conversation
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice maxOccurs='unbounded'>
+				<xs:element name='camera' type='camera' />
+				<xs:element name='actor' type='actor' />
+				<xs:element name='snippet' type='snippet' />
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name='simpleConversation' type='simpleConversation'>
+		<xs:unique name='unique.snippet.id'>
+			<xs:selector xpath='snippet' />
+			<xs:field xpath='@id' />
+		</xs:unique>
+		<!--
+		<xs:keyref name='keyrefSnippetId' refer='unique.snippet.id'>
+			<xs:selector xpath='snippet/snippet' />
+			<xs:field xpath='.' />
+		</xs:keyref>
+		-->
+		<xs:unique name='unique.camera.id'>
+			<xs:selector xpath='camera' />
+			<xs:field xpath='@id' />
+		</xs:unique>
+		<xs:unique name='unique.actor.id'>
+			<xs:selector xpath='actor' />
+			<xs:field xpath='@id' />
+		</xs:unique>
+		<!--
+		<xs:keyref name='keyref.actor.camera' refer='unique.camera.id'>
+			<xs:selector xpath='actor/camera' />
+			<xs:field xpath='.' />
+		</xs:keyref>
+		-->
+	</xs:element>
+</xs:schema>
