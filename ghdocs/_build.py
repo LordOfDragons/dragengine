@@ -71,7 +71,7 @@ class DocAppBuilder:
         self.path_artifact = path_artifact
         self.path_datafile = path_datafile
 
-    def build(self: 'DocAppBuilder', version: str) -> None:
+    def build(self: 'DocAppBuilder', version: str, is_latest: bool) -> None:
         shutil.rmtree(self.path_doc, True)
         self._update_doxyfile(version)
         self._build_doxyfile()
@@ -114,12 +114,50 @@ class DocAppBuilder:
             for each in versions:
                 f.write("- version: '{}'\n".format(each.version))
 
+
+class XmlSchemaBuilder:
+    """Build XML Schema."""
+
+    def __init__(self: 'XmlSchemaBuilder',
+                 path_src: str,
+                 path_artifact: str,
+                 path_datafile: str) -> None:
+        self.path_src = path_src
+        self.path_artifact = path_artifact
+        self.path_datafile = path_datafile
+
+    def build(self: 'XmlSchemaBuilder', version: str, is_latest: bool) -> None:
+        self._copy_xmlschema(version)
+        if is_latest:
+            self._copy_xmlschema('latest')
+
+    def _copy_xmlschema(self: 'XmlSchemaBuilder', version: str) -> None:
+        dest: str = os.path.join(self.path_artifact, version)
+        shutil.rmtree(dest, True)
+
+        directory = os.path.dirname(dest)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        if os.path.exists(self.path_src):
+            shutil.copytree(self.path_src, dest)
+
+    def write_data_file(self: 'XmlSchemaBuilder', versions: list[Release]) -> None:
+        directory = os.path.dirname(self.path_datafile)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        with open(self.path_datafile, 'w') as f:
+            for each in versions:
+                f.write("- version: '{}'\n".format(each.version))
+
+
 def find_repo_releases(repo_name: str) -> list[Release]:
     """Find all released of repository.
 
     Sorts releases by time from newest to oldest.
     Skips nightly release. Keeps only the latest
-    minor release of releases with same minor.
+    minor release of releases with same major.
     """
     with Github() as gh:
         repo = gh.get_repo(repo_name)
@@ -147,11 +185,11 @@ def find_repo_releases(repo_name: str) -> list[Release]:
 def build_dragengine(releases: list[Release]) -> None:
     curdir = os.getcwd()
 
-    pathApiDoc = os.path.join(curdir, "artifacts/apidoc")
-    pathDataDir = os.path.join(curdir, "_data/apidoc")
-    pathBaseSrc = os.path.join(curdir, "_repository/dragengine/src")
+    pathApiDoc = os.path.join(curdir, "artifacts", "apidoc")
+    pathDataDir = os.path.join(curdir, "_data", "apidoc")
+    pathBaseSrc = os.path.join(curdir, "_repository", "dragengine", "src")
 
-    builders: list[DocAppBuilder] = []
+    builders: list[DocAppBuilder|XmlSchemaBuilder] = []
 
     builders.append(DocAppBuilder(
         path_base=os.path.join(pathBaseSrc, "dragengine"),
@@ -180,6 +218,11 @@ def build_dragengine(releases: list[Release]) -> None:
         path_src=".",
         path_doc="doc/script/html"))
 
+    builders.append(XmlSchemaBuilder(
+        path_src=os.path.join(curdir, "_repository", "dragengine", "doc", "xmlschema"),
+        path_artifact=os.path.join(curdir, "artifacts", "xmlschema", "dragengine"),
+        path_datafile=os.path.join(curdir, "_data", "xmlschema", "xmlschema.yml")))
+
     for each in builders:
         shutil.rmtree(each.path_artifact, True)
 
@@ -199,8 +242,9 @@ def build_dragengine(releases: list[Release]) -> None:
         run_command("git reset --hard")
         run_command("git clean -x -f")
 
+        is_latest = release == releases[0]
         for builder in builders:
-            builder.build(release.version)
+            builder.build(release.version, is_latest)
 
     os.chdir(curdir)
     for each in builders:
