@@ -55,7 +55,8 @@ class OBJECT_OT_ExportOcclusionMesh( bpy.types.Operator, ExportHelper ):
 		( '3', "Debug", "Output very large amount of debug messages." ),
 		), name = "Logging", description = "Choose amount of logging", default = '1' )
 	
-	def __init__( self ):
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
 		self.mesh = None
 		self.armature = None
 		self.debugLevel = 1

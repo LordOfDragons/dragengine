@@ -92,7 +92,8 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
     #export_move: bpy.props.EnumProperty(items=exportActionList)
     export_move: bpy.props.StringProperty(default="")
     
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.mesh = None
         self.armature = None
         self.moves = []
