@@ -1,5 +1,7 @@
 /* Generated File. Do not edit */
 #include <dragengine/systems/deModuleSystem.h>
+
+extern deInternalModule *deadRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *dearRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deaiRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deanimRegisterInternalModule(deModuleSystem*);
@@ -17,7 +19,8 @@ extern deInternalModule *deJpegRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deIesRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deWebpRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deWebp3DRegisterInternalModule(deModuleSystem*);
-extern deInternalModule *dewiRegisterInternalModule(deModuleSystem*);
+extern deInternalModule *deciRegisterInternalModule(deModuleSystem*);
+extern deInternalModule *dexsiRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *delpRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *demdlRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *denbRegisterInternalModule(deModuleSystem*);
@@ -30,7 +33,6 @@ extern deInternalModule *desynRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *dethRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deapngRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *dewebmRegisterInternalModule(deModuleSystem*);
-extern deInternalModule *deadRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *fbxModelRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *fbxRigRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *fbxAnimRegisterInternalModule(deModuleSystem*);
@@ -38,6 +40,11 @@ extern deInternalModule *fbxSkinRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *denvrRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deoxrRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deModioRegisterInternalModule(deModuleSystem*);
+
+static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctionsPriority[]{
+	deadRegisterInternalModule,
+	nullptr};
+
 static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]{
 	dearRegisterInternalModule,
 	deaiRegisterInternalModule,
@@ -56,7 +63,8 @@ static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]
 	deIesRegisterInternalModule,
 	deWebpRegisterInternalModule,
 	deWebp3DRegisterInternalModule,
-	dewiRegisterInternalModule,
+	deciRegisterInternalModule,
+	dexsiRegisterInternalModule,
 	delpRegisterInternalModule,
 	demdlRegisterInternalModule,
 	denbRegisterInternalModule,
@@ -69,7 +77,6 @@ static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]
 	dethRegisterInternalModule,
 	deapngRegisterInternalModule,
 	dewebmRegisterInternalModule,
-	deadRegisterInternalModule,
 	fbxModelRegisterInternalModule,
 	fbxRigRegisterInternalModule,
 	fbxAnimRegisterInternalModule,
@@ -78,7 +85,11 @@ static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]
 	deoxrRegisterInternalModule,
 	deModioRegisterInternalModule,
 	nullptr};
+
 extern "C" {
+MOD_ENTRY_POINT_ATTR const deModuleSystem::FPRegisterInternalModule* DEInternalModuleFunctionsPriority(){
+	return (deModuleSystem::FPRegisterInternalModule*)&vInternalModuleFunctionsPriority;
+}
 MOD_ENTRY_POINT_ATTR const deModuleSystem::FPRegisterInternalModule* DEInternalModuleFunctions(){
 	return (deModuleSystem::FPRegisterInternalModule*)&vInternalModuleFunctions;
 }
