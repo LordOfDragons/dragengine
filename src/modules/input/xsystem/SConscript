@@ -65,6 +65,8 @@ if envModule['force_version']:
 pathConfig = '{}/modules/input/xsystem/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
 pathModule = '{}/modules/input/xsystem/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
 pathShared = '{}/modules/input/xsystem/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
+pathAsset = 'modules/input/xsystem/{}'.format(versionString)
+withEngineDeal = envModule['with_engine_deal']
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
@@ -83,6 +85,7 @@ appendLibrary(envModule, parent_targets['lib_libevdev'], libs)
 
 install = []
 archive = {}
+assetEngine = {}
 
 if internalModule:
 	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
@@ -131,9 +134,13 @@ else:
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 for d in data:
-	filename = os.path.join(pathShared, d[5:])
-	install.append(envModule.InstallAs(filename, d))
-	archive[filename] = envModule.File(d).srcnode()
+	if withEngineDeal:
+		filename = os.path.join(pathAsset, d[5:])
+		assetEngine[filename] = envModule.File(d).srcnode()
+	else:
+		filename = os.path.join(pathShares, d[5:])
+		install.append(envModule.InstallAs(filename, d))
+		archive[filename] = envModule.File(d).srcnode()
 
 targetInstall = envModule.Alias('inp_x', install)
 
@@ -153,5 +160,6 @@ parent_targets['inp_x'] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'asset-engine' : assetEngine,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir) }

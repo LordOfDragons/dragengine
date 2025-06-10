@@ -23,6 +23,8 @@ if envModule['force_version']:
 pathConfig = '{}/modules/scripting/dragonscript/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
 pathModule = '{}/modules/scripting/dragonscript/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
 pathShared = '{}/modules/scripting/dragonscript/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
+pathAsset = 'modules/scripting/dragonscript/{}'.format(versionString)
+withEngineDeal = envModule['with_engine_deal']
 
 pathIGDEShared = envModule.subst(envModule['path_igde_share'])
 
@@ -59,6 +61,7 @@ igdeTemplates = [x for x in igdeTemplates if 'project.code-workspace' not in x]
 install = []
 archive = {}
 archiveIGDE = {}
+assetEngine = {}
 
 if internalModule:
 	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
@@ -112,19 +115,31 @@ else:
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 for s in scripts:
-	filename = os.path.join(pathShared, s)
-	install.append(envModule.InstallAs(filename, s))
-	archive[filename] = envModule.File(s).srcnode()
+	if withEngineDeal:
+		filename = os.path.join(pathAsset, s)
+		assetEngine[filename] = envModule.File(s).srcnode()
+	else:
+		filename = os.path.join(pathShared, s)
+		install.append(envModule.InstallAs(filename, s))
+		archive[filename] = envModule.File(s).srcnode()
 
 for s in nativeclasses:
-	filename = os.path.join(pathShared, 'native', *(os.path.join(s).split(os.sep)[2:]))
-	install.append(envModule.InstallAs(filename, s))
-	archive[filename] = envModule.File(s).srcnode()
+	if withEngineDeal:
+		filename = os.path.join(pathAsset, 'native', *(os.path.join(s).split(os.sep)[2:]))
+		assetEngine[filename] = envModule.File(s).srcnode()
+	else:
+		filename = os.path.join(pathShared, 'native', *(os.path.join(s).split(os.sep)[2:]))
+		install.append(envModule.InstallAs(filename, s))
+		archive[filename] = envModule.File(s).srcnode()
 
 for s in data:
-	filename = os.path.join(pathShared, s)
-	install.append(envModule.InstallAs(filename, s))
-	archive[filename] = envModule.File(s).srcnode()
+	if withEngineDeal:
+		filename = os.path.join(pathAsset, s)
+		assetEngine[filename] = envModule.File(s).srcnode()
+	else:
+		filename = os.path.join(pathShared, s)
+		install.append(envModule.InstallAs(filename, s))
+		archive[filename] = envModule.File(s).srcnode()
 
 replacements = []
 if envModule['OSWindows']:
@@ -212,6 +227,7 @@ parent_targets['scr_dragonscript'] = {
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'archive-igde' : archiveIGDE,
+	'asset-engine' : assetEngine,
 	'doxygen' : buildDoxygen,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

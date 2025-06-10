@@ -47,6 +47,7 @@ typedef const deModuleSystem::FPRegisterInternalModule* (*FUNC_FUNCTIONS)();
 ////////////////////////////
 
 deInternalModulesLibrary::deInternalModulesLibrary(deModuleSystem &modsys, const decPath &pathModules) :
+pFunctionsPriority(nullptr),
 pFunctions(nullptr)
 {
 	#ifdef OS_BEOS
@@ -158,29 +159,37 @@ void deInternalModulesLibrary::pLoadLibrary(deModuleSystem &modsys, const decPat
 	}
 	
 	// look for the entry point function
-	FUNC_FUNCTIONS funcFunctions;
+	FUNC_FUNCTIONS funcFunctions = nullptr;
+	FUNC_FUNCTIONS funcFunctionsPriority = nullptr;
 	const char * const funcName = "DEInternalModuleFunctions";
+	const char * const funcNamePriority = "DEInternalModuleFunctionsPriority";
 	
 #ifdef OS_BEOS
 	if(get_image_symbol(pLibHandle, funcName, B_SYMBOL_TYPE_TEXT, (void**)&funcFunctions) != B_OK){
 		funcFunctions = nullptr;
 	}
+	if(get_image_symbol(pLibHandle, funcNamePriority, B_SYMBOL_TYPE_TEXT, (void**)&funcFunctionsPriority) != B_OK){
+		funcFunctionsPriority = nullptr;
+	}
 	
 #elif defined HAS_LIB_DL
 	funcFunctions = (FUNC_FUNCTIONS)dlsym(pLibHandle, funcName);
+	funcFunctionsPriority = (FUNC_FUNCTIONS)dlsym(pLibHandle, funcNamePriority);
 	
 #elif defined OS_W32
 	funcFunctions = (FUNC_FUNCTIONS)GetProcAddress(pLibHandle, funcName);
+	funcFunctionsPriority = (FUNC_FUNCTIONS)GetProcAddress(pLibHandle, funcNamePriority);
 #endif
 	
-	if(!funcFunctions){
+	if(!funcFunctions || !funcFunctionsPriority){
 		DETHROW_INFO(deeInvalidAction, "Entry point function not found");
 	}
 	
 	// store functions
 	pFunctions = funcFunctions();
-	if(!pFunctions){
-		DETHROW_INFO(deeInvalidAction, "Entry point returned null functions");
+	pFunctionsPriority = funcFunctionsPriority();
+	if(!pFunctions || !pFunctionsPriority){
+		DETHROW_INFO(deeInvalidAction, "Entry point returned nullptr");
 	}
 }
 

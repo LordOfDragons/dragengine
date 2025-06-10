@@ -33,8 +33,6 @@
 #include "input/deInputEvent.h"
 #include "input/deInputEventQueue.h"
 
-#include "filesystem/deVirtualFileSystem.h"
-
 #include "logger/deLogger.h"
 #include "logger/deLoggerConsole.h"
 #include "logger/deLoggerConsoleColor.h"
@@ -280,7 +278,7 @@ const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[ 0 ];
 deEngine::deEngine( deOS *os, deVirtualFileSystem *fileSystem ) :
 pArgs( nullptr ),
 pOS( os ),
-pOSFileSystem( fileSystem ),
+pOSFileSystem(deVirtualFileSystem::Ref::New(fileSystem)),
 
 pErrorTrace( nullptr ),
 pScriptFailed( false ),
@@ -293,8 +291,6 @@ pSystems( nullptr ),
 pParallelProcessing( nullptr ),
 pResLoader( nullptr ),
 pResMgrs( nullptr ),
-
-pVFS( nullptr ),
 
 pFrameTimer( nullptr ),
 pElapsedTime( 0.0f ),
@@ -1191,7 +1187,7 @@ void deEngine::pInitResourceManagers(){
 	
 	pResMgrs = new deResourceManager*[ ermManagerCount ];
 	for( i=0; i<ermManagerCount; i++ ){
-		pResMgrs[ i ] = NULL;
+		pResMgrs[ i ] = nullptr;
 	}
 	
 	pResMgrs[ ermAnimations ] = new deAnimationManager( this );
@@ -1323,6 +1319,10 @@ void deEngine::pCleanUp(){
 		pVFS->RemoveAllContainers();
 	}
 	
+	if(pModSys && pModSys->GetVFSAssetLibraries()){
+		pModSys->GetVFSAssetLibraries()->RemoveAllContainers();
+	}
+	
 	// free resource managers
 	int i;
 	if( pResMgrs ){
@@ -1362,9 +1362,7 @@ void deEngine::pCleanUp(){
 	if( pFrameTimer ){
 		delete pFrameTimer;
 	}
-	if( pVFS ){
-		pVFS->FreeReference();
-	}
+	pVFS = nullptr;
 	
 	if( pOS ){
 		delete pOS;
@@ -1383,9 +1381,7 @@ void deEngine::pCleanUp(){
 	}
 	
 	// free os file system if present
-	if( pOSFileSystem ){
-		pOSFileSystem->FreeReference();
-	}
+	pOSFileSystem = nullptr;
 }
 
 void deEngine::pUpdateFPSRate(){

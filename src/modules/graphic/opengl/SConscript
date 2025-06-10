@@ -106,6 +106,8 @@ if envModule['force_version']:
 pathConfig = '{}/modules/graphic/opengl/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
 pathModule = '{}/modules/graphic/opengl/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
 pathShares = '{}/modules/graphic/opengl/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
+pathAsset = 'modules/graphic/opengl/{}'.format(versionString)
+withEngineDeal = envModule['with_engine_deal']
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
@@ -129,6 +131,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=inte
 
 install = []
 archive = {}
+assetEngine = {}
 
 if internalModule:
 	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
@@ -176,9 +179,13 @@ else:
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 for f in data:
-	filename = os.path.join(pathShares, f[5:])
-	install.append(envModule.InstallAs(filename, f))
-	archive[filename] = envModule.File(f).srcnode()
+	if withEngineDeal:
+		filename = os.path.join(pathAsset, f[5:])
+		assetEngine[filename] = envModule.File(f).srcnode()
+	else:
+		filename = os.path.join(pathShares, f[5:])
+		install.append(envModule.InstallAs(filename, f))
+		archive[filename] = envModule.File(f).srcnode()
 
 targetInstall = envModule.Alias('gra_opengl', install)
 
@@ -201,5 +208,6 @@ parent_targets['gra_opengl'] =  {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'asset-engine' : assetEngine,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir) }

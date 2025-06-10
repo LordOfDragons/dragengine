@@ -27,12 +27,12 @@
 
 #include "../common/collection/decObjectOrderedSet.h"
 #include "../common/file/decPath.h"
+#include "../filesystem/deVirtualFileSystem.h"
 
 class deEngine;
 class deBaseModule;
 class deInternalModule;
 class deLoadableModule;
-class deVirtualFileSystem;
 class deInternalModulesLibrary;
 
 
@@ -162,6 +162,7 @@ private:
 	deEngine *pEngine;
 	decObjectOrderedSet pModules;
 	deInternalModulesLibrary *pInternalModulesLibrary;
+	deVirtualFileSystem::Ref pVFSAssetLibraries;
 	
 	
 public:
@@ -265,6 +266,9 @@ public:
 	 * - emtService
 	 */
 	void ServicesAddVFSContainers( deVirtualFileSystem &vfs, const char *stage );
+	
+	/** \brief Asset libraries virtual file system. */
+	inline const deVirtualFileSystem::Ref &GetVFSAssetLibraries() const{ return pVFSAssetLibraries; }
 	/*@}*/
 	
 	
@@ -344,14 +348,16 @@ public:
 	 * For internal use only!
 	 */
 	typedef deInternalModule* (*FPRegisterInternalModule)(deModuleSystem*);
-	static bool RegisterInternalModule(FPRegisterInternalModule fp);
 	/*@}*/
 	
 	
 	
 private:
+	void pAddInternalModulesPriority(const decPath &pathModules);
 	void pAddInternalModules(const decPath &pathModules);
+	void pAddInternalModules(const FPRegisterInternalModule *functions);
 	void pDetectModulesIn(const char *basePath, const char *directory, eModuleTypes type);
+	void pInitAssetLibrary();
 };
 
 #endif

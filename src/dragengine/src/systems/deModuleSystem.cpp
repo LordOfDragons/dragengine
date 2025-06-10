@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "deModuleSystem.h"
 #include "modules/deBaseModule.h"
 #include "modules/deInternalModule.h"
@@ -40,11 +41,13 @@
 #include "../common/exceptions.h"
 #include "../filesystem/dePathList.h"
 #include "../filesystem/deCollectDirectorySearchVisitor.h"
+#include "../filesystem/deCollectFileSearchVisitor.h"
 #include "../filesystem/deVFSDiskDirectory.h"
-#include "../filesystem/deVFSContainerReference.h"
-#include "../filesystem/deVirtualFileSystem.h"
-#include "../filesystem/deVirtualFileSystemReference.h"
+#include "../filesystem/deVFSRedirect.h"
 #include "../logger/deLogger.h"
+#include "../resources/archive/deArchive.h"
+#include "../resources/archive/deArchiveContainer.h"
+#include "../resources/archive/deArchiveManager.h"
 
 
 
@@ -63,7 +66,8 @@
 
 deModuleSystem::deModuleSystem(deEngine *engine) :
 pEngine(engine),
-pInternalModulesLibrary(nullptr)
+pInternalModulesLibrary(nullptr),
+pVFSAssetLibraries(deVirtualFileSystem::Ref::New(new deVirtualFileSystem))
 {
 	DEASSERT_NOTNULL(engine)
 }
@@ -112,15 +116,29 @@ deModuleSystem::~deModuleSystem(){
 ///////////////
 
 void deModuleSystem::DetectModules(){
-	deLogger &logger = *pEngine->GetLogger();
-	decPath searchPath;
+	pVFSAssetLibraries->RemoveAllContainers();
 	
+	decPath searchPath;
 	searchPath.SetFromNative( pEngine->GetOS()->GetPathEngine() );
 	searchPath.AddUnixPath( DEGS_MODULES_PATH );
 	
+	deLogger &logger = *pEngine->GetLogger();
+	
 	try{
+		logger.LogInfoFormat( LOGSOURCE, "Add internal priority modules" );
+		pAddInternalModulesPriority(searchPath);
+		
+		
+		logger.LogInfoFormat( LOGSOURCE, "Loading Archive modules" );
+		pDetectModulesIn( searchPath.GetPathNative(), "archive", emtArchive );
+		
+		
+		pInitAssetLibrary();
+		
+		
 		logger.LogInfoFormat( LOGSOURCE, "Add internal modules" );
 		pAddInternalModules(searchPath);
+		
 		
 		logger.LogInfoFormat( LOGSOURCE, "Loading Crash Recovery modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "crashrecovery", emtCrashRecovery );
@@ -155,10 +173,6 @@ void deModuleSystem::DetectModules(){
 		logger.LogInfoFormat( LOGSOURCE, "Loading VR modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "vr", emtVR );
 		
-		
-		
-		logger.LogInfoFormat( LOGSOURCE, "Loading Archive modules" );
-		pDetectModulesIn( searchPath.GetPathNative(), "archive", emtArchive );
 		
 		logger.LogInfoFormat( LOGSOURCE, "Loading Animation modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "animation", emtAnimation );
@@ -727,6 +741,21 @@ bool deModuleSystem::IsSingleType( eModuleTypes type ){
 #include "deModuleSystem_generated.cpp"
 #endif
 
+void deModuleSystem::pAddInternalModulesPriority(const decPath &pathModules){
+	const deModuleSystem::FPRegisterInternalModule *functions = nullptr;
+	
+#ifdef WITH_STATIC_INTERNALMODULES
+	functions = vInternalModuleFunctionsPriority;
+#else
+	if(!pInternalModulesLibrary){
+		pInternalModulesLibrary = new deInternalModulesLibrary(*this, pathModules);
+	}
+	functions = pInternalModulesLibrary->GetFunctionsPriority();
+#endif
+	
+	pAddInternalModules(functions);
+}
+
 void deModuleSystem::pAddInternalModules(const decPath &pathModules){
 	const deModuleSystem::FPRegisterInternalModule *functions = nullptr;
 	
@@ -739,6 +768,10 @@ void deModuleSystem::pAddInternalModules(const decPath &pathModules){
 	functions = pInternalModulesLibrary->GetFunctions();
 #endif
 	
+	pAddInternalModules(functions);
+}
+
+void deModuleSystem::pAddInternalModules(const FPRegisterInternalModule *functions){
 	deLogger &logger = *pEngine->GetLogger();
 	int i = 0;
 	
@@ -781,14 +814,11 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 	
 	try{
 		// find directories
-		deVirtualFileSystemReference vfs;
-		vfs.TakeOver( new deVirtualFileSystem );
+		const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
 		
-		deVFSContainerReference container;
 		searchPath.SetFromNative( basePath );
 		searchPath.AddUnixPath( directory );
-		container.TakeOver( new deVFSDiskDirectory( searchPath ) );
-		vfs->AddContainer( container );
+		vfs->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(searchPath)));
 		
 		deCollectDirectorySearchVisitor collect;
 		vfs->SearchFiles( decPath::CreatePathUnix( "/" ), collect );
@@ -889,5 +919,39 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 			module->FreeReference();
 		}
 		logger.LogException( LOGSOURCE, e );
+	}
+}
+
+void deModuleSystem::pInitAssetLibrary(){
+	deLogger &logger = *pEngine->GetLogger();
+	logger.LogInfo(LOGSOURCE, "Searching for engine asset libraries");
+	
+	const decPath rootPath(decPath::CreatePathUnix("/"));
+	
+	if(pEngine->GetOSFileSystem()){
+		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSRedirect(
+			rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true)));
+		
+	}else{
+		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSDiskDirectory(
+			decPath::CreatePathNative(pEngine->GetOS()->GetPathShare()))));
+	}
+	
+	deCollectFileSearchVisitor collect("dragengine-*.deal");
+	pVFSAssetLibraries->SearchFiles(decPath::CreatePathUnix("/"), collect);
+	
+	const dePathList &pathList = collect.GetFiles();
+	deArchiveManager &arcMgr = *pEngine->GetArchiveManager();
+	int i;
+	
+	for(i=0; i<pathList.GetCount(); i++){
+		const decPath pathAsset = pathList.GetAt(i);
+		logger.LogInfoFormat(LOGSOURCE, "Found engine asset library: %s",
+			pathAsset.GetLastComponent().GetString());
+		
+		pVFSAssetLibraries->AddContainer(deArchiveContainer::Ref::New(arcMgr.CreateContainer(
+			rootPath,
+			deArchive::Ref::New(arcMgr.OpenArchive(pVFSAssetLibraries, pathAsset.GetPathNative(), "/")),
+			rootPath)));
 	}
 }

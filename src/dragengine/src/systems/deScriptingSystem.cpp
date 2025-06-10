@@ -112,67 +112,51 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 	deVirtualFileSystem * const osFileSystem = engine.GetOSFileSystem();
 	const deLoadableModule &loadableModule = pActiveModule->GetLoadableModule();
 	
-	decPath pathRoot;
-	pathRoot.SetFromUnix( vfsPath );
+	const char * const typeName = engine.GetModuleSystem()->GetTypeDirectory(loadableModule.GetType());
+	const decString &directoryName = loadableModule.GetDirectoryName();
+	const decString &version = loadableModule.GetVersion();
+	
+	const decPath pathRoot(decPath::CreatePathUnix(vfsPath));
+	decPath pathRedirect;
 	
 	if( osFileSystem ){
-		decPath pathRedirect;
 		pathRedirect.SetFromUnix( "/share/modules" );
-		pathRedirect.AddUnixPath( engine.GetModuleSystem()->GetTypeDirectory( loadableModule.GetType() ) );
-		pathRedirect.AddUnixPath( loadableModule.GetDirectoryName() );
-		pathRedirect.AddComponent( loadableModule.GetVersion() );
+		pathRedirect.AddUnixPath(typeName);
+		pathRedirect.AddUnixPath(directoryName);
+		pathRedirect.AddComponent(version);
 		pathRedirect.AddUnixPath( dataDir );
 		
-		deVFSRedirect *container = NULL;
-		
-		try{
-			container = new deVFSRedirect( pathRoot, pathRedirect, osFileSystem, true );
-			vfs.AddContainer( container );
-			container->FreeReference();
-			container = NULL;
-			
-		}catch( const deException &e ){
-			if( container ){
-				container->FreeReference();
-			}
-			engine.GetLogger()->LogException( LOGSOURCE, e );
-			throw;
-		}
+		vfs.AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
+			pathRoot, pathRedirect, osFileSystem, true)));
 		
 	}else{
 		// build disk path
 		decPath pathDisk;
 		pathDisk.SetFromNative( engine.GetOS()->GetPathShare() );
 		pathDisk.AddUnixPath( "modules" );
-		pathDisk.AddUnixPath( engine.GetModuleSystem()->GetTypeDirectory( loadableModule.GetType() ) );
-		pathDisk.AddUnixPath( loadableModule.GetDirectoryName() );
-		pathDisk.AddComponent( loadableModule.GetVersion() );
+		pathDisk.AddUnixPath(typeName);
+		pathDisk.AddUnixPath(directoryName);
+		pathDisk.AddComponent(version);
 		pathDisk.AddUnixPath( dataDir );
 		
 		// add container
-		deVFSDiskDirectory *container = NULL;
-		
 		engine.GetLogger()->LogInfoFormat( LOGSOURCE, "Adding disk container '%s' => '%s'(ro)",
 			pathDisk.GetPathNative().GetString(), vfsPath );
 		
-		try{
-			container = new deVFSDiskDirectory( pathRoot, pathDisk );
-			container->SetReadOnly( true );
-			
-			vfs.AddContainer( container );
-			container->FreeReference();
-			container = NULL;
-			
-		}catch( const deException &e ){
-			if( container ){
-				container->FreeReference();
-			}
-			
-			engine.GetLogger()->LogErrorFormat( LOGSOURCE, "Failed to add disk container to VFS (root=%s,disk=%s,ro):",
-				vfsPath, pathDisk.GetPathNative().GetString() );
-			engine.GetLogger()->LogException( LOGSOURCE, e );
-			throw;
-		}
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(pathRoot, pathDisk, true)));
+	}
+	
+	// asset libraries
+	const deVirtualFileSystem::Ref vfsAssetLibraries = engine.GetModuleSystem()->GetVFSAssetLibraries();
+	if(vfsAssetLibraries->GetContainerCount() > 0){
+		pathRedirect.SetFromUnix("/modules");
+		pathRedirect.AddUnixPath(typeName);
+		pathRedirect.AddUnixPath(directoryName);
+		pathRedirect.AddComponent(version);
+		pathRedirect.AddUnixPath(dataDir);
+		
+		vfs.AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
+			pathRoot, pathRedirect, vfsAssetLibraries, true)));
 	}
 }
 
