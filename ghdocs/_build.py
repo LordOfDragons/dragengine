@@ -42,7 +42,7 @@ class Release:
         return self._patch
 
     @property
-    def publish_time(self: 'Release') -> datetime:
+    def publish_time(self: 'Release') -> datetime.datetime:
         return self._publish_time
 
     @property
@@ -218,10 +218,11 @@ def build_dragengine(releases: list[Release]) -> None:
         path_src=".",
         path_doc="doc/script/html"))
 
-    builders.append(XmlSchemaBuilder(
+    builderXmlSchema = XmlSchemaBuilder(
         path_src=os.path.join(curdir, "_repository", "dragengine", "doc", "xmlschema"),
         path_artifact=os.path.join(curdir, "artifacts", "xmlschema", "dragengine"),
-        path_datafile=os.path.join(curdir, "_data", "xmlschema", "xmlschema.yml")))
+        path_datafile=os.path.join(curdir, "_data", "xmlschema", "xmlschema.yml"))
+    builders.append(builderXmlSchema)
 
     for each in builders:
         shutil.rmtree(each.path_artifact, True)
@@ -245,6 +246,13 @@ def build_dragengine(releases: list[Release]) -> None:
         is_latest = release == releases[0]
         for builder in builders:
             builder.build(release.version, is_latest)
+
+    # temporary
+    run_command("git checkout master")
+    run_command("git reset --hard")
+    run_command("git clean -x -f")
+    builderXmlSchema.build('latest', False)
+    # end temporary
 
     os.chdir(curdir)
     for each in builders:
