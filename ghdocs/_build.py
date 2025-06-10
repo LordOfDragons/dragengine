@@ -199,19 +199,19 @@ def build_dragengine(releases: list[Release]) -> None:
         path_doc="src/doc/html"))
 
     builders.append(DocAppBuilder(
-        path_base=os.path.join(pathBaseSrc, "launcher/shared"),
+        path_base=os.path.join(pathBaseSrc, "launcher", "shared"),
         path_artifact=os.path.join(pathApiDoc, "delauncher"),
         path_datafile=os.path.join(pathDataDir, "delauncher.yml"),
         path_src="."))
 
     builders.append(DocAppBuilder(
-        path_base=os.path.join(pathBaseSrc, "deigde/deigde"),
+        path_base=os.path.join(pathBaseSrc, "deigde", "deigde"),
         path_artifact=os.path.join(pathApiDoc, "deigde"),
         path_datafile=os.path.join(pathDataDir, "deigde.yml"),
         path_src="shared/src"))
 
     builders.append(DocAppBuilder(
-        path_base=os.path.join(pathBaseSrc, "modules/scripting/dragonscript"),
+        path_base=os.path.join(pathBaseSrc, "modules", "scripting", "dragonscript"),
         path_artifact=os.path.join(pathApiDoc, "dragonscript"),
         path_datafile=os.path.join(pathDataDir, "dragonscript.yml"),
         path_doxyfile="doxyfile_script",
@@ -219,7 +219,7 @@ def build_dragengine(releases: list[Release]) -> None:
         path_doc="doc/script/html"))
 
     builderXmlSchema = XmlSchemaBuilder(
-        path_src=os.path.join(curdir, "_repository", "dragengine", "doc", "xmlschema"),
+        path_src=os.path.join(pathBaseSrc, "dragengine", "doc", "xmlschema"),
         path_artifact=os.path.join(curdir, "artifacts", "xmlschema", "dragengine"),
         path_datafile=os.path.join(curdir, "_data", "xmlschema", "xmlschema.yml"))
     builders.append(builderXmlSchema)
