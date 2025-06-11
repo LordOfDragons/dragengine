@@ -30,7 +30,7 @@ pin Dragengine.Utils
 
 /**
  * \brief Behavior tree rule stop processing behavior tree for one update cycle.
- * \version 1.27
+ * \version 1.26
  * 
  * Returns \ref BTResult#running if \ref BTContext#getActionFirstRun() returns true
  * otherwise returns \ref BTResult#success.

@@ -344,7 +344,7 @@ class Camera
 	
 	/**
 	 * \brief Inverse world matrix of camera.
-	 * \version 1.27
+	 * \version 1.26
 	 */
 	func DMatrix getInverseMatrix()
 		return null
