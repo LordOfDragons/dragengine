@@ -409,7 +409,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -WithEngineDeal</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src"</Command>
@@ -437,7 +437,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -WithEngineDeal</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src"</Command>
@@ -465,7 +465,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -InternalModule</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -InternalModule -WithEngineDeal</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src"</Command>
@@ -493,7 +493,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -WithEngineDeal</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src"</Command>
@@ -521,7 +521,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -InternalModule</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -DistributeDir "$(SolutionDir)Distribute" -InternalModule -WithEngineDeal</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)pre_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\vr\openxr\src"</Command>
