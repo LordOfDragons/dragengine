@@ -5,7 +5,7 @@
 	<author>Plüss Roland (roland@rptd.ch)</author>
 	<version>VERSION</version>
 	<type>Archive</type>
-	<pattern>.delga</pattern>
+	<pattern>.delga .deal</pattern>
 	<noCompress/>
 	<priority>1</priority>
 	<library>

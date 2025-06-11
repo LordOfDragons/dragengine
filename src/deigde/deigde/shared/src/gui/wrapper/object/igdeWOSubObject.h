@@ -145,6 +145,16 @@ public:
 	
 	/** \brief Visit. */
 	virtual void Visit( igdeWOSOVisitor &visitor ) = 0;
+	
+	/**
+	 * \brief Sub object is visible.
+	 * 
+	 * Returns true if wrapped resources is visible. For example a component resource without
+	 * valid model or with no texture containing a valid skin is invisible. This check does not
+	 * include the visibility state of the object. Hence invisible content is still considered
+	 * visible if it would be visible otherwise.
+	 */
+	virtual bool IsContentVisible();
 	/*@}*/
 	
 	

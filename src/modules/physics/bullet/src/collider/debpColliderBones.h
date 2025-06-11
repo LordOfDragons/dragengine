@@ -244,8 +244,10 @@ public:
 	
 	
 	
-	/** Update static collision tests. */
-	void UpdateStaticCollisionTests();
+	/**
+	 * Update static collision tests. Returns true if at least one bone has a collision shape.
+	 */
+	bool UpdateStaticCollisionTests();
 	
 	
 	

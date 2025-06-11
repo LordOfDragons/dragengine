@@ -27,6 +27,7 @@
 
 #include "common/string/decString.h"
 #include "common/utils/decPRNG.h"
+#include "filesystem/deVirtualFileSystem.h"
 
 class deAISystem;
 class deAnimationManager;
@@ -96,7 +97,6 @@ class deSynthesizerSystem;
 class deTouchSensorManager;
 class deVideoManager;
 class deVideoPlayerManager;
-class deVirtualFileSystem;
 class deVRSystem;
 class deWorldManager;
 
@@ -106,37 +106,28 @@ class decTimer;
 /**
  * \brief Drag[en]gine Game Engine Class.
  *
- * Manages the runtime
- * of the entire game engine. Create one instance of
- * this class for each game running. The class is safe
- * to be used in multiple instances but this behaviour
- * can be restricted by single type modules grabbing
- * certain devices.
+ * Manages the runtime of the entire game engine. Create one instance of this class for each game
+ * running. The class is safe to be used in multiple instances but this behaviour can be restricted
+ * by single type modules grabbing certain devices.
  *
- * To launch successfully a game with this engine create
- * first one instance of this class. Then set your game
- * specific information to the shared data directory
- * of the engine and your game data directory. You are
- * now ready to launch the game by calling the run
- * function. You need to specify the script directory
- * inside your data directory where the scripting module
- * has to look for your game scripts. The run function
- * catches exceptions itself hence there is no need to
+ * To launch successfully a game with this engine create first one instance of this class. Then
+ * set your game specific information to the shared data directory of the engine and your game
+ * data directory. You are now ready to launch the game by calling the run function. You need to
+ * specify the script directory inside your data directory where the scripting module has to look
+ * for your game scripts. The run function catches exceptions itself hence there is no need to
  * enclose it in a try-catch block.
  *
- * If you plan to use the library in slave mode hence
- * only for rendering and you provide the run loop then
- * you can do parts of the run() function yourself. Be
- * carefull though as wrong setting will result in
- * crashes. Wrapping all in an try-catch clause should
- * be enough for testing to be safe.
+ * If you plan to use the library in slave mode hence only for rendering and you provide the run
+ * loop then you can do parts of the run() function yourself. Be carefull though as wrong setting
+ * will result in crashes. Wrapping all in an try-catch clause should be enough for testing to
+ * be safe.
  */
 class DE_DLL_EXPORT deEngine{
 private:
 	// application
 	deCmdLineArgs *pArgs;
 	deOS *pOS;
-	deVirtualFileSystem *pOSFileSystem;
+	deVirtualFileSystem::Ref pOSFileSystem;
 	
 	// crash prevention system
 	deErrorTrace *pErrorTrace;
@@ -156,7 +147,7 @@ private:
 	// files
 	decString pPathData; // the path to the data files
 	decString pCacheAppID; // unique catch directory identifier for the application
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decString pPathCapture;
 	decString pPathOverlay;
 	decString pPathConfig;
@@ -394,7 +385,7 @@ public:
 	void SetCacheAppID( const char *cacheAppID );
 	
 	/** \brief Virtual file system used by the game engine. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVirtualFileSystem() const{ return pVFS; }
 	
 	/**
 	 * \brief Overlay directory.
@@ -485,7 +476,7 @@ public:
 	inline deOS *GetOS() const{ return pOS; }
 	
 	/**
-	 * \brief OS file system or NULL if not used.
+	 * \brief OS file system or nullptr if not used.
 	 * 
 	 * OS file system is used if the engine installation is located outside the simple confines
 	 * of an installation directory.
@@ -493,7 +484,7 @@ public:
 	 * \warning Do not make this file system available to game scripts. Faulty or malicious
 	 * applications could damage the system or the content of the file system.
 	 */
-	inline deVirtualFileSystem *GetOSFileSystem() const{ return pOSFileSystem; }
+	inline const deVirtualFileSystem::Ref &GetOSFileSystem() const{ return pOSFileSystem; }
 	
 	/** \brief Determine if the engine received a quit request. */
 	inline bool GetQuitRequest() const{ return pRequestQuit; }

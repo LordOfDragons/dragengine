@@ -1,0 +1,10 @@
+{
+	"dragonscriptLanguage.scriptDirectories": [],
+	"files.exclude": {
+		"_repository": true,
+		"_site": true,
+		"_venv": true,
+		"local": true,
+		"artifacts": true
+	}
+}

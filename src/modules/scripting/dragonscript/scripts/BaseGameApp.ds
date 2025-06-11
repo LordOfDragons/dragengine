@@ -353,7 +353,7 @@ class BaseGameApp extends Game
 	 * \brief Default binding input processor mouse axis scale factor.
 	 * \version 1.18
 	 * 
-	 * Default value is 0.2.
+	 * Default value is 0.1.
 	 */
 	protected var float defaultInputMouseAxisScale
 	
@@ -415,7 +415,7 @@ class BaseGameApp extends Game
 		pathSavedBindings = "/config/bindings.xml"
 		pathSavedSettings = "/config/settings.ptree.xml"
 		defaultConsoleBufferSize = 50
-		defaultInputMouseAxisScale = 0.2
+		defaultInputMouseAxisScale = 0.1
 		defaultInputMouseWheelScale = 0.2
 			// TODO: make the config path used by the game available to the script
 			//       then this value can be calculated requiring less setting up

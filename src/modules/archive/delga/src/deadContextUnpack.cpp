@@ -286,6 +286,8 @@ deadArchiveDirectory::Ref deadContextUnpack::ReadFileTable(){
 		info.size_filename, NULL, 0, NULL, 0 ) != UNZ_OK ){
 			DETHROW_INFO( deeReadFile, filename );
 		}
+
+		filename.Replace('\\', '/'); // windows idiocy protection
 		
 		if( ! filename.IsEmpty() && filename.GetAt( filename.GetLength() - 1 ) != '/' ){
 			const decPath archivePath( decPath::CreatePathUnix( filename ) );

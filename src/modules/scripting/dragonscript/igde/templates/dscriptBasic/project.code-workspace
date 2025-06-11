@@ -5,6 +5,12 @@
 		}
 	],
 	"settings": {
-		"dragonscriptLanguage.requiresPackageDragengine": true
+		"dragonscriptLanguage.requiresPackageDragengine": true,
+		"xml.fileAssociations": [
+			{
+				"pattern": "**/*.desconvo",
+				"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/simpleConversation.xsd"
+			}
+		]
 	}
 }

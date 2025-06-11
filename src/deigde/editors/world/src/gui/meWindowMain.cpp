@@ -1555,6 +1555,39 @@ public:
 	}
 };
 
+class cActionShowShapes : public cActionBase{
+public:
+	cActionShowShapes(meWindowMain &window) :
+	cActionBase(window, "Show Shapes", nullptr, "Show shapes"){}
+	
+	igdeUndo *OnAction(meWorld *world) override{
+		world->GetGuiParameters().SetShowShapes(!world->GetGuiParameters().GetShowShapes());
+		return nullptr;
+	}
+	
+	void Update(const meWorld &world) override{
+		cActionBase::Update(world);
+		SetSelected(world.GetGuiParameters().GetShowShapes());
+	}
+};
+
+class cActionShowShapesSelected : public cActionBase{
+public:
+	cActionShowShapesSelected(meWindowMain &window) : cActionBase(window,
+		"Show Shapes Selected", nullptr, "Show shapes of selected objects"){}
+	
+	igdeUndo *OnAction(meWorld *world) override{
+		world->GetGuiParameters().SetShowShapesSelected(
+			!world->GetGuiParameters().GetShowShapesSelected());
+		return nullptr;
+	}
+	
+	void Update(const meWorld &world) override{
+		cActionBase::Update(world);
+		SetSelected(world.GetGuiParameters().GetShowShapesSelected());
+	}
+};
+
 
 class cActionNavTestLoad : public cActionBase{
 public:
@@ -1760,6 +1793,8 @@ void meWindowMain::pCreateActions(){
 	pActionShowOcclusionMeshesSelected.TakeOver( new cActionShowOcclusionMeshesSelected( *this ) );
 	pActionShowNavigationSpaces.TakeOver( new cActionShowNavigationSpaces( *this ) );
 	pActionShowNavigationSpacesSelected.TakeOver( new cActionShowNavigationSpacesSelected( *this ) );
+	pActionShowShapes.TakeOver(new cActionShowShapes(*this));
+	pActionShowShapesSelected.TakeOver(new cActionShowShapesSelected(*this));
 	pActionNavTestLoad.TakeOver( new cActionNavTestLoad( *this ) );
 	pActionNavTestSave.TakeOver( new cActionNavTestSave( *this ) );
 	
@@ -1848,6 +1883,8 @@ void meWindowMain::pCreateActions(){
 	AddUpdateAction( pActionShowOcclusionMeshesSelected );
 	AddUpdateAction( pActionShowNavigationSpaces );
 	AddUpdateAction( pActionShowNavigationSpacesSelected );
+	AddUpdateAction( pActionShowShapes);
+	AddUpdateAction( pActionShowShapesSelected);
 	AddUpdateAction( pActionNavTestLoad );
 	AddUpdateAction( pActionNavTestSave );
 }
@@ -2143,6 +2180,8 @@ void meWindowMain::pCreateMenuView( igdeMenuCascade &menu ){
 	helper.MenuCheck( menu, pActionShowOcclusionMeshesSelected );
 	helper.MenuCheck( menu, pActionShowNavigationSpaces );
 	helper.MenuCheck( menu, pActionShowNavigationSpacesSelected );
+	helper.MenuCheck(menu, pActionShowShapes);
+	helper.MenuCheck(menu, pActionShowShapesSelected);
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionNavTestLoad );

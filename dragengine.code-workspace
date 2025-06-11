@@ -231,6 +231,9 @@
 		{
 			"name": "Testing",
 			"path": "detesting"
+		},
+		{
+			"path": "ghdocs"
 		}
 	],
 	"settings": {

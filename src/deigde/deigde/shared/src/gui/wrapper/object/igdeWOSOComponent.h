@@ -75,7 +75,7 @@ public:
 	igdeWOSOComponent( igdeWObject &wrapper, const igdeGDCComponent &gdComponent, const decString &prefix );
 	
 	/** \brief Clean up object wrapper sub object. */
-	virtual ~igdeWOSOComponent();
+	~igdeWOSOComponent() override;
 	/*@}*/
 	
 	
@@ -104,46 +104,56 @@ public:
 	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }
 	
 	/** \brief Update parameters. */
-	virtual void UpdateParameters();
+	void UpdateParameters() override;
 	
 	/** \brief All sub components finished loading. */
-	virtual void OnAllSubObjectsFinishedLoading();
+	void OnAllSubObjectsFinishedLoading() override;
 	
 	/** \brief Update visibility. */
-	virtual void UpdateVisibility();
+	void UpdateVisibility() override;
 	
 	/** \brief Layer masks changed. */
-	virtual void UpdateLayerMasks();
+	void UpdateLayerMasks() override;
 	
 	/** \brief Collision filter changed. */
-	virtual void UpdateCollisionFilter();
+	void UpdateCollisionFilter() override;
 	
 	/** \brief Geometry changed. */
-	virtual void UpdateGeometry();
+	void UpdateGeometry() override;
 	
 	/** \brief Update collider response type. */
-	virtual void UpdateColliderResponseType();
+	void UpdateColliderResponseType() override;
 	
 	/** \brief Frame update. */
-	virtual void Update( float elapsed );
+	void Update( float elapsed ) override;
 	
 	/** \brief Reset physics. */
-	virtual void ResetPhysics();
+	void ResetPhysics() override;
 	
 	/** \brief Reset component textures. */
-	virtual void ResetComponentTextures();
+	void ResetComponentTextures() override;
 	
 	/** \brief Camera changed. */
-	virtual void CameraChanged();
+	void CameraChanged() override;
 	
 	/** \brief Outline skin changed. */
-	virtual void OutlineSkinChanged();
+	void OutlineSkinChanged() override;
 	
 	/** \brief Visit. */
-	virtual void Visit( igdeWOSOVisitor &visitor );
+	void Visit( igdeWOSOVisitor &visitor ) override;
 	
 	/** \brief For internal use only. */
 	void AsyncLoadFinished( bool success );
+	
+	/**
+	 * \brief Sub object is visible.
+	 * 
+	 * Returns true if wrapped resources is visible. For example a component resource without
+	 * valid model or with no texture containing a valid skin is invisible. This check does not
+	 * include the visibility state of the object. Hence invisible content is still considered
+	 * visible if it would be visible otherwise.
+	 */
+	bool IsContentVisible() override;
 	/*@}*/
 	
 	

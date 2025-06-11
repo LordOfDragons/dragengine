@@ -535,7 +535,7 @@ void deoglRTContext::DropCompileContexts(int count){
 #elif defined OS_MACOS
 	
 #elif defined OS_W32
-	for(i=0; i<pCompileContextCount; i++){
+	for(i=count; i<pCompileContextCount; i++){
 		logger.LogInfoFormat("Drop compile context %d", i);
 		if(pCompileContext[i]){
 			wglDeleteContext(pCompileContext[i]);

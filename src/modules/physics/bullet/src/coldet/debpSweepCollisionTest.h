@@ -148,7 +148,7 @@ protected:
 	
 	
 private:
-	void SweepTest( btGhostObject &ghostObject, const btVector3 &castShapeAabbMin, 
+	void SweepTest(btCollisionObject &collisionObject, const btVector3 &castShapeAabbMin, 
 		const btVector3 &castShapeAabbMax, const btTransform &rfrom, const btTransform &rto,
 		const btConvexShape &castShape, debpCollisionWorld::ConvexResultCallback &resultCallback );
 };

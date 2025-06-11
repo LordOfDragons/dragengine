@@ -47,5 +47,6 @@
 #undef GetClassName
 #undef GetObject
 #undef LoadImage
+#undef DeleteFile
 
 #endif // _FOXTOOLKIT_H_

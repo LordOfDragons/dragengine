@@ -145,6 +145,9 @@ class LoadBehaviorTree extends BaseXmlLoader
 		elif tagName.equals("running")
 			return readRuleRunning(element, behaviorTree, idPrefix, parentID)
 			
+		elif tagName.equals("yield")
+			return readRuleYield(element, behaviorTree, idPrefix, parentID)
+			
 		elif tagName.equals("subtree") or tagName.equals("subTree")
 			return readRuleSubTree(element, behaviorTree, idPrefix, parentID, basePath)
 			
@@ -328,6 +331,21 @@ class LoadBehaviorTree extends BaseXmlLoader
 	private func BTRuleRunning readRuleRunning(EasyXMLElement root, BehaviorTree behaviorTree,\
 	String idPrefix, String parentID)
 		var BTRuleRunning rule = BTRuleRunning.new(pGetRuleID(root, behaviorTree, idPrefix, parentID))
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if not readRuleCommon(element, rule)
+				logUnknownTag(element)
+				throw EInvalidParam.new()
+			end
+		end)
+		
+		return rule
+	end
+	
+	/**\brief Read yield rule. */
+	private func BTRuleYield readRuleYield(EasyXMLElement root, BehaviorTree behaviorTree,\
+	String idPrefix, String parentID)
+		var BTRuleYield rule = BTRuleYield.new(pGetRuleID(root, behaviorTree, idPrefix, parentID))
 		
 		root.forEachTag(block EasyXMLElement element, String tagName
 			if not readRuleCommon(element, rule)

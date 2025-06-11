@@ -576,7 +576,7 @@ class Collider
 	end
 	
 	/** \brief Tests moving collider for collision. */
-	public func void colliderMoveHitsCLosest(Collider collider, Vector displacement, ColliderListener listener)
+	public func void colliderMoveHitsClosest(Collider collider, Vector displacement, ColliderListener listener)
 	end
 	
 	/** \brief Test rotating collider for collision. */

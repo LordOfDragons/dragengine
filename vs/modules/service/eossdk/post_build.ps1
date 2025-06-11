@@ -3,7 +3,8 @@
     [Parameter(Mandatory=$true)][string]$SolutionDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
     [Parameter(Mandatory=$true)][string]$DistributeDir,
-    [Parameter(Mandatory=$false)][switch]$InternalModule = $false
+    [Parameter(Mandatory=$false)][switch]$InternalModule = $false,
+    [Parameter(Mandatory=$false)][switch]$WithEngineDeal = $false
 )
 
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
@@ -28,9 +29,22 @@ if(!$InternalModule)
 $Library = "$SolutionDir\extern\eossdk\eossdk\bin\EOSSDK-Win64-Shipping.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
-$DataTargetDir = "$DistributeDir\$PathDistDESharesModules\service\eossdk\$Version"
-Write-Host "EOSSDK Module: Copy Data to '$DataTargetDir'"
+if($WithEngineDeal)
+{
+    $BaseDataTargetDir = "$OutputDir\..\enginedeal\modules\service\eossdk"
+    if (Test-Path $BaseDataTargetDir) {
+        Remove-Item $BaseDataTargetDir -Force -Recurse
+    }
+    
+    $DataTargetDir = "$BaseDataTargetDir\$Version"
+    New-Item -ItemType Directory $DataTargetDir | Out-Null
+}
+else
+{
+    $DataTargetDir = "$DistributeDir\$PathDistDESharesModules\service\eossdk\$Version"
+}
 
+Write-Host "EOSSDK Module: Copy Data to '$DataTargetDir'"
 Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*.*"
 
 

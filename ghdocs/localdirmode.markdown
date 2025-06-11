@@ -2,7 +2,7 @@
 layout: page
 title: Local Directory Mode
 permalink: /localdirmode/
-nav_order: 4
+nav_order: 5
 ---
 
 # Local Directory Mode

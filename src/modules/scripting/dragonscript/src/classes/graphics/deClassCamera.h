@@ -152,7 +152,8 @@ private:
 	DEF_NATFUNC( nfSetLayerMask );
 	DEF_NATFUNC( nfGetParentWorld );
 	
-	DEF_NATFUNC( nfGetMatrix );
+	DEF_NATFUNC(nfGetMatrix);
+	DEF_NATFUNC(nfGetInverseMatrix);
 	
 	DEF_NATFUNC( nfGetEffectCount );
 	DEF_NATFUNC( nfGetEffectAt );

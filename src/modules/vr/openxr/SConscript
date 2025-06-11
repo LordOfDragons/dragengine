@@ -29,6 +29,8 @@ if envModule['force_version']:
 pathConfig = os.path.join(envModule.subst(envModule['path_de_config']), 'modules', 'vr', 'openxr', versionString)
 pathModule = os.path.join(envModule.subst(envModule['path_de_data']), 'modules', 'vr', 'openxr', versionString)
 pathShared = os.path.join(envModule.subst(envModule['path_de_share']), 'modules', 'vr', 'openxr', versionString)
+pathAsset = os.path.join('modules', 'vr', 'openxr', versionString)
+withEngineDeal = envModule['with_engine_deal']
 
 envModule.Append(CXXFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
 
@@ -65,6 +67,7 @@ if not useInternalLoader:
 
 install = []
 archive = {}
+assetEngine = {}
 
 if internalModule:
 	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
@@ -119,9 +122,13 @@ else:
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 for d in data:
-	filename = os.path.join(pathShared, d[5:])
-	install.append(envModule.InstallAs(filename, d))
-	archive[filename] = envModule.File(d).srcnode()
+	if withEngineDeal:
+		filename = os.path.join(pathAsset, d[5:])
+		assetEngine[filename] = envModule.File(d).srcnode()
+	else:
+		filename = os.path.join(pathShares, d[5:])
+		install.append(envModule.InstallAs(filename, d))
+		archive[filename] = envModule.File(d).srcnode()
 
 targetInstall = envModule.Alias('vr_openxr', install)
 
@@ -141,5 +148,6 @@ parent_targets['vr_openxr'] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'asset-engine' : assetEngine,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

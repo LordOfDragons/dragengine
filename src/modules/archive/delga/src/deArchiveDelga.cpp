@@ -104,6 +104,7 @@ public:
 		SetType(deModuleSystem::emtArchive);
 		SetDirectoryName("delga");
 		GetPatternList().Add(".delga");
+		GetPatternList().Add(".deal");
 		SetDefaultExtension(".delga");
 		SetNoCompress(true);
 		SetPriority(1);

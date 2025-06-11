@@ -161,6 +161,12 @@ igdeWObject::cAsyncLoadFinished::cAsyncLoadFinished(){
 igdeWObject::cAsyncLoadFinished::~cAsyncLoadFinished(){
 }
 
+void igdeWObject::cAsyncLoadFinished::AnyContentVisibleChanged(igdeWObject&){
+}
+
+void igdeWObject::cAsyncLoadFinished::ExtendsChanged(igdeWObject&){
+}
+
 
 
 // Class igdeWObject
@@ -186,7 +192,8 @@ pDirtyExtends( false ),
 pDirtyFallbackColliderShape( false ),
 pOutlineColor( 1.0f, 0.0f, 0.0f ),
 pAsyncLoadFinished( NULL ),
-pAsyncLoadCounter( 0 )
+pAsyncLoadCounter( 0 ),
+pAnyContentVisible(false)
 {
 	try{
 		pTriggerListener.TakeOver( new igdeWObjectTriggerListener( *this ) );
@@ -302,35 +309,43 @@ void igdeWObject::SetTriggerTable( igdeTriggerTargetList *triggerTable ){
 
 
 
-void igdeWObject::SetPosition( const decDVector &position ){
-	if( position.IsEqualTo( pPosition ) ){
+void igdeWObject::SetPosition(const decDVector &position){
+	if(position.IsEqualTo(pPosition)){
 		return;
 	}
 	
 	pPosition = position;
+	pUpdateMatrices();
 	
-	pColliderFallback->SetPosition( position );
+	pColliderFallback->SetPosition(position);
 	pSubObjectsUpdateGeometry();
 }
 
-void igdeWObject::SetOrientation( const decQuaternion &orientation ){
-	if( orientation.IsEqualTo( pOrientation ) ){
+void igdeWObject::SetOrientation(const decQuaternion &orientation){
+	if(orientation.IsEqualTo(pOrientation)){
 		return;
 	}
 	
 	pOrientation = orientation;
+	pUpdateMatrices();
 	
-	pColliderFallback->SetOrientation( orientation );
+	pColliderFallback->SetOrientation(orientation);
 	pSubObjectsUpdateGeometry();
 }
 
-void igdeWObject::SetScaling( const decVector &scaling ){
-	if( scaling.IsEqualTo( pScaling ) ){
+void igdeWObject::SetScaling(const decVector &scaling){
+	if(scaling.IsEqualTo(pScaling)){
 		return;
 	}
 	
-	pScaling = scaling.Largest( decVector( 1e-5f, 1e-5f, 1e-5f ) );
+	const decVector absScaling(scaling.Absolute());
+	
+	pScaling.x = absScaling.x > 1e-5f ? scaling.x : (scaling.x > 0.0f ? 1e-5f : -1e-5f);
+	pScaling.y = absScaling.y > 1e-5f ? scaling.y : (scaling.y > 0.0f ? 1e-5f : -1e-5f);
+	pScaling.z = absScaling.z > 1e-5f ? scaling.z : (scaling.z > 0.0f ? 1e-5f : -1e-5f);
 	pDirtyFallbackColliderShape = true;
+	
+	pUpdateMatrices();
 	
 	pSubObjectsUpdateGeometry();
 	pUpdateColliderShapes();
@@ -758,6 +773,10 @@ void igdeWObject::SubObjectFinishedLoading( igdeWOSubObject&, bool ){
 void igdeWObject::SubObjectExtendsDirty(){
 	pDirtyExtends = true;
 	pDirtyFallbackColliderShape = true;
+	
+	if(pAsyncLoadFinished){
+		pAsyncLoadFinished->ExtendsChanged(*this);
+	}
 }
 
 void igdeWObject::SetInteractCollider( deColliderComponent *collider ){
@@ -810,6 +829,28 @@ void igdeWObject::RemoveInteractionCollider( deCollider *collider ){
 	pEnvironment.SetColliderUserPointer( collider, nullptr );
 	
 	pCollidersInteraction.Remove( collider );
+}
+
+void igdeWObject::UpdateAnyContentVisibile(){
+	const int count = pSubObjects.GetCount();
+	bool anyContentVisible = false;
+	int i;
+	
+	for(i=0; i<count; i++){
+		if(((igdeWOSubObject*)pSubObjects.GetAt(i))->IsContentVisible()){
+			anyContentVisible = true;
+			break;
+		}
+	}
+	
+	if(anyContentVisible == pAnyContentVisible){
+		return;
+	}
+	
+	pAnyContentVisible = anyContentVisible;
+	if(pAsyncLoadFinished){
+		pAsyncLoadFinished->AnyContentVisibleChanged(*this);
+	}
 }
 
 
@@ -1121,16 +1162,17 @@ void igdeWObject::pSubObjectsAllFinishedLoading(){
 }
 
 void igdeWObject::pCheckAsyncLoadFinished(){
-	if( pAsyncLoadCounter != 0 ){
+	if(pAsyncLoadCounter != 0){
 		return;
 	}
 	
 	pSubObjectsAllFinishedLoading();
 	pSubObjectsUpdateTriggers();
 	pSubObjectsReattachToColliders();
+	UpdateAnyContentVisibile();
 	
-	if( pAsyncLoadFinished ){
-		pAsyncLoadFinished->LoadFinished( *this, true );
+	if(pAsyncLoadFinished){
+		pAsyncLoadFinished->LoadFinished(*this, true);
 	}
 }
 
@@ -1270,4 +1312,9 @@ void igdeWObject::pPrepareExtends(){
 	}
 	
 	pDirtyExtends = false;
+}
+
+void igdeWObject::pUpdateMatrices(){
+	pMatrix.SetWorld(pPosition, pOrientation, pScaling);
+	pInvMatrix = pMatrix.QuickInvert();
 }

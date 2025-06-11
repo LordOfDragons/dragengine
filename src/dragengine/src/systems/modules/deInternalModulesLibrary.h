@@ -54,6 +54,7 @@ private:
 	decStringList pPreloadLibraryPath;
 	decPointerList pPreloadedLibraries;
 	
+	const deModuleSystem::FPRegisterInternalModule *pFunctionsPriority;
 	const deModuleSystem::FPRegisterInternalModule *pFunctions;
 	
 	
@@ -72,6 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief List of function pointers. */
+	inline const deModuleSystem::FPRegisterInternalModule* GetFunctionsPriority() const{ return pFunctionsPriority; }
 	inline const deModuleSystem::FPRegisterInternalModule* GetFunctions() const{ return pFunctions; }
 	/*@}*/
 	

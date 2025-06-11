@@ -29,7 +29,6 @@ class debpCollisionObject;
 class debpCollider;
 class debpHTSector;
 class debpTouchSensor;
-class debpWorld;
 
 class btCollisionObject;
 
@@ -38,16 +37,11 @@ class btCollisionObject;
  * \brief Shared collision filter functions.
  */
 class debpSharedCollisionFiltering{
-private:
-	debpWorld &pWorld;
-	
-	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shared collision filtering. */
-	debpSharedCollisionFiltering( debpWorld &world );
+	debpSharedCollisionFiltering();
 	
 	/** \brief Clean up shared collision filtering. */
 	~debpSharedCollisionFiltering();
