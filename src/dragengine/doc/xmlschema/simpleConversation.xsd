@@ -247,11 +247,11 @@
 				<br/>Activates the camera assigned to the actor. This action does not yet make the
 				actor speak. It only sets up the camera and parameters for upcoming speak actions.
 				<br/>
-				<br/>Add an empty "<actor/>" to the end of a spoken text line to make the next
+				<br/>Add an empty "&lt;actor/&gt;" to the end of a spoken text line to make the next
 				text line to show as a new dialog box.
 				<br/>
-				<br/>For translation simple conversations omit this tag Instead add an empty
-				"<actor/>" tag at the end of each translation text line to mark the end of line
+				<br/>For translation simple conversations omit this tag. Instead add an empty
+				"&lt;actor/&gt;" tag at the end of each translation text line to mark the end of line
 				</pre>]]>
 			</xs:documentation>
 		</xs:annotation>
@@ -286,10 +286,10 @@
 				<br/>Activates the camera assigned to the actor. This action does not yet make the
 				actor speak. It only sets up the camera and parameters for upcoming speak actions.
 				<br/>
-				<br/>Add an empty "<a/>" to the end of a spoken text line to make the next
+				<br/>Add an empty "&lt;a/&gt;" to the end of a spoken text line to make the next
 				text line to show as a new dialog box.
 				<br/>
-				<br/>For translation simple conversations omit this tag Instead add an empty "<a/>"
+				<br/>For translation simple conversations omit this tag. Instead add an empty "&lt;a/&gt;"
 				tag at the end of each translation text line to mark the end of line
 				</pre>]]>
 			</xs:documentation>
