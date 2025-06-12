@@ -6,7 +6,7 @@
 		<xs:documentation>
 			<![CDATA[<pre>
 			Schema for Drag[en]gine Simple Conversation XML files. Documentation on
-				https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation .
+			https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation .
 			</pre>]]>
 		</xs:documentation>
 	</xs:annotation>

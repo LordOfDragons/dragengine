@@ -1,0 +1,428 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[<pre>
+			Schema for Drag[en]gine Behavior Tree XML files. Documentation on
+			https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behaviortrees .
+			</pre>]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:complexType name='parameter'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Add parameter. Parameter value is text content of node which can be empty if
+				only the presence of the parameter is required by an action or condition.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute type='xs:string' name='name' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[<pre>
+							Name of parameter. See the documentation of the matching action and
+							condition for the supported parameters.
+							</pre>]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name='condition'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Add condition. Condition name is text content of node.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='condition_mode' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				How conditions are evaluated.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='allTrue'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						All conditions have to evaluate to true.
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='anyTrue'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						At least one condition has to evaluate to true.
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='anyFalse'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						At least one condition has to evaluate to false.
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='allFalse'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[<pre>
+						All conditions have to evaluate to false.
+						</pre>]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='id'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Rule identifier. Required for rules potentially returning "BTResult.running"
+				to support persistance. If identifier starts with "." the parent rule
+				identifier is prepended.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='doNotFail'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				If rule fails return "BTResult.success" instead of "BTResult.failure".
+				Useful to running optional rules without failing the parent rule.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:boolean'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='action'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Main working rule connecting game logic to the behavior tree. "BTAction" subclasses
+				are created by the game developer and added to the behavior tree. If the rule is
+				run the action is looked up and run. The return value of the action becomes the
+				return value of the rule.
+				<br/>
+				<br/>If the named action is not found the rule fails with "BTResult.failure".
+				<br/>
+				<br/>Actions can be parametrized by adding one or more parameters to the rule.
+				The actions define themselves which parameters they understand and how they react
+				to them. See the documentation of the matching action and condition for the
+				supported parameters.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice maxOccurs='unbounded' minOccurs='0'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+		</xs:choice>
+		
+		<xs:attribute type='id' name='id' use='optional'/>
+		<xs:attribute type='doNotFail' name='doNotFail' use='optional'/>
+		
+		<xs:attribute type='xs:string' name='name' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					Name of action to run. "BTAction" subclasses are created by the game developer
+					and added to the behavior tree. If the rule is run the action is looked up
+					using the "name" value and run. If the named action is not found the rule
+					fails with "BTResult.failure".
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='success'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Returns always "BTResult.success" unless a rule condition evaluates to false.
+				<br/>
+				<br/>The main use for this rule is to test rule conditions without needing
+				to attach them to some other rule.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice maxOccurs='unbounded' minOccurs='0'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+		</xs:choice>
+		
+		<xs:attribute type='id' name='id' use='optional'/>
+	</xs:complexType>
+	
+	<xs:complexType name='failure'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Returns always "BTResult.failure". The main use for this rule is to fail a
+				sequence rule by placing this last.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice maxOccurs='unbounded' minOccurs='0'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+		</xs:choice>
+		
+		<xs:attribute type='id' name='id' use='optional'/>
+	</xs:complexType>
+	
+	<xs:complexType name='running'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Returns always "BTResult.running" unless a rule condition evaluates to false.
+				<br/>
+				<br/>The main use for this rule is to force waiting until a rule conditions fails.
+				<br/>
+				<br/>Since this rules returns "BTResult.running" it must have an "id" attribute to
+				make sure it is persistable. A typical example is this:
+				```
+				<running id='.running'/>
+				```
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice maxOccurs='unbounded' minOccurs='0'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+		</xs:choice>
+		
+		<xs:attribute type='id' name='id' use='optional'/>
+	</xs:complexType>
+	
+	<xs:complexType name='yield'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Returns "BTResult.running" the first time the rule is run and
+				"BTResult.success" otherwise.
+				<br/>
+				<br/>This rule causes the behavior tree to yield processing for one frame update
+				to continue with the next rule the next time it is run. This rule prevents endless
+				choice loops. Choice loops happen if all rules in a looping choice are not applying.
+				The last rule has to be a rule returning "BTResult.running" to stop retesting all
+				rules endlessly. After some time though this last rule has to return
+				"BTResult.success" or the behavior tree is stuck forever in this rule. A typical
+				solution is to use a short "ECBehaviorBehaviorTreeTimer" to achieve this pause.
+				This rule allows to yield processing for one frame in a simple way without needing
+				to deal with timers.
+				<br/>
+				<br/>This rule can also be used to add single frame delays in a behavior tree,
+				for example to ensure actors are not running actions too fast.
+				<br/>
+				<br/>Since this rules can return "BTResult.running" it must have an id to make
+				sure it is persistable. A typical example is this:
+				```
+				<yield id='.yield'/>
+				```
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice maxOccurs='unbounded' minOccurs='0'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+		</xs:choice>
+		
+		<xs:attribute type='id' name='id' use='optional'/>
+	</xs:complexType>
+	
+	<xs:complexType name='subtree'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Load behavior tree using path from tag text content. Subtree is added to the
+				behavior tree as a sequence rule containing the loaded behavior tree.
+				<br/>
+				<br/>Path can be absolute or relative to the directory this behavior tree
+				file is located in.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute type='id' name='id' use='optional'/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='sequence'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Runs all actions in sequence. Returns "BTResult.success" if all actions returned
+				"BTResult.success". If an action return "BTResult.failure" processing of the rule
+				stops and "BTResult.failure" is returned. If no actions are present
+				"BTResult.failure" is returned.
+				<br/>
+				<br/>If looping is set to true the sequence restarts at the beginning if all
+				actions returns "BTResult.success". This allows to keep looping a sequence until
+				the first time any action returns "BTResult.failure".
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice maxOccurs='unbounded' minOccurs='0'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+			<xs:element type='action' name='action'/>
+			<xs:element type='success' name='success'/>
+			<xs:element type='failure' name='failure'/>
+			<xs:element type='running' name='running'/>
+			<xs:element type='yield' name='yield'/>
+			<xs:element type='subtree' name='subtree'/>
+			<xs:element type='sequence' name='sequence'/>
+			<xs:element type='choice' name='choice'/>
+		</xs:choice>
+		
+		<xs:attribute type='id' name='id' use='optional'/>
+		<xs:attribute type='doNotFail' name='doNotFail' use='optional'/>
+		
+		<xs:attribute type='xs:boolean' name='loop' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					If "true" restarts at the beginning if all actions returns "BTResult.success".
+					This allows to keep looping a sequence until the first time any action returns
+					"BTResult.failure".
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='choice'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Runs all actions in sequence. Returns "BTResult.failure" if all actions returned
+				"BTResult.failure". If an action returns "BTResult.success" processing of the rule
+				stops and "BTResult.success" is returned. If no actions are present
+				"BTResult.failure" is returned.
+				<br/>
+				<br/>If looping is set to true the choice restarts at the beginning if the first
+				action returns "BTResult.success". This allows to keep looping a choice until the
+				first time all actions return "BTResult.failure".
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice maxOccurs='unbounded' minOccurs='0'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+			<xs:element type='action' name='action'/>
+			<xs:element type='success' name='success'/>
+			<xs:element type='failure' name='failure'/>
+			<xs:element type='running' name='running'/>
+			<xs:element type='yield' name='yield'/>
+			<xs:element type='subtree' name='subtree'/>
+			<xs:element type='sequence' name='sequence'/>
+			<xs:element type='choice' name='choice'/>
+		</xs:choice>
+		
+		<xs:attribute type='id' name='id' use='optional'/>
+		<xs:attribute type='doNotFail' name='doNotFail' use='optional'/>
+		
+		<xs:attribute type='xs:boolean' name='loop' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[<pre>
+					If "true" restarts at the beginning if the first action returns
+					"BTResult.success". This allows to keep looping a choice until the first
+					time all actions return "BTResult.failure".
+					</pre>]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='behaviorTree'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[<pre>
+				Behavior Tree. Documentation on
+				https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behaviortrees .
+				<br/>
+				<br/>Behavior trees are structured graphs describing the AI logic using a tree
+				of rules. The behavior tree is at all times located at one of the rules in the tree.
+				During each simulation step (typically during frame update) the behavior tree moves
+				along the tree until an rule returns either "BTResult.running" . The behavior tree
+				keeps on running the active rule each simulation step until the rule either returns
+				"BTResult.success" or "BTResult.failure". The AI logic is formed by the logic
+				behind each rule.
+				<br/>
+				<br/>Each can also have one or more conditions assigned. Before each run of the
+				rule the conditions are evaluated. If any of the conditions evaluates to false the
+				rule fails. Only the conditions of the active rule are evaluated. The conditions of
+				the parent rule are only evaluated if the active node returns anything else but
+				"BTResult.running". In this case the behavior tree wants to move to the next action.
+				To do this the parent rule is run which then automatically evaluates the parent
+				rule conditions.
+				<br/>
+				<br/>Conditions can be paramtrized by adding one or more parameters to the rule.
+				The conditions define themselves which parameters they understand and how they
+				react to them. The name of parameters is free but it is recommended to use a naming
+				scheme like this: "<source>.<parameter>". This groups parameters and reduces the
+				chance of name conflicts. This is especially important since parameters are also
+				reused for action rules. And while actions already define the source part rather
+				well for conditions this is unknown.
+				</pre>]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice maxOccurs='unbounded' minOccurs='0'>
+			<xs:element type='action' name='action'/>
+			<xs:element type='success' name='success'/>
+			<xs:element type='failure' name='failure'/>
+			<xs:element type='running' name='running'/>
+			<xs:element type='yield' name='yield'/>
+			<xs:element type='subtree' name='subtree'/>
+			<xs:element type='sequence' name='sequence'/>
+			<xs:element type='choice' name='choice'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name='behaviorTree' type='behaviorTree'>
+	</xs:element>
+</xs:schema>
