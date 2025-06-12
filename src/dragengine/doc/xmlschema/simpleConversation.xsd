@@ -5,7 +5,8 @@
 	<xs:annotation>
 		<xs:documentation>
 			<![CDATA[<pre>
-			Schema for Drag[en]gine Simple Conversation XML files
+			Schema for Drag[en]gine Simple Conversation XML files. Documentation on
+				https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation .
 			</pre>]]>
 		</xs:documentation>
 	</xs:annotation>
@@ -1553,7 +1554,8 @@
 		<xs:annotation>
 			<xs:documentation>
 				<![CDATA[<pre>
-				Simple conversation
+				Simple conversation. Documentation on
+				https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation .
 				</pre>]]>
 			</xs:documentation>
 		</xs:annotation>
