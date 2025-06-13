@@ -70,7 +70,7 @@ class GameApp extends BaseGameApp
 					end)
 				*/
 				
-				// If you have configured game services in your "configuration.ptree.xml"
+				// If you have configured game services in your "configuration.dept"
 				// file then you should make sure all services have finished initialize
 				// (either successfully or not). If you show logos chances are high the
 				// initialization finished in time but to be safe set an action listener
