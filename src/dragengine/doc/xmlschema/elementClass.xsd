@@ -1,0 +1,1000 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine XML Element Class files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_elements#xml_element_classes).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	
+	<!-- definitions shared with parameterTree.xsd . they are not 1-1 copies though. -->
+	
+	<xs:complexType name='string'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set string property. Value is tag text content.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:string'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='float'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set floating point property. Value is tag text content.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:float'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='integer'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set integer point property. Value is tag text content.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:integer'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='boolean'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set boolean point property. Value is tag text content.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:boolean'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name='vector_x'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				X component of vector. If not set defaults to 0.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:float'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='vector_y'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Y component of vector. If not set defaults to 0.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:float'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='vector_z'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Z component of vector. If not set defaults to 0.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:float'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='vector'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set 3-component floating point vector property.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
+		<xs:attribute type='vector_z' name='z' use='optional' default='0'/>
+	</xs:complexType>
+	
+	<xs:complexType name='vector2'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set 2-component floating point vector property.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
+	</xs:complexType>
+	
+	<xs:simpleType name='point_x'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				X component of point. If not set defaults to 0.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='point_y'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Y component of point. If not set defaults to 0.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='point_z'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Z component of point. If not set defaults to 0.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='point'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set 2-component integer point property.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
+	</xs:complexType>
+	
+	<xs:complexType name='point3'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set 3-component integer point property.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
+		<xs:attribute type='point_z' name='z' use='optional' default='0'/>
+	</xs:complexType>
+	
+	<xs:complexType name='borderSize'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set 4-component integer border size property. Border size defines a border
+				around an area. This can be done either using the <code>all</code> attribute to set all
+				borders to the same value or setting the borders individually using <code>left</code>,
+				<code>top</code>, <code>right</code> and <code>bottom</code>.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='xs:integer' name='all' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set left, top, right and bottom border to the same value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='left' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set left border to value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='top' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set top border to value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='right' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set right border to value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='bottom' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set bottom border to value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='rectArea'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set 4-component integer rectangular area property. Area is define as
+				upper left (inclusive) and lower right (exclusive) corner.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='xs:integer' name='x1' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set X coordinate of upper left corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='y1' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set Y coordinate of upper left corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='x2' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set X coordinate of lower right corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='y2' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set Y coordinate of lower right corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='floatRectArea'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set 4-component floating point rectangular area property. Area is define as
+				upper left (inclusive) and lower right (exclusive) corner.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='xs:float' name='x1' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set X coordinate of upper left corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:float' name='y1' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set Y coordinate of upper left corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:float' name='x2' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set X coordinate of lower right corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:float' name='y2' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set Y coordinate of lower right corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='color'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set color property with optional transparency value. Colors can be defined
+				using multiple ways depending what is easier to use for the situation.
+				<p>
+				Define color as floating point components in the range from 0 (black) to 1 (white).
+				For this use the attributes <code>r</code>, <code>g</code>, <code>b</code> and <code>a</code>.
+				</p>
+				<p>
+				Define color as integer components in the range from 0 (black) to 255 (white).
+				For this use the attributes <code>ir</code>, <code>ig</code>, <code>ib</code>, <code>ia</code>.
+				</p>
+				<p>
+				Define color as string hexadecimal value. For this use the attribute <code>hex</code>.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='xs:float' name='r' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set red floating point component in the range from 0 (black) to 1 (white).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:float' name='g' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set green floating point component in the range from 0 (black) to 1 (white).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:float' name='b' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set blue floating point component in the range from 0 (black) to 1 (white).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:float' name='a' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set alpha floating point component in the range from 0 (transparent) to 1 (solid).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='ir' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set red integer component in the range from 0 (black) to 255 (white).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='ig' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set green integer component in the range from 0 (black) to 255 (white).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='ib' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set blue integer component in the range from 0 (black) to 255 (white).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='ia' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set alpha integer component in the range from 0 (transparent) to 255 (solid).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute name='hex' use='optional' default='000000'>
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							Set color using dexadecimal string in the form <code>RRGGBB</code> or <code>RRGGBBAA</code>
+							where each component is in the range from <code>00</code> to <code>FF</code>. Both upper and
+							lower case letters are supported.
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+					<xs:pattern value='([0-9a-fA-F][0-9a-fA-F]){3,4}'></xs:pattern>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='null'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set null property. This tag is typically used to clear a previously set
+				property or to explicitely mark a value as having no value (null value).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	
+	<xs:complexType name='list'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set list property. Lists can contain all other property types in any combination.
+				See the game documentation on what values are allowed inside the list.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string' type='string'/>
+			<xs:element name='float' type='float'/>
+			<xs:element name='integer' type='integer'/>
+			<xs:element name='boolean' type='boolean'/>
+			<xs:element name='vector' type='vector'/>
+			<xs:element name='vector2' type='vector2'/>
+			<xs:element name='point' type='point'/>
+			<xs:element name='point3' type='point3'/>
+			<xs:element name='borderSize' type='borderSize'/>
+			<xs:element name='rectArea' type='rectArea'/>
+			<xs:element name='floatRectArea' type='floatRectArea'/>
+			<xs:element name='color' type='color'/>
+			<xs:element name='null' type='null'/>
+			<xs:element name='list' type='list'/>
+			<xs:element name='map' type='map'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:simpleType name='map_key'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Key of entry. If entry with the same key is present it is overwritten.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='map'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set map property. Maps are associative lists storing for each entry a string
+				key and a value which can be any other property types. See the game documentation
+				on what values are allowed inside the map.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='string'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='float'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='float'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='integer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='integer'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='boolean'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='boolean'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector2'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector2'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point3'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point3'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='borderSize'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='borderSize'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='rectArea'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='floatRectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='floatRectArea'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='null'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='null'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='list'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='list'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='map'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='map'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<!-- end definitions modified from parameterTree.xsd -->
+	
+	
+	<xs:simpleType name='property_name'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Name of property.
+				<p>
+				Element class properties are typically in the form <code>behavior.property</code>
+				or <code>behavior(id).property</code>. The identifier is omitted if it is empty
+				string. For example the <code>ECBehaviorComponent</code> behavior uses the prefix
+				<code>component.</code>. Hence <code>component.model</code> would set the
+				<code>model</code> property. The same for an <code>ECBehaviorComponent</code>
+				with the identifier second. Here the name would be <code>component(second).model</code>.
+				</p>
+				<p>
+				Inside <code>behavior</code> tag names can be shortened since the prefix used
+				by the respective behavior is known. Just remove the behavior property prefix
+				from the property name leaving being only the <code>.</code> as first character
+				in the name. This way the DragonScript module prepends the behavior property
+				prefix while setting the property values. This is easier to write, increases
+				readability and has less possibility for errors. It is thus recommended to set
+				properties of just added behaviors in this way.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='node_with_properties'>
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='string'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='float'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='float'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='integer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='integer'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='boolean'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='boolean'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector2'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector2'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point3'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point3'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='borderSize'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='borderSize'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='rectArea'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='floatRectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='floatRectArea'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='null'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='null'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='list'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='list'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='map'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='map'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='behavior'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Adding behaviors is done using the behavior tag. Some behaviors require additional
+				parameters during construction time. These parameters can be defined inside the
+				behavior tag using the same tags as you use to define element properties.
+				The behavior documentation list the supported parameters. After adding a behavior
+				you can set the element properties outside the behavior tag as you usually would do.
+				<p>
+				To simplify the adding of behaviors properties of a just added behavior can be also
+				defined by moving the property tags inside the <code>behavior</code> tag.
+				If you do this you have to remove the behavior property prefix from the property
+				names leaving being only the <code>.</code> as first character in the name.
+				This way the DragonScript module prepends the behavior property prefix while
+				setting the property values. This is easier to write, increases readability and
+				has less possibility for errors. It is thus recommended to set properties of just
+				added behaviors in this way.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:complexContent>
+			<xs:extension base='node_with_properties'>
+				<xs:attribute type='xs:string' name='type' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							Type of behavior to add. This is the name of the behavior script class
+							(for example <code>ECBehaviorComponent</code>).
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				
+				<xs:attribute type='xs:string' name='id' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							Identifier unique amongst all behaviors of the same type. If not set empty
+							string is used as identifier.
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='elementClass'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Drag[en]gine XML Element Class.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_elements#xml_element_classes).
+				<p>
+				XML Element classes allow to create new element classes using an XML file
+				(<code>*.deeclass</code>) instead of writing script code. XML element classes
+				always subclass from an existing script class or XML element class. Using an
+				XML element class you can change properties added by the behavior definitions.
+				</p>
+				<p>
+				Element class properties are typically in the form <code>behavior.property</code>
+				or <code>behavior(id).property</code>. The identifier is omitted if it is empty
+				string. For example the <code>ECBehaviorComponent</code> behavior uses the prefix
+				<code>component.</code>. Hence <code>component.model</code> would set the
+				<code>model</code> property. The same for an <code>ECBehaviorComponent</code>
+				with the identifier second. Here the name would be <code>component(second).model</code>.
+				</p>
+				<p>
+				Behaviors can be complex and nested. This allows behaviors to add other behaviors
+				to achieve their goals. Such nested behaviors need to be differentiated from
+				other behaviors of the same kind. The rule is to prefix the property names of the
+				behaviors with their parent prefix to make them unique. For example if you have a
+				fictional behavior MyBehavior with the prefix mybehavior. which adds one or more
+				<code>ECBehaviorComponent</code> then the property names of those component
+				behaviors would look like </code>mybehavior.component.model</code> or
+				<code>mybehavior.component(second).model</code>. This nesting can go deeper
+				depending on how complex of a behavior you are designing. In general it is
+				favorable to keep the nesting as little as possible as this is easier to use for
+				team members and modders.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:complexContent>
+			<xs:extension base='node_with_properties'>
+				<xs:choice minOccurs='0' maxOccurs='unbounded'>
+					<xs:element type='behavior' name='behavior'/>
+				</xs:choice>
+				
+				<xs:attribute type='xs:string' name='name' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							Name of the element class to define. Name has to be unique across all
+							element class no matter if scripted or XML defined. The name can use any
+							character but it is recommended to use only <code>A-Z</code>,
+							<code>a-z</code>, <code>0-9</code> and <code>_</code>.
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				
+				<xs:attribute type='xs:string' name='class' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							Name of the element class to subclass. Name has to be an existing script
+							class or another XML defined class.
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name='elementClass' type='elementClass'>
+	</xs:element>
+</xs:schema>

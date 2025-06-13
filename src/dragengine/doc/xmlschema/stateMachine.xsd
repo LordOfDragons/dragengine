@@ -10,8 +10,6 @@
 		</xs:documentation>
 	</xs:annotation>
 	
-	
-	
 	<xs:complexType name='transitionAction'>
 		<xs:annotation>
 			<xs:documentation>

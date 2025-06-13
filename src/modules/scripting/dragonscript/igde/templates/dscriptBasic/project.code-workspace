@@ -23,6 +23,10 @@
 		{
 			"pattern": "**/*.dept",
 			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTree.xsd"
+		},
+		{
+			"pattern": "**/*.deeclass",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/elementClass.xsd"
 		}
 	]
 }
