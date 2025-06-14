@@ -300,6 +300,20 @@ class ECBehaviorBehaviorTreeFlags extends DefaultECBehavior
 			pFlags.setAt(name, flagged)
 		end
 		
+		/**
+		 * \brief List of set flags as \ref Array of \ref String.
+		 * \version 1.27
+		 */
+		func Array getSetFlags()
+			var Array flags = Array.new()
+			pFlags.forEach(block String name, bool flagged
+				if flagged
+					flags.add(name)
+				end
+			end)
+			return flags
+		end
+		
 		
 		
 		/** \brief Read element from file. */
