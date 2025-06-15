@@ -10,8 +10,7 @@
 		</xs:documentation>
 	</xs:annotation>
 	
-	<!-- <xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/> -->
-	<xs:include schemaLocation='/home/roland/progs/dragengine/src/dragengine/doc/xmlschema/dragengineTypes.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
 	
 	
 	<xs:simpleType name='parameter_name'>
