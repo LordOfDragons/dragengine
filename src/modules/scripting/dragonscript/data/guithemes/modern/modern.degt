@@ -25,8 +25,8 @@
 			<font parameter='active.title.font' size='15'>fonts/sans15.defont</font>
 			<color parameter='active.title.textColor' r='1' g='1' b='1'/>
 			<color parameter='inactive.title.textColor' r='0.75' g='0.75' b='0.75'/>
-			<canvasCreator parameter='active.canvas' extend='window/normal.deccreator'/>
-			<canvasCreator parameter='inactive.canvas' extend='window/inactive.deccreator'/>
+			<canvasCreator parameter='active.canvas' extend='window/normal.decc'/>
+			<canvasCreator parameter='inactive.canvas' extend='window/inactive.decc'/>
 			<image parameter='imageButtonCloseNormal'>window/button/close_normal.png</image>
 			<image parameter='imageButtonCloseHover'>window/button/close_hover.png</image>
 			<image parameter='imageButtonClosePressed'>window/button/close_pressed.png</image>
@@ -53,13 +53,13 @@
 	</designer>
 	
 	<designer name='WindowToolTip' type='Window'>
-		<canvasCreator parameter='normal.canvas' extend='framed/background.deccreator'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0' g='0' b='0' a='0.65'/>
 			</colorMatrix>
 		</canvasCreator>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/normal.deccreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.decc'>
 				<colorMatrix parameter='colorMatrix'>
 					<scale r='0.75' g='0.75' b='0.75' a='0.85'/>
 				</colorMatrix>
@@ -115,20 +115,20 @@
 	</designer>
 	
 	<designer name='Button' type='Button'>
-		<canvasCreator parameter='normal.canvas' extend='button/normal.deccreator'/>
-		<canvasCreator parameter='pressed.canvas' extend='button/pressed.deccreator'/>
-		<canvasCreator parameter='disabled.canvas' extend='button/disabled.deccreator'/>
-		<canvasCreator parameter='hover.canvas' extend='button/hover.deccreator'/>
-		<canvasCreator parameter='focused.canvas' extend='button/focused.deccreator'/>
-		<canvasCreator parameter='focusedHover.canvas' extend='button/focusedHover.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='button/normal.decc'/>
+		<canvasCreator parameter='pressed.canvas' extend='button/pressed.decc'/>
+		<canvasCreator parameter='disabled.canvas' extend='button/disabled.decc'/>
+		<canvasCreator parameter='hover.canvas' extend='button/hover.decc'/>
+		<canvasCreator parameter='focused.canvas' extend='button/focused.decc'/>
+		<canvasCreator parameter='focusedHover.canvas' extend='button/focusedHover.decc'/>
 		<borderSize parameter='normal.padding' all='5'/>
 		<borderSize parameter='pressed.padding' left='6' top='6' right='4' bottom='4'/>
 	</designer>
 	
 	<designer name='ScrollBar' type='ScrollBar'>
-		<canvasCreator parameter='canvasFrame' extend='scrollbar/frame.deccreator'/>
-		<canvasCreator parameter='canvasKnob' extend='scrollbar/knob.deccreator'/>
-		<canvasCreator parameter='canvasKnobHover' extend='scrollbar/knob-hover.deccreator'/>
+		<canvasCreator parameter='canvasFrame' extend='scrollbar/frame.decc'/>
+		<canvasCreator parameter='canvasKnob' extend='scrollbar/knob.decc'/>
+		<canvasCreator parameter='canvasKnobHover' extend='scrollbar/knob-hover.decc'/>
 		
 		<integer parameter='size'>16</integer>
 		
@@ -156,12 +156,12 @@
 	</designer>
 	
 	<designer name='Slider' type='Slider'>
-		<canvasCreator parameter='canvasBarHorizontal' extend='slider/bar-horizontal.deccreator'/>
-		<canvasCreator parameter='canvasBarVertical' extend='slider/bar-vertical.deccreator'/>
-		<canvasCreator parameter='canvasTickLargeHorizontal' extend='slider/tick-large-horizontal.deccreator'/>
-		<canvasCreator parameter='canvasTickLargeVertical' extend='slider/tick-large-vertical.deccreator'/>
-		<canvasCreator parameter='canvasTickSmallHorizontal' extend='slider/tick-small-horizontal.deccreator'/>
-		<canvasCreator parameter='canvasTickSmallVertical' extend='slider/tick-small-vertical.deccreator'/>
+		<canvasCreator parameter='canvasBarHorizontal' extend='slider/bar-horizontal.decc'/>
+		<canvasCreator parameter='canvasBarVertical' extend='slider/bar-vertical.decc'/>
+		<canvasCreator parameter='canvasTickLargeHorizontal' extend='slider/tick-large-horizontal.decc'/>
+		<canvasCreator parameter='canvasTickLargeVertical' extend='slider/tick-large-vertical.decc'/>
+		<canvasCreator parameter='canvasTickSmallHorizontal' extend='slider/tick-small-horizontal.decc'/>
+		<canvasCreator parameter='canvasTickSmallVertical' extend='slider/tick-small-vertical.decc'/>
 		<integer parameter='size'>24</integer>
 		<integer parameter='knobOffset'>12</integer>
 		<integer parameter='tickSize'>2</integer>
@@ -188,82 +188,82 @@
 	</designer>
 	
 	<designer name='TextField' type='TextField'>
-		<canvasCreator parameter='normal.canvas' extend='framed/background.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.decc'/>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/normal.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		
-		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.deccreator'/>
+		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.decc'/>
 		<border parameter='disabled.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/disabled.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/disabled.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		
-		<canvasCreator parameter='focused.canvas' extend='framed/background.deccreator'/>
+		<canvasCreator parameter='focused.canvas' extend='framed/background.decc'/>
 		<border parameter='focused.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/focused.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/focused.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		
 		<border parameter='hover.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/hover.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/hover.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 	</designer>
 	
 	<designer name='TextArea' type='TextArea'>
-		<canvasCreator parameter='normal.canvas' extend='framed/background.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.decc'/>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/normal.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		
-		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.deccreator'/>
+		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.decc'/>
 		<border parameter='disabled.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/disabled.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/disabled.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		
-		<canvasCreator parameter='focused.canvas' extend='framed/background.deccreator'/>
+		<canvasCreator parameter='focused.canvas' extend='framed/background.decc'/>
 		<border parameter='focused.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/focused.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/focused.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		
 		<border parameter='hover.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/hover.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/hover.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 	</designer>
 	
 	<designer name='ListBox' type='ListBox'>
-		<canvasCreator parameter='normal.canvas' extend='framed/background.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.decc'/>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/normal.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		
-		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.deccreator'/>
+		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.decc'/>
 		<border parameter='disabled.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/disabled.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/disabled.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		
-		<canvasCreator parameter='focused.canvas' extend='framed/background.deccreator'/>
+		<canvasCreator parameter='focused.canvas' extend='framed/background.decc'/>
 		<border parameter='focused.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/focused.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/focused.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		
 		<border parameter='hover.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/hover.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/hover.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 	</designer>
@@ -291,12 +291,12 @@
 	</designer>
 	
 	<designer name='ComboBox' type='ComboBox'>
-		<canvasCreator parameter='normal.canvas' extend='button/normal.deccreator'/>
-		<canvasCreator parameter='droppedDown.canvas' extend='button/pressed.deccreator'/>
-		<canvasCreator parameter='disabled.canvas' extend='button/disabled.deccreator'/>
-		<canvasCreator parameter='hover.canvas' extend='button/hover.deccreator'/>
-		<canvasCreator parameter='focused.canvas' extend='button/focused.deccreator'/>
-		<canvasCreator parameter='focusedHover.canvas' extend='button/focusedHover.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='button/normal.decc'/>
+		<canvasCreator parameter='droppedDown.canvas' extend='button/pressed.decc'/>
+		<canvasCreator parameter='disabled.canvas' extend='button/disabled.decc'/>
+		<canvasCreator parameter='hover.canvas' extend='button/hover.decc'/>
+		<canvasCreator parameter='focused.canvas' extend='button/focused.decc'/>
+		<canvasCreator parameter='focusedHover.canvas' extend='button/focusedHover.decc'/>
 		<borderSize parameter='normal.padding' left='4' top='2'/>
 		<image parameter='imageDropDownNormal'>arrows/down_normal.png</image>
 		<image parameter='imageDropDownHover'>arrows/down_hover.png</image>
@@ -349,16 +349,16 @@
 	</designer>
 	
 	<designer name='ProgressBar' type='ProgressBar'>
-		<canvasCreator parameter='normal.canvas' extend='framed/background.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.decc'/>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/normal.deccreator'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.decc'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 		<borderSize parameter='normal.padding' left='8' top='4' right='8' bottom='4'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		
-		<canvasCreator parameter='bar' extend='framed/background.deccreator'>
+		<canvasCreator parameter='bar' extend='framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0' g='0.5' b='1' a='1'/>
 			</colorMatrix>
@@ -432,7 +432,7 @@
 	</designer>
 	
 	<designer name='MenuItem.Separator' type='Widget'>
-		<canvasCreator parameter='normal.canvas' extend='divider/normal.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='divider/normal.decc'/>
 		<border parameter='normal.border' type='Empty'>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='0'/>
 		</border>
@@ -451,7 +451,7 @@
 	
 	<!-- ReorderListMouseListener -->
 	<designer name='ReorderListBoxDrop' type='Widget'>
-		<canvasCreator parameter='normal.canvas' extend='framed/focused.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='framed/focused.decc'/>
 	</designer>
 	
 	<!-- WindowGameWorld -->
@@ -507,17 +507,17 @@
 	
 	
 	
-	<import>../shared/virtualkeyboard.deguitheme</import>
-	<import>../shared/console.deguitheme</import>
-	<import>../shared/conversation.deguitheme</import>
-	<import>../shared/editbindings.deguitheme</import>
-	<import>../shared/modparamsystem.deguitheme</import>
-	<import>../shared/interactprompt.deguitheme</import>
-	<import>../shared/windowlogo.deguitheme</import>
-	<import>../shared/interactivemainmenu.deguitheme</import>
-	<import>../shared/behaviors.deguitheme</import>
-	<import>../shared/paneldebuginformation.deguitheme</import>
-	<import>../shared/windowsettings.deguitheme</import>
-	<import>../shared/fpsrates.deguitheme</import>
-	<import>../shared/modmanagement.deguitheme</import>
+	<import>../shared/virtualkeyboard.degt</import>
+	<import>../shared/console.degt</import>
+	<import>../shared/conversation.degt</import>
+	<import>../shared/editbindings.degt</import>
+	<import>../shared/modparamsystem.degt</import>
+	<import>../shared/interactprompt.degt</import>
+	<import>../shared/windowlogo.degt</import>
+	<import>../shared/interactivemainmenu.degt</import>
+	<import>../shared/behaviors.degt</import>
+	<import>../shared/paneldebuginformation.degt</import>
+	<import>../shared/windowsettings.degt</import>
+	<import>../shared/fpsrates.degt</import>
+	<import>../shared/modmanagement.degt</import>
 </guiTheme>

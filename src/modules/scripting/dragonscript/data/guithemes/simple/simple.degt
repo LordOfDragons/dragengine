@@ -98,10 +98,10 @@
 	</designer>
 	
 	<designer name='Button' type='Button'>
-		<canvasCreator parameter='normal.canvas' extend='normal.deccreator'/>
-		<canvasCreator parameter='pressed.canvas' extend='pressed.deccreator'/>
-		<canvasCreator parameter='disabled.canvas' extend='disabled.deccreator'/>
-		<canvasCreator parameter='hover.canvas' extend='hover.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='normal.decc'/>
+		<canvasCreator parameter='pressed.canvas' extend='pressed.decc'/>
+		<canvasCreator parameter='disabled.canvas' extend='disabled.decc'/>
+		<canvasCreator parameter='hover.canvas' extend='hover.decc'/>
 		<borderSize parameter='normal.padding' all='5'/>
 		<borderSize parameter='pressed.padding' left='6' top='6' right='4' bottom='4'/>
 	</designer>
@@ -118,27 +118,27 @@
 			<color parameter='colorBackground' r='0.86' g='0.86' b='0.86'/>
 		</canvasCreator>
 		<integer parameter='size'>16</integer>
-		<designer parameter='buttonUp' extend='button.dedesigner'>
+		<designer parameter='buttonUp' extend='button.dedes'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
-		<designer parameter='buttonDown' extend='button.dedesigner'>
+		<designer parameter='buttonDown' extend='button.dedes'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
-		<designer parameter='buttonLeft' extend='button.dedesigner'>
+		<designer parameter='buttonLeft' extend='button.dedes'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
-		<designer parameter='buttonRight' extend='button.dedesigner'>
+		<designer parameter='buttonRight' extend='button.dedes'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
 	</designer>
 	
 	<designer name='Slider' type='Slider'>
-		<canvasCreator parameter='canvasBarHorizontal' extend='../modern/slider/bar-horizontal.deccreator'/>
-		<canvasCreator parameter='canvasBarVertical' extend='../modern/slider/bar-vertical.deccreator'/>
-		<canvasCreator parameter='canvasTickLargeHorizontal' extend='../modern/slider/tick-large-horizontal.deccreator'/>
-		<canvasCreator parameter='canvasTickLargeVertical' extend='../modern/slider/tick-large-vertical.deccreator'/>
-		<canvasCreator parameter='canvasTickSmallHorizontal' extend='../modern/slider/tick-small-horizontal.deccreator'/>
-		<canvasCreator parameter='canvasTickSmallVertical' extend='../modern/slider/tick-small-vertical.deccreator'/>
+		<canvasCreator parameter='canvasBarHorizontal' extend='../modern/slider/bar-horizontal.decc'/>
+		<canvasCreator parameter='canvasBarVertical' extend='../modern/slider/bar-vertical.decc'/>
+		<canvasCreator parameter='canvasTickLargeHorizontal' extend='../modern/slider/tick-large-horizontal.decc'/>
+		<canvasCreator parameter='canvasTickLargeVertical' extend='../modern/slider/tick-large-vertical.decc'/>
+		<canvasCreator parameter='canvasTickSmallHorizontal' extend='../modern/slider/tick-small-horizontal.decc'/>
+		<canvasCreator parameter='canvasTickSmallVertical' extend='../modern/slider/tick-small-vertical.decc'/>
 		<integer parameter='size'>24</integer>
 		<integer parameter='knobOffset'>12</integer>
 		<integer parameter='tickSize'>2</integer>
@@ -150,10 +150,10 @@
 	
 	<designer name='SpinButton' type='SpinButton'>
 		<integer parameter='size'>16</integer>
-		<designer parameter='buttonUp' extend='button.dedesigner'>
+		<designer parameter='buttonUp' extend='button.dedes'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
-		<designer parameter='buttonDown' extend='button.dedesigner'>
+		<designer parameter='buttonDown' extend='button.dedes'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
 	</designer>
@@ -231,10 +231,10 @@
 	</designer>
 	
 	<designer name='ComboBox' type='ComboBox'>
-		<canvasCreator parameter='normal.canvas' extend='normal.deccreator'/>
-		<canvasCreator parameter='droppedDown.canvas' extend='pressed.deccreator'/>
-		<canvasCreator parameter='disabled.canvas' extend='disabled.deccreator'/>
-		<canvasCreator parameter='hover.canvas' extend='hover.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='normal.decc'/>
+		<canvasCreator parameter='droppedDown.canvas' extend='pressed.decc'/>
+		<canvasCreator parameter='disabled.canvas' extend='disabled.decc'/>
+		<canvasCreator parameter='hover.canvas' extend='hover.decc'/>
 		<borderSize parameter='normal.padding' left='4'/>
 	</designer>
 	
@@ -358,7 +358,7 @@
 	</designer>
 	
 	<designer name='MenuItem.Separator' type='Widget'>
-		<canvasCreator parameter='normal.canvas' extend='../modern/divider/normal.deccreator'/>
+		<canvasCreator parameter='normal.canvas' extend='../modern/divider/normal.decc'/>
 		<border parameter='normal.border' type='Empty'>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='0'/>
 		</border>
@@ -435,17 +435,17 @@
 	<designer name='Image.RatingUpDown.ReadOnly.Down' extendNamed='Image.Button.RatingUpDown.Down'/>
 	
 	
-	<import>../shared/virtualkeyboard.deguitheme</import>
-	<import>../shared/console.deguitheme</import>
-	<import>../shared/conversation.deguitheme</import>
-	<import>../shared/editbindings.deguitheme</import>
-	<import>../shared/modparamsystem.deguitheme</import>
-	<import>../shared/interactprompt.deguitheme</import>
-	<import>../shared/windowlogo.deguitheme</import>
-	<import>../shared/interactivemainmenu.deguitheme</import>
-	<import>../shared/behaviors.deguitheme</import>
-	<import>../shared/paneldebuginformation.deguitheme</import>
-	<import>../shared/windowsettings.deguitheme</import>
-	<import>../shared/fpsrates.deguitheme</import>
-	<import>../shared/modmanagement.deguitheme</import>
+	<import>../shared/virtualkeyboard.degt</import>
+	<import>../shared/console.degt</import>
+	<import>../shared/conversation.degt</import>
+	<import>../shared/editbindings.degt</import>
+	<import>../shared/modparamsystem.degt</import>
+	<import>../shared/interactprompt.degt</import>
+	<import>../shared/windowlogo.degt</import>
+	<import>../shared/interactivemainmenu.degt</import>
+	<import>../shared/behaviors.degt</import>
+	<import>../shared/paneldebuginformation.degt</import>
+	<import>../shared/windowsettings.degt</import>
+	<import>../shared/fpsrates.degt</import>
+	<import>../shared/modmanagement.degt</import>
 </guiTheme>

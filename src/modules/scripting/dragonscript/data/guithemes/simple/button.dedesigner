@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<designer type='Button'>
-	<canvasCreator parameter='normal.canvas' extend='normal.deccreator'/>
-	<canvasCreator parameter='pressed.canvas' extend='pressed.deccreator'/>
-	<canvasCreator parameter='disabled.canvas' extend='disabled.deccreator'/>
-	<canvasCreator parameter='hover.canvas' extend='hover.deccreator'/>
-	<borderSize parameter='normal.padding' all='5'/>
-</designer>

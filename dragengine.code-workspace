@@ -362,27 +362,27 @@
 				"systemId": "${workspaceFolder}/doc/xmlschema/elementClass.xsd"
 			},
 			{
-				"pattern": "**/*.deccreator",
+				"pattern": "**/*.decc",
 				"systemId": "${workspaceFolder}/doc/xmlschema/canvasCreator.xsd"
 			},
 			{
-				"pattern": "**/*.deborder",
+				"pattern": "**/*.debor",
 				"systemId": "${workspaceFolder}/doc/xmlschema/border.xsd"
 			},
 			{
-				"pattern": "**/*.dedecoration",
+				"pattern": "**/*.dedeco",
 				"systemId": "${workspaceFolder}/doc/xmlschema/decoration.xsd"
 			},
 			{
-				"pattern": "**/*.dempointer",
+				"pattern": "**/*.demp",
 				"systemId": "${workspaceFolder}/doc/xmlschema/mousePointer.xsd"
 			},
 			{
-				"pattern": "**/*.dedesigner",
+				"pattern": "**/*.dedes",
 				"systemId": "${workspaceFolder}/doc/xmlschema/designer.xsd"
 			},
 			{
-				"pattern": "**/*.deguitheme",
+				"pattern": "**/*.degt",
 				"systemId": "${workspaceFolder}/doc/xmlschema/guitheme.xsd"
 			}
 		]

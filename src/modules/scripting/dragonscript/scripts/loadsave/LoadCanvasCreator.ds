@@ -89,7 +89,7 @@ class LoadCanvasCreator extends BaseXmlLoader
 		logLoadingFromFile(filename)
 		
 		if not FileSystem.existsFile(filename) and filename.endsWith(".ccreator.xml")
-			var String filename2 = filename.substring(0, -13) + ".deccreator"
+			var String filename2 = filename.substring(0, -13) + ".decc"
 			if FileSystem.existsFile(filename2)
 				printOnConsole(filename, "Renamed to '{}'. Please use new filename.".\
 					format(Array.newWith(filename2)))

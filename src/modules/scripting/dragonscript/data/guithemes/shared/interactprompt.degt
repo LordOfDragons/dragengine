@@ -12,7 +12,7 @@
 	-->
 	
 	<designer name='InteractPrompt' type='Widget'>
-		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.deccreator'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0' g='0' b='0' a='0.5'/>
 			</colorMatrix>

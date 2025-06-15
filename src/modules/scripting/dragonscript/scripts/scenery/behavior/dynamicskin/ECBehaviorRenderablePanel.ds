@@ -41,7 +41,7 @@ pin Dragengine.Utils
  * using GuiThemes to create complex content easily.
  * 
  * The default layout for the Panel is StackLayout. The default gui theme is
- * "/shareddata/guithemes/modern/modern.deguitheme". The default Panel designer selector
+ * "/shareddata/guithemes/modern/modern.degt". The default Panel designer selector
  * is "RenderablePanel".
  * 
  * To use this behavior add an ECBehaviorDynamicSkin to the element class before adding this
@@ -65,13 +65,13 @@ pin Dragengine.Utils
  *       
  *       var ECBehaviorRenderablePanel behavior = ECBehaviorRenderablePanel.new(this, dynamicSkin)
  *       behavior.getRenderable().setValue("content1")
- *       behavior.getGuiTheme().setPath("/content/renderable.deguitheme")
+ *       behavior.getGuiTheme().setPath("/content/renderable.degt")
  *       behavior.getDesignerSelector().setValue("Panel.MyElement")
  *       
  *       behavior = ECBehaviorRenderablePanel.new(this, dynamicSkin, "renderablePanel2")
  *       behavior.setBackgroundColor(Color.blue)
  *       behavior.getRenderable().setValue("intensity2")
- *       behavior.getGuiTheme().setPath("/content/renderable.deguitheme")
+ *       behavior.getGuiTheme().setPath("/content/renderable.degt")
  *       behavior.getDesignerSelector().setValue("Panel.MyElement")
  *    end
  * end
@@ -311,7 +311,7 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 		eclass.addProperty(pSize)
 		
 		pGuiTheme = ECPGuiTheme.new(prefix + "guiTheme", loaders.getGuiTheme(), \
-			"/shareddata/guithemes/modern/modern.deguitheme")
+			"/shareddata/guithemes/modern/modern.degt")
 		eclass.addProperty(pGuiTheme)
 		
 		pDesignerSelector = ECPString.new(prefix + "designerSelector", "RenderablePanel")

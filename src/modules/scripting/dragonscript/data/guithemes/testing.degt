@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='ISO-8859-1'?>
-<guiTheme extend='modern/modern.deguitheme'>
+<guiTheme extend='modern/modern.degt'>
 	<!-- Main GUI Theme based on modern GUI Theme -->
 	
 	<!-- Main menu window is full screen with no border and white background -->

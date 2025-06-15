@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <canvasCreator type='Combined'>
-	<canvasCreator parameter='outerCanvas' extend='hover.deccreator'/>
+	<canvasCreator parameter='outerCanvas' extend='hover.decc'/>
 	<canvasCreator parameter='innerCanvas' type='ImageBorder'>
 		<image parameter='sideLeft'>focused/side_left.png</image>
 		<image parameter='sideTop'>focused/side_top.png</image>
