@@ -35,7 +35,7 @@ These are suitable for editors like Visual Studio Code to provide verification a
 
 These are helper schemas included in the above schemas containing common types. They contain only type definitions. You can use them in your own schemas like this:
 ```xml
-<xs:include schemaLocation='{{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
+<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
 ```
 
 - [Drag[en]gine Data Types]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd)
