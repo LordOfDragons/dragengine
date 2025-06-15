@@ -118,16 +118,16 @@
 			<color parameter='colorBackground' r='0.86' g='0.86' b='0.86'/>
 		</canvasCreator>
 		<integer parameter='size'>16</integer>
-		<designer parameter='buttonUp' extend='button.wdesigner.xml'>
+		<designer parameter='buttonUp' extend='button.dedesigner'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
-		<designer parameter='buttonDown' extend='button.wdesigner.xml'>
+		<designer parameter='buttonDown' extend='button.dedesigner'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
-		<designer parameter='buttonLeft' extend='button.wdesigner.xml'>
+		<designer parameter='buttonLeft' extend='button.dedesigner'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
-		<designer parameter='buttonRight' extend='button.wdesigner.xml'>
+		<designer parameter='buttonRight' extend='button.dedesigner'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
 	</designer>
@@ -150,10 +150,10 @@
 	
 	<designer name='SpinButton' type='SpinButton'>
 		<integer parameter='size'>16</integer>
-		<designer parameter='buttonUp' extend='button.wdesigner.xml'>
+		<designer parameter='buttonUp' extend='button.dedesigner'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
-		<designer parameter='buttonDown' extend='button.wdesigner.xml'>
+		<designer parameter='buttonDown' extend='button.dedesigner'>
 			<point parameter='normal.minimumSize' x='16' y='16'/>
 		</designer>
 	</designer>

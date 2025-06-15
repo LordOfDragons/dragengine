@@ -364,6 +364,22 @@
 			{
 				"pattern": "**/*.deccreator",
 				"systemId": "${workspaceFolder}/doc/xmlschema/canvasCreator.xsd"
+			},
+			{
+				"pattern": "**/*.deborder",
+				"systemId": "${workspaceFolder}/doc/xmlschema/border.xsd"
+			},
+			{
+				"pattern": "**/*.dedecoration",
+				"systemId": "${workspaceFolder}/doc/xmlschema/decoration.xsd"
+			},
+			{
+				"pattern": "**/*.dempointer",
+				"systemId": "${workspaceFolder}/doc/xmlschema/mousePointer.xsd"
+			},
+			{
+				"pattern": "**/*.dedesigner",
+				"systemId": "${workspaceFolder}/doc/xmlschema/designer.xsd"
 			}
 		]
 	}

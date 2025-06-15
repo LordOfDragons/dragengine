@@ -10,19 +10,8 @@
 		</xs:documentation>
 	</xs:annotation>
 	
-	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTypes.xsd'/>
 	
-	
-	<xs:simpleType name='parameter_name'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Name of parameter to set.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base='xs:string'/>
-	</xs:simpleType>
 	
 	<xs:complexType name='canvasCreator'>
 		<xs:annotation>
@@ -36,165 +25,24 @@
 		</xs:annotation>
 		
 		<xs:choice minOccurs='0' maxOccurs='unbounded'>
-			<xs:element name='string'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='string'>
-							<xs:annotation>
-								<xs:documentation>Set string parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='float'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='float'>
-							<xs:annotation>
-								<xs:documentation>Set float parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='integer'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='integer'>
-							<xs:annotation>
-								<xs:documentation>Set integer parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='boolean'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='boolean'>
-							<xs:annotation>
-								<xs:documentation>Set boolean parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='point'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='point'>
-							<xs:annotation>
-								<xs:documentation>Set point parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='borderSize'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='borderSize'>
-							<xs:annotation>
-								<xs:documentation>Set border size parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='color'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='color'>
-							<xs:annotation>
-								<xs:documentation>Set color parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='null'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='null'>
-							<xs:annotation>
-								<xs:documentation>Set null parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='colorMatrix'>
-				<xs:complexType>
-					<xs:complexContent>
-						<xs:extension base='colorMatrix'>
-							<xs:annotation>
-								<xs:documentation>Set color matrix parameter</xs:documentation>
-							</xs:annotation>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:complexContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='image'>
-				<xs:annotation>
-					<xs:documentation><![CDATA[
-						Set image parameter.
-						<p>
-						Relative or absolute path to image resource to load.
-						</p>
-					]]></xs:documentation>
-				</xs:annotation>
-				<xs:complexType>
-					<xs:simpleContent>
-						<xs:extension base='xs:string'>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:simpleContent>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name='video'>
-				<xs:annotation>
-					<xs:documentation><![CDATA[
-						Set video parameter.
-						<p>
-						Relative or absolute path to video resource to load.
-						</p>
-					]]></xs:documentation>
-				</xs:annotation>
-				<xs:complexType>
-					<xs:simpleContent>
-						<xs:extension base='xs:string'>
-							<xs:attribute type='parameter_name' name='parameter' use='required'/>
-						</xs:extension>
-					</xs:simpleContent>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name='string' type='parameter_string'/>
+			<xs:element name='float' type='parameter_float'/>
+			<xs:element name='integer' type='parameter_integer'/>
+			<xs:element name='boolean' type='parameter_boolean'/>
+			<xs:element name='point' type='parameter_point'/>
+			<xs:element name='borderSize' type='parameter_borderSize'/>
+			<xs:element name='color' type='parameter_color'/>
+			<xs:element name='null' type='parameter_null'/>
+			<xs:element name='colorMatrix' type='parameter_colorMatrix'/>
+			<xs:element name='image' type='parameter_image'/>
+			<xs:element name='video' type='parameter_video'/>
 			
 			<xs:element name='canvasCreator'>
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='canvasCreator'>
 							<xs:annotation>
-								<xs:documentation>Set canvas creator parameter.</xs:documentation>
+								<xs:documentation>Canvas creator parameter.</xs:documentation>
 							</xs:annotation>
 							<xs:attribute type='parameter_name' name='parameter' use='required'/>
 						</xs:extension>
@@ -226,11 +74,11 @@
 								rectangle fill and line color.
 								<p>
 								Supported parameters:
-								<p>
+								</p>
 								<ul>
 								<li><code>colorFill</code>(color): Fill color</li>
 								<li><code>colorLine</code>(color): Line color</li>
-								<li><code>thickness</code>(float): Line thickness in pixels.</li>
+								<li><code>thickness</code>(integer): Line thickness in pixels.</li>
 								</ul>
 							]]></xs:documentation>
 						</xs:annotation>
@@ -241,7 +89,7 @@
 								Canvas creator creating a canvas with a paint only simple bevel border.
 								<p>
 								Supported parameters:
-								<p>
+								</p>
 								<ul>
 								<li><code>colorHighlight</code>(color): Hilight color</li>
 								<li><code>colorShadow</code>(color): Shadow color</li>
@@ -257,7 +105,7 @@
 								Canvas creator creating a single image canvas stretched to fit the entire widget.
 								<p>
 								Supported parameters:
-								<p>
+								</p>
 								<ul>
 								<li><code>image</code>(image): Image to display.</li>
 								<li><code>colorMatrix</code>(colorMatrix): Color transformation matrix.</li>
@@ -275,9 +123,10 @@
 								images can be used to add non-stretching middle sections to sides.
 								Think of of a cartoon speech bubble. The section pointing down at
 								the speaking actor would be an attach image.
+								</p>
 								<p>
 								Supported parameters:
-								<p>
+								</p>
 								<ul>
 								<li><code>center</code>(image): Center image.</li>
 								<li><code>sideLeft</code>(image): Left side image stretched vertically.</li>
@@ -307,7 +156,7 @@
 								creator. If not null the padding allows to nest the inner canvas creator.
 								<p>
 								Supported parameters:
-								<p>
+								</p>
 								<ul>
 								<li><code>outerCanvas</code>(canvasCreator): Outer canvas creator.</li>
 								<li><code>innerCanvas</code>(canvasCreator): Inner canvas creator.</li>

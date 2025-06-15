@@ -27,6 +27,26 @@
 		{
 			"pattern": "**/*.deeclass",
 			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/elementClass.xsd"
+		},
+		{
+			"pattern": "**/*.deccreator",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd"
+		},
+		{
+			"pattern": "**/*.deborder",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/border.xsd"
+		},
+		{
+			"pattern": "**/*.dedecoration",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/decoration.xsd"
+		},
+		{
+			"pattern": "**/*.dempointer",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/mousePointer.xsd"
+		},
+		{
+			"pattern": "**/*.dedesigner",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/designer.xsd"
 		}
 	]
 }
