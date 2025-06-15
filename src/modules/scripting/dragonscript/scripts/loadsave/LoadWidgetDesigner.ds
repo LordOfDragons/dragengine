@@ -131,7 +131,7 @@ class LoadWidgetDesigner extends BaseXmlLoader
 		logLoadingFromFile(filename)
 		
 		if not FileSystem.existsFile(filename) and filename.endsWith(".wdesigner.xml")
-			var String filename2 = filename.substring(0, -13) + ".dedesigner"
+			var String filename2 = filename.substring(0, -14) + ".dedesigner"
 			if FileSystem.existsFile(filename2)
 				printOnConsole(filename, "Renamed to '{}'. Please use new filename.".\
 					format(Array.newWith(filename2)))

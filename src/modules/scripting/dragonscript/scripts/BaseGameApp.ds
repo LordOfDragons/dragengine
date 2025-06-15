@@ -86,7 +86,7 @@ pin Dragengine.Services
  *    end
  *    
  *    func new()
- *       pathDesktopGuiTheme = "/content/ui/main.guitheme.xml"
+ *       pathDesktopGuiTheme = "/content/ui/main.deguitheme"
  *       // set more properties here if required. do all init work in initGame()
  *    end
  *    
@@ -115,7 +115,7 @@ pin Dragengine.Services
 class BaseGameApp extends Game
 	/** \brief Path of default gui theme provided by the DragonScript module. */
 	public static fixed var String defaultPathGuiTheme = \
-		"/shareddata/guithemes/modern/modern.guitheme.xml"
+		"/shareddata/guithemes/modern/modern.deguitheme"
 	
 	/**
 	 * \brief Invert looking up-down setting key.

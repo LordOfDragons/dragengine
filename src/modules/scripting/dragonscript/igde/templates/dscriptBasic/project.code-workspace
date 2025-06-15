@@ -47,6 +47,10 @@
 		{
 			"pattern": "**/*.dedesigner",
 			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/designer.xsd"
+		},
+		{
+			"pattern": "**/*.deguitheme",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/guitheme.xsd"
 		}
 	]
 }

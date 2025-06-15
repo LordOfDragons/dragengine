@@ -951,4 +951,24 @@
 			</xs:element>
 		</xs:choice>
 	</xs:complexType>
+	
+	
+	<xs:complexType name='font'>
+		<xs:simpleContent>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Font. Relative or absolute path to font resource to load.
+				]]></xs:documentation>
+			</xs:annotation>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='size' type='xs:integer' use='required'>
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							Font size in pixels (line height).
+						]]></xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 </xs:schema>

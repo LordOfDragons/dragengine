@@ -311,7 +311,7 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 		eclass.addProperty(pSize)
 		
 		pGuiTheme = ECPGuiTheme.new(prefix + "guiTheme", loaders.getGuiTheme(), \
-			"/shareddata/guithemes/modern/modern.guitheme.xml")
+			"/shareddata/guithemes/modern/modern.deguitheme")
 		eclass.addProperty(pGuiTheme)
 		
 		pDesignerSelector = ECPString.new(prefix + "designerSelector", "RenderablePanel")

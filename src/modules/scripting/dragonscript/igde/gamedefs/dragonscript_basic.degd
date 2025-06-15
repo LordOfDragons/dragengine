@@ -944,7 +944,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Dra[en]gine Gui Theme' pattern='*.guitheme.xml' default='.guitheme.xml'/>
+				<add name='Dra[en]gine Gui Theme' pattern='*.deguitheme' default='.deguitheme'/>
 			</customPathPattern>
 		</property>
 		<property name='designerSelector'>
@@ -976,7 +976,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Dra[en]gine Gui Theme' pattern='*.guitheme.xml' default='.guitheme.xml'/>
+				<add name='Dra[en]gine Gui Theme' pattern='*.deguitheme' default='.deguitheme'/>
 			</customPathPattern>
 		</property>
 		<property name='designerSelector'>

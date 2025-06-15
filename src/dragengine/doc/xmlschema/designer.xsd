@@ -5,6 +5,7 @@
 		<xs:documentation>
 			<![CDATA[
 			Schema for Drag[en]gine Widget Designer XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:widgetdesigner).
 			]]>
 		</xs:documentation>
 	</xs:annotation>
@@ -20,9 +21,14 @@
 		<xs:annotation>
 			<xs:documentation><![CDATA[
 				Drag[en]gine Widget Designer.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:widgetdesigner).
 				<p>
 				Requires either "type", "extend" or "extendNamed" attribute to be used but
 				not two or more at the same time.
+				</p>
+				<p>
+				It is possible to use the same identifier for "name" and "extendNamed".
+				This will replace the designer with a copy of itself you can then extend.
 				</p>
 			]]></xs:documentation>
 		</xs:annotation>
@@ -110,7 +116,8 @@
 		<xs:attribute name='type' use='optional'>
 			<xs:annotation>
 				<xs:documentation><![CDATA[
-					WIdget designer type name. Types are defined by the game scripts.
+					Widget designer type name. Types are defined by the game scripts.
+					[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:widgetdesigner).
 				]]></xs:documentation>
 			</xs:annotation>
 			<xs:simpleType>
@@ -135,7 +142,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -167,7 +173,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -200,7 +205,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -239,7 +243,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -270,7 +273,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -302,7 +304,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -337,7 +338,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -367,7 +367,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -399,7 +398,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -435,7 +433,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -469,7 +466,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -503,7 +499,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -550,7 +545,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -590,7 +584,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -627,7 +620,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -657,7 +649,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -687,7 +678,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -720,7 +710,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -750,7 +739,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -780,7 +768,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -812,7 +799,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>
@@ -843,7 +829,6 @@
 								For states:
 								</p>
 								<ul>
-								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
 								<li><code>normal</code>: Widget is in normal state.</li>
 								<li><code>disabled</code>: Widget is disabled.</li>
 								<li><code>focused</code>: Widget has focus.</li>

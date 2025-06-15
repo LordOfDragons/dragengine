@@ -5,6 +5,7 @@
 		<xs:documentation>
 			<![CDATA[
 			Schema for Drag[en]gine Border XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:borderfactory).
 			]]>
 		</xs:documentation>
 	</xs:annotation>
@@ -17,6 +18,7 @@
 		<xs:annotation>
 			<xs:documentation><![CDATA[
 				Drag[en]gine Border.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:borderfactory).
 				<p>
 				Requires either "type" or "extend" attribute to be used but not both at the same time.
 				</p>
@@ -68,6 +70,7 @@
 			<xs:annotation>
 				<xs:documentation><![CDATA[
 					Border type name. Types are defined by the game scripts.
+					[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:borderfactory).
 				]]></xs:documentation>
 			</xs:annotation>
 			<xs:simpleType>

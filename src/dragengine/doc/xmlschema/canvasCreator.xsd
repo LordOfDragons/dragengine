@@ -55,6 +55,7 @@
 			<xs:annotation>
 				<xs:documentation><![CDATA[
 					Canvas creator type name. Types are defined by the game scripts.
+					[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:canvascreators).
 				]]></xs:documentation>
 			</xs:annotation>
 			<xs:simpleType>
@@ -172,7 +173,7 @@
 		<xs:attribute name='extend' use='optional'>
 			<xs:annotation>
 				<xs:documentation><![CDATA[
-					Extend named canvas creator.
+					Relative or absolute path to canvas creator to extend (*.deccreator).
 				]]></xs:documentation>
 			</xs:annotation>
 		</xs:attribute>

@@ -380,6 +380,10 @@
 			{
 				"pattern": "**/*.dedesigner",
 				"systemId": "${workspaceFolder}/doc/xmlschema/designer.xsd"
+			},
+			{
+				"pattern": "**/*.deguitheme",
+				"systemId": "${workspaceFolder}/doc/xmlschema/guitheme.xsd"
 			}
 		]
 	}

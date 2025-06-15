@@ -152,12 +152,12 @@
 	
 	<xs:complexType name='parameter_font'>
 		<xs:simpleContent>
-			<xs:annotation>
-				<xs:documentation><![CDATA[
-					Font parameter. Relative or absolute path to font resource to load.
-				]]></xs:documentation>
-			</xs:annotation>
-			<xs:extension base='xs:string'>
+			<xs:extension base='font'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Font parameter. Relative or absolute path to font resource to load.
+					]]></xs:documentation>
+				</xs:annotation>
 				<xs:attribute type='parameter_name' name='parameter' use='required'/>
 			</xs:extension>
 		</xs:simpleContent>

@@ -22,7 +22,7 @@ class GameApp extends BaseGameApp
 	func new()
 		// Path to the GUI Theme file to use. If not set uses BaseGameApp.defaultPathGuiTheme
 		// 
-		//pathDesktopGuiTheme = "/content/ui/main.guitheme.xml"
+		//pathDesktopGuiTheme = "/content/ui/main.deguitheme"
 		
 		
 		// To use translation support create one or more language packs and uncomment the
