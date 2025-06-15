@@ -35,7 +35,7 @@ pin Dragengine.XML
 
 
 /**
- * \brief Load dynamic music from a dynmusic.xml file.
+ * \brief Load dynamic music from a .dedmusic file.
  * 
  */
 class LoadDynamicMusic extends BaseXmlLoader

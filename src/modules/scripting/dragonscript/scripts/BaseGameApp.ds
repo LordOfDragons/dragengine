@@ -336,7 +336,7 @@ class BaseGameApp extends Game
 	/**
 	 * \brief Application settings file path property.
 	 * 
-	 * Default value is "/config/settings.xml". "/config" has to match the "Config Path"
+	 * Default value is "/config/settings.dept". "/config" has to match the "Config Path"
 	 * set in the game project.
 	 */
 	protected var String pathSavedSettings
