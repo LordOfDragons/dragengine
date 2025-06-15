@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<canvasCreator extend='normal.ccreator.xml'>
+<canvasCreator parameter='inactive' extend='normal.deccreator'>
 	<colorMatrix parameter='colorMatrix'>
-		<brightness r='0.05' g='0.05' b='0.05'/>
+		<scale r='0.75' g='0.75' b='0.75' a='1'/>
 	</colorMatrix>
 </canvasCreator>

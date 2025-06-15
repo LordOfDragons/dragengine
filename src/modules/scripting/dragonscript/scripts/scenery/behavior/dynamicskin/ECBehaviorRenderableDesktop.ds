@@ -41,7 +41,7 @@ pin Dragengine.Utils
  * allows to use the full power of the GUI ToolKit including using GuiThemes to create
  * complex content easily.
  * 
- * The default gui theme is "/shareddata/guithemes/modern/modern.guitheme.xml". The default
+ * The default gui theme is "/shareddata/guithemes/modern/modern.deguitheme". The default
  * Desktop designer selector is "RenderableDesktop".
  * 
  * To use this behavior add an ECBehaviorDynamicSkin to the element class before adding this
@@ -76,13 +76,13 @@ pin Dragengine.Utils
  *       
  *       var ECBehaviorRenderableDesktop behavior = ECBehaviorRenderableDesktop.new(this)
  *       behavior.getRenderable().setValue("content1")
- *       behavior.getGuiTheme().setPath("/content/renderable.guitheme.xml")
+ *       behavior.getGuiTheme().setPath("/content/renderable.deguitheme")
  *       behavior.getDesignerSelector().setValue("Desktop.MyElement")
  *       
  *       behavior = ECBehaviorRenderableDesktop.new(this, "renderableDesktop2")
  *       behavior.setBackgroundColor(Color.blue)
  *       behavior.getRenderable().setValue("intensity2")
- *       behavior.getGuiTheme().setPath("/content/renderable.guitheme.xml")
+ *       behavior.getGuiTheme().setPath("/content/renderable.deguitheme")
  *       behavior.getDesignerSelector().setValue("Desktop.MyElement")
  *    end
  * end

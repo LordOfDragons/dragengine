@@ -37,6 +37,8 @@ pin Dragengine.XML
  * 
  * Supports caching state machines to avoid loading the same state machine multiple times.
  * Returned state machine can thus be shared so do not change it.
+ * 
+ * \see https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/stateMachine.xsd
  */
 class LoadStateMachine extends BaseXmlLoader
 	var Dictionary pStateMachines

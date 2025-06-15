@@ -10,479 +10,8 @@
 		</xs:documentation>
 	</xs:annotation>
 	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
 	
-	<!-- definitions shared with parameterTree.xsd . they are not 1-1 copies though. -->
-	
-	<xs:complexType name='string'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set string property. Value is tag text content.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:simpleContent>
-			<xs:extension base='xs:string'/>
-		</xs:simpleContent>
-	</xs:complexType>
-	
-	<xs:complexType name='float'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set floating point property. Value is tag text content.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:simpleContent>
-			<xs:extension base='xs:float'/>
-		</xs:simpleContent>
-	</xs:complexType>
-	
-	<xs:complexType name='integer'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set integer point property. Value is tag text content.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:simpleContent>
-			<xs:extension base='xs:integer'/>
-		</xs:simpleContent>
-	</xs:complexType>
-	
-	<xs:complexType name='boolean'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set boolean point property. Value is tag text content.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:simpleContent>
-			<xs:extension base='xs:boolean'/>
-		</xs:simpleContent>
-	</xs:complexType>
-	
-	<xs:simpleType name='vector_x'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				X component of vector. If not set defaults to 0.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base='xs:float'/>
-	</xs:simpleType>
-	
-	<xs:simpleType name='vector_y'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Y component of vector. If not set defaults to 0.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base='xs:float'/>
-	</xs:simpleType>
-	
-	<xs:simpleType name='vector_z'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Z component of vector. If not set defaults to 0.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base='xs:float'/>
-	</xs:simpleType>
-	
-	<xs:complexType name='vector'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set 3-component floating point vector property.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
-		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
-		<xs:attribute type='vector_z' name='z' use='optional' default='0'/>
-	</xs:complexType>
-	
-	<xs:complexType name='vector2'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set 2-component floating point vector property.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
-		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
-	</xs:complexType>
-	
-	<xs:simpleType name='point_x'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				X component of point. If not set defaults to 0.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base='xs:integer'/>
-	</xs:simpleType>
-	
-	<xs:simpleType name='point_y'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Y component of point. If not set defaults to 0.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base='xs:integer'/>
-	</xs:simpleType>
-	
-	<xs:simpleType name='point_z'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Z component of point. If not set defaults to 0.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base='xs:integer'/>
-	</xs:simpleType>
-	
-	<xs:complexType name='point'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set 2-component integer point property.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
-		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
-	</xs:complexType>
-	
-	<xs:complexType name='point3'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set 3-component integer point property.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
-		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
-		<xs:attribute type='point_z' name='z' use='optional' default='0'/>
-	</xs:complexType>
-	
-	<xs:complexType name='borderSize'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set 4-component integer border size property. Border size defines a border
-				around an area. This can be done either using the <code>all</code> attribute to set all
-				borders to the same value or setting the borders individually using <code>left</code>,
-				<code>top</code>, <code>right</code> and <code>bottom</code>.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:attribute type='xs:integer' name='all' use='optional'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set left, top, right and bottom border to the same value in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='left' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set left border to value in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='top' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set top border to value in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='right' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set right border to value in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='bottom' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set bottom border to value in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-	</xs:complexType>
-	
-	<xs:complexType name='rectArea'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set 4-component integer rectangular area property. Area is define as
-				upper left (inclusive) and lower right (exclusive) corner.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:attribute type='xs:integer' name='x1' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set X coordinate of upper left corner in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='y1' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set Y coordinate of upper left corner in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='x2' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set X coordinate of lower right corner in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='y2' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set Y coordinate of lower right corner in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-	</xs:complexType>
-	
-	<xs:complexType name='floatRectArea'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set 4-component floating point rectangular area property. Area is define as
-				upper left (inclusive) and lower right (exclusive) corner.
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:attribute type='xs:float' name='x1' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set X coordinate of upper left corner in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='y1' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set Y coordinate of upper left corner in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='x2' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set X coordinate of lower right corner in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='y2' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set Y coordinate of lower right corner in pixels.
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-	</xs:complexType>
-	
-	<xs:complexType name='color'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set color property with optional transparency value. Colors can be defined
-				using multiple ways depending what is easier to use for the situation.
-				<p>
-				Define color as floating point components in the range from 0 (black) to 1 (white).
-				For this use the attributes <code>r</code>, <code>g</code>, <code>b</code> and <code>a</code>.
-				</p>
-				<p>
-				Define color as integer components in the range from 0 (black) to 255 (white).
-				For this use the attributes <code>ir</code>, <code>ig</code>, <code>ib</code>, <code>ia</code>.
-				</p>
-				<p>
-				Define color as string hexadecimal value. For this use the attribute <code>hex</code>.
-				</p>
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-		
-		<xs:attribute type='xs:float' name='r' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set red floating point component in the range from 0 (black) to 1 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='g' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set green floating point component in the range from 0 (black) to 1 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='b' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set blue floating point component in the range from 0 (black) to 1 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='a' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set alpha floating point component in the range from 0 (transparent) to 1 (solid).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='ir' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set red integer component in the range from 0 (black) to 255 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='ig' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set green integer component in the range from 0 (black) to 255 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='ib' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set blue integer component in the range from 0 (black) to 255 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='ia' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set alpha integer component in the range from 0 (transparent) to 255 (solid).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute name='hex' use='optional' default='000000'>
-			<xs:simpleType>
-				<xs:restriction base='xs:string'>
-					<xs:annotation>
-						<xs:documentation>
-							<![CDATA[
-							Set color using dexadecimal string in the form <code>RRGGBB</code> or <code>RRGGBBAA</code>
-							where each component is in the range from <code>00</code> to <code>FF</code>. Both upper and
-							lower case letters are supported.
-							]]>
-						</xs:documentation>
-					</xs:annotation>
-					<xs:pattern value='([0-9a-fA-F][0-9a-fA-F]){3,4}'></xs:pattern>
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
-	</xs:complexType>
-	
-	<xs:complexType name='null'>
-		<xs:annotation>
-			<xs:documentation>
-				<![CDATA[
-				Set null property. This tag is typically used to clear a previously set
-				property or to explicitely mark a value as having no value (null value).
-				]]>
-			</xs:documentation>
-		</xs:annotation>
-	</xs:complexType>
 	
 	<xs:complexType name='list'>
 		<xs:annotation>
@@ -726,6 +255,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='string'>
+							<xs:annotation>
+								<xs:documentation>Set string property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -736,6 +268,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='float'>
+							<xs:annotation>
+								<xs:documentation>Set float property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -746,6 +281,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='integer'>
+							<xs:annotation>
+								<xs:documentation>Set integer property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -756,6 +294,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='boolean'>
+							<xs:annotation>
+								<xs:documentation>Set boolean property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -766,6 +307,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='vector'>
+							<xs:annotation>
+								<xs:documentation>Set vector property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -776,6 +320,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='vector2'>
+							<xs:annotation>
+								<xs:documentation>Set vector2 property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -786,6 +333,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='point'>
+							<xs:annotation>
+								<xs:documentation>Set point property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -796,6 +346,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='point3'>
+							<xs:annotation>
+								<xs:documentation>Set point3 property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -806,6 +359,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='borderSize'>
+							<xs:annotation>
+								<xs:documentation>Set border size property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -816,6 +372,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='rectArea'>
+							<xs:annotation>
+								<xs:documentation>Set rectangular area property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -826,6 +385,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='floatRectArea'>
+							<xs:annotation>
+								<xs:documentation>Set float rectangular area property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -836,6 +398,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation>Set color property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>
@@ -846,6 +411,9 @@
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='null'>
+							<xs:annotation>
+								<xs:documentation>Set null property</xs:documentation>
+							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>
 					</xs:complexContent>

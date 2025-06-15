@@ -743,4 +743,212 @@
 			</xs:documentation>
 		</xs:annotation>
 	</xs:complexType>
+	
+	
+	<xs:complexType name='colorMatrix'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Color matrix value. Matrix has 5 columns and 4 rows. The rows represent red,
+				green, blue and alpha color component. The columns represent red, green, blue,
+				alpha and white components. The white component is simply a static value added
+				to the color not linked to the other color components.
+				<pre>
+				[ red.red   | red.green   | red.blue   | red.alpha   | white.red   ]
+				[ green.red | green.green | green.blue | green.alpha | white.green ]
+				[ blue.red  | blue.green  | blue.blue  | blue.alpha  | white.blue  ]
+				[ alpha.red | alpha.green | alpha.blue | alpha.alpha | white.alpha ]
+				</pre>
+				Or in a shortened version:
+				<pre>
+				[ red   | white.red   ]
+				[ green | white.green ]
+				[ blue  | white.blue  ]
+				[ alpha | white.alpha ]
+				</pre>
+				<p>
+				Color matrix is defined by chaining (matrix multiplication) one or more matrices
+				together. The matrices are created using individual child tags indicating what
+				kind of matric to create. If no child tag is present an identity matrix is created.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='translate'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create translation matrix using color value. The color value
+									is used to fill the white column in the matrix.
+									This tag is the same as the <code>brightness</code> tag.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='scale'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create scale matrix using color value. The color value
+									is used to fill the diagonal values in the matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='brightness'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create brightness matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='contrast'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create contrast matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='saturation'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create saturation matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='invertColor'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create invert color matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='custom'>
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							Create custom matrix by defining the content of each row (the red,
+							green, blue and alpha components) as well as the white column.
+							The matrix is initialized as identity matrix with only the defined
+							rows and columns modified.
+						]]></xs:documentation>
+					</xs:annotation>
+					
+					<xs:choice minOccurs='0' maxOccurs='unbounded'>
+						<xs:element name='red'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set the red, green, blue and alpha component of
+												the red matrix row.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name='green'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set the red, green, blue and alpha component of
+												the green matrix row.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name='blue'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set the red, green, blue and alpha component of
+												the blue matrix row.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name='alpha'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set the red, green, blue and alpha component of
+												the alpha matrix row.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name='white'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set white matrix column.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
 </xs:schema>

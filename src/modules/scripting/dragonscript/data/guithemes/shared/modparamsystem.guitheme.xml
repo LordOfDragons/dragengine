@@ -29,7 +29,7 @@
 	-->
 	<designer name='Panel.EMPSystem.Content' type='Widget'>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.ccreator.xml'/>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.deccreator'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
 	</designer>
@@ -39,23 +39,23 @@
 	</designer>
 	
 	<designer name='Panel.EMPSystem.CycleValue' type='Widget'>
-		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.ccreator.xml'/>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.deccreator'/>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.ccreator.xml'/>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.deccreator'/>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
 		</border>
 		<borderSize parameter='normal.padding' left='2' right='2'/>
 		
 		<!--
-		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.ccreator.xml'/>
+		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.deccreator'/>
 		<border parameter='disabled.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='framed/disabled.ccreator.xml'/>
+			<canvasCreator parameter='canvasCreator' extend='framed/disabled.deccreator'/>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
 		</border>
 		-->
 		
 		<border parameter='hover.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='../modern/framed/hover.ccreator.xml'/>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/hover.deccreator'/>
 			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
 		</border>
 	</designer>

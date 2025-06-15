@@ -4,7 +4,6 @@
 	<xs:annotation>
 		<xs:documentation>
 			<![CDATA[
-			<p>
 			Schema for Drag[en]gine Behavior Tree XML files.
 			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behaviortrees).
 			]]>
