@@ -28,12 +28,22 @@
 		
 		<xs:choice minOccurs='0' maxOccurs='unbounded'>
 			<xs:element name='font'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set default font.
+					]]></xs:documentation>
+				</xs:annotation>
 				<xs:complexType>
 					<xs:complexContent>
 						<xs:extension base='font'>
 							<xs:attribute name='for' use='required'>
 								<xs:simpleType>
 									<xs:restriction base='xs:string'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Target to set default font for.
+											]]></xs:documentation>
+										</xs:annotation>
 										<xs:enumeration value='widget'>
 											<xs:annotation>
 												<xs:documentation><![CDATA[
