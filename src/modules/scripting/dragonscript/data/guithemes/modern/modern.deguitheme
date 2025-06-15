@@ -507,17 +507,17 @@
 	
 	
 	
-	<import>../shared/virtualkeyboard.guitheme.xml</import>
-	<import>../shared/console.guitheme.xml</import>
-	<import>../shared/conversation.guitheme.xml</import>
-	<import>../shared/editbindings.guitheme.xml</import>
-	<import>../shared/modparamsystem.guitheme.xml</import>
-	<import>../shared/interactprompt.guitheme.xml</import>
-	<import>../shared/windowlogo.guitheme.xml</import>
-	<import>../shared/interactivemainmenu.guitheme.xml</import>
-	<import>../shared/behaviors.guitheme.xml</import>
-	<import>../shared/paneldebuginformation.guitheme.xml</import>
-	<import>../shared/windowsettings.guitheme.xml</import>
-	<import>../shared/fpsrates.guitheme.xml</import>
-	<import>../shared/modmanagement.guitheme.xml</import>
+	<import>../shared/virtualkeyboard.deguitheme</import>
+	<import>../shared/console.deguitheme</import>
+	<import>../shared/conversation.deguitheme</import>
+	<import>../shared/editbindings.deguitheme</import>
+	<import>../shared/modparamsystem.deguitheme</import>
+	<import>../shared/interactprompt.deguitheme</import>
+	<import>../shared/windowlogo.deguitheme</import>
+	<import>../shared/interactivemainmenu.deguitheme</import>
+	<import>../shared/behaviors.deguitheme</import>
+	<import>../shared/paneldebuginformation.deguitheme</import>
+	<import>../shared/windowsettings.deguitheme</import>
+	<import>../shared/fpsrates.deguitheme</import>
+	<import>../shared/modmanagement.deguitheme</import>
 </guiTheme>
