@@ -51,6 +51,14 @@
 		{
 			"pattern": "**/*.degt",
 			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/guitheme.xsd"
+		},
+		{
+			"pattern": "**/*.decamera",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/camera.xsd"
+		},
+		{
+			"pattern": "**/*.deskinann",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/skinAnnotations.xsd"
 		}
 	]
 }

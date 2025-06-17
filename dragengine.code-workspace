@@ -384,6 +384,14 @@
 			{
 				"pattern": "**/*.degt",
 				"systemId": "${workspaceFolder}/doc/xmlschema/guitheme.xsd"
+			},
+			{
+				"pattern": "**/*.decamera",
+				"systemId": "${workspaceFolder}/doc/xmlschema/camera.xsd"
+			},
+			{
+				"pattern": "**/*.deskinann",
+				"systemId": "${workspaceFolder}/doc/xmlschema/skinAnnotations.xsd"
 			}
 		]
 	}

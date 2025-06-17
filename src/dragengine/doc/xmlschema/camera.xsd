@@ -1,0 +1,229 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Camera files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_camera?s[]=ecbehaviorcamera).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTypes.xsd'/>
+	
+	
+	<xs:complexType name='camera'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Camera.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_camera?s[]=ecbehaviorcamera).
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='fov' type='xs:float' default='90'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set field of view in degrees.
+						<p>
+						Default value is <code>90</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='fovRatio' type='xs:float' default='1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set field of view ratio (height / width).
+						<p>
+						Default value is <code>1</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='imageDistance' type='xs:float' default='0.01'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set camera image distance in meters.
+						<p>
+						Default value is <code>0.01</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='viewDistance' type='xs:float' default='200'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set camera view distance in meters.
+						<p>
+						Default value is <code>200</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='enableHDRR' type='xs:boolean' default='true'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set to enable high definition range rendering (HDRR) if supported.
+						<p>
+						Default value is </code>true</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='exposure' type='xs:float' default='1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set exposure. Higher values brighten, lower value darken.
+						<p>
+						Default value is <code>1</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='lowestIntensity' type='xs:float' default='1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set lowest intensity the camera automatically adapts to.
+						<p>
+						Default value is <code>1</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='highestIntensity' type='xs:float' default='20'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set highest intensity the camera automatically adapts to.
+						<p>
+						Default value is <code>20</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='adaptionTime' type='xs:float' default='0.1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set adaption time in seconds.
+						<p>
+						Default value is <code>0.1</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='enableGI' type='xs:boolean' default='true'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set to enable global illumination (GI) if supported.
+						<p>
+						Default value is </code>true</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='whiteIntensity' type='xs:float' default='3'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set white intensity multiplier. The white intensity is the intensity
+						beyond which colors appear white. The multiplier is applied to the
+						intensity level the camera is currently adapted to. Hence the white
+						intensity varies between <code>lowestIntensity * whiteIntensity</code>
+						and <code>highestIntensity * whiteIntensity</code>.
+						<p>
+						Default value is <code>3</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='bloomIntensity' type='xs:float' default='4'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set bloom intensity multiplier. The bloom intensity is the intensity
+						beyond which colors begin to bleed into the surrounding areas. The
+						multiplier is applied to the intensity level the camera is currently
+						adapted to. Hence the bloom intensity varies between
+						<code>lowestIntensity * bloomIntensity</code>
+						and <code>highestIntensity * bloomIntensity</code>.
+						<p>
+						Default value is <code>4</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='bloomStrength' type='xs:float' default='1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set bloom strength as multiplier of intensity beyond bloom intensity.
+						Basically this means
+						<code>intensity + (intensity - bloomIntensity) * bloomStrength</code>.
+						Larger values cause intensities close to the bloom intensity to produce
+						strong blooming. Smaller values require intensities much higher than the
+						bloom intensity to produce strong blooming.
+						<p>
+						Default value is <code>1</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='bloomBlend' type='xs:float' default='1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set bloom blend as multiplier of intensity beyond bloom intensity.
+						Larger values exaggerate blooming while smaller values tone it down.
+						Basically this means <code>finalBloomIntensity * bloomBlend</code>.
+						This can be used to tune the blooming strength. In particular this can
+						be used to fade in and out blooming for special effects. To disable
+						blooming it is best to set <code>bloomBlend</code> to 0.
+						<p>
+						Default value is <code>1</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='bloomSize' type='xs:float' default='0.25'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Bloom size as percentage of screen width. Basically this indicates
+						the broadness of the bloom intensity blurring relative to the size
+						of the screen.
+						<p>
+						Default value is <code>0.25</code>.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='toneMapCurve' type='curve'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set custom tone mapping curve or empty curve to disable.
+						<p>
+						If enabled make sure to match the curve range to the white intensity.
+						Hence the left end of the curve should be at <code>x = 0</code>
+						coordinate while the right end of the curve should be at
+						<code>x = whiteIntensity</code> coordinate.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name='camera' type='camera'>
+	</xs:element>
+</xs:schema>

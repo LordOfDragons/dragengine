@@ -1225,7 +1225,7 @@ class BaseGameApp extends Game
 	 * end
 	 * \endcode
 	 * 
-	 * See LoadSkinAnnotations.loadFromFiles for details about the *.deskinann files.
+	 * See LoadSkinAnnotations.loadFromFiles for details about the ".deskinann" files.
 	 */
 	protected func SkinAnnotations createSkinAnnotations()
 		return SkinAnnotations.new()

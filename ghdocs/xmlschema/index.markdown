@@ -17,6 +17,8 @@ These are suitable for editors like Visual Studio Code to provide verification a
 
 - [Canvas Creator (*.decc)]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd): Documentation [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:canvascreators)
 
+- [Camera (*.decamera)]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/camera.xsd): Documentation [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_camera?s[]=ecbehaviorcamera)
+
 - [Decoration (*.dedeco)]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/decoration.xsd): Documentation [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:decoration)
 
 - [Element Class (*.deeclass)]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/elementClass.xsd): Documentation [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_elements#xml_element_classes)
@@ -28,6 +30,8 @@ These are suitable for editors like Visual Studio Code to provide verification a
 - [Parameter Tree (*.dept)]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/parameterTree.xsd)
 
 - [Simple Conversation (*.desconvo)]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/simpleConversation.xsd): Documentation [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation)
+
+- [Skin Annotations (*.deskinann)]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/skinAnnotations.xsd)
 
 - [State Machine (*.desm)]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/stateMachine.xsd): Documentation [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:statemachines)
 

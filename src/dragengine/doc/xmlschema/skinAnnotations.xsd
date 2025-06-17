@@ -1,0 +1,484 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Skin Annotation files.
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
+	
+	<xs:simpleType name='annotation_path'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Path to apply the annotation to. If not set the directory this file is located in is used.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='annotation_key'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Key of annotation to add to path.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='list'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set list annotation. Lists can contain all other annotation types in any combination.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string' type='string'/>
+			<xs:element name='float' type='float'/>
+			<xs:element name='integer' type='integer'/>
+			<xs:element name='boolean' type='boolean'/>
+			<xs:element name='vector' type='vector'/>
+			<xs:element name='vector2' type='vector2'/>
+			<xs:element name='point' type='point'/>
+			<xs:element name='point3' type='point3'/>
+			<xs:element name='borderSize' type='borderSize'/>
+			<xs:element name='rectArea' type='rectArea'/>
+			<xs:element name='floatRectArea' type='floatRectArea'/>
+			<xs:element name='color' type='color'/>
+			<xs:element name='null' type='null'/>
+			<xs:element name='list' type='list'/>
+			<xs:element name='map' type='map'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:simpleType name='map_key'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Key of entry. If entry with the same key is present it is overwritten.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='map'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set map annotation. Maps are associative lists storing for each entry a string
+				key and a value which can be any other annotation types.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='string'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='float'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='float'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='integer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='integer'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='boolean'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='boolean'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector2'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector2'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point3'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point3'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='borderSize'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='borderSize'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='rectArea'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='floatRectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='floatRectArea'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='null'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='null'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='list'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='list'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='map'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='map'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name='skinAnnotations'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Annotations for Skin resources.
+				<p>
+				Skin resources store texture properties but no game specific information.
+				Skin annotations allow storing game related properties which are linked to
+				Skin resources without needing special classes.
+				</p>
+				<p>
+				Skin annotations are organized hierarchically by path. Annotations for skins
+				can be attached to directories affecting all skin files underneath, individual
+				skin files and also individual textures inside skin files. Annotations can be
+				either retrieved in best match mode or accumulated mode. In best match mode
+				annotation with longest path (most specific) is used. In accumulated mode all
+				annotations for path are used using best match mode.
+				</p>
+				<p>
+				These are example path that can be used:
+				</p>
+				<ul>
+				<li><code>directory</code>: Applies to all skins in the directory and subdirectories.</li>
+				<li><code>directory/material.deskin</code>: Applies to the skin and all textures inside.</li>
+				<li><code>directory/material.deskin/texture</code>: Applies to only a specific texture inside skin</li>
+				</ul>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='string'>
+							<xs:annotation>
+								<xs:documentation>Set string annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='float'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='float'>
+							<xs:annotation>
+								<xs:documentation>Set float annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='integer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='integer'>
+							<xs:annotation>
+								<xs:documentation>Set integer annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='boolean'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='boolean'>
+							<xs:annotation>
+								<xs:documentation>Set boolean annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector'>
+							<xs:annotation>
+								<xs:documentation>Set vector annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector2'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector2'>
+							<xs:annotation>
+								<xs:documentation>Set vector2 annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point'>
+							<xs:annotation>
+								<xs:documentation>Set point annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point3'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point3'>
+							<xs:annotation>
+								<xs:documentation>Set point3 annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='borderSize'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='borderSize'>
+							<xs:annotation>
+								<xs:documentation>Set border size annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='rectArea'>
+							<xs:annotation>
+								<xs:documentation>Set rectangular area annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='floatRectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='floatRectArea'>
+							<xs:annotation>
+								<xs:documentation>Set float rectangular area annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation>Set color annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='null'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='null'>
+							<xs:annotation>
+								<xs:documentation>Set null annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='list'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='list'>
+							<xs:annotation>
+								<xs:documentation>Set list annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='map'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='map'>
+							<xs:annotation>
+								<xs:documentation>Set map annotation</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='annotation_path' name='path' use='optional'/>
+							<xs:attribute type='annotation_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name='skinAnnotations' type='skinAnnotations'>
+	</xs:element>
+</xs:schema>
