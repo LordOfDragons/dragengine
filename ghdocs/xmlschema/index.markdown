@@ -11,8 +11,8 @@ has_children: false
 Here you can find the XML Schema for XML based Drag[en]gine file formats.
 These are suitable for editors like Visual Studio Code to provide verification and auto completion.
 
-| Type | Pattern | Schema | Documentation |
-| --- | --- | --- | --- |
+| Type | Extension | Schema | Documentation |
+| :--- | :--- | :---: | :---: |
 | Behavior Tree | .debt | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/behaviorTree.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behaviortrees) |
 | Border | .debor | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/border.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:borderfactory) |
 | Canvas Creator | .decc | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:canvascreators) |
@@ -33,6 +33,6 @@ These are helper schemas included in the above schemas containing common types. 
 ```
 
 | Type | Schema |
-| --- | --- |
+| :--- | :---: |
 | Drag[en]gine Data Types | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd) |
 | Drag[en]gine Parameter Types | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/parameterTypes.xsd) |
