@@ -315,7 +315,7 @@
 			<xs:element type='parameter' name='parameter'/>
 			<xs:element type='condition' name='condition'/>
 			<xs:element type='condition_mode' name='conditionMode'/>
-			<xs:group ref='rule'/>
+			<xs:group ref='rule' minOccurs='1' maxOccurs='1'/>
 		</xs:choice>
 		
 		<xs:attribute type='id' name='id' use='optional'/>
@@ -355,7 +355,7 @@
 			<xs:element type='parameter' name='parameter'/>
 			<xs:element type='condition' name='condition'/>
 			<xs:element type='condition_mode' name='conditionMode'/>
-			<xs:group ref='rule'/>
+			<xs:group ref='rule' minOccurs='1' maxOccurs='1'/>
 		</xs:choice>
 		
 		<xs:attribute type='id' name='id' use='optional'/>
@@ -435,7 +435,7 @@
 		</xs:annotation>
 		
 		<xs:choice maxOccurs='unbounded' minOccurs='0'>
-			<xs:group ref='rule'/>
+			<xs:group ref='rule' minOccurs='1' maxOccurs='1'/>
 		</xs:choice>
 	</xs:complexType>
 	

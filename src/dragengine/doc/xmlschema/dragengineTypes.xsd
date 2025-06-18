@@ -105,14 +105,14 @@
 	</xs:simpleType>
 	
 	<xs:attributeGroup name='vector_xy'>
-		<xs:attribute type='vector_x' name='r' use='optional' default='0'/>
-		<xs:attribute type='vector_y' name='g' use='optional' default='0'/>
+		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
 	</xs:attributeGroup>
 	
 	<xs:attributeGroup name='vector_xyz'>
-		<xs:attribute type='vector_x' name='r' use='optional' default='0'/>
-		<xs:attribute type='vector_y' name='g' use='optional' default='0'/>
-		<xs:attribute type='vector_z' name='b' use='optional' default='0'/>
+		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
+		<xs:attribute type='vector_z' name='z' use='optional' default='0'/>
 	</xs:attributeGroup>
 	
 	<xs:complexType name='vector'>
