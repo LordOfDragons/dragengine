@@ -195,7 +195,7 @@ class LoadGuiTheme extends BaseXmlLoader
 	private func GuiTheme loadFromFile(String filename, GuiTheme guitheme)
 		logLoadingFromFile(filename)
 		
-		if not FileSystem.existsFile(filename) and filename.endsWith(".degt")
+		if not FileSystem.existsFile(filename) and filename.endsWith(".guitheme.xml")
 			var String filename2 = filename.substring(0, -13) + ".degt"
 			if FileSystem.existsFile(filename2)
 				printOnConsole(filename, "Renamed to '{}'. Please use new filename.".\

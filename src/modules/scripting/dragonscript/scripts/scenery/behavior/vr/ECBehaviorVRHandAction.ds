@@ -157,8 +157,6 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 				end
 				
 				return runActionShared(context, parameters)
-				
-				return BTResult.success
 			end
 			
 			func void runAction(SMContext context, Dictionary parameters)
