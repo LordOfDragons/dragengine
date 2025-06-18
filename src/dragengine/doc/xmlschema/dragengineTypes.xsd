@@ -1072,4 +1072,22 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+	
+	<xs:complexType name='multilineText' mixed='true'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Multiline text. Can contain <code>&lt;br/&gt;</code> to do line breaks.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='br'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Line break.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
 </xs:schema>
