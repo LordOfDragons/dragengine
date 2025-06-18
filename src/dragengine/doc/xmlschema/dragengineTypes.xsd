@@ -75,7 +75,7 @@
 		<xs:annotation>
 			<xs:documentation>
 				<![CDATA[
-				X component of vector. If not set defaults to 0.
+				X component of vector.
 				]]>
 			</xs:documentation>
 		</xs:annotation>
@@ -86,7 +86,7 @@
 		<xs:annotation>
 			<xs:documentation>
 				<![CDATA[
-				Y component of vector. If not set defaults to 0.
+				Y component of vector.
 				]]>
 			</xs:documentation>
 		</xs:annotation>
@@ -97,12 +97,23 @@
 		<xs:annotation>
 			<xs:documentation>
 				<![CDATA[
-				Z component of vector. If not set defaults to 0.
+				Z component of vector.
 				]]>
 			</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base='xs:float'/>
 	</xs:simpleType>
+	
+	<xs:attributeGroup name='vector_xy'>
+		<xs:attribute type='vector_x' name='r' use='optional' default='0'/>
+		<xs:attribute type='vector_y' name='g' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:attributeGroup name='vector_xyz'>
+		<xs:attribute type='vector_x' name='r' use='optional' default='0'/>
+		<xs:attribute type='vector_y' name='g' use='optional' default='0'/>
+		<xs:attribute type='vector_z' name='b' use='optional' default='0'/>
+	</xs:attributeGroup>
 	
 	<xs:complexType name='vector'>
 		<xs:annotation>
@@ -113,9 +124,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		
-		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
-		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
-		<xs:attribute type='vector_z' name='z' use='optional' default='0'/>
+		<xs:attributeGroup ref='vector_xyz'/>
 	</xs:complexType>
 	
 	
@@ -128,8 +137,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		
-		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
-		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
+		<xs:attributeGroup ref='vector_xy'/>
 	</xs:complexType>
 	
 	
@@ -137,7 +145,7 @@
 		<xs:annotation>
 			<xs:documentation>
 				<![CDATA[
-				X component of point. If not set defaults to 0.
+				X component of point.
 				]]>
 			</xs:documentation>
 		</xs:annotation>
@@ -148,7 +156,7 @@
 		<xs:annotation>
 			<xs:documentation>
 				<![CDATA[
-				Y component of point. If not set defaults to 0.
+				Y component of point.
 				]]>
 			</xs:documentation>
 		</xs:annotation>
@@ -159,12 +167,23 @@
 		<xs:annotation>
 			<xs:documentation>
 				<![CDATA[
-				Z component of point. If not set defaults to 0.
+				Z component of point.
 				]]>
 			</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base='xs:integer'/>
 	</xs:simpleType>
+	
+	<xs:attributeGroup name='point_xy'>
+		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:attributeGroup name='point_xyz'>
+		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
+		<xs:attribute type='point_z' name='z' use='optional' default='0'/>
+	</xs:attributeGroup>
 	
 	<xs:complexType name='point'>
 		<xs:annotation>
@@ -175,8 +194,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		
-		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
-		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
+		<xs:attributeGroup ref='point_xy'/>
 	</xs:complexType>
 	
 	
@@ -189,9 +207,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		
-		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
-		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
-		<xs:attribute type='point_z' name='z' use='optional' default='0'/>
+		<xs:attributeGroup ref='point_xyz'/>
 	</xs:complexType>
 	
 	
@@ -363,6 +379,179 @@
 	</xs:complexType>
 	
 	
+	<xs:simpleType name='color_r'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set red floating point component in the range from 0 (black) to 1 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:float'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='1'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_g'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set green floating point component in the range from 0 (black) to 1 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:float'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='1'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_b'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set blue floating point component in the range from 0 (black) to 1 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:float'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='1'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_a'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set alpha floating point component in the range from 0 (black) to 1 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:float'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='1'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:attributeGroup name='color_rgb'>
+		<xs:attribute name='r' type='color_r' use='optional' default='0'/>
+		<xs:attribute name='g' type='color_g' use='optional' default='0'/>
+		<xs:attribute name='b' type='color_b' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:attributeGroup name='color_rgba'>
+		<xs:attribute name='r' type='color_r' use='optional' default='0'/>
+		<xs:attribute name='g' type='color_g' use='optional' default='0'/>
+		<xs:attribute name='b' type='color_b' use='optional' default='0'/>
+		<xs:attribute name='a' type='color_a' use='optional' default='1'/>
+	</xs:attributeGroup>
+	
+	<xs:simpleType name='color_ir'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set red integer component in the range from 0 (black) to 255 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='255'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_ig'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set green integer component in the range from 0 (black) to 255 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='255'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_ib'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set blue integer component in the range from 0 (black) to 255 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='255'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_ia'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set alpha integer component in the range from 0 (black) to 255 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='255'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:attributeGroup name='color_irgb'>
+		<xs:attribute name='ir' type='color_ir' use='optional' default='0'/>
+		<xs:attribute name='ig' type='color_ig' use='optional' default='0'/>
+		<xs:attribute name='ib' type='color_ib' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:attributeGroup name='color_irgba'>
+		<xs:attribute name='ir' type='color_ir' use='optional' default='0'/>
+		<xs:attribute name='ig' type='color_ig' use='optional' default='0'/>
+		<xs:attribute name='ib' type='color_ib' use='optional' default='0'/>
+		<xs:attribute name='ia' type='color_ia' use='optional' default='255'/>
+	</xs:attributeGroup>
+	
+	<xs:simpleType name='color_hex_rgb'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set color using dexadecimal string in the form <code>RRGGBB</code>
+				where each component is in the range from <code>00</code> to
+				<code>FF</code>. Both upper and lower case letters are supported.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:pattern value='([0-9a-fA-F][0-9a-fA-F]){3}'></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_hex_rgba'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set color using dexadecimal string in the form <code>RRGGBB</code> or
+				<code>RRGGBBAA</code> where each component is in the range from
+				<code>00</code> to <code>FF</code>. Both upper and lower case letters
+				are supported.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:pattern value='([0-9a-fA-F][0-9a-fA-F]){3,4}'></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:attributeGroup name='color_hex'>
+		<xs:attribute name='hex' type='color_hex_rgba' use='optional' default='000000'/>
+	</xs:attributeGroup>
+	
 	<xs:complexType name='color'>
 		<xs:annotation>
 			<xs:documentation>
@@ -384,102 +573,9 @@
 			</xs:documentation>
 		</xs:annotation>
 		
-		<xs:attribute type='xs:float' name='r' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set red floating point component in the range from 0 (black) to 1 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='g' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set green floating point component in the range from 0 (black) to 1 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='b' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set blue floating point component in the range from 0 (black) to 1 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:float' name='a' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set alpha floating point component in the range from 0 (transparent) to 1 (solid).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='ir' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set red integer component in the range from 0 (black) to 255 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='ig' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set green integer component in the range from 0 (black) to 255 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='ib' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set blue integer component in the range from 0 (black) to 255 (white).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute type='xs:integer' name='ia' use='optional' default='0'>
-			<xs:annotation>
-				<xs:documentation>
-					<![CDATA[
-					Set alpha integer component in the range from 0 (transparent) to 255 (solid).
-					]]>
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		
-		<xs:attribute name='hex' use='optional' default='000000'>
-			<xs:simpleType>
-				<xs:restriction base='xs:string'>
-					<xs:annotation>
-						<xs:documentation>
-							<![CDATA[
-							Set color using dexadecimal string in the form <code>RRGGBB</code> or <code>RRGGBBAA</code>
-							where each component is in the range from <code>00</code> to <code>FF</code>. Both upper and
-							lower case letters are supported.
-							]]>
-						</xs:documentation>
-					</xs:annotation>
-					<xs:pattern value='([0-9a-fA-F][0-9a-fA-F]){3,4}'></xs:pattern>
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
+		<xs:attributeGroup ref='color_rgba'/>
+		<xs:attributeGroup ref='color_irgba'/>
+		<xs:attributeGroup ref='color_hex'/>
 	</xs:complexType>
 	
 	
