@@ -401,6 +401,10 @@
 			{
 				"pattern": "**/*.deskinann",
 				"systemId": "${workspaceFolder}/doc/xmlschema/skinAnnotations.xsd"
+			},
+			{
+				"pattern": "**/*.dest",
+				"systemId": "${workspaceFolder}/doc/xmlschema/styledText.xsd"
 			}
 		]
 	}

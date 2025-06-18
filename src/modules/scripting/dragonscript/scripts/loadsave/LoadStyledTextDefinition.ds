@@ -32,7 +32,7 @@ pin Dragengine.XML
 
 
 /**
- * \brief Load styled text document definition.
+ * \brief Load styled text document definition (.dest).
  */
 class LoadStyledTextDefinition extends BaseXmlLoader
 	/** \brief Create loader. */

@@ -26,6 +26,7 @@ These are suitable for editors like Visual Studio Code to provide verification a
 | Skin | .deskin | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/skin.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:editors:skin?s[]=skin) |
 | Skin Annotations | .deskinann | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/skinAnnotations.xsd) |
 | State Machine | .desm | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/stateMachine.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:statemachines) |
+| Styled Text | .dest | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/styledText.xsd) | |
 | Widget Designer | .dedes | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/designer.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:widgetdesigner) |
 
 These are helper schemas included in the above schemas containing common types. They contain only type definitions. You can use them in your own schemas like this:
