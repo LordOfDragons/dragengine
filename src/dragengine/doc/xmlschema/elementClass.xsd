@@ -308,7 +308,7 @@
 					<xs:complexContent>
 						<xs:extension base='vector'>
 							<xs:annotation>
-								<xs:documentation>Set vector property</xs:documentation>
+								<xs:documentation>Set vector property.</xs:documentation>
 							</xs:annotation>
 							<xs:attribute type='property_name' name='name' use='required'/>
 						</xs:extension>

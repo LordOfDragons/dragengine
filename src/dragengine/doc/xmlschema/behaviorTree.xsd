@@ -315,14 +315,7 @@
 			<xs:element type='parameter' name='parameter'/>
 			<xs:element type='condition' name='condition'/>
 			<xs:element type='condition_mode' name='conditionMode'/>
-			<xs:element type='action' name='action'/>
-			<xs:element type='success' name='success'/>
-			<xs:element type='failure' name='failure'/>
-			<xs:element type='running' name='running'/>
-			<xs:element type='yield' name='yield'/>
-			<xs:element type='subtree' name='subtree'/>
-			<xs:element type='sequence' name='sequence'/>
-			<xs:element type='choice' name='choice'/>
+			<xs:group ref='rule'/>
 		</xs:choice>
 		
 		<xs:attribute type='id' name='id' use='optional'/>
@@ -362,14 +355,7 @@
 			<xs:element type='parameter' name='parameter'/>
 			<xs:element type='condition' name='condition'/>
 			<xs:element type='condition_mode' name='conditionMode'/>
-			<xs:element type='action' name='action'/>
-			<xs:element type='success' name='success'/>
-			<xs:element type='failure' name='failure'/>
-			<xs:element type='running' name='running'/>
-			<xs:element type='yield' name='yield'/>
-			<xs:element type='subtree' name='subtree'/>
-			<xs:element type='sequence' name='sequence'/>
-			<xs:element type='choice' name='choice'/>
+			<xs:group ref='rule'/>
 		</xs:choice>
 		
 		<xs:attribute type='id' name='id' use='optional'/>
@@ -387,6 +373,29 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+	
+	<xs:group name='rule'>
+		<xs:choice>
+			<xs:element type='action' name='action'/>
+			<xs:element type='success' name='success'/>
+			<xs:element type='failure' name='failure'/>
+			<xs:element type='running' name='running'/>
+			<xs:element type='yield' name='yield'/>
+			<xs:element type='subtree' name='subtree'/>
+			<xs:element type='sequence' name='sequence'>
+				<xs:unique name='sequence_unique.rule.id'>
+					<xs:selector xpath='action|success|failure|running|yield|subtree|sequence|choice'/>
+					<xs:field xpath='@id'/>
+				</xs:unique>
+			</xs:element>
+			<xs:element type='choice' name='choice'>
+				<xs:unique name='choice_unique.rule.id'>
+					<xs:selector xpath='action|success|failure|running|yield|subtree|sequence|choice'/>
+					<xs:field xpath='@id'/>
+				</xs:unique>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
 	
 	<xs:complexType name='behaviorTree'>
 		<xs:annotation>
@@ -426,17 +435,14 @@
 		</xs:annotation>
 		
 		<xs:choice maxOccurs='unbounded' minOccurs='0'>
-			<xs:element type='action' name='action'/>
-			<xs:element type='success' name='success'/>
-			<xs:element type='failure' name='failure'/>
-			<xs:element type='running' name='running'/>
-			<xs:element type='yield' name='yield'/>
-			<xs:element type='subtree' name='subtree'/>
-			<xs:element type='sequence' name='sequence'/>
-			<xs:element type='choice' name='choice'/>
+			<xs:group ref='rule'/>
 		</xs:choice>
 	</xs:complexType>
 	
 	<xs:element name='behaviorTree' type='behaviorTree'>
+		<xs:unique name='unique.rule.id'>
+			<xs:selector xpath='action|success|failure|running|yield|subtree|sequence|choice'/>
+			<xs:field xpath='@id'/>
+		</xs:unique>
 	</xs:element>
 </xs:schema>

@@ -36,7 +36,7 @@
 		</xs:annotation>
 		
 		<xs:simpleContent>
-			<xs:extension base='xs:float'/>
+			<xs:extension base='xs:decimal'/>
 		</xs:simpleContent>
 	</xs:complexType>
 	
@@ -79,7 +79,7 @@
 				]]>
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base='xs:float'/>
+		<xs:restriction base='xs:decimal'/>
 	</xs:simpleType>
 	
 	<xs:simpleType name='vector_y'>
@@ -90,7 +90,7 @@
 				]]>
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base='xs:float'/>
+		<xs:restriction base='xs:decimal'/>
 	</xs:simpleType>
 	
 	<xs:simpleType name='vector_z'>
@@ -101,7 +101,7 @@
 				]]>
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base='xs:float'/>
+		<xs:restriction base='xs:decimal'/>
 	</xs:simpleType>
 	
 	<xs:attributeGroup name='vector_xy'>
@@ -337,7 +337,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		
-		<xs:attribute type='xs:float' name='x1' use='optional' default='0'>
+		<xs:attribute type='xs:decimal' name='x1' use='optional' default='0'>
 			<xs:annotation>
 				<xs:documentation>
 					<![CDATA[
@@ -347,7 +347,7 @@
 			</xs:annotation>
 		</xs:attribute>
 		
-		<xs:attribute type='xs:float' name='y1' use='optional' default='0'>
+		<xs:attribute type='xs:decimal' name='y1' use='optional' default='0'>
 			<xs:annotation>
 				<xs:documentation>
 					<![CDATA[
@@ -357,7 +357,7 @@
 			</xs:annotation>
 		</xs:attribute>
 		
-		<xs:attribute type='xs:float' name='x2' use='optional' default='0'>
+		<xs:attribute type='xs:decimal' name='x2' use='optional' default='0'>
 			<xs:annotation>
 				<xs:documentation>
 					<![CDATA[
@@ -367,7 +367,7 @@
 			</xs:annotation>
 		</xs:attribute>
 		
-		<xs:attribute type='xs:float' name='y2' use='optional' default='0'>
+		<xs:attribute type='xs:decimal' name='y2' use='optional' default='0'>
 			<xs:annotation>
 				<xs:documentation>
 					<![CDATA[
@@ -387,7 +387,7 @@
 				]]>
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base='xs:float'>
+		<xs:restriction base='xs:decimal'>
 			<xs:minInclusive value='0'/>
 			<xs:maxInclusive value='1'/>
 		</xs:restriction>
@@ -401,7 +401,7 @@
 				]]>
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base='xs:float'>
+		<xs:restriction base='xs:decimal'>
 			<xs:minInclusive value='0'/>
 			<xs:maxInclusive value='1'/>
 		</xs:restriction>
@@ -415,7 +415,7 @@
 				]]>
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base='xs:float'>
+		<xs:restriction base='xs:decimal'>
 			<xs:minInclusive value='0'/>
 			<xs:maxInclusive value='1'/>
 		</xs:restriction>
@@ -429,7 +429,7 @@
 				]]>
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base='xs:float'>
+		<xs:restriction base='xs:decimal'>
 			<xs:minInclusive value='0'/>
 			<xs:maxInclusive value='1'/>
 		</xs:restriction>

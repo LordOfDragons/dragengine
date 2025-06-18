@@ -22,7 +22,7 @@
 		</xs:annotation>
 		
 		<xs:choice minOccurs='0' maxOccurs='unbounded'>
-			<xs:element name='fov' type='xs:float' default='90'>
+			<xs:element name='fov' type='xs:decimal' default='90'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set field of view in degrees.
@@ -33,7 +33,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='fovRatio' type='xs:float' default='1'>
+			<xs:element name='fovRatio' type='xs:decimal' default='1'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set field of view ratio (height / width).
@@ -44,7 +44,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='imageDistance' type='xs:float' default='0.01'>
+			<xs:element name='imageDistance' type='xs:decimal' default='0.01'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set camera image distance in meters.
@@ -55,7 +55,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='viewDistance' type='xs:float' default='200'>
+			<xs:element name='viewDistance' type='xs:decimal' default='200'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set camera view distance in meters.
@@ -77,7 +77,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='exposure' type='xs:float' default='1'>
+			<xs:element name='exposure' type='xs:decimal' default='1'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set exposure. Higher values brighten, lower value darken.
@@ -88,7 +88,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='lowestIntensity' type='xs:float' default='1'>
+			<xs:element name='lowestIntensity' type='xs:decimal' default='1'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set lowest intensity the camera automatically adapts to.
@@ -99,7 +99,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='highestIntensity' type='xs:float' default='20'>
+			<xs:element name='highestIntensity' type='xs:decimal' default='20'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set highest intensity the camera automatically adapts to.
@@ -110,7 +110,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='adaptionTime' type='xs:float' default='0.1'>
+			<xs:element name='adaptionTime' type='xs:decimal' default='0.1'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set adaption time in seconds.
@@ -132,7 +132,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='whiteIntensity' type='xs:float' default='3'>
+			<xs:element name='whiteIntensity' type='xs:decimal' default='3'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set white intensity multiplier. The white intensity is the intensity
@@ -147,7 +147,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='bloomIntensity' type='xs:float' default='4'>
+			<xs:element name='bloomIntensity' type='xs:decimal' default='4'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set bloom intensity multiplier. The bloom intensity is the intensity
@@ -163,7 +163,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='bloomStrength' type='xs:float' default='1'>
+			<xs:element name='bloomStrength' type='xs:decimal' default='1'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set bloom strength as multiplier of intensity beyond bloom intensity.
@@ -179,7 +179,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='bloomBlend' type='xs:float' default='1'>
+			<xs:element name='bloomBlend' type='xs:decimal' default='1'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Set bloom blend as multiplier of intensity beyond bloom intensity.
@@ -195,7 +195,7 @@
 				</xs:annotation>
 			</xs:element>
 			
-			<xs:element name='bloomSize' type='xs:float' default='0.25'>
+			<xs:element name='bloomSize' type='xs:decimal' default='0.25'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[
 						Bloom size as percentage of screen width. Basically this indicates
