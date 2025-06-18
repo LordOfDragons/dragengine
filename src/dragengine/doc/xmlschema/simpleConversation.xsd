@@ -1632,29 +1632,50 @@
 	</xs:complexType>
 	
 	<xs:element name='simpleConversation' type='simpleConversation'>
-		<xs:unique name='unique.snippet.id'>
+		<xs:key name='key.snippet.id'>
 			<xs:selector xpath='snippet'/>
 			<xs:field xpath='@id'/>
-		</xs:unique>
-		<!--
-		<xs:keyref name='keyrefSnippetId' refer='unique.snippet.id'>
+		</xs:key>
+		
+		<xs:keyref name='keyref.snippet.id' refer='key.snippet.id'>
 			<xs:selector xpath='snippet/snippet'/>
 			<xs:field xpath='.'/>
 		</xs:keyref>
-		-->
-		<xs:unique name='unique.camera.id'>
+		
+		<xs:keyref name='keyref.snippet.id2' refer='key.snippet.id'>
+			<xs:selector xpath='snippet/if |
+				snippet/elif |
+				snippet/else |
+				snippet/wait |
+				snippet/option'/>
+			<xs:field xpath='@snippet'/>
+		</xs:keyref>
+		
+		
+		<xs:key name='key.camera.id'>
 			<xs:selector xpath='camera'/>
 			<xs:field xpath='@id'/>
-		</xs:unique>
-		<xs:unique name='unique.actor.id'>
-			<xs:selector xpath='actor'/>
-			<xs:field xpath='@id'/>
-		</xs:unique>
-		<!--
-		<xs:keyref name='keyref.actor.camera' refer='unique.camera.id'>
+		</xs:key>
+		
+		<xs:keyref name='keyref.camera.id' refer='key.camera.id'>
 			<xs:selector xpath='actor/camera'/>
 			<xs:field xpath='.'/>
 		</xs:keyref>
-		-->
+		
+		
+		<xs:key name='key.actor.id'>
+			<xs:selector xpath='actor'/>
+			<xs:field xpath='@id'/>
+		</xs:key>
+		
+		<xs:keyref name='keyref.actor.id' refer='key.actor.id'>
+			<xs:selector xpath='snippet/actor'/>
+			<xs:field xpath='@id'/>
+		</xs:keyref>
+		
+		<xs:keyref name='keyref.actor.id2' refer='key.actor.id'>
+			<xs:selector xpath='snippet/a'/>
+			<xs:field xpath='@i'/>
+		</xs:keyref>
 	</xs:element>
 </xs:schema>

@@ -205,6 +205,10 @@
 			"path": "src/deigde/editors/project"
 		},
 		{
+			"name": "Editor: Skin",
+			"path": "src/deigde/editors/skin"
+		},
+		{
 			"name": "Editor: World",
 			"path": "src/deigde/editors/world"
 		},
@@ -233,6 +237,7 @@
 			"path": "detesting"
 		},
 		{
+			"name": "ghdocs",
 			"path": "ghdocs"
 		}
 	],
@@ -388,6 +393,10 @@
 			{
 				"pattern": "**/*.decamera",
 				"systemId": "${workspaceFolder}/doc/xmlschema/camera.xsd"
+			},
+			{
+				"pattern": "**/*.deskin",
+				"systemId": "${workspaceFolder}/doc/xmlschema/skin.xsd"
 			},
 			{
 				"pattern": "**/*.deskinann",

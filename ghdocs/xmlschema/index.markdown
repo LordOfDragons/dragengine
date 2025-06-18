@@ -23,6 +23,7 @@ These are suitable for editors like Visual Studio Code to provide verification a
 | Mouse Pointer | .demp | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/mousePointer.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:mousepointer) |
 | Parameter Tree | .dept | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/parameterTree.xsd) | |
 | Simple Conversation | .desconvo | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/simpleConversation.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation) |
+| Skin | .deskin | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/skin.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:editors:skin?s[]=skin) |
 | Skin Annotations | .deskinann | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/skinAnnotations.xsd) |
 | State Machine | .desm | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/stateMachine.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:statemachines) |
 | Widget Designer | .dedes | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/designer.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:widgetdesigner) |
