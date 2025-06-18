@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE font SYSTEM 'DragengineFont.dtd'>
 <font>
 	<image src='font_noborder.png'/>
 	<lineHeight>15</lineHeight>
