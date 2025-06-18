@@ -284,9 +284,11 @@
 			<xs:documentation><![CDATA[
 				Drag[en]gine Styled Text.
 				<p>
-				If you use this schema in your own schema use it like this:
-				</p>
+				If you use this schema in your own schema import the scheme like this:
+				<pre>&lt;xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/styledText.xsd'/&gt;</pre>
+				Then use like this to insert the content:
 				<pre>&lt;xs:element name='content' type='styledText'/&gt;</pre>
+				</p>
 			]]></xs:documentation>
 		</xs:annotation>
 		
