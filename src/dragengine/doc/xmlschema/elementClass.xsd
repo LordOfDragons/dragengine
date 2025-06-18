@@ -249,8 +249,8 @@
 		<xs:restriction base='xs:string'/>
 	</xs:simpleType>
 	
-	<xs:complexType name='node_with_properties'>
-		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+	<xs:group name='node_with_properties'>
+		<xs:choice>
 			<xs:element name='string'>
 				<xs:complexType>
 					<xs:complexContent>
@@ -440,7 +440,7 @@
 				</xs:complexType>
 			</xs:element>
 		</xs:choice>
-	</xs:complexType>
+	</xs:group>
 	
 	
 	<xs:complexType name='behavior'>
@@ -465,31 +465,31 @@
 			</xs:documentation>
 		</xs:annotation>
 		
-		<xs:complexContent>
-			<xs:extension base='node_with_properties'>
-				<xs:attribute type='xs:string' name='type' use='required'>
-					<xs:annotation>
-						<xs:documentation>
-							<![CDATA[
-							Type of behavior to add. This is the name of the behavior script class
-							(for example <code>ECBehaviorComponent</code>).
-							]]>
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				
-				<xs:attribute type='xs:string' name='id' use='optional'>
-					<xs:annotation>
-						<xs:documentation>
-							<![CDATA[
-							Identifier unique amongst all behaviors of the same type. If not set empty
-							string is used as identifier.
-							]]>
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-			</xs:extension>
-		</xs:complexContent>
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:group ref='node_with_properties'/>
+		</xs:choice>
+		
+		<xs:attribute type='xs:string' name='type' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Type of behavior to add. This is the name of the behavior script class
+					(for example <code>ECBehaviorComponent</code>).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:string' name='id' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Identifier unique amongst all behaviors of the same type. If not set empty
+					string is used as identifier.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	
 	
@@ -530,37 +530,34 @@
 			</xs:documentation>
 		</xs:annotation>
 		
-		<xs:complexContent>
-			<xs:extension base='node_with_properties'>
-				<xs:choice minOccurs='0' maxOccurs='unbounded'>
-					<xs:element type='behavior' name='behavior'/>
-				</xs:choice>
-				
-				<xs:attribute type='xs:string' name='name' use='required'>
-					<xs:annotation>
-						<xs:documentation>
-							<![CDATA[
-							Name of the element class to define. Name has to be unique across all
-							element class no matter if scripted or XML defined. The name can use any
-							character but it is recommended to use only <code>A-Z</code>,
-							<code>a-z</code>, <code>0-9</code> and <code>_</code>.
-							]]>
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				
-				<xs:attribute type='xs:string' name='class' use='required'>
-					<xs:annotation>
-						<xs:documentation>
-							<![CDATA[
-							Name of the element class to subclass. Name has to be an existing script
-							class or another XML defined class.
-							]]>
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-			</xs:extension>
-		</xs:complexContent>
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:group ref='node_with_properties'/>
+			<xs:element type='behavior' name='behavior'/>
+		</xs:choice>
+		
+		<xs:attribute type='xs:string' name='name' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Name of the element class to define. Name has to be unique across all
+					element class no matter if scripted or XML defined. The name can use any
+					character but it is recommended to use only <code>A-Z</code>,
+					<code>a-z</code>, <code>0-9</code> and <code>_</code>.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:string' name='class' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Name of the element class to subclass. Name has to be an existing script
+					class or another XML defined class.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	
 	<xs:element name='elementClass' type='elementClass'>
