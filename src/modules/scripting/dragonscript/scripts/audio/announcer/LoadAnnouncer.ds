@@ -188,38 +188,40 @@ class LoadAnnouncer extends BaseXmlLoader
 	/** \brief Parse parts tag. */
 	private func void pParseParts(EasyXMLElement root, Announcer announcer, \
 	String baseDirectory, PreloadAnnouncer preloader)
-		var String directoryName = root.getFirstCData()
-		var String pattern = "*.deann"
-		var int idCutOff = 0
+		var String pattern, directoryName = root.getFirstCData()
 		
 		if root.hasAttributeNamed("pattern")
 			pattern = root.getAttributeNamed("pattern")
 		end
-		if root.hasAttributeNamed("idCutOff")
-			idCutOff = root.getAttributeIntNamed("idCutOff")
-			if idCutOff < 0
-				logInvalidAttributeValue(root, "idCutOff", root.getAttributeNamed("idCutOff"))
-				throw EInvalidParam.new()
-			end
-		end
 		
 		directoryName = File.absolutePath(directoryName, baseDirectory).getPath()
 		
-		scanForSoundFiles(root, directoryName, pattern, -idCutOff, baseDirectory, announcer, preloader)
+		if pattern == null
+			pattern = FileSystem.getFileExtensions(ResourceLoaderType.sound).map(block FileExtension each
+				return each.getPatternsString()
+			end).fold(block String last, String each
+				return last + ',' + each
+			end) cast String
+		end
+		
+		scanForSoundFiles(root, directoryName, pattern, baseDirectory, announcer, preloader)
 	end
 	
 	/** Scan directory for materials files. */
-	private func void scanForSoundFiles(EasyXMLElement root, String directoryName, String pattern, \
-	int idCutOff, String baseDirectory, Announcer announcer, PreloadAnnouncer preloader)
+	private func void scanForSoundFiles(EasyXMLElement root, String directoryName, String pattern,\
+	String baseDirectory, Announcer announcer, PreloadAnnouncer preloader)
 		FileSystem.searchFiles(directoryName, true, block String each, FileType type
 			if type == FileType.file
 				var File file = File.absolutePath(each, baseDirectory)
 				var String filetitle = file.getName()
 				
 				if FileSystem.pathMatchesPattern(filetitle, pattern)
-					// convert filename to id. id is lowercase with idCutOff characters cut off from the
-					// end of the file title with separators converted to whitespace
-					var String id = filetitle.substring(0, idCutOff).toLower().replace("_-", ' ')
+					var String id = filetitle
+					var int deli = id.find('.')
+					if deli != -1
+						id = id.substring(0, deli)
+					end
+					id = id.toLower().replace("_-", ' ')
 					
 					loadPartFromFile(root, file.getPath(), id, announcer, preloader)
 				end

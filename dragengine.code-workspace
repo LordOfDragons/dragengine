@@ -405,6 +405,14 @@
 			{
 				"pattern": "**/*.dest",
 				"systemId": "${workspaceFolder}/doc/xmlschema/styledText.xsd"
+			},
+			{
+				"pattern": "**/*.deann",
+				"systemId": "${workspaceFolder}/doc/xmlschema/announcer.xsd"
+			},
+			{
+				"pattern": "**/*.dedm",
+				"systemId": "${workspaceFolder}/doc/xmlschema/dynamicMusic.xsd"
 			}
 		]
 	}

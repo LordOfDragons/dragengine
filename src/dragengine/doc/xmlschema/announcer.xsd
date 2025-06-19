@@ -1,0 +1,98 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Announcer XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_announcer).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	
+	<xs:complexType name='announcer'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Announcer.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_announcer).
+				<p>
+				Announcers parse text to speak matching words with sound files (parts).
+				This allows to easily create announcing systems in games like announcer speakers
+				in facilities, public transportation or even a silly alarm clock.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='parts'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Relative or absolute directory name to scan recursively for sound files to use
+						as announcer parts.
+						<p>
+						For each found sound file a part is added with the sound assigned. The
+						identifier of the part is derived from the sound file by cutting the extension,
+						converting the remainder to lower case and replacing "<code>_</code>" and
+						"<code>-</code>" with a whitespace.
+						</p>
+						<p>
+						Use this method to load a larger number of sound files as announcer parts without
+						the need to manually define parts for each of them. In the majority of situations
+						this is the easier solution since you usually have lots of sound files.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+				
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base='xs:string'>
+							<xs:attribute name='pattern' type='xs:string'>
+								<xs:annotation>
+									<xs:documentation><![CDATA[
+										File pattern of sound files to load. Default is the list of
+										patterns of all supported sound files.
+									]]></xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='part'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Relative or absolute path to sound file to load as part.
+					]]></xs:documentation>
+				</xs:annotation>
+				
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base='xs:string'>
+							<xs:attribute name='id' type='xs:string' use='required'>
+								<xs:annotation>
+									<xs:documentation><![CDATA[
+										Part identifier.
+									]]></xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='synthesizer' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Relative or absolute path to synthesizer resource to use as custom
+						modifier synthesizer.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name='announcer' type='announcer'>
+	</xs:element>
+</xs:schema>

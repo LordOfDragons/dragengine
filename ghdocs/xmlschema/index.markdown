@@ -13,11 +13,13 @@ These are suitable for editors like Visual Studio Code to provide verification a
 
 | Type | Extension | Schema | Documentation |
 | :--- | :--- | :---: | :---: |
+| Announcer | .deann | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/announcer.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_announcer) |
 | Behavior Tree | .debt | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/behaviorTree.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behaviortrees) |
 | Border | .debor | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/border.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:borderfactory) |
 | Canvas Creator | .decc | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:canvascreators) |
 | Camera | .decamera | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/camera.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_camera?s[]=ecbehaviorcamera) |
 | Decoration | .dedeco | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/decoration.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:decoration) |
+| Dynamic Music | .dedm | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/dynamicMusic.xsd) | |
 | Element Class | .deeclass | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/elementClass.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_elements#xml_element_classes) |
 | Gui Theme | .degt | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/guitheme.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:guitheme) |
 | Mouse Pointer | .demp | [XSD]({{ site.baseurl }}/artifacts/xmlschema/dragengine/latest/mousePointer.xsd) | [Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:mousepointer) |
