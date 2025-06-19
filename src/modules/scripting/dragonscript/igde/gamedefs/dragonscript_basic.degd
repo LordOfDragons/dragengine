@@ -944,7 +944,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Dra[en]gine Gui Theme' pattern='*.guitheme.xml' default='.guitheme.xml'/>
+				<add name='Dra[en]gine Gui Theme' pattern='*.degt' default='.degt'/>
 			</customPathPattern>
 		</property>
 		<property name='designerSelector'>
@@ -976,7 +976,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Dra[en]gine Gui Theme' pattern='*.guitheme.xml' default='.guitheme.xml'/>
+				<add name='Dra[en]gine Gui Theme' pattern='*.degt' default='.degt'/>
 			</customPathPattern>
 		</property>
 		<property name='designerSelector'>
@@ -2538,7 +2538,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Announcer Definition' pattern='*.announcer.xml' default='.announcer.xml'/>
+				<add name='Announcer Definition' pattern='*.deann' default='.deann'/>
 			</customPathPattern>
 		</property>
 		<property name='volume'>

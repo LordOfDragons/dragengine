@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE gameDefinition SYSTEM 'DragengineGameDefinition.dtd'>
 <gameDefinition>
 	<identifier>DragonScript InteractiveMainMenu</identifier>
 	<description>Game definition for projects using "Interactive Main Menu" on DragonScript Scripting Module. Add this game definition after "DragonScript Basic" if used. Using "DragonScript Basic" is not a requirement".</description>

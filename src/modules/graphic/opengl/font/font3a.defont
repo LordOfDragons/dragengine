@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE font SYSTEM 'DragengineFont.dtd'>
 <font>
 	<image src='/epsylon/fonts/TEMP/font3a.png'/>
 	<lineHeight>10</lineHeight>

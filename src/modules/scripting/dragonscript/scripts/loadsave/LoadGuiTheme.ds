@@ -36,49 +36,40 @@ pin Dragengine.XML
  * \brief Load gfui theme from xml file.
  */
 class LoadGuiTheme extends BaseXmlLoader
-	/** \brief Dictionary of loaded gui themes. */
-	private var Dictionary pLoadedGuiThemes
-	
-	/** \brief Decoration loader. */
-	private var LoadDecoration pDecorationLoader
-	
-	/** \brief Widget designer loader. */
-	private var LoadWidgetDesigner pWidgetDesignerLoader
-	
-	
+	var Dictionary pLoadedGuiThemes
+	var LoadDecoration pDecorationLoader
+	var LoadWidgetDesigner pWidgetDesignerLoader
 	
 	
 	/** \brief Create loader. */
-	public func new( Console console ) this( console, "LoadGuiTheme" )
+	func new(Console console) this(console, "LoadGuiTheme")
 	end
 	
 	/** \brief Create loader. */
-	public func new( Console console, String name ) super( console, name )
-		this.pLoadedGuiThemes = Dictionary.new()
+	func new(Console console, String name) super(console, name)
+		pLoadedGuiThemes = Dictionary.new()
 	end
 	
 	
-	
 	/** \brief Decoration loader. */
-	public func LoadDecoration getDecorationLoader()
-		return this.pDecorationLoader
+	func LoadDecoration getDecorationLoader()
+		return pDecorationLoader
 	end
 	
 	/** \brief Set decoration loader. */
-	public func void setDecorationLoader( LoadDecoration loader )
-		this.pDecorationLoader = loader
+	func void setDecorationLoader(LoadDecoration loader)
+		pDecorationLoader = loader
 	end
 	
 	/** \brief Widget designer loader. */
-	public func LoadWidgetDesigner getWidgetDesignerLoader()
-		return this.pWidgetDesignerLoader
+	func LoadWidgetDesigner getWidgetDesignerLoader()
+		return pWidgetDesignerLoader
 	end
 	
 	/** \brief Set widget designer loader. */
-	public func void setWidgetDesignerLoader( LoadWidgetDesigner loader )
-		this.pWidgetDesignerLoader = loader
+	func void setWidgetDesignerLoader(LoadWidgetDesigner loader)
+		pWidgetDesignerLoader = loader
 	end
-	
 	
 	
 	/**
@@ -87,54 +78,53 @@ class LoadGuiTheme extends BaseXmlLoader
 	 * Gui themes are shared. Do not modify directly. If you need to modify them create
 	 * first a copy using the copy constructor.
 	 */
-	public func GuiTheme loadFromFile( String filename )
-		var GuiTheme guitheme = this.pLoadedGuiThemes.getAt( filename, null ) cast GuiTheme
+	func GuiTheme loadFromFile(String filename)
+		var GuiTheme guitheme = pLoadedGuiThemes.getAt(filename, null) cast GuiTheme
 		if guitheme != null
 			return guitheme
 		end
 		
-		guitheme = this.loadFromFile( filename, null )
-		this.pLoadedGuiThemes.setAt( filename, guitheme )
+		guitheme = loadFromFile(filename, null)
+		pLoadedGuiThemes.setAt(filename, guitheme)
 		return guitheme
 	end
 	
 	
-	
 	/** \brief Parse gui theme tag. */
-	public func GuiTheme parseGuiTheme( String filename, EasyXMLElement root, \
-	String basePath, GuiTheme guitheme )
+	func GuiTheme parseGuiTheme(String filename, EasyXMLElement root, \
+	String basePath, GuiTheme guitheme)
 		var int e, elementCount = root.getElementCount()
 		var EasyXMLElement element
 		var bool isShared = false
 		var String identifier
 		var String tagName
 		
-		if root.hasAttributeNamed( "extend" )
+		if root.hasAttributeNamed("extend")
 			try
-				guitheme = GuiTheme.new( this.loadFromFile( File.absolutePath( \
-					root.getAttributeNamed( "extend" ), basePath ).getPath() ) )
+				guitheme = GuiTheme.new(loadFromFile(File.absolutePath(\
+					root.getAttributeNamed("extend"), basePath).getPath()))
 				
 			catch Exception e
-				this.printOnConsole( filename, root, "Failed loading gui theme '" \
-					+ root.getAttributeNamed( "extend" ) + "'" )
+				printOnConsole(filename, root, "Failed loading gui theme '" \
+					+ root.getAttributeNamed("extend") + "'")
 				throw
 			end
 			
 			isShared = true
 			
-		elif root.hasAttributeNamed( "extendNamed" )
+		elif root.hasAttributeNamed("extendNamed")
 			if guitheme == null
-				this.printOnConsole( filename, root, "Attribute extendNamed only works on 'import' and 'theme'" )
+				printOnConsole(filename, root, "Attribute extendNamed only works on 'import' and 'theme'")
 				throw EInvalidParam.new()
 			end
 			
 			try
-				guitheme = GuiTheme.new( guitheme.getNamedGuiTheme( \
-					root.getAttributeNamed( "extendNamed" ) ) )
+				guitheme = GuiTheme.new(guitheme.getNamedGuiTheme(\
+					root.getAttributeNamed("extendNamed")))
 				
 			catch Exception e
-				this.printOnConsole( filename, root, "Gui theme named '" \
-					+ root.getAttributeNamed( "extendNamed" ) + "' not found" )
+				printOnConsole(filename, root, "Gui theme named '" \
+					+ root.getAttributeNamed("extendNamed") + "' not found")
 				throw
 			end
 			
@@ -145,54 +135,54 @@ class LoadGuiTheme extends BaseXmlLoader
 		end
 		
 		for e = 0 to elementCount
-			element = root.getElementAt( e )
+			element = root.getElementAt(e)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			if isShared
-				guitheme = GuiTheme.new( guitheme )
+				guitheme = GuiTheme.new(guitheme)
 				isShared = false
 			end
 			
 			tagName = element.getTagName()
 			
-			if tagName.equals( "font" )
-				identifier = element.getAttributeNamed( "for" )
+			if tagName.equals("font")
+				identifier = element.getAttributeNamed("for")
 				
-				if identifier.equals( "widget" )
-					guitheme.setWidgetFont( this.readFont( element, basePath ) )
+				if identifier.equals("widget")
+					guitheme.setWidgetFont(readFont(element, basePath))
 				end
 				
-			elif tagName.equals( "designer" )
+			elif tagName.equals("designer")
 				try
-					guitheme.setWidgetDesigner( element.getAttributeNamed( "name" ), \
-						this.pWidgetDesignerLoader.parseWidgetDesigner( \
-							filename, element, basePath, guitheme ) )
+					guitheme.setWidgetDesigner(element.getAttributeNamed("name"), \
+						pWidgetDesignerLoader.parseWidgetDesigner(\
+							filename, element, basePath, guitheme))
 					
 				catch Exception e
-					this.printOnConsole( filename, element, "Failed loading widget designer '" \
-						+ element.getFirstCData() + "'" )
+					printOnConsole(filename, element, "Failed loading widget designer '" \
+						+ element.getFirstCData() + "'")
 					throw
 				end
 				
-			elif tagName.equals( "theme" )
-				guitheme.setNamedGuiTheme( element.getAttributeNamed( "name" ), \
-					this.parseGuiTheme( filename, element, basePath, guitheme ) )
+			elif tagName.equals("theme")
+				guitheme.setNamedGuiTheme(element.getAttributeNamed("name"), \
+					parseGuiTheme(filename, element, basePath, guitheme))
 				
-			elif tagName.equals( "import" )
+			elif tagName.equals("import")
 				try
-					this.loadFromFile( File.absolutePath( element.getFirstCData(), \
-						basePath ).getPath(), guitheme )
+					loadFromFile(File.absolutePath(element.getFirstCData(), \
+						basePath).getPath(), guitheme)
 					
 				catch Exception e
-					this.printOnConsole( filename, element, "Failed importing gui theme '" \
-						+ element.getFirstCData() + "'" )
+					printOnConsole(filename, element, "Failed importing gui theme '" \
+						+ element.getFirstCData() + "'")
 					throw
 				end
 				
 			else
-				this.logUnknownTag( filename, element )
+				logUnknownTag(filename, element)
 				throw EInvalidParam.new()
 			end
 		end
@@ -201,25 +191,33 @@ class LoadGuiTheme extends BaseXmlLoader
 	end
 	
 	
-	
 	/** \brief Load gui theme from xml file. */
-	private func GuiTheme loadFromFile( String filename, GuiTheme guitheme )
-		this.logLoadingFromFile( filename )
+	private func GuiTheme loadFromFile(String filename, GuiTheme guitheme)
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		if not FileSystem.existsFile(filename) and filename.endsWith(".guitheme.xml")
+			var String filename2 = filename.substring(0, -13) + ".degt"
+			if FileSystem.existsFile(filename2)
+				printOnConsole(filename, "Renamed to '{}'. Please use new filename.".\
+					format(Array.newWith(filename2)))
+				filename = filename2
+			end
+		end
+		
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
-		if not root.getTagName().equals( "guiTheme" )
-			this.logUnknownTag( filename, root )
+		if not root.getTagName().equals("guiTheme")
+			logUnknownTag(filename, root)
 			throw EInvalidParam.new()
 		end
 		
-		var String basePath = File.new( filename ).getParent().getPath()
+		var String basePath = File.new(filename).getParent().getPath()
 		
-		return this.parseGuiTheme( filename, root, basePath, guitheme )
+		return parseGuiTheme(filename, root, basePath, guitheme)
 	end
 end

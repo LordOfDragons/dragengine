@@ -205,6 +205,10 @@
 			"path": "src/deigde/editors/project"
 		},
 		{
+			"name": "Editor: Skin",
+			"path": "src/deigde/editors/skin"
+		},
+		{
 			"name": "Editor: World",
 			"path": "src/deigde/editors/world"
 		},
@@ -233,6 +237,7 @@
 			"path": "detesting"
 		},
 		{
+			"name": "ghdocs",
 			"path": "ghdocs"
 		}
 	],
@@ -339,6 +344,76 @@
 			"MOD_ENTRY_POINT_ATTR"
 		],
 		"git.ignoreLimitWarning": true,
-		"java.configuration.updateBuildConfiguration": "disabled"
+		"java.configuration.updateBuildConfiguration": "disabled",
+		"xml.fileAssociations": [
+			{
+				"pattern": "**/*.desconvo",
+				"systemId": "${workspaceFolder}/doc/xmlschema/simpleConversation.xsd"
+			},
+			{
+				"pattern": "**/*.debt",
+				"systemId": "${workspaceFolder}/doc/xmlschema/behaviorTree.xsd"
+			},
+			{
+				"pattern": "**/*.desm",
+				"systemId": "${workspaceFolder}/doc/xmlschema/stateMachine.xsd"
+			},
+			{
+				"pattern": "**/*.dept",
+				"systemId": "${workspaceFolder}/doc/xmlschema/parameterTree.xsd"
+			},
+			{
+				"pattern": "**/*.deeclass",
+				"systemId": "${workspaceFolder}/doc/xmlschema/elementClass.xsd"
+			},
+			{
+				"pattern": "**/*.decc",
+				"systemId": "${workspaceFolder}/doc/xmlschema/canvasCreator.xsd"
+			},
+			{
+				"pattern": "**/*.debor",
+				"systemId": "${workspaceFolder}/doc/xmlschema/border.xsd"
+			},
+			{
+				"pattern": "**/*.dedeco",
+				"systemId": "${workspaceFolder}/doc/xmlschema/decoration.xsd"
+			},
+			{
+				"pattern": "**/*.demp",
+				"systemId": "${workspaceFolder}/doc/xmlschema/mousePointer.xsd"
+			},
+			{
+				"pattern": "**/*.dedes",
+				"systemId": "${workspaceFolder}/doc/xmlschema/designer.xsd"
+			},
+			{
+				"pattern": "**/*.degt",
+				"systemId": "${workspaceFolder}/doc/xmlschema/guitheme.xsd"
+			},
+			{
+				"pattern": "**/*.decamera",
+				"systemId": "${workspaceFolder}/doc/xmlschema/camera.xsd"
+			},
+			{
+				"pattern": "**/*.deskin",
+				"systemId": "${workspaceFolder}/doc/xmlschema/skin.xsd"
+			},
+			{
+				"pattern": "**/*.deskinann",
+				"systemId": "${workspaceFolder}/doc/xmlschema/skinAnnotations.xsd"
+			},
+			{
+				"pattern": "**/*.dest",
+				"systemId": "${workspaceFolder}/doc/xmlschema/styledText.xsd"
+			},
+			{
+				"pattern": "**/*.deann",
+				"systemId": "${workspaceFolder}/doc/xmlschema/announcer.xsd"
+			},
+			{
+				"pattern": "**/*.dedm",
+				"systemId": "${workspaceFolder}/doc/xmlschema/dynamicMusic.xsd"
+			}
+		]
 	}
 }

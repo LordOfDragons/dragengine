@@ -1,0 +1,1093 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for basic Drag[en]gine XML data types. Contains only type definitions.
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	
+	<xs:complexType name='string'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				String value. Value is tag text content.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:string'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='float'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Floating point value. Value is tag text content.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:decimal'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='integer'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Integer value. Value is tag text content.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:integer'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='boolean'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Bolean point parameter. Value is tag text content.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:boolean'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	
+	<xs:simpleType name='vector_x'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				X component of vector.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='vector_y'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Y component of vector.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='vector_z'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Z component of vector.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'/>
+	</xs:simpleType>
+	
+	<xs:attributeGroup name='vector_xy'>
+		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:attributeGroup name='vector_xyz'>
+		<xs:attribute type='vector_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='vector_y' name='y' use='optional' default='0'/>
+		<xs:attribute type='vector_z' name='z' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:complexType name='vector'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				3-component floating point vector.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attributeGroup ref='vector_xyz'/>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='vector2'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				2-component floating point vector.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attributeGroup ref='vector_xy'/>
+	</xs:complexType>
+	
+	
+	<xs:simpleType name='point_x'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				X component of point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='point_y'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Y component of point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='point_z'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Z component of point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'/>
+	</xs:simpleType>
+	
+	<xs:attributeGroup name='point_xy'>
+		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:attributeGroup name='point_xyz'>
+		<xs:attribute type='point_x' name='x' use='optional' default='0'/>
+		<xs:attribute type='point_y' name='y' use='optional' default='0'/>
+		<xs:attribute type='point_z' name='z' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:complexType name='point'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				2-component integer point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attributeGroup ref='point_xy'/>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='point3'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				3-component integer point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attributeGroup ref='point_xyz'/>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='borderSize'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				4-component integer border size. Border size defines a border around an area.
+				This can be done either using the <code>all</code> attribute to set all borders
+				to the same value or setting the borders individually using <code>left</code>,
+				<code>top</code>, <code>right</code> and <code>bottom</code>.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='xs:integer' name='all' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set left, top, right and bottom border to the same value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='left' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set left border to value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='top' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set top border to value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='right' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set right border to value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='bottom' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set bottom border to value in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='rectArea'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				4-component integer rectangular area. Area is define as upper left (inclusive)
+				and lower right (exclusive) corner.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='xs:integer' name='x1' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set X coordinate of upper left corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='y1' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set Y coordinate of upper left corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='x2' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set X coordinate of lower right corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:integer' name='y2' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set Y coordinate of lower right corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='floatRectArea'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				4-component floating point rectangular area. Area is define as upper left
+				(inclusive) and lower right (exclusive) corner.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute type='xs:decimal' name='x1' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set X coordinate of upper left corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:decimal' name='y1' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set Y coordinate of upper left corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:decimal' name='x2' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set X coordinate of lower right corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:decimal' name='y2' use='optional' default='0'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Set Y coordinate of lower right corner in pixels.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:simpleType name='color_r'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set red floating point component in the range from 0 (black) to 1 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='1'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_g'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set green floating point component in the range from 0 (black) to 1 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='1'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_b'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set blue floating point component in the range from 0 (black) to 1 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='1'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_a'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set alpha floating point component in the range from 0 (black) to 1 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='1'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:attributeGroup name='color_rgb'>
+		<xs:attribute name='r' type='color_r' use='optional' default='0'/>
+		<xs:attribute name='g' type='color_g' use='optional' default='0'/>
+		<xs:attribute name='b' type='color_b' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:attributeGroup name='color_rgba'>
+		<xs:attribute name='r' type='color_r' use='optional' default='0'/>
+		<xs:attribute name='g' type='color_g' use='optional' default='0'/>
+		<xs:attribute name='b' type='color_b' use='optional' default='0'/>
+		<xs:attribute name='a' type='color_a' use='optional' default='1'/>
+	</xs:attributeGroup>
+	
+	<xs:simpleType name='color_ir'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set red integer component in the range from 0 (black) to 255 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='255'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_ig'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set green integer component in the range from 0 (black) to 255 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='255'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_ib'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set blue integer component in the range from 0 (black) to 255 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='255'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_ia'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set alpha integer component in the range from 0 (black) to 255 (white).
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:integer'>
+			<xs:minInclusive value='0'/>
+			<xs:maxInclusive value='255'/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:attributeGroup name='color_irgb'>
+		<xs:attribute name='ir' type='color_ir' use='optional' default='0'/>
+		<xs:attribute name='ig' type='color_ig' use='optional' default='0'/>
+		<xs:attribute name='ib' type='color_ib' use='optional' default='0'/>
+	</xs:attributeGroup>
+	
+	<xs:attributeGroup name='color_irgba'>
+		<xs:attribute name='ir' type='color_ir' use='optional' default='0'/>
+		<xs:attribute name='ig' type='color_ig' use='optional' default='0'/>
+		<xs:attribute name='ib' type='color_ib' use='optional' default='0'/>
+		<xs:attribute name='ia' type='color_ia' use='optional' default='255'/>
+	</xs:attributeGroup>
+	
+	<xs:simpleType name='color_hex_rgb'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set color using dexadecimal string in the form <code>RRGGBB</code>
+				where each component is in the range from <code>00</code> to
+				<code>FF</code>. Both upper and lower case letters are supported.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:pattern value='([0-9a-fA-F][0-9a-fA-F]){3}'></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='color_hex_rgba'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set color using dexadecimal string in the form <code>RRGGBB</code> or
+				<code>RRGGBBAA</code> where each component is in the range from
+				<code>00</code> to <code>FF</code>. Both upper and lower case letters
+				are supported.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:pattern value='([0-9a-fA-F][0-9a-fA-F]){3,4}'></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:attributeGroup name='color_hex'>
+		<xs:attribute name='hex' type='color_hex_rgba' use='optional' default='000000'/>
+	</xs:attributeGroup>
+	
+	<xs:complexType name='color'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Color with optional transparency value. Colors can be defined using multiple ways
+				depending what is easier to use for the situation.
+				<p>
+				Define color as floating point components in the range from 0 (black) to 1 (white).
+				For this use the attributes <code>r</code>, <code>g</code>, <code>b</code> and <code>a</code>.
+				</p>
+				<p>
+				Define color as integer components in the range from 0 (black) to 255 (white).
+				For this use the attributes <code>ir</code>, <code>ig</code>, <code>ib</code>, <code>ia</code>.
+				</p>
+				<p>
+				Define color as string hexadecimal value. For this use the attribute <code>hex</code>.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:attributeGroup ref='color_rgba'/>
+		<xs:attributeGroup ref='color_irgba'/>
+		<xs:attributeGroup ref='color_hex'/>
+	</xs:complexType>
+	
+	
+	<xs:simpleType name='curve_interpolation' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set curve interpolation mode.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='constant'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Constant interpolation. Control points composes of a position only.
+						Curve keeps same Y coordinate until the X coordinate of the next
+						control point is reached then jumps to the new Y coordinate.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='linear'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Linear interpolation. Control points composes of a position only.
+						Curves is piecewise linear between control points.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='bezier'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Bezier interpolation. Control points composes of a position and two
+						handles with the curve smoothly interpolated between control points.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='curve_point'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Curve curve control point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='coordinates' type='vector2'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Set control point position as 2-component floating point vector.
+						<p>
+						If not set defaults to 0-vector.
+						</p>
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='handle1' type='vector2'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Set control point left side handle as 2-component floating point vector.
+						This is the handle controling how the curve flows into the control point
+						from the direction of the previous one.
+						<p>
+						Only used for <code>bezier</code> type <code>interpolation</code>.
+						</p>
+						<p>
+						If not set defaults to the value of <code>coordinates</code>.
+						</p>
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='handle2' type='vector2'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Set control point right side handle as 2-component floating point vector.
+						This is the handle controling how the curve flows out of the control
+						point towards the next control point.
+						<p>
+						Only used for <code>bezier</code> type <code>interpolation</code>.
+						</p>
+						<p>
+						If not set defaults to the value of <code>coordinates</code>.
+						</p>
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name='curve'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				2-dimensional curve. Curves compose of a series of control points. Control points
+				composes of a position and two handles. The handles are only used if
+				<code>bezier</code> interpolation is used. With <code>constant</code> the same
+				value is used from the starting coordinates up to but excluding the coordinates
+				of the next point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='interpolation' type='curve_interpolation'/>
+			<xs:element name='point' type='curve_point'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<xs:simpleType name='curve3d_interpolation' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set 3d curve interpolation mode.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='constant'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Constant interpolation. Control points composes of a position only.
+						Curve evaluates only to the last passed through control point.
+						This is best used for situations where objects are only supposed to
+						be placed in very specific locations across the curve. Moving over
+						a control point teleports to the just passed control point position.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='linear'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Linear interpolation. Control points composes of a position only.
+						Curves is piecewise linear between control points.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='bezier'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Bezier interpolation. Control points composes of a position and two
+						handles with the curve smoothly interpolated between control points.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='curve3d_point'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Curve 3d curve control point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='coordinates' type='vector'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Set control point position as 3-component floating point vector.
+						<p>
+						If not set defaults to 0-vector.
+						</p>
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='handle1' type='vector'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Set control point left side handle as 3-component floating point vector.
+						This is the handle controling how the curve flows into the control point
+						from the direction of the previous one.
+						<p>
+						Only used for <code>bezier</code> type <code>interpolation</code>.
+						</p>
+						<p>
+						If not set defaults to the value of <code>coordinates</code>.
+						</p>
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='handle2' type='vector'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Set control point right side handle as 3-component floating point vector.
+						This is the handle controling how the curve flows out of the control
+						point towards the next control point.
+						<p>
+						Only used for <code>bezier</code> type <code>interpolation</code>.
+						</p>
+						<p>
+						If not set defaults to the value of <code>coordinates</code>.
+						</p>
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name='curve3d'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				3-dimensional curve. Curves compose of a series of control points. Control points
+				composes of a position and two handles. The handles are only used if
+				<code>bezier</code> interpolation is used. With <code>constant</code> the same
+				value is used from the starting coordinates up to but excluding the coordinates
+				of the next point.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='interpolation' type='curve3d_interpolation'/>
+			<xs:element name='point' type='curve3d_point'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='null'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Null value. This tag is typically used to clear a previously set value or to
+				explicitely mark a value as having no value.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='colorMatrix'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Color matrix value. Matrix has 5 columns and 4 rows. The rows represent red,
+				green, blue and alpha color component. The columns represent red, green, blue,
+				alpha and white components. The white component is simply a static value added
+				to the color not linked to the other color components.
+				<pre>
+				[ red.red   | red.green   | red.blue   | red.alpha   | white.red   ]
+				[ green.red | green.green | green.blue | green.alpha | white.green ]
+				[ blue.red  | blue.green  | blue.blue  | blue.alpha  | white.blue  ]
+				[ alpha.red | alpha.green | alpha.blue | alpha.alpha | white.alpha ]
+				</pre>
+				Or in a shortened version:
+				<pre>
+				[ red   | white.red   ]
+				[ green | white.green ]
+				[ blue  | white.blue  ]
+				[ alpha | white.alpha ]
+				</pre>
+				<p>
+				Color matrix is defined by chaining (matrix multiplication) one or more matrices
+				together. The matrices are created using individual child tags indicating what
+				kind of matric to create. If no child tag is present an identity matrix is created.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='translate'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create translation matrix using color value. The color value
+									is used to fill the white column in the matrix.
+									This tag is the same as the <code>brightness</code> tag.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='scale'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create scale matrix using color value. The color value
+									is used to fill the diagonal values in the matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='brightness'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create brightness matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='contrast'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create contrast matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='saturation'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create saturation matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='invertColor'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Create invert color matrix.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='custom'>
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							Create custom matrix by defining the content of each row (the red,
+							green, blue and alpha components) as well as the white column.
+							The matrix is initialized as identity matrix with only the defined
+							rows and columns modified.
+						]]></xs:documentation>
+					</xs:annotation>
+					
+					<xs:choice minOccurs='0' maxOccurs='unbounded'>
+						<xs:element name='red'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set the red, green, blue and alpha component of
+												the red matrix row.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name='green'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set the red, green, blue and alpha component of
+												the green matrix row.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name='blue'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set the red, green, blue and alpha component of
+												the blue matrix row.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name='alpha'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set the red, green, blue and alpha component of
+												the alpha matrix row.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name='white'>
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base='color'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Set white matrix column.
+											]]></xs:documentation>
+										</xs:annotation>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='font'>
+		<xs:simpleContent>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Font. Relative or absolute path to font resource to load.
+				]]></xs:documentation>
+			</xs:annotation>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='size' use='required'>
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							Font size in pixels (line height).
+						]]></xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base='xs:integer'>
+							<xs:minInclusive value='1'/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='multilineText' mixed='true'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Multiline text. Can contain <code>&lt;br/&gt;</code> to do line breaks.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='br'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Line break.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>

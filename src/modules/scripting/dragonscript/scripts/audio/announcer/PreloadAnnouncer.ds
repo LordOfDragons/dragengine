@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Audio.Announcer
 
 pin Dragengine.Preloading
@@ -31,61 +30,51 @@ pin Dragengine.Scenery
 pin Dragengine.Utils
 
 
-
 /**
  * \brief Preload announcer.
  * 
- * Preloads sound files and finishes the announcer once all resources are loaded.
- * To use create preloader and add one or more listeners to them. Once ready to
- * preload call startPreloading().
- * 
+ * Preloads sound files and finishes the announcer once all resources are loaded. To use create
+ * preloader and add one or more listeners to them. Once ready to preload call startPreloading().
  */
 class PreloadAnnouncer extends Preloader
 	/** \brief Preload part sound listener. */
-	public class PartSoundFinishedListener extends ResourceFinishedListener
-		/** \brief Part. */
-		private var AnnouncerPart pPart
+	class PartSoundFinishedListener extends ResourceFinishedListener
+		var AnnouncerPart pPart
 		
 		/** \brief Create listener. */
-		public func new( PreloadAnnouncer preloader, AnnouncerPart part ) super( preloader )
-			this.pPart = part
+		func new(PreloadAnnouncer preloader, AnnouncerPart part) super(preloader)
+			pPart = part
 		end
 		
-		/** \brief Resource finished loading. */
-		public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
-			this.pPart.setSound( resource cast Sound )
-			super.finishedLoading( path, resourceType, resource )
+		func void finishedLoading(String path, ResourceLoaderType resourceType, Object resource)
+			pPart.setSound(resource cast Sound)
+			super.finishedLoading(path, resourceType, resource)
 		end
 	end
 	
 	
-	
-	/** \brief Dynamic sound to preload. */
-	private var Announcer pAnnouncer
-	
+	var Announcer pAnnouncer
 	
 	
 	/** \brief Create preloader. */
-	public func new( Announcer announcer, PreloadCounter parentCounter ) super( parentCounter )
+	func new(Announcer announcer, PreloadCounter parentCounter) super(parentCounter)
 		if announcer == null
 			throw EInvalidParam.new()
 		end
-		this.pAnnouncer = announcer
+		pAnnouncer = announcer
 	end
 	
 	
-	
-	/** \brief Dynamic sound to preload. */
-	public func Announcer getAnnouncer()
-		return this.pAnnouncer
+	/** \brief Announcer to preload. */
+	func Announcer getAnnouncer()
+		return pAnnouncer
 	end
-	
 	
 	
 	/** \brief Finish preloading. */
-	public func void finishPreloading()
-		if this.getSuccess()
-			this.pAnnouncer.updateSpeaker()
+	func void finishPreloading()
+		if getSuccess()
+			pAnnouncer.updateSpeaker()
 		end
 	end
 end

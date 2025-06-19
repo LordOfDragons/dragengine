@@ -18,7 +18,7 @@
 	Set by default to BaseGameApp.DEFAULT_GUITHEME
 	-->
 	<!--
-	<string path='pathDesktopGuiTheme'>/shareddata/guithemes/modern/modern.guitheme.xml</string>
+	<string path='pathDesktopGuiTheme'>/shareddata/guithemes/modern/modern.degt</string>
 	-->
 	
 	

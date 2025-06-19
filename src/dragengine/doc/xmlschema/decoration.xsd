@@ -1,0 +1,131 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Decoration XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:decoration).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTypes.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd'/>
+	
+	
+	<xs:complexType name='decoration'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Decoration.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:decoration).
+				<p>
+				Requires either "type" or "extend" attribute to be used but not both at the same time.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string' type='parameter_string'/>
+			<xs:element name='float' type='parameter_float'/>
+			<xs:element name='integer' type='parameter_integer'/>
+			<xs:element name='boolean' type='parameter_boolean'/>
+			<xs:element name='point' type='parameter_point'/>
+			<xs:element name='borderSize' type='parameter_borderSize'/>
+			<xs:element name='color' type='parameter_color'/>
+			<xs:element name='null' type='parameter_null'/>
+			<xs:element name='colorMatrix' type='parameter_colorMatrix'/>
+			<xs:element name='image' type='parameter_image'/>
+			<xs:element name='video' type='parameter_video'/>
+			<xs:element name='font' type='parameter_font'/>
+			
+			<xs:element name='canvasCreator'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='canvasCreator'>
+							<xs:annotation>
+								<xs:documentation>Canvas creator parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='type' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Decoration type name. Types are defined by the game scripts.
+					[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:decoration).
+				]]></xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:enumeration value='Default'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Default decoration. Typically used to explicitely define an empty decoration.
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Simple'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Bevelled border around a window with subtle 3D effect and caption.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>active.title.textColor</code>(color): Color for active window title text.</li>
+								<li><code>active.title.font</code>(font): Font for active window title text.</li>
+								<li><code>inactive.title.textColor</code>(color): Color for inactive window title text.</li>
+								<li><code>inactive.title.font</code>(font): Font for inactive window title text.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='CanvasCreator'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Bevelled border around a window with subtle 3D effect and caption.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>decorationSize</code>(borderSize): Size of decoration in pixels.</li>
+								<li><code>active.canvas</code>(canvasCreator): Canvas creator to use for active window.</li>
+								<li><code>active.title.textColor</code>(color): Color for active window title text.</li>
+								<li><code>active.title.font</code>(font): Font for active window title text.</li>
+								<li><code>inactive.canvas</code>(canvasCreator): Canvas creator to use for inactive window.</li>
+								<li><code>inactive.title.textColor</code>(color): Color for inactive window title text.</li>
+								<li><code>inactive.title.font</code>(font): Font for inactive window title text.</li>
+								<li><code>imageButtonCloseNormal</code>(image): Close button image in normal state.</li>
+								<li><code>imageButtonCloseHover</code>(image): Close button image in hover state.</li>
+								<li><code>imageButtonClosePressed</code>(image): Close button image in pressed state.</li>
+								<li><code>imageButtonMaximizeNormal</code>(image): Maximize button image in normal state.</li>
+								<li><code>imageButtonMaximizeHover</code>(image): Maximize button image in hover state.</li>
+								<li><code>imageButtonMaximizePressed</code>(image): Maximize button image in pressed state.</li>
+								<li><code>imageButtonMinimizeNormal</code>(image): Minimize button image in normal state.</li>
+								<li><code>imageButtonMinimizeHover</code>(image): Minimize button image in hover state.</li>
+								<li><code>imageButtonMinimizePressed</code>(image): Minimize button image in pressed state.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		
+		<xs:attribute name='extend' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Relative or absolute path to decoration to extend (*.dedecoration).
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:element name='decoration' type='decoration'>
+	</xs:element>
+</xs:schema>

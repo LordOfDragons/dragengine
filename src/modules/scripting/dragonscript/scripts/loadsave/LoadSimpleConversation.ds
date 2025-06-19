@@ -35,6 +35,7 @@ pin Dragengine.Scenery
  * \version 1.25
  * \see SimpleConversation
  * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation
+ * \see https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/simpleConversation.xsd
  */
 class LoadSimpleConversation extends BaseXmlLoader
 	var Dictionary pConversations

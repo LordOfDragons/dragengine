@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <guiTheme>
 	<designer name='WindowVirtualKeyboard' type='Window'>
-		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.ccreator.xml'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0' g='0' b='0' a='0.65'/>
 			</colorMatrix>
 		</canvasCreator>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.ccreator.xml'>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.decc'>
 				<colorMatrix parameter='colorMatrix'>
 					<scale r='0.75' g='0.75' b='0.75' a='0.85'/>
 				</colorMatrix>
@@ -18,12 +18,12 @@
 	</designer>
 	
 	<designer name='Label.WindowVirtualKeyboard.Key' type='Label'>
-		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.ccreator.xml'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0.5' g='0.5' b='0.5'/>
 			</colorMatrix>
 		</canvasCreator>
-		<canvasCreator parameter='hover.canvas' extend='../modern/framed/background.ccreator.xml'>
+		<canvasCreator parameter='hover.canvas' extend='../modern/framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0.5' g='1' b='1'/>
 			</colorMatrix>
@@ -34,12 +34,12 @@
 	</designer>
 	
 	<designer name='Image.WindowVirtualKeyboard.Key' type='Image'>
-		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.ccreator.xml'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0.5' g='0.5' b='0.5'/>
 			</colorMatrix>
 		</canvasCreator>
-		<canvasCreator parameter='hover.canvas' extend='../modern/framed/background.ccreator.xml'>
+		<canvasCreator parameter='hover.canvas' extend='../modern/framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0.5' g='1' b='1'/>
 			</colorMatrix>

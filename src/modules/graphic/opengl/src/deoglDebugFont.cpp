@@ -87,7 +87,7 @@ void deoglDebugFont::pBuildGlyphs(){
 	float factorU, factorV, offsetU, offsetV;
 	int i;
 	
-	// reg-exp replace .font.xml :
+	// reg-exp replace .defont :
 	// search: <glyph code='([0-9]+)' u='([0-9]+)' v='([0-9]+)' width='([0-9]+)' bearing='([0-9]+)' advance='([0-9]+)'/>
 	// replace: { \2, \3, \6 }, /* glyph \1 */
 #if 0

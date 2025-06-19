@@ -1,0 +1,864 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Widget Designer XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:widgetdesigner).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTypes.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/border.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/decoration.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/mousePointer.xsd'/>
+	
+	
+	<xs:complexType name='designer'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Widget Designer.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:widgetdesigner).
+				<p>
+				Requires either "type", "extend" or "extendNamed" attribute to be used but
+				not two or more at the same time.
+				</p>
+				<p>
+				It is possible to use the same identifier for "name" and "extendNamed".
+				This will replace the designer with a copy of itself you can then extend.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string' type='parameter_string'/>
+			<xs:element name='float' type='parameter_float'/>
+			<xs:element name='integer' type='parameter_integer'/>
+			<xs:element name='boolean' type='parameter_boolean'/>
+			<xs:element name='point' type='parameter_point'/>
+			<xs:element name='borderSize' type='parameter_borderSize'/>
+			<xs:element name='color' type='parameter_color'/>
+			<xs:element name='null' type='parameter_null'/>
+			<xs:element name='colorMatrix' type='parameter_colorMatrix'/>
+			<xs:element name='image' type='parameter_image'/>
+			<xs:element name='video' type='parameter_video'/>
+			<xs:element name='font' type='parameter_font'/>
+			
+			<xs:element name='canvasCreator'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='canvasCreator'>
+							<xs:annotation>
+								<xs:documentation>Canvas creator parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='border'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='border'>
+							<xs:annotation>
+								<xs:documentation>Border parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='decoration'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='decoration'>
+							<xs:annotation>
+								<xs:documentation>Decoration parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='mousePointer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='mousePointer'>
+							<xs:annotation>
+								<xs:documentation>Mouse pointer parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='designer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='designer'>
+							<xs:annotation>
+								<xs:documentation>Widget designer parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='type' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Widget designer type name. Types are defined by the game scripts.
+					[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:widgetdesigner).
+				]]></xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:enumeration value='Button'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Button.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								<li><code>pressed</code>: Button is in pressed state.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ButtonWidget'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Button child. Supports tracking the states of parent button.
+								Otherwise the same as <code>button</code>.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								<li><code>pressed</code>: Button is in pressed state.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='CheckBox'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								CheckBox.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.imageBox</code>(image): Image to use for check box.</li>
+								<li><code>{state}.imageCheck</code>(image): Image to use for check mark.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								<li><code>pressed</code>: Button is in pressed state.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ComboBox'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								ComboBox.
+								</p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.imageBox</code>(image): Image to use for check box.</li>
+								<li><code>{state}.imageCheck</code>(image): Image to use for check mark.</li>
+								<li><code>buttonDropDownNormal</code>(canvasCreator): Canvas creator for drop down button in normal state.</li>
+								<li><code>buttonDropDownDroppedDown</code>(canvasCreator): Canvas creator for drop down button in dropped down state.</li>
+								<li><code>buttonDropDownDisabled</code>(canvasCreator): Canvas creator for drop down button in disabled state.</li>
+								<li><code>buttonDropDownHover</code>(canvasCreator): Canvas creator for drop down button in hover state.</li>
+								<li><code>imageDropDownNormal</code>(image): Image to use for drop down button in normal state.</li>
+								<li><code>imageDropDownHover</code>(image): Image to use for drop down button in dropped down state.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								<li><code>pressed</code>: Button is in pressed state.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Desktop'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Desktop.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Image'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								DisplayImage.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.imageColorTransform</code>(colorMatrix): Color transform matrix to apply to image.</li>
+								<li><code>{state}.image</code>(image): Use image instead of image set in the widget.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Label'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Label.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.alignment</code>(string): Alignment to use.
+									Value is a comma separated list of up to two identifiers,
+									one from <code>left</code>, <code>center</code>,
+									<code>right</code> (vertical) and one from <code>top</code>,
+									<code>middle</code>, <code>bottom</code> (horizontal).</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ListBox'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								ListBox.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='OptionBox'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								OptionBox.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.imageBox</code>(image): Image to use for option box.</li>
+								<li><code>{state}.imageSelect</code>(image): Image to use for option mark.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								<li><code>pressed</code>: Button is in pressed state.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='PlayerChoiceEntry'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								PlayerChoiceEntry.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.alignment</code>(string): Alignment to use.
+									Value is a comma separated list of up to two identifiers,
+									one from <code>left</code>, <code>center</code>,
+									<code>right</code> (vertical) and one from <code>top</code>,
+									<code>middle</code>, <code>bottom</code> (horizontal).</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ProgressBar'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								ProgressBar.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.showPercentage</code>(boolean): Show percentage text.</li>
+								<li><code>{state}.invertColorOverBar</code>(boolean): Invert percentage
+									text color for the text portion overlapping the bar.</li>
+								<li><code>bar</code>(canvasCreator): Canvas creator to use for the bar.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ProgressGauge'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								ProgressGauge.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.showPercentage</code>(boolean): Show percentage text.</li>
+								<li><code>{state}.blendWidth</code>(boolean): Blend width of gauge bar.</li>
+								<li><code>{state}.gauge</code>(canvasCreator): Canvas creator to use for the gauge.</li>
+								<li><code>{state}.blend</code>(canvasCreator): Canvas creator to use for the blend.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ScrollBar'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								ScrollBar.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>canvasFrame</code>(canvasCreator): Canvas creator to use for widget frame.</li>
+								<li><code>canvasKnob</code>(canvasCreator): Canvas creator to use for scroll knob.</li>
+								<li><code>canvasKnobHover</code>(canvasCreator): Canvas creator to use for scroll knob in hover state.</li>
+								<li><code>size</code>(integer): Width of scroll bar in pixels (height for horizontal bar).</li>
+								<li><code>paddingKnobFrame</code>(borderSize): Border size of frame around knob.</li>
+								<li><code>buttonUp</code>(designer): Widget designer to use for up button.</li>
+								<li><code>buttonDown</code>(designer): Widget designer to use for down button.</li>
+								<li><code>buttonLeft</code>(designer): Widget designer to use for left button.</li>
+								<li><code>buttonRight</code>(designer): Widget designer to use for right button.</li>
+								<li><code>imageUpNormal</code>(image): Up button image in normal state.</li>
+								<li><code>imageUpHover</code>(image): Up button image in hover state.</li>
+								<li><code>imageDownNormal</code>(image): Down button image in normal state.</li>
+								<li><code>imageDownHover</code>(image): Down button image in hover state.</li>
+								<li><code>imageLeftNormal</code>(image): Left button image in normal state.</li>
+								<li><code>imageLeftHover</code>(image): Left button image in hover state.</li>
+								<li><code>imageRightNormal</code>(image): Right button image in normal state.</li>
+								<li><code>imageRightHover</code>(image): Right button image in hover state.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Slider'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Slider.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>canvasBarHorizontal</code>(canvasCreator): Canvas creator to use for horizontal bar.</li>
+								<li><code>canvasBarVertical</code>(canvasCreator): Canvas creator to use for vertical bar.</li>
+								<li><code>canvasTickLargeHorizontal</code>(canvasCreator): Canvas creator to use for horizontal large tick.</li>
+								<li><code>canvasTickLargeVertical</code>(canvasCreator): Canvas creator to use for vertical large tick.</li>
+								<li><code>canvasTickSmallHorizontal</code>(canvasCreator): Canvas creator to use for horizontal small tick.</li>
+								<li><code>canvasTickSmallVertical</code>(canvasCreator): Canvas creator to use for vertical small tick.</li>
+								<li><code>size</code>(integer): Width of bar in pixels (height for horizontal bar).</li>
+								<li><code>knobOffset</code>(integer): Knob offset in pixels.</li>
+								<li><code>tickSize</code>(integer): Tick size in pixels.</li>
+								<li><code>showTicks</code>(boolean): Show ticks.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='SpinButton'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								SpinButton.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>size</code>(integer): Width of spinner pixels.</li>
+								<li><code>buttonUp</code>(designer): Widget designer to use for up button.</li>
+								<li><code>buttonDown</code>(designer): Widget designer to use for down button.</li>
+								<li><code>imageUpNormal</code>(image): Up button image in normal state.</li>
+								<li><code>imageUpHover</code>(image): Up button image in hover state.</li>
+								<li><code>imageDownNormal</code>(image): Down button image in normal state.</li>
+								<li><code>imageDownHover</code>(image): Down button image in hover state.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='TextArea'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								TextArea.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='TextField'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								TextField.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Video'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Video.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.videoColorTransform</code>(colorMatrix): Color transform matrix to apply to video.</li>
+								<li><code>{state}.video</code>(video): Video to use instead of widget video.</li>
+								<li><code>replaceVideo</code>(boolean): Replace video even if null.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Widget'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Widget. Basic type to use for all kinds of widgets not having a special type.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Window'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Window.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='MenuItemToggle'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								MenuItemToggle.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.imageBox</code>(image): Image to use for box.</li>
+								<li><code>{state}.imageMark</code>(image): Image to use for mark.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='MenuItemSubMenu'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								MenuItemSubMenu.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>{state}.canvas</code>(canvasCreator): Canvas creator.</li>
+								<li><code>{state}.border</code>(border): Border.</li>
+								<li><code>{state}.font</code>(font): Text font.</li>
+								<li><code>{state}.textColor</code>(color): Text color.</li>
+								<li><code>{state}.padding</code>(borderSize): Padding.</li>
+								<li><code>{state}.minimumSize</code>(point): Minimum size.</li>
+								<li><code>{state}.mousePointer</code>(mousePointer): Mouse pointer.</li>
+								<li><code>{state}.imageArrow</code>(image): Image to use for arrow pointing to sub menu.</li>
+								</ul>
+								<p>
+								For states:
+								</p>
+								<ul>
+								<li><code>normal</code>: Widget is in normal state.</li>
+								<li><code>disabled</code>: Widget is disabled.</li>
+								<li><code>focused</code>: Widget has focus.</li>
+								<li><code>hover</code>: Mouse pointer hover over widget or children thereof.</li>
+								<li><code>focusedHover</code>: Mouse pointer hover over widget or children thereof while focused.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		
+		<xs:attribute name='extend' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Relative or absolute path to widget designer to extend (*.dedesigner).
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute name='extendNamed' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Extend named widget designer.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:element name='designer' type='designer'>
+	</xs:element>
+</xs:schema>

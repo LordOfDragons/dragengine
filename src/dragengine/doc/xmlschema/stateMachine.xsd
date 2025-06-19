@@ -1,0 +1,442 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine State Machine XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:statemachines).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:complexType name='transitionAction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Action to run if transition is selected.
+				<p>
+				Actions can have conditions which determine if the action is run or not.
+				</p>
+				<p>
+				Enter actions can have a state change assigned. If an enter action with a
+				state change is run the state changes immediately to the specified state and all
+				enter actions afterwards are ignored. This can be used to automatically transition
+				into another state for example if a pre-condition is not fulfilled or an earlier
+				action failed to run properly. In particular no action can be assigned in which
+				case the enter action only serves the purpose to transition into another state
+				if its conditions fail.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+		</xs:choice>
+		
+		<xs:attribute type='xs:string' name='name' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Name of action. Can be empty if the enter action is only used to switch
+					to another state for example using a condition.
+					<p>
+					Actions are typically provided by behaviors to control the behavior
+					or behaviors linked to them. See the respective behavior documentation
+					to learn about supported action names.
+					</p>
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:string' name='state' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Identifier of state to switch to after action runs.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='transition'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Defines a transition.
+				<p>
+				Upon receiving an event the state machine checks transitions defined in the
+				current state from the first defined to the last defined. The first transition
+				matching the event with all of its conditions evaluating to true is used. All
+				matching transitions afterwards are ignored.If no transition matches the event
+				is discared. It is thus fully legit to send an event to a state machine for
+				states not supporting this particular event.
+				</p>
+				<p>
+				Transitions can have actions assigned. They behave similar to enter actions
+				of states. In particular they can also contain a state change which is useful
+				for situations where actions are unable to properly to transition into an error
+				type state.
+				</p>
+				<p>
+				Transitions typically have a next state assigned but this is optional.
+				If no next state is set the transition only runs actions and stays in the
+				current state. If all actions finished running and a next state is set then
+				the state changes to the next state. If a next state is set the transition first
+				switches the state machine to the null state to run exit actions. Then the
+				transition actions are run. Afterward the state is changed.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+			<xs:element type='transitionAction' name='action'/>
+			
+			<xs:element type='xs:string' name='nextState'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Identifier of state to switch to after all actions finished without
+						triggering a state change.
+						<p>
+						If no next state is set the transition only runs actions and stays
+						in the current state. If all actions finished running and a next state
+						is set then the state changes to the next state. If a next state is set
+						the transition first switches the state machine to the null state to
+						run exit actions. Then the transition actions are run. Afterward the
+						state is changed.
+						</p>
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='import'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Import actions and next state (if set) from existing state with identifier.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute type='xs:string' name='event' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Event name. See the documentation of the behaviors to learn about the
+					events they can send.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:string' name='state' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					State to transition to after all actions finished. If no state is provided
+					only actions are run and the state is unchanged. If the state is the same
+					as this state it is re-entered (exit and enter actions are run).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Add parameter. Parameter value is text content of node which can be empty if
+				only the presence of the parameter is required by an action or condition.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute type='xs:string' name='name' use='required'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							Name of parameter. See the documentation of behaviors to learn what
+							parameter names are supported for an action/condition.
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name='condition'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Add condition. Condition name is text content of node.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='condition_mode' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				How conditions are evaluated.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='allTrue'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						All conditions have to evaluate to true.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='anyTrue'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						At least one condition has to evaluate to true.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='anyFalse'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						At least one condition has to evaluate to false.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='allFalse'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						All conditions have to evaluate to false.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='enterAction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Action to run upon entering state.
+				<p>
+				Enter actions can have conditions which determine if the action is run or not.
+				</p>
+				<p>
+				Enter actions can have a state change assigned. If an enter action with a
+				state change is run the state changes immediately to the specified state and all
+				enter actions afterwards are ignored. This can be used to automatically transition
+				into another state for example if a pre-condition is not fulfilled or an earlier
+				action failed to run properly. In particular no action can be assigned in which
+				case the enter action only serves the purpose to transition into another state
+				if its conditions fail.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+		</xs:choice>
+		
+		<xs:attribute type='xs:string' name='name' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Name of action. Can be empty if the enter action is only used to switch
+					to another state for example using a condition.
+					<p>
+					Actions are typically provided by behaviors to control the behavior
+					or behaviors linked to them. See the respective behavior documentation
+					to learn about supported action names.
+					</p>
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:string' name='state' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Identifier of state to switch to after action runs.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='exitAction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Action to run upon exiting state.
+				<p>
+				Exit actions can have conditions which determine if the action is run or not.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element type='parameter' name='parameter'/>
+			<xs:element type='condition' name='condition'/>
+			<xs:element type='condition_mode' name='conditionMode'/>
+		</xs:choice>
+		
+		<xs:attribute type='xs:string' name='name' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Name of action. Can be empty if the enter action is only used to switch
+					to another state for example using a condition.
+					<p>
+					Actions are typically provided by behaviors to control the behavior
+					or behaviors linked to them. See the respective behavior documentation
+					to learn about supported action names.
+					</p>
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='state'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Define state. Replaces existing state if present.
+				<p>
+				States can contain actions which modify game state. Actions are typically
+				provided by behaviors to control the behavior or behaviors linked to them.
+				</p>
+				<p>
+				States can have enter actions and exit actions. Enter actions run after
+				activating the state. Exit actions run before switching to another state.
+				Enter and exit actions both can have conditions which determine if the action
+				is run or not.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element type='enterAction' name='enterAction'/>
+			<xs:element type='exitAction' name='exitAction'/>
+			<xs:element type='transition' name='transition'/>
+			
+			<xs:element type='xs:string' name='nextState'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Identifier of state to switch to after all enter actions finished
+						without triggering a state change.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='import'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Import actions, transitions and next state (if set) from existing state
+						with identifier.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute type='xs:string' name='id' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Identifier of state.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:complexType name='stateMachineType'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				State Machine.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:statemachines).
+				<p>
+				State machines define game logic using a set of states with transitions
+				leading from one state to the other. Transitions are triggered by sending
+				events to the state machine. A state machine is defined by the state it is
+				located in right now. In contrary to behavior trees stats machines only run
+				when an event is sent. This makes state machines more efficient than
+				behavior trees if events are sent at low intervals.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element type='xs:string' name='import'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Import states from a state machine file replacing existing states if
+						present. Path can be absolute or relative to the directory this state
+						machine has been loaded from. Relative path are not supported on
+						in-script created state machines.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element type='xs:string' name='initialState'>
+				<xs:annotation>
+					<xs:documentation>
+						<![CDATA[
+						Initial state of the state machine. Enter actions are run.
+						]]>
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element type='state' name='state'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name='stateMachine' type='stateMachineType'>
+		<xs:unique name='unique.state.id'>
+			<xs:selector xpath='state' />
+			<xs:field xpath='@id' />
+		</xs:unique>
+	</xs:element>
+</xs:schema>

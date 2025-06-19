@@ -1,0 +1,193 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Border XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:borderfactory).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTypes.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd'/>
+	
+	
+	<xs:complexType name='border'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Border.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:borderfactory).
+				<p>
+				Requires either "type" or "extend" attribute to be used but not both at the same time.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string' type='parameter_string'/>
+			<xs:element name='float' type='parameter_float'/>
+			<xs:element name='integer' type='parameter_integer'/>
+			<xs:element name='boolean' type='parameter_boolean'/>
+			<xs:element name='point' type='parameter_point'/>
+			<xs:element name='borderSize' type='parameter_borderSize'/>
+			<xs:element name='color' type='parameter_color'/>
+			<xs:element name='null' type='parameter_null'/>
+			<xs:element name='colorMatrix' type='parameter_colorMatrix'/>
+			<xs:element name='image' type='parameter_image'/>
+			<xs:element name='video' type='parameter_video'/>
+			<xs:element name='font' type='parameter_font'/>
+			
+			<xs:element name='canvasCreator'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='canvasCreator'>
+							<xs:annotation>
+								<xs:documentation>Canvas creator parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='border'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='border'>
+							<xs:annotation>
+								<xs:documentation>Border parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='type' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Border type name. Types are defined by the game scripts.
+					[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:borderfactory).
+				]]></xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:enumeration value='Empty'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Empty border. Typically used to explicitely define an empty border.
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Bevel'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Draws a bevelled border around a widget with a given color and thickness.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>colorHighlight</code>(color): Hilight color</li>
+								<li><code>colorShadow</code>(color): Shadow color</li>
+								<li><code>raised</code>(boolean): Raised or sunken.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Etched'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Draws an etched border around a widget with a given color and thickness.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>colorHighlight</code>(color): Hilight color</li>
+								<li><code>colorShadow</code>(color): Shadow color</li>
+								<li><code>raised</code>(boolean): Raised or sunken.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Line'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Draws a line around a widget with a given color and thickness.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>color</code>(color): Line color.</li>
+								<li><code>thickness</code>(integer): Line thickness in pixels.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='CanvasCreator'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Border using a canvas creator.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>canvasCreator</code>(canvasCreator): Canvas creator to use.</li>
+								<li><code>size</code>(borderSize): Size of border.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Combined'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Combine two borders into one. Borders are called "inner" and
+								"outer" border with outer border layered ontop of inner border.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>outer</code>(border): Outer border.</li>
+								<li><code>inner</code>(border): Inner border.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='TitledEtched'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Draw etched border around a widget with a given color and thickness
+								and displaying the widget title. The border has a gap where the text
+								is drawn.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>colorHighlight</code>(color): Hilight color</li>
+								<li><code>colorShadow</code>(color): Shadow color</li>
+								<li><code>raised</code>(boolean): Raised or sunken.</li>
+								<li><code>text</code>(string): Use text instead of widget title.</li>
+								<li><code>font</code>(font): Use font instead of widget font.</li>
+								<li><code>textColor</code>(color): Use color instead of widget text color.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		
+		<xs:attribute name='extend' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Relative or absolute path to border to extend (*.deborder).
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:element name='border' type='border'>
+	</xs:element>
+</xs:schema>

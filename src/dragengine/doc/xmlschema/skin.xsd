@@ -1,0 +1,2568 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Skin files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:editors:skin?s[]=skin).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
+	
+	
+	<xs:complexType name='property_mapped'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Property defined by a mapped balue. Mapped values allow to dynamically
+				adjust the value of a property by using a renderable or a bone state.
+				<p>
+				Default content depends on property
+				([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='mappedRed' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Named mapped to use for red color component. If not used default value is used.
+						<p>
+						Default value depends on property
+						([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='mappedGreen' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Named mapped to use for green color component. If not used default value is used.
+						<p>
+						Default value depends on property
+						([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='mappedBlue' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Named mapped to use for blue color component. If not used default value is used.
+						<p>
+						Default value depends on property
+						([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='mappedAlpha' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Named mapped to use for alpha color component. If not used default value is used.
+						<p>
+						Default value depends on property
+						([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attributeGroup ref='texture_attribs'/>
+	</xs:complexType>
+	
+	
+	<xs:group name='property_constructed_node_common'>
+		<xs:choice>
+			<xs:element name='position' type='point3'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Position in pixels relative to top-left-front corner.
+						Z coordinate is the layer index.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='size'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Size in pixels. Z coordinate is the count of layers covered.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute type='point_x' name='x' use='optional' default='256'/>
+					<xs:attribute type='point_y' name='y' use='optional' default='256'/>
+					<xs:attribute type='point_z' name='z' use='optional' default='1'/>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rotation' type='xs:decimal' default='0'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Counter clock-wise rotation in degrees.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='shear' type='xs:decimal' default='0'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Shearing in degrees. Positive angle shears along the other axis direction.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='brightness' type='xs:decimal' default='0'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Brightness.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='contrast' type='xs:decimal' default='1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Contrast.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='gamma' default='1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Gamma.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base='xs:decimal'>
+						<xs:minExclusive value='0'></xs:minExclusive>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name='colorize'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Colorize.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name='r' type='color_r' use='optional' default='1'/>
+					<xs:attribute name='g' type='color_g' use='optional' default='1'/>
+					<xs:attribute name='b' type='color_b' use='optional' default='1'/>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='transparency'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Transparency. 0 is fully transparent and 1 is fully opaque.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base='xs:decimal'>
+						<xs:minInclusive value='0'></xs:minInclusive>
+						<xs:maxInclusive value='1'></xs:maxInclusive>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name='combineMode'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Combien mode.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base='xs:string'>
+						<xs:enumeration value='blend'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Blend canvas with content below using combine strength.
+									<p>
+									Result will be
+									<code>d.rgba = (d.rgb * (1 - strength)) + s.rgb * strength</code>
+									where d=destination, s=source and strength=combine-strength.
+									</p>
+									<p>
+									For <code>normal</code> texture property d.rgb will be normalized
+									like a normal vector.
+									</p>
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='overlay'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Overlay canvas to content below using combine strength.
+									<p>
+									Result will be
+									<code>d.rgb += s.rgb * strength</code>
+									where d=destination, s=source and strength=combine-strength.
+									</p>
+									<p>
+									For <code>normal</code> texture property the result will be
+									the source normal added to the destination normal and the
+									result normalized. This allows to super-impose fine grained
+									normals over coarse grained normals. The calculation is
+									carried out in texture space.
+									</p>
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name='mask'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Mask node. Content of mask node is converted to grayscale before use.
+						White color shows content of this node while black color hides it.
+						Values in between gradually blend.
+						<p>
+						Only one node can be specified. If you need a complex mask use
+						a <code>group</code> node.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:choice minOccurs='0' maxOccurs='unbounded'>
+						<xs:group ref='property_constructed_node' minOccurs='1' maxOccurs='1'/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='mapped'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Use mapping curve to dynamically alter node parameter.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base='xs:string'>
+							<xs:attribute name='name'>
+								<xs:annotation>
+									<xs:documentation><![CDATA[
+										Name of parameter to alter.
+									]]></xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base='xs:string'>
+										<xs:enumeration value='positionX'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Position X coordinate (<code>position.x</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='positionY'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Position Y coordinate (<code>position.y</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='positionZ'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Position Z coordinate (<code>position.z</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='sizeX'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Width (<code>size.x</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='sizeY'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Height (<code>size.y</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='sizeZ'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Depth (<code>size.z</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='rotation'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Rotation (<code>rotation</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='shear'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Shear (<code>shear</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='brightness'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Brightness (<code>brightness</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='contrast'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Contrast (<code>contrast</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='gamma'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Gamma (<code>gamma</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='colorizeR'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Colorize red component (<code>colorize.r</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='colorizeG'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Colorize green component (<code>colorize.g</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='colorizeB'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Colorize blue component (<code>colorize.b</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='transparency'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Transparency (<code>transparency</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
+	
+	<xs:complexType name='property_constructed_node_group'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Group node containing zero, one or more nodes.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:group ref='property_constructed_node_common' minOccurs='1' maxOccurs='1'/>
+			<xs:group ref='property_constructed_node' minOccurs='1' maxOccurs='1'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name='property_constructed_node_image'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Image node.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:group ref='property_constructed_node_common' minOccurs='1' maxOccurs='1'/>
+			
+			<xs:element name='path' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Relative or absolute path of image resource to use.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='repeat'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Repeat count of image along X and Y axis.
+					]]></xs:documentation>
+				</xs:annotation>
+				
+				<xs:complexType>
+					<xs:attribute name='x' type='xs:integer' default='1'>
+						<xs:annotation>
+							<xs:documentation>
+								<![CDATA[
+								Repeat count of image along X axis. Defaults to 1 if not set.
+								]]>
+							</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					
+					<xs:attribute name='y' type='xs:integer' default='1'>
+						<xs:annotation>
+							<xs:documentation>
+								<![CDATA[
+								Repeat count of image along Y axis. Defaults to 1 if not set.
+								]]>
+							</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name='property_constructed_node_shape'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Shape node.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:group ref='property_constructed_node_common' minOccurs='1' maxOccurs='1'/>
+			
+			<xs:element name='type'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Shape type.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base='xs:string'>
+						<xs:enumeration value='rectangle'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Rectangle or box.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='ellipse'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Ellipse or ellipsoid.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name='fillColor'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Fill color.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attributeGroup ref='color_rgba'/>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='lineColor'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Line color.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attributeGroup ref='color_rgba'/>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='thickness' default='1'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Line thicknss in pixels.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base='xs:decimal'>
+						<xs:minInclusive value='0'/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name='shapeMapped'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Use mapping curve to dynamically alter shape node parameter.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base='xs:string'>
+							<xs:attribute name='name'>
+								<xs:annotation>
+									<xs:documentation><![CDATA[
+										Name of parameter to alter.
+									]]></xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base='xs:string'>
+										<xs:enumeration value='fillColorR'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Fill color red component (<code>fillColor.r</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='fillColorG'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Fill color green component (<code>fillColor.g</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='fillColorB'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Fill color blue component (<code>fillColor.b</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='fillColorA'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Fill color alpha component (<code>fillColor.a</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='lineColorR'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Line color red component (<code>lineColor.r</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='lineColorG'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Line color green component (<code>lineColor.g</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='lineColorB'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Line color blue component (<code>lineColor.b</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='lineColorA'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Line color alpha component (<code>lineColor.a</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='thickness'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Thickness (<code>thickness</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name='property_constructed_node_text'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Text node.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:group ref='property_constructed_node_common' minOccurs='1' maxOccurs='1'/>
+			
+			<xs:element name='path' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Relative or absolute path to font resource to use.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='fontSize' default='10'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Font size in pixels (line height).
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base='xs:integer'>
+						<xs:minInclusive value='1'/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name='text' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Text.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Text color.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attributeGroup ref='color_rgb'/>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='textMapped'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Use mapping curve to dynamically alter text node parameter.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base='xs:string'>
+							<xs:attribute name='name'>
+								<xs:annotation>
+									<xs:documentation><![CDATA[
+										Name of parameter to alter.
+									]]></xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base='xs:string'>
+										<xs:enumeration value='fontSize'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Font size (<code>fontSize</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='colorR'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Text color red component (<code>color.r</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='colorG'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Text color green component (<code>color.g</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+										<xs:enumeration value='colorB'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Text color blue component (<code>color.b</code>).
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:group name='property_constructed_node'>
+		<xs:choice>
+			<xs:element name='group' type='property_constructed_node_group'/>
+			<xs:element name='image' type='property_constructed_node_image'/>
+			<xs:element name='shape' type='property_constructed_node_shape'/>
+			<xs:element name='text' type='property_constructed_node_text'/>
+		</xs:choice>
+	</xs:group>
+	
+	<xs:complexType name='property_constructed'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Propererty defioned by a construction plan. This allows to build images
+				for properties using a CAD like interface. The graphic module creates the
+				final images for use with textures from the constructed image at runtime.
+				This allows to create modifications of existing textures or assembling
+				complex textures from shared images without the need to go through a full
+				art production pipeline. Furthermore constructed textures are useful to
+				create 3 dimensional images. Depending on the content used constructed
+				properties are static or dynamic.
+				<p>
+				Default content depends on property
+				([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Background color.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='size'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Size of the image in pixels. Z component is depth if required
+						by texture property.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name='x' default='256'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Width of the image in pixels.
+							]]></xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base='xs:integer'>
+								<xs:minInclusive value='0'/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name='y' default='256'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Height of the image in pixels.
+							]]></xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base='xs:integer'>
+								<xs:minInclusive value='0'/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name='z' default='1'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Count of layers.
+							]]></xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base='xs:integer'>
+								<xs:minInclusive value='0'/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='tileX' type='xs:boolean'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Tile nodes along x axis.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='tileY' type='xs:boolean'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Tile nodes along y axis.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='bitCount'>
+				<xs:simpleType>
+					<xs:restriction base='xs:integer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Bit count. Allowed are 8, 16 or 32.
+							]]></xs:documentation>
+						</xs:annotation>
+						<xs:enumeration value='8'></xs:enumeration>
+						<xs:enumeration value='16'></xs:enumeration>
+						<xs:enumeration value='32'></xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:group ref='property_constructed_node' minOccurs='1' maxOccurs='1'/>
+		</xs:choice>
+		
+		<xs:attributeGroup ref='texture_attribs'/>
+	</xs:complexType>
+	
+	
+	<xs:simpleType name='property_property'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Name of texture property. See property list of possible values and their settings.
+				([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'>
+			<xs:enumeration value='color'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the color of a material. The color is used for various lighting steps.
+						Typically this property is specified using a 24-bit image.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='color.gamma'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the gamma correction for the color property.
+						Typically used for images which have a particular gamma value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='color.tint'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a color used to tint the color property. This defines an 3-component color
+						that is multiplied component wise with the color property. Typically used to create
+						tinted versions of a texture without creating multiple skins.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='color.tint.mask'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a mask for the color.tint property. This defines an 1-component image
+						that blends between color.tint and color property. Typically used to create tinted
+						versions of a texture where only individual parts of the texture are tinted without
+						creating multiple skins. A value of 1 applies the color.tint which is the default.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='color.solidity.multiplier'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the color weight factor for solidity. This texture property is
+						used with decal textures to weight the decal color against the color of the
+						underlaying geometry. This allows to create decals where not all texture properties
+						affect the underlaying geometry the same way in respect to the decal solidity.
+						A value of 0 makes the decal to not affect the underlaying geometry color at all.
+						A value of 1 makes the decal fully overwrite the underlaying geometry color.
+						Values in between blend linearly the decal color  with the underlaying geometry
+						color. The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='color.omnidir'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the omni-directional color of a material using a cube map. This
+						property is used only by sky layers, sky bodies, lights and environment map probes.
+						The property has to contain image data with depth of 6. Each layer represents one
+						face in the cube map: X+, X-, Y+, Y-, Z+ and Z- (in this order). Typically this
+						property is specified using a 24-bit image of depth 6.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='color.omnidir.equirect'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the omni-directional color of a material using an equirectangular map.
+						This property is used only by sky layers, sky bodies, lights and environment map probes.
+						The image data defined by the property has to be formatted in the equirectangular format.
+						Typically this property is specified using a 24-bit image.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='ambient.occlusion'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the ambient occlusion. This simulates the effect of indirect lighting where
+						locations on a model are darker inside cavities. Values range from 0 to 1 where 0 is
+						fully occluded and 1 is fully in light. In general fully in light equals to full light
+						contribution and fully occluded to zero light contribution. In general this property
+						affects indirect lighting but can also affect direct lighting at the description of
+						the graphic module.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='ambient.occlusion.solidity.multiplier'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the ambient occlusion weight factor for solidity. This texture property is
+						used with decal textures to weight the decal ambient occlusion against the ambient
+						occlusion of the underlaying geometry. This allows to create decals where not all
+						texture properties affect the underlaying geometry the same way in respect to the
+						decal solidity. A value of 0 makes the decal to not affect the underlaying geometry
+						ambient occlusion at all. A value of 1 makes the decal fully overwrite the
+						underlaying geometry ambient occlusion. Values in between blend linearly the decal
+						ambient occlusion  with the underlaying geometry ambient occlusion.
+						The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='normal'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the normal of the surface. This is a special texture property in that the
+						color is not a real color but a normal encoded as a color. Normal maps are used to
+						fake detail on flat surfaces by specifying the structure of normals along a surface.
+						<p>
+						The normal is encoded as a 24-bit color relative to the tangent space of the surface.
+						The tangent space is formed taking the original triangle normal and the tangent which
+						points along the U direction of triangle.
+						</p>
+						<p>
+						The red component indicates the X component of the normal (along the U direction of
+						the texture). Negative values are in the range from 0 to 0.5 and positive values in
+						the range from 0.5 to 1.
+						</p>
+						<p>
+						The green component indicates the Y component of the normal (along the V direction
+						of the texture). Negative values are in the range from 0 to 0.5 and positive values
+						in the range from 0.5 to 1.
+						</p>
+						<p>
+						The blue component indicates the Z component of the normal (along the triangle normal).
+						Negative values are in the range from 0 to 0.5 and positive values in the range from
+						0.5 to 1.
+						</p>
+						<p>
+						The normal is normalized before storing. Normals should not point further away than
+						90 degree measured from the triangle normal. If you go beyond this limit render
+						artifacts can occur. Due to this layout normal maps have a tendency to be blueish in
+						color since the Z component is always positive.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='normal.strength'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the strength of the normal map. This property blends the normal obtained from
+						the normal map with the real geometry normal. This allows to use the full image
+						resolution for normal map details where subtle normal map effects are desired without
+						producing artifacts. Furthermore this can also be used to create dynamic normal map
+						effects without the need for a dynamic normal map property. A value of 0 uses the
+						real geometry normal. A value of 1 uses the normal obtained from the "normal" texture
+						property. Values in between blend linearly between the two normals. The default value
+						is 1 to apply the full normal map value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='normal.solidity.multiplier'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the normal weight factor for solidity. This texture property is used with
+						decal textures to weight the decal normal against the normal of the underlaying
+						geometry. This allows to create decals where not all texture properties affect the
+						underlaying geometry the same way in respect to the decal solidity. A value of 0 makes
+						the decal to not affect the underlaying geometry normal at all. A value of 1 makes the
+						decal fully overwrite the underlaying geometry normal. Values in between blend
+						linearly the decal normal with the underlaying geometry normal.
+						The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='height'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the height of the surface. This is also a special texture property similar
+						to the normal map one but this time the height of a surface relative to the mesh
+						surface is stored. This height can be used for different purpose depending on the
+						graphic module used. One usage is to derive a normal map from the height difference.
+						Another usage is to dynamically increase the detail level of a mesh. The new vertices
+						are then offset using this height. Terrain meshes can also use this height information
+						to provide LODing (level of detail reduction over distance). A value of 0.5 indicates
+						no surface height alteration. Values below 0.5 indicate a dent in a surface while
+						values above 0.5 indicate a bump in a surface. The strength and offset of the height
+						alteration can be set using the "height.scale" and "height.offset" property.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='height.scale'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Used in conjunction with the height surface property and defines the scaling of the
+						height values. With a scaling of 1 the height values are considered to be in the range
+						of -0.5m to 0.5m. The height texture property values are multiplied by the scale factor
+						and offseted by the offset factor resulting in the final height values. For generating
+						normal maps this is not required. As an example if the hills and valleys are at most
+						1cm then a scaling of 0.02 (1 divided by 50) has to be used (0.5m times 0.02 yields
+						0.01m or 1cm). This property has to be a single value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='height.offset'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Used in conjunction with the height surface property and defines the relative offset
+						of the height values. Positive values move the height values away from the surface
+						while negative values move them into the surface. This can be used for height maps
+						only denting into or only bumping out of the surface to maximize the texture
+						resolution. The effective offset added to the height is the height.offset multiplied
+						by the height.scale. The height.offset can thus be considered the percentage shift
+						of the height texture property values. The typical range is from -0.5 (height of 1
+						is surface level and 0 the total bottom) to 0.5 (height of 0 is surface level and 1
+						the total uphill). For generating normal maps this is not required. This property
+						has to be a single value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='transparency'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the transparency material. Transparent materials allow to see through with
+						varying strength. Transparent material is still solid unless the solidity texture
+						property is used. Hence a material can be fully transparent with a value of 0 but at
+						grazing angles the material still behaves like a mirror due to fresnel and physically
+						based rendering. For truely stopping light to interact with the material use the
+						solidity texture property instead. Use this texture property for all kinds of glass
+						type materials where light partially traverses the material and gets filtered on its
+						way through. Typically this property is specified using a 8-bit gray scale image.
+						A value of 1 indicates a fully opaque material whereas 0 equals to a fully transparent
+						material. All values in between equal to a partial transparency with the given strength.
+						The type of transparency can be specified using the "transparency.type" property.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='transparency.multiplier'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the multiplier for the transparency texture property. This allows to create
+						fading effects with complex transparency. The end result is the transparency value
+						multiplied with this value. The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='solidity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the solidity material. Transparent materials allow to see through with
+						varying strength. In contrary to the transparency texture property the solidity
+						defines the probability of light rays actually interacting with the material.
+						With transparency material can be fully transparent but still act like a full
+						mirror at grazing angles. Solidity on the other hand makes materials truely
+						transparent to all light interaction. This can be used for ghost effects or
+						fading out objects which is not possible with transparency. Typically this property
+						is specified using a 8-bit gray scale image. A value of 1 indicates a fully solid
+						material whereas 0 equals to a fully non-solid material. All values in between equal
+						to a partial solidity with the given strength. The type of solidity can be specified
+						using the "solidity.type" property.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='solidity.masked'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if the solidity is masked. Some materials do not require the full level of
+						solidity support as they contain only holes. Fences are a typical example of such a
+						type of material. Often this kind of solidity can be rendered faster than common
+						solidity. Using this property the material can be marked as either having full grades
+						of solidity or just having holes. With holes solidity values above 0.5 mark solid areas
+						while solidity values below 0.5 mark holes which is the default. A value of 0 (or
+						below 0.5) marks the material as using all levels of solidity. A value of 1 (or above
+						0.5) marks the material as having holes only.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='solidity.multiplier'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the multiplier for the solidity texture property. This allows to create
+						fading effects with complex solidity. The end result is the solidity value
+						multiplied with this value. The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='solidity.filterPriority'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the filter priority. Graphic modules use Mip-Mapping to calculate down
+						scaled versions of the image set using the "solidity" texture property. This
+						improves performance and visual quality. By down scaling the image information
+						is lost. There exist different ways to calculate the down sampled images.
+						The most common solutions are averaging, minimum and maximum.
+						<p>
+						Averaging is the default Mip-Mapping technique used and calculates down scaled
+						image pixels by averaging over pixels from the the next higher level. For most
+						images this technique yields good results.
+						</p>
+						<p>
+						The minimum and maximum technique use instead the smallest respective largest
+						value of pixels from the next higher level. In contrary to averaging this favors
+						either holes (minimum) or solid geometry (maximum).
+						</p>
+						<p>
+						In some situations using averaging causes problems. These are two examples.
+						</p>
+						<p>
+						With foliage averaging the solidity can cause the foliage to grow thinner over
+						distance. This causes bushes and trees at distance to loose their density. By
+						using maximum filtering solidity is favored and foliage grows denser over
+						distance. This can be visually better looking than thinning out.
+						</p>
+						<p>
+						With shutter blinds the lower part of the image is holed all the way to the
+						border. By using texture transformation the blinds can be pulled up leaving
+						most of the image open. Averaging can now cause the hole pixels on the bottom
+						of the image to smear with the solid pixels causing the hole to vanish over
+						distance. This can cause textures where the player can see through to suddenly
+						become totally solid. By using minimum filtering holes are favored and the
+						texture is ensured to keep the hole part at the bottom intact.
+						</p>
+						<p>
+						This parameter is a hint to the Graphic Module if holes or solid geometry
+						should be favored. A value of 0 favors holes. A value of 1 favors solid geometry.
+						A value of 0.5 averages between the two. The actual implementation in the
+						Graphic Module can be different but this texture property helps to shift the
+						calculation into the right direction to get good results.
+						</p>
+						<p>
+						Mip-Mapping is one situation where Graphic Modules can use this texture
+						property to deliver better results. Another situation could be alpha dithering
+						or percentage alpha filtering to improve the visual quality.
+						</p>
+						<p>
+						The default value is 0.5.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='refraction.distort'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the distortion applied to rendered content behind transparent material.
+						The distortion works by manipulating the coordinates of the point to be used as the
+						background pixel color using a 2-channel image. The red channel indicates the amount
+						of displacement in the x direction (with -1 being 0 red and 1 being full red) and
+						the green channel indicates the displacement in the y direction (same as with red).
+						The displacement strength is defined using "refraction.distort.strength". Usually a
+						3-component image is used where the blue channel has no use. This way normal maps
+						can be directly used for distortion.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='refraction.distort.strength'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the strength of the refraction distortion. Scales the displacement by the
+						given single value. Negative values are possible inventing the displacements.
+						The displacement is measured relative to the size of the render window. Hence a
+						value of 0.1 would cause displacements to have a magnitude of up to 10% of the
+						render window size. The default is 0.01 which results in a usual screen resolution
+						a displacement of roughly 10 pixels (1% of render window size).
+						This is a single value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='reflectivity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the reflectivity of a material. A value of 1 fully reflects the environment
+						without any diffuse contribution. A value of 0 reflects nothing showing the entire
+						diffuse contribution. Values in between represent the amount of reflection of the
+						environment. The reflectivity can be defined for each color component individually
+						(typical for matrials like gold) or for all at the same time (typical for materials
+						like plastic).
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='reflectivity.multiplier'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the multiplier for the reflectivity. The reflectivity value is first
+						multiplied by this value before being send down the lighting pipeline as described
+						in "reflectivity". This property is useful for fine adjusting reflectivity without
+						altering the source image as well as better using the limited resolution of image
+						files especially with low reflectivity values.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='reflectivity.solidity.multiplier'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the reflectivity weight factor for solidity. This texture property is used
+						with decal textures to weight the decal reflectivity against the reflectivity of the
+						underlaying geometry. This allows to create decals where not all texture properties
+						affect the underlaying geometry the same way in respect to the decal solidity.
+						A value of 0 makes the decal to not affect the underlaying geometry reflectivity
+						at all. A value of 1 makes the decal fully overwrite the underlaying geometry
+						reflectivity. Values in between blend linearly the decal reflectivity with the
+						underlaying geometry reflectivity. The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='roughness'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the roughness of the surface. This value is typically used for defining the
+						sharpness of reflections. A value of 0 defines a mirror like smooth surface. A value
+						of 1 defines a very rough surface. Values in between create a blend between a smooth
+						and a rough surface. Rough surfaces have blurry reflections while smooth surfaces
+						have mirror like sharp reflections. The roughness value is comparable to the roughness
+						value in the Beckman Shading formula and allows to control the roughness of the
+						surface in a more intuitive way. The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='roughness.remap.lower'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the lower remapping value for the roughness of the surface. The remapping
+						allows to use the same roughness input for various skins as well as simplify creating
+						art asset by individually remapping the the input values to the new range defined by
+						roughness.remap.lower and roughness.remap.upper. A roughness value of 0 is mapped to
+						roughness.remap.lower, a value of 1 is mapped to roughness.remap.upper and all values
+						in between are mapped linearly. Thus the roughness value can be seen as the blend
+						factor between roughness.remap.lower and roughness.remap.upper. The value of this
+						property has to be of value type. The default value is 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='roughness.remap.upper'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the upper remapping value for the roughness of the surface. The remapping
+						allows to use the same roughness input for various skins as well as simplify creating
+						art asset by individually remapping the the input values to the new range defined
+						by roughness.remap.lower and roughness.remap.upper. A roughness value of 0 is mapped
+						to roughness.remap.lower, a value of 1 is mapped to roughness.remap.upper and all
+						values in between are mapped linearly. Thus the roughness value can be seen as the
+						blend factor between roughness.remap.lower and roughness.remap.upper. The value of
+						this property has to be of value type. The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='roughness.gamma'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the gamma correction for the roughness property. Typically used for images
+						which have a particular gamma value. By default roughness images are considered to
+						be real values hence no gamma correction is applied. In some cases though like tools
+						creating gamma corrected images setting the usage of a custom gamma correction is
+						required. In this case the gamma required to convert the image data to real values
+						has to be specified. Gamma correction is applied to the roughness property values
+						before remapping is done. The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='roughness.solidity.multiplier'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the roughness weight factor for solidity. This texture property is used with
+						decal textures to weight the decal roughness against the roughness of the underlaying
+						geometry. This allows to create decals where not all texture properties affect the
+						underlaying geometry the same way in respect to the decal solidity. A value of 0 makes
+						the decal to not affect the underlaying geometry roughness at all. A value of 1 makes
+						the decal fully overwrite the underlaying geometry roughness. Values in between blend
+						linearly the decal roughness  with the underlaying geometry roughness.
+						The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='environmentmap'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the environment map to use for reflection. By default the Graphic Module
+						produces and environment map for reflections itself dynamically if it is able to do
+						so. Using this property the environment map to use for reflections can be forced.
+						This can be used for various purpose. For example by defining static environment maps
+						the Graphic Module can be helped to avoid dealing with dynamic environment maps.
+						Or it can be used to achieve special effects for example by using a renderable.
+						This allows to show foreign environment content like an object reflecting a different
+						world.
+						<p>
+						This property is typically of image or renderable type. The image has to be of one
+						of the supported image types. To use a cube map the image has to have a depth of 6
+						with each layer specifying a face of the cube map in the following order:
+						</p>
+						<ul>
+						<li>layer 0: positive x axis</li>
+						<li>layer 1: negative x axis</li>
+						<li>layer 2: positive y axis</li>
+						<li>layer 3: negative y axis</li>
+						<li>layer 4: positive z axis</li>
+						<li>layer 5: negative z axis</li>
+						</ul>
+						<p>
+						Each layer has to be oriented along the other two positive axes. Hence the positive
+						x axis layer has to be oriented with the image x and y axis along the cube map y and
+						z axis.
+						</p>
+						<p>
+						This property has no default value. If it is not specified the Graphic Module creates
+						an environment map itself according to whatever rules it sees fit.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='reflected'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if geometry with this skin is reflected by other geometry. Typically
+						reflections are done using static or dynamic environment maps and optionally other
+						real time reflection algorithms. By default all geometry is reflected by other
+						geometry and rendered in dynamically rendered environment maps. Editing objects as
+						used in the IGDE editors should not be reflected by other geometry and never show
+						up in environment maps. This property allows these objects to be not reflected by
+						other geometry. This can be also useful in a game situation to make an object not
+						to be reflected by other objects. This is typically the case for objects not really
+						existing like ghosts or imagined objects. This property is of value type. A value
+						of 0.5 or higher makes the geometry to be reflected by other geometry. A value
+						below 0.5 prevents the geometry from being reflected by other geometry.
+						This default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='mirror'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines that this material is a fully reflective ( perfect ) flat mirror. All pixels
+						covered by mesh faces with this texture reflect the world totally. Transparency
+						effects like refraction distortion can be applied to mirrors. Use this property
+						only on flat or nearly flat geometry. For curved geometry use the "reflection.*"
+						properties. Mirror reflections tend to be faster than "reflection.*" reflections
+						and should be used if the geometry is flat. A value of 0 equals to no mirror
+						reflection. A value of 1 equals to full mirror reflections.
+						This is a single value wit default 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='emissivity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the component wise light emission of a surface. A value of 0 equals to no
+						light being emitted from the surface whereas 1 equals to full bright light being
+						emitted. In the lighting model used by this game engine there exists no maximum
+						strength of light since the light intensity is only limited towards the bottom.
+						For this reason the additional property "emissivity.intensity" indicates the maximum
+						intensity for all color components. The real intensity equals to the emissivity
+						value multiplied by the "emissivity.intensity" value. Usually this property is an
+						24-bit color image. The default is black.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='emissivity.tint'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a color used to tint the emissivity property. This defines an 3-component
+						color that is multiplied component wise with the emissivity property. Typically
+						used to create tinted versions of a texture without creating multiple skins.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='emissivity.intensity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the intensity of light emission. This value has the same value range as the
+						intensity parameter of light sources. For a common 100W light bulb this value would
+						be around 1. This value has to be a single value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='emissivity.camera.adapted'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if all emissivity based properties are absolute intensities or intensities
+						relative to the camera maximum adapted intensity.
+						<p>
+						The camera adapted intensity is updated by the Graphic Module to to choose an
+						appropriate exposure for the visible camera content. The camera adapted intensity
+						is adjusted over time to match up with the required intensity. This ensures the
+						rendered content is not under nor over exposed when the lighting conditions change.
+						</p>
+						<p>
+						By using this texture property you can ensure the intensity of all emissivity
+						properties is not too low in strong light conditions nor too high (white-out
+						or even blooming) in low light conditions.
+						</p>
+						<p>
+						A typical use case for this texture property are monitors. With absolute
+						intensities the emissivity is inadequate in extreme light conditions. With this
+						property enabled the emissivity is kept at a stable, final tone mapped intensity.
+						</p>
+						<p>
+						Another typical use case is for particles and beams. This allows using
+						particle and beam effects in different lighting conditions without becoming
+						too faint nor white-out with excessive bloom.
+						</p>
+						<p>
+						The property is a boolean type property.
+						</p>
+						<p>
+						A value of 0 equals to all emissivity intensities to be absolute intensities
+						in the range from 0 to infinity.
+						</p>
+						<p>
+						A value of 1 equals to all emissivity intensities to be relative to the camera
+						adapted intensity. The values of all emissivity properties are in the range from
+						0 to infinity and are multiplied by the camera adapted maximum intensity.
+						Values in the range from 0 to 1 are recommended (0% to 100% intensity). Values
+						higher than 1 can be used to ensure emissive objects receive white-out and
+						bloom effects.
+						</p>
+						<p>
+						When using relative emissivity intensities keep in mind that graphic modules
+						have to do tone mapping one way or the other. Tone mapping in general requires
+						increasing contrast to avoid colors being washed out. This in turn means high
+						intensity values near the maximum intensity for a given scene key tend to
+						wash out towards white (or even blooming). It is thus not recommended to use
+						emissivity intensities above 0.75 if you want to avoid colors to wash out
+						towards white color. In bright light this effect is less pronounced than in
+						low light conditions. By staying under this threshold you should get good
+						results. Of course if you want to ensure emissive materials to white out and
+						bloom starting at an emissivity of 2.0 and above is a good way to ensure this.
+						</p>
+						<p>
+						Other values are mapped to 0 or 1 whichever is closer.
+						</p>
+						<p>
+						Usually this property is an single value, either 0 or 1. The default is 0.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='environmentroom'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines an environment room to use to produce the illusion of a 3 dimensional room
+						behind a flat wall. This is typically used to create a more realistic illusion of a
+						room behind a window in contrary to flat window textures.
+						<p>
+						Environment rooms are environment map type cube or equirectangular texture containing
+						a prerendered illusion of a room. The environment room is oriented like this:
+						</p>
+						<ul>
+						<li>x axis: along the texture u direction</li>
+						<li>y axis: along the negative texture v direction</li>
+						<li>z axis: along the negative normal direction.</li>
+						</ul>
+						</p>
+						<p>
+						The room extends along the x and y axis map to the texture coordinate range from
+						0 to 1 in the respective room axis. The size of the room is defined with the
+						"environmentroom.size" texture property. The position of the room is half the
+						"environmentroom.size" value. The texture coordinates on the flat surface maps to
+						the invisible negative z axis face of the room.
+						</p>
+						<p>
+						The environment room is used if this texture property is defined. Otherwise normal
+						rendering is used
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='environmentroom.size'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the size ratio of an environment room to use to produce the illusion of a 3
+						dimensional room behind a flat wall. See the environmentroom texture property for
+						details. The size is a 2 component value larger than 0 representing the ratio between
+						the height and width and the depth and width of the room. The first component contains
+						the ratio between height and width. The second component contains the ratio between
+						the depth and width. The default value is (1,1) defining a cubic room. The actual
+						perceived size in metric units depends on the actual texture coordinates used.
+						The ratio between the height and width of the texture coordinates has to be identical
+						to the first value component.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='environmentroom.offset'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the offset of an environment room cube map relative to the room center.
+						This offset is required if the cube map origin is not located exactly at the center
+						of the room. This is typically the case for in-engine rendered cube maps used as
+						environment room cube maps. Placing the cube map origin near the entry side of the
+						room reduces perspective problems. The offset is a 3 component value: x, y, z.
+						The default value is (0,0,0).
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='environmentroom.mask'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the mask of an environment room. The mask defines the blending between the
+						environment room and the regular materila parameters. The mask is a 1 component with
+						0 showing the regular material parameters and 1 showing only the environment room.
+						The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='environmentroom.emissivity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the emissivity of an environment room to use to produce the illusion of a 3
+						dimensional room behind a flat wall.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='environmentroom.emissivity.tint'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a color used to tint the environment room emissivity property. This defines
+						an 3-component color that is multiplied component wise with the environment room
+						emissivity property. Typically used to create tinted versions of a texture without
+						creating multiple skins.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='environmentroom.emissivity.intensity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the intensity of an environment room emissivity texture.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='thickness'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines thickness in meters of material.
+						<p>
+						This property is used if the thickness of the material can not be determined from
+						the Model faces itself. This is typically the case for window glass where it is
+						common to use double sided model textures. Modules can not calculate the thickness
+						in this situation because they lack a matching backwards facing model face.
+						</p>
+						<p>
+						This property is used by the Graphic Module for transparency and absorption
+						calculations.
+						</p>
+						<p>
+						This property is used by the Audio Module for transmission loss calculations.
+						</p>
+						<p>
+						This is a single value type property. The default value is 0 indicating no explicit
+						thickness defined. Modules will calculate the thickness themselves in this case.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='absorption'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the absorption strength per component. Affected by absorption.range.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='absorption.range'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the absorption range. Each component in absorption is multiplied by this value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='shadow.none'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if this material does not can shadows. All values above 0.5 prevents this
+						material from casting shadows (solid nor transparent). All values below 0.5 cause
+						this texture to cast shadows. This is a single value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='shadow.importance'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a threshold to stop this texture from casting shadows. This is a performance
+						optimization property and is linked to user settings. If the user chooses a high
+						detail level this shadow is shown otherwise not. To prevent shadows from being cast
+						at all use "shadow.none" instead. A value of 0 equals to the lowest detail level where
+						only the most vital textures cast shadows. A value of 1 equals to the highest detail
+						level where any textures cast shows. All values in between represent the detail
+						percentage (hence 0.2 for example requires the user to set the detail level at or
+						above 20% to see this shadow). This is a single value with default 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='hint.nocompression'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if hardware textures can be compressed or not. Graphic modules can decide to
+						compress textures to conserve memory. Compression though tends to have a more or less
+						negative impact on the visual quality depending on the kind of texture. Usually
+						diffuse textures are compressed while normal textures are not. If you have a special
+						texture which has to keep the full quality you can use this property to tell the
+						Graphic Module to not compress this texture. As this is a hint the Graphic Module is
+						not required to respect it. A value of 0 indicates that this texture can be compressed.
+						A value of 1 indicates that this texture should not be compressed if possible.
+						This is a single value with default 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='texcoord.clamp'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if texture coordinates are clamped instead of repeated. A value of 0 indicates
+						that texture coordinates are repeated. A value of 1 indicates that texture coordinates
+						are clamped to the range of 0 to 1. This is a single value with default 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='texcoord.offset'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines offset of texture coordinates relative to model texture coordinates.
+						This is a color value with 2 components (u, v) with default 0. If multiple
+						transformations are used applies first "texcoord.zoom" then "texcoord.rotate"
+						then "texcoord.offset".
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='texcoord.scale'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines scaling of texture coordinates relative to model texture coordinates.
+						This is a color value with 2 components (u, v) with default 1. Zooming has as
+						center the center of the texture. If multiple transformations are applies first
+						"texcoord.zoom" then "texcoord.rotate" then "texcoord.offset".
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='texcoord.rotate'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines rotation of texture coordinates relative to model texture coordinates.
+						This is a single value with default 0. Rotates texture coordinates counter
+						clock wise around the center of the texture. If multiple transformations are
+						used applies first "texcoord.zoom" then "texcoord.rotate" then "texcoord.offset".
+						Value represents rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+						Values larger than 1 or less than 0 are supported. In this case the value is
+						normalized into the range from 0 to 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='omnidir.rotate'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines rotation of omni-direction textures relative to model texture coordinates.
+						This is a 3-component value with default (0,0,0). Rotates the omni-direction texture
+						counter clock wise. Red (first) component is rotation around X axis, green (second)
+						component is rotation around Y axis and blue (third) component is rotation around
+						Z axis. Values represent rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+						Values larger than 1 or less than 0 are supported. In this case the value is
+						normalized into the range from 0 to 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='omnidir.rotate.spot'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines rotation of omni-direction textures relative to model texture coordinates
+						for spot or projected type light sources only.
+						This is a 3-component value with default (0,0,0). Rotates the omni-direction texture
+						counter clock wise. Red (first) component is rotation around X axis, green (second)
+						component is rotation around Y axis and blue (third) component is rotation around
+						Z axis. Values represent rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+						Values larger than 1 or less than 0 are supported. In this case the value is
+						normalized into the range from 0 to 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='variation.u'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if texture variations are used along the texture U direction. If texture
+						variations are enabled various texture properties can be defines using a depth of
+						larger than 1. The integral part of texture coordinates in the U direction is used
+						to randomly pick a layer from these properties. A value of 0 indicates that texture
+						variations are not used along the U direction. A value of 1 indicates that texture
+						variations are used along the U direction. This is a single value with default 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='variation.v'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if texture variations are used along the texture V direction. If texture
+						variations are enabled various texture properties can be defines using a depth of
+						larger than 1. The integral part of texture coordinates in the V direction is used
+						to randomly pick a layer from these properties. A value of 0 indicates that texture
+						variations are not used along the V direction. A value of 1 indicates that texture
+						variations are used along the V direction. This is a single value with default 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='variation.weight'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the probability weighting of layers for texture variations.
+						The probability of a layer to be picked is calculated using the following formula:
+						<p>
+						<code>(1 + weight.atPixel(layer,0)) / sum(weights)</code>
+						</p>
+						<p>
+						This is a 1 dimensional image with default 0 for all pixels.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='particle.sheets'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the number of sheets to use for particles of type "beam" or "ribbon".
+						This property is only used by Graphic modules supporting advanced particle render
+						controls. Otherwise this property is ignored and the graphic module uses an
+						appropriate way to render particle beams and ribbons. A value of 0 allows the
+						graphic module to choose an appropriate value itself. This is the same as if the
+						graphic module does not support this property at all.
+						This is a single value with default value 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='outline.color'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the outline color. If outline.thickness is larger than 0 an outline is
+						rendered around the component. This is typically used to highlight objects or to
+						use cartoon style effects. Outline color is rendered as fully rough material
+						with no reflectivity. This allows outline to be affected by lighting like other
+						skins which makes outlines fit better.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='outline.color.tint'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a color used to tint the outline.color property. This defines an 3-component
+						color that is multiplied component wise with the color property. Typically used to
+						create tinted versions of a texture without creating multiple skins.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='outline.thickness'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the outline thickness in meters or percentage of camera field-of-view
+						depending on the value of "outline.thickness.screen". If the "outline.thickness.screen"
+						value is 0 this value is measured as meters in world space. Otherwise the value is
+						measured relative to the camera field-of-view which makes the thickness to stay at
+						the same visual size no matter what distance it is looked at. For example in the
+						screen mode a value of 0.01 for example equals to a thickness of 1% the screen width.
+						If thickness is larger than 0 an outline is rendered around the component. This is
+						typically used to highlight objects or to use cartoon style effects.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='outline.thickness.screen'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Determines if the outline thickness is relative to screen. If this value is 0
+						the "outline.thickness" value is measured as meters in world space. If this value
+						is 1 the "outline.thickness" value is measured as percentage of the camera
+						field-of-view resulting in the visual thickness to stay the same no matter the
+						distance to the object. For example in this mode a value of 0.01 for example
+						equals to a thickness of 1% the screen width.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='outline.solidity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the outline solidity. If outline.thickness is larger than 0 an outline is
+						rendered around the component. This is typically used to highlight objects or to
+						use cartoon style effects. The solidity can be used to create transparent outlines.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='outline.emissivity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the outline emissivity color. If outline.thickness is larger than 0 an
+						outline is rendered around the component. This is typically used to highlight
+						objects or to use cartoon style effects. While outline.color is affected by
+						lighting emissivity is not. This allows to make glowing outlines. If you use
+						this texture property you have to also use outline.emissivity.intensity
+						otherwise you will get no visible emissivity.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='outline.emissivity.tint'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a color used to tint the outline.emissivity property. This defines an
+						3-component color that is multiplied component wise with the outline.emissivity
+						property. Typically used to create tinted versions of a texture without creating
+						multiple skins.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='outline.emissivity.intensity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the outline emissivity intensity. If outline.thickness is larger than 0 an
+						outline is rendered around the component. This is typically used to highlight objects
+						or to use cartoon style effects. This value has the same value range as the
+						intensity parameter of light sources. For a common 100W light bulb this value would
+						be around 1. This value has to be a single value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='rim.emissivity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the component wise rim light emission of a surface. Rim light intensity
+						is multiplied by the angle difference between the camera view plane and the
+						surface normal. This allows to create ghost like effects where objects glow
+						along their rim while not glowing seen face on.
+						<p>
+						A value of 0 equals to no light being emitted whereas 1 equals to full bright
+						light being emitted. In the lighting model used by this game engine there exists
+						no maximum strength of light since the light intensity is only limited towards
+						the bottom. For this reason the additional property "rim.emissivity.intensity"
+						indicates the maximum intensity for all color components. The real intensity
+						equals to the emissivity value multiplied by the "rim.emissivity.intensity"
+						value.
+						</p>
+						<p>
+						Usually this property is an 24-bit color image. The default is black.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='rim.emissivity.tint'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a color used to tint the rim emissivity property. This defines
+						a 3-component color that is multiplied component wise with the
+						rim.emissivity property. Typically used to create tinted versions of a
+						texture without creating multiple skins.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='rim.emissivity.intensity'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the intensity of rim light emission. This value has the same value
+						range as the intensity parameter of light sources. For a common 100W light
+						bulb this value would be around 1. This value has to be a single value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='rim.angle'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the maximum angle difference between the camera view plane and the
+						surface normal for rim light emissivity to become 0. Surface normals
+						located in the camera view plane (parallel to this plane) have maximum
+						intensity. The intensity is faded until reaching rim.angle deviation from
+						the camera view plane. The rim.exponent defines the shape of the fading curve.
+						<p>
+						The angle value is defined as mapping between no deviation (0 degrees) at
+						value 0 to full deviation (90 degrees) at value 1. The default value is 0
+						which disables the effect.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='rim.exponent'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the shape of the fading curve for rim light. The value is used
+						as exponent for the curve. Hence a value of 1 produces a linear blend
+						along the angle (constant intensity change per degree change).
+						A value of 2 produces a squared shape with intensity changing stronger
+						near rim.angle and less near 0 angle. A value of 0.5 produces a similar
+						squared shape but flipped with intensity changing stronger near 0 angle
+						and less near rim.angle . The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='nonpbr.albedo'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the Non-PBR albedo color. This texture property is part of Non-PBR
+						metalness workflow and is used together with the "nonpbr.metalness" texture
+						property. These values are Non-PBR since they do not represent real world
+						material properties and store "color" and "reflectivity" texture property
+						in a merged format distributed across "nonpbr.albedo" and "nonpbr.metalness".
+						These texture properties exist to allow using textures authored by tool
+						supporting only the Non-PBR metalness workflow including other game engines.
+						Typically this property is specified using a 24-bit image.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='nonpbr.metalness'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the Non-PBR metalness color. This texture property is part of Non-PBR
+						metalness workflow and is used together with the "nonpbr.albedo" texture
+						property. These values are Non-PBR since they do not represent real world
+						material properties and store "color" and "reflectivity" texture property
+						in a merged format distributed across "nonpbr.albedo" and "nonpbr.metalness".
+						These texture properties exist to allow using textures authored by tool
+						supporting only the Non-PBR metalness workflow including other game engines.
+						Typically this property is specified using a 8-bit image. A value of 0
+						indicates a fully dieletric material where "nonpbr.albedo" maps to "color"
+						and "reflectivity" is set to 0.23 (4%). A value of 1 indicates a fully
+						electric material where "color" is set to (0,0,0) and "nonpbr.albedo"
+						maps to "reflectivity". Values inbetween blend between these two states.
+						Due to this mapping various materials can not be properly represented.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='xray'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if the object is visible through other objects.
+						<p>
+						The property is a boolean type property.
+						</p>
+						<p>
+						A value of 0 indicates this object is covered by other objects located closer to the camera.
+						</p>
+						<p>
+						A value of 1 indicates this object is rendered in front of all other objects.
+						All objects with XRay enabled keep their depth order while rendered in front
+						of all objects with XRay disabled.
+						</p>
+						<p>
+						Other values are mapped to 0 or 1 whichever is closer.
+						</p>
+						<p>
+						Usually this property is an single value, either 0 or 1. The default is 0.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='clip.plane'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines blend factor for clipping model geometry based on the distance to a clip plane.
+						The clip plane is defined by the coordinate system of a named bone. The position of
+						the bone is the origin of the clip plane. The positive Z axis of the bone is the plane
+						normal. Vertices in front of the clip plane (along the positive bone Z axis) are
+						rendered while vertices on the back side are hidden. Using the "clip.plane.border"
+						texture property allows to create a smooth transition between the two sides. Cliping
+						is multiplied with the "solidity" texture property. This property is specified using
+						a single value in the range from 0 to 1. A value of 0 disables clipping. A value of
+						1 enables clipping. Values in between gradually blend between clipped and unclipped.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='clip.plane.border'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines size in meters of the blend zone between clipped and unclipped geometry.
+						The clip plane is defined by the coordinate system of a named bone. The position of
+						the bone is the origin of the clip plane. The positive Z axis of the bone is the plane
+						normal. Vertices in front of the clip plane (along the positive bone Z axis) are
+						rendered while vertices on the back side are hidden. This property is specified using
+						a single value. A value of 0 creates a hard break between clipped and unclipped
+						geometry. Values larger or smaller than 0 create a soft transition between clipped
+						and unclipped geometry. With values larger than 0 geometry is fully clipped at the
+						clip plane origin and fully unclipped "value" meters in front of the clip plane.
+						With values smaller than 0 geometry is fully unclipped at the clip plane origin and
+						fully clipped "-value" meters behind the clip plane. Hence using positive values
+						the border zone expands into the positive side of the clip plane while negative
+						values expand into the negative side of the clip plane.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='bounciness'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the bounciness of a surface. This is used by the physics module to determine
+						with what fraction of the incoming force an object is repelled from a surface.
+						A value of 0 equals to no bounciness in which case an object hitting this surface
+						is not repelled at all whereas 1 equals to full bounciness in which case an object
+						bounces off this surface with the force it arrived. This has to be a single value.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='sound.none'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines if the material is interacting with sound at all. This texture property can
+						be make objects become ghost-like to sound as well as helping Audio Modules optimize
+						processing time. The value is of single value type and has to be 0 for regular sound
+						processing or 1 to not affect sound processing. The default value is 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='sound.absorption'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the sound absorption of a surface. This property is used by the audio
+						module to determine the fraction of sound energy absorbed by the surface.
+						The value is of single value type and has to be in the range from 0 to 1.
+						A value of 0 absorbs no sound while a value of 1 absorbs all sound.
+						The default value is 0.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='sound.absorption.lower'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the scaling factor to apply to "sound.absorption" for low frequencies.
+						The scale factor changes linearly from lower to upper value depending on frequency.
+						The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='sound.absorption.upper'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the scaling factor to apply to "sound.absorption" for tones of high
+						frequencies. The scale factor changes linearly from lower to upper value
+						depending on frequency. The default value is 1.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='sound.transmission'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the required thickness in meters of material before sound drops to inaudible
+						levels. This property is used by the audio module to determine the transmission loss
+						for sound passing through material after applying absorption. The reflected sound
+						energy is the remaining amount of sound energy after absorption and transmission.
+						Hence if you want a fully reflective wall set transmission to 0.
+						<p>
+						The thickness of a material is defined as the distance between the model face where
+						the sound enters the surface and the first model face it exits. Faces are classified
+						using the orientation of their face normal compared to the sound travel direction:
+						</p>
+						<ul>
+						<li>Entering faces: face normal points in the opposite direction</li>
+						<li>Exiting faces: face normal points in the same direction</li>
+						</ul>
+						<p>
+						Another way to look at it would be saying "entering faces" point towards the sound
+						wave while "exiting faces" point away from the sound wave.
+						</p>
+						<p>
+						The "exiting faces" are not required to be located in the same Component resource.
+						Actually in most of the situations this is not the case.
+						</p>
+						<p>
+						If no "exiting face" exists the thickness is considered to be infinite and sound
+						waves are inaudible.
+						</p>
+						<p>
+						The property value is of single value type and has to be 0 or larger. With a value of
+						0 sound passing through the material is always inaudible. For larger values the sound
+						volume drops linear with distance travelled in the material.
+						</p>
+						<p>
+						The "sound.transmission.lower" and "sound.transmission.upper" properties are
+						multipliers for this property for different frequency ranges.
+						</p>
+						<p>
+						The default value is 0.4 which equals a 40cm thick brickwork wall plastered on both sides.
+						</p>
+						<p>
+						Typical values:
+						</p>
+						<ul>
+						<li>Brickwork plastered both sides: 0.4</li>
+						<li>Brickwork plastered one side: 0.92</li>
+						<li>Wood studs (38/89mm) 20mm Gypsum both sides: 0.78</li>
+						<li>6mm double glass with air-gap: 0.7</li>
+						<li>75mm timber studs plastered both sides: 1.2</li>
+						</ul>
+						<p>
+						Reasonable range values can be calculated from engineering charts for sound
+						transmission using this approximation: range = thickness * pow(2, -reductionDB/6) * 1024.
+						Units are: range(m), thickness(m), reductionDB(dB). 1024 is 1/pow(2,-60[dB]/6).
+						</p>
+						<p>
+						Note: Double Sided Geometry
+						To simulate a material like air-gap double window glass done using double sided model
+						textures use "sound.transmission" with a value of 0.7 and a "thickness" of 0.1.
+						This values are from the above table. This creates a material with constant sound
+						transmission effect transmitting 1/7 of sound volume to the other side.
+						</p>
+						<p>
+						Note: No Transmission Loss
+						To simulate a material with no transmission loss use "sound.none" if there is no
+						absorption or a large value like 1000 if there is absorption.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='sound.transmission.lower'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the scaling factor to apply to "sound.transmission" for low frequencies.
+						The scale factor changes linearly from lower to upper value depending on frequency.
+						Walls typically filter out higher frequencies allowing lower frequencies to pass easily.
+						<p>
+						The default value is 2.8 which equals to a reduction of noise reduction capability
+						of the material by 9dB.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value='sound.transmission.upper'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines the scaling factor to apply to "sound.transmission" for high frequencies.
+						The scale factor changes linearly from lower to upper value depending on frequency.
+						Walls typically filter out higher frequencies allowing lower frequencies to pass easily.
+						<p>
+						The default value is 0.28 which equals to an increase of noise reduction capability
+						of the material by 11dB (empirical engineering value). Higher values increase the
+						high-pass filter effect. A value of 1 removes the low-pass filter effect.
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='property_renderable'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Renderable name to use. Renderables of dynamic skins modify properties with
+				matching renderable name. If no dynamic skin nor renderable with matching name
+				is present the regular defined property value is used.
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='property_bone'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Bone to use for dynamic content.
+			]]></xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	
+	<xs:attributeGroup name='texture_attribs'>
+		<xs:attribute name='property' type='property_property' use='required'/>
+		<xs:attribute name='renderable' type='property_renderable' use='optional'/>
+		<xs:attribute name='bone' type='property_bone' use='optional'/>
+	</xs:attributeGroup>
+	
+	<xs:complexType name='texture'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Skin Texture. Stores information about a skin texture. Each texture contains
+				properties defining the material properties for rendering, audio, physics and
+				other uses.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='value'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Property defined by a static value.
+						<p>
+						Default value depends on property
+						([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType mixed='true'>
+					<xs:simpleContent>
+						<xs:extension base='xs:decimal'>
+							<xs:attributeGroup ref='texture_attribs'/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Property defined by a static color. Many properties require only
+						3 components (red, green, blue) in which case the 4th component
+						is not required.
+						<p>
+						Default color depends on property
+						([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attributeGroup ref='texture_attribs'/>
+					<xs:attributeGroup ref='color_rgba'/>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='image'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Property defined by a static image. The UV coordinates stored in a mesh
+						are used to index into the image. The range of UV coordinates is matched
+						to the size of the texture with uv=(0,0) being the upper left corner and
+						uv=(1,1) the lower right corner. The format of the image can be 8-bit
+						gray scale (often called intensity images), 32-bit RGB (3-color image)
+						or 32-bit RGBA (3-color image with alpha channel). In memory the image
+						is arranged in the same way in row order from left to right and top to
+						bottom without any padding. Specifying a static color for an image is
+						allowed but not the other way around.
+						<p>
+						Default content depends on property
+						([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType mixed='true'>
+					<xs:simpleContent>
+						<xs:extension base='xs:string'>
+							<xs:attributeGroup ref='texture_attribs'/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='video'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Property defined by a video. The UV coordinates stored in a mesh are
+						used to index into the video images. The range of UV coordinates is
+						matched to the size of the video with uv=(0,0) being the upper left
+						corner and uv=(1,1) the lower right corner. The format of the video
+						can be 8-bit gray scale, 24-bit RGB or 32-bit RGBA. A video is
+						automatically played back using a play speed relative to the update
+						calls done to the world object containing a component with a video
+						texture property. In contrary to videos used over renderables the
+						control over static videos is limited. Specifying a static color for
+						an video is allowed but not the other way around.
+						<p>
+						Default content depends on property
+						([Property List](https://developer.dragondreams.ch/wiki/doku.php/gamedev:texturepropertylist)).
+						</p>
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType mixed='true'>
+					<xs:simpleContent>
+						<xs:extension base='xs:string'>
+							<xs:attributeGroup ref='texture_attribs'/>
+							<xs:attribute name='sharedTime' type='xs:boolean' default='true'>
+								<xs:annotation>
+									<xs:documentation><![CDATA[
+										Share playback time across all instances of the same texture.
+										<p>
+										Default value is <code>true</code>.
+										</p>
+									]]></xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='mapped' type='property_mapped'/>
+			<xs:element name='constructed' type='property_constructed'/>
+		</xs:choice>
+		
+		<xs:attribute name='name' use='required'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Name of texture. Textures are mapped to component textures by name.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='mapped'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Mapped calculating output value from input values using mapping rules.
+				Referenced by <code>mapped</code> texture properties.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='curve'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='curve'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Mapping curve to use.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='inputType'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set input type.
+					]]></xs:documentation>
+				</xs:annotation>
+				
+				<xs:simpleType>
+					<xs:restriction base='xs:string'>
+						<xs:enumeration value='time'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use elapsed time.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='bonePositionX'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone X position.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='bonePositionY'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone Y position.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='bonePositionZ'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone Z position.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='boneRotationX'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone X rotation in degrees.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='boneRotationY'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone Y rotation in degrees.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='boneRotationZ'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone Z rotation in degrees.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='boneScaleX'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone X scale.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='boneScaleY'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone Y scale.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='boneScaleZ'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use named bone Z scale.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='renderable'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use renderable. Supports value and color renderables.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name='inputLower' type='xs:decimal'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set lower input range. Input value is mapped from lower to upper value
+						to the range from 0 to 1. This is then used as input for the mapping curve.
+						This avoids the need to scale values in the curve which in turn allows
+						to copy and reuse curves easier.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='inputUpper' type='xs:decimal'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set upper input range. Input value is mapped from lower to upper value
+						to the range from 0 to 1. This is then used as input for the mapping curve.
+						This avoids the need to scale values in the curve which in turn allows
+						to copy and reuse curves easier.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='inputClamped' type='xs:boolean' default='false'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set if input value is clamped to range instead of wrapping around.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='outputLower' type='xs:decimal'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set lower output range. Curve output value is mapped from the range 0 to 1
+						to the range from lower output to upper output. This avoids the need to
+						scale values in the curve which in turn allows to copy and reuse curves easier.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='outputUpper' type='xs:decimal'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set upper output range. Curve output value is mapped from the range 0 to 1
+						to the range from lower output to upper output. This avoids the need to
+						scale values in the curve which in turn allows to copy and reuse curves easier.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='bone' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set bone to use for bone related input types.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='renderable' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set renderable to use for renderable related input types.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='renderableComponent'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set color component to use if renderable is of color type.
+					]]></xs:documentation>
+				</xs:annotation>
+				
+				<xs:simpleType>
+					<xs:restriction base='xs:string'>
+						<xs:enumeration value='red'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use red component if renderable is of color type.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='green'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use green component if renderable is of color type.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='blue'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use blue component if renderable is of color type.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='alpha'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Use alpha component if renderable is of color type.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='name' type='xs:string' use='required'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Name of mapped.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='skin'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Skin.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:editors:skin?s[]=skin).
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='mapped' type='mapped'/>
+			<xs:element name='texture' type='texture'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name='skin' type='skin'>
+		<xs:key name='key.texture.name'>
+			<xs:selector xpath='texture'/>
+			<xs:field xpath='@name'/>
+		</xs:key>
+		
+		<xs:key name='key.mapped.name'>
+			<xs:selector xpath='mapped'/>
+			<xs:field xpath='@name'/>
+		</xs:key>
+		
+		<xs:keyref name='keyref.mapped.name' refer='key.mapped.name'>
+			<xs:selector xpath='texture/mapped/mappedRed |
+				texture/mapped/mappedGreen |
+				texture/mapped/mappedBlue |
+				texture/mapped/mappedAlpha |
+				.//group/mapped |
+				.//image/mapped |
+				.//shape/mapped |
+				.//text/mapped'/>
+			<xs:field xpath='.'/>
+		</xs:keyref>
+	</xs:element>
+</xs:schema>

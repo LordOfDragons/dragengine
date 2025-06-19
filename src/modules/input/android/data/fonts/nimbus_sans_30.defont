@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE font SYSTEM 'DragengineFont.dtd'>
 <font>
 	<image src='nimbus_sans_30.png'/>
 	<lineHeight>52</lineHeight>

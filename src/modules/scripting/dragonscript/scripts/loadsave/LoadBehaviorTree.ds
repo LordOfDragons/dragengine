@@ -37,6 +37,8 @@ pin Dragengine.XML
  * 
  * Supports caching behavior trees to avoid loading the same behavior tree multiple times.
  * Returned behavior tree can thus be shared so do not change it.
+ * 
+ * \see https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/behaviorTree.xsd
  */
 class LoadBehaviorTree extends BaseXmlLoader
 	/**\brief Dictionary of cached behavior trees (Dictionary: String -> BehaviorTree). */

@@ -1,0 +1,663 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Parameter Tree XML files.
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
+	
+	<xs:simpleType name='parameter_path'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Path of parameter to set. Path separater is chosen by application but typically
+				it is <code>/</code>. Do not begin with <code>/</code> since this is no file system path.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='list'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set list parameter. Lists can contain all other parameter types in any combination.
+				See the game documentation on what values are allowed inside the list.
+				<p>
+				Lists support appending values by using the <code>append</code> attribute. Append can be
+				used only if the list is not located in a list.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string' type='string'/>
+			<xs:element name='float' type='float'/>
+			<xs:element name='integer' type='integer'/>
+			<xs:element name='boolean' type='boolean'/>
+			<xs:element name='vector' type='vector'/>
+			<xs:element name='vector2' type='vector2'/>
+			<xs:element name='point' type='point'/>
+			<xs:element name='point3' type='point3'/>
+			<xs:element name='borderSize' type='borderSize'/>
+			<xs:element name='rectArea' type='rectArea'/>
+			<xs:element name='floatRectArea' type='floatRectArea'/>
+			<xs:element name='color' type='color'/>
+			<xs:element name='curve' type='curve'/>
+			<xs:element name='curve3d' type='curve3d'/>
+			<xs:element name='null' type='null'/>
+			<xs:element name='list' type='list'/>
+			<xs:element name='map' type='map'/>
+			<xs:element name='tree' type='parameterTree'/>
+			<xs:element name='treeFile' type='treeFile'/>
+		</xs:choice>
+		
+		<xs:attribute name='append' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Append to list if present (attribute value does not matter).
+					<p>
+					If the list parameter does not exist it is created with the
+					specified list content. If the list parameter does exist the specified
+					list content is appended to the existing list.
+					</p>
+					<p>
+					Append mode is useful for game modifications to extend existing
+					lists for example to add more objects a player can use. Append mode is
+					also useful without game modifications to allow storing parameter trees
+					for individual game components combining the values together. This
+					makes developing complex game content easier.
+					</p>
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+			
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:pattern value=''></xs:pattern>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:simpleType name='map_key'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Key of entry. If entry with the same key is present it is overwritten.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='map'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set map parameter. Maps are associative lists storing for each entry a string
+				key and a value which can be any other parameter types. See the game documentation
+				on what values are allowed inside the map.
+				<p>
+				Maps support adding values by using the <code>append</code> attribute. Append can be
+				used only if the map is not located in a list.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='string'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='float'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='float'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='integer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='integer'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='boolean'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='boolean'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector2'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector2'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point3'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point3'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='borderSize'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='borderSize'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='rectArea'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='floatRectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='floatRectArea'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='curve'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='curve'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='curve3d'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='curve3d'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='null'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='null'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='list'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='list'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='map'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='map'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='tree'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='parameterTree'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+							<xs:attribute type='tree_append' name='append' use='optional'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='treeFile'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='treeFile'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+							<xs:attribute type='tree_append' name='append' use='optional'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='append' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Append to map if present (attribute value does not matter).
+					<p>
+					If the map parameter does not exist it is created with
+					the specified map content. If the mapt parameter does exist the
+					specified map content is added to the existing map overwriting existing
+					values with same keys.
+					</p>
+					<p>
+					Append mode is useful for game modifications to extend existing
+					maps for example to add more objects a player can use. Append mode is
+					also useful without game modifications to allow storing parameter trees
+					for individual game components combining the values together. This
+					makes developing complex game content easier.
+					</p>
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+			
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:pattern value=''></xs:pattern>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:simpleType name='tree_append' final='restriction'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Append to tree if present (attribute value does not matter).
+				<p>
+				If the tree parameter does not exist it is created with
+				the specified tree content. If the tree parameter does exist the
+				specified tree content is added to the existing tree overwriting existing
+				parameters with same path.
+				</p>
+				<p>
+				Append mode is useful for game modifications to extend existing
+				trees for example to add more objects a player can use. Append mode is
+				also useful without game modifications to allow storing parameter trees
+				for individual game components combining the values together. This
+				makes developing complex game content easier.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:restriction base='xs:string'>
+			<xs:pattern value=''></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name='treeFile'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Load parameter tree from file. Path can be relative to the directory this
+				parameter tree file is located in.
+				<p>
+				Parameter trees support adding values by using the <code>append</code> attribute.
+				Append can be used only if the parameter tree is not located in a list.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:string'/>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameterTree'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Parameter Tree.
+				<p>
+				Parameter trees support adding values by using the <code>append</code> attribute.
+				Append can be used only if the parameter tree is not located in a list and
+				is not the root element.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='string'>
+							<xs:annotation>
+								<xs:documentation>Set string parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='float'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='float'>
+							<xs:annotation>
+								<xs:documentation>Set float parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='integer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='integer'>
+							<xs:annotation>
+								<xs:documentation>Set integer parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='boolean'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='boolean'>
+							<xs:annotation>
+								<xs:documentation>Set boolean parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector'>
+							<xs:annotation>
+								<xs:documentation>Set vector parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector2'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector2'>
+							<xs:annotation>
+								<xs:documentation>Set vector2 parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point'>
+							<xs:annotation>
+								<xs:documentation>Set point parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point3'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point3'>
+							<xs:annotation>
+								<xs:documentation>Set point3 parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='borderSize'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='borderSize'>
+							<xs:annotation>
+								<xs:documentation>Set border size parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='rectArea'>
+							<xs:annotation>
+								<xs:documentation>Set rectangular area parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='floatRectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='floatRectArea'>
+							<xs:annotation>
+								<xs:documentation>Set float rectangular area parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation>Set color parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='curve'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='curve'>
+							<xs:annotation>
+								<xs:documentation>Set 2d curve parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='curve3d'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='curve3d'>
+							<xs:annotation>
+								<xs:documentation>Set 3d curve parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='null'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='null'>
+							<xs:annotation>
+								<xs:documentation>Set null parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='list'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='list'>
+							<xs:annotation>
+								<xs:documentation>Set list parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='map'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='map'>
+							<xs:annotation>
+								<xs:documentation>Set map parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='tree'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='parameterTree'>
+							<xs:annotation>
+								<xs:documentation>Set tree parameter</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+							<xs:attribute type='tree_append' name='append' use='optional'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='treeFile'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='treeFile'>
+							<xs:attribute type='parameter_path' name='path' use='required'/>
+							<xs:attribute type='tree_append' name='append' use='optional'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='pathPrefix' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Prefix to prepend to all parameter path.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:element name='parameterTree' type='parameterTree'>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for parameter Drag[en]gine XML types. Contains only type definitions.
+			Extends basic types with a <code>parameter</code> attribute and added documentation.
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
+	
+	
+	<xs:simpleType name='parameter_name'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Name of parameter.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='parameter_string'>
+		<xs:complexContent>
+			<xs:extension base='string'>
+				<xs:annotation>
+					<xs:documentation>String parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_float'>
+		<xs:complexContent>
+			<xs:extension base='float'>
+				<xs:annotation>
+					<xs:documentation>Float parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_integer'>
+		<xs:complexContent>
+			<xs:extension base='integer'>
+				<xs:annotation>
+					<xs:documentation>Integer parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_boolean'>
+		<xs:complexContent>
+			<xs:extension base='boolean'>
+				<xs:annotation>
+					<xs:documentation>Boolean parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_point'>
+		<xs:complexContent>
+			<xs:extension base='point'>
+				<xs:annotation>
+					<xs:documentation>Point parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_borderSize'>
+		<xs:complexContent>
+			<xs:extension base='borderSize'>
+				<xs:annotation>
+					<xs:documentation>Set border size parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_color'>
+		<xs:complexContent>
+			<xs:extension base='color'>
+				<xs:annotation>
+					<xs:documentation>Set color parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_null'>
+		<xs:complexContent>
+			<xs:extension base='null'>
+				<xs:annotation>
+					<xs:documentation>Null parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_colorMatrix'>
+		<xs:complexContent>
+			<xs:extension base='colorMatrix'>
+				<xs:annotation>
+					<xs:documentation>Set color matrix parameter</xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_image'>
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Image parameter. Relative or absolute path to image resource to load.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_video'>
+		<xs:simpleContent>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Video parameter. Relative or absolute path to video resource to load.
+				]]></xs:documentation>
+			</xs:annotation>
+			<xs:extension base='xs:string'>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name='parameter_font'>
+		<xs:simpleContent>
+			<xs:extension base='font'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Font parameter. Relative or absolute path to font resource to load.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:attribute type='parameter_name' name='parameter' use='required'/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

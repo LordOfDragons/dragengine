@@ -1,0 +1,139 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Dynamic Music XML files.
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	
+	<xs:complexType name='transition'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Transition to new music part. Transition is chosen if all mentioned switches
+				are in the required state.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='on' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Switch has to be enabled to choose this transition.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name='off' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Switch has to be disabled to choose this transition.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='target' type='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Name of part to transition to if conditions are fulfilled.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='init'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Initial state. Defines transitions from not playing to first playing part.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='transition' type='transition'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='part'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Part state. Defines transitions to next parts.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='music' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Relative or absolute path to sound file to play.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='transition' type='transition'/>
+		</xs:choice>
+		
+		<xs:attribute name='id' type='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Identifier of part.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='dynamicMusic'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Dynamic Music.
+				<p>
+				Dynamic Music allows to play various connected music parts by switching between
+				them using switches. The switching happens when one part ends. For each part the
+				next possible parts depending on the switches set can be defined. This way music
+				flows through different parts without using blending which has the highest quality.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='switch' type='xs:string'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Music switch. Used by transitions to figure out which part to
+						play next. Switches are boolean and can be on or off.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='init' type='init'/>
+			<xs:element name='part' type='part'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name='dynamicMusic' type='dynamicMusic'>
+		<xs:key name='key.switch'>
+			<xs:selector xpath='switch'/>
+			<xs:field xpath='.'/>
+		</xs:key>
+		
+		<xs:keyref name='keyref.switch' refer='key.switch'>
+			<xs:selector xpath='.//transition/on | .//transition/off'/>
+			<xs:field xpath='.'/>
+		</xs:keyref>
+		
+		<xs:key name='key.part.id'>
+			<xs:selector xpath='part'/>
+			<xs:field xpath='@id'/>
+		</xs:key>
+		
+		<xs:keyref name='keyref.part.id' refer='key.part.id'>
+			<xs:selector xpath='.//transition'/>
+			<xs:field xpath='@target'/>
+		</xs:keyref>
+	</xs:element>
+</xs:schema>

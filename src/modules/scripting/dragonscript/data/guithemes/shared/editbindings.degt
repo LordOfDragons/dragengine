@@ -67,13 +67,13 @@
 	</designer>
 	
 	<designer name='Label.EditBindingsEntry.Binding' extendNamed='Label'>
-		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.ccreator.xml'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.decc'>
 			<colorMatrix parameter='colorMatrix'>
 				<scale r='0.9' g='1' b='0.9'/>
 			</colorMatrix>
 		</canvasCreator>
 		<border parameter='normal.border' type='CanvasCreator'>
-			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.ccreator.xml'>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.decc'>
 				<colorMatrix parameter='colorMatrix'>
 					<scale r='0.6' g='0.6' b='0.6'/>
 				</colorMatrix>

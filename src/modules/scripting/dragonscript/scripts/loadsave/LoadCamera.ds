@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.LoadSave
 
 pin Dragengine.CameraDirectors
@@ -32,12 +31,11 @@ pin Dragengine.XML
 
 
 /**
- * \brief Load/save camera parameters.
+ * \brief Load/save camera parameters from ".decamera" files.
  * \version 1.21
  */
 class LoadCamera extends BaseXmlLoader
 	var Dictionary pCameras
-	
 	
 	
 	/** \brief Create camera loader. */
@@ -50,10 +48,7 @@ class LoadCamera extends BaseXmlLoader
 	end
 	
 	
-	
-	/**
-	 * \brief Load camera from file into new camera director.
-	 */
+	/** \brief Load camera from file into new camera director. */
 	func CameraDirector loadFromFile(String filename)
 		var CameraDirector director = CameraDirector.new()
 		director.setLayerMask(null) // important or applying parameters changes layer mask
@@ -61,9 +56,7 @@ class LoadCamera extends BaseXmlLoader
 		return director
 	end
 	
-	/**
-	 * \brief Load camera from file into camera director.
-	 */
+	/** \brief Load camera from file into camera director. */
 	func void loadFromFile(String filename, CameraDirector director)
 		var CameraDirector cached = pCameras.getAt(filename, null) cast CameraDirector
 		if cached != null
@@ -82,16 +75,12 @@ class LoadCamera extends BaseXmlLoader
 		director.copyParameters(cached)
 	end
 	
-	/**
-	 * \brief Load camera from file into camera.
-	 */
+	/** \brief Load camera from file into camera. */
 	func void loadFromFile(String filename, Camera camera)
 		loadFromFile(filename).applyParameters(camera)
 	end
 	
-	/**
-	 * \brief Save camera from camera director to file.
-	 */
+	/** \brief Save camera from camera director to file. */
 	func void saveToFile(String filename, CameraDirector director)
 		if director == null
 			throw ENullPointer.new("director")
@@ -113,9 +102,7 @@ class LoadCamera extends BaseXmlLoader
 		pCameras.setAt(filename, cached)
 	end
 	
-	/**
-	 * \brief Save camera from camera to file.
-	 */
+	/** \brief Save camera from camera to file. */
 	func void saveToFile(String filename, Camera camera)
 		if camera == null
 			throw ENullPointer.new("camera")
@@ -125,7 +112,6 @@ class LoadCamera extends BaseXmlLoader
 		director.copyParameters(camera)
 		saveToFile(filename, director)
 	end
-	
 	
 	
 	/** \brief Read camera tag. */
@@ -181,7 +167,6 @@ class LoadCamera extends BaseXmlLoader
 			end
 		end)
 	end
-	
 	
 	
 	/** \brief Write camera tag. */

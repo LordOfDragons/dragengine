@@ -5,12 +5,76 @@
 		}
 	],
 	"settings": {
-		"dragonscriptLanguage.requiresPackageDragengine": true,
-		"xml.fileAssociations": [
-			{
-				"pattern": "**/*.desconvo",
-				"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/simpleConversation.xsd"
-			}
-		]
-	}
+		"dragonscriptLanguage.requiresPackageDragengine": true
+	},
+	"xml.fileAssociations": [
+		{
+			"pattern": "**/*.desconvo",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/simpleConversation.xsd"
+		},
+		{
+			"pattern": "**/*.debt",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/behaviorTree.xsd"
+		},
+		{
+			"pattern": "**/*.desm",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/stateMachine.xsd"
+		},
+		{
+			"pattern": "**/*.dept",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTree.xsd"
+		},
+		{
+			"pattern": "**/*.deeclass",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/elementClass.xsd"
+		},
+		{
+			"pattern": "**/*.decc",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd"
+		},
+		{
+			"pattern": "**/*.debor",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/border.xsd"
+		},
+		{
+			"pattern": "**/*.dedeco",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/decoration.xsd"
+		},
+		{
+			"pattern": "**/*.demp",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/mousePointer.xsd"
+		},
+		{
+			"pattern": "**/*.dedes",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/designer.xsd"
+		},
+		{
+			"pattern": "**/*.degt",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/guitheme.xsd"
+		},
+		{
+			"pattern": "**/*.decamera",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/camera.xsd"
+		},
+		{
+			"pattern": "**/*.deskin",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/skin.xsd"
+		},
+		{
+			"pattern": "**/*.deskinann",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/skinAnnotations.xsd"
+		},
+		{
+			"pattern": "**/*.dest",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/styledText.xsd"
+		},
+		{
+			"pattern": "**/*.deann",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/announcer.xsd"
+		},
+		{
+			"pattern": "**/*.dedm",
+			"systemId": "https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dynamicMusic.xsd"
+		}
+	]
 }
