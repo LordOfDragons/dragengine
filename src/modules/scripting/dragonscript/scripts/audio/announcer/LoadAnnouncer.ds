@@ -33,7 +33,7 @@ pin Dragengine.XML
 
 
 /**
- * \brief Load announcer from ".deannouncer" file.
+ * \brief Load announcer from ".dean" file.
  * 
  * Before first use set synthesizer loader with \ref #setSynthesizerLoader(). Otherwise
  * loading announcer fails if a modifier synthesizer tag is encountered.
@@ -189,7 +189,7 @@ class LoadAnnouncer extends BaseXmlLoader
 	private func void pParseParts(EasyXMLElement root, Announcer announcer, \
 	String baseDirectory, PreloadAnnouncer preloader)
 		var String directoryName = root.getFirstCData()
-		var String pattern = "*.deannouncer"
+		var String pattern = "*.deann"
 		var int idCutOff = 0
 		
 		if root.hasAttributeNamed("pattern")

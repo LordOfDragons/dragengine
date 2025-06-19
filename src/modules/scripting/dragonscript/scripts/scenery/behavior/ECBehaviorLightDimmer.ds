@@ -71,7 +71,7 @@ pin Dragengine.Utils
  * 
  * This behavior does require the element class to be persistable (setPersistable).
  * 
- * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lightdimmerr
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lightdimmer
  */
 class ECBehaviorLightDimmer extends DefaultECBehavior
 	/**

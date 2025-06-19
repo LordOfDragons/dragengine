@@ -2538,7 +2538,7 @@
 			<type>path</type>
 			<pathPatternType>custom</pathPatternType>
 			<customPathPattern>
-				<add name='Announcer Definition' pattern='*.deannouncer' default='.deannouncer'/>
+				<add name='Announcer Definition' pattern='*.deann' default='.deann'/>
 			</customPathPattern>
 		</property>
 		<property name='volume'>
