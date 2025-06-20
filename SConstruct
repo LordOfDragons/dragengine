@@ -291,6 +291,7 @@ params.Add(BoolVariable('build_vr_openvr_internal', 'Build OpenVR VR Module as i
 params.Add(BoolVariable('build_vr_openxr_internal', 'Build OpenXR VR Module as internal module', True))
 
 params.Add(BoolVariable('with_static_internalmodules', 'Statically link internal modules', False))
+params.Add(BoolVariable('with_engine_deal', 'Build Drag[en]gine Asset Library', True))
 
 params.Add(TernaryVariable('build_igde', 'Build IGDE'))
 params.Add(TernaryVariable('build_editor_animator', 'Build IGDE Animator Editor'))
@@ -937,6 +938,9 @@ scdirs.append('src/modules/vr/openxr')
 scdirs.append('src/modules/service/steamsdk')
 scdirs.append('src/modules/service/eossdk')
 scdirs.append('src/modules/service/modio')
+
+# engine asset library
+scdirs.append('src/dragengine/asset')
 
 # launchers
 scdirs.append('src/launcher/shared')

@@ -516,6 +516,10 @@ bool debpColliderRig::IsSimpleShape() const{
 	return pSimplePhyBody != NULL;
 }
 
+bool debpColliderRig::PrepareStaticCollisionTest(){
+	return false;
+}
+
 
 
 // Debugging

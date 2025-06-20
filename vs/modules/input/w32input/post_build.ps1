@@ -2,7 +2,8 @@
     [Parameter(Mandatory=$true)][string]$SourceDir,
     [Parameter(Mandatory=$true)][string]$OutputDir,
     [Parameter(Mandatory=$true)][string]$DistributeDir,
-    [Parameter(Mandatory=$false)][switch]$InternalModule = $false
+    [Parameter(Mandatory=$false)][switch]$InternalModule = $false,
+    [Parameter(Mandatory=$false)][switch]$WithEngineDeal = $false
 )
 
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
@@ -24,8 +25,22 @@ if(!$InternalModule)
         -Library $Library -Version $Version
 }
 
-Copy-Files -SourceDir "$SourceDir\..\data" -Pattern "*"`
-    -TargetDir "$DistributeDir\$PathDistDESharesModules\input\w32input\$Version"
+if($WithEngineDeal)
+{
+    $BaseDataTargetDir = "$OutputDir\..\enginedeal\modules\input\w32input"
+    if (Test-Path $BaseDataTargetDir) {
+        Remove-Item $BaseDataTargetDir -Force -Recurse
+    }
+    
+    $DataTargetDir = "$BaseDataTargetDir\$Version"
+    New-Item -ItemType Directory $DataTargetDir | Out-Null
+}
+else
+{
+    $DataTargetDir = "$DistributeDir\$PathDistDESharesModules\input\w32input\$Version"
+}
+
+Copy-Files -SourceDir "$SourceDir\..\data" -Pattern "*" -TargetDir $DataTargetDir
 
 
 # debug

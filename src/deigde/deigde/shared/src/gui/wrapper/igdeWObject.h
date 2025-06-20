@@ -78,6 +78,12 @@ public:
 		
 		/** \brief Loading finished. */
 		virtual void LoadFinished( igdeWObject &wrapper, bool succeeded ) = 0;
+		
+		/** \brief Any content visibility changed. */
+		virtual void AnyContentVisibleChanged(igdeWObject &wrapper);
+		
+		/** \brief Extends changed. */
+		virtual void ExtendsChanged(igdeWObject &wrapper);
 	};
 	
 	
@@ -103,6 +109,7 @@ private:
 	decDVector pPosition;
 	decQuaternion pOrientation;
 	decVector pScaling;
+	decDMatrix pMatrix, pInvMatrix;
 	
 	decStringDictionary pProperties;
 	
@@ -137,6 +144,8 @@ private:
 	
 	cAsyncLoadFinished *pAsyncLoadFinished;
 	int pAsyncLoadCounter;
+	
+	bool pAnyContentVisible;
 	
 	
 	
@@ -201,6 +210,12 @@ public:
 	
 	/** \brief Set scaling. */
 	void SetScaling( const decVector &scaling );
+	
+	/** \brief Matrix. */
+	inline const decDMatrix &GetMatrix() const{ return pMatrix; }
+	
+	/** \brief Inverse matrix. */
+	inline const decDMatrix &GetInverseMatrix() const{ return pInvMatrix; }
 	
 	/** \brief Determines if the object is visible. */
 	inline bool GetVisible() const{ return pVisible; }
@@ -321,6 +336,17 @@ public:
 	 */
 	deComponent *GetComponent() const;
 	
+	/**
+	 * \brief Object has any content which is visible.
+	 * 
+	 * Returns true if any of the wrapped resources is visible. For example a component resource
+	 * without valid model or with no texture containing a valid skin is invisible. If this
+	 * function returns true the caller should show a placeholder for this object since otherwise
+	 * the user can not see where it is. This check does not include the visibility state of the
+	 * object. Hence invisible content is still considered visible if it would be visible otherwise.
+	 */
+	inline bool IsAnyContentVisible() const{ return pAnyContentVisible; }
+	
 	/** \brief Collider component. */
 	inline const deColliderComponent::Ref &GetColliderComponent() const{ return pColliderComponent; }
 	
@@ -426,6 +452,7 @@ public:
 	inline deDynamicSkin *GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
 	void AddInteractionCollider( deCollider *collider );
 	void RemoveInteractionCollider( deCollider *collider );
+	void UpdateAnyContentVisibile();
 	/*@}*/
 	
 	
@@ -454,6 +481,7 @@ private:
 	void pUpdateColliderShapes();
 	
 	void pPrepareExtends();
+	void pUpdateMatrices();
 };
 
 #endif

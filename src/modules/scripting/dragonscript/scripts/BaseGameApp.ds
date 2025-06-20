@@ -86,7 +86,7 @@ pin Dragengine.Services
  *    end
  *    
  *    func new()
- *       pathDesktopGuiTheme = "/content/ui/main.guitheme.xml"
+ *       pathDesktopGuiTheme = "/content/ui/main.degt"
  *       // set more properties here if required. do all init work in initGame()
  *    end
  *    
@@ -115,7 +115,7 @@ pin Dragengine.Services
 class BaseGameApp extends Game
 	/** \brief Path of default gui theme provided by the DragonScript module. */
 	public static fixed var String defaultPathGuiTheme = \
-		"/shareddata/guithemes/modern/modern.guitheme.xml"
+		"/shareddata/guithemes/modern/modern.degt"
 	
 	/**
 	 * \brief Invert looking up-down setting key.
@@ -280,7 +280,7 @@ class BaseGameApp extends Game
 	/**
 	 * \brief Configuration file path property.
 	 * 
-	 * Default value is "/configuration.ptree.xml". Change this property before initGame is
+	 * Default value is "/configuration.dept". Change this property before initGame is
 	 * called if the configuration parameter tree file is located in a different place.
 	 * 
 	 * Using a configuration parameter tree file is optional. If the file is not present it
@@ -336,7 +336,7 @@ class BaseGameApp extends Game
 	/**
 	 * \brief Application settings file path property.
 	 * 
-	 * Default value is "/config/settings.xml". "/config" has to match the "Config Path"
+	 * Default value is "/config/settings.dept". "/config" has to match the "Config Path"
 	 * set in the game project.
 	 */
 	protected var String pathSavedSettings
@@ -353,7 +353,7 @@ class BaseGameApp extends Game
 	 * \brief Default binding input processor mouse axis scale factor.
 	 * \version 1.18
 	 * 
-	 * Default value is 0.2.
+	 * Default value is 0.1.
 	 */
 	protected var float defaultInputMouseAxisScale
 	
@@ -411,14 +411,22 @@ class BaseGameApp extends Game
 		pathLanguagePacks = null
 		defaultLanguagePackName = UnicodeString.newFromUTF8("English")
 		defaultLanguagePackIdentifier = "en"
-		pathConfiguration = "/configuration.ptree.xml"
+		pathConfiguration = "/configuration.dept"
 		pathSavedBindings = "/config/bindings.xml"
-		pathSavedSettings = "/config/settings.ptree.xml"
+		pathSavedSettings = "/config/settings.dept"
 		defaultConsoleBufferSize = 50
-		defaultInputMouseAxisScale = 0.2
+		defaultInputMouseAxisScale = 0.1
 		defaultInputMouseWheelScale = 0.2
 			// TODO: make the config path used by the game available to the script
 			//       then this value can be calculated requiring less setting up
+		
+		// backwards compatibility
+		if FileSystem.existsFile("/configuration.ptree.xml")
+			pathConfiguration = "/configuration.ptree.xml"
+		end
+		if FileSystem.existsFile("/config/settings.ptree.xml")
+			pathSavedSettings = "/config/settings.ptree.xml"
+		end
 	end
 	
 	
@@ -1217,7 +1225,7 @@ class BaseGameApp extends Game
 	 * end
 	 * \endcode
 	 * 
-	 * See LoadSkinAnnotations.loadFromFiles for details about the *.deskinann files.
+	 * See LoadSkinAnnotations.loadFromFiles for details about the ".deskinann" files.
 	 */
 	protected func SkinAnnotations createSkinAnnotations()
 		return SkinAnnotations.new()

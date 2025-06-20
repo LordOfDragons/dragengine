@@ -106,6 +106,11 @@ public:
 	void SetTestCollider( btCollisionObject *collisionObject,
 		debpCollider *collider, deBaseScriptingCollider *listener );
 	
+	void SetTestCollider(debpCollider *collider, deBaseScriptingCollider *listener);
+	
+	/** \brief Set test collision object. */
+	void SetTestCollisionObject(btCollisionObject *collisionObject);
+	
 	/** \brief Ignore multiple contact points to not send them multiple times to the listener. */
 	void SetIgnoreMultipleContactPoints( bool ignore );
 	/*@}*/

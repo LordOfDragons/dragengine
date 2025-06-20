@@ -239,6 +239,9 @@ void igdeWOSOBillboard::AsyncLoadFinished( bool success ){
 	GetWrapper().SubObjectFinishedLoading( *this, success );
 }
 
+bool igdeWOSOBillboard::IsContentVisible(){
+	return pBillboard && pBillboard->GetSkin();
+}
 
 
 // Private Functions

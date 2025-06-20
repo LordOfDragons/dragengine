@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<guiTheme extend='modern/modern.degt'>
+	<!-- Main GUI Theme based on modern GUI Theme -->
+	
+	<!-- Main menu window is full screen with no border and white background -->
+	<designer name='Window.WindowTesting' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.9' g='0.9' b='0.9'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='5'/>
+	</designer>
+	
+	<!-- List element renderers -->
+	<designer name='Panel.ListRenderer.TestSuite' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<borderSize parameter='normal.padding' left='2' top='0' right='0' bottom='0'/>
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.1'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.TestSuite.Selected' extendNamed='Panel.ListRenderer.TestSuite'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5'/>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.3' g='0.3' b='0.5'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Label.ListRenderer.TestSuite.Name' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.TestSuite.Name.Selected' extendNamed='Label.ListRenderer.TestSuite.Name'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.TestSuite.State' extendNamed='Label'>
+		<borderSize parameter='normal.padding' all='0'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>center,middle</string>
+		<point parameter='normal.minimumSize' x='100' y='10'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.TestSuite.State.Pending' extendNamed='Label.ListRenderer.TestSuite.State'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.65' g='0.65' b='0.65'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Label.ListRenderer.TestSuite.State.Running' extendNamed='Label.ListRenderer.TestSuite.State'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='1' b='0'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Label.ListRenderer.TestSuite.State.Passed' extendNamed='Label.ListRenderer.TestSuite.State'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='1' b='0'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Label.ListRenderer.TestSuite.State.Failed' extendNamed='Label.ListRenderer.TestSuite.State'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='0' b='0'/>
+		</canvasCreator>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.TestCase' extendNamed='Panel.ListRenderer.TestSuite'/>
+	<designer name='Panel.ListRenderer.TestCase.Selected' extendNamed='Panel.ListRenderer.TestSuite.Selected'/>
+	<designer name='Label.ListRenderer.TestCase.Name' extendNamed='Label.ListRenderer.TestSuite.Name'/>
+	<designer name='Label.ListRenderer.TestCase.Name.Selected' extendNamed='Label.ListRenderer.TestSuite.Name.Selected'/>
+	<designer name='Label.ListRenderer.TestCase.State' extendNamed='Label.ListRenderer.TestSuite.State'/>
+	<designer name='Label.ListRenderer.TestCase.State.Pending' extendNamed='Label.ListRenderer.TestSuite.State.Pending'/>
+	<designer name='Label.ListRenderer.TestCase.State.Running' extendNamed='Label.ListRenderer.TestSuite.State.Running'/>
+	<designer name='Label.ListRenderer.TestCase.State.Passed' extendNamed='Label.ListRenderer.TestSuite.State.Passed'/>
+	<designer name='Label.ListRenderer.TestCase.State.Failed' extendNamed='Label.ListRenderer.TestSuite.State.Failed'/>
+</guiTheme>

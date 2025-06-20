@@ -509,6 +509,16 @@ class ECBehaviorStepAside extends DefaultECBehavior
 			niLeft = navigator.nearestPoint(leftPosition, 0.1)
 			niRight = navigator.nearestPoint(rightPosition, 0.1)
 			
+			if niLeft == null and niRight == null
+				return NavSideResult.new(leftPosition, rightPosition, NavSideResult.Side.none)
+				
+			elif niLeft == null
+				return NavSideResult.new(leftPosition, rightPosition, NavSideResult.Side.right)
+				
+			elif niRight == null
+				return NavSideResult.new(leftPosition, rightPosition, NavSideResult.Side.left)
+			end
+			
 			var float fixCostRight = navigator.getTypeFixCost(niRight.getCostType())
 			var float fixCostLeft = navigator.getTypeFixCost(niLeft.getCostType())
 			var float costPerMeterRight = navigator.getTypeCostPerMeter(niRight.getCostType())

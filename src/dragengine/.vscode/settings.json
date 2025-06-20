@@ -5,6 +5,7 @@
 		"data": true
 	},
 	"files.exclude": {
-		"build": true
+		"build": true,
+		"asset/build": true
 	}
 }

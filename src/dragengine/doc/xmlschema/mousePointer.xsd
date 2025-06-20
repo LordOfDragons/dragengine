@@ -1,0 +1,133 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Mouse Pointer XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:mousepointer).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTypes.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/canvasCreator.xsd'/>
+	
+	
+	<xs:complexType name='mousePointer'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Mouse Pointer.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:mousepointer).
+				<p>
+				Requires either "type" or "extend" attribute to be used but not both at the same time.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string' type='parameter_string'/>
+			<xs:element name='float' type='parameter_float'/>
+			<xs:element name='integer' type='parameter_integer'/>
+			<xs:element name='boolean' type='parameter_boolean'/>
+			<xs:element name='point' type='parameter_point'/>
+			<xs:element name='borderSize' type='parameter_borderSize'/>
+			<xs:element name='color' type='parameter_color'/>
+			<xs:element name='null' type='parameter_null'/>
+			<xs:element name='colorMatrix' type='parameter_colorMatrix'/>
+			<xs:element name='image' type='parameter_image'/>
+			<xs:element name='video' type='parameter_video'/>
+			
+			<xs:element name='canvasCreator'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='canvasCreator'>
+							<xs:annotation>
+								<xs:documentation>Canvas creator parameter.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='parameter_name' name='parameter' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='type' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Mouse pointer type name. Types are defined by the game scripts.
+					[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:mousepointer).
+				]]></xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:enumeration value='Default'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Default mouse pointer. Typically used to explicitely define an empty mouse pointer.
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Image'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Mouse pointer using image.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>size</code>(point): Size of pointer in pixels.</li>
+								<li><code>offset</code>(point): Offset of pointer in pixels (image upper-left).</li>
+								<li><code>image</code>(image): Image to use.</li>
+								<li><code>colorMatrix</code>(colorMatrix): Color transform to apply to image.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='Video'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Mouse pointer using video.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>size</code>(point): Size of pointer in pixels.</li>
+								<li><code>offset</code>(point): Offset of pointer in pixels (video upper-left).</li>
+								<li><code>video</code>(video): Video to use.</li>
+								<li><code>colorMatrix</code>(colorMatrix): Color transform to apply to video.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='CanvasCreator'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Bevelled border around a window with subtle 3D effect and caption.
+								<p>
+								Supported parameters:
+								</p>
+								<ul>
+								<li><code>size</code>(point): Size of pointer in pixels.</li>
+								<li><code>offset</code>(point): Offset of pointer in pixels (canvas upper-left).</li>
+								<li><code>canvasCreator</code>(canvasCreator): Canvas creator to use.</li>
+								</ul>
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		
+		<xs:attribute name='extend' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Relative or absolute path to mouse pointer to extend (*.dempointer).
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:element name='mousePointer' type='mousePointer'>
+	</xs:element>
+</xs:schema>

@@ -58,7 +58,7 @@
 		<path>develop/Notes</path>
 	</file>
 	<file>
-		<path>configuration.ptree.xml</path>
+		<path>configuration.dept</path>
 	</file>
 	
 	<!-- Visual Studio Code project file for editing scripts. -->

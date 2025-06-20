@@ -523,6 +523,38 @@ void igdeWOSOComponent::AsyncLoadFinished( bool success ){
 	GetWrapper().SubObjectFinishedLoading( *this, success );
 }
 
+bool igdeWOSOComponent::IsContentVisible(){
+	if(!pComponent || !pComponent->GetModel()){
+		return false;
+	}
+	
+	const deModel &model = *pComponent->GetModel();
+	const int textureCount = model.GetTextureCount();
+	if(textureCount == 0){
+		return false;
+	}
+	
+	const deSkin * const skin = pComponent->GetSkin();
+	int i;
+	
+	for(i=0; i<textureCount; i++){
+		const deComponentTexture &componentTexture = pComponent->GetTextureAt(i);
+		const deSkin * const ctexSkin = componentTexture.GetSkin();
+		
+		if(ctexSkin){
+			const int ctexTex = componentTexture.GetTexture();
+			if(ctexTex >= 0 && ctexTex < ctexSkin->GetTextureCount()){
+				return true;
+			}
+		}
+		
+		if(skin && skin->IndexOfTextureNamed(model.GetTextureAt(i)->GetName()) != -1){
+			return true;
+		}
+	}
+	
+	return false;
+}
 
 
 // Private Functions
@@ -750,7 +782,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 	
 	// update extends
 	if( modelChanged ){
-		if( pGDComponent.GetDoNotScale() ){
+		if(pGDComponent.GetDoNotScale() || !IsContentVisible()){
 			ClearBoxExtends();
 			
 		}else{
@@ -1130,7 +1162,7 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	// create outline component
 	deEngine &engine = *GetWrapper().GetEnvironment().GetEngineController()->GetEngine();
 	
-	pOutlineComponent.TakeOver( engine.GetComponentManager()->CreateComponent( pComponent->GetModel(), outlineSkin ) );
+	pOutlineComponent.TakeOver(engine.GetComponentManager()->CreateComponent(pComponent->GetModel(), nullptr));
 	pOutlineComponent->SetRig( pComponent->GetRig() );
 	pOutlineComponent->SetDynamicSkin( GetWrapper().GetOutlineDynamicSkin() );
 	
@@ -1141,10 +1173,30 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	pOutlineComponent->SetHintMovement( deComponent::emhDynamic );
 	
 	const int textureCount = pComponent->GetTextureCount();
+	const deModel &model = *pComponent->GetModel();
+	deSkin * const cskin = pComponent->GetSkin();
 	int i;
+	
 	for( i=0; i<textureCount; i++ ){
-		pOutlineComponent->GetTextureAt( i ).SetSkin( outlineSkin );
-		pOutlineComponent->NotifyTextureChanged( i );
+		const deComponentTexture &componentTexture = pComponent->GetTextureAt(i);
+		const deSkin * const ctexSkin = componentTexture.GetSkin();
+		bool hasSkin = false;
+		
+		if(ctexSkin){
+			const int ctexTex = componentTexture.GetTexture();
+			if(ctexTex >= 0 && ctexTex < ctexSkin->GetTextureCount()){
+				hasSkin = true;
+			}
+		}
+		
+		if(cskin && cskin->IndexOfTextureNamed(model.GetTextureAt(i)->GetName()) != -1){
+			hasSkin = true;
+		}
+		
+		if(hasSkin){
+			pOutlineComponent->GetTextureAt(i).SetSkin(outlineSkin);
+			pOutlineComponent->NotifyTextureChanged(i);
+		}
 	}
 	
 	if( pGDComponent.GetDoNotScale() ){

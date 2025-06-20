@@ -3,7 +3,8 @@
     [Parameter(Mandatory=$true)][string]$OutputDir,
     [Parameter(Mandatory=$true)][string]$DistributeDir,
     [Parameter(Mandatory=$true)][string]$RuntimeDir,
-    [Parameter(Mandatory=$false)][switch]$InternalModule = $false
+    [Parameter(Mandatory=$false)][switch]$InternalModule = $false,
+    [Parameter(Mandatory=$false)][switch]$WithEngineDeal = $false
 )
 
 Import-Module "$PSScriptRoot\..\..\..\shared.psm1"
@@ -26,21 +27,37 @@ if(!$InternalModule)
 }
 
 
-$DataTargetDir = Join-Path -Path $DistributeDir -ChildPath "$PathDistDESharesModules\scripting\dragonscript\$Version"
+if($WithEngineDeal)
+{
+    $BaseDataTargetDir = "$OutputDir\..\enginedeal\modules\scripting\dragonscript"
+    if (Test-Path $BaseDataTargetDir) {
+        Remove-Item $BaseDataTargetDir -Force -Recurse
+    }
+    
+    $DataTargetDir = "$BaseDataTargetDir\$Version"
+    New-Item -ItemType Directory $DataTargetDir | Out-Null
+}
+else
+{
+    $DataTargetDir = "$DistributeDir\$PathDistDESharesModules\scripting\dragonscript\$Version"
+}
+
 Write-Host "DragonScript Module: Copy Data to '$DataTargetDir'"
 
 Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\scripts")`
-    -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "scripts") -Pattern "*.ds"
+    -TargetDir "$DataTargetDir\scripts" -Pattern "*.ds"
 
 Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\doc\nativeclasses")`
-    -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "native") -Pattern "*.ds"
+    -TargetDir "$DataTargetDir\native" -Pattern "*.ds"
 
 Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\data")`
-    -TargetDir (Join-Path -Path $DataTargetDir -ChildPath "data") -Pattern "*"
+    -TargetDir "$DataTargetDir\data" -Pattern "*"
+
 
 Copy-Files -SourceDir "$RuntimeDir\bin" -Pattern "libdscript.dll" -TargetDir $TargetDir
 
 
+$DataTargetDir = "$DistributeDir\$PathDistDESharesModules\scripting\dragonscript\$Version"
 $RuntimeTargetDir = Join-Path -Path $DataTargetDir -ChildPath "dsinstall"
 Write-Host "DragonScript Module: Copy Runtime to '$RuntimeTargetDir'"
 

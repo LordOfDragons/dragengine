@@ -277,10 +277,11 @@ class BTContext
 	/**
 	 * \brief Action runs for the first time after the current rule changed.
 	 * 
-	 * After calling setCurrentRule() this flag is set to true. Whenever an action is run
-	 * this flag is set to false. This allows actions to know if they are run for the
-	 * first time after the current rule changed. This allows actions to do some setting
-	 * up tasks the first time they run and check back on this state as long as they run.
+	 * After calling \ref #setCurrentRule() this flag is set to true. \ref BTAction can use
+	 * this flag to know if they run for the first time after a rule change. This can be used
+	 * to set up tasks the first time an action runs and check back later on the state.
+	 * 
+	 * \note Rules are responsible to clear this flag after running if they use it.
 	 */
 	func bool getActionFirstRun()
 		return pActionFirstRun
@@ -289,7 +290,8 @@ class BTContext
 	/**
 	 * \brief Set action runs for the first time after the current rule changed.
 	 * 
-	 * To be called only by BTRuleAction.run().
+	 * Called by \ref BTRuleAction#run() and \ref BTResultYield. Call this if your rule needs
+	 * to know if it is run for the first time after \ref #setCurrentRule() is called.
 	 */
 	func void setActionFirstRun(bool firstRun)
 		pActionFirstRun = firstRun

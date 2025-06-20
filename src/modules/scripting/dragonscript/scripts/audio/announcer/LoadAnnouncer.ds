@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Audio.Announcer
 
 pin Dragengine.LoadSave
@@ -33,61 +32,55 @@ pin Dragengine.Utils
 pin Dragengine.XML
 
 
-
 /**
- * \brief Load announcer from a dynmusic.xml file.
+ * \brief Load announcer from ".dean" file.
  * 
- * Before first set the synthesizer loader with setSynthesizerLoader. Otherwise
+ * Before first use set synthesizer loader with \ref #setSynthesizerLoader(). Otherwise
  * loading announcer fails if a modifier synthesizer tag is encountered.
- * 
  */
 class LoadAnnouncer extends BaseXmlLoader
-	/** \brief Synthesizer loader. */
-	private var LoadSynthesizer pSynthesizerLoader
-	
+	var LoadSynthesizer pSynthesizerLoader
 	
 	
 	/** \brief Create loader. */
-	public func new( Console console ) this( console, "LoadAnnouncer" )
+	func new(Console console) this(console, "LoadAnnouncer")
 	end
 	
 	/** \brief Create loader. */
-	public func new( Console console, String name ) super( console, name )
+	func new(Console console, String name) super(console, name)
 	end
 	
 	
-	
 	/** \brief Synthesizer loader. */
-	public func LoadSynthesizer getSynthesizerLoader()
-		return this.pSynthesizerLoader
+	func LoadSynthesizer getSynthesizerLoader()
+		return pSynthesizerLoader
 	end
 	
 	/** \brief Set synthesizer loader. */
-	public func void setSynthesizerLoader( LoadSynthesizer loader )
-		this.pSynthesizerLoader = loader
+	func void setSynthesizerLoader(LoadSynthesizer loader)
+		pSynthesizerLoader = loader
 	end
 	
 	
-	
 	/** \brief Load announcer from file. */
-	public func Announcer loadFromFile( String filename )
-		this.logLoadingFromFile( filename )
+	func Announcer loadFromFile(String filename)
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
 		
-		if not root.getTagName().equals( "announcer" )
-			this.logUnknownTag( root )
+		if not root.getTagName().equals("announcer")
+			logUnknownTag(root)
 			throw EInvalidParam.new()
 		end
 		
 		var Announcer announcer = Announcer.new()
-		this.pParseAnnouncer( root, File.new( filename ).getParent().getPath(), announcer, null )
+		pParseAnnouncer(root, File.new(filename).getParent().getPath(), announcer, null)
 		return announcer
 	end
 	
@@ -95,71 +88,70 @@ class LoadAnnouncer extends BaseXmlLoader
 	 * \brief Asynchronously load announcer from file.
 	 * \returns Preloader for loaded announcer. Add listener and call checkFinished().
 	 */
-	public func PreloadAnnouncer loadFromFileAsync( String filename, PreloadCounter parentCounter )
-		this.logLoadingFromFile( filename )
+	func PreloadAnnouncer loadFromFileAsync(String filename, PreloadCounter parentCounter)
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
 		
-		if not root.getTagName().equals( "announcer" )
-			this.logUnknownTag( root )
+		if not root.getTagName().equals("announcer")
+			logUnknownTag(root)
 			throw EInvalidParam.new()
 		end
 		
 		var Announcer announcer = Announcer.new()
-		var PreloadAnnouncer preloader = PreloadAnnouncer.new( announcer, parentCounter )
-		this.pParseAnnouncer( root, File.new( filename ).getParent().getPath(), announcer, preloader )
+		var PreloadAnnouncer preloader = PreloadAnnouncer.new(announcer, parentCounter)
+		pParseAnnouncer(root, File.new(filename).getParent().getPath(), announcer, preloader)
 		return preloader
 	end
 	
 	
-	
 	/** \brief Parse announcer tag. */
-	private func void pParseAnnouncer( EasyXMLElement root, String baseDirectory, \
-	Announcer announcer, PreloadAnnouncer preloader )
+	private func void pParseAnnouncer(EasyXMLElement root, String baseDirectory, \
+	Announcer announcer, PreloadAnnouncer preloader)
 		var int i, count = root.getElementCount()
 		var EasyXMLElement element
 		var String tagName
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			tagName = element.getTagName()
 			
-			if tagName.equals( "parts" )
-				this.pParseParts( element, announcer, baseDirectory, preloader )
+			if tagName.equals("parts")
+				pParseParts(element, announcer, baseDirectory, preloader)
 				
-			elif tagName.equals( "part" )
-				this.pParsePart( element, announcer, baseDirectory, preloader )
+			elif tagName.equals("part")
+				pParsePart(element, announcer, baseDirectory, preloader)
 				
-			elif tagName.equals( "synthesizer" )
-				if this.pSynthesizerLoader == null
-					this.printOnConsole( element, "Synthesizer loader missing" )
+			elif tagName.equals("synthesizer")
+				if pSynthesizerLoader == null
+					printOnConsole(element, "Synthesizer loader missing")
 					throw EInvalidParam.new()
 				end
 				
 				var String filename = root.getFirstCData()
 				if not filename.empty()
-					filename = File.absolutePath( filename, baseDirectory ).getPath()
+					filename = File.absolutePath(filename, baseDirectory).getPath()
 					
 					try
-						announcer.setModifierSynthesizer( this.pSynthesizerLoader.loadFromFile( filename ) )
+						announcer.setModifierSynthesizer(pSynthesizerLoader.loadFromFile(filename))
 						
 					catch Exception e
-						this.logLoadFileFailed( root, filename )
+						logLoadFileFailed(root, filename)
 					end
 				end
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
 		end
@@ -170,88 +162,90 @@ class LoadAnnouncer extends BaseXmlLoader
 	end
 	
 	/** \brief Parse part tag. */
-	private func void pParsePart( EasyXMLElement root, Announcer announcer, \
-	String baseDirectory, PreloadAnnouncer preloader )
-		var AnnouncerPart part = AnnouncerPart.new( root.getAttributeNamed( "id" ) )
-		announcer.addPart( part )
+	private func void pParsePart(EasyXMLElement root, Announcer announcer, \
+	String baseDirectory, PreloadAnnouncer preloader)
+		var AnnouncerPart part = AnnouncerPart.new(root.getAttributeNamed("id"))
+		announcer.addPart(part)
 		
 		var String filename = root.getFirstCData()
 		if not filename.empty()
-			filename = File.absolutePath( filename, baseDirectory ).getPath()
+			filename = File.absolutePath(filename, baseDirectory).getPath()
 			
 			try
 				if preloader == null
-					part.setSound( Sound.new( filename ) )
+					part.setSound(Sound.new(filename))
 					
 				else
-					Sound.loadAsynchron( filename, PreloadAnnouncer.PartSoundFinishedListener.new( preloader, part ) )
+					Sound.loadAsynchron(filename, PreloadAnnouncer.PartSoundFinishedListener.new(preloader, part))
 				end
 				
 			catch Exception e
-				this.logLoadFileFailed( root, filename )
+				logLoadFileFailed(root, filename)
 			end
 		end
 	end
 	
 	/** \brief Parse parts tag. */
-	private func void pParseParts( EasyXMLElement root, Announcer announcer, \
-	String baseDirectory, PreloadAnnouncer preloader )
-		var String directoryName = root.getFirstCData()
-		var String pattern = "*.announcer.xml"
-		var int idCutOff = 0
+	private func void pParseParts(EasyXMLElement root, Announcer announcer, \
+	String baseDirectory, PreloadAnnouncer preloader)
+		var String pattern, directoryName = root.getFirstCData()
 		
-		if root.hasAttributeNamed( "pattern" )
-			pattern = root.getAttributeNamed( "pattern" )
-		end
-		if root.hasAttributeNamed( "idCutOff" )
-			idCutOff = root.getAttributeIntNamed( "idCutOff" )
-			if idCutOff < 0
-				this.logInvalidAttributeValue( root, "idCutOff", root.getAttributeNamed( "idCutOff" ) )
-				throw EInvalidParam.new()
-			end
+		if root.hasAttributeNamed("pattern")
+			pattern = root.getAttributeNamed("pattern")
 		end
 		
-		directoryName = File.absolutePath( directoryName, baseDirectory ).getPath()
+		directoryName = File.absolutePath(directoryName, baseDirectory).getPath()
 		
-		this.scanForSoundFiles( root, directoryName, pattern, -idCutOff, baseDirectory, announcer, preloader )
+		if pattern == null
+			pattern = FileSystem.getFileExtensions(ResourceLoaderType.sound).map(block FileExtension each
+				return each.getPatternsString()
+			end).fold(block String last, String each
+				return last + ',' + each
+			end) cast String
+		end
+		
+		scanForSoundFiles(root, directoryName, pattern, baseDirectory, announcer, preloader)
 	end
 	
 	/** Scan directory for materials files. */
-	private func void scanForSoundFiles( EasyXMLElement root, String directoryName, String pattern, \
-	int idCutOff, String baseDirectory, Announcer announcer, PreloadAnnouncer preloader )
-		FileSystem.searchFiles( directoryName, true, block String each, FileType type
+	private func void scanForSoundFiles(EasyXMLElement root, String directoryName, String pattern,\
+	String baseDirectory, Announcer announcer, PreloadAnnouncer preloader)
+		FileSystem.searchFiles(directoryName, true, block String each, FileType type
 			if type == FileType.file
-				var File file = File.absolutePath( each, baseDirectory )
+				var File file = File.absolutePath(each, baseDirectory)
 				var String filetitle = file.getName()
 				
-				if FileSystem.pathMatchesPattern( filetitle, pattern )
-					// convert filename to id. id is lowercase with idCutOff characters cut off from the
-					// end of the file title with separators converted to whitespace
-					var String id = filetitle.substring( 0, idCutOff ).toLower().replace( "_-", ' ' )
+				if FileSystem.pathMatchesPattern(filetitle, pattern)
+					var String id = filetitle
+					var int deli = id.find('.')
+					if deli != -1
+						id = id.substring(0, deli)
+					end
+					id = id.toLower().replace("_-", ' ')
 					
-					this.loadPartFromFile( root, file.getPath(), id, announcer, preloader )
+					loadPartFromFile(root, file.getPath(), id, announcer, preloader)
 				end
 			end
 			return true
-		end )
+		end)
 	end
 	
 	/** \brief Load part from file. */
-	private func void loadPartFromFile( EasyXMLElement root, String filename, String id, \
-	Announcer announcer, PreloadAnnouncer preloader )
-		var AnnouncerPart part = AnnouncerPart.new( id )
-		announcer.addPart( part )
+	private func void loadPartFromFile(EasyXMLElement root, String filename, String id, \
+	Announcer announcer, PreloadAnnouncer preloader)
+		var AnnouncerPart part = AnnouncerPart.new(id)
+		announcer.addPart(part)
 		
 		try
 			if preloader == null
-				part.setSound( Sound.new( filename ) )
+				part.setSound(Sound.new(filename))
 				
 			else
-				Sound.loadAsynchron( filename, PreloadAnnouncer.PartSoundFinishedListener.new( preloader, part ) )
+				Sound.loadAsynchron(filename, PreloadAnnouncer.PartSoundFinishedListener.new(preloader, part))
 			end
 			
 		catch Exception e
-			this.logLoadFileFailed( root, filename )
+			logLoadFileFailed(root, filename)
 		end
 	end
 end

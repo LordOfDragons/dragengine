@@ -191,9 +191,32 @@ void debpColliderBone::SetFromRigBone( const deRigBone &bone ){
 // Collision detection
 ////////////////////////
 
-btGhostObject *debpColliderBone::GetStaticCollisionTest(){
+btCollisionObject *debpColliderBone::GetStaticCollisionTest(){
+	if(pPhyBody && pPhyBody->GetRigidBody()){
+		return pPhyBody->GetRigidBody();
+	}
+	
 	pUpdateStaticCollisionTest();
-	return pStaticCollisionTest;
+	return pStaticCollisionTest->getCollisionShape() ? pStaticCollisionTest : nullptr;
+}
+
+btCollisionObject *debpColliderBone::GetStaticCollisionTestPrepare(){
+	if(pPhyBody && pPhyBody->GetRigidBody()){
+		return pPhyBody->GetRigidBody();
+	}
+	
+	btCollisionObject * const go = GetStaticCollisionTest();
+	if(!go){
+		return nullptr;
+	}
+	
+	const decDVector &position = pPhyBody->GetPosition();
+	const decQuaternion &orientation = pPhyBody->GetOrientation();
+	go->setWorldTransform(btTransform(
+		{(btScalar)orientation.x, (btScalar)orientation.y,
+			(btScalar)orientation.z, (btScalar)orientation.w},
+		{(btScalar)position.x, (btScalar)position.y, (btScalar)position.z}));
+	return go;
 }
 
 

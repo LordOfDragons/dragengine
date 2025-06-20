@@ -671,6 +671,19 @@ void deClassCamera::nfGetMatrix::RunFunction( dsRunTime *rt, dsValue *myself ){
 		camera.GetPosition(), camera.GetOrientation() ) );
 }
 
+// public func DMatrix getInverseMatrix()
+deClassCamera::nfGetInverseMatrix::nfGetInverseMatrix(const sInitData &init) :
+dsFunction(init.clsCamera, "getInverseMatrix", DSFT_FUNCTION,
+	DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix){
+}
+void deClassCamera::nfGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deCamera &camera = *(((sCamNatDat*)p_GetNativeData(myself))->camera);
+	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass() )->GetDS();
+	
+	ds.GetClassDMatrix()->PushDMatrix(rt, decDMatrix::CreateWorld(
+		camera.GetPosition(), camera.GetOrientation()).QuickInvert());
+}
+
 
 
 // Efects
@@ -880,7 +893,8 @@ void deClassCamera::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetLayerMask( init ) );
 	AddFunction( new nfGetParentWorld( init ) );
 	
-	AddFunction( new nfGetMatrix( init ) );
+	AddFunction(new nfGetMatrix(init));
+	AddFunction(new nfGetInverseMatrix(init));
 	
 	AddFunction( new nfGetEffectCount( init ) );
 	AddFunction( new nfGetEffectAt( init ) );

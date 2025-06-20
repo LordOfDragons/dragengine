@@ -33,7 +33,7 @@ pin Dragengine.XML
 
 
 /**
- * \brief Load conversation script from a conversation.xml file.
+ * \brief Load conversation script from a *.deconvo file.
  * 
  * Supports caching conversations to avoid loading the same conversation multiple times.
  * The returned conversation can thus be shared so do not change it.

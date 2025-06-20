@@ -1,0 +1,1538 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine XML Element Class files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_elements#xml_element_classes).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
+	
+	
+	<xs:complexType name='list'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set list property. Lists can contain all other property types in any combination.
+				See the game documentation on what values are allowed inside the list.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string' type='string'/>
+			<xs:element name='float' type='float'/>
+			<xs:element name='integer' type='integer'/>
+			<xs:element name='boolean' type='boolean'/>
+			<xs:element name='vector' type='vector'/>
+			<xs:element name='vector2' type='vector2'/>
+			<xs:element name='point' type='point'/>
+			<xs:element name='point3' type='point3'/>
+			<xs:element name='borderSize' type='borderSize'/>
+			<xs:element name='rectArea' type='rectArea'/>
+			<xs:element name='floatRectArea' type='floatRectArea'/>
+			<xs:element name='color' type='color'/>
+			<xs:element name='null' type='null'/>
+			<xs:element name='list' type='list'/>
+			<xs:element name='map' type='map'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:simpleType name='map_key'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Key of entry. If entry with the same key is present it is overwritten.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:complexType name='map'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Set map property. Maps are associative lists storing for each entry a string
+				key and a value which can be any other property types. See the game documentation
+				on what values are allowed inside the map.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='string'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='string'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='float'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='float'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='integer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='integer'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='boolean'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='boolean'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector2'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector2'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point3'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point3'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='borderSize'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='borderSize'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='rectArea'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='floatRectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='floatRectArea'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='null'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='null'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='list'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='list'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='map'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='map'>
+							<xs:attribute type='map_key' name='key' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<!-- end definitions modified from parameterTree.xsd -->
+	
+	
+	<xs:simpleType name='property_name'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Name of property.
+				<p>
+				Element class properties are typically in the form <code>behavior.property</code>
+				or <code>behavior(id).property</code>. The identifier is omitted if it is empty
+				string. For example the <code>ECBehaviorComponent</code> behavior uses the prefix
+				<code>component.</code>. Hence <code>component.model</code> would set the
+				<code>model</code> property. The same for an <code>ECBehaviorComponent</code>
+				with the identifier second. Here the name would be <code>component(second).model</code>.
+				</p>
+				<p>
+				Inside <code>behavior</code> tag names can be shortened since the prefix used
+				by the respective behavior is known. Just remove the behavior property prefix
+				from the property name leaving being only the <code>.</code> as first character
+				in the name. This way the DragonScript module prepends the behavior property
+				prefix while setting the property values. This is easier to write, increases
+				readability and has less possibility for errors. It is thus recommended to set
+				properties of just added behaviors in this way.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	<xs:group name='node_with_properties'>
+		<xs:choice>
+			<xs:element name='string'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='string'>
+							<xs:annotation>
+								<xs:documentation>Set string property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='float'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='float'>
+							<xs:annotation>
+								<xs:documentation>Set float property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='integer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='integer'>
+							<xs:annotation>
+								<xs:documentation>Set integer property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='boolean'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='boolean'>
+							<xs:annotation>
+								<xs:documentation>Set boolean property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector'>
+							<xs:annotation>
+								<xs:documentation>Set vector property.</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='vector2'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='vector2'>
+							<xs:annotation>
+								<xs:documentation>Set vector2 property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point'>
+							<xs:annotation>
+								<xs:documentation>Set point property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='point3'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='point3'>
+							<xs:annotation>
+								<xs:documentation>Set point3 property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='borderSize'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='borderSize'>
+							<xs:annotation>
+								<xs:documentation>Set border size property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='rectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='rectArea'>
+							<xs:annotation>
+								<xs:documentation>Set rectangular area property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='floatRectArea'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='floatRectArea'>
+							<xs:annotation>
+								<xs:documentation>Set float rectangular area property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='color'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation>Set color property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='null'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='null'>
+							<xs:annotation>
+								<xs:documentation>Set null property</xs:documentation>
+							</xs:annotation>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='list'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='list'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='map'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='map'>
+							<xs:attribute type='property_name' name='name' use='required'/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
+	
+	
+	<xs:simpleType name='behavior_type'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Type of behavior to add. This is the name of the behavior script class
+				(for example <code>ECBehaviorComponent</code>).
+				<p>
+				See [Behavior Listing](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behaviors_use_cases)
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:enumeration value='ECBehaviorActorAIAction'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Allows instance of BaseActorAction and BaseActorAI to be assigned
+								to actor. During thinking first the AI then the Action is called.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actoraiaction)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorActorAnimated'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds AnimatorInstance and a map of animators to switch using string identifiers.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actoranimated)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorActorCutscene'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Allows actor to perform cutscene actions controlled by conversation scripts.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actorcutscene)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorActorIK'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds inverse kinematic support to actors.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actorik)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorActorMover'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Uses <code>ECBehaviorNavigator</code> to find a path.
+								Uses <code>ECBehaviorLocomotion</code> to provide input to the
+								actor for the direction to move to.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actormover)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorActorMoverUnstuck'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								This behavior helps in situations where an actor moving along
+								a path ends up in a stuck position.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actormoverunstuck)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorActorTransmission'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								The behavior acts similar to <code>CActionActorSpeak.executeSubTitle()</code>
+								in that it supports creating and adding a series of sub titles
+								for an actor as if a conversation is used.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_actortransmission)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAlignActor'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Manipulates ECBehaviorLocomotion to move an actor a short distance
+								to a specific position, orientation and looking direction.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_alignactor)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAnchorElement'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Allows to locate elements in a GameWorld using a unique name set by the mapper.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_anchorelement)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAnimated'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Plays back an animation using an animator for an <code>ECBehaviorComponent</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_animated)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAnnouncer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds an <code>Announcer</code> to play back announcer files (<code>.deann</code>).
+								The speaker created by the Announcer instance is added to the game world.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_announcer)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAttachDynamicSkin'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								For use together with <code>ECBehaviorAttachToParent</code> or
+								<code>ECBehaviorAttachable</code>. Upon attaching the element to a
+								parent element the dynamic skin of parent element
+								<code>ECBehaviorDynamicSkin</code> is assigned to this element
+								<code>ECBehaviorComponent</code>. If an <code>ECBehaviorAttachSlot</code>
+								is involved supports also detaching when the dynamic skin is removed.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachdynamicskin)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAttachSlot'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Provides an attachment slot where one <code>ECBehaviorAttachable</code>
+								supporting element can be attached to.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachslot)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAttachToParent'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								This behavior knows how to attach to BehaviorElement instances.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachtoparent)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAttachable'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to be attached to an <code>ECBehaviorAttachSlot</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachable)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAttachments'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Provides list for <code>ECBehaviorAttachToParent</code> to register themselves at.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachments)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAvoidCollision'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Attaches to <code>ECBehaviorActorMover</code> to modify walking path while moving.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_avoidcollision)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorAvoidedByActor'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to elements to be avoided by actors.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_avoidedbyactor)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorBehaviorTree'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Loads a single behavior tree from file and creates a BTContext.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_behaviortree)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorBehaviorTreeFlags'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Aadds behavior tree actions and conditions to an
+								<code>ECBehaviorBehaviorTree</code> allowing scripts and behavior
+								rees to set, clear and check flags.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_behaviortreeflags)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorBehaviorTreeTimer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds behavior tree actions and conditions to an
+								<code>ECBehaviorBehaviorTree</code> allowing behavior trees to
+								start and wait for multiple independent timers.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_behaviortreetimer)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorBillboard'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Billboards place a flat image in the game world optionally
+								rotated towards the camera position.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_billboard)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBCTRRBindings'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a CTRRBinding rule to <code>ECBehaviorConversationActor</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_ctrrbindings)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorBodyTilting'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds body tilting support for actors projected to ground.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_bodytilting)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorInteractPrompt'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Passive behavior storing the information used by player prompt
+								behaviors to show to the player what he can do with the element
+								for example when looking at it.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_interactprompt)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorCamera'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a Camera resource to the the behavior element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_camera)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorClearPath'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to actors to make other actors get out of the way.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_clearpath)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorCollider'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Colliders provide physical presence to elements allowing them to
+								collide with other colliders, attaching them to other colliders
+								and moving the element through the game world.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_collider)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorColliderAI'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a collider which is useable for actor AI usage.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_colliderai)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorComponent'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Provide visual appearance to elements by adding a Component
+								resource to the element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_component)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorComposed'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Create and adds list of element classes to use (child elements).
+								For each element class an optional list of property values can be
+								defined that are used to create an instance of this class.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_composed)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorControlDesktop'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Allows player (or other actors) to move the mouse pointer on a
+								<code>ECBehaviorRenderableDesktop</code> by looking or pointing at
+								the desired position. Also the player can simulate a left or right
+								mouse click by using an input binding defined by the actor himself.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_controldesktop)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorConversation'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Loads a conversation resource file (<code>.deconvo</code>, <code>.desconvo</code>)
+								and allows to start a conversation using a user defined topic.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_conversation)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorConversationActor'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Provides ConversationActor with basic properties set depending on
+								what behaviors are present before this behavior.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_conversationactor)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorConvoCoordSystem'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a ElementConvoCoordSystem to the game world the element is
+								added to. Useful for conversation scripts to reference a specific
+								position on an element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_convocoordsystem)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorCustomColor'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Allows player to customize the look of their player actor by
+								altering color of individual body parts.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_customcolor)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorDayTimeSky'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Updates day time controller of a day time supporting sky assigned
+								to <code>ECBehaviorSky</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_daytimesky)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorDecal'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds decal projected onto <code>ECBehaviorComponent</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_decal)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorDynamicSkin'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Alters visual appearance of <code>ECBehaviorComponent</code>.
+								Dynamic skins affect the skin assigned to the <code>ECBehaviorComponent</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_dynamicskin)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorEnvMapProbe'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Attaches an EnvMapProbe resource to the behavior element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_envmapprobe)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorEvaluate'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Fires and resets a trigger target depending on the evaluation state
+								of a trigger expression. Optionally pulses trigger target instead
+								of just firing it.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_evaluate)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorFootSteps'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Uses a list of events to play random foot steps according to an
+								elapsing time value.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_footsteps)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorFootStepConfig'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a single foot step configuration with a list of events.
+								Optionally a list of sounds can be defined which is assigned to the
+								events. All events share the same sounds and play sound parameters.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_footstepconfig)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorForceField'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a ForceField resource to the the behavior element.
+								Force fields apply physical forces to physical elements in the
+								game world if their collision filter to match.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_forcefield)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorGrabber'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Grab spots are typically used for physics interaction like VR hand
+								use but can be used also with mouse interaction.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_grabber)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorGrabSpot'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Defines position and orientation where the actor can grab the owner element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_grabspot)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorHearSounds'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Uses a SoundLevelMeter resources to hear what sounds are playing
+								in the audible range of the element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_hearsounds)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorHitScan'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Supports using one or more collider collision tests to do one or
+								more hit scans for example to check for weapon projectile impacts.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_hitscan)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorInteraction'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds storing supported interactions by other behaviors.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_interaction)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorInteractionSpot'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Defines position and orientation actors or the player have to
+								assume to properly interact with the owner element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_interactionspot)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorInventory'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds inventory where <code>ECBehaviorStashable</code> can be put into.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_inventory)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorLight'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds Light resource.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_light)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorLightDimmer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Modifies light parameters of <code>ECBehaviorLight</code> instances
+								present in the element to make lights gently raise and lower
+								intensity when (de)activated.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lightdimmer)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorLocomotion'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds Locomotion support to move actor AI colliders across the game
+								world. Locomotion also provides values for AnimatorController to
+								provide animation to actors matching their movement.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_locomotion)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorLookAt'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Uses one collider collision test located attached
+								<code>ECBehaviorColliderAI</code> facing forward to figure out
+								which element an actor is currently looking at.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lookat)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorLookedAt'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Tracks if actors are looking at element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lookedat)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorNavigationBlocker'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a NavigationBlocker resource to the the behavior element.
+								This allow elements using Navigator resource to avoid moving
+								into the blocked space.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_navigationblocker)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorNavigationSpace'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a NavigationSpace resource to the the behavior element.
+								This allow elements using Navigator resource to move around the element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:bahavior_navigationspace)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorNavigator'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds Navigator resource to actor. Actors use Navigator to find
+								path around the game world using navigation spaces.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_navigator)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorNetworkState'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds network state support. Behavior is only active during creation
+								time if StubElement contains Connection instance.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_networkstate)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorNStateGeometry'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								If <code>ECBehaviorNetworkState</code> is present and activate adds
+								network values to synchronize the owner element position and orientation.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_nstategeometry)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorNStateLocomotion'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								If <code>ECBehaviorNetworkState</code> is present and activate adds
+								network values to synchronize <code>ECBehaviorLocomotion</code> certain values.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_nstatelocomotion)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorOutline'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Renders outline around a component.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_outline)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorOccupier'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to occupy an <code>ECBehaviorInteractionSpot</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_occupier#ecbehavioroccupier)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorParameterTable'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds ParameterTable instance. This allows to store parameter with
+								primitive or persistable type for game elements or global game state.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_parametertable)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorParticleEmitter'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a ParticleEmitter resource to the the behavior element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_particleemitter)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorPlaySound'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Comparable to <code>ECBehaviorSpeaker</code> but does not add a
+								permanent speaker to the element. Instead GWBehaviorOneShotSpeaker.addSpeaker()
+								is used to play a short sound event.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playsound)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorPlaySoundRandom'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Extends <code>ECBehaviorPlaySound</code> to pick sound to play
+								randomly from a list of sounds.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playsoundrandom)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorPlayerControllable'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Actors with this behavior can become the player controlled actor.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playercontrollable)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorPlayerInputCrouch'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Keeps track of crouching player input and applies them to actor locomotion.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerinputcrouch)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorPlayerInputLook'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Keeps track of looking around player input and applies them to actor locomotion.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerinputlook)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorPlayerInputMove'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Keeps track of moving player input and applies them to actor locomotion.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:bahevior_playerinputmove)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorPlayerInputTurn'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Keeps track of turning player input and applies them to actor locomotion.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_playerinputturn)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorProjectToGround'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to project actor AI collider down to ground if close enough.
+								Also allows to detect if the actor is standing on ground or not.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_projecttoground)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRenderableCamera'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a camera renderable to <code>ECBehaviorDynamicSkin</code>
+								displaying a <code>ECBehaviorCamera</code> in it.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderablecamera)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRenderableCanvas'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a renderable canvas view to <code>ECBehaviorDynamicSkin</code>
+								for other behaviors to add content to.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderablecanvas)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRenderableCustomColor'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Applies chosen color of <code>ECBehaviorCustomColor</code> either
+								directly to a color type renderable or indirectly to a canvas type
+								renderable on a <code>ECBehaviorDynamicSkin</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderablecustomcolor)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRenderableDesktop'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a renderable Desktop widget to <code>ECBehaviorDynamicSkin</code>
+								for other behaviors to add Window widgets to. Allows for complex
+								dynamic skins to be done.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderabledesktop)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRenderableLight'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds renderable to <code>ECBehaviorDynamicSkin</code> matching
+								color value to <code>ECBehaviorLight</code> light intensity.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderablelight)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRenderablePanel'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds renderable Panel widget. to <code>ECBehaviorDynamicSkin</code>
+								for other behaviors to add Window widgets to. Allows for complex
+								dynamic skins to be done.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_renderablepanel)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRandomizeCreation'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								While creating element randomly decides to not creae it.
+								Adds variation to game worlds by randomly (not) creating elements.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_randomizecreation)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRandomizeGeometry'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds variation to multiple instances of the same element added
+								to a game world by randomizing the position, rotation and scaling
+								before creating the element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_randomizegeometry)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRidable'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Actors will attach using relative mode if
+								<code>ECBehaviorProjectToGround</code> touches this element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_ridable)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorRideOn'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								If <code>ECBehaviorProjectToGround</code> and <code>ECBehaviorColliderAI</code>
+								are enabled sets the ridable to the ground element if element
+								supports <code>ECBehaviorRidable</code>. Otherwise clears the ridable.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_rideon)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorShowElement'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								If trigger evaluates to true the element is set visible and touchable others not.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_showelement)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorSkinSwitcher'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to switch component skins.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_skinswitcher)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorShowMessage'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Shows message to player if triggered.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_showmessage)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorSky'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Shows message to player if triggered.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_sky)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorSpeaker'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a Speaker resource to the the behavior element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_speaker)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorStashable'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support for elements to be placed in <code>ECBehaviorInventory</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_stashable)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorStateMachine'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Loads state machine from file (*.desm) and creates a SMContext.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_statemachine)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorStepAside'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to actors to step aside if told by <code>ECBehaviorClearPath</code>.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_stepaside)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorTimer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Fires or resets trigger target after timeout after evaluation
+								state of trigger expression changes to true.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_timer)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorToggle'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Toggles trigger target between fired and reset state whenever
+								evaluation state of trigger expression changes to true.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_toggle)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorTouching'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Fires and resets a trigger target depending if elements are in
+								touch sensor. Optionally pulses trigger target instead of just firing it.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_touching)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorTouchSensor'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Attaches a TouchSensor resource to the behavior element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_touchsensor)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorTriggered'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds a trigger expression to the behavior element. If the trigger
+								expression changes value notifies the listeners.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_triggered)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorTwoStateAnimated'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Plays back animations for behavior elements in two different
+								states with transition between them.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_twostateanimated)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRControlDesktop'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to VR hand action to control desktops.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrcontroldesktop)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRHand'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds VR Hand Controller support to actor.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhand)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRHandAction'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Allows instance of BaseVRHandAction to be assigned to actor
+								VR hands. During thinking the Action is called.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandaction)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRHandLaserPointer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds particle emitter representing the VR Hand laser pointer.
+								Attaches itself to a <code>ECBehaviorVRHandPointAt</code> to match
+								particle emitter casting state to <code>ECBehaviorVRHandPointAt</code> enabled state.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandlaserpointer)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRHandPointAt'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to VR Hand behavior to know what element they are pointing at.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandpointat)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRHandPointedAt'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds support to track which VR hands are pointing at element.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandpointedat)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRHandPose'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Queries VR hand device for finger bone poses and applies them to
+								VR hand component. Basically allows to use finger tracking.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandpose)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRHMD'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds VR HMD support to actor tracking position, orientation and
+								if the headset is attached or not.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhmd)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorVRPlayspace'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds VR Playspace support to actor. This behavior defines the VR Playspace
+								which is used as reference coordinate system. Playspace position and
+								orientation matches behavior element position and orientation.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrplayspace)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorWorld'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Loads world file and adds contained content to the the game world
+								this element is located in.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_world)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+			
+			<xs:simpleType>
+				<xs:restriction base='xs:string'/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	
+	<xs:complexType name='behavior'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Adding behaviors is done using the behavior tag. Some behaviors require additional
+				parameters during construction time. These parameters can be defined inside the
+				behavior tag using the same tags as you use to define element properties.
+				The behavior documentation list the supported parameters. After adding a behavior
+				you can set the element properties outside the behavior tag as you usually would do.
+				<p>
+				To simplify the adding of behaviors properties of a just added behavior can be also
+				defined by moving the property tags inside the <code>behavior</code> tag.
+				If you do this you have to remove the behavior property prefix from the property
+				names leaving being only the <code>.</code> as first character in the name.
+				This way the DragonScript module prepends the behavior property prefix while
+				setting the property values. This is easier to write, increases readability and
+				has less possibility for errors. It is thus recommended to set properties of just
+				added behaviors in this way.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:group ref='node_with_properties'/>
+		</xs:choice>
+		
+		<xs:attribute name='type' type='behavior_type' use='required'/>
+		
+		<xs:attribute type='xs:string' name='id' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Identifier unique amongst all behaviors of the same type. If not set empty
+					string is used as identifier.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='elementClass'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Drag[en]gine XML Element Class.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_elements#xml_element_classes).
+				<p>
+				XML Element classes allow to create new element classes using an XML file
+				(<code>*.deeclass</code>) instead of writing script code. XML element classes
+				always subclass from an existing script class or XML element class. Using an
+				XML element class you can change properties added by the behavior definitions.
+				</p>
+				<p>
+				Element class properties are typically in the form <code>behavior.property</code>
+				or <code>behavior(id).property</code>. The identifier is omitted if it is empty
+				string. For example the <code>ECBehaviorComponent</code> behavior uses the prefix
+				<code>component.</code>. Hence <code>component.model</code> would set the
+				<code>model</code> property. The same for an <code>ECBehaviorComponent</code>
+				with the identifier second. Here the name would be <code>component(second).model</code>.
+				</p>
+				<p>
+				Behaviors can be complex and nested. This allows behaviors to add other behaviors
+				to achieve their goals. Such nested behaviors need to be differentiated from
+				other behaviors of the same kind. The rule is to prefix the property names of the
+				behaviors with their parent prefix to make them unique. For example if you have a
+				fictional behavior MyBehavior with the prefix mybehavior. which adds one or more
+				<code>ECBehaviorComponent</code> then the property names of those component
+				behaviors would look like </code>mybehavior.component.model</code> or
+				<code>mybehavior.component(second).model</code>. This nesting can go deeper
+				depending on how complex of a behavior you are designing. In general it is
+				favorable to keep the nesting as little as possible as this is easier to use for
+				team members and modders.
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:group ref='node_with_properties'/>
+			<xs:element type='behavior' name='behavior'/>
+		</xs:choice>
+		
+		<xs:attribute type='xs:string' name='name' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Name of the element class to define. Name has to be unique across all
+					element class no matter if scripted or XML defined. The name can use any
+					character but it is recommended to use only <code>A-Z</code>,
+					<code>a-z</code>, <code>0-9</code> and <code>_</code>.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute type='xs:string' name='class' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Name of the element class to subclass. Name has to be an existing script
+					class or another XML defined class.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:element name='elementClass' type='elementClass'>
+	</xs:element>
+</xs:schema>

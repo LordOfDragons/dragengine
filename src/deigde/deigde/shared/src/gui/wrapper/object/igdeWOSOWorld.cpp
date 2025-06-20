@@ -339,16 +339,24 @@ pOwner(owner){
 }
 
 void igdeWOSOWorld::ChildAsyncFinished::LoadFinished(igdeWObject &wrapper, bool succeeded){
-	if(!succeeded){
-		return;
-	}
-	
 	const int count = pOwner.GetChildObjectCount();
 	int i;
 	for(i=0; i<count; i++){
 		ChildObject &child = pOwner.GetChildObjectAt(i);
 		if(&child.GetWrapper() == &wrapper){
 			pOwner.ChildObjectFinishedAsyncLoad(child);
+			return;
+		}
+	}
+}
+
+void igdeWOSOWorld::ChildAsyncFinished::ExtendsChanged(igdeWObject &wrapper){
+	const int count = pOwner.GetChildObjectCount();
+	int i;
+	for(i=0; i<count; i++){
+		ChildObject &child = pOwner.GetChildObjectAt(i);
+		if(&child.GetWrapper() == &wrapper){
+			pOwner.ChildObjectExtendsChanged(child);
 			return;
 		}
 	}
@@ -366,7 +374,8 @@ igdeWOSOWorld::igdeWOSOWorld(igdeWObject &wrapper, const igdeGDCWorld &gdcWorld,
 igdeWOSubObject(wrapper, prefix),
 pGDWorld(gdcWorld),
 pChildAsyncFinished(*this),
-pLoadObjectResources(LoadObjectResources::Ref::New(new LoadObjectResources(*this)))
+pLoadObjectResources(LoadObjectResources::Ref::New(new LoadObjectResources(*this))),
+pNoUpdateAnyContentVisibile(false)
 {
 	wrapper.SubObjectFinishedLoading(*this, true);
 }
@@ -507,15 +516,19 @@ void igdeWOSOWorld::RemoveAllChildObjects(){
 
 void igdeWOSOWorld::ChildObjectFinishedAsyncLoad(ChildObject &object){
 	pUpdateChildComponentTextures(object);
+	pUpdateExtends();
+	if(!pNoUpdateAnyContentVisibile){
+		GetWrapper().UpdateAnyContentVisibile();
+	}
+}
+
+void igdeWOSOWorld::ChildObjectExtendsChanged(ChildObject &object){
+	pUpdateExtends();
 }
 
 void igdeWOSOWorld::LoadTextureSkin(ChildObject &object, ChildObjectTexture &texture){
 	pLoadObjectResources->LoadTexture(object, texture);
 }
-
-
-// Protected Functions
-////////////////////////
 
 void igdeWOSOWorld::UpdateChildComponentTexture(ChildObject &object, ChildObjectTexture &texture){
 	igdeWObject &wo = object.GetWrapper();
@@ -543,6 +556,21 @@ void igdeWOSOWorld::UpdateChildComponentTexture(ChildObject &object, ChildObject
 	}
 	component->NotifyTextureChanged(index);
 }
+
+bool igdeWOSOWorld::IsContentVisible(){
+	const int count = pChildObjects.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		if(((ChildObject*)pChildObjects.GetAt(i))->GetWrapper().IsAnyContentVisible()){
+			return true;
+		}
+	}
+	return false;
+}
+
+
+// Protected Functions
+////////////////////////
 
 void igdeWOSOWorld::AttachToCollider(){
 }
@@ -600,7 +628,15 @@ void igdeWOSOWorld::pLoadWorld(const decString &path){
 		return;
 	}
 	
-	LoadXmlWorld(*this).LoadWorld(path);
+	pNoUpdateAnyContentVisibile = true;
+	try{
+		LoadXmlWorld(*this).LoadWorld(path);
+		pNoUpdateAnyContentVisibile = false;
+		
+	}catch(const deException &){
+		pNoUpdateAnyContentVisibile = false;
+		throw;
+	}
 }
 
 void igdeWOSOWorld::pUpdateChildComponentTextures(ChildObject &object){
@@ -615,5 +651,68 @@ void igdeWOSOWorld::pUpdateChildComponentTextures(ChildObject &object){
 	
 	for(i=0; i<textureCount; i++){
 		UpdateChildComponentTexture(object, object.GetTextureAt(i));
+	}
+}
+
+
+void igdeWOSOWorld::pUpdateExtends(){
+	const decDMatrix invMatrix(GetWrapper().GetInverseMatrix().QuickMultiply(
+		decDMatrix::CreateWorld(pPosition, pOrientation).QuickInvert()));
+	decVector boxMinExtend, boxMaxExtend, cboxCorners[8];
+	const int count = pChildObjects.GetCount();
+	bool hasBoxExtends = false;
+	int i, j;
+	
+	for(i=0; i<count; i++){
+		igdeWObject &c = ((ChildObject*)pChildObjects.GetAt(i))->GetWrapper();
+		if(!c.GetHasBoxExtends()){
+			continue;
+		}
+		
+		const decDVector a(c.GetBoxMinExtend()), b(c.GetBoxMaxExtend());
+		const decDVector boxCorners[8]{
+			{a.x, a.y, a.z}, {a.x, b.y, a.z}, {b.x, b.y, a.z}, {b.x, a.y, a.z},
+			{a.x, a.y, b.z}, {a.x, b.y, b.z}, {b.x, b.y, b.z}, {b.x, a.y, b.z}};
+		
+		const decDMatrix matrix(c.GetMatrix() * invMatrix);
+		for(j=0; j<8; j++){
+			cboxCorners[j] = matrix * boxCorners[j];
+		}
+		
+		decVector cboxMinExtend(cboxCorners[0]), cboxMaxExtend(cboxCorners[0]);
+		for(j=1; j<8; j++){
+			cboxMinExtend.SetSmallest(cboxCorners[j]);
+			cboxMaxExtend.SetLargest(cboxCorners[j]);
+		}
+		
+		if(hasBoxExtends){
+			boxMinExtend.SetSmallest(cboxMinExtend);
+			boxMaxExtend.SetLargest(cboxMaxExtend);
+			
+		}else{
+			boxMinExtend = cboxMinExtend;
+			boxMaxExtend = cboxMaxExtend;
+			hasBoxExtends = true;
+		}
+	}
+	
+	if(hasBoxExtends){
+		const decVector boxSize(boxMaxExtend - boxMinExtend);
+		if(boxSize.x < 0.001f){
+			boxMinExtend.x -= 0.0005f;
+			boxMaxExtend.x += 0.0005f;
+		}
+		if(boxSize.y < 0.001f){
+			boxMinExtend.y -= 0.0005f;
+			boxMaxExtend.y += 0.0005f;
+		}
+		if(boxSize.z < 0.001f){
+			boxMinExtend.z -= 0.0005f;
+			boxMaxExtend.z += 0.0005f;
+		}
+		SetBoxExtends(boxMinExtend, boxMaxExtend);
+		
+	}else{
+		ClearBoxExtends();
 	}
 }

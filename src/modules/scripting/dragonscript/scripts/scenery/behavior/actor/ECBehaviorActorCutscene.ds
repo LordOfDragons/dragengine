@@ -191,6 +191,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			
 			if action.equals("start")
 				pInstance.setAnimator(arguments.getAt(2) cast String)
+				pInstance.removeAllBreakPoints()
 				arguments.slice(3).forEach(block String each
 					pInstance.addBreakPoint(each.toFloat())
 				end)
@@ -201,6 +202,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 				
 			elif action.equals("stop")
 				pInstance.stop()
+				pInstance.removeAllBreakPoints()
 				
 			elif action.equals("synthesizer")
 				var String path = arguments.getAt(2) cast String
@@ -304,7 +306,6 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		public func new(ECBehaviorActorCutscene ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pBreakPoints = Array.new()
-			pNextBreakPoint = 0
 			pState = State.stopped
 		
 			pListeners = Array.new()
@@ -501,6 +502,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			
 			pController = null
 			
+			pNextBreakPoint = 0
 			pState = State.stopped
 			
 			pListeners.forEach(block Listener each
@@ -590,6 +592,11 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 				
 				if flags.getAt(0)
 					setAnimator(reader.readString8())
+					
+					var ECBehaviorActorAnimated.Instance animated = pConversationActor.getActorAnimated()
+					animated.setAnimator(pAnimator)
+					pController = animated.getControllerNamed(pControllerName)
+					
 					var float value = reader.readFloat()
 					if pController != null
 						pController.setValue(value)

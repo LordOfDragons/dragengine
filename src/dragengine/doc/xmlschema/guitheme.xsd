@@ -1,0 +1,197 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Gui Theme XML files.
+			[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:guitheme).
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/dragengineTypes.xsd'/>
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/designer.xsd'/>
+	
+	
+	<xs:complexType name='guiTheme'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Gui Theme.
+				[Documentation on Wiki](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:xmlguitheme:guitheme).
+				<p>
+				Requires either "type", "extend" or "extendNamed" attribute to be used but
+				not two or more at the same time.
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='font'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Set default font.
+					]]></xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='font'>
+							<xs:attribute name='for' use='required'>
+								<xs:simpleType>
+									<xs:restriction base='xs:string'>
+										<xs:annotation>
+											<xs:documentation><![CDATA[
+												Target to set default font for.
+											]]></xs:documentation>
+										</xs:annotation>
+										<xs:enumeration value='widget'>
+											<xs:annotation>
+												<xs:documentation><![CDATA[
+													Set font for widgets.
+												]]></xs:documentation>
+											</xs:annotation>
+										</xs:enumeration>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='designer'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='designer'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Define widget designer.
+								]]></xs:documentation>
+							</xs:annotation>
+							<xs:attribute name='name' type='xs:string' use='required'>
+								<xs:annotation>
+									<xs:documentation><![CDATA[
+										Name of widget designer.
+										<p>
+										Widget designers are selected using the setDesignerSelector
+										parameter of widgets. Selectors compose of dot separated
+										names, for example <code>Label.MyUIComponent.SpecialVersion</code>.
+										The selector is matched first in its entire length against
+										all defined widget designers. The last widget designer with
+										the exact matching name is chosen. If no widget designer
+										matches the last dot separated name is removed and the
+										matching restarts. In the this example the next match
+										attempt would be with the full name <code>Label.MyUIComponent</code>.
+										If this does still not match another component is remove
+										matching now against Label. If even this does not match
+										no widget designer is used for the widget. In short the
+										first matching designer from the list below is chosen:
+										</p>
+										<ul>
+										<li><code>Label.MyUIComponent.SpecialVersion</code></li>
+										<li><code>Label.MyUIComponent</code></li>
+										<li><code>Label</code></li>
+										<li>apply no designer</li>
+										</ul>
+										<p>
+										This system allows to create specializations of widgets
+										with custom design while falling back to previous, broader
+										definitions if missing. In this example Label is the top
+										level designer matching all labels if nothing else applies.
+										Using <code>.MyUIComponent</code> you can define a widget
+										designer applying to all labels in a specific UI component
+										of yours given they all have selectors set of the form
+										<code>Label.MyUIComponent{.XXX}</code> where <code>{.XXX}</code>
+										is optional. You can further customize individual labels
+										in this UI component by adding yet another selector component.
+										If the artists wants to style these labels individually he
+										can use the full name. Otherwise he can define one of the
+										broader upper level selectors. Hence it never hurts to
+										have a selector component more attached if you want to
+										give creative freedom to your artist.
+										</p>
+									]]></xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='theme'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='guiTheme'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Define a named gui theme. Named gui themes allow to apply a set
+									of designers as a whole. This is useful to apply an entirely
+									different gui theme to a subset of widgets without needing to
+									create and maintain individual gui themes.
+								]]></xs:documentation>
+							</xs:annotation>
+							
+							<xs:attribute name='name' type='xs:string' use='required'>
+								<xs:annotation>
+									<xs:documentation><![CDATA[
+										Name of theme.
+										<p>
+										Named gui themes are organized in a tree. The top level
+										gui theme has a list of child gui themes which in turn
+										can have more child gui themes. The selector set for the
+										widget composes of a dot separated name, for example
+										<code>InGame.InventoryWindow</code>. The parent of the
+										widget has the top level gui theme assigned. The widget
+										then selects first the named gui theme <code>InGame</code>.
+										If found it uses this gui theme to continue choosing the
+										named gui theme <code>InventoryWindow</code>. This way the
+										widget digs into the theme three picking the best gui theme
+										it can find (meaning the last one which matches). If one
+										gui theme along the path is not found the last found one is used.
+										</p>
+									]]></xs:documentation>
+								</xs:annotation>
+							</xs:attribute>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='import'>
+				<xs:complexType mixed='true'>
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							Relative or absolute path to gui theme file to import (*.deguitheme).
+							Importing gui themes allows to reuse designers across multiple gui themes
+							without needing to store them in individual *.dedesigner files.
+							<p>
+							Keep in mind the imported gui theme designers are placed in this gui
+							theme as if they have been defined in this file. To apply the gui
+							theme as a named child gui theme wrap the import in a "guiTheme" tag.
+							</p>
+						]]></xs:documentation>
+					</xs:annotation>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='extend' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Relative or absolute path to gui theme to extend (*.deguitheme).
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute name='extendNamed' use='optional'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Extend named gui theme.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	<xs:element name='guiTheme' type='guiTheme'>
+	</xs:element>
+</xs:schema>

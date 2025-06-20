@@ -55,7 +55,7 @@ pin Dragengine.Gui
  * - "directory/material.deskin": Applies to the skin and all textures inside.
  * - "directory/material.deskin/texture": Applies to only a specific texture inside the skin
  * 
- * Annotations are stored in "*.deskinann" (Drag[en]gine Skin Annotations) and can be loaded
+ * Annotations are stored in ".deskinann" (Drag[en]gine Skin Annotations) and can be loaded
  * using \ref LoadSave.LoadSkinAnnotations. This class provides convenience methods for
  * loading annotations.
  * 

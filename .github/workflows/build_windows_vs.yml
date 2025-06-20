@@ -108,7 +108,7 @@ jobs:
       - name: Build
         working-directory: vs
         run: |
-          $Config = "${{ inputs.debugBuild && 'Debug' || 'Release' }}"
+          $Config = "${{ inputs.debugBuild && 'ReleaseDebug' || 'Release' }}"
           $BuilVersion = "${{ inputs.buildVersion }}"
           msbuild /m -maxcpucount /p:Configuration=$Config /p:BuildVersion=$BuilVersion dragengine.sln
       

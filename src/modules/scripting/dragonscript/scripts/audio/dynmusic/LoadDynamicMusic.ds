@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Audio.DynamicMusic
 
 pin Dragengine.LoadSave
@@ -33,41 +32,38 @@ pin Dragengine.Utils
 pin Dragengine.XML
 
 
-
 /**
- * \brief Load dynamic music from a dynmusic.xml file.
- * 
+ * \brief Load dynamic music from a ".dedm" file.
  */
 class LoadDynamicMusic extends BaseXmlLoader
 	/** \brief Create loader. */
-	public func new( Console console ) this( console, "LoadDynamicMusic" )
+	func new(Console console) this(console, "LoadDynamicMusic")
 	end
 	
 	/** \brief Create loader. */
-	public func new( Console console, String name ) super( console, name )
+	func new(Console console, String name) super(console, name)
 	end
 	
 	
-	
 	/** \brief Load dynamic music from file. */
-	public func DynamicMusic loadFromFile( String filename )
-		this.logLoadingFromFile( filename )
+	func DynamicMusic loadFromFile(String filename)
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
 		
-		if not root.getTagName().equals( "dynamicMusic" )
-			this.logUnknownTag( root )
+		if not root.getTagName().equals("dynamicMusic")
+			logUnknownTag(root)
 			throw EInvalidParam.new()
 		end
 		
 		var DynamicMusic dynamicMusic = DynamicMusic.new()
-		this.pParseDynamicMusic( root, File.new( filename ).getParent().getPath(), dynamicMusic, null )
+		pParseDynamicMusic(root, File.new(filename).getParent().getPath(), dynamicMusic, null)
 		return dynamicMusic
 	end
 	
@@ -75,56 +71,55 @@ class LoadDynamicMusic extends BaseXmlLoader
 	 * \brief Asynchronously load dynamic music from file.
 	 * \returns Preloader for loaded dynamic music. Add listener and call checkFinished().
 	 */
-	public func PreloadDynamicMusic loadFromFileAsync( String filename, PreloadCounter parentCounter )
-		this.logLoadingFromFile( filename )
+	func PreloadDynamicMusic loadFromFileAsync(String filename, PreloadCounter parentCounter)
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
 		
-		if not root.getTagName().equals( "dynamicMusic" )
-			this.logUnknownTag( root )
+		if not root.getTagName().equals("dynamicMusic")
+			logUnknownTag(root)
 			throw EInvalidParam.new()
 		end
 		
 		var DynamicMusic dynamicMusic = DynamicMusic.new()
-		var PreloadDynamicMusic preloader = PreloadDynamicMusic.new( dynamicMusic, parentCounter )
-		this.pParseDynamicMusic( root, File.new( filename ).getParent().getPath(), dynamicMusic, preloader )
+		var PreloadDynamicMusic preloader = PreloadDynamicMusic.new(dynamicMusic, parentCounter)
+		pParseDynamicMusic(root, File.new(filename).getParent().getPath(), dynamicMusic, preloader)
 		return preloader
 	end
 	
 	
-	
 	/** \brief Parse dynamic music tag. */
-	private func void pParseDynamicMusic( EasyXMLElement root, String baseDirectory, \
-	DynamicMusic dynamicMusic, PreloadDynamicMusic preloader )
+	private func void pParseDynamicMusic(EasyXMLElement root, String baseDirectory, \
+	DynamicMusic dynamicMusic, PreloadDynamicMusic preloader)
 		var int i, count = root.getElementCount()
 		var EasyXMLElement element
 		var String tagName
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			tagName = element.getTagName()
 			
-			if tagName.equals( "switch" )
-				dynamicMusic.addSwitch( DynamicMusicSwitch.new( element.getFirstCData() ) )
+			if tagName.equals("switch")
+				dynamicMusic.addSwitch(DynamicMusicSwitch.new(element.getFirstCData()))
 				
-			elif tagName.equals( "init" )
-				this.pParseInit( element, dynamicMusic )
+			elif tagName.equals("init")
+				pParseInit(element, dynamicMusic)
 				
-			elif tagName.equals( "part" )
-				this.pParsePart( element, dynamicMusic, baseDirectory, preloader )
+			elif tagName.equals("part")
+				pParsePart(element, dynamicMusic, baseDirectory, preloader)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
 		end
@@ -135,106 +130,106 @@ class LoadDynamicMusic extends BaseXmlLoader
 	end
 	
 	/** \brief Parse init tag. */
-	private func void pParseInit( EasyXMLElement root, DynamicMusic dynamicMusic )
+	private func void pParseInit(EasyXMLElement root, DynamicMusic dynamicMusic)
 		var DynamicMusicPart init = dynamicMusic.getInit()
 		var int i, count = root.getElementCount()
 		var EasyXMLElement element
 		var String tagName
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			tagName = element.getTagName()
 			
-			if tagName.equals( "transition" )
-				init.addTransition( this.pParseTransition( element, dynamicMusic ) )
+			if tagName.equals("transition")
+				init.addTransition(pParseTransition(element, dynamicMusic))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
 		end
 	end
 	
 	/** \brief Parse part tag. */
-	private func void pParsePart( EasyXMLElement root, DynamicMusic dynamicMusic, \
-	String baseDirectory, PreloadDynamicMusic preloader )
+	private func void pParsePart(EasyXMLElement root, DynamicMusic dynamicMusic, \
+	String baseDirectory, PreloadDynamicMusic preloader)
 		var int i, count = root.getElementCount()
 		var EasyXMLElement element
 		var String tagName
 		var String value
 		
-		var DynamicMusicPart part = DynamicMusicPart.new( root.getAttributeNamed( "id" ) )
-		dynamicMusic.addPart( part )
+		var DynamicMusicPart part = DynamicMusicPart.new(root.getAttributeNamed("id"))
+		dynamicMusic.addPart(part)
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			tagName = element.getTagName()
 			
-			if tagName.equals( "music" )
+			if tagName.equals("music")
 				value = element.getFirstCData()
 				if not value.empty()
 					try
 						if preloader == null
-							part.setMusic( Sound.new( File.absolutePath( value, baseDirectory ).getPath() ) )
+							part.setMusic(Sound.new(File.absolutePath(value, baseDirectory).getPath()))
 							
 						else
-							Sound.loadAsynchron( File.absolutePath( value, baseDirectory ).getPath(), \
-								PreloadDynamicMusic.PartMusicFinishedListener.new( preloader, part ) )
+							Sound.loadAsynchron(File.absolutePath(value, baseDirectory).getPath(), \
+								PreloadDynamicMusic.PartMusicFinishedListener.new(preloader, part))
 						end
 						
 					catch Exception e
-						this.logLoadFileFailed( element, value )
+						logLoadFileFailed(element, value)
 					end
 				end
 				
-			elif tagName.equals( "transition" )
-				part.addTransition( this.pParseTransition( element, dynamicMusic ) )
+			elif tagName.equals("transition")
+				part.addTransition(pParseTransition(element, dynamicMusic))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
 		end
 	end
 	
 	/** \brief Parse transition tag. */
-	private func DynamicMusicTransition pParseTransition( EasyXMLElement root, DynamicMusic dynamicMusic )
+	private func DynamicMusicTransition pParseTransition(EasyXMLElement root, DynamicMusic dynamicMusic)
 		var int i, count = root.getElementCount()
 		var DynamicMusicTransition transition
 		var EasyXMLElement element
 		var String tagName
 		
-		if root.hasAttributeNamed( "target" )
-			transition = DynamicMusicTransition.new( root.getAttributeNamed( "target" ) )
+		if root.hasAttributeNamed("target")
+			transition = DynamicMusicTransition.new(root.getAttributeNamed("target"))
 			
 		else
 			transition = DynamicMusicTransition.new()
 		end
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			tagName = element.getTagName()
 			
-			if tagName.equals( "on" )
-				transition.addSwitchOn( dynamicMusic.getSwitchNamed( element.getFirstCData() ) )
+			if tagName.equals("on")
+				transition.addSwitchOn(dynamicMusic.getSwitchNamed(element.getFirstCData()))
 				
-			elif tagName.equals( "off" )
-				transition.addSwitchOff( dynamicMusic.getSwitchNamed( element.getFirstCData() ) )
+			elif tagName.equals("off")
+				transition.addSwitchOff(dynamicMusic.getSwitchNamed(element.getFirstCData()))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
 		end

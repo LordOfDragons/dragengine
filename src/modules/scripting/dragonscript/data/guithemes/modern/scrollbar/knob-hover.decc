@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<canvasCreator extend='knob.decc'>
+	<colorMatrix parameter='colorMatrix'>
+		<brightness r='0.05' g='0.05' b='0.05'/>
+	</colorMatrix>
+</canvasCreator>

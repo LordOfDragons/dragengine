@@ -1,0 +1,328 @@
+<xs:schema attributeFormDefault='unqualified'
+		elementFormDefault='qualified'
+		xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+	<xs:annotation>
+		<xs:documentation>
+			<![CDATA[
+			Schema for Drag[en]gine Styled Text XML files.
+			]]>
+		</xs:documentation>
+	</xs:annotation>
+	
+	<xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTypes.xsd'/>
+	
+	
+	<xs:complexType name='margins'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Margin in pixels.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:complexContent>
+			<xs:extension base='borderSize'>
+				<xs:choice minOccurs='0' maxOccurs='unbounded'>
+					<xs:element name='left' type='xs:integer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Left margin in pixels.
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					
+					<xs:element name='right' type='xs:integer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Right margin in pixels.
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					
+					<xs:element name='top' type='xs:integer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Top margin in pixels.
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					
+					<xs:element name='bottom' type='xs:integer'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Bottom margin in pixels.
+							]]></xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='style'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Style.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='font' type='font'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Font to use.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='textColor'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Text color.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='backgroundColor'>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base='color'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Background color. If not set no background is used.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name='margins' type='margins'/>
+			
+			<xs:element name='firstLineIndent' type='xs:integer' default='0'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Indent in pixels of the first text line.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='lineSpacing' type='xs:integer' default='0'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Line spacing in pixels.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='characterSpacing' type='xs:integer' default='0'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Character spacing in pixels.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='alignment' default='left'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Text alignment.
+					]]></xs:documentation>
+				</xs:annotation>
+				
+				<xs:simpleType>
+					<xs:restriction base='xs:string'>
+						<xs:enumeration value='left'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Left align text.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='right'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Right align text.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='center'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Center align text.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+						<xs:enumeration value='block'>
+							<xs:annotation>
+								<xs:documentation><![CDATA[
+									Block align text. Word spacing is chosen automatically to fit
+									all words into the available line width.
+								]]></xs:documentation>
+							</xs:annotation>
+						</xs:enumeration>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name='name' type='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Style name.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute name='extend' type='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Extend named style.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='span' mixed='true'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Span of text. Used to format chunks of text inside a <code>text</code> node
+				using a different <code>style</code>.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:attribute name='style' type='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Style to use. If not set uses <code>text</code> style.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		
+		<xs:attribute name='image' type='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Relative or absolute path to image to display in front of span text.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='text' mixed='true'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Text.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='span' type='span'/>
+		</xs:choice>
+		
+		<xs:attribute name='style' type='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Style to use. If not set uses page style.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='image'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Relative or absolute path to image resource to display.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='style' type='xs:string'>
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							Style to use. If not set uses page style.
+						]]></xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='video'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Relative or absolute path to video resource to display.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:simpleContent>
+			<xs:extension base='xs:string'>
+				<xs:attribute name='style' type='xs:string'>
+					<xs:annotation>
+						<xs:documentation><![CDATA[
+							Style to use. If not set uses page style.
+						]]></xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	
+	<xs:complexType name='styledText'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Drag[en]gine Styled Text.
+				<p>
+				If you use this schema in your own schema import the scheme like this:
+				<pre>&lt;xs:include schemaLocation='https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/styledText.xsd'/&gt;</pre>
+				Then use like this to insert the content:
+				<pre>&lt;xs:element name='content' type='styledText'/&gt;</pre>
+				</p>
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:choice minOccurs='0' maxOccurs='unbounded'>
+			<xs:element name='pageSize' type='point'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Page size in pixels resulting in an optimal document layout.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			
+			<xs:element name='margins' type='margins'/>
+			<xs:element name='style' type='style'/>
+			<xs:element name='text' type='text'/>
+			<xs:element name='image' type='image'/>
+			<xs:element name='video' type='video'/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name='styledText' type='styledText'>
+		<xs:key name='key.style.name'>
+			<xs:selector xpath='style'/>
+			<xs:field xpath='@name'/>
+		</xs:key>
+		
+		<xs:keyref name='keyref.style.name' refer='key.style.name'>
+			<xs:selector xpath='style'/>
+			<xs:field xpath='@extend'/>
+		</xs:keyref>
+		
+		<xs:keyref name='keyref.style.name2' refer='key.style.name'>
+			<xs:selector xpath='text | text/span | image | video'/>
+			<xs:field xpath='@style'/>
+		</xs:keyref>
+	</xs:element>
+</xs:schema>

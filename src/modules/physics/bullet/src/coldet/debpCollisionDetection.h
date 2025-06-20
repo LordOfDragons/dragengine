@@ -45,6 +45,8 @@ class debpHeightTerrain;
 class debpHTSector;
 class debpComponent;
 class deModelFace;
+class debpSharedCollisionFiltering;
+class debpContactResultCallback;
 
 class deBaseScriptingCollider;
 class deCollisionInfo;
@@ -108,6 +110,13 @@ private:
 	btSphereShape *pPointTestShape;
 	btCollisionObject *pPointTestBulletColObj;
 	
+	debpSharedCollisionFiltering *pSharedCollisionFiltering;
+	btCollisionConfiguration *pColConfig;
+	btCollisionDispatcher *pColDisp;
+	btBroadphaseInterface *pBroadPhase;
+	debpConstraintSolver *pConstraintSolver;
+	btSoftBodySolver *pSoftBodySolver;
+	btDynamicsWorld *pDynWorld;
 	
 	
 public:
@@ -231,11 +240,16 @@ public:
 #endif
 	
 	/**
-	 * Determines if a collider hits another collider. The collider shapes are supposed to be
-	 * transformed relative to the world. If the collider is hit the shape1, shape2, bone1 and
-	 * bone2 parameters are set in the result.
+	 * Collider hits another collider. Static collision testst of both colliders have to be
+	 * prepared and valid before calling this method. If the collider is hit the shape1, shape2,
+	 * bone1 and bone2 parameters are set in the result.
+	 * 
+	 * \deprecated Still used by non-bullet collision detection.
 	 */
-	bool ColliderHitsCollider( debpCollider *collider1, debpCollider *collider2, debpCollisionResult &result );
+	bool ColliderHitsCollider(debpCollider *collider1, debpCollider *collider2, debpCollisionResult &result);
+	
+	void ColliderHitsCollider(debpCollider &collider1, debpCollider &collider2,
+		debpContactResultCallback &result, bool reversedColliders = false);
 	
 #if 0
 	/**
@@ -420,6 +434,31 @@ public:
 	bool ColliderComponentMoveHitsColliderRig( debpColliderComponent &collider1, const decDVector &displacement,
 		debpColliderRig &collider2, debpCollisionResult &result );
 #endif
+	
+	/**
+	 * \brief Script callback safe contact testing.
+	 * 
+	 * performs a discrete collision test between two collision objects and calls the
+	 * resultCallback if overlap if detected. it reports one or more contact points
+	 * (including the one with deepest penetration)
+	 * 
+	 * Protects btCollisionWorld::contactPairTest by locking delayed operations.
+	 * 
+	 * \note used by debpTouchSensor.
+	 */
+	void contactPairTest(btCollisionObject *colObjA, btCollisionObject *colObjB,
+		btDynamicsWorld::ContactResultCallback& resultCallback);
+	
+	/**
+	 * \brief Script callback safe contact testing.
+	 * 
+	 * Modified version of safeContactPairTest returning only true or false. This version
+	 * avoids juggling contact points not required for a quick test.
+	 * 
+	 * \note used by debpTouchSensor.
+	 */
+	bool contactPairTest(btCollisionObject *colObjA, btCollisionObject *colObjB);
+	
 	/*@}*/
 };
 

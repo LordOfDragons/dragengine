@@ -158,6 +158,8 @@ private:
 	bool pShowOcclusionMeshesSelected;
 	bool pShowNavigationSpaces;
 	bool pShowNavigationSpacesSelected;
+	bool pShowShapes;
+	bool pShowShapesSelected;
 	
 	igdeTagManager pTagsHideClass;
 	igdeTagManager pTagsPartialHideClass;
@@ -299,6 +301,19 @@ public:
 	
 	/** \brief Set if navigation spaces of selected objects are shown. */
 	void SetShowNavigationSpacesSelected( bool show );
+	
+	/** \brief Shapes are shown. */
+	inline bool GetShowShapes() const{ return pShowShapes; }
+	
+	/** \brief Set if shapes are shown. */
+	void SetShowShapes(bool show);
+	
+	/** \brief Shapes of selected objects are shown. */
+	inline bool GetShowShapesSelected() const{ return pShowShapesSelected; }
+	
+	/** \brief Set if shapes of selected objects are shown. */
+	void SetShowShapesSelected(bool show);
+	
 	
 	
 	

@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+	Widgets for editing input bindings. These designers can be defined:
+	- 'ListBox.EditBindings'
+	    EditBindingsListBox
+	- 'Panel.EditBindingsEntry' {+'.Selected' for selected}
+	    EditBindingsListRenderer root panel
+	- 'Label.EditBindingsEntry.Name' {+'.Selected' for selected}
+	    EditBindingsListRenderer name label with command name to configurate bindings for
+	- 'Label.EditBindingsEntry.Binding' {+'.Selected' for selected}
+	    EditBindingsListRenderer binding label
+	- 'TextArea.EditBindings.CommandInfo'
+	    TextArea in EditBindingsPanel showing command description
+	- 'WindowDialog.CaptureBinding'
+	    Dialog window for capturing binding
+	- 'Label.WindowDialog.CaptureBinding'
+	    Text in capture binding dialog
+	- 'Panel.WindowDialogButtons.CaptureBinding'
+	    Button panel in capture binding dialog
+	- 'Button.WindowDialog.CaptureBinding'
+	    Button in capture binding dialog button panel
+	-->
+	
+	<designer name='Panel.EditBindingsEntry' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.1'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Panel.EditBindingsEntry.Selected' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.3' g='0.3' b='0.5'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Panel.EditBindingsEntry.Binding' type='Widget'>
+		<borderSize parameter='normal.padding' left='3' right='3'/>
+		<null parameter='normal.canvas'/>
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.2'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Panel.EditBindingsEntry.Binding.Selected' type='Widget'>
+		<borderSize parameter='normal.padding' left='3' right='3'/>
+		<null parameter='normal.canvas'/>
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.4' g='0.4' b='1'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Label.EditBindingsEntry.Name' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+	</designer>
+	
+	<designer name='Label.EditBindingsEntry.Name.Selected' extendNamed='Label'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
+	<designer name='Label.EditBindingsEntry.Binding' extendNamed='Label'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.decc'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0.9' g='1' b='0.9'/>
+			</colorMatrix>
+		</canvasCreator>
+		<border parameter='normal.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.decc'>
+				<colorMatrix parameter='colorMatrix'>
+					<scale r='0.6' g='0.6' b='0.6'/>
+				</colorMatrix>
+			</canvasCreator>
+			<borderSize parameter='size' all='2'/>
+		</border>
+		<borderSize parameter='normal.padding' left='4' top='1' right='4' bottom='1'/>
+	</designer>
+	
+	<designer name='Label.DisplayInputSource' type='Label'>
+		<borderSize parameter='normal.padding' all='3'/>
+		<font parameter='normal.font' size='26'>../modern/fonts/binding.defont</font>
+		<color parameter='normal.textColor' r='1' g='1' b='0'/>
+	</designer>
+	
+	<designer name='Button.EditBindingsEntry.DeleteBinding' type='Button'>
+		<borderSize parameter='normal.padding' left='3'/>
+	</designer>
+	
+	<designer name='Label.Button.EditBindingsEntry.DeleteBinding' extendNamed='Label'>
+		<point parameter='normal.minimumSize' x='26' y='26'/>
+		<borderSize parameter='normal.padding' all='3'/>
+		<canvasCreator parameter='normal.canvas' type='Image'>
+			<image parameter='image'>../modern/arrows/remove_normal.webp</image>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Image'>
+			<image parameter='image'>../modern/arrows/remove_hover.webp</image>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Button.EditBindingsEntry.AddBinding' type='Button'>
+		<borderSize parameter='normal.padding' left='3'/>
+	</designer>
+	
+	<designer name='Label.Button.EditBindingsEntry.AddBinding' extendNamed='Label'>
+		<point parameter='normal.minimumSize' x='26' y='26'/>
+		<borderSize parameter='normal.padding' all='3'/>
+		<canvasCreator parameter='normal.canvas' type='Image'>
+			<image parameter='image'>../modern/arrows/add_normal.webp</image>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Image'>
+			<image parameter='image'>../modern/arrows/add_hover.webp</image>
+		</canvasCreator>
+	</designer>
+</guiTheme>

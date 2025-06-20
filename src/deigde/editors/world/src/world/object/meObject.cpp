@@ -136,11 +136,19 @@
 // class cWOAsyncFinished
 ///////////////////////////
 
-meObject::cWOAsyncFinished::cWOAsyncFinished( meObject &object ) : pObject( object ){
+meObject::cWOAsyncFinished::cWOAsyncFinished(meObject &object) : pObject(object){
 }
 
-void meObject::cWOAsyncFinished::LoadFinished( igdeWObject&, bool ){
+void meObject::cWOAsyncFinished::LoadFinished(igdeWObject&, bool){
 	pObject.WOAsyncFinished();
+}
+
+void meObject::cWOAsyncFinished::AnyContentVisibleChanged(igdeWObject &wrapper){
+	pObject.WOAnyContentVisibleChanged();
+}
+
+void meObject::cWOAsyncFinished::ExtendsChanged(igdeWObject &wrapper){
+	pObject.WOExtendsChanged();
 }
 
 
@@ -894,19 +902,19 @@ void meObject::ShowStateChanged(){
 			pUpdateComponent();
 		}
 		
-		const bool visible = ( pVisible && ( pActive || pSelected ) && modeObj && ! hiddenByTag );
+		const bool visible = pVisible && (pActive || pSelected) && modeObj && !hiddenByTag;
 		
-		pDDSObject->SetVisible( visible );
-		pDDSLightAoE->SetVisible( false ); // visible && pLight
-		pDDSOcclusionMesh->SetVisible(
-			guiParams.GetShowOcclusionMeshes()
-			|| ( visible && guiParams.GetShowOcclusionMeshesSelected() ) );
-		pDDSObjectShapes->SetVisible( pSelected && pVisible && modeObjShape );
-		pDDSListNavSpaces.SetVisibleAll(
-			modeNavSpace
+		pDDSObject->SetVisible(visible);
+		pDDSLightAoE->SetVisible(false); // visible && pLight
+		pDDSOcclusionMesh->SetVisible(guiParams.GetShowOcclusionMeshes()
+			|| (visible && guiParams.GetShowOcclusionMeshesSelected()));
+		pDDSObjectShapes->SetVisible((modeObjShape && pSelected && pVisible)
+			|| guiParams.GetShowShapes()
+			|| (visible && guiParams.GetShowShapesSelected()));
+		pDDSListNavSpaces.SetVisibleAll(modeNavSpace
 			|| guiParams.GetShowNavigationSpaces()
-			|| ( visible && guiParams.GetShowNavigationSpacesSelected() ) );
-		pDDSCoordSysArrows->SetVisible( visible );
+			|| (visible && guiParams.GetShowNavigationSpacesSelected()));
+		pDDSCoordSysArrows->SetVisible(visible);
 	}
 	
 	int i;
@@ -970,6 +978,14 @@ void meObject::WOAsyncFinished(){
 		InvalidateDecals.Collect( *pWObject );
 		InvalidateDecals.InvalidateDecals();
 	}
+}
+
+void meObject::WOAnyContentVisibleChanged(){
+	pUpdateBrokenComponent();
+}
+
+void meObject::WOExtendsChanged(){
+	pUpdateShapes();
 }
 
 
@@ -1406,6 +1422,8 @@ void meObject::UpdateComponentTextures(){
 }
 
 bool meObject::IsComponentBroken() const{
+	return !pWObject->IsAnyContentVisible();
+#if 0
 	// if the component is missing it is broken
 	const deComponent * const component = pWObject->GetComponent();
 	if( ! component ){
@@ -1456,6 +1474,7 @@ bool meObject::IsComponentBroken() const{
 	
 	// no component texture is visible to the user. the component is broken
 	return true;
+#endif
 }
 
 void meObject::GetTextureNameList( decStringList &list ) const{
@@ -2224,7 +2243,10 @@ void meObject::pUpdateShapeOcclusionMesh(){
 
 void meObject::pUpdateComponent(){
 	UpdateComponentTextures();
-	
+	pUpdateBrokenComponent();
+}
+
+void meObject::pUpdateBrokenComponent(){
 	// if the component is broken show a broken component replacement
 	if( IsComponentBroken() ){
 		if( ! pEngComponentBroken ){

@@ -106,14 +106,8 @@ class BaseConversationPlayback extends ConversationPlayback
 	/** \brief Create conversation playback. */
 	func new(Conversation conversation, ECBehaviorPlayerControllable.Tracker playerControlledActor) \
 	super(conversation)
-		pCommandParser = CommandLineParser.new()
-		pCommands = Dictionary.new()
-		pConditions = Dictionary.new()
 		pPlayerControlledActor = playerControlledActor
-		setSubTitle(BaseGameApp.getApp().getWindowSubTitle())
-		setPlayerChoice(BaseGameApp.getApp().getWindowPlayerChoice())
-		setCameraDirector(createCameraDirector())
-		pInputProcessor = createInputProcessor()
+		initShared()
 	end
 	
 	/**
@@ -127,7 +121,20 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * - SubTitle
 	 * - pPlayerChoice
 	 */
-	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
+	func new(PersistencyEnvironment env, FileReader reader)\
+	this(env, reader, BaseGameApp.getApp().getPlayerControlledActor())
+	end
+	
+	func new(PersistencyEnvironment env, FileReader reader,\
+	ECBehaviorPlayerControllable.Tracker playerControlledActor) super(env, reader)
+		pPlayerControlledActor = playerControlledActor
+		initShared()
+	end
+	
+	private func void initShared()
+		pCommandParser = CommandLineParser.new()
+		pCommands = Dictionary.new()
+		pConditions = Dictionary.new()
 		setSubTitle(BaseGameApp.getApp().getWindowSubTitle())
 		setPlayerChoice(BaseGameApp.getApp().getWindowPlayerChoice())
 		setCameraDirector(createCameraDirector())

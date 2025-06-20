@@ -34,6 +34,8 @@ pin Dragengine.XML
 
 /**
  * \brief Load element class from XML file.
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_elements#xml_element_classes
+ * \see https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/elementClass.xsd
  */
 class LoadElementClass extends BaseXmlLoader
 	/** \brief Stores information about a failed loaded element class. */

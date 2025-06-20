@@ -222,12 +222,21 @@ if envDragengine['with_static_internalmodules']:
 	envDragengine.Append(CPPFLAGS=['-DWITH_STATIC_INTERNALMODULES'])
 	
 	envDragengine['InternalModuleCreateFunctions'] = []
+	envDragengine['InternalModuleCreateFunctionsPriority'] = []
 	
 	def createInternalModulesBuild(target, source, env):
 		with open(target[0].abspath, 'w') as f:
 			f.write('/* Generated File. Do not edit */\n')
+			for cf in env['InternalModuleCreateFunctionsPriority']:
+				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
 			for cf in env['InternalModuleCreateFunctions']:
 				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+			f.write('\n')
+			f.write('static deModuleSystem::FPRegisterInternalModule vInternalModuleFunctionsPriority[]{\n')
+			for cf in env['InternalModuleCreateFunctionsPriority']:
+				f.write('\t{},\n'.format(cf))
+			f.write('\tnullptr};\n')
+			f.write('\n')
 			f.write('static deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]{\n')
 			for cf in env['InternalModuleCreateFunctions']:
 				f.write('\t{},\n'.format(cf))
@@ -386,18 +395,32 @@ if not envDragengine['with_static_internalmodules']:
 	modulesArchive = {}
 	
 	envModules['InternalModuleCreateFunctions'] = []
+	envModules['InternalModuleCreateFunctionsPriority'] = []
 	
 	def createInternalModulesBuild(target, source, env):
 		with open(target[0].abspath, 'w') as f:
 			f.write('/* Generated File. Do not edit */\n')
 			f.write('#include <dragengine/systems/deModuleSystem.h>\n')
+			f.write('\n')
+			for cf in env['InternalModuleCreateFunctionsPriority']:
+				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
 			for cf in env['InternalModuleCreateFunctions']:
 				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+			f.write('\n')
+			f.write('static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctionsPriority[]{\n')
+			for cf in env['InternalModuleCreateFunctionsPriority']:
+				f.write('\t{},\n'.format(cf))
+			f.write('\tnullptr};\n')
+			f.write('\n')
 			f.write('static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]{\n')
 			for cf in env['InternalModuleCreateFunctions']:
 				f.write('\t{},\n'.format(cf))
 			f.write('\tnullptr};\n')
+			f.write('\n')
 			f.write('extern "C" {\n')
+			f.write('MOD_ENTRY_POINT_ATTR const deModuleSystem::FPRegisterInternalModule* DEInternalModuleFunctionsPriority(){\n')
+			f.write('\treturn (deModuleSystem::FPRegisterInternalModule*)&vInternalModuleFunctionsPriority;\n')
+			f.write('}\n')
 			f.write('MOD_ENTRY_POINT_ATTR const deModuleSystem::FPRegisterInternalModule* DEInternalModuleFunctions(){\n')
 			f.write('\treturn (deModuleSystem::FPRegisterInternalModule*)&vInternalModuleFunctions;\n')
 			f.write('}\n')
@@ -430,7 +453,7 @@ if not envDragengine['with_static_internalmodules']:
 	
 	modulesTargetInstall = envModules.Alias('deinternalmodules', modulesInstall)
 
-def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
+def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[], priority=False):
 	if parent_env['with_static_internalmodules']:
 		targetLibrary = library
 		targetDepend = targetCreateInternalModules
@@ -484,7 +507,10 @@ def addInternalModule(env, nodes, externLibs, createFunc, syslibs=[]):
 	
 	env.Depends(targetLibrary, nodes)
 	
-	libenv['InternalModuleCreateFunctions'].append(createFunc)
+	if priority:
+		libenv['InternalModuleCreateFunctionsPriority'].append(createFunc)
+	else:
+		libenv['InternalModuleCreateFunctions'].append(createFunc)
 	libenv.Depends(targetDepend, nodes)
 	
 	"""

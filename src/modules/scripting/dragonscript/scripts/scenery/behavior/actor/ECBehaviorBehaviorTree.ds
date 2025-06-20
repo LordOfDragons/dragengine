@@ -344,6 +344,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			pBehaviorTree = loadBehaviorTree(stub)
 			if pBehaviorTree == null
 				pBehaviorTree = BehaviorTree.new()
+				pBehaviorTree.setRootRule(BTRuleRunning.new("root"))
 			end
 			
 			pContext = createContext(stub, pBehaviorTree)

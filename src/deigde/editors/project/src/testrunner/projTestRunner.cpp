@@ -757,9 +757,11 @@ void projTestRunner::pSendLaunchParameters(){
 	int i, count;
 	
 	// merge them together
-	const int scaleFactor = pWindowMain.GetEngine()->GetOS()->GetDisplayCurrentScaleFactor(0);
-	int windowSizeX = 0;
-	int windowSizeY = 0;
+	deOS &os = *pWindowMain.GetEngine()->GetOS();
+	const int scaleFactor = os.GetDisplayCurrentScaleFactor(0);
+	const decPoint fullScreenSize(os.GetDisplayCurrentResolution(0));
+	int windowSizeX = fullScreenSize.x;
+	int windowSizeY = fullScreenSize.y;
 	bool fullScreen = true;
 	
 	if( pLauncherProfile ){

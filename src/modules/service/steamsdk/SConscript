@@ -22,6 +22,8 @@ if envModule['force_version']:
 pathConfig = '{}/modules/service/steamsdk/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
 pathModule = '{}/modules/service/steamsdk/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
 pathShared = '{}/modules/service/steamsdk/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
+pathAsset = 'modules/service/steamsdk/{}'.format(versionString)
+withEngineDeal = envModule['with_engine_deal']
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
@@ -43,6 +45,8 @@ targetBuild = envModule.Alias('srv_steamsdk_build', library)
 
 install = []
 archive = {}
+assetEngine = {}
+
 for l in library:
 	if l.name.endswith(envModule['SHLIBSUFFIX']):
 		install.append(envModule.Install(pathModule, l))
@@ -78,9 +82,13 @@ install.append(envModule.Install(pathModule, updateManifest))
 archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
 
 for s in data:
-	filename = os.path.join(pathShared, s[5:])
-	install.append(envModule.InstallAs(filename, s))
-	archive[filename] = envModule.File(s).srcnode()
+	if withEngineDeal:
+		filename = os.path.join(pathAsset, s[5:])
+		assetEngine[filename] = envModule.File(s).srcnode()
+	else:
+		filename = os.path.join(pathShares, s[5:])
+		install.append(envModule.InstallAs(filename, s))
+		archive[filename] = envModule.File(s).srcnode()
 
 targetInstall = envModule.Alias('srv_steamsdk', install)
 
@@ -100,5 +108,6 @@ parent_targets['srv_steamsdk'] = {
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
+	'asset-engine' : assetEngine,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

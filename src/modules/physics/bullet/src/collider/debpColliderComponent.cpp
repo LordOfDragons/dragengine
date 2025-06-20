@@ -1071,9 +1071,34 @@ debpSweepCollisionTest *debpColliderComponent::GetSweepCollisionTest(){
 	return pSweepCollisionTest;
 }
 
-btGhostObject *debpColliderComponent::GetStaticCollisionTest(){
+btCollisionObject *debpColliderComponent::GetStaticCollisionTest(){
+	if(pSimplePhyBody && pSimplePhyBody->GetRigidBody()){
+		return pSimplePhyBody->GetRigidBody();
+	}
+	
 	pUpdateStaticCollisionTest();
-	return pStaticCollisionTest;
+	return pStaticCollisionTest->getCollisionShape() ? pStaticCollisionTest : nullptr;
+}
+
+btCollisionObject *debpColliderComponent::GetStaticCollisionTestPrepare(){
+	if(pSimplePhyBody && pSimplePhyBody->GetRigidBody()){
+		return pSimplePhyBody->GetRigidBody();
+	}
+	
+	btCollisionObject * const co = GetStaticCollisionTest();
+	if(!co){
+		return nullptr;
+	}
+	
+	co->setWorldTransform(btTransform(
+		{(btScalar)pOrientation.x, (btScalar)pOrientation.y,
+			(btScalar)pOrientation.z, (btScalar)pOrientation.w},
+		{(btScalar)pPosition.x, (btScalar)pPosition.y, (btScalar)pPosition.z}));
+	return co;
+}
+
+bool debpColliderComponent::PrepareStaticCollisionTest(){
+	return GetStaticCollisionTestPrepare() != nullptr;
 }
 
 
@@ -2003,7 +2028,7 @@ const decVector &rayDirection, deBaseScriptingCollider *listener ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( ! pPrepreStaticCollisionTestPos() ){
+	if(!pPrepreStaticCollisionTestPos()){
 		return;
 	}
 	
@@ -2046,48 +2071,54 @@ const decVector &rayDirection, deBaseScriptingCollider *listener ){
 static btManifoldPoint vDummyManifoldPoint; // Dummy manifold point to be used where bullet requires one but dragengine not
 
 void debpColliderComponent::ColliderHits( deCollider *engCollider, deBaseScriptingCollider *listener ){
-	if( ! engCollider || ! listener ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(engCollider)
+	DEASSERT_NOTNULL(listener)
 	
-	if( ! pPrepreStaticCollisionTestPos() ){
+	debpCollider &collider = *(debpCollider*)engCollider->GetPeerPhysics();
+	if(!PrepareStaticCollisionTest() || !collider.PrepareStaticCollisionTest()){
 		return;
 	}
 	
 	debpCollisionDetection &coldet = GetBullet()->GetCollisionDetection();
-	debpCollider * const collider = ( debpCollider* )engCollider->GetPeerPhysics();
+	debpContactResultCallback result(coldet.GetCollisionInfo());
+	result.SetTestCollider(&collider, listener);
+	coldet.GetCollisionInfo()->SetStopTesting(false);
+	coldet.ColliderHitsCollider(*this, collider, result);
+	
+	#if 0
+	if(!pPrepreStaticCollisionTestPos()){
+		return;
+	}
+	
+	debpCollisionDetection &coldet = GetBullet()->GetCollisionDetection();
+	debpCollider * const collider = (debpCollider*)engCollider->GetPeerPhysics();
 	deCollisionInfo * const colinfo = coldet.GetCollisionInfo();
 	debpCollisionResult coldetResult;
 	
-	debpContactResultCallback result( colinfo );
+	debpContactResultCallback result(colinfo);
 	
-	if( collider->IsVolume() ){
+	if(collider->IsVolume()){
 		debpColliderVolume &colliderVolume = *collider->CastToVolume();
-		btGhostObject * const staticCollisionTest = colliderVolume.GetStaticCollisionTest();
-		const btCollisionObjectWrapper obj0Wrap( NULL, staticCollisionTest->getCollisionShape(),
-			staticCollisionTest, staticCollisionTest->getWorldTransform(), -1, -1 );
+		btGhostObject * const staticCollisionTest2 = colliderVolume.GetStaticCollisionTestPrepare();
+		if(!staticCollisionTest2){
+			return;
+		}
+		const btCollisionObjectWrapper obj0Wrap( NULL, staticCollisionTest2->getCollisionShape(),
+			staticCollisionTest2, staticCollisionTest2->getWorldTransform(), -1, -1 );
 		
-		const decDVector &position = colliderVolume.GetPosition();
-		const btVector3 btposition( ( btScalar )position.x, ( btScalar )position.y, ( btScalar )position.z );
-		
-		const decQuaternion &orientation = colliderVolume.GetOrientation();
-		const btQuaternion btorientation( ( btScalar )orientation.x, ( btScalar )orientation.y,
-			( btScalar )orientation.z, ( btScalar )orientation.w );
-		
-		staticCollisionTest->setWorldTransform( btTransform( btorientation, btposition ) );
-		
-		result.SetTestCollider( staticCollisionTest, collider, listener );
+		result.SetTestCollider( staticCollisionTest2, collider, listener );
 		colinfo->SetStopTesting( false );
 		
 		btVector3 aabbMin, aabbMax;
-		staticCollisionTest->getCollisionShape()->getAabb( staticCollisionTest->getWorldTransform(), aabbMin, aabbMax );
+		staticCollisionTest2->getCollisionShape()->getAabb( staticCollisionTest2->getWorldTransform(), aabbMin, aabbMax );
 		
 		if( coldet.ColliderHitsCollider( collider, this, coldetResult ) ){
-			const btCollisionObjectWrapper obj1Wrap( NULL, staticCollisionTest->getCollisionShape(),
-				staticCollisionTest, staticCollisionTest->getWorldTransform(), -1, -1 );
+			const btCollisionObjectWrapper obj1Wrap( NULL, staticCollisionTest2->getCollisionShape(),
+				staticCollisionTest2, staticCollisionTest2->getWorldTransform(), -1, -1 );
 			result.addSingleResult( vDummyManifoldPoint, &obj0Wrap, 0, -1, &obj1Wrap, 0, coldetResult.face );
 		}
 	}
+	#endif
 }
 
 void debpColliderComponent::ColliderMoveHits( deCollider *engCollider,
@@ -2096,7 +2127,7 @@ const decVector &displacement, deBaseScriptingCollider *listener ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( ! pPrepreStaticCollisionTestPos() ){
+	if(!pPrepreStaticCollisionTestPos()){
 		return;
 	}
 	
@@ -2137,7 +2168,7 @@ const decVector &rotation, deBaseScriptingCollider *listener ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( ! pPrepreStaticCollisionTestPos() ){
+	if(!pPrepreStaticCollisionTestPos()){
 		return;
 	}
 	
@@ -2179,7 +2210,7 @@ const decVector &displacement, const decVector &rotation, deBaseScriptingCollide
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( ! pPrepreStaticCollisionTestPos() ){
+	if(!pPrepreStaticCollisionTestPos()){
 		return;
 	}
 	
@@ -3012,15 +3043,15 @@ debpBulletShape *debpColliderComponent::pCreateBPShape(){
 
 bool debpColliderComponent::pPrepreStaticCollisionTestPos(){
 	// early exit
-	switch( pTestMode ){
+	switch(pTestMode){
 	case etmRigShape:
-		if( ! pSimplePhyBody ){
+		if(!pSimplePhyBody){
 			return false;
 		}
 		break;
 		
 	case etmBoneShape:
-		if( ! pBones ){
+		if(!pBones){
 			return false;
 		}
 		break;
@@ -3030,18 +3061,16 @@ bool debpColliderComponent::pPrepreStaticCollisionTestPos(){
 	}
 	
 	// prepare static collision test to be in the right spot
-	switch( pTestMode ){
-	case etmRigShape:{
-		btGhostObject &staticCollisionTest = *GetStaticCollisionTest();
-		const btVector3 btColPos( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z );
-		const btQuaternion btColOrien( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
-			( btScalar )pOrientation.z, ( btScalar )pOrientation.w );
-		staticCollisionTest.setWorldTransform( btTransform( btColOrien, btColPos ) );
-		}break;
+	switch(pTestMode){
+	case etmRigShape:
+		if(!GetStaticCollisionTestPrepare()){
+			return false;
+		}
+		break;
 		
 	case etmBoneShape:
-		if( pBones ){
-			pBones->UpdateStaticCollisionTests();
+		if(pBones && !pBones->UpdateStaticCollisionTests()){
+			return false;
 		}
 		break;
 		

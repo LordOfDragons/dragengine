@@ -179,6 +179,7 @@ private:
 	public:
 		ChildAsyncFinished(igdeWOSOWorld &owner);
 		void LoadFinished(igdeWObject &wrapper, bool succeeded) override;
+		void ExtendsChanged(igdeWObject &wrapper) override;
 	};
 	
 	
@@ -189,6 +190,7 @@ private:
 	decObjectOrderedSet pChildObjects;
 	ChildAsyncFinished pChildAsyncFinished;
 	const LoadObjectResources::Ref pLoadObjectResources;
+	bool pNoUpdateAnyContentVisibile;
 	
 	
 public:
@@ -244,11 +246,24 @@ public:
 	/** \brief Child object async loading finished. */
 	void ChildObjectFinishedAsyncLoad(ChildObject &object);
 	
+	/** \brief Child object extends changed. */
+	void ChildObjectExtendsChanged(ChildObject &object);
+	
 	/** \brief Load texture skin. */
 	void LoadTextureSkin(ChildObject &object, ChildObjectTexture &texture);
 	
 	/** \brief Update child component texture. */
 	void UpdateChildComponentTexture(ChildObject &object, ChildObjectTexture &texture);
+	
+	/**
+	 * \brief Sub object is visible.
+	 * 
+	 * Returns true if wrapped resources is visible. For example a component resource without
+	 * valid model or with no texture containing a valid skin is invisible. This check does not
+	 * include the visibility state of the object. Hence invisible content is still considered
+	 * visible if it would be visible otherwise.
+	 */
+	bool IsContentVisible() override;
 	/*@}*/
 	
 	
@@ -262,6 +277,7 @@ private:
 	void pDestroyWorld();
 	void pLoadWorld(const decString &path);
 	void pUpdateChildComponentTextures(ChildObject &object);
+	void pUpdateExtends();
 };
 
 #endif

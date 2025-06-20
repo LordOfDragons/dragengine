@@ -51,52 +51,13 @@ pin Dragengine.XML
  * The "parameterTree" tag can have the "pathPrefix" attribute. If used this prefix is prepended
  * to all "path" attributes as is. This avoids writing the same prefix for all keys.
  * 
- * Supported are these tags:
- * - UTF8 encoded string value: \code{.xml}<string></string>\endcode
- * - Floating point value: \code{.xml}<float></float>\endcode
- * - Integer value: \code{.xml}<int></int>\endcode
- * - Boolean value ("true", "false"): \code{.xml}<bool></bool>\endcode
- * - 2-Component point (integer): \code{.xml}<point x='' y=''/>\endcode
- * - 3-Component point (integer): \code{.xml}<point3 x='' y='' z=''/>\endcode
- * - 2-Component vector (float): \code{.xml}<vector2 x='' y=''/>\endcode
- * - 3-Component vector (float): \code{.xml}<vector x='' y='' z=''/>\endcode
- * - Color (float): \code{.xml}<color r='' g='' b='' a=''/>\endcode
- * - BorderSize (int): \code{.xml}<borderSize left='' top='' right='' bottom=''/>\endcode
- * - RectArea (int): \code{.xml}<rectArea x1='' y1='' x2='' y2=''/>\endcode
- * - FloatRectArea (float): \code{.xml}<floatRectArea x1='' y1='' x2='' y2=''/>\endcode
- * - bezier curve: \code{.xml} <curve>
- *   <interpolation>mode</interpolation>
- *   <point>
- *     <coordinates x='' y=''/>
- *     <handle1 x='' y=''/> <!-- if not set uses 'coordinates' -->
- *     <handle2 x='' y=''/> <!-- if not set uses 'coordinates' -->
- *   </point>
- * </curve>\endcode
- * - 3D bezier curve: \code{.xml} <curve3d>
- *   <interpolation>mode</interpolation>
- *   <point>
- *     <coordinates x='' y='' z=''/>
- *     <handle1 x='' y='' z=''/> <!-- if not set uses 'coordinates' -->
- *     <handle2 x='' y='' z=''/> <!-- if not set uses 'coordinates' -->
- *   </point>
- * </curve3d>\endcode
- * - List of values: \code{.xml} <list>
- *   ...
- * </list>\endcode
- * - Map of values: \code{.xml} <map>
- *   ...
- * </map>\endcode
- * - Inline parameter tree: \code{.xml} <tree>
- *   ...
- * </tree>\endcode
- * - Parameter tree loaded from file relative to this file: \code{.xml}<treeFile>filename</treeFile>\endcode
- * - null value: \code{.xml}<null/>\endcode
- * 
  * Inside <map> tag values required the attribute "key='name'".
  * 
  * Tags <list>, <map> and <tree> support adding attribute "append='true'". If used the content
  * is added to an existing list, dictionary or tree. If not existing behaves the sames as not
  * adding attribute "append='true'".
+ * 
+ * \see https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/parameterTree.xsd
  */
 class LoadParameterTree extends BaseXmlLoader
 	/** \brief Create loader. */

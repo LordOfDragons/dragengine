@@ -106,7 +106,7 @@ class BaseGameAppTesting extends Game
 		
 		pDesktop = createDesktop()
 		if pDesktop != null
-			pDesktop.setGuiTheme(pLoaders.getGuiTheme().loadFromFile("/shareddata/guithemes/testing.guitheme.xml"))
+			pDesktop.setGuiTheme(pLoaders.getGuiTheme().loadFromFile("/shareddata/guithemes/testing.degt"))
 			GraphicSystem.getPrimaryCanvas().addCanvas(pDesktop.getCanvasWidget())
 			
 			pWindowTesting = createWindowTesting()

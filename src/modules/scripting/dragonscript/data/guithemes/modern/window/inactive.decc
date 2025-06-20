@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<canvasCreator parameter='inactive' extend='normal.decc'>
+	<colorMatrix parameter='colorMatrix'>
+		<scale r='0.75' g='0.75' b='0.75' a='1'/>
+	</colorMatrix>
+</canvasCreator>

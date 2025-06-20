@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+	Widgets for editing system parameters. These designers can be defined:
+	- 'Panel.EditModuleParametersPanel'
+	    EditModuleParametersPanel
+	- 'Button.EditModuleParametersPanel.System'
+	    Button to switch to system panel
+	- 'Panel.EMPSystem.Content'
+	    EMPSystem
+	- 'TextArea.EMPSystem.ParameterInfo'
+	    TextArea in EMPSystem showing parameter information
+	- 'Label.EMPSystem.Name'
+	    Label in EMPSystem showing name of parameter
+	- 'TextField.EMPSystem.Value'
+	    TextField edit string value
+	- 'CheckBox.EMPSystem.Value'
+	    CheckBox edit boolean value
+	- 'Panel.EMPSystem.CycleValue'
+	    Cycle value panel
+	- 'Button.EMPSystem.CycleValue.Prev'
+	    Previous value button in cycle value panel
+	- 'Button.EMPSystem.CycleValue.Next'
+	    Next value button in cycle value panel
+	- 'Label.EMPSystem.CycleValue.Value'
+	    Value label in cycle value panel
+	- 'Button.EMPSystem.Reset'
+		Reset button
+	-->
+	<designer name='Panel.EMPSystem.Content' type='Widget'>
+		<border parameter='normal.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.decc'/>
+			<borderSize parameter='size' all='2'/>
+		</border>
+	</designer>
+	
+	<designer name='Panel.EMPSystem.Parameters' type='Widget'>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+	</designer>
+	
+	<designer name='Panel.EMPSystem.CycleValue' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='../modern/framed/background.decc'/>
+		<border parameter='normal.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/normal.decc'/>
+			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' right='2'/>
+		
+		<!--
+		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.decc'/>
+		<border parameter='disabled.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/disabled.decc'/>
+			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
+		</border>
+		-->
+		
+		<border parameter='hover.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='../modern/framed/hover.decc'/>
+			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
+		</border>
+	</designer>
+	
+	<designer name='Label.EMPSystem.CycleValue.Value' type='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<font parameter='normal.font' size='15'>../modern/fonts/sans15.defont</font>
+	</designer>
+	
+	<designer name='Button.EMPSystem.Reset' extendNamed='Button'>
+		<borderSize parameter='normal.padding' left='5' top='1' right='5' bottom='1'/>
+		<borderSize parameter='pressed.padding' left='6' top='2' right='4' bottom='0'/>
+	</designer>
+	
+	<designer name='Label.Button.EMPSystem.Reset' extendNamed='Label'>
+		<point parameter='normal.minimumSize' x='12' y='12'/>
+		<canvasCreator parameter='normal.canvas' type='Image'>
+			<image parameter='image'>../modern/arrows/reload_normal.png</image>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Image'>
+			<image parameter='image'>../modern/arrows/reload_hover.png</image>
+		</canvasCreator>
+	</designer>
+</guiTheme>

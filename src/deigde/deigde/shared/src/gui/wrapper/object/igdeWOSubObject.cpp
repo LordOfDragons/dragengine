@@ -134,6 +134,10 @@ void igdeWOSubObject::CameraChanged(){
 void igdeWOSubObject::OutlineSkinChanged(){
 }
 
+bool igdeWOSubObject::IsContentVisible(){
+	return false;
+}
+
 
 
 // Protected Functions

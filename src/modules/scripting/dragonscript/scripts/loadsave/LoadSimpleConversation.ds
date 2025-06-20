@@ -35,6 +35,7 @@ pin Dragengine.Scenery
  * \version 1.25
  * \see SimpleConversation
  * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:simpleconversation
+ * \see https://lordofdragons.github.io/dragengine/artifacts/xmlschema/dragengine/latest/simpleConversation.xsd
  */
 class LoadSimpleConversation extends BaseXmlLoader
 	var Dictionary pConversations
@@ -228,6 +229,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 							logInvalidValue(element, text)
 							throw EInvalidParam.new("invalid value: " + text)
 						end
+					end
+					if element.hasAttributeNamed("sound")
+						action.setSound(element.getAttributeNamed("sound"))
 					end
 					snippet.addAction(action)
 					
@@ -444,6 +448,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 							logInvalidValue(element, text)
 							throw EInvalidParam.new("invalid value: " + text)
 						end
+					end
+					if element.hasAttributeNamed("s")
+						action.setSound(element.getAttributeNamed("s"))
 					end
 					snippet.addAction(action)
 					
