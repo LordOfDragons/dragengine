@@ -308,7 +308,7 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 	 * \brief Count of visible rows.
 	 * \version 1.17
 	 */
-	public func int getpVisibleRowCount()
+	public func int getVisibleRowCount()
 		return pVisibleRows
 	end
 	
@@ -316,7 +316,7 @@ class ListBox extends Container implements RangeModelListener, ListModelListener
 	 * \brief Count of visible columns.
 	 * \version 1.17
 	 */
-	public func int getpVisibleColumnCount()
+	public func int getVisibleColumnCount()
 		return pVisibleColumns
 	end
 	
