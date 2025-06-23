@@ -812,8 +812,7 @@ void deoglRRenderWindow::OnResize(int width, int height){
 	
 	pWidth = width;
 	pHeight = height;
-	pRenderThread.GetOgl().LogInfoFormat(
-		"RRenderWindow.OnResize: %p (%d,%d)", this, width, height);
+	// pRenderThread.GetOgl().LogInfoFormat("RRenderWindow.OnResize: %p (%d,%d)", this, width, height);
 	
 	pNotifySizeChanged = true;
 }
