@@ -1376,7 +1376,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:choice maxOccurs='unbounded'>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='cameraShot' type='cameraShot'/>
 				<xs:element name='snippet' type='cameraShot.snippet'/>
 				<xs:element name='command' type='cameraShot.command'/>
@@ -1523,7 +1523,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:choice maxOccurs='unbounded'>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='actorId' type='actor.actorId'/>
 				<xs:element name='camera' type='actor.camera'/>
 				<xs:element name='style' type='actor.style'/>
@@ -1555,7 +1555,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:choice maxOccurs='unbounded'>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='import' type='import'/>
 				<xs:element name='waitMode' type='enum_wait_mode'/>
 				<xs:element name='add' type='add'/>
@@ -1623,7 +1623,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:choice maxOccurs='unbounded'>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='camera' type='camera'/>
 				<xs:element name='actor' type='actor'/>
 				<xs:element name='snippet' type='snippet'/>
