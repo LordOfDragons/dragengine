@@ -98,6 +98,7 @@
 #include <deigde/module/igdeEditorModule.h>
 
 #include <dragengine/deEngine.h>
+#include <dragengine/app/deOS.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/file/decBaseFileReaderReference.h>
@@ -113,6 +114,7 @@
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSRedirect.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deCollectDirectorySearchVisitor.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
@@ -2063,17 +2065,21 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	deLogger &logger = *GetLogger();
 	logger.LogInfo( LOGSOURCE, "Loading shared game definitions" );
 	
-	const decPath basePath( decPath::CreatePathNative( pConfiguration.GetPathIGDEGameDefs() ) );
+	const decPath gameDefPath( decPath::CreatePathNative( pConfiguration.GetPathIGDEGameDefs() ) );
 	
 	deVirtualFileSystemReference vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
 	deVFSContainerReference container;
-	container.TakeOver( new deVFSDiskDirectory( basePath ) );
+	container.TakeOver( new deVFSDiskDirectory( gameDefPath ) );
 	vfs->AddContainer( container );
 	
 	deCollectFileSearchVisitor collectFiles( "*.degd" );
 	vfs->SearchFiles( decPath::CreatePathUnix( "/" ), collectFiles );
+	
+	const decPath sharePath(decPath::CreatePathNative(GetEngine()->GetOS()->GetPathShare()));
+	const deVirtualFileSystem::Ref &vfsAssetLibraries =
+		GetEngine()->GetModuleSystem()->GetVFSAssetLibraries();
 	
 	const dePathList &pathList = collectFiles.GetFiles();
 	igdeXMLGameDefinition loadGameDef( pEnvironmentIGDE, &logger );
@@ -2084,7 +2090,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	for( i=0; i<count; i++ ){
 		igdeGameDefinition *gameDefinition = NULL;
 		
-		decPath path( basePath );
+		decPath path( gameDefPath );
 		path.Add( pathList.GetAt( i ) );
 		logger.LogInfoFormat( LOGSOURCE, "Loading shared game definition '%s'",
 			pathList.GetAt( i ).GetLastComponent().GetString() );
@@ -2121,15 +2127,21 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		
 		vfs.TakeOver( new deVirtualFileSystem );
 		
-		container.TakeOver( new deVFSDiskDirectory(
-			decPath::CreatePathUnix( gameDefinition->GetVFSPath() ),
-			decPath::CreatePathNative( gameDefinition->GetBasePath() ) ) );
-		vfs->AddContainer( container );
+		const decPath diskPath(decPath::CreatePathNative(gameDefinition->GetBasePath()));
+		const decPath rootPath(decPath::CreatePathUnix(gameDefinition->GetVFSPath()));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(rootPath, diskPath, true)));
+		
+		if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
+			decPath relPath(diskPath.RelativePath(sharePath, true));
+			relPath.SetPrefix("/");
+			vfs->AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
+				rootPath, relPath, vfsAssetLibraries, true)));
+		}
 		
 		igdeGDClassManager foundClasses;
 		gameDefinition->FindClasses( vfs, foundClasses );
 		gameDefinition->GetClassManager()->UpdateWithElementClasses( foundClasses );
-
+		
 		igdeGDSkinManager foundSkins;
 		gameDefinition->FindSkins( vfs, foundSkins );
 		gameDefinition->GetSkinManager()->UpdateWithFound( foundSkins );

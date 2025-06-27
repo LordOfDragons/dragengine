@@ -43,6 +43,7 @@
 #include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSNull.h>
+#include <dragengine/filesystem/deVFSRedirect.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/systems/deGraphicSystem.h>
@@ -209,19 +210,30 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 	vfs.RemoveAllContainers();
 	
 	if( gameProject ){
+		const decPath sharePath(decPath::CreatePathNative(pEngine->GetOS()->GetPathShare()));
+		const deVirtualFileSystem::Ref &vfsAssetLibraries =
+			pEngine->GetModuleSystem()->GetVFSAssetLibraries();
+				
 		const igdeGameDefinitionList &baseGameDefs = gameProject->GetBaseGameDefinitionList();
 		const int baseGameDefCount = baseGameDefs.GetCount();
 		int i;
-		for( i=0; i<baseGameDefCount; i++ ){
-			const igdeGameDefinition &baseGameDef = *baseGameDefs.GetAt( i );
+		
+		for(i=0; i<baseGameDefCount; i++){
+			const igdeGameDefinition &baseGameDef = *baseGameDefs.GetAt(i);
 			
-			diskPath.SetFromNative( baseGameDef.GetBasePath() );
-			rootPath.SetFromUnix( baseGameDef.GetVFSPath() );
-			logger.LogInfoFormat( LOGSOURCE, "- Adding base game definition '%s' as '%s' (read-only)",
-				diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString() );
-			container.TakeOver( new deVFSDiskDirectory( rootPath, diskPath ) );
-			( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
-			vfs.AddContainer( container );
+			diskPath.SetFromNative(baseGameDef.GetBasePath());
+			rootPath.SetFromUnix(baseGameDef.GetVFSPath());
+			logger.LogInfoFormat(LOGSOURCE, "- Adding base game definition '%s' as '%s' (read-only)",
+				diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
+			vfs.AddContainer(deVFSDiskDirectory::Ref::New(
+				new deVFSDiskDirectory(rootPath, diskPath, true)));
+			
+			if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
+				decPath relPath(diskPath.RelativePath(sharePath, true));
+				relPath.SetPrefix("/");
+				vfs.AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
+					rootPath, relPath, vfsAssetLibraries, true)));
+			}
 		}
 	}
 	
