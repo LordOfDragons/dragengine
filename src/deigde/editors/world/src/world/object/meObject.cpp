@@ -2299,29 +2299,32 @@ void meObject::pUpdateProperties(){
 
 
 void meObject::pUpdateCamera(){
-	if( pClassDef && pClassDef->GetHasCamera() ){
-		if( ! pCamera && pWorld ){
-			pCamera = new meCamera( GetEnvironment()->GetEngineController()->GetEngine() );
-			pCamera->SetEnableGI( pWorld->GetWindowMain().GetConfiguration().GetEnableGI() );
-			pCamera->SetHostObject( this );
-			pCamera->SetWorld( pWorld );
+	const igdeGDCamera *gdCamera = nullptr;
+	if(pClassDef){
+		gdCamera = meHelpers::FindFirstCamera(*pClassDef);
+	}
+	
+	if(gdCamera){
+		if(!pCamera && pWorld){
+			pCamera = new meCamera(GetEnvironment()->GetEngineController()->GetEngine());
+			pCamera->SetEnableGI(pWorld->GetWindowMain().GetConfiguration().GetEnableGI());
+			pCamera->SetHostObject(this);
+			pCamera->SetWorld(pWorld);
 		}
 		
-	}else if( pCamera ){
+	}else if(pCamera){
 		delete pCamera;
 		pCamera = nullptr;
 	}
 	
-	if( ! pCamera ){
+	if(!pCamera || !gdCamera){
 		return;
 	}
 	
-	igdeGDCamera *gdCamera = pClassDef->GetCamera();
-	
-	pCamera->SetFov( gdCamera->GetFov() );
-	pCamera->SetFovRatio( gdCamera->GetFovRatio() );
-	pCamera->SetImageDistance( gdCamera->GetImageDistance() );
-	pCamera->SetViewDistance( gdCamera->GetViewDistance() );
+	pCamera->SetFov(gdCamera->GetFov());
+	pCamera->SetFovRatio(gdCamera->GetFovRatio());
+	pCamera->SetImageDistance(gdCamera->GetImageDistance());
+	pCamera->SetViewDistance(gdCamera->GetViewDistance());
 	
 	pCheckCameraProps();
 	pRepositionCamera();
@@ -2332,13 +2335,21 @@ void meObject::pCheckCameraProps(){
 		return;
 	}
 	
-	const igdeGDCamera &gdCamera = *pClassDef->GetCamera();
+	igdeGDCamera *gdCamera = nullptr;
+	decString prefix;
+	if(pClassDef){
+		meHelpers::FindFirstCamera(*pClassDef, prefix, gdCamera);
+	}
+	if(!gdCamera){
+		return;
+	}
+	
 	decString value, defaultValue;
 	const decString *pvalue;
 	bool found;
 	
 	// name property
-	const decString &propName = gdCamera.GetPropName();
+	const decString propName(prefix + gdCamera->GetPropName());
 	
 	if(pProperties.Has(propName)){
 		value.Format("%s: %s", pClassDef->GetName().GetString(), pProperties.GetAt(propName).GetString());
@@ -2353,11 +2364,11 @@ void meObject::pCheckCameraProps(){
 	pCamera->SetName(value);
 	
 	// position/rotation property
-	const decString &propPosition = gdCamera.GetPropPosition();
-	const decString &propRotation = gdCamera.GetPropRotation();
+	const decString propPosition(prefix + gdCamera->GetPropPosition());
+	const decString propRotation(prefix + gdCamera->GetPropRotation());
 	
-	decQuaternion orientation(gdCamera.GetOrientation());
-	decDVector position(gdCamera.GetPosition());
+	decQuaternion orientation(gdCamera->GetOrientation());
+	decDVector position(gdCamera->GetPosition());
 	igdeCodecPropertyString codec;
 	
 	if(!propPosition.IsEmpty()){
@@ -2373,7 +2384,7 @@ void meObject::pCheckCameraProps(){
 				codec.DecodeDVector(*pvalue, position);
 				
 			}catch(const deException &){
-				position = gdCamera.GetPosition();
+				position = gdCamera->GetPosition();
 			}
 		}
 	}
@@ -2393,7 +2404,7 @@ void meObject::pCheckCameraProps(){
 				orientation.SetFromEuler(rotation * DEG2RAD);
 				
 			}catch(const deException &){
-				orientation = gdCamera.GetOrientation();
+				orientation = gdCamera->GetOrientation();
 			}
 		}
 	}

@@ -33,6 +33,7 @@
 class meObject;
 class igdeGDClass;
 class igdeGDCComponent;
+class igdeGDCamera;
 class igdeGDCLight;
 class igdeGDCCTexture;
 class igdeGDPropertyList;
@@ -98,6 +99,20 @@ namespace meHelpers{
 	
 	/** \brief Find first game definition navigationBlocker. */
 	bool FindFirstNavigationBlocker( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationBlocker* &navigationBlocker );
+	
+	
+	
+	/** \brief Find first game definition camera. */
+	igdeGDCamera *FindFirstCamera( const igdeGDClass *gdclass );
+	
+	/** \brief Find first game definition camera. */
+	igdeGDCamera *FindFirstCamera( const igdeGDClass &gdclass );
+	
+	/** \brief Find first game definition camera. */
+	bool FindFirstCamera( const igdeGDClass &gdclass, igdeGDCamera* &camera );
+	
+	/** \brief Find first game definition camera. */
+	bool FindFirstCamera( const igdeGDClass &gdclass, decString &prefix, igdeGDCamera* &camera );
 	
 	
 	
