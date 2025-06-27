@@ -611,6 +611,9 @@
 			<partialHide>true</partialHide>
 			<renderEnvMap>false</renderEnvMap>
 		</component>
+		<camera>
+			<propName>convoCoordSystem.name</propName>
+		</camera>
 		<partialHideTag>Editing</partialHideTag>
 		<partialHideTag>Info</partialHideTag>
 		<partialHideTag>Conversation</partialHideTag>
@@ -1803,7 +1806,7 @@
 		<canInstantiate>false</canInstantiate>
 		<defaultInheritPropertyPrefix>camera.</defaultInheritPropertyPrefix>
 		<property name='fov'>
-			<description>Vertical field  of view in degrees for the entire view. Typical values:<br/>- Normal: 39.6<br/>- Wide: 65.47<br/>- Ultra Wide: 83.97<br/>- Short Tele: 22.62<br/>- Medium Tele: 10.29<br/>- Long Tele: 6.87<br/>- First Person (Ego): 90</description>
+			<description>Vertical field of view in degrees for the entire view. Typical values:<br/>- Normal: 39.6<br/>- Wide: 65.47<br/>- Ultra Wide: 83.97<br/>- Short Tele: 22.62<br/>- Medium Tele: 10.29<br/>- Long Tele: 6.87<br/>- First Person (Ego): 90</description>
 			<type>range</type>
 			<range min='0' max='180'/>
 			<default>39.6</default>
