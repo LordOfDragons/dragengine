@@ -149,6 +149,14 @@ gdeObjectClass *objectClass, gdeOCComponent *component ){
 	model->Validate();
 }
 
+void gdeWPSTreeModelListener::OCCamerasChanged(gdeGameDefinition*, gdeObjectClass *objectClass){
+	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith(objectClass);
+	if(model){
+		model->SubObjectsChanged();
+		pModel.SetCurrentItemFromGameDef();
+	}
+}
+
 void gdeWPSTreeModelListener::OCEnvMapProbesChanged( gdeGameDefinition*, gdeObjectClass *objectClass ){
 	gdeWPSTIMObjectClass * const model = pModel.GetObjectClasses().GetChildWith( objectClass );
 	if( model ){
