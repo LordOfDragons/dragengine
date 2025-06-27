@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +22,47 @@
  * SOFTWARE.
  */
 
-#ifndef _MEUCAMERAROTATEOBJECT_H_
-#define _MEUCAMERAROTATEOBJECT_H_
+#ifndef _GDEUOCCAMERASETPROPERTYPOSITION_H_
+#define _GDEUOCCAMERASETPROPERTYPOSITION_H_
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/math/decMath.h>
-
-class meObject;
-
+class gdeOCCamera;
+class gdeObjectClass;
 
 
 /**
- * Undo action for camera rotating an object.
+ * \brief Undo action object class camera set property position.
  */
-class meUCameraRotateObject : public igdeUndo{
+class gdeUOCCameraSetPropertyPosition : public igdeUndo{
 private:
-	meObject *pObject;
-	decVector pOldRotation, pNewRotation;
+	gdeObjectClass *pObjectClass;
+	gdeOCCamera *pCamera;
+	decString pOldValue, pNewValue;
+	
 	
 public:
-	// constructor, destructor
-	meUCameraRotateObject(meObject *object);
-	~meUCameraRotateObject() override;
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	gdeUOCCameraSetPropertyPosition(gdeObjectClass *objectClass, gdeOCCamera *camera, const char *newValue);
 	
-	void SetNewRotation(const decVector &rotation);
-	bool HasChanged() const;
+protected:
+	/** \brief Clean up undo action. */
+	~gdeUOCCameraSetPropertyPosition() override;
+	/*@}*/
 	
-	// undo and redo operations
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
 	void Undo() override;
+	
+	/** \brief Redo. */
 	void Redo() override;
+	/*@}*/
 };
 
 #endif

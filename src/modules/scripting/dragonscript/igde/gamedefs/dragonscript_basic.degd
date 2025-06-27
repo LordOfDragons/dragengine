@@ -611,9 +611,6 @@
 			<partialHide>true</partialHide>
 			<renderEnvMap>false</renderEnvMap>
 		</component>
-		<camera>
-			<propName>convoCoordSystem.name</propName>
-		</camera>
 		<partialHideTag>Editing</partialHideTag>
 		<partialHideTag>Info</partialHideTag>
 		<partialHideTag>Conversation</partialHideTag>
@@ -1055,6 +1052,11 @@
 		<ghost>true</ghost>
 		<canInstantiate>false</canInstantiate>
 		<defaultInheritPropertyPrefix>convoCoordSystem.</defaultInheritPropertyPrefix>
+		<camera>
+			<propName>name</propName>
+			<propPosition>position</propPosition>
+			<propRotation>orientation</propRotation>
+		</camera>
 		<property name='name'>
 			<description>Name of conversation coordinate system.</description>
 			<type>identifier</type>

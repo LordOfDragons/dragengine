@@ -2105,8 +2105,14 @@ void igdeXMLGameDefinition::pParseCamera( const decXmlElementTag &root, igdeGDCa
 		}else if( tagName == "viewDistance" ){
 			camera->SetViewDistance( GetCDataFloat( *tag ) );
 			
-		}else if( tagName == "propName" ){
-			camera->SetPropName( GetCDataString( *tag ) );
+		}else if(tagName == "propName"){
+			camera->SetPropName(GetCDataString(*tag));
+			
+		}else if(tagName == "propPosition"){
+			camera->SetPropPosition(GetCDataString(*tag));
+			
+		}else if(tagName == "propRotation"){
+			camera->SetPropRotation(GetCDataString(*tag));
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );

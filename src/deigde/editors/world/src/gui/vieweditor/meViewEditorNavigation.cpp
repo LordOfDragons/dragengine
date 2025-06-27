@@ -31,6 +31,7 @@
 #include "../../configuration/meConfiguration.h"
 #include "../../world/meCamera.h"
 #include "../../world/meWorld.h"
+#include "../../world/object/meObject.h"
 #include "../../undosys/gui/camera/meUCameraMoveObject.h"
 #include "../../undosys/gui/camera/meUCameraRotateObject.h"
 
@@ -99,7 +100,8 @@ void meViewEditorNavigation::OnRightMouseButtonPress( int x, int y, bool shift, 
 		
 	// rotate
 	}else{
-		pOldOrientation = activeCamera->GetOrientation();
+		pOldRotation = activeCamera->GetOrientation();
+		pOldOrientation.SetFromEuler(pOldRotation * DEG2RAD);
 		pNavigating = true;
 		
 		if( activeCamera->HasHostObject() ){
@@ -158,11 +160,16 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 		}else if( shiftStart ){
 			camera = world.GetActiveCamera();
 			
-			if( camera->HasHostObject() ){
-				if( pUndoCameraMove ){
-					( ( meUCameraMoveObject& )( igdeUndo& )pUndoCameraMove ).SetNewPosition( camera->GetPosition()
-						- matrixView.TransformRight() * ( ME_DRAG_MOVE * ( float )dragDistLast.x * sensitivity )
-						- matrixView.TransformUp() * ( ME_DRAG_MOVE * ( float )dragDistLast.y ) * sensitivity );
+			if(camera->HasHostObject()){
+				if(pUndoCameraMove){
+					decDVector position(camera->GetPosition()
+						- matrixView.TransformRight() * (ME_DRAG_MOVE * (float)dragDistLast.x * sensitivity)
+						- matrixView.TransformUp() * (ME_DRAG_MOVE * (float)dragDistLast.y) * sensitivity);
+					position = camera->GetInvHostMatrix().
+						QuickMultiply(decDMatrix::CreateRT(camera->GetOrientation() * DEG2RAD, position)).
+						GetPosition();
+					
+					((meUCameraMoveObject&)(igdeUndo&)pUndoCameraMove).SetNewPosition(position);
 					pUndoCameraMove->Redo();
 				}
 				
@@ -178,10 +185,15 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 		}else if( controlStart ){
 			camera = world.GetActiveCamera();
 			
-			if( camera->HasHostObject() ){
-				if( pUndoCameraMove ){
-					( ( meUCameraMoveObject& )( igdeUndo& )pUndoCameraMove ).SetNewPosition( camera->GetPosition()
-						+ matrixView.TransformView() * ( ME_DRAG_MOVE * ( float )dragDistLast.y * sensitivity ) );
+			if(camera->HasHostObject()){
+				if(pUndoCameraMove){
+					decDVector position(camera->GetPosition()
+						+ matrixView.TransformView() * (ME_DRAG_MOVE * (float)dragDistLast.y * sensitivity));
+					position = camera->GetInvHostMatrix().
+						QuickMultiply(decDMatrix::CreateRT(camera->GetOrientation() * DEG2RAD, position)).
+						GetPosition();
+					
+					((meUCameraMoveObject&)(igdeUndo&)pUndoCameraMove).SetNewPosition(position);
 					pUndoCameraMove->Redo();
 				}
 				
@@ -194,22 +206,56 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 			
 		// rotate
 		}else{
-			const decVector vector(
-				decMath::normalize( pOldOrientation.x - ME_DRAG_TURN * ( float )dragDistStart.y, 0.0f, 360.0f ),
-				decMath::normalize( pOldOrientation.y - ME_DRAG_TURN * ( float )dragDistStart.x, 0.0f, 360.0f ),
-				0.0f );
-			
 			camera = world.GetActiveCamera();
 			
 			if( camera->HasHostObject() ){
+				decQuaternion rotation;
+					
+				// which one of the next two lines to use depends on the use case.
+				//
+				// using this version the camera rotation works similar to the world camera
+				// rotation handling. this will reset any tilting if present.
+				rotation.SetFromEuler(
+					decMath::normalize(pOldRotation.x - ME_DRAG_TURN * (float)dragDistStart.y, 0.0f, 360.0f) * DEG2RAD,
+					decMath::normalize(pOldRotation.y - ME_DRAG_TURN * (float)dragDistStart.x, 0.0f, 360.0f) * DEG2RAD,
+					0.0f);
+				
+				// using this version the camera rotation works similar to the world camera
+				// rotation handling with the exception that the tilt (z axis rotation) is kept.
+				// this is similar to the line above but the tilt is retained which might be
+				// desireable in certain situations
+				/*
+				rotation.SetFromEuler(-ME_DRAG_TURN * (float)dragDistStart.y * DEG2RAD,
+					-ME_DRAG_TURN * (float)dragDistStart.x * DEG2RAD, 0.0f);
+				rotation = pOldOrientation * rotation;
+				*/
+				
+				// using this version the camera rotation works more like in-game meaning the
+				// rotation is relative to the current camera orientation
+				/*
+				rotation.SetFromEuler(-ME_DRAG_TURN * (float)dragDistStart.y * DEG2RAD,
+					-ME_DRAG_TURN * (float)dragDistStart.x * DEG2RAD, 0.0f);
+				rotation *= pOldOrientation;
+				*/
+				
 				if( pUndoCameraRotate ){
-					( ( meUCameraRotateObject& )( igdeUndo& )pUndoCameraRotate ).SetNewRotation( vector );
+					rotation = camera->GetInvHostMatrix().
+						QuickMultiply(decDMatrix::CreateWorld(camera->GetPosition(), rotation)).
+						ToQuaternion();
+					
+					((meUCameraRotateObject&)(igdeUndo&)pUndoCameraRotate).SetNewRotation(
+						rotation.GetEulerAngles() * RAD2DEG);
 					pUndoCameraRotate->Redo();
 				}
 				
 			}else{
-				camera->SetOrientation( vector );
-				world.NotifyCameraChanged( camera );
+				const decVector rotation(
+					decMath::normalize(pOldRotation.x - ME_DRAG_TURN * (float)dragDistStart.y, 0.0f, 360.0f),
+					decMath::normalize(pOldRotation.y - ME_DRAG_TURN * (float)dragDistStart.x, 0.0f, 360.0f),
+					0.0f);
+				
+				camera->SetOrientation(rotation);
+				world.NotifyCameraChanged(camera);
 			}
 		}
 	}

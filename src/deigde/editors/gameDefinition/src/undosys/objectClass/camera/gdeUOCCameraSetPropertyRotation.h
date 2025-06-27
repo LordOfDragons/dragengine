@@ -22,36 +22,47 @@
  * SOFTWARE.
  */
 
-#ifndef _MEUCAMERAROTATEOBJECT_H_
-#define _MEUCAMERAROTATEOBJECT_H_
+#ifndef _GDEUOCCAMERASETPROPERTYROTATION_H_
+#define _GDEUOCCAMERASETPROPERTYROTATION_H_
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/math/decMath.h>
-
-class meObject;
-
+class gdeOCCamera;
+class gdeObjectClass;
 
 
 /**
- * Undo action for camera rotating an object.
+ * \brief Undo action object class camera set property rotation.
  */
-class meUCameraRotateObject : public igdeUndo{
+class gdeUOCCameraSetPropertyRotation : public igdeUndo{
 private:
-	meObject *pObject;
-	decVector pOldRotation, pNewRotation;
+	gdeObjectClass *pObjectClass;
+	gdeOCCamera *pCamera;
+	decString pOldValue, pNewValue;
+	
 	
 public:
-	// constructor, destructor
-	meUCameraRotateObject(meObject *object);
-	~meUCameraRotateObject() override;
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create undo action. */
+	gdeUOCCameraSetPropertyRotation(gdeObjectClass *objectClass, gdeOCCamera *camera, const char *newValue);
 	
-	void SetNewRotation(const decVector &rotation);
-	bool HasChanged() const;
+protected:
+	/** \brief Clean up undo action. */
+	~gdeUOCCameraSetPropertyRotation() override;
+	/*@}*/
 	
-	// undo and redo operations
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** \brief Undo. */
 	void Undo() override;
+	
+	/** \brief Redo. */
 	void Redo() override;
+	/*@}*/
 };
 
 #endif

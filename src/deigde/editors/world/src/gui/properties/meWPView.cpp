@@ -399,7 +399,8 @@ meWPView::meWPView( meWindowProperties &windowProperties ) :
 igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
 pWindowProperties( windowProperties ),
 pListener( nullptr ),
-pWorld( nullptr )
+pWorld( nullptr ),
+pPreventUpdateCamera(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -607,18 +608,30 @@ void meWPView::UpdateCameraList(){
 }
 
 void meWPView::UpdateCamera(){
-	meCamera * const camera = pWorld ? pWorld->GetActiveCamera() : nullptr;
-	
-	if( camera ){
-		pEditActiveCamera->SetText( camera->GetName() );
-		
-	}else{
-		pEditActiveCamera->ClearText();
+	if(pPreventUpdateCamera){
+		return;
 	}
 	
-	pWPCamera->SetCamera( camera );
-	pWPCamera->UpdateCamera();
-	pWPCamera->UpdateViewDirection();
+	pPreventUpdateCamera = true;
+	try{
+		meCamera * const camera = pWorld ? pWorld->GetActiveCamera() : nullptr;
+		
+		if( camera ){
+			pEditActiveCamera->SetText( camera->GetName() );
+			
+		}else{
+			pEditActiveCamera->ClearText();
+		}
+		
+		pWPCamera->SetCamera( camera );
+		pWPCamera->UpdateCamera();
+		pWPCamera->UpdateViewDirection();
+		
+	}catch(const deException &){
+		pPreventUpdateCamera = false;
+		throw;
+	}
+	pPreventUpdateCamera = false;
 }
 
 void meWPView::UpdateSky(){

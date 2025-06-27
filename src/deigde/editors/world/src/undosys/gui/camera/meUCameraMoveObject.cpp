@@ -23,32 +23,33 @@
  */
 
 #include "meUCameraMoveObject.h"
+#include "../../../world/meCamera.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class meUCameraMoveObject
-////////////////////////////////
+//////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-meUCameraMoveObject::meUCameraMoveObject( meObject *object ){
-	if( ! object ) DETHROW( deeInvalidParam );
+meUCameraMoveObject::meUCameraMoveObject(meObject *object){
+	DEASSERT_NOTNULL(object)
 	
-	pOldPosition = object->GetPosition();
-	pNewPosition = pOldPosition;
-	SetShortInfo( "Move Camera Object" );
+	pNewPosition = pOldPosition = object->GetPosition();
+	SetShortInfo("Move Camera Object");
 	
 	pObject = object;
 	object->AddReference();
 }
 
 meUCameraMoveObject::~meUCameraMoveObject(){
-	if( pObject ) pObject->FreeReference();
+	if(pObject){
+		pObject->FreeReference();
+	}
 }
 
 
@@ -56,20 +57,20 @@ meUCameraMoveObject::~meUCameraMoveObject(){
 // Undo and Redo operations
 /////////////////////////////
 
-void meUCameraMoveObject::SetNewPosition( const decDVector &position ){
+void meUCameraMoveObject::SetNewPosition(const decDVector &position){
 	pNewPosition = position;
 }
 
 bool meUCameraMoveObject::HasChanged() const{
-	return ! pNewPosition.IsEqualTo( pOldPosition );
+	return ! pNewPosition.IsEqualTo(pOldPosition);
 }
 
 void meUCameraMoveObject::Undo(){
-	pObject->SetPosition( pOldPosition );
-	pObject->GetWorld()->NotifyObjectGeometryChanged( pObject );
+	pObject->SetPosition(pOldPosition);
+	pObject->GetWorld()->NotifyObjectGeometryChanged(pObject);
 }
 
 void meUCameraMoveObject::Redo(){
-	pObject->SetPosition( pNewPosition );
-	pObject->GetWorld()->NotifyObjectGeometryChanged( pObject );
+	pObject->SetPosition(pNewPosition);
+	pObject->GetWorld()->NotifyObjectGeometryChanged(pObject);
 }
