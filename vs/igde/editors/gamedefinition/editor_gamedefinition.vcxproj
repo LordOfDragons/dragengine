@@ -359,6 +359,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetImageDistance.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetPosition.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetPropertyName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetPropertyPosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetPropertyRotation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetRotation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCCameraSetViewDistance.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\camera\gdeUOCRemoveCamera.cpp" />
