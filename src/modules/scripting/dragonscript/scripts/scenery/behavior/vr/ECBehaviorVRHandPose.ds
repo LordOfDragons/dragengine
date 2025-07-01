@@ -165,11 +165,17 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			public var AnimatorController controllerOrientation
 			public var Vector posePosition
 			public var Quaternion poseOrientation
+			public var bool usePosition
 			
-			func new(String bone, int poseIndex, String namePrefix)
+			func new(String bone, int poseIndex, String namePrefix)\
+			this(bone, poseIndex, namePrefix, false)
+			end
+			
+			func new(String bone, int poseIndex, String namePrefix, bool usePosition)
 				this.bone = bone
 				this.poseIndex = poseIndex
 				this.namePrefix = namePrefix
+				this.usePosition = usePosition
 			end
 		end
 		
@@ -231,23 +237,23 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				return
 			end
 			
-			pBones.add(Bone.new(pECBehavior.getBoneWrist().getValue(stub), InputDeviceHandBone.wrist, "wrist"))
-			pBones.add(Bone.new(pECBehavior.getBoneThumb1().getValue(stub), InputDeviceHandBone.thumb0, "thumb1"))
+			pBones.add(Bone.new(pECBehavior.getBoneWrist().getValue(stub), InputDeviceHandBone.wrist, "wrist", true))
+			pBones.add(Bone.new(pECBehavior.getBoneThumb1().getValue(stub), InputDeviceHandBone.thumb0, "thumb1", true))
 			pBones.add(Bone.new(pECBehavior.getBoneThumb2().getValue(stub), InputDeviceHandBone.thumb1, "thumb2"))
 			pBones.add(Bone.new(pECBehavior.getBoneThumb3().getValue(stub), InputDeviceHandBone.thumb2, "thumb3"))
-			pBones.add(Bone.new(pECBehavior.getBoneIndex1().getValue(stub), InputDeviceHandBone.index0, "index1"))
+			pBones.add(Bone.new(pECBehavior.getBoneIndex1().getValue(stub), InputDeviceHandBone.index0, "index1", true))
 			pBones.add(Bone.new(pECBehavior.getBoneIndex2().getValue(stub), InputDeviceHandBone.index1, "index2"))
 			pBones.add(Bone.new(pECBehavior.getBoneIndex3().getValue(stub), InputDeviceHandBone.index2, "index3"))
 			pBones.add(Bone.new(pECBehavior.getBoneIndex4().getValue(stub), InputDeviceHandBone.index3, "index4"))
-			pBones.add(Bone.new(pECBehavior.getBoneMiddle1().getValue(stub), InputDeviceHandBone.middle0, "middle1"))
+			pBones.add(Bone.new(pECBehavior.getBoneMiddle1().getValue(stub), InputDeviceHandBone.middle0, "middle1", true))
 			pBones.add(Bone.new(pECBehavior.getBoneMiddle2().getValue(stub), InputDeviceHandBone.middle1, "middle2"))
 			pBones.add(Bone.new(pECBehavior.getBoneMiddle3().getValue(stub), InputDeviceHandBone.middle2, "middle3"))
 			pBones.add(Bone.new(pECBehavior.getBoneMiddle4().getValue(stub), InputDeviceHandBone.middle3, "middle4"))
-			pBones.add(Bone.new(pECBehavior.getBoneRing1().getValue(stub), InputDeviceHandBone.ring0, "ring1"))
+			pBones.add(Bone.new(pECBehavior.getBoneRing1().getValue(stub), InputDeviceHandBone.ring0, "ring1", true))
 			pBones.add(Bone.new(pECBehavior.getBoneRing2().getValue(stub), InputDeviceHandBone.ring1, "ring2"))
 			pBones.add(Bone.new(pECBehavior.getBoneRing3().getValue(stub), InputDeviceHandBone.ring2, "ring3"))
 			pBones.add(Bone.new(pECBehavior.getBoneRing4().getValue(stub), InputDeviceHandBone.ring3, "ring4"))
-			pBones.add(Bone.new(pECBehavior.getBonePinky1().getValue(stub), InputDeviceHandBone.pinky0, "pinky1"))
+			pBones.add(Bone.new(pECBehavior.getBonePinky1().getValue(stub), InputDeviceHandBone.pinky0, "pinky1", true))
 			pBones.add(Bone.new(pECBehavior.getBonePinky2().getValue(stub), InputDeviceHandBone.pinky1, "pinky2"))
 			pBones.add(Bone.new(pECBehavior.getBonePinky3().getValue(stub), InputDeviceHandBone.pinky2, "pinky3"))
 			pBones.add(Bone.new(pECBehavior.getBonePinky4().getValue(stub), InputDeviceHandBone.pinky3, "pinky4"))
@@ -343,7 +349,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				rule.addTargetLink(ADRuleTargetLink.new(\
 					ARInverseKinematicTarget.blendFactor, linkEnableFingers))
 				
-				if bone.poseIndex == InputDeviceHandBone.wrist or not pOnlyRotation
+				if bone.usePosition or not pOnlyRotation
 					bone.adControllerPosition = ADController.new()
 					bone.adControllerPosition.setName(bone.namePrefix + " position")
 					definition.addController(bone.adControllerPosition)
