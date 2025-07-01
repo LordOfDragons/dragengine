@@ -543,7 +543,7 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 		ciAndroid.applicationVM = os.GetJavaVM();
 		ciAndroid.applicationActivity = os.GetActivity();
 		*pcreateNext = &ciAndroid;
-		pcreateNext = &ciAndroid.next;
+		pcreateNext = (void**)&ciAndroid.next;
 	}
 	#endif
 	

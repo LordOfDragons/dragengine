@@ -526,6 +526,7 @@ parent_targets['dragengine']['add internal module'] = addInternalModule
 if not envDragengine['with_static_internalmodules']:
 	parent_targets['deinternalmodules'] = {
 		'name': 'Drag[en]gine Internal Modules',
+		'library': modulesLibrary,
 		'build': modulesTargetBuild,
 		'install': modulesTargetInstall,
 		'install-engine-runtime': modulesTargetInstall,

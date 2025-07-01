@@ -82,7 +82,7 @@ public:
 		extKHRAndroidCreateInstance //<! XR_KHR_android_create_instance
 	};
 	
-	static const int ExtensionCount = extHTCHandInteraction + 1;
+	static const int ExtensionCount = extKHRAndroidCreateInstance + 1;
 	
 	/** Layers. */
 	enum eLayer{
