@@ -78,7 +78,8 @@ public:
 		extEXTDebugUtils, //<! XR_EXT_debug_utils
 		extKHRCompositionLayerDepth, //<! XR_KHR_composition_layer_depth
 		extEXTHandInteraction, //<! XR_EXT_hand_interaction
-		extHTCHandInteraction //<! XR_HTC_hand_interaction
+		extHTCHandInteraction, //<! XR_HTC_hand_interaction
+		extKHRAndroidCreateInstance //<! XR_KHR_android_create_instance
 	};
 	
 	static const int ExtensionCount = extHTCHandInteraction + 1;

@@ -102,6 +102,12 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extEXTHandInteraction ].name = XR_EXT_HAND_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extHTCHandInteraction ].name = XR_HTC_HAND_INTERACTION_EXTENSION_NAME;
 	
+	#ifdef OS_ANDROID
+		pSupportsExtension[extKHRAndroidCreateInstance].name = XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME;
+	#else
+		pSupportsExtension[extKHRAndroidCreateInstance].name = "XR_KHR_android_create_instance";
+	#endif
+	
 	pSupportsExtension[ extKHROpenglEnable ].enableIfSupported = true;
 	pSupportsExtension[ extKHRVisibilityMask ].enableIfSupported = true;
 	pSupportsExtension[ extEXTEyeGazeInteraction ].enableIfSupported =
@@ -137,6 +143,7 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extKHRCompositionLayerDepth ].enableIfSupported = true;
 	pSupportsExtension[ extEXTHandInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extHTCHandInteraction ].enableIfSupported = true;
+	pSupportsExtension[extKHRAndroidCreateInstance].enableIfSupported = true;
 	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
@@ -526,6 +533,19 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 		instanceCreateInfo.enabledExtensionNames = extensions;
 		instanceCreateInfo.enabledExtensionCount = extensionCount;
 	}
+	
+	#ifdef OS_ANDROID
+	void **pcreateNext = (void**)&instanceCreateInfo.next;
+	
+	XrInstanceCreateInfoAndroidKHR ciAndroid{XR_TYPE_INSTANCE_CREATE_INFO_ANDROID_KHR};
+	if(pSupportsExtension[extKHRAndroidCreateInstance].version){
+		deOSAndroid &os = *GetOxr().GetGameEngine()->GetOS()->CastToOSAndroid();
+		ciAndroid.applicationVM = os.GetJavaVM();
+		ciAndroid.applicationActivity = os.GetActivity();
+		*pcreateNext = &ciAndroid;
+		pcreateNext = &ciAndroid.next;
+	}
+	#endif
 	
 	// create device
 	OXR_CHECK( xrCreateInstance( &instanceCreateInfo, &pInstance ) );
