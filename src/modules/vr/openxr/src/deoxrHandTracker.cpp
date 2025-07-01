@@ -65,18 +65,10 @@ deInputDevice::eHandBones pbone2, float angle0, float angle1){
 	bone1 = pbone1;
 	bone2 = pbone2;
 	
-	if(angle1 > angle0){
-		angleLower = angle0 * DEG2RAD;
-		angleUpper = angle1 * DEG2RAD;
-		mapValueLower = 0.0f;
-		mapValueUpper = 1.0f;
-		
-	}else{
-		angleLower = angle1 * DEG2RAD;
-		angleUpper = angle0 * DEG2RAD;
-		mapValueLower = 1.0f;
-		mapValueUpper = 0.0f;
-	}
+	angleLower = angle0 * DEG2RAD;
+	angleUpper = angle1 * DEG2RAD;
+	mapValueLower = 0.0f;
+	mapValueUpper = 1.0f;
 	
 	value = 0.0f;
 }
@@ -125,10 +117,10 @@ pMapBoneXrToDeCount( 0 )
 	pBendFinger[3].Init(deInputDevice::ehbRing1, deInputDevice::ehbRing2, -15.0f, -80.0f);
 	pBendFinger[4].Init(deInputDevice::ehbPinky1, deInputDevice::ehbPinky2, -15.0f, -72.0f);
 	
-	pSpreadFinger[0].Init(deInputDevice::ehbThumb1, deInputDevice::ehbIndex1, 0, 60);
-	pSpreadFinger[1].Init(deInputDevice::ehbIndex1, deInputDevice::ehbMiddle1, 0, 60);
-	pSpreadFinger[2].Init(deInputDevice::ehbMiddle1, deInputDevice::ehbRing1, 0, 60);
-	pSpreadFinger[3].Init(deInputDevice::ehbRing1, deInputDevice::ehbPinky1, 0, 60);
+	pSpreadFinger[0].Init(deInputDevice::ehbThumb1, deInputDevice::ehbIndex1, 0, 90);
+	pSpreadFinger[1].Init(deInputDevice::ehbIndex1, deInputDevice::ehbMiddle1, 0, 30);
+	pSpreadFinger[2].Init(deInputDevice::ehbMiddle1, deInputDevice::ehbRing1, 0, 30);
+	pSpreadFinger[3].Init(deInputDevice::ehbRing1, deInputDevice::ehbPinky1, 0, 30);
 	
 	pFixBrokenRotationBone[0].Init(deInputDevice::ehbThumb0, deInputDevice::ehbThumb1);
 	pFixBrokenRotationBone[1].Init(deInputDevice::ehbThumb1, deInputDevice::ehbThumb2);
