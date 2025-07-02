@@ -202,9 +202,7 @@ pIsGACOpenGL( false ),
 		#endif
 		
 		// create session info struct depending on what the graphic module supports
-		XrSessionCreateInfo createInfo;
-		memset( &createInfo, 0, sizeof( createInfo ) );
-		createInfo.type = XR_TYPE_SESSION_CREATE_INFO;
+		XrSessionCreateInfo createInfo{XR_TYPE_SESSION_CREATE_INFO};
 		createInfo.systemId = system.GetSystemId();
 		
 		const void *graphicBinding = nullptr;
@@ -222,16 +220,14 @@ pIsGACOpenGL( false ),
 			oxr.LogInfo( "Create Session: Testing OpenGL Support" );
 			// openxr specification requires this call to be done although the result is not used
 			#ifdef OS_ANDROID
-				XrGraphicsRequirementsOpenGLESKHR requirements;
-				memset( &requirements, 0, sizeof( requirements ) );
-				requirements.type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_ES_KHR;
+				XrGraphicsRequirementsOpenGLESKHR requirements{
+					XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_ES_KHR};
 				
 				instance.xrGetOpenGLESGraphicsRequirementsKHR(
 					instance.GetInstance(), system.GetSystemId(), &requirements );
 			#else
-				XrGraphicsRequirementsOpenGLKHR requirements;
-				memset( &requirements, 0, sizeof( requirements ) );
-				requirements.type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_KHR;
+				XrGraphicsRequirementsOpenGLKHR requirements{
+					XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_KHR};
 				
 				instance.xrGetOpenGLGraphicsRequirementsKHR(
 					instance.GetInstance(), system.GetSystemId(), &requirements );
