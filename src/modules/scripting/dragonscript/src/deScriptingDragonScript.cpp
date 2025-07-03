@@ -1360,7 +1360,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsRig = new deClassRig( this ) );
 		package->AddHostClass( pClsRigBuilder = new deClassRigBuilder( *this ) );
 		package->AddHostClass( pClsRTM = new deClassRuntimeMeter( this ) );
-		package->AddHostClass( pClsAnim = new deClassAnimation( engine, this ) );
+		package->AddHostClass( pClsAnim = new deClassAnimation(*engine, *this));
 		package->AddHostClass( pClsAnimBuilder = new deClassAnimationBuilder( *this ) );
 		package->AddHostClass( pClsAr = new deClassAnimator( this ) );
 		package->AddHostClass( pClsArI = new deClassAnimatorInstance( *this ) );

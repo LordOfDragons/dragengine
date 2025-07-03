@@ -22,31 +22,29 @@
  * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
 #include "deClassAnimation.h"
+#include "../curve/deClassCurveBezier.h"
 #include "../resources/deClassResourceListener.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 #include "../../resourceloader/dedsResourceLoader.h"
-#include "dragengine/resources/animation/deAnimation.h"
-#include "dragengine/resources/animation/deAnimationBone.h"
-#include "dragengine/resources/animation/deAnimationMove.h"
-#include "dragengine/resources/animation/deAnimationManager.h"
-#include "dragengine/resources/loader/deResourceLoader.h"
-#include "dragengine/deEngine.h"
+
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/animation/deAnimation.h>
+#include <dragengine/resources/animation/deAnimationBone.h>
+#include <dragengine/resources/animation/deAnimationMove.h>
+#include <dragengine/resources/animation/deAnimationManager.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
+
 #include <libdscript/exceptions.h>
 
 
-// native structure
 struct sAnimNatDat{
 	deAnimation *anim;
 };
 
-// native functions
+
+// Native Functions
 /////////////////////
 
 // public func new(String filename)
@@ -57,7 +55,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassAnimation::nfLoad::RunFunction(dsRunTime *RT, dsValue *This){
 	sAnimNatDat *nd = (sAnimNatDat*)p_GetNativeData(This);
 	deClassAnimation *clsAnim = (deClassAnimation*)GetOwnerClass();
-	deAnimationManager *animMgr = clsAnim->GetGameEngine()->GetAnimationManager();
+	deAnimationManager *animMgr = clsAnim->GetGameEngine().GetAnimationManager();
 	// reset all
 	nd->anim = NULL;
 	// load animation
@@ -80,7 +78,7 @@ void deClassAnimation::nfLoadAsynchron::RunFunction( dsRunTime *rt, dsValue *mys
 	
 	if( ! listener ) DSTHROW( dueInvalidParam );
 	
-	clsAnim->GetScriptModule()->GetResourceLoader()->AddRequest( filename,
+	clsAnim->GetDS().GetResourceLoader()->AddRequest( filename,
 		deResourceLoader::ertAnimation, listener );
 }
 
@@ -94,7 +92,7 @@ void deClassAnimation::nfSave::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassAnimation &clsAnim = *( ( deClassAnimation* )GetOwnerClass() );
 	
 	const char * const filename = rt->GetValue( 0 )->GetString();
-	clsAnim.GetGameEngine()->GetAnimationManager()->SaveAnimation( *nd.anim, filename );
+	clsAnim.GetGameEngine().GetAnimationManager()->SaveAnimation( *nd.anim, filename );
 }
 
 // public func destructor()
@@ -249,6 +247,46 @@ void deClassAnimation::nfIndexOfMoveNamed::RunFunction( dsRunTime *rt, dsValue *
 	rt->PushInt( animation.FindMove( rt->GetValue( 0 )->GetString() ) );
 }
 
+// public func CurveBezier getKeyframeCurve(int move, int bone, AnimationBoneParameter parameter)
+deClassAnimation::nfGetKeyframeCurve::nfGetKeyframeCurve(const sInitData &init) :
+dsFunction(init.clsAnim, "getKeyframeCurve",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezier){
+	p_AddParameter(init.clsInt); // move
+	p_AddParameter(init.clsInt); // bone
+	p_AddParameter(init.clsAnimationBoneParameter); // parameter
+}
+void deClassAnimation::nfGetKeyframeCurve::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAnimation &animation = *(((sAnimNatDat*)p_GetNativeData(myself))->anim);
+	const deScriptingDragonScript &ds = ((deClassAnimation*)GetOwnerClass())->GetDS();
+	const int move = rt->GetValue(0)->GetInt();
+	const int bone = rt->GetValue(1)->GetInt();
+	const deAnimationMove::BoneParameter parameter = (deAnimationMove::BoneParameter)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+			*rt->GetValue(2)->GetRealObject());
+	
+	decCurveBezier curve;
+	animation.GetMove(move)->GetKeyframeCurve(curve, bone, parameter);
+	ds.GetClassCurveBezier()->PushCurve(rt, curve);
+}
+
+// public func CurveBezier getVertexPositionSetKeyframeCurve(int move, int vertexPositionSet)
+deClassAnimation::nfGetVertexPositionSetKeyframeCurve::nfGetVertexPositionSetKeyframeCurve(const sInitData &init) :
+dsFunction(init.clsAnim, "getVertexPositionSetKeyframeCurve",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezier){
+	p_AddParameter(init.clsInt); // move
+	p_AddParameter(init.clsInt); // vertexPositionSet
+}
+void deClassAnimation::nfGetVertexPositionSetKeyframeCurve::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAnimation &animation = *(((sAnimNatDat*)p_GetNativeData(myself))->anim);
+	const deScriptingDragonScript &ds = ((deClassAnimation*)GetOwnerClass())->GetDS();
+	const int move = rt->GetValue(0)->GetInt();
+	const int vps = rt->GetValue(1)->GetInt();
+	
+	decCurveBezier curve;
+	animation.GetMove(move)->GetVertexPositionSetKeyframeCurve(curve, vps);
+	ds.GetClassCurveBezier()->PushCurve(rt, curve);
+}
+
 
 
 // public func int hashCode()
@@ -281,28 +319,31 @@ void deClassAnimation::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
 
 
 
-// class deClassAnimation
-///////////////////////
-// constructor
-deClassAnimation::deClassAnimation(deEngine *GameEngine, deScriptingDragonScript *ScrMgr) :
-dsClass("Animation", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(!GameEngine || !ScrMgr) DSTHROW(dueInvalidParam);
-	// prepare
-	p_gameEngine = GameEngine;
-	pScrMgr = ScrMgr;
-	// set parser info
+// Class deClassAnimation
+///////////////////////////
+
+// Constructor, Destructor
+////////////////////////////
+
+deClassAnimation::deClassAnimation(deEngine &gameEngine, deScriptingDragonScript &ds) :
+dsClass("Animation", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pGameEngine(gameEngine),
+pDS(ds),
+pClsBoneParameter(nullptr)
+{
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
-	// do the rest
+	
 	p_SetNativeDataSize(sizeof(sAnimNatDat));
 }
+
 deClassAnimation::~deClassAnimation(){
 }
-// management
+
+
 void deClassAnimation::CreateClassMembers(dsEngine *engine){
 	sInitData init;
-	// store classes
-	pClsRN = pScrMgr->GetClassResourceListener();
+	
 	init.clsAnim = this;
 	init.clsVoid = engine->GetClassVoid();
 	init.clsBool = engine->GetClassBool();
@@ -310,8 +351,11 @@ void deClassAnimation::CreateClassMembers(dsEngine *engine){
 	init.clsInt = engine->GetClassInt();
 	init.clsFlt = engine->GetClassFloat();
 	init.clsObj = engine->GetClassObject();
-	init.clsRN = pClsRN;
-	// add functions
+	init.clsRN = pDS.GetClassResourceListener();
+	init.clsCurveBezier = pDS.GetClassCurveBezier();
+	init.clsAnimationBoneParameter = pClsBoneParameter =
+		engine->GetClass("Dragengine.Scenery.AnimationBoneParameter");
+	
 	AddFunction(new nfLoad(init));
 	AddFunction( new nfLoadAsynchron( init ) );
 	AddFunction( new nfSave( init ) );
@@ -328,30 +372,29 @@ void deClassAnimation::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfGetMoveCount( init ) );
 	AddFunction( new nfGetMoveName( init ) );
 	AddFunction( new nfIndexOfMoveNamed( init ) );
+	AddFunction(new nfGetKeyframeCurve(init));
+	AddFunction(new nfGetVertexPositionSetKeyframeCurve(init));
 	AddFunction(new nfEquals(init));
 	AddFunction(new nfHashCode(init));
-	// calculate member offsets
+	
 	CalcMemberOffsets();
 }
-deAnimation *deClassAnimation::GetAnimation( dsRealObject *object ) const{
-	if( ! object ){
-		return NULL;
-	}
-	
-	return ( ( sAnimNatDat* )p_GetNativeData( object->GetBuffer() ) )->anim;
+
+deAnimation *deClassAnimation::GetAnimation(dsRealObject *object) const{
+	return object ? ((sAnimNatDat*)p_GetNativeData(object->GetBuffer()))->anim : nullptr;
 }
 
-void deClassAnimation::PushAnimation( dsRunTime *rt, deAnimation *anim ){
-	if( ! rt ){
-		DSTHROW( dueInvalidParam );
+void deClassAnimation::PushAnimation(dsRunTime *rt, deAnimation *anim){
+	if(!rt){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! anim ){
-		rt->PushObject( NULL, this );
+	if(!anim){
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	( ( sAnimNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) )->anim = anim;
+	rt->CreateObjectNakedOnStack(this);
+	((sAnimNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->anim = anim;
 	anim->AddReference();
 }

@@ -22,45 +22,45 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DECLASSANIMATION_H_
 #define _DECLASSANIMATION_H_
 
-// includes
 #include <libdscript/libdscript.h>
 
-// predefinitions
 class deEngine;
 class deAnimation;
 class deScriptingDragonScript;
 class deClassResourceListener;
 
-// animation script class
+/**
+ * \brief Animation script class.
+ */
 class deClassAnimation : public dsClass{
 private:
-	deEngine *p_gameEngine;
-	deScriptingDragonScript *pScrMgr;
+	deEngine &pGameEngine;
+	deScriptingDragonScript &pDS;
 	
-	deClassResourceListener *pClsRN;
+	dsClass *pClsBoneParameter;
 	
 public:
-	// constructor
-	deClassAnimation(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
-	~deClassAnimation();
-	// internal functions
-	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
+	deClassAnimation(deEngine &gameEngine, deScriptingDragonScript &ds);
+	~deClassAnimation() override;
 	
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
+	void CreateClassMembers(dsEngine *engine) override;
+	inline deEngine &GetGameEngine() const{ return pGameEngine; }
 	
-	inline deClassResourceListener *GetClassResourceListener() const{ return pClsRN; }
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	deAnimation *GetAnimation(dsRealObject *This) const;
 	void PushAnimation( dsRunTime *rt, deAnimation *anim );
 	
+	inline dsClass *GetClassAnimationBoneParameter() const{ return pClsBoneParameter; }
+	
 private:
 	struct sInitData{
 		dsClass *clsAnim, *clsVoid, *clsBool, *clsStr, *clsInt, *clsFlt, *clsObj, *clsRN;
+		dsClass *clsCurveBezier;
+		dsClass *clsAnimationBoneParameter;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -84,10 +84,11 @@ private:
 	DEF_NATFUNC( nfGetMoveCount );
 	DEF_NATFUNC( nfGetMoveName );
 	DEF_NATFUNC( nfIndexOfMoveNamed );
+	DEF_NATFUNC(nfGetKeyframeCurve);
+	DEF_NATFUNC(nfGetVertexPositionSetKeyframeCurve);
 	DEF_NATFUNC(nfEquals);
 	DEF_NATFUNC(nfHashCode);
 #undef DEF_NATFUNC
 };
 
-// end of include only once
 #endif
