@@ -1530,6 +1530,245 @@
 		</property>
 		<category>Dragengine/Behavior</category>
 	</class>
+	<class name='ECBehaviorLightAnimation'>
+		<description>Behavior element behavior adding animation support to ECBehaviorLight.<br/><br/>This behavior uses property prefix "lightAnimation.". If you use multiple instances of ECBehaviorLightAnimation use unique identifiers like "lightAnimation(identifier).".</description>
+		<ghost>true</ghost>
+		<canInstantiate>false</canInstantiate>
+		<defaultInheritPropertyPrefix>lightAnimation.</defaultInheritPropertyPrefix>
+		<property name='animation'>
+			<description>Path of animation resource to use.</description>
+			<type>path</type>
+			<pathPatternType>animation</pathPatternType>
+		</property>
+		<property name='move'>
+			<description>Name of animation move to use.</description>
+			<type>string</type>
+		</property>
+		<property name='enabled'>
+			<description>Enable animation if trigger is not used.</description>
+			<type>boolean</type>
+			<default>1</default>
+		</property>
+		<property name='playSpeed'>
+			<description>Playback speed. Elapsed time is multiplied by this value before advancing animation time. Hence a value of 1 is normal playback speed, values less than 1 slow down playback while values larger than 1 speed up playback. Negative values are allowed and play back the animation backwards.</description>
+			<type>float</type>
+			<default>1</default>
+		</property>
+		<property name='trigger'>
+			<description>Trigger expression enable animation if light is in activate state.</description>
+			<type>triggerExpression</type>
+		</property>
+		<property name='colorRed.target'>
+			<description>Name of bone/vertexPositionSet to use for red color.</description>
+			<type>string</type>
+		</property>
+		<property name='colorRed.parameter'>
+			<description>Target parameter to use for red color. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='colorGreen.target'>
+			<description>Name of bone/vertexPositionSet to use for green color.</description>
+			<type>string</type>
+		</property>
+		<property name='colorGreen.parameter'>
+			<description>Target parameter to use for green color. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='colorBlue.target'>
+			<description>Name of bone/vertexPositionSet to use for blue color.</description>
+			<type>string</type>
+		</property>
+		<property name='colorBlue.parameter'>
+			<description>Target parameter to use for blue color. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='intensity.target'>
+			<description>Name of bone/vertexPositionSet to use for intensity.</description>
+			<type>string</type>
+		</property>
+		<property name='intensity.parameter'>
+			<description>Target parameter to use for intensity. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='range.target'>
+			<description>Name of bone/vertexPositionSet to use for range.</description>
+			<type>string</type>
+		</property>
+		<property name='range.parameter'>
+			<description>Target parameter to use for range. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='halfIntensityDistance.target'>
+			<description>Name of bone/vertexPositionSet to use for half intensity distance.</description>
+			<type>string</type>
+		</property>
+		<property name='halfIntensityDistance.parameter'>
+			<description>Target parameter to use for half intensity distance. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='ambientRatio.target'>
+			<description>Name of bone/vertexPositionSet to use for ambient ratio.</description>
+			<type>string</type>
+		</property>
+		<property name='ambientRatio.parameter'>
+			<description>Target parameter to use for ambient ratio. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='spotAngle.target'>
+			<description>Name of bone/vertexPositionSet to use for spot angle.</description>
+			<type>string</type>
+		</property>
+		<property name='spotAngle.parameter'>
+			<description>Target parameter to use for spot angle. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='spotRatio.target'>
+			<description>Name of bone/vertexPositionSet to use for spot ratio.</description>
+			<type>string</type>
+		</property>
+		<property name='spotRatio.parameter'>
+			<description>Target parameter to use for spot ratio. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='spotSmoothness.target'>
+			<description>Name of bone/vertexPositionSet to use for spot smoothness.</description>
+			<type>string</type>
+		</property>
+		<property name='spotSmoothness.parameter'>
+			<description>Target parameter to use for spot smoothness. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<property name='spotExponent.target'>
+			<description>Name of bone/vertexPositionSet to use for spot exponent.</description>
+			<type>string</type>
+		</property>
+		<property name='spotExponent.parameter'>
+			<description>Target parameter to use for spot exponent. "weight" uses vertex position set, all others bone.</description>
+			<type>selection</type>
+			<option>positionX</option>
+			<option>positionY</option>
+			<option>positionZ</option>
+			<option>rotationX</option>
+			<option>rotationY</option>
+			<option>rotationZ</option>
+			<option>scaleX</option>
+			<option>scaleY</option>
+			<option>scaleZ</option>
+			<option>weight</option>
+			<default>positionZ</default>
+		</property>
+		<category>Dragengine/Behavior</category>
+	</class>
 	<class name='ECBehaviorNavigationBlocker'>
 		<description>Behavior element behavior adding navigation blocker support.<br/><br/>This behavior uses property prefix "navigationBlocker.". If you use multiple instances of ECBehaviorNavigationBlocker use unique identifiers like "navigationBlocker(identifier).".</description>
 		<ghost>true</ghost>
