@@ -170,6 +170,38 @@ void deClassAnimation::nfGetBoneName::RunFunction( dsRunTime *rt, dsValue *mysel
 	rt->PushString( animation.GetBone( rt->GetValue( 0 )->GetInt() )->GetName() );
 }
 
+// func int getVertexPositionSetCount()
+deClassAnimation::nfGetVertexPositionSetCount::nfGetVertexPositionSetCount(const sInitData &init) :
+dsFunction(init.clsAnim, "getVertexPositionSetCount",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
+}
+void deClassAnimation::nfGetVertexPositionSetCount::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAnimation &animation = *(((sAnimNatDat*)p_GetNativeData(myself))->anim);
+	rt->PushInt(animation.GetVertexPositionSets().GetCount());
+}
+
+// func int indexOfVertexPositionSetNamed(String name)
+deClassAnimation::nfIndexOfVertexPositionSetNamed::nfIndexOfVertexPositionSetNamed(const sInitData &init) :
+dsFunction(init.clsAnim, "indexOfVertexPositionSetNamed",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassAnimation::nfIndexOfVertexPositionSetNamed::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAnimation &animation = *(((sAnimNatDat*)p_GetNativeData(myself))->anim);
+	rt->PushInt(animation.GetVertexPositionSets().IndexOf(rt->GetValue(0)->GetString()));
+}
+
+// public func String getVertexPositionSetName(int index)
+deClassAnimation::nfGetVertexPositionSetName::nfGetVertexPositionSetName(const sInitData &init) :
+dsFunction(init.clsAnim, "getVertexPositionSetName",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassAnimation::nfGetVertexPositionSetName::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deAnimation &animation = *(((sAnimNatDat*)p_GetNativeData(myself))->anim);
+	rt->PushString(animation.GetVertexPositionSets().GetAt(rt->GetValue(0)->GetInt()));
+}
+
 // public func float getMoveFPS( String moveName )
 deClassAnimation::nfGetMoveFPS::nfGetMoveFPS( const sInitData &init ) :
 dsFunction( init.clsAnim, "getMoveFPS", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
@@ -289,6 +321,9 @@ void deClassAnimation::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfGetBoneCount( init ) );
 	AddFunction( new nfIndexOfBoneNamed( init ) );
 	AddFunction( new nfGetBoneName( init ) );
+	AddFunction(new nfGetVertexPositionSetCount(init));
+	AddFunction(new nfIndexOfVertexPositionSetNamed(init));
+	AddFunction(new nfGetVertexPositionSetName(init));
 	AddFunction( new nfGetMoveFPS( init ) );
 	AddFunction( new nfGetMoveCount( init ) );
 	AddFunction( new nfGetMoveName( init ) );

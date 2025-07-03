@@ -77,6 +77,9 @@ private:
 	DEF_NATFUNC( nfGetBoneCount );
 	DEF_NATFUNC( nfIndexOfBoneNamed );
 	DEF_NATFUNC( nfGetBoneName );
+	DEF_NATFUNC(nfGetVertexPositionSetCount);
+	DEF_NATFUNC(nfIndexOfVertexPositionSetNamed);
+	DEF_NATFUNC(nfGetVertexPositionSetName);
 	DEF_NATFUNC( nfGetMoveFPS );
 	DEF_NATFUNC( nfGetMoveCount );
 	DEF_NATFUNC( nfGetMoveName );

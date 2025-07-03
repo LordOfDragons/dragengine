@@ -81,7 +81,33 @@ fixed class Animation
 	 * \param index Index of bone to get name of
 	 * \throws EInvalidParam index is less than 0 or larger than or equal to getBoneCount().
 	 */
-	public func String getBoneName(int index)
+	func String getBoneName(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Count of vertex position sets.
+	 * \version 1.28
+	 */
+	func int getVertexPositionSetCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Index of named vertex position set or -1 if not found.
+	 * \version 1.28
+	 */
+	func int indexOfVertexPositionSetNamed(String name)
+		return 0
+	end
+	
+	/**
+	 * \brief Name of vertex position set at index.
+	 * \version 1.28
+	 * \param index Index of vertex position set to get name of
+	 * \throws EInvalidParam index is less than 0 or larger than or equal to getVertexPositionSetCount().
+	 */
+	func String getVertexPositionSetName(int index)
 		return null
 	end
 	
