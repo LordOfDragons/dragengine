@@ -1,7 +1,7 @@
 package ch.dragondreams.delauncher
 
+import android.graphics.Point
 import android.util.Log
-import android.view.SurfaceView
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.EngineModule
 import ch.dragondreams.delauncher.launcher.EngineModuleParameter
@@ -13,7 +13,7 @@ class RunGameShared(
     val loggerTag: String
 ) {
     var launcher: DragengineLauncher? = null
-    var surfaceView: SurfaceView? = null
+    var surfaceSize: Point = Point(768, 1024)
 
     /**
      * Game instance. Automatically handles release/retain calls.
@@ -67,7 +67,7 @@ class RunGameShared(
      * Locate game profile to use.
      */
     fun locateProfile(profile: GameProfile?): Boolean{
-        val sv = surfaceView!!
+        val ss = surfaceSize
         val l = launcher!!
         val g = game!!
 
@@ -95,8 +95,9 @@ class RunGameShared(
 
         // update the run parameters
         runParams.gameProfile = useProfile
-        runParams.width = sv.width
-        runParams.height = sv.height
+
+        runParams.width = ss.x
+        runParams.height = ss.y
 
         /*
         var error: String

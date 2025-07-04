@@ -12,6 +12,7 @@
     <string name="lab_install_dragengine_failed">Install/Update Drag[en]gine failed.\nSee logs for more information.</string>
     <string name="lab_load_libraries_failed">Loading Drag[en]gine libraries failed.\nSee logs for more information.</string>
     <string name="lab_create_dragengine_failed">Create Drag[en]gine instance failed.\nSee logs for more information.</string>
+    <string name="lab_load_engine_cancelled">Loading Drag[en]gine instance cancelled.</string>
     <string name="lab_dragengine_ready">Drag[en]gine Ready.</string>
     <string name="lab_install_engine_progress">%1$d%%</string>
     <string name="form_label_name">Name:</string>

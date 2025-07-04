@@ -2,6 +2,7 @@ package ch.dragondreams.delauncher
 
 import android.content.ContentResolver
 import android.content.Intent
+import android.graphics.Point
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -27,8 +28,13 @@ class RunDelgaActivity : GameActivity(),
     ) : DragengineLauncher.DefaultListener() {
         override fun stateChanged(launcher: DragengineLauncher) {
             Log.i(TAG, "stateChanged: " + launcher.state)
-            if (launcher.state == DragengineLauncher.State.EngineReady) {
-                activity.onEngineReady()
+            when(launcher.state) {
+                DragengineLauncher.State.InstallEngineFailed -> activity.onEngineFailed()
+                DragengineLauncher.State.LoadLibrariesFailed -> activity.onEngineFailed()
+                DragengineLauncher.State.CreateInternalLauncherFailed -> activity.onEngineFailed()
+                DragengineLauncher.State.EngineReady -> activity.onEngineReady()
+                DragengineLauncher.State.Cancelled -> activity.onEngineFailed()
+                else -> {}
             }
         }
     }
@@ -93,21 +99,29 @@ class RunDelgaActivity : GameActivity(),
     }
 
     enum class State {
+        EngineDown,
         InitEngine,
-        RunGame
+        RunGame,
+        GameStopped,
+        ShutDownEngine
     }
 
     private val shared = RunGameShared(TAG)
-    private var state = State.InitEngine
+    private var state = State.EngineDown
     private var delgaGames: MutableList<Game> = mutableListOf()
     private var delgaPath: String? = null
     private var runGameHandler: RunGameHandler? = null
     @Volatile
     private var isDestroyingView = false
+    private var isResumed = false
+    private var isSurfaceReady = false
+    private var surfaceHolder: SurfaceHolder? = null
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun getLauncher(): DragengineLauncher {
         if (shared.launcher == null) {
-            shared.launcher = DragengineLauncher(this, mSurfaceView)
+            shared.launcher = DragengineLauncher(this, mSurfaceView.holder.surface)
+            //shared.launcher = DragengineLauncher(this, surfaceHolder?.surface)
             shared.launcher?.logFilename = "delauncher"
             shared.launcher?.addListener(RunLauncherListener(this))
             shared.launcher?.initLauncher()
@@ -127,19 +141,28 @@ class RunDelgaActivity : GameActivity(),
 
         if (intent.action == ACTION_LAUNCH_DELGA
             || intent.action == "android.intent.action.VIEW") {
+
             mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceCreated(holder: SurfaceHolder){
-                    shared.surfaceView = mSurfaceView
-                    getLauncher() // force create launcher if not created already
-                    supportFragmentManager.beginTransaction()
-                        .add(android.R.id.content, FragmentInitEngine()).commit()
+                    shared.logInfo("RunDelgaActivity",
+                        "onCreate.mSurfaceView.surfaceCreated: " +
+                        "size=${mSurfaceView.width}x${mSurfaceView.height}")
+                    shared.surfaceSize = Point(mSurfaceView.width, mSurfaceView.height)
                 }
 
                 override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int){
+                    shared.logInfo("RunDelgaActivity",
+                        "onCreate.mSurfaceView.surfaceChanged: size=${width}x${height}")
+                    shared.surfaceSize = Point(width, height)
+                    isSurfaceReady = true
+                    initEngine()
                 }
 
                 override fun surfaceDestroyed(holder: SurfaceHolder){
-                    stopApplicationWait()
+                    shared.logInfo("RunDelgaActivity",
+                        "onCreate.mSurfaceView.surfaceDestroyed")
+                    isSurfaceReady = false
+                    shutDownEngine()
                 }
             })
 
@@ -148,9 +171,63 @@ class RunDelgaActivity : GameActivity(),
         }
     }
 
+    override fun surfaceCreated(holder: SurfaceHolder) {
+        super.surfaceCreated(holder)
+
+        val r = holder.surfaceFrame
+        shared.logInfo("RunDelgaActivity",
+            "surfaceCreated: mDestroyed=${mDestroyed} size=${r.width()}x${r.height()}")
+
+        if (!mDestroyed) {
+            surfaceHolder = holder
+        }
+    }
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        super.surfaceChanged(holder, format, width, height)
+
+        val r = holder.surfaceFrame
+        shared.logInfo("RunDelgaActivity",
+            "surfaceChanged: mDestroyed=${mDestroyed} size=${r.width()}x${r.height()}")
+    }
+
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
+        shared.logInfo("RunDelgaActivity",
+            "surfaceDestroyed: mDestroyed=${mDestroyed}")
+
+        if (!mDestroyed) {
+            surfaceHolder = null
+        }
+
+        super.surfaceDestroyed(holder)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shared.logInfo("RunDelgaActivity",
+            "onResume: mDestroyed=${mDestroyed}")
+
+        if (!mDestroyed) {
+            isResumed = true
+            initEngine()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shared.logInfo("RunDelgaActivity",
+            "onPause: mDestroyed=${mDestroyed}")
+
+        if (!mDestroyed) {
+            isResumed = false
+            shutDownEngine()
+        }
+    }
+
     override fun onDestroy() {
+        shared.logInfo("RunDelgaActivity", "onDestroy")
         isDestroyingView = true
-        stopApplicationWait()
+        shutDownEngine()
 
         GameActivityAdapter().setHandler(0L)
         runGameHandler?.dispose()
@@ -163,13 +240,64 @@ class RunDelgaActivity : GameActivity(),
         super.onDestroy()
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        shared.logInfo("RunDelgaActivity",
+            "onWindowFocusChanged: mDestroyed=${mDestroyed} hasFocus=${hasFocus} " +
+                    "isResumed=${isResumed} isSurfaceReady=${isSurfaceReady} state=${state}")
+    }
+
+    private fun initEngine() {
+        shared.logInfo("RunDelgaActivity",
+            "initEngine: isResumed=${isResumed} isSurfaceReady=${isSurfaceReady} state=${state}")
+        if (!isResumed || !isSurfaceReady || state != State.EngineDown) {
+            return
+        }
+
+        state = State.InitEngine
+        val l = getLauncher() // force create launcher if not created already
+
+        if (!DEBuildInfo.runDelgaNoFragment) {
+            supportFragmentManager
+                .beginTransaction()
+                .add(android.R.id.content, FragmentInitEngine())
+                .commit()
+        }
+    }
+
+    private fun shutDownEngine() {
+        shared.logInfo("RunDelgaActivity",
+            "shutDownEngine: isResumed=${isResumed} isSurfaceReady=${isSurfaceReady} state=${state}")
+        stopGameWait()
+
+        if (state == State.GameStopped || state == State.InitEngine) {
+            state = State.ShutDownEngine
+            shared.launcher?.dispose()
+            shared.launcher = null
+            state = State.EngineDown
+        }
+    }
+
     private fun onEngineReady() {
+        shared.logInfo("RunDelgaActivity", "onEngineReady: state=${state}")
         if (state != State.InitEngine) {
             return
         }
 
         state = State.RunGame
         processIntentLaunchDelga()
+    }
+
+    private fun onEngineFailed() {
+        shared.logInfo("RunDelgaActivity", "onEngineFailed: state=${state}")
+        if (state != State.InitEngine) {
+            return
+        }
+
+        if (DEBuildInfo.runDelgaNoFragment) {
+            state = State.EngineDown
+            shutDownEngine()
+        }
     }
 
     private fun processIntentLaunchDelga() {
@@ -330,10 +458,15 @@ class RunDelgaActivity : GameActivity(),
         }
     }
 
-    fun stopApplicationWait() {
-        shared.logInfo(TAG, "stopApplication")
+    private fun stopGameWait() {
+        shared.logInfo(TAG, "stopGameWait")
+        if (state != State.RunGame) {
+            return
+        }
+
         runGameHandler?.stopGame()
         runGameHandler?.waitForState(RunGameHandler.State.GameStopped)
+        state = State.GameStopped
     }
 
     private fun handlerStateChanged(state: RunGameHandler.State) {

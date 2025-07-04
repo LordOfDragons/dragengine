@@ -1,5 +1,6 @@
 package ch.dragondreams.delauncher
 
+import android.graphics.Point
 import android.os.Bundle
 import android.util.Log
 import android.view.SurfaceHolder
@@ -30,7 +31,7 @@ class RemoteLauncherActivity : GameActivity(),
 
     override fun getLauncher(): DragengineLauncher {
         if (shared.launcher == null) {
-            shared.launcher = DragengineLauncher(this, mSurfaceView)
+            shared.launcher = DragengineLauncher(this, mSurfaceView.holder.surface)
             shared.launcher?.logFilename = "deremotelauncher"
             shared.launcher?.addListener(RemoteLauncherListener(this))
             shared.launcher?.initLauncher()
@@ -49,16 +50,26 @@ class RemoteLauncherActivity : GameActivity(),
 
         mSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder){
-                shared.surfaceView = mSurfaceView
+                shared.logInfo("RemoteLauncherActivity", listOf(
+                    "surfaceView created:",
+                    "size=${mSurfaceView.width}x${mSurfaceView.height}").
+                        joinToString(" "))
+                shared.surfaceSize = Point(mSurfaceView.width, mSurfaceView.height)
                 getLauncher() // force create launcher if not created already
                 supportFragmentManager.beginTransaction()
                     .add(android.R.id.content, FragmentInitEngine()).commit()
             }
 
             override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int){
+                shared.logInfo("RunDelgaActivity", listOf(
+                    "surfaceView changed:",
+                    "size=${width}x${height}").
+                        joinToString(" "))
+                shared.surfaceSize = Point(width, height)
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder){
+                shared.logInfo("RunDelgaActivity", "surfaceView destroyed")
                 fragmentMain?.stopApplicationWait()
             }
         })
