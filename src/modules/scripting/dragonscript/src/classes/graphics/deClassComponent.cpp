@@ -559,6 +559,38 @@ void deClassComponent::nfBoneSetRotation::RunFunction( dsRunTime *rt, dsValue *m
 	component.InvalidateBones();
 }
 
+// func Vector boneGetScale(int bone)
+deClassComponent::nfBoneGetScale::nfBoneGetScale(const sInitData &init) :
+dsFunction(init.clsCom, "boneGetScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
+	p_AddParameter(init.clsInt); // bone
+}
+void deClassComponent::nfBoneGetScale::RunFunction(dsRunTime *rt, dsValue *myself){
+	deComponent &component = *(((sCompNatDat*)p_GetNativeData(myself))->component);
+	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	
+	component.PrepareBones();
+	
+	const deComponentBone &bone = component.GetBoneAt(rt->GetValue(0)->GetInt());
+	ds.GetClassVector()->PushVector(rt, bone.GetScale());
+}
+
+// func void boneSetScale(int bone, Vector scale)
+deClassComponent::nfBoneSetScale::nfBoneSetScale(const sInitData &init) :
+dsFunction(init.clsCom, "boneSetScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInt); // bone
+	p_AddParameter(init.clsVec); // scale
+}
+void deClassComponent::nfBoneSetScale::RunFunction(dsRunTime *rt, dsValue *myself){
+	deComponent &component = *(((sCompNatDat*)p_GetNativeData(myself))->component);
+	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	
+	deComponentBone &bone = component.GetBoneAt(rt->GetValue(0)->GetInt());
+	const decVector &scale = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
+	
+	bone.SetScale(scale);
+	component.InvalidateBones();
+}
+
 // public func Matrix boneGetMatrix( int bone )
 deClassComponent::nfBoneGetMatrix::nfBoneGetMatrix( const sInitData &init ) : dsFunction( init.clsCom,
 "boneGetMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMat ){
@@ -1349,6 +1381,8 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBoneSetPosition( init ) );
 	AddFunction( new nfBoneGetRotation( init ) );
 	AddFunction( new nfBoneSetRotation( init ) );
+	AddFunction(new nfBoneGetScale(init));
+	AddFunction(new nfBoneSetScale(init));
 	AddFunction( new nfBoneGetMatrix( init ) );
 	AddFunction( new nfBoneGetInverseMatrix( init ) );
 	AddFunction( new nfGetBonePosition( init ) );

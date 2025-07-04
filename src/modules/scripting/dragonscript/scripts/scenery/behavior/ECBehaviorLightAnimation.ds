@@ -37,8 +37,8 @@ pin Dragengine.BehaviorTreeSystem
  * \version 1.28
  * 
  * This behavior modifies the light parameters of \ref ECBehaviorLight instances present in
- * the element using move keyframes stored in an \ref Animation. Animation playback starts
- * when the light becomes activated and stops (and resets) if reactivated.
+ * the element using move keyframes stored in an \ref Animation or \ref ECBehaviorComponent state.
+ * Animation playback starts when the light becomes activated and stops (and resets) if reactivated.
  * 
  * To use this behavior add first an \ref ECBehaviorLight. Adding \ref ECBehaviorLightAnimation
  * will then register itself as listener to the \ref ECBehaviorLight and also set it to use
@@ -59,26 +59,35 @@ pin Dragengine.BehaviorTreeSystem
  * end
  * \endcode
  * 
+ * Using \ref Animation keyframes from a move is used to animate the light parameters.
+ * 
+ * Using \ref ECBehaviorComponent the animated state is used to animate the light parameters.
+ * In this case the play time is 0 since the component state is typically driven by an animator
+ * or manually.
+ * 
+ * The input values obtained either from animation keyframes or component state is remapped
+ * before applying to the light parameter. This linearly maps the lower remap value (default 0)
+ * to 0 output value and the upper remap value (default 1) to 1 output value. Values outside
+ * the remap range are extrapolated.
+ * 
+ * Remapping is applied before scaling.
+ * 
  * Element class properties have the prefix "lightAnimation{(id)}.".
  * 
  * 
  * 
- * \par Full Bright Intensity
+ * \par Scale factors
  * 
- * This behaviors needs to know the full bright intensity of the light. During init() call
- * the intensity of the light resource in the controlled \ref ECBehaviorLight is stored as the
- * full bright intensity. This value can be later on changed if required.
+ * This behaviors scales intensity, range and spot angle. During init() call intensity, range
+ * and spot angle of light are stored as scale values. These values can be later on changed if
+ * required. Using this system the input intensity, range and spot angle values can be kept in
+ * the range from 0 to 1 similar to the other parameters. The final values are then obtained by
+ * scaling by the scale factor.
  * 
- * If the full bright intensity of the light changes over time you have to update the full
- * bright intensity in this behavior for the animation to work correctly.
+ * Hence intensity, range and spot angle are animated as relative values while all other light
+ * parameters are animated absolute.
  * 
  * This behavior supports persistable element class (setPersistable).
- * 
- * 
- * \par Attachable
- * 
- * This behavior can be optionally used as attachable behavior to dynamically add animations
- * to lights of behavior elements of any type.
  * 
  * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lightanimation
  */
@@ -101,6 +110,9 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 	 * 
 	 *   <!-- optional: use light with id instead of empty string -->
 	 *   <string name='light'>second</string>
+	 * 
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
 	 *   
 	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
 	 *   <list name='behaviorTrees'>
@@ -135,6 +147,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorLightAnimation behavior = ECBehaviorLightAnimation.new(eclass,\
 				eclass.sharedFactoryHelper.defaultLight(eclass, parameters),\
+				eclass.sharedFactoryHelper.optionalComponent(eclass, parameters),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -160,6 +173,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 		var String pPrefix
 		var ECPString pTarget
 		var ECPEnumeration pParameter
+		var ECPFloat pRemapLower, pRemapUpper
 		
 		
 		/**
@@ -173,6 +187,8 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			eclass.addProperty(pTarget = ECPString.new(prefix + "target", null))
 			eclass.addProperty(pParameter = ECPEnumeration.new(prefix + "parameter",\
 				Instance.AnimationParameter.all(), Instance.AnimationParameter.positionZ))
+			eclass.addProperty(pRemapLower = ECPFloat.new(prefix + "remapLower", 0))
+			eclass.addProperty(pRemapUpper = ECPFloat.new(prefix + "remapUpper", 1))
 		end
 		
 		
@@ -193,6 +209,16 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 		 */
 		func ECPEnumeration getParameter()
 			return pParameter
+		end
+		
+		/** \brief Lower remap value. */
+		func ECPFloat getRemapLower()
+			return pRemapLower
+		end
+		
+		/** \brief Upper remap value. */
+		func ECPFloat getRemapUpper()
+			return pRemapUpper
 		end
 	end
 	
@@ -351,6 +377,9 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 		class LightParameterState
 			public var int target
 			public var CurveBezier curve
+			public var Component component
+			public var Instance.AnimationParameter parameter
+			public var float offset, scale
 			
 			func new(StubElement stub, ECBehaviorLightAnimation ecbehavior,\
 			LightParameter parameter, Animation animation, int move)
@@ -361,10 +390,9 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 					return
 				end
 				
-				var Instance.AnimationParameter ap =\
-					lp.getParameter().getEnumeration(stub) cast Instance.AnimationParameter
+				this.parameter = lp.getParameter().getEnumeration(stub) cast Instance.AnimationParameter
 				
-				if ap == Instance.AnimationParameter.weight
+				if this.parameter == Instance.AnimationParameter.weight
 					target = animation.indexOfVertexPositionSetNamed(value)
 					
 				else
@@ -374,7 +402,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 					return
 				end
 				
-				select ap
+				select this.parameter
 				case Instance.AnimationParameter.positionX
 					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.positionX)
 					
@@ -405,14 +433,82 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 				else
 					curve = animation.getVertexPositionSetKeyframeCurve(move, target)
 				end
+				initCommon(lp, stub)
+			end
+			
+			func new(StubElement stub, ECBehaviorLightAnimation ecbehavior,\
+			LightParameter parameter, Component component)
+				var ECCLightParameter lp = ecbehavior.getLightParameter(parameter)
+				
+				var String value = lp.getTarget().getValueOrNull(stub)
+				if value == null
+					return
+				end
+				
+				this.component = component
+				this.parameter = lp.getParameter().getEnumeration(stub) cast Instance.AnimationParameter
+				
+				if this.parameter == Instance.AnimationParameter.weight
+					target = component.indexOfVertexPositionSetNamed(value)
+					
+				else
+					target = component.indexOfBoneNamed(value)
+				end
+				initCommon(lp, stub)
+			end
+			
+			private func void initCommon(ECCLightParameter lp, StubWithProperties stub)
+				var float lower = lp.getRemapLower().getValue(stub)
+				var float upper = lp.getRemapUpper().getValue(stub)
+				scale = 1 / (upper - lower)
+				offset = -lower * scale
 			end
 			
 			func bool isValid()
-				return curve != null
+				return target != -1
 			end
 			
 			func float evaluateAt(float time)
-				return curve.evaluateAt(time)
+				var float value
+				
+				if component != null
+					select parameter
+					case Instance.AnimationParameter.positionX
+						value = component.boneGetPosition(target).getX()
+						
+					case Instance.AnimationParameter.positionY
+						value = component.boneGetPosition(target).getY()
+						
+					case Instance.AnimationParameter.positionZ
+						value = component.boneGetPosition(target).getZ()
+						
+					case Instance.AnimationParameter.rotationX
+						value = component.boneGetRotation(target).getEulerAngles().getX()
+						
+					case Instance.AnimationParameter.rotationY
+						value = component.boneGetRotation(target).getEulerAngles().getY()
+						
+					case Instance.AnimationParameter.rotationZ
+						value = component.boneGetRotation(target).getEulerAngles().getZ()
+						
+					case Instance.AnimationParameter.scaleX
+						value = component.boneGetScale(target).getX()
+						
+					case Instance.AnimationParameter.scaleY
+						value = component.boneGetScale(target).getY()
+						
+					case Instance.AnimationParameter.scaleZ
+						value = component.boneGetScale(target).getZ()
+						
+					else
+						value = component.vertexPositionSetGetWeightAt(target)
+					end
+					
+				else
+					value = curve.evaluateAt(time)
+				end
+				
+				return value * scale + offset
 			end
 		end
 		
@@ -438,8 +534,9 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 		var ECBehaviorLight.Instance pLight
 		var bool pLightIsActive, pHasColorStates, pEnabled
 		var Animation pAnimation
+		var Component pComponent
 		var int pMove
-		var float pFullBrightIntensity, pElapsedTime, pPlayTime, pPlaySpeed
+		var float pScaleIntensity, pScaleRange, pScaleSpotAngle, pElapsedTime, pPlayTime, pPlaySpeed
 		var LightParameterState pStateColorRed, pStateColorGreen, pStateColorBlue
 		var LightParameterState pStateIntensity, pStateRange, pStateHalfIntensityDistance, pStateAmbientRatio
 		var LightParameterState pStateSpotAngle, pStateSpotRatio, pStateSpotSmoothness, pStateSpotExponent
@@ -466,21 +563,32 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			var BehaviorElement element = getElement()
 			
 			pAnimation = pECBehavior.getAnimation().getAnimation(stub, element.getClass())
-			if pAnimation == null
-				return
-			end
 			
-			var String value = pECBehavior.getMove().getValueOrNull(stub)
-			if value != null
-				pMove = pAnimation.indexOfMoveNamed(value)
-			end
-			if pMove == -1
+			if pAnimation != null
+				var String value = pECBehavior.getMove().getValueOrNull(stub)
+				if value != null
+					pMove = pAnimation.indexOfMoveNamed(value)
+				end
+				if pMove == -1
+					return
+				end
+				
+				pPlayTime = pAnimation.getMovePlaytime(value)
+				
+			elif pECBehavior.getComponent() != null
+				pComponent = pECBehavior.getComponent().instance(element).getComponent()
+				
+			else
 				return
 			end
 			
 			pLight = pECBehavior.getLight().instance(element)
-			pFullBrightIntensity = pLight.getLight().getIntensity()
-			pPlayTime = pAnimation.getMovePlaytime(value)
+			
+			var Light l = pLight.getLight()
+			pScaleIntensity = l.getIntensity()
+			pScaleRange = l.getRange()
+			pScaleSpotAngle = l.getSpotAngle()
+			
 			pEnabled = pECBehavior.getEnabled().getValue(stub)
 			pPlaySpeed = pECBehavior.getPlaySpeed().getValue(stub)
 			
@@ -527,9 +635,17 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			end
 		end
 		
+		/** \brief Create state using animation move or getComponent() state if present. */
 		protected func LightParameterState createState(StubElement stub, LightParameter parameter)
-			var LightParameterState state = LightParameterState.new(\
-				stub, pECBehavior, parameter, pAnimation, pMove)
+			var LightParameterState state
+			
+			if pComponent != null
+				state = LightParameterState.new(stub, pECBehavior, parameter, pComponent)
+				
+			else
+				state = LightParameterState.new(stub, pECBehavior, parameter, pAnimation, pMove)
+			end
+			
 			return state.isValid() if state else null
 		end
 		
@@ -549,14 +665,39 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			return pLight
 		end
 		
-		/** \brief Full bright intensity. */
-		func float getFullBrightIntensity()
-			return pFullBrightIntensity
+		/** \brief Component or null. */
+		func Component getComponent()
+			return pComponent
 		end
 		
-		/** \brief Set full bright intensity. */
-		func void setFullBrightIntensity(float intensity)
-			pFullBrightIntensity = DEMath.max(intensity, 0.0)
+		/** \brief Intensity scale. */
+		func float getScaleIntensity()
+			return pScaleIntensity
+		end
+		
+		/** \brief Set intensity scale. */
+		func void setScaleIntensity(float scale)
+			pScaleIntensity = DEMath.max(scale, 0.0)
+		end
+		
+		/** \brief Range scale. */
+		func float getScaleRange()
+			return pScaleRange
+		end
+		
+		/** \brief Set range scale. */
+		func void setScaleRange(float scale)
+			pScaleRange = DEMath.max(scale, 0.0)
+		end
+		
+		/** \brief Spot angle scale. */
+		func float getScaleSpotAngle()
+			return pScaleSpotAngle
+		end
+		
+		/** \brief Set spot anglescale. */
+		func void setScaleSpotAngle(float scale)
+			pScaleSpotAngle = DEMath.max(scale, 0.0)
 		end
 		
 		/** \brief Animation is enabled. */
@@ -673,11 +814,11 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			end
 			
 			if pStateIntensity != null
-				l.setIntensity(pStateIntensity.evaluateAt(pElapsedTime) * pFullBrightIntensity)
+				l.setIntensity(pStateIntensity.evaluateAt(pElapsedTime) * pScaleIntensity)
 			end
 			
 			if pStateRange != null
-				l.setRange(pStateRange.evaluateAt(pElapsedTime))
+				l.setRange(pStateRange.evaluateAt(pElapsedTime) * pScaleRange)
 			end
 			if pStateHalfIntensityDistance != null
 				l.setHalfIntensityDistance(pStateHalfIntensityDistance.evaluateAt(pElapsedTime))
@@ -687,7 +828,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			end
 			
 			if pStateSpotAngle != null
-				l.setSpotAngle(pStateSpotAngle.evaluateAt(pElapsedTime))
+				l.setSpotAngle(pStateSpotAngle.evaluateAt(pElapsedTime) * pScaleSpotAngle)
 			end
 			if pStateSpotRatio != null
 				l.setSpotRatio(pStateSpotRatio.evaluateAt(pElapsedTime))
@@ -712,7 +853,12 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			if pPlayTime > 0
 				pElapsedTime = DEMath.normalize(pElapsedTime + elapsed * pPlaySpeed, 0, pPlayTime)
 			end
-			updateLight()
+		end
+		
+		func void postThink(float elapsed)
+			if pLightIsActive
+				updateLight()
+			end
 		end
 		
 		
@@ -724,7 +870,9 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 				pLightIsActive = flags.getAt(0)
 				pEnabled = flags.getAt(1)
 				
-				pFullBrightIntensity = reader.readFloat()
+				pScaleIntensity = reader.readFloat()
+				pScaleRange = reader.readFloat()
+				pScaleSpotAngle = reader.readFloat()
 				pElapsedTime = reader.readFloat()
 				
 				setRequiresThink(pLightIsActive and pEnabled)
@@ -743,13 +891,16 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			flags.setAt(1, pEnabled)
 			flags.writeToFile(writer)
 			
-			writer.writeFloat(pFullBrightIntensity)
+			writer.writeFloat(pScaleIntensity)
+			writer.writeFloat(pScaleRange)
+			writer.writeFloat(pScaleSpotAngle)
 			writer.writeFloat(pElapsedTime)
 		end
 	end
 	
 	
 	var ECBehaviorLight pLight
+	var ECBehaviorComponent pComponent
 	var ECPAnimation pAnimation
 	var ECPString pMove
 	var ECPBoolean pEnabled
@@ -761,27 +912,35 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 	var String pPrefix
 	
 	
-	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass, ECBehaviorLight light) this(eclass, light, null, "")
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * Component and trigger table are optional.
+	 */
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component)\
+	this(eclass, light, component, null, "")
 	end
 	
-	func new(BehaviorElementClass eclass, ECBehaviorLight light, String id) this(eclass, light, null, id)
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	String id) this(eclass, light, component, null, id)
 	end
 	
-	func new(BehaviorElementClass eclass, ECBehaviorLight light, TSTriggerTable triggerTable)\
-	this(eclass, light, triggerTable, "")
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	TSTriggerTable triggerTable) this(eclass, light, component, triggerTable, "")
 	end
 	
-	func new(BehaviorElementClass eclass, ECBehaviorLight light, TSTriggerTable triggerTable, String id) \
-	this(eclass, light, triggerTable, id, id.empty() if "lightAnimation" else "lightAnimation(" + id + ")")
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	TSTriggerTable triggerTable, String id) this(eclass, light, component, triggerTable, id,\
+	id.empty() if "lightAnimation" else "lightAnimation(" + id + ")")
 	end
 	
-	func new(BehaviorElementClass eclass, ECBehaviorLight light, TSTriggerTable triggerTable,\
-	String id, String subID) this(eclass, light, triggerTable, id, subID, subID + ".")
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	TSTriggerTable triggerTable, String id, String subID)\
+	this(eclass, light, component, triggerTable, id, subID, subID + ".")
 	end
 	
-	func new(BehaviorElementClass eclass, ECBehaviorLight light, TSTriggerTable triggerTable,\
-	String id, String subID, String prefix) super(eclass, id)
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	TSTriggerTable triggerTable, String id, String subID, String prefix) super(eclass, id)
 		if light == null
 			throw ENullPointer.new("light")
 		end
@@ -789,6 +948,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 		pPrefix = prefix
 		pTriggerTable = triggerTable
 		pLight = light
+		pComponent = component
 		pLightParameters = Dictionary.new()
 		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
@@ -838,6 +998,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 	/** \brief Dispose of behavior. */
 	func void dispose()
 		pLight = null
+		pComponent = null
 		pBTSMs = null
 		super.dispose()
 	end
@@ -859,6 +1020,16 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			throw ENullPointer.new("light")
 		end
 		pLight = light
+	end
+	
+	/** \brief Component behavior or null. */
+	func ECBehaviorComponent getComponent()
+		return pComponent
+	end
+	
+	/** \brief Set component behavior or null. */
+	func void setComponent(ECBehaviorComponent component)
+		pComponent = component
 	end
 	
 	/** \brief Trigger table or \em null if not used. */

@@ -303,6 +303,23 @@ class Component
 	end
 	
 	/**
+	 * \brief Scale of bone relative to bone origin matrix.
+	 * \version 1.28
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	func Vector boneGetScale(int bone)
+		return null
+	end
+	
+	/**
+	 * \brief Set scale of bone relative to bone origin matrix.
+	 * \version 1.28
+	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
+	 */
+	func void boneSetScale(int bone, Vector scale)
+	end
+	
+	/**
 	 * \brief Bone matrix relative to component space.
 	 * \throws EInvalidParam \em bone is less than 0 or larger than or equal to GetBoneCount().
 	 */

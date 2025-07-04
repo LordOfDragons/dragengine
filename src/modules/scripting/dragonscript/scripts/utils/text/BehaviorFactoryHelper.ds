@@ -1255,6 +1255,7 @@ class BehaviorFactoryHelper
 		factories.add(ECBehaviorHitScan.Factory.new())
 		factories.add(ECBehaviorLight.Factory.new())
 		factories.add(ECBehaviorLightDimmer.Factory.new())
+		factories.add(ECBehaviorLightAnimation.Factory.new())
 		factories.add(ECBehaviorNavigationBlocker.Factory.new())
 		factories.add(ECBehaviorNavigationSpace.Factory.new())
 		factories.add(ECBehaviorParticleEmitter.Factory.new())
