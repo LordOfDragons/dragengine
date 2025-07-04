@@ -410,6 +410,10 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			func bool isValid()
 				return curve != null
 			end
+			
+			func float evaluateAt(float time)
+				return curve.evaluateAt(time)
+			end
 		end
 		
 		/** \brief Trigger listener to enable animation. */
@@ -571,6 +575,10 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			
 			setRequiresThink(pLightIsActive and enabled)
 			
+			if pLightIsActive and enabled
+				updateLight()
+			end
+			
 			if pBTSMs != null
 				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
 			end
@@ -616,6 +624,10 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			pLightIsActive = true
 			setRequiresThink(pEnabled)
 			
+			if pEnabled
+				updateLight()
+			end
+			
 			if pBTSMs != null
 				pBTSMs.runEvent(pECBehavior.getPrefix(), "startAnimation")
 			end
@@ -648,43 +660,43 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 				var float r = color.getRed(), g = color.getGreen(), b = color.getBlue()
 				
 				if pStateColorRed != null
-					r = pStateColorRed.curve.evaluateAt(pElapsedTime)
+					r = pStateColorRed.evaluateAt(pElapsedTime)
 				end
 				if pStateColorGreen != null
-					g = pStateColorGreen.curve.evaluateAt(pElapsedTime)
+					g = pStateColorGreen.evaluateAt(pElapsedTime)
 				end
 				if pStateColorBlue != null
-					b = pStateColorBlue.curve.evaluateAt(pElapsedTime)
+					b = pStateColorBlue.evaluateAt(pElapsedTime)
 				end
 				
 				l.setColor(Color.new(r, g, b))
 			end
 			
 			if pStateIntensity != null
-				l.setIntensity(pStateIntensity.curve.evaluateAt(pElapsedTime) * pFullBrightIntensity)
+				l.setIntensity(pStateIntensity.evaluateAt(pElapsedTime) * pFullBrightIntensity)
 			end
 			
 			if pStateRange != null
-				l.setRange(pStateRange.curve.evaluateAt(pElapsedTime))
+				l.setRange(pStateRange.evaluateAt(pElapsedTime))
 			end
 			if pStateHalfIntensityDistance != null
-				l.setHalfIntensityDistance(pStateHalfIntensityDistance.curve.evaluateAt(pElapsedTime))
+				l.setHalfIntensityDistance(pStateHalfIntensityDistance.evaluateAt(pElapsedTime))
 			end
 			if pStateAmbientRatio != null
-				l.setAmbientRatio(pStateAmbientRatio.curve.evaluateAt(pElapsedTime))
+				l.setAmbientRatio(pStateAmbientRatio.evaluateAt(pElapsedTime))
 			end
 			
 			if pStateSpotAngle != null
-				l.setSpotAngle(pStateSpotAngle.curve.evaluateAt(pElapsedTime))
+				l.setSpotAngle(pStateSpotAngle.evaluateAt(pElapsedTime))
 			end
 			if pStateSpotRatio != null
-				l.setSpotRatio(pStateSpotRatio.curve.evaluateAt(pElapsedTime))
+				l.setSpotRatio(pStateSpotRatio.evaluateAt(pElapsedTime))
 			end
 			if pStateSpotSmoothness != null
-				l.setSpotSmoothness(pStateSpotSmoothness.curve.evaluateAt(pElapsedTime))
+				l.setSpotSmoothness(pStateSpotSmoothness.evaluateAt(pElapsedTime))
 			end
 			if pStateSpotExponent != null
-				l.setSpotExponent(pStateSpotExponent.curve.evaluateAt(pElapsedTime))
+				l.setSpotExponent(pStateSpotExponent.evaluateAt(pElapsedTime))
 			end
 			
 			pLight.notifyParametersChanged()
