@@ -147,7 +147,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorLightAnimation behavior = ECBehaviorLightAnimation.new(eclass,\
 				eclass.sharedFactoryHelper.defaultLight(eclass, parameters),\
-				eclass.sharedFactoryHelper.optionalComponent(eclass, parameters),\
+				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
@@ -384,6 +384,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			func new(StubElement stub, ECBehaviorLightAnimation ecbehavior,\
 			LightParameter parameter, Animation animation, int move)
 				var ECCLightParameter lp = ecbehavior.getLightParameter(parameter)
+				target = -1
 				
 				var String value = lp.getTarget().getValueOrNull(stub)
 				if value == null
@@ -439,6 +440,7 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			func new(StubElement stub, ECBehaviorLightAnimation ecbehavior,\
 			LightParameter parameter, Component component)
 				var ECCLightParameter lp = ecbehavior.getLightParameter(parameter)
+				target = -1
 				
 				var String value = lp.getTarget().getValueOrNull(stub)
 				if value == null
@@ -617,6 +619,10 @@ class ECBehaviorLightAnimation extends DefaultECBehavior
 			and pStateSpotExponent == null
 				pLight = null
 				return
+			end
+			
+			if pLight.getActivated()
+				onLightActivated()
 			end
 			
 			pLight.addListener(ActivateListener.new(this))
