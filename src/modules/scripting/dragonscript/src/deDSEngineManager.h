@@ -25,40 +25,51 @@
 #ifndef _DEDSENGINEMANAGER_H_
 #define _DEDSENGINEMANAGER_H_
 
+#include <dragengine/common/string/decString.h>
+
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
-
+class decPath;
 
 
 /**
- * @brief DragonScript Engine Manager.
+ * DragonScript Engine Manager.
  */
-class deDSEngineManager : public dsBaseEngineManager{
+class deDSEngineManager : public dsDefaultEngineManager{
 private:
-	deScriptingDragonScript *pDS;
+	deScriptingDragonScript &pDS;
+	const decPath pPathContrib;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new dragonscript engine manager. */
-	deDSEngineManager( deScriptingDragonScript *ds );
-	/** Cleans up the dragonscript engine manager. */
-	virtual ~deDSEngineManager();
+	/** Create dragonscript engine manager. */
+	deDSEngineManager(deScriptingDragonScript &ds, const decPath &pathContrib);
+	
+	/** Clean up dragonscript engine manager. */
+	~deDSEngineManager() override;
 	/*@}*/
 	
-	/** @name Management */
+	
+	/** \name Management */
 	/*@{*/
-	// message output
-	void OutputMessage(const char *Message);
-	void OutputWarning(const char *Message, int WarnID, dsScriptSource *Script, int Line, int Position);
-	void OutputWarningMore(const char *Message);
-	void OutputError(const char *Message, int ErrorID, dsScriptSource *Script, int Line, int Position);
-	void OutputErrorMore(const char *Message);
-	// parser management
-	bool ContinueParsing();
+	void OutputMessage(const char *message) override;
+	
+	void OutputWarning(const char *message, int warnID, dsScriptSource *script,
+		int line, int position) override;
+	
+	void OutputWarningMore(const char *message) override;
+	
+	void OutputError(const char *message, int errorID, dsScriptSource *script,
+		int line, int position) override;
+	
+	void OutputErrorMore(const char *message) override;
+	
+	bool ContinueParsing() override;
+	
+	dsScriptSource *CreateScriptSource(const char *path) override;
 	/*@}*/
 };
 
-// end of include only once
 #endif

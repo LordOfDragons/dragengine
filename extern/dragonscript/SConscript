@@ -11,7 +11,7 @@ envLibrary = parent_env.Clone()
 
 # parameters
 distVersionMajor = 1
-distVersionMinor = 4
+distVersionMinor = 5
 srcdir = 'dragonscript-{}.{}'.format(distVersionMajor, distVersionMinor)
 
 if envLibrary[ 'OSWindows' ]:
@@ -29,7 +29,7 @@ else:
 	libLinkName = 'dscript'
 
 # fetching is always allowed
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'dragonscript', 'lib_dragonscript_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'dragonscript', 'lib_dragonscript_fetch')
 
 # check if system dragonscript is present
 envLibrary.Append( CPPPATH = [ envLibrary[ 'with_dragonscript_inc' ] ] )

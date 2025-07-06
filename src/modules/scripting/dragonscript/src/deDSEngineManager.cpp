@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-
 #include "deDSEngineManager.h"
 #include "deScriptingDragonScript.h"
+#include "deScriptSource.h"
 
 #include <dragengine/deEngine.h>
-#include <libdscript/exceptions.h>
+#include <dragengine/common/file/decPath.h>
 
+#include <libdscript/exceptions.h>
 
 
 // Class deDSEngineManager
@@ -40,42 +38,50 @@
 // Constructor
 ////////////////
 
-deDSEngineManager::deDSEngineManager( deScriptingDragonScript *ds ){
-	if( ! ds ){
-		DSTHROW( dueInvalidParam );
-	}
-	
-	pDS = ds;
+deDSEngineManager::deDSEngineManager(deScriptingDragonScript &ds, const decPath &pathContrib) :
+pDS(ds),
+pPathContrib(pathContrib){
 }
 
 deDSEngineManager::~deDSEngineManager(){
 }
 
 
-
 // Management
 ///////////////
 
-void deDSEngineManager::OutputMessage( const char *message ){
-	pDS->LogInfo( message );
+void deDSEngineManager::OutputMessage(const char *message){
+	pDS.LogInfo(message);
 }
 
-void deDSEngineManager::OutputWarning( const char *message, int warnID, dsScriptSource *script, int line, int position ){
-	pDS->LogWarnFormat( "WARN#%i %s:%i(%i): %s", warnID, script->GetName(), line, position, message );
+void deDSEngineManager::OutputWarning(const char *message, int warnID,
+dsScriptSource *script, int line, int position){
+	pDS.LogWarnFormat("WARN#%i %s:%i(%i): %s", warnID, script->GetName(), line, position, message);
 }
 
-void deDSEngineManager::OutputWarningMore( const char *message ){
-	pDS->LogWarnFormat( "   %s", message );
+void deDSEngineManager::OutputWarningMore(const char *message){
+	pDS.LogWarnFormat("   %s", message);
 }
 
-void deDSEngineManager::OutputError( const char *message, int errorID, dsScriptSource *script, int line, int position ){
-	pDS->LogErrorFormat( "ERR#%i %s:%i(%i): %s", errorID, script->GetName(), line, position, message );
+void deDSEngineManager::OutputError(const char *message, int errorID,
+dsScriptSource *script, int line, int position){
+	pDS.LogErrorFormat("ERR#%i %s:%i(%i): %s", errorID, script->GetName(), line, position, message);
 }
 
-void deDSEngineManager::OutputErrorMore( const char *message ){
-	pDS->LogErrorFormat( "   %s", message );
+void deDSEngineManager::OutputErrorMore(const char *message){
+	pDS.LogErrorFormat("   %s", message);
 }
 
 bool deDSEngineManager::ContinueParsing(){
 	return true;
+}
+
+dsScriptSource *deDSEngineManager::CreateScriptSource(const char *path){
+	const decPath ppath(decPath::CreatePathNative(path));
+	if(pPathContrib.IsParentOf(ppath)){
+		return new deScriptSource(vfs, ppath.RelativePath(pPathContrib, true));
+	}
+#ifdef USE_INTERNAL_DSCRIPT
+#endif
+	return dsDefaultEngineManager::CreateScriptSource(path);
 }

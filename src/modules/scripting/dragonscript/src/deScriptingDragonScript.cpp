@@ -582,8 +582,9 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 	//	if( ! pLockManager ) return false;
 		
 		// if library has been installed as contrib adjust load path
-		#ifdef USE_INTERNAL_DSCRIPT
 		decPath pathContrib;
+		
+		#ifdef USE_INTERNAL_DSCRIPT
 		pathContrib.SetFromNative( GetGameEngine()->GetOS()->GetPathShare() );
 		pathContrib.AddComponent( "modules" );
 		pathContrib.AddComponent( GetGameEngine()->GetModuleSystem()->GetTypeDirectory( GetLoadableModule().GetType() ) );
@@ -627,7 +628,7 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		#endif
 		
 		// set script engine manager
-		dsmanager = new deDSEngineManager( this );
+		dsmanager = new deDSEngineManager(*this);
 		
 		pScriptEngine->SetEngineManager( dsmanager );
 		dsmanager = nullptr;
