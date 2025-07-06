@@ -26,7 +26,6 @@ import bpy
 import time
 
 
-
 # Progress display. To use create instance and call update. The instance
 # will update the UI whenever it is useful.
 class ProgressDisplay:
@@ -95,6 +94,7 @@ class FCurveBuilder:
 		
 		self.fcurve.update()
 
+
 class ActionFCurvesBuilder:
 	## Create builder
 	def __init__(self, action, actionGroup):
@@ -162,6 +162,26 @@ class ActionFCurvesBuilder:
 		self.fcurveScaleX.build()
 		self.fcurveScaleY.build()
 		self.fcurveScaleZ.build()
+
+
+# Helps with animation slot handling introduced in Blender 4.4
+class ActionSlotHelper:
+	def __init__(self, object):
+		self.object = object
+		try:
+			self.action_slot_id = object.animation_data.action_slot.identifier
+		except:
+			self.action_slot_id = None
+	
+	def groups(self, action):
+		if self.action_slot_id:
+			try:
+				return action.layers[0].strips[0].channelbag(
+					action.slots[self.action_slot_id], ensure=True).groups
+			except:
+				return action.groups
+		else:
+			return action.groups
 
 
 class Timer:
