@@ -26,6 +26,7 @@
 #define _DEDSENGINEMANAGER_H_
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/file/decPath.h>
 
 #include <libdscript/libdscript.h>
 
@@ -40,12 +41,14 @@ class deDSEngineManager : public dsDefaultEngineManager{
 private:
 	deScriptingDragonScript &pDS;
 	const decPath pPathContrib;
+	const decPath pVfsPathContrib;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create dragonscript engine manager. */
-	deDSEngineManager(deScriptingDragonScript &ds, const decPath &pathContrib);
+	deDSEngineManager(deScriptingDragonScript &ds, const decPath &pathContrib,
+		const decPath &vfsPathContrib);
 	
 	/** Clean up dragonscript engine manager. */
 	~deDSEngineManager() override;
@@ -68,7 +71,7 @@ public:
 	
 	bool ContinueParsing() override;
 	
-	dsScriptSource *CreateScriptSource(const char *path) override;
+	void AddPackageScriptFiles(dsPackage &package, const char *baseDirectory) override;
 	/*@}*/
 };
 

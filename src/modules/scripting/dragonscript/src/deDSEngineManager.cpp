@@ -27,7 +27,7 @@
 #include "deScriptSource.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/common/file/decPath.h>
+#include <dragengine/filesystem/deFileSearchVisitor.h>
 
 #include <libdscript/exceptions.h>
 
@@ -38,9 +38,11 @@
 // Constructor
 ////////////////
 
-deDSEngineManager::deDSEngineManager(deScriptingDragonScript &ds, const decPath &pathContrib) :
+deDSEngineManager::deDSEngineManager(deScriptingDragonScript &ds,
+	const decPath &pathContrib, const decPath &vfsPathContrib) :
 pDS(ds),
-pPathContrib(pathContrib){
+pPathContrib(pathContrib),
+pVfsPathContrib(vfsPathContrib){
 }
 
 deDSEngineManager::~deDSEngineManager(){
@@ -76,12 +78,52 @@ bool deDSEngineManager::ContinueParsing(){
 	return true;
 }
 
-dsScriptSource *deDSEngineManager::CreateScriptSource(const char *path){
-	const decPath ppath(decPath::CreatePathNative(path));
-	if(pPathContrib.IsParentOf(ppath)){
-		return new deScriptSource(vfs, ppath.RelativePath(pPathContrib, true));
+
+class deDSEngineManagerAddSources : public deFileSearchVisitor{
+private:
+	dsPackage &pPackage;
+	
+public:
+	deDSEngineManagerAddSources(dsPackage &package) : pPackage(package){
 	}
-#ifdef USE_INTERNAL_DSCRIPT
-#endif
-	return dsDefaultEngineManager::CreateScriptSource(path);
+	
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
+		if(!path.GetLastComponent().MatchesPattern("*.ds")){
+			return true;
+		}
+		
+		deScriptSource *source = nullptr;
+		try{
+			source = new deScriptSource(vfs, path);
+			pPackage.AddScript(source);
+			
+		}catch(...){
+			if(source){
+				delete source;
+			}
+			throw;
+		}
+		
+		return true;
+	}
+	
+	bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path) override{
+		vfs.SearchFiles(path, *this);
+		return true;
+	}
+};
+
+void deDSEngineManager::AddPackageScriptFiles(dsPackage &package, const char *baseDirectory){
+	if(!pPathContrib.IsEmpty()){
+		const decPath pathBaseDir(decPath::CreatePathNative(baseDirectory));
+		if(pPathContrib.IsParentOf(pathBaseDir)){
+			deDSEngineManagerAddSources visitor(package);
+			pDS.GetVFS().SearchFiles(
+				pVfsPathContrib + pathBaseDir.RelativePath(pPathContrib, true),
+				visitor);
+			return;
+		}
+	}
+	
+	dsDefaultEngineManager::AddPackageScriptFiles(package, baseDirectory);
 }
