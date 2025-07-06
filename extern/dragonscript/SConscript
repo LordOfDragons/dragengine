@@ -13,20 +13,25 @@ envLibrary = parent_env.Clone()
 distVersionMajor = 1
 distVersionMinor = 5
 srcdir = 'dragonscript-{}.{}'.format(distVersionMajor, distVersionMinor)
+buildStaticLinking = True
 
 if envLibrary[ 'OSWindows' ]:
 	libFileName = 'lib/dscript.dll'
 	libLinkName = 'dscript'
+	staticFileName = 'lib/dscript.a'
 elif envLibrary['OSBeOS']:
 	libFileName = envLibrary.subst( 'lib/${SHLIBPREFIX}dscript${SHLIBSUFFIX}.1' )
 	libLinkName = 'dscript'
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 elif envLibrary['OSMacOS']:
 	libFileName = envLibrary.subst( 'lib/${SHLIBPREFIX}dscript${SHLIBSUFFIX}' )
 	libLinkName = 'dscript'
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 else:
 	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}dscript${{SHLIBSUFFIX}}.{}.{}.0'.format(
 		distVersionMajor, distVersionMinor) )
 	libLinkName = 'dscript'
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
 # fetching is always allowed
 nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'dragonscript', 'lib_dragonscript_fetch')
@@ -76,6 +81,11 @@ def dragonscriptBuild( target, source, env ):
 		f.write('with_sanitize = "{}"\n'.format('yes' if useSanitize else 'no'))
 		f.write('with_verbose = "no"\n')
 		f.write('with_warnerrors = "yes"\n')
+		f.write('with_internal_packages = "yes"\n')
+		if buildStaticLinking:
+			f.write('with_static = "yes"\n')
+		else:
+			f.write('with_static = "no"\n')
 		f.write('prefix = "{}"\n'.format(buildDir.abspath))
 		f.write('build_dsi = "no"\n')
 		if env['platform_android'] != 'no':
@@ -121,7 +131,10 @@ patches = [] # create with 'diff -rupN original_sources patches_sources'
 globFiles(envLibrary, 'patches/{}.{}'.format(distVersionMajor, distVersionMinor), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
-targets = [ libFileName ]
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
 with open( envLibrary.File( 'header_file_list' ).srcnode().abspath, 'r' ) as f:
 	targets.extend( [ x[:-1] for x in f.readlines() ] )
 
@@ -136,12 +149,18 @@ depends = parent_env.Alias( 'lib_dragonscript', library )
 
 envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
 
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
 parent_targets[ 'lib_dragonscript' ] = {
 	'name' : 'Internal DragonScript library',
 	'cpppath' : [ envLibrary.Dir( 'include' ) ],
 	'libpath' : [ envLibrary.Dir( 'lib' ) ],
 	'libs' : libs,
-	'runtimelibs' : [ library[ 0 ] ],
+	'runtimelibs' : runtimelibs,
 	'runtimedata' : runtimedata,
 	'runtimedatadir' : envLibrary.Dir('lib/dragonscript'),
 	'depends' : depends }
