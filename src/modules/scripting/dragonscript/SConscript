@@ -173,7 +173,7 @@ for s in igdeTemplates:
 if parent_targets['lib_dragonscript']['runtimedatadir']:
 	basedir = parent_targets['lib_dragonscript']['runtimedatadir']
 	for d in parent_targets['lib_dragonscript']['runtimedata']:
-		if withEngineDeal:
+		if withEngineDeal and d.abspath.endswith('.ds'):
 			filename = os.path.join(pathAsset, 'dsinstall', basedir.rel_path(d))
 			assetEngine[filename] = d
 		else:

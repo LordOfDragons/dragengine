@@ -278,7 +278,7 @@ params.Add(BoolVariable('build_network_basic_internal', 'Build Basic Network Mod
 params.Add(BoolVariable('build_occmesh_deoccmesh_internal', 'Build Drag[en]gine Occlusion Mesh Occlusion Mesh Module as internal module', True))
 params.Add(BoolVariable('build_physics_bullet_internal', 'Build Bullet Physics Module as internal module', True))
 params.Add(BoolVariable('build_rig_derig_internal', 'Build Drag[en]gine Rig Rig Module as internal module', True))
-params.Add(BoolVariable('build_script_ds_internal', 'Build DragonScript Script Module as internal module', False))
+params.Add(BoolVariable('build_script_ds_internal', 'Build DragonScript Script Module as internal module', True))
 params.Add(BoolVariable('build_service_modio_internal', 'Build Mod.io Service Module as internal module', True))
 params.Add(BoolVariable('build_skin_deskin_internal', 'Build Drag[en]gine Skin Skin Module as internal module', True))
 params.Add(BoolVariable('build_sound_ogg_internal', 'Build OGG Vorbis Sound Module as internal module', True))
