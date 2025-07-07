@@ -85,7 +85,6 @@ delLauncher &launcher, const char *logfile ){
 
 delEngineInstanceThreaded::delEngineInstanceThreaded( delLauncher &launcher, const char *logfile ) :
 delEngineInstance( launcher, logfile ),
-pStopping( false ),
 pGameCollectChangedParams( nullptr ),
 
 #ifdef OS_W32

@@ -88,7 +88,9 @@ def dragonscriptBuild( target, source, env ):
 			f.write('with_static = "no"\n')
 		f.write('prefix = "{}"\n'.format(buildDir.abspath))
 		f.write('build_dsi = "no"\n')
-		if env['platform_android'] != 'no':
+		if env['platform_webwasm']:
+			f.write('crosscompile = "emscripten"\n')
+		elif env['platform_android'] != 'no':
 			f.write('target_platform = "android"\n')
 			f.write('crosscompile = "android"\n')
 			if env['platform_android'] == 'armv7':

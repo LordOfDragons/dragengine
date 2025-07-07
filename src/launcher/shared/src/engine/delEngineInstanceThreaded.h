@@ -60,7 +60,6 @@ public:
 	
 	
 private:
-	bool pStopping;
 	delGPModuleList *pGameCollectChangedParams;
 	
 #ifdef OS_W32
