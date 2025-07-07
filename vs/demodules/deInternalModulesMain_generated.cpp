@@ -26,6 +26,7 @@ extern deInternalModule *denbRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deoccmRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *depbRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *dermRegisterInternalModule(deModuleSystem*);
+extern deInternalModule *dedsRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *desmRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deoggRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *desynRegisterInternalModule(deModuleSystem*);
@@ -69,6 +70,7 @@ static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]
 	deoccmRegisterInternalModule,
 	depbRegisterInternalModule,
 	dermRegisterInternalModule,
+	dedsRegisterInternalModule,
 	desmRegisterInternalModule,
 	deoggRegisterInternalModule,
 	desynRegisterInternalModule,

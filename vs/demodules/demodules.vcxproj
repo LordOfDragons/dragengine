@@ -123,6 +123,9 @@
     <ProjectReference Include="..\modules\rig\derig\rig_derig.vcxproj">
       <Project>{f5150f97-fb7f-488f-b6b5-5df0b7dd92f8}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\modules\scripting\dragonscript\scr_dragonscript.vcxproj">
+      <Project>{9ba956ba-e62b-4575-97df-ee0b956ad933}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\modules\service\modio\srv_modio.vcxproj">
       <Project>{df4b0723-860e-40b5-8200-ac3d2e732d47}</Project>
     </ProjectReference>

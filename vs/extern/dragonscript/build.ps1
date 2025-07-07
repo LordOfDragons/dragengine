@@ -25,3 +25,6 @@ Expand-Archive -Path "$ProjectDir\dragonscript-1.5-vc64.zip" -DestinationPath $P
 
 Copy-Files -SourceDir (Join-Path -Path $ExpandedDir -ChildPath "bin")`
     -TargetDir (Join-Path -Path $ExpandedDir -ChildPath "lib") -Pattern "*.dll"
+
+Copy-Files -SourceDir (Join-Path -Path $ExpandedDir -ChildPath "pdb")`
+    -TargetDir (Join-Path -Path $ExpandedDir -ChildPath "lib") -Pattern "*.pdb"
