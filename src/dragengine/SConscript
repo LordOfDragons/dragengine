@@ -7,6 +7,10 @@ Import('parent_env parent_targets parent_report')
 # setup the environment matching the OS
 envDragengine = parent_env.Clone()
 
+buildStatic = False
+if envDragengine['platform_webwasm']:
+	buildStatic = True
+
 libs = []
 
 if envDragengine['OSBeOS']:
@@ -265,7 +269,12 @@ if envDragengine['OSPosix']:
 
 envDragengine.Depends(sources, targetConfig)
 
-library = envDragengine.SharedLibrary(target='dragengine', source=objects, LIBS=libs)
+
+if buildStatic:
+	library = envDragengine.StaticLibrary(target='dragengine', source=objects, LIBS=libs)
+else:
+	library = envDragengine.SharedLibrary(target='dragengine', source=objects, LIBS=libs)
+
 targetBuild = envDragengine.Alias('dragengine_build', library)
 
 copyHeaders = []
@@ -284,30 +293,31 @@ installRuntime = []
 archiveDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in headers}
 archiveEngine = {}
 
-if envDragengine['OSPosix'] or envDragengine['OSBeOS']:
-	for l in library:
-		lname = l.name
-		installRuntime.append(envDragengine.InstallVersionedLib(pathLib, l))
-		archiveEngine['{}/{}'.format(pathLib, l.name)] = l
-		
-		lname = '.'.join(lname.split('.')[0:-2])
-		archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
-		
-		lname = '.'.join(lname.split('.')[0:-1])
-		archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
+if not buildStatic:
+	if envDragengine['OSPosix'] or envDragengine['OSBeOS']:
+		for l in library:
+			lname = l.name
+			installRuntime.append(envDragengine.InstallVersionedLib(pathLib, l))
+			archiveEngine['{}/{}'.format(pathLib, l.name)] = l
+			
+			lname = '.'.join(lname.split('.')[0:-2])
+			archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
+			
+			lname = '.'.join(lname.split('.')[0:-1])
+			archiveEngine['{}/{}'.format(pathLib, lname)] = envDragengine.File(lname)
 
-elif envDragengine['OSWindows']:
-	installRuntime.append(envDragengine.Install(pathSysLib, 'dragengine.dll'))
-	installDevelop.append(envDragengine.Install(pathLib, 'dragengine.lib'))
-	installDevelop.append(envDragengine.Install(pathLib, 'dragengine.def'))
-	archiveEngine['{}/dragengine.dll'.format(pathSysLib)] = envDragengine.File('dragengine.dll')
-	archiveDevelop['{}/dragengine.lib'.format(pathLib)] = envDragengine.File('dragengine.lib')
-	archiveDevelop['{}/dragengine.def'.format(pathLib)] = envDragengine.File('dragengine.def')
-	
-	if envDragengine['CROSSCOMPILE_CLANG'] and envDragengine['with_install_pdb']:
-		pathPdb = envDragengine.subst(envDragengine['path_pdb'])
-		installRuntime.append(envDragengine.Install(pathPdb, 'dragengine.pdb'))
-		archiveEngine['{}/dragengine.pdb'.format(pathPdb)] = envDragengine.File('dragengine.pdb')
+	elif envDragengine['OSWindows']:
+		installRuntime.append(envDragengine.Install(pathSysLib, 'dragengine.dll'))
+		installDevelop.append(envDragengine.Install(pathLib, 'dragengine.lib'))
+		installDevelop.append(envDragengine.Install(pathLib, 'dragengine.def'))
+		archiveEngine['{}/dragengine.dll'.format(pathSysLib)] = envDragengine.File('dragengine.dll')
+		archiveDevelop['{}/dragengine.lib'.format(pathLib)] = envDragengine.File('dragengine.lib')
+		archiveDevelop['{}/dragengine.def'.format(pathLib)] = envDragengine.File('dragengine.def')
+		
+		if envDragengine['CROSSCOMPILE_CLANG'] and envDragengine['with_install_pdb']:
+			pathPdb = envDragengine.subst(envDragengine['path_pdb'])
+			installRuntime.append(envDragengine.Install(pathPdb, 'dragengine.pdb'))
+			archiveEngine['{}/dragengine.pdb'.format(pathPdb)] = envDragengine.File('dragengine.pdb')
 
 
 if envDragengine['OSPosix'] and not envDragengine['OSBeOS'] and envDragengine['platform_android'] == 'no':

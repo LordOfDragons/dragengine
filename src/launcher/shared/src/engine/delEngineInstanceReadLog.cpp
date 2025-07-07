@@ -48,6 +48,7 @@ pBufferSourceLen( 0 ),
 pBufferMessage( nullptr ),
 pBufferMessageLen( 0 )
 {
+	(void)pEngineInstance;
 	if( ! logger ){
 		DETHROW_INFO( deeNullPointer, "logger" );
 	}
