@@ -948,6 +948,7 @@ scdirs.append('src/launcher/console')
 scdirs.append('src/launcher/gui')
 scdirs.append('src/launcher/android')
 scdirs.append('src/launcher/live')
+scdirs.append('src/launcher/web')
 
 # tests
 scdirs.append('src/tests')

@@ -55,11 +55,7 @@ objects = [envLibrary.SharedObject(s) for s in sources]
 
 libsLib = []
 
-if buildStatic:
-	appendLibrary(envLibrary, parent_targets['dragengine'], libsLib, withLibs=False)
-	objects.extend(parent_targets['dragengine']['library'])
-else:
-	appendLibrary(envLibrary, parent_targets['dragengine'], libsLib)
+appendLibrary(envLibrary, parent_targets['dragengine'], libsLib)
 
 if envLibrary['OSPosix']:
 	envLibrary.Replace(SHLIBVERSION = libVersionString)
