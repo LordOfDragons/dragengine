@@ -8,8 +8,8 @@ Import('parent_env parent_targets parent_report')
 envDragengine = parent_env.Clone()
 
 buildStatic = False
-if envDragengine['platform_webwasm']:
-	buildStatic = True
+#if envDragengine['platform_webwasm']:
+#	buildStatic = True
 
 libs = []
 
@@ -202,6 +202,9 @@ if envDragengine['OSMacOS']:
 #if envDragengine['OSBeOS']:
 #	envDragengine.Append(CXXFLAGS = '-Wno-multichar')
 
+if envDragengine['platform_webwasm']:
+	envDragengine.Append(LINKFLAGS = ['-sSIDE_MODULE=1'])
+
 envDragengine.Append(CPPFLAGS = envDragengine['SANITIZE_FLAGS'])
 envDragengine.Append(LINKFLAGS = envDragengine['SANITIZE_FLAGS'])
 
@@ -373,6 +376,9 @@ if not 'mingw' in envDragengine['TOOLS']:
 	cpppath.extend(parent_targets['lib_zlib']['cpppath'])
 	libpath.extend(parent_targets['lib_zlib']['libpath'])
 	binlibs.extend(parent_targets['lib_zlib']['libs'])
+
+if envDragengine['platform_webwasm']:
+	linklibs = library
 
 parent_targets['dragengine'] = {
 	'name': 'Drag[en]gine Game Engine',

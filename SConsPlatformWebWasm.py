@@ -21,6 +21,7 @@ def webWasmUpdateEnv(env):
 	# env.Append(LINKFLAGS = ['-s', 'SIDE_MODULE=1'])
 	
 	env.Append(MODULE_LINKFLAGS = ['-sSIDE_MODULE=1'])
+	env.Append(MODULE_LINKFLAGS_NOMODVER = ['-sSIDE_MODULE=1'])
 	
 	env['CROSSCOMPILE_CFLAGS'] = []
 	env['CROSSCOMPILE_CPPFLAGS'] = []
