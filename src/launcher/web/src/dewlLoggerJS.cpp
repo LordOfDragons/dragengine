@@ -24,80 +24,54 @@
 
 #include <emscripten.h>
 
-#include "dewlLauncher.h"
-
-#include <delauncher/engine/delEngineInstanceDirect.h>
+#include "dewlLoggerJS.h"
 
 #include <dragengine/common/exceptions.h>
 
 
-// Definitions
-////////////////
-
-#define LOGSOURCE "WebLauncher"
-
-
-// Class dewlLauncher
+// Class dewlLoggerJS
 ///////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-dewlLauncher::dewlLauncher(){
-	SetEngineInstanceFactory(delEngineInstanceDirect::Factory::Ref::New(
-		new delEngineInstanceDirect::Factory));
+dewlLoggerJS::dewlLoggerJS(){
 }
 
-dewlLauncher::~dewlLauncher(){
-	CleanUp();
+dewlLoggerJS::~dewlLoggerJS(){
 }
 
 
 // Management
 ///////////////
 
-void dewlLauncher::AddArgument(const std::string &argument){
-	pArgList.push_back(argument);
-}
+EM_JS(void, logMessageToJS, (int severity, const char *source, const char *message), {
+	this.onLogMessage(severity, UTF8ToString(source), UTF8ToString(message))
+});
 
-void dewlLauncher::Init(){
-	try{
-		pInitLogger();
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-		EM_ASM(throw 'Launcher.Init failed');
-	}
-}
-
-int dewlLauncher::Run(){
-	try{
-		Prepare();
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-		EM_ASM(throw 'Launcher.Run failed');
-	}
-	return 0;
-}
-
-void dewlLauncher::CleanUp(){
-	try{
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-	}
-}
-
-
-// Private Functions
-//////////////////////
-
-void dewlLauncher::pInitLogger(){
-	GetLogger()->RemoveAllLoggers();
+void dewlLoggerJS::LogInfo(const char *source, const char *message){
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
-	AddFileLogger("delauncher-web");
+	logMessageToJS(0, source, message);
+}
+
+void dewlLoggerJS::LogWarn(const char *source, const char *message){
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
 	
-	pLoggerJS.TakeOver(new dewlLoggerJS);
-	GetLogger()->AddLogger(pLoggerJS);
+	logMessageToJS(1, source, message);
+}
+
+void dewlLoggerJS::LogError(const char *source, const char *message){
+	DEASSERT_NOTNULL(source)
+	DEASSERT_NOTNULL(message)
+	
+	logMessageToJS(2, source, message);
+}
+
+void dewlLoggerJS::LogException(const char *source, const deException &exception){
+	DEASSERT_NOTNULL(source)
+	
+	logMessageToJS(2, source, exception.FormatOutput().Join("\n"));
 }

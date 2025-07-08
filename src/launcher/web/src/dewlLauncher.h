@@ -25,6 +25,8 @@
 #ifndef _DEWLLAUNCHER_H_
 #define _DEWLLAUNCHER_H_
 
+#include "dewlLoggerJS.h"
+
 #include <string>
 #include <vector>
 
@@ -33,6 +35,8 @@
 #include <dragengine/logger/deLogger.h>
 
 #include <emscripten/bind.h>
+
+namespace es = emscripten;
 
 
 /**
@@ -46,6 +50,8 @@ private:
 	std::string pXMLFile;
 	std::vector<std::string> pGameArgs;
 	std::string pWindowTitle;
+	
+	dewlLoggerJS::Ref pLoggerJS;
 	
 	
 public:
@@ -90,10 +96,17 @@ private:
 };
 
 EMSCRIPTEN_BINDINGS(dragengine_web_launcher) {
-	emscripten::class_<dewlLauncher>("dewlLauncher")
+	es::class_<dewlLauncher>("dewlLauncher")
 		.constructor<>()
+		.function("GetArgumentList", &dewlLauncher::GetArgumentList)
 		.function("AddArgument", &dewlLauncher::AddArgument)
+		.function("Init", &dewlLauncher::Init)
+		.function("Run", &dewlLauncher::Run)
+		.function("CleanUp", &dewlLauncher::CleanUp)
 		;
+	
+	es::register_vector<std::string>("vector<string>");
+	es::register_optional<std::string>();
 }
 
 #endif

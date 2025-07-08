@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>Drag[en]gine Web Launcher</title>
+		<link rel='stylesheet' href='launcher.css'/>
+	</head>
+	
+	<body>
+		<canvas id='panel-canvas'></canvas>
+		
+		<div id='panel-logs' class='panel-logs-right'>
+			<div id='panel-logs-logs'></div>
+		</div>
+		
+		<div id='panel-settings' class='panel-settings-top'>
+			<ul class='horizontal-button-bar'>
+				<li><a href='#' onclick='window.webLauncher.panelLogs.togglePanel(); event.preventDefault();'>Logs</a></li>
+				<li><a href='#' onclick='window.webLauncher.panelCanvas.toggleFullScreen(); event.preventDefault();'>FullScreen</a></li>
+				<li><a href='#' onclick='event.preventDefault();'>Button3</a></li>
+			</ul>
+		</div>
+		
+		<script type='module' src='launcher.js'></script>
+		<script>
+			window.onload = function() {
+				window.webLauncher.onPageLoaded()
+			}
+			
+			window.onresize = function() {
+				window.webLauncher.onPageResize()
+			}
+			
+			var Module = {
+				onRuntimeInitialized: function() {
+					window.webLauncher.onWasmReady()
+				}
+			};
+		</script>
+		<script src='delauncher-web.js'></script>
+	</body>
+</html>

@@ -18,6 +18,9 @@ def webWasmUpdateEnv(env):
 	# disable some nag warnings which are plain out stupid
 	env.Append(CPPFLAGS = ['-Wno-nontrivial-memcall'])
 	
+	env.Append(CXXFLAGS = ['-sDISABLE_EXCEPTION_CATCHING=0'])
+	env.Append(LINKFLAGS = ['-sDISABLE_EXCEPTION_CATCHING=0'])
+	
 	# env.Append(LINKFLAGS = ['-s', 'SIDE_MODULE=1'])
 	
 	env.Append(MODULE_LINKFLAGS = ['-sSIDE_MODULE=1'])
