@@ -547,6 +547,10 @@ if not envDragengine['with_static_internalmodules']:
 		'install': modulesTargetInstall,
 		'install-engine-runtime': modulesTargetInstall,
 		'archive-engine': modulesArchive}
+	
+	if envDragengine['platform_webwasm']:
+		parent_targets['deinternalmodules']['wasm-preload-files'] = {
+			'libdemodules.so': modulesLibrary[0]}
 
 # report
 if envDragengine['OSPosix'] or envDragengine['OSMacOS']:

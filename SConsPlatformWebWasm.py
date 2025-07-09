@@ -15,11 +15,21 @@ def webWasmUpdateEnv(env):
 	env.Append(CPPFLAGS = ['-DWEB_WASM'])
 	env.Append(CPPFLAGS = ['-O3'])
 	
+	"""
+	if env['with_debug']:
+		env.Append(CPPFLAGS = ['-g3'])
+		env.Append(CPPFLAGS = ['-gsource-map'])
+		env.Append(LINKFLAGS = ['-g3'])
+		env.Append(LINKFLAGS = ['-gsource-map'])
+	"""
+	
 	# disable some nag warnings which are plain out stupid
 	env.Append(CPPFLAGS = ['-Wno-nontrivial-memcall'])
 	
 	env.Append(CXXFLAGS = ['-sDISABLE_EXCEPTION_CATCHING=0'])
 	env.Append(LINKFLAGS = ['-sDISABLE_EXCEPTION_CATCHING=0'])
+	
+	env.Append(LINKFLAGS = ['-sFULL_ES3'])
 	
 	# env.Append(LINKFLAGS = ['-s', 'SIDE_MODULE=1'])
 	

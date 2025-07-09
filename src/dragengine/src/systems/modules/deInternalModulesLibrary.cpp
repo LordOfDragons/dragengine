@@ -57,11 +57,14 @@ pFunctions(nullptr)
 	#endif
 	
 	decPath pathLibrary(pathModules);
-	#ifdef OS_W32
+	#if defined OS_W32
 	pathLibrary.AddComponent("demodules.dll");
 	#elif defined OS_MACOS
 	pathLibrary.AddComponent("libdemodules.dylib");
 	#else
+	#ifdef WEB_WASM
+	pathLibrary.SetEmpty();
+	#endif
 	pathLibrary.AddComponent("libdemodules.so");
 	#endif
 	

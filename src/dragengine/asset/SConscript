@@ -6,11 +6,11 @@ envAsset = parent_env.Clone()
 
 filesAsset = {}
 for t in parent_targets.values():
-    if 'asset-engine' in t:
-        filesAsset.update(t['asset-engine'])
+	if 'asset-engine' in t:
+		filesAsset.update(t['asset-engine'])
 
 if not filesAsset:
-    Return()
+	Return()
 
 pathShare = envAsset.subst(envAsset['path_de_share'])
 
@@ -20,8 +20,8 @@ if envAsset['force_version']:
 
 filename = 'dragengine-{}.deal'.format(versionString)
 asset = envAsset.Command(filename, filesAsset.values(),
-    envAsset.Action(ArchiveZip, 'Archiving {}'.format(filename)),
-    ArchiveFiles = filesAsset)
+	envAsset.Action(ArchiveZip, 'Archiving {}'.format(filename)),
+	ArchiveFiles = filesAsset)
 
 targetName = 'asset_dragengine'
 envAsset.Alias('{}_build'.format(targetName), asset)
@@ -32,9 +32,12 @@ targetInstall = envAsset.Alias(targetName, install)
 archiveEngine = {'{}/{}'.format(pathShare, filename): asset[0]}
 
 parent_targets[targetName] = {
-    'name': 'Archive Drag[en]gine Asset',
-    'asset': asset,
+	'name': 'Archive Drag[en]gine Asset',
+	'asset': asset,
 	'archive-engine': archiveEngine,
-    'install': targetInstall,
+	'install': targetInstall,
 	'install-runtime': targetInstall,
 	'install-engine-runtime': targetInstall}
+
+if envAsset['platform_webwasm']:
+	parent_targets[targetName]['wasm-preload-files'] = {filename: asset[0]}

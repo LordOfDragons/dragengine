@@ -40,6 +40,13 @@ objects = [envLauncher.StaticObject(s) for s in sources]
 
 appendLibrary(envLauncher, parent_targets['delauncher'], libs)
 
+for t in parent_targets.values():
+	if 'wasm-preload-files' in t:
+		for (vfs,node) in t['wasm-preload-files'].items():
+			envLauncher.Append(LINKFLAGS = ['--preload-file',
+				'{}@{}'.format(node.abspath, vfs)])
+			envLauncher.Depends(objects, node)
+
 program = envLauncher.Program(target='delauncher-web.js', source=objects, LIBS=libs)
 
 targetBuild = envLauncher.Alias('launcher_web_build', program)
