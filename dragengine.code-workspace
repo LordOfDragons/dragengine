@@ -189,6 +189,10 @@
 			"path": "src/launcher/shared"
 		},
 		{
+			"name": "Launcher: Live",
+			"path": "src/launcher/live"
+		},
+		{
 			"name": "IGDE",
 			"path": "src/deigde/deigde"
 		},

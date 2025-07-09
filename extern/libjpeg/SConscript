@@ -13,7 +13,8 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'libjpeg-turbo-3.1.0'
+jpegVersion = '3.1.0'
+srcdir = 'libjpeg-turbo-{}'.format(jpegVersion)
 
 libLinkVersion = '62'
 libLinkName = 'jpeg'
@@ -80,6 +81,12 @@ def jpegBuild(target, source, env):
 	
 	script = createScriptHeader(env, cppflags=cppflags)
 	
+	realSrcDir = buildDir.Dir(srcdir).abspath
+	script.append('cd "{}" || exit 1'.format(realSrcDir))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	
 	if env['platform_android'] != 'no':
@@ -94,6 +101,7 @@ def jpegBuild(target, source, env):
 	cmdline.append('-DENABLE_SHARED=Off')
 	cmdline.append('-DENABLE_STATIC=On')
 	cmdline.append('-DWITH_TURBOJPEG=Off')
+	cmdline.append('-DWITH_TOOLS=Off')
 	
 	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
 		cmdline.append(x)
@@ -156,7 +164,15 @@ else:
 	targets = [libFileName]
 targets.extend(['include/jconfig.h', 'include/jerror.h', 'include/jmorecfg.h', 'include/jpeglib.h'])
 
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+envLibrary.Append(PATCHES = [])
+
+globFiles(envLibrary, os.path.join('patches', jpegVersion), '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
 library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(jpegBuild, 'Build JPEG library'))
+
+envLibrary.Depends(library, envLibrary['PATCHES'])
 
 envLibrary.SideEffect('#notParallelCMake', library)
 
