@@ -40,4 +40,5 @@ parent_targets[targetName] = {
 	'install-engine-runtime': targetInstall}
 
 if envAsset['platform_webwasm']:
-	parent_targets[targetName]['wasm-preload-files'] = {filename: asset[0]}
+	parent_targets[targetName]['wasm-preload-files'] = {
+		'/dragengine/share/{}'.format(filename): asset[0]}

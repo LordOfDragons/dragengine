@@ -31,6 +31,8 @@ def webWasmUpdateEnv(env):
 	
 	env.Append(LINKFLAGS = ['-sFULL_ES3'])
 	
+	env.Append(LINKFLAGS = ['-sALLOW_MEMORY_GROWTH'])
+	
 	# env.Append(LINKFLAGS = ['-s', 'SIDE_MODULE=1'])
 	
 	env.Append(MODULE_LINKFLAGS = ['-sSIDE_MODULE=1'])
@@ -40,6 +42,14 @@ def webWasmUpdateEnv(env):
 	env['CROSSCOMPILE_CPPFLAGS'] = []
 	env['CROSSCOMPILE_CXXFLAGS'] = []
 	env['CROSSCOMPILE_LINKFLAGS'] = []
+	
+	env.Append(CROSSCOMPILE_CFLAGS = ['-pthread'])
+	env.Append(CROSSCOMPILE_CXXFLAGS = ['-pthread'])
+	env.Append(CROSSCOMPILE_LINKFLAGS = ['-pthread'])
+	
+	env.Append(CROSSCOMPILE_CFLAGS = ['-gsource-map'])
+	env.Append(CROSSCOMPILE_CXXFLAGS = ['-gsource-map'])
+	env.Append(CROSSCOMPILE_LINKFLAGS = ['-gsource-map'])
 	
 	env.Append(CFLAGS = env['CROSSCOMPILE_CFLAGS'])
 	env.Append(CPPFLAGS = env['CROSSCOMPILE_CPPFLAGS'])

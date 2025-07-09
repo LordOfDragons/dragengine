@@ -31,15 +31,15 @@ export class PanelCanvas {
 	 * Fullscreen mode enabled.
 	 */
 	isFullScreen() {
-		return this._panel.fullscreenElement === this._panel
+		return document.fullscreenElement === this._panelParent
 	}
 	
 	/**
 	 * Enable full screen mode.
 	 */
 	enableFullScreen() {
-		if (this._panel.requestFullscreen) {
-			this._panel.requestFullscreen()
+		if (this._panelParent.requestFullscreen) {
+			this._panelParent.requestFullscreen()
 		}
 	}
 	
@@ -47,8 +47,8 @@ export class PanelCanvas {
 	 * Disable full screen mode.
 	 */
 	disableFullScreen() {
-		if (this._panel.exitFullscreen) {
-			this._panel.exitFullscreen()
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
 		}
 	}
 	

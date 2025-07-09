@@ -58,6 +58,9 @@ public:
 	/** \brief Create run parameters. */
 	delGameRunParams();
 	
+	/** \brief Create copy of run parameters. */
+	delGameRunParams(const delGameRunParams &params);
+	
 	/** \brief Clean up run parameters. */
 	~delGameRunParams();
 	/*@}*/

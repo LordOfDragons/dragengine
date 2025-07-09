@@ -62,9 +62,6 @@ pFunctions(nullptr)
 	#elif defined OS_MACOS
 	pathLibrary.AddComponent("libdemodules.dylib");
 	#else
-	#ifdef WEB_WASM
-	pathLibrary.SetEmpty();
-	#endif
 	pathLibrary.AddComponent("libdemodules.so");
 	#endif
 	

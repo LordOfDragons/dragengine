@@ -39,6 +39,8 @@
 #elif defined OS_BEOS
 #	include <dragengine/app/deOSBeOS.h>
 #	include <dragengine/app/deOSConsole.h>
+#elif defined OS_WEBWASM
+#	include <dragengine/app/deOSWebWasm.h>
 #elif defined OS_UNIX
 #	include <dragengine/app/deOSUnix.h>
 #	include <dragengine/app/deOSConsole.h>
@@ -217,7 +219,7 @@ bool delEngineInstanceDirect::StartEngine(){
 		
 		// create os
 		if( GetUseConsole() ){
-			#ifdef OS_ANDROID
+			#if defined OS_ANDROID || defined OS_WEBWASM
 			DETHROW_INFO(deeInvalidAction, "not supported");
 			#elif defined OS_UNIX
 			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Console (console requested)" );
@@ -234,17 +236,20 @@ bool delEngineInstanceDirect::StartEngine(){
 			#elif defined OS_ANDROID
 				pLogger->LogInfo(GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Android");
 				os = new deOSAndroid(pConfig);
+			#elif defined OS_WEBWASM
+				pLogger->LogInfo(GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Web WASM");
+				os = new deOSWebWasm;
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
 				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Unix" );
-				os = new deOSUnix();
+				os = new deOSUnix;
 				#else
 				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Console" );
-				os = new deOSConsole();
+				os = new deOSConsole;
 				#endif
 			#elif defined OS_W32
 			pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Windows" );
-			os = new deOSWindows();
+			os = new deOSWindows;
 			os->CastToOSWindows()->SetInstApp( GetModuleHandle( NULL ) );
 			#endif
 		}

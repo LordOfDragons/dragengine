@@ -46,7 +46,14 @@ dewlLoggerJS::~dewlLoggerJS(){
 ///////////////
 
 EM_JS(void, logMessageToJS, (int severity, const char *source, const char *message), {
-	this.onLogMessage(severity, UTF8ToString(source), UTF8ToString(message))
+	//this.onLogMessage(severity, UTF8ToString(source), UTF8ToString(message))
+	this.dispatchEvent(new CustomEvent('delauncher:log', {
+		detail: {
+			severity: severity,
+			source: UTF8ToString(source),
+			message: UTF8ToString(message)
+		}
+	}))
 });
 
 void dewlLoggerJS::LogInfo(const char *source, const char *message){

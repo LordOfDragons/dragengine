@@ -210,7 +210,15 @@ void delLauncher::pCleanUp(){
 }
 
 void delLauncher::pLocatePath(){
-#ifdef OS_ANDROID
+#ifdef OS_WEBWASM
+	pPathConfigSystem = "/dragengine/etc/delauncher";
+	pPathConfigUser = "/dragengine/userConfig/delauncher";
+	pPathShares = "/dragengine/share/delauncher";
+	pPathGames = "/dragengine/games";
+	pPathLogs = pPathConfigUser + "/logs";
+	return;
+	
+#elif defined OS_ANDROID
 	pPathConfigSystem.Format("%s/etc/delauncher", pConfig.pathLauncher.GetString());
 	pPathConfigUser = pConfig.pathConfig;
 	pPathShares.Format("%s/share/delauncher", pConfig.pathLauncher.GetString());

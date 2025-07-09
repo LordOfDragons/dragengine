@@ -25,10 +25,12 @@ envLauncher.Append(CXXFLAGS = [
 	cmdlineDefinePath(envLauncher, 'LAUNCHER_CONFIG_PATH', pathConfig)])
 
 libs.append('embind')
+libs.append('idbfs.js')
 
 envLauncher.Append(CXXFLAGS = ['-fPIC'])
 # envLauncher.Append(LINKFLAGS = ['-error-limit=0'])
 envLauncher.Append(LINKFLAGS = ['-sMAIN_MODULE'])
+envLauncher.Append(LINKFLAGS = ['-sPTHREAD_POOL_SIZE="navigator.hardwareConcurrency"'])
 
 # setup the builders
 sources = []
