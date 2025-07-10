@@ -3,6 +3,11 @@ name: Development Windows
 on:
   workflow_dispatch:
     inputs:
+      branch:
+        description: 'Branch'
+        required: true
+        type: string
+        default: 'master'
       version:
         description: 'Version'
         required: true
