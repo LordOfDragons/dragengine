@@ -20,11 +20,32 @@ export class PanelCanvas {
 	}
 	
 	/**
+	 * Panel width.
+	 */
+	panelWidth() {
+		return this._panel.width
+	}
+	
+	/**
+	 * Panel height.
+	 */
+	panelHeight() {
+		return this._panel.height
+	}
+	
+	/**
 	 * Resize canvas to fit parent size.
 	 */
 	resizeCanvas() {
-		this._panel.width = this._panelParent.innerWidth;
-		this._panel.height = this._panelParent.innerHeight;
+		// different parent tags have different size parameters
+		//
+		// - body: scrollHeight, offsetHeight
+		// - html: clientHeight, scrollHeight, offsetHeight
+		// - canvas: width, height
+		// - ??: innerWidth, innerHeight
+		
+		this._panel.width = this._panelParent.clientWidth;
+		this._panel.height = this._panelParent.clientHeight;
 	}
 	
 	/**

@@ -73,13 +73,14 @@ private:
 		std::string error;
 	};
 	
+	decString pCanvasId;
+	decPoint pCanvasSize;
 	deLogger::Ref pEngineLogger, pEngineLoggerDebug;
 	
 	dewlLoggerJS::Ref pLoggerJS;
 	
 	decString pDelgaPath, pProfileName;
 	decUnicodeArgumentList pGameArgs;
-	decString pCanvasId;
 	
 	delGame::Ref pGame;
 	delGameProfile::Ref pProfile;
@@ -103,7 +104,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create launcher. */
-	dewlLauncher();
+	dewlLauncher(const std::string &canvasId, int canvasWidth, int canvasHeight);
 	
 	/** Clean up launcher. */
 	~dewlLauncher() override;
@@ -129,7 +130,6 @@ public:
 	
 	/** Canvas id. */
 	std::string GetCanvasId() const{ return pCanvasId.GetString(); }
-	void SetCanvasId(const std::string &canvasId);
 	
 	/** Run game. */
 	void RunGame();
@@ -171,7 +171,6 @@ private:
 		deModuleSystem::eModuleTypes moduleType);
 	void pUpdateRunArguments();
 	void pApplyCustomModuleParameters();
-	void pUpdateEngineInstanceParams();
 	
 	void pFSMkdirAbsent(const char *path);
 	void pFSSymlink(const char *pathTarget, const char *pathLink);

@@ -54,6 +54,7 @@
 
 #elif defined OS_WEBWASM
 #include <dragengine/app/deOSWebWasm.h>
+#include "../extensions/wasmfix.h"
 
 #elif defined OS_BEOS
 #include <GLView.h>
@@ -564,7 +565,7 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	#endif
 	
 #elif defined OS_WEBWASM
-	return nullptr; //(void*)emscripten_GetProcAddress(funcName);
+	return wasmGetProcAddress(pRenderThread, funcName);
 	
 #elif defined WITH_OPENGLES
 	return ( void* )androidGetProcAddress(pRenderThread, funcName);
@@ -1358,17 +1359,22 @@ void deoglRTContext::pCreateContext(){
 	attrs.renderViaOffscreenBackBuffer = true;
 	//attrs.proxyContextToMainThread = EMSCRIPTEN_WEBGL_CONTEXT_PROXY_FALLBACK;
 	
-	const char * const cid = pOSWebWasm->GetCanvasId();
-	pRenderThread.GetLogger().LogInfoFormat("Create context using id '%s'", cid);
-	pContext = emscripten_webgl_create_context(cid, &attrs);
+	const char * const canvasId = pOSWebWasm->GetCanvasId();
+	pRenderThread.GetLogger().LogInfoFormat("Create context using id '%s'", canvasId);
+	pContext = emscripten_webgl_create_context(canvasId, &attrs);
 	DEASSERT_NOTNULL(pContext)
 	
 	// loader and compiler contexts have to be created by the thread using them
 	
 	OGL_WASM_CHECK(pRenderThread, emscripten_webgl_make_context_current(pContext));
 	
-	OGL_WASM_CHECK(pRenderThread, emscripten_webgl_get_drawing_buffer_size(
-		pContext, &pScreenWidth, &pScreenHeight));
+	// this call returns 1x1. passing down instead the initial canvas size
+	// OGL_WASM_CHECK(pRenderThread, emscripten_webgl_get_drawing_buffer_size(
+	//	pContext, &pScreenWidth, &pScreenHeight));
+	
+	const decPoint &canvasSize = pOSWebWasm->GetCanvasSize();
+	pScreenWidth = canvasSize.x;
+	pScreenHeight = canvasSize.y;
 	
 	pRenderThread.GetLogger().LogInfoFormat("Display size %ix%i", pScreenWidth, pScreenHeight);
 }

@@ -22,28 +22,18 @@
  * SOFTWARE.
  */
 
-#ifndef _DEWLLAUNCHERBINDINGS_H_
-#define _DEWLLAUNCHERBINDINGS_H_
+#ifndef _WASMFIX_H_
+#define _WASMFIX_H_
 
-#include "dewlLauncher.h"
+#include <dragengine/dragengine_configuration.h>
 
-EMSCRIPTEN_BINDINGS(dragengine_web_launcher) {
-	es::class_<dewlLauncher>("dewlLauncher")
-		.constructor<std::string,int,int>()
-		.property("delgaPath", &dewlLauncher::GetDelgaPath, &dewlLauncher::SetDelgaPath)
-		.property("profileName", &dewlLauncher::GetProfileName, &dewlLauncher::SetProfileName)
-		.property("canvasId", &dewlLauncher::GetCanvasId)
-		.function("removeAllModuleParameters", &dewlLauncher::RemoveAllModuleParameters)
-		.function("addModuleParameter", &dewlLauncher::AddModuleParameter)
-		.function("runGame", &dewlLauncher::RunGame)
-		.function("getGameProblems", &dewlLauncher::GetGameProblems)
-		.function("getLocatedProfileName", &dewlLauncher::GetLocatedProfileName)
-		.function("getProfileProblems", &dewlLauncher::GetProfileProblems)
-		.function("getPatchProblems", &dewlLauncher::GetPatchProblems)
-		;
-	
-	es::register_vector<std::string>("vector<string>");
-	es::register_optional<std::string>();
-}
+#ifdef OS_WEBWASM
 
+// in wasm/webgl no function pointers can be obtained. the functions are all just present
+// even if not working. this function bridges the gap
+
+class deoglRenderThread;
+void *wasmGetProcAddress(deoglRenderThread &renderThread, const char *name);
+
+#endif
 #endif

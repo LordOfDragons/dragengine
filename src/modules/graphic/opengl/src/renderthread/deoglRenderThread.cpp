@@ -89,6 +89,11 @@
 #include <dragengine/systems/deGraphicSystem.h>
 #endif
 
+#ifdef OS_WEBWASM
+#include <emscripten/html5.h>
+#include <emscripten/threading.h>
+#endif
+
 
 
 // Class deoglRenderThread
@@ -332,7 +337,18 @@ void deoglRenderThread::Init( deRenderWindow *renderWindow ){
 		pThreadState = etsInitialize;
 		DEBUG_SYNC_MT_STATE
 		
+#ifdef OS_WEBWASM
+		{
+		// webgl seems to require canvas to be transferred to the thread creating the gl context
+		pthread_attr_t attr;
+		pthread_attr_init(&attr);
+		emscripten_pthread_attr_settransferredcanvases(
+			&attr, pOgl.GetOS()->CastToOSWebWasm()->GetCanvasId());
+		Start(attr);
+		}
+#else
 		Start();
+#endif
 		
 		DEBUG_SYNC_MT_WAIT("out")
 		pBarrierSyncOut.Wait();

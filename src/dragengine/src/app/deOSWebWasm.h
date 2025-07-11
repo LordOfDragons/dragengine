@@ -43,6 +43,9 @@ public:
 	struct sConfig{
 		/** \brief Canvas identifier in the form "#<id>". */
 		decString canvasId;
+		
+		/** \brief Size of canvas. */
+		decPoint canvasSize;
 	};
 	
 	
@@ -93,6 +96,9 @@ public:
 	
 	/** \brief Canvas identifier. */
 	inline const decString &GetCanvasId() const{ return pConfig.canvasId; }
+	
+	/** \brief Canvas size. */
+	inline const decPoint &GetCanvasSize() const{ return pConfig.canvasSize; }
 	/*@}*/
 	
 	

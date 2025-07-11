@@ -62,7 +62,9 @@ pthread_mutex_t dewlLauncher::pMutexEvents = PTHREAD_MUTEX_INITIALIZER;
 // Constructor, destructor
 ////////////////////////////
 
-dewlLauncher::dewlLauncher() :
+dewlLauncher::dewlLauncher(const std::string &canvasId, int canvasWidth, int canvasHeight) :
+pCanvasId(canvasId.c_str()),
+pCanvasSize(canvasWidth, canvasHeight),
 pModuleParameters(nullptr),
 pHasPatchIdentifier(false),
 pPatchesValid(false),
@@ -70,8 +72,20 @@ pThreadLauncher(0),
 pMutexLauncher(PTHREAD_MUTEX_INITIALIZER),
 pConditionLauncher(PTHREAD_COND_INITIALIZER)
 {
-	SetEngineInstanceFactory(delEngineInstanceDirect::Factory::Ref::New(
-		new delEngineInstanceDirect::Factory));
+	dewlLoggerJS::AddLogEntryFormat(dewlLoggerJS::eSeverity::info, LOGSOURCE,
+		"Launcher: Init (canvasId='%s' canvasSize=%dx%d)",
+		pCanvasId.GetString(), pCanvasSize.x, pCanvasSize.y);
+	
+	const delEngineInstanceDirect::Factory::Ref factory(
+		delEngineInstanceDirect::Factory::Ref::New(new delEngineInstanceDirect::Factory));
+	{
+	deOSWebWasm::sConfig config{};
+	config.canvasId = pCanvasId;
+	config.canvasSize = pCanvasSize;
+	factory->SetConfig(config);
+	}
+	SetEngineInstanceFactory(factory);
+	
 	DEASSERT_TRUE(pthread_create(&pThreadLauncher, nullptr, pLauncherThreadMainGlue, this) == 0)
 }
 
@@ -82,11 +96,6 @@ dewlLauncher::~dewlLauncher(){
 
 // Management
 ///////////////
-
-void dewlLauncher::SetCanvasId(const std::string &canvasId){
-	pCanvasId = canvasId.c_str();
-	pUpdateEngineInstanceParams();
-}
 
 void dewlLauncher::RemoveAllModuleParameters(){
 	if(pModuleParameters){
@@ -390,18 +399,6 @@ void dewlLauncher::pApplyCustomModuleParameters(){
 	
 	// use custom profile
 	pRunParams.SetGameProfile(profile);
-}
-
-void dewlLauncher::pUpdateEngineInstanceParams(){
-	const delEngineInstanceDirect::Factory::Ref factory(
-		delEngineInstanceDirect::Factory::Ref::New(new delEngineInstanceDirect::Factory));
-	
-	deOSWebWasm::sConfig config{};
-	config.canvasId = pCanvasId;
-	
-	factory->SetConfig(config);
-	
-	SetEngineInstanceFactory(factory);
 }
 
 void dewlLauncher::pFSMkdirAbsent(const char *path){

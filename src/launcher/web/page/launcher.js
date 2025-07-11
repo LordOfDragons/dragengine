@@ -65,8 +65,10 @@ export class WebLauncher {
 	 */
 	onRuntimeInitialized() {
 		this.logInfo('Runtime initialized')
-		this.launcher = new Module.dewlLauncher()
-		this.launcher.canvasId = `#${this.panelCanvas.panelId()}`
+		this.launcher = new Module.dewlLauncher(
+			`#${this.panelCanvas.panelId()}`,
+			this.panelCanvas.panelWidth(),
+			this.panelCanvas.panelHeight())
 	}
 	
 	_onWorkerMessage(event) {
@@ -182,10 +184,12 @@ export class WebLauncher {
 	
 	_onPageLoaded(_event) {
 		this.panelCanvas.resizeCanvas()
+		this.logInfo(`onPageLoaded: canvasSize=${this.panelCanvas.panelWidth()}x${this.panelCanvas.panelHeight()}`)
 	}
 	
 	_onPageResize(_event) {
 		this.panelCanvas.resizeCanvas()
+		this.logInfo(`onPageResize: canvasSize=${this.panelCanvas.panelWidth()}x${this.panelCanvas.panelHeight()}`)
 	}
 	
 	_onLogMessage(_event) {
