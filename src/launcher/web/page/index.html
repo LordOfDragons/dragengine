@@ -22,9 +22,6 @@
 					<a href='#' onclick='window.webLauncher.panelCanvas.toggleFullScreen(); event.preventDefault();'>FullScreen</a>
 				</li>
 				<li>
-					<a href='#' onclick='window.webLauncher.initLauncher(); event.preventDefault();'>Init</a>
-				</li>
-				<li>
 					<a href='#' onclick='onRunGame(); event.preventDefault();'>Run</a>
 				</li>
 				<li>
@@ -51,12 +48,12 @@
 				window.webLauncher.logInfo(`Run DELGA file from local disk: ${delgaFile.name}`)
 				
 				const reader = new FileReader()
-				reader.addEventListener('loadend', function(event) {
+				reader.addEventListener('loadend', () => {
 					const path = `/dragengine/localDelgas/${delgaFile.name}`
 					FS.writeFile(path, new Uint8Array(reader.result))
 					window.webLauncher.runGame(path)
-				});
-				reader.readAsArrayBuffer(delgaFile);
+				})
+				reader.readAsArrayBuffer(delgaFile)
 			}
 			
 			function onDownloadLogs() {
@@ -77,10 +74,15 @@
 				}
 			})
 			
+			window.addEventListener('delauncher:runGame', function(event) {
+				const resultCode = event.detail.result
+				const error = event.detail.error
+				window.webLauncher.logInfo(`RunGame: resultCode=${resultCode} error="${error}"`)
+			})
+			
 			var Module = {
 				onRuntimeInitialized: function() {
-					window.webLauncher.logInfo('Runtime initialized')
-					//window.webLauncher.onWasmReady()
+					window.webLauncher.onRuntimeInitialized()
 				}
 			};
 		</script>

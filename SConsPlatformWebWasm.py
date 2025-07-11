@@ -13,25 +13,14 @@ def webWasmUpdateEnv(env):
 		raise SCons.Errors.UserError('Invalid web platform %s'.format(env['platform_web']))
 	
 	env.Append(CPPFLAGS = ['-DWEB_WASM'])
-	env.Append(CPPFLAGS = ['-O3'])
-	
-	"""
-	if env['with_debug']:
-		env.Append(CPPFLAGS = ['-g3'])
-		env.Append(CPPFLAGS = ['-gsource-map'])
-		env.Append(LINKFLAGS = ['-g3'])
-		env.Append(LINKFLAGS = ['-gsource-map'])
-	"""
 	
 	# disable some nag warnings which are plain out stupid
 	env.Append(CPPFLAGS = ['-Wno-nontrivial-memcall'])
-	
-	env.Append(CXXFLAGS = ['-sDISABLE_EXCEPTION_CATCHING=0'])
-	env.Append(LINKFLAGS = ['-sDISABLE_EXCEPTION_CATCHING=0'])
-	
+
+	env.Append(LINKFLAGS = ['-sMIN_WEBGL_VERSION=2'])
+	env.Append(LINKFLAGS = ['-sOFFSCREENCANVAS_SUPPORT'])
+	env.Append(LINKFLAGS = ['-sOFFSCREEN_FRAMEBUFFER'])
 	env.Append(LINKFLAGS = ['-sFULL_ES3'])
-	
-	env.Append(LINKFLAGS = ['-sALLOW_MEMORY_GROWTH'])
 	
 	# env.Append(LINKFLAGS = ['-s', 'SIDE_MODULE=1'])
 	
@@ -43,13 +32,22 @@ def webWasmUpdateEnv(env):
 	env['CROSSCOMPILE_CXXFLAGS'] = []
 	env['CROSSCOMPILE_LINKFLAGS'] = []
 	
+	env.Append(CROSSCOMPILE_CXXFLAGS = ['-sDISABLE_EXCEPTION_CATCHING=0'])
+	env.Append(CROSSCOMPILE_LINKFLAGS = ['-sDISABLE_EXCEPTION_CATCHING=0'])
+	
+	env.Append(CROSSCOMPILE_CFLAGS = ['-O3'])
+	env.Append(CROSSCOMPILE_CXXFLAGS = ['-O3'])
+	
+	env.Append(CROSSCOMPILE_LINKFLAGS = ['-sALLOW_MEMORY_GROWTH'])
+	
 	env.Append(CROSSCOMPILE_CFLAGS = ['-pthread'])
 	env.Append(CROSSCOMPILE_CXXFLAGS = ['-pthread'])
 	env.Append(CROSSCOMPILE_LINKFLAGS = ['-pthread'])
 	
-	env.Append(CROSSCOMPILE_CFLAGS = ['-gsource-map'])
-	env.Append(CROSSCOMPILE_CXXFLAGS = ['-gsource-map'])
-	env.Append(CROSSCOMPILE_LINKFLAGS = ['-gsource-map'])
+	if env['with_debug']:
+		env.Append(CROSSCOMPILE_CFLAGS = ['-g3', '-gsource-map'])
+		env.Append(CROSSCOMPILE_CXXFLAGS = ['-g3', '-gsource-map'])
+		env.Append(CROSSCOMPILE_LINKFLAGS = ['-g3', '-gsource-map'])
 	
 	env.Append(CFLAGS = env['CROSSCOMPILE_CFLAGS'])
 	env.Append(CPPFLAGS = env['CROSSCOMPILE_CPPFLAGS'])

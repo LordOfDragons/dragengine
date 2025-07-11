@@ -97,6 +97,7 @@ if envModule['platform_webwasm']:
 	envModule.Append(LINKFLAGS = ['-sMIN_WEBGL_VERSION=2'])
 	envModule.Append(LINKFLAGS = ['-sOFFSCREENCANVAS_SUPPORT'])
 	envModule.Append(LINKFLAGS = ['-sOFFSCREEN_FRAMEBUFFER'])
+	envModule.Append(LINKFLAGS = ['-sFULL_ES3'])
 
 # fetch values in expanded form for later use
 versionString = '1.26'

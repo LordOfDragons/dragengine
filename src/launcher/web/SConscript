@@ -25,12 +25,19 @@ envLauncher.Append(CXXFLAGS = [
 	cmdlineDefinePath(envLauncher, 'LAUNCHER_CONFIG_PATH', pathConfig)])
 
 libs.append('embind')
-libs.append('idbfs.js')
+#libs.append('idbfs.js')
+#libs.append('opfs.js')
 
 envLauncher.Append(CXXFLAGS = ['-fPIC'])
 # envLauncher.Append(LINKFLAGS = ['-error-limit=0'])
 envLauncher.Append(LINKFLAGS = ['-sMAIN_MODULE'])
-envLauncher.Append(LINKFLAGS = ['-sPTHREAD_POOL_SIZE="navigator.hardwareConcurrency"'])
+# envLauncher.Append(LINKFLAGS = ['-sPTHREAD_POOL_SIZE="navigator.hardwareConcurrency"'])
+envLauncher.Append(LINKFLAGS = ['-sPTHREAD_POOL_SIZE="navigator.hardwareConcurrency+4"'])
+# envLauncher.Append(LINKFLAGS = ['-sALLOW_BLOCKING_ON_MAIN_THREAD=0'])
+envLauncher.Append(LINKFLAGS = ['-sENVIRONMENT=web,worker'])
+# envLauncher.Append(LINKFLAGS = ['-s TOTAL_MEMORY=256MB'])
+envLauncher.Append(LINKFLAGS = ['-sWASMFS'])
+envLauncher.Append(LINKFLAGS = ['-sOFFSCREEN_FRAMEBUFFER=1'])
 
 # setup the builders
 sources = []

@@ -50,14 +50,39 @@ export class WebLauncher {
 	 */
 	constructor() {
 		this.gameRunning = false
-		this.launcher = undefined
 		this._initPanels()
 		
 		window.addEventListener("load", this._onPageLoaded.bind(this));
 		window.addEventListener("resize", this._onPageResize.bind(this));
 		window.addEventListener(WebLauncher.EventLog, this._onLogMessage.bind(this));
 		
-		this._initFileSystem()
+		// this.launcherWorker = new Worker(new URL('launcherWorker.js', import.meta.url));
+		// this.launcherWorker.onmessage = this._onWorkerMessage.bind(this)
+	}
+	
+	/**
+	 * Webassembly runtime finished loading.
+	 */
+	onRuntimeInitialized() {
+		this.logInfo('Runtime initialized')
+		this.launcher = new Module.dewlLauncher()
+		this.launcher.canvasId = `#${this.panelCanvas.panelId()}`
+	}
+	
+	_onWorkerMessage(event) {
+		const data = event.data
+		const action = data['action']
+		
+		if (action == WebLauncher.EventLog) {
+			this.panelLogs.addLogs(data['severity'], data['source'], data['message'])
+			
+		} else if (action == WebLauncher.EventInitialized) {
+			if (data['error']) {
+				
+			} else {
+				
+			}
+		}
 	}
 	
 	logInfo(message) {
@@ -70,38 +95,6 @@ export class WebLauncher {
 	
 	logError(message) {
 		this.panelLogs.addLogs(PanelLogs.Severity.Error, 'Launcher', message)
-	}
-	
-	/**
-	 * Create launcher and initialize it. Throws exception if launcher exists already.
-	 */
-	initLauncher() {
-		if (this.launcher !== undefined) {
-			throw 'Launcher exists already'
-		}
-		
-		this.logInfo('Create launcher')
-		
-		try {
-			this.launcher = new Module.dewlLauncher()
-			this.logInfo('Initinalize launcher')
-			
-			/*
-			this._launcher.AddArgument("this_is_a_test")
-			this._launcher.AddArgument("something_else")
-			
-			var args_in = this._launcher.GetArgumentList()
-			var args = new Array(args_in.size()).fill(0).map((_,i) => args_in.get(i))
-			this.logInfo("Arguments: " + args)
-			*/
-			
-			this.launcher.init()
-			
-		} catch (e) {
-			this.disposeLauncher()
-			throw e
-		}
-		this.logInfo('Launcher initialized')
 	}
 	
 	/**
@@ -121,11 +114,10 @@ export class WebLauncher {
 		
 		try {
 			this._runGame(pathDelga, options ?? {})
-		
 		} catch(e) {
-			this.logError(`${e}: ${e.stack}`)
 			this.gameRunning = false
 			this._dispatchEvent(WebLauncher.EventGameRunningChanged, {running: false})
+			throw e
 		}
 		
 		/*
@@ -170,10 +162,10 @@ export class WebLauncher {
 				}
 				
 				const filename = `${curPath}/${name}`
-				const {mode, timestamp} = FS.lookupPath(filename).node
-				if (FS.isFile(mode)) {
+				const stat = FS.stat(filename);
+				if ((stat.mode & 0o100000) == 0o100000) {
 					zip.file(filename.substring(basePathLen), FS.readFile(filename))
-				} else if (FS.isDir(mode)) {
+				} else if ((stat.mode & 0o40000) == 0o40000) {
 					_recursive(filename);
 				}
 			}
@@ -186,29 +178,6 @@ export class WebLauncher {
 			compressionOptions: {level: 9},
 			streamFiles: true
 		}).then(callback)
-	}
-	
-	_readAllLogFiles(path) {
-		const files = [];
-		
-		function _recursive(curPath) {
-			for (const name of FS.readdir(curPath)) {
-				if (name === '.' || name === '..'){
-					continue
-				}
-				
-				const childPath = `${curPath}/${name}`
-				const {mode, timestamp} = FS.lookupPath(childPath).node
-				if (FS.isFile(mode)) {
-					files.push({path: childPath, timestamp})
-				} else if (FS.isDir(mode)) {
-					_recursive(childPath);
-				}
-			}
-		}
-		
-		_recursive(path);
-		return files;
 	}
 	
 	_onPageLoaded(_event) {
@@ -245,28 +214,25 @@ export class WebLauncher {
 			return
 		}
 		
-		if (!FS.analyzePath('/idbfs/config').exists) {
-			FS.mkdir('/idbfs/config');
-		}
-		if (!FS.analyzePath('/idbfs/cache').exists) {
-			FS.mkdir('/idbfs/cache');
-		}
-		if (!FS.analyzePath('/idbfs/capture').exists) {
-			FS.mkdir('/idbfs/capture');
-		}
+		this._fsMkdirAbsent('/idbfs/config');
+		this._fsMkdirAbsent('/idbfs/cache');
+		this._fsMkdirAbsent('/idbfs/capture');
 		
-		FS.mkdir('/dragengine');
+		this._fsMkdirAbsent('/dragengine');
 		FS.symlink('/idbfs/config', '/dragengine/userConfig');
 		FS.symlink('/idbfs/cache', '/dragengine/userCache');
 		FS.symlink('/idbfs/capture', '/dragengine/userCapture');
 		
-		if (!FS.analyzePath('/dragengine/userCache/delgas').exists) {
-			FS.mkdir('/dragengine/userCache/delgas');
-		}
-		
-		FS.mkdir('/dragengine/localDelgas');
+		this._fsMkdirAbsent('/dragengine/userCache/delgas');
+		this._fsMkdirAbsent('/dragengine/localDelgas');
 		
 		this._dispatchEvent(WebLauncher.EventInitialized, {})
+	}
+	
+	_fsMkdirAbsent(path) {
+		if (!FS.analyzePath(path).exists) {
+			FS.mkdir(path);
+		}
 	}
 	
 	_dispatchEvent(name, data) {
@@ -279,6 +245,14 @@ export class WebLauncher {
 			this.launcher.profileName = options.profileName
 		}
 		
+		this.launcher.removeAllModuleParameters()
+		this.launcher.addModuleParameter('OpenGL', 'logLevel', 'debug')
+		this.launcher.addModuleParameter('OpenGL', 'debugContext', '0')
+		this.launcher.addModuleParameter('OpenGL', 'debugNoMessages', '0')
+		
+		this.launcher.runGame()
+		
+		/*
 		this.launcher.prepare()
 		this.launcher.locateGame()
 		
@@ -313,6 +287,7 @@ export class WebLauncher {
 		
 		this.launcher.prepareRunParameters()
 		this.launcher.startGame()
+		*/
 	}
 }
 

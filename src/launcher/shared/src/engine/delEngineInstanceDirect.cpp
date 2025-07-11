@@ -128,12 +128,18 @@ void delEngineInstanceDirect::Factory::SetConfig(const deOSAndroid::sConfig &con
 }
 #endif
 
+#ifdef OS_WEBWASM
+void delEngineInstanceDirect::Factory::SetConfig(const deOSWebWasm::sConfig &config){
+	pConfig = config;
+}
+#endif
+
 delEngineInstance *delEngineInstanceDirect::Factory::CreateEngineInstance(
 delLauncher &launcher, const char *logfile){
 	delEngineInstanceDirect * const instance = new delEngineInstanceDirect(launcher, logfile);
 	instance->SetEngineLogger(pEngineLogger);
 	instance->SetUseConsole(pUseConsole);
-#ifdef OS_ANDROID
+#if defined OS_ANDROID || defined OS_WEBWASM
 	instance->SetConfig(pConfig);
 #endif
 	return instance;
@@ -183,6 +189,12 @@ void delEngineInstanceDirect::SetEngineLogger( deLogger *logger ){
 
 #ifdef OS_ANDROID
 void delEngineInstanceDirect::SetConfig(const deOSAndroid::sConfig &config){
+	pConfig = config;
+}
+#endif
+
+#ifdef OS_WEBWASM
+void delEngineInstanceDirect::SetConfig(const deOSWebWasm::sConfig &config){
 	pConfig = config;
 }
 #endif
@@ -238,7 +250,7 @@ bool delEngineInstanceDirect::StartEngine(){
 				os = new deOSAndroid(pConfig);
 			#elif defined OS_WEBWASM
 				pLogger->LogInfo(GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Web WASM");
-				os = new deOSWebWasm;
+				os = new deOSWebWasm(pConfig);
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
 				pLogger->LogInfo( GetLauncher().GetLogSource(), "EngineProcess.StartEngine: Create OS Unix" );

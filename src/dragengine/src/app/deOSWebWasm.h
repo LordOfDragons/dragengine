@@ -38,7 +38,17 @@
  * \brief Web WASM operating system.
  */
 class deOSWebWasm : public deOS{
+public:
+	/** \brief Application configuration. */
+	struct sConfig{
+		/** \brief Canvas identifier in the form "#<id>". */
+		decString canvasId;
+	};
+	
+	
 private:
+	const sConfig pConfig;
+	
 	int pScreenWidth, pScreenHeight, pScreenRefreshRate;
 	int pScaleFactor;
 	void *pCurWindow, *pHostingMainWindow, *pHostingRenderWindow;
@@ -50,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new Web WASM operating system object. */
-	deOSWebWasm();
+	deOSWebWasm(const sConfig &config);
 	
 	/** \brief Clean up the Web WASM operating system object. */
 	~deOSWebWasm() override;
@@ -78,10 +88,11 @@ public:
 	/** \brief User capture path. */
 	decString GetPathUserCapture() override;
 	
-	/**
-	 * \brief Process all events in the application event queue.
-	 */
+	/** \brief Process all events in the application event queue. */
 	void ProcessEventLoop(bool sendToInputModule) override;
+	
+	/** \brief Canvas identifier. */
+	inline const decString &GetCanvasId() const{ return pConfig.canvasId; }
 	/*@}*/
 	
 	

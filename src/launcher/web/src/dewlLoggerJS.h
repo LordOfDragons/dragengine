@@ -25,6 +25,9 @@
 #ifndef _DEWLLOGGERJS_H_
 #define _DEWLLOGGERJS_H_
 
+#include <pthread.h>
+#include <string>
+#include <vector>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -35,9 +38,22 @@ class dewlLoggerJS : public deLogger{
 public:
 	typedef deTObjectReference<dewlLoggerJS> Ref;
 	
+	enum class eSeverity{
+		info,
+		warning,
+		error
+	};
+	
+	struct sLogEntry{
+		eSeverity severity;
+		std::string source;
+		std::string message;
+	};
+	
 	
 private:
-	
+	static pthread_mutex_t pMutex;
+	static std::vector<sLogEntry> pLogEntries;
 	
 	
 public:
@@ -66,6 +82,15 @@ public:
 	
 	/** Log an exception as error message. */
 	void LogException(const char *source, const deException &exception) override;
+	
+	/** Add log entry. */
+	static void AddLogEntry(eSeverity severity, const char *source, const char *message);
+	
+	/** Add log entry. */
+	static void AddLogEntryFormat(eSeverity severity, const char *source, const char *format, ...);
+	
+	/** Main thread update. */
+	static void MainThreadUpdate();
 	/*@}*/
 };
 

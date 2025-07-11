@@ -30,6 +30,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <pthread.h>
 
 #include <delauncher/delLauncher.h>
 #include <delauncher/game/delGame.h>
@@ -38,8 +39,6 @@
 
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/logger/deLogger.h>
-#include <dragengine/threading/deThread.h>
-#include <dragengine/threading/deMutex.h>
 
 #include <emscripten/bind.h>
 
@@ -50,20 +49,29 @@ namespace es = emscripten;
  * Web Launcher Class.
  */
 class dewlLauncher : public delLauncher{
-private:
-	class RunGameThread : public deThread{
-	private:
-		dewlLauncher &pLauncher;
-		
-	public:
-		RunGameThread(dewlLauncher &launcher);
-		~RunGameThread() override;
-		
-		void Run() override;
+public:
+	enum class Commands{
+		RunGame
 	};
 	
-	friend class RunGameThread;
+	enum class eResultCodes{
+		Success,
+		Exception,
+		GameProblems,
+		ProfileProblems,
+		PatchProblems
+	};
 	
+private:
+	struct sCommand{
+		Commands command;
+	};
+	
+	struct sEvent{
+		std::string event;
+		eResultCodes resultCode;
+		std::string error;
+	};
 	
 	deLogger::Ref pEngineLogger, pEngineLoggerDebug;
 	
@@ -71,16 +79,24 @@ private:
 	
 	decString pDelgaPath, pProfileName;
 	decUnicodeArgumentList pGameArgs;
+	decString pCanvasId;
 	
 	delGame::Ref pGame;
 	delGameProfile::Ref pProfile;
 	delGPModuleList *pModuleParameters;
 	decUuid pPatchIdentifier;
-	bool pHasPatchIdentifier;
+	bool pHasPatchIdentifier, pPatchesValid;
 	delGameRunParams pRunParams;
+	decString pPatchProblems;
 	
-	RunGameThread *pRunGameThread;
-	deMutex pMutexGameThread;
+	pthread_t pThreadLauncher;
+	pthread_mutex_t pMutexLauncher;
+	pthread_cond_t pConditionLauncher;
+	
+	std::vector<sCommand> pCommands;
+	
+	static std::vector<sEvent> pEvents;
+	static pthread_mutex_t pMutexEvents;
 	
 	
 public:
@@ -111,20 +127,24 @@ public:
 	std::string GetProfileName() const{ return pProfileName.GetString(); }
 	void SetProfileName(const std::string &name){ pProfileName = name.c_str(); }
 	
-	/** Init. */
-	void Init();
+	/** Canvas id. */
+	std::string GetCanvasId() const{ return pCanvasId.GetString(); }
+	void SetCanvasId(const std::string &canvasId);
 	
-	/** Prepare. */
-	void Prepare();
+	/** Run game. */
+	void RunGame();
 	
-	/** Locate game. */
-	void LocateGame();
+	
+	
+	/** Remove all module parameters. */
+	void RemoveAllModuleParameters();
+	
+	/** Add module parameter. */
+	void AddModuleParameter(const std::string &module,
+		const std::string &parameter, const std::string &value);
 	
 	/** Game problems. */
 	std::vector<std::string> GetGameProblems();
-	
-	/** Locate profile. */
-	void LocateProfile();
 	
 	/** Located profile name or empty string. */
 	std::string GetLocatedProfileName();
@@ -132,20 +152,14 @@ public:
 	/** Profile problems. */
 	std::vector<std::string> GetProfileProblems();
 	
-	/** Locate patches. */
-	void LocatePatches();
-	
 	/** Patches problems. */
 	std::vector<std::string> GetPatchProblems();
 	
-	/** Prepare run parameters. */
-	void PrepareRunParameters();
-	
-	/** Start running game. */
-	void StartGame();
-	
 	/** Clean up. */
 	void CleanUp();
+	
+	/** Main thread update. */
+	static void MainThreadUpdate();
 	/*@}*/
 	
 	
@@ -157,31 +171,44 @@ private:
 		deModuleSystem::eModuleTypes moduleType);
 	void pUpdateRunArguments();
 	void pApplyCustomModuleParameters();
+	void pUpdateEngineInstanceParams();
 	
-	void pRunGameThreadFunc();
+	void pFSMkdirAbsent(const char *path);
+	void pFSSymlink(const char *pathTarget, const char *pathLink);
+	
+	static void *pLauncherThreadMainGlue(void*);
+	void pLauncherThreadMain();
+	void pCommandRunGame();
+	
+	void pPrepare();
+	void pLocateGame();
+	void pLocateProfile();
+	void pLocatePatches();
+	void pPrepareRunParameters();
+	void pStartGame();
+	
+	static void pDispatchEvent(const std::string &event,
+		eResultCodes resultCode = eResultCodes::Success, const char *error = "");
+	static void pDispatchEvent(const std::string &event, const deException &exception);
 };
 
+#ifdef DEWL_LAUNCHER_REGISTER_BINDINGS
 EMSCRIPTEN_BINDINGS(dragengine_web_launcher) {
 	es::class_<dewlLauncher>("dewlLauncher")
 		.constructor<>()
 		.property("delgaPath", &dewlLauncher::GetDelgaPath, &dewlLauncher::SetDelgaPath)
 		.property("profileName", &dewlLauncher::GetProfileName, &dewlLauncher::SetProfileName)
-		.function("init", &dewlLauncher::Init)
-		.function("prepare", &dewlLauncher::Prepare)
-		.function("locateGame", &dewlLauncher::LocateGame)
+		.property("canvasId", &dewlLauncher::GetCanvasId, &dewlLauncher::SetCanvasId)
+		.function("runGame", &dewlLauncher::RunGame)
 		.function("getGameProblems", &dewlLauncher::GetGameProblems)
-		.function("locateProfile", &dewlLauncher::LocateProfile)
 		.function("getLocatedProfileName", &dewlLauncher::GetLocatedProfileName)
 		.function("getProfileProblems", &dewlLauncher::GetProfileProblems)
-		.function("locatePatches", &dewlLauncher::LocatePatches)
 		.function("getPatchProblems", &dewlLauncher::GetPatchProblems)
-		.function("prepareRunParameters", &dewlLauncher::PrepareRunParameters)
-		.function("startGame", &dewlLauncher::StartGame)
-		.function("cleanUp", &dewlLauncher::CleanUp)
 		;
 	
 	es::register_vector<std::string>("vector<string>");
 	es::register_optional<std::string>();
 }
+#endif
 
 #endif

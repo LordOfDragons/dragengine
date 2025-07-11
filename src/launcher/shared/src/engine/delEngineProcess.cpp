@@ -191,8 +191,7 @@ void delEngineProcess::StartEngine(){
 			#elif defined OS_ANDROID
 				DETHROW_INFO(deeInvalidAction, "not supported");
 			#elif defined OS_WEBWASM
-				pLogger->LogInfo(pLogSource, "EngineProcess.StartEngine: Create OS Web WASM");
-				os = new deOSWebWasm;
+				DETHROW_INFO(deeInvalidAction, "not supported");
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
 				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Unix" );

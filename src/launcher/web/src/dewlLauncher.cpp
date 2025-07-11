@@ -23,12 +23,20 @@
  */
 
 #include <emscripten.h>
+#include <emscripten/wasmfs.h>
+
+#include <errno.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #include "dewlLauncher.h"
+#include "dewlLauncherBindings.h"
 
 #include <delauncher/engine/delEngineInstanceDirect.h>
 #include <delauncher/engine/modules/delEngineModule.h>
 #include <delauncher/game/fileformat/delFileFormat.h>
+#include <delauncher/game/profile/delGPModule.h>
+#include <delauncher/game/profile/delGPMParameter.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
@@ -41,20 +49,11 @@
 
 #define LOGSOURCE "WebLauncher"
 
+static const std::string EventInitialized("delauncher:initialized");
+static const std::string EventRunGame("delauncher:runGame");
 
-// Class dewlLauncher::RunGameThread
-//////////////////////////////////////
-
-dewlLauncher::RunGameThread::RunGameThread(dewlLauncher &launcher) :
-pLauncher(launcher){
-}
-
-dewlLauncher::RunGameThread::~RunGameThread(){
-}
-
-void dewlLauncher::RunGameThread::Run(){
-	pLauncher.pRunGameThreadFunc();
-}
+std::vector<dewlLauncher::sEvent> dewlLauncher::pEvents;
+pthread_mutex_t dewlLauncher::pMutexEvents = PTHREAD_MUTEX_INITIALIZER;
 
 
 // Class dewlLauncher
@@ -66,10 +65,14 @@ void dewlLauncher::RunGameThread::Run(){
 dewlLauncher::dewlLauncher() :
 pModuleParameters(nullptr),
 pHasPatchIdentifier(false),
-pRunGameThread(nullptr)
+pPatchesValid(false),
+pThreadLauncher(0),
+pMutexLauncher(PTHREAD_MUTEX_INITIALIZER),
+pConditionLauncher(PTHREAD_COND_INITIALIZER)
 {
 	SetEngineInstanceFactory(delEngineInstanceDirect::Factory::Ref::New(
 		new delEngineInstanceDirect::Factory));
+	DEASSERT_TRUE(pthread_create(&pThreadLauncher, nullptr, pLauncherThreadMainGlue, this) == 0)
 }
 
 dewlLauncher::~dewlLauncher(){
@@ -80,72 +83,50 @@ dewlLauncher::~dewlLauncher(){
 // Management
 ///////////////
 
-void dewlLauncher::Init(){
-	try{
-		DEASSERT_NULL(pRunGameThread)
-		
-		pInitLogger();
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-		EM_ASM(throw 'Launcher.Init failed');
+void dewlLauncher::SetCanvasId(const std::string &canvasId){
+	pCanvasId = canvasId.c_str();
+	pUpdateEngineInstanceParams();
+}
+
+void dewlLauncher::RemoveAllModuleParameters(){
+	if(pModuleParameters){
+		delete pModuleParameters;
+		pModuleParameters = nullptr;
 	}
 }
 
-void dewlLauncher::Prepare(){
-	try{
-		DEASSERT_NULL(pRunGameThread)
+void dewlLauncher::AddModuleParameter(const std::string &module,
+const std::string &parameter, const std::string &value){
+	if(!pModuleParameters){
+		pModuleParameters = new delGPModuleList;
+	}
+	
+	delGPModule::Ref gpmodule(pModuleParameters->GetNamed(module.c_str()));
+	if(!gpmodule){
+		gpmodule.TakeOver(new delGPModule(module.c_str()));
+		pModuleParameters->Add(gpmodule);
+	}
+	
+	delGPMParameter::Ref gpparam(gpmodule->GetParameters().GetNamed(parameter.c_str()));
+	if(gpparam){
+		gpparam->SetValue(value.c_str());
 		
-		delLauncher::Prepare();
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-		EM_ASM(throw 'Launcher.Prepare failed');
+	}else{
+		gpparam.TakeOver(new delGPMParameter(parameter.c_str(), value.c_str()));
+		gpmodule->GetParameters().Add(gpparam);
 	}
 }
 
-void dewlLauncher::LocateGame(){
-	try{
-		DEASSERT_NULL(pRunGameThread)
-		
-		delGameManager &gameManager = GetGameManager();
-		deLogger &logger = *GetLogger();
-		
-		delGameList list;
-		
-		{
-		const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-			GetEngineInstanceFactory().CreateEngineInstance(*this, GetEngine().GetLogFile())));
-		
-		instance->StartEngine();
-		instance->LoadModules();
-		
-		gameManager.LoadGameFromDisk(instance, pDelgaPath, list);
-		}
-		
-		if(list.GetCount() == 0){
-			logger.LogInfo(LOGSOURCE, "No valid game definition found.");
-			DETHROW_INFO(deeInvalidParam, "No valid game definition found.");
-		}
-		
-		pGame = list.GetAt(0); // TODO support multiple games using a choice for for example
-		
-		// load configuration if the game is not installed. this allows to keep the parameter
-		// changes alive done by the player inside the game
-		if(!gameManager.GetGames().HasWithID(pGame->GetIdentifier())){
-			pGame->LoadConfig();
-		}
-		
-		pGame->VerifyRequirements();
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-		EM_ASM(throw 'Launcher.LocateGame failed');
-	}
+
+void dewlLauncher::RunGame(){
+	pthread_mutex_lock(&pMutexLauncher);
+	pCommands.push_back({Commands::RunGame});
+	pthread_cond_signal(&pConditionLauncher);
+	pthread_mutex_unlock(&pMutexLauncher);
 }
 
 std::vector<std::string> dewlLauncher::GetGameProblems(){
-	if((pGame && pGame->GetCanRun()) || pRunGameThread){
+	if(pGame && pGame->GetCanRun()){
 		return {};
 	}
 	
@@ -157,37 +138,12 @@ std::vector<std::string> dewlLauncher::GetGameProblems(){
 	return problems;
 }
 
-void dewlLauncher::LocateProfile(){
-	try{
-		DEASSERT_NULL(pRunGameThread)
-		
-		delGameManager &gameManager = GetGameManager();
-		deLogger &logger = *GetLogger();
-		
-		if(pProfileName.IsEmpty()){
-			pProfile = pGame->GetProfileToUse();
-			
-		}else{
-			pProfile = gameManager.GetProfiles().GetNamed(pProfileName);
-			if(!pProfile){
-				decString message;
-				message.Format("No profile found with name '%s'", pProfileName.GetString());
-				logger.LogError(LOGSOURCE, message.GetString());
-				DETHROW_INFO(deeInvalidParam, message);
-			}
-		}
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-	}
-}
-
 std::string dewlLauncher::GetLocatedProfileName(){
 	return pProfile ? pProfile->GetName().GetString() : "";
 }
 
 std::vector<std::string> dewlLauncher::GetProfileProblems(){
-	if((pProfile && pProfile->GetValid()) || pRunGameThread){
+	if(pProfile && pProfile->GetValid()){
 		return {};
 	}
 	
@@ -199,89 +155,18 @@ std::vector<std::string> dewlLauncher::GetProfileProblems(){
 	return problems;
 }
 
-void dewlLauncher::LocatePatches(){
-	try{
-		DEASSERT_NULL(pRunGameThread)
-		
-		// determine patch to use
-		if(!pHasPatchIdentifier){
-			if(pGame->GetUseCustomPatch()){
-				pHasPatchIdentifier = true;
-				pPatchIdentifier = pGame->GetUseCustomPatch();
-				
-			}else if(!pGame->GetUseLatestPatch()){
-				pHasPatchIdentifier = true;
-				pPatchIdentifier.Clear();
-			}
-		}
-		
-		// update the run parameters
-		pRunParams.SetGameProfile(pProfile);
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-	}
-}
-
 std::vector<std::string> dewlLauncher::GetPatchProblems(){
-	if(!pGame || pRunGameThread){
+	if(pPatchesValid){
 		return {};
 	}
 	
 	std::vector<std::string> problems;
-	
-	decString error;
-	if(!pRunParams.FindPatches(pGame, pGame->GetUseLatestPatch(), pPatchIdentifier, error)){
-		problems.push_back(error.GetString());
-		GetLogger()->LogError(LOGSOURCE, error.GetString());
-	}
-	
+	problems.push_back(pPatchProblems.GetString());
 	return problems;
 }
 
-void dewlLauncher::PrepareRunParameters(){
-	try{
-		DEASSERT_NULL(pRunGameThread)
-		
-		pUpdateRunArguments();
-		pRunParams.SetWidth(pProfile->GetWidth());
-		pRunParams.SetHeight(pProfile->GetHeight());
-		pRunParams.SetFullScreen(pProfile->GetFullScreen());
-		
-		const decPoint windowSize(pGame->GetDisplayScaledWindowSize());
-		if(windowSize != decPoint()){
-			pRunParams.SetWidth(windowSize.x);
-			pRunParams.SetHeight(windowSize.y);
-			pRunParams.SetFullScreen(false);
-		}
-		
-		pApplyCustomModuleParameters(); // potentially changes game profile set in run parameters
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-	}
-}
-
-void dewlLauncher::StartGame(){
-	try{
-		DEASSERT_NULL(pRunGameThread)
-		
-		deLogger &logger = *GetLogger();
-		logger.LogInfoFormat(LOGSOURCE, "Cache application ID = '%s'",
-			pGame->GetIdentifier().ToHexString(false).GetString());
-		logger.LogInfoFormat(LOGSOURCE, "Starting game '%s' using profile '%s'",
-			pGame->GetTitle().ToUTF8().GetString(),
-			pRunParams.GetGameProfile()->GetName().GetString());
-		
-		pRunGameThread = new RunGameThread(*this);
-		pRunGameThread->Start();
-		
-	}catch(const deException &e){
-		GetLogger()->LogException("Launcher", e);
-	}
-}
-
 void dewlLauncher::CleanUp(){
+	/*
 	try{
 		if(pRunGameThread){
 			pRunGameThread->Stop();
@@ -291,6 +176,39 @@ void dewlLauncher::CleanUp(){
 		
 	}catch(const deException &e){
 		GetLogger()->LogException("Launcher", e);
+	}
+	*/
+	
+	pthread_cond_destroy(&pConditionLauncher);
+	pthread_mutex_destroy(&pMutexLauncher);
+}
+
+void dewlLauncher::MainThreadUpdate(){
+	static std::vector<sEvent> events;
+	
+	if(pthread_mutex_trylock(&pMutexEvents) == 0){
+		events = pEvents;
+		pEvents.clear();
+		pthread_mutex_unlock(&pMutexEvents);
+		
+	}else{
+		events.clear();
+		return;
+	}
+	
+	for(auto event : events){
+		const char * const ev = event.event.c_str();
+		const int resultCode = (int)event.resultCode;
+		const char * const error = event.error.c_str();
+		
+		EM_ASM({
+			this.dispatchEvent(new CustomEvent(UTF8ToString($0), {
+				detail: {
+					result: $1,
+					error: UTF8ToString($2)
+				}
+			}))
+		}, ev, resultCode, error);
 	}
 }
 
@@ -345,8 +263,8 @@ void dewlLauncher::pGameProblems(std::vector<std::string> &problems){
 
 void dewlLauncher::pProfileProblems(std::vector<std::string> &problems,
 const delGameProfile &profile){
-	GetLogger()->LogErrorFormat(LOGSOURCE, "Profile '%s' has the following problems:",
-		profile.GetName().GetString());
+	dewlLoggerJS::AddLogEntryFormat(dewlLoggerJS::eSeverity::error, LOGSOURCE,
+		"Profile '%s' has the following problems:", profile.GetName().GetString());
 	
 	pModuleProblem(problems, profile.GetModuleGraphic(), deModuleSystem::emtGraphic);
 	pModuleProblem(problems, profile.GetModuleInput(), deModuleSystem::emtInput);
@@ -474,11 +392,270 @@ void dewlLauncher::pApplyCustomModuleParameters(){
 	pRunParams.SetGameProfile(profile);
 }
 
-void dewlLauncher::pRunGameThreadFunc(){
+void dewlLauncher::pUpdateEngineInstanceParams(){
 	const delEngineInstanceDirect::Factory::Ref factory(
-		delEngineInstanceDirect::Factory::Ref::New(
-			new delEngineInstanceDirect::Factory(/*pEngineLogger*/ GetLogger())));
+		delEngineInstanceDirect::Factory::Ref::New(new delEngineInstanceDirect::Factory));
 	
-	// blocks until the game finished
-	pGame->StartGame(pRunParams, factory);
+	deOSWebWasm::sConfig config{};
+	config.canvasId = pCanvasId;
+	
+	factory->SetConfig(config);
+	
+	SetEngineInstanceFactory(factory);
+}
+
+void dewlLauncher::pFSMkdirAbsent(const char *path){
+	struct stat s{};
+	if(stat(path, &s) == 0){
+		return;
+	}
+	
+	if(mkdir(path, 0777) != 0){
+		const int e = errno;
+		decString message;
+		message.Format("Create directory failed: %s (%d)", path, e);
+		DETHROW_INFO(deeWriteFile, message);
+	}
+}
+
+void dewlLauncher::pFSSymlink(const char *pathTarget, const char *pathLink){
+	if(symlink(pathTarget, pathLink) != 0){
+		const int e = errno;
+		decString message;
+		message.Format("Create symlink failed: %s -> %s (%d)", pathTarget, pathLink, e);
+		DETHROW_INFO(deeWriteFile, message);
+	}
+}
+
+void *dewlLauncher::pLauncherThreadMainGlue(void *parameter){
+	((dewlLauncher*)parameter)->pLauncherThreadMain();
+	return nullptr;
+}
+
+void dewlLauncher::pLauncherThreadMain(){
+	dewlLoggerJS::AddLogEntry(dewlLoggerJS::eSeverity::info, LOGSOURCE, "LauncherThread: Enter");
+	
+	try{
+		// initialize file system
+		dewlLoggerJS::AddLogEntry(dewlLoggerJS::eSeverity::info, LOGSOURCE,
+			"LauncherThread: Initialize file system");
+		backend_t opfs = wasmfs_create_opfs_backend();
+		DEASSERT_TRUE(wasmfs_create_directory("/opfs", 0777, opfs) == 0)
+		
+		pFSMkdirAbsent("/opfs/config");
+		pFSMkdirAbsent("/opfs/cache");
+		pFSMkdirAbsent("/opfs/capture");
+		
+		pFSSymlink("/opfs/config", "/dragengine/userConfig");
+		pFSSymlink("/opfs/cache", "/dragengine/userCache");
+		pFSSymlink("/opfs/capture", "/dragengine/userCapture");
+		
+		pFSMkdirAbsent("/dragengine/userCache/delgas");
+		
+		pFSMkdirAbsent("/localDelgas");
+		pFSSymlink("/localDelgas", "/dragengine/localDelgas");
+		
+		// initialize loggers
+		dewlLoggerJS::AddLogEntry(dewlLoggerJS::eSeverity::info, LOGSOURCE,
+			"LauncherThread: Initialize loggers");
+		pInitLogger();
+		
+		// finished
+		dewlLoggerJS::AddLogEntry(dewlLoggerJS::eSeverity::info, LOGSOURCE,
+			"LauncherThread: Initialized");
+		pDispatchEvent(EventInitialized);
+		
+	}catch(const deException &e){
+		dewlLoggerJS::AddLogEntry(dewlLoggerJS::eSeverity::error,
+			LOGSOURCE, e.FormatOutput().Join("/"));
+		pDispatchEvent(EventInitialized, e);
+		return;
+	}
+	
+	// process commands
+	sCommand command;
+	
+	while(true){
+		// get next command
+		if(pthread_mutex_lock(&pMutexLauncher) != 0){
+			return;
+		}
+		
+		if(pCommands.empty()){
+			if(pthread_cond_wait(&pConditionLauncher, &pMutexLauncher) != 0){
+				pthread_mutex_unlock(&pMutexLauncher);
+				return;
+			}
+		}
+		
+		bool hasCommand = !pCommands.empty();
+		if(hasCommand){
+			command = pCommands.front();
+			pCommands.erase(pCommands.begin());
+		}
+		
+		pthread_mutex_unlock(&pMutexLauncher);
+		
+		emscripten_log(EM_LOG_INFO, "LauncherThread: %d %d", hasCommand, (int)command.command);
+		GetLogger()->LogInfoFormat(LOGSOURCE, "LauncherThread: %d %d", hasCommand, (int)command.command);
+		
+		// evaluate command
+		if(!hasCommand){
+			continue;
+		}
+		
+		switch(command.command){
+		case Commands::RunGame:
+			pCommandRunGame();
+			break;
+		}
+	}
+	
+	GetLogger()->LogInfo(LOGSOURCE, "LauncherThread: Exit");
+}
+
+void dewlLauncher::pCommandRunGame(){
+	try{
+		pPrepare();
+		pLocateGame();
+		if(!pGame || !pGame->GetCanRun()){
+			pDispatchEvent(EventRunGame, eResultCodes::GameProblems, "Game problems");
+			return;
+		}
+		
+		pLocateProfile();
+		if(!pProfile || !pProfile->GetValid()){
+			pDispatchEvent(EventRunGame, eResultCodes::ProfileProblems, "Profile problems");
+			return;
+		}
+		
+		pLocatePatches();
+		if(!pPatchesValid){
+			pDispatchEvent(EventRunGame, eResultCodes::PatchProblems, pPatchProblems.GetString());
+			return;
+		}
+		
+		pPrepareRunParameters();
+		pStartGame();
+		
+	}catch(const deException &e){
+		pDispatchEvent(EventRunGame, e);
+	}
+}
+
+void dewlLauncher::pPrepare(){
+	delLauncher::Prepare();
+}
+
+void dewlLauncher::pLocateGame(){
+	delGameManager &gameManager = GetGameManager();
+	deLogger &logger = *GetLogger();
+	
+	delGameList list;
+	
+	{
+	const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
+		GetEngineInstanceFactory().CreateEngineInstance(*this, GetEngine().GetLogFile())));
+	
+	instance->StartEngine();
+	instance->LoadModules();
+	
+	gameManager.LoadGameFromDisk(instance, pDelgaPath, list);
+	}
+	
+	if(list.GetCount() == 0){
+		logger.LogInfo(LOGSOURCE, "No valid game definition found.");
+		DETHROW_INFO(deeInvalidParam, "No valid game definition found.");
+	}
+	
+	pGame = list.GetAt(0); // TODO support multiple games using a choice for for example
+	
+	// load configuration if the game is not installed. this allows to keep the parameter
+	// changes alive done by the player inside the game
+	if(!gameManager.GetGames().HasWithID(pGame->GetIdentifier())){
+		pGame->LoadConfig();
+	}
+	
+	pGame->VerifyRequirements();
+}
+
+void dewlLauncher::pLocateProfile(){
+	delGameManager &gameManager = GetGameManager();
+	deLogger &logger = *GetLogger();
+	
+	if(pProfileName.IsEmpty()){
+		pProfile = pGame->GetProfileToUse();
+		
+	}else{
+		pProfile = gameManager.GetProfiles().GetNamed(pProfileName);
+		if(!pProfile){
+			decString message;
+			message.Format("No profile found with name '%s'", pProfileName.GetString());
+			logger.LogError(LOGSOURCE, message.GetString());
+			DETHROW_INFO(deeInvalidParam, message);
+		}
+	}
+}
+
+void dewlLauncher::pLocatePatches(){
+	// determine patch to use
+	if(!pHasPatchIdentifier){
+		if(pGame->GetUseCustomPatch()){
+			pHasPatchIdentifier = true;
+			pPatchIdentifier = pGame->GetUseCustomPatch();
+			
+		}else if(!pGame->GetUseLatestPatch()){
+			pHasPatchIdentifier = true;
+			pPatchIdentifier.Clear();
+		}
+	}
+	
+	// update the run parameters
+	pRunParams.SetGameProfile(pProfile);
+	
+	pPatchProblems.Empty();
+	pPatchesValid = pRunParams.FindPatches(pGame,
+		pGame->GetUseLatestPatch(), pPatchIdentifier, pPatchProblems);
+	if(!pPatchesValid){
+		dewlLoggerJS::AddLogEntry(dewlLoggerJS::eSeverity::error,
+			LOGSOURCE, pPatchProblems.GetString());
+	}
+}
+
+void dewlLauncher::pPrepareRunParameters(){
+	pUpdateRunArguments();
+	pRunParams.SetWidth(pProfile->GetWidth());
+	pRunParams.SetHeight(pProfile->GetHeight());
+	pRunParams.SetFullScreen(pProfile->GetFullScreen());
+	
+	const decPoint windowSize(pGame->GetDisplayScaledWindowSize());
+	if(windowSize != decPoint()){
+		pRunParams.SetWidth(windowSize.x);
+		pRunParams.SetHeight(windowSize.y);
+		pRunParams.SetFullScreen(false);
+	}
+	
+	pApplyCustomModuleParameters(); // potentially changes game profile set in run parameters
+}
+
+void dewlLauncher::pStartGame(){
+	deLogger &logger = *GetLogger();
+	logger.LogInfoFormat(LOGSOURCE, "Cache application ID = '%s'",
+		pGame->GetIdentifier().ToHexString(false).GetString());
+	logger.LogInfoFormat(LOGSOURCE, "Starting game '%s' using profile '%s'",
+		pGame->GetTitle().ToUTF8().GetString(),
+		pRunParams.GetGameProfile()->GetName().GetString());
+	
+	pGame->StartGame(pRunParams);
+}
+
+void dewlLauncher::pDispatchEvent(const std::string &event, eResultCodes resultCode, const char *error){
+	if(pthread_mutex_lock(&pMutexEvents) == 0){
+		pEvents.push_back({event, resultCode, error});
+		pthread_mutex_unlock(&pMutexEvents);
+	}
+}
+
+void dewlLauncher::pDispatchEvent(const std::string &event, const deException &exception){
+	pDispatchEvent(event, eResultCodes::Exception, exception.FormatOutput().Join("\n"));
 }

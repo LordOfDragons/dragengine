@@ -243,6 +243,9 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 #elif defined OS_ANDROID
 	pInitDisplay();
 	
+#elif defined OS_WEBWASM
+	pCreateContext();
+	
 #elif defined OS_BEOS
 	pCreateContext();
 	
@@ -360,6 +363,9 @@ void deoglRTContext::CleanUp(){
 #elif defined OS_ANDROID
 	pCloseDisplay();
 	
+#elif defined OS_WEBWASM
+	pFreeContext();
+	
 #elif defined OS_BEOS
 	pFreeContext();
 	
@@ -433,7 +439,7 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		}
 		
 #elif defined OS_WEBWASM
-		DEASSERT_TRUE(emscripten_webgl_make_context_current(pContext) == EMSCRIPTEN_RESULT_SUCCESS)
+		OGL_WASM_CHECK(pRenderThread, emscripten_webgl_make_context_current(pContext));
 		
 #elif defined OS_BEOS
 		rrenderWindow->GetGLView()->LockGL();
@@ -473,7 +479,7 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		}
 		
 #elif defined OS_WEBWASM
-		DEASSERT_TRUE(emscripten_webgl_make_context_current(0) == EMSCRIPTEN_RESULT_SUCCESS)
+		OGL_WASM_CHECK(pRenderThread, emscripten_webgl_make_context_current(0));
 		
 #elif defined OS_MACOS
 		pGLContextMakeCurrent( NULL );
@@ -521,7 +527,7 @@ void deoglRTContext::DropCompileContexts(int count){
 		}
 	}
 	
-#elif defined OS_WEBASM
+#elif defined OS_WEBWASM
 	for(i=count; i<pCompileContextCount; i++){
 		logger.LogInfoFormat("Drop compile context %d", i);
 		if(pCompileContext[i]){
@@ -556,6 +562,9 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	#else
 		return ( void* )glXGetProcAddress( ( const GLubyte * )funcName );
 	#endif
+	
+#elif defined OS_WEBWASM
+	return nullptr; //(void*)emscripten_GetProcAddress(funcName);
 	
 #elif defined WITH_OPENGLES
 	return ( void* )androidGetProcAddress(pRenderThread, funcName);
@@ -602,8 +611,8 @@ void deoglRTContext::CheckConfigurationChanged(){
 	pScreenWidth = contentRect.x2 - contentRect.x1;
 	pScreenHeight = contentRect.y2 - contentRect.y1;
 	
-	DEASSERT_TRUE(emscripten_webgl_get_drawing_buffer_size(
-		pContext, &pScreenWidth, &pScreenHeight) == EMSCRIPTEN_RESULT_SUCCESS)
+	OGL_WASM_CHECK(pRenderThread, emscripten_webgl_get_drawing_buffer_size(
+		pContext, &pScreenWidth, &pScreenHeight));
 }
 
 
@@ -1324,6 +1333,7 @@ void deoglRTContext::pCloseDisplay(){
 #elif defined OS_WEBWASM
 
 void deoglRTContext::pCreateContext(){
+	pRenderThread.GetLogger().LogInfoFormat("RTContext CreateContext %lu", pContext);
 	if(pContext){
 		return;
 	}
@@ -1331,34 +1341,34 @@ void deoglRTContext::pCreateContext(){
 	pCompileContextCount = decMath::min(MaxCompileContextCount,
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().GetCoreCount());
 	
-	if(!pContext){
-		EmscriptenWebGLContextAttributes attrs{};
-		emscripten_webgl_init_context_attributes(&attrs);
-		attrs.alpha = false;
-		attrs.depth = true;
-		attrs.stencil = true;
-		attrs.antialias = false;
-		attrs.premultipliedAlpha = false;
-		attrs.preserveDrawingBuffer = false;
-		attrs.powerPreference = EM_WEBGL_POWER_PREFERENCE_HIGH_PERFORMANCE;
-		attrs.failIfMajorPerformanceCaveat = false;
-		attrs.majorVersion = 2;
-		attrs.minorVersion = 0;
-		attrs.enableExtensionsByDefault = false;
-		attrs.explicitSwapControl = true;
-		attrs.renderViaOffscreenBackBuffer = true;
-		//attrs.proxyContextToMainThread = EMSCRIPTEN_WEBGL_CONTEXT_PROXY_FALLBACK;
-		
-		pContext = emscripten_webgl_create_context("#dragengine", &attrs);
-		DEASSERT_NOTNULL(pContext)
-		
-		// loader and compiler contexts have to be created by the thread using them
-	}
+	EmscriptenWebGLContextAttributes attrs{};
+	emscripten_webgl_init_context_attributes(&attrs);
+	attrs.alpha = false;
+	attrs.depth = true;
+	attrs.stencil = true;
+	attrs.antialias = false;
+	attrs.premultipliedAlpha = false;
+	attrs.preserveDrawingBuffer = false;
+	attrs.powerPreference = EM_WEBGL_POWER_PREFERENCE_HIGH_PERFORMANCE;
+	attrs.failIfMajorPerformanceCaveat = false;
+	attrs.majorVersion = 2;
+	attrs.minorVersion = 0;
+	attrs.enableExtensionsByDefault = false;
+	attrs.explicitSwapControl = true;
+	attrs.renderViaOffscreenBackBuffer = true;
+	//attrs.proxyContextToMainThread = EMSCRIPTEN_WEBGL_CONTEXT_PROXY_FALLBACK;
 	
-	DEASSERT_TRUE(emscripten_webgl_make_context_current(pContext) == EMSCRIPTEN_RESULT_SUCCESS)
+	const char * const cid = pOSWebWasm->GetCanvasId();
+	pRenderThread.GetLogger().LogInfoFormat("Create context using id '%s'", cid);
+	pContext = emscripten_webgl_create_context(cid, &attrs);
+	DEASSERT_NOTNULL(pContext)
 	
-	DEASSERT_TRUE(emscripten_webgl_get_drawing_buffer_size(
-		pContext, &pScreenWidth, &pScreenHeight) == EMSCRIPTEN_RESULT_SUCCESS)
+	// loader and compiler contexts have to be created by the thread using them
+	
+	OGL_WASM_CHECK(pRenderThread, emscripten_webgl_make_context_current(pContext));
+	
+	OGL_WASM_CHECK(pRenderThread, emscripten_webgl_get_drawing_buffer_size(
+		pContext, &pScreenWidth, &pScreenHeight));
 	
 	pRenderThread.GetLogger().LogInfoFormat("Display size %ix%i", pScreenWidth, pScreenHeight);
 }
@@ -1401,7 +1411,7 @@ EMSCRIPTEN_WEBGL_CONTEXT_HANDLE deoglRTContext::GetLoaderContext(){
 		attrs.explicitSwapControl = true;
 		attrs.renderViaOffscreenBackBuffer = false;
 		
-		pLoaderContext = emscripten_webgl_create_context("#dragengine", &attrs);
+		pLoaderContext = emscripten_webgl_create_context(pOSWebWasm->GetCanvasId(), &attrs);
 		DEASSERT_NOTNULL(pLoaderContext)
 	}
 	return pLoaderContext;
@@ -1426,7 +1436,7 @@ EMSCRIPTEN_WEBGL_CONTEXT_HANDLE deoglRTContext::GetCompileContextAt(int index){
 		attrs.explicitSwapControl = true;
 		attrs.renderViaOffscreenBackBuffer = false;
 		
-		pCompileContext[index] = emscripten_webgl_create_context("#dragengine", &attrs);
+		pCompileContext[index] = emscripten_webgl_create_context(pOSWebWasm->GetCanvasId(), &attrs);
 		DEASSERT_NOTNULL(pCompileContext[index])
 	}
 	return pCompileContext[index];

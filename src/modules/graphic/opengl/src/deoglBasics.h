@@ -85,6 +85,13 @@ void dbgCheckOglError(deoglRenderThread &renderThread, const char *file, int lin
 
 #define OGL_CHECK_WRTC(renderThread,wrtc,cmd) oglClearError(); cmd; dbgCheckOglError(renderThread, __FILE__, __LINE__, wrtc)
 
+#ifdef OS_WEBWASM
+
+#include <emscripten.h>
+void oglCheckWasmError(deoglRenderThread &renderThread, EMSCRIPTEN_RESULT result, const char *file, int line);
+#define OGL_WASM_CHECK(renderThread,cmd) oglCheckWasmError(renderThread, cmd, __FILE__, __LINE__)
+
+#endif
 
 struct oglRGBA{
 	GLubyte r, g, b, a;
