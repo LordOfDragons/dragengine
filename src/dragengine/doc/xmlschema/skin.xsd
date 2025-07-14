@@ -16,7 +16,7 @@
 	<xs:complexType name='property_mapped'>
 		<xs:annotation>
 			<xs:documentation><![CDATA[
-				Property defined by a mapped balue. Mapped values allow to dynamically
+				Property defined by a mapped value. Mapped values allow to dynamically
 				adjust the value of a property by using a renderable or a bone state.
 				<p>
 				Default content depends on property
