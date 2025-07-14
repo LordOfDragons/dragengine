@@ -44,6 +44,7 @@
 #define pInstRefractionDistortStrength pSharedSPB[spbIndex].instRefractionDistortStrength
 #define pInstReflectivitySolidityMultiplier pSharedSPB[spbIndex].instReflectivitySolidityMultiplier
 #define pInstEmissivityIntensity pSharedSPB[spbIndex].instEmissivityIntensity
+#define pInstEnvRoomTint pSharedSPB[spbIndex].instEnvRoomTint
 #define pInstEnvRoomSize pSharedSPB[spbIndex].instEnvRoomSize
 #define pInstEnvRoomOffset pSharedSPB[spbIndex].instEnvRoomOffset
 #define pInstEnvRoomEmissivityIntensity pSharedSPB[spbIndex].instEnvRoomEmissivityIntensity

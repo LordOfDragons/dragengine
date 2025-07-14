@@ -106,6 +106,7 @@ void deoglSkinShaderConfig::Reset(){
 	pDynamicRefractionDistortStrength = false;
 	pDynamicEmissivityTint = false;
 	pDynamicEmissivityIntensity = false;
+	pDynamicEnvRoomTint = false;
 	pDynamicEnvRoomSize = false;
 	pDynamicEnvRoomOffset = false;
 	pDynamicEnvRoomEmissivityTint = false;
@@ -349,6 +350,10 @@ void deoglSkinShaderConfig::SetDynamicEmissivityIntensity( bool dynamic ){
 	pDynamicEmissivityIntensity = dynamic;
 }
 
+void deoglSkinShaderConfig::SetDynamicEnvRoomTint(bool dynamic){
+	pDynamicEnvRoomTint = dynamic;
+}
+
 void deoglSkinShaderConfig::SetDynamicEnvRoomSize( bool dynamic ){
 	pDynamicEnvRoomSize = dynamic;
 }
@@ -567,25 +572,26 @@ void deoglSkinShaderConfig::UpdateKey(){
 	if( pDynamicRefractionDistortStrength ) pKey3 |= ( uint64_t )1 << 14;
 	if( pDynamicEmissivityTint ) pKey3 |= ( uint64_t )1 << 15;
 	if( pDynamicEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 16;
-	if( pDynamicEnvRoomSize ) pKey3 |= ( uint64_t )1 << 17;
-	if( pDynamicEnvRoomOffset ) pKey3 |= ( uint64_t )1 << 18;
-	if( pDynamicEnvRoomEmissivityTint ) pKey3 |= ( uint64_t )1 << 19;
-	if( pDynamicEnvRoomEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 20;
-	if( pDynamicThickness ) pKey3 |= ( uint64_t )1 << 21;
-	if( pDynamicAbsorption ) pKey3 |= ( uint64_t )1 << 22;
-	if( pDynamicVariation ) pKey3 |= ( uint64_t )1 << 23;
-	if( pDynamicOutlineColor ) pKey3 |= ( uint64_t )1 << 24;
-	if( pDynamicOutlineColorTint ) pKey3 |= ( uint64_t )1 << 25;
-	if( pDynamicOutlineThickness ) pKey3 |= ( uint64_t )1 << 26;
-	if( pDynamicOutlineSolidity ) pKey3 |= ( uint64_t )1 << 27;
-	if( pDynamicOutlineEmissivity ) pKey3 |= ( uint64_t )1 << 28;
-	if( pDynamicOutlineEmissivityTint ) pKey3 |= ( uint64_t )1 << 29;
-	if( pDynamicRimEmissivityTint ) pKey3 |= ( uint64_t )1 << 30;
-	if( pDynamicRimEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 31;
-	if( pDynamicRimAngle ) pKey3 |= ( uint64_t )1 << 32;
-	if( pDynamicRimExponent ) pKey3 |= ( uint64_t )1 << 33;
-	if( pDynamicSkinClipPlane ) pKey3 |= ( uint64_t )1 << 34;
-	if( pDynamicSkinClipPlaneBorder ) pKey3 |= ( uint64_t )1 << 35;
+	if( pDynamicEnvRoomTint ) pKey3 |= (uint64_t)1 << 17;
+	if( pDynamicEnvRoomSize ) pKey3 |= ( uint64_t )1 << 18;
+	if( pDynamicEnvRoomOffset ) pKey3 |= ( uint64_t )1 << 19;
+	if( pDynamicEnvRoomEmissivityTint ) pKey3 |= ( uint64_t )1 << 20;
+	if( pDynamicEnvRoomEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 21;
+	if( pDynamicThickness ) pKey3 |= ( uint64_t )1 << 22;
+	if( pDynamicAbsorption ) pKey3 |= ( uint64_t )1 << 23;
+	if( pDynamicVariation ) pKey3 |= ( uint64_t )1 << 24;
+	if( pDynamicOutlineColor ) pKey3 |= ( uint64_t )1 << 25;
+	if( pDynamicOutlineColorTint ) pKey3 |= ( uint64_t )1 << 26;
+	if( pDynamicOutlineThickness ) pKey3 |= ( uint64_t )1 << 27;
+	if( pDynamicOutlineSolidity ) pKey3 |= ( uint64_t )1 << 28;
+	if( pDynamicOutlineEmissivity ) pKey3 |= ( uint64_t )1 << 29;
+	if( pDynamicOutlineEmissivityTint ) pKey3 |= ( uint64_t )1 << 30;
+	if( pDynamicRimEmissivityTint ) pKey3 |= ( uint64_t )1 << 31;
+	if( pDynamicRimEmissivityIntensity ) pKey3 |= ( uint64_t )1 << 32;
+	if( pDynamicRimAngle ) pKey3 |= ( uint64_t )1 << 33;
+	if( pDynamicRimExponent ) pKey3 |= ( uint64_t )1 << 34;
+	if( pDynamicSkinClipPlane ) pKey3 |= ( uint64_t )1 << 35;
+	if( pDynamicSkinClipPlaneBorder ) pKey3 |= ( uint64_t )1 << 36;
 	
 	pKey4 = ( uint32_t )0;
 	if( pTextureColor ) pKey4 |= ( uint32_t )1 << 0;
@@ -798,6 +804,9 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pDynamicEmissivityIntensity ){
 		string.Append( " dynEmiInt" );
 	}
+	if(pDynamicEnvRoomTint){
+		string.Append(" dynEnvRoomTint");
+	}
 	if( pDynamicEnvRoomSize ){
 		string.Append( " dynEnvRoomSize" );
 	}
@@ -980,6 +989,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pDynamicRefractionDistortStrength = config.pDynamicRefractionDistortStrength;
 	pDynamicEmissivityTint = config.pDynamicEmissivityTint;
 	pDynamicEmissivityIntensity = config.pDynamicEmissivityIntensity;
+	pDynamicEnvRoomTint = config.pDynamicEnvRoomTint;
 	pDynamicEnvRoomSize = config.pDynamicEnvRoomSize;
 	pDynamicEnvRoomOffset = config.pDynamicEnvRoomOffset;
 	pDynamicEnvRoomEmissivityTint = config.pDynamicEnvRoomEmissivityTint;

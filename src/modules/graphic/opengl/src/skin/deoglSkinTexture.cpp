@@ -160,8 +160,10 @@ pSharedSPBElement( nullptr )
 	pEmissivityIntensity = 0.0f;
 	pEmissivity.SetZero();
 	pEmissivityCameraAdapted = false;
+	pEmissivityTint.Set(1.0f, 1.0f, 1.0f);
 	pEnvironmentRoomEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pEnvironmentRoomEmissivityIntensity = 0.0f;
+	pEnvironmentRoomTint.Set(1.0f, 1.0f, 1.0f);
 	pEnvironmentRoomSize.Set( 1.0f, 1.0f );
 	pEnvironmentRoomOffset.Set( 0.0f, 0.0f, 0.0f );
 	pHeightScale = 0.1f;
@@ -610,6 +612,10 @@ void deoglSkinTexture::SetReflectivitySolidityMultiplier( float multiplier ){
 
 void deoglSkinTexture::SetReflected( bool reflected ){
 	pReflected = reflected;
+}
+
+void deoglSkinTexture::SetEnvironmentRoomTint(const decColor &tint){
+	pEnvironmentRoomTint = tint;
 }
 
 void deoglSkinTexture::SetEnvironmentRoomSize( const decVector2 &size ){
@@ -1603,6 +1609,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pEmissivityCameraAdapted = value > 0.5f;
 			break;
 			
+		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
+			pEnvironmentRoomTint.Set(value, value, value);
+			break;
+			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
 			pEnvironmentRoomSize.Set( value, value );
 			break;
@@ -1813,6 +1823,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pEmissivityTint = color;
 			break;
 			
+		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
+			pEnvironmentRoomTint = color;
+			break;
+			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
 			pEnvironmentRoomSize.Set( color.r, color.g );
 			break;
@@ -2007,6 +2021,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptEmissivityIntensity:
 			materialProperty = pMaterialProperties + empEmissivityIntensity;
+			break;
+			
+		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
+			materialProperty = pMaterialProperties + empEnvironmentRoomTint;
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
@@ -2311,6 +2329,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pMaterialProperties[ empEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
+		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
+			pMaterialProperties[empEnvironmentRoomTint].SetRenderable(
+				skin.AddRenderable(renderable));
+			break;
+			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
 			pMaterialProperties[ empEnvironmentRoomSize ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
@@ -2516,6 +2539,11 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 		powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
 		powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
 		powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
+	
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexEnvRoomTint, element,
+		powf(pEnvironmentRoomTint.r, 2.2f),
+		powf(pEnvironmentRoomTint.g, 2.2f),
+		powf(pEnvironmentRoomTint.b, 2.2f));
 	
 	spb.SetParameterDataVec2( deoglSkinShader::etutTexEnvRoomSize, element,
 		1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );

@@ -45,6 +45,8 @@ struct sTextureParameters{
 	vec3 texEnvRoomOffset; // environmentroom.offset
 	float texTransparencyMultiplier; // transparency.multiplier
 	
+	vec3 texEnvRoomTint; // environmentroom.tint
+	
 	vec3 texEnvRoomEmissivityIntensity; // environmentroom.emissivity.intensity
 	float texThickness; // thickness
 	

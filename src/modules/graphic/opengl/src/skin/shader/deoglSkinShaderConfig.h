@@ -178,6 +178,7 @@ public:
 	bool pDynamicRefractionDistortStrength;
 	bool pDynamicEmissivityTint;
 	bool pDynamicEmissivityIntensity;
+	bool pDynamicEnvRoomTint;
 	bool pDynamicEnvRoomSize;
 	bool pDynamicEnvRoomOffset;
 	bool pDynamicEnvRoomEmissivityTint;
@@ -540,6 +541,12 @@ public:
 	
 	/** Set if emissivity intensity texture property is dynamic. */
 	void SetDynamicEmissivityIntensity( bool dynamic );
+	
+	/** Environent room tint texture property is dynamic. */
+	inline bool GetDynamicEnvRoomTint() const{ return pDynamicEnvRoomTint; }
+	
+	/** Set if environent room tint texture property is dynamic. */
+	void SetDynamicEnvRoomTint(bool dynamic);
 	
 	/** Environent room size texture property is dynamic. */
 	inline bool GetDynamicEnvRoomSize() const{ return pDynamicEnvRoomSize; }

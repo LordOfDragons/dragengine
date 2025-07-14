@@ -8,6 +8,7 @@
 	<define>DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY</define>
 	<define>DYNAMIC_ENVROOM_OFFSET</define>
 	<define>DYNAMIC_ENVROOM_SIZE</define>
+	<define>DYNAMIC_ENVROOM_TINT</define>
 	<define>DYNAMIC_HEIGHT_REMAP</define>
 	<define>DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER</define>
 	<define>DYNAMIC_NORMAL_STRENGTH</define>
@@ -121,6 +122,12 @@
 	#define pEmissivityIntensity pInstEmissivityIntensity
 #else
 	#define pEmissivityIntensity pTexEmissivityIntensity
+#endif
+
+#ifdef DYNAMIC_ENVROOM_TINT
+	#define pEnvRoomTint pInstEnvRoomTint
+#else
+	#define pEnvRoomTint pTexEnvRoomTint
 #endif
 
 #ifdef DYNAMIC_ENVROOM_SIZE
