@@ -1486,6 +1486,16 @@
 					]]></xs:documentation>
 				</xs:annotation>
 			</xs:enumeration>
+			<xs:enumeration value='environmentroom.tint'>
+				<xs:annotation>
+					<xs:documentation><![CDATA[
+						Defines a color used to tint the environment room property. This defines
+						an 3-component color that is multiplied component wise with the environment room
+						property. Typically used to create tinted versions of a texture without
+						creating multiple skins.
+					]]></xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
 			<xs:enumeration value='environmentroom.size'>
 				<xs:annotation>
 					<xs:documentation><![CDATA[

@@ -181,6 +181,8 @@ public:
 		etutTexEnvRoomOffset,
 		etutTexTransparencyMultiplier,
 		
+		etutTexEnvRoomTint,
+		
 		etutTexEnvRoomEmissivityIntensity,
 		etutTexThickness,
 		
@@ -252,6 +254,7 @@ public:
 		eiutInstRefractionDistortStrength,
 		eiutInstReflectivitySolidityMultiplier,
 		eiutInstEmissivityIntensity,
+		eiutInstEnvRoomTint,
 		eiutInstEnvRoomSize,
 		eiutInstEnvRoomOffset,
 		eiutInstEnvRoomEmissivityIntensity,

@@ -72,6 +72,8 @@ struct sInstanceParameters{
 	vec3 instEmissivityIntensity; // emissivity.intensity
 	float instRefractionDistortStrength; // refraction.distort.strength
 	
+	vec3 instEnvRoomTint; // environmentroom.tint
+	
 	vec3 instEnvRoomEmissivityIntensity; // environmentroom.emissivity.intensity
 	float instReflectivitySolidityMultiplier; // reflectivity.solidity.multiplier
 	
@@ -177,6 +179,8 @@ UBOLAYOUT_BIND(2) uniform InstanceParameters{
 	vec2 pInstEnvRoomSize; // environmentroom.size
 	
 	vec3 pInstEnvRoomOffset; // environmentroom.offset
+	
+	vec3 pInstEnvRoomTint; // environmentroom.tint
 	
 	vec3 pInstEnvRoomEmissivityIntensity; // environmentroom.emissivity.intensity
 	

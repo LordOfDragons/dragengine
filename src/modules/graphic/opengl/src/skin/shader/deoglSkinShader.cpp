@@ -120,10 +120,12 @@ static const char *vTextureUniformTargetNames[ deoglSkinShader::ETUT_COUNT ] = {
 	"pTexEnvRoomSize", // etutTexEnvRoomSize
 	"pTexRefractionDistortStrength", // etutTexRefractionDistortStrength
 	"pTexReflectivitySolidityMultiplier", // etutTexReflectivitySolidityMultiplier
-		
+	
 	"pTexEnvRoomOffset", // etutTexEnvRoomOffset
 	"pTexTransparencyMultiplier", // etutTexTransparencyMultiplier
-
+	
+	"pTexEnvRoomTint", // etutTexEnvRoomTint
+	
 	"pTexEnvRoomEmissivityIntensity", // etutTexEnvRoomEmissivityIntensity
 	"pTexThickness", // etutTexThichness
 	
@@ -192,6 +194,7 @@ static const char *vInstanceUniformTargetNames[ deoglSkinShader::EIUT_COUNT ] = 
 	"pInstRefractionDistortStrength", // pInstRefractionDistortStrength
 	"pInstReflectivitySolidityMultiplier", // eiutInstReflectivitySolidityMultiplier
 	"pInstEmissivityIntensity", // eiutInstEmissivityIntensity
+	"pInstEnvRoomTint", // eiutInstEnvRoomTint
 	"pInstEnvRoomSize", // eiutInstEnvRoomSize
 	"pInstEnvRoomOffset", // eiutInstEnvRoomOffset
 	"pInstEnvRoomEmissivityIntensity", // eiutInstEnvRoomEmissivityIntensity
@@ -250,6 +253,8 @@ static const sSPBParameterDefinition vTextureSPBParamDefs[ deoglSkinShader::ETUT
 	
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexEnvRoomOffset ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexTransparencyMultiplier ( float )
+	
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexEnvRoomTint (vec3)
 	
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexEnvRoomEmissivityIntensity ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexThickness ( float )
@@ -320,6 +325,7 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIU
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstRefractionDistortStrength ( float )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstReflectivitySolidityMultiplier ( float )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstEmissivityIntensity ( float )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstEnvRoomTint (vec3)
 	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // eiutInstEnvRoomSize ( vec2 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstEnvRoomOffset ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstEnvRoomEmissivityIntensity ( vec3 )
@@ -333,13 +339,13 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIU
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineColorTint ( vec3 )
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineEmissivity ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstOutlineSolidity ( float )
-	{ deoglSPBParameter::evtFloat, 3, 1, 1 },  // eiutInstOutlineEmissivityTint ( vec3 )
-	{ deoglSPBParameter::evtFloat, 4, 1, 1 },  // eiutInstClipPlaneNormal ( vec4 )
+	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstOutlineEmissivityTint ( vec3 )
+	{ deoglSPBParameter::evtFloat, 4, 1, 1 }, // eiutInstClipPlaneNormal ( vec4 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstClipPlane ( float )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 } // eiutInstClipPlaneBorder ( float )
 };
 
-static const int vUBOInstParamMapCount = 47;
+static const int vUBOInstParamMapCount = 48;
 static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInstParamMapCount ] = {
 	deoglSkinShader::eiutMatrixModel, // eiutMatrixModel ( mat4x3 )
 	deoglSkinShader::eiutMatrixNormal, // eiutMatrixNormal ( mat3 )
@@ -388,6 +394,8 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	
 	deoglSkinShader::eiutInstEmissivityIntensity, // eiutInstEmissivityIntensity ( vec3 )
 	deoglSkinShader::eiutInstRefractionDistortStrength, // eiutInstRefractionDistortStrength ( float )
+	
+	deoglSkinShader::eiutInstEnvRoomTint, // eiutInstEnvRoomTint (vec3)
 	
 	deoglSkinShader::eiutInstEnvRoomEmissivityIntensity, // eiutInstEnvRoomEmissivityIntensity ( vec3 )
 	deoglSkinShader::eiutInstReflectivitySolidityMultiplier, // eiutInstReflectivitySolidityMultiplier ( float )
@@ -990,6 +998,20 @@ deoglRDynamicSkin *dynamicSkin ) const{
 		
 		paramBlock.SetParameterDataVec3( pInstanceUniformTargets[ eiutInstEmissivityIntensity ],
 			element, tint * decMath::max( intensity, 0.0f ) );
+	}
+	
+	if(pInstanceUniformTargets[eiutInstEnvRoomTint] != -1){
+		const deoglSkinTextureProperty &propertyTint = skinTexture
+			.GetMaterialPropertyAt(deoglSkinTexture::empEnvironmentRoomTint);
+		decColor tint(propertyTint.ResolveColor(skinState, dynamicSkin,
+			skinTexture.GetEnvironmentRoomTint()));
+		
+		tint.r = powf(decMath::max(tint.r, 0.0f), 2.2f);
+		tint.g = powf(decMath::max(tint.g, 0.0f), 2.2f);
+		tint.b = powf(decMath::max(tint.b, 0.0f), 2.2f);
+		
+		paramBlock.SetParameterDataVec3(
+			pInstanceUniformTargets[eiutInstEnvRoomTint], element, tint);
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstEnvRoomSize ] != -1 ){
@@ -2020,6 +2042,9 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetDynamicEmissivityIntensity() || pConfig.GetDynamicEmissivityTint() ){
 		defines.SetDefines( "DYNAMIC_EMISSIVITY_INTENSITY" );
 	}
+	if(pConfig.GetDynamicEnvRoomTint()){
+		defines.SetDefines("DYNAMIC_ENVROOM_TINT");
+	}
 	if( pConfig.GetDynamicEnvRoomSize() ){
 		defines.SetDefines( "DYNAMIC_ENVROOM_SIZE" );
 	}
@@ -2391,6 +2416,7 @@ void deoglSkinShader::UpdateUniformTargets(){
 		pInstanceUniformTargets[ eiutInstReflectivitySolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstRefractionDistortStrength ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstEmissivityIntensity ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[eiutInstEnvRoomTint] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstEnvRoomSize ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstEnvRoomOffset ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstEnvRoomEmissivityIntensity ] = pUsedInstanceUniformTargetCount++;

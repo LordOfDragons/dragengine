@@ -368,7 +368,7 @@ void main(void){
 		
 		#ifndef LUMINANCE_ONLY
 			#ifdef TEXTURE_ENVROOM
-				vec3 envRoomColor = textureLod(texEnvRoom, envRoomDir, 0.0).rgb;
+				vec3 envRoomColor = textureLod(texEnvRoom, envRoomDir, 0.0).rgb * pEnvRoomTint;
 			#else
 				vec3 envRoomColor = vec3(0.0);
 			#endif

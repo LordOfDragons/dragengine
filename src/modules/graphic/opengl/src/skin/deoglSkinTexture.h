@@ -66,6 +66,7 @@ public:
 		empEmissivity,
 		empEmissivityTint,
 		empEmissivityIntensity,
+		empEnvironmentRoomTint,
 		empEnvironmentRoomEmissivityIntensity,
 		empEnvironmentRoomEmissivityTint,
 		empEnvironmentRoomSize,
@@ -182,6 +183,7 @@ private:
 	decColor pEmissivityTint;
 	float pEmissivityIntensity;
 	bool pEmissivityCameraAdapted;
+	decColor pEnvironmentRoomTint;
 	decVector2 pEnvironmentRoomSize;
 	decVector pEnvironmentRoomOffset;
 	decColor pEnvironmentRoomEmissivityTint;
@@ -548,6 +550,12 @@ public:
 	void SetEmissivityCameraAdapted( bool cameraAdapted );
 	
 	
+	
+	/** Environment room tint. */
+	inline const decColor &GetEnvironmentRoomTint() const{ return pEnvironmentRoomTint; }
+	
+	/** Set environment room tint. */
+	void SetEnvironmentRoomTint(const decColor &tint);
 	
 	/** Environment room size. */
 	inline const decVector2 &GetEnvironmentRoomSize() const{ return pEnvironmentRoomSize; }
