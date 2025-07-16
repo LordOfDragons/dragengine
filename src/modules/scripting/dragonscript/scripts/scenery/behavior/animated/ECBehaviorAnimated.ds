@@ -438,9 +438,9 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				pTrigger.addListener(PlayingListener.new(this))
 				
 				pTargetPlaying.setName(pECBehavior.getTargetPlaying().getValue(stub))
+				
+				pPlayback.setPlaying(pTrigger.getState(pPlayback.getPlaying()))
 			end
-			
-			pPlayback.setPlaying(pTrigger.getState(pPlayback.getPlaying()))
 			
 			if pPlayback.getPlaying()
 				setRequiresThink(true)
