@@ -16,7 +16,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=inte
 appendLibrary(envModule, parent_targets['lib_dragonscript'], libs)
 
 # fetch values in expanded form for later use
-versionString = '1.27'
+versionString = '1.28'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
