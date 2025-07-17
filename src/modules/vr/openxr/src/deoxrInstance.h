@@ -79,10 +79,13 @@ public:
 		extKHRCompositionLayerDepth, //<! XR_KHR_composition_layer_depth
 		extEXTHandInteraction, //<! XR_EXT_hand_interaction
 		extHTCHandInteraction, //<! XR_HTC_hand_interaction
-		extKHRAndroidCreateInstance //<! XR_KHR_android_create_instance
+		extKHRAndroidCreateInstance, //<! XR_KHR_android_create_instance
+		extFBTouchControllerPro, //<! XR_FB_touch_controller_pro
+		extFBTouchControllerProximity, //<! XR_FB_touch_controller_proximity
+		extMETATouchControllerPlus //<! XR_META_touch_controller_plus
 	};
 	
-	static const int ExtensionCount = extKHRAndroidCreateInstance + 1;
+	static const int ExtensionCount = extMETATouchControllerPlus + 1;
 	
 	/** Layers. */
 	enum eLayer{

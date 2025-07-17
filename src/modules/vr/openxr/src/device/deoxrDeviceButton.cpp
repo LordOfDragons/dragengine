@@ -49,7 +49,8 @@ pDevice( device ),
 pIndex( -1 ),
 pType( deInputDeviceButton::ebtGeneric ),
 pPressed( false ),
-pTouched( false ){
+pTouched( false ),
+pNear(false){
 }
 
 deoxrDeviceButton::~deoxrDeviceButton(){
@@ -70,6 +71,10 @@ void deoxrDeviceButton::SetActionPress( deoxrAction *action ){
 
 void deoxrDeviceButton::SetActionTouch( deoxrAction *action ){
 	pActionTouch = action;
+}
+
+void deoxrDeviceButton::SetActionApproach(deoxrAction *action){
+	pActionApproach = action;
 }
 
 void deoxrDeviceButton::SetFakeFromAxis( const deoxrDeviceAxis::Ref &axis ){
@@ -132,6 +137,26 @@ void deoxrDeviceButton::UpdateTouched( bool touched ){
 	pDevice.GetOxr().SendEvent( event );
 }
 
+void deoxrDeviceButton::SetNear(bool near){
+	pNear = near;
+}
+
+void deoxrDeviceButton::UpdateNear(bool near){
+	if(near == pNear){
+		return;
+	}
+	
+	SetNear(near);
+	
+	deInputEvent event;
+	event.SetType(near ? deInputEvent::eeButtonApproach : deInputEvent::eeButtonWithdraw);
+	event.SetSource(deInputEvent::esVR);
+	event.SetDevice(pDevice.GetIndex());
+	event.SetCode(pIndex);
+	pDevice.GetOxr().InputEventSetTimestamp(event);
+	pDevice.GetOxr().SendEvent(event);
+}
+
 
 
 void deoxrDeviceButton::SetDisplayImages( const char *name ){
@@ -176,6 +201,7 @@ void deoxrDeviceButton::GetInfo( deInputDeviceButton &info ) const{
 	info.SetType( pType );
 	info.SetComponent( pInputDeviceComponent ? pInputDeviceComponent->GetID().GetString() : "" );
 	info.SetTouchable( pActionTouch );
+	info.SetApproachable(pActionApproach);
 	
 	info.SetDisplayImage( pDisplayImage );
 	
@@ -216,5 +242,12 @@ void deoxrDeviceButton::TrackState(){
 		UpdateTouched(
 			XR_SUCCEEDED( instance.xrGetActionStateBoolean( session.GetSession(), &getInfo, &state ) )
 			&& state.isActive && state.currentState );
+	}
+	
+	if(pActionApproach){
+		getInfo.action = pActionApproach->GetAction();
+		UpdateNear(
+			XR_SUCCEEDED(instance.xrGetActionStateBoolean(session.GetSession(), &getInfo, &state))
+			&& state.isActive && state.currentState);
 	}
 }

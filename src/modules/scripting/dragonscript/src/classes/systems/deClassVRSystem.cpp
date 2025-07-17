@@ -349,6 +349,22 @@ void deClassVRSystem::nfGetButtonTouched::RunFunction( dsRunTime *rt, dsValue* )
 	rt->PushBool( module.GetButtonTouched( device, button ) );
 }
 
+// static func bool getButtonNear(int device, int button)
+deClassVRSystem::nfGetButtonNear::nfGetButtonNear(const sInitData &init) :
+dsFunction(init.clsVRSystem, "getButtonNear", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+	p_AddParameter(init.clsInteger); // device
+	p_AddParameter(init.clsInteger); // button
+}
+void deClassVRSystem::nfGetButtonNear::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass() )->GetDS();
+	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
+	
+	const int device = rt->GetValue(0)->GetInt();
+	const int button = rt->GetValue(1)->GetInt();
+	rt->PushBool(module.GetButtonNear(device, button));
+}
+
 // public static func float getAxisValue( int device, int axis )
 deClassVRSystem::nfGetAxisValue::nfGetAxisValue( const sInitData &init ) :
 dsFunction( init.clsVRSystem, "getAxisValue", DSFT_FUNCTION,
@@ -563,6 +579,7 @@ void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIndexOfFeedbackWithID( init ) );
 	AddFunction( new nfGetButtonPressed( init ) );
 	AddFunction( new nfGetButtonTouched( init ) );
+	AddFunction(new nfGetButtonNear(init));
 	AddFunction( new nfGetAxisValue( init ) );
 	AddFunction( new nfGetFeedbackValue( init ) );
 	AddFunction( new nfSetFeedbackValue( init ) );

@@ -86,4 +86,16 @@ enum InputEventType
 	 * devices and device lists held.
 	 */
 	deviceAttachedDetached
+	
+	/**
+	 * \brief User finger approached device button.
+	 * \version 1.28
+	 */
+	buttonApproach
+	
+	/**
+	 * \brief User finger withdrew from device button.
+	 * \version 1.28
+	 */
+	buttonWithdraw
 end

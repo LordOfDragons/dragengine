@@ -34,22 +34,18 @@ pin Dragengine.Utils.Text
  * Can be bound to player input events or used in widgets.
  */
 class Command
-	private var String pName
-	private var String pDescription
-	private var String pTranslateDescription
-	private var String pDisplayName
-	private var String pTranslateDisplayName
+	var String pName, pDescription, pTranslateDescription, pDisplayName, pTranslateDisplayName
 	
 	
 	
 	/** \brief Create command. */
-	public func new()
+	func new()
 		pName = "unnamed"
 		pDescription = ""
 	end
 	
 	/** \brief Create command. */
-	public func new(String name, String description)
+	func new(String name, String description)
 		setName(name)
 		setDescription(description)
 	end
@@ -57,7 +53,7 @@ class Command
 	
 	
 	/** \brief Unique name. */
-	public func String getName()
+	func String getName()
 		return pName
 	end
 	
@@ -66,7 +62,7 @@ class Command
 	 * 
 	 * Allowed are only upper and lower case letters, numbers and underscores.
 	 */
-	public func void setName(String name)
+	func void setName(String name)
 		if name == null
 			throw EInvalidParam.new()
 		end
@@ -74,12 +70,12 @@ class Command
 	end
 	
 	/** \brief Description. */
-	public func String getDescription()
+	func String getDescription()
 		return pDescription
 	end
 	
 	/** \brief Set description. */
-	public func void setDescription(String description)
+	func void setDescription(String description)
 		if description == null
 			throw EInvalidParam.new()
 		end
@@ -93,7 +89,7 @@ class Command
 	 * If not null use TranslationManager to get description. If null or no translation
 	 * can be found getDescription() has to be used.
 	 */
-	public func String getTranslateDescription()
+	func String getTranslateDescription()
 		return pTranslateDescription
 	end
 	
@@ -104,7 +100,7 @@ class Command
 	 * If not null use TranslationManager to get display name. If null or no translation
 	 * can be found getDescription() has to be used.
 	 */
-	public func void setTranslateDescription(String translateName)
+	func void setTranslateDescription(String translateName)
 		pTranslateDescription = translateName
 	end
 	
@@ -115,7 +111,7 @@ class Command
 	 * Display name is used for EditBindingsPanel and other placers where commands
 	 * have to be shown to the user in a UI. If null getName() has to be used.
 	 */
-	public func String getDisplayName()
+	func String getDisplayName()
 		return pDisplayName
 	end
 	
@@ -126,7 +122,7 @@ class Command
 	 * Display name is used for EditBindingsPanel and other placers where commands
 	 * have to be shown to the user in a UI. If null getName() has to be used.
 	 */
-	public func void setDisplayName(String displayName)
+	func void setDisplayName(String displayName)
 		pDisplayName = displayName
 	end
 	
@@ -137,7 +133,7 @@ class Command
 	 * If not null use TranslationManager to get display name. If null or no translation
 	 * can be found getDisplayName() has to be used.
 	 */
-	public func String getTranslateDisplayName()
+	func String getTranslateDisplayName()
 		return pTranslateDisplayName
 	end
 	
@@ -148,7 +144,7 @@ class Command
 	 * If not null use TranslationManager to get display name. If null or no translation
 	 * can be found getDisplayName() has to be used.
 	 */
-	public func void setTranslateDisplayName(String translateName)
+	func void setTranslateDisplayName(String translateName)
 		pTranslateDisplayName = translateName
 	end
 	
@@ -167,7 +163,7 @@ class Command
 	 * 
 	 * \param translationManager TranslationManager to use or null.
 	 */
-	public func String translateDisplayName(TranslationManager translationManager)
+	func String translateDisplayName(TranslationManager translationManager)
 		var UnicodeString text
 		
 		if pTranslateDisplayName != null
@@ -196,7 +192,7 @@ class Command
 	 * 
 	 * Same as translateDisplayName(TranslationManager) using TranslationManager.get() .
 	 */
-	public func String translateDisplayName()
+	func String translateDisplayName()
 		return translateDisplayName(TranslationManager.get())
 	end
 	
@@ -212,7 +208,7 @@ class Command
 	 * 
 	 * \param translationManager TranslationManager to use or null.
 	 */
-	public func String translateDescription(TranslationManager translationManager)
+	func String translateDescription(TranslationManager translationManager)
 		var UnicodeString t
 		
 		if pTranslateDescription != null
@@ -233,18 +229,18 @@ class Command
 	 * 
 	 * Same as translateDescription(TranslationManager) using TranslationManager.get() .
 	 */
-	public func String translateDescription()
+	func String translateDescription()
 		return translateDescription(TranslationManager.get())
 	end
 	
 	
 	
 	/** \brief Input device key or button has been pressed. */
-	public func void start()
+	func void start()
 	end
 	
 	/** \brief Input device key or button has been released. */
-	public func void stop()
+	func void stop()
 	end
 	
 	/**
@@ -252,7 +248,7 @@ class Command
 	 * 
 	 * Used for example to run the command for different reasons than input handling.
 	 */
-	public func void pulse()
+	func void pulse()
 		start()
 		stop()
 	end
@@ -267,7 +263,7 @@ class Command
 	 * \param value Relative axis position change in axis units. Caller is responsible to
 	 *              adjust the range to make different input devices match in magnitude.
 	 */
-	public func void analogRelative(float value)
+	func void analogRelative(float value)
 	end
 	
 	/**
@@ -278,20 +274,34 @@ class Command
 	 * 
 	 * \param value New axis position in the range -1 to 1.
 	 */
-	public func void analogAbsolute(float value)
+	func void analogAbsolute(float value)
 	end
 	
 	/**
 	 * \brief Input device button has been touched.
 	 * \version 1.6
 	 */
-	public func void touch()
+	func void touch()
 	end
 	
 	/**
 	 * \brief Input device button has been untouched.
 	 * \version 1.6
 	 */
-	public func void untouch()
+	func void untouch()
+	end
+	
+	/**
+	 * \brief User finger approached device button.
+	 * \version 1.28
+	 */
+	func void approach()
+	end
+	
+	/**
+	 * \brief User finger withdrew from device button.
+	 * \version 1.28
+	 */
+	func void withdraw()
 	end
 end

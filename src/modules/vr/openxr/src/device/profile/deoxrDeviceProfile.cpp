@@ -220,16 +220,20 @@ void deoxrDeviceProfile::pAddAxisTrigger( deoxrDevice &device, deoxrDeviceCompon
 	device.AddAxis( axis );
 }
 
-void deoxrDeviceProfile::pAddButtonTrigger( deoxrDevice &device, deoxrDeviceComponent *component, bool withTouch ){
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( device ) ) );
-	button->SetID( "trig" );
-	button->SetName( "Trigger" );
-	button->SetType( deInputDeviceButton::ebtTrigger );
-	button->SetDisplayText( "Tri" );
-	button->SetInputDeviceComponent( component );
-	button->SetActionPress( pInstance.GetOxr().GetAction( deVROpenXR::eiaTriggerPress ) );
-	if( withTouch ){
-		button->SetActionTouch( pInstance.GetOxr().GetAction( deVROpenXR::eiaTriggerTouch ) );
+void deoxrDeviceProfile::pAddButtonTrigger(deoxrDevice &device, deoxrDeviceComponent *component,
+bool withTouch, bool withAproach){
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(device)));
+	button->SetID("trig");
+	button->SetName("Trigger");
+	button->SetType(deInputDeviceButton::ebtTrigger);
+	button->SetDisplayText("Tri");
+	button->SetInputDeviceComponent(component);
+	button->SetActionPress(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerPress));
+	if(withTouch){
+		button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerTouch));
+	}
+	if(withAproach){
+		button->SetActionApproach(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerNear));
 	}
 	button->SetIndex( device.GetButtonCount() );
 	device.AddButton( button );
@@ -329,16 +333,23 @@ deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentThumbrest( deoxrDevice &d
 	return pAddComponent( device, deInputDeviceComponent::ectGeneric, "Thumbrest", "thumbrest", "Thumbrest" );
 }
 
-void deoxrDeviceProfile::pAddButtonThumbrest( deoxrDevice &device, deoxrDeviceComponent *component ){
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( device ) ) );
-	button->SetID( "trest" );
-	button->SetName( "Thumbrest" );
-	button->SetType( deInputDeviceButton::ebtGeneric );
-	button->SetDisplayText( "ThR" );
-	button->SetInputDeviceComponent( component );
-	button->SetActionTouch( pInstance.GetOxr().GetAction( deVROpenXR::eiaThumbrestTouch ) );
-	button->SetIndex( device.GetButtonCount() );
-	device.AddButton( button );
+void deoxrDeviceProfile::pAddButtonThumbrest(deoxrDevice &device, deoxrDeviceComponent *component,
+bool withPress, bool withApproach){
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(device)));
+	button->SetID("trest");
+	button->SetName("Thumbrest");
+	button->SetType(deInputDeviceButton::ebtGeneric);
+	button->SetDisplayText("ThR");
+	button->SetInputDeviceComponent(component);
+	button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestTouch));
+	if(withPress){
+		button->SetActionPress(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestPress));
+	}
+	if(withApproach){
+		button->SetActionApproach(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestNear));
+	}
+	button->SetIndex(device.GetButtonCount());
+	device.AddButton(button);
 }
 
 deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentGrip( deoxrDevice &device ){

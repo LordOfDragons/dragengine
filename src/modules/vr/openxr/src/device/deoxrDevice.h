@@ -222,6 +222,12 @@ public:
 		deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
 		const char *name, const char *id, const char *displayText );
 	
+	/** Add button. */
+	void AddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
+		deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
+		deVROpenXR::eInputActions actionNear, const char *name, const char *id,
+		const char *displayText );
+	
 	/** Button at index. */
 	deoxrDeviceButton *GetButtonAt( int index ) const;
 	

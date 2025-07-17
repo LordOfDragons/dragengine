@@ -43,6 +43,8 @@
 #include "device/profile/deoxrDPValveIndexController.h"
 #include "device/profile/deoxrDPHtcViveTracker.h"
 #include "device/profile/deoxrDPOculusTouchController.h"
+#include "device/profile/deoxrDPMetaQuestTouchProController.h"
+#include "device/profile/deoxrDPMetaTouchControllerPlus.h"
 #include "device/profile/deoxrDPHPMixedRealityController.h"
 #include "device/profile/deoxrDPSamsungOdysseyController.h"
 #include "device/profile/deoxrDPHTCViveCosmosControllerInteraction.h"
@@ -453,6 +455,10 @@ bool deVROpenXR::GetButtonPressed( int device, int button ){
 
 bool deVROpenXR::GetButtonTouched( int device, int button ){
 	return pDevices.GetAt( device )->GetButtonAt( button )->GetTouched();
+}
+
+bool deVROpenXR::GetButtonNear(int device, int button){
+	return pDevices.GetAt(device)->GetButtonAt(button)->GetNear();
 }
 
 float deVROpenXR::GetAxisValue( int device, int axis ){
@@ -904,9 +910,13 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet.TakeOver( new deoxrActionSet( pInstance ) );
 	
 	pActionSet->AddBoolAction( "trigger_press", "Press Trigger" );
+	pActionSet->AddBoolAction("trigger_force", "Force Trigger");
 	pActionSet->AddBoolAction( "trigger_touch", "Touch Trigger" );
 	pActionSet->AddFloatAction( "trigger_analog", "Pull Trigger" );
 	pActionSet->AddVibrationAction( "trigger_haptic", "Trigger Haptic" );
+	pActionSet->AddFloatAction("trigger_curl", "Curl Trigger");
+	pActionSet->AddFloatAction("trigger_slide", "Slide Trigger");
+	pActionSet->AddBoolAction("trigger_near", "Near Trigger");
 	
 	pActionSet->AddBoolAction( "button_primary_press", "Press Primary Button" );
 	pActionSet->AddBoolAction( "button_primary_touch", "Touch Primary Button" );
@@ -929,6 +939,9 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddVector2Action( "trackpad_analog", "TrackPad Analog" );
 	
 	pActionSet->AddBoolAction( "thumbrest_touch", "Touch Thumbrest" );
+	pActionSet->AddFloatAction("thumbrest_press", "Press Thumbrest");
+	pActionSet->AddBoolAction("thumbrest_near", "Near Thumbrest");
+	pActionSet->AddVibrationAction("thumbrest_haptic", "Thumbrest Haptic");
 	
 	pActionSet->AddBoolAction( "grip_press", "Squeeze Grip" );
 	pActionSet->AddBoolAction( "grip_touch", "Touch Grip" );
@@ -978,6 +991,8 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHUAWEIControllerInteraction( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftMixedRealityMotionController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftXboxController( pInstance ) ) );
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMetaTouchControllerPlus(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMetaQuestTouchProController(pInstance)));
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusGoController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusTouchController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSamsungOdysseyController( pInstance ) ) );

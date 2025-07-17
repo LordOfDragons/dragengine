@@ -185,7 +185,8 @@ protected:
 	
 	deoxrDeviceComponent *pAddComponentTrigger( deoxrDevice &device );
 	void pAddAxisTrigger( deoxrDevice &device, deoxrDeviceComponent *component );
-	void pAddButtonTrigger( deoxrDevice &device, deoxrDeviceComponent *component, bool withTouch );
+	void pAddButtonTrigger(deoxrDevice &device, deoxrDeviceComponent *component,
+		bool withTouch, bool withApproach = false);
 	
 	deoxrDeviceComponent *pAddComponentTrackpad( deoxrDevice &device );
 	void pAddAxesTrackpad( deoxrDevice &device, deoxrDeviceComponent *component );
@@ -196,7 +197,8 @@ protected:
 	void pAddButtonJoystick( deoxrDevice &device, deoxrDeviceComponent *component, bool withPress, bool withTouch );
 	
 	deoxrDeviceComponent *pAddComponentThumbrest( deoxrDevice &device );
-	void pAddButtonThumbrest( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddButtonThumbrest(deoxrDevice &device, deoxrDeviceComponent *component,
+		bool withPress = false, bool withApproach = false);
 	
 	deoxrDeviceComponent *pAddComponentGrip( deoxrDevice &device );
 	void pAddAxisGripGrab( deoxrDevice &device, deoxrDeviceComponent *component );

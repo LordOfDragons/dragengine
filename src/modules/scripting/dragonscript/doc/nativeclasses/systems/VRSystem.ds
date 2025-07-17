@@ -26,7 +26,7 @@ fixed class VRSystem
 	 * 
 	 * Returns true if a call to startRuntime() is likely to succeed or not.
 	 */
-	public static func bool runtimeUsable()
+	static func bool runtimeUsable()
 		return false
 	end
 	
@@ -78,7 +78,7 @@ fixed class VRSystem
 	 * and activates VR support on various modules. VR mode can be started and
 	 * stopped at any time.
 	 */
-	public static func void startRuntime()
+	static func void startRuntime()
 	end
 	
 	/**
@@ -89,7 +89,7 @@ fixed class VRSystem
 	 * and activates VR support on various modules. VR mode can be started and
 	 * stopped at any time.
 	 */
-	public static func void stopRuntime()
+	static func void stopRuntime()
 	end
 	
 	/**
@@ -101,12 +101,12 @@ fixed class VRSystem
 	 * and activates VR support on various modules. VR mode can be started and
 	 * stopped at any time.
 	 */
-	public static func bool isRuntimeRunning()
+	static func bool isRuntimeRunning()
 		return false
 	end
 	
 	/** \brief Camera to render on head mounted display or null. */
-	public static func Camera getCamera()
+	static func Camera getCamera()
 		return null
 	end
 	
@@ -115,14 +115,14 @@ fixed class VRSystem
 	 * 
 	 * If set to null fades back to safe scene as defined by VR Runtime.
 	 */
-	public static func void setCamera( Camera camera )
+	static func void setCamera( Camera camera )
 	end
 	
 	/**
 	 * \brief VR Runtime supports presenting user environment inside the rendered world.
 	 * \version 1.12
 	 */
-	public static func bool supportsPassthrough()
+	static func bool supportsPassthrough()
 		return false
 	end
 	
@@ -132,7 +132,7 @@ fixed class VRSystem
 	 * 
 	 * Returns false if SupportsPassthrough() returns false.
 	 */
-	public static func bool getEnablePassthrough()
+	static func bool getEnablePassthrough()
 		return false
 	end
 	
@@ -142,7 +142,7 @@ fixed class VRSystem
 	 * 
 	 * Has no effect if SupportsPassthrough() returns false.
 	 */
-	public static func void setEnablePassthrough(bool enable)
+	static func void setEnablePassthrough(bool enable)
 	end
 	
 	/**
@@ -152,7 +152,7 @@ fixed class VRSystem
 	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
 	 * environment. A value of 1 shows the environment. Values in between blend over.
 	 */
-	public static func float getPassthroughTransparency()
+	static func float getPassthroughTransparency()
 		return 0.0
 	end
 	
@@ -163,7 +163,7 @@ fixed class VRSystem
 	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
 	 * environment. A value of 1 shows the environment. Values in between blend over.
 	 */
-	public static func void setPassthroughTransparency(float transparency)
+	static func void setPassthroughTransparency(float transparency)
 	end
 	/*@}*/
 	
@@ -172,57 +172,65 @@ fixed class VRSystem
 	/** \name Input devices */
 	/*@{*/
 	/** \brief Number of input devices. */
-	public static func int getDeviceCount()
+	static func int getDeviceCount()
 		return 0
 	end
 	
 	/** \brief Information for input device at index. */
-	public static func InputDevice getDeviceAt( int index )
+	static func InputDevice getDeviceAt( int index )
 		return null
 	end
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	public static func int indexOfDeviceWithID( String id )
+	static func int indexOfDeviceWithID( String id )
 		return 0
 	end
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	public static func int indexOfButtonWithID( int device, String id )
+	static func int indexOfButtonWithID( int device, String id )
 		return 0
 	end
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	public static func int indexOfAxisWithID( int device, String id )
+	static func int indexOfAxisWithID( int device, String id )
 		return 0
 	end
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	public static func int indexOfFeedbackWithID( int device, String id )
+	static func int indexOfFeedbackWithID( int device, String id )
 		return 0
 	end
 	
 	/** \brief Button at index on device at index is pressed down. */
-	public static func bool getButtonPressed( int device, int button )
+	static func bool getButtonPressed( int device, int button )
 		return false
 	end
 	
 	/** \brief Button at index on device at index is touched. */
-	public static func bool getButtonTouched( int device, int button )
+	static func bool getButtonTouched( int device, int button )
+		return false
+	end
+	
+	/**
+	 * \brief User finger is near button at index on device at index.
+	 * \version 1.28
+	 */
+	static func bool getButtonNear(int device, int button)
 		return false
 	end
 	
 	/** \brief Value of axis at index on device at index. */
-	public static func float getAxisValue( int device, int axis )
+	static func float getAxisValue( int device, int axis )
 		return 0
 	end
 	
 	/** \brief Value of feedback at index on device at index. */
-	public static func float getFeedbackValue( int device, int feedback )
+	static func float getFeedbackValue( int device, int feedback )
 		return 0
 	end
 	
 	/** \brief Set value of feedback at index on device at index. */
-	public static func void setFeedbackValue( int device, int feedback, float value )
+	static func void setFeedbackValue( int device, int feedback, float value )
 	end
 	/*@}*/
 	
@@ -231,7 +239,7 @@ fixed class VRSystem
 	/** \name Parameters */
 	/*@{*/
 	/** \brief Number of parameters available. */
-	public static func int getParameterCount()
+	static func int getParameterCount()
 		return 0
 	end
 	
@@ -239,12 +247,12 @@ fixed class VRSystem
 	 * \brief Parameter information.
 	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
 	 */
-	public static func ModuleParameter getParameterInfo( int index )
+	static func ModuleParameter getParameterInfo( int index )
 		return null
 	end
 	
 	/** \brief Named parameter information or \em null if not found. */
-	public static func ModuleParameter getParameterInfo( String name )
+	static func ModuleParameter getParameterInfo( String name )
 		return null
 	end
 	
@@ -252,7 +260,7 @@ fixed class VRSystem
 	 * \brief Parameter value.
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
-	public static func String getParameterValue( String name )
+	static func String getParameterValue( String name )
 		return null
 	end
 	
@@ -260,11 +268,11 @@ fixed class VRSystem
 	 * \brief Set named parameter value.
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
-	public static func void setParameterValue( String name, String value )
+	static func void setParameterValue( String name, String value )
 	end
 	
 	/** \brief Send command. */
-	public static func String sendCommand( String command )
+	static func String sendCommand( String command )
 		return null
 	end
 	/*@}*/

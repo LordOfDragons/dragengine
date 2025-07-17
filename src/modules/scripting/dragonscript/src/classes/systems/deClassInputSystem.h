@@ -118,6 +118,7 @@ private:
 	DEF_NATFUNC( nfIndexOfFeedbackWithID );
 	DEF_NATFUNC( nfGetButtonPressed );
 	DEF_NATFUNC( nfGetButtonTouched );
+	DEF_NATFUNC(nfGetButtonNear);
 	DEF_NATFUNC( nfGetAxisValue );
 	DEF_NATFUNC( nfGetFeedbackValue );
 	DEF_NATFUNC( nfSetFeedbackValue );

@@ -57,16 +57,14 @@ private:
 	
 	int pIndex;
 	
-	deoxrAction::Ref pActionPress;
-	deoxrAction::Ref pActionTouch;
+	deoxrAction::Ref pActionPress, pActionTouch, pActionApproach;
 	deoxrDeviceAxis::Ref pFakeFromAxis;
 	
 	decString pID;
 	decString pName;
 	deInputDeviceButton::eButtonTypes pType;
 	deoxrDeviceComponent::Ref pInputDeviceComponent;
-	bool pPressed;
-	bool pTouched;
+	bool pPressed, pTouched, pNear;
 	
 	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
@@ -112,6 +110,12 @@ public:
 	
 	/** Set touch button action. */
 	void SetActionTouch( deoxrAction *action );
+	
+	/** Near button action. */
+	inline deoxrAction *GetActionNear() const{return pActionApproach;}
+	
+	/** Set approach button action. */
+	void SetActionApproach(deoxrAction *action);
 	
 	/** Button state is faked from axis state. */
 	inline const deoxrDeviceAxis::Ref &GetFakeFromAxis() const{ return pFakeFromAxis; }
@@ -162,6 +166,15 @@ public:
 	
 	/** Update touched sending event if changed. */
 	void UpdateTouched( bool touched );
+	
+	/** Near button. */
+	inline bool GetNear() const{ return pNear; }
+	
+	/** Set if near button. */
+	void SetNear(bool near);
+	
+	/** Update near sending event if changed. */
+	void UpdateNear(bool near);
 	
 	
 	

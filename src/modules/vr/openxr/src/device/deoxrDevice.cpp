@@ -164,6 +164,23 @@ const char *name, const char *id, const char *displayText ){
 	pButtons.Add( button );
 }
 
+void deoxrDevice::AddButton(deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
+deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
+deVROpenXR::eInputActions actionApproach, const char *name, const char *id, const char *displayText){
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(*this)));
+	button->SetID(id);
+	button->SetName(name);
+	button->SetType(type);
+	button->SetDisplayText(displayText);
+	button->SetInputDeviceComponent(component);
+	button->SetActionPress(pOxr.GetAction(actionPress));
+	button->SetActionTouch(pOxr.GetAction(actionTouch));
+	button->SetActionApproach(pOxr.GetAction(actionApproach));
+	
+	button->SetIndex(pButtons.GetCount());
+	pButtons.Add(button);
+}
+
 deoxrDeviceButton *deoxrDevice::GetButtonAt( int index ) const{
 	return ( deoxrDeviceButton* )pButtons.GetAt( index );
 }

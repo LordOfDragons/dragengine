@@ -46,6 +46,10 @@ bool deBaseInputModule::GetButtonTouched( int, int ){
 	return false;
 }
 
+bool deBaseInputModule::GetButtonNear(int, int){
+	return false;
+}
+
 int deBaseInputModule::IndexOfComponentWithID( int, const char* ){
 	return -1;
 }

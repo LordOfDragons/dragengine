@@ -35,7 +35,8 @@
 
 deInputDeviceButton::deInputDeviceButton() :
 pType( ebtGeneric ),
-pTouchable( false ){
+pTouchable( false ),
+pApproachable(false){
 }
 
 deInputDeviceButton::deInputDeviceButton( const deInputDeviceButton &button ) :
@@ -45,7 +46,8 @@ pType( button.pType ),
 pDisplayImage( button.pDisplayImage ),
 pDisplayIcons( button.pDisplayIcons ),
 pDisplayText( button.pDisplayText ),
-pTouchable( button.pTouchable ){
+pTouchable( button.pTouchable ),
+pApproachable(button.pApproachable){
 }
 
 deInputDeviceButton::~deInputDeviceButton(){
@@ -99,6 +101,10 @@ void deInputDeviceButton::SetTouchable( bool touchable ){
 	pTouchable = touchable;
 }
 
+void deInputDeviceButton::SetApproachable(bool approachable){
+	pApproachable = approachable;
+}
+
 
 
 // Operators
@@ -113,5 +119,6 @@ deInputDeviceButton &deInputDeviceButton::operator=( const deInputDeviceButton &
 	pDisplayIcons = button.pDisplayIcons;
 	pDisplayText = button.pDisplayText;
 	pTouchable = button.pTouchable;
+	pApproachable = button.pApproachable;
 	return *this;
 }

@@ -101,6 +101,9 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extKHRCompositionLayerDepth ].name = XR_KHR_COMPOSITION_LAYER_DEPTH_EXTENSION_NAME;
 	pSupportsExtension[ extEXTHandInteraction ].name = XR_EXT_HAND_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extHTCHandInteraction ].name = XR_HTC_HAND_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extFBTouchControllerPro].name = XR_FB_TOUCH_CONTROLLER_PRO_EXTENSION_NAME;
+	pSupportsExtension[extFBTouchControllerProximity].name = XR_FB_TOUCH_CONTROLLER_PROXIMITY_EXTENSION_NAME;
+	pSupportsExtension[extMETATouchControllerPlus].name = XR_META_TOUCH_CONTROLLER_PLUS_EXTENSION_NAME;
 	
 	#ifdef OS_ANDROID
 		pSupportsExtension[extKHRAndroidCreateInstance].name = XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME;
@@ -144,6 +147,9 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extEXTHandInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extHTCHandInteraction ].enableIfSupported = true;
 	pSupportsExtension[extKHRAndroidCreateInstance].enableIfSupported = true;
+	pSupportsExtension[extFBTouchControllerPro].enableIfSupported = true;
+	pSupportsExtension[extFBTouchControllerProximity].enableIfSupported = true;
+	pSupportsExtension[extMETATouchControllerPlus].enableIfSupported = true;
 	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";

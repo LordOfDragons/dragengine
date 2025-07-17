@@ -158,6 +158,26 @@ class BindingInputProcessor extends DefaultInputProcessor
 		binding.getCommand().untouch()
 	end
 	
+	/**
+	 * \brief Approach binding command.
+	 * \version 1.28
+	 * 
+	 * Default implementation calls Command.approach() .
+	 */
+	protected func void approach(Binding binding)
+		binding.getCommand().approach()
+	end
+	
+	/**
+	 * \brief Withdraw binding command.
+	 * \version 1.28
+	 * 
+	 * Default implementation calls Command.withdraw() .
+	 */
+	protected func void withdraw(Binding binding)
+		binding.getCommand().withdraw()
+	end
+	
 	
 	
 	/** \brief Process input event. */
@@ -313,6 +333,20 @@ class BindingInputProcessor extends DefaultInputProcessor
 				event.getSource(), event.getDevice(), event.getCode())
 			if binding != null
 				untouch(binding)
+			end
+			
+		case InputEventType.buttonApproach
+			var Binding binding = pBindingManager.findButtonBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
+			if binding != null
+				approach(binding)
+			end
+			
+		case InputEventType.buttonWithdraw
+			var Binding binding = pBindingManager.findButtonBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
+			if binding != null
+				withdraw(binding)
 			end
 		end
 	end

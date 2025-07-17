@@ -273,6 +273,18 @@ void deClassInputDeviceButton::nfGetTouchable::RunFunction( dsRunTime *rt, dsVal
 	rt->PushBool( button.GetTouchable() );
 }
 
+// func bool getApproachable()
+deClassInputDeviceButton::nfGetApproachable::nfGetApproachable(const sInitData &init) :
+dsFunction(init.clsIDButton, "getApproachable", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+void deClassInputDeviceButton::nfGetApproachable::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	const deInputDeviceButton &button = nd.device->GetDevice()->GetButtonAt(nd.buttonIndex);
+	
+	rt->PushBool(button.GetApproachable());
+}
+
 
 
 // public func bool isPressed()
@@ -326,6 +338,32 @@ void deClassInputDeviceButton::nfIsTouched::RunFunction( dsRunTime *rt, dsValue 
 		
 	default:
 		DETHROW_INFO( deeInvalidParam, "input source" );
+	}
+}
+
+// func bool isNear()
+deClassInputDeviceButton::nfIsNear::nfIsNear(const sInitData &init) :
+dsFunction(init.clsIDButton, "isNear", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+void deClassInputDeviceButton::nfIsNear::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sIDButtonNatDat &nd = *((const sIDButtonNatDat*)p_GetNativeData(myself));
+	deScriptingDragonScript &ds = ((deClassInputDeviceButton*)GetOwnerClass())->GetDS();
+	
+	switch(nd.device->GetDeviceSource()){
+	case deInputEvent::esInput:{
+		deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		rt->PushBool(deviceIndex != -1 && module.GetButtonNear(deviceIndex, nd.buttonIndex));
+		}break;
+		
+	case deInputEvent::esVR:{
+		deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
+		const int deviceIndex = module.IndexOfDeviceWithID(nd.device->GetDevice()->GetID());
+		rt->PushBool(deviceIndex != -1 && module.GetButtonNear(deviceIndex, nd.buttonIndex));
+		}break;
+		
+	default:
+		DETHROW_INFO(deeInvalidParam, "input source");
 	}
 }
 
@@ -409,9 +447,11 @@ void deClassInputDeviceButton::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetLargestDisplayIconY( init ) );
 	AddFunction( new nfGetDisplayText( init ) );
 	AddFunction( new nfGetTouchable( init ) );
+	AddFunction(new nfGetApproachable(init));
 	
 	AddFunction( new nfIsPressed( init ) );
 	AddFunction( new nfIsTouched( init ) );
+	AddFunction(new nfIsNear(init));
 	
 	AddFunction( new nfEquals( init ) );
 	
