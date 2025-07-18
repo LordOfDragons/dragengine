@@ -180,6 +180,22 @@ void deoxrDeviceAxis::TrackState(){
 	const deoxrSession &session = pDevice.GetOxr().GetSession();
 	
 	switch( pType ){
+	case deInputDeviceAxis::eatTrigger:{
+		float value = pGetActionFloatValue(instance, session);
+		if(pDevice.GetHandTracker() && pFinger != -1 && pDevice.GetEnableTwoFingerTriggerSimulation()){
+			value = decMath::max(value, decMath::linearStep(
+				pDevice.GetHandTracker()->GetFingerInputAt(0), 0.0f, 1.0f, -1.0f, 1.0f));
+		}
+		UpdateValue(value);
+		}break;
+		
+	case deInputDeviceAxis::eatTwoFingerTrigger:{
+		if(pDevice.GetHandTracker() && pFinger != -1){
+			UpdateValue(decMath::linearStep(
+				pDevice.GetHandTracker()->GetFingerInputAt(pFinger), 0.0f, 1.0f, -1.0f, 1.0f));
+		}
+		}break;
+		
 	case deInputDeviceAxis::eatFingerBend:
 		if( pDevice.GetHandTracker() ){
 			UpdateValue( decMath::linearStep( pDevice.GetHandTracker()->GetBendFingerAt( pFinger ),
@@ -223,22 +239,7 @@ void deoxrDeviceAxis::TrackState(){
 		break;
 		
 	default:
-		if( pActionAnalog ){
-			XrActionStateGetInfo getInfo;
-			memset( &getInfo, 0, sizeof( getInfo ) );
-			getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
-			getInfo.action = pActionAnalog->GetAction();
-			getInfo.subactionPath = pDevice.GetSubactionPath();
-			
-			XrActionStateFloat state;
-			memset( &state, 0, sizeof( state ) );
-			state.type = XR_TYPE_ACTION_STATE_FLOAT;
-			
-			if( XR_SUCCEEDED( instance.xrGetActionStateFloat( session.GetSession(), &getInfo, &state ) )
-			&& state.isActive ){
-				UpdateValue( decMath::linearStep( state.currentState, pMinimum, pMaximum, -1.0f, 1.0f ) );
-			}
-		}
+		UpdateValue(pGetActionFloatValue(instance, session));
 		break;
 	}
 }
@@ -263,4 +264,24 @@ void deoxrDeviceAxis::GetInfo( deInputDeviceAxis &info ) const{
 		info.AddDisplayIcon( ( deImage* )pDisplayIcons.GetAt( i ) );
 	}
 	info.SetDisplayText( pDisplayText );
+}
+
+float deoxrDeviceAxis::pGetActionFloatValue(const deoxrInstance &instance,
+const deoxrSession &session) const{
+	if(!pActionAnalog){
+		return pCenter;
+	}
+	
+	XrActionStateGetInfo getInfo{XR_TYPE_ACTION_STATE_GET_INFO};
+	getInfo.action = pActionAnalog->GetAction();
+	getInfo.subactionPath = pDevice.GetSubactionPath();
+	
+	XrActionStateFloat state{XR_TYPE_ACTION_STATE_FLOAT};
+	
+	if(XR_SUCCEEDED(instance.xrGetActionStateFloat(session.GetSession(), &getInfo, &state))
+	&& state.isActive){
+		return decMath::linearStep(state.currentState, pMinimum, pMaximum, -1.0f, 1.0f);
+	}
+	
+	return pCenter;
 }

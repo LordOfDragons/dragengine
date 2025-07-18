@@ -76,6 +76,12 @@ private:
 		void Init(deInputDevice::eHandBones base, deInputDevice::eHandBones target);
 	};
 	
+	struct sFingerInput{
+		XrHandJointEXT base, target;
+		float rangePress, rangeTouch, distance, value;
+		void Init(XrHandJointEXT base, XrHandJointEXT target, float rangePress, float rangeTouch);
+	};
+	
 	deoxrSession &pSession;
 	deoxrDevice &pDevice;
 	
@@ -100,8 +106,10 @@ private:
 	static const int SpreadFingerCount = 4;
 	sFingerSpreading pSpreadFinger[SpreadFingerCount];
 	
-	static const int FoxBrokenRotationBoneCount = 14;
-	sFixBrokenRotationBone pFixBrokenRotationBone[FoxBrokenRotationBoneCount];
+	static const int FixBrokenRotationBoneCount = 14;
+	sFixBrokenRotationBone pFixBrokenRotationBone[FixBrokenRotationBoneCount];
+	
+	sFingerInput pFingerInput[4];
 	
 	sBoneMapping *pMapBoneXrToDe;
 	int pMapBoneXrToDeCount;
@@ -149,6 +157,9 @@ public:
 	/** Spread finger value for finger. */
 	float GetSpreadFingerAt( int index ) const;
 	
+	/** Finger input value. */
+	float GetFingerInputAt(int index) const;
+	
 	/** Log bone poses. */
 	void LogPoseBones( const char *prefix ) const;
 	/*@}*/
@@ -161,6 +172,7 @@ private:
 	void pFixBrokenBoneRotations();
 	void pCalcFingerBending();
 	void pCalcFingerSpreading();
+	void pCalcFingerInput();
 };
 
 #endif

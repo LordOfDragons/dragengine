@@ -100,6 +100,7 @@ private:
 	
 	deoxrHandTracker::Ref pHandTracker;
 	decMatrix pMatrixWristToDevice;
+	bool pEnableTwoFingerTriggerSimulation;
 	
 	deoxrFaceTracker::Ref pFaceTracker;
 
@@ -317,6 +318,12 @@ public:
 	/** Set matrix transforming from wrist space to device space. */
 	void SetMatrixWristToDevice( const decMatrix &matrix );
 	
+	/** Enable trigger input simulation using two-finger input of index finger. */
+	inline bool GetEnableTwoFingerTriggerSimulation() const{
+		return pEnableTwoFingerTriggerSimulation; }
+	
+	/** Set enable trigger input simulation using two-finger input of index finger. */
+	void SetEnableTwoFingerTriggerSimulation(bool enable);
 	
 	
 	/** Face tracker or nullptr. */

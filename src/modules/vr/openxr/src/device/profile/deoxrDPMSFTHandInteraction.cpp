@@ -185,7 +185,8 @@ void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
 	device->AddAxis( axis );
 	
 	// hand tracking
-	pAddHandTracker( device, left );
+	pAddHandTracker(device, left, true);
+	device->SetEnableTwoFingerTriggerSimulation(false);
 	
 	oxr.GetDevices().Add( device );
 }

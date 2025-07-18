@@ -166,6 +166,9 @@ void deoxrDPMetaTouchControllerPlus::pAddDevice( bool left ){
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
 	pAddAxisTrigger(device, trigger);
+	pAddAxisTriggerForce(device, trigger);
+	pAddAxisTriggerCurl(device, trigger);
+	pAddAxisTriggerSlide(device, trigger);
 	pAddButtonTrigger(device, trigger, true, true); // has to be button 0
 	
 	if(left){
@@ -189,8 +192,6 @@ void deoxrDPMetaTouchControllerPlus::pAddDevice( bool left ){
 	deoxrDeviceComponent * const grip = pAddComponentGrip(device);
 	pAddAxisGripGrab(device, grip);
 	pAddButtonGrip(device, grip, false);
-	
-	pAddHandTracker(device, left);
 	
 	GetInstance().GetOxr().GetDevices().Add(device);
 }

@@ -48,6 +48,7 @@ deoxrDeviceButton::deoxrDeviceButton( deoxrDevice &device ) :
 pDevice( device ),
 pIndex( -1 ),
 pType( deInputDeviceButton::ebtGeneric ),
+pFinger(-1),
 pPressed( false ),
 pTouched( false ),
 pNear(false){
@@ -79,6 +80,10 @@ void deoxrDeviceButton::SetActionApproach(deoxrAction *action){
 
 void deoxrDeviceButton::SetFakeFromAxis( const deoxrDeviceAxis::Ref &axis ){
 	pFakeFromAxis = axis;
+}
+
+void deoxrDeviceButton::SetFinger(int finger){
+	pFinger = finger;
 }
 
 void deoxrDeviceButton::SetID( const char *id ){
@@ -230,12 +235,37 @@ void deoxrDeviceButton::TrackState(){
 	memset( &state, 0, sizeof( state ) );
 	state.type = XR_TYPE_ACTION_STATE_BOOLEAN;
 	
-	if( pActionPress ){
+	bool pressed = false;
+	if(pActionPress){
 		getInfo.action = pActionPress->GetAction();
-		UpdatePressed(
-			XR_SUCCEEDED( instance.xrGetActionStateBoolean( session.GetSession(), &getInfo, &state ) )
-			&& state.isActive && state.currentState );
+		pressed = XR_SUCCEEDED(instance.xrGetActionStateBoolean(session.GetSession(), &getInfo, &state))
+			&& state.isActive && state.currentState;
 	}
+	
+	switch(pType){
+	case deInputDeviceButton::ebtTrigger:
+		if(pDevice.GetHandTracker() && pFinger != -1 && pDevice.GetEnableTwoFingerTriggerSimulation()){
+			pressed |= pDevice.GetHandTracker()->GetFingerInputAt(pFinger) > 0.9f;
+		}
+		break;
+		
+	case deInputDeviceButton::ebtAction:
+		if(pDevice.GetHandTracker() && pFinger != -1){
+			pressed |= pDevice.GetHandTracker()->GetFingerInputAt(pFinger) > 0.9f;
+		}
+		break;
+		
+	case deInputDeviceButton::ebtTwoFingerTrigger:
+		if(pDevice.GetHandTracker() && pFinger != -1){
+			pressed = pDevice.GetHandTracker()->GetFingerInputAt(pFinger) > 0.9f;
+		}
+		break;
+		
+	default:
+		break;
+	}
+	
+	UpdatePressed(pressed);
 	
 	if( pActionTouch ){
 		getInfo.action = pActionTouch->GetAction();

@@ -57,7 +57,8 @@ pIndex( -1 ),
 pProfile( profile ),
 pType( deInputDevice::edtGeneric ),
 pBoneConfiguration( deInputDevice::ebcNone ),
-pNameNumber( -1 ){
+pNameNumber( -1 ),
+pEnableTwoFingerTriggerSimulation(true){
 }
 
 deoxrDevice::~deoxrDevice(){
@@ -412,6 +413,10 @@ void deoxrDevice::SetHandTracker( deoxrHandTracker *handTracker ){
 
 void deoxrDevice::SetMatrixWristToDevice( const decMatrix &matrix ){
 	pMatrixWristToDevice = matrix;
+}
+
+void deoxrDevice::SetEnableTwoFingerTriggerSimulation(bool enable){
+	pEnableTwoFingerTriggerSimulation = enable;
 }
 
 

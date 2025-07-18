@@ -165,7 +165,7 @@ void deoxrDPHTCViveCosmosControllerInteraction::pAddDevice( bool left ){
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
 	pAddButtonGrip( device, grip, false );
 	
-	pAddHandTracker( device, left );
+	pAddHandTracker(device, left, false);
 	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

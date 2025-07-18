@@ -185,6 +185,8 @@ void deoxrDPMetaQuestTouchProController::pAddDevice( bool left ){
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
 	pAddAxisTrigger(device, trigger);
+	pAddAxisTriggerCurl(device, trigger);
+	pAddAxisTriggerSlide(device, trigger);
 	pAddButtonTrigger(device, trigger, true, supportsProximity); // has to be button 0
 	
 	if(left){
@@ -204,12 +206,11 @@ void deoxrDPMetaQuestTouchProController::pAddDevice( bool left ){
 	
 	deoxrDeviceComponent * const thumbrest = pAddComponentThumbrest(device);
 	pAddButtonThumbrest(device, thumbrest, true, supportsProximity);
+	pAddAxesThumbrestPress(device, thumbrest);
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip(device);
 	pAddAxisGripGrab(device, grip);
 	pAddButtonGrip(device, grip, false);
-	
-	pAddHandTracker(device, left);
 	
 	GetInstance().GetOxr().GetDevices().Add(device);
 }

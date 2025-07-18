@@ -694,7 +694,8 @@ class DefaultBindingHelper
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 * \param type Type of axis. Use InputDeviceAxisType.trigger, InputDeviceAxisType.gripGrab,
 	 *             InputDeviceAxisType.gripSqueeze, InputDeviceAxisType.gripPinch,
-	 *             InputDeviceAxisType.fingerBend or InputDeviceAxisType.fingerSpread .
+	 *             InputDeviceAxisType.fingerBend, InputDeviceAxisType.fingerSpread
+	 *             or InputDeviceAxisType.twoFingerTrigger .
 	 * \param trigger Number of trigger of given type.
 	 * \param name Name of command to bind to horizontal movement or null.
 	 * \returns true if at least one controller is present with command bound.
@@ -711,7 +712,8 @@ class DefaultBindingHelper
 	 * \param rightHand True for right hand controller otherwise left hand controller.
 	 * \param type Type of axis. Use InputDeviceAxisType.trigger, InputDeviceAxisType.gripGrab,
 	 *             InputDeviceAxisType.gripSqueeze, InputDeviceAxisType.gripPinch,
-	 *             InputDeviceAxisType.fingerBend or InputDeviceAxisType.fingerSpread .
+	 *             InputDeviceAxisType.fingerBend, InputDeviceAxisType.fingerSpread
+	 *             or InputDeviceAxisType.twoFingerTrigger .
 	 * \param axis Number of axis of given type.
 	 * \param pull Name of command to bind to pull movement or null.
 	 * \param release Name of command to bind to release movement or null.

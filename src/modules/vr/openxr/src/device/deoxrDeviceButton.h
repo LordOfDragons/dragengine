@@ -68,6 +68,7 @@ private:
 	decString pName;
 	deInputDeviceButton::eButtonTypes pType;
 	deoxrDeviceComponent::Ref pInputDeviceComponent;
+	int pFinger;
 	bool pPressed, pTouched, pNear;
 	
 	deImage::Ref pDisplayImage;
@@ -152,6 +153,12 @@ public:
 	
 	/** Set input device component. */
 	void SetInputDeviceComponent( deoxrDeviceComponent *component );
+	
+	/** Finger. */
+	inline int GetFinger() const{ return pFinger; }
+	
+	/** Set finger. */
+	void SetFinger(int finger);
 	
 	/** Button is pressed. */
 	inline bool GetPressed() const{ return pPressed; }

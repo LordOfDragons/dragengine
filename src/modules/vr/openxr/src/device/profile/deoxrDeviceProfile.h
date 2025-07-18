@@ -187,6 +187,9 @@ protected:
 	void pAddAxisTrigger( deoxrDevice &device, deoxrDeviceComponent *component );
 	void pAddButtonTrigger(deoxrDevice &device, deoxrDeviceComponent *component,
 		bool withTouch, bool withApproach = false);
+	void pAddAxisTriggerForce(deoxrDevice &device, deoxrDeviceComponent *component);
+	void pAddAxisTriggerCurl(deoxrDevice &device, deoxrDeviceComponent *component);
+	void pAddAxisTriggerSlide(deoxrDevice &device, deoxrDeviceComponent *component);
 	
 	deoxrDeviceComponent *pAddComponentTrackpad( deoxrDevice &device );
 	void pAddAxesTrackpad( deoxrDevice &device, deoxrDeviceComponent *component );
@@ -199,6 +202,7 @@ protected:
 	deoxrDeviceComponent *pAddComponentThumbrest( deoxrDevice &device );
 	void pAddButtonThumbrest(deoxrDevice &device, deoxrDeviceComponent *component,
 		bool withPress = false, bool withApproach = false);
+	void pAddAxesThumbrestPress(deoxrDevice &device, deoxrDeviceComponent *component);
 	
 	deoxrDeviceComponent *pAddComponentGrip( deoxrDevice &device );
 	void pAddAxisGripGrab( deoxrDevice &device, deoxrDeviceComponent *component );
@@ -212,7 +216,7 @@ protected:
 	const char *pButtonId( eButtonLabel label ) const;
 	const char *pButtonDisplayText( eButtonLabel label ) const;
 	
-	deoxrHandTracker *pAddHandTracker( deoxrDevice &device, bool leftHand );
+	deoxrHandTracker *pAddHandTracker(deoxrDevice &device, bool leftHand, bool withInputSimulation);
 };
 
 #endif

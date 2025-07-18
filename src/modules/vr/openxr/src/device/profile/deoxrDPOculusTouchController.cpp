@@ -178,7 +178,7 @@ void deoxrDPOculusTouchController::pAddDevice( bool left ){
 	pAddAxisGripGrab( device, grip );
 	pAddButtonGrip( device, grip, false );
 	
-	pAddHandTracker( device, left );
+	pAddHandTracker(device, left, true);
 	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

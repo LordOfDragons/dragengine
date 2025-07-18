@@ -125,7 +125,13 @@ public:
 		 * \brief Battery is charging.
 		 * \version 1.20
 		 */
-		ebtBatteryCharging
+		ebtBatteryCharging,
+		
+		/**
+		 * \brief Trigger click simulated by touching two fingers.
+		 * \version 1.28
+		 */
+		ebtTwoFingerTrigger
 	};
 	
 	
