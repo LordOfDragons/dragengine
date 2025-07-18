@@ -95,6 +95,8 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCVivePro.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHtcViveTracker.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHUAWEIControllerInteraction.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMetaQuestTouchProController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMetaTouchControllerPlus.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftMixedRealityMotionController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftXboxController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMSFTHandInteraction.h" />
@@ -150,6 +152,8 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCVivePro.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHtcViveTracker.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHUAWEIControllerInteraction.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMetaQuestTouchProController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMetaTouchControllerPlus.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftMixedRealityMotionController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftXboxController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMSFTHandInteraction.cpp" />

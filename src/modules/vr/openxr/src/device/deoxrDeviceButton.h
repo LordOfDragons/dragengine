@@ -38,6 +38,10 @@
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/resources/image/deImage.h>
 
+#ifdef OS_W32
+#undef near
+#endif
+
 class deInputDeviceButton;
 class deoxrDevice;
 

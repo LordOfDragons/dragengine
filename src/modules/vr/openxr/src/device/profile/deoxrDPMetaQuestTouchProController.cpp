@@ -102,9 +102,14 @@ void deoxrDPMetaQuestTouchProController::pSuggestBindings(){
 	const bool supportsProximity = GetInstance().SupportsExtension(
 		deoxrInstance::extFBTouchControllerProximity);
 	
-	const int bindingCount = (17 + (supportsProximity ? 2 : 0)) * 2 + 5 + 5;
-	
-	deoxrInstance::sSuggestBinding bindings[bindingCount];
+	const int maxBindingCount = 19 * 2 + 5 + 5;
+
+	int bindingCount = 17 * 2 + 5 + 5;
+	if(supportsProximity){
+		bindingCount += 2 * 2;
+	}
+
+	deoxrInstance::sSuggestBinding bindings[maxBindingCount];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
 	
