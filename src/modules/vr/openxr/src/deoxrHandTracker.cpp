@@ -148,10 +148,10 @@ pMapBoneXrToDeCount( 0 )
 	pFixBrokenRotationBone[12].Init(deInputDevice::ehbPinky1, deInputDevice::ehbPinky2);
 	pFixBrokenRotationBone[13].Init(deInputDevice::ehbPinky2, deInputDevice::ehbPinky3);
 	
-	pFingerInput[0].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 0.01f, 0.03f);
-	pFingerInput[1].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, 0.01f, 0.03f);
-	pFingerInput[2].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_RING_TIP_EXT, 0.01f, 0.03f);
-	pFingerInput[3].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT, 0.01f, 0.03f);
+	pFingerInput[0].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 0.015f, 0.03f);
+	pFingerInput[1].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, 0.015f, 0.03f);
+	pFingerInput[2].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_RING_TIP_EXT, 0.015f, 0.03f);
+	pFingerInput[3].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT, 0.015f, 0.03f);
 	
 	deoxrInstance &instance = session.GetSystem().GetInstance();
 	
