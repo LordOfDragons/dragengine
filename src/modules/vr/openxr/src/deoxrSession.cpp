@@ -716,6 +716,18 @@ const char *deoxrSession::GetSwapchainFormatNameOpenGL(int64_t format, const cha
 	return notFound;
 }
 
+void deoxrSession::DebugPrintActiveProfilePath() const{
+	if(!pSession){
+		return;
+	}
+	
+	deoxrInstance &instance = pSystem.GetInstance();
+	pDebugPrintActiveProfilePath(instance.GetPathHead(), "Head");
+	pDebugPrintActiveProfilePath(instance.GetPathHandRight(), "Right Hand");
+	pDebugPrintActiveProfilePath(instance.GetPathHandLeft(), "Left Hand");
+	pDebugPrintActiveProfilePath(instance.GetPathGamepad(), "Gamepad");
+}
+
 
 
 // Private Functions
@@ -782,4 +794,20 @@ void deoxrSession::pEnumSwapchainFormats(){
 		const int format = (int)pSwapchainFormats[i];
 		instance.GetOxr().LogInfoFormat("- %s (0x%x)", GetSwapchainFormatNameOpenGL(format, "??"), format);
 	}
+}
+
+void deoxrSession::pDebugPrintActiveProfilePath(const deoxrPath &path, const char *name) const{
+	deoxrInstance &instance = pSystem.GetInstance();
+	deVROpenXR &oxr = instance.GetOxr();
+	XrInteractionProfileState state{XR_TYPE_INTERACTION_PROFILE_STATE};
+	
+	if(XR_SUCCEEDED(instance.xrGetCurrentInteractionProfile(pSession, path, &state))){
+		const deoxrPath resolved(instance, state.interactionProfile);
+		if(resolved.IsNotEmpty()){
+			oxr.LogInfoFormat("Interaction profile '%s': %s", name, resolved.GetName().GetString());
+			return;
+		}
+	}
+	
+	oxr.LogInfoFormat("Interaction profile '%s': -", name);
 }

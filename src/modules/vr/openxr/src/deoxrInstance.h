@@ -125,8 +125,7 @@ private:
 	sExtension pSupportsExtension[ ExtensionCount ];
 	sLayer pSupportsLayer[ LayerCount ];
 	
-	deoxrPath pPathHandRight;
-	deoxrPath pPathHandLeft;
+	deoxrPath pPathHandRight, pPathHandLeft, pPathHead, pPathGamepad;
 	
 	
 	
@@ -178,6 +177,12 @@ public:
 	
 	/** Left hand path. */
 	inline const deoxrPath &GetPathHandLeft() const{ return pPathHandLeft; }
+	
+	/** Head path. */
+	inline const deoxrPath &GetPathHead() const{ return pPathHead; }
+	
+	/** Gamepad path. */
+	inline const deoxrPath &GetPathGamepad() const{ return pPathGamepad; }
 	
 	/** Suggest input bindings. */
 	void SuggestBindings( const deoxrPath &profile, const sSuggestBinding *bindings, int count );

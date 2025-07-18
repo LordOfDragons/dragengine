@@ -173,8 +173,10 @@ pInstance( XR_NULL_HANDLE )
 			pDebug.SetEnabled( enableDebug );
 		#endif
 		
-		pPathHandLeft = deoxrPath( *this, "/user/hand/left" );
-		pPathHandRight = deoxrPath( *this, "/user/hand/right" );
+		pPathHandLeft = deoxrPath(*this, "/user/hand/left");
+		pPathHandRight = deoxrPath(*this, "/user/hand/right");
+		pPathHead = deoxrPath(*this, "/user/head");
+		pPathGamepad = deoxrPath(*this, "/user/gamepad");
 		
 	}catch( const deException & ){
 		pCleanUp();

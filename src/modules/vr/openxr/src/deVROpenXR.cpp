@@ -167,6 +167,7 @@ void deVROpenXR::WaitUntilReadyExit(){
 					pPassthrough = nullptr;
 					pSession = nullptr;
 					pDeviceProfiles.CheckAllAttached();
+					pSession->DebugPrintActiveProfilePath();
 				}
 				break;
 				
@@ -540,6 +541,7 @@ void deVROpenXR::ProcessEvents(){
 				if( pSession ){
 					pSession->Begin();
 					pDeviceProfiles.CheckAllAttached();
+					pSession->DebugPrintActiveProfilePath();
 				}
 				LogInfo( "Done Session State Changed: ready" );
 				break;
@@ -600,6 +602,9 @@ void deVROpenXR::ProcessEvents(){
 			// all known top level path to figure out if something changed
 			LogInfo( "Interaction profile changed. Updating devices." );
 			pDeviceProfiles.CheckAllAttached();
+			if(pSession){
+				pSession->DebugPrintActiveProfilePath();
+			}
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_VISIBILITY_MASK_CHANGED_KHR:
@@ -629,6 +634,9 @@ void deVROpenXR::ProcessEvents(){
 				path.GetName().GetString(), pathRole.GetName().GetString() );
 			//LogInfo( "VIVE Tracker connected. Updating devices" );
 			pDeviceProfiles.CheckAllAttached();
+			if(pSession){
+				pSession->DebugPrintActiveProfilePath();
+			}
 			}break;
 			
 		default:
@@ -1063,6 +1071,7 @@ bool deVROpenXR::pBeginFrame(){
 		pCreateActionSet();
 
 		pDeviceProfiles.CheckAllAttached();
+		pSession->DebugPrintActiveProfilePath();
 		// no CheckNotifyAttachedDetached call here since we potentially outside main thread
 		
 		pSuggestBindings();

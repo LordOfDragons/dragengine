@@ -29,6 +29,7 @@
 #include "deoxrSpace.h"
 #include "deoxrSwapchain.h"
 #include "deoxrHiddenMesh.h"
+#include "deoxrPath.h"
 #include "action/deoxrActionSet.h"
 
 #include <dragengine/deObject.h>
@@ -281,6 +282,9 @@ public:
 	
 	/** Swapchain format name or 'notFound'. */
 	const char *GetSwapchainFormatNameOpenGL(int64_t format, const char *notFound = nullptr) const;
+	
+	/** Debug print some important device profile path. */
+	void DebugPrintActiveProfilePath() const;
 	/*@}*/
 	
 	
@@ -288,6 +292,7 @@ public:
 private:
 	void pCleanUp();
 	void pEnumSwapchainFormats();
+	void pDebugPrintActiveProfilePath(const deoxrPath &path, const char *name) const;
 };
 
 #endif
