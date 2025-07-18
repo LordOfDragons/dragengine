@@ -41,12 +41,12 @@ on:
         description: 'Build Version'
         required: true
         type: string
-        default: "9999"
+        default: '9999'
       artifactArchive:
         description: 'Artifact Archive'
         required: true
         type: string
-        default: "archives-windows"
+        default: 'archives-windows'
       debugBuild:
         description: 'Debug Build'
         type: boolean
