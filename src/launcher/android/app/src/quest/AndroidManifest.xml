@@ -5,7 +5,8 @@
 
     <uses-sdk
         android:minSdkVersion="29"
-        android:targetSdkVersion="32" />
+        android:targetSdkVersion="32"
+        tools:ignore="ExpiredTargetSdkVersion" />
 
     <uses-feature
         android:name="android.hardware.vr.headtracking"
