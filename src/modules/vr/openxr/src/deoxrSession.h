@@ -181,6 +181,9 @@ public:
 	/** Force end session ignoring errors. */
 	void ForceEnd();
 	
+	/** Attached action set or nullptr. */
+	inline const deoxrActionSet::Ref &GetAttachedActionSet() const{ return pAttachedActionSet; }
+	
 	/** Attach action set. */
 	void AttachActionSet( deoxrActionSet *actionSet );
 	

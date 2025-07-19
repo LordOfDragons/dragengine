@@ -797,6 +797,10 @@ void deoxrSession::pEnumSwapchainFormats(){
 }
 
 void deoxrSession::pDebugPrintActiveProfilePath(const deoxrPath &path, const char *name) const{
+	if(!pAttachedActionSet){
+		return;
+	}
+	
 	deoxrInstance &instance = pSystem.GetInstance();
 	deVROpenXR &oxr = instance.GetOxr();
 	XrInteractionProfileState state{XR_TYPE_INTERACTION_PROFILE_STATE};

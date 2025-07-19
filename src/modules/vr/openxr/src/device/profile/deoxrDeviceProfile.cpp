@@ -140,15 +140,12 @@ deVROpenXR::eInputActions inputAction, const char *path ) const{
 
 bool deoxrDeviceProfile::pMatchesProfile( const deoxrPath &path ) const{
 	const deoxrSession * const session = pInstance.GetOxr().GetSession();
-	if( ! session ){
+	if(!session || !session->GetAttachedActionSet()){
 		return false;
 	}
 	
-	XrInteractionProfileState state;
-	memset( &state, 0, sizeof( state ) );
-	state.type = XR_TYPE_INTERACTION_PROFILE_STATE;
-	
-	return XR_SUCCEEDED( pInstance.xrGetCurrentInteractionProfile(session->GetSession(), path, &state ) )
+	XrInteractionProfileState state{XR_TYPE_INTERACTION_PROFILE_STATE};
+	return XR_SUCCEEDED(pInstance.xrGetCurrentInteractionProfile(session->GetSession(), path, &state))
 		&& pPath == state.interactionProfile;
 }
 

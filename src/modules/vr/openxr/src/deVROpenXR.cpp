@@ -918,7 +918,7 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet.TakeOver( new deoxrActionSet( pInstance ) );
 	
 	pActionSet->AddBoolAction( "trigger_press", "Press Trigger" );
-	pActionSet->AddBoolAction("trigger_force", "Force Trigger");
+	pActionSet->AddFloatAction("trigger_force", "Force Trigger");
 	pActionSet->AddBoolAction( "trigger_touch", "Touch Trigger" );
 	pActionSet->AddFloatAction( "trigger_analog", "Pull Trigger" );
 	pActionSet->AddVibrationAction( "trigger_haptic", "Trigger Haptic" );
