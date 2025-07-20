@@ -66,8 +66,14 @@ class ProgressDisplay:
 # FCurve builder
 class FCurveBuilder:
 	## Create builder
-	def __init__(self, action, rna, rnaIndex, actionGroup):
-		self.fcurve = action.fcurves.new(rna, index=rnaIndex, action_group=actionGroup)
+	def __init__(self, ash, action, rna, rna_index=0, action_group=None):
+		if ash.has_slots:
+			self.fcurve = ash.fcurves(action).new(rna, index=rna_index)
+			if action_group:
+				self.fcurve.group = ash.ensure_group(action, action_group)
+		else:
+			self.fcurve = action.fcurves.new(rna, index=rna_index,
+				action_group=(action_group or ""))
 		self.keyframes = []
 		
 	## Add keyframe
@@ -97,24 +103,24 @@ class FCurveBuilder:
 
 class ActionFCurvesBuilder:
 	## Create builder
-	def __init__(self, action, actionGroup):
-		self.rnaBase = "pose.bones[\"{}\"].".format(actionGroup)
+	def __init__(self, ash, action, action_group):
+		self.rnaBase = "pose.bones[\"{}\"].".format(action_group)
 		
 		rna = self.rnaBase + "location"
-		self.fcurveLocationX = FCurveBuilder(action, rna, 0, actionGroup)
-		self.fcurveLocationY = FCurveBuilder(action, rna, 1, actionGroup)
-		self.fcurveLocationZ = FCurveBuilder(action, rna, 2, actionGroup)
+		self.fcurveLocationX = FCurveBuilder(ash, action, rna, 0, action_group)
+		self.fcurveLocationY = FCurveBuilder(ash, action, rna, 1, action_group)
+		self.fcurveLocationZ = FCurveBuilder(ash, action, rna, 2, action_group)
 		
 		rna = self.rnaBase + "rotation_quaternion"
-		self.fcurveRotationX = FCurveBuilder(action, rna, 1, actionGroup)
-		self.fcurveRotationY = FCurveBuilder(action, rna, 2, actionGroup)
-		self.fcurveRotationZ = FCurveBuilder(action, rna, 3, actionGroup)
-		self.fcurveRotationW = FCurveBuilder(action, rna, 0, actionGroup)
+		self.fcurveRotationX = FCurveBuilder(ash, action, rna, 1, action_group)
+		self.fcurveRotationY = FCurveBuilder(ash, action, rna, 2, action_group)
+		self.fcurveRotationZ = FCurveBuilder(ash, action, rna, 3, action_group)
+		self.fcurveRotationW = FCurveBuilder(ash, action, rna, 0, action_group)
 		
 		rna = self.rnaBase + "scale"
-		self.fcurveScaleX = FCurveBuilder(action, rna, 0, actionGroup)
-		self.fcurveScaleY = FCurveBuilder(action, rna, 1, actionGroup)
-		self.fcurveScaleZ = FCurveBuilder(action, rna, 2, actionGroup)
+		self.fcurveScaleX = FCurveBuilder(ash, action, rna, 0, action_group)
+		self.fcurveScaleY = FCurveBuilder(ash, action, rna, 1, action_group)
+		self.fcurveScaleZ = FCurveBuilder(ash, action, rna, 2, action_group)
 		
 		self.lastRotation = None
 	
@@ -169,20 +175,64 @@ class ActionSlotHelper:
 	def __init__(self, object):
 		self.object = object
 		try:
-			self.action_slot_id = object.animation_data.action_slot.identifier
+			slot = object.animation_data.action_slot
+			self.has_slots = True
+			if slot:
+				self.slot_id = slot.identifier
+				self.slot_type = object.type
+			else:
+				self.slot_id = object.name
+				self.slot_type = 'OBJECT'
 		except:
-			self.action_slot_id = None
+			self.slot_id = None
+			self.slot_type = None
+			self.has_slots = False
+	
+	def ensure_slot(self, action):
+		sid = '{}{}'.format(self.slot_type[0:2], self.slot_id)
+		if sid in action.slots:
+			slot = action.slots[sid]
+		else:
+			slot = action.slots.new(self.slot_type, self.slot_id)
+		
+		if len(action.layers) > 0:
+			layer = action.layers[0]
+		else:
+			layer = action.layers.new("Layer")
+		
+		if len(layer.strips) > 0:
+			strip = layer.strips[0]
+		else:
+			strip = layer.strips.new(type='KEYFRAME')
+		
+		return slot
 	
 	def groups(self, action):
-		if self.action_slot_id:
+		if self.has_slots:
 			try:
-				return action.layers[0].strips[0].channelbag(
-					action.slots[self.action_slot_id], ensure=True).groups
+				slot = self.ensure_slot(action)
+				return action.layers[0].strips[0].channelbag(slot, ensure=True).groups
 			except:
 				return action.groups
 		else:
 			return action.groups
-
+	
+	def fcurves(self, action):
+		if self.has_slots:
+			try:
+				slot = self.ensure_slot(action)
+				return action.layers[0].strips[0].channelbag(slot, ensure=True).fcurves
+			except:
+				return action.fcurves
+		else:
+			return action.fcurves
+	
+	def ensure_group(self, action, group_name):
+		groups = self.groups(action)
+		if group_name in groups:
+			return groups[group_name]
+		else:
+			return groups.new(group_name)
 
 class Timer:
 	def __init__(self):
