@@ -613,8 +613,8 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 			blf.draw(0, move.name)"""
 			#Blender.Window.DrawProgressBar(0.2 + progressCounter * 0.8 / countMoves, "Writing Move %s..." % move.name)
 			playtime = 0
-			firstFrame = 10000
-			lastFrame = -10000
+			firstFrame = 1000000
+			lastFrame = -1000000
 			moveBones = []
 			moveVpSets = []
 			skafcurves = None
@@ -633,7 +633,7 @@ class OBJECT_OT_ExportAnimation(bpy.types.Operator, ExportHelper):
 			
 			for bone in self.armature.bones:
 				moveBone = Armature.MoveBone(bone)
-				moveBone.times.append(1)
+				#moveBone.times.append(1)
 				if bone.name in agroups:
 					boneAGroup = agroups[bone.name]
 					moveBone.used = True

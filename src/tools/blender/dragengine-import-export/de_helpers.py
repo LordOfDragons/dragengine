@@ -178,8 +178,8 @@ class ActionSlotHelper:
 			slot = object.animation_data.action_slot
 			self.has_slots = True
 			if slot:
-				self.slot_id = slot.identifier
-				self.slot_type = object.type
+				self.slot_id = slot.identifier[2:]
+				self.slot_type = slot.identifier[0:2]
 			else:
 				self.slot_id = object.name
 				self.slot_type = 'OBJECT'
