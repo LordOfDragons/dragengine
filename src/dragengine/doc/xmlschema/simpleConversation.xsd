@@ -1018,6 +1018,45 @@
 		</xs:attribute>
 	</xs:complexType>
 	
+	<xs:complexType name='condition_has'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Evaluate if actor or conversation coordinate system is present.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='actor' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					If attribute is present evaluate if actor with id or alias is matching
+					attribute value is present.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='coordSystem' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					If attribute is present evaluate if conversation coordinate system with
+					id matching attribute value is present.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='test' type='xs:boolean' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Expect actor/convoSystem to be present (true) or absent (false).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
 	<xs:complexType name='condition_all'>
 		<xs:annotation>
 			<xs:documentation>
@@ -1051,6 +1090,7 @@
 			<xs:element name='command' type='condition_command'/>
 			<xs:element name='trigger' type='condition_trigger'/>
 			<xs:element name='variable' type='condition_variable'/>
+			<xs:element name='has' type='condition_has'/>
 		</xs:choice>
 	</xs:complexType>
 	
@@ -1062,6 +1102,7 @@
 				<xs:element name='command' type='condition_command'/>
 				<xs:element name='trigger' type='condition_trigger'/>
 				<xs:element name='variable' type='condition_variable'/>
+				<xs:element name='has' type='condition_has'/>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
