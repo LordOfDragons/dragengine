@@ -352,7 +352,8 @@
 			"__verbose_abort": "cpp",
 			"locale": "cpp",
 			"print": "cpp",
-			"__locale": "cpp"
+			"__locale": "cpp",
+			"stack": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			

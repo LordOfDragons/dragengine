@@ -127,7 +127,7 @@ ceConversationAction *ceWPTTIMAction::GetOwnerAction() const{
 void ceWPTTIMAction::BuildPlaybackFromHere() const{
 	ceWPTTreeItemModel::BuildPlaybackFromHere();
 	
-	cePlaybackActionStack &stack = GetConversation().GetPlayback()->GetActionStack();
+	cePlaybackActionStack &stack = GetConversation().GetPlayback()->GetMainActionStack();
 	cePlaybackActionStackEntry &stackTop = stack.GetTop();
 	if( ! stackTop.GetParentList() ){
 		DETHROW( deeInvalidParam );

@@ -285,6 +285,7 @@ class SimpleConversationAction
 	var WaitMode pWaitMode
 	var Enumeration pMode
 	var SimpleConversationCondition pCondition
+	var bool pCreateSideLane
 	
 	
 	/** \brief Create simple conversation action. */
@@ -310,6 +311,7 @@ class SimpleConversationAction
 		pDuration = action.pDuration
 		pWaitMode = action.pWaitMode
 		pMode = action.pMode
+		pCreateSideLane = action.pCreateSideLane
 		if action.pCondition != null
 			pCondition = SimpleConversationCondition.new(action.pCondition)
 		end
@@ -576,5 +578,23 @@ class SimpleConversationAction
 	 */
 	func void setSound(String sound)
 		pSound = sound
+	end
+	
+	/**
+	 * \brief Create side lane.
+	 * 
+	 * - \ref Type#snippet: If true create side lane.
+	 * - other types: Not used and is false
+	 */
+	func bool getCreateSideLane()
+		return pCreateSideLane
+	end
+	
+	/**
+	 * \brief Set create side lane.
+	 * \see #getCreateSideLane()
+	 */
+	func void setCreateSideLane(bool createSideLane)
+		pCreateSideLane = createSideLane
 	end
 end

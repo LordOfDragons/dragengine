@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,60 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _CECASNIPPET_H_
-#define _CECASNIPPET_H_
+#ifndef _CEUCASNIPPETTOGGLECREATESIDELANE_H_
+#define _CEUCASNIPPETTOGGLECREATESIDELANE_H_
 
-#include "ceConversationAction.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/common/string/decString.h>
+class ceCASnippet;
+class ceConversationTopic;
 
 
 /**
- * \brief Snippet Conversation Action.
- * Process a list of actions from another topic.
+ * \brief Undo action snippet conversation action toggle create side lane.
  */
-class ceCASnippet : public ceConversationAction{
+class ceUCASnippetToggleCreateSideLane : public igdeUndo{
 private:
-	decString pFile, pTopic;
-	bool pCreateSideLane;
-	
+	ceConversationTopic *pTopic;
+	ceCASnippet *pSnippet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create snippet conversation action. */
-	ceCASnippet();
+	/** \brief Create undo. */
+	ceUCASnippetToggleCreateSideLane(ceConversationTopic *topic, ceCASnippet *snippet);
 	
-	/** Create snippet conversation action. */
-	ceCASnippet(const ceCASnippet &snippet);
-	
-	/** Clean up snippet conversation action. */
-	~ceCASnippet() override;
+protected:
+	/** \brief Clean up undo. */
+	~ceUCASnippetToggleCreateSideLane() override;
 	/*@}*/
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** File to look for. */
-	inline const decString &GetFile() const{ return pFile; }
+	/** \brief Undo. */
+	void Undo() override;
 	
-	/** Set file to look for. */
-	void SetFile(const char *file);
-	
-	/** Topic to look for. */
-	inline const decString &GetTopic() const{ return pTopic; }
-	
-	/** Set topic to look for. */
-	void SetTopic(const char *topic);
-	
-	/** Create side lane. */
-	inline bool GetCreateSideLane() const{ return pCreateSideLane; }
-	
-	/** Set create side lane. */
-	void SetCreateSideLane(bool createSideLane);
-	
-	/** Create a copy of this action. */
-	ceConversationAction *CreateCopy() const override;
+	/** \brief Redo. */
+	void Redo() override;
 	/*@}*/
 };
 

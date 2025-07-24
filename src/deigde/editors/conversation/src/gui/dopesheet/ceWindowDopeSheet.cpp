@@ -151,7 +151,7 @@ public:
 	}
 	
 	virtual void Update( const ceConversation &conversation ){
-		SetEnabled( conversation.GetPlayback()->GetActionStack().IsNotEmpty() );
+		SetEnabled( conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty() );
 	}
 };
 
@@ -168,7 +168,7 @@ public:
 	}
 	
 	virtual void Update( const ceConversation &conversation ){
-		SetEnabled( conversation.GetPlayback()->GetActionStack().IsNotEmpty() );
+		SetEnabled( conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty() );
 		SetSelected( conversation.GetPlayback()->GetPaused() );
 	}
 };
@@ -199,7 +199,7 @@ public:
 	}
 	
 	virtual void Update( const ceConversation &conversation ){
-		SetEnabled( conversation.GetPlayback()->GetActionStack().IsNotEmpty() );
+		SetEnabled( conversation.GetPlayback()->GetMainActionStack()->IsNotEmpty() );
 	}
 };
 

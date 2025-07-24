@@ -571,6 +571,17 @@
 						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name='createSideLane' type='xs:boolean' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							If true runs conversation snippet in a new side lane. Side lanes
+							run in parallel to the main lane simplifying conversation scripts
+							containing heavily timed actions.
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>

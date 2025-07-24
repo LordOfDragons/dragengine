@@ -1327,6 +1327,7 @@ class SimpleConversationConverter
 					caSnippet.setWaitForActor(false)
 					caSnippet.setGroupID(subTarget)
 					caSnippet.setTopicID(rid)
+					caSnippet.setCreateSideLane(action.getCreateSideLane())
 					caIfCase.getActions().add(caSnippet)
 					
 				else
@@ -1340,8 +1341,19 @@ class SimpleConversationConverter
 					subState.simpleConversation = state.simpleConversation
 					subState.playback = state.playback
 					subState.conversation = state.playback.getConversation()
-					subState.actions = caIfCase.getActions()
 					subState.conversationActors = state.conversationActors
+					
+					if action.getCreateSideLane()
+						var CActionSnippet caction = CActionSnippet.new()
+						caction.setCreateSideLane(true)
+						caIfCase.getActions().add(caction)
+						
+						subState.actions = caction.getActions()
+						
+					else
+						subState.actions = caIfCase.getActions()
+					end
+					
 					convert(subState)
 				end
 			end
@@ -1354,6 +1366,7 @@ class SimpleConversationConverter
 				state.pauseTime = 0
 				caction.setGroupID(subTarget)
 				caction.setTopicID(action.getTarget())
+				caction.setCreateSideLane(action.getCreateSideLane())
 				state.actions.add(caction)
 				
 			else
@@ -1368,9 +1381,22 @@ class SimpleConversationConverter
 				subState.simpleConversation = state.simpleConversation
 				subState.playback = state.playback
 				subState.conversation = state.playback.getConversation()
-				subState.actions = state.actions
-				subState.pauseTime = state.pauseTime
 				subState.conversationActors = state.conversationActors
+				
+				if action.getCreateSideLane()
+					var CActionSnippet caction = CActionSnippet.new()
+					applyWaitMode(state, caction)
+					caction.setDelay(state.pauseTime)
+					caction.setCreateSideLane(true)
+					state.actions.add(caction)
+					
+					subState.actions = caction.getActions()
+					
+				else
+					subState.actions = state.actions
+					subState.pauseTime = state.pauseTime
+				end
+				
 				state.pauseTime = 0
 				convert(subState)
 			end

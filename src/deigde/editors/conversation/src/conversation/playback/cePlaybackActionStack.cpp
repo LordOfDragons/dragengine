@@ -41,7 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-cePlaybackActionStack::cePlaybackActionStack(){
+cePlaybackActionStack::cePlaybackActionStack() :
+pActionWaiting(false),
+pActionTime(0.0f)
+{
 	pEntries = NULL;
 	pEntryCount = 0;
 	pEntrySize = 0;
@@ -54,6 +57,14 @@ cePlaybackActionStack::~cePlaybackActionStack(){
 		Clear();
 		delete [] pEntries;
 	}
+}
+
+void cePlaybackActionStack::SetActionWaiting(bool actionWaiting){
+	pActionWaiting = actionWaiting;
+}
+
+void cePlaybackActionStack::SetActionTime(float time){
+	pActionTime = time;
 }
 
 
@@ -131,4 +142,7 @@ void cePlaybackActionStack::Clear(){
 		pEntryCount--;
 		pEntries[ pEntryCount ].Clear();
 	}
+	
+	pActionTime = 0.0f;
+	pActionWaiting = true;
 }

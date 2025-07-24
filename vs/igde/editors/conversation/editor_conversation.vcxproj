@@ -459,6 +459,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetValueVariable.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetFile.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetTopic.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetToggleCreateSideLane.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetAction.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetName.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitAdd.cpp" />
@@ -984,6 +985,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetValueVariable.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetFile.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetTopic.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetToggleCreateSideLane.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetAction.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetName.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitAdd.h" />

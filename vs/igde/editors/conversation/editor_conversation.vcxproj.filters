@@ -1279,6 +1279,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetTopic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetToggleCreateSideLane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2848,6 +2851,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetTopic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetToggleCreateSideLane.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetAction.h">

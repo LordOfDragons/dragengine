@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,45 +22,55 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "ceWPTTIMASnippet.h"
-#include "../ceWPTTreeItem.h"
-#include "../../../ceWindowMain.h"
-#include "../../../../conversation/ceConversation.h"
-#include "../../../../conversation/action/ceCASnippet.h"
-
-#include <deigde/environment/igdeEnvironment.h>
+#include "ceUCASnippetToggleCreateSideLane.h"
+#include "../../../conversation/ceConversation.h"
+#include "../../../conversation/action/ceCASnippet.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 #include <dragengine/common/exceptions.h>
 
 
+// Class ceUCASnippetToggleCreateSideLane
+///////////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTIMASnippet::ceWPTTIMASnippet( ceWindowMain &windowMain,
-ceConversation &conversation, ceCASnippet *action ) :
-ceWPTTIMAction( windowMain, etActionSnippet, conversation, action )
+ceUCASnippetToggleCreateSideLane::ceUCASnippetToggleCreateSideLane(
+	ceConversationTopic *topic, ceCASnippet *snippet) :
+pTopic(nullptr),
+pSnippet(nullptr)
 {
-	SetIcon( windowMain.GetIconActionSnippet() );
-	Update();
+	DEASSERT_NOTNULL(topic)
+	DEASSERT_NOTNULL(snippet)
+	
+	SetShortInfo("Snippet Toggle Create Side lane");
+	
+	pTopic = topic;
+	topic->AddReference();
+	
+	pSnippet = snippet;
+	snippet->AddReference();
 }
 
-ceWPTTIMASnippet::~ceWPTTIMASnippet(){
+ceUCASnippetToggleCreateSideLane::~ceUCASnippetToggleCreateSideLane(){
+	if( pSnippet ){
+		pSnippet->FreeReference();
+	}
+	if( pTopic ){
+		pTopic->FreeReference();
+	}
 }
-
 
 
 // Management
 ///////////////
 
-void ceWPTTIMASnippet::Update(){
-	const ceCASnippet &action = *GetActionSnippet();
-	decString text;
-	text.Format("Snippet%s: '%s' > '%s'", action.GetCreateSideLane() ? "{S}" : "",
-		action.GetFile().GetString(), action.GetTopic().GetString());
-	SetText(text);
+void ceUCASnippetToggleCreateSideLane::Undo(){
+	pSnippet->SetCreateSideLane(!pSnippet->GetCreateSideLane());
+	pTopic->NotifyActionChanged(pSnippet);
+}
+
+void ceUCASnippetToggleCreateSideLane::Redo(){
+	Undo();
 }

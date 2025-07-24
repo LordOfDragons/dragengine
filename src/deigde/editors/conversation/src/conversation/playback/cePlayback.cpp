@@ -73,12 +73,12 @@ pActors( NULL ),
 pActorCount( 0 ),
 pRunning( false ),
 pPaused( false ),
-pActionWaiting( false ),
 pAutoAdvanceCommands( true ),
 pCameraHandling( echFree ),
-pActionTime( 0.0f ),
 pTextBoxText( NULL ),
 pCamera( NULL ),
+pMainActionStack(cePlaybackActionStack::Ref::New(new cePlaybackActionStack)),
+pActiveActionStack(pMainActionStack),
 
 pLastPlayedAction( NULL ),
 pLastPlayedActionTopic( NULL )
@@ -176,10 +176,18 @@ void cePlayback::SetAutoAdvanceCommands( bool autoAdvance ){
 	pConversation.NotifyPlaybackChanged();
 }
 
+void cePlayback::AddSideActionStack(const cePlaybackActionStack::Ref &stack){
+	pSideActionStacks.Add(stack);
+	const cePlaybackActionStack::Ref restoreStack(pActiveActionStack);
+	pActiveActionStack = stack;
+	pProcessActions(0.0f);
+	pActiveActionStack = restoreStack;
+}
+
 void cePlayback::Rewind(){
-	pActionStack.Clear();
-	pActionTime = 0.0f;
-	pActionWaiting = true;
+	pSideActionStacks.RemoveAll();
+	pMainActionStack->Clear();
+	pActiveActionStack = pMainActionStack;
 	SetLastPlayedAction( NULL, NULL );
 	
 	int i;
@@ -251,7 +259,9 @@ void cePlayback::PlaySingleAction( ceConversationAction *action, float time ){
 		//time += action->GetDelay();
 	}
 	
-	pActionStack.Clear();
+	pSideActionStacks.RemoveAll();
+	pMainActionStack->Clear();
+	pActiveActionStack = pMainActionStack;
 	SetLastPlayedAction( NULL, NULL );
 	
 	if( pTestActionList.GetCount() > 0 ){
@@ -418,115 +428,17 @@ void cePlayback::UpdateCamera( float elapsed ){
 	}
 }
 
-void cePlayback::ProcessActions( float elapsed ){
-	ceConversationTopic *actionTopic = pLastPlayedActionTopic;
-	ceConversationAction *action = NULL;
+void cePlayback::ProcessActions(float elapsed){
+	const decObjectOrderedSet lanes(pSideActionStacks);
+	const int count = lanes.GetCount();
 	int i;
-	
-	// check if any stack entry upwards contains a condition evaluating to false. in
-	// this case all actions up to this level are cancelled. in particular this means
-	// if two looping conditions are nested and the outer condition becomes false then
-	// control passes outside the outer layer. this also means top-level layer
-	// boundaries are skiped so be careful how you nest conditional loops
-	cePlaybackEvaluateCondition evaluateCondition;
-	
-	for( i=0; i<pActionStack.GetCount(); i++ ){
-		cePlaybackActionStackEntry &stackEntry = pActionStack.GetAt( i );
-		
-		const ceConversationCondition * const condition = stackEntry.GetLoopCondition();
-		if( ! condition ){
-			continue;
-		}
-		
-		if( evaluateCondition.EvaluateCondition( pConversation, *condition ) ){
-			continue;
-		}
-		
-		stackEntry.CancelLooping();
-		for( ; i>0; i-- ){
-			pActionStack.Pop();
-		}
-		pActionTime = 0.0f;
-		pActionWaiting = true;
-		break;
+	for(i=0; i<count; i++){
+		pActiveActionStack = (cePlaybackActionStack*)lanes.GetAt(i);
+		pProcessActions(elapsed);
 	}
 	
-	// determine the next action
-	if( pActionStack.IsNotEmpty() ){
-		cePlaybackActionStackEntry &stackEntry = pActionStack.GetTop();
-		
-		action = stackEntry.GetNextAction();
-		if( stackEntry.GetParentTopic() ){
-			actionTopic = stackEntry.GetParentTopic();
-		}
-		
-		// special case. it is possible the stack entry is looping but contains no actions.
-		// in this case skip processing until a change comes from the outside world
-		if( ! action && stackEntry.GetLooping() ){
-			return;
-		}
-	}
-	
-	// if there is a next action process it
-	if( action ){
-		// check for waiting conditions
-		if( pActionWaiting ){
-			const ceConversationActorList &actorList = pConversation.GetActorList();
-			
-			if( action->GetWaitForActor() ){
-				const bool useActorWait = ! action->GetWaitSpeakOnly();
-				
-				if( action->GetWaitForActorID().IsEmpty() ){
-					for( i=0; i<pActorCount; i++ ){
-						if( ! pActors[ i ].IsSpeechDone()
-						|| ( useActorWait && actorList.GetAt( i )->GetWaiting() ) ){
-							return;
-						}
-					}
-					
-				}else{
-					const int index = actorList.IndexWithIDOrAliasID( action->GetWaitForActorID() );
-					if( index != -1 ){
-						if( ! pActors[ index ].IsSpeechDone()
-						|| ( useActorWait && actorList.GetAt( index )->GetWaiting() ) ){
-							return;
-						}
-					}
-				}
-			}
-			
-			pActionWaiting = false;
-		}
-		
-		// wait the delay time then process the action
-		pActionTime += elapsed;
-		
-		if( pActionTime >= action->GetDelay() ){
-			cePlaybackProcessAction processAction;
-			SetLastPlayedAction( actionTopic, action );
-			processAction.ProcessAction( pConversation, action );
-			pActionTime = 0.0f;
-			pActionWaiting = true;
-		}
-		
-	// if there is no next action this can be either because a looping action has no actions or
-	// we actually arrive at the end of the conversation.
-	}else{
-		if( pActionStack.GetCount() > 1 ){
-			// looping action without actions. advance to the next action in the stack below
-			AdvanceToNextAction();
-			
-		}else{
-			// end of conversation. wait for all actors to be done speaking and exit the loop
-			for( i=0; i<pActorCount; i++ ){
-				if( ! pActors[ i ].IsSpeechDone() ){
-					return;
-				}
-			}
-			
-			SetRunning( false );
-		}
-	}
+	pActiveActionStack = pMainActionStack;
+	pProcessActions(elapsed);
 }
 
 void cePlayback::AdvanceToNextAction(){
@@ -535,31 +447,31 @@ void cePlayback::AdvanceToNextAction(){
 		return;
 	}
 	
-	if( pActionStack.IsEmpty() ){
+	if(pActiveActionStack->IsEmpty()){
 		if( pTestActionList.GetCount() > 0 ){
-			pActionStack.Push( NULL, pTestActionList.GetAt( 0 ), &pTestActionList, 0 );
+			pActiveActionStack->Push( NULL, pTestActionList.GetAt( 0 ), &pTestActionList, 0 );
 			
 		}else{
-			pActionStack.Push( pTopic, NULL, &pTopic->GetActionList(), 0 );
+			pActiveActionStack->Push( pTopic, NULL, &pTopic->GetActionList(), 0 );
 		}
 		return;
 	}
 	
 	while( true ){
-		cePlaybackActionStackEntry &stackEntry = pActionStack.GetTop();
+		cePlaybackActionStackEntry &stackEntry = pActiveActionStack->GetTop();
 		
 		stackEntry.AdvanceIndex();
 		
 		if( stackEntry.HasNextAction() ){
-			pActionWaiting = true;
-			pActionTime = 0.0f;
+			pActiveActionStack->SetActionWaiting(true);
+			pActiveActionStack->SetActionTime(0.0f);
 			break;
 			
 		}else{
-			if( pActionStack.GetCount() > 1 ){
-				pActionStack.Pop();
-				pActionWaiting = true;
-				pActionTime = 0.0f;
+			if( pActiveActionStack->GetCount() > 1 ){
+				pActiveActionStack->Pop();
+				pActiveActionStack->SetActionWaiting(true);
+				pActiveActionStack->SetActionTime(0.0f);
 				
 			}else{
 				break;
@@ -599,17 +511,17 @@ void cePlayback::FastForwardSpeaking(){
 }
 
 void cePlayback::CancelLoopingLayer( int stackDepth ){
-	if( stackDepth < 0 || stackDepth > pActionStack.GetCount() ){
+	if( stackDepth < 0 || stackDepth > pActiveActionStack->GetCount() ){
 		return;
 	}
 	
-	while( pActionStack.GetCount() > stackDepth ){
-		pActionStack.Pop();
+	while( pActiveActionStack->GetCount() > stackDepth ){
+		pActiveActionStack->Pop();
 	}
 	
-	pActionStack.GetTop().CancelLooping();
-	pActionTime = 0.0f;
-	pActionWaiting = true;
+	pActiveActionStack->GetTop().CancelLooping();
+	pActiveActionStack->SetActionTime(0.0f);
+	pActiveActionStack->SetActionWaiting(true);
 }
 
 
@@ -649,6 +561,120 @@ void cePlayback::ClearTextBoxText(){
 
 // Private Functions
 //////////////////////
+
+void cePlayback::pProcessActions(float elapsed){
+	ceConversationTopic *actionTopic = pLastPlayedActionTopic;
+	ceConversationAction *action = NULL;
+	int i;
+	
+	// check if any stack entry upwards contains a condition evaluating to false. in
+	// this case all actions up to this level are cancelled. in particular this means
+	// if two looping conditions are nested and the outer condition becomes false then
+	// control passes outside the outer layer. this also means top-level layer
+	// boundaries are skiped so be careful how you nest conditional loops
+	cePlaybackEvaluateCondition evaluateCondition;
+	
+	for( i=0; i<pActiveActionStack->GetCount(); i++ ){
+		cePlaybackActionStackEntry &stackEntry = pActiveActionStack->GetAt( i );
+		
+		const ceConversationCondition * const condition = stackEntry.GetLoopCondition();
+		if( ! condition ){
+			continue;
+		}
+		
+		if( evaluateCondition.EvaluateCondition( pConversation, *condition ) ){
+			continue;
+		}
+		
+		stackEntry.CancelLooping();
+		for( ; i>0; i-- ){
+			pActiveActionStack->Pop();
+		}
+		pActiveActionStack->SetActionTime(0.0f);
+		pActiveActionStack->SetActionWaiting(true);
+		break;
+	}
+	
+	// determine the next action
+	if( pActiveActionStack->IsNotEmpty() ){
+		cePlaybackActionStackEntry &stackEntry = pActiveActionStack->GetTop();
+		
+		action = stackEntry.GetNextAction();
+		if( stackEntry.GetParentTopic() ){
+			actionTopic = stackEntry.GetParentTopic();
+		}
+		
+		// special case. it is possible the stack entry is looping but contains no actions.
+		// in this case skip processing until a change comes from the outside world
+		if( ! action && stackEntry.GetLooping() ){
+			return;
+		}
+	}
+	
+	// if there is a next action process it
+	if( action ){
+		// check for waiting conditions
+		if( pActiveActionStack->GetActionWaiting() ){
+			const ceConversationActorList &actorList = pConversation.GetActorList();
+			
+			if( action->GetWaitForActor() ){
+				const bool useActorWait = ! action->GetWaitSpeakOnly();
+				
+				if( action->GetWaitForActorID().IsEmpty() ){
+					for( i=0; i<pActorCount; i++ ){
+						if( ! pActors[ i ].IsSpeechDone()
+						|| ( useActorWait && actorList.GetAt( i )->GetWaiting() ) ){
+							return;
+						}
+					}
+					
+				}else{
+					const int index = actorList.IndexWithIDOrAliasID( action->GetWaitForActorID() );
+					if( index != -1 ){
+						if( ! pActors[ index ].IsSpeechDone()
+						|| ( useActorWait && actorList.GetAt( index )->GetWaiting() ) ){
+							return;
+						}
+					}
+				}
+			}
+			
+			pActiveActionStack->SetActionWaiting(false);
+		}
+		
+		// wait the delay time then process the action
+		pActiveActionStack->SetActionTime(pActiveActionStack->GetActionTime() + elapsed);
+		
+		if( pActiveActionStack->GetActionTime() >= action->GetDelay() ){
+			cePlaybackProcessAction processAction;
+			SetLastPlayedAction( actionTopic, action );
+			processAction.ProcessAction( pConversation, action );
+			pActiveActionStack->SetActionTime(0.0f);
+			pActiveActionStack->SetActionWaiting(true);
+		}
+		
+	// if there is no next action this can be either because a looping action has no actions or
+	// we actually arrive at the end of the conversation.
+	}else{
+		if( pActiveActionStack->GetCount() > 1 ){
+			// looping action without actions. advance to the next action in the stack below
+			AdvanceToNextAction();
+			
+		}else if(pActiveActionStack == pMainActionStack){
+			// end of conversation. wait for all actors to be done speaking and exit the loop
+			for( i=0; i<pActorCount; i++ ){
+				if( ! pActors[ i ].IsSpeechDone() ){
+					return;
+				}
+			}
+			
+			SetRunning( false );
+			
+		}else{
+			pSideActionStacks.Remove(pActiveActionStack);
+		}
+	}
+}
 
 void cePlayback::SetLastPlayedAction( ceConversationTopic *topic, ceConversationAction *action ){
 	if( topic != pLastPlayedActionTopic ){

@@ -30,6 +30,7 @@
 #include "variable/cePlaybackVariableList.h"
 #include "../action/ceConversationActionList.h"
 
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
@@ -71,13 +72,12 @@ private:
 	int pActorCount;
 	bool pRunning;
 	bool pPaused;
-	bool pActionWaiting;
 	bool pAutoAdvanceCommands;
 	eCameraHandling pCameraHandling;
-	float pActionTime;
 	ceTextBoxText *pTextBoxText;
 	cePlaybackCamera *pCamera;
-	cePlaybackActionStack pActionStack;
+	cePlaybackActionStack::Ref pMainActionStack, pActiveActionStack;
+	decObjectOrderedSet pSideActionStacks;
 	cePlaybackCommandList pCommandList;
 	cePlaybackVariableList pVariableList;
 	ceConversationActionList pTestActionList;
@@ -152,9 +152,17 @@ public:
 	
 	
 	
-	/** Action stack. */
-	inline cePlaybackActionStack &GetActionStack(){ return pActionStack; }
-	inline const cePlaybackActionStack &GetActionStack() const{ return pActionStack; }
+	/** Active action stack. */
+	inline const cePlaybackActionStack::Ref &GetActiveActionStack() const{ return pActiveActionStack; }
+	
+	/** Main action stack. */
+	inline const cePlaybackActionStack::Ref &GetMainActionStack() const{ return pMainActionStack; }
+	
+	/** Side action stacks. */
+	inline const decObjectOrderedSet &GetSideActionStacks() const{ return pSideActionStacks; }
+	
+	/** Add side action stack and run it once. */
+	void AddSideActionStack(const cePlaybackActionStack::Ref &stack);
 	
 	/** Command list. */
 	inline cePlaybackCommandList &GetCommands(){ return pCommandList; }
@@ -226,6 +234,7 @@ public:
 	
 	
 private:
+	void pProcessActions(float elapsed);
 	void SetLastPlayedAction( ceConversationTopic *topic, ceConversationAction *action );
 };
 
