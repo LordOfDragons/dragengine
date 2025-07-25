@@ -857,7 +857,7 @@ class BaseGameApp extends Game
 		return pNetworkStateTracker
 	end
 	
-	/** \brief ID Generator. */ 
+	/** \brief ID Generator. */
 	func MutableID getIDGenerator()
 		return pIDGenerator
 	end

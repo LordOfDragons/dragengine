@@ -124,12 +124,8 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorVRHMD"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorVRHMD")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -140,20 +136,10 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 				ECBehaviorVRPlayspace.getBehaviorIn(eclass),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrhmd")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "vrhmd")
 			return behavior
-		end
-		
-		/**
-		 * \brief Binding manager matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getBindingManager() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func BindingManager getBindingManagerFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
 		end
 	end
 	
@@ -443,7 +429,7 @@ class ECBehaviorVRHMD extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace) \
-	this(eclass, vrPlayspace, BaseGameApp.getApp().getBindingManager())
+	this(eclass, vrPlayspace, eclass.sharedFactoryHelper.defaultBindingManager())
 	end
 	
 	/** \brief Create behavior element class. */

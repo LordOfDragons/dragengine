@@ -58,12 +58,8 @@ class ECBehaviorRandomizeGeometry extends DefaultECBehavior implements BehaviorP
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorRandomizeGeometry"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorRandomizeGeometry")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -71,8 +67,7 @@ class ECBehaviorRandomizeGeometry extends DefaultECBehavior implements BehaviorP
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorRandomizeGeometry behavior = ECBehaviorRandomizeGeometry.new(eclass)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "randomizeGeometry")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "randomizeGeometry")
 			return behavior
 		end
 	end

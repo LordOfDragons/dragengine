@@ -244,12 +244,8 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorActorCutscene"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorActorCutscene")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -259,7 +255,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			var ECBehaviorActorCutscene behavior = ECBehaviorActorCutscene.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass))
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "cutscene")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "cutscene")
 			return behavior
 		end
 	end
@@ -699,7 +695,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	/** \brief Create behavior element class. */
 	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	ECBehaviorConversationActor conversationActor) \
-	this(eclass, collider, conversationActor, BaseGameApp.getApp().getLoaders())
+	this(eclass, collider, conversationActor, eclass.sharedFactoryHelper.defaultLoaders())
 	end
 	
 	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \

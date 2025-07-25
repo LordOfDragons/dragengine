@@ -72,12 +72,8 @@ class ECBehaviorSky extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorSky"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorSky")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -91,7 +87,7 @@ class ECBehaviorSky extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "sky")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "sky")
 			return behavior
 		end
 	end
@@ -219,12 +215,12 @@ class ECBehaviorSky extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders())
+	func new(BehaviorElementClass eclass) this(eclass, eclass.sharedFactoryHelper.defaultLoaders())
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, String prefix) \
-	this(eclass, BaseGameApp.getApp().getLoaders(), prefix)
+	this(eclass, eclass.sharedFactoryHelper.defaultLoaders(), prefix)
 	end
 	
 	/** \brief Create behavior element class. */

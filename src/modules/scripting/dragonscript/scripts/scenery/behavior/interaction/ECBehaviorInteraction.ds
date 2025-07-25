@@ -63,12 +63,8 @@ class ECBehaviorInteraction extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorInteraction"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorInteraction")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -76,7 +72,7 @@ class ECBehaviorInteraction extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorInteraction behavior = ECBehaviorInteraction.new(eclass)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "interaction")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "interaction")
 			return behavior
 		end
 	end

@@ -192,12 +192,8 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorTouchSensor"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorTouchSensor")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -209,9 +205,9 @@ class ECBehaviorTouchSensor extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "touchSensor", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "touchSensor", id)
 			return behavior
 		end
 	end

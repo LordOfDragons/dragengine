@@ -63,7 +63,7 @@ class BTActionTrigger implements BTAction
 	
 	/** \brief Create action using BaseGameApp trigger table. */
 	func new(StringID name, Action action) \
-	this(BaseGameApp.getApp().getTriggerTable(), name, action)
+	this(BehaviorElementClass.sharedFactoryHelper.defaultTriggerTable(), name, action)
 	end
 	
 	/** \brief Create action. */

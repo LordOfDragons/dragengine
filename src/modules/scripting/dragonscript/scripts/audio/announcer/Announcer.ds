@@ -210,8 +210,8 @@ class Announcer
 					end
 					
 					if bestPart == null
-						BaseGameApp.getApp().getConsole().addMessage( "Announcer no part found matching '" \
-							+ words.getAt( position ) + "'" )
+						BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
+							"Announcer no part found matching '" + words.getAt( position ) + "'")
 						position++
 						
 					else

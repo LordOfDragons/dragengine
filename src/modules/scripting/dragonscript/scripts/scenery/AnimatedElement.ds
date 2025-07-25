@@ -22,9 +22,7 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
-
 
 /**
  * \brief Animated element.
@@ -32,26 +30,25 @@ namespace Dragengine.Scenery
  * Simple element supporting playing back animation.
  */
 class AnimatedElement extends SimpleElement
-	private var ECBehaviorAnimated.Instance pAnimated
-	
+	var ECBehaviorAnimated.Instance pAnimated
 	
 	
 	/** \brief Create element. */
-	public func new( AnimatedElementClass eclass ) super( eclass )
-		this.pAnimated = eclass.getAnimated().instance( this )
+	func new(AnimatedElementClass eclass) super(eclass)
 	end
-	
 	
 	
 	/** \brief Animated behavior instance. */
-	public func ECBehaviorAnimated.Instance getAnimated()
-		return this.pAnimated
+	func ECBehaviorAnimated.Instance getAnimated()
+		if pAnimated == null
+			pAnimated = (getClass() cast AnimatedElementClass).getAnimated().instance(this)
+		end
+		return pAnimated
 	end
 	
 	
-	
 	/** \brief Visit element. */
-	public func void visit( ElementVisitor visitor )
-		visitor.visitAnimatedElement( this )
+	func void visit(ElementVisitor visitor)
+		visitor.visitAnimatedElement(this)
 	end
 end

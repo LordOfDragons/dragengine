@@ -310,8 +310,8 @@ class BaseVRActorClass extends BaseActorClass
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	func new() this("VRActor", BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getPlayerControlledActor())
+	func new() this("VRActor", sharedFactoryHelper.defaultLoaders(), \
+	sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	/** \brief Create element class. */
@@ -320,8 +320,8 @@ class BaseVRActorClass extends BaseActorClass
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	func new(String className) this(className, BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getPlayerControlledActor())
+	func new(String className) this(className, sharedFactoryHelper.defaultLoaders(), \
+	sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	/** \brief Create element class. */
@@ -394,10 +394,12 @@ class BaseVRActorClass extends BaseActorClass
 		pVRLeftHandPointAt.setIgnoreCollider(getCollider())
 		
 		// add support for laser pointers on hand controllers
-		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRRightHandPointAt, idVRRightHand)
+		pVRRightHandLaserPointer = ECBehaviorVRHandLaserPointer.new(\
+			this, pVRRightHandPointAt, idVRRightHand)
 		addBtsmRightHand.run(pVRRightHandLaserPointer.getBTSMs(), "vrHandLaserPointer")
 		
-		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(this, pVRLeftHandPointAt, idVRLeftHand)
+		pVRLeftHandLaserPointer = ECBehaviorVRHandLaserPointer.new(\
+			this, pVRLeftHandPointAt, idVRLeftHand)
 		addBtsmLeftHand.run(pVRLeftHandLaserPointer.getBTSMs(), "vrHandLaserPointer")
 		
 		// add support for grabbing grab slots using hand controllers. the aim pose for

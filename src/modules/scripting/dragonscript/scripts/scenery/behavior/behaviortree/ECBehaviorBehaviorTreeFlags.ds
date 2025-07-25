@@ -165,19 +165,14 @@ class ECBehaviorBehaviorTreeFlags extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorBehaviorTreeFlags"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorBehaviorTreeFlags")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorBehaviorTreeFlags behavior = ECBehaviorBehaviorTreeFlags.new(eclass,\
-				eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "behaviorTreeFlags", id)
+				getHelper().defaultBehaviorTree(eclass, parameters), id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "behaviorTreeFlags", id)
 			return behavior
 		end
 	end

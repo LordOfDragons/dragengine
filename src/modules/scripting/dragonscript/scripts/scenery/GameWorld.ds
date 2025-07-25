@@ -347,13 +347,15 @@ class GameWorld
 		end
 		
 		if pThinkers.has(element)
-			BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind thinker")
+			BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
+				"GameWorld.removeElement: Object of class " + element.className() + " left behind thinker")
 			pThinkers.remove(element)
 		end
 		
 		var int index = pEnterFrameOnce.indexOf(element)
 		if index != -1
-			BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once")
+			BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
+				"GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once")
 			pEnterFrameOnce.removeFrom(index)
 		end
 	end

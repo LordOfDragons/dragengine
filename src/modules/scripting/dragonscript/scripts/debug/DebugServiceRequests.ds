@@ -24,6 +24,7 @@
 
 namespace Dragengine.Debugging
 pin Dragengine.Utils
+pin Dragengine.Scenery
 
 
 /**
@@ -37,7 +38,7 @@ class DebugServiceRequests
 	/**
 	 * \brief Create new instance of class DebugServiceRequests.
 	 */
-	func new() this(BaseGameApp.getApp().getConsole())
+	func new() this(BehaviorElementClass.sharedFactoryHelper.defaultConsole())
 	end
 	
 	/**

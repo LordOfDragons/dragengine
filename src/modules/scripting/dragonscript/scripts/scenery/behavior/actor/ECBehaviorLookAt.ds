@@ -147,19 +147,15 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorLookAt"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorLookAt")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			if not id.empty()
 				throw EInvalidParam.new("id is not empty string")
 			end
-			var ECBehaviorComponent component = eclass.sharedFactoryHelper.defaultComponent(eclass, parameters)
+			var ECBehaviorComponent component = getHelper().defaultComponent(eclass, parameters)
 			var ECBehaviorLocomotion locomotion = ECBehaviorLocomotion.getBehaviorIn(eclass)
 			var ECBehaviorLookAt behavior
 			
@@ -177,9 +173,9 @@ class ECBehaviorLookAt extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "lookAt")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "lookAt")
 			return behavior
 		end
 	end

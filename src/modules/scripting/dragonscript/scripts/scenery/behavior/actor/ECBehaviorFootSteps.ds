@@ -463,12 +463,8 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorFootSteps"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorFootSteps")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -477,10 +473,10 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			end
 			var ECBehaviorFootSteps behavior = ECBehaviorFootSteps.new(eclass)
 			
-			behavior.setActorAnimated(eclass.sharedFactoryHelper.defaultActorAnimated(eclass, parameters))
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			behavior.setActorAnimated(getHelper().defaultActorAnimated(eclass, parameters))
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "footSteps")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "footSteps")
 			return behavior
 		end
 	end

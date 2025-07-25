@@ -47,8 +47,8 @@ class BaseParticleEmitterClass extends BehaviorElementClass
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getTriggerTable() )
+	public func new( String className ) this( className, sharedFactoryHelper.defaultLoaders(), \
+	sharedFactoryHelper.defaultTriggerTable())
 	end
 	
 	/** \brief Create element class. */

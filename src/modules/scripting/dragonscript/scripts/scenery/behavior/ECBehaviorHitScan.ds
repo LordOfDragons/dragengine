@@ -154,27 +154,23 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorHitScan"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorHitScan")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorHitScan behavior = ECBehaviorHitScan.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass),\
-				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters), id)
+				getHelper().defaultComponent(eclass, parameters), id)
 			
 			if parameters.has("collisionFilter")
 				behavior.getCollisionFilter().setCollisionFilter(eclass.getSharedCodecPropertyString().\
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "hitScan", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "hitScan", id)
 			return behavior
 		end
 	end

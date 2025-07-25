@@ -52,8 +52,8 @@ class HiddenElementClass extends SimpleElementClass
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	func new(String className)\
-	this(className, BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getTriggerTable())
+	func new(String className) this(className, sharedFactoryHelper.defaultLoaders(),\
+	sharedFactoryHelper.defaultTriggerTable())
 	end
 	
 	/** \brief Create element class. */

@@ -139,24 +139,19 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorAttachSlot"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorAttachSlot")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorAttachSlot behavior = ECBehaviorAttachSlot.new(\
 				eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
-			behavior.setVRHand(eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters))
+			behavior.setVRHand(getHelper().optionalVRHand(eclass, parameters))
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "attachSlot", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "attachSlot", id)
 			return behavior
 		end
 	end

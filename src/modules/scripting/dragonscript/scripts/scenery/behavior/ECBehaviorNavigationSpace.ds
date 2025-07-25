@@ -91,19 +91,14 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorNavigationSpace"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorNavigationSpace")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorNavigationSpace behavior = ECBehaviorNavigationSpace.new(\
 				eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "navigationSpace", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "navigationSpace", id)
 			return behavior
 		end
 	end
@@ -211,11 +206,11 @@ class ECBehaviorNavigationSpace extends DefaultECBehavior
 	 * These values are optional and can be null: \em collider.
 	 */
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
-	this( eclass, collider, BaseGameApp.getApp().getLoaders(), "" )
+	this( eclass, collider, eclass.sharedFactoryHelper.defaultLoaders(), "" )
 	end
 	
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
-	this( eclass, collider, BaseGameApp.getApp().getLoaders(), id )
+	this( eclass, collider, eclass.sharedFactoryHelper.defaultLoaders(), id )
 	end
 	
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders ) \

@@ -26,6 +26,7 @@
 namespace Dragengine.Commands
 
 pin Dragengine.Utils
+pin Dragengine.Scenery
 
 
 /**
@@ -74,8 +75,8 @@ class DefaultBindingHelper
 	 * \param bindingManager Binding manager to update once finished.
 	 * \param commandManager Command manager to use for bindings.
 	 */
-	func new() this(BaseGameApp.getApp().getBindingManager(),\
-	BaseGameApp.getApp().getCommandManager())
+	func new() this(BehaviorElementClass.sharedFactoryHelper.defaultBindingManager(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultCommandManager())
 	end
 	
 	/**

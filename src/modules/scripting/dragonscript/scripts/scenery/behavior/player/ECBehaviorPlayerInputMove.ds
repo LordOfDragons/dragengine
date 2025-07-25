@@ -120,12 +120,8 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorPlayerInputMove"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorPlayerInputMove")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -143,9 +139,9 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				end
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "playerInputMove")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "playerInputMove")
 			return behavior
 		end
 	end

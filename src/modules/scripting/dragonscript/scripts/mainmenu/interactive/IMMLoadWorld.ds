@@ -134,9 +134,10 @@ class IMMLoadWorld
 			// for a simple main menu world file it is better to preload only what is used.
 			// this reduces loading time especially if multiple world files are present
 			//pMainMenu.getElementClasses().preloadAll(pPreloadManager)
-			pStubWorld.addElementClassesTo(pPreloadManager)
+			// pStubWorld.addElementClassesTo(pPreloadManager)
+			// pPreloadManager.addElementClassDependencies()
 			
-			pPreloadManager.addElementClassDependencies()
+			pMainMenu.getElementClasses().preloadAll(pPreloadManager)
 			pPreloadManager.preloadElementClasses()
 			pStubWorld.beginPreloading()
 			

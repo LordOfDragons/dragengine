@@ -122,12 +122,8 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorVRHandPointedAt"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorVRHandPointedAt")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -136,9 +132,9 @@ class ECBehaviorVRHandPointedAt extends DefaultECBehavior
 			end
 			var ECBehaviorVRHandPointedAt behavior = ECBehaviorVRHandPointedAt.new(eclass)
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrHandPointedAt")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "vrHandPointedAt")
 			return behavior
 		end
 	end

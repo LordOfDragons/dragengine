@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Utils
 
 pin Dragengine.Gui
@@ -30,6 +29,7 @@ pin Dragengine.Scenery
 pin Dragengine.ConversationSystem
 pin Dragengine.TriggerSystem
 pin Dragengine.Commands
+pin Dragengine.LoadSave
 
 
 /**
@@ -1078,12 +1078,20 @@ class BehaviorFactoryHelper
 	 */
 	func TSTriggerTable triggerTable(String value)
 		if value.equals("default")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getTriggerTable()
-			end
+			return defaultTriggerTable()
 		end
 		return null
+	end
+	
+	/**
+	 * \brief Default trigger table.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getTriggerTable().
+	 */
+	func TSTriggerTable defaultTriggerTable()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getTriggerTable() else null
 	end
 	
 	/**
@@ -1093,12 +1101,20 @@ class BehaviorFactoryHelper
 	 */
 	func CommandManager commandManager(String value)
 		if value.equals("default")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getCommandManager()
-			end
+			return defaultCommandManager()
 		end
 		return null
+	end
+	
+	/**
+	 * \brief Default command manager matching value.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getCommandManager().
+	 */
+	func CommandManager defaultCommandManager()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getCommandManager() else null
 	end
 	
 	/**
@@ -1108,12 +1124,20 @@ class BehaviorFactoryHelper
 	 */
 	func BindingManager bindingManager(String value)
 		if value.equals("default")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getBindingManager()
-			end
+			return defaultBindingManager()
 		end
 		return null
+	end
+	
+	/**
+	 * \brief Default binding manager matching value.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getTriggerTable().
+	 */
+	func BindingManager defaultBindingManager()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getBindingManager() else null
 	end
 	
 	/**
@@ -1123,12 +1147,20 @@ class BehaviorFactoryHelper
 	 */
 	func ConversationPlaybackSubTitle subtitle(String value)
 		if value.equals("default")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getWindowSubTitle()
-			end
+			return defaultSubtitle()
 		end
 		return null
+	end
+	
+	/**
+	 * \brief Default conversation playback subtitle matching value.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getWindowSubTitle().
+	 */
+	func ConversationPlaybackSubTitle defaultSubtitle()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getWindowSubTitle() else null
 	end
 	
 	/**
@@ -1140,18 +1172,37 @@ class BehaviorFactoryHelper
 	 */
 	func GuiTheme subtitleTheme(String value)
 		if value.equals("default")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getWindowSubTitle().getGuiTheme()
-			end
+			return defaultSubtitleTheme()
 			
 		elif value.startsWith("path:")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getLoaders().getGuiTheme().loadFromFile(value.substring(5))
+			var Loaders loaders = defaultLoaders()
+			if loaders != null
+				return loaders.getGuiTheme().loadFromFile(value.substring(5))
 			end
 		end
 		return null
+	end
+	
+	/**
+	 * \brief Default subtitle gui theme matching value.
+	 * \version 1.28
+	 * 
+	 * Returns \ref WindowSubTitle#getGuiTheme() on \ref BaseGameApp#getWindowSubTitle().
+	 */
+	func GuiTheme defaultSubtitleTheme()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getWindowSubTitle().getGuiTheme() else null
+	end
+	
+	/**
+	 * \brief Default loaders.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getLoaders().
+	 */
+	func Loaders defaultLoaders()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getLoaders() else null
 	end
 	
 	/**
@@ -1162,12 +1213,20 @@ class BehaviorFactoryHelper
 	 */
 	func SimpleConversationConverter simpleConversationConverter(String value)
 		if value.equals("default")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getSimpleConversationConverter()
-			end
+			return defaultSimpleConversationConverter()
 		end
 		return null
+	end
+	
+	/**
+	 * \brief Default simple conversation converter matching value.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getSimpleConversationConverter().
+	 */
+	func SimpleConversationConverter defaultSimpleConversationConverter()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getSimpleConversationConverter() else null
 	end
 	
 	/**
@@ -1175,14 +1234,22 @@ class BehaviorFactoryHelper
 	 * 
 	 * Returns \ref BaseGameApp#getPlayerControlledActor() for value "default" and null otherwise.
 	 */
-	func ECBehaviorPlayerControllable.Tracker playerControllableActor(String value)
+	func ECBehaviorPlayerControllable.Tracker playerControlledActor(String value)
 		if value.equals("default")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getPlayerControlledActor()
-			end
+			return defaultPlayerControlledActor()
 		end
 		return null
+	end
+	
+	/**
+	 * \brief Default player controllable actor matching value.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getPlayerControlledActor().
+	 */
+	func ECBehaviorPlayerControllable.Tracker defaultPlayerControlledActor()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getPlayerControlledActor() else null
 	end
 	
 	/**
@@ -1192,12 +1259,64 @@ class BehaviorFactoryHelper
 	 */
 	func TranslationManager translationManager(String value)
 		if value.equals("default")
-			var BaseGameApp app = BaseGameApp.getApp()
-			if app != null
-				return app.getTranslationManager()
-			end
+			return defaultTranslationManager()
 		end
 		return null
+	end
+	
+	/**
+	 * \brief Default translation manager matching value.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getTranslationManager().
+	 */
+	func TranslationManager defaultTranslationManager()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getTranslationManager() else null
+	end
+	
+	/**
+	 * \brief Default ID Generator.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getIDGenerator().
+	 */
+	func MutableID defaultIDGenerator()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getIDGenerator() else null
+	end
+	
+	/**
+	 * \brief Default console.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getConsole().
+	 */
+	func Console defaultConsole()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getConsole() else null
+	end
+	
+	/**
+	 * \brief Default player choice window.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getWindowPlayerChoice().
+	 */
+	func WindowPlayerChoice defaultWindowPlayerChoice()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getWindowPlayerChoice() else null
+	end
+	
+	/**
+	 * \brief Default element classes list.
+	 * \version 1.28
+	 * 
+	 * Returns \ref BaseGameApp#getElementClassList().
+	 */
+	func ElementClassList defaultElementClassList()
+		var BaseGameApp app = BaseGameApp.getApp()
+		return app != null if app.getElementClassList() else null
 	end
 	
 	

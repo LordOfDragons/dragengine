@@ -70,12 +70,8 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorShowMessage"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorShowMessage")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -86,19 +82,8 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "showMessage", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "showMessage", id)
 			return behavior
-		end
-		
-		/**
-		 * \brief Trigger table matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func TSTriggerTable getTriggerTableFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 		
 		/**
@@ -219,12 +204,12 @@ class ECBehaviorShowMessage extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) \
-	this(eclass, BaseGameApp.getApp().getTriggerTable(), BaseGameApp.getApp().getConsole(), "")
+	func new(BehaviorElementClass eclass) this(eclass,\
+	eclass.sharedFactoryHelper.defaultTriggerTable(), eclass.sharedFactoryHelper.defaultConsole(), "")
 	end
 	
-	func new(BehaviorElementClass eclass, String id) \
-	this(eclass, BaseGameApp.getApp().getTriggerTable(), BaseGameApp.getApp().getConsole(), id)
+	func new(BehaviorElementClass eclass, String id) this(eclass,\
+	eclass.sharedFactoryHelper.defaultTriggerTable(), eclass.sharedFactoryHelper.defaultConsole(), id)
 	end
 	
 	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, Console console) \

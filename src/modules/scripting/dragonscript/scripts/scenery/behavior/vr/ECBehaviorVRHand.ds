@@ -185,12 +185,8 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorVRHand"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorVRHand")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -204,20 +200,10 @@ class ECBehaviorVRHand extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "vrHand", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "vrHand", id)
 			return behavior
-		end
-		
-		/**
-		 * \brief Binding manager matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getBindingManager() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func BindingManager getBindingManagerFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
 		end
 	end
 	
@@ -954,25 +940,25 @@ class ECBehaviorVRHand extends DefaultECBehavior
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
 	InputDeviceType inputDeviceType) this(eclass, vrPlayspace, inputDeviceType, \
-	BaseGameApp.getApp().getBindingManager())
+	eclass.sharedFactoryHelper.defaultBindingManager())
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
 	InputDeviceType inputDeviceType, String id) this(eclass, vrPlayspace, inputDeviceType, \
-	BaseGameApp.getApp().getBindingManager(), id)
+	eclass.sharedFactoryHelper.defaultBindingManager(), id)
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
 	InputDeviceType inputDeviceType, String id, String subID) this(eclass, vrPlayspace, \
-	inputDeviceType, BaseGameApp.getApp().getBindingManager(), id, subID)
+	inputDeviceType, eclass.sharedFactoryHelper.defaultBindingManager(), id, subID)
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorVRPlayspace vrPlayspace, \
 	InputDeviceType inputDeviceType, String id, String subID, String prefix) \
-	this(eclass, vrPlayspace, inputDeviceType, BaseGameApp.getApp().getBindingManager(), \
+	this(eclass, vrPlayspace, inputDeviceType, eclass.sharedFactoryHelper.defaultBindingManager(), \
 	id, subID, prefix)
 	end
 	

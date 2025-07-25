@@ -293,18 +293,13 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorBehaviorTree"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorBehaviorTree")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorBehaviorTree behavior = ECBehaviorBehaviorTree.new(eclass, id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "behaviorTree", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "behaviorTree", id)
 			return behavior
 		end
 	end
@@ -348,9 +343,7 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 			end
 			
 			pContext = createContext(stub, pBehaviorTree)
-			if BaseGameApp.getApp() != null
-				pContext.setConsole(BaseGameApp.getApp().getConsole())
-			end
+			pContext.setConsole(BehaviorElementClass.sharedFactoryHelper.defaultConsole())
 			
 			setRequiresThink(pRun)
 			pECBehavior.createListeners(this)
@@ -568,17 +561,17 @@ class ECBehaviorBehaviorTree extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(), "")
+	func new(BehaviorElementClass eclass) this(eclass, eclass.sharedFactoryHelper.defaultLoaders(), "")
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, String id)\
-	this(eclass, BaseGameApp.getApp().getLoaders(), id)
+	this(eclass, eclass.sharedFactoryHelper.defaultLoaders(), id)
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, String id, String prefix)\
-	this(eclass, BaseGameApp.getApp().getLoaders(), id, prefix)
+	this(eclass, eclass.sharedFactoryHelper.defaultLoaders(), id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */

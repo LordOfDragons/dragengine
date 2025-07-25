@@ -43,7 +43,7 @@ class TriggerConversationClass extends BehaviorElementClass
 	
 	/** \brief Create element class. */
 	public func new( TSTriggerTable triggerTable ) this( "TriggerConversation", triggerTable, \
-	BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getPlayerControlledActor() )
+	sharedFactoryHelper.defaultLoaders(), sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	public func new( TSTriggerTable triggerTable, Loaders loaders, \
@@ -52,7 +52,7 @@ class TriggerConversationClass extends BehaviorElementClass
 	end
 	
 	public func new( String name, TSTriggerTable triggerTable ) this( name, triggerTable, \
-	BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getPlayerControlledActor() )
+	sharedFactoryHelper.defaultLoaders(), sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	public func new( String name, TSTriggerTable triggerTable, Loaders loaders, \
