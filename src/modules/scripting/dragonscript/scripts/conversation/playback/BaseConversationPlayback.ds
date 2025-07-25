@@ -100,7 +100,7 @@ class BaseConversationPlayback extends ConversationPlayback
 	
 	/** \brief Create conversation playback. */
 	func new(Conversation conversation) \
-	this(conversation, BaseGameApp.getApp().getPlayerControlledActor())
+	this(conversation, BehaviorElementClass.sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	/** \brief Create conversation playback. */
@@ -122,7 +122,7 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * - pPlayerChoice
 	 */
 	func new(PersistencyEnvironment env, FileReader reader)\
-	this(env, reader, BaseGameApp.getApp().getPlayerControlledActor())
+	this(env, reader, BehaviorElementClass.sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	func new(PersistencyEnvironment env, FileReader reader,\
@@ -135,8 +135,8 @@ class BaseConversationPlayback extends ConversationPlayback
 		pCommandParser = CommandLineParser.new()
 		pCommands = Dictionary.new()
 		pConditions = Dictionary.new()
-		setSubTitle(BaseGameApp.getApp().getWindowSubTitle())
-		setPlayerChoice(BaseGameApp.getApp().getWindowPlayerChoice())
+		setSubTitle(BehaviorElementClass.sharedFactoryHelper.defaultSubtitle())
+		setPlayerChoice(BehaviorElementClass.sharedFactoryHelper.defaultWindowPlayerChoice())
 		setCameraDirector(createCameraDirector())
 		pInputProcessor = createInputProcessor()
 	end
@@ -269,7 +269,7 @@ class BaseConversationPlayback extends ConversationPlayback
 		var ConversationTopicGroup topicGroup = conversation.getTopicGroupWithID(\
 			StringID.new(idTopicGroup))
 		if topicGroup == null
-			BaseGameApp.getApp().getConsole().addMessage(\
+			BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
 				"BaseConversationPlayback.setTopic: Not found '" + idTopicGroup + "' => '" + idTopic)
 			throw EInvalidParam.new()
 		end
@@ -277,7 +277,7 @@ class BaseConversationPlayback extends ConversationPlayback
 		var ConversationTopic topic = topicGroup.getTopicWithID(StringID.new(idTopic))
 		
 		if topic == null
-			BaseGameApp.getApp().getConsole().addMessage(\
+			BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
 				"BaseConversationPlayback.setTopic: Not found '" + idTopicGroup + "' => '" + idTopic)
 			throw EInvalidParam.new()
 		end
@@ -337,7 +337,7 @@ class BaseConversationPlayback extends ConversationPlayback
 	
 	/** \brief Trigger table to use. */
 	func TSTriggerTable getTriggerTable()
-		return BaseGameApp.getApp().getTriggerTable()
+		return BehaviorElementClass.sharedFactoryHelper.defaultTriggerTable()
 	end
 	
 	/**
@@ -458,7 +458,8 @@ class BaseConversationPlayback extends ConversationPlayback
 	 */
 	protected func InputProcessor createInputProcessor()
 		var ConversationInputProcessor inputProcessor = ConversationInputProcessor.new(this)
-		inputProcessor.setBindingManager(BaseGameApp.getApp().getBindingManager())
+		inputProcessor.setBindingManager(\
+			BehaviorElementClass.sharedFactoryHelper.defaultBindingManager())
 		return inputProcessor
 	end
 	

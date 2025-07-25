@@ -40,7 +40,7 @@
 	
 	<type>
 		<name>beam</name>
-		<skin>/shareddata/particles/laserpointer/laserpointer.deskin</skin>
+		<skin>laserpointer.deskin</skin>
 		<castFrom>vertex</castFrom>
 		<simulationType>beam</simulationType>
 		<intervalAsDistance>false</intervalAsDistance>

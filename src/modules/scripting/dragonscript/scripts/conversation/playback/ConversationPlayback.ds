@@ -42,7 +42,7 @@ abstract class ConversationPlayback implements Persistable
 	var ConversationCameraDirector pCameraDirector
 	var Dictionary pVariables
 	var ConversationPlaybackLane pActiveLane, pMainLane
-	var Array pSideLanes
+	var SafeArray pSideLanes
 	var bool pRunning, pPaused, pEnableFastForwardSpeaking
 	var ConversationPlaybackSubTitle pSubTitle
 	var ConversationPlaybackPlayerChoice pPlayerChoice
@@ -62,17 +62,13 @@ abstract class ConversationPlayback implements Persistable
 		pCoordSystems = Array.new()
 		pVariables = Dictionary.new()
 		pMainLane = ConversationPlaybackLane.new(true)
-		pSideLanes = Array.new()
+		pSideLanes = SafeArray.new()
 		pActiveLane = pMainLane
 		pRunning = false
 		pPaused = false
 		pEnableFastForwardSpeaking = false
 		pListeners = Array.new()
-		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pTranslationManager = app.getTranslationManager()
-		end
+		pTranslationManager = BehaviorElementClass.sharedFactoryHelper.defaultTranslationManager()
 	end
 	
 	/** \brief Dispose of conversation playback. */
@@ -123,11 +119,7 @@ abstract class ConversationPlayback implements Persistable
 		pActors = Array.new()
 		pCoordSystems = Array.new()
 		pListeners = Array.new()
-		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pTranslationManager = app.getTranslationManager()
-		end
+		pTranslationManager = BehaviorElementClass.sharedFactoryHelper.defaultTranslationManager()
 		
 		select reader.readByte() // version
 		case 0
