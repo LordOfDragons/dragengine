@@ -189,6 +189,7 @@ class BaseActorClass extends BehaviorElementClass
 		
 		pFootSteps = ECBehaviorFootSteps.new(this)
 		pFootSteps.setActorAnimated(pActorAnimated)
+		pFootSteps.setConversationActor(pConversationActor)
 		pFootSteps.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pRideOn = ECBehaviorRideOn.new(this, pLocomotion, pProjectToGround)

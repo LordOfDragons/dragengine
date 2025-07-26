@@ -474,6 +474,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			var ECBehaviorFootSteps behavior = ECBehaviorFootSteps.new(eclass)
 			
 			behavior.setActorAnimated(getHelper().defaultActorAnimated(eclass, parameters))
+			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
 			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			getHelper().setPropertiesFromParameters(eclass, parameters, "footSteps")
@@ -599,6 +600,55 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 			end
 		end
 		
+		/**
+		 * \brief Conversation command.
+		 * 
+		 * Syntax:
+		 * 
+		 * \code footSteps step <configuration> [<event> | random] \endcode
+		 * Play footstep sound using configuration. Event is either "random" to play a random
+		 * event of the index of the event to play.
+		 */
+		class CCommand implements ECBehaviorConversationActor.ConversationCommand
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void runCommand(ECBehaviorConversationActor.Instance instance, Array arguments)
+				var String action = arguments.getAt(1) cast String
+				
+				if action.equals("step")
+					runStep(instance, arguments)
+					
+				else
+					throw EInvalidParam.new("Unknown action '" + action + "'")
+				end
+			end
+			
+			protected func void runStep(ECBehaviorConversationActor.Instance instance, Array arguments)
+				var Configuration config = pInstance.getConfigurationAt(arguments.getAt(2) cast String)
+				if config == null
+					return
+				end
+				
+				var int index
+				var Object value = arguments.getAt(3)
+				if value.equals("random")
+					index = DEMath.random(0, config.getEventCount() - 1)
+					
+				else
+					index = (value cast String).toInt()
+				end
+				if index < 0 or index >= config.getEventCount()
+					return
+				end
+				
+				pInstance.footStep(config, config.getEventAt(index))
+			end
+		end
+		
 		private class AnimatorChangedFindController extends ECBehaviorActorAnimated.DefaultListener
 			var Instance pInstance
 			
@@ -661,6 +711,12 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
 				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
 				pBTSMs.dropBTContexts()
+			end
+			
+			if pECBehavior.getConversationActor() != null
+				var ECBehaviorConversationActor.Instance convoActor =\
+					pECBehavior.getConversationActor().instance(element)
+				convoActor.addCommand("footSteps", CCommand.new(this))
 			end
 		end
 		
@@ -1045,6 +1101,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	
 	var bool pAutoUpdate
 	var ECBehaviorActorAnimated pActorAnimated
+	var ECBehaviorConversationActor pConversationActor
 	var ECComposeBTSM pBTSMs
 	var String pPrefix
 	
@@ -1068,6 +1125,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	
 	func void dispose()
 		pActorAnimated = null
+		pConversationActor = null
 		pBTSMs = null
 		super.dispose()
 	end
@@ -1095,6 +1153,24 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	 */
 	func void setActorAnimated(ECBehaviorActorAnimated actorAnimated)
 		pActorAnimated = actorAnimated
+	end
+	
+	/**
+	 * \brief Conversation actor behavior or null.
+	 * \version 1.28
+	 */
+	func ECBehaviorConversationActor getConversationActor()
+		return pConversationActor
+	end
+	
+	/**
+	 * \brief Set conversation actor or null.
+	 * \version 1.28
+	 * 
+	 * If set conversation conditions and commands are added.
+	 */
+	func void setConversationActor(ECBehaviorConversationActor conversationActor)
+		pConversationActor = conversationActor
 	end
 	
 	/** \brief Call update() automatically on postThink(). */
