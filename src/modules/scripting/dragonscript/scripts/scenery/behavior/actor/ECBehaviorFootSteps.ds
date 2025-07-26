@@ -485,7 +485,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/**
-		 * \brief Behavior tree action "forceField{(id)}.set".
+		 * \brief Behavior tree action "footSteps.set".
 		 * \version 1.26
 		 */
 		private class BTASet extends BTSMActionCondition
@@ -518,7 +518,7 @@ class ECBehaviorFootSteps extends DefaultECBehavior
 		end
 		
 		/**
-		 * \brief Behavior tree action/condition "forceField{(id)}.check".
+		 * \brief Behavior tree action/condition "footSteps.check".
 		 * \version 1.26
 		 */
 		private class BTACheck extends BTSMActionCondition
