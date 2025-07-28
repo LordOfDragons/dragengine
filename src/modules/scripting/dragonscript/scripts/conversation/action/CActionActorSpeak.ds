@@ -463,6 +463,11 @@ class CActionActorSpeak extends ConversationAction
 	
 	/** \brief Execute action. */
 	func void execute(ConversationPlayback playback)
+		if pActorID == null
+			playback.advanceToNextAction()
+			return
+		end
+		
 		var ConversationActor actor = playback.getActorMatching(pActorID)
 		if actor == null
 			playback.advanceToNextAction()

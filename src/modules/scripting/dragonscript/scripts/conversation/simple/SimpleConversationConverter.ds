@@ -1355,6 +1355,7 @@ class SimpleConversationConverter
 					end
 					
 					convert(subState)
+					ensureNoEmptySideLineActions(subState.actions, action)
 				end
 			end
 			
@@ -1399,7 +1400,16 @@ class SimpleConversationConverter
 				
 				state.pauseTime = 0
 				convert(subState)
+				ensureNoEmptySideLineActions(subState.actions, action)
 			end
+		end
+	end
+	
+	private func void ensureNoEmptySideLineActions(Array actions, SimpleConversationAction action)
+		if action.getCreateSideLane() and actions.getCount() == 0
+			var CActionActorSpeak caction = CActionActorSpeak.new()
+			caction.setWaitForActor(false)
+			actions.add(caction)
 		end
 	end
 	
