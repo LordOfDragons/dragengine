@@ -33,7 +33,6 @@
 #include "../../../common/exceptions.h"
 
 
-
 // Class deAnimatorRuleBoneTransformator
 //////////////////////////////////////////
 
@@ -50,12 +49,12 @@ pCoordinateFrame( ecfComponent ),
 pEnablePosition( false ),
 pEnableOrientation( true ),
 pEnableSize( false ),
-pUseAxis( false ){
+pUseAxis( false ),
+pInputSource(eisTargetBlend){
 }
 
 deAnimatorRuleBoneTransformator::~deAnimatorRuleBoneTransformator(){
 }
-
 
 
 // Management
@@ -121,6 +120,13 @@ void deAnimatorRuleBoneTransformator::SetTargetBone( const char *boneName ){
 	pTargetBone = boneName;
 }
 
+void deAnimatorRuleBoneTransformator::SetInputBone(const char *boneName){
+	pInputBone = boneName;
+}
+
+void deAnimatorRuleBoneTransformator::SetInputSource(eInputSources source){
+	pInputSource = source;
+}
 
 
 // Visiting

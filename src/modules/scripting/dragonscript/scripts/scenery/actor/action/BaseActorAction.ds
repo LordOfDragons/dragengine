@@ -391,7 +391,7 @@ class BaseActorAction implements Persistable
 	/**
 	 * \brief Update animator controllers.
 	 * 
-	 * Default implementation calls these method if the behvaiors are present:
+	 * Default implementation calls these method if the behaviors are present:
 	 * - ECBehaviorLocomotion.updateAnimator()
 	 * - ECBehaviorActorAnimated.notifyControllersChanged()
 	 */
@@ -405,7 +405,7 @@ class BaseActorAction implements Persistable
 	/**
 	 * \brief Apply animations.
 	 * 
-	 * Default implementation calls these method if the behvaiors are present:
+	 * Default implementation calls these method if the behaviors are present:
 	 * - ECBehaviorActorAnimated.applyAnimations()
 	 */
 	protected func void applyAnimations()

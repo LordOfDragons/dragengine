@@ -201,6 +201,8 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTransMax.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTransMin.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetUseAxis.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputSource.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaBone.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaDestCFrame.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnablePos.cpp" />
@@ -487,6 +489,8 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTransMax.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetTransMin.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetUseAxis.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputSource.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaBone.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaDestCFrame.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaEnablePos.h" />

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,53 +22,41 @@
  * SOFTWARE.
  */
 
-#ifndef _AEWPAPANELRULEBONTRANSFORMATOR_H_
-#define _AEWPAPANELRULEBONTRANSFORMATOR_H_
+#ifndef _AEURULEBTRANSSETINPUTBONE_H_
+#define _AEURULEBTRANSSETINPUTBONE_H_
 
-#include "aeWPAPanelRule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+class aeRuleBoneTransformator;
 
 
 /**
- * Bone transformator rule panel.
+ * Undo action rule bone set input bone.
  */
-class aeWPAPanelRuleBoneTransformator : public aeWPAPanelRule{
+class aeURuleBTransSetInputBone : public igdeUndo{
 private:
-	igdeEditVectorReference pEditMinTrans, pEditMaxTrans, pEditMinRot, pEditMaxRot;
-	igdeEditVectorReference pEditMinScale, pEditMaxScale, pEditAxis;
-	igdeTextFieldReference pEditMinAngle, pEditMaxAngle;
-	igdeComboBoxReference pCBCoordFrame, pCBInputSource;
-	igdeCheckBoxReference pChkEnablePosition, pChkEnableRotation, pChkEnableSize, pChkUseAxis;
-	igdeComboBoxFilterReference pCBTargetBone, pCBInputBone;
-	
-	
+	aeRuleBoneTransformator *pRule;
+	decString pOldBone, pNewBone;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create panel. */
-	aeWPAPanelRuleBoneTransformator( aeWPRule &wpRule );
+	/** Creates a new undo object. */
+	aeURuleBTransSetInputBone(aeRuleBoneTransformator *rule, const char *newBone);
 	
 protected:
-	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleBoneTransformator();
+	/** Clean up undo. */
+	~aeURuleBTransSetInputBone() override;
 	/*@}*/
-	
-	
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	/** Undo action. */
+	void Undo() override;
 	
-	/** Update rule. */
-	virtual void UpdateRule();
-	
-	/** Update target list. */
-	virtual void UpdateTargetList();
+	/** Redo action. */
+	void Redo() override;
 	/*@}*/
 };
 

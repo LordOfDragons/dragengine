@@ -36,26 +36,19 @@ pin Dragengine.Utils
  * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleBoneTransformator extends ADRule
-	private var Vector pMinimumTranslation
-	private var Vector pMaximumTranslation
-	private var Vector pMinimumRotation
-	private var Vector pMaximumRotation
-	private var Vector pMinimumScaling
-	private var Vector pMaximumScaling
-	private var ARBoneTransformatorCFrame pCoordFrame
-	private var bool pEnablePosition
-	private var bool pEnableOrientation
-	private var bool pEnableSize
-	private var String pTargetBone
-	private var Vector pAxis
-	private var float pMinimumAngle
-	private var float pMaximumAngle
-	private var bool pUseAxis
+	var Vector pMinimumTranslation, pMaximumTranslation, pMinimumRotation, pMaximumRotation
+	var Vector pMinimumScaling, pMaximumScaling, pAxis
+	var ARBoneTransformatorCFrame pCoordFrame
+	var bool pEnablePosition, pEnableOrientation, pEnableSize
+	var String pTargetBone, pInputBone
+	var float pMinimumAngle, pMaximumAngle
+	var bool pUseAxis
+	var ARBoneTransformatorInputSource pInputSource
 	
 	
 	
 	/** \brief Create animation rule definition. */
-	public func new()
+	func new()
 		pMinimumTranslation = Vector.new()
 		pMaximumTranslation = Vector.new()
 		pMinimumRotation = Vector.new()
@@ -63,21 +56,18 @@ class ADRuleBoneTransformator extends ADRule
 		pMinimumScaling = Vector.new(1, 1, 1)
 		pMaximumScaling = Vector.new(1, 1, 1)
 		pCoordFrame = ARBoneTransformatorCFrame.component
-		pEnablePosition = false
 		pEnableOrientation = true
-		pEnableSize = false
 		pTargetBone = ""
 		pAxis = Vector.new(0, 0, 1)
-		pMinimumAngle = 0
-		pMaximumAngle = 0
-		pUseAxis = false
+		pInputBone = ""
+		pInputSource = ARBoneTransformatorInputSource.targetBlend
 	end
 	
 	/**
 	 * \brief Create copy of animation rule definition.
 	 * \version 1.13
 	 */
-	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
 	ADRuleBoneTransformator rule) super(fromDef, toDef, rule)
 		pMinimumTranslation = rule.pMinimumTranslation
 		pMaximumTranslation = rule.pMaximumTranslation
@@ -94,17 +84,19 @@ class ADRuleBoneTransformator extends ADRule
 		pMinimumAngle = rule.pMinimumAngle
 		pMaximumAngle = rule.pMaximumAngle
 		pUseAxis = rule.pUseAxis
+		pInputBone = rule.pInputBone
+		pInputSource = rule.pInputSource
 	end
 	
 	
 	
 	/** \brief Mminimum translation. */
-	public func Vector getMinimumTranslation()
+	func Vector getMinimumTranslation()
 		return pMinimumTranslation
 	end
 	
 	/** \brief Set minimum translation. */
-	public func void setMinimumTranslation(Vector translation)
+	func void setMinimumTranslation(Vector translation)
 		if translation == null
 			throw ENullPointer.new("translation")
 		end
@@ -112,12 +104,12 @@ class ADRuleBoneTransformator extends ADRule
 	end
 	
 	/** \brief Maximum translation. */
-	public func Vector getMaximumTranslation()
+	func Vector getMaximumTranslation()
 		return pMaximumTranslation
 	end
 	
 	/** \brief Set maximum translation. */
-	public func void setMaximumTranslation(Vector translation)
+	func void setMaximumTranslation(Vector translation)
 		if translation == null
 			throw ENullPointer.new("translation")
 		end
@@ -125,12 +117,12 @@ class ADRuleBoneTransformator extends ADRule
 	end
 	
 	/** \brief Minimum rotation. */
-	public func Vector getMinimumRotation()
+	func Vector getMinimumRotation()
 		return pMinimumRotation
 	end
 	
 	/** \brief Set minimum rotation. */
-	public func void setMinimumRotation(Vector rotation)
+	func void setMinimumRotation(Vector rotation)
 		if rotation == null
 			throw ENullPointer.new("rotation")
 		end
@@ -138,12 +130,12 @@ class ADRuleBoneTransformator extends ADRule
 	end
 	
 	/** \brief Maximum rotation. */
-	public func Vector getMaximumRotation()
+	func Vector getMaximumRotation()
 		return pMaximumRotation
 	end
 	
 	/** \brief Set maximum rotation. */
-	public func void setMaximumRotation(Vector rotation)
+	func void setMaximumRotation(Vector rotation)
 		if rotation == null
 			throw ENullPointer.new("rotationn")
 		end
@@ -151,12 +143,12 @@ class ADRuleBoneTransformator extends ADRule
 	end
 	
 	/** \brief Minimum scaling. */
-	public func Vector getMinimumScaling()
+	func Vector getMinimumScaling()
 		return pMinimumScaling
 	end
 	
 	/** \brief Set minimum scaling. */
-	public func void setMinimumScaling(Vector scaling)
+	func void setMinimumScaling(Vector scaling)
 		if scaling == null
 			throw ENullPointer.new("scaling")
 		end
@@ -164,12 +156,12 @@ class ADRuleBoneTransformator extends ADRule
 	end
 	
 	/** \brief Maximum scaling. */
-	public func Vector getMaximumScaling()
+	func Vector getMaximumScaling()
 		return pMaximumScaling
 	end
 	
 	/** \brief Set maximum scaling. */
-	public func void setMaximumScaling(Vector scaling)
+	func void setMaximumScaling(Vector scaling)
 		if scaling == null
 			throw ENullPointer.new("scaling")
 		end
@@ -177,52 +169,52 @@ class ADRuleBoneTransformator extends ADRule
 	end
 	
 	/** \brief Coordinate frame of rotation. */
-	public func ARBoneTransformatorCFrame getCoordinateFrame()
+	func ARBoneTransformatorCFrame getCoordinateFrame()
 		return pCoordFrame
 	end
 	
 	/** \brief Set if coordinate frame of rotation. */
-	public func void setCoordinateFrame(ARBoneTransformatorCFrame coordFrame)
+	func void setCoordinateFrame(ARBoneTransformatorCFrame coordFrame)
 		pCoordFrame = coordFrame
 	end
 	
 	/** \brief Ttransformation affects the position. */
-	public func bool getEnablePosition()
+	func bool getEnablePosition()
 		return pEnablePosition
 	end
 	
 	/** \brief Set if transformation affects the position. */
-	public func void setEnablePosition(bool enable)
+	func void setEnablePosition(bool enable)
 		pEnablePosition = enable
 	end
 	
 	/** \brief Transformation affects the orientation. */
-	public func bool getEnableOrientation()
+	func bool getEnableOrientation()
 		return pEnableOrientation
 	end
 	
 	/** \brief Set if transformation affects the orientation. */
-	public func void setEnableOrientation(bool enable)
+	func void setEnableOrientation(bool enable)
 		pEnableOrientation = enable
 	end
 	
 	/** \brief Transformation affects the size. */
-	public func bool getEnableSize()
+	func bool getEnableSize()
 		return pEnableSize
 	end
 	
 	/** \brief Set if transformation affects the size. */
-	public func void setEnableSize(bool enable)
+	func void setEnableSize(bool enable)
 		pEnableSize = enable
 	end
 	
 	/** \brief Target bone name. */
-	public func String getTargetBone()
+	func String getTargetBone()
 		return pTargetBone
 	end
 	
 	/** \brief Set target bone name. */
-	public func void setTargetBone(String name)
+	func void setTargetBone(String name)
 		if name == null
 			throw ENullPointer.new("name")
 		end
@@ -233,7 +225,7 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Rotation axis.
 	 * \version 1.6
 	 */
-	public func Vector getAxis()
+	func Vector getAxis()
 		return pAxis
 	end
 	
@@ -241,7 +233,7 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Set rotation axis.
 	 * \version 1.6
 	 */
-	public func void setAxis(Vector axis)
+	func void setAxis(Vector axis)
 		if axis == null
 			throw ENullPointer.new("axis")
 		end
@@ -252,7 +244,7 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Minimum axis rotation angle.
 	 * \version 1.6
 	 */
-	public func float getMinimumAngle()
+	func float getMinimumAngle()
 		return pMinimumAngle
 	end
 	
@@ -260,7 +252,7 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Set minimum axis rotation angle.
 	 * \version 1.6
 	 */
-	public func void setMinimumAngle(float angle)
+	func void setMinimumAngle(float angle)
 		pMinimumAngle = angle
 	end
 	
@@ -268,7 +260,7 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Maximum axis rotation angle.
 	 * \version 1.6
 	 */
-	public func float getMaximumAngle()
+	func float getMaximumAngle()
 		return pMaximumAngle
 	end
 	
@@ -276,7 +268,7 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Set maximum axis rotation angle.
 	 * \version 1.6
 	 */
-	public func void setMaximumAngle(float angle)
+	func void setMaximumAngle(float angle)
 		pMaximumAngle = angle
 	end
 	
@@ -284,7 +276,7 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Use rotation axis instead of rotation directly.
 	 * \version 1.6
 	 */
-	public func bool getUseAxis()
+	func bool getUseAxis()
 		return pUseAxis
 	end
 	
@@ -292,14 +284,49 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Set to use rotation axis instead of rotation directly.
 	 * \version 1.6
 	 */
-	public func void setUseAxis(bool useAxis)
+	func void setUseAxis(bool useAxis)
 		pUseAxis = useAxis
+	end
+	
+	/**
+	 * \brief Input bone name.
+	 * \version 1.28
+	 */
+	func String getInputBone()
+		return pInputBone
+	end
+	
+	/**
+	 * \brief Set input bone name.
+	 * \version 1.28
+	 */
+	func void setInputBone(String name)
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		pInputBone = name
+	end
+	
+	/**
+	 * \brief Input source.
+	 * \version 1.28
+	 */
+	func ARBoneTransformatorInputSource getInputSource()
+		return pInputSource
+	end
+	
+	/**
+	 * \brief Set input source.
+	 * \version 1.28
+	 */
+	func void setInputSource(ARBoneTransformatorInputSource source)
+		pInputSource = source
 	end
 	
 	
 	
 	/** Build engine animator rule using the stored definition. */
-	public func AnimatorRule buildRule(Animator animator)
+	func AnimatorRule buildRule(Animator animator)
 		var ARBoneTransformator rule = ARBoneTransformator.new()
 		
 		buildRuleCommon(rule)
@@ -323,6 +350,8 @@ class ADRuleBoneTransformator extends ADRule
 		rule.setMinimumAngle(pMinimumAngle)
 		rule.setMaximumAngle(pMaximumAngle)
 		rule.setUseAxis(pUseAxis)
+		rule.setInputBone(pInputBone)
+		rule.setInputSource(pInputSource)
 		
 		return rule
 	end
@@ -333,13 +362,13 @@ class ADRuleBoneTransformator extends ADRule
 	 * \brief Create copy of rule.
 	 * \version 1.13
 	 */
-	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+	func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
 		return new(fromDef, toDef, this)
 	end
 	
 	
 	
-	public func void debug(Console console)
+	func void debug(Console console)
 		console.addMessage(debugCommon("Bone Transformator") + \
 			" minTrans=" + pMinimumTranslation + " maxTrans=" + pMaximumTranslation + \
 			" minRot=" + pMinimumRotation + " maxRot=" + pMaximumRotation + \

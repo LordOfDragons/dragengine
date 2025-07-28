@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,53 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _AEWPAPANELRULEBONTRANSFORMATOR_H_
-#define _AEWPAPANELRULEBONTRANSFORMATOR_H_
+#ifndef _AEURULEBTRANSSETINPUTSOURCE_H_
+#define _AEURULEBTRANSSETINPUTSOURCE_H_
 
-#include "aeWPAPanelRule.h"
+#include <deigde/undo/igdeUndo.h>
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 /**
- * Bone transformator rule panel.
+ * Undo action rule bone set input source.
  */
-class aeWPAPanelRuleBoneTransformator : public aeWPAPanelRule{
+class aeURuleBTransSetInputSource : public igdeUndo{
 private:
-	igdeEditVectorReference pEditMinTrans, pEditMaxTrans, pEditMinRot, pEditMaxRot;
-	igdeEditVectorReference pEditMinScale, pEditMaxScale, pEditAxis;
-	igdeTextFieldReference pEditMinAngle, pEditMaxAngle;
-	igdeComboBoxReference pCBCoordFrame, pCBInputSource;
-	igdeCheckBoxReference pChkEnablePosition, pChkEnableRotation, pChkEnableSize, pChkUseAxis;
-	igdeComboBoxFilterReference pCBTargetBone, pCBInputBone;
-	
-	
+	aeRuleBoneTransformator *pRule;
+	deAnimatorRuleBoneTransformator::eInputSources pOldValue, pNewValue;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create panel. */
-	aeWPAPanelRuleBoneTransformator( aeWPRule &wpRule );
+	/** Creates a new undo object. */
+	aeURuleBTransSetInputSource(aeRuleBoneTransformator *rule,
+		deAnimatorRuleBoneTransformator::eInputSources newValue);
 	
 protected:
-	/** Clean up panel. */
-	virtual ~aeWPAPanelRuleBoneTransformator();
+	/** Clean up undo. */
+	~aeURuleBTransSetInputSource() override;
 	/*@}*/
-	
-	
 	
 public:
 	/** \name Management */
 	/*@{*/
-	/** Update rig bone list. */
-	virtual void UpdateRigBoneList();
+	/** Undo action. */
+	void Undo() override;
 	
-	/** Update rule. */
-	virtual void UpdateRule();
-	
-	/** Update target list. */
-	virtual void UpdateTargetList();
+	/** Redo action. */
+	void Redo() override;
 	/*@}*/
 };
 

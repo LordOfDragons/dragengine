@@ -33,7 +33,7 @@
  * \brief Animator Foreign State Rule Class.
  *
  * The foreign state rule applies the state of another bone to the affected
- * bones ( usually one ) after applying a scaling factor. This way bones can
+ * bones (usually one) after applying a scaling factor. This way bones can
  * be animated in dependence of other bones. This is useful for character
  * attachments where animation data does not exists for new bones added by
  * the attachment yet the right bone state can be calculated from existing
@@ -61,25 +61,13 @@ public:
 	
 	
 private:
-	decString pForeignBone;
-	decString pForeignVertexPositionSet;
-	eCoordinateFrames pSourceCoordinateFrame;
-	eCoordinateFrames pDestCoordinateFrame;
-	float pScalePosition;
-	float pScaleOrientation;
-	float pScaleSize;
-	float pScaleVertexPositionSet;
-	bool pModifyX;
-	bool pModifyY;
-	bool pModifyZ;
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pEnableVertexPositionSet;
+	decString pForeignBone, pForeignVertexPositionSet;
+	eCoordinateFrames pSourceCoordinateFrame, pDestCoordinateFrame;
+	float pScalePosition, pScaleOrientation, pScaleSize, pScaleVertexPositionSet;
+	bool pModifyX, pModifyY, pModifyZ;
+	bool pEnablePosition, pEnableOrientation, pEnableSize, pEnableVertexPositionSet;
 	
-	deAnimatorControllerTarget pTargetPosition;
-	deAnimatorControllerTarget pTargetOrientation;
-	deAnimatorControllerTarget pTargetSize;
+	deAnimatorControllerTarget pTargetPosition, pTargetOrientation, pTargetSize;
 	deAnimatorControllerTarget pTargetVertexPositionSets;
 	
 	

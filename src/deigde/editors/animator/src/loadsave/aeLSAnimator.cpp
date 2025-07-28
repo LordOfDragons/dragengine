@@ -873,6 +873,28 @@ const aeRuleBoneTransformator &rule ){
 		writer.WriteDataTagString( "targetBone", rule.GetTargetBone() );
 	}
 	
+	if(!rule.GetInputBone().IsEmpty()){
+		writer.WriteDataTagString("inputBone", rule.GetInputBone());
+	}
+	
+	switch(rule.GetInputSource()){
+	case deAnimatorRuleBoneTransformator::eisTargetBlend:
+		// writer.WriteDataTagString("inputSource", "targetBlend");
+		break;
+		
+	case deAnimatorRuleBoneTransformator::eisTargetDirect:
+		writer.WriteDataTagString("inputSource", "targetDirect");
+		break;
+		
+	case deAnimatorRuleBoneTransformator::eisBoneState:
+		writer.WriteDataTagString("inputSource", "boneState");
+		break;
+		
+	case deAnimatorRuleBoneTransformator::eisBoneStateInverse:
+		writer.WriteDataTagString("inputSource", "boneStateInverse");
+		break;
+	}
+	
 	pSaveControllerTarget( writer, animator, rule.GetTargetTranslation(), "translation" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetRotation(), "rotation" );
 	pSaveControllerTarget( writer, animator, rule.GetTargetScaling(), "scaling" );
@@ -2247,7 +2269,6 @@ aeRule *aeLSAnimator::pLoadRuleAnimationSelect( decXmlElementTag *root, aeAnimat
 aeRule *aeLSAnimator::pLoadRuleBoneTransformator( decXmlElementTag *root, aeAnimator &animator ){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	const aeRuleBoneTransformator::Ref rule( aeRuleBoneTransformator::Ref::New( new aeRuleBoneTransformator ) );
-	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2330,13 +2351,31 @@ aeRule *aeLSAnimator::pLoadRuleBoneTransformator( decXmlElementTag *root, aeAnim
 					rule->SetUseAxis( GetCDataBool( *tag ) );
 					
 				}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
-					cdata = tag->GetFirstData();
+					rule->SetTargetBone(GetCDataString(*tag));
 					
-					if( cdata ){
-						rule->SetTargetBone( cdata->GetData() );
+				}else if(tag->GetName() == "inputBone"){
+					rule->SetInputBone(GetCDataString(*tag));
+					
+				}else if(tag->GetName() == "inputSource"){
+					name = GetCDataString(*tag);
+					
+					if(strcmp(name, "targetBlend") == 0){
+						rule->SetInputSource(deAnimatorRuleBoneTransformator::eisTargetBlend);
+						
+					}else if(strcmp(name, "targetDirect") == 0){
+						rule->SetInputSource(deAnimatorRuleBoneTransformator::eisTargetDirect);
+						
+					}else if(strcmp(name, "boneState") == 0){
+						rule->SetInputSource(deAnimatorRuleBoneTransformator::eisBoneState);
+						
+					}else if(strcmp(name, "boneStateInverse") == 0){
+						rule->SetInputSource(deAnimatorRuleBoneTransformator::eisBoneStateInverse);
 						
 					}else{
-						rule->SetTargetBone( "" );
+						logger.LogErrorFormat( LOGSOURCE, "%s(%i:%i): Unknown coordinate frame '%s'",
+							root->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), name );
+						DETHROW( deeInvalidFileFormat );
 					}
 					
 				}else if( strcmp( tag->GetName(), "target" ) == 0 ){

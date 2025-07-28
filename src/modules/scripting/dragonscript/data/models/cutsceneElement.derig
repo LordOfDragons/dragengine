@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<rig>
+	<rootBone>element</rootBone>
+	<mass>1</mass>
+	<centralMassPoint x='0' y='0' z='0'/>
+	<bone name='element'>
+		<position x='0' y='0' z='0'/>
+		<rotation x='0' y='0' z='0'/>
+		<mass>0</mass>
+		<centralMassPoint x='0' y='0' z='0'/>
+		<dynamic>false</dynamic>
+		<ikX>
+			<lower>1</lower>
+			<upper>0</upper>
+			<resistance>0</resistance>
+			<locked>0</locked>
+		</ikX>
+		<ikY>
+			<lower>1</lower>
+			<upper>0</upper>
+			<resistance>0</resistance>
+			<locked>0</locked>
+		</ikY>
+		<ikZ>
+			<lower>1</lower>
+			<upper>0</upper>
+			<resistance>0</resistance>
+			<locked>0</locked>
+		</ikZ>
+	</bone>
+</rig>

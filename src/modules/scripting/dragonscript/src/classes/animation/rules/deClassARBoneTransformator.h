@@ -58,6 +58,7 @@ private:
 	deScriptingDragonScript &pDS;
 	dsClass *pClsARBoneTransformatorTarget;
 	dsClass *pClsARBoneTransformatorCFrame;
+	dsClass *pClsARBoneTransformatorInputSource;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -90,6 +91,7 @@ public:
 	
 	inline dsClass *GetClassARBoneTransformatorTarget() const{ return pClsARBoneTransformatorTarget; }
 	inline dsClass *GetClassARBoneTransformatorCFrame() const{ return pClsARBoneTransformatorCFrame; }
+	inline dsClass *GetClassARBoneTransformatorInputSource() const{ return pClsARBoneTransformatorInputSource; }
 	/*@}*/
 	
 private:
@@ -98,6 +100,7 @@ private:
 		dsClass *clsVec, *clsQuat, *clsVec2, *clsAr, *clsCol;
 		dsClass *clsARBoneTransformatorTarget;
 		dsClass *clsARBoneTransformatorCFrame;
+		dsClass *clsARBoneTransformatorInputSource;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -123,6 +126,8 @@ private:
 	DEF_NATFUNC( nfSetUseAxis );
 	DEF_NATFUNC( nfSetCoordinateFrame );
 	DEF_NATFUNC( nfSetTargetBone );
+	DEF_NATFUNC(nfSetInputBone);
+	DEF_NATFUNC(nfSetInputSource);
 	
 	DEF_NATFUNC( nfSetEnablePosition );
 	DEF_NATFUNC( nfSetEnableOrientation );
