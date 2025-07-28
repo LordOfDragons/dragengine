@@ -425,6 +425,11 @@ class LoadSimpleConversation extends BaseXmlLoader
 					action.setDelay(element.getFirstCDataFloat())
 					snippet.addAction(action)
 					
+				elif tagName.equals("time")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.time)
+					action.setTime(element.getFirstCDataFloat())
+					snippet.addAction(action)
+					
 				elif tagName.equals("waitMode")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.waitMode)
 					text = element.getFirstCData()

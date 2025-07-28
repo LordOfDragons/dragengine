@@ -695,6 +695,27 @@
 		<xs:restriction base='xs:decimal'/>
 	</xs:simpleType>
 	
+	<xs:simpleType name='time'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Align next action to time in seconds since the beginning of the snippet.
+				<p>
+				Works only with <code>waitMode</code> set to <code>noWait</code>.
+				Adds pause similar to <code>pause</code> but calculates the required delay
+				using the desired time and the last action time relative to the beginning
+				of the snippet. Basically this is the sum of all delays and pauses encountered
+				so far. For this reason time based alignment works only with no wait mode.
+				</p>
+				<p>
+				For translation simple conversations omit this tag
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'/>
+	</xs:simpleType>
+	
 	<xs:complexType name='endActorSpeak'>
 		<xs:annotation>
 			<xs:documentation>
@@ -1630,11 +1651,13 @@
 						<xs:element name='a' type='actorSpeak_short'/>
 						<xs:element name='pause' type='pause'/>
 						<xs:element name='p' type='pause_short'/>
+						<xs:element name='time' type='time'/>
 					</xs:choice>
 					<xs:element minOccurs='0' maxOccurs='1' name='endActorSpeak' type='endActorSpeak'/>
 				</xs:sequence>
 				<xs:element name='pause' type='pause'/>
 				<xs:element name='p' type='pause_short'/>
+				<xs:element name='time' type='time'/>
 				<xs:element name='command' type='command'/>
 				<xs:element name='snippet' type='run_snippet'/>
 				<xs:element name='wait' type='wait'/>
