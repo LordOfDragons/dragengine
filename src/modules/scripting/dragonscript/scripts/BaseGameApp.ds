@@ -290,14 +290,14 @@ class BaseGameApp extends Game
 	 * in this class the configuration file values take precendence. This allows to modify
 	 * the properties without having to change source files.
 	 */
-	protected var String pathConfiguration
+	public var String pathConfiguration
 	
 	/**
 	 * \brief Desktop gui theme path property.
 	 * 
 	 * Set by default to defaultPathGuiTheme.
 	 */
-	protected var String pathDesktopGuiTheme
+	public var String pathDesktopGuiTheme
 	
 	/**
 	 * \brief Path to directory containing language packs.
@@ -305,7 +305,7 @@ class BaseGameApp extends Game
 	 * Default value is \em null. To support internationalization in your game set the
 	 * property to a valid path. Also set default language property if required.
 	 */
-	protected var String pathLanguagePacks
+	public var String pathLanguagePacks
 	
 	/**
 	 * \brief Name of default language pack to activate.
@@ -314,7 +314,7 @@ class BaseGameApp extends Game
 	 * Default value is "English". If no such language pack is found internationalization
 	 * is disabled. The language pack name is matched case sensitive.
 	 */
-	protected var UnicodeString defaultLanguagePackName
+	public var UnicodeString defaultLanguagePackName
 	
 	/**
 	 * \brief Name of default language pack to activate.
@@ -323,7 +323,7 @@ class BaseGameApp extends Game
 	 * Default value is the current user locale language at the start of the game.
 	 * If no such language pack is found internationalization is disabled.
 	 */
-	protected var String defaultLanguagePackIdentifier
+	public var String defaultLanguagePackIdentifier
 	
 	/**
 	 * \brief Binding save file path property.
@@ -331,7 +331,7 @@ class BaseGameApp extends Game
 	 * Default value is "/config/bindings.xml". "/config" has to match the "Config Path"
 	 * set in the game project.
 	 */
-	protected var String pathSavedBindings
+	public var String pathSavedBindings
 	
 	/**
 	 * \brief Application settings file path property.
@@ -339,7 +339,7 @@ class BaseGameApp extends Game
 	 * Default value is "/config/settings.dept". "/config" has to match the "Config Path"
 	 * set in the game project.
 	 */
-	protected var String pathSavedSettings
+	public var String pathSavedSettings
 	
 	/**
 	 * \brief Default console buffer size.
@@ -347,7 +347,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Default value is 50.
 	 */
-	protected var int defaultConsoleBufferSize
+	public var int defaultConsoleBufferSize
 	
 	/**
 	 * \brief Default binding input processor mouse axis scale factor.
@@ -355,7 +355,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Default value is 0.1.
 	 */
-	protected var float defaultInputMouseAxisScale
+	public var float defaultInputMouseAxisScale
 	
 	/**
 	 * \brief Default binding input processor mouse wheel scale factor.
@@ -363,7 +363,7 @@ class BaseGameApp extends Game
 	 * 
 	 * Default value is 0.2.
 	 */
-	protected var float defaultInputMouseWheelScale
+	public var float defaultInputMouseWheelScale
 	
 	
 	
