@@ -64,7 +64,7 @@ jobs:
           sudo apt -y install build-essential scons cmake autoconf libtool nasm \
             patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
             libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
-            flex bison gettext mingw-w64
+            flex bison gettext mingw-w64 glslang-tools
       
       - name: Init custom.py
         run: |

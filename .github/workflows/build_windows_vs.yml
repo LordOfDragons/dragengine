@@ -92,7 +92,16 @@ jobs:
         
       - name: Install required packages
         run: choco install ninja 7zip
-
+      
+      - name: Install GLSL Tools
+        run: |
+          Invoke-WebRequest "https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-master-windows-Release.zip" `
+            -OutFile "${{ github.workspace }}/glslang-master-windows-Release.zip"
+          Expand-Archive -LiteralPath "${{ github.workspace }}/glslang-master-windows-Release.zip" `
+            -DestinationPath "${{ github.workspace }}/glslang"
+          echo "::add-path::${{ github.workspace }}/glslang/bin"
+        # binary name glslangValidator.exe
+        
       - name: Restore NuGet packages
         working-directory: vs
         run: nuget restore dragengine.sln
