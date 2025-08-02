@@ -124,7 +124,7 @@ jobs:
       
       - name: Install GLSL Tools
         run: |
-          wget https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-main-linux-Release.zip -o "${{ github.workspace }}/glslang.zip"
+          wget https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-main-linux-Release.zip -O "${{ github.workspace }}/glslang.zip"
           unzip -d "${{ github.workspace }}/glslang" "${{ github.workspace }}/glslang.zip"
           echo "PATH=${{ github.workspace }}/glslang/bin:$PATH" >> $GITHUB_ENV
       
