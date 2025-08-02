@@ -99,7 +99,8 @@ jobs:
             -OutFile "${{ github.workspace }}/glslang-master-windows-Release.zip"
           Expand-Archive -LiteralPath "${{ github.workspace }}/glslang-master-windows-Release.zip" `
             -DestinationPath "${{ github.workspace }}/glslang"
-          echo "::add-path::${{ github.workspace }}/glslang/bin"
+          $env:PATH = "${{ github.workspace }}\glslang\bin;" + $env:PATH
+          Write-Output "PATH=$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
         # binary name glslangValidator.exe
         
       - name: Restore NuGet packages
@@ -114,6 +115,10 @@ jobs:
           $Content = $Content -creplace "DebugBuild","${{ inputs.debugBuild && 'yes' || 'no' }}"
           Set-Content -Path "custom.py" -Value $Content
         
+      - name: Quick Test
+        run: |
+          glslangValidator.exe -h
+      
       - name: Build
         working-directory: vs
         run: |
