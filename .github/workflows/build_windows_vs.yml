@@ -114,10 +114,6 @@ jobs:
           $Content = $Content -creplace "BuildVersion","${{ inputs.buildVersion }}"
           $Content = $Content -creplace "DebugBuild","${{ inputs.debugBuild && 'yes' || 'no' }}"
           Set-Content -Path "custom.py" -Value $Content
-        
-      - name: Quick Test
-        run: |
-          glslangValidator.exe -h
       
       - name: Build
         working-directory: vs
