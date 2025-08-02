@@ -1,4 +1,5 @@
 from SConsCommon import *
+import xml.etree.ElementTree as ET
 
 # import whatever is given by the parent builder
 Import('parent_env parent_targets parent_report')
@@ -125,6 +126,9 @@ globFiles(envModule, 'squish', '*.h', headers)
 data = []
 globFiles(envModule, 'data', '*', data)
 
+shaderSources = []
+globFiles(envModule, 'data/shaderSources', '*.shaderSource.xml', shaderSources)
+
 if envModule['OSMacOS']:
 	globFiles(envModule, 'src', '*.mm', sources)
 
@@ -187,6 +191,49 @@ for f in data:
 		filename = os.path.join(pathShares, f[5:])
 		install.append(envModule.InstallAs(filename, f))
 		archive[filename] = envModule.File(f).srcnode()
+
+
+# transpile OpenGL Spir-V
+def transpileOpenGLSpirV(env):
+	def buildTranspileOpenGLSpirV(target, source, env):
+		script = []
+		script.append('mkdir -p "{}" || exit 1'.format(target[0].get_dir().abspath))
+		script.append('glslangValidator --glsl-version {} -V {} -o {} || exit 1'.format(
+			env['GLSL_VERSION'], source[0].abspath, target[0].abspath))
+		return 1 if os.system('\n'.join(script)) else None
+	
+	dataPath = 'shaderSources/spirv/opengl'
+	basePathTranspiled = env.Dir('data').Dir(dataPath)
+	basePathShaderSources = env.Dir('data/shaderSources').srcnode()
+	
+	for s in shaderSources:
+		shaderSourceFile = env.File(s)
+		tree = ET.parse(shaderSourceFile.srcnode().abspath)
+		root = tree.getroot()
+		tagGlslVersion = root.find('glslVersion')
+		if tagGlslVersion == None:
+			continue
+		
+		glslVersion = tagGlslVersion.text
+		filename = root.find('source').text
+		glslFile = shaderSourceFile.srcnode().get_dir().File(filename)
+		relativePath = basePathShaderSources.rel_path(glslFile).replace('.glsl', '.spv')
+		spirvFile = basePathTranspiled.File(relativePath)
+		env.Depends(spirvFile, [shaderSourceFile, glslFile])
+		
+		transpiled = env.Command(spirvFile, glslFile, env.Action(
+			buildTranspileOpenGLSpirV, 'Transpile Spir-V (GLSL): {}'.format(relativePath)),
+			GLSL_VERSION=glslVersion)
+		
+		if withEngineDeal:
+			filename = os.path.join(pathAsset, dataPath, relativePath)
+			assetEngine[filename] = spirvFile
+		else:
+			filename = os.path.join(pathShares, dataPath, relativePath)
+			install.append(env.InstallAs(filename, spirvFile))
+			archive[filename] = spirvFile
+
+transpileOpenGLSpirV(envModule)
 
 targetInstall = envModule.Alias('gra_opengl', install)
 
