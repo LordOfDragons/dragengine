@@ -1,5 +1,4 @@
-//#version 130
-//@@DEFINES@@
+#include "shared/preamble.glsl"
 
 precision HIGHP float;
 precision HIGHP int;

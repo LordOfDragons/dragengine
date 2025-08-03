@@ -6,9 +6,8 @@
 	<define>GI_RAY</define>
 */
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
+// DecodeInDepth
+const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 
 #ifdef GI_RAY
 vec3 normalFromDepth( in ivec2 texcoord, in float centerDepth, in vec3 centerPosition )
@@ -39,17 +38,19 @@ vec3 normalFromDepth( in ivec3 texcoord, in float centerDepth, in vec3 centerPos
 	to obtain the correct one
 	*/
 	
-	#ifdef DECODE_IN_DEPTH
-		vec4 samples = vec4( dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( -1, 0 ) ).rgb, unpackDepth ),
+	vec4 samples;
+	if(DecodeInDepth){
+		samples = vec4( dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( -1, 0 ) ).rgb, unpackDepth ),
 			dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( 1, 0 ) ).rgb, unpackDepth ),
 			dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, -1 ) ).rgb, unpackDepth ),
 			dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, 1 ) ).rgb, unpackDepth ) );
-	#else
-		vec4 samples = vec4( texelFetchOffset( texDepth, texcoord, 0, ivec2( -1, 0 ) ).r,
+		
+	}else{
+		samples = vec4( texelFetchOffset( texDepth, texcoord, 0, ivec2( -1, 0 ) ).r,
 			texelFetchOffset( texDepth, texcoord, 0, ivec2( 1, 0 ) ).r,
 			texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, -1 ) ).r,
 			texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, 1 ) ).r );
-	#endif
+	}
 	
 	vec4 difference = abs( samples - vec4( centerDepth ) );
 	

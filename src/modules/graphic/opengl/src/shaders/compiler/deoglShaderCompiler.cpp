@@ -498,7 +498,7 @@ void deoglShaderCompiler::pCompileShaderUnit(deoglShaderProgramUnit &unit){
 	GLuint handle = unit.GetHandle();
 	DEASSERT_NOTNULL(handle)
 	
-	PreparePreprocessor(unit.GetDefines());
+	PreparePreprocessor(unit);
 	AppendPreprocessSourcesBuffer(sources->GetName(), sources->GetSourceCode());
 	unit.SetProcessedSources(pPreprocessor.GetSources());
 	unit.SetProcessedSourceLocations(pPreprocessor.GetSourceLocations());
@@ -894,8 +894,45 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 	}
 }
 
-void deoglShaderCompiler::PreparePreprocessor(const deoglShaderDefines &defines){
+static const int vSpecializationCount = 23;
+static const struct sSpecialization{
+	int index;
+	bool isBool;
+	const char *constantName, *defineName;
+} vSpecializations[vSpecializationCount] = {
+	// 0-2: LOCAL_SIZE_{XYZ}
+	{3, true, "TransformInPlace", "TRANSFORM_INPLACE"},
+	{4, true, "WithRayCache", "WITH_RAY_CACHE"},
+	{5, true, "GIUseRayCache", "GI_USE_RAY_CACHE"},
+	{6, true, "GIRayCastDistanceOnly", "GI_RAYCAST_DISTANCE_ONLY"},
+	{7, true, "GIRayCastOccMeshOnly", "GI_RAYCAST_OCCMESH_ONLY"},
+	{8, true, "RenderDocDebugGI", "RENDER_DOC_DEBUG_GI"},
+	{9, false, "GIClearProbesCount", "GI_CLEAR_PROBES_COUNT"},
+	{10, true, "MapIrradiance", "MAP_IRRADIANCE"},
+	{11, true, "BlurPass2", "BLUR_PASS_2"},
+	{12, true, "DecodeInDepth", "DECODE_IN_DEPTH"},
+	{13, true, "DualOccMap", "DUAL_OCCMAP"},
+	{14, true, "EnsureMinSize", "ENSURE_MIN_SIZE"},
+	{15, true, "FrustumTest", "FRUSTUM_TEST"},
+	{16, true, "RenderDocDebugOccTest", "RENDER_DOC_DEBUG_OCCTEST"},
+	{17, true, "WithComputeRenderTask", "WITH_COMPUTE_RENDER_TASK"},
+	{18, true, "CullViewFrustum", "CULL_VIEW_FRUSTUM"},
+	{19, true, "CullSkyLightFrustum", "CULL_SKY_LIGHT_FRUSTUM"},
+	{20, true, "CullSkyLightGIBox", "CULL_SKY_LIGHT_GIBOX"},
+	{21, true, "CullTooSmall", "CULL_TOO_SMALL"},
+	{22, true, "WriteCullResult", "WRITE_CULL_RESULT"},
+	{23, true, "WithOcclusion", "WITH_OCCLUSION"},
+	{24, true, "ClearCullResult", "CLEAR_CULL_RESULT"},
+	{25, true, "WithCalcLod", "WITH_CALC_LOD"}
+};
+
+// Special:
+// - GI_RAYCAST_USE_SSBO
+
+void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit){
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
+	const deoglExtensions &ext = renderThread.GetExtensions();
+	const deoglShaderDefines &defines = unit.GetDefines();
 	pPreprocessor.Clear();
 	
 	// add version
@@ -907,9 +944,35 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderDefines &defines)
 	const int extCount = pLanguage.GetGLSLExtensions().GetCount();
 	int i;
 	
-	for( i=0; i<extCount; i++ ){
-		line.Format( "#extension %s : require\n", pLanguage.GetGLSLExtensions().GetAt( i ).GetString() );
-		pPreprocessor.SourcesAppend( line, false );
+	for(i=0; i<extCount; i++){
+		line.Format("#extension %s : require\n", pLanguage.GetGLSLExtensions().GetAt( i ).GetString());
+		pPreprocessor.SourcesAppend(line, false);
+	}
+	
+	switch(unit.GetSources()->GetStage()){
+	case GL_VERTEX_SHADER:
+		// OpenGL extensions would define symbols for these extentions which would work in
+		// shaders but our pre-processor does not know about them. so add them manually.
+		// this is mainly required for broken intel and nvidia drivers
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_viewport_layer_array)){
+			pPreprocessor.SourcesAppend("#extension GL_ARB_shader_viewport_layer_array : require\n", false);
+			
+		}else if(ext.GetHasExtension(deoglExtensions::ext_AMD_vertex_shader_layer)){
+			pPreprocessor.SourcesAppend("#extension GL_AMD_vertex_shader_layer : require\n", false);
+		}
+		
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_draw_parameters)){
+			pPreprocessor.SourcesAppend("#extension GL_ARB_shader_draw_parameters : require\n", false);
+		}
+		break;
+		
+	case GL_GEOMETRY_SHADER:
+		#if ! defined OS_ANDROID && ! defined WITH_OPENGLES
+		if(ext.SupportsGSInstancing()){
+			pPreprocessor.SourcesAppend("#extension GL_ARB_gpu_shader5 : require\n", false);
+		}
+		#endif
+		break;
 	}
 	
 	// add version selection defines
@@ -947,6 +1010,23 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderDefines &defines)
 	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "");
 	pPreprocessor.SetSymbol("ARG_SAMP_LOWP", "");
 	#endif
+	
+	// specializations
+	static const decString notDefined("0");
+	char specBuf[256];
+	
+	for(i=0; i<vSpecializationCount; i++){
+		const sSpecialization &s = vSpecializations[i];
+		if(s.isBool){
+			snprintf(specBuf, sizeof(specBuf), "const bool %s = %s;\n", s.constantName,
+				defines.GetDefineValueFor(s.defineName, notDefined) == "1" ? "true" : "false");
+			
+		}else{
+			snprintf(specBuf, sizeof(specBuf), "const int %s = %s;\n", s.constantName,
+				defines.GetDefineValueFor(s.defineName, notDefined).GetString());
+		}
+		pPreprocessor.SourcesAppend(specBuf, false);
+	}
 }
 
 void deoglShaderCompiler::pDetachUnits(const deoglShaderProgram &program, GLuint handleShader){

@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -5,10 +7,9 @@ precision HIGHP int;
 #include "shared/defren/gi/ubo_gi.glsl"
 #include "shared/defren/gi/probe_flags.glsl"
 
-#ifdef WITH_RAY_CACHE
-	#include "shared/defren/gi/raycast/ray_cache.glsl"
-	#include "shared/defren/gi/trace_probe.glsl"
-#endif
+// #endif
+#include "shared/defren/gi/raycast/ray_cache.glsl"
+#include "shared/defren/gi/trace_probe.glsl"
 
 
 uniform sampler2D texPosition;
@@ -26,11 +27,12 @@ ivec3 giGridLocalToShift( in ivec3 local ){
 }
 
 void main( void ){
-	#ifdef WITH_RAY_CACHE
-		ivec2 rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( vInstanceID ) );
-	#else
-		ivec2 rayOffset = ivec2( ( vInstanceID % pGIProbesPerLine ) * pGIRaysPerProbe, vInstanceID / pGIProbesPerLine );
-	#endif
+	ivec2 rayOffset;
+	if(WithRayCache){
+		rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( vInstanceID ) );
+	}else{
+		rayOffset = ivec2( ( vInstanceID % pGIProbesPerLine ) * pGIRaysPerProbe, vInstanceID / pGIProbesPerLine );
+	}
 	
 	vec3 probePosition = pGIProbePosition[ vInstanceID ].xyz;
 	
@@ -44,24 +46,27 @@ void main( void ){
 	for( i=0; i<pGIRaysPerProbe; i++ ){
 		ivec2 rayTC = rayOffset + ivec2( i, 0 );
 		
-		#ifdef WITH_RAY_CACHE
-			float rayDistance = texelFetch( texPosition, rayTC, 0 ).r;
-		#else
-			vec4 rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
-			#define rayDistance rayPosition.w
-		#endif
+		float rayDistance;
+		vec4 rayPosition;
+		if(WithRayCache){
+			rayDistance = texelFetch( texPosition, rayTC, 0 ).r;
+		}else{
+			rayPosition = texelFetch( texPosition, rayTC, 0 ); // position, distance
+			rayDistance = rayPosition.w;
+		}
 		
 		if( rayDistance >= 9999.0 ){
 			continue; // ray misses
 		}
 		
-		#ifdef WITH_RAY_CACHE
-			vec3 rayDirection = pGIRayDirection[ i ] * rayDistance;
-			#define normRayDir pGIRayDirection[ i ]
-		#else
-			vec3 rayDirection = rayPosition.xyz - probePosition;
-			vec3 normRayDir = normalize( rayDirection );
-		#endif
+		vec3 rayDirection, normRayDir;
+		if(WithRayCache){
+			rayDirection = pGIRayDirection[ i ] * rayDistance;
+			normRayDir = pGIRayDirection[ i ];
+		}else{
+			rayDirection = rayPosition.xyz - probePosition;
+			normRayDir = normalize( rayDirection );
+		}
 		
 		vec3 hitNormal = texelFetch( texNormal, rayTC, 0 ).xyz; // only valid if ray does not miss
 		float dotFacing = dot( hitNormal, normRayDir );

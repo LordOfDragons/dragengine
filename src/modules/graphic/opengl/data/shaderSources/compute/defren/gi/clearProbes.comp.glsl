@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -7,25 +9,16 @@ precision HIGHP int;
 #include "shared/image_buffer.glsl"
 
 
-#ifdef MAP_IRRADIANCE
-	layout(binding=0, rgba16f) uniform writeonly restrict HIGHP image2DArray texProbe;
-#else
-	layout(binding=0, IMG_RG16F_FMT) uniform writeonly restrict HIGHP IMG_RG16F_2DARR texProbe;
-#endif
+// MapIrradiance
+layout(binding=0, rgba16f) uniform writeonly restrict HIGHP image2DArray texProbeIrradiance;
+
+// !MapIrradiance
+layout(binding=0, IMG_RG16F_FMT) uniform writeonly restrict HIGHP IMG_RG16F_2DARR texProbeDistance;
 
 
-#ifdef MAP_IRRADIANCE
-	layout( local_size_x=10, local_size_y=10 ) in; // 8x8 + 1 pixel border
-#else
-	layout( local_size_x=18, local_size_y=18 ) in; // 16x16 + 1 pixel border
-#endif
+// Irradiance: 10x10, Distance: 18x18 (size + 1 pixel border)
+CT_COMPUTE_IN_SIZE_XY
 
-
-#ifdef MAP_IRRADIANCE
-	#define mapProbeSize pGIIrradianceMapSize
-#else
-	#define mapProbeSize pGIDistanceMapSize
-#endif
 
 ivec3 probeIndexToGridCoord( in int index ){
 	int stride = pGIGridProbeCount.x * pGIGridProbeCount.z;
@@ -43,15 +36,17 @@ void main( void ){
 	}
 	
 	// clear probe
+	int mapProbeSize = MapIrradiance ? pGIIrradianceMapSize : pGIDistanceMapSize;
+	
 	ivec3 probeGrid = probeIndexToGridCoord( index );
 	ivec2 tcProbe = ivec2( pGIGridProbeCount.x * probeGrid.y + probeGrid.x, probeGrid.z ) * ( mapProbeSize + 2 ) + ivec2( 1 );
 	ivec2 tcLocal = ivec2( gl_LocalInvocationID );
 	ivec3 tcClear = ivec3( tcProbe + tcLocal, pGICascade );
 	
-	#ifdef MAP_IRRADIANCE
-		imageStore( texProbe, tcClear, vec4( 0, 0, 0, 1 ) );
-	#else
-		imageStore(texProbe, tcClear, IMG_RG16F_STORE(vec2(
+	if(MapIrradiance){
+		imageStore(texProbeIrradiance, tcClear, vec4(0, 0, 0, 1));
+	}else{
+		imageStore(texProbeDistance, tcClear, IMG_RG16F_STORE(vec2(
 			pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance)));
-	#endif
+	}
 }

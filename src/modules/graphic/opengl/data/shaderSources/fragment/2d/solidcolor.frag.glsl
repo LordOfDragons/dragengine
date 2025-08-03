@@ -1,7 +1,9 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pColor;
+UNIFORM_BIND(0) uniform vec4 pColor;
 
 layout(location=0) out vec4 outColor;
 

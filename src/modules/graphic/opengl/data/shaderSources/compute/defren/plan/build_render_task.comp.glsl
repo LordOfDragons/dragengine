@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -37,7 +39,7 @@ UBOLAYOUT_BIND(4) writeonly restrict buffer RenderTask {
 #include "shared/defren/plan/render_task_set_geometry.glsl"
 
 
-uniform uint pPass;
+UNIFORM_BIND(0) uniform uint pPass;
 
 
 layout( local_size_x=64 ) in;

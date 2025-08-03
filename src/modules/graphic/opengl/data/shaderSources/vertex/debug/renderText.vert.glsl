@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision mediump float;
 precision mediump int;
 

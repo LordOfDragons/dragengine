@@ -232,9 +232,6 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 				DETHROW( deeInvalidParam );
 			}
 			
-		}else if(tag->GetName() == "glslVersion"){
-			// for use with build system only
-			
 		}else{
 			logger.LogWarnFormat( LOGGING_SOURCE, "shader(%i:%i): Unknown Tag %s, ignoring.",
 				tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );

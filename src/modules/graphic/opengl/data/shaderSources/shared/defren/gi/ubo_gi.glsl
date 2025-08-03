@@ -44,9 +44,9 @@ UBOLAYOUT_BIND(1) uniform GIParameters{
 };
 
 UBOLAYOUT_BIND(3) uniform GIProbePositions{
-	vec4 pGIProbePosition[ GI_MAX_COUNT_PROBE_POSITIONS ]; // position(xyz), flags(w)
+	vec4 pGIProbePosition[GIMaxCountProbePositions]; // position(xyz), flags(w)
 };
 
 UBOLAYOUT_BIND(4) uniform GIRayDirections{
-	vec3 pGIRayDirection[ GI_MAX_COUNT_RAY_DIRECTIONS];
+	vec3 pGIRayDirection[GIMaxCountRayDirections];
 };

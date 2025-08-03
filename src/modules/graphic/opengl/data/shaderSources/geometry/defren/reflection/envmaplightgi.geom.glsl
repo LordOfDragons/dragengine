@@ -1,8 +1,4 @@
-#if defined GS_INSTANCING
-	#ifndef OPENGLES
-		#extension GL_ARB_gpu_shader5 : require
-	#endif
-#endif
+#include "shared/preamble.glsl"
 
 #ifdef GS_INSTANCING
 	layout( triangles, invocations=6 ) in;

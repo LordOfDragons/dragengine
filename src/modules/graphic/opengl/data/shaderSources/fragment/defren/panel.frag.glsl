@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 uniform HIGHP mat4 pColorTransform;
 uniform HIGHP vec4 pColorTransform2;
 

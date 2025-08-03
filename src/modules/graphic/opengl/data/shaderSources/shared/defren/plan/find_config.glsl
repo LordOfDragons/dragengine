@@ -1,5 +1,5 @@
 
-UBOLAYOUT uniform FindConfig{
+UBOLAYOUT_BIND(0) uniform FindConfig{
 	uint pNodeCount;
 	uint pElementCount;
 	
@@ -13,13 +13,13 @@ UBOLAYOUT uniform FindConfig{
 	vec3 pGIMaxExtend;
 	
 	// element culling
-	uvec2 pLayerMask;  // x=higher 32 bits, y=lower 32 bits
+	uvec2 pLayerMask; // x=higher 32 bits, y=lower 32 bits
 	bool pCullLayerMask;
 	uint pCullFlags;
 	
-	vec3 pCameraPosition;  // pPlan.GetCameraPosition()
-	vec3 pCameraView;  // pPlan.GetInverseCameraMatrix().TransformView()
-	float pErrorScaling;  // deoglRPVisitorFindContent
+	vec3 pCameraPosition; // pPlan.GetCameraPosition()
+	vec3 pCameraView; // pPlan.GetInverseCameraMatrix().TransformView()
+	float pErrorScaling; // deoglRPVisitorFindContent
 	
 	// hull
 	vec4 pHullEdgeNormal[ 5 ]; // xy=normal, zw=normalAbs

@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -13,7 +15,7 @@ UBOLAYOUT_BIND(1) writeonly restrict buffer Element {
 	sElement pElement[];
 };
 
-uniform uint pUpdateElementCount;
+UNIFORM_BIND(0) uniform uint pUpdateElementCount;
 
 
 layout( local_size_x=64 ) in;

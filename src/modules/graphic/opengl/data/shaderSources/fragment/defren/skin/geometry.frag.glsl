@@ -1,3 +1,4 @@
+#include "shared/preamble.glsl"
 #include "shared/defren/skin/macros_geometry.glsl"
 
 // Uniform Parameters
@@ -202,11 +203,12 @@ void main(void){
 	
 	// test against depth texture
 	#ifdef DEPTH_TEST
-		#ifdef DECODE_IN_DEPTH
-		float depthTestValue = dot(texelFetch(texDepthTest, ivec3(tc, vLayer), 0).rgb, unpackDepth);
-		#else
-		float depthTestValue = texelFetch(texDepthTest, ivec3(tc, vLayer), 0).r;
-		#endif
+		float depthTestValue;
+		if(DecodeInDepth){
+			depthTestValue = dot(texelFetch(texDepthTest, ivec3(tc, vLayer), 0).rgb, unpackDepth);
+		}else{
+			depthTestValue = texelFetch(texDepthTest, ivec3(tc, vLayer), 0).r;
+		}
 		
 		#ifdef INVERSE_DEPTH
 			#ifdef DEPTH_TEST_LARGER

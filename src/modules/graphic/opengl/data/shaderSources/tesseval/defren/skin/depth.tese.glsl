@@ -1,5 +1,7 @@
 //#extension GL_ARB_tessellation_shader : enable
 
+#include "shared/preamble.glsl"
+
 layout(triangles, equal_spacing, ccw) in;
 
 #include "shared/ubo_defines.glsl"

@@ -1,5 +1,7 @@
 //#extension GL_ARB_tessellation_shader : enable
 
+#include "shared/preamble.glsl"
+
 layout( vertices=3 ) out;
 
 in vec2 vTCSTCColor[];

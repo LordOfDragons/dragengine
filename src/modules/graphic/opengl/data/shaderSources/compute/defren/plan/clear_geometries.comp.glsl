@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -13,7 +15,7 @@ UBOLAYOUT_BIND(1) writeonly restrict buffer ElementGeometry {
 	sElementGeometry pElementGeometries[];
 };
 
-uniform uint pClearGeometryCount;
+UNIFORM_BIND(0) uniform uint pClearGeometryCount;
 
 
 layout( local_size_x=64 ) in;

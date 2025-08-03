@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -29,7 +31,7 @@ UBOLAYOUT_BIND(1) writeonly restrict buffer TransformedData {
 
 layout( local_size_x=64 ) in;
 
-uniform uvec2 pParams; // x=first, y=count
+UNIFORM_BIND(0) uniform uvec2 pParams; // x=first, y=count
 
 void main( void ){
 	if( gl_GlobalInvocationID.x >= pParams.y ){

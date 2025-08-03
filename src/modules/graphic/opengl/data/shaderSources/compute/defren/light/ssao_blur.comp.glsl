@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -5,11 +7,11 @@ precision HIGHP int;
 #include "shared/defren/ubo_render_parameters.glsl"
 #include "shared/image_buffer.glsl"
 
-uniform vec4 pTCDataToDepth; // xy=scale, zw=offset
-uniform ivec2 pOffsetRead;
-uniform ivec2 pOffsetWrite;
-uniform int pClamp;
-uniform float pDepthDifferenceThreshold;
+UNIFORM_BIND(0) uniform vec4 pTCDataToDepth; // xy=scale, zw=offset
+UNIFORM_BIND(1) uniform ivec2 pOffsetRead;
+UNIFORM_BIND(2) uniform ivec2 pOffsetWrite;
+UNIFORM_BIND(3) uniform int pClamp;
+UNIFORM_BIND(4) uniform float pDepthDifferenceThreshold;
 
 uniform HIGHP sampler2DArray texDepth;
 
@@ -22,11 +24,7 @@ uniform HIGHP sampler2DArray texDepth;
 	#define texData_store texData
 #endif
 
-#ifdef BLUR_PASS_2
-	layout( local_size_y=64 ) in;
-#else
-	layout( local_size_x=64 ) in;
-#endif
+layout(local_size_x=64) in;
 
 shared float vData[ 72 ];
 shared float vDepth[ 72 ];
@@ -61,11 +59,7 @@ const vec4 cGaussWeightModifier = vec4( 0.85, 0.9, 0.95, 1 );
 #include "shared/defren/depth_to_position.glsl"
 
 
-#ifdef BLUR_PASS_2
-const int cBlurCoord = 1;
-#else
-const int cBlurCoord = 0;
-#endif
+const int cBlurCoord = BlurPass2 ? 1 : 0;
 
 
 void main( void ){
@@ -73,7 +67,10 @@ void main( void ){
 	float cWeightCenter = cGaussWeightCenter * cGaussWeightCenterModifier;
 	vec4 cWeights = cGaussWeights * cGaussWeightModifier;
 	
-	ivec3 tcCenter = ivec3( gl_GlobalInvocationID );
+	ivec3 tcCenter = ivec3(gl_GlobalInvocationID);
+	if(BlurPass2){
+		tcCenter.xy = tcCenter.yx;
+	}
 	
 	// cooperative read data
 	ivec3 tc = tcCenter;
@@ -98,7 +95,7 @@ void main( void ){
 	
 	
 	// per invocation processing
-	if( gl_GlobalInvocationID[ cBlurCoord ] > uint( pClamp ) ){
+	if(gl_GlobalInvocationID.x > uint(pClamp)){
 		// skipping the invocation has to be done after the cooperative read phase since
 		// otherwise parts of the shared data is not properly read causing errors
 		return;

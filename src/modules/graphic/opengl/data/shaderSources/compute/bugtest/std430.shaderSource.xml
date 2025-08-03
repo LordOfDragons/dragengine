@@ -5,6 +5,4 @@
 	<source>std430.comp.glsl</source>
 	
 	<shaderStorageBlock name='Output' binding='0'/>
-	
-	<glslVersion>430</glslVersion>
 </shaderSource>

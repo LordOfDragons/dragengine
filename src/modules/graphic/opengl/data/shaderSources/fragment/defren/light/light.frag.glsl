@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 // request high precision if the graphic card supports this
 precision HIGHP float;
 precision HIGHP int;

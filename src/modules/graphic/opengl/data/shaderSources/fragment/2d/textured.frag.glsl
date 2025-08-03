@@ -1,11 +1,13 @@
+#include "shared/preamble.glsl"
+
 precision lowp float;
 precision lowp int;
 
-uniform lowp vec4 pColor;
+UNIFORM_BIND(0) uniform lowp vec4 pColor;
 
 uniform lowp sampler2D texColor;
 
-in vec2 vTexCoord;
+layout(location=0) in vec2 vTexCoord;
 
 layout(location=0) out lowp vec4 outColor;
 

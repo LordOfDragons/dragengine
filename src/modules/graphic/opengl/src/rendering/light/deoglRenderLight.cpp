@@ -279,7 +279,7 @@ pAddToRenderTask( NULL )
 	sources = shaderManager.GetSourcesNamed( "DefRen SSAO Blur" );
 	pAsyncGetPipeline(pPipelineSSAOBlur1, pipconf, sources, defines);
 	
-	defines.SetDefines( "BLUR_PASS_2" );
+	defines.SetDefines("BLUR_PASS_2");
 	pAsyncGetPipeline(pPipelineSSAOBlur2, pipconf, sources, defines);
 	
 	
@@ -642,7 +642,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( espssaobDepthDifferenceThreshold, edgeBlurThreshold );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute(
-		reducedWidth, ( reducedHeight - 1 ) / 64 + 1, workGroupSizeZ ) );
+		( reducedHeight - 1 ) / 64 + 1, reducedWidth, workGroupSizeZ ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ) );
 	
 	

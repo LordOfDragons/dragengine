@@ -1,3 +1,4 @@
+#include "shared/preamble.glsl"
 
 layout (binding=0, std430, row_major) restrict writeonly buffer Output{
 	uint pOutput[];

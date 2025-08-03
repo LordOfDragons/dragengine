@@ -1,17 +1,18 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
 uniform HIGHP sampler2DArray texOccMap;
-#ifdef DUAL_OCCMAP
+// DualOccMap
 uniform HIGHP sampler2DArray texOccMap2;
-#endif
 
 uniform vec2 pScaleSize;
 uniform float pBaseLevel;
-#ifdef DUAL_OCCMAP
+
+// DualOccMap
 uniform vec2 pScaleSize2;
 uniform float pBaseLevel2;
-#endif
 
 in vec3 vMinExtend;
 in vec2 vMaxExtend;

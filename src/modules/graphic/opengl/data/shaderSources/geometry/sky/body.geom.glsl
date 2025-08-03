@@ -1,8 +1,4 @@
-#ifdef GS_INSTANCING
-	#ifndef OPENGLES
-		#extension GL_ARB_gpu_shader5 : require
-	#endif
-#endif
+#include "shared/preamble.glsl"
 
 #if defined GS_RENDER_STEREO
 	#ifdef GS_INSTANCING

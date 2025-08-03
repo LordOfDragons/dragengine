@@ -21,13 +21,13 @@ struct sRenderTaskConfig{
 	// pipeline modifiers
 	uint pipelineModifier;
 	
-	// for occlusion rendering using WITH_OCCLUSION
+	// for occlusion rendering using WithOcclusion
 	uint pipelineDoubleSided;
 	uint pipelineSingleSided;
 };
 
-#define MAX_RENDER_TASK_CONFIG 8
+const int MaxRenderTaskConfig = 8;
 
 UBOLAYOUT_BIND(0) uniform RenderTaskConfig {
-	sRenderTaskConfig pRenderTaskConfig[ MAX_RENDER_TASK_CONFIG ];
+	sRenderTaskConfig pRenderTaskConfig[MaxRenderTaskConfig];
 };

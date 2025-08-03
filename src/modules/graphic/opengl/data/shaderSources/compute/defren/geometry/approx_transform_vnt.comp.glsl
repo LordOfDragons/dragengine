@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -23,17 +25,9 @@ UBOLAYOUT_BIND(0) readonly buffer ModelData {
 	sModelData pModelData[];
 };
 
-#ifdef TRANSFORM_INPLACE
-	UBOLAYOUT_BIND(1) restrict buffer TransformedData {
-		sTransformedData pTransformedData[];
-	};
-	#define pFetchData pTransformedData
-#else
-	UBOLAYOUT_BIND(1) writeonly restrict buffer TransformedData {
-		sTransformedData pTransformedData[];
-	};
-	#define pFetchData pModelData
-#endif
+UBOLAYOUT_BIND(1) restrict buffer TransformedData {
+	sTransformedData pTransformedData[];
+};
 
 UBOLAYOUT_BIND(2) readonly buffer WeightsMatrix {
 	mat4x3 pWeightMatrix[];
@@ -41,7 +35,10 @@ UBOLAYOUT_BIND(2) readonly buffer WeightsMatrix {
 
 layout( local_size_x=64 ) in;
 
-uniform uvec2 pParams; // x=first, y=count
+UNIFORM_BIND(0) uniform uvec2 pParams; // x=first, y=count
+
+#define GET_DATA(i,m) (TransformInPlace ? pTransformedData[i].m : pModelData[i].m)
+
 
 void main( void ){
 	// skip outside of parameter space
@@ -52,31 +49,25 @@ void main( void ){
 	// get parameters
 	uint from = pParams.x + gl_GlobalInvocationID.x;
 	uint to = gl_GlobalInvocationID.x;
-	uint fetchFrom;
-
-	#ifdef TRANSFORM_INPLACE
-		fetchFrom = to;
-	#else
-		fetchFrom = from;
-	#endif
-
+	uint fetchFrom = TransformInPlace ? to : from;
+	
 	int weights = pModelData[ from ].weights;
 	
 	// if there is no weight write out all positions untransformed
 	if( weights == -1 ){
-		#ifndef TRANSFORM_INPLACE
+		if(!TransformInPlace){
 			pTransformedData[ to ].position = pModelData[ from ].position;
 			pTransformedData[ to ].realNormal = pModelData[ from ].realNormal;
 			pTransformedData[ to ].normal = pModelData[ from ].normal;
 			pTransformedData[ to ].tangent = pModelData[ from ].tangent;
-		#endif
+		}
 		return;
 	}
 	
 	mat4x3 matrix = pWeightMatrix[ weights ];
 	
 	// transform the position. this is correct and accurate
-	pTransformedData[ to ].position = matrix * vec4( pFetchData[ fetchFrom ].position, 1 );
+	pTransformedData[to].position = matrix * vec4(GET_DATA(fetchFrom, position), 1);
 	
 	// transform the normal and tangent. this is not correct and only an approximation
 	// 
@@ -88,15 +79,15 @@ void main( void ){
 	//      threshold value to protect against dangerously small vectors.
 	mat3 matrixNormal = mat3( matrix );
 	
-	vec3 v = matrixNormal * pFetchData[ fetchFrom ].realNormal;
+	vec3 v = matrixNormal * GET_DATA(fetchFrom, realNormal);
 	pTransformedData[ to ].realNormal = dot( v, v ) > 0.00001 ? v : vec3( 0, 1, 0 );
 	
-	v = matrixNormal * pFetchData[ fetchFrom ].normal;
+	v = matrixNormal * GET_DATA(fetchFrom, normal);
 	pTransformedData[ to ].normal = dot( v, v ) > 0.00001 ? v : vec3( 0, 1, 0 );
 	
-	v = matrixNormal * vec3( pFetchData[ fetchFrom ].tangent );
+	v = matrixNormal * vec3( GET_DATA(fetchFrom, tangent ) );
 	pTransformedData[ to ].tangent.xyz = dot( v, v ) > 0.00001 ? v : vec3( 1, 0, 0 );
-	#ifndef TRANSFORM_INPLACE
-		pTransformedData[ to ].tangent.w = pFetchData[ fetchFrom ].tangent.w;
-	#endif
+	if(!TransformInPlace){
+		pTransformedData[ to ].tangent.w = pModelData[ fetchFrom ].tangent.w;
+	}
 }

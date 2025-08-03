@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -12,15 +14,14 @@ uniform HIGHP sampler2DArray texDepth;
 	const int vLayer = 0;
 #endif
 
-#ifdef DECODE_IN_DEPTH
-	layout(location=0) out vec4 outDepth;
-#endif
+// DecodeInDepth
+layout(location=0) out vec4 outDepth;
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-	const vec3 packShift = vec3( 1.0, 256.0, 65536.0 );
-	const vec3 packMask = vec3( 1.0 / 256.0, 1.0 / 256.0, 0.0 );
-#endif
+// DecodeInDepth
+const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
+const vec3 packShift = vec3( 1.0, 256.0, 65536.0 );
+const vec3 packMask = vec3( 1.0 / 256.0, 1.0 / 256.0, 0.0 );
+
 const ivec4 tcScale = ivec4( 2 );
 const ivec4 tcOffset = ivec4( 0, 0, 1, 1 );
 #ifndef USE_MIN_FUNCTION
@@ -31,7 +32,7 @@ void main( void ){
 	ivec4 tc = min( ivec4( gl_FragCoord.xyxy ) * tcScale + tcOffset, pTCClamp.xyxy ); // s*2, t*2, s*2+1, t*2+1
 	vec4 depth;
 	
-	#ifdef DECODE_IN_DEPTH
+	if(DecodeInDepth){
 		depth.x = dot( texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2, t*2)
 		depth.y = dot( texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2+1, t*2)
 		depth.z = dot( texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2, t*2+1)
@@ -50,7 +51,7 @@ void main( void ){
 		#endif
 		outDepth = vec4( encoded - ( encoded.yzz * packMask ), 1.0 );
 		
-	#else
+	}else{
 		depth.x = texelFetch( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ).r; // (s*2, t*2)
 		depth.y = texelFetch( texDepth, ivec3( tc.zy, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2)
 		depth.z = texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).r; // (s*2, t*2+1)
@@ -67,5 +68,5 @@ void main( void ){
 		#else
 			gl_FragDepth = dot( depth, weights );
 		#endif
-	#endif
+	}
 }

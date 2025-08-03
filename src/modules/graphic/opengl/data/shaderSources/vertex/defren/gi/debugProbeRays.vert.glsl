@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -17,11 +19,11 @@ uniform int pRayDataValid;
 #include "shared/defren/gi/constants.glsl"
 
 UBOLAYOUT_BIND(4) uniform GIRayDirections{
-	vec3 pGIRayDirection[ GI_MAX_COUNT_RAY_DIRECTIONS ];
+	vec3 pGIRayDirection[GIMaxCountRayDirections];
 };
 
 UBOLAYOUT_BIND(2) restrict buffer RayData {
-	vec4 pRayData[ GI_MAX_COUNT_RAY_DIRECTIONS ];
+	vec4 pRayData[GIMaxCountRayDirections];
 };
 
 #include "shared/defren/gi/raycast/ray_cache.glsl"

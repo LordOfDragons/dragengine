@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 uniform vec4 pTCTransform;
 

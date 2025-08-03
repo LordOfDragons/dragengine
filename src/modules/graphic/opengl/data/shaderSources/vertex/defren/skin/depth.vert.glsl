@@ -1,12 +1,4 @@
-#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
-	#extension GL_ARB_shader_viewport_layer_array : require
-#endif
-#ifdef EXT_AMD_VERTEX_SHADER_LAYER
-	#extension GL_AMD_vertex_shader_layer : require
-#endif
-#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
-	#extension GL_ARB_shader_draw_parameters : require
-#endif
+#include "shared/preamble.glsl"
 
 // Uniform Parameters
 ///////////////////////
