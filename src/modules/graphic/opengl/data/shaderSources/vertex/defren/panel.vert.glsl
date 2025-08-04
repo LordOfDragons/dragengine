@@ -1,8 +1,8 @@
 #include "shared/preamble.glsl"
 
-uniform mat4x3 pMatrixModel;
-uniform mat4 pMatrixVP;
-uniform mat4 pMatrixVP2;
+UNIFORM_BIND(0) uniform mat4x3 pMatrixModel;
+UNIFORM_BIND(1) uniform mat4 pMatrixVP;
+UNIFORM_BIND(2) uniform mat4 pMatrixVP2;
 
 layout(location=0) in vec3 inPosition;
 layout(location=4) in vec2 inTexCoord;

@@ -3,8 +3,8 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mat4x3 pMatrixMV;
-uniform mat4 pMatrixP;
+UNIFORM_BIND(0) uniform mat4x3 pMatrixMV;
+UNIFORM_BIND(1) uniform mat4 pMatrixP;
 
 layout(location=0) in vec3 inPosition;
 

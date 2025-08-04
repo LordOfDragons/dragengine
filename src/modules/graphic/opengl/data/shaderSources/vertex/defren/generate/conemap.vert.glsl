@@ -3,9 +3,9 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform int pWidth;
-uniform vec4 pSrcTCTransform;
-uniform vec4 pDestTCTransform;
+UNIFORM_BIND(0) uniform int pWidth;
+UNIFORM_BIND(1) uniform vec4 pSrcTCTransform;
+UNIFORM_BIND(2) uniform vec4 pDestTCTransform;
 
 layout(location=0) in vec2 inPosition;
 

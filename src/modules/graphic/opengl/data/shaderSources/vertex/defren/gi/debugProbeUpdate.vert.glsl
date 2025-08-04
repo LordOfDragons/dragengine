@@ -1,7 +1,7 @@
 #include "shared/preamble.glsl"
 
-uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
-uniform vec4 pTCTransform;
+UNIFORM_BIND(0) uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
+UNIFORM_BIND(1) uniform vec4 pTCTransform;
 
 #ifdef PASS2
 	#include "shared/ubo_defines.glsl"
@@ -9,8 +9,8 @@ uniform vec4 pTCTransform;
 	#include "shared/defren/gi/trace_probe.glsl"
 	#include "shared/defren/light/ubo_gi.glsl"
 	
-	uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
-	uniform int pGIDebugCascade;
+	UNIFORM_BIND(2) uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
+	UNIFORM_BIND(3) uniform int pGIDebugCascade;
 #endif
 
 layout(location=0) in vec2 inPosition;

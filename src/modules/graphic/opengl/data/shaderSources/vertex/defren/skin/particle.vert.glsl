@@ -26,7 +26,7 @@ precision HIGHP int;
 // Samplers
 /////////////
 
-uniform mediump sampler2D texSamples;
+layout(binding=0) uniform mediump sampler2D texSamples;
 
 
 

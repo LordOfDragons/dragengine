@@ -6,15 +6,15 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_gi.glsl"
 
-uniform mat4x3 pMatrixMV;
-uniform mat4 pMatrixP;
-uniform int pGICascade;
-uniform int pGIDebugProbe;
-uniform int pGIRaysPerProbe;
-uniform int pGIProbesPerLine;
-uniform vec3 pProbePosition;
-uniform ivec2 pUpdateDataRayOffset;
-uniform int pRayDataValid;
+UNIFORM_BIND(0) uniform mat4x3 pMatrixMV;
+UNIFORM_BIND(1) uniform mat4 pMatrixP;
+UNIFORM_BIND(2) uniform int pGICascade;
+UNIFORM_BIND(3) uniform int pGIDebugProbe;
+UNIFORM_BIND(4) uniform int pGIRaysPerProbe;
+UNIFORM_BIND(5) uniform int pGIProbesPerLine;
+UNIFORM_BIND(6) uniform vec3 pProbePosition;
+UNIFORM_BIND(7) uniform ivec2 pUpdateDataRayOffset;
+UNIFORM_BIND(8) uniform int pRayDataValid;
 
 #include "shared/defren/gi/constants.glsl"
 
@@ -28,8 +28,8 @@ UBOLAYOUT_BIND(2) restrict buffer RayData {
 
 #include "shared/defren/gi/raycast/ray_cache.glsl"
 
-uniform HIGHP sampler2DArray texCacheDistance;
-uniform mediump sampler2D texLight;
+layout(binding=0) uniform HIGHP sampler2DArray texCacheDistance;
+layout(binding=1) uniform mediump sampler2D texLight;
 
 layout(location=0) in vec2 inPosition;
 

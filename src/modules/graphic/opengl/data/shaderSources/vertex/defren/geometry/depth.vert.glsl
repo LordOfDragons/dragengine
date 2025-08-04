@@ -3,15 +3,15 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mat4 pMatrixMVP;
+UNIFORM_BIND(0) uniform mat4 pMatrixMVP;
 #ifdef USE_CLIP_PLANE
-uniform mat4x3 pMatrixMV;
+UNIFORM_BIND(1) uniform mat4x3 pMatrixMV;
 #endif
 #if defined( IGNORE_HOLES ) || defined( CLIP_DEPTH )
-uniform mat3x2 pMatrixDiffuse;
+UNIFORM_BIND(2) uniform mat3x2 pMatrixDiffuse;
 #endif
 #ifdef PROP_FIELD
-uniform mat4 pPFMatrix;
+UNIFORM_BIND(3) uniform mat4 pPFMatrix;
 #endif
 
 layout(location=0) in vec3 inPosition;

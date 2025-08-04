@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform ivec4 pParameters; // to.mapsPerRow, to.rowsPerImage, from.mapsPerRow, from.rowsPerImage
+UNIFORM_BIND(0) uniform ivec4 pParameters; // to.mapsPerRow, to.rowsPerImage, from.mapsPerRow, from.rowsPerImage
 
 layout(location=0) in vec2 inPosition;
 

@@ -6,9 +6,9 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_gi.glsl"
 
-uniform mat4x3 pMatrixMV;
-uniform mat4 pMatrixP;
-uniform int pGIDebugCascade;
+UNIFORM_BIND(0) uniform mat4x3 pMatrixMV;
+UNIFORM_BIND(1) uniform mat4 pMatrixP;
+UNIFORM_BIND(2) uniform int pGIDebugCascade;
 
 #define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
 #include "shared/defren/gi/probe_offset.glsl"

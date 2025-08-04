@@ -6,7 +6,7 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform mat4x3 pMatrixBody;
+UNIFORM_BIND(0) uniform mat4x3 pMatrixBody;
 
 layout(location=0) in vec2 inPosition;
 layout(location=1) in int inLayer;
