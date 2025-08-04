@@ -17,9 +17,7 @@ layout(location=4) in float inParticle4; // beamLocation
 #endif
 */
 
-VARYING_BIND(0) out vec3 vGSParticleLightColor;
-VARYING_BIND(1) out float vGSParticleLightRange;
-VARYING_BIND(2) flat out int vGSLayer;
+#include "shared/interface/light_vertex.glsl"
 
 const vec2 curveOffset1 = vec2(0, 1.0 / 4.0);
 
@@ -31,6 +29,8 @@ const vec2 curveOffset3 = vec2(0, 3.0 / 4.0);
 
 
 void main(void){
+	lightVertexShaderDefaultOutputs();
+	
 	// retrieves particle parameters from texSamples
 	vec2 tcSamples = vec2(inParticle0.x, 0) * pSamplesParams.xz + pSamplesParams.yw;
 	vec3 pattrs1 = vec3(texture(texSamples, tcSamples));
@@ -42,26 +42,24 @@ void main(void){
 		vec3 pattrs4 = vec3(texture(texSamples, tcSamples + curveOffset3));
 	#endif
 	
-	vGSParticleLightColor = inParticle3.xyz * pattrs1.xyz; // red, green, blue
-	vGSParticleLightColor *= vec3(inParticle1.w * pattrs2.y); // emissivity
-	vGSParticleLightRange = inParticle1.z * pattrs2.z; // size
+	vParticleLightColor = inParticle3.xyz * pattrs1.xyz; // red, green, blue
+	vParticleLightColor *= vec3(inParticle1.w * pattrs2.y); // emissivity
+	vParticleLightRange = inParticle1.z * pattrs2.z; // size
 	
 	#ifdef PARTICLE_BEAM
-		vGSParticleLightColor *= pattrs3.xyz; // red, green, blue
-		vGSParticleLightColor *= vec3(pattrs4.y); // emissivity
-		vGSParticleLightRange *= pattrs4.z; // size
+		vParticleLightColor *= pattrs3.xyz; // red, green, blue
+		vParticleLightColor *= vec3(pattrs4.y); // emissivity
+		vParticleLightRange *= pattrs4.z; // size
 	#endif
 	
-	vGSParticleLightRange *= 2.0; // 2 meters range per size meters
+	vParticleLightRange *= 2.0; // 2 meters range per size meters
 	
 	// retrieves the position from the input particle
 	gl_Position = vec4(inParticle0.yzw, 1);
 	
+	#ifdef SUPPORTS_VSDRAWPARAM
 	if(VSRenderStereo){
-		#ifdef SUPPORTS_VSDRAWPARAM
-		vGSLayer = gl_DrawID;
-		#endif
-	}else{
-		vGSLayer = 0;
+		vLayer = gl_DrawID;
 	}
+	#endif
 }

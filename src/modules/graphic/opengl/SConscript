@@ -223,14 +223,16 @@ def transpileOpenGLSpirV(env):
 		parts = []
 		parts.append('glslangValidator')
 		parts.append('-G')
-		parts.extend(['--glsl-version', '450'])  # 430 minimum
+		parts.extend(['--glsl-version', '460'])  # 430 minimum
 		
 		parts.append('-P"#extension GL_ARB_shading_language_include : require"')
 		parts.append('-P"#extension GL_EXT_shader_integer_mix : require"')
 		if source[0].get_path().endswith('.vert.glsl'):
 			parts.append('-P"#extension GL_ARB_shader_viewport_layer_array : require"')
+			parts.append('-P"#extension GL_ARB_shader_draw_parameters : require"')
 		elif source[0].get_path().endswith('.geom.glsl'):
-			parts.append('-P"#extension GL_ARB_gpu_shader5 : require"')
+			#parts.append('-P"#extension GL_ARB_gpu_shader5 : require"')
+			pass
 		
 		parts.append('-DWITH_SPIRV_OPENGL=1')
 		parts.append('--enhanced-msgs')
@@ -268,6 +270,7 @@ def transpileOpenGLSpirV(env):
 		'data/shaderSources/fragment/generic/color.shaderSource.xml',
 		'data/shaderSources/fragment/generic/gauss_sep_fixed.shaderSource.xml',
 		'data/shaderSources/fragment/generic/output_texture.shaderSource.xml',
+		#'data/shaderSources/fragment/defren/light/light.shaderSource.xml',
 		
 		'data/shaderSources/vertex/2d/solidcolor.shaderSource.xml',
 		'data/shaderSources/vertex/2d/textured.shaderSource.xml',
@@ -281,9 +284,20 @@ def transpileOpenGLSpirV(env):
 		'data/shaderSources/vertex/generic/fullscreenquad.shaderSource.xml',
 		'data/shaderSources/vertex/generic/passthrough.shaderSource.xml',
 		'data/shaderSources/vertex/generic/screenspace.shaderSource.xml',
-		'data/shaderSources/vertex/generic/transform_mvp.shaderSource.xml'
+		'data/shaderSources/vertex/generic/transform_mvp.shaderSource.xml',
+		'data/shaderSources/vertex/defren/light/light.shaderSource.xml',
+		'data/shaderSources/vertex/defren/light/particle.shaderSource.xml',
+		
+		'data/shaderSources/geometry/defren/light/stereo.shaderSource.xml',
+		'data/shaderSources/geometry/defren/light/particle.shaderSource.xml'
 	]
 	globFiles(envModule, 'data/shaderSources/compute', '*.shaderSource.xml', shaderSources)
+	
+	# certain shaders can never happen under spir-v. remove them
+	removeShaderSources = [
+		'data/shaderSources/geometry/defren/light/stereo.shaderSource.xml'
+	]
+	shaderSources = [x for x in shaderSources if x not in removeShaderSources]
 	
 	for s in shaderSources:
 		shaderSourceFile = env.File(s)
@@ -301,11 +315,11 @@ def transpileOpenGLSpirV(env):
 		
 		if withEngineDeal:
 			filename = os.path.join(pathAsset, dataPath, relativePath)
-			assetEngine[filename] = spirvFile
+			assetEngine[filename] = transpiled[0]
 		else:
 			filename = os.path.join(pathShares, dataPath, relativePath)
-			install.append(env.InstallAs(filename, spirvFile))
-			archive[filename] = spirvFile
+			install.append(env.InstallAs(filename, transpiled[0]))
+			archive[filename] = transpiled[0]
 
 if envModule['OSWindows']:
 	transpileOpenGLSpirV(envModule.Clone())

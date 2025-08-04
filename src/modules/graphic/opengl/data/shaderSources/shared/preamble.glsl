@@ -77,6 +77,8 @@ layout(constant_id=47) const bool NoPosTransform = false;
 layout(constant_id=48) const bool NoTCTransform = false;
 layout(constant_id=49) const bool TexCoordFlipY = false;
 
+layout(constant_id=50) const bool ParticleLight = false;
+
 // OpenGL
 #else
 

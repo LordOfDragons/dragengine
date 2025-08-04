@@ -130,27 +130,31 @@ uniform lowp sampler2D texColorEquirect;
 // Inputs
 ///////////
 
-// FullScreenQuad
-VARYING_BIND(0) in vec2 vScreenCoord;
+#include "shared/interface/light_fragment.glsl"
 
-// !FullScreenQuad
-VARYING_BIND(1) in vec3 vLightVolumePos;
+vec3 getLightPosition(){
+	if(ParticleLight){
+		return vParticleLightPosition;
+	}else{
+		return pLightPosition[vLayer];
+	}
+}
 
-VARYING_BIND(2) flat in int vLayer;
+vec3 getLightColor(){
+	if(ParticleLight){
+		return vParticleLightColor;
+	}else{
+		return pLightColor;
+	}
+}
 
-#ifdef PARTICLE_LIGHT
-	VARYING_BIND(3) in vec3 vParticleLightPosition;
-	VARYING_BIND(4) in vec3 vParticleLightColor;
-	VARYING_BIND(5) in float vParticleLightRange;
-	
-	#define vLightPosition vParticleLightPosition
-	#define pLightColor vParticleLightColor
-	#define pLightRange vParticleLightRange
-	
-#else
-	#define vLightPosition pLightPosition[vLayer]
-#endif
-
+float getLightRange(){
+	if(ParticleLight){
+		return vParticleLightRange;
+	}else{
+		return pLightRange;
+	}
+}
 
 
 // Outputs
@@ -665,11 +669,11 @@ void main(void){
 	#ifdef SKY_LIGHT
 		#define lightDir pLightView[vLayer]
 	#else
-		vec3 lightDir = vLightPosition - position;
+		vec3 lightDir = getLightPosition() - position;
 		float dist = length(lightDir);
 		
 		// discard if pre-lit (length = 0) or outside the light range
-		if(dist == 0.0 || dist > pLightRange){
+		if(dist == 0.0 || dist > getLightRange()){
 			outputUnlit();
 			return;
 		}
@@ -1084,7 +1088,7 @@ void main(void){
 	
 	
 	// light color taking into account light color, light image and shadow. attenuation is handled separately
-	vec3 lightColor = pLightColor;
+	vec3 lightColor = getLightColor();
 	#ifdef GI_RAY
 	lightColor += pLightColorAmbientGI;
 	#endif

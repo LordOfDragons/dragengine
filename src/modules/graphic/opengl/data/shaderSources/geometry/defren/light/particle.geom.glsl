@@ -19,23 +19,14 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
-VARYING_BIND(0) in vec3 vGSParticleLightColor[1];
-VARYING_BIND(1) in float vGSParticleLightRange[1];
-VARYING_BIND(2) in int vGSLayer[1];
-
-VARYING_BIND(0) out vec2 vScreenCoord;
-VARYING_BIND(1) out vec3 vLightVolumePos;
-VARYING_BIND(2) flat out int vLayer;
-
-VARYING_BIND(3) out vec3 vParticleLightPosition;
-VARYING_BIND(4) out vec3 vParticleLightColor;
-VARYING_BIND(5) out float vParticleLightRange;
+#define GEOMETRY_SHADER_INPUT_SIZE 1
+#include "shared/interface/light_geometry.glsl"
 
 
 void emitCorner(in vec3 position, in vec3 range, float zfactor, in int layer){
+	lightGeometryShaderDefaultOutputs(0, layer);
+	
 	vParticleLightPosition = position;
-	vParticleLightColor = vGSParticleLightColor[0];
-	vParticleLightRange = vGSParticleLightRange[0];
 	
 	vLightVolumePos = position + range;
 	
@@ -69,11 +60,6 @@ void emitCorner(in vec3 position, in vec3 range, float zfactor, in int layer){
 	// the z value can be precalculated since the z position is the same
 	// for all corners in the billboard
 	gl_Position.z = zfactor * gl_Position.w;
-	
-	vLayer = layer;
-	
-	gl_Layer = layer;
-	gl_PrimitiveID = gl_PrimitiveIDIn;
 	
 	//EmitVertex();
 }

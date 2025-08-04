@@ -894,7 +894,7 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 	}
 }
 
-static const int vSpecializationCount = 47;
+static const int vSpecializationCount = 48;
 static const struct sSpecialization{
 	int index;
 	bool isBool;
@@ -947,7 +947,8 @@ static const struct sSpecialization{
 	{46, true, "FullScreenQuadTCTransform", "FULLSCREENQUAD_TCTRANSFORM"},
 	{47, true, "NoPosTransform", "NO_POSTRANSFORM"},
 	{48, true, "NoTCTransform", "NO_TCTRANSFORM"},
-	{49, true, "TexCoordFlipY", "TEXCOORD_FLIP_Y"}
+	{49, true, "TexCoordFlipY", "TEXCOORD_FLIP_Y"},
+	{50, true, "ParticleLight", "PARTICLE_LIGHT"}
 };
 
 // Special:

@@ -16,13 +16,7 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
-// FullScreenQuad
-VARYING_BIND(0) out vec2 vScreenCoord;
-
-// !FullScreenQuad
-VARYING_BIND(1) out vec3 vLightVolumePos;
-
-VARYING_BIND(2) flat out int vLayer;
+#include "shared/interface/light_geometry.glsl"
 
 void main(void){
 	int eye;
@@ -34,8 +28,9 @@ void main(void){
 		
 		int corner;
 		for(corner=0; corner<3; corner++){
-			vec4 position = gl_in[corner].gl_Position;
+			lightGeometryShaderDefaultOutputs(corner, eye);
 			
+			vec4 position = gl_in[corner].gl_Position;
 			if(FullScreenQuad){
 				gl_Position = position;
 				vScreenCoord = position.xy;
@@ -44,11 +39,6 @@ void main(void){
 				gl_Position = pMatrixMVP[eye] * position;
 				vLightVolumePos = pMatrixMV[eye] * position;
 			}
-			
-			vLayer = eye;
-			
-			gl_Layer = eye;
-			gl_PrimitiveID = gl_PrimitiveIDIn;
 			
 			EmitVertex();
 		}
