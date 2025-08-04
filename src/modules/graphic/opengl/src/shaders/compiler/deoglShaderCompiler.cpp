@@ -894,7 +894,7 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 	}
 }
 
-static const int vSpecializationCount = 42;
+static const int vSpecializationCount = 47;
 static const struct sSpecialization{
 	int index;
 	bool isBool;
@@ -942,7 +942,12 @@ static const struct sSpecialization{
 	{41, true, "GSRenderStereo", "GS_RENDER_STEREO"},
 	{42, true, "VSLayer", "VS_LAYER"},
 	{43, true, "GSLayer", "GS_LAYER"},
-	{44, true, "FullScreenQuad", "FULLSCREENQUAD"}
+	{44, true, "FullScreenQuad", "FULLSCREENQUAD"},
+	{45, true, "FullScreenQuadSCTransform", "FULLSCREENQUAD_SCTRANSFORM"},
+	{46, true, "FullScreenQuadTCTransform", "FULLSCREENQUAD_TCTRANSFORM"},
+	{47, true, "NoPosTransform", "NO_POSTRANSFORM"},
+	{48, true, "NoTCTransform", "NO_TCTRANSFORM"},
+	{49, true, "TexCoordFlipY", "TEXCOORD_FLIP_Y"}
 };
 
 // Special:

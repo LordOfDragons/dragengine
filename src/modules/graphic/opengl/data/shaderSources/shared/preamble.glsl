@@ -71,6 +71,11 @@ layout(constant_id=41) const bool GSRenderStereo = false;
 layout(constant_id=42) const bool VSLayer = false;
 layout(constant_id=43) const bool GSLayer = false;
 layout(constant_id=44) const bool FullScreenQuad = false;
+layout(constant_id=45) const bool FullScreenQuadSCTransform = false;
+layout(constant_id=46) const bool FullScreenQuadTCTransform = false;
+layout(constant_id=47) const bool NoPosTransform = false;
+layout(constant_id=48) const bool NoTCTransform = false;
+layout(constant_id=49) const bool TexCoordFlipY = false;
 
 // OpenGL
 #else
