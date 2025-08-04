@@ -16,7 +16,7 @@ uniform mediump sampler2D texColor;
 #endif
 
 #ifdef _USE_TEXTURE_
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 #endif
 in vec3 vLSPosition;
 

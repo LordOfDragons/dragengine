@@ -18,7 +18,7 @@ layout(location=4) in vec2 inTexCoord;
 	#define vTexCoord vGSTexCoord
 	
 #else
-	out vec2 vTexCoord;
+	VARYING_BIND(0) out vec2 vTexCoord;
 #endif
 
 

@@ -2,8 +2,11 @@
 <shader>
 	<name>Gauss Separable Fixed</name>
 	
+	<!-- shader assigned locations
 	<texture name='texData' target='0'/>
+	<texture name='texDataArray' target='0'/>
 	<texture name='texDepth' target='1'/>
+	-->
 	
 	<parameter name='pTCTransform'/>
 	<parameter name='pTCTransformAlt'/>

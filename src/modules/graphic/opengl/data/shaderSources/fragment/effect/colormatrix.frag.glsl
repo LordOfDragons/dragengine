@@ -3,13 +3,13 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mat4 pColorMatrix;
-uniform vec4 pColorOffset;
+UNIFORM_BIND(0) uniform mat4 pColorMatrix;
+UNIFORM_BIND(1) uniform vec4 pColorOffset;
 
 uniform mediump sampler2DArray texColor;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(0) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

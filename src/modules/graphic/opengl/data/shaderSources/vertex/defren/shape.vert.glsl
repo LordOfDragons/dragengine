@@ -23,7 +23,7 @@ layout(location=0) in vec3 inPosition;
 #ifdef VS_RENDER_STEREO
 	uniform int pDrawIDOffset;
 	#define inLayer (gl_DrawID + pDrawIDOffset)
-	flat out int vLayer;
+	VARYING_BIND(0) flat out int vLayer;
 #else
 	const int inLayer = 0;
 #endif

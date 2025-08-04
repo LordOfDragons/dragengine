@@ -18,7 +18,7 @@ layout(location=0) in vec2 inPosition;
 	out vec2 vGSTexCoord;
 	#define vTexCoord vGSTexCoord
 #else
-	out vec2 vTexCoord;
+	VARYING_BIND(0) out vec2 vTexCoord;
 #endif
 
 #ifdef VS_RENDER_STEREO
@@ -26,11 +26,7 @@ layout(location=0) in vec2 inPosition;
 #endif
 
 // Z value on far clip plane (cleared depth) in NDC
-#ifdef INVERSE_DEPTH
-	const float vZFar = -1.0;
-#else
-	const float vZFar = 1.0;
-#endif
+const float vZFar = InverseDepth ? -1.0 : 1.0;
 
 void main( void ){
 	gl_Position = vec4( inPosition, vZFar, 1 );

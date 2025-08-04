@@ -33,12 +33,12 @@ layout(location=0) in vec2 inPosition;
 		out vec2 vGSTexCoord;
 		#define vTexCoord vGSTexCoord
 	#else
-		out vec2 vTexCoord;
+		VARYING_BIND(0) out vec2 vTexCoord;
 	#endif
 #endif
 
 #ifdef VS_RENDER_STEREO
-	flat out int vLayer;
+	VARYING_BIND(1) flat out int vLayer;
 #endif
 
 void main( void ){

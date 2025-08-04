@@ -15,9 +15,9 @@
 
 in vec2 vGSTexCoord[ 3 ];
 
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 
-flat out int vLayer;
+VARYING_BIND(1) flat out int vLayer;
 
 void main( void ){
 	int eye;

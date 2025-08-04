@@ -9,7 +9,7 @@ uniform lowp sampler2D texDiffuse;
 uniform HIGHP sampler2DArray texDepth;
 
 #if defined IGNORE_HOLES || defined CLIP_DEPTH
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 #endif
 #ifdef USE_CLIP_PLANE
 in vec3 vClipCoord;
@@ -51,20 +51,20 @@ void main( void ){
 	// remove next line for deoglSkinShader version when using DepthTestBack on estDepth
 	if( texture( texDiffuse, vTexCoord ).a < epsilon ) discard;
 	
-	#ifdef INVERSE_DEPTH
+	if(InverseDepth){
 		#ifdef ENCODE_DEPTH
 			if( gl_FragCoord.z <= dot( texelFetch( texDepth, ivec3( gl_FragCoord.xy, vLayer ), 0 ).rgb, unpackDepth ) ) discard;
 		#else
 			if( gl_FragCoord.z <= texelFetch( texDepth, ivec3( gl_FragCoord.xy, vLayer ), 0 ).r ) discard;
 		#endif
 		
-	#else
+	}else{
 		#ifdef ENCODE_DEPTH
 			if( gl_FragCoord.z >= dot( texelFetch( texDepth, ivec3( gl_FragCoord.xy, vLayer ), 0 ).rgb, unpackDepth ) ) discard;
 		#else
 			if( gl_FragCoord.z >= texelFetch( texDepth, ivec3( gl_FragCoord.xy, vLayer ), 0 ).r ) discard;
 		#endif
-	#endif
+	}
 #endif
 
 #ifdef ENCODE_DEPTH

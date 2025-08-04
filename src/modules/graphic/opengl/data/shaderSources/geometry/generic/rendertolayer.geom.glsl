@@ -8,7 +8,7 @@ layout( triangle_strip, max_vertices=3 ) out;
 
 in vec2 vGSTexCoord[ 3 ];
 
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 
 void main( void ){
 	int i;

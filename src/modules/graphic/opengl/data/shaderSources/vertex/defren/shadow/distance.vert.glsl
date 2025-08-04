@@ -22,7 +22,7 @@ layout(location=4) in float inHTHeight;
 #endif
 
 #ifdef _USE_TEXTURE_
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 #endif
 out vec3 vLSPosition;
 

@@ -9,7 +9,7 @@ uniform vec4 pMaterialGamma;
 uniform lowp sampler2D texColor;
 uniform lowp sampler2D texTransparency;
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	flat in int vLayer;

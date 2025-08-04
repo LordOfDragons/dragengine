@@ -9,10 +9,10 @@ precision HIGHP int;
 uniform mediump sampler2DArray texColor;
 uniform HIGHP sampler2D texToneMapParams;
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(2) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

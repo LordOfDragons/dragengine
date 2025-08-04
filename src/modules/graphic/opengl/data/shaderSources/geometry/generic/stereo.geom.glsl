@@ -19,14 +19,14 @@
 #endif
 
 #ifndef NO_TEXCOORD
-	out vec2 vTexCoord;
+	VARYING_BIND(0) out vec2 vTexCoord;
 	
 	#ifdef FULLSCREENQUAD
-		out vec2 vScreenCoord;
+		VARYING_BIND(1) out vec2 vScreenCoord;
 	#endif
 #endif
 
-flat out int vLayer;
+VARYING_BIND(2) flat out int vLayer;
 
 void main( void ){
 	int eye;

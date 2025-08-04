@@ -7,12 +7,12 @@ precision HIGHP int;
 // uniform vec3 pKernel1;
 // uniform vec3 pKernel2;
 // uniform vec3 pKernel3;
-uniform ivec2 pTCClamp;
+UNIFORM_BIND(0) uniform ivec2 pTCClamp;
 
 uniform mediump sampler2DArray texColor;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(0) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

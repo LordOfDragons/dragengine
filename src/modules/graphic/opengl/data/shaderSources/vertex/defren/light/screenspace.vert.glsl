@@ -7,8 +7,8 @@ uniform vec4 pQuadParams; // scaleX, scaleY, offsetX, offsetY
 
 in vec2 inPosition;
 
-out vec2 vTexCoord;
-out vec2 vScreenCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
+VARYING_BIND(1) out vec2 vScreenCoord;
 
 void main( void ){
 	gl_Position = vec4( inPosition, 0, 1 );

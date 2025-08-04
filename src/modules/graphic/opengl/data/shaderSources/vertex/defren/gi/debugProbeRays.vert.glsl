@@ -33,7 +33,7 @@ uniform mediump sampler2D texLight;
 
 layout(location=0) in vec2 inPosition;
 
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 flat out vec3 vColor;
 flat out vec3 vColorRim;
 flat out float vRimThickness;

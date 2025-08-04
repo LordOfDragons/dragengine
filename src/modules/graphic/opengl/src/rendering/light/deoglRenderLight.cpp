@@ -214,7 +214,7 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "TAP_COUNT", 9 );
 	defines.SetDefine( "OUT_DATA_SIZE", 1 );
 	defines.SetDefine( "TEX_DATA_SIZE", 1 );
-	defines.SetDefine( "TEX_DATA_SWIZZLE", "g" );
+	defines.SetDefine( "TEX_DATA_SWIZZLE", 1 ); // gggg
 	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
 	defines.SetDefines( "NO_POSTRANSFORM" );
 	pAsyncGetPipeline(pPipelineAOBlur1, pipconf, sources, defines);
@@ -234,7 +234,7 @@ pAddToRenderTask( NULL )
 	sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
 	defines.SetDefine( "TAP_COUNT", 9 );
 	defines.SetDefine( "OUT_DATA_SIZE", 3 );
-	defines.SetDefine( "OUT_DATA_SWIZZLE", "g" );
+	defines.SetDefine( "OUT_DATA_SWIZZLE", 1 ); // gggg
 	defines.SetDefine( "TEX_DATA_SIZE", 1 );
 	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
 	defines.SetDefines( "NO_POSTRANSFORM" );
@@ -254,9 +254,9 @@ pAddToRenderTask( NULL )
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
-	defines.SetDefine( "TEXTURELEVEL", 1 );
-	defines.SetDefine( "OUT_COLOR_SIZE", 3 );
-	defines.SetDefine( "TEX_DATA_SWIZZLE", "ggg" );
+	defines.SetDefines("TEXTURELEVEL");
+	defines.SetDefine( "OUT_DATA_SIZE", 3 );
+	defines.SetDefine( "TEX_DATA_SWIZZLE", 1 ); // gggg
 	pAsyncGetPipeline(pPipelineDebugAO, pipconf, sources, defines);
 	
 	

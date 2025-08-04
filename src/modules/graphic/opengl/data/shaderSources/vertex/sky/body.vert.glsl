@@ -20,7 +20,7 @@ layout(location=0) in vec2 inPosition;
 	out vec2 vGSTexCoord;
 	#define vTexCoord vGSTexCoord
 #else
-	out vec2 vTexCoord;
+	VARYING_BIND(0) out vec2 vTexCoord;
 #endif
 
 #ifdef VS_RENDER_STEREO

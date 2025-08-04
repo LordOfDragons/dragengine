@@ -9,7 +9,7 @@ uniform vec4 pDestTCTransform;
 
 layout(location=0) in vec2 inPosition;
 
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 out vec2 vDestTC;
 
 const vec2 tcTransform = vec2( 0.5 );

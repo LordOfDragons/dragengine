@@ -894,7 +894,7 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 	}
 }
 
-static const int vSpecializationCount = 23;
+static const int vSpecializationCount = 36;
 static const struct sSpecialization{
 	int index;
 	bool isBool;
@@ -923,7 +923,20 @@ static const struct sSpecialization{
 	{22, true, "WriteCullResult", "WRITE_CULL_RESULT"},
 	{23, true, "WithOcclusion", "WITH_OCCLUSION"},
 	{24, true, "ClearCullResult", "CLEAR_CULL_RESULT"},
-	{25, true, "WithCalcLod", "WITH_CALC_LOD"}
+	{25, true, "WithCalcLod", "WITH_CALC_LOD"},
+	{26, true, "WithTexture", "WITH_TEXTURE"},
+	{27, true, "WithRenderWorld", "WITH_RENDER_WORLD"},
+	{28, true, "WithMask", "WITH_MASK"},
+	{29, true, "InverseDepth", "INVERSE_DEPTH"},
+	{30, true, "WithDepth", "WITH_DEPTH"},
+	{31, true, "DepthDifferenceWeighting", "DEPTH_DIFFERENCE_WEIGHTING"},
+	{32, true, "InputArrayTextures", "INPUT_ARRAY_TEXTURES"},
+	{33, false, "OutDataSize", "OUT_DATA_SIZE"},
+	{34, false, "OutDataSwizzle", "OUT_DATA_SWIZZLE"},
+	{35, false, "TapCount", "TAP_COUNT"},
+	{36, false, "TexDataSize", "TEX_DATA_SIZE"},
+	{37, false, "TexDataSwizzle", "TEX_DATA_SWIZZLE"},
+	{38, true, "TextureLevel", "TEXTURELEVEL"}
 };
 
 // Special:

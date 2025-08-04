@@ -131,7 +131,7 @@ pTBORenderRectangle2( nullptr )
 		pAsyncGetPipeline(pPipelineOutTexLayer, pipconf, "Debug Display Texture", defines);
 		
 		// texture array
-		defines.SetDefines("ARRAYTEXTURE");
+		defines.SetDefines("INPUT_ARRAY_TEXTURES");
 		pAsyncGetPipeline(pPipelineOutArrTex, pipconf, "Debug Display Texture", defines);
 		
 		// text

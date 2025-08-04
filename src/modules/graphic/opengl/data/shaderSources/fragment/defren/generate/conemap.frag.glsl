@@ -17,7 +17,7 @@ uniform float pStepFactor; // 1.0 / ( float )pStepCount
 uniform float pLayer;
 #endif
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 in vec2 vDestTC;
 
 layout(location=0) out float outConeRatio; // use minimum blend function

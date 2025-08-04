@@ -19,7 +19,7 @@ uniform mat4 pMatrixVP2;
 
 in vec2 vGSTexCoord[ 3 ];
 
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 
 
 #ifdef GS_RENDER_STEREO

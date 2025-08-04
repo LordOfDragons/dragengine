@@ -3,15 +3,15 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pDistortTransform;
+UNIFORM_BIND(0) uniform vec4 pDistortTransform;
 
 uniform mediump sampler2DArray texColor;
 uniform lowp sampler2D texDistort;
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(1) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

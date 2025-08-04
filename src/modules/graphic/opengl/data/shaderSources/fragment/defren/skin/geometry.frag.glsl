@@ -210,19 +210,19 @@ void main(void){
 			depthTestValue = texelFetch(texDepthTest, ivec3(tc, vLayer), 0).r;
 		}
 		
-		#ifdef INVERSE_DEPTH
+		if(InverseDepth){
 			#ifdef DEPTH_TEST_LARGER
 			if(gl_FragCoord.z < depthTestValue) discard;
 			#else
 			if(gl_FragCoord.z > depthTestValue) discard;
 			#endif
-		#else
+		}else{
 			#ifdef DEPTH_TEST_LARGER
 			if(gl_FragCoord.z > depthTestValue) discard;
 			#else
 			if(gl_FragCoord.z < depthTestValue) discard;
 			#endif
-		#endif
+		}
 	#endif
 	
 	

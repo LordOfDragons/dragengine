@@ -14,8 +14,8 @@ uniform mediump samplerBuffer texData2;
 
 layout(location=0) in vec2 inPosition;
 
-flat out vec4 vColor;
-out vec2 vTexCoord;
+VARYING_BIND(0) flat out vec4 vColor;
+VARYING_BIND(1) out vec2 vTexCoord;
 
 void main( void ){
 	vec4 transform = texelFetch( texData1, gl_InstanceID * 2 );

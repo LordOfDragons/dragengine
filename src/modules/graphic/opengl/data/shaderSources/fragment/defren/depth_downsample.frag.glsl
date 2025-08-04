@@ -9,7 +9,7 @@ uniform int pMipMapLevel;
 uniform HIGHP sampler2DArray texDepth;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(1) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif
@@ -38,14 +38,16 @@ void main( void ){
 		depth.z = dot( texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2, t*2+1)
 		depth.w = dot( texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).rgb, unpackDepth ); // (s*2+1, t*2+1)
 		
+		vec3 encoded;
 		#ifdef USE_MIN_FUNCTION
-			#ifdef INVERSE_DEPTH
+			if(InverseDepth){
 				depth.xy = max( depth.xy, depth.zw );
-				vec3 encoded = fract( packShift * vec3( max( depth.x, depth.y ) ) );
-			#else
+				encoded = fract( packShift * vec3( max( depth.x, depth.y ) ) );
+				
+			}else{
 				depth.xy = min( depth.xy, depth.zw );
-				vec3 encoded = fract( packShift * vec3( min( depth.x, depth.y ) ) );
-			#endif
+				encoded = fract( packShift * vec3( min( depth.x, depth.y ) ) );
+			}
 		#else
 			vec3 encoded = fract( packShift * vec3( dot( depth, weights ) ) );
 		#endif
@@ -58,13 +60,14 @@ void main( void ){
 		depth.w = texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2+1)
 		
 		#ifdef USE_MIN_FUNCTION
-			#ifdef INVERSE_DEPTH
+			if(InverseDepth){
 				depth.xy = max( depth.xy, depth.zw );
 				gl_FragDepth = max( depth.x, depth.y );
-			#else
+				
+			}else{
 				depth.xy = min( depth.xy, depth.zw );
 				gl_FragDepth = min( depth.x, depth.y );
-			#endif
+			}
 		#else
 			gl_FragDepth = dot( depth, weights );
 		#endif

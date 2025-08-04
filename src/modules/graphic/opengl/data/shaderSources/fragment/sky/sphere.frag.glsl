@@ -14,7 +14,7 @@ uniform vec4 pSkyBgColor;
 
 uniform mediump sampler2D texSky;
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
 	flat in int vLayer;

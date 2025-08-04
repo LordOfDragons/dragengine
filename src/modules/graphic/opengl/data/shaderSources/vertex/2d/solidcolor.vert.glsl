@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
+UNIFORM_BIND(0) uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 
 layout(location=0) in vec2 inPosition;
 

@@ -290,19 +290,19 @@ void main(void){
 	#ifdef DEPTH_TEST
 		float depthTestValue = sampleDepth(texDepthTest, ivec3(gl_FragCoord.xy, vLayer));
 		
-		#ifdef INVERSE_DEPTH
+		if(InverseDepth){
 			#ifdef DEPTH_TEST_LARGER
 			if(fragmentDepth <= depthTestValue) discard;
 			#else
 			if(fragmentDepth >= depthTestValue) discard;
 			#endif
-		#else
+		}else{
 			#ifdef DEPTH_TEST_LARGER
 			if(fragmentDepth >= depthTestValue) discard;
 			#else
 			if(fragmentDepth <= depthTestValue) discard;
 			#endif
-		#endif
+		}
 	#endif
 	
 	// encode the output depth

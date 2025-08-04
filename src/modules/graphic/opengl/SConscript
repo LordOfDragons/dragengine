@@ -228,7 +228,27 @@ def transpileOpenGLSpirV(env):
 		'data/shaderSources/fragment/2d/textured.shaderSource.xml',
 		'data/shaderSources/fragment/bugtest/gs_layer.shaderSource.xml',
 		'data/shaderSources/fragment/bugtest/intpacking.shaderSource.xml',
-		'data/shaderSources/fragment/bugtest/ubo_idmataccess_bug.shaderSource.xml'
+		'data/shaderSources/fragment/bugtest/ubo_idmataccess_bug.shaderSource.xml',
+		'data/shaderSources/fragment/canvas/canvas.shaderSource.xml',
+		'data/shaderSources/fragment/debug/rectangle.shaderSource.xml',
+		'data/shaderSources/fragment/debug/renderText.shaderSource.xml',
+		'data/shaderSources/fragment/effect/colormatrix.shaderSource.xml',
+		'data/shaderSources/fragment/effect/distort_image.shaderSource.xml',
+		'data/shaderSources/fragment/effect/filter_kernel_downsample.shaderSource.xml',
+		'data/shaderSources/fragment/effect/filter_kernel.shaderSource.xml',
+		'data/shaderSources/fragment/effect/overlay_image.shaderSource.xml',
+		'data/shaderSources/fragment/generic/color.shaderSource.xml',
+		'data/shaderSources/fragment/generic/gauss_sep_fixed.shaderSource.xml',
+		'data/shaderSources/fragment/generic/output_texture.shaderSource.xml',
+		
+		'data/shaderSources/vertex/2d/solidcolor.shaderSource.xml',
+		'data/shaderSources/vertex/2d/textured.shaderSource.xml',
+		'data/shaderSources/vertex/bugtest/gs_layer.shaderSource.xml',
+		'data/shaderSources/vertex/bugtest/intpacking.shaderSource.xml',
+		'data/shaderSources/vertex/bugtest/ubo_idmataccess_bug.shaderSource.xml',
+		'data/shaderSources/vertex/canvas/canvas.shaderSource.xml',
+		'data/shaderSources/vertex/debug/rectangle.shaderSource.xml',
+		'data/shaderSources/vertex/debug/renderText.shaderSource.xml'
 	]
 	globFiles(envModule, 'data/shaderSources/compute', '*.shaderSource.xml', shaderSources)
 	

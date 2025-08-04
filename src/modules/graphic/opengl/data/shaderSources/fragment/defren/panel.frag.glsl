@@ -5,7 +5,7 @@ uniform HIGHP vec4 pColorTransform2;
 
 uniform mediump sampler2D texTexture;
 
-in mediump vec2 vTexCoord;
+VARYING_BIND(0) in mediump vec2 vTexCoord;
 
 layout(location=0) out lowp vec4 outColor;
 

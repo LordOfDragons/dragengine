@@ -7,7 +7,7 @@ uniform ivec4 pParameters; // to.mapsPerRow, to.rowsPerImage, from.mapsPerRow, f
 
 layout(location=0) in vec2 inPosition;
 
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 
 void main( void ){
 	// calculate target map to write to and source map to sample from.

@@ -23,7 +23,7 @@ layout(location=4) in float inHTHeight;
 #endif
 
 #if defined( IGNORE_HOLES ) || defined( CLIP_DEPTH )
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 #endif
 #ifdef USE_CLIP_PLANE
 out vec3 vClipCoord;

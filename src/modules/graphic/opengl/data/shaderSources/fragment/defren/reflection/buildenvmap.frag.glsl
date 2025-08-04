@@ -16,7 +16,7 @@ uniform mediump SAMPLER_ENVMAP texEnvMap2;
 uniform mediump SAMPLER_ENVMAP texEnvMap3;
 uniform mediump SAMPLER_ENVMAP texEnvMap4;
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 #ifdef ENVMAP_EQUI
 	layout(location=0) out vec4 outColor;

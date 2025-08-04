@@ -15,11 +15,11 @@ uniform lowp sampler2DArray texNormal;
 uniform lowp sampler2DArray texRoughness;
 uniform lowp sampler2DArray texAOSolidity;
 
-in vec2 vTexCoord;
-in vec2 vScreenCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
+VARYING_BIND(1) in vec2 vScreenCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(2) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif
@@ -55,6 +55,8 @@ bool screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float dtFactor, inout vec4 tcResult )
 #endif
 {
+	bool condition;
+	
 	#if 0
 	{ // ground truth
 	int rayLength = 60;
@@ -68,12 +70,12 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 		geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 		dt = dtFactor * tcTo.w * tcTo.w;
 		
-		#ifdef INVERSE_DEPTH
-		if( tcTo.z <= geomZ && geomZ - tcTo.z <= dt )
-		#else
-		if( tcTo.z >= geomZ && tcTo.z - geomZ <= dt )
-		#endif
-		{
+		if(InverseDepth){
+			condition = tcTo.z <= geomZ && geomZ - tcTo.z <= dt;
+		}else{
+			condition = tcTo.z >= geomZ && tcTo.z - geomZ <= dt;
+		}
+		if(condition){
 			tcResult = tcTo;
 			#ifdef MULTI_STEPPING
 			return true;
@@ -131,26 +133,26 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 		#endif*/
 		
 		/*#ifdef USE_DEPTH_MIPMAP
-			#ifdef INVERSE_DEPTH
-			if( tcTo.z <= geomZ.y )
-			#else
-			if( tcTo.z >= geomZ.x )
-			#endif
+			if(InverseDepth){
+				condition = tcTo.z <= geomZ.y;
+			}else{
+				condition = tcTo.z >= geomZ.x;
+			}
 		#else*/
-			#ifdef INVERSE_DEPTH
-			if( tcTo.z <= geomZ )
-			#else
-			if( tcTo.z >= geomZ )
-			#endif
+			if(InverseDepth){
+				condition = tcTo.z <= geomZ;
+			}else{
+				condition = tcTo.z >= geomZ;
+			}
 		//#endif
-		{
+		if(condition){
 			#ifdef INTEGRATED_THRESHOLD_TEST
-				#ifdef INVERSE_DEPTH
-				if( geomZ - tcTo.z <= dt )
-				#else
-				if( tcTo.z - geomZ <= dt )
-				#endif
-				{ // * ( pow( 2.0, roughnessTestX ) )
+				if(InverseDepth){
+					condition = geomZ - tcTo.z <= dt;
+				}else{
+					condition = tcTo.z - geomZ <= dt;
+				}
+				if(condition){ // * ( pow( 2.0, roughnessTestX ) )
 					tcResult = tcTo; //vec4( tcTo.xyw, depth );
 					//roughnessTestFinal = roughnessTestX;
 					#ifdef MULTI_STEPPING
@@ -182,12 +184,12 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 			geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 			dt = dtFactor * tcTo.w * tcTo.w;
 			
-			#ifdef INVERSE_DEPTH
-			if( tcTo.z <= geomZ && geomZ - tcTo.z <= dt )
-			#else
-			if( tcTo.z >= geomZ && tcTo.z - geomZ <= dt )
-			#endif
-			{
+			if(InverseDepth){
+				condition = tcTo.z <= geomZ && geomZ - tcTo.z <= dt;
+			}else{
+				condition = tcTo.z >= geomZ && tcTo.z - geomZ <= dt;
+			}
+			if(condition){
 				tcResult = tcTo;
 				#ifdef MULTI_STEPPING
 				return true;
@@ -202,12 +204,12 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 			geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 			dt = dtFactor * tcTo.w * tcTo.w;
 			
-			#ifdef INVERSE_DEPTH
-			if( tcTo.z <= geomZ && geomZ - tcTo.z <= dt )
-			#else
-			if( tcTo.z >= geomZ && tcTo.z - geomZ <= dt )
-			#endif
-			{
+			if(InverseDepth){
+				condition = tcTo.z <= geomZ && geomZ - tcTo.z <= dt;
+			}else{
+				condition = tcTo.z >= geomZ && tcTo.z - geomZ <= dt;
+			}
+			if(condition){
 				tcResult = tcTo;
 				#ifdef MULTI_STEPPING
 				return true;
@@ -220,20 +222,22 @@ void screenSpaceReflectionBisection( in vec4 tcTo, in vec4 tcReflDir, in float d
 			dt = dtFactor * tcTo.w * tcTo.w;
 			
 			/*#ifdef USE_DEPTH_MIPMAP
-				#ifdef INVERSE_DEPTH
-				if( abs( geomZ.y - tcTo.z ) <= dt )
-				#else
-				if( abs( tcTo.z - geomZ.x ) <= dt )
-				#endif
+				if(InverseDepth){
+					condition = abs( geomZ.y - tcTo.z ) <= dt;
+				}else{
+					condition = abs( tcTo.z - geomZ.x ) <= dt;
+				}
 			#else*/
-				/*#ifdef INVERSE_DEPTH
-				if( tcTo.z <= geomZ + dt * 0.05 && geomZ - tcTo.z <= dt )
-				#else
-				if( tcTo.z >= geomZ - dt * 0.05 && tcTo.z - geomZ <= dt )
-				#endif*/
-				if( abs( geomZ - tcTo.z ) <= dt )
+				/*
+				if(InverseDepth){
+					condition = tcTo.z <= geomZ + dt * 0.05 && geomZ - tcTo.z <= dt;
+				}else{
+					condition = tcTo.z >= geomZ - dt * 0.05 && tcTo.z - geomZ <= dt;
+				}
+				*/
+				condition = abs( geomZ - tcTo.z ) <= dt;
 			//#endif
-			{
+			if(condition){
 				tcResult = tcTo;
 				#ifdef MULTI_STEPPING
 				return true;
@@ -256,15 +260,15 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	// touch the nearest boundary face and for this the initial vector length is irrelevant
 	vec4 tcFrom = pMatrixP[ vLayer ] * vec4( position, 1.0 );
 	tcFrom = vec4( tcFrom.xyz, 1.0 ) / vec4( tcFrom.w );
-	#ifndef INVERSE_DEPTH
-	tcFrom.z = tcFrom.z * 0.5 + 0.5;
-	#endif
+	if(!InverseDepth){
+		tcFrom.z = tcFrom.z * 0.5 + 0.5;
+	}
 	
 	vec4 tcTo = pMatrixP[ vLayer ] * vec4( position + reflectDir * pSSRClipReflDirNearDist, 1.0 );
 	tcTo = vec4( tcTo.xyz, 1.0 ) / vec4( tcTo.w );
-	#ifndef INVERSE_DEPTH
-	tcTo.z = tcTo.z * 0.5 + 0.5;
-	#endif
+	if(!InverseDepth){
+		tcTo.z = tcTo.z * 0.5 + 0.5;
+	}
 	
 	// stretch the reflection vector to touch the nearest clip space boundary face. this ensures the search
 	// touches all potential pixels to find the matching result without leaving the screen boundary
@@ -452,6 +456,7 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 	// 
 	// uniform parameter pSSRSubStepCount:
 	//    pSSRSubStepCount = int( floor( log( max( pSSRMaxRayLength / float( pSSRStepCount ), 1.0 ) ) / log( 2.0 ) ) ) + 1
+	bool condition;
 	
 #if SSR_VERSION == 0
 	// ground GROUND truth
@@ -469,13 +474,14 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 		//geomZ = pPosTransform.x / ( pPosTransform.y - sampleDepth( texDepth, vec3( p.st, vLayer ) ) );
 		//rayZ = position.z + rd.z * float(i);
 		geomZ = sampleDepth( texDepth, vec3( p.st, vLayer ) );
-		#ifdef INVERSE_DEPTH
-		rayZ = p.z;
-		if( rayZ <= geomZ ){ //&& rayZ - geomZ <= depthThreshold ){
-		#else
-		rayZ = p.z * 0.5 + 0.5;
-		if( rayZ >= geomZ ){ //&& rayZ - geomZ <= depthThreshold ){
-		#endif
+		if(InverseDepth){
+			rayZ = p.z;
+			condition = rayZ <= geomZ; //&& rayZ - geomZ <= depthThreshold;
+		}else{
+			rayZ = p.z * 0.5 + 0.5;
+			condition = rayZ >= geomZ; //&& rayZ - geomZ <= depthThreshold;
+		}
+		if(condition){
 			result = vec3( p.st, 1.0 ); return;
 			tcFrom = p;
 			break;
@@ -494,12 +500,12 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 		geomZ = sampleDepth( texDepth, vec3( tcTo.st, vLayer ) );
 		dt = dtFactor * tcTo.w * tcTo.w;
 		
-		#ifdef INVERSE_DEPTH
-		if( tcTo.z <= geomZ && geomZ - tcTo.z <= dt )
-		#else
-		if( tcTo.z >= geomZ && tcTo.z - geomZ <= dt )
-		#endif
-		{
+		if(InverseDepth){
+			condition = tcTo.z <= geomZ && geomZ - tcTo.z <= dt;
+		}else{
+			condition = tcTo.z >= geomZ && tcTo.z - geomZ <= dt;
+		}
+		if(condition){
 			tcFrom = tcTo; //vec4( tcTo.xyw, depth );
 			break;
 		}
@@ -565,33 +571,33 @@ void screenSpaceReflection( in vec3 position, in vec3 reflectDir, out vec3 resul
 		#endif
 		
 		#ifdef USE_DEPTH_MIPMAP
-			#ifdef INVERSE_DEPTH
-			if( tcTo.z <= geomZ.y )
-			#else
-			if( tcTo.z >= geomZ.x )
-			#endif
+			if(InverseDepth){
+				condition = tcTo.z <= geomZ.y;
+			}else{
+				condition = tcTo.z >= geomZ.x;
+			}
 			//if( rayZ >= geomZ.x && rayZ <= geomZ.y + depthThreshold )
 			//if( rayZ >= ( geomZ.x + geomZ.y ) * 0.5 ){//&& rayZ <= geomZ.y + depthThreshold )
 		#else
-			#ifdef INVERSE_DEPTH
-			if( tcTo.z <= geomZ )
-			#else
-			if( tcTo.z >= geomZ )
-			#endif
+			if(InverseDepth){
+				condition = tcTo.z <= geomZ;
+			}else{
+				condition = tcTo.z >= geomZ;
+			}
 		#endif
-		{
+		if(condition){
 			// this test here is important. it is possible the test point itself is the best hit point. if this
 			// test is not done the point potentially falls through the narrow-phase test since the z-component
 			// can be slightly larger than the depth value. in this case the narrow-phase approaches the point
 			// from the other direction and is slightly below the z-component value. this results in black
 			// pixels or lines polluting the reflections
 			#if ! defined USE_DEPTH_MIPMAP && defined RESULT_AFTER_FIRST_LOOP
-				#ifdef INVERSE_DEPTH
-				if( geomZ - tcTo.z <= dt )
-				#else
-				if( tcTo.z - geomZ <= dt )
-				#endif
-				{ // * ( pow( 2.0, roughnessTestX ) ) ){
+				if(InverseDepth){
+					condition = geomZ - tcTo.z <= dt;
+				}else{
+					condition = tcTo.z - geomZ <= dt;
+				}
+				if(condition){ // * ( pow( 2.0, roughnessTestX ) ) ){
 					tcFrom = tcTo; //vec4( tcTo.xyw, depth );
 					break;
 					//roughnessTestFinal = roughnessTestX;

@@ -6,7 +6,7 @@ precision lowp int;
 uniform lowp sampler2DArray texValues;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(2) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

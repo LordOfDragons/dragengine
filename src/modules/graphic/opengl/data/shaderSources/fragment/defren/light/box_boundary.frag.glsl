@@ -23,7 +23,7 @@ uniform int pMipMapLevel;
 uniform HIGHP sampler2D texMin;
 uniform HIGHP sampler2D texMax;
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 layout(location=0) out vec3 outMin;
 layout(location=1) out vec3 outMax;

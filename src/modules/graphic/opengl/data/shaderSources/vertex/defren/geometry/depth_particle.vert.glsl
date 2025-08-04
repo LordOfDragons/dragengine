@@ -11,7 +11,7 @@ uniform vec3 pPosition;
 in vec3 inPosition;
 in vec2 inTexCoord;
 
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 #ifdef USE_CLIP_PLANE
 out vec3 vClipCoord;
 #endif

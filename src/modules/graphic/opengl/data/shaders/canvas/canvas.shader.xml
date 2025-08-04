@@ -3,6 +3,7 @@
 	<name>Canvas</name>
 	
 	<texture name='texColor' target='0'/>
+	<texture name='texColorArray' target='0'/>
 	<texture name='texMask' target='1'/>
 	
 	<parameter name='pTransform'/> <!-- 0 -->

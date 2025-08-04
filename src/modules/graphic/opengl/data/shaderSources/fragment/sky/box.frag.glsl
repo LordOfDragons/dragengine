@@ -13,7 +13,7 @@ uniform vec4 pSkyBgColor; // skybg.rgb, skybgBlendFactor
 
 uniform mediump samplerCube texSky;
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 layout(location=0) out vec4 outColor;
 

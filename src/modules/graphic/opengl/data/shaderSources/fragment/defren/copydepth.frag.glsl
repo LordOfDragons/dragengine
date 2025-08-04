@@ -8,10 +8,10 @@ uniform HIGHP sampler2DArray texDepth;
 	uniform mediump sampler2DArray texColor;
 #endif
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(1) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

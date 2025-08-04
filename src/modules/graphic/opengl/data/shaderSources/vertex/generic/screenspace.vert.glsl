@@ -45,16 +45,16 @@ layout(location=0) in vec2 inPosition;
 		#endif
 		
 	#else
-		out vec2 vTexCoord;
+		VARYING_BIND(0) out vec2 vTexCoord;
 		
 		#ifdef FULLSCREENQUAD
-			out vec2 vScreenCoord;
+			VARYING_BIND(1) out vec2 vScreenCoord;
 		#endif
 	#endif
 #endif
 
 #ifdef VS_RENDER_STEREO
-	flat out int vLayer;
+	VARYING_BIND(2) flat out int vLayer;
 #endif
 
 void main( void ){

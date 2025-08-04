@@ -3,17 +3,17 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pOptions; // rows, cols, stepU, stepV
-uniform vec3 pKernel1;
-uniform vec3 pKernel2;
-uniform vec3 pKernel3;
+UNIFORM_BIND(0) uniform vec4 pOptions; // rows, cols, stepU, stepV
+UNIFORM_BIND(1) uniform vec3 pKernel1;
+UNIFORM_BIND(2) uniform vec3 pKernel2;
+UNIFORM_BIND(3) uniform vec3 pKernel3;
 
 uniform mediump sampler2DArray texColor;
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(1) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

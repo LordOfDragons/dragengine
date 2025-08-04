@@ -41,11 +41,11 @@ uniform SAMPLER_ENVMAP texEnvMap7;
 uniform SAMPLER_ENVMAP texEnvMap8;
 #endif
 
-in vec2 vTexCoord;
-in vec2 vScreenCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
+VARYING_BIND(1) in vec2 vScreenCoord;
 
 #if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
+	VARYING_BIND(2) flat in int vLayer;
 #else
 	const int vLayer = 0;
 #endif

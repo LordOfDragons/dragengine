@@ -57,7 +57,7 @@
 // Inputs
 ///////////
 
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 
 
 // Outputs
