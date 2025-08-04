@@ -10,13 +10,13 @@ precision mediump int;
 #endif
 
 #ifndef NO_POSTRANSFORM
-	uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
+	UNIFORM_BIND(0) uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 #endif
 #ifndef NO_TCTRANSFORM
-	uniform vec4 pTCTransform; // scaleX, scaleY, offsetX, offsetY
+	UNIFORM_BIND(1) uniform vec4 pTCTransform; // scaleX, scaleY, offsetX, offsetY
 #endif
 #if defined FULLSCREENQUAD && FULLSCREENQUAD_SCTRANSFORM
-	uniform vec4 pSCTransform; // scaleX, scaleY, offsetX, offsetY
+	UNIFORM_BIND(2) uniform vec4 pSCTransform; // scaleX, scaleY, offsetX, offsetY
 #endif
 
 #ifndef NO_TEXCOORD

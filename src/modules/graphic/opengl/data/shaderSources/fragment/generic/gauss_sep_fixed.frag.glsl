@@ -7,30 +7,30 @@ precision HIGHP int;
 #include "shared/defren/ubo_render_parameters.glsl"
 
 // DepthDifferenceWeighting
-UNIFORM_BIND(0) uniform vec4 pTCTransformAlt; // xy=scale, zw=offset
+UNIFORM_BIND(3) uniform vec4 pTCTransformAlt; // xy=scale, zw=offset
 
-UNIFORM_BIND(1) uniform vec4 pOffsets1; // offset1.st, -offset1.st
+UNIFORM_BIND(4) uniform vec4 pOffsets1; // offset1.st, -offset1.st
 // TapCount > 3
-UNIFORM_BIND(2) uniform vec4 pOffsets2; // offset2.st, -offset2.st
+UNIFORM_BIND(5) uniform vec4 pOffsets2; // offset2.st, -offset2.st
 // TapCount > 5
-UNIFORM_BIND(3) uniform vec4 pOffsets3; // offset3.st, -offset3.st
+UNIFORM_BIND(6) uniform vec4 pOffsets3; // offset3.st, -offset3.st
 // TapCount > 7
-UNIFORM_BIND(4) uniform vec4 pOffsets4; // offset4.st, -offset4.st
+UNIFORM_BIND(7) uniform vec4 pOffsets4; // offset4.st, -offset4.st
 // TapCount > 9
-UNIFORM_BIND(5) uniform vec4 pOffsets5; // offset5.st, -offset5.st
+UNIFORM_BIND(8) uniform vec4 pOffsets5; // offset5.st, -offset5.st
 // TapCount > 11
-UNIFORM_BIND(6) uniform vec4 pOffsets6; // offset6.st, -offset6.st
+UNIFORM_BIND(9) uniform vec4 pOffsets6; // offset6.st, -offset6.st
 // TapCount > 13
-UNIFORM_BIND(7) uniform vec4 pOffsets7; // offset7.st, -offset7.st
+UNIFORM_BIND(10) uniform vec4 pOffsets7; // offset7.st, -offset7.st
 
-UNIFORM_BIND(8) uniform vec4 pWeights1; // weightCenter, weight1, weight2, weight3
+UNIFORM_BIND(11) uniform vec4 pWeights1; // weightCenter, weight1, weight2, weight3
 // TapCount > 7
-UNIFORM_BIND(9) uniform vec4 pWeights2; // weight4, weight5, weight6, weight7
+UNIFORM_BIND(12) uniform vec4 pWeights2; // weight4, weight5, weight6, weight7
 
-UNIFORM_BIND(10) uniform vec2 pClamp; // clamp.s, clamp.t
+UNIFORM_BIND(13) uniform vec2 pClamp; // clamp.s, clamp.t
 
 // DepthDifferenceWeighting
-UNIFORM_BIND(11) uniform float pDepthDifferenceThreshold;
+UNIFORM_BIND(14) uniform float pDepthDifferenceThreshold;
 
 
 // !InputArrayTextures

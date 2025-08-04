@@ -3,10 +3,10 @@
 precision HIGHP float;
 precision HIGHP int;
 
-UNIFORM_BIND(0) uniform vec4 pOptions; // rows, cols, stepU, stepV
-UNIFORM_BIND(1) uniform vec3 pKernel1;
-UNIFORM_BIND(2) uniform vec3 pKernel2;
-UNIFORM_BIND(3) uniform vec3 pKernel3;
+UNIFORM_BIND(3) uniform vec4 pOptions; // rows, cols, stepU, stepV
+UNIFORM_BIND(4) uniform vec3 pKernel1;
+UNIFORM_BIND(5) uniform vec3 pKernel2;
+UNIFORM_BIND(6) uniform vec3 pKernel3;
 
 uniform mediump sampler2DArray texColor;
 

@@ -3,12 +3,12 @@
 precision HIGHP float;
 precision HIGHP int;
 
-UNIFORM_BIND(0) uniform vec4 pColor;
-UNIFORM_BIND(1) uniform vec4 pGamma;
+UNIFORM_BIND(3) uniform vec4 pColor;
+UNIFORM_BIND(4) uniform vec4 pGamma;
 // TextureLevel
-UNIFORM_BIND(2) uniform float pLevel;
+UNIFORM_BIND(5) uniform float pLevel;
 // InputArrayTextures
-UNIFORM_BIND(3) uniform float pLayer;
+UNIFORM_BIND(6) uniform float pLayer;
 
 // InputArrayTextures
 layout(binding=0) uniform mediump sampler2DArray texTextureArray;

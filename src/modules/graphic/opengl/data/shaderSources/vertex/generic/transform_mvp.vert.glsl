@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mat4x4 pMatrixMVP; // matrix model-view-projection
+UNIFORM_BIND(0) uniform mat4x4 pMatrixMVP; // matrix model-view-projection
 
 layout(location=0) in vec3 inPosition;
 

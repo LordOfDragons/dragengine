@@ -248,7 +248,12 @@ def transpileOpenGLSpirV(env):
 		'data/shaderSources/vertex/bugtest/ubo_idmataccess_bug.shaderSource.xml',
 		'data/shaderSources/vertex/canvas/canvas.shaderSource.xml',
 		'data/shaderSources/vertex/debug/rectangle.shaderSource.xml',
-		'data/shaderSources/vertex/debug/renderText.shaderSource.xml'
+		'data/shaderSources/vertex/debug/renderText.shaderSource.xml',
+		'data/shaderSources/vertex/generic/fsquad.shaderSource.xml',
+		'data/shaderSources/vertex/generic/fullscreenquad.shaderSource.xml',
+		'data/shaderSources/vertex/generic/passthrough.shaderSource.xml',
+		'data/shaderSources/vertex/generic/screenspace.shaderSource.xml',
+		'data/shaderSources/vertex/generic/transform_mvp.shaderSource.xml'
 	]
 	globFiles(envModule, 'data/shaderSources/compute', '*.shaderSource.xml', shaderSources)
 	

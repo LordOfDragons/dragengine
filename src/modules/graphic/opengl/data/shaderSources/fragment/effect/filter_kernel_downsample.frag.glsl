@@ -7,7 +7,7 @@ precision HIGHP int;
 // uniform vec3 pKernel1;
 // uniform vec3 pKernel2;
 // uniform vec3 pKernel3;
-UNIFORM_BIND(0) uniform ivec2 pTCClamp;
+UNIFORM_BIND(3) uniform ivec2 pTCClamp;
 
 uniform mediump sampler2DArray texColor;
 

@@ -3,8 +3,8 @@
 precision HIGHP float;
 precision HIGHP int;
 
-UNIFORM_BIND(0) uniform mat4 pColorMatrix;
-UNIFORM_BIND(1) uniform vec4 pColorOffset;
+UNIFORM_BIND(3) uniform mat4 pColorMatrix;
+UNIFORM_BIND(4) uniform vec4 pColorOffset;
 
 uniform mediump sampler2DArray texColor;
 

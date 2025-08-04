@@ -17,7 +17,7 @@ precision HIGHP int;
 #endif
 
 #ifndef NO_TEXCOORD
-	uniform vec4 pQuadParams; // scaleX, scaleY, offsetX, offsetY
+	UNIFORM_BIND(0) uniform vec4 pQuadParams; // scaleX, scaleY, offsetX, offsetY
 #endif
 
 layout(location=0) in vec2 inPosition;

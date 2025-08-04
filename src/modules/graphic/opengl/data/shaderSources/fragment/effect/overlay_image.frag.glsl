@@ -3,8 +3,8 @@
 precision HIGHP float;
 precision HIGHP int;
 
-UNIFORM_BIND(0) uniform vec4 pGamma;
-UNIFORM_BIND(1) uniform vec4 pColor;
+UNIFORM_BIND(3) uniform vec4 pGamma;
+UNIFORM_BIND(4) uniform vec4 pColor;
 
 uniform mediump sampler2D texColor;
 
