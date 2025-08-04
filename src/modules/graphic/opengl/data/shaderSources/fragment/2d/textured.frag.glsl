@@ -7,7 +7,7 @@ UNIFORM_BIND(0) uniform lowp vec4 pColor;
 
 uniform lowp sampler2D texColor;
 
-VARYING_BIND(0) in vec2 vTexCoord;
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out lowp vec4 outColor;
 

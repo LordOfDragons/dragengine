@@ -12,7 +12,7 @@ precision HIGHP int;
 uniform HIGHP SAMPLER texShadow;
 uniform mediump SAMPLER texColor;
 
-in vec3 vTexCoord;
+VARYING_BIND(0) in vec3 vTexCoord;
 
 #ifdef COPY_COLOR
 	layout(location=0) out vec4 outColor;

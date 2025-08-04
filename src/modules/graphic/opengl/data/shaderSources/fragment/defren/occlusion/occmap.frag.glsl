@@ -18,21 +18,15 @@ precision HIGHP int;
 	};
 #endif
 
-in float vDepth;
-in vec3 vPosition;
-in vec3 vClipCoord;
-flat in int vLayer;
-flat in int vSPBIndex;
-
-#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	#define vInLayer vLayer
-#else
-	const int vInLayer = 0;
-#endif
+VARYING_BIND(0) in float vDepth;
+VARYING_BIND(1) in vec3 vPosition;
+VARYING_BIND(2) in vec3 vClipCoord;
+VARYING_BIND(3) flat in int vLayer;
+VARYING_BIND(4) flat in int vSPBIndex;
 
 void main(void){
 	#ifdef USE_CLIP_PLANE
-		if(dot(vClipCoord, pClipPlane[vInLayer].xyz) <= pClipPlane[vInLayer].w){
+		if(dot(vClipCoord, pClipPlane[vLayer].xyz) <= pClipPlane[vLayer].w){
 			discard;
 		}
 	#endif

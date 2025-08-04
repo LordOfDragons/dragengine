@@ -15,11 +15,8 @@ VARYING_BIND(0) in vec2 vTexCoord;
 in vec3 vClipCoord;
 #endif
 
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+// GSRenderStereo || VSRenderStereo
+VARYING_BIND(1) flat in int vLayer;
 
 #ifdef ENCODE_DEPTH
 layout(location=0) out vec4 outDepth;

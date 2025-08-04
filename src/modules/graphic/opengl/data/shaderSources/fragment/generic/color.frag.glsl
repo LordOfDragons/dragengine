@@ -14,15 +14,11 @@ layout(location=0) out vec4 outColor;
 
 uniform HIGHP sampler2DArray texDepth;
 
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	VARYING_BIND(0) flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
-
 #include "shared/defren/sample_depth.glsl"
 // ^^^^^^^^^
 ////////////
+
+#include "shared/interface/2d_fragment.glsl"
 
 void main(void){
 	if(WithDepth){

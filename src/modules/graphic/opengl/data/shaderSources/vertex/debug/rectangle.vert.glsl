@@ -5,11 +5,11 @@ precision mediump int;
 
 // one pixel per instance
 // pixel1: posTransform = (scaleX, scaleY, offsetX, offsetY)
-uniform mediump samplerBuffer texData1;
+layout(binding=0) uniform mediump samplerBuffer texData1;
 
 // one pixel per instance
 // pixel1: color = (r, g, b, a)
-uniform mediump samplerBuffer texData2;
+layout(binding=1) uniform mediump samplerBuffer texData2;
 
 layout(location=0) in vec2 inPosition;
 

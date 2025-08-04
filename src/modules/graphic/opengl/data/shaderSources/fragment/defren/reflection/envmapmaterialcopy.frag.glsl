@@ -12,8 +12,7 @@ uniform HIGHP sampler2DArray texDepth;
 uniform lowp sampler2DArray texDiffuse;
 uniform lowp sampler2DArray texNormal;
 
-in vec2 vScreenCoord;
-in vec2 vTexCoord;
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out vec3 outPosition;
 layout(location=1) out vec3 outDiffuse;

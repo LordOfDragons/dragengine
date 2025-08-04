@@ -17,9 +17,7 @@
 uniform mat4 pMatrixVP;
 uniform mat4 pMatrixVP2;
 
-in vec2 vGSTexCoord[ 3 ];
-
-VARYING_BIND(0) out vec2 vTexCoord;
+#include "shared/interface/2d_geometry.glsl"
 
 
 #ifdef GS_RENDER_STEREO
@@ -36,11 +34,7 @@ void main( void ){
 		int i;
 		for( i=0; i<3; i++ ){
 			gl_Position = ( eye == 0 ? pMatrixVP : pMatrixVP2 ) * gl_in[ i ].gl_Position;
-			gl_Layer = eye;
-			gl_PrimitiveID = gl_PrimitiveIDIn;
-			
-			vTexCoord = vGSTexCoord[ i ];
-			
+			geometryShaderDefaultOutputs(i, eye);
 			EmitVertex();
 		}
 		EndPrimitive();
@@ -56,11 +50,7 @@ void main( void ){
 	int i;
 	for( i=0; i<3; i++ ){
 		gl_Position = gl_in[ i ].gl_Position;
-		gl_Layer = 0;
-		gl_PrimitiveID = gl_PrimitiveIDIn;
-		
-		vTexCoord = vGSTexCoord[ i ];
-		
+		geometryShaderDefaultOutputs(i);
 		EmitVertex();
 	}
 	

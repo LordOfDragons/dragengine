@@ -14,13 +14,13 @@ UNIFORM_BIND(2) uniform mat3x2 pTCTransformMask;
 
 layout(location=0) in vec2 inPosition;
 
-// RequiresTexture
-VARYING_BIND(0) out vec2 vTexCoord;
+#include "shared/interface/2d_vertex.glsl"
 
-// WithMask
-VARYING_BIND(1) out vec2 vTexCoordMask;
+VARYING_BIND(3) out vec2 vTexCoordMask;
 
 void main( void ){
+	vertexShaderDefaultOutputs();
+	
 	gl_Position = vec4( vec2( pTransform * vec3( inPosition, 1.0 ) ), 0.0, 1.0 );
 	
 	if(RequiresTexture){

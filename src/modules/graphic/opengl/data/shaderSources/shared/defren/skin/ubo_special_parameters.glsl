@@ -34,7 +34,7 @@ UBOLAYOUT_BIND(3) uniform SpecialParameters{
 	// bit 2: cascade 2
 	// bit 3: cascade 3
 	
-	// GS_RENDER_STEREO does not use this
+	// GSRenderStereo does not use this
 	
 	int pLayerVisibility;
 };

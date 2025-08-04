@@ -16,10 +16,10 @@ uniform int pGIDebugCascade;
 
 uniform lowp sampler2DArray texGIIrradiance;
 
-flat in ivec3 vProbeCoord;
-flat in vec3 vProbePosition;
-in vec2 vTexCoord;
-flat in float vRimThickness;
+VARYING_BIND(0) flat in ivec3 vProbeCoord;
+VARYING_BIND(1) flat in vec3 vProbePosition;
+VARYING_BIND(2) in vec2 vTexCoord;
+VARYING_BIND(3) flat in float vRimThickness;
 
 layout(location=0) out vec3 outColor;
 

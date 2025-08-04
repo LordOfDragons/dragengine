@@ -121,7 +121,7 @@ void emitCorner(in int layer, in int corner, in vec4 position){
 	vec4 preTransformedPosition;
 	
 	#ifdef BILLBOARD
-		#ifdef GS_RENDER_STEREO
+		if(GSRenderStereo){
 			// during vertex shader the left view position has been used.
 			// if this is the right view correct the transform
 			if(layer == 1){
@@ -130,9 +130,9 @@ void emitCorner(in int layer, in int corner, in vec4 position){
 			}else{
 				preTransformedPosition = pMatrixP[layer] * position;
 			}
-		#else
+		}else{
 			preTransformedPosition = pMatrixP[layer] * position;
-		#endif
+		}
 	#else
 		preTransformedPosition = pMatrixVP[layer] * position;
 	#endif

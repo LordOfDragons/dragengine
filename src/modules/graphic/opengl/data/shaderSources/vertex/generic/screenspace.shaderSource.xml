@@ -16,7 +16,6 @@
 	<define>FULLSCREENQUAD_SCTRANSFORM</define>
 	<define>FULLSCREENQUAD_TCTRANSFORM</define>
 	<define>FULLSCREENQUAD</define>
-	<define>GEOMETRY_SHADER</define>
 	<define>GS_RENDER_STEREO</define>
 	<define>NO_POSTRANSFORM</define>
 	<define>NO_TCTRANSFORM</define>

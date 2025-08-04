@@ -7,7 +7,7 @@ precision HIGHP int;
 layout( triangles ) in;
 layout( triangle_strip, max_vertices=18 ) out;
 
-out vec3 vColor;
+VARYING_BIND(0) out vec3 vColor;
 
 
 void emitCorner( in int layer, in vec4 position, in vec3 color ){

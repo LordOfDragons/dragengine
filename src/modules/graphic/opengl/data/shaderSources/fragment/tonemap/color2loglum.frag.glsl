@@ -9,13 +9,7 @@ uniform vec4 pParam2; // offset3.s, offset3.t, clamp.s, clamp.t
 // uniform mediump sampler2DArray texColor;
 uniform HIGHP sampler2DArray texLuminance;
 
-VARYING_BIND(0) in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	VARYING_BIND(2) flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out float outLogLum;
 

@@ -31,27 +31,24 @@ precision HIGHP int;
 layout(location=0) in vec3 inPosition;
 
 #if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
-	flat out int vGSSPBIndex;
-	flat out int vGSSPBFlags;
+	VARYING_BIND(0) flat out int vGSSPBIndex;
+	VARYING_BIND(1) flat out int vGSSPBFlags;
 	
 	#define vSPBIndex vGSSPBIndex
 	#define vSPBFlags vGSSPBFlags
 	
 #else
-	out float vDepth;
-	out vec3 vPosition;
-	out vec3 vClipCoord;
-	flat out int vSPBIndex;
-	flat out int vSPBFlags;
+	VARYING_BIND(0) out float vDepth;
+	VARYING_BIND(1) out vec3 vPosition;
+	VARYING_BIND(2) out vec3 vClipCoord;
+	VARYING_BIND(3) flat out int vSPBIndex;
+	VARYING_BIND(4) flat out int vSPBFlags;
 #endif
 
-#ifdef VS_RENDER_STEREO
-	uniform int pDrawIDOffset;
-	#define inLayer (gl_DrawID + pDrawIDOffset)
-	flat out int vLayer;
-#else
-	const int inLayer = 0;
-#endif
+flat out int vLayer;
+
+// VSRenderStereo
+UNIFORM_BIND(0) uniform int pDrawIDOffset;
 
 #include "shared/defren/sanitize_position.glsl"
 
@@ -60,22 +57,29 @@ layout(location=0) in vec3 inPosition;
 void main(void){
 	#include "shared/defren/skin/shared_spb_index2.glsl"
 	
+	vLayer = 0;
+	if(VSRenderStereo){
+		#ifdef SUPPORTS_VSDRAWPARAM
+		vLayer = gl_DrawID + pDrawIDOffset;
+		#endif
+	}
+	
 	vec4 position = vec4(sanitizePosition(pMatrixModel * vec4(inPosition, 1)), 1);
 	
 	#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 		gl_Position = position;
 		
 	#else
-		gl_Position = pMatrixVP[inLayer] * position;
-		vDepth = dot(pTransformZ[inLayer], position);
-		vPosition = pMatrixV[inLayer] * position;
-		vClipCoord = pMatrixV[inLayer] * position;
+		gl_Position = pMatrixVP[vLayer] * position;
+		vDepth = dot(pTransformZ[vLayer], position);
+		vPosition = pMatrixV[vLayer] * position;
+		vClipCoord = pMatrixV[vLayer] * position;
 		
 		#if defined DEPTH_OFFSET
 			#ifdef DEPTH_DISTANCE
-				applyDepthOffset(inLayer, vPosition.z);
+				applyDepthOffset(vLayer, vPosition.z);
 			#else
-				applyDepthOffset(inLayer);
+				applyDepthOffset(vLayer);
 			#endif
 		#endif
 	#endif
@@ -83,8 +87,9 @@ void main(void){
 	vSPBIndex = spbIndex;
 	vSPBFlags = spbFlags;
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
-		vLayer = inLayer;
+	#ifdef SUPPORTS_VSLAYER
+	if(VSRenderStereo){
+		gl_Layer = vLayer;
+	}
 	#endif
 }

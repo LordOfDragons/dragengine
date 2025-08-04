@@ -34,9 +34,9 @@ uniform mediump sampler2D texLight;
 layout(location=0) in vec2 inPosition;
 
 VARYING_BIND(0) out vec2 vTexCoord;
-flat out vec3 vColor;
-flat out vec3 vColorRim;
-flat out float vRimThickness;
+VARYING_BIND(1) flat out vec3 vColor;
+VARYING_BIND(2) flat out vec3 vColorRim;
+VARYING_BIND(3) flat out float vRimThickness;
 
 void main( void ){
 	ivec3 tcCache = giRayCastCacheTCFromProbeIndex( pGIDebugProbe, gl_InstanceID );

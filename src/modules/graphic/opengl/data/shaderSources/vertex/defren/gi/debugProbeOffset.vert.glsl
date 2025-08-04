@@ -14,7 +14,7 @@ uniform int pGIDebugCascade;
 
 layout(location=0) in vec2 inPosition;
 
-out vec3 vColor;
+VARYING_BIND(0) out vec3 vColor;
 
 ivec3 giIndexToCoord( in int index ){
 	int stride = pGIParams[pGIDebugCascade].probeCount.x * pGIParams[pGIDebugCascade].probeCount.z;

@@ -16,7 +16,7 @@ uniform mediump SAMPLER_ENVMAP texEnvMap2;
 uniform mediump SAMPLER_ENVMAP texEnvMap3;
 uniform mediump SAMPLER_ENVMAP texEnvMap4;
 
-VARYING_BIND(0) in vec2 vTexCoord;
+#include "shared/interface/2d_fragment.glsl"
 
 #ifdef ENVMAP_EQUI
 	layout(location=0) out vec4 outColor;

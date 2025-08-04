@@ -3,8 +3,10 @@
 precision lowp float;
 precision lowp int;
 
+#include "shared/interface/2d_fragment.glsl"
+
 layout(location=0) out vec4 outColor;
 
 void main( void ){
-	outColor = vec4( 0, 0, 0, 1 );
+	outColor = vec4(0, 0, 0, 1);
 }

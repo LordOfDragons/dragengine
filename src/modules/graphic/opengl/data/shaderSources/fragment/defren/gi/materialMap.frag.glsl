@@ -57,7 +57,7 @@
 // Inputs
 ///////////
 
-VARYING_BIND(0) in vec2 vTexCoord;
+#include "shared/interface/2d_fragment.glsl"
 
 
 // Outputs

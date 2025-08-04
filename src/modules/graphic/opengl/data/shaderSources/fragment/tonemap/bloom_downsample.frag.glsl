@@ -7,11 +7,7 @@ uniform int pLevel;
 
 uniform mediump sampler2DArray texColor;
 
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out vec3 outColor;
 

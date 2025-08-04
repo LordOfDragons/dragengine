@@ -7,11 +7,14 @@ layout(location=0) in vec2 inPosition;
 layout(location=1) in int inLayer;
 layout(location=2) in vec3 inTexCoord;
 
+// special situation: can not use interface/2d_vertex.glsl
 #ifdef GS_LAYER
-	out vec3 vGSTexCoord;
-	flat out int vGSLayer;
+	// opengl only
+	VARYING_BIND(0) out vec3 vGSTexCoord;
+	VARYING_BIND(1) flat out int vGSLayer;
 #else
-	out vec3 vTexCoord;
+	// spir-v only
+	VARYING_BIND(0) out vec3 vTexCoord;
 #endif
 
 void main( void ){
@@ -22,8 +25,10 @@ void main( void ){
 		vGSLayer = inLayer;
 	#else
 		vTexCoord = inTexCoord;
-		#ifdef VS_LAYER
+		#ifdef SUPPORTS_VSLAYER
+		if(VSLayer){
 			gl_Layer = inLayer;
+		}
 		#endif
 	#endif
 }

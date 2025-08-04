@@ -5,4 +5,9 @@
 	<source>rectangle.vert.glsl</source>
 	
 	<attribute name="inPosition" target="0"/>
+	
+	<!-- textures:
+	0: texData1
+	1: texData2
+	-->
 </shaderSource>

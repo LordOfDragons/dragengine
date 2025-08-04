@@ -17,8 +17,8 @@ uniform float pStepFactor; // 1.0 / ( float )pStepCount
 uniform float pLayer;
 #endif
 
-VARYING_BIND(0) in vec2 vTexCoord;
-in vec2 vDestTC;
+#include "shared/interface/2d_fragment.glsl"
+VARYING_BIND(3) in vec2 vDestTC;
 
 layout(location=0) out float outConeRatio; // use minimum blend function
 

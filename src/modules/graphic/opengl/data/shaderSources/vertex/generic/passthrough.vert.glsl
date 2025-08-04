@@ -5,19 +5,20 @@ precision HIGHP int;
 
 layout(location=0) in vec2 inPosition;
 
-#ifdef VS_RENDER_STEREO
-	layout(location=1) in int inLayer;
-#endif
+// VSRenderStereo
+layout(location=1) in int inLayer;
 
-#ifdef VS_RENDER_STEREO
-	flat out int vLayer;
-#endif
+#include "shared/interface/2d_vertex.glsl"
 
 void main( void ){
+	vertexShaderDefaultOutputs();
+	
 	gl_Position = vec4( inPosition, 0, 1 );
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
+	if(VSRenderStereo){
 		vLayer = inLayer;
-	#endif
+		#ifdef SUPPORTS_VSLAYER
+		gl_Layer = vLayer;
+		#endif
+	}
 }

@@ -24,14 +24,7 @@ uniform mediump sampler2DArray texEnvMapArray;
 uniform mediump sampler2D texEnvMapSky;
 
 
-VARYING_BIND(0) in vec2 vTexCoord;
-VARYING_BIND(1) in vec2 vScreenCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	VARYING_BIND(2) flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out vec4 outColor;
 
@@ -314,11 +307,13 @@ void main( void ){
 	// determine position of fragment
 	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
 	
-	#ifdef FULLSCREENQUAD
-	vec3 position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
-	#else
-	vec3 position = depthToPositionVolume( texDepth, tc, vVolumePos, vLayer );
-	#endif
+	vec3 position;
+	if(FullScreenQuad){
+		position = depthToPosition( texDepth, tc, vScreenCoord, vLayer );
+		
+	}else{
+		position = depthToPositionVolume( texDepth, tc, vVolumePos, vLayer );
+	}
 	
 	// fetch reflectivity
 	vec3 reflectivity = texelFetch( texReflectivity, tc, 0 ).rgb;

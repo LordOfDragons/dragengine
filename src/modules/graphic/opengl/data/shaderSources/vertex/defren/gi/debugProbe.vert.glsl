@@ -15,10 +15,10 @@ uniform int pGIDebugCascade;
 
 layout(location=0) in vec2 inPosition;
 
-flat out ivec3 vProbeCoord;
-flat out vec3 vProbePosition;
-out vec2 vTexCoord;
-flat out float vRimThickness;
+VARYING_BIND(0) flat out ivec3 vProbeCoord;
+VARYING_BIND(1) flat out vec3 vProbePosition;
+VARYING_BIND(2) out vec2 vTexCoord;
+VARYING_BIND(3) flat out float vRimThickness;
 
 ivec3 giIndexToCoord( in int index ){
 	int stride = pGIParams[pGIDebugCascade].probeCount.x * pGIParams[pGIDebugCascade].probeCount.z;

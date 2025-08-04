@@ -15,14 +15,7 @@ uniform lowp sampler2DArray texNormal;
 uniform lowp sampler2DArray texRoughness;
 uniform lowp sampler2DArray texAOSolidity;
 
-VARYING_BIND(0) in vec2 vTexCoord;
-VARYING_BIND(1) in vec2 vScreenCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	VARYING_BIND(2) flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out vec3 outResult;
 

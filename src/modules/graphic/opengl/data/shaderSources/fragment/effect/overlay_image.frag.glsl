@@ -8,13 +8,7 @@ UNIFORM_BIND(4) uniform vec4 pColor;
 
 uniform mediump sampler2D texColor;
 
-VARYING_BIND(0) in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	VARYING_BIND(1) flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out mediump vec4 outColor;
 

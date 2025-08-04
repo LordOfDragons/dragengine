@@ -6,49 +6,47 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
-#if defined GS_RENDER_STEREO || defined FULLSCREENQUAD
-	layout(location=0) in vec2 inPosition;
-#else
-	layout(location=0) in vec3 inPosition;
-#endif
+// GSRenderStereo || FullScreenQuad: vec2
+// !(GSRenderStereo || FullScreenQuad): vec3
+layout(location=0) in vec3 inPosition;
 
-#ifdef VS_RENDER_STEREO
-	#ifdef FULLSCREENQUAD
-		layout(location=1) in int inLayer;
-	#else
-		#define inLayer gl_DrawID
-	#endif
-#else
-	const int inLayer = 0;
-#endif
+// VSRenderStereo && FullScreenQuad
+layout(location=1) in int inLayer;
 
-#ifndef GS_RENDER_STEREO
-	#ifdef FULLSCREENQUAD
-		out vec2 vScreenCoord;
-	#else
-		out vec3 vLightVolumePos;
-	#endif
-#endif
+// !GSRenderStereo && FullScreenQuad
+VARYING_BIND(0) out vec2 vScreenCoord;
 
-#ifdef VS_RENDER_STEREO
-	flat out int vLayer;
-#endif
+// !GSRenderStereo && !FullScreenQuad
+VARYING_BIND(1) out vec3 vLightVolumePos;
+
+// VSRenderStereo
+VARYING_BIND(2) flat out int vLayer;
 
 void main(void){
 	#ifdef GS_RENDER_STEREO
-		gl_Position = vec4(inPosition, 0.0, 1.0);
+		gl_Position = vec4(vec2(inPosition), 0.0, 1.0);
 	#else
-		#ifdef FULLSCREENQUAD
-			gl_Position = vec4(inPosition, 0.0, 1.0);
-			vScreenCoord = inPosition;
-		#else
+		if(FullScreenQuad){
+			gl_Position = vec4(vec2(inPosition), 0.0, 1.0);
+			vScreenCoord = vec2(inPosition);
+			
+		}else{
 			gl_Position = pMatrixMVP[inLayer] * vec4(inPosition, 1.0);
 			vLightVolumePos = pMatrixMV[inLayer] * vec4(inPosition, 1.0);
-		#endif
+		}
 	#endif
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
-		vLayer = inLayer;
-	#endif
+	vLayer = 0;
+	if(VSRenderStereo){
+		if(FullScreenQuad){
+			vLayer = inLayer;
+		}else{
+			#ifdef SUPPORTS_VSDRAWPARAM
+			vLayer = gl_DrawID;
+			#endif
+		}
+		#ifdef SUPPORTS_VSLAYER
+		gl_Layer = vLayer;
+		#endif
+	}
 }

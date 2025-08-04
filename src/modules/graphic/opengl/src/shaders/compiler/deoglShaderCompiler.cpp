@@ -894,7 +894,7 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 	}
 }
 
-static const int vSpecializationCount = 36;
+static const int vSpecializationCount = 42;
 static const struct sSpecialization{
 	int index;
 	bool isBool;
@@ -936,7 +936,13 @@ static const struct sSpecialization{
 	{35, false, "TapCount", "TAP_COUNT"},
 	{36, false, "TexDataSize", "TEX_DATA_SIZE"},
 	{37, false, "TexDataSwizzle", "TEX_DATA_SWIZZLE"},
-	{38, true, "TextureLevel", "TEXTURELEVEL"}
+	{38, true, "TextureLevel", "TEXTURELEVEL"},
+	{39, true, "NoTexCoord", "NO_TEXCOORD"},
+	{40, true, "VSRenderStereo", "VS_RENDER_STEREO"},
+	{41, true, "GSRenderStereo", "GS_RENDER_STEREO"},
+	{42, true, "VSLayer", "VS_LAYER"},
+	{43, true, "GSLayer", "GS_LAYER"},
+	{44, true, "FullScreenQuad", "FULLSCREENQUAD"}
 };
 
 // Special:
@@ -1023,6 +1029,15 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "");
 	pPreprocessor.SetSymbol("ARG_SAMP_LOWP", "");
 	#endif
+	
+	if(unit.GetSources()->GetStage() == GL_VERTEX_SHADER){
+		if(ext.SupportsVSLayer()){
+			pPreprocessor.SetSymbol("SUPPORTS_VSLAYER", "1");
+		}
+		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_draw_parameters)){
+			pPreprocessor.SetSymbol("SUPPORTS_VSDRAWPARAM", "1");
+		}
+	}
 	
 	// specializations
 	static const decString notDefined("0");

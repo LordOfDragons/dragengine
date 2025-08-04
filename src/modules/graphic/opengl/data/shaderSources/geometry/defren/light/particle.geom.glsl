@@ -19,16 +19,17 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
-in vec3 vGSParticleLightColor[1];
-in float vGSParticleLightRange[1];
-in int vGSLayer[1];
+VARYING_BIND(0) in vec3 vGSParticleLightColor[1];
+VARYING_BIND(1) in float vGSParticleLightRange[1];
+VARYING_BIND(2) in int vGSLayer[1];
 
-out vec3 vLightVolumePos;
-out vec3 vParticleLightPosition;
-out vec3 vParticleLightColor;
-out float vParticleLightRange;
+VARYING_BIND(0) out vec2 vScreenCoord;
+VARYING_BIND(1) out vec3 vLightVolumePos;
+VARYING_BIND(2) flat out int vLayer;
 
-flat out int vLayer;
+VARYING_BIND(3) out vec3 vParticleLightPosition;
+VARYING_BIND(4) out vec3 vParticleLightColor;
+VARYING_BIND(5) out float vParticleLightRange;
 
 
 void emitCorner(in vec3 position, in vec3 range, float zfactor, in int layer){

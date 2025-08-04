@@ -18,11 +18,12 @@ uniform lowp sampler2DArray texColorArray;
 // WithMask
 uniform lowp sampler2D texMask;
 
-// WithTexture or WithRenderWorld
-VARYING_BIND(0) in vec2 vTexCoord;
+#include "shared/interface/2d_fragment.glsl"
+
+// vTexCoord: WithTexture or WithRenderWorld
 
 // WithMask
-VARYING_BIND(1) in vec2 vTexCoordMask;
+VARYING_BIND(3) in vec2 vTexCoordMask;
 
 layout(location=0) out vec4 outColor;
 

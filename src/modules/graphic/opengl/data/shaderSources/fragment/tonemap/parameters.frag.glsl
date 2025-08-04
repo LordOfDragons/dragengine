@@ -12,6 +12,8 @@ uniform HIGHP sampler2DArray texAvgLogLum;
 uniform HIGHP sampler2D texLastParams;
 uniform mediump samplerCube texEnvMap;
 
+#include "shared/interface/2d_fragment.glsl"
+
 layout(location=0) out vec4 outParams;
 
 const ivec2 tcParameters = ivec2( 0, 0 );

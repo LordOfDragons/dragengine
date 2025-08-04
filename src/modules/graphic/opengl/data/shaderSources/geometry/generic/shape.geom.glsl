@@ -1,19 +1,17 @@
 #include "shared/preamble.glsl"
 
-#if defined GS_RENDER_STEREO
-	#ifdef GS_INSTANCING
-		layout( triangles, invocations=2 ) in;
-		layout( triangle_strip, max_vertices=3 ) out;
-	#else
-		layout( triangles ) in;
-		layout( triangle_strip, max_vertices=6 ) out;
-	#endif
+#ifdef GS_INSTANCING
+	layout( triangles, invocations=2 ) in;
+	layout( triangle_strip, max_vertices=3 ) out;
+#else
+	layout( triangles ) in;
+	layout( triangle_strip, max_vertices=6 ) out;
 #endif
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-flat out int vLayer;
+#include "shared/interface/2d_geometry.glsl"
 
 void main( void ){
 	int eye;
@@ -27,12 +25,7 @@ void main( void ){
 		for( corner=0; corner<3; corner++ ){
 			gl_Position = gl_in[ corner ].gl_Position;
 			gl_Position.z = gl_Position.z * pDebugDepthScale + pDebugDepthOffset;
-			
-			vLayer = eye;
-			
-			gl_Layer = eye;
-			gl_PrimitiveID = gl_PrimitiveIDIn;
-			
+			geometryShaderDefaultOutputs(conrner, eye);
 			EmitVertex();
 		}
 		

@@ -31,7 +31,7 @@ UNIFORM_BIND(12) uniform vec3 pFrustumNormal4;
 UNIFORM_BIND(13) uniform vec4 pFrustumTestAdd;
 UNIFORM_BIND(14) uniform vec4 pFrustumTestMul;
 
-// GS_RENDER_STEREO or VS_RENDER_STEREO or DUAL_OCCMAP_STEREO or FRUSTUM_TEST_STEREO
+// GSRenderStereo or VSRenderStereo or DUAL_OCCMAP_STEREO or FRUSTUM_TEST_STEREO
 UNIFORM_BIND(15) uniform mat4 pMatrixStereo;
 UNIFORM_BIND(16) uniform mat4 pMatrix2Stereo;
 
@@ -332,18 +332,18 @@ bool occlusionTest( in uint index ){
 		inputMaxExtend = inMaxExtend;
 	}
 	
-	vec3 testMinExtend;
-	vec3 testMaxExtend;
-	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-		vec3 testMinExtendStereo;
-		vec3 testMaxExtendStereo;
-	#endif
+	vec3 testMinExtend, testMaxExtend;
+	// GSRenderStereo || VSRenderStereo
+	vec3 testMinExtendStereo, testMaxExtendStereo;
 	
 	bool result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, inputMinExtend, inputMaxExtend );
-	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-		bool resultStereo = calcScreenAABB( testMinExtendStereo, testMaxExtendStereo, pMatrixStereo, inputMinExtend, inputMaxExtend );
-		result = result | resultStereo;
-	#endif
+	bool resultStereo;
+	
+	if(GSRenderStereo || VSRenderStereo){
+		resultStereo = calcScreenAABB( testMinExtendStereo, testMaxExtendStereo, pMatrixStereo, inputMinExtend, inputMaxExtend );
+		result = result || resultStereo;
+	}
+	
 	if(WithComputeRenderTask && RenderDocDebugOccTest){
 		renderDocDebugStore(1, vec4(inputMinExtend, 0));
 		renderDocDebugStore(2, vec4(inputMaxExtend, 0));
@@ -354,6 +354,7 @@ bool occlusionTest( in uint index ){
 			renderDocDebugStore(16, vec4(1.0));
 		}
 	}
+	
 	if( ! result ){
 		if(WithComputeRenderTask && RenderDocDebugOccTest){
 			renderDocDebugStore(0, vec4(index, 2, 0, 0));
@@ -395,13 +396,13 @@ bool occlusionTest( in uint index ){
 		result = testBox(occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
 			testMinExtend.z, pScaleSize, pBaseTopLevel, texOccMap, 0);
 		
-		#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+		if(GSRenderStereo || VSRenderStereo){
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
-			result = result | testBox( occmapMaxDepthStereo, occmapMinExtendStereo,
+			result = result || testBox( occmapMaxDepthStereo, occmapMinExtendStereo,
 				occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize, pBaseTopLevel2, texOccMap, 1 );
-		#endif
+		}
 		
 		if( ! result ){
 			return false;
@@ -417,7 +418,7 @@ bool occlusionTest( in uint index ){
 				testMinExtend.z, pScaleSize, pBaseTopLevel, texOccMap, 0 );
 		}
 		
-		#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+		if(GSRenderStereo || VSRenderStereo){
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
@@ -427,8 +428,8 @@ bool occlusionTest( in uint index ){
 					occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize,
 					pBaseTopLevel, texOccMap, 1 );
 			}
-			result = result | resultStereo;
-		#endif
+			result = result || resultStereo;
+		}
 		
 		if( ! result ){
 			if(WithComputeRenderTask && RenderDocDebugOccTest){

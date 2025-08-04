@@ -7,9 +7,11 @@ uniform ivec4 pParameters; // to.mapsPerRow, to.rowsPerImage, from.mapsPerRow, f
 
 layout(location=0) in vec2 inPosition;
 
-VARYING_BIND(0) out vec2 vTexCoord;
+#include "shared/interface/2d_vertex.glsl"
 
 void main( void ){
+	vertexShaderDefaultOutputs();
+	
 	// calculate target map to write to and source map to sample from.
 	// both the target and source calculations are done at the same time.
 	// the basic calculation is like this:

@@ -5,16 +5,9 @@ precision HIGHP int;
 
 uniform lowp sampler2DArray texAO;
 
-VARYING_BIND(0) in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	VARYING_BIND(2) flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out vec3 outAO; // ao, ssao, solidity
-
 
 void main( void ){
 	outAO = vec3( textureLod( texAO, vec3( vTexCoord, vLayer ), 0.0 ) );

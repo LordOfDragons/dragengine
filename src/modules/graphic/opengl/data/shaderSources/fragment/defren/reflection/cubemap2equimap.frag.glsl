@@ -7,7 +7,8 @@ uniform float pLevel;
 
 uniform mediump samplerCube texEnvMap;
 
-in vec2 vScreenCoord; // -long, lat
+#include "shared/interface/2d_fragment.glsl"
+// vScreenCoord: -long, lat
 
 layout(location=0) out vec4 outColor;
 

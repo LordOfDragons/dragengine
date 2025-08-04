@@ -13,8 +13,11 @@
 	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
 	-->
 	
-	<define>GEOMETRY_SHADER</define>
 	<define>GS_RENDER_STEREO</define>
 	<define>NO_TEXCOORD</define>
 	<define>VS_RENDER_STEREO</define>
+	
+	<!-- uniforms:
+	0: vec4 pQuadParams
+	-->
 </shaderSource>

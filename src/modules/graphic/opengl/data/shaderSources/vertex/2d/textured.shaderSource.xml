@@ -5,4 +5,9 @@
 	<source>textured.vert.glsl</source>
 	
 	<attribute name='inPosition' location='0'/>
+	
+	<!-- uniforms:
+	0: vec4 pPosTransform
+	1: vec4 pTCTransform
+	-->
 </shaderSource>

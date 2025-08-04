@@ -16,10 +16,10 @@ uniform vec4 pTCTransform;
 layout(location=0) in vec2 inPosition;
 
 #ifdef PASS2
-	flat out ivec3 vProbeCoord;
+	VARYING_BIND(1) flat out ivec3 vProbeCoord;
 	
 #else
-	out vec2 vTC;
+	VARYING_BIND(0) out vec2 vTC;
 #endif
 
 #ifdef PASS2

@@ -14,13 +14,7 @@ uniform vec4 pSkyBgColor;
 
 uniform mediump sampler2D texSky;
 
-VARYING_BIND(0) in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out vec4 outColor;
 

@@ -6,10 +6,11 @@ precision HIGHP int;
 layout(triangles) in;
 layout(triangle_strip, max_vertices=3) out;
 
-in vec3 vGSTexCoord[3];
-flat in int vGSLayer[3];
+// special situation: can not use interface/2d_vertex.glsl
+VARYING_BIND(0) in vec3 vGSTexCoord[3];
+VARYING_BIND(1) flat in int vGSLayer[3];
 
-out vec3 vTexCoord;
+VARYING_BIND(0) out vec3 vTexCoord;
 
 void main(void){
 	int i;

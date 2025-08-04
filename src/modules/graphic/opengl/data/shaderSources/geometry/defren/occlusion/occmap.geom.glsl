@@ -49,8 +49,8 @@
 #endif
 
 // inputs
-flat in int vGSSPBIndex[3];
-flat in int vGSSPBFlags[3];
+VARYING_BIND(0) flat in int vGSSPBIndex[3];
+VARYING_BIND(1) flat in int vGSSPBFlags[3];
 
 #ifdef SHARED_SPB
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
@@ -58,11 +58,11 @@ flat in int vGSSPBFlags[3];
 
 
 // outputs
-out float vDepth;
-out vec3 vPosition;
-out vec3 vClipCoord;
-flat out int vLayer;
-flat out int vSPBIndex;
+VARYING_BIND(0) out float vDepth;
+VARYING_BIND(1) out vec3 vPosition;
+VARYING_BIND(2) out vec3 vClipCoord;
+VARYING_BIND(3) flat out int vLayer;
+VARYING_BIND(4) flat out int vSPBIndex;
 
 
 #include "shared/defren/sanitize_position.glsl"

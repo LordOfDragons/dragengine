@@ -17,9 +17,9 @@ layout(location=4) in float inParticle4; // beamLocation
 #endif
 */
 
-out vec3 vGSParticleLightColor;
-out float vGSParticleLightRange;
-flat out int vGSLayer;
+VARYING_BIND(0) out vec3 vGSParticleLightColor;
+VARYING_BIND(1) out float vGSParticleLightRange;
+VARYING_BIND(2) flat out int vGSLayer;
 
 const vec2 curveOffset1 = vec2(0, 1.0 / 4.0);
 
@@ -57,9 +57,11 @@ void main(void){
 	// retrieves the position from the input particle
 	gl_Position = vec4(inParticle0.yzw, 1);
 	
-	#ifdef VS_RENDER_STEREO
-	vGSLayer = gl_DrawID;
-	#else
-	vGSLayer = 0;
-	#endif
+	if(VSRenderStereo){
+		#ifdef SUPPORTS_VSDRAWPARAM
+		vGSLayer = gl_DrawID;
+		#endif
+	}else{
+		vGSLayer = 0;
+	}
 }

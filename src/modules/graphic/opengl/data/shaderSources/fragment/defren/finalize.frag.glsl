@@ -9,13 +9,7 @@ uniform vec4 pContrast; // red, green, blue
 
 uniform lowp sampler2DArray texColor;
 
-VARYING_BIND(0) in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	VARYING_BIND(2) flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 #ifdef SPLIT_LAYERS
 	layout(location=0) out vec4 outColor1;

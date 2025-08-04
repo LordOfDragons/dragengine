@@ -194,6 +194,27 @@ for f in data:
 
 
 # transpile OpenGL Spir-V
+# -----------------------
+# OpenGL Spir-V can only be used if all of the following is true:
+# - deoglRTChoices.pRenderStereoVSLayer is true
+# - deoglRTChoices.pRenderFSQuadStereoVSLayer is true
+#
+# this in turn can only be true if all of the following is true:
+# - has ARB_shader_viewport_layer_array or AMD_vertex_shader_layer
+# - has ARB_multi_draw_indirect
+# - has ARB_draw_elements_base_vertex
+# - has ARB_shader_draw_parameters (requires 4.6 otherwise buggy)
+#
+# hence geometry shaders will not be used for stereo rendering.
+# in particular this means:
+# - geometry shaders never have GS_RENDER_STEREO set
+#
+# for other shaders GS_INSTANCING is expected to be set. hence OpenGL Spir-V can only be
+# used if GL_ARB_gpu_shader5 is supported or OpenGL is version 4.6
+#
+# for 4.6 support these extensions are also required:
+# - EXT_shader_integer_mix
+
 def transpileOpenGLSpirV(env):
 	def buildTranspileOpenGLSpirV(target, source, env):
 		script = []
@@ -202,8 +223,15 @@ def transpileOpenGLSpirV(env):
 		parts = []
 		parts.append('glslangValidator')
 		parts.append('-G')
-		parts.extend(['--glsl-version', '430'])
+		parts.extend(['--glsl-version', '450'])  # 430 minimum
+		
 		parts.append('-P"#extension GL_ARB_shading_language_include : require"')
+		parts.append('-P"#extension GL_EXT_shader_integer_mix : require"')
+		if source[0].get_path().endswith('.vert.glsl'):
+			parts.append('-P"#extension GL_ARB_shader_viewport_layer_array : require"')
+		elif source[0].get_path().endswith('.geom.glsl'):
+			parts.append('-P"#extension GL_ARB_gpu_shader5 : require"')
+		
 		parts.append('-DWITH_SPIRV_OPENGL=1')
 		parts.append('--enhanced-msgs')
 		parts.append('--error-column')

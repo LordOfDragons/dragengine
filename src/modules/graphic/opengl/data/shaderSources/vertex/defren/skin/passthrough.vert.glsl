@@ -50,13 +50,8 @@ flat out int vSPBIndex;
 flat out int vSPBFlags;
 flat out int vLayer;
 
-#ifdef VS_RENDER_STEREO
-	uniform int pDrawIDOffset;
-	#define inLayer (gl_DrawID + pDrawIDOffset)
-#else
-	const int inLayer = 0;
-#endif
-
+// VSRenderStereo
+UNIFORM_BIND(0) uniform int pDrawIDOffset;
 
 
 // Main Function
@@ -78,7 +73,11 @@ void main(void){
 	vSPBFlags = spbFlags;
 	vLayer = inLayer;
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
+	#ifdef SUPPORTS_VSLAYER
+	if(VSRenderStereo){
+		#ifdef SUPPORTS_VSDRAWPARAM
+		gl_Layer = gl_DrawID + pDrawIDOffset;
+		#endif
+	}
 	#endif
 }

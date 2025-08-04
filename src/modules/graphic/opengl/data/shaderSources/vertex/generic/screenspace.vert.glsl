@@ -3,12 +3,6 @@
 precision mediump float;
 precision mediump int;
 
-#ifndef GEOMETRY_SHADER
-	#ifdef GS_RENDER_STEREO
-		#define GEOMETRY_SHADER 1
-	#endif
-#endif
-
 #ifndef NO_POSTRANSFORM
 	UNIFORM_BIND(0) uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 #endif
@@ -19,45 +13,17 @@ precision mediump int;
 	UNIFORM_BIND(2) uniform vec4 pSCTransform; // scaleX, scaleY, offsetX, offsetY
 #endif
 
-#ifndef NO_TEXCOORD
-	#ifdef FULLSCREENQUAD
-		#include "shared/ubo_defines.glsl"
-		#include "shared/defren/ubo_render_parameters.glsl"
-	#endif
-#endif
+#include "shared/ubo_defines.glsl"
+#include "shared/defren/ubo_render_parameters.glsl"
 
 layout(location=0) in vec2 inPosition;
+layout(location=1) in int inLayer;
 
-#ifdef VS_RENDER_STEREO
-	layout(location=1) in int inLayer;
-#else
-	const int inLayer = 0;
-#endif
-
-#ifndef NO_TEXCOORD
-	#ifdef GEOMETRY_SHADER
-		out vec2 vGSTexCoord;
-		#define vTexCoord vGSTexCoord
-		
-		#ifdef FULLSCREENQUAD
-			out vec2 vGSScreenCoord;
-			#define vScreenCoord vGSScreenCoord
-		#endif
-		
-	#else
-		VARYING_BIND(0) out vec2 vTexCoord;
-		
-		#ifdef FULLSCREENQUAD
-			VARYING_BIND(1) out vec2 vScreenCoord;
-		#endif
-	#endif
-#endif
-
-#ifdef VS_RENDER_STEREO
-	VARYING_BIND(2) flat out int vLayer;
-#endif
+#include "shared/interface/2d_vertex.glsl"
 
 void main( void ){
+	vertexShaderDefaultOutputs();
+	
 	vec2 position = inPosition;
 	
 	#ifndef NO_POSTRANSFORM
@@ -66,7 +32,7 @@ void main( void ){
 	
 	gl_Position = vec4( position, 0, 1 );
 	
-	#ifndef NO_TEXCOORD
+	if(!NoTexCoord){
 		vec2 texCoord;
 		
 		#ifdef NO_TCTRANSFORM
@@ -96,10 +62,12 @@ void main( void ){
 		#endif
 		
 		vTexCoord = texCoord;
-	#endif
+	}
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
+	if(VSRenderStereo){
 		vLayer = inLayer;
-	#endif
+		#ifdef SUPPORTS_VSLAYER
+		gl_Layer = vLayer;
+		#endif
+	}
 }

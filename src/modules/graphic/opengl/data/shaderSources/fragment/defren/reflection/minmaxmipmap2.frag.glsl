@@ -12,11 +12,7 @@ uniform ivec2 pTCClamp;
 
 uniform HIGHP sampler2DArray texData;
 
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d_fragment.glsl"
 
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 //

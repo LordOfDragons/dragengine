@@ -1,12 +1,16 @@
 // OpenGL Spir-V
 #ifdef WITH_SPIRV_OPENGL
 
-#define WITH_SPECIALIZATIONS 1
+#define WITH_SPECIALIZATIONS
 
 #define HIGHP highp
 #define ARG_SAMP_HIGHP
 #define ARG_SAMP_MEDP
 #define ARG_SAMP_LOWP
+#define GLSL_450
+#define GS_INSTANCING
+#define SUPPORTS_VSLAYER
+#define SUPPORTS_VSDRAWPARAM
 
 #define UNIFORM_BIND(index) layout(location=index)
 #define VARYING_BIND(index) layout(location=index)
@@ -60,6 +64,13 @@ layout(constant_id=37) const int TexDataSwizzle = 0;
 	// 0: rgba
 	// 1: gggg
 layout(constant_id=38) const bool TextureLevel = false;
+
+layout(constant_id=39) const bool NoTexCoord = false;
+layout(constant_id=40) const bool VSRenderStereo = false;
+layout(constant_id=41) const bool GSRenderStereo = false;
+layout(constant_id=42) const bool VSLayer = false;
+layout(constant_id=43) const bool GSLayer = false;
+layout(constant_id=44) const bool FullScreenQuad = false;
 
 // OpenGL
 #else

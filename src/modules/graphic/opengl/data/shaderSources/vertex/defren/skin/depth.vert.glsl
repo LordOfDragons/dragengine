@@ -102,13 +102,19 @@ uniform HIGHP samplerBuffer texSubInstance2;
 	flat out int vLayer;
 #endif
 
-#ifdef VS_RENDER_STEREO
-	uniform int pDrawIDOffset;
-	#define inLayer (gl_DrawID + pDrawIDOffset)
-#else
-	const int inLayer = 0;
-#endif
 
+// VSRenderStereo
+UNIFORM_BIND(0) uniform int pDrawIDOffset;
+
+
+int getInLayer(){
+	#if SUPPORTS_VSDRAWPARAM
+	return gl_DrawID + pDrawIDOffset;
+	#else
+	return 0;
+	#endif
+}
+#define inLayer getInLayer()
 
 
 // Main Function
@@ -188,10 +194,14 @@ void main(void){
 	vSPBFlags = spbFlags;
 	
 	#ifdef WRITE_VLAYER
-		vLayer = inLayer;
+	vLayer = 0;
 	#endif
-	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
+	#ifdef SUPPORTS_VSLAYER
+	if(VSRenderStereo){
+		gl_Layer = getInLayer();
+		#ifdef WRITE_VLAYER
+		vLayer = gl_Layer;
+		#endif
+	}
 	#endif
 }

@@ -16,8 +16,7 @@ layout(binding=0) uniform mediump sampler2DArray texTextureArray;
 // !InputArrayTextures
 layout(binding=0) uniform mediump sampler2D texTexture;
 
-VARYING_BIND(0) in vec2 vTexCoord;
-
+#include "shared/interface/2d_fragment.glsl"
 
 layout(location=0) out vec4 outColor;
 

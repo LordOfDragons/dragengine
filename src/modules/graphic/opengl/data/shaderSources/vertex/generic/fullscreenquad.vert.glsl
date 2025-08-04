@@ -10,45 +10,27 @@ precision HIGHP int;
 //                                                        //
 // DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED //
 
-#ifndef GEOMETRY_SHADER
-	#ifdef GS_RENDER_STEREO
-		#define GEOMETRY_SHADER 1
-	#endif
-#endif
-
-#ifndef NO_TEXCOORD
-	UNIFORM_BIND(0) uniform vec4 pQuadParams; // scaleX, scaleY, offsetX, offsetY
-#endif
+// !NoTexCoord
+UNIFORM_BIND(0) uniform vec4 pQuadParams; // scaleX, scaleY, offsetX, offsetY
 
 layout(location=0) in vec2 inPosition;
 
-#ifdef VS_RENDER_STEREO
-	layout(location=1) in int inLayer;
-#else
-	const int inLayer = 0;
-#endif
+// VSRenderStereo
+layout(location=1) in int inLayer;
 
-#ifndef NO_TEXCOORD
-	#ifdef GEOMETRY_SHADER
-		out vec2 vGSTexCoord;
-		#define vTexCoord vGSTexCoord
-	#else
-		VARYING_BIND(0) out vec2 vTexCoord;
-	#endif
-#endif
-
-#ifdef VS_RENDER_STEREO
-	VARYING_BIND(1) flat out int vLayer;
-#endif
+#include "shared/interface/2d_vertex.glsl"
 
 void main( void ){
-	gl_Position = vec4( inPosition, 0, 1 );
-	#ifndef NO_TEXCOORD
-		vTexCoord = inPosition * pQuadParams.xy + pQuadParams.zw;
-	#endif
+	vertexShaderDefaultOutputs();
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
+	gl_Position = vec4( inPosition, 0, 1 );
+	// !NoTexCoord
+	vTexCoord = inPosition * pQuadParams.xy + pQuadParams.zw;
+	
+	if(VSRenderStereo){
 		vLayer = inLayer;
-	#endif
+		#ifdef SUPPORTS_VSLAYER
+		gl_Layer = vLayer;
+		#endif
+	}
 }

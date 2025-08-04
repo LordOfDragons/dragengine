@@ -19,10 +19,10 @@ uniform vec4 pPlaneNear;
 #include "shared/defren/gi/probe_flags.glsl"
 
 #ifdef PASS2
-	flat in ivec3 vProbeCoord;
+	VARYING_BIND(1) flat in ivec3 vProbeCoord;
 	
 #else
-	in vec2 vTC;
+	VARYING_BIND(0) in vec2 vTC;
 #endif
 
 layout(location=0) out vec3 outColor;
