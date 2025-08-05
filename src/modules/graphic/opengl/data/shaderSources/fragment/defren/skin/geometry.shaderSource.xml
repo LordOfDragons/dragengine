@@ -23,7 +23,6 @@
 	<output set='4' name='outColor' location='0'/>
 	
 	<define>AMBIENT_LIGHT_PROBE</define>
-	<define>DECODE_IN_DEPTH</define>
 	<define>DEPTH_TEST_LARGER</define>
 	<define>DEPTH_TEST</define>
 	<define>FADEOUT_RANGE</define>

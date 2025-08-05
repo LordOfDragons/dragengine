@@ -1866,7 +1866,7 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.SetDefines( "CLIP_PLANE" );
 	}
 	if( pConfig.GetDecodeInDepth() ){
-		defines.SetDefines( "DECODE_IN_DEPTH" );
+		// defines.SetDefines( "DECODE_IN_DEPTH" );
 	}
 	if( pConfig.GetEncodeOutDepth() ){
 		defines.SetDefines( "ENCODE_OUT_DEPTH" );

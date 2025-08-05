@@ -10,7 +10,4 @@
 	<define>SPLIT_SHIFT_TC</define>
 	<define>SPLIT_VERSION</define>
 	<define>VS_RENDER_STEREO</define>
-	
-	<!-- shared/defren/sample_depth.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 </shaderSource>

@@ -6,7 +6,7 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
-uniform mediump sampler2D texSamples;
+layout(binding=10) uniform mediump sampler2D texSamples;
 
 layout(location=0) in vec4 inParticle0; // lifetime, position.x, position.y, position.z
 layout(location=1) in vec4 inParticle1; // linearVelocity, angularVelocity, castSize, castEmissivity

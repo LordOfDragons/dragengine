@@ -26,7 +26,4 @@
 	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
 	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
 	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
-	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 </shaderSource>

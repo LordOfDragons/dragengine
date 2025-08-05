@@ -6,7 +6,7 @@
 	
 	<output name='outDepth' location='0'/>
 	
-	<define>DECODE_IN_DEPTH</define>
+	<!-- <define>DECODE_IN_DEPTH</define> -->
 	<define>GS_RENDER_STEREO</define>
 	<define>INVERSE_DEPTH</define>
 	<define>USE_MIN_FUNCTION</define>

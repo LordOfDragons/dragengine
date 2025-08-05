@@ -27,10 +27,6 @@
 	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
 	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
 	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
-	
 	<!-- shared/defren/light/normal_from_depth.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 	<define>GI_RAY</define>
 </shaderSource>

@@ -113,9 +113,6 @@
 	<define>DEPTH_DISTANCE</define>
 	<define>DEPTH_ORTHOGONAL</define>
 	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
-	
 	<!-- system only
 	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>
 	<define>SHARED_SPB_TEXTURE_PADDING</define>

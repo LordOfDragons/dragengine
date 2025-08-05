@@ -16,7 +16,7 @@ VARYING_BIND(3) out vec3 vLightVolumePos;
 
 // particle light color (location 4)
 // used by:
-// - ParticleLight
+// - LightMode == LightModeParticle
 VARYING_BIND(4) in vec3 vGSParticleLightColor[GEOMETRY_SHADER_INPUT_SIZE];
 
 VARYING_BIND(4) out vec3 vParticleLightColor;
@@ -24,15 +24,17 @@ VARYING_BIND(4) out vec3 vParticleLightColor;
 
 // particle light range (location 5)
 // used by:
-// - ParticleLight
+// - LightMode == LightModeParticle
 VARYING_BIND(5) in float vGSParticleLightRange[GEOMETRY_SHADER_INPUT_SIZE];
 
 VARYING_BIND(5) out float vParticleLightRange;
 
 
-// particle light position (out location 6)
+// particle light position (location 6)
 // used by:
-// - ParticleLight
+// - LightMode == LightModeParticle
+VARYING_BIND(6) in float vGSParticleLightPosition[GEOMETRY_SHADER_INPUT_SIZE];
+
 VARYING_BIND(6) out vec3 vParticleLightPosition;
 
 

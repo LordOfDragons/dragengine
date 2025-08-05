@@ -14,13 +14,13 @@ VARYING_BIND(3) in vec3 vLightVolumePos;
 
 // particle light color (location 4)
 // used by:
-// - ParticleLight
+// - LightMode == LightModeParticle
 VARYING_BIND(4) in vec3 vParticleLightColor;
 
 
 // particle light range (location 5)
 // used by:
-// - ParticleLight
+// - LightMode == LightModeParticle
 VARYING_BIND(5) in float vParticleLightRange;
 
 

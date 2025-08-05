@@ -34,14 +34,9 @@ const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 #ifdef DEPTH_CUBEMAP
 void updateMinMaxFromDepth(in HIGHP samplerCube tex, in vec3 tc,
 in ivec3 swizzle, in ivec3 flipper, inout vec3 resMin, inout vec3 resMax){
-	vec3 position;
-	if(DecodeInDepth){
-		position = vec3( dot( textureLod( tex, tc, 0.0 ).rgb, unpackDepth ) );
-	}else{
-		position = vec3( textureLod( tex, tc, 0.0 ).r );
-	}
+	vec3 position = vec3( textureLod( tex, tc, 0.0 ).r );
 	
-	#ifdef SHADOW_INVERSE_DEPTH
+	if(ShadowInverseDepth){
 		// clear value is 0 causing inf value. nothing can be 0 except clear value.
 		// skipping the value though would result in wrong results if all merged points
 		// have are clear values. in this case the initial min/max value is returned
@@ -53,7 +48,7 @@ in ivec3 swizzle, in ivec3 flipper, inout vec3 resMin, inout vec3 resMax){
 			resMax = max(resMax, pClearMaxValue);
 			return;
 		}
-	#endif
+	}
 	
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	position.xy = vTexCoord * position.zz;
@@ -66,14 +61,9 @@ in ivec3 swizzle, in ivec3 flipper, inout vec3 resMin, inout vec3 resMax){
 
 #else
 void updateMinMaxFromDepth(in HIGHP sampler2D tex, in ivec2 tc, inout vec3 resMin, inout vec3 resMax){
-	vec3 position;
-	if(DecodeInDepth){
-		position = vec3( dot( texelFetch( tex, tc, 0 ).rgb, unpackDepth ) );
-	}else{
-		position = vec3( texelFetch( tex, tc, 0 ).r );
-	}
+	vec3 position = vec3( texelFetch( tex, tc, 0 ).r );
 	
-	#ifdef SHADOW_INVERSE_DEPTH
+	if(ShadowInverseDepth){
 		// clear value is 0 causing inf value. nothing can be 0 except clear value.
 		// skipping the value though would result in wrong results if all merged points
 		// have are clear values. in this case the initial min/max value is returned
@@ -85,7 +75,7 @@ void updateMinMaxFromDepth(in HIGHP sampler2D tex, in ivec2 tc, inout vec3 resMi
 			resMax = max(resMax, pClearMaxValue);
 			return;
 		}
-	#endif
+	}
 	
 	position.z = pPosTransform.x / ( pPosTransform.y - position.z );
 	position.xy = vTexCoord * pPosTransform.zw * position.zz;

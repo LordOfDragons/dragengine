@@ -13,7 +13,4 @@
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>
-	
-	<!-- shared/defren/sample_depth.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 </shaderSource>

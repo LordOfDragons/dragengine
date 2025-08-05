@@ -894,7 +894,7 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 	}
 }
 
-static const int vSpecializationCount = 48;
+static const int vSpecializationCount = 64;
 static const struct sSpecialization{
 	int index;
 	bool isBool;
@@ -910,45 +910,61 @@ static const struct sSpecialization{
 	{9, false, "GIClearProbesCount", "GI_CLEAR_PROBES_COUNT"},
 	{10, true, "MapIrradiance", "MAP_IRRADIANCE"},
 	{11, true, "BlurPass2", "BLUR_PASS_2"},
-	{12, true, "DecodeInDepth", "DECODE_IN_DEPTH"},
-	{13, true, "DualOccMap", "DUAL_OCCMAP"},
-	{14, true, "EnsureMinSize", "ENSURE_MIN_SIZE"},
-	{15, true, "FrustumTest", "FRUSTUM_TEST"},
-	{16, true, "RenderDocDebugOccTest", "RENDER_DOC_DEBUG_OCCTEST"},
-	{17, true, "WithComputeRenderTask", "WITH_COMPUTE_RENDER_TASK"},
-	{18, true, "CullViewFrustum", "CULL_VIEW_FRUSTUM"},
-	{19, true, "CullSkyLightFrustum", "CULL_SKY_LIGHT_FRUSTUM"},
-	{20, true, "CullSkyLightGIBox", "CULL_SKY_LIGHT_GIBOX"},
-	{21, true, "CullTooSmall", "CULL_TOO_SMALL"},
-	{22, true, "WriteCullResult", "WRITE_CULL_RESULT"},
-	{23, true, "WithOcclusion", "WITH_OCCLUSION"},
-	{24, true, "ClearCullResult", "CLEAR_CULL_RESULT"},
-	{25, true, "WithCalcLod", "WITH_CALC_LOD"},
-	{26, true, "WithTexture", "WITH_TEXTURE"},
-	{27, true, "WithRenderWorld", "WITH_RENDER_WORLD"},
-	{28, true, "WithMask", "WITH_MASK"},
-	{29, true, "InverseDepth", "INVERSE_DEPTH"},
-	{30, true, "WithDepth", "WITH_DEPTH"},
-	{31, true, "DepthDifferenceWeighting", "DEPTH_DIFFERENCE_WEIGHTING"},
-	{32, true, "InputArrayTextures", "INPUT_ARRAY_TEXTURES"},
-	{33, false, "OutDataSize", "OUT_DATA_SIZE"},
-	{34, false, "OutDataSwizzle", "OUT_DATA_SWIZZLE"},
-	{35, false, "TapCount", "TAP_COUNT"},
-	{36, false, "TexDataSize", "TEX_DATA_SIZE"},
-	{37, false, "TexDataSwizzle", "TEX_DATA_SWIZZLE"},
-	{38, true, "TextureLevel", "TEXTURELEVEL"},
-	{39, true, "NoTexCoord", "NO_TEXCOORD"},
-	{40, true, "VSRenderStereo", "VS_RENDER_STEREO"},
-	{41, true, "GSRenderStereo", "GS_RENDER_STEREO"},
-	{42, true, "VSLayer", "VS_LAYER"},
-	{43, true, "GSLayer", "GS_LAYER"},
-	{44, true, "FullScreenQuad", "FULLSCREENQUAD"},
-	{45, true, "FullScreenQuadSCTransform", "FULLSCREENQUAD_SCTRANSFORM"},
-	{46, true, "FullScreenQuadTCTransform", "FULLSCREENQUAD_TCTRANSFORM"},
-	{47, true, "NoPosTransform", "NO_POSTRANSFORM"},
-	{48, true, "NoTCTransform", "NO_TCTRANSFORM"},
-	{49, true, "TexCoordFlipY", "TEXCOORD_FLIP_Y"},
-	{50, true, "ParticleLight", "PARTICLE_LIGHT"}
+	{12, true, "DualOccMap", "DUAL_OCCMAP"},
+	{13, true, "EnsureMinSize", "ENSURE_MIN_SIZE"},
+	{14, true, "FrustumTest", "FRUSTUM_TEST"},
+	{15, true, "RenderDocDebugOccTest", "RENDER_DOC_DEBUG_OCCTEST"},
+	{16, true, "WithComputeRenderTask", "WITH_COMPUTE_RENDER_TASK"},
+	{17, true, "CullViewFrustum", "CULL_VIEW_FRUSTUM"},
+	{18, true, "CullSkyLightFrustum", "CULL_SKY_LIGHT_FRUSTUM"},
+	{19, true, "CullSkyLightGIBox", "CULL_SKY_LIGHT_GIBOX"},
+	{20, true, "CullTooSmall", "CULL_TOO_SMALL"},
+	{21, true, "WriteCullResult", "WRITE_CULL_RESULT"},
+	{22, true, "WithOcclusion", "WITH_OCCLUSION"},
+	{23, true, "ClearCullResult", "CLEAR_CULL_RESULT"},
+	{24, true, "WithCalcLod", "WITH_CALC_LOD"},
+	{25, true, "WithTexture", "WITH_TEXTURE"},
+	{26, true, "WithRenderWorld", "WITH_RENDER_WORLD"},
+	{27, true, "WithMask", "WITH_MASK"},
+	{28, true, "InverseDepth", "INVERSE_DEPTH"},
+	{29, true, "WithDepth", "WITH_DEPTH"},
+	{30, true, "DepthDifferenceWeighting", "DEPTH_DIFFERENCE_WEIGHTING"},
+	{31, true, "InputArrayTextures", "INPUT_ARRAY_TEXTURES"},
+	{32, false, "OutDataSize", "OUT_DATA_SIZE"},
+	{33, false, "OutDataSwizzle", "OUT_DATA_SWIZZLE"},
+	{34, false, "TapCount", "TAP_COUNT"},
+	{35, false, "TexDataSize", "TEX_DATA_SIZE"},
+	{36, false, "TexDataSwizzle", "TEX_DATA_SWIZZLE"},
+	{37, true, "TextureLevel", "TEXTURELEVEL"},
+	{38, true, "NoTexCoord", "NO_TEXCOORD"},
+	{39, true, "VSRenderStereo", "VS_RENDER_STEREO"},
+	{40, true, "GSRenderStereo", "GS_RENDER_STEREO"},
+	{41, true, "VSLayer", "VS_LAYER"},
+	{42, true, "GSLayer", "GS_LAYER"},
+	{43, true, "FullScreenQuad", "FULLSCREENQUAD"},
+	{44, true, "FullScreenQuadSCTransform", "FULLSCREENQUAD_SCTRANSFORM"},
+	{45, true, "FullScreenQuadTCTransform", "FULLSCREENQUAD_TCTRANSFORM"},
+	{46, true, "NoPosTransform", "NO_POSTRANSFORM"},
+	{47, true, "NoTCTransform", "NO_TCTRANSFORM"},
+	{48, true, "TexCoordFlipY", "TEXCOORD_FLIP_Y"},
+	{49, false, "LightMode", "LIGHT_MODE"},
+	{50, true, "NoiseTap", "NOISE_TAP"},
+	{51, false, "PcfMode", "PCF_MODE"},
+	{52, true, "AmbientLighting", "AMBIENT_LIGHTING"},
+	{53, true, "GIRay", "GI_RAY"},
+	{54, true, "LuminanceOnly", "LUMINANCE_ONLY"},
+	{55, false, "Shadow1Mode", "SHADOW1_MODE"},
+	{56, false, "Shadow2Mode", "SHADOW2_MODE"},
+	{57, true, "ShadowInverseDepth", "SHADOW_INVERSE_DEPTH"},
+	{58, true, "ShaMat2EqualsShaMat1", "SHAMAT2_EQUALS_SHAMAT1"},
+	{59, false, "TextureLightColor", "TEXTURE_LIGHT_COLOR"},
+	{60, true, "TextureShadow1Solid", "TEXTURE_SHADOW1_SOLID"},
+	{61, true, "TextureShadow1Transparent", "TEXTURE_SHADOW1_TRANSPARENT"},
+	{62, true, "TextureShadow1Ambient", "TEXTURE_SHADOW1_AMBIENT"},
+	{63, true, "TextureShadow2Solid", "TEXTURE_SHADOW2_SOLID"},
+	{64, true, "TextureShadow2Transparent", "TEXTURE_SHADOW2_TRANSPARENT"},
+	{65, true, "TextureShadow2Ambient", "TEXTURE_SHADOW2_AMBIENT"},
+	{66, true, "WithSubsurface", "WITH_SUBSURFACE"}
 };
 
 // Special:
@@ -1035,6 +1051,8 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	pPreprocessor.SetSymbol("ARG_SAMP_MEDP", "");
 	pPreprocessor.SetSymbol("ARG_SAMP_LOWP", "");
 	#endif
+	
+	pPreprocessor.SetSymbol("ARG_CONST", "const");
 	
 	if(unit.GetSources()->GetStage() == GL_VERTEX_SHADER){
 		if(ext.SupportsVSLayer()){

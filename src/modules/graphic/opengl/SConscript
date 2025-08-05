@@ -270,7 +270,7 @@ def transpileOpenGLSpirV(env):
 		'data/shaderSources/fragment/generic/color.shaderSource.xml',
 		'data/shaderSources/fragment/generic/gauss_sep_fixed.shaderSource.xml',
 		'data/shaderSources/fragment/generic/output_texture.shaderSource.xml',
-		#'data/shaderSources/fragment/defren/light/light.shaderSource.xml',
+		'data/shaderSources/fragment/defren/light/light.shaderSource.xml',
 		
 		'data/shaderSources/vertex/2d/solidcolor.shaderSource.xml',
 		'data/shaderSources/vertex/2d/textured.shaderSource.xml',

@@ -36,11 +36,9 @@ void main( void ){
 			/* if( gl_FragDepth == 0.0 ){
 				gl_FragDepth = 1.0;
 			} */
-			#ifdef SHADOW_INVERSE_DEPTH
-			if( gl_FragDepth == 1.0 ) discard;
-			#else
-			if( gl_FragDepth == 0.0 ) discard;
-			#endif
+			if(gl_FragDepth == (ShadowInverseDepth ? 1.0 : 0.0)){
+				discard;
+			}
 		#endif
 	#endif
 	

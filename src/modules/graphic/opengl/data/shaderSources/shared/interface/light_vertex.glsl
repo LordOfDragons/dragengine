@@ -22,7 +22,7 @@
 
 // particle light color (location 4)
 // used by:
-// - ParticleLight
+// - LightMode == LightModeParticle
 #ifdef WITH_SPIRV_OPENGL
 	// spir-v
 	VARYING_BIND(4) out vec3 vParticleLightColor;
@@ -36,7 +36,7 @@
 
 // particle light range (location 5)
 // used by:
-// - ParticleLight
+// - LightMode == LightModeParticle
 #ifdef WITH_SPIRV_OPENGL
 	// spir-v
 	VARYING_BIND(5) out float vParticleLightRange;
@@ -45,6 +45,20 @@
 	// opengl
 	VARYING_BIND(5) out float vGSParticleLightRange;
 	#define vParticleLightRange vGSParticleLightRange
+#endif
+
+
+// particle light position (location 6)
+// used by:
+// - LightMode == LightModeParticle
+#ifdef WITH_SPIRV_OPENGL
+	// spir-v
+	VARYING_BIND(6) out vec3 vParticleLightPosition;
+	
+#else
+	// opengl
+	VARYING_BIND(6) out vec3 vGSParticleLightPosition;
+	#define vParticleLightPosition vGSParticleLightPosition
 #endif
 
 

@@ -203,12 +203,7 @@ void main(void){
 	
 	// test against depth texture
 	#ifdef DEPTH_TEST
-		float depthTestValue;
-		if(DecodeInDepth){
-			depthTestValue = dot(texelFetch(texDepthTest, ivec3(tc, vLayer), 0).rgb, unpackDepth);
-		}else{
-			depthTestValue = texelFetch(texDepthTest, ivec3(tc, vLayer), 0).r;
-		}
+		float depthTestValue = texelFetch(texDepthTest, ivec3(tc, vLayer), 0).r;
 		
 		if(InverseDepth){
 			#ifdef DEPTH_TEST_LARGER
