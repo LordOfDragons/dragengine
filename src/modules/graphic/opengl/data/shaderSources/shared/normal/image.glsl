@@ -2,13 +2,11 @@
 
 /*
 	<!-- shared/normal_image.glsl -->
-	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
-	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
+	<define>MATERIAL_NORMAL_DEC</define>
+	<define>MATERIAL_NORMAL_ENC</define>
 */
+
+#include "shared/normal/constants.glsl"
 
 // load normal from image using direct method.
 // use this method for RGB16F, RGB32F, RGB8_SNORM or RGB16_SNORM textures.
@@ -102,58 +100,58 @@ vec2 normalEncodeSphereMap( in vec3 normal ){
 
 
 // load normal using method decided by using one of these preprocessor definitions
-// - MATERIAL_NORMAL_DEC_FLOATBASIC: normalLoadShiftedFloat
-// - MATERIAL_NORMAL_DEC_INTBASIC: normalLoadShiftedInt
-// - MATERIAL_NORMAL_DEC_SPHEREMAP: normalLoadSphere
-// - none of the above: normalLoadDirect
+// - MaterialNormalDec = MaterialNormalModeFloatBasic: normalLoadShiftedFloat
+// - MaterialNormalDec = MaterialNormalModeIntBasic: normalLoadShiftedInt
+// - MaterialNormalDec = MaterialNormalModeSpheremap: normalLoadSphere
+// - MaterialNormalDec = MaterialNormalModeFloat: normalLoadDirect
 // normal is potentially not normalized.
 vec3 normalLoadMaterial( readonly image2D image, in ivec2 texCoord ){
-	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
-	return normalLoadShiftedFloat( image, texCoord );
-	
-	#elif defined MATERIAL_NORMAL_DEC_INTBASIC
-	return normalLoadShiftedInt( image, texCoord );
-	
-	#elif defined MATERIAL_NORMAL_DEC_SPHEREMAP
-	return normalLoadSphereMap( image, texCoord );
-	
-	#else
-	return normalLoadDirect( image, texCoord );
-	#endif
+	if(MaterialNormalDec == MaterialNormalModeFloatBasic){
+		return normalLoadShiftedFloat( image, texCoord );
+		
+	}else if(MaterialNormalDec == MaterialNormalModeIntBasic){
+		return normalLoadShiftedInt( image, texCoord );
+		
+	}else if(MaterialNormalDec == MaterialNormalModeSpheremap){
+		return normalLoadSphereMap( image, texCoord );
+		
+	}else{ // MaterialNormalDec == MaterialNormalModeFloat
+		return normalLoadDirect( image, texCoord );
+	}
 }
 
 vec3 normalLoadMaterial( readonly image2DArray image, in ivec3 texCoord ){
-	#ifdef MATERIAL_NORMAL_DEC_FLOATBASIC
-	return normalLoadShiftedFloat( image, texCoord );
-	
-	#elif defined MATERIAL_NORMAL_DEC_INTBASIC
-	return normalLoadShiftedInt( image, texCoord );
-	
-	#elif defined MATERIAL_NORMAL_DEC_SPHEREMAP
-	return normalLoadSphereMap( image, texCoord );
-	
-	#else
-	return normalLoadDirect( image, texCoord );
-	#endif
+	if(MaterialNormalDec == MaterialNormalModeFloatBasic){
+		return normalLoadShiftedFloat( image, texCoord );
+		
+	}else if(MaterialNormalDec == MaterialNormalModeIntBasic){
+		return normalLoadShiftedInt( image, texCoord );
+		
+	}else if(MaterialNormalDec == MaterialNormalModeSpheremap){
+		return normalLoadSphereMap( image, texCoord );
+		
+	}else{ // MaterialNormalDec == MaterialNormalModeFloat
+		return normalLoadDirect( image, texCoord );
+	}
 }
 
 // encode normal using method decided by using one of these preprocessor definitions
-// - MATERIAL_NORMAL_ENC_FLOATBASIC: normalEncodeShiftedFloat
-// - MATERIAL_NORMAL_ENC_INTBASIC: normalEncodeShiftedInt
-// - MATERIAL_NORMAL_ENC_SPHEREMAP: normalEncodeSphereMap
-// - none of the above: normal unmodified
+// - MaterialNormalDec = MaterialNormalModeFloatBasic: normalEncodeShiftedFloat
+// - MaterialNormalDec = MaterialNormalModeIntBasic: normalEncodeShiftedInt
+// - MaterialNormalDec = MaterialNormalModeSpheremap: normalEncodeSphereMap
+// - MaterialNormalDec = MaterialNormalModeFloat: normal unmodified
 // normal has to be normalized. encoded value is padded to vec3 with 0
 vec3 normalEncodeMaterial( in vec3 normal ){
-	#ifdef MATERIAL_NORMAL_ENC_FLOATBASIC
-	return normalEncodeShiftedFloat( normal );
-	
-	#elif defined MATERIAL_NORMAL_ENC_INTBASIC
-	return normalEncodeShiftedInt( normal );
-	
-	#elif defined MATERIAL_NORMAL_ENC_SPHEREMAP
-	return vec3( normalEncodeSphereMap( normal ), 0 );
-	
-	#else
-	return normal;
-	#endif
+	if(MaterialNormalDec == MaterialNormalModeFloatBasic){
+		return normalEncodeShiftedFloat( normal );
+		
+	}else if(MaterialNormalDec == MaterialNormalModeIntBasic){
+		return normalEncodeShiftedInt( normal );
+		
+	}else if(MaterialNormalDec == MaterialNormalModeSpheremap){
+		return vec3( normalEncodeSphereMap( normal ), 0 );
+		
+	}else{ // MaterialNormalDec == MaterialNormalModeFloat
+		return normal;
+	}
 }

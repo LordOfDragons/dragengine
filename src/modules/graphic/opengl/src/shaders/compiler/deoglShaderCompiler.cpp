@@ -894,7 +894,7 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 	}
 }
 
-static const int vSpecializationCount = 64;
+static const int vSpecializationCount = 66;
 static const struct sSpecialization{
 	int index;
 	bool isBool;
@@ -964,7 +964,9 @@ static const struct sSpecialization{
 	{63, true, "TextureShadow2Solid", "TEXTURE_SHADOW2_SOLID"},
 	{64, true, "TextureShadow2Transparent", "TEXTURE_SHADOW2_TRANSPARENT"},
 	{65, true, "TextureShadow2Ambient", "TEXTURE_SHADOW2_AMBIENT"},
-	{66, true, "WithSubsurface", "WITH_SUBSURFACE"}
+	{66, true, "WithSubsurface", "WITH_SUBSURFACE"},
+	{67, false, "MaterialNormalDec", "MATERIAL_NORMAL_DEC"},
+	{68, false, "MaterialNormalEnc", "MATERIAL_NORMAL_ENC"}
 };
 
 // Special:

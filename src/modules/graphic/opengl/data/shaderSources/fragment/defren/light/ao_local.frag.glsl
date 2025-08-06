@@ -19,7 +19,7 @@ layout(location=0) out vec3 outAO; // ao, ssao, solidity
 // Calculate the screen space ambient occlusion
 /////////////////////////////////////////////////
 
-#include "shared/normal_texture.glsl"
+#include "shared/normal/texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
 #include "shared/defren/depth_to_position_fragment.glsl"
 

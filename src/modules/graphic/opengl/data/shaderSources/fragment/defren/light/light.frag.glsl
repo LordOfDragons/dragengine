@@ -173,7 +173,7 @@ const bool EnableOccTracing = false;
 // Includes using definitions above
 /////////////////////////////////////
 
-#include "shared/normal_texture.glsl"
+#include "shared/normal/texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
 #include "shared/defren/depth_to_position_fragment.glsl"
 

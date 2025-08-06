@@ -76,7 +76,7 @@ in ARG_CONST vec2 tcnoise, in ARG_CONST ivec2 tcnoiseOffset, in ARG_CONST vec2 t
 	return texture(texsm, tc);
 }
 */
-#define inl_sampleShadowMap(a,b,c,d,e,f) texture(a, b + vec3(c,0) + (NoiseTap ? vec3(inl_sampleShadowNoise_offset2(d,e,f),0) : vec3(0)))
+#define inl_sampleShadowMap(a,b,c,d,e,f) texture(a, b + vec3(c,0.0) + (NoiseTap ? vec3(inl_sampleShadowNoise_offset2(d,e,f),0.0) : vec3(0.0)))
 
 float evalShadowMap(in ARG_SAMP_HIGHP sampler2DShadow texsm, in ARG_CONST vec3 params, in ARG_CONST vec3 position){
 	#define ES2DTC vec3
@@ -110,7 +110,7 @@ in ARG_CONST ivec2 tcnoiseOffset, in ARG_CONST vec2 tcnoiseScale){
 	return texture(texsm, tc);
 }
 */
-#define inl_sampleShadowMapArray(a,b,c,d,e,f) texture(a, b + vec4(c,0,0) + (NoiseTap ? vec4(inl_sampleShadowNoise_offset2(d,e,f),0,0) : vec4(0)))
+#define inl_sampleShadowMapArray(a,b,c,d,e,f) texture(a, b + vec4(c,0.0,0.0) + (NoiseTap ? vec4(inl_sampleShadowNoise_offset2(d,e,f),0.0,0.0) : vec4(0.0)))
 
 float evalShadowMapArray(in ARG_SAMP_HIGHP sampler2DArrayShadow texsm,
 in ARG_CONST vec3 params, in ARG_CONST vec4 position){

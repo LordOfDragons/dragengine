@@ -18,7 +18,7 @@ layout(location=0) out vec3 outPosition;
 layout(location=1) out vec3 outDiffuse;
 layout(location=2) out vec3 outNormal;
 
-#include "shared/normal_texture.glsl"
+#include "shared/normal/texture.glsl"
 
 
 void main( void ){

@@ -38,7 +38,7 @@ layout(location=0) out vec4 outColor;
 
 #ifdef WITH_GI
 	#include "shared/defren/light/gi_illuminate.glsl"
-	#include "shared/normal_texture.glsl"
+	#include "shared/normal/texture.glsl"
 #endif
 
 

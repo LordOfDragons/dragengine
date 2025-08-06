@@ -14,7 +14,7 @@ layout( local_size_x=64 ) in;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-#include "shared/normal_image.glsl"
+#include "shared/normal/image.glsl"
 #include "shared/defren/depth_to_position.glsl"
 
 #define pSSAOSelfOcclusion pSSAOParams1.x

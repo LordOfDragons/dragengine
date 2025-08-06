@@ -1750,11 +1750,11 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	// shading configuration definitions
 	switch( pConfig.GetMaterialNormalModeDec() ){
 	case deoglSkinShaderConfig::emnmIntBasic:
-		defines.SetDefines( "MATERIAL_NORMAL_DEC_INTBASIC" );
+		defines.SetDefine("MATERIAL_NORMAL_DEC", "1");
 		break;
 		
 	case deoglSkinShaderConfig::emnmSpheremap:
-		defines.SetDefines( "MATERIAL_NORMAL_DEC_SPHEREMAP" );
+		defines.SetDefine("MATERIAL_NORMAL_DEC", "3");
 		break;
 		
 	default:
@@ -1763,11 +1763,11 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeEnc() ){
 	case deoglSkinShaderConfig::emnmIntBasic:
-		defines.SetDefines( "MATERIAL_NORMAL_ENC_INTBASIC" );
+		defines.SetDefine("MATERIAL_NORMAL_ENC", "1");
 		break;
 		
 	case deoglSkinShaderConfig::emnmSpheremap:
-		defines.SetDefines( "MATERIAL_NORMAL_ENC_SPHEREMAP" );
+		defines.SetDefine("MATERIAL_NORMAL_ENC", "3");
 		break;
 		
 	default:

@@ -14,10 +14,10 @@ precision HIGHP int;
 /////////////
 
 #ifdef GI_RAY
-	uniform HIGHP sampler2D texPosition;
-	uniform lowp sampler2D texDiffuse;
-	uniform lowp sampler2D texNormal;
-	uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
+	layout(binding=0) uniform HIGHP sampler2D texPosition;
+	layout(binding=1) uniform lowp sampler2D texDiffuse;
+	layout(binding=2) uniform lowp sampler2D texNormal;
+	layout(binding=3) uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
 	
 	// NOTE transfer:
 	// params = giRayCastMaterialParams(ray.material)
@@ -30,16 +30,16 @@ precision HIGHP int;
 	// - vec2 ray.texCoord = giRayCastFaceTexCoord() => requires RG16F
 	
 #else
-	uniform HIGHP sampler2DArray texDepth;
-	uniform lowp sampler2DArray texDiffuse;
-	uniform lowp sampler2DArray texNormal;
-	uniform lowp sampler2DArray texReflectivity;
-	uniform lowp sampler2DArray texRoughness;
-	uniform lowp sampler2DArray texAOSolidity;
+	layout(binding=0) uniform HIGHP sampler2DArray texDepth;
+	layout(binding=1) uniform lowp sampler2DArray texDiffuse;
+	layout(binding=2) uniform lowp sampler2DArray texNormal;
+	layout(binding=3) uniform lowp sampler2DArray texReflectivity;
+	layout(binding=4) uniform lowp sampler2DArray texRoughness;
+	layout(binding=5) uniform lowp sampler2DArray texAOSolidity;
 #endif
 
-uniform lowp sampler2DArray texGIIrradiance;
-uniform HIGHP sampler2DArray texGIDistance;
+layout(binding=6) uniform lowp sampler2DArray texGIIrradiance;
+layout(binding=7) uniform HIGHP sampler2DArray texGIDistance;
 
 
 // includes to come after defining fixed position samplers
@@ -66,7 +66,7 @@ layout(location=2) out vec4 outSubSurface;
 const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 
 
-#include "shared/normal_texture.glsl"
+#include "shared/normal/texture.glsl"
 #ifndef GI_RAY
 	#include "shared/defren/depth_to_position.glsl"
 	#include "shared/defren/depth_to_position_fragment.glsl"

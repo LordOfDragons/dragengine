@@ -53,7 +53,7 @@ layout(location=0) out vec3 outColor;
 const float roughnessToBlur = 3.14159265; // pi | 1.570796; // pi/2
 
 
-#include "shared/normal_texture.glsl"
+#include "shared/normal/texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
 
 

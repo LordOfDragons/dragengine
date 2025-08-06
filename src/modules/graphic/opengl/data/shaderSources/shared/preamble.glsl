@@ -113,6 +113,13 @@ layout(constant_id=63) const bool TextureShadow2Solid = false;
 layout(constant_id=64) const bool TextureShadow2Transparent = false;
 layout(constant_id=65) const bool TextureShadow2Ambient = false;
 layout(constant_id=66) const bool WithSubsurface = false;
+layout(constant_id=67) const int MaterialNormalDec = 0;
+	// 0: float
+	// 1: int basic
+	// 2: float basic
+	// 3: sphere map
+layout(constant_id=68) const int MaterialNormalEnc = 0;
+	// same as MaterialNormalDec
 
 // OpenGL
 #else

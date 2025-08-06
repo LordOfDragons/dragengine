@@ -416,15 +416,15 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeDec() ){
 	case deoglLightShaderConfig::emnmIntBasic:
-		defines.SetDefines( "MATERIAL_NORMAL_DEC_INTBASIC" );
+		defines.SetDefine("MATERIAL_NORMAL_DEC", "1");
 		break;
 		
 	case deoglLightShaderConfig::emnmFloatBasic:
-		defines.SetDefines( "MATERIAL_NORMAL_DEC_FLOATBASIC" );
+		defines.SetDefine("MATERIAL_NORMAL_DEC", "2");
 		break;
 		
 	case deoglLightShaderConfig::emnmSpheremap:
-		defines.SetDefines( "MATERIAL_NORMAL_DEC_SPHEREMAP" );
+		defines.SetDefine("MATERIAL_NORMAL_DEC", "3");
 		break;
 		
 	case deoglLightShaderConfig::emnmFloat:
@@ -433,15 +433,15 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 	
 	switch( pConfig.GetMaterialNormalModeEnc() ){
 	case deoglLightShaderConfig::emnmIntBasic:
-		defines.SetDefines( "MATERIAL_NORMAL_ENC_INTBASIC" );
+		defines.SetDefine("MATERIAL_NORMAL_ENC", "1");
 		break;
 		
 	case deoglLightShaderConfig::emnmFloatBasic:
-		defines.SetDefines( "MATERIAL_NORMAL_ENC_FLOATBASIC" );
+		defines.SetDefine("MATERIAL_NORMAL_ENC", "2");
 		break;
 		
 	case deoglLightShaderConfig::emnmSpheremap:
-		defines.SetDefines( "MATERIAL_NORMAL_ENC_SPHEREMAP" );
+		defines.SetDefine("MATERIAL_NORMAL_ENC", "3");
 		break;
 		
 	case deoglLightShaderConfig::emnmFloat:
