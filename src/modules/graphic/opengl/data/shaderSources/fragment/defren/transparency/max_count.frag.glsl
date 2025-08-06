@@ -9,7 +9,7 @@ uniform lowp ivec4 pOffsets2; // off3.x, off3.y, off4.x, off4.y
 uniform lowp ivec4 pOffsets3; // off5.x, off5.y, off6.x, off6.y
 uniform lowp ivec4 pOffsets4; // off7.x, off7.y, scaleX, scaleY
 
-uniform lowp sampler2DArray texValues;
+layout(binding=0) uniform lowp sampler2DArray texValues;
 
 #include "shared/interface/2d_fragment.glsl"
 

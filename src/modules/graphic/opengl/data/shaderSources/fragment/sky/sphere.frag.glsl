@@ -12,7 +12,7 @@ uniform vec4 pLayerColor;
 uniform vec4 pMaterialGamma;
 uniform vec4 pSkyBgColor;
 
-uniform mediump sampler2D texSky;
+layout(binding=0) uniform mediump sampler2D texSky;
 
 #include "shared/interface/2d_fragment.glsl"
 

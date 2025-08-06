@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Panel Stereo</name>
 	
-	<texture name='texTexture' target='0'/>
-	
 	<parameter name='pMatrixModel'/>
 	<parameter name='pMatrixVP'/>
 	<parameter name='pMatrixVP2'/>

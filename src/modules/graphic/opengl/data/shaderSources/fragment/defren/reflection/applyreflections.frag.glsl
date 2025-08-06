@@ -17,28 +17,28 @@ UBOLAYOUT_BIND(1) uniform EnvironmentMaps{
 	int pEnvMapCount;
 };
 
-uniform lowp sampler2DArray texDiffuse;
-uniform HIGHP sampler2DArray texDepth;
-uniform lowp sampler2DArray texReflection;
-uniform lowp sampler2DArray texNormal;
-uniform lowp sampler2DArray texReflectivity;
-uniform lowp sampler2DArray texRoughness;
-uniform lowp sampler2DArray texAOSolidity;
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform lowp sampler2DArray texDiffuse;
+layout(binding=1) uniform HIGHP sampler2DArray texDepth;
+layout(binding=2) uniform lowp sampler2DArray texReflection;
+layout(binding=3) uniform lowp sampler2DArray texNormal;
+layout(binding=4) uniform lowp sampler2DArray texReflectivity;
+layout(binding=5) uniform lowp sampler2DArray texRoughness;
+layout(binding=6) uniform lowp sampler2DArray texAOSolidity;
+layout(binding=7) uniform mediump sampler2DArray texColor;
 #ifdef ENVMAP_EQUI
 	#define SAMPLER_ENVMAP mediump sampler2D
 #else
 	#define SAMPLER_ENVMAP mediump samplerCube
 #endif
-uniform SAMPLER_ENVMAP texEnvMap;
+layout(binding=8) uniform SAMPLER_ENVMAP texEnvMap;
 #if defined ENVMAP_BOX_PROJECTION || ! defined ENVMAP_SINGLE
-uniform SAMPLER_ENVMAP texEnvMap2;
-uniform SAMPLER_ENVMAP texEnvMap3;
-uniform SAMPLER_ENVMAP texEnvMap4;
-uniform SAMPLER_ENVMAP texEnvMap5;
-uniform SAMPLER_ENVMAP texEnvMap6;
-uniform SAMPLER_ENVMAP texEnvMap7;
-uniform SAMPLER_ENVMAP texEnvMap8;
+layout(binding=9) uniform SAMPLER_ENVMAP texEnvMap2;
+layout(binding=10) uniform SAMPLER_ENVMAP texEnvMap3;
+layout(binding=11) uniform SAMPLER_ENVMAP texEnvMap4;
+layout(binding=12) uniform SAMPLER_ENVMAP texEnvMap5;
+layout(binding=13) uniform SAMPLER_ENVMAP texEnvMap6;
+layout(binding=14) uniform SAMPLER_ENVMAP texEnvMap7;
+layout(binding=15) uniform SAMPLER_ENVMAP texEnvMap8;
 #endif
 
 #include "shared/interface/2d_fragment.glsl"

@@ -2,8 +2,6 @@
 <shader>
 	<name>Effect Color Matrix Stereo</name>
 	
-	<texture name="texColor" target="0"/>
-	
 	<parameter name="pColorMatrix"/>
 	<parameter name="pColorOffset"/>
 	

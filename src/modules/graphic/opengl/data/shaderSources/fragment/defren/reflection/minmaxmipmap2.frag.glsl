@@ -10,7 +10,7 @@ uniform ivec2 pTCClamp;
 	uniform int pMipMapLevel;
 #endif
 
-uniform HIGHP sampler2DArray texData;
+layout(binding=0) uniform HIGHP sampler2DArray texData;
 
 #include "shared/interface/2d_fragment.glsl"
 

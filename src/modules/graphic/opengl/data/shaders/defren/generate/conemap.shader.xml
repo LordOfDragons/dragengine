@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Generate ConeMap</name>
 	
-	<texture name='texHeight' target='0'/>
-	
 	<parameter name='pWidth'/>
 	<parameter name='pSrcTCTransform'/>
 	<parameter name='pDestTCTransform'/>

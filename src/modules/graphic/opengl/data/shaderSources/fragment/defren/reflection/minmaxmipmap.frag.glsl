@@ -11,7 +11,7 @@ uniform int pMipMapLevel;
 	uniform int pSplitPos;
 #endif
 
-uniform HIGHP sampler2DArray texDepth;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 //

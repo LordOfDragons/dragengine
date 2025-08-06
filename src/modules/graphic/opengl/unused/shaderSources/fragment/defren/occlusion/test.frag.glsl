@@ -3,9 +3,9 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform HIGHP sampler2DArray texOccMap;
+layout(binding=0) uniform HIGHP sampler2DArray texOccMap;
 // DualOccMap
-uniform HIGHP sampler2DArray texOccMap2;
+layout(binding=1) uniform HIGHP sampler2DArray texOccMap2;
 
 uniform vec2 pScaleSize;
 uniform float pBaseLevel;

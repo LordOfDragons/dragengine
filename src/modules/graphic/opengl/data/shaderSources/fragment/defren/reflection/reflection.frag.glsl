@@ -14,14 +14,14 @@ UBOLAYOUT_BIND(1) uniform EnvMapParameters{
 };
 
 
-uniform HIGHP sampler2DArray texDepth;
-uniform lowp sampler2DArray texDiffuse;
-uniform lowp sampler2DArray texNormal;
-uniform lowp sampler2DArray texReflectivity;
-uniform lowp sampler2DArray texRoughness;
-uniform lowp sampler2DArray texAOSolidity;
-uniform mediump sampler2DArray texEnvMapArray;
-uniform mediump sampler2D texEnvMapSky;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
+layout(binding=1) uniform lowp sampler2DArray texDiffuse;
+layout(binding=2) uniform lowp sampler2DArray texNormal;
+layout(binding=3) uniform lowp sampler2DArray texReflectivity;
+layout(binding=4) uniform lowp sampler2DArray texRoughness;
+layout(binding=5) uniform lowp sampler2DArray texAOSolidity;
+layout(binding=6) uniform mediump sampler2DArray texEnvMapArray;
+layout(binding=7) uniform mediump sampler2D texEnvMapSky;
 
 
 #include "shared/interface/2d_fragment.glsl"

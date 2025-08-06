@@ -89,25 +89,24 @@ void emitCorner(in int layer, in int corner, in vec4 position, in vec4 preTransf
 		vFadeZ = (pMatrixV[layer] * position).z;
 	#endif
 	
-	#if defined DEPTH_OFFSET
+	if(DepthOffset){
 		// pDoubleSided is passed on from the vertex shader to avoid requiring SSBO
 		// (ubo_instance_parameters) in geometry shaders for compatibility reasons
-		bool doubleSided = vGSDoubleSided[0] == 1;
+		VARCONST bool doubleSided = vGSDoubleSided[0] == 1;
 		
 		#ifdef GS_RENDER_CUBE
-			#ifdef DEPTH_DISTANCE
-				applyDepthOffset(0, vNormal, doubleSided, vPosition.z);
-			#else
-				applyDepthOffset(0, vNormal, doubleSided);
-			#endif
+			VARCONST int depthLayer = 0;
 		#else
-			#ifdef DEPTH_DISTANCE
-				applyDepthOffset(layer, vNormal, doubleSided, vPosition.z);
-			#else
-				applyDepthOffset(layer, vNormal, doubleSided);
-			#endif
+			VARCONST int depthLayer = layer;
 		#endif
-	#endif
+		
+		if(DepthDistance){
+			applyDepthOffset(depthLayer, vNormal, doubleSided, vPosition.z);
+			
+		}else{
+			applyDepthOffset(depthLayer, vNormal, doubleSided);
+		}
+	}
 	
 	vLayer = layer;
 	

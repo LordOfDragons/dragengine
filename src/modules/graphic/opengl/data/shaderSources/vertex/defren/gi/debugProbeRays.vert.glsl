@@ -16,8 +16,6 @@ UNIFORM_BIND(6) uniform vec3 pProbePosition;
 UNIFORM_BIND(7) uniform ivec2 pUpdateDataRayOffset;
 UNIFORM_BIND(8) uniform int pRayDataValid;
 
-#include "shared/defren/gi/constants.glsl"
-
 UBOLAYOUT_BIND(4) uniform GIRayDirections{
 	vec3 pGIRayDirection[GIMaxCountRayDirections];
 };
@@ -29,7 +27,7 @@ UBOLAYOUT_BIND(2) restrict buffer RayData {
 #include "shared/defren/gi/raycast/ray_cache.glsl"
 
 layout(binding=0) uniform HIGHP sampler2DArray texCacheDistance;
-layout(binding=1) uniform mediump sampler2D texLight;
+layout(binding=2) uniform mediump sampler2D texLight;
 
 layout(location=0) in vec2 inPosition;
 

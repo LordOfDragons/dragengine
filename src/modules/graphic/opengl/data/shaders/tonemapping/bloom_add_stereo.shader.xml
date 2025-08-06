@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Bloom Add Stereo</name>
 	
-	<texture name='texColor' target='0'/>
-	
 	<parameter name='pTCTransform'/>
 	<parameter name='pLevel'/>
 	

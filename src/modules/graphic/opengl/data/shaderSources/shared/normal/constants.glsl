@@ -1,7 +1,4 @@
 // material normal mode.
-// used by:
-// - MaterialNormalDec
-// - MaterialNormalEnc
 
 // Float mode for 3-component float textures
 const int MaterialNormalModeFloat = 0;

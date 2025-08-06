@@ -3,9 +3,9 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texReflectivity;
-uniform mediump sampler2D texEmissivity;
+layout(binding=0) uniform lowp sampler2D texDiffuse;
+layout(binding=1) uniform lowp sampler2D texReflectivity;
+layout(binding=2) uniform mediump sampler2D texEmissivity;
 
 #include "shared/interface/2d_fragment.glsl"
 

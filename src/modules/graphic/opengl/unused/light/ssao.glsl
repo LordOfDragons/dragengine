@@ -1,7 +1,7 @@
 precision highp float;
 precision highp int;
 
-uniform HIGHP sampler2DArray texDepth;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
 layout(binding=0, rgba8) uniform readonly image2DArray texDiffuse;
 layout(binding=1, rgba16f) uniform readonly image2DArray texNormal;

@@ -6,7 +6,7 @@ precision HIGHP int;
 uniform ivec2 pTCClamp;
 uniform int pMipMapLevel;
 
-uniform HIGHP sampler2DArray texDepth;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
 #include "shared/interface/2d_fragment.glsl"
 

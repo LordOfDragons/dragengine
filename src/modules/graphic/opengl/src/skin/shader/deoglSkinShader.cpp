@@ -1727,10 +1727,10 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.SetDefines( "PARTICLE" );
 		
 		if( pConfig.GetParticleMode() == deoglSkinShaderConfig::epmRibbon ){
-			defines.SetDefines( "PARTICLE_RIBBON" );
+			defines.SetDefine("PARTICLE_MODE", "1");
 			
 		}else if( pConfig.GetParticleMode() == deoglSkinShaderConfig::epmBeam ){
-			defines.SetDefines( "PARTICLE_BEAM" );
+			defines.SetDefine("PARTICLE_MODE", "2");
 		}
 		
 	}else if( pConfig.GetGeometryMode() == deoglSkinShaderConfig::egmDecal ){

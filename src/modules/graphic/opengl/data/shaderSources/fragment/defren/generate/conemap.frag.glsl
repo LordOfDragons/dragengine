@@ -4,10 +4,10 @@ precision HIGHP float;
 precision HIGHP int;
 
 #ifdef WITH_LAYER
-	uniform mediump sampler2DArray texHeight;
+	layout(binding=0) uniform mediump sampler2DArray texHeight;
 	#define SAMPLE_HEIGHT(tc) texture(texHeight, vec3(tc, pLayer))
 #else
-	uniform mediump sampler2D texHeight;
+	layout(binding=0) uniform mediump sampler2D texHeight;
 	#define SAMPLE_HEIGHT(tc) texture(texHeight, tc)
 #endif
 

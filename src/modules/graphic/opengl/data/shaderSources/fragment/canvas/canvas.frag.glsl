@@ -10,13 +10,13 @@ UNIFORM_BIND(6) uniform vec4 pClipRect; // left, top, right, bottom
 UNIFORM_BIND(7) uniform vec4 pTCClamp; // left, top, right, bottom
 
 // WithTexture
-uniform lowp sampler2D texColor;
+layout(binding=0) uniform lowp sampler2D texColor;
 
 // WithRenderWorld
-uniform lowp sampler2DArray texColorArray;
+layout(binding=0) uniform lowp sampler2DArray texColorArray;
 
 // WithMask
-uniform lowp sampler2D texMask;
+layout(binding=1) uniform lowp sampler2D texMask;
 
 #include "shared/interface/2d_fragment.glsl"
 

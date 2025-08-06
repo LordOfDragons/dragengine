@@ -2,10 +2,6 @@
 <shader>
 	<name>DefRen GI Debug Probe</name>
 	
-	<texture name='texGIIrradiance' target='0'/>
-	<texture name='texGIDistance' target='1'/>
-	<texture name='texGIProbeOffset' target='2'/>
-	
 	<parameter name='pMatrixNormal'/> <!-- 0 -->
 	<parameter name='pMatrixMV'/> <!-- 1 -->
 	<parameter name='pMatrixMVP'/> <!-- 2 -->

@@ -5,8 +5,8 @@
 	<define>GI_RAY</define>
 */
 
-vec3 normalFromDepth(in ARG_CONST ivec3 texcoord, in ARG_CONST float centerDepth,
-in ARG_CONST vec3 centerPosition){
+vec3 normalFromDepth(const in ivec3 texcoord, const in float centerDepth,
+const in vec3 centerPosition){
 	/*
 	the simple solution uses derivatives. this produces wrong results
 	along corners and is also not usable in compute shaders

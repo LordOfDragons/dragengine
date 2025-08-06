@@ -12,7 +12,7 @@ uniform vec4 pOptions; // scale, offset
 uniform vec3 pMask; // scale, first, second
 
 #ifdef _USE_TEXTURE_
-uniform mediump sampler2D texColor;
+layout(binding=0) uniform mediump sampler2D texColor;
 #endif
 
 #ifdef _USE_TEXTURE_

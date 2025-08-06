@@ -11,10 +11,10 @@ uniform float pMipMapLevel;
 #else
 	#define SAMPLER_ENVMAP samplerCube
 #endif
-uniform mediump SAMPLER_ENVMAP texEnvMap1;
-uniform mediump SAMPLER_ENVMAP texEnvMap2;
-uniform mediump SAMPLER_ENVMAP texEnvMap3;
-uniform mediump SAMPLER_ENVMAP texEnvMap4;
+layout(binding=0) uniform mediump SAMPLER_ENVMAP texEnvMap1;
+layout(binding=1) uniform mediump SAMPLER_ENVMAP texEnvMap2;
+layout(binding=2) uniform mediump SAMPLER_ENVMAP texEnvMap3;
+layout(binding=3) uniform mediump SAMPLER_ENVMAP texEnvMap4;
 
 #include "shared/interface/2d_fragment.glsl"
 

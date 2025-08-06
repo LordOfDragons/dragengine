@@ -14,7 +14,7 @@ uniform vec2 pClamp; // clamp.s, clamp.t
 uniform float pLevel;
 uniform float pScaleColor;
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Bloom Blur Stereo</name>
 	
-	<texture name='texColor' target='0'/>
-	
 	<parameter name='pTCTransform'/>
 	<parameter name='pOffsets1'/>
 	<parameter name='pOffsets2'/>

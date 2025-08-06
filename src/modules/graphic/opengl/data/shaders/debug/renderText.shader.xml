@@ -2,10 +2,6 @@
 <shader>
 	<name>Debug Render Text</name>
 	
-	<texture name='texTexture' target='0'/>
-	<texture name='texData1' target='1'/>
-	<texture name='texData2' target='2'/>
-	
 	<sourceCode unit='vertex'>V Debug Render Text</sourceCode>
 	<sourceCode unit='fragment'>F Debug Render Text</sourceCode>
 </shader>

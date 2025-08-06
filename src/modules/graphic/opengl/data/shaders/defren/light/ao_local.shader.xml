@@ -5,10 +5,6 @@
 	<parameter name='pTCTransform'/>
 	<parameter name='pSCTransform'/>
 	
-	<texture name='texDepth' target='0'/>
-	<texture name='texDiffuse' target='1'/>
-	<texture name='texNormal' target='2'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen AmbientOcclusion Local</sourceCode>
 </shader>

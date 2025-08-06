@@ -291,7 +291,7 @@ decStringList deoglShaderPreprocessor::GetSymbolNames() const{
 }
 
 bool deoglShaderPreprocessor::HasSymbolNamed( const char *name ) const{
-	return pSymbolTable.Has( name );
+	return pSymbolTable.Has(name);
 }
 
 deoglShaderPreprocessorSymbol *deoglShaderPreprocessor::GetSymbolNamed( const char *name ) const{
@@ -329,15 +329,29 @@ void deoglShaderPreprocessor::SetSymbol( const char *name, const char *value ){
 	// HACK HACK HACK
 }
 
+bool deoglShaderPreprocessor::HasMacroSymbolNamed(const char *name) const{
+	return pMacroSymbol.Has(name);
+}
+
+void deoglShaderPreprocessor::AddMacroSymbol(const char *name){
+	pMacroSymbol.Add(name);
+}
+
+bool deoglShaderPreprocessor::HasAnySymbolNamed(const char *name) const{
+	return HasSymbolNamed(name) || HasMacroSymbolNamed(name);
+}
+
 void deoglShaderPreprocessor::ClearSymbol( const char *name ){
 	if( ! name ){
 		DETHROW( deeInvalidParam );
 	}
 	pSymbolTable.RemoveIfPresent( name );
+	pMacroSymbol.Remove(name);
 }
 
 void deoglShaderPreprocessor::ClearAllSymbols(){
 	pSymbolTable.RemoveAll();
+	pMacroSymbol.RemoveAll();
 }
 
 void deoglShaderPreprocessor::SetSymbolsFromDefines( const deoglShaderDefines &defines ){
@@ -639,6 +653,8 @@ void deoglShaderPreprocessor::pProcessDirectiveDefine( const char *beginLine ){
 		pInputLine = inputLine;
 		SourcesAppend( value, true );
 		pInputLine = nextInputLine;
+		
+		AddMacroSymbol(symbol);
 		}break;
 		
 	case edtInvalid:
@@ -730,14 +746,14 @@ void deoglShaderPreprocessor::pProcessDirectiveIfDef() {
 	if( pDebugLogParsing ){
 		pRenderThread.GetLogger().LogInfoFormat( "Shader Preprocessor: #ifdef:"
 			" symbol '%s' = %d (output %d)", symbol.GetString(),
-			HasSymbolNamed( symbol ), pOutputCode );
+			HasAnySymbolNamed( symbol ), pOutputCode );
 	}
 	
 	const bool oldOutputCode = pOutputCode;
 	const bool oldOutputCodeCase = pOutputCodeCase;
 	
 	if( pOutputCode ){
-		pOutputCode = HasSymbolNamed( symbol );
+		pOutputCode = HasAnySymbolNamed( symbol );
 		pOutputCodeCase = ! pOutputCode;
 		
 	}else{
@@ -763,14 +779,14 @@ void deoglShaderPreprocessor::pProcessDirectiveIfNotDef() {
 	if( pDebugLogParsing ){
 		pRenderThread.GetLogger().LogInfoFormat( "Shader Preprocessor: #ifndef:"
 			" symbol '%s' = %d (output %d)", symbol.GetString(),
-			HasSymbolNamed( symbol ), pOutputCode );
+			HasAnySymbolNamed( symbol ), pOutputCode );
 	}
 	
 	const bool oldOutputCode = pOutputCode;
 	const bool oldOutputCodeCase = pOutputCodeCase;
 	
 	if( pOutputCode ){
-		pOutputCode = ! HasSymbolNamed( symbol );
+		pOutputCode = ! HasAnySymbolNamed( symbol );
 		pOutputCodeCase = ! pOutputCode;
 		
 	}else{
@@ -900,13 +916,13 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition( const char *directive,
 				
 				if( identifier == "defined" ){
 					switch( pParseDirectiveToken( token ) ){
-					case edtIdentifier:
-						updateResultValue = HasSymbolNamed( pDirectiveTokenString( token ) );
-						break;
+					case edtIdentifier:{
+						updateResultValue = HasAnySymbolNamed( pDirectiveTokenString( token ) );
+						}break;
 						
 					case edtLeftParanthesis:
 						pExpectDirectiveToken( token, edtIdentifier, directive );
-						updateResultValue = HasSymbolNamed( pDirectiveTokenString( token ) );
+						updateResultValue = HasAnySymbolNamed( pDirectiveTokenString( token ) );
 						pExpectDirectiveToken( edtRightParanthesis, directive );
 						break;
 						

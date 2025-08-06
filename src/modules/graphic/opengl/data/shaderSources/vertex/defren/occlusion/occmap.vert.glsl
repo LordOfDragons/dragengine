@@ -4,22 +4,6 @@ precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
-
-#ifdef WITH_SHADOWMAP
-	#include "shared/defren/ubo_render_parameters.glsl"
-	const vec4 pTransformZ[6] = vec4[6](vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0));
-	
-#else
-	UBOLAYOUT_BIND(0) uniform RenderParameters{
-		mat4 pMatrixVP[6];
-		mat4x3 pMatrixV[6];
-		vec4 pTransformZ[6];
-		vec2 pZToDepth;
-		vec4 pClipPlane[2]; // normal.xyz, distance
-	};
-	const vec4 pDepthOffset[4] = vec4[4](vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0));
-#endif
-
 #include "shared/defren/occmap.glsl"
 
 #ifdef SHARED_SPB
@@ -70,18 +54,19 @@ void main(void){
 		gl_Position = position;
 		
 	#else
-		gl_Position = pMatrixVP[vLayer] * position;
-		vDepth = dot(pTransformZ[vLayer], position);
-		vPosition = pMatrixV[vLayer] * position;
-		vClipCoord = pMatrixV[vLayer] * position;
+		gl_Position = getMatrixVP(vLayer) * position;
+		vDepth = dot(getTransformZ(vLayer), position);
+		vPosition = getMatrixV(vLayer) * position;
+		vClipCoord = getMatrixV(vLayer) * position;
 		
-		#if defined DEPTH_OFFSET
-			#ifdef DEPTH_DISTANCE
+		if(DepthOffset){
+			if(DepthDistance){
 				applyDepthOffset(vLayer, vPosition.z);
-			#else
+				
+			}else{
 				applyDepthOffset(vLayer);
-			#endif
-		#endif
+			}
+		}
 	#endif
 	
 	vSPBIndex = spbIndex;

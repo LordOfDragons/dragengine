@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Bloom Down-Sample Stereo</name>
 	
-	<texture name='texColor' target='0'/>
-	
 	<parameter name='pLevel'/>
 	
 	<sourceCode unit='vertex'>V Generic PassThrough</sourceCode>

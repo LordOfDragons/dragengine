@@ -2,13 +2,6 @@
 <shader>
 	<name>DefRen Reflection ScreenSpace</name>
 	
-	<texture name='texDepth' target='0'/>
-	<texture name='texDepthMinMax' target='1'/>
-	<texture name='texDiffuse' target='2'/>
-	<texture name='texNormal' target='3'/>
-	<texture name='texRoughness' target='4'/>
-	<texture name='texAOSolidity' target='5'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Reflection ScreenSpace</sourceCode>
 </shader>

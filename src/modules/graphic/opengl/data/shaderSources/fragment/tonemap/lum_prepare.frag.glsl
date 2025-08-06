@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform HIGHP sampler2DArray texColor;
+layout(binding=0) uniform HIGHP sampler2DArray texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

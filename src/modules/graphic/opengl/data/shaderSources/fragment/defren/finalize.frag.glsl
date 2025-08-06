@@ -7,7 +7,7 @@ uniform vec4 pGamma; // red, green, blue
 uniform vec4 pBrightness; // red, green, blue
 uniform vec4 pContrast; // red, green, blue
 
-uniform lowp sampler2DArray texColor;
+layout(binding=0) uniform lowp sampler2DArray texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

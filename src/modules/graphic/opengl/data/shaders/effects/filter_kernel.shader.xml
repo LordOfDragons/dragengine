@@ -2,8 +2,6 @@
 <shader>
 	<name>Effect Filter Kernel</name>
 	
-	<texture name="texColor" target="0"/>
-	
 	<parameter name="pTCTransform"/>
 	<parameter name="pOptions"/>
 	<parameter name="pKernel1"/>

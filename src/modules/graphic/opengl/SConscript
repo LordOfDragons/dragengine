@@ -271,6 +271,12 @@ def transpileOpenGLSpirV(env):
 		'data/shaderSources/fragment/generic/gauss_sep_fixed.shaderSource.xml',
 		'data/shaderSources/fragment/generic/output_texture.shaderSource.xml',
 		'data/shaderSources/fragment/defren/light/light.shaderSource.xml',
+		'data/shaderSources/fragment/defren/light/ao_local.shaderSource.xml',
+		'data/shaderSources/fragment/defren/light/box_boundary.shaderSource.xml',
+		'data/shaderSources/fragment/defren/light/copy_shadow.shaderSource.xml',
+		'data/shaderSources/fragment/defren/light/gi.shaderSource.xml',
+		'data/shaderSources/fragment/defren/light/ssao_upscale.shaderSource.xml',
+		'data/shaderSources/fragment/defren/light/sssss.shaderSource.xml',
 		
 		'data/shaderSources/vertex/2d/solidcolor.shaderSource.xml',
 		'data/shaderSources/vertex/2d/textured.shaderSource.xml',

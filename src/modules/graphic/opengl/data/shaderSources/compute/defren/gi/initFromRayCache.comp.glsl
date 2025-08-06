@@ -8,11 +8,11 @@ precision HIGHP int;
 #include "shared/defren/gi/trace_probe.glsl"
 #include "shared/defren/gi/raycast/ray_cache.glsl"
 
-uniform HIGHP sampler2DArray texCacheDistance;
-uniform HIGHP sampler2DArray texCacheNormal;
-uniform lowp sampler2DArray texCacheDiffuse;
-uniform lowp sampler2DArray texCacheReflectivity;
-uniform HIGHP sampler2DArray texCacheLight;
+layout(binding=0) uniform HIGHP sampler2DArray texCacheDistance;
+layout(binding=1) uniform HIGHP sampler2DArray texCacheNormal;
+layout(binding=2) uniform lowp sampler2DArray texCacheDiffuse;
+layout(binding=3) uniform lowp sampler2DArray texCacheReflectivity;
+layout(binding=4) uniform HIGHP sampler2DArray texCacheLight;
 
 layout( binding=0, rgba16f ) uniform writeonly restrict HIGHP image2D texPosition;
 layout( binding=1, rgba8_snorm ) uniform writeonly restrict HIGHP image2D texNormal;

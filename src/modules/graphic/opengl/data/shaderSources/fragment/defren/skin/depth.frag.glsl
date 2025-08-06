@@ -116,13 +116,15 @@ vec3 finalEmissivityIntensity(in vec3 intensity){
 void main(void){
 	// calculate depth if non-projective depth is used. this has to be done before any branching
 	// because derivatives become undefined otherwise.
-	#ifdef DEPTH_DISTANCE
+	if(DepthDistance){
 		float depth = length(vPosition) * pDepthTransform.x + pDepthTransform.y;
-		#ifdef DEPTH_OFFSET
+#if 0
+		if(DepthOffset){
 // 			vec2 depthDeriv = vec2(dFdx(depth), dFdy(depth));
-		#endif
+		}
+#endif
 		gl_FragDepth = depth;
-	#endif
+	}
 	
 	// discard fragments beyond render range
 	#ifdef FADEOUT_RANGE
@@ -131,7 +133,8 @@ void main(void){
 		}
 	#endif
 	
-	#if defined DEPTH_OFFSET && defined DEPTH_ORTHOGONAL && NEVER_DEFINED
+#if 0
+	if(DepthOffset && DepthOrthogonal){
 		/*if(gl_FrontFacing){
 			gl_FragDepth += length(depthDeriv) * pDepthOffset[vLayer].x + pDepthOffset[vLayer].y;
 			
@@ -142,7 +145,8 @@ void main(void){
 		vec2 depthOffset = mix(pDepthOffset[vLayer].zw, pDepthOffset[vLayer].xy,
 			bvec2(gl_FrontFacing || pDoubleSided)); // mix(if-false, if-true, condition)
 		gl_FragDepth += length(depthDeriv) * depthOffset.x + depthOffset.y;
-	#endif
+	}
+#endif
 	
 	// discard fragments using the clip plane
 	#ifdef CLIP_PLANE
@@ -280,11 +284,13 @@ void main(void){
 	#endif
 	
 	// determine where the depth is coming from. this is different depending if projective depth is used or not
-	#if defined DEPTH_ORTHOGONAL || defined DEPTH_DISTANCE
-		#define fragmentDepth gl_FragDepth
-	#else
-		#define fragmentDepth gl_FragCoord.z
-	#endif
+	float fragmentDepth;
+	if(DepthOrthogonal || DepthDistance){
+		fragmentDepth = gl_FragDepth;
+		
+	}else{
+		fragmentDepth = gl_FragCoord.z;
+	}
 	
 	// discard against previous depth
 	#ifdef DEPTH_TEST

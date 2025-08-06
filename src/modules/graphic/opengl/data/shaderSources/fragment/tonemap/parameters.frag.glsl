@@ -8,9 +8,9 @@ precision HIGHP int;
 
 uniform vec4 pAvgLogLumTCs; // tc1.s, tc1.t, tc2.s, tc2.t
 
-uniform HIGHP sampler2DArray texAvgLogLum;
-uniform HIGHP sampler2D texLastParams;
-uniform mediump samplerCube texEnvMap;
+layout(binding=0) uniform HIGHP sampler2DArray texAvgLogLum;
+layout(binding=1) uniform HIGHP sampler2D texLastParams;
+layout(binding=2) uniform mediump samplerCube texEnvMap;
 
 #include "shared/interface/2d_fragment.glsl"
 

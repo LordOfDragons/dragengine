@@ -2,9 +2,6 @@
 <shader>
 	<name>Sky Body</name>
 	
-	<texture name='texColor' target='0'/>
-	<texture name='texTransparency' target='1'/>
-	
 	<parameter name='pMatrixBody'/>
 	<parameter name='pColor'/>
 	<parameter name='pMaterialGamma'/>

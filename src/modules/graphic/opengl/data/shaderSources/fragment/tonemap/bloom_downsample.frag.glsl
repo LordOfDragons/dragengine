@@ -5,7 +5,7 @@ precision HIGHP int;
 
 uniform int pLevel;
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

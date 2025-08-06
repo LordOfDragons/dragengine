@@ -1,3 +1,9 @@
+// global constants
+#include "shared/normal/constants.glsl"
+#include "shared/defren/constants.glsl"
+#include "shared/defren/gi/constants.glsl"
+#include "shared/defren/light/constants.glsl"
+
 // OpenGL Spir-V
 #ifdef WITH_SPIRV_OPENGL
 
@@ -7,12 +13,14 @@
 #define ARG_SAMP_HIGHP
 #define ARG_SAMP_MEDP
 #define ARG_SAMP_LOWP
-#define ARG_CONST const
 #define GLSL_450
 #define GS_INSTANCING
 #define SUPPORTS_VSLAYER
 #define SUPPORTS_VSDRAWPARAM
 #define HW_DEPTH_COMPARE
+#define SHARED_SPB
+#define SHARED_SPB_USE_SSBO
+#define SPB_SSBO_INSTANCE_ARRAY
 
 #define UNIFORM_BIND(index) layout(location=index)
 #define VARYING_BIND(index) layout(location=index)
@@ -77,35 +85,18 @@ layout(constant_id=45) const bool FullScreenQuadTCTransform = false;
 layout(constant_id=46) const bool NoPosTransform = false;
 layout(constant_id=47) const bool NoTCTransform = false;
 layout(constant_id=48) const bool TexCoordFlipY = false;
-
-layout(constant_id=49) const int LightMode = 0;
-	// 0: point
-	// 1: spot
-	// 2: projector
-	// 3: sky
-	// 4: particle
-
+layout(constant_id=49) const int LightMode = LightModePoint;
 layout(constant_id=50) const bool NoiseTap = false;
-layout(constant_id=51) const int PcfMode = 0;
-	// 0: 1-tap
-	// 1: 4-tap
-	// 2: 9-tap
-	// 3: variable tap
+layout(constant_id=51) const int PcfMode = PcfMode1Tap;
 layout(constant_id=52) const bool AmbientLighting = false;
 layout(constant_id=53) const bool GIRay = false;
 layout(constant_id=54) const bool LuminanceOnly = false;
-layout(constant_id=55) const int Shadow1Mode = 0;
-	// 0: map
-	// 1: cube
-	// 2: dual paraboloid
-	// 3: pyramid
-layout(constant_id=56) const int Shadow2Mode = 0; // same as Shadow1Mode
+
+layout(constant_id=55) const int Shadow1Mode = ShadowModeMap;
+layout(constant_id=56) const int Shadow2Mode = ShadowModeMap;
 layout(constant_id=57) const bool ShadowInverseDepth = false;
 layout(constant_id=58) const bool ShaMat2EqualsShaMat1 = false;
-layout(constant_id=59) const int TextureLightColor = 0;
-	// 0: 2d
-	// 1: cube
-	// 2: equirect
+layout(constant_id=59) const int TextureLightColor = TextureLightColorNone;
 layout(constant_id=60) const bool TextureShadow1Solid = false;
 layout(constant_id=61) const bool TextureShadow1Transparent = false;
 layout(constant_id=62) const bool TextureShadow1Ambient = false;
@@ -113,13 +104,23 @@ layout(constant_id=63) const bool TextureShadow2Solid = false;
 layout(constant_id=64) const bool TextureShadow2Transparent = false;
 layout(constant_id=65) const bool TextureShadow2Ambient = false;
 layout(constant_id=66) const bool WithSubsurface = false;
-layout(constant_id=67) const int MaterialNormalDec = 0;
-	// 0: float
-	// 1: int basic
-	// 2: float basic
-	// 3: sphere map
-layout(constant_id=68) const int MaterialNormalEnc = 0;
-	// same as MaterialNormalDec
+layout(constant_id=67) const int MaterialNormalDec = MaterialNormalModeFloat;
+layout(constant_id=68) const int MaterialNormalEnc = MaterialNormalModeFloat;
+
+layout(constant_id=69) const bool DepthDistance = false;
+layout(constant_id=70) const int ParticleMode = ParticleModeParticle;
+layout(constant_id=71) const int SSAOResolutionCount = 1;
+layout(constant_id=72) const bool DepthCubeMap = false;
+layout(constant_id=73) const bool DepthInput = false;
+layout(constant_id=74) const bool AmbientMap = false;
+layout(constant_id=75) const bool CopyColor = false;
+layout(constant_id=76) const bool EncodedDepth = false;
+layout(constant_id=77) const bool DepthTest = false;
+layout(constant_id=78) const bool DepthOrthogonal = false;
+layout(constant_id=79) const bool WithShadowMap = false;
+layout(constant_id=80) const bool DepthOffset = false;
+layout(constant_id=81) const bool UseClipPlane = false;
+layout(constant_id=82) const bool PerspectiveToLinear = false;
 
 // OpenGL
 #else

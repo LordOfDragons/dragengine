@@ -32,21 +32,7 @@
 
 // uniforms
 #include "shared/ubo_defines.glsl"
-
-#ifdef WITH_SHADOWMAP
-	#include "shared/defren/ubo_render_parameters.glsl"
-	const vec4 pTransformZ[6] = vec4[6](vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0));
-	
-#else
-	UBOLAYOUT_BIND(0) uniform RenderParameters{
-		mat4 pMatrixVP[6];
-		mat4x3 pMatrixV[6];
-		vec4 pTransformZ[6];
-		vec2 pZToDepth;
-		vec4 pClipPlane[2]; // normal.xyz, distance
-	};
-	const vec4 pDepthOffset[4] = vec4[4](vec4(0.0), vec4(0.0), vec4(0.0), vec4(0.0));
-#endif
+#include "shared/defren/occmap.glsl"
 
 // inputs
 VARYING_BIND(0) flat in int vGSSPBIndex[3];
@@ -76,25 +62,24 @@ void emitCorner(in int layer, in vec4 position, in vec4 preTransformedPosition){
 	gl_Position = preTransformedPosition;
 	
 	vSPBIndex = vGSSPBIndex[0];
-	vDepth = dot(pTransformZ[layer], position);
-	vPosition = pMatrixV[layer] * position;
-	vClipCoord = pMatrixV[layer] * position;
+	vDepth = dot(getTransformZ(layer), position);
+	vPosition = getMatrixV(layer) * position;
+	vClipCoord = getMatrixV(layer) * position;
 	
-	#if defined DEPTH_OFFSET
+	if(DepthOffset){
 		#ifdef GS_RENDER_CUBE
-			#ifdef DEPTH_DISTANCE
-				applyDepthOffset(0, vPosition.z);
-			#else
-				applyDepthOffset(0);
-			#endif
+			VARCONST int depthLayer = 0;
 		#else
-			#ifdef DEPTH_DISTANCE
-				applyDepthOffset(layer, vPosition.z);
-			#else
-				applyDepthOffset(layer);
-			#endif
+			VARCONST int depthLayer = layer;
 		#endif
-	#endif
+		
+		if(DepthDistance){
+			applyDepthOffset(depthLayer, vPosition.z);
+			
+		}else{
+			applyDepthOffset(depthLayer);
+		}
+	}
 	
 	vLayer = layer;
 	gl_Layer = layer;
@@ -104,7 +89,7 @@ void emitCorner(in int layer, in vec4 position, in vec4 preTransformedPosition){
 }
 
 void emitCorner(in int layer, in vec4 position){
-	emitCorner(layer, position, pMatrixVP[layer] * position);
+	emitCorner(layer, position, getMatrixVP(layer) * position);
 }
 
 #endif

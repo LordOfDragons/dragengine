@@ -6,8 +6,8 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform mediump sampler2DArray texColor;
-uniform HIGHP sampler2D texToneMapParams;
+layout(binding=0) uniform mediump sampler2DArray texColor;
+layout(binding=1) uniform HIGHP sampler2D texToneMapParams;
 
 #include "shared/interface/2d_fragment.glsl"
 

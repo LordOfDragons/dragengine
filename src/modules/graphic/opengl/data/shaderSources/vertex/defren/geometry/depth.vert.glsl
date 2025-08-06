@@ -4,9 +4,10 @@ precision HIGHP float;
 precision HIGHP int;
 
 UNIFORM_BIND(0) uniform mat4 pMatrixMVP;
-#ifdef USE_CLIP_PLANE
+
+// UseClipPlane
 UNIFORM_BIND(1) uniform mat4x3 pMatrixMV;
-#endif
+
 #if defined( IGNORE_HOLES ) || defined( CLIP_DEPTH )
 UNIFORM_BIND(2) uniform mat3x2 pMatrixDiffuse;
 #endif
@@ -25,9 +26,9 @@ layout(location=4) in float inHTHeight;
 #if defined( IGNORE_HOLES ) || defined( CLIP_DEPTH )
 VARYING_BIND(0) out vec2 vTexCoord;
 #endif
-#ifdef USE_CLIP_PLANE
+
+// UseClipPlane
 out vec3 vClipCoord;
-#endif
 
 #include "shared/defren/sanitize_position.glsl"
 
@@ -58,11 +59,11 @@ void main( void ){
 #endif // HEIGHTTERRAIN
 #endif // PROP_FIELD
 	
-#ifdef USE_CLIP_PLANE
+	if(UseClipPlane){
 #ifdef HEIGHTTERRAIN
 	vClipCoord = pMatrixMV * vec4( inPosition.x, inHTHeight, inPosition.y, 1 );
 #else // HEIGHTTERRAIN
 	vClipCoord = pMatrixMV * vec4( inPosition, 1 );
 #endif // HEIGHTTERRAIN
-#endif
+	}
 }

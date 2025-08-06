@@ -11,7 +11,7 @@ uniform vec4 pParams; // x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMa
 uniform vec4 pMaterialGamma;
 uniform vec4 pSkyBgColor; // skybg.rgb, skybgBlendFactor
 
-uniform mediump samplerCube texSky;
+layout(binding=0) uniform mediump samplerCube texSky;
 
 #include "shared/interface/2d_fragment.glsl"
 

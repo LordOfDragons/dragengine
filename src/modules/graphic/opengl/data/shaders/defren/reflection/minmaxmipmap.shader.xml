@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Reflection MinMap MipMap</name>
 	
-	<texture name='texDepth' target='0'/>
-	
 	<parameter name='pTCClamp'/> <!-- 0 -->
 	<parameter name='pMipMapLevel'/> <!-- 1 -->
 	<parameter name='pSplitPos'/> <!-- 2 -->

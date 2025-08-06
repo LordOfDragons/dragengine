@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform lowp sampler2DArray texAO;
+layout(binding=0) uniform lowp sampler2DArray texAO;
 
 #include "shared/interface/2d_fragment.glsl"
 

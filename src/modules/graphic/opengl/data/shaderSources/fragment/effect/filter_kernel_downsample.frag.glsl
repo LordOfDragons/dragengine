@@ -9,7 +9,7 @@ precision HIGHP int;
 // uniform vec3 pKernel3;
 UNIFORM_BIND(3) uniform ivec2 pTCClamp;
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

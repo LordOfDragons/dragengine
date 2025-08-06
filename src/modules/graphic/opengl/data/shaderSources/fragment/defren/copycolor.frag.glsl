@@ -15,11 +15,11 @@ precision mediump int;
 #endif
 
 #ifdef INPUT_ARRAY_TEXTURE
-	uniform mediump sampler2DArray texColor;
+	layout(binding=0) uniform mediump sampler2DArray texColor;
 	#define TEX_COLOR(tc) textureLod( texColor, vec3( tc, vLayer ), pMipMapLevel )
 	#define TEX_FETCH_COLOR(tc) texelFetch( texColor, ivec3( tc, vLayer ), 0 )
 #else
-	uniform mediump sampler2D texColor;
+	layout(binding=0) uniform mediump sampler2D texColor;
 	#define TEX_COLOR(tc) textureLod( texColor, vec2( tc ), pMipMapLevel )
 	#define TEX_FETCH_COLOR(tc) texelFetch( texColor, tc, 0 )
 #endif

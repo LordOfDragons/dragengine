@@ -12,8 +12,8 @@ precision HIGHP int;
 #include "shared/defren/gi/trace_probe.glsl"
 
 
-uniform sampler2D texPosition;
-uniform sampler2D texNormal;
+layout(binding=0) uniform sampler2D texPosition;
+layout(binding=1) uniform sampler2D texNormal;
 
 
 flat in int vInstanceID;

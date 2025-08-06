@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Transparency Get Count</name>
 	
-	<texture name='texValues' target='0'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Transparency Get Count</sourceCode>
 </shader>

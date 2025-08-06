@@ -96,6 +96,16 @@ const decString &deoglShaderDefines::GetDefineValueFor( const char *name, const 
 	return defaultValue;
 }
 
+const char *deoglShaderDefines::GetDefineValueFor(const char *name, const char *defaultValue) const{
+	int i;
+	for(i=0; i<pDefineCount; i++){
+		if(pDefines[i].name == name){
+			return pDefines[i].value;
+		}
+	}
+	return defaultValue;
+}
+
 void deoglShaderDefines::SetDefine( const char *name, const char *value ){
 	DEASSERT_NOTNULL( name )
 	DEASSERT_NOTNULL( name[ 0 ] )

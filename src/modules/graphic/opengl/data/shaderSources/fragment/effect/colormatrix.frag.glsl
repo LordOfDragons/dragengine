@@ -6,7 +6,7 @@ precision HIGHP int;
 UNIFORM_BIND(3) uniform mat4 pColorMatrix;
 UNIFORM_BIND(4) uniform vec4 pColorOffset;
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

@@ -1,5 +1,3 @@
-#include "shared/defren/gi/constants.glsl"
-
 UBOLAYOUT_BIND(1) uniform GIParameters{
 	vec2 pGISampleImageScale;
 	int pGIProbeCount;

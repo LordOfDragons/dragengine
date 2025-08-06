@@ -2,8 +2,6 @@
 <shader>
 	<name>Effect Overlay Stereo</name>
 	
-	<texture name="texColor" target="0"/>
-	
 	<parameter name="pGamma"/>
 	<parameter name="pColor"/>
 	

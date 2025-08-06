@@ -2,10 +2,6 @@
 <shader>
 	<name>DefRen Reflection MinMap MipMap 2</name>
 	
-	<!-- shader assigned locations
-	<texture name='texData' target='0'/>
-	-->
-	
 	<parameter name='pTCClamp'/> <!-- 0 -->
 	<parameter name='pMipMapLevel'/> <!-- 1 -->
 	

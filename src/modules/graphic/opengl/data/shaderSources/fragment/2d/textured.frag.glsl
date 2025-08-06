@@ -5,7 +5,7 @@ precision lowp int;
 
 UNIFORM_BIND(0) uniform lowp vec4 pColor;
 
-uniform lowp sampler2D texColor;
+layout(binding=0) uniform lowp sampler2D texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

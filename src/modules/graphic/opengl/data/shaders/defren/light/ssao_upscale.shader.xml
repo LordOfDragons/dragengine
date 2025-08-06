@@ -4,8 +4,6 @@
 	
 	<parameter name='pTCTransform'/>
 	
-	<texture name='texAO' target='0'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen SSAO Upscale</sourceCode>
 </shader>

@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
 uniform float pLevel;
 

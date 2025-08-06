@@ -79,15 +79,15 @@
 };
 	
 #else
-	uniform HIGHP samplerBuffer tboGIRayCastNodeBox;
-	uniform HIGHP usamplerBuffer tboGIRayCastIndex;
-	uniform HIGHP usamplerBuffer tboGIRayCastInstance;
-	uniform HIGHP samplerBuffer tboGIRayCastMatrix;
-	uniform HIGHP usamplerBuffer tboGIRayCastFace;
-	uniform HIGHP samplerBuffer tboGIRayCastVertex;
+	layout(binding=0) uniform HIGHP samplerBuffer tboGIRayCastNodeBox;
+	layout(binding=1) uniform HIGHP usamplerBuffer tboGIRayCastIndex;
+	layout(binding=2) uniform HIGHP usamplerBuffer tboGIRayCastInstance;
+	layout(binding=3) uniform HIGHP samplerBuffer tboGIRayCastMatrix;
+	layout(binding=4) uniform HIGHP usamplerBuffer tboGIRayCastFace;
+	layout(binding=5) uniform HIGHP samplerBuffer tboGIRayCastVertex;
 
 	// !GIRayCastDistanceOnly
-	uniform HIGHP samplerBuffer tboGIRayCastTexCoord;
+	layout(binding=6) uniform HIGHP samplerBuffer tboGIRayCastTexCoord;
 #endif
 
 // ray cast result

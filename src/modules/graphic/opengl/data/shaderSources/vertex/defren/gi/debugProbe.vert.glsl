@@ -11,6 +11,7 @@ UNIFORM_BIND(1) uniform mat4 pMatrixP;
 UNIFORM_BIND(2) uniform int pGIDebugCascade;
 
 #define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
+#define TEX_GI_PROBE_OFFSET_BINDING 2
 #include "shared/defren/gi/probe_offset.glsl"
 
 layout(location=0) in vec2 inPosition;

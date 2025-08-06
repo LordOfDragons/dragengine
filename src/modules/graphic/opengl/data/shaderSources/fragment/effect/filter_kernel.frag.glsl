@@ -8,7 +8,7 @@ UNIFORM_BIND(4) uniform vec3 pKernel1;
 UNIFORM_BIND(5) uniform vec3 pKernel2;
 UNIFORM_BIND(6) uniform vec3 pKernel3;
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

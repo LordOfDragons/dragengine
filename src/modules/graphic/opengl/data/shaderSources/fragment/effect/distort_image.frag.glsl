@@ -5,8 +5,8 @@ precision HIGHP int;
 
 UNIFORM_BIND(3) uniform vec4 pDistortTransform;
 
-uniform mediump sampler2DArray texColor;
-uniform lowp sampler2D texDistort;
+layout(binding=0) uniform mediump sampler2DArray texColor;
+layout(binding=1) uniform lowp sampler2D texDistort;
 
 #include "shared/interface/2d_fragment.glsl"
 

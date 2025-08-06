@@ -9,11 +9,6 @@
 	<parameter name='pTapRadiusLimit'/>
 	<parameter name='pTapDropRadiusThreshold'/>
 	
-	<texture name='texDepth' target='0'/>
-	<texture name='texDiffuse' target='1'/>
-	<texture name='texSubSurface' target='2'/>
-	<texture name='texLight' target='3'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen ScreenSpace SubSurface Scattering</sourceCode>
 </shader>

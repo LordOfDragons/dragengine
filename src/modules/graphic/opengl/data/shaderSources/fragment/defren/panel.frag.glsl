@@ -3,7 +3,7 @@
 uniform HIGHP mat4 pColorTransform;
 uniform HIGHP vec4 pColorTransform2;
 
-uniform mediump sampler2D texTexture;
+layout(binding=0) uniform mediump sampler2D texTexture;
 
 #include "shared/interface/2d_fragment.glsl"
 

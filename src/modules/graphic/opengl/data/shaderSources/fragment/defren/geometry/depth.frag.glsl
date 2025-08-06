@@ -5,15 +5,15 @@ precision HIGHP int;
 
 uniform vec4 pClipPlane; // normal.xyz, distance
 
-uniform lowp sampler2D texDiffuse;
-uniform HIGHP sampler2DArray texDepth;
+layout(binding=0) uniform lowp sampler2D texDiffuse;
+layout(binding=1) uniform HIGHP sampler2DArray texDepth;
 
 #if defined IGNORE_HOLES || defined CLIP_DEPTH
 VARYING_BIND(0) in vec2 vTexCoord;
 #endif
-#ifdef USE_CLIP_PLANE
+
+// UseClipPlane
 in vec3 vClipCoord;
-#endif
 
 // GSRenderStereo || VSRenderStereo
 VARYING_BIND(1) flat in int vLayer;
@@ -35,9 +35,9 @@ const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 #endif
 
 void main( void ){
-#ifdef USE_CLIP_PLANE
-	if( dot( vClipCoord, pClipPlane.xyz ) <= pClipPlane.w ) discard;
-#endif
+	if(UseClipPlane){
+		if( dot( vClipCoord, pClipPlane.xyz ) <= pClipPlane.w ) discard;
+	}
 	
 #ifdef IGNORE_HOLES
 	//if( texture( texDiffuse, vTexCoord ).a < 0.5 ) discard;

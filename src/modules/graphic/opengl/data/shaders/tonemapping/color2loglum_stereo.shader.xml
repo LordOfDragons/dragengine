@@ -2,9 +2,6 @@
 <shader>
 	<name>ToneMap Color2LogLum Stereo</name>
 	
-	<!--<texture name='texColor' target='0'/>-->
-	<texture name='texLuminance' target='0'/>
-	
 	<parameter name='pParam1'/>
 	<parameter name='pParam2'/>
 	

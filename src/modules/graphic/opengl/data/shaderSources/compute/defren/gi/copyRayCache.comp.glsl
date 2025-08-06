@@ -9,11 +9,11 @@ precision HIGHP int;
 #include "shared/defren/gi/raycast/ray_cache.glsl"
 #include "shared/image_buffer.glsl"
 
-uniform HIGHP sampler2D texPosition;
-uniform HIGHP sampler2D texNormal;
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texReflectivity;
-uniform HIGHP sampler2D texLight;
+layout(binding=0) uniform HIGHP sampler2D texPosition;
+layout(binding=1) uniform HIGHP sampler2D texNormal;
+layout(binding=2) uniform lowp sampler2D texDiffuse;
+layout(binding=3) uniform lowp sampler2D texReflectivity;
+layout(binding=4) uniform HIGHP sampler2D texLight;
 
 layout(binding=0, IMG_R16F_FMT) uniform writeonly restrict HIGHP IMG_R16F_2DARR texCacheDistance;
 layout( binding=1, rgba8_snorm ) uniform writeonly restrict HIGHP image2DArray texCacheNormal;

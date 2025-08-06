@@ -2,19 +2,5 @@
 <shader>
 	<name>DefRen GI Copy Ray Cache</name>
 	
-	<texture name='texPosition' target='0'/>
-	<texture name='texNormal' target='1'/>
-	<texture name='texDiffuse' target='2'/>
-	<texture name='texReflectivity' target='3'/>
-	<texture name='texLight' target='4'/>
-	
-	<!-- shader assigned locations
-	<texture name='texCacheDistance' target='0'/>
-	<texture name='texCacheNormal' target='1'/>
-	<texture name='texCacheDiffuse' target='2'/>
-	<texture name='texCacheReflectivity' target='3'/>
-	<texture name='texCacheLight' target='4'/>
-	-->
-	
 	<sourceCode unit='compute'>C DefRen GI Copy Ray Cache</sourceCode>
 </shader>

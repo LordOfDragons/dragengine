@@ -2,10 +2,5 @@
 <shader>
 	<name>DefRen GI Probe Extends</name>
 	
-	<!-- shader assigned locations
-	<texture name='texCacheDistance' target='0'/>
-	<texture name='texPosition' target='0'/>
-	-->
-	
 	<sourceCode unit='compute'>C DefRen GI Probe Extends</sourceCode>
 </shader>

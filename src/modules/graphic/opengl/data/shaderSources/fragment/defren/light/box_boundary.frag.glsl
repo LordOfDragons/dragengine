@@ -3,25 +3,25 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pPosTransform;
-uniform mat3 pMatrixRotation;
-uniform vec3 pInitialMinValue;
-uniform vec3 pInitialMaxValue;
-uniform vec3 pClearMinValue;
-uniform vec3 pClearMaxValue;
+UNIFORM_BIND(1) uniform vec4 pPosTransform;
+UNIFORM_BIND(2) uniform mat3 pMatrixRotation;
+UNIFORM_BIND(3) uniform vec3 pInitialMinValue;
+UNIFORM_BIND(4) uniform vec3 pInitialMaxValue;
+UNIFORM_BIND(5) uniform vec3 pClearMinValue;
+UNIFORM_BIND(6) uniform vec3 pClearMaxValue;
 
-uniform int pMipMapLevel;
+UNIFORM_BIND(7) uniform int pMipMapLevel;
 
-#ifdef DEPTH_CUBEMAP
-	uniform HIGHP samplerCube texAmbient;
-	uniform HIGHP samplerCube texDepth;
-#else
-	uniform HIGHP sampler2D texAmbient;
-	uniform HIGHP sampler2D texDepth;
-#endif
+layout(binding=0) uniform HIGHP sampler2D texMin;
+layout(binding=1) uniform HIGHP sampler2D texMax;
 
-uniform HIGHP sampler2D texMin;
-uniform HIGHP sampler2D texMax;
+// DepthCubeMap
+layout(binding=2) uniform HIGHP samplerCube texDepthCube;
+layout(binding=3) uniform HIGHP samplerCube texAmbientCube;
+
+// !DepthCubeMap
+layout(binding=2) uniform HIGHP sampler2D texDepth;
+layout(binding=3) uniform HIGHP sampler2D texAmbient;
 
 #include "shared/interface/2d_fragment.glsl"
 
@@ -31,9 +31,8 @@ layout(location=1) out vec3 outMax;
 const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
 
 
-#ifdef DEPTH_CUBEMAP
-void updateMinMaxFromDepth(in HIGHP samplerCube tex, in vec3 tc,
-in ivec3 swizzle, in ivec3 flipper, inout vec3 resMin, inout vec3 resMax){
+void updateMinMaxFromDepth(in HIGHP samplerCube tex, const in vec3 tc,
+const in ivec3 swizzle, const in ivec3 flipper, inout vec3 resMin, inout vec3 resMax){
 	vec3 position = vec3( textureLod( tex, tc, 0.0 ).r );
 	
 	if(ShadowInverseDepth){
@@ -59,8 +58,8 @@ in ivec3 swizzle, in ivec3 flipper, inout vec3 resMin, inout vec3 resMax){
 	resMax = max(resMax, position);
 }
 
-#else
-void updateMinMaxFromDepth(in HIGHP sampler2D tex, in ivec2 tc, inout vec3 resMin, inout vec3 resMax){
+void updateMinMaxFromDepth(in HIGHP sampler2D tex, const in ivec2 tc,
+inout vec3 resMin, inout vec3 resMax){
 	vec3 position = vec3( texelFetch( tex, tc, 0 ).r );
 	
 	if(ShadowInverseDepth){
@@ -84,18 +83,17 @@ void updateMinMaxFromDepth(in HIGHP sampler2D tex, in ivec2 tc, inout vec3 resMi
 	resMin = min(resMin, position);
 	resMax = max(resMax, position);
 }
-#endif // DEPTH_CUBEMAP
 
 
 const vec2 tcFaceTransform = vec2( 1, -1 );
 
 void main(void){
 	// min-max of depth input
-	#ifdef DEPTH_INPUT
+	if(DepthInput){
 		outMin = pInitialMinValue;
 		outMax = pInitialMaxValue;
 		
-		#ifdef DEPTH_CUBEMAP
+		if(DepthCubeMap){
 			vec4 tc = vec4( vTexCoord, 1, -1 );
 			vec3 tcoff = vec3( pPosTransform.z ) * vec3( 1, -1, 0 );
 			ivec3 swizzle, flipper;
@@ -103,96 +101,96 @@ void main(void){
 			// positive y = (s,-1,t), transform (1,1) same as above
 			swizzle = ivec3( 0, 2, 1 );
 			flipper = ivec3( 1, -1, 1 );
-			updateMinMaxFromDepth(texDepth, tc.xwy, swizzle, flipper, outMin, outMax);
-			updateMinMaxFromDepth(texDepth, tc.xwy + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
-			updateMinMaxFromDepth(texDepth, tc.xwy + tcoff.zzx, swizzle, flipper, outMin, outMax); // x=0, y=1
-			updateMinMaxFromDepth(texDepth, tc.xwy + tcoff.xzx, swizzle, flipper, outMin, outMax); // x=1, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.xwy, swizzle, flipper, outMin, outMax);
+			updateMinMaxFromDepth(texDepthCube, tc.xwy + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
+			updateMinMaxFromDepth(texDepthCube, tc.xwy + tcoff.zzx, swizzle, flipper, outMin, outMax); // x=0, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.xwy + tcoff.xzx, swizzle, flipper, outMin, outMax); // x=1, y=1
 			
-			#ifdef AMBIENT_MAP
-				updateMinMaxFromDepth(texAmbient, tc.xwy, swizzle, flipper, outMin, outMax);
-				updateMinMaxFromDepth(texAmbient, tc.xwy + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
-				updateMinMaxFromDepth(texAmbient, tc.xwy + tcoff.zzx, swizzle, flipper, outMin, outMax); // x=0, y=1
-				updateMinMaxFromDepth(texAmbient, tc.xwy + tcoff.xzx, swizzle, flipper, outMin, outMax); // x=1, y=1
-			#endif
+			if(AmbientMap){
+				updateMinMaxFromDepth(texAmbientCube, tc.xwy, swizzle, flipper, outMin, outMax);
+				updateMinMaxFromDepth(texAmbientCube, tc.xwy + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
+				updateMinMaxFromDepth(texAmbientCube, tc.xwy + tcoff.zzx, swizzle, flipper, outMin, outMax); // x=0, y=1
+				updateMinMaxFromDepth(texAmbientCube, tc.xwy + tcoff.xzx, swizzle, flipper, outMin, outMax); // x=1, y=1
+			}
 			
 			// negative x = (-1,t,s), transform (1,1) same as above
 			swizzle = ivec3( 2, 1, 0 );
 			flipper = ivec3( -1, 1, 1 );
-			updateMinMaxFromDepth(texDepth, tc.wyx, swizzle, flipper, outMin, outMax);
-			updateMinMaxFromDepth(texDepth, tc.wyx + tcoff.zzx, swizzle, flipper, outMin, outMax); // x=1, y=0
-			updateMinMaxFromDepth(texDepth, tc.wyx + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
-			updateMinMaxFromDepth(texDepth, tc.wyx + tcoff.zxx, swizzle, flipper, outMin, outMax); // x=1, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.wyx, swizzle, flipper, outMin, outMax);
+			updateMinMaxFromDepth(texDepthCube, tc.wyx + tcoff.zzx, swizzle, flipper, outMin, outMax); // x=1, y=0
+			updateMinMaxFromDepth(texDepthCube, tc.wyx + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.wyx + tcoff.zxx, swizzle, flipper, outMin, outMax); // x=1, y=1
 			
-			#ifdef AMBIENT_MAP
-				updateMinMaxFromDepth(texAmbient, tc.wyx, swizzle, flipper, outMin, outMax);
-				updateMinMaxFromDepth(texAmbient, tc.wyx + tcoff.zzx, swizzle, flipper, outMin, outMax); // x=1, y=0
-				updateMinMaxFromDepth(texAmbient, tc.wyx + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
-				updateMinMaxFromDepth(texAmbient, tc.wyx + tcoff.zxx, swizzle, flipper, outMin, outMax); // x=1, y=1
-			#endif
+			if(AmbientMap){
+				updateMinMaxFromDepth(texAmbientCube, tc.wyx, swizzle, flipper, outMin, outMax);
+				updateMinMaxFromDepth(texAmbientCube, tc.wyx + tcoff.zzx, swizzle, flipper, outMin, outMax); // x=1, y=0
+				updateMinMaxFromDepth(texAmbientCube, tc.wyx + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
+				updateMinMaxFromDepth(texAmbientCube, tc.wyx + tcoff.zxx, swizzle, flipper, outMin, outMax); // x=1, y=1
+			}
 			
 			// positive z = (s,t,1), transform (1,1) same as above
 			swizzle = ivec3( 0, 1, 2 );
 			flipper = ivec3( 1, 1, 1 );
-			updateMinMaxFromDepth(texDepth, tc.xyz, swizzle, flipper, outMin, outMax);
-			updateMinMaxFromDepth(texDepth, tc.xyz + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
-			updateMinMaxFromDepth(texDepth, tc.xyz + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
-			updateMinMaxFromDepth(texDepth, tc.xyz + tcoff.xxz, swizzle, flipper, outMin, outMax); // x=1, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.xyz, swizzle, flipper, outMin, outMax);
+			updateMinMaxFromDepth(texDepthCube, tc.xyz + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
+			updateMinMaxFromDepth(texDepthCube, tc.xyz + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.xyz + tcoff.xxz, swizzle, flipper, outMin, outMax); // x=1, y=1
 			
-			#ifdef AMBIENT_MAP
-				updateMinMaxFromDepth(texAmbient, tc.xyz, swizzle, flipper, outMin, outMax);
-				updateMinMaxFromDepth(texAmbient, tc.xyz + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
-				updateMinMaxFromDepth(texAmbient, tc.xyz + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
-				updateMinMaxFromDepth(texAmbient, tc.xyz + tcoff.xxz, swizzle, flipper, outMin, outMax); // x=1, y=1
-			#endif
+			if(AmbientMap){
+				updateMinMaxFromDepth(texAmbientCube, tc.xyz, swizzle, flipper, outMin, outMax);
+				updateMinMaxFromDepth(texAmbientCube, tc.xyz + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
+				updateMinMaxFromDepth(texAmbientCube, tc.xyz + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
+				updateMinMaxFromDepth(texAmbientCube, tc.xyz + tcoff.xxz, swizzle, flipper, outMin, outMax); // x=1, y=1
+			}
 			
 			// negative z = (-s,t,-1), transform (-1,1)
 			swizzle = ivec3( 0, 1, 2 );
 			flipper = ivec3( -1, 1, -1 );
 			tc.xy = vTexCoord * tcFaceTransform.yx;
-			updateMinMaxFromDepth(texDepth, tc.xyw, swizzle, flipper, outMin, outMax);
-			updateMinMaxFromDepth(texDepth, tc.xyw + tcoff.yzz, swizzle, flipper, outMin, outMax); // x=1, y=0
-			updateMinMaxFromDepth(texDepth, tc.xyw + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
-			updateMinMaxFromDepth(texDepth, tc.xyw + tcoff.yxz, swizzle, flipper, outMin, outMax); // x=1, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.xyw, swizzle, flipper, outMin, outMax);
+			updateMinMaxFromDepth(texDepthCube, tc.xyw + tcoff.yzz, swizzle, flipper, outMin, outMax); // x=1, y=0
+			updateMinMaxFromDepth(texDepthCube, tc.xyw + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.xyw + tcoff.yxz, swizzle, flipper, outMin, outMax); // x=1, y=1
 			
-			#ifdef AMBIENT_MAP
-				updateMinMaxFromDepth(texAmbient, tc.xyw, swizzle, flipper, outMin, outMax);
-				updateMinMaxFromDepth(texAmbient, tc.xyw + tcoff.yzz, swizzle, flipper, outMin, outMax); // x=1, y=0
-				updateMinMaxFromDepth(texAmbient, tc.xyw + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
-				updateMinMaxFromDepth(texAmbient, tc.xyw + tcoff.yxz, swizzle, flipper, outMin, outMax); // x=1, y=1
-			#endif
+			if(AmbientMap){
+				updateMinMaxFromDepth(texAmbientCube, tc.xyw, swizzle, flipper, outMin, outMax);
+				updateMinMaxFromDepth(texAmbientCube, tc.xyw + tcoff.yzz, swizzle, flipper, outMin, outMax); // x=1, y=0
+				updateMinMaxFromDepth(texAmbientCube, tc.xyw + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
+				updateMinMaxFromDepth(texAmbientCube, tc.xyw + tcoff.yxz, swizzle, flipper, outMin, outMax); // x=1, y=1
+			}
 			
 			// positive x = (1,t,-s), transform (1,1) same as above
 			swizzle = ivec3( 2, 1, 0 );
 			flipper = ivec3( 1, 1, -1 );
-			updateMinMaxFromDepth(texDepth, tc.zyx, swizzle, flipper, outMin, outMax);
-			updateMinMaxFromDepth(texDepth, tc.zyx + tcoff.zzy, swizzle, flipper, outMin, outMax); // x=1, y=0
-			updateMinMaxFromDepth(texDepth, tc.zyx + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
-			updateMinMaxFromDepth(texDepth, tc.zyx + tcoff.zxy, swizzle, flipper, outMin, outMax); // x=1, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.zyx, swizzle, flipper, outMin, outMax);
+			updateMinMaxFromDepth(texDepthCube, tc.zyx + tcoff.zzy, swizzle, flipper, outMin, outMax); // x=1, y=0
+			updateMinMaxFromDepth(texDepthCube, tc.zyx + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.zyx + tcoff.zxy, swizzle, flipper, outMin, outMax); // x=1, y=1
 			
-			#ifdef AMBIENT_MAP
-				updateMinMaxFromDepth(texAmbient, tc.zyx, swizzle, flipper, outMin, outMax);
-				updateMinMaxFromDepth(texAmbient, tc.zyx + tcoff.zzy, swizzle, flipper, outMin, outMax); // x=1, y=0
-				updateMinMaxFromDepth(texAmbient, tc.zyx + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
-				updateMinMaxFromDepth(texAmbient, tc.zyx + tcoff.zxy, swizzle, flipper, outMin, outMax); // x=1, y=1
-			#endif
+			if(AmbientMap){
+				updateMinMaxFromDepth(texAmbientCube, tc.zyx, swizzle, flipper, outMin, outMax);
+				updateMinMaxFromDepth(texAmbientCube, tc.zyx + tcoff.zzy, swizzle, flipper, outMin, outMax); // x=1, y=0
+				updateMinMaxFromDepth(texAmbientCube, tc.zyx + tcoff.zxz, swizzle, flipper, outMin, outMax); // x=0, y=1
+				updateMinMaxFromDepth(texAmbientCube, tc.zyx + tcoff.zxy, swizzle, flipper, outMin, outMax); // x=1, y=1
+			}
 			
 			// negative y = (s,1,-t), transform (-1,-1)
 			swizzle = ivec3( 0, 2, 1 );
 			flipper = ivec3( 1, 1, -1 );
 			tc.xy = vTexCoord * tcFaceTransform.yy;
-			updateMinMaxFromDepth(texDepth, tc.xzy, swizzle, flipper, outMin, outMax);
-			updateMinMaxFromDepth(texDepth, tc.xzy + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
-			updateMinMaxFromDepth(texDepth, tc.xzy + tcoff.zzy, swizzle, flipper, outMin, outMax); // x=0, y=1
-			updateMinMaxFromDepth(texDepth, tc.xzy + tcoff.xzy, swizzle, flipper, outMin, outMax); // x=1, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.xzy, swizzle, flipper, outMin, outMax);
+			updateMinMaxFromDepth(texDepthCube, tc.xzy + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
+			updateMinMaxFromDepth(texDepthCube, tc.xzy + tcoff.zzy, swizzle, flipper, outMin, outMax); // x=0, y=1
+			updateMinMaxFromDepth(texDepthCube, tc.xzy + tcoff.xzy, swizzle, flipper, outMin, outMax); // x=1, y=1
 			
-			#ifdef AMBIENT_MAP
-				updateMinMaxFromDepth(texAmbient, tc.xzy, swizzle, flipper, outMin, outMax);
-				updateMinMaxFromDepth(texAmbient, tc.xzy + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
-				updateMinMaxFromDepth(texAmbient, tc.xzy + tcoff.zzy, swizzle, flipper, outMin, outMax); // x=0, y=1
-				updateMinMaxFromDepth(texAmbient, tc.xzy + tcoff.xzy, swizzle, flipper, outMin, outMax); // x=1, y=1
-			#endif
+			if(AmbientMap){
+				updateMinMaxFromDepth(texAmbientCube, tc.xzy, swizzle, flipper, outMin, outMax);
+				updateMinMaxFromDepth(texAmbientCube, tc.xzy + tcoff.xzz, swizzle, flipper, outMin, outMax); // x=1, y=0
+				updateMinMaxFromDepth(texAmbientCube, tc.xzy + tcoff.zzy, swizzle, flipper, outMin, outMax); // x=0, y=1
+				updateMinMaxFromDepth(texAmbientCube, tc.xzy + tcoff.xzy, swizzle, flipper, outMin, outMax); // x=1, y=1
+			}
 			
-		#else
+		}else{
 			ivec2 tc = ivec2( gl_FragCoord.xy ) * ivec2( 2 );
 			
 			updateMinMaxFromDepth(texDepth, tc, outMin, outMax);
@@ -200,15 +198,15 @@ void main(void){
 			updateMinMaxFromDepth(texDepth, tc + ivec2(0, 1), outMin, outMax);
 			updateMinMaxFromDepth(texDepth, tc + ivec2(1, 1), outMin, outMax);
 			
-			#ifdef AMBIENT_MAP
+			if(AmbientMap){
 				updateMinMaxFromDepth(texAmbient, tc, outMin, outMax);
 				updateMinMaxFromDepth(texAmbient, tc + ivec2(1, 0), outMin, outMax);
 				updateMinMaxFromDepth(texAmbient, tc + ivec2(0, 1), outMin, outMax);
 				updateMinMaxFromDepth(texAmbient, tc + ivec2(1, 1), outMin, outMax);
-			#endif
-		#endif
+			}
+		}
 		
-	#else
+	}else{
 		ivec2 tc = ivec2( gl_FragCoord.xy ) * ivec2( 2 );
 		
 		outMin = texelFetch( texMin, tc, pMipMapLevel ).rgb;
@@ -220,5 +218,5 @@ void main(void){
 		outMax = max( outMax, texelFetchOffset( texMax, tc, pMipMapLevel, ivec2( 1, 0 ) ).rgb );
 		outMax = max( outMax, texelFetchOffset( texMax, tc, pMipMapLevel, ivec2( 0, 1 ) ).rgb );
 		outMax = max( outMax, texelFetchOffset( texMax, tc, pMipMapLevel, ivec2( 1, 1 ) ).rgb );
-	#endif
+	}
 }

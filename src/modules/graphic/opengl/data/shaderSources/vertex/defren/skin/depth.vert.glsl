@@ -173,13 +173,14 @@ void main(void){
 			vSkinClipCoord = vec3(inPosition);
 		#endif
 		
-		#if defined DEPTH_OFFSET
-			#ifdef DEPTH_DISTANCE
+		if(DepthOffset){
+			if(DepthDistance){
 				applyDepthOffset(inLayer, vNormal, pDoubleSided, vPosition.z);
-			#else
+				
+			}else{
 				applyDepthOffset(inLayer, vNormal, pDoubleSided);
-			#endif
-		#endif
+			}
+		}
 	#endif
 	
 	// height terrain mask. this can be interpolated since each texel refers to exactly one vertex in the height map

@@ -5,7 +5,7 @@ precision HIGHP int;
 
 uniform vec4 pOffsets; // -offsetU, offsetU, -offsetV, offsetV
 
-uniform mediump sampler2DArray texValues;
+layout(binding=0) uniform mediump sampler2DArray texValues;
 
 #include "shared/interface/2d_fragment.glsl"
 

@@ -77,6 +77,7 @@ public:
 	
 	/** Value of named define or default value if absent. */
 	const decString &GetDefineValueFor( const char *name, const decString &defaultValue ) const;
+	const char *GetDefineValueFor(const char *name, const char *defaultValue) const;
 	
 	/** Set define. */
 	void SetDefine( const char *name, const char *value );

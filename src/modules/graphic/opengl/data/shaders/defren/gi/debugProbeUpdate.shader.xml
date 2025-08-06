@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen GI Debug Probe Update</name>
 	
-	<texture name='texGIProbeOffset' target='0'/>
-	
 	<parameter name='pPosTransform'/> <!-- 0 -->
 	<parameter name='pTCTransform'/> <!-- 1 -->
 	<parameter name='pGIDebugCascade'/> <!-- 2 -->

@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Luminance Prepare Stereo</name>
 	
-	<texture name='texColor' target='0'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
 	<sourceCode unit='fragment'>F ToneMap Luminance Prepare</sourceCode>

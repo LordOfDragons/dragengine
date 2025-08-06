@@ -5,7 +5,6 @@ UNIFORM_BIND(1) uniform vec4 pTCTransform;
 
 #ifdef PASS2
 	#include "shared/ubo_defines.glsl"
-	#include "shared/defren/gi/constants.glsl"
 	#include "shared/defren/gi/trace_probe.glsl"
 	#include "shared/defren/light/ubo_gi.glsl"
 	

@@ -2,8 +2,6 @@
 <shader>
 	<name>Sky Sky-Sphere</name>
 	
-	<texture name='texSky' target='0'/>
-	
 	<parameter name='pMatrixLayer'/>
 	<parameter name='pLayerPosition'/>
 	<parameter name='pLayerColor'/>

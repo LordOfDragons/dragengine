@@ -2,8 +2,6 @@
 <shader>
 	<name>Effect Overlay</name>
 	
-	<texture name="texColor" target="0"/>
-	
 	<parameter name="pGamma"/>
 	<parameter name="pColor"/>
 	

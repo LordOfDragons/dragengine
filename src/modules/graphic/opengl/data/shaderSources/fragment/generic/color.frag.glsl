@@ -12,7 +12,7 @@ layout(location=0) out vec4 outColor;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform HIGHP sampler2DArray texDepth;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
 #include "shared/defren/sample_depth.glsl"
 // ^^^^^^^^^

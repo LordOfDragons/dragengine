@@ -11,10 +11,11 @@ uniform mat4x3 pMatrixNormal;
 uniform int pGIDebugCascade;
 
 #define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
+#define TEX_GI_PROBE_OFFSET_BINDING 2
 #include "shared/defren/gi/probe_offset.glsl"
 #include "shared/defren/gi/probe_flags.glsl"
 
-uniform lowp sampler2DArray texGIIrradiance;
+layout(binding=0) uniform lowp sampler2DArray texGIIrradiance;
 
 VARYING_BIND(0) flat in ivec3 vProbeCoord;
 VARYING_BIND(1) flat in vec3 vProbePosition;

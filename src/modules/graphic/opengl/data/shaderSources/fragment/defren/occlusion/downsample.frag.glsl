@@ -5,7 +5,7 @@ precision HIGHP int;
 
 uniform int pLevel;
 
-uniform HIGHP sampler2DArray texSource;
+layout(binding=0) uniform HIGHP sampler2DArray texSource;
 
 #include "shared/interface/2d_fragment.glsl"
 

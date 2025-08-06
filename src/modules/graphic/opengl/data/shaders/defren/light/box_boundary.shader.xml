@@ -2,11 +2,6 @@
 <shader>
 	<name>DefRen Light BoxBoundary</name>
 	
-	<texture name='texMin' target='0'/>
-	<texture name='texMax' target='1'/>
-	<texture name='texDepth' target='2'/>
-	<texture name='texAmbient' target='3'/>
-	
 	<parameter name='pQuadParams'/>
 	<parameter name='pPosTransform'/>
 	<parameter name='pMipMapLevel'/>

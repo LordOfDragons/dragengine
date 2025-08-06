@@ -2,8 +2,6 @@
 <shader>
 	<name>ToneMap Luminance Prepare</name>
 	
-	<texture name='texColor' target='0'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F ToneMap Luminance Prepare</sourceCode>
 </shader>

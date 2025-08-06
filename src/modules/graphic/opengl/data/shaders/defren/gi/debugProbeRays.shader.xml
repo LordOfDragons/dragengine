@@ -2,10 +2,6 @@
 <shader>
 	<name>DefRen GI Debug Probe Rays</name>
 	
-	<texture name='texCacheDistance' target='0'/>
-	<texture name='texGIProbeOffset' target='1'/>
-	<texture name='texLight' target='2'/>
-	
 	<parameter name='pMatrixNormal'/> <!-- 0 -->
 	<parameter name='pMatrixMV'/> <!-- 1 -->
 	<parameter name='pMatrixMVP'/> <!-- 2 -->

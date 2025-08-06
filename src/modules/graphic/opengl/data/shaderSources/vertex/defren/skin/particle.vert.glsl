@@ -38,9 +38,8 @@ layout(location=1) in vec4 inParticle1; // linearVelocity, angularVelocity, cast
 layout(location=2) in vec4 inParticle2; // linearDirection.x, linearDirection.y, linearDirection.z, rotation
 layout(location=3) in vec4 inParticle3; // castRed, castGreen, castBlue, castTransparency
 /*
-#ifdef PARTICLE_BEAM
+// ParticleMode == ParticleModeBeam
 layout(location=4) in float inParticle4; // beamLocation
-#endif
 */
 
 

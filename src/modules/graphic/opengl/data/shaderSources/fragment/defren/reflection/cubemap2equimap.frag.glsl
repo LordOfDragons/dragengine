@@ -5,7 +5,7 @@ precision HIGHP int;
 
 uniform float pLevel;
 
-uniform mediump samplerCube texEnvMap;
+layout(binding=0) uniform mediump samplerCube texEnvMap;
 
 #include "shared/interface/2d_fragment.glsl"
 // vScreenCoord: -long, lat

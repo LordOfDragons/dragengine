@@ -13,7 +13,7 @@ UNIFORM_BIND(2) uniform ivec2 pOffsetWrite;
 UNIFORM_BIND(3) uniform int pClamp;
 UNIFORM_BIND(4) uniform float pDepthDifferenceThreshold;
 
-uniform HIGHP sampler2DArray texDepth;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
 #ifdef ANDROID
 	layout(binding=0, IMG_R8_FMT) uniform readonly lowp IMG_R8_2DARR texData_load;

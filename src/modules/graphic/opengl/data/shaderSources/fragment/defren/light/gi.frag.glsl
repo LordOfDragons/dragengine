@@ -13,30 +13,31 @@ precision HIGHP int;
 // samplers
 /////////////
 
-#ifdef GI_RAY
-	layout(binding=0) uniform HIGHP sampler2D texPosition;
-	layout(binding=1) uniform lowp sampler2D texDiffuse;
-	layout(binding=2) uniform lowp sampler2D texNormal;
-	layout(binding=3) uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
-	
-	// NOTE transfer:
-	// params = giRayCastMaterialParams(ray.material)
-	// tc = giRayCastMaterialTC(params, ray.tc)
-	// texDiffuse: vec3 giRayCastSampleColor(params.g, tc)
-	// texReflectivity: giRayCastSampleReflectivityRoughness(params.b, tc, out reflectivity, out roughness)
-	// 
-	// hence these values have to be stored in the ray:
-	// - int ray.material => requires R16UI
-	// - vec2 ray.texCoord = giRayCastFaceTexCoord() => requires RG16F
-	
-#else
-	layout(binding=0) uniform HIGHP sampler2DArray texDepth;
-	layout(binding=1) uniform lowp sampler2DArray texDiffuse;
-	layout(binding=2) uniform lowp sampler2DArray texNormal;
-	layout(binding=3) uniform lowp sampler2DArray texReflectivity;
-	layout(binding=4) uniform lowp sampler2DArray texRoughness;
-	layout(binding=5) uniform lowp sampler2DArray texAOSolidity;
-#endif
+// GIRay
+// vvvvv
+layout(binding=0) uniform HIGHP sampler2D texGIPosition;
+layout(binding=1) uniform lowp sampler2D texGIDiffuse;
+layout(binding=2) uniform lowp sampler2D texGINormal;
+layout(binding=3) uniform lowp sampler2D texGIReflectivity; // reflectivity.rgb, roughness
+
+// NOTE transfer:
+// params = giRayCastMaterialParams(ray.material)
+// tc = giRayCastMaterialTC(params, ray.tc)
+// texDiffuse: vec3 giRayCastSampleColor(params.g, tc)
+// texReflectivity: giRayCastSampleReflectivityRoughness(params.b, tc, out reflectivity, out roughness)
+// 
+// hence these values have to be stored in the ray:
+// - int ray.material => requires R16UI
+// - vec2 ray.texCoord = giRayCastFaceTexCoord() => requires RG16F
+// ^^^^^
+
+// !GIRay
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
+layout(binding=1) uniform lowp sampler2DArray texDiffuse;
+layout(binding=2) uniform lowp sampler2DArray texNormal;
+layout(binding=3) uniform lowp sampler2DArray texReflectivity;
+layout(binding=4) uniform lowp sampler2DArray texRoughness;
+layout(binding=5) uniform lowp sampler2DArray texAOSolidity;
 
 layout(binding=6) uniform lowp sampler2DArray texGIIrradiance;
 layout(binding=7) uniform HIGHP sampler2DArray texGIDistance;
@@ -44,6 +45,7 @@ layout(binding=7) uniform HIGHP sampler2DArray texGIDistance;
 
 // includes to come after defining fixed position samplers
 #define pGIGridProbeCount pGIParams[0].probeCount
+#define TEX_GI_PROBE_OFFSET_BINDING 8
 #include "shared/defren/gi/probe_offset.glsl"
 
 
@@ -67,11 +69,10 @@ const vec3 lumiFactors = vec3( 0.2125, 0.7154, 0.0721 );
 
 
 #include "shared/normal/texture.glsl"
-#ifndef GI_RAY
-	#include "shared/defren/depth_to_position.glsl"
-	#include "shared/defren/depth_to_position_fragment.glsl"
-	#include "shared/defren/light/normal_from_depth.glsl"
-#endif
+// !GIRay
+#include "shared/defren/depth_to_position.glsl"
+#include "shared/defren/depth_to_position_fragment.glsl"
+#include "shared/defren/light/normal_from_depth.glsl"
 
 #include "shared/defren/light/gi_illuminate.glsl"
 
@@ -91,57 +92,67 @@ void outputUnlit(){
 //////////////////
 
 void main( void ){
-	#ifdef GI_RAY
-		ivec2 tc = ivec2( gl_FragCoord.xy );
-	#else
-		ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
-	#endif
+	ivec3 tc = ivec3(gl_FragCoord.xy, vLayer);
+	ivec2 tcGI = ivec2(gl_FragCoord.xy);
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
-	vec4 diffuse = texelFetch( texDiffuse, tc, 0 );
-	#ifndef GI_RAY
-		if( diffuse.a == 0.0 ){
+	vec4 diffuse;
+	
+	if(GIRay){
+		diffuse = texelFetch(texGIDiffuse, tcGI, 0);
+		
+	}else{
+		diffuse = texelFetch(texDiffuse, tc, 0);
+		if(diffuse.a == 0.0){
 			outputUnlit();
 			return;
 		}
-	#endif
+	}
 	
 	// determine position of fragment to light
-	#ifdef GI_RAY
-		vec4 positionDistance = texelFetch( texPosition, tc, 0 );
+	vec3 position;
+	float depth;
+	
+	if(GIRay){
+		vec4 positionDistance = texelFetch(texGIPosition, tcGI, 0);
 		if( positionDistance.a > 9999.0 ){
 			// ray hits nothing
 			outputUnlit();
 			return;
 		}
-		vec3 position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1 ) );
-	#else
-		float depth = sampleDepth( texDepth, tc );
-		vec3 position = depthToPosition( depth, vScreenCoord, vLayer );
-	#endif
+		position = vec3( pGIRayMatrix * vec4( positionDistance.rgb, 1 ) );
+		
+	}else{
+		depth = sampleDepth( texDepth, tc );
+		position = depthToPosition( depth, vScreenCoord, vLayer );
+	}
 	
 	// fetch normal
-	#ifdef GI_RAY
+	vec3 normal, bendNormal;
+	
+	if(GIRay){
 		// requires matrix transpose done by reversed order
-		vec3 normal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) * pGIRayMatrixNormal );
-		#define bendNormal normal
+		normal = sanitizeNormal(normalLoadMaterial(texGINormal, tcGI) * pGIRayMatrixNormal);
+		bendNormal = normal;
 		
-	#else
+	}else{
 		// we can not use gbuffer normal here since it is bend potentially causing
 		// troubles. derive instead the normal from the depth buffer
-		vec3 normal = normalFromDepth( tc, depth, position );
-		vec3 bendNormal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
-	#endif
+		normal = normalFromDepth( tc, depth, position );
+		bendNormal = sanitizeNormal( normalLoadMaterial( texNormal, tc ) );
+	}
 	
 	// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding
 	// if both are used. the result is stored in aoSolidity.g . this way aoSolidity.r contains
 	// the pure texture-ao and aoSolidity.gb the combined ao
-	#ifndef GI_RAY
-		vec3 aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
+	vec3 aoSolidity;
+	
+	if(!GIRay){
+		aoSolidity = texelFetch( texAOSolidity, tc, 0 ).rgb;
 		
 		aoSolidity.g = min( aoSolidity.r, aoSolidity.g );
 		diffuse.a *= aoSolidity.b;
-	#endif
+	}
 	
 	// apply ambient occlusion to the direct lighting. this is done by comparing the ambient
 	// occlusion angle with the lighting angle. the ambient occlusion angle can be calculated
@@ -159,9 +170,9 @@ void main( void ){
 	// global illumination
 	vec3 finalColor = giIlluminate( position, normal, bendNormal );
 	
-	#ifndef GI_RAY
+	if(!GIRay){
 		finalColor *= vec3( aoSolidity.g ); // texture AO and SSAO
-	#endif
+	}
 	
 	outLuminance = vec4( vec3( dot( finalColor, lumiFactors ) ), diffuse.a );
 	outColor = vec4( finalColor * diffuse.rgb, diffuse.a );

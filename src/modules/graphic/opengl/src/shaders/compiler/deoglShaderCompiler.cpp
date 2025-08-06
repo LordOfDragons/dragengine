@@ -894,83 +894,114 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 	}
 }
 
-static const int vSpecializationCount = 66;
+enum class SpecDataType{
+	Bool,
+	Int
+};
+
+static const int vSpecializationCount = 80;
 static const struct sSpecialization{
 	int index;
-	bool isBool;
-	const char *constantName, *defineName;
+	SpecDataType dataType;
+	const char *constantName, *defineName, *defaultValue;
 } vSpecializations[vSpecializationCount] = {
 	// 0-2: LOCAL_SIZE_{XYZ}
-	{3, true, "TransformInPlace", "TRANSFORM_INPLACE"},
-	{4, true, "WithRayCache", "WITH_RAY_CACHE"},
-	{5, true, "GIUseRayCache", "GI_USE_RAY_CACHE"},
-	{6, true, "GIRayCastDistanceOnly", "GI_RAYCAST_DISTANCE_ONLY"},
-	{7, true, "GIRayCastOccMeshOnly", "GI_RAYCAST_OCCMESH_ONLY"},
-	{8, true, "RenderDocDebugGI", "RENDER_DOC_DEBUG_GI"},
-	{9, false, "GIClearProbesCount", "GI_CLEAR_PROBES_COUNT"},
-	{10, true, "MapIrradiance", "MAP_IRRADIANCE"},
-	{11, true, "BlurPass2", "BLUR_PASS_2"},
-	{12, true, "DualOccMap", "DUAL_OCCMAP"},
-	{13, true, "EnsureMinSize", "ENSURE_MIN_SIZE"},
-	{14, true, "FrustumTest", "FRUSTUM_TEST"},
-	{15, true, "RenderDocDebugOccTest", "RENDER_DOC_DEBUG_OCCTEST"},
-	{16, true, "WithComputeRenderTask", "WITH_COMPUTE_RENDER_TASK"},
-	{17, true, "CullViewFrustum", "CULL_VIEW_FRUSTUM"},
-	{18, true, "CullSkyLightFrustum", "CULL_SKY_LIGHT_FRUSTUM"},
-	{19, true, "CullSkyLightGIBox", "CULL_SKY_LIGHT_GIBOX"},
-	{20, true, "CullTooSmall", "CULL_TOO_SMALL"},
-	{21, true, "WriteCullResult", "WRITE_CULL_RESULT"},
-	{22, true, "WithOcclusion", "WITH_OCCLUSION"},
-	{23, true, "ClearCullResult", "CLEAR_CULL_RESULT"},
-	{24, true, "WithCalcLod", "WITH_CALC_LOD"},
-	{25, true, "WithTexture", "WITH_TEXTURE"},
-	{26, true, "WithRenderWorld", "WITH_RENDER_WORLD"},
-	{27, true, "WithMask", "WITH_MASK"},
-	{28, true, "InverseDepth", "INVERSE_DEPTH"},
-	{29, true, "WithDepth", "WITH_DEPTH"},
-	{30, true, "DepthDifferenceWeighting", "DEPTH_DIFFERENCE_WEIGHTING"},
-	{31, true, "InputArrayTextures", "INPUT_ARRAY_TEXTURES"},
-	{32, false, "OutDataSize", "OUT_DATA_SIZE"},
-	{33, false, "OutDataSwizzle", "OUT_DATA_SWIZZLE"},
-	{34, false, "TapCount", "TAP_COUNT"},
-	{35, false, "TexDataSize", "TEX_DATA_SIZE"},
-	{36, false, "TexDataSwizzle", "TEX_DATA_SWIZZLE"},
-	{37, true, "TextureLevel", "TEXTURELEVEL"},
-	{38, true, "NoTexCoord", "NO_TEXCOORD"},
-	{39, true, "VSRenderStereo", "VS_RENDER_STEREO"},
-	{40, true, "GSRenderStereo", "GS_RENDER_STEREO"},
-	{41, true, "VSLayer", "VS_LAYER"},
-	{42, true, "GSLayer", "GS_LAYER"},
-	{43, true, "FullScreenQuad", "FULLSCREENQUAD"},
-	{44, true, "FullScreenQuadSCTransform", "FULLSCREENQUAD_SCTRANSFORM"},
-	{45, true, "FullScreenQuadTCTransform", "FULLSCREENQUAD_TCTRANSFORM"},
-	{46, true, "NoPosTransform", "NO_POSTRANSFORM"},
-	{47, true, "NoTCTransform", "NO_TCTRANSFORM"},
-	{48, true, "TexCoordFlipY", "TEXCOORD_FLIP_Y"},
-	{49, false, "LightMode", "LIGHT_MODE"},
-	{50, true, "NoiseTap", "NOISE_TAP"},
-	{51, false, "PcfMode", "PCF_MODE"},
-	{52, true, "AmbientLighting", "AMBIENT_LIGHTING"},
-	{53, true, "GIRay", "GI_RAY"},
-	{54, true, "LuminanceOnly", "LUMINANCE_ONLY"},
-	{55, false, "Shadow1Mode", "SHADOW1_MODE"},
-	{56, false, "Shadow2Mode", "SHADOW2_MODE"},
-	{57, true, "ShadowInverseDepth", "SHADOW_INVERSE_DEPTH"},
-	{58, true, "ShaMat2EqualsShaMat1", "SHAMAT2_EQUALS_SHAMAT1"},
-	{59, false, "TextureLightColor", "TEXTURE_LIGHT_COLOR"},
-	{60, true, "TextureShadow1Solid", "TEXTURE_SHADOW1_SOLID"},
-	{61, true, "TextureShadow1Transparent", "TEXTURE_SHADOW1_TRANSPARENT"},
-	{62, true, "TextureShadow1Ambient", "TEXTURE_SHADOW1_AMBIENT"},
-	{63, true, "TextureShadow2Solid", "TEXTURE_SHADOW2_SOLID"},
-	{64, true, "TextureShadow2Transparent", "TEXTURE_SHADOW2_TRANSPARENT"},
-	{65, true, "TextureShadow2Ambient", "TEXTURE_SHADOW2_AMBIENT"},
-	{66, true, "WithSubsurface", "WITH_SUBSURFACE"},
-	{67, false, "MaterialNormalDec", "MATERIAL_NORMAL_DEC"},
-	{68, false, "MaterialNormalEnc", "MATERIAL_NORMAL_ENC"}
+	{3, SpecDataType::Bool, "TransformInPlace", "TRANSFORM_INPLACE", "false"},
+	{4, SpecDataType::Bool, "WithRayCache", "WITH_RAY_CACHE", "false"},
+	{5, SpecDataType::Bool, "GIUseRayCache", "GI_USE_RAY_CACHE", "false"},
+	{6, SpecDataType::Bool, "GIRayCastDistanceOnly", "GI_RAYCAST_DISTANCE_ONLY", "false"},
+	{7, SpecDataType::Bool, "GIRayCastOccMeshOnly", "GI_RAYCAST_OCCMESH_ONLY", "false"},
+	{8, SpecDataType::Bool, "RenderDocDebugGI", "RENDER_DOC_DEBUG_GI", "false"},
+	{9, SpecDataType::Int, "GIClearProbesCount", "GI_CLEAR_PROBES_COUNT", "64"},
+	{10, SpecDataType::Bool, "MapIrradiance", "MAP_IRRADIANCE", "false"},
+	{11, SpecDataType::Bool, "BlurPass2", "BLUR_PASS_2", "false"},
+	{12, SpecDataType::Bool, "DualOccMap", "DUAL_OCCMAP", "false"},
+	{13, SpecDataType::Bool, "EnsureMinSize", "ENSURE_MIN_SIZE", "false"},
+	{14, SpecDataType::Bool, "FrustumTest", "FRUSTUM_TEST", "false"},
+	{15, SpecDataType::Bool, "RenderDocDebugOccTest", "RENDER_DOC_DEBUG_OCCTEST", "false"},
+	{16, SpecDataType::Bool, "WithComputeRenderTask", "WITH_COMPUTE_RENDER_TASK", "false"},
+	{17, SpecDataType::Bool, "CullViewFrustum", "CULL_VIEW_FRUSTUM", "false"},
+	{18, SpecDataType::Bool, "CullSkyLightFrustum", "CULL_SKY_LIGHT_FRUSTUM", "false"},
+	{19, SpecDataType::Bool, "CullSkyLightGIBox", "CULL_SKY_LIGHT_GIBOX", "false"},
+	{20, SpecDataType::Bool, "CullTooSmall", "CULL_TOO_SMALL", "false"},
+	{21, SpecDataType::Bool, "WriteCullResult", "WRITE_CULL_RESULT", "false"},
+	{22, SpecDataType::Bool, "WithOcclusion", "WITH_OCCLUSION", "false"},
+	{23, SpecDataType::Bool, "ClearCullResult", "CLEAR_CULL_RESULT", "false"},
+	{24, SpecDataType::Bool, "WithCalcLod", "WITH_CALC_LOD", "false"},
+	{25, SpecDataType::Bool, "WithTexture", "WITH_TEXTURE", "false"},
+	{26, SpecDataType::Bool, "WithRenderWorld", "WITH_RENDER_WORLD", "false"},
+	{27, SpecDataType::Bool, "WithMask", "WITH_MASK", "false"},
+	{28, SpecDataType::Bool, "InverseDepth", "INVERSE_DEPTH", "false"},
+	{29, SpecDataType::Bool, "WithDepth", "WITH_DEPTH", "false"},
+	{30, SpecDataType::Bool, "DepthDifferenceWeighting", "DEPTH_DIFFERENCE_WEIGHTING", "false"},
+	{31, SpecDataType::Bool, "InputArrayTextures", "INPUT_ARRAY_TEXTURES", "false"},
+	{32, SpecDataType::Int, "OutDataSize", "OUT_DATA_SIZE", "4"},
+	{33, SpecDataType::Int, "OutDataSwizzle", "OUT_DATA_SWIZZLE", "0"},
+	{34, SpecDataType::Int, "TapCount", "TAP_COUNT", "1"},
+	{35, SpecDataType::Int, "TexDataSize", "TEX_DATA_SIZE", "1"},
+	{36, SpecDataType::Int, "TexDataSwizzle", "TEX_DATA_SWIZZLE", "0"},
+	{37, SpecDataType::Bool, "TextureLevel", "TEXTURELEVEL", "false"},
+	{38, SpecDataType::Bool, "NoTexCoord", "NO_TEXCOORD", "false"},
+	{39, SpecDataType::Bool, "VSRenderStereo", "VS_RENDER_STEREO", "false"},
+	{40, SpecDataType::Bool, "GSRenderStereo", "GS_RENDER_STEREO", "false"},
+	{41, SpecDataType::Bool, "VSLayer", "VS_LAYER", "false"},
+	{42, SpecDataType::Bool, "GSLayer", "GS_LAYER", "false"},
+	{43, SpecDataType::Bool, "FullScreenQuad", "FULLSCREENQUAD", "false"},
+	{44, SpecDataType::Bool, "FullScreenQuadSCTransform", "FULLSCREENQUAD_SCTRANSFORM", "false"},
+	{45, SpecDataType::Bool, "FullScreenQuadTCTransform", "FULLSCREENQUAD_TCTRANSFORM", "false"},
+	{46, SpecDataType::Bool, "NoPosTransform", "NO_POSTRANSFORM", "false"},
+	{47, SpecDataType::Bool, "NoTCTransform", "NO_TCTRANSFORM", "false"},
+	{48, SpecDataType::Bool, "TexCoordFlipY", "TEXCOORD_FLIP_Y", "false"},
+	{49, SpecDataType::Int, "LightMode", "LIGHT_MODE", "0"},
+	{50, SpecDataType::Bool, "NoiseTap", "NOISE_TAP", "false"},
+	{51, SpecDataType::Int, "PcfMode", "PCF_MODE", "0"},
+	{52, SpecDataType::Bool, "AmbientLighting", "AMBIENT_LIGHTING", "false"},
+	{53, SpecDataType::Bool, "GIRay", "GI_RAY", "false"},
+	{54, SpecDataType::Bool, "LuminanceOnly", "LUMINANCE_ONLY", "false"},
+	{55, SpecDataType::Int, "Shadow1Mode", "SHADOW1_MODE", "0"},
+	{56, SpecDataType::Int, "Shadow2Mode", "SHADOW2_MODE", "0"},
+	{57, SpecDataType::Bool, "ShadowInverseDepth", "SHADOW_INVERSE_DEPTH", "false"},
+	{58, SpecDataType::Bool, "ShaMat2EqualsShaMat1", "SHAMAT2_EQUALS_SHAMAT1", "false"},
+	{59, SpecDataType::Int, "TextureLightColor", "TEXTURE_LIGHT_COLOR", "0"},
+	{60, SpecDataType::Bool, "TextureShadow1Solid", "TEXTURE_SHADOW1_SOLID", "false"},
+	{61, SpecDataType::Bool, "TextureShadow1Transparent", "TEXTURE_SHADOW1_TRANSPARENT", "false"},
+	{62, SpecDataType::Bool, "TextureShadow1Ambient", "TEXTURE_SHADOW1_AMBIENT", "false"},
+	{63, SpecDataType::Bool, "TextureShadow2Solid", "TEXTURE_SHADOW2_SOLID", "false"},
+	{64, SpecDataType::Bool, "TextureShadow2Transparent", "TEXTURE_SHADOW2_TRANSPARENT", "false"},
+	{65, SpecDataType::Bool, "TextureShadow2Ambient", "TEXTURE_SHADOW2_AMBIENT", "false"},
+	{66, SpecDataType::Bool, "WithSubsurface", "WITH_SUBSURFACE", "false"},
+	{67, SpecDataType::Int, "MaterialNormalDec", "MATERIAL_NORMAL_DEC", "0"},
+	{68, SpecDataType::Int, "MaterialNormalEnc", "MATERIAL_NORMAL_ENC", "0"},
+	{69, SpecDataType::Bool, "DepthDistance", "DEPTH_DISTANCE", "false"},
+	{70, SpecDataType::Int, "ParticleMode", "PARTICLE_MODE", "0"},
+	{71, SpecDataType::Int, "SSAOResolutionCount", "SSAO_RESOLUTION_COUNT", "1"},
+	{72, SpecDataType::Bool, "DepthCubeMap", "DEPTH_CUBEMAP", "false"},
+	{73, SpecDataType::Bool, "DepthInput", "DEPTH_INPUT", "false"},
+	{74, SpecDataType::Bool, "AmbientMap", "AMBIENT_MAP", "false"},
+	{75, SpecDataType::Bool, "CopyColor", "COPY_COLOR", "false"},
+	{76, SpecDataType::Bool, "EncodedDepth", "ENCODED_DEPTH", "false"},
+	{77, SpecDataType::Bool, "DepthTest", "DEPTH_TEST", "false"},
+	{78, SpecDataType::Bool, "DepthOrthogonal", "DEPTH_ORTHOGONAL", "false"},
+	{79, SpecDataType::Bool, "WithShadowMap", "WITH_SHADOWMAP", "false"},
+	{80, SpecDataType::Bool, "DepthOffset", "DEPTH_OFFSET", "false"},
+	{81, SpecDataType::Bool, "UseClipPlane", "USE_CLIP_PLANE", "false"},
+	{82, SpecDataType::Bool, "PerspectiveToLinear", "PERSPECTIVE_TO_LINEAR", "false"}
 };
 
 // Special:
 // - GI_RAYCAST_USE_SSBO
+// - GS_INSTANCING
+// - HW_DEPTH_COMPARE
+// - SHARED_SPB
+// - SHARED_SPB_USE_SSBO
+// - SHARED_SPB_PADDING
+// - SHARED_SPB_TEXTURE_PADDING
+// - SHARED_SPB_TEXTURE_ARRAY_SIZE
+// - SPB_SSBO_INSTANCE_ARRAY
+// - SPB_INSTANCE_ARRAY_SIZE
+
+// Problem:
+// - SHARED_SPB_PADDING: can cause 0 length arrays which is not allowed
 
 void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit){
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
@@ -1066,18 +1097,22 @@ void deoglShaderCompiler::PreparePreprocessor(const deoglShaderProgramUnit &unit
 	}
 	
 	// specializations
-	static const decString notDefined("0");
 	char specBuf[256];
 	
 	for(i=0; i<vSpecializationCount; i++){
 		const sSpecialization &s = vSpecializations[i];
-		if(s.isBool){
+		const char * const v = defines.GetDefineValueFor(s.defineName, nullptr);
+		
+		switch(s.dataType){
+		case SpecDataType::Bool:
 			snprintf(specBuf, sizeof(specBuf), "const bool %s = %s;\n", s.constantName,
-				defines.GetDefineValueFor(s.defineName, notDefined) == "1" ? "true" : "false");
+				v ? (strcmp(v, "1") == 0 ? "true" : "false") : s.defaultValue);
+			break;
 			
-		}else{
+		case SpecDataType::Int:
 			snprintf(specBuf, sizeof(specBuf), "const int %s = %s;\n", s.constantName,
-				defines.GetDefineValueFor(s.defineName, notDefined).GetString());
+				v ? v : s.defaultValue);
+			break;
 		}
 		pPreprocessor.SourcesAppend(specBuf, false);
 	}

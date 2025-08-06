@@ -13,8 +13,6 @@ precision HIGHP int;
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 #include "shared/defren/light/ubo_light_parameters.glsl"
 #include "shared/equirectangular.glsl"
-#include "shared/defren/constants.glsl"
-#include "shared/defren/light/constants.glsl"
 
 
 // Configuration

@@ -17,17 +17,18 @@ precision HIGHP int;
 	#define SAMPLER_ENVMAP mediump sampler2DArray
 #endif
 
-uniform SAMPLER_ENVMAP texPosition;
-uniform SAMPLER_ENVMAP texDiffuse;
-uniform SAMPLER_ENVMAP texNormal;
-uniform SAMPLER_ENVMAP texEmissive;
+layout(binding=0) uniform SAMPLER_ENVMAP texPosition;
+layout(binding=1) uniform SAMPLER_ENVMAP texDiffuse;
+layout(binding=2) uniform SAMPLER_ENVMAP texNormal;
+layout(binding=3) uniform SAMPLER_ENVMAP texEmissive;
 
 #ifdef WITH_GI
-	uniform lowp sampler2DArray texGIIrradiance;
-	uniform HIGHP sampler2DArray texGIDistance;
+	layout(binding=4) uniform lowp sampler2DArray texGIIrradiance;
+	layout(binding=5) uniform HIGHP sampler2DArray texGIDistance;
 	
 	// includes to come after defining fixed position samplers
 	#define pGIGridProbeCount pGIParams[0].probeCount
+	#define TEX_GI_PROBE_OFFSET_BINDING 6
 	#include "shared/defren/gi/probe_offset.glsl"
 #endif
 

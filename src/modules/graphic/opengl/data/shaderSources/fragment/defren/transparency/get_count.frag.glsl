@@ -3,7 +3,7 @@
 precision lowp float;
 precision lowp int;
 
-uniform lowp sampler2DArray texValues;
+layout(binding=0) uniform lowp sampler2DArray texValues;
 
 #include "shared/interface/2d_fragment.glsl"
 

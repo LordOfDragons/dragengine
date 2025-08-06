@@ -2,9 +2,6 @@
 <shader>
 	<name>Effect Distort Image</name>
 	
-	<texture name="texColor" target="0"/>
-	<texture name="texDistort" target="1"/>
-	
 	<parameter name="pDistortTransform"/>
 	
 	<sourceCode unit="vertex">V Generic ScreenSpace</sourceCode>

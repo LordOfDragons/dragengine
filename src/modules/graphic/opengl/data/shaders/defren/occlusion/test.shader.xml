@@ -2,9 +2,6 @@
 <shader>
 	<name>DefRen Occlusion Test</name>
 	
-	<texture name='texOccMap' target='0'/>
-	<texture name='texOccMap2' target='1'/>
-	
 	<parameter name='pInputDataCount'/>
 	<parameter name='pMatrix'/>
 	<parameter name='pScaleSize'/>

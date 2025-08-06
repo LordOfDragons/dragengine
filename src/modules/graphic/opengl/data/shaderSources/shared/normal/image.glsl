@@ -6,8 +6,6 @@
 	<define>MATERIAL_NORMAL_ENC</define>
 */
 
-#include "shared/normal/constants.glsl"
-
 // load normal from image using direct method.
 // use this method for RGB16F, RGB32F, RGB8_SNORM or RGB16_SNORM textures.
 // normal is potentially not normalized.

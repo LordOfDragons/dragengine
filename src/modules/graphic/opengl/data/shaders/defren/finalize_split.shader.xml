@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Finalize Split</name>
 	
-	<texture name='texColor' target='0'/>
-	
 	<parameter name='pTCTransform'/>
 	<parameter name='pGamma'/>
 	<parameter name='pBrightness'/>

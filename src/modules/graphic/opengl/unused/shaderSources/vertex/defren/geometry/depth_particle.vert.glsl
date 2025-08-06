@@ -12,9 +12,8 @@ in vec3 inPosition;
 in vec2 inTexCoord;
 
 VARYING_BIND(0) out vec2 vTexCoord;
-#ifdef USE_CLIP_PLANE
+// UseClipPlane
 out vec3 vClipCoord;
-#endif
 
 const vec2 tcOffset = vec2( -0.5 );
 
@@ -26,7 +25,7 @@ void main( void ){
 	gl_Position = pMatrixProj * vec4( position, 1.0 );
 	
 	vTexCoord = inTexCoord;
-#ifdef USE_CLIP_PLANE
-	vClipCoord = position;
-#endif
+	if(UseClipPlane){
+		vClipCoord = position;
+	}
 }

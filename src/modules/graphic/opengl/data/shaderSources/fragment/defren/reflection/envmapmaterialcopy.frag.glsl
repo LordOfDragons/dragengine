@@ -8,9 +8,9 @@ uniform vec2 pPosTransform2;
 uniform mat4x3 pMatrixPosition;
 uniform mat3 pMatrixNormal;
 
-uniform HIGHP sampler2DArray texDepth;
-uniform lowp sampler2DArray texDiffuse;
-uniform lowp sampler2DArray texNormal;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
+layout(binding=1) uniform lowp sampler2DArray texDiffuse;
+layout(binding=2) uniform lowp sampler2DArray texNormal;
 
 #include "shared/interface/2d_fragment.glsl"
 

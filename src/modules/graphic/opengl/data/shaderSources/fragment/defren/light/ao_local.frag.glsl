@@ -6,9 +6,9 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform HIGHP sampler2DArray texDepth;
-uniform lowp sampler2DArray texDiffuse;
-uniform lowp sampler2DArray texNormal;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
+layout(binding=1) uniform lowp sampler2DArray texDiffuse;
+layout(binding=2) uniform lowp sampler2DArray texNormal;
 
 #include "shared/interface/2d_fragment.glsl"
 
@@ -115,31 +115,27 @@ void main( void ){
 	vec3 normal = normalize( cross( dFdy( position ), dFdx( position ) ) );
 #endif
 	
-	float radius = min( pSSAORadiusFactor * pTapRadius / position.z, pTapRadiusLimit );
+	float ao, radius = min( pSSAORadiusFactor * pTapRadius / position.z, pTapRadiusLimit );
 	
 	// calculate the screen space ambient occlusion
-	#ifndef SSAO_RESOLUTION_COUNT
-		#define SSAO_RESOLUTION_COUNT 1
-	#endif
-	
-	#if SSAO_RESOLUTION_COUNT == 1
-		float ao = screenSpaceAO( vTexCoord, position, normal, radius, pTapCount );
+	if(SSAOResolutionCount == 1){
+		ao = screenSpaceAO( vTexCoord, position, normal, radius, pTapCount );
 		
-	#elif SSAO_RESOLUTION_COUNT == 2
-		float ao = screenSpaceAO( vTexCoord, position, normal, radius * 0.35, pTapCount ); // or weight 0.35
+	}else if(SSAOResolutionCount == 2){
+		ao = screenSpaceAO( vTexCoord, position, normal, radius * 0.35, pTapCount ); // or weight 0.35
 		ao = min( ao, screenSpaceAO( vTexCoord, position, normal, radius, pTapCount ) ); // or weight 0.65
 		
-	#elif SSAO_RESOLUTION_COUNT == 3
-		float ao = screenSpaceAO( vTexCoord, position, normal, radius * 0.25, pTapCount ); // or weight 0.1
+	}else if(SSAOResolutionCount == 3){
+		ao = screenSpaceAO( vTexCoord, position, normal, radius * 0.25, pTapCount ); // or weight 0.1
 		ao = min( ao, screenSpaceAO( vTexCoord, position, normal, radius * 0.5, pTapCount ) ); // or weight 0.3
 		ao = min( ao, screenSpaceAO( vTexCoord, position, normal, radius, pTapCount ) ); // or weight 0.6
 		
-	#else
-		float ao = screenSpaceAO( vTexCoord, position, normal, radius * 0.15, pTapCount ); // or weight 0.32
+	}else{
+		ao = screenSpaceAO( vTexCoord, position, normal, radius * 0.15, pTapCount ); // or weight 0.32
 		ao = min( ao, screenSpaceAO( vTexCoord, position, normal, radius * 0.25, pTapCount ) ); // or weight 0.27
 		ao = min( ao, screenSpaceAO( vTexCoord, position, normal, radius * 0.5, pTapCount ) ); // or weight 0.23
 		ao = min( ao, screenSpaceAO( vTexCoord, position, normal, radius, pTapCount ) ); // or weight 0.18
-	#endif
+	}
 	
 	outAO = vec3( ao );
 }

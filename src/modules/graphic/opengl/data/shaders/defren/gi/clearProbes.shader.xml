@@ -2,10 +2,5 @@
 <shader>
 	<name>DefRen GI Clear Probes</name>
 	
-	<!-- shader assigned locations
-	<texture name='texProbeIrradiance' target='0'/>
-	<texture name='texProbeDistance' target='0'/>
-	-->
-	
 	<sourceCode unit='compute'>C DefRen GI Clear Probes</sourceCode>
 </shader>

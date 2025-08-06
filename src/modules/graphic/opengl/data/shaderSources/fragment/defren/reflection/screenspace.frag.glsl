@@ -6,14 +6,14 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform HIGHP sampler2DArray texDepth;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 #ifdef USE_DEPTH_MIPMAP
-uniform HIGHP sampler2DArray texDepthMinMax;
+layout(binding=1) uniform HIGHP sampler2DArray texDepthMinMax;
 #endif
-uniform lowp sampler2DArray texDiffuse;
-uniform lowp sampler2DArray texNormal;
-uniform lowp sampler2DArray texRoughness;
-uniform lowp sampler2DArray texAOSolidity;
+layout(binding=2) uniform lowp sampler2DArray texDiffuse;
+layout(binding=3) uniform lowp sampler2DArray texNormal;
+layout(binding=4) uniform lowp sampler2DArray texRoughness;
+layout(binding=5) uniform lowp sampler2DArray texAOSolidity;
 
 #include "shared/interface/2d_fragment.glsl"
 

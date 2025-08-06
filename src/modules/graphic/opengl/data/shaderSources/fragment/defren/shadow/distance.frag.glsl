@@ -11,7 +11,7 @@ uniform vec4 pMaterialGamma;
 uniform vec4 pOptions; // depth-scaling
 
 #ifdef _USE_TEXTURE_
-uniform mediump sampler2D texColor;
+layout(binding=0) uniform mediump sampler2D texColor;
 #endif
 
 #ifdef _USE_TEXTURE_

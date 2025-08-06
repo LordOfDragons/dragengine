@@ -6,7 +6,7 @@ precision HIGHP int;
 uniform ivec4 pParam1; // scale.s, scale.t, offset1.s, offset1.t
 uniform ivec4 pParam2; // offset2.s, offset2.t, offset3.s, offset3.t
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
 #include "shared/interface/2d_fragment.glsl"
 

@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Occlusion OccMap Down-Sample</name>
 	
-	<texture name='texSource' target='0'/>
-	
 	<parameter name='pLevel'/>
 	
 	<sourceCode unit='vertex'>V Generic PassThrough</sourceCode>

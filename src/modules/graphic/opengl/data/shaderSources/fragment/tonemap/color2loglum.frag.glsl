@@ -7,7 +7,7 @@ uniform vec4 pParam1; // offset1.s, offset1.t, offset2.s, offset2.t
 uniform vec4 pParam2; // offset3.s, offset3.t, clamp.s, clamp.t
 
 // uniform mediump sampler2DArray texColor;
-uniform HIGHP sampler2DArray texLuminance;
+layout(binding=0) uniform HIGHP sampler2DArray texLuminance;
 
 #include "shared/interface/2d_fragment.glsl"
 

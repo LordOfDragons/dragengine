@@ -10,11 +10,11 @@ precision HIGHP int;
 uniform vec4 pTCBloomTransform;
 uniform vec2 pTCBloomClamp;
 
-uniform mediump sampler2DArray texColor;
-uniform HIGHP sampler2D texToneMapParams;
-uniform mediump sampler2DArray texBloom;
+layout(binding=0) uniform mediump sampler2DArray texColor;
+layout(binding=1) uniform HIGHP sampler2D texToneMapParams;
+layout(binding=2) uniform mediump sampler2DArray texBloom;
 #ifdef WITH_TONEMAP_CURVE
-uniform HIGHP sampler2D texToneMapCurve;
+layout(binding=3) uniform HIGHP sampler2D texToneMapCurve;
 #endif
 
 #include "shared/interface/2d_fragment.glsl"

@@ -305,7 +305,7 @@ pVAOCopyShadow( nullptr )
 		pipconf.SetClipControl( useInverseDepth );
 		
 		defines = commonDefines;
-		defines.SetDefines( "SHADOW_CUBE" );
+		defines.SetDefine("SHADOW1_MODE", "1"); // cube
 		
 		if( renderFSQuadStereoVSLayer ){
 			defines.SetDefines( "VS_LAYER" );
