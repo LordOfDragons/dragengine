@@ -47,7 +47,6 @@ public:
 		euscpVertexGeometry,
 		euscpVertexDepth,
 		euscpVertexParticle,
-		euscpVertexPassThrough,
 		euscpVertexGIMaterialMap,
 		
 		euscpGeometryGeometry,

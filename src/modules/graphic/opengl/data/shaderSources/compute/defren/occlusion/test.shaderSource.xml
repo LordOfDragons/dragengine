@@ -15,9 +15,9 @@
 	<define>DUAL_OCCMAP</define>
 	<define>ENSURE_MIN_SIZE</define>
 	<define>FRUSTUM_TEST</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>RENDER_DOC_DEBUG_OCCTEST</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>WITH_COMPUTE_RENDER_TASK</define>
 	<!-- <define>DUAL_OCCMAP_STEREO</define> never set -->
 	<!-- <define>FRUSTUM_TEST_STEREO</define> never set -->

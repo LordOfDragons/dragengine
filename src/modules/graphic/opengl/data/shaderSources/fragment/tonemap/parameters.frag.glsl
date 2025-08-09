@@ -6,13 +6,13 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform vec4 pAvgLogLumTCs; // tc1.s, tc1.t, tc2.s, tc2.t
+UNIFORM_BIND(3) uniform vec4 pAvgLogLumTCs; // tc1.s, tc1.t, tc2.s, tc2.t
 
 layout(binding=0) uniform HIGHP sampler2DArray texAvgLogLum;
 layout(binding=1) uniform HIGHP sampler2D texLastParams;
 layout(binding=2) uniform mediump samplerCube texEnvMap;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec4 outParams;
 
@@ -29,13 +29,13 @@ void main( void ){
 	avgLums.z = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 0 ), 0.0 ).r; // tc2.s, tc1.t
 	avgLums.w = textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 0 ), 0.0 ).r; // tc2.s, tc2.t
 	
-	#ifdef SAMPLE_STEREO
-	avgLums.x += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 1 ), 0.0 ).r; // tc1.s, tc1.t
-	avgLums.y += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 1 ), 0.0 ).r; // tc1.s, tc2.t
-	avgLums.z += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 1 ), 0.0 ).r; // tc2.s, tc1.t
-	avgLums.w += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 1 ), 0.0 ).r; // tc2.s, tc2.t
-	avgLums /= vec4( 2 );
-	#endif
+	if(SampleStereo){
+		avgLums.x += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xy, 1 ), 0.0 ).r; // tc1.s, tc1.t
+		avgLums.y += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.xw, 1 ), 0.0 ).r; // tc1.s, tc2.t
+		avgLums.z += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zy, 1 ), 0.0 ).r; // tc2.s, tc1.t
+		avgLums.w += textureLod( texAvgLogLum, vec3( pAvgLogLumTCs.zw, 1 ), 0.0 ).r; // tc2.s, tc2.t
+		avgLums /= vec4( 2 );
+	}
 	
 	//vec3 envLight = texture( texEnvMap, vec3( 0.0, 1.0, 0.0 ) ).rgb;
 	//float envLuminance = dot( envLight, lumiFactors );

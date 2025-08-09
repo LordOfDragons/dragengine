@@ -7,7 +7,7 @@ UNIFORM_BIND(0) uniform ivec4 pParameters; // to.mapsPerRow, to.rowsPerImage, fr
 
 layout(location=0) in vec2 inPosition;
 
-#include "shared/interface/2d_vertex.glsl"
+#include "shared/interface/2d/vertex.glsl"
 
 void main( void ){
 	vertexShaderDefaultOutputs();

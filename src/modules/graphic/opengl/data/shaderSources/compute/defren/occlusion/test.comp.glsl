@@ -31,7 +31,7 @@ UNIFORM_BIND(12) uniform vec3 pFrustumNormal4;
 UNIFORM_BIND(13) uniform vec4 pFrustumTestAdd;
 UNIFORM_BIND(14) uniform vec4 pFrustumTestMul;
 
-// GSRenderStereo or VSRenderStereo or DUAL_OCCMAP_STEREO or FRUSTUM_TEST_STEREO
+// LayeredRendering == LayeredRenderingStereo or DUAL_OCCMAP_STEREO or FRUSTUM_TEST_STEREO
 UNIFORM_BIND(15) uniform mat4 pMatrixStereo;
 UNIFORM_BIND(16) uniform mat4 pMatrix2Stereo;
 
@@ -333,13 +333,13 @@ bool occlusionTest( in uint index ){
 	}
 	
 	vec3 testMinExtend, testMaxExtend;
-	// GSRenderStereo || VSRenderStereo
+	// LayeredRendering == LayeredRenderingStereo
 	vec3 testMinExtendStereo, testMaxExtendStereo;
 	
 	bool result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, inputMinExtend, inputMaxExtend );
 	bool resultStereo;
 	
-	if(GSRenderStereo || VSRenderStereo){
+	if(LayeredRendering == LayeredRenderingStereo){
 		resultStereo = calcScreenAABB( testMinExtendStereo, testMaxExtendStereo, pMatrixStereo, inputMinExtend, inputMaxExtend );
 		result = result || resultStereo;
 	}
@@ -396,7 +396,7 @@ bool occlusionTest( in uint index ){
 		result = testBox(occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
 			testMinExtend.z, pScaleSize, pBaseTopLevel, texOccMap, 0);
 		
-		if(GSRenderStereo || VSRenderStereo){
+		if(LayeredRendering == LayeredRenderingStereo){
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
@@ -418,7 +418,7 @@ bool occlusionTest( in uint index ){
 				testMinExtend.z, pScaleSize, pBaseTopLevel, texOccMap, 0 );
 		}
 		
-		if(GSRenderStereo || VSRenderStereo){
+		if(LayeredRendering == LayeredRenderingStereo){
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;

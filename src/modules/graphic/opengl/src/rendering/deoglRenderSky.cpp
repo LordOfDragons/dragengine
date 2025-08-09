@@ -190,7 +190,9 @@ enum eSPBox{
 	spboxLayerPosition,
 	spboxLayerColor,
 	spboxMaterialGamma,
-	spboxSkyBgColor
+	spboxSkyBgColor,
+	spboxMatrixCamera,
+	spboxParams
 };
 
 enum eSPBody{
@@ -240,7 +242,10 @@ deoglRenderBase( renderThread )
 	pAsyncGetPipeline(pPipelineSkySphere, pipconf, sources, defines);
 	
 	// sky sphere stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Sphere Stereo" );
 	}
@@ -254,7 +259,10 @@ deoglRenderBase( renderThread )
 	pAsyncGetPipeline(pPipelineSkyBox, pipconf, sources, defines);
 	
 	// sky box stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Sky Sky-Box Stereo" );
 	}
@@ -268,7 +276,10 @@ deoglRenderBase( renderThread )
 	pAsyncGetPipeline(pPipelineBody, pipconf, sources, defines);
 	
 	// sky body stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Sky Body Stereo" );
 	}

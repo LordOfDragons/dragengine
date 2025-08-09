@@ -2,7 +2,7 @@
 <shader>
 	<name>ToneMap Bloom Down-Sample</name>
 	
-	<parameter name='pLevel'/>
+	<parameter name='pLevel' location='3'/>
 	
 	<sourceCode unit='vertex'>V Generic PassThrough</sourceCode>
 	<sourceCode unit='fragment'>F ToneMap Bloom Down-Sample</sourceCode>

@@ -9,7 +9,7 @@
 	<uniformBlock name='GIParameters' binding='1'/>
 	
 	<define>WITH_GI</define>
-	<define>ENVMAP_EQUI</define>
+	<define>TEXTURE_ENVMAP_EQUI</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>

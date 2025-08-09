@@ -198,14 +198,14 @@ pAddToRenderTask( NULL )
 			defines = commonOccMapDefines;
 			
 			if( modifiers & epmStereo ){
+				defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
 				if( renderFSQuadStereoVSLayer ){
 					sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
-					defines.SetDefines( "VS_RENDER_STEREO" );
+					defines.SetDefines("VS_RENDER_LAYER");
 					pipconf.SetDrawIDOffset( 1 );
 					
 				}else{
 					sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
-					defines.SetDefines( "GS_RENDER_STEREO" );
 				}
 				
 			}else{
@@ -239,14 +239,14 @@ pAddToRenderTask( NULL )
 			defines = commonDefines;
 			
 			if( modifiers & epmStereo ){
+				defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
 				if( renderFSQuadStereoVSLayer ){
 					sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap" );
-					defines.SetDefines( "VS_RENDER_STEREO" );
+					defines.SetDefines("VS_RENDER_LAYER");
 					pipconf.SetDrawIDOffset( 1 );
 					
 				}else{
 					sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Stereo" );
-					defines.SetDefines( "GS_RENDER_STEREO" );
 				}
 				
 			}else{
@@ -275,7 +275,10 @@ pAddToRenderTask( NULL )
 		sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample" );
 		pAsyncGetPipeline(pPipelineOccMapDownSample, pipconf, sources, defines);
 		
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Occlusion OccMap Down-Sample Stereo" );
 		}

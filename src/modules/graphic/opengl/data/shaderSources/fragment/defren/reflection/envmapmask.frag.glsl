@@ -3,10 +3,10 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mat4x3 pMatrixReflectionBox;
-uniform mat4x3 pMatrixMaskBox;
+UNIFORM_BIND(2) uniform mat4x3 pMatrixReflectionBox;
+UNIFORM_BIND(3) uniform mat4x3 pMatrixMaskBox;
 
-in vec3 vEnvMapDir;
+VARYING_BIND(0) in vec3 vEnvMapDir;
 
 layout(location=0) out vec4 outMask;
 

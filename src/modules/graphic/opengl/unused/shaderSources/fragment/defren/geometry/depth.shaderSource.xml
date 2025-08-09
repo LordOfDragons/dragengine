@@ -7,10 +7,10 @@
 	<output name='outDepth' location='0'/>
 	
 	<define>CLIP_DEPTH</define>
-	<define>ENCODE_DEPTH</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>ENCODED_DEPTH</define>
+	<define>LAYERED_RENDERING</define>
 	<define>IGNORE_HOLES</define>
 	<define>INVERSE_DEPTH</define>
 	<define>USE_CLIP_PLANE</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

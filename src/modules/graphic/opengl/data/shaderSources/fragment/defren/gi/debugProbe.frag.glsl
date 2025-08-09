@@ -7,8 +7,8 @@ precision HIGHP int;
 #include "shared/octahedral.glsl"
 #include "shared/defren/light/ubo_gi.glsl"
 
-uniform mat4x3 pMatrixNormal;
-uniform int pGIDebugCascade;
+UNIFORM_BIND(3) uniform mat4x3 pMatrixNormal;
+UNIFORM_BIND(2) uniform int pGIDebugCascade;
 
 #define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
 #define TEX_GI_PROBE_OFFSET_BINDING 2

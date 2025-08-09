@@ -5,7 +5,7 @@ precision lowp int;
 
 layout(binding=0) uniform lowp sampler2DArray texValues;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out lowp float outDummy;
 

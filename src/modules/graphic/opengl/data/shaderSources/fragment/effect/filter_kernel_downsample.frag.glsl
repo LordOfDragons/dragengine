@@ -11,7 +11,7 @@ UNIFORM_BIND(3) uniform ivec2 pTCClamp;
 
 layout(binding=0) uniform mediump sampler2DArray texColor;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out mediump vec4 outColor;
 

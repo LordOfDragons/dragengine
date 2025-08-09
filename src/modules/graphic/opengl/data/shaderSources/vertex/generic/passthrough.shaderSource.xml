@@ -13,5 +13,5 @@
 	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
 	-->
 	
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

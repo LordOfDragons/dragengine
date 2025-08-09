@@ -3,25 +3,25 @@
 UNIFORM_BIND(0) uniform vec4 pPosTransform; // scaleX, scaleY, offsetX, offsetY
 UNIFORM_BIND(1) uniform vec4 pTCTransform;
 
-#ifdef PASS2
-	#include "shared/ubo_defines.glsl"
-	#include "shared/defren/gi/trace_probe.glsl"
-	#include "shared/defren/light/ubo_gi.glsl"
-	
-	UNIFORM_BIND(2) uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
-	UNIFORM_BIND(3) uniform int pGIDebugCascade;
-#endif
+// RenderPass == 1
+#include "shared/ubo_defines.glsl"
+#include "shared/defren/gi/trace_probe.glsl"
+#include "shared/defren/light/ubo_gi.glsl"
+
+// RenderPass == 1
+UNIFORM_BIND(2) uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
+UNIFORM_BIND(3) uniform int pGIDebugCascade;
 
 layout(location=0) in vec2 inPosition;
 
-#ifdef PASS2
-	VARYING_BIND(1) flat out ivec3 vProbeCoord;
-	
-#else
-	VARYING_BIND(0) out vec2 vTC;
-#endif
+// RenderPass == 0
+VARYING_BIND(0) out vec2 vTC;
 
-#ifdef PASS2
+// RenderPass == 1
+VARYING_BIND(1) flat out ivec3 vProbeCoord;
+
+
+// RenderPass == 1
 ivec3 probeIndexToGridCoord( in int index ){
 	return ivec3( index % pGIParams[pGIDebugCascade].probeCount.x,
 		index / ( pGIParams[pGIDebugCascade].probeCount.x * pGIParams[pGIDebugCascade].probeCount.z ),
@@ -29,13 +29,14 @@ ivec3 probeIndexToGridCoord( in int index ){
 			/ pGIParams[pGIDebugCascade].probeCount.x );
 }
 
+// RenderPass == 1
 ivec3 giGridLocalToShift( in ivec3 local ){
 	return ( local + pGIParams[pGIDebugCascade].gridCoordUnshift ) % pGIParams[pGIDebugCascade].probeCount;
 }
-#endif
+
 
 void main( void ){
-	#ifdef PASS2
+	if(RenderPass == 1){
 		int probeIndex = giTraceProbeProbeIndex( gl_InstanceID );
 		vProbeCoord = giGridLocalToShift( probeIndexToGridCoord( probeIndex ) );
 		
@@ -55,8 +56,8 @@ void main( void ){
 		
 		gl_Position = vec4( tc * pPosTransform.xy + pPosTransform.zw, 0.0, 1.0 );
 		
-	#else
+	}else{
 		gl_Position = vec4( inPosition * pPosTransform.xy + pPosTransform.zw, 0.0, 1.0 );
 		vTC = inPosition * pTCTransform.xy + pTCTransform.zw;
-	#endif
+	}
 }

@@ -5,7 +5,7 @@
 	<source>shape.geom.glsl</source>
 	
 	<define>GS_INSTANCING</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>

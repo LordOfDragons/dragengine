@@ -1,14 +1,13 @@
 // usage:
-// #include "shared/interface/light_vertex.glsl"
+// #include "shared/interface/light/vertex.glsl"
 
 
-#include "shared/interface/2d_vertex.glsl"
+#include "shared/interface/2d/vertex.glsl"
 
 
 // light volume position (location 3)
 // used by:
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 #ifdef WITH_GEOMETRY_SHADER
 	// opengl
 	VARYING_BIND(3) out vec3 vGSLightVolumePos;

@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Plan Find Geometries</name>
 	
-	<parameter name='pGeometryCount'/>
+	<parameter name='pGeometryCount' location='0'/>
 	
 	<sourceCode unit='compute'>C DefRen Plan Find Geometries</sourceCode>
 </shader>

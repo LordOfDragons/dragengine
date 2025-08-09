@@ -5,7 +5,7 @@ precision HIGHP int;
 
 layout(binding=0) uniform HIGHP sampler2DArray texColor;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out float outLuminance;
 

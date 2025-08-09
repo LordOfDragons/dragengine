@@ -16,7 +16,7 @@ uniform float pBaseLevel2;
 
 in vec3 vMinExtend;
 in vec2 vMaxExtend;
-#ifdef GS_RENDER_STEREO
+#ifdef WITH_GEOMETRY_SHADER
 	in vec3 vMinExtend2;
 	in vec2 vMaxExtend2;
 #endif
@@ -127,7 +127,7 @@ bool testPoint( in int layer, in vec3 minExtend, in vec2 maxExtend ){
 
 void main( void ){
 	bool result = testPoint( 0, vMinExtend, vMaxExtend );
-	#ifdef GS_RENDER_STEREO
+	#ifdef WITH_GEOMETRY_SHADER
 		result = result || testPoint( 1, vMinExtend2, vMaxExtend2 );
 	#endif
 	

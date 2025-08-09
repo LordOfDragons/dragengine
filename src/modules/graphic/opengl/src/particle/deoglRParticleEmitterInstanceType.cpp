@@ -361,7 +361,7 @@ deoglSkinTexturePipelines::eTypes shaderType ) const{
 	deoglRenderThread &renderThread = pEmitterInstance.GetRenderThread();
 	deoglTexUnitsConfig *tuc = NULL;
 	
-	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+	if(skinShader.GetTextureUnitCount() > 0){
 		deoglRDynamicSkin *dynamicSkin = NULL;
 		deoglSkinState *skinState = NULL;
 		
@@ -423,7 +423,7 @@ deoglSkinTexturePipelines::eTypes shaderType ) const{
 		}
 		
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			&units[ 0 ], skinShader.GetTextureUnitCount(),
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	

@@ -23,9 +23,9 @@
 	<define>TEXTURE_TRANSPARENCY</define>
 	
 	<!-- shared/defren/skin/macros_geometry.glsl -->
-	<define>DECAL</define>
+	<define>GEOMETRY_MODE</define>
 	<define>DEPTH_TEST</define>
-	<define>OUTPUT_COLOR</define>
+	<define>OUTPUT_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>TEXTURE_EMISSIVITY</define>
 	<define>TEXTURE_ENVMAP</define>

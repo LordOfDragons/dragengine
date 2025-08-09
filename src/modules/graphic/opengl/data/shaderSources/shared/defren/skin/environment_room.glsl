@@ -18,17 +18,17 @@
 //   texture coordinates calculated by fragment shader. this can differ from if relief
 //   mapping is used.
 // 
-// pEnvRoomSize
+// getEnvRoomSize()
 //   size of the environment room. X = width / height. Y = -( width / depth )
 // 
-// pEnvRoomOffset
+// getEnvRoomOffset()
 //   offset of environment room cube map origin relative to room center
 // 
 // The texture coordinate defines where the view vector enters the room while the vReflectDir
 // defines the view vector direction. Using these two values the hit point with the box behind
 // the surface can be calculated. The final room direction is then the difference compared to
 // the room center
-vec3 calcEnvRoomDir( in vec2 tc, in vec3 normal ){
+vec3 calcEnvRoomDir(const in vec2 tc, const in vec3 normal, const int spbIndex){
 	// transform view vector into vector relative to room. the resulting room vector is
 	// pointing from the hit point on the surface into the room behind the surface
 	vec3 roomDir = vec3(
@@ -36,10 +36,10 @@ vec3 calcEnvRoomDir( in vec2 tc, in vec3 normal ){
 		dot( vBitangent, vReflectDir ),
 		dot( normal, vReflectDir ) );
 	
-	// pEnvRoomSize is chosen to normalize the vector relative to the room width. this
+	// getEnvRoomSize() is chosen to normalize the vector relative to the room width. this
 	// results in a vector relative to the unit cube. converting to a unit cube now than
 	// later makes it easier to do the calculation
-	roomDir.yz *= pEnvRoomSize;
+	roomDir.yz *= getEnvRoomSize(spbIndex);
 	
 	// we need now to calculate the hit point of the view vector with the unit cube. for this
 	// we need first the position on the unit cube the view vector enters the cube. we only
@@ -54,7 +54,7 @@ vec3 calcEnvRoomDir( in vec2 tc, in vec3 normal ){
 	// placing the cube map origin near the entry side of the room reduces perspective
 	// problems. by offseting the enter position we calculate the room direction vector
 	// against this original position instead of the room center.
-	enterPos += pEnvRoomOffset;
+	enterPos += getEnvRoomOffset(spbIndex);
 	
 	// the following calculations are an optimized version of ray-plane intersection tests.
 	// 5 planes are tested since the one lining up with the surface can never be hit. the

@@ -2,11 +2,11 @@
 <shader>
 	<name>DefRen SSAO Blur</name>
 	
-	<parameter name='pTCDataToDepth'/>
-	<parameter name='pOffsetRead'/>
-	<parameter name='pOffsetWrite'/>
-	<parameter name='pClamp'/>
-	<parameter name='pDepthDifferenceThreshold'/>
+	<parameter name='pTCDataToDepth' location='0'/>
+	<parameter name='pOffsetRead' location='1'/>
+	<parameter name='pOffsetWrite' location='2'/>
+	<parameter name='pClamp' location='3'/>
+	<parameter name='pDepthDifferenceThreshold' location='4'/>
 	
 	<sourceCode unit='compute'>C DefRen SSAO Blur</sourceCode>
 </shader>

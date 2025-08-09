@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen GI Resize Materials</name>
 	
-	<parameter name='pParameters'/>
+	<parameter name='pParameters' location='0'/>
 	
 	<sourceCode unit='vertex'>V DefRen GI Resize Materials</sourceCode>
 	<sourceCode unit='fragment'>F DefRen GI Resize Materials</sourceCode>

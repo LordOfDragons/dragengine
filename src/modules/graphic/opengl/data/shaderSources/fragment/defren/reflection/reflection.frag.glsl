@@ -24,7 +24,7 @@ layout(binding=6) uniform mediump sampler2DArray texEnvMapArray;
 layout(binding=7) uniform mediump sampler2D texEnvMapSky;
 
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec4 outColor;
 
@@ -33,9 +33,8 @@ layout(location=0) out vec4 outColor;
 // Constants
 //////////////
 
-#ifdef ENVMAP_EQUI
-	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
-#endif
+// TextureEnvMapEqui
+const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
 
 #include "shared/normal/texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
@@ -139,42 +138,45 @@ void envMapReflection( in vec3 position, in vec3 reflectDir, in vec3 reflectivit
 	float envMapLodLevel = log2( 1.0 + pReflEnvMapLodLevel * roughness );
 	envMapDir = pMatrixEnvMap * reflectDir;
 	
-	#ifdef ENVMAP_EQUI
+	if(TextureEnvMapEqui){
 		envMapDir = normalize( envMapDir );
-	#endif
+	}
 	
 	if( envMapLayers.x < -0.5 ){
-		#ifdef ENVMAP_EQUI
+		if(TextureEnvMapEqui){
 			vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
 			color = textureLod( texEnvMapSky, tcEnvMap, envMapLodLevel ).rgb;
-		#else
-			color = textureLod( texEnvMapSky, envMapDir, envMapLodLevel ).rgb;
-		#endif
+			
+		}else{
+			// color = textureLod( texEnvMapSky, envMapDir, envMapLodLevel ).rgb;
+		}
 		
 	}else if( envMapLayers.y < -0.5 ){
-		#ifdef ENVMAP_EQUI
+		if(TextureEnvMapEqui){
 			vec3 tcEnvMap = vec3( cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) ), envMapLayers.x );
 			color = textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb;
-		#else
-			vec4 tcEnvMap = vec4( envMapDir, envMapLayers.x );
-			color = textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb;
-		#endif
+			
+		}else{
+			// vec4 tcEnvMap = vec4( envMapDir, envMapLayers.x );
+			// color = textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb;
+		}
 		
 	}else{
 		distances = sqrt( distances );
 		blendWeight = clamp( ( distances.x - distances.y ) * pBlendFactors.x + pBlendFactors.y, 0.0, 1.0 );
 		
-		#ifdef ENVMAP_EQUI
+		if(TextureEnvMapEqui){
 			vec3 tcEnvMap = vec3( cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) ), envMapLayers.x );
 			color = textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb;
 			tcEnvMap.z = envMapLayers.y;
 			color = mix( color, textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb, vec3( blendWeight ) );
-		#else
-			vec4 tcEnvMap = vec4( envMapDir, envMapLayers.x );
-			color = textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb;
-			tcEnvMap.w = envMapLayers.y;
-			color = mix( color, textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb, vec3( blendWeight ) );
-		#endif
+			
+		}else{
+			// vec4 tcEnvMap = vec4( envMapDir, envMapLayers.x );
+			// color = textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb;
+			// tcEnvMap.w = envMapLayers.y;
+			// color = mix( color, textureLod( texEnvMapArray, tcEnvMap, envMapLodLevel ).rgb, vec3( blendWeight ) );
+		}
 	}
 	
 	// this should simulate to some degree a prefiltered environment map (cosine filter, phong lobe).

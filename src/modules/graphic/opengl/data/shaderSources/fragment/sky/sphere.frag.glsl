@@ -6,15 +6,15 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform mat3 pMatrixLayer;
-uniform vec3 pLayerPosition;
-uniform vec4 pLayerColor;
-uniform vec4 pMaterialGamma;
-uniform vec4 pSkyBgColor;
+UNIFORM_BIND(0) uniform mat3 pMatrixLayer;
+UNIFORM_BIND(1) uniform vec3 pLayerPosition;
+UNIFORM_BIND(2) uniform vec4 pLayerColor;
+UNIFORM_BIND(3) uniform vec4 pMaterialGamma;
+UNIFORM_BIND(4) uniform vec4 pSkyBgColor;
 
 layout(binding=0) uniform mediump sampler2D texSky;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec4 outColor;
 

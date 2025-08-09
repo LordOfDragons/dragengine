@@ -2,11 +2,11 @@
 <shader>
 	<name>Effect Filter Kernel</name>
 	
-	<parameter name="pTCTransform"/>
-	<parameter name="pOptions"/>
-	<parameter name="pKernel1"/>
-	<parameter name="pKernel2"/>
-	<parameter name="pKernel3"/>
+	<parameter name="pTCTransform" location='1'/>
+	<parameter name="pOptions" location='3'/>
+	<parameter name="pKernel1" location='4'/>
+	<parameter name="pKernel2" location='5'/>
+	<parameter name="pKernel3" location='6'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit="fragment">F Effect Filter Kernel</sourceCode>

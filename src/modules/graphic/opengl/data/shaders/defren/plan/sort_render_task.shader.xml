@@ -2,8 +2,8 @@
 <shader>
 	<name>DefRen Plan Sort Render Task</name>
 	
-	<parameter name='pStage'/>
-	<parameter name='pLaneSize'/>
+	<parameter name='pStage' location='0'/>
+	<parameter name='pLaneSize' location='1'/>
 	
 	<sourceCode unit='compute'>C DefRen Plan Sort Render Task</sourceCode>
 </shader>

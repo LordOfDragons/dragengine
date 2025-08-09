@@ -2,15 +2,15 @@
 <shader>
 	<name>DefRen GI Debug Probe Update</name>
 	
-	<parameter name='pPosTransform'/> <!-- 0 -->
-	<parameter name='pTCTransform'/> <!-- 1 -->
-	<parameter name='pGIDebugCascade'/> <!-- 2 -->
-	<parameter name='pParams'/> <!-- 3 -->
-	<parameter name='pPlaneLeft'/> <!-- 4 -->
-	<parameter name='pPlaneRight'/> <!-- 5 -->
-	<parameter name='pPlaneTop'/> <!-- 6 -->
-	<parameter name='pPlaneBottom'/> <!-- 7 -->
-	<parameter name='pPlaneNear'/> <!-- 8 -->
+	<parameter name='pPosTransform' location='0'/> <!-- 0 -->
+	<parameter name='pTCTransform' location='1'/> <!-- 1 -->
+	<parameter name='pGIDebugCascade' location='3'/> <!-- 2 -->
+	<parameter name='pParams' location='2'/> <!-- 3 -->
+	<parameter name='pPlaneLeft' location='4'/> <!-- 4 -->
+	<parameter name='pPlaneRight' location='5'/> <!-- 5 -->
+	<parameter name='pPlaneTop' location='6'/> <!-- 6 -->
+	<parameter name='pPlaneBottom' location='7'/> <!-- 7 -->
+	<parameter name='pPlaneNear' location='8'/> <!-- 8 -->
 	
 	<sourceCode unit='vertex'>V DefRen GI Debug Probe Update</sourceCode>
 	<sourceCode unit='fragment'>F DefRen GI Debug Probe Update</sourceCode>

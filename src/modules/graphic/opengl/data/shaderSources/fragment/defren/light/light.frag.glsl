@@ -111,7 +111,7 @@ layout(binding=19) uniform lowp sampler2D texShadowNoise;
 // Inputs
 ///////////
 
-#include "shared/interface/light_fragment.glsl"
+#include "shared/interface/light/fragment.glsl"
 
 vec3 getLightPosition(){
 	return LightMode == LightModeParticle ? vParticleLightPosition : pLightPosition[vLayer];

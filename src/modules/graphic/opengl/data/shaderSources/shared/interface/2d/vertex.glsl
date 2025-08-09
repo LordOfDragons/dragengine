@@ -1,19 +1,10 @@
 // usage:
-// #include "shared/interface/2d_vertex.glsl"
-
-
-// opengl only
-#ifndef WITH_GEOMETRY_SHADER
-	#if defined GS_RENDER_STEREO || defined GS_LAYER
-		#define WITH_GEOMETRY_SHADER 1
-	#endif
-#endif
+// #include "shared/interface/2d/vertex.glsl"
 
 
 // texture coordinates (location 0)
 // used by:
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 #ifdef WITH_GEOMETRY_SHADER
 	// opengl
 	VARYING_BIND(0) out vec2 vGSTexCoord;
@@ -41,9 +32,7 @@
 
 // layer (location 2)
 // used by:
-// - VSRenderStereo
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 #ifdef WITH_GEOMETRY_SHADER
 	// opengl
 	VARYING_BIND(2) flat out int vGSLayer;

@@ -2,8 +2,8 @@
 <shader>
 	<name>Effect Color Matrix Stereo</name>
 	
-	<parameter name="pColorMatrix"/>
-	<parameter name="pColorOffset"/>
+	<parameter name="pColorMatrix" location='3'/>
+	<parameter name="pColorOffset" location='4'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

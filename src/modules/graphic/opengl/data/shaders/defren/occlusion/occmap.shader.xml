@@ -2,8 +2,8 @@
 <shader>
 	<name>DefRen Occlusion OccMap</name>
 	
-	<parameter name='pSPBInstanceIndexBase'/>
-	<parameter name='pDrawIDOffset'/>
+	<parameter name='pSPBInstanceIndexBase' location='0'/> <!-- 0 -->
+	<parameter name='pDrawIDOffset' location='1'/> <!-- 1 -->
 	
 	<sourceCode unit='vertex'>V DefRen Occlusion OccMap</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Occlusion OccMap</sourceCode>

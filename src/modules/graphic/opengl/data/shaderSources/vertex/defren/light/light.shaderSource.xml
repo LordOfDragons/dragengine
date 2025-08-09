@@ -7,8 +7,8 @@
 	<attribute name='inPosition' location='0'/>
 	<attribute name='inLayer' location='1'/>
 	
-	<define>GS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>FULLSCREENQUAD</define>
 	
 	<!-- shared/defren/light/ubo_instance_parameters.glsl -->

@@ -1,6 +1,6 @@
 #include "shared/preamble.glsl"
 
-#ifdef GS_RENDER_STEREO
+#if LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout( triangles, invocations=2 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
@@ -8,19 +8,20 @@
 		layout( triangles ) in;
 		layout( triangle_strip, max_vertices=6 ) out;
 	#endif
+	
 #else
 	layout( triangles ) in;
 	layout( triangle_strip, max_vertices=3 ) out;
 #endif
 
 
-uniform mat4 pMatrixVP;
-uniform mat4 pMatrixVP2;
+UNIFORM_BIND(1) uniform mat4 pMatrixVP;
+UNIFORM_BIND(2) uniform mat4 pMatrixVP2;
 
-#include "shared/interface/2d_geometry.glsl"
+#include "shared/interface/2d/geometry.glsl"
 
 
-#ifdef GS_RENDER_STEREO
+#if LAYERED_RENDERING_STEREO
 
 void main( void ){
 	int eye;
@@ -57,4 +58,4 @@ void main( void ){
 	EndPrimitive();
 }
 
-#endif // GS_RENDER_STEREO
+#endif

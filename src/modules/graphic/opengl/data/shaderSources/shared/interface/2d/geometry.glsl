@@ -1,5 +1,5 @@
 // usage:
-// #include "shared/interface/2d_geometry.glsl"
+// #include "shared/interface/2d/geometry.glsl"
 
 
 // configuration
@@ -10,8 +10,7 @@
 
 // texture coordinates (location 0)
 // used by:
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 VARYING_BIND(0) in vec2 vGSTexCoord[GEOMETRY_SHADER_INPUT_SIZE];
 
 VARYING_BIND(0) out vec2 vTexCoord;
@@ -27,9 +26,7 @@ VARYING_BIND(1) out vec2 vScreenCoord;
 
 // layer (location 2)
 // used by:
-// - VSRenderStereo
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 VARYING_BIND(2) flat in int vGSLayer[GEOMETRY_SHADER_INPUT_SIZE];
 
 VARYING_BIND(2) flat out int vLayer;

@@ -3,11 +3,11 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform int pLevel;
+UNIFORM_BIND(0) uniform int pLevel;
 
 layout(binding=0) uniform HIGHP sampler2DArray texSource;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 void main( void ){
 	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );

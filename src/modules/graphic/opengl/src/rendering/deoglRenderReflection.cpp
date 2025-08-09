@@ -111,7 +111,8 @@ static decTimer timer;
 enum eSPCopyColor{
 	spccQuadParams,
 	spccMipMapLevel,
-	spccTCClamp
+	spccTCClamp,
+	spccTCClampMipMap
 };
 
 enum eSPMinMapMipMap{
@@ -209,7 +210,7 @@ deoglRenderBase( renderThread )
 		pipconf.SetEnableScissorTest( true );
 		
 		defines = commonDefines;
-		defines.SetDefines( "INPUT_ARRAY_TEXTURE" );
+		defines.SetDefines( "INPUT_ARRAY_TEXTURES" );
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
 		pAsyncGetPipeline(pPipelineCopyColor, pipconf, sources, defines);
 		
@@ -217,8 +218,11 @@ deoglRenderBase( renderThread )
 		pAsyncGetPipeline(pPipelineCopyColorMipMap, pipconf, sources, defines);
 		
 		defines = commonDefines;
-		defines.SetDefines( "INPUT_ARRAY_TEXTURE" );
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefines( "INPUT_ARRAY_TEXTURES" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
 		}
@@ -237,11 +241,13 @@ deoglRenderBase( renderThread )
 		
 			defines = commonDefines;
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap 2" );
-			defines.SetDefines( "NO_TEXCOORD", "INITIAL" );
+			defines.SetDefines("NO_TEXCOORD");
+			defines.SetDefine("RENDER_PASS", 0);
 			pAsyncGetPipeline(pPipelineMinMaxMipMapInitial, pipconf, sources, defines);
 			
 			defines = commonDefines;
-			defines.SetDefines( "NO_TEXCOORD", "DOWNSAMPLE" );
+			defines.SetDefines("NO_TEXCOORD");
+			defines.SetDefine("RENDER_PASS", 1);
 			pAsyncGetPipeline(pPipelineMinMaxMipMapDownsample, pipconf, sources, defines);
 			
 		}else if( deoglDRDepthMinMax::USAGE_VERSION == 1 ){
@@ -250,11 +256,11 @@ deoglRenderBase( renderThread )
 			
 			defines = commonDefines;
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection MinMap MipMap" );
-			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "FUNC_MIN" );
+			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "USE_MIN_FUNCTION" );
 			pAsyncGetPipeline(pPipelineMinMaxMipMapMin, pipconf, sources, defines);
 			
 			defines = commonDefines;
-			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC", "FUNC_MAX" );
+			defines.SetDefines( "NO_TEXCOORD", "CLAMP_TC"); // !USE_MIN_FUNCTION
 			pAsyncGetPipeline(pPipelineMinMaxMipMapMax, pipconf, sources, defines);
 			
 		}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
@@ -292,7 +298,7 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace" );
 		if( pUseEquiEnvMap ){
-			defines.SetDefines( "ENVMAP_EQUI" );
+			defines.SetDefines( "TEXTURE_ENVMAP_EQUI" );
 		}
 		if( useInverseDepth ){
 			defines.SetDefines( "INVERSE_DEPTH" );
@@ -319,7 +325,10 @@ deoglRenderBase( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pAsyncGetPipeline(pPipelineScreenSpace, pipconf, sources, defines);
 		
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ScreenSpace Stereo" );
 		}
@@ -335,31 +344,24 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections" );
 		if( pUseEquiEnvMap ){
-			defines.SetDefines( "ENVMAP_EQUI" );
+			defines.SetDefines( "TEXTURE_ENVMAP_EQUI" );
 		}
 		if( useInverseDepth ){
 			defines.SetDefines( "INVERSE_DEPTH" );
 		}
 		//defines.SetDefine( "HACK_NO_SSR", true ); // set to 1 to examine env-map reflection only
 		
-		if( config.GetEnvMapMethod() == deoglConfiguration::eemmSingle ){
-			defines.SetDefines( "ENVMAP_SINGLE" ); // ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
-			
-		}else if( config.GetEnvMapMethod() == deoglConfiguration::eemmMultipleBoxProjection ){
-			defines.SetDefines( "ENVMAP_BOX_PROJECTION" ); // ENVMAP_BOX_PROJECTION, not ENVMAP_SINGLE
-			
-		//}else{ // not ENVMAP_SINGLE, not ENVMAP_BOX_PROJECTION
-		}
+		defines.SetDefine("ENVMAP_MODE", config.GetEnvMapMethod());
 		
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pAsyncGetPipeline(pPipelineApplyReflections, pipconf, sources, defines);
 		
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
 		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
+			defines.SetDefines("VS_RENDER_LAYER");
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection ApplyReflections Stereo" );
-			defines.SetDefines( "GS_RENDER_STEREO" );
 		}
 		pAsyncGetPipeline(pPipelineApplyReflectionsStereo, pipconf, sources, defines);
 		
@@ -380,7 +382,7 @@ deoglRenderBase( renderThread )
 		
 		sources = shaderManager.GetSourcesNamed( "DefRen EnvMap Light GI" );
 		if( pUseEquiEnvMap ){
-			defines.SetDefines( "ENVMAP_EQUI" );
+			defines.SetDefines( "TEXTURE_ENVMAP_EQUI" );
 		}
 		pAsyncGetPipeline(pPipelineEnvMapCopy, pipconf, sources, defines);
 		
@@ -404,7 +406,7 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		sources = shaderManager.GetSourcesNamed( "DefRen Reflection" );
 		//if( pUseEquiEnvMap ){
-			defines.SetDefines( "ENVMAP_EQUI" );
+			defines.SetDefines( "TEXTURE_ENVMAP_EQUI" );
 		//}
 		if( useInverseDepth ){
 			defines.SetDefines( "INVERSE_DEPTH" );
@@ -412,7 +414,10 @@ deoglRenderBase( renderThread )
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
 		pAsyncGetPipeline(pPipelineReflection, pipconf, sources, defines);
 		
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Stereo" );
 		}
@@ -435,7 +440,7 @@ deoglRenderBase( renderThread )
 		defines = commonDefines;
 		if( pUseEquiEnvMap ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap Equi" );
-			defines.SetDefines( "ENVMAP_EQUI" );
+			defines.SetDefines( "TEXTURE_ENVMAP_EQUI" );
 			
 		}else{
 			sources = shaderManager.GetSourcesNamed( "DefRen Reflection Build EnvMap" );

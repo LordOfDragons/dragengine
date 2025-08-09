@@ -1,14 +1,13 @@
 // usage:
-// #include "shared/interface/light_fragment.glsl"
+// #include "shared/interface/light/fragment.glsl"
 
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 
 // light volume position (location 3)
 // used by:
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 VARYING_BIND(3) in vec3 vLightVolumePos;
 
 

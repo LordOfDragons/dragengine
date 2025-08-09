@@ -23,15 +23,13 @@
 	<output set='4' name='outColor' location='0'/>
 	
 	<define>AMBIENT_LIGHT_PROBE</define>
-	<define>DEPTH_TEST_LARGER</define>
 	<define>DEPTH_TEST</define>
 	<define>FADEOUT_RANGE</define>
-	<define>HAS_TESSELLATION_SHADER</define>
+	<define>TESSELLATION_MODE</define>
 	<define>INVERSE_DEPTH</define>
-	<define>LUMINANCE_ONLY</define>
 	<define>MASKED_SOLIDITY</define>
-	<define>OUTPUT_MATERIAL_PROPERTIES</define>
-	<define>PARTICLE</define>
+	<define>OUTPUT_MODE</define>
+	<define>GEOMETRY_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>SKIN_REFLECTIONS</define>
 	<define>USE_NORMAL_ROUGHNESS_CORRECTION</define>
@@ -69,9 +67,9 @@
 	<uniformBlock name='RenderParameters' binding='0'/>
 	
 	<!-- shared/defren/skin/macros_geometry.glsl -->
-	<define>DECAL</define>
+	<define>GEOMETRY_MODE</define>
 	<define>DEPTH_TEST</define>
-	<define>OUTPUT_COLOR</define>
+	<define>OUTPUT_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>TEXTURE_EMISSIVITY</define>
 	<define>TEXTURE_ENVMAP</define>
@@ -153,6 +151,6 @@
 	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>
 	<define>SHARED_SPB_TEXTURE_PADDING</define>
 	<define>SHARED_SPB_USE_SSBO</define>
-	<define>OUTPUT_LIMITBUFFERS</define>
+	<define>OUTPUT_MODE</define>
 	-->
 </shaderSource>

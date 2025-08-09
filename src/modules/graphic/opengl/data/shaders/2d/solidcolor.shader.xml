@@ -2,8 +2,8 @@
 <shader>
 	<name>2D Solid Color</name>
 	
-	<parameter name='pColor'/> <!-- 0 -->
-	<parameter name='pPosTransform'/> <!-- 1 -->
+	<parameter name='pColor' location='1'/> <!-- 0 -->
+	<parameter name='pPosTransform' location='0'/> <!-- 1 -->
 	
 	<sourceCode unit='vertex'>V 2D Solid Color</sourceCode>
 	<sourceCode unit='fragment'>F 2D Solid Color</sourceCode>

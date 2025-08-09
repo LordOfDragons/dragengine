@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Copy VNT</name>
 	
-	<parameter name='pParams'/>
+	<parameter name='pParams' location='0'/>
 	
 	<sourceCode unit='compute'>C DefRen Copy VNT</sourceCode>
 </shader>

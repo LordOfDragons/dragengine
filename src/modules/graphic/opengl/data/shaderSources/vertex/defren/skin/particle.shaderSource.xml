@@ -21,7 +21,7 @@
 	<define>SHARED_SPB_ARRAY_SIZE</define>
 	-->
 	
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->

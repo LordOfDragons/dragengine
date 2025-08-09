@@ -12,7 +12,7 @@
 	<!-- <define>DECODE_IN_SHADOW</define> -->
 	<define>FULLSCREENQUAD</define>
 	<define>GI_RAY</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<!-- <define>HW_DEPTH_COMPARE</define> -->
 	<define>NOISE_TAP</define>
 	<define>LIGHT_MODE</define>
@@ -29,7 +29,7 @@
 	<define>TEXTURE_SHADOW2_SOLID</define>
 	<define>TEXTURE_SHADOW2_TRANSPARENT</define>
 	<define>TEXTURE_SHADOW2_AMBIENT</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>WITH_SUBSURFACE</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->

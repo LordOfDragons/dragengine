@@ -101,13 +101,14 @@ void main( void ){
 		minExtend = pGIDetectionBox;
 		maxExtend = -pGIDetectionBox;
 		for(i=0; i<pGIRaysPerProbe; i++){
-			#ifdef WITH_RAY_CACHE
+			if(WithRayCache){
 				ivec3 rayTC = ivec3(rayOffset + ivec2(i,0), pGICascade);
 				vec3 position = probePosition + pGIRayDirection[i]
 					* IMG_R16F_LOAD(imageLoad(texCacheDistance, rayTC));
-			#else
+				
+			}else{
 				vec3 position = vec3(imageLoad(texPosition, rayOffset + ivec2(i,0)));
-			#endif
+			}
 			minExtend = min(minExtend, position);
 			maxExtend = max(maxExtend, position);
 		}

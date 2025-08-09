@@ -49,7 +49,7 @@ layout(binding=7) uniform HIGHP sampler2DArray texGIDistance;
 #include "shared/defren/gi/probe_offset.glsl"
 
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 
 // outputs

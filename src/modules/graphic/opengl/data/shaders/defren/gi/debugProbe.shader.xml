@@ -2,11 +2,11 @@
 <shader>
 	<name>DefRen GI Debug Probe</name>
 	
-	<parameter name='pMatrixNormal'/> <!-- 0 -->
-	<parameter name='pMatrixMV'/> <!-- 1 -->
-	<parameter name='pMatrixMVP'/> <!-- 2 -->
-	<parameter name='pMatrixP'/> <!-- 3 -->
-	<parameter name='pGIDebugCascade'/> <!-- 4 -->
+	<parameter name='pMatrixNormal' location='3'/> <!-- 0 -->
+	<parameter name='pMatrixMV' location='0'/> <!-- 1 -->
+	<parameter name='pMatrixMVP' location='-1'/> <!-- 2 -->
+	<parameter name='pMatrixP' location='1'/> <!-- 3 -->
+	<parameter name='pGIDebugCascade' location='2'/> <!-- 4 -->
 	
 	<sourceCode unit='vertex'>V DefRen GI Debug Probe</sourceCode>
 	<sourceCode unit='fragment'>F DefRen GI Debug Probe</sourceCode>

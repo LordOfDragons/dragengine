@@ -26,13 +26,10 @@
 	<define>SHARED_SPB_ARRAY_SIZE</define>
 	-->
 	
-	<define>BILLBOARD</define>
-	<define>GS_RENDER_CASCADED</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>HAS_TESSELLATION_SHADER</define>
-	<define>HEIGHT_MAP</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
+	<define>TESSELLATION_MODE</define>
+	<define>GEOMETRY_MODE</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
@@ -63,23 +60,16 @@
 	<define>DYNAMIC_OUTLINE_THICKNESS</define>
 	
 	<!-- shared/defren/skin/transform_position.glsl -->
-	<define>BILLBOARD</define>
-	<define>GS_RENDER_CASCADED</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>HAS_TESSELLATION_SHADER</define>
-	<define>PROP_FIELD</define>
+	<define>LAYERED_RENDERING</define>
+	<define>TESSELLATION_MODE</define>
+	<define>GEOMETRY_MODE</define>
 	<define>WITH_OUTLINE_THICKNESS_SCREEN</define>
 	<define>WITH_OUTLINE</define>
 	
 	<!-- shared/defren/skin/transform_normal.glsl -->
-	<define>BILLBOARD</define>
-	<define>GS_RENDER_CASCADED</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>HAS_TESSELLATION_SHADER</define>
-	<define>HEIGHT_MAP</define>
-	<define>PROP_FIELD</define>
+	<define>LAYERED_RENDERING</define>
+	<define>TESSELLATION_MODE</define>
+	<define>GEOMETRY_MODE</define>
 	
 	<!-- shared/defren/skin/shared_spb_index2.glsl -->
 	<define>SHARED_SPB</define>

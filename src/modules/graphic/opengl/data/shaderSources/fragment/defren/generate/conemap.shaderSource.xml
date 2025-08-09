@@ -6,5 +6,5 @@
 	
 	<output name='outConeRatio' location='0'/>
 	
-	<define>WITH_LAYER</define>
+	<define>INPUT_ARRAY_TEXTURES</define>
 </shaderSource>

@@ -2,13 +2,6 @@
 <shader>
 	<name>DefRen ScreenSpace SubSurface Scattering</name>
 	
-	<parameter name='pDropSubSurfaceThreshold'/>
-	<parameter name='pTapCount'/>
-	<parameter name='pAngleConstant'/>
-	<parameter name='pTapRadiusFactor'/>
-	<parameter name='pTapRadiusLimit'/>
-	<parameter name='pTapDropRadiusThreshold'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen ScreenSpace SubSurface Scattering</sourceCode>
 </shader>

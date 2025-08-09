@@ -2,8 +2,8 @@
 <shader>
 	<name>DefRen Depth Downsample Stereo</name>
 	
-	<parameter name='pTCClamp'/> <!-- 0 -->
-	<parameter name='pMipMapLevel'/> <!-- 1 -->
+	<parameter name='pTCClamp' location='3'/> <!-- 0 -->
+	<parameter name='pMipMapLevel' location='4'/> <!-- 1 -->
 	
 	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

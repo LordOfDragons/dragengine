@@ -3,16 +3,16 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pPosTransform;
-uniform vec2 pPosTransform2;
-uniform mat4x3 pMatrixPosition;
-uniform mat3 pMatrixNormal;
+UNIFORM_BIND(2) uniform vec4 pPosTransform;
+UNIFORM_BIND(3) uniform vec2 pPosTransform2;
+UNIFORM_BIND(4) uniform mat4x3 pMatrixPosition;
+UNIFORM_BIND(5) uniform mat3 pMatrixNormal;
 
 layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 layout(binding=1) uniform lowp sampler2DArray texDiffuse;
 layout(binding=2) uniform lowp sampler2DArray texNormal;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec3 outPosition;
 layout(location=1) out vec3 outDiffuse;

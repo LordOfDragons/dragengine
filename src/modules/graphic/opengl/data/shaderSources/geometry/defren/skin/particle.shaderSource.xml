@@ -5,8 +5,7 @@
 	<source>particle.geom.glsl</source>
 	
 	<define>GS_INSTANCING</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>GS_RENDER_CUBE</define>
+	<define>LAYERED_RENDERING</define>
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->

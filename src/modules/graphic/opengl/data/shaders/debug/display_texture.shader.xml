@@ -2,12 +2,12 @@
 <shader>
 	<name>Debug Display Texture</name>
 	
-	<parameter name="pPosTransform"/> <!-- 0 -->
-	<parameter name="pTCTransform"/> <!-- 1 -->
-	<parameter name="pColor"/> <!-- 2 -->
-	<parameter name="pGamma"/> <!-- 3 -->
-	<parameter name="pLevel"/> <!-- 4 -->
-	<parameter name="pLayer"/> <!-- 5 -->
+	<parameter name="pPosTransform" location='0'/> <!-- 0 -->
+	<parameter name="pTCTransform" location='1'/> <!-- 1 -->
+	<parameter name="pColor" location='3'/> <!-- 2 -->
+	<parameter name="pGamma" location='4'/> <!-- 3 -->
+	<parameter name="pLevel" location='5'/> <!-- 4 -->
+	<parameter name="pLayer" location='6'/> <!-- 5 -->
 	
 	<sourceCode unit="vertex">V Generic ScreenSpace</sourceCode>
 	<sourceCode unit="fragment">F Generic Output Texture</sourceCode>

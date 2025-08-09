@@ -3,30 +3,31 @@
 precision lowp float;
 precision lowp int;
 
-uniform vec4 pGamma; // red, green, blue
-uniform vec4 pBrightness; // red, green, blue
-uniform vec4 pContrast; // red, green, blue
+UNIFORM_BIND(3) uniform vec4 pGamma; // red, green, blue
+UNIFORM_BIND(4) uniform vec4 pBrightness; // red, green, blue
+UNIFORM_BIND(5) uniform vec4 pContrast; // red, green, blue
 
 layout(binding=0) uniform lowp sampler2DArray texColor;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
-#ifdef SPLIT_LAYERS
-	layout(location=0) out vec4 outColor1;
-	layout(location=1) out vec4 outColor2;
-#else
-	layout(location=0) out vec4 outColor;
-#endif
+// SplitLayers
+layout(location=0) out vec4 outColor1;
+layout(location=1) out vec4 outColor2;
+
+// !SplitLayers
+// layout(location=0) out vec4 outColor;
 
 void main( void ){
 	// gamma correction only
 	//outColor = pow( texture( texColor, vec3( vTexCoord, vLayer ) ), pGamma );
 	
 	// gamma, contrast and brightness correction
-	#ifdef SPLIT_LAYERS
+	if(SplitLayers){
 		outColor1 = pow( texture( texColor, vec3( vTexCoord, 0 ) ), pGamma ) * pContrast + pBrightness;
 		outColor2 = pow( texture( texColor, vec3( vTexCoord, 1 ) ), pGamma ) * pContrast + pBrightness;
-	#else
-		outColor = pow( texture( texColor, vec3( vTexCoord, vLayer ) ), pGamma ) * pContrast + pBrightness;
-	#endif
+		
+	}else{
+		outColor1 = pow( texture( texColor, vec3( vTexCoord, vLayer ) ), pGamma ) * pContrast + pBrightness;
+	}
 }

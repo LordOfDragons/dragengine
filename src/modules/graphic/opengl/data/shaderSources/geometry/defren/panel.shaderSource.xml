@@ -5,5 +5,5 @@
 	<source>panel.geom.glsl</source>
 	
 	<define>GS_INSTANCING</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 </shaderSource>

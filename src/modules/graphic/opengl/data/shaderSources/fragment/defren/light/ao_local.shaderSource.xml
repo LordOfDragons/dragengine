@@ -6,8 +6,8 @@
 	
 	<output name='outAO' location='0'/>
 	
-	<define>GS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 	<!-- <define>SSAO_RESOLUTION_COUNT</define> system only -->
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->

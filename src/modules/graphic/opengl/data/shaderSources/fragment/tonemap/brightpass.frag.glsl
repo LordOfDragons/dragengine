@@ -9,7 +9,7 @@ precision HIGHP int;
 layout(binding=0) uniform mediump sampler2DArray texColor;
 layout(binding=1) uniform HIGHP sampler2D texToneMapParams;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec3 outColor;
 

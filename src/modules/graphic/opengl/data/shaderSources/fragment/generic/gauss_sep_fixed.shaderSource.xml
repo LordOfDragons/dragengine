@@ -7,14 +7,14 @@
 	<output name='outData' location='0'/>
 	
 	<define>DEPTH_DIFFERENCE_WEIGHTING</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>INPUT_ARRAY_TEXTURES</define>
 	<define>OUT_DATA_SIZE</define>
 	<define>OUT_DATA_SWIZZLE</define>
 	<define>TAP_COUNT</define>
 	<define>TEX_DATA_SIZE</define>
 	<define>TEX_DATA_SWIZZLE</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>

@@ -5,7 +5,7 @@
 	<source>stereo.geom.glsl</source>
 	
 	<define>GS_INSTANCING</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>NO_TEXCOORD</define>
 	<define>FULLSCREENQUAD</define>
 </shaderSource>

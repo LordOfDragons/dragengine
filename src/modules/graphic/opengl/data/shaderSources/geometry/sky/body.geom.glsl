@@ -11,7 +11,7 @@
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-#include "shared/interface/2d_geometry.glsl"
+#include "shared/interface/2d/geometry.glsl"
 
 void main( void ){
 	int eye;

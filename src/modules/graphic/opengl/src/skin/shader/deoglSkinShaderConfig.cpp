@@ -73,7 +73,6 @@ void deoglSkinShaderConfig::Reset(){
 	pOutputConstant = false;
 	pOutputColor = false;
 	pAmbientLightProbe = false;
-	pBillboard = false;
 	pSkinReflections = false;
 	pFadeOutRange = false;
 	pVariations = false;
@@ -218,10 +217,6 @@ void deoglSkinShaderConfig::SetOutputColor( bool outputColor ){
 
 void deoglSkinShaderConfig::SetAmbientLightProbe( bool ambientLightProbe ){
 	pAmbientLightProbe = ambientLightProbe;
-}
-
-void deoglSkinShaderConfig::SetBillboard( bool billboard ){
-	pBillboard = billboard;
 }
 
 void deoglSkinShaderConfig::SetSkinReflections( bool skinReflections ){
@@ -538,21 +533,20 @@ void deoglSkinShaderConfig::UpdateKey(){
 	if( pOutputConstant ) pKey2 |= ( uint32_t )1 << 5;
 	if( pOutputColor ) pKey2 |= ( uint32_t )1 << 6;
 	if( pAmbientLightProbe ) pKey2 |= ( uint32_t )1 << 7;
-	if( pBillboard ) pKey2 |= ( uint32_t )1 << 8;
-	if( pSkinReflections ) pKey2 |= ( uint32_t )1 << 9;
-	if( pFadeOutRange ) pKey2 |= ( uint32_t )1 << 10;
-	if( pVariations ) pKey2 |= ( uint32_t )1 << 11;
-	if( pUseNormalRoughnessCorrection ) pKey2 |= ( uint32_t )1 << 12;
-	if( pGSRenderCube ) pKey2 |= ( uint32_t )1 << 13;
-	if( pGSRenderCascaded ) pKey2 |= ( uint32_t )1 << 14;
-	if( pVSRenderStereo ) pKey2 |= ( uint32_t )1 << 15;
-	if( pGSRenderStereo ) pKey2 |= ( uint32_t )1 << 16;
-	if( pSharedSPB ) pKey2 |= ( uint32_t )1 << 17;
-	if( pOutline ) pKey2 |= ( uint32_t )1 << 18;
-	if( pOutlineThicknessScreen ) pKey2 |= ( uint32_t )1 << 19;
-	if( pLuminanceOnly ) pKey2 |= ( uint32_t )1 << 20;
-	if( pGIMaterial ) pKey2 |= ( uint32_t )1 << 21;
-	if( pSkinClipPlane ) pKey2 |= ( uint32_t )1 << 22;
+	if( pSkinReflections ) pKey2 |= ( uint32_t )1 << 8;
+	if( pFadeOutRange ) pKey2 |= ( uint32_t )1 << 9;
+	if( pVariations ) pKey2 |= ( uint32_t )1 << 10;
+	if( pUseNormalRoughnessCorrection ) pKey2 |= ( uint32_t )1 << 11;
+	if( pGSRenderCube ) pKey2 |= ( uint32_t )1 << 12;
+	if( pGSRenderCascaded ) pKey2 |= ( uint32_t )1 << 13;
+	if( pVSRenderStereo ) pKey2 |= ( uint32_t )1 << 14;
+	if( pGSRenderStereo ) pKey2 |= ( uint32_t )1 << 15;
+	if( pSharedSPB ) pKey2 |= ( uint32_t )1 << 16;
+	if( pOutline ) pKey2 |= ( uint32_t )1 << 17;
+	if( pOutlineThicknessScreen ) pKey2 |= ( uint32_t )1 << 18;
+	if( pLuminanceOnly ) pKey2 |= ( uint32_t )1 << 19;
+	if( pGIMaterial ) pKey2 |= ( uint32_t )1 << 20;
+	if( pSkinClipPlane ) pKey2 |= ( uint32_t )1 << 21;
 	
 	pKey3 = ( uint64_t )0;
 	if( pDynamicColorTint ) pKey3 |= ( uint64_t )1 << 0;
@@ -630,6 +624,7 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 		case egmBillboard: string = "billboard"; break;
 		case egmDecal: string = "decal"; break;
 		case egmPropField: string = "propField"; break;
+		case egmPropFieldImposter: string = "propFieldImposter"; break;
 		case egmParticle: string = "particle"; break;
 		case egmHeightMap: string = "heightMap"; break;
 		default: string = "?";
@@ -706,9 +701,6 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	}
 	if( pAmbientLightProbe ){
 		string.Append( " ambientLightProbe" );
-	}
-	if( pBillboard ){
-		string.Append( " billboard" );
 	}
 	if( pSkinReflections ){
 		string.Append( " skinReflections" );
@@ -956,7 +948,6 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pOutputConstant = config.pOutputConstant;
 	pOutputColor = config.pOutputColor;
 	pAmbientLightProbe = config.pAmbientLightProbe;
-	pBillboard = config.pBillboard;
 	pSkinReflections = config.pSkinReflections;
 	pFadeOutRange = config.pFadeOutRange;
 	pVariations = config.pVariations;

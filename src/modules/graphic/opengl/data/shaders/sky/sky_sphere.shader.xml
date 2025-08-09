@@ -2,11 +2,11 @@
 <shader>
 	<name>Sky Sky-Sphere</name>
 	
-	<parameter name='pMatrixLayer'/>
-	<parameter name='pLayerPosition'/>
-	<parameter name='pLayerColor'/>
-	<parameter name='pMaterialGamma'/>
-	<parameter name='pSkyBgColor'/>
+	<parameter name='pMatrixLayer' location='0'/>
+	<parameter name='pLayerPosition' location='1'/>
+	<parameter name='pLayerColor' location='2'/>
+	<parameter name='pMaterialGamma' location='3'/>
+	<parameter name='pSkyBgColor' location='4'/>
 	
 	<sourceCode unit='vertex'>V Sky Sky-Box</sourceCode>
 	<sourceCode unit='fragment'>F Sky Sky-Sphere</sourceCode>

@@ -9,8 +9,9 @@ precision HIGHP int;
 VARYING_BIND(0) in float vDepth;
 VARYING_BIND(1) in vec3 vPosition;
 VARYING_BIND(2) in vec3 vClipCoord;
-VARYING_BIND(3) flat in int vLayer;
-VARYING_BIND(4) flat in int vSPBIndex;
+VARYING_BIND(3) flat in int vSPBIndex;
+VARYING_BIND(4) flat in int vSPBFlags;
+VARYING_BIND(5) flat in int vLayer;
 
 void main(void){
 	if(UseClipPlane){

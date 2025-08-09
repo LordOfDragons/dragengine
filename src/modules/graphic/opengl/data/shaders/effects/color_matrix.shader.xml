@@ -2,8 +2,8 @@
 <shader>
 	<name>Effect Color Matrix</name>
 	
-	<parameter name="pColorMatrix"/>
-	<parameter name="pColorOffset"/>
+	<parameter name="pColorMatrix" location='3'/>
+	<parameter name="pColorOffset" location='4'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit="fragment">F Effect Color Matrix</sourceCode>

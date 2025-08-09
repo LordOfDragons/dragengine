@@ -25,31 +25,43 @@ layout(binding=4) uniform lowp sampler2DArray texReflectivity;
 layout(binding=5) uniform lowp sampler2DArray texRoughness;
 layout(binding=6) uniform lowp sampler2DArray texAOSolidity;
 layout(binding=7) uniform mediump sampler2DArray texColor;
-#ifdef ENVMAP_EQUI
-	#define SAMPLER_ENVMAP mediump sampler2D
-#else
-	#define SAMPLER_ENVMAP mediump samplerCube
-#endif
-layout(binding=8) uniform SAMPLER_ENVMAP texEnvMap;
-#if defined ENVMAP_BOX_PROJECTION || ! defined ENVMAP_SINGLE
-layout(binding=9) uniform SAMPLER_ENVMAP texEnvMap2;
-layout(binding=10) uniform SAMPLER_ENVMAP texEnvMap3;
-layout(binding=11) uniform SAMPLER_ENVMAP texEnvMap4;
-layout(binding=12) uniform SAMPLER_ENVMAP texEnvMap5;
-layout(binding=13) uniform SAMPLER_ENVMAP texEnvMap6;
-layout(binding=14) uniform SAMPLER_ENVMAP texEnvMap7;
-layout(binding=15) uniform SAMPLER_ENVMAP texEnvMap8;
-#endif
 
-#include "shared/interface/2d_fragment.glsl"
+layout(binding=8) uniform mediump sampler2D texEnvMap;
+layout(binding=8) uniform mediump samplerCube texEnvMapCube;
+
+// EnvMapMode == EnvMapModeMultiBoxProjection
+// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+layout(binding=9) uniform mediump sampler2D texEnvMap2;
+layout(binding=9) uniform mediump samplerCube texEnvMap2Cube;
+
+layout(binding=10) uniform mediump sampler2D texEnvMap3;
+layout(binding=10) uniform mediump samplerCube texEnvMap3Cube;
+
+layout(binding=11) uniform mediump sampler2D texEnvMap4;
+layout(binding=11) uniform mediump samplerCube texEnvMap4Cube;
+
+layout(binding=12) uniform mediump sampler2D texEnvMap5;
+layout(binding=12) uniform mediump samplerCube texEnvMap5Cube;
+
+layout(binding=13) uniform mediump sampler2D texEnvMap6;
+layout(binding=13) uniform mediump samplerCube texEnvMap6Cube;
+
+layout(binding=14) uniform mediump sampler2D texEnvMap7;
+layout(binding=14) uniform mediump samplerCube texEnvMap7Cube;
+
+layout(binding=15) uniform mediump sampler2D texEnvMap8;
+layout(binding=15) uniform mediump samplerCube texEnvMap8Cube;
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec3 outColor;
 
 
 
-#ifdef ENVMAP_EQUI
-	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
-#endif
+// TextureEnvMapEqui
+const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); // 0.5, 1.0, -1/2pi, -1/pi
+
 const float roughnessToBlur = 3.14159265; // pi | 1.570796; // pi/2
 
 
@@ -163,13 +175,15 @@ color += textureLod( texEnvMap, tcEnvMap + offset * vec2( -1.20755, 0.37736 ), e
 color *= vec3( 0.209486 );
 */
 
-#ifdef ENVMAP_BOX_PROJECTION
 
-#define VERSION_ENVMAP 2
+// EnvMapMode == EnvMapModeMultiBoxProjection
 
-void envMapReflection( in int index, in SAMPLER_ENVMAP samplerEnvMap,
-in vec3 position, in vec3 reflectDir, in float roughness,
-out vec4 color, out vec2 weights, out float hitDistance, out float borderDistance ){
+#define VERSION_ENVMAP_BOXPROJ 2
+
+void envMapReflectionBoxProj(const in int index, in ARG_SAMP_MEDP sampler2D samplerEnvMap,
+in ARG_SAMP_MEDP samplerCube samplerEnvMapCube, const in vec3 position, const in vec3 reflectDir,
+const in float roughness, out vec4 color, out vec2 weights, out float hitDistance,
+out float borderDistance){
 	vec3 localPosition = abs( pEnvMapMatrixInfluence[ index ] * vec4( position, 1.0 ) );
 	vec3 hitPoint;
 	
@@ -200,7 +214,7 @@ out vec4 color, out vec2 weights, out float hitDistance, out float borderDistanc
 	localPosition = pEnvMapMatrixReflBox[ index ] * vec4( position, 1.0 );
 	vec3 localReflectDir = mat3( pEnvMapMatrixReflBox[ index ] ) * reflectDir;
 	
-#if VERSION_ENVMAP == 1
+#if VERSION_ENVMAP_BOXPROJ == 1
 	vec4 absLocalPosition = vec4( abs( localPosition ), 1.0 );
 	absLocalPosition.xy = max( absLocalPosition.xy, absLocalPosition.zw );
 	localPosition /= max( absLocalPosition.x, absLocalPosition.y );
@@ -209,7 +223,7 @@ out vec4 color, out vec2 weights, out float hitDistance, out float borderDistanc
 		vec3( 1e6 ), lessThan( abs(localReflectDir), vec3( 1e-5 ) ) );
 	hitDistance = min( reflectDirDist.x, min( reflectDirDist.y, reflectDirDist.z ) );
 	
-#elif VERSION_ENVMAP == 2
+#elif VERSION_ENVMAP_BOXPROJ == 2
 	vec3 reflectDirDist = mix( ( sign( localReflectDir ) - localPosition ) / localReflectDir,
 		vec3( 1e6 ), lessThan( abs( localReflectDir ), vec3( 1e-5 ) ) );
 	hitDistance = max( min( reflectDirDist.x, min( reflectDirDist.y, reflectDirDist.z ) ), 0.0 );
@@ -240,12 +254,15 @@ out vec4 color, out vec2 weights, out float hitDistance, out float borderDistanc
 	
 	// calculate texture coordinates for the sampling either as cube map or equirectangular map
 	vec3 envMapDir = pMatrixEnvMap * ( hitPoint - pEnvMapPosition[ index ] );
-	#ifdef ENVMAP_EQUI
+	vec3 tcEnvMap;
+	
+	if(TextureEnvMapEqui){
 		envMapDir = normalize( envMapDir );
-		vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
-	#else
-		#define tcEnvMap envMapDir
-	#endif
+		tcEnvMap.xy = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
+		
+	}else{
+		tcEnvMap = envMapDir;
+	}
 	
 	// sample environment map color. the roughness jhas to be adjusted depending on the distance
 	// to the hit point. the approximation formula looks like this:
@@ -268,15 +285,21 @@ out vec4 color, out vec2 weights, out float hitDistance, out float borderDistanc
 	//	* ( reflectDir * vec3( hitDistance * roughness * roughnessToBlur ) ) );
 	//float envMapLodLevel = log2( pEnvMapRoughness[ index ] * blurSize );
 	
-	color = textureLod( samplerEnvMap, tcEnvMap, envMapLodLevel );
+	if(TextureEnvMapEqui){
+		color = textureLod(samplerEnvMap, vec2(tcEnvMap), envMapLodLevel);
+		
+	}else{
+		color = textureLod(samplerEnvMapCube, tcEnvMap, envMapLodLevel);
+	}
 	weights *= vec2( color.a );
 }
 
-void envMapProcessAt( in int index, in SAMPLER_ENVMAP samplerEnvMap,
-in vec3 position, in vec3 reflectDir, in float roughness,
-inout float order1WeightSum, inout float order1Mask, inout vec3 order1Color, inout int order1Priority,
+void envMapBoxProjProcessAt(const in int index, in ARG_SAMP_MEDP sampler2D samplerEnvMap,
+in ARG_SAMP_MEDP samplerCube samplerEnvMapCube, const in vec3 position,
+const in vec3 reflectDir, const in float roughness, inout float order1WeightSum,
+inout float order1Mask, inout vec3 order1Color, inout int order1Priority,
 inout float order2WeightSum, inout vec3 order2Color, inout float order2Distance,
-inout float closestBorderDistance, inout vec3 closestColor ){
+inout float closestBorderDistance, inout vec3 closestColor){
 	if( index >= pEnvMapCount ){
 		return;
 	}
@@ -286,8 +309,8 @@ inout float closestBorderDistance, inout vec3 closestColor ){
 	float hitDistance;
 	vec4 envMapColor;
 	
-	envMapReflection( index, samplerEnvMap, position, reflectDir, roughness,
-		envMapColor, envMapWeights, hitDistance, borderDistance );
+	envMapReflectionBoxProj(index, samplerEnvMap, samplerEnvMapCube, position, reflectDir,
+		roughness, envMapColor, envMapWeights, hitDistance, borderDistance);
 	
 	// first order reflection
 	if( envMapWeights.x > 0.0 ){
@@ -334,7 +357,7 @@ inout float closestBorderDistance, inout vec3 closestColor ){
 	}
 }
 
-void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float roughness, out vec3 color ){
+void colorEnvMapBoxProjReflection( in vec3 position, in vec3 reflectDir, in float roughness, out vec3 color ){
 	float order1WeightSum = 0.0;
 	float order1Mask = 0.0;
 	vec3 order1Color = vec3( 0.0 );
@@ -347,35 +370,35 @@ void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float rough
 	float closestBorderDistance = 1e5;
 	vec3 closestColor = vec3( 0.0 );
 	
-	envMapProcessAt( 0, texEnvMap, position, reflectDir, roughness,
+	envMapBoxProjProcessAt( 0, texEnvMap, texEnvMapCube, position, reflectDir, roughness,
 		order1WeightSum, order1Mask, order1Color, order1Priority,
 		order2WeightSum, order2Color, order2Distance, closestBorderDistance, closestColor );
 	
-	envMapProcessAt( 1, texEnvMap2, position, reflectDir, roughness,
+	envMapBoxProjProcessAt( 1, texEnvMap2, texEnvMap2Cube, position, reflectDir, roughness,
 		order1WeightSum, order1Mask, order1Color, order1Priority,
 		order2WeightSum, order2Color, order2Distance, closestBorderDistance, closestColor );
 	
-	envMapProcessAt( 2, texEnvMap3, position, reflectDir, roughness,
+	envMapBoxProjProcessAt( 2, texEnvMap3, texEnvMap3Cube, position, reflectDir, roughness,
 		order1WeightSum, order1Mask, order1Color, order1Priority,
 		order2WeightSum, order2Color, order2Distance, closestBorderDistance, closestColor );
 	
-	envMapProcessAt( 3, texEnvMap4, position, reflectDir, roughness,
+	envMapBoxProjProcessAt( 3, texEnvMap4, texEnvMap4Cube, position, reflectDir, roughness,
 		order1WeightSum, order1Mask, order1Color, order1Priority,
 		order2WeightSum, order2Color, order2Distance, closestBorderDistance, closestColor );
 	
-	envMapProcessAt( 4, texEnvMap5, position, reflectDir, roughness,
+	envMapBoxProjProcessAt( 4, texEnvMap5, texEnvMap5Cube, position, reflectDir, roughness,
 		order1WeightSum, order1Mask, order1Color, order1Priority,
 		order2WeightSum, order2Color, order2Distance, closestBorderDistance, closestColor );
 	
-	envMapProcessAt( 5, texEnvMap6, position, reflectDir, roughness,
+	envMapBoxProjProcessAt( 5, texEnvMap6, texEnvMap6Cube, position, reflectDir, roughness,
 		order1WeightSum, order1Mask, order1Color, order1Priority,
 		order2WeightSum, order2Color, order2Distance, closestBorderDistance, closestColor );
 	
-	envMapProcessAt( 6, texEnvMap7, position, reflectDir, roughness,
+	envMapBoxProjProcessAt( 6, texEnvMap7, texEnvMap7Cube, position, reflectDir, roughness,
 		order1WeightSum, order1Mask, order1Color, order1Priority,
 		order2WeightSum, order2Color, order2Distance, closestBorderDistance, closestColor );
 	
-	envMapProcessAt( 7, texEnvMap8, position, reflectDir, roughness,
+	envMapBoxProjProcessAt( 7, texEnvMap8, texEnvMap8Cube, position, reflectDir, roughness,
 		order1WeightSum, order1Mask, order1Color, order1Priority,
 		order2WeightSum, order2Color, order2Distance, closestBorderDistance, closestColor );
 	
@@ -402,27 +425,39 @@ void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float rough
 	//color = vec3( order1WeightSum, order1Mask, 0 );
 }
 
-#else // ENVMAP_BOX_PROJECTION
 
-#ifdef ENVMAP_SINGLE
-void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float roughness, out vec3 color ){
+// EnvMapMode == EnvMapModeSingle
+
+void colorEnvMapSingleReflection(const in vec3 position, const in vec3 reflectDir,
+const in float roughness, out vec3 color){
 	float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );
 	
 	vec3 envMapDir = pMatrixEnvMap * reflectDir;
-	#ifdef ENVMAP_EQUI
-		envMapDir = normalize( envMapDir );
-		vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
-	#else
-		#define tcEnvMap envMapDir
-	#endif
+	vec3 tcEnvMap;
 	
-	color = textureLod( texEnvMap, tcEnvMap, envMapLodLevel );
+	if(TextureEnvMapEqui){
+		envMapDir = normalize( envMapDir );
+		tcEnvMap.xy = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
+		
+	}else{
+		tcEnvMap = envMapDir;
+	}
+	
+	if(TextureEnvMapEqui){
+		color = vec3(textureLod(texEnvMap, vec2(tcEnvMap), envMapLodLevel));
+		
+	}else{
+		color = vec3(textureLod(texEnvMapCube, tcEnvMap, envMapLodLevel));
+	}
 }
 
-#else // ENVMAP_SINGLE
-void envMapReflection( in int index, in SAMPLER_ENVMAP samplerEnvMap,
-in vec3 position, in vec3 reflectDir, in float roughness,
-out vec3 color, out float weight, out float borderDistance ){
+
+// EnvMapMode == EnvMapModeMultiNoParallax
+
+void envMapNoParReflection(const in int index, in ARG_SAMP_MEDP sampler2D samplerEnvMap,
+in ARG_SAMP_MEDP samplerCube samplerEnvMapCube, const in vec3 position,
+const in vec3 reflectDir, const in float roughness, out vec3 color, out float weight,
+out float borderDistance){
 	vec3 localPosition = abs( pEnvMapMatrixInfluence[ index ] * vec4( position, 1.0 ) );
 	
 	borderDistance = length( ( localPosition - clamp( localPosition, vec3( 0.0 ), vec3( 1.0 ) ) )
@@ -437,21 +472,30 @@ out vec3 color, out float weight, out float borderDistance ){
 	}
 	
 	vec3 envMapDir = pMatrixEnvMap * reflectDir;
-	#ifdef ENVMAP_EQUI
+	vec3 tcEnvMap;
+	
+	if(TextureEnvMapEqui){
 		envMapDir = normalize( envMapDir );
-		vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
-	#else
-		#define tcEnvMap envMapDir
-	#endif
+		tcEnvMap.xy = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );
+		
+	}else{
+		tcEnvMap = envMapDir;
+	}
 	
 	float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );
 	
-	color = textureLod( samplerEnvMap, tcEnvMap, envMapLodLevel ).rgb;
+	if(TextureEnvMapEqui){
+		color = vec3(textureLod(samplerEnvMap, vec2(tcEnvMap), envMapLodLevel));
+		
+	}else{
+		color = vec3(textureLod(samplerEnvMapCube, tcEnvMap, envMapLodLevel));
+	}
 }
 
-void envMapProcessAt( in int index, in SAMPLER_ENVMAP samplerEnvMap, in vec3 position,
-in vec3 reflectDir, in float roughness, inout float weightSum, inout vec3 color,
-inout int priority, inout float closestBorderDistance, inout vec3 closestColor ){
+void envMapNoParProcessAt(const in int index, in ARG_SAMP_MEDP sampler2D samplerEnvMap,
+in ARG_SAMP_MEDP samplerCube samplerEnvMapCube, const in vec3 position,
+const in vec3 reflectDir, const in float roughness, inout float weightSum, inout vec3 color,
+inout int priority, inout float closestBorderDistance, inout vec3 closestColor){
 	if( index >= pEnvMapCount ){
 		return;
 	}
@@ -460,8 +504,8 @@ inout int priority, inout float closestBorderDistance, inout vec3 closestColor )
 	float envMapWeight;
 	vec3 envMapColor;
 	
-	envMapReflection( index, ARG_SAMP_MEDP samplerEnvMap, position, reflectDir,
-		roughness, envMapColor, envMapWeight, borderDistance );
+	envMapNoParReflection(index, samplerEnvMap, samplerEnvMapCube, position, reflectDir,
+		roughness, envMapColor, envMapWeight, borderDistance);
 	
 	if( envMapWeight > 0.0 ){
 		if( weightSum == 0.0 ){
@@ -482,28 +526,28 @@ inout int priority, inout float closestBorderDistance, inout vec3 closestColor )
 	}
 }
 
-void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float roughness, out vec3 color ){
+void colorEnvMapNoParReflection( in vec3 position, in vec3 reflectDir, in float roughness, out vec3 color ){
 	float closestBorderDistance = 1e5;
 	vec3 closestColor = vec3( 0.0 );
 	float weightSum = 0.0;
 	color = vec3( 0.0 );
 	int priority = 0;
 	
-	envMapProcessAt( 0, texEnvMap, position, reflectDir, roughness, weightSum, color,
+	envMapNoParProcessAt( 0, texEnvMap, texEnvMapCube, position, reflectDir, roughness, weightSum, color,
 		priority, closestBorderDistance, closestColor );
-	envMapProcessAt( 1, texEnvMap2, position, reflectDir, roughness, weightSum, color,
+	envMapNoParProcessAt( 1, texEnvMap2, texEnvMap2Cube, position, reflectDir, roughness, weightSum, color,
 		priority, closestBorderDistance, closestColor );
-	envMapProcessAt( 2, texEnvMap3, position, reflectDir, roughness, weightSum, color,
+	envMapNoParProcessAt( 2, texEnvMap3, texEnvMap3Cube, position, reflectDir, roughness, weightSum, color,
 		priority, closestBorderDistance, closestColor );
-	envMapProcessAt( 3, texEnvMap4, position, reflectDir, roughness, weightSum, color,
+	envMapNoParProcessAt( 3, texEnvMap4, texEnvMap4Cube, position, reflectDir, roughness, weightSum, color,
 		priority, closestBorderDistance, closestColor );
-	envMapProcessAt( 4, texEnvMap5, position, reflectDir, roughness, weightSum, color,
+	envMapNoParProcessAt( 4, texEnvMap5, texEnvMap5Cube, position, reflectDir, roughness, weightSum, color,
 		priority, closestBorderDistance, closestColor );
-	envMapProcessAt( 5, texEnvMap6, position, reflectDir, roughness, weightSum, color,
+	envMapNoParProcessAt( 5, texEnvMap6, texEnvMap6Cube, position, reflectDir, roughness, weightSum, color,
 		priority, closestBorderDistance, closestColor );
-	envMapProcessAt( 6, texEnvMap7, position, reflectDir, roughness, weightSum, color,
+	envMapNoParProcessAt( 6, texEnvMap7, texEnvMap7Cube, position, reflectDir, roughness, weightSum, color,
 		priority, closestBorderDistance, closestColor );
-	envMapProcessAt( 7, texEnvMap8, position, reflectDir, roughness, weightSum, color,
+	envMapNoParProcessAt( 7, texEnvMap8, texEnvMap8Cube, position, reflectDir, roughness, weightSum, color,
 		priority, closestBorderDistance, closestColor );
 	
 	if( weightSum > 0.0 ){
@@ -513,9 +557,9 @@ void colorEnvMapReflection( in vec3 position, in vec3 reflectDir, in float rough
 		color = closestColor;
 	}
 }
-#endif // ENVMAP_SINGLE
 
-#endif // ENVMAP_BOX_PROJECTION
+
+const bool HackNoSSR = false;
 
 void main( void ){
 	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
@@ -532,9 +576,9 @@ void main( void ){
 	vec3 reflectivity, reflectDir;
 	float roughness;
 	
-	#ifdef HACK_NO_SSR
-	reflection.z = 0.0;
-	#endif
+	if(HackNoSSR){
+		reflection.z = 0.0;
+	}
 	
 	calculateReflectionParameters( tc, position, reflectivity, roughness, reflectDir );
 	
@@ -596,13 +640,6 @@ void main( void ){
 	// typically one additional bounce should be enough to get a proper solution without too high
 	// reflection. for the time being though this is hacked by bouncing a ray into the env-map and
 	// blending the result together. this lets the environment map jump in for these cases.
-	vec3 envMapDir;
-	#ifdef ENVMAP_EQUI
-		vec2 tcEnvMap;
-	#else
-		#define tcEnvMap envMapDir
-	#endif
-	
 	if( reflection.z > 0.0 ){
 		// this check here is currently required to avoid trying to tap from the sky or another
 		// special pixel not having written the reflectivity properly. later on this should be
@@ -621,7 +658,13 @@ void main( void ){
 			vec2 reflScreenCoord = ( reflection.xy / pViewportMax ) * vec2( 2 ) - vec2( 1 );
 			vec3 hitPosition = depthToPosition( texDepth, tcRefl, reflScreenCoord, vLayer );
 			
-			colorEnvMapReflection( hitPosition, bouncedReflectDir, bouncedRoughness, bouncedReflectionColor );
+			if(EnvMapMode == EnvMapModeSingle){
+				colorEnvMapSingleReflection(hitPosition, bouncedReflectDir, bouncedRoughness, bouncedReflectionColor);
+			}else if(EnvMapMode == EnvMapModeMultiBoxProjection){
+				colorEnvMapBoxProjReflection(hitPosition, bouncedReflectDir, bouncedRoughness, bouncedReflectionColor);
+			}else if(EnvMapMode == EnvMapModeMultiNoParallax){
+				colorEnvMapNoParReflection(hitPosition, bouncedReflectDir, bouncedRoughness, bouncedReflectionColor);
+			}
 			
 			reflectionLocal = mix( reflectionLocal, bouncedReflectionColor, bouncedReflectivity );
 		}
@@ -629,7 +672,13 @@ void main( void ){
 	
 	// get the global reflection
 	vec3 reflectionGlobal;
-	colorEnvMapReflection( position, reflectDir, roughness, reflectionGlobal );
+	if(EnvMapMode == EnvMapModeSingle){
+		colorEnvMapSingleReflection(position, reflectDir, roughness, reflectionGlobal);
+	}else if(EnvMapMode == EnvMapModeMultiBoxProjection){
+		colorEnvMapBoxProjReflection(position, reflectDir, roughness, reflectionGlobal);
+	}else if(EnvMapMode == EnvMapModeMultiNoParallax){
+		colorEnvMapNoParReflection(position, reflectDir, roughness, reflectionGlobal);
+	}
 	
 	// mix the reflections
 	outColor = mix( reflectionGlobal, reflectionLocal, reflection.z );

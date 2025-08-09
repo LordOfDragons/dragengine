@@ -5,7 +5,7 @@ precision HIGHP int;
 
 layout(location=0) in vec2 inPosition;
 
-#include "shared/interface/2d_vertex.glsl"
+#include "shared/interface/2d/vertex.glsl"
 
 const vec2 cv1 = vec2( -3.1415927, -1.57079633 ); // -pi, -pi/2
 const vec2 cv2 = vec2( 0.0, 1.57079633 ); // 0, pi/2

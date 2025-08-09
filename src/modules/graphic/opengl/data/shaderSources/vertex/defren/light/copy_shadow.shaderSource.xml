@@ -8,8 +8,8 @@
 	<attribute name='inLayer' location='1'/>
 	<attribute name='inTexCoord' location='2'/>
 	
-	<define>GS_LAYER</define>
-	<define>VS_LAYER</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 	
 	<!-- system only
 	<define>EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY</define>

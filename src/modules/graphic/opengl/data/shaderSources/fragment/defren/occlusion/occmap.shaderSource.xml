@@ -7,12 +7,10 @@
 	<uniformBlock name='OcclusionMeshParameters' binding='2'/>
 	
 	<define>DEPTH_DISTANCE</define>
-	<define>GS_RENDER_CASCADED</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>PERSPECTIVE_TO_LINEAR</define>
 	<define>USE_CLIP_PLANE</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>WITH_SHADOWMAP</define>
 	
 	<define>SHARED_SPB</define>

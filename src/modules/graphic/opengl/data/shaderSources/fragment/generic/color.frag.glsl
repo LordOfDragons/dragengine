@@ -18,7 +18,7 @@ layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 // ^^^^^^^^^
 ////////////
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 void main(void){
 	if(WithDepth){

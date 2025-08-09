@@ -2,11 +2,11 @@
 <shader>
 	<name>DefRen Panel</name>
 	
-	<parameter name='pMatrixModel'/>
-	<parameter name='pMatrixVP'/>
-	<parameter name='pMatrixVP2'/>
-	<parameter name='pColorTransform'/>
-	<parameter name='pColorTransform2'/>
+	<parameter name='pMatrixModel' location='0'/> <!-- 0 -->
+	<parameter name='pMatrixVP' location='1'/> <!-- 1 -->
+	<parameter name='pMatrixVP2' location='2'/> <!-- 2 -->
+	<parameter name='pColorTransform' location='3'/> <!-- 3 -->
+	<parameter name='pColorTransform2' location='4'/> <!-- 4 -->
 	
 	<sourceCode unit='vertex'>V DefRen Panel</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Panel</sourceCode>

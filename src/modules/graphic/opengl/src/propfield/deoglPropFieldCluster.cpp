@@ -346,7 +346,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipel
 		GetAt( deoglSkinTexturePipelinesList::eptPropField ).
 		GetWithRef( type ).GetShader();
 	
-	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+	if(skinShader.GetTextureUnitCount() > 0){
 		skinShader.SetTUCCommon( &units[ 0 ], *skinTexture, skinState, dynamicSkin );
 		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
 			pPropFieldType.GetPropField().GetParentWorld()->GetSkyEnvironmentMap(), nullptr, nullptr );
@@ -362,7 +362,7 @@ deoglTexUnitsConfig *deoglPropFieldCluster::BareGetTUCFor( deoglSkinTexturePipel
 		}
 		
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			&units[ 0 ], skinShader.GetTextureUnitCount(),
 			skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	

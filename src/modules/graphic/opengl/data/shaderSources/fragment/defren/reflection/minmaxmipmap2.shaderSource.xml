@@ -6,8 +6,7 @@
 	
 	<output name='outData' location='0'/>
 	
-	<define>DOWNSAMPLE</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>INITIAL</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>RENDER_PASS</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

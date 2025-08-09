@@ -291,7 +291,8 @@ pVAOCopyShadow( nullptr )
 		
 		defines = commonDefines;
 		AddSharedSPBDefines( defines );
-		defines.SetDefines( "GS_RENDER_CUBE", "GS_RENDER_CUBE_CULLING" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmCube);
+		defines.SetDefines("GS_RENDER_CUBE_CULLING");
 		
 		pipconf.SetSPBInstanceIndexBase(0);
 		pAsyncGetPipeline(pPipelineOccMap, pipconf, "DefRen Occlusion OccMap Cube", defines, true);
@@ -307,12 +308,12 @@ pVAOCopyShadow( nullptr )
 		defines = commonDefines;
 		defines.SetDefine("SHADOW1_MODE", "1"); // cube
 		
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmCube);
 		if( renderFSQuadStereoVSLayer ){
-			defines.SetDefines( "VS_LAYER" );
+			defines.SetDefines("VS_RENDER_LAYER");
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow" );
 			
 		}else{
-			defines.SetDefines( "GS_LAYER" );
 			sources = shaderManager.GetSourcesNamed( "DefRen Copy Shadow GS" );
 		}
 		

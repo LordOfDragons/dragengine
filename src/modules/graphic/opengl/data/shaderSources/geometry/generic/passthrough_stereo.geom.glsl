@@ -8,7 +8,7 @@
 	layout( triangle_strip, max_vertices=6 ) out;
 #endif
 
-#include "shared/interface/2d_geometry.glsl"
+#include "shared/interface/2d/geometry.glsl"
 
 void main( void ){
 	int eye;

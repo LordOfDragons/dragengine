@@ -11,7 +11,7 @@ layout(binding=1) uniform lowp sampler2DArray texDiffuse;
 layout(binding=2) uniform HIGHP sampler2DArray texSubSurface;
 layout(binding=3) uniform mediump sampler2DArray texLight;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out mediump vec3 outColor;
 

@@ -192,7 +192,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexturePipelines::
 	deoglTexUnitsConfig *tuc = NULL;
 	int target;
 	
-	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+	if(skinShader.GetTextureUnitCount() > 0){
 		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, skinState, dynamicSkin );
 		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ],
 			pSector.GetHeightTerrain().GetParentWorld()->GetSkyEnvironmentMap(), nullptr, nullptr );
@@ -213,7 +213,7 @@ deoglTexUnitsConfig *deoglHTSTexture::BareGetTUCFor( deoglSkinTexturePipelines::
 		}
 		
 		tuc = renderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			&units[ 0 ], skinShader.GetTextureUnitCount(),
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	

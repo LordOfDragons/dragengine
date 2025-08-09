@@ -27,7 +27,7 @@
 	-->
 	
 	<define>HEIGHT_MAP</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/skin/shared_spb_index.glsl -->

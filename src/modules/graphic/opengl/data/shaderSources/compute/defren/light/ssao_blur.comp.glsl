@@ -59,22 +59,19 @@ const vec4 cGaussWeightModifier = vec4( 0.85, 0.9, 0.95, 1 );
 #include "shared/defren/depth_to_position.glsl"
 
 
-const int cBlurCoord = BlurPass2 ? 1 : 0;
-
-
 void main( void ){
 	// constants that glsl does not allow to be global constants
 	float cWeightCenter = cGaussWeightCenter * cGaussWeightCenterModifier;
 	vec4 cWeights = cGaussWeights * cGaussWeightModifier;
 	
 	ivec3 tcCenter = ivec3(gl_GlobalInvocationID);
-	if(BlurPass2){
+	if(RenderPass == 1){
 		tcCenter.xy = tcCenter.yx;
 	}
 	
 	// cooperative read data
 	ivec3 tc = tcCenter;
-	tc[ cBlurCoord ] = clamp( tcCenter[ cBlurCoord ] - 4, 0, pClamp );
+	tc[RenderPass] = clamp( tcCenter[RenderPass] - 4, 0, pClamp );
 	
 	uint index = gl_LocalInvocationIndex;
 	
@@ -83,7 +80,7 @@ void main( void ){
 		vec3( vec2( tc.xy ) * pTCDataToDepth.xy + pTCDataToDepth.zw, tc.z ), tc.z );
 	
 	if( gl_LocalInvocationIndex < uint( 8 ) ){
-		tc[ cBlurCoord ] = min( tcCenter[ cBlurCoord ] + 60, pClamp );
+		tc[RenderPass] = min( tcCenter[RenderPass] + 60, pClamp );
 		index += uint( 64 );
 		
 		vData[index] = float(IMG_R8_LOAD(imageLoad(texData_load, ivec3(tc.xy + pOffsetRead, tc.z))));

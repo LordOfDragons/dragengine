@@ -8,11 +8,10 @@
 	
 	<uniformBlock name='EnvironmentMaps' binding='1'/>
 	
-	<define>ENVMAP_EQUI</define>
-	<define>ENVMAP_BOX_PROJECTION</define>
-	<define>ENVMAP_SINGLE</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>TEXTURE_ENVMAP_EQUI</define>
+	<define>ENVMAP_MODE</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 	
 	<!-- <define>HACK_NO_SSR</define> system only -->
 	

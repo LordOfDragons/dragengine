@@ -2,8 +2,8 @@
 <shader>
 	<name>DefRen Reflection MinMap MipMap 2</name>
 	
-	<parameter name='pTCClamp'/> <!-- 0 -->
-	<parameter name='pMipMapLevel'/> <!-- 1 -->
+	<parameter name='pTCClamp' location='3'/> <!-- 0 -->
+	<parameter name='pMipMapLevel' location='4'/> <!-- 1 -->
 	
 	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Reflection MinMap MipMap 2</sourceCode>

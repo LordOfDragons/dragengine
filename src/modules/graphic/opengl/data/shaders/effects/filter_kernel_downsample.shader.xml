@@ -2,8 +2,8 @@
 <shader>
 	<name>Effect Filter Kernel DownSample</name>
 	
-	<parameter name="pTCTransform"/>
-	<parameter name="pTCClamp"/>
+	<parameter name="pTCTransform" location='1'/>
+	<parameter name="pTCClamp" location='3'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit="fragment">F Effect Filter Kernel DownSample</sourceCode>

@@ -13,15 +13,13 @@
 	<define>DEPTH_DISTANCE</define>
 	<define>DEPTH_OFFSET</define>
 	<define>DEPTH_ORTHOGONAL</define>
-	<define>DEPTH_TEST_LARGER</define>
 	<define>DEPTH_TEST</define>
 	<define>ENCODE_OUT_DEPTH</define>
 	<define>FADEOUT_RANGE</define>
-	<define>HAS_TESSELLATION_SHADER</define>
+	<define>TESSELLATION_MODE</define>
 	<define>INVERSE_DEPTH</define>
 	<define>MASKED_SOLIDITY</define>
-	<define>OUTPUT_COLOR</define>
-	<define>OUTPUT_CONSTANT</define>
+	<define>OUTPUT_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>TP_NORMAL_STRENGTH</define>
 	<define>WITH_OUTLINE</define>
@@ -40,9 +38,9 @@
 	<uniformBlock name='RenderParameters' binding='0'/>
 	
 	<!-- shared/defren/skin/macros_geometry.glsl -->
-	<define>DECAL</define>
+	<define>GEOMETRY_MODE</define>
 	<define>DEPTH_TEST</define>
-	<define>OUTPUT_COLOR</define>
+	<define>OUTPUT_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>TEXTURE_EMISSIVITY</define>
 	<define>TEXTURE_ENVMAP</define>

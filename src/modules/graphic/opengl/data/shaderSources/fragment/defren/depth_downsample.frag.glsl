@@ -3,18 +3,18 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform ivec2 pTCClamp;
-uniform int pMipMapLevel;
+UNIFORM_BIND(3) uniform ivec2 pTCClamp;
+UNIFORM_BIND(4) uniform int pMipMapLevel;
 
 layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 const ivec4 tcScale = ivec4( 2 );
 const ivec4 tcOffset = ivec4( 0, 0, 1, 1 );
-#ifndef USE_MIN_FUNCTION
-	const vec4 weights = vec4( 0.25 );
-#endif
+
+// !UseMinFunction
+const vec4 weights = vec4( 0.25 );
 
 void main( void ){
 	ivec4 tc = min( ivec4( gl_FragCoord.xyxy ) * tcScale + tcOffset, pTCClamp.xyxy ); // s*2, t*2, s*2+1, t*2+1
@@ -25,7 +25,7 @@ void main( void ){
 	depth.z = texelFetch( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ).r; // (s*2, t*2+1)
 	depth.w = texelFetch( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ).r; // (s*2+1, t*2+1)
 	
-	#ifdef USE_MIN_FUNCTION
+	if(UseMinFunction){
 		if(InverseDepth){
 			depth.xy = max( depth.xy, depth.zw );
 			gl_FragDepth = max( depth.x, depth.y );
@@ -34,7 +34,8 @@ void main( void ){
 			depth.xy = min( depth.xy, depth.zw );
 			gl_FragDepth = min( depth.x, depth.y );
 		}
-	#else
+		
+	}else{
 		gl_FragDepth = dot( depth, weights );
-	#endif
+	}
 }

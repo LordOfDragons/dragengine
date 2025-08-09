@@ -2,8 +2,8 @@
 <shader>
 	<name>DefRen AmbientOcclusion Local Stereo</name>
 	
-	<parameter name='pTCTransform'/>
-	<parameter name='pSCTransform'/>
+	<parameter name='pTCTransform' location='1'/>
+	<parameter name='pSCTransform' location='2'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

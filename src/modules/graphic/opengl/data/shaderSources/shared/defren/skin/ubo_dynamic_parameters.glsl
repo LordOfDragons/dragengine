@@ -34,198 +34,139 @@
 	<define>DYNAMIC_VARIATION</define>
 */
 
-#ifdef DYNAMIC_COLOR_TINT
-	#define pColorTint pInstColorTint
-#else
-	#define pColorTint pTexColorTint
-#endif
+vec3 getColorTint(int spbIndex){
+	return DynamicColorTint ? pInstColorTint : pTexColorTint;
+}
 
-#ifdef DYNAMIC_COLOR_GAMMA
-	#define pColorGamma pInstColorGamma
-#else
-	#define pColorGamma pTexColorGamma
-#endif
+float getColorGamma(int spbIndex){
+	return DynamicColorGamma ? pInstColorGamma : pTexColorGamma;
+}
 
-#ifdef DYNAMIC_COLOR_SOLIDITY_MULTIPLIER
-	#define pColorSolidityMultiplier pInstColorSolidityMultiplier
-#else
-	#define pColorSolidityMultiplier pTexColorSolidityMultiplier
-#endif
+float getColorSolidityMultiplier(int spbIndex){
+	return DynamicColorSolidityMultiplier ? pInstColorSolidityMultiplier : pTexColorSolidityMultiplier;
+}
 
-#ifdef DYNAMIC_AO_SOLIDITY_MULTIPLIER
-	#define pAOSolidityMultiplier pInstAOSolidityMultiplier
-#else
-	#define pAOSolidityMultiplier pTexAOSolidityMultiplier
-#endif
+float getAOSolidityMultiplier(int spbIndex){
+	return DynamicAOSolidityMultiplier ? pInstAOSolidityMultiplier : pTexAOSolidityMultiplier;
+}
 
-#ifdef DYNAMIC_TRANSPARENCY_MULTIPLIER
-	#define pTransparencyMultiplier pInstTransparencyMultiplier
-#else
-	#define pTransparencyMultiplier pTexTransparencyMultiplier
-#endif
+float getTransparencyMultiplier(int spbIndex){
+	return DynamicTransparencyMultiplier ? pInstTransparencyMultiplier : pTexTransparencyMultiplier;
+}
 
-#ifdef DYNAMIC_SOLIDITY_MULTIPLIER
-	#define pSolidityMultiplier pInstSolidityMultiplier
-#else
-	#define pSolidityMultiplier pTexSolidityMultiplier
-#endif
+float getSolidityMultiplier(int spbIndex){
+	return DynamicSolidityMultiplier ? pInstSolidityMultiplier : pTexSolidityMultiplier;
+}
 
-#ifdef DYNAMIC_HEIGHT_REMAP
-	#define pHeightRemap pInstHeightRemap
-#else
-	#define pHeightRemap pTexHeightRemap
-#endif
+vec2 getHeightRemap(int spbIndex){
+	return DynamicHeightRemap ? pInstHeightRemap : pTexHeightRemap;
+}
 
-#ifdef DYNAMIC_NORMAL_STRENGTH
-	#define pNormalStrength pInstNormalStrength
-#else
-	#define pNormalStrength pTexNormalStrength
-#endif
+float getNormalStrength(int spbIndex){
+	return DynamicNormalStrength ? pInstNormalStrength : pTexNormalStrength;
+}
 
-#ifdef DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER
-	#define pNormalSolidityMultiplier pInstNormalSolidityMultiplier
-#else
-	#define pNormalSolidityMultiplier pTexNormalSolidityMultiplier
-#endif
+float getNormalStrengthMultiplier(int spbIndex){
+	return DynamicNormalStrengthMultiplier ? pInstNormalSolidityMultiplier : pTexNormalSolidityMultiplier;
+}
 
-#ifdef DYNAMIC_ROUGHNESS_REMAP
-	#define pRoughnessRemap pInstRoughnessRemap
-#else
-	#define pRoughnessRemap pTexRoughnessRemap
-#endif
+vec2 getRoughnessRemap(int spbIndex){
+	return DynamicRoughnessRemap ? pInstRoughnessRemap : pTexRoughnessRemap;
+}
 
-#ifdef DYNAMIC_ROUGHNESS_GAMMA
-	#define pRoughnessGamma pInstRoughnessGamma
-#else
-	#define pRoughnessGamma pTexRoughnessGamma
-#endif
+float getRoughnessGamma(int spbIndex){
+	return DynamicRoughnessGamma ? pInstRoughnessGamma : pTexRoughnessGamma;
+}
 
-#ifdef DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER
-	#define pRoughnessSolidityMultiplier pInstRoughnessSolidityMultiplier
-#else
-	#define pRoughnessSolidityMultiplier pTexRoughnessSolidityMultiplier
-#endif
+float getRoughnessSolidityMultiplier(int spbIndex){
+	return DynamicRoughnessSolidityMultiplier ? pInstRoughnessSolidityMultiplier : pTexRoughnessSolidityMultiplier;
+}
 
-#ifdef DYNAMIC_REFLECTIVITY_SOLIDITY_MULTIPLIER
-	#define pReflectivitySolidityMultiplier pInstReflectivitySolidityMultiplier
-#else
-	#define pReflectivitySolidityMultiplier pTexReflectivitySolidityMultiplier
-#endif
+float getReflectivitySolidityMultiplier(int spbIndex){
+	return DynamicReflectivitySolidityMultiplier ? pInstReflectivitySolidityMultiplier : pTexReflectivitySolidityMultiplier;
+}
 
-#ifdef DYNAMIC_REFRACTION_DISTORT_STRENGTH
-	#define pRefractionDistortStrength pInstRefractionDistortStrength
-#else
-	#define pRefractionDistortStrength pTexRefractionDistortStrength
-#endif
+float getDynamicReflectivityMultiplier(int spbIndex){
+	return DynamicReflectivityMultiplier ? pInstReflectivityMultiplier : pTexReflectivityMultiplier;
+}
 
-#ifdef DYNAMIC_EMISSIVITY_INTENSITY
-	#define pEmissivityIntensity pInstEmissivityIntensity
-#else
-	#define pEmissivityIntensity pTexEmissivityIntensity
-#endif
+float getRefractionDistortStrength(int spbIndex){
+	return DynamicRefractionDistortStrength ? pInstRefractionDistortStrength : pTexRefractionDistortStrength;
+}
 
-#ifdef DYNAMIC_ENVROOM_TINT
-	#define pEnvRoomTint pInstEnvRoomTint
-#else
-	#define pEnvRoomTint pTexEnvRoomTint
-#endif
+vec3 getEmissivityIntensity(int spbIndex){
+	return DynamicEmissivityIntensity ? pInstEmissivityIntensity : pTexEmissivityIntensity;
+}
 
-#ifdef DYNAMIC_ENVROOM_SIZE
-	#define pEnvRoomSize pInstEnvRoomSize
-#else
-	#define pEnvRoomSize pTexEnvRoomSize
-#endif
+vec3 getEnvRoomTint(int spbIndex){
+	return DynamicEnvRoomTint ? pInstEnvRoomTint : pTexEnvRoomTint;
+}
 
-#ifdef DYNAMIC_ENVROOM_OFFSET
-	#define pEnvRoomOffset pInstEnvRoomOffset
-#else
-	#define pEnvRoomOffset pTexEnvRoomOffset
-#endif
+vec2 getEnvRoomSize(int spbIndex){
+	return DynamicEnvRoomSize ? pInstEnvRoomSize : pTexEnvRoomSize;
+}
 
-#ifdef DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY
-	#define pEnvRoomEmissivityIntensity pInstEnvRoomEmissivityIntensity
-#else
-	#define pEnvRoomEmissivityIntensity pTexEnvRoomEmissivityIntensity
-#endif
+vec3 getEnvRoomOffset(int spbIndex){
+	return DynamicEnvRoomOffset ? pInstEnvRoomOffset : pTexEnvRoomOffset;
+}
 
-#ifdef DYNAMIC_VARIATION
-	#define pVariationEnableScale pInstVariationEnableScale
-#else
-	#define pVariationEnableScale pTexVariationEnableScale
-#endif
+vec3 getEnvRoomEmissivityIntensity(int spbIndex){
+	return DynamicEnvRoomEmissivityIntensity ? pInstEnvRoomEmissivityIntensity : pTexEnvRoomEmissivityIntensity;
+}
 
-#ifdef DYNAMIC_REFLECTIVITY_MULTIPLIER
-	#define pReflectivityMultiplier pInstReflectivityMultiplier
-#else
-	#define pReflectivityMultiplier pTexReflectivityMultiplier
-#endif
+vec2 getVariationEnableScale(int spbIndex){
+	return DynamicVariation ? pInstVariationEnableScale : pTexVariationEnableScale;
+}
 
-#define pParticleSheetCount pTexParticleSheetCount
+vec3 getRimEmissivityIntensity(int spbIndex){
+	return DynamicRimEmissivityIntensity ? pInstRimEmissivityIntensity : pTexRimEmissivityIntensity;
+}
 
-#ifdef DYNAMIC_RIM_EMISSIVITY_INTENSITY
-	#define pRimEmissivityIntensity pInstRimEmissivityIntensity
-#else
-	#define pRimEmissivityIntensity pTexRimEmissivityIntensity
-#endif
+float getRimAngle(int spbIndex){
+	return DynamicRimAngle ? pInstRimAngle : pTexRimAngle;
+}
 
-#ifdef DYNAMIC_RIM_ANGLE
-	#define pRimAngle pInstRimAngle
-#else
-	#define pRimAngle pTexRimAngle
-#endif
+float getRimExponent(int spbIndex){
+	return DynamicRimExponent ? pInstRimExponent : pTexRimExponent;
+}
 
-#ifdef DYNAMIC_RIM_EXPONENT
-	#define pRimExponent pInstRimExponent
-#else
-	#define pRimExponent pTexRimExponent
-#endif
+vec3 getOutlineColor(int spbIndex){
+	return DynamicOutlineColor ? pInstOutlineColor : pTexOutlineColor;
+}
 
-#ifdef DYNAMIC_OUTLINE_COLOR
-	#define pOutlineColor pInstOutlineColor
-#else
-	#define pOutlineColor pTexOutlineColor
-#endif
+vec3 getOutlineColorTint(int spbIndex){
+	return DynamicOutlineColorTint ? pInstOutlineColorTint : pTexOutlineColorTint;
+}
 
-#ifdef DYNAMIC_OUTLINE_COLOR_TINT
-	#define pOutlineColorTint pInstOutlineColorTint
-#else
-	#define pOutlineColorTint pTexOutlineColorTint
-#endif
+float getOutlineThickness(int spbIndex){
+	return DynamicOutlineThickness ? pInstOutlineThickness : pTexOutlineThickness;
+}
 
-#ifdef DYNAMIC_OUTLINE_THICKNESS
-	#define pOutlineThickness pInstOutlineThickness
-#else
-	#define pOutlineThickness pTexOutlineThickness
-#endif
+float getOutlineSolidity(int spbIndex){
+	return DynamicOutlineSolidity ? pInstOutlineSolidity : pTexOutlineSolidity;
+}
 
-#ifdef DYNAMIC_OUTLINE_SOLIDITY
-	#define pOutlineSolidity pInstOutlineSolidity
-#else
-	#define pOutlineSolidity pTexOutlineSolidity
-#endif
+vec3 getOutlineEmissivity(int spbIndex){
+	return DynamicOutlineEmissivity ? pInstOutlineEmissivity : pTexOutlineEmissivity;
+}
 
-#ifdef DYNAMIC_OUTLINE_EMISSIVITY
-	#define pOutlineEmissivity pInstOutlineEmissivity
-#else
-	#define pOutlineEmissivity pTexOutlineEmissivity
-#endif
+vec3 getOutlineEmissivityTint(int spbIndex){
+	return DynamicOutlineEmissivityTint ? pInstOutlineEmissivityTint : pTexOutlineEmissivityTint;
+}
 
-#ifdef DYNAMIC_OUTLINE_EMISSIVITY_TINT
-	#define pOutlineEmissivityTint pInstOutlineEmissivityTint
-#else
-	#define pOutlineEmissivityTint pTexOutlineEmissivityTint
-#endif
+float getSkinClipPlane(int spbIndex){
+	return DynamicSkinClipPlane ? pInstSkinClipPlane : pTexSkinClipPlane;
+}
 
-#define pEmissivityCameraAdapted pTexEmissivityCameraAdapted
+float getSkinClipPlaneBorder(int spbIndex){
+	return DynamicSkinClipPlaneBorder ? pInstSkinClipPlaneBorder : pTexSkinClipPlaneBorder;
+}
 
-#ifdef DYNAMIC_SKIN_CLIP_PLANE
-	#define pSkinClipPlane pInstSkinClipPlane
-#else
-	#define pSkinClipPlane pTexSkinClipPlane
-#endif
+int getParticleSheetCount(int spbIndex){
+	return pTexParticleSheetCount;
+}
 
-#ifdef DYNAMIC_SKIN_CLIP_PLANE_BORDER
-	#define pSkinClipPlaneBorder pInstSkinClipPlaneBorder
-#else
-	#define pSkinClipPlaneBorder pTexSkinClipPlaneBorder
-#endif
+bool getEmissivityCameraAdapted(int spbIndex){
+	return pTexEmissivityCameraAdapted;
+}
+

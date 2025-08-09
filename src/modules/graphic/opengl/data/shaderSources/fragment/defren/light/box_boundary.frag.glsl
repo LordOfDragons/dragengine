@@ -3,14 +3,14 @@
 precision HIGHP float;
 precision HIGHP int;
 
-UNIFORM_BIND(1) uniform vec4 pPosTransform;
-UNIFORM_BIND(2) uniform mat3 pMatrixRotation;
-UNIFORM_BIND(3) uniform vec3 pInitialMinValue;
-UNIFORM_BIND(4) uniform vec3 pInitialMaxValue;
-UNIFORM_BIND(5) uniform vec3 pClearMinValue;
-UNIFORM_BIND(6) uniform vec3 pClearMaxValue;
+UNIFORM_BIND(3) uniform vec4 pPosTransform;
+UNIFORM_BIND(4) uniform mat3 pMatrixRotation;
+UNIFORM_BIND(5) uniform vec3 pInitialMinValue;
+UNIFORM_BIND(6) uniform vec3 pInitialMaxValue;
+UNIFORM_BIND(7) uniform vec3 pClearMinValue;
+UNIFORM_BIND(8) uniform vec3 pClearMaxValue;
 
-UNIFORM_BIND(7) uniform int pMipMapLevel;
+UNIFORM_BIND(9) uniform int pMipMapLevel;
 
 layout(binding=0) uniform HIGHP sampler2D texMin;
 layout(binding=1) uniform HIGHP sampler2D texMax;
@@ -23,7 +23,7 @@ layout(binding=3) uniform HIGHP samplerCube texAmbientCube;
 layout(binding=2) uniform HIGHP sampler2D texDepth;
 layout(binding=3) uniform HIGHP sampler2D texAmbient;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec3 outMin;
 layout(location=1) out vec3 outMax;

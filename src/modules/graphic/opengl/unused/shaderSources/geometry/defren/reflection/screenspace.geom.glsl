@@ -1,6 +1,6 @@
 #include "shared/preamble.glsl"
 
-#if defined GS_RENDER_STEREO
+#if LAYERED_RENDERING == LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout( triangles, invocations=2 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;

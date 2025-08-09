@@ -18,7 +18,7 @@ UNIFORM_BIND(2) uniform vec4 pSCTransform; // scaleX, scaleY, offsetX, offsetY
 layout(location=0) in vec2 inPosition;
 layout(location=1) in int inLayer;
 
-#include "shared/interface/2d_vertex.glsl"
+#include "shared/interface/2d/vertex.glsl"
 
 void main( void ){
 	vertexShaderDefaultOutputs();
@@ -63,7 +63,7 @@ void main( void ){
 		vTexCoord = texCoord;
 	}
 	
-	if(VSRenderStereo){
+	if(VSRenderLayer){
 		vLayer = inLayer;
 		#ifdef SUPPORTS_VSLAYER
 		gl_Layer = vLayer;

@@ -1,7 +1,7 @@
 #include "shared/preamble.glsl"
 
 // layout definitions
-#ifdef GS_RENDER_CUBE
+#if LAYERED_RENDERING_CUBE
 	#ifdef GS_INSTANCING
 		layout(triangles, invocations=6) in;
 		layout(triangle_strip, max_vertices=3) out;
@@ -10,7 +10,7 @@
 		layout(triangle_strip, max_vertices=18) out;
 	#endif
 	
-#elif defined GS_RENDER_CASCADED
+#elif LAYERED_RENDERING_CASCADED
 	#ifdef GS_INSTANCING
 		layout(triangles, invocations=4) in;
 		layout(triangle_strip, max_vertices=3) out;
@@ -19,7 +19,7 @@
 		layout(triangle_strip, max_vertices=12) out;
 	#endif
 	
-#elif defined GS_RENDER_STEREO
+#elif LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout(triangles, invocations=2) in;
 		layout(triangle_strip, max_vertices=3) out;
@@ -33,68 +33,44 @@
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-in vec2 vGSTCColor[3];
-in float vGSHTMask[3];
-in vec3 vGSNormal[3];
-in vec3 vGSTangent[3];
-in vec3 vGSBitangent[3];
-flat in int vGSDoubleSided[3];
-flat in int vGSSPBIndex[3];
-flat in int vGSSPBFlags[3];
-
-#define spbIndex vGSSPBIndex[0]
-#define spbFlags vGSSPBFlags[0]
-
-out vec2 vTCColor;
-out vec3 vClipCoord;
-out vec3 vSkinClipCoord;
-out vec3 vPosition;
-out float vHTMask;
-out vec3 vNormal;
-out vec3 vTangent;
-out vec3 vBitangent;
-out vec3 vReflectDir;
-out float vFadeZ;
-flat out int vLayer;
-flat out int vSPBIndex;
+#include "shared/interface/skin/geometry.glsl"
 
 
 // Layered rendering
 //////////////////////
-
-#if defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
 
 #include "shared/defren/skin/depth_offset.glsl"
 
 void emitCorner(in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition){
 	gl_Position = preTransformedPosition;
 	
-	vSPBIndex = spbIndex;
-	vTCColor = vGSTCColor[corner];
-	vNormal = normalize(vGSNormal[corner] * pMatrixVn[layer]);
-	vTangent = normalize(vGSTangent[corner] * pMatrixVn[layer]);
+	geometryShaderDefaultOutputs(corner, layer);
+	
+	vNormal = normalize(vGSNormal(corner) * pMatrixVn[layer]);
+	vTangent = normalize(vGSTangent(corner) * pMatrixVn[layer]);
 	vBitangent = normalize(vGSBitangent[corner] * pMatrixVn[layer]);
 	vSkinClipCoord = vec3(position);
-	vHTMask = vGSHTMask[corner];
+	vHTMask = vGSHTMask(corner);
 	
-	#ifdef BILLBOARD
+	if(AnyKindBillboard){
 		vReflectDir = vec3(position);
 		vPosition = vec3(position);
 		vClipCoord = vec3(position);
 		vFadeZ = position.z;
-	#else
+		
+	}else{
 		vReflectDir = pMatrixV[layer] * position;
 		vPosition = pMatrixV[layer] * position;
 		vClipCoord = pMatrixV[layer] * position;
 		vFadeZ = (pMatrixV[layer] * position).z;
-	#endif
+	}
 	
 	if(DepthOffset){
 		// pDoubleSided is passed on from the vertex shader to avoid requiring SSBO
 		// (ubo_instance_parameters) in geometry shaders for compatibility reasons
-		VARCONST bool doubleSided = vGSDoubleSided[0] == 1;
+		VARCONST bool doubleSided = vGSDoubleSided(0) == 1;
 		
-		#ifdef GS_RENDER_CUBE
+		#if LAYERED_RENDERING_CUBE
 			VARCONST int depthLayer = 0;
 		#else
 			VARCONST int depthLayer = layer;
@@ -108,19 +84,14 @@ void emitCorner(in int layer, in int corner, in vec4 position, in vec4 preTransf
 		}
 	}
 	
-	vLayer = layer;
-	
-	gl_Layer = layer;
-	gl_PrimitiveID = gl_PrimitiveIDIn;
-	
 	//EmitVertex();
 }
 
 void emitCorner(in int layer, in int corner, in vec4 position){
 	vec4 preTransformedPosition;
 	
-	#ifdef BILLBOARD
-		if(GSRenderStereo){
+	if(AnyKindBillboard){
+		if(LayeredRendering == LayeredRenderingStereo){
 			// during vertex shader the left view position has been used.
 			// if this is the right view correct the transform
 			if(layer == 1){
@@ -132,21 +103,20 @@ void emitCorner(in int layer, in int corner, in vec4 position){
 		}else{
 			preTransformedPosition = pMatrixP[layer] * position;
 		}
-	#else
+		
+	}else{
 		preTransformedPosition = pMatrixVP[layer] * position;
-	#endif
+	}
 	
 	emitCorner(layer, corner, position, preTransformedPosition);
 }
-
-#endif
 
 
 
 // Cube Map Rendering
 ///////////////////////
 
-#ifdef GS_RENDER_CUBE
+#if LAYERED_RENDERING_CUBE
 // cube map handling. each triangle is send to one of the cube map faces using
 // appropriate matrix transformation
 
@@ -193,40 +163,42 @@ void main(void){
 		//          * vec4(cRotFace[gl_InvocationID]
 		//             * (pMatrixV * vec4(gl_in[i].gl_Position), 1.0), 1.0);
 		
-		#ifdef GS_RENDER_CUBE_CULLING
-		// WARNING! there is a nasty bug in the MESA implementation causing 'continue' to
-		//          skip the loop increment if used in if-statements resulting in GPU infinite
-		//          loop. sometimes continue works but especially here it results in the GPU
-		//          dying horribly. the only working solution is to use the code in a way
-		//          no 'continue' statement is required to be used
-		if((spbFlags & (1 << face)) != 0){
-		#endif
-			
-			// emit triangle
-			int i;
-			for(i=0; i<3; i++){
-				emitCorner(face, i, gl_in[i].gl_Position);
-				EmitVertex();
+		if(GSRenderCubeCulling){
+			// WARNING! there is a nasty bug in the MESA implementation causing 'continue' to
+			//          skip the loop increment if used in if-statements resulting in GPU infinite
+			//          loop. sometimes continue works but especially here it results in the GPU
+			//          dying horribly. the only working solution is to use the code in a way
+			//          no 'continue' statement is required to be used
+			//
+			// should not be a problem anymore with newer MESA drivers
+			if((vGSSPBFlags(0) & (1 << face)) == 0){
+				#ifdef GS_INSTANCING
+				return;
+				#else
+				continue;
+				#endif
 			}
-			EndPrimitive();
-			
-		#ifdef GS_RENDER_CUBE_CULLING
 		}
-		#endif
+		
+		// emit triangle
+		int i;
+		for(i=0; i<3; i++){
+			emitCorner(face, i, gl_in[i].gl_Position);
+			EmitVertex();
+		}
+		EndPrimitive();
 		
 	#ifndef GS_INSTANCING
 	}
 	#endif
 }
 
-#endif // GS_RENDER_CUBE
-
 
 
 // Cascaded Rendering
 ///////////////////////
 
-#ifdef GS_RENDER_CASCADED
+#elif LAYERED_RENDERING_CASCADED
 
 void main(void){
 	// NOTE: quest requires EmitVertex to be called in main()
@@ -257,11 +229,11 @@ void main(void){
 		int i;
 		
 		for(i=0; i<3; i++){
-			#ifdef BILLBOARD
-			position[i] = gl_in[i].gl_Position;
-			#else
-			position[i] = pMatrixV[cascade] * gl_in[i].gl_Position;
-			#endif
+			if(AnyKindBillboard){
+				position[i] = gl_in[i].gl_Position;
+			}else{
+				position[i] = pMatrixV[cascade] * gl_in[i].gl_Position;
+			}
 		}
 		
 		// it would be possible to box check also the Z coordinate. with orthogonal
@@ -291,15 +263,15 @@ void main(void){
 		}
 		*/
 		
-		if((spbFlags & (1 << cascade)) != 0){
+		if((vGSSPBFlags(0) & (1 << cascade)) != 0){
 			// emit triangle
 			int i;
 			for(i=0; i<3; i++){
-				#ifdef BILLBOARD
-				emitCorner(cascade, i, gl_in[i].gl_Position, gl_in[i].gl_Position);
-				#else
-				emitCorner(cascade, i, gl_in[i].gl_Position, vec4(pMatrixV[cascade] * gl_in[i].gl_Position, 1));
-				#endif
+				if(AnyKindBillboard){
+					emitCorner(cascade, i, gl_in[i].gl_Position, gl_in[i].gl_Position);
+				}else{
+					emitCorner(cascade, i, gl_in[i].gl_Position, vec4(pMatrixV[cascade] * gl_in[i].gl_Position, 1));
+				}
 				EmitVertex();
 			}
 			EndPrimitive();
@@ -311,14 +283,12 @@ void main(void){
 	#endif
 }
 
-#endif // GS_RENDER_CASCADED
-
 
 
 // Dual Viewport Rendering
 ////////////////////////////
 
-#ifdef GS_RENDER_STEREO
+#elif LAYERED_RENDERING_STEREO
 
 void main(void){
 	// NOTE: quest requires EmitVertex to be called in main()
@@ -344,4 +314,4 @@ void main(void){
 	#endif
 }
 
-#endif // GS_RENDER_STEREO
+#endif

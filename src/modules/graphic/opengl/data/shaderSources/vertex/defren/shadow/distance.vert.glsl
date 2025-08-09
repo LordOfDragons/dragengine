@@ -17,21 +17,23 @@ layout(location=0) in vec3 inPosition;
 #ifdef _USE_TEXTURE_
 layout(location=3) in vec2 inTexCoord;
 #endif
-#ifdef HEIGHTTERRAIN
+
+// GeometryMode == GeometryModeHeightMap
 layout(location=4) in float inHTHeight;
-#endif
 
 #ifdef _USE_TEXTURE_
 VARYING_BIND(0) out vec2 vTexCoord;
 #endif
-out vec3 vLSPosition;
+VARYING_BIND(1) out vec3 vLSPosition;
 
 void main( void ){
-#ifdef HEIGHTTERRAIN
-	vec4 position = vec4( inPosition.x, inHTHeight, inPosition.y, 1.0 );
-#else // HEIGHTTERRAIN
-	vec4 position = vec4( inPosition.xyz, 1.0 );
-#endif // HEIGHTTERRAIN
+	vec4 position;
+	if(GeometryMode == GeometryModeHeightMap){
+		position = vec4( inPosition.x, inHTHeight, inPosition.y, 1.0 );
+		
+	}else{
+		position = vec4( inPosition.xyz, 1.0 );
+	}
 	
 	vLSPosition = pMatrixMV * position;
 	

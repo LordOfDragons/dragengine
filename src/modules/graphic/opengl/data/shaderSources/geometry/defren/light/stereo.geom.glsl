@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-#if defined GS_RENDER_STEREO
+#if LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout(triangles, invocations=2) in;
 		layout(triangle_strip, max_vertices=3) out;
@@ -16,7 +16,7 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
-#include "shared/interface/light_geometry.glsl"
+#include "shared/interface/light/geometry.glsl"
 
 void main(void){
 	int eye;

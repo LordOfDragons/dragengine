@@ -2,17 +2,17 @@
 <shader>
 	<name>DefRen GI Debug Probe Rays</name>
 	
-	<parameter name='pMatrixNormal'/> <!-- 0 -->
-	<parameter name='pMatrixMV'/> <!-- 1 -->
-	<parameter name='pMatrixMVP'/> <!-- 2 -->
-	<parameter name='pMatrixP'/> <!-- 3 -->
-	<parameter name='pGICascade'/> <!-- 4 -->
-	<parameter name='pGIDebugProbe'/> <!-- 5 -->
-	<parameter name='pGIRaysPerProbe'/> <!-- 6 -->
-	<parameter name='pGIProbesPerLine'/> <!-- 7 -->
-	<parameter name='pProbePosition'/> <!-- 8 -->
-	<parameter name='pUpdateDataRayOffset'/> <!-- 9 -->
-	<parameter name='pRayDataValid'/> <!-- 10 -->
+	<parameter name='pMatrixNormal' location='-1'/> <!-- 0 -->
+	<parameter name='pMatrixMV' location='0'/> <!-- 1 -->
+	<parameter name='pMatrixMVP' location='-1'/> <!-- 2 -->
+	<parameter name='pMatrixP' location='1'/> <!-- 3 -->
+	<parameter name='pGICascade' location='-1'/> <!-- 4 -->
+	<parameter name='pGIDebugProbe' location='-1'/> <!-- 5 -->
+	<parameter name='pGIRaysPerProbe' location='-1'/> <!-- 6 -->
+	<parameter name='pGIProbesPerLine' location='-1'/> <!-- 7 -->
+	<parameter name='pProbePosition' location='-1'/> <!-- 8 -->
+	<parameter name='pUpdateDataRayOffset' location='-1'/> <!-- 9 -->
+	<parameter name='pRayDataValid' location='-1'/> <!-- 10 -->
 	
 	<sourceCode unit='vertex'>V DefRen GI Debug Probe Rays</sourceCode>
 	<sourceCode unit='fragment'>F DefRen GI Debug Probe Rays</sourceCode>

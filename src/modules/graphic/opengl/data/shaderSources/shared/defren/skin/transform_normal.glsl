@@ -1,44 +1,38 @@
 /*
 	<!-- shared/defren/skin/transform_normal.glsl -->
-	<define>BILLBOARD</define>
-	<define>GS_RENDER_CASCADED</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>HAS_TESSELLATION_SHADER</define>
-	<define>HEIGHT_MAP</define>
-	<define>PROP_FIELD</define>
+	<define>LAYERED_RENDERING</define>
+	<define>TESSELLATION_MODE</define>
+	<define>GEOMETRY_MODE</define>
 */
 
 // normal transformation. the result is written to vNormal. if a normal map exists vTangent and vBitangent
 // are also calculated and written.
-#if defined HAS_TESSELLATION_SHADER || defined GS_RENDER_CUBE || defined GS_RENDER_CASCADED || defined GS_RENDER_STEREO
-	#define NO_TRANSFORMATION 1
-#endif
+const bool NormalNoTransform = WithGeometryShader || WithTessellationShader;
 
 void transformNormal(in int spbIndex, out sTransformTransfer transformTransfer){
-	#ifdef BILLBOARD
-		#ifdef PROP_FIELD
-			vNormal = normalize(mat3(transformTransfer.matRSMV) * -transformTransfer.bbMat[2]);
-			vTangent = normalize(mat3(transformTransfer.matRSMV) * transformTransfer.bbMat[0]);
-			vBitangent = cross(vNormal, vTangent);
-		#else
-			vNormal = vec3(0.0, 0.0, 1.0);
-			vTangent = vec3(1.0, 0.0, 0.0);
-			vBitangent = vec3(0.0, 1.0, 0.0);
-		#endif
+	if(GeometryMode == GeometryModePropFieldImposter){
+		vNormal = normalize(mat3(transformTransfer.matRSMV) * -transformTransfer.bbMat[2]);
+		vTangent = normalize(mat3(transformTransfer.matRSMV) * transformTransfer.bbMat[0]);
+		vBitangent = cross(vNormal, vTangent);
 		
-	#else
-		#ifdef HEIGHT_MAP
+	}else if(GeometryMode == GeometryModeBillboard){
+		vNormal = vec3(0.0, 0.0, 1.0);
+		vTangent = vec3(1.0, 0.0, 0.0);
+		vBitangent = vec3(0.0, 1.0, 0.0);
+		
+	}else{
+		if(GeometryMode == GeometryModeHeightMap){
 			vNormal = normalize(fract(vec3(1.0, 256.0, 65536.0) * vec3(inNormal))
 				* vec3(1.9921569) + vec3(-0.9921722));
 			vTangent = normalize(vec3(pMatrixTexCoord[0][0], 0.0, pMatrixTexCoord[0][1]));
 			vBitangent = cross(vNormal, vTangent);
-		#else
+			
+		}else{
 			vNormal = normalize(inNormal);
 			vTangent = normalize(vec3(inTangent));
 			vBitangent = cross(vNormal, vTangent);
 			vTangent = cross(vBitangent, vNormal) * vec3(inTangent.w);
-		#endif
+		}
 		
 		// the normalize is currently required since the pMatrixNor can contain scaling from a component. using the scaling though
 		// "normal" is suddenly no more normalized resulting in render artifacts. there are only two solutions. one is to use
@@ -46,7 +40,7 @@ void transformNormal(in int spbIndex, out sTransformTransfer transformTransfer){
 		// though is not so easy and has its own problems
 		mat3 matrixNormal = pMatrixNormal;
 		
-		#ifdef PROP_FIELD
+		if(GeometryMode == GeometryModePropField){
 			// see doc/shader_propfield
 			int instanceOffset = gl_InstanceID * 3;
 			vec4 instance1 = texelFetch(texSubInstance1, instanceOffset); // pos.x, pos.y, pos.z, sr.a13
@@ -66,17 +60,17 @@ void transformNormal(in int spbIndex, out sTransformTransfer transformTransfer){
 			
 			// calculate normal matrix
 			matrixNormal = transpose(matBend * pfiRotScale) * matrixNormal; // ~= inverted(matBend * pMatrixPropField)
-		#endif
+		}
 		
-		#ifndef NO_TRANSFORMATION
+		if(!NormalNoTransform){
 			matrixNormal *= pMatrixVn[inLayer];
-		#endif
+		}
 		
 		vNormal = normalize(vNormal * matrixNormal);
 		vTangent = vTangent * matrixNormal;
 		vBitangent = vBitangent * matrixNormal;
 		
-		#ifndef HEIGHT_MAP
+		if(GeometryMode != GeometryModeHeightMap){
 			// using static or dynamic models it is possible cross(normal,tangent) becomes 0-vector.
 			// doing normalize would result in inf values in the interpolation unit resulting in
 			// all kinds of nasty problems on different gpu drivers. better use a degenerated vector.
@@ -87,6 +81,6 @@ void transformNormal(in int spbIndex, out sTransformTransfer transformTransfer){
 			if(dot(vBitangent, vBitangent) > 0.00001){
 				vBitangent = normalize(vBitangent);
 			}
-		#endif
-	#endif
+		}
+	}
 }

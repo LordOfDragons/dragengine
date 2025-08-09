@@ -3,11 +3,11 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform float pLevel;
+UNIFORM_BIND(0) uniform float pLevel;
 
 layout(binding=0) uniform mediump samplerCube texEnvMap;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 // vScreenCoord: -long, lat
 
 layout(location=0) out vec4 outColor;

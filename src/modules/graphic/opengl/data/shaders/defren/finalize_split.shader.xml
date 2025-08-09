@@ -2,10 +2,10 @@
 <shader>
 	<name>DefRen Finalize Split</name>
 	
-	<parameter name='pTCTransform'/>
-	<parameter name='pGamma'/>
-	<parameter name='pBrightness'/>
-	<parameter name='pContrast'/>
+	<parameter name='pTCTransform' location='1'/>
+	<parameter name='pGamma' location='3'/>
+	<parameter name='pBrightness' location='4'/>
+	<parameter name='pContrast' location='5'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Finalize</sourceCode>

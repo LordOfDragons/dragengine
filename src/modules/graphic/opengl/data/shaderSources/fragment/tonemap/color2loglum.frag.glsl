@@ -3,13 +3,13 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pParam1; // offset1.s, offset1.t, offset2.s, offset2.t
-uniform vec4 pParam2; // offset3.s, offset3.t, clamp.s, clamp.t
+UNIFORM_BIND(3) uniform vec4 pParam1; // offset1.s, offset1.t, offset2.s, offset2.t
+UNIFORM_BIND(4) uniform vec4 pParam2; // offset3.s, offset3.t, clamp.s, clamp.t
 
 // uniform mediump sampler2DArray texColor;
 layout(binding=0) uniform HIGHP sampler2DArray texLuminance;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out float outLogLum;
 

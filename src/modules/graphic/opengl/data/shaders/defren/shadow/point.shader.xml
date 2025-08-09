@@ -2,11 +2,11 @@
 <shader>
 	<name>DefRen Shadow Point</name>
 	
-	<parameter name='pMatrixMVP'/> <!-- 0 -->
-	<parameter name='pMatrixMV'/> <!-- 1 -->
-	<parameter name='pMatrixDiffuse'/> <!-- 2 -->
-	<parameter name='pMaterialGamma'/> <!-- 3 -->
-	<parameter name='pOptions'/> <!-- 4 -->
+	<parameter name='pMatrixMVP' location='0'/> <!-- 0 -->
+	<parameter name='pMatrixMV' location='1'/> <!-- 1 -->
+	<parameter name='pMatrixDiffuse' location='2'/> <!-- 2 -->
+	<parameter name='pMaterialGamma' location='3'/> <!-- 3 -->
+	<parameter name='pOptions' location='4'/> <!-- 4 -->
 	
 	<sourceCode unit='vertex'>V DefRen Shadow Point</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Shadow Point</sourceCode>

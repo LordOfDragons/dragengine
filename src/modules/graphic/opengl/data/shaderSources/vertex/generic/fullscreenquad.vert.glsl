@@ -15,10 +15,10 @@ UNIFORM_BIND(0) uniform vec4 pQuadParams; // scaleX, scaleY, offsetX, offsetY
 
 layout(location=0) in vec2 inPosition;
 
-// VSRenderStereo
+// VSRenderLayer
 layout(location=1) in int inLayer;
 
-#include "shared/interface/2d_vertex.glsl"
+#include "shared/interface/2d/vertex.glsl"
 
 void main( void ){
 	vertexShaderDefaultOutputs();
@@ -27,7 +27,7 @@ void main( void ){
 	// !NoTexCoord
 	vTexCoord = inPosition * pQuadParams.xy + pQuadParams.zw;
 	
-	if(VSRenderStereo){
+	if(VSRenderLayer){
 		vLayer = inLayer;
 		#ifdef SUPPORTS_VSLAYER
 		gl_Layer = vLayer;

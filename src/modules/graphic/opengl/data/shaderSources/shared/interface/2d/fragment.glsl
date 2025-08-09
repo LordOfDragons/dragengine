@@ -1,11 +1,10 @@
 // usage:
-// #include "shared/interface/2d_fragment.glsl"
+// #include "shared/interface/2d/fragment.glsl"
 
 
 // texture coordinates (location 0)
 // used by:
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 VARYING_BIND(0) in vec2 vTexCoord;
 
 
@@ -17,7 +16,5 @@ VARYING_BIND(1) in vec2 vScreenCoord;
 
 // layer (location 2)
 // used by:
-// - VSRenderStereo
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 VARYING_BIND(2) flat in int vLayer;

@@ -2,7 +2,7 @@
 <shader>
 	<name>Effect Distort Image</name>
 	
-	<parameter name="pDistortTransform"/>
+	<parameter name="pDistortTransform" location='3'/>
 	
 	<sourceCode unit="vertex">V Generic ScreenSpace</sourceCode>
 	<sourceCode unit="fragment">F Effect Distort Image</sourceCode>

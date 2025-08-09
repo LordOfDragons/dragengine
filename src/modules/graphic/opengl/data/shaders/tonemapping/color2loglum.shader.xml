@@ -2,8 +2,8 @@
 <shader>
 	<name>ToneMap Color2LogLum</name>
 	
-	<parameter name='pParam1'/>
-	<parameter name='pParam2'/>
+	<parameter name='pParam1' location='3'/>
+	<parameter name='pParam2' location='4'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F ToneMap Color2LogLum</sourceCode>

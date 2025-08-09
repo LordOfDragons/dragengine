@@ -323,7 +323,7 @@ pDebugRayLightIndex( -1 )
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
 		pAsyncGetPipeline(pPipelineDebugProbeUpdatePass1, pipconf2, sources, defines);
 		
-		defines.SetDefines( "PASS2" );
+		defines.SetDefine("RENDER_PASS", 1);
 		pAsyncGetPipeline(pPipelineDebugProbeUpdatePass2, pipconf2, sources, defines);
 		
 		
@@ -343,7 +343,10 @@ pDebugRayLightIndex( -1 )
 		pAsyncGetPipeline(pPipelineLightTransp, pipconf, sources, defines);
 		
 		// render light stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
 		}

@@ -30,6 +30,7 @@
 #include "deoglLightShaderManager.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../extensions/deoglExtensions.h"
+#include "../../skin/shader/deoglSkinShaderConfig.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../renderthread/deoglRTShader.h"
@@ -47,53 +48,6 @@
 
 // Definitions
 ////////////////
-
-static const char *vInstanceUniformTargetNames[ deoglLightShader::EIUT_COUNT ] = {
-	"pMatrixMVP", // eiutMatrixMVP
-	"pMatrixMV", // eiutMatrixMV
-	
-	"pSamplesParams", // eiutSamplesParams
-	"pBurstFactor", // eiutBurstFactor
-	
-	"pLightPosition", // eiutLightPosition
-	"pLightView", // eiutLightView
-	"pLightParams", // eiutLightParams
-	
-	"pShadowMatrix", // eiutShadowMatrix
-	"pShadowMatrix2", // eiutShadowMatrix2
-	"pShadowMatrix3", // eiutShadowMatrix3
-	"pShadowMatrix4", // eiutShadowMatrix4
-	"pLayerBorder", // eiutLayerBorder
-	
-	"pLightImageOmniMatrix", // eiutLightImageOmniMatrix
-	
-	"pShadow1Solid", // elutShadow1Solid
-	"pShadow1Transparent", // elutShadow1Transparent
-	"pShadow2Solid", // eiutShadow2Solid
-	"pShadow2Transparent", // eiutShadow2Transparent
-	
-	"pShadowDepthTransform", // eiutShadowDepthTransform
-	"pShadowDepthTransform2", // eiutShadowDepthTransform2
-	
-	"pGIShadowMatrix", // eiutGIShadowMatrix
-	"pGIShadowParams" // eiutGIShadowParams
-};
-
-static const char *vLightUniformTargetNames[ deoglLightShader::ELUT_COUNT ] = {
-	"pLightColor", // elutLightColor
-	"pLightRange", // elutLightRange
-	"pLightColorAmbient", // elutLightColorAmbient
-	"pLightAmbientRatio", // elutLightAmbientRatio
-	"pLightGIAmbientIntensity", // elutLightGIAmbientIntensity
-	"pLightAttenuationCoefficient", // elutLightAttenuationCoefficient
-	"pLightDampingCoefficient", // elutLightDampingCoefficient
-	"pLightDampingThreshold", // elutLightDampingThreshold
-	"pLightImageGamma", // elutLightImageGamma
-	
-	"pLightSpotFactor", // elutLightSpotFactor
-	"pLightSpotBase", // elutLightSpotBase
-	"pLightSpotExponent" // elutLightSpotExponent
-};
 
 struct sSPBParameterDefinition{
 	deoglSPBParameter::eValueTypes dataType;
@@ -398,19 +352,7 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 		
 	case deoglLightShaderConfig::elmParticle:
 		defines.SetDefine("LIGHT_MODE", "4");
-		
-		switch( pConfig.GetParticleMode() ){
-		case deoglLightShaderConfig::epmRibbon:
-			defines.SetDefines( "PARTICLE_RIBBON" );
-			break;
-			
-		case deoglLightShaderConfig::epmBeam:
-			defines.SetDefines( "PARTICLE_BEAM" );
-			break;
-			
-		case deoglLightShaderConfig::epmParticle:
-			break;
-		}
+		defines.SetDefine("PARTICLE_MODE", pConfig.GetParticleMode());
 		break;
 	}
 	
@@ -509,16 +451,17 @@ void deoglLightShader::GenerateDefines( deoglShaderDefines &defines ){
 		defines.SetDefines( "WITH_SUBSURFACE" );
 	}
 	if( pConfig.GetLuminanceOnly() ){
-		defines.SetDefines( "LUMINANCE_ONLY" );
+		defines.SetDefine("OUTPUT_MODE", deoglSkinShaderConfig::eomLuminance);
 	}
 	if( pConfig.GetGIRay() ){
 		defines.SetDefines( "GI_RAY" );
 	}
 	if( pConfig.GetGSRenderStereo() ){
-		defines.SetDefines( "GS_RENDER_STEREO" );
-	}
-	if( pConfig.GetVSRenderStereo() ){
-		defines.SetDefines( "VS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		
+	}else if( pConfig.GetVSRenderStereo() ){
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		defines.SetDefines( "VS_RENDER_LAYER" );
 	}
 	
 	switch( pConfig.GetShadowTapMode() ){
@@ -801,19 +744,4 @@ void deoglLightShader::UpdateUniformTargets(){
 }
 
 void deoglLightShader::InitShaderParameters(){
-	decStringList &parameterList = pSources->GetParameterList();
-	int i;
-	
-	// uniforms
-	for( i=0; i<EIUT_COUNT; i++ ){
-		if( pInstanceUniformTargets[ i ] != -1 ){
-			parameterList.Add( vInstanceUniformTargetNames[ i ] );
-		}
-	}
-	
-	for( i=0; i<ELUT_COUNT; i++ ){
-		if( pLightUniformTargets[ i ] != -1 ){
-			parameterList.Add( vLightUniformTargetNames[ i ] );
-		}
-	}
 }

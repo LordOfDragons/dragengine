@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Occlusion OccMap Down-Sample Stereo</name>
 	
-	<parameter name='pLevel'/>
+	<parameter name='pLevel' location='0'/>
 	
 	<sourceCode unit='vertex'>V Generic PassThrough</sourceCode>
 	<sourceCode unit='geometry'>G Generic PassThrough Stereo</sourceCode>

@@ -495,12 +495,12 @@ deoglTexUnitsConfig *deoglRDecal::BareGetTUCFor( deoglSkinTexturePipelines::eTyp
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt( deoglSkinTexturePipelinesList::eptDecal ).GetWithRef( type ).GetShader();
 	
-	if( skinShader.GetUsedTextureTargetCount() > 0 ){
+	if(skinShader.GetTextureUnitCount() > 0){
 		skinShader.SetTUCCommon( &units[ 0 ], *pUseSkinTexture, pUseSkinState, pUseDynamicSkin );
 		skinShader.SetTUCPerObjectEnvMap( &units[ 0 ], envmapSky,
 			pParentComponent->GetRenderEnvMap(), pParentComponent->GetRenderEnvMapFade() );
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetWith(
-			&units[ 0 ], skinShader.GetUsedTextureTargetCount(),
+			&units[ 0 ], skinShader.GetTextureUnitCount(),
 			pUseSkinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
 	}
 	

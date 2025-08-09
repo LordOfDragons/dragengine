@@ -207,7 +207,7 @@ for f in data:
 #
 # hence geometry shaders will not be used for stereo rendering.
 # in particular this means:
-# - geometry shaders never have GS_RENDER_STEREO set
+# - geometry shaders never have LAYERED_RENDERING set
 #
 # for other shaders GS_INSTANCING is expected to be set. hence OpenGL Spir-V can only be
 # used if GL_ARB_gpu_shader5 is supported or OpenGL is version 4.6
@@ -253,59 +253,14 @@ def transpileOpenGLSpirV(env):
 	sharedShaderSources = []
 	globFiles(envModule, 'data/shaderSources/shared', '*.glsl', sharedShaderSources)
 	
-	shaderSources = [
-		'data/shaderSources/fragment/2d/solidcolor.shaderSource.xml',
-		'data/shaderSources/fragment/2d/textured.shaderSource.xml',
-		'data/shaderSources/fragment/bugtest/gs_layer.shaderSource.xml',
-		'data/shaderSources/fragment/bugtest/intpacking.shaderSource.xml',
-		'data/shaderSources/fragment/bugtest/ubo_idmataccess_bug.shaderSource.xml',
-		'data/shaderSources/fragment/canvas/canvas.shaderSource.xml',
-		'data/shaderSources/fragment/debug/rectangle.shaderSource.xml',
-		'data/shaderSources/fragment/debug/renderText.shaderSource.xml',
-		'data/shaderSources/fragment/effect/colormatrix.shaderSource.xml',
-		'data/shaderSources/fragment/effect/distort_image.shaderSource.xml',
-		'data/shaderSources/fragment/effect/filter_kernel_downsample.shaderSource.xml',
-		'data/shaderSources/fragment/effect/filter_kernel.shaderSource.xml',
-		'data/shaderSources/fragment/effect/overlay_image.shaderSource.xml',
-		'data/shaderSources/fragment/generic/color.shaderSource.xml',
-		'data/shaderSources/fragment/generic/gauss_sep_fixed.shaderSource.xml',
-		'data/shaderSources/fragment/generic/output_texture.shaderSource.xml',
-		'data/shaderSources/fragment/defren/light/light.shaderSource.xml',
-		'data/shaderSources/fragment/defren/light/ao_local.shaderSource.xml',
-		'data/shaderSources/fragment/defren/light/box_boundary.shaderSource.xml',
-		'data/shaderSources/fragment/defren/light/copy_shadow.shaderSource.xml',
-		'data/shaderSources/fragment/defren/light/gi.shaderSource.xml',
-		'data/shaderSources/fragment/defren/light/ssao_upscale.shaderSource.xml',
-		'data/shaderSources/fragment/defren/light/sssss.shaderSource.xml',
-		
-		'data/shaderSources/vertex/2d/solidcolor.shaderSource.xml',
-		'data/shaderSources/vertex/2d/textured.shaderSource.xml',
-		'data/shaderSources/vertex/bugtest/gs_layer.shaderSource.xml',
-		'data/shaderSources/vertex/bugtest/intpacking.shaderSource.xml',
-		'data/shaderSources/vertex/bugtest/ubo_idmataccess_bug.shaderSource.xml',
-		'data/shaderSources/vertex/canvas/canvas.shaderSource.xml',
-		'data/shaderSources/vertex/debug/rectangle.shaderSource.xml',
-		'data/shaderSources/vertex/debug/renderText.shaderSource.xml',
-		'data/shaderSources/vertex/generic/fsquad.shaderSource.xml',
-		'data/shaderSources/vertex/generic/fullscreenquad.shaderSource.xml',
-		'data/shaderSources/vertex/generic/passthrough.shaderSource.xml',
-		'data/shaderSources/vertex/generic/screenspace.shaderSource.xml',
-		'data/shaderSources/vertex/generic/transform_mvp.shaderSource.xml',
-		'data/shaderSources/vertex/defren/light/light.shaderSource.xml',
-		'data/shaderSources/vertex/defren/light/particle.shaderSource.xml',
-		
-		'data/shaderSources/geometry/defren/light/stereo.shaderSource.xml',
-		'data/shaderSources/geometry/defren/light/particle.shaderSource.xml'
-	]
-	globFiles(envModule, 'data/shaderSources/compute', '*.shaderSource.xml', shaderSources)
-	
 	# certain shaders can never happen under spir-v. remove them
 	removeShaderSources = [
-		'data/shaderSources/geometry/defren/light/stereo.shaderSource.xml'
+		'data/shaderSources/geometry/defren/light/stereo.shaderSource.xml',
+		'data/shaderSources/geometry/defren/occlusion/occmap.shaderSource.xml',
+		'data/shaderSources/geometry/defren/skin/depth.shaderSource.xml',
 	]
-	shaderSources = [x for x in shaderSources if x not in removeShaderSources]
 	
-	for s in shaderSources:
+	for s in [x for x in shaderSources if x not in removeShaderSources]:
 		shaderSourceFile = env.File(s)
 		tree = ET.parse(shaderSourceFile.srcnode().abspath)
 		root = tree.getroot()

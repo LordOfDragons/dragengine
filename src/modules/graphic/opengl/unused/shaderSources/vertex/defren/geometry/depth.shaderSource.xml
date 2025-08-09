@@ -9,7 +9,7 @@
 	<attribute name='inHTHeight' location='4'/>
 	
 	<define>CLIP_DEPTH</define>
-	<define>HEIGHTTERRAIN</define>
+	<define>GEOMETRY_MODE</define>
 	<define>IGNORE_HOLES</define>
 	<define>PROP_FIELD</define>
 	<define>USE_CLIP_PLANE</define>

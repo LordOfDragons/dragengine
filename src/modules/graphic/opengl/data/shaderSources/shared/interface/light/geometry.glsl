@@ -1,14 +1,13 @@
 // usage:
-// #include "shared/interface/light_geometry.glsl"
+// #include "shared/interface/light/geometry.glsl"
 
 
-#include "shared/interface/2d_geometry.glsl"
+#include "shared/interface/2d/geometry.glsl"
 
 
 // light volume position (location 3)
 // used by:
-// - GSRenderStereo
-// - GSLayer
+// - LayeredRendering != LayeredRenderingNone
 VARYING_BIND(3) in vec3 vGSLightVolumePos[GEOMETRY_SHADER_INPUT_SIZE];
 
 VARYING_BIND(3) out vec3 vLightVolumePos;
@@ -33,7 +32,7 @@ VARYING_BIND(5) out float vParticleLightRange;
 // particle light position (location 6)
 // used by:
 // - LightMode == LightModeParticle
-VARYING_BIND(6) in float vGSParticleLightPosition[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(6) in vec3 vGSParticleLightPosition[GEOMETRY_SHADER_INPUT_SIZE];
 
 VARYING_BIND(6) out vec3 vParticleLightPosition;
 

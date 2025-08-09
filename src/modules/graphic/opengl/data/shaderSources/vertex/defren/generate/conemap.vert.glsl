@@ -9,7 +9,7 @@ UNIFORM_BIND(2) uniform vec4 pDestTCTransform;
 
 layout(location=0) in vec2 inPosition;
 
-#include "shared/interface/2d_vertex.glsl"
+#include "shared/interface/2d/vertex.glsl"
 VARYING_BIND(3) out vec2 vDestTC;
 
 const vec2 tcTransform = vec2( 0.5 );

@@ -2,14 +2,14 @@
 <shader>
 	<name>Canvas</name>
 	
-	<parameter name='pTransform'/> <!-- 0 -->
-	<parameter name='pTCTransform'/> <!-- 1 -->
-	<parameter name='pColorTransform'/> <!-- 2 -->
-	<parameter name='pColorTransform2'/> <!-- 3 -->
-	<parameter name='pGamma'/> <!-- 4 -->
-	<parameter name='pClipRect'/> <!-- 5 -->
-	<parameter name='pTCClamp'/> <!-- 6 -->
-	<parameter name='pTCTransformMask'/> <!-- 7 -->
+	<parameter name='pTransform' location='0'/> <!-- 0 -->
+	<parameter name='pTCTransform' location='1'/> <!-- 1 -->
+	<parameter name='pColorTransform' location='3'/> <!-- 2 -->
+	<parameter name='pColorTransform2' location='4'/> <!-- 3 -->
+	<parameter name='pGamma' location='5'/> <!-- 4 -->
+	<parameter name='pClipRect' location='6'/> <!-- 5 -->
+	<parameter name='pTCClamp' location='7'/> <!-- 6 -->
+	<parameter name='pTCTransformMask' location='2'/> <!-- 7 -->
 	
 	<sourceCode unit='vertex'>V Canvas</sourceCode>
 	<sourceCode unit='fragment'>F Canvas</sourceCode>

@@ -28,6 +28,7 @@
 #include "deoglShaderBindingList.h"
 
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/collection/decIntList.h>
 #include <dragengine/deObject.h>
 
 class deLogger;
@@ -60,6 +61,7 @@ private:
 	
 	deoglShaderBindingList pTextureList;
 	decStringList pParameterList;
+	decIntList pParameterLocations;
 	bool pFeedbackInterleaved;
 	
 	
@@ -93,8 +95,13 @@ public:
 	inline const deoglShaderBindingList &GetTextureList() const{ return pTextureList; }
 	
 	/** Retrieves the parameter list. */
-	inline decStringList &GetParameterList(){ return pParameterList; }
 	inline const decStringList &GetParameterList() const{ return pParameterList; }
+	
+	/** Parameter locations. */
+	inline const decIntList &GetParameterLocations() const{ return pParameterLocations; }
+	
+	/** Add parameter. */
+	void AddParameter(const char *name, int location);
 	
 	/** Path to compute unit source code file or empty string. */
 	inline const decString &GetPathComputeSourceCode() const{ return pPathSCCompute; }

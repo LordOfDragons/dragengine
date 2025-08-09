@@ -3,11 +3,11 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform int pLevel;
+UNIFORM_BIND(3) uniform int pLevel;
 
 layout(binding=0) uniform mediump sampler2DArray texColor;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec3 outColor;
 

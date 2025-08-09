@@ -16,7 +16,7 @@ layout(location=3) in vec4 inParticle3; // castRed, castGreen, castBlue, castTra
 layout(location=4) in float inParticle4; // beamLocation
 */
 
-#include "shared/interface/light_vertex.glsl"
+#include "shared/interface/light/vertex.glsl"
 
 const vec2 curveOffset1 = vec2(0, 1.0 / 4.0);
 
@@ -57,7 +57,7 @@ void main(void){
 	gl_Position = vec4(inParticle0.yzw, 1);
 	
 	#ifdef SUPPORTS_VSDRAWPARAM
-	if(VSRenderStereo){
+	if(VSRenderLayer){
 		vLayer = gl_DrawID;
 	}
 	#endif

@@ -18,7 +18,7 @@ layout(binding=0) uniform lowp sampler2DArray texColorArray;
 // WithMask
 layout(binding=1) uniform lowp sampler2D texMask;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 // vTexCoord: WithTexture or WithRenderWorld
 

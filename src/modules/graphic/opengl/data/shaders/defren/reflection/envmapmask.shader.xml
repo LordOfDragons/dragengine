@@ -2,10 +2,10 @@
 <shader>
 	<name>DefRen Reflection EnvMap Mask</name>
 	
-	<parameter name='pMatrixMV'/> <!-- 0 -->
-	<parameter name='pMatrixP'/> <!-- 1 -->
-	<parameter name='pMatrixReflectionBox'/> <!-- 2 -->
-	<parameter name='pMatrixMaskBox'/> <!-- 3 -->
+	<parameter name='pMatrixMV' location='0'/> <!-- 0 -->
+	<parameter name='pMatrixP' location='1'/> <!-- 1 -->
+	<parameter name='pMatrixReflectionBox' location='2'/> <!-- 2 -->
+	<parameter name='pMatrixMaskBox' location='3'/> <!-- 3 -->
 	
 	<sourceCode unit='vertex'>V DefRen Reflection EnvMap Mask</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Reflection EnvMap Mask</sourceCode>

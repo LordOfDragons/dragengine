@@ -7,8 +7,8 @@
 	<output name='outDepth' location='0'/>
 	
 	<!-- <define>DECODE_IN_DEPTH</define> -->
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>INVERSE_DEPTH</define>
 	<define>USE_MIN_FUNCTION</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

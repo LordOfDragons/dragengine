@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen SSAO Upscale</name>
 	
-	<parameter name='pTCTransform'/>
+	<parameter name='pTCTransform' location='1'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen SSAO Upscale</sourceCode>

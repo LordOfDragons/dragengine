@@ -3,15 +3,15 @@
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mediump ivec4 pClampTC; // minU, minV, maxU, maxV
-uniform lowp ivec4 pOffsets1; // off1.x, off1.y, off2.x, off2.y
-uniform lowp ivec4 pOffsets2; // off3.x, off3.y, off4.x, off4.y
-uniform lowp ivec4 pOffsets3; // off5.x, off5.y, off6.x, off6.y
-uniform lowp ivec4 pOffsets4; // off7.x, off7.y, scaleX, scaleY
+UNIFORM_BIND(3) uniform mediump ivec4 pClampTC; // minU, minV, maxU, maxV
+UNIFORM_BIND(4) uniform lowp ivec4 pOffsets1; // off1.x, off1.y, off2.x, off2.y
+UNIFORM_BIND(5) uniform lowp ivec4 pOffsets2; // off3.x, off3.y, off4.x, off4.y
+UNIFORM_BIND(6) uniform lowp ivec4 pOffsets3; // off5.x, off5.y, off6.x, off6.y
+UNIFORM_BIND(7) uniform lowp ivec4 pOffsets4; // off7.x, off7.y, scaleX, scaleY
 
 layout(binding=0) uniform lowp sampler2DArray texValues;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out lowp float outValue;
 

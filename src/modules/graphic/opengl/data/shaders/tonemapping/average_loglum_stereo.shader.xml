@@ -2,8 +2,8 @@
 <shader>
 	<name>ToneMap Average LogLum Stereo</name>
 	
-	<parameter name='pTCTransform'/>
-	<parameter name='pOffsets'/>
+	<parameter name='pTCTransform' location='1'/>
+	<parameter name='pOffsets' location='3'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

@@ -8,7 +8,7 @@ layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 // CopyColor
 layout(binding=1) uniform mediump sampler2DArray texColor;
 
-#include "shared/interface/2d_fragment.glsl"
+#include "shared/interface/2d/fragment.glsl"
 
 // CopyColor
 layout(location=0) out vec4 outColor;
@@ -22,7 +22,7 @@ void main( void ){
 	
 	if(EncodedDepth){
 		outDepth = texelFetch( texDepth, tc, 0 );
-		if(DepthTest){
+		if(DepthTest != DepthTestNone){
 			/* if( outDepth.rgb == vec3( 0.0 ) ){
 				outDepth.rgb = vec3( 1.0, 0.0, 0.0 );
 			} */
@@ -33,7 +33,7 @@ void main( void ){
 		
 	}else{
 		gl_FragDepth = texelFetch( texDepth, tc, 0 ).r;
-		if(DepthTest){
+		if(DepthTest != DepthTestNone){
 			/* if( gl_FragDepth == 0.0 ){
 				gl_FragDepth = 1.0;
 			} */

@@ -13,8 +13,8 @@
 	<uniformBlock name='GIRayDirections' binding='4'/>
 	
 	<define>GI_RAY</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>

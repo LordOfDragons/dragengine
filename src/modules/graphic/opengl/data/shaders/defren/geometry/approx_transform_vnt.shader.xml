@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Approx Transform VNT</name>
 	
-	<parameter name='pParams'/>
+	<parameter name='pParams' location='0'/>
 	
 	<sourceCode unit='compute'>C DefRen Approx Transform VNT</sourceCode>
 </shader>

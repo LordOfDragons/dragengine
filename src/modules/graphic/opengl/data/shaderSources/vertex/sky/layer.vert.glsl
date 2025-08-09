@@ -9,7 +9,7 @@ precision HIGHP int;
 layout(location=0) in vec2 inPosition;
 layout(location=1) in int inLayer;
 
-#include "shared/interface/2d_vertex.glsl"
+#include "shared/interface/2d/vertex.glsl"
 
 // Z value on far clip plane (cleared depth) in NDC
 const float vZFar = InverseDepth ? -1.0 : 1.0;
@@ -20,7 +20,7 @@ void main( void ){
 	gl_Position = vec4( inPosition, vZFar, 1 );
 	vTexCoord = inPosition;
 	
-	if(VSRenderStereo){
+	if(VSRenderLayer){
 		vLayer = inLayer;
 		#ifdef SUPPORTS_VSLAYER
 		gl_Layer = vLayer;

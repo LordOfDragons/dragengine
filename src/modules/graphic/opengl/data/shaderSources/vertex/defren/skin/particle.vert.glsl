@@ -26,7 +26,7 @@ precision HIGHP int;
 // Samplers
 /////////////
 
-layout(binding=0) uniform mediump sampler2D texSamples;
+layout(binding=20) uniform mediump sampler2D texSamples;
 
 
 
@@ -47,15 +47,7 @@ layout(location=4) in float inParticle4; // beamLocation
 // Outputs
 ////////////
 
-out vec3 vParticle0; // size, emissivity, rotation
-out vec4 vParticle1; // red, green, blue, transparency
-flat out int vParticleSheetCount;
-flat out int vGSSPBIndex;
-flat out int vGSSPBFlags;
-flat out int vLayer;
-
-// VSRenderStereo
-UNIFORM_BIND(0) uniform int pDrawIDOffset;
+#include "shared/interface/skin/vertex.glsl"
 
 
 
@@ -75,6 +67,8 @@ const vec2 curveOffset3 = vec2(0.0, 3.0 / 4.0);
 
 void main(void){
 	#include "shared/defren/skin/shared_spb_index2.glsl"
+	
+	vertexShaderDefaultOutputs();
 	
 	vec2 tcSamples = vec2(inParticle0.x, 0.0) * pSamplesParams.xz + pSamplesParams.yw;
 	vec3 pattrs1 = vec3(texture(texSamples, tcSamples));
@@ -99,16 +93,14 @@ void main(void){
 	
 	gl_Position = vec4(pMatrixModel * vec4(inParticle0.yzw, 1.0), 1.0);
 	
-	vGSSPBIndex = spbIndex;
-	vGSSPBFlags = spbFlags;
+	vSPBIndex = spbIndex;
+	vSPBFlags = spbFlags;
 	
 	vLayer = 0;
-	if(VSRenderStereo){
-		#ifdef SUPPORTS_VSDRAWPARAM
-		vLayer = gl_DrawID + pDrawIDOffset;
+	if(VSRenderLayer){
+		vLayer = getInLayer();
 		#ifdef SUPPORTS_VSLAYER
 		gl_Layer = vLayer;
-		#endif
 		#endif
 	}
 }

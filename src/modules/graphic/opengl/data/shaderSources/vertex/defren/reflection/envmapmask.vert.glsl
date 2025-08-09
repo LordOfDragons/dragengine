@@ -8,7 +8,7 @@ UNIFORM_BIND(1) uniform mat4 pMatrixP;
 
 layout(location=0) in vec3 inPosition;
 
-out vec3 vEnvMapDir;
+VARYING_BIND(0) out vec3 vEnvMapDir;
 
 
 

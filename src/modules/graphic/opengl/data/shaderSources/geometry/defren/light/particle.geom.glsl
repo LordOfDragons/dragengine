@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-#ifdef GS_RENDER_STEREO
+#if LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout(points, invocations=2) in;
 		layout(triangle_strip, max_vertices=4) out;
@@ -11,6 +11,7 @@ precision HIGHP int;
 		layout(points) in;
 		layout(triangle_strip, max_vertices=8) out;
 	#endif
+	
 #else
 	layout(points) in;
 	layout(triangle_strip, max_vertices=4) out;
@@ -20,7 +21,7 @@ precision HIGHP int;
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
 #define GEOMETRY_SHADER_INPUT_SIZE 1
-#include "shared/interface/light_geometry.glsl"
+#include "shared/interface/light/geometry.glsl"
 
 
 void emitCorner(in vec3 position, in vec3 range, float zfactor, in int layer){
@@ -84,12 +85,13 @@ void main(void){
 	vec3 range = vec3(vGSParticleLightRange[0], -vGSParticleLightRange[0], 0);
 	
 	int layer;
-	#ifdef GS_RENDER_STEREO
+	#if LAYERED_RENDERING_STEREO
 		#ifdef GS_INSTANCING
 			layer = gl_InvocationID;
 		#else
 			for(layer=0; layer<2; layer++){ // left and right eye
 		#endif
+		
 	#else
 		layer = vGSLayer[0];
 	#endif
@@ -117,7 +119,7 @@ void main(void){
 	// end emitParticle()
 	
 	
-	#ifdef GS_RENDER_STEREO
+	#if LAYERED_RENDERING_STEREO
 		#ifndef GS_INSTANCING
 			}
 		#endif

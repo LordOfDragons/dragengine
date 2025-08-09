@@ -2,12 +2,12 @@
 <shader>
 	<name>DefRen Generate ConeMap</name>
 	
-	<parameter name='pWidth'/>
-	<parameter name='pSrcTCTransform'/>
-	<parameter name='pDestTCTransform'/>
-	<parameter name='pStepCount'/>
-	<parameter name='pStepFactor'/>
-	<parameter name='pLayer'/>
+	<parameter name='pWidth' location='0'/>
+	<parameter name='pSrcTCTransform' location='1'/>
+	<parameter name='pDestTCTransform' location='2'/>
+	<parameter name='pStepCount' location='3'/>
+	<parameter name='pStepFactor' location='4'/>
+	<parameter name='pLayer' location='5'/>
 	
 	<sourceCode unit='vertex'>V DefRen Generate ConeMap</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Generate ConeMap</sourceCode>
