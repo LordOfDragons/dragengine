@@ -47,7 +47,7 @@ void reliefMapping(inout vec2 tc, const in vec3 normal, const int spbIndex){
 		end = vec3( tc, 1 ); // top
 		for( i=0; i<linearStepCount; i++ ){
 			end += direction;
-			if(textureLod(texHeight, end.st, 0.0).r > end.z){
+			if(TEXTURE_LOD(texHeight, end.st, 0.0).r > end.z){
 				break; // ran below surface
 			}
 		}
@@ -56,7 +56,7 @@ void reliefMapping(inout vec2 tc, const in vec3 normal, const int spbIndex){
 		float rayRatio = length( direction.xy );
 		vec3 end = vec3( tc, 1 ); // top
 		for( i=0; i<reliefMappingConeStepCount; i++ ){
-			vec2 tap = textureLod(texHeight, end.st, 0.0).rg;
+			vec2 tap = TEXTURE_LOD(texHeight, end.st, 0.0).rg;
 			end += direction * ( tap.y * clamp( end.z - tap.x, 0, 1 ) / max( rayRatio + tap.y, 0.001 ) );
 		}
 	}
@@ -66,7 +66,7 @@ void reliefMapping(inout vec2 tc, const in vec3 normal, const int spbIndex){
 	for( i=0; i<reliefMappingBinaryStepCount; i++ ){
 		direction *= vec3( 0.5 );
 		vec3 test = begin + direction;
-		if(textureLod(texHeight, test.st, 0.0).r > test.z){
+		if(TEXTURE_LOD(texHeight, test.st, 0.0).r > test.z){
 			end = test;
 		}else{
 			begin = test;

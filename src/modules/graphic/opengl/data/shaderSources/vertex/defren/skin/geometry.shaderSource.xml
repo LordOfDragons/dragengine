@@ -65,6 +65,30 @@
 	<define>GEOMETRY_MODE</define>
 	<define>WITH_OUTLINE_THICKNESS_SCREEN</define>
 	<define>WITH_OUTLINE</define>
+	<define>WITH_VARIATIONS</define>
+	
+	<define>TEXTURE_ABSORPTION</define>
+	<define>TEXTURE_AO</define>
+	<define>TEXTURE_COLOR_TINT_MASK</define>
+	<define>TEXTURE_COLOR</define>
+	<define>TEXTURE_EMISSIVITY</define>
+	<define>TEXTURE_ENVMAP_EQUI</define>
+	<define>TEXTURE_ENVMAP_FADE</define>
+	<define>TEXTURE_ENVMAP</define>
+	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
+	<define>TEXTURE_ENVROOM_MASK</define>
+	<define>TEXTURE_ENVROOM</define>
+	<define>TEXTURE_HEIGHT</define>
+	<define>TEXTURE_NONPBR_ALBEDO</define>
+	<define>TEXTURE_NONPBR_METALNESS</define>
+	<define>TEXTURE_NORMAL</define>
+	<define>TEXTURE_REFLECTIVITY</define>
+	<define>TEXTURE_REFRACTION_DISTORT</define>
+	<define>TEXTURE_RENDERCOLOR</define>
+	<define>TEXTURE_RIM_EMISSIVITY</define>
+	<define>TEXTURE_ROUGHNESS</define>
+	<define>TEXTURE_SOLIDITY</define>
+	<define>TEXTURE_TRANSPARENCY</define>
 	
 	<!-- shared/defren/skin/transform_normal.glsl -->
 	<define>LAYERED_RENDERING</define>

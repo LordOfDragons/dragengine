@@ -35,4 +35,15 @@ vec4 textureVariation(in sampler2D tex2d, in sampler2DArray texarr, const in vec
 	}
 }
 
+vec4 textureVariationLod(in sampler2D tex2d, in sampler2DArray texarr, const in vec2 tc, const in float lod){
+	// functions are defined right before main due to Shared-SPB support
+	if(WithVariations){
+		return textureLod(texarr, tcTexVar(tc, textureSize(texarr, 0).z), lod);
+		
+	}else{
+		return textureLod(tex2d, tc, lod);
+	}
+}
+
 #define TEXTURE(s,tc) textureVariation(s, s##Array, tc)
+#define TEXTURE_LOD(s,tc,l) textureVariationLod(s, s##Array, tc, l)

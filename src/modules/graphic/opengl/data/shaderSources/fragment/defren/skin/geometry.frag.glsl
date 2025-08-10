@@ -56,15 +56,6 @@ layout(location=6) out vec4 outMaterialColor; // color.r, color.g, color.b, n/a
 #define outDefaultColor outMaterialDiffuse // color.r, color.g, color.b, n/a
 
 
-// Includes requiring inputs to be defined
-////////////////////////////////////////////
-
-#include "shared/defren/skin/relief_mapping.glsl"
-#include "shared/defren/skin/environment_room.glsl"
-#include "shared/defren/skin/nonpbr_metalness.glsl"
-
-
-
 // Constants
 //////////////
 
@@ -77,11 +68,16 @@ const vec4 colorTransparent = vec4(0.0, 0.0, 0.0, 1.0);
 const vec3 lumiFactors = vec3(0.2125, 0.7154, 0.0721);
 //const vec3 lumiFactors = vec3(0.3086, 0.6094, 0.0820); // nVidia
 
+
 #include "shared/normal/texture.glsl"
 #include "shared/normal/zero.glsl"
 
 #include "shared/interface/skin/variation.glsl"
 #include "shared/interface/skin/emissivity.glsl"
+
+#include "shared/defren/skin/relief_mapping.glsl"
+#include "shared/defren/skin/environment_room.glsl"
+#include "shared/defren/skin/nonpbr_metalness.glsl"
 
 
 // Main Function

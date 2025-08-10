@@ -14,10 +14,14 @@ layout(triangles, equal_spacing, ccw) in;
 #include "shared/interface/skin/tessellation_evaluate.glsl"
 
 #ifdef SHARED_SPB
+	#define VAR_SPB_INDEX vTESSPBIndex(0)
 	#include "shared/defren/skin/shared_spb_redirect.glsl"
 #endif
 #include "shared/defren/skin/shared_spb_texture_redirect.glsl"
 #include "shared/defren/skin/ubo_dynamic_parameters.glsl"
+
+#include "shared/interface/skin/variation.glsl"
+
 
 void main(){
 	tessellationShaderDefaultOutputs();
@@ -25,11 +29,9 @@ void main(){
 	// tessellate position
 	tessLinearTri(gl_Position, gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position);
 	
-	VARCONST int spbIndex = vTESSPBIndex(0);
-	
 	if(TextureHeight){
-		gl_Position.xyz += normalize(vNormal) * vec3(texture(texHeight, vTCColor).r
-			* getHeightRemap(spbIndex).x + getHeightRemap(spbIndex).y);
+		gl_Position.xyz += normalize(vNormal) * vec3(TEXTURE(texHeight, vTCColor).r
+			* getHeightRemap(VAR_SPB_INDEX).x + getHeightRemap(VAR_SPB_INDEX).y);
 	}
 	
 	// normalize normals again. required since for displacement

@@ -447,8 +447,8 @@ void deoglSkinShaderConfig::SetTextureNormal( bool textureNormal ){
 	pTextureNormal = textureNormal;
 }
 
-void deoglSkinShaderConfig::SetTextureHeight( bool textureHeightCone ){
-	pTextureHeight = textureHeightCone;
+void deoglSkinShaderConfig::SetTextureHeight( bool textureHeight ){
+	pTextureHeight = textureHeight;
 }
 
 void deoglSkinShaderConfig::SetTextureReflectivity( bool textureReflectivity ){

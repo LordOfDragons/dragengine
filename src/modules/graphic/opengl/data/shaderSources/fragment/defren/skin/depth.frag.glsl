@@ -53,9 +53,6 @@ const vec3 packMask = vec3(1.0 / 256.0, 1.0 / 256.0, 0.0);
 // Includes requiring inputs to be defined
 ////////////////////////////////////////////
 
-// WithTessellationShader && RequireNormal
-#include "shared/defren/skin/relief_mapping.glsl"
-
 #include "shared/defren/depth_to_position.glsl"
 
 /*
@@ -67,6 +64,8 @@ const vec3 packMask = vec3(1.0 / 256.0, 1.0 / 256.0, 0.0);
 
 #include "shared/interface/skin/variation.glsl"
 #include "shared/interface/skin/emissivity.glsl"
+
+#include "shared/defren/skin/relief_mapping.glsl"
 
 // Main Function
 //////////////////
