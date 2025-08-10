@@ -87,35 +87,56 @@ void deoglRImage::SetPixelBuffer( deoglPixelBuffer *pixelBuffer ){
 }
 
 void deoglRImage::SetTexture( deoglTexture *texture ){
-	// called from render thread. does not use delayed operations to avoid dead-locking
-	if( texture == pTexture ){
+	// called from render thread (deoglSkinChannel).
+	// does not use delayed operations to avoid dead-locking
+	if(texture == pTexture){
 		return;
 	}
-	pDirectReleaseTextures();
+	
+	if(pTexture){
+		delete pTexture;
+		pTexture = nullptr;
+	}
+	
 	pTexture = texture;
 	pSkinUse = true;
+	
 	pUpdateSkinMemoryUsage();
 }
 
 void deoglRImage::SetCubeMap( deoglCubeMap *cubemap ){
-	// called from render thread. does not use delayed operations to avoid dead-locking
+	// called from render thread (deoglSkinChannel).
+	// does not use delayed operations to avoid dead-locking
 	if( cubemap == pCubeMap ){
 		return;
 	}
-	pDirectReleaseTextures();
+	
+	if(pCubeMap){
+		delete pCubeMap;
+		pCubeMap = nullptr;
+	}
+	
 	pCubeMap = cubemap;
 	pSkinUse = true;
+	
 	pUpdateSkinMemoryUsage();
 }
 
 void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
-	// called from render thread. does not use delayed operations to avoid dead-locking
+	// called from render thread (deoglSkinChannel).
+	// does not use delayed operations to avoid dead-locking
 	if( arrayTexture == pArrayTexture ){
 		return;
 	}
-	pDirectReleaseTextures();
+	
+	if(pArrayTexture){
+		delete pArrayTexture;
+		pArrayTexture = nullptr;
+	}
+	
 	pArrayTexture = arrayTexture;
 	pSkinUse = true;
+	
 	pUpdateSkinMemoryUsage();
 }
 
@@ -126,48 +147,65 @@ void deoglRImage::PrepareForRender(){
 		return;
 	}
 	
-	if( ! pTexture && ! pCubeMap && ! pArrayTexture ){
-		// this should happen only for callers except skins. if the depth is 1 a 2D texture
-		// is created. if the depth is 6 and width and height are equals a cube map is created.
-		// otherwise an array texture is created. users of images have to cope with these
-		// three types of textures to exist
+	// NOTE: it is possible a skin adds an array version of the texture because variations
+	//       are used although the original image has depth=1 only. if the image is then
+	//       used in canvas it tries to use the texture version which is null. this code
+	//       the texture creation has been modified to support a regular texture to be
+	//       stored even if an array version of the texture exists to not break canvas
+	
+	// this should happen only for callers except skins. if the depth is 1 a 2D texture
+	// is created. if the depth is 6 and width and height are equals a cube map is created.
+	// otherwise an array texture is created. users of images have to cope with these
+	// three types of textures to exist
+	
+	// if the image is too small disable compression. otherwise the result
+	// can turn out smeared out. observed are problems at less than 5 pixel
+	// width or height. with 5 or more pixel no such problem is observed
+	const bool compressed = false; //pWidth >= 5 && pHeight >= 5;
+	
+	// NOTE since this is usually called for images used in UI using compression typically
+	//      results in visible artifacts. since these places have no way to tell if using
+	//      compression is a problem default to not use compression
+	
+	if(pDepth == 1){
+		if(!pTexture){
+			pTexture = new deoglTexture(pRenderThread);
+			pTexture->SetSize(pWidth, pHeight);
+			pTexture->SetMapingFormat(pComponentCount, pBitCount > 8, compressed);
+			pTexture->SetMipMapped(false);
+		}
 		
-		// if the image is too small disable compression. otherwise the result
-		// can turn out smeared out. observed are problems at less than 5 pixel
-		// width or height. with 5 or more pixel no such problem is observed
-		const bool compressed = false; //pWidth >= 5 && pHeight >= 5;
+	}else if(pDepth == 6 && pWidth == pHeight){
+		if(!pCubeMap){
+			pCubeMap = new deoglCubeMap(pRenderThread);
+			pCubeMap->SetSize(pWidth);
+			pCubeMap->SetMapingFormat(pComponentCount, pBitCount > 8, compressed);
+			pCubeMap->SetMipMapped(false);
+		}
 		
-		// NOTE since this is usually called for images used in UI using compression typically
-		//      results in visible artifacts. since these places have no way to tell if using
-		//      compression is a problem default to not use compression
-		
-		if( pDepth == 1 ){
-			pTexture = new deoglTexture( pRenderThread );
-			pTexture->SetSize( pWidth, pHeight );
-			pTexture->SetMapingFormat( pComponentCount, pBitCount > 8, compressed );
-			pTexture->SetMipMapped( false );
-			
-		}else if( pDepth == 6 && pWidth == pHeight ){
-			pCubeMap = new deoglCubeMap( pRenderThread );
-			pCubeMap->SetSize( pWidth );
-			pCubeMap->SetMapingFormat( pComponentCount, pBitCount > 8, compressed );
-			pCubeMap->SetMipMapped( false );
-			
-		}else{
-			pArrayTexture = new deoglArrayTexture( pRenderThread );
-			pArrayTexture->SetSize( pWidth, pHeight, pDepth );
-			pArrayTexture->SetMapingFormat( pComponentCount, pBitCount > 8, compressed );
-			pArrayTexture->SetMipMapped( false );
+	}else{
+		if(!pArrayTexture){
+			pArrayTexture = new deoglArrayTexture(pRenderThread);
+			pArrayTexture->SetSize(pWidth, pHeight, pDepth);
+			pArrayTexture->SetMapingFormat(pComponentCount, pBitCount > 8, compressed);
+			pArrayTexture->SetMipMapped(false);
 		}
 	}
 	
-	if( pArrayTexture ){
-		pArrayTexture->SetPixels( pPixelBuffer );
-		
-	}else if( pCubeMap ){
-		pCubeMap->SetPixels( pPixelBuffer );
-		
-	}else{
+	// fill textures
+	if(pArrayTexture && pPixelBuffer->GetWidth() == pArrayTexture->GetWidth()
+	&& pPixelBuffer->GetHeight() == pArrayTexture->GetHeight()
+	&& pPixelBuffer->GetDepth() == pArrayTexture->GetLayerCount()){
+		pArrayTexture->SetPixels(pPixelBuffer);
+	}
+	
+	if(pCubeMap && pPixelBuffer->GetWidth() == pCubeMap->GetSize()
+	&& pPixelBuffer->GetHeight() == pCubeMap->GetSize() && pPixelBuffer->GetDepth() == 6){
+		pCubeMap->SetPixels(pPixelBuffer);
+	}
+	
+	if(pTexture && pPixelBuffer->GetWidth() == pTexture->GetWidth()
+	&& pPixelBuffer->GetHeight() == pTexture->GetHeight() && pPixelBuffer->GetDepth() == 1){
 		pTexture->SetPixels( pPixelBuffer );
 	}
 	
@@ -190,17 +228,17 @@ void deoglRImage::pReleaseTextures(){
 
 void deoglRImage::pDirectReleaseTextures(){
 	// called from render thread and from pReleaseTextures
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
-		pTexture = NULL;
+		pTexture = nullptr;
 	}
-	if( pCubeMap ){
+	if(pCubeMap){
 		delete pCubeMap;
-		pCubeMap = NULL;
+		pCubeMap = nullptr;
 	}
-	if( pArrayTexture ){
+	if(pArrayTexture){
 		delete pArrayTexture;
-		pArrayTexture = NULL;
+		pArrayTexture = nullptr;
 	}
 	
 	pUpdateSkinMemoryUsage();

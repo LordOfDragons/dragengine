@@ -34,6 +34,10 @@ class deImage;
  * \brief Texture property image node.
  */
 class sePropertyNodeImage : public sePropertyNode{
+public:
+	typedef deTObjectReference<sePropertyNodeImage> Ref;
+	
+	
 private:
 	decString pPath;
 	deImage *pImage;

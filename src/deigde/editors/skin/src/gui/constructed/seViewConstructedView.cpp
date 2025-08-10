@@ -216,21 +216,25 @@ public:
 	
 	virtual sePropertyNode *CreateNode( seSkin &skin, seProperty & ){
 		igdeEnvironment &env = pView.GetEnvironment();
-		decString filename( skin.GetDirectoryPath() );
-		if( ! igdeCommonDialogs::GetFileOpen( &pView, "Select Image", *env.GetFileSystemGame(),
-		*env.GetOpenFilePatternList( igdeEnvironment::efpltImage ), filename ) ){
-			return NULL;
+		decString path(skin.GetDirectoryPath());
+		if(!igdeCommonDialogs::GetFileOpen(&pView, "Select Image", *env.GetFileSystemGame(),
+		*env.GetOpenFilePatternList(igdeEnvironment::efpltImage), path)){
+			return nullptr;
 		}
 		
-		deImageReference image;
-		image.TakeOver( pView.GetEngine()->GetImageManager()->LoadImage( filename, "/" ) );
+		deImage::Ref image(deImage::Ref::New(
+			pView.GetEngine()->GetImageManager()->LoadImage(path, "/")));
 		
-		deObjectReference refNode;
-		refNode.TakeOver( new sePropertyNodeImage( *pView.GetEngine() ) );
-		sePropertyNodeImage * const node = ( sePropertyNodeImage* )( deObject* )refNode;
-		node->SetPath( filename );
+		const sePropertyNodeImage::Ref node(sePropertyNodeImage::Ref::New(
+			new sePropertyNodeImage(*pView.GetEngine())));
+		
+		if(!skin.GetDirectoryPath().IsEmpty() && decPath::IsUnixPathAbsolute(path)){
+			path = decPath::RelativePathUnix(path, skin.GetDirectoryPath(), true).GetPathUnix();
+		}
+		
+		node->SetPath(path);
 		node->SetSize( decPoint3( image->GetWidth(), image->GetHeight(), image->GetDepth() ) );
-		refNode->AddReference(); // because we need to hand over a reference
+		node->AddReference(); // because we need to hand over a reference
 		return node;
 	}
 };

@@ -103,6 +103,7 @@ seProperty *property, sePropertyNode* ){
 		return;
 	}
 	
+	pPanel.UpdateOutline();
 	pPanel.UpdateNode();
 }
 
