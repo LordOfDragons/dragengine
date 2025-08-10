@@ -22,7 +22,7 @@ void transformNormal(in int spbIndex, out sTransformTransfer transformTransfer){
 		
 	}else{
 		if(GeometryMode == GeometryModeHeightMap){
-			vNormal = normalize(fract(vec3(1.0, 256.0, 65536.0) * vec3(inNormal))
+			vNormal = normalize(fract(vec3(1.0, 256.0, 65536.0) * vec3(inHMNormal))
 				* vec3(1.9921569) + vec3(-0.9921722));
 			vTangent = normalize(vec3(pMatrixTexCoord[0][0], 0.0, pMatrixTexCoord[0][1]));
 			vBitangent = cross(vNormal, vTangent);

@@ -95,7 +95,7 @@ void transformPosition(out vec3 position, in int spbIndex, out sTransformTransfe
 		}
 		
 	}else if(GeometryMode == GeometryModeHeightMap){
-		position = vec3(inPosition.x, inHMHeight, inPosition.y);
+		position = vec3(inHMPosition.x, inHMHeight, inHMPosition.y);
 		
 	}else{
 		position = inPosition;

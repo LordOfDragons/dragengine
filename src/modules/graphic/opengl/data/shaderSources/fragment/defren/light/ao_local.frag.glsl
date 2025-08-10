@@ -78,6 +78,27 @@ float screenSpaceAO( in vec2 tc, in vec3 position, in vec3 normal, in float radi
 		v1 = factor1.x * float( i ) + factor1.y;
 		v2 = pSSAORandomAngleConstant * v1 + c1;
 		
+/*
+http://john-chapman-graphics.blogspot.com
+vec3 v = vec3(1,0,0);
+vec3 t = normalize(v - normal*dot(v,normal));
+vec3 b = cross(normal,t);
+mat3 m = mat3(t,b,normal);
+
+vec3 s = normalize(vec3(vec2(cos(v2),sin(v2))*v1,1));
+s = position + m*s*0.1;
+
+vec4 p = pMatrixP[vLayer] * vec4(s,1);
+p.xy = (p.xy / p.w) * 0.5 + 0.5;
+
+float d1 = sampleDepth(texDepth, vec3(p.xy, vLayer), 0);
+
+if(d1 > p.z) occaccum += 1;
+
+float rangeCheck= abs(origin.z - sampleDepth) < uRadius ? 1.0 : 0.0;
+occlusion += (sampleDepth <= sample.z ? 1.0 : 0.0) * rangeCheck;
+*/
+		
 		tcoff = vec2( radius * v1 ) * vec2( cos( v2 ), sin( v2 ) );
 		
 		level = min( floor( log2( length( tcoff * pRenderSize.xy ) ) - pSSAOMipMapBase ), pSSAOMipMapMaxLevel );
