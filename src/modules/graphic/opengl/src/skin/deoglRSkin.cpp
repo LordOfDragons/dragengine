@@ -555,8 +555,27 @@ void deoglRSkin::pRetainImageData( const deSkin &skin ){
 			if( ! channel ){
 				continue;
 			}
-			if( channel->GetImage() && channel->GetImage()->GetSkinUse() ){
-				continue;  // already loaded
+			
+			if(channel->GetImage()){
+				bool hasUseSkin = false;
+				
+				switch(channel->GetTextureType()){
+				case deoglSkinChannel::ett2d:
+					hasUseSkin = channel->GetImage()->GetSkinUseTexture();
+					break;
+					
+				case deoglSkinChannel::ettCube:
+					hasUseSkin = channel->GetImage()->GetSkinUseCubeMap();
+					break;
+					
+				case deoglSkinChannel::ettArray:
+					hasUseSkin = channel->GetImage()->GetSkinUseArrayTexture();
+					break;
+				}
+				
+				if(hasUseSkin){
+					continue; // already loaded
+				}
 			}
 			
 			if( ! pVSRetainImageData ){

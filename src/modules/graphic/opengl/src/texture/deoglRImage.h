@@ -52,20 +52,15 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	const decString pFilename;
-	const int pWidth;
-	const int pHeight;
-	const int pDepth;
-	const int pComponentCount;
-	const int pBitCount;
+	const int pWidth, pHeight, pDepth, pComponentCount, pBitCount;
 	
-	deoglPixelBuffer::Ref pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBufferTexture, pPixelBufferCubeMap, pPixelBufferArrayTexture;
 	deoglTexture *pTexture;
 	deoglCubeMap *pCubeMap;
 	deoglArrayTexture *pArrayTexture;
-	bool pSkinUse;
+	bool pSkinUseTexture, pSkinUseCubeMap, pSkinUseArrayTexture;
 	
-	float pScaleU;
-	float pScaleV;
+	float pScaleU, pScaleV;
 	
 	deoglMemoryConsumptionSkinUse pSkinMemUse;
 	
@@ -111,7 +106,9 @@ public:
 	 * Set pixel or nullptr if not set.
 	 * \warning Called during synchronization from main thread only.
 	 */
-	void SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
+	void SetPixelBufferTexture(const deoglPixelBuffer::Ref &pixelBuffer);
+	void SetPixelBufferCubeMap(const deoglPixelBuffer::Ref &pixelBuffer);
+	void SetPixelBufferArrayTexture(const deoglPixelBuffer::Ref &pixelBuffer);
 	
 	
 	
@@ -161,7 +158,9 @@ public:
 	void SetArrayTexture( deoglArrayTexture *arrayTexture );
 	
 	/** Texture is used by skin. */
-	inline bool GetSkinUse() const{ return pSkinUse; }
+	inline bool GetSkinUseTexture() const{ return pSkinUseTexture; }
+	inline bool GetSkinUseCubeMap() const{ return pSkinUseCubeMap; }
+	inline bool GetSkinUseArrayTexture() const{ return pSkinUseArrayTexture; }
 	
 	/** Scaling factor in U direction. */
 	inline float GetScaleFactorU() const{ return pScaleU; }

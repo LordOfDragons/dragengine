@@ -139,6 +139,13 @@ public:
 		ectNonPbrMetalness
 	};
 	
+	/** Texture type. */
+	enum eTextureType{
+		ett2d,
+		ettCube,
+		ettArray
+	};
+	
 	/** Number of channels. */
 	static const int CHANNEL_COUNT = ectNonPbrMetalness + 1;
 	
@@ -159,6 +166,7 @@ private:
 	deoglArrayTexture *pArrayTexture;
 	deoglCombinedTexture *pCombinedTexture;
 	deoglPixelBufferMipMap::Ref pPixelBufferMipMap;
+	eTextureType pTextureType;
 	
 	decString pCacheID;
 	bool pIsCached;
@@ -258,6 +266,9 @@ public:
 	
 	/** Set combined texture or nullptr if not used. */
 	void SetCombinedTexture( deoglCombinedTexture *combinedTexture );
+	
+	/** Texture type. */
+	inline deoglSkinChannel::eTextureType GetTextureType() const{ return pTextureType; }
 	
 	
 	

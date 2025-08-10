@@ -81,7 +81,7 @@ void deoglVSRetainImageData::ProcessImage( deImage &image, bool forceLock ){
 	// NOTE skin use is changed during delayed operations on the render thread by the first
 	//      skin assigning the processed texture
 	
-	if( oglImage.GetRImage()->GetSkinUse() && ! forceLock ){
+	if(oglImage.GetRImage()->GetSkinUseTexture() && ! forceLock ){
 		// a skin assigned a texture to this image. it is not required anymore to build it.
 		// disregarded if lock is forced. this is the case for constructed textures which
 		// can not take advantage of reusing a shared image

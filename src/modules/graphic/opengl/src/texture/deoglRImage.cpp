@@ -58,15 +58,16 @@ pDepth( image.GetDepth() ),
 pComponentCount( image.GetComponentCount() ),
 pBitCount( image.GetBitCount() ),
 
-pTexture( NULL ),
-pCubeMap( NULL ),
-pArrayTexture( NULL ),
-pSkinUse( false ),
+pTexture(nullptr),
+pCubeMap(nullptr),
+pArrayTexture(nullptr),
+pSkinUseTexture(false),
+pSkinUseCubeMap(false),
+pSkinUseArrayTexture(false),
 pScaleU( 1.0f ),
 pScaleV( 1.0f ),
 
-pSkinMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
-{
+pSkinMemUse( renderThread.GetMemoryManager().GetConsumption().skin ){
 	LEAK_CHECK_CREATE( renderThread, Image );
 }
 
@@ -80,13 +81,25 @@ deoglRImage::~deoglRImage(){
 // Management
 ///////////////
 
-void deoglRImage::SetPixelBuffer( deoglPixelBuffer *pixelBuffer ){
+void deoglRImage::SetPixelBufferTexture(const deoglPixelBuffer::Ref &pixelBuffer){
 	// WARNING Called during synchronization from main thread only
 	
-	pPixelBuffer = pixelBuffer;
+	pPixelBufferTexture = pixelBuffer;
 }
 
-void deoglRImage::SetTexture( deoglTexture *texture ){
+void deoglRImage::SetPixelBufferCubeMap(const deoglPixelBuffer::Ref &pixelBuffer){
+	// WARNING Called during synchronization from main thread only
+	
+	pPixelBufferCubeMap = pixelBuffer;
+}
+
+void deoglRImage::SetPixelBufferArrayTexture(const deoglPixelBuffer::Ref &pixelBuffer){
+	// WARNING Called during synchronization from main thread only
+	
+	pPixelBufferArrayTexture = pixelBuffer;
+}
+
+void deoglRImage::SetTexture(deoglTexture *texture){
 	// called from render thread (deoglSkinChannel).
 	// does not use delayed operations to avoid dead-locking
 	if(texture == pTexture){
@@ -99,15 +112,16 @@ void deoglRImage::SetTexture( deoglTexture *texture ){
 	}
 	
 	pTexture = texture;
-	pSkinUse = true;
+	pPixelBufferTexture = nullptr;
+	pSkinUseTexture = true;
 	
 	pUpdateSkinMemoryUsage();
 }
 
-void deoglRImage::SetCubeMap( deoglCubeMap *cubemap ){
+void deoglRImage::SetCubeMap(deoglCubeMap *cubemap){
 	// called from render thread (deoglSkinChannel).
 	// does not use delayed operations to avoid dead-locking
-	if( cubemap == pCubeMap ){
+	if(cubemap == pCubeMap){
 		return;
 	}
 	
@@ -117,15 +131,16 @@ void deoglRImage::SetCubeMap( deoglCubeMap *cubemap ){
 	}
 	
 	pCubeMap = cubemap;
-	pSkinUse = true;
+	pPixelBufferCubeMap = nullptr;
+	pSkinUseCubeMap = true;
 	
 	pUpdateSkinMemoryUsage();
 }
 
-void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
+void deoglRImage::SetArrayTexture(deoglArrayTexture *arrayTexture){
 	// called from render thread (deoglSkinChannel).
 	// does not use delayed operations to avoid dead-locking
-	if( arrayTexture == pArrayTexture ){
+	if(arrayTexture == pArrayTexture){
 		return;
 	}
 	
@@ -135,7 +150,8 @@ void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
 	}
 	
 	pArrayTexture = arrayTexture;
-	pSkinUse = true;
+	pPixelBufferArrayTexture = nullptr;
+	pSkinUseArrayTexture = true;
 	
 	pUpdateSkinMemoryUsage();
 }
@@ -143,7 +159,7 @@ void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
 
 
 void deoglRImage::PrepareForRender(){
-	if( ! pPixelBuffer ){
+	if(!pPixelBufferTexture && !pPixelBufferCubeMap && !pPixelBufferArrayTexture){
 		return;
 	}
 	
@@ -193,23 +209,21 @@ void deoglRImage::PrepareForRender(){
 	}
 	
 	// fill textures
-	if(pArrayTexture && pPixelBuffer->GetWidth() == pArrayTexture->GetWidth()
-	&& pPixelBuffer->GetHeight() == pArrayTexture->GetHeight()
-	&& pPixelBuffer->GetDepth() == pArrayTexture->GetLayerCount()){
-		pArrayTexture->SetPixels(pPixelBuffer);
+	if(pArrayTexture && pPixelBufferArrayTexture){
+		pArrayTexture->SetPixels(pPixelBufferArrayTexture);
 	}
 	
-	if(pCubeMap && pPixelBuffer->GetWidth() == pCubeMap->GetSize()
-	&& pPixelBuffer->GetHeight() == pCubeMap->GetSize() && pPixelBuffer->GetDepth() == 6){
-		pCubeMap->SetPixels(pPixelBuffer);
+	if(pCubeMap && pPixelBufferCubeMap){
+		pCubeMap->SetPixels(pPixelBufferCubeMap);
 	}
 	
-	if(pTexture && pPixelBuffer->GetWidth() == pTexture->GetWidth()
-	&& pPixelBuffer->GetHeight() == pTexture->GetHeight() && pPixelBuffer->GetDepth() == 1){
-		pTexture->SetPixels( pPixelBuffer );
+	if(pTexture && pPixelBufferTexture){
+		pTexture->SetPixels(pPixelBufferTexture);
 	}
 	
-	pPixelBuffer = nullptr;
+	pPixelBufferTexture = nullptr;
+	pPixelBufferCubeMap = nullptr;
+	pPixelBufferArrayTexture = nullptr;
 }
 
 
@@ -232,10 +246,12 @@ void deoglRImage::pDirectReleaseTextures(){
 		delete pTexture;
 		pTexture = nullptr;
 	}
+	
 	if(pCubeMap){
 		delete pCubeMap;
 		pCubeMap = nullptr;
 	}
+	
 	if(pArrayTexture){
 		delete pArrayTexture;
 		pArrayTexture = nullptr;
@@ -247,21 +263,17 @@ void deoglRImage::pDirectReleaseTextures(){
 void deoglRImage::pUpdateSkinMemoryUsage(){
 	pSkinMemUse.Clear();
 	
-	if( ! pSkinUse ){
-		return;
-	}
-	
-	if( pTexture ){
+	if(pTexture && pSkinUseTexture){
 		pSkinMemUse.compressed += pTexture->GetMemoryConsumption().TotalCompressed();
 		pSkinMemUse.uncompressed += pTexture->GetMemoryConsumption().TotalUncompressed();
 	}
 	
-	if( pCubeMap ){
+	if(pCubeMap && pSkinUseCubeMap){
 		pSkinMemUse.compressed += pCubeMap->GetMemoryConsumption().TotalCompressed();
 		pSkinMemUse.uncompressed += pCubeMap->GetMemoryConsumption().TotalUncompressed();
 	}
 	
-	if( pArrayTexture ){
+	if(pArrayTexture && pSkinUseArrayTexture){
 		pSkinMemUse.compressed += pArrayTexture->GetMemoryConsumption().TotalCompressed();
 		pSkinMemUse.uncompressed += pArrayTexture->GetMemoryConsumption().TotalUncompressed();
 	}

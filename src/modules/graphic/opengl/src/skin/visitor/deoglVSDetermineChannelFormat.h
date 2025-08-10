@@ -45,7 +45,6 @@ class deSkinTexture;
  * Required channel format visitor.
  */
 class deoglVSDetermineChannelFormat{
-public:
 	deoglRenderThread &pRenderThread;
 	const deoglRSkin &pSkin;
 	const deoglSkinTexture &pOglTex;
@@ -60,7 +59,7 @@ public:
 	bool pRequiresFloat;
 	bool pAllowMipMap;
 	deoglRImage *pSharedImage;
-	
+	deoglSkinChannel::eTextureType pTextureType;
 	
 	
 public:
@@ -106,6 +105,9 @@ public:
 	
 	/** Shared image. */
 	inline deoglRImage *GetSharedImage() const{ return pSharedImage; }
+	
+	/** Texture type. */
+	inline deoglSkinChannel::eTextureType GetTextureType() const{ return pTextureType; }
 	
 	
 	
