@@ -2048,29 +2048,31 @@ void meObject::pUpdateDDSCoordSysArrowsLength(){
 }
 
 void meObject::pRepositionDDSNavSpaces(){
-	if( pWObject ){
-		const igdeGDCNavigationSpaceList &gdcNavSpaceList = pClassDef->GetNavigationSpaceList();
-		const int count = pDDSListNavSpaces.GetCount();
-		int i;
+	if(!pWObject || !pClassDef){
+		return;
+	}
+	
+	const igdeGDCNavigationSpaceList &gdcNavSpaceList = pClassDef->GetNavigationSpaceList();
+	const int count = pDDSListNavSpaces.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( i >= gdcNavSpaceList.GetCount() ){
+			break;
+		}
 		
-		for( i=0; i<count; i++ ){
-			if( i >= gdcNavSpaceList.GetCount() ){
-				break;
-			}
+		igdeWDebugDrawerShape &ddshape = *pDDSListNavSpaces.GetAt( i );
+		
+		if( pClassDef ){
+			const igdeGDCNavigationSpace &gdNavSpace = *gdcNavSpaceList.GetAt( i );
+			ddshape.SetPosition( gdNavSpace.GetPosition() );
+			ddshape.SetOrientation( gdNavSpace.GetOrientation() );
+			ddshape.SetScale( pScaling );
 			
-			igdeWDebugDrawerShape &ddshape = *pDDSListNavSpaces.GetAt( i );
-			
-			if( pClassDef ){
-				const igdeGDCNavigationSpace &gdNavSpace = *gdcNavSpaceList.GetAt( i );
-				ddshape.SetPosition( gdNavSpace.GetPosition() );
-				ddshape.SetOrientation( gdNavSpace.GetOrientation() );
-				ddshape.SetScale( pScaling );
-				
-			}else{
-				ddshape.SetPosition( decVector() );
-				ddshape.SetOrientation( decQuaternion() );
-				ddshape.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
-			}
+		}else{
+			ddshape.SetPosition( decVector() );
+			ddshape.SetOrientation( decQuaternion() );
+			ddshape.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
 		}
 	}
 }
