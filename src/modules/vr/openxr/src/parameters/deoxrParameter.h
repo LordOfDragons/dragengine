@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,53 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRDPHANDINTERACTION_H_
-#define _DEOXRDPHANDINTERACTION_H_
+#ifndef _DEOXRPARAMETER_H_
+#define _DEOXRPARAMETER_H_
 
-#include "deoxrDPBaseTwoHandController.h"
+#include <dragengine/common/string/decStringSet.h>
+#include <dragengine/systems/modules/deModuleParameter.h>
+#include <dragengine/deObject.h>
 
+class deVROpenXR;
 
 /**
- * Hand interaction profile (XR_EXT_hand_interaction).
+ * Base class for all parameters.
  */
-class deoxrDPHandInteraction : public deoxrDPBaseTwoHandController{
+class deoxrParameter : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<deoxrParameter> Ref;
+	
+	
+protected:
+	deVROpenXR &pOxr;
+	deModuleParameter pParameter;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create device profile. */
-	deoxrDPHandInteraction( deoxrInstance &instance );
+	/** Create parameter. */
+	deoxrParameter(deVROpenXR &oxr);
 	
 protected:
-	/** Clean up device profile. */
-	~deoxrDPHandInteraction() override;
+	/** Clean up parameter. */
+	~deoxrParameter() override = default;
 	/*@}*/
 	
 	
-protected:
-	bool pProfileEnabled() const override;
-	void pSuggestBindings() override;
-	void pAddDevice( bool left ) override;
+public:
+	/** \name Management */
+	/*@{*/
+	/** Parameter. */
+	inline const deModuleParameter &GetParameter() const{ return pParameter; }
+	
+	/** Current value. */
+	virtual decString GetParameterValue() = 0;
+	
+	/** Set current value. */
+	virtual void SetParameterValue(const char *value) = 0;
+	/*@}*/
 };
 
 #endif
-

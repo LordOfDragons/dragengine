@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,30 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRDPHANDINTERACTION_H_
-#define _DEOXRDPHANDINTERACTION_H_
+#include "deoxrParameterBool.h"
 
-#include "deoxrDPBaseTwoHandController.h"
+#include <dragengine/common/exceptions.h>
 
 
-/**
- * Hand interaction profile (XR_EXT_hand_interaction).
- */
-class deoxrDPHandInteraction : public deoxrDPBaseTwoHandController{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create device profile. */
-	deoxrDPHandInteraction( deoxrInstance &instance );
-	
-protected:
-	/** Clean up device profile. */
-	~deoxrDPHandInteraction() override;
-	/*@}*/
-	
-	
-protected:
-	bool pProfileEnabled() const override;
-	void pSuggestBindings() override;
-	void pAddDevice( bool left ) override;
-};
+// Class deoxrParameterBool
+/////////////////////////////
 
-#endif
+// Constructor, destructor
+////////////////////////////
 
+deoxrParameterBool::deoxrParameterBool(deVROpenXR &oxr) : deoxrParameter(oxr){
+	pParameter.SetType(deModuleParameter::eptBoolean);
+}
+
+
+// Parameter Value
+////////////////////
+
+decString deoxrParameterBool::GetParameterValue(){
+	return GetParameterBool() ? "1" : "0";
+}
+
+void deoxrParameterBool::SetParameterValue(const char *value){
+	const decString checkValue(decString(value).GetLower());
+	SetParameterBool(checkValue == "1" || checkValue == "true" || checkValue == "yes");
+}

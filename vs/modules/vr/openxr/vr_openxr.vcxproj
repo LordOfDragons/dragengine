@@ -60,6 +60,12 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrActionSet.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBasics.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrDebug.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterBool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterInt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterList.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrPLogLevel.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrThreadSync.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFaceTracker.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFunctionNames.h" />
@@ -118,6 +124,12 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrActionSet.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBasics.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrDebug.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterBool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterInt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterList.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrPLogLevel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrThreadSync.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFaceTracker.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrGlobalFunctions.cpp" />

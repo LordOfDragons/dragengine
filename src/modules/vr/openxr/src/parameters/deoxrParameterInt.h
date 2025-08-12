@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,38 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRDPHANDINTERACTION_H_
-#define _DEOXRDPHANDINTERACTION_H_
+#ifndef _DEOXRPARAMETERINT_H_
+#define _DEOXRPARAMETERINT_H_
 
-#include "deoxrDPBaseTwoHandController.h"
+#include "deoxrParameter.h"
 
 
 /**
- * Hand interaction profile (XR_EXT_hand_interaction).
+ * Base class for integer based parameters.
  */
-class deoxrDPHandInteraction : public deoxrDPBaseTwoHandController{
+class deoxrParameterInt : public deoxrParameter{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create device profile. */
-	deoxrDPHandInteraction( deoxrInstance &instance );
-	
-protected:
-	/** Clean up device profile. */
-	~deoxrDPHandInteraction() override;
+	/** Create parameter. */
+	deoxrParameterInt(deVROpenXR &oxr);
 	/*@}*/
 	
 	
-protected:
-	bool pProfileEnabled() const override;
-	void pSuggestBindings() override;
-	void pAddDevice( bool left ) override;
+	/** \name Parameter Value */
+	/*@{*/
+	/** Current value. */
+	decString GetParameterValue() override;
+	
+	/** Set current value. */
+	void SetParameterValue(const char *value) override;
+	
+	/** Current value. */
+	virtual int GetParameterInt() = 0;
+	
+	/** Set current value. */
+	virtual void SetParameterInt(int value) = 0;
+	/*@}*/
 };
 
 #endif
-

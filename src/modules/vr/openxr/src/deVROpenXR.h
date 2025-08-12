@@ -42,6 +42,7 @@
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
 #include "graphicapi/deoxrGraphicApiOpenGL.h"
+#include "parameters/deoxrParameterList.h"
 
 /** input module device identifier prefix. */
 #define OXR_DEVID_PREFIX "OXR_"
@@ -104,6 +105,12 @@ public:
 	
 	static const int InputActionCount = eiaPoseRight2 + 1;
 	
+	enum class LogLevel{
+		error,
+		warning,
+		info,
+		debug
+	};
 	
 	
 private:
@@ -133,6 +140,9 @@ private:
 	eFeatureSupportLevel pRequestFeatureEyeGazeTracking;
 	eFeatureSupportLevel pRequestFeatureFacialTracking;
 	
+	LogLevel pLogLevel;
+	
+	deoxrParameterList pParameters;
 	
 	
 public:
@@ -218,6 +228,10 @@ public:
 	/** Requested feature levels. */
 	inline eFeatureSupportLevel GetRequestFeatureEyeGazeTracking() const{ return pRequestFeatureEyeGazeTracking; }
 	inline eFeatureSupportLevel GetRequestFeatureFacialTracking() const{ return pRequestFeatureFacialTracking; }
+	
+	/** Log level. */
+	inline LogLevel GetLogLevel() const{ return pLogLevel; }
+	void SetLogLevel(LogLevel level){ pLogLevel = level; }
 	/*@}*/
 	
 	
@@ -414,6 +428,30 @@ public:
 	
 	
 	
+	/** \name Parameters */
+	/*@{*/
+	/** Number of parameters. */
+	virtual int GetParameterCount() const;
+	
+	/**
+	 * Get information about parameter.
+	 * \param[in] index Index of the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
+	 */
+	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	
+	/** Index of named parameter or -1 if not found. */
+	virtual int IndexOfParameterNamed( const char *name ) const;
+	
+	/** Value of named parameter. */
+	virtual decString GetParameterValue( const char *name ) const;
+	
+	/** Set value of named parameter. */
+	virtual void SetParameterValue( const char *name, const char *value );
+	/*@}*/
+	
+	
+	
 private:
 	void pRealShutdown();
 	void pCreateActionSet();
@@ -421,6 +459,7 @@ private:
 	void pCreateDeviceProfiles();
 	void pSuggestBindings();
 	bool pBeginFrame();
+	void pCreateParameters();
 };
 
 #endif

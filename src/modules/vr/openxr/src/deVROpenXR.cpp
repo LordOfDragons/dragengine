@@ -56,6 +56,7 @@
 #include "device/profile/deoxrDPHandInteraction.h"
 #include "device/profile/deoxrDPHTCHandInteraction.h"
 #include "loader/deoxrLoader.h"
+#include "parameters/deoxrPLogLevel.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -111,9 +112,11 @@ pRestartSession( false ),
 pLastDetectedSystem( deoxrSystem::esUnknown ),
 pThreadSync( nullptr ),
 pRequestFeatureEyeGazeTracking( efslDisabled ),
-pRequestFeatureFacialTracking( efslDisabled )
+pRequestFeatureFacialTracking( efslDisabled ),
+pLogLevel(LogLevel::info)
 {
-	memset( pActions, 0, sizeof( pActions ) );
+	memset(pActions, 0, sizeof(pActions));
+	pCreateParameters();
 }
 
 deVROpenXR::~deVROpenXR(){
@@ -894,6 +897,31 @@ void deVROpenXR::EndFrame(){
 
 
 
+// Parameters
+///////////////
+
+int deVROpenXR::GetParameterCount() const{
+	return pParameters.GetParameterCount();
+}
+
+void deVROpenXR::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameters.GetParameterAt(index).GetParameter();
+}
+
+int deVROpenXR::IndexOfParameterNamed(const char *name) const{
+	return pParameters.IndexOfParameterNamed(name);
+}
+
+decString deVROpenXR::GetParameterValue(const char *name) const{
+	return pParameters.GetParameterNamed(name).GetParameterValue();
+}
+
+void deVROpenXR::SetParameterValue(const char *name, const char *value){
+	pParameters.GetParameterNamed(name).SetParameterValue(value);
+}
+
+
+
 // Private Functions
 //////////////////////
 
@@ -1021,8 +1049,16 @@ void deVROpenXR::pSuggestBindings(){
 	const int count = pDeviceProfiles.GetCount();
 	int i;
 	
+	if(pLogLevel == LogLevel::debug){
+		LogInfo("Suggesting bindings for device profiles.");
+	}
+	
 	for( i=0; i<count; i++ ){
 		deoxrDeviceProfile &profile = *pDeviceProfiles.GetAt( i );
+		
+		if(pLogLevel == LogLevel::debug){
+			LogInfoFormat("Suggest bindings for device profile '%s':", profile.GetName().GetString());
+		}
 		
 		try{
 			profile.SuggestBindings();
@@ -1032,6 +1068,10 @@ void deVROpenXR::pSuggestBindings(){
 			LogWarnFormat( "Device profile '%s' failed suggesting bindings. "
 				"Ignoring device profile", profile.GetPath().GetName().GetString() );
 		}
+	}
+	
+	if(pLogLevel == LogLevel::debug){
+		LogInfo("Done suggesting bindings for device profiles.");
 	}
 }
 
@@ -1096,6 +1136,11 @@ bool deVROpenXR::pBeginFrame(){
 		return false;
 	}
 }
+
+void deVROpenXR::pCreateParameters(){
+	pParameters.AddParameter(deoxrParameter::Ref::New(new deoxrPLogLevel(*this)));
+}
+
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>

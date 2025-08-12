@@ -222,8 +222,17 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		return;
 	}
 	
-	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
 	int i;
+	if(pOxr.GetLogLevel() == deVROpenXR::LogLevel::debug){
+		pOxr.LogInfoFormat("Suggest bindings for interaction profile '%s' (action -> binding):",
+			profile.GetName().GetString());
+		for(i=0; i<count; i++ ){
+			pOxr.LogInfoFormat("- '%s' -> '%s'", bindings[i].action->GetName().GetString(),
+				bindings[i].binding.GetName().GetString());
+		}
+	}
+	
+	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
 	
 	try{
 		for( i=0; i<count; i++ ){
@@ -246,7 +255,7 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 			delete [] xrbindings;
 		}
 		
-		pOxr.LogErrorFormat( "SuggestBindings failed for profile '%s' (action -> binding)",
+		pOxr.LogErrorFormat( "SuggestBindings failed for interaction profile '%s' (action -> binding)",
 			profile.GetName().GetString() );
 		for( i=0; i<count; i++ ){
 			pOxr.LogErrorFormat( "- '%s' -> '%s'", bindings[ i ].action->GetName().GetString(),

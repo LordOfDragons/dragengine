@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,48 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRDPHANDINTERACTION_H_
-#define _DEOXRDPHANDINTERACTION_H_
+#include "deoxrParameterFloat.h"
 
-#include "deoxrDPBaseTwoHandController.h"
+#include <dragengine/common/exceptions.h>
 
 
-/**
- * Hand interaction profile (XR_EXT_hand_interaction).
- */
-class deoxrDPHandInteraction : public deoxrDPBaseTwoHandController{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create device profile. */
-	deoxrDPHandInteraction( deoxrInstance &instance );
+// class deoxrParameterFloat
+//////////////////////////////
+
+// Constructor, destructor
+////////////////////////////
+
+deoxrParameterFloat::deoxrParameterFloat(deVROpenXR &oxr) : deoxrParameter(oxr){
+	pParameter.SetType(deModuleParameter::eptNumeric);
+}
+
+
+// Parameter Value
+////////////////////
+
+decString deoxrParameterFloat::GetParameterValue(){
+	decString value;
 	
-protected:
-	/** Clean up device profile. */
-	~deoxrDPHandInteraction() override;
-	/*@}*/
+	value.Format("%f", GetParameterFloat());
 	
+	int len = value.GetLength();
+	while(len > 1){
+		len--;
+		if(value[len] == '.'){
+			value[len] = 0;
+			break;
+			
+		}else if(value[len] == '0'){
+			value[len] = 0;
+			
+		}else{
+			break;
+		}
+	}
 	
-protected:
-	bool pProfileEnabled() const override;
-	void pSuggestBindings() override;
-	void pAddDevice( bool left ) override;
-};
+	return value;
+}
 
-#endif
-
+void deoxrParameterFloat::SetParameterValue(const char *value){
+	SetParameterFloat(decString(value).ToFloat());
+}

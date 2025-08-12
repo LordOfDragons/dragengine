@@ -40,6 +40,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.Settings.ModuleParameters.Audio'>Audio</translation>
 	<translation name='UI.Settings.ModuleParameters.Physics'>Physik</translation>
 	<translation name='UI.Settings.ModuleParameters.Input'>Eingabe</translation>
+	<translation name='UI.Settings.ModuleParameters.VR'>VR</translation>
 	<translation name='UI.Settings.ModuleParameters.Network'>Netzwerk</translation>
 	<translation name='UI.Settings.ModuleParameters.Animator'>Animator</translation>
 	<translation name='UI.Settings.ModuleParameters.AI'>KI</translation>

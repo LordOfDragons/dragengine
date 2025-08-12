@@ -40,6 +40,7 @@ Do you want to re-assign?</translation>
 	<translation name='UI.Settings.ModuleParameters.Audio'>Audio</translation>
 	<translation name='UI.Settings.ModuleParameters.Physics'>Physics</translation>
 	<translation name='UI.Settings.ModuleParameters.Input'>Input</translation>
+	<translation name='UI.Settings.ModuleParameters.VR'>VR</translation>
 	<translation name='UI.Settings.ModuleParameters.Network'>Network</translation>
 	<translation name='UI.Settings.ModuleParameters.Animator'>Animator</translation>
 	<translation name='UI.Settings.ModuleParameters.AI'>AI</translation>

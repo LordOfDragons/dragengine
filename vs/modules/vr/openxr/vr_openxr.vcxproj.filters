@@ -26,6 +26,24 @@
     <None Include="pre_build.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterBool.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterInt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterFloat.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrPLogLevel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deoxrDebug.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -251,6 +269,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrBasics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterBool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterInt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterFloat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrParameterList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\parameters\deoxrPLogLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrDebug.cpp">

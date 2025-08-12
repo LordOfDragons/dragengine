@@ -29,7 +29,7 @@
 
 
 /**
- * HTC hand interaction profile.
+ * HTC hand interaction profile (XR_HTC_hand_interaction).
  */
 class deoxrDPHTCHandInteraction : public deoxrDPBaseTwoHandController{
 public:
@@ -44,15 +44,8 @@ protected:
 	/*@}*/
 	
 	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	void CheckAttached() override;
-	/*@}*/
-	
-	
 protected:
+	bool pProfileEnabled() const override;
 	void pSuggestBindings() override;
 	void pAddDevice( bool left ) override;
 };

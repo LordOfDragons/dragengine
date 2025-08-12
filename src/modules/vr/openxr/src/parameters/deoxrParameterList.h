@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,53 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRDPHANDINTERACTION_H_
-#define _DEOXRDPHANDINTERACTION_H_
+#ifndef _DEOXRPARAMETERLIST_H_
+#define _DEOXRPARAMETERLIST_H_
 
-#include "deoxrDPBaseTwoHandController.h"
+#include "deoxrParameter.h"
+
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 
 
 /**
- * Hand interaction profile (XR_EXT_hand_interaction).
+ * Parameter list.
  */
-class deoxrDPHandInteraction : public deoxrDPBaseTwoHandController{
+class deoxrParameterList{
+private:
+	decObjectOrderedSet pParameters;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create device profile. */
-	deoxrDPHandInteraction( deoxrInstance &instance );
+	/** Create parameter list. */
+	deoxrParameterList() = default;
 	
-protected:
-	/** Clean up device profile. */
-	~deoxrDPHandInteraction() override;
+	/** Clean up parameter list. */
+	~deoxrParameterList() = default;
 	/*@}*/
 	
 	
-protected:
-	bool pProfileEnabled() const override;
-	void pSuggestBindings() override;
-	void pAddDevice( bool left ) override;
+	/** \name Management */
+	/*@{*/
+	/** Number of parameters. */
+	int GetParameterCount() const;
+	
+	/** Index of named parameter or -1 if absent. */
+	int IndexOfParameterNamed(const char *name) const;
+	
+	/** Parameter at index. */
+	deoxrParameter &GetParameterAt(int index) const;
+	
+	/** Named parameter. */
+	deoxrParameter &GetParameterNamed(const char *name) const;
+	
+	/** Add parameter. */
+	void AddParameter(const deoxrParameter::Ref &parameter);
+	
+	/** Remove all parameters. */
+	void RemoveAllParameters();
+	/*@}*/
 };
 
 #endif
-

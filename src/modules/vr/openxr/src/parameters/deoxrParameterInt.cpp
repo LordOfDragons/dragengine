@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,31 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRDPHANDINTERACTION_H_
-#define _DEOXRDPHANDINTERACTION_H_
+#include "deoxrParameterInt.h"
 
-#include "deoxrDPBaseTwoHandController.h"
+#include <dragengine/common/exceptions.h>
 
 
-/**
- * Hand interaction profile (XR_EXT_hand_interaction).
- */
-class deoxrDPHandInteraction : public deoxrDPBaseTwoHandController{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create device profile. */
-	deoxrDPHandInteraction( deoxrInstance &instance );
-	
-protected:
-	/** Clean up device profile. */
-	~deoxrDPHandInteraction() override;
-	/*@}*/
-	
-	
-protected:
-	bool pProfileEnabled() const override;
-	void pSuggestBindings() override;
-	void pAddDevice( bool left ) override;
-};
+// Class deoxrParameterInt
+////////////////////////////
 
-#endif
+// Constructor, destructor
+////////////////////////////
 
+deoxrParameterInt::deoxrParameterInt(deVROpenXR &oxr) : deoxrParameter(oxr){
+	pParameter.SetType(deModuleParameter::eptNumeric);
+}
+
+
+// Parameter Value
+////////////////////
+
+decString deoxrParameterInt::GetParameterValue(){
+	decString value;
+	value.Format("%d", GetParameterInt());
+	return value;
+}
+
+void deoxrParameterInt::SetParameterValue(const char *value){
+	SetParameterInt(decString(value).ToInt());
+}
