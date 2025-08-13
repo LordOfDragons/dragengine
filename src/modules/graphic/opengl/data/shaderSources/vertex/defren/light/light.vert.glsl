@@ -18,7 +18,17 @@ layout(location=1) in int inLayer;
 void main(void){
 	lightVertexShaderDefaultOutputs();
 	
-	int layer = VSRenderLayer && FullScreenQuad ? inLayer : 0;
+	int layer = 0;
+	if(VSRenderLayer){
+		if(FullScreenQuad){
+			layer = inLayer;
+			
+		}else{
+			#ifdef SUPPORTS_VSDRAWPARAM
+			layer = gl_DrawID;
+			#endif
+		}
+	}
 	
 	if(LayeredRendering != LayeredRenderingNone && !VSRenderLayer){
 		gl_Position = vec4(vec2(inPosition), 0.0, 1.0);
@@ -32,18 +42,10 @@ void main(void){
 		vLightVolumePos = pMatrixMV[layer] * vec4(inPosition, 1.0);
 	}
 	
+	vLayer = layer;
+	#ifdef SUPPORTS_VSLAYER
 	if(VSRenderLayer){
-		if(FullScreenQuad){
-			vLayer = layer;
-			
-		}else{
-			#ifdef SUPPORTS_VSDRAWPARAM
-			vLayer = gl_DrawID;
-			#endif
-		}
-		
-		#ifdef SUPPORTS_VSLAYER
-		gl_Layer = vLayer;
-		#endif
+		gl_Layer = layer;
 	}
+	#endif
 }
