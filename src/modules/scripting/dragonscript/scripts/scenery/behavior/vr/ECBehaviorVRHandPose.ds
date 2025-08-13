@@ -434,7 +434,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			
 			// update controllers with transformed poses
 			pAnimateBones.forEach(block Bone bone
-				bone.controllerOrientation.setRotation(bone.poseOrientation.getEulerAngles())
+				bone.controllerOrientation.setOrientation(bone.poseOrientation)
 				
 				if bone.controllerPosition != null
 					bone.controllerPosition.setVector(pHandScale * bone.posePosition)
