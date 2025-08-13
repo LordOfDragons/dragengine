@@ -288,19 +288,18 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		var ECBehaviorVRHandPointAt pECBehavior
 		var ECBehaviorVRHand.Instance pVRHand
+		var ECBehaviorVRHMD.Instance pVRHMD
 		
 		var bool pEnabled
 		var ShapeList pShape
 		var CollisionFilter pCollisionFilter
 		
 		var ColliderCollisionTest pTest
-		var Vector pOrigin
-		var Vector pRotation
+		var Vector pOrigin, pRotation, pNextTestOrigin, pNextTestRotation
 		
 		var float pRange
 		
-		var DVector pPointAtOrigin
-		var DVector pPointAtDirection
+		var DVector pPointAtOrigin, pPointAtDirection
 		var Element pPointAtElement
 		var int pPointAtBone
 		var String pPointAtBoneName
@@ -327,6 +326,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		func void dispose()
 			pTest = null
 			pVRHand = null
+			pVRHMD = null
 			pPointAtElement = null
 			pListeners = null
 			pBTSMs = null
@@ -347,8 +347,8 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 			
 			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
-			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
-			pRotation = pECBehavior.getRotation().getVector(stub, codec)
+			pNextTestOrigin = pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
+			pNextTestRotation = pRotation = pECBehavior.getRotation().getVector(stub, codec)
 			
 			pShape = pECBehavior.getShape().getShapeList(stub)
 			if pShape != null and pShape.getCount() == 0
@@ -412,6 +412,17 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		/** \brief VR Hand behavior instance. */
 		func ECBehaviorVRHand.Instance getVRHand()
 			return pVRHand
+		end
+		
+		/**
+		 * \brief VR HMD behavior instance.
+		 * \version 1.28
+		 */
+		func ECBehaviorVRHMD.Instance getVRHMD()
+			if pVRHMD == null
+				pVRHMD = ECBehaviorVRHMD.getInstanceIn(getElement())
+			end
+			return pVRHMD
 		end
 		
 		
@@ -547,6 +558,36 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			updateTestParameters()
 		end
 		
+		/**
+		 * \brief Next test origin.
+		 * \version 1.28
+		 * 
+		 * If input device is not hand interaction this returns \ref #getOrigin(). If input
+		 * device is hand interaction this returns the per frame calculated test origin
+		 */
+		func Vector getNextTestOrigin()
+			return pNextTestOrigin
+		end
+		
+		/**
+		 * \brief Next test direction scaled by range.
+		 * \version 1.28
+		 * 
+		 * If input device is not hand interaction this returns \ref #getRotation(). If input
+		 * device is hand interaction this returns the per frame calculated test rotation.
+		 */
+		func Vector getNextTestRotation()
+			return pNextTestRotation
+		end
+		
+		/**
+		 * \brief Next test bone name or empty string.
+		 * \version 1.28
+		 */
+		func String getNextTestBone()
+			return pTest.getBone()
+		end
+		
 		
 		
 		/** \brief Point-at element or null. */
@@ -619,7 +660,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		 * the test origin and orientation would be if enabled.
 		 */
 		func DMatrix calcTestMatrix()
-			var Matrix matrix = Matrix.newRT(pRotation, pOrigin)
+			var Matrix matrix = Matrix.newRT(pNextTestRotation, pNextTestOrigin)
 			
 			var String bone = pTest.getBone()
 			if not bone.empty()
@@ -646,19 +687,28 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		
 		
+		/** \brief Thinking. */
+		func void think(float elapsed)
+			updateThink(elapsed)
+		end
+		
 		/** \brief Post thinking after physics processing is finished. */
 		func void postThink(float elapsed)
-			update(elapsed)
+			updatePostThink(elapsed)
 		end
 		
 		/** \brief Update. */
-		protected func void update(float elapsed)
-			if pTest == null or not pTest.getEnabled()
-				return
+		protected func void updateThink(float elapsed)
+			if pTest != null and pTest.getEnabled()
+				updateTestParameters()
 			end
-			
-			evaluateTest()
-			updateTestParameters()
+		end
+		
+		/** \brief Update post think. */
+		protected func void updatePostThink(float elapsed)
+			if pTest != null and pTest.getEnabled()
+				evaluateTest()
+			end
 		end
 		
 		/** \brief Evaluate last test. */
@@ -702,7 +752,35 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		/** \brief Update test parameters. */
 		protected func void updateTestParameters()
 			pTest.setOrigin(pOrigin)
-			pTest.setDirection(Matrix.newRotation(pRotation).transformNormal(Vector.new(0, 0, pRange)))
+			pNextTestOrigin = pOrigin
+			
+			var InputDevice device = pVRHand.getInputDevice()
+			pNextTestRotation = pRotation
+			
+			if device != null and device.getUsingHandInteraction()
+				var ECBehaviorVRHMD.Instance hmd = getVRHMD()
+				if hmd != null
+					var Matrix rayMatrix = pVRHand.getMatrixPlayspace()
+					if not pTest.getBone().empty()
+						rayMatrix = pVRHand.getComponent().getComponent()\
+							.getBoneInverseMatrix(pTest.getBone()) * rayMatrix
+					end
+					
+					var Vector rayOrigin = rayMatrix * pOrigin
+					
+					var float shift = device.getType() == InputDeviceType.vrRightHand if 0.1 else -0.1
+					var Vector hmdOrigin = hmd.getMatrixPlayspace() * Vector.new(shift, -0.2, -0.3)
+					
+					var Vector hmdRayDirection = rayOrigin - hmdOrigin
+					if hmdRayDirection.getLength() > 0.01
+						var Vector direction = rayMatrix.getInverse().transformNormal(hmdRayDirection)
+						
+						pNextTestRotation = Matrix.newVU(direction, Vector.new(0, 1, 0)).getEulerAngles()
+					end
+				end
+			end
+			
+			pTest.setDirection(Matrix.newRotation(pNextTestRotation).transformNormal(Vector.new(0, 0, pRange)))
 			
 			pListeners.forEach(block Listener each
 				each.testParametersChanged(this)

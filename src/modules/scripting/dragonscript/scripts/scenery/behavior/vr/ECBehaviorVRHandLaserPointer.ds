@@ -491,8 +491,17 @@ class ECBehaviorVRHandLaserPointer extends DefaultECBehavior
 			
 			var Collider collider = pVRHandPointAt.getVRHand().getCollider()
 			collider.detach(pei)
-			collider.attachStatic(pei, pVRHandPointAt.getOrigin(), \
-				Quaternion.newFromEuler(pVRHandPointAt.getRotation()))
+			
+			var String bone = pVRHandPointAt.getNextTestBone()
+			var Vector position = pVRHandPointAt.getNextTestOrigin()
+			var Quaternion orientation = Quaternion.newFromEuler(pVRHandPointAt.getNextTestRotation())
+			
+			if not bone.empty() and collider castable ColliderRig
+				(collider cast ColliderRig).attachBone(pei, bone, position, orientation)
+				
+			else
+				collider.attachStatic(pei, position, orientation)
+			end
 		end
 		
 		

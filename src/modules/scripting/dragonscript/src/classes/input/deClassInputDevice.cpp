@@ -518,6 +518,16 @@ void deClassInputDevice::nfGetSupportsFaceMouthExpressions::RunFunction( dsRunTi
 	rt->PushBool( device.GetDevice()->GetSupportsFaceMouthExpressions() );
 }
 
+// public func bool getUsingHandInteraction()
+deClassInputDevice::nfGetUsingHandInteraction::nfGetUsingHandInteraction(const sInitData &init) :
+dsFunction(init.clsInputDevice, "getUsingHandInteraction", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+}
+void deClassInputDevice::nfGetUsingHandInteraction::RunFunction(dsRunTime *rt, dsValue *myself){
+	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	rt->PushBool(device.GetDevice()->GetUsingHandInteraction());
+}
+
 // public func Model getVRModel()
 deClassInputDevice::nfGetVRModel::nfGetVRModel( const sInitData &init ) :
 dsFunction( init.clsInputDevice, "getVRModel", DSFT_FUNCTION,
@@ -833,6 +843,7 @@ void deClassInputDevice::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetHandRig( init ) );
 	AddFunction( new nfGetSupportsFaceEyeExpressions( init ) );
 	AddFunction( new nfGetSupportsFaceMouthExpressions( init ) );
+	AddFunction(new nfGetUsingHandInteraction(init));
 	AddFunction(new nfGetVRModel(init));
 	AddFunction(new nfGetVRSkin(init));
 	

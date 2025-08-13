@@ -467,6 +467,7 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 
 	info.SetSupportsFaceEyeExpressions( pFaceTracker );
 	info.SetSupportsFaceMouthExpressions( pFaceTracker );
+	info.SetUsingHandInteraction(!pEnableTwoFingerTriggerSimulation);
 }
 
 void deoxrDevice::UpdateParameters(){
