@@ -31,6 +31,7 @@
 #include "deClassAnimatorController.h"
 #include "deClassAnimatorInstance.h"
 #include "../math/deClassVector.h"
+#include "../math/deClassQuaternion.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -356,6 +357,44 @@ void deClassAnimatorController::nfSetRotation::RunFunction( dsRunTime *rt, dsVal
 	}
 }
 
+// public func Quaternion getOrientation()
+deClassAnimatorController::nfGetOrientation::nfGetOrientation(const sInitData &init) :
+dsFunction(init.clsAnimatorCtrl, "getOrientation", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
+}
+void deClassAnimatorController::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sAnimatorCtrlNatDat &nd = *((const sAnimatorCtrlNatDat*)p_GetNativeData(myself));
+	const deClassAnimatorController &clsAC = *((deClassAnimatorController*)GetOwnerClass());
+	const deAnimatorController &controller = nd.animator
+		? *nd.animator->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
+	
+	clsAC.GetDS().GetClassQuaternion()->PushQuaternion(rt,
+		decQuaternion::CreateFromEuler(controller.GetVector()));
+}
+
+// public func void setOrientation(Quaternion orientation)
+deClassAnimatorController::nfSetOrientation::nfSetOrientation(const sInitData &init) :
+dsFunction(init.clsAnimatorCtrl, "setOrientation", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsQuaternion); // orientation
+}
+void deClassAnimatorController::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sAnimatorCtrlNatDat &nd = *((const sAnimatorCtrlNatDat*)p_GetNativeData(myself));
+	const deClassAnimatorController &clsAC = *((deClassAnimatorController*)GetOwnerClass());
+	deAnimatorController &controller = nd.animator
+		? *nd.animator->GetControllerAt(nd.index)
+		: nd.instance->GetControllerAt(nd.index);
+	const decQuaternion orientation(clsAC.GetDS().GetClassQuaternion()->
+		GetQuaternion(rt->GetValue(0)->GetRealObject()));
+	
+	controller.SetVector(orientation.GetEulerAngles());
+	
+	if(nd.instance){
+		nd.instance->NotifyControllerChangedAt(nd.index);
+	}
+}
+
 // public func bool getFrozen()
 deClassAnimatorController::nfGetFrozen::nfGetFrozen( const sInitData &init ) :
 dsFunction( init.clsAnimatorCtrl, "getFrozen", DSFT_FUNCTION,
@@ -671,6 +710,7 @@ void deClassAnimatorController::CreateClassMembers( dsEngine *engine ){
 	init.clsObj = engine->GetClassObject();
 	
 	init.clsVector = pDS.GetClassVector();
+	init.clsQuaternion = pDS.GetClassQuaternion();
 	init.clsAnimator = pDS.GetClassAnimator();
 	init.clsAnimatorInst = pDS.GetClassAnimatorInstance();
 	
@@ -694,6 +734,8 @@ void deClassAnimatorController::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetVector( init ) );
 	AddFunction( new nfGetRotation( init ) );
 	AddFunction( new nfSetRotation( init ) );
+	AddFunction(new nfGetOrientation(init));
+	AddFunction(new nfSetOrientation(init));
 	AddFunction( new nfGetFrozen( init ) );
 	AddFunction( new nfSetFrozen( init ) );
 	AddFunction( new nfGetClamp( init ) );
