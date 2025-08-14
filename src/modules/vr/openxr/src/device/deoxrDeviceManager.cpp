@@ -164,6 +164,14 @@ void deoxrDeviceManager::CheckNotifyAttachedDetached(){
 	pOxr.GetGameEngine()->GetVRSystem()->GetEventQueue().AddEvent( event );
 }
 
+void deoxrDeviceManager::ReferenceSpaceChanged(){
+	const int count = pDevices.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		GetAt(i)->ReferenceSpaceChanged();
+	}
+}
+
 
 
 void deoxrDeviceManager::LogDevices(){

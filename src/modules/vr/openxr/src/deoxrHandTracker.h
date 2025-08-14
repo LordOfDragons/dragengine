@@ -162,6 +162,9 @@ public:
 	
 	/** Log bone poses. */
 	void LogPoseBones( const char *prefix ) const;
+	
+	/** Reference pose changed. */
+	void ReferencePoseChanged();
 	/*@}*/
 	
 	

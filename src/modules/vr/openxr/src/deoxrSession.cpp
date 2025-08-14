@@ -147,8 +147,11 @@ pPredictedDisplayTime( 0 ),
 pPredictedDisplayPeriod( 0 ),
 pShouldRender( false ),
 pFrameRunning( false ),
+pRequestCenterSpaceOrigin(false),
 pSwapchainFormats( nullptr ),
 pSwapchainFormatCount( 0 ),
+pLeftEyePose(deoxrUtils::IdentityPose()),
+pRightEyePose(deoxrUtils::IdentityPose()),
 pIsGACOpenGL( false ),
 #ifdef OS_ANDROID
 	pGACOpenGLDisplay( nullptr ),
@@ -296,9 +299,14 @@ pIsGACOpenGL( false ),
 		OXR_CHECK( instance.xrCreateSession( instance.GetInstance(), &createInfo, &pSession ) );
 		
 		// create spaces
-		pSpaceStage.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_STAGE ) );
-		pSpaceView.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_VIEW ) );
-		pSpaceLocal.TakeOver( new deoxrSpace( *this, XR_REFERENCE_SPACE_TYPE_LOCAL ) );
+		pSpaceStageOrigin.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_STAGE));
+		pSpaceView.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_VIEW));
+		pSpaceLocalOrigin.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_LOCAL));
+		
+		pMainSpaceOrigin = pSpaceStageOrigin;
+		// pMainSpaceOrigin = pSpaceLocalOrigin;
+		
+		pCreateSpaces();
 		
 		// enumerate swapchain formats
 		pEnumSwapchainFormats();
@@ -355,6 +363,7 @@ void deoxrSession::Begin(){
 	beginInfo.primaryViewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 	
 	OXR_CHECK( instance.xrBeginSession( pSession, &beginInfo ) );
+	// pRequestCenterSpaceOrigin = true;
 	
 	pRunning = true;
 }
@@ -439,6 +448,11 @@ void deoxrSession::WaitFrame(){
 	pPredictedDisplayTime = state.predictedDisplayTime;
 	pPredictedDisplayPeriod = state.predictedDisplayPeriod;
 	pShouldRender = state.shouldRender;
+	
+	if(pRequestCenterSpaceOrigin){
+		pRequestCenterSpaceOrigin = false;
+		CenterSpaceOrigin(pPredictedDisplayTime);
+	}
 }
 
 void deoxrSession::BeginFrame(){
@@ -466,7 +480,7 @@ void deoxrSession::BeginFrame(){
 	memset( &viewLocateInfo, 0, sizeof( viewLocateInfo ) );
 	viewLocateInfo.type = XR_TYPE_VIEW_LOCATE_INFO;
 	viewLocateInfo.displayTime = pPredictedDisplayTime;
-	viewLocateInfo.space = pSpaceStage->GetSpace();
+	viewLocateInfo.space = pMainSpace->GetSpace();
 	viewLocateInfo.viewConfigurationType = XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;
 	
 	uint32_t viewCount;
@@ -497,17 +511,19 @@ void deoxrSession::BeginFrame(){
 	
 	// locate hmd
 	if( pPredictedDisplayTime > 0 ){
-		pSpaceView->LocateSpace( pSpaceStage, pPredictedDisplayTime,
+		pSpaceView->LocateSpace( pMainSpace, pPredictedDisplayTime,
 			pHeadPosition, pHeadOrientation, pHeadLinearVelocity, pHeadAngularVelocity );
 		
 		/*
-		instance.GetOxr().LogInfoFormat( "Locate HMD: pos=(%g,%g,%g) rot=(%g,%g,%g) lv=(%g,%g,%g) av=(%g,%g,%g)",
-			pHeadMatrix.GetPosition().x, pHeadMatrix.GetPosition().y, pHeadMatrix.GetPosition().z,
-			pHeadMatrix.GetEulerAngles().x * RAD2DEG, pHeadMatrix.GetEulerAngles().y * RAD2DEG,
-				pHeadMatrix.GetEulerAngles().z * RAD2DEG,
+		instance.GetOxr().LogInfoFormat(
+			"Locate HMD: pos=(%g,%g,%g) rot=(%g,%g,%g) lv=(%g,%g,%g) av=(%g,%g,%g)",
+			pHeadPosition.x, pHeadPosition.y, pHeadPosition.z,
+			pHeadOrientation.GetEulerAngles().x * RAD2DEG,
+			pHeadOrientation.GetEulerAngles().y * RAD2DEG,
+			pHeadOrientation.GetEulerAngles().z * RAD2DEG,
 			pHeadLinearVelocity.x, pHeadLinearVelocity.y, pHeadLinearVelocity.z,
 			pHeadAngularVelocity.x * RAD2DEG, pHeadAngularVelocity.y * RAD2DEG,
-				pHeadAngularVelocity.z * RAD2DEG );
+				pHeadAngularVelocity.z * RAD2DEG);
 		*/
 		
 		// calculate eye matrices transforming from camera space to eye space. we have to do
@@ -614,7 +630,7 @@ void deoxrSession::EndFrame(){
 	
 	layerProjection.type = XR_TYPE_COMPOSITION_LAYER_PROJECTION;
 // 	layerProjection.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
-	layerProjection.space = pSpaceStage->GetSpace();
+	layerProjection.space = pMainSpace->GetSpace();
 	layerProjection.viewCount = 2;
 	layerProjection.views = views;
 	layers[ layerCount++ ] = ( const XrCompositionLayerBaseHeader* )&layerProjection;
@@ -681,6 +697,41 @@ void deoxrSession::UpdateLeftEyeHiddenMesh(){
 void deoxrSession::UpdateRightEyeHiddenMesh(){
 	pRightEyeHiddenMesh->SetFov( pRightEyeFov );
 	pRightEyeHiddenMesh->UpdateModel();
+}
+
+void deoxrSession::SetSpaceOriginPose(const decMatrix &pose){
+	const decVector p(pose.GetPosition());
+	const decVector r(pose.GetEulerAngles() * RAD2DEG);
+	pSystem.GetInstance().GetOxr().LogInfoFormat(
+		"Set space origin pose: position=(%f,%f,%f) orientation=(%f,%f,%f)",
+		p.x, p.y, p.z, r.x, r.y, r.z);
+	
+	pSpaceOriginPose = pose;
+	pCreateSpaces();
+	
+	pSystem.GetInstance().GetOxr().GetDevices().ReferenceSpaceChanged();
+}
+
+void deoxrSession::CenterSpaceOrigin(XrTime timeOffset){
+	decVector position;
+	decQuaternion orientation;
+	pSpaceView->LocateSpace(pMainSpaceOrigin, timeOffset, position, orientation);
+	
+	{
+	const decVector r(orientation.GetEulerAngles() * RAD2DEG);
+	pSystem.GetInstance().GetOxr().LogInfoFormat(
+		"Center space origin: position=(%f,%f,%f) orientation=(%f,%f,%f)",
+		position.x, position.y, position.z, r.x, r.y, r.z);
+	}
+	
+	position.y = 0.0f;
+	orientation.SetFromEulerY(orientation.GetEulerAngles().y);
+	
+	SetSpaceOriginPose(decMatrix::CreateWorld(position, orientation)/*.QuickInvert()*/);
+}
+
+void deoxrSession::RequestCenterSpaceOrigin(){
+	pRequestCenterSpaceOrigin = true;
 }
 
 void deoxrSession::RestoreOpenGLCurrent(){
@@ -814,4 +865,12 @@ void deoxrSession::pDebugPrintActiveProfilePath(const deoxrPath &path, const cha
 	}
 	
 	oxr.LogInfoFormat("Interaction profile '%s': -", name);
+}
+
+void deoxrSession::pCreateSpaces(){
+	pSpaceStage.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_STAGE, pSpaceOriginPose));
+	pSpaceLocal.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_LOCAL, pSpaceOriginPose));
+	// pSpaceLocal.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_LOCAL_FLOOR));
+	
+	pMainSpace = pMainSpaceOrigin == pSpaceStageOrigin ? pSpaceStage : pSpaceLocal;
 }

@@ -306,6 +306,16 @@ public:
 	
 	/** Set transparency of user environment presented inside the rendered world. */
 	virtual void SetPassthroughTransparency( float transparency );
+	
+	/**
+	 * \brief Center playspace with forward direction matching looking direction.
+	 * \version 1.28
+	 * 
+	 * Playspace is not automatically centered after starting the VR runtime. Call this function
+	 * any time later to center the playspace, for example if the player adjusted seating position
+	 * or if the VR runtime uses a broken playspace orientation.
+	 */
+	virtual void CenterPlayspace();
 	/*@}*/
 	
 	

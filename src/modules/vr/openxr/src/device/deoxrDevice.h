@@ -351,6 +351,9 @@ public:
 
 	/** Direct device pose access for internal use. */
 	inline const deInputDevicePose &GetDirectDevicePose() const{ return pPoseDevice; }
+	
+	/** Reference space changed. */
+	void ReferenceSpaceChanged();
 	/*@}*/
 };
 

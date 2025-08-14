@@ -165,6 +165,19 @@ fixed class VRSystem
 	 */
 	static func void setPassthroughTransparency(float transparency)
 	end
+	
+	/**
+	 * \brief Center playspace with forward direction matching looking direction.
+	 * \version 1.28
+	 * 
+	 * Has no effect if runtime is not running.
+	 * 
+	 * Playspace is not automatically centered after starting the VR runtime. Call this function
+	 * any time later to center the playspace, for example if the player adjusted seating position
+	 * or if the VR runtime uses a broken playspace orientation.
+	 */
+	static func void centerPlayspace()
+	end
 	/*@}*/
 	
 	

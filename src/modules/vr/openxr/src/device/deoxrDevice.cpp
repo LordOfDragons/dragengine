@@ -519,7 +519,7 @@ void deoxrDevice::TrackStates(){
 					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
 				
 			}else{
-				pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
+				pSpacePose->LocateSpace( session.GetMainSpace(), session.GetPredictedDisplayTime(),
 					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
 				
 				if( pActionPoseOrientation && pSpacePoseOrientation ){
@@ -534,7 +534,7 @@ void deoxrDevice::TrackStates(){
 					if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
 					&& state.isActive == XR_TRUE ){
 						decVector ignore;
-						pSpacePoseOrientation->LocateSpace( session.GetSpace(),
+						pSpacePoseOrientation->LocateSpace( session.GetMainSpace(),
 							session.GetPredictedDisplayTime(), ignore, pPoseOrientation );
 					}
 				}
@@ -604,4 +604,10 @@ void deoxrDevice::ResetStates(){
 
 void deoxrDevice::GetDevicePose( deInputDevicePose &pose ){
 	pose = pPoseDevice;
+}
+
+void deoxrDevice::ReferenceSpaceChanged(){
+	if(pHandTracker){
+		pHandTracker->ReferencePoseChanged();
+	}
 }

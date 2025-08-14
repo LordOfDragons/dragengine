@@ -63,6 +63,9 @@ void deBaseVRModule::SetEnablePassthrough( bool ){
 void deBaseVRModule::SetPassthroughTransparency( float ){
 }
 
+void deBaseVRModule::CenterPlayspace(){
+}
+
 float deBaseVRModule::GetDeviceFaceExpression( int, int ){
 	return 0.0f;
 }

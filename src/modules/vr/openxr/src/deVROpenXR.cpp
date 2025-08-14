@@ -415,6 +415,12 @@ void deVROpenXR::SetPassthroughTransparency( float transparency ){
 	}
 }
 
+void deVROpenXR::CenterPlayspace(){
+	if(pSession){
+		pSession->RequestCenterSpaceOrigin();
+	}
+}
+
 
 
 // Devices
@@ -630,7 +636,7 @@ void deVROpenXR::ProcessEvents(){
 			
 		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
 			const XrEventDataViveTrackerConnectedHTCX &connected =
-				( XrEventDataViveTrackerConnectedHTCX& )event;
+				(const XrEventDataViveTrackerConnectedHTCX&)event;
 			const deoxrPath path( pInstance, connected.paths->persistentPath );
 			const deoxrPath pathRole( pInstance, connected.paths->rolePath );
 			LogInfoFormat( "VIVE Tracker Connected Event, updating devices: path='%s' rolePath='%s'",
@@ -640,6 +646,36 @@ void deVROpenXR::ProcessEvents(){
 			if(pSession){
 				pSession->DebugPrintActiveProfilePath();
 			}
+			}break;
+			
+		case XR_TYPE_EVENT_DATA_REFERENCE_SPACE_CHANGE_PENDING:{
+			if(!pSession){
+				break;
+			}
+			
+			const XrEventDataReferenceSpaceChangePending &data =
+				(const XrEventDataReferenceSpaceChangePending&)event;
+			if(data.session != pSession->GetSession()){
+				break;
+			}
+			
+			LogInfoFormat("Reference space changed: type=%d changeTime=%d poseValid=%d",
+				data.referenceSpaceType, (int)data.changeTime, data.poseValid);
+			
+			if(data.referenceSpaceType != XR_REFERENCE_SPACE_TYPE_STAGE
+			&& data.referenceSpaceType != XR_REFERENCE_SPACE_TYPE_LOCAL){
+				break;
+			}
+			
+			/*
+			if(data.poseValid == XR_TRUE){
+				pSession->SetSpaceOriginPose(data.poseInPreviousSpace);
+				
+			}else{
+				
+			}
+			*/
+			pSession->RequestCenterSpaceOrigin();
 			}break;
 			
 		default:

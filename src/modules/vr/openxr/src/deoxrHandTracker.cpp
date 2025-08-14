@@ -182,7 +182,7 @@ pMapBoneXrToDeCount( 0 )
 		// to be always reported in world space instead of the space we tell it to use
 		memset( &pLocateInfo, 0, sizeof( pLocateInfo ) );
 		pLocateInfo.type = XR_TYPE_HAND_JOINTS_LOCATE_INFO_EXT;
-		pLocateInfo.baseSpace = session.GetSpace()->GetSpace();
+		pLocateInfo.baseSpace = session.GetMainSpace()->GetSpace();
 		
 		memset( &pLocations, 0, sizeof( pLocations ) );
 		pLocations.type = XR_TYPE_HAND_JOINT_LOCATIONS_EXT;
@@ -390,6 +390,10 @@ void deoxrHandTracker::LogPoseBones(const char *prefix) const{
 			" lv=(% 3.1f,% 3.1f,% 3.1f) av=(% 3f,% 3f,% 3f)",
 			prefix, i, p.x, p.y, p.z, o.x, o.y, o.z, lv.x, lv.y, lv.z, av.x, av.y, av.z);
 	}
+}
+
+void deoxrHandTracker::ReferencePoseChanged(){
+	pLocateInfo.baseSpace = pSession.GetMainSpace()->GetSpace();
 }
 
 

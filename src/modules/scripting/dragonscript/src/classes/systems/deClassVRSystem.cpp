@@ -230,6 +230,16 @@ void deClassVRSystem::nfSetPassthroughTransparency::RunFunction( dsRunTime *rt, 
 	ds.GetGameEngine()->GetVRSystem()->SetPassthroughTransparency( rt->GetValue( 0 )->GetFloat() );
 }
 
+// static func void centerPlayspace()
+deClassVRSystem::nfCenterPlayspace::nfCenterPlayspace(const sInitData &init) :
+dsFunction(init.clsVRSystem, "centerPlayspace", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+}
+void deClassVRSystem::nfCenterPlayspace::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	ds.GetGameEngine()->GetVRSystem()->CenterPlayspace();
+}
+
 
 
 // public static func int getDeviceCount()
@@ -570,6 +580,7 @@ void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnablePassthrough( init ) );
 	AddFunction( new nfGetPassthroughTransparency( init ) );
 	AddFunction( new nfSetPassthroughTransparency( init ) );
+	AddFunction(new nfCenterPlayspace(init));
 	
 	AddFunction( new nfGetDeviceCount( init ) );
 	AddFunction( new nfGetDeviceAt( init ) );
