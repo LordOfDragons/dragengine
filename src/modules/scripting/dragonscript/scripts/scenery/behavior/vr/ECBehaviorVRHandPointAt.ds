@@ -754,10 +754,9 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pTest.setOrigin(pOrigin)
 			pNextTestOrigin = pOrigin
 			
-			var InputDevice device = pVRHand.getInputDevice()
 			pNextTestRotation = pRotation
 			
-			if device != null and device.getUsingHandInteraction()
+			if pVRHand.isUsingHandInteraction()
 				var ECBehaviorVRHMD.Instance hmd = getVRHMD()
 				if hmd != null
 					var Matrix rayMatrix = pVRHand.getMatrixPlayspace()
@@ -768,7 +767,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 					
 					var Vector rayOrigin = rayMatrix * pOrigin
 					
-					var float shift = device.getType() == InputDeviceType.vrRightHand if 0.1 else -0.1
+					var float shift = pVRHand.isRightHand() if 0.1 else -0.1
 					var Vector hmdOrigin = hmd.getMatrixPlayspace() * Vector.new(shift, -0.2, -0.1)
 					
 					var Vector hmdRayDirection = rayOrigin - hmdOrigin

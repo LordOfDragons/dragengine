@@ -467,7 +467,17 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 
 	info.SetSupportsFaceEyeExpressions( pFaceTracker );
 	info.SetSupportsFaceMouthExpressions( pFaceTracker );
-	info.SetUsingHandInteraction(!pEnableTwoFingerTriggerSimulation);
+	
+	switch(pType){
+	case deInputDevice::edtVRRightHand:
+	case deInputDevice::edtVRLeftHand:
+		info.SetUsingHandInteraction(!pEnableTwoFingerTriggerSimulation);
+		break;
+		
+	default:
+		info.SetUsingHandInteraction(false);
+		break;
+	}
 }
 
 void deoxrDevice::UpdateParameters(){

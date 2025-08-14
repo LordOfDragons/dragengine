@@ -283,8 +283,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		var Model pCustomModel
 		var Skin pCustomSkin
 		var Rig pCustomRig
-		var bool pUseVendorModel
-		var bool pShowHand
+		var bool pUseVendorModel, pShowHand
 		var InputDevice pInputDevice
 		var Vector pPosition
 		var Quaternion pOrientation
@@ -505,6 +504,15 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		/** \brief Controller is detached. */
 		func bool isDetached()
 			return pInputDevice == null
+		end
+		
+		/**
+		 * \brief Controller is right hand.
+		 * \version 1.28
+		 * \returns true if controller is right hand, false if left hand.
+		 */
+		func bool isRightHand()
+			return pECBehavior.getInputDeviceType() == InputDeviceType.vrRightHand
 		end
 		
 		/**
@@ -729,10 +737,20 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		 * device is present and the type is InputDeviceType.vrRightHand .
 		 */
 		func void updateDebugPanelPosition()
-			if pInputDevice != null and pInputDevice.getType() == InputDeviceType.vrRightHand
+			if pInputDevice != null and pECBehavior.getInputDeviceType() == InputDeviceType.vrRightHand
 				var DMatrix matrix = DMatrix.newWorld(DVector.new(pDebugPanelPosition), pDebugPanelOrientation) * getMatrix()
 				GraphicSystem.setVRDebugPanelPosition(matrix.getPosition(), matrix.toQuaternion())
 			end
+		end
+		
+		/**
+		 * \brief Input device is using hand interaction.
+		 * \version 1.28
+		 * \returns true if input device is present and \ref InputDevice#getUsingHandInteraction()
+		 *          returns true
+		 */
+		func bool isUsingHandInteraction()
+			return pInputDevice != null and pInputDevice.getUsingHandInteraction()
 		end
 		
 		
