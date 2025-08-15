@@ -288,7 +288,6 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		
 		var ECBehaviorVRHandPointAt pECBehavior
 		var ECBehaviorVRHand.Instance pVRHand
-		var ECBehaviorVRHMD.Instance pVRHMD
 		
 		var bool pEnabled
 		var ShapeList pShape
@@ -326,7 +325,6 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		func void dispose()
 			pTest = null
 			pVRHand = null
-			pVRHMD = null
 			pPointAtElement = null
 			pListeners = null
 			pBTSMs = null
@@ -412,17 +410,6 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 		/** \brief VR Hand behavior instance. */
 		func ECBehaviorVRHand.Instance getVRHand()
 			return pVRHand
-		end
-		
-		/**
-		 * \brief VR HMD behavior instance.
-		 * \version 1.28
-		 */
-		func ECBehaviorVRHMD.Instance getVRHMD()
-			if pVRHMD == null
-				pVRHMD = ECBehaviorVRHMD.getInstanceIn(getElement())
-			end
-			return pVRHMD
 		end
 		
 		
@@ -757,7 +744,7 @@ class ECBehaviorVRHandPointAt extends DefaultECBehavior
 			pNextTestRotation = pRotation
 			
 			if pVRHand.isUsingHandInteraction()
-				var ECBehaviorVRHMD.Instance hmd = getVRHMD()
+				var ECBehaviorVRHMD.Instance hmd = pVRHand.getVRHMD()
 				if hmd != null
 					var Matrix rayMatrix = pVRHand.getMatrixPlayspace()
 					if not pTest.getBone().empty()

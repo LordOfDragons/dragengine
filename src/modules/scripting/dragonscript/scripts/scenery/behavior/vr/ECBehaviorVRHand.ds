@@ -276,9 +276,9 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		end
 		
 		
-		
 		var ECBehaviorVRHand pECBehavior
 		var ECBehaviorVRPlayspace.Instance pVRPlayspace
+		var ECBehaviorVRHMD.Instance pVRHMD
 		var ECBehaviorComponent.Instance pComponent
 		var Model pCustomModel
 		var Skin pCustomSkin
@@ -287,8 +287,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		var InputDevice pInputDevice
 		var Vector pPosition
 		var Quaternion pOrientation
-		var Vector pLinearVelocity
-		var Vector pAngularVelocity
+		var Vector pLinearVelocity, pAngularVelocity
 		var Array pListeners
 		var AttachDetachListener pAttachDetachListener
 		var Collider pCollider
@@ -335,6 +334,7 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			pListeners = null
 			pComponent = null
 			pVRPlayspace = null
+			pVRHMD = null
 			pBTSMs = null
 			super.dispose()
 		end
@@ -426,6 +426,17 @@ class ECBehaviorVRHand extends DefaultECBehavior
 		/** \brief VR Playspace. */
 		func ECBehaviorVRPlayspace.Instance getVRPlayspace()
 			return pVRPlayspace
+		end
+		
+		/**
+		 * \brief VR HMD behavior instance.
+		 * \version 1.28
+		 */
+		func ECBehaviorVRHMD.Instance getVRHMD()
+			if pVRHMD == null
+				pVRHMD = ECBehaviorVRHMD.getInstanceIn(getElement())
+			end
+			return pVRHMD
 		end
 		
 		/** \brief Component behavior instance. */
@@ -523,6 +534,43 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			return pCollider
 		end
 		
+		/**
+		 * \brief Hand is facing user.
+		 * \version 1.28
+		 * 
+		 * Same as \ref #isFacingUser(float) with angle threshold 45.
+		 */
+		func bool isFacingUser()
+			return isFacingUser(45)
+		end
+		
+		/**
+		 * \brief Hand is facing user.
+		 * \version 1.28
+		 * \param angle Angle threshold in degrees. A good value is 45.
+		 * 
+		 * Compares the direction emerging from the palm center along the front side of the hand
+		 * with the direction from the hand palm to the headset origin. If the angle in degrees
+		 * between these two directions is less than \ref #getHandFaceUserAngle() then the hand
+		 * is considered facing the user. This is typically used to ensure certain finger input
+		 * can not be triggered by accident. This function only checks the orientation of the
+		 * hand not if it is inside the view of the user.
+		 */
+		func bool isFacingUser(float angle)
+			var Matrix matrix = getMatrixPlayspace() * getVRHMD().getInverseMatrixPlayspace()
+			
+			var Vector targetDirection = -matrix.getPosition()
+			if targetDirection.getLength() < 0.01
+				return false
+			end
+			
+			var Vector direction = matrix.getRightVector()
+			if isRightHand()
+				direction = -direction
+			end
+			
+			return DEMath.acos(direction * targetDirection.normalize()) < angle
+		end
 		
 		
 		/**
@@ -939,7 +987,6 @@ class ECBehaviorVRHand extends DefaultECBehavior
 			pCollider.getAngularVelocity().writeToFile(writer)
 		end
 	end
-	
 	
 	
 	var InputDeviceType pInputDeviceType
