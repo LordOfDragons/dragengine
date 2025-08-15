@@ -84,5 +84,13 @@ void deoxrUtils::Convert(const decMatrix &matrix, XrPosef &pose){
 }
 
 XrPosef deoxrUtils::IdentityPose(){
-	return {orientation: {0.0f, 0.0f, 0.f, 1.0f}, position: {0.0f, 0.0f, 0.0f}};
+	XrPosef pose;
+	pose.orientation.x = 0.0f;
+	pose.orientation.y = 0.0f;
+	pose.orientation.z = 0.0f;
+	pose.orientation.w = 1.0f;
+	pose.position.x = 0.0f;
+	pose.position.y = 0.0f;
+	pose.position.z = 0.0f;
+	return pose;
 }
