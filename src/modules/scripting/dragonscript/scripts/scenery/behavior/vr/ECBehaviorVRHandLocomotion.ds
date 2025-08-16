@@ -301,6 +301,9 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 						
 					elif value.equals("turnMove")
 						pInstance.setCommandsTurnMove()
+						
+					elif value.equals("clear")
+						pInstance.clearCommands()
 					end
 				end
 				
