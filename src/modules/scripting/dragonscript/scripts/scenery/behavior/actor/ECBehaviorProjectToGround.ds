@@ -427,6 +427,15 @@ class ECBehaviorProjectToGround extends DefaultECBehavior
 		/** \brief Set if projecting to ground is enabled. */
 		func void setEnabled(bool enabled)
 			if enabled == pTest.getEnabled()
+				// if setEnabled(false) is called before the first think()/postThink() happens
+				// pTest.getEnabled() is false but pTouchesGround is true due to init(). this
+				// can cause problems as outlined below. hence if enabled is false force
+				// pTouchesGround to false
+				if not enabled
+					pTouchSensor.setEnabled(false)
+					setTouchesGround(false)
+					setRequiresThink(false)
+				end
 				return
 			end
 			
