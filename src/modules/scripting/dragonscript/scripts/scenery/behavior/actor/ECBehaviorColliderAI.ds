@@ -360,6 +360,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		func new(ECBehaviorColliderAI ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
+			pEnabled = true
 			
 			pBaseCollider = ecbehavior.getBaseCollider().instance(element)
 		end
