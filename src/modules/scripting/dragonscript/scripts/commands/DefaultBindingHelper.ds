@@ -54,13 +54,8 @@ pin Dragengine.Scenery
 class DefaultBindingHelper
 	var BindingManager pBindingManager
 	var CommandManager pCommandManager
-	var Array pAxisBindings
-	var Array pButtonBindings
-	var InputDevice pMouse
-	var InputDevice pKeyboard
-	var InputDevice pGamepad
-	var InputDevice pVRLeftHand
-	var InputDevice pVRRightHand
+	var Array pAxisBindings, pButtonBindings
+	var InputDevice pMouse, pKeyboard, pGamepad, pVRLeftHand, pVRRightHand
 	
 	
 	
@@ -172,7 +167,7 @@ class DefaultBindingHelper
 		if pGamepad != null
 			updateBindingManager(pGamepad)
 		end
-		if pVRLeftHand != null
+		if pVRRightHand != null
 			updateBindingManager(pVRRightHand)
 		end
 		if pVRLeftHand != null
@@ -405,7 +400,7 @@ class DefaultBindingHelper
 		end
 		
 		addButtonBinding(Binding.new(pKeyboard.getID(),\
-			pKeyboard.getButtonAt(index).getID(), cmd, false))
+			pKeyboard.getButtonAt(index).getID(), cmd))
 		return true
 	end
 	
@@ -437,7 +432,7 @@ class DefaultBindingHelper
 		end
 		
 		addButtonBinding(Binding.new(pKeyboard.getID(),\
-			pKeyboard.getButtonAt(index).getID(), cmd, false))
+			pKeyboard.getButtonAt(index).getID(), cmd))
 		return true
 	end
 	
@@ -466,7 +461,7 @@ class DefaultBindingHelper
 		end
 		
 		addButtonBinding(Binding.new(pKeyboard.getID(),\
-			pKeyboard.getButtonAt(index).getID(), cmd, false))
+			pKeyboard.getButtonAt(index).getID(), cmd))
 		return true
 	end
 	
@@ -497,7 +492,7 @@ class DefaultBindingHelper
 			return false
 		end
 		
-		addButtonBinding(Binding.new(pKeyboard.getID(), pKeyboard.getButtonAt(index).getID(), cmd, false))
+		addButtonBinding(Binding.new(pKeyboard.getID(), pKeyboard.getButtonAt(index).getID(), cmd))
 		return true
 	end
 	
@@ -799,6 +794,54 @@ class DefaultBindingHelper
 		end).getCount() > 0
 	end
 	
+	/**
+	 * \brief Bind command to VR hand interaction two finger trigger.
+	 * \version 1.28
+	 * \param rightHand True for right hand otherwise left hand.
+	 * \param finger Finger index (0=index, 1=middle, 2=ring, 3=pinky).
+	 * \param facingUser True to activate binding only if hand faces user.
+	 * \param command Name of command to bind to button or null.
+	 * \returns true if vrLeftHand is present and command has been bound.
+	 */
+	func bool vrHandBindTwoFingerTrigger(bool rightHand, int finger, bool facingUser, String command)
+		if finger < 0 or finger > 3
+			throw EInvalidParam.new("finger not in range 0..3")
+		end
+		
+		if command == null
+			return false
+		end
+		
+		var Command cmd = pCommandManager.getNamed(command)
+		if cmd == null
+			return false
+		end
+		
+		return getAllVRHands(rightHand).collect(block InputDevice device
+			var int i, number, count = device.getButtonCount()
+			var InputDeviceButton idbutton
+			var Binding binding
+			
+			for i = 0 to count
+				idbutton = device.getButtonAt(i)
+				if idbutton.getType() != InputDeviceButtonType.twoFingerTrigger
+					continue
+				end
+				
+				if number == finger
+					binding = Binding.new(device.getID(), idbutton.getID(), cmd)
+					binding.setVRHandFacingUser(facingUser)
+					addButtonBinding(binding)
+					return true
+				end
+				
+				number++
+			end
+			
+			return false
+		end).getCount() > 0
+	end
+	
 	/*@}*/
 	
 	
@@ -824,8 +867,7 @@ class DefaultBindingHelper
 			return false
 		end
 		
-		addAxisBinding(Binding.new(device.getID(),\
-			device.getAxisAt(axis).getID(), cmd, false))
+		addAxisBinding(Binding.new(device.getID(), device.getAxisAt(axis).getID(), cmd))
 		return true
 	end
 	
@@ -847,7 +889,7 @@ class DefaultBindingHelper
 			return false
 		end
 		
-		addButtonBinding(Binding.new(device.getID(), device.getButtonAt(button).getID(), cmd, false))
+		addButtonBinding(Binding.new(device.getID(), device.getButtonAt(button).getID(), cmd))
 		return true
 	end
 	
@@ -881,7 +923,7 @@ class DefaultBindingHelper
 			end
 			
 			if number == button
-				addButtonBinding(Binding.new(device.getID(), idbutton.getID(), cmd, false))
+				addButtonBinding(Binding.new(device.getID(), idbutton.getID(), cmd))
 				return true
 			end
 			
@@ -937,7 +979,7 @@ class DefaultBindingHelper
 				if pull != null
 					var Command command = pCommandManager.getNamed(pull)
 					if command != null
-						addAxisBinding(Binding.new(device.getID(), axis.getID(), command, false))
+						addAxisBinding(Binding.new(device.getID(), axis.getID(), command))
 						if pull.equals(release)
 							release = null
 						end
@@ -1132,9 +1174,7 @@ class DefaultBindingHelper
 	
 	/** \brief Find first mouse, keyboard and gamepad input device. */
 	protected func void findFirstDevices()
-		pMouse = null
-		pKeyboard = null
-		pGamepad = null
+		pMouse = pKeyboard = pGamepad = pVRRightHand = pVRLeftHand = null
 		
 		pBindingManager.forEachDevice(block InputDevice each
 			select each.getType()

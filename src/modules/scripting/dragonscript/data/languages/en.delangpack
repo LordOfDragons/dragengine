@@ -106,6 +106,10 @@ Do you want to re-assign?</translation>
 	<translation name='UI.Command.MenuRight.Description'>Menu right hand.</translation>
 	<translation name='UI.Command.MenuLeft.DisplayName'>Menu Left Hand</translation>
 	<translation name='UI.Command.MenuLeft.Description'>Menu left hand.</translation>
+	<translation name='UI.Command.HandLocomotionRight.DisplayName'>Right Hand Locomotion</translation>
+	<translation name='UI.Command.HandLocomotionRight.Description'>Right hand locomotion.</translation>
+	<translation name='UI.Command.HandLocomotionLeft.DisplayName'>Left Hand Locomotion</translation>
+	<translation name='UI.Command.HandLocomotionLeft.Description'>Left hand locomotion.</translation>
 	<translation name='UI.EditBinding.DeleteBinding.ToolTip'>Delete binding</translation>
 	<translation name='UI.EditBinding.AddBinding.ToolTip'>Add binding</translation>
 	<translation name='UI.Modifications'>Modifications</translation>

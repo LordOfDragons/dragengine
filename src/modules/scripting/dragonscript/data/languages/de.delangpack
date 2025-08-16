@@ -106,6 +106,10 @@ Neu zuweisen?</translation>
 	<translation name='UI.Command.MenuRight.Description'>Menu anzeigen mit der rechten Hand.</translation>
 	<translation name='UI.Command.MenuLeft.DisplayName'>Menu linke Hand</translation>
 	<translation name='UI.Command.MenuLeft.Description'>Menu anzeigen mit der linken Hand.</translation>
+	<translation name='UI.Command.HandLocomotionRight.DisplayName'>Rechte Hand Bewegen</translation>
+	<translation name='UI.Command.HandLocomotionRight.Description'>Bewegen mit rechter Hand Geste.</translation>
+	<translation name='UI.Command.HandLocomotionLeft.DisplayName'>Linke Hand Bewegen</translation>
+	<translation name='UI.Command.HandLocomotionLeft.Description'>Bewegen mit linker Hand Geste.</translation>
 	<translation name='UI.EditBinding.DeleteBinding.ToolTip'>Steuerung löschen</translation>
 	<translation name='UI.EditBinding.AddBinding.ToolTip'>Steuerung hinzufügen</translation>
 	<translation name='UI.Modifications'>Modifikationen</translation>

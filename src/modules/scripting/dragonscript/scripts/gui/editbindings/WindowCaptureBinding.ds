@@ -45,8 +45,7 @@ public class WindowCaptureBinding extends WindowDialog
 	public class CaptureResult
 		var EditBindingsListModelEntry.InputSource pInputSource
 		var InputEventSource pSystem
-		var int pDeviceIndex
-		var int pSourceIndex
+		var int pDeviceIndex, pSourceIndex
 		var bool pInverseAxis
 		
 		/**

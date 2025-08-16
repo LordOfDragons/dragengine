@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Commands
 
 
@@ -33,31 +32,34 @@ namespace Dragengine.Commands
  * For quicker access the device and button index are used.
  */
 class Binding
-	var String pDeviceID
-	var String pSourceID
+	var String pDeviceID, pSourceID
 	var Command pCommand
-	var bool pInverseAxis
 	var InputEventSource pSystem
-	var int pDeviceIndex
-	var int pSourceIndex
-	var bool pSimulateAxisPressed
+	var int pDeviceIndex, pSourceIndex
+	var bool pInverseAxis, pSimulateAxisPressed, pVRHandFacingUser
+	var float pDeadzone, pLinearity, pLinearityFactor
 	
 	
-	
-	/** \brief Create binding. */
-	func new(String deviceID, String sourceID, Command command, bool inverseAxis)
+	/**
+	 * \brief Create binding.
+	 * \version 1.28
+	 */
+	func new(String deviceID, String sourceID, Command command)
 		if deviceID == null or sourceID == null or command == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new()
 		end
 		
 		pDeviceID = deviceID
 		pSourceID = sourceID
 		pCommand = command
+		pDeviceIndex = pSourceIndex = -1
+		pLinearityFactor = 1
+	end
+	
+	/** \brief Create binding. */
+	func new(String deviceID, String sourceID, Command command, bool inverseAxis)\
+	this(deviceID, sourceID, command)
 		pInverseAxis = inverseAxis
-		pSystem = null
-		pDeviceIndex = -1
-		pSourceIndex = -1
-		pSimulateAxisPressed = false
 	end
 	
 	/** \brief Create copy of binding. */
@@ -70,16 +72,19 @@ class Binding
 		pDeviceIndex = binding.pDeviceIndex
 		pSourceIndex = binding.pSourceIndex
 		pSimulateAxisPressed = false
+		pVRHandFacingUser = binding.pVRHandFacingUser
+		pDeadzone = binding.pDeadzone
+		pLinearity = binding.pLinearity
+		pLinearityFactor = binding.pLinearityFactor
 	end
 	
 	/** \brief Create copy of binding with different command. */
 	func new(Binding binding, Command command) this(binding)
 		if command == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new()
 		end
 		pCommand = command
 	end
-	
 	
 	
 	/** \brief Input device identifier*/
@@ -97,11 +102,118 @@ class Binding
 		return pCommand
 	end
 	
+	
 	/** \brief Inverse axis. */
 	func bool getInverseAxis()
 		return pInverseAxis
 	end
 	
+	/**
+	 * \brief Set inverse axis.
+	 * \version 1.28
+	 */
+	func void setInverseAxis(bool inverseAxis)
+		pInverseAxis = inverseAxis
+	end
+	
+	/**
+	 * \brief VR hand has to face user.
+	 * \version 1.28
+	 */
+	func bool getVRHandFacingUser()
+		return pVRHandFacingUser
+	end
+	
+	/**
+	 * \brief Set VR hand has to face user.
+	 * \version 1.28
+	 */
+	func void setVRHandFacingUser(bool facingUser)
+		pVRHandFacingUser = facingUser
+	end
+	
+	/**
+	 * \brief Deadzone as percentage of range (0..1).
+	 * \version 1.28
+	 * 
+	 * For use with absolute axis input in the range from -1 to 1 or 0 to 1.
+	 */
+	func float getDeadzone()
+		return pDeadzone
+	end
+	
+	/**
+	 * \brief Set deadzone as percentage of range (0..1).
+	 * \version 1.28
+	 * 
+	 * For use with absolute axis input in the range from -1 to 1 or 0 to 1.
+	 */
+	func void setDeadzone(float deadzone)
+		pDeadzone = DEMath.clamp(deadzone, 0.0, 1.0)
+	end
+	
+	/**
+	 * \brief Linearity of input.
+	 * \version 1.28
+	 * 
+	 * Value of 0 is linear input. Values up to 1 map larger input range to small movement.
+	 * Values down to -1 map larger input range to larger movement. 0 is the default.
+	 * 
+	 * Linearity is calculated like this:
+	 * 
+	 * | Linearity | Mapped value (x=input) |
+	 * | --- | --- |
+	 * | 0 | x |
+	 * | 1/3 | pow(x, 2) |
+	 * | 2/3 | pow(x, 4) |
+	 * | 1 | pow(x, 8) |
+	 * | -1/3 | pow(x, 1/2) |
+	 * | -2/3 | pow(x, 1/4) |
+	 * | -1 | pow(x, 1/8) |
+	 * 
+	 * For use with absolute axis input in the range from -1 to 1 or 0 to 1.
+	 */
+	func float getLinearity()
+		return pLinearity
+	end
+	
+	/**
+	 * \brief Set linearity of input.
+	 * \version 1.28
+	 * \see #getLinearity()
+	 * 
+	 * For use with absolute axis input in the range from -1 to 1 or 0 to 1.
+	 */
+	func void setLinearity(float linearity)
+		pLinearity = DEMath.clamp(linearity, -1.0, 1.0)
+		
+		if linearity > 0.001
+			pLinearityFactor = DEMath.pow(2, pLinearity * 3)
+			
+		elif linearity < -0.001
+			pLinearityFactor = DEMath.pow(2, 1 / (pLinearity * 3))
+			
+		else
+			pLinearityFactor = 1
+		end
+	end
+	
+	/**
+	 * \brief Map axis value using deadzone and linearity.
+	 * \version 1.28
+	 * \param value Value in the range from -1 to 1.
+	 * \returns Mapped value in the range from -1 to 1.
+	 * 
+	 * For use with absolute axis input in the range from -1 to 1 or 0 to 1.
+	 */
+	func float mapAxisValue(float value)
+		if value > 0
+			return DEMath.pow(DEMath.linearStep(value, pDeadzone, 1), pLinearityFactor)
+			
+		else
+			return -DEMath.pow(DEMath.linearStep(value, -1, -pDeadzone, 1, 0), pLinearityFactor)
+		end
+	end
 	
 	
 	/**
@@ -139,7 +251,6 @@ class Binding
 	func void setSourceIndex(int index)
 		pSourceIndex = index
 	end
-	
 	
 	
 	/**
@@ -205,7 +316,6 @@ class Binding
 	end
 	
 	
-	
 	/** \brief Axis pressed simulation state. */
 	func bool getSimulateAxisPressed()
 		return pSimulateAxisPressed
@@ -215,7 +325,6 @@ class Binding
 	func void setSimulateAxisPressed(bool pressed)
 		pSimulateAxisPressed = pressed
 	end
-	
 	
 	
 	/** \brief Bindings are equal. */

@@ -39,10 +39,10 @@ class BaseVRHandAction implements Persistable
 	public class Factory implements PersistencyFactory, ECBehaviorVRHandAction.ActionFactory
 		public static fixed var String NAME = "BaseVRHandAction"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
 			return BaseVRHandAction.new()
 		end
 		
@@ -50,7 +50,7 @@ class BaseVRHandAction implements Persistable
 			persistency.addFactory(NAME, Factory.new())
 		end
 		
-		public func BaseVRHandAction createAction(ECBehaviorVRHandAction.Instance instance)
+		func BaseVRHandAction createAction(ECBehaviorVRHandAction.Instance instance)
 			return BaseVRHandAction.new()
 		end
 	end
@@ -81,8 +81,11 @@ class BaseVRHandAction implements Persistable
 	/** \brief Hand Controller Grabber behavior. */
 	protected var ECBehaviorGrabber.Instance handGrabber
 	
-	/** \brief Hand Animated Pose behavior. */
+	/** \brief Hand Pose behavior. */
 	protected var ECBehaviorVRHandPose.Instance handPose
+	
+	/** \brief Hand Locomotion behavior. */
+	protected var ECBehaviorVRHandLocomotion.Instance handLocomotion
 	
 	/** \brief Hand animated behavior if present. */
 	protected var ECBehaviorActorAnimated.Instance handAnimated
@@ -95,92 +98,100 @@ class BaseVRHandAction implements Persistable
 	
 	
 	/** \brief Create actor action. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create actor action from persisted state. */
-	public func new(PersistencyEnvironment env, FileReader reader)
+	func new(PersistencyEnvironment env, FileReader reader)
 	end
 	
 	/** \brief Dispose of actor action. */
-	public func void dispose()
+	func void dispose()
 		actor = null
 	end
 	
 	
 	
 	/** \brief Actor the action is assigned to or \em null. */
-	public func BehaviorElement getActor()
+	func BehaviorElement getActor()
 		return actor
 	end
 	
 	/** \brief VR hand behavior the action is assigned to or \em null. */
-	public func ECBehaviorVRHand.Instance getVRHand()
+	func ECBehaviorVRHand.Instance getVRHand()
 		return vrHand
 	end
 	
 	/** \brief Locomotion behavior. */
-	public func ECBehaviorLocomotion.Instance getLocomotion()
+	func ECBehaviorLocomotion.Instance getLocomotion()
 		return locomotion
 	end
 	
 	/** \brief Conversation actor behavior if present. */
-	public func ECBehaviorConversationActor.Instance getConversationActor()
+	func ECBehaviorConversationActor.Instance getConversationActor()
 		return conversationActor
 	end
 	
 	/** \brief Hand Controller Point-At. */
-	public func ECBehaviorVRHandPointAt.Instance getHandPointAt()
+	func ECBehaviorVRHandPointAt.Instance getHandPointAt()
 		return handPointAt
 	end
 	
 	/** \brief Hand Controller Laser Pointer. */
-	public func ECBehaviorVRHandLaserPointer.Instance getHandLaserPointer()
+	func ECBehaviorVRHandLaserPointer.Instance getHandLaserPointer()
 		return handLaserPointer
 	end
 	
 	/** \brief Hand Controller Attach Slot. */
-	public func ECBehaviorAttachSlot.Instance getHandAttachSlot()
+	func ECBehaviorAttachSlot.Instance getHandAttachSlot()
 		return handAttachSlot
 	end
 	
 	/** \brief Hand Controller Grabber. */
-	public func ECBehaviorGrabber.Instance getHandGrabber()
+	func ECBehaviorGrabber.Instance getHandGrabber()
 		return handGrabber
 	end
 	
 	/** \brief Hand Pose. */
-	public func ECBehaviorVRHandPose.Instance getHandPose()
+	func ECBehaviorVRHandPose.Instance getHandPose()
 		return handPose
 	end
 	
+	/**
+	 * \brief Hand Locomotion.
+	 * \version 1.28
+	 */
+	func ECBehaviorVRHandLocomotion.Instance getHandLocomotion()
+		return handLocomotion
+	end
+	
 	/** \brief Hand animated behavior if present. */
-	public func ECBehaviorActorAnimated.Instance getHandAnimated()
+	func ECBehaviorActorAnimated.Instance getHandAnimated()
 		return handAnimated
 	end
 	
 	/** \brief Behavior VR hand action or \em null. */
-	public func ECBehaviorVRHandAction.Instance getHandAction()
+	func ECBehaviorVRHandAction.Instance getHandAction()
 		return handAction
 	end
 	
 	/** \brief Action is active hand action. */
-	public func bool isActive()
+	func bool isActive()
 		return handAction.getAction() == this
 	end
 	
 	/** \brief Action is not active hand action. */
-	public func bool isNotActive()
+	func bool isNotActive()
 		return handAction.getAction() != this
 	end
 	
 	/** \brief Action is right hand. */
-	public func bool isRightHand()
+	func bool isRightHand()
 		return pIsRightHand
 	end
 	
 	/** \brief Action is left hand. */
-	public func bool isLeftHand()
+	func bool isLeftHand()
 		return not pIsRightHand
 	end
 	
@@ -196,7 +207,7 @@ class BaseVRHandAction implements Persistable
 	 * - initBehaviors()
 	 * - initAnimator()
 	 */
-	public func void activate(BehaviorElement actor, ECBehaviorVRHand.Instance vrHand)
+	func void activate(BehaviorElement actor, ECBehaviorVRHand.Instance vrHand)
 		this.actor = actor
 		this.vrHand = vrHand
 		
@@ -218,7 +229,7 @@ class BaseVRHandAction implements Persistable
 	 * activate(BehaviorElement,ECBehaviorVRHand.Instance) is called these states would
 	 * be reset to initial values.
 	 */
-	public func void activateWhileLoading(BehaviorElement actor, ECBehaviorVRHand.Instance vrHand)
+	func void activateWhileLoading(BehaviorElement actor, ECBehaviorVRHand.Instance vrHand)
 		this.actor = actor
 		this.vrHand = vrHand
 		
@@ -232,27 +243,27 @@ class BaseVRHandAction implements Persistable
 	 * 
 	 * The stored actor is not cleared to avoid problems while cleaning up.
 	 */
-	public func void deactivate()
+	func void deactivate()
 	end
 	
 	/** \brief Actor entered game world. */
-	public func void enteredGameWorld()
+	func void enteredGameWorld()
 	end
 	
 	/** \brief Actor left game world. */
-	public func void leftGameWorld()
+	func void leftGameWorld()
 	end
 	
 	/** \brief Actor has been added to game world and enterFrame() is called once. */
-	public func void enterFrame()
+	func void enterFrame()
 	end
 	
 	/** \brief Player takes control of actor. */
-	public func void playerTakesControl()
+	func void playerTakesControl()
 	end
 	
 	/** \brief Player released control of actor. */
-	public func void playerReleasesControl()
+	func void playerReleasesControl()
 	end
 	
 	/**
@@ -262,19 +273,19 @@ class BaseVRHandAction implements Persistable
 	 * - updateAnimator()
 	 * - applyAnimations()
 	 */
-	public func void think(float elapsed)
+	func void think(float elapsed)
 		updateAnimator(elapsed)
 		applyAnimations()
 	end
 	
 	/** \brief Post physics. */
-	public func void postThink(float elapsed)
+	func void postThink(float elapsed)
 	end
 	
 	
 	
 	/** \brief Cancel action the next time possible. */
-	public func void cancel()
+	func void cancel()
 	end
 	
 	
@@ -296,6 +307,7 @@ class BaseVRHandAction implements Persistable
 				handAttachSlot = baseVRActor.getVRRightHandAttachSlot()
 				handGrabber = baseVRActor.getVRRightHandGrabber()
 				handPose = baseVRActor.getVRRightHandPose()
+				handLocomotion = baseVRActor.getVRRightHandLocomotion()
 				handAnimated = baseVRActor.getVRRightHandAnimated()
 				handAction = baseVRActor.getVRRightHandAction()
 				
@@ -305,6 +317,7 @@ class BaseVRHandAction implements Persistable
 				handAttachSlot = baseVRActor.getVRLeftHandAttachSlot()
 				handGrabber = baseVRActor.getVRLeftHandGrabber()
 				handPose = baseVRActor.getVRLeftHandPose()
+				handLocomotion = baseVRActor.getVRLeftHandLocomotion()
 				handAnimated = baseVRActor.getVRLeftHandAnimated()
 				handAction = baseVRActor.getVRLeftHandAction()
 			end
@@ -319,6 +332,7 @@ class BaseVRHandAction implements Persistable
 				handAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
 				handGrabber = ECBehaviorGrabber.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
 				handPose = ECBehaviorVRHandPose.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
+				handLocomotion = ECBehaviorVRHandLocomotion.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
 				handAnimated = ECBehaviorActorAnimated.getInstanceIn(actor, BaseVRActorClass.idNonVRRightHand)
 				handAction = ECBehaviorVRHandAction.getInstanceIn(actor, BaseVRActorClass.idVRRightHand)
 				
@@ -328,6 +342,7 @@ class BaseVRHandAction implements Persistable
 				handAttachSlot = ECBehaviorAttachSlot.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
 				handGrabber = ECBehaviorGrabber.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
 				handPose = ECBehaviorVRHandPose.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
+				handLocomotion = ECBehaviorVRHandLocomotion.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
 				handAnimated = ECBehaviorActorAnimated.getInstanceIn(actor, BaseVRActorClass.idNonVRLeftHand)
 				handAction = ECBehaviorVRHandAction.getInstanceIn(actor, BaseVRActorClass.idVRLeftHand)
 			end
@@ -428,35 +443,35 @@ class BaseVRHandAction implements Persistable
 	 * 
 	 * The default implementation returns false which equals no waiting required.
 	 */
-	public func bool conversationWait()
+	func bool conversationWait()
 		return false
 	end
 	
 	
 	
 	/** \brief Collision detected. */
-	public func void collisionResponse(Collider owner, CollisionInfo info)
+	func void collisionResponse(Collider owner, CollisionInfo info)
 	end
 	
 	
 	
 	/** \brief Log text to BaseGameApp console prefixed with actor information. */
-	public func void log(String text)
+	func void log(String text)
 		log(BehaviorElementClass.sharedFactoryHelper.defaultConsole(), text)
 	end
 	
 	/** \brief Log text to console prefixed with actor information. */
-	public func void log(Console console, String text)
+	func void log(Console console, String text)
 		console.addMessage(loggingPrefix() + ": " + text)
 	end
 	
 	/** \brief Log text about element to BaseGameApp console prefixed with actor information. */
-	public func void log(Element element, String text)
+	func void log(Element element, String text)
 		log(BehaviorElementClass.sharedFactoryHelper.defaultConsole(), element, text)
 	end
 	
 	/** \brief Log text about element to console prefixed with actor information. */
-	public func void log(Console console, Element element, String text)
+	func void log(Console console, Element element, String text)
 		if element == null
 			console.addMessage(loggingPrefix() + " <null>: " + text)
 			
@@ -467,12 +482,12 @@ class BaseVRHandAction implements Persistable
 	end
 	
 	/** \brief Log exception to BaseGameApp console prefixed with actor information. */
-	public func void log(Exception exception)
+	func void log(Exception exception)
 		log(BehaviorElementClass.sharedFactoryHelper.defaultConsole(), exception)
 	end
 	
 	/** \brief Log exception to console prefixed with actor information. */
-	public func void log(Console console, Exception exception)
+	func void log(Console console, Exception exception)
 		console.addError(loggingPrefix(), exception)
 	end
 	
@@ -481,7 +496,7 @@ class BaseVRHandAction implements Persistable
 	 * 
 	 * Returns string in the form "<actor-class>/<action-class>".
 	 */
-	public func String loggingPrefix()
+	func String loggingPrefix()
 		return actor.getClass().getClassname().splitExact('.').getAt(-1).toString() \
 			+ "/" + className().splitExact('.').getAt(-1)\
 			+ "/" + vrHand.getECBehavior().getID()
@@ -499,11 +514,11 @@ class BaseVRHandAction implements Persistable
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 	end
 end
