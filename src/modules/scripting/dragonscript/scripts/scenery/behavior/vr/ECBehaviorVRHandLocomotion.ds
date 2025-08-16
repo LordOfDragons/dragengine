@@ -535,6 +535,13 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 			pInputZ.setCommand(CommandsBAAMovement.AnalogMoveFB.new(tracker))
 		end
 		
+		/** \brief Set all axis command to null. */
+		func void clearCommands()
+			pInputX.setCommand(null)
+			pInputY.setCommand(null)
+			pInputZ.setCommand(null)
+		end
+		
 		/** \brief Input range in meters. */
 		func float getRange()
 			return pRange
