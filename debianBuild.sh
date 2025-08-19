@@ -72,6 +72,9 @@ cleanScons
 rm -rf /sources/dragengine_*.orig.tar.gz
 rm -rf /sources/dragengine_*.orig.tar
 rm -rf /sources/dragengine_*-ppa*
+rm -rf /sources/deigde*.deb
+rm -rf /sources/delauncher*.deb
+rm -rf /sources/dragengine*.deb
 
 if [ $buildPackage = true ]; then
   gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
