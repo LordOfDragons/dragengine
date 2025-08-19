@@ -396,7 +396,59 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 					result &= pInstance.getEnabled() == value.equals("true")
 				end
 				
+				value = parameters.getAt(prefix + "running", null)
+				if value != null
+					result &= pInstance.isRunning() == value.equals("true")
+				end
+				
+				result &= checkCommand(parameters, prefix + "input.x.value", pInstance.getInputX(), value)
+				result &= checkCommand(parameters, prefix + "input.y.value", pInstance.getInputY(), value)
+				result &= checkCommand(parameters, prefix + "input.z.value", pInstance.getInputZ(), value)
+				
+				result &= checkCommand(parameters, prefix + "command.x.positive", pInstance.getInputX(), value)
+				result &= checkCommand(parameters, prefix + "command.x.negative", pInstance.getInputX(), value)
+				result &= checkCommand(parameters, prefix + "command.y.positive", pInstance.getInputY(), value)
+				result &= checkCommand(parameters, prefix + "command.y.negative", pInstance.getInputY(), value)
+				result &= checkCommand(parameters, prefix + "command.z.positive", pInstance.getInputZ(), value)
+				result &= checkCommand(parameters, prefix + "command.z.negative", pInstance.getInputZ(), value)
+				
 				return result
+			end
+			
+			func bool checkInputValue(Dictionary parameters, String prefix, TrackedInput input, Object value)
+				var bool result = true
+				
+				value = parameters.getAt(prefix + ".less", null)
+				if value != null
+					result &= input.getValue() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + ".greater", null)
+				if value != null
+					result &= input.getValue() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+			
+			func bool checkCommand(Dictionary parameters, String prefix, TrackedInput input, Object value)
+				var bool result = true
+				
+				value = parameters.getAt(prefix, null)
+				if value != null
+					result &= matchesCommand(input.getCommandPositive(), value)
+				end
+				
+				value = parameters.getAt(prefix + ".not", null)
+				if value != null
+					result &= not matchesCommand(input.getCommandPositive(), value)
+				end
+				
+				return result
+			end
+			
+			func bool matchesCommand(Command command, Object value)
+				return value.equals(command != null if command.getName() else "")
 			end
 		end
 		
@@ -630,7 +682,7 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 				each.startLocomotion(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix(), "beginInput")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "start")
 			end
 		end
 		
@@ -654,7 +706,7 @@ class ECBehaviorVRHandLocomotion extends DefaultECBehavior
 				each.stopLocomotion(this)
 			end)
 			if pBTSMs != null
-				pBTSMs.runEvent(pECBehavior.getPrefix(), "endInput")
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
 			end
 		end
 		
