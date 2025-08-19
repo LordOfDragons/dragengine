@@ -71,12 +71,8 @@ class ECBCTRRBindings extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBCTRRBindings"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBCTRRBindings")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -88,39 +84,8 @@ class ECBCTRRBindings extends DefaultECBehavior
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String),\
 				getSubtitleThemeFor(parameters.getAt("subtitleTheme", "default") cast String))
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "ctrrBindings")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "ctrrBindings")
 			return behavior
-		end
-		
-		/**
-		 * \brief Command manager matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getCommandManager() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func CommandManager getCommandManagerFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.commandManager(value)
-		end
-		
-		/**
-		 * \brief Binding manager matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func BindingManager getBindingManagerFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
-		end
-		
-		/**
-		 * \brief Subtitle gui theme matching value.
-		 * 
-		 * Default implementation returns \ref WindowSubTitle#getGuiTheme()
-		 * on \ref BaseGameApp#getWindowSubTitle() for value 'default', loads gui theme if value
-		 * begins with 'path:' or null for all other values. Overwrite to accept other values.
-		 */
-		func GuiTheme getSubtitleThemeFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.subtitleTheme(value)
 		end
 	end
 	
@@ -186,8 +151,9 @@ class ECBCTRRBindings extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	public func new( BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor ) \
-	this( eclass, conversationActor, BaseGameApp.getApp().getCommandManager(), \
-	BaseGameApp.getApp().getBindingManager(), BaseGameApp.getApp().getWindowSubTitle().getGuiTheme() )
+	this( eclass, conversationActor, BehaviorElementClass.sharedFactoryHelper.defaultCommandManager(), \
+	BehaviorElementClass.sharedFactoryHelper.defaultBindingManager(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultSubtitleTheme())
 	end
 	
 	public func new( BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor, \

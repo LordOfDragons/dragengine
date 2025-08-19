@@ -2,11 +2,9 @@
 <shader>
 	<name>2D Textured</name>
 	
-	<texture name='texColor' target='0'/>
-	
-	<parameter name='pColor'/> <!-- 0 -->
-	<parameter name='pPosTransform'/> <!-- 1 -->
-	<parameter name='pTCTransform'/> <!-- 2 -->
+	<parameter name='pColor' location='2'/> <!-- 0 -->
+	<parameter name='pPosTransform' location='0'/> <!-- 1 -->
+	<parameter name='pTCTransform' location='1'/> <!-- 2 -->
 	
 	<sourceCode unit='vertex'>V 2D Textured</sourceCode>
 	<sourceCode unit='fragment'>F 2D Textured</sourceCode>

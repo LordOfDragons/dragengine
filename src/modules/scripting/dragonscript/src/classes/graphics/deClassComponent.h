@@ -123,6 +123,8 @@ private:
 	DEF_NATFUNC( nfBoneSetPosition );
 	DEF_NATFUNC( nfBoneGetRotation );
 	DEF_NATFUNC( nfBoneSetRotation );
+	DEF_NATFUNC(nfBoneGetScale);
+	DEF_NATFUNC(nfBoneSetScale);
 	DEF_NATFUNC( nfBoneGetMatrix );
 	DEF_NATFUNC( nfBoneGetInverseMatrix );
 	DEF_NATFUNC( nfGetBonePosition );

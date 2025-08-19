@@ -1,21 +1,17 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mediump ivec4 pClampTC; // minU, minV, maxU, maxV
-uniform lowp ivec4 pOffsets1; // off1.x, off1.y, off2.x, off2.y
-uniform lowp ivec4 pOffsets2; // off3.x, off3.y, off4.x, off4.y
-uniform lowp ivec4 pOffsets3; // off5.x, off5.y, off6.x, off6.y
-uniform lowp ivec4 pOffsets4; // off7.x, off7.y, scaleX, scaleY
+UNIFORM_BIND(3) uniform mediump ivec4 pClampTC; // minU, minV, maxU, maxV
+UNIFORM_BIND(4) uniform lowp ivec4 pOffsets1; // off1.x, off1.y, off2.x, off2.y
+UNIFORM_BIND(5) uniform lowp ivec4 pOffsets2; // off3.x, off3.y, off4.x, off4.y
+UNIFORM_BIND(6) uniform lowp ivec4 pOffsets3; // off5.x, off5.y, off6.x, off6.y
+UNIFORM_BIND(7) uniform lowp ivec4 pOffsets4; // off7.x, off7.y, scaleX, scaleY
 
-uniform lowp sampler2DArray texValues;
+layout(binding=0) uniform lowp sampler2DArray texValues;
 
-in mediump vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out lowp float outValue;
 

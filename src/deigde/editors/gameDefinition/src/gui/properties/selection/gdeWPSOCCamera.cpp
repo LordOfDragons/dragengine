@@ -40,6 +40,8 @@
 #include "../../../undosys/objectClass/camera/gdeUOCCameraSetImageDistance.h"
 #include "../../../undosys/objectClass/camera/gdeUOCCameraSetPosition.h"
 #include "../../../undosys/objectClass/camera/gdeUOCCameraSetPropertyName.h"
+#include "../../../undosys/objectClass/camera/gdeUOCCameraSetPropertyPosition.h"
+#include "../../../undosys/objectClass/camera/gdeUOCCameraSetPropertyRotation.h"
 #include "../../../undosys/objectClass/camera/gdeUOCCameraSetRotation.h"
 #include "../../../undosys/objectClass/camera/gdeUOCCameraSetViewDistance.h"
 
@@ -220,6 +222,48 @@ public:
 	}
 };
 
+class cComboPropertyPosition : public igdeComboBoxListener{
+	gdeWPSOCCamera &pPanel;
+	
+public:
+	cComboPropertyPosition(gdeWPSOCCamera &panel) : pPanel(panel){}
+	
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		gdeOCCamera * const camera = pPanel.GetCamera();
+		if(!camera || camera->GetPropPosition() == comboBox->GetText()){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver(new gdeUOCCameraSetPropertyPosition(
+			pPanel.GetObjectClass(), camera, comboBox->GetText()));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
+		}
+	}
+};
+
+class cComboPropertyRotation : public igdeComboBoxListener{
+	gdeWPSOCCamera &pPanel;
+	
+public:
+	cComboPropertyRotation(gdeWPSOCCamera &panel) : pPanel(panel){}
+	
+	void OnTextChanged(igdeComboBox *comboBox) override{
+		gdeOCCamera * const camera = pPanel.GetCamera();
+		if(!camera || camera->GetPropRotation() == comboBox->GetText()){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver(new gdeUOCCameraSetPropertyRotation(
+			pPanel.GetObjectClass(), camera, comboBox->GetText()));
+		if(undo){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
+		}
+	}
+};
+
 }
 
 
@@ -258,9 +302,18 @@ pGameDefinition( NULL )
 		pEditPosition, new cEditPosition( *this ) );
 	helper.EditVector( groupBox, "Rotation:", "Rotation in degrees relative to object class",
 		pEditRotation, new cEditRotation( *this ) );
-	helper.ComboBox( groupBox, "ID Property:", true, "Object class property containing camera identifier",
-		pCBPropertyName, new cComboPropertyName( *this ) );
+	helper.ComboBox(groupBox, "ID Property:", true,
+		"Object class property containing camera identifier",
+		pCBPropertyName, new cComboPropertyName(*this));
 	pCBPropertyName->SetDefaultSorter();
+	helper.ComboBox(groupBox, "Position Property:", true,
+		"Object class property containing camera position",
+		pCBPropertyPosition, new cComboPropertyPosition(*this));
+	pCBPropertyPosition->SetDefaultSorter();
+	helper.ComboBox(groupBox, "Rotation Property:", true,
+		"Object class property containing camera rotation",
+		pCBPropertyRotation, new cComboPropertyRotation(*this));
+	pCBPropertyRotation->SetDefaultSorter();
 }
 
 gdeWPSOCCamera::~gdeWPSOCCamera(){
@@ -319,16 +372,28 @@ void gdeWPSOCCamera::UpdatePropertyList(){
 		objectClass->AddPropertyNamesTo( properties, true );
 	}
 	
-	const decString selection( pCBPropertyName->GetText() );
+	const decString selectionName(pCBPropertyName->GetText());
+	const decString selectionPosition(pCBPropertyPosition->GetText());
+	const decString selectionRotation(pCBPropertyRotation->GetText());
 	pCBPropertyName->RemoveAllItems();
+	pCBPropertyPosition->RemoveAllItems();
+	pCBPropertyRotation->RemoveAllItems();
 	
 	const int count = properties.GetCount();
-	for( i=0; i<count; i++ ){
-		pCBPropertyName->AddItem( properties.GetAt( i ) );
+	for(i=0; i<count; i++){
+		const decString &property = properties.GetAt(i);
+		pCBPropertyName->AddItem(property);
+		pCBPropertyPosition->AddItem(property);
+		pCBPropertyRotation->AddItem(property);
 	}
 	
 	pCBPropertyName->SortItems();
-	pCBPropertyName->SetText( selection );
+	pCBPropertyPosition->SortItems();
+	pCBPropertyRotation->SortItems();
+	
+	pCBPropertyName->SetText(selectionName);
+	pCBPropertyPosition->SetText(selectionPosition);
+	pCBPropertyRotation->SetText(selectionRotation);
 }
 
 void gdeWPSOCCamera::UpdateCamera(){
@@ -341,7 +406,9 @@ void gdeWPSOCCamera::UpdateCamera(){
 		pEditViewDistance->SetFloat( camera->GetViewDistance() );
 		pEditPosition->SetVector( camera->GetPosition() );
 		pEditRotation->SetVector( camera->GetRotation() );
-		pCBPropertyName->SetText( camera->GetPropName() );
+		pCBPropertyName->SetText(camera->GetPropName());
+		pCBPropertyPosition->SetText(camera->GetPropPosition());
+		pCBPropertyRotation->SetText(camera->GetPropRotation());
 		
 	}else{
 		pEditFov->ClearText();
@@ -351,6 +418,8 @@ void gdeWPSOCCamera::UpdateCamera(){
 		pEditPosition->SetVector( decVector() );
 		pEditRotation->SetVector( decVector() );
 		pCBPropertyName->ClearText();
+		pCBPropertyPosition->ClearText();
+		pCBPropertyRotation->ClearText();
 	}
 	
 	const bool enabled = camera;
@@ -360,5 +429,7 @@ void gdeWPSOCCamera::UpdateCamera(){
 	pEditViewDistance->SetEnabled( enabled );
 	pEditPosition->SetEnabled( enabled );
 	pEditRotation->SetEnabled( enabled );
-	pCBPropertyName->SetEnabled( enabled );
+	pCBPropertyName->SetEnabled(enabled);
+	pCBPropertyPosition->SetEnabled(enabled);
+	pCBPropertyRotation->SetEnabled(enabled);
 }

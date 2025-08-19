@@ -6,6 +6,6 @@
 	
 	<output name='outDummy' location='0'/>
 	
-	<define>GS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

@@ -186,12 +186,12 @@ void deoglTextureStageManager::DisableStage( int stage ){
 	
 	const GLenum type = pStages[ stage ].type;
 	
+	if(pStages[stage].samplerConfig != 0){
+		OGL_CHECK(pRenderThread, pglBindSampler(stage, 0));
+		pStages[stage].samplerConfig = 0;
+	}
+	
 	if( type != 0 ){
-		if( pStages[ stage ].samplerConfig != 0 ){
-			OGL_CHECK( pRenderThread, pglBindSampler( stage, 0 ) );
-			pStages[ stage ].samplerConfig = 0;
-		}
-		
 		if( pStages[ stage ].texture != 0 ){
 			OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + stage ) );
 			OGL_CHECK( pRenderThread, glBindTexture( type, 0 ) );
@@ -210,12 +210,12 @@ void deoglTextureStageManager::DisableStagesAbove( int stage ){
 	for( s=stage+1; s<OGL_MAX_TEXTURE_STAGES; s++ ){
 		type = pStages[ s ].type;
 		
+		if(pStages[s].samplerConfig != 0){
+			OGL_CHECK(pRenderThread, pglBindSampler(s, 0));
+			pStages[s].samplerConfig = 0;
+		}
+		
 		if( type != 0 ){
-			if( pStages[ s ].samplerConfig != 0 ){
-				OGL_CHECK( pRenderThread, pglBindSampler( s, 0 ) );
-				pStages[ s ].samplerConfig = 0;
-			}
-			
 			if( pStages[ s ].texture != 0 ){
 				OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + s ) );
 				OGL_CHECK( pRenderThread, glBindTexture( type, 0 ) );
@@ -235,12 +235,12 @@ void deoglTextureStageManager::DisableAllStages(){
 	for( s=0; s<OGL_MAX_TEXTURE_STAGES; s++ ){
 		type = pStages[ s ].type;
 		
+		if(pStages[s].samplerConfig != 0){
+			OGL_CHECK(pRenderThread, pglBindSampler(s, 0));
+			pStages[s].samplerConfig = 0;
+		}
+		
 		if( type != 0 ){
-			if( pStages[ s ].samplerConfig != 0 ){
-				OGL_CHECK( pRenderThread, pglBindSampler( s, 0 ) );
-				pStages[ s ].samplerConfig = 0;
-			}
-			
 			if( pStages[ s ].texture != 0 ){
 				OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + s ) );
 				OGL_CHECK( pRenderThread, glBindTexture( type, 0 ) );
@@ -262,14 +262,15 @@ void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum ty
 	OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + stage ) );
 	
 	if( texture != pStages[ stage ].texture ){
+		if(pStages[stage].samplerConfig != 0){
+			OGL_CHECK(pRenderThread, pglBindSampler(stage, 0));
+			pStages[stage].samplerConfig = 0;
+		}
+		
 		if( type != pStages[ stage ].type ){
-			/*
-			if( pStages[ stage ].texture != 0 ){
-				OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + stage ) );
-				OGL_CHECK( pRenderThread, glBindTexture( pStages[ stage ].type, 0 ) );
-				pStages[ stage ].texture = 0;
+			if(pStages[stage].texture != 0){
+				OGL_CHECK(pRenderThread, glBindTexture(pStages[stage].type, 0));
 			}
-			*/
 			
 			/* if( pStages[ stage ].texture != 0 ){
 				OGL_CHECK( pRenderThread, glBindTexture( pStages[ stage ].type, 0 ) );

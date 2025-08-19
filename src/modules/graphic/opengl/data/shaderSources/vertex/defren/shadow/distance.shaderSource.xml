@@ -10,5 +10,5 @@
 	
 	<define>TRANSPARENT</define>
 	<define>DISCARD_HOLES</define>
-	<define>HEIGHTTERRAIN</define>
+	<define>GEOMETRY_MODE</define>
 </shaderSource>

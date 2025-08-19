@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Occlusion OccMap Stereo</name>
 	
-	<parameter name='pSPBInstanceIndexBase'/>
+	<parameter name='pSPBInstanceIndexBase' location='0'/> <!-- 0 -->
 	
 	<sourceCode unit='vertex'>V DefRen Occlusion OccMap</sourceCode>
 	<sourceCode unit='geometry'>G DefRen Occlusion OccMap</sourceCode>

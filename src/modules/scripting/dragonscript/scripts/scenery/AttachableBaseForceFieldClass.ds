@@ -47,7 +47,7 @@ class AttachableBaseForceFieldClass extends BehaviorElementClass
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new( String className ) this( className, BaseGameApp.getApp().getTriggerTable() )
+	public func new(String className) this(className, sharedFactoryHelper.defaultTriggerTable())
 	end
 	
 	/** \brief Create element class. */

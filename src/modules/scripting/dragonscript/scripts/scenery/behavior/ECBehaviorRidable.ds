@@ -139,12 +139,8 @@ class ECBehaviorRidable extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorRidable"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorRidable")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -154,9 +150,9 @@ class ECBehaviorRidable extends DefaultECBehavior
 			var ECBehaviorRidable behavior = ECBehaviorRidable.new(\
 				eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "ridable")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "ridable")
 			return behavior
 		end
 	end

@@ -218,7 +218,8 @@ class ScreenshotCreator
 	 */
 	public func void screenshotFinished( String filename )
 		if this.pConsole == null
-			BaseGameApp.getApp().getConsole().addMessage( "Screenshot saved to " + filename )
+			BehaviorElementClass.sharedFactoryHelper.defaultConsole().\
+				addMessage("Screenshot saved to " + filename)
 			
 		else
 			this.pConsole.addMessage( "Screenshot saved to " + filename )

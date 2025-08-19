@@ -38,23 +38,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeGDCamera::igdeGDCamera(){
-	pFov = 90.0f;
-	pFovRatio = 1.0f;
-	pImageDistance = 0.01f;
-	pViewDistance = 500.0f;
-	pPropName = "";
+igdeGDCamera::igdeGDCamera() :
+pFov(90.0f),
+pFovRatio(1.0f),
+pImageDistance(0.01f),
+pViewDistance(500.0f){
 }
 
-igdeGDCamera::igdeGDCamera( const igdeGDCamera &camera ){
-	pFov = camera.GetFov();
-	pFovRatio = camera.GetFovRatio();
-	pImageDistance = camera.GetImageDistance();
-	pViewDistance = camera.GetViewDistance();
-	pPosition = camera.GetPosition();
-	pOrientation = camera.GetOrientation();
-	
-	pPropName = camera.GetPropName();
+igdeGDCamera::igdeGDCamera(const igdeGDCamera &camera) :
+pFov(camera.pFov),
+pFovRatio(camera.pFovRatio),
+pImageDistance(camera.pImageDistance),
+pViewDistance(camera.pViewDistance),
+pPosition(camera.pPosition),
+pOrientation(camera.pOrientation),
+pPropName(camera.pPropName),
+pPropPosition(camera.pPropPosition),
+pPropRotation(camera.pPropRotation){
 }
 
 igdeGDCamera::~igdeGDCamera(){
@@ -97,6 +97,14 @@ void igdeGDCamera::SetViewDistance( float distance ){
 	pViewDistance = distance;
 }
 
-void igdeGDCamera::SetPropName( const char *propName ){
-	pPropName = propName;
+void igdeGDCamera::SetPropName(const char *property){
+	pPropName = property;
+}
+
+void igdeGDCamera::SetPropPosition(const char *property){
+	pPropPosition = property;
+}
+
+void igdeGDCamera::SetPropRotation(const char *property){
+	pPropRotation = property;
 }

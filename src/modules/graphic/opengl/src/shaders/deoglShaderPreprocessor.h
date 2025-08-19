@@ -27,6 +27,7 @@
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/string/decStringSet.h>
 
 class deoglRenderThread;
 class deoglShaderPreprocessorSymbol;
@@ -85,6 +86,7 @@ private:
 	int pSourcesSize;
 	
 	decObjectDictionary pSymbolTable;
+	decStringSet pMacroSymbol;
 	const char *pInputNext;
 	const char *pInputFile;
 	int pInputLine;
@@ -181,6 +183,15 @@ public:
 	
 	/** Set symbol. */
 	void SetSymbol( const char *name, const char *value );
+	
+	/** Named macro symbol is present. */
+	bool HasMacroSymbolNamed(const char *name) const;
+	
+	/** Set has symbol. */
+	void AddMacroSymbol(const char *name);
+	
+	/** Named symbol or macro symbol is present. */
+	bool HasAnySymbolNamed(const char *name) const;
 	
 	/** Clear symbol. */
 	void ClearSymbol( const char *name );

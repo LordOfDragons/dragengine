@@ -2,13 +2,11 @@
 <shader>
 	<name>DefRen Transparency Max Count</name>
 	
-	<texture name='texValues' target='0'/>
-	
-	<parameter name='pClampTC'/>
-	<parameter name='pOffsets1'/>
-	<parameter name='pOffsets2'/>
-	<parameter name='pOffsets3'/>
-	<parameter name='pOffsets4'/>
+	<parameter name='pClampTC' location='3'/>
+	<parameter name='pOffsets1' location='4'/>
+	<parameter name='pOffsets2' location='5'/>
+	<parameter name='pOffsets3' location='6'/>
+	<parameter name='pOffsets4' location='7'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Transparency Max Count</sourceCode>

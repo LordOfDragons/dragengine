@@ -582,8 +582,9 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 	//	if( ! pLockManager ) return false;
 		
 		// if library has been installed as contrib adjust load path
+		decPath pathContrib, vfsPathContrib;
+		
 		#ifdef USE_INTERNAL_DSCRIPT
-		decPath pathContrib;
 		pathContrib.SetFromNative( GetGameEngine()->GetOS()->GetPathShare() );
 		pathContrib.AddComponent( "modules" );
 		pathContrib.AddComponent( GetGameEngine()->GetModuleSystem()->GetTypeDirectory( GetLoadableModule().GetType() ) );
@@ -611,6 +612,8 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 			DSTHROW( dueInvalidAction );
 		}
 		#endif // OS_W32
+		
+		vfsPathContrib.SetFromUnix("/share/dsinstall");
 		#endif // USE_INTERNAL_DSCRIPT
 		
 		// create script engine
@@ -627,7 +630,7 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		#endif
 		
 		// set script engine manager
-		dsmanager = new deDSEngineManager( this );
+		dsmanager = new deDSEngineManager(*this, pathContrib, vfsPathContrib);
 		
 		pScriptEngine->SetEngineManager( dsmanager );
 		dsmanager = nullptr;
@@ -1360,7 +1363,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsRig = new deClassRig( this ) );
 		package->AddHostClass( pClsRigBuilder = new deClassRigBuilder( *this ) );
 		package->AddHostClass( pClsRTM = new deClassRuntimeMeter( this ) );
-		package->AddHostClass( pClsAnim = new deClassAnimation( engine, this ) );
+		package->AddHostClass( pClsAnim = new deClassAnimation(*engine, *this));
 		package->AddHostClass( pClsAnimBuilder = new deClassAnimationBuilder( *this ) );
 		package->AddHostClass( pClsAr = new deClassAnimator( this ) );
 		package->AddHostClass( pClsArI = new deClassAnimatorInstance( *this ) );

@@ -152,6 +152,40 @@ class ADController
 		pVector = vector
 	end
 	
+	/**
+	 * \brief Vector as rotation in degrees.
+	 * \version 1.28
+	 */
+	func Vector getRotation()
+		return Vector.new(DEMath.radToDeg(pVector.getX()),\
+			DEMath.radToDeg(pVector.getY()), DEMath.radToDeg(pVector.getZ()))
+	end
+	
+	/**
+	 * \brief Set vector from rotation in degrees.
+	 * \version 1.28
+	 */
+	func void setRotation(Vector rotation)
+		pVector = Vector.new(DEMath.degToRad(rotation.getX()),\
+			DEMath.degToRad(rotation.getY()), DEMath.degToRad(rotation.getZ()))
+	end
+	
+	/**
+	 * \brief Vector as orientation.
+	 * \version 1.28
+	 */
+	func Quaternion getOrientation()
+		return Quaternion.newFromEuler(getRotation())
+	end
+	
+	/**
+	 * \brief Set vector from orientation.
+	 * \version 1.28
+	 */
+	func void setOrientation(Quaternion orientation)
+		setRotation(orientation.getEulerAngles())
+	end
+	
 	
 	
 	/** \brief Index of controller in animator. */

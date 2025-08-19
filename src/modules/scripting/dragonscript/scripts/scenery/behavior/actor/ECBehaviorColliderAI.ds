@@ -187,12 +187,8 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorColliderAI"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorColliderAI")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -207,9 +203,9 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "colliderAI")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "colliderAI")
 			return behavior
 		end
 	end
@@ -357,13 +353,14 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		var ColliderVolume pCollider
 		var Vector pGravity
 		var Array pListeners
-		
+		var bool pEnabled
 		
 		
 		/** \brief Create element. */
 		func new(ECBehaviorColliderAI ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pListeners = Array.new()
+			pEnabled = true
 			
 			pBaseCollider = ecbehavior.getBaseCollider().instance(element)
 		end
@@ -460,6 +457,31 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		 */
 		func void setGravity(Vector gravity)
 			pGravity = gravity
+		end
+		
+		/**
+		 * \brief Collider is enabled if element is touchable.
+		 * \version 1.28
+		 */
+		func bool getEnabled()
+			return pEnabled
+		end
+		
+		/**
+		 * \brief Set if collider is enabled if element is touchable.
+		 * \version 1.28
+		 * 
+		 * Setting element untouchable disables \ref ECBehaviorColliderAI as well as
+		 * \ref ECBehaviorCollider and potentially other behaviors. Sometimes it is desied to
+		 * only disable the AI collider. Using this function this can be done.
+		 */
+		func void setEnabled(bool enabled)
+			if enabled == pEnabled
+				return
+			end
+			
+			pEnabled = enabled
+			stateChanged()
 		end
 		
 		
@@ -602,7 +624,7 @@ class ECBehaviorColliderAI extends DefaultECBehavior
 		/** \brief State changed (visble, touchable). */
 		func void stateChanged()
 			if pCollider != null
-				pCollider.setEnabled(getElement().getTouchable())
+				pCollider.setEnabled(pEnabled and getElement().getTouchable())
 			end
 		end
 		

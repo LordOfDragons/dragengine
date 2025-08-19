@@ -133,10 +133,14 @@ class IMMLoadWorld
 			// classes. for a gmae it is often better to preload all element classes.
 			// for a simple main menu world file it is better to preload only what is used.
 			// this reduces loading time especially if multiple world files are present
-			//pMainMenu.getElementClasses().preloadAll(pPreloadManager)
-			pStubWorld.addElementClassesTo(pPreloadManager)
+			// pStubWorld.addElementClassesTo(pPreloadManager)
+			// pPreloadManager.addElementClassDependencies()
+			// 
+			// preloading only used classes can cause problems so load all. to cut down
+			// the loading time it is enough to restrict the directories to load xml
+			// element classes from.
 			
-			pPreloadManager.addElementClassDependencies()
+			pMainMenu.getElementClasses().preloadAll(pPreloadManager)
 			pPreloadManager.preloadElementClasses()
 			pStubWorld.beginPreloading()
 			

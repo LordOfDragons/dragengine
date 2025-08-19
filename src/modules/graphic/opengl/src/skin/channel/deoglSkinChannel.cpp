@@ -91,6 +91,7 @@ pTexture( NULL ),
 pCubeMap( NULL ),
 pArrayTexture( NULL ),
 pCombinedTexture( NULL ),
+pTextureType(ett2d),
 
 pIsCached( false ),
 pCanBeCached( false ),
@@ -303,7 +304,25 @@ const deSkinTexture &engTexture, const deoglVSDetermineChannelFormat &channelFor
 	
 	pInitUniformColor();
 	
-	if( ! pImage || ! pImage->GetSkinUse() ){
+	pTextureType = channelFormat.GetTextureType();
+	bool hasSkinUse = false;
+	if(pImage){
+		switch(pTextureType){
+		case ett2d:
+			hasSkinUse = pImage->GetSkinUseTexture();
+			break;
+			
+		case ettCube:
+			hasSkinUse = pImage->GetSkinUseCubeMap();
+			break;
+			
+		case ettArray:
+			hasSkinUse = pImage->GetSkinUseArrayTexture();
+			break;
+		}
+	}
+	
+	if(!hasSkinUse){
 		pCreatePixelBufferMipMap( texture, channelFormat );
 		if( pPixelBufferMipMap ){
 			// the actual creation of the texture will be done during the delayed creation of the skin
@@ -372,37 +391,37 @@ void deoglSkinChannel::ClearCacheData(){
 void deoglSkinChannel::UseSharedImage(){
 	// called in render thread. deleting opengl objects here is fine but using
 	// deoglDelayedOperations results in dead-locking
-	DEASSERT_NOTNULL( pImage )
+	DEASSERT_NOTNULL(pImage)
 	
-	if( pTexture ){
-		if( pImage->GetSkinUse() ){
+	if(pTexture){
+		if(pImage->GetSkinUseTexture()){
 			delete pTexture;
 			
 		}else{
-			pImage->SetTexture( pTexture ); // guaranteed to not use deoglDelayedOperations
+			pImage->SetTexture(pTexture); // guaranteed to not use deoglDelayedOperations
 		}
 		
-		pTexture = NULL;
+		pTexture = nullptr;
 		
-	}else if( pCubeMap ){
-		if( pImage->GetSkinUse() ){
+	}else if(pCubeMap){
+		if(pImage->GetSkinUseCubeMap()){
 			delete pCubeMap;
 			
 		}else{
-			pImage->SetCubeMap( pCubeMap ); // guaranteed to not use deoglDelayedOperations
+			pImage->SetCubeMap(pCubeMap); // guaranteed to not use deoglDelayedOperations
 		}
 		
-		pCubeMap = NULL;
+		pCubeMap = nullptr;
 		
-	}else if( pArrayTexture ){
-		if( pImage->GetSkinUse() ){
+	}else if(pArrayTexture){
+		if(pImage->GetSkinUseArrayTexture()){
 			delete pArrayTexture;
 			
 		}else{
-			pImage->SetArrayTexture( pArrayTexture ); // guaranteed to not use deoglDelayedOperations
+			pImage->SetArrayTexture(pArrayTexture); // guaranteed to not use deoglDelayedOperations
 		}
 		
-		pArrayTexture = NULL;
+		pArrayTexture = nullptr;
 	}
 }
 

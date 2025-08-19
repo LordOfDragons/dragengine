@@ -91,12 +91,12 @@ deoglRenderBase( renderThread )
 		
 		// hidden area stereo left
 		sources = shaderManager.GetSourcesNamed( "VR Hidden Area Stereo" );
-		defines.SetDefine( "RENDER_TO_LAYER", 0 );
+		defines.SetDefine("RENDER_PASS", 0);
 		pAsyncGetPipeline(pPipelineHiddenAreaClearMaskStereoLeft, pipconf, sources, defines);
 		pAsyncGetPipeline(pPipelineHiddenAreaDepthStereoLeft, pipconf2, sources, defines);
 		
 		// hidden area stereo right
-		defines.SetDefine( "RENDER_TO_LAYER", 1 );
+		defines.SetDefine("RENDER_PASS", 1);
 		pAsyncGetPipeline(pPipelineHiddenAreaClearMaskStereoRight, pipconf, sources, defines);
 		pAsyncGetPipeline(pPipelineHiddenAreaDepthStereoRight, pipconf2, sources, defines);
 		

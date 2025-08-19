@@ -112,6 +112,9 @@ public:
 	/** \brief Dot-product. */
 	float Dot( const decQuaternion &q ) const;
 	
+	/** \brief Angle in radians between two quaternions. */
+	float AngleBetween(const decQuaternion &q) const;
+	
 	/**
 	 * \brief Retrieves quaternion as euler angles.
 	 * \warning The result is only correct if the quaternion is normalized.

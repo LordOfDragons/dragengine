@@ -175,20 +175,16 @@ class ECBehaviorRenderableCustomColor extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorRenderableCustomColor"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorRenderableCustomColor")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorCustomColor customColor =\
-				eclass.sharedFactoryHelper.defaultCustomColor(eclass, parameters)
+				getHelper().defaultCustomColor(eclass, parameters)
 			
 			var ECBehaviorRenderableCanvas renderableCanvas =\
-				eclass.sharedFactoryHelper.defaultRenderableCanvas(eclass, parameters)
+				getHelper().defaultRenderableCanvas(eclass, parameters)
 			
 			var ECBehaviorRenderableCustomColor behavior
 			if renderableCanvas != null
@@ -196,10 +192,9 @@ class ECBehaviorRenderableCustomColor extends DefaultECBehavior
 				
 			else
 				behavior = ECBehaviorRenderableCustomColor.new(eclass, customColor,\
-					eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), "", id)
+					getHelper().defaultDynamicSkin(eclass, parameters), "", id)
 			end
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "renderableCustomColor", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "renderableCustomColor", id)
 			return behavior
 		end
 	end

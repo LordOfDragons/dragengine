@@ -4,5 +4,5 @@
 	<stage>geometry</stage>
 	<source>hiddenarea.geom.glsl</source>
 	
-	<define>RENDER_TO_LAYER</define>
+	<define>RENDER_PASS</define>
 </shaderSource>

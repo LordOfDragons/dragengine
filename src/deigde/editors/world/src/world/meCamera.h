@@ -46,6 +46,7 @@ private:
 	meWorld *pWorld;
 	
 	meObject *pHostObject;
+	decDMatrix pHostMatrix, pInvHostMatrix;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -53,7 +54,7 @@ public:
 	/** Creates a new camera. */
 	meCamera( deEngine *engine );
 	/** Cleans up the camera object. */
-	virtual ~meCamera();
+	~meCamera() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -73,13 +74,22 @@ public:
 	/** Determines if this camera has a host object. */
 	bool HasHostObject() const;
 	
+	/** Matrix transforming from host object to camera. */
+	inline const decDMatrix &GetHostMatrix() const{ return pHostMatrix; }
+	
+	/** Matrix transforming from camera to host object. */
+	inline const decDMatrix &GetInvHostMatrix() const{ return pInvHostMatrix; }
+	
+	/** Set matrix transforming from host object to camera (and inverse). */
+	void SetHostMatrix(const decDMatrix &matrix);
+	
 	/** Resets the camera. */
-	virtual void Reset();
+	void Reset() override;
 	
 	/** Geometry changed. */
-	virtual void GeometryChanged();
+	void GeometryChanged() override;
 	/** Adaption changed. */
-	virtual void AdaptionChanged();
+	void AdaptionChanged() override;
 	/*@}*/
 	
 private:

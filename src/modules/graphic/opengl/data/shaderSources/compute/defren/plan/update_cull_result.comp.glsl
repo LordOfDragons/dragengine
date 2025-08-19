@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -6,11 +8,10 @@ precision HIGHP int;
 #include "shared/defren/plan/world_element_constants.glsl"
 #include "shared/defren/plan/counter.glsl"
 
-#ifndef CLEAR_CULL_RESULT
+// !ClearCullResult
 UBOLAYOUT_BIND(0) readonly buffer Element {
 	sElement pElement[];
 };
-#endif
 
 UBOLAYOUT_BIND(1) readonly buffer VisibleElement {
 	uvec4 pVisibleElement[];
@@ -25,16 +26,14 @@ UBOLAYOUT_BIND(3) writeonly restrict buffer ElementCullResult {
 };
 
 
-uniform uint pLodLayer;
+UNIFORM_BIND(0) uniform uint pLodLayer;
 
 
-#ifndef CLEAR_CULL_RESULT
-	#include "shared/defren/plan/find_config.glsl"
-	
-	#ifdef WITH_CALC_LOD
-		#include "shared/defren/plan/calc_lod.glsl"
-	#endif
-#endif
+// !ClearCullResult
+#include "shared/defren/plan/find_config.glsl"
+
+// !ClearCullResult and WithCalcLod
+#include "shared/defren/plan/calc_lod.glsl"
 
 #include "shared/defren/plan/element_cull_result_set.glsl"
 
@@ -55,18 +54,16 @@ void main( void ){
 	
 	uint cullResult = uint( 0 );
 	
-	#ifndef CLEAR_CULL_RESULT
+	if(!ClearCullResult){
 		uint flags = visibleElement >> uint( 24 );
-		uint lod;
+		uint lod = uint(0);
 		
-		#ifdef WITH_CALC_LOD
-			lod = calcLod( elementIndex );
-		#else
-			lod = uint( 0 );
-		#endif
+		if(WithCalcLod){
+			lod = calcLod(elementIndex);
+		}
 		
-		cullResult = composeElementCullResult( flags, lod );
-	#endif
+		cullResult = composeElementCullResult(flags, lod);
+	}
 	
 	setElementCullResult( elementIndex, cullResult );
 }

@@ -34,16 +34,16 @@ pin Dragengine.Utils
 /**
  * \brief Default implementation of ECBehaviorInstance doing nothing.
  */
-public class DefaultECBehaviorInstance implements ECBehaviorInstance
-	private var BehaviorElement pElement
-	private var int pInstanceIndex
-	private var bool pRequiresThink
-	private var bool pRequiresEnterFrame
+class DefaultECBehaviorInstance implements ECBehaviorInstance
+	var BehaviorElement pElement
+	var int pInstanceIndex
+	var bool pRequiresThink
+	var bool pRequiresEnterFrame
 	
 	
 	
 	/** \brief Create default composeable instance. */
-	public func new(BehaviorElement element)
+	func new(BehaviorElement element)
 		pElement = element
 		pRequiresThink = false
 		pRequiresEnterFrame = false
@@ -51,46 +51,46 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	end
 	
 	/** \brief Dispose of behavior instance. */
-	public func void dispose()
+	func void dispose()
 		pElement = null
 	end
 	
 	
 	
 	/** \brief Behavior element to apply behavior to. */
-	public func BehaviorElement getElement()
+	func BehaviorElement getElement()
 		return pElement
 	end
 	
 	/** \brief Behavior instance index. */
-	public func int getInstanceIndex()
+	func int getInstanceIndex()
 		return pInstanceIndex
 	end
 	
 	
 	
 	/** \brief Initialize element from stub. */
-	public func void init(StubElement stub)
+	func void init(StubElement stub)
 	end
 	
 	/** \brief State changed (visble, touchable). */
-	public func void stateChanged()
+	func void stateChanged()
 	end
 	
 	/** \brief Position or orientation changed. */
-	public func void geometryChanged()
+	func void geometryChanged()
 	end
 	
 	/** \brief Add element to game world. */
-	public func void addToGameWorld()
+	func void addToGameWorld()
 	end
 	
 	/** \brief Remove element from game world. */
-	public func void removeFromGameWorld()
+	func void removeFromGameWorld()
 	end
 	
 	/** \brief Behavior instance requires enterFrame() to be called. */
-	public func bool requiresEnterFrame()
+	func bool requiresEnterFrame()
 		return pRequiresEnterFrame
 	end
 	
@@ -100,11 +100,11 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	end
 	
 	/** \brief Frame update started. */
-	public func void enterFrame()
+	func void enterFrame()
 	end
 	
 	/** \brief Behavior instance requires think() to be called. */
-	public func bool requiresThink()
+	func bool requiresThink()
 		return pRequiresThink
 	end
 	
@@ -123,11 +123,11 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	end
 	
 	/** \brief Think about what to do for the next frame update. */
-	public func void think(float elapsed)
+	func void think(float elapsed)
 	end
 	
 	/** \brief Post thinking after physics processing is finished. */
-	public func void postThink(float elapsed)
+	func void postThink(float elapsed)
 	end
 	
 	/**
@@ -137,7 +137,7 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	 * attaching succeedes. If multiple behaviors support attaching they have to negotiate
 	 * with each other who does the attaching for example by using BehaviorElement.getParent().
 	 */
-	public func void attachToParent(Element parent)
+	func void attachToParent(Element parent)
 	end
 	
 	/**
@@ -147,7 +147,7 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	 * This allows subclasses to add persistency support by overwriting this method without
 	 * super calling it.
 	 */
-	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		if reader.readByte() !=  0 // version
 			throw EInvalidParam.new("unsupported version")
 		end
@@ -160,7 +160,7 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	 * This allows subclasses to add persistency support by overwriting this method without
 	 * super calling it.
 	 */
-	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 		writer.writeByte(0) // version
 	end
 end

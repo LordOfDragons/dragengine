@@ -1,0 +1,15 @@
+#define vTCColor vTexCoords1.xy
+#define vTCColorTintMask vTexCoords1.zw
+#define vTCNormal vTexCoords2.xy
+#define vTCReflectivity vTexCoords2.zw
+#define vTCEmissivity vTexCoords3.xy
+#define vTCRefractionDistort vTexCoords3.zw
+#define vTCAO vTexCoords4.xy
+#define vNormal vNormalHTMask.xyz
+#define vTangent vTangentFadeZ.xyz
+#define vHTMask vNormalHTMask.w
+#define vFadeZ vTangentFadeZ.w
+#define vDoubleSided vIndicesFlags.x
+#define vSPBIndex vIndicesFlags.y
+#define vSPBFlags vIndicesFlags.z
+#define vLayer vIndicesFlags.w

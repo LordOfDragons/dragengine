@@ -922,6 +922,14 @@
 								]]></xs:documentation>
 						</xs:annotation>
 					</xs:enumeration>
+					<xs:enumeration value='ECBehaviorLightAnimation'>
+						<xs:annotation>
+							<xs:documentation><![CDATA[
+								Adds Light animation support to ECBehaviorLight.
+								[Documentation](https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lightanimation)
+								]]></xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
 					<xs:enumeration value='ECBehaviorLightDimmer'>
 						<xs:annotation>
 							<xs:documentation><![CDATA[
@@ -1521,7 +1529,7 @@
 			</xs:annotation>
 		</xs:attribute>
 		
-		<xs:attribute type='xs:string' name='class' use='required'>
+		<xs:attribute type='xs:string' name='class' use='required' default='GenericBehaviorElement'>
 			<xs:annotation>
 				<xs:documentation>
 					<![CDATA[

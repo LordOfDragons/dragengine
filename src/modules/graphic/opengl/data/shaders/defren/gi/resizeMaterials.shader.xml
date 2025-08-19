@@ -2,11 +2,7 @@
 <shader>
 	<name>DefRen GI Resize Materials</name>
 	
-	<texture name='texDiffuse' target='0'/>
-	<texture name='texReflectivity' target='1'/>
-	<texture name='texEmissivity' target='2'/>
-	
-	<parameter name='pParameters'/>
+	<parameter name='pParameters' location='0'/>
 	
 	<sourceCode unit='vertex'>V DefRen GI Resize Materials</sourceCode>
 	<sourceCode unit='fragment'>F DefRen GI Resize Materials</sourceCode>

@@ -68,6 +68,29 @@ void deoxrUtils::Convert( const decVector &rotation, XrQuaternionf &xrquat ){
 	Convert( decQuaternion::CreateFromEuler( rotation ), xrquat );
 }
 
+void deoxrUtils::Convert(const decVector &position, XrVector3f &xrpos){
+	xrpos.x = position.x;
+	xrpos.y = position.y;
+	xrpos.z = -position.z;
+}
+
 decMatrix deoxrUtils::Convert( const XrPosef &pose ){
 	return decMatrix::CreateWorld( Convert( pose.position ), Convert( pose.orientation ) );
+}
+
+void deoxrUtils::Convert(const decMatrix &matrix, XrPosef &pose){
+	Convert(matrix.GetPosition(), pose.position);
+	Convert(matrix.ToQuaternion(), pose.orientation);
+}
+
+XrPosef deoxrUtils::IdentityPose(){
+	XrPosef pose;
+	pose.orientation.x = 0.0f;
+	pose.orientation.y = 0.0f;
+	pose.orientation.z = 0.0f;
+	pose.orientation.w = 1.0f;
+	pose.position.x = 0.0f;
+	pose.position.y = 0.0f;
+	pose.position.z = 0.0f;
+	return pose;
 }

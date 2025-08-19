@@ -2,20 +2,11 @@
 
 /*
 	<!-- shared/defren/light/normal_from_depth.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 	<define>GI_RAY</define>
 */
 
-#ifdef DECODE_IN_DEPTH
-	const vec3 unpackDepth = vec3( 1.0, 1.0 / 256.0, 1.0 / 65536.0 );
-#endif
-
-#ifdef GI_RAY
-vec3 normalFromDepth( in ivec2 texcoord, in float centerDepth, in vec3 centerPosition )
-#else
-vec3 normalFromDepth( in ivec3 texcoord, in float centerDepth, in vec3 centerPosition )
-#endif
-{
+vec3 normalFromDepth(const in ivec3 texcoord, const in float centerDepth,
+const in vec3 centerPosition){
 	/*
 	the simple solution uses derivatives. this produces wrong results
 	along corners and is also not usable in compute shaders
@@ -39,17 +30,11 @@ vec3 normalFromDepth( in ivec3 texcoord, in float centerDepth, in vec3 centerPos
 	to obtain the correct one
 	*/
 	
-	#ifdef DECODE_IN_DEPTH
-		vec4 samples = vec4( dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( -1, 0 ) ).rgb, unpackDepth ),
-			dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( 1, 0 ) ).rgb, unpackDepth ),
-			dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, -1 ) ).rgb, unpackDepth ),
-			dot( texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, 1 ) ).rgb, unpackDepth ) );
-	#else
-		vec4 samples = vec4( texelFetchOffset( texDepth, texcoord, 0, ivec2( -1, 0 ) ).r,
-			texelFetchOffset( texDepth, texcoord, 0, ivec2( 1, 0 ) ).r,
-			texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, -1 ) ).r,
-			texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, 1 ) ).r );
-	#endif
+	vec4 samples;
+	samples.x = texelFetchOffset( texDepth, texcoord, 0, ivec2( -1, 0 ) ).r;
+	samples.y = texelFetchOffset( texDepth, texcoord, 0, ivec2( 1, 0 ) ).r;
+	samples.z = texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, -1 ) ).r;
+	samples.w = texelFetchOffset( texDepth, texcoord, 0, ivec2( 0, 1 ) ).r;
 	
 	vec4 difference = abs( samples - vec4( centerDepth ) );
 	

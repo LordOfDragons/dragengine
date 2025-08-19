@@ -107,9 +107,11 @@ private:
 	DEF_NATFUNC( nfGetLargestDisplayIconY );
 	DEF_NATFUNC( nfGetDisplayText );
 	DEF_NATFUNC( nfGetTouchable );
+	DEF_NATFUNC(nfGetApproachable);
 	
 	DEF_NATFUNC( nfIsPressed );
 	DEF_NATFUNC( nfIsTouched );
+	DEF_NATFUNC(nfIsNear);
 	
 	DEF_NATFUNC( nfEquals );
 #undef DEF_NATFUNC

@@ -2,10 +2,7 @@
 <shader>
 	<name>DefRen Copy Depth</name>
 	
-	<texture name="texDepth" target="0"/>
-	<texture name="texColor" target="1"/>
-	
-	<parameter name="pQuadParams"/>
+	<parameter name="pQuadParams" location='0'/>
 	
 	<sourceCode unit="vertex">V Generic FullScreenQuad</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Copy Depth</sourceCode>

@@ -2,9 +2,6 @@
 <shader>
 	<name>Debug Rectangle</name>
 	
-	<texture name='texData1' target='0'/>
-	<texture name='texData2' target='1'/>
-	
 	<sourceCode unit="vertex">V Debug Rectangle</sourceCode>
 	<sourceCode unit="fragment">F Debug Rectangle</sourceCode>
 </shader>

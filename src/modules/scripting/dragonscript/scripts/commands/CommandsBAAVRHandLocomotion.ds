@@ -1,0 +1,159 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Commands
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Commands for player controlled BaseActor with BAAVRHandLocomotion action.
+ * \version 1.28
+ * 
+ * Contains commands as sub classes. A static helper method adds instances of each
+ * command to the command manager of a BaseGameApp.
+ */
+class CommandsBAAVRHandLocomotion
+	/**
+	 * \brief Bridge from BAAVRHandLocomotion to BAAStateMachineEvent.
+	 * 
+	 * Send events match BAAVRHandLocomotion function named with prefix "vrHandLocomotion.".
+	 */
+	class StateMachineEventBridge implements BAAVRHandLocomotion
+		var BAAStateMachineEvent pTarget
+		
+		func new(BAAStateMachineEvent target)
+			pTarget = target
+		end
+		
+		func void startHandLocomotion()
+			pTarget.sendInputAsEvent("vrHandLocomotion.start", null)
+		end
+		
+		func void stopHandLocomotion()
+			pTarget.sendInputAsEvent("vrHandLocomotion.stop", null)
+		end
+	end
+	
+	/** \brief Base class operating only on actors with BAAVRHandLocomotion action. */
+	class HandLocomotionAction extends Command
+		protected var ECBehaviorPlayerControllable.Tracker pTracker
+		protected var bool pRightHand
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker, String name,\
+		String description, bool rightHand) super(name, description)
+			if tracker == null
+				throw ENullPointer.new("tracker")
+			end
+			pTracker = tracker
+			pRightHand = rightHand
+		end
+		
+		protected func BAAVRHandLocomotion getInterface()
+			var ECBehaviorPlayerControllable.Instance actor = pTracker.getActor()
+			if actor == null
+				return null
+			end
+			
+			var ECBehaviorVRHandAction.Instance vrHandAction
+			
+			if pRightHand
+				vrHandAction = ECBehaviorVRHandAction.getInstanceIn(\
+					actor.getElement(), BaseVRActorClass.idVRRightHand)
+				
+			else
+				vrHandAction = ECBehaviorVRHandAction.getInstanceIn(\
+					actor.getElement(), BaseVRActorClass.idVRLeftHand)
+			end
+			
+			if vrHandAction != null
+				var BaseVRHandAction action = vrHandAction.getAction()
+				if action castable BAAVRHandLocomotion
+					return action cast BAAVRHandLocomotion
+					
+				elif action castable BAAStateMachineEvent
+					return StateMachineEventBridge.new(action cast BAAStateMachineEvent)
+				end
+			end
+			return null
+		end
+		
+		func void start()
+			var BAAVRHandLocomotion iface = getInterface()
+			if iface != null
+				iface.startHandLocomotion()
+			end
+		end
+		
+		func void stop()
+			var BAAVRHandLocomotion iface = getInterface()
+			if iface != null
+				iface.stopHandLocomotion()
+			end
+		end
+	end
+	
+	
+	/**
+	 * \brief Add commands to command manager.
+	 * 
+	 * Adds these commands:
+	 * - handLocomotionRight: Right hand locomotion
+	 * - handLocomotionLeft: Left hand locomotion
+	 */
+	static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
+		var HandLocomotionAction action
+		
+		action = HandLocomotionAction.new(tracker, "handLocomotionRight", "Right Hand Locomotion", true)
+		action.setTranslateDescription("UI.Command.HandLocomotionRight.Description")
+		action.setTranslateDisplayName("UI.Command.HandLocomotionRight.DisplayName")
+		commands.add(action)
+		
+		action = HandLocomotionAction.new(tracker, "handLocomotionLeft", "Left Hand Locomotion", false)
+		action.setTranslateDescription("UI.Command.HandLocomotionLeft.Description")
+		action.setTranslateDisplayName("UI.Command.HandLocomotionLeft.DisplayName")
+		commands.add(action)
+	end
+	
+	
+	/**
+	 * \brief Add default bindings for commands.
+	 * 
+	 * Adds bindings for these commands if present in binding manager:
+	 * - "handLocomotionRight"
+	 * - "handLocomotionLeft"
+	 * 
+	 * Adds binding to two finger interaction. Recommended is middle finger (finger=1)
+	 * since index finger (finger=0) is usually occupied by hard coded VR runtime functionality.
+	 */
+	static func void addDefaultBindings(DefaultBindingHelper helper, int finger)
+		if helper.hasVRHand(true)
+			helper.vrHandBindTwoFingerTrigger(true, finger, true, "handLocomotionRight")
+		end
+		
+		if helper.hasVRHand(false)
+			helper.vrHandBindTwoFingerTrigger(false, finger, true, "handLocomotionLeft")
+		end
+	end
+end

@@ -571,6 +571,17 @@
 						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name='createSideLane' type='xs:boolean' use='optional'>
+					<xs:annotation>
+						<xs:documentation>
+							<![CDATA[
+							If true runs conversation snippet in a new side lane. Side lanes
+							run in parallel to the main lane simplifying conversation scripts
+							containing heavily timed actions.
+							]]>
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
@@ -674,6 +685,27 @@
 				To apply the pause to the end of the last spoken text append <code>endActorSpeak</code>
 				tag after the pause. This is especially useful if the current <code>waitMode</code> is
 				<code>noWait</code>. In this case the spoken text is prolonged which prolongs also gestures.
+				</p>
+				<p>
+				For translation simple conversations omit this tag
+				</p>
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base='xs:decimal'/>
+	</xs:simpleType>
+	
+	<xs:simpleType name='time'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Align next action to time in seconds since the beginning of the snippet.
+				<p>
+				Works only with <code>waitMode</code> set to <code>noWait</code>.
+				Adds pause similar to <code>pause</code> but calculates the required delay
+				using the desired time and the last action time relative to the beginning
+				of the snippet. Basically this is the sum of all delays and pauses encountered
+				so far. For this reason time based alignment works only with no wait mode.
 				</p>
 				<p>
 				For translation simple conversations omit this tag
@@ -1018,6 +1050,45 @@
 		</xs:attribute>
 	</xs:complexType>
 	
+	<xs:complexType name='condition_has'>
+		<xs:annotation>
+			<xs:documentation>
+				<![CDATA[
+				Evaluate if actor or conversation coordinate system is present.
+				]]>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name='actor' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					If attribute is present evaluate if actor with id or alias is matching
+					attribute value is present.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='coordSystem' type='xs:string' use='optional'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					If attribute is present evaluate if conversation coordinate system with
+					id matching attribute value is present.
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name='test' type='xs:boolean' use='required'>
+			<xs:annotation>
+				<xs:documentation>
+					<![CDATA[
+					Expect actor/convoSystem to be present (true) or absent (false).
+					]]>
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	
 	<xs:complexType name='condition_all'>
 		<xs:annotation>
 			<xs:documentation>
@@ -1051,6 +1122,7 @@
 			<xs:element name='command' type='condition_command'/>
 			<xs:element name='trigger' type='condition_trigger'/>
 			<xs:element name='variable' type='condition_variable'/>
+			<xs:element name='has' type='condition_has'/>
 		</xs:choice>
 	</xs:complexType>
 	
@@ -1062,6 +1134,7 @@
 				<xs:element name='command' type='condition_command'/>
 				<xs:element name='trigger' type='condition_trigger'/>
 				<xs:element name='variable' type='condition_variable'/>
+				<xs:element name='has' type='condition_has'/>
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
@@ -1376,7 +1449,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:choice maxOccurs='unbounded'>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='cameraShot' type='cameraShot'/>
 				<xs:element name='snippet' type='cameraShot.snippet'/>
 				<xs:element name='command' type='cameraShot.command'/>
@@ -1523,7 +1596,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:choice maxOccurs='unbounded'>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='actorId' type='actor.actorId'/>
 				<xs:element name='camera' type='actor.camera'/>
 				<xs:element name='style' type='actor.style'/>
@@ -1555,7 +1628,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:choice maxOccurs='unbounded'>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='import' type='import'/>
 				<xs:element name='waitMode' type='enum_wait_mode'/>
 				<xs:element name='add' type='add'/>
@@ -1578,11 +1651,13 @@
 						<xs:element name='a' type='actorSpeak_short'/>
 						<xs:element name='pause' type='pause'/>
 						<xs:element name='p' type='pause_short'/>
+						<xs:element name='time' type='time'/>
 					</xs:choice>
 					<xs:element minOccurs='0' maxOccurs='1' name='endActorSpeak' type='endActorSpeak'/>
 				</xs:sequence>
 				<xs:element name='pause' type='pause'/>
 				<xs:element name='p' type='pause_short'/>
+				<xs:element name='time' type='time'/>
 				<xs:element name='command' type='command'/>
 				<xs:element name='snippet' type='run_snippet'/>
 				<xs:element name='wait' type='wait'/>
@@ -1623,7 +1698,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:choice maxOccurs='unbounded'>
+			<xs:choice minOccurs='0' maxOccurs='unbounded'>
 				<xs:element name='camera' type='camera'/>
 				<xs:element name='actor' type='actor'/>
 				<xs:element name='snippet' type='snippet'/>

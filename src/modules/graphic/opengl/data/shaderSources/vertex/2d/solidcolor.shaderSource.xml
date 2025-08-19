@@ -5,4 +5,8 @@
 	<source>solidcolor.vert.glsl</source>
 	
 	<attribute name='inPosition' location='0'/>
+	
+	<!-- uniforms:
+	0: vec4 pPosTransform
+	-->
 </shaderSource>

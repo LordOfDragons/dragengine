@@ -2,10 +2,7 @@
 <shader>
 	<name>Effect Distort Image Stereo</name>
 	
-	<texture name="texColor" target="0"/>
-	<texture name="texDistort" target="1"/>
-	
-	<parameter name="pDistortTransform"/>
+	<parameter name="pDistortTransform" location='3'/>
 	
 	<sourceCode unit="vertex">V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

@@ -54,14 +54,18 @@ Copy-Files -SourceDir (Join-Path -Path $SourceDir -ChildPath "..\data")`
     -TargetDir "$DataTargetDir\data" -Pattern "*"
 
 
-Copy-Files -SourceDir "$RuntimeDir\bin" -Pattern "libdscript.dll" -TargetDir $TargetDir
+if(!$InternalModule)
+{
+    Write-Host "DragonScript Module: Copy Runtime Library to '$TargetDir'"
+
+    Copy-Files -SourceDir "$RuntimeDir\bin" -Pattern "libdscript.dll" -TargetDir $TargetDir
+}
 
 
-$DataTargetDir = "$DistributeDir\$PathDistDESharesModules\scripting\dragonscript\$Version"
 $RuntimeTargetDir = Join-Path -Path $DataTargetDir -ChildPath "dsinstall"
 Write-Host "DragonScript Module: Copy Runtime to '$RuntimeTargetDir'"
 
-Copy-Files -SourceDir "$RuntimeDir\dsinstall" -Pattern "*" -TargetDir $RuntimeTargetDir
+Copy-Files -SourceDir "$RuntimeDir\dsinstall" -Pattern "*.ds" -TargetDir $RuntimeTargetDir
 
 
 # igde
@@ -83,6 +87,6 @@ Write-Host "DragonScript Module: Copy PDBs to '$TargetDir'"
 
 if(!$InternalModule)
 {
-Install-Files -Path "$OutputDir\de_module\scripting\dragonscript\scrdscript.pdb" -Destination $TargetDir
+    Install-Files -Path "$OutputDir\de_module\scripting\dragonscript\scrdscript.pdb" -Destination $TargetDir
+    Install-Files "$RuntimeDir\pdb\libdscript.pdb" -Destination $TargetDir
 }
-Install-Files "$RuntimeDir\pdb\libdscript.pdb" -Destination $TargetDir

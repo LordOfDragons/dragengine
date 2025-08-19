@@ -165,7 +165,7 @@ public:
 		}
 		
 		cePlayback &playback = *pView.GetConversation()->GetPlayback();
-		cePlaybackActionStack &stack = playback.GetActionStack();
+		cePlaybackActionStack &stack = playback.GetMainActionStack();
 		
 		// action user has to advance himself
 		ceConversationAction * const action = stack.HasNextAction() ? stack.GetTop().GetNextAction() : NULL;
@@ -220,7 +220,7 @@ public:
 			
 			// push option actions to stack or advance to the next action if missing
 			if( option->GetActions().GetCount() > 0 ){
-				playback.GetActionStack().Push( NULL, action, &option->GetActions(), 0 );
+				playback.GetMainActionStack()->Push( NULL, action, &option->GetActions(), 0 );
 				
 			}else{
 				playback.AdvanceToNextAction();

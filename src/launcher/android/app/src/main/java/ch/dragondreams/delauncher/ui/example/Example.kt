@@ -93,6 +93,8 @@ class Example(
                     "${activity.packageName}.provider", pathInstalled!!),
                 RunDelgaActivity.MIME_TYPE_DELGA)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            //addFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra(RunDelgaActivity.EXTRA_OWNER_PACKAGE, activity.packageName)
             putExtra(RunDelgaActivity.EXTRA_GAME_ID, gameId)
         }
@@ -106,7 +108,6 @@ class Example(
             }
             return false
         }
-
         return true
     }
 }

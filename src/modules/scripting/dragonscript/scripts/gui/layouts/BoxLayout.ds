@@ -42,9 +42,9 @@ class BoxLayout implements Layout
 	/**
 	 * \brief Create layout with 0 gap.
 	 */
-	public func new( LayoutAxis axis )
-		this.setAxis( axis )
-		this.pGap = 0
+	func new(LayoutAxis axis)
+		setAxis(axis)
+		pGap = 0
 	end
 	
 	/**
@@ -52,34 +52,34 @@ class BoxLayout implements Layout
 	 * \param gap Size of gap between child widgets. Can be negative to overlap widgets.
 	 * \throws EInvalidParam axis is not LayoutAxis.x, LayoutAxis.y, LayoutAxis.inverseX or LayoutAxis.inverseY.
 	 */
-	public func new( LayoutAxis axis, int gap )
-		this.setAxis( axis )
-		this.setGap( gap )
+	func new(LayoutAxis axis, int gap)
+		setAxis(axis)
+		setGap(gap)
 	end
 	
 	
 	
 	/** \brief Gap between child widgets. */
-	public func int getGap()
-		return this.pGap
+	func int getGap()
+		return pGap
 	end
 	
 	/**
 	 * \brief Set gap between child widgets.
 	 * \details Can be negative to overlap widgets.
 	 */
-	public func void setGap( int gap )
-		this.pGap = gap
+	func void setGap(int gap)
+		pGap = gap
 	end
 	
 	/** \brief Axis to arrange widgets along. */
-	public func LayoutAxis getAxis()
-		return this.pAxis
+	func LayoutAxis getAxis()
+		return pAxis
 	end
 	
 	/** \brief Set axis to arrange along. */
-	public func void setAxis( LayoutAxis axis )
-		this.pAxis = axis
+	func void setAxis(LayoutAxis axis)
+		pAxis = axis
 	end
 	
 	
@@ -89,31 +89,31 @@ class BoxLayout implements Layout
 	 * \param widget Widget to add to layout.
 	 * \param settings Not used.
 	 */
-	public func void addWidget( Widget widget, Object settings )
+	func void addWidget(Widget widget, Object settings)
 	end
 	
 	/** \brief Remove widget from layout. */
-	public func void removeWidget( Widget widget )
+	func void removeWidget(Widget widget)
 	end
 	
 	
 	
 	/** \brief Layout widgets in container. */
-	public func void doLayout( Container container )
+	func void doLayout(Container container)
 		var int count = container.getWidgetCount()
 		
 		// determine first the minimum size needed. this is the real minimum size not a
 		// potentially artifial minimal size from container.getMinimumSize()
 		var int width = container.getContainerWidth()
 		var int height = container.getContainerHeight()
-		var Point minSize = this.getMinimumSizeFor( container, width, height )
+		var Point minSize = getMinimumSizeFor(container, width, height)
 		
 		// now determine how much additional space we have got
 		// at our disposal to size child widgets beyond minimum
-		var bool negate = ( this.pAxis == LayoutAxis.inverseX or this.pAxis == LayoutAxis.inverseY )
+		var bool negate = (pAxis == LayoutAxis.inverseX or pAxis == LayoutAxis.inverseY)
 		var int cx = container.getPadding().getLeft()
 		var int cy = container.getPadding().getTop()
-		var int w, sizeGain, availCount
+		var int i, sizeGain, availCount
 		var Point childSize
 		var Widget child
 		
@@ -123,32 +123,29 @@ class BoxLayout implements Layout
 		var int borderLeft
 		var int borderTop
 		
-		for w = 0 to count
-			if container.getWidget( w ).getVisible()
+		for i = 0 to count
+			if container.getWidget(i).getVisible()
 				availCount++
 			end
 		end
 		
-		select this.pAxis
+		select pAxis
 		case LayoutAxis.x, LayoutAxis.inverseX
-			var int availSpace = DEMath.max( container.getWidth() - minSize.getX(), 0 )
+			var int availSpace = DEMath.max(container.getWidth() - minSize.getX(), 0)
 			if negate
 				cx += width
 			end
 			
-			for w = 0 to count
-				child = container.getWidget( w )
+			for i = 0 to count
+				child = container.getWidget(i)
 				if not child.getVisible()
 					continue
 				end
 				
-				childSize = child.getMinimumSizeForHeight( height )
+				childSize = child.getMinimumSizeForHeight(height)
 				
 				if child.getBorder() == null
-					borderLeft = 0
-					borderTop = 0
-					borderWidth = 0
-					borderHeight = 0
+					borderLeft = borderTop = borderWidth = borderHeight = 0
 					
 				else
 					borderSize = child.getBorder().getBorderSize()
@@ -158,38 +155,35 @@ class BoxLayout implements Layout
 					borderHeight = borderSize.getHeight()
 				end
 				sizeGain = availSpace / availCount--
-				child.setSize( Point.new( childSize.getX() + sizeGain, height - borderHeight ) )
+				child.setSize(Point.new(childSize.getX() + sizeGain, height - borderHeight))
 				availSpace -= sizeGain
 				
 				if negate
-					cx -= childSize.getX() + sizeGain + borderWidth + this.pGap
-					child.setPosition( Point.new( cx + borderLeft + this.pGap, cy + borderTop ) )
+					cx -= childSize.getX() + sizeGain + borderWidth + pGap
+					child.setPosition(Point.new(cx + borderLeft + pGap, cy + borderTop))
 					
 				else
-					child.setPosition( Point.new( cx + borderLeft, cy + borderTop ) )
-					cx += childSize.getX() + sizeGain + borderWidth + this.pGap
+					child.setPosition(Point.new(cx + borderLeft, cy + borderTop))
+					cx += childSize.getX() + sizeGain + borderWidth + pGap
 				end
 			end
 			
 		else
-			var int availSpace = DEMath.max( container.getHeight() - minSize.getY(), 0 )
+			var int availSpace = DEMath.max(container.getHeight() - minSize.getY(), 0)
 			if negate
 				cy += height
 			end
 			
-			for w = 0 to count
-				child = container.getWidget( w )
+			for i = 0 to count
+				child = container.getWidget(i)
 				if not child.getVisible()
 					continue
 				end
 				
-				childSize = child.getMinimumSizeForWidth( width )
+				childSize = child.getMinimumSizeForWidth(width)
 				
 				if child.getBorder() == null
-					borderLeft = 0
-					borderTop = 0
-					borderHeight = 0
-					borderWidth = 0
+					borderLeft = borderTop = borderHeight = borderWidth = 0
 					
 				else
 					borderSize = child.getBorder().getBorderSize()
@@ -199,16 +193,16 @@ class BoxLayout implements Layout
 					borderHeight = borderSize.getHeight()
 				end
 				sizeGain = availSpace / availCount--
-				child.setSize( Point.new( width - borderWidth, childSize.getY() + sizeGain ) )
+				child.setSize(Point.new(width - borderWidth, childSize.getY() + sizeGain))
 				availSpace -= sizeGain
 				
 				if negate
-					cy -= childSize.getY() + sizeGain + borderHeight + this.pGap
-					child.setPosition( Point.new( cx + borderLeft, cy + borderTop + this.pGap ) )
+					cy -= childSize.getY() + sizeGain + borderHeight + pGap
+					child.setPosition(Point.new(cx + borderLeft, cy + borderTop + pGap))
 					
 				else
-					child.setPosition( Point.new( cx + borderLeft, cy + borderTop ) )
-					cy += childSize.getY() + sizeGain + borderHeight + this.pGap
+					child.setPosition(Point.new(cx + borderLeft, cy + borderTop))
+					cy += childSize.getY() + sizeGain + borderHeight + pGap
 				end
 			end
 		end
@@ -217,21 +211,21 @@ class BoxLayout implements Layout
 	
 	
 	/** \brief Minimal size required for layout in container. */
-	public func Point getMinimumSize( Container container )
-		return this.getMinimumSizeFor( container, \
-			container.getContainerWidth(), container.getContainerHeight() )
+	func Point getMinimumSize(Container container)
+		return getMinimumSizeFor(container,\
+			container.getContainerWidth(), container.getContainerHeight())
 	end
 	
 	/** \brief Minimum size of layout using reference width and variable height. */
-	public func Point getMinimumSizeForWidth( Container container, int width )
-		return this.getMinimumSizeFor( container, \
-			DEMath.max( 0, width - container.getPadding().getWidth() ), container.getContainerHeight() )
+	func Point getMinimumSizeForWidth(Container container, int width)
+		return getMinimumSizeFor(container,\
+			DEMath.max(0, width - container.getPadding().getWidth()), container.getContainerHeight())
 	end
 	
 	/** \brief Minimum size of layout using reference widget height and variable width. */
-	public func Point getMinimumSizeForHeight( Container container, int height )
-		return this.getMinimumSizeFor( container, \
-			container.getContainerWidth(), DEMath.max( 0, height - container.getPadding().getHeight() ) )
+	func Point getMinimumSizeForHeight(Container container, int height)
+		return getMinimumSizeFor(container, container.getContainerWidth(),\
+			DEMath.max(0, height - container.getPadding().getHeight()))
 	end
 	
 	
@@ -241,52 +235,47 @@ class BoxLayout implements Layout
 	 * \details If LayoutAxis.x is used height is the reference size. If LayoutAxis.y is used
 	 *          width is the reference size.
 	 */
-	protected func Point getMinimumSizeFor( Container container, int width, int height )
-		var int count = container.getWidgetCount()
-		var bool usePadding = false
-		var int w, cx = 0, cy = 0
+	protected func Point getMinimumSizeFor(Container container, int width, int height)
+		var int i, cx, cy, count = container.getWidgetCount()
+		var bool usePadding
 		var Point childSize
 		var Widget child
 		
-		select this.pAxis
+		select pAxis
 		case LayoutAxis.x, LayoutAxis.inverseX
 			if count > 0
-				for w = 0 to count
-					child = container.getWidget( w )
+				for i = 0 to count
+					child = container.getWidget(i)
 					if not child.getVisible()
 						continue
 					end
 					
-					childSize = child.getMinimumSizeWithBorderForHeight( height )
-					cx += childSize.getX() + this.pGap
-					if childSize.getY() > cy
-						cy = childSize.getY()
-					end
+					childSize = child.getMinimumSizeWithBorderForHeight(height)
+					cx += childSize.getX() + pGap
+					cy = DEMath.max(cy, childSize.getY())
 					usePadding = true
 				end
-				cx -= this.pGap // because we added one gap too much
+				cx -= pGap // because we added one gap too much
 			end
 			
 		else
 			if count > 0
-				for w = 0 to count
-					child = container.getWidget( w )
+				for i = 0 to count
+					child = container.getWidget(i)
 					if not child.getVisible()
 						continue
 					end
 					
-					childSize = child.getMinimumSizeWithBorderForWidth( width )
-					cy += childSize.getY() + this.pGap
-					if childSize.getX() > cx
-						cx = childSize.getX()
-					end
+					childSize = child.getMinimumSizeWithBorderForWidth(width)
+					cy += childSize.getY() + pGap
+					cx = DEMath.max(cx, childSize.getX())
 					usePadding = true
 				end
-				cy -= this.pGap // because we added one gap too much
+				cy -= pGap // because we added one gap too much
 			end
 		end
 		
-		var Point size = Point.new().largest( cx, cy )
+		var Point size = Point.new().largest(cx, cy)
 		if usePadding
 			size = size + container.getPadding().getSize()
 		end

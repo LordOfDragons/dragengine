@@ -1390,7 +1390,7 @@ void ceWPTopic::PlayActionFromHere(){
 		return;
 	}
 	
-	if( ! pConversation->GetPlayback()->GetActionStack().GetTop().GetParentList() ){
+	if( ! pConversation->GetPlayback()->GetMainActionStack()->GetTop().GetParentList() ){
 		return; // this should never happen
 	}
 	

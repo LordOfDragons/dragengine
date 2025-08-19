@@ -100,7 +100,19 @@ public:
 		 * 
 		 * Modules have to query the entire list of devices to detect changes.
 		 */
-		eeDevicesAttachedDetached
+		eeDevicesAttachedDetached,
+		
+		/**
+		 * \brief User finger approaches device button.
+		 * \version 1.28
+		 */
+		eeButtonApproach,
+		
+		/**
+		 * \brief User finger withdrew from device button.
+		 * \version 1.28
+		 */
+		eeButtonWithdraw,
 	};
 	
 	/** \brief State modifiers. */

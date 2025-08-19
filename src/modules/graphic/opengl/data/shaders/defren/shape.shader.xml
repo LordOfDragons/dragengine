@@ -2,12 +2,10 @@
 <shader>
 	<name>DefRen Shape</name>
 	
-	<texture name='texDepth' target='0'/>
-	
-	<parameter name='pMatrixModel'/>
-	<parameter name='pColor'/>
-	<parameter name='pMatrixModel2'/>
-	<parameter name='pDrawIDOffset'/>
+	<parameter name='pMatrixModel' location='0'/>
+	<parameter name='pColor' location='3'/>
+	<parameter name='pMatrixModel2' location='1'/>
+	<parameter name='pDrawIDOffset' location='2'/>
 	
 	<sourceCode unit='vertex'>V DefRen Shape</sourceCode>
 	<sourceCode unit='fragment'>F Generic Color</sourceCode>

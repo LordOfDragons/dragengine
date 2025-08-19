@@ -11,11 +11,9 @@
 	<shaderStorageBlock name='OcclusionMeshParametersSSBO' binding='0'/>
 	
 	<define>WITH_SHADOWMAP</define>
-	<define>GS_RENDER_CUBE</define>
 	<define>GS_RENDER_CUBE_CULLING</define>
-	<define>GS_RENDER_CASCADED</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>DEPTH_OFFSET</define>
 	<define>DEPTH_DISTANCE</define>
 	<define>SHARED_SPB</define>

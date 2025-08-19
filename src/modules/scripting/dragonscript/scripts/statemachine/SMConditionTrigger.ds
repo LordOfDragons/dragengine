@@ -67,8 +67,8 @@ class SMConditionTrigger implements SMCondition
 	
 	
 	/** \brief Create condition. */
-	public func new( StringID name, TestMode testMode ) \
-	this( BaseGameApp.getApp().getTriggerTable(), name, testMode )
+	func new(StringID name, TestMode testMode)\
+	this(BehaviorElementClass.sharedFactoryHelper.defaultTriggerTable(), name, testMode)
 	end
 	
 	/** \brief Create condition. */

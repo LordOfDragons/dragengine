@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Gui.Layouts
 
 pin Dragengine.Gui.Borders
@@ -47,66 +46,52 @@ class ScrollPanelLayout implements Layout
 	end
 	
 	
-	
-	/** \brief Content */
-	private var Widget pContent
-	
-	/** \brief Horizontal scrollbar widget */
-	private var ScrollBar pHorizontalScrollBar
-	
-	/** \brief Vertical scrollbar widget */
-	private var ScrollBar pVerticalScrollBar
-	
-	/** \brief Gap between scrollbars and the content viewport */
-	private var int pGap
-	
+	var Widget pContent
+	var ScrollBar pHorizontalScrollBar, pVerticalScrollBar
+	var int pGap
 	
 	
 	/** \brief Create layout with 0 gap. */
-	public func new()
-		this.pGap = 0
+	func new()
 	end
 	
 	/**
 	 * \brief Create layout.
 	 * \param gap Gap in pixels between areas.
 	 */
-	public func new( int gap )
-		this.setGap( gap )
+	func new(int gap)
+		setGap(gap)
 	end
-	
 	
 	
 	/** \brief Gap between areas in pixels. */
-	public func int getGap()
-		return this.pGap
+	func int getGap()
+		return pGap
 	end
 	
 	/** \brief Set gap between areas in pixels. */
-	public func void setGap( int gap )
+	func void setGap(int gap)
 		if gap < 0
 			throw EInvalidParam.new()
 		end
-		this.pGap = gap
+		pGap = gap
 	end
-	
 	
 	
 	/** \brief Content widget or \em null if not set. */
-	public func Widget getContent()
-		return this.pContent
+	func Widget getContent()
+		return pContent
 	end
 	
 	/** \brief Horizontal scrollbar or \em null if not set. */
-	public func ScrollBar getHorizontalScrollBar()
-		return this.pHorizontalScrollBar
+	func ScrollBar getHorizontalScrollBar()
+		return pHorizontalScrollBar
 	end
 	
 	/** \brief Vertical scrollbar or \em null if not set. */
-	public func ScrollBar getVerticalScrollBar()
-		return this.pVerticalScrollBar
+	func ScrollBar getVerticalScrollBar()
+		return pVerticalScrollBar
 	end
-	
 	
 	
 	/**
@@ -116,29 +101,29 @@ class ScrollPanelLayout implements Layout
 	 * \param settings Area to place widget in. Has to be of type \ref Area .
 	 * \throws EInvalidParam widget is \em null.
 	 */
-	public func void addWidget( Widget widget, Object settings )
+	func void addWidget(Widget widget, Object settings)
 		if widget == null
 			throw EInvalidParam.new()
 		end
 		
 		select settings cast Area
 		case Area.content
-			if this.pContent != null
+			if pContent != null
 				throw EInvalidParam.new()
 			end
-			this.pContent = widget
+			pContent = widget
 			
 		case Area.horizontal
-			if this.pHorizontalScrollBar != null
+			if pHorizontalScrollBar != null
 				throw EInvalidParam.new()
 			end
-			this.pHorizontalScrollBar = widget cast ScrollBar
+			pHorizontalScrollBar = widget cast ScrollBar
 			
 		case Area.vertical
-			if this.pVerticalScrollBar != null
+			if pVerticalScrollBar != null
 				throw EInvalidParam.new()
 			end
-			this.pVerticalScrollBar = widget cast ScrollBar
+			pVerticalScrollBar = widget cast ScrollBar
 			
 		else
 			throw EInvalidParam.new()
@@ -146,19 +131,19 @@ class ScrollPanelLayout implements Layout
 	end
 	
 	/** \brief Remove widget from layout. */
-	public func void removeWidget( Widget widget )
+	func void removeWidget(Widget widget)
 		if widget == null
 			throw EInvalidParam.new()
 		end
 		
-		if this.pContent == widget
-			this.pContent = null
+		if pContent == widget
+			pContent = null
 			
-		elif widget == this.pHorizontalScrollBar
-			this.pHorizontalScrollBar = null
+		elif widget == pHorizontalScrollBar
+			pHorizontalScrollBar = null
 			
-		elif widget == this.pVerticalScrollBar
-			this.pVerticalScrollBar = null
+		elif widget == pVerticalScrollBar
+			pVerticalScrollBar = null
 			
 		else
 			throw EInvalidParam.new()
@@ -166,71 +151,57 @@ class ScrollPanelLayout implements Layout
 	end
 	
 	
-	
 	/** \brief Layout widgets in container. */
-	public func void doLayout( Container container )
-		var bool hasHorz = this.pHorizontalScrollBar != null and this.pHorizontalScrollBar.getVisible()
-		var bool hasVert = this.pVerticalScrollBar != null and this.pVerticalScrollBar.getVisible()
-		var bool hasContent = this.pContent != null and this.pContent.getVisible()
+	func void doLayout(Container container)
+		var bool hasHorz = pHorizontalScrollBar != null and pHorizontalScrollBar.getVisible()
+		var bool hasVert = pVerticalScrollBar != null and pVerticalScrollBar.getVisible()
+		var bool hasContent = pContent != null and pContent.getVisible()
 		var int borderLeft = container.getPadding().getLeft()
 		var int borderTop = container.getPadding().getTop()
 		var int borderRight = container.getPadding().getRight()
 		var int borderBottom = container.getPadding().getBottom()
 		var int width = container.getWidth()
 		var int height = container.getHeight()
-		var int gap = this.getGap()
-		var int horzHeight = 0
-		var int horzBLeft = 0
-		var int horzBTop = 0
-		var int horzBRight = 0
-		var int horzBBottom = 0
-		var int vertWidth = 0
-		var int vertBLeft = 0
-		var int vertBTop = 0
-		var int vertBRight = 0
-		var int vertBBottom = 0
-		var int contentBLeft = 0
-		var int contentBTop = 0
-		var int contentBWidth = 0
-		var int contentBHeight = 0
+		var int gap = getGap()
+		var int horzHeight, horzBLeft, horzBTop, horzBRight, horzBBottom
+		var int vertWidth, vertBLeft, vertBTop, vertBRight, vertBBottom
+		var int contentBLeft, contentBTop, contentBWidth, contentBHeight
 		var BorderSize borderSize
-		var int cx = 0
-		var int cy = 0
 		
 		// determine size of content area
-		cx = width - borderLeft - borderRight
-		cy = height - borderTop - borderBottom
+		var int cx = width - borderLeft - borderRight
+		var int cy = height - borderTop - borderBottom
 		
 		if hasHorz
-			horzHeight = this.pHorizontalScrollBar.getMinimumSize().getY()
+			horzHeight = pHorizontalScrollBar.getMinimumSize().getY()
 			
-			if this.pHorizontalScrollBar.getBorder() != null
-				borderSize = this.pHorizontalScrollBar.getBorder().getBorderSize()
+			if pHorizontalScrollBar.getBorder() != null
+				borderSize = pHorizontalScrollBar.getBorder().getBorderSize()
 				horzBLeft = borderSize.getLeft()
 				horzBTop = borderSize.getTop()
 				horzBRight = borderSize.getRight()
 				horzBBottom = borderSize.getBottom()
 			end
 			
-			cy = DEMath.max( cy - horzHeight - gap - horzBTop - horzBBottom, 0 )
+			cy = DEMath.max(cy - horzHeight - gap - horzBTop - horzBBottom, 0)
 		end
 		
 		if hasVert
-			vertWidth = this.pVerticalScrollBar.getMinimumSize().getX()
+			vertWidth = pVerticalScrollBar.getMinimumSize().getX()
 			
-			if this.pVerticalScrollBar.getBorder() != null
-				borderSize = this.pVerticalScrollBar.getBorder().getBorderSize()
+			if pVerticalScrollBar.getBorder() != null
+				borderSize = pVerticalScrollBar.getBorder().getBorderSize()
 				vertBLeft = borderSize.getLeft()
 				vertBTop = borderSize.getTop()
 				vertBRight = borderSize.getRight()
 				vertBBottom = borderSize.getBottom()
 			end
 			
-			cx = DEMath.max( cx - vertWidth - gap - vertBLeft - vertBRight, 0 )
+			cx = DEMath.max(cx - vertWidth - gap - vertBLeft - vertBRight, 0)
 		end
 		
-		if hasContent and this.pContent.getBorder() != null
-			borderSize = this.pContent.getBorder().getBorderSize()
+		if hasContent and pContent.getBorder() != null
+			borderSize = pContent.getBorder().getBorderSize()
 			contentBLeft = borderSize.getLeft()
 			contentBTop = borderSize.getTop()
 			contentBWidth = borderSize.getWidth()
@@ -239,74 +210,73 @@ class ScrollPanelLayout implements Layout
 		
 		// place widgets
 		if hasHorz
-			this.pHorizontalScrollBar.setPosition( Point.new( borderLeft + horzBLeft, height - borderBottom - horzHeight - horzBBottom ) )
-			this.pHorizontalScrollBar.setSize( Point.new( cx - horzBLeft - horzBRight, horzHeight ) )
+			pHorizontalScrollBar.setPosition(Point.new(borderLeft + horzBLeft, height - borderBottom - horzHeight - horzBBottom))
+			pHorizontalScrollBar.setSize(Point.new(cx - horzBLeft - horzBRight, horzHeight))
 		end
 		
 		if hasVert
-			this.pVerticalScrollBar.setPosition( Point.new( width - borderRight - vertWidth - vertBRight, borderTop + vertBTop ) )
-			this.pVerticalScrollBar.setSize( Point.new( vertWidth, cy - vertBTop - vertBBottom ) )
+			pVerticalScrollBar.setPosition(Point.new(width - borderRight - vertWidth - vertBRight, borderTop + vertBTop))
+			pVerticalScrollBar.setSize(Point.new(vertWidth, cy - vertBTop - vertBBottom))
 		end
 		
 		if hasContent
-			cx = DEMath.max( cx - contentBWidth, 0 )
-			cy = DEMath.max( cy - contentBHeight, 0 )
+			cx = DEMath.max(cx - contentBWidth, 0)
+			cy = DEMath.max(cy - contentBHeight, 0)
 			
-			this.pContent.setPosition( Point.new( borderLeft + contentBLeft, borderTop + contentBTop ) )
-			this.pContent.setSize( Point.new( cx , cy ) )
+			pContent.setPosition(Point.new(borderLeft + contentBLeft, borderTop + contentBTop))
+			pContent.setSize(Point.new(cx , cy))
 		end
 	end
 	
 	
 	
 	/** \brief Minimal size required for layout in container. */
-	public func Point getMinimumSize( Container container )
-		var Point minSize = this.getBaseMinimumSize( container )
+	func Point getMinimumSize(Container container)
+		var Point minSize = getBaseMinimumSize(container)
 		
-		if this.pContent != null and this.pContent.getVisible()
-			minSize = minSize + this.pContent.getMinimumSizeWithBorder()
+		if pContent != null and pContent.getVisible()
+			minSize = minSize + pContent.getMinimumSizeWithBorder()
 		end
 		
 		return minSize
 	end
 	
 	/** \brief Minimum size of layout using reference width and variable height. */
-	public func Point getMinimumSizeForWidth( Container container, int width )
-		var Point minSize = this.getBaseMinimumSize( container )
+	func Point getMinimumSizeForWidth(Container container, int width)
+		var Point minSize = getBaseMinimumSize(container)
 		
-		if this.pContent != null and this.pContent.getVisible()
-			minSize = minSize + this.pContent.getMinimumSizeWithBorderForWidth( width )
+		if pContent != null and pContent.getVisible()
+			minSize = minSize + pContent.getMinimumSizeWithBorderForWidth(width)
 		end
 		
 		return minSize
 	end
 	
 	/** \brief Minimum size of layout using reference widget height and variable width. */
-	public func Point getMinimumSizeForHeight( Container container, int height )
-		var Point minSize = this.getBaseMinimumSize( container )
+	func Point getMinimumSizeForHeight(Container container, int height)
+		var Point minSize = getBaseMinimumSize(container)
 		
-		if this.pContent != null and this.pContent.getVisible()
-			minSize = minSize + this.pContent.getMinimumSizeWithBorderForHeight( height )
+		if pContent != null and pContent.getVisible()
+			minSize = minSize + pContent.getMinimumSizeWithBorderForHeight(height)
 		end
 		
 		return minSize
 	end
 	
 	
-	
 	/** \brief Reference size independend minimum size. */
-	protected func Point getBaseMinimumSize( Container container )
+	protected func Point getBaseMinimumSize(Container container)
 		var Point size = Point.new()
-		var int gap = this.getGap()
+		var int gap = getGap()
 		var bool usePadding = false
 		
-		if this.pHorizontalScrollBar != null and this.pHorizontalScrollBar.getVisible()
-			size = size + this.pHorizontalScrollBar.getMinimumSizeWithBorder() + Point.new( 0, gap )
+		if pHorizontalScrollBar != null and pHorizontalScrollBar.getVisible()
+			size = size + pHorizontalScrollBar.getMinimumSizeWithBorder() + Point.new(0, gap)
 			usePadding = true
 		end
 		
-		if this.pVerticalScrollBar != null and this.pVerticalScrollBar.getVisible()
-			size = size + this.pVerticalScrollBar.getMinimumSizeWithBorder() + Point.new( gap, 0 )
+		if pVerticalScrollBar != null and pVerticalScrollBar.getVisible()
+			size = size + pVerticalScrollBar.getMinimumSizeWithBorder() + Point.new(gap, 0)
 			usePadding = true
 		end
 		

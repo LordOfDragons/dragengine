@@ -103,7 +103,7 @@ void deoxrDPSimpleController::pAddDevice( bool left ){
 	
 	pAddButton( device, ebaPrimary, eblHome, false ); // has to be button 1
 	
-	pAddHandTracker( device, left );
+	pAddHandTracker(device, left, true);
 	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

@@ -372,6 +372,44 @@ void deClassARBoneTransformator::nfSetTargetBone::RunFunction( dsRunTime *rt, ds
 	}
 }
 
+// func void setInputBone(String boneName)
+deClassARBoneTransformator::nfSetInputBone::nfSetInputBone(const sInitData &init) :
+dsFunction(init.clsARBoneTrans, "setInputBone",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsStr); // boneName
+}
+void deClassARBoneTransformator::nfSetInputBone::RunFunction(dsRunTime *rt, dsValue *myself){
+	sARBoneTransNatDat &nd = *((sARBoneTransNatDat*)p_GetNativeData(myself));
+	
+	nd.rule->SetInputBone(rt->GetValue(0)->GetString());
+	
+	if(nd.animator){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// func void setInputSource(ARBoneTransformatorInputSource source)
+deClassARBoneTransformator::nfSetInputSource::nfSetInputSource(const sInitData &init) :
+dsFunction(init.clsARBoneTrans, "setInputSource",
+DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsARBoneTransformatorInputSource); // source
+}
+void deClassARBoneTransformator::nfSetInputSource::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(!rt->GetValue(0)->GetRealObject()){
+		DSTHROW(dueNullPointer);
+	}
+	
+	sARBoneTransNatDat &nd = *((sARBoneTransNatDat*)p_GetNativeData(myself));
+	
+	nd.rule->SetInputSource((deAnimatorRuleBoneTransformator::eInputSources)
+		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue(0)->GetRealObject()));
+	
+	if(nd.animator){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void targetAddLink( ARBoneTransformatorTarget target, int link )
@@ -485,6 +523,7 @@ deClassARBoneTransformator::~deClassARBoneTransformator(){
 void deClassARBoneTransformator::CreateClassMembers( dsEngine *engine ){
 	pClsARBoneTransformatorTarget = engine->GetClass( "Dragengine.Scenery.ARBoneTransformatorTarget" );
 	pClsARBoneTransformatorCFrame = engine->GetClass( "Dragengine.Scenery.ARBoneTransformatorCFrame" );
+	pClsARBoneTransformatorInputSource = engine->GetClass("Dragengine.Scenery.ARBoneTransformatorInputSource");
 	
 	sInitData init;
 	init.clsARBoneTrans = this;
@@ -501,6 +540,7 @@ void deClassARBoneTransformator::CreateClassMembers( dsEngine *engine ){
 	init.clsCol = pDS.GetClassCollider();
 	init.clsARBoneTransformatorTarget = pClsARBoneTransformatorTarget;
 	init.clsARBoneTransformatorCFrame = pClsARBoneTransformatorCFrame;
+	init.clsARBoneTransformatorInputSource = pClsARBoneTransformatorInputSource;
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -522,6 +562,8 @@ void deClassARBoneTransformator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetUseAxis( init ) );
 	AddFunction( new nfSetCoordinateFrame( init ) );
 	AddFunction( new nfSetTargetBone( init ) );
+	AddFunction(new nfSetInputBone(init));
+	AddFunction(new nfSetInputSource(init));
 	
 	AddFunction( new nfTargetAddLink( init ) );
 	AddFunction( new nfTargetRemoveAllLinks( init ) );

@@ -1,24 +1,20 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform mat3 pMatrixLayer;
-uniform vec3 pLayerPosition;
-uniform vec4 pLayerColor;
-uniform vec4 pMaterialGamma;
-uniform vec4 pSkyBgColor;
+UNIFORM_BIND(0) uniform mat3 pMatrixLayer;
+UNIFORM_BIND(1) uniform vec3 pLayerPosition;
+UNIFORM_BIND(2) uniform vec4 pLayerColor;
+UNIFORM_BIND(3) uniform vec4 pMaterialGamma;
+UNIFORM_BIND(4) uniform vec4 pSkyBgColor;
 
-uniform mediump sampler2D texSky;
+layout(binding=0) uniform mediump sampler2D texSky;
 
-in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec4 outColor;
 

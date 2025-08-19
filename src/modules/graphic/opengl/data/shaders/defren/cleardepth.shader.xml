@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Clear Depth</name>
 	
-	<parameter name='pDepth'/>
+	<parameter name='pDepth' location='0'/>
 	
 	<sourceCode unit='vertex'>V DefRen Clear Depth</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Clear Depth</sourceCode>

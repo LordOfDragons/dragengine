@@ -158,7 +158,7 @@ void ceWPTTIMActions::BuildPlaybackFromHere() const{
 		GetConversation().GetPlayback()->AdvanceToNextAction();
 		
 	}else{
-		GetConversation().GetPlayback()->GetActionStack().Push(
+		GetConversation().GetPlayback()->GetMainActionStack()->Push(
 			NULL, GetOwnerAction(), &pActions, 0 );
 	}
 }

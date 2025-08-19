@@ -95,12 +95,8 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorAttachToParent"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorAttachToParent")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -110,8 +106,7 @@ class ECBehaviorAttachToParent extends DefaultECBehavior
 			var ECBehaviorAttachToParent behavior = ECBehaviorAttachToParent.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				ECBehaviorAttachable.getBehaviorIn(eclass))
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "attachToParent")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "attachToParent")
 			return behavior
 		end
 	end

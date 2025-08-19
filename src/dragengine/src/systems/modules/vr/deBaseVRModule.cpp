@@ -63,6 +63,9 @@ void deBaseVRModule::SetEnablePassthrough( bool ){
 void deBaseVRModule::SetPassthroughTransparency( float ){
 }
 
+void deBaseVRModule::CenterPlayspace(){
+}
+
 float deBaseVRModule::GetDeviceFaceExpression( int, int ){
 	return 0.0f;
 }
@@ -90,4 +93,8 @@ int deBaseVRModule::AcquireEyeViewImage( eEye ){
 }
 
 void deBaseVRModule::ReleaseEyeViewImage( eEye ){
+}
+
+bool deBaseVRModule::GetButtonNear(int device, int button){
+	return false;
 }

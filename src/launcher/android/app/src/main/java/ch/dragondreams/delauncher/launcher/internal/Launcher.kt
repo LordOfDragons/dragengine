@@ -1,7 +1,7 @@
 package ch.dragondreams.delauncher.launcher.internal
 
 import android.app.Activity
-import android.view.SurfaceView
+import android.view.Surface
 import ch.dragondreams.delauncher.launcher.DragengineLauncher
 import ch.dragondreams.delauncher.launcher.EngineModule
 import ch.dragondreams.delauncher.launcher.GameProfile
@@ -9,7 +9,7 @@ import ch.dragondreams.delauncher.launcher.GameProfile
 class Launcher(
     owner: DragengineLauncher,
     activity: Activity,
-    view: SurfaceView?
+    surface: Surface?
     )
 {
     interface FileDescriptorProducer {
@@ -52,7 +52,7 @@ class Launcher(
                 owner.pathEngineConfig.absolutePath,
                 owner.pathEngineCache.absolutePath,
                 activity,
-                view?.holder?.surface
+                surface
             )
         )
     }

@@ -840,7 +840,7 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
 				DEASSERT_NOTNULL( sources )
 				deoglShaderDefines defines;
-				defines.SetDefines( "WITH_LAYER" );
+				defines.SetDefines( "INPUT_ARRAY_TEXTURES" );
 				pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
 			}
 			program = pShaderGenConeMapLayer;

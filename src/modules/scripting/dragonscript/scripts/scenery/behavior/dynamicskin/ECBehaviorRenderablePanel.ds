@@ -145,19 +145,14 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorRenderablePanel"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorRenderablePanel")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorRenderablePanel behavior = ECBehaviorRenderablePanel.new(eclass,\
-				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "renderablePanel", id)
+				getHelper().defaultDynamicSkin(eclass, parameters), id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "renderablePanel", id)
 			return behavior
 		end
 	end
@@ -280,11 +275,11 @@ class ECBehaviorRenderablePanel extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin) \
-	this(eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), "")
+	this(eclass, dynamicSkin, eclass.sharedFactoryHelper.defaultLoaders(), "")
 	end
 	
 	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, String id) \
-	this(eclass, dynamicSkin, BaseGameApp.getApp().getLoaders(), id)
+	this(eclass, dynamicSkin, eclass.sharedFactoryHelper.defaultLoaders(), id)
 	end
 	
 	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, Loaders loaders) \

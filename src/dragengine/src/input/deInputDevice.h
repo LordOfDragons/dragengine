@@ -428,6 +428,9 @@ private:
 	/** \brief Device supports face mouth expressions. */
 	bool pSupportsFaceMouthExpressions;
 	
+	/** \brief Device is using hand interaction. */
+	bool pUsingHandInteraction;
+	
 	/** \brief Model to represent the device in VR environments or nullptr if not set. */
 	deModel::Ref pVRModel;
 	
@@ -599,6 +602,18 @@ public:
 	 * \version 1.12
 	 */
 	void SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions );
+	
+	/**
+	 * \brief Device is using hand interaction.
+	 * \version 1.28
+	 */
+	inline bool GetUsingHandInteraction() const{ return pUsingHandInteraction; }
+	
+	/**
+	 * \brief Set if device is using hand interaction.
+	 * \version 1.28
+	 */
+	void SetUsingHandInteraction(bool usingHandInteraction);
 	
 	/**
 	 * \brief Model to represent the device in VR environments or NULL if not set.

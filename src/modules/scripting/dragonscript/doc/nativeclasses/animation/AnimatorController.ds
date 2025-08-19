@@ -114,6 +114,21 @@ class AnimatorController
 	func void setRotation(Vector rotation)
 	end
 	
+	/**
+	 * \brief Vector as orientation.
+	 * \version 1.28
+	 */
+	func Quaternion getOrientation()
+		return null
+	end
+	
+	/**
+	 * \brief Set vector from orientation.
+	 * \version 1.28
+	 */
+	func void setOrientation(Quaternion orientation)
+	end
+	
 	/** \brief Controller is frozen. */
 	func bool getFrozen()
 		return false

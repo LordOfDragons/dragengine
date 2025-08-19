@@ -22,12 +22,15 @@
  * SOFTWARE.
  */
 
-
 #include "deAnimation.h"
 #include "deAnimationMove.h"
+#include "deAnimationKeyframe.h"
 #include "deAnimationKeyframeList.h"
+#include "deAnimationKeyframeVertexPositionSet.h"
 #include "deAnimationKeyframeVertexPositionSetList.h"
 #include "../../common/exceptions.h"
+#include "../../common/curve/decCurveBezier.h"
+#include "../../common/curve/decCurveBezierPoint.h"
 
 
 // class deAnimationMove
@@ -141,4 +144,74 @@ void deAnimationMove::AddVertexPositionSetKeyframeList( deAnimationKeyframeVerte
 	
 	pVertexPositionSetLists[ pVertexPositionSetListCount ] = list;
 	pVertexPositionSetListCount++;
+}
+
+void deAnimationMove::GetKeyframeCurve(decCurveBezier &curve, int index,
+BoneParameter parameter) const{
+	const deAnimationKeyframeList &list = *GetKeyframeList(index);
+	
+	curve.RemoveAllPoints();
+	curve.SetInterpolationMode(decCurveBezier::eimLinear);
+	
+	const int count = list.GetKeyframeCount();
+	float value = 0.0f;
+	int i;
+	
+	for(i=0; i<count; i++){
+		const deAnimationKeyframe &kf = *list.GetKeyframe(i);
+		
+		switch(parameter){
+		case BoneParameter::positionX:
+			value = kf.GetPosition().x;
+			break;
+			
+		case BoneParameter::positionY:
+			value = kf.GetPosition().y;
+			break;
+			
+		case BoneParameter::positionZ:
+			value = kf.GetPosition().z;
+			break;
+			
+		case BoneParameter::rotationX:
+			value = kf.GetRotation().x;
+			break;
+			
+		case BoneParameter::rotationY:
+			value = kf.GetRotation().y;
+			break;
+			
+		case BoneParameter::rotationZ:
+			value = kf.GetRotation().z;
+			break;
+			
+		case BoneParameter::scaleX:
+			value = kf.GetScale().x;
+			break;
+			
+		case BoneParameter::scaleY:
+			value = kf.GetScale().y;
+			break;
+			
+		case BoneParameter::scaleZ:
+			value = kf.GetScale().z;
+			break;
+		}
+		
+		curve.AddPoint(decCurveBezierPoint(decVector2(kf.GetTime(), value)));
+	}
+}
+
+void deAnimationMove::GetVertexPositionSetKeyframeCurve(decCurveBezier &curve, int index) const{
+	const deAnimationKeyframeVertexPositionSetList &list = *GetVertexPositionSetKeyframeList(index);
+	
+	curve.RemoveAllPoints();
+	curve.SetInterpolationMode(decCurveBezier::eimLinear);
+	
+	const int count = list.GetKeyframeCount();
+	int i;
+	for(i=0; i<count; i++){
+		const deAnimationKeyframeVertexPositionSet &kf = *list.GetKeyframe(i);
+		curve.AddPoint(decCurveBezierPoint(decVector2(kf.GetTime(), kf.GetWeight())));
+	}
 }

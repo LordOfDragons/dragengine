@@ -4,10 +4,7 @@
 	<stage>tessellateEvaluate</stage>
 	<source>depth.tese.glsl</source>
 	
-	<define>BILLBOARD</define>
-	<define>GS_RENDER_CASCADED</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>TEXTURE_HEIGHT</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->

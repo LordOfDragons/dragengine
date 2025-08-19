@@ -5,4 +5,9 @@
 	<source>renderText.vert.glsl</source>
 	
 	<attribute name='inPosition' location='0'/>
+	
+	<!-- textures:
+	0: texData1
+	1: texData2
+	-->
 </shaderSource>

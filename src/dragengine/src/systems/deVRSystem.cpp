@@ -62,13 +62,13 @@ deVRSystem::~deVRSystem(){
 ///////////////
 
 void deVRSystem::ProcessEvents(){
-	if( GetIsRunning() ){
+	if(GetIsRunning()){
 		pActiveModule->ProcessEvents();
 	}
 }
 
 bool deVRSystem::RuntimeUsable(){
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -76,7 +76,7 @@ bool deVRSystem::RuntimeUsable(){
 }
 
 void deVRSystem::RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportLevel level ){
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -84,7 +84,7 @@ void deVRSystem::RequestFeatureEyeGazeTracking( deBaseVRModule::eFeatureSupportL
 }
 
 void deVRSystem::RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLevel level ){
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -92,7 +92,7 @@ void deVRSystem::RequestFeatureFacialTracking( deBaseVRModule::eFeatureSupportLe
 }
 
 void deVRSystem::StartRuntime(){
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -107,7 +107,7 @@ void deVRSystem::StartRuntime(){
 }
 
 void deVRSystem::StopRuntime(){
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -123,7 +123,7 @@ bool deVRSystem::IsRuntimeRunning(){
 }
 
 void deVRSystem::SetCamera( deCamera *camera ){
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -137,7 +137,7 @@ void deVRSystem::SetCamera( deCamera *camera ){
 }
 
 bool deVRSystem::SupportsPassthrough(){
-	if( ! GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -145,7 +145,7 @@ bool deVRSystem::SupportsPassthrough(){
 }
 
 void deVRSystem::SetEnablePassthrough( bool enable ){
-	if( GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -159,7 +159,7 @@ void deVRSystem::SetEnablePassthrough( bool enable ){
 }
 
 void deVRSystem::SetPassthroughTransparency( float transparency ){
-	if( GetIsRunning() ){
+	if(!GetIsRunning()){
 		DETHROW_INFO( deeInvalidAction, "Module not running" );
 	}
 	
@@ -170,6 +170,14 @@ void deVRSystem::SetPassthroughTransparency( float transparency ){
 	pPassthroughTransparency = transparency;
 	
 	pActiveModule->SetPassthroughTransparency( transparency );
+}
+
+void deVRSystem::CenterPlayspace(){
+	if(!GetIsRunning()){
+		DETHROW_INFO(deeInvalidAction, "Module not running");
+	}
+	
+	pActiveModule->CenterPlayspace();
 }
 
 

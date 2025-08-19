@@ -9,7 +9,8 @@
 	<attribute name='inParticle3' location='3'/>
 	<attribute name='inParticle4' location='4'/>
 	
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
+	<define>PARTICLE_MODE</define>
 	
 	<!-- shared/defren/light/ubo_instance_parameters.glsl -->
 	<uniformBlock name='InstanceParameters' binding='1'/>

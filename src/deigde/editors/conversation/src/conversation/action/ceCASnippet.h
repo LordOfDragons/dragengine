@@ -30,40 +30,52 @@
 #include <dragengine/common/string/decString.h>
 
 
-
 /**
  * \brief Snippet Conversation Action.
  * Process a list of actions from another topic.
  */
 class ceCASnippet : public ceConversationAction{
 private:
-	decString pFile;
-	decString pTopic;
+	decString pFile, pTopic;
+	bool pCreateSideLane;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new snippet conversation action. */
+	/** Create snippet conversation action. */
 	ceCASnippet();
-	/** Creates a new snippet conversation action. */
-	ceCASnippet( const ceCASnippet &snippet );
-	/** Cleans up the snippet conversation action. */
-	virtual ~ceCASnippet();
+	
+	/** Create snippet conversation action. */
+	ceCASnippet(const ceCASnippet &snippet);
+	
+	/** Clean up snippet conversation action. */
+	~ceCASnippet() override;
 	/*@}*/
+	
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the file to look for. */
+	/** File to look for. */
 	inline const decString &GetFile() const{ return pFile; }
-	/** Sets the file to look for. */
-	void SetFile( const char *file );
-	/** Retrieves the topic to look for. */
+	
+	/** Set file to look for. */
+	void SetFile(const char *file);
+	
+	/** Topic to look for. */
 	inline const decString &GetTopic() const{ return pTopic; }
-	/** Sets the topic to look for. */
-	void SetTopic( const char *topic );
+	
+	/** Set topic to look for. */
+	void SetTopic(const char *topic);
+	
+	/** Create side lane. */
+	inline bool GetCreateSideLane() const{ return pCreateSideLane; }
+	
+	/** Set create side lane. */
+	void SetCreateSideLane(bool createSideLane);
 	
 	/** Create a copy of this action. */
-    virtual ceConversationAction *CreateCopy() const;
+	ceConversationAction *CreateCopy() const override;
 	/*@}*/
 };
 

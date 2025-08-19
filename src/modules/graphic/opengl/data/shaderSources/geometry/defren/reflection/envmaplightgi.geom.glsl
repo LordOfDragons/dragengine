@@ -1,8 +1,4 @@
-#if defined GS_INSTANCING
-	#ifndef OPENGLES
-		#extension GL_ARB_gpu_shader5 : require
-	#endif
-#endif
+#include "shared/preamble.glsl"
 
 #ifdef GS_INSTANCING
 	layout( triangles, invocations=6 ) in;
@@ -12,7 +8,7 @@
 	layout( triangle_strip, max_vertices=18 ) out;
 #endif
 
-flat out int vLayer;
+VARYING_BIND(0) flat out int vLayer;
 
 void main( void ){
 	int face;
@@ -26,10 +22,7 @@ void main( void ){
 		int i;
 		for( i=0; i<3; i++ ){
 			gl_Position = gl_in[ i ].gl_Position;
-			
-			vLayer = face;
-			
-			gl_Layer = face;
+			gl_Layer = vLayer = face;
 			gl_PrimitiveID = gl_PrimitiveIDIn;
 			EmitVertex();
 		}

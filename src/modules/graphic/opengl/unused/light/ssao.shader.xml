@@ -4,11 +4,5 @@
 	
 	<uniformBlock name='RenderParameters' target='0'/>
 	
-	<!-- shader assigned locations
-	<texture name='texDiffuse' target='0'/>
-	<texture name='texNormal' target='1'/>
-	<texture name='texAO' target='2'/>
-	-->
-	
 	<sourceCode unit='compute'>compute/defren/light/ssao/ssao.glsl</sourceCode>
 </shader>

@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -23,7 +25,7 @@ UBOLAYOUT_BIND(2) writeonly restrict buffer VisibleGeometry {
 #include "shared/defren/plan/element_cull_result_get.glsl"
 
 
-uniform uint pGeometryCount;
+UNIFORM_BIND(0) uniform uint pGeometryCount;
 
 
 layout( local_size_x=64 ) in;
@@ -64,16 +66,17 @@ void main( void ){
 	}
 	
 	// check geometry matches the lod level selected for the element
-	#ifdef WITH_OCCLUSION
+	if(WithOcclusion){
 		if( ( rfgeometry & erfOcclusion ) != erfOcclusion
 		&& pElementGeometries[ index ].lod != elementCullResultGetLodIndex( cullResult ) ){
 			return;
 		}
-	#else
+		
+	}else{
 		if( pElementGeometries[ index ].lod != elementCullResultGetLodIndex( cullResult ) ){
 			return;
 		}
-	#endif
+	}
 	
 	// add geometry to list of visible geometries
 	uint visibleIndex = atomicCounterIncrement( pNextVisibleIndex );

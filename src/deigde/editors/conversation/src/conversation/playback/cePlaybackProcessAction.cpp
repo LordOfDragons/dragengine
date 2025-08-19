@@ -523,11 +523,19 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 }
 
 void cePlaybackProcessAction::ProcessSnippet( ceConversation &conversation, ceCASnippet *action ){
-	ceConversationTopic * const topic = conversation.GetTopicWithID( action->GetFile(), action->GetTopic() );
+	ceConversationTopic * const topic = conversation.GetTopicWithID(action->GetFile(), action->GetTopic());
 	cePlayback &playback = *conversation.GetPlayback();
 	
-	if( topic ){
-		playback.GetActionStack().Push( topic, action, &topic->GetActionList(), 0 );
+	if(topic){
+		if(action->GetCreateSideLane()){
+			const cePlaybackActionStack::Ref stack(cePlaybackActionStack::Ref::New(new cePlaybackActionStack));
+			stack->Push(topic, action, &topic->GetActionList(), 0);
+			playback.AddSideActionStack(stack);
+			playback.AdvanceToNextAction();
+			
+		}else{
+			playback.GetMainActionStack()->Push(topic, action, &topic->GetActionList(), 0);
+		}
 		
 	}else{
 		playback.AdvanceToNextAction();
@@ -536,7 +544,7 @@ void cePlaybackProcessAction::ProcessSnippet( ceConversation &conversation, ceCA
 
 void cePlaybackProcessAction::ProcessStopConversation( ceConversation& conversation ){
 	cePlayback &playback = *conversation.GetPlayback();
-	cePlaybackActionStack &actionStack = playback.GetActionStack();
+	cePlaybackActionStack &actionStack = playback.GetActiveActionStack();
 	
 	while( actionStack.GetCount() > 1 ){
 		actionStack.Pop();
@@ -553,7 +561,7 @@ void cePlaybackProcessAction::ProcessStopConversation( ceConversation& conversat
 
 void cePlaybackProcessAction::ProcessStopTopic( ceConversation& conversation ){
 	cePlayback &playback = *conversation.GetPlayback();
-	cePlaybackActionStack &actionStack = playback.GetActionStack();
+	cePlaybackActionStack &actionStack = playback.GetActiveActionStack();
 	
 	while( actionStack.GetCount() > 0 && ! actionStack.GetTop().GetParentTopic() ){
 		actionStack.Pop();
@@ -569,7 +577,7 @@ void cePlaybackProcessAction::ProcessStopTopic( ceConversation& conversation ){
 
 void cePlaybackProcessAction::ProcessIfElse( ceConversation &conversation, ceCAIfElse *action ){
 	cePlayback &playback = *conversation.GetPlayback();
-	cePlaybackActionStack &actionStack = playback.GetActionStack();
+	cePlaybackActionStack &actionStack = playback.GetActiveActionStack();
 	cePlaybackEvaluateCondition evalCondition;
 	
 	// if cases
@@ -613,7 +621,7 @@ void cePlaybackProcessAction::ProcessPlayerChoice( ceConversation &conversation,
 	int i;
 	
 	cePlayback &playback = *conversation.GetPlayback();
-	cePlaybackActionStack &actionStack = playback.GetActionStack();
+	cePlaybackActionStack &actionStack = playback.GetActiveActionStack();
 	actionStack.Push( NULL, action, &action->GetActions(), 0 );
 	actionStack.GetTop().SetLooping( true );
 	
@@ -797,7 +805,7 @@ void cePlaybackProcessAction::ProcessGameCommand( ceConversation &conversation, 
 
 void cePlaybackProcessAction::ProcessWait( ceConversation &conversation, ceCAWait *action ){
 	cePlayback &playback = *conversation.GetPlayback();
-	cePlaybackActionStack &actionStack = playback.GetActionStack();
+	cePlaybackActionStack &actionStack = playback.GetActiveActionStack();
 	
 	if( action->GetCondition() ){
 		actionStack.Push( NULL, action, &action->GetActions(), 0 );

@@ -97,12 +97,8 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorCamera"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorCamera")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -114,7 +110,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "camera", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "camera", id)
 			return behavior
 		end
 	end
@@ -264,11 +260,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 	String prefix) super(eclass, id)
 		pCollider = collider
 		pLayerMask = LayerMask.new()
-		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pLoadCamera = app.getLoaders().getCamera()
-		end
+		pLoadCamera = eclass.sharedFactoryHelper.defaultLoaders().getCamera()
 		
 		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		
@@ -404,8 +396,7 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * \brief Camera loader or null.
 	 * \version 1.22
 	 * 
-	 * By default set to BaseGameApp.getApp().getLoaders().getCamera() if
-	 * BaseGameApp.getApp() is not null.
+	 * By default set to BehaviorElementClass.sharedFactoryHelper.getLoaders().getCamera().
 	 */
 	func LoadCamera getLoadCamera()
 		return pLoadCamera

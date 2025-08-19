@@ -53,7 +53,8 @@ pCoordinateFrame( deAnimatorRuleBoneTransformator::ecfComponent ),
 pEnablePosition( false ),
 pEnableOrientation( true ),
 pEnableSize( false ),
-pUseAxis( false )
+pUseAxis( false ),
+pInputSource(deAnimatorRuleBoneTransformator::eisTargetBlend)
 {
 	SetName( "Bone Transformator" );
 }
@@ -75,6 +76,8 @@ pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
 pUseAxis( copy.pUseAxis ),
 pTargetBone( copy.pTargetBone ),
+pInputBone(copy.pInputBone),
+pInputSource(copy.pInputSource),
 pTargetTranslation( copy.pTargetTranslation ),
 pTargetRotation( copy.pTargetRotation ),
 pTargetScaling( copy.pTargetScaling ){
@@ -215,7 +218,6 @@ void aeRuleBoneTransformator::SetMaximumAngle( float angle ){
 }
 
 
-
 void aeRuleBoneTransformator::SetCoordinateFrame( deAnimatorRuleBoneTransformator::eCoordinateFrames coordinateFrame ){
 	if( coordinateFrame < deAnimatorRuleBoneTransformator::ecfBoneLocal
 	|| coordinateFrame > deAnimatorRuleBoneTransformator::ecfTargetBone ){
@@ -234,7 +236,6 @@ void aeRuleBoneTransformator::SetCoordinateFrame( deAnimatorRuleBoneTransformato
 		NotifyRuleChanged();
 	}
 }
-
 
 
 void aeRuleBoneTransformator::SetEnablePosition( bool enable ){
@@ -294,7 +295,6 @@ void aeRuleBoneTransformator::SetUseAxis( bool useAxis ){
 }
 
 
-
 void aeRuleBoneTransformator::SetTargetBone( const char *boneName ){
 	if( pTargetBone == boneName ){
 		return;
@@ -309,6 +309,34 @@ void aeRuleBoneTransformator::SetTargetBone( const char *boneName ){
 	}
 }
 
+
+void aeRuleBoneTransformator::SetInputBone(const char *boneName){
+	if(pInputBone == boneName){
+		return;
+	}
+	
+	pInputBone = boneName;
+	
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetInputBone(boneName);
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleBoneTransformator::SetInputSource(deAnimatorRuleBoneTransformator::eInputSources source){
+	if(source == pInputSource){
+		return;
+	}
+	
+	pInputSource = source;
+	
+	deAnimatorRuleBoneTransformator * const rule = (deAnimatorRuleBoneTransformator*)GetEngineRule();
+	if(rule){
+		rule->SetInputSource(source);
+		NotifyRuleChanged();
+	}
+}
 
 
 void aeRuleBoneTransformator::UpdateTargets(){
@@ -390,7 +418,9 @@ deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
 		engRule->SetUseAxis( pUseAxis );
-		engRule->SetTargetBone( pTargetBone.GetString() );
+		engRule->SetTargetBone(pTargetBone);
+		engRule->SetInputBone(pInputBone);
+		engRule->SetInputSource(pInputSource);
 		
 		pTargetTranslation.UpdateEngineTarget( GetAnimator(), engRule->GetTargetTranslation() );
 		pTargetRotation.UpdateEngineTarget( GetAnimator(), engRule->GetTargetRotation() );
@@ -441,6 +471,8 @@ aeRuleBoneTransformator &aeRuleBoneTransformator::operator=( const aeRuleBoneTra
 	SetEnableSize( copy.pEnableSize );
 	SetUseAxis( copy.pUseAxis );
 	SetTargetBone( copy.pTargetBone );
+	SetInputBone(copy.pInputBone);
+	SetInputSource(copy.pInputSource);
 	pTargetTranslation = copy.pTargetTranslation;
 	pTargetRotation = copy.pTargetRotation;
 	pTargetScaling = copy.pTargetScaling;

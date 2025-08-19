@@ -1,13 +1,11 @@
+#include "shared/preamble.glsl"
+
 precision lowp float;
 precision lowp int;
 
-uniform lowp sampler2DArray texValues;
+layout(binding=0) uniform lowp sampler2DArray texValues;
 
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out lowp float outDummy;
 

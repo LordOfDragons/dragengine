@@ -13,8 +13,8 @@
 	<define>EXT_ARB_SHADER_DRAW_PARAMETERS</define>
 	-->
 	
-	<define>VS_RENDER_STEREO</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
+	<define>LAYERED_RENDERING</define>
 	<define>INVERSE_DEPTH</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->

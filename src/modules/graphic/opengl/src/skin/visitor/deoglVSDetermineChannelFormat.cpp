@@ -70,7 +70,8 @@ pIsDefined( false ),
 pRequiredComponentCount( 1 ),
 pRequiresFloat( false ),
 pAllowMipMap( true ),
-pSharedImage( NULL ){
+pSharedImage( NULL ),
+pTextureType(deoglSkinChannel::ett2d){
 }
 
 deoglVSDetermineChannelFormat::~deoglVSDetermineChannelFormat(){
@@ -91,6 +92,7 @@ void deoglVSDetermineChannelFormat::ProcessChannel( deoglSkinChannel::eChannelTy
 	pRequiresFloat = false;
 	pAllowMipMap = true;
 	pSharedImage = NULL;
+	pTextureType = deoglSkinChannel::ett2d;
 	
 	switch( channel ){
 	case deoglSkinChannel::ectColorOmnidirCube:
@@ -98,9 +100,16 @@ void deoglVSDetermineChannelFormat::ProcessChannel( deoglSkinChannel::eChannelTy
 	case deoglSkinChannel::ectEnvironmentRoom:
 	case deoglSkinChannel::ectEnvironmentRoomEmissivity:
 		pRequiredSize.z = 6;
+		pTextureType = deoglSkinChannel::ettCube;
 		break;
 		
 	default:
+		if(pOglTex.GetVariationU() || pOglTex.GetVariationV()){
+			pTextureType = deoglSkinChannel::ettArray;
+			
+		}else{
+			pTextureType = deoglSkinChannel::ett2d;
+		}
 		break;
 	}
 	

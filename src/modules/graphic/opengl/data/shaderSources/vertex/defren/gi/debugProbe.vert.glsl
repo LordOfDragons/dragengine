@@ -1,22 +1,25 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_gi.glsl"
 
-uniform mat4x3 pMatrixMV;
-uniform mat4 pMatrixP;
-uniform int pGIDebugCascade;
+UNIFORM_BIND(0) uniform mat4x3 pMatrixMV;
+UNIFORM_BIND(1) uniform mat4 pMatrixP;
+UNIFORM_BIND(2) uniform int pGIDebugCascade;
 
 #define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
+#define TEX_GI_PROBE_OFFSET_BINDING 2
 #include "shared/defren/gi/probe_offset.glsl"
 
 layout(location=0) in vec2 inPosition;
 
-flat out ivec3 vProbeCoord;
-flat out vec3 vProbePosition;
-out vec2 vTexCoord;
-flat out float vRimThickness;
+VARYING_BIND(0) flat out ivec3 vProbeCoord;
+VARYING_BIND(1) flat out vec3 vProbePosition;
+VARYING_BIND(2) out vec2 vTexCoord;
+VARYING_BIND(3) flat out float vRimThickness;
 
 ivec3 giIndexToCoord( in int index ){
 	int stride = pGIParams[pGIDebugCascade].probeCount.x * pGIParams[pGIDebugCascade].probeCount.z;

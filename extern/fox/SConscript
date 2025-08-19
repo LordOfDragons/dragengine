@@ -105,7 +105,7 @@ def foxBuild(target, source, env):
 	script.append('autoreconf -fi || exit 1')
 	
 	for p in env['POST_PATCHES']:
-		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+		script.append('patch -F 3 -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	

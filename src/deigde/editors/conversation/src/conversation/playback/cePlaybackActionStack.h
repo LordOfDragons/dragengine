@@ -25,6 +25,8 @@
 #ifndef _CEPLAYBACKACTIONSTACK_H_
 #define _CEPLAYBACKACTIONSTACK_H_
 
+#include <dragengine/deObject.h>
+
 class ceConversationTopic;
 class ceConversationAction;
 class ceConversationActionList;
@@ -39,11 +41,16 @@ class cePlaybackActionStackEntry;
  * stack entry if existing) as well as the action list being processed. The stack is
  * maintained as a growing list to avoid ongoing memory (de)allocation.
  */
-class cePlaybackActionStack{
+class cePlaybackActionStack : public deObject{
+public:
+	typedef deTObjectReference<cePlaybackActionStack> Ref;
+	
 private:
 	cePlaybackActionStackEntry *pEntries;
 	int pEntryCount;
 	int pEntrySize;
+	bool pActionWaiting;
+	float pActionTime;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -51,11 +58,17 @@ public:
 	/** Creates a new stack. */
 	cePlaybackActionStack();
 	/** Cleans up the stack. */
-	~cePlaybackActionStack();
+	~cePlaybackActionStack() override;
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
+	inline bool GetActionWaiting() const{ return pActionWaiting; }
+	void SetActionWaiting(bool actionWaiting);
+	
+	inline float GetActionTime() const{ return pActionTime; }
+	void SetActionTime(float time);
+	
 	/** Retrieves the size of the stack. */
 	inline int GetStackSize() const{ return pEntrySize; }
 	/** Sets the size of the stack. */

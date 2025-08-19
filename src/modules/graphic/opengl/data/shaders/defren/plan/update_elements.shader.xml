@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Plan Update Elements</name>
 	
-	<parameter name='pUpdateElementCount'/>
+	<parameter name='pUpdateElementCount' location='0'/>
 	
 	<sourceCode unit='compute'>C DefRen Plan Update Elements</sourceCode>
 </shader>

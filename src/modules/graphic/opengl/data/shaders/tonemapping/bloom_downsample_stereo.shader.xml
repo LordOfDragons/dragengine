@@ -2,9 +2,7 @@
 <shader>
 	<name>ToneMap Bloom Down-Sample Stereo</name>
 	
-	<texture name='texColor' target='0'/>
-	
-	<parameter name='pLevel'/>
+	<parameter name='pLevel' location='3'/>
 	
 	<sourceCode unit='vertex'>V Generic PassThrough</sourceCode>
 	<sourceCode unit='geometry'>G Generic PassThrough Stereo</sourceCode>

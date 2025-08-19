@@ -36,12 +36,12 @@ class InputDeviceButton
 	/** \name Management */
 	/*@{*/
 	/** \brief Owner input device. */
-	public func InputDevice getInputDevice()
+	func InputDevice getInputDevice()
 		return null
 	end
 	
 	/** \brief Button index. */
-	public func int getButtonIndex()
+	func int getButtonIndex()
 		return 0
 	end
 	/*@}*/
@@ -58,7 +58,7 @@ class InputDeviceButton
 	 * suitable to be combined with the device identifier to store them in config files as
 	 * key bindings.
 	 */
-	public func String getID()
+	func String getID()
 		return null
 	end
 	
@@ -68,7 +68,7 @@ class InputDeviceButton
 	 * Dispaly name is human readable like for example 'Button #1'. The name is unique but
 	 * not guaranteed to stay the same across restarting the input module or game engine.
 	 */
-	public func String getName()
+	func String getName()
 		return null
 	end
 	
@@ -76,7 +76,7 @@ class InputDeviceButton
 	 * \brief Button type.
 	 * \version 1.6
 	 */
-	public func InputDeviceButtonType getType()
+	func InputDeviceButtonType getType()
 		return null
 	end
 	
@@ -84,7 +84,7 @@ class InputDeviceButton
 	 * \brief Identifier of component or empty string if standalone.
 	 * \version 1.6
 	 */
-	public func String getComponent()
+	func String getComponent()
 		return null
 	end
 	
@@ -93,12 +93,12 @@ class InputDeviceButton
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	public func Image getDisplayImage()
+	func Image getDisplayImage()
 		return null
 	end
 	
 	/** \brief Count of icons representing the button in bindings. */
-	public func int getDisplayIconCount()
+	func int getDisplayIconCount()
 		return 0
 	end
 	
@@ -107,7 +107,7 @@ class InputDeviceButton
 	 * 
 	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getDisplayIconAt( int index )
+	func Image getDisplayIconAt( int index )
 		return null
 	end
 	
@@ -116,7 +116,7 @@ class InputDeviceButton
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getLargestDisplayIconX( int maxWidth )
+	func Image getLargestDisplayIconX( int maxWidth )
 		return null
 	end
 	
@@ -125,12 +125,12 @@ class InputDeviceButton
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getLargestDisplayIconY( int maxHeight )
+	func Image getLargestDisplayIconY( int maxHeight )
 		return null
 	end
 	
 	/** \brief Text to display centered across display image or icon. */
-	public func String getDisplayText()
+	func String getDisplayText()
 		return null
 	end
 	
@@ -138,7 +138,15 @@ class InputDeviceButton
 	 * \brief Button can send touch/untouch events.
 	 * \version 1.11.1
 	 */
-	public func bool getTouchable()
+	func bool getTouchable()
+		return false
+	end
+	
+	/**
+	 * \brief Button can send approach/withdraw events.
+	 * \version 1.28
+	 */
+	func bool getApproachable()
 		return false
 	end
 	
@@ -153,7 +161,7 @@ class InputDeviceButton
 	 * to this instance without worrying about the device being detached from the system.
 	 * If reattached the device properly works again.
 	 */
-	public func bool isPressed()
+	func bool isPressed()
 		return false
 	end
 	
@@ -167,7 +175,21 @@ class InputDeviceButton
 	 * to this instance without worrying about the device being detached from the system.
 	 * If reattached the device properly works again.
 	 */
-	public func bool isTouched()
+	func bool isTouched()
+		return false
+	end
+	
+	/**
+	 * \brief Get near state.
+	 * \version 1.28
+	 * 
+	 * This obtains the current near state from the input module. If the device has been
+	 * detached from the host platform in the mean time false is returned. In contrary to
+	 * InputSystem.getButtonNear() no exception is thrown. This allows to keep a reference
+	 * to this instance without worrying about the device being detached from the system.
+	 * If reattached the device properly works again.
+	 */
+	func bool isNear()
 		return false
 	end
 	/*@}*/

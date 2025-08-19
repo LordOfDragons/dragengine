@@ -1,22 +1,17 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/ubo_render_parameters.glsl"
 
-uniform HIGHP sampler2DArray texDepth;
-uniform lowp sampler2DArray texDiffuse;
-uniform HIGHP sampler2DArray texSubSurface;
-uniform mediump sampler2DArray texLight;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
+layout(binding=1) uniform lowp sampler2DArray texDiffuse;
+layout(binding=2) uniform HIGHP sampler2DArray texSubSurface;
+layout(binding=3) uniform mediump sampler2DArray texLight;
 
-in HIGHP vec2 vTexCoord;
-in HIGHP vec2 vScreenCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out mediump vec3 outColor;
 

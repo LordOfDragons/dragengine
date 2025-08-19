@@ -46,7 +46,8 @@
 // Constructor, Destructor
 ////////////////////////////
 
-deOSWebWasm::deOSWebWasm() :
+deOSWebWasm::deOSWebWasm(const sConfig &config) :
+pConfig(config),
 pScreenWidth(800),
 pScreenHeight(600),
 pScreenRefreshRate(30),

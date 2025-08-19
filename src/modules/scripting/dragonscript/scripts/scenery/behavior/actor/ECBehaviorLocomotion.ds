@@ -85,12 +85,8 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorLocomotion"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorLocomotion")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -106,10 +102,9 @@ class ECBehaviorLocomotion extends DefaultECBehavior
 				behavior = ECBehaviorLocomotion.new(eclass, ECBehaviorCollider.getBehaviorIn(eclass))
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "locomotion")
-			
+			getHelper().setPropertiesFromParameters(eclass, parameters, "locomotion")
 			return behavior
 		end
 	end

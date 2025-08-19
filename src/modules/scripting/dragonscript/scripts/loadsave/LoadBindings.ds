@@ -39,11 +39,11 @@ pin Dragengine.XML
  */
 class LoadBindings extends BaseXmlLoader
 	/** \brief Create binding loader. */
-	public func new( Console console ) this( console, "LoadBindings" )
+	func new(Console console) this(console, "LoadBindings")
 	end
 	
 	/** \brief Create bindings loader. */
-	public func new( Console console, String name ) super( console, name )
+	func new(Console console, String name) super(console, name)
 	end
 	
 	
@@ -61,23 +61,23 @@ class LoadBindings extends BaseXmlLoader
 	 * In general reading bindings files only throws exceptions if the file is XML incorrect.
 	 * Invalid tags, attributes or values are only logged but no exceptions thrown.
 	 */
-	public func void loadFromFile( String filename, BindingManager bindingManager, \
-	CommandManager commandManager )
-		this.logLoadingFromFile( filename )
+	func void loadFromFile(String filename, BindingManager bindingManager, \
+	CommandManager commandManager)
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
-		if not root.getTagName().equals( "bindings" )
-			this.logUnknownTag( root )
+		if not root.getTagName().equals("bindings")
+			logUnknownTag(root)
 			throw EInvalidParam.new()
 		end
 		
-		this.readBindings( root, bindingManager, commandManager )
+		readBindings(root, bindingManager, commandManager)
 	end
 	
 	/**
@@ -85,21 +85,21 @@ class LoadBindings extends BaseXmlLoader
 	 * 
 	 * Saves all bindings in \em bindingManager.
 	 */
-	public func void saveToFile( String filename, BindingManager bindingManager )
+	func void saveToFile(String filename, BindingManager bindingManager)
 		if bindingManager == null
 			throw EInvalidParam.new()
 		end
 		
-		this.logSavingFromFile( filename )
+		logSavingFromFile(filename)
 		
 		var EasyXML document = EasyXML.new()
 		var EasyXMLElement root = document.getRootElement()
 		
-		root.setTagName( "bindings" )
+		root.setTagName("bindings")
 		
-		this.writeBindings( root, bindingManager )
+		writeBindings(root, bindingManager)
 		
-		document.writeToFile( FileWriter.new( filename ), false )
+		document.writeToFile(FileWriter.new(filename), false)
 	end
 	
 	
@@ -109,131 +109,148 @@ class LoadBindings extends BaseXmlLoader
 	 * 
 	 * Can be used by other classes to read a bindings tag from any XML outside bindings XML.
 	 */
-	public func void readBindings( EasyXMLElement root, BindingManager bindingManager, \
-	CommandManager commandManager )
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "button" )
-				this.pReadButton( element, bindingManager, commandManager )
+	func void readBindings(EasyXMLElement root, BindingManager bindingManager, \
+	CommandManager commandManager)
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("button")
+				pReadButton(element, bindingManager, commandManager)
 				
-			elif tagName.equals( "axis" )
-				this.pReadAxis( element, bindingManager, commandManager )
+			elif tagName.equals("axis")
+				pReadAxis(element, bindingManager, commandManager)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 	end
 	
 	/** \brief Read button binding. */
-	private func void pReadButton( EasyXMLElement root, BindingManager bindingManager, \
-	CommandManager commandManager )
+	private func void pReadButton(EasyXMLElement root, BindingManager bindingManager, \
+	CommandManager commandManager)
 		var int i, count = root.getElementCount()
+		var bool vrHandFacingUser
 		var String deviceID, id
 		var Command command
 		
 		for i = 0 to count
-			var EasyXMLElement element = root.getElementAt( i )
+			var EasyXMLElement element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			var String tagName = element.getTagName()
 			
-			if tagName.equals( "device" )
+			if tagName.equals("device")
 				deviceID = element.getFirstCData()
 				
-			elif tagName.equals( "id" )
+			elif tagName.equals("id")
 				id = element.getFirstCData()
 				
-			elif tagName.equals( "command" )
-				command = commandManager.getNamed( element.getFirstCData() )
+			elif tagName.equals("command")
+				command = commandManager.getNamed(element.getFirstCData())
 				if command == null
-					this.printOnConsole( element, "Unknown command '" \
-						+ element.getFirstCData() + "'" )
+					printOnConsole(element, "Unknown command '" + element.getFirstCData() + "'")
 					return
 				end
 				
+			elif tagName.equals("vrHandFacingUser")
+				vrHandFacingUser = element.getFirstCDataBool()
+				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
 		end
 		
 		if deviceID == null
-			this.logMissingTag( "device" )
+			logMissingTag("device")
 			return
 		end
 		if id == null
-			this.logMissingTag( "id" )
+			logMissingTag("id")
 			return
 		end
 		if command == null
-			this.logMissingTag( "command" )
+			logMissingTag("command")
 			return
 		end
 		
-		var Binding binding = bindingManager.findButtonBinding( deviceID, id )
+		var Binding binding = bindingManager.findButtonBinding(deviceID, id)
 		if binding != null
-			bindingManager.removeButtonBinding( binding )
+			bindingManager.removeButtonBinding(binding)
 		end
-		bindingManager.addButtonBinding( Binding.new( deviceID, id, command, false ) )
+		
+		binding = Binding.new(deviceID, id, command)
+		binding.setVRHandFacingUser(vrHandFacingUser)
+		bindingManager.addButtonBinding(binding)
 	end
 	
 	/** \brief Read axis binding. */
-	private func void pReadAxis( EasyXMLElement root, BindingManager bindingManager, \
-	CommandManager commandManager )
+	private func void pReadAxis(EasyXMLElement root, BindingManager bindingManager, \
+	CommandManager commandManager)
 		var int i, count = root.getElementCount()
-		var bool inverseAxis = false
+		var float deadzone, linearity
 		var String deviceID, id
+		var bool inverseAxis
 		var Command command
 		
 		for i = 0 to count
-			var EasyXMLElement element = root.getElementAt( i )
+			var EasyXMLElement element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
 			
 			var String tagName = element.getTagName()
 			
-			if tagName.equals( "device" )
+			if tagName.equals("device")
 				deviceID = element.getFirstCData()
 				
-			elif tagName.equals( "id" )
+			elif tagName.equals("id")
 				id = element.getFirstCData()
 				
-			elif tagName.equals( "command" )
-				command = commandManager.getNamed( element.getFirstCData() )
+			elif tagName.equals("command")
+				command = commandManager.getNamed(element.getFirstCData())
 				if command == null
-					this.printOnConsole( element, "Unknown command '" \
-						+ element.getFirstCData() + "'" )
+					printOnConsole(element, "Unknown command '" \
+						+ element.getFirstCData() + "'")
 					return
 				end
 				
-			elif tagName.equals( "inverseAxis" )
+			elif tagName.equals("inverseAxis")
 				inverseAxis = element.getFirstCDataBool()
 				
+			elif tagName.equals("deadzone")
+				deadzone = element.getFirstCDataFloat()
+				
+			elif tagName.equals("linearity")
+				linearity = element.getFirstCDataFloat()
+				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
 		end
 		
 		if deviceID == null
-			this.logMissingTag( "device" )
+			logMissingTag("device")
 			return
 		end
 		if id == null
-			this.logMissingTag( "id" )
+			logMissingTag("id")
 			return
 		end
 		if command == null
-			this.logMissingTag( "command" )
+			logMissingTag("command")
 			return
 		end
 		
-		var Binding binding = bindingManager.findAxisBinding( deviceID, id, inverseAxis )
+		var Binding binding = bindingManager.findAxisBinding(deviceID, id, inverseAxis)
 		if binding != null
-			bindingManager.removeAxisBinding( binding )
+			bindingManager.removeAxisBinding(binding)
 		end
-		bindingManager.addAxisBinding( Binding.new( deviceID, id, command, inverseAxis ) )
+		
+		binding = Binding.new(deviceID, id, command, inverseAxis)
+		binding.setDeadzone(deadzone)
+		binding.setLinearity(linearity)
+		bindingManager.addAxisBinding(binding)
 	end
 	
 	
@@ -243,36 +260,45 @@ class LoadBindings extends BaseXmlLoader
 	 * 
 	 * Can be used by other classes to write a bindings tag to any XML outside bindings XML.
 	 */
-	public func void writeBindings( EasyXMLElement root, BindingManager bindingManager )
-		bindingManager.forEachAxisBinding( block Binding each
+	func void writeBindings(EasyXMLElement root, BindingManager bindingManager)
+		bindingManager.forEachAxisBinding(block Binding each
 			if each.getCommand() != null
-				this.writeAxisBinding( root, each )
+				writeAxisBinding(root, each)
 			end
-		end )
+		end)
 		
-		bindingManager.forEachButtonBinding( block Binding each
+		bindingManager.forEachButtonBinding(block Binding each
 			if each.getCommand() != null
-				this.writeButtonBinding( root, each )
+				writeButtonBinding(root, each)
 			end
-		end )
+		end)
 	end
 	
 	/** \brief Write axis binding tag. */
-	protected func void writeAxisBinding( EasyXMLElement root, Binding binding )
-		var EasyXMLElement tag = root.addTag( "axis" )
-		tag.addDataTag( "device", binding.getDeviceID() )
-		tag.addDataTag( "id", binding.getSourceID() )
-		tag.addDataTag( "command", binding.getCommand().getName() )
+	protected func void writeAxisBinding(EasyXMLElement root, Binding binding)
+		var EasyXMLElement tag = root.addTag("axis")
+		tag.addDataTag("device", binding.getDeviceID())
+		tag.addDataTag("id", binding.getSourceID())
+		tag.addDataTag("command", binding.getCommand().getName())
 		if binding.getInverseAxis()
-			tag.addDataTag( "inverseAxis", true )
+			tag.addDataTag("inverseAxis", true)
+		end
+		if binding.getVRHandFacingUser()
+			tag.addDataTag("vrHandFacingUser", true)
+		end
+		if binding.getDeadzone() > 0.001
+			tag.addDataTag("deadzone", binding.getDeadzone())
+		end
+		if DEMath.fabs(binding.getLinearity()) > 0.001
+			tag.addDataTag("linearity", binding.getLinearity())
 		end
 	end
 	
 	/** \brief Write button binding tag. */
-	protected func void writeButtonBinding( EasyXMLElement root, Binding binding )
-		var EasyXMLElement tag = root.addTag( "button" )
-		tag.addDataTag( "device", binding.getDeviceID() )
-		tag.addDataTag( "id", binding.getSourceID() )
-		tag.addDataTag( "command", binding.getCommand().getName() )
+	protected func void writeButtonBinding(EasyXMLElement root, Binding binding)
+		var EasyXMLElement tag = root.addTag("button")
+		tag.addDataTag("device", binding.getDeviceID())
+		tag.addDataTag("id", binding.getSourceID())
+		tag.addDataTag("command", binding.getCommand().getName())
 	end
 end

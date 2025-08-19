@@ -759,6 +759,10 @@ decDMatrix meObject::GetObjectMatrix(){
 	return decDMatrix::CreateSRT( pScaling, pRotation * DEG2RAD, pPosition );
 }
 
+decDMatrix meObject::GetInverseObjectMatrix(){
+	return GetObjectMatrix().QuickInvert();
+}
+
 
 
 void meObject::DecrementIDGroupIDUsage(){
@@ -1597,6 +1601,7 @@ void meObject::RemoveProperty( const char *key ){
 	
 	IncrementIDGroupIDUsage();
 	pUpdateProperties();
+	pUpdateCamera();
 	
 	if( pClassDef ){
 		if( pClassDef->HasNavSpaceLinkedProperty( key ) ){
@@ -1631,6 +1636,7 @@ void meObject::RemoveAllProperties(){
 	pUpdateProperties();
 	pUpdateDDSNavSpaces();
 	UpdateNavPathTest();
+	pUpdateCamera();
 	
 	if( pWorld ){
 		pWorld->SetChanged( true );
@@ -2042,29 +2048,31 @@ void meObject::pUpdateDDSCoordSysArrowsLength(){
 }
 
 void meObject::pRepositionDDSNavSpaces(){
-	if( pWObject ){
-		const igdeGDCNavigationSpaceList &gdcNavSpaceList = pClassDef->GetNavigationSpaceList();
-		const int count = pDDSListNavSpaces.GetCount();
-		int i;
+	if(!pWObject || !pClassDef){
+		return;
+	}
+	
+	const igdeGDCNavigationSpaceList &gdcNavSpaceList = pClassDef->GetNavigationSpaceList();
+	const int count = pDDSListNavSpaces.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( i >= gdcNavSpaceList.GetCount() ){
+			break;
+		}
 		
-		for( i=0; i<count; i++ ){
-			if( i >= gdcNavSpaceList.GetCount() ){
-				break;
-			}
+		igdeWDebugDrawerShape &ddshape = *pDDSListNavSpaces.GetAt( i );
+		
+		if( pClassDef ){
+			const igdeGDCNavigationSpace &gdNavSpace = *gdcNavSpaceList.GetAt( i );
+			ddshape.SetPosition( gdNavSpace.GetPosition() );
+			ddshape.SetOrientation( gdNavSpace.GetOrientation() );
+			ddshape.SetScale( pScaling );
 			
-			igdeWDebugDrawerShape &ddshape = *pDDSListNavSpaces.GetAt( i );
-			
-			if( pClassDef ){
-				const igdeGDCNavigationSpace &gdNavSpace = *gdcNavSpaceList.GetAt( i );
-				ddshape.SetPosition( gdNavSpace.GetPosition() );
-				ddshape.SetOrientation( gdNavSpace.GetOrientation() );
-				ddshape.SetScale( pScaling );
-				
-			}else{
-				ddshape.SetPosition( decVector() );
-				ddshape.SetOrientation( decQuaternion() );
-				ddshape.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
-			}
+		}else{
+			ddshape.SetPosition( decVector() );
+			ddshape.SetOrientation( decQuaternion() );
+			ddshape.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
 		}
 	}
 }
@@ -2293,68 +2301,129 @@ void meObject::pUpdateProperties(){
 
 
 void meObject::pUpdateCamera(){
-	if( pClassDef && pClassDef->GetHasCamera() ){
-		if( ! pCamera && pWorld ){
-			pCamera = new meCamera( GetEnvironment()->GetEngineController()->GetEngine() );
-			pCamera->SetEnableGI( pWorld->GetWindowMain().GetConfiguration().GetEnableGI() );
-			pCamera->SetHostObject( this );
-			pCamera->SetWorld( pWorld );
+	const igdeGDCamera *gdCamera = nullptr;
+	if(pClassDef){
+		gdCamera = meHelpers::FindFirstCamera(*pClassDef);
+	}
+	
+	if(gdCamera){
+		if(!pCamera && pWorld){
+			pCamera = new meCamera(GetEnvironment()->GetEngineController()->GetEngine());
+			pCamera->SetEnableGI(pWorld->GetWindowMain().GetConfiguration().GetEnableGI());
+			pCamera->SetHostObject(this);
+			pCamera->SetWorld(pWorld);
 		}
 		
-	}else if( pCamera ){
+	}else if(pCamera){
 		delete pCamera;
 		pCamera = nullptr;
 	}
 	
-	if( ! pCamera ){
+	if(!pCamera || !gdCamera){
 		return;
 	}
 	
-	igdeGDCamera *gdCamera = pClassDef->GetCamera();
+	pCamera->SetFov(gdCamera->GetFov());
+	pCamera->SetFovRatio(gdCamera->GetFovRatio());
+	pCamera->SetImageDistance(gdCamera->GetImageDistance());
+	pCamera->SetViewDistance(gdCamera->GetViewDistance());
 	
-	pCamera->SetFov( gdCamera->GetFov() );
-	pCamera->SetFovRatio( gdCamera->GetFovRatio() );
-	pCamera->SetImageDistance( gdCamera->GetImageDistance() );
-	pCamera->SetViewDistance( gdCamera->GetViewDistance() );
-	
-	pRepositionCamera();
 	pCheckCameraProps();
+	pRepositionCamera();
 }
 
 void meObject::pCheckCameraProps(){
-	if( ! pCamera ){
+	if(!pCamera){
 		return;
 	}
 	
-	igdeGDCamera *gdCamera = pClassDef->GetCamera();
-	decString value, defaultValue;
-	
-	// name property
-	const decString &propname = gdCamera->GetPropName();
-	
-	if( pProperties.Has( propname ) ){
-		value.Format( "%s: %s", pClassDef->GetName().GetString(), pProperties.GetAt( propname ).GetString() );
-		
-	}else if( pClassDef->GetDefaultPropertyValue( propname, defaultValue ) ){
-		value.Format( "%s: %s", pClassDef->GetName().GetString(), defaultValue.GetString() );
-		
-	}else{
-		value.Format( "%s: <unnamed>", pClassDef->GetName().GetString() );
+	igdeGDCamera *gdCamera = nullptr;
+	decString prefix;
+	if(pClassDef){
+		meHelpers::FindFirstCamera(*pClassDef, prefix, gdCamera);
+	}
+	if(!gdCamera){
+		return;
 	}
 	
-	pCamera->SetName( value );
+	decString value, defaultValue;
+	const decString *pvalue;
+	bool found;
+	
+	// name property
+	const decString propName(prefix + gdCamera->GetPropName());
+	
+	if(pProperties.Has(propName)){
+		value.Format("%s: %s", pClassDef->GetName().GetString(), pProperties.GetAt(propName).GetString());
+		
+	}else if(pClassDef->GetDefaultPropertyValue(propName, defaultValue)){
+		value.Format("%s: %s", pClassDef->GetName().GetString(), defaultValue.GetString());
+		
+	}else{
+		value.Format("%s: <unnamed>", pClassDef->GetName().GetString());
+	}
+	
+	pCamera->SetName(value);
+	
+	// position/rotation property
+	const decString propPosition(prefix + gdCamera->GetPropPosition());
+	const decString propRotation(prefix + gdCamera->GetPropRotation());
+	
+	decQuaternion orientation(gdCamera->GetOrientation());
+	decDVector position(gdCamera->GetPosition());
+	igdeCodecPropertyString codec;
+	
+	if(!propPosition.IsEmpty()){
+		found = pProperties.GetAt(propPosition, &pvalue);
+		if(!found){
+			found = pClassDef->GetDefaultPropertyValue(propPosition, value);
+			if(found){
+				pvalue = &value;
+			}
+		}
+		if(found){
+			try{
+				codec.DecodeDVector(*pvalue, position);
+				
+			}catch(const deException &){
+				position = gdCamera->GetPosition();
+			}
+		}
+	}
+	
+	if(!propRotation.IsEmpty()){
+		found = pProperties.GetAt(propRotation, &pvalue);
+		if(!found){
+			found = pClassDef->GetDefaultPropertyValue(propRotation, value);
+			if(found){
+				pvalue = &value;
+			}
+		}
+		if(found){
+			try{
+				decDVector rotation;
+				codec.DecodeDVector(*pvalue, rotation);
+				orientation.SetFromEuler(rotation * DEG2RAD);
+				
+			}catch(const deException &){
+				orientation = gdCamera->GetOrientation();
+			}
+		}
+	}
+	
+	pCamera->SetHostMatrix(decDMatrix::CreateWorld(position, orientation));
 }
 
 void meObject::pRepositionCamera(){
-	if( pCamera ){
-		igdeGDCamera *gdCamera = pClassDef->GetCamera();
-		decDMatrix matrix = decDMatrix::CreateFromQuaternion( gdCamera->GetOrientation() )
-			* decDMatrix::CreateTranslation( gdCamera->GetPosition() )
-			* decDMatrix::CreateRT( pRotation * DEG2RAD, pPosition );
-		
-		pCamera->SetPosition( matrix.GetPosition() );
-		pCamera->SetOrientation( matrix.GetEulerAngles().ToVector() / DEG2RAD );
+	if(!pCamera){
+		return;
 	}
+	
+	const decDMatrix matrix = pCamera->GetHostMatrix().
+		QuickMultiply(decDMatrix::CreateRT(pRotation * DEG2RAD, pPosition));
+	
+	pCamera->SetPosition(matrix.GetPosition());
+	pCamera->SetOrientation(matrix.GetEulerAngles().ToVector() * RAD2DEG);
 }
 
 void meObject::pRepositionLinks(){

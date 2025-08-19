@@ -227,7 +227,7 @@ void ceWPTTIMAWaitActions::BuildPlaybackFromHere() const{
 	}
 	ceCAWait &wait = *modelWait->GetActionWait();
 	
-	cePlaybackActionStack &stack = GetConversation().GetPlayback()->GetActionStack();
+	cePlaybackActionStack &stack = GetConversation().GetPlayback()->GetMainActionStack();
 	stack.Push( NULL, &wait, &wait.GetActions(), 0 );
 	stack.GetTop().SetLoopCondition( wait.GetCondition() );
 	stack.GetTop().SetLooping( true );

@@ -61,7 +61,7 @@ class BTConditionTrigger implements BTCondition
 	
 	/** \brief Create condition. */
 	func new(StringID name, TestMode testMode) \
-	this(BaseGameApp.getApp().getTriggerTable(), name, testMode)
+	this(BehaviorElementClass.sharedFactoryHelper.defaultTriggerTable(), name, testMode)
 	end
 	
 	/** \brief Create condition. */

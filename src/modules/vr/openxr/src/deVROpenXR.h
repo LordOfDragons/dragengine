@@ -42,6 +42,7 @@
 #include "device/deoxrDeviceManager.h"
 #include "device/profile/deoxrDeviceProfileManager.h"
 #include "graphicapi/deoxrGraphicApiOpenGL.h"
+#include "parameters/deoxrParameterList.h"
 
 /** input module device identifier prefix. */
 #define OXR_DEVID_PREFIX "OXR_"
@@ -61,9 +62,13 @@ public:
 	/** Input actions. */
 	enum eInputActions{
 		eiaTriggerPress,
+		eiaTriggerForce,
 		eiaTriggerTouch,
 		eiaTriggerAnalog,
 		eiaTriggerHaptic,
+		eiaTriggerCurl,
+		eiaTriggerSlide,
+		eiaTriggerNear,
 		eiaButtonPrimaryPress,
 		eiaButtonPrimaryTouch,
 		eiaButtonSecondaryPress,
@@ -79,6 +84,9 @@ public:
 		eiaTrackpadTouch,
 		eiaTrackpadAnalog,
 		eiaThumbrestTouch,
+		eiaThumbrestPress,
+		eiaThumbrestNear,
+		eiaThumbrestHaptic,
 		eiaGripPress,
 		eiaGripTouch,
 		eiaGripGrab,
@@ -97,6 +105,12 @@ public:
 	
 	static const int InputActionCount = eiaPoseRight2 + 1;
 	
+	enum class LogLevel{
+		error,
+		warning,
+		info,
+		debug
+	};
 	
 	
 private:
@@ -126,6 +140,9 @@ private:
 	eFeatureSupportLevel pRequestFeatureEyeGazeTracking;
 	eFeatureSupportLevel pRequestFeatureFacialTracking;
 	
+	LogLevel pLogLevel;
+	
+	deoxrParameterList pParameters;
 	
 	
 public:
@@ -211,6 +228,10 @@ public:
 	/** Requested feature levels. */
 	inline eFeatureSupportLevel GetRequestFeatureEyeGazeTracking() const{ return pRequestFeatureEyeGazeTracking; }
 	inline eFeatureSupportLevel GetRequestFeatureFacialTracking() const{ return pRequestFeatureFacialTracking; }
+	
+	/** Log level. */
+	inline LogLevel GetLogLevel() const{ return pLogLevel; }
+	void SetLogLevel(LogLevel level){ pLogLevel = level; }
 	/*@}*/
 	
 	
@@ -285,6 +306,16 @@ public:
 	
 	/** Set transparency of user environment presented inside the rendered world. */
 	virtual void SetPassthroughTransparency( float transparency );
+	
+	/**
+	 * \brief Center playspace with forward direction matching looking direction.
+	 * \version 1.28
+	 * 
+	 * Playspace is not automatically centered after starting the VR runtime. Call this function
+	 * any time later to center the playspace, for example if the player adjusted seating position
+	 * or if the VR runtime uses a broken playspace orientation.
+	 */
+	virtual void CenterPlayspace();
 	/*@}*/
 	
 	
@@ -317,6 +348,9 @@ public:
 	
 	/** Button at index on device at index is touched. */
 	virtual bool GetButtonTouched( int device, int button );
+	
+	/** User finger is near button at index on device at index. */
+	virtual bool GetButtonNear(int device, int button);
 	
 	/** Value of axis at index on device at index. */
 	virtual float GetAxisValue( int device, int axis );
@@ -404,6 +438,30 @@ public:
 	
 	
 	
+	/** \name Parameters */
+	/*@{*/
+	/** Number of parameters. */
+	virtual int GetParameterCount() const;
+	
+	/**
+	 * Get information about parameter.
+	 * \param[in] index Index of the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
+	 */
+	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	
+	/** Index of named parameter or -1 if not found. */
+	virtual int IndexOfParameterNamed( const char *name ) const;
+	
+	/** Value of named parameter. */
+	virtual decString GetParameterValue( const char *name ) const;
+	
+	/** Set value of named parameter. */
+	virtual void SetParameterValue( const char *name, const char *value );
+	/*@}*/
+	
+	
+	
 private:
 	void pRealShutdown();
 	void pCreateActionSet();
@@ -411,6 +469,7 @@ private:
 	void pCreateDeviceProfiles();
 	void pSuggestBindings();
 	bool pBeginFrame();
+	void pCreateParameters();
 };
 
 #endif

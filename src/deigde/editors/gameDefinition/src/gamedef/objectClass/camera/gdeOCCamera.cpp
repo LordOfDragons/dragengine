@@ -52,8 +52,9 @@ pImageDistance( camera.pImageDistance ),
 pViewDistance( camera.pViewDistance ),
 pPosition( camera.pPosition ),
 pRotation( camera.pRotation ),
-
-pPropName( camera.pPropName ){
+pPropName( camera.pPropName ),
+pPropPosition(camera.pPropPosition),
+pPropRotation(camera.pPropRotation){
 }
 
 gdeOCCamera::~gdeOCCamera(){
@@ -88,6 +89,14 @@ void gdeOCCamera::SetViewDistance( float distance ){
 	pViewDistance = decMath::max( distance, 0.0f );
 }
 
-void gdeOCCamera::SetPropName( const char *propName ){
-	pPropName = propName;
+void gdeOCCamera::SetPropName(const char *property){
+	pPropName = property;
+}
+
+void gdeOCCamera::SetPropPosition(const char *property){
+	pPropPosition = property;
+}
+
+void gdeOCCamera::SetPropRotation(const char *property){
+	pPropRotation = property;
 }

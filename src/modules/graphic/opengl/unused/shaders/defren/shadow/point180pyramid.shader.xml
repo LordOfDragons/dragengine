@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Shadow Point 180 Pyramid</name>
+	
+	<parameter name='pMatrixMVP' location='0'/> <!-- 0 -->
+	<parameter name='pMatrixMV' location='1'/> <!-- 1 -->
+	<parameter name='pMatrixDiffuse' location='2'/> <!-- 2 -->
+	<parameter name='pMaterialGamma'/> <!-- 3 -->
+	<parameter name='pOptions'/> <!-- 4 -->
+	<parameter name='pMask'/> <!-- 5 -->
+	
+	<sourceCode unit='vertex'>V DefRen Shadow Point</sourceCode>
+	<sourceCode unit='fragment'>F DefRen Shadow Point 180 Pyramid</sourceCode>
+</shader>

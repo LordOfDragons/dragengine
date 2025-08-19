@@ -13,36 +13,49 @@
 	<define>DEPTH_DISTANCE</define>
 	<define>DEPTH_OFFSET</define>
 	<define>DEPTH_ORTHOGONAL</define>
-	<define>DEPTH_TEST_LARGER</define>
 	<define>DEPTH_TEST</define>
 	<define>ENCODE_OUT_DEPTH</define>
 	<define>FADEOUT_RANGE</define>
-	<define>HAS_TESSELLATION_SHADER</define>
+	<define>TESSELLATION_MODE</define>
 	<define>INVERSE_DEPTH</define>
 	<define>MASKED_SOLIDITY</define>
-	<define>OUTPUT_COLOR</define>
-	<define>OUTPUT_CONSTANT</define>
+	<define>OUTPUT_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>TP_NORMAL_STRENGTH</define>
 	<define>WITH_OUTLINE</define>
 	<define>WITH_VARIATIONS</define>
 	
+	<define>TEXTURE_ABSORPTION</define>
+	<define>TEXTURE_AO</define>
+	<define>TEXTURE_COLOR_TINT_MASK</define>
+	<define>TEXTURE_COLOR</define>
 	<define>TEXTURE_EMISSIVITY</define>
+	<define>TEXTURE_ENVMAP_EQUI</define>
+	<define>TEXTURE_ENVMAP_FADE</define>
+	<define>TEXTURE_ENVMAP</define>
 	<define>TEXTURE_ENVROOM_EMISSIVITY</define>
+	<define>TEXTURE_ENVROOM_MASK</define>
 	<define>TEXTURE_ENVROOM</define>
+	<define>TEXTURE_HEIGHT</define>
+	<define>TEXTURE_NONPBR_ALBEDO</define>
+	<define>TEXTURE_NONPBR_METALNESS</define>
 	<define>TEXTURE_NORMAL</define>
+	<define>TEXTURE_REFLECTIVITY</define>
+	<define>TEXTURE_REFRACTION_DISTORT</define>
+	<define>TEXTURE_RENDERCOLOR</define>
 	<define>TEXTURE_RIM_EMISSIVITY</define>
+	<define>TEXTURE_ROUGHNESS</define>
 	<define>TEXTURE_SOLIDITY</define>
-	
+	<define>TEXTURE_TRANSPARENCY</define>
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>
 	
 	<!-- shared/defren/skin/macros_geometry.glsl -->
-	<define>DECAL</define>
+	<define>GEOMETRY_MODE</define>
 	<define>DEPTH_TEST</define>
-	<define>OUTPUT_COLOR</define>
+	<define>OUTPUT_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>TEXTURE_EMISSIVITY</define>
 	<define>TEXTURE_ENVMAP</define>
@@ -67,6 +80,7 @@
 	<define>DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY</define>
 	<define>DYNAMIC_ENVROOM_OFFSET</define>
 	<define>DYNAMIC_ENVROOM_SIZE</define>
+	<define>DYNAMIC_ENVROOM_TINT</define>
 	<define>DYNAMIC_HEIGHT_REMAP</define>
 	<define>DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER</define>
 	<define>DYNAMIC_NORMAL_STRENGTH</define>
@@ -111,9 +125,6 @@
 	<!-- shared/defren/skin/depth_offset.glsl -->
 	<define>DEPTH_DISTANCE</define>
 	<define>DEPTH_ORTHOGONAL</define>
-	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 	
 	<!-- system only
 	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>

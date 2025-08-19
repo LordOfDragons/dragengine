@@ -25,7 +25,7 @@
 import bpy
 
 from .de_porting import registerClass, appendToMenu
-
+from .de_helpers import ActionSlotHelper
 
 
 # Tool Sort Action Channels
@@ -35,25 +35,39 @@ class OBJECT_OT_DEToolSortActionChannels( bpy.types.Operator ):
 	bl_idname = "dragengine.sortactionchannels"
 	bl_label = "Sort alphabetically"
 	bl_label_button = "Sort Action Channels"
+	bl_icon = 'SORT_ASC'
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Sort Action Channels"""
 	
 	#digits: bpy.props.IntProperty( name="Digits", description="Digits to round to", soft_min=0, soft_max=5, default=5 )
 	
 	@classmethod
-	def poll( cls, context ):
-		return context.active_object != None \
-			and context.active_object.type == 'ARMATURE' \
-			and bpy.context.mode == 'POSE' \
-			and context.active_object.animation_data \
-			and context.active_object.animation_data.action \
-			and len( context.active_object.animation_data.action.groups ) > 0
+	def poll(cls, context):
+		if bpy.context.mode != 'POSE':
+			return False
+		
+		o = context.active_object
+		if not o or o.type != 'ARMATURE':
+			return False
+		
+		ad = o.animation_data
+		if not ad:
+			return False
+		
+		a = ad.action
+		if not a or not ActionSlotHelper(o).groups(a):
+			return False
+		
+		return True
 	
 	def execute( self, context ):
-		pose = context.active_object.pose
-		action = context.active_object.animation_data.action
+		object = context.active_object
+		pose = object.pose
+		action = object.animation_data.action
+		ash = ActionSlotHelper(object)
+		agroups = ash.groups(action)
 		
-		channelNames = [ channel.name for channel in action.groups ]
+		channelNames = [channel.name for channel in agroups]
 		
 		# sort whatever way
 		sortedChannelNames = channelNames
@@ -82,18 +96,19 @@ class OBJECT_OT_DEToolSortActionChannels( bpy.types.Operator ):
 		# only remedy is deselect all channels before using the script. unfortunately blender does not
 		# have an explicit deselect operator only a toggle operator. to get this all working the first
 		# channel is selected. then the toggle seelction can be used to deselect all channels
-		action.groups[ 0 ].select = True
-		bpy.ops.anim.channels_select_all_toggle()
+		agroups[0].select = True
+		bpy.ops.anim.channels_select_all(action='DESELECT')
 		
 		# since the ordering can not be changed directly from blender we use a trick. to sort the channels
 		# go through the list of the sorted names in the right order. select only the channel to move and
 		# call the move to bottom operator. deselect the channel and repeat. this way all channels are
 		# properly sorted in the desired order
 		for channelName in channelNames:
-			action.groups[ channelName ].select = True
+			agroups[channelName].select = True
 			bpy.ops.anim.channels_move( direction='BOTTOM' )
-			action.groups[ channelName ].select = False
+			agroups[channelName].select = False
 		
 		return { 'FINISHED' }
+
 registerClass(OBJECT_OT_DEToolSortActionChannels)
 appendToMenu(bpy.types.DOPESHEET_MT_channel, OBJECT_OT_DEToolSortActionChannels)

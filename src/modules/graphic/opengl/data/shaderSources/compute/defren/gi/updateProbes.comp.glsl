@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -12,51 +14,38 @@ layout(binding=0, rgba16f) uniform readonly HIGHP image2D texPosition;
 layout(binding=1, rgba8_snorm) uniform readonly HIGHP image2D texNormal;
 layout(binding=2, rgba16f) uniform readonly HIGHP image2D texLight;
 
-#ifdef MAP_IRRADIANCE
-	#ifdef ANDROID
-		layout(binding=3, rgba16f) uniform readonly HIGHP image2DArray texProbe_load;
-		layout(binding=3, rgba16f) uniform writeonly HIGHP image2DArray texProbe_store;
-	#else
-		layout(binding=3, rgba16f) uniform HIGHP image2DArray texProbe;
-		#define texProbe_load texProbe
-		#define texProbe_store texProbe
-	#endif
-	#define STORE_RESULT(v) v
+// MapIrradiance
+#ifdef ANDROID
+	layout(binding=3, rgba16f) uniform readonly HIGHP image2DArray texProbeIrradiance_load;
+	layout(binding=3, rgba16f) uniform writeonly HIGHP image2DArray texProbeIrradiance_store;
 #else
-	#ifdef ANDROID
-		layout(binding=3, IMG_RG16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texProbe_load;
-		layout(binding=3, IMG_RG16F_FMT) uniform writeonly HIGHP IMG_R16F_2DARR texProbe_store;
-	#else
-		layout(binding=3, IMG_RG16F_FMT) uniform HIGHP IMG_R16F_2DARR texProbe;
-		#define texProbe_load texProbe
-		#define texProbe_store texProbe
-	#endif
-	#define STORE_RESULT(v) IMG_RG16F_STORE(v)
+	layout(binding=3, rgba16f) uniform HIGHP image2DArray texProbeIrradiance;
+	#define texProbeIrradiance_load texProbeIrradiance
+	#define texProbeIrradiance_store texProbeIrradiance
 #endif
 
-#ifdef RENDER_DOC_DEBUG_GI
-	layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texRenderDocDebug;
-	void renderDocDebugStore(int index, vec4 value){
-		ivec2 tc = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y * uint(12) + uint(index));
-		if(all(lessThan(tc, ivec2(2048, 1024)))){
-			imageStore(texRenderDocDebug, tc, value);
-		}
+// !MapIrradiance
+#ifdef ANDROID
+	layout(binding=3, IMG_RG16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texProbeDistance_load;
+	layout(binding=3, IMG_RG16F_FMT) uniform writeonly HIGHP IMG_R16F_2DARR texProbeDistance_store;
+#else
+	layout(binding=3, IMG_RG16F_FMT) uniform HIGHP IMG_R16F_2DARR texProbeDistance;
+	#define texProbeDistance_load texProbeDistance
+	#define texProbeDistance_store texProbeDistance
+#endif
+
+// RenderDocDebugGI
+layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texRenderDocDebug;
+void renderDocDebugStore(int index, vec4 value){
+	ivec2 tc = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y * uint(12) + uint(index));
+	if(all(lessThan(tc, ivec2(2048, 1024)))){
+		imageStore(texRenderDocDebug, tc, value);
 	}
-#endif
+}
 
 
-#ifdef MAP_IRRADIANCE
-	#define mapProbeSize pGIIrradianceMapSize
-#else
-	#define mapProbeSize pGIDistanceMapSize
-#endif
-
-
-#ifdef MAP_IRRADIANCE
-	layout( local_size_x=8, local_size_y=8 ) in;
-#else
-	layout( local_size_x=16, local_size_y=16 ) in;
-#endif
+// Irradiance: 8x8, Distance: 16x16
+CT_COMPUTE_IN_SIZE_XY
 
 
 // NOTE findMSB exists since GLSL 4.0
@@ -112,12 +101,8 @@ struct sRayData{
 	float rayProbeDistance;
 };
 
-#ifdef MAP_IRRADIANCE
-	#define RAY_COUNT 64
-#else
-	#define RAY_COUNT 256
-#endif
-shared sRayData vRayData[ RAY_COUNT ];  // 4096 / 16384 bytes
+const int RayCount = MapIrradiance ? 64 : 256;
+shared sRayData vRayData[RayCount]; // 4096 / 16384 bytes
 
 
 void main( void ){
@@ -134,11 +119,11 @@ void main( void ){
 	int probeIndex = giTraceProbeProbeIndex( updateIndex );
 	ivec3 probeGrid = probeIndexToGridCoord( probeIndex );
 	
-	#ifdef RENDER_DOC_DEBUG_GI
+	if(RenderDocDebugGI){
 		renderDocDebugStore(0, vec4(updateIndex, rayOffset, blendFactor));
 		renderDocDebugStore(1, vec4(probePosition, probeFlags));
 		renderDocDebugStore(2, vec4(probeIndex, probeGrid));
-	#endif
+	}
 	
 	// map layout: (probeCount.x * probeCount.y) x pGIGridProbeCount.z
 	// 
@@ -155,6 +140,8 @@ void main( void ){
 	// tcProbe is the top-left pixel in the probe excluding the border
 	// tcLocal is the coordinate inside the probe excluding the border
 	
+	int mapProbeSize = MapIrradiance ? pGIIrradianceMapSize : pGIDistanceMapSize;
+	
 	ivec2 tcProbe = ivec2( pGIGridProbeCount.x * probeGrid.y + probeGrid.x, probeGrid.z ) * ( mapProbeSize + 2 ) + ivec2( 2 );
 	ivec2 tcLocal = ivec2( gl_LocalInvocationID ); // + tcQuadrant[ gl_WorkGroupID.y ];
 	ivec3 tcSample = ivec3( tcProbe + tcLocal, pGICascade );
@@ -167,11 +154,7 @@ void main( void ){
 	float weight, sumWeight = 0.0;
 	int i;
 	
-	#ifdef MAP_IRRADIANCE
-		vec3 newProbeState = vec3( 0 );
-	#else
-		vec2 newProbeState = vec2( 0 );
-	#endif
+	vec3 newProbeState = vec3(0);
 	
 // 	bool tooCloseToSurface = false;
 	float rayBackCount = 0.0;
@@ -185,11 +168,11 @@ void main( void ){
 	// ray counts per probe can be 16, 32, 64, 128 and 256 . Only the last 3 are multiples
 	// of 64. this requires limiting the count of threads assisting in the cooperative reading
 	
-	UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / RAY_COUNT + 1;
+	UFCONST int rayGroupCount = ( pGIRaysPerProbe - 1 ) / RayCount + 1;
 	int rg;
 	
 	for( rg=0; rg<rayGroupCount; rg++ ){
-		int rayFirst = RAY_COUNT * rg;
+		int rayFirst = RayCount * rg;
 		
 		// cooperative processing
 		int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
@@ -206,18 +189,18 @@ void main( void ){
 			vRayData[ gl_LocalInvocationIndex ].frontFacing = vRayData[ gl_LocalInvocationIndex ].rayMisses
 				|| dot( vRayData[ gl_LocalInvocationIndex ].normal, vRayData[ gl_LocalInvocationIndex ].rayDirection ) < 0.0;
 			
-			#ifdef MAP_IRRADIANCE
-				vRayData[ gl_LocalInvocationIndex ].light = vec3( imageLoad( texLight, rayTC ) );
-			#else
-				vRayData[ gl_LocalInvocationIndex ].rayProbeDistance = min(
-					vRayData[ gl_LocalInvocationIndex ].position.w, pGIMaxProbeDistance );
-			#endif
+			if(MapIrradiance){
+				vRayData[gl_LocalInvocationIndex].light = vec3(imageLoad(texLight, rayTC));
+			}else{
+				vRayData[gl_LocalInvocationIndex].rayProbeDistance = min(
+					vRayData[gl_LocalInvocationIndex].position.w, pGIMaxProbeDistance);
+			}
 		}
 		barrier();
 		
 		
 		// per invocation processing
-		int rayLimit = min( RAY_COUNT, pGIRaysPerProbe - rayFirst );
+		int rayLimit = min( RayCount, pGIRaysPerProbe - rayFirst );
 		
 		for( i=0; i<rayLimit; i++ ){
 			/*
@@ -245,13 +228,13 @@ void main( void ){
 			
 			// optimized version of the above commented out code block. the ray misses check
 			// has been moved inside the optimized block to save more time
-			#ifdef MAP_DISTANCE
+			if(!MapIrradiance){
 				// here we deviate from the paper. ignoring misses to influence the result
 				// removes the most glaring light leaks
 				if( vRayData[ i ].rayMisses ){
 					continue;
 				}
-			#endif
+			}
 			
 			rayBackCount += vRayData[ i ].frontFacing ? 0.0 : 1.0;
 			// end of optimized block
@@ -261,34 +244,34 @@ void main( void ){
 			// for dynamic ray-tracing only the pGIRayDirection[i] (see define) can be used
 			//vec3 rayDirection = normalize( rayPosition.xyz - vProbePosition );
 			weight = max( dot( texelDirection, vRayData[ i ].rayDirection ), 0.0 );
-			#ifdef MAP_DISTANCE
+			if(!MapIrradiance){
 				weight = pow( weight, pGIDepthSharpness );
-			#endif
+			}
 			
 			if( weight < epsilon ){
 				continue;
 			}
 			
 			/*
-			#ifdef MAP_DISTANCE
+			if(!MapIrradiance){
 				// here we deviate from the paper. ignoring misses to influence the result
 				// removes the most glaring light leaks
 				if( vRayData[ i ].rayMisses ){
 					continue;
 				}
-			#endif
+			}
 			*/
 			
 			sumWeight += weight;
 			
-			#ifdef MAP_IRRADIANCE
+			if(MapIrradiance){
 				if( vRayData[ i ].frontFacing ){
 					// ray misses or hits front facing geometry. ray misses are handled
 					// the same since sky lighting is applied to missing rays too
 					newProbeState += vRayData[ i ].light * weight;
 				}
 				
-			#else
+			}else{
 				// ray misses do not end up here due to the check above
 				
 				// according to source code distance distance hits and misses should be clamped
@@ -303,7 +286,7 @@ void main( void ){
 					newProbeState.x += vRayData[ i ].rayProbeDistance * weight;
 					newProbeState.y += vRayData[ i ].rayProbeDistance * vRayData[ i ].rayProbeDistance * weight;
 				}
-			#endif
+			}
 		}
 	}
 	
@@ -349,30 +332,26 @@ void main( void ){
 	// finalize the probe
 	// blendFactor: 1-hysteresis. modified by update code per-probe
 	
-	#ifdef MAP_IRRADIANCE
-		vec3 prevProbeState = vec3(imageLoad(texProbe_load, tcSample));
-	#else
-		vec2 prevProbeState = IMG_RG16F_LOAD(imageLoad(texProbe_load, tcSample));
-	#endif
+	vec3 prevProbeState;
+	if(MapIrradiance){
+		prevProbeState = vec3(imageLoad(texProbeIrradiance_load, tcSample));
+	}else{
+		prevProbeState = vec3(IMG_RG16F_LOAD(imageLoad(texProbeDistance_load, tcSample)), 0);
+	}
 	
-	#ifdef RENDER_DOC_DEBUG_GI
+	if(RenderDocDebugGI){
 		renderDocDebugStore(3, vec4(tcProbe, tcLocal));
 		renderDocDebugStore(4, vec4(tcSample, 0));
 		renderDocDebugStore(5, vec4(texelDirection, 0));
 		renderDocDebugStore(6, vec4(sumWeight, rayBackCount, enableProbe, 0));
-		#ifdef MAP_IRRADIANCE
-			renderDocDebugStore(7, vec4(newProbeState, 0));
-			renderDocDebugStore(8, vec4(prevProbeState, 0));
-		#else
-			renderDocDebugStore(7, vec4(newProbeState, 0, 0));
-			renderDocDebugStore(8, vec4(prevProbeState, 0, 0));
-		#endif
-	#endif
+		renderDocDebugStore(7, vec4(newProbeState, 0));
+		renderDocDebugStore(8, vec4(prevProbeState, 0));
+	}
 	
 	if( enableProbe ){
 		sumWeight = 1.0 / max( sumWeight, epsilon );
 		
-		#ifdef MAP_IRRADIANCE
+		if(MapIrradiance){
 			// according to source code this is required to account for the extra factor
 			// of two from summing the cosine weights. I do not see such a factor
 // 			sumWeight *= 0.5;
@@ -397,20 +376,20 @@ void main( void ){
 			newProbeState = pow( newProbeState, vec3( pGIInvIrradianceGamma ) );
 			
 // 			newProbeState = vec3(0,1,0); // DEBUG
-		#else
+		}else{
 			newProbeState *= sumWeight;
-		#endif
+		}
 		
 	}else{
-		#ifdef MAP_IRRADIANCE
-			newProbeState = vec3( 0 );
+		if(MapIrradiance){
+			newProbeState = vec3(0);
 // 			newProbeState = vec3(1,0,0); // DEBUG
-		#else
+		}else{
 			// by deviating from the paper above we need to handle the case of no hit
 			// being scored at all otherwise the probe turns black
 			//newProbeState = vec2( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance );
-			newProbeState = vec2( 0 );
-		#endif
+			newProbeState = vec3(0);
+		}
 		blendFactor = 1.0;
 	}
 	
@@ -418,13 +397,13 @@ void main( void ){
 // 		blendFactor = pGIBlendUpdateProbe;
 	
 	// update probe state
-	#ifdef MAP_IRRADIANCE
-		vec4 result = vec4( mix( prevProbeState, newProbeState, blendFactor ), 0 );
-	#else
-		vec4 result = vec4( mix( prevProbeState, newProbeState, blendFactor ), 0, 0 );
-	#endif
-	
-	imageStore(texProbe_store, tcSample, STORE_RESULT(result));
+	vec4 result = vec4( mix( prevProbeState, newProbeState, blendFactor ), 0 );
+	if(MapIrradiance){
+		imageStore(texProbeIrradiance_store, tcSample, result);
+		
+	}else{
+		imageStore(texProbeDistance_store, tcSample, IMG_RG16F_STORE(result));
+	}
 	
 	
 	// update border pixels by copying probe edge pixels. the original paper does not
@@ -456,21 +435,39 @@ void main( void ){
 	ivec2 tcShift = ivec2( isOnEdge.x ? -1 : 1, isOnEdge.z ? -1 : 1 );
 	ivec2 tcFlipped = tcProbe + edgeValues.yy - tcLocal;
 	
-	#ifdef RENDER_DOC_DEBUG_GI
+	if(RenderDocDebugGI){
 		renderDocDebugStore(9, result);
 		renderDocDebugStore(10, vec4(isOnEdge));
 		renderDocDebugStore(11, vec4(tcShift, tcFlipped));
-	#endif
+	}
 	
 	if(anyOnEdge.x){
-		imageStore(texProbe_store, ivec3(tcSample.x + tcShift.x, tcFlipped.y, tcSample.z), STORE_RESULT(result));
+		ivec3 tc = ivec3(tcSample.x + tcShift.x, tcFlipped.y, tcSample.z);
+		if(MapIrradiance){
+			imageStore(texProbeIrradiance_store, tc, result);
+			
+		}else{
+			imageStore(texProbeDistance_store, tc, IMG_RG16F_STORE(result));
+		}
 	}
 	
 	if(anyOnEdge.y){
-		imageStore(texProbe_store, ivec3(tcFlipped.x, tcSample.y + tcShift.y, tcSample.z), STORE_RESULT(result));
+		ivec3 tc = ivec3(tcFlipped.x, tcSample.y + tcShift.y, tcSample.z);
+		if(MapIrradiance){
+			imageStore(texProbeIrradiance_store, tc, result);
+			
+		}else{
+			imageStore(texProbeDistance_store, tc, IMG_RG16F_STORE(result));
+		}
 	}
 	
 	if(all(anyOnEdge)){
-		imageStore(texProbe_store, ivec3(tcFlipped - tcShift, tcSample.z), STORE_RESULT(result));
+		ivec3 tc = ivec3(tcFlipped - tcShift, tcSample.z);
+		if(MapIrradiance){
+			imageStore(texProbeIrradiance_store, tc, result);
+			
+		}else{
+			imageStore(texProbeDistance_store, tc, IMG_RG16F_STORE(result));
+		}
 	}
 }

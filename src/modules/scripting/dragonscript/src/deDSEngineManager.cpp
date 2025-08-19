@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-
 #include "deDSEngineManager.h"
 #include "deScriptingDragonScript.h"
+#include "deScriptSource.h"
 
 #include <dragengine/deEngine.h>
-#include <libdscript/exceptions.h>
+#include <dragengine/filesystem/deFileSearchVisitor.h>
 
+#include <libdscript/exceptions.h>
 
 
 // Class deDSEngineManager
@@ -40,42 +38,92 @@
 // Constructor
 ////////////////
 
-deDSEngineManager::deDSEngineManager( deScriptingDragonScript *ds ){
-	if( ! ds ){
-		DSTHROW( dueInvalidParam );
-	}
-	
-	pDS = ds;
+deDSEngineManager::deDSEngineManager(deScriptingDragonScript &ds,
+	const decPath &pathContrib, const decPath &vfsPathContrib) :
+pDS(ds),
+pPathContrib(pathContrib),
+pVfsPathContrib(vfsPathContrib){
 }
 
 deDSEngineManager::~deDSEngineManager(){
 }
 
 
-
 // Management
 ///////////////
 
-void deDSEngineManager::OutputMessage( const char *message ){
-	pDS->LogInfo( message );
+void deDSEngineManager::OutputMessage(const char *message){
+	pDS.LogInfo(message);
 }
 
-void deDSEngineManager::OutputWarning( const char *message, int warnID, dsScriptSource *script, int line, int position ){
-	pDS->LogWarnFormat( "WARN#%i %s:%i(%i): %s", warnID, script->GetName(), line, position, message );
+void deDSEngineManager::OutputWarning(const char *message, int warnID,
+dsScriptSource *script, int line, int position){
+	pDS.LogWarnFormat("WARN#%i %s:%i(%i): %s", warnID, script->GetName(), line, position, message);
 }
 
-void deDSEngineManager::OutputWarningMore( const char *message ){
-	pDS->LogWarnFormat( "   %s", message );
+void deDSEngineManager::OutputWarningMore(const char *message){
+	pDS.LogWarnFormat("   %s", message);
 }
 
-void deDSEngineManager::OutputError( const char *message, int errorID, dsScriptSource *script, int line, int position ){
-	pDS->LogErrorFormat( "ERR#%i %s:%i(%i): %s", errorID, script->GetName(), line, position, message );
+void deDSEngineManager::OutputError(const char *message, int errorID,
+dsScriptSource *script, int line, int position){
+	pDS.LogErrorFormat("ERR#%i %s:%i(%i): %s", errorID, script->GetName(), line, position, message);
 }
 
-void deDSEngineManager::OutputErrorMore( const char *message ){
-	pDS->LogErrorFormat( "   %s", message );
+void deDSEngineManager::OutputErrorMore(const char *message){
+	pDS.LogErrorFormat("   %s", message);
 }
 
 bool deDSEngineManager::ContinueParsing(){
 	return true;
+}
+
+
+class deDSEngineManagerAddSources : public deFileSearchVisitor{
+private:
+	dsPackage &pPackage;
+	
+public:
+	deDSEngineManagerAddSources(dsPackage &package) : pPackage(package){
+	}
+	
+	bool VisitFile(const deVirtualFileSystem &vfs, const decPath &path) override{
+		if(!path.GetLastComponent().MatchesPattern("*.ds")){
+			return true;
+		}
+		
+		deScriptSource *source = nullptr;
+		try{
+			source = new deScriptSource(vfs, path);
+			pPackage.AddScript(source);
+			
+		}catch(...){
+			if(source){
+				delete source;
+			}
+			throw;
+		}
+		
+		return true;
+	}
+	
+	bool VisitDirectory(const deVirtualFileSystem &vfs, const decPath &path) override{
+		vfs.SearchFiles(path, *this);
+		return true;
+	}
+};
+
+void deDSEngineManager::AddPackageScriptFiles(dsPackage &package, const char *baseDirectory){
+	if(!pPathContrib.IsEmpty()){
+		const decPath pathBaseDir(decPath::CreatePathNative(baseDirectory));
+		if(pPathContrib.IsParentOf(pathBaseDir)){
+			deDSEngineManagerAddSources visitor(package);
+			pDS.GetVFS().SearchFiles(
+				pVfsPathContrib + pathBaseDir.RelativePath(pPathContrib, true),
+				visitor);
+			return;
+		}
+	}
+	
+	dsDefaultEngineManager::AddPackageScriptFiles(package, baseDirectory);
 }

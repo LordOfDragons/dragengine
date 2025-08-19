@@ -2,8 +2,6 @@
 <shader>
 	<name>DefRen Shadow Copy Texture2D</name>
 	
-	<texture name='texDepth' target='0'/>
-	
 	<sourceCode unit='vertex'>V DefRen Shadow Copy Texture2D</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Shadow Copy Texture2D</sourceCode>
 </shader>

@@ -98,6 +98,10 @@ public:
 	virtual void OCComponentChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass, gdeOCComponent *component );
 	
+	/** Object class cameras changed. */
+	virtual void OCCamerasChanged( gdeGameDefinition *gameDefinition,
+		gdeObjectClass *objectClass );
+	
 	/** \brief Object class environment map probes changed. */
 	virtual void OCEnvMapProbesChanged( gdeGameDefinition *gameDefinition,
 		gdeObjectClass *objectClass );

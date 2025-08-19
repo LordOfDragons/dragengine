@@ -29,7 +29,8 @@
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 
-#define OGL_MAX_TEXTURE_STAGES 16
+// minimum required by opengl is 16. vast majority of GPUs support 32
+#define OGL_MAX_TEXTURE_STAGES 32
 
 class deoglArrayTexture;
 class deoglRenderThread;

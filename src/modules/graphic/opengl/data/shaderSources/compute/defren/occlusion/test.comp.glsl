@@ -1,102 +1,113 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform HIGHP sampler2DArray texOccMap;
-#ifdef DUAL_OCCMAP
-uniform HIGHP sampler2DArray texOccMap2;
-#endif
+layout(binding=0) uniform HIGHP sampler2DArray texOccMap;
+// DualOccMap
+layout(binding=1) uniform HIGHP sampler2DArray texOccMap2;
 
-uniform uint pInputDataCount;
-uniform mat4 pMatrix; // camera-rotation and projection
-uniform vec2 pScaleSize;
-uniform vec2 pBaseTopLevel; // x=base, y=top
-uniform float pClipNear;
-#ifdef DUAL_OCCMAP
-uniform mat4 pMatrix2;
-uniform vec2 pScaleSize2;
-uniform vec2 pBaseTopLevel2; // x=base, y=top
-uniform float pClipNear2;
-#endif
-#ifdef FRUSTUM_TEST
-uniform mat4 pMatrix2;
-uniform float pClipNear2;
-uniform vec3 pFrustumNormal1;
-uniform vec3 pFrustumNormal2;
-uniform vec3 pFrustumNormal3;
-uniform vec3 pFrustumNormal4;
-uniform vec4 pFrustumTestAdd;
-uniform vec4 pFrustumTestMul;
-#endif
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO || defined DUAL_OCCMAP_STEREO || defined FRUSTUM_TEST_STEREO
-uniform mat4 pMatrixStereo;
-uniform mat4 pMatrix2Stereo;
-#endif
-uniform uint pCullFilter;
+UNIFORM_BIND(0) uniform uint pInputDataCount;
+UNIFORM_BIND(1) uniform mat4 pMatrix; // camera-rotation and projection
+UNIFORM_BIND(2) uniform vec2 pScaleSize;
+UNIFORM_BIND(3) uniform vec2 pBaseTopLevel; // x=base, y=top
+UNIFORM_BIND(4) uniform float pClipNear;
+
+// DualOccMap
+UNIFORM_BIND(5) uniform mat4 pMatrix2;
+UNIFORM_BIND(6) uniform vec2 pScaleSize2;
+UNIFORM_BIND(7) uniform vec2 pBaseTopLevel2; // x=base, y=top
+UNIFORM_BIND(8) uniform float pClipNear2;
+
+// FrustumTest
+// NOTE: FrustumTest is not used together with DualOccMap but both define an individual
+// pMatrix2 and pClipNear2.
+//UNIFORM_BIND(9) uniform mat4 pMatrix2;
+// UNIFORM_BIND(9) uniform float pClipNear2;
+UNIFORM_BIND(9) uniform vec3 pFrustumNormal1;
+UNIFORM_BIND(10) uniform vec3 pFrustumNormal2;
+UNIFORM_BIND(11) uniform vec3 pFrustumNormal3;
+UNIFORM_BIND(12) uniform vec3 pFrustumNormal4;
+UNIFORM_BIND(13) uniform vec4 pFrustumTestAdd;
+UNIFORM_BIND(14) uniform vec4 pFrustumTestMul;
+
+// LayeredRendering == LayeredRenderingStereo or DUAL_OCCMAP_STEREO or FRUSTUM_TEST_STEREO
+UNIFORM_BIND(15) uniform mat4 pMatrixStereo;
+UNIFORM_BIND(16) uniform mat4 pMatrix2Stereo;
+
+UNIFORM_BIND(17) uniform uint pCullFilter;
 
 
 #include "shared/ubo_defines.glsl"
 
-#ifdef WITH_COMPUTE_RENDER_TASK
-	#include "shared/defren/plan/world_element.glsl"
-	#include "shared/defren/plan/counter.glsl"
-	
-	UBOLAYOUT_BIND(0) readonly buffer Element {
-		sElement pElement[];
-	};
-	
-	UBOLAYOUT_BIND(1) readonly buffer VisibleElement {
-		uvec4 pVisibleElement[];
-	};
-	
-	UBOLAYOUT_BIND(2) readonly buffer Counters {
-		sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
-	};
-	
-	UBOLAYOUT_BIND(3) writeonly restrict buffer VisibleElementOut {
-		uvec4 pVisibleElementOut[];
-	};
-	
-#ifdef RENDER_DOC_DEBUG_OCCTEST
-	layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texRenderDocDebug;
-	void renderDocDebugStore(int index, vec4 value){
-		ivec2 tc = ivec2(gl_GlobalInvocationID.x, 1023 - index);
-		if(all(lessThan(tc, ivec2(2048, 1024)))){
-			imageStore(texRenderDocDebug, tc, value);
-		}
+// WithComputeRenderTask
+// vvvvvvvvvvvvvvvvvvvvv
+#include "shared/defren/plan/world_element.glsl"
+#include "shared/defren/plan/counter.glsl"
+
+UBOLAYOUT_BIND(0) readonly buffer Element {
+	sElement pElement[];
+};
+
+UBOLAYOUT_BIND(1) readonly buffer VisibleElement {
+	uvec4 pVisibleElement[];
+};
+
+UBOLAYOUT_BIND(2) readonly buffer Counters {
+	sCounter pRenderComputeCounter[ pRenderComputeCounterCount ];
+};
+
+UBOLAYOUT_BIND(3) writeonly restrict buffer VisibleElementOut {
+	uvec4 pVisibleElementOut[];
+};
+// ^^^^^^^^^^^^^^^^^^^^^
+////////////////////////
+
+// RenderDocDebugOccTest
+// vvvvvvvvvvvvvvvvvvvvv
+layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2D texRenderDocDebug;
+void renderDocDebugStore(int index, vec4 value){
+	ivec2 tc = ivec2(gl_GlobalInvocationID.x, 1023 - index);
+	if(all(lessThan(tc, ivec2(2048, 1024)))){
+		imageStore(texRenderDocDebug, tc, value);
 	}
-#endif
-	
-	// buffer stores in the first uvec4 the output of the node search pass. the output
-	// of the element search pass is stored in the next uvec4. for this reason the
-	// offset 16 is added so we can reuse the same binding (binding point 3) for input
-	// and output through different variables. we store the work group size too so
-	// we can dispatch over the results in later passes
-	layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
-	layout( binding=0, offset=12 ) uniform atomic_uint pNextVisibleIndex;
-	
-	const uint dispatchWorkGroupSize = uint( 64 );
-	
-#else
-	struct sInputData{
-		vec3 minExtend;
-		vec3 maxExtend;
-	};
-	
-	UBOLAYOUT_BIND(0) readonly buffer InputData {
-		sInputData pInputData[];
-	};
-	
-	UBOLAYOUT_BIND(1) writeonly restrict buffer ResultData {
-		bvec4 pResultData[];
-	};
-#endif
+}
+
+// buffer stores in the first uvec4 the output of the node search pass. the output
+// of the element search pass is stored in the next uvec4. for this reason the
+// offset 16 is added so we can reuse the same binding (binding point 3) for input
+// and output through different variables. we store the work group size too so
+// we can dispatch over the results in later passes
+layout( binding=0, offset=0 ) uniform atomic_uint pDispatchWorkGroupCount;
+layout( binding=0, offset=12 ) uniform atomic_uint pNextVisibleIndex;
+
+const uint dispatchWorkGroupSize = uint( 64 );
+// ^^^^^^^^^^^^^^^^^^^^^
+////////////////////////
+
+// !RenderDocDebugOccTest
+// vvvvvvvvvvvvvvvvvvvvvv
+struct sInputData{
+	vec3 minExtend;
+	vec3 maxExtend;
+};
+
+UBOLAYOUT_BIND(0) readonly buffer InputData {
+	sInputData pInputData[];
+};
+
+UBOLAYOUT_BIND(1) writeonly restrict buffer ResultData {
+	bvec4 pResultData[];
+};
+// ^^^^^^^^^^^^^^^^^^^^^^
+/////////////////////////
+
 
 layout( local_size_x=64 ) in;
 
 const float baselog = log2( 3.0 ); // 1.5849625007211563
-#ifdef ENSURE_MIN_SIZE
-	const vec3 epsilonSize = vec3( 0.005 );
-#endif
+// EnsureMinSize
+const vec3 epsilonSize = vec3( 0.005 );
 
 
 
@@ -218,9 +229,9 @@ in vec2 scaleSize, in vec2 baseTopLevel, ARG_SAMP_HIGHP sampler2DArray occmap, i
 		samples.z = textureLod( occmap, tc, level ).x;
 		tc.x = minExtend.x;
 		samples.w = textureLod( occmap, tc, level ).x;
-		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		if(WithComputeRenderTask && RenderDocDebugOccTest){
 			renderDocDebugStore(9, samples);
-		#endif
+		}
 		samples.xy = max( samples.xy, samples.zw );
 		samplesAll.x = max( samples.x, samples.y );
 		
@@ -232,9 +243,9 @@ in vec2 scaleSize, in vec2 baseTopLevel, ARG_SAMP_HIGHP sampler2DArray occmap, i
 		samples.z = textureLod( occmap, tc, level ).x;
 		tc.y = steps.w;
 		samples.w = textureLod( occmap, tc, level ).x;
-		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		if(WithComputeRenderTask && RenderDocDebugOccTest){
 			renderDocDebugStore(10, samples);
-		#endif
+		}
 		samples.xy = max( samples.xy, samples.zw );
 		samplesAll.y = max( samples.x, samples.y );
 		
@@ -246,9 +257,9 @@ in vec2 scaleSize, in vec2 baseTopLevel, ARG_SAMP_HIGHP sampler2DArray occmap, i
 		samples.z = textureLod( occmap, tc, level ).x;
 		tc.y = steps.w;
 		samples.w = textureLod( occmap, tc, level ).x;
-		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		if(WithComputeRenderTask && RenderDocDebugOccTest){
 			renderDocDebugStore(11, samples);
-		#endif
+		}
 		samples.xy = max( samples.xy, samples.zw );
 		samplesAll.z = max( samples.x, samples.y );
 		
@@ -260,23 +271,23 @@ in vec2 scaleSize, in vec2 baseTopLevel, ARG_SAMP_HIGHP sampler2DArray occmap, i
 		samples.z = textureLod( occmap, tc, level ).x;
 		tc.x = maxExtend.x;
 		samples.w = textureLod( occmap, tc, level ).x;
-		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		if(WithComputeRenderTask && RenderDocDebugOccTest){
 			renderDocDebugStore(12, samples);
-		#endif
+		}
 		samples.xy = max( samples.xy, samples.zw );
 		samplesAll.w = max( samples.x, samples.y );
-		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		if(WithComputeRenderTask && RenderDocDebugOccTest){
 			renderDocDebugStore(14, samples);
-		#endif
+		}
 		
 		samplesAll.xy = max( samplesAll.xy, samplesAll.zw );
 		largestSample = max( samplesAll.x, samplesAll.y );
 		
-		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		if(WithComputeRenderTask && RenderDocDebugOccTest){
 			renderDocDebugStore(5, vec4(size, maxSize, level));
 			renderDocDebugStore(6, vec4(pixelShift, minDepth, largestSample));
 			renderDocDebugStore(7, vec4(minExtend, maxExtend));
-		#endif
+		}
 		
 		return minDepth <= largestSample;
 	//}
@@ -288,49 +299,52 @@ const vec2 vOffset = vec2( 0.5 );
 bool occlusionTest( in uint index ){
 	vec3 inMinExtend, inMaxExtend;
 	
-	#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+	if(WithComputeRenderTask && RenderDocDebugOccTest){
 		renderDocDebugStore(0, vec4(index, 0, 0, 0));
-	#endif
+	}
 	
-	#ifdef WITH_COMPUTE_RENDER_TASK
+	if(WithComputeRenderTask){
 		if( ( pElement[ index ].flags & pCullFilter ) == uint( 0 ) ){
-			#ifdef RENDER_DOC_DEBUG_OCCTEST
+			if(RenderDocDebugOccTest){
 				renderDocDebugStore(0, vec4(index, 1, 0, 0));
-			#endif
+			}
 			return true;
 		}
 		
 		inMinExtend = pElement[ index ].minExtend;
 		inMaxExtend = pElement[ index ].maxExtend;
-	#else
+		
+	}else{
 		inMinExtend = pInputData[ index ].minExtend;
 		inMaxExtend = pInputData[ index ].maxExtend;
-	#endif
+	}
 	
-	#ifdef ENSURE_MIN_SIZE
+	vec3 inputMinExtend, inputMaxExtend;
+	if(EnsureMinSize){
 		//vec3 adjustExtends = step( ( inMaxExtend - inMinExtend ), epsilonSize ) * epsilonSize;
 		//vec3 adjustExtends = mix( vec3( 0.0 ), epsilonSize, lessThan( ( inMaxExtend - inMinExtend ), epsilonSize ) );
 		vec3 adjustExtends = max( vec3( 0.0 ), epsilonSize + inMinExtend - inMaxExtend ) * vec3( 0.5 );
-		vec3 inputMinExtend = inMinExtend - adjustExtends;
-		vec3 inputMaxExtend = inMaxExtend + adjustExtends;
-	#else
-		vec3 inputMinExtend = inMinExtend;
-		vec3 inputMaxExtend = inMaxExtend;
-	#endif
+		inputMinExtend = inMinExtend - adjustExtends;
+		inputMaxExtend = inMaxExtend + adjustExtends;
+		
+	}else{
+		inputMinExtend = inMinExtend;
+		inputMaxExtend = inMaxExtend;
+	}
 	
-	vec3 testMinExtend;
-	vec3 testMaxExtend;
-	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-		vec3 testMinExtendStereo;
-		vec3 testMaxExtendStereo;
-	#endif
+	vec3 testMinExtend, testMaxExtend;
+	// LayeredRendering == LayeredRenderingStereo
+	vec3 testMinExtendStereo, testMaxExtendStereo;
 	
 	bool result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix, inputMinExtend, inputMaxExtend );
-	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-		bool resultStereo = calcScreenAABB( testMinExtendStereo, testMaxExtendStereo, pMatrixStereo, inputMinExtend, inputMaxExtend );
-		result = result | resultStereo;
-	#endif
-	#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+	bool resultStereo;
+	
+	if(LayeredRendering == LayeredRenderingStereo){
+		resultStereo = calcScreenAABB( testMinExtendStereo, testMaxExtendStereo, pMatrixStereo, inputMinExtend, inputMaxExtend );
+		result = result || resultStereo;
+	}
+	
+	if(WithComputeRenderTask && RenderDocDebugOccTest){
 		renderDocDebugStore(1, vec4(inputMinExtend, 0));
 		renderDocDebugStore(2, vec4(inputMaxExtend, 0));
 		renderDocDebugStore(3, vec4(testMinExtend, 0));
@@ -339,15 +353,16 @@ bool occlusionTest( in uint index ){
 		&& length(inputMaxExtend - vec3(32.5, 18.5, -116)) < 0.1){
 			renderDocDebugStore(16, vec4(1.0));
 		}
-	#endif
+	}
+	
 	if( ! result ){
-		#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+		if(WithComputeRenderTask && RenderDocDebugOccTest){
 			renderDocDebugStore(0, vec4(index, 2, 0, 0));
-		#endif
+		}
 		return true;
 	}
 	
-	#ifdef FRUSTUM_TEST
+	if(FrustumTest){
 		/*
 		// NOTE this optimization incorrectly discards a shadow caster causing sun light sometimes
 		//      leaking through. mostly seen with hallway and facade meshes. the box seems to fail
@@ -381,19 +396,19 @@ bool occlusionTest( in uint index ){
 		result = testBox(occmapMaxDepth, occmapMinExtend, occmapMaxExtend,
 			testMinExtend.z, pScaleSize, pBaseTopLevel, texOccMap, 0);
 		
-		#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+		if(LayeredRendering == LayeredRenderingStereo){
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
-			result = result | testBox( occmapMaxDepthStereo, occmapMinExtendStereo,
+			result = result || testBox( occmapMaxDepthStereo, occmapMinExtendStereo,
 				occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize, pBaseTopLevel2, texOccMap, 1 );
-		#endif
+		}
 		
 		if( ! result ){
 			return false;
 		}
 		
-	#else
+	}else{
 		float occmapMaxDepth;
 		vec2 occmapMinExtend = testMinExtend.xy * vScale + vOffset;
 		vec2 occmapMaxExtend = vec2( testMaxExtend ) * vScale + vOffset;
@@ -403,7 +418,7 @@ bool occlusionTest( in uint index ){
 				testMinExtend.z, pScaleSize, pBaseTopLevel, texOccMap, 0 );
 		}
 		
-		#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
+		if(LayeredRendering == LayeredRenderingStereo){
 			float occmapMaxDepthStereo;
 			vec2 occmapMinExtendStereo = testMinExtendStereo.xy * vScale + vOffset;
 			vec2 occmapMaxExtendStereo = vec2( testMaxExtendStereo ) * vScale + vOffset;
@@ -413,17 +428,17 @@ bool occlusionTest( in uint index ){
 					occmapMaxExtendStereo, testMinExtendStereo.z, pScaleSize,
 					pBaseTopLevel, texOccMap, 1 );
 			}
-			result = result | resultStereo;
-		#endif
+			result = result || resultStereo;
+		}
 		
 		if( ! result ){
-			#if defined WITH_COMPUTE_RENDER_TASK && defined RENDER_DOC_DEBUG_OCCTEST
+			if(WithComputeRenderTask && RenderDocDebugOccTest){
 				renderDocDebugStore(0, vec4(index, 3, 0, 0));
-			#endif
+			}
 			return false;
 		}
 		
-		#ifdef DUAL_OCCMAP
+		if(DualOccMap){
 			testMaxExtend.z = max( testMaxExtend.z, occmapMaxDepth );
 			result = calcScreenAABB( testMinExtend, testMaxExtend, pMatrix2, testMinExtend, testMaxExtend );
 			if( ! result ){
@@ -437,8 +452,8 @@ bool occlusionTest( in uint index ){
 			if( ! result ){
 				return false;
 			}
-		#endif
-	#endif
+		}
+	}
 	
 	return true;
 }
@@ -446,7 +461,7 @@ bool occlusionTest( in uint index ){
 void main( void ){
 	uint index = gl_GlobalInvocationID.x;
 	
-	#ifdef WITH_COMPUTE_RENDER_TASK
+	if(WithComputeRenderTask){
 		if( index >= pRenderComputeCounter[ erccTempCounter ].counter ){
 			return;
 		}
@@ -469,12 +484,12 @@ void main( void ){
 			atomicCounterIncrement( pDispatchWorkGroupCount );
 		}
 		
-	#else
+	}else{
 		if( index >= pInputDataCount ){
 			return;
 		}
 		
 		bool result = occlusionTest( index );
 		pResultData[ index / uint(4) ][ index % uint(4) ] = result;
-	#endif
+	}
 }

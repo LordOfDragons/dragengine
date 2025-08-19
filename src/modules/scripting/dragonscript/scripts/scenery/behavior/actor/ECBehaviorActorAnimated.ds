@@ -171,17 +171,13 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorActorAnimated"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorActorAnimated")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorActorAnimated behavior = ECBehaviorActorAnimated.new(eclass,\
-				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
+				getHelper().defaultComponent(eclass, parameters),\
 				ECBehaviorLocomotion.getBehaviorIn(eclass), id)
 			
 			var Object value = parameters.getAt("controllerMapping", null)
@@ -200,11 +196,9 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 				behavior.setDefaultControllerMappings()
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "actorAnimated", id)
-			
+			getHelper().setPropertiesFromParameters(eclass, parameters, "actorAnimated", id)
 			return behavior
 		end
 	end
@@ -688,17 +682,17 @@ class ECBehaviorActorAnimated extends DefaultECBehavior
 	 */
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorLocomotion locomotion) \
-	this(eclass, component, locomotion, BaseGameApp.getApp().getLoaders(), "")
+	this(eclass, component, locomotion, eclass.sharedFactoryHelper.defaultLoaders(), "")
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorLocomotion locomotion, String id) \
-	this(eclass, component, locomotion, BaseGameApp.getApp().getLoaders(), id)
+	this(eclass, component, locomotion, eclass.sharedFactoryHelper.defaultLoaders(), id)
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
 	ECBehaviorLocomotion locomotion, String id, String subID) \
-	this(eclass, component, locomotion, BaseGameApp.getApp().getLoaders(), id, subID)
+	this(eclass, component, locomotion, eclass.sharedFactoryHelper.defaultLoaders(), id, subID)
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component, \

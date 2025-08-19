@@ -668,6 +668,28 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator( const decXmlEleme
 			}else if( strcmp( tag->GetName(), "targetBone" ) == 0 ){
 				rule->SetTargetBone( GetCDataString( *tag ) );
 				
+			}else if(tag->GetName() == "inputBone"){
+				rule->SetInputBone(GetCDataString(*tag));
+				
+			}else if(tag->GetName() == "inputSource"){
+				name = GetCDataString(*tag);
+				
+				if(strcmp(name, "targetBlend") == 0){
+					rule->SetInputSource(deAnimatorRuleBoneTransformator::eisTargetBlend);
+					
+				}else if(strcmp(name, "targetDirect") == 0){
+					rule->SetInputSource(deAnimatorRuleBoneTransformator::eisTargetDirect);
+					
+				}else if(strcmp(name, "boneState") == 0){
+					rule->SetInputSource(deAnimatorRuleBoneTransformator::eisBoneState);
+					
+				}else if(strcmp(name, "boneStateInverse") == 0){
+					rule->SetInputSource(deAnimatorRuleBoneTransformator::eisBoneStateInverse);
+					
+				}else{
+					LogErrorUnknownValue(*tag, name);
+				}
+				
 			}else if( strcmp( tag->GetName(), "target" ) == 0 ){
 				name = GetAttributeString( *tag, "name" );
 				

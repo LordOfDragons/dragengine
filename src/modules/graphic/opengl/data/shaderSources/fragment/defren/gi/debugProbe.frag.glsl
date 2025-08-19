@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -5,19 +7,20 @@ precision HIGHP int;
 #include "shared/octahedral.glsl"
 #include "shared/defren/light/ubo_gi.glsl"
 
-uniform mat4x3 pMatrixNormal;
-uniform int pGIDebugCascade;
+UNIFORM_BIND(3) uniform mat4x3 pMatrixNormal;
+UNIFORM_BIND(2) uniform int pGIDebugCascade;
 
 #define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
+#define TEX_GI_PROBE_OFFSET_BINDING 2
 #include "shared/defren/gi/probe_offset.glsl"
 #include "shared/defren/gi/probe_flags.glsl"
 
-uniform lowp sampler2DArray texGIIrradiance;
+layout(binding=0) uniform lowp sampler2DArray texGIIrradiance;
 
-flat in ivec3 vProbeCoord;
-flat in vec3 vProbePosition;
-in vec2 vTexCoord;
-flat in float vRimThickness;
+VARYING_BIND(0) flat in ivec3 vProbeCoord;
+VARYING_BIND(1) flat in vec3 vProbePosition;
+VARYING_BIND(2) in vec2 vTexCoord;
+VARYING_BIND(3) flat in float vRimThickness;
 
 layout(location=0) out vec3 outColor;
 

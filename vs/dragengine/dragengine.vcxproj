@@ -1746,7 +1746,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine";WITH_STATIC_INTERNALMODULES</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DRAGENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);DE_COMPILE_DLL;DE_ENGINE_PATH="@ProgramFiles\\Dragengine\\Data";DE_CONFIG_PATH="@ProgramFiles\\Dragengine\\Config";DE_SHARE_PATH="@ProgramFiles\\Dragengine\\Share";DE_CACHE_PATH="@LocalAppData\\Dragengine\\Cache";DE_ENGINE_BASE_PATH="@ProgramFiles\\Dragengine"</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

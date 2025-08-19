@@ -9,6 +9,7 @@ class DEBuildInfo {
 
         const val arch = "armv7"
         const val platform = "android"
+        const val runDelgaNoFragment = false
 
         val examples = listOf(
             Example(

@@ -2,11 +2,10 @@
 <shader>
 	<name>DefRen Copy Color Stereo</name>
 	
-	<texture name='texColor' target='0'/>
-	
-	<parameter name='pQuadParams'/> <!-- 0 -->
-	<parameter name='pMipMapLevel'/> <!-- 1 -->
-	<parameter name='pTCClamp'/> <!-- 2 -->
+	<parameter name='pQuadParams' location='0'/> <!-- 0 -->
+	<parameter name='pMipMapLevel' location='3'/> <!-- 1 -->
+	<parameter name='pTCClamp' location='5'/> <!-- 2 -->
+	<parameter name='pTCClampMipMap' location='4'/> <!-- 3 -->
 	
 	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

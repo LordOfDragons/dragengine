@@ -1,20 +1,16 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pOptions; // rows, cols, stepU, stepV
-uniform vec3 pKernel1;
-uniform vec3 pKernel2;
-uniform vec3 pKernel3;
+UNIFORM_BIND(3) uniform vec4 pOptions; // rows, cols, stepU, stepV
+UNIFORM_BIND(4) uniform vec3 pKernel1;
+UNIFORM_BIND(5) uniform vec3 pKernel2;
+UNIFORM_BIND(6) uniform vec3 pKernel3;
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
-in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out mediump vec4 outColor;
 

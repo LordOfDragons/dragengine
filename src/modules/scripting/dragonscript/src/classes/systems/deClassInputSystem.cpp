@@ -190,6 +190,22 @@ void deClassInputSystem::nfGetButtonTouched::RunFunction( dsRunTime *rt, dsValue
 	rt->PushBool( module.GetButtonTouched( device, button ) );
 }
 
+// static func bool getButtonNear(int device, int button)
+deClassInputSystem::nfGetButtonNear::nfGetButtonNear(const sInitData &init) :
+dsFunction(init.clsInpSys, "getButtonNear", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+	p_AddParameter(init.clsInteger); // device
+	p_AddParameter(init.clsInteger); // button
+}
+void deClassInputSystem::nfGetButtonNear::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = ((deClassInputSystem*)GetOwnerClass() )->GetDS();
+	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
+	
+	const int device = rt->GetValue(0)->GetInt();
+	const int button  = rt->GetValue(1)->GetInt();
+	rt->PushBool(module.GetButtonNear(device, button));
+}
+
 // public static func float getAxisValue( int device, int axis )
 deClassInputSystem::nfGetAxisValue::nfGetAxisValue( const sInitData &init ) :
 dsFunction( init.clsInpSys, "getAxisValue", DSFT_FUNCTION,
@@ -467,6 +483,7 @@ void deClassInputSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIndexOfFeedbackWithID( init ) );
 	AddFunction( new nfGetButtonPressed( init ) );
 	AddFunction( new nfGetButtonTouched( init ) );
+	AddFunction(new nfGetButtonNear(init));
 	AddFunction( new nfGetAxisValue( init ) );
 	AddFunction( new nfGetFeedbackValue( init ) );
 	AddFunction( new nfSetFeedbackValue( init ) );

@@ -1,26 +1,22 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pOffsets1; // offset1.s, offset1.t, offset2.s, offset2.t
-uniform vec4 pOffsets2; // offset3.s, offset3.t, offset4.s, offset4.t
-uniform vec4 pOffsets3; // offset5.s, offset5.t, offset6.s, offset6.t
-uniform vec4 pOffsets4; // offset7.s, offset7.t, offset8.s, offset8.t
-uniform vec4 pOffsets5; // offset9.s, offset9.t, offset10.s, offset10.t
-uniform vec4 pWeights1; // weightCenter, weight1, weight2, weight3
-uniform vec4 pWeights2; // weight4, weight5, n/a, n/a
-uniform vec2 pClamp; // clamp.s, clamp.t
-uniform float pLevel;
-uniform float pScaleColor;
+UNIFORM_BIND(3) uniform vec4 pOffsets1; // offset1.s, offset1.t, offset2.s, offset2.t
+UNIFORM_BIND(4) uniform vec4 pOffsets2; // offset3.s, offset3.t, offset4.s, offset4.t
+UNIFORM_BIND(5) uniform vec4 pOffsets3; // offset5.s, offset5.t, offset6.s, offset6.t
+UNIFORM_BIND(6) uniform vec4 pOffsets4; // offset7.s, offset7.t, offset8.s, offset8.t
+UNIFORM_BIND(7) uniform vec4 pOffsets5; // offset9.s, offset9.t, offset10.s, offset10.t
+UNIFORM_BIND(8) uniform vec4 pWeights1; // weightCenter, weight1, weight2, weight3
+UNIFORM_BIND(9) uniform vec4 pWeights2; // weight4, weight5, n/a, n/a
+UNIFORM_BIND(10) uniform vec2 pClamp; // clamp.s, clamp.t
+UNIFORM_BIND(11) uniform float pLevel;
+UNIFORM_BIND(12) uniform float pScaleColor;
 
-uniform mediump sampler2DArray texColor;
+layout(binding=0) uniform mediump sampler2DArray texColor;
 
-in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec3 outColor;
 

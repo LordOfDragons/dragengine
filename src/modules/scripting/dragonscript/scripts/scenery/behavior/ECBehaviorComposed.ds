@@ -248,17 +248,13 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorComposed"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorComposed")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorComposed behavior = ECBehaviorComposed.new(eclass, id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "composed", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "composed", id)
 			return behavior
 		end
 	end
@@ -361,21 +357,21 @@ class ECBehaviorComposed extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass) this(eclass, \
-	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator())
+	eclass.sharedFactoryHelper.defaultElementClassList(), eclass.sharedFactoryHelper.defaultIDGenerator())
 	end
 	
 	func new(BehaviorElementClass eclass, String id) this(eclass, \
-	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator(), id)
+	eclass.sharedFactoryHelper.defaultElementClassList(), eclass.sharedFactoryHelper.defaultIDGenerator(), id)
 	end
 	
 	func new(BehaviorElementClass eclass, String id, String subID) this(eclass, \
-	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator(), \
+	eclass.sharedFactoryHelper.defaultElementClassList(), eclass.sharedFactoryHelper.defaultIDGenerator(), \
 	id, subID, subID + ".")
 	end
 	
 	func new(BehaviorElementClass eclass, String id, String subID, String prefix) \
-	this(eclass, BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator(), \
-	id, subID, prefix)
+	this(eclass, eclass.sharedFactoryHelper.defaultElementClassList(),\
+	eclass.sharedFactoryHelper.defaultIDGenerator(), id, subID, prefix)
 	end
 	
 	func new(BehaviorElementClass eclass, ElementClassList elementClassList, \

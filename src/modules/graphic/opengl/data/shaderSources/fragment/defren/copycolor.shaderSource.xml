@@ -6,9 +6,9 @@
 	
 	<output name='outColor' location='0'/>
 	
-	<define>GS_RENDER_STEREO</define>
-	<define>INPUT_ARRAY_TEXTURE</define>
+	<define>LAYERED_RENDERING</define>
+	<define>INPUT_ARRAY_TEXTURES</define>
 	<define>MIPMAP</define>
-	<define>TCCLAMP</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>CLAMP_TC</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

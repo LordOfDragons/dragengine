@@ -148,22 +148,18 @@ class ECBehaviorOutline extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorOutline"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorOutline")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorOutline behavior = ECBehaviorOutline.new(eclass,\
-				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
+				getHelper().defaultComponent(eclass, parameters),\
 				ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "outline", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "outline", id)
 			return behavior
 		end
 	end

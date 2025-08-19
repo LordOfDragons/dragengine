@@ -36,6 +36,7 @@
 #include <deigde/gamedefinition/class/igdeGDClassInherit.h>
 #include <deigde/gamedefinition/class/component/igdeGDCComponent.h>
 #include <deigde/gamedefinition/class/component/igdeGDCCTexture.h>
+#include <deigde/gamedefinition/class/igdeGDCamera.h>
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gamedefinition/class/navblocker/igdeGDCNavigationBlocker.h>
 #include <deigde/gamedefinition/class/navspace/igdeGDCNavigationSpace.h>
@@ -172,6 +173,41 @@ bool meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass, decStrin
 	for( int i=0; i<count; i++ ){
 		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
 		if( inherit.GetClass() && meHelpers::FindFirstNavigationBlocker( *inherit.GetClass(), prefix, navigationBlocker ) ){
+			prefix = inherit.GetPropertyPrefix() + prefix;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+igdeGDCamera *meHelpers::FindFirstCamera(const igdeGDClass *gdclass){
+	return gdclass ? FindFirstCamera(*gdclass) : nullptr;
+}
+
+igdeGDCamera *meHelpers::FindFirstCamera(const igdeGDClass &gdclass){
+	igdeGDCamera *camera = nullptr;
+	decString prefix;
+	return FindFirstCamera(gdclass, prefix, camera) ? camera : nullptr;
+}
+
+bool meHelpers::FindFirstCamera(const igdeGDClass &gdclass, igdeGDCamera* &camera){
+	decString prefix;
+	return FindFirstCamera(gdclass, prefix, camera);
+}
+
+bool meHelpers::FindFirstCamera(const igdeGDClass &gdclass, decString &prefix, igdeGDCamera* &camera){
+	if(gdclass.GetHasCamera()){
+		camera = gdclass.GetCamera();
+		prefix.Empty();
+		return true;
+	}
+	const int count = gdclass.GetInheritClassCount();
+	int i;
+	for(i=0; i<count; i++){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt(i);
+		if(inherit.GetClass() && meHelpers::FindFirstCamera(*inherit.GetClass(), prefix, camera)){
 			prefix = inherit.GetPropertyPrefix() + prefix;
 			return true;
 		}

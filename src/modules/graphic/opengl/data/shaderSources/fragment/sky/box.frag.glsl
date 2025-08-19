@@ -1,17 +1,19 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform mat3 pMatrixCamera;
-uniform mat3 pMatrixLayer;
-uniform vec3 pLayerPosition;
-uniform vec4 pLayerColor;
-uniform vec4 pParams; // x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMat.a23
-uniform vec4 pMaterialGamma;
-uniform vec4 pSkyBgColor; // skybg.rgb, skybgBlendFactor
+UNIFORM_BIND(0) uniform mat3 pMatrixCamera;
+UNIFORM_BIND(1) uniform mat3 pMatrixLayer;
+UNIFORM_BIND(2) uniform vec3 pLayerPosition;
+UNIFORM_BIND(3) uniform vec4 pLayerColor;
+UNIFORM_BIND(4) uniform vec4 pParams; // x=1/projMat.a11, y=1/projMat.a22, -projMat.a13, -projMat.a23
+UNIFORM_BIND(5) uniform vec4 pMaterialGamma;
+UNIFORM_BIND(6) uniform vec4 pSkyBgColor; // skybg.rgb, skybgBlendFactor
 
-uniform mediump samplerCube texSky;
+layout(binding=0) uniform mediump samplerCube texSky;
 
-in vec2 vTexCoord;
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec4 outColor;
 

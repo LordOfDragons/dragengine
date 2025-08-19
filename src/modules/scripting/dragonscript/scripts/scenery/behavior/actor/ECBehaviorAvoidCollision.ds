@@ -111,12 +111,8 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorAvoidCollision"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorAvoidCollision")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -126,14 +122,14 @@ class ECBehaviorAvoidCollision extends DefaultECBehavior
 			var ECBehaviorAvoidCollision behavior = ECBehaviorAvoidCollision.new(eclass,\
 				ECBehaviorActorMover.getBehaviorIn(eclass), ECBehaviorRideOn.getBehaviorIn(eclass))
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
 			if parameters.has("collisionFilter")
 				behavior.getCollisionFilter().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "avoidCollision")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "avoidCollision")
 			return behavior
 		end
 	end

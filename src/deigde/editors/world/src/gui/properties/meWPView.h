@@ -80,6 +80,8 @@ private:
 	
 	igdeCheckBoxReference pChkEnableAuralization;
 	
+	bool pPreventUpdateCamera;
+	
 	
 	
 public:

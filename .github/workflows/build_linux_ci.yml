@@ -95,6 +95,12 @@ jobs:
           sudo apt -y install build-essential scons cmake autoconf libtool nasm \
             patchelf libasound2-dev extra-cmake-modules flex bison gettext doxygen
       
+      - name: Install GLSL Tools
+        run: |
+          wget https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-main-linux-Release.zip -O "${{ github.workspace }}/glslang.zip"
+          unzip -d "${{ github.workspace }}/glslang" "${{ github.workspace }}/glslang.zip"
+          echo "PATH=${{ github.workspace }}/glslang/bin:$PATH" >> $GITHUB_ENV
+      
       - name: Init custom.py
         run: |
           cp ${{ github.workspace }}/.github/workflows/custom_linux_ci.py custom.py

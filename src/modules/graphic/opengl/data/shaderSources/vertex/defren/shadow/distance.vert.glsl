@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -5,31 +7,33 @@ precision HIGHP int;
 #define _USE_TEXTURE_
 #endif
 
-uniform mat4 pMatrixMVP; // matrix model-view-projection
-uniform mat4x3 pMatrixMV; // matrix model-view
+UNIFORM_BIND(0) uniform mat4 pMatrixMVP; // matrix model-view-projection
+UNIFORM_BIND(1) uniform mat4x3 pMatrixMV; // matrix model-view
 #ifdef _USE_TEXTURE_
-uniform mat3x2 pMatrixDiffuse; // matrix for diffuse texture
+UNIFORM_BIND(2) uniform mat3x2 pMatrixDiffuse; // matrix for diffuse texture
 #endif
 
 layout(location=0) in vec3 inPosition;
 #ifdef _USE_TEXTURE_
 layout(location=3) in vec2 inTexCoord;
 #endif
-#ifdef HEIGHTTERRAIN
+
+// GeometryMode == GeometryModeHeightMap
 layout(location=4) in float inHTHeight;
-#endif
 
 #ifdef _USE_TEXTURE_
-out vec2 vTexCoord;
+VARYING_BIND(0) out vec2 vTexCoord;
 #endif
-out vec3 vLSPosition;
+VARYING_BIND(1) out vec3 vLSPosition;
 
 void main( void ){
-#ifdef HEIGHTTERRAIN
-	vec4 position = vec4( inPosition.x, inHTHeight, inPosition.y, 1.0 );
-#else // HEIGHTTERRAIN
-	vec4 position = vec4( inPosition.xyz, 1.0 );
-#endif // HEIGHTTERRAIN
+	vec4 position;
+	if(GeometryMode == GeometryModeHeightMap){
+		position = vec4( inPosition.x, inHTHeight, inPosition.y, 1.0 );
+		
+	}else{
+		position = vec4( inPosition.xyz, 1.0 );
+	}
 	
 	vLSPosition = pMatrixMV * position;
 	

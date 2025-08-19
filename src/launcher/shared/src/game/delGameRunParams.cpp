@@ -46,6 +46,15 @@ pHeight( 0 ),
 pFullScreen( false ){
 }
 
+delGameRunParams::delGameRunParams(const delGameRunParams &params) :
+pGameProfile(params.pGameProfile),
+pRunArguments(params.pRunArguments),
+pWidth(params.pWidth),
+pHeight(params.pHeight),
+pFullScreen(params.pFullScreen),
+pPatches(params.pPatches){
+}
+
 delGameRunParams::~delGameRunParams(){
 }
 

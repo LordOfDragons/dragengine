@@ -64,7 +64,7 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       var ECBehaviorComponent component = ECBehaviorComponent.new(this)
  *       var ECBehaviorDynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, component)
  *       
@@ -114,20 +114,15 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorRenderableLight"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorRenderableLight")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorRenderableLight behavior = ECBehaviorRenderableLight.new(eclass,\
-				eclass.sharedFactoryHelper.defaultDynamicSkin(eclass, parameters),\
-				eclass.sharedFactoryHelper.defaultLight(eclass, parameters), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "renderableLight", id)
+				getHelper().defaultDynamicSkin(eclass, parameters),\
+				getHelper().defaultLight(eclass, parameters), id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "renderableLight", id)
 			return behavior
 		end
 	end
@@ -136,251 +131,244 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Update renderable listener. */
 		public class UpdateRenderableListener extends ECBehaviorLight.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void lightActivated( ECBehaviorLight.Instance instance )
-				this.pInstance.updateRenderables()
+			func void lightActivated(ECBehaviorLight.Instance instance)
+				pInstance.updateRenderables()
 			end
 			
-			public func void lightDeactivated( ECBehaviorLight.Instance instance )
-				this.pInstance.updateRenderables()
+			func void lightDeactivated(ECBehaviorLight.Instance instance)
+				pInstance.updateRenderables()
 			end
 			
-			public func void lightParametersChanged( ECBehaviorLight.Instance instance )
-				this.pInstance.updateRenderables()
+			func void lightParametersChanged(ECBehaviorLight.Instance instance)
+				pInstance.updateRenderables()
 			end
 		end
 		
 		
 		
-		private var ECBehaviorRenderableLight pECBehavior
-		private var ECBehaviorDynamicSkin.Instance pDynamicSkin
-		private var ECBehaviorLight.Instance pLight
-		private var int pRenderableIntensity
-		private var int pRenderableColor
-		private var float pScaleIntensity
-		private var Color pScaleColor
+		var ECBehaviorRenderableLight pECBehavior
+		var ECBehaviorDynamicSkin.Instance pDynamicSkin
+		var ECBehaviorLight.Instance pLight
+		var int pRenderableIntensity
+		var int pRenderableColor
+		var float pScaleIntensity
+		var Color pScaleColor
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorRenderableLight ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pRenderableIntensity = -1
-			this.pRenderableColor = -1
-			this.pScaleIntensity = 1
-			this.pScaleColor = Color.white
+		func new(ECBehaviorRenderableLight ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pRenderableIntensity = -1
+			pRenderableColor = -1
+			pScaleIntensity = 1
+			pScaleColor = Color.white
 			
-			this.pDynamicSkin = ecbehavior.getDynamicSkin().instance( element )
-			this.pLight = ecbehavior.getLight().instance( element )
+			pDynamicSkin = ecbehavior.getDynamicSkin().instance(element)
+			pLight = ecbehavior.getLight().instance(element)
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			this.pLight = null
-			this.pDynamicSkin = null
+		func void dispose()
+			pLight = null
+			pDynamicSkin = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var DynamicSkin dynamicSkin = this.pDynamicSkin.getDynamicSkin()
+		func void init(StubElement stub)
+			var DynamicSkin dynamicSkin = pDynamicSkin.getDynamicSkin()
 			var String value
 			
-			value = this.pECBehavior.getRenderableIntensity().getValue( stub )
+			value = pECBehavior.getRenderableIntensity().getValue(stub)
 			if not value.empty()
-				this.pRenderableIntensity = dynamicSkin.getRenderableCount()
-				dynamicSkin.addRenderable( value, DynamicSkinRenderableType.value )
+				pRenderableIntensity = dynamicSkin.getRenderableCount()
+				dynamicSkin.addRenderable(value, DynamicSkinRenderableType.value)
 			end
 			
-			value = this.pECBehavior.getRenderableColor().getValue( stub )
+			value = pECBehavior.getRenderableColor().getValue(stub)
 			if not value.empty()
-				this.pRenderableColor = dynamicSkin.getRenderableCount()
-				dynamicSkin.addRenderable( value, DynamicSkinRenderableType.color )
+				pRenderableColor = dynamicSkin.getRenderableCount()
+				dynamicSkin.addRenderable(value, DynamicSkinRenderableType.color)
 			end
 			
-			this.pLight.addListener( UpdateRenderableListener.new( this ) )
+			pLight.addListener(UpdateRenderableListener.new(this))
 			
-			this.pScaleIntensity = this.pECBehavior.getScaleIntensity().getValue( stub )
-			this.pScaleColor = this.pECBehavior.getScaleColor().getColor( stub, \
-				this.getElement().getClass().getCodecPropertyString() )
+			pScaleIntensity = pECBehavior.getScaleIntensity().getValue(stub)
+			pScaleColor = pECBehavior.getScaleColor().getColor(stub, \
+				getElement().getClass().getCodecPropertyString())
 			
-			this.updateRenderables()
+			updateRenderables()
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorRenderableLight getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorRenderableLight getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Dynamic skin behavior. */
-		public func ECBehaviorDynamicSkin.Instance getDynamicSkin()
-			return this.pDynamicSkin
+		func ECBehaviorDynamicSkin.Instance getDynamicSkin()
+			return pDynamicSkin
 		end
 		
 		/** \brief Light behavior. */
-		public func ECBehaviorLight.Instance getLight()
-			return this.pLight
+		func ECBehaviorLight.Instance getLight()
+			return pLight
 		end
 		
 		
 		
 		/** \brief Index of intensity renderable or -1 if not used. */
-		public func int getRenderableIntensity()
-			return this.pRenderableIntensity
+		func int getRenderableIntensity()
+			return pRenderableIntensity
 		end
 		
 		/** \brief Index of color renderable or -1 if not used. */
-		public func int getRenderableColor()
-			return this.pRenderableColor
+		func int getRenderableColor()
+			return pRenderableColor
 		end
 		
 		/** \brief Intensity scale factor. */
-		public func float getScaleIntensity()
-			return this.pScaleIntensity
+		func float getScaleIntensity()
+			return pScaleIntensity
 		end
 		
 		/** \brief Set intensity scale factor. */
-		protected func void setScaleIntensity( float factor )
-			this.pScaleIntensity = factor
+		protected func void setScaleIntensity(float factor)
+			pScaleIntensity = factor
 		end
 		
 		/** \brief Color scale factor. */
-		public func Color getScaleColor()
-			return this.pScaleColor
+		func Color getScaleColor()
+			return pScaleColor
 		end
 		
 		/** \brief Set color scale factor. */
-		public func void setScaleColor( Color factor )
-			this.pScaleColor = factor
+		func void setScaleColor(Color factor)
+			pScaleColor = factor
 		end
 		
 		
 		
 		/** \brief Update renderables. */
-		public func void updateRenderables()
-			if this.pLight == null or this.pDynamicSkin == null
+		func void updateRenderables()
+			if pLight == null or pDynamicSkin == null
 				return
 			end
 			
-			if this.pRenderableIntensity != -1
-				if this.pLight.getLight().getActivated()
-					this.pDynamicSkin.getDynamicSkin().setValueAt( this.pRenderableIntensity, \
-						this.pLight.getLight().getIntensity() * this.pScaleIntensity )
+			if pRenderableIntensity != -1
+				if pLight.getLight().getActivated()
+					pDynamicSkin.getDynamicSkin().setValueAt(pRenderableIntensity, \
+						pLight.getLight().getIntensity() * pScaleIntensity)
 					
 				else
-					this.pDynamicSkin.getDynamicSkin().setValueAt( this.pRenderableIntensity, 0 )
+					pDynamicSkin.getDynamicSkin().setValueAt(pRenderableIntensity, 0)
 				end
 			end
 			
-			if this.pRenderableColor != -1
-				this.pDynamicSkin.getDynamicSkin().setColorAt( this.pRenderableColor, \
-					this.pLight.getLight().getColor() * this.pScaleColor )
+			if pRenderableColor != -1
+				pDynamicSkin.getDynamicSkin().setColorAt(pRenderableColor, \
+					pLight.getLight().getColor() * pScaleColor)
 			end
 		end
 	end
 	
 	
 	
-	private var ECBehaviorDynamicSkin pDynamicSkin
-	private var ECBehaviorLight pLight
-	private var ECPString pRenderableIntensity
-	private var ECPFloat pScaleIntensity
-	private var ECPString pRenderableColor
-	private var ECPColor pScaleColor
+	var ECBehaviorDynamicSkin pDynamicSkin
+	var ECBehaviorLight pLight
+	var ECPString pRenderableIntensity
+	var ECPFloat pScaleIntensity
+	var ECPString pRenderableColor
+	var ECPColor pScaleColor
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
-	ECBehaviorLight light ) this( eclass, dynamicSkin, light, "" )
+	func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
+	ECBehaviorLight light) this(eclass, dynamicSkin, light, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
-	ECBehaviorLight light, String id ) this( eclass, dynamicSkin, light, id, \
-	id.empty() if "renderableLight." else "renderableLight(" + id + ")." )
+	func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
+	ECBehaviorLight light, String id) this(eclass, dynamicSkin, light, id, \
+	id.empty() if "renderableLight." else "renderableLight(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
-	ECBehaviorLight light, String id, String prefix ) super( eclass, id )
+	func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
+	ECBehaviorLight light, String id, String prefix) super(eclass, id)
 		if dynamicSkin == null
-			throw ENullPointer.new( "dynamicSkin" )
+			throw ENullPointer.new("dynamicSkin")
 		end
 		if light == null
-			throw ENullPointer.new( "light" )
+			throw ENullPointer.new("light")
 		end
 		
-		this.pDynamicSkin = dynamicSkin
-		this.pLight = light
+		pDynamicSkin = dynamicSkin
+		pLight = light
 		
-		this.pRenderableIntensity = ECPString.new( prefix + "renderableIntensity", "" )
-		eclass.addProperty( this.pRenderableIntensity )
+		eclass.addProperty(pRenderableIntensity = ECPString.new(prefix + "renderableIntensity", ""))
+		eclass.addProperty(pScaleIntensity = ECPFloat.new(prefix + "scaleIntensity", 1))
+		eclass.addProperty(pRenderableColor = ECPString.new(prefix + "renderableColor", ""))
+		eclass.addProperty(pScaleColor = ECPColor.new(prefix + "scaleColor", Color.white))
 		
-		this.pScaleIntensity = ECPFloat.new( prefix + "scaleIntensity", 1 )
-		eclass.addProperty( this.pScaleIntensity )
-		
-		this.pRenderableColor = ECPString.new( prefix + "renderableColor", "" )
-		eclass.addProperty( this.pRenderableColor )
-		
-		this.pScaleColor = ECPColor.new( prefix + "scaleColor", Color.white )
-		eclass.addProperty( this.pScaleColor )
-		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pDynamicSkin = null
-		this.pLight = null
+	func void dispose()
+		pDynamicSkin = null
+		pLight = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Dynamic skin behavior to modify. */
-	public func ECBehaviorDynamicSkin getDynamicSkin()
-		return this.pDynamicSkin
+	func ECBehaviorDynamicSkin getDynamicSkin()
+		return pDynamicSkin
 	end
 	
 	/** \brief Light behavior to use. */
-	public func ECBehaviorLight getLight()
-		return this.pLight
+	func ECBehaviorLight getLight()
+		return pLight
 	end
 	
 	/** \brief Name of renderable to create for intensity or empty string if not used. */
-	public func ECPString getRenderableIntensity()
-		return this.pRenderableIntensity
+	func ECPString getRenderableIntensity()
+		return pRenderableIntensity
 	end
 	
 	/** \brief Scale factor to apply to light intensity. */
-	public func ECPFloat getScaleIntensity()
-		return this.pScaleIntensity
+	func ECPFloat getScaleIntensity()
+		return pScaleIntensity
 	end
 	
 	/** \brief Name of renderable to create for color or empty string if not used. */
-	public func ECPString getRenderableColor()
-		return this.pRenderableColor
+	func ECPString getRenderableColor()
+		return pRenderableColor
 	end
 	
 	/** \brief Scale factor to apply to light color. */
-	public func ECPColor getScaleColor()
-		return this.pScaleColor
+	func ECPColor getScaleColor()
+		return pScaleColor
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -391,10 +379,10 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorRenderableLight getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehaviorRenderableLight each
+	static func ECBehaviorRenderableLight getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorRenderableLight each
 			return true
-		end ) cast ECBehaviorRenderableLight
+		end) cast ECBehaviorRenderableLight
 	end
 	
 	/**
@@ -403,10 +391,10 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorRenderableLight with specific identifier.
 	 */
-	static public func ECBehaviorRenderableLight getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorRenderableLight each
-			return each.getID().equals( id )
-		end ) cast ECBehaviorRenderableLight
+	static func ECBehaviorRenderableLight getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorRenderableLight each
+			return each.getID().equals(id)
+		end) cast ECBehaviorRenderableLight
 	end
 	
 	/**
@@ -415,10 +403,10 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderableLight behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		return eclass.collectBehaviors( block ECBehaviorRenderableLight each
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorRenderableLight each
 			return true
-		end )
+		end)
 	end
 	
 	
@@ -430,10 +418,10 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * of type ECBehaviorRenderableLight.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block Instance each
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
 			return true
-		end ) cast Instance
+		end) cast Instance
 	end
 	
 	/**
@@ -442,10 +430,10 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorRenderableLight.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block Instance each
-			return each.getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -454,16 +442,16 @@ class ECBehaviorRenderableLight extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderableLight.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		return element.collectInstances( block Instance each
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

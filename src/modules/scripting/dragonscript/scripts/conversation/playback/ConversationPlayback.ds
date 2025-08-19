@@ -41,9 +41,8 @@ abstract class ConversationPlayback implements Persistable
 	var Array pActors, pCoordSystems
 	var ConversationCameraDirector pCameraDirector
 	var Dictionary pVariables
-	var Array pLayers
-	var bool pActionWaiting
-	var float pActionTime
+	var ConversationPlaybackLane pActiveLane, pMainLane
+	var SafeArray pSideLanes
 	var bool pRunning, pPaused, pEnableFastForwardSpeaking
 	var ConversationPlaybackSubTitle pSubTitle
 	var ConversationPlaybackPlayerChoice pPlayerChoice
@@ -62,24 +61,22 @@ abstract class ConversationPlayback implements Persistable
 		pActors = Array.new()
 		pCoordSystems = Array.new()
 		pVariables = Dictionary.new()
-		pLayers = Array.new()
-		pActionTime = 0
-		pActionWaiting = false
+		pMainLane = ConversationPlaybackLane.new(true)
+		pSideLanes = SafeArray.new()
+		pActiveLane = pMainLane
 		pRunning = false
 		pPaused = false
 		pEnableFastForwardSpeaking = false
 		pListeners = Array.new()
-		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pTranslationManager = app.getTranslationManager()
-		end
+		pTranslationManager = BehaviorElementClass.sharedFactoryHelper.defaultTranslationManager()
 	end
 	
 	/** \brief Dispose of conversation playback. */
 	func void dispose()
 		setRunning(false)
-		removeAllLayers()
+		pSideLanes.removeAll()
+		pMainLane.removeAllLayers()
+		pActiveLane = pMainLane
 		removeAllVariables()
 		removeAllCoordSystems()
 		removeAllActors()
@@ -122,61 +119,76 @@ abstract class ConversationPlayback implements Persistable
 		pActors = Array.new()
 		pCoordSystems = Array.new()
 		pListeners = Array.new()
-		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pTranslationManager = app.getTranslationManager()
-		end
+		pTranslationManager = BehaviorElementClass.sharedFactoryHelper.defaultTranslationManager()
 		
 		select reader.readByte() // version
 		case 0
-			var int i, count
-			var String path
-			var StringID id
+			pReadFromFileV0(env, reader)
 			
-			path = env.readString16OrNullIfEmpty(reader)
-			if path != null
-				var LoadConversation loadConversation = env.getVariable(\
-					PersistencyEnvironment.varLoadConversation) cast LoadConversation
-				pConversation = loadConversation.loadFromFile(path)
-			end
-			
-			id = env.readStringIDOrNullIfEmpty(reader)
-			if id != null
-				pTopicGroup = pConversation.getTopicGroupWithID(id)
-			end
-			
-			id = env.readStringIDOrNullIfEmpty(reader)
-			if id != null
-				pTopic = pTopicGroup.getTopicWithID(id)
-			end
-			
-			var String variableName
-			var int variableValue
-			count = reader.readUShort()
-			pVariables = Dictionary.new()
-			for i = 0 to count
-				variableName = reader.readString8()
-				variableValue = reader.readInt()
-				pVariables.setAt(variableName, variableValue)
-			end
-			
-			count = reader.readUShort()
-			pLayers = Array.new()
-			for i = 0 to count
-				pLayers.add(ConversationPlaybackLayer.readFromFile(env, reader))
-			end
-			
-			var PersistencyFlags flags = PersistencyFlags.new(4, reader)
-			pActionWaiting = flags.getAt(0)
-			pRunning = flags.getAt(1)
-			pPaused = flags.getAt(2)
-			pEnableFastForwardSpeaking = flags.getAt(3)
-			
-			pActionTime = reader.readFloat()
+		case 1
+			pReadFromFileV1(env, reader)
 			
 		else
 			throw EInvalidParam.new("unsupported version")
+		end
+	end
+	
+	private func void pReadFromFileV0(PersistencyEnvironment env, FileReader reader)
+		var int i, count
+		var String path
+		var StringID id
+		
+		path = env.readString16OrNullIfEmpty(reader)
+		if path != null
+			var LoadConversation loadConversation = env.getVariable(\
+				PersistencyEnvironment.varLoadConversation) cast LoadConversation
+			pConversation = loadConversation.loadFromFile(path)
+		end
+		
+		id = env.readStringIDOrNullIfEmpty(reader)
+		if id != null
+			pTopicGroup = pConversation.getTopicGroupWithID(id)
+		end
+		
+		id = env.readStringIDOrNullIfEmpty(reader)
+		if id != null
+			pTopic = pTopicGroup.getTopicWithID(id)
+		end
+		
+		var String variableName
+		var int variableValue
+		count = reader.readUShort()
+		pVariables = Dictionary.new()
+		for i = 0 to count
+			variableName = reader.readString8()
+			variableValue = reader.readInt()
+			pVariables.setAt(variableName, variableValue)
+		end
+		
+		count = reader.readUShort()
+		pMainLane = ConversationPlaybackLane.new(true)
+		for i = 0 to count
+			pMainLane.pushLayer(ConversationPlaybackLayer.readFromFile(env, reader))
+		end
+		pActiveLane = pMainLane
+		
+		var PersistencyFlags flags = PersistencyFlags.new(4, reader)
+		pMainLane.setWaitingForAction(flags.getAt(0))
+		pRunning = flags.getAt(1)
+		pPaused = flags.getAt(2)
+		pEnableFastForwardSpeaking = flags.getAt(3)
+		
+		pMainLane.setElapsedActionWaiting(reader.readFloat())
+	end
+	
+	private func void pReadFromFileV1(PersistencyEnvironment env, FileReader reader)
+		pReadFromFileV0(env, reader)
+		
+		var int i, count
+		
+		count = reader.readUShort()
+		for i = 0 to count
+			pSideLanes.add(ConversationPlaybackLane.new(env, reader, false))
 		end
 	end
 	
@@ -240,9 +252,8 @@ abstract class ConversationPlayback implements Persistable
 		pTopicGroup = group
 		pTopic = topic
 		
-		removeAllLayers()
-		pActionTime = 0
-		pActionWaiting = true
+		pSideLanes.removeAll()
+		pMainLane.clear()
 		
 		if topic == null
 			setPaused(false)
@@ -263,9 +274,8 @@ abstract class ConversationPlayback implements Persistable
 		pTopicGroup = null
 		pTopic = null
 		
-		removeAllLayers()
-		pActionTime = 0
-		pActionWaiting = true
+		pSideLanes.removeAll()
+		pMainLane.clear()
 		
 		if converter != null and simpleConversation != null and snippet != null
 			converter.convert(snippet, simpleConversation, this)
@@ -283,7 +293,7 @@ abstract class ConversationPlayback implements Persistable
 	
 	/** \brief Set if playback is running. */
 	func void setRunning(bool running)
-		if pTopic == null and pLayers.getCount() == 0
+		if pTopic == null and pMainLane.getLayerCount() == 0
 			running = false
 		end
 		
@@ -291,6 +301,8 @@ abstract class ConversationPlayback implements Persistable
 			return
 		end
 		
+		pSideLanes.removeAll()
+		pActiveLane = pMainLane
 		pRunning = running
 		
 		if running
@@ -419,6 +431,17 @@ abstract class ConversationPlayback implements Persistable
 		pActors.forEach(ablock)
 	end
 	
+	/**
+	 * \brief Find actor using block.
+	 * \version 1.28
+	 * 
+	 * Block requires signature (\ref ConversationActor actor)
+	 * or (int index, \ref ConversationActor actor) and returns true if found.
+	 */
+	func ConversationActor findActor(Block ablock)
+		return pActors.find(ablock) cast ConversationActor
+	end
+	
 	
 	
 	/** \brief Number of coordinate systems. */
@@ -469,6 +492,17 @@ abstract class ConversationPlayback implements Persistable
 	/** \brief Visit coordinate systems with block with parameter ConversationCoordSystem. */
 	func void forEachCoordSystem(Block ablock)
 		pCoordSystems.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Find conversation coordinate system using block.
+	 * \version 1.28
+	 * 
+	 * Block requires signature (\ref ConversationCoordSystem actor)
+	 * or (int index, \ref ConversationCoordSystem actor) and returns true if found.
+	 */
+	func ConversationCoordSystem findCoordSystem(Block ablock)
+		return pActors.find(ablock) cast ConversationCoordSystem
 	end
 	
 	
@@ -569,147 +603,18 @@ abstract class ConversationPlayback implements Persistable
 		end)
 		
 		// loop until there are no more actions able to be processed in elapsed time
-		var ConversationPlaybackLayer layer
-		var ConversationCondition condition
-		var ConversationAction action
-		var int i
+		pSideLanes.forEach(block ConversationPlaybackLane each
+			pActiveLane = each
+			each.processActions(this, elapsed, skipDelay)
+		end)
 		
-		while true
-			action = null
-			
-			// check if any stack entry upwards contains a condition evaluating to false. in
-			// this case all actions up to this level are cancelled. in particular this means
-			// if two looping conditions are nested and the outer condition becomes false then
-			// control passes outside the outer layer. this also means top-level layer
-			// boundaries are skiped so be careful how you nest conditional loops
-			for i = pLayers.getCount() - 1 downto 0
-				layer = pLayers.getAt(i) cast ConversationPlaybackLayer
-				
-				condition = layer.getLoopCondition()
-				if condition != null and not condition.evaluate(this)
-					layer.cancelLooping()
-					pLayers.resize(i + 1)
-					pActionTime = 0
-					pActionWaiting = true
-					break
-				end
-			end
-			
-			// determine the next action
-			if pLayers.getCount() > 0
-				layer = getTopLayer()
-				action = getTopLayer().getNextAction()
-				
-				// special case. it is possible the stack entry is looping but contains no actions.
-				// in this case skip processing until a change comes from the outside world
-				if action == null and layer.getLooping()
-					return
-				end
-			end
-			
-			// if there is a next action process it
-			if action != null
-				// check for waiting conditions
-				if pActionWaiting
-					if action.getWaitForActor()
-						var bool useActorWait = not action.getWaitSpeakOnly()
-						var bool notDone = false
-						
-						if action.getWaitForActorID() != null
-							var ConversationActor actor = getActorMatching(\
-								StringID.new(action.getWaitForActorID()))
-							if actor != null
-								notDone = actor.isSpeaking() or (useActorWait and actor.wait())
-							end
-							
-						else
-							notDone = pActors.find(block ConversationActor each
-								return each.isSpeaking() or (useActorWait and each.wait())
-							end) != null
-						end
-						
-						if notDone
-							return
-						end
-					end
-					
-					pActionWaiting = false
-				end
-				
-				// wait the delay time then process the action
-				if skipDelay
-					pActionTime = action.getDelay()
-					
-				else
-					pActionTime += elapsed
-				end
-				
-				if pActionTime >= action.getDelay()
-					action.execute(this)
-					pActionTime = 0
-					pActionWaiting = true
-					
-				else
-					return // end the loop
-				end
-				
-			// if there is no next action this can be either because a looping action has no actions or
-			// we actually arrive at the end of the conversation.
-			else
-				if pLayers.getCount() > 1
-					// looping action without actions. advance to the next action in the stack below
-					advanceToNextAction()
-					
-				else
-					// end of conversation. wait for all actors to be done speaking and exit the loop
-					var bool notDone = false
-					
-					notDone = (pActors.find(block ConversationActor each
-						return each.isSpeaking()
-					end) != null)
-					
-					if not notDone
-						setRunning(false)
-					end
-					
-					return
-				end
-			end
-		end
+		pActiveLane = pMainLane
+		pMainLane.processActions(this, elapsed, skipDelay)
 	end
 	
 	/** \brief Advance to next action. */
 	func void advanceToNextAction()
-		if pLayers.getCount() == 0
-			if pTopic == null
-				setRunning(false)
-				
-			else
-				var ConversationPlaybackLayer layer =\
-					ConversationPlaybackLayer.new(pTopic.getIteratorActions())
-				layer.setTopicTopLevel(true)
-				pLayers.add(layer)
-			end
-			
-		else
-			while true
-				var ConversationPlaybackLayer layer = getTopLayer()
-				
-				layer.advance()
-				
-				if layer.hasNextAction()
-					pActionWaiting = true
-					pActionTime = 0
-					break
-				end
-				
-				if pLayers.getCount() < 2
-					break
-				end
-				
-				popLayer()
-			end
-		end
+		pActiveLane.advanceToNextAction(this)
 	end
 	
 	/**
@@ -721,23 +626,21 @@ abstract class ConversationPlayback implements Persistable
 	 * conversation scripts breaking.
 	 */
 	func void fastForwardSpeaking()
-		if (pTopic == null and pLayers.getCount() == 0) or not pRunning or not pEnableFastForwardSpeaking
+		if (pTopic == null and pMainLane.getLayerCount() == 0)\
+		or not pRunning or not pEnableFastForwardSpeaking
 			return
 		end
 		
-		var float timeToForward = 0
-		var float timeStep = 0.1
+		var float actorTime, subStep, timeToForward = 0, timeStep = 0.1
 		var ConversationActor actor
 		var Speaker speaker
-		var float actorTime
-		var float subStep
 		
 		var ConversationPlaybackLayer layer = getTopLayer()
 		if layer.hasNextAction()
-			timeToForward = DEMath.max(layer.getNextAction().getDelay() - pActionTime, 0.0)
+			timeToForward = DEMath.max(layer.getNextAction().getDelay() - getElapsedActionWaiting(), 0.0)
 		end
 		
-		var int i, count= pActors.getCount()
+		var int i, count = pActors.getCount()
 		for i = 0 to count
 			actor = pActors.getAt(i) cast ConversationActor
 			
@@ -785,49 +688,42 @@ abstract class ConversationPlayback implements Persistable
 	
 	/** \brief Cancel looping layer removing all layers below. */
 	func void cancelLoopingLayer(ConversationPlaybackLayer layer)
-		var int i
-		
-		for i = pLayers.getCount() - 1 downto 0
-			if pLayers.getAt(i) == layer
-				layer.cancelLooping()
-				pLayers.resize(i + 1)
-				pActionTime = 0
-				pActionWaiting = true
-				return
-			end
-		end
-		
-		throw EInvalidParam.new("Layer absent")
+		pActiveLane.cancelLoopingLayer(layer)
 	end
 	
 	
 	
 	/** \brief Number of layers. */
 	func int getLayerCount()
-		return pLayers.getCount()
+		return pActiveLane.getLayerCount()
+	end
+	
+	/**
+	 * \brief Layer at index where index is counted from the top.
+	 * \version 1.28
+	 */
+	func ConversationPlaybackLayer getLayerAt(int index)
+		return pActiveLane.getLayerAt(index)
 	end
 	
 	/** \brief Top layer. */
 	func ConversationPlaybackLayer getTopLayer()
-		return pLayers.getAt(pLayers.getCount() - 1) cast ConversationPlaybackLayer
+		return pActiveLane.getTopLayer()
 	end
 	
 	/** \brief Push layer to top of stack. */
 	func void pushLayer(ConversationPlaybackLayer layer)
-		if layer == null
-			throw ENullPointer.new("layer")
-		end
-		pLayers.add(layer)
+		pActiveLane.pushLayer(layer)
 	end
 	
 	/** \brief Pop top layer off stack. */
 	func void popLayer()
-		pLayers.removeFrom(pLayers.getCount() - 1)
+		pActiveLane.popLayer()
 	end
 	
 	/** \brief Next action is present. */
 	func bool hasNextAction()
-		return pLayers.getCount() > 0 and getTopLayer().hasNextAction()
+		return pActiveLane.hasNextAction()
 	end
 	
 	/**
@@ -835,19 +731,18 @@ abstract class ConversationPlayback implements Persistable
 	 * \version 1.16
 	 */
 	func ConversationAction getNextAction()
-		return hasNextAction() if getTopLayer().getNextAction() else null
+		return pActiveLane.getNextAction()
 	end
 	
 	/** \brief Remove all layers. */
 	func void removeAllLayers()
-		pLayers.removeAll()
+		pActiveLane.removeAllLayers()
 	end
 	
 	/** \brief Stop conversation. */
 	func void stopConversation()
-		pLayers.removeAll()
-		pActionWaiting = false
-		pActionTime = 0
+		pSideLanes.removeAll()
+		pMainLane.clear()
 		setRunning(false)
 	end
 	
@@ -856,7 +751,7 @@ abstract class ConversationPlayback implements Persistable
 	 * \version 1.16
 	 */
 	func bool getWaitingForAction()
-		return pActionWaiting
+		return pActiveLane.getWaitingForAction()
 	end
 	
 	/**
@@ -864,7 +759,95 @@ abstract class ConversationPlayback implements Persistable
 	 * \version 1.16
 	 */
 	func float getElapsedActionWaiting()
-		return pActionTime
+		return pActiveLane.getElapsedActionWaiting()
+	end
+	
+	
+	
+	/**
+	 * \brief Main lane.
+	 * \version 1.28
+	 */
+	func ConversationPlaybackLane getMainLane()
+		return pMainLane
+	end
+	
+	/**
+	 * \brief Count of side lanes.
+	 * \version 1.28
+	 */
+	func int getSideLaneCount()
+		return pSideLanes.getCount()
+	end
+	
+	/**
+	 * \brief Side lane at index.
+	 * \version 1.28
+	 */
+	func ConversationPlaybackLane getSideLaneAt(int lane)
+		return pSideLanes.getAt(lane) cast ConversationPlaybackLane
+	end
+	
+	/**
+	 * \brief Add side lane.
+	 * \version 1.28
+	 * 
+	 * Adding a side lane runs it once.
+	 */
+	func void addSideLane(ConversationPlaybackLane lane)
+		if lane == null
+			ENullPointer.new("lane")
+		end
+		if lane.isMainLane()
+			EInvalidParam.new("lane is main lane")
+		end
+		if pSideLanes.getCount() == 65535
+			throw EInvalidParam.new("too many side lanes")
+		end
+		
+		pSideLanes.add(lane)
+		
+		var ConversationPlaybackLane restoreLane = pActiveLane
+		pActiveLane = lane
+		lane.processActions(this, 0, false)
+		pActiveLane = restoreLane
+	end
+	
+	/**
+	 * \brief Remove side lane.
+	 * \version 1.28
+	 */
+	func void removeSideLane(ConversationPlaybackLane lane)
+		pSideLanes.remove(lane)
+	end
+	
+	/**
+	 * \brief Remove all side lanes.
+	 * \version 1.28
+	 */
+	func void removeAllSideLanes()
+		pSideLanes.removeAll()
+	end
+	
+	/**
+	 * \brief Active lane.
+	 * \version 1.28
+	 * \warning For internal use only.
+	 */
+	protected func ConversationPlaybackLane getActiveLane()
+		return pActiveLane
+	end
+	
+	/**
+	 * \brief Set active lane.
+	 * \version 1.28
+	 * \warning For internal use only.
+	 */
+	protected func void setActiveLane(ConversationPlaybackLane lane)
+		if lane == null
+			throw ENullPointer.new("lane")
+		end
+		pActiveLane = lane
 	end
 	
 	
@@ -1000,7 +983,7 @@ abstract class ConversationPlayback implements Persistable
 	 * Subclass usually does not required to overwrite this method.
 	 */
 	func void writeObjectConstructToFile(PersistencyEnvironment env, FileWriter writer)
-		writer.writeByte(0) // version
+		writer.writeByte(1) // version
 		
 		writer.writeString16(pConversation != null if pConversation.getPathFile() else "")
 		writer.writeString8(pTopicGroup != null if pTopicGroup.getID().toString() else "")
@@ -1012,19 +995,25 @@ abstract class ConversationPlayback implements Persistable
 			writer.writeInt(value)
 		end)
 		
-		writer.writeUShort(pLayers.getCount())
-		pLayers.forEach(block ConversationPlaybackLayer each
-			each.writeToFile(env, writer)
-		end)
+		var int i, count = pMainLane.getLayerCount()
+		writer.writeUShort(count)
+		for i = count - 1 downto 0
+			pMainLane.getLayerAt(i).writeToFile(env, writer)
+		end
 		
 		var PersistencyFlags flags = PersistencyFlags.new(4)
-		flags.setAt(0, pActionWaiting)
+		flags.setAt(0, pMainLane.getWaitingForAction())
 		flags.setAt(1, pRunning)
 		flags.setAt(2, pPaused)
 		flags.setAt(3, pEnableFastForwardSpeaking)
 		flags.writeToFile(writer)
 		
-		writer.writeFloat(pActionTime)
+		writer.writeFloat(pMainLane.getElapsedActionWaiting())
+		
+		writer.writeUShort(pSideLanes.getCount())
+		pSideLanes.forEach(block ConversationPlaybackLane each
+			each.writeToFile(env, writer)
+		end)
 	end
 	
 	/**

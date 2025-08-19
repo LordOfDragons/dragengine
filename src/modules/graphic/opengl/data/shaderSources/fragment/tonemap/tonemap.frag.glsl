@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -5,23 +7,17 @@ precision HIGHP int;
 #include "shared/defren/ubo_render_parameters.glsl"
 // #include "shared/defren/sanitize_light.glsl"
 
-uniform vec4 pTCBloomTransform;
-uniform vec2 pTCBloomClamp;
+UNIFORM_BIND(3) uniform vec4 pTCBloomTransform;
+UNIFORM_BIND(4) uniform vec2 pTCBloomClamp;
 
-uniform mediump sampler2DArray texColor;
-uniform HIGHP sampler2D texToneMapParams;
-uniform mediump sampler2DArray texBloom;
-#ifdef WITH_TONEMAP_CURVE
-uniform HIGHP sampler2D texToneMapCurve;
-#endif
+layout(binding=0) uniform mediump sampler2DArray texColor;
+layout(binding=1) uniform HIGHP sampler2D texToneMapParams;
+layout(binding=2) uniform mediump sampler2DArray texBloom;
 
-in vec2 vTexCoord;
+// WithToneMapCurve
+layout(binding=3) uniform HIGHP sampler2D texToneMapCurve;
 
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec4 outColor;
 
@@ -124,15 +120,16 @@ void main( void ){
 	
 	outColor.a = color.a;
 	
-	#ifdef WITH_TONEMAP_CURVE
+	if(WithToneMapCurve){
 		outColor.r = texture( texToneMapCurve, vec2( color.r, 0 ) ).r;
 		outColor.g = texture( texToneMapCurve, vec2( color.g, 0 ) ).r;
 		outColor.b = texture( texToneMapCurve, vec2( color.b, 0 ) ).r;
-	#else
+		
+	}else{
 		outColor.r = uchimura( color.r );
 		outColor.g = uchimura( color.g );
 		outColor.b = uchimura( color.b );
-	#endif
+	}
 	
 	// bloom
 	outColor.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0.0 ).rgb * vec3( pToneMapBloomBlend );

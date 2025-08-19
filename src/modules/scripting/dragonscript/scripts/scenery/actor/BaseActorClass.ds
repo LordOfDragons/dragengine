@@ -117,8 +117,8 @@ class BaseActorClass extends BehaviorElementClass
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	func new() this("Actor", BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getPlayerControlledActor())
+	func new() this("Actor", sharedFactoryHelper.defaultLoaders(), \
+	sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	/** \brief Create element class. */
@@ -127,8 +127,8 @@ class BaseActorClass extends BehaviorElementClass
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	func new(String className) this(className, BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getPlayerControlledActor())
+	func new(String className) this(className, sharedFactoryHelper.defaultLoaders(), \
+	sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	/** \brief Create element class. */
@@ -189,6 +189,7 @@ class BaseActorClass extends BehaviorElementClass
 		
 		pFootSteps = ECBehaviorFootSteps.new(this)
 		pFootSteps.setActorAnimated(pActorAnimated)
+		pFootSteps.setConversationActor(pConversationActor)
 		pFootSteps.getBTSMs().addBTSM(pBehaviorTree, pStateMachine)
 		
 		pRideOn = ECBehaviorRideOn.new(this, pLocomotion, pProjectToGround)

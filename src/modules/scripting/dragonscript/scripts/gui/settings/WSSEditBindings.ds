@@ -26,6 +26,7 @@ namespace Dragengine.Gui
 
 pin Dragengine.Commands
 pin Dragengine.Utils
+pin Dragengine.Scenery
 
 
 /**
@@ -42,12 +43,13 @@ class WSSEditBindings extends DefaultWindowSettingsSheet
 	 * 
 	 * Uses binding manager from BaseGameWorld.
 	 */
-	func new() this(BaseGameApp.getApp().getBindingManager(),\
-	BaseGameApp.getApp().getCommandManager())
+	func new() this(BehaviorElementClass.sharedFactoryHelper.defaultBindingManager(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultCommandManager())
 	end
 	
-	func new(String identifier, String title) this(BaseGameApp.getApp().getBindingManager(),\
-	BaseGameApp.getApp().getCommandManager(), identifier, title)
+	func new(String identifier, String title)\
+	this(BehaviorElementClass.sharedFactoryHelper.defaultBindingManager(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultCommandManager(), identifier, title)
 	end
 	
 	/**

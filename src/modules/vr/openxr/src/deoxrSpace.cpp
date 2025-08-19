@@ -37,65 +37,97 @@
 // class deoxrSpace
 //////////////////////
 
-deoxrSpace::deoxrSpace( deoxrSession &session, XrReferenceSpaceType referenceType ) :
-pSession( session ),
-pSpace( XR_NULL_HANDLE )
+deoxrSpace::deoxrSpace(deoxrSession &session, XrReferenceSpaceType referenceType) :
+pSession(session),
+pSpace(XR_NULL_HANDLE)
 {
 	try{
-		XrReferenceSpaceCreateInfo createInfo;
-		memset( &createInfo, 0, sizeof( createInfo ) );
-		createInfo.type = XR_TYPE_REFERENCE_SPACE_CREATE_INFO;
-		createInfo.referenceSpaceType = referenceType;
-		createInfo.poseInReferenceSpace.orientation.w = 1.0f;
+		XrReferenceSpaceCreateInfo ci{XR_TYPE_REFERENCE_SPACE_CREATE_INFO};
+		ci.referenceSpaceType = referenceType;
+		ci.poseInReferenceSpace.orientation.w = 1.0f;
 		
-		OXR_CHECK( session.GetSystem().GetInstance().xrCreateReferenceSpace(
-			session.GetSession(), &createInfo, &pSpace ) );
+		OXR_CHECK(session.GetSystem().GetInstance().xrCreateReferenceSpace(
+			session.GetSession(), &ci, &pSpace));
 		
 		// xrGetReferenceSpaceBoundsRect : get chaperone
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-deoxrSpace::deoxrSpace( deoxrSession &session, const deoxrAction &action,
-	const deoxrPath &subactionPath, const decVector &poseRotation ) :
-pSession( session ),
-pSpace( XR_NULL_HANDLE )
+deoxrSpace::deoxrSpace(deoxrSession &session, XrReferenceSpaceType referenceType,
+	const XrPosef &pose) :
+pSession(session),
+pSpace(XR_NULL_HANDLE)
 {
 	try{
-		XrActionSpaceCreateInfo createInfo;
-		memset( &createInfo, 0, sizeof( createInfo ) );
-		createInfo.type = XR_TYPE_ACTION_SPACE_CREATE_INFO;
-		createInfo.action = action.GetAction();
-		createInfo.subactionPath = subactionPath;
-		deoxrUtils::Convert( poseRotation, createInfo.poseInActionSpace.orientation );
+		XrReferenceSpaceCreateInfo ci{XR_TYPE_REFERENCE_SPACE_CREATE_INFO};
+		ci.referenceSpaceType = referenceType;
+		ci.poseInReferenceSpace = pose;
 		
-		OXR_CHECK( session.GetSystem().GetInstance().xrCreateActionSpace(
-			session.GetSession(), &createInfo, &pSpace ) );
+		OXR_CHECK(session.GetSystem().GetInstance().xrCreateReferenceSpace(
+			session.GetSession(), &ci, &pSpace));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
 }
 
-deoxrSpace::deoxrSpace( deoxrSession &session, const deoxrAction &action ) :
-pSession( session ),
-pSpace( XR_NULL_HANDLE )
+deoxrSpace::deoxrSpace(deoxrSession &session, XrReferenceSpaceType referenceType,
+const decMatrix &transform) :
+pSession(session),
+pSpace(XR_NULL_HANDLE)
 {
 	try{
-		XrActionSpaceCreateInfo createInfo;
-		memset( &createInfo, 0, sizeof( createInfo ) );
-		createInfo.type = XR_TYPE_ACTION_SPACE_CREATE_INFO;
-		createInfo.action = action.GetAction();
-		createInfo.poseInActionSpace.orientation.w = 1.0f;
+		XrReferenceSpaceCreateInfo ci{XR_TYPE_REFERENCE_SPACE_CREATE_INFO};
+		ci.referenceSpaceType = referenceType;
+		deoxrUtils::Convert(transform, ci.poseInReferenceSpace);
 		
-		OXR_CHECK( session.GetSystem().GetInstance().xrCreateActionSpace(
-			session.GetSession(), &createInfo, &pSpace ) );
+		OXR_CHECK(session.GetSystem().GetInstance().xrCreateReferenceSpace(
+			session.GetSession(), &ci, &pSpace));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
+		pCleanUp();
+		throw;
+	}
+}
+
+deoxrSpace::deoxrSpace(deoxrSession &session, const deoxrAction &action,
+	const deoxrPath &subactionPath, const decVector &poseRotation) :
+pSession(session),
+pSpace(XR_NULL_HANDLE)
+{
+	try{
+		XrActionSpaceCreateInfo ci{XR_TYPE_ACTION_SPACE_CREATE_INFO};
+		ci.action = action.GetAction();
+		ci.subactionPath = subactionPath;
+		deoxrUtils::Convert(poseRotation, ci.poseInActionSpace.orientation);
+		
+		OXR_CHECK(session.GetSystem().GetInstance().xrCreateActionSpace(
+			session.GetSession(), &ci, &pSpace));
+		
+	}catch(const deException &){
+		pCleanUp();
+		throw;
+	}
+}
+
+deoxrSpace::deoxrSpace(deoxrSession &session, const deoxrAction &action) :
+pSession(session),
+pSpace(XR_NULL_HANDLE)
+{
+	try{
+		XrActionSpaceCreateInfo ci{XR_TYPE_ACTION_SPACE_CREATE_INFO};
+		ci.action = action.GetAction();
+		ci.poseInActionSpace.orientation.w = 1.0f;
+		
+		OXR_CHECK(session.GetSystem().GetInstance().xrCreateActionSpace(
+			session.GetSession(), &ci, &pSpace));
+		
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}

@@ -1,11 +1,14 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform float pLevel;
+UNIFORM_BIND(0) uniform float pLevel;
 
-uniform mediump samplerCube texEnvMap;
+layout(binding=0) uniform mediump samplerCube texEnvMap;
 
-in vec2 vScreenCoord; // -long, lat
+#include "shared/interface/2d/fragment.glsl"
+// vScreenCoord: -long, lat
 
 layout(location=0) out vec4 outColor;
 

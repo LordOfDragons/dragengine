@@ -16,7 +16,7 @@ appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=inte
 appendLibrary(envModule, parent_targets['lib_dragonscript'], libs)
 
 # fetch values in expanded form for later use
-versionString = '1.27'
+versionString = '1.28'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -173,9 +173,13 @@ for s in igdeTemplates:
 if parent_targets['lib_dragonscript']['runtimedatadir']:
 	basedir = parent_targets['lib_dragonscript']['runtimedatadir']
 	for d in parent_targets['lib_dragonscript']['runtimedata']:
-		filename = os.path.join(pathShared, 'dsinstall', basedir.rel_path(d))
-		install.append(envModule.InstallAs(filename, d))
-		archive[filename] = d
+		if withEngineDeal and d.abspath.endswith('.ds'):
+			filename = os.path.join(pathAsset, 'dsinstall', basedir.rel_path(d))
+			assetEngine[filename] = d
+		else:
+			filename = os.path.join(pathShared, 'dsinstall', basedir.rel_path(d))
+			install.append(envModule.InstallAs(filename, d))
+			archive[filename] = d
 
 if envModule['OSPosix'] and not envModule['OSBeOS']:
 	pathDataDir = envModule.subst('$datadir')

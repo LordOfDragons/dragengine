@@ -1,0 +1,247 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Commands
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Commands for player controlled BaseActor with BAAVRFingerInteraction action.
+ * \version 1.28
+ * 
+ * Contains various commands as sub classes. A static helper method adds instances of each
+ * command to the command manager of a BaseGameApp.
+ */
+class CommandsBAAVRFingerInteraction
+	/**
+	 * \brief Bridge from BAAVRFingerInteraction to BAAStateMachineEvent.
+	 * \version 1.26
+	 * 
+	 * Send events match BAAVRFingerInteraction function named with prefix "vrFingerInteraction.".
+	 */
+	class StateMachineEventBridge implements BAAVRFingerInteraction
+		var BAAStateMachineEvent pTarget
+		
+		func new(BAAStateMachineEvent target)
+			pTarget = target
+		end
+		
+		func void fingerTouch(bool rightHand, int finger)
+			select finger
+			case 0
+				pTarget.sendInputAsEvent("vrFingerInteraction.touch.index", null)
+				
+			case 1
+				pTarget.sendInputAsEvent("vrFingerInteraction.touch.middle", null)
+				
+			case 2
+				pTarget.sendInputAsEvent("vrFingerInteraction.touch.ring", null)
+				
+			case 3
+				pTarget.sendInputAsEvent("vrFingerInteraction.touch.pinky", null)
+			end
+		end
+		
+		func void fingerUntouch(bool rightHand, int finger)
+			select finger
+			case 0
+				pTarget.sendInputAsEvent("vrFingerInteraction.untouch.index", null)
+				
+			case 1
+				pTarget.sendInputAsEvent("vrFingerInteraction.untouch.middle", null)
+				
+			case 2
+				pTarget.sendInputAsEvent("vrFingerInteraction.untouch.ring", null)
+				
+			case 3
+				pTarget.sendInputAsEvent("vrFingerInteraction.untouch.pinky", null)
+			end
+		end
+		
+		func void fingerAnalog(bool rightHand, int finger, float value)
+			select finger
+			case 0
+				pTarget.sendInputAsEvent("vrFingerInteraction.analog.index", value)
+				
+			case 1
+				pTarget.sendInputAsEvent("vrFingerInteraction.analog.middle", value)
+				
+			case 2
+				pTarget.sendInputAsEvent("vrFingerInteraction.analog.ring", value)
+				
+			case 3
+				pTarget.sendInputAsEvent("vrFingerInteraction.analog.pinky", value)
+			end
+		end
+	end
+	
+	/** \brief Base class operating only on actors with BAAVRFingerInteraction action. */
+	class FingerAction extends Command
+		protected var ECBehaviorPlayerControllable.Tracker pTracker
+		protected var bool pRightHand
+		protected var int pFinger
+		
+		func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		String description, bool rightHand, int finger) super(name, description)
+			if tracker == null
+				throw ENullPointer.new("tracker")
+			end
+			pTracker = tracker
+			pRightHand = rightHand
+			pFinger = finger
+		end
+		
+		protected func ECBehaviorPlayerControllable.Tracker getTracker()
+			return pTracker
+		end
+		
+		protected func BAAVRFingerInteraction getInterface()
+			var ECBehaviorPlayerControllable.Instance actor = pTracker.getActor()
+			if actor == null
+				return null
+			end
+			
+			var ECBehaviorVRHandAction.Instance action
+			
+			if pRightHand
+				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRRightHand)
+				
+			else
+				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRLeftHand)
+			end
+			
+			if action != null and action.getAction() castable BAAVRFingerInteraction
+				return action.getAction() cast BAAVRFingerInteraction
+				
+			else
+				return null
+			end
+		end
+		
+		func void start()
+			var BAAVRFingerInteraction iface = getInterface()
+			BaseGameApp.getApp().getConsole().addMessage("START " + Array.newWith(iface, pRightHand, pFinger))
+			if iface != null
+				iface.fingerTouch(pRightHand, pFinger)
+			end
+		end
+		
+		func void stop()
+			var BAAVRFingerInteraction iface = getInterface()
+			BaseGameApp.getApp().getConsole().addMessage("STOP " + Array.newWith(iface, pRightHand, pFinger))
+			if iface != null
+				iface.fingerUntouch(pRightHand, pFinger)
+			end
+		end
+		
+		func void analogAbsolute(float value)
+			var BAAVRFingerInteraction iface = getInterface()
+			if iface != null
+				iface.fingerAnalog(pRightHand, pFinger, value)
+			end
+		end
+	end
+	
+	
+	/**
+	 * \brief Add commands to command manager.
+	 * 
+	 * Adds these commands:
+	 * - triggerRight: Right hand trigger
+	 * - triggerLeft: Left hand trigger
+	 */
+	static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
+		var FingerAction trigger = FingerAction.new(tracker,\
+			"fingerIndexRight", "Index Finger Input Right Hand", true, 0)
+		trigger.setTranslateDescription("UI.Command.FingerIndexRight.Description")
+		trigger.setTranslateDisplayName("UI.Command.FingerIndexRight.DisplayName")
+		commands.add(trigger)
+		
+		trigger = FingerAction.new(tracker, "fingerIndexLeft", "Index Finger Input Left Hand", false, 0)
+		trigger.setTranslateDescription("UI.Command.FingerIndexLeft.Description")
+		trigger.setTranslateDisplayName("UI.Command.FingerIndexLeft.DisplayName")
+		commands.add(trigger)
+		
+		trigger = FingerAction.new(tracker, "fingerMiddleRight", "Middle Finger Input Right Hand", true, 1)
+		trigger.setTranslateDescription("UI.Command.FingerMiddleRight.Description")
+		trigger.setTranslateDisplayName("UI.Command.FingerMiddleRight.DisplayName")
+		commands.add(trigger)
+		
+		trigger = FingerAction.new(tracker, "fingerMiddleLeft", "Middle Finger Input Left Hand", false, 1)
+		trigger.setTranslateDescription("UI.Command.FingerMiddleLeft.Description")
+		trigger.setTranslateDisplayName("UI.Command.FingerMiddleLeft.DisplayName")
+		commands.add(trigger)
+		
+		trigger = FingerAction.new(tracker, "fingerRingRight", "Ring Finger Input Right Hand", true, 2)
+		trigger.setTranslateDescription("UI.Command.FingerRingRight.Description")
+		trigger.setTranslateDisplayName("UI.Command.FingerRingRight.DisplayName")
+		commands.add(trigger)
+		
+		trigger = FingerAction.new(tracker, "fingerRingLeft", "Ring Finger Input Left Hand", false, 2)
+		trigger.setTranslateDescription("UI.Command.FingerRingLeft.Description")
+		trigger.setTranslateDisplayName("UI.Command.FingerRingLeft.DisplayName")
+		commands.add(trigger)
+		
+		trigger = FingerAction.new(tracker, "fingerPinkyRight", "Pinky Finger Input Right Hand", true, 3)
+		trigger.setTranslateDescription("UI.Command.FingerPinkyRight.Description")
+		trigger.setTranslateDisplayName("UI.Command.FingerPinkyRight.DisplayName")
+		commands.add(trigger)
+		
+		trigger = FingerAction.new(tracker, "fingerPinkyLeft", "Pinky Finger Input Left Hand", false, 3)
+		trigger.setTranslateDescription("UI.Command.FingerPinkyLeft.Description")
+		trigger.setTranslateDisplayName("UI.Command.FingerPinkyLeft.DisplayName")
+		commands.add(trigger)
+	end
+	
+	
+	/**
+	 * \brief Add default bindings for commands.
+	 * 
+	 * Adds bindings for these commands if present in binding manager:
+	 * - "fingerIndexRight"
+	 * - "fingerMiddleRight"
+	 * - "fingerRingRight"
+	 * - "fingerPinkyRight"
+	 * - "fingerIndexLeft"
+	 * - "fingerMiddleLeft"
+	 * - "fingerRingLeft"
+	 * - "fingerPinkyLeft"
+	 */
+	static func void addDefaultBindings(DefaultBindingHelper helper)
+		if helper.hasVRHand(true)
+			helper.vrHandBindButton(true, InputDeviceButtonType.twoFingerTrigger, 0, "fingerIndexRight")
+			helper.vrHandBindButton(true, InputDeviceButtonType.twoFingerTrigger, 1, "fingerMiddleRight")
+			helper.vrHandBindButton(true, InputDeviceButtonType.twoFingerTrigger, 2, "fingerRingRight")
+			helper.vrHandBindButton(true, InputDeviceButtonType.twoFingerTrigger, 3, "fingerPinkyRight")
+		end
+		
+		if helper.hasVRHand(false)
+			helper.vrHandBindButton(false, InputDeviceButtonType.twoFingerTrigger, 0, "fingerIndexLeft")
+			helper.vrHandBindButton(false, InputDeviceButtonType.twoFingerTrigger, 1, "fingerMiddleLeft")
+			helper.vrHandBindButton(false, InputDeviceButtonType.twoFingerTrigger, 2, "fingerRingLeft")
+			helper.vrHandBindButton(false, InputDeviceButtonType.twoFingerTrigger, 3, "fingerPinkyLeft")
+		end
+	end
+end

@@ -281,18 +281,14 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorTwoStateAnimated"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorTwoStateAnimated")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorTwoStateAnimated behavior = ECBehaviorTwoStateAnimated.new(eclass,\
-				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
-				BaseGameApp.getApp().getLoaders(),\
+				getHelper().defaultComponent(eclass, parameters),\
+				getHelper().defaultLoaders(),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			var String value = parameters.getAt("controllerNameDeactivated", null) cast String
@@ -318,21 +314,10 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "twoStateAnimated", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "twoStateAnimated", id)
 			return behavior
-		end
-		
-		/**
-		 * \brief Trigger table matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func TSTriggerTable getTriggerTableFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 	end
 	
@@ -1378,12 +1363,12 @@ class ECBehaviorTwoStateAnimated extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component) \
-	this(eclass, component, BaseGameApp.getApp().getLoaders(), null, "")
+	this(eclass, component, eclass.sharedFactoryHelper.defaultLoaders(), null, "")
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component, String id) \
-	this(eclass, component, BaseGameApp.getApp().getLoaders(), null, id)
+	this(eclass, component, eclass.sharedFactoryHelper.defaultLoaders(), null, id)
 	end
 	
 	/** \brief Create behavior element class. */

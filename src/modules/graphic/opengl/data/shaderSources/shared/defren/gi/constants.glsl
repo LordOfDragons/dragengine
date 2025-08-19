@@ -1,5 +1,5 @@
-#define GI_MAX_COUNT_PROBE_POSITIONS 2048
-#define GI_MAX_COUNT_RAY_DIRECTIONS 256
+const int GIMaxCountProbePositions = 2048;
+const int GIMaxCountRayDirections = 256;
 
 // 0: [0]+=[1],  [2]+=[3],   ...,        [62]+=[63]
 // 1: [0]+=[2],  [4]+=[6],   ...,        [60]+=[62]

@@ -10,6 +10,6 @@
 	<define>AMBIENT_MAP</define>
 	<define>DEPTH_CUBEMAP</define>
 	<define>DEPTH_INPUT</define>
-	<define>DECODE_IN_DEPTH</define>
+	<!-- <define>DECODE_IN_DEPTH</define> -->
 	<define>SHADOW_INVERSE_DEPTH</define>
 </shaderSource>

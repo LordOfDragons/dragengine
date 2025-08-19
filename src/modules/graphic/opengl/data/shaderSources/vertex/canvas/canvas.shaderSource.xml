@@ -9,4 +9,10 @@
 	<define>WITH_TEXTURE</define>
 	<define>WITH_RENDER_WORLD</define>
 	<define>WITH_MASK</define>
+	
+	<!-- uniforms:
+	0: mat3x2 pTransform
+	1: mat3x2 pTCTransform
+	2: mat3x2 pTCTransformMask
+	-->
 </shaderSource>

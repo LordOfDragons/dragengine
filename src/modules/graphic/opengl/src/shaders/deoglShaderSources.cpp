@@ -83,6 +83,11 @@ deoglShaderSources::~deoglShaderSources(){
 // Management
 ///////////////
 
+void deoglShaderSources::AddParameter(const char *name, int location){
+	pParameterList.Add(name);
+	pParameterLocations.Add(location);
+}
+
 void deoglShaderSources::SetPathComputeSourceCode( const char *path ){
 	pPathSCCompute = path;
 }
@@ -187,14 +192,21 @@ void deoglShaderSources::pParseShader( deLogger &logger, const decXmlElementTag 
 			pTextureList.Add( attrName, attribute->GetValue().ToInt() );
 			
 		}else if( strcmp( tag->GetName(), "parameter" ) == 0 ){
-			const decXmlAttValue *attribute = pFindAttribute( *tag, "name" );
+			const decXmlAttValue * const attribute = pFindAttribute( *tag, "name" );
 			if( ! attribute ){
 				logger.LogErrorFormat( LOGGING_SOURCE, "shader.parameter(%i:%i): Missing attribute 'name'!",
 					tag->GetLineNumber(), tag->GetPositionNumber() );
 				DETHROW( deeInvalidParam );
 			}
 			
-			pParameterList.Add( attribute->GetValue() );
+			const decXmlAttValue * const attrLocation = pFindAttribute(*tag, "location");
+			if(!attrLocation){
+				logger.LogErrorFormat(LOGGING_SOURCE, "shader.parameter(%i:%i): Missing attribute 'location'!",
+					tag->GetLineNumber(), tag->GetPositionNumber());
+				DETHROW(deeInvalidParam);
+			}
+			
+			AddParameter(attribute->GetValue(), attrLocation->GetValue().ToIntValid());
 			
 		}else if( strcmp( tag->GetName(), "sourceCode" ) == 0 ){
 			const decXmlAttValue *attribute = pFindAttribute( *tag, "unit" );

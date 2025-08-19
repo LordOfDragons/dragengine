@@ -222,19 +222,14 @@ class ECBehaviorBehaviorTreeTimer extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorBehaviorTreeTimer"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorBehaviorTreeTimer")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorBehaviorTreeTimer behavior = ECBehaviorBehaviorTreeTimer.new(eclass,\
-				eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "behaviorTreeTimer", id)
+				getHelper().defaultBehaviorTree(eclass, parameters), id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "behaviorTreeTimer", id)
 			return behavior
 		end
 	end

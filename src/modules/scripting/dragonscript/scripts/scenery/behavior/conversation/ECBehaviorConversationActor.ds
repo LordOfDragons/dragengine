@@ -404,12 +404,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorConversationActor"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorConversationActor")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -418,9 +414,9 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			end
 			var ECBehaviorConversationActor behavior = ECBehaviorConversationActor.new(eclass)
 			
-			behavior.setActorAnimated(eclass.sharedFactoryHelper.optionalActorAnimated(eclass, parameters))
-			behavior.setAnimated(eclass.sharedFactoryHelper.optionalAnimated(eclass, parameters))
-			behavior.setTwoStateAnimated(eclass.sharedFactoryHelper.optionalTwoStateAnimated(eclass, parameters))
+			behavior.setActorAnimated(getHelper().optionalActorAnimated(eclass, parameters))
+			behavior.setAnimated(getHelper().optionalAnimated(eclass, parameters))
+			behavior.setTwoStateAnimated(getHelper().optionalTwoStateAnimated(eclass, parameters))
 			behavior.setLocomotion(ECBehaviorLocomotion.getBehaviorIn(eclass))
 			behavior.setParameterTable(ECBehaviorParameterTable.getBehaviorIn(eclass))
 			
@@ -445,19 +441,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				behavior.setSubtitleTheme(getSubtitleThemeFor(parameters.getAt("subtitleTheme") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "convoActor")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "convoActor")
 			return behavior
-		end
-		
-		/**
-		 * \brief Subtitle gui theme matching value.
-		 * 
-		 * Default implementation returns \ref WindowSubTitle#getGuiTheme()
-		 * on \ref BaseGameApp#getWindowSubTitle() for value 'default', loads gui theme if value
-		 * begins with 'path:' or null for all other values. Overwrite to accept other values.
-		 */
-		func GuiTheme getSubtitleThemeFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.subtitleTheme(value)
 		end
 	end
 	
@@ -1331,10 +1316,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pSubtitleTheme = app.getWindowSubTitle().getGuiTheme()
-		end
+		pSubtitleTheme = eclass.sharedFactoryHelper.defaultSubtitleTheme()
 		
 		pListenerFactories = Array.new()
 		pBTSMs = ECComposeBTSM.new()

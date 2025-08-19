@@ -376,6 +376,9 @@ class LoadSimpleConversation extends BaseXmlLoader
 					if element.hasAttributeNamed("random")
 						action.setRandom(element.getAttributeIntNamed("random"))
 					end
+					if element.hasAttributeNamed("createSideLane")
+						action.setCreateSideLane(element.getAttributeBoolNamed("createSideLane"))
+					end
 					snippet.addAction(action)
 					
 				elif tagName.equals("music")
@@ -420,6 +423,11 @@ class LoadSimpleConversation extends BaseXmlLoader
 				elif tagName.equals("pause")
 					action = SimpleConversationAction.new(SimpleConversationAction.Type.pause)
 					action.setDelay(element.getFirstCDataFloat())
+					snippet.addAction(action)
+					
+				elif tagName.equals("time")
+					action = SimpleConversationAction.new(SimpleConversationAction.Type.time)
+					action.setTime(element.getFirstCDataFloat())
 					snippet.addAction(action)
 					
 				elif tagName.equals("waitMode")

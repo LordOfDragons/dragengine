@@ -101,6 +101,24 @@ void deThread::Start(){
 	#endif
 }
 
+#ifdef OS_WEBWASM
+void deThread::Start(pthread_attr_t &attributes){
+	bool running = IsRunning();
+	if(pCreated && ! running){
+		Stop();
+	}
+	if(!pCreated){
+		pCreated = true;
+		pRunning = true;
+		if(pthread_create(&pThread, &attributes, deThread::pThreadRunner, this) != 0){
+			pCreated = false;
+			pRunning = false;
+			DETHROW(deeOutOfMemory);
+		}
+	}
+}
+#endif
+
 void deThread::Stop(){
 	bool running = IsRunning();
 	

@@ -27,6 +27,7 @@ namespace Dragengine.Commands
 
 pin Dragengine.Gui
 pin Dragengine.Utils
+pin Dragengine.Scenery
 
 
 /**
@@ -38,14 +39,12 @@ pin Dragengine.Utils
  * supports mouse sensitivity using BaseGameApp.settingInputMouseSensitivity setting.
  */
 class BindingInputProcessor extends DefaultInputProcessor
-	private var BindingManager pBindingManager
-	private var float pScaleMouseAxis
-	private var float pScaleMouseWheel
-	
+	var BindingManager pBindingManager
+	var float pScaleMouseAxis, pScaleMouseWheel, pVRHandFacingUserAngle
 	
 	
 	/** \brief Create input processor. */
-	public func new(BindingManager bindingManager)
+	func new(BindingManager bindingManager)
 		if bindingManager == null
 			throw EInvalidParam.new()
 		end
@@ -53,17 +52,17 @@ class BindingInputProcessor extends DefaultInputProcessor
 		pBindingManager = bindingManager
 		pScaleMouseAxis = 0.2
 		pScaleMouseWheel = 0.2
+		pVRHandFacingUserAngle = 45
 	end
 	
 	
-	
 	/** \brief Binding manager */
-	public func BindingManager getBindingManager()
+	func BindingManager getBindingManager()
 		return pBindingManager
 	end
 	
 	/** \brief Mouse axis scaling factor. */
-	public func float getScaleMouseAxis()
+	func float getScaleMouseAxis()
 		return pScaleMouseAxis
 	end
 	
@@ -72,12 +71,12 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * 
 	 * Default value is 0.2
 	 */
-	public func void setScaleMouseAxis(float scale)
+	func void setScaleMouseAxis(float scale)
 		pScaleMouseAxis = DEMath.max(scale, 0.0)
 	end
 	
 	/** \brief Mouse wheel scaling factor. */
-	public func float getScaleMouseWheel()
+	func float getScaleMouseWheel()
 		return pScaleMouseWheel
 	end
 	
@@ -86,7 +85,7 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * 
 	 * Default value is 0.2
 	 */
-	public func void setScaleMouseWheel(float scale)
+	func void setScaleMouseWheel(float scale)
 		pScaleMouseWheel = DEMath.max(scale, 0.0)
 	end
 	
@@ -97,11 +96,10 @@ class BindingInputProcessor extends DefaultInputProcessor
 	 * If BaseGameApp exists returns BaseGameApp.getApp().getMouseSensitivity() otherwise 1.
 	 * If you do not use BaseGameApp overwrite this method to return the appropriate value.
 	 */
-	public func float getMouseSensitivity()
+	func float getMouseSensitivity()
 		var BaseGameApp app = BaseGameApp.getApp()
 		return app != null if app.getMouseSensitivity() else 1
 	end
-	
 	
 	
 	/**
@@ -158,28 +156,46 @@ class BindingInputProcessor extends DefaultInputProcessor
 		binding.getCommand().untouch()
 	end
 	
+	/**
+	 * \brief Approach binding command.
+	 * \version 1.28
+	 * 
+	 * Default implementation calls Command.approach() .
+	 */
+	protected func void approach(Binding binding)
+		binding.getCommand().approach()
+	end
+	
+	/**
+	 * \brief Withdraw binding command.
+	 * \version 1.28
+	 * 
+	 * Default implementation calls Command.withdraw() .
+	 */
+	protected func void withdraw(Binding binding)
+		binding.getCommand().withdraw()
+	end
 	
 	
 	/** \brief Process input event. */
-	public func void inputEvent(InputEvent event)
+	func void inputEvent(InputEvent event)
 		select event.getType()
-		case InputEventType.keyPress, \
-			InputEventType.mousePress, \
-			InputEventType.buttonPress
-				var Binding binding = pBindingManager.findButtonBinding(\
-					event.getSource(), event.getDevice(), event.getCode())
-				if binding != null
-					activate(binding)
+		case InputEventType.keyPress, InputEventType.mousePress, InputEventType.buttonPress
+			var Binding binding = pBindingManager.findButtonBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
+			if binding != null
+				if binding.getVRHandFacingUser() and not isVRHandFacingUser(binding)
+					break
 				end
+				activate(binding)
+			end
 			
-		case InputEventType.keyRelease, \
-			InputEventType.mouseRelease, \
-			InputEventType.buttonRelease
-				var Binding binding = pBindingManager.findButtonBinding(\
-					event.getSource(), event.getDevice(), event.getCode())
-				if binding != null
-					deactivate(binding)
-				end
+		case InputEventType.keyRelease, InputEventType.mouseRelease, InputEventType.buttonRelease
+			var Binding binding = pBindingManager.findButtonBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
+			if binding != null
+				deactivate(binding)
+			end
 			
 		case InputEventType.mouseMove
 			var float scale = pScaleMouseAxis * getMouseSensitivity()
@@ -264,9 +280,11 @@ class BindingInputProcessor extends DefaultInputProcessor
 			var float value = event.getValue()
 			
 			if bindingPositive != null
+				value = bindingPositive.mapAxisValue(value)
 				analogAbsolute(bindingPositive, value)
 				
 			else
+				value = bindingNegative.mapAxisValue(value)
 				analogAbsolute(bindingNegative, -value)
 			end
 			
@@ -314,6 +332,46 @@ class BindingInputProcessor extends DefaultInputProcessor
 			if binding != null
 				untouch(binding)
 			end
+			
+		case InputEventType.buttonApproach
+			var Binding binding = pBindingManager.findButtonBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
+			if binding != null
+				approach(binding)
+			end
+			
+		case InputEventType.buttonWithdraw
+			var Binding binding = pBindingManager.findButtonBinding(\
+				event.getSource(), event.getDevice(), event.getCode())
+			if binding != null
+				withdraw(binding)
+			end
 		end
+	end
+	
+	/**
+	 * \brief VR hand facing user condition.
+	 * \version 1.28
+	 */
+	func bool isVRHandFacingUser(Binding binding)
+		var InputDevice hmd = pBindingManager.getVRHMD()
+		if hmd == null
+			return false
+		end
+		
+		var InputDevice device = binding.getInputDevice()
+		var Matrix matrix = device.getDevicePoseMatrix() * hmd.getDevicePoseMatrix().getInverse()
+		
+		var Vector targetDirection = -matrix.getPosition()
+		if targetDirection.getLength() < 0.01
+			return false
+		end
+		
+		var Vector direction = matrix.getRightVector()
+		if device.getType() == InputDeviceType.vrRightHand
+			direction = -direction
+		end
+		
+		return DEMath.acos(direction * targetDirection.normalize()) < pVRHandFacingUserAngle
 	end
 end

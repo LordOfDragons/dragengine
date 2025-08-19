@@ -49,8 +49,7 @@ pVRRenderFormat(deBaseVRModule::evrrfRGB8)
 	deVROpenXR &oxr = instance.GetOxr();
 	
 	try{
-		XrSwapchainCreateInfo createInfo{};
-		createInfo.type = XR_TYPE_SWAPCHAIN_CREATE_INFO;
+		XrSwapchainCreateInfo createInfo{XR_TYPE_SWAPCHAIN_CREATE_INFO};
 		createInfo.createFlags = 0;
 		createInfo.usageFlags = XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT;
 		createInfo.sampleCount = 1;

@@ -77,17 +77,13 @@ class ECBehaviorWorld extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".path").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorWorld"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorWorld")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorWorld behavior = ECBehaviorWorld.new(eclass, id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "world", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "world", id)
 			return behavior
 		end
 	end
@@ -294,12 +290,12 @@ class ECBehaviorWorld extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(),\
-	BaseGameApp.getApp().getIDGenerator(), "")
+	func new(BehaviorElementClass eclass) this(eclass, eclass.sharedFactoryHelper.defaultLoaders(),\
+	eclass.sharedFactoryHelper.defaultIDGenerator(), "")
 	end
 	
 	func new(BehaviorElementClass eclass, String id) this(eclass,\
-	BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getIDGenerator(), id)
+	eclass.sharedFactoryHelper.defaultLoaders(), eclass.sharedFactoryHelper.defaultIDGenerator(), id)
 	end
 	
 	func new(BehaviorElementClass eclass, Loaders loaders, MutableID idGenerator)\

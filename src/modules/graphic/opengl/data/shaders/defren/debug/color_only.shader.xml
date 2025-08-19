@@ -2,12 +2,9 @@
 <shader>
 	<name>DefRen Debug Color-Only</name>
 	
-	<texture name='texDepth' target='0'/>
-	
-	<parameter name='pMatrixMVP'/> <!-- 0 -->
-	<parameter name='pColor'/> <!-- 1 -->
-	<parameter name='pSCToDTC'/> <!-- 2 -->
-	
+	<parameter name='pMatrixMVP' location='0'/> <!-- 0 -->
+	<parameter name='pColor' location='3'/> <!-- 1 -->
+	<parameter name='pSCToDTC' location='-1'/>
 	<sourceCode unit='vertex'>V Generic TransformMVP</sourceCode>
 	<sourceCode unit='fragment'>F Generic Color</sourceCode>
 </shader>

@@ -37,11 +37,13 @@
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../undosys/action/snippet/ceUCASnippetSetFile.h"
 #include "../../../undosys/action/snippet/ceUCASnippetSetTopic.h"
+#include "../../../undosys/action/snippet/ceUCASnippetToggleCreateSideLane.h"
 #include "../../../configuration/ceConfiguration.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -94,6 +96,26 @@ public:
 		igdeUndoReference undo;
 		undo.TakeOver( new ceUCASnippetSetTopic( topic, action, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cActionCreateSideLane : public igdeAction{
+	ceWPASnippet &pPanel;
+	
+public:
+	cActionCreateSideLane(ceWPASnippet &panel) : igdeAction("Create Side Lane",
+		nullptr, "Run snippet in a new side lane"), pPanel(panel){}
+	
+	void OnAction() override{
+		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
+		ceCASnippet * const action = pPanel.GetAction();
+		if(!topic || !action){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver(new ceUCASnippetToggleCreateSideLane(topic, action));
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(undo);
 	}
 };
 
@@ -151,6 +173,8 @@ ceWPASnippet::ceWPASnippet( ceWPTopic &parentPanel ) : ceWPAction( parentPanel )
 	helper.ComboBoxFilter( formLine, true, "Topic to run", pCBTopic, new cComboTopic( *this ) );
 	pCBTopic->SetDefaultSorter();
 	helper.Button( formLine, pBtnJumpToTopic, new cActionJumpToTopic( *this ), true );
+	
+	helper.CheckBox(*this, pChkCreateSideLane, new cActionCreateSideLane(*this), true);
 }
 
 ceWPASnippet::~ceWPASnippet(){
@@ -183,11 +207,15 @@ void ceWPASnippet::UpdateAction(){
 		UpdateTopicList();
 		pCBTopic->SetText( action->GetTopic() );
 		
+		pChkCreateSideLane->SetChecked(action->GetCreateSideLane());
+		
 	}else{
 		pCBFile->ClearText();
 		
 		UpdateTopicList();
 		pCBTopic->ClearText();
+		
+		pChkCreateSideLane->SetChecked(false);
 	}
 }
 

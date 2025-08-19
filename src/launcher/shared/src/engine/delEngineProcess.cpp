@@ -41,6 +41,8 @@
 #if defined OS_BEOS
 #	include <dragengine/app/deOSBeOS.h>
 #	include <dragengine/app/deOSConsole.h>
+#elif defined OS_WEBWASM
+#	include <dragengine/app/deOSWebWasm.h>
 #elif defined OS_UNIX
 #	include <dragengine/app/deOSUnix.h>
 #	include <dragengine/app/deOSConsole.h>
@@ -172,18 +174,24 @@ void delEngineProcess::StartEngine(){
 	try{
 		// create os
 		if( pUseConsole ){
-			#ifdef OS_UNIX
-			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Console (console requested)" );
-			os = new deOSConsole();
+			#if defined OS_ANDROID || defined OS_WEBWASM
+				DETHROW_INFO(deeInvalidAction, "not supported");
+			#elif defined OS_UNIX
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Console (console requested)" );
+				os = new deOSConsole();
 			#elif defined OS_W32
-			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Windows (console requested)" );
-			os = new deOSWindows();
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Windows (console requested)" );
+				os = new deOSWindows();
 			#endif
 			
 		}else{
 			#ifdef OS_BEOS
-			pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS BeOS" );
-			os = new deOSBeOS();
+				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS BeOS" );
+				os = new deOSBeOS();
+			#elif defined OS_ANDROID
+				DETHROW_INFO(deeInvalidAction, "not supported");
+			#elif defined OS_WEBWASM
+				DETHROW_INFO(deeInvalidAction, "not supported");
 			#elif defined OS_UNIX
 				#ifdef HAS_LIB_X11
 				pLogger->LogInfo( pLogSource, "EngineProcess.StartEngine: Create OS Unix" );

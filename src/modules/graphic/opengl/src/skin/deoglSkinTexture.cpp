@@ -160,8 +160,10 @@ pSharedSPBElement( nullptr )
 	pEmissivityIntensity = 0.0f;
 	pEmissivity.SetZero();
 	pEmissivityCameraAdapted = false;
+	pEmissivityTint.Set(1.0f, 1.0f, 1.0f);
 	pEnvironmentRoomEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pEnvironmentRoomEmissivityIntensity = 0.0f;
+	pEnvironmentRoomTint.Set(1.0f, 1.0f, 1.0f);
 	pEnvironmentRoomSize.Set( 1.0f, 1.0f );
 	pEnvironmentRoomOffset.Set( 0.0f, 0.0f, 0.0f );
 	pHeightScale = 0.1f;
@@ -312,22 +314,39 @@ void deoglSkinTexture::BuildChannels( deoglRSkin &skin, const deSkinTexture &tex
 			continue; // loaded from cache
 		}
 		
-		if( pChannels[ i ]->GetImage() && pChannels[ i ]->GetImage()->GetSkinUse() ){
-			// already build by somebody else.
-			// 
-			// building channels runs potentially parallel to the render thread running delayed
-			// operations to init skins. during this time skin-use parameter can be changed to true.
-			// it is thus possible skin-use has been false while the skin-texture has been
-			// constructed but not while BuildChannels() is run. this results in the pixel buffer
-			// to be present but not initialized. then pWriteCached() would write an
-			// non-initialized pixel buffer which breaks future loading. to be sure nothing goes
-			// wrong the cache-id has to be cleared and the pixel buffer dropped. then
-			// pWriteCached() will not pick it up and delayed operations will not try to init the
-			// skin using non-initialized data
-			pChannels[ i ]->SetCacheID( "" );
-			pChannels[ i ]->SetCanBeCached( false );
-			pChannels[ i ]->SetPixelBufferMipMap( NULL );
-			continue;
+		if(pChannels[ i ]->GetImage()){
+			bool hasUseSkin = false;
+			switch(pChannels[i]->GetTextureType()){
+			case deoglSkinChannel::ett2d:
+				hasUseSkin = pChannels[i]->GetImage()->GetSkinUseTexture();
+				break;
+				
+			case deoglSkinChannel::ettCube:
+				hasUseSkin = pChannels[i]->GetImage()->GetSkinUseCubeMap();
+				break;
+				
+			case deoglSkinChannel::ettArray:
+				hasUseSkin = pChannels[i]->GetImage()->GetSkinUseArrayTexture();
+				break;
+			}
+			
+			if(hasUseSkin){
+				// already build by somebody else.
+				// 
+				// building channels runs potentially parallel to the render thread running delayed
+				// operations to init skins. during this time skin-use parameter can be changed to true.
+				// it is thus possible skin-use has been false while the skin-texture has been
+				// constructed but not while BuildChannels() is run. this results in the pixel buffer
+				// to be present but not initialized. then pWriteCached() would write an
+				// non-initialized pixel buffer which breaks future loading. to be sure nothing goes
+				// wrong the cache-id has to be cleared and the pixel buffer dropped. then
+				// pWriteCached() will not pick it up and delayed operations will not try to init the
+				// skin using non-initialized data
+				pChannels[ i ]->SetCacheID( "" );
+				pChannels[ i ]->SetCanBeCached( false );
+				pChannels[ i ]->SetPixelBufferMipMap( NULL );
+				continue;
+			}
 		}
 		
 		if( enableCacheLogging ){
@@ -610,6 +629,10 @@ void deoglSkinTexture::SetReflectivitySolidityMultiplier( float multiplier ){
 
 void deoglSkinTexture::SetReflected( bool reflected ){
 	pReflected = reflected;
+}
+
+void deoglSkinTexture::SetEnvironmentRoomTint(const decColor &tint){
+	pEnvironmentRoomTint = tint;
 }
 
 void deoglSkinTexture::SetEnvironmentRoomSize( const decVector2 &size ){
@@ -1352,22 +1375,40 @@ void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
 				continue; // do not cache channel
 			}
 			
-			if(pChannels[i]->GetImage() && pChannels[i]->GetImage()->GetSkinUse()){
-				// already build by somebody else.
-				// 
-				// this is an optimization. building channels runs potentially parallel to the
-				// render thread running delayed operations to init skins. during this time
-				// skin-use parameter can be changed to true. it is possible skin-use has not been
-				// set during the first check in BuildChannels(). this forces the channels to be
-				// build. if in the mean time the skin-use has been set to true it would be a
-				// waste of time to create and upload textures during delayed operation time if
-				// we know the textures are going to be dropped right away because somebody else
-				// created them already. dropping the cache id and pixel buffer prevents any
-				// further processing of this channel
-				pChannels[i]->SetCacheID("");
-				pChannels[i]->SetCanBeCached(false);
-				pChannels[i]->SetPixelBufferMipMap(nullptr);
-				continue;
+			if(pChannels[i]->GetImage()){
+				bool hasSkinUse = false;
+				switch(pChannels[i]->GetTextureType()){
+				case deoglSkinChannel::ett2d:
+					hasSkinUse = pChannels[i]->GetImage()->GetSkinUseTexture();
+					break;
+					
+				case deoglSkinChannel::ettCube:
+					hasSkinUse = pChannels[i]->GetImage()->GetSkinUseCubeMap();
+					break;
+					
+				case deoglSkinChannel::ettArray:
+					hasSkinUse = pChannels[i]->GetImage()->GetSkinUseArrayTexture();
+					break;
+					
+				}
+				
+				if(hasSkinUse){
+					// already build by somebody else.
+					// 
+					// this is an optimization. building channels runs potentially parallel to the
+					// render thread running delayed operations to init skins. during this time
+					// skin-use parameter can be changed to true. it is possible skin-use has not been
+					// set during the first check in BuildChannels(). this forces the channels to be
+					// build. if in the mean time the skin-use has been set to true it would be a
+					// waste of time to create and upload textures during delayed operation time if
+					// we know the textures are going to be dropped right away because somebody else
+					// created them already. dropping the cache id and pixel buffer prevents any
+					// further processing of this channel
+					pChannels[i]->SetCacheID("");
+					pChannels[i]->SetCanBeCached(false);
+					pChannels[i]->SetPixelBufferMipMap(nullptr);
+					continue;
+				}
 			}
 			
 			decBaseFileWriter::Ref writer;
@@ -1603,6 +1644,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pEmissivityCameraAdapted = value > 0.5f;
 			break;
 			
+		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
+			pEnvironmentRoomTint.Set(value, value, value);
+			break;
+			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
 			pEnvironmentRoomSize.Set( value, value );
 			break;
@@ -1813,6 +1858,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pEmissivityTint = color;
 			break;
 			
+		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
+			pEnvironmentRoomTint = color;
+			break;
+			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
 			pEnvironmentRoomSize.Set( color.r, color.g );
 			break;
@@ -2007,6 +2056,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptEmissivityIntensity:
 			materialProperty = pMaterialProperties + empEmissivityIntensity;
+			break;
+			
+		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
+			materialProperty = pMaterialProperties + empEnvironmentRoomTint;
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
@@ -2311,6 +2364,11 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pMaterialProperties[ empEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
+		case deoglSkinPropertyMap::eptEnvironmentRoomTint:
+			pMaterialProperties[empEnvironmentRoomTint].SetRenderable(
+				skin.AddRenderable(renderable));
+			break;
+			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
 			pMaterialProperties[ empEnvironmentRoomSize ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
@@ -2516,6 +2574,11 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 		powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
 		powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
 		powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
+	
+	spb.SetParameterDataVec3(deoglSkinShader::etutTexEnvRoomTint, element,
+		powf(pEnvironmentRoomTint.r, 2.2f),
+		powf(pEnvironmentRoomTint.g, 2.2f),
+		powf(pEnvironmentRoomTint.b, 2.2f));
 	
 	spb.SetParameterDataVec2( deoglSkinShader::etutTexEnvRoomSize, element,
 		1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );

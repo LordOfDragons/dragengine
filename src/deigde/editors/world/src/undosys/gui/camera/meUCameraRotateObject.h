@@ -39,20 +39,19 @@ class meObject;
 class meUCameraRotateObject : public igdeUndo{
 private:
 	meObject *pObject;
-	decVector pOldRotation;
-	decVector pNewRotation;
+	decVector pOldRotation, pNewRotation;
 	
 public:
 	// constructor, destructor
-	meUCameraRotateObject( meObject *object );
-	virtual ~meUCameraRotateObject();
+	meUCameraRotateObject(meObject *object);
+	~meUCameraRotateObject() override;
 	
-	void SetNewRotation( const decVector &rotation );
+	void SetNewRotation(const decVector &rotation);
 	bool HasChanged() const;
 	
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 #endif

@@ -400,7 +400,7 @@ class IMMBehaviorHotSpot extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	public func new(BehaviorElementClass eclass, ECBehaviorTwoStateAnimated animated) \
-	this(eclass, animated, BaseGameApp.getApp().getLoaders(), null)
+	this(eclass, animated, eclass.sharedFactoryHelper.defaultLoaders(), null)
 	end
 	
 	/** \brief Create behavior element class. */

@@ -2,12 +2,5 @@
 <shader>
 	<name>DefRen GI Update Probes</name>
 	
-	<!-- shader assigned locations
-	<texture name='texPosition' target='0'/>
-	<texture name='texNormal' target='1'/>
-	<texture name='texLight' target='2'/>
-	<texture name='texProbe' target='3'/>
-	-->
-	
 	<sourceCode unit='compute'>C DefRen GI Update Probes</sourceCode>
 </shader>

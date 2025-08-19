@@ -4,6 +4,10 @@ Import('parent_env parent_targets parent_report')
 
 envLibrary = parent_env.Clone()
 
+buildStatic = False
+if envLibrary['platform_webwasm']:
+	buildStatic = True
+
 pathConfig = envLibrary.subst(envLibrary['path_launcher_config'])
 pathData = envLibrary.subst(envLibrary['path_launcher_data'])
 pathShare = envLibrary.subst(envLibrary['path_launcher_share'])
@@ -56,7 +60,11 @@ appendLibrary(envLibrary, parent_targets['dragengine'], libsLib)
 if envLibrary['OSPosix']:
 	envLibrary.Replace(SHLIBVERSION = libVersionString)
 
-buildLibrary = envLibrary.SharedLibrary(target='delauncher', source=objects, LIBS=libsLib)
+if buildStatic:
+	buildLibrary = envLibrary.StaticLibrary(target='delauncher', source=objects, LIBS=libsLib)
+else:
+	buildLibrary = envLibrary.SharedLibrary(target='delauncher', source=objects, LIBS=libsLib)
+
 targetBuildLib = envLibrary.Alias('delauncher_build', buildLibrary)
 
 copyHeaders = []
@@ -74,26 +82,27 @@ installLibRuntime = []
 archiveLibDevelop = {os.path.join(pathInclude, refDir.rel_path(h)):h for h in headers}
 archiveLib = {}
 
-if envLibrary['OSPosix']:
-	l = buildLibrary[0]
-	lname = l.name
-	installLibRuntime.append(envLibrary.InstallVersionedLib(pathLib, l))
-	archiveLib['{}/{}'.format(pathLib, l.name)] = l
-	
-	lname = '.'.join(lname.split('.')[0:-2])
-	archiveLib['{}/{}'.format(pathLib, lname)] = envLibrary.File(lname)
-	
-	lname = '.'.join(lname.split('.')[0:-1])
-	archiveLib['{}/{}'.format(pathLib, lname)] = envLibrary.File(lname)
-	
-elif envLibrary['OSWindows']:
-	installLibRuntime.append(envLibrary.Install(pathSysLib, 'delauncher.dll'))
-	installLibDevelop.append(envLibrary.Install(pathLib, 'delauncher.lib'))
-	installLibDevelop.append(envLibrary.Install(pathLib, 'delauncher.def'))
-	
-	archiveLib[os.path.join(pathSysLib, 'delauncher.dll')] = envLibrary.File('delauncher.dll')
-	archiveLibDevelop[os.path.join(pathLib, 'delauncher.lib')] = envLibrary.File('delauncher.lib')
-	archiveLibDevelop[os.path.join(pathLib, 'delauncher.def')] = envLibrary.File('delauncher.def')
+if not buildStatic:
+	if envLibrary['OSPosix']:
+		l = buildLibrary[0]
+		lname = l.name
+		installLibRuntime.append(envLibrary.InstallVersionedLib(pathLib, l))
+		archiveLib['{}/{}'.format(pathLib, l.name)] = l
+		
+		lname = '.'.join(lname.split('.')[0:-2])
+		archiveLib['{}/{}'.format(pathLib, lname)] = envLibrary.File(lname)
+		
+		lname = '.'.join(lname.split('.')[0:-1])
+		archiveLib['{}/{}'.format(pathLib, lname)] = envLibrary.File(lname)
+		
+	elif envLibrary['OSWindows']:
+		installLibRuntime.append(envLibrary.Install(pathSysLib, 'delauncher.dll'))
+		installLibDevelop.append(envLibrary.Install(pathLib, 'delauncher.lib'))
+		installLibDevelop.append(envLibrary.Install(pathLib, 'delauncher.def'))
+		
+		archiveLib[os.path.join(pathSysLib, 'delauncher.dll')] = envLibrary.File('delauncher.dll')
+		archiveLibDevelop[os.path.join(pathLib, 'delauncher.lib')] = envLibrary.File('delauncher.lib')
+		archiveLibDevelop[os.path.join(pathLib, 'delauncher.def')] = envLibrary.File('delauncher.def')
 
 dataFiles = []
 globFiles(envLibrary, 'shared/data', '*', dataFiles)

@@ -50,24 +50,6 @@ deoxrDPMSFTHandInteraction::~deoxrDPMSFTHandInteraction(){
 }
 
 
-// Management
-///////////////
-
-void deoxrDPMSFTHandInteraction::CheckAttached(){
-	const deoxrInstance &instance = GetInstance();
-	
-	if( ! instance.SupportsExtension( deoxrInstance::extMSFTHandInteraction ) ){
-		return;
-	}
-	if( pHasAnyHandDevice( pDeviceLeft, pDeviceRight ) ){
-		return;
-	}
-	
-	deoxrDPBaseTwoHandController::CheckAttached();
-}
-
-
-
 // Private Functions
 //////////////////////
 
@@ -89,14 +71,9 @@ void deoxrDPMSFTHandInteraction::pSuggestBindings(){
 	int usedBindingCount = 0;
 	
 	const deoxrPath basePathList[ 2 ] = { pPathHandLeft, pPathHandRight };
-	const deoxrDevice * const devices[ 2 ] = { pDeviceLeft, pDeviceRight };
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		if( ! devices[ i ] ){
-			continue;
-		}
-		
 		const decString &basePath = basePathList[ i ];
 		
 		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
@@ -113,6 +90,10 @@ void deoxrDPMSFTHandInteraction::pSuggestBindings(){
 	if( usedBindingCount > 0 ){
 		GetInstance().SuggestBindings( GetPath(), bindings, usedBindingCount );
 	}
+}
+
+bool deoxrDPMSFTHandInteraction::pProfileEnabled() const{
+	return GetInstance().SupportsExtension(deoxrInstance::extMSFTHandInteraction);
 }
 
 void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
@@ -185,7 +166,8 @@ void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
 	device->AddAxis( axis );
 	
 	// hand tracking
-	pAddHandTracker( device, left );
+	pAddHandTracker(device, left, true);
+	device->SetEnableTwoFingerTriggerSimulation(false);
 	
 	oxr.GetDevices().Add( device );
 }

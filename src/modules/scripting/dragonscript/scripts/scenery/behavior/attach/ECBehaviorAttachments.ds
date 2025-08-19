@@ -55,12 +55,8 @@ class ECBehaviorAttachments extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorAttachments"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorAttachments")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -68,7 +64,7 @@ class ECBehaviorAttachments extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorAttachments behavior = ECBehaviorAttachments.new(eclass)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "attachments")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "attachments")
 			return behavior
 		end
 	end

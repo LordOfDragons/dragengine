@@ -61,8 +61,17 @@ public:
 	/** Convert decVector to XrQuaternionf. */
 	static void Convert( const decVector &rotation, XrQuaternionf &xrquat );
 	
+	/** Convert decVector to XrVector3f. */
+	static void Convert(const decVector &position, XrVector3f &xrpos);
+	
 	/** Convert XrPosef to decMatrix. */
 	static decMatrix Convert( const XrPosef &pose );
+	
+	/** Convert decMatrix to XrPosef. */
+	static void Convert(const decMatrix &matrix, XrPosef &pose);
+	
+	/** Identify XrPosef. */
+	static XrPosef IdentityPose();
 };
 
 #endif

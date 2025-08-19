@@ -321,15 +321,14 @@ class EditBindingsListBox extends ListBox
 		select captured.getInputSource()
 		case EditBindingsListModelEntry.InputSource.axis
 			var InputDeviceAxis axis = captured.getInputDeviceAxis()
-			
-			bindingManager.addAxisBinding(Binding.new(axis.getInputDevice().getID(), \
-				axis.getID(), command, captured.getInverseAxis()))
+			binding = Binding.new(axis.getInputDevice().getID(), axis.getID(), command)
+			binding.setInverseAxis(captured.getInverseAxis())
+			bindingManager.addAxisBinding(binding)
 			
 		case EditBindingsListModelEntry.InputSource.button
 			var InputDeviceButton button = captured.getInputDeviceButton()
-			
-			bindingManager.addButtonBinding(Binding.new(button.getInputDevice().getID(), \
-				button.getID(), command, false))
+			binding = Binding.new(button.getInputDevice().getID(), button.getID(), command)
+			bindingManager.addButtonBinding(binding)
 		end
 		
 		model.notifyContentChanged(index, index)

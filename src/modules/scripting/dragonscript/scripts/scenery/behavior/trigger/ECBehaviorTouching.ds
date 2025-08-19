@@ -137,12 +137,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorTouching"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorTouching")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -150,20 +146,10 @@ class ECBehaviorTouching extends DefaultECBehavior
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getTouchSensor().getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getTouchSensor().getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "touching", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "touching", id)
 			return behavior
-		end
-		
-		/**
-		 * \brief Trigger table matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func TSTriggerTable getTriggerTableFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 	end
 	
@@ -366,11 +352,11 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * These values are optional and can be null: \em null.
 	 */
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
-	this(eclass, collider, BaseGameApp.getApp().getTriggerTable(), "")
+	this(eclass, collider, eclass.sharedFactoryHelper.defaultTriggerTable(), "")
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
-	this(eclass, collider, BaseGameApp.getApp().getTriggerTable(), id)
+	this(eclass, collider, eclass.sharedFactoryHelper.defaultTriggerTable(), id)
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \

@@ -32,27 +32,25 @@
 class meObject;
 
 
-
 /**
  * Undo action for camera moving an object.
  */
 class meUCameraMoveObject : public igdeUndo{
 private:
 	meObject *pObject;
-	decDVector pOldPosition;
-	decDVector pNewPosition;
+	decDVector pOldPosition, pNewPosition;
 	
 public:
 	// constructor, destructor
-	meUCameraMoveObject( meObject *object );
-	virtual ~meUCameraMoveObject();
+	meUCameraMoveObject(meObject *object);
+	~meUCameraMoveObject() override;
 	
-	void SetNewPosition( const decDVector &position );
+	void SetNewPosition(const decDVector &position);
 	bool HasChanged() const;
 	
 	// undo and redo operations
-	virtual void Undo();
-	virtual void Redo();
+	void Undo() override;
+	void Redo() override;
 };
 
 #endif

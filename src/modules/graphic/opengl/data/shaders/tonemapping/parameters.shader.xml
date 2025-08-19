@@ -2,11 +2,7 @@
 <shader>
 	<name>ToneMap Parameters</name>
 	
-	<texture name='texAvgLogLum' target='0'/>
-	<texture name='texLastParams' target='1'/>
-	<texture name='texEnvMap' target='2'/>
-	
-	<parameter name='pAvgLogLumTCs'/>
+	<parameter name='pAvgLogLumTCs' location='3'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F ToneMap Parameters</sourceCode>

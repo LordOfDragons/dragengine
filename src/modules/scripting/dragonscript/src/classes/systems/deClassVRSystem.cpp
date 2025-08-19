@@ -230,6 +230,16 @@ void deClassVRSystem::nfSetPassthroughTransparency::RunFunction( dsRunTime *rt, 
 	ds.GetGameEngine()->GetVRSystem()->SetPassthroughTransparency( rt->GetValue( 0 )->GetFloat() );
 }
 
+// static func void centerPlayspace()
+deClassVRSystem::nfCenterPlayspace::nfCenterPlayspace(const sInitData &init) :
+dsFunction(init.clsVRSystem, "centerPlayspace", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+}
+void deClassVRSystem::nfCenterPlayspace::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	ds.GetGameEngine()->GetVRSystem()->CenterPlayspace();
+}
+
 
 
 // public static func int getDeviceCount()
@@ -347,6 +357,22 @@ void deClassVRSystem::nfGetButtonTouched::RunFunction( dsRunTime *rt, dsValue* )
 	const int device = rt->GetValue( 0 )->GetInt();
 	const int button  = rt->GetValue( 1 )->GetInt();
 	rt->PushBool( module.GetButtonTouched( device, button ) );
+}
+
+// static func bool getButtonNear(int device, int button)
+deClassVRSystem::nfGetButtonNear::nfGetButtonNear(const sInitData &init) :
+dsFunction(init.clsVRSystem, "getButtonNear", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
+	p_AddParameter(init.clsInteger); // device
+	p_AddParameter(init.clsInteger); // button
+}
+void deClassVRSystem::nfGetButtonNear::RunFunction(dsRunTime *rt, dsValue*){
+	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass() )->GetDS();
+	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
+	
+	const int device = rt->GetValue(0)->GetInt();
+	const int button = rt->GetValue(1)->GetInt();
+	rt->PushBool(module.GetButtonNear(device, button));
 }
 
 // public static func float getAxisValue( int device, int axis )
@@ -554,6 +580,7 @@ void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnablePassthrough( init ) );
 	AddFunction( new nfGetPassthroughTransparency( init ) );
 	AddFunction( new nfSetPassthroughTransparency( init ) );
+	AddFunction(new nfCenterPlayspace(init));
 	
 	AddFunction( new nfGetDeviceCount( init ) );
 	AddFunction( new nfGetDeviceAt( init ) );
@@ -563,6 +590,7 @@ void deClassVRSystem::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIndexOfFeedbackWithID( init ) );
 	AddFunction( new nfGetButtonPressed( init ) );
 	AddFunction( new nfGetButtonTouched( init ) );
+	AddFunction(new nfGetButtonNear(init));
 	AddFunction( new nfGetAxisValue( init ) );
 	AddFunction( new nfGetFeedbackValue( init ) );
 	AddFunction( new nfSetFeedbackValue( init ) );

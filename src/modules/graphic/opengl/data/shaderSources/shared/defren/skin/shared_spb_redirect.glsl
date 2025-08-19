@@ -1,62 +1,67 @@
-#define pMatrixModel pSharedSPB[spbIndex].matrixModel
-#define pMatrixNormal pSharedSPB[spbIndex].matrixNormal
-#define pMatrixTexCoord pSharedSPB[spbIndex].matrixTexCoord
+#ifndef VAR_SPB_INDEX
+	#define VAR_SPB_INDEX spbIndex
+#endif
 
-#define pBillboardPosTransform pSharedSPB[spbIndex].billboardPosTransform
-#define pBillboardParams pSharedSPB[spbIndex].billboardParams
-#define pSamplesParams pSharedSPB[spbIndex].samplesParams
+#define pMatrixModel pSharedSPB[VAR_SPB_INDEX].matrixModel
+#define pMatrixNormal pSharedSPB[VAR_SPB_INDEX].matrixNormal
+#define pMatrixTexCoord pSharedSPB[VAR_SPB_INDEX].matrixTexCoord
 
-#define pHeightTerrainMaskTCTransform pSharedSPB[spbIndex].heightTerrainMaskTCTransform
-#define pHeightTerrainMaskSelector pSharedSPB[spbIndex].heightTerrainMaskSelector
+#define pBillboardPosTransform pSharedSPB[VAR_SPB_INDEX].billboardPosTransform
+#define pBillboardParams pSharedSPB[VAR_SPB_INDEX].billboardParams
+#define pSamplesParams pSharedSPB[VAR_SPB_INDEX].samplesParams
 
-#define pVariationSeed pSharedSPB[spbIndex].variationSeed
-#define pBurstFactor pSharedSPB[spbIndex].burstFactor
-#define pRibbonSheetCount pSharedSPB[spbIndex].ribbonSheetCount
+#define pHeightTerrainMaskTCTransform pSharedSPB[VAR_SPB_INDEX].heightTerrainMaskTCTransform
+#define pHeightTerrainMaskSelector pSharedSPB[VAR_SPB_INDEX].heightTerrainMaskSelector
 
-#define pPropFieldParams pSharedSPB[spbIndex].propFieldParams
-#define pDoubleSided pSharedSPB[spbIndex].doubleSided
-#define pEnvMapFade pSharedSPB[spbIndex].envMapFade
-#define pIndexSPBTexParams pSharedSPB[spbIndex].indexSPBTexParams
+#define pVariationSeed pSharedSPB[VAR_SPB_INDEX].variationSeed
+#define pBurstFactor pSharedSPB[VAR_SPB_INDEX].burstFactor
+#define pRibbonSheetCount pSharedSPB[VAR_SPB_INDEX].ribbonSheetCount
 
-#define pInstSkinClipPlaneNormal pSharedSPB[spbIndex].instSkinClipPlaneNormal
+#define pPropFieldParams pSharedSPB[VAR_SPB_INDEX].propFieldParams
+#define pDoubleSided pSharedSPB[VAR_SPB_INDEX].doubleSided
+#define pEnvMapFade pSharedSPB[VAR_SPB_INDEX].envMapFade
+#define pIndexSPBTexParams pSharedSPB[VAR_SPB_INDEX].indexSPBTexParams
+
+#define pInstSkinClipPlaneNormal pSharedSPB[VAR_SPB_INDEX].instSkinClipPlaneNormal
 
 /*
-#define pTCTransformColor pSharedSPB[spbIndex].tcTransformColor
-#define pTCTransformNormal pSharedSPB[spbIndex].tcTransformNormal
-#define pTCTransformReflectivity pSharedSPB[spbIndex].tcTransformReflectivity
-#define pTCTransformEmissivity pSharedSPB[spbIndex].tcTransformEmissivity
-#define pTCTransformRefractionDistort pSharedSPB[spbIndex].tcTransformRefractionDistort
-#define pTCTransformAO pSharedSPB[spbIndex].tcTransformAO
+#define pTCTransformColor pSharedSPB[VAR_SPB_INDEX].tcTransformColor
+#define pTCTransformNormal pSharedSPB[VAR_SPB_INDEX].tcTransformNormal
+#define pTCTransformReflectivity pSharedSPB[VAR_SPB_INDEX].tcTransformReflectivity
+#define pTCTransformEmissivity pSharedSPB[VAR_SPB_INDEX].tcTransformEmissivity
+#define pTCTransformRefractionDistort pSharedSPB[VAR_SPB_INDEX].tcTransformRefractionDistort
+#define pTCTransformAO pSharedSPB[VAR_SPB_INDEX].tcTransformAO
 */
 
-#define pInstColorTint pSharedSPB[spbIndex].instColorTint
-#define pInstColorGamma pSharedSPB[spbIndex].instColorGamma
-#define pInstColorSolidityMultiplier pSharedSPB[spbIndex].instColorSolidityMultiplier
-#define pInstTransparencyMultiplier pSharedSPB[spbIndex].instTransparencyMultiplier
-#define pInstSolidityMultiplier pSharedSPB[spbIndex].instSolidityMultiplier
-#define pInstAOSolidityMultiplier pSharedSPB[spbIndex].instAOSolidityMultiplier
-#define pInstHeightRemap pSharedSPB[spbIndex].instHeightRemap
-#define pInstNormalStrength pSharedSPB[spbIndex].instNormalStrength
-#define pInstNormalSolidityMultiplier pSharedSPB[spbIndex].instNormalSolidityMultiplier
-#define pInstRoughnessRemap pSharedSPB[spbIndex].instRoughnessRemap
-#define pInstRoughnessGamma pSharedSPB[spbIndex].instRoughnessGamma
-#define pInstRoughnessSolidityMultiplier pSharedSPB[spbIndex].instRoughnessSolidityMultiplier
-#define pInstRefractionDistortStrength pSharedSPB[spbIndex].instRefractionDistortStrength
-#define pInstReflectivitySolidityMultiplier pSharedSPB[spbIndex].instReflectivitySolidityMultiplier
-#define pInstEmissivityIntensity pSharedSPB[spbIndex].instEmissivityIntensity
-#define pInstEnvRoomSize pSharedSPB[spbIndex].instEnvRoomSize
-#define pInstEnvRoomOffset pSharedSPB[spbIndex].instEnvRoomOffset
-#define pInstEnvRoomEmissivityIntensity pSharedSPB[spbIndex].instEnvRoomEmissivityIntensity
-#define pInstVariationEnableScale pSharedSPB[spbIndex].instVariationEnableScale
-#define pInstReflectivityMultiplier pSharedSPB[spbIndex].instReflectivityMultiplier
-#define pInstRimEmissivityIntensity pSharedSPB[spbIndex].instRimEmissivityIntensity
-#define pInstRimAngle pSharedSPB[spbIndex].instRimAngle
-#define pInstRimExponent pSharedSPB[spbIndex].instRimExponent
-#define pInstOutlineColor pSharedSPB[spbIndex].instOutlineColor
-#define pInstOutlineColorTint pSharedSPB[spbIndex].instOutlineColorTint
-#define pInstOutlineThickness pSharedSPB[spbIndex].instOutlineThickness
-#define pInstOutlineEmissivity pSharedSPB[spbIndex].instOutlineEmissivity
-#define pInstOutlineEmissivityTint pSharedSPB[spbIndex].instOutlineEmissivityTint
-#define pInstOutlineSolidity pSharedSPB[spbIndex].instOutlineSolidity
-#define pInstSkinClipPlane pSharedSPB[spbIndex].instSkinClipPlane
-#define pInstSkinClipPlaneBorder pSharedSPB[spbIndex].instSkinClipPlaneBorder
+#define pInstColorTint pSharedSPB[VAR_SPB_INDEX].instColorTint
+#define pInstColorGamma pSharedSPB[VAR_SPB_INDEX].instColorGamma
+#define pInstColorSolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instColorSolidityMultiplier
+#define pInstTransparencyMultiplier pSharedSPB[VAR_SPB_INDEX].instTransparencyMultiplier
+#define pInstSolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instSolidityMultiplier
+#define pInstAOSolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instAOSolidityMultiplier
+#define pInstHeightRemap pSharedSPB[VAR_SPB_INDEX].instHeightRemap
+#define pInstNormalStrength pSharedSPB[VAR_SPB_INDEX].instNormalStrength
+#define pInstNormalSolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instNormalSolidityMultiplier
+#define pInstRoughnessRemap pSharedSPB[VAR_SPB_INDEX].instRoughnessRemap
+#define pInstRoughnessGamma pSharedSPB[VAR_SPB_INDEX].instRoughnessGamma
+#define pInstRoughnessSolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instRoughnessSolidityMultiplier
+#define pInstRefractionDistortStrength pSharedSPB[VAR_SPB_INDEX].instRefractionDistortStrength
+#define pInstReflectivitySolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instReflectivitySolidityMultiplier
+#define pInstEmissivityIntensity pSharedSPB[VAR_SPB_INDEX].instEmissivityIntensity
+#define pInstEnvRoomTint pSharedSPB[VAR_SPB_INDEX].instEnvRoomTint
+#define pInstEnvRoomSize pSharedSPB[VAR_SPB_INDEX].instEnvRoomSize
+#define pInstEnvRoomOffset pSharedSPB[VAR_SPB_INDEX].instEnvRoomOffset
+#define pInstEnvRoomEmissivityIntensity pSharedSPB[VAR_SPB_INDEX].instEnvRoomEmissivityIntensity
+#define pInstVariationEnableScale pSharedSPB[VAR_SPB_INDEX].instVariationEnableScale
+#define pInstReflectivityMultiplier pSharedSPB[VAR_SPB_INDEX].instReflectivityMultiplier
+#define pInstRimEmissivityIntensity pSharedSPB[VAR_SPB_INDEX].instRimEmissivityIntensity
+#define pInstRimAngle pSharedSPB[VAR_SPB_INDEX].instRimAngle
+#define pInstRimExponent pSharedSPB[VAR_SPB_INDEX].instRimExponent
+#define pInstOutlineColor pSharedSPB[VAR_SPB_INDEX].instOutlineColor
+#define pInstOutlineColorTint pSharedSPB[VAR_SPB_INDEX].instOutlineColorTint
+#define pInstOutlineThickness pSharedSPB[VAR_SPB_INDEX].instOutlineThickness
+#define pInstOutlineEmissivity pSharedSPB[VAR_SPB_INDEX].instOutlineEmissivity
+#define pInstOutlineEmissivityTint pSharedSPB[VAR_SPB_INDEX].instOutlineEmissivityTint
+#define pInstOutlineSolidity pSharedSPB[VAR_SPB_INDEX].instOutlineSolidity
+#define pInstSkinClipPlane pSharedSPB[VAR_SPB_INDEX].instSkinClipPlane
+#define pInstSkinClipPlaneBorder pSharedSPB[VAR_SPB_INDEX].instSkinClipPlaneBorder

@@ -104,7 +104,7 @@ class DebugLogThinkers
 	
 	
 	/** \brief Create debug instance using BaseGameApp. */
-	public func new() this( BaseGameApp.getApp().getConsole() )
+	public func new() this( BehaviorElementClass.sharedFactoryHelper.defaultConsole() )
 	end
 	
 	/** \brief Create debug instance. */

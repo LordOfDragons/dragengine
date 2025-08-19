@@ -196,12 +196,16 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int le
 			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 			OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 			fbo->Verify();
-			OGL_CHECK( pRenderThread, glReadPixels( 0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, pbdata ) );
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
+			OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, GL_DEPTH_COMPONENT, GL_FLOAT, pbdata));
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 			
 		}else{
-			tsmgr.EnableBareTexture( 0, texture );
-			OGL_CHECK( pRenderThread, glGetTexImage( GL_TEXTURE_2D, level, GL_DEPTH_COMPONENT, GL_FLOAT, pbdata ) );
-			tsmgr.DisableStage( 0 );
+			tsmgr.EnableBareTexture(0, texture);
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
+			OGL_CHECK(pRenderThread, glGetTexImage(GL_TEXTURE_2D, level, GL_DEPTH_COMPONENT, GL_FLOAT, pbdata));
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
+			tsmgr.DisableStage(0);
 		}
 		
 		imgdata = new sRGBA8[ width * height ];
@@ -303,11 +307,15 @@ void deoglDebugSaveTexture::SaveStencilTexture( deoglTexture &texture, const cha
 			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 			OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 			fbo->Verify();
-			OGL_CHECK( pRenderThread, glReadPixels( 0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata ) );
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
+			OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata));
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 			
 		}else{
 			tsmgr.EnableBareTexture( 0, texture );
-			OGL_CHECK( pRenderThread, glGetTexImage( GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata ) );
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
+			OGL_CHECK(pRenderThread, glGetTexImage( GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata));
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 			tsmgr.DisableStage( 0 );
 		}
 		
@@ -395,12 +403,16 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture( deoglArrayTexture &texture,
 			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 			OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 			fbo->Verify();
-			OGL_CHECK( pRenderThread, glReadPixels( 0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata ) );
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
+			OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata));
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 			
 		}else{
-			tsmgr.EnableBareArrayTexture( 0, texture );
+			tsmgr.EnableBareArrayTexture(0, texture);
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 			OGL_CHECK( pRenderThread, glGetTexImage( GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata ) );
-			tsmgr.DisableStage( 0 );
+			OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
+			tsmgr.DisableStage(0);
 		}
 		
 		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 4 ) );

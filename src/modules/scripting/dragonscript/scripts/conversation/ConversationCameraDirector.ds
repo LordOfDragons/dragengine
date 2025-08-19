@@ -57,6 +57,10 @@ class ConversationCameraDirector extends CameraDirector
 	
 	/** \brief Creates conversation camera director. */
 	public func new(Camera camera, Microphone microphone) super(camera, microphone)
+		setFov(fovFirstPerson)
+		setFovRatio(1)
+		setViewDistance(200)
+		
 		pElapsed = 0
 		pDuration = 10
 		pLooping = false
@@ -442,15 +446,6 @@ class ConversationCameraDirector extends CameraDirector
 	end
 	
 	
-	
-	/** \brief Init camera parameters. */
-	public func void initCameraParameters()
-		var Camera camera = getCamera()
-		
-		camera.setFov(/*RenderCameraManager.fovNormal * 2*/ fovFirstPerson)
-		camera.setFovRatio(1.0)
-		camera.setViewDistance(200.0)
-	end
 	
 	/**
 	 * \brief Update camera.

@@ -2,10 +2,8 @@
 <shader>
 	<name>ToneMap Bloom Reduce</name>
 	
-	<texture name='texColor' target='0'/>
-	
-	<parameter name='pParam1'/>
-	<parameter name='pParam2'/>
+	<parameter name='pParam1' location='3'/>
+	<parameter name='pParam2' location='4'/>
 	
 	<sourceCode unit='vertex'>V ToneMap Bloom Reduce</sourceCode>
 	<sourceCode unit='fragment'>F ToneMap Bloom Reduce</sourceCode>

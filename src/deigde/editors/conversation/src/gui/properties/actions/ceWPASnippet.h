@@ -26,6 +26,7 @@
 #define _CEWPASNIPPET_H_
 
 #include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeButtonReference.h>
 
 #include "ceWPAction.h"
@@ -34,29 +35,26 @@ class ceWPTopic;
 class ceCASnippet;
 
 
-
 /**
  * \brief Snippet Conversation Action property window.
  */
 class ceWPASnippet : public ceWPAction{
 private:
-	igdeComboBoxFilterReference pCBFile;
-	igdeComboBoxFilterReference pCBTopic;
+	igdeComboBoxFilterReference pCBFile, pCBTopic;
+	igdeCheckBoxReference pChkCreateSideLane;
 	igdeButtonReference pBtnJumpToTopic;
-	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create panel. */
-	ceWPASnippet( ceWPTopic &parentPanel );
+	ceWPASnippet(ceWPTopic &parentPanel);
 	
 protected:
 	/** \brief Clean up panel. */
-	virtual ~ceWPASnippet();
+	~ceWPASnippet() override;
 	/*@}*/
-	
 	
 	
 public:

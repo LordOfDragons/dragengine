@@ -1,9 +1,11 @@
-uniform HIGHP mat4 pColorTransform;
-uniform HIGHP vec4 pColorTransform2;
+#include "shared/preamble.glsl"
 
-uniform mediump sampler2D texTexture;
+UNIFORM_BIND(3) uniform HIGHP mat4 pColorTransform;
+UNIFORM_BIND(4) uniform HIGHP vec4 pColorTransform2;
 
-in mediump vec2 vTexCoord;
+layout(binding=0) uniform mediump sampler2D texTexture;
+
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out lowp vec4 outColor;
 

@@ -8,5 +8,5 @@
 	
 	<uniformBlock name='GIProbeIndices' binding='2'/>
 	
-	<define>PASS2</define>
+	<define>RENDER_PASS</define>
 </shaderSource>

@@ -47,6 +47,8 @@
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetEnableSize.h"
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetUseAxis.h"
 #include "../../../undosys/rule/bonetrans/aeURuleBTransSetTargetBone.h"
+#include "../../../undosys/rule/bonetrans/aeURuleBTransSetInputBone.h"
+#include "../../../undosys/rule/bonetrans/aeURuleBTransSetInputSource.h"
 #include "../../../animatoreditor.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -377,6 +379,31 @@ public:
 	}
 };
 
+class cComboInputBone : public cBaseComboBoxListener{
+public:
+	cComboInputBone(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
+	
+	igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		return comboBox->GetText() != rule->GetInputBone()
+			? new aeURuleBTransSetInputBone(rule, comboBox->GetText()) : nullptr;
+	}
+};
+
+class cComboInputSource : public cBaseComboBoxListener{
+public:
+	cComboInputSource(aeWPAPanelRuleBoneTransformator &panel) : cBaseComboBoxListener(panel){}
+	
+	igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleBoneTransformator *rule) override{
+		if(!comboBox->GetSelectedItem()){
+			return nullptr;
+		}
+		
+		deAnimatorRuleBoneTransformator::eInputSources value =
+			(deAnimatorRuleBoneTransformator::eInputSources)(intptr_t)comboBox->GetSelectedItem()->GetData();
+		return rule->GetInputSource() != value ? new aeURuleBTransSetInputSource(rule, value) : nullptr;
+	}
+};
+
 }
 
 
@@ -425,9 +452,24 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertBoneTransformator )
 	pCBCoordFrame->AddItem( "Component", NULL, ( void* )( intptr_t )deAnimatorRuleBoneTransformator::ecfComponent );
 	pCBCoordFrame->AddItem( "Target Bone", NULL, ( void* )( intptr_t )deAnimatorRuleBoneTransformator::ecfTargetBone );
 	
-	helper.ComboBoxFilter( groupBox, "Target Bone:", true, "Sets the bone to use as coordinate frame",
+	helper.ComboBoxFilter( groupBox, "Target Bone:", true, "Set bone to use as coordinate frame",
 		pCBTargetBone, new cComboTargetBone( *this ) );
 	pCBTargetBone->SetDefaultSorter();
+	
+	helper.ComboBoxFilter(groupBox, "Input Bone:", true, "Set bone to use as input",
+		pCBInputBone, new cComboInputBone(*this));
+	pCBInputBone->SetDefaultSorter();
+	
+	helper.ComboBox(groupBox, "Input Source:", "Source to use for input.",
+		pCBInputSource, new cComboInputSource(*this));
+	pCBInputSource->AddItem("Target Blend", nullptr,
+		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisTargetBlend);
+	pCBInputSource->AddItem("Target Direct", nullptr,
+		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisTargetDirect);
+	pCBInputSource->AddItem("Bone State", nullptr,
+		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisBoneState);
+	pCBInputSource->AddItem("Bone State Inverse", nullptr,
+		(void*)(intptr_t)deAnimatorRuleBoneTransformator::eisBoneStateInverse);
 	
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
@@ -445,24 +487,32 @@ aeWPAPanelRuleBoneTransformator::~aeWPAPanelRuleBoneTransformator(){
 void aeWPAPanelRuleBoneTransformator::UpdateRigBoneList(){
 	aeWPAPanelRule::UpdateRigBoneList();
 	
-	const decString selection( pCBTargetBone->GetText() );
+	const decString selectionTargetBone(pCBTargetBone->GetText());
+	const decString selectionInputBone(pCBInputBone->GetText());
 	
 	pCBTargetBone->RemoveAllItems();
+	pCBInputBone->RemoveAllItems();
 	
-	if( GetAnimator() ){
+	if(GetAnimator()){
 		const deRig * const rig = GetAnimator()->GetEngineRig();
-		if( rig ){
+		if(rig){
 			const int count = rig->GetBoneCount();
 			int i;
-			for( i=0; i<count; i++ ){
-				pCBTargetBone->AddItem( rig->GetBoneAt( i ).GetName() );
+			for(i=0; i<count; i++){
+				const decString &name = rig->GetBoneAt(i).GetName();
+				pCBTargetBone->AddItem(name);
+				pCBInputBone->AddItem(name);
 			}
 		}
 		pCBTargetBone->SortItems();
+		pCBInputBone->SortItems();
 	}
 	
 	pCBTargetBone->StoreFilterItems();
-	pCBTargetBone->SetText( selection );
+	pCBTargetBone->SetText(selectionTargetBone);
+	
+	pCBInputBone->StoreFilterItems();
+	pCBInputBone->SetText(selectionInputBone);
 }
 
 void aeWPAPanelRuleBoneTransformator::UpdateRule(){
@@ -482,6 +532,8 @@ void aeWPAPanelRuleBoneTransformator::UpdateRule(){
 		pEditMaxAngle->SetFloat( rule->GetMaximumAngle() );
 		pCBCoordFrame->SetSelectionWithData( ( void* )( intptr_t )rule->GetCoordinateFrame() );
 		pCBTargetBone->SetText( rule->GetTargetBone() );
+		pCBInputBone->SetText(rule->GetInputBone());
+		pCBInputSource->SetSelectionWithData((void*)(intptr_t)rule->GetInputSource());
 		
 	}else{
 		pEditMinTrans->SetVector( decVector() );
@@ -495,6 +547,8 @@ void aeWPAPanelRuleBoneTransformator::UpdateRule(){
 		pEditMaxAngle->SetFloat( 0.0f );
 		pCBCoordFrame->SetSelectionWithData( ( void* )( intptr_t )deAnimatorRuleBoneTransformator::ecfComponent );
 		pCBTargetBone->ClearText();
+		pCBInputBone->ClearText();
+		pCBInputSource->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleBoneTransformator::eisTargetBlend);
 	}
 	
 	const bool enabled = rule;
@@ -510,6 +564,8 @@ void aeWPAPanelRuleBoneTransformator::UpdateRule(){
 	pEditMaxAngle->SetEnabled( enabled );
 	pCBCoordFrame->SetEnabled( enabled );
 	pCBTargetBone->SetEnabled( enabled );
+	pCBInputBone->SetEnabled(enabled);
+	pCBInputSource->SetEnabled(enabled);
 	
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();

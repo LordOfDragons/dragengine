@@ -87,7 +87,7 @@ class BehaviorElementClass extends ElementClass
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	func new() this("BehaviorElement", BaseGameApp.getApp().getLoaders())
+	func new() this("BehaviorElement", sharedFactoryHelper.defaultLoaders())
 	end
 	
 	/** \brief Create element class. */
@@ -95,7 +95,7 @@ class BehaviorElementClass extends ElementClass
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	func new(String className) this(className, BaseGameApp.getApp().getLoaders())
+	func new(String className) this(className, sharedFactoryHelper.defaultLoaders())
 	end
 	
 	/** \brief Create element class. */

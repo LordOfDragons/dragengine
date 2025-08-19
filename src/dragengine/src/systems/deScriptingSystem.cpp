@@ -147,7 +147,7 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 	}
 	
 	// asset libraries
-	const deVirtualFileSystem::Ref vfsAssetLibraries = engine.GetModuleSystem()->GetVFSAssetLibraries();
+	const deVirtualFileSystem::Ref &vfsAssetLibraries = engine.GetModuleSystem()->GetVFSAssetLibraries();
 	if(vfsAssetLibraries->GetContainerCount() > 0){
 		pathRedirect.SetFromUnix("/modules");
 		pathRedirect.AddUnixPath(typeName);

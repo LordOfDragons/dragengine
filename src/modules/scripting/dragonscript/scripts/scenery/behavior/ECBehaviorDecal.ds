@@ -88,18 +88,14 @@ class ECBehaviorDecal extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorDecal"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorDecal")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorDecal behavior = ECBehaviorDecal.new(eclass,\
-				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "decal", id)
+				getHelper().defaultComponent(eclass, parameters), id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "decal", id)
 			return behavior
 		end
 	end

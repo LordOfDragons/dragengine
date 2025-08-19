@@ -129,7 +129,10 @@ pCount( 0 )
 	pAsyncGetPipeline(pPipelineTraCountMaxCount, pipconf, sources, defines);
 	
 	// count max count stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Max Count Stereo" );
 	}
@@ -143,7 +146,10 @@ pCount( 0 )
 	pAsyncGetPipeline(pPipelineTraCountGetCount, pipconf, sources, defines);
 	
 	// count get count stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Transparency Get Count Stereo" );
 	}

@@ -181,6 +181,8 @@ public:
 		etutTexEnvRoomOffset,
 		etutTexTransparencyMultiplier,
 		
+		etutTexEnvRoomTint,
+		
 		etutTexEnvRoomEmissivityIntensity,
 		etutTexThickness,
 		
@@ -252,6 +254,7 @@ public:
 		eiutInstRefractionDistortStrength,
 		eiutInstReflectivitySolidityMultiplier,
 		eiutInstEmissivityIntensity,
+		eiutInstEnvRoomTint,
 		eiutInstEnvRoomSize,
 		eiutInstEnvRoomOffset,
 		eiutInstEnvRoomEmissivityIntensity,
@@ -325,9 +328,9 @@ private:
 	deoglSkinShaderConfig pConfig;
 	
 	int pTextureTargets[ ETT_COUNT ];
-	int pUsedTextureTargetCount;
 	int pInstanceUniformTargets[ EIUT_COUNT ];
 	int pUsedInstanceUniformTargetCount;
+	int pTextureUnitCount;
 	
 	int pTargetSPBInstanceIndexBase;
 	int pTargetDrawIDOffset;
@@ -355,17 +358,12 @@ public:
 	
 	/** Retrieves the index for a texture target or -1 if not used. */
 	int GetTextureTarget( eTextureTargets target ) const;
-	/** Sets the index for a texture target or -1 if not used. */
-	void SetTextureTarget( eTextureTargets target, int index );
-	/** Retrieves the used texture target count. */
-	inline int GetUsedTextureTargetCount() const{ return pUsedTextureTargetCount; }
-	/** Sets the used texture target count. */
-	void SetUsedTextureTargetCount( int usedTextureTargetCount );
 	
 	/** Retrieves the index for an instance parameter uniform target or -1 if not used. */
 	int GetInstanceUniformTarget( eInstanceUniformTargets target ) const;
-	/** Sets the index for an instance parameter uniform target or -1 if not used. */
-	void SetInstanceUniformTarget( eInstanceUniformTargets target, int index );
+	
+	/** Required count of texture unit index used by this shader. */
+	inline int GetTextureUnitCount() const{ return pTextureUnitCount; }
 	
 	/** Target of shared SPB instance index base parameter or -1 if not used. */
 	inline int GetTargetSPBInstanceIndexBase() const{ return pTargetSPBInstanceIndexBase; }

@@ -2,10 +2,8 @@
 <shader>
 	<name>Effect Overlay</name>
 	
-	<texture name="texColor" target="0"/>
-	
-	<parameter name="pGamma"/>
-	<parameter name="pColor"/>
+	<parameter name="pGamma" location='3'/>
+	<parameter name="pColor" location='4'/>
 	
 	<sourceCode unit="vertex">V Generic ScreenSpace</sourceCode>
 	<sourceCode unit="fragment">F Effect Overlay</sourceCode>

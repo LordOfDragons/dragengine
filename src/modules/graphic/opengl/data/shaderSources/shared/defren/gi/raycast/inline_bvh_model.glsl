@@ -36,8 +36,9 @@
 				vec3 e1 = v3 - v1;
 				vec3 pv = cross( rayDirection, e1 );
 				float det = dot( e0, pv );
+				bool condition;
 				
-				#if defined GI_RAYCAST_DISTANCE_ONLY && defined GI_RAYCAST_OCCMESH_ONLY
+				if(GIRayCastDistanceOnly && GIRayCastOccMeshOnly){
 					// check single sided and parallelity. parallelity check (det != 0) has to be
 					// present always or division fails. single sided is tested using (det < 0).
 					// if corners.w is 1 the face is double sided. if corners is 0 the face is
@@ -55,13 +56,14 @@
 					// 
 					// the meaning of corners.w is different in the position only case to deal
 					// with double sided faces
-					if( det < 0.0 || det * corners.w > 0.0 )
+					condition = det < 0.0 || det * corners.w > 0.0;
 				
-				#else
+				}else{
 					// check parallelity
-					if( det != 0.0 )
-				#endif
-				{
+					condition = det != 0.0;
+				}
+				
+				if(condition){
 					vec3 tv = rayOrigin - v1;
 					vec3 qv = cross( tv, e0 );
 					
@@ -76,8 +78,8 @@
 						vec3 normal = cross( e0, e1 ); // no normalize here since caller needs to do this anyways
 						bool frontface = dot( rayDirection, normal ) < 0.0;
 						
-						#ifdef GI_RAYCAST_DISTANCE_ONLY
-							#ifndef GI_RAYCAST_OCCMESH_ONLY
+						if(GIRayCastDistanceOnly){
+							if(!GIRayCastOccMeshOnly){
 								// in the distance only case materials with solidity are ignored.
 								// this is done like this because position only is used for ray
 								// limit optimization and there we want stable limits that do not
@@ -95,9 +97,9 @@
 								if( ( params & flagsIgnore ) != uint( 0 ) ){
 									continue;
 								}
-							#endif
+							}
 							
-						#else
+						}else{
 							int material = rootMaterial + corners.w;
 							uint params = giRayCastMaterialCastParams( material );
 							uint flagsIgnore = frontface
@@ -175,7 +177,7 @@
 							result.face = face;
 							result.material = material;
 							result.normal = normal;
-						#endif
+						}
 						
 						result.distance = uvt.z;
 						hasHit = true;

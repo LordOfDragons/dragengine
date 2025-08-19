@@ -48,13 +48,9 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeTextFieldReference pEditFov;
-	igdeTextFieldReference pEditFovRatio;
-	igdeTextFieldReference pEditImageDistance;
-	igdeTextFieldReference pEditViewDistance;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeComboBoxReference pCBPropertyName;
+	igdeTextFieldReference pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
+	igdeEditVectorReference pEditPosition, pEditRotation;
+	igdeComboBoxReference pCBPropertyName, pCBPropertyPosition, pCBPropertyRotation;
 	
 	
 	

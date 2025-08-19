@@ -386,26 +386,85 @@ void igdeEditPath::ClearPath(){
 }
 
 decString igdeEditPath::GetAbsolutePath() const{
-	if( pText->GetText().IsEmpty() ){
+	if(pText->GetText().IsEmpty()){
 		return "";
 	}
 	
-	if( pUseGameVFS ){
-		if( decPath::IsUnixPathAbsolute( pText->GetText() ) ){
-			return pText->GetText();
-			
-		}else{
-			return decPath::AbsolutePathUnix( pText->GetText(), pBasePath ).GetPathUnix();
-		}
+	if(pUseGameVFS){
+		return decPath::IsUnixPathAbsolute(pText->GetText())
+			? pText->GetText()
+			: decPath::AbsolutePathUnix(pText->GetText(), pBasePath).GetPathUnix();
 		
 	}else{
-		if( decPath::IsNativePathAbsolute( pText->GetText() ) ){
-			return pText->GetText();
-			
-		}else{
-			return decPath::AbsolutePathNative( pText->GetText(), pBasePath ).GetPathNative();
-		}
+		return decPath::IsNativePathAbsolute(pText->GetText())
+			? pText->GetText()
+			: decPath::AbsolutePathNative( pText->GetText(), pBasePath ).GetPathNative();
 	}
+}
+
+decString igdeEditPath::AsAbsolutePath(const decString &path) const{
+	if(pBasePath.IsEmpty()){
+		DETHROW_INFO(deeInvalidParam, "Base path is empty string");
+	}
+	
+	return pUseGameVFS
+		? decPath::AbsolutePathUnix(path, pBasePath).GetPathUnix()
+		: decPath::AbsolutePathNative(path, pBasePath).GetPathNative();
+}
+
+decString igdeEditPath::GetRelativePath() const{
+	if(pText->GetText().IsEmpty()){
+		return "";
+	}
+	
+	if(pUseGameVFS){
+		return decPath::IsUnixPathAbsolute(pText->GetText())
+			? decPath::RelativePathUnix(pText->GetText(), pBasePath, false).GetPathUnix()
+			: pText->GetText();
+		
+	}else{
+		return decPath::IsNativePathAbsolute(pText->GetText())
+			? decPath::RelativePathNative(pText->GetText(), pBasePath, false).GetPathNative()
+			: pText->GetText();
+	}
+}
+
+decString igdeEditPath::AsRelativePath(const decString &path) const{
+	if(pBasePath.IsEmpty()){
+		DETHROW_INFO(deeInvalidParam, "Base path is empty string");
+	}
+	
+	return pUseGameVFS
+		? decPath::RelativePathUnix(path, pBasePath, false).GetPathUnix()
+		: decPath::RelativePathNative(path, pBasePath, false).GetPathNative();
+}
+
+bool igdeEditPath::IsAbsolutePath() const{
+	return IsAbsolutePath(pText->GetText());
+}
+
+bool igdeEditPath::IsAbsolutePath(const decString &path) const{
+	if(path.IsEmpty()){
+		return false;
+	}
+	
+	return pUseGameVFS
+		? decPath::IsUnixPathAbsolute(path)
+		: decPath::IsNativePathAbsolute(path);
+}
+
+bool igdeEditPath::IsRelativePath() const{
+	return IsRelativePath(pText->GetText());
+}
+
+bool igdeEditPath::IsRelativePath(const decString &path) const{
+	if(path.IsEmpty()){
+		return false;
+	}
+	
+	return pUseGameVFS
+		? !decPath::IsUnixPathAbsolute(path)
+		: !decPath::IsNativePathAbsolute(path);
 }
 
 bool igdeEditPath::GetEnabled() const{

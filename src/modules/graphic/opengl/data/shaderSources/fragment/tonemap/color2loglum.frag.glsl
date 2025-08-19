@@ -1,19 +1,15 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform vec4 pParam1; // offset1.s, offset1.t, offset2.s, offset2.t
-uniform vec4 pParam2; // offset3.s, offset3.t, clamp.s, clamp.t
+UNIFORM_BIND(3) uniform vec4 pParam1; // offset1.s, offset1.t, offset2.s, offset2.t
+UNIFORM_BIND(4) uniform vec4 pParam2; // offset3.s, offset3.t, clamp.s, clamp.t
 
 // uniform mediump sampler2DArray texColor;
-uniform HIGHP sampler2DArray texLuminance;
+layout(binding=0) uniform HIGHP sampler2DArray texLuminance;
 
-in vec2 vTexCoord;
-
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out float outLogLum;
 

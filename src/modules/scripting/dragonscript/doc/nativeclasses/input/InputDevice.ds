@@ -175,7 +175,7 @@ class InputDevice
 	 * \brief Device supports face eye expressions.
 	 * \version 1.12
 	 */
-	public  func bool getSupportsFaceEyeExpressions()
+	func bool getSupportsFaceEyeExpressions()
 		return false
 	end
 	
@@ -183,7 +183,19 @@ class InputDevice
 	 * \brief Device supports face mouth expressions.
 	 * \version 1.12
 	 */
-	public  func bool getSupportsFaceMouthExpressions()
+	func bool getSupportsFaceMouthExpressions()
+		return false
+	end
+	
+	/**
+	 * \brief Device is using hand interaction.
+	 * \version 1.28
+	 * 
+	 * Used for devices of type \ref InputDeviceType#vrRightHand or \ref InputDeviceType#vrLeftHand.
+	 * If true the device is representing hand interaction with no controller held in hand.
+	 * Typically applications should use different aiming, pointing and input behavior.
+	 */
+	func bool getUsingHandInteraction()
 		return false
 	end
 	

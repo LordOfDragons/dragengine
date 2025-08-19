@@ -133,14 +133,18 @@ deoglRenderBase( renderThread )
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
 	defines = commonDefines;
-	defines.SetDefines( "DEPTH_TEST", "COPY_COLOR" );
+	defines.SetDefines("COPY_COLOR");
+	defines.SetDefine("DEPTH_TEST", deoglSkinShaderConfig::edtmSmaller);
 	if( useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	pAsyncGetPipeline(pPipelineCopyDepthColor, pipconf, sources, defines);
 	
 	// copy depth color stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
 	}
@@ -156,14 +160,17 @@ deoglRenderBase( renderThread )
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth" );
 	
 	defines = commonDefines;
-	defines.SetDefine( "DEPTH_TEST", true );
+	defines.SetDefine("DEPTH_TEST", deoglSkinShaderConfig::edtmSmaller);
 	if( ! useInverseDepth ){
 		defines.SetDefine( "SHADOW_INVERSE_DEPTH", true );
 	}
 	pAsyncGetPipeline(pPipelineCopyDepthLimit, pipconf, sources, defines);
 	
 	// copy depth limit stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
 	}
@@ -177,11 +184,14 @@ deoglRenderBase( renderThread )
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "DefRen Copy Color" );
-	defines.SetDefine( "INPUT_ARRAY_TEXTURE", true );
+	defines.SetDefine( "INPUT_ARRAY_TEXTURES", true );
 	pAsyncGetPipeline(pPipelineCopyColor, pipconf, sources, defines);
 	
 	// copy color stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Color Stereo" );
 	}

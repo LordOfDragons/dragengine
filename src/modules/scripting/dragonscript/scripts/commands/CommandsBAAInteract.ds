@@ -209,13 +209,13 @@ class CommandsBAAInteract
 		end
 		
 		if helper.hasVRHand(true)
-			helper.vrHandBindButton(true, 0, "primaryAction")
-			helper.vrHandBindButton(true, 1, "secondaryAction")
+			helper.vrHandBindButton(true, InputDeviceButtonType.trigger, 0, "primaryAction")
+			helper.vrHandBindButton(true, InputDeviceButtonType.action, 0, "secondaryAction")
 		end
 		
 		if helper.hasVRHand(false)
-			helper.vrHandBindButton(false, 0, "primaryAction")
-			helper.vrHandBindButton(false, 1, "secondaryAction")
+			helper.vrHandBindButton(false, InputDeviceButtonType.trigger, 0, "primaryAction")
+			helper.vrHandBindButton(false, InputDeviceButtonType.action, 0, "secondaryAction")
 		end
 	end
 end

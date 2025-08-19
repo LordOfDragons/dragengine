@@ -25,7 +25,7 @@
 import bpy
 
 from .de_porting import registerClass, appendToMenu
-
+from .de_helpers import ActionSlotHelper
 
 
 # Tool Mirror Animation
@@ -41,19 +41,30 @@ class OBJECT_OT_DEToolMirrorAnimation( bpy.types.Operator ):
 	#digits: bpy.props.IntProperty( name="Digits", description="Digits to round to", soft_min=0, soft_max=5, default=5 )
 	
 	@classmethod
-	def poll( cls, context ):
-		return context.active_object != None and context.active_object.type == 'ARMATURE' \
-			and bpy.context.mode == 'POSE' and context.active_object.animation_data \
-			and context.active_object.animation_data.action
+	def poll(cls, context):
+		if bpy.context.mode != 'POSE':
+			return False
+		
+		o = context.active_object
+		if not o or o.type != 'ARMATURE':
+			return False
+		
+		ad = o.animation_data
+		if not ad or not ad.action:
+			return False
+		
+		return True
 	
 	def execute( self, context ):
 		pose = context.active_object.pose
 		action = context.active_object.animation_data.action
+		ash = ActionSlotHelper(context.active_object)
+		agroups = ash.groups(action)
 		
 		for posebone in pose.bones:
 			if posebone.bone.select:
-				if posebone.bone.name in action.groups:
-					group = action.groups[ posebone.bone.name ]
+				if posebone.bone.name in agroups:
+					group = agroups[posebone.bone.name]
 					# location and rotation_quaterion can be mirrored channel wise directly
 					for fcurve in group.channels:
 						if fcurve.data_path[ -9: ] == ".location":

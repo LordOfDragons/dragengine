@@ -75,7 +75,7 @@ class CommandsBAAVRTriggerInput
 		protected var ECBehaviorPlayerControllable.Tracker pTracker
 		protected var bool pRightHand
 		
-		public func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
 		String description, bool rightHand) super(name, description)
 			if tracker == null
 				throw ENullPointer.new("tracker")
@@ -111,35 +111,57 @@ class CommandsBAAVRTriggerInput
 			end
 		end
 		
-		public func void touch()
+		protected func BAAVRTriggerInput2 getInterface2()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null and iface castable BAAVRTriggerInput2
+				return iface cast BAAVRTriggerInput2
+			end
+			return null
+		end
+		
+		func void touch()
 			var BAAVRTriggerInput iface = getInterface()
 			if iface != null
 				iface.triggerTouch()
 			end
 		end
 		
-		public func void untouch()
+		func void untouch()
 			var BAAVRTriggerInput iface = getInterface()
 			if iface != null
 				iface.triggerUntouch()
 			end
 		end
 		
-		public func void start()
+		func void approach()
+			var BAAVRTriggerInput2 iface = getInterface2()
+			if iface != null
+				iface.triggerApproach()
+			end
+		end
+		
+		func void withdraw()
+			var BAAVRTriggerInput2 iface = getInterface2()
+			if iface != null
+				iface.triggerWithdraw()
+			end
+		end
+		
+		func void start()
 			var BAAVRTriggerInput iface = getInterface()
 			if iface != null
 				iface.triggerPull()
 			end
 		end
 		
-		public func void stop()
+		func void stop()
 			var BAAVRTriggerInput iface = getInterface()
 			if iface != null
 				iface.triggerRelease()
 			end
 		end
 		
-		public func void analogAbsolute(float value)
+		func void analogAbsolute(float value)
 			var BAAVRTriggerInput iface = getInterface()
 			if iface != null
 				iface.triggerAnalog(value)

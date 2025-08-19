@@ -140,15 +140,12 @@ deVROpenXR::eInputActions inputAction, const char *path ) const{
 
 bool deoxrDeviceProfile::pMatchesProfile( const deoxrPath &path ) const{
 	const deoxrSession * const session = pInstance.GetOxr().GetSession();
-	if( ! session ){
+	if(!session || !session->GetAttachedActionSet()){
 		return false;
 	}
 	
-	XrInteractionProfileState state;
-	memset( &state, 0, sizeof( state ) );
-	state.type = XR_TYPE_INTERACTION_PROFILE_STATE;
-	
-	return XR_SUCCEEDED( pInstance.xrGetCurrentInteractionProfile(session->GetSession(), path, &state ) )
+	XrInteractionProfileState state{XR_TYPE_INTERACTION_PROFILE_STATE};
+	return XR_SUCCEEDED(pInstance.xrGetCurrentInteractionProfile(session->GetSession(), path, &state))
 		&& pPath == state.interactionProfile;
 }
 
@@ -217,22 +214,73 @@ void deoxrDeviceProfile::pAddAxisTrigger( deoxrDevice &device, deoxrDeviceCompon
 	axis->SetDisplayText( "Tri" );
 	axis->SetIndex( device.GetAxisCount() );
 	axis->SetInputDeviceComponent( component );
+	axis->SetFinger(0);
 	device.AddAxis( axis );
 }
 
-void deoxrDeviceProfile::pAddButtonTrigger( deoxrDevice &device, deoxrDeviceComponent *component, bool withTouch ){
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( device ) ) );
-	button->SetID( "trig" );
-	button->SetName( "Trigger" );
-	button->SetType( deInputDeviceButton::ebtTrigger );
-	button->SetDisplayText( "Tri" );
-	button->SetInputDeviceComponent( component );
-	button->SetActionPress( pInstance.GetOxr().GetAction( deVROpenXR::eiaTriggerPress ) );
-	if( withTouch ){
-		button->SetActionTouch( pInstance.GetOxr().GetAction( deVROpenXR::eiaTriggerTouch ) );
+void deoxrDeviceProfile::pAddButtonTrigger(deoxrDevice &device, deoxrDeviceComponent *component,
+bool withTouch, bool withAproach){
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(device)));
+	button->SetID("trig");
+	button->SetName("Trigger");
+	button->SetType(deInputDeviceButton::ebtTrigger);
+	button->SetDisplayText("Tri");
+	button->SetInputDeviceComponent(component);
+	button->SetActionPress(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerPress));
+	if(withTouch){
+		button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerTouch));
 	}
+	if(withAproach){
+		button->SetActionApproach(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerNear));
+	}
+	button->SetFinger(0);
 	button->SetIndex( device.GetButtonCount() );
 	device.AddButton( button );
+}
+
+void deoxrDeviceProfile::pAddAxisTriggerForce(deoxrDevice &device, deoxrDeviceComponent *component){
+	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+	axis->SetActionAnalog(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerForce));
+	axis->SetType(deInputDeviceAxis::eatTriggerForce);
+	axis->SetRange(0.0f, 1.0f);
+	axis->SetCenter(-1.0f);
+	axis->SetValue(-1.0f);
+	axis->SetName("Trigger Force");
+	axis->SetID("trifo");
+	axis->SetDisplayText("TriF");
+	axis->SetIndex(device.GetAxisCount());
+	axis->SetInputDeviceComponent(component);
+	device.AddAxis(axis);
+}
+
+void deoxrDeviceProfile::pAddAxisTriggerCurl(deoxrDevice &device, deoxrDeviceComponent *component){
+	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+	axis->SetActionAnalog(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerCurl));
+	axis->SetType(deInputDeviceAxis::eatTriggerCurl);
+	axis->SetRange(0.0f, 1.0f);
+	axis->SetCenter(-1.0f);
+	axis->SetValue(-1.0f);
+	axis->SetName("Trigger Curl");
+	axis->SetID("tricu");
+	axis->SetDisplayText("TriC");
+	axis->SetIndex(device.GetAxisCount());
+	axis->SetInputDeviceComponent(component);
+	device.AddAxis(axis);
+}
+
+void deoxrDeviceProfile::pAddAxisTriggerSlide(deoxrDevice &device, deoxrDeviceComponent *component){
+	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+	axis->SetActionAnalog(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerSlide));
+	axis->SetType(deInputDeviceAxis::eatTriggerSlide);
+	axis->SetRange(0.0f, 1.0f);
+	axis->SetCenter(-1.0f);
+	axis->SetValue(-1.0f);
+	axis->SetName("Trigger Slide");
+	axis->SetID("trisl");
+	axis->SetDisplayText("TriS");
+	axis->SetIndex(device.GetAxisCount());
+	axis->SetInputDeviceComponent(component);
+	device.AddAxis(axis);
 }
 
 deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentTrackpad( deoxrDevice &device ){
@@ -329,16 +377,38 @@ deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentThumbrest( deoxrDevice &d
 	return pAddComponent( device, deInputDeviceComponent::ectGeneric, "Thumbrest", "thumbrest", "Thumbrest" );
 }
 
-void deoxrDeviceProfile::pAddButtonThumbrest( deoxrDevice &device, deoxrDeviceComponent *component ){
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( device ) ) );
-	button->SetID( "trest" );
-	button->SetName( "Thumbrest" );
-	button->SetType( deInputDeviceButton::ebtGeneric );
-	button->SetDisplayText( "ThR" );
-	button->SetInputDeviceComponent( component );
-	button->SetActionTouch( pInstance.GetOxr().GetAction( deVROpenXR::eiaThumbrestTouch ) );
-	button->SetIndex( device.GetButtonCount() );
-	device.AddButton( button );
+void deoxrDeviceProfile::pAddButtonThumbrest(deoxrDevice &device, deoxrDeviceComponent *component,
+bool withPress, bool withApproach){
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(device)));
+	button->SetID("trest");
+	button->SetName("Thumbrest");
+	button->SetType(deInputDeviceButton::ebtGeneric);
+	button->SetDisplayText("ThR");
+	button->SetInputDeviceComponent(component);
+	button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestTouch));
+	if(withPress){
+		button->SetActionPress(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestPress));
+	}
+	if(withApproach){
+		button->SetActionApproach(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestNear));
+	}
+	button->SetIndex(device.GetButtonCount());
+	device.AddButton(button);
+}
+
+void deoxrDeviceProfile::pAddAxesThumbrestPress(deoxrDevice &device, deoxrDeviceComponent *component){
+	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+	axis->SetActionAnalog(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestPress));
+	axis->SetType(deInputDeviceAxis::eatThumbrestPress);
+	axis->SetRange(0.0f, 1.0f);
+	axis->SetCenter(-1.0f);
+	axis->SetValue(-1.0f);
+	axis->SetName("Thumbrest Press");
+	axis->SetID("trestpr");
+	axis->SetDisplayText("ThRPr");
+	axis->SetIndex(device.GetAxisCount());
+	axis->SetInputDeviceComponent(component);
+	device.AddAxis(axis);
 }
 
 deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentGrip( deoxrDevice &device ){
@@ -419,31 +489,35 @@ eButtonLabel label, bool withTouch ){
 	
 	switch( action ){
 	case ebaPrimary:
-		button->SetActionPress( pInstance.GetOxr().GetAction( deVROpenXR::eiaButtonPrimaryPress ) );
-		if( withTouch ){
-			button->SetActionTouch( pInstance.GetOxr().GetAction( deVROpenXR::eiaButtonPrimaryTouch ) );
+		button->SetActionPress(pInstance.GetOxr().GetAction(deVROpenXR::eiaButtonPrimaryPress));
+		if(withTouch){
+			button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaButtonPrimaryTouch));
 		}
+		//button->SetFinger(1);
 		break;
 		
 	case ebaSecondary:
-		button->SetActionPress( pInstance.GetOxr().GetAction( deVROpenXR::eiaButtonSecondaryPress ) );
-		if( withTouch ){
-			button->SetActionTouch( pInstance.GetOxr().GetAction( deVROpenXR::eiaButtonSecondaryTouch ) );
+		button->SetActionPress(pInstance.GetOxr().GetAction(deVROpenXR::eiaButtonSecondaryPress));
+		if(withTouch){
+			button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaButtonSecondaryTouch));
 		}
+		//button->SetFinger(2);
 		break;
 		
 	case ebaAuxiliary1:
-		button->SetActionPress( pInstance.GetOxr().GetAction( deVROpenXR::eiaButtonAuxiliary1Press ) );
-		if( withTouch ){
-			button->SetActionTouch( pInstance.GetOxr().GetAction( deVROpenXR::eiaButtonAuxiliary1Touch ) );
+		button->SetActionPress(pInstance.GetOxr().GetAction(deVROpenXR::eiaButtonAuxiliary1Press));
+		if(withTouch){
+			button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaButtonAuxiliary1Touch));
 		}
+		//button->SetFinger(3);
 		break;
 		
 	case ebaAuxiliary2:
-		button->SetActionPress( pInstance.GetOxr().GetAction( deVROpenXR::eiaButtonAuxiliary2Press ) );
-		if( withTouch ){
-			button->SetActionTouch( pInstance.GetOxr().GetAction( deVROpenXR::eiaButtonAuxiliary2Touch ) );
+		button->SetActionPress(pInstance.GetOxr().GetAction(deVROpenXR::eiaButtonAuxiliary2Press));
+		if(withTouch){
+			button->SetActionTouch(pInstance.GetOxr().GetAction(deVROpenXR::eiaButtonAuxiliary2Touch));
 		}
+		//button->SetFinger(3);
 		break;
 	}
 	
@@ -562,7 +636,8 @@ const char *deoxrDeviceProfile::pButtonDisplayText( eButtonLabel label ) const{
 	}
 }
 
-deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool leftHand ){
+deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker(deoxrDevice &device, bool leftHand,
+bool withInputSimulation){
 	if( ! pInstance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
 		return nullptr;
 	}
@@ -629,6 +704,46 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 		axis->SetFinger( i );
 		axis->SetInputDeviceComponent( componentHand );
 		device.AddAxis( axis );
+	}
+	
+	// two finger input
+	if(withInputSimulation){
+		const Data tfiData[4] = {
+			{"Input Index Finger", "tfi1", "FI1" },
+			{"Input Middle Finger", "tfi2", "FI2" },
+			{"Input Ring Finger", "tfi3", "FI3" },
+			{"Input Pinky Finger", "tfi4", "FI4" }};
+		
+		for(i=0; i<4; i++){
+			const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+			axis->SetType(deInputDeviceAxis::eatTwoFingerTrigger);
+			axis->SetRange(0.0f, 1.0f);
+			axis->SetCenter(-1.0f);
+			axis->SetValue(-1.0f);
+			axis->SetName(tfiData[i].name);
+			axis->SetID(tfiData[i].id);
+			axis->SetDisplayText(tfiData[i].displayText);
+			axis->SetFinger(i);
+			axis->SetIndex(device.GetAxisCount());
+			axis->SetInputDeviceComponent(componentHand);
+			device.AddAxis(axis);
+			
+			const deoxrDeviceButton::Ref button(
+				deoxrDeviceButton::Ref::New(new deoxrDeviceButton(device)));
+			button->SetType(deInputDeviceButton::ebtTwoFingerTrigger);
+			button->SetName(tfiData[i].name);
+			button->SetID(tfiData[i].id);
+			button->SetDisplayText(tfiData[i].displayText);
+			button->SetFinger(i);
+			button->SetIndex(device.GetButtonCount());
+			button->SetInputDeviceComponent(componentHand);
+			device.AddButton(button);
+		}
+		
+		device.SetEnableTwoFingerTriggerSimulation(true);
+		
+	}else{
+		device.SetEnableTwoFingerTriggerSimulation(false);
 	}
 	
 	return handTracker;

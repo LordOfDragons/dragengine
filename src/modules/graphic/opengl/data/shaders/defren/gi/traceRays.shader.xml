@@ -2,28 +2,5 @@
 <shader>
 	<name>DefRen GI Trace Rays</name>
 	
-	<texture name='tboGIRayCastNodeBox' target='0'/>
-	<texture name='tboGIRayCastIndex' target='1'/>
-	<texture name='tboGIRayCastInstance' target='2'/>
-	<texture name='tboGIRayCastMatrix' target='3'/>
-	<texture name='tboGIRayCastFace' target='4'/>
-	<texture name='tboGIRayCastVertex' target='5'/>
-	<texture name='tboGIRayCastTexCoord' target='6'/>
-	<texture name='tboGIRayCastMaterial' target='7'/>
-	<texture name='tboGIRayCastMaterial2' target='8'/>
-	<texture name='tboGIRayCastMaterialDiffuse' target='9'/>
-	<texture name='tboGIRayCastMaterialReflectivity' target='10'/>
-	<texture name='tboGIRayCastMaterialEmissivity' target='11'/>
-	<texture name='texGIRayCastDistanceLimit' target='12'/>
-	
-	<!-- shader assigned locations
-	<texture name='texDistance' target='0'/>
-	<texture name='texPosition' target='0'/>
-	<texture name='texNormal' target='1'/>
-	<texture name='texDiffuse' target='2'/>
-	<texture name='texReflectivity' target='3'/>
-	<texture name='texLight' target='4'/>
-	-->
-	
 	<sourceCode unit='compute'>C DefRen GI Trace Rays</sourceCode>
 </shader>

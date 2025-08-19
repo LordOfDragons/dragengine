@@ -1,36 +1,14 @@
+#include "shared/preamble.glsl"
+
 #ifdef GS_INSTANCING
-	#ifndef OPENGLES
-		#extension GL_ARB_gpu_shader5 : require
-	#endif
+	layout( triangles, invocations=2 ) in;
+	layout( triangle_strip, max_vertices=3 ) out;
+#else
+	layout( triangles ) in;
+	layout( triangle_strip, max_vertices=6 ) out;
 #endif
 
-#if defined GS_RENDER_STEREO
-	#ifdef GS_INSTANCING
-		layout( triangles, invocations=2 ) in;
-		layout( triangle_strip, max_vertices=3 ) out;
-	#else
-		layout( triangles ) in;
-		layout( triangle_strip, max_vertices=6 ) out;
-	#endif
-#endif
-
-#ifndef NO_TEXCOORD
-	in vec2 vGSTexCoord[ 3 ];
-	
-	#ifdef FULLSCREENQUAD
-		in vec2 vGSScreenCoord[ 3 ];
-	#endif
-#endif
-
-#ifndef NO_TEXCOORD
-	out vec2 vTexCoord;
-	
-	#ifdef FULLSCREENQUAD
-		out vec2 vScreenCoord;
-	#endif
-#endif
-
-flat out int vLayer;
+#include "shared/interface/2d/geometry.glsl"
 
 void main( void ){
 	int eye;
@@ -43,20 +21,7 @@ void main( void ){
 		int corner;
 		for( corner=0; corner<3; corner++ ){
 			gl_Position = gl_in[ corner ].gl_Position;
-			
-			#ifndef NO_TEXCOORD
-				vTexCoord = vGSTexCoord[ corner ];
-				
-				#ifdef FULLSCREENQUAD
-					vScreenCoord = vGSScreenCoord[ corner ];
-				#endif
-			#endif
-			
-			vLayer = eye;
-			
-			gl_Layer = eye;
-			gl_PrimitiveID = gl_PrimitiveIDIn;
-			
+			geometryShaderDefaultOutputs(corner, eye);
 			EmitVertex();
 		}
 		

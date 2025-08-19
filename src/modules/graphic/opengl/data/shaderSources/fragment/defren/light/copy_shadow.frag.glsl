@@ -1,36 +1,34 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-#ifdef SHADOW_CUBE
-	#define SAMPLER samplerCube
-#else
-	#define SAMPLER sampler2D
-#endif
+layout(binding=0) uniform HIGHP sampler2D texShadow;
+layout(binding=0) uniform HIGHP samplerCube texShadowCube;
 
-uniform HIGHP SAMPLER texShadow;
-uniform mediump SAMPLER texColor;
+layout(binding=1) uniform mediump sampler2D texColor;
+layout(binding=1) uniform mediump samplerCube texColorCube;
 
-in vec3 vTexCoord;
+VARYING_BIND(0) in vec3 vTexCoord;
 
-#ifdef COPY_COLOR
-	layout(location=0) out vec4 outColor;
-#endif
+// CopyColor
+layout(location=0) out vec4 outColor;
 
 void main(){
-	#ifdef SHADOW_CUBE
-		gl_FragDepth = textureLod(texShadow, vTexCoord, 0.0).r;
+	if(Shadow1Mode == ShadowModeCube){
+		gl_FragDepth = textureLod(texShadowCube, vTexCoord, 0.0).r;
 		
-		#ifdef COPY_COLOR
-			outColor = textureLod(texColor, vTexCoord, 0.0);
-		#endif
+		if(CopyColor){
+			outColor = textureLod(texColorCube, vTexCoord, 0.0);
+		}
 		
-	#else
+	}else{
 		ivec2 tc = ivec2(gl_FragCoord);
 		
 		gl_FragDepth = texelFetch(texShadow, ivec2(gl_FragCoord), 0).r;
 		
-		#ifdef COPY_COLOR
+		if(CopyColor){
 			outColor = texelFetch(texColor, ivec2(gl_FragCoord), 0);
-		#endif
-	#endif
+		}
+	}
 }

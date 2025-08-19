@@ -224,3 +224,44 @@ void dbgCheckOglError(deoglRenderThread&, const char *file, int line, bool withR
 		OGL_ON_RENDER_THREAD
 	}
 }
+
+#ifdef OS_WEBWASM
+
+void oglCheckWasmError(deoglRenderThread &renderThread, EMSCRIPTEN_RESULT result, const char *file, int line){
+	switch(result){
+	case EMSCRIPTEN_RESULT_SUCCESS:
+		break;
+		
+	case EMSCRIPTEN_RESULT_DEFERRED:
+		throw deeInvalidParam(file, line, "EMSCRIPTEN_RESULT_DEFERRED");
+		
+	case EMSCRIPTEN_RESULT_NOT_SUPPORTED:
+		throw deeInvalidParam(file, line, "EMSCRIPTEN_RESULT_NOT_SUPPORTED");
+		
+	case EMSCRIPTEN_RESULT_FAILED_NOT_DEFERRED:
+		throw deeInvalidParam(file, line, "EMSCRIPTEN_RESULT_FAILED_NOT_DEFERRED");
+		
+	case EMSCRIPTEN_RESULT_INVALID_TARGET:
+		throw deeInvalidParam(file, line, "EMSCRIPTEN_RESULT_INVALID_TARGET");
+		
+	case EMSCRIPTEN_RESULT_UNKNOWN_TARGET:
+		throw deeInvalidParam(file, line, "EMSCRIPTEN_RESULT_UNKNOWN_TARGET");
+		
+	case EMSCRIPTEN_RESULT_INVALID_PARAM:
+		throw deeInvalidParam(file, line, "EMSCRIPTEN_RESULT_INVALID_PARAM");
+		
+	case EMSCRIPTEN_RESULT_FAILED:
+		throw deeInvalidParam(file, line, "EMSCRIPTEN_RESULT_FAILED");
+		
+	case EMSCRIPTEN_RESULT_NO_DATA:
+		throw deeInvalidParam(file, line, "EMSCRIPTEN_RESULT_NO_DATA");
+		
+	default:{
+		decString message;
+		message.Format("Failed %x (%d)", result, result);
+		throw deeInvalidParam(file, line, message);
+		}
+	}
+}
+
+#endif
