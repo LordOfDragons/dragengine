@@ -22,7 +22,7 @@ apt update -y -q \
   && apt-get -y -q install software-properties-common \
   && add-apt-repository -y -u ppa:rpluess/dragondreams \
   && apt-get -y -q upgrade \
-  && apt-get -y -q install libdscript-dev || exit 1
+  && apt-get -y -q install libdscript-dev glslang-tools || exit 1
 
 export SCONSFLAGS="-j 8"
 
