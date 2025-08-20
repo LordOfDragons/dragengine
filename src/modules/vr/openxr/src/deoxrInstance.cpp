@@ -575,7 +575,7 @@ void deoxrInstance::pLoadFunctions(){
 		}
 	
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( name, extension ) \
-		if( pSupportsExtension[ extension ].version != 0 ){ \
+		if(pSupportsExtension[extension].version != 0 && pSupportsExtension[extension].enableIfSupported){ \
 			INSTANCE_LEVEL_OPENXR_FUNCTION( name ) \
 		}
 	

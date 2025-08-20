@@ -2601,9 +2601,9 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 		pReflectivityMultiplier );
 	
 	// see shader source geometry/defren/skin/particle_ribbon.glsl for the
-	// calculation of the maximum number of supported sheets (5)
+	// calculation of the maximum number of supported sheets (4)
 	spb.SetParameterDataInt( deoglSkinShader::etutTexParticleSheetCount, element,
-		decMath::clamp(pParticleSheetCount, 1, 5));
+		decMath::clamp(pParticleSheetCount, 1, 4));
 	
 	spb.SetParameterDataVec3( deoglSkinShader::etutTexRimEmissivityIntensity, element,
 		powf( pRimEmissivityTint.r, 2.2f ) * pRimEmissivityIntensity,

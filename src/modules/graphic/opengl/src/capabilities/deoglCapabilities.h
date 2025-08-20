@@ -76,6 +76,7 @@ private:
 	int pNumProgramBinaryFormats;
 	int pMaxComputeWorkGroupInvocations;
 	decPoint3 pMaxComputeWorkGroupSize;
+	int pMaxTextureImageUnits;
 	
 	deoglCapCheckATLUnbind pATLUnbind;
 	deoglCapCheckUBOIndirectMatrixAccess pUBOIndirectMatrixAccess;
@@ -169,6 +170,9 @@ public:
 	
 	/** Maximum count of compute work group invocations. */
 	inline const decPoint3 &GetMaxComputeWorkGroupSize() const{ return pMaxComputeWorkGroupSize; }
+	
+	/** Maximum texture image units. */
+	inline int GetMaxTextureImageUnits() const{ return pMaxTextureImageUnits; }
 	
 	
 	

@@ -546,16 +546,16 @@ void main(void){
 				vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2(
 					atan(envMapDir.x, envMapDir.z), acos(envMapDir.y));
 				
-				reflectedColor = textureLod(texEnvMap, tcEnvMap, envMapLodLevel).rgb;
+				reflectedColor = SAMPLE_ENVMAP_EQUI(texEnvMap, tcEnvMap, envMapLodLevel).rgb;
 				if(TextureEnvMapFade && GeometryMode != GeometryModeParticle){
-					reflectedColor = mix(textureLod(texEnvMapFade, tcEnvMap, envMapLodLevel).rgb,
+					reflectedColor = mix(SAMPLE_ENVMAP_EQUI(texEnvMapFade, tcEnvMap, envMapLodLevel).rgb,
 						reflectedColor, vec3(pEnvMapFade));
 				}
 				
 			}else{
-				reflectedColor = textureLod(texEnvMapCube, envMapDir, envMapLodLevel).rgb;
+				reflectedColor = SAMPLE_ENVMAP(texEnvMapCube, envMapDir, envMapLodLevel).rgb;
 				if(TextureEnvMapFade && GeometryMode != GeometryModeParticle){
-					reflectedColor = mix(textureLod(texEnvMapFadeCube, envMapDir, envMapLodLevel).rgb,
+					reflectedColor = mix(SAMPLE_ENVMAP(texEnvMapFadeCube, envMapDir, envMapLodLevel).rgb,
 						reflectedColor, vec3(pEnvMapFade));
 				}
 			}

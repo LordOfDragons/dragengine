@@ -9,12 +9,14 @@ void main( void ){
 	
 	gl_Position = vec4( inPosition.xy * vec2( 2 ) - vec2( 1 ), 1, 1 );
 	
+	vLayer = RenderPass;
+	
 	if(VSRenderLayer){
-		#ifdef SUPPORTS_VSDRAWPARAM
+		#if ! defined SPLIT_LAYERS && defined SUPPORTS_VSDRAWPARAM
 		vLayer = gl_DrawID;
+		#endif
 		#ifdef SUPPORTS_VSLAYER
 		gl_Layer = vLayer;
-		#endif
 		#endif
 	}
 }

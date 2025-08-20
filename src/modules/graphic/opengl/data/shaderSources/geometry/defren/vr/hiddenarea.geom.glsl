@@ -9,7 +9,7 @@ void main( void ){
 	int i;
 	for( i=0; i<3; i++ ){
 		gl_Position = gl_in[ i ].gl_Position;
-		geometryShaderDefaultOutputs(i, RenderPass);
+		geometryShaderDefaultOutputs(i);
 		EmitVertex();
 	}
 	EndPrimitive();
