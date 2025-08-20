@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Plan Clear Geometries</name>
 	
-	<parameter name='pClearGeometryCount'/>
+	<parameter name='pClearGeometryCount' location='0'/>
 	
 	<sourceCode unit='compute'>C DefRen Plan Clear Geometries</sourceCode>
 </shader>

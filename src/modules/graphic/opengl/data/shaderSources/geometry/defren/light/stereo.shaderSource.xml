@@ -4,7 +4,7 @@
 	<stage>geometry</stage>
 	<source>stereo.geom.glsl</source>
 	
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>GS_INSTANCING</define>
 	<define>FULLSCREENQUAD</define>
 	

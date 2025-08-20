@@ -10,7 +10,7 @@
 #else
 
 UBOLAYOUT_BIND(3) uniform SpecialParameters{
-	// for GS_RENDER_CUBE enabled shaders bit flag defines which cube faces
+	// for LayeredRenderingCube enabled shaders bit flag defines which cube faces
 	// the object is visible on:
 	// 
 	// bit 0: X+
@@ -26,7 +26,7 @@ UBOLAYOUT_BIND(3) uniform SpecialParameters{
 	// another way to define this variable would be as bool[6]. due to the way GLSL std140
 	// aligns data members this requires 32 bytes to store while the other solution needs 4
 	
-	// for GS_RENDER_CASCADED enabled shaders bit flag defines which cascade
+	// for LayeredRenderingCascaded enabled shaders bit flag defines which cascade
 	// the object is visible on:
 	// 
 	// bit 0: cascade 0
@@ -34,8 +34,7 @@ UBOLAYOUT_BIND(3) uniform SpecialParameters{
 	// bit 2: cascade 2
 	// bit 3: cascade 3
 	
-	// GS_RENDER_STEREO does not use this
-	
+	// LayeredRendering == {LayeredRenderingCube, LayeredRenderingCascaded}
 	int pLayerVisibility;
 };
 

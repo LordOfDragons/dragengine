@@ -48,9 +48,6 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleBoneTransformator> Ref;
 	
-	
-	
-public:
 	/** \brief Coordinate frame. */
 	enum eCoordinateFrames{
 		/** \brief Bone local coordinate frame. */
@@ -63,30 +60,34 @@ public:
 		ecfTargetBone
 	};
 	
+	/** \brief Input source. */
+	enum eInputSources{
+		/** \brief Use controller targets to blend between minimum and maximum. */
+		eisTargetBlend,
+		
+		/** \brief Use controller target vectors directly. */
+		eisTargetDirect,
+		
+		/** \brief Use input bone local state directly. */
+		eisBoneState,
+		
+		/** \brief Use inverse input bone local state directly. */
+		eisBoneStateInverse
+	};
 	
 	
 private:
-	decVector pMinTranslation;
-	decVector pMaxTranslation;
-	decVector pMinRotation;
-	decVector pMaxRotation;
-	decVector pMinScaling;
-	decVector pMaxScaling;
-	decVector pAxis;
-	float pMinAngle;
-	float pMaxAngle;
+	decVector pMinTranslation, pMaxTranslation, pMinRotation, pMaxRotation;
+	decVector pMinScaling, pMaxScaling, pAxis;
+	float pMinAngle, pMaxAngle;
 	
 	eCoordinateFrames pCoordinateFrame;
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pUseAxis;
+	bool pEnablePosition, pEnableOrientation, pEnableSize, pUseAxis;
 	
-	decString pTargetBone;
+	decString pTargetBone, pInputBone;
+	eInputSources pInputSource;
 	
-	deAnimatorControllerTarget pTargetTranslation;
-	deAnimatorControllerTarget pTargetRotation;
-	deAnimatorControllerTarget pTargetScaling;
+	deAnimatorControllerTarget pTargetTranslation, pTargetRotation, pTargetScaling;
 	
 	
 	
@@ -222,6 +223,18 @@ public:
 	
 	/** \brief Set name of the target bone. */
 	void SetTargetBone( const char *boneName );
+	
+	/** \brief Name of the input bone. */
+	inline const decString &GetInputBone() const{ return pInputBone; }
+	
+	/** \brief Set name of the input bone. */
+	void SetInputBone(const char *boneName);
+	
+	/** \brief Input source. */
+	inline eInputSources GetInputSource() const{ return pInputSource; }
+	
+	/** \brief Set input source. */
+	void SetInputSource(eInputSources source);
 	
 	/** \brief Translation target. */
 	inline deAnimatorControllerTarget &GetTargetTranslation(){ return pTargetTranslation; }

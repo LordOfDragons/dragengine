@@ -61,6 +61,9 @@ public:
 		/** Prop field. */
 		egmPropField,
 		
+		/** Prop field. */
+		egmPropFieldImposter,
+		
 		/** Particle. */
 		egmParticle,
 		
@@ -125,6 +128,42 @@ public:
 		edtmLarger
 	};
 	
+	/** Layered rendering mode. */
+	enum eLayeredRenderingMode{
+		/** No layered rendering. */
+		elrmNone,
+		
+		/** Stereo rendering. */
+		elrmStereo,
+		
+		/** Cube map rendering. */
+		elrmCube,
+		
+		/** Cascaded map rendering. */
+		elrmCascaded
+	};
+	
+	/** Output mode. */
+	enum eOutputMode{
+		/** Default. */
+		eomDefault,
+		
+		/** Constant. */
+		eomConstant,
+		
+		/** Color. */
+		eomColor,
+		
+		/** Material. */
+		eomMaterial,
+		
+		/** Material with reduced FBO attachment count. */
+		eomMaterialReduced,
+		
+		/** Luminance only. */
+		eomLuminance
+	};
+	
 	
 	
 public:
@@ -145,7 +184,6 @@ public:
 	bool pOutputConstant;
 	bool pOutputColor;
 	bool pAmbientLightProbe;
-	bool pBillboard;
 	bool pSkinReflections;
 	bool pFadeOutRange;
 	bool pVariations;
@@ -178,6 +216,7 @@ public:
 	bool pDynamicRefractionDistortStrength;
 	bool pDynamicEmissivityTint;
 	bool pDynamicEmissivityIntensity;
+	bool pDynamicEnvRoomTint;
 	bool pDynamicEnvRoomSize;
 	bool pDynamicEnvRoomOffset;
 	bool pDynamicEnvRoomEmissivityTint;
@@ -350,12 +389,6 @@ public:
 	
 	/** Set if lighting has to be taken from an ambient light probe. */
 	void SetAmbientLightProbe( bool ambientLightProbe );
-	
-	/** Billboard is used. */
-	inline bool GetBillboard() const{ return pBillboard; }
-	
-	/** Set if billboard is used. */
-	void SetBillboard( bool billboard );
 	
 	/** Skin does reflections. */
 	inline bool GetSkinReflections() const{ return pSkinReflections; }
@@ -540,6 +573,12 @@ public:
 	
 	/** Set if emissivity intensity texture property is dynamic. */
 	void SetDynamicEmissivityIntensity( bool dynamic );
+	
+	/** Environent room tint texture property is dynamic. */
+	inline bool GetDynamicEnvRoomTint() const{ return pDynamicEnvRoomTint; }
+	
+	/** Set if environent room tint texture property is dynamic. */
+	void SetDynamicEnvRoomTint(bool dynamic);
 	
 	/** Environent room size texture property is dynamic. */
 	inline bool GetDynamicEnvRoomSize() const{ return pDynamicEnvRoomSize; }

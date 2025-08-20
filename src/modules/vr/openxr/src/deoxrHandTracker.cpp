@@ -35,15 +35,15 @@
 #include <dragengine/systems/modules/deBaseModule.h>
 
 
-// struct void deoxrHandTracker::sFingerBending
-/////////////////////////////////////////////////
+// structs
+////////////
 
-void deoxrHandTracker::sFingerBending::Init( deInputDevice::eHandBones pbase,
-deInputDevice::eHandBones ptip, float angle0, float angle1 ){
+void deoxrHandTracker::sFingerBending::Init(deInputDevice::eHandBones pbase,
+deInputDevice::eHandBones ptip, float angle0, float angle1){
 	base = pbase;
 	tip = ptip;
 	
-	if( angle1 > angle0 ){
+	if(angle1 > angle0){
 		angleLower = angle0 * DEG2RAD;
 		angleUpper = angle1 * DEG2RAD;
 		mapValueLower = 0.0f;
@@ -59,6 +59,37 @@ deInputDevice::eHandBones ptip, float angle0, float angle1 ){
 	value = 0.0f;
 }
 
+
+void deoxrHandTracker::sFingerSpreading::Init(deInputDevice::eHandBones pbone1,
+deInputDevice::eHandBones pbone2, float angle0, float angle1){
+	bone1 = pbone1;
+	bone2 = pbone2;
+	
+	angleLower = angle0 * DEG2RAD;
+	angleUpper = angle1 * DEG2RAD;
+	mapValueLower = 0.0f;
+	mapValueUpper = 1.0f;
+	
+	value = 0.0f;
+}
+
+
+void deoxrHandTracker::sFixBrokenRotationBone::Init(
+deInputDevice::eHandBones pbase, deInputDevice::eHandBones ptarget){
+	base = pbase;
+	target = ptarget;
+}
+
+
+void deoxrHandTracker::sFingerInput::Init(XrHandJointEXT pbase, XrHandJointEXT ptarget,
+float prangePress, float prangeTouch){
+	base = pbase;
+	target = ptarget;
+	rangePress = prangePress;
+	rangeTouch = prangeTouch;
+	distance = prangeTouch;
+	value = 0.0f;
+}
 
 
 // class deoxrHandTracker
@@ -77,7 +108,9 @@ pPoseBoneCount( 0 ),
 pMapBoneXrToDe( nullptr ),
 pMapBoneXrToDeCount( 0 )
 {
-	memset( pBendFinger, 0, sizeof( sFingerBending ) * 5 );
+	memset(pBendFinger, 0, sizeof(sFingerBending) * FingerBendingCount);
+	memset(pSpreadFinger, 0, sizeof(sFingerSpreading) * SpreadFingerCount);
+	memset(pFixBrokenRotationBone, 0, sizeof(sFixBrokenRotationBone) * FixBrokenRotationBoneCount);
 	
 	/*
 	// these values allow for the fully closed hand only if squeezing the grip
@@ -89,16 +122,36 @@ pMapBoneXrToDeCount( 0 )
 	*/
 	
 	// these values allow for the fully closed hand without squeezing the grip
-	pBendFinger[ 0 ].Init( deInputDevice::ehbThumb0, deInputDevice::ehbThumb1, -15.0f, -55.0f );
-	pBendFinger[ 1 ].Init( deInputDevice::ehbIndex0, deInputDevice::ehbIndex1, -15.0f, -94.0f );
-	pBendFinger[ 2 ].Init( deInputDevice::ehbMiddle0, deInputDevice::ehbMiddle1, -15.0f, -88.0f );
-	pBendFinger[ 3 ].Init( deInputDevice::ehbRing0, deInputDevice::ehbRing1, -15.0f, -80.0f );
-	pBendFinger[ 4 ].Init( deInputDevice::ehbPinky0, deInputDevice::ehbPinky1, -15.0f, -72.0f );
+	pBendFinger[0].Init(deInputDevice::ehbThumb0, deInputDevice::ehbThumb1, -15.0f, -55.0f);
+	pBendFinger[1].Init(deInputDevice::ehbIndex1, deInputDevice::ehbIndex2, -15.0f, -94.0f);
+	pBendFinger[2].Init(deInputDevice::ehbMiddle1, deInputDevice::ehbMiddle2, -15.0f, -88.0f);
+	pBendFinger[3].Init(deInputDevice::ehbRing1, deInputDevice::ehbRing2, -15.0f, -80.0f);
+	pBendFinger[4].Init(deInputDevice::ehbPinky1, deInputDevice::ehbPinky2, -15.0f, -72.0f);
 	
-	int i;
-	for( i=0; i<4; i++ ){
-		pSpreadFinger[ i ] = 0.0f;
-	}
+	pSpreadFinger[0].Init(deInputDevice::ehbThumb1, deInputDevice::ehbIndex1, 0, 90);
+	pSpreadFinger[1].Init(deInputDevice::ehbIndex1, deInputDevice::ehbMiddle1, 0, 30);
+	pSpreadFinger[2].Init(deInputDevice::ehbMiddle1, deInputDevice::ehbRing1, 0, 30);
+	pSpreadFinger[3].Init(deInputDevice::ehbRing1, deInputDevice::ehbPinky1, 0, 30);
+	
+	pFixBrokenRotationBone[0].Init(deInputDevice::ehbThumb0, deInputDevice::ehbThumb1);
+	pFixBrokenRotationBone[1].Init(deInputDevice::ehbThumb1, deInputDevice::ehbThumb2);
+	pFixBrokenRotationBone[2].Init(deInputDevice::ehbIndex0, deInputDevice::ehbIndex1);
+	pFixBrokenRotationBone[3].Init(deInputDevice::ehbIndex1, deInputDevice::ehbIndex2);
+	pFixBrokenRotationBone[4].Init(deInputDevice::ehbIndex2, deInputDevice::ehbIndex3);
+	pFixBrokenRotationBone[5].Init(deInputDevice::ehbMiddle0, deInputDevice::ehbMiddle1);
+	pFixBrokenRotationBone[6].Init(deInputDevice::ehbMiddle1, deInputDevice::ehbMiddle2);
+	pFixBrokenRotationBone[7].Init(deInputDevice::ehbMiddle2, deInputDevice::ehbMiddle3);
+	pFixBrokenRotationBone[8].Init(deInputDevice::ehbRing0, deInputDevice::ehbRing1);
+	pFixBrokenRotationBone[9].Init(deInputDevice::ehbRing1, deInputDevice::ehbRing2);
+	pFixBrokenRotationBone[10].Init(deInputDevice::ehbRing2, deInputDevice::ehbRing3);
+	pFixBrokenRotationBone[11].Init(deInputDevice::ehbPinky0, deInputDevice::ehbPinky1);
+	pFixBrokenRotationBone[12].Init(deInputDevice::ehbPinky1, deInputDevice::ehbPinky2);
+	pFixBrokenRotationBone[13].Init(deInputDevice::ehbPinky2, deInputDevice::ehbPinky3);
+	
+	pFingerInput[0].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 0.015f, 0.03f);
+	pFingerInput[1].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, 0.015f, 0.03f);
+	pFingerInput[2].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_RING_TIP_EXT, 0.015f, 0.03f);
+	pFingerInput[3].Init(XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT, 0.015f, 0.03f);
 	
 	deoxrInstance &instance = session.GetSystem().GetInstance();
 	
@@ -129,7 +182,7 @@ pMapBoneXrToDeCount( 0 )
 		// to be always reported in world space instead of the space we tell it to use
 		memset( &pLocateInfo, 0, sizeof( pLocateInfo ) );
 		pLocateInfo.type = XR_TYPE_HAND_JOINTS_LOCATE_INFO_EXT;
-		pLocateInfo.baseSpace = session.GetSpace()->GetSpace();
+		pLocateInfo.baseSpace = session.GetMainSpace()->GetSpace();
 		
 		memset( &pLocations, 0, sizeof( pLocations ) );
 		pLocations.type = XR_TYPE_HAND_JOINT_LOCATIONS_EXT;
@@ -212,6 +265,11 @@ deoxrHandTracker::~deoxrHandTracker(){
 // Management
 ///////////////
 
+#define FLAGS_POS_VALID (XR_SPACE_LOCATION_POSITION_TRACKED_BIT | XR_SPACE_LOCATION_POSITION_VALID_BIT)
+#define FLAGS_ROT_VALID (XR_SPACE_LOCATION_ORIENTATION_TRACKED_BIT | XR_SPACE_LOCATION_ORIENTATION_VALID_BIT)
+#define FLAGS_LVELO_VALID XR_SPACE_VELOCITY_LINEAR_VALID_BIT
+#define FLAGS_AVELO_VALID XR_SPACE_VELOCITY_ANGULAR_VALID_BIT
+
 void deoxrHandTracker::Locate(){
 	const deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
@@ -224,26 +282,43 @@ void deoxrHandTracker::Locate(){
 	
 	decMatrix invDeviceMatrix;
 	int i;
-
-	if( pDevice.GetSpacePose() ){
+	
+	if(pDevice.GetSpacePose()){
 		const deInputDevicePose &pose = pDevice.GetDirectDevicePose();
-		invDeviceMatrix = decMatrix::CreateWorld( pose.GetPosition(), pose.GetOrientation() ).QuickInvert();
+		invDeviceMatrix = decMatrix::CreateWorld(pose.GetPosition(), pose.GetOrientation()).QuickInvert();
 	}
-
-	for( i=0; i<pMapBoneXrToDeCount; i++ ){
-		const sBoneMapping &mapping = pMapBoneXrToDe[ i ];
+	
+	for(i=0; i<pMapBoneXrToDeCount; i++){
+		const sBoneMapping &mapping = pMapBoneXrToDe[i];
 		
-		const decMatrix matrix( decMatrix::CreateWorld(
-			deoxrUtils::Convert( mapping.location->pose.position ),
-			deoxrUtils::Convert( mapping.location->pose.orientation ) ) * invDeviceMatrix );
-
-		mapping.bone->SetPosition( matrix.GetPosition() );
-		mapping.bone->SetOrientation( matrix.ToQuaternion() );
+		const decMatrix matrix(decMatrix::CreateWorld(
+			deoxrUtils::Convert(mapping.location->pose.position),
+			deoxrUtils::Convert(mapping.location->pose.orientation)) * invDeviceMatrix);
 		
-		mapping.bone->SetLinearVelocity( invDeviceMatrix.TransformNormal(
-			deoxrUtils::Convert( mapping.velocity->linearVelocity ) ) );
-		mapping.bone->SetAngularVelocity( invDeviceMatrix.TransformNormal(
-			deoxrUtils::ConvertEuler( mapping.velocity->angularVelocity ) ) );
+		if((mapping.location->locationFlags & FLAGS_POS_VALID) == FLAGS_POS_VALID){
+			mapping.bone->SetPosition(matrix.GetPosition());
+		}
+		
+		if((mapping.location->locationFlags & FLAGS_ROT_VALID) == FLAGS_ROT_VALID){
+			mapping.bone->SetOrientation(matrix.ToQuaternion());
+		}
+		
+		if((mapping.velocity->velocityFlags & FLAGS_LVELO_VALID) == FLAGS_LVELO_VALID){
+			mapping.bone->SetLinearVelocity(invDeviceMatrix.TransformNormal(
+				deoxrUtils::Convert(mapping.velocity->linearVelocity)));
+		}
+		
+		if((mapping.velocity->velocityFlags & FLAGS_AVELO_VALID) == FLAGS_AVELO_VALID){
+			mapping.bone->SetAngularVelocity(invDeviceMatrix.TransformNormal(
+				deoxrUtils::ConvertEuler(mapping.velocity->angularVelocity)));
+		}
+		
+		/*{
+		const decVector r(mapping.bone->GetOrientation().GetEulerAngles() * RAD2DEG);
+		instance.GetOxr().LogInfoFormat("BoneMap %02d[%02d]: r=(%f,%f,%f) f=(%d,%d)",
+			mapping.constDe, mapping.constOxr, r.x, r.y, r.z,
+			(int)mapping.location->locationFlags, (int)mapping.velocity->velocityFlags);
+		}*/
 	}
 	
 	/*{
@@ -260,51 +335,65 @@ void deoxrHandTracker::Locate(){
 			q2.x, q2.y, q2.z, q2.w, v2.x, v2.y, v2.z, u2.x, u2.y, u2.z);
 	}*/
 	
+	pFixBrokenBoneRotations();
 	pCalcFingerBending();
 	pCalcFingerSpreading();
+	pCalcFingerInput();
 }
 
-deInputDevicePose &deoxrHandTracker::GetPoseBoneAt( int index ){
-	if( index < 0 || index >= pPoseBoneCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pPoseBones[ index ];
+deInputDevicePose &deoxrHandTracker::GetPoseBoneAt(int index){
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pPoseBoneCount)
+	
+	return pPoseBones[index];
 }
 
-const deInputDevicePose &deoxrHandTracker::GetPoseBoneAt( int index ) const{
-	if( index < 0 || index >= pPoseBoneCount ){
-		DETHROW( deeInvalidParam );
-	}
-	return pPoseBones[ index ];
+const deInputDevicePose &deoxrHandTracker::GetPoseBoneAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pPoseBoneCount)
+	
+	return pPoseBones[index];
 }
 
-float deoxrHandTracker::GetBendFingerAt( int index ) const{
-	if( index < 0 || index > 4 ){
-		DETHROW( deeInvalidParam );
-	}
-	return pBendFinger[ index ].value;
+float deoxrHandTracker::GetBendFingerAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < FingerBendingCount)
+	
+	return pBendFinger[index].value;
 }
 
-float deoxrHandTracker::GetSpreadFingerAt( int index ) const{
-	if( index < 0 || index > 3 ){
-		DETHROW( deeInvalidParam );
-	}
-	return pSpreadFinger[ index ];
+float deoxrHandTracker::GetSpreadFingerAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < SpreadFingerCount)
+	
+	return pSpreadFinger[index].value;
 }
 
-void deoxrHandTracker::LogPoseBones( const char *prefix ) const{
+float deoxrHandTracker::GetFingerInputAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index <= 3)
+	
+	return pFingerInput[index].value;
+}
+
+void deoxrHandTracker::LogPoseBones(const char *prefix) const{
 	deVROpenXR &oxr = pSession.GetSystem().GetInstance().GetOxr();
 	int i;
 	
-	for( i=0; i<pPoseBoneCount; i++ ){
-		const deInputDevicePose &pose = pPoseBones[ i ];
+	for(i=0; i<pPoseBoneCount; i++){
+		const deInputDevicePose &pose = pPoseBones[i];
 		const decVector &p = pose.GetPosition();
-		const decVector o( pose.GetOrientation().GetEulerAngles() * RAD2DEG );
+		const decVector o(pose.GetOrientation().GetEulerAngles() * RAD2DEG);
 		const decVector &lv = pose.GetLinearVelocity();
-		const decVector av( pose.GetAngularVelocity() * RAD2DEG );
-		oxr.LogInfoFormat( "%sBone %02d: pos=(%.3f,%.3f,%.3f) rot=(% 3f,% 3f,% 3f) lv=(% 3.1f,% 3.1f,% 3.1f) av=(% 3f,% 3f,% 3f)",
+		const decVector av(pose.GetAngularVelocity() * RAD2DEG);
+		oxr.LogInfoFormat( "%sBone %02d: pos=(%.3f,%.3f,%.3f) rot=(% 3f,% 3f,% 3f)"
+			" lv=(% 3.1f,% 3.1f,% 3.1f) av=(% 3f,% 3f,% 3f)",
 			prefix, i, p.x, p.y, p.z, o.x, o.y, o.z, lv.x, lv.y, lv.z, av.x, av.y, av.z);
 	}
+}
+
+void deoxrHandTracker::ReferencePoseChanged(){
+	pLocateInfo.baseSpace = pSession.GetMainSpace()->GetSpace();
 }
 
 
@@ -334,20 +423,41 @@ void deoxrHandTracker::pCleanUp(){
 }
 
 void deoxrHandTracker::pSetBoneMapping( int index, deInputDevice::eHandBones to, XrHandJointEXT from ){
-	pMapBoneXrToDe[ index ].location = pJointLocations + from;
-	pMapBoneXrToDe[ index ].velocity = pJointVelocities + from;
-	pMapBoneXrToDe[ index ].bone = pPoseBones + to;
+	sBoneMapping &m = pMapBoneXrToDe[index];
+	m.constOxr = from;
+	m.constDe = to;
+	m.location = pJointLocations + from;
+	m.velocity = pJointVelocities + from;
+	m.bone = pPoseBones + to;
+}
+
+void deoxrHandTracker::pFixBrokenBoneRotations(){
+	int i;
+	for(i=0; i<FixBrokenRotationBoneCount; i++){
+		sFixBrokenRotationBone &fbrb = pFixBrokenRotationBone[i];
+		const decVector &target = pPoseBones[fbrb.target].GetPosition();
+		const decVector &base = pPoseBones[fbrb.base].GetPosition();
+		const decVector viewExpected(target - base);
+		if(viewExpected.IsZero()){
+			continue;
+		}
+		
+		const decVector up(decMatrix::CreateFromQuaternion(
+			pPoseBones[fbrb.base].GetOrientation()).TransformUp());
+		
+		pPoseBones[fbrb.base].SetOrientation(decMatrix::CreateVU(viewExpected, up).ToQuaternion());
+	}
 }
 
 void deoxrHandTracker::pCalcFingerBending(){
-	// using the second last finger orientation seems enough
 	int i;
-	for( i=0; i<5; i++ ){
-		sFingerBending &fb = pBendFinger[ i ];
-		const decVector view( decMatrix::CreateFromQuaternion( pPoseBones[ fb.tip ].GetOrientation()
-			* pPoseBones[ fb.base ].GetOrientation().Conjugate() ).TransformView() );
-		const float angle = atan2f( view.y, view.z );
-		fb.value = decMath::linearStep( angle, fb.angleLower, fb.angleUpper, fb.mapValueLower, fb.mapValueUpper );
+	for(i=0; i<FingerBendingCount; i++){
+		sFingerBending &fb = pBendFinger[i];
+		const decVector view(decMatrix::CreateFromQuaternion(pPoseBones[fb.tip].GetOrientation()
+			* pPoseBones[fb.base].GetOrientation().Conjugate()).TransformView());
+		const float angle = atan2f(view.y, view.z);
+		fb.value = decMath::linearStep(angle, fb.angleLower, fb.angleUpper,
+			fb.mapValueLower, fb.mapValueUpper);
 		/*
 		if(i==2){
 			pSession.GetSystem().GetInstance().GetOxr().LogInfoFormat(
@@ -359,7 +469,33 @@ void deoxrHandTracker::pCalcFingerBending(){
 
 void deoxrHandTracker::pCalcFingerSpreading(){
 	int i;
-	for( i=0; i<4; i++ ){
-		pSpreadFinger[ i ] = 0.0f;
+	for(i=0; i<SpreadFingerCount; i++){
+		sFingerSpreading &fs = pSpreadFinger[i];
+		const float angle = pPoseBones[fs.bone1].GetOrientation().AngleBetween(
+			pPoseBones[fs.bone2].GetOrientation());
+		fs.value = decMath::linearStep(angle, fs.angleLower, fs.angleUpper,
+			fs.mapValueLower, fs.mapValueUpper);
+		//fs.value = 0.0f;
+	}
+}
+
+void deoxrHandTracker::pCalcFingerInput(){
+	int i;
+	for(i=0; i<4; i++){
+		sFingerInput &fi = pFingerInput[i];
+		const XrHandJointLocationEXT &lbase = pJointLocations[fi.base];
+		const XrHandJointLocationEXT &ltarget = pJointLocations[fi.target];
+		
+		if((lbase.locationFlags & FLAGS_POS_VALID) == FLAGS_POS_VALID
+		&& (ltarget.locationFlags & FLAGS_POS_VALID) == FLAGS_POS_VALID){
+			const decVector pbase(deoxrUtils::Convert(lbase.pose.position));
+			const decVector ptarget(deoxrUtils::Convert(ltarget.pose.position));
+			fi.distance = (ptarget - pbase).Length();
+			
+		}else{
+			fi.distance = fi.rangeTouch;
+		}
+		
+		fi.value = decMath::linearStep(fi.distance, fi.rangePress, fi.rangeTouch, 1.0f, 0.0f);
 	}
 }

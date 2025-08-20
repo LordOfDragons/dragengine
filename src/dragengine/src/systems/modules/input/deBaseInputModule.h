@@ -135,6 +135,12 @@ public:
 	 */
 	virtual bool GetButtonTouched( int device, int button );
 	
+	/**
+	 * \brief User finger is near button at index on device.
+	 * \version 1.28
+	 */
+	virtual bool GetButtonNear(int device, int button);
+	
 	/** \brief Value of axis at index on device. */
 	virtual float GetAxisValue( int device, int axis ) = 0;
 	

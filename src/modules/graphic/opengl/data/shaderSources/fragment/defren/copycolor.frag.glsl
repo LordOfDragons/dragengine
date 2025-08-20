@@ -1,51 +1,62 @@
+#include "shared/preamble.glsl"
+
 precision mediump float;
 precision mediump int;
 
-#ifdef MIPMAP
-	uniform float pMipMapLevel;
-#endif
-#ifdef TCCLAMP
-	#ifdef MIPMAP
-		uniform vec2 pTCClamp;
-	#else
-		uniform ivec2 pTCClamp;
-	#endif
-#endif
+// MipMap
+UNIFORM_BIND(3) uniform float pMipMapLevel;
 
-#ifdef INPUT_ARRAY_TEXTURE
-	uniform mediump sampler2DArray texColor;
-	#define TEX_COLOR(tc) textureLod( texColor, vec3( tc, vLayer ), pMipMapLevel )
-	#define TEX_FETCH_COLOR(tc) texelFetch( texColor, ivec3( tc, vLayer ), 0 )
-#else
-	uniform mediump sampler2D texColor;
-	#define TEX_COLOR(tc) textureLod( texColor, vec2( tc ), pMipMapLevel )
-	#define TEX_FETCH_COLOR(tc) texelFetch( texColor, tc, 0 )
-#endif
+// ClampTC && MipMap
+UNIFORM_BIND(4) uniform vec2 pTCClampMipMap;
 
-in vec2 vTexCoord;
+// ClampTC && !MipMap
+UNIFORM_BIND(5) uniform ivec2 pTCClamp;
 
-#ifdef INPUT_ARRAY_TEXTURE
-	#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-		flat in int vLayer;
-	#else
-		const int vLayer = 0;
-	#endif
-#endif
+// InputArrayTextures
+layout(binding=0) uniform mediump sampler2DArray texColorArray;
+
+// !InputArrayTextures
+layout(binding=0) uniform mediump sampler2D texColor;
+
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out mediump vec4 outColor;
 
+
+vec4 sampleColor(const in vec2 tc){
+	if(InputArrayTextures){
+		return textureLod(texColorArray, vec3(tc, vLayer), pMipMapLevel);
+		
+	}else{
+		return textureLod(texColor, tc, pMipMapLevel);
+	}
+}
+
+vec4 fetchColor(const in ivec2 tc){
+	if(InputArrayTextures){
+		return texelFetch(texColorArray, ivec3(tc, vLayer), 0);
+		
+	}else{
+		return texelFetch(texColor, tc, 0);
+	}
+}
+
+
 void main( void ){
-	#ifdef MIPMAP
-		#ifdef TCCLAMP
-			outColor = TEX_COLOR( min( vTexCoord, pTCClamp ) );
-		#else
-			outColor = TEX_COLOR( vTexCoord );
-		#endif
-	#else
-		#ifdef TCCLAMP
-			outColor = TEX_FETCH_COLOR( min( ivec2( gl_FragCoord.xy ), pTCClamp ) );
-		#else
-			outColor = TEX_FETCH_COLOR( ivec2( gl_FragCoord.xy ) );
-		#endif
-	#endif
+	if(MipMap){
+		if(ClampTC){
+			outColor = sampleColor(min(vTexCoord, pTCClampMipMap));
+			
+		}else{
+			outColor = sampleColor(vTexCoord);
+		}
+		
+	}else{
+		if(ClampTC){
+			outColor = fetchColor(min(ivec2(gl_FragCoord), pTCClamp));
+			
+		}else{
+			outColor = fetchColor(ivec2(gl_FragCoord));
+		}
+	}
 }

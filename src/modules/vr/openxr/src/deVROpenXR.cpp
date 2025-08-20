@@ -43,6 +43,8 @@
 #include "device/profile/deoxrDPValveIndexController.h"
 #include "device/profile/deoxrDPHtcViveTracker.h"
 #include "device/profile/deoxrDPOculusTouchController.h"
+#include "device/profile/deoxrDPMetaQuestTouchProController.h"
+#include "device/profile/deoxrDPMetaTouchControllerPlus.h"
 #include "device/profile/deoxrDPHPMixedRealityController.h"
 #include "device/profile/deoxrDPSamsungOdysseyController.h"
 #include "device/profile/deoxrDPHTCViveCosmosControllerInteraction.h"
@@ -54,6 +56,7 @@
 #include "device/profile/deoxrDPHandInteraction.h"
 #include "device/profile/deoxrDPHTCHandInteraction.h"
 #include "loader/deoxrLoader.h"
+#include "parameters/deoxrPLogLevel.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -109,9 +112,11 @@ pRestartSession( false ),
 pLastDetectedSystem( deoxrSystem::esUnknown ),
 pThreadSync( nullptr ),
 pRequestFeatureEyeGazeTracking( efslDisabled ),
-pRequestFeatureFacialTracking( efslDisabled )
+pRequestFeatureFacialTracking( efslDisabled ),
+pLogLevel(LogLevel::info)
 {
-	memset( pActions, 0, sizeof( pActions ) );
+	memset(pActions, 0, sizeof(pActions));
+	pCreateParameters();
 }
 
 deVROpenXR::~deVROpenXR(){
@@ -165,6 +170,7 @@ void deVROpenXR::WaitUntilReadyExit(){
 					pPassthrough = nullptr;
 					pSession = nullptr;
 					pDeviceProfiles.CheckAllAttached();
+					pSession->DebugPrintActiveProfilePath();
 				}
 				break;
 				
@@ -409,6 +415,12 @@ void deVROpenXR::SetPassthroughTransparency( float transparency ){
 	}
 }
 
+void deVROpenXR::CenterPlayspace(){
+	if(pSession){
+		pSession->RequestCenterSpaceOrigin();
+	}
+}
+
 
 
 // Devices
@@ -453,6 +465,10 @@ bool deVROpenXR::GetButtonPressed( int device, int button ){
 
 bool deVROpenXR::GetButtonTouched( int device, int button ){
 	return pDevices.GetAt( device )->GetButtonAt( button )->GetTouched();
+}
+
+bool deVROpenXR::GetButtonNear(int device, int button){
+	return pDevices.GetAt(device)->GetButtonAt(button)->GetNear();
 }
 
 float deVROpenXR::GetAxisValue( int device, int axis ){
@@ -534,6 +550,7 @@ void deVROpenXR::ProcessEvents(){
 				if( pSession ){
 					pSession->Begin();
 					pDeviceProfiles.CheckAllAttached();
+					pSession->DebugPrintActiveProfilePath();
 				}
 				LogInfo( "Done Session State Changed: ready" );
 				break;
@@ -594,6 +611,9 @@ void deVROpenXR::ProcessEvents(){
 			// all known top level path to figure out if something changed
 			LogInfo( "Interaction profile changed. Updating devices." );
 			pDeviceProfiles.CheckAllAttached();
+			if(pSession){
+				pSession->DebugPrintActiveProfilePath();
+			}
 			}break;
 			
 		case XR_TYPE_EVENT_DATA_VISIBILITY_MASK_CHANGED_KHR:
@@ -616,13 +636,46 @@ void deVROpenXR::ProcessEvents(){
 			
 		case XR_TYPE_EVENT_DATA_VIVE_TRACKER_CONNECTED_HTCX:{
 			const XrEventDataViveTrackerConnectedHTCX &connected =
-				( XrEventDataViveTrackerConnectedHTCX& )event;
+				(const XrEventDataViveTrackerConnectedHTCX&)event;
 			const deoxrPath path( pInstance, connected.paths->persistentPath );
 			const deoxrPath pathRole( pInstance, connected.paths->rolePath );
 			LogInfoFormat( "VIVE Tracker Connected Event, updating devices: path='%s' rolePath='%s'",
 				path.GetName().GetString(), pathRole.GetName().GetString() );
 			//LogInfo( "VIVE Tracker connected. Updating devices" );
 			pDeviceProfiles.CheckAllAttached();
+			if(pSession){
+				pSession->DebugPrintActiveProfilePath();
+			}
+			}break;
+			
+		case XR_TYPE_EVENT_DATA_REFERENCE_SPACE_CHANGE_PENDING:{
+			if(!pSession){
+				break;
+			}
+			
+			const XrEventDataReferenceSpaceChangePending &data =
+				(const XrEventDataReferenceSpaceChangePending&)event;
+			if(data.session != pSession->GetSession()){
+				break;
+			}
+			
+			LogInfoFormat("Reference space changed: type=%d changeTime=%d poseValid=%d",
+				data.referenceSpaceType, (int)data.changeTime, data.poseValid);
+			
+			if(data.referenceSpaceType != XR_REFERENCE_SPACE_TYPE_STAGE
+			&& data.referenceSpaceType != XR_REFERENCE_SPACE_TYPE_LOCAL){
+				break;
+			}
+			
+			/*
+			if(data.poseValid == XR_TRUE){
+				pSession->SetSpaceOriginPose(data.poseInPreviousSpace);
+				
+			}else{
+				
+			}
+			*/
+			pSession->RequestCenterSpaceOrigin();
 			}break;
 			
 		default:
@@ -880,6 +933,31 @@ void deVROpenXR::EndFrame(){
 
 
 
+// Parameters
+///////////////
+
+int deVROpenXR::GetParameterCount() const{
+	return pParameters.GetParameterCount();
+}
+
+void deVROpenXR::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameters.GetParameterAt(index).GetParameter();
+}
+
+int deVROpenXR::IndexOfParameterNamed(const char *name) const{
+	return pParameters.IndexOfParameterNamed(name);
+}
+
+decString deVROpenXR::GetParameterValue(const char *name) const{
+	return pParameters.GetParameterNamed(name).GetParameterValue();
+}
+
+void deVROpenXR::SetParameterValue(const char *name, const char *value){
+	pParameters.GetParameterNamed(name).SetParameterValue(value);
+}
+
+
+
 // Private Functions
 //////////////////////
 
@@ -904,9 +982,13 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet.TakeOver( new deoxrActionSet( pInstance ) );
 	
 	pActionSet->AddBoolAction( "trigger_press", "Press Trigger" );
+	pActionSet->AddFloatAction("trigger_force", "Force Trigger");
 	pActionSet->AddBoolAction( "trigger_touch", "Touch Trigger" );
 	pActionSet->AddFloatAction( "trigger_analog", "Pull Trigger" );
 	pActionSet->AddVibrationAction( "trigger_haptic", "Trigger Haptic" );
+	pActionSet->AddFloatAction("trigger_curl", "Curl Trigger");
+	pActionSet->AddFloatAction("trigger_slide", "Slide Trigger");
+	pActionSet->AddBoolAction("trigger_near", "Near Trigger");
 	
 	pActionSet->AddBoolAction( "button_primary_press", "Press Primary Button" );
 	pActionSet->AddBoolAction( "button_primary_touch", "Touch Primary Button" );
@@ -929,6 +1011,9 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddVector2Action( "trackpad_analog", "TrackPad Analog" );
 	
 	pActionSet->AddBoolAction( "thumbrest_touch", "Touch Thumbrest" );
+	pActionSet->AddFloatAction("thumbrest_press", "Press Thumbrest");
+	pActionSet->AddBoolAction("thumbrest_near", "Near Thumbrest");
+	pActionSet->AddVibrationAction("thumbrest_haptic", "Thumbrest Haptic");
 	
 	pActionSet->AddBoolAction( "grip_press", "Squeeze Grip" );
 	pActionSet->AddBoolAction( "grip_touch", "Touch Grip" );
@@ -978,6 +1063,8 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHUAWEIControllerInteraction( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftMixedRealityMotionController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftXboxController( pInstance ) ) );
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMetaTouchControllerPlus(pInstance)));
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMetaQuestTouchProController(pInstance)));
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusGoController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusTouchController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSamsungOdysseyController( pInstance ) ) );
@@ -998,8 +1085,16 @@ void deVROpenXR::pSuggestBindings(){
 	const int count = pDeviceProfiles.GetCount();
 	int i;
 	
+	if(pLogLevel == LogLevel::debug){
+		LogInfo("Suggesting bindings for device profiles.");
+	}
+	
 	for( i=0; i<count; i++ ){
 		deoxrDeviceProfile &profile = *pDeviceProfiles.GetAt( i );
+		
+		if(pLogLevel == LogLevel::debug){
+			LogInfoFormat("Suggest bindings for device profile '%s':", profile.GetName().GetString());
+		}
 		
 		try{
 			profile.SuggestBindings();
@@ -1009,6 +1104,10 @@ void deVROpenXR::pSuggestBindings(){
 			LogWarnFormat( "Device profile '%s' failed suggesting bindings. "
 				"Ignoring device profile", profile.GetPath().GetName().GetString() );
 		}
+	}
+	
+	if(pLogLevel == LogLevel::debug){
+		LogInfo("Done suggesting bindings for device profiles.");
 	}
 }
 
@@ -1048,6 +1147,7 @@ bool deVROpenXR::pBeginFrame(){
 		pCreateActionSet();
 
 		pDeviceProfiles.CheckAllAttached();
+		pSession->DebugPrintActiveProfilePath();
 		// no CheckNotifyAttachedDetached call here since we potentially outside main thread
 		
 		pSuggestBindings();
@@ -1072,6 +1172,11 @@ bool deVROpenXR::pBeginFrame(){
 		return false;
 	}
 }
+
+void deVROpenXR::pCreateParameters(){
+	pParameters.AddParameter(deoxrParameter::Ref::New(new deoxrPLogLevel(*this)));
+}
+
 
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>

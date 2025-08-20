@@ -308,6 +308,9 @@ public:
 	/** \brief Get object matrix. */
 	decDMatrix GetObjectMatrix();
 	
+	/** \brief Get inverse object matrix. */
+	decDMatrix GetInverseObjectMatrix();
+	
 	
 	
 	/** \brief Decrement use count on identifier group identifiers. */

@@ -66,12 +66,8 @@ class ECBehaviorNStateGeometry extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorNStateGeometry"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorNStateGeometry")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -88,7 +84,7 @@ class ECBehaviorNStateGeometry extends DefaultECBehavior
 				behavior.setPrecisionOrientation((parameters.getAt("precisionOrientation") cast String).toFloat())
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "nstateGeometry")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "nstateGeometry")
 			return behavior
 		end
 	end

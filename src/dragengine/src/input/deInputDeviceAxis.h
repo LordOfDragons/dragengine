@@ -158,7 +158,37 @@ public:
 		 * parts or the entire body itself. Value ranges from 0 (not performing gesture) to
 		 * 1 (fully performing gesture).
 		 */
-		eatGesture
+		eatGesture,
+		
+		/**
+		 * \brief Force applied to trigger when fully pulled.
+		 * \version 1.28
+		 */
+		eatTriggerForce,
+		
+		/**
+		 * \brief Trigger finger curl.
+		 * \version 1.28
+		 */
+		eatTriggerCurl,
+		
+		/**
+		 * \brief Trigger finger slide.
+		 * \version 1.28
+		 */
+		eatTriggerSlide,
+		
+		/**
+		 * \brief Pressing force applied to thumb rest.
+		 * \version 1.28
+		 */
+		eatThumbrestPress,
+		
+		/**
+		 * \brief Trigger simulated by touching two fingers.
+		 * \version 1.28
+		 */
+		eatTwoFingerTrigger
 	};
 	
 	

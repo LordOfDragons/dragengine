@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -14,8 +16,8 @@ UBOLAYOUT_BIND(1) restrict buffer SubInstGroup {
 };
 
 
-uniform int pStage;
-uniform uint pLaneSize;
+UNIFORM_BIND(0) uniform int pStage;
+UNIFORM_BIND(1) uniform uint pLaneSize;
 
 
 layout( local_size_x=64 ) in;

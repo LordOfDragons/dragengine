@@ -100,6 +100,7 @@ private:
 	
 	deoxrHandTracker::Ref pHandTracker;
 	decMatrix pMatrixWristToDevice;
+	bool pEnableTwoFingerTriggerSimulation;
 	
 	deoxrFaceTracker::Ref pFaceTracker;
 
@@ -222,6 +223,12 @@ public:
 		deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
 		const char *name, const char *id, const char *displayText );
 	
+	/** Add button. */
+	void AddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
+		deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
+		deVROpenXR::eInputActions actionNear, const char *name, const char *id,
+		const char *displayText );
+	
 	/** Button at index. */
 	deoxrDeviceButton *GetButtonAt( int index ) const;
 	
@@ -311,6 +318,12 @@ public:
 	/** Set matrix transforming from wrist space to device space. */
 	void SetMatrixWristToDevice( const decMatrix &matrix );
 	
+	/** Enable trigger input simulation using two-finger input of index finger. */
+	inline bool GetEnableTwoFingerTriggerSimulation() const{
+		return pEnableTwoFingerTriggerSimulation; }
+	
+	/** Set enable trigger input simulation using two-finger input of index finger. */
+	void SetEnableTwoFingerTriggerSimulation(bool enable);
 	
 	
 	/** Face tracker or nullptr. */
@@ -338,6 +351,9 @@ public:
 
 	/** Direct device pose access for internal use. */
 	inline const deInputDevicePose &GetDirectDevicePose() const{ return pPoseDevice; }
+	
+	/** Reference space changed. */
+	void ReferenceSpaceChanged();
 	/*@}*/
 };
 

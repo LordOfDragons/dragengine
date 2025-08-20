@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
 pin Dragengine.LoadSave
 pin Dragengine.Preloading
 pin Dragengine.Utils
+pin Dragengine.Animators
 
 
 /**
@@ -81,23 +81,23 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Cutscene started. */
-		public func void cutsceneStarted(Instance instance)
+		func void cutsceneStarted(Instance instance)
 		end
 		
 		/** \brief Cutscene stopped. */
-		public func void cutsceneStopped(Instance instance)
+		func void cutsceneStopped(Instance instance)
 		end
 		
 		/** \brief Cutscene hit break point and is now waiting. */
-		public func void cutscenePaused(Instance instance)
+		func void cutscenePaused(Instance instance)
 		end
 		
 		/** \brief Cutscene continues after waiting at a break point. */
-		public func void cutsceneResumed(Instance instance)
+		func void cutsceneResumed(Instance instance)
 		end
 	end
 	
@@ -109,10 +109,10 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	
 	/** \brief Factory creating listeners using block. */
 	class BlockListenerFactory implements ListenerFactory
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
-		public func new(Block blockFactory)
+		func new(Block blockFactory)
 			if blockFactory == null
 				throw ENullPointer.new()
 			end
@@ -120,7 +120,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		/** \brief Create listener. */
-		public func Listener createListener(Instance instance)
+		func Listener createListener(Instance instance)
 			return pBlock.run(instance) cast Listener
 		end
 	end
@@ -140,37 +140,45 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	/**
 	 * \brief Conversation condition and command controlling cutscene.
 	 * 
-	 * Condition Syntax:
-	 * cutscene playing|paused|stopped
-	 *   Checks if cutscene is playing, paused or stopped.
+	 * \par Condition Syntax:
 	 * 
-	 * Command Syntax:
-	 * cutscene start [path] {[breakPoint1] ... [breakPointN]}
-	 *   path: Path to animator to load
-	 *   breakPoint*: Break points to wait on in seconds in ascending order
+	 * \code cutscene playing|paused|stopped \endcode
+	 * Checks if cutscene is playing, paused or stopped.
 	 * 
-	 * cutscene resume
-	 *   Resume cutscene if paused (hence waiting at a break point).
+	 * \par Command Syntax:
 	 * 
-	 * cutscene stop
-	 *   Stop cutscene if running
+	 * \code cutscene start <path> {<breakPoint1> ... <breakPointN>} \endcode
+	 * Start cutscene using animator with break points.
+	 * - path: Path to animator to load
+	 * - breakPoint*: Break points to wait on in seconds in ascending order
 	 * 
-	 * cutscene synthesizer [path] [range] {[positionX] [positionY] [positionZ] {[bone]}}
-	 *   Loads synthesizer and starts playing it back. Attaches the speaker to the actor.
-	 *   path: Absolute path to synthesizer to load
-	 *   range: Range in meters of speaker
-	 *   position*: Position relative to actor origin to attach speaker to
-	 *   bone: Attach relative to bone instead of actor origin
+	 * \code cutscene resume \endcode
+	 * Resume cutscene if paused (hence waiting at a break point).
+	 * 
+	 * \code cutscene stop \endcode
+	 * Stop cutscene if running
+	 * 
+	 * \code cutscene synthesizer <path> <range> {<positionX> <positionY> <positionZ> {<bone>}} \endcode
+	 * Loads synthesizer and starts playing it back. Attaches the speaker to the actor.
+	 * - path: Absolute path to synthesizer to load
+	 * - range: Range in meters of speaker
+	 * - position*: Position relative to actor origin to attach speaker to
+	 * - bone: Attach relative to bone instead of actor origin
+	 * 
+	 * \code cutscene element <path> {<bone>} \endcode
+	 * Start element animator. Can be called before or after "cutscene start".
+	 * - path: Path to animator to load
+	 * - bone: Name of bone to use to animated element. If not set "element" is used.
 	 */
 	class ConversationController implements ECBehaviorConversationActor.ConversationCondition, \
 	ECBehaviorConversationActor.ConversationCommand
-		private var Instance pInstance
+		var Instance pInstance
 		
-		public func new(Instance instance)
+		func new(Instance instance)
 			pInstance = instance
 		end
 		
-		public func bool evaluateCondition(ECBehaviorConversationActor.Instance instance, Array arguments)
+		func bool evaluateCondition(ECBehaviorConversationActor.Instance instance, Array arguments)
 			var String action = arguments.getAt(1) cast String
 			if action.equals("playing")
 				return pInstance.isPlaying()
@@ -186,7 +194,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			end
 		end
 		
-		public func void runCommand(ECBehaviorConversationActor.Instance instance, Array arguments)
+		func void runCommand(ECBehaviorConversationActor.Instance instance, Array arguments)
 			var String action = arguments.getAt(1) cast String
 			
 			if action.equals("start")
@@ -222,6 +230,17 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 				end
 				
 				pInstance.playSynthesizer(path, range, position, bone)
+				
+			elif action.equals("element")
+				var String bone
+				if arguments.getCount() > 3
+					bone = arguments.getAt(3) cast String
+					
+				else
+					bone = "element"
+				end
+				pInstance.setElementAnimator(arguments.getAt(2) cast String, bone)
+				
 			else
 				throw EInvalidParam.new("Unknown action '" + action + "'")
 			end
@@ -244,12 +263,8 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorActorCutscene"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorActorCutscene")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -259,7 +274,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			var ECBehaviorActorCutscene behavior = ECBehaviorActorCutscene.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass))
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "cutscene")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "cutscene")
 			return behavior
 		end
 	end
@@ -270,43 +285,46 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Update controllers listener. */
 		private class UpdateControllers extends ECBehaviorActorAnimated.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new(Instance instance)
+			func new(Instance instance)
 				pInstance = instance
 			end
 			
-			public func void updateControllers(ECBehaviorActorAnimated.Instance instance, float elapsed)
+			func void updateControllers(ECBehaviorActorAnimated.Instance instance, float elapsed)
 				pInstance.updateControllers(elapsed)
 			end
 		end
 		
 		
-		private var ECBehaviorActorCutscene pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
-		private var ECBehaviorConversationActor.Instance pConversationActor
+		var ECBehaviorActorCutscene pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var ECBehaviorConversationActor.Instance pConversationActor
 		
-		private var State pState
-		private var String pPathAnimator
-		private var Animator pAnimator
-		private var String pPathSynthesizer
-		private var Speaker pSpeakerSynth
-		private var Vector pSpeakerPosition
-		private var String pSpeakerBone
-		private var Array pBreakPoints
-		private var int pNextBreakPoint
-		private var String pControllerName
-		private var AnimatorController pController
+		var State pState
+		var String pPathAnimator, pPathSynthesizer, pSpeakerBone, pControllerName
+		var String pPathElementAnimator, pElementAnimationBone
+		var Animator pAnimator, pElementAnimator
+		var AnimatorInstance pElementAnimatorInstance
+		var Speaker pSpeakerSynth
+		var Vector pSpeakerPosition
+		var Array pBreakPoints
+		var int pNextBreakPoint, pElementBoneIndex
+		var AnimatorController pController, pElementController
+		var Component pElementComponent
+		var DMatrix pElementOriginMatrix
 		
-		private var Array pListeners
+		var Array pListeners
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new(ECBehaviorActorCutscene ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorActorCutscene ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pBreakPoints = Array.new()
 			pState = State.stopped
+			pElementBoneIndex = -1
+			pElementOriginMatrix = DMatrix.new()
 		
 			pListeners = Array.new()
 			
@@ -315,7 +333,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
+		func void dispose()
 			pConversationActor = null
 			pCollider = null
 			pListeners = null
@@ -326,7 +344,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		
 		
 		/** \brief Initialize behavior from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			pControllerName = pECBehavior.getControllerName().getValue(stub)
 			
 			pConversationActor.getActorAnimated().addListener(UpdateControllers.new(this))
@@ -341,30 +359,31 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorActorCutscene getECBehavior()
+		func ECBehaviorActorCutscene getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief Collider behavior. */
-		public func ECBehaviorCollider.Instance getCollider()
+		func ECBehaviorCollider.Instance getCollider()
 			return pCollider
 		end
 		
 		/** \brief Conversation actor behavior. */
-		public func ECBehaviorConversationActor.Instance getConversationActor()
+		func ECBehaviorConversationActor.Instance getConversationActor()
 			return pConversationActor
 		end
 		
 		
 		
 		/** \brief Animator or \em null if absent. */
-		public func Animator getAnimator()
+		func Animator getAnimator()
 			return pAnimator
 		end
 		
 		/** \brief Set animator from path or \em null if absent. */
-		public func void setAnimator(String path)
+		func void setAnimator(String path)
 			if path == null
+				pPathAnimator = ""
 				pAnimator = null
 				
 			else
@@ -375,33 +394,88 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		
 		
 		
+		/** \brief Element animator or \em null if absent. */
+		func Animator getElementAnimator()
+			return pElementAnimator
+		end
+		
+		/**
+		 * \brief Set element animator from path or \em null if absent.
+		 * 
+		 * Typically the animator uses "/shareddata/models/cutsceneElement.derig" but you are
+		 * free to create your own rig. For the "cutsceneElement.derig" use "element" as "bone".
+		 */
+		func void setElementAnimator(String path, String bone)
+			if path == null
+				pPathElementAnimator = ""
+				pElementAnimationBone = ""
+				pElementAnimator = null
+				pElementComponent = null
+				pElementBoneIndex = -1
+				
+			else
+				if bone == null
+					throw ENullPointer.new("bone")
+				end
+				
+				pPathElementAnimator = path
+				pElementAnimationBone = bone
+				pElementOriginMatrix = getElement().getElementMatrix()
+				
+				pElementAnimator = pECBehavior.getLoaders().getAnimator().loadFromFile(path)
+				
+				pElementComponent = Component.new()
+				pElementComponent.setRig(pElementAnimator.getRig())
+				pElementBoneIndex = pElementComponent.indexOfBoneNamed(bone)
+				
+				pElementAnimatorInstance = AnimatorInstance.new()
+				pElementAnimatorInstance.setAnimator(pElementAnimator)
+				pElementAnimatorInstance.setComponent(pElementComponent)
+				
+				pElementController = pElementAnimatorInstance.getControllerNamed(pControllerName)
+				pElementController.setToLower()
+				
+				pElementAnimatorInstance.apply()
+				updateElementGeometry()
+			end
+			
+			updateRequiresThink()
+		end
+		
+		/** \brief Element animator instance or \em null if absent. */
+		func AnimatorInstance getElementAnimatorInstance()
+			return pElementAnimatorInstance
+		end
+		
+		
+		
 		/** \brief Count of break points. */
-		public func int getBreakPointCount()
+		func int getBreakPointCount()
 			return pBreakPoints.getCount()
 		end
 		
 		/** \brief Break point at index. */
-		public func float getBreakPointAt(int index)
+		func float getBreakPointAt(int index)
 			return pBreakPoints.getAt(index) cast float
 		end
 		
 		/** \brief Add break point. */
-		public func void addBreakPoint(float breakPoint)
+		func void addBreakPoint(float breakPoint)
 			pBreakPoints.add(breakPoint)
 		end
 		
 		/** \brief Remove all break points. */
-		public func void removeAllBreakPoints()
+		func void removeAllBreakPoints()
 			pBreakPoints.removeAll()
 		end
 		
 		/** \brief Index of next break point. */
-		public func int getNextBreakPoint()
+		func int getNextBreakPoint()
 			return pNextBreakPoint
 		end
 		
 		/** \brief Set index of next break point. */
-		public func void setNextBreakPoint(int index)
+		func void setNextBreakPoint(int index)
 			if index < 0
 				throw EInvalidParam.new()
 			end
@@ -411,7 +485,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		
 		
 		/** \brief State. */
-		public func State getState()
+		func State getState()
 			return pState
 		end
 		
@@ -421,37 +495,39 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		/** \brief Cutscene is playing back. */
-		public func bool isPlaying()
+		func bool isPlaying()
 			return pState == State.playing
 		end
 		
 		/** \brief Cutscene is waiting at a break point. */
-		public func bool isPaused()
+		func bool isPaused()
 			return pState == State.paused
 		end
 		
 		/** \brief Cutscene is stopped. */
-		public func bool isStopped()
+		func bool isStopped()
 			return pState == State.stopped
 		end
 		
 		/** \brief Play back cutscene. */
-		public func void start()
+		func void start()
 			stop()
 			
 			if pAnimator == null
 				throw EInvalidParam.new("No animator loaded to play back")
 			end
 			
-			var ECBehaviorActorAnimated.Instance animated = pConversationActor.getActorAnimated()
-			
-			animated.setAnimator(pAnimator)
-			
-			pController = animated.getControllerNamed(pControllerName)
-			pController.setToLower()
-			
-			animated.captureState(0)
-			animated.applyAnimations() // required if behavior has been added after animated
+			if pAnimator != null
+				var ECBehaviorActorAnimated.Instance animated = pConversationActor.getActorAnimated()
+				
+				animated.setAnimator(pAnimator)
+				
+				pController = animated.getControllerNamed(pControllerName)
+				pController.setToLower()
+				
+				animated.captureState(0)
+				animated.applyAnimations() // required if behavior has been added after animated
+			end
 			
 			pNextBreakPoint = 0
 			pState = State.playing
@@ -462,7 +538,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		/** \brief Break cutscene at break point. */
-		public func void pause()
+		func void pause()
 			if pState != State.playing
 				return
 			end
@@ -475,7 +551,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		/** \brief Continue cutscene if waiting on break point. */
-		public func void resume()
+		func void resume()
 			if pState != State.paused
 				return
 			end
@@ -489,7 +565,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		/** \brief Stop cutscene if running. */
-		public func void stop()
+		func void stop()
 			if pState == State.stopped
 				return
 			end
@@ -501,6 +577,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			end
 			
 			pController = null
+			pElementController = null
 			
 			pNextBreakPoint = 0
 			pState = State.stopped
@@ -511,7 +588,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		/** \brief Update controllers. */
-		public func void updateControllers(float elapsed)
+		func void updateControllers(float elapsed)
 			if pState != State.playing
 				return
 			end
@@ -530,10 +607,18 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			end
 		end
 		
+		/**
+		 * \brief Update requires think.
+		 * \version 1.28
+		 */
+		protected func void updateRequiresThink()
+			setRequiresThink(pElementAnimatorInstance != null)
+		end
+		
 		
 		
 		/** \brief Load synthesizer and create speaker playing it back. */
-		public func void playSynthesizer(String path, float range, Vector position, String bone)
+		func void playSynthesizer(String path, float range, Vector position, String bone)
 			if pState == State.stopped
 				return
 			end
@@ -566,9 +651,37 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		
+		func void think(float elapsed)
+			if pElementBoneIndex != -1
+				if pElementController != null
+					pElementController.increment(elapsed)
+				end
+				if pElementAnimatorInstance != null
+					pElementAnimatorInstance.apply()
+				end
+			end
+		end
+		
+		func void postThink(float elapsed)
+			if pElementBoneIndex != -1
+				updateElementGeometry()
+			end
+		end
+		
+		/**
+		 * \brief Update element geometry.
+		 * \version 1.28
+		 */
+		protected func void updateElementGeometry()
+			var DMatrix matrix = pElementComponent.\
+				boneGetMatrix(pElementBoneIndex).toDMatrix() * pElementOriginMatrix
+			getElement().setGeometry(matrix.getPosition(),\
+				matrix.normalize().toQuaternion(), matrix.getScaling().toVector())
+		end
+		
 		
 		/** \brief Add listener. */
-		public func void addListener(Listener listener)
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
@@ -576,80 +689,104 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener(Listener listener)
+		func void removeListener(Listener listener)
 			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
 			select reader.readByte() // version
 			case 0
-				var PersistencyFlags flags = PersistencyFlags.new(3, reader)
+				readFromFileV0(env, reader)
 				
-				pState = State.withOrder(reader.readByte())
-				
-				if flags.getAt(0)
-					setAnimator(reader.readString8())
-					
-					var ECBehaviorActorAnimated.Instance animated = pConversationActor.getActorAnimated()
-					animated.setAnimator(pAnimator)
-					pController = animated.getControllerNamed(pControllerName)
-					
-					var float value = reader.readFloat()
-					if pController != null
-						pController.setValue(value)
-					end
-				end
-				
-				if flags.getAt(1)
-					var SynthesizerInstance synthinst = SynthesizerInstance.new()
-					pPathSynthesizer = reader.readString8()
-					synthinst.setSynthesizer(pECBehavior.getLoaders().getSynthesizer() \
-						.loadFromFile(pPathSynthesizer))
-					synthinst.getControllerNamed(pControllerName).setCurveTime()
-					
-					pSpeakerSynth = Speaker.new()
-					pSpeakerSynth.setLooping(flags.getAt(2))
-					pSpeakerSynth.setVolume(reader.readFloat())
-					pSpeakerSynth.setRange(reader.readFloat())
-					pSpeakerSynth.setRollOff(reader.readFloat())
-					pSpeakerSynth.setLayerMask(LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
-					
-					pSpeakerBone = env.readString8OrNullIfEmpty(reader)
-					pSpeakerPosition = Vector.readFromFile(reader)
-					
-					if pSpeakerBone != null
-						(pCollider.getCollider() cast ColliderRig).attachBone(\
-							pSpeakerSynth, pSpeakerBone, pSpeakerPosition, Quaternion.new())
-						
-					else
-						pCollider.getCollider().attachStatic(\
-							pSpeakerSynth, pSpeakerPosition, Quaternion.new())
-					end
-					
-					pSpeakerSynth.setSynthesizer(synthinst)
-					getElement().getGameWorld().getWorld().addSpeaker(pSpeakerSynth)
-					pSpeakerSynth.setPlayPosition(reader.readInt(), pSpeakerSynth.getPlayTo())
-					pSpeakerSynth.play()
-				end
-				
-				var int i, count = reader.readByte()
-				for i = 0 to count
-					pBreakPoints.add(reader.readFloat())
-				end
-				
-				pNextBreakPoint = reader.readByte()
+			case 1
+				readFromFileV1(env, reader)
 				
 			else
 				throw EInvalidParam.new("unsupported version")
 			end
 		end
 		
+		func void readFromFileV0(PersistencyEnvironment env, FileReader reader)
+			var PersistencyFlags flags = PersistencyFlags.new(3, reader)
+			
+			pState = State.withOrder(reader.readByte())
+			
+			if flags.getAt(0)
+				setAnimator(reader.readString8())
+				
+				var ECBehaviorActorAnimated.Instance animated = pConversationActor.getActorAnimated()
+				animated.setAnimator(pAnimator)
+				pController = animated.getControllerNamed(pControllerName)
+				
+				var float value = reader.readFloat()
+				if pController != null
+					pController.setValue(value)
+				end
+			end
+			
+			if flags.getAt(1)
+				var SynthesizerInstance synthinst = SynthesizerInstance.new()
+				pPathSynthesizer = reader.readString8()
+				synthinst.setSynthesizer(pECBehavior.getLoaders().getSynthesizer() \
+					.loadFromFile(pPathSynthesizer))
+				synthinst.getControllerNamed(pControllerName).setCurveTime()
+				
+				pSpeakerSynth = Speaker.new()
+				pSpeakerSynth.setLooping(flags.getAt(2))
+				pSpeakerSynth.setVolume(reader.readFloat())
+				pSpeakerSynth.setRange(reader.readFloat())
+				pSpeakerSynth.setRollOff(reader.readFloat())
+				pSpeakerSynth.setLayerMask(LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
+				
+				pSpeakerBone = env.readString8OrNullIfEmpty(reader)
+				pSpeakerPosition = Vector.readFromFile(reader)
+				
+				if pSpeakerBone != null
+					(pCollider.getCollider() cast ColliderRig).attachBone(\
+						pSpeakerSynth, pSpeakerBone, pSpeakerPosition, Quaternion.new())
+					
+				else
+					pCollider.getCollider().attachStatic(\
+						pSpeakerSynth, pSpeakerPosition, Quaternion.new())
+				end
+				
+				pSpeakerSynth.setSynthesizer(synthinst)
+				getElement().getGameWorld().getWorld().addSpeaker(pSpeakerSynth)
+				pSpeakerSynth.setPlayPosition(reader.readInt(), pSpeakerSynth.getPlayTo())
+				pSpeakerSynth.play()
+			end
+			
+			var int i, count = reader.readByte()
+			for i = 0 to count
+				pBreakPoints.add(reader.readFloat())
+			end
+			
+			pNextBreakPoint = reader.readByte()
+		end
+		
+		func void readFromFileV1(PersistencyEnvironment env, FileReader reader)
+			readFromFileV0(env, reader)
+			
+			var String path = reader.readString8()
+			if not path.empty()
+				var String bone = reader.readString8()
+				setElementAnimator(path, bone)
+				
+				pElementOriginMatrix = DMatrix.readFromFile(reader)
+				
+				var float value = reader.readFloat()
+				if pElementController != null
+					pElementController.setValue(value)
+				end
+			end
+		end
+		
 		/** \brief Write behavior to file. */
-		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
-			writer.writeByte(0) // version
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(1)
 			
 			var PersistencyFlags flags = PersistencyFlags.new(3)
 			flags.setAt(0, pAnimator != null)
@@ -683,31 +820,47 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 			end)
 			
 			writer.writeByte(pNextBreakPoint)
+			
+			if pElementAnimator != null
+				writer.writeString8(pPathElementAnimator)
+				writer.writeString8(pElementAnimationBone)
+				
+				pElementOriginMatrix.writeToFile(writer)
+				
+				var float value
+				if pElementController != null
+					value = pElementController.getValue()
+				end
+				writer.writeFloat(value)
+				
+			else
+				writer.writeString8("")
+			end
 		end
 	end
 	
 	
 	
-	private var Loaders pLoaders
-	private var ECBehaviorCollider pCollider
-	private var ECBehaviorConversationActor pConversationActor
-	private var ECPString pControllerName
-	private var Array pListenerFactories
+	var Loaders pLoaders
+	var ECBehaviorCollider pCollider
+	var ECBehaviorConversationActor pConversationActor
+	var ECPString pControllerName
+	var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	ECBehaviorConversationActor conversationActor) \
-	this(eclass, collider, conversationActor, BaseGameApp.getApp().getLoaders())
+	this(eclass, collider, conversationActor, eclass.sharedFactoryHelper.defaultLoaders())
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	ECBehaviorConversationActor conversationActor, Loaders loaders) \
 	this(eclass, collider, conversationActor, loaders, "cutscene.")
 	end
 	
-	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	ECBehaviorConversationActor conversationActor, Loaders loaders, String prefix) super(eclass)
 		if collider == null
 			throw ENullPointer.new("collider")
@@ -728,7 +881,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pCollider = null
 		pConversationActor = null
 		pLoaders = null
@@ -739,27 +892,27 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	
 	
 	/** \brief Loaders. */
-	public func Loaders getLoaders()
+	func Loaders getLoaders()
 		return pLoaders
 	end
 	
 	/** \brief Collider behavior. */
-	public func ECBehaviorCollider getCollider()
+	func ECBehaviorCollider getCollider()
 		return pCollider
 	end
 	
 	/** \brief Conversation actor behavior. */
-	public func ECBehaviorConversationActor getConversationActor()
+	func ECBehaviorConversationActor getConversationActor()
 		return pConversationActor
 	end
 	
 	/** \brief Name of playback controller (default "cutscene"). */
-	public func ECPString getControllerName()
+	func ECPString getControllerName()
 		return pControllerName
 	end
 	
 	/** \brief Add listener factory. */
-	public func void addListenerFactory(ListenerFactory factory)
+	func void addListenerFactory(ListenerFactory factory)
 		if factory == null
 			throw ENullPointer.new()
 		end
@@ -771,17 +924,17 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	 * 
 	 * Block receives as parameter Instance and returns Listener.
 	 */
-	public func void addListenerFactory(Block blockFactory)
+	func void addListenerFactory(Block blockFactory)
 		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
 	end
 	
 	/** \brief Visit listener factories with block with argument ListenerFactory. */
-	public func void forEachListenerFactory(Block ablock)
+	func void forEachListenerFactory(Block ablock)
 		pListenerFactories.forEach(ablock)
 	end
 	
 	/** \brief Create listeners from factories adding them to behavior instance. */
-	public func void createListeners(Instance instance)
+	func void createListeners(Instance instance)
 		pListenerFactories.forEach(block ListenerFactory each
 			instance.addListener(each.createListener(instance))
 		end)
@@ -790,7 +943,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -800,7 +953,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorConversationActor.
 	 */
-	static public func ECBehaviorActorCutscene getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorActorCutscene getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorActorCutscene each
 			return true
 		end) cast ECBehaviorActorCutscene
@@ -813,7 +966,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	 * of type ECBehaviorActorCutscene.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -822,7 +975,7 @@ class ECBehaviorActorCutscene extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

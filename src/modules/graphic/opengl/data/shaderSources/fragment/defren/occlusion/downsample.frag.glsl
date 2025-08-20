@@ -1,15 +1,13 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform int pLevel;
+UNIFORM_BIND(0) uniform int pLevel;
 
-uniform HIGHP sampler2DArray texSource;
+layout(binding=0) uniform HIGHP sampler2DArray texSource;
 
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 void main( void ){
 	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );

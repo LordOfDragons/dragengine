@@ -227,7 +227,7 @@ class BaseActorAI implements Persistable
 	
 	/** \brief Log text to BaseGameApp console prefixed with actor information. */
 	func void log(String text)
-		log(BaseGameApp.getApp().getConsole(), text)
+		log(BehaviorElementClass.sharedFactoryHelper.defaultConsole(), text)
 	end
 	
 	/** \brief Log text to console prefixed with actor information. */
@@ -237,7 +237,7 @@ class BaseActorAI implements Persistable
 	
 	/** \brief Log text about element to BaseGameApp console prefixed with actor information. */
 	func void log(Element element, String text)
-		log(BaseGameApp.getApp().getConsole(), element, text)
+		log(BehaviorElementClass.sharedFactoryHelper.defaultConsole(), element, text)
 	end
 	
 	/** \brief Log text about element to console prefixed with actor information. */
@@ -253,7 +253,7 @@ class BaseActorAI implements Persistable
 	
 	/** \brief Log exception to BaseGameApp console prefixed with actor information. */
 	func void log(Exception exception)
-		log(BaseGameApp.getApp().getConsole(), exception)
+		log(BehaviorElementClass.sharedFactoryHelper.defaultConsole(), exception)
 	end
 	
 	/** \brief Log exception to console prefixed with actor information. */

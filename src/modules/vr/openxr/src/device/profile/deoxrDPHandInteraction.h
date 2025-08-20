@@ -29,7 +29,7 @@
 
 
 /**
- * Hand interaction profile.
+ * Hand interaction profile (XR_EXT_hand_interaction).
  */
 class deoxrDPHandInteraction : public deoxrDPBaseTwoHandController{
 public:
@@ -44,15 +44,8 @@ protected:
 	/*@}*/
 	
 	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	void CheckAttached() override;
-	/*@}*/
-	
-	
 protected:
+	bool pProfileEnabled() const override;
 	void pSuggestBindings() override;
 	void pAddDevice( bool left ) override;
 };

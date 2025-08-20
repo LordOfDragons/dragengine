@@ -87,20 +87,15 @@ class ECBehaviorAttachDynamicSkin extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorAttachDynamicSkin"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorAttachDynamicSkin")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorAttachDynamicSkin behavior = ECBehaviorAttachDynamicSkin.new(eclass,\
-				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
+				getHelper().defaultComponent(eclass, parameters),\
 				ECBehaviorAttachable.getBehaviorIn(eclass), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "attachDynamicSkin", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "attachDynamicSkin", id)
 			return behavior
 		end
 	end

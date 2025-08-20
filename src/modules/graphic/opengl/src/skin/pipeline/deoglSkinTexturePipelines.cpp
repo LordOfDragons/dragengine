@@ -897,6 +897,7 @@ void deoglSkinTexturePipelines::pSetTexturesGeometryGI( deoglSkinShaderConfig &c
 	config.SetDynamicReflectivityMultiplier( ISPROPDYN( empReflectivityMultiplier ) );
 	config.SetDynamicEmissivityTint( ISPROPDYN( empEmissivityTint ) );
 	config.SetDynamicEmissivityIntensity( ISPROPDYN( empEmissivityIntensity ) );
+	config.SetDynamicEnvRoomTint(ISPROPDYN(empEnvironmentRoomTint));
 	config.SetDynamicEnvRoomSize( ISPROPDYN( empEnvironmentRoomSize ) );
 	config.SetDynamicEnvRoomOffset( ISPROPDYN( empEnvironmentRoomOffset ) );
 	config.SetDynamicEnvRoomEmissivityTint( ISPROPDYN( empEnvironmentRoomEmissivityTint ) );
@@ -925,6 +926,7 @@ void deoglSkinTexturePipelines::pSetDynamicGeometry( deoglSkinShaderConfig &conf
 	config.SetDynamicReflectivityMultiplier( ISPROPDYN( empReflectivityMultiplier ) );
 	config.SetDynamicEmissivityTint( ISPROPDYN( empEmissivityTint ) );
 	config.SetDynamicEmissivityIntensity( ISPROPDYN( empEmissivityIntensity ) );
+	config.SetDynamicEnvRoomTint(ISPROPDYN(empEnvironmentRoomTint));
 	config.SetDynamicEnvRoomSize( ISPROPDYN( empEnvironmentRoomSize ) );
 	config.SetDynamicEnvRoomOffset( ISPROPDYN( empEnvironmentRoomOffset ) );
 	config.SetDynamicEnvRoomEmissivityTint( ISPROPDYN( empEnvironmentRoomEmissivityTint ) );

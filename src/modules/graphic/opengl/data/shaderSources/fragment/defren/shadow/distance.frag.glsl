@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -5,17 +7,17 @@ precision HIGHP int;
 #define _USE_TEXTURE_
 #endif
 
-uniform vec4 pMaterialGamma;
-uniform vec4 pOptions; // depth-scaling
+UNIFORM_BIND(3) uniform vec4 pMaterialGamma;
+UNIFORM_BIND(4) uniform vec4 pOptions; // depth-scaling
 
 #ifdef _USE_TEXTURE_
-uniform mediump sampler2D texColor;
+layout(binding=0) uniform mediump sampler2D texColor;
 #endif
 
 #ifdef _USE_TEXTURE_
-in vec2 vTexCoord;
+VARYING_BIND(0) in vec2 vTexCoord;
 #endif
-in vec3 vLSPosition;
+VARYING_BIND(1) in vec3 vLSPosition;
 
 #if defined( DEPTH_AS_COLOR ) || defined( TRANSPARENT )
 layout(location=0) out vec4 outBuf1;

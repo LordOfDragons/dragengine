@@ -36,21 +36,12 @@
  */
 class aeWPAPanelRuleBoneTransformator : public aeWPAPanelRule{
 private:
-	igdeEditVectorReference pEditMinTrans;
-	igdeEditVectorReference pEditMaxTrans;
-	igdeEditVectorReference pEditMinRot;
-	igdeEditVectorReference pEditMaxRot;
-	igdeEditVectorReference pEditMinScale;
-	igdeEditVectorReference pEditMaxScale;
-	igdeEditVectorReference pEditAxis;
-	igdeTextFieldReference pEditMinAngle;
-	igdeTextFieldReference pEditMaxAngle;
-	igdeComboBoxReference pCBCoordFrame;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkUseAxis;
-	igdeComboBoxFilterReference pCBTargetBone;
+	igdeEditVectorReference pEditMinTrans, pEditMaxTrans, pEditMinRot, pEditMaxRot;
+	igdeEditVectorReference pEditMinScale, pEditMaxScale, pEditAxis;
+	igdeTextFieldReference pEditMinAngle, pEditMaxAngle;
+	igdeComboBoxReference pCBCoordFrame, pCBInputSource;
+	igdeCheckBoxReference pChkEnablePosition, pChkEnableRotation, pChkEnableSize, pChkUseAxis;
+	igdeComboBoxFilterReference pCBTargetBone, pCBInputBone;
 	
 	
 	

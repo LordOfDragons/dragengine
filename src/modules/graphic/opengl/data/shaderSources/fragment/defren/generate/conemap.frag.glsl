@@ -1,29 +1,38 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-#ifdef WITH_LAYER
-	uniform mediump sampler2DArray texHeight;
-	#define SAMPLE_HEIGHT(tc) texture(texHeight, vec3(tc, pLayer))
-#else
-	uniform mediump sampler2D texHeight;
-	#define SAMPLE_HEIGHT(tc) texture(texHeight, tc)
-#endif
+// InputArrayTextures
+layout(binding=0) uniform mediump sampler2DArray texHeightArray;
 
-uniform int pStepCount; // 128 or so
-uniform float pStepFactor; // 1.0 / ( float )pStepCount
-#ifdef WITH_LAYER
-uniform float pLayer;
-#endif
+// !InputArrayTextures
+layout(binding=0) uniform mediump sampler2D texHeight;
 
-in vec2 vTexCoord;
-in vec2 vDestTC;
+UNIFORM_BIND(3) uniform int pStepCount; // 128 or so
+UNIFORM_BIND(4) uniform float pStepFactor; // 1.0 / ( float )pStepCount
+
+// InputArrayTextures
+UNIFORM_BIND(5) uniform float pLayer;
+
+#include "shared/interface/2d/fragment.glsl"
+VARYING_BIND(3) in vec2 vDestTC;
 
 layout(location=0) out float outConeRatio; // use minimum blend function
+
+vec4 sampleHeight(const in vec2 tc){
+	if(InputArrayTextures){
+		return texture(texHeightArray, vec3(tc, pLayer));
+		
+	}else{
+		return texture(texHeight, tc);
+	}
+}
 
 void main( void ){
 	outConeRatio = 1.0;
 	
-	float destz = SAMPLE_HEIGHT( vDestTC ).r;
+	float destz = sampleHeight(vDestTC).r;
 	if( destz > 0.999 ){ // prevent div-by-zero if destination is at the top
 		return;
 	}
@@ -38,13 +47,13 @@ void main( void ){
 	int i;
 	for( i=0; i<pStepCount; i++ ){
 		destination += direction;
-		if( SAMPLE_HEIGHT( destination.st ).r <= destination.z ){
+		if( sampleHeight(vec2(destination)).r <= destination.z ){
 			break;
 		}
 	}
 	
 	// destination has to be above source
-	float diffz = destination.z - SAMPLE_HEIGHT( vTexCoord ).r;
+	float diffz = destination.z - sampleHeight(vTexCoord).r;
 	if( diffz > 0.001 ){
 		outConeRatio = length( destination.xy - vTexCoord ) / diffz;
 	}

@@ -1,5 +1,5 @@
 
-uniform HIGHP sampler2DArray texGIProbeOffset;
+layout(binding=TEX_GI_PROBE_OFFSET_BINDING) uniform HIGHP sampler2DArray texGIProbeOffset;
 
 vec3 gipoProbeOffset( in ivec3 probeCoord, in int cascade ){
 	ivec3 texCoord = ivec3( pGIGridProbeCount.x * probeCoord.y + probeCoord.x, probeCoord.z, cascade );

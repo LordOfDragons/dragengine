@@ -48,7 +48,7 @@ class DebugCaptureCanvasView extends FrameUpdateListener
 	 * \brief Start capturing canvas view into file.
 	 */
 	public func new( String filename, CanvasView canvasView ) \
-	this( filename, canvasView, BaseGameApp.getApp().getConsole() )
+	this( filename, canvasView, BehaviorElementClass.sharedFactoryHelper.defaultConsole() )
 	end
 	
 	/**

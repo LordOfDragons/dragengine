@@ -127,4 +127,34 @@ enum InputDeviceAxisType
 	 * 1 (fully performing gesture).
 	 */
 	gesture
+	
+	/**
+	 * \brief Force applied to trigger when fully pulled.
+	 * \version 1.28
+	 */
+	triggerForce
+	
+	/**
+	 * \brief Trigger finger curl.
+	 * \version 1.28
+	 */
+	triggerCurl
+	
+	/**
+	 * \brief Trigger finger slide.
+	 * \version 1.28
+	 */
+	triggerSlide
+	
+	/**
+	 * \brief Pressing force applied to thumb rest.
+	 * \version 1.28
+	 */
+	thumbrestPress
+	
+	/**
+	 * \brief Trigger simulated by touching two fingers.
+	 * \version 1.28
+	 */
+	twoFingerTrigger
 end

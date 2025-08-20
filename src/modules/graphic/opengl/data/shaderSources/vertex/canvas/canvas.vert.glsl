@@ -1,35 +1,34 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-#if defined WITH_TEXTURE || defined WITH_RENDER_WORLD
-#define REQUIRES_TEXTURE 1
-#endif
+const bool RequiresTexture = WithTexture || WithRenderWorld;
 
-uniform mat3x2 pTransform;
-#ifdef REQUIRES_TEXTURE
-uniform mat3x2 pTCTransform;
-#endif
-#ifdef WITH_MASK
-uniform mat3x2 pTCTransformMask;
-#endif
+UNIFORM_BIND(0) uniform mat3x2 pTransform;
+// RequiresTexture
+UNIFORM_BIND(1) uniform mat3x2 pTCTransform;
+
+// WithMask
+UNIFORM_BIND(2) uniform mat3x2 pTCTransformMask;
 
 layout(location=0) in vec2 inPosition;
 
-#ifdef REQUIRES_TEXTURE
-out vec2 vTexCoord;
-#endif
-#ifdef WITH_MASK
-out vec2 vTexCoordMask;
-#endif
+#include "shared/interface/2d/vertex.glsl"
+
+VARYING_BIND(3) out vec2 vTexCoordMask;
 
 void main( void ){
+	vertexShaderDefaultOutputs();
+	
 	gl_Position = vec4( vec2( pTransform * vec3( inPosition, 1.0 ) ), 0.0, 1.0 );
 	
-	#ifdef REQUIRES_TEXTURE
-	vTexCoord = vec2( pTCTransform * vec3( inPosition, 1.0 ) );
-	#endif
-	#ifdef WITH_MASK
-	//vTexCoordMask = vec2( pTCTransformMask * vec3( gl_Position.xy, 1.0 ) );
-	vTexCoordMask = vec2( pTCTransformMask * vec3( inPosition, 1.0 ) );
-	#endif
+	if(RequiresTexture){
+		vTexCoord = vec2( pTCTransform * vec3( inPosition, 1.0 ) );
+	}
+	
+	if(WithMask){
+		//vTexCoordMask = vec2( pTCTransformMask * vec3( gl_Position.xy, 1.0 ) );
+		vTexCoordMask = vec2( pTCTransformMask * vec3( inPosition, 1.0 ) );
+	}
 }

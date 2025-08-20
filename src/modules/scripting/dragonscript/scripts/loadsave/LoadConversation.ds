@@ -672,6 +672,9 @@ class LoadConversation extends BaseXmlLoader
 			elif tagName.equals("topic")
 				action.setTopicID(StringID.new(element.getFirstCData()))
 				
+			elif tagName.equals("createSideLane")
+				action.setCreateSideLane(element.getFirstCDataBool())
+				
 			elif not pReadActionCommon(element, action)
 				logUnknownTag(element)
 			end

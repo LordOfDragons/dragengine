@@ -260,12 +260,8 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorPlayerControllable"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorPlayerControllable")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -277,20 +273,10 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 			
 			behavior.setConversationActor(ECBehaviorConversationActor.getBehaviorIn(eclass))
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "playerControllable")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "playerControllable")
 			return behavior
-		end
-		
-		/**
-		 * \brief Trigger table matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func Tracker getPlayerControlledActorFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.playerControllableActor(value)
 		end
 	end
 	
@@ -480,8 +466,8 @@ class ECBehaviorPlayerControllable extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) \
-	this(eclass, BaseGameApp.getApp().getPlayerControlledActor())
+	func new(BehaviorElementClass eclass) this(eclass,\
+	eclass.sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	func new(BehaviorElementClass eclass, Tracker tracker) super(eclass)

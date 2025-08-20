@@ -31,6 +31,7 @@
 class deAnimation;
 class deAnimationKeyframeList;
 class deAnimationKeyframeVertexPositionSetList;
+class decCurveBezier;
 
 
 /**
@@ -38,6 +39,41 @@ class deAnimationKeyframeVertexPositionSetList;
  *
  */
 class DE_DLL_EXPORT deAnimationMove{
+public:
+	/**
+	 * \brief 2D curve bone parameter.
+	 * \version 1.28
+	 */
+	enum class BoneParameter{
+		/** X position. */
+		positionX,
+		
+		/** Y position. */
+		positionY,
+		
+		/** Z position. */
+		positionZ,
+		
+		/** X axis rotation in radians. */
+		rotationX,
+		
+		/** Y axis rotation in radians. */
+		rotationY,
+		
+		/** Z axis rotation in radians. */
+		rotationZ,
+		
+		/** X axis scale. */
+		scaleX,
+		
+		/** Y axis scale. */
+		scaleY,
+		
+		/** Z axis scale. */
+		scaleZ
+	};
+	
+	
 private:
 	decString pName;
 	float pPlaytime;
@@ -50,7 +86,6 @@ private:
 	deAnimationKeyframeVertexPositionSetList **pVertexPositionSetLists;
 	int pVertexPositionSetListCount;
 	int pVertexPositionSetListSize;
-	
 	
 	
 public:
@@ -121,6 +156,18 @@ public:
 	 * \version 1.17
 	 */
 	void AddVertexPositionSetKeyframeList( deAnimationKeyframeVertexPositionSetList *list );
+	
+	/**
+	 * \brief Create bezier curve from bone keyframes.
+	 * \version 1.28
+	 */
+	void GetKeyframeCurve(decCurveBezier &curve, int index, BoneParameter parameter) const;
+	
+	/**
+	 * \brief Create bezier curve from vertex position set keyframes.
+	 * \version 1.28
+	 */
+	void GetVertexPositionSetKeyframeCurve(decCurveBezier &curve, int index) const;
 	/*@}*/
 };
 

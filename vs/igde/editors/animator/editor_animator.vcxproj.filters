@@ -499,6 +499,12 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetUseAxis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaBone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1351,6 +1357,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetUseAxis.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputBone.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\bonetrans\aeURuleBTransSetInputSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\animator\src\undosys\rule\foreignstate\aeUSetRuleFStaBone.h">

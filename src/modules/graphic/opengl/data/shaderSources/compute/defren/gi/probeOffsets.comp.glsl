@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -7,18 +9,16 @@ precision HIGHP int;
 #include "shared/defren/gi/trace_probe.glsl"
 #include "shared/image_buffer.glsl"
 
-#ifdef WITH_RAY_CACHE
-	#include "shared/defren/gi/raycast/ray_cache.glsl"
-#endif
+#include "shared/defren/gi/raycast/ray_cache.glsl"
 
 
-#ifdef WITH_RAY_CACHE
-	layout(binding=2, IMG_R16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texCacheDistance;
-	layout(binding=3, rgba8_snorm) uniform readonly HIGHP image2DArray texCacheNormal;
-#else
-	layout(binding=0, rgba16f) uniform readonly HIGHP image2D texPosition;
-	layout(binding=1, rgba8_snorm) uniform readonly HIGHP image2D texNormal;
-#endif
+// !WithRayCache
+layout(binding=0, rgba16f) uniform readonly HIGHP image2D texPosition;
+layout(binding=1, rgba8_snorm) uniform readonly HIGHP image2D texNormal;
+
+// WithRayCache
+layout(binding=2, IMG_R16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texCacheDistance;
+layout(binding=3, rgba8_snorm) uniform readonly HIGHP image2DArray texCacheNormal;
 
 layout(binding=4, rgba16f) uniform writeonly restrict HIGHP image2DArray texProbeOffsets;
 
@@ -94,11 +94,12 @@ void main( void ){
 	
 	ivec3 probeCoord = probeIndexToGridCoord( giTraceProbeProbeIndex( index ) );
 	
-	#ifdef WITH_RAY_CACHE
-		ivec2 rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( index ) );
-	#else
-		ivec2 rayOffset = ivec2( ( index % pGIProbesPerLine ) * pGIRaysPerProbe, index / pGIProbesPerLine );
-	#endif
+	ivec2 rayOffset;
+	if(WithRayCache){
+		rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( index ) );
+	}else{
+		rayOffset = ivec2( ( index % pGIProbesPerLine ) * pGIRaysPerProbe, index / pGIProbesPerLine );
+	}
 	
 	
 	// calculate probe offset
@@ -131,15 +132,19 @@ void main( void ){
 		int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
 		
 		if( rayIndex < pGIRaysPerProbe ){
-			#ifdef WITH_RAY_CACHE
-				ivec3 rayTC = ivec3( rayOffset + ivec2( rayIndex, 0 ), pGICascade );
-				float rayDistance = IMG_R16F_LOAD(imageLoad(texCacheDistance, rayTC));
+			float rayDistance;
+			vec4 rayPosition;
+			ivec3 rayTC;
+			
+			if(WithRayCache){
+				rayTC = ivec3( rayOffset + ivec2( rayIndex, 0 ), pGICascade );
+				rayDistance = IMG_R16F_LOAD(imageLoad(texCacheDistance, rayTC));
 				
-			#else
-				ivec2 rayTC = rayOffset + ivec2( rayIndex, 0 );
-				vec4 rayPosition = imageLoad( texPosition, rayTC ); // position, distance
-				#define rayDistance rayPosition.w
-			#endif
+			}else{
+				rayTC.xy = rayOffset + ivec2( rayIndex, 0 );
+				rayPosition = imageLoad( texPosition, ivec2(rayTC) ); // position, distance
+				rayDistance = rayPosition.w;
+			}
 			
 			vRayData[ gl_LocalInvocationIndex ].counts = ivec3( 1, 0, 0 );
 			vRayData[ gl_LocalInvocationIndex ].probeOffset = vec3( 0 );
@@ -151,14 +156,16 @@ void main( void ){
 			if( rayDistance < 9999.0 ){
 				// if larger ray misses and we do not move. since we have to hit the barrier
 				// we can not use continue here to skip the loop run
+				vec3 rayDirection, hitNormal;
 				
-				#ifdef WITH_RAY_CACHE
-					vec3 rayDirection = pGIRayDirection[ rayIndex ] * rayDistance;
-					vec3 hitNormal = vec3( imageLoad( texCacheNormal, rayTC ) );
-				#else
-					vec3 rayDirection = vec3( rayPosition ) - probePosition;
-					vec3 hitNormal = vec3( imageLoad( texNormal, rayTC ) );
-				#endif
+				if(WithRayCache){
+					rayDirection = pGIRayDirection[ rayIndex ] * rayDistance;
+					hitNormal = vec3( imageLoad( texCacheNormal, rayTC ) );
+					
+				}else{
+					rayDirection = vec3( rayPosition ) - probePosition;
+					hitNormal = vec3( imageLoad( texNormal, ivec2(rayTC) ) );
+				}
 				
 				float distToSurface = dot( hitNormal, rayDirection );
 				

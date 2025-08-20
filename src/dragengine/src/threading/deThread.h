@@ -75,6 +75,11 @@ public:
 	/** \brief Start thread if not running already. */
 	void Start();
 	
+#ifdef OS_WEBWASM
+	/** \brief Start thread if not running already with thread attributes. */
+	void Start(pthread_attr_t &attributes);
+#endif
+	
 	/**
 	 * \brief Stop thread.
 	 * 

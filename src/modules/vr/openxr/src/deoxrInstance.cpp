@@ -101,6 +101,15 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extKHRCompositionLayerDepth ].name = XR_KHR_COMPOSITION_LAYER_DEPTH_EXTENSION_NAME;
 	pSupportsExtension[ extEXTHandInteraction ].name = XR_EXT_HAND_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extHTCHandInteraction ].name = XR_HTC_HAND_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[extFBTouchControllerPro].name = XR_FB_TOUCH_CONTROLLER_PRO_EXTENSION_NAME;
+	pSupportsExtension[extFBTouchControllerProximity].name = XR_FB_TOUCH_CONTROLLER_PROXIMITY_EXTENSION_NAME;
+	pSupportsExtension[extMETATouchControllerPlus].name = XR_META_TOUCH_CONTROLLER_PLUS_EXTENSION_NAME;
+	
+	#ifdef OS_ANDROID
+		pSupportsExtension[extKHRAndroidCreateInstance].name = XR_KHR_ANDROID_CREATE_INSTANCE_EXTENSION_NAME;
+	#else
+		pSupportsExtension[extKHRAndroidCreateInstance].name = "XR_KHR_android_create_instance";
+	#endif
 	
 	pSupportsExtension[ extKHROpenglEnable ].enableIfSupported = true;
 	pSupportsExtension[ extKHRVisibilityMask ].enableIfSupported = true;
@@ -137,6 +146,10 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extKHRCompositionLayerDepth ].enableIfSupported = true;
 	pSupportsExtension[ extEXTHandInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extHTCHandInteraction ].enableIfSupported = true;
+	pSupportsExtension[extKHRAndroidCreateInstance].enableIfSupported = true;
+	pSupportsExtension[extFBTouchControllerPro].enableIfSupported = true;
+	pSupportsExtension[extFBTouchControllerProximity].enableIfSupported = true;
+	pSupportsExtension[extMETATouchControllerPlus].enableIfSupported = true;
 	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
@@ -160,8 +173,10 @@ pInstance( XR_NULL_HANDLE )
 			pDebug.SetEnabled( enableDebug );
 		#endif
 		
-		pPathHandLeft = deoxrPath( *this, "/user/hand/left" );
-		pPathHandRight = deoxrPath( *this, "/user/hand/right" );
+		pPathHandLeft = deoxrPath(*this, "/user/hand/left");
+		pPathHandRight = deoxrPath(*this, "/user/hand/right");
+		pPathHead = deoxrPath(*this, "/user/head");
+		pPathGamepad = deoxrPath(*this, "/user/gamepad");
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -207,8 +222,17 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 		return;
 	}
 	
-	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
 	int i;
+	if(pOxr.GetLogLevel() == deVROpenXR::LogLevel::debug){
+		pOxr.LogInfoFormat("Suggest bindings for interaction profile '%s' (action -> binding):",
+			profile.GetName().GetString());
+		for(i=0; i<count; i++ ){
+			pOxr.LogInfoFormat("- '%s' -> '%s'", bindings[i].action->GetName().GetString(),
+				bindings[i].binding.GetName().GetString());
+		}
+	}
+	
+	XrActionSuggestedBinding * const xrbindings = new XrActionSuggestedBinding[ count ];
 	
 	try{
 		for( i=0; i<count; i++ ){
@@ -231,7 +255,7 @@ void deoxrInstance::SuggestBindings( const deoxrPath &profile, const sSuggestBin
 			delete [] xrbindings;
 		}
 		
-		pOxr.LogErrorFormat( "SuggestBindings failed for profile '%s' (action -> binding)",
+		pOxr.LogErrorFormat( "SuggestBindings failed for interaction profile '%s' (action -> binding)",
 			profile.GetName().GetString() );
 		for( i=0; i<count; i++ ){
 			pOxr.LogErrorFormat( "- '%s' -> '%s'", bindings[ i ].action->GetName().GetString(),
@@ -527,6 +551,19 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 		instanceCreateInfo.enabledExtensionCount = extensionCount;
 	}
 	
+	#ifdef OS_ANDROID
+	void **pcreateNext = (void**)&instanceCreateInfo.next;
+	
+	XrInstanceCreateInfoAndroidKHR ciAndroid{XR_TYPE_INSTANCE_CREATE_INFO_ANDROID_KHR};
+	if(pSupportsExtension[extKHRAndroidCreateInstance].version){
+		deOSAndroid &os = *GetOxr().GetGameEngine()->GetOS()->CastToOSAndroid();
+		ciAndroid.applicationVM = os.GetJavaVM();
+		ciAndroid.applicationActivity = os.GetActivity();
+		*pcreateNext = &ciAndroid;
+		pcreateNext = (void**)&ciAndroid.next;
+	}
+	#endif
+	
 	// create device
 	OXR_CHECK( xrCreateInstance( &instanceCreateInfo, &pInstance ) );
 }
@@ -538,7 +575,7 @@ void deoxrInstance::pLoadFunctions(){
 		}
 	
 	#define INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( name, extension ) \
-		if( pSupportsExtension[ extension ].version != 0 ){ \
+		if(pSupportsExtension[extension].version != 0 && pSupportsExtension[extension].enableIfSupported){ \
 			INSTANCE_LEVEL_OPENXR_FUNCTION( name ) \
 		}
 	

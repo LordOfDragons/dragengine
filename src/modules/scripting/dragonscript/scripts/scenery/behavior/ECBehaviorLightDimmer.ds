@@ -97,19 +97,14 @@ class ECBehaviorLightDimmer extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorLightDimmer"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorLightDimmer")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorLightDimmer behavior = ECBehaviorLightDimmer.new(eclass,\
-				eclass.sharedFactoryHelper.defaultLight(eclass, parameters), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "lightDimmer", id)
+				getHelper().defaultLight(eclass, parameters), id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "lightDimmer", id)
 			return behavior
 		end
 	end

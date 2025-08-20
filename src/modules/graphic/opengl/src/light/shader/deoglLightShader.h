@@ -166,7 +166,6 @@ private:
 	const deoglLightShaderConfig pConfig;
 	
 	int pTextureTargets[ ETT_COUNT ];
-	int pUsedTextureTargetCount;
 	int pInstanceUniformTargets[ EIUT_COUNT ];
 	int pUsedInstanceUniformTargetCount;
 	int pLightUniformTargets[ ELUT_COUNT ];
@@ -200,12 +199,6 @@ public:
 	
 	/** Set index for texture target or -1 if not used. */
 	void SetTextureTarget( eTextureTargets target, int index );
-	
-	/** Used texture target count. */
-	inline int GetUsedTextureTargetCount() const{ return pUsedTextureTargetCount; }
-	
-	/** Set used texture target count. */
-	void SetUsedTextureTargetCount( int usedTextureTargetCount );
 	
 	/** Index for instance parameter uniform target or -1 if not used. */
 	int GetInstanceUniformTarget( eInstanceUniformTargets target ) const;

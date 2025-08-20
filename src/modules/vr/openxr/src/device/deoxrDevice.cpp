@@ -57,7 +57,8 @@ pIndex( -1 ),
 pProfile( profile ),
 pType( deInputDevice::edtGeneric ),
 pBoneConfiguration( deInputDevice::ebcNone ),
-pNameNumber( -1 ){
+pNameNumber( -1 ),
+pEnableTwoFingerTriggerSimulation(true){
 }
 
 deoxrDevice::~deoxrDevice(){
@@ -162,6 +163,23 @@ const char *name, const char *id, const char *displayText ){
 	
 	button->SetIndex( pButtons.GetCount() );
 	pButtons.Add( button );
+}
+
+void deoxrDevice::AddButton(deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
+deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
+deVROpenXR::eInputActions actionApproach, const char *name, const char *id, const char *displayText){
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(*this)));
+	button->SetID(id);
+	button->SetName(name);
+	button->SetType(type);
+	button->SetDisplayText(displayText);
+	button->SetInputDeviceComponent(component);
+	button->SetActionPress(pOxr.GetAction(actionPress));
+	button->SetActionTouch(pOxr.GetAction(actionTouch));
+	button->SetActionApproach(pOxr.GetAction(actionApproach));
+	
+	button->SetIndex(pButtons.GetCount());
+	pButtons.Add(button);
 }
 
 deoxrDeviceButton *deoxrDevice::GetButtonAt( int index ) const{
@@ -397,6 +415,10 @@ void deoxrDevice::SetMatrixWristToDevice( const decMatrix &matrix ){
 	pMatrixWristToDevice = matrix;
 }
 
+void deoxrDevice::SetEnableTwoFingerTriggerSimulation(bool enable){
+	pEnableTwoFingerTriggerSimulation = enable;
+}
+
 
 
 void deoxrDevice::SetFaceTracker( deoxrFaceTracker *faceTracker ){
@@ -445,6 +467,17 @@ void deoxrDevice::GetInfo( deInputDevice &info ) const{
 
 	info.SetSupportsFaceEyeExpressions( pFaceTracker );
 	info.SetSupportsFaceMouthExpressions( pFaceTracker );
+	
+	switch(pType){
+	case deInputDevice::edtVRRightHand:
+	case deInputDevice::edtVRLeftHand:
+		info.SetUsingHandInteraction(!pEnableTwoFingerTriggerSimulation);
+		break;
+		
+	default:
+		info.SetUsingHandInteraction(false);
+		break;
+	}
 }
 
 void deoxrDevice::UpdateParameters(){
@@ -496,7 +529,7 @@ void deoxrDevice::TrackStates(){
 					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
 				
 			}else{
-				pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
+				pSpacePose->LocateSpace( session.GetMainSpace(), session.GetPredictedDisplayTime(),
 					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
 				
 				if( pActionPoseOrientation && pSpacePoseOrientation ){
@@ -511,7 +544,7 @@ void deoxrDevice::TrackStates(){
 					if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
 					&& state.isActive == XR_TRUE ){
 						decVector ignore;
-						pSpacePoseOrientation->LocateSpace( session.GetSpace(),
+						pSpacePoseOrientation->LocateSpace( session.GetMainSpace(),
 							session.GetPredictedDisplayTime(), ignore, pPoseOrientation );
 					}
 				}
@@ -581,4 +614,10 @@ void deoxrDevice::ResetStates(){
 
 void deoxrDevice::GetDevicePose( deInputDevicePose &pose ){
 	pose = pPoseDevice;
+}
+
+void deoxrDevice::ReferenceSpaceChanged(){
+	if(pHandTracker){
+		pHandTracker->ReferencePoseChanged();
+	}
 }

@@ -178,7 +178,7 @@ class WindowGameWorld extends Window
 	
 	
 	/** \brief Create screen sized window using BaseGameApp console. */
-	func new() this(BaseGameApp.getApp().getConsole())
+	func new() this(BehaviorElementClass.sharedFactoryHelper.defaultConsole())
 	end
 	
 	/** \brief Create screen sized window. */

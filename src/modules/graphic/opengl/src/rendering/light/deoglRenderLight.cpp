@@ -177,7 +177,10 @@ pAddToRenderTask( NULL )
 	defines.SetDefines( "FULLSCREENQUAD", "NO_POSTRANSFORM" );
 	pAsyncGetPipeline(pPipelineSSSSS, pipconf, sources, defines);
 	
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen ScreenSpace SubSurface Scattering Stereo" );
 	}
@@ -198,7 +201,10 @@ pAddToRenderTask( NULL )
 	pAsyncGetPipeline(pPipelineAOLocal, pipconf, sources, defines);
 	
 	// ambient occlusion stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen AmbientOcclusion Local Stereo" );
 	}
@@ -214,13 +220,16 @@ pAddToRenderTask( NULL )
 	defines.SetDefine( "TAP_COUNT", 9 );
 	defines.SetDefine( "OUT_DATA_SIZE", 1 );
 	defines.SetDefine( "TEX_DATA_SIZE", 1 );
-	defines.SetDefine( "TEX_DATA_SWIZZLE", "g" );
+	defines.SetDefine( "TEX_DATA_SWIZZLE", 1 ); // gggg
 	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
 	defines.SetDefines( "NO_POSTRANSFORM" );
 	pAsyncGetPipeline(pPipelineAOBlur1, pipconf, sources, defines);
 	
 	// ambient occlusion blur phase 1 stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
 	}
@@ -234,14 +243,17 @@ pAddToRenderTask( NULL )
 	sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed" );
 	defines.SetDefine( "TAP_COUNT", 9 );
 	defines.SetDefine( "OUT_DATA_SIZE", 3 );
-	defines.SetDefine( "OUT_DATA_SWIZZLE", "g" );
+	defines.SetDefine( "OUT_DATA_SWIZZLE", 1 ); // gggg
 	defines.SetDefine( "TEX_DATA_SIZE", 1 );
 	defines.SetDefines( "DEPTH_DIFFERENCE_WEIGHTING", "INPUT_ARRAY_TEXTURES" );
 	defines.SetDefines( "NO_POSTRANSFORM" );
 	pAsyncGetPipeline(pPipelineAOBlur2, pipconf, sources, defines);
 	
 	// ambient occlusion blur phase 2 stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "Gauss Separable Fixed Stereo" );
 	}
@@ -254,9 +266,9 @@ pAddToRenderTask( NULL )
 	
 	defines = commonDefines;
 	sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
-	defines.SetDefine( "TEXTURELEVEL", 1 );
-	defines.SetDefine( "OUT_COLOR_SIZE", 3 );
-	defines.SetDefine( "TEX_DATA_SWIZZLE", "ggg" );
+	defines.SetDefines("TEXTURELEVEL");
+	defines.SetDefine( "OUT_DATA_SIZE", 3 );
+	defines.SetDefine( "TEX_DATA_SWIZZLE", 1 ); // gggg
 	pAsyncGetPipeline(pPipelineDebugAO, pipconf, sources, defines);
 	
 	
@@ -279,7 +291,7 @@ pAddToRenderTask( NULL )
 	sources = shaderManager.GetSourcesNamed( "DefRen SSAO Blur" );
 	pAsyncGetPipeline(pPipelineSSAOBlur1, pipconf, sources, defines);
 	
-	defines.SetDefines( "BLUR_PASS_2" );
+	defines.SetDefine("RENDER_PASS", 1);
 	pAsyncGetPipeline(pPipelineSSAOBlur2, pipconf, sources, defines);
 	
 	
@@ -292,7 +304,10 @@ pAddToRenderTask( NULL )
 	defines.SetDefines( "NO_POSTRANSFORM" );
 	pAsyncGetPipeline(pPipelineSSAOUpscale, pipconf, sources, defines);
 	
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen SSAO Upscale Stereo" );
 	}
@@ -310,7 +325,10 @@ pAddToRenderTask( NULL )
 	pAsyncGetPipeline(pPipelineCopyDepth, pipconf, sources, defines);
 	
 	// copy depth stereo
-	defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+	defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+	if(renderFSQuadStereoVSLayer){
+		defines.SetDefines("VS_RENDER_LAYER");
+	}
 	if( ! renderFSQuadStereoVSLayer ){
 		sources = shaderManager.GetSourcesNamed( "DefRen Copy Depth Stereo" );
 	}
@@ -642,7 +660,7 @@ void deoglRenderLight::RenderAO( deoglRenderPlan &plan, bool solid ){
 	shader->SetParameterFloat( espssaobDepthDifferenceThreshold, edgeBlurThreshold );
 	
 	OGL_CHECK( renderThread, pglDispatchCompute(
-		reducedWidth, ( reducedHeight - 1 ) / 64 + 1, workGroupSizeZ ) );
+		( reducedHeight - 1 ) / 64 + 1, reducedWidth, workGroupSizeZ ) );
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_TEXTURE_FETCH_BARRIER_BIT ) );
 	
 	

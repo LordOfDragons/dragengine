@@ -142,17 +142,13 @@ class ECBehaviorConversation extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorConversation"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorConversation")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorConversation behavior = ECBehaviorConversation.new(\
-				eclass, BaseGameApp.getApp().getLoaders(),\
+				eclass, getHelper().defaultLoaders(),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String),\
 				getPlayerControllableActorFor(parameters.getAt("playerControllableActor", "default") cast String), id)
 			
@@ -166,40 +162,10 @@ class ECBehaviorConversation extends DefaultECBehavior
 			behavior.getTriggered().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setBehaviorTree(getHelper().defaultBehaviorTree(eclass, parameters))
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "conversation", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "conversation", id)
 			return behavior
-		end
-		
-		/**
-		 * \brief Trigger table matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func TSTriggerTable getTriggerTableFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
-		end
-		
-		/**
-		 * \brief Player controllable actor matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getPlayerControlledActor() for value
-		 * 'default' and null for all other values. Overwrite to accept other values.
-		 */
-		func ECBehaviorPlayerControllable.Tracker getPlayerControllableActorFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.playerControllableActor(value)
-		end
-		
-		/**
-		 * \brief Simple conversation converter matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getSimpleConversationConverter()
-		 * for value 'default' and null for all other values. Overwrite to accept other values.
-		 */
-		func SimpleConversationConverter getSimpleConversationConverterFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.simpleConversationConverter(value)
 		end
 	end
 	
@@ -482,7 +448,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 				if topicGroup != null
 					var ConversationTopic topic = topicGroup.getTopicWithID(pTopic)
 					if topic == null
-						BaseGameApp.getApp().getConsole().addMessage(\
+						BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
 							"ECBehaviorConversation: Not found '" + pTopicGroup + "' => '" + pTopic)
 						throw EInvalidParam.new()
 					end
@@ -491,14 +457,14 @@ class ECBehaviorConversation extends DefaultECBehavior
 					
 				else
 					if pSimpleConversation == null
-						BaseGameApp.getApp().getConsole().addMessage(\
+						BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
 							"ECBehaviorConversation: Not found '" + pTopicGroup + "' => '" + pTopic)
 						throw EInvalidParam.new()
 					end
 					
 					var SimpleConversationSnippet snippet = pSimpleConversation.getSnippetWith(pTopic)
 					if snippet == null
-						BaseGameApp.getApp().getConsole().addMessage(\
+						BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
 							"ECBehaviorConversation: Not found '{}'".format(Array.newWith(pTopic)))
 						throw EInvalidParam.new()
 					end
@@ -643,18 +609,20 @@ class ECBehaviorConversation extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(), \
-	null, BaseGameApp.getApp().getPlayerControlledActor(), "")
+	func new(BehaviorElementClass eclass) this(eclass, eclass.sharedFactoryHelper.defaultLoaders(), \
+	null, eclass.sharedFactoryHelper.defaultPlayerControlledActor(), "")
 	end
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass, String id) this(eclass, \
-	BaseGameApp.getApp().getLoaders(), null, BaseGameApp.getApp().getPlayerControlledActor(), id)
+	func new(BehaviorElementClass eclass, String id) this(eclass,\
+	eclass.sharedFactoryHelper.defaultLoaders(), null,\
+	eclass.sharedFactoryHelper.defaultPlayerControlledActor(), id)
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, String id, String prefix) this(eclass, \
-	BaseGameApp.getApp().getLoaders(), null, BaseGameApp.getApp().getPlayerControlledActor(), id, prefix)
+	eclass.sharedFactoryHelper.defaultLoaders(), null,\
+	eclass.sharedFactoryHelper.defaultPlayerControlledActor(), id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */
@@ -678,10 +646,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 	func new(BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
 	ECBehaviorPlayerControllable.Tracker playerControlledActor, String id, String subID, String prefix) \
 	super(eclass, id)
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pSimpleConversationConverter = app.getSimpleConversationConverter()
-		end
+		pSimpleConversationConverter = eclass.sharedFactoryHelper.defaultSimpleConversationConverter()
 		
 		pPrefix = prefix
 		pPlayerControlledActor = playerControlledActor

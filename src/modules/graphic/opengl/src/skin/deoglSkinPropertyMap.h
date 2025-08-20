@@ -85,6 +85,7 @@ namespace deoglSkinPropertyMap{
 		eptEmissivityCameraAdapted,
 		
 		eptEnvironmentRoom,
+		eptEnvironmentRoomTint,
 		eptEnvironmentRoomSize,
 		eptEnvironmentRoomOffset,
 		eptEnvironmentRoomMask,

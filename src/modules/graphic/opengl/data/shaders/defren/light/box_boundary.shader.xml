@@ -2,19 +2,14 @@
 <shader>
 	<name>DefRen Light BoxBoundary</name>
 	
-	<texture name='texMin' target='0'/>
-	<texture name='texMax' target='1'/>
-	<texture name='texDepth' target='2'/>
-	<texture name='texAmbient' target='3'/>
-	
-	<parameter name='pQuadParams'/>
-	<parameter name='pPosTransform'/>
-	<parameter name='pMipMapLevel'/>
-	<parameter name='pMatrixRotation'/>
-	<parameter name='pInitialMinValue'/>
-	<parameter name='pInitialMaxValue'/>
-	<parameter name='pClearMinValue'/>
-	<parameter name='pClearMaxValue'/>
+	<parameter name='pQuadParams' location='0'/>
+	<parameter name='pPosTransform' location='3'/>
+	<parameter name='pMipMapLevel' location='9'/>
+	<parameter name='pMatrixRotation' location='4'/>
+	<parameter name='pInitialMinValue' location='5'/>
+	<parameter name='pInitialMaxValue' location='6'/>
+	<parameter name='pClearMinValue' location='7'/>
+	<parameter name='pClearMaxValue' location='8'/>
 	
 	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Light BoxBoundary</sourceCode>

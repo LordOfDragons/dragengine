@@ -9,56 +9,37 @@
 	<output name='outSubSurface' location='2'/>
 	
 	<define>AMBIENT_LIGHTING</define>
-	<define>COLORED_SHADOWS</define>
-	<define>DECODE_IN_DEPTH</define>
-	<define>DECODE_IN_SHADOW</define>
-	<define>ENABLE_OCCTRACING</define>
+	<!-- <define>DECODE_IN_SHADOW</define> -->
 	<define>FULLSCREENQUAD</define>
 	<define>GI_RAY</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>HW_DEPTH_COMPARE</define>
-	<define>LUMINANCE_ONLY</define>
+	<define>LAYERED_RENDERING</define>
+	<!-- <define>HW_DEPTH_COMPARE</define> -->
 	<define>NOISE_TAP</define>
-	<define>OPTIMIZE_SHADOW_BACKFACE</define>
-	<define>PARTICLE_LIGHT</define>
-	<define>PCF_4TAP</define>
-	<define>PCF_9TAP</define>
-	<define>PCF_VARTAP</define>
+	<define>LIGHT_MODE</define>
+	<define>PCF_MODE</define>
 	<define>SHADOW_INVERSE_DEPTH</define>
 	<define>SHAMAT2_EQUALS_SHAMAT1</define>
-	<define>SKY_LIGHT</define>
-	<define>SMA1_CUBE</define>
-	<define>SMA2_CUBE</define>
-	<define>SPOT_LIGHT</define>
-	<define>TEXTURE_COLOR_CUBEMAP</define>
-	<define>TEXTURE_COLOR_EQUIRECT</define>
-	<define>TEXTURE_COLOR</define>
+	<define>SHADOW1_MODE</define>
+	<define>SHADOW2_MODE</define>
+	<define>TEXTURE_LIGHT_COLOR</define>
 	<define>TEXTURE_NOISE</define>
-	<define>TEXTURE_SHADOW1_AMBIENT</define>
 	<define>TEXTURE_SHADOW1_SOLID</define>
 	<define>TEXTURE_SHADOW1_TRANSPARENT</define>
-	<define>TEXTURE_SHADOW2_AMBIENT</define>
+	<define>TEXTURE_SHADOW1_AMBIENT</define>
 	<define>TEXTURE_SHADOW2_SOLID</define>
 	<define>TEXTURE_SHADOW2_TRANSPARENT</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>TEXTURE_SHADOW2_AMBIENT</define>
+	<define>VS_RENDER_LAYER</define>
 	<define>WITH_SUBSURFACE</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>
 	
 	<!-- shared/normal_texture.glsl -->
-	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
-	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
-	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
+	<define>MATERIAL_NORMAL_DEC</define>
+	<define>MATERIAL_NORMAL_ENC</define>
 	
 	<!-- shared/defren/light/normal_from_depth.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 	<define>GI_RAY</define>
 	
 	<!-- shared/defren/light/ubo_instance_parameters.glsl -->

@@ -51,7 +51,8 @@ pComponents( nullptr ),
 pComponentCount( 0 ),
 pBoneConfiguration( ebcNone ),
 pSupportsFaceEyeExpressions( false ),
-pSupportsFaceMouthExpressions( false ){
+pSupportsFaceMouthExpressions( false ),
+pUsingHandInteraction(false){
 }
 
 deInputDevice::~deInputDevice(){
@@ -130,6 +131,10 @@ void deInputDevice::SetSupportsFaceEyeExpressions( bool supportsFaceEyeExpressio
 
 void deInputDevice::SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions ){
 	pSupportsFaceMouthExpressions = supportsFaceMouthExpressions;
+}
+
+void deInputDevice::SetUsingHandInteraction(bool usingHandInteraction){
+	pUsingHandInteraction = usingHandInteraction;
 }
 
 void deInputDevice::SetVRModel(const deModel::Ref &model){

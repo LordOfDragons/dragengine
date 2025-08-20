@@ -1,6 +1,5 @@
 /*
 	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 */
 
 #include "shared/defren/sample_depth.glsl"

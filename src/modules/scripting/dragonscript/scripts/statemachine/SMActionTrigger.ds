@@ -67,8 +67,8 @@ class SMActionTrigger implements SMAction
 	
 	
 	/** \brief Create action using BaseGameApp trigger table. */
-	public func new( StringID name, Action action ) \
-	this( BaseGameApp.getApp().getTriggerTable(), name, action )
+	func new(StringID name, Action action) \
+	this(BehaviorElementClass.sharedFactoryHelper.defaultTriggerTable(), name, action)
 	end
 	
 	/** \brief Create action. */

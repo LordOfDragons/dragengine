@@ -49,13 +49,15 @@ class STDTRRBinding extends STDTRRStyle
 	
 	
 	/** \brief Create resolve tag rule. */
-	public func new(String styleName) this(BaseGameApp.getApp().getCommandManager(),\
-	BaseGameApp.getApp().getBindingManager(), styleName)
+	public func new(String styleName)\
+	this(BehaviorElementClass.sharedFactoryHelper.defaultCommandManager(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultBindingManager(), styleName)
 	end
 	
 	/** \brief Create resolve tag rule. */
-	public func new(STDStyle style) this(BaseGameApp.getApp().getCommandManager(),\
-	BaseGameApp.getApp().getBindingManager(), style)
+	public func new(STDStyle style)\
+	this(BehaviorElementClass.sharedFactoryHelper.defaultCommandManager(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultBindingManager(), style)
 	end
 	
 	/** \brief Create resolve tag rule. */

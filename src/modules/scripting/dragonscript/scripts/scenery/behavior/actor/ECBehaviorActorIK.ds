@@ -146,18 +146,14 @@ class ECBehaviorActorIK extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorActorIK"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorActorIK")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorActorIK behavior = ECBehaviorActorIK.new(eclass,\
-				eclass.sharedFactoryHelper.defaultActorAnimated(eclass, parameters), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "actorIK", id)
+				getHelper().defaultActorAnimated(eclass, parameters), id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "actorIK", id)
 			return behavior
 		end
 	end

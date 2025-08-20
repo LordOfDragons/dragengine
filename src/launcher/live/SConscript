@@ -9,6 +9,9 @@ if not parent_env['OSPosix'] and not parent_env['OSWindows']:
 if parent_env['platform_android'] != 'no':
 	Return()
 
+if parent_env['platform_webwasm']:
+	Return()
+
 if parent_env['OSBeOS']:
 	# no patchelf support. need to investigate how this can work out
 	Return()

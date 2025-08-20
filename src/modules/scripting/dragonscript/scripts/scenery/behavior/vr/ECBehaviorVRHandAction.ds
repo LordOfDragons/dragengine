@@ -97,12 +97,8 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorVRHandAction"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorVRHandAction")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -110,10 +106,9 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String),\
 				ECBehaviorConversationActor.getBehaviorIn(eclass), id)
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "vrHandAction", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "vrHandAction", id)
 			return behavior
 		end
 	end
@@ -501,9 +496,8 @@ class ECBehaviorVRHandAction extends DefaultECBehavior
 		pActionFactory = BaseVRHandAction.Factory.new()
 		pBTSMs = ECComposeBTSM.new(eclass, prefix)
 		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			var Loaders loaders = app.getLoaders()
+		var Loaders loaders = eclass.sharedFactoryHelper.defaultLoaders()
+		if loaders != null
 			pLoadStateMachine = loaders.getStateMachine()
 			pPersistency = loaders.getPersistency()
 		end

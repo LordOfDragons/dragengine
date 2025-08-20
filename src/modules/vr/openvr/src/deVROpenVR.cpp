@@ -467,6 +467,10 @@ bool deVROpenVR::GetButtonTouched( int device, int button ){
 	return pDevices.GetAt( device )->GetButtonAt( button )->GetTouched();
 }
 
+bool deVROpenVR::GetButtonNear(int device, int button){
+	return false;
+}
+
 float deVROpenVR::GetAxisValue( int device, int axis ){
 	return pDevices.GetAt( device )->GetAxisAt( axis )->GetValue();
 }

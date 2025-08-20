@@ -52,23 +52,45 @@ class CActionSnippet extends ConversationAction
 	end
 	
 	
-	var StringID pGroupID
-	var StringID pTopicID
+	var StringID pGroupID, pTopicID
+	var Array pActions
+	var bool pCreateSideLane
 	
 	
 	/** \brief Create conversation action. */
 	func new()
+		pActions = Array.new()
 	end
 	
 	/** \brief Read from file. */
 	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
 		select reader.readByte() // version
 		case 0
-			pGroupID = env.readStringIDOrNullIfEmpty(reader)
-			pTopicID = env.readStringIDOrNullIfEmpty(reader)
+			newFromFileV0(env, reader)
+			
+		case 1
+			newFromFileV1(env, reader)
 			
 		else
 			throw EInvalidParam.new("unsupported version")
+		end
+	end
+	
+	private func void newFromFileV0(PersistencyEnvironment env, FileReader reader)
+		pGroupID = env.readStringIDOrNullIfEmpty(reader)
+		pTopicID = env.readStringIDOrNullIfEmpty(reader)
+	end
+	
+	private func void newFromFileV1(PersistencyEnvironment env, FileReader reader)
+		newFromFileV0(env, reader)
+		
+		var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+		pCreateSideLane = flags.getAt(0)
+		
+		var int i, count = reader.readUShort()
+		pActions = Array.new()
+		for i = 0 to count
+			pActions.add(env.readObject(reader))
 		end
 	end
 	
@@ -94,25 +116,73 @@ class CActionSnippet extends ConversationAction
 		pTopicID = id
 	end
 	
+	/**
+	 * \brief Create side lane.
+	 * \version 1.28
+	 */
+	func bool getCreateSideLane()
+		return pCreateSideLane
+	end
+	
+	/**
+	 * \brief Set create side lane.
+	 * \version 1.28
+	 */
+	func void setCreateSideLane(bool createSideLane)
+		pCreateSideLane = createSideLane
+	end
+	
+	/**
+	 * \brief Array of ConversationAction to run instead of snippet.
+	 * \version 1.28
+	 * 
+	 * For use by simple conversation and custom code wishing to inject actions.
+	 */
+	func Array getActions()
+		return pActions
+	end
+	
+	/**
+	 * \brief Actions iterator.
+	 * \version 1.28
+	 */
+	func ConversationActionIterator getIteratorActions()
+		return ConversationActionIterator.new(pActions, 0)
+	end
+	
 	
 	
 	/** \brief Execute action. */
 	func void execute(ConversationPlayback playback)
-		var Conversation conversation = playback.getConversation()
-		var ConversationTopic topic
+		var ConversationPlaybackLayer layer
 		
-		var ConversationTopicGroup group = conversation.getTopicGroupWithID(pGroupID)
-		if group != null
-			topic = group.getTopicWithID(pTopicID)
-		end
-		
-		if topic != null
-			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(topic.getIteratorActions())
-			layer.setTopicTopLevel(true)
-			playback.pushLayer(layer)
+		if pActions.getCount() > 0
+			layer = ConversationPlaybackLayer.new(getIteratorActions())
 			
 		else
+			var Conversation conversation = playback.getConversation()
+			var ConversationTopic topic
+			
+			var ConversationTopicGroup group = conversation.getTopicGroupWithID(pGroupID)
+			if group != null
+				topic = group.getTopicWithID(pTopicID)
+			end
+			
+			if topic == null
+				playback.advanceToNextAction()
+				return
+			end
+			
+			layer = ConversationPlaybackLayer.new(topic.getIteratorActions())
+			layer.setTopicTopLevel(true)
+		end
+		
+		if pCreateSideLane
+			playback.addSideLane(ConversationPlaybackLane.new(false, layer))
 			playback.advanceToNextAction()
+			
+		else
+			playback.pushLayer(layer)
 		end
 	end
 	
@@ -136,9 +206,18 @@ class CActionSnippet extends ConversationAction
 	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 		super.writeObjectToFile(env, writer)
 		
-		writer.writeByte(0) // version
+		writer.writeByte(1)
 		
 		env.writeStringIDOrEmptyIfNull(writer, pGroupID)
 		env.writeStringIDOrEmptyIfNull(writer, pTopicID)
+		
+		var PersistencyFlags flags = PersistencyFlags.new(1)
+		flags.setAt(0, pCreateSideLane)
+		flags.writeToFile(writer)
+		
+		writer.writeUShort(pActions.getCount())
+		pActions.forEach(block ConversationAction each
+			env.writeObject(writer, each)
+		end)
 	end
 end

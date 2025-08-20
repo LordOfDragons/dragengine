@@ -9,7 +9,7 @@
 	
 	<output set='2' name='outColor' location='0'/>
 	
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>SPLIT_LAYERS</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

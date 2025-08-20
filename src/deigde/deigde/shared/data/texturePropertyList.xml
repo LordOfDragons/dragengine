@@ -910,6 +910,25 @@
 		</affects>
 	</property>
 	
+	<property name='environmentroom.tint'>
+		<description>
+			Defines a color used to tint the environment room property. This defines
+			an 3-component color that is multiplied component wise with the environment room
+			property. Typically used to create tinted versions of a texture without
+			creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='environmentroom.size'>
 		<description>
 			Defines the size ratio of an environment room to use to produce the illusion of a 3

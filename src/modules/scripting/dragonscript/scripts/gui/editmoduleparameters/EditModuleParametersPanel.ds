@@ -202,6 +202,11 @@ class EditModuleParametersPanel extends Panel
 				pPanelSystems.addWidget(EMPSystem.new(InpSysParamWrapper.new()))
 			end
 			
+			if VRSystem.getParameterCount() > 0
+				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.VR")
+				pPanelSystems.addWidget(EMPSystem.new(VRSysParamWrapper.new()))
+			end
+			
 			if NetworkSystem.getParameterCount() > 0
 				addButtonSystem(panelButtons, "@UI.Settings.ModuleParameters.Network")
 				pPanelSystems.addWidget(EMPSystem.new(NetSysParamWrapper.new()))

@@ -145,6 +145,11 @@ float decQuaternion::Dot( const decQuaternion &q ) const{
 	return x * q.x + y * q.y + z * q.z + w * q.w;
 }
 
+float decQuaternion::AngleBetween(const decQuaternion &q) const{
+	const float d = Dot(q);
+	return acosf((d * d) * 2.0f - 1.0f);
+}
+
 const decVector decQuaternion::GetEulerAngles() const{
 	const float sqnx = x * x;
 	const float sqny = y * y;

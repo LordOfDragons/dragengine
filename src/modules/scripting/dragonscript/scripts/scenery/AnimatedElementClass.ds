@@ -53,7 +53,7 @@ class AnimatedElementClass extends SimpleElementClass
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
 	public func new( String className ) this( className, \
-	BaseGameApp.getApp().getLoaders(), BaseGameApp.getApp().getTriggerTable() )
+	sharedFactoryHelper.defaultLoaders(), sharedFactoryHelper.defaultTriggerTable() )
 	end
 	
 	/** \brief Create element class. */

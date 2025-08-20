@@ -2,13 +2,8 @@
 <shader>
 	<name>ToneMap Tone Mapping Stereo</name>
 	
-	<texture name='texColor' target='0'/>
-	<texture name='texToneMapParams' target='1'/>
-	<texture name='texBloom' target='2'/>
-	<texture name='texToneMapCurve' target='3'/>
-	
-	<parameter name='pTCBloomTransform'/>
-	<parameter name='pTCBloomClamp'/>
+	<parameter name='pTCBloomTransform' location='3'/>
+	<parameter name='pTCBloomClamp' location='4'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

@@ -1,31 +1,24 @@
-#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
-	#extension GL_ARB_shader_viewport_layer_array : require
-#endif
-#ifdef EXT_AMD_VERTEX_SHADER_LAYER
-	#extension GL_AMD_vertex_shader_layer : require
-#endif
-#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
-	#extension GL_ARB_shader_draw_parameters : require
-#endif
+#include "shared/preamble.glsl"
 
 precision HIGHP float;
 precision HIGHP int;
 
 layout(location=0) in vec2 inPosition;
 
-#ifdef VS_RENDER_STEREO
-	layout(location=1) in int inLayer;
-#endif
+// VSRenderLayer
+layout(location=1) in int inLayer;
 
-#ifdef VS_RENDER_STEREO
-	flat out int vLayer;
-#endif
+#include "shared/interface/2d/vertex.glsl"
 
 void main( void ){
+	vertexShaderDefaultOutputs();
+	
 	gl_Position = vec4( inPosition, 0, 1 );
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
+	if(VSRenderLayer){
 		vLayer = inLayer;
-	#endif
+		#ifdef SUPPORTS_VSLAYER
+		gl_Layer = vLayer;
+		#endif
+	}
 }

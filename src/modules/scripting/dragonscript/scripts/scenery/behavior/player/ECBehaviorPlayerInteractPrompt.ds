@@ -181,12 +181,8 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	abstract class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorPlayerInteractPrompt"
+	abstract class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorPlayerInteractPrompt")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -200,31 +196,10 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String),\
 				getBindingManagerFor(parameters.getAt("bindingManager", "default") cast String))
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "playerInteractPrompt")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "playerInteractPrompt")
 			return behavior
-		end
-		
-		/**
-		 * \brief Command manager matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getCommandManager() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func CommandManager getCommandManagerFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.commandManager(value)
-		end
-		
-		/**
-		 * \brief Binding manager matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getBindingManager() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func BindingManager getBindingManagerFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.bindingManager(value)
 		end
 		
 		/** \brief Create prompt controller factory. */
@@ -615,8 +590,8 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	PromptControllerFactory promptControllerFactory, Container uiContainer, \
 	Object uiContainerAddSettings) \
 	this(eclass, playerControllable, promptControllerFactory, uiContainer, \
-	uiContainerAddSettings, BaseGameApp.getApp().getCommandManager(), \
-	BaseGameApp.getApp().getBindingManager())
+	uiContainerAddSettings, eclass.sharedFactoryHelper.defaultCommandManager(), \
+	eclass.sharedFactoryHelper.defaultBindingManager())
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \
@@ -630,8 +605,8 @@ class ECBehaviorPlayerInteractPrompt extends DefaultECBehavior
 	PromptControllerFactory promptControllerFactory, Container uiContainer, \
 	Object uiContainerAddSettings, String prefix) \
 	this(eclass, playerControllable, promptControllerFactory, uiContainer, \
-	uiContainerAddSettings, BaseGameApp.getApp().getCommandManager(), \
-	BaseGameApp.getApp().getBindingManager(), prefix)
+	uiContainerAddSettings, eclass.sharedFactoryHelper.defaultCommandManager(), \
+	eclass.sharedFactoryHelper.defaultBindingManager(), prefix)
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorPlayerControllable playerControllable, \

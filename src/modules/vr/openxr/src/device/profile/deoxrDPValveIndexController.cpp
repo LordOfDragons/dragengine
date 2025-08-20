@@ -159,7 +159,7 @@ void deoxrDPValveIndexController::pAddDevice( bool left ){
 // 	pAddAxesGripPinch( device, grip );
 	pAddButtonGrip( device, grip, false );
 	
-	pAddHandTracker( device, left );
+	pAddHandTracker(device, left, false);
 	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

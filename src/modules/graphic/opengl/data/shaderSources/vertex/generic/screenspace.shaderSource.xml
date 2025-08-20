@@ -16,13 +16,12 @@
 	<define>FULLSCREENQUAD_SCTRANSFORM</define>
 	<define>FULLSCREENQUAD_TCTRANSFORM</define>
 	<define>FULLSCREENQUAD</define>
-	<define>GEOMETRY_SHADER</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>NO_POSTRANSFORM</define>
 	<define>NO_TCTRANSFORM</define>
 	<define>NO_TEXCOORD</define>
 	<define>TEXCOORD_FLIP_Y</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>

@@ -134,6 +134,9 @@ public:
 	/** Button at index on device at index is touched. */
 	virtual bool GetButtonTouched( int device, int button );
 	
+	/** User finger is near button at index on device at index. */
+	virtual bool GetButtonNear(int device, int button);
+	
 	/** Value of axis at index on device at index. */
 	virtual float GetAxisValue( int device, int axis );
 	

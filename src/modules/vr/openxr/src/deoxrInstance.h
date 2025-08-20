@@ -78,10 +78,14 @@ public:
 		extEXTDebugUtils, //<! XR_EXT_debug_utils
 		extKHRCompositionLayerDepth, //<! XR_KHR_composition_layer_depth
 		extEXTHandInteraction, //<! XR_EXT_hand_interaction
-		extHTCHandInteraction //<! XR_HTC_hand_interaction
+		extHTCHandInteraction, //<! XR_HTC_hand_interaction
+		extKHRAndroidCreateInstance, //<! XR_KHR_android_create_instance
+		extFBTouchControllerPro, //<! XR_FB_touch_controller_pro
+		extFBTouchControllerProximity, //<! XR_FB_touch_controller_proximity
+		extMETATouchControllerPlus //<! XR_META_touch_controller_plus
 	};
 	
-	static const int ExtensionCount = extHTCHandInteraction + 1;
+	static const int ExtensionCount = extMETATouchControllerPlus + 1;
 	
 	/** Layers. */
 	enum eLayer{
@@ -121,8 +125,7 @@ private:
 	sExtension pSupportsExtension[ ExtensionCount ];
 	sLayer pSupportsLayer[ LayerCount ];
 	
-	deoxrPath pPathHandRight;
-	deoxrPath pPathHandLeft;
+	deoxrPath pPathHandRight, pPathHandLeft, pPathHead, pPathGamepad;
 	
 	
 	
@@ -174,6 +177,12 @@ public:
 	
 	/** Left hand path. */
 	inline const deoxrPath &GetPathHandLeft() const{ return pPathHandLeft; }
+	
+	/** Head path. */
+	inline const deoxrPath &GetPathHead() const{ return pPathHead; }
+	
+	/** Gamepad path. */
+	inline const deoxrPath &GetPathGamepad() const{ return pPathGamepad; }
 	
 	/** Suggest input bindings. */
 	void SuggestBindings( const deoxrPath &profile, const sSuggestBinding *bindings, int count );

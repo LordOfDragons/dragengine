@@ -48,22 +48,38 @@ public:
 	
 private:
 	struct sBoneMapping{
+		XrHandJointEXT constOxr;
+		deInputDevice::eHandBones constDe;
 		deInputDevicePose *bone;
 		XrHandJointLocationEXT *location;
 		XrHandJointVelocityEXT *velocity;
 	};
 	
 	struct sFingerBending{
-		deInputDevice::eHandBones base;
-		deInputDevice::eHandBones tip;
-		float angleLower;
-		float angleUpper;
-		float mapValueLower;
-		float mapValueUpper;
-		float value;
+		deInputDevice::eHandBones base, tip;
+		float angleLower, angleUpper, mapValueLower, mapValueUpper, value;
 		
-		void Init( deInputDevice::eHandBones base,
-			deInputDevice::eHandBones tip, float angle0, float angle1 );
+		void Init(deInputDevice::eHandBones base,
+			deInputDevice::eHandBones tip, float angle0, float angle1);
+	};
+	
+	struct sFingerSpreading{
+		deInputDevice::eHandBones bone1, bone2;
+		float angleLower, angleUpper, mapValueLower, mapValueUpper, value;
+		
+		void Init(deInputDevice::eHandBones bone1,
+			deInputDevice::eHandBones bone2, float angle0, float angle1);
+	};
+	
+	struct sFixBrokenRotationBone{
+		deInputDevice::eHandBones base, target;
+		void Init(deInputDevice::eHandBones base, deInputDevice::eHandBones target);
+	};
+	
+	struct sFingerInput{
+		XrHandJointEXT base, target;
+		float rangePress, rangeTouch, distance, value;
+		void Init(XrHandJointEXT base, XrHandJointEXT target, float rangePress, float rangeTouch);
 	};
 	
 	deoxrSession &pSession;
@@ -84,8 +100,16 @@ private:
 	deInputDevicePose *pPoseBones;
 	int pPoseBoneCount;
 	
-	sFingerBending pBendFinger[ 5 ];
-	float pSpreadFinger[ 4 ];
+	static const int FingerBendingCount = 5;
+	sFingerBending pBendFinger[FingerBendingCount];
+	
+	static const int SpreadFingerCount = 4;
+	sFingerSpreading pSpreadFinger[SpreadFingerCount];
+	
+	static const int FixBrokenRotationBoneCount = 14;
+	sFixBrokenRotationBone pFixBrokenRotationBone[FixBrokenRotationBoneCount];
+	
+	sFingerInput pFingerInput[4];
 	
 	sBoneMapping *pMapBoneXrToDe;
 	int pMapBoneXrToDeCount;
@@ -133,8 +157,14 @@ public:
 	/** Spread finger value for finger. */
 	float GetSpreadFingerAt( int index ) const;
 	
+	/** Finger input value. */
+	float GetFingerInputAt(int index) const;
+	
 	/** Log bone poses. */
 	void LogPoseBones( const char *prefix ) const;
+	
+	/** Reference pose changed. */
+	void ReferencePoseChanged();
 	/*@}*/
 	
 	
@@ -142,9 +172,10 @@ public:
 private:
 	void pCleanUp();
 	void pSetBoneMapping( int index, deInputDevice::eHandBones to, XrHandJointEXT from );
+	void pFixBrokenBoneRotations();
 	void pCalcFingerBending();
 	void pCalcFingerSpreading();
+	void pCalcFingerInput();
 };
 
 #endif
-

@@ -88,6 +88,7 @@ private:
 		dsClass *clsObj;
 		
 		dsClass *clsVector;
+		dsClass *clsQuaternion;
 		dsClass *clsAnimator;
 		dsClass *clsAnimatorInst;
 	};
@@ -117,6 +118,8 @@ private:
 	DEF_NATFUNC( nfSetVector );
 	DEF_NATFUNC( nfGetRotation );
 	DEF_NATFUNC( nfSetRotation );
+	DEF_NATFUNC(nfGetOrientation);
+	DEF_NATFUNC(nfSetOrientation);
 	DEF_NATFUNC( nfGetFrozen );
 	DEF_NATFUNC( nfSetFrozen );
 	DEF_NATFUNC( nfGetClamp );

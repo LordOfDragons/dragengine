@@ -2,19 +2,17 @@
 <shader>
 	<name>ToneMap Bloom Blur</name>
 	
-	<texture name='texColor' target='0'/>
-	
-	<parameter name='pTCTransform'/>
-	<parameter name='pOffsets1'/>
-	<parameter name='pOffsets2'/>
-	<parameter name='pOffsets3'/>
-	<parameter name='pOffsets4'/>
-	<parameter name='pOffsets5'/>
-	<parameter name='pWeights1'/>
-	<parameter name='pWeights2'/>
-	<parameter name='pClamp'/>
-	<parameter name='pLevel'/>
-	<parameter name='pScaleColor'/>
+	<parameter name='pTCTransform' location='1'/>
+	<parameter name='pOffsets1' location='3'/>
+	<parameter name='pOffsets2' location='4'/>
+	<parameter name='pOffsets3' location='5'/>
+	<parameter name='pOffsets4' location='6'/>
+	<parameter name='pOffsets5' location='7'/>
+	<parameter name='pWeights1' location='8'/>
+	<parameter name='pWeights2' location='9'/>
+	<parameter name='pClamp' location='10'/>
+	<parameter name='pLevel' location='11'/>
+	<parameter name='pScaleColor' location='12'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='fragment'>F ToneMap Bloom Blur</sourceCode>

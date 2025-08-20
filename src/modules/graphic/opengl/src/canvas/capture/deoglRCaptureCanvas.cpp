@@ -148,8 +148,10 @@ void deoglRCaptureCanvas::CaptureRenderWindow( deoglRRenderWindow &renderWindow 
 		const deoglPixelBuffer::Ref tempData( deoglPixelBuffer::Ref::New(
 			new deoglPixelBuffer( pPixelBuffer->GetFormat(), width, height, 1 ) ) );
 		
-		OGL_CHECK( pRenderThread, glReadPixels( 0, 0, width, height, pPixelBuffer->GetGLPixelFormat(),
-			pPixelBuffer->GetGLPixelType(), tempData->GetPointer() ) );
+		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
+		OGL_CHECK(pRenderThread, glReadPixels(0, 0, width, height, pPixelBuffer->GetGLPixelFormat(),
+			pPixelBuffer->GetGLPixelType(), tempData->GetPointer()));
+		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 4));
 		
 		// copy data over in in the correct order (hence flipped upside down)
 		const char * const ptrTempData = ( char* )tempData->GetPointer();

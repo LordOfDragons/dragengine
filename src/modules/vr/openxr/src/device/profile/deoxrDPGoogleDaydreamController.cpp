@@ -111,7 +111,7 @@ void deoxrDPGoogleDaydreamController::pAddDevice( bool left ){
 	pAddAxesTrackpad( device, trackpad );
 	pAddButtonTrackpad( device, trackpad, true, true );
 	
-	pAddHandTracker( device, left );
+	pAddHandTracker(device, left, true);
 	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

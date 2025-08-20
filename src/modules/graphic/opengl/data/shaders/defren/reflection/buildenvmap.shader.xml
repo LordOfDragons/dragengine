@@ -2,14 +2,9 @@
 <shader>
 	<name>DefRen Reflection Build EnvMap</name>
 	
-	<texture name='texEnvMap1' target='0'/>
-	<texture name='texEnvMap2' target='1'/>
-	<texture name='texEnvMap3' target='2'/>
-	<texture name='texEnvMap4' target='3'/>
-	
-	<parameter name='pQuadParams'/> <!-- 0 -->
-	<parameter name='pBlendWeights'/> <!-- 1 -->
-	<parameter name='pMipMapLevel'/> <!-- 2 -->
+	<parameter name='pQuadParams' location='0'/> <!-- 0 -->
+	<parameter name='pBlendWeights' location='3'/> <!-- 1 -->
+	<parameter name='pMipMapLevel' location='4'/> <!-- 2 -->
 	
 	<sourceCode unit='vertex'>V Generic FullScreenQuad</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Reflection Build EnvMap</sourceCode>

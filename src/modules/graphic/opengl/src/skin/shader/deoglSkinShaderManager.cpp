@@ -44,7 +44,6 @@ static const char *vUnitSourceCodePath[ deoglSkinShaderManager::UnitSourceCodePa
 	"V DefRen Skin Geometry", // euscpVertexGeometry
 	"V DefRen Skin Depth", // euscpVertexDepth
 	"V DefRen Skin Particle", // euscpVertexParticle
-	"V DefRen Skin PassThrough", // euscpVertexPassThrough
 	"V DefRen GI Material Map", // euscpGIMaterialMap
 	
 	"G DefRen Skin Geometry", // euscpGeometryGeometry

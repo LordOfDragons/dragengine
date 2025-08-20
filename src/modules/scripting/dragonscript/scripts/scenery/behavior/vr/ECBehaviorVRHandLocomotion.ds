@@ -1,0 +1,988 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.BehaviorTreeSystem
+pin Dragengine.XML
+
+
+/**
+ * \brief Behavior element behavior adding hands only locomotion support to actor.
+ * \version 1.28
+ * 
+ * This behavior is designed to be used with \ref ECBehaviorVRHand for which
+ * \ref ECBehaviorVRHand.Instance#isUsingHandInteraction() returns true.
+ * 
+ * Using hands only (or hand interaction) controllers there is no way to use sticks to move
+ * or turn the actor. This behavior simulates stick type movement by tracking hand position.
+ * The user begins moving and turning by looking at his hand and touching an application defined
+ * finger to the thumb, typically the middle finger. The index is usually a bad choice since VR
+ * runtimes tend to intercept this touch event for special system handling. The hand location
+ * relative to the HMD at the time of touching is stored as origin. While still touching the
+ * thumb the user can then move the hand left, right, forward, backwards, up and
+ * down. This is like if the user is moving the tip of an imaginary stick. Each movement
+ * direction is assigned a \ref Command of this the analog value is set from the distance from
+ * the origin. Furthermore button press events are simulated on the same commands if the value
+ * is larger than 75% away from the origin. There is a dead-zone near the stored origin to avoid
+ * unintentional turning or moving. Furthermore the input is not linear from the dead zone border
+ * to the input range. This allows for easier input of small turning and movement while still
+ * being able to turn and move faster near the range.
+ * 
+ * This behavior can be added multiple times to an element. This allows to track two hands.
+ * Each instance has an identifier which can be used to retrieve a specific instance. The prefix
+ * of the element class properties is "vrHandLocomotion." . If the identifier is not empty the
+ * element class properties have the prefix "{id}.vrHandLocomotion." . This can be overwritten
+ * if required.
+ * 
+ * This behavior does not require persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_vrhandlocomotion
+ */
+class ECBehaviorVRHandLocomotion extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Enabled changed. */
+		func void enabledChanged(Instance instance)
+		
+		/** \brief Start locomotion. */
+		func void startLocomotion(Instance instance)
+		
+		/** \brief Stop locomotion. */
+		func void stopLocomotion(Instance instance)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		func new()
+		end
+		
+		func void enabledChanged(Instance instance)
+		end
+		
+		func void startLocomotion(Instance instance)
+		end
+		
+		func void stopLocomotion(Instance instance)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorVRHand
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorVRHandLocomotion'>
+	 *   <!-- required: use vr hand with id. -->
+	 *   <string name='vrHand'>right</string>
+	 *   
+	 *   <!-- optional: use BaseGameApp command manager. game can add more supported values.
+	 *                  default is 'default' -->
+	 *   <string name='commandManager'>default</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorVRHandLocomotion' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorVRHandLocomotion")
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorVRHandLocomotion behavior = ECBehaviorVRHandLocomotion.new(eclass,\
+				ECBehaviorVRHand.getBehaviorIn(eclass, parameters.getAt("vrHand") cast String),\
+				ECBehaviorPlayerControllable.getBehaviorIn(eclass),\
+				getCommandManagerFor(parameters.getAt("commandManager", "default") cast String), id)
+			
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			getHelper().setPropertiesFromParameters(eclass, parameters, "vrHandLocomotion", id)
+			return behavior
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Tracked input. */
+		class TrackedInput
+			var float pValue
+			var bool pPressedPositive, pPressedNegative
+			var Command pCommandPositive, pCommandNegative
+			
+			
+			/** \brief Created tracked input. */
+			func new()
+			end
+			
+			
+			/** \brief Value */
+			func float getValue()
+				return pValue
+			end
+			
+			/** \brief Set value sending commands if required. */
+			func void setValue(float value)
+				if DEMath.fabs(value - pValue) < 0.01
+					return
+				end
+				
+				pValue = value
+				
+				if pCommandPositive != null
+					pCommandPositive.analogAbsolute(value)
+					
+				elif pCommandNegative != null
+					pCommandNegative.analogAbsolute(value)
+				end
+				
+				if value > 0.75 != pPressedPositive
+					pPressedPositive = not pPressedPositive
+					
+					if pCommandPositive != null
+						if pPressedPositive
+							pCommandPositive.start()
+							
+						else
+							pCommandPositive.stop()
+						end
+					end
+				end
+				
+				if value < -0.75 != pPressedNegative
+					pPressedNegative = not pPressedNegative
+					
+					if pCommandNegative != null
+						if pPressedNegative
+							pCommandNegative.start()
+							
+						else
+							pCommandNegative.stop()
+						end
+					end
+				end
+			end
+			
+			/** \brief Positive value command. */
+			func Command getCommandPositive()
+				return pCommandPositive
+			end
+			
+			/** \brief Set positive value command. */
+			func void setCommandPositive(Command command)
+				pCommandPositive = command
+			end
+			
+			/** \brief Negative value command. */
+			func Command getCommandNegative()
+				return pCommandNegative
+			end
+			
+			/** \brief Set negative value command. */
+			func void setCommandNegative(Command command)
+				pCommandNegative = command
+			end
+			
+			/** \brief Set commands. */
+			func void setCommand(Command command)
+				pCommandPositive = pCommandNegative = command
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action "vrHandLocomotion{(id)}.set".
+		 * \version 1.26
+		 */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				value = parameters.getAt("deadzone", null)
+				if value != null
+					pInstance.setDeadzone((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("linearity", null)
+				if value != null
+					pInstance.setLinearity((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("command.profile", null)
+				if value != null
+					if value.equals("move")
+						pInstance.setCommandsMove()
+						
+					elif value.equals("turn")
+						pInstance.setCommandsTurn()
+						
+					elif value.equals("turnMove")
+						pInstance.setCommandsTurnMove()
+						
+					elif value.equals("clear")
+						pInstance.clearCommands()
+					end
+				end
+				
+				value = parameters.getAt("command.x", null)
+				if value != null
+					pInstance.getInputX().setCommand(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				value = parameters.getAt("command.x.positive", null)
+				if value != null
+					pInstance.getInputX().setCommandPositive(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				value = parameters.getAt("command.x.negative", null)
+				if value != null
+					pInstance.getInputX().setCommandNegative(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				value = parameters.getAt("command.y", null)
+				if value != null
+					pInstance.getInputY().setCommand(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				value = parameters.getAt("command.y.positive", null)
+				if value != null
+					pInstance.getInputY().setCommandPositive(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				value = parameters.getAt("command.y.negative", null)
+				if value != null
+					pInstance.getInputY().setCommandNegative(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				value = parameters.getAt("command.z", null)
+				if value != null
+					pInstance.getInputZ().setCommand(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				value = parameters.getAt("command.z.positive", null)
+				if value != null
+					pInstance.getInputZ().setCommandPositive(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				value = parameters.getAt("command.z.negative", null)
+				if value != null
+					pInstance.getInputZ().setCommandNegative(pInstance.getECBehavior().\
+						getCommandManager().getNamed(value cast String))
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/**
+		 * \brief Behavior tree action/condition "vrHandLocomotion{(id)}.check".
+		 * \version 1.26
+		 */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "running", null)
+				if value != null
+					result &= pInstance.isRunning() == value.equals("true")
+				end
+				
+				result &= checkCommand(parameters, prefix + "input.x.value", pInstance.getInputX(), value)
+				result &= checkCommand(parameters, prefix + "input.y.value", pInstance.getInputY(), value)
+				result &= checkCommand(parameters, prefix + "input.z.value", pInstance.getInputZ(), value)
+				
+				result &= checkCommand(parameters, prefix + "command.x.positive", pInstance.getInputX(), value)
+				result &= checkCommand(parameters, prefix + "command.x.negative", pInstance.getInputX(), value)
+				result &= checkCommand(parameters, prefix + "command.y.positive", pInstance.getInputY(), value)
+				result &= checkCommand(parameters, prefix + "command.y.negative", pInstance.getInputY(), value)
+				result &= checkCommand(parameters, prefix + "command.z.positive", pInstance.getInputZ(), value)
+				result &= checkCommand(parameters, prefix + "command.z.negative", pInstance.getInputZ(), value)
+				
+				return result
+			end
+			
+			func bool checkInputValue(Dictionary parameters, String prefix, TrackedInput input, Object value)
+				var bool result = true
+				
+				value = parameters.getAt(prefix + ".less", null)
+				if value != null
+					result &= input.getValue() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + ".greater", null)
+				if value != null
+					result &= input.getValue() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+			
+			func bool checkCommand(Dictionary parameters, String prefix, TrackedInput input, Object value)
+				var bool result = true
+				
+				value = parameters.getAt(prefix, null)
+				if value != null
+					result &= matchesCommand(input.getCommandPositive(), value)
+				end
+				
+				value = parameters.getAt(prefix + ".not", null)
+				if value != null
+					result &= not matchesCommand(input.getCommandPositive(), value)
+				end
+				
+				return result
+			end
+			
+			func bool matchesCommand(Command command, Object value)
+				return value.equals(command != null if command.getName() else "")
+			end
+		end
+		
+		
+		var ECBehaviorVRHandLocomotion pECBehavior
+		var ECBehaviorVRHand.Instance pVRHand
+		var ECBehaviorPlayerControllable.Instance pPlayerControllable
+		var bool pEnabled
+		var float pRange, pDeadzone, pLinearity, pLinearityFactor
+		var Matrix pOriginMatrix, pOriginMatrixInverse
+		var Vector pInputPosition
+		var TrackedInput pInputX, pInputY, pInputZ
+		
+		var Array pListeners
+		var ECComposeBTSM.Instance pBTSMs
+		
+		
+		/** \brief Create instance. */
+		func new(ECBehaviorVRHandLocomotion ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pVRHand = ecbehavior.getVRHand().instance(element)
+			pPlayerControllable = ecbehavior.getPlayerControllable().instance(element)
+			
+			pListeners = Array.new()
+			pRange = 0.1
+			pDeadzone = 0.1
+			pLinearity = 0.25
+			pLinearityFactor = calcLinearityFactor()
+			pEnabled = true
+			pInputX = TrackedInput.new()
+			pInputY = TrackedInput.new()
+			pInputZ = TrackedInput.new()
+			
+			setCommandsTurnMove()
+			
+			setRequiresThink(true)
+		end
+		
+		/** \brief Dispose of instance. */
+		func void dispose()
+			pVRHand = null
+			pListeners = null
+			pBTSMs = null
+			pInputX = pInputY = pInputZ = null
+			super.dispose()
+		end
+		
+		
+		/** \brief Initialize behavior from stub. */
+		func void init(StubElement stub)
+			pECBehavior.createListeners(this)
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(getElement(), pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorVRHandLocomotion getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief VR Hand. */
+		func ECBehaviorVRHand.Instance getVRHand()
+			return pVRHand
+		end
+		
+		
+		/** \brief Enabled. */
+		func bool getEnabled()
+			return pEnabled
+		end
+		
+		/** \brief Set enabled. */
+		func void setEnabled(bool enabled)
+			if enabled == pEnabled
+				return
+			end
+			
+			pEnabled = enabled
+			
+			if not enabled
+				stop()
+			end
+			setRequiresThink(enabled)
+			
+			pListeners.forEach(block Listener each
+				each.enabledChanged(this)
+			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
+			end
+		end
+		
+		/** \brief X axis input. */
+		func TrackedInput getInputX()
+			return pInputX
+		end
+		
+		/** \brief Y axis input. */
+		func TrackedInput getInputY()
+			return pInputY
+		end
+		
+		/** \brief Z axis input. */
+		func TrackedInput getInputZ()
+			return pInputZ
+		end
+		
+		/** \brief Set MoveLR as X axis command, MoveFB as Z axis command, and null as Y axis command. */
+		func void setCommandsMove()
+			var ECBehaviorPlayerControllable.Tracker tracker = pPlayerControllable.getTracker()
+			pInputX.setCommand(CommandsBAAMovement.AnalogMoveLR.new(tracker))
+			pInputY.setCommand(null)
+			pInputZ.setCommand(CommandsBAAMovement.AnalogMoveFB.new(tracker))
+		end
+		
+		/** \brief Set LookLR as X axis command and null as Y and Z axis command. */
+		func void setCommandsTurn()
+			var ECBehaviorPlayerControllable.Tracker tracker = pPlayerControllable.getTracker()
+			pInputX.setCommand(CommandsBAAMovement.AnalogLookLR.new(tracker))
+			pInputY.setCommand(null)
+			pInputZ.setCommand(null)
+		end
+		
+		/** \brief Set LookLR as X axis command and MoveFB as Z axis command, and null as Y axis command. */
+		func void setCommandsTurnMove()
+			var ECBehaviorPlayerControllable.Tracker tracker = pPlayerControllable.getTracker()
+			pInputX.setCommand(CommandsBAAMovement.AnalogLookLR.new(tracker))
+			pInputY.setCommand(null)
+			pInputZ.setCommand(CommandsBAAMovement.AnalogMoveFB.new(tracker))
+		end
+		
+		/** \brief Set all axis command to null. */
+		func void clearCommands()
+			pInputX.setCommand(null)
+			pInputY.setCommand(null)
+			pInputZ.setCommand(null)
+		end
+		
+		/** \brief Input range in meters. */
+		func float getRange()
+			return pRange
+		end
+		
+		/** \brief Set input range in meters. */
+		func void setRange(float range)
+			pRange = DEMath.max(range, 0.01)
+		end
+		
+		/** \brief Deadzone as percentage of range (0..1). */
+		func float getDeadzone()
+			return pDeadzone
+		end
+		
+		/** \brief Set deadzone as percentage of range (0..1). */
+		func void setDeadzone(float deadzone)
+			pDeadzone = DEMath.clamp(deadzone, 0.0, 1.0)
+		end
+		
+		/**
+		 * \brief Linearity of input.
+		 * 
+		 * Value of 0 is linear input. Values up to 1 map larger input range to small movement.
+		 * Values down to -1 map larger input range to larger movement. 0.25 is the default.
+		 * 
+		 * Linearity is calculated like this:
+		 * 
+		 * | Linearity | Mapped value (x=input) |
+		 * | --- | --- |
+		 * | 0 | x |
+		 * | 1/3 | pow(x, 2) |
+		 * | 2/3 | pow(x, 4) |
+		 * | 1 | pow(x, 8) |
+		 * | -1/3 | pow(x, 1/2) |
+		 * | -2/3 | pow(x, 1/4) |
+		 * | -1 | pow(x, 1/8) |
+		 */
+		func float getLinearity()
+			return pLinearity
+		end
+		
+		/**
+		 * \brief Set linearity of input.
+		 * \see #getLinearity()
+		 */
+		func void setLinearity(float linearity)
+			pLinearity = DEMath.clamp(linearity, -1.0, 1.0)
+			pLinearityFactor = calcLinearityFactor()
+		end
+		
+		/** \brief Calculate linearity factor. */
+		protected func float calcLinearityFactor()
+			if pLinearity > 0.001
+				return DEMath.pow(2, pLinearity * 3)
+				
+			elif pLinearity < -0.001
+				return DEMath.pow(2, 1 / (pLinearity * 3))
+				
+			else
+				return 1
+			end
+		end
+		
+		
+		/** \brief Locomotion is running. */
+		func bool isRunning()
+			return pEnabled and pOriginMatrix != null
+		end
+		
+		/**
+		 * \brief Start locomotion.
+		 * 
+		 * Has no effect if disabled, hand is not using hand interaction or already tracking.
+		 */
+		func void start()
+			if not pEnabled or not pVRHand.isUsingHandInteraction() or isRunning()
+				return
+			end
+			
+			pOriginMatrix = calcOriginMatrix()
+			pOriginMatrixInverse = pOriginMatrix.getInverse()
+			pInputPosition = pOriginMatrix.getPosition()
+			
+			pListeners.forEach(block Listener each
+				each.startLocomotion(this)
+			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "start")
+			end
+		end
+		
+		/**
+		 * \brief Stop locomotion.
+		 * 
+		 * Has no effect if disabled, hand is not using hand interaction or not tracking.
+		 */
+		func void stop()
+			if not isRunning()
+				return
+			end
+			
+			pInputX.setValue(0)
+			pInputY.setValue(0)
+			pInputZ.setValue(0)
+			pOriginMatrix = pOriginMatrixInverse = null
+			pInputPosition = null
+			
+			pListeners.forEach(block Listener each
+				each.stopLocomotion(this)
+			end)
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stop")
+			end
+		end
+		
+		
+		/** \brief Calculate origin matrix. */
+		func Matrix calcOriginMatrix()
+			var Vector hand = pVRHand.getPositionPlayspace()
+			
+			var float shift = pVRHand.isRightHand() if 0.1 else -0.1
+			var Vector hmd = pVRHand.getVRHMD().getMatrixPlayspace() * Vector.new(shift, -0.2, -0.1)
+			
+			var Vector direction = (hand - hmd).compSelect(true, false, true)
+			if direction.getLength() < 0.001
+				return Matrix.new()
+			end
+			return Matrix.newWorld(hand, direction, Vector.new(0, 1, 0))
+		end
+		
+		/** \brief Calculated mapped input value in the range -1..1 . */
+		func float mapInputValue(float input)
+			if input > 0
+				return DEMath.pow(DEMath.linearStep(input, pDeadzone, 1), pLinearityFactor)
+				
+			else
+				return -DEMath.pow(DEMath.linearStep(input, -1, -pDeadzone, 1, 0), pLinearityFactor)
+			end
+		end
+		
+		
+		/** \brief Update input tracking. */
+		func void update(float elapsed)
+			if pOriginMatrix == null or not pEnabled
+				return
+			end
+			
+			pInputPosition = pVRHand.getPositionPlayspace()
+			var Vector position = (pOriginMatrixInverse * pInputPosition) / pRange
+			pInputX.setValue(mapInputValue(position.getX()))
+			pInputY.setValue(mapInputValue(position.getY()))
+			pInputZ.setValue(mapInputValue(-position.getZ()))
+		end
+		
+		
+		/** \brief Add listener. */
+		func void addListener(Listener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		/** \brief Frame update. */
+		func void think(float elapsed)
+			update(elapsed)
+		end
+	end
+	
+	
+	var ECBehaviorVRHand pVRHand
+	var ECBehaviorPlayerControllable pPlayerControllable
+	var CommandManager pCommandManager
+	var Array pListenerFactories
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
+	ECBehaviorPlayerControllable playerControllable, CommandManager commandManager)\
+	this(eclass, vrHand, playerControllable, commandManager, "")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
+	ECBehaviorPlayerControllable playerControllable, CommandManager commandManager, String id)\
+	this(eclass, vrHand, playerControllable, commandManager, id,\
+	id.empty() if "vrHandLocomotion" else "vrHandLocomotion(" + id + ")")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
+	ECBehaviorPlayerControllable playerControllable, String id)\
+	this(eclass, vrHand, playerControllable, eclass.sharedFactoryHelper.defaultCommandManager(), id)
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
+	ECBehaviorPlayerControllable playerControllable, CommandManager commandManager, String id,\
+	String subID) this(eclass, vrHand, playerControllable, commandManager, id, subID, subID + ".")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
+	ECBehaviorPlayerControllable playerControllable, String id, String subID) this(eclass, vrHand,\
+	playerControllable, eclass.sharedFactoryHelper.defaultCommandManager(), id, subID, subID + ".")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand,\
+	ECBehaviorPlayerControllable playerControllable, CommandManager commandManager,\
+	String id, String subID, String prefix) super(eclass, id)
+		if vrHand == null
+			throw ENullPointer.new("vrHand")
+		end
+		if playerControllable == null
+			throw ENullPointer.new("playerControllable")
+		end
+		if commandManager == null
+			throw ENullPointer.new("commandManager")
+		end
+		
+		pPrefix = prefix
+		pVRHand = vrHand
+		pCommandManager = commandManager
+		pPlayerControllable = playerControllable
+		pListenerFactories = Array.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pVRHand = null
+		pPlayerControllable = null
+		pCommandManager = null
+		pListenerFactories = null
+		pBTSMs = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief VR Hand behavior. */
+	func ECBehaviorVRHand getVRHand()
+		return pVRHand
+	end
+	
+	/** \brief Player controllable behavior. */
+	func ECBehaviorPlayerControllable getPlayerControllable()
+		return pPlayerControllable
+	end
+	
+	/** \brief Command manager. */
+	func CommandManager getCommandManager()
+		return pCommandManager
+	end
+	
+	/** \brief Compose behavior trees and state machines. */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
+	/** \brief Add listener factory. */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandLocomotion.
+	 */
+	static func ECBehaviorVRHandLocomotion getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHandLocomotion each
+			return true
+		end) cast ECBehaviorVRHandLocomotion
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandLocomotion with specific identifier.
+	 */
+	static func ECBehaviorVRHandLocomotion getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorVRHandLocomotion each
+			return each.getID().equals(id)
+		end) cast ECBehaviorVRHandLocomotion
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandLocomotion behaviors in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorVRHandLocomotion each
+			return true
+		end)
+	end
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandLocomotion.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandLocomotion.Instance with specific identifier.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandLocomotion.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

@@ -2,10 +2,8 @@
 <shader>
 	<name>ToneMap Bloom Add Stereo</name>
 	
-	<texture name='texColor' target='0'/>
-	
-	<parameter name='pTCTransform'/>
-	<parameter name='pLevel'/>
+	<parameter name='pTCTransform' location='1'/>
+	<parameter name='pLevel' location='3'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

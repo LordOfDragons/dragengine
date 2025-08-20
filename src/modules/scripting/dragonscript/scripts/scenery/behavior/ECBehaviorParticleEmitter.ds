@@ -209,17 +209,13 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorParticleEmitter"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorParticleEmitter")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorParticleEmitter behavior = ECBehaviorParticleEmitter.new(eclass,\
-				ECBehaviorCollider.getBehaviorIn(eclass), BaseGameApp.getApp().getLoaders(),\
+				ECBehaviorCollider.getBehaviorIn(eclass), getHelper().defaultLoaders(),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			if parameters.has("collisionFilter")
@@ -238,21 +234,10 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "particleEmitter", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "particleEmitter", id)
 			return behavior
-		end
-		
-		/**
-		 * \brief Trigger table matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func TSTriggerTable getTriggerTableFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 	end
 	
@@ -663,11 +648,11 @@ class ECBehaviorParticleEmitter extends DefaultECBehavior
 	 * These values are optional and can be null: \em collider.
 	 */
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
-	this(eclass, collider, BaseGameApp.getApp().getLoaders(), null)
+	this(eclass, collider, eclass.sharedFactoryHelper.defaultLoaders(), null)
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
-	this(eclass, collider, BaseGameApp.getApp().getLoaders(), null, id)
+	this(eclass, collider, eclass.sharedFactoryHelper.defaultLoaders(), null, id)
 	end
 	
 	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, Loaders loaders, \

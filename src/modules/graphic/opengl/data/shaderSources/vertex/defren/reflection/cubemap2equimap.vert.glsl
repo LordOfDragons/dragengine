@@ -1,14 +1,17 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
 layout(location=0) in vec2 inPosition;
 
-out vec2 vScreenCoord;
+#include "shared/interface/2d/vertex.glsl"
 
 const vec2 cv1 = vec2( -3.1415927, -1.57079633 ); // -pi, -pi/2
 const vec2 cv2 = vec2( 0.0, 1.57079633 ); // 0, pi/2
 
 void main( void ){
+	vertexShaderDefaultOutputs();
 	gl_Position = vec4( inPosition, 0, 1 );
 	
 	// this is the basic relationship between the texture coordinates and the polar coordinates.

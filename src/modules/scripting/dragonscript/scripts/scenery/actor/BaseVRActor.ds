@@ -38,29 +38,31 @@ pin Dragengine.Utils
  * Extends BaseActor with VR behaviors.
  */
 class BaseVRActor extends BaseActor
-	private var ECBehaviorVRPlayspace.Instance pVRPlayspace
-	private var ECBehaviorVRHMD.Instance pVRHMD
-	private var ECBehaviorVRHand.Instance pVRRightHand
-	private var ECBehaviorVRHand.Instance pVRLeftHand
-	private var ECBehaviorVRHandPointAt.Instance pVRRightHandPointAt
-	private var ECBehaviorVRHandPointAt.Instance pVRLeftHandPointAt
-	private var ECBehaviorVRHandLaserPointer.Instance pVRRightHandLaserPointer
-	private var ECBehaviorVRHandLaserPointer.Instance pVRLeftHandLaserPointer
-	private var ECBehaviorAttachSlot.Instance pVRRightHandAttachSlot
-	private var ECBehaviorAttachSlot.Instance pVRLeftHandAttachSlot
-	private var ECBehaviorGrabber.Instance pVRRightHandGrabber
-	private var ECBehaviorGrabber.Instance pVRLeftHandGrabber
-	private var ECBehaviorVRHandPose.Instance pVRRightHandPose
-	private var ECBehaviorVRHandPose.Instance pVRLeftHandPose
-	private var ECBehaviorActorAnimated.Instance pVRRightHandAnimated
-	private var ECBehaviorActorAnimated.Instance pVRLeftHandAnimated
-	private var ECBehaviorVRHandAction.Instance pVRRightHandAction
-	private var ECBehaviorVRHandAction.Instance pVRLeftHandAction
+	var ECBehaviorVRPlayspace.Instance pVRPlayspace
+	var ECBehaviorVRHMD.Instance pVRHMD
+	var ECBehaviorVRHand.Instance pVRRightHand
+	var ECBehaviorVRHand.Instance pVRLeftHand
+	var ECBehaviorVRHandPointAt.Instance pVRRightHandPointAt
+	var ECBehaviorVRHandPointAt.Instance pVRLeftHandPointAt
+	var ECBehaviorVRHandLaserPointer.Instance pVRRightHandLaserPointer
+	var ECBehaviorVRHandLaserPointer.Instance pVRLeftHandLaserPointer
+	var ECBehaviorAttachSlot.Instance pVRRightHandAttachSlot
+	var ECBehaviorAttachSlot.Instance pVRLeftHandAttachSlot
+	var ECBehaviorGrabber.Instance pVRRightHandGrabber
+	var ECBehaviorGrabber.Instance pVRLeftHandGrabber
+	var ECBehaviorVRHandPose.Instance pVRRightHandPose
+	var ECBehaviorVRHandPose.Instance pVRLeftHandPose
+	var ECBehaviorVRHandLocomotion.Instance pVRRightHandLocomotion
+	var ECBehaviorVRHandLocomotion.Instance pVRLeftHandLocomotion
+	var ECBehaviorActorAnimated.Instance pVRRightHandAnimated
+	var ECBehaviorActorAnimated.Instance pVRLeftHandAnimated
+	var ECBehaviorVRHandAction.Instance pVRRightHandAction
+	var ECBehaviorVRHandAction.Instance pVRLeftHandAction
 	
 	
 	
 	/** \brief Create element. */
-	public func new(BaseVRActorClass eclass) super(eclass)
+	func new(BaseVRActorClass eclass) super(eclass)
 		pVRPlayspace = eclass.getVRPlayspace().instance(this)
 		pVRHMD = eclass.getVRHMD().instance(this)
 		pVRRightHand = eclass.getVRRightHand().instance(this)
@@ -75,6 +77,8 @@ class BaseVRActor extends BaseActor
 		pVRLeftHandGrabber = eclass.getVRLeftHandGrabber().instance(this)
 		pVRRightHandPose = eclass.getVRRightHandPose().instance(this)
 		pVRLeftHandPose = eclass.getVRLeftHandPose().instance(this)
+		pVRRightHandLocomotion = eclass.getVRRightHandLocomotion().instance(this)
+		pVRLeftHandLocomotion = eclass.getVRLeftHandLocomotion().instance(this)
 		pVRRightHandAnimated = eclass.getVRRightHandAnimated().instance(this)
 		pVRLeftHandAnimated = eclass.getVRLeftHandAnimated().instance(this)
 		pVRRightHandAction = eclass.getVRRightHandAction().instance(this)
@@ -84,42 +88,42 @@ class BaseVRActor extends BaseActor
 	
 	
 	/** \brief VR Playspace behavior instance. */
-	public func ECBehaviorVRPlayspace.Instance getVRPlayspace()
+	func ECBehaviorVRPlayspace.Instance getVRPlayspace()
 		return pVRPlayspace
 	end
 	
 	/** \brief VR HMD. */
-	public func ECBehaviorVRHMD.Instance getVRHMD()
+	func ECBehaviorVRHMD.Instance getVRHMD()
 		return pVRHMD
 	end
 	
 	/** \brief VR Right Hand Controller. */
-	public func ECBehaviorVRHand.Instance getVRRightHand()
+	func ECBehaviorVRHand.Instance getVRRightHand()
 		return pVRRightHand
 	end
 	
 	/** \brief VR Left Hand Controller. */
-	public func ECBehaviorVRHand.Instance getVRLeftHand()
+	func ECBehaviorVRHand.Instance getVRLeftHand()
 		return pVRLeftHand
 	end
 	
 	/** \brief VR Right Hand Controller Point-At. */
-	public func ECBehaviorVRHandPointAt.Instance getVRRightHandPointAt()
+	func ECBehaviorVRHandPointAt.Instance getVRRightHandPointAt()
 		return pVRRightHandPointAt
 	end
 	
 	/** \brief VR Left Hand Controller Point-At. */
-	public func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
+	func ECBehaviorVRHandPointAt.Instance getVRLeftHandPointAt()
 		return pVRLeftHandPointAt
 	end
 	
 	/** \brief VR Right Hand Controller Laser Pointer. */
-	public func ECBehaviorVRHandLaserPointer.Instance getVRRightHandLaserPointer()
+	func ECBehaviorVRHandLaserPointer.Instance getVRRightHandLaserPointer()
 		return pVRRightHandLaserPointer
 	end
 	
 	/** \brief VR Left Hand Controller Laser Pointer. */
-	public func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
+	func ECBehaviorVRHandLaserPointer.Instance getVRLeftHandLaserPointer()
 		return pVRLeftHandLaserPointer
 	end
 	
@@ -127,7 +131,7 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Right Hand Controller Attach Slot.
 	 * \version 1.9
 	 */
-	public func ECBehaviorAttachSlot.Instance getVRRightHandAttachSlot()
+	func ECBehaviorAttachSlot.Instance getVRRightHandAttachSlot()
 		return pVRRightHandAttachSlot
 	end
 	
@@ -135,7 +139,7 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Left Hand Controller Attach Slot.
 	 * \version 1.9
 	 */
-	public func ECBehaviorAttachSlot.Instance getVRLeftHandAttachSlot()
+	func ECBehaviorAttachSlot.Instance getVRLeftHandAttachSlot()
 		return pVRLeftHandAttachSlot
 	end
 	
@@ -143,7 +147,7 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Right Hand Controller Grabber.
 	 * \version 1.9
 	 */
-	public func ECBehaviorGrabber.Instance getVRRightHandGrabber()
+	func ECBehaviorGrabber.Instance getVRRightHandGrabber()
 		return pVRRightHandGrabber
 	end
 	
@@ -151,7 +155,7 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Left Hand Controller Grabber.
 	 * \version 1.9
 	 */
-	public func ECBehaviorGrabber.Instance getVRLeftHandGrabber()
+	func ECBehaviorGrabber.Instance getVRLeftHandGrabber()
 		return pVRLeftHandGrabber
 	end
 	
@@ -159,7 +163,7 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Right Hand Pose.
 	 * \version 1.10
 	 */
-	public func ECBehaviorVRHandPose.Instance getVRRightHandPose()
+	func ECBehaviorVRHandPose.Instance getVRRightHandPose()
 		return pVRRightHandPose
 	end
 	
@@ -167,15 +171,31 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Left Hand Pose.
 	 * \version 1.10
 	 */
-	public func ECBehaviorVRHandPose.Instance getVRLeftHandPose()
+	func ECBehaviorVRHandPose.Instance getVRLeftHandPose()
 		return pVRLeftHandPose
+	end
+	
+	/**
+	 * \brief VR Right Hand Locomotion.
+	 * \version 1.28
+	 */
+	func ECBehaviorVRHandLocomotion.Instance getVRRightHandLocomotion()
+		return pVRRightHandLocomotion
+	end
+	
+	/**
+	 * \brief VR Left Hand Locomotion.
+	 * \version 1.28
+	 */
+	func ECBehaviorVRHandLocomotion.Instance getVRLeftHandLocomotion()
+		return pVRLeftHandLocomotion
 	end
 	
 	/**
 	 * \brief VR Right Hand Animated.
 	 * \version 1.10
 	 */
-	public func ECBehaviorActorAnimated.Instance getVRRightHandAnimated()
+	func ECBehaviorActorAnimated.Instance getVRRightHandAnimated()
 		return pVRRightHandAnimated
 	end
 	
@@ -183,7 +203,7 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Left Hand Animated.
 	 * \version 1.10
 	 */
-	public func ECBehaviorActorAnimated.Instance getVRLeftHandAnimated()
+	func ECBehaviorActorAnimated.Instance getVRLeftHandAnimated()
 		return pVRLeftHandAnimated
 	end
 	
@@ -191,7 +211,7 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Right Hand Action.
 	 * \version 1.10
 	 */
-	public func ECBehaviorVRHandAction.Instance getVRRightHandAction()
+	func ECBehaviorVRHandAction.Instance getVRRightHandAction()
 		return pVRRightHandAction
 	end
 	
@@ -199,14 +219,14 @@ class BaseVRActor extends BaseActor
 	 * \brief VR Left Hand Action.
 	 * \version 1.10
 	 */
-	public func ECBehaviorVRHandAction.Instance getVRLeftHandAction()
+	func ECBehaviorVRHandAction.Instance getVRLeftHandAction()
 		return pVRLeftHandAction
 	end
 	
 	
 	
 	/** \brief Visit element. */
-	public func void visit(ElementVisitor visitor)
+	func void visit(ElementVisitor visitor)
 		visitor.visitBaseVRActor(this)
 	end
 end

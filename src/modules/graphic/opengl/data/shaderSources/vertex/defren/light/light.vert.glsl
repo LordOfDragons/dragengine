@@ -1,12 +1,4 @@
-#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
-	#extension GL_ARB_shader_viewport_layer_array : require
-#endif
-#ifdef EXT_AMD_VERTEX_SHADER_LAYER
-	#extension GL_AMD_vertex_shader_layer : require
-#endif
-#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
-	#extension GL_ARB_shader_draw_parameters : require
-#endif
+#include "shared/preamble.glsl"
 
 precision HIGHP float;
 precision HIGHP int;
@@ -14,49 +6,46 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
-#if defined GS_RENDER_STEREO || defined FULLSCREENQUAD
-	layout(location=0) in vec2 inPosition;
-#else
-	layout(location=0) in vec3 inPosition;
-#endif
+// (LayeredRendering == LayeredRenderingStereo && !VSRenderLayer) || FullScreenQuad: vec2
+// otherwise: vec3
+layout(location=0) in vec3 inPosition;
 
-#ifdef VS_RENDER_STEREO
-	#ifdef FULLSCREENQUAD
-		layout(location=1) in int inLayer;
-	#else
-		#define inLayer gl_DrawID
-	#endif
-#else
-	const int inLayer = 0;
-#endif
+// VSRenderLayer && FullScreenQuad
+layout(location=1) in int inLayer;
 
-#ifndef GS_RENDER_STEREO
-	#ifdef FULLSCREENQUAD
-		out vec2 vScreenCoord;
-	#else
-		out vec3 vLightVolumePos;
-	#endif
-#endif
-
-#ifdef VS_RENDER_STEREO
-	flat out int vLayer;
-#endif
+#include "shared/interface/light/vertex.glsl"
 
 void main(void){
-	#ifdef GS_RENDER_STEREO
-		gl_Position = vec4(inPosition, 0.0, 1.0);
-	#else
-		#ifdef FULLSCREENQUAD
-			gl_Position = vec4(inPosition, 0.0, 1.0);
-			vScreenCoord = inPosition;
-		#else
-			gl_Position = pMatrixMVP[inLayer] * vec4(inPosition, 1.0);
-			vLightVolumePos = pMatrixMV[inLayer] * vec4(inPosition, 1.0);
-		#endif
-	#endif
+	lightVertexShaderDefaultOutputs();
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
-		vLayer = inLayer;
+	int layer = 0;
+	if(VSRenderLayer){
+		if(FullScreenQuad){
+			layer = inLayer;
+			
+		}else{
+			#ifdef SUPPORTS_VSDRAWPARAM
+			layer = gl_DrawID;
+			#endif
+		}
+	}
+	
+	if(LayeredRendering != LayeredRenderingNone && !VSRenderLayer){
+		gl_Position = vec4(vec2(inPosition), 0.0, 1.0);
+		
+	}else if(FullScreenQuad){
+		gl_Position = vec4(vec2(inPosition), 0.0, 1.0);
+		vScreenCoord = vec2(inPosition);
+		
+	}else{
+		gl_Position = pMatrixMVP[layer] * vec4(inPosition, 1.0);
+		vLightVolumePos = pMatrixMV[layer] * vec4(inPosition, 1.0);
+	}
+	
+	vLayer = layer;
+	#ifdef SUPPORTS_VSLAYER
+	if(VSRenderLayer){
+		gl_Layer = layer;
+	}
 	#endif
 }

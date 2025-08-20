@@ -1,4 +1,6 @@
-uniform float pDepth;
+#include "shared/preamble.glsl"
+
+UNIFORM_BIND(0) uniform float pDepth;
 
 layout(location=0) in vec2 inPosition;
 

@@ -69,12 +69,8 @@ class ECBehaviorEnvMapProbe extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorEnvMapProbe"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorEnvMapProbe")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -86,8 +82,7 @@ class ECBehaviorEnvMapProbe extends DefaultECBehavior
 					decodeLayerMask(parameters.getAt("layerMask") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "envMapProbe", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "envMapProbe", id)
 			return behavior
 		end
 	end

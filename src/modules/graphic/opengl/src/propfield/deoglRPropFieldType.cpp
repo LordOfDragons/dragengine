@@ -101,11 +101,7 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 		pModel->FreeReference();
 	}
 	
-	const int clusterCount = pClusters.GetCount();
-	int i;
-	for( i=0; i<clusterCount; i++ ){
-		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
-	}
+	RemoveAllClusters();
 }
 
 

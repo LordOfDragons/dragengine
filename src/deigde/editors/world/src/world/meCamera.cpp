@@ -107,9 +107,13 @@ void meCamera::SetHostObject( meObject *object ){
 	pHostObject = object;
 }
 
+void meCamera::SetHostMatrix(const decDMatrix &matrix){
+	pHostMatrix = matrix;
+	pInvHostMatrix = pHostMatrix.QuickInvert();
+}
+
 void meCamera::Reset(){
 	igdeCamera::Reset();
-	SetPosition( decVector() );
 }
 
 

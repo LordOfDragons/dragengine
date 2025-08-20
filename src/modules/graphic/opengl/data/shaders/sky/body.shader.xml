@@ -2,12 +2,9 @@
 <shader>
 	<name>Sky Body</name>
 	
-	<texture name='texColor' target='0'/>
-	<texture name='texTransparency' target='1'/>
-	
-	<parameter name='pMatrixBody'/>
-	<parameter name='pColor'/>
-	<parameter name='pMaterialGamma'/>
+	<parameter name='pMatrixBody' location='0'/>
+	<parameter name='pColor' location='1'/>
+	<parameter name='pMaterialGamma' location='2'/>
 	
 	<sourceCode unit='vertex'>V Sky Body</sourceCode>
 	<sourceCode unit='fragment'>F Sky Body</sourceCode>

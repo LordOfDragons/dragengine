@@ -173,12 +173,8 @@ class ECBehaviorCollider extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorCollider"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorCollider")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -186,14 +182,14 @@ class ECBehaviorCollider extends DefaultECBehavior
 				throw EInvalidParam.new("id is not empty string")
 			end
 			var ECBehaviorCollider behavior = ECBehaviorCollider.new(eclass,\
-				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters))
+				getHelper().defaultComponent(eclass, parameters))
 			
 			if parameters.has("collisionFilter")
 				behavior.getCollider().setCollisionFilter(ElementClass.getSharedCodecPropertyString().\
 					decodeCollisionFilter(parameters.getAt("collisionFilter") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "collider")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "collider")
 			return behavior
 		end
 	end

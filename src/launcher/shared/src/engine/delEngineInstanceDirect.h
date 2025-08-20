@@ -34,6 +34,8 @@
 
 #ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
+#elif defined OS_WEBWASM
+#include <dragengine/app/deOSWebWasm.h>
 #endif
 
 class deEngine;
@@ -53,6 +55,9 @@ public:
 		bool pUseConsole;
 #ifdef OS_ANDROID
 		deOSAndroid::sConfig pConfig;
+#endif
+#ifdef OS_WEBWASM
+		deOSWebWasm::sConfig pConfig;
 #endif
 		
 	public:
@@ -89,6 +94,14 @@ public:
 		/** \brief Set configuration to use for creating OS instance. */
 		void SetConfig(const deOSAndroid::sConfig &config);
 #endif
+		
+#ifdef OS_WEBWASM
+		/** \brief Configuration to use for creating OS instance. */
+		inline const deOSWebWasm::sConfig &GetConfig() const{ return pConfig; }
+		
+		/** \brief Set configuration to use for creating OS instance. */
+		void SetConfig(const deOSWebWasm::sConfig &config);
+#endif
 	};
 	
 	
@@ -111,6 +124,10 @@ private:
 #ifdef OS_ANDROID
 	deOSAndroid::sConfig pConfig;
 	delGPModuleList *pGameCollectChangedParams;
+#endif
+	
+#ifdef OS_WEBWASM
+	deOSWebWasm::sConfig pConfig;
 #endif
 	
 	
@@ -152,6 +169,14 @@ public:
 	
 	/** \brief Set configuration to use for creating OS instance. */
 	void SetConfig(const deOSAndroid::sConfig &config);
+#endif
+		
+#ifdef OS_WEBWASM
+	/** \brief Configuration to use for creating OS instance. */
+	inline const deOSWebWasm::sConfig &GetConfig() const{ return pConfig; }
+	
+	/** \brief Set configuration to use for creating OS instance. */
+	void SetConfig(const deOSWebWasm::sConfig &config);
 #endif
 	
 	

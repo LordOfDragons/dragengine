@@ -214,11 +214,8 @@ void deoglTexUnitConfig::Disable(){
 }
 
 void deoglTexUnitConfig::EnableTexture( deoglTexture *texture, deoglTexSamplerConfig *sampler ){
+	Disable();
 	pTexture = texture;
-	pCubeMap = NULL;
-	pArrayTexture = NULL;
-	pTBO = 0;
-	pSpecial = estNone;
 	pSampler = sampler;
 }
 
@@ -339,11 +336,8 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 }
 
 void deoglTexUnitConfig::EnableCubeMap( deoglCubeMap *cubemap, deoglTexSamplerConfig *sampler ){
-	pTexture = NULL;
+	Disable();
 	pCubeMap = cubemap;
-	pArrayTexture = NULL;
-	pTBO = 0;
-	pSpecial = estNone;
 	pSampler = sampler;
 }
 
@@ -410,11 +404,8 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCube
 }
 
 void deoglTexUnitConfig::EnableArrayTexture( deoglArrayTexture *texture, deoglTexSamplerConfig *sampler ){
-	pTexture = NULL;
-	pCubeMap = NULL;
+	Disable();
 	pArrayTexture = texture;
-	pTBO = 0;
-	pSpecial = estNone;
 	pSampler = sampler;
 }
 
@@ -471,11 +462,8 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglArra
 }
 
 void deoglTexUnitConfig::EnableTBO( GLuint tbo ){
-	pTexture = NULL;
-	pCubeMap = NULL;
-	pArrayTexture = NULL;
+	Disable();
 	pTBO = tbo;
-	pSpecial = estNone;
 	pSampler = NULL;
 }
 
@@ -484,10 +472,7 @@ void deoglTexUnitConfig::EnableSpecial( int special, deoglTexSamplerConfig *samp
 		DETHROW( deeInvalidParam );
 	}
 	
-	pTexture = NULL;
-	pCubeMap = NULL;
-	pArrayTexture = NULL;
-	pTBO = 0;
+	Disable();
 	pSpecial = special;
 	pSampler = sampler;
 }

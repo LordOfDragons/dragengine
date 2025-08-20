@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>Drag[en]gine Web Launcher</title>
+		<link rel='stylesheet' href='launcher.css'/>
+	</head>
+	
+	<body>
+		<canvas id='panel-canvas'></canvas>
+		
+		<div id='panel-logs' class='panel-logs-right'>
+			<div id='panel-logs-logs'></div>
+		</div>
+		
+		<div id='panel-settings' class='panel-settings-top'>
+			<ul class='horizontal-button-bar'>
+				<li>
+					<a href='#' onclick='window.webLauncher.panelLogs.togglePanel(); event.preventDefault();'>Logs</a>
+				</li>
+				<li>
+					<a href='#' onclick='window.webLauncher.panelCanvas.toggleFullScreen(); event.preventDefault();'>FullScreen</a>
+				</li>
+				<li>
+					<a href='#' onclick='onRunGame(); event.preventDefault();'>Run</a>
+				</li>
+				<li>
+					<input type='file' id='runDelgaPath' name='runDelgaPath' accept='.delga,application/dragengine-delga'/>
+				</li>
+				<li>
+					<a href='#' onclick='window.webLauncher.disposeLauncher(); event.preventDefault();'>Dispose</a>
+				</li>
+				<li>
+					<a href='#' onclick='onDownloadLogs(); event.preventDefault();'>DL-Logs</a>
+				</li>
+			</ul>
+		</div>
+		
+		<script>
+			function onRunGame() {
+				const delgaFiles = document.getElementById('runDelgaPath').files
+				if (!delgaFiles.length) {
+					alert('At least one DELGA file required')
+					return
+				}
+				
+				const delgaFile = delgaFiles[0]
+				window.webLauncher.logInfo(`Run DELGA file from local disk: ${delgaFile.name}`)
+				
+				const reader = new FileReader()
+				reader.addEventListener('loadend', () => {
+					const path = `/dragengine/localDelgas/${delgaFile.name}`
+					FS.writeFile(path, new Uint8Array(reader.result))
+					window.webLauncher.runGame(path)
+				})
+				reader.readAsArrayBuffer(delgaFile)
+			}
+			
+			function onDownloadLogs() {
+				window.webLauncher.archiveLogs(function(data) {
+					var a = document.createElement('a')
+					a.setAttribute('href', URL.createObjectURL(data))
+					a.setAttribute('download', 'DELauncherLogs.zip')
+					a.click()
+					URL.revokeObjectURL(a.href)
+				})
+			}
+			
+			window.addEventListener('delauncher:initialized', function(event) {
+				if (event.detail.error) {
+					window.webLauncher.logInfo(`WebLauncher initialize failed: ${event.detail.error}`)
+				} else {
+					window.webLauncher.logInfo('WebLauncher initialized')
+				}
+			})
+			
+			window.addEventListener('delauncher:runGame', function(event) {
+				const resultCode = event.detail.result
+				const error = event.detail.error
+				window.webLauncher.logInfo(`RunGame: resultCode=${resultCode} error="${error}"`)
+			})
+			
+			var Module = {
+				onRuntimeInitialized: function() {
+					window.webLauncher.onRuntimeInitialized()
+				}
+			};
+		</script>
+		<script type='module' src='launcher.js'></script>
+		<script src='delauncher-web.js'></script>
+	</body>
+</html>

@@ -59,12 +59,8 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	 * </behavior>
 	 * \endcode
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorAnchorElement"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorAnchorElement")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)

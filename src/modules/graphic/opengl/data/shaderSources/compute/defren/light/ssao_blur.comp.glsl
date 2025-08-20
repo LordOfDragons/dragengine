@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -5,13 +7,13 @@ precision HIGHP int;
 #include "shared/defren/ubo_render_parameters.glsl"
 #include "shared/image_buffer.glsl"
 
-uniform vec4 pTCDataToDepth; // xy=scale, zw=offset
-uniform ivec2 pOffsetRead;
-uniform ivec2 pOffsetWrite;
-uniform int pClamp;
-uniform float pDepthDifferenceThreshold;
+UNIFORM_BIND(0) uniform vec4 pTCDataToDepth; // xy=scale, zw=offset
+UNIFORM_BIND(1) uniform ivec2 pOffsetRead;
+UNIFORM_BIND(2) uniform ivec2 pOffsetWrite;
+UNIFORM_BIND(3) uniform int pClamp;
+UNIFORM_BIND(4) uniform float pDepthDifferenceThreshold;
 
-uniform HIGHP sampler2DArray texDepth;
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
 #ifdef ANDROID
 	layout(binding=0, IMG_R8_FMT) uniform readonly lowp IMG_R8_2DARR texData_load;
@@ -22,11 +24,7 @@ uniform HIGHP sampler2DArray texDepth;
 	#define texData_store texData
 #endif
 
-#ifdef BLUR_PASS_2
-	layout( local_size_y=64 ) in;
-#else
-	layout( local_size_x=64 ) in;
-#endif
+layout(local_size_x=64) in;
 
 shared float vData[ 72 ];
 shared float vDepth[ 72 ];
@@ -61,23 +59,19 @@ const vec4 cGaussWeightModifier = vec4( 0.85, 0.9, 0.95, 1 );
 #include "shared/defren/depth_to_position.glsl"
 
 
-#ifdef BLUR_PASS_2
-const int cBlurCoord = 1;
-#else
-const int cBlurCoord = 0;
-#endif
-
-
 void main( void ){
 	// constants that glsl does not allow to be global constants
 	float cWeightCenter = cGaussWeightCenter * cGaussWeightCenterModifier;
 	vec4 cWeights = cGaussWeights * cGaussWeightModifier;
 	
-	ivec3 tcCenter = ivec3( gl_GlobalInvocationID );
+	ivec3 tcCenter = ivec3(gl_GlobalInvocationID);
+	if(RenderPass == 1){
+		tcCenter.xy = tcCenter.yx;
+	}
 	
 	// cooperative read data
 	ivec3 tc = tcCenter;
-	tc[ cBlurCoord ] = clamp( tcCenter[ cBlurCoord ] - 4, 0, pClamp );
+	tc[RenderPass] = clamp( tcCenter[RenderPass] - 4, 0, pClamp );
 	
 	uint index = gl_LocalInvocationIndex;
 	
@@ -86,7 +80,7 @@ void main( void ){
 		vec3( vec2( tc.xy ) * pTCDataToDepth.xy + pTCDataToDepth.zw, tc.z ), tc.z );
 	
 	if( gl_LocalInvocationIndex < uint( 8 ) ){
-		tc[ cBlurCoord ] = min( tcCenter[ cBlurCoord ] + 60, pClamp );
+		tc[RenderPass] = min( tcCenter[RenderPass] + 60, pClamp );
 		index += uint( 64 );
 		
 		vData[index] = float(IMG_R8_LOAD(imageLoad(texData_load, ivec3(tc.xy + pOffsetRead, tc.z))));
@@ -98,7 +92,7 @@ void main( void ){
 	
 	
 	// per invocation processing
-	if( gl_GlobalInvocationID[ cBlurCoord ] > uint( pClamp ) ){
+	if(gl_GlobalInvocationID.x > uint(pClamp)){
 		// skipping the invocation has to be done after the cooperative read phase since
 		// otherwise parts of the shared data is not properly read causing errors
 		return;

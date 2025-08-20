@@ -58,6 +58,12 @@ public:
 	/** Create reference space. */
 	deoxrSpace( deoxrSession &session, XrReferenceSpaceType referenceType );
 	
+	/** Create reference space. */
+	deoxrSpace(deoxrSession &session, XrReferenceSpaceType referenceType, const XrPosef &pose);
+	
+	/** Create reference space. */
+	deoxrSpace(deoxrSession &session, XrReferenceSpaceType referenceType, const decMatrix &pose);
+	
 	/** Create action space. */
 	deoxrSpace( deoxrSession &session, const deoxrAction &action,
 		const deoxrPath &subactionPath, const decVector &rotation );

@@ -60,7 +60,7 @@ ceWPTTIMASnippet::~ceWPTTIMASnippet(){
 void ceWPTTIMASnippet::Update(){
 	const ceCASnippet &action = *GetActionSnippet();
 	decString text;
-	
-	text.Format( "Snippet: '%s' > '%s'", action.GetFile().GetString(), action.GetTopic().GetString() );
-	SetText( text );
+	text.Format("Snippet%s: '%s' > '%s'", action.GetCreateSideLane() ? "{S}" : "",
+		action.GetFile().GetString(), action.GetTopic().GetString());
+	SetText(text);
 }

@@ -110,12 +110,8 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorInteractPrompt"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorInteractPrompt")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -126,19 +122,8 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 					parameters.getAt("translationManager") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "interactPrompt", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "interactPrompt", id)
 			return behavior
-		end
-		
-		/**
-		 * \brief Translation manager matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTranslationManager() for value
-		 * 'default' and null for all other values. Overwrite to accept other values.
-		 */
-		func TranslationManager getTranslationManagerFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.translationManager(value)
 		end
 	end
 	
@@ -398,11 +383,8 @@ class ECBehaviorInteractPrompt extends DefaultECBehavior
 	end
 	
 	func new(BehaviorElementClass eclass, String id, String subID, String prefix) super(eclass, id)
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			pTranslationManager = app.getTranslationManager()
-		end
-
+		pTranslationManager = eclass.sharedFactoryHelper.defaultTranslationManager()
+		
 		eclass.addProperty(pImage = ECPImage.new(prefix + "image"))
 		eclass.addProperty(pVideo = ECPVideo.new(prefix + "video"))
 		eclass.addProperty(pStyle = ECPString.new(prefix + "style", ""))

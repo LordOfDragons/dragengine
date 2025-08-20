@@ -31,47 +31,44 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class ceCASnippet
 //////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-ceCASnippet::ceCASnippet() : ceConversationAction( eatSnippet ){
+ceCASnippet::ceCASnippet() :
+ceConversationAction(eatSnippet),
+pCreateSideLane(false){
 }
 
-ceCASnippet::ceCASnippet( const ceCASnippet &snippet ) : ceConversationAction( snippet ){
-	pFile = snippet.GetFile();
-	pTopic = snippet.GetTopic();
+ceCASnippet::ceCASnippet(const ceCASnippet &snippet) :
+ceConversationAction(snippet),
+pFile(snippet.pFile),
+pTopic(snippet.pTopic),
+pCreateSideLane(snippet.pCreateSideLane){
 }
 
 ceCASnippet::~ceCASnippet(){
 }
 
 
-
 // Management
 ///////////////
 
-void ceCASnippet::SetFile( const char *file ){
-	if( ! file ){
-		DETHROW( deeInvalidParam );
-	}
-	
+void ceCASnippet::SetFile(const char *file){
 	pFile = file;
 }
 
-void ceCASnippet::SetTopic( const char *topic ){
-	if( ! topic ){
-		DETHROW( deeInvalidParam );
-	}
-	
+void ceCASnippet::SetTopic(const char *topic){
 	pTopic = topic;
 }
 
+void ceCASnippet::SetCreateSideLane(bool createSideLane){
+	pCreateSideLane = createSideLane;
+}
 
 
 ceConversationAction *ceCASnippet::CreateCopy() const{
-	return new ceCASnippet( *this );
+	return new ceCASnippet(*this);
 }

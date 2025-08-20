@@ -195,12 +195,8 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorActorTransmission"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorActorTransmission")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -214,20 +210,10 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 				behavior.setSubTitle(getSubTitleFor(parameters.getAt("subTitle") cast String))
 			end
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "transmission")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "transmission")
 			return behavior
-		end
-		
-		/**
-		 * \brief Conversation playback subtitle matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getWindowSubTitle() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func ConversationPlaybackSubTitle getSubTitleFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.subtitle(value)
 		end
 	end
 	
@@ -881,7 +867,7 @@ class ECBehaviorActorTransmission extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor) \
-	this(eclass, conversationActor, BaseGameApp.getApp().getWindowSubTitle())
+	this(eclass, conversationActor, eclass.sharedFactoryHelper.defaultSubtitle())
 	end
 	
 	/** \brief Create behavior element class. */

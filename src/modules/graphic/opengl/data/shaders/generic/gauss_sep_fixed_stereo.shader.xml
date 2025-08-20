@@ -2,22 +2,19 @@
 <shader>
 	<name>Gauss Separable Fixed Stereo</name>
 	
-	<texture name='texData' target='0'/>
-	<texture name='texDepth' target='1'/>
-	
-	<parameter name='pTCTransform'/>
-	<parameter name='pTCTransformAlt'/>
-	<parameter name='pOffsets1'/>
-	<parameter name='pOffsets2'/>
-	<parameter name='pOffsets3'/>
-	<parameter name='pOffsets4'/>
-	<parameter name='pOffsets5'/>
-	<parameter name='pOffsets6'/>
-	<parameter name='pOffsets7'/>
-	<parameter name='pWeights1'/>
-	<parameter name='pWeights2'/>
-	<parameter name='pClamp'/>
-	<parameter name='pDepthDifferenceThreshold'/>
+	<parameter name='pTCTransform' location='1'/>
+	<parameter name='pTCTransformAlt' location='3'/>
+	<parameter name='pOffsets1' location='4'/>
+	<parameter name='pOffsets2' location='5'/>
+	<parameter name='pOffsets3' location='6'/>
+	<parameter name='pOffsets4' location='7'/>
+	<parameter name='pOffsets5' location='8'/>
+	<parameter name='pOffsets6' location='9'/>
+	<parameter name='pOffsets7' location='10'/>
+	<parameter name='pWeights1' location='11'/>
+	<parameter name='pWeights2' location='12'/>
+	<parameter name='pClamp' location='13'/>
+	<parameter name='pDepthDifferenceThreshold' location='14'/>
 	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>

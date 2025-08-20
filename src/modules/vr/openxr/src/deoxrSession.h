@@ -29,6 +29,7 @@
 #include "deoxrSpace.h"
 #include "deoxrSwapchain.h"
 #include "deoxrHiddenMesh.h"
+#include "deoxrPath.h"
 #include "action/deoxrActionSet.h"
 
 #include <dragengine/deObject.h>
@@ -91,13 +92,11 @@ private:
 	
 	XrTime pPredictedDisplayTime;
 	XrDuration pPredictedDisplayPeriod;
-	bool pShouldRender;
-	bool pFrameRunning;
+	bool pShouldRender, pFrameRunning, pRequestCenterSpaceOrigin;
 	deoxrActionSet::Ref pAttachedActionSet;
 	
-	deoxrSpace::Ref pSpaceStage;
-	deoxrSpace::Ref pSpaceView;
-	deoxrSpace::Ref pSpaceLocal;
+	deoxrSpace::Ref pSpaceStage, pSpaceStageOrigin, pSpaceView, pSpaceLocal, pSpaceLocalOrigin,
+		pMainSpace, pMainSpaceOrigin;
 	
 	int64_t *pSwapchainFormats;
 	int pSwapchainFormatCount;
@@ -107,21 +106,15 @@ private:
 	deoxrSwapchain::Ref pSwapchainDepthLeftEye;
 	deoxrSwapchain::Ref pSwapchainDepthRightEye;
 	
-	XrPosef pLeftEyePose;
-	XrFovf pLeftEyeFov;
-	
-	XrPosef pRightEyePose;
-	XrFovf pRightEyeFov;
+	XrPosef pLeftEyePose, pRightEyePose;
+	XrFovf pLeftEyeFov, pRightEyeFov;
 	
 	deoxrHiddenMesh::Ref pLeftEyeHiddenMesh;
 	deoxrHiddenMesh::Ref pRightEyeHiddenMesh;
 	
-	decVector pHeadPosition;
+	decVector pHeadPosition, pHeadLinearVelocity, pHeadAngularVelocity;
 	decQuaternion pHeadOrientation;
-	decVector pHeadLinearVelocity;
-	decVector pHeadAngularVelocity;
-	decMatrix pLeftEyeMatrix;
-	decMatrix pRightEyeMatrix;
+	decMatrix pLeftEyeMatrix, pRightEyeMatrix, pSpaceOriginPose;
 	
 	// graphic api connection
 	bool pIsGACOpenGL;
@@ -180,6 +173,9 @@ public:
 	/** Force end session ignoring errors. */
 	void ForceEnd();
 	
+	/** Attached action set or nullptr. */
+	inline const deoxrActionSet::Ref &GetAttachedActionSet() const{ return pAttachedActionSet; }
+	
 	/** Attach action set. */
 	void AttachActionSet( deoxrActionSet *actionSet );
 	
@@ -205,7 +201,7 @@ public:
 	void SyncActions();
 	
 	/** Spaces. */
-	inline const deoxrSpace::Ref &GetSpace() const{ return pSpaceStage; }
+	inline const deoxrSpace::Ref &GetMainSpace() const{ return pMainSpace; }
 	inline const deoxrSpace::Ref &GetSpaceStage() const{ return pSpaceStage; }
 	inline const deoxrSpace::Ref &GetSpaceView() const{ return pSpaceView; }
 	inline const deoxrSpace::Ref &GetSpaceLocal() const{ return pSpaceLocal; }
@@ -264,6 +260,18 @@ public:
 	/** Right eye matrix relative to head. */
 	inline const decMatrix &GetRightEyeMatrix() const{ return pRightEyeMatrix; }
 	
+	/** Origin pose relative to space where player is facing forward. */
+	inline const decMatrix &GetSpaceOriginPose() const{ return pSpaceOriginPose; }
+	
+	/** Set origin pose relative to space where player is facing forward. */
+	void SetSpaceOriginPose(const decMatrix &pose);
+	
+	/** Set space origin pose from current HMD pose. */
+	void CenterSpaceOrigin(XrTime timeOffset);
+	
+	/** Request center space origin. */
+	void RequestCenterSpaceOrigin();
+	
 	/** Graphic connection is OpenGL. */
 	inline bool GetIsGACOpenGL() const{ return pIsGACOpenGL; }
 	
@@ -281,6 +289,9 @@ public:
 	
 	/** Swapchain format name or 'notFound'. */
 	const char *GetSwapchainFormatNameOpenGL(int64_t format, const char *notFound = nullptr) const;
+	
+	/** Debug print some important device profile path. */
+	void DebugPrintActiveProfilePath() const;
 	/*@}*/
 	
 	
@@ -288,6 +299,8 @@ public:
 private:
 	void pCleanUp();
 	void pEnumSwapchainFormats();
+	void pDebugPrintActiveProfilePath(const deoxrPath &path, const char *name) const;
+	void pCreateSpaces();
 };
 
 #endif

@@ -207,7 +207,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineColor2LogLum, pipconf, sources, defines);
 		
 		// color to loglum stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Color2LogLum Stereo" );
 		}
@@ -221,7 +224,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineAvgLogLum, pipconf, sources, defines);
 		
 		// average loglum stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Average LogLum Stereo" );
 		}
@@ -250,7 +256,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineBrightPass, pipconf, sources, defines);
 		
 		
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bright-Pass Stereo" );
 		}
@@ -262,7 +271,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Down-Sample" );
 		pAsyncGetPipeline(pPipelineBloomDownSample, pipconf, sources, defines);
 		
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Down-Sample Stereo" );
 		}
@@ -276,7 +288,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineBloomBlur, pipconf, sources, defines);
 		
 		// bloom blur stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Blur Stereo" );
 		}
@@ -293,7 +308,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineBloomAdd, pipconf, sources, defines);
 		
 		// bloom add stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Bloom Add Stereo" );
 		}
@@ -312,7 +330,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines.RemoveDefines( "WITH_TONEMAP_CURVE" );
 		
 		// tone map stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping Stereo" );
 		}
@@ -334,7 +355,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineLdr, pipconf, sources, defines);
 		
 		// ldr stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
 		}
@@ -352,7 +376,10 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineLumPrepare, pipconf, sources, defines);
 		
 		// lum prepare stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "ToneMap Luminance Prepare Stereo" );
 		}
@@ -574,10 +601,10 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	shader = &pipeline->GetShader();
 	
 	// WARNING we have to use the non-stereo version always even if we sample stereo. the reason
-	//         is that to use the stereo render param block we have to use the GS_RENDER_STEREO
+	//         is that to use the stereo render param block we have to use the LAYERED_RENDERING
 	//         shader define to get the right block layout. this in turn though would cause
 	//         the vertex shader to use a geometry shader which this shader is not using.
-	//         to avoid problems the GS_RENDER_STEREO is not used, which requires us to always
+	//         to avoid problems the LAYERED_RENDERING is not used, which requires us to always
 	//         use the non-stereo block. instead a special define SAMPLE_STEREO is used
 	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	

@@ -30,7 +30,6 @@
 #include "aeRule.h"
 
 
-
 /**
  * Animator rule bone transformator.
  */
@@ -38,30 +37,18 @@ class aeRuleBoneTransformator : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleBoneTransformator> Ref;
 	
-	
-	
 private:
-	decVector pMinTranslation;
-	decVector pMaxTranslation;
-	decVector pMinRotation;
-	decVector pMaxRotation;
-	decVector pMinScaling;
-	decVector pMaxScaling;
-	decVector pAxis;
-	float pMinAngle;
-	float pMaxAngle;
+	decVector pMinTranslation, pMaxTranslation, pMinRotation, pMaxRotation;
+	decVector pMinScaling, pMaxScaling, pAxis;
+	float pMinAngle, pMaxAngle;
 	
 	deAnimatorRuleBoneTransformator::eCoordinateFrames pCoordinateFrame;
-	bool pEnablePosition;
-	bool pEnableOrientation;
-	bool pEnableSize;
-	bool pUseAxis;
+	bool pEnablePosition, pEnableOrientation, pEnableSize, pUseAxis;
 	
-	decString pTargetBone;
+	decString pTargetBone, pInputBone;
+	deAnimatorRuleBoneTransformator::eInputSources pInputSource;
 	
-	aeControllerTarget pTargetTranslation;
-	aeControllerTarget pTargetRotation;
-	aeControllerTarget pTargetScaling;
+	aeControllerTarget pTargetTranslation, pTargetRotation, pTargetScaling;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -147,6 +134,18 @@ public:
 	inline const decString &GetTargetBone() const{ return pTargetBone; }
 	/** Set the name of the target bone. */
 	void SetTargetBone( const char *boneName );
+	
+	/** Name of the input bone. */
+	inline const decString &GetInputBone() const{ return pInputBone; }
+	
+	/** Set name of input bone. */
+	void SetInputBone(const char *boneName);
+	
+	/** Input source. */
+	inline deAnimatorRuleBoneTransformator::eInputSources GetInputSource() const{ return pInputSource; }
+	
+	/** Set input source. */
+	void SetInputSource(deAnimatorRuleBoneTransformator::eInputSources source);
 	
 	/** Retrieve the translation target. */
 	inline aeControllerTarget &GetTargetTranslation(){ return pTargetTranslation; }

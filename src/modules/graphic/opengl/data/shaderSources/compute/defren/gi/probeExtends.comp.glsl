@@ -1,3 +1,5 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
@@ -6,16 +8,14 @@ precision HIGHP int;
 #include "shared/defren/gi/trace_probe.glsl"
 #include "shared/image_buffer.glsl"
 
-#ifdef WITH_RAY_CACHE
-	#include "shared/defren/gi/raycast/ray_cache.glsl"
-#endif
+#include "shared/defren/gi/raycast/ray_cache.glsl"
 
 
-#ifdef WITH_RAY_CACHE
-	layout(binding=0, IMG_R16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texCacheDistance;
-#else
-	layout(binding=0, rgba16f) uniform readonly HIGHP image2D texPosition;
-#endif
+// WithRayCache
+layout(binding=0, IMG_R16F_FMT) uniform readonly HIGHP IMG_R16F_2DARR texCacheDistance;
+
+// !WithRayCache
+layout(binding=0, rgba16f) uniform readonly HIGHP image2D texPosition;
 
 
 struct sProbeExtends {
@@ -45,11 +45,12 @@ void combineRays( in uvec3 params ){
 void main( void ){
 	int index = int( gl_WorkGroupID.x );
 	
-	#ifdef WITH_RAY_CACHE
-		ivec2 rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( index ) );
-	#else
-		ivec2 rayOffset = ivec2( ( index % pGIProbesPerLine ) * pGIRaysPerProbe, index / pGIProbesPerLine );
-	#endif
+	ivec2 rayOffset;
+	if(WithRayCache){
+		rayOffset = giRayCastCacheFirstTCFromProbeIndex( giTraceProbeProbeIndex( index ) );
+	}else{
+		rayOffset = ivec2( ( index % pGIProbesPerLine ) * pGIRaysPerProbe, index / pGIProbesPerLine );
+	}
 	
 	vec3 probePosition = vec3( pGIProbePosition[ index ] );
 	int i;
@@ -66,13 +67,15 @@ void main( void ){
 		int rayIndex = rayFirst + int( gl_LocalInvocationIndex );
 		
 		if( rayIndex < pGIRaysPerProbe ){
-			#ifdef WITH_RAY_CACHE
+			vec3 position;
+			
+			if(WithRayCache){
 				ivec3 rayTC = ivec3( rayOffset + ivec2( rayIndex, 0 ), pGICascade );
-				vec3 position = probePosition + pGIRayDirection[ rayIndex ]
+				position = probePosition + pGIRayDirection[ rayIndex ]
 					* IMG_R16F_LOAD(imageLoad(texCacheDistance, rayTC));
-			#else
-				vec3 position = vec3( imageLoad( texPosition, rayOffset + ivec2( rayIndex, 0 ) ) );
-			#endif
+			}else{
+				position = vec3( imageLoad( texPosition, rayOffset + ivec2( rayIndex, 0 ) ) );
+			}
 			
 			vRayData[ gl_LocalInvocationIndex ].minExtend = position;
 			vRayData[ gl_LocalInvocationIndex ].maxExtend = position;
@@ -98,13 +101,14 @@ void main( void ){
 		minExtend = pGIDetectionBox;
 		maxExtend = -pGIDetectionBox;
 		for(i=0; i<pGIRaysPerProbe; i++){
-			#ifdef WITH_RAY_CACHE
+			if(WithRayCache){
 				ivec3 rayTC = ivec3(rayOffset + ivec2(i,0), pGICascade);
 				vec3 position = probePosition + pGIRayDirection[i]
 					* IMG_R16F_LOAD(imageLoad(texCacheDistance, rayTC));
-			#else
+				
+			}else{
 				vec3 position = vec3(imageLoad(texPosition, rayOffset + ivec2(i,0)));
-			#endif
+			}
 			minExtend = min(minExtend, position);
 			maxExtend = max(maxExtend, position);
 		}

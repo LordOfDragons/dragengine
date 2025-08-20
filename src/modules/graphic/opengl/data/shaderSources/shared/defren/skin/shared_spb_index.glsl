@@ -41,4 +41,4 @@
 	};
 #endif
 
-uniform int pSPBInstanceIndexBase;
+UNIFORM_BIND(0) uniform int pSPBInstanceIndexBase;

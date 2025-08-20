@@ -120,12 +120,8 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorLookedAt"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorLookedAt")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -134,9 +130,9 @@ class ECBehaviorLookedAt extends DefaultECBehavior
 			end
 			var ECBehaviorLookedAt behavior = ECBehaviorLookedAt.new(eclass)
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "lookedAt")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "lookedAt")
 			return behavior
 		end
 	end

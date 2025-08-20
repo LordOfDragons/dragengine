@@ -41,12 +41,12 @@ on:
         description: 'Build Version'
         required: true
         type: string
-        default: "9999"
+        default: '9999'
       artifactArchive:
         description: 'Artifact Archive'
         required: true
         type: string
-        default: "archives-windows"
+        default: 'archives-windows'
       debugBuild:
         description: 'Debug Build'
         type: boolean
@@ -92,7 +92,17 @@ jobs:
         
       - name: Install required packages
         run: choco install ninja 7zip
-
+      
+      - name: Install GLSL Tools
+        run: |
+          Invoke-WebRequest "https://github.com/KhronosGroup/glslang/releases/download/main-tot/glslang-master-windows-Release.zip" `
+            -OutFile "${{ github.workspace }}/glslang-master-windows-Release.zip"
+          Expand-Archive -LiteralPath "${{ github.workspace }}/glslang-master-windows-Release.zip" `
+            -DestinationPath "${{ github.workspace }}/glslang"
+          $env:PATH = "${{ github.workspace }}\glslang\bin;" + $env:PATH
+          Write-Output "PATH=$env:PATH" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+        # binary name glslangValidator.exe
+        
       - name: Restore NuGet packages
         working-directory: vs
         run: nuget restore dragengine.sln
@@ -104,7 +114,7 @@ jobs:
           $Content = $Content -creplace "BuildVersion","${{ inputs.buildVersion }}"
           $Content = $Content -creplace "DebugBuild","${{ inputs.debugBuild && 'yes' || 'no' }}"
           Set-Content -Path "custom.py" -Value $Content
-        
+      
       - name: Build
         working-directory: vs
         run: |

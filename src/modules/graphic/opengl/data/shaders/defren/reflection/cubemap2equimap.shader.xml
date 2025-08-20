@@ -2,9 +2,7 @@
 <shader>
 	<name>DefRen Reflection CubeMap 2 EquiMap</name>
 	
-	<texture name='texEnvMap' target='0'/>
-	
-	<parameter name='pLevel'/> <!-- 0 -->
+	<parameter name='pLevel' location='0'/> <!-- 0 -->
 	
 	<sourceCode unit='vertex'>V DefRen Reflection CubeMap 2 EquiMap</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Reflection CubeMap 2 EquiMap</sourceCode>

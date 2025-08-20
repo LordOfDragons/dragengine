@@ -128,19 +128,14 @@ class ECBehaviorControlDesktop extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorControlDesktop"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorControlDesktop")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorControlDesktop behavior = ECBehaviorControlDesktop.new(eclass,\
-				eclass.sharedFactoryHelper.defaultRenderableDesktop(eclass, parameters), id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "controlDesktop", id)
+				getHelper().defaultRenderableDesktop(eclass, parameters), id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "controlDesktop", id)
 			return behavior
 		end
 	end

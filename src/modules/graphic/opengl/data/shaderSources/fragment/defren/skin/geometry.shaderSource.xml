@@ -23,16 +23,13 @@
 	<output set='4' name='outColor' location='0'/>
 	
 	<define>AMBIENT_LIGHT_PROBE</define>
-	<define>DECODE_IN_DEPTH</define>
-	<define>DEPTH_TEST_LARGER</define>
 	<define>DEPTH_TEST</define>
 	<define>FADEOUT_RANGE</define>
-	<define>HAS_TESSELLATION_SHADER</define>
+	<define>TESSELLATION_MODE</define>
 	<define>INVERSE_DEPTH</define>
-	<define>LUMINANCE_ONLY</define>
 	<define>MASKED_SOLIDITY</define>
-	<define>OUTPUT_MATERIAL_PROPERTIES</define>
-	<define>PARTICLE</define>
+	<define>OUTPUT_MODE</define>
+	<define>GEOMETRY_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>SKIN_REFLECTIONS</define>
 	<define>USE_NORMAL_ROUGHNESS_CORRECTION</define>
@@ -70,9 +67,9 @@
 	<uniformBlock name='RenderParameters' binding='0'/>
 	
 	<!-- shared/defren/skin/macros_geometry.glsl -->
-	<define>DECAL</define>
+	<define>GEOMETRY_MODE</define>
 	<define>DEPTH_TEST</define>
-	<define>OUTPUT_COLOR</define>
+	<define>OUTPUT_MODE</define>
 	<define>SKIN_CLIP_PLANE</define>
 	<define>TEXTURE_EMISSIVITY</define>
 	<define>TEXTURE_ENVMAP</define>
@@ -97,6 +94,7 @@
 	<define>DYNAMIC_ENVROOM_EMISSIVITY_INTENSITY</define>
 	<define>DYNAMIC_ENVROOM_OFFSET</define>
 	<define>DYNAMIC_ENVROOM_SIZE</define>
+	<define>DYNAMIC_ENVROOM_TINT</define>
 	<define>DYNAMIC_HEIGHT_REMAP</define>
 	<define>DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER</define>
 	<define>DYNAMIC_NORMAL_STRENGTH</define>
@@ -143,22 +141,16 @@
 	<define>TEXTURE_NONPBR_METALNESS</define>
 	
 	<!-- shared/normal_texture.glsl -->
-	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
-	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
+	<define>MATERIAL_NORMAL_DEC</define>
+	<define>MATERIAL_NORMAL_ENC</define>
 	
 	<!-- shared/normal_zero.glsl -->
-	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
+	<define>MATERIAL_NORMAL_DEC</define>
 	
 	<!-- system only
 	<define>SHARED_SPB_TEXTURE_ARRAY_SIZE</define>
 	<define>SHARED_SPB_TEXTURE_PADDING</define>
 	<define>SHARED_SPB_USE_SSBO</define>
-	<define>OUTPUT_LIMITBUFFERS</define>
+	<define>OUTPUT_MODE</define>
 	-->
 </shaderSource>

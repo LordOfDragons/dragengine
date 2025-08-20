@@ -238,6 +238,27 @@ public:
 	/** \brief Absolute path. */
 	decString GetAbsolutePath() const;
 	
+	/** \brief Absolute path. */
+	decString AsAbsolutePath(const decString &path) const;
+	
+	/** \brief Relative path. */
+	decString GetRelativePath() const;
+	
+	/** \brief Relative path. */
+	decString AsRelativePath(const decString &path) const;
+	
+	/** \brief Path is absolute. */
+	bool IsAbsolutePath() const;
+	
+	/** \brief Path is absolute. */
+	bool IsAbsolutePath(const decString &path) const;
+	
+	/** \brief Path is relative. */
+	bool IsRelativePath() const;
+	
+	/** \brief Path is relative. */
+	bool IsRelativePath(const decString &path) const;
+	
 	/** \brief Widget is enabled. */
 	bool GetEnabled() const;
 	

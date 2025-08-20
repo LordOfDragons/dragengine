@@ -23,12 +23,12 @@
  */
 
 #include "meUCameraRotateObject.h"
+#include "../../../world/meCamera.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/object/meObject.h"
 #include "../../../worldedit.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class meUCameraRotateObject
@@ -37,19 +37,21 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUCameraRotateObject::meUCameraRotateObject( meObject *object ){
-	if( ! object ) DETHROW( deeInvalidParam );
+meUCameraRotateObject::meUCameraRotateObject(meObject *object){
+	DEASSERT_NOTNULL(object)
 	
 	pOldRotation = object->GetRotation();
 	pNewRotation = pOldRotation;
-	SetShortInfo( "Rotate Camera Object" );
+	SetShortInfo("Rotate Camera Object");
 	
 	pObject = object;
 	object->AddReference();
 }
 
 meUCameraRotateObject::~meUCameraRotateObject(){
-	if( pObject ) pObject->FreeReference();
+	if(pObject){
+		pObject->FreeReference();
+	}
 }
 
 
@@ -57,20 +59,20 @@ meUCameraRotateObject::~meUCameraRotateObject(){
 // Undo and Redo operations
 /////////////////////////////
 
-void meUCameraRotateObject::SetNewRotation( const decVector &rotation ){
+void meUCameraRotateObject::SetNewRotation(const decVector &rotation){
 	pNewRotation = rotation;
 }
 
 bool meUCameraRotateObject::HasChanged() const{
-	return ! pNewRotation.IsEqualTo( pOldRotation );
+	return ! pNewRotation.IsEqualTo(pOldRotation);
 }
 
 void meUCameraRotateObject::Undo(){
-	pObject->SetRotation( pOldRotation );
-	pObject->GetWorld()->NotifyObjectGeometryChanged( pObject );
+	pObject->SetRotation(pOldRotation);
+	pObject->GetWorld()->NotifyObjectGeometryChanged(pObject);
 }
 
 void meUCameraRotateObject::Redo(){
-	pObject->SetRotation( pNewRotation );
-	pObject->GetWorld()->NotifyObjectGeometryChanged( pObject );
+	pObject->SetRotation(pNewRotation);
+	pObject->GetWorld()->NotifyObjectGeometryChanged(pObject);
 }

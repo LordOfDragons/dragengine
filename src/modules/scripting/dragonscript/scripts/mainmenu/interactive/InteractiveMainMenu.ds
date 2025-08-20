@@ -47,23 +47,54 @@ pin Dragengine.Utils
  */
 class InteractiveMainMenu extends Window
 	/** \brief Deactivate hotspot on window close listener. */
-	public class WindowCloseDeactivateHotSpot extends DefaultWindowListener
+	class WindowCloseDeactivateHotSpot extends DefaultWindowListener
 		/** \brief Main menu. */
-		private var InteractiveMainMenu pMainMenu
+		var InteractiveMainMenu pMainMenu
 		
 		/** \brief Create listener. */
-		public func new(InteractiveMainMenu mainMenu)
+		func new(InteractiveMainMenu mainMenu)
 			pMainMenu = mainMenu
 		end
 		
 		/** \brief Window is closing. */
-		public func void onWindowClosing(WindowEvent event)
+		func void onWindowClosing(WindowEvent event)
 			if pMainMenu.getActiveHotSpot() != null
 				pMainMenu.deactivateHotSpot()
 			end
 		end
 	end
 	
+	/**
+	 * \brief \ref BehaviorFactoryHelper modified for use with \ref InteractiveMainMenu.
+	 * \version 1.28
+	 */
+	private class ModifiedBehaviorFactoryHelper extends BehaviorFactoryHelper
+		var InteractiveMainMenu pMainMenu
+		
+		func new(InteractiveMainMenu mainMenu)
+			pMainMenu = mainMenu
+		end
+		
+		func TSTriggerTable defaultTriggerTable()
+			return pMainMenu.getTriggerTable()
+		end
+		
+		func Loaders defaultLoaders()
+			return pMainMenu.getLoaders()
+		end
+		
+		func MutableID defaultIDGenerator()
+			return pMainMenu.getIDGenerator()
+		end
+		
+		func Console defaultConsole()
+			return pMainMenu.getConsole()
+		end
+		
+		func ElementClassList defaultElementClassList()
+			return pMainMenu.getElementClasses()
+		end
+	end
 	
 	
 	/** \brief States. */
@@ -92,27 +123,30 @@ class InteractiveMainMenu extends Window
 	
 	
 	
-	private var Console pConsole
-	private var Loaders pLoaders
-	private var String pDirXmlElementClasses
-	private var IMMLoadWorld pLoadWorld
-	private var IMMAnimateCamera pAnimateCamera
-	private var IMMTextDisplay pTextDisplay
-	private var IMMMenuFader pMenuFader
-	private var IMMInteract pInteract
-	private var float pMenuFadeInTime
+	var Console pConsole
+	var Loaders pLoaders
+	var String pDirXmlElementClasses
+	var IMMLoadWorld pLoadWorld
+	var IMMAnimateCamera pAnimateCamera
+	var IMMTextDisplay pTextDisplay
+	var IMMMenuFader pMenuFader
+	var IMMInteract pInteract
+	var float pMenuFadeInTime
 	
-	private var String pPathWorld
-	private var GameWorld pWorld
-	private var Camera pCamera
-	private var Microphone pMicrophone
-	private var ElementClassList pElementClasses
-	private var WorldRenderer pWorldRenderer
-	private var Dictionary pActions
-	private var String pMainCameraSpot
-	private var IMMBehaviorHotSpot.Instance pActiveHotSpot
-	private var State pState
-	private var TSTriggerTable pTriggerTable
+	var String pPathWorld
+	var GameWorld pWorld
+	var Camera pCamera
+	var Microphone pMicrophone
+	var ElementClassList pElementClasses
+	var MutableID pIDGenerator
+	var WorldRenderer pWorldRenderer
+	var Dictionary pActions
+	var String pMainCameraSpot
+	var IMMBehaviorHotSpot.Instance pActiveHotSpot
+	var State pState
+	var TSTriggerTable pTriggerTable
+	var BehaviorFactoryList pBehaviorFactories
+	var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
 	
 	
 	
@@ -125,15 +159,21 @@ class InteractiveMainMenu extends Window
 	 * 
 	 * \param console Console to output messages to
 	 */
-	public func new(Console console)
+	func new(Console console)
 		if console == null
 			throw EInvalidParam.new()
 		end
 		
 		pConsole = console
 		pLoadWorld = IMMLoadWorld.new(this)
+		
+		pBehaviorFactories = BehaviorFactoryList.new()
+		createAndAddBehaviorFactories()
+		
+		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		pAnimateCamera = IMMAnimateCamera.new(this)
 		pElementClasses = ElementClassList.new()
+		pIDGenerator = MutableID.new(1)
 		pActions = Dictionary.new()
 		pMainCameraSpot = "main"
 		pState = State.constructed
@@ -173,7 +213,7 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pause()
 		
 		pMicrophone = null
@@ -187,6 +227,7 @@ class InteractiveMainMenu extends Window
 			pElementClasses.dispose()
 			pElementClasses = null
 		end
+		pBehaviorFactories = null
 		
 		if pTriggerTable != null
 			pTriggerTable.dispose()
@@ -200,6 +241,7 @@ class InteractiveMainMenu extends Window
 			pMenuFader = null
 		end
 		
+		pPlayerControlledActor = null
 		pWorldRenderer = null
 		pActions = null
 		
@@ -216,32 +258,40 @@ class InteractiveMainMenu extends Window
 	
 	
 	/** \brief Console. */
-	public func Console getConsole()
+	func Console getConsole()
 		return pConsole
 	end
 	
 	/** \brief Loaders. */
-	public func Loaders getLoaders()
+	func Loaders getLoaders()
 		return pLoaders
 	end
 	
+	/**
+	 * \brief Behavior factories.
+	 * \version 1.28
+	 */
+	func BehaviorFactoryList getBehaviorFactories()
+		return pBehaviorFactories
+	end
+	
 	/** \brief XML element directory. */
-	public func String getDirXmlElementClasses()
+	func String getDirXmlElementClasses()
 		return pDirXmlElementClasses
 	end
 	
 	/** \brief Set XML element directory. */
-	public func void setDirXmlElementClasses(String pathDir)
+	func void setDirXmlElementClasses(String pathDir)
 		pDirXmlElementClasses = pathDir
 	end
 	
 	/** \brief World loader. */
-	public func IMMLoadWorld getLoadWorld()
+	func IMMLoadWorld getLoadWorld()
 		return pLoadWorld
 	end
 	
 	/** \brief Set world loader. */
-	public func void setLoadWorld(IMMLoadWorld loadWorld)
+	func void setLoadWorld(IMMLoadWorld loadWorld)
 		if loadWorld == null
 			throw EInvalidParam.new()
 		end
@@ -249,12 +299,12 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Animate camera. */
-	public func IMMAnimateCamera getAnimateCamera()
+	func IMMAnimateCamera getAnimateCamera()
 		return pAnimateCamera
 	end
 	
 	/** \brief Set animate camera. */
-	public func void setAnimateCamera(IMMAnimateCamera animateCamera)
+	func void setAnimateCamera(IMMAnimateCamera animateCamera)
 		if animateCamera == null
 			throw EInvalidParam.new()
 		end
@@ -262,22 +312,22 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Menu fader. */
-	public func IMMMenuFader getWorldRendererFader()
+	func IMMMenuFader getWorldRendererFader()
 		return pMenuFader
 	end
 	
 	/** \brief Set menu fader. */
-	public func void setMenuFader(IMMMenuFader fader)
+	func void setMenuFader(IMMMenuFader fader)
 		pMenuFader = fader
 	end
 	
 	/** \brief Text display. */
-	public func IMMTextDisplay getTextDisplay()
+	func IMMTextDisplay getTextDisplay()
 		return pTextDisplay
 	end
 	
 	/** \brief Set text display. */
-	public func void setTextDisplay(IMMTextDisplay textDisplay)
+	func void setTextDisplay(IMMTextDisplay textDisplay)
 		if textDisplay == null
 			throw EInvalidParam.new()
 		end
@@ -291,69 +341,85 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Interact. */
-	public func IMMInteract getInteract()
+	func IMMInteract getInteract()
 		return pInteract
 	end
 	
 	/** \brief Set interact. */
-	public func void setInteract(IMMInteract interact)
+	func void setInteract(IMMInteract interact)
 		pInteract = interact
 	end
 	
 	/** \brief Main menu fade in time. */
-	public func float getMenuFadeInTime()
+	func float getMenuFadeInTime()
 		return pMenuFadeInTime
 	end
 	
 	/** \brief Set main menu fade in time. */
-	public func void setMenuFadeInTime(float time)
+	func void setMenuFadeInTime(float time)
 		pMenuFadeInTime = DEMath.max(time, 0.0)
+	end
+	
+	/**
+	 * \brief Player controlled actor tracker.
+	 * \version 1.28
+	 */
+	func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
+		return pPlayerControlledActor
 	end
 	
 	
 	
 	/** \brief World filename or \em null if none loaded yet. */
-	public func String getPathWorld()
+	func String getPathWorld()
 		return pPathWorld
 	end
 	
 	/** \brief World or \em null. */
-	public func GameWorld getWorld()
+	func GameWorld getWorld()
 		return pWorld
 	end
 	
 	/** \brief Camera or \em null. */
-	public func Camera getCamera()
+	func Camera getCamera()
 		return pCamera
 	end
 	
 	/** \brief Microphone or \em null. */
-	public func Microphone getMicrophone()
+	func Microphone getMicrophone()
 		return pMicrophone
 	end
 	
 	/** \brief Element classes. */
-	public func ElementClassList getElementClasses()
+	func ElementClassList getElementClasses()
 		return pElementClasses
 	end
 	
+	/**
+	 * \brief ID Generator.
+	 * \version 1.28
+	 */
+	func MutableID getIDGenerator()
+		return pIDGenerator
+	end
+	
 	/** \brief World renderer. */
-	public func WorldRenderer getWorldRenderer()
+	func WorldRenderer getWorldRenderer()
 		return pWorldRenderer
 	end
 	
 	/** \brief Name of main camera spot is no hot-spot is active. */
-	public func String getMainCameraSpot()
+	func String getMainCameraSpot()
 		return pMainCameraSpot
 	end
 	
 	/** \brief Set name of main camera spot is no hot-spot is active. */
-	public func void setMainCameraSpot(String name)
+	func void setMainCameraSpot(String name)
 		pMainCameraSpot = name
 	end
 	
 	/** \brief State. */
-	public func State getState()
+	func State getState()
 		return pState
 	end
 	
@@ -363,29 +429,29 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Trigger table. */
-	public func TSTriggerTable getTriggerTable()
+	func TSTriggerTable getTriggerTable()
 		return pTriggerTable
 	end
 	
 	/** \brief Main menu is loading and is not ready to be used. */
-	public func bool isNotReady()
+	func bool isNotReady()
 		return pState == State.constructed or pState == State.loadingWorld
 	end
 	
 	/** \brief Main menu is loaded and ready to be used. */
-	public func bool isReady()
+	func bool isReady()
 		return pState != State.constructed and pState != State.loadingWorld
 	end
 	
 	
 	
 	/** \brief Active hot-spot or null. */
-	public func IMMBehaviorHotSpot.Instance getActiveHotSpot()
+	func IMMBehaviorHotSpot.Instance getActiveHotSpot()
 		return pActiveHotSpot
 	end
 	
 	/** \brief Activate hot-spot with transition. */
-	public func void activateHotSpot(IMMBehaviorHotSpot.Instance hotSpot)
+	func void activateHotSpot(IMMBehaviorHotSpot.Instance hotSpot)
 		if pState == State.constructed
 			throw EInvalidParam.new("Not allowed in constructed state")
 		end
@@ -415,7 +481,7 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Deactivate hot-spot with transition. */
-	public func void deactivateHotSpot()
+	func void deactivateHotSpot()
 		if pState == State.constructed
 			throw EInvalidParam.new("Not allowed in constructed state")
 		end
@@ -439,7 +505,7 @@ class InteractiveMainMenu extends Window
 	 * 
 	 * \param hotSpot Hot-Spot to activate. Can be null to reset to main.
 	 */
-	public func void setActiveHotSpot(IMMBehaviorHotSpot.Instance hotSpot)
+	func void setActiveHotSpot(IMMBehaviorHotSpot.Instance hotSpot)
 		if pState == State.constructed
 			throw EInvalidParam.new("Not allowed in constructed state")
 		end
@@ -477,7 +543,7 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Get hot spot with action or \em null if absent. */
-	public func IMMBehaviorHotSpot.Instance getHotSpotWithAction(String action)
+	func IMMBehaviorHotSpot.Instance getHotSpotWithAction(String action)
 		var IMMBehaviorHotSpot.Instance behavior
 		var BehaviorElement element = pWorld.findElement(block Element each
 			if each castable BehaviorElement
@@ -494,12 +560,12 @@ class InteractiveMainMenu extends Window
 	
 	
 	/** \brief Action or \em null if absent. */
-	public func ActionListener getActionAt(String name)
+	func ActionListener getActionAt(String name)
 		return pActions.getAt(name, null) cast ActionListener
 	end
 	
 	/** \brief Set action. */
-	public func void setActionAt(String name, ActionListener listener)
+	func void setActionAt(String name, ActionListener listener)
 		if name == null or listener == null
 			throw EInvalidParam.new()
 		end
@@ -510,7 +576,7 @@ class InteractiveMainMenu extends Window
 	
 	
 	/** \brief Named camera spot or \em null if absent. */
-	public func IMMCameraSpot getCameraSpotNamed(String name)
+	func IMMCameraSpot getCameraSpotNamed(String name)
 		return pWorld.findElement(block Element each
 			return each castable IMMCameraSpot \
 				and (each cast IMMCameraSpot).getName().equals(name)
@@ -526,7 +592,7 @@ class InteractiveMainMenu extends Window
 	 * interval. It is safe to call multiple times. Also sets the main menu microphone
 	 * as the active microphone.
 	 */
-	public func void resume()
+	func void resume()
 		AudioSystem.setActiveMicrophone(pMicrophone)
 		startFrameUpdater()
 	end
@@ -537,7 +603,7 @@ class InteractiveMainMenu extends Window
 	 * Call when switching to in-game. Stops processing the main menu to not consume
 	 * processing time. It is safe to call multiple times.
 	 */
-	public func void pause()
+	func void pause()
 		stopFrameUpdater()
 	end
 	
@@ -546,7 +612,7 @@ class InteractiveMainMenu extends Window
 	 * 
 	 * \throws EInvalidParam loadWorld has been called already.
 	 */
-	public func void loadWorld(String path)
+	func void loadWorld(String path)
 		if pState != State.constructed
 			throw EInvalidParam.new("Not allowed in constructed state")
 		end
@@ -571,7 +637,7 @@ class InteractiveMainMenu extends Window
 	 * Call for example when returning to the main menu from game. Sets the camera to
 	 * the main camera spot without transition.
 	 */
-	public func void reset()
+	func void reset()
 		if isNotReady()
 			return
 		end
@@ -595,7 +661,7 @@ class InteractiveMainMenu extends Window
 	
 	
 	/** \brief Parent changed. */
-	public func void setParent(Container parent)
+	func void setParent(Container parent)
 		super.setParent(parent)
 		
 		if getDesktop() != null // dispose protection
@@ -604,7 +670,7 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Temporary hack until class is working then remove. */
-	public func void onKeyPress(KeyEvent event)
+	func void onKeyPress(KeyEvent event)
 		super.onKeyPress(event)
 		
 		select pState
@@ -614,7 +680,7 @@ class InteractiveMainMenu extends Window
 	end
 	
 	/** \brief Mouse button pressed. */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		super.onButtonPress(event)
 		
 		select pState
@@ -628,7 +694,7 @@ class InteractiveMainMenu extends Window
 	 * 
 	 * \param elapsed Elapsed time as reported by Engine.getElapsedTime().
 	 */
-	public func void onFrameUpdate(float elapsed)
+	func void onFrameUpdate(float elapsed)
 		select pState
 		case State.loadingWorld
 			pMenuFader.setCurTransparency(0)
@@ -679,7 +745,7 @@ class InteractiveMainMenu extends Window
 	
 	
 	/** \brief Print exception to console. */
-	public func void printExceptionToConsole(String action, Exception e)
+	func void printExceptionToConsole(String action, Exception e)
 		pConsole.addError("InteractiveMainMenu " + action, e)
 	end
 	
@@ -692,37 +758,44 @@ class InteractiveMainMenu extends Window
 	 * In addition adds IMM*Class element classes.
 	 */
 	protected func void addElementClasses()
+		var BehaviorFactoryHelper restoreHelper = BehaviorElementClass.sharedFactoryHelper
+		BehaviorElementClass.sharedFactoryHelper = ModifiedBehaviorFactoryHelper.new(this)
+		
 		// from BaseGameApp.createAndAddElementClasses()
 		pElementClasses.add(IgnoreElementClass.new("VirtualElement"))
 		pElementClasses.add(IgnoreElementClass.new("MapperNote"))
+		pElementClasses.add(createGenericBehaviorElementClass())
 		pElementClasses.add(SimpleElementClass.new(pLoaders))
 		pElementClasses.add(PhysicsElementClass.new())
 		pElementClasses.add(AnimatedElementClass.new(pLoaders, pTriggerTable))
 		pElementClasses.add(TwoStateAnimatedElementClass.new(pLoaders, pTriggerTable))
+		pElementClasses.add(HiddenElementClass.new(pLoaders, pTriggerTable))
 		pElementClasses.add(RandomElementClass.new(pElementClasses))
-		pElementClasses.add(BaseLightClass.new())
-		pElementClasses.add(BaseSpeakerClass.new())
-		pElementClasses.add(BaseParticleEmitterClass.new())
-		pElementClasses.add(BaseSkyClass.new())
-		pElementClasses.add(BaseForceFieldClass.new())
+		pElementClasses.add(BaseLightClass.new(pTriggerTable))
+		pElementClasses.add(BaseSpeakerClass.new(pLoaders, pTriggerTable))
+		pElementClasses.add(BaseParticleEmitterClass.new(pLoaders, pTriggerTable))
+		pElementClasses.add(BaseSkyClass.new(pLoaders))
+		pElementClasses.add(BaseForceFieldClass.new(pTriggerTable))
 		pElementClasses.add(BaseBillboardClass.new())
-		pElementClasses.add(AttachableBaseLightClass.new())
-		pElementClasses.add(AttachableBaseSpeakerClass.new())
-		pElementClasses.add(AttachableBaseParticleEmitterClass.new())
-		pElementClasses.add(AttachableBaseForceFieldClass.new())
+		pElementClasses.add(BaseWorldClass.new(pLoaders, pIDGenerator))
+		pElementClasses.add(AttachableBaseLightClass.new(pTriggerTable))
+		pElementClasses.add(AttachableBaseSpeakerClass.new(pLoaders, pTriggerTable))
+		pElementClasses.add(AttachableBaseParticleEmitterClass.new(pLoaders, pTriggerTable))
+		pElementClasses.add(AttachableBaseForceFieldClass.new(pTriggerTable))
 		pElementClasses.add(AttachableBaseBillboardClass.new())
 		pElementClasses.add(AttachSlotClass.new())
 		pElementClasses.add(SpawnPointClass.new())
-		pElementClasses.add(BaseActorClass.new())
+		pElementClasses.add(BaseActorClass.new(pLoaders, pPlayerControlledActor))
+		pElementClasses.add(BaseVRActorClass.new(pLoaders, pPlayerControlledActor))
 		pElementClasses.add(EnvironmentMapClass.new())
 		pElementClasses.add(TriggerEvaluateClass.new(pTriggerTable))
 		pElementClasses.add(TriggerTimerClass.new(pTriggerTable))
 		pElementClasses.add(TriggerToggleClass.new(pTriggerTable))
 		pElementClasses.add(TriggerTouchClass.new(pTriggerTable))
 		pElementClasses.add(TriggerShoutClass.new(pTriggerTable, pConsole))
-		pElementClasses.add(TriggerConversationClass.new(pTriggerTable, pLoaders, null))
+		pElementClasses.add(TriggerConversationClass.new(pTriggerTable, pLoaders, pPlayerControlledActor))
 		pElementClasses.add(RailCornerClass.new())
-		pElementClasses.add(SimpleElementOnRailClass.new())
+		pElementClasses.add(SimpleElementOnRailClass.new(pLoaders, pTriggerTable))
 		pElementClasses.add(InfoConvoCoordSystemClass.new())
 		
 		// main menu specific
@@ -744,6 +817,8 @@ class InteractiveMainMenu extends Window
 			pLoaders.getElementClass().addXmlElementClasses(\
 				pElementClasses, pDirXmlElementClasses, true)
 		end
+		
+		BehaviorElementClass.sharedFactoryHelper = restoreHelper
 	end
 	
 	/** \brief Loading world failed. */
@@ -804,5 +879,33 @@ class InteractiveMainMenu extends Window
 		camera.setLayerMask(LayerMask.newWith(\
 			BaseGameApp.WorldLayerBit.default, BaseGameApp.WorldLayerBit.envmap))
 		return camera
+	end
+	
+	/**
+	 * \brief Create generic behavior element class.
+	 * \version 1.28
+	 * 
+	 * Creates instance of \ref GenericBehaviorElementClass and replaces all factories
+	 * with \ref #getBehaviorFactories().
+	 */
+	protected func GenericBehaviorElementClass createGenericBehaviorElementClass()
+		var GenericBehaviorElementClass eclass = GenericBehaviorElementClass.new()
+		eclass.removeAllBehaviorFactories()
+		eclass.addBehaviorFactories(getBehaviorFactories())
+		return eclass
+	end
+	
+	/**
+	 * \brief Create behavior factories adding them to the factory list.
+	 * \version 1.28
+	 * 
+	 * Behavior factories allow generic \ref BehaviorElementClass to be created using XML element
+	 * class files (*.deeclass) where not only element class properties can be defined but
+	 * also behaviors added. \ref #getBehaviorFactories() is used by
+	 * \ref GenericBehaviorElementClass to set the initial list of allowed factories.
+	 * Default uses \ref BehaviorFactoryHelper#addAllFactories() to populate the list.
+	 */
+	protected func void createAndAddBehaviorFactories()
+		BehaviorElementClass.sharedFactoryHelper.addAllFactories(pBehaviorFactories)
 	end
 end

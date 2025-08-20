@@ -118,12 +118,12 @@ const deoglPipeline *deoglREffectColorMatrix::GetPipelineStereo(){
 		pipconf.SetDepthMask( false );
 		pipconf.SetEnableScissorTest( true );
 		
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
 		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
+			defines.SetDefines( "VS_RENDER_LAYER" );
 			pipconf.SetShader( GetRenderThread(), "Effect Color Matrix", defines );
 			
 		}else{
-			defines.SetDefines( "GS_RENDER_STEREO" );
 			pipconf.SetShader( GetRenderThread(), "Effect Color Matrix Stereo", defines );
 		}
 		

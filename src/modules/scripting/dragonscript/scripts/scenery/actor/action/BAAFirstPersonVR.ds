@@ -166,6 +166,7 @@ class BAAFirstPersonVR extends BAAFirstPerson
 	
 	/**
 	 * \brief VR Right Hand Controller Point-At.
+	 * \version 1.7
 	 */
 	public func ECBehaviorVRHandPointAt.Instance getVRRightHandPointAt()
 		return vrRightHandPointAt

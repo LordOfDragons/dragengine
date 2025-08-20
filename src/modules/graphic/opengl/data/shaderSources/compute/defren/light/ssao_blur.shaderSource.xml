@@ -4,11 +4,8 @@
 	<stage>compute</stage>
 	<source>ssao_blur.comp.glsl</source>
 	
-	<define>BLUR_PASS_2</define>
+	<define>RENDER_PASS</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>
-	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
 </shaderSource>

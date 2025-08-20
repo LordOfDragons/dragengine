@@ -2,9 +2,6 @@
 <shader>
 	<name>DefRen Copy Shadow</name>
 	
-	<texture name='texDepth' target='0'/>
-	<texture name='texColor' target='1'/>
-	
 	<sourceCode unit='vertex'>V DefRen Copy Shadow</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Copy Shadow</sourceCode>
 </shader>

@@ -492,14 +492,14 @@ void deoglGIBVH::pAddMaterial( deoglGIInstance &instance, int index,
 const deoglSkinTexture &skinTexture, deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin,
 deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 	// collect values
-	decColor colorTint( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empColorTint )
-		.ResolveColor( skinState, dynamicSkin, skinTexture.GetColorTint() ) );
-	colorTint.r = powf( decMath::max( colorTint.r, 0.0f ), 2.2f );
-	colorTint.g = powf( decMath::max( colorTint.g, 0.0f ), 2.2f );
-	colorTint.b = powf( decMath::max( colorTint.b, 0.0f ), 2.2f );
+	decColor colorTint(skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empColorTint)
+		.ResolveColor(skinState, dynamicSkin, skinTexture.GetColorTint()));
+	colorTint.r = powf(decMath::max(colorTint.r, 0.0f), 2.2f);
+	colorTint.g = powf(decMath::max(colorTint.g, 0.0f), 2.2f);
+	colorTint.b = powf(decMath::max(colorTint.b, 0.0f), 2.2f);
 	
-	const float colorGamma = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empColorGamma )
-		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetColorGamma() );
+	const float colorGamma = skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empColorGamma)
+		.ResolveAsFloat(skinState, dynamicSkin, skinTexture.GetColorGamma());
 	
 	const float roughnessRemapLower = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessRemapLower )
 		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessRemapLower() );
@@ -507,6 +507,15 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessRemapUpper() );
 	const float roughnessGamma = skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empRoughnessGamma )
 		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetRoughnessGamma() );
+	
+	decColor envRoomTint(
+		skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empEnvironmentRoomTint)
+		.ResolveColor(skinState, dynamicSkin, skinTexture.GetEnvironmentRoomTint()));
+	envRoomTint.r = powf(decMath::max(envRoomTint.r, 0.0f), 2.2f);
+	envRoomTint.g = powf(decMath::max(envRoomTint.g, 0.0f), 2.2f);
+	envRoomTint.b = powf(decMath::max(envRoomTint.b, 0.0f), 2.2f);
+	
+	colorTint += envRoomTint;
 	
 	decColor emissivityIntensity( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEmissivityTint )
 		.ResolveColor( skinState, dynamicSkin, skinTexture.GetEmissivityTint() ) );
@@ -517,14 +526,16 @@ deoglTexUnitsConfig *tuc, const decTexMatrix2 &texCoordMatrix ){
 	emissivityIntensity *= decMath::max( 0.0f, skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEmissivityIntensity )
 		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetEmissivityIntensity() ) );
 	
-	decColor envRoomEmissivityTint( skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEnvironmentRoomEmissivityTint )
-		.ResolveColor( skinState, dynamicSkin, skinTexture.GetEnvironmentRoomEmissivityTint() ) );
+	decColor envRoomEmissivityTint(
+		skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empEnvironmentRoomEmissivityTint)
+		.ResolveColor(skinState, dynamicSkin, skinTexture.GetEnvironmentRoomEmissivityTint()));
 	envRoomEmissivityTint.r = powf( decMath::max( envRoomEmissivityTint.r, 0.0f ), 2.2f );
 	envRoomEmissivityTint.g = powf( decMath::max( envRoomEmissivityTint.g, 0.0f ), 2.2f );
 	envRoomEmissivityTint.b = powf( decMath::max( envRoomEmissivityTint.b, 0.0f ), 2.2f );
 	
-	envRoomEmissivityTint *= decMath::max( 0.0f, skinTexture.GetMaterialPropertyAt( deoglSkinTexture::empEnvironmentRoomEmissivityIntensity )
-		.ResolveAsFloat( skinState, dynamicSkin, skinTexture.GetEnvironmentRoomEmissivityIntensity() ) );
+	envRoomEmissivityTint *= decMath::max(0.0f,
+		skinTexture.GetMaterialPropertyAt(deoglSkinTexture::empEnvironmentRoomEmissivityIntensity)
+		.ResolveAsFloat(skinState, dynamicSkin, skinTexture.GetEnvironmentRoomEmissivityIntensity()));
 	
 	emissivityIntensity += envRoomEmissivityTint;
 	

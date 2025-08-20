@@ -529,12 +529,8 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorNetworkState"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorNetworkState")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -546,7 +542,7 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 				parameters.getAt("messageCode") cast byte,\
 				getConnectionTrackerFor(parameters.getAt("connectionTracker", "default") cast String),\
 				getNetworkStateTrackerFor(parameters.getAt("networkStateTracker", "default") cast String))
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "networkState")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "networkState")
 			return behavior
 		end
 		
@@ -1141,7 +1137,8 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 	 */
 	static public func ECBehaviorNetworkState.Instance createFromLinkRequest( \
 	Connection connection, NetworkState state, FileReader reader )
-		return createFromLinkRequest( connection, state, reader, BaseGameApp.getApp().getElementClassList() )
+		return createFromLinkRequest(connection, state, reader,\
+			BehaviorElementClass.sharedFactoryHelper.defaultElementClassList())
 	end
 	
 	static public func ECBehaviorNetworkState.Instance createFromLinkRequest( \
@@ -1201,8 +1198,8 @@ class ECBehaviorNetworkState extends DefaultECBehavior
 	 */
 	static public func bool createAndAddFromLinkRequest( Connection connection, \
 	NetworkState state, FileReader reader, GameWorld gameWorld )
-		return createAndAddFromLinkRequest( connection, state, reader, gameWorld, \
-			BaseGameApp.getApp().getElementClassList() )
+		return createAndAddFromLinkRequest(connection, state, reader, gameWorld, \
+			BehaviorElementClass.sharedFactoryHelper.defaultElementClassList())
 	end
 	
 	static public func bool createAndAddFromLinkRequest( Connection connection, \

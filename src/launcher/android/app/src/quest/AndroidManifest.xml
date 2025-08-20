@@ -5,35 +5,31 @@
 
     <uses-sdk
         android:minSdkVersion="29"
-        android:targetSdkVersion="32" />
-
-    <uses-feature
-        android:glEsVersion="0x00030002"
-        android:required="true"
-        />
+        android:targetSdkVersion="32"
+        tools:ignore="ExpiredTargetSdkVersion" />
 
     <uses-feature
         android:name="android.hardware.vr.headtracking"
         android:required="true"
         android:version="1" />
 
-    <!--
+    <uses-permission android:name="org.khronos.openxr.permission.OPENXR" />
+    <uses-permission android:name="org.khronos.openxr.permission.OPENXR_SYSTEM" />
+
     <uses-feature
         android:name="com.oculus.software.handtracking"
         android:required="false" />
     <uses-permission android:name="com.oculus.permission.HAND_TRACKING" />
-    -->
 
     <!--
     enable support for:
     - XR_FB_face_tracking
     - XR_FB_face_tracking2
     -->
-    <!--
     <uses-feature
         android:name="oculus.software.face_tracking"
         android:required="false" />
-    -->
+    <uses-permission android:name="com.oculus.permission.FACE_TRACKING" />
 
     <!--
     enable support for:
@@ -41,12 +37,10 @@
     - XR_FB_eye_tracking_social
     - XR_META_foveation_eye_tracked
     -->
-    <!--
     <uses-feature
         android:name="oculus.software.eye_tracking"
         android:required="false" />
     <uses-permission android:name="horizonos.permission.EYE_TRACKING" />
-    -->
 
     <!--
     enable support for:
@@ -56,11 +50,10 @@
     - XR_META_body_tracking_calibration
     - XR_META_hand_tracking_wide_motion_mode
     -->
-    <!--
     <uses-feature
         android:name="com.oculus.software.body_tracking"
         android:required="false" />
-    -->
+    <uses-permission android:name="com.oculus.permission.BODY_TRACKING" />
 
     <!--
     enable support for:
@@ -119,11 +112,10 @@
     enable support for:
     - XR_FB_render_model
     -->
-    <!--
     <uses-feature
         android:name="com.oculus.feature.RENDER_MODEL"
         android:required="false" />
-    -->
+    <uses-permission android:name="com.oculus.permission.RENDER_MODEL" />
 
     <!--
     enable support for:
@@ -140,11 +132,9 @@
     - XR_META_passthrough_layer_resumed_event
     - XR_META_passthrough_preferences
     -->
-    <!--
     <uses-feature
         android:name="com.oculus.feature.PASSTHROUGH"
         android:required="false" />
-    -->
 
     <!--
     missing and unknown what uses-feature/uses-permission they belong to:
@@ -165,6 +155,11 @@
         <meta-data
             android:name="com.oculus.supportedDevices"
             android:value="quest2|questpro|quest3|quest3s"/>
+
+        <meta-data android:name="com.oculus.vr.focusaware" android:value="true"/>
+        <meta-data android:name="handtracking" android:value="1" />
+        <meta-data android:name="eyetracking_calibration" android:value="true" />
+        <!-- <meta-data android:name="com.oculus.ossplash" android:value="true"/> -->
 
         <activity
             android:name=".RemoteLauncherActivity"

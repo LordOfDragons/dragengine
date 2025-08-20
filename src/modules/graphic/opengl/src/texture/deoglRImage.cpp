@@ -58,15 +58,16 @@ pDepth( image.GetDepth() ),
 pComponentCount( image.GetComponentCount() ),
 pBitCount( image.GetBitCount() ),
 
-pTexture( NULL ),
-pCubeMap( NULL ),
-pArrayTexture( NULL ),
-pSkinUse( false ),
+pTexture(nullptr),
+pCubeMap(nullptr),
+pArrayTexture(nullptr),
+pSkinUseTexture(false),
+pSkinUseCubeMap(false),
+pSkinUseArrayTexture(false),
 pScaleU( 1.0f ),
 pScaleV( 1.0f ),
 
-pSkinMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
-{
+pSkinMemUse( renderThread.GetMemoryManager().GetConsumption().skin ){
 	LEAK_CHECK_CREATE( renderThread, Image );
 }
 
@@ -80,98 +81,149 @@ deoglRImage::~deoglRImage(){
 // Management
 ///////////////
 
-void deoglRImage::SetPixelBuffer( deoglPixelBuffer *pixelBuffer ){
+void deoglRImage::SetPixelBufferTexture(const deoglPixelBuffer::Ref &pixelBuffer){
 	// WARNING Called during synchronization from main thread only
 	
-	pPixelBuffer = pixelBuffer;
+	pPixelBufferTexture = pixelBuffer;
 }
 
-void deoglRImage::SetTexture( deoglTexture *texture ){
-	// called from render thread. does not use delayed operations to avoid dead-locking
-	if( texture == pTexture ){
+void deoglRImage::SetPixelBufferCubeMap(const deoglPixelBuffer::Ref &pixelBuffer){
+	// WARNING Called during synchronization from main thread only
+	
+	pPixelBufferCubeMap = pixelBuffer;
+}
+
+void deoglRImage::SetPixelBufferArrayTexture(const deoglPixelBuffer::Ref &pixelBuffer){
+	// WARNING Called during synchronization from main thread only
+	
+	pPixelBufferArrayTexture = pixelBuffer;
+}
+
+void deoglRImage::SetTexture(deoglTexture *texture){
+	// called from render thread (deoglSkinChannel).
+	// does not use delayed operations to avoid dead-locking
+	if(texture == pTexture){
 		return;
 	}
-	pDirectReleaseTextures();
+	
+	if(pTexture){
+		delete pTexture;
+		pTexture = nullptr;
+	}
+	
 	pTexture = texture;
-	pSkinUse = true;
+	pPixelBufferTexture = nullptr;
+	pSkinUseTexture = true;
+	
 	pUpdateSkinMemoryUsage();
 }
 
-void deoglRImage::SetCubeMap( deoglCubeMap *cubemap ){
-	// called from render thread. does not use delayed operations to avoid dead-locking
-	if( cubemap == pCubeMap ){
+void deoglRImage::SetCubeMap(deoglCubeMap *cubemap){
+	// called from render thread (deoglSkinChannel).
+	// does not use delayed operations to avoid dead-locking
+	if(cubemap == pCubeMap){
 		return;
 	}
-	pDirectReleaseTextures();
+	
+	if(pCubeMap){
+		delete pCubeMap;
+		pCubeMap = nullptr;
+	}
+	
 	pCubeMap = cubemap;
-	pSkinUse = true;
+	pPixelBufferCubeMap = nullptr;
+	pSkinUseCubeMap = true;
+	
 	pUpdateSkinMemoryUsage();
 }
 
-void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
-	// called from render thread. does not use delayed operations to avoid dead-locking
-	if( arrayTexture == pArrayTexture ){
+void deoglRImage::SetArrayTexture(deoglArrayTexture *arrayTexture){
+	// called from render thread (deoglSkinChannel).
+	// does not use delayed operations to avoid dead-locking
+	if(arrayTexture == pArrayTexture){
 		return;
 	}
-	pDirectReleaseTextures();
+	
+	if(pArrayTexture){
+		delete pArrayTexture;
+		pArrayTexture = nullptr;
+	}
+	
 	pArrayTexture = arrayTexture;
-	pSkinUse = true;
+	pPixelBufferArrayTexture = nullptr;
+	pSkinUseArrayTexture = true;
+	
 	pUpdateSkinMemoryUsage();
 }
 
 
 
 void deoglRImage::PrepareForRender(){
-	if( ! pPixelBuffer ){
+	if(!pPixelBufferTexture && !pPixelBufferCubeMap && !pPixelBufferArrayTexture){
 		return;
 	}
 	
-	if( ! pTexture && ! pCubeMap && ! pArrayTexture ){
-		// this should happen only for callers except skins. if the depth is 1 a 2D texture
-		// is created. if the depth is 6 and width and height are equals a cube map is created.
-		// otherwise an array texture is created. users of images have to cope with these
-		// three types of textures to exist
+	// NOTE: it is possible a skin adds an array version of the texture because variations
+	//       are used although the original image has depth=1 only. if the image is then
+	//       used in canvas it tries to use the texture version which is null. this code
+	//       the texture creation has been modified to support a regular texture to be
+	//       stored even if an array version of the texture exists to not break canvas
+	
+	// this should happen only for callers except skins. if the depth is 1 a 2D texture
+	// is created. if the depth is 6 and width and height are equals a cube map is created.
+	// otherwise an array texture is created. users of images have to cope with these
+	// three types of textures to exist
+	
+	// if the image is too small disable compression. otherwise the result
+	// can turn out smeared out. observed are problems at less than 5 pixel
+	// width or height. with 5 or more pixel no such problem is observed
+	const bool compressed = false; //pWidth >= 5 && pHeight >= 5;
+	
+	// NOTE since this is usually called for images used in UI using compression typically
+	//      results in visible artifacts. since these places have no way to tell if using
+	//      compression is a problem default to not use compression
+	
+	if(pDepth == 1){
+		if(!pTexture){
+			pTexture = new deoglTexture(pRenderThread);
+			pTexture->SetSize(pWidth, pHeight);
+			pTexture->SetMapingFormat(pComponentCount, pBitCount > 8, compressed);
+			pTexture->SetMipMapped(false);
+		}
 		
-		// if the image is too small disable compression. otherwise the result
-		// can turn out smeared out. observed are problems at less than 5 pixel
-		// width or height. with 5 or more pixel no such problem is observed
-		const bool compressed = false; //pWidth >= 5 && pHeight >= 5;
+	}else if(pDepth == 6 && pWidth == pHeight){
+		if(!pCubeMap){
+			pCubeMap = new deoglCubeMap(pRenderThread);
+			pCubeMap->SetSize(pWidth);
+			pCubeMap->SetMapingFormat(pComponentCount, pBitCount > 8, compressed);
+			pCubeMap->SetMipMapped(false);
+		}
 		
-		// NOTE since this is usually called for images used in UI using compression typically
-		//      results in visible artifacts. since these places have no way to tell if using
-		//      compression is a problem default to not use compression
-		
-		if( pDepth == 1 ){
-			pTexture = new deoglTexture( pRenderThread );
-			pTexture->SetSize( pWidth, pHeight );
-			pTexture->SetMapingFormat( pComponentCount, pBitCount > 8, compressed );
-			pTexture->SetMipMapped( false );
-			
-		}else if( pDepth == 6 && pWidth == pHeight ){
-			pCubeMap = new deoglCubeMap( pRenderThread );
-			pCubeMap->SetSize( pWidth );
-			pCubeMap->SetMapingFormat( pComponentCount, pBitCount > 8, compressed );
-			pCubeMap->SetMipMapped( false );
-			
-		}else{
-			pArrayTexture = new deoglArrayTexture( pRenderThread );
-			pArrayTexture->SetSize( pWidth, pHeight, pDepth );
-			pArrayTexture->SetMapingFormat( pComponentCount, pBitCount > 8, compressed );
-			pArrayTexture->SetMipMapped( false );
+	}else{
+		if(!pArrayTexture){
+			pArrayTexture = new deoglArrayTexture(pRenderThread);
+			pArrayTexture->SetSize(pWidth, pHeight, pDepth);
+			pArrayTexture->SetMapingFormat(pComponentCount, pBitCount > 8, compressed);
+			pArrayTexture->SetMipMapped(false);
 		}
 	}
 	
-	if( pArrayTexture ){
-		pArrayTexture->SetPixels( pPixelBuffer );
-		
-	}else if( pCubeMap ){
-		pCubeMap->SetPixels( pPixelBuffer );
-		
-	}else{
-		pTexture->SetPixels( pPixelBuffer );
+	// fill textures
+	if(pArrayTexture && pPixelBufferArrayTexture){
+		pArrayTexture->SetPixels(pPixelBufferArrayTexture);
 	}
 	
-	pPixelBuffer = nullptr;
+	if(pCubeMap && pPixelBufferCubeMap){
+		pCubeMap->SetPixels(pPixelBufferCubeMap);
+	}
+	
+	if(pTexture && pPixelBufferTexture){
+		pTexture->SetPixels(pPixelBufferTexture);
+	}
+	
+	pPixelBufferTexture = nullptr;
+	pPixelBufferCubeMap = nullptr;
+	pPixelBufferArrayTexture = nullptr;
 }
 
 
@@ -190,17 +242,19 @@ void deoglRImage::pReleaseTextures(){
 
 void deoglRImage::pDirectReleaseTextures(){
 	// called from render thread and from pReleaseTextures
-	if( pTexture ){
+	if(pTexture){
 		delete pTexture;
-		pTexture = NULL;
+		pTexture = nullptr;
 	}
-	if( pCubeMap ){
+	
+	if(pCubeMap){
 		delete pCubeMap;
-		pCubeMap = NULL;
+		pCubeMap = nullptr;
 	}
-	if( pArrayTexture ){
+	
+	if(pArrayTexture){
 		delete pArrayTexture;
-		pArrayTexture = NULL;
+		pArrayTexture = nullptr;
 	}
 	
 	pUpdateSkinMemoryUsage();
@@ -209,21 +263,17 @@ void deoglRImage::pDirectReleaseTextures(){
 void deoglRImage::pUpdateSkinMemoryUsage(){
 	pSkinMemUse.Clear();
 	
-	if( ! pSkinUse ){
-		return;
-	}
-	
-	if( pTexture ){
+	if(pTexture && pSkinUseTexture){
 		pSkinMemUse.compressed += pTexture->GetMemoryConsumption().TotalCompressed();
 		pSkinMemUse.uncompressed += pTexture->GetMemoryConsumption().TotalUncompressed();
 	}
 	
-	if( pCubeMap ){
+	if(pCubeMap && pSkinUseCubeMap){
 		pSkinMemUse.compressed += pCubeMap->GetMemoryConsumption().TotalCompressed();
 		pSkinMemUse.uncompressed += pCubeMap->GetMemoryConsumption().TotalUncompressed();
 	}
 	
-	if( pArrayTexture ){
+	if(pArrayTexture && pSkinUseArrayTexture){
 		pSkinMemUse.compressed += pArrayTexture->GetMemoryConsumption().TotalCompressed();
 		pSkinMemUse.uncompressed += pArrayTexture->GetMemoryConsumption().TotalUncompressed();
 	}

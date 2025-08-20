@@ -97,7 +97,7 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 * Pivot point is set to 1.6m above ground.
 	 */
 	public func new(Camera camera, Microphone microphone) \
-	this(camera, microphone, BaseGameApp.getApp().getPlayerControlledActor())
+	this(camera, microphone, BehaviorElementClass.sharedFactoryHelper.defaultPlayerControlledActor())
 	end
 	
 	/**

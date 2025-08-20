@@ -8,11 +8,10 @@
 	
 	<uniformBlock name='EnvironmentMaps' binding='1'/>
 	
-	<define>ENVMAP_EQUI</define>
-	<define>ENVMAP_BOX_PROJECTION</define>
-	<define>ENVMAP_SINGLE</define>
-	<define>GS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>TEXTURE_ENVMAP_EQUI</define>
+	<define>ENVMAP_MODE</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 	
 	<!-- <define>HACK_NO_SSR</define> system only -->
 	
@@ -20,13 +19,6 @@
 	<uniformBlock name='RenderParameters' binding='0'/>
 	
 	<!-- shared/normal_texture.glsl -->
-	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
-	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
-	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
+	<define>MATERIAL_NORMAL_DEC</define>
+	<define>MATERIAL_NORMAL_ENC</define>
 </shaderSource>

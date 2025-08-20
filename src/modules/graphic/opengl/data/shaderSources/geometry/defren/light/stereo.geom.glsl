@@ -1,13 +1,9 @@
-#ifdef GS_INSTANCING
-	#ifndef OPENGLES
-		#extension GL_ARB_gpu_shader5 : require
-	#endif
-#endif
+#include "shared/preamble.glsl"
 
 precision HIGHP float;
 precision HIGHP int;
 
-#if defined GS_RENDER_STEREO
+#if LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout(triangles, invocations=2) in;
 		layout(triangle_strip, max_vertices=3) out;
@@ -20,13 +16,7 @@ precision HIGHP int;
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_instance_parameters.glsl"
 
-#ifdef FULLSCREENQUAD
-	out vec2 vScreenCoord;
-#else
-	out vec3 vLightVolumePos;
-#endif
-
-flat out int vLayer;
+#include "shared/interface/light/geometry.glsl"
 
 void main(void){
 	int eye;
@@ -38,20 +28,17 @@ void main(void){
 		
 		int corner;
 		for(corner=0; corner<3; corner++){
-			vec4 position = gl_in[corner].gl_Position;
+			lightGeometryShaderDefaultOutputs(corner, eye);
 			
-			#ifdef FULLSCREENQUAD
+			vec4 position = gl_in[corner].gl_Position;
+			if(FullScreenQuad){
 				gl_Position = position;
 				vScreenCoord = position.xy;
-			#else
+				
+			}else{
 				gl_Position = pMatrixMVP[eye] * position;
 				vLightVolumePos = pMatrixMV[eye] * position;
-			#endif
-			
-			vLayer = eye;
-			
-			gl_Layer = eye;
-			gl_PrimitiveID = gl_PrimitiveIDIn;
+			}
 			
 			EmitVertex();
 		}

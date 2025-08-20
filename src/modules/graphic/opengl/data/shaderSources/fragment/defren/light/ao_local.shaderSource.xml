@@ -6,21 +6,14 @@
 	
 	<output name='outAO' location='0'/>
 	
-	<define>GS_RENDER_STEREO</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
+	<define>VS_RENDER_LAYER</define>
 	<!-- <define>SSAO_RESOLUTION_COUNT</define> system only -->
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>
 	
 	<!-- shared/normal_texture.glsl -->
-	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
-	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
-	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
+	<define>MATERIAL_NORMAL_DEC</define>
+	<define>MATERIAL_NORMAL_ENC</define>
 </shaderSource>

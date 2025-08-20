@@ -29,7 +29,6 @@
 #include <dragengine/common/math/decMath.h>
 
 
-
 /**
  * \brief Game Definition Camera.
  *
@@ -37,15 +36,10 @@
  */
 class DE_DLL_EXPORT igdeGDCamera{
 private:
-	float pFov;
-	float pFovRatio;
-	float pImageDistance;
-	float pViewDistance;
+	float pFov, pFovRatio, pImageDistance, pViewDistance;
 	decVector pPosition;
 	decQuaternion pOrientation;
-	
-	decString pPropName;
-	
+	decString pPropName, pPropPosition, pPropRotation;
 	
 	
 public:
@@ -105,7 +99,19 @@ public:
 	inline const decString &GetPropName() const{ return pPropName; }
 	
 	/** \brief Set name of the name property. */
-	void SetPropName( const char *propName );
+	void SetPropName(const char *property);
+	
+	/** \brief Name of the position property. */
+	inline const decString &GetPropPosition() const{ return pPropPosition; }
+	
+	/** \brief Set name of the position property. */
+	void SetPropPosition(const char *property);
+	
+	/** \brief Name of the rotation property. */
+	inline const decString &GetPropRotation() const{ return pPropRotation; }
+	
+	/** \brief Set name of the rotation property. */
+	void SetPropRotation(const char *property);
 	/*@}*/
 };
 

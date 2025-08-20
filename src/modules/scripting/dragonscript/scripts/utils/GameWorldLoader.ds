@@ -132,8 +132,10 @@ class GameWorldLoader
 	 * 
 	 * Creates a DecalBuilder and an AddDecalVisitor.
 	 */
-	func new() this(BaseGameApp.getApp().getConsole(), BaseGameApp.getApp().getLoaders(),\
-	BaseGameApp.getApp().getElementClassList(), BaseGameApp.getApp().getIDGenerator())
+	func new() this(BehaviorElementClass.sharedFactoryHelper.defaultConsole(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultLoaders(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultElementClassList(),\
+	BehaviorElementClass.sharedFactoryHelper.defaultIDGenerator())
 	end
 	
 	/**

@@ -1,13 +1,17 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform ivec4 pParameters; // to.mapsPerRow, to.rowsPerImage, from.mapsPerRow, from.rowsPerImage
+UNIFORM_BIND(0) uniform ivec4 pParameters; // to.mapsPerRow, to.rowsPerImage, from.mapsPerRow, from.rowsPerImage
 
 layout(location=0) in vec2 inPosition;
 
-out vec2 vTexCoord;
+#include "shared/interface/2d/vertex.glsl"
 
 void main( void ){
+	vertexShaderDefaultOutputs();
+	
 	// calculate target map to write to and source map to sample from.
 	// both the target and source calculations are done at the same time.
 	// the basic calculation is like this:

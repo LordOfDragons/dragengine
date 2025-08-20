@@ -125,20 +125,25 @@ public:
 		 * \brief Battery is charging.
 		 * \version 1.20
 		 */
-		ebtBatteryCharging
+		ebtBatteryCharging,
+		
+		/**
+		 * \brief Trigger click simulated by touching two fingers.
+		 * \version 1.28
+		 */
+		ebtTwoFingerTrigger
 	};
 	
 	
 	
 private:
-	decString pID;
-	decString pName;
+	decString pID, pName;
 	eButtonTypes pType;
 	decString pComponent;
 	deImageReference pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
-	bool pTouchable;
+	bool pTouchable, pApproachable;
 	
 	
 	
@@ -249,6 +254,18 @@ public:
 	 * \version 1.11.1
 	 */
 	void SetTouchable( bool touchable );
+	
+	/**
+	 * \brief Button supports sending approach/withdraw events.
+	 * \version 1.28
+	 */
+	inline bool GetApproachable() const{ return pApproachable; }
+	
+	/**
+	 * \brief Set if button supports sending approach/withdraw events.
+	 * \version 1.28
+	 */
+	void SetApproachable(bool approachable);
 	/*@}*/
 	
 	

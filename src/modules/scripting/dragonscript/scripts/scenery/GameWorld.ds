@@ -44,11 +44,9 @@ pin Dragengine.Utils
  */
 class GameWorld
 	var World pWorld
-	var SafeArray pElements
-	var SafeArray pThinkers
+	var SafeArray pElements, pThinkers
 	var Dictionary pElementIDMap
 	var Array pEnterFrameOnce
-	var bool pLockEnterFrameOnce
 	var SpawnPointList pSpawnPoints
 	var TemporaryDecalManager pTempDecalMgr
 	var CachedVegetation pCachedVegetation
@@ -63,8 +61,7 @@ class GameWorld
 	var Array pBehaviors
 	var bool pBehaviorsInited
 	var Array pThinkingBehaviors
-	var bool pEnablePersistency
-	var bool pEnableReadDynDataWithSize
+	var bool pEnablePersistency, pEnableReadDynDataWithSize
 	
 	var GWBehaviorOneShotSpeaker pBehaviorOneShotSpeaker
 	
@@ -350,14 +347,15 @@ class GameWorld
 		end
 		
 		if pThinkers.has(element)
-			BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind thinker")
+			BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
+				"GameWorld.removeElement: Object of class " + element.className() + " left behind thinker")
 			pThinkers.remove(element)
 		end
 		
 		var int index = pEnterFrameOnce.indexOf(element)
 		if index != -1
-			BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once")
-			pPrepareUpdateEnterFrameOnce()
+			BehaviorElementClass.sharedFactoryHelper.defaultConsole().addMessage(\
+				"GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once")
 			pEnterFrameOnce.removeFrom(index)
 		end
 	end
@@ -427,7 +425,6 @@ class GameWorld
 		end
 		
 		if not pEnterFrameOnce.has(element)
-			pPrepareUpdateEnterFrameOnce()
 			pEnterFrameOnce.add(element)
 		end
 	end
@@ -436,7 +433,6 @@ class GameWorld
 	func void removeEnterFrameOnce(Element element)
 		var int index = pEnterFrameOnce.indexOf(element)
 		if index != -1
-			pPrepareUpdateEnterFrameOnce()
 			pEnterFrameOnce.removeFrom(index)
 		end
 	end
@@ -563,13 +559,11 @@ class GameWorld
 	func void enterFrame()
 		while pEnterFrameOnce.getCount() > 0
 			var Array list = pEnterFrameOnce
-			pLockEnterFrameOnce = true
+			pEnterFrameOnce = Array.new()
 			
 			list.forEach(block Element each
 				each.enterFrame()
 			end)
-			list.removeAll()
-			pLockEnterFrameOnce = false
 		end
 	end
 	
@@ -951,15 +945,6 @@ class GameWorld
 			throw EInvalidParam.new()
 		end
 		pTempDecalMgr = manager
-	end
-	
-	
-	
-	private func void pPrepareUpdateEnterFrameOnce()
-		if pLockEnterFrameOnce
-			pEnterFrameOnce = Array.new(pEnterFrameOnce)
-			pLockEnterFrameOnce = false
-		end
 	end
 	
 	

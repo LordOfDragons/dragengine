@@ -2,10 +2,5 @@
 <shader>
 	<name>DefRen GI Probe Dynamic States</name>
 	
-	<!-- shader assigned locations
-	<texture name='texTracePosition' target='0'/>
-	<texture name='texTraceNormal' target='1'/>
-	-->
-	
 	<sourceCode unit='compute'>C DefRen GI Probe Dynamic States</sourceCode>
 </shader>

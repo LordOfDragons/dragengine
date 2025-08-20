@@ -1,10 +1,6 @@
-#ifdef GS_INSTANCING
-	#ifndef OPENGLES
-		#extension GL_ARB_gpu_shader5 : require
-	#endif
-#endif
+#include "shared/preamble.glsl"
 
-#ifdef GS_RENDER_STEREO
+#if LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout( triangles, invocations=2 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
@@ -12,21 +8,20 @@
 		layout( triangles ) in;
 		layout( triangle_strip, max_vertices=6 ) out;
 	#endif
+	
 #else
 	layout( triangles ) in;
 	layout( triangle_strip, max_vertices=3 ) out;
 #endif
 
 
-uniform mat4 pMatrixVP;
-uniform mat4 pMatrixVP2;
+UNIFORM_BIND(1) uniform mat4 pMatrixVP;
+UNIFORM_BIND(2) uniform mat4 pMatrixVP2;
 
-in vec2 vGSTexCoord[ 3 ];
-
-out vec2 vTexCoord;
+#include "shared/interface/2d/geometry.glsl"
 
 
-#ifdef GS_RENDER_STEREO
+#if LAYERED_RENDERING_STEREO
 
 void main( void ){
 	int eye;
@@ -40,11 +35,7 @@ void main( void ){
 		int i;
 		for( i=0; i<3; i++ ){
 			gl_Position = ( eye == 0 ? pMatrixVP : pMatrixVP2 ) * gl_in[ i ].gl_Position;
-			gl_Layer = eye;
-			gl_PrimitiveID = gl_PrimitiveIDIn;
-			
-			vTexCoord = vGSTexCoord[ i ];
-			
+			geometryShaderDefaultOutputs(i, eye);
 			EmitVertex();
 		}
 		EndPrimitive();
@@ -60,15 +51,11 @@ void main( void ){
 	int i;
 	for( i=0; i<3; i++ ){
 		gl_Position = gl_in[ i ].gl_Position;
-		gl_Layer = 0;
-		gl_PrimitiveID = gl_PrimitiveIDIn;
-		
-		vTexCoord = vGSTexCoord[ i ];
-		
+		geometryShaderDefaultOutputs(i);
 		EmitVertex();
 	}
 	
 	EndPrimitive();
 }
 
-#endif // GS_RENDER_STEREO
+#endif

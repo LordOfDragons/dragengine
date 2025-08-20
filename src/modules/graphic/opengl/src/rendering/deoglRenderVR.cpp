@@ -61,6 +61,7 @@ deoglRenderVR::deoglRenderVR( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread )
 {
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
+	const bool vsRenderLayer = renderThread.GetChoices().GetRenderFSQuadStereoVSLayer();
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
 	deoglPipelineConfiguration pipconf, pipconf2;
 	deoglShaderDefines defines, commonDefines;
@@ -85,18 +86,22 @@ deoglRenderBase( renderThread )
 		pipconf2.SetClipControl( useInverseDepth );
 		
 		defines = commonDefines;
-		sources = shaderManager.GetSourcesNamed( "VR Hidden Area" );
+		if(vsRenderLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
+		sources = shaderManager.GetSourcesNamed(vsRenderLayer ? "VR Hidden Area" : "VR Hidden Area Stereo");
 		pAsyncGetPipeline(pPipelineHiddenAreaClearMask, pipconf, sources, defines);
 		pAsyncGetPipeline(pPipelineHiddenAreaDepth, pipconf2, sources, defines);
 		
 		// hidden area stereo left
-		sources = shaderManager.GetSourcesNamed( "VR Hidden Area Stereo" );
-		defines.SetDefine( "RENDER_TO_LAYER", 0 );
+		sources = shaderManager.GetSourcesNamed(vsRenderLayer ? "VR Hidden Area" : "VR Hidden Area Stereo");
+		defines.SetDefines("SPLIT_LAYERS");
+		defines.SetDefine("RENDER_PASS", 0);
 		pAsyncGetPipeline(pPipelineHiddenAreaClearMaskStereoLeft, pipconf, sources, defines);
 		pAsyncGetPipeline(pPipelineHiddenAreaDepthStereoLeft, pipconf2, sources, defines);
 		
 		// hidden area stereo right
-		defines.SetDefine( "RENDER_TO_LAYER", 1 );
+		defines.SetDefine("RENDER_PASS", 1);
 		pAsyncGetPipeline(pPipelineHiddenAreaClearMaskStereoRight, pipconf, sources, defines);
 		pAsyncGetPipeline(pPipelineHiddenAreaDepthStereoRight, pipconf2, sources, defines);
 		

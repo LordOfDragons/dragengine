@@ -105,7 +105,7 @@ ECBehaviorPlayerInteractPrompt.PromptController
 	
 	
 	/** \brief Create interact prompt panel. */
-	func new() this(BaseGameApp.getApp().getBindingManager(), 32)
+	func new() this(BehaviorElementClass.sharedFactoryHelper.defaultBindingManager(), 32)
 	end
 	
 	func new(BindingManager bindingManager, int bindingIconHeight) \

@@ -63,8 +63,7 @@ const char *deoglSTPipelinesPropFieldImposter::GetDebugName() const{
 void deoglSTPipelinesPropFieldImposter::pPreparePipelines( const ChannelInfo &cinfo,
 deoglBatchedShaderLoading &batched ){
 	deoglSkinShaderConfig baseShaderConfig;
-	baseShaderConfig.SetGeometryMode( deoglSkinShaderConfig::egmPropField );
-	baseShaderConfig.SetBillboard( true );
+	baseShaderConfig.SetGeometryMode(deoglSkinShaderConfig::egmPropFieldImposter);
 	
 	pPrepareGeometry( baseShaderConfig, cinfo, batched);
 	// pPrepareGeometryDepthTest( baseShaderConfig, cinfo, batched);

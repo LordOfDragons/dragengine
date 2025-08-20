@@ -24,6 +24,7 @@
 
 
 namespace Dragengine.Utils
+pin Dragengine.Scenery
 
 
 
@@ -65,10 +66,10 @@ class TranslationManager
 	 * \brief Get TranslationManager from BaseGameApp.
 	 * \version 1.16
 	 * 
-	 * Convenience method for BaseGameApp.getApp().getTranslationManager() .
+	 * Convenience method for BehaviorElementClass.sharedFactoryHelper.getTranslationManager() .
 	 */
 	static func TranslationManager get()
-		return BaseGameApp.getApp().getTranslationManager()
+		return BehaviorElementClass.sharedFactoryHelper.defaultTranslationManager()
 	end
 	
 	

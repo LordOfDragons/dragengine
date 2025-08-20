@@ -1,40 +1,40 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_gi.glsl"
 
-uniform mat4x3 pMatrixMV;
-uniform mat4 pMatrixP;
-uniform int pGICascade;
-uniform int pGIDebugProbe;
-uniform int pGIRaysPerProbe;
-uniform int pGIProbesPerLine;
-uniform vec3 pProbePosition;
-uniform ivec2 pUpdateDataRayOffset;
-uniform int pRayDataValid;
-
-#include "shared/defren/gi/constants.glsl"
+UNIFORM_BIND(0) uniform mat4x3 pMatrixMV;
+UNIFORM_BIND(1) uniform mat4 pMatrixP;
+UNIFORM_BIND(2) uniform int pGICascade;
+UNIFORM_BIND(3) uniform int pGIDebugProbe;
+UNIFORM_BIND(4) uniform int pGIRaysPerProbe;
+UNIFORM_BIND(5) uniform int pGIProbesPerLine;
+UNIFORM_BIND(6) uniform vec3 pProbePosition;
+UNIFORM_BIND(7) uniform ivec2 pUpdateDataRayOffset;
+UNIFORM_BIND(8) uniform int pRayDataValid;
 
 UBOLAYOUT_BIND(4) uniform GIRayDirections{
-	vec3 pGIRayDirection[ GI_MAX_COUNT_RAY_DIRECTIONS ];
+	vec3 pGIRayDirection[GIMaxCountRayDirections];
 };
 
 UBOLAYOUT_BIND(2) restrict buffer RayData {
-	vec4 pRayData[ GI_MAX_COUNT_RAY_DIRECTIONS ];
+	vec4 pRayData[GIMaxCountRayDirections];
 };
 
 #include "shared/defren/gi/raycast/ray_cache.glsl"
 
-uniform HIGHP sampler2DArray texCacheDistance;
-uniform mediump sampler2D texLight;
+layout(binding=0) uniform HIGHP sampler2DArray texCacheDistance;
+layout(binding=2) uniform mediump sampler2D texLight;
 
 layout(location=0) in vec2 inPosition;
 
-out vec2 vTexCoord;
-flat out vec3 vColor;
-flat out vec3 vColorRim;
-flat out float vRimThickness;
+VARYING_BIND(0) out vec2 vTexCoord;
+VARYING_BIND(1) flat out vec3 vColor;
+VARYING_BIND(2) flat out vec3 vColorRim;
+VARYING_BIND(3) flat out float vRimThickness;
 
 void main( void ){
 	ivec3 tcCache = giRayCastCacheTCFromProbeIndex( pGIDebugProbe, gl_InstanceID );

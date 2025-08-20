@@ -1,27 +1,29 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 #include "shared/defren/light/ubo_gi.glsl"
 
-uniform int pGIDebugCascade;
-uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
-uniform vec4 pPlaneLeft;
-uniform vec4 pPlaneRight;
-uniform vec4 pPlaneTop;
-uniform vec4 pPlaneBottom;
-uniform vec4 pPlaneNear;
+UNIFORM_BIND(3) uniform int pGIDebugCascade;
+UNIFORM_BIND(2) uniform ivec3 pParams; // probeSize, spaceSize, groupSpaceSize
+UNIFORM_BIND(4) uniform vec4 pPlaneLeft;
+UNIFORM_BIND(5) uniform vec4 pPlaneRight;
+UNIFORM_BIND(6) uniform vec4 pPlaneTop;
+UNIFORM_BIND(7) uniform vec4 pPlaneBottom;
+UNIFORM_BIND(8) uniform vec4 pPlaneNear;
 
 #define pGIGridProbeCount pGIParams[pGIDebugCascade].probeCount
+#define TEX_GI_PROBE_OFFSET_BINDING 0
 #include "shared/defren/gi/probe_offset.glsl"
 #include "shared/defren/gi/probe_flags.glsl"
 
-#ifdef PASS2
-	flat in ivec3 vProbeCoord;
-	
-#else
-	in vec2 vTC;
-#endif
+// RenderPass == 0
+VARYING_BIND(0) in vec2 vTC;
+
+// RenderPass == 1
+VARYING_BIND(1) flat in ivec3 vProbeCoord;
 
 layout(location=0) out vec3 outColor;
 
@@ -39,12 +41,13 @@ int giCoordToIndex( in ivec3 coord ){
 void main( void ){
 	outColor = vec3( 0.0 );
 	
-	#ifdef PASS2
-		ivec3 probeCoord = vProbeCoord;
+	ivec3 probeCoord;
+	
+	if(RenderPass == 1){
+		probeCoord = vProbeCoord;
 		
-	#else
+	}else{
 		ivec2 tc = ivec2( vTC );
-		ivec3 probeCoord;
 		
 		int probeStride = pParams.x + pParams.y;
 		if( tc.y % probeStride >= pParams.x ){
@@ -65,7 +68,7 @@ void main( void ){
 			return; // inside spacing
 		}
 		probeCoord.x = tc.x / probeStride;
-	#endif
+	}
 	
 	vec3 gridPosition = pGIParams[pGIDebugCascade].probeSpacing * vec3( probeCoord )
 		+ pGIParams[pGIDebugCascade].gridOrigin;
@@ -82,12 +85,6 @@ void main( void ){
 	bool disabled = ( flags & gipfDisabled ) == gipfDisabled;
 	bool nearGeometry = ( flags & gipfNearGeometry ) == gipfNearGeometry;
 	
-	#ifdef PASS2
-	bool updated = true;
-	#else
-	bool updated = false;
-	#endif
-	
 	if( disabled ){
 		outColor = mix( vec3( 0.5 ), vec3( 1 ), bvec3( insideView ) );
 		
@@ -98,7 +95,7 @@ void main( void ){
 		outColor = mix( vec3( 0.25, 0, 0.25 ), vec3( 0.5, 0, 0.5 ), bvec3( insideView ) );
 	}
 	
-	if( ! updated ){
+	if(RenderPass == 0){
 		outColor *= 0.1;
 	}
 }

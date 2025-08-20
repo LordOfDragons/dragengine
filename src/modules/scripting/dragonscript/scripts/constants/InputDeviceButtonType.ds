@@ -115,4 +115,10 @@ enum InputDeviceButtonType
 	 * \version 1.20
 	 */
 	batteryCharging
+	
+	/**
+	 * \brief Trigger click simulated by touching two fingers.
+	 * \version 1.28
+	 */
+	twoFingerTrigger
 end

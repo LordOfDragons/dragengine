@@ -2,16 +2,12 @@
 <shader>
 	<name>DefRen EnvMap Material Copy</name>
 	
-	<texture name='texDepth' target='0'/>
-	<texture name='texDiffuse' target='1'/>
-	<texture name='texNormal' target='2'/>
-	
-	<parameter name='pPosTransform'/>
-	<parameter name='pPosTransform2'/>
-	<parameter name='pSCTransform'/>
-	<parameter name='pTCTransform'/>
-	<parameter name='pMatrixPosition'/>
-	<parameter name='pMatrixNormal'/>
+	<parameter name='pPosTransform' location='2'/>
+	<parameter name='pPosTransform2' location='3'/>
+	<parameter name='pSCTransform' location='0'/>
+	<parameter name='pTCTransform' location='1'/>
+	<parameter name='pMatrixPosition' location='4'/>
+	<parameter name='pMatrixNormal' location='5'/>
 	
 	<sourceCode unit='vertex'>V DefRen EnvMap Material Copy</sourceCode>
 	<sourceCode unit='fragment'>F DefRen EnvMap Material Copy</sourceCode>

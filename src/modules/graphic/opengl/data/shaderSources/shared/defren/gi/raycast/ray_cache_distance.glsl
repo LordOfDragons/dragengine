@@ -1,4 +1,4 @@
-uniform HIGHP sampler2DArray texGIRayCastDistanceLimit;
+layout(binding=12) uniform HIGHP sampler2DArray texGIRayCastDistanceLimit;
 
 // get ray cache distance for ray
 float giRayCastCacheDistance( in int instanceID, in int rayIndex, in int layer ){

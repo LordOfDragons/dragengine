@@ -62,18 +62,13 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorConvoCoordSystem"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorConvoCoordSystem")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorConvoCoordSystem behavior = ECBehaviorConvoCoordSystem.new(eclass, id)
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "convoCoordSystem", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "convoCoordSystem", id)
 			return behavior
 		end
 	end

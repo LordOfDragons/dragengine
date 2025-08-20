@@ -96,6 +96,9 @@ public:
 	/** Check if devices have been added or removed sending event to game engine. */
 	void CheckNotifyAttachedDetached();
 	
+	/** Reference space changed. */
+	void ReferenceSpaceChanged();
+	
 	
 	
 	/** Log list of input devices. */

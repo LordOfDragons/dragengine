@@ -217,6 +217,7 @@ public:
 	
 	
 private:
+	float pGetActionFloatValue(const deoxrInstance &instance, const deoxrSession &session) const;
 };
 
 #endif

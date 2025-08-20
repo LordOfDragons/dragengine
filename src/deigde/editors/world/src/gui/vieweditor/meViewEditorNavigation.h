@@ -43,7 +43,8 @@ class meViewEditorNavigation : public meViewEditor{
 private:
 	float pOldDist;
 	float pOldZoom;
-	decVector pOldOrientation;
+	decQuaternion pOldOrientation;
+	decVector pOldRotation;
 	
 	bool pNavigating;
 	

@@ -2,8 +2,8 @@
 <shader>
 	<name>DefRen VPS Transform VNT</name>
 	
-	<parameter name='pParams'/>
-	<parameter name='pWeight'/>
+	<parameter name='pParams' location='0'/>
+	<parameter name='pWeight' location='1'/>
 	
 	<sourceCode unit='compute'>C DefRen VPS Transform VNT</sourceCode>
 </shader>

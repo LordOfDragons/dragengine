@@ -1,41 +1,8 @@
+#include "shared/preamble.glsl"
+
 // request high precision if the graphic card supports this
 precision HIGHP float;
 precision HIGHP int;
-
-// Some helper definitions to make the code easier to read. the strange way of defining
-// the tokens is just due to nVidia GLSL compiler failing to support breaking the #if
-// condition expression across multiple lines as ATI can. To avoid overly long lines
-// a bit of macro-magic is used
-#if defined TEXTURE_SHADOW1_SOLID || defined TEXTURE_SHADOW1_TRANSPARENT
-	#define _TS1S 1
-#endif
-#if defined TEXTURE_SHADOW2_SOLID || defined TEXTURE_SHADOW2_TRANSPARENT
-	#define _TS2S 1
-#endif
-
-#ifndef PARTICLE_LIGHT
-	// shadow casting is currently not supported on particle lights. if shadow casting
-	// would be enabled shaders fail to compile since PARTICLE_LIGHT prevents the
-	// inclusion of various pShader* uniforms in InstanceParameters uniform block
-	#if defined _TS1S || defined _TS2S
-		#if defined SMA1_CUBE || defined SMA2_CUBE
-			#define EVALUATE_SHADOWCUBE 1
-		#endif
-		#if ! defined SMA1_CUBE || ! defined SMA2_CUBE
-			#define EVALUATE_SHADOW2D 1
-		#endif
-		#define SHADOW_CASTING 1
-	#endif
-#endif
-
-#if defined TEXTURE_SHADOW1_TRANSPARENT || defined TEXTURE_SHADOW2_TRANSPARENT
-	#define COLORED_SHADOWS 1
-#endif
-
-#if defined SKY_LIGHT && ! defined GI_RAY
-	#define USE_ARRAY_FORM 1
-#endif
-
 
 
 // Uniform Parameters
@@ -48,128 +15,202 @@ precision HIGHP int;
 #include "shared/equirectangular.glsl"
 
 
+// Configuration
+//////////////////
+
+const bool HasShadow1 = TextureShadow1Solid || TextureShadow1Transparent;
+const bool HasShadow2 = TextureShadow2Solid || TextureShadow2Transparent;
+const bool HasShadows = HasShadow1 || HasShadow2;
+const bool HasColoredShadows = TextureShadow1Transparent || TextureShadow2Transparent;
+
+// shadow casting is currently not supported on particle lights
+const bool CastShadows = HasShadows && LightMode != LightModeParticle;
+
+const bool UseArrayForm = LightMode == LightModeSky && !GIRay;
+
+#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+	#if LIGHT_MODE == 3 && ! defined GI_RAY
+		#define USE_ARRAY_FORM
+	#endif
+#endif
+
 
 // Samplers
 /////////////
 
-#ifdef HW_DEPTH_COMPARE
-	#ifdef USE_ARRAY_FORM
-		#define SAMPLER_SHADOW2D sampler2DArrayShadow
+// see deoglLightShader::UpdateTextureTargets()
+
+#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+	#if SHADOW1_MODE == 1
+		#define RCS1C(e) e;
+		#define RCS1A(e)
+		#define RCS1R(e)
+	#elif defined USE_ARRAY_FORM
+		#define RCS1C(e)
+		#define RCS1A(e) e;
+		#define RCS1R(e)
 	#else
-		#define SAMPLER_SHADOW2D sampler2DShadow
+		#define RCS1C(e)
+		#define RCS1A(e)
+		#define RCS1R(e) e;
 	#endif
-	#define SAMPLER_SHADOWCUBE samplerCubeShadow
-#else
-	#ifdef USE_ARRAY_FORM
-		#define SAMPLER_SHADOW2D sampler2DArray
+	
+	#if SHADOW2_MODE == 1
+		#define RCS2C(e) e;
+		#define RCS2A(e)
+		#define RCS2R(e)
+	#elif defined USE_ARRAY_FORM
+		#define RCS2C(e)
+		#define RCS2A(e) e;
+		#define RCS2R(e)
 	#else
-		#define SAMPLER_SHADOW2D sampler2D
+		#define RCS2C(e)
+		#define RCS2A(e)
+		#define RCS2R(e) e;
 	#endif
-	#define SAMPLER_SHADOWCUBE samplerCube
-#endif
-
-#ifdef USE_ARRAY_FORM
-	#define SAMPLER_DEPTH2D sampler2DArray
+	
+	#if TEXTURE_LIGHT_COLOR == 1
+		#define RCTLCR(e) e;
+		#define RCTLCC(e)
+		#define RCTLCE(e)
+	#elif TEXTURE_LIGHT_COLOR == 2
+		#define RCTLCR(e)
+		#define RCTLCC(e) e;
+		#define RCTLCE(e)
+	#elif TEXTURE_LIGHT_COLOR == 3
+		#define RCTLCR(e)
+		#define RCTLCC(e)
+		#define RCTLCE(e) e;
+	#else
+		#define RCTLCR(e)
+		#define RCTLCC(e)
+		#define RCTLCE(e)
+	#endif
+	
 #else
-	#define SAMPLER_DEPTH2D sampler2D
+	#define RCS1C(e) e;
+	#define RCS1A(e) e;
+	#define RCS1R(e) e;
+	
+	#define RCS2C(e) e;
+	#define RCS2A(e) e;
+	#define RCS2R(e) e;
+	
+	#define RCTLCR(e) e;
+	#define RCTLCC(e) e;
+	#define RCTLCE(e) e;
 #endif
 
-#ifdef GI_RAY
-	uniform HIGHP sampler2D texPosition;
-	uniform lowp sampler2D texDiffuse;
-	uniform lowp sampler2D texNormal;
-	uniform lowp sampler2D texReflectivity; // reflectivity.rgb, roughness
+// GIRay
+#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && ! defined GI_RAY
+	#define texGIPosition texShadowNoise
+	#define texGIDiffuse texShadowNoise
+	#define texGINormal texShadowNoise
+	#define texGIReflectivity texShadowNoise
 #else
-	uniform HIGHP sampler2DArray texDepth;
-	uniform lowp sampler2DArray texDiffuse;
-	uniform lowp sampler2DArray texNormal;
-	uniform lowp sampler2DArray texReflectivity;
-	uniform lowp sampler2DArray texRoughness;
-	uniform lowp sampler2DArray texAOSolidity;
+	layout(binding=0) uniform HIGHP sampler2D texGIPosition;
+	layout(binding=1) uniform lowp sampler2D texGIDiffuse;
+	layout(binding=2) uniform lowp sampler2D texGINormal;
+	layout(binding=3) uniform lowp sampler2D texGIReflectivity; // reflectivity.rgb, roughness
 #endif
 
-uniform HIGHP sampler2DArray texSubSurface;
+// !GIRay
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
+layout(binding=1) uniform lowp sampler2DArray texDiffuse;
+layout(binding=2) uniform lowp sampler2DArray texNormal;
+layout(binding=3) uniform lowp sampler2DArray texReflectivity;
+layout(binding=4) uniform lowp sampler2DArray texRoughness;
+layout(binding=5) uniform lowp sampler2DArray texAOSolidity;
 
-#ifdef SMA1_CUBE
-	uniform HIGHP SAMPLER_SHADOWCUBE texShadow1SolidDepth;
-	uniform HIGHP SAMPLER_SHADOWCUBE texShadow1TransparentDepth;
-	uniform lowp samplerCube texShadow1TransparentColor;
-	uniform HIGHP SAMPLER_SHADOWCUBE texShadow1Ambient;
-	uniform HIGHP SAMPLER_SHADOWCUBE texShadow2Ambient;
-	uniform HIGHP samplerCube texLightDepth1;
-#else
-	uniform HIGHP SAMPLER_SHADOW2D texShadow1SolidDepth;
-	uniform HIGHP SAMPLER_SHADOW2D texShadow1TransparentDepth;
-	uniform lowp sampler2D texShadow1TransparentColor;
-	uniform HIGHP SAMPLER_SHADOW2D texShadow1Ambient;
-	uniform HIGHP SAMPLER_SHADOW2D texShadow2Ambient;
-	uniform HIGHP SAMPLER_DEPTH2D texLightDepth1;
-#endif
+// WithSubsurface
+layout(binding=6) uniform HIGHP sampler2DArray texSubSurface;
 
-#ifdef SMA2_CUBE
-	uniform HIGHP SAMPLER_SHADOWCUBE texShadow2SolidDepth;
-	uniform HIGHP SAMPLER_SHADOWCUBE texShadow2TransparentDepth;
-	uniform lowp samplerCube texShadow2TransparentColor;
-	uniform HIGHP samplerCube texLightDepth2;
-#else
-	uniform HIGHP SAMPLER_SHADOW2D texShadow2SolidDepth;
-	uniform HIGHP SAMPLER_SHADOW2D texShadow2TransparentDepth;
-	uniform lowp sampler2D texShadow2TransparentColor;
-	uniform HIGHP SAMPLER_DEPTH2D texLightDepth2;
-#endif
+// WithSubsurface && TextureShadow1Solid
+RCS1R(layout(binding=7) uniform HIGHP sampler2D texLightDepth1)
+RCS1A(layout(binding=7) uniform HIGHP sampler2DArray texLightDepth1Array)
+RCS1C(layout(binding=7) uniform HIGHP samplerCube texLightDepth1Cube)
 
-uniform lowp sampler2D texNoise;
+// WithSubsurface && TextureShadow2Solid
+RCS2R(layout(binding=8) uniform HIGHP sampler2D texLightDepth2)
+RCS2A(layout(binding=8) uniform HIGHP sampler2DArray texLightDepth2Array)
+RCS2C(layout(binding=8) uniform HIGHP samplerCube texLightDepth2Cube)
 
-uniform lowp sampler2D texColor;
-uniform lowp samplerCube texColorCubemap;
-uniform lowp sampler2D texColorEquirect;
+// TextureLightColor
+RCTLCR(layout(binding=9) uniform lowp sampler2D texColor)
+RCTLCC(layout(binding=9) uniform lowp samplerCube texColorCubemap)
+RCTLCE(layout(binding=9) uniform lowp sampler2D texColorEquirect)
+
+// TextureShadow1Solid
+RCS1R(layout(binding=11) uniform HIGHP sampler2DShadow texShadow1SolidDepth)
+RCS1A(layout(binding=11) uniform HIGHP sampler2DArrayShadow texShadow1SolidDepthArray)
+RCS1C(layout(binding=11) uniform HIGHP samplerCubeShadow texShadow1SolidDepthCube)
+
+// TextureShadow1Ambient
+RCS1R(layout(binding=12) uniform HIGHP sampler2DShadow texShadow1Ambient)
+RCS1A(layout(binding=12) uniform HIGHP sampler2DArrayShadow texShadow1AmbientArray)
+RCS1C(layout(binding=12) uniform HIGHP samplerCubeShadow texShadow1AmbientCube)
+
+// TextureShadow2Solid
+RCS2R(layout(binding=13) uniform HIGHP sampler2DShadow texShadow2SolidDepth)
+RCS2A(layout(binding=13) uniform HIGHP sampler2DArrayShadow texShadow2SolidDepthArray)
+RCS2C(layout(binding=13) uniform HIGHP samplerCubeShadow texShadow2SolidDepthCube)
+
+// TextureShadow2Ambient
+RCS2R(layout(binding=14) uniform HIGHP sampler2DShadow texShadow2Ambient)
+RCS2A(layout(binding=14) uniform HIGHP sampler2DArrayShadow texShadow2AmbientArray)
+RCS2C(layout(binding=14) uniform HIGHP samplerCubeShadow texShadow2AmbientCube)
+
+// TextureShadow1Transparent
+RCS1R(layout(binding=15) uniform HIGHP sampler2DShadow texShadow1TransparentDepth)
+RCS1A(layout(binding=15) uniform HIGHP sampler2DArrayShadow texShadow1TransparentDepthArray)
+RCS1C(layout(binding=15) uniform HIGHP samplerCubeShadow texShadow1TransparentDepthCube)
+
+// TextureShadow1Transparent
+RCS1R(layout(binding=16) uniform lowp sampler2D texShadow1TransparentColor)
+RCS1C(layout(binding=16) uniform lowp samplerCube texShadow1TransparentColorCube)
+
+// TextureShadow2Transparent
+RCS2R(layout(binding=17) uniform HIGHP sampler2DShadow texShadow2TransparentDepth)
+RCS2A(layout(binding=17) uniform HIGHP sampler2DArrayShadow texShadow2TransparentDepthArray)
+RCS2C(layout(binding=17) uniform HIGHP samplerCubeShadow texShadow2TransparentDepthCube)
+
+// TextureShadow2Transparent
+RCS2R(layout(binding=18) uniform lowp sampler2D texShadow2TransparentColor)
+RCS2C(layout(binding=18) uniform lowp samplerCube texShadow2TransparentColorCube)
+
+// NoiseTap
+layout(binding=19) uniform lowp sampler2D texShadowNoise;
 
 
 // Inputs
 ///////////
 
-#ifdef FULLSCREENQUAD
-	in vec2 vScreenCoord;
-#else
-	in vec3 vLightVolumePos;
-#endif
+#include "shared/interface/light/fragment.glsl"
 
-flat in int vLayer;
-
-#if (defined GS_RENDER_STEREO || defined VS_RENDER_STEREO) && ! defined GI_RAY
-	#define vInLayer vLayer
-#else
-	const int vInLayer = 0;
-#endif
-
-#ifdef PARTICLE_LIGHT
-	in vec3 vParticleLightPosition;
-	in vec3 vParticleLightColor;
-	in float vParticleLightRange;
-	
-	#define vLightPosition vParticleLightPosition
-	#define pLightColor vParticleLightColor
-	#define pLightRange vParticleLightRange
-	
-#else
-	#define vLightPosition pLightPosition[vInLayer]
-#endif
-
+vec3 getLightPosition(){
+	return LightMode == LightModeParticle ? vParticleLightPosition : pLightPosition[vLayer];
+}
+vec3 getLightColor(){
+	return LightMode == LightModeParticle ? vParticleLightColor : pLightColor;
+}
+float getLightRange(){
+	return LightMode == LightModeParticle ? vParticleLightRange : pLightRange;
+}
 
 
 // Outputs
 ////////////
 
 layout(location=0) out vec4 outColor;
-#ifndef GI_RAY
-	layout(location=1) out vec4 outLuminance;
-		// vec4 not float since blending is required. if float is used
-		// GPU randomly writes NaN values breaking rendering
-#endif
-#ifdef WITH_SUBSURFACE
-	layout(location=2) out vec4 outSubSurface;
-#endif
 
+// !GIRay
+//
+// vec4 not float since blending is required. if float is used
+// GPU randomly writes NaN values breaking rendering
+layout(location=1) out vec4 outLuminance;
+
+// WithSubsurface
+layout(location=2) out vec4 outSubSurface;
 
 
 // Constants
@@ -187,416 +228,182 @@ const float epsilon = 0.0001;
 const float shadowThreshold = -0.0174524; // cos of 1 radians
 const float shadowThresholdInv = 1.0 / 0.0174524;
 
-#ifdef PCF_4TAP
-	const vec4 pcfTCScale = vec4(0.5, 0.5, -0.5, -0.5);
-	const float pcfWeight = 0.25;
-	
-#elif defined PCF_9TAP
-	const vec4 pcfTCScale = vec4(1.0, 1.0, -1.0, -1.0);
-	const vec4 pcfTCScale2 = vec4(1.0, 1.0, 0.0, 0.0);
-	const float pcfWeight = 1.0 / 9.0;
-	
-#elif defined NOISE_TAP
-	const vec2 noiseScale = vec2(1.0);
-	const vec2 noiseOffset = vec2(-0.5);
-#endif
-
-const vec3 unpackDepth = vec3(1.0, 1.0 / 256.0, 1.0 / 65536.0);
-
 const vec3 ambientLightFactor = vec3(0.25, 0.5, 0.25);
 
 const vec3 lumiFactors = vec3(0.2125, 0.7154, 0.0721);
 //const vec3 lumiFactors = vec3(0.3086, 0.6094, 0.0820); // nVidia
 
+// calculate the solid shadow value. we use a little trick to avoid shadow artifacts as well as
+// avoiding taping the shadow map for pixels it is not required. for this the observation is made
+// that pixels facing away from the light are always in shadows. in this case there is no need
+// for taping the shadow map since the result should be 0 in the correct case.
+const bool OptimizeShadowBackface = false;
+
+const bool EnableOccTracing = false;
 
 
 // Includes using definitions above
 /////////////////////////////////////
 
-// never used and file does not exist. what has it been added for in the first place?
-//#include "shared/defren/light/occtracing.glsl"
-//#include "shared/defren/light/normal_from_depth.glsl"
-
-#include "shared/normal_texture.glsl"
+#include "shared/normal/texture.glsl"
 #include "shared/defren/depth_to_position.glsl"
 #include "shared/defren/depth_to_position_fragment.glsl"
 
 
-// Macros to increase readability and extendibility
-/////////////////////////////////////////////////////
+// Shadow casting
+///////////////////
 
-#ifdef DECODE_IN_SHADOW
-	#define SHATEX(sampler, texcoord) dot(texture(sampler, texcoord).rgb, unpackDepth)
-#else
-	#define SHATEX(sampler, texcoord) texture(sampler, texcoord)
-#endif
-
-#ifdef EVALUATE_SHADOW2D
-	#ifdef NOISE_TAP
-		#define TAP_NOISE(tc, tcscale) \
-			(texture(texNoise, tc).rg * noiseScale + noiseOffset) * tcscale
-		#define TAP_NOISE_OFFSET(tc, tcoffset, tcscale) \
-			(textureOffset(texNoise, tc, tcoffset).rg * noiseScale + noiseOffset) * tcscale
-	#endif
-	
-	#ifdef USE_ARRAY_FORM
-		#ifdef HW_DEPTH_COMPARE
-			#ifdef NOISE_TAP
-				#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-					SHATEX(texsm, vec4(tc.st + TAP_NOISE(tcnoise, tcnoiseScale), tc.pq))
-				#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-					SHATEX(texsm, vec4(tc.st + tcoffset + TAP_NOISE_OFFSET(tcnoise, tcnoiseOffset, tcnoiseScale), tc.pq))
-			#else
-				#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-					SHATEX(texsm, tc)
-				#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-					SHATEX(texsm, vec4(tc.st + tcoffset, tc.pq))
-			#endif
-		#else
-			#ifdef NOISE_TAP
-				#ifdef SHADOW_INVERSE_DEPTH
-					#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-						step(SHATEX(texsm, vec3(tc.st + TAP_NOISE(tcnoise, tcnoiseScale), tc.p)), tc.q)
-					#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-						step(SHATEX(texsm, vec3(tc.st + tcoffset + TAP_NOISE_OFFSET(tcnoise, tcnoiseOffset, tcnoiseScale), tc.p)), tc.q)
-				#else
-					#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-						step(tc.q, SHATEX(texsm, vec3(tc.st + TAP_NOISE(tcnoise, tcnoiseScale), tc.p)))
-					#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-						step(tc.q, SHATEX(texsm, vec3(tc.st + tcoffset + TAP_NOISE_OFFSET(tcnoise, tcnoiseOffset, tcnoiseScale), tc.p)))
-				#endif
-			#else
-				#ifdef SHADOW_INVERSE_DEPTH
-					#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-						step(SHATEX(texsm, tc.stp), tc.q)
-					#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-						step(SHATEX(texsm, vec3(tc.st + tcoffset, tc.p)), tc.q)
-				#else
-					#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-						step(tc.q, SHATEX(texsm, tc.stp))
-					#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-						step(tc.q, SHATEX(texsm, vec3(tc.st + tcoffset, tc.p)))
-				#endif
-			#endif
-		#endif
-	#else
-		#ifdef HW_DEPTH_COMPARE
-			#ifdef NOISE_TAP
-				#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-					SHATEX(texsm, vec3(tc.st + TAP_NOISE(tcnoise, tcnoiseScale), tc.p))
-				#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-					SHATEX(texsm, vec3(tc.st + tcoffset + TAP_NOISE_OFFSET(tcnoise, tcnoiseOffset, tcnoiseScale), tc.p))
-			#else
-				#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-					SHATEX(texsm, tc)
-				#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-					SHATEX(texsm, vec3(tc.st + tcoffset, tc.p))
-			#endif
-		#else
-			#ifdef NOISE_TAP
-				#ifdef SHADOW_INVERSE_DEPTH
-					#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-						step(SHATEX(texsm, tc.st + TAP_NOISE(tcnoise, tcnoiseScale)), tc.p)
-					#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-						step(SHATEX(texsm, tc.st + tcoffset + TAP_NOISE_OFFSET(tcnoise, tcnoiseOffset, tcnoiseScale)), tc.p)
-				#else
-					#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-						step(tc.p, SHATEX(texsm, tc.st + TAP_NOISE(tcnoise, tcnoiseScale)))
-					#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-						step(tc.p, SHATEX(texsm, tc.st + tcoffset + TAP_NOISE_OFFSET(tcnoise, tcnoiseOffset, tcnoiseScale)))
-				#endif
-			#else
-				#ifdef SHADOW_INVERSE_DEPTH
-					#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-						step(SHATEX(texsm, tc.st), tc.p)
-					#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-						step(SHATEX(texsm, tc.st + tcoffset), tc.p)
-				#else
-					#define TAP_DEPTH2D(texsm, tc, tcnoise, tcnoiseScale) \
-						step(tc.p, SHATEX(texsm, tc.st))
-					#define TAP_DEPTH2D_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseScale) \
-						step(tc.p, SHATEX(texsm, tc.st + tcoffset))
-				#endif
-			#endif
-		#endif
-	#endif
-#endif
-
-#ifdef EVALUATE_SHADOWCUBE
-	#ifdef NOISE_TAP
-		#define TAP_NOISE2(tc) \
-			(texture(texNoise, tc).rg * noiseScale + noiseOffset)
-		#define TAP_NOISE_OFFSET2(tc, tcoffset) \
-			(textureOffset(texNoise, tc, tcoffset).rg * noiseScale + noiseOffset)
-	#endif
-	
-	#ifdef HW_DEPTH_COMPARE
-		#ifdef NOISE_TAP
-			#define TAP_DEPTHCUBE(texsm, tc, tcnoise, tcnoiseMatrix) \
-				SHATEX(texsm, vec4(tc.stp + tcnoiseMatrix * TAP_NOISE2(tcnoise), tc.q))
-			#define TAP_DEPTHCUBE_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseMatrix) \
-				SHATEX(texsm, vec4(tc.stp + tcoffset + tcnoiseMatrix * TAP_NOISE_OFFSET2(tcnoise, tcnoiseOffset), tc.q))
-		#else
-			#define TAP_DEPTHCUBE(texsm, tc, tcnoise, tcnoiseMatrix) \
-				SHATEX(texsm, tc)
-			#define TAP_DEPTHCUBE_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseMatrix, tcnoiseOffset) \
-				SHATEX(texsm, vec4(tc.stp + tcoffset, tc.q))
-		#endif
-	#else
-		#ifdef NOISE_TAP
-			#ifdef SHADOW_INVERSE_DEPTH
-				#define TAP_DEPTHCUBE(texsm, tc, tcnoise, tcnoiseMatrix) \
-					step(SHATEX(texsm, tc.stp + tcnoiseMatrix * TAP_NOISE2(tcnoise)), tc.q)
-				#define TAP_DEPTHCUBE_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseMatrix) \
-					step(SHATEX(texsm, tc.stp + tcoffset + tcnoiseMatrix * TAP_NOISE_OFFSET2(tcnoise, tcnoiseOffset)), tc.q)
-			#else
-				#define TAP_DEPTHCUBE(texsm, tc, tcnoise, tcnoiseMatrix) \
-					step(tc.q, SHATEX(texsm, tc.stp + tcnoiseMatrix * TAP_NOISE2(tcnoise)))
-				#define TAP_DEPTHCUBE_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseOffset, tcnoiseMatrix) \
-					step(tc.q, SHATEX(texsm, tc.stp + tcoffset + tcnoiseMatrix * TAP_NOISE_OFFSET2(tcnoise, tcnoiseOffset)))
-			#endif
-		#else
-			#ifdef SHADOW_INVERSE_DEPTH
-				#define TAP_DEPTHCUBE(texsm, tc, tcnoise, tcnoiseMatrix) \
-					step(SHATEX(texsm, tc.stp), tc.q)
-				#define TAP_DEPTHCUBE_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseMatrix, tcnoiseOffset) \
-					step(SHATEX(texsm, tc.stp + tcoffset), tc.q)
-			#else
-				#define TAP_DEPTHCUBE(texsm, tc, tcnoise, tcnoiseMatrix) \
-					step(SHATEX(texsm, tc.stp), tc.q)
-				#define TAP_DEPTHCUBE_OFFSET(texsm, tc, tcoffset, tcnoise, tcnoiseMatrix, tcnoiseOffset) \
-					step(SHATEX(texsm, tc.stp + tcoffset), tc.q)
-			#endif
-		#endif
-	#endif
-#endif
+#include "shared/defren/light/shadow/shadow.glsl"
 
 
+const float defaultShadowThickness = 100.0; // just something large enough
 
-// Evaluate 2D shadow map
-///////////////////////////
 
-#ifdef EVALUATE_SHADOW2D
-#ifdef USE_ARRAY_FORM
-	#define ES2DTC vec4
-	#define ES2D(tc) tc
-#else
-	#define ES2DTC vec3
-	#define ES2D(tc) (tc).stp
-#endif
-
-// for HW_DEPTH_COMPARE mediump is required
-float evaluateShadow2D(in ARG_SAMP_HIGHP SAMPLER_SHADOW2D texsm, in vec3 params, in ES2DTC position){
-	vec4 tcoffset;
-	float shadow;
-	
-	#ifdef NOISE_TAP
-		vec2 tcnoise = gl_FragCoord.xy / vec2(32.0);
-	#endif
-	
-	#ifdef PCF_VARTAP
-		//vec2 shascale = params.xy * vec2(clamp(position.p * 5.0, 0.5, 5.0));
-		// problem is that position.q is perspective in the shadow map. for the var-tap though
-		// the distance would be required. just multiplying by position.q doesn't work since
-		// then it's relative to the scaling. besides q is not transported in the position
-		// unless required for special use
-		ivec2 vtcount = ivec2(-2, 2);
-		float vtweight = 25.0; // 5 pixel * 5 pixel
-		ES2DTC tc = position;
-		int x, y;
+float evalShadowMap(in ARG_SAMP_HIGHP sampler2DShadow texsm,
+in ARG_SAMP_HIGHP sampler2DArrayShadow texsmarr, in vec3 params, in vec4 position){
+	if(UseArrayForm){
+		return evalShadowMapArray(texsmarr, params, position);
 		
-		shadow = 0.0;
-		
-		for(y=vtcount.x; y<vtcount.y; y++){
-			tc.t = shascale.y * float(y) + position.t;
-			
-			for(x=vtcount.x; x<vtcount.y; x++){
-				tc.s = shascale.x * float(x) + position.s;
-				shadow += TAP_DEPTH2D(texsm, tc, tcnoise, params.zz);
-			}
-		}
-		
-		shadow /= vtweight;
-		
-	#elif defined PCF_9TAP
-		shadow = TAP_DEPTH2D(texsm, position, tcnoise, params.zz);
-		
-	#elif defined PCF_4TAP
-		shadow = 0.0;
-		
-	#else
-		shadow = TAP_DEPTH2D(texsm, position, tcnoise, params.zz);
-	#endif
-	
-	#if defined PCF_4TAP || defined PCF_9TAP
-		tcoffset = params.xyxy * pcfTCScale; // (u,v) (u,-v) (-u,v) (-u,-v) . with PCF_4TAP u/2 and v/2
-		shadow += TAP_DEPTH2D_OFFSET(texsm, position, tcoffset.xy, tcnoise, ivec2(1,1), params.zz);
-		shadow += TAP_DEPTH2D_OFFSET(texsm, position, tcoffset.xw, tcnoise, ivec2(1,-1), params.zz);
-		shadow += TAP_DEPTH2D_OFFSET(texsm, position, tcoffset.zy, tcnoise, ivec2(-1,1), params.zz);
-		shadow += TAP_DEPTH2D_OFFSET(texsm, position, tcoffset.zw, tcnoise, ivec2(-1,-1), params.zz);
-	#endif
-	
-	#ifdef PCF_9TAP
-		tcoffset = params.xyxy * pcfTCScale2; // (u, 0) (-u, 0) (0, v) (0, -v)
-		shadow += TAP_DEPTH2D_OFFSET(texsm, position,  tcoffset.xw, tcnoise, ivec2(1,0), params.zz);
-		shadow += TAP_DEPTH2D_OFFSET(texsm, position, -tcoffset.xw, tcnoise, ivec2(-1,0), params.zz);
-		shadow += TAP_DEPTH2D_OFFSET(texsm, position,  tcoffset.zy, tcnoise, ivec2(0,1), params.zz);
-		shadow += TAP_DEPTH2D_OFFSET(texsm, position, -tcoffset.zy, tcnoise, ivec2(0,-1), params.zz);
-	#endif
-	
-	#if defined PCF_4TAP || defined PCF_9TAP
-		shadow *= pcfWeight;
-	#endif
-	
-	return shadow;
-}
-#endif
-
-
-
-// Evaluate shadow cube map
-/////////////////////////////
-
-#ifdef EVALUATE_SHADOWCUBE
-float evaluateShadowCube(in ARG_SAMP_HIGHP SAMPLER_SHADOWCUBE texsm, in vec3 params, in vec4 position){
-	float shadow;
-	
-	#ifdef NOISE_TAP
-		vec2 tcnoise = gl_FragCoord.xy / vec2(32.0);
-	#endif
-	
-	#if defined PCF_9TAP || defined PCF_4TAP || defined PCF_VARTAP || defined PCF_NOISETAP
-		float pdist = length(position.xyz);
-		float nolen = pdist * params.z;
-		vec3 no1, no2;
-		
-		vec3 aposition = abs(position.xyz);
-		bvec4 atest = greaterThan(aposition.xxyy, aposition.yzxz); // (x>y, x>z, y>x, y>z)
-		//vec3 r = step(absshapos.xyz, absshapos.yzx) * step(absshapos.xyz, absshapos.zxy);
-		//vec2 scale = vec2(dot(absshapos, r) * pShaOpts1.z);
-		//o1.xz = (c2 * r.xx + c1) * scale;
-		//o2.zy = (c2 * r.yy + c1) * scale;
-		if(all(atest.xy)){ // x is largest
-			no1 = vec3(0.0, 0.0, nolen);
-			no2 = vec3(0.0, nolen, 0.0);
-			
-		}else if(all(atest.zw)){ // y is largest
-			no1 = vec3(nolen, 0.0, 0.0);
-			no2 = vec3(0.0, 0.0, nolen);
-			
-		}else{ // z is largest
-			no1 = vec3(nolen, 0.0, 0.0);
-			no2 = vec3(0.0, nolen, 0.0);
-		}
-		
-		mat2x3 noiseMatrix = mat2x3(no1, no2);
-	#endif
-	
-	#ifdef PCF_VARTAP
-		vec2 shascale = params.xy * vec2(clamp(pdist * 5.0, 0.5, 5.0));
-		vec4 tc = position;
-		vec3 offy;
-		int x, y;
-		
-		no1 *= vec3(shascale.x);
-		no2 *= vec3(shascale.y);
-		noiseMatrix = mat2x3(no1, no2); //noiseMatrix *= shascale;
-		shadow = 0.0;
-		
-		for(y=-2; y<2; y++){
-			offy = position.stp + no2 * vec3(y);
-			
-			for(x=-2; x<2; x++){
-				tc.xyz = offy + no1 * vec3(x);
-				shadow += TAP_DEPTHCUBE(texsm, tc, tcnoise, noiseMatrix);
-			}
-		}
-		
-		shadow /= 25.0;
-		
-	#elif defined PCF_9TAP
-		shadow = TAP_DEPTHCUBE(texsm, position, tcnoise, noiseMatrix);
-		
-	#elif defined(PCF_4TAP)
-		shadow = 0.0;
-		
-	#else
-		shadow = TAP_DEPTHCUBE(texsm, position, tcnoise, noiseMatrix);
-	#endif
-	
-	#if defined PCF_4TAP || defined PCF_9TAP
-		// (u,v) (u,-v) (-u,v) (-u,-v) . with PCF_4TAP u/2 and v/2
-		shadow += TAP_DEPTHCUBE_OFFSET(texsm, position, noiseMatrix * pcfTCScale.xy, tcnoise, ivec2(1,1), noiseMatrix);
-		shadow += TAP_DEPTHCUBE_OFFSET(texsm, position, noiseMatrix * pcfTCScale.xw, tcnoise, ivec2(1,-1), noiseMatrix);
-		shadow += TAP_DEPTHCUBE_OFFSET(texsm, position, noiseMatrix * pcfTCScale.zy, tcnoise, ivec2(-1,1), noiseMatrix);
-		shadow += TAP_DEPTHCUBE_OFFSET(texsm, position, noiseMatrix * pcfTCScale.zw, tcnoise, ivec2(-1,-1), noiseMatrix);
-	#endif
-	
-	#ifdef PCF_9TAP
-		// (u, 0) (-u, 0) (0, v) (0, -v)
-		shadow += TAP_DEPTHCUBE_OFFSET(texsm, position, noiseMatrix * pcfTCScale2.xw, tcnoise, ivec2(1,0), noiseMatrix);
-		shadow += TAP_DEPTHCUBE_OFFSET(texsm, position, noiseMatrix * -pcfTCScale2.xw, tcnoise, ivec2(-1,0), noiseMatrix);
-		shadow += TAP_DEPTHCUBE_OFFSET(texsm, position, noiseMatrix * pcfTCScale2.zy, tcnoise, ivec2(0,1), noiseMatrix);
-		shadow += TAP_DEPTHCUBE_OFFSET(texsm, position, noiseMatrix * -pcfTCScale2.zy, tcnoise, ivec2(0,-1), noiseMatrix);
-	#endif
-	
-	#if defined PCF_4TAP || defined PCF_9TAP
-		shadow *= pcfWeight;
-	#endif
-	
-	return shadow;
-}
-#endif
-
-
-
-// Retrieve shadow map depth
-///////////////////////////////
-
-#ifdef WITH_SUBSURFACE
-	#ifdef DECODE_IN_SHADOW
-		#define SSSHATEX(sampler, texcoord) dot(texture(sampler, texcoord).rgb, unpackDepth)
-	#else
-		#define SSSHATEX(sampler, texcoord) texture(sampler, texcoord).r
-	#endif
-	
-	// distanceBlocker2Fragment = distanceFragmentToLight * (1 - depthBlocker / depthFragment)
-	// this works only with linear shadow maps. with projective shadow maps the depths have to
-	// be first back-transformed into distances where a simple subtraction can then be done
-	
-	#ifdef EVALUATE_SHADOW2D
-		#ifdef USE_ARRAY_FORM
-			float thicknessShadow2DArray(in ARG_SAMP_HIGHP sampler2DArray texsm, in float scale, in vec4 position){
-				float thickness = SSSHATEX(texsm, position.stp) * scale;
-				thickness = position.q * scale - thickness;
-				
-				//return max(thickness, 0.0);
-				return thickness;
-			}
-		#else
-			float thicknessShadow2D(in ARG_SAMP_HIGHP sampler2D texsm, in vec3 position){
-				float thickness = SSSHATEX(texsm, position.st);
-				thickness = pShadowDepthTransform.z / (pShadowDepthTransform.w - thickness);
-				thickness = (pShadowDepthTransform.z / (pShadowDepthTransform.w - position.p)) - thickness;
-				
-				//return max(thickness, 0.0);
-				return thickness;
-			}
-		#endif
-	#endif
-	
-	#ifdef EVALUATE_SHADOWCUBE
-	float thicknessShadowCube(in ARG_SAMP_HIGHP samplerCube texsm, in vec4 position){
-		float thickness = SSSHATEX(texsm, position.stp);
-		thickness = thickness * pShadowDepthTransform.z + pShadowDepthTransform.w;
-		thickness = position.q - thickness;
-		
-		//return max(thickness, 0.0);
-		return thickness;
+	}else{
+		return evalShadowMap(texsm, params, vec3(position));
 	}
-	#endif
-#endif
+}
 
+
+float evalShadow1SolidDepth(in vec3 params, in vec4 position){
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW1_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow1SolidDepthArray, params, position);
+		#else
+			return evalShadowMap(texShadow1SolidDepth, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow1SolidDepth, texShadow1SolidDepthArray, params, position);
+	#endif
+}
+
+float evalShadow1TransparentDepth(in vec3 params, in vec4 position){
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW1_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow1TransparentDepthArray, params, position);
+		#else
+			return evalShadowMap(texShadow1TransparentDepth, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow1TransparentDepth, texShadow1TransparentDepthArray, params, position);
+	#endif
+}
+
+float evalShadow1Ambient(in vec3 params, in vec4 position){
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW1_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow1AmbientArray, params, position);
+		#else
+			return evalShadowMap(texShadow1Ambient, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow1Ambient, texShadow1AmbientArray, params, position);
+	#endif
+}
+
+
+float evalShadow1SolidDepthCube(in vec3 params, in vec4 position){
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW1_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow1SolidDepthCube, params, position);
+	#endif
+}
+
+float evalShadow1TransparentDepthCube(in vec3 params, in vec4 position){
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW1_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow1TransparentDepthCube, params, position);
+	#endif
+}
+
+float evalShadow1AmbientCube(in vec3 params, in vec4 position){
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW1_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow1AmbientCube, params, position);
+	#endif
+}
+
+
+float evalShadow2SolidDepth(in vec3 params, in vec4 position){
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW2_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow2SolidDepthArray, params, position);
+		#else
+			return evalShadowMap(texShadow2SolidDepth, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow2SolidDepth, texShadow2SolidDepthArray, params, position);
+	#endif
+}
+
+float evalShadow2TransparentDepth(in vec3 params, in vec4 position){
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW2_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow2TransparentDepthArray, params, position);
+		#else
+			return evalShadowMap(texShadow2TransparentDepth, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow2TransparentDepth, texShadow2TransparentDepthArray, params, position);
+	#endif
+}
+
+float evalShadow2Ambient(in vec3 params, in vec4 position){
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW2_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow2AmbientArray, params, position);
+		#else
+			return evalShadowMap(texShadow2Ambient, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow2Ambient, texShadow2AmbientArray, params, position);
+	#endif
+}
+
+
+float evalShadow2SolidDepthCube(in vec3 params, in vec4 position){
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW2_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow2SolidDepthCube, params, position);
+	#endif
+}
+
+float evalShadow2TransparentDepthCube(in vec3 params, in vec4 position){
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW2_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow2TransparentDepthCube, params, position);
+	#endif
+}
+
+float evalShadow2AmbientCube(in vec3 params, in vec4 position){
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW2_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow2AmbientCube, params, position);
+	#endif
+}
 
 
 // Discard fragment without disabling early-z
@@ -604,74 +411,80 @@ float evaluateShadowCube(in ARG_SAMP_HIGHP SAMPLER_SHADOWCUBE texsm, in vec3 par
 
 void outputUnlit(){
 	outColor = vec4(0);
-	#ifndef GI_RAY
+	if(!GIRay){
 		outLuminance = vec4(0);
-	#endif
-	#ifdef WITH_SUBSURFACE
+	}
+	if(WithSubsurface){
 		outSubSurface = vec4(0);
-	#endif
+	}
 }
-
 
 
 // Main Function
 //////////////////
 
 void main(void){
-	ivec3 tcArray = ivec3(gl_FragCoord.xy, vInLayer);
-	#ifdef LUMINANCE_ONLY
-		tcArray.xy *= pLumFragCoordScale;
-	#else
-	
-	#ifdef GI_RAY
-		ivec2 tc = ivec2(tcArray);
-	#else
-		ivec3 tc = tcArray;
-	#endif
+	ivec3 tcArray = ivec3(gl_FragCoord.xy, vLayer);
+	ivec2 tcGI = ivec2(tcArray); // GIRay
+	ivec3 tc = tcArray; // !GIRay
 	
 	// discard not inizalized fragments or fragements that are not supposed to be lit
-	vec4 diffuse = texelFetch(texDiffuse, tc, 0);
-	#ifndef GI_RAY
+	vec4 diffuse;
+	if(GIRay){
+		diffuse = texelFetch(texGIDiffuse, tcGI, 0);
+		
+	}else{
+		diffuse = texelFetch(texDiffuse, tc, 0);
 		if(diffuse.a == 0.0){
 			outputUnlit();
 			return;
 		}
-	#endif
+	}
 	
 	// determine position of fragment to light
-	#ifdef GI_RAY
-		vec4 positionDistance = texelFetch(texPosition, tc, 0);
+	vec3 position;
+	float depth;
+	
+	if(GIRay){
+		vec4 positionDistance = texelFetch(texGIPosition, tcGI, 0);
 		if(positionDistance.a > 9999.0){
 			// ray hits nothing. for sky lights this adds the ambient light contribution.
 			// for all other light sources do not light the ray
-			#ifdef SKY_LIGHT
+			if(LightMode == LightModeSky){
 				vec3 lightColor = pLightColorAmbientGI;
 				//outLuminance = vec4(vec3(dot(lightColor, lumiFactors)), diffuse.a);
 				outColor = vec4(lightColor * diffuse.rgb, diffuse.a);
-			#else
+				
+			}else{
 				outputUnlit();
-			#endif
+			}
 			return;
 		}
-		vec3 position = vec3(pGIRayMatrix * vec4(positionDistance.rgb, 1.0));
-	#else
-		float depth = sampleDepth(texDepth, tc);
-		#ifdef FULLSCREENQUAD
-			vec3 position = depthToPosition(depth, vScreenCoord, vInLayer);
-		#else
-			vec3 position = depthToPositionVolume(depth, vLightVolumePos, vInLayer);
-		#endif
-	#endif
+		position = vec3(pGIRayMatrix * vec4(positionDistance.rgb, 1.0));
+		
+	}else{
+		depth = sampleDepth(texDepth, tc);
+		if(FullScreenQuad){
+			position = depthToPosition(depth, vScreenCoord, vLayer);
+			
+		}else{
+			position = depthToPositionVolume(depth, vLightVolumePos, vLayer);
+		}
+	}
 	
 	// calculate light direction and distance
-	#ifdef SKY_LIGHT
-		#define lightDir pLightView[vInLayer]
-	#else
-		vec3 lightDir = vLightPosition - position;
-		float dist = length(lightDir);
+	vec3 lightDir;
+	float dist;
+	
+	if(LightMode == LightModeSky){
+		lightDir = pLightView[vLayer];
+		
+	}else{
+		lightDir = getLightPosition() - position;
+		dist = length(lightDir);
 		
 		// discard if pre-lit (length = 0) or outside the light range
-		if(dist == 0.0 || dist > pLightRange){
+		if(dist == 0.0 || dist > getLightRange()){
 			outputUnlit();
 			return;
 		}
@@ -680,117 +493,126 @@ void main(void){
 		// discard fragments outside the spot cone
 		// NOTE this does not work anymore since spot cone can be squashed now
 		/*
-		#if defined SPOT_LIGHT
+		if(LightMode == LightModeSpot){
 			float spotFactor = dot(lightView, -lightDir) - pLightSpotBase;
 			if(spotFactor <= 0.0){
 				discard;
 			}
-		#endif
+		}
 		*/
-	#endif
+	}
 	
 	// calculate shadow position if required
-	#ifdef SKY_LIGHT
-		#ifdef SHADOW_CASTING
-			#ifdef WITH_SUBSURFACE
-			float thicknessShadowScale;
-			#endif
-			vec4 shapos1;
+	float thicknessShadowScale;
+	vec4 shapos1, shapos2;
+	vec2 projectorConeRadius;
+	float spotConeRadius;
+	
+	if(LightMode == LightModeSky){
+		if(CastShadows){
+			// WithSubsurface
 			
 			if(position.z < pLayerBorder.x){
-				shapos1 = (pShadowMatrix1[vInLayer] * vec4(position, 1)).stqp; // s(x),t(y),layer,distance(z)
+				shapos1 = (pShadowMatrix1[vLayer] * vec4(position, 1)).stqp; // s(x),t(y),layer,distance(z)
 				shapos1.p = 0.0; // layer 0
-				#ifdef WITH_SUBSURFACE
-				thicknessShadowScale = pShadowDepthTransform.z;
-				#endif
+				if(WithSubsurface){
+					thicknessShadowScale = pShadowDepthTransform.z;
+				}
 				
 			}else if(position.z < pLayerBorder.y){
-				shapos1 = (pShadowMatrix2[vInLayer] * vec4(position, 1)).stqp; // s(x),t(y),layer,distance(z)
+				shapos1 = (pShadowMatrix2[vLayer] * vec4(position, 1)).stqp; // s(x),t(y),layer,distance(z)
 				shapos1.p = 1.0; // layer 1
-				#ifdef WITH_SUBSURFACE
-				thicknessShadowScale = pShadowDepthTransform.w;
-				#endif
+				if(WithSubsurface){
+					thicknessShadowScale = pShadowDepthTransform.w;
+				}
 				
 			}else if(position.z < pLayerBorder.z){
-				shapos1 = (pShadowMatrix3[vInLayer] * vec4(position, 1)).stqp; // s(x),t(y),layer,distance(z)
+				shapos1 = (pShadowMatrix3[vLayer] * vec4(position, 1)).stqp; // s(x),t(y),layer,distance(z)
 				shapos1.p = 2.0; // layer 2
-				#ifdef WITH_SUBSURFACE
-				thicknessShadowScale = pShadowDepthTransform2.z;
-				#endif
+				if(WithSubsurface){
+					thicknessShadowScale = pShadowDepthTransform2.z;
+				}
 				
 			}else{
-				shapos1 = (pShadowMatrix4[vInLayer] * vec4(position, 1)).stqp; // s(x),t(y),layer,distance(z)
+				shapos1 = (pShadowMatrix4[vLayer] * vec4(position, 1)).stqp; // s(x),t(y),layer,distance(z)
 				shapos1.p = 3.0; // layer 3
-				#ifdef WITH_SUBSURFACE
-				thicknessShadowScale = pShadowDepthTransform2.w;
-				#endif
+				if(WithSubsurface){
+					thicknessShadowScale = pShadowDepthTransform2.w;
+				}
 			}
-			
-			#define shapos2 shapos1
-		#endif
+		}
 		
-	#elif defined PARTICLE_LIGHT
-		vec4 shapos1 = vec4(position - vParticleLightPosition, 1);
+	}else if(LightMode == LightModeParticle){
+		shapos1 = vec4(position - vParticleLightPosition, 1);
 		
-	#else
-		vec4 shapos1 = pShadowMatrix1[vInLayer] * vec4(position, 1);
+	}else{
+		shapos1 = pShadowMatrix1[vLayer] * vec4(position, 1);
 		
-		#ifdef SMA1_CUBE
+		if(Shadow1Mode == ShadowModeCube){
 			vec3 absshapos1 = abs(vec3(shapos1));
 			float shaZ1 = max(max(absshapos1.x, absshapos1.y), max(absshapos1.z, pLightShadowClamp));
 			shapos1.q = (shaZ1 * pShadowDepthTransform.x + pShadowDepthTransform.y) / shaZ1;
 			
-		#else
+		}else{
 			shapos1.pq = max(shapos1.pq, vec2(pLightShadowClamp));
 			shapos1.stp /= shapos1.q;
-		#endif
+		}
 		
-		#ifdef SPOT_LIGHT
+		if(LightMode == LightModeSpot){
 			// discard fragments outside the spot cone. since spot cones can now be squashed
 			// the shadow matrix texture coordinates have to be used to get a correct result.
 			// this boils down to a circle test in the range 0..1 which is a simple check if
 			// the point is more than 0.5 units away from the center. this is always correct
 			// the same no matter how squashed the cone is
-			float spotConeRadius = length(shapos1.st - vec2(0.5));
+			spotConeRadius = length(shapos1.st - vec2(0.5));
 			if(spotConeRadius > 0.5){
 				outputUnlit();
 				return;
 			}
 			
-		#elif defined PROJECTOR_LIGHT
+		}else if(LightMode == LightModeProjector){
 			// discard fragments outide the projector frustum
-			vec2 spotConeRadius = abs(shapos1.st - vec2(0.5));
-			if(any(greaterThan(spotConeRadius, vec2(0.5)))){
+			projectorConeRadius = abs(shapos1.st - vec2(0.5));
+			if(any(greaterThan(projectorConeRadius, vec2(0.5)))){
 				outputUnlit();
 				return;
 			}
-		#endif
+		}
 		
-		#if defined SHADOW_CASTING && defined TEXTURE_SHADOW2_SOLID
-			#ifdef SHAMAT2_EQUALS_SHAMAT1
-				#define shapos2 shapos1
-			#else
-				vec4 shapos2 = pShadowMatrix2[vInLayer] * vec4(position, 1.0);
+		if(CastShadows && TextureShadow2Solid){
+			if(ShaMat2EqualsShaMat1){
+				shapos2 = shapos1;
 				
-				#ifdef SMA2_CUBE
+			}else{
+				shapos2 = pShadowMatrix2[vLayer] * vec4(position, 1.0);
+				
+				if(Shadow2Mode == ShadowModeCube){
 					//shapos2.w = length(shapos2.xyz);
 					vec3 absshapos2 = abs(shapos2.xyz);
 					float shaZ2 = max(max(absshapos2.x, absshapos2.y), max(absshapos2.z, pLightShadowClamp));
 					shapos2.q = (shaZ2 * pShadowDepthTransform.x + pShadowDepthTransform.y) / shaZ2;
-				#else
+					
+				}else{
 					shapos2.pq = max(shapos2.pq, vec2(pLightShadowClamp));
 					shapos2.stp /= shapos2.q;
-				#endif
-			#endif
-		#endif
-	#endif
+				}
+			}
+		}
+	}
+	
+	if(LightMode == LightModeSky && CastShadows){
+		shapos2 = shapos1;
+	}
 	
 	// fetch normal
-	vec3 normal = normalLoadMaterial(texNormal, tc);
-	
-	#ifdef GI_RAY
+	vec3 normal;
+	if(GIRay){
+		normal = normalLoadMaterial(texGINormal, tcGI);
 		normal = normal * pGIRayMatrixNormal; // requires matrix transpose done by reversed order
-	#endif
+		
+	}else{
+		normal = normalLoadMaterial(texNormal, tc);
+	}
 	
 	if(dot(normal, normal) < 0.0001){
 		normal = lightDir; // 0-normal means always point towards light source
@@ -801,88 +623,88 @@ void main(void){
 	}
 	
 	// calculate the sss thickness from the shadow map if existing
-	#ifdef WITH_SUBSURFACE
-		vec3 absorptionRadius = texelFetch(texSubSurface, tcArray, 0).rgb;
-		float largestAbsorptionRadius = max(max(absorptionRadius.x, absorptionRadius.y), absorptionRadius.z);
-		#ifdef SHADOW_CASTING
-			#ifdef TEXTURE_SHADOW1_SOLID
-				#ifdef SMA1_CUBE
-					float shadowThickness = max(0.0, thicknessShadowCube(texLightDepth1, shapos1));
-				#else
-					#ifdef USE_ARRAY_FORM
-						float shadowThickness = max(0.0, thicknessShadow2DArray(texLightDepth1, thicknessShadowScale, shapos1));
-					#else
-						float shadowThickness = max(0.0, thicknessShadow2D(texLightDepth1, shapos1.stp));
-					#endif
-				#endif
-			#else
-				float shadowThickness = 100.0; // just something large enough
-			#endif
+	float largestAbsorptionRadius, shadowThickness;
+	vec3 absorptionRadius;
+	
+	if(WithSubsurface){
+		absorptionRadius = texelFetch(texSubSurface, tcArray, 0).rgb;
+		largestAbsorptionRadius = max(max(absorptionRadius.x, absorptionRadius.y), absorptionRadius.z);
+		shadowThickness = defaultShadowThickness;
+		
+		if(CastShadows){
+			if(TextureShadow1Solid){
+				if(Shadow1Mode == ShadowModeCube){
+					RCS1C(shadowThickness = shadowCubeThickness(texLightDepth1Cube, shapos1, pShadowDepthTransform.zw))
+					
+				}else if(UseArrayForm){
+					RCS1A(shadowThickness = shadowMapArrayThickness(texLightDepth1Array, thicknessShadowScale, shapos1))
+					
+				}else{
+					RCS1R(shadowThickness = shadowMapThickness(texLightDepth1, vec3(shapos1), pShadowDepthTransform.zw))
+				}
+			}
 			
-			#ifdef TEXTURE_SHADOW2_SOLID
-				#ifdef SMA2_CUBE
-					shadowThickness = max(shadowThickness, thicknessShadowCube(texLightDepth2, shapos2));
-				#else
-					#ifdef USE_ARRAY_FORM
-						shadowThickness = max(shadowThickness, thicknessShadow2DArray(texLightDepth2, thicknessShadowScale, shapos2));
-					#else
-						shadowThickness = max(shadowThickness, thicknessShadow2D(texLightDepth2, shapos2.stp));
-					#endif
-				#endif
-			#endif
-		#else
-			float shadowThickness = 100.0; // just something large enough
-		#endif
-	#endif
+			if(TextureShadow2Solid){
+				if(Shadow2Mode == ShadowModeCube){
+					RCS2C(shadowThickness = shadowCubeThickness(texLightDepth2Cube, shapos2, pShadowDepthTransform.zw))
+					
+				}else if(UseArrayForm){
+					RCS2A(shadowThickness = shadowMapArrayThickness(texLightDepth2Array, thicknessShadowScale, shapos2))
+					
+				}else{
+					RCS2R(shadowThickness = shadowMapThickness(texLightDepth2, vec3(shapos2), pShadowDepthTransform.zw))
+				}
+			}
+		}
+	}
 	
 	// calculate shadow color of required
 	// NOTE the clamp() call is unfortunately mandatory. small imprecisions in GPU calculation
 	//      can cause dot() to output a value which is slightly outside the range totally
 	//      upsetting the upcoming calculations
 	float dotval = clamp(dot(normal, lightDir), -1.0, 1.0);
-	#ifdef WITH_SUBSURFACE
-		float absorptionDot = max(-dotval, 0.0);
-		
-		float absorptionEdgeHack = abs(dotval);
-		absorptionEdgeHack *= absorptionEdgeHack;
-		absorptionEdgeHack *= absorptionEdgeHack; // pow(1-abs(dot), 4)
-		absorptionDot *= absorptionEdgeHack;
-	#endif
+	float absorptionDot = max(-dotval, 0.0); // WithSubsurface
 	
-	#ifdef SHADOW_CASTING
+	if(WithSubsurface){
+		float v = abs(dotval);
+		v *= v;
+		v *= v; // pow(1-abs(dot), 4)
+		absorptionDot *= v;
+	}
+	
+	vec3 fullShadowColor = vec3(1.0), shadowColor = vec3(1.0);
+	
+	if(CastShadows){
 		// calculate the solid shadow value. we use a little trick to avoid shadow artifacts as well as
 		// avoiding taping the shadow map for pixels it is not required. for this the observation is made
 		// that pixels facing away from the light are always in shadows. in this case there is no need
 		// for taping the shadow map since the result should be 0 in the correct case.
 		float shadow;
-		#ifdef OPTIMIZE_SHADOW_BACKFACE
-		if(dotval <= shadowThreshold){
-			#ifdef AMBIENT_LIGHTING
+		
+		if(OptimizeShadowBackface){
+			if(dotval <= shadowThreshold){
+				// discard is done later if shadow less than threshold
 				shadow = 0.0;
-			#else
-				#ifdef WITH_SUBSURFACE
-				if(shadowThickness > largestAbsorptionRadius){
-				#endif
-				outputUnlit();
-				return;
-				#ifdef WITH_SUBSURFACE
-				}
-				#endif
-			#endif
+				
+			}else{
+				shadow = clamp(dotval * shadowThresholdInv + 1, 0, 1);
+			}
 			
 		}else{
-			shadow = clamp(dotval * shadowThresholdInv + 1, 0, 1);
-		#else
 			// force back facing fragments into shadow. not only does this avoid the need to
 			// sample the shadow maps but it also avoids light leaking problems. this does
 			// not affect ambient shadows
-			if(dotval > 0.0){
-				shadow = 1.0;
-		#endif
-			#ifdef TEXTURE_SHADOW1_SOLID
-				#ifdef SMA1_CUBE
-					shadow = min(shadow, evaluateShadowCube(texShadow1SolidDepth, pShadow1Solid, shapos1));
-				#elif defined GI_RAY && defined SKY_LIGHT
+			shadow = dotval > 0.0 ? 1.0 : 0.0;
+		}
+		
+		vec4 gishapos;
+		
+		if(shadow >= epsilon){
+			if(TextureShadow1Solid){
+				if(Shadow1Mode == ShadowModeCube){
+					shadow = min(shadow, evalShadow1SolidDepthCube(pShadow1Solid, shapos1));
+					
+				}else if(GIRay && LightMode == LightModeSky){
 					// the main shadow map array is only guaranteed to hold valid data for
 					// pixels falling into the view frustum. outside this volume data is
 					// potentially culled for performance reason. use GI shadow map instead
@@ -896,8 +718,8 @@ void main(void){
 // 					vec4 projPos = pMatrixP[0] * vec4(position, 1.0);
 // 					if(any(greaterThan(abs(projPos.xyz), vec3(projPos.w)))){
 						//shadow = min(shadow, SHATEX(texShadow1SolidDepth, (pGIShadowMatrix * vec4(position, 1.0)).stp));
-						vec4 gishapos = pGIShadowMatrix * vec4(position, 1.0);
-						shadow = min(shadow, evaluateShadow2D(texShadow1SolidDepth, pGIShadowParams, ES2D(gishapos)));
+						gishapos = pGIShadowMatrix * vec4(position, 1.0);
+						shadow = min(shadow, evalShadow1SolidDepth(pGIShadowParams, gishapos));
 						
 						// prevent the test depth from reaching 0 or below. if this happens the test
 						// result incorrectly considers the fragment not in shadows even if it is.
@@ -905,122 +727,127 @@ void main(void){
 // 						shapos1.q = max(shapos1.q, 0.0001);
 						
 // 					}else{
-// 						shadow = min(shadow, evaluateShadow2D(texShadow1SolidDepth, pShadow1Solid, ES2D(shapos1)));
+// 						shadow = min(shadow, evalShadow1SolidDepth(texShadow1SolidDepth, pShadow1Solid, shapos1));
 // 					}
-				#else
-					shadow = min(shadow, evaluateShadow2D(texShadow1SolidDepth, pShadow1Solid, ES2D(shapos1)));
-				#endif
-			#endif
-			#ifdef TEXTURE_SHADOW2_SOLID
-				#ifdef SMA2_CUBE
-					shadow = min(shadow, evaluateShadowCube(texShadow2SolidDepth, pShadow2Solid, shapos2));
-				#elif defined GI_RAY && defined SKY_LIGHT
-					shadow = min(shadow, evaluateShadow2D(texShadow2SolidDepth, pGIShadowParams, ES2D(gishapos)));
-				#else
-					shadow = min(shadow, evaluateShadow2D(texShadow2SolidDepth, pShadow2Solid, ES2D(shapos2)));
-				#endif
-			#endif
-			}else{
-				shadow = 0.0;
+					
+				}else{
+					shadow = min(shadow, evalShadow1SolidDepth(pShadow1Solid, shapos1));
+				}
 			}
 			
-			#ifdef AMBIENT_LIGHTING
+			if(TextureShadow2Solid){
+				if(Shadow2Mode == ShadowModeCube){
+					shadow = min(shadow, evalShadow2SolidDepthCube(pShadow2Solid, shapos2));
+					
+				}else if(GIRay && LightMode == LightModeSky){
+					shadow = min(shadow, evalShadow2SolidDepth(pGIShadowParams, gishapos));
+					
+				}else{
+					shadow = min(shadow, evalShadow2SolidDepth(pShadow2Solid, shapos2));
+				}
+			}
+			
+			if(AmbientLighting){
 				// temporary until sky light is improved. required since pLightAmbientRatio is
 				// not defined for sky light which would result in strange errors if this not
 				// initialized value is used
-				vec3 fullShadowColor = vec3(shadow); // required for specular reflection
+				fullShadowColor = vec3(shadow); // required for specular reflection
 				
-			#elif defined TEXTURE_SHADOW1_AMBIENT || defined TEXTURE_SHADOW2_AMBIENT
+			}else if(TextureShadow1Ambient || TextureShadow2Ambient){
 				// if shadow is 1 the fragment is in plain light and has to stay at 1
 				// if shadow is 0 the fragment is in shadows. in this case it can received ambient light or not.
 				// if ambient light applies it is applied using the ambient ratio parameter of the light source.
 				// to avoid problems with light leaking through inside rooms having only a back facing wall the
 				// ambient map is used like an additional shadow map before calculating the real result
 				float ambientShadow = 1.0;
-				#ifdef TEXTURE_SHADOW1_AMBIENT
-					#ifdef SMA1_CUBE
-						ambientShadow = min(ambientShadow, evaluateShadowCube(texShadow1Ambient, pShadow1Solid, shapos1));
-					#else
-						ambientShadow = min(ambientShadow, evaluateShadow2D(texShadow1Ambient, pShadow1Solid, ES2D(shapos1)));
-					#endif
-				#endif
-				#ifdef TEXTURE_SHADOW2_AMBIENT
-					#ifdef SMA2_CUBE
-						ambientShadow = min(ambientShadow, evaluateShadowCube(texShadow2Ambient, pShadow2Solid, shapos2));
-					#else
-						ambientShadow = min(ambientShadow, evaluateShadow2D(texShadow2Ambient, pShadow2Solid, ES2D(shapos2)));
-					#endif
-				#endif
 				
-				vec3 fullShadowColor = vec3(shadow * ambientShadow); // required for specular reflection
+				if(TextureShadow1Ambient){
+					if(Shadow1Mode == ShadowModeCube){
+						ambientShadow = min(ambientShadow, evalShadow1AmbientCube(pShadow1Solid, shapos1));
+						
+					}else{
+						ambientShadow = min(ambientShadow, evalShadow1Ambient(pShadow1Solid, shapos1));
+					}
+				}
+				
+				if(TextureShadow2Ambient){
+					if(Shadow2Mode == ShadowModeCube){
+						ambientShadow = min(ambientShadow, evalShadow2AmbientCube(pShadow2Solid, shapos2));
+						
+					}else{
+						ambientShadow = min(ambientShadow, evalShadow2Ambient(pShadow2Solid, shapos2));
+					}
+				}
+				
+				fullShadowColor = vec3(shadow * ambientShadow); // required for specular reflection
 				shadow = mix(pLightAmbientRatio, 1.0, shadow) * ambientShadow;
 				/*
-				#ifdef SMA1_CUBE
+				if(Shadow1Mode == ShadowModeCube){
 					shadow = mix(pLightAmbientRatio * evaluateShadowCube(texShadowAmbient, pShadow1Solid, shapos1), 1.0, shadow);
-				#else
-					shadow = mix(pLightAmbientRatio * evaluateShadow2D(texShadowAmbient, pShadow1Solid, ES2D(shapos1)), 1.0, shadow);
-				#endif
+				}else{
+					shadow = mix(pLightAmbientRatio * evaluateShadow2D(texShadowAmbient, pShadow1Solid, shapos1), 1.0, shadow);
+				}
 				*/
-			#else
-				vec3 fullShadowColor = vec3(shadow); // required for specular reflection
+				
+			}else{
+				fullShadowColor = vec3(shadow); // required for specular reflection
 				shadow = mix(pLightAmbientRatio, 1.0, shadow);
-			#endif
-		#ifdef OPTIMIZE_SHADOW_BACKFACE
+			}
 		}
-		#endif
 		
 		// discard the fragment if it is fully in shadows and there is no ambient light
-		#ifndef AMBIENT_LIGHTING
+		if(!AmbientLighting){
 			if(shadow < epsilon){
-				#ifdef WITH_SUBSURFACE
-				if(shadowThickness > largestAbsorptionRadius){
-				#endif
-				outputUnlit();
-				return;
-				#ifdef WITH_SUBSURFACE
+				bool discardFragment = true;
+				if(WithSubsurface){
+					discardFragment = shadowThickness > largestAbsorptionRadius;
 				}
-				#endif
+				if(discardFragment){
+					outputUnlit();
+					return;
+				}
 			}
-		#endif
+		}
 		
-		#if GI_RAY
-		shadow = step(0.75, shadow);
-		#endif
+		if(GIRay){
+			shadow = step(0.75, shadow);
+		}
 		
-		vec3 shadowColor = vec3(shadow);
+		shadowColor = vec3(shadow);
 		
 		// calculate the transparent shadow value
-		#ifdef COLORED_SHADOWS
+		if(HasColoredShadows){
 			// only evaluate transparency if not in solid shadow
 			if(shadow > epsilon){
 				float transpShadow;
 				vec4 transpColor;
 				
-				#ifdef TEXTURE_SHADOW1_TRANSPARENT
-					#ifdef SMA1_CUBE
-						transpShadow = evaluateShadowCube(texShadow1TransparentDepth, pShadow1Transparent, shapos1);
-						transpColor = textureLod(texShadow1TransparentColor, shapos1.stp, 0.0);
-					#else
-						transpShadow = evaluateShadow2D(texShadow1TransparentDepth, pShadow1Transparent, ES2D(shapos1));
-						transpColor = textureLod(texShadow1TransparentColor, shapos1.st, 0.0);
-					#endif
+				if(TextureShadow1Transparent){
+					if(Shadow1Mode == ShadowModeCube){
+						transpShadow = evalShadow1TransparentDepthCube(pShadow1Transparent, shapos1);
+						RCS1C(transpColor = textureLod(texShadow1TransparentColorCube, shapos1.stp, 0.0))
+						
+					}else{
+						transpShadow = evalShadow1TransparentDepth(pShadow1Transparent, shapos1);
+						RCS1R(transpColor = textureLod(texShadow1TransparentColor, shapos1.st, 0.0))
+					}
 					shadowColor *= mix(vec3(1.0), transpColor.rgb, vec3((1.0 - transpShadow) * transpColor.a));
-				#endif
-				#ifdef TEXTURE_SHADOW2_TRANSPARENT
-					#ifdef SMA2_CUBE
-						transpShadow = evaluateShadowCube(texShadow2TransparentDepth, pShadow2Transparent, shapos2);
-						transpColor = textureLod(texShadow2TransparentColor, shapos2.stp, 0.0);
-					#else
-						transpShadow = evaluateShadow2D(texShadow2TransparentDepth, pShadow2Transparent, ES2D(shapos2));
-						transpColor = textureLod(texShadow2TransparentColor, shapos2.st, 0.0);
-					#endif
+				}
+				
+				if(TextureShadow2Transparent){
+					if(Shadow2Mode == ShadowModeCube){
+						transpShadow = evalShadow2TransparentDepthCube(pShadow2Transparent, shapos2);
+						RCS2C(transpColor = textureLod(texShadow2TransparentColorCube, shapos2.stp, 0.0))
+						
+					}else{
+						transpShadow = evalShadow2TransparentDepth(pShadow2Transparent, shapos2);
+						RCS2R(transpColor = textureLod(texShadow2TransparentColor, shapos2.st, 0.0))
+					}
 					shadowColor *= mix(vec3(1.0), transpColor.rgb, vec3((1.0 - transpShadow) * transpColor.a));
-				#endif
+				}
 			}
-		#endif
-	#endif
-	
-	
+		}
+	}
 	
 	// diffuse term = color_diff * color_light * max(dot(normal, lightDir), 0)
 	// specular term = ((ap + 2) / 8) * pow(max(dot(normal, halfDir), 0), ap)
@@ -1045,24 +872,25 @@ void main(void){
 	// 
 	// roughness = clamp(texture-input(0=sharp .. 1=diffuse), 0.0, 1.0)
 	// float ap = 2.0 / (specularity.g * specularity.g + maxAP) - minAP
-	#ifdef GI_RAY
-		vec4 reflRough = texelFetch(texReflectivity, tc, 0);
-		vec3 reflectivity = reflRough.rgb;
-		vec3 roughness = vec3(reflRough.a, 0.0, 0.0);
-		
-	#else
-		vec3 reflectivity = texelFetch(texReflectivity, tc, 0).rgb;
-		vec3 roughness = texelFetch(texRoughness, tc, 0).rgb;
-		vec3 aoSolidity = texelFetch(texAOSolidity, tc, 0).rgb;
-	#endif
+	vec3 reflectivity, roughness, aoSolidity;
 	
-	// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding if both are used.
-	// the result is stored in aoSolidity.g . this way aoSolidity.r contains the pure texture-ao and
-	// aoSolidity.gb the combined ao
-	#ifndef GI_RAY
+	if(GIRay){
+		vec4 reflRough = texelFetch(texGIReflectivity, tcGI, 0);
+		reflectivity = reflRough.rgb;
+		roughness = vec3(reflRough.a, 0.0, 0.0);
+		aoSolidity = vec3(1.0);
+		
+	}else{
+		reflectivity = vec3(texelFetch(texReflectivity, tc, 0));
+		roughness = vec3(texelFetch(texRoughness, tc, 0));
+		aoSolidity = vec3(texelFetch(texAOSolidity, tc, 0));
+		
+		// merge the texture-ao with the ssao. use the minimum of the two to avoid over-occluding
+		// if both are used. the result is stored in aoSolidity.g . this way aoSolidity.r contains
+		// the pure texture-ao and aoSolidity.gb the combined ao
 		aoSolidity.g = min(aoSolidity.r, aoSolidity.g);
 		diffuse.a *= aoSolidity.b;
-	#endif
+	}
 	
 	// specular term
 	//roughness.r = max(roughness.r, 0.1);
@@ -1072,62 +900,62 @@ void main(void){
 	float specPowTerm = pow(clamp(dot(normal, halfDir), 0.0, 0.99), ap); // 0.99 prevents infinity overshoot on near 0-angle ray
 	vec3 specFresnelTerm = mix(reflectivity, vec3(1.0), vec3(pow(clamp(1.0 - dot(lightDir, halfDir), 0.0, 1.0), 5.0)));
 	
-	#ifdef AMBIENT_LIGHTING
-		//float aldotval = dot(vec3(dotval * dotval, dotval, 1.0), ambientLightFactor);
-	#endif
+	//float aldotval = dot(vec3(dotval * dotval, dotval, 1.0), ambientLightFactor); //AmbientLighting
+	
 	dotval = max(dotval, 0.0);
 	
-	#ifdef SHADOW_CASTING
-	specFresnelTerm *= fullShadowColor; // no specular reflection in shadows
-	#endif
+	if(CastShadows){
+		specFresnelTerm *= fullShadowColor; // no specular reflection in shadows
+	}
 	vec3 finalColorSurface = clamp(vec3(specNormTerm * specPowTerm) * specFresnelTerm, vec3(0.0), vec3(1.0));
 		// clamp prevents overshoot on near 0 roughness (specNormTerm)
 	
 	
-	
 	// light color taking into account light color, light image and shadow. attenuation is handled separately
-	vec3 lightColor = pLightColor;
-	#ifdef GI_RAY
-	lightColor += pLightColorAmbientGI;
-	#endif
+	vec3 lightColor = getLightColor();
+	if(GIRay){
+		lightColor += pLightColorAmbientGI;
+	}
 	
-	#ifdef TEXTURE_COLOR
+	if(TextureLightColor == TextureLightColor2D){
 		// shadow maps are upside down compared to regular images. this is due to the images being
 		// stored upside down to fit opengl. we need to reverse the flipping to get it right
-		vec2 lightImageTC = shapos1.st;
-		lightImageTC.y = 1.0 - lightImageTC.y;
-		lightColor *= pow(texture(texColor, lightImageTC).rgb, vec3(pLightImageGamma));
+		vec2 ltc = shapos1.st;
+		ltc.y = 1.0 - ltc.y;
+		RCTLCR(lightColor *= pow(texture(texColor, ltc).rgb, vec3(pLightImageGamma)))
 		
-	#elif defined TEXTURE_COLOR_CUBEMAP
+	}else if(TextureLightColor == TextureLightColorCube){
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec3 lightImageTC = normalize(pLightImageOmniMatrix[vInLayer] * vec4(position, 1.0));
-		lightColor *= pow(texture(texColorCubemap, lightImageTC).rgb, vec3(pLightImageGamma));
+		vec3 ltc = normalize(pLightImageOmniMatrix[vLayer] * vec4(position, 1.0));
+		RCTLCC(lightColor *= pow(texture(texColorCubemap, ltc).rgb, vec3(pLightImageGamma)))
 		
-	#elif defined TEXTURE_COLOR_EQUIRECT
+	}else if(TextureLightColor == TextureLightColorEquirect){
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
-		vec2 lightImageTC = equirectFromNormal(normalize(pLightImageOmniMatrix[vInLayer] * vec4(position, 1.0)));
-		lightColor *= pow(texture(texColorEquirect, lightImageTC).rgb, vec3(pLightImageGamma));
-	#endif
+		vec2 ltc = equirectFromNormal(normalize(pLightImageOmniMatrix[vLayer] * vec4(position, 1.0)));
+		RCTLCE(lightColor *= pow(texture(texColorEquirect, ltc).rgb, vec3(pLightImageGamma)))
+	}
 	
-	#ifdef WITH_SUBSURFACE
-		vec3 absorptionLightColor = lightColor;
-	#endif
+	// WithSubsurface
+	vec3 absorptionLightColor = lightColor;
 	
-	#ifndef GI_RAY
-		#ifdef PARTICLE_LIGHT
+	if(!GIRay){
+		if(LightMode == LightModeParticle){
 			lightColor *= vec3(dotval);
-		#else
-	 		//lightColor *= vec3(dotval);
+			
+		}else{
+			//lightColor *= vec3(dotval);
 			lightColor *= vec3(mix(pLightAmbientRatio, 1.0, dotval));
-		#endif
-	#endif
-	#ifdef SHADOW_CASTING
+		}
+	}
+	if(CastShadows){
 		lightColor *= shadowColor;
-	#endif
+	}
 	
-	#ifndef GI_RAY
+	vec3 finalColorAmbient;
+	
+	if(!GIRay){
 		// apply ambient occlusion to the direct lighting. this is done by comparing the ambient occlusion angle
 		// with the lighting angle. the ambient occlusion angle can be calculated using the relation ao = 1 - cos(angle).
 		// this works because the ao value can be considered the ratio between a free sphere cap and the entire half
@@ -1151,34 +979,37 @@ void main(void){
 		//   d = dnl * dnl * 0.25 + dnl * 0.5 + 0.25
 		//   d = dot((dnl * dnl, dnl, 1), (0.25, 0.5, 0.25))
 		// this calculation is moved up since we need the dot product without clamping for the ambient lighting
-		#ifdef AMBIENT_LIGHTING
-			#ifdef SKY_LIGHT
-				#ifdef ENABLE_OCCTRACING
-					vec3 finalColorAmbient = pLightColorAmbient * vec3(aoSolidity.g);
+		if(AmbientLighting){
+			if(LightMode == LightModeSky){
+				/*
+				if(EnableOccTracing){
+					finalColorAmbient = pLightColorAmbient * vec3(aoSolidity.g);
 					if(pOTEnabled){
 						// normal is not a geometry normal but a modified normal. for tracing
 						// we need though a geometry normal. this can be derived from depth
 						//finalColorAmbient *= vec3(occtraceOcclusion(position, normal));
 						finalColorAmbient *= vec3(occtraceOcclusion(position, normalFromDepth(tc, depth, position)));
 					}
-				#else
-					vec3 finalColorAmbient = pLightColorAmbient * vec3(aoSolidity.g);
-				#endif
-			#else
+				}else{
+				*/
+					finalColorAmbient = pLightColorAmbient * vec3(aoSolidity.g);
+				//}
+				
+			}else{
 	// 			vec3 finalColorAmbient = pLightColorAmbient * vec3(mix(0.25, 1.0, clamp(aldotval, 0.0, 1.0)) * aoSolidity.g);
-				vec3 finalColorAmbient = pLightColorAmbient * vec3(aoSolidity.g);
-			#endif
-		#endif
-	#endif
+				finalColorAmbient = pLightColorAmbient * vec3(aoSolidity.g);
+			}
+		}
+	}
 	
 	// distance and spot attenuation
-	#ifndef SKY_LIGHT
-		#ifdef PARTICLE_LIGHT
+	if(LightMode != LightModeSky){
+		if(LightMode == LightModeParticle){
 			dist /= vParticleLightRange; // map all ranges into the 1m range so the same attenuation parameters can be used
-		#endif
+		}
 		float attenuation = max(pLightDampingCoefficient / (1.0 + pLightAttenuationCoefficient * dist * dist) + pLightDampingThreshold, 0.0);
 		
-		#ifdef SPOT_LIGHT
+		if(LightMode == LightModeSpot){
 			// here comes the fun train!
 			// 
 			// for mathematicians 0 raised to the power of 0 is 1. unfortunately GLSL has an
@@ -1230,55 +1061,55 @@ void main(void){
 					0.001, 1.0), float(pLightSpotExponent));
 			#endif
 			
-		#elif defined PROJECTOR_LIGHT
+		}else if(LightMode == LightModeProjector){
 			// same as above but the calculation is a bit different in that is is applied
 			// not on the radius but each direction individually
 			vec2 spotConeAtten = pow(clamp(
-				spotConeRadius * vec2(pLightSpotFactor) + vec2(pLightSpotBase),
+				projectorConeRadius * vec2(pLightSpotFactor) + vec2(pLightSpotBase),
 				vec2(0.001), vec2(1.0)), vec2(pLightSpotExponent));
 			attenuation *= spotConeAtten.x;
 			attenuation *= spotConeAtten.y;
-		#endif
+		}
 		
 		lightColor *= vec3(attenuation);
-		#ifdef AMBIENT_LIGHTING
+		if(AmbientLighting){
 			finalColorAmbient *= vec3(attenuation);
-		#endif
-		#ifdef WITH_SUBSURFACE
+		}
+		if(WithSubsurface){
 			absorptionLightColor *= vec3(attenuation);
-		#endif
-	#endif
+		}
+	}
 	
 	// ambient occlusion
 	//lightColor *= vec3(aoSolidity.g);
-	//#ifdef AMBIENT_LIGHTING
+	//if(AmbientLighting){
 	//	finalColorAmbient *= vec3(aoSolidity.g);
-	//#endif
-	#ifdef SKY_LIGHT
-		#ifdef ENABLE_OCCTRACING
-			if(pOTEnabled){
-				lightColor = max(lightColor, finalColorAmbient);
-			}
-		#endif
-	#endif
+	//}
+	/*
+	if(LightMode == LightModeSky && EnableOccTracing){
+		//if(pOTEnabled){
+			lightColor = max(lightColor, finalColorAmbient);
+		//}
+	}
+	*/
 	
 	// final light contribution
 	finalColorSurface *= lightColor;
 	
 	vec3 finalColorSubSurface = lightColor;
-	#ifdef AMBIENT_LIGHTING
-		//#ifndef SKY_LIGHT
+	if(AmbientLighting){
+		//if(LightMode != LightModeSky){
 			// note: if enabled also for other light sources skip too if
-			// ifdef ENABLE_OCCTRACING and pOTEnabled = true
+			// ifdef EnableOccTracing and pOTEnabled = true
 			finalColorSubSurface += finalColorAmbient;
-		//#endif
-	#endif
+		//}
+	}
 	
-	#ifndef GI_RAY
+	if(!GIRay){
 		outLuminance = vec4(vec3(dot(finalColorSubSurface + finalColorSurface, lumiFactors)), diffuse.a);
-	#endif
+	}
 	
-	#ifdef WITH_SUBSURFACE
+	if(WithSubsurface){
 		outColor = vec4(finalColorSurface, diffuse.a);
 		outSubSurface = vec4(finalColorSubSurface, diffuse.a);
 		
@@ -1310,7 +1141,8 @@ void main(void){
 		vec3 scatDist = vec3(shadowThickness) / max(absorptionRadius, vec3(0.001));
 		vec3 scatAdd = exp(scatDist * vec3(-5.0)) * vec3(absorptionDot) * absorptionLightColor;
 		outSubSurface.rgb += scatAdd * step(vec3(0.001), absorptionRadius);
-	#else
+		
+	}else{
 		outColor = vec4(finalColorSubSurface * diffuse.rgb + finalColorSurface, diffuse.a);
-	#endif
+	}
 }

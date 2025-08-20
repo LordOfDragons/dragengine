@@ -25,8 +25,8 @@
 import bpy
 import re
 
-
 from .de_porting import registerClass, appendToMenu
+from .de_helpers import ActionSlotHelper
 
 
 # Tool Spread Animation
@@ -44,17 +44,29 @@ class OBJECT_OT_DEToolSpreadAnimation(bpy.types.Operator):
 	
 	@classmethod
 	def poll(cls, context):
-		return (context.active_object.pose
-			and context.active_object.animation_data
-			and context.active_object.animation_data.action
-			and context.selected_pose_bones)
+		if not context.selected_pose_bones:
+			return False
+		
+		o = context.active_object
+		if not o or not o.pose:
+			return False
+		
+		ad = o.animation_data
+		if not ad or not ad.action:
+			return False
+		
+		return True
 	
 	def execute(self, context):
-		pose = context.active_object.pose
+		object = context.active_object
+		if not object:
+			return {'FINISHED'}
+		
+		pose = object.pose
 		if not pose:
 			return {'FINISHED'}
 		
-		action = context.active_object.animation_data.action
+		action = object.animation_data.action
 		if not action:
 			return {'FINISHED'}
 		
@@ -62,19 +74,24 @@ class OBJECT_OT_DEToolSpreadAnimation(bpy.types.Operator):
 		if not selectedBones:
 			return {'FINISHED'}
 		
+		ash = ActionSlotHelper(object)
+		agroups = ash.groups(action)
+		
 		reTarget = re.compile(context.scene.dragengine_spreadanimtarget)
-		targets = [x for x in bpy.data.actions if not x == action and reTarget.match(x.name)]
+		targets = [x for x in bpy.data.actions
+			 if not x == action and reTarget.match(x.name)]
 		
 		for bone in selectedBones:
-			if not bone.name in action.groups:
+			if not bone.name in agroups:
 				continue
-			group = action.groups[bone.name]
+			group = agroups[bone.name]
 			#print('spread animation for bone: {}'.format(bone.name))
 			
 			# remove first all fcurves in all targets linked to bone name
 			for target in targets:
-				if bone.name in target.groups:
-					tgroup = target.groups[bone.name]
+				tgroups = ash.groups(target)
+				if bone.name in tgroups:
+					tgroup = tgroups[bone.name]
 					delgroups = [x for x in target.fcurves if x.group == tgroup]
 					for delgroup in delgroups:
 						target.fcurves.remove(delgroup)

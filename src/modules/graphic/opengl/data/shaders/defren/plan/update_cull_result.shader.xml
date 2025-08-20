@@ -2,7 +2,7 @@
 <shader>
 	<name>DefRen Plan Update Cull Result</name>
 	
-	<parameter name='pLodLayer'/>
+	<parameter name='pLodLayer' location='0'/>
 	
 	<sourceCode unit='compute'>C DefRen Plan Update Cull Result</sourceCode>
 </shader>

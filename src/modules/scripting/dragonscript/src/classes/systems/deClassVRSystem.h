@@ -121,6 +121,8 @@ private:
 	DEF_NATFUNC( nfSetEnablePassthrough );
 	DEF_NATFUNC( nfGetPassthroughTransparency );
 	DEF_NATFUNC( nfSetPassthroughTransparency );
+	DEF_NATFUNC(nfCenterPlayspace);
+
 	
 	DEF_NATFUNC( nfGetDeviceCount );
 	DEF_NATFUNC( nfGetDeviceAt );
@@ -130,6 +132,7 @@ private:
 	DEF_NATFUNC( nfIndexOfFeedbackWithID );
 	DEF_NATFUNC( nfGetButtonPressed );
 	DEF_NATFUNC( nfGetButtonTouched );
+	DEF_NATFUNC(nfGetButtonNear);
 	DEF_NATFUNC( nfGetAxisValue );
 	DEF_NATFUNC( nfGetFeedbackValue );
 	DEF_NATFUNC( nfSetFeedbackValue );

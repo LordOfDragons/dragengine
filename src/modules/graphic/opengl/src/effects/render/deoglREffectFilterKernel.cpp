@@ -169,12 +169,12 @@ const deoglPipeline *deoglREffectFilterKernel::GetPipelineStereo(){
 		pipconf.SetDepthMask( false );
 		pipconf.SetEnableScissorTest( true );
 		
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
 		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
+			defines.SetDefines( "VS_RENDER_LAYER" );
 			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel", defines );
 			
 		}else{
-			defines.SetDefines( "GS_RENDER_STEREO" );
 			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel Stereo", defines );
 		}
 		
@@ -216,12 +216,12 @@ const deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsampleStereo(){
 		pipconf.SetDepthMask( false );
 		pipconf.SetEnableScissorTest( true );
 		
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
 		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
+			defines.SetDefines( "VS_RENDER_LAYER" );
 			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel DownSample", defines );
 			
 		}else{
-			defines.SetDefines( "GS_RENDER_STEREO" );
 			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel DownSample Stereo", defines );
 		}
 		

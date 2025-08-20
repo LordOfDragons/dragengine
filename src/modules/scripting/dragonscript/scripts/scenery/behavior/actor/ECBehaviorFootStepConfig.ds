@@ -64,20 +64,15 @@ class ECBehaviorFootStepConfig extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorFootStepConfig"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorFootStepConfig")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorFootStepConfig behavior = ECBehaviorFootStepConfig.new(\
 				eclass, ECBehaviorFootSteps.getBehaviorIn(eclass), id)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "footStepConfig", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "footStepConfig", id)
 			return behavior
 		end
 	end

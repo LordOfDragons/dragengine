@@ -106,7 +106,10 @@ deoglRenderBase( renderThread )
 		pAsyncGetPipeline(pPipelineShapeXRay, pipconf, sources, defines);
 		
 		// shape x-ray stereo
-		defines.SetDefines( renderStereoVRLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderStereoVRLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderStereoVRLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Shape Stereo" );
 		}
@@ -124,7 +127,10 @@ deoglRenderBase( renderThread )
 		pAsyncGetPipeline(pPipelineShapeSolid, pipconf, sources, defines);
 		
 		// shape solid stereo
-		defines.SetDefines( renderStereoVRLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderStereoVRLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderStereoVRLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Shape Stereo" );
 		}
@@ -138,7 +144,10 @@ deoglRenderBase( renderThread )
 		pAsyncGetPipeline(pPipelineMeshXRay, pipconf, sources, defines);
 		
 		// mesh x-ray stereo
-		defines.SetDefines( renderStereoVRLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderStereoVRLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderStereoVRLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Shape Stereo" );
 		}
@@ -156,7 +165,10 @@ deoglRenderBase( renderThread )
 		pAsyncGetPipeline(pPipelineMeshSolid, pipconf, sources, defines);
 		
 		// mesh solid stereo
-		defines.SetDefines( renderStereoVRLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderStereoVRLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderStereoVRLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Shape Stereo" );
 		}

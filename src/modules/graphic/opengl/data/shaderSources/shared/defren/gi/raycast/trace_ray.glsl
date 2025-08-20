@@ -79,33 +79,25 @@
 };
 	
 #else
-	uniform HIGHP samplerBuffer tboGIRayCastNodeBox;
-	uniform HIGHP usamplerBuffer tboGIRayCastIndex;
-	uniform HIGHP usamplerBuffer tboGIRayCastInstance;
-	uniform HIGHP samplerBuffer tboGIRayCastMatrix;
-	uniform HIGHP usamplerBuffer tboGIRayCastFace;
-	uniform HIGHP samplerBuffer tboGIRayCastVertex;
+	layout(binding=0) uniform HIGHP samplerBuffer tboGIRayCastNodeBox;
+	layout(binding=1) uniform HIGHP usamplerBuffer tboGIRayCastIndex;
+	layout(binding=2) uniform HIGHP usamplerBuffer tboGIRayCastInstance;
+	layout(binding=3) uniform HIGHP samplerBuffer tboGIRayCastMatrix;
+	layout(binding=4) uniform HIGHP usamplerBuffer tboGIRayCastFace;
+	layout(binding=5) uniform HIGHP samplerBuffer tboGIRayCastVertex;
 
-	#ifndef GI_RAYCAST_DISTANCE_ONLY
-		uniform HIGHP samplerBuffer tboGIRayCastTexCoord;
-	#endif
+	// !GIRayCastDistanceOnly
+	layout(binding=6) uniform HIGHP samplerBuffer tboGIRayCastTexCoord;
 #endif
 
 // ray cast result
-#ifdef GI_RAYCAST_DISTANCE_ONLY
-	struct GIRayCastResult{
-		float distance;
-	};
-	
-#else
-	struct GIRayCastResult{
-		vec3 barycentric;
-		float distance;
-		vec3 normal;
-		int face;
-		int material;
-	};
-#endif
+struct GIRayCastResult{
+	vec3 barycentric; // !GIRayCastDistanceOnly
+	float distance;
+	vec3 normal; // !GIRayCastDistanceOnly
+	int face; // !GIRayCastDistanceOnly
+	int material; // !GIRayCastDistanceOnly
+};
 
 
 // constants
@@ -126,7 +118,7 @@ float giRayCastBvhNodeHit( in vec3 minExtend, in vec3 maxExtend, in vec3 rayOrig
 
 
 // Calculate texture coordinates of hit face.
-#ifndef GI_RAYCAST_DISTANCE_ONLY
+// !GIRayCastDistanceOnly
 vec2 giRayCastFaceTexCoord( in int face, in vec3 barycentric ){
 	#ifdef GI_RAYCAST_USE_SSBO
 		return pGIRayCastFaces[ face ].tc1 * barycentric.x
@@ -140,7 +132,6 @@ vec2 giRayCastFaceTexCoord( in int face, in vec3 barycentric ){
 		return tc1 * barycentric.x + tc2 * barycentric.y + tc3 * barycentric.z;
 	#endif
 }
-#endif
 
 
 // Perform ray cast against mesh BVH starting at absolute strided index.

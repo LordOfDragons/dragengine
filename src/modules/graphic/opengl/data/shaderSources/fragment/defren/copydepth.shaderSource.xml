@@ -10,7 +10,7 @@
 	<define>COPY_COLOR</define>
 	<define>DEPTH_TEST</define>
 	<define>ENCODED_DEPTH</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>SHADOW_INVERSE_DEPTH</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

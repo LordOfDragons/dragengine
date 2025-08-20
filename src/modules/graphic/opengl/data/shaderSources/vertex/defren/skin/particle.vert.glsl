@@ -1,12 +1,4 @@
-#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
-	#extension GL_ARB_shader_viewport_layer_array : require
-#endif
-#ifdef EXT_AMD_VERTEX_SHADER_LAYER
-	#extension GL_AMD_vertex_shader_layer : require
-#endif
-#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
-	#extension GL_ARB_shader_draw_parameters : require
-#endif
+#include "shared/preamble.glsl"
 
 precision HIGHP float;
 precision HIGHP int;
@@ -34,7 +26,7 @@ precision HIGHP int;
 // Samplers
 /////////////
 
-uniform mediump sampler2D texSamples;
+layout(binding=20) uniform mediump sampler2D texSamples;
 
 
 
@@ -46,9 +38,8 @@ layout(location=1) in vec4 inParticle1; // linearVelocity, angularVelocity, cast
 layout(location=2) in vec4 inParticle2; // linearDirection.x, linearDirection.y, linearDirection.z, rotation
 layout(location=3) in vec4 inParticle3; // castRed, castGreen, castBlue, castTransparency
 /*
-#ifdef PARTICLE_BEAM
+// ParticleMode == ParticleModeBeam
 layout(location=4) in float inParticle4; // beamLocation
-#endif
 */
 
 
@@ -56,19 +47,7 @@ layout(location=4) in float inParticle4; // beamLocation
 // Outputs
 ////////////
 
-out vec3 vParticle0; // size, emissivity, rotation
-out vec4 vParticle1; // red, green, blue, transparency
-flat out int vParticleSheetCount;
-flat out int vGSSPBIndex;
-flat out int vGSSPBFlags;
-flat out int vLayer;
-
-#ifdef VS_RENDER_STEREO
-	uniform int pDrawIDOffset;
-	#define inLayer (gl_DrawID + pDrawIDOffset)
-#else
-	const int inLayer = 0;
-#endif
+#include "shared/interface/skin/vertex.glsl"
 
 
 
@@ -88,6 +67,8 @@ const vec2 curveOffset3 = vec2(0.0, 3.0 / 4.0);
 
 void main(void){
 	#include "shared/defren/skin/shared_spb_index2.glsl"
+	
+	vertexShaderDefaultOutputs();
 	
 	vec2 tcSamples = vec2(inParticle0.x, 0.0) * pSamplesParams.xz + pSamplesParams.yw;
 	vec3 pattrs1 = vec3(texture(texSamples, tcSamples));
@@ -112,11 +93,14 @@ void main(void){
 	
 	gl_Position = vec4(pMatrixModel * vec4(inParticle0.yzw, 1.0), 1.0);
 	
-	vGSSPBIndex = spbIndex;
-	vGSSPBFlags = spbFlags;
-	vLayer = inLayer;
+	vSPBIndex = spbIndex;
+	vSPBFlags = spbFlags;
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
-	#endif
+	vLayer = 0;
+	if(VSRenderLayer){
+		vLayer = getInLayer();
+		#ifdef SUPPORTS_VSLAYER
+		gl_Layer = vLayer;
+		#endif
+	}
 }

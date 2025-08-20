@@ -223,21 +223,16 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorStateMachine"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorStateMachine")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorStateMachine behavior = ECBehaviorStateMachine.new(eclass, id)
 			
-			behavior.setBehaviorTree(eclass.sharedFactoryHelper.defaultBehaviorTree(eclass, parameters))
+			behavior.setBehaviorTree(getHelper().defaultBehaviorTree(eclass, parameters))
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "stateMachine", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "stateMachine", id)
 			return behavior
 		end
 	end
@@ -395,9 +390,7 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 			end
 			
 			pContext = createContext(stub, pStateMachine)
-			if BaseGameApp.getApp() != null
-				pContext.setConsole(BaseGameApp.getApp().getConsole())
-			end
+			pContext.setConsole(BehaviorElementClass.sharedFactoryHelper.defaultConsole())
 			
 			var String debug = pECBehavior.getDebug().getValueOrNull(stub)
 			if debug != null
@@ -559,17 +552,17 @@ class ECBehaviorStateMachine extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(), "")
+	func new(BehaviorElementClass eclass) this(eclass, eclass.sharedFactoryHelper.defaultLoaders(), "")
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, String id)\
-	this(eclass, BaseGameApp.getApp().getLoaders(), id)
+	this(eclass, eclass.sharedFactoryHelper.defaultLoaders(), id)
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, String id, String prefix)\
-	this(eclass, BaseGameApp.getApp().getLoaders(), id, prefix)
+	this(eclass, eclass.sharedFactoryHelper.defaultLoaders(), id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */

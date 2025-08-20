@@ -55,7 +55,7 @@
 					meshResult.distance /= length( meshRayDirection );
 					
 					if( meshResult.distance < result.distance ){
-						#ifndef GI_RAYCAST_DISTANCE_ONLY
+						if(!GIRayCastDistanceOnly){
 							// transform hit normal back. this requires the following matrix:
 							//    matNor = transpose( inverse( mat3( matrix ) ) )
 							// we have invMatrix which is inverse(matrix) but without transpose.
@@ -67,7 +67,7 @@
 							result.face = meshResult.face;
 							result.material = meshResult.material;
 							result.normal = normalize( mat3( invMatrix ) * meshResult.normal );
-						#endif
+						}
 						
 						result.distance = meshResult.distance;
 						hasHit = true;

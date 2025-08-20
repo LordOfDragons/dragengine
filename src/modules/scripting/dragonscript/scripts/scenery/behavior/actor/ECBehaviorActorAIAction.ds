@@ -104,12 +104,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorActorAIAction"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorActorAIAction")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
@@ -121,9 +117,9 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 				ECBehaviorConversationActor.getBehaviorIn(eclass),\
 				ECBehaviorPlayerControllable.getBehaviorIn(eclass))
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "aiAction")
+			getHelper().setPropertiesFromParameters(eclass, parameters, "aiAction")
 			return behavior
 		end
 	end
@@ -762,9 +758,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		pAIFactory = BAAIBehaviorTree.Factory.new()
 		pBTSMs = ECComposeBTSM.new()
 		
-		var BaseGameApp app = BaseGameApp.getApp()
-		if app != null
-			var Loaders loaders = app.getLoaders()
+		var Loaders loaders = eclass.sharedFactoryHelper.defaultLoaders()
+		if loaders != null
 			pLoadBehaviorTree = loaders.getBehaviorTree()
 			pLoadStateMachine = loaders.getStateMachine()
 			pPersistency = loaders.getPersistency()

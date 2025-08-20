@@ -2,18 +2,6 @@
 <shader>
 	<name>DefRen Light GI Stereo</name>
 	
-	<texture name='texDepth' target='0'/>
-	<texture name='texDiffuse' target='1'/>
-	<texture name='texNormal' target='2'/>
-	<texture name='texReflectivity' target='3'/>
-	<texture name='texRoughness' target='4'/>
-	<texture name='texAOSolidity' target='5'/>
-	
-	<texture name='texGIIrradiance' target='6'/>
-	<texture name='texGIDistance' target='7'/>
-	
-	<texture name='texGIProbeOffset' target='8'/>
-	
 	<sourceCode unit='vertex'>V Generic ScreenSpace</sourceCode>
 	<sourceCode unit='geometry'>G Generic Stereo</sourceCode>
 	<sourceCode unit='fragment'>F DefRen Light GI</sourceCode>

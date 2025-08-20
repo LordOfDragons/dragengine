@@ -82,19 +82,14 @@ class ECBehaviorBillboard extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorBillboard"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorBillboard")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorBillboard behavior = ECBehaviorBillboard.new(eclass,\
 				ECBehaviorCollider.getBehaviorIn(eclass), id)
-			BehaviorElementClass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "billboard", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "billboard", id)
 			return behavior
 		end
 	end

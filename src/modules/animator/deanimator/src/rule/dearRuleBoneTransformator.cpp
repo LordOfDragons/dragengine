@@ -38,7 +38,6 @@
 #include <dragengine/deEngine.h>
 
 
-
 // Class dearRuleBoneRotator
 //////////////////////////////
 
@@ -58,7 +57,6 @@
 #endif
 
 
-
 // Constructors and Destructors
 /////////////////////////////////
 
@@ -68,7 +66,8 @@ dearRule( instance, animator, firstLink, rule ),
 
 pBoneTransformator( rule ),
 
-pTargetBone( 0 ),
+pTargetBone(-1),
+pInputBone(-1),
 
 pTargetTranslation( rule.GetTargetTranslation(), firstLink ),
 pTargetRotation( rule.GetTargetRotation(), firstLink ),
@@ -88,7 +87,8 @@ pMinScaling( rule.GetMinimumScaling() ),
 pMaxScaling( rule.GetMaximumScaling() ),
 pAxis( rule.GetAxis() ),
 pMinAngle( rule.GetMinimumAngle() ),
-pMaxAngle( rule.GetMaximumAngle() )
+pMaxAngle( rule.GetMaximumAngle() ),
+pInputSource(rule.GetInputSource())
 {
 	RuleChanged();
 }
@@ -118,27 +118,92 @@ DEBUG_RESET_TIMERS;
 	int i;
 	
 	// prepare transformation matrix
-	const float valueTranslation = decMath::clamp( pTargetTranslation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-	const decVector translation( pMinTranslation * ( 1.0f - valueTranslation ) + pMaxTranslation * valueTranslation );
 	
-	const float valueRotation = decMath::clamp( pTargetRotation.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-	
-	const float valueScaling = decMath::clamp( pTargetScaling.GetValue( instance, 0.0f ), 0.0f, 1.0f );
-	const decVector scaling( pMinScaling * ( 1.0f - valueScaling ) + pMaxScaling * valueScaling );
-	
+	decVector translation, rotation, scaling;
 	decMatrix transformMatrix;
 	
-	if( pUseAxis ){
-		const float angle = pMinAngle * ( 1.0f - valueRotation ) + pMaxAngle * valueRotation;
+	switch(pInputSource){
+	case deAnimatorRuleBoneTransformator::eisTargetBlend:{
+		const float valueTranslation = decMath::clamp(pTargetTranslation.GetValue(instance, 0.0f), 0.0f, 1.0f);
+		const float valueRotation = decMath::clamp(pTargetRotation.GetValue(instance, 0.0f), 0.0f, 1.0f);
+		const float valueScaling = decMath::clamp(pTargetScaling.GetValue(instance, 0.0f), 0.0f, 1.0f);
 		
-		transformMatrix = decMatrix::CreateScale( scaling ).
-			QuickMultiply( decMatrix::CreateRotationAxis( pAxis, angle ) ).
-			QuickMultiply( decMatrix::CreateTranslation( translation ) );
+		translation = pMinTranslation * (1.0f - valueTranslation) + pMaxTranslation * valueTranslation;
+		scaling = pMinScaling * (1.0f - valueScaling) + pMaxScaling * valueScaling;
 		
-	}else{
-		const decVector rotation( pMinRotation * ( 1.0f - valueRotation ) + pMaxRotation * valueRotation );
+		if(pUseAxis){
+			const float angle = pMinAngle * (1.0f - valueRotation) + pMaxAngle * valueRotation;
+			
+			transformMatrix = decMatrix::CreateScale(scaling).
+				QuickMultiply(decMatrix::CreateRotationAxis(pAxis, angle)).
+				QuickMultiply(decMatrix::CreateTranslation(translation));
+			
+		}else{
+			rotation = pMinRotation * (1.0f - valueRotation) + pMaxRotation * valueRotation;
+			
+			transformMatrix.SetSRT(scaling, rotation, translation);
+		}
+		}break;
 		
-		transformMatrix.SetSRT( scaling, rotation, translation );
+	case deAnimatorRuleBoneTransformator::eisTargetDirect:
+		pTargetTranslation.GetVector(instance, translation);
+		scaling.Set(1.0f, 1.0f, 1.0f);
+		pTargetScaling.GetVector(instance, scaling);
+		
+		if(pUseAxis){
+			const float valueRotation = decMath::clamp(pTargetRotation.GetValue(instance, 0.0f), 0.0f, 1.0f);
+			const float angle = pMinAngle * (1.0f - valueRotation) + pMaxAngle * valueRotation;
+			
+			transformMatrix = decMatrix::CreateScale(scaling).
+				QuickMultiply(decMatrix::CreateRotationAxis(pAxis, angle)).
+				QuickMultiply(decMatrix::CreateTranslation(translation));
+			
+		}else{
+			pTargetRotation.GetVector(instance, rotation);
+			
+			transformMatrix.SetSRT(scaling, rotation, translation);
+		}
+		break;
+		
+	case deAnimatorRuleBoneTransformator::eisBoneState:{
+		if(pInputBone == -1){
+			break;
+		}
+		
+		const dearBoneState &bstate = *stalist.GetStateAt(pInputBone);
+		
+		if(pUseAxis){
+			const float valueRotation = decMath::clamp(pTargetRotation.GetValue(instance, 0.0f), 0.0f, 1.0f);
+			const float angle = pMinAngle * (1.0f - valueRotation) + pMaxAngle * valueRotation;
+			
+			transformMatrix = decMatrix::CreateScale(bstate.GetScale()).
+				QuickMultiply(decMatrix::CreateRotationAxis(pAxis, angle)).
+				QuickMultiply(decMatrix::CreateTranslation(bstate.GetPosition()));
+			
+		}else{
+			transformMatrix.SetWorld(bstate.GetPosition(), bstate.GetOrientation(), bstate.GetScale());
+		}
+		}break;
+		
+	case deAnimatorRuleBoneTransformator::eisBoneStateInverse:{
+		if(pInputBone == -1){
+			break;
+		}
+		
+		const dearBoneState &bstate = *stalist.GetStateAt(pInputBone);
+		
+		transformMatrix = decMatrix::CreateWorld(bstate.GetPosition(),
+			bstate.GetOrientation(), bstate.GetScale()).QuickInvert();
+		
+		if(pUseAxis){
+			const float valueRotation = decMath::clamp(pTargetRotation.GetValue(instance, 0.0f), 0.0f, 1.0f);
+			const float angle = pMinAngle * (1.0f - valueRotation) + pMaxAngle * valueRotation;
+			
+			transformMatrix = decMatrix::CreateScale(transformMatrix.GetScale()).
+				QuickMultiply(decMatrix::CreateRotationAxis(pAxis, angle)).
+				QuickMultiply(decMatrix::CreateTranslation(transformMatrix.GetPosition()));
+		}
+		}break;
 	}
 	
 	if( pCoordinateFrame == deAnimatorRuleBoneTransformator::ecfTargetBone && pTargetBone != -1 ){
@@ -188,5 +253,7 @@ void dearRuleBoneTransformator::RuleChanged(){
 //////////////////////
 
 void dearRuleBoneTransformator::pUpdateTargetBone(){
-	pTargetBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pBoneTransformator.GetTargetBone() );
+	const dearBoneStateList &list = GetInstance().GetBoneStateList();
+	pTargetBone = list.IndexOfStateNamed(pBoneTransformator.GetTargetBone());
+	pInputBone = list.IndexOfStateNamed(pBoneTransformator.GetInputBone());
 }

@@ -44,15 +44,8 @@ protected:
 	/*@}*/
 	
 	
-	
-public:
-	/** \name Management */
-	/*@{*/
-	void CheckAttached() override;
-	/*@}*/
-	
-	
 protected:
+	bool pProfileEnabled() const override;
 	void pSuggestBindings() override;
 	void pAddDevice( bool left ) override;
 };

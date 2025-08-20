@@ -232,18 +232,13 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorAnimated"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorAnimated")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorAnimated behavior = ECBehaviorAnimated.new(eclass,\
-				eclass.sharedFactoryHelper.defaultComponent(eclass, parameters),\
-				BaseGameApp.getApp().getLoaders(),\
+				getHelper().defaultComponent(eclass, parameters), getHelper().defaultLoaders(),\
 				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
 			
 			behavior.setControllerName(parameters.getAt("controllerName", null) cast String)
@@ -251,20 +246,10 @@ class ECBehaviorAnimated extends DefaultECBehavior
 			behavior.getTrigger().setSynchronize(eclass,\
 				parameters.getAt("trigger.synchronize", null) cast String)
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(eclass, parameters, "animated", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "animated", id)
 			return behavior
-		end
-		
-		/**
-		 * \brief Trigger table matching value.
-		 * 
-		 * Default implementation returns \ref BaseGameApp#getTriggerTable() for value 'default'
-		 * and null for all other values. Overwrite to accept other values.
-		 */
-		func TSTriggerTable getTriggerTableFor(String value)
-			return BehaviorElementClass.sharedFactoryHelper.triggerTable(value)
 		end
 	end
 	
@@ -438,6 +423,8 @@ class ECBehaviorAnimated extends DefaultECBehavior
 				pTrigger.addListener(PlayingListener.new(this))
 				
 				pTargetPlaying.setName(pECBehavior.getTargetPlaying().getValue(stub))
+				
+				pPlayback.setPlaying(pTrigger.getState(pPlayback.getPlaying()))
 			end
 			
 			if pPlayback.getPlaying()
@@ -745,17 +732,17 @@ class ECBehaviorAnimated extends DefaultECBehavior
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component) \
-	this(eclass, component, BaseGameApp.getApp().getLoaders(), null, "")
+	this(eclass, component, eclass.sharedFactoryHelper.defaultLoaders(), null, "")
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component, String id) \
-	this(eclass, component, BaseGameApp.getApp().getLoaders(), null, id)
+	this(eclass, component, eclass.sharedFactoryHelper.defaultLoaders(), null, id)
 	end
 	
 	/** \brief Create behavior element class. */
 	func new(BehaviorElementClass eclass, ECBehaviorComponent component, String id, String subID) \
-	this(eclass, component, BaseGameApp.getApp().getLoaders(), null, id, subID)
+	this(eclass, component, eclass.sharedFactoryHelper.defaultLoaders(), null, id, subID)
 	end
 	
 	/** \brief Create behavior element class. */

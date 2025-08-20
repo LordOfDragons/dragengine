@@ -102,6 +102,27 @@ deoglRTChoices::deoglRTChoices( deoglRenderThread &renderThread ){
 		( HAS_EXT( ext_ARB_shader_viewport_layer_array ) || HAS_EXT( ext_AMD_vertex_shader_layer ) )
 		&& HAS_EXT( ext_ARB_shader_draw_parameters );
 	
+	// meta quest notes:
+	//
+	// on meta quest geometry shaders are supported but discouraged to be used due to performance
+	// problems. but OpenGL ES does not support changing gl_Layer in the vertex shader only in the
+	// geometry shader. this makes it impossible to implement efficient vr rendering.
+	//
+	// there exists the extensions GL_OVR_multiview and GL_OVR_multiview2. they are reported on
+	// meta quest hardware. this extension allows to use FramebufferTextureMultiviewOVR
+	// to set up a framebuffer which is multi-view capable. this function is similar to
+	// FramebufferTextureLayer but different which requires code branchine. vertex shaders now
+	// have to use this first:
+	// 
+	// #define GL_OVR_multiview 1
+	// layout(num_views = 2) in;
+	//
+	// then the view to use for each vertex shader invocation is "gl_ViewID_OVR". hence instead
+	// of choosing the layer to output to the vertex shader is called twice with a different
+	// value for "gl_ViewID_OVR".
+	//
+	// example: https://arm-software.github.io/opengl-es-sdk-for-android/multiview.html
+	
 	pGPUTransformVertices = egputvApproximate;
 	
 	// inverse depth

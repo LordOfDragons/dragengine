@@ -1,7 +1,7 @@
 package ch.dragondreams.delauncher.launcher
 
 import android.app.Activity
-import android.view.SurfaceView
+import android.view.Surface
 import ch.dragondreams.delauncher.launcher.internal.Launcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +16,7 @@ import kotlin.time.TimeSource
 
 class DragengineLauncher(
     val activity: Activity,
-    val view: SurfaceView?
+    val surface: Surface?
 ) {
     interface Listener {
         /** State changed. */
@@ -80,8 +80,16 @@ class DragengineLauncher(
         /**
          * GameInfo engine is installed and ready to be used.
          */
-        EngineReady
+        EngineReady,
+
+        /**
+         * Loading game engine has been cancelled.
+         */
+        Cancelled
     }
+
+    private var isCancelled = false
+    private var isInitializing = false
 
     val pathEngine = File(activity.filesDir, "dragengine")
     val pathEngineConfig = File(activity.filesDir, "dragengine-config")
@@ -105,7 +113,7 @@ class DragengineLauncher(
     /** Active profile. */
     var activeProfile: GameProfile? = null
         set(value) {
-            launcher!!.setActiveProfile(value)
+            launcher?.setActiveProfile(value)
             field = value
         }
 
@@ -139,6 +147,11 @@ class DragengineLauncher(
     private val crscope = CoroutineScope(Dispatchers.IO)
 
     fun dispose() {
+        if (isInitializing) {
+            isCancelled = true
+            return
+        }
+
         activeProfile?.release()
         activeProfile = null
 
@@ -161,8 +174,18 @@ class DragengineLauncher(
      * setting parameters required to be done before this process begins.
      */
     fun initLauncher() {
+        if (isInitializing) {
+            return
+        }
+
         crscope.launch {
+            isInitializing = true
             verifyEngineInstallation()
+            isInitializing = false
+
+            if (isCancelled) {
+                dispose()
+            }
         }
     }
 
@@ -251,13 +274,13 @@ class DragengineLauncher(
         engineVersion = getEngineVersionInstall()
         logInfo("verifyEngineInstallation: version '$engineVersion' installed '$versionInstalled'")
 
-        if (engineVersion == versionInstalled) {
-            loadLibraries()
-
-        } else {
+        if (engineVersion != versionInstalled) {
             installEngine()
             updateEngineVersionInstalled(engineVersion)
+            if (checkCancelled()) return
         }
+
+        loadLibraries()
     }
 
     private fun installEngine() {
@@ -276,8 +299,6 @@ class DragengineLauncher(
             setState(State.InstallEngineFailed)
             return
         }
-
-        loadLibraries()
     }
 
     private fun getEngineVersionInstall(): String {
@@ -393,8 +414,13 @@ class DragengineLauncher(
 
         try {
             System.loadLibrary("dragengine")
+            if (checkCancelled()) return
+
             System.loadLibrary("delauncher")
+            if (checkCancelled()) return
+
             System.loadLibrary("launcherinternal")
+            if (checkCancelled()) return
 
         } catch (e: Exception) {
             logError("loadLibraries: Failed", e)
@@ -410,7 +436,7 @@ class DragengineLauncher(
         setState(State.CreateInternalLauncher)
 
         try {
-            launcher = Launcher(this, activity, view)
+            launcher = Launcher(this, activity, surface)
             launcher?.addFileLogger(logFilename)
             launcher?.prepare()
 
@@ -462,8 +488,22 @@ class DragengineLauncher(
             return
         }
 
+        if (checkCancelled()) return
+
         logInfo("game engine ready")
         setState(State.EngineReady)
+    }
+
+    private fun checkCancelled(): Boolean {
+        if (!isCancelled) {
+            return false
+        }
+
+        logWarn("cancelled")
+        setState(State.Cancelled)
+        launcher?.dispose()
+        launcher = null
+        return true
     }
 
     fun logInfo(message: String){

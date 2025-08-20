@@ -378,11 +378,11 @@ class ConversationLookAtPlayback
 			end
 			
 			/*
-			BaseGameApp.getApp().getConsole().addMessage("CLAP: strips=" + pLookAts.getCount() + " pos=" + pPosition \
+			BehaviorElementClass.sharedFactoryHelper.getConsole().addMessage("CLAP: strips=" + pLookAts.getCount() + " pos=" + pPosition \
 				+ " elapsed=" + pElapsed + " lla=" + pLastLookAt + " llap=" \
 				+ pLastLookAtPosition + " cla=" + pCurLookAt + " clap=" + pCurLookAtPosition)
 			pLookAts.forEach(block LookAt each
-				BaseGameApp.getApp().getConsole().addMessage("- lookat=" + each.getLookAt() + " strip=(" + each.getStrip().getID() \
+				BehaviorElementClass.sharedFactoryHelper.getConsole().addMessage("- lookat=" + each.getLookAt() + " strip=(" + each.getStrip().getID() \
 					+ ", " + each.getStrip().getPause() + ", " + each.getStrip().getDuration() + ")")
 			end)
 			//pLookAts.removeAll()

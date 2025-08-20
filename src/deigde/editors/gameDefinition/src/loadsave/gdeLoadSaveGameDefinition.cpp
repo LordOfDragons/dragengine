@@ -1984,8 +1984,14 @@ void gdeLoadSaveGameDefinition::pReadObjectClassCamera( const decXmlElementTag &
 		}else if( tagName == "viewDistance" ){
 			camera.SetViewDistance( GetCDataFloat( *tag ) );
 			
-		}else if( tagName == "propName" ){
-			camera.SetPropName( GetCDataString( *tag ) );
+		}else if(tagName == "propName"){
+			camera.SetPropName(GetCDataString(*tag));
+			
+		}else if(tagName == "propPosition"){
+			camera.SetPropPosition(GetCDataString(*tag));
+			
+		}else if(tagName == "propRotation"){
+			camera.SetPropRotation(GetCDataString(*tag));
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
@@ -2836,6 +2842,12 @@ decXmlWriter &writer, const gdeOCCamera &camera ){
 	}
 	if( ! camera.GetPropName().IsEmpty() ){
 		writer.WriteDataTagString( "propName", camera.GetPropName() );
+	}
+	if(!camera.GetPropPosition().IsEmpty()){
+		writer.WriteDataTagString("propPosition", camera.GetPropPosition());
+	}
+	if(!camera.GetPropRotation().IsEmpty()){
+		writer.WriteDataTagString("propRotation", camera.GetPropRotation());
 	}
 	
 	writer.WriteClosingTag( "camera" );

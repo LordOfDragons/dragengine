@@ -5,12 +5,9 @@
 	<source>minmaxmipmap.frag.glsl</source>
 	
 	<define>CLAMP_TC</define>
-	<define>FUNC_MIN</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>USE_MIN_FUNCTION</define>
+	<define>LAYERED_RENDERING</define>
 	<define>SPLIT_SHIFT_TC</define>
 	<define>SPLIT_VERSION</define>
-	<define>VS_RENDER_STEREO</define>
-	
-	<!-- shared/defren/sample_depth.glsl -->
-	<define>DECODE_IN_DEPTH</define>
+	<define>VS_RENDER_LAYER</define>
 </shaderSource>

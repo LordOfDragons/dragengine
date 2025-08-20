@@ -30,6 +30,8 @@
 #define pTexEnvRoomOffset pSharedSPBTexture[ pIndexSPBTexParams ].texEnvRoomOffset
 #define pTexTransparencyMultiplier pSharedSPBTexture[ pIndexSPBTexParams ].texTransparencyMultiplier
 
+#define pTexEnvRoomTint pSharedSPBTexture[pIndexSPBTexParams].texEnvRoomTint
+
 #define pTexEnvRoomEmissivityIntensity pSharedSPBTexture[ pIndexSPBTexParams ].texEnvRoomEmissivityIntensity
 #define pTexThickness pSharedSPBTexture[ pIndexSPBTexParams ].texThickness
 

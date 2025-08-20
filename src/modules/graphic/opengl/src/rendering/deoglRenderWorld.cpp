@@ -210,7 +210,10 @@ pDebugInfo( renderThread )
 		pAsyncGetPipeline(pPipelineFinalizeBlend, pipconf2, sources, defines);
 		
 		// finalize stereo
-		defines.SetDefines( useFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(useFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! useFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Finalize Stereo" );
 		}

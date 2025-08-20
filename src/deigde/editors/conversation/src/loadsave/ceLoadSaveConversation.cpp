@@ -703,12 +703,15 @@ void ceLoadSaveConversation::pWriteActionStopTopic( decXmlWriter &writer, const 
 	writer.WriteClosingTag( "stopTopic" );
 }
 
-void ceLoadSaveConversation::pWriteActionSnippet( decXmlWriter &writer, const ceCASnippet &action ){
-	writer.WriteOpeningTag( "snippet" );
-	pWriteActionCommon( writer, action );
-	writer.WriteDataTagString( "group", action.GetFile() );
-	writer.WriteDataTagString( "topic", action.GetTopic() );
-	writer.WriteClosingTag( "snippet" );
+void ceLoadSaveConversation::pWriteActionSnippet(decXmlWriter &writer, const ceCASnippet &action){
+	writer.WriteOpeningTag("snippet");
+	pWriteActionCommon(writer, action);
+	writer.WriteDataTagString("group", action.GetFile());
+	writer.WriteDataTagString("topic", action.GetTopic());
+	if(action.GetCreateSideLane()){
+		writer.WriteDataTagBool("createSideLane", action.GetCreateSideLane());
+	}
+	writer.WriteClosingTag("snippet");
 }
 
 void ceLoadSaveConversation::pWriteActionSetVariable( decXmlWriter &writer, const ceCASetVariable &action ){
@@ -2255,25 +2258,28 @@ void ceLoadSaveConversation::pReadActionStopTopic( const decXmlElementTag &root,
 	}
 }
 
-void ceLoadSaveConversation::pReadActionSnippet( const decXmlElementTag &root, ceCASnippet &action ){
+void ceLoadSaveConversation::pReadActionSnippet(const decXmlElementTag &root, ceCASnippet &action){
 	const int elementCount = root.GetElementCount();
-	int e;
+	int i;
 	
-	for( e=0; e<elementCount; e++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( e );
-		if( ! tag ){
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
 		const decString &tagName = tag->GetName();
-		if( tagName == "group" || tagName == "file" ){ // "file" DEPRECATED
-			action.SetFile( GetCDataString( *tag ) );
+		if(tagName == "group" || tagName == "file"){ // "file" DEPRECATED
+			action.SetFile(GetCDataString(*tag));
 			
-		}else if( tagName == "topic" ){
-			action.SetTopic( GetCDataString( *tag ) );
+		}else if(tagName == "topic"){
+			action.SetTopic(GetCDataString(*tag));
 			
-		}else if( ! pReadActionCommon( *tag, action ) ){
-			LogWarnUnknownTag( root, *tag );
+		}else if(tagName == "createSideLane"){
+			action.SetCreateSideLane(GetCDataBool(*tag));
+			
+		}else if(!pReadActionCommon(*tag, action)){
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }

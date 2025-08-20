@@ -200,6 +200,16 @@ public:
 	 * environment. A value of 1 shows the environment. Values in between blend over.
 	 */
 	virtual void SetPassthroughTransparency( float transparency );
+	
+	/**
+	 * \brief Center playspace with forward direction matching looking direction.
+	 * \version 1.28
+	 * 
+	 * Playspace is not automatically centered after starting the VR runtime. Call this function
+	 * any time later to center the playspace, for example if the player adjusted seating position
+	 * or if the VR runtime uses a broken playspace orientation.
+	 */
+	virtual void CenterPlayspace();
 	/*@}*/
 	
 	
@@ -232,6 +242,12 @@ public:
 	
 	/** \brief Button at index on device at index is touched. */
 	virtual bool GetButtonTouched( int device, int button ) = 0;
+	
+	/**
+	 * \brief User finger is near button at index on device.
+	 * \version 1.28
+	 */
+	virtual bool GetButtonNear(int device, int button);
 	
 	/** \brief Value of axis at index on device at index. */
 	virtual float GetAxisValue( int device, int axis ) = 0;

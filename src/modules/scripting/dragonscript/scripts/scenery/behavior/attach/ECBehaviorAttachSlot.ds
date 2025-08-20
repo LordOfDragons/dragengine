@@ -139,24 +139,19 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 	 * Element class properties added by the behavior can also be set directly inside the tag
 	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
 	 */
-	class Factory implements BehaviorFactory
-		func new()
-		end
-		
-		func String factoryId()
-			return "ECBehaviorAttachSlot"
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorAttachSlot")
 		end
 		
 		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
 			var ECBehaviorAttachSlot behavior = ECBehaviorAttachSlot.new(\
 				eclass, ECBehaviorCollider.getBehaviorIn(eclass), id)
 			
-			behavior.setVRHand(eclass.sharedFactoryHelper.optionalVRHand(eclass, parameters))
+			behavior.setVRHand(getHelper().optionalVRHand(eclass, parameters))
 			
-			eclass.sharedFactoryHelper.allBTSM(behavior.getBTSMs(), eclass, parameters)
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
 			
-			eclass.sharedFactoryHelper.setPropertiesFromParameters(\
-				eclass, parameters, "attachSlot", id)
+			getHelper().setPropertiesFromParameters(eclass, parameters, "attachSlot", id)
 			return behavior
 		end
 	end
@@ -278,9 +273,6 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 		/** \brief Create element. */
 		func new(ECBehaviorAttachSlot ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
-			pBone = ecbehavior.getBone().getValue()
-			pPosition = ecbehavior.getPosition().getVector()
-			pOrientation = Quaternion.newFromEuler(ecbehavior.getOrientation().getVector())
 			pListeners = Array.new()
 		end
 		
@@ -315,17 +307,9 @@ class ECBehaviorAttachSlot extends DefaultECBehavior
 			
 			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 			
-			pBone = stub.getPropertyValueFor(pECBehavior.getBone().getName(), pBone)
-			
-			var String value = stub.getPropertyValueFor(pECBehavior.getPosition().getName(), "")
-			if not value.empty()
-				pPosition = codec.decodeVector(value)
-			end
-			
-			value = stub.getPropertyValueFor(pECBehavior.getOrientation().getName(), "")
-			if not value.empty()
-				pOrientation = Quaternion.newFromEuler(codec.decodeVector(value))
-			end
+			pBone = pECBehavior.getBone().getValueOrEmpty(stub)
+			pPosition = pECBehavior.getPosition().getVector(stub, codec)
+			pOrientation = Quaternion.newFromEuler(pECBehavior.getOrientation().getVector(stub, codec))
 			
 			pECBehavior.createListeners(this)
 			

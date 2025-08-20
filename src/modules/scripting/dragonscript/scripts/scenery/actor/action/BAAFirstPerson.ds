@@ -546,7 +546,8 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * collider during the last postThink() call.
 	 */
 	protected func void updateAICollider(float elapsed)
-		if projectToGround == null or projectToGround.getTouchesGround()
+		if projectToGround == null or projectToGround.getTouchesGround()\
+		or not projectToGround.getEnabled()
 			colliderAI.setFromLocomotion(locomotion)
 			
 		else
@@ -608,7 +609,8 @@ class BAAFirstPerson extends BaseActorAction implements BAAMovement
 	 * direction enable projecting to ground again.
 	 */
 	func void collisionResponse(Collider owner, CollisionInfo info)
-		if projectToGround == null or projectToGround.getTouchesGround()
+		if projectToGround == null or projectToGround.getTouchesGround()\
+		or not projectToGround.getEnabled()
 			var Vector velocity = owner.getLinearVelocity()
 			var Vector normal = info.getNormal()
 			owner.setLinearVelocity(velocity - normal * (normal * velocity))

@@ -1,0 +1,1126 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.TriggerSystem
+pin Dragengine.BehaviorTreeSystem
+
+
+/**
+ * \brief Behavior element behavior adding animation support to \ref ECBehaviorLight.
+ * \version 1.28
+ * 
+ * This behavior modifies the light parameters of \ref ECBehaviorLight instances present in
+ * the element using move keyframes stored in an \ref Animation or \ref ECBehaviorComponent state.
+ * Animation playback starts when the light becomes activated and stops (and resets) if reactivated.
+ * 
+ * To use this behavior add first an \ref ECBehaviorLight. Adding \ref ECBehaviorLightAnimation
+ * will then register itself as listener to the \ref ECBehaviorLight and also set it to use
+ * custom light handling.
+ * 
+ * Multiple \ref ECBehaviorLightAnimation instances can be added to affect individual
+ * \ref ECBehaviorLight instances like this example below.
+ * 
+ * \code{.ds}
+ * class MyElement extends BehaviorElementClass
+ *    func new()
+ *       var ECBehaviorLight light1 = ECBehaviorLight.new(this)
+ *       ECBehaviorLightAnimation.new(this, light1)
+ *       
+ *       var ECBehaviorLight light2 = ECBehaviorLight.new(this, "subLight")
+ *       ECBehaviorLightAnimation.new(this, light2)
+ *    end
+ * end
+ * \endcode
+ * 
+ * Using \ref Animation keyframes from a move is used to animate the light parameters.
+ * 
+ * Using \ref ECBehaviorComponent the animated state is used to animate the light parameters.
+ * In this case the play time is 0 since the component state is typically driven by an animator
+ * or manually.
+ * 
+ * The input values obtained either from animation keyframes or component state is remapped
+ * before applying to the light parameter. This linearly maps the lower remap value (default 0)
+ * to 0 output value and the upper remap value (default 1) to 1 output value. Values outside
+ * the remap range are extrapolated.
+ * 
+ * Remapping is applied before scaling.
+ * 
+ * Element class properties have the prefix "lightAnimation{(id)}.".
+ * 
+ * 
+ * 
+ * \par Scale factors
+ * 
+ * This behaviors scales intensity, range and spot angle. During init() call intensity, range
+ * and spot angle of light are stored as scale values. These values can be later on changed if
+ * required. Using this system the input intensity, range and spot angle values can be kept in
+ * the range from 0 to 1 similar to the other parameters. The final values are then obtained by
+ * scaling by the scale factor.
+ * 
+ * Hence intensity, range and spot angle are animated as relative values while all other light
+ * parameters are animated absolute.
+ * 
+ * This behavior supports persistable element class (setPersistable).
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_lightanimation
+ */
+class ECBehaviorLightAnimation extends DefaultECBehavior
+	/**
+	 * \brief Behavior factory.
+	 * 
+	 * Automatically assigns these behaviors if present before adding:
+	 * - Required: \ref ECBehaviorLight
+	 * 
+	 * Example XML element class:
+	 * \code{.xml}
+	 * <behavior type='ECBehaviorLightAnimation'>
+	 *   <!-- optional: use BaseGameApp trigger table. game can add more supported values -->
+	 *   <string name='triggerTable'>default</string>
+	 *   
+	 *   <!-- optional: identifier of ECBehaviorTriggered to synchronize with or empty
+	 *                  string to not synchronize. default is empty string. -->
+	 *   <string name='trigger.synchronize'>other</string>
+	 * 
+	 *   <!-- optional: use light with id instead of empty string -->
+	 *   <string name='light'>second</string>
+	 * 
+	 *   <!-- optional: use component with id instead of empty string -->
+	 *   <string name='component'>second</string>
+	 *   
+	 *   <!-- optional: add behavior trees. default adds all behavior trees. -->
+	 *   <list name='behaviorTrees'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * 
+	 *   <!-- optional: add state machines. default adds all state machines. -->
+	 *   <list name='stateMachines'>
+	 *     <string/> <!-- add behavior with empty identifier -->
+	 *     <string>default</string> <!-- add behavior with 'default' identifier -->
+	 *   </list>
+	 * </behavior>
+	 * 
+	 * <!-- for adding multiple behaviors use unique identifiers -->
+	 * <behavior type='ECBehaviorLightAnimation' id='second'>
+	 *   ...
+	 * </behavior>
+	 * \endcode
+	 * 
+	 * Element class properties added by the behavior can also be set directly inside the tag
+	 * be removing the property name prefix and starting with a "." (for example ".propertyName").
+	 */
+	class Factory extends DefaultBehaviorFactory
+		func new() super("ECBehaviorLightAnimation")
+		end
+		
+		func ECBehavior addBehavior(BehaviorElementClass eclass, String id, Dictionary parameters)
+			var ECBehaviorLightAnimation behavior = ECBehaviorLightAnimation.new(eclass,\
+				getHelper().defaultLight(eclass, parameters),\
+				getHelper().defaultComponent(eclass, parameters),\
+				getTriggerTableFor(parameters.getAt("triggerTable", "default") cast String), id)
+			
+			getHelper().allBTSM(behavior.getBTSMs(), eclass, parameters)
+			
+			getHelper().setPropertiesFromParameters(eclass, parameters, "lightAnimation", id)
+			return behavior
+		end
+	end
+	
+	/** \brief Composable Light parameter properties. */
+	class ECCLightParameter
+		var String pPrefix
+		var ECPString pTarget
+		var ECPEnumeration pParameter
+		var ECPFloat pRemapLower, pRemapUpper
+		
+		
+		/**
+		 * \brief Create composable light parameter properties.
+		 * 
+		 * Adds properties with name "<prefix>target" and "<prefix>parameter".
+		 */
+		func new(BehaviorElementClass eclass, String prefix)
+			pPrefix = prefix
+			
+			eclass.addProperty(pTarget = ECPString.new(prefix + "target", null))
+			eclass.addProperty(pParameter = ECPEnumeration.new(prefix + "parameter",\
+				Instance.AnimationParameter.all(), Instance.AnimationParameter.positionZ))
+			eclass.addProperty(pRemapLower = ECPFloat.new(prefix + "remapLower", 0))
+			eclass.addProperty(pRemapUpper = ECPFloat.new(prefix + "remapUpper", 1))
+		end
+		
+		
+		/** \brief Element class property name prefix. */
+		func String getPrefix()
+			return pPrefix
+		end
+		
+		/** \brief Name of keyframe list to use from animation. */
+		func ECPString getTarget()
+			return pTarget
+		end
+		
+		/**
+		 * \brief Parameter to use from animation move keyframe list.
+		 * 
+		 * Uses values from \ref Instance.AnimationParameter.
+		 */
+		func ECPEnumeration getParameter()
+			return pParameter
+		end
+		
+		/** \brief Lower remap value. */
+		func ECPFloat getRemapLower()
+			return pRemapLower
+		end
+		
+		/** \brief Upper remap value. */
+		func ECPFloat getRemapUpper()
+			return pRemapUpper
+		end
+	end
+	
+	/** \brief Light parameter. */
+	enum LightParameter
+		colorRed
+		colorGreen
+		colorBlue
+		intensity
+		range
+		halfIntensityDistance
+		ambientRatio
+		spotAngle
+		spotRatio
+		spotSmoothness
+		spotExponent
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Animation parameter. */
+		enum AnimationParameter
+			/** Bone X position. */
+			positionX
+			
+			/** Bone Y position. */
+			positionY
+			
+			/** Bone Z position. */
+			positionZ
+			
+			/** Bone X axis rotation in radians. */
+			rotationX
+			
+			/** Bone Y axis rotation in radians. */
+			rotationY
+			
+			/** Bone Z axis rotation in radians. */
+			rotationZ
+			
+			/** Bone X axis scale. */
+			scaleX
+			
+			/** Bone Y axis scale. */
+			scaleY
+			
+			/** Bone Z axis scale. */
+			scaleZ
+			
+			/** Vertex position set weight. */
+			weight
+		end
+		
+		/** \brief Behavior tree action "lightAnimation{(id)}.set". */
+		private class BTASet extends BTSMActionCondition
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				var Object value
+				
+				value = parameters.getAt("enabled", null)
+				if value != null
+					pInstance.setEnabled(value.equals("true"))
+				end
+				
+				value = parameters.getAt("time", null)
+				if value != null
+					pInstance.setTime((value cast String).toFloat())
+				end
+				
+				value = parameters.getAt("time.relative", null)
+				if value != null
+					pInstance.setTimeRelative((value cast String).toFloat())
+				end
+				
+				return BTResult.success
+			end
+		end
+		
+		/** \brief Behavior tree action/condition "lightAnimation{(id)}.check". */
+		private class BTACheck extends BTSMActionCondition
+			var Instance pInstance
+			var String pPrefix
+			
+			func new(Instance instance, String prefix)
+				pInstance = instance
+				pPrefix = prefix
+			end
+			
+			func BTResult runActionShared(Object context, Dictionary parameters)
+				return check("", parameters) if BTResult.success\
+					else (parameters.has("wait") if BTResult.running else BTResult.failure)
+			end
+			
+			func bool evaluateConditionShared(Object context, Dictionary parameters)
+				return check(pPrefix, parameters)
+			end
+			
+			func bool check(String prefix, Dictionary parameters)
+				var bool result = true
+				var Object value
+				
+				value = parameters.getAt(prefix + "enabled", null)
+				if value != null
+					result &= pInstance.getEnabled() == value.equals("true")
+				end
+				
+				value = parameters.getAt(prefix + "time.less", null)
+				if value != null
+					result &= pInstance.getTime() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.greater", null)
+				if value != null
+					result &= pInstance.getTime() > (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.relative.less", null)
+				if value != null
+					result &= pInstance.getTimeRelative() < (value cast String).toFloat()
+				end
+				
+				value = parameters.getAt(prefix + "time.relative.greater", null)
+				if value != null
+					result &= pInstance.getTimeRelative() > (value cast String).toFloat()
+				end
+				
+				return result
+			end
+		end
+		
+		/** \brief Activate listener. */
+		class ActivateListener extends ECBehaviorLight.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void lightActivated(ECBehaviorLight.Instance instance)
+				pInstance.onLightActivated()
+			end
+			
+			func void lightDeactivated(ECBehaviorLight.Instance instance)
+				pInstance.lightDeactivated()
+			end
+		end
+		
+		/**
+		 * \brief Light parameter state.
+		 */
+		class LightParameterState
+			public var int target
+			public var CurveBezier curve
+			public var Component component
+			public var Instance.AnimationParameter parameter
+			public var float offset, scale
+			
+			func new(StubElement stub, ECBehaviorLightAnimation ecbehavior,\
+			LightParameter parameter, Animation animation, int move)
+				var ECCLightParameter lp = ecbehavior.getLightParameter(parameter)
+				target = -1
+				
+				var String value = lp.getTarget().getValueOrNull(stub)
+				if value == null
+					return
+				end
+				
+				this.parameter = lp.getParameter().getEnumeration(stub) cast Instance.AnimationParameter
+				
+				if this.parameter == Instance.AnimationParameter.weight
+					target = animation.indexOfVertexPositionSetNamed(value)
+					
+				else
+					target = animation.indexOfBoneNamed(value)
+				end
+				if target == -1
+					return
+				end
+				
+				select this.parameter
+				case Instance.AnimationParameter.positionX
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.positionX)
+					
+				case Instance.AnimationParameter.positionY
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.positionY)
+					
+				case Instance.AnimationParameter.positionZ
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.positionZ)
+					
+				case Instance.AnimationParameter.rotationX
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.rotationX)
+					
+				case Instance.AnimationParameter.rotationY
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.rotationY)
+					
+				case Instance.AnimationParameter.rotationZ
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.rotationZ)
+					
+				case Instance.AnimationParameter.scaleX
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.scaleX)
+					
+				case Instance.AnimationParameter.scaleY
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.scaleY)
+					
+				case Instance.AnimationParameter.scaleZ
+					curve = animation.getKeyframeCurve(move, target, AnimationBoneParameter.scaleZ)
+					
+				else
+					curve = animation.getVertexPositionSetKeyframeCurve(move, target)
+				end
+				initCommon(lp, stub)
+			end
+			
+			func new(StubElement stub, ECBehaviorLightAnimation ecbehavior,\
+			LightParameter parameter, Component component)
+				var ECCLightParameter lp = ecbehavior.getLightParameter(parameter)
+				target = -1
+				
+				var String value = lp.getTarget().getValueOrNull(stub)
+				if value == null
+					return
+				end
+				
+				this.component = component
+				this.parameter = lp.getParameter().getEnumeration(stub) cast Instance.AnimationParameter
+				
+				if this.parameter == Instance.AnimationParameter.weight
+					target = component.indexOfVertexPositionSetNamed(value)
+					
+				else
+					target = component.indexOfBoneNamed(value)
+				end
+				initCommon(lp, stub)
+			end
+			
+			private func void initCommon(ECCLightParameter lp, StubWithProperties stub)
+				var float lower = lp.getRemapLower().getValue(stub)
+				var float upper = lp.getRemapUpper().getValue(stub)
+				scale = 1 / (upper - lower)
+				offset = -lower * scale
+			end
+			
+			func bool isValid()
+				return target != -1
+			end
+			
+			func float evaluateAt(float time)
+				var float value
+				
+				if component != null
+					select parameter
+					case Instance.AnimationParameter.positionX
+						value = component.boneGetPosition(target).getX()
+						
+					case Instance.AnimationParameter.positionY
+						value = component.boneGetPosition(target).getY()
+						
+					case Instance.AnimationParameter.positionZ
+						value = component.boneGetPosition(target).getZ()
+						
+					case Instance.AnimationParameter.rotationX
+						value = component.boneGetRotation(target).getEulerAngles().getX()
+						
+					case Instance.AnimationParameter.rotationY
+						value = component.boneGetRotation(target).getEulerAngles().getY()
+						
+					case Instance.AnimationParameter.rotationZ
+						value = component.boneGetRotation(target).getEulerAngles().getZ()
+						
+					case Instance.AnimationParameter.scaleX
+						value = component.boneGetScale(target).getX()
+						
+					case Instance.AnimationParameter.scaleY
+						value = component.boneGetScale(target).getY()
+						
+					case Instance.AnimationParameter.scaleZ
+						value = component.boneGetScale(target).getZ()
+						
+					else
+						value = component.vertexPositionSetGetWeightAt(target)
+					end
+					
+				else
+					value = curve.evaluateAt(time)
+				end
+				
+				return value * scale + offset
+			end
+		end
+		
+		/** \brief Trigger listener to enable animation. */
+		private class EnabledListener extends ECBehaviorTriggered.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+				pInstance.setEnabled(true)
+			end
+			
+			func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
+				pInstance.setEnabled(false)
+			end
+		end
+		
+		
+		var ECBehaviorLightAnimation pECBehavior
+		var ECBehaviorLight.Instance pLight
+		var bool pLightIsActive, pHasColorStates, pEnabled
+		var Animation pAnimation
+		var Component pComponent
+		var int pMove
+		var float pScaleIntensity, pScaleRange, pScaleSpotAngle, pElapsedTime, pPlayTime, pPlaySpeed
+		var LightParameterState pStateColorRed, pStateColorGreen, pStateColorBlue
+		var LightParameterState pStateIntensity, pStateRange, pStateHalfIntensityDistance, pStateAmbientRatio
+		var LightParameterState pStateSpotAngle, pStateSpotRatio, pStateSpotSmoothness, pStateSpotExponent
+		var ECBehaviorTriggered.Instance pTrigger
+		var ECComposeBTSM.Instance pBTSMs
+		
+		
+		/** \brief Create behavior instance. */
+		func new(ECBehaviorLightAnimation ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pLight = null
+			pTrigger = null
+			pBTSMs = null
+			super.dispose()
+		end
+		
+		
+		/** \brief Initialize element from stub. */
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
+			pAnimation = pECBehavior.getAnimation().getAnimation(stub, element.getClass())
+			
+			if pAnimation != null
+				var String value = pECBehavior.getMove().getValueOrNull(stub)
+				if value != null
+					pMove = pAnimation.indexOfMoveNamed(value)
+				end
+				if pMove == -1
+					return
+				end
+				
+				pPlayTime = pAnimation.getMovePlaytime(value)
+				
+			elif pECBehavior.getComponent() != null
+				pComponent = pECBehavior.getComponent().instance(element).getComponent()
+				
+			else
+				return
+			end
+			
+			pLight = pECBehavior.getLight().instance(element)
+			
+			var Light l = pLight.getLight()
+			pScaleIntensity = l.getIntensity()
+			pScaleRange = l.getRange()
+			pScaleSpotAngle = l.getSpotAngle()
+			
+			pEnabled = pECBehavior.getEnabled().getValue(stub)
+			pPlaySpeed = pECBehavior.getPlaySpeed().getValue(stub)
+			
+			pStateColorRed = createState(stub, LightParameter.colorRed)
+			pStateColorGreen = createState(stub, LightParameter.colorGreen)
+			pStateColorBlue = createState(stub, LightParameter.colorBlue)
+			pStateIntensity = createState(stub, LightParameter.intensity)
+			pStateRange = createState(stub, LightParameter.range)
+			pStateHalfIntensityDistance = createState(stub, LightParameter.halfIntensityDistance)
+			pStateAmbientRatio = createState(stub, LightParameter.ambientRatio)
+			pStateSpotAngle = createState(stub, LightParameter.spotAngle)
+			pStateSpotRatio = createState(stub, LightParameter.spotRatio)
+			pStateSpotSmoothness = createState(stub, LightParameter.spotSmoothness)
+			pStateSpotExponent = createState(stub, LightParameter.spotExponent)
+			
+			pHasColorStates = pStateColorRed != null or pStateColorGreen != null or pStateColorBlue != null
+			
+			if not pHasColorStates\
+			and pStateIntensity == null\
+			and pStateRange == null\
+			and pStateHalfIntensityDistance == null\
+			and pStateAmbientRatio == null\
+			and pStateSpotAngle == null\
+			and pStateSpotRatio == null\
+			and pStateSpotSmoothness == null\
+			and pStateSpotExponent == null
+				pLight = null
+				return
+			end
+			
+			if pLight.getActivated()
+				onLightActivated()
+			end
+			
+			pLight.addListener(ActivateListener.new(this))
+			
+			if pECBehavior.getTriggerTable() != null
+				pTrigger = pECBehavior.getTrigger().synchronizedOrSelf().instance(element)
+				pTrigger.addListener(EnabledListener.new(this))
+			end
+			
+			if pECBehavior.getBTSMs().hasAny()
+				var String prefix = pECBehavior.getPrefix()
+				pBTSMs = ECComposeBTSM.Instance.new(element, pECBehavior.getBTSMs())
+				pBTSMs.addAllAction(prefix, "set", BTASet.new(this))
+				pBTSMs.addAllActionCondition(prefix, "check", BTACheck.new(this, prefix))
+				pBTSMs.dropBTContexts()
+			end
+		end
+		
+		/** \brief Create state using animation move or getComponent() state if present. */
+		protected func LightParameterState createState(StubElement stub, LightParameter parameter)
+			var LightParameterState state
+			
+			if pComponent != null
+				state = LightParameterState.new(stub, pECBehavior, parameter, pComponent)
+				
+			else
+				state = LightParameterState.new(stub, pECBehavior, parameter, pAnimation, pMove)
+			end
+			
+			return state.isValid() if state else null
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorLightAnimation getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Trigger enabled or \em null. */
+		func ECBehaviorTriggered.Instance getTrigger()
+			return pTrigger
+		end
+		
+		/** \brief Light behavior or null. */
+		func ECBehaviorLight.Instance getLight()
+			return pLight
+		end
+		
+		/** \brief Component or null. */
+		func Component getComponent()
+			return pComponent
+		end
+		
+		/** \brief Intensity scale. */
+		func float getScaleIntensity()
+			return pScaleIntensity
+		end
+		
+		/** \brief Set intensity scale. */
+		func void setScaleIntensity(float scale)
+			pScaleIntensity = DEMath.max(scale, 0.0)
+		end
+		
+		/** \brief Range scale. */
+		func float getScaleRange()
+			return pScaleRange
+		end
+		
+		/** \brief Set range scale. */
+		func void setScaleRange(float scale)
+			pScaleRange = DEMath.max(scale, 0.0)
+		end
+		
+		/** \brief Spot angle scale. */
+		func float getScaleSpotAngle()
+			return pScaleSpotAngle
+		end
+		
+		/** \brief Set spot anglescale. */
+		func void setScaleSpotAngle(float scale)
+			pScaleSpotAngle = DEMath.max(scale, 0.0)
+		end
+		
+		/** \brief Animation is enabled. */
+		func bool getEnabled()
+			return pEnabled
+		end
+		
+		/** \brief Set if animation is enabled. */
+		func void setEnabled(bool enabled)
+			if enabled == pEnabled
+				return
+			end
+			
+			pEnabled = enabled
+			pElapsedTime = 0
+			
+			setRequiresThink(pLightIsActive and enabled)
+			
+			if pLightIsActive and enabled
+				updateLight()
+			end
+			
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), enabled if "enabled" else "disabled")
+			end
+		end
+		
+		/** \brief Playback time in seconds. */
+		func float getTime()
+			return pElapsedTime
+		end
+		
+		/** \brief Playback time relative to move play time in the range from 0 to 1. */
+		func float getTimeRelative()
+			return pPlayTime > 0 if pElapsedTime / pPlayTime else 0
+		end
+		
+		/** \brief Set playback time in seconds. */
+		func void setTime(float time)
+			if pPlayTime > 0
+				pElapsedTime = DEMath.normalize(time, 0, pPlayTime)
+				
+			else
+				pElapsedTime = 0
+			end
+		end
+		
+		/** \brief Set playback time relative to move play time in the range from 0 to 1. */
+		func void setTimeRelative(float time)
+			setTime(time * pPlayTime)
+		end
+		
+		
+		/**
+		 * \brief Light has been activated.
+		 * 
+		 * Activate animation if enabled.
+		 */
+		func void onLightActivated()
+			if pLightIsActive or pLight == null
+				return
+			end
+			
+			pElapsedTime = 0
+			pLightIsActive = true
+			setRequiresThink(pEnabled)
+			
+			if pEnabled
+				updateLight()
+			end
+			
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "startAnimation")
+			end
+		end
+		
+		/**
+		 * \brief Light has been deacivated.
+		 * 
+		 * Deactivate animation.
+		 */
+		func void lightDeactivated()
+			if not pLightIsActive or pLight == null
+				return
+			end
+			
+			setRequiresThink(false)
+			pLightIsActive = false
+			
+			if pBTSMs != null
+				pBTSMs.runEvent(pECBehavior.getPrefix(), "stopAnimation")
+			end
+		end
+		
+		/** \brief Update light using animation state. */
+		func void updateLight()
+			var Light l = pLight.getLight()
+			
+			if pHasColorStates
+				var Color color = l.getColor()
+				var float r = color.getRed(), g = color.getGreen(), b = color.getBlue()
+				
+				if pStateColorRed != null
+					r = pStateColorRed.evaluateAt(pElapsedTime)
+				end
+				if pStateColorGreen != null
+					g = pStateColorGreen.evaluateAt(pElapsedTime)
+				end
+				if pStateColorBlue != null
+					b = pStateColorBlue.evaluateAt(pElapsedTime)
+				end
+				
+				l.setColor(Color.new(r, g, b))
+			end
+			
+			if pStateIntensity != null
+				l.setIntensity(pStateIntensity.evaluateAt(pElapsedTime) * pScaleIntensity)
+			end
+			
+			if pStateRange != null
+				l.setRange(pStateRange.evaluateAt(pElapsedTime) * pScaleRange)
+			end
+			if pStateHalfIntensityDistance != null
+				l.setHalfIntensityDistance(pStateHalfIntensityDistance.evaluateAt(pElapsedTime))
+			end
+			if pStateAmbientRatio != null
+				l.setAmbientRatio(pStateAmbientRatio.evaluateAt(pElapsedTime))
+			end
+			
+			if pStateSpotAngle != null
+				l.setSpotAngle(pStateSpotAngle.evaluateAt(pElapsedTime) * pScaleSpotAngle)
+			end
+			if pStateSpotRatio != null
+				l.setSpotRatio(pStateSpotRatio.evaluateAt(pElapsedTime))
+			end
+			if pStateSpotSmoothness != null
+				l.setSpotSmoothness(pStateSpotSmoothness.evaluateAt(pElapsedTime))
+			end
+			if pStateSpotExponent != null
+				l.setSpotExponent(pStateSpotExponent.evaluateAt(pElapsedTime))
+			end
+			
+			pLight.notifyParametersChanged()
+		end
+		
+		
+		/** \brief Think about what to do for the next frame update. */
+		func void think(float elapsed)
+			if not pLightIsActive
+				return
+			end
+			
+			if pPlayTime > 0
+				pElapsedTime = DEMath.normalize(pElapsedTime + elapsed * pPlaySpeed, 0, pPlayTime)
+			end
+		end
+		
+		func void postThink(float elapsed)
+			if pLightIsActive
+				updateLight()
+			end
+		end
+		
+		
+		/** \brief Read behavior from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+				pLightIsActive = flags.getAt(0)
+				pEnabled = flags.getAt(1)
+				
+				pScaleIntensity = reader.readFloat()
+				pScaleRange = reader.readFloat()
+				pScaleSpotAngle = reader.readFloat()
+				pElapsedTime = reader.readFloat()
+				
+				setRequiresThink(pLightIsActive and pEnabled)
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0)
+			
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pLightIsActive)
+			flags.setAt(1, pEnabled)
+			flags.writeToFile(writer)
+			
+			writer.writeFloat(pScaleIntensity)
+			writer.writeFloat(pScaleRange)
+			writer.writeFloat(pScaleSpotAngle)
+			writer.writeFloat(pElapsedTime)
+		end
+	end
+	
+	
+	var ECBehaviorLight pLight
+	var ECBehaviorComponent pComponent
+	var ECPAnimation pAnimation
+	var ECPString pMove
+	var ECPBoolean pEnabled
+	var ECPFloat pPlaySpeed
+	var Dictionary pLightParameters
+	var ECBehaviorTriggered pTrigger
+	var TSTriggerTable pTriggerTable
+	var ECComposeBTSM pBTSMs
+	var String pPrefix
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * Component and trigger table are optional.
+	 */
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component)\
+	this(eclass, light, component, null, "")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	String id) this(eclass, light, component, null, id)
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	TSTriggerTable triggerTable) this(eclass, light, component, triggerTable, "")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	TSTriggerTable triggerTable, String id) this(eclass, light, component, triggerTable, id,\
+	id.empty() if "lightAnimation" else "lightAnimation(" + id + ")")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	TSTriggerTable triggerTable, String id, String subID)\
+	this(eclass, light, component, triggerTable, id, subID, subID + ".")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorLight light, ECBehaviorComponent component,\
+	TSTriggerTable triggerTable, String id, String subID, String prefix) super(eclass, id)
+		if light == null
+			throw ENullPointer.new("light")
+		end
+		
+		pPrefix = prefix
+		pTriggerTable = triggerTable
+		pLight = light
+		pComponent = component
+		pLightParameters = Dictionary.new()
+		pBTSMs = ECComposeBTSM.new(eclass, prefix)
+		
+		eclass.addProperty(pAnimation = ECPAnimation.new(prefix + "animation"))
+		eclass.addProperty(pMove = ECPString.new(prefix + "move", null))
+		eclass.addProperty(pEnabled = ECPBoolean.new(prefix + "enabled", true))
+		eclass.addProperty(pPlaySpeed = ECPFloat.new(prefix + "playSpeed", 1))
+		
+		pLightParameters.setAt(LightParameter.colorRed,\
+			ECCLightParameter.new(eclass, prefix + "colorRed."))
+		
+		pLightParameters.setAt(LightParameter.colorGreen,\
+			ECCLightParameter.new(eclass, prefix + "colorGreen."))
+		
+		pLightParameters.setAt(LightParameter.colorBlue,\
+			ECCLightParameter.new(eclass, prefix + "colorBlue."))
+		
+		pLightParameters.setAt(LightParameter.intensity,\
+			ECCLightParameter.new(eclass, prefix + "intensity."))
+		
+		pLightParameters.setAt(LightParameter.range,\
+			ECCLightParameter.new(eclass, prefix + "range."))
+		
+		pLightParameters.setAt(LightParameter.halfIntensityDistance,\
+			ECCLightParameter.new(eclass, prefix + "halfIntensityDistance."))
+		
+		pLightParameters.setAt(LightParameter.ambientRatio,\
+			ECCLightParameter.new(eclass, prefix + "ambientRatio."))
+		
+		pLightParameters.setAt(LightParameter.spotAngle,\
+			ECCLightParameter.new(eclass, prefix + "spotAngle."))
+		
+		pLightParameters.setAt(LightParameter.spotRatio,\
+			ECCLightParameter.new(eclass, prefix + "spotRatio."))
+		
+		pLightParameters.setAt(LightParameter.spotSmoothness,\
+			ECCLightParameter.new(eclass, prefix + "spotSmoothness."))
+		
+		pLightParameters.setAt(LightParameter.spotExponent,\
+			ECCLightParameter.new(eclass, prefix + "spotExponent."))
+		
+		pTrigger = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pLight = null
+		pComponent = null
+		pBTSMs = null
+		super.dispose()
+	end
+	
+	
+	/** \brief Prefix. */
+	func String getPrefix()
+		return pPrefix
+	end
+	
+	/** \brief Light behavior to modify. */
+	func ECBehaviorLight getLight()
+		return pLight
+	end
+	
+	/** \brief Set light behavior to modify. */
+	func void setLight(ECBehaviorLight light)
+		if light == null
+			throw ENullPointer.new("light")
+		end
+		pLight = light
+	end
+	
+	/** \brief Component behavior or null. */
+	func ECBehaviorComponent getComponent()
+		return pComponent
+	end
+	
+	/** \brief Set component behavior or null. */
+	func void setComponent(ECBehaviorComponent component)
+		pComponent = component
+	end
+	
+	/** \brief Trigger table or \em null if not used. */
+	func TSTriggerTable getTriggerTable()
+		return pTriggerTable
+	end
+	
+	/** \brief Set trigger table or \em null if not used. */
+	func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
+	end
+	
+	/** \brief Trigger enable. */
+	func ECBehaviorTriggered getTrigger()
+		return pTrigger
+	end
+	
+	/** \brief Compose behavior trees and state machines. */
+	func ECComposeBTSM getBTSMs()
+		return pBTSMs
+	end
+	
+	/** \brief Animation. */
+	func ECPAnimation getAnimation()
+		return pAnimation
+	end
+	
+	/** \brief Animation move name. */
+	func ECPString getMove()
+		return pMove
+	end
+	
+	/** \brief Animation is enabled. */
+	func ECPBoolean getEnabled()
+		return pEnabled
+	end
+	
+	/** \brief Play speed. */
+	func ECPFloat getPlaySpeed()
+		return pPlaySpeed
+	end
+	
+	/** \brief Light parameter element class properties. */
+	func ECCLightParameter getLightParameter(LightParameter parameter)
+		return pLightParameters.getAt(parameter) cast ECCLightParameter
+	end
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	/** \brief First \ref ECBehaviorLightAnimation or null if absent. */
+	static func ECBehaviorLightAnimation getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorLightAnimation each
+			return true
+		end) cast ECBehaviorLightAnimation
+	end
+	
+	/** \brief \ref ECBehaviorLightAnimation with identifier or null if absent. */
+	static func ECBehaviorLightAnimation getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorLightAnimation each
+			return each.getID().equals(id)
+		end) cast ECBehaviorLightAnimation
+	end
+	
+	/** \brief List of all \ref ECBehaviorLightAnimation in creation order. */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorLightAnimation each
+			return true
+		end)
+	end
+	
+	
+	/** \brief First \ref Instance or null if absent. */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/** \brief \ref Instance with identifier or null if absent. */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/** \brief List of all \ref Instance in creation order. */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

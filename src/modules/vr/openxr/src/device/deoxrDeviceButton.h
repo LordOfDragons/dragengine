@@ -38,6 +38,10 @@
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/resources/image/deImage.h>
 
+#ifdef OS_W32
+#undef near
+#endif
+
 class deInputDeviceButton;
 class deoxrDevice;
 
@@ -57,16 +61,15 @@ private:
 	
 	int pIndex;
 	
-	deoxrAction::Ref pActionPress;
-	deoxrAction::Ref pActionTouch;
+	deoxrAction::Ref pActionPress, pActionTouch, pActionApproach;
 	deoxrDeviceAxis::Ref pFakeFromAxis;
 	
 	decString pID;
 	decString pName;
 	deInputDeviceButton::eButtonTypes pType;
 	deoxrDeviceComponent::Ref pInputDeviceComponent;
-	bool pPressed;
-	bool pTouched;
+	int pFinger;
+	bool pPressed, pTouched, pNear;
 	
 	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
@@ -113,6 +116,12 @@ public:
 	/** Set touch button action. */
 	void SetActionTouch( deoxrAction *action );
 	
+	/** Near button action. */
+	inline deoxrAction *GetActionNear() const{return pActionApproach;}
+	
+	/** Set approach button action. */
+	void SetActionApproach(deoxrAction *action);
+	
 	/** Button state is faked from axis state. */
 	inline const deoxrDeviceAxis::Ref &GetFakeFromAxis() const{ return pFakeFromAxis; }
 
@@ -145,6 +154,12 @@ public:
 	/** Set input device component. */
 	void SetInputDeviceComponent( deoxrDeviceComponent *component );
 	
+	/** Finger. */
+	inline int GetFinger() const{ return pFinger; }
+	
+	/** Set finger. */
+	void SetFinger(int finger);
+	
 	/** Button is pressed. */
 	inline bool GetPressed() const{ return pPressed; }
 	
@@ -162,6 +177,15 @@ public:
 	
 	/** Update touched sending event if changed. */
 	void UpdateTouched( bool touched );
+	
+	/** Near button. */
+	inline bool GetNear() const{ return pNear; }
+	
+	/** Set if near button. */
+	void SetNear(bool near);
+	
+	/** Update near sending event if changed. */
+	void UpdateNear(bool near);
 	
 	
 	

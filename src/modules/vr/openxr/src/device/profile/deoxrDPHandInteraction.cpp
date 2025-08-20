@@ -51,25 +51,12 @@ deoxrDPHandInteraction::~deoxrDPHandInteraction(){
 }
 
 
-// Management
-///////////////
-
-void deoxrDPHandInteraction::CheckAttached(){
-	const deoxrInstance &instance = GetInstance();
-
-	if( ! instance.SupportsExtension( deoxrInstance::extEXTHandInteraction ) ){
-		return;
-	}
-	if( pHasAnyHandDevice( pDeviceLeft, pDeviceRight ) ){
-		return;
-	}
-
-	deoxrDPBaseTwoHandController::CheckAttached();
-}
-
-
 // Private Functions
 //////////////////////
+
+bool deoxrDPHandInteraction::pProfileEnabled() const{
+	return GetInstance().SupportsExtension(deoxrInstance::extEXTHandInteraction);
+}
 
 void deoxrDPHandInteraction::pSuggestBindings(){
 	// Valid for user paths:
@@ -95,14 +82,9 @@ void deoxrDPHandInteraction::pSuggestBindings(){
 	int usedBindingCount = 0;
 	
 	const deoxrPath basePathList[ 2 ] = { pPathHandLeft, pPathHandRight };
-	const deoxrDevice * const devices[ 2 ] = { pDeviceLeft, pDeviceRight };
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		if( ! devices[ i ] ){
-			continue;
-		}
-
 		const decString &basePath = basePathList[ i ];
 		
 		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
@@ -189,7 +171,8 @@ void deoxrDPHandInteraction::pAddDevice( bool left ){
 	device->AddAxis( axis );
 	
 	// hand tracking
-	pAddHandTracker( device, left );
+	pAddHandTracker(device, left, true);
+	device->SetEnableTwoFingerTriggerSimulation(false);
 	
 	oxr.GetDevices().Add( device );
 }

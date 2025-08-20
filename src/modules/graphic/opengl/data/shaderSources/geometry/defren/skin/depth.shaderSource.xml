@@ -4,14 +4,11 @@
 	<stage>geometry</stage>
 	<source>depth.geom.glsl</source>
 	
-	<define>BILLBOARD</define>
 	<define>DEPTH_DISTANCE</define>
 	<define>DEPTH_OFFSET</define>
 	<define>GS_INSTANCING</define>
-	<define>GS_RENDER_CASCADED</define>
 	<define>GS_RENDER_CUBE_CULLING</define>
-	<define>GS_RENDER_CUBE</define>
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>SHARED_SPB</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->

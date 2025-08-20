@@ -240,13 +240,17 @@ pDebugRayLightIndex( -1 )
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Clear Probes" );
 		defines.SetDefine( "GI_CLEAR_PROBES_COUNT", ( 32 * 32 * 8 ) / 32 / 4 );
 		
-		defines.SetDefines( "MAP_IRRADIANCE" );
+		defines.SetDefines("MAP_IRRADIANCE");
+		defines.SetDefine("LOCAL_SIZE_X", 10); // 8x8 + 1 pixel border
+		defines.SetDefine("LOCAL_SIZE_Y", 10);
 		pAsyncGetPipeline(pPipelineClearProbeIrradiance, pipconf, sources, defines);
-		defines.RemoveDefine( "MAP_IRRADIANCE" );
+		defines.RemoveDefine("MAP_IRRADIANCE");
 		
-		defines.SetDefines( "MAP_DISTANCE" );
+		defines.SetDefines("MAP_DISTANCE");
+		defines.SetDefine("LOCAL_SIZE_X", 18); // 16x16 + 1 pixel border
+		defines.SetDefine("LOCAL_SIZE_Y", 18);
 		pAsyncGetPipeline(pPipelineClearProbeDistance, pipconf, sources, defines);
-		defines.RemoveDefine( "MAP_DISTANCE" );
+		defines.RemoveDefine("MAP_DISTANCE");
 		
 		defines.RemoveDefine( "GI_CLEAR_PROBES_COUNT" );
 		
@@ -254,14 +258,19 @@ pDebugRayLightIndex( -1 )
 		// update probes
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Update Probes" );
 		
-		defines.SetDefines( "MAP_IRRADIANCE" );
+		defines.SetDefines("MAP_IRRADIANCE");
+		defines.SetDefine("LOCAL_SIZE_X", 8);
+		defines.SetDefine("LOCAL_SIZE_Y", 8);
 		pAsyncGetPipeline(pPipelineUpdateProbeIrradiance, pipconf, sources, defines);
-		defines.RemoveDefine( "MAP_IRRADIANCE" );
+		defines.RemoveDefine("MAP_IRRADIANCE");
 		
-		defines.SetDefines( "MAP_DISTANCE" );
+		defines.SetDefines("MAP_DISTANCE");
+		defines.SetDefine("LOCAL_SIZE_X", 16);
+		defines.SetDefine("LOCAL_SIZE_Y", 16);
 		pAsyncGetPipeline(pPipelineUpdateProbeDistance, pipconf, sources, defines);
-		defines.RemoveDefine( "MAP_DISTANCE" );
+		defines.RemoveDefine("MAP_DISTANCE");
 		
+		defines.RemoveDefines("LOCAL_SIZE_X", "LOCAL_SIZE_Y");
 		
 		// probe dynamic states
 		pAsyncGetPipeline(pPipelineProbeDynamicStates, pipconf,
@@ -314,7 +323,7 @@ pDebugRayLightIndex( -1 )
 		sources = shaderManager.GetSourcesNamed( "DefRen GI Debug Probe Update" );
 		pAsyncGetPipeline(pPipelineDebugProbeUpdatePass1, pipconf2, sources, defines);
 		
-		defines.SetDefines( "PASS2" );
+		defines.SetDefine("RENDER_PASS", 1);
 		pAsyncGetPipeline(pPipelineDebugProbeUpdatePass2, pipconf2, sources, defines);
 		
 		
@@ -334,7 +343,10 @@ pDebugRayLightIndex( -1 )
 		pAsyncGetPipeline(pPipelineLightTransp, pipconf, sources, defines);
 		
 		// render light stereo
-		defines.SetDefines( renderFSQuadStereoVSLayer ? "VS_RENDER_STEREO" : "GS_RENDER_STEREO" );
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
+		if(renderFSQuadStereoVSLayer){
+			defines.SetDefines("VS_RENDER_LAYER");
+		}
 		if( ! renderFSQuadStereoVSLayer ){
 			sources = shaderManager.GetSourcesNamed( "DefRen Light GI Stereo" );
 		}

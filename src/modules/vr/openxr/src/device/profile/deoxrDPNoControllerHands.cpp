@@ -132,7 +132,11 @@ void deoxrDPNoControllerHands::pAddDevice( bool left ){
 	
 	device->SetID( id );
 	
-	pAddHandTracker( device, left );
+	deoxrDeviceComponent * const trigger = pAddComponentTrigger(device);
+	pAddAxisTrigger(device, trigger);
+	pAddButtonTrigger(device, trigger, false, false); // has to be button 0
+	
+	pAddHandTracker(device, left, true);
 	
 	GetInstance().GetOxr().GetDevices().Add( device );
 }

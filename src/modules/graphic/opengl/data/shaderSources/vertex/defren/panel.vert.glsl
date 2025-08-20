@@ -1,47 +1,36 @@
-#ifdef EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY
-	#extension GL_ARB_shader_viewport_layer_array : require
-#endif
-#ifdef EXT_AMD_VERTEX_SHADER_LAYER
-	#extension GL_AMD_vertex_shader_layer : require
-#endif
-#ifdef EXT_ARB_SHADER_DRAW_PARAMETERS
-	#extension GL_ARB_shader_draw_parameters : require
-#endif
+#include "shared/preamble.glsl"
 
-uniform mat4x3 pMatrixModel;
-uniform mat4 pMatrixVP;
-uniform mat4 pMatrixVP2;
+UNIFORM_BIND(0) uniform mat4x3 pMatrixModel;
+UNIFORM_BIND(1) uniform mat4 pMatrixVP;
+UNIFORM_BIND(2) uniform mat4 pMatrixVP2;
 
 layout(location=0) in vec3 inPosition;
 layout(location=4) in vec2 inTexCoord;
 
-#ifdef VS_RENDER_STEREO
-	layout(location=5) in int inLayer;
-#else
-	const int inLayer = 0;
-#endif
+// VSRenderLayer
+layout(location=5) in int inLayer;
 
-#ifdef GS_RENDER_STEREO
-	out vec2 vGSTexCoord;
-	#define vTexCoord vGSTexCoord
-	
-#else
-	out vec2 vTexCoord;
-#endif
-
+#include "shared/interface/2d/vertex.glsl"
 
 void main( void ){
-	vec3 position = pMatrixModel * vec4( inPosition, 1 );
+	vertexShaderDefaultOutputs();
 	
-	#ifdef GS_RENDER_STEREO
-		gl_Position = vec4( position, 1 );
-	#else
-		gl_Position = ( inLayer == 0 ? pMatrixVP : pMatrixVP2 ) * vec4( position, 1 );
-	#endif
+	vec3 position = pMatrixModel * vec4( inPosition, 1 );
+	int layer = VSRenderLayer ? inLayer : 0;
+	
+	if(LayeredRendering != LayeredRenderingNone && !VSRenderLayer){
+		gl_Position = vec4(position, 1.0);
+		
+	}else{
+		gl_Position = (layer == 0 ? pMatrixVP : pMatrixVP2) * vec4(position, 1.0);
+	}
 	
 	vTexCoord = inTexCoord;
 	
-	#ifdef VS_RENDER_STEREO
-		gl_Layer = inLayer;
-	#endif
+	if(VSRenderLayer){
+		vLayer = layer;
+		#ifdef SUPPORTS_VSLAYER
+		gl_Layer = layer;
+		#endif
+	}
 }

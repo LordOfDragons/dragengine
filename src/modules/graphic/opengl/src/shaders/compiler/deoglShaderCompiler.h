@@ -131,7 +131,7 @@ public:
 	/** Finish compile shader. */
 	void FinishCompileShader(deoglShaderProgram &program);
 	
-	void PreparePreprocessor(const deoglShaderDefines &defines);
+	void PreparePreprocessor(const deoglShaderProgramUnit &unit);
 	void AppendPreprocessSourcesBuffer(const char *inputFile, const char *data);
 	inline deoglShaderPreprocessor &GetPreprocessor(){ return pPreprocessor; }
 	/*@}*/

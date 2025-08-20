@@ -195,12 +195,12 @@ deoglRenderDevMode::deoglRenderDevMode( deoglRenderThread &renderThread ) : deog
 		pipconf.EnableBlendBlend();
 		pAsyncGetPipeline(pPipelineVRDebugPanel, pipconf, "DefRen Panel", defines);
 		
+		defines.SetDefine("LAYERED_RENDERING", deoglSkinShaderConfig::elrmStereo);
 		if( renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() ){
-			defines.SetDefines( "VS_RENDER_STEREO" );
+			defines.SetDefines( "VS_RENDER_LAYER" );
 			sources = "DefRen Panel";
 			
 		}else{
-			defines.SetDefines( "GS_RENDER_STEREO" );
 			sources = "DefRen Panel Stereo";
 		}
 		

@@ -148,6 +148,10 @@ bool deVRNull::GetButtonTouched( int, int ){
 	DETHROW( deeInvalidParam );
 }
 
+bool deVRNull::GetButtonNear(int, int){
+	DETHROW(deeInvalidParam);
+}
+
 float deVRNull::GetAxisValue( int, int ){
 	DETHROW( deeInvalidParam );
 }

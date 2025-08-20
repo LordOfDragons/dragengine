@@ -1,4 +1,2 @@
-lib/dragonscript/Math/Math${SHLIBSUFFIX}
 lib/dragonscript/Utils/TerminalColorizer.ds
 lib/dragonscript/Introspection/TypeModifier.ds
-lib/dragonscript/Introspection/Introspection${SHLIBSUFFIX}

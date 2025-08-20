@@ -6,9 +6,9 @@
 	
 	<output name="outColor" target="0"/>
 	
-	<define>ARRAYTEXTURE</define>
-	<define>OUT_COLOR_SIZE</define>
-	<define>OUT_COLOR_SWIZZLE</define>
+	<define>INPUT_ARRAY_TEXTURES</define>
+	<define>OUT_DATA_SIZE</define>
+	<define>OUT_DATA_SWIZZLE</define>
 	<define>TEX_DATA_SIZE</define>
 	<define>TEX_DATA_SWIZZLE</define>
 	<define>TEXTURELEVEL</define>

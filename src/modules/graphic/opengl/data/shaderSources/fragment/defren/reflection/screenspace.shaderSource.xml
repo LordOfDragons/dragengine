@@ -6,7 +6,7 @@
 	
 	<output name='outResult' location='0'/>
 	
-	<define>GS_RENDER_STEREO</define>
+	<define>LAYERED_RENDERING</define>
 	<define>INTEGRATED_THRESHOLD_TEST</define>
 	<define>INVERSE_DEPTH</define>
 	<define>MULTI_STEPPING</define>
@@ -15,19 +15,12 @@
 	<define>ROUGHNESS_TAPPING</define>
 	<define>SSR_VERSION</define>
 	<define>USE_DEPTH_MIPMAP</define>
-	<define>VS_RENDER_STEREO</define>
+	<define>VS_RENDER_LAYER</define>
 	
 	<!-- shared/defren/ubo_render_parameters.glsl -->
 	<uniformBlock name='RenderParameters' binding='0'/>
 	
 	<!-- shared/normal_texture.glsl -->
-	<define>MATERIAL_NORMAL_DEC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_DEC_SPHEREMAP</define>
-	<define>MATERIAL_NORMAL_ENC_FLOATBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_INTBASIC</define>
-	<define>MATERIAL_NORMAL_ENC_SPHEREMAP</define>
-	
-	<!-- shared/defren/depth_to_position.glsl -->
-	<define>DECODE_IN_DEPTH</define>
+	<define>MATERIAL_NORMAL_DEC</define>
+	<define>MATERIAL_NORMAL_ENC</define>
 </shaderSource>

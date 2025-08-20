@@ -171,14 +171,43 @@ class CommandsBAAVRMenuInput
 	 * Adds bindings for these commands if present in binding manager:
 	 * - "menuRight"
 	 * - "menuLeft"
+	 * 
+	 * Adds binding to first non-trigger action button.
+	 * 
+	 * \note
+	 * 
+	 * If you use also \ref CommandsBAAInteract use
+	 * \ref #addDefaultBindings(DefaultBindingHelper,int) with 1 as button number.
+	 * This way the trigger and first action button are interactions and the second
+	 * button is the menu.
 	 */
 	public static func void addDefaultBindings(DefaultBindingHelper helper)
+		addDefaultBindings(helper, 0)
+	end
+	
+	/**
+	 * \brief Add default bindings for commands.
+	 * \version 1.28
+	 * 
+	 * Adds bindings for these commands if present in binding manager:
+	 * - "menuRight"
+	 * - "menuLeft"
+	 * 
+	 * \note
+	 * 
+	 * If you use also \ref CommandsBAAInteract use 1 as button number. This way the trigger
+	 * and first action button are interactions and the second button is the menu.
+	 * 
+	 * \param helper Helper to add bindings to
+	 * \param button Number of action button to use. 0 is the first non-trigger button.
+	 */
+	public static func void addDefaultBindings(DefaultBindingHelper helper, int button)
 		if helper.hasVRHand(true)
-			helper.vrHandBindButton(true, 1, "menuRight")
+			helper.vrHandBindButton(true, InputDeviceButtonType.action, button, "menuRight")
 		end
 		
 		if helper.hasVRHand(false)
-			helper.vrHandBindButton(false, 1, "menuLeft")
+			helper.vrHandBindButton(false, InputDeviceButtonType.action, button, "menuLeft")
 		end
 	end
 end

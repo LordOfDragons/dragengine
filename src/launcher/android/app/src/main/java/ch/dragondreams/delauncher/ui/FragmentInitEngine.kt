@@ -67,6 +67,11 @@ class FragmentInitEngine : Fragment() {
                         t.hide(this@FragmentInitEngine)
                         t.commit()
                     }
+                    DragengineLauncher.State.Cancelled -> {
+                        labState?.text = resources.getString(R.string.lab_load_engine_cancelled)
+                        pbProgress?.visibility = View.INVISIBLE
+                        labProgress?.text = ""
+                    }
                     else -> {}
                 }
                 handler.postDelayed(this, 150)

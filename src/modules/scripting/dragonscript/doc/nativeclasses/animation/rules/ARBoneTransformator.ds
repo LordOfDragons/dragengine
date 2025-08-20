@@ -17,7 +17,7 @@ class ARBoneTransformator extends AnimatorRule
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create animator rule. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -26,69 +26,69 @@ class ARBoneTransformator extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable position modification. */
-	public func void setEnablePosition( bool enabled )
+	func void setEnablePosition( bool enabled )
 	end
 	
 	/** \brief Enable orientation modification. */
-	public func void setEnableOrientation( bool enabled )
+	func void setEnableOrientation( bool enabled )
 	end
 	
 	/** \brief Enable size modification. */
-	public func void setEnableSize( bool enabled )
+	func void setEnableSize( bool enabled )
 	end
 	
 	
 	
 	/** \brief Set minimum translation value. */
-	public func void setMinimumTranslation( Vector translation )
+	func void setMinimumTranslation( Vector translation )
 	end
 	
 	/** \brief Set maximum translation value. */
-	public func void setMaximumTranslation( Vector translation )
+	func void setMaximumTranslation( Vector translation )
 	end
 	
 	/** \brief Set minimum rotation value. */
-	public func void setMinimumRotation( Vector rotation )
+	func void setMinimumRotation( Vector rotation )
 	end
 	
 	/** \brief Set maximum rotation value. */
-	public func void setMaximumRotation( Vector rotation )
+	func void setMaximumRotation( Vector rotation )
 	end
 	
 	/** \brief Set minimum scaleing value. */
-	public func void setMinimumScaling( Vector scaling )
+	func void setMinimumScaling( Vector scaling )
 	end
 	
 	/** \brief Set maximum scaling value. */
-	public func void setMaximumScaling( Vector scaling )
+	func void setMaximumScaling( Vector scaling )
 	end
 	
 	/**
 	 * \brief Set rotation axis.
 	 * \version 1.6
 	 */
-	public func void setAxis( Vector axis )
+	func void setAxis( Vector axis )
 	end
 	
 	/**
 	 * \brief Set minimum axis rotation angle.
 	 * \version 1.6
 	 */
-	public func void setMinimumAngle( float angle )
+	func void setMinimumAngle( float angle )
 	end
 	
 	/**
 	 * \brief Set maximum axis rotation angle.
 	 * \version 1.6
 	 */
-	public func void setMaximumAngle( float angle )
+	func void setMaximumAngle( float angle )
 	end
 	
 	/**
 	 * \brief Use rotation axis instead of rotation directly.
 	 * \version 1.6
 	 */
-	public func void setUseAxis( bool useAxis )
+	func void setUseAxis( bool useAxis )
 	end
 	
 	
@@ -97,11 +97,27 @@ class ARBoneTransformator extends AnimatorRule
 	 * \brief Set coordinate frame.
 	 * \throws EInvalidParam \em coordinateFrame is an invalid value.
 	 */
-	public func void setCoordinateFrame( ARBoneTransformatorCFrame coordinateFrame )
+	func void setCoordinateFrame( ARBoneTransformatorCFrame coordinateFrame )
 	end
 	
 	/** \brief Set target bone or empty string if not set. */
-	public func void setTargetBone( String bone )
+	func void setTargetBone( String bone )
+	end
+	
+	
+	
+	/**
+	 * \brief Name of the input bone.
+	 * \version 1.28
+	 */
+	func void setInputBone(String bone)
+	end
+	
+	/**
+	 * \brief Set input source.
+	 * \throws EInvalidParam \em source is an invalid value.
+	 */
+	func void setInputSource(ARBoneTransformatorInputSource source)
 	end
 	
 	
@@ -110,14 +126,14 @@ class ARBoneTransformator extends AnimatorRule
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( ARBoneTransformatorTarget target, int link )
+	func void targetAddLink( ARBoneTransformatorTarget target, int link )
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( ARBoneTransformatorTarget target )
+	func void targetRemoveAllLinks( ARBoneTransformatorTarget target )
 	end
 	/*@}*/
 end

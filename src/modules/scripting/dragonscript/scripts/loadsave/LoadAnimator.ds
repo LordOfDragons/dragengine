@@ -490,6 +490,20 @@ class LoadAnimator extends BaseXmlLoader
 			elif tagName.equals("maximumAngle")
 				rule.setMaximumAngle(element.getFirstCDataFloat())
 				
+			elif tagName.equals("inputBone")
+				rule.setInputBone(element.getFirstCData())
+				
+			elif tagName.equals("inputSource")
+				var ARBoneTransformatorInputSource source =\
+					ARBoneTransformatorInputSource.named(element.getFirstCData())
+				if source != null
+					rule.setInputSource(source)
+					
+				else
+					logInvalidValue(element, element.getFirstCData())
+					throw EInvalidParam.new()
+				end
+				
 			elif tagName.equals("target")
 				var ARBoneTransformatorTarget target = ARBoneTransformatorTarget.named(element.getAttributeNamed("name"))
 				if target != null

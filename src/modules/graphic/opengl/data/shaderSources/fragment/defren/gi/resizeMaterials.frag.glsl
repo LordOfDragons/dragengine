@@ -1,11 +1,13 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
-uniform lowp sampler2D texDiffuse;
-uniform lowp sampler2D texReflectivity;
-uniform mediump sampler2D texEmissivity;
+layout(binding=0) uniform lowp sampler2D texDiffuse;
+layout(binding=1) uniform lowp sampler2D texReflectivity;
+layout(binding=2) uniform mediump sampler2D texEmissivity;
 
-in vec2 vTexCoord;
+#include "shared/interface/2d/fragment.glsl"
 
 layout(location=0) out vec4 outDiffuse;
 layout(location=1) out vec4 outReflectivity;

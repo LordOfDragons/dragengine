@@ -222,6 +222,13 @@ class SimpleConversationAction
 		
 		/** \brief Explicitely end actor speak. */
 		endActorSpeak
+		
+		/**
+		 * \brief Align to time in seconds since beginning of snippet.
+		 * 
+		 * Uses getTime() as time in seconds.
+		 */
+		time
 	end
 	
 	/** \brief Condition. */
@@ -281,10 +288,11 @@ class SimpleConversationAction
 	var UnicodeString pText, pAnimText
 	var String pName, pSound
 	var int pValue, pRandom
-	var float pDelay, pDuration
+	var float pDelay, pDuration, pTime
 	var WaitMode pWaitMode
 	var Enumeration pMode
 	var SimpleConversationCondition pCondition
+	var bool pCreateSideLane
 	
 	
 	/** \brief Create simple conversation action. */
@@ -308,8 +316,10 @@ class SimpleConversationAction
 		pRandom = action.pRandom
 		pDelay = action.pDelay
 		pDuration = action.pDuration
+		pTime = action.pTime
 		pWaitMode = action.pWaitMode
 		pMode = action.pMode
+		pCreateSideLane = action.pCreateSideLane
 		if action.pCondition != null
 			pCondition = SimpleConversationCondition.new(action.pCondition)
 		end
@@ -504,6 +514,24 @@ class SimpleConversationAction
 	end
 	
 	/**
+	 * \brief Time in seconds.
+	 * 
+	 * - \ref Type#time: Time to align to.
+	 * - other types: Not used and is 0
+	 */
+	func float getTime()
+		return pTime
+	end
+	
+	/**
+	 * \brief Set time in seconds.
+	 * \see #getTime()
+	 */
+	func void setTime(float time)
+		pTime = DEMath.max(time, 0.0)
+	end
+	
+	/**
 	 * \brief Wait mode.
 	 * 
 	 * - \ref Type#changeWaitMode: Wait mode to set.
@@ -576,5 +604,23 @@ class SimpleConversationAction
 	 */
 	func void setSound(String sound)
 		pSound = sound
+	end
+	
+	/**
+	 * \brief Create side lane.
+	 * 
+	 * - \ref Type#snippet: If true create side lane.
+	 * - other types: Not used and is false
+	 */
+	func bool getCreateSideLane()
+		return pCreateSideLane
+	end
+	
+	/**
+	 * \brief Set create side lane.
+	 * \see #getCreateSideLane()
+	 */
+	func void setCreateSideLane(bool createSideLane)
+		pCreateSideLane = createSideLane
 	end
 end

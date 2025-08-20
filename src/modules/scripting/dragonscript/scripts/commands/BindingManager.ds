@@ -39,11 +39,8 @@ namespace Dragengine.Commands
  * After creating the binding manager has updated the internal data structures already.
  */
 class BindingManager
-	var Array pAxisBindings
-	var Array pButtonBindings
-	var Array pDevices
-	var Array pListeners
-	
+	var Array pAxisBindings, pButtonBindings, pDevices, pListeners
+	var InputDevice pMouse, pKeyboard, pVRHMD, pVRLeftHand, pVRRightHand
 	
 	
 	/** \brief Create binding manager. */
@@ -66,7 +63,6 @@ class BindingManager
 		end)
 		pDevices = Array.new(bindingManager.pDevices)
 	end
-	
 	
 	
 	/**
@@ -232,7 +228,6 @@ class BindingManager
 	end
 	
 	
-	
 	/** \brief Number of button bindings. */
 	func int getButtonBindingCount()
 		return pButtonBindings.getCount()
@@ -325,7 +320,6 @@ class BindingManager
 	end
 	
 	
-	
 	/** \brief Remove all bindings with command. */
 	func void removeBindingsWithCommand(Command command)
 		pAxisBindings.collect(block Binding each
@@ -340,7 +334,6 @@ class BindingManager
 			removeButtonBinding(each)
 		end)
 	end
-	
 	
 	
 	/** \brief Number of input devices. */
@@ -374,7 +367,6 @@ class BindingManager
 	func Array collectDevices(Block ablock)
 		return pDevices.collect(ablock)
 	end
-	
 	
 	
 	/**
@@ -485,6 +477,7 @@ class BindingManager
 			pDevices.add(VRSystem.getDeviceAt(i))
 		end
 		
+		findDefaultDevices()
 		updateAllBindingIndices()
 		
 		pListeners.forEach(block BindingManagerListener each
@@ -492,6 +485,83 @@ class BindingManager
 		end)
 	end
 	
+	
+	/**
+	 * \brief Default mouse device or null.
+	 * \version 1.28
+	 */
+	func InputDevice getMouse()
+		return pMouse
+	end
+	
+	/**
+	 * \brief Default keyboard device or null.
+	 * \version 1.28
+	 */
+	func InputDevice getKeyboard()
+		return pKeyboard
+	end
+	
+	/**
+	 * \brief Default VR HMD device or null.
+	 * \version 1.28
+	 */
+	func InputDevice getVRHMD()
+		return pVRHMD
+	end
+	
+	/**
+	 * \brief Default VR Right Hand device or null.
+	 * \version 1.28
+	 */
+	func InputDevice getVRRightHand()
+		return pVRRightHand
+	end
+	
+	/**
+	 * \brief Default VR Left Hand device or null.
+	 * \version 1.28
+	 */
+	func InputDevice getVRLeftHand()
+		return pVRLeftHand
+	end
+	
+	/**
+	 * \brief Find default devices for quick access.
+	 * \version 1.28
+	 */
+	protected func void findDefaultDevices()
+		pMouse = pKeyboard = pVRHMD = pVRRightHand = pVRLeftHand = null
+		
+		pDevices.forEach(block InputDevice each
+			select each.getType()
+			case InputDeviceType.mouse
+				if pMouse == null
+					pMouse = each
+				end
+				
+			case InputDeviceType.keyboard
+				if pKeyboard == null
+					pKeyboard = each
+				end
+				
+			case InputDeviceType.vrHMD
+				if pVRHMD == null
+					pVRHMD = each
+				end
+				
+			case InputDeviceType.vrLeftHand
+				if pVRLeftHand == null
+					pVRLeftHand = each
+				end
+				
+			case InputDeviceType.vrRightHand
+				if pVRRightHand == null
+					pVRRightHand = each
+				end
+			end
+		end)
+	end
 	
 	
 	/**

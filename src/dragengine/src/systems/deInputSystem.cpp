@@ -128,6 +128,8 @@ bool deInputSystem::DropEvent(const deInputEvent& event) const{
 	case deInputEvent::eeButtonRelease:
 	case deInputEvent::eeButtonTouch:
 	case deInputEvent::eeButtonUntouch:
+	case deInputEvent::eeButtonApproach:
+	case deInputEvent::eeButtonWithdraw:
 		return true;
 		
 	case deInputEvent::eeDeviceAttached:

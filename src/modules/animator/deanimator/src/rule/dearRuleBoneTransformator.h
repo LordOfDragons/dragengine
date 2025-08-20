@@ -39,26 +39,16 @@ class dearRuleBoneTransformator : public dearRule{
 private:
 	const deAnimatorRuleBoneTransformator &pBoneTransformator;
 	
-	int pTargetBone;
+	int pTargetBone, pInputBone;
 	
-	dearControllerTarget pTargetTranslation;
-	dearControllerTarget pTargetRotation;
-	dearControllerTarget pTargetScaling;
+	dearControllerTarget pTargetTranslation, pTargetRotation, pTargetScaling;
 	
 	const deAnimatorRuleBoneTransformator::eCoordinateFrames pCoordinateFrame;
-	const bool pEnablePosition;
-	const bool pEnableOrientation;
-	const bool pEnableSize;
-	const bool pUseAxis;
-	const decVector pMinTranslation;
-	const decVector pMaxTranslation;
-	const decVector pMinRotation;
-	const decVector pMaxRotation;
-	const decVector pMinScaling;
-	const decVector pMaxScaling;
-	const decVector pAxis;
-	const float pMinAngle;
-	const float pMaxAngle;
+	const bool pEnablePosition, pEnableOrientation, pEnableSize, pUseAxis;
+	const decVector pMinTranslation, pMaxTranslation, pMinRotation, pMaxRotation;
+	const decVector pMinScaling, pMaxScaling, pAxis;
+	const float pMinAngle, pMaxAngle;
+	const deAnimatorRuleBoneTransformator::eInputSources pInputSource;
 	
 public:
 	/** \name Constructors and Destructors */

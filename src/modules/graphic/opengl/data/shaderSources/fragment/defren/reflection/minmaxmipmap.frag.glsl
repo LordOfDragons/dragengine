@@ -1,15 +1,17 @@
+#include "shared/preamble.glsl"
+
 precision HIGHP float;
 precision HIGHP int;
 
 #include "shared/ubo_defines.glsl"
 
-uniform ivec2 pTCClamp;
-uniform int pMipMapLevel;
-#ifdef SPLIT_VERSION
-	uniform int pSplitPos;
-#endif
+UNIFORM_BIND(3) uniform ivec2 pTCClamp;
+UNIFORM_BIND(4) uniform int pMipMapLevel;
 
-uniform HIGHP sampler2DArray texDepth;
+// SplitVersion
+UNIFORM_BIND(5) uniform int pSplitPos;
+
+layout(binding=0) uniform HIGHP sampler2DArray texDepth;
 
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 //
@@ -23,39 +25,28 @@ uniform HIGHP sampler2DArray texDepth;
 // 
 // NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
 
-#if defined GS_RENDER_STEREO || defined VS_RENDER_STEREO
-	flat in int vLayer;
-#else
-	const int vLayer = 0;
-#endif
+#include "shared/interface/2d/fragment.glsl"
 
 #include "shared/defren/sample_depth.glsl"
 
 const ivec4 tcScale = ivec4( 2 );
 const ivec4 tcOffset = ivec4( 0, 0, 1, 1 );
 
-#ifdef FUNC_MIN
-	#define FUNC min
-#elif defined FUNC_MAX
-	#define FUNC max
-#endif
-
 void main( void ){
 	ivec4 tc = ivec4( gl_FragCoord.xyxy );
+	bool splitUseRight;
 	
-	#ifdef SPLIT_VERSION
-		bool splitUseRight = ( tc.x >= pSplitPos );
-		#ifdef SPLIT_SHIFT_TC
-			if( splitUseRight ){
-				tc.xz -= ivec2( pSplitPos );
-			}
-		#endif
-	#endif
+	if(SplitVersion){
+		splitUseRight = tc.x >= pSplitPos;
+		if(SplitShiftTC && splitUseRight){
+			tc.xz -= ivec2(pSplitPos);
+		}
+	}
 	
 	tc = tc * tcScale + tcOffset; // s*2, t*2, s*2+1, t*2+1
-	#ifdef CLAMP_TC
-		tc = min( tc, pTCClamp.xyxy );
-	#endif
+	if(ClampTC){
+		tc = min(tc, pTCClamp.xyxy);
+	}
 	
 	vec4 depth;
 	depth.x = sampleDepth( texDepth, ivec3( tc.xy, vLayer ), pMipMapLevel ); // (s*2, t*2)
@@ -63,17 +54,12 @@ void main( void ){
 	depth.z = sampleDepth( texDepth, ivec3( tc.xw, vLayer ), pMipMapLevel ); // (s*2, t*2+1)
 	depth.w = sampleDepth( texDepth, ivec3( tc.zw, vLayer ), pMipMapLevel ); // (s*2+1, t*2+1)
 	
-	#ifdef SPLIT_VERSION
-		if( splitUseRight ){
-			depth.xy = max( depth.xy, depth.zw );
-			gl_FragDepth = max( depth.x, depth.y );
-			
-		}else{
-			depth.xy = min( depth.xy, depth.zw );
-			gl_FragDepth = min( depth.x, depth.y );
-		}
-	#else
-		depth.xy = FUNC( depth.xy, depth.zw );
-		gl_FragDepth = FUNC( depth.x, depth.y );
-	#endif
+	if(SplitVersion ? !splitUseRight : UseMinFunction){
+		depth.xy = min(depth.xy, depth.zw);
+		gl_FragDepth = min(depth.x, depth.y);
+		
+	}else{
+		depth.xy = max(depth.xy, depth.zw);
+		gl_FragDepth = max(depth.x, depth.y);
+	}
 }
