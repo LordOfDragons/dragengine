@@ -13,4 +13,6 @@
 	-->
 	
 	<define>VS_RENDER_LAYER</define>
+	<define>RENDER_PASS</define>
+	<define>SPLIT_LAYERS</define>
 </shaderSource>
