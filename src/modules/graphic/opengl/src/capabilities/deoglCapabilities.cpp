@@ -55,6 +55,7 @@ pFormats( *this ),
 pMaxTextureSize( 1024 ),
 pMax3DTextureSize( 1024 ),
 pMaxDrawBuffers( 4 ),
+pMaxTextureImageUnits(32),
 pUBOMaxSize( 0 ),
 pTBOMaxSize( 0 ),
 pSSBOMaxSize( 0 ),
@@ -172,6 +173,9 @@ void deoglCapabilities::DetectCapabilities(){
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_BUFFER_SIZE, &resultsInt[ 0 ] ) );
 		pTBOMaxSize = ( int )resultsInt[ 0 ];
 		
+		OGL_CHECK(pRenderThread, glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &resultsInt[0]));
+		pMaxTextureImageUnits = (int)resultsInt[0];
+		
 		if(ext.GetHasExtension(deoglExtensions::ext_ARB_shader_storage_buffer_object)
 		|| ext.GetGLESVersion() >= deoglExtensions::evgles3p1){
 			if( pglGetInteger64v ){
@@ -231,6 +235,7 @@ void deoglCapabilities::DetectCapabilities(){
 		logger.LogInfoFormat( "- TBO Maximum Size = %d", pTBOMaxSize );
 		logger.LogInfoFormat( "- SSBO Maximum Size = %d", pSSBOMaxSize );
 		logger.LogInfoFormat( "- Count program binary formats = %d", pNumProgramBinaryFormats );
+		logger.LogInfoFormat("- Maximum texture image units = %d", pMaxTextureImageUnits);
 		logger.LogInfo( "- SSBO Maximum Blocks Shader:" );
 		logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
 		logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );

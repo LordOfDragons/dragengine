@@ -45,5 +45,17 @@ vec4 textureVariationLod(in sampler2D tex2d, in sampler2DArray texarr, const in 
 	}
 }
 
-#define TEXTURE(s,tc) textureVariation(s, s##Array, tc)
-#define TEXTURE_LOD(s,tc,l) textureVariationLod(s, s##Array, tc, l)
+
+#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+	#ifdef WITH_VARIATION
+		#define TEXTURE(s,tc) texture(s##Array, tcTexVar(tc, textureSize(s##Array, 0).z))
+		#define TEXTURE_LOD(s,tc,l) textureLod(s##Array, tcTexVar(tc, textureSize(s##Array, 0).z), l)
+	#else
+		#define TEXTURE(s,tc) texture(s, tc)
+		#define TEXTURE_LOD(s,tc,l) textureLod(s, tc, l)
+	#endif
+	
+#else
+	#define TEXTURE(s,tc) textureVariation(s, s##Array, tc)
+	#define TEXTURE_LOD(s,tc,l) textureVariationLod(s, s##Array, tc, l)
+#endif

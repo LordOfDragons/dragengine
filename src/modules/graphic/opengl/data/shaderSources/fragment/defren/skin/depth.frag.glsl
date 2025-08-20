@@ -203,7 +203,7 @@ void main(void){
 		}
 	}
 	
-	vec3 emissivity;
+	vec3 emissivity = vec3(0.0);
 	if(WithEmissivity){
 		if(WithOutline){
 			emissivity = getOutlineEmissivity(vSPBIndex);
@@ -250,7 +250,7 @@ void main(void){
 	
 	// determine where the depth is coming from. this is different depending if projective depth is used or not
 	float fragmentDepth;
-	if(DepthOrthogonal || DepthDistance){
+	if(/*DepthOrthogonal ||*/ DepthDistance){
 		fragmentDepth = gl_FragDepth;
 		
 	}else{

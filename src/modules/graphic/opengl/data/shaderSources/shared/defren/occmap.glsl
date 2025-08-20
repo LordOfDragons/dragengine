@@ -16,10 +16,13 @@ UBOLAYOUT_BIND(0) uniform RenderParametersOccMap{
 };
 
 mat4 getMatrixVP(const in int index){
-	return WithShadowMap ? pMatrixVP[index] : pOMMatrixVP[index];
+	// mat4(x) is required due to buggy nVidia driver causing garbage to be read
+	return WithShadowMap ? mat4(pMatrixVP[index]) : mat4(pOMMatrixVP[index]);
 }
 mat4x3 getMatrixV(const in int index){
-	return WithShadowMap ? pMatrixV[index] : pOMMatrixV[index];
+	// mat4x3(x) is required due to buggy nVidia driver which incorrectly claims here
+	// invalid cast from mat3x4 to mat4x3
+	return WithShadowMap ? mat4x3(pMatrixV[index]) : mat4x3(pOMMatrixV[index]);
 }
 vec4 getTransformZ(const in int index){
 	return WithShadowMap ? vec4(0.0) : pOMTransformZ[index];

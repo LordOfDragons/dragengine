@@ -17,32 +17,28 @@
 #ifdef USE_SHEETS
 	// OpenGL requires these minimum limits: MaxVertices=256, MaxComponents=1024.
 	// the maximum number of components written per invocation is:
-	// - particle parameters: 23 components
+	// - particle parameters: 49 components
 	// - opengl internal parameters: 6 components (gl_Position, gl_Layer, gl_PrimitiveID)
-	// hence 29 components in total. this results in the maximum supported vertices of:
-	//   floor(MaxComponents / 29) = 35
+	// hence 55 components in total. this results in the maximum supported vertices of:
+	//   floor(MaxComponents / 55) = 18
 	// since 4 vertices are required for a full sheet the maximum number of sheets is:
-	//   floor(35 / 4) = 8
-	// and thus maximum number of vertices 32 (8*4)
+	//   floor(18 / 4) = 4
+	// and thus maximum number of vertices 16 (4*4)
 	//
-	// this calculation is now more complicated. right now the maximum count of possible
-	// particle parameters is 43. combined with the opengl internal parameters this yields
-	// 49 components. this gives a maximum of floor(MaxComponents / 49) = 20 vertices.
-	// with 4 vertices per sheet this yields floor(20 / 4) = 5. hence the maximum count
-	// of sheets is 5 and the maximum count of vertices 20
+	// hence the maximum count of sheets is 4 and the maximum count of vertices 16
 	//
 	// this problem can be solved by moving the calculation of vertices in the beam into
 	// a compute shader filling a VBO. this way all kinds of sheet counts can be done
 	// without even needing a geometry shader to begin with.
 	#if LAYERED_RENDERING_STEREO
 		#ifdef GS_INSTANCING
-			layout(triangle_strip, max_vertices=20) out;
+			layout(triangle_strip, max_vertices=16) out;
 		#else
-			layout(triangle_strip, max_vertices=40) out;
+			layout(triangle_strip, max_vertices=32) out;
 		#endif
 		
 	#else
-		layout(triangle_strip, max_vertices=20) out;
+		layout(triangle_strip, max_vertices=16) out;
 	#endif
 	
 #else

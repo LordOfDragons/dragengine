@@ -42,7 +42,7 @@ void emitParticle(in int layer, in mat2 rotmat, in vec3 normal, in vec3 tangent,
 		
 		gl_Position = pMatrixP[layer] * position;
 		
-		geometryShaderDefaultOutputs(i, layer);
+		geometryShaderDefaultOutputs(0, layer);
 		
 		vReflectDir = vec3(position);
 		vFadeZ = position.z;
@@ -100,7 +100,7 @@ void main(void){
 		
 		gl_Position = pMatrixP[layer] * position;
 		
-		geometryShaderDefaultOutputs(i, layer);
+		geometryShaderDefaultOutputs(0, layer);
 		
 		vTCColor = tc[i];
 		vTCColorTintMask = tc[i];

@@ -872,6 +872,7 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition( const char *directive,
 	// (condition)
 	// number
 	// condition1 == number
+	// condition1 != number
 	sToken token;
 	bool result = false;
 	bool negate = false;
@@ -1215,7 +1216,7 @@ deoglShaderPreprocessor::eDirectiveTokens deoglShaderPreprocessor::pParseDirecti
 				token.length = 2;
 				token.line = pInputLine;
 				token.type = edtNotEquals;
-				return edtEquals;
+				return edtNotEquals;
 				
 			}else if( *pInputNext == '!' ){
 				token.begin = pInputNext++;

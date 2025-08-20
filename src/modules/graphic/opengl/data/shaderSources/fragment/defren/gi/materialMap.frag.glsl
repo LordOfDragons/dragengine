@@ -40,7 +40,17 @@ vec4 textureVariation(in sampler2D tex2d, in sampler2DArray texarr, const in vec
 	}
 }
 
-#define TEXTURE(s,tc) textureVariation(s, s##Array, tc)
+#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+	#ifdef WITH_VARIATION
+		#define TEXTURE(s,tc) textureLod(s##Array, vec3(tc, 0.0), 0.0)
+	#else
+		#define TEXTURE(s,tc) textureLod(s, tc, 0.0)
+	#endif
+	
+#else
+	#define TEXTURE(s,tc) textureVariation(s, s##Array, tc)
+#endif
+
 
 void main( void ){
 	vec3 nonpbrAlbedo;
@@ -127,7 +137,7 @@ void main( void ){
 	
 	// environment room replaces the diffuse component.
 	// since we have no direction here we use the back face
-	float envRoomMask;
+	float envRoomMask = 1.0;
 	vec3 envRoomDir;
 	
 	if(TextureEnvRoom || TextureEnvRoomEmissivity){

@@ -28,17 +28,91 @@ const bool CastShadows = HasShadows && LightMode != LightModeParticle;
 
 const bool UseArrayForm = LightMode == LightModeSky && !GIRay;
 
+#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+	#if LIGHT_MODE == 3 && ! defined GI_RAY
+		#define USE_ARRAY_FORM
+	#endif
+#endif
+
 
 // Samplers
 /////////////
 
 // see deoglLightShader::UpdateTextureTargets()
 
+#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+	#if SHADOW1_MODE == 1
+		#define RCS1C(e) e;
+		#define RCS1A(e)
+		#define RCS1R(e)
+	#elif defined USE_ARRAY_FORM
+		#define RCS1C(e)
+		#define RCS1A(e) e;
+		#define RCS1R(e)
+	#else
+		#define RCS1C(e)
+		#define RCS1A(e)
+		#define RCS1R(e) e;
+	#endif
+	
+	#if SHADOW2_MODE == 1
+		#define RCS2C(e) e;
+		#define RCS2A(e)
+		#define RCS2R(e)
+	#elif defined USE_ARRAY_FORM
+		#define RCS2C(e)
+		#define RCS2A(e) e;
+		#define RCS2R(e)
+	#else
+		#define RCS2C(e)
+		#define RCS2A(e)
+		#define RCS2R(e) e;
+	#endif
+	
+	#if TEXTURE_LIGHT_COLOR == 1
+		#define RCTLCR(e) e;
+		#define RCTLCC(e)
+		#define RCTLCE(e)
+	#elif TEXTURE_LIGHT_COLOR == 2
+		#define RCTLCR(e)
+		#define RCTLCC(e) e;
+		#define RCTLCE(e)
+	#elif TEXTURE_LIGHT_COLOR == 3
+		#define RCTLCR(e)
+		#define RCTLCC(e)
+		#define RCTLCE(e) e;
+	#else
+		#define RCTLCR(e)
+		#define RCTLCC(e)
+		#define RCTLCE(e)
+	#endif
+	
+#else
+	#define RCS1C(e) e;
+	#define RCS1A(e) e;
+	#define RCS1R(e) e;
+	
+	#define RCS2C(e) e;
+	#define RCS2A(e) e;
+	#define RCS2R(e) e;
+	
+	#define RCTLCR(e) e;
+	#define RCTLCC(e) e;
+	#define RCTLCE(e) e;
+#endif
+
 // GIRay
-layout(binding=0) uniform HIGHP sampler2D texGIPosition;
-layout(binding=1) uniform lowp sampler2D texGIDiffuse;
-layout(binding=2) uniform lowp sampler2D texGINormal;
-layout(binding=3) uniform lowp sampler2D texGIReflectivity; // reflectivity.rgb, roughness
+#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && ! defined GI_RAY
+	#define texGIPosition texShadowNoise
+	#define texGIDiffuse texShadowNoise
+	#define texGINormal texShadowNoise
+	#define texGIReflectivity texShadowNoise
+#else
+	layout(binding=0) uniform HIGHP sampler2D texGIPosition;
+	layout(binding=1) uniform lowp sampler2D texGIDiffuse;
+	layout(binding=2) uniform lowp sampler2D texGINormal;
+	layout(binding=3) uniform lowp sampler2D texGIReflectivity; // reflectivity.rgb, roughness
+#endif
 
 // !GIRay
 layout(binding=0) uniform HIGHP sampler2DArray texDepth;
@@ -52,57 +126,57 @@ layout(binding=5) uniform lowp sampler2DArray texAOSolidity;
 layout(binding=6) uniform HIGHP sampler2DArray texSubSurface;
 
 // WithSubsurface && TextureShadow1Solid
-layout(binding=7) uniform HIGHP sampler2D texLightDepth1;
-layout(binding=7) uniform HIGHP sampler2DArray texLightDepth1Array;
-layout(binding=7) uniform HIGHP samplerCube texLightDepth1Cube;
+RCS1R(layout(binding=7) uniform HIGHP sampler2D texLightDepth1)
+RCS1A(layout(binding=7) uniform HIGHP sampler2DArray texLightDepth1Array)
+RCS1C(layout(binding=7) uniform HIGHP samplerCube texLightDepth1Cube)
 
 // WithSubsurface && TextureShadow2Solid
-layout(binding=8) uniform HIGHP sampler2D texLightDepth2;
-layout(binding=8) uniform HIGHP sampler2DArray texLightDepth2Array;
-layout(binding=8) uniform HIGHP samplerCube texLightDepth2Cube;
+RCS2R(layout(binding=8) uniform HIGHP sampler2D texLightDepth2)
+RCS2A(layout(binding=8) uniform HIGHP sampler2DArray texLightDepth2Array)
+RCS2C(layout(binding=8) uniform HIGHP samplerCube texLightDepth2Cube)
 
 // TextureLightColor
-layout(binding=9) uniform lowp sampler2D texColor;
-layout(binding=9) uniform lowp samplerCube texColorCubemap;
-layout(binding=9) uniform lowp sampler2D texColorEquirect;
+RCTLCR(layout(binding=9) uniform lowp sampler2D texColor)
+RCTLCC(layout(binding=9) uniform lowp samplerCube texColorCubemap)
+RCTLCE(layout(binding=9) uniform lowp sampler2D texColorEquirect)
 
 // TextureShadow1Solid
-layout(binding=11) uniform HIGHP sampler2DShadow texShadow1SolidDepth;
-layout(binding=11) uniform HIGHP sampler2DArrayShadow texShadow1SolidDepthArray;
-layout(binding=11) uniform HIGHP samplerCubeShadow texShadow1SolidDepthCube;
+RCS1R(layout(binding=11) uniform HIGHP sampler2DShadow texShadow1SolidDepth)
+RCS1A(layout(binding=11) uniform HIGHP sampler2DArrayShadow texShadow1SolidDepthArray)
+RCS1C(layout(binding=11) uniform HIGHP samplerCubeShadow texShadow1SolidDepthCube)
 
 // TextureShadow1Ambient
-layout(binding=12) uniform HIGHP sampler2DShadow texShadow1Ambient;
-layout(binding=12) uniform HIGHP sampler2DArrayShadow texShadow1AmbientArray;
-layout(binding=12) uniform HIGHP samplerCubeShadow texShadow1AmbientCube;
+RCS1R(layout(binding=12) uniform HIGHP sampler2DShadow texShadow1Ambient)
+RCS1A(layout(binding=12) uniform HIGHP sampler2DArrayShadow texShadow1AmbientArray)
+RCS1C(layout(binding=12) uniform HIGHP samplerCubeShadow texShadow1AmbientCube)
 
 // TextureShadow2Solid
-layout(binding=13) uniform HIGHP sampler2DShadow texShadow2SolidDepth;
-layout(binding=13) uniform HIGHP sampler2DArrayShadow texShadow2SolidDepthArray;
-layout(binding=13) uniform HIGHP samplerCubeShadow texShadow2SolidDepthCube;
+RCS2R(layout(binding=13) uniform HIGHP sampler2DShadow texShadow2SolidDepth)
+RCS2A(layout(binding=13) uniform HIGHP sampler2DArrayShadow texShadow2SolidDepthArray)
+RCS2C(layout(binding=13) uniform HIGHP samplerCubeShadow texShadow2SolidDepthCube)
 
 // TextureShadow2Ambient
-layout(binding=14) uniform HIGHP sampler2DShadow texShadow2Ambient;
-layout(binding=14) uniform HIGHP sampler2DArrayShadow texShadow2AmbientArray;
-layout(binding=14) uniform HIGHP samplerCubeShadow texShadow2AmbientCube;
+RCS2R(layout(binding=14) uniform HIGHP sampler2DShadow texShadow2Ambient)
+RCS2A(layout(binding=14) uniform HIGHP sampler2DArrayShadow texShadow2AmbientArray)
+RCS2C(layout(binding=14) uniform HIGHP samplerCubeShadow texShadow2AmbientCube)
 
 // TextureShadow1Transparent
-layout(binding=15) uniform HIGHP sampler2DShadow texShadow1TransparentDepth;
-layout(binding=15) uniform HIGHP sampler2DArrayShadow texShadow1TransparentDepthArray;
-layout(binding=15) uniform HIGHP samplerCubeShadow texShadow1TransparentDepthCube;
+RCS1R(layout(binding=15) uniform HIGHP sampler2DShadow texShadow1TransparentDepth)
+RCS1A(layout(binding=15) uniform HIGHP sampler2DArrayShadow texShadow1TransparentDepthArray)
+RCS1C(layout(binding=15) uniform HIGHP samplerCubeShadow texShadow1TransparentDepthCube)
 
 // TextureShadow1Transparent
-layout(binding=16) uniform lowp sampler2D texShadow1TransparentColor;
-layout(binding=16) uniform lowp samplerCube texShadow1TransparentColorCube;
+RCS1R(layout(binding=16) uniform lowp sampler2D texShadow1TransparentColor)
+RCS1C(layout(binding=16) uniform lowp samplerCube texShadow1TransparentColorCube)
 
 // TextureShadow2Transparent
-layout(binding=17) uniform HIGHP sampler2DShadow texShadow2TransparentDepth;
-layout(binding=17) uniform HIGHP sampler2DArrayShadow texShadow2TransparentDepthArray;
-layout(binding=17) uniform HIGHP samplerCubeShadow texShadow2TransparentDepthCube;
+RCS2R(layout(binding=17) uniform HIGHP sampler2DShadow texShadow2TransparentDepth)
+RCS2A(layout(binding=17) uniform HIGHP sampler2DArrayShadow texShadow2TransparentDepthArray)
+RCS2C(layout(binding=17) uniform HIGHP samplerCubeShadow texShadow2TransparentDepthCube)
 
 // TextureShadow2Transparent
-layout(binding=18) uniform lowp sampler2D texShadow2TransparentColor;
-layout(binding=18) uniform lowp samplerCube texShadow2TransparentColorCube;
+RCS2R(layout(binding=18) uniform lowp sampler2D texShadow2TransparentColor)
+RCS2C(layout(binding=18) uniform lowp samplerCube texShadow2TransparentColorCube)
 
 // NoiseTap
 layout(binding=19) uniform lowp sampler2D texShadowNoise;
@@ -197,54 +271,138 @@ in ARG_SAMP_HIGHP sampler2DArrayShadow texsmarr, in vec3 params, in vec4 positio
 
 
 float evalShadow1SolidDepth(in vec3 params, in vec4 position){
-	return evalShadowMap(texShadow1SolidDepth, texShadow1SolidDepthArray, params, position);
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW1_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow1SolidDepthArray, params, position);
+		#else
+			return evalShadowMap(texShadow1SolidDepth, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow1SolidDepth, texShadow1SolidDepthArray, params, position);
+	#endif
 }
 
 float evalShadow1TransparentDepth(in vec3 params, in vec4 position){
-	return evalShadowMap(texShadow1TransparentDepth, texShadow1TransparentDepthArray, params, position);
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW1_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow1TransparentDepthArray, params, position);
+		#else
+			return evalShadowMap(texShadow1TransparentDepth, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow1TransparentDepth, texShadow1TransparentDepthArray, params, position);
+	#endif
 }
 
 float evalShadow1Ambient(in vec3 params, in vec4 position){
-	return evalShadowMap(texShadow1Ambient, texShadow1AmbientArray, params, position);
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW1_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow1AmbientArray, params, position);
+		#else
+			return evalShadowMap(texShadow1Ambient, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow1Ambient, texShadow1AmbientArray, params, position);
+	#endif
 }
 
 
 float evalShadow1SolidDepthCube(in vec3 params, in vec4 position){
-	return evalShadowCube(texShadow1SolidDepthCube, params, position);
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW1_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow1SolidDepthCube, params, position);
+	#endif
 }
 
 float evalShadow1TransparentDepthCube(in vec3 params, in vec4 position){
-	return evalShadowCube(texShadow1TransparentDepthCube, params, position);
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW1_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow1TransparentDepthCube, params, position);
+	#endif
 }
 
 float evalShadow1AmbientCube(in vec3 params, in vec4 position){
-	return evalShadowCube(texShadow1AmbientCube, params, position);
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW1_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow1AmbientCube, params, position);
+	#endif
 }
 
 
 float evalShadow2SolidDepth(in vec3 params, in vec4 position){
-	return evalShadowMap(texShadow2SolidDepth, texShadow2SolidDepthArray, params, position);
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW2_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow2SolidDepthArray, params, position);
+		#else
+			return evalShadowMap(texShadow2SolidDepth, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow2SolidDepth, texShadow2SolidDepthArray, params, position);
+	#endif
 }
 
 float evalShadow2TransparentDepth(in vec3 params, in vec4 position){
-	return evalShadowMap(texShadow2TransparentDepth, texShadow2TransparentDepthArray, params, position);
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW2_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow2TransparentDepthArray, params, position);
+		#else
+			return evalShadowMap(texShadow2TransparentDepth, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow2TransparentDepth, texShadow2TransparentDepthArray, params, position);
+	#endif
 }
 
 float evalShadow2Ambient(in vec3 params, in vec4 position){
-	return evalShadowMap(texShadow2Ambient, texShadow2AmbientArray, params, position);
+	#ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
+		#if SHADOW2_MODE == 1
+			return 1.0;
+		#elif defined USE_ARRAY_FORM
+			return evalShadowMapArray(texShadow2AmbientArray, params, position);
+		#else
+			return evalShadowMap(texShadow2Ambient, params, vec3(position));
+		#endif
+	#else
+		return evalShadowMap(texShadow2Ambient, texShadow2AmbientArray, params, position);
+	#endif
 }
 
 
 float evalShadow2SolidDepthCube(in vec3 params, in vec4 position){
-	return evalShadowCube(texShadow2SolidDepthCube, params, position);
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW2_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow2SolidDepthCube, params, position);
+	#endif
 }
 
 float evalShadow2TransparentDepthCube(in vec3 params, in vec4 position){
-	return evalShadowCube(texShadow2TransparentDepthCube, params, position);
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW2_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow2TransparentDepthCube, params, position);
+	#endif
 }
 
 float evalShadow2AmbientCube(in vec3 params, in vec4 position){
-	return evalShadowCube(texShadow2AmbientCube, params, position);
+	#if defined NVIDIA_SAMPLER_COUNT_WORKAROUND && SHADOW2_MODE != 1
+		return 1.0f;
+	#else
+		return evalShadowCube(texShadow2AmbientCube, params, position);
+	#endif
 }
 
 
@@ -476,25 +634,25 @@ void main(void){
 		if(CastShadows){
 			if(TextureShadow1Solid){
 				if(Shadow1Mode == ShadowModeCube){
-					shadowThickness = shadowCubeThickness(texLightDepth1Cube, shapos1, pShadowDepthTransform.zw);
+					RCS1C(shadowThickness = shadowCubeThickness(texLightDepth1Cube, shapos1, pShadowDepthTransform.zw))
 					
 				}else if(UseArrayForm){
-					shadowThickness = shadowMapArrayThickness(texLightDepth1Array, thicknessShadowScale, shapos1);
+					RCS1A(shadowThickness = shadowMapArrayThickness(texLightDepth1Array, thicknessShadowScale, shapos1))
 					
 				}else{
-					shadowThickness = shadowMapThickness(texLightDepth1, vec3(shapos1), pShadowDepthTransform.zw);
+					RCS1R(shadowThickness = shadowMapThickness(texLightDepth1, vec3(shapos1), pShadowDepthTransform.zw))
 				}
 			}
 			
 			if(TextureShadow2Solid){
 				if(Shadow2Mode == ShadowModeCube){
-					shadowThickness = shadowCubeThickness(texLightDepth2Cube, shapos2, pShadowDepthTransform.zw);
+					RCS2C(shadowThickness = shadowCubeThickness(texLightDepth2Cube, shapos2, pShadowDepthTransform.zw))
 					
 				}else if(UseArrayForm){
-					shadowThickness = shadowMapArrayThickness(texLightDepth2Array, thicknessShadowScale, shapos2);
+					RCS2A(shadowThickness = shadowMapArrayThickness(texLightDepth2Array, thicknessShadowScale, shapos2))
 					
 				}else{
-					shadowThickness = shadowMapThickness(texLightDepth2, vec3(shapos2), pShadowDepthTransform.zw);
+					RCS2R(shadowThickness = shadowMapThickness(texLightDepth2, vec3(shapos2), pShadowDepthTransform.zw))
 				}
 			}
 		}
@@ -514,8 +672,7 @@ void main(void){
 		absorptionDot *= v;
 	}
 	
-	vec3 fullShadowColor;
-	vec3 shadowColor;
+	vec3 fullShadowColor = vec3(1.0), shadowColor = vec3(1.0);
 	
 	if(CastShadows){
 		// calculate the solid shadow value. we use a little trick to avoid shadow artifacts as well as
@@ -668,11 +825,11 @@ void main(void){
 				if(TextureShadow1Transparent){
 					if(Shadow1Mode == ShadowModeCube){
 						transpShadow = evalShadow1TransparentDepthCube(pShadow1Transparent, shapos1);
-						transpColor = textureLod(texShadow1TransparentColorCube, shapos1.stp, 0.0);
+						RCS1C(transpColor = textureLod(texShadow1TransparentColorCube, shapos1.stp, 0.0))
 						
 					}else{
 						transpShadow = evalShadow1TransparentDepth(pShadow1Transparent, shapos1);
-						transpColor = textureLod(texShadow1TransparentColor, shapos1.st, 0.0);
+						RCS1R(transpColor = textureLod(texShadow1TransparentColor, shapos1.st, 0.0))
 					}
 					shadowColor *= mix(vec3(1.0), transpColor.rgb, vec3((1.0 - transpShadow) * transpColor.a));
 				}
@@ -680,11 +837,11 @@ void main(void){
 				if(TextureShadow2Transparent){
 					if(Shadow2Mode == ShadowModeCube){
 						transpShadow = evalShadow2TransparentDepthCube(pShadow2Transparent, shapos2);
-						transpColor = textureLod(texShadow2TransparentColorCube, shapos2.stp, 0.0);
+						RCS2C(transpColor = textureLod(texShadow2TransparentColorCube, shapos2.stp, 0.0))
 						
 					}else{
 						transpShadow = evalShadow2TransparentDepth(pShadow2Transparent, shapos2);
-						transpColor = textureLod(texShadow2TransparentColor, shapos2.st, 0.0);
+						RCS2R(transpColor = textureLod(texShadow2TransparentColor, shapos2.st, 0.0))
 					}
 					shadowColor *= mix(vec3(1.0), transpColor.rgb, vec3((1.0 - transpShadow) * transpColor.a));
 				}
@@ -765,19 +922,19 @@ void main(void){
 		// stored upside down to fit opengl. we need to reverse the flipping to get it right
 		vec2 ltc = shapos1.st;
 		ltc.y = 1.0 - ltc.y;
-		lightColor *= pow(texture(texColor, ltc).rgb, vec3(pLightImageGamma));
+		RCTLCR(lightColor *= pow(texture(texColor, ltc).rgb, vec3(pLightImageGamma)))
 		
 	}else if(TextureLightColor == TextureLightColorCube){
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
 		vec3 ltc = normalize(pLightImageOmniMatrix[vLayer] * vec4(position, 1.0));
-		lightColor *= pow(texture(texColorCubemap, ltc).rgb, vec3(pLightImageGamma));
+		RCTLCC(lightColor *= pow(texture(texColorCubemap, ltc).rgb, vec3(pLightImageGamma)))
 		
 	}else if(TextureLightColor == TextureLightColorEquirect){
 		// the shadow matrix is world aligned but for the light image we need image aligned.
 		// this is stored in a separate matrix present only if a light image is used
 		vec2 ltc = equirectFromNormal(normalize(pLightImageOmniMatrix[vLayer] * vec4(position, 1.0)));
-		lightColor *= pow(texture(texColorEquirect, ltc).rgb, vec3(pLightImageGamma));
+		RCTLCE(lightColor *= pow(texture(texColorEquirect, ltc).rgb, vec3(pLightImageGamma)))
 	}
 	
 	// WithSubsurface

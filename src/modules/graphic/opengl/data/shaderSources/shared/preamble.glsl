@@ -226,6 +226,13 @@ layout(constant_id=169) const bool WithReflection = false;
 #define CT_COMPUTE_IN_SIZE_XY layout(local_size_x=LOCAL_SIZE_X, local_size_y=LOCAL_SIZE_Y) in;
 #define CT_COMPUTE_IN_SIZE_XYZ layout(local_size_x=LOCAL_SIZE_X, local_size_y=LOCAL_SIZE_Y, local_size_z=LOCAL_SIZE_Z) in;
 
+// nVidia has a problematic shader compiler which assigns and evaluates sampkers already
+// in the compile phase instead of the link phase as AMD does. this causes the maximum
+// sampler limit to be hit although after linking and dead code removal it would be clear
+// that the limit never can be reached. setting the symbol below enables a workaround for
+// this problem. it is safe to keep this enabled since it works also on the good AMD compiler
+#define NVIDIA_SAMPLER_COUNT_WORKAROUND
+
 #endif
 
 
@@ -262,8 +269,15 @@ NOTE: spir-v compilers are not affected by this bug only opengl drivers it seems
 #if defined LAYERED_RENDERING && ! defined VS_RENDER_LAYER
 	#define WITH_GEOMETRY_SHADER
 #endif
+#if GEOMETRY_MODE == 5 && ! defined WITH_GEOMETRY_SHADER
+	#define WITH_GEOMETRY_SHADER
+#endif
+#if LIGHT_MODE == 4 && ! defined WITH_GEOMETRY_SHADER
+	#define WITH_GEOMETRY_SHADER
+#endif
 
-const bool WithGeometryShader = LayeredRendering != LayeredRenderingNone && !VSRenderLayer;
+const bool WithGeometryShader = (LayeredRendering != LayeredRenderingNone && !VSRenderLayer)
+	|| GeometryMode == GeometryModeParticle;
 
 
 // #define TESSELLATION_MODE_LINEAR 1
