@@ -124,7 +124,7 @@ def dragonscriptBuild( target, source, env ):
 		script.append('install_name_tool -id "@rpath/libdscript.dylib" "{}" || exit 1'.format(target[0].abspath))
 	
 	# on haiku not all symlinks properly install. fix it
-	if env['OSBeOS']:
+	if env['OSBeOS'] and not buildStaticLinking:
 		script.append('cp -f src/scriptengine/build/libdscript.so.[0-9] ../lib')
 	
 	return 1 if os.system('\n'.join(script)) else None
