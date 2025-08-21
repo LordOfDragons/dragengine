@@ -827,6 +827,9 @@ void main(void){
 						transpShadow = evalShadow1TransparentDepthCube(pShadow1Transparent, shapos1);
 						RCS1C(transpColor = textureLod(texShadow1TransparentColorCube, shapos1.stp, 0.0))
 						
+					}else if(UseArrayForm){
+						transpColor = vec4(0.0);
+						
 					}else{
 						transpShadow = evalShadow1TransparentDepth(pShadow1Transparent, shapos1);
 						RCS1R(transpColor = textureLod(texShadow1TransparentColor, shapos1.st, 0.0))
@@ -838,6 +841,9 @@ void main(void){
 					if(Shadow2Mode == ShadowModeCube){
 						transpShadow = evalShadow2TransparentDepthCube(pShadow2Transparent, shapos2);
 						RCS2C(transpColor = textureLod(texShadow2TransparentColorCube, shapos2.stp, 0.0))
+						
+					}else if(UseArrayForm){
+						transpColor = vec4(0.0);
 						
 					}else{
 						transpShadow = evalShadow2TransparentDepth(pShadow2Transparent, shapos2);

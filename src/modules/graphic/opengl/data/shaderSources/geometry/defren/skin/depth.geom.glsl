@@ -152,7 +152,7 @@ void main(void){
 		// pMatrixVn
 		//    works similar to pMatrixV but needs transposed cRotFace to work like this:
 		//    
-		//       vNormal = normalize((vGSNormal[i] * pMatrixVn)
+		//       vNormal = normalize((vGSNormal(i) * pMatrixVn)
 		//          * cRotFaceN[gl_InvocationID]);
 		// 
 		// pMatrixVP

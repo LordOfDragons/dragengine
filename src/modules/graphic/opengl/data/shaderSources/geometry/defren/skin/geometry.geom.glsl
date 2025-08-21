@@ -29,11 +29,11 @@ void emitCorner(in int layer, in int corner, in vec4 position, in vec4 preTransf
 	
 	geometryShaderDefaultOutputs(corner, layer);
 	
-	vNormal = normalize(vGSNormal[corner] * pMatrixVn[layer]);
-	vTangent = normalize(vGSTangent[corner] * pMatrixVn[layer]);
+	vNormal = normalize(vGSNormal(corner) * pMatrixVn[layer]);
+	vTangent = normalize(vGSTangent(corner) * pMatrixVn[layer]);
 	vBitangent = normalize(vGSBitangent[corner] * pMatrixVn[layer]);
 	vReflectDir = pMatrixV[layer] * position;
-	vHTMask = vGSHTMask[corner];
+	vHTMask = vGSHTMask(corner);
 	
 	if(AnyKindBillboard){
 		vFadeZ = position.z;
