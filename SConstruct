@@ -272,6 +272,7 @@ params.Add(BoolVariable('build_image_webp3d_internal', 'Build WebP-3D Image Modu
 params.Add(BoolVariable('build_input_android_internal', 'Build Android Input Module as internal module', True))
 params.Add(BoolVariable('build_input_console_internal', 'Build Console Input Module as internal module', True))
 params.Add(BoolVariable('build_input_x_internal', 'Build X Input Module as internal module', True))
+params.Add(BoolVariable('build_input_beos_internal', 'Build BeOS Input Module as internal module', True))
 params.Add(BoolVariable('build_langpack_delangpack_internal', 'Build DELangPack Language Pack Module as internal module', True))
 params.Add(BoolVariable('build_model_demodel_internal', 'Build Drag[en]gine Model Model Module as internal module', True))
 params.Add(BoolVariable('build_network_basic_internal', 'Build Basic Network Module as internal module', True))
