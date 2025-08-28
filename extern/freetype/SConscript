@@ -99,6 +99,68 @@ def freetypeBuild(target, source, env):
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building FreeType')
 
+def freetypeBuildWasm(target, source, env):
+	buildDir = target[0].get_dir().up()
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	cmakeBuildDir = buildDir.Dir('build').abspath
+	if not os.path.isdir(cmakeBuildDir):
+		os.mkdir(cmakeBuildDir)
+	
+	deps = [parent_targets['lib_libpng']]
+	script = createScriptHeader(env, deps=deps)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
+	
+	cmdline = []
+	cmdline.append('emcmake')
+	cmdline.append('cmake')
+	cmdline.append('-G"Unix Makefiles"')
+	cmdline.append('-DFT_DISABLE_ZLIB=Off')
+	cmdline.append('-DFT_DISABLE_BZIP2=On')
+	cmdline.append('-DFT_DISABLE_PNG=Off')
+	cmdline.append('-DFT_DISABLE_HARFBUZZ=On')
+	cmdline.append('-DFT_DISABLE_BROTLI=On')
+	
+	cmdline.append('-DENABLE_SHARED=Off')
+	cmdline.append('-DENABLE_STATIC=On')
+	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
+	
+	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
+	if cmakeCFlags:
+		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
+	
+	cmdline.append('-DCMAKE_C_FLAGS="-fPIC"')
+	cmdline.append('-DCMAKE_C_FLAGS="-pthread"')
+	
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=True')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=True')
+	
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	# this is required otherwise depending on the platform the install
+	# directory is sometimes 'lib' and sometimes 'lib64' causing problems
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	cmdline.append('"{}"'.format(buildDir.Dir(srcdir).abspath))
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building FreeType')
+
 targets = [staticFileName if buildStaticLinking else libFileName]
 
 with open(envLibrary.File('header_file_list/freetype').srcnode().abspath, 'r') as f:
@@ -112,10 +174,17 @@ globFiles(envLibrary, os.path.join('patches', freetypeVersion),
 	'*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
-library = envLibrary.Command(targets, nodeArtifacts,
-	envLibrary.Action(freetypeBuild, 'Build FreeType library'))
+if envLibrary['platform_webwasm']:
+	library = envLibrary.Command(targets, nodeArtifacts,
+		envLibrary.Action(freetypeBuildWasm, 'Build FreeType library'))
+else:
+	library = envLibrary.Command(targets, nodeArtifacts,
+		envLibrary.Action(freetypeBuild, 'Build FreeType library'))
 
 envLibrary.Depends(library, envLibrary['PATCHES'])
+
+if envLibrary['platform_webwasm']:
+	envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_freetype', library)
 
