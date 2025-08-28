@@ -23,6 +23,7 @@
 // default outputs
 void vertexShaderDefaultOutputs(){
 	vLayer = 0;
+	vHTMask = 1.0;
 }
 
 

@@ -60,9 +60,6 @@
 
 ceConversationInfoBox::ceConversationInfoBox( ceConversation &conversation ) :
 pConversation( conversation ),
-
-pEngFont( NULL ),
-
 pBackgroundColor( 1.0f, 1.0f, 0.0f, 0.5f ),
 pTextColor( 1.0f, 1.0f, 1.0f, 1.0f ),
 pTextSize( 18 ),
@@ -93,17 +90,14 @@ ceConversationInfoBox::~ceConversationInfoBox(){
 // Management
 ///////////////
 
-void ceConversationInfoBox::SetPathFont( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pPathFont.Equals( path ) ){
+void ceConversationInfoBox::SetPathFont(const char *path){
+	if(pPathFont == path){
 		return;
 	}
 	
 	pPathFont = path;
 	pUpdateFont();
+	pUpdateFontSize();
 	UpdateCanvas();
 }
 
@@ -126,15 +120,14 @@ void ceConversationInfoBox::SetTextColor( const decColor &color ){
 }
 
 void ceConversationInfoBox::SetTextSize( int size ){
-	if( size < 1 ){
-		size = 1;
-	}
+	size = decMath::max(size, 1);
 	
-	if( size == pTextSize ){
+	if(size == pTextSize){
 		return;
 	}
 	
 	pTextSize = size;
+	pUpdateFontSize();
 	UpdateCanvas();
 }
 
@@ -260,32 +253,37 @@ void ceConversationInfoBox::pCleanUp(){
 	if( pCanvasView ){
 		pCanvasView->FreeReference();
 	}
-	
-	if( pEngFont ){
-		pEngFont->FreeReference();
-	}
 }
 
 
 
 void ceConversationInfoBox::pUpdateFont(){
-	deFont *font = NULL;
+	pEngFontSize = nullptr;
 	
 	try{
-		if( ! pPathFont.IsEmpty() ){
-			font = pConversation.GetEngine()->GetFontManager()->LoadFont( pPathFont.GetString(), "/" );
+		if(!pPathFont.IsEmpty()){
+			pEngFont.TakeOver(pConversation.GetEngine()->GetFontManager()->LoadFont(pPathFont, "/"));
+			
+		}else{
+			pEngFont = nullptr;
 		}
 		
-		if( pEngFont ){
-			pEngFont->FreeReference();
-		}
-		pEngFont = font;
+	}catch(const deException &e){
+		pConversation.GetLogger()->LogException(LOGSOURCE, e);
+	}
+}
+
+void ceConversationInfoBox::pUpdateFontSize(){
+	if(!pEngFont){
+		pEngFontSize = nullptr;
+		return;
+	}
+	
+	try{
+		pEngFontSize = pEngFont->PrepareSize(pTextSize);
 		
-	}catch( const deException &e ){
-		if( font ){
-			font->FreeReference();
-		}
-		pConversation.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pConversation.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }
 
@@ -296,45 +294,46 @@ void ceConversationInfoBox::pUpdateText(){
 	pWidth = pPadding * 2;
 	pHeight = pPadding * 2;
 	
-	if( pText.IsEmpty() || ! pEngFont ){
+	if(pText.IsEmpty() || !pEngFont){
 		return;
 	}
 	
 	decUTF8Decoder utf8Decoder;
-	utf8Decoder.SetString( pText );
+	utf8Decoder.SetString(pText);
 	
-	const float scale = ( float )pTextSize / ( float )pEngFont->GetLineHeight();
+	const float scale = (float)pTextSize / (float)(pEngFontSize
+		? pEngFontSize->GetLineHeight() : pEngFont->GetLineHeight());
 	const int textLength = utf8Decoder.GetLength();
 	int textHeight = 0;
 	int textWidth = 0;
 	int lineWidth = 0;
 	int lineStart = 0;
 	
-	while( utf8Decoder.GetPosition() < textLength ){
+	while(utf8Decoder.GetPosition() < textLength){
 		const int position = utf8Decoder.GetPosition();
 		const int character = utf8Decoder.DecodeNextCharacter();
-		if( character < 0 ){
+		if(character < 0){
 			continue; // invalid unicode character
 		}
 		
-		if( character == '\n' ){
-			pLayoutTexts.Add( pText.GetMiddle( lineStart, position ) );
-			pLayoutWidths.Add( lineWidth );
+		if(character == '\n'){
+			pLayoutTexts.Add(pText.GetMiddle(lineStart, position));
+			pLayoutWidths.Add(lineWidth);
 			textHeight += pTextSize;
 			lineWidth = 0;
 			lineStart = utf8Decoder.GetPosition();
 			
 		}else{
-			lineWidth += ( int )( ( float )pEngFont->GetGlyph( character ).GetWidth() * scale );
-			if( lineWidth > textWidth ){
+			lineWidth += (int)((float)pEngFont->GetGlyph(character, pEngFontSize).GetAdvance() * scale);
+			if(lineWidth > textWidth){
 				textWidth = lineWidth;
 			}
 		}
 	}
 	
-	if( lineStart < textLength ){
-		pLayoutTexts.Add( pText.GetMiddle( lineStart, textLength ) );
-		pLayoutWidths.Add( lineWidth );
+	if(lineStart < textLength){
+		pLayoutTexts.Add(pText.GetMiddle(lineStart, textLength));
+		pLayoutWidths.Add(lineWidth);
 		textHeight += pTextSize;
 	}
 	

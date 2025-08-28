@@ -83,7 +83,8 @@ enum eSPCanvas{
 	spcGamma,
 	spcClipRect,
 	spcTCClamp,
-	spcTCTransformMask
+	spcTCTransformMask,
+	spcTCLayer
 };
 
 
@@ -118,8 +119,13 @@ pActiveVAO( 0 )
 		sources = shaderManager.GetSourcesNamed("Canvas");
 		pCreatePipelines(pPipelineCanvasColor, pipconf, sources, defines);
 		
+		
 		defines.SetDefines("WITH_TEXTURE");
 		pCreatePipelines(pPipelineCanvasImage, pipconf, sources, defines);
+		
+		defines.SetDefines("INPUT_ARRAY_TEXTURES");
+		pCreatePipelines(pPipelineCanvasImageArray, pipconf, sources, defines);
+		
 		
 		defines = commonDefines;
 		defines.SetDefines("WITH_MASK");
@@ -127,6 +133,9 @@ pActiveVAO( 0 )
 		
 		defines.SetDefines("WITH_TEXTURE");
 		pCreatePipelines(pPipelineCanvasImageMask, pipconf, sources, defines);
+		
+		defines.SetDefines("INPUT_ARRAY_TEXTURES");
+		pCreatePipelines(pPipelineCanvasImageMaskArray, pipconf, sources, defines);
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -278,12 +287,21 @@ void deoglRenderConstructed::DrawNodeImage( const deoglRenderCanvasContext &cont
 
 void deoglRenderConstructed::DrawNodeText( const deoglRenderCanvasContext &context, const deoglSkinStateCNText &node ){
 	const deoglRFont::Ref &font = node.GetFont();
-	if( ! font ){
+	if(!font){
 		return;
 	}
 	
-	const deoglRImage::Ref &image = font->GetImage();
-	if( ! image || ! image->GetTexture() ){
+	const deoglRFontSize::Ref &fontSize = node.GetFontSize();
+	const deoglRFontGlyphs &glyphs = (fontSize ? fontSize->GetGlyphs() : font->GetGlyphs());
+	
+	const deoglRImage::Ref &image = glyphs.GetImage();
+	if(!image){
+		return;
+	}
+	
+	deoglTexture * const texture = image->GetTexture();
+	deoglArrayTexture * const arrayTexture = image->GetArrayTexture();
+	if(!texture && !arrayTexture){
 		return;
 	}
 	
@@ -297,14 +315,25 @@ void deoglRenderConstructed::DrawNodeText( const deoglRenderCanvasContext &conte
 	
 	pActivateVAOShapes();
 	
-	const deoglPipeline &pipeline = context.GetMask()
-		? *pPipelineCanvasImageMask[ node.GetCombineMode() ]
-		: *pPipelineCanvasImage[ node.GetCombineMode() ];
+	const deoglPipeline &pipeline = arrayTexture
+		? (context.GetMask()
+			? *pPipelineCanvasImageMaskArray[node.GetCombineMode()]
+			: *pPipelineCanvasImageArray[node.GetCombineMode()])
+		: (context.GetMask()
+			? *pPipelineCanvasImageMask[node.GetCombineMode()]
+			: *pPipelineCanvasImage[node.GetCombineMode()]);
 	pipeline.Activate();
 	
 	// set texture
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	tsmgr.EnableTexture( 0, *image->GetTexture(), GetSamplerClampNearest() );
+	
+	if(arrayTexture){
+		tsmgr.EnableArrayTexture(0, *arrayTexture, GetSamplerClampNearest());
+		
+	}else{
+		tsmgr.EnableTexture(0, *texture, GetSamplerClampNearest());
+	}
+	
 	if( context.GetMask() ){
 		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
 	}
@@ -341,34 +370,30 @@ void deoglRenderConstructed::DrawNodeText( const deoglRenderCanvasContext &conte
 	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	
 	// render text
-	const deoglRFont::sGlyph * const oglGlyphs = font->GetGlyphs();
 	decUTF8Decoder utf8Decoder;
 	float curx = 0.0f;
 	float cury = 0.0f;
 	
 	utf8Decoder.SetString( node.GetText() );
 	const int len = utf8Decoder.GetLength();
-	const float fontScale = node.GetFontSize() / ( float )font->GetLineHeight();
+	const float fontScale = node.GetTextSize() / (float)glyphs.GetLineHeight();
 	
 	const decTexMatrix2 &transform = context.GetTransform();
 	
 	while( utf8Decoder.GetPosition() < len ){
 		const int character = utf8Decoder.DecodeNextCharacter();
-		if( character < 0 ){
+		if(character < 0){
 			continue; // invalid unicode character
 		}
 		
-		const deoglRFont::sGlyph &oglGlyph = ( character < 256 )
-			? oglGlyphs[ character ] : font->GetUndefinedGlyph();
-			// temp hack: not working for unicode
+		const deoglRFontGlyphs::sGlyph &oglGlyph = glyphs.GetGlyphFor(character);
 		
 		// calculate positions
-		const float x1 = curx - ( float )oglGlyph.bearing * fontScale;
-		const float y1 = cury;
-		const float cw = ( float )oglGlyph.width * fontScale;
-		const float x2 = x1 + cw;
-		const float y2 = y1 + ( float )oglGlyph.height * fontScale;
-		const float adv = ( float )oglGlyph.advance * fontScale;
+		const float x1 = curx - (float)oglGlyph.bearing * fontScale;
+		const float y1 = cury - (float)oglGlyph.bearingY * fontScale;
+		const float x2 = x1 + (float)oglGlyph.width * fontScale;
+		const float y2 = y1 + (float)oglGlyph.height * fontScale;
+		const float adv = (float)oglGlyph.advance * fontScale;
 		
 		// render char
 		const decTexMatrix2 rectTransform( decTexMatrix2::CreateST( x2 - x1, y2 - y1, x1, y1 ) );
@@ -378,6 +403,8 @@ void deoglRenderConstructed::DrawNodeText( const deoglRenderCanvasContext &conte
 			( oglGlyph.x2 - oglGlyph.x1 ) * factorU, ( oglGlyph.y2 - oglGlyph.y1 ) * factorV,
 			                                 oglGlyph.x1 * factorU + offsetU, oglGlyph.y1 * factorV + offsetV ) );
 		shader.SetParameterTexMatrix3x2( spcTCTransform, tcTransform );
+		
+		shader.SetParameterInt(spcTCLayer, oglGlyph.z);
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT ) );
 		

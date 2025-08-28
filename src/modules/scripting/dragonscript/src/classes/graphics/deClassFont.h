@@ -41,7 +41,6 @@ private:
 	deScriptingDragonScript &pDS;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -100,6 +99,7 @@ private:
 	
 	DEF_NATFUNC( nfGetFilename );
 	DEF_NATFUNC( nfGetSize );
+	DEF_NATFUNC(nfGetBaseLine);
 	
 	DEF_NATFUNC( nfGetTextSize );
 	DEF_NATFUNC( nfGetCharWidth );

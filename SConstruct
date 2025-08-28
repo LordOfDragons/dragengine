@@ -215,6 +215,7 @@ params.Add(PathVariable('with_denetwork_inc',
 params.Add(PathVariable('with_denetwork_lib',
 	'Path to DENetwork library files or empty to use system default',
 	'', PathVariable.PathAccept))
+params.Add(TernaryVariable('with_system_freetype', 'Use System FreeType'))
 
 params.Add(TernaryVariable('with_opengl', 'Use OpenGL'))
 params.Add(TernaryVariable('with_python', 'Use Python'))
@@ -226,6 +227,7 @@ params.Add(TernaryVariable('build_cr_basic', 'Build Basic Crash-Recovery Module'
 params.Add(TernaryVariable('build_graphics_opengl', 'Build OpenGL Graphics Module'))
 params.Add(TernaryVariable('build_graphics_vulkan', 'Build Vulkan Graphics Module', False))
 params.Add(TernaryVariable('build_guilauncher', 'Build GUI Launcher'))
+params.Add(TernaryVariable('build_font_freetype', 'Build FreeType Font Module'))
 params.Add(TernaryVariable('build_image_jpeg', 'Build JPEG Image Module'))
 params.Add(TernaryVariable('build_image_png', 'Build PNG Image Module'))
 params.Add(TernaryVariable('build_image_png3d', 'Build PNG-3D Image Module'))
@@ -260,6 +262,7 @@ params.Add(BoolVariable('build_comb_fbx_internal', 'Build FBX based modules as i
 params.Add(BoolVariable('build_cr_basic_internal', 'Build Basic Crash-Recovery Module as internal module', True))
 params.Add(BoolVariable('build_cr_simplyquit_internal', 'Build SimplyQuit Crash-Recovery Module as internal module', True))
 params.Add(BoolVariable('build_font_defont_internal', 'Build Drag[en]gine Font Font Module as internal module', True))
+params.Add(BoolVariable('build_font_freetype_internal', 'Build FreeType Font Module as internal module', True))
 params.Add(BoolVariable('build_graphic_null_internal', 'Build Null Graphic Module as internal module', True))
 params.Add(BoolVariable('build_graphic_opengl_internal', 'Build OpenGL Graphic Module as internal module', True))
 params.Add(BoolVariable('build_image_ies_internal', 'Build IES Image Module as internal module', True))
@@ -272,6 +275,7 @@ params.Add(BoolVariable('build_image_webp3d_internal', 'Build WebP-3D Image Modu
 params.Add(BoolVariable('build_input_android_internal', 'Build Android Input Module as internal module', True))
 params.Add(BoolVariable('build_input_console_internal', 'Build Console Input Module as internal module', True))
 params.Add(BoolVariable('build_input_x_internal', 'Build X Input Module as internal module', True))
+params.Add(BoolVariable('build_input_beos_internal', 'Build BeOS Input Module as internal module', True))
 params.Add(BoolVariable('build_langpack_delangpack_internal', 'Build DELangPack Language Pack Module as internal module', True))
 params.Add(BoolVariable('build_model_demodel_internal', 'Build Drag[en]gine Model Model Module as internal module', True))
 params.Add(BoolVariable('build_network_basic_internal', 'Build Basic Network Module as internal module', True))
@@ -829,6 +833,7 @@ extdirs.append('extern/zlib')
 extdirs.append('extern/libpng')
 extdirs.append('extern/libapng')
 extdirs.append('extern/libjpeg')
+extdirs.append('extern/freetype')
 extdirs.append('extern/sndio')
 extdirs.append('extern/jsoncpp')
 extdirs.append('extern/openal')
@@ -882,6 +887,7 @@ scdirs.append('src/modules/crashrecovery/simplyquit')
 scdirs.append('src/modules/crashrecovery/basicrecovery')
 
 scdirs.append('src/modules/font/defont')
+scdirs.append('src/modules/font/freetype')
 
 scdirs.append('src/modules/graphic/null')
 scdirs.append('src/modules/graphic/opengl')

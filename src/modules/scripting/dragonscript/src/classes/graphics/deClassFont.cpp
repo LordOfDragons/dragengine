@@ -44,6 +44,7 @@
 #include <libdscript/exceptions.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/font/deFontSize.h>
 #include <dragengine/resources/font/deFontGlyph.h>
 #include <dragengine/resources/font/deFontManager.h>
 #include <dragengine/systems/deGraphicSystem.h>
@@ -55,6 +56,7 @@
 
 struct sFntNatDat{
 	deFont *font;
+	deFontSize *fontSize;
 	int size;
 	float scale;
 };
@@ -64,102 +66,124 @@ struct sFntNatDat{
 // Native Functions
 /////////////////////
 
-// public new( String filename, int size )
-deClassFont::nfNew::nfNew( const sInitData &init ) :
-dsFunction( init.clsFont, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // filename
-	p_AddParameter( init.clsInteger ); // size
+// public new(String filename, int size)
+deClassFont::nfNew::nfNew(const sInitData &init) :
+dsFunction(init.clsFont, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsString); // filename
+	p_AddParameter(init.clsInteger); // size
 }
-void deClassFont::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
-	const deScriptingDragonScript &ds = ( ( deClassFont* )GetOwnerClass() )->GetDS();
+void deClassFont::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
+	sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = ((deClassFont*)GetOwnerClass())->GetDS();
 	deFontManager &fontMgr = *ds.GetGameEngine()->GetFontManager();
 	
 	// clear (important)
-	nd.font = NULL;
+	nd.font = nullptr;
+	nd.fontSize = nullptr;
 	nd.size = 0;
 	nd.scale = 1.0f;
 	
 	// load font
-	const char * const filename = rt->GetValue( 0 )->GetString();
-	const int size = rt->GetValue( 1 )->GetInt();
-	if( size < 1 ){
-		DSTHROW( dueInvalidParam );
+	const char * const filename = rt->GetValue(0)->GetString();
+	const int size = rt->GetValue(1)->GetInt();
+	if(size < 1){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	nd.font = fontMgr.LoadFont( filename, "/" );
+	nd.font = fontMgr.LoadFont(filename, "/");
+	nd.fontSize = nd.font->PrepareSize(size);
 	nd.size = size;
-	nd.scale = ( float )size / ( float )nd.font->GetLineHeight();
+	
+	if(nd.fontSize){
+		nd.fontSize->AddReference();
+		nd.scale = (float)size / (float)nd.fontSize->GetLineHeight();
+		
+	}else{
+		nd.scale = (float)size / (float)nd.font->GetLineHeight();
+	}
 }
 
-// public new( Font font, int size )
-deClassFont::nfNewSize::nfNewSize( const sInitData &init ) :
-dsFunction( init.clsFont, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFont ); // font
-	p_AddParameter( init.clsInteger ); // size
+// public new(Font font, int size)
+deClassFont::nfNewSize::nfNewSize(const sInitData &init) :
+dsFunction(init.clsFont, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFont); // font
+	p_AddParameter(init.clsInteger); // size
 }
-void deClassFont::nfNewSize::RunFunction( dsRunTime *rt, dsValue *myself ){
-	sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
-	deClassFont &clsFont = *( ( deClassFont* )GetOwnerClass() );
+void deClassFont::nfNewSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
+	deClassFont &clsFont = *((deClassFont*)GetOwnerClass());
 	
 	// clear (important)
-	nd.font = NULL;
+	nd.font = nullptr;
+	nd.fontSize = nullptr;
 	nd.size = 0;
 	nd.scale = 1.0f;
 	
 	// store font
-	deFont * font = clsFont.GetFont( rt->GetValue( 0 )->GetRealObject() );
-	if( ! font ){
-		DSTHROW( dueNullPointer );
+	deFont * font = clsFont.GetFont(rt->GetValue(0)->GetRealObject());
+	if(!font){
+		DSTHROW(dueNullPointer);
 	}
 	
-	const int size = rt->GetValue( 1 )->GetInt();
-	if( size < 1 ){
-		DSTHROW( dueInvalidParam );
+	const int size = rt->GetValue(1)->GetInt();
+	if(size < 1){
+		DSTHROW(dueInvalidParam);
 	}
 	
 	nd.font = font;
-	nd.size = size;
-	nd.scale = ( float )size / ( float )nd.font->GetLineHeight();
 	font->AddReference();
+	nd.fontSize = font->PrepareSize(size);
+	nd.size = size;
+	
+	if(nd.fontSize){
+		nd.fontSize->AddReference();
+		nd.scale = (float)size / (float)nd.fontSize->GetLineHeight();
+		
+	}else{
+		nd.scale = (float)size / (float)nd.font->GetLineHeight();
+	}
 }
 
-// static public func void loadAsynchron( String filename, ResourceListener listener )
-deClassFont::nfLoadAsynchron::nfLoadAsynchron( const sInitData &init ) :
-dsFunction( init.clsFont, "loadAsynchron", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsString ); // filename
-	p_AddParameter( init.clsResourceListener ); // listener
+// static public func void loadAsynchron(String filename, ResourceListener listener)
+deClassFont::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) :
+dsFunction(init.clsFont, "loadAsynchron", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+	p_AddParameter(init.clsString); // filename
+	p_AddParameter(init.clsResourceListener); // listener
 }
-void deClassFont::nfLoadAsynchron::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassFont* )GetOwnerClass() )->GetDS();
+void deClassFont::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassFont*)GetOwnerClass())->GetDS();
 	
-	const char * const filename = rt->GetValue( 0 )->GetString();
-	dsRealObject * const listener = rt->GetValue( 1 )->GetRealObject();
-	if( ! listener ){
-		DSTHROW( dueInvalidParam );
+	const char * const filename = rt->GetValue(0)->GetString();
+	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
+	if(!listener){
+		DSTHROW(dueInvalidParam);
 	}
 	
-	ds.GetResourceLoader()->AddRequest( filename, deResourceLoader::ertFont, listener );
+	ds.GetResourceLoader()->AddRequest(filename, deResourceLoader::ertFont, listener);
 }
 
 // public void destructor()
-deClassFont::nfDestructor::nfDestructor( const sInitData &init ) :
-dsFunction( init.clsFont, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFont::nfDestructor::nfDestructor(const sInitData &init) :
+dsFunction(init.clsFont, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassFont::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( myself->GetRealObject()->GetRefCount() != 1 ){
+void deClassFont::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
+	sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
 	
-	if( nd.font){
+	if(nd.fontSize){
+		nd.fontSize->FreeReference();
+		nd.fontSize = nullptr;
+	}
+	if(nd.font){
 		nd.font->FreeReference();
-		nd.font = NULL;
+		nd.font = nullptr;
 	}
 }
 
@@ -183,20 +207,30 @@ void deClassFont::nfGetSize::RunFunction( dsRunTime *rt, dsValue *myself ){
 	rt->PushInt( nd.size );
 }
 
+// func float getBaseLine()
+deClassFont::nfGetBaseLine::nfGetBaseLine(const sInitData &init) :
+dsFunction(init.clsFont, "getBaseLine", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+}
+void deClassFont::nfGetBaseLine::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
+	rt->PushFloat((float)nd.font->GetBaseLine() * nd.scale);
+}
 
 
-// public func Point getTextSize( String text )
-deClassFont::nfGetTextSize::nfGetTextSize( const sInitData &init ) :
-dsFunction( init.clsFont, "getTextSize", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint ){
+
+// public func Point getTextSize(String text)
+deClassFont::nfGetTextSize::nfGetTextSize(const sInitData &init) :
+dsFunction(init.clsFont, "getTextSize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint){
 	p_AddParameter( init.clsString ); // text
 }
-void deClassFont::nfGetTextSize::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = ( ( deClassFont* )GetOwnerClass() )->GetDS();
-	const sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
+void deClassFont::nfGetTextSize::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deScriptingDragonScript &ds = ((deClassFont*)GetOwnerClass())->GetDS();
+	const sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
 	
 	decUTF8Decoder utf8Decoder;
-	utf8Decoder.SetString( rt->GetValue( 0 )->GetString() );
+	utf8Decoder.SetString(rt->GetValue(0)->GetString());
 	
 	int textHeight = nd.size;
 	float lineWidth = 0.0f;
@@ -210,92 +244,92 @@ void deClassFont::nfGetTextSize::RunFunction( dsRunTime *rt, dsValue *myself ){
 			lineWidth = 0.0f;
 			
 		}else if( character >= 0 ){
-			const deFontGlyph &glyph = nd.font->GetGlyph( character );
-			const float extendEnd = ( float )( glyph.GetWidth()
-				- glyph.GetAdvance() - glyph.GetBearing() ) * nd.scale;
-			lineWidth += ( float )glyph.GetAdvance() * nd.scale;
-			if( lineWidth + extendEnd > textWidth ){
+			const deFontGlyph &glyph = nd.font->GetGlyph(character, nd.fontSize);
+			const float extendEnd = (float)(glyph.GetWidth()
+				- glyph.GetAdvance() - glyph.GetBearing()) * nd.scale;
+			lineWidth += (float)glyph.GetAdvance() * nd.scale;
+			if(lineWidth + extendEnd > textWidth){
 				textWidth = lineWidth + extendEnd;
 			}
 		}
 	}
 	
-	ds.GetClassPoint()->PushPoint( rt, decPoint( ( int )ceilf( textWidth ), textHeight ) );
+	ds.GetClassPoint()->PushPoint(rt, decPoint((int)ceilf(textWidth), textHeight));
 }
 
-// public func float getCharWidth( int char )
-deClassFont::nfGetCharWidth::nfGetCharWidth( const sInitData &init ) :
-dsFunction( init.clsFont, "getCharWidth", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
-	p_AddParameter( init.clsInteger ); // char
+// public func float getCharWidth(int char)
+deClassFont::nfGetCharWidth::nfGetCharWidth(const sInitData &init) :
+dsFunction(init.clsFont, "getCharWidth", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // char
 }
-void deClassFont::nfGetCharWidth::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
-	const int character = rt->GetValue( 0 )->GetInt();
+void deClassFont::nfGetCharWidth::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
+	const int character = rt->GetValue(0)->GetInt();
 	
-	if( character >= 0 ){
-		rt->PushFloat( ( float )nd.font->GetGlyph( character ).GetWidth() * nd.scale );
+	if(character >= 0){
+		rt->PushFloat((float)nd.font->GetGlyph(character, nd.fontSize).GetWidth() * nd.scale);
 		
 	}else{
-		rt->PushFloat( 0.0f );
+		rt->PushFloat(0.0f);
 	}
 }
 
-// public func float getCharAdvance( int char )
-deClassFont::nfGetCharAdvance::nfGetCharAdvance( const sInitData &init ) :
-dsFunction( init.clsFont, "getCharAdvance", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
-	p_AddParameter( init.clsInteger ); // char
+// public func float getCharAdvance(int char)
+deClassFont::nfGetCharAdvance::nfGetCharAdvance(const sInitData &init) :
+dsFunction(init.clsFont, "getCharAdvance", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // char
 }
-void deClassFont::nfGetCharAdvance::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
-	const int character = rt->GetValue( 0 )->GetInt();
+void deClassFont::nfGetCharAdvance::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
+	const int character = rt->GetValue(0)->GetInt();
 	
-	if( character >= 0 ){
-		rt->PushFloat( nd.font->GetGlyph( character ).GetAdvance() * nd.scale );
+	if(character >= 0){
+		rt->PushFloat(nd.font->GetGlyph(character, nd.fontSize).GetAdvance() * nd.scale);
 		
 	}else{
-		rt->PushFloat( 0.0f );
+		rt->PushFloat(0.0f);
 	}
 }
 
-// public func float getCharBearing( int char )
-deClassFont::nfGetCharBearing::nfGetCharBearing( const sInitData &init ) :
-dsFunction( init.clsFont, "getCharBearing", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
-	p_AddParameter( init.clsInteger ); // char
+// public func float getCharBearing(int char)
+deClassFont::nfGetCharBearing::nfGetCharBearing(const sInitData &init) :
+dsFunction(init.clsFont, "getCharBearing", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+	p_AddParameter(init.clsInteger); // char
 }
-void deClassFont::nfGetCharBearing::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
-	const int character = rt->GetValue( 0 )->GetInt();
+void deClassFont::nfGetCharBearing::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
+	const int character = rt->GetValue(0)->GetInt();
 	
-	if( character >= 0 ){
-		rt->PushFloat( nd.font->GetGlyph( character ).GetBearing() * nd.scale );
+	if(character >= 0){
+		rt->PushFloat(nd.font->GetGlyph(character, nd.fontSize).GetBearing() * nd.scale);
 		
 	}else{
-		rt->PushFloat( 0.0f );
+		rt->PushFloat(0.0f);
 	}
 }
 
 // public func float getMaxWidth()
-deClassFont::nfGetMaxWidth::nfGetMaxWidth( const sInitData &init ) :
-dsFunction( init.clsFont, "getMaxWidth", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat ){
+deClassFont::nfGetMaxWidth::nfGetMaxWidth(const sInitData &init) :
+dsFunction(init.clsFont, "getMaxWidth", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
-void deClassFont::nfGetMaxWidth::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
-	rt->PushFloat( ( float )nd.font->GetFontWidth() * nd.scale );
+void deClassFont::nfGetMaxWidth::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
+	rt->PushFloat((float)(nd.fontSize ? nd.fontSize->GetFontWidth() : nd.font->GetFontWidth()) * nd.scale);
 }
 
 // public func bool hasGlyph(int character)
-deClassFont::nfHasGlyph::nfHasGlyph( const sInitData &init ) :
-dsFunction( init.clsFont, "hasGlyph", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
-	p_AddParameter( init.clsInteger ); // char
+deClassFont::nfHasGlyph::nfHasGlyph(const sInitData &init) :
+dsFunction(init.clsFont, "hasGlyph", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
+	p_AddParameter(init.clsInteger); // char
 }
-void deClassFont::nfHasGlyph::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( myself ) );
-	const int character = rt->GetValue( 0 )->GetInt();
-	rt->PushBool( character >= 0 && nd.font->HasGlyph( character ) );
+void deClassFont::nfHasGlyph::RunFunction(dsRunTime *rt, dsValue *myself){
+	const sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(myself));
+	const int character = rt->GetValue(0)->GetInt();
+	rt->PushBool(character >= 0 && nd.font->HasGlyph(character));
 }
 
 
@@ -384,6 +418,7 @@ void deClassFont::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetFilename( init ) );
 	AddFunction( new nfGetSize( init ) );
+	AddFunction(new nfGetBaseLine(init));
 	
 	AddFunction( new nfGetTextSize( init ) );
 	AddFunction( new nfGetCharWidth( init ) );
@@ -399,34 +434,36 @@ void deClassFont::CreateClassMembers( dsEngine *engine ){
 	CalcMemberOffsets();
 }
 
-void deClassFont::PushFont( dsRunTime *rt, deFont *font, int size ){
-	if( ! rt  || size < 1 ){
+void deClassFont::PushFont(dsRunTime *rt, deFont *font, int size){
+	if(! rt || size < 1){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	if( ! font ){
-		rt->PushObject( NULL, this );
+	if(!font){
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	
-	rt->CreateObjectNakedOnStack( this );
-	sFntNatDat &nd = *( ( sFntNatDat* )p_GetNativeData( rt->GetValue( 0 )->GetRealObject()->GetBuffer() ) );
+	rt->CreateObjectNakedOnStack(this);
+	sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.font = font;
 	font->AddReference();
+	nd.fontSize = font->PrepareSize(size);
 	nd.size = size;
-	nd.scale = ( float )size / ( float )font->GetLineHeight();
+	
+	if(nd.fontSize){
+		nd.fontSize->AddReference();
+		nd.scale = (float)size / (float)nd.fontSize->GetLineHeight();
+		
+	}else{
+		nd.scale = (float)size / (float)font->GetLineHeight();
+	}
 }
 
 deFont *deClassFont::GetFont( dsRealObject *object ) const{
-	if( ! object ){
-		return NULL;
-	}
-	return ( ( sFntNatDat* )p_GetNativeData( object->GetBuffer() ) )->font;
+	return object ? ((sFntNatDat*)p_GetNativeData(object->GetBuffer()))->font : nullptr;
 }
 
 int deClassFont::GetFontSize( dsRealObject *object ) const{
-	if( ! object ){
-		return 0;
-	}
-	return ( ( sFntNatDat* )p_GetNativeData( object->GetBuffer() ) )->size;
+	return object ? ((sFntNatDat*)p_GetNativeData(object->GetBuffer()))->size : 0;
 }

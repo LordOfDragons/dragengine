@@ -41,22 +41,28 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglFont::deoglFont( deGraphicOpenGl &ogl, const deFont &font ) :
-pFont( font ),
-pRFont( NULL ){
-	pRFont = new deoglRFont( ogl.GetRenderThread(), font );
+deoglFont::deoglFont(deGraphicOpenGl &ogl, deFont &font) :
+pFont(font),
+pRFont(deoglRFont::Ref::New(new deoglRFont(ogl.GetRenderThread(), font))){
 }
 
 deoglFont::~deoglFont(){
-	if( pRFont ){
-		pRFont->FreeReference();
-	}
 }
 
+
+// Management
+///////////////
+
+deoglRFontSize *deoglFont::GetFontSizeFor(int lineHeight){
+	return pRFont->GetFontSizeFor(pFont, lineHeight);
+}
 
 
 // Notifications
 //////////////////
 
-void deoglFont::Update( float elapsed ){
+void deoglFont::Update(float elapsed){
+}
+
+void deoglFont::FontSizeAdded(int lineHeight, deFontSize *size){
 }

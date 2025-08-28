@@ -1,0 +1,205 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+freetypeVersion = '2.13.3'
+srcdir = 'freetype-{}'.format(freetypeVersion)
+
+libLinkVersion = '6'
+libLinkName = 'freetype'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'freetype', 'lib_freetype_fetch')
+
+# check if system freetype is present.
+# NOTE some OS have compilers causing errors on the check below because "true" is used.
+#      the error looks like "cannot convert bool to boolean". to prevent this "TRUE" is
+#      used instead
+hasSystemFreetype = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_freetype'] != TernaryVariableNo:
+	hasSystemFreetype = conf.CheckLibWithHeader(libLinkName,
+		['stdio.h', 'stdlib.h', 'ft2build.h'], 'c++',
+		'FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
+conf.Finish()
+
+if not hasSystemFreetype and envLibrary['with_system_freetype'] == TernaryVariableYes:
+	Exit('Requested to use system freetype but no usable freetype found.')
+
+libs = [libLinkName]
+libs.extend(parent_targets['lib_libpng']['libs'])
+
+parent_report['use system freetype'] = 'yes' if hasSystemFreetype else 'no'
+
+if hasSystemFreetype:
+	parent_targets['lib_freetype'] = {
+		'name' : 'Internal FreeType library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : []}
+	Return()
+
+# build freetype
+def freetypeBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	deps = [parent_targets['lib_libpng']]
+	script = createScriptHeader(env, deps=deps)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	if buildStaticLinking:
+		cmdline.append('--enable-shared=no')
+		cmdline.append('--enable-static=yes')
+		cmdline.append('--with-pic=yes')
+	else:
+		cmdline.append('--enable-shared=yes')
+		cmdline.append('--enable-static=no')
+	
+	cmdline.append('--enable-year2038')
+	cmdline.append('--with-zlib=yes')
+	cmdline.append('--with-bzip2=no')
+	cmdline.append('--with-png=yes')
+	cmdline.append('--with-harfbuzz=no')
+	cmdline.append('--with-brotli=no')
+	cmdline.append('--with-librsvg=no')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format( ' '.join(cmdline)))
+	
+	script.append( 'make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building FreeType')
+
+def freetypeBuildWasm(target, source, env):
+	buildDir = target[0].get_dir().up()
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	cmakeBuildDir = buildDir.Dir('build').abspath
+	if not os.path.isdir(cmakeBuildDir):
+		os.mkdir(cmakeBuildDir)
+	
+	deps = [parent_targets['lib_libpng']]
+	script = createScriptHeader(env, deps=deps)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
+	
+	cmdline = []
+	cmdline.append('emcmake')
+	cmdline.append('cmake')
+	cmdline.append('-G"Unix Makefiles"')
+	cmdline.append('-DFT_DISABLE_ZLIB=Off')
+	cmdline.append('-DFT_DISABLE_BZIP2=On')
+	cmdline.append('-DFT_DISABLE_PNG=Off')
+	cmdline.append('-DFT_DISABLE_HARFBUZZ=On')
+	cmdline.append('-DFT_DISABLE_BROTLI=On')
+	
+	cmdline.append('-DENABLE_SHARED=Off')
+	cmdline.append('-DENABLE_STATIC=On')
+	
+	for x in env.Flatten(env['EXTERN_CMAKE_FLAGS']):
+		cmdline.append(x)
+	
+	cmakeCFlags = env.Flatten(env['EXTERN_CMAKE_C_FLAGS'])
+	if cmakeCFlags:
+		cmdline.append('-DCMAKE_C_FLAGS="{}"'.format(' '.join(cmakeCFlags)))
+	
+	cmdline.append('-DCMAKE_C_FLAGS="-fPIC"')
+	cmdline.append('-DCMAKE_C_FLAGS="-pthread"')
+	
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=True')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=True')
+	
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	# this is required otherwise depending on the platform the install
+	# directory is sometimes 'lib' and sometimes 'lib64' causing problems
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	cmdline.append('"{}"'.format(buildDir.Dir(srcdir).abspath))
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building FreeType')
+
+targets = [staticFileName if buildStaticLinking else libFileName]
+
+with open(envLibrary.File('header_file_list/freetype').srcnode().abspath, 'r') as f:
+	for x in f.readlines():
+		targets.append(x[:-1])
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+envLibrary.Append(PATCHES = [])
+
+globFiles(envLibrary, os.path.join('patches', freetypeVersion),
+	'*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if envLibrary['platform_webwasm']:
+	library = envLibrary.Command(targets, nodeArtifacts,
+		envLibrary.Action(freetypeBuildWasm, 'Build FreeType library'))
+else:
+	library = envLibrary.Command(targets, nodeArtifacts,
+		envLibrary.Action(freetypeBuild, 'Build FreeType library'))
+
+envLibrary.Depends(library, envLibrary['PATCHES'])
+
+if envLibrary['platform_webwasm']:
+	envLibrary.SideEffect('#notParallelCMake', library)
+
+depends = parent_env.Alias('lib_freetype', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'build', srcdir])
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_freetype'] = {
+	'name' : 'Internal FreeType library',
+	'cpppath' : [envLibrary.Dir('include/freetype2')],
+	'libpath' : [envLibrary.Dir('lib')],
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends}

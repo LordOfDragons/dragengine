@@ -117,7 +117,6 @@ igdeNativeFoxVFSList::~igdeNativeFoxVFSList(){
 class igdeNativeFoxVFSListFind : public deFileSearchVisitor{
 private:
 	igdeNativeFoxVFSList &pOwner;
-	deObjectReference pSkin;
 	const char * const pColumnPattern;
 	
 public:

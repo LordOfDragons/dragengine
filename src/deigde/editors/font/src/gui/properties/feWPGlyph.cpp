@@ -37,7 +37,9 @@
 #include "../../undosys/glyph/feUGlyphSetU.h"
 #include "../../undosys/glyph/feUGlyphSetV.h"
 #include "../../undosys/glyph/feUGlyphSetWidth.h"
+#include "../../undosys/glyph/feUGlyphSetHeight.h"
 #include "../../undosys/glyph/feUGlyphSetBearing.h"
+#include "../../undosys/glyph/feUGlyphSetBearingY.h"
 #include "../../undosys/glyph/feUGlyphSetAdvance.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -190,6 +192,16 @@ public:
 	}
 };
 
+class cTextHeight : public cBaseTextFieldListener{
+public:
+	cTextHeight(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
+	
+	igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
+		const int height = textField->GetInteger();
+		return height != glyph->GetHeight() ? new feUGlyphSetHeight(glyph, height) : nullptr;
+	}
+};
+
 class cTextBearing : public cBaseTextFieldListener{
 public:
 	cTextBearing( feWPGlyph &panel ) : cBaseTextFieldListener( panel ){ }
@@ -200,6 +212,16 @@ public:
 			return NULL;
 		}
 		return new feUGlyphSetBearing( glyph, width );
+	}
+};
+
+class cTextBearingY : public cBaseTextFieldListener{
+public:
+	cTextBearingY(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
+	
+	igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
+		const int bearing = textField->GetInteger();
+		return bearing != glyph->GetBearingY() ? new feUGlyphSetBearingY(glyph, bearing) : nullptr;
 	}
 };
 
@@ -255,8 +277,12 @@ pListener( NULL )
 	
 	helper.EditInteger( groupBox, "Width:", "Width of the glyph in pixels.",
 		pEditWidth, new cTextWidth( *this ) );
-	helper.EditInteger( groupBox, "Bearing:", "Bearing in pixels.",
+	helper.EditInteger(groupBox, "Height:", "Height of the glyph in pixels.",
+		pEditHeight, new cTextHeight(*this));
+	helper.EditInteger( groupBox, "Bearing:", "Horizontal bearing in pixels.",
 		pEditBearing, new cTextBearing( *this ) );
+	helper.EditInteger(groupBox, "Bearing Y:", "Vertical bearing in pixels.",
+		pEditBearingY, new cTextBearingY(*this));
 	helper.EditInteger( groupBox, "Advance:", "Advance in pixels.",
 		pEditAdvance, new cTextAdvance( *this ) );
 }
@@ -366,14 +392,18 @@ void feWPGlyph::UpdateGlyph(){
 		pEditU->SetInteger( pGlyph->GetU() );
 		pEditV->SetInteger( pGlyph->GetV() );
 		pEditWidth->SetInteger( pGlyph->GetWidth() );
+		pEditHeight->SetInteger(pGlyph->GetHeight());
 		pEditBearing->SetInteger( pGlyph->GetBearing() );
+		pEditBearingY->SetInteger(pGlyph->GetBearingY());
 		pEditAdvance->SetInteger( pGlyph->GetAdvance() );
 		
 	}else{
-		pEditU->SetText( "" );
-		pEditV->SetText( "" );
-		pEditWidth->SetText( "" );
-		pEditBearing->SetText( "" );
-		pEditAdvance->SetText( "" );
+		pEditU->ClearText();
+		pEditV->ClearText();
+		pEditWidth->ClearText();
+		pEditHeight->ClearText();
+		pEditBearing->ClearText();
+		pEditBearingY->ClearText();
+		pEditAdvance->ClearText();
 	}
 }

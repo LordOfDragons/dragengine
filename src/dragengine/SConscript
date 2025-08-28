@@ -445,6 +445,15 @@ if not envDragengine['with_static_internalmodules']:
 	envModules.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 	envModules.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS_NOMODVER'])
 	
+	if envModules['OSBeOS']:
+		# network module requires ['network']
+		# input module requires ['game', 'device']
+		modulesLibs.extend(['root', 'be', 'network', 'game', 'device'])
+	elif envModules['OSMacOS']:
+		envModules.Append(FRAMEWORKS = ['Cocoa'])
+	elif envModules['OSPosix']:
+		pass
+	
 	if not envModules['OSMacOS']:
 		envModules.Append(MODULE_LINKFLAGS = ['-Wl,--version-script=modules.version'])
 	

@@ -43,16 +43,8 @@ class feFont;
 class feFontGlyph : public deObject{
 private:
 	feFont *pParentFont;
-	
-	int pCode;
-	int pU;
-	int pV;
-	int pWidth;
-	int pBearing;
-	int pAdvance;
-	
-	bool pSelected;
-	bool pActive;
+	int pCode, pU, pV, pWidth, pHeight, pBearing, pBearingY, pAdvance;
+	bool pSelected, pActive;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -86,10 +78,24 @@ public:
 	inline int GetWidth() const{ return pWidth; }
 	/** Sets the width. */
 	void SetWidth( int width );
+	
+	/** Height. */
+	inline int GetHeight() const{ return pHeight; }
+	
+	/** Set height. */
+	void SetHeight(int height);
+	
 	/** Retrieves the bearing in x direction. */
 	inline int GetBearing() const{ return pBearing; }
 	/** Sets the bearing in x direction. */
 	void SetBearing( int bearing );
+	
+	/** Bearing in y direction. */
+	inline int GetBearingY() const{ return pBearingY; }
+	
+	/** Set bearing in y direction. */
+	void SetBearingY(int bearing);
+	
 	/** Retrieves the advance in x direction. */
 	inline int GetAdvance() const{ return pAdvance; }
 	/** Sets the advance in x direction. */

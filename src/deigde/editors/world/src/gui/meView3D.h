@@ -31,7 +31,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasTextReference.h>
 #include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/font/deFontReference.h>
+#include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/font/deFontSize.h>
 
 class meView3DListener;
 class meViewEditor;
@@ -56,7 +57,8 @@ private:
 	int pFPSHistory[ 30 ];
 	float pFPSRedrawCanvasDelay;
 	
-	deFontReference pFontStats;
+	deFont::Ref pFontStats;
+	deFontSize::Ref pFontSizeStats;
 	deCanvasViewReference pCanvasFPS;
 	deCanvasTextReference pCanvasFPSText;
 	

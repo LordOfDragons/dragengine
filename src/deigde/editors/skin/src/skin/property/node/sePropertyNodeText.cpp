@@ -47,28 +47,20 @@
 
 sePropertyNodeText::sePropertyNodeText( deEngine &engine ) :
 sePropertyNode( entText, engine, TextMappedCount ),
-pFont( NULL ),
-pFontSize( 10.0f ){
+pTextSize( 10.0f ){
 }
 
 sePropertyNodeText::sePropertyNodeText( const sePropertyNodeText &node ) :
 sePropertyNode( node ),
 pPath( node.pPath ),
-pFont( NULL ),
-pFontSize( node.pFontSize ),
+pFont(node.pFont),
+pFontSize(node.pFontSize),
+pTextSize( node.pTextSize ),
 pText( node.pText ),
-pColor( node.pColor )
-{
-	pFont = node.pFont;
-	if( pFont ){
-		pFont->AddReference();
-	}
+pColor( node.pColor ){
 }
 
 sePropertyNodeText::~sePropertyNodeText(){
-	if( pFont ){
-		pFont->FreeReference();
-	}
 }
 
 
@@ -77,50 +69,55 @@ sePropertyNodeText::~sePropertyNodeText(){
 ///////////////
 
 void sePropertyNodeText::SetPath( const char *path ){
-	if( pPath.Equals( path ) ){
+	if(pPath == path){
 		return;
 	}
 	
 	pPath = path;
 	UpdateFont();
+	UpdateFontSize();
 	NotifyChanged();
 }
 
-void sePropertyNodeText::SetFontSize( float size ){
-	size = decMath::max( size, 0.0f );
-	if( fabsf( size - pFontSize ) < FLOAT_SAFE_EPSILON ){
+void sePropertyNodeText::SetTextSize( float size ){
+	size = decMath::max(size, 0.0f);
+	if(fabsf(size - pTextSize) < FLOAT_SAFE_EPSILON){
 		return;
 	}
 	
-	pFontSize = size;
+	pTextSize = size;
+	UpdateFontSize();
 	NotifyChanged();
 }
 
 void sePropertyNodeText::UpdateFont(){
-	deFont *font = NULL;
+	pFontSize = nullptr;
 	
-	if( ! pPath.IsEmpty() && GetProperty() && GetProperty()->GetTexture() && GetProperty()->GetTexture()->GetSkin() ){
+	if(!pPath.IsEmpty() && GetProperty() && GetProperty()->GetTexture()
+	&& GetProperty()->GetTexture()->GetSkin()){
 		const decString &basePath = GetProperty()->GetTexture()->GetSkin()->GetDirectoryPath();
 		
 		try{
-			font = GetEngine().GetFontManager()->LoadFont( pPath, basePath );
+			pFont.TakeOver(GetEngine().GetFontManager()->LoadFont(pPath, basePath));
 			
-		}catch( const deException &e ){
-			GetProperty()->GetTexture()->GetSkin()->GetLogger()->LogException( "Skin Editor", e );
+		}catch(const deException &e){
+			GetProperty()->GetTexture()->GetSkin()->GetLogger()->LogException("Skin Editor", e);
 		}
 	}
-	
-	if( font == pFont ){
-		if( font ){
-			font->FreeReference();
-		}
+}
+
+void sePropertyNodeText::UpdateFontSize(){
+	if(!pFont){
+		pFontSize = nullptr;
 		return;
 	}
 	
-	if( pFont ){
-		pFont->FreeReference();
+	try{
+		pFontSize = pFont->PrepareSize(pTextSize);
+		
+	}catch(const deException &e){
+		GetProperty()->GetTexture()->GetSkin()->GetLogger()->LogException("Skin Editor", e);
 	}
-	pFont = font;
 }
 
 void sePropertyNodeText::SetText( const char *text ){

@@ -62,12 +62,15 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontImportImage.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetImagePath.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetBaseLine.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetAdvance.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearing.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetU.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetV.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearingY.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\clipboard\feBaseClip.h" />
@@ -101,12 +104,15 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontImportImage.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetImagePath.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetBaseLine.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetAdvance.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearing.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetU.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetV.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearingY.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">

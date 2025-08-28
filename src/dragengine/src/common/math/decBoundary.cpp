@@ -96,3 +96,11 @@ decBoundary &decBoundary::operator=( const decBoundary &b ){
 	y2 = b.y2;
 	return *this;
 }
+
+bool decBoundary::operator==(const decBoundary &b) const{
+	return x1 == b.x1 && y1 == b.y1 && x2 == b.x2 && y2 == b.y2;
+}
+
+bool decBoundary::operator!=(const decBoundary &b) const{
+	return x1 != b.x1 || y1 != b.y1 || x2 != b.x2 || y2 != b.y2;
+}

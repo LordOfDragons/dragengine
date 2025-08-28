@@ -59,9 +59,6 @@
 
 cePlayerChoiceBox::cePlayerChoiceBox( ceConversation &conversation ) :
 pConversation( conversation ),
-
-pEngFont( NULL ),
-
 pBackgroundColor( 0.0f, 0.0f, 0.0f, 0.5f ),
 pTextColor( 1.0f, 1.0f, 1.0f, 1.0f ),
 pSelectedBackgroundColor( 0.0f, 0.0f, 0.5f, 0.5f ),
@@ -96,16 +93,13 @@ cePlayerChoiceBox::~cePlayerChoiceBox(){
 ///////////////
 
 void cePlayerChoiceBox::SetPathFont( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pPathFont.Equals( path ) ){
+	if(pPathFont == path){
 		return;
 	}
 	
 	pPathFont = path;
 	pUpdateFont();
+	pUpdateFontSize();
 	UpdateCanvas();
 }
 
@@ -123,15 +117,14 @@ void cePlayerChoiceBox::SetTextColor( const decColor &color ){
 }
 
 void cePlayerChoiceBox::SetTextSize( int size ){
-	if( size < 1 ){
-		size = 1;
-	}
+	size = decMath::max(size, 1);
 	
-	if( size == pTextSize ){
+	if(size == pTextSize){
 		return;
 	}
 	
 	pTextSize = size;
+	pUpdateFontSize();
 	UpdateCanvas();
 }
 
@@ -290,31 +283,36 @@ void cePlayerChoiceBox::pCleanUp(){
 	if( pCanvasView ){
 		pCanvasView->FreeReference();
 	}
-	
-	if( pEngFont ){
-		pEngFont->FreeReference();
-	}
 }
 
 
 
 void cePlayerChoiceBox::pUpdateFont(){
-	deFont *font = NULL;
+	pEngFontSize = nullptr;
 	
 	try{
-		if( ! pPathFont.IsEmpty() ){
-			font = pConversation.GetEngine()->GetFontManager()->LoadFont( pPathFont.GetString(), "/" );
+		if(!pPathFont.IsEmpty()){
+			pEngFont.TakeOver(pConversation.GetEngine()->GetFontManager()->LoadFont(pPathFont, "/"));
+			
+		}else{
+			pEngFont = nullptr;
 		}
 		
-		if( pEngFont ){
-			pEngFont->FreeReference();
-		}
-		pEngFont = font;
+	}catch(const deException &e){
+		pConversation.GetLogger()->LogException(LOGSOURCE, e);
+	}
+}
+
+void cePlayerChoiceBox::pUpdateFontSize(){
+	if(!pEngFont){
+		pEngFontSize = nullptr;
+		return;
+	}
+	
+	try{
+		pEngFontSize = pEngFont->PrepareSize(pTextSize);
 		
-	}catch( const deException &e ){
-		if( font ){
-			font->FreeReference();
-		}
-		pConversation.GetLogger()->LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pConversation.GetLogger()->LogException(LOGSOURCE, e);
 	}
 }

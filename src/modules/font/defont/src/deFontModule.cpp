@@ -169,6 +169,7 @@ void deFontModule::pParseFont( decXmlElementTag *root, deFont &font ){
 	}
 	
 	font.SetGlyphCount( glyphCount );
+	bool hasBaseLine = false;
 	int glyphIndex = 0;
 	
 	for( i=0; i<root->GetElementCount(); i++ ){
@@ -184,7 +185,14 @@ void deFontModule::pParseFont( decXmlElementTag *root, deFont &font ){
 			font.SetIsColorFont( true );
 			
 		}else if ( strcmp( tag->GetName(), "lineHeight" ) == 0 ){
-			font.SetLineHeight( ( int )strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
+			font.SetLineHeight(tag->GetFirstData()->GetData().ToInt());
+			if(!hasBaseLine){
+				font.SetBaseLine(font.GetLineHeight() * 3 / 4);
+			}
+			
+		}else if(tag->GetName() == "baseLine"){
+			font.SetBaseLine(tag->GetFirstData()->GetData().ToInt());
+			hasBaseLine = true;
 			
 		}else if ( strcmp( tag->GetName(), "defaults" ) == 0 ){
 			deFontGlyph &glyph = font.GetUndefinedGlyph();
@@ -194,6 +202,7 @@ void deFontModule::pParseFont( decXmlElementTag *root, deFont &font ){
 				glyph.SetX( pGetAttributeInt( tag, "u" ) );
 				glyph.SetY( pGetAttributeInt( tag, "v" ) );
 				glyph.SetWidth( pGetAttributeInt( tag, "width" ) );
+				glyph.SetHeight(font.GetLineHeight());
 				glyph.SetAdvance( glyph.GetWidth() );
 				
 			}else{
@@ -203,6 +212,17 @@ void deFontModule::pParseFont( decXmlElementTag *root, deFont &font ){
 				glyph.SetWidth( pGetAttributeInt( tag, "width" ) );
 				glyph.SetBearing( pGetAttributeInt( tag, "bearing" ) );
 				glyph.SetAdvance( pGetAttributeInt( tag, "advance" ) );
+				
+				if(pHasAttributeString(tag, "height")){
+					glyph.SetHeight(pGetAttributeInt(tag, "width"));
+					
+				}else{
+					glyph.SetHeight(font.GetLineHeight());
+				}
+				
+				if(pHasAttributeString(tag, "bearingY")){
+					glyph.SetBearingY(pGetAttributeInt(tag, "bearingY"));
+				}
 			}
 			
 		} else if ( strcmp( tag->GetName(), "glyph" ) == 0 ) {
@@ -224,6 +244,17 @@ void deFontModule::pParseFont( decXmlElementTag *root, deFont &font ){
 			glyph.SetWidth( pGetAttributeInt( tag, "width" ) );
 			glyph.SetBearing( pGetAttributeInt( tag, "bearing" ) );
 			glyph.SetAdvance( pGetAttributeInt( tag, "advance" ) );
+			
+			if(pHasAttributeString(tag, "height")){
+				glyph.SetHeight(pGetAttributeInt(tag, "width"));
+				
+			}else{
+				glyph.SetHeight(font.GetLineHeight());
+			}
+			
+			if(pHasAttributeString(tag, "bearingY")){
+				glyph.SetBearingY(pGetAttributeInt(tag, "bearingY"));
+			}
 		}
 	}
 }
@@ -243,15 +274,22 @@ void deFontModule::pWriteFont( decXmlWriter& writer, const deFont& font ) {
 		writer.WriteDataTagString( "colorFont", "true" ); // hack, only presence of tag checked
 	}
 	
-	writer.WriteDataTagInt( "lineHeight", font.GetLineHeight() );
+	writer.WriteDataTagInt("lineHeight", font.GetLineHeight() );
+	writer.WriteDataTagInt("baseLine", font.GetBaseLine());
 	
 	const deFontGlyph &undefinedGlyph = font.GetUndefinedGlyph();
 	writer.WriteOpeningTagStart( "defaults" );
 	writer.WriteAttributeInt( "x", undefinedGlyph.GetX() );
 	writer.WriteAttributeInt( "y", undefinedGlyph.GetY() );
 	writer.WriteAttributeInt( "z", undefinedGlyph.GetZ() );
-	writer.WriteAttributeInt( "width", undefinedGlyph.GetWidth() );
-	writer.WriteAttributeInt( "bearing", undefinedGlyph.GetBearing() );
+	writer.WriteAttributeInt("width", undefinedGlyph.GetWidth());
+	writer.WriteAttributeInt("height", undefinedGlyph.GetHeight());
+	if(undefinedGlyph.GetBearing() != 0){
+		writer.WriteAttributeInt("bearing", undefinedGlyph.GetBearing());
+	}
+	if(undefinedGlyph.GetBearingY() != 0){
+		writer.WriteAttributeInt("bearingY", undefinedGlyph.GetBearingY());
+	}
 	writer.WriteAttributeInt( "advance", undefinedGlyph.GetAdvance() );
 	writer.WriteOpeningTagEnd( true );
 	
@@ -268,7 +306,13 @@ void deFontModule::pWriteFont( decXmlWriter& writer, const deFont& font ) {
 		writer.WriteAttributeInt( "y", glyph.GetY() );
 		writer.WriteAttributeInt( "z", glyph.GetZ() );
 		writer.WriteAttributeInt( "width", glyph.GetWidth() );
-		writer.WriteAttributeInt( "bearing", glyph.GetBearing() );
+		writer.WriteAttributeInt( "height", glyph.GetHeight() );
+		if(glyph.GetBearing() != 0){
+			writer.WriteAttributeInt("bearing", glyph.GetBearing());
+		}
+		if(glyph.GetBearingY() != 0){
+			writer.WriteAttributeInt("bearingY", glyph.GetBearingY());
+		}
 		writer.WriteAttributeInt( "advance", glyph.GetAdvance() );
 		writer.WriteOpeningTagEnd( true );
 	}

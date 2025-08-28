@@ -112,7 +112,8 @@ feFont* feGenerateFont::GenerateFont(){
 	fontRef.TakeOver( new feFont( &pEnvironment ) );
 	feFont * const font = ( feFont* )( deObject* )fontRef;
 	
-	font->SetLineHeight( pSystemFont->GetLineHeight() + pEnlargeGlyph * 2  );
+	font->SetLineHeight( pSystemFont->GetLineHeight() + pEnlargeGlyph * 2 );
+	font->SetBaseLine(pSystemFont->GetBaseLine());
 	
 	pAddGlyphs( *font );
 	pCalcLayout( *font );
@@ -144,7 +145,9 @@ void feGenerateFont::pAddGlyphs( feFont &font ){
 		glyph->SetU( 0 );
 		glyph->SetV( 0 );
 		glyph->SetWidth( sfGlyph.GetWidth() + pEnlargeGlyph * 2 );
+		glyph->SetHeight(sfGlyph.GetHeight() + pEnlargeGlyph * 2);
 		glyph->SetBearing( sfGlyph.GetBearing() + pEnlargeGlyph );
+		glyph->SetBearingY(sfGlyph.GetBearingY() + pEnlargeGlyph);
 		glyph->SetAdvance( glyph->GetWidth() );
 		
 		font.AddGlyph( glyph );

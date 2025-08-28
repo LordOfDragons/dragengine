@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../../../dragengine/build/include",
+                "${workspaceFolder}/../../../../extern/freetype/build/include/freetype2",
+                "${workspaceFolder}/../../../../../testing/include"
+            ],
+            "defines": [
+                "MODULE_VERSION=\"9999\"",
+                "MOD_ENTRY_POINT_ATTR=",
+                "WITH_INTERNAL_MODULE="
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11"
+        }
+    ],
+    "version": 4
+}

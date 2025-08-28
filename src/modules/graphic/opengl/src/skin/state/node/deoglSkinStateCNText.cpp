@@ -42,9 +42,11 @@
 
 deoglSkinStateCNText::deoglSkinStateCNText( deSkinPropertyNodeText &node ) :
 deoglSkinStateConstructedNode( node, etText ),
-pFont( node.GetFont() && node.GetFont()->GetPeerGraphic()
-	? ( ( deoglFont* )node.GetFont()->GetPeerGraphic() )->GetRFont() : nullptr ),
-pFontSize( node.GetFontSize() ),
+pFont(node.GetFont() && node.GetFont()->GetPeerGraphic()
+	? ((deoglFont*)node.GetFont()->GetPeerGraphic())->GetRFont() : nullptr),
+pFontSize(pFont ? ((deoglFont*)node.GetFont()->GetPeerGraphic())->GetFontSizeFor(
+	(int)(node.GetFontSize() + 0.5f)) : nullptr),
+pTextSize( node.GetFontSize() ),
 pText( node.GetText() ),
 pColor( node.GetColor() )
 {
@@ -56,8 +58,9 @@ pColor( node.GetColor() )
 
 deoglSkinStateCNText::deoglSkinStateCNText( const deoglSkinStateCNText &node ) :
 deoglSkinStateConstructedNode( node ),
-pFont( node.pFont ),
-pFontSize( node.pFontSize ),
+pFont(node.pFont),
+pFontSize(node.pFontSize),
+pTextSize( node.pTextSize ),
 pText( node.pText ),
 pColor( node.pColor )
 {
@@ -82,14 +85,14 @@ int deoglSkinStateCNText::GetTextMappedFor( deSkinPropertyNodeText::eTextMapped 
 
 
 void deoglSkinStateCNText::Update( deoglSkinState &state ){
-	if( pText.IsEmpty() || ! pFont || pFontSize <= 0.01f ){
+	if(pText.IsEmpty() || !pFont || pTextSize <= 0.01f){
 		return;
 	}
 	
 	deoglSkinStateConstructedNode::Update( state );
 	
 	if( pTextMapped[ deSkinPropertyNodeText::etmFontSize ] != -1 ){
-		pFontSize = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmFontSize ] ).GetValue();
+		pTextSize = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmFontSize ] ).GetValue();
 	}
 	if( pTextMapped[ deSkinPropertyNodeText::etmColorRed ] != -1 ){
 		pColor.r = state.GetMappedAt( pTextMapped[ deSkinPropertyNodeText::etmColorRed ] ).GetValue();
@@ -103,7 +106,7 @@ void deoglSkinStateCNText::Update( deoglSkinState &state ){
 }
 
 void deoglSkinStateCNText::Render( deoglSkinState &state, const deoglRenderCanvasContext &context ){
-	if( pText.IsEmpty() || ! pFont || pFontSize <= 0.01f ){
+	if(pText.IsEmpty() || !pFont || pTextSize <= 0.01f){
 		return;
 	}
 	

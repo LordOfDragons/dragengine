@@ -26,10 +26,11 @@
 #define _DEBASEFONTMODULE_H_
 
 #include "../deBaseModule.h"
+#include "../../../resources/font/deFont.h"
+#include "../../../resources/font/deFontSize.h"
+#include "../../../common/file/decBaseFileReader.h"
 
-class decBaseFileReader;
 class decBaseFileWriter;
-class deFont;
 
 
 /**
@@ -40,21 +41,38 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deBaseFontModule( deLoadableModule &loadableModule );
+	deBaseFontModule(deLoadableModule &loadableModule);
 	
 	/** \brief Clean up module. */
-	virtual ~deBaseFontModule();
+	~deBaseFontModule() override;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Load font. */
-	virtual void LoadFont( decBaseFileReader &reader, deFont &font ) = 0;
+	virtual void LoadFont(decBaseFileReader &reader, deFont &font) = 0;
+	
+	/**
+	 * \brief Load font size.
+	 * 
+	 * If loading font size is not fast a parallel load task has to be assigned. The load task
+	 * has to update the font size instance until loading finished. Users must not touch the
+	 * font size until the loader task is finished.
+	 * 
+	 * Module does creates a new deFontSize instance if the requested font size can be loaded
+	 * successfully. If the requested font size is too large the module can create a deFontSize
+	 * of smaller line height. In general font modules use a line height limit to avoid creating
+	 * huge textures or font render engines not supporting large sizes. If a deFontSize with
+	 * the largest supported size exists already the module has to return this one.
+	 * 
+	 * Default implementation throws deeInvalidAction exception.
+	 */
+	virtual deFontSize::Ref LoadFontSize(const decBaseFileReader::Ref &reader,
+		const deFont::Ref &font, int lineHeight);
 	
 	/** \brief Save font. */
-	virtual void SaveFont( decBaseFileWriter &writer, const deFont &font ) = 0;
+	virtual void SaveFont(decBaseFileWriter &writer, const deFont &font) = 0;
 	/*@}*/
 };
 

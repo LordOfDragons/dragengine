@@ -163,8 +163,8 @@ void deoglVSRetainImageData::VisitText( deSkinPropertyNodeText &node ){
 	// it into a texture. we need here though direct access to the image data. this is no problem
 	// since the texture is constructed once and then cached to file causing the image file data
 	// to be retained only once
-	if( node.GetFont() && node.GetFont()->GetImage() ){
-		ProcessImage( *node.GetFont()->GetImage(), true );
+	if(node.GetFont() && node.GetFont()->GetImage()){
+		ProcessImage(node.GetFont()->GetImage(), true);
 	}
 }
 /*@}*/

@@ -39,6 +39,9 @@
 #include "../../common/file/decPath.h"
 #include "../../common/file/decBaseFileReader.h"
 #include "../../common/file/decBaseFileWriter.h"
+#include "../../errortracing/deErrorTrace.h"
+#include "../../errortracing/deErrorTracePoint.h"
+#include "../../errortracing/deErrorTraceValue.h"
 #include "../../filesystem/deVirtualFileSystem.h"
 #include "../../systems/deModuleSystem.h"
 #include "../../systems/deGraphicSystem.h"
@@ -443,8 +446,8 @@ deFont *deFontManager::LoadDebugFont(){
 			glyph.SetUnicode( 32 + i );
 			glyph.SetX( tempGlyphs[ i ].u );
 			glyph.SetY( tempGlyphs[ i ].v );
-			glyph.SetZ( 0 );
 			glyph.SetWidth( tempGlyphs[ i ].width );
+			glyph.SetHeight(font->GetLineHeight());
 			glyph.SetAdvance( tempGlyphs[ i ].width );
 		}
 		
@@ -485,6 +488,55 @@ void deFontManager::ReleaseLeakingResources(){
 	pFonts.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 }
 
+void deFontManager::AddLoadedFont( deFont *font ){
+	DEASSERT_NOTNULL(font)
+	
+	pFonts.Add(font);
+}
+
+deFontSize *deFontManager::LoadFontSize(deFont &font, int size){
+	if(!(font.GetScalable() || font.GetFixedSizes().Has(size))){
+		return nullptr;
+	}
+	
+	deBaseFontModule * const module = (deBaseFontModule*)GetModuleSystem()->
+		GetModuleAbleToLoad(deModuleSystem::emtFont, font.GetFilename());
+		
+	try{
+		DEASSERT_NOTNULL(module)
+		deFontSize * const found = font.GetSizeWith(size);
+		if(found){
+			return found;
+		}
+		
+		return font.AddSize(size, module->LoadFontSize(
+			decBaseFileReader::Ref::New(OpenFileForReading(
+				*font.GetVirtualFileSystem(), font.GetFilename())),
+			deFont::Ref(&font), size));
+		
+	}catch(const deException &e){
+		LogErrorFormat("Load font size failed: %s", font.GetFilename().GetString());
+		LogException(e);
+		
+		deErrorTrace &et = *GetEngine()->GetErrorTrace();
+		et.AddAndSetIfEmpty(e.GetName(), nullptr, e.GetFile(), e.GetLine());
+		
+		deErrorTracePoint &etp = *et.AddPoint(nullptr, "deFontManager::LoadFontSize", __LINE__);
+		
+		deErrorTraceValue &etv = *etp.AddValue("font", "<deFont>");
+		etv.AddSubValue("filename", font.GetFilename());
+		etv.AddSubValueInt("size", size);
+		if(module){
+			etp.AddValue("module", module->GetLoadableModule().GetName());
+		}
+		throw;
+	}
+}
+
+void deFontManager::RemoveResource( deResource *resource ){
+	pFonts.RemoveIfPresent( resource );
+}
+
 
 
 // Systems Support
@@ -508,17 +560,6 @@ void deFontManager::SystemGraphicUnload(){
 		font->SetPeerGraphic( NULL );
 		font = ( deFont* )font->GetLLManagerNext();
 	}
-}
-
-void deFontManager::AddLoadedFont( deFont *font ){
-	if( ! font ){
-		DETHROW( deeInvalidParam );
-	}
-	pFonts.Add( font );
-}
-
-void deFontManager::RemoveResource( deResource *resource ){
-	pFonts.RemoveIfPresent( resource );
 }
 
 

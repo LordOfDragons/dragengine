@@ -9,10 +9,13 @@ UNIFORM_BIND(5) uniform vec4 pGamma; // red, green, blue, 1
 UNIFORM_BIND(6) uniform vec4 pClipRect; // left, top, right, bottom
 UNIFORM_BIND(7) uniform vec4 pTCClamp; // left, top, right, bottom
 
-// WithTexture
+// InputArrayTextures
+UNIFORM_BIND(8) uniform int pTCLayer;
+
+// WithTexture && !InputArrayTextures
 layout(binding=0) uniform lowp sampler2D texColor;
 
-// WithRenderWorld
+// WithRenderWorld || (WithTexture && InputArrayTextures)
 layout(binding=0) uniform lowp sampler2DArray texColorArray;
 
 // WithMask
@@ -20,7 +23,7 @@ layout(binding=1) uniform lowp sampler2D texMask;
 
 #include "shared/interface/2d/fragment.glsl"
 
-// vTexCoord: WithTexture or WithRenderWorld
+// vTexCoord: WithTexture || WithRenderWorld || InputArrayTextures
 
 // WithMask
 VARYING_BIND(3) in vec2 vTexCoordMask;
@@ -34,15 +37,26 @@ void main( void ){
 	}
 	
 	// fragment color
+	vec2 tc = clamp(vTexCoord, pTCClamp.xy, pTCClamp.zw);
+	
 	if(WithTexture){
-		outColor = pow( texture( texColor, clamp( vTexCoord, pTCClamp.xy, pTCClamp.zw ) ), pGamma );
-		outColor = pColorTransform * outColor;
+		if(InputArrayTextures){
+			outColor = texture(texColorArray, vec3(tc, pTCLayer));
+			
+		}else{
+			outColor = texture(texColor, tc);
+		}
+		
+		outColor = pColorTransform * pow(outColor, pGamma);
+		
 	}else if(WithRenderWorld){
-		outColor = pow( texture( texColorArray, vec3( clamp( vTexCoord, pTCClamp.xy, pTCClamp.zw ), 0 ) ), pGamma );
-		outColor = pColorTransform * outColor;
+		outColor = texture(texColorArray, vec3(tc, 0));
+		outColor = pColorTransform * pow(outColor, pGamma);
+		
 	}else{
 		outColor = vec4( pColorTransform[0][0], pColorTransform[1][1], pColorTransform[2][2], pColorTransform[3][3] );
 	}
+	
 	outColor += pColorTransform2;
 	
 	// mask

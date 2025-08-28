@@ -75,6 +75,9 @@
     <ProjectReference Include="..\modules\font\defont\fnt_defont.vcxproj">
       <Project>{74365938-4cd2-4ce4-b53d-284b17c05a01}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\modules\font\freetype\fnt_freetype.vcxproj">
+      <Project>{74365938-4cd2-4ce4-b53d-284b17c05701}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\modules\graphic\null\gra_null.vcxproj">
       <Project>{88498e2c-d02a-4562-a422-e66c40b811e2}</Project>
     </ProjectReference>

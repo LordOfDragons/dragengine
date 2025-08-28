@@ -86,10 +86,12 @@ private:
 	DEF_NATFUNC( nfBuild );
 	DEF_NATFUNC( nfBuildFont );
 	DEF_NATFUNC( nfSetLineHeight );
+	DEF_NATFUNC( nfSetBaseLine );
 	DEF_NATFUNC( nfSetIsColorFont );
 	DEF_NATFUNC( nfSetUndefinedGlyph );
 	DEF_NATFUNC( nfSetGlyphCount );
 	DEF_NATFUNC( nfSetGlyphAt );
+	DEF_NATFUNC( nfSetGlyphAt2 );
 #undef DEF_NATFUNC
 };
 

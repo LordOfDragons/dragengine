@@ -230,37 +230,28 @@ void deImageManager::SaveImage( deImage *image, const char *filename ){
 }
 
 void deImageManager::SaveImage( deVirtualFileSystem *vfs, deImage *image, const char *filename ){
-	if( ! image || ! vfs || ! filename ){
-		DETHROW( deeInvalidParam );
-	}
-	decBaseFileWriter *fileWriter = NULL;
-	deBaseImageModule *module;
+	DEASSERT_NOTNULL(image)
+	DEASSERT_NOTNULL(vfs)
+	DEASSERT_NOTNULL(filename)
 	
 	try{
-		// find the module able to handle this image file
-		module = ( deBaseImageModule* )GetModuleSystem()->GetModuleAbleToLoad(
-			deModuleSystem::emtImage, filename );
+		deBaseImageModule * const module = (deBaseImageModule*)GetModuleSystem()->
+			GetModuleAbleToLoad(deModuleSystem::emtImage, filename);
+		DEASSERT_NOTNULL(module)
 		
-		// save the file with it
-		fileWriter = OpenFileForWriting( *vfs, filename );
-		module->SaveImage( *fileWriter, *image );
-		fileWriter->FreeReference(); fileWriter = NULL;
+		module->SaveImage(decBaseFileWriter::Ref::New(OpenFileForWriting(*vfs, filename)), *image);
 		
-	}catch( const deException & ){
-		if( fileWriter ){
-			fileWriter->FreeReference();
-		}
-		LogErrorFormat( "Saving image '%s' failed", filename );
+	}catch(const deException &e){
+		LogErrorFormat("Saving image '%s' failed", filename);
+		LogException(e);
 		throw;
 	}
 }
 
-void deImageManager::AddLoadedImage( deImage *image ){
-	if( ! image ){
-		DETHROW( deeInvalidParam );
-	}
+void deImageManager::AddLoadedImage(deImage *image){
+	DEASSERT_NOTNULL(image)
 	
-	pImages.Add( image );
+	pImages.Add(image);
 }
 
 

@@ -78,10 +78,13 @@ pCLClosest ( nullptr )
 	
 	pInfoBubble.TakeOver( new meInfoBubble( view ) );
 	
+	deFontManager &fontmgr = *view.GetEngine()->GetFontManager();
+	const deFont::Ref font(deFont::Ref::New(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/")));
+	font->PrepareSize(font->GetLineHeight());
+	
 	pInfoBubbleText.TakeOver( view.GetEngine()->GetCanvasManager()->CreateCanvasText() );
-	pInfoBubbleText->SetFont( deFont::Ref::New( view.GetEngine()->GetFontManager()->
-		LoadFont( "/igde/fonts/sans_10.defont", "/" ) ) );
-	pInfoBubbleText->SetFontSize( ( float )pInfoBubbleText->GetFont()->GetLineHeight() );
+	pInfoBubbleText->SetFont(font);
+	pInfoBubbleText->SetFontSize((float)font->GetLineHeight());
 	pInfoBubbleText->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
 	pInfoBubbleText->SetOrder( 0.0f );
 	pInfoBubble->GetCanvasContent()->AddCanvas( pInfoBubbleText );

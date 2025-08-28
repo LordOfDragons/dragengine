@@ -163,6 +163,21 @@ void deClassFontBuilder::nfSetLineHeight::RunFunction( dsRunTime *rt, dsValue *m
 	builder->GetFont()->SetLineHeight( rt->GetValue( 0 )->GetInt() );
 }
 
+// protected func void setBaseLine(int baseLine)
+deClassFontBuilder::nfSetBaseLine::nfSetBaseLine(const sInitData &init) :
+dsFunction(init.clsFontBuilder, "setBaseLine", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsInteger); // baseLine
+}
+void deClassFontBuilder::nfSetBaseLine::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	if(!builder || !builder->GetFont()){
+		DSTHROW(dueInvalidAction);
+	}
+	
+	builder->GetFont()->SetBaseLine(rt->GetValue(0)->GetInt());
+}
+
 // protected func void setIsColorFont( bool isColorFont )
 deClassFontBuilder::nfSetIsColorFont::nfSetIsColorFont( const sInitData &init ) :
 dsFunction( init.clsFontBuilder, "setIsColorFont", DSFT_FUNCTION,
@@ -244,8 +259,43 @@ void deClassFontBuilder::nfSetGlyphAt::RunFunction( dsRunTime *rt, dsValue *myse
 	glyph.SetY( rt->GetValue( 3 )->GetInt() );
 	glyph.SetZ( rt->GetValue( 4 )->GetInt() );
 	glyph.SetWidth( rt->GetValue( 5 )->GetInt() );
+	glyph.SetHeight(builder->GetFont()->GetLineHeight());
 	glyph.SetBearing( rt->GetValue( 6 )->GetInt() );
 	glyph.SetAdvance( rt->GetValue( 7 )->GetInt() );
+}
+
+// protected func void setGlyphAt(int index, int unicode, int x, int y, int z,
+//    int width, int height, int bearing, int bearingY, int advance)
+deClassFontBuilder::nfSetGlyphAt2::nfSetGlyphAt2(const sInitData &init) :
+dsFunction(init.clsFontBuilder, "setGlyphAt", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter( init.clsInteger ); // index
+	p_AddParameter( init.clsInteger ); // unicode
+	p_AddParameter( init.clsInteger ); // x
+	p_AddParameter( init.clsInteger ); // y
+	p_AddParameter( init.clsInteger ); // z
+	p_AddParameter( init.clsInteger ); // width
+	p_AddParameter( init.clsInteger ); // height
+	p_AddParameter( init.clsInteger ); // bearing
+	p_AddParameter( init.clsInteger ); // bearingY
+	p_AddParameter( init.clsInteger ); // advance
+}
+void deClassFontBuilder::nfSetGlyphAt2::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	if(!builder || !builder->GetFont()){
+		DSTHROW(dueInvalidAction);
+	}
+	
+	deFontGlyph &glyph = builder->GetFont()->GetGlyphAt(rt->GetValue(0)->GetInt());
+	glyph.SetUnicode(rt->GetValue(1)->GetInt());
+	glyph.SetX(rt->GetValue(2)->GetInt());
+	glyph.SetY(rt->GetValue(3)->GetInt());
+	glyph.SetZ(rt->GetValue(4)->GetInt());
+	glyph.SetWidth(rt->GetValue(5)->GetInt());
+	glyph.SetHeight(rt->GetValue(6)->GetInt());
+	glyph.SetBearing(rt->GetValue(7)->GetInt());
+	glyph.SetBearingY(rt->GetValue(8)->GetInt());
+	glyph.SetAdvance(rt->GetValue(9)->GetInt());
 }
 
 
@@ -292,8 +342,10 @@ void deClassFontBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBuild( init ) );
 	AddFunction( new nfBuildFont( init ) );
 	AddFunction( new nfSetLineHeight( init ) );
+	AddFunction(new nfSetBaseLine(init));
 	AddFunction( new nfSetIsColorFont( init ) );
 	AddFunction( new nfSetUndefinedGlyph( init ) );
 	AddFunction( new nfSetGlyphCount( init ) );
 	AddFunction( new nfSetGlyphAt( init ) );
+	AddFunction( new nfSetGlyphAt2( init ) );
 }

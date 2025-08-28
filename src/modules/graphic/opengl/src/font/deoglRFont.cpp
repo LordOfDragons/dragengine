@@ -22,22 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRFont.h"
-#include "../configuration/deoglConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
-#include "../texture/deoglImage.h"
-#include "../texture/deoglRImage.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
-#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/font/deFont.h>
-#include <dragengine/resources/font/deFontGlyph.h>
-#include <dragengine/resources/image/deImage.h>
-
+#include <dragengine/threading/deMutexGuard.h>
 
 
 // Class deoglRFont
@@ -47,108 +37,53 @@
 ////////////////////////////
 
 deoglRFont::deoglRFont( deoglRenderThread &renderThread, const deFont &font ) :
-pRenderThread( renderThread ),
-
-pGlyphs( NULL ),
-pLineHeight( font.GetLineHeight() ),
-pIsColorFont( font.GetIsColorFont() ),
-
-pDelayedImage( NULL )
+pFilename(font.GetFilename()),
+pIsColorFont(font.GetIsColorFont()),
+pGlyphs(renderThread, font)
 {
-	try{
-		pBuildGlyphs( font );
-		
-		// register for delayed async res initialize and delayed opengl object creation
-		pRenderThread.GetDelayedOperations().AddAsyncResInitFont( this );
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
-	LEAK_CHECK_CREATE( renderThread, Font );
+	pGlyphs.SetImage(font.GetImage());
+	
+	// register for delayed async res initialize and delayed opengl object creation
+	renderThread.GetDelayedOperations().AddAsyncResInitFont(this);
+	
+	LEAK_CHECK_CREATE(renderThread, Font);
 }
 
 deoglRFont::~deoglRFont(){
-	LEAK_CHECK_FREE( pRenderThread, Font );
-	pCleanUp();
+	LEAK_CHECK_FREE(pRenderThread, Font);
+	
+	pGlyphs.GetRenderThread().GetDelayedOperations().RemoveAsyncResInitFont(this);
 }
-
 
 
 // Management
 ///////////////
 
 void deoglRFont::FinalizeAsyncResLoading(){
-	// FinalizeAsyncResLoading is called from main thread
-	if( ! pDelayedImage ){
-		return;
-	}
-	
-	// ensure image texture is created. this required SyncToRender() called from the main
-	// thread and PrepareForRender() called in the render thread using delayed operations.
-	pDelayedImage->SyncToRender();
-	
-	pImage = pDelayedImage->GetRImage();
-	pRenderThread.GetDelayedOperations().AddInitImage( pImage );
+	pGlyphs.FinalizeAsyncResLoading();
 }
 
 
-
-// Private Functions
-//////////////////////
-
-void deoglRFont::pCleanUp(){
-	pRenderThread.GetDelayedOperations().RemoveAsyncResInitFont( this );
-	
-	if( pImage ){
-		pRenderThread.GetDelayedOperations().RemoveInitImage( pImage );
-	}
-	if( pGlyphs ){
-		delete [] pGlyphs;
-	}
-}
-
-void deoglRFont::pBuildGlyphs( const deFont &font ){
-	// NOTE this is called during asynchronous resource loading. careful accessing other objects.
-	//      in particular calling AddReference on render objects can lead to ugly bugs
-	
-	// TODO change this to properly use font glyphs. right now the codes 0-255 are allowed
-	//      and filled as a fixed size array
-	pGlyphs = new sGlyph[ 256 ];
-	
-	deImage * const image = font.GetImage();
-	
-	if( image ){
-		pDelayedImage = ( deoglImage* )image->GetPeerGraphic();
-		
-	}else{
-		DETHROW( deeInvalidParam );
+deoglRFontSize *deoglRFont::GetFontSizeFor(deFont &font, int lineHeight){
+	const deFontSize * const size = font.EnsureSizePrepared(lineHeight);
+	if(!size){
+		return nullptr;
 	}
 	
-	pSetGlyph( pUndefinedGlyph, font.GetUndefinedGlyph() );
+	lineHeight = size->GetLineHeight();
 	
+	const deMutexGuard guard(pMutex);
+	const int count = pSizes.GetCount();
 	int i;
-	for( i=0; i<256; i++ ){
-		pGlyphs[ i ] = pUndefinedGlyph;
-	}
-	
-	const int glyphCount = font.GetGlyphCount();
-	for( i=0; i<glyphCount; i++ ){
-		const deFontGlyph &glyph = font.GetGlyphAt( i );
-		if( glyph.GetUnicode() < 256 ){
-			pSetGlyph( pGlyphs[ glyph.GetUnicode() ], glyph );
+	for(i=0; i<count; i++){
+		deoglRFontSize * const rsize = (deoglRFontSize*)pSizes.GetAt(i);
+		if(rsize->GetGlyphs().GetLineHeight() == lineHeight){
+			return rsize;
 		}
 	}
-}
-
-void deoglRFont::pSetGlyph( sGlyph &target, const deFontGlyph &source ){
-	target.x1 = ( float )source.GetX();
-	target.y1 = ( float )source.GetY();
-	target.x2 = ( float )( source.GetX() + source.GetWidth() );
-	target.y2 = ( float )( source.GetY() + pLineHeight );
-	// target.z = source.GetZ()
-	target.bearing = source.GetBearing();
-	target.width = source.GetWidth();
-	target.height = pLineHeight;
-	target.advance = source.GetAdvance();
+	
+	const deoglRFontSize::Ref rsize(deoglRFontSize::Ref::New(
+		new deoglRFontSize(pGlyphs.GetRenderThread(), *this, *size)));
+	pSizes.Add(rsize);
+	return rsize;
 }

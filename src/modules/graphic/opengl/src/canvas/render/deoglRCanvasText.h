@@ -26,10 +26,9 @@
 #define _DEOGLRCANVASTEXT_H_
 
 #include "deoglRCanvas.h"
+#include "../../font/deoglRFont.h"
 
 #include <dragengine/common/string/decString.h>
-
-class deoglRFont;
 
 
 /**
@@ -37,8 +36,9 @@ class deoglRFont;
  */
 class deoglRCanvasText : public deoglRCanvas{
 private:
-	deoglRFont *pFont;
-	float pFontSize;
+	deoglRFont::Ref pFont;
+	deoglRFontSize::Ref pFontSize;
+	float pTextSize;
 	decString pText;
 	decColor pColor;
 	
@@ -56,17 +56,23 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Font or \em NULL if not set. */
-	inline deoglRFont *GetFont() const{ return pFont; }
+	/** Font or nullptr. */
+	inline const deoglRFont::Ref &GetFont() const{ return pFont; }
 	
-	/** Set font or \em NULL to unset. */
-	void SetFont( deoglRFont *font );
+	/** Set font or nullptr. */
+	void SetFont(deoglRFont *font);
 	
-	/** Font size in canvas units. */
-	inline float GetFontSize() const{ return pFontSize; }
+	/** Font size or nullptr. */
+	inline const deoglRFontSize::Ref &GetFontSize() const{ return pFontSize; }
 	
-	/** Set font size in canvas units. */
-	void SetFontSize( float size );
+	/** Set font size or nullptr. */
+	void SetFontSize(deoglRFontSize *size);
+	
+	/** Text size in canvas units. */
+	inline float GetTextSize() const{ return pTextSize; }
+	
+	/** Set text size in canvas units. */
+	void SetTextSize(float size);
 	
 	/** Text. */
 	inline const decString &GetText() const{ return pText; }

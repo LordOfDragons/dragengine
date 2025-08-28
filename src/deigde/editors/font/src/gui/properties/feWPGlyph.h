@@ -48,13 +48,9 @@ private:
 	feWPGlyphListener *pListener;
 	
 	igdeComboBoxReference pCBGlyph;
-	igdeButtonReference pBtnGlyphAdd;
-	igdeButtonReference pBtnGlyphDel;
-	igdeTextFieldReference pEditU;
-	igdeTextFieldReference pEditV;
-	igdeTextFieldReference pEditWidth;
-	igdeTextFieldReference pEditBearing;
-	igdeTextFieldReference pEditAdvance;
+	igdeButtonReference pBtnGlyphAdd, pBtnGlyphDel;
+	igdeTextFieldReference pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
+		pEditBearingY, pEditAdvance;
 	
 	
 	

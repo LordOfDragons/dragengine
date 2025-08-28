@@ -64,6 +64,7 @@
 #include "../vao/deoglVAO.h"
 #include "../world/deoglRCamera.h"
 #include "../font/deoglRFont.h"
+#include "../font/deoglRFontSize.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -134,12 +135,18 @@ void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 	}
 	pAsyncResInitSkinList.RemoveAll();
 	
-	// async res initialize skins
+	// async res initialize fonts
 	count = pAsyncResInitFontList.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoglRFont* )pAsyncResInitFontList.GetAt( i ) )->FinalizeAsyncResLoading();
 	}
 	pAsyncResInitFontList.RemoveAll();
+
+	count = pAsyncResInitFontSizeList.GetCount();
+	for(i=0; i<count; i++){
+		((deoglRFontSize*)pAsyncResInitFontSizeList.GetAt(i))->FinalizeAsyncResLoading();
+	}
+	pAsyncResInitFontSizeList.RemoveAll();
 
 	// finished
 	pHasAsyncResInitOperations = false;
@@ -175,6 +182,22 @@ void deoglDelayedOperations::RemoveAsyncResInitFont( deoglRFont *font ){
 	deMutexGuard guard( pMutexAsyncResInit );
 	
 	pAsyncResInitFontList.RemoveIfPresent( font );
+}
+
+
+
+void deoglDelayedOperations::AddAsyncResInitFontSize(deoglRFontSize *size){
+	DEASSERT_NOTNULL(size)
+	
+	const deMutexGuard guard(pMutexAsyncResInit);
+	pAsyncResInitFontSizeList.AddIfAbsent(size);
+	pHasAsyncResInitOperations = true;
+}
+
+void deoglDelayedOperations::RemoveAsyncResInitFontSize(deoglRFontSize *size){
+	deMutexGuard guard(pMutexAsyncResInit);
+	
+	pAsyncResInitFontSizeList.RemoveIfPresent(size);
 }
 
 

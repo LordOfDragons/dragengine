@@ -864,3 +864,32 @@ void deBeOSInput::pSetAutoRepeatEnabled( bool enabled ){
 		//XAutoRepeatOff( display );
 	}
 }
+
+#ifdef WITH_INTERNAL_MODULE
+#include <dragengine/systems/modules/deInternalModule.h>
+
+class debiModuleInternal : public deInternalModule{
+public:
+	debiModuleInternal(deModuleSystem *system) : deInternalModule(system){
+		SetName("BeOSInput");
+		SetDescription("Processes input on BeOS type operating systems.");
+		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
+		SetVersion(MODULE_VERSION);
+		SetType(deModuleSystem::emtInput);
+		SetDirectoryName("beos");
+		SetPriority(1);
+		SetDefaultLoggingName();
+	}
+	
+	void CreateModule() override{
+		SetModule(BeOSInpCreateModule(this));
+		if(!GetModule()){
+			SetErrorCode(eecCreateModuleFailed);
+		}
+	}
+};
+
+deInternalModule *debiRegisterInternalModule(deModuleSystem *system){
+	return new debiModuleInternal(system);
+}
+#endif

@@ -10,6 +10,7 @@
 	<parameter name='pClipRect' location='6'/> <!-- 5 -->
 	<parameter name='pTCClamp' location='7'/> <!-- 6 -->
 	<parameter name='pTCTransformMask' location='2'/> <!-- 7 -->
+	<parameter name='pTCLayer' location='8'/> <!-- 8 -->
 	
 	<sourceCode unit='vertex'>V Canvas</sourceCode>
 	<sourceCode unit='fragment'>F Canvas</sourceCode>

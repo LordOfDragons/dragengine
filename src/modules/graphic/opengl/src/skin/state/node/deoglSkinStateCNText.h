@@ -42,7 +42,8 @@ public:
 	
 private:
 	deoglRFont::Ref pFont;
-	float pFontSize;
+	deoglRFontSize::Ref pFontSize;
+	float pTextSize;
 	const decString pText;
 	decColor pColor;
 	
@@ -73,7 +74,10 @@ public:
 	inline const deoglRFont::Ref &GetFont() const{ return pFont; }
 	
 	/** Font size. */
-	inline float GetFontSize() const{ return pFontSize; }
+	inline const deoglRFontSize::Ref &GetFontSize() const{ return pFontSize; }
+	
+	/** Text size. */
+	inline float GetTextSize() const{ return pTextSize; }
 	
 	/** Text. */
 	inline const decString &GetText() const{ return pText; }

@@ -109,11 +109,15 @@ def libwebmBuild(target, source, env):
 	cmdline.append('-DENABLE_WEBM_PARSER=ON')
 	cmdline.append('-DBUILD_SHARED_LIBS=OFF')
 	cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=ON')
+	cmdline.append('-DENABLE_SAMPLE_PROGRAMS=OFF')
 		
 	if env['platform_android'] != 'no':
 		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
 	elif 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+	
+	if env['OSBeOS']:
+		cmdline.append('-DCMAKE_POLICY_VERSION_MINIMUM=3.5')
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	

@@ -33,13 +33,7 @@
  */
 class DE_DLL_EXPORT deFontGlyph{
 private:
-	int pUnicode;
-	int pX;
-	int pY;
-	int pZ;
-	int pWidth;
-	int pBearing;
-	int pAdvance;
+	int pUnicode, pX, pY, pZ, pWidth, pHeight, pBearing, pBearingY, pAdvance;
 	
 	
 	
@@ -87,11 +81,23 @@ public:
 	/** \brief Width of glyph in pixels on image map. */
 	void SetWidth( int width );
 	
+	/** \brief Height of glyph in pixels on image map. */
+	inline int GetHeight() const{ return pHeight; }
+	
+	/** \brief Height of glyph in pixels on image map. */
+	void SetHeight(int height);
+	
 	/** \brief Horizontal bearing in pixels. */
 	inline int GetBearing() const{ return pBearing; }
 	
 	/** \brief Horizontal bearing in pixels. */
 	void SetBearing( int bearing );
+	
+	/** \brief Vertical bearing in pixels. */
+	inline int GetBearingY() const{ return pBearingY; }
+	
+	/** \brief Vertical bearing in pixels. */
+	void SetBearingY(int bearing);
 	
 	/** \brief Horizontal advance in pixels. */
 	inline int GetAdvance() const{ return pAdvance; }
