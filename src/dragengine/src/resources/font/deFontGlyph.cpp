@@ -30,7 +30,6 @@
 #include "../../common/exceptions.h"
 
 
-
 // Class deFontGlyph
 //////////////////////
 
@@ -38,59 +37,63 @@
 /////////////////////////////////
 
 deFontGlyph::deFontGlyph() :
-pUnicode( 0 ),
-pX( 0 ),
-pY( 0 ),
-pZ( 0 ),
-pWidth( 0 ),
-pBearing( 0 ),
-pAdvance( 0 ){
+pUnicode(0),
+pX(0),
+pY(0),
+pZ(0),
+pWidth(0),
+pHeight(0),
+pBearing(0),
+pBearingY(0),
+pAdvance(0){
 }
 
 deFontGlyph::~deFontGlyph(){
 }
 
 
-
 // Management
 ///////////////
 
-void deFontGlyph::SetUnicode( int unicode ){
-	if( unicode < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+void deFontGlyph::SetUnicode(int unicode){
+	DEASSERT_TRUE(unicode >= 0)
 	pUnicode = unicode;
 }
 
-void deFontGlyph::SetX( int x ){
+void deFontGlyph::SetX(int x){
+	DEASSERT_TRUE(x >= 0)
 	pX = x;
 }
 
-void deFontGlyph::SetY( int y ){
+void deFontGlyph::SetY(int y){
+	DEASSERT_TRUE(y >= 0)
 	pY = y;
 }
 
-void deFontGlyph::SetZ( int z ){
-	if( z < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+void deFontGlyph::SetZ(int z){
+	DEASSERT_TRUE(z >= 0)
 	pZ = z;
 }
 
-void deFontGlyph::SetWidth( int width ){
-	if( width < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+void deFontGlyph::SetWidth(int width){
+	DEASSERT_TRUE(width >= 0)
 	pWidth = width;
 }
 
-void deFontGlyph::SetBearing( int bearing ){
+void deFontGlyph::SetHeight(int height){
+	DEASSERT_TRUE(height >= 0)
+	pHeight = height;
+}
+
+void deFontGlyph::SetBearing(int bearing){
 	pBearing = bearing;
 }
 
-void deFontGlyph::SetAdvance( int advance ){
-	if( advance < 0 ){
-		DETHROW( deeInvalidParam );
-	}
+void deFontGlyph::SetBearingY(int bearing){
+	pBearingY = bearing;
+}
+
+void deFontGlyph::SetAdvance(int advance){
+	DEASSERT_TRUE(advance >= 0)
 	pAdvance = advance;
 }

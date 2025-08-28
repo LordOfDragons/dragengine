@@ -60,6 +60,7 @@ igdeEditableEntity( environment )
 	
 	SetFilePath( "new.defont" );
 	pLineHeight = 10;
+	pBaseLine = 7;
 	pColorFont = false;
 	pFontImage = NULL;
 	pElementMode = eemBone;
@@ -94,7 +95,7 @@ feFont::~feFont(){
 ///////////////
 
 void feFont::SetLineHeight( int lineHeight ){
-	if( lineHeight < 1 ) DETHROW( deeInvalidParam );
+	DEASSERT_TRUE(lineHeight > 0)
 	
 	if( lineHeight != pLineHeight ){
 		pLineHeight = lineHeight;
@@ -105,6 +106,15 @@ void feFont::SetLineHeight( int lineHeight ){
 void feFont::SetColorFont( bool colorFont ){
 	if( colorFont != pColorFont ){
 		pColorFont = colorFont;
+		NotifyFontChanged();
+	}
+}
+
+void feFont::SetBaseLine(int baseLine){
+	DEASSERT_TRUE(baseLine >= 0)
+	
+	if( baseLine != pBaseLine ){
+		pBaseLine = baseLine;
 		NotifyFontChanged();
 	}
 }

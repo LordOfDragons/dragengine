@@ -28,11 +28,12 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/font/deFontSize.h>
 
 #include "cePCBOptionList.h"
 
 class deCanvasView;
-class deFont;
 class deGraphicContext;
 class ceConversation;
 
@@ -45,7 +46,8 @@ class cePlayerChoiceBox{
 private:
 	ceConversation &pConversation;
 	
-	deFont *pEngFont;
+	deFont::Ref pEngFont;
+	deFontSize::Ref pEngFontSize;
 	
 	decString pPathFont;
 	decColor pBackgroundColor;
@@ -79,7 +81,10 @@ public:
 	inline ceConversation &GetConversation() const{ return pConversation; }
 	
 	/** \brief Engine font. */
-	inline deFont *GetFont() const{ return pEngFont; }
+	inline const deFont::Ref &GetFont() const{ return pEngFont; }
+	
+	/** \brief Engine font size. */
+	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
 	
 	/** \brief Canvas view. */
 	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
@@ -166,6 +171,7 @@ private:
 	void pCleanUp();
 	
 	void pUpdateFont();
+	void pUpdateFontSize();
 };
 
 #endif

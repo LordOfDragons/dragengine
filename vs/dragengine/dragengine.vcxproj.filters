@@ -873,6 +873,9 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\font\deFont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2904,6 +2907,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\font\deFont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontSize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontBuilder.h">

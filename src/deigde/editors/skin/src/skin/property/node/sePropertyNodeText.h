@@ -27,8 +27,8 @@
 
 #include "sePropertyNode.h"
 
-class deFont;
-
+#include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/font/deFontSize.h>
 
 
 /**
@@ -49,8 +49,9 @@ public:
 	
 private:
 	decString pPath;
-	deFont *pFont;
-	float pFontSize;
+	deFont::Ref pFont;
+	deFontSize::Ref pFontSize;
+	float pTextSize;
 	decString pText;
 	decColor pColor;
 	
@@ -79,20 +80,26 @@ public:
 	/** \brief Set font path or empty path if not set. */
 	void SetPath( const char *path );
 	
-	/** \brief Font or \em NULL if not set. */
-	inline deFont *GetFont() const{ return pFont; }
+	/** \brief Font or nullptr. */
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
-	/** \brief Font size in canvas units. */
-	inline float GetFontSize() const{ return pFontSize; }
+	/** \brief Font size or nullptr. */
+	inline const deFontSize::Ref &GetFontSize() const{ return pFontSize; }
+	
+	/** \brief Text size in canvas units. */
+	inline float GetTextSize() const{ return pTextSize; }
 	
 	/**
-	 * \brief Set font size in canvas units.
+	 * \brief Set text size in canvas units.
 	 * \details Size is clamped to 0 or larger.
 	 */
-	void SetFontSize( float size );
+	void SetTextSize( float size );
 	
 	/** \brief Update font. */
 	void UpdateFont();
+	
+	/** \brief Update font size. */
+	void UpdateFontSize();
 	
 	/** \brief Text. */
 	inline const decString &GetText() const{ return pText; }

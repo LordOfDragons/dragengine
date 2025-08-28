@@ -9,4 +9,5 @@
 	<define>WITH_TEXTURE</define>
 	<define>WITH_RENDER_WORLD</define>
 	<define>WITH_MASK</define>
+	<define>INPUT_ARRAY_TEXTURES</define>
 </shaderSource>

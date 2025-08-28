@@ -155,7 +155,7 @@ deSkinPropertyNode *seTextureSkinBuilder::CreateNode( const sePropertyNode &node
 			engNode = engNodeText;
 			engNodeText->SetPath( nodeText.GetPath() );
 			engNodeText->SetFont( nodeText.GetFont() );
-			engNodeText->SetFontSize( nodeText.GetFontSize() );
+			engNodeText->SetFontSize( nodeText.GetTextSize() );
 			engNodeText->SetText( nodeText.GetText() );
 			engNodeText->SetColor( nodeText.GetColor() );
 			

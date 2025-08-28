@@ -87,6 +87,15 @@ public:
 	
 	/** \brief Returns the point formed by adding the given point to the top left corner point. */
 	inline decPoint MapPoint( const decPoint &pt ) const{ return decPoint( x1 + pt.x, y1 + pt.y ); }
+	
+	/** \brief Top left boundary. */
+	inline decPoint GetTopLeft() const{ return decPoint(x1, y1); }
+	
+	/** \brief Top left boundary. */
+	inline decPoint GetBottomRight() const{ return decPoint(x2, y2); }
+	
+	/** \brief Boundary size. */
+	inline decPoint GetSize() const{ return decPoint(x1 + x2, y1 + y2); }
 	/*@}*/
 	
 	
@@ -95,5 +104,11 @@ public:
 	/*@{*/
 	/** \brief Set components of this boundary object to the values of another one. */
 	decBoundary &operator=( const decBoundary &b );
+	
+	/** \brief Boundaries are equal. */
+	bool operator==(const decBoundary &b) const;
+	
+	/** \brief Boundaries are not equal. */
+	bool operator!=(const decBoundary &b) const;
 	/*@}*/
 };

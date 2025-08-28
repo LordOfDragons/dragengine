@@ -140,6 +140,7 @@ public:
 			engGlyph.SetY( glyph.y );
 			engGlyph.SetZ( 0 );
 			engGlyph.SetWidth( glyph.width );
+			engGlyph.SetHeight(pLineHeight);
 			engGlyph.SetBearing( glyph.bearing );
 			engGlyph.SetAdvance( glyph.advance );
 		}

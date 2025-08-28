@@ -76,6 +76,13 @@ abstract class FontBuilder
 	end
 	
 	/**
+	 * \brief Set base line in pixels from top.
+	 * \version 1.29
+	 */
+	protected func void setBaseLine(int baseLine)
+	end
+	
+	/**
 	 * \brief Set if font is colored.
 	 */
 	protected func void setIsColorFont( bool isColorFont )
@@ -97,6 +104,13 @@ abstract class FontBuilder
 	 * \brief Set glyph parameters.
 	 */
 	protected func void setGlyphAt( int index, int unicode, int x, int y, int z, int width, int bearing, int advance )
+	end
+	
+	/**
+	 * \brief Set glyph parameters.
+	 * \version 1.29
+	 */
+	protected func void setGlyphAt(int index, int unicode, int x, int y, int z, int width, int height, int bearing, int bearingY, int advance)
 	end
 	/*@}*/
 end

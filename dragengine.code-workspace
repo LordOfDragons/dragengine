@@ -45,6 +45,10 @@
 			"path": "src/modules/font/defont"
 		},
 		{
+			"name": "Module Font: FreeType",
+			"path": "src/modules/font/freetype"
+		},
+		{
 			"name": "Module Graphic: Null",
 			"path": "src/modules/graphic/null"
 		},
@@ -205,6 +209,10 @@
 			"path": "src/deigde/editors/conversation"
 		},
 		{
+			"name": "Editor: Font",
+			"path": "src/deigde/editors/font"
+		},
+		{
 			"name": "Editor: Game Definition",
 			"path": "src/deigde/editors/gameDefinition"
 		},
@@ -353,7 +361,9 @@
 			"locale": "cpp",
 			"print": "cpp",
 			"__locale": "cpp",
-			"stack": "cpp"
+			"stack": "cpp",
+			"hash_set": "cpp",
+			"queue": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			

@@ -195,7 +195,9 @@ pEditor( NULL )
 	}
 	pFPSRedrawCanvasDelay = 1.0f;
 	
-	pFontStats.TakeOver( GetEngine()->GetFontManager()->LoadFont( "/igde/fonts/sans_10.defont", "/" ) );
+	deFontManager &fontmgr = *GetEngine()->GetFontManager();
+	pFontStats.TakeOver(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/"));
+	pFontSizeStats = pFontStats->PrepareSize(pFontStats->GetLineHeight());
 	
 	pListener = new meView3DListener( *this );
 	
@@ -286,13 +288,15 @@ void meView3D::OnFrameUpdate( float elapsed ){
 
 
 void meView3D::CreateCanvas(){
+	const int lineHeight = pFontSizeStats ? pFontSizeStats->GetLineHeight() : pFontStats->GetLineHeight();
+	
 	igdeViewRenderWindow::CreateCanvas();
 	
 	if( ! pCanvasFPS ){
 		pCanvasFPS.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasView() );
 		pCanvasFPS->SetOrder( 10.0f );
 		pCanvasFPS->SetPosition( decPoint( 5, 5 ) );
-		pCanvasFPS->SetSize( decPoint( pFontStats->GetLineHeight() * 4, pFontStats->GetLineHeight() ) );
+		pCanvasFPS->SetSize(decPoint(lineHeight * 4, lineHeight));
 		AddCanvas( pCanvasFPS );
 		
 		deCanvasPaintReference canvasBackground;
@@ -309,8 +313,8 @@ void meView3D::CreateCanvas(){
 	if( ! pCanvasFPSText ){
 		pCanvasFPSText.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
 		pCanvasFPSText->SetColor( decColor( 1.0f, 1.0f, 1.0f, 1.0f ) );
-		pCanvasFPSText->SetFont( pFontStats );
-		pCanvasFPSText->SetFontSize( ( float )pFontStats->GetLineHeight() );
+		pCanvasFPSText->SetFont(pFontStats);
+		pCanvasFPSText->SetFontSize((float)lineHeight);
 		pCanvasFPSText->SetOrder( 1.0f );
 		pCanvasFPSText->SetPosition( decPoint( 1, 0 ) );
 		pCanvasFPSText->SetSize( pCanvasFPS->GetSize() - decPoint( 2, 0 ) );

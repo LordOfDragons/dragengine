@@ -364,7 +364,7 @@ sePropertyNode *seLoadSaveSkin::LoadPropertyNode( seSkin &skin, deSkinPropertyNo
 			childNode = childText;
 			LoadPropertyNodeCommon( skin, *childNode, engNode );
 			childText->SetPath( engNodeText.GetPath() );
-			childText->SetFontSize( engNodeText.GetFontSize() );
+			childText->SetTextSize( engNodeText.GetFontSize() );
 			childText->SetText( engNodeText.GetText() );
 			childText->SetColor( engNodeText.GetColor() );
 			

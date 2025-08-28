@@ -22,15 +22,21 @@
  * SOFTWARE.
  */
 
-// includes
 #include "deBaseFontModule.h"
+#include "../../../common/exceptions.h"
+
 
 // Class deBaseFontModule
 ///////////////////////////
 
-deBaseFontModule::deBaseFontModule( deLoadableModule &loadableModule ) :
-deBaseModule( loadableModule ){
+deBaseFontModule::deBaseFontModule(deLoadableModule &loadableModule) :
+deBaseModule(loadableModule){
 }
 
 deBaseFontModule::~deBaseFontModule(){
+}
+
+deFontSize::Ref deBaseFontModule::LoadFontSize(const decBaseFileReader::Ref &reader,
+const deFont::Ref &font, int lineHeight){
+	DETHROW(deeInvalidAction);
 }

@@ -25,10 +25,14 @@
 #ifndef _DEFONT_H_
 #define _DEFONT_H_
 
+#include "deFontSize.h"
 #include "deFontGlyph.h"
 #include "../deFileResource.h"
-#include "../image/deImageReference.h"
+#include "../image/deImage.h"
+#include "../../common/collection/decObjectList.h"
+#include "../../common/collection/decIntList.h"
 #include "../../common/math/decMath.h"
+#include "../../threading/deMutex.h"
 
 class deFontManager;
 class deBaseGraphicFont;
@@ -47,24 +51,24 @@ public:
 	typedef deTObjectReference<deFont> Ref;
 	
 	
-	
 private:
-	deFontGlyph pUndefinedGlyph;
-	deFontGlyph *pGlyphs;
+	deFontGlyph pUndefinedGlyph, *pGlyphs;
 	int pGlyphCount;
 	unsigned short *pGlyphGroups;
 	int pGlyphGroupCount;
 	unsigned short *pGlyphMap;
 	int pGlyphMapCount;
-	int pFontWidth;
-	int pLineHeight;
-	bool pColorFont;
+	int pFontWidth, pLineHeight, pBaseLine;
+	bool pColorFont, pScalable;
 	
 	decString pImagePath;
-	deImageReference pImage;
+	deImage::Ref pImage;
+	
+	decIntList pFixedSizes;
+	decObjectList pSizes;
+	deMutex pMutex;
 	
 	deBaseGraphicFont *pPeerGraphic;
-	
 	
 	
 public:
@@ -81,9 +85,8 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deFont();
+	~deFont() override;
 	/*@}*/
-	
 	
 	
 public:
@@ -104,6 +107,17 @@ public:
 	/** \brief Maximum width of all glyphs in pixels. */
 	inline int GetFontWidth() const{ return pFontWidth; }
 	
+	/** \brief Font is scalable. */
+	inline bool GetScalable() const{ return pScalable; }
+	
+	/** \brief Set if font is scalable. */
+	void SetScalable(bool scalable);
+	
+	/** \brief Base line position in pixels from top. */
+	inline int GetBaseLine() const{ return pBaseLine; }
+	
+	/** \brief Set base line position in pixels from top. */
+	void SetBaseLine(int baseLine);
 	
 	
 	/** \brief Undefined glyph. */
@@ -130,6 +144,20 @@ public:
 	 */
 	const deFontGlyph &GetGlyph( int unicode ) const;
 	
+	/**
+	 * \brief Glyph for Unicode.
+	 * 
+	 * If glyph is not defined the undefined glyph is returned. Size can be nullptr in which
+	 * case this function behaves the same as GetGlyph(int).
+	 */
+	const deFontGlyph &GetGlyph(int unicode, const deFontSize *size) const;
+	
+	/**
+	 * \brief Glyph index for Unicode.
+	 * 
+	 * If glyph is not defined -1 is returned.
+	 */
+	int GetGlyphIndex(int unicode) const;
 	
 	
 	/** \brief Update glyphs. */
@@ -139,26 +167,101 @@ public:
 	bool Verify();
 	
 	
-	
 	/** \brief Path to image resource or empty string is not set. */
 	inline const decString &GetImagePath() const{ return pImagePath; }
 	
 	/** \brief Set path to image if existing. */
 	void SetImagePath( const char *path );
 	
-	/** \brief Image or NULL. */
-	inline deImage *GetImage() const{ return pImage; }
+	/** \brief Image or nullptr. */
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or NULL. */
-	void SetImage( deImage *image );
+	/** \brief Set image or nullptr. */
+	void SetImage(deImage *image);
 	
+	
+	/** \brief List of fixed font sizes (line heights). */
+	inline decIntList &GetFixedSizes(){ return pFixedSizes; }
+	inline const decIntList &GetFixedSizes() const{ return pFixedSizes; }
+	
+	/**
+	 * \brief Fixed size best matching line height.
+	 * 
+	 * If font has no fixed sizes 0 is returned.
+	 */
+	int BestFixedSizeFor(int lineHeight) const;
+	
+	
+	/**
+	 * \brief Font size count.
+	 * \note Mutex protected access to sizes.
+	 */
+	int GetSizeCount();
+	
+	/**
+	 * \brief Font size.
+	 * \note Mutex protected access to sizes.
+	 */
+	deFontSize &GetSizeAt(int index);
+	
+	/**
+	 * \brief Font size with line height or null.
+	 * \warning Make sure to check if font size has pending load task. While loading you must not
+	 *          access any data except GetTaskLoad().
+	 * \note Mutex protected access to sizes.
+	 */
+	deFontSize *GetSizeWith(int lineHeight);
+	
+	/**
+	 * \brief Add font size if absent.
+	 * 
+	 * Returns the added font size if absent or the already existing size.
+	 * 
+	 * \note Mutex protected access to sizes.
+	 * \warning For use by deFontManager only.
+	 */
+	deFontSize *AddSize(int lineHeight, const deFontSize::Ref &size);
+	
+	
+	/**
+	 * \brief Prepare font size if required.
+	 * 
+	 * Call this during loading time to allow loading font size ahead of use. It is safe to not
+	 * call this function but it helps to improve loading times. If a matching font size is found
+	 * it is returned otherwise nullptr.
+	 * 
+	 * Also call this before using the font for rendering. In this case wait for the load task
+	 * to finish if present.
+	 * 
+	 * \note Mutex protected access to sizes.
+	 */
+	deFontSize *PrepareSize(int lineHeight);
+	
+	/**
+	 * \brief Ensure font size is prepared.
+	 * 
+	 * Call this before using the font for rendering. If a matching font size is found it is
+	 * returned otherwise nullptr.
+	 * 
+	 * Similar to PrepareSize() but waits for the load task to finish if present.
+	 * 
+	 * \note Mutex protected access to sizes.
+	 */
+	deFontSize *EnsureSizePrepared(int lineHeight);
 	
 	
 	/** \brief Measure size of text. */
-	decPoint TextSize( const decUnicodeString &text ) const;
+	decPoint TextSize(const decUnicodeString &text) const;
 	
 	/** \brief Measure size of text. */
-	decPoint TextSize( const char *text ) const;
+	decPoint TextSize(const char *text) const;
+	
+	
+	/** \brief Measure size of text. */
+	decPoint TextSize(const decUnicodeString &text, const deFontSize &size) const;
+	
+	/** \brief Measure size of text. */
+	decPoint TextSize(const char *text, const deFontSize &size) const;
 	/*@}*/
 	
 	
@@ -178,6 +281,7 @@ private:
 	void pCleanUp();
 	void pFreeGlyphMap();
 	void pCreateGlyphMap();
+	deFontSize *pGetSizeWith(int lineHeight);
 };
 
 #endif

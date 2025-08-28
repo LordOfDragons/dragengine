@@ -29,6 +29,7 @@
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include <deigde/gui/composed/igdeEditPointReference.h>
 
 class feFont;
 class feWindowProperties;
@@ -47,7 +48,7 @@ private:
 	
 	igdeTextFieldReference pEditImagePath;
 	igdeButtonReference pBtnImagePath;
-	igdeTextFieldReference pEditLineHeight;
+	igdeTextFieldReference pEditLineHeight, pEditBaseLine;
 	igdeCheckBoxReference pChkColorFont;
 	
 	

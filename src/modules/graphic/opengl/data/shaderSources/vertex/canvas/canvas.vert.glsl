@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-const bool RequiresTexture = WithTexture || WithRenderWorld;
+const bool RequiresTexture = WithTexture || WithRenderWorld || InputArrayTextures;
 
 UNIFORM_BIND(0) uniform mat3x2 pTransform;
 // RequiresTexture

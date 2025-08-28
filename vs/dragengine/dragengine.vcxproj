@@ -334,6 +334,7 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectVisitor.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectVisitorIdentify.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\font\deFont.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontSize.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontBuilder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontGlyph.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontManager.cpp" />
@@ -1021,6 +1022,7 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectVisitor.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectVisitorIdentify.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\font\deFont.h" />
+    <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontSize.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontBuilder.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontGlyph.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontManager.h" />

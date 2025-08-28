@@ -307,7 +307,7 @@ void deoglSCBuildConstructed::VisitImage( deSkinPropertyNodeImage &node ){
 		( ( float )( image->GetWidth() - 1 ) / ( float )context.clamp.x ) * ( float )node.GetRepeat().x,
 		( ( float )( image->GetHeight() - 1 ) / ( float )context.clamp.y ) * ( float )node.GetRepeat().y );
 	
-	pDrawImage( context, *image, tcScale, decVector2() );
+	pDrawImage(context, *image, tcScale, decVector2(), 0);
 }
 
 void deoglSCBuildConstructed::VisitShape( deSkinPropertyNodeShape &node ){
@@ -471,83 +471,88 @@ void deoglSCBuildConstructed::VisitShape( deSkinPropertyNodeShape &node ){
 }
 
 void deoglSCBuildConstructed::VisitText( deSkinPropertyNodeText &node ){
-	const deFont * const font = node.GetFont();
-	if( ! font ){
+	deFont * const font = node.GetFont();
+	if(!font){
 		return;
 	}
 	
-	const deImage * const image = font->GetImage();
-	if( ! image ){
+	const float textSize = node.GetFontSize();
+	const deFontSize * const size = font->EnsureSizePrepared(textSize);
+	
+	const deImage * const image = (size ? size->GetImage() : font->GetImage());
+	if(!image){
 		return;
 	}
 	
 	sContext &context = *pContext;
 	sTarget target;
-	pDrawMaskIfPresent( node, target );
+	pDrawMaskIfPresent(node, target);
 	
-	const float fontSize = node.GetFontSize();
+	const int lineHeight = size ? size->GetLineHeight() : font->GetLineHeight();
 	
 	decUTF8Decoder utf8Decoder;
-	utf8Decoder.SetString( node.GetText() );
+	utf8Decoder.SetString(node.GetText());
 	const int len = utf8Decoder.GetLength();
-	const float fontScale = fontSize / ( float )font->GetLineHeight();
+	const float fontScale = textSize / (float)lineHeight;
 	
 	// image parameters required for painting
-	const decTexMatrix2 transformInverse( context.transformInverse );
-	const decVector2 tcScale(
-		( float )font->GetLineHeight() / fontSize,
-		( float )font->GetLineHeight() / fontSize );
-	const decPoint3 clipFrom( context.clipFrom );
-	const decPoint3 clipTo( context.clipTo );
-	float glyphPosition = 0.0;
+	const decTexMatrix2 transformInverse(context.transformInverse);
+	const decVector2 tcScale((float)lineHeight / textSize, (float)lineHeight / textSize);
+	const decPoint3 clipFrom(context.clipFrom);
+	const decPoint3 clipTo(context.clipTo);
+	float glyphPosition = 0.0f;
 	
-	context.clamp.y = ( int )( fontSize - 0.5f ); // (fontsize - 1) + 0.5
+	// context.clamp.y = (int)(textSize - 0.5f); // (fontsize - 1) + 0.5
 	
-	if( ! font->GetIsColorFont() ){
-		decColor fontColor( node.GetColor() );
-		fontColor.r = powf( fontColor.r, node.GetGamma() );
-		fontColor.g = powf( fontColor.g, node.GetGamma() );
-		fontColor.b = powf( fontColor.b, node.GetGamma() );
-		context.transformColor *= decColorMatrix::CreateScaling( fontColor );
+	if(!font->GetIsColorFont()){
+		decColor fontColor(node.GetColor());
+		fontColor.r = powf(fontColor.r, node.GetGamma());
+		fontColor.g = powf(fontColor.g, node.GetGamma());
+		fontColor.b = powf(fontColor.b, node.GetGamma());
+		context.transformColor *= decColorMatrix::CreateScaling(fontColor);
 	}
 	
-	while( utf8Decoder.GetPosition() < len ){
+	while(utf8Decoder.GetPosition() < len){
 		const int character = utf8Decoder.DecodeNextCharacter();
-		if( character < 0 || character > 255 ){
-			continue; // temp hack: not working for unicode
+		if(character < 0){
+			continue;
 		}
 		
-		const deFontGlyph &glyph = font->GetGlyph( character );
-		if( glyph.GetWidth() == 0 ){
+		const deFontGlyph &glyph = font->GetGlyph(character, size);
+		if(glyph.GetWidth() == 0 || glyph.GetHeight() == 0){
 			continue;
 		}
 		
 		// adjust transformation and clamping
-		const float realGlyphPosition = glyphPosition - ( float )glyph.GetBearing() * fontScale;
-		const float glyphWidth = ( float )glyph.GetWidth() * fontScale;
+		const float realGlyphPosition = glyphPosition - (float)glyph.GetBearing() * fontScale;
+		const float glyphWidth = (float)glyph.GetWidth() * fontScale;
+		const float glyphHeight = (float)glyph.GetHeight() * fontScale;
+		const float glyphY = -(float)glyph.GetBearingY() * fontScale;
 		
 		context.transformInverse.a13 = transformInverse.a13 - realGlyphPosition;
-		context.clamp.x = ( int )( glyphWidth - 0.5 ); // (glyphWidth - 1) + 0.5
+		context.transformInverse.a23 = transformInverse.a23 - glyphY;
+		context.clamp.x = (int)(glyphWidth - 0.5f); // (glyphWidth - 1) + 0.5
+		context.clamp.y = (int)(glyphY + glyphHeight - 0.5f);
 		
 		// calculate clip boundaries
 		const float x2 = realGlyphPosition + glyphWidth - 1.0f;
 		
-		const decVector2 p1( context.transformScreen * decVector2( realGlyphPosition, 0.0f ) );
-		const decVector2 p2( context.transformScreen * decVector2( x2, 0.0f ) );
-		const decVector2 p3( context.transformScreen * decVector2( realGlyphPosition, ( float )context.clamp.y ) );
-		const decVector2 p4( context.transformScreen * decVector2( x2, ( float )context.clamp.y ) );
+		const decVector2 p1(context.transformScreen * decVector2(realGlyphPosition, glyphY));
+		const decVector2 p2(context.transformScreen * decVector2(x2, glyphY));
+		const decVector2 p3(context.transformScreen * decVector2(realGlyphPosition, (float)context.clamp.y));
+		const decVector2 p4(context.transformScreen * decVector2(x2, (float)context.clamp.y));
 		
-		const decPoint smallest( p1.Smallest( p2 ).Smallest( p3 ).Smallest( p4 ).Round() );
-		const decPoint largest( p1.Largest( p2 ).Largest( p3 ).Largest( p4 ).Round() );
+		const decPoint smallest(p1.Smallest(p2).Smallest(p3).Smallest(p4).Round());
+		const decPoint largest(p1.Largest(p2).Largest(p3).Largest(p4).Round());
 		
-		context.clipFrom = decPoint3( smallest.x, smallest.y, clipFrom.z ).Largest( clipFrom );
-		context.clipTo = decPoint3( largest.x, largest.y, clipTo.z ).Smallest( clipTo );
+		context.clipFrom = decPoint3(smallest.x, smallest.y, clipFrom.z).Largest(clipFrom);
+		context.clipTo = decPoint3(largest.x, largest.y, clipTo.z).Smallest(clipTo);
 		
 		// draw glyph and advance to next position
-		const decVector2 tcOffset( ( float )glyph.GetX(), ( float )glyph.GetY() );
-		pDrawImage( context, *image, tcScale, tcOffset );
+		const decVector2 tcOffset((float)glyph.GetX(), (float)glyph.GetY());
+		pDrawImage(context, *image, tcScale, tcOffset, glyph.GetZ());
 		
-		glyphPosition += ( float )glyph.GetAdvance() * fontScale;
+		glyphPosition += (float)glyph.GetAdvance() * fontScale;
 	}
 }
 
@@ -750,37 +755,37 @@ const decTexMatrix2 &transformInverse, deSkinPropertyNode &childNode ){
 	childNode.Visit( *this );
 }
 
-void deoglSCBuildConstructed::pDrawImage( const sContext &context, const deImage &image,
-const decVector2 &tcScale, const decVector2 &tcOffset ){
+void deoglSCBuildConstructed::pDrawImage(const sContext &context, const deImage &image,
+const decVector2 &tcScale, const decVector2 &tcOffset, int layer){
 	// obtain appropriate data pointer for image
-	const sGrayscale8 *imgGrayscale8 = NULL;
-	const sGrayscale16 *imgGrayscale16 = NULL;
-	const sGrayscale32 *imgGrayscale32 = NULL;
-	const sGrayscaleAlpha8 *imgGrayscaleAlpha8 = NULL;
-	const sGrayscaleAlpha16 *imgGrayscaleAlpha16 = NULL;
-	const sGrayscaleAlpha32 *imgGrayscaleAlpha32 = NULL;
-	const sRGB8 *imgRGB8 = NULL;
-	const sRGB16 *imgRGB16 = NULL;
-	const sRGB32 *imgRGB32 = NULL;
-	const sRGBA8 *imgRGBA8 = NULL;
-	const sRGBA16 *imgRGBA16 = NULL;
-	const sRGBA32 *imgRGBA32 = NULL;
-	const deoglPixelBuffer::sByte1 *imgPbByte1 = NULL;
-	const deoglPixelBuffer::sByte2 *imgPbByte2 = NULL;
-	const deoglPixelBuffer::sByte3 *imgPbByte3 = NULL;
-	const deoglPixelBuffer::sByte4 *imgPbByte4 = NULL;
-	const deoglPixelBuffer::sFloat1 *imgPbFloat1 = NULL;
-	const deoglPixelBuffer::sFloat2 *imgPbFloat2 = NULL;
-	const deoglPixelBuffer::sFloat3 *imgPbFloat3 = NULL;
-	const deoglPixelBuffer::sFloat4 *imgPbFloat4 = NULL;
+	const sGrayscale8 *imgGrayscale8 = nullptr;
+	const sGrayscale16 *imgGrayscale16 = nullptr;
+	const sGrayscale32 *imgGrayscale32 = nullptr;
+	const sGrayscaleAlpha8 *imgGrayscaleAlpha8 = nullptr;
+	const sGrayscaleAlpha16 *imgGrayscaleAlpha16 = nullptr;
+	const sGrayscaleAlpha32 *imgGrayscaleAlpha32 = nullptr;
+	const sRGB8 *imgRGB8 = nullptr;
+	const sRGB16 *imgRGB16 = nullptr;
+	const sRGB32 *imgRGB32 = nullptr;
+	const sRGBA8 *imgRGBA8 = nullptr;
+	const sRGBA16 *imgRGBA16 = nullptr;
+	const sRGBA32 *imgRGBA32 = nullptr;
+	const deoglPixelBuffer::sByte1 *imgPbByte1 = nullptr;
+	const deoglPixelBuffer::sByte2 *imgPbByte2 = nullptr;
+	const deoglPixelBuffer::sByte3 *imgPbByte3 = nullptr;
+	const deoglPixelBuffer::sByte4 *imgPbByte4 = nullptr;
+	const deoglPixelBuffer::sFloat1 *imgPbFloat1 = nullptr;
+	const deoglPixelBuffer::sFloat2 *imgPbFloat2 = nullptr;
+	const deoglPixelBuffer::sFloat3 *imgPbFloat3 = nullptr;
+	const deoglPixelBuffer::sFloat4 *imgPbFloat4 = nullptr;
 	bool hasAlpha = false;
 	
-	deoglPixelBuffer * const pixelBuffer = ( ( deoglImage* )image.GetPeerGraphic() )->GetPixelBuffer();
+	deoglPixelBuffer * const pixelBuffer = ((deoglImage*)image.GetPeerGraphic())->GetPixelBuffer();
 	
-	if( pixelBuffer ){
+	if(pixelBuffer){
 		// image skin pixel buffer is used for memory optimization
 		
-		switch( pixelBuffer->GetFormat() ){
+		switch(pixelBuffer->GetFormat()){
 		case deoglPixelBuffer::epfByte1:
 			imgPbByte1 = pixelBuffer->GetPointerByte1();
 			break;
@@ -818,21 +823,21 @@ const decVector2 &tcScale, const decVector2 &tcOffset ){
 			break;
 			
 		default:
-			DETHROW( deeInvalidParam );
+			DETHROW(deeInvalidParam);
 		}
 		
-	}else if( image.GetData() ){
+	}else if(image.GetData()){
 		// direct memory access is used for regular mode and as fallback
 		
-		if( image.GetBitCount() == 8 ){
-			if( image.GetComponentCount() == 1 ){
+		if(image.GetBitCount() == 8){
+			if(image.GetComponentCount() == 1){
 				imgGrayscale8 = image.GetDataGrayscale8();
 				
-			}else if( image.GetComponentCount() == 2 ){
+			}else if(image.GetComponentCount() == 2){
 				imgGrayscaleAlpha8 = image.GetDataGrayscaleAlpha8();
 				hasAlpha = true;
 				
-			}else if( image.GetComponentCount() == 3 ){
+			}else if(image.GetComponentCount() == 3){
 				imgRGB8 = image.GetDataRGB8();
 				
 			}else{
@@ -840,15 +845,15 @@ const decVector2 &tcScale, const decVector2 &tcOffset ){
 				hasAlpha = true;
 			}
 			
-		}else if( image.GetBitCount() == 16 ){
-			if( image.GetComponentCount() == 1 ){
+		}else if(image.GetBitCount() == 16){
+			if(image.GetComponentCount() == 1){
 				imgGrayscale16 = image.GetDataGrayscale16();
 				
-			}else if( image.GetComponentCount() == 2 ){
+			}else if(image.GetComponentCount() == 2){
 				imgGrayscaleAlpha16 = image.GetDataGrayscaleAlpha16();
 				hasAlpha = true;
 				
-			}else if( image.GetComponentCount() == 3 ){
+			}else if(image.GetComponentCount() == 3){
 				imgRGB16 = image.GetDataRGB16();
 				
 			}else{
@@ -857,14 +862,14 @@ const decVector2 &tcScale, const decVector2 &tcOffset ){
 			}
 			
 		}else{
-			if( image.GetComponentCount() == 1 ){
+			if(image.GetComponentCount() == 1){
 				imgGrayscale32 = image.GetDataGrayscale32();
 				
-			}else if( image.GetComponentCount() == 2 ){
+			}else if(image.GetComponentCount() == 2){
 				imgGrayscaleAlpha32 = image.GetDataGrayscaleAlpha32();
 				hasAlpha = true;
 				
-			}else if( image.GetComponentCount() == 3 ){
+			}else if(image.GetComponentCount() == 3){
 				imgRGB32 = image.GetDataRGB32();
 				
 			}else{
@@ -874,12 +879,13 @@ const decVector2 &tcScale, const decVector2 &tcOffset ){
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		DETHROW(deeInvalidParam);
 	}
 	
 	// image parameters required for painting
 	const int imgWidth = image.GetWidth();
 	const int imgHeight = image.GetHeight();
+	const int imgSize = imgWidth * imgHeight;
 	
 	// paint image
 	const int strideLine = pTarget->pixBufWidth * pTarget->pixBufComponentCount;
@@ -896,7 +902,8 @@ const decVector2 &tcScale, const decVector2 &tcOffset ){
 	int j, z;
 	
 	for( i.y=context.clipFrom.y; i.y<=context.clipTo.y; i.y++ ){
-		int offset = strideImage * context.clipFrom.z + strideLine * i.y + pixBufComponentCount * context.clipFrom.x;
+		int offset = strideImage * context.clipFrom.z + strideLine * i.y
+			+ pixBufComponentCount * context.clipFrom.x;
 		
 		for( i.x=context.clipFrom.x; i.x<=context.clipTo.x; i.x++ ){
 			// transform position from root up to this context clipping at each step
@@ -950,7 +957,7 @@ const decVector2 &tcScale, const decVector2 &tcOffset ){
 			decColor color( 0.0f, 0.0f, 0.0f, hasAlpha ? 0.0f : 1.0f );
 			
 			for( j=0; j<4; j++ ){
-				const int imgOffset = imgWidth * texCoord[ j ].y + texCoord[ j ].x;
+				const int imgOffset = imgSize * layer + imgWidth * texCoord[j].y + texCoord[j].x;
 				
 				// memory optimization
 				if( imgPbByte1 ){

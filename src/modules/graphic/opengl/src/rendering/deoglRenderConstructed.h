@@ -51,6 +51,8 @@ private:
 	const deoglPipeline *pPipelineCanvasColorMask[ 2 ];
 	const deoglPipeline *pPipelineCanvasImage[ 2 ];
 	const deoglPipeline *pPipelineCanvasImageMask[ 2 ];
+	const deoglPipeline *pPipelineCanvasImageArray[2];
+	const deoglPipeline *pPipelineCanvasImageMaskArray[2];
 	
 	
 	

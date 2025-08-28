@@ -119,15 +119,13 @@ void igdeFont::GetConfig( sConfiguration &config ) const{
 }
 
 decPoint igdeFont::TextSize( const char *text ) const{
-	if( ! text ){
-		DETHROW( deeInvalidParam );
-	}
-	return ( ( igdeNativeFont* )pNativeFont )->TextSize( text );
+	DEASSERT_NOTNULL(text)
+	return ((igdeNativeFont*)pNativeFont)->TextSize(text);
 }
 
 deFont *igdeFont::GetEngineFont(){
-	if( ! pEngineFont ){
-		pEngineFont.TakeOver( ( ( igdeNativeFont* )pNativeFont )->CreateEngineFont() );
+	if(!pEngineFont){
+		pEngineFont.TakeOver(((igdeNativeFont*)pNativeFont)->CreateEngineFont());
 	}
 	return pEngineFont;
 }

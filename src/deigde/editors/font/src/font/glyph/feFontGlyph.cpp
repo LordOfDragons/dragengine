@@ -46,8 +46,10 @@ feFontGlyph::feFontGlyph(){
 	pCode = 0;
 	pU = 0;
 	pV = 0;
-	pWidth =10;
+	pWidth = 10;
+	pHeight = 0;
 	pBearing = 0;
+	pBearingY = 0;
 	pAdvance = 10;
 	
 	pSelected = false;
@@ -92,7 +94,7 @@ void feFontGlyph::SetV( int v ){
 }
 
 void feFontGlyph::SetWidth( int width ){
-	if( width < 0 ) DETHROW( deeInvalidParam );
+	DEASSERT_TRUE(width >= 0)
 	
 	if( width != pWidth ){
 		pWidth = width;
@@ -100,9 +102,25 @@ void feFontGlyph::SetWidth( int width ){
 	}
 }
 
+void feFontGlyph::SetHeight(int height){
+	DEASSERT_TRUE(height >= 0)
+	
+	if(height != pHeight){
+		pHeight = height;
+		NotifyGlyphChanged();
+	}
+}
+
 void feFontGlyph::SetBearing( int bearing ){
 	if( bearing != pBearing ){
 		pBearing = bearing;
+		NotifyGlyphChanged();
+	}
+}
+
+void feFontGlyph::SetBearingY(int bearing){
+	if(bearing != pBearingY){
+		pBearingY = bearing;
 		NotifyGlyphChanged();
 	}
 }
@@ -135,7 +153,9 @@ feFontGlyph* feFontGlyph::Copy() const{
 		glyph->pU = pU;
 		glyph->pV = pV;
 		glyph->pWidth = pWidth;
+		glyph->pHeight = pHeight;
 		glyph->pBearing = pBearing;
+		glyph->pBearingY = pBearingY;
 		glyph->pAdvance = pAdvance;
 		
 	}catch( const deException & ){
