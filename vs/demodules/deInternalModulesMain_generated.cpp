@@ -10,6 +10,7 @@ extern deInternalModule *deoalRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deCRRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *decrbRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deFontRegisterInternalModule(deModuleSystem*);
+extern deInternalModule* deftRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *degnRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *deoglRegisterInternalModule(deModuleSystem*);
 extern deInternalModule *depngRegisterInternalModule(deModuleSystem*);
@@ -54,6 +55,7 @@ static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctions[]
 	deCRRegisterInternalModule,
 	decrbRegisterInternalModule,
 	deFontRegisterInternalModule,
+	deftRegisterInternalModule,
 	degnRegisterInternalModule,
 	deoglRegisterInternalModule,
 	depngRegisterInternalModule,
