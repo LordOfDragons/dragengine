@@ -37,6 +37,12 @@
 #include <dragengine/resources/image/deImageManager.h>
 
 
+/** Free type color in BGRS format. */
+struct sFTColorBGRA{
+	unsigned char blue, green, red, alpha;
+};
+
+
 // Class deftFont
 ///////////////////
 
@@ -52,9 +58,12 @@ pOpenArgs{},
 pMaxImageWidth(2048),
 pGlyphSpacing(1),
 pLineHeightLimit(128),
+pHintingSafetyMargin(1),
 pRealFontSize(0),
 pBaseLine(0),
-pRealLineHeight(0)
+pRealLineHeight(0),
+pComponentCount(2),
+pLoadFlags(FT_LOAD_DEFAULT)
 {
 	pStreamRec.size = reader.GetLength();
 	pStreamRec.pos = reader.GetPosition();
@@ -86,7 +95,7 @@ void deftFont::LoadFont(deFont &font){
 	
 	font.SetLineHeight(16);
 	font.SetBaseLine(16 * 3 / 4);
-	font.SetIsColorFont(FT_HAS_COLOR(pFace));
+	font.SetIsColorFont(false);//FT_HAS_COLOR(pFace));
 	font.SetScalable(FT_IS_SCALABLE(pFace));
 	
 	if(FT_HAS_FIXED_SIZES(pFace)){
@@ -120,15 +129,27 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	
 	pRealLineHeight = pBBox.y2 - pBBox.y1;
 	
+	// enlarge glyphs by a small margin to get some wiggle space if hinting enlarges font
+	pRealLineHeight += pHintingSafetyMargin;
+	
 	pBearingOffset.x = 0;
 	pBearingOffset.y = (lineHeight - pRealLineHeight) / 2;
 	pBaseLine = pBBox.y2 + pBearingOffset.y;
 	
+	if(FT_HAS_COLOR(pFace)){
+		pLoadFlags = FT_LOAD_DEFAULT | FT_LOAD_COLOR;
+		pComponentCount = 4;
+		
+	}else{
+		pLoadFlags = FT_LOAD_COLOR;
+		pComponentCount = 2;
+	}
+	
 	pModule.LogInfoFormat(
-		"LoadFontSize[%s,%d]: fs=%d bb=(%d,%d,%d,%d) h=%d gh=%d o=(%d,%d) bl=%d",
+		"LoadFontSize[%s,%d]: fs=%d bb=(%d,%d,%d,%d) h=%d gh=%d o=(%d,%d) bl=%d clr=%d",
 		filename, lineHeight, pRealFontSize, pBBox.x1, pBBox.y1, pBBox.x2, pBBox.y2,
 		(int)(FT_MulFix(pFace->height, pFace->size->metrics.y_scale) / 64),
-		pRealLineHeight, pBearingOffset.x, pBearingOffset.y, pBaseLine);
+		pRealLineHeight, pBearingOffset.x, pBearingOffset.y, pBaseLine, FT_HAS_COLOR(pFace));
 	
 	pInitGlyphs(size);
 	
@@ -139,11 +160,9 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	
 	// pDebugPrintGlyphs(font, size);
 	
-	// const bool hasColor(FT_HAS_COLOR(pFace));
-	
 	decTimer timer;
 	const deImage::Ref image(deImage::Ref::New(pModule.GetGameEngine()->GetImageManager()->
-		CreateImage(imageSize.x, imageSize.y, imageSize.z, /*hasColor ? 4 : 2*/ 2, 8)));
+		CreateImage(imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8)));
 	pRenderGlyphs(size, image);
 	image->NotifyImageDataChanged();
 	size->SetImage(image);
@@ -153,10 +172,12 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	
 	// DEBUG
 	/*
-	if(imageSize.z > 1){
-		pModule.GetGameEngine()->GetImageManager()->SaveImage(image, "/capture/freetype_image.png3d");
-	}else{
-		pModule.GetGameEngine()->GetImageManager()->SaveImage(image, "/capture/freetype_image.png");
+	if(pComponentCount == 4){
+		if(imageSize.z > 1){
+			pModule.GetGameEngine()->GetImageManager()->SaveImage(image, "/capture/freetype_image.png3d");
+		}else{
+			pModule.GetGameEngine()->GetImageManager()->SaveImage(image, "/capture/freetype_image.png");
+		}
 	}
 	*/
 	// DEBUG
@@ -250,18 +271,22 @@ void deftFont::pInitGlyphs(deFontSize &size){
 	
 	while(gindex != 0){
 		if(charcode < 0xffff){
-			pModule.AssertFT(FT_Load_Glyph(pFace, gindex, FT_LOAD_DEFAULT), "FT_Load_Glyph");
+			pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
 			
 			deFontGlyph &glyph = size.GetGlyphAt(glyphIndex++);
 			glyph.SetUnicode((int)charcode);
 			glyph.SetWidth(pFace->glyph->metrics.width / 64);
-			glyph.SetHeight(pFace->glyph->metrics.height / 64);
+			glyph.SetHeight(decMath::min(pFace->glyph->metrics.height / 64, pRealLineHeight));
 			glyph.SetAdvance(pFace->glyph->metrics.horiAdvance / 64);
 			
 			// bearing in freetype is positive to the right and top.
-			// bearing in dragengine is positive to the left and top
+			// bearing in dragengine is positive to the left and bottom
 			glyph.SetBearing(-(pFace->glyph->metrics.horiBearingX / 64 + pBearingOffset.x));
 			glyph.SetBearingY(pFace->glyph->metrics.horiBearingY / 64 - pBaseLine);
+			
+			// enlarge glyph by a small margin to get some wiggle space if hinting enlarges font
+			glyph.SetWidth(glyph.GetWidth() + pHintingSafetyMargin);
+			glyph.SetHeight(glyph.GetHeight() + pHintingSafetyMargin);
 		}
 		charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
 	}
@@ -338,38 +363,67 @@ void deftFont::pRenderGlyphs(const deFontSize &size, deImage &image){
 		
 		while(gindex != 0){
 			if(charcode < 0xffff){
-				pModule.AssertFT(FT_Load_Glyph(pFace, gindex, FT_LOAD_DEFAULT), "FT_Load_Glyph");
+				pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
 				pModule.AssertFT(FT_Render_Glyph(pFace->glyph, FT_RENDER_MODE_NORMAL), "FT_Render_Glyph");
 				
 				const deFontGlyph &glyph = size.GetGlyphAt(glyphIndex++);
-				sGrayscaleAlpha8 *dg = di + strideZ * glyph.GetZ() + strideY * glyph.GetY() + glyph.GetX();
 				
-				const int rows = pFace->glyph->bitmap.rows;
-				
-				// hinting can cause the glyph to be slightly larger than the boundary box.
-				// since we can not enlarge the image anymore at this point in time we have
-				// to clip the glyph. using the bearing the glyph lines up at the top. hence
-				// the best we can do is clip the glyph at the bottom. this could be improved
-				// by adding a clip area at the bottom of the line as safeguard
-				// DEASSERT_TRUE(rows <= pRealLineHeight)
-				const int safeRows = decMath::min(rows, pRealLineHeight);
-				
-				const int top = pBaseLine - pFace->glyph->bitmap_top;
-				const int bottom = top + safeRows;
-				const int width = pFace->glyph->bitmap.width;
-				
-				const unsigned char *bd = pFace->glyph->bitmap.buffer;
-				const int pitch = pFace->glyph->bitmap.pitch;
-				if(pitch < 0){
-					bd += (rows - 1) * -pitch;
-				}
-				
-				for(y=top; y<bottom; y++){
-					for(x=0; x<width; x++){
-						dg[x].alpha = bd[x];
+				if(pFace->glyph->bitmap.buffer){
+					const int rows = pFace->glyph->bitmap.rows;
+					
+					// hinting can cause the glyph to be slightly larger than the boundary box.
+					// since we can not enlarge the image anymore at this point in time we have
+					// to clip the glyph. using the bearing the glyph lines up at the top. hence
+					// the best we can do is clip the glyph at the bottom. this could be improved
+					// by adding a clip area at the bottom of the line as safeguard
+					const int safeRows = decMath::min(rows, glyph.GetHeight());
+					const int padTop = rows - safeRows;
+					
+					const int pitch = pFace->glyph->bitmap.pitch;
+					
+					const unsigned char *bdBase = pFace->glyph->bitmap.buffer;
+					if(pitch < 0){
+						bdBase += (rows - 1 - padTop) * -pitch;
+						
+					}else{
+						bdBase += padTop * pitch;
 					}
-					dg += strideY;
-					bd += pitch;
+					
+					// some fonts cause the bearing to be included in the bitmap width although it
+					// is not included in the metrics. this is incorrect and causes problems.
+					// as a work around calculate the padding on the left side and clip the bitmap
+					const unsigned char *bd = bdBase;
+					const int realWidth = pFace->glyph->bitmap.width;
+					int padLeft = realWidth - 1;
+					
+					for(y=0; y<safeRows; y++){
+						for(x=0; x<realWidth; x++){
+							if(bd[x] > 0){
+								padLeft = decMath::min(padLeft, x);
+								break;
+							}
+						}
+						bd += pitch;
+					}
+					
+					const int width = decMath::min(realWidth - padLeft, glyph.GetWidth());
+					
+					/*
+					pModule.LogInfoFormat("Render: g=0x%x s=(%d,%d) p=%d pm=%d pad=%d", (int)charcode,
+						pFace->glyph->bitmap.width, pFace->glyph->bitmap.rows,
+						pFace->glyph->bitmap.pitch, pFace->glyph->bitmap.pixel_mode, padLeft);
+					*/
+					
+					sGrayscaleAlpha8 *dg = di + strideZ * glyph.GetZ() + strideY * glyph.GetY() + glyph.GetX();
+					bd = bdBase + padLeft;
+					
+					for(y=0; y<safeRows; y++){
+						for(x=0; x<width; x++){
+							dg[x].alpha = bd[x];
+						}
+						dg += strideY;
+						bd += pitch;
+					}
 				}
 			}
 			charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
@@ -383,38 +437,72 @@ void deftFont::pRenderGlyphs(const deFontSize &size, deImage &image){
 		
 		while(gindex != 0){
 			if(charcode < 0xffff){
-				pModule.AssertFT(FT_Load_Glyph(pFace, gindex, FT_LOAD_DEFAULT), "FT_Load_Glyph");
+				pModule.AssertFT(FT_Load_Glyph(pFace, gindex, pLoadFlags), "FT_Load_Glyph");
 				pModule.AssertFT(FT_Render_Glyph(pFace->glyph, FT_RENDER_MODE_NORMAL), "FT_Render_Glyph");
 				
 				const deFontGlyph &glyph = size.GetGlyphAt(glyphIndex++);
-				sRGBA8 *dg = di + strideZ * glyph.GetZ() + strideY * glyph.GetY() + glyph.GetX();
 				
-				const int rows = pFace->glyph->bitmap.rows;
-				
-				// hinting can cause the glyph to be slightly larger than the boundary box.
-				// since we can not enlarge the image anymore at this point in time we have
-				// to clip the glyph. using the bearing the glyph lines up at the top. hence
-				// the best we can do is clip the glyph at the bottom. this could be improved
-				// by adding a clip area at the bottom of the line as safeguard
-				// DEASSERT_TRUE(rows <= pRealLineHeight)
-				const int safeRows = decMath::min(rows, pRealLineHeight);
-				
-				const int top = pBaseLine - pFace->glyph->bitmap_top;
-				const int bottom = top + safeRows;
-				const int width = pFace->glyph->bitmap.width;
-				
-				const unsigned char *bd = pFace->glyph->bitmap.buffer;
-				const int pitch = pFace->glyph->bitmap.pitch;
-				if(pitch < 0){
-					bd += (rows - 1) * -pitch;
-				}
-				
-				for(y=top; y<bottom; y++){
-					for(x=0; x<width; x++){
-						dg[x].alpha = bd[x];
+				if(pFace->glyph->bitmap.buffer){
+					const int rows = pFace->glyph->bitmap.rows;
+					
+					// hinting can cause the glyph to be slightly larger than the boundary box.
+					// since we can not enlarge the image anymore at this point in time we have
+					// to clip the glyph. using the bearing the glyph lines up at the top. hence
+					// the best we can do is clip the glyph at the bottom. this could be improved
+					// by adding a clip area at the bottom of the line as safeguard
+					const int safeRows = decMath::min(rows, glyph.GetHeight());
+					const int padTop = rows - safeRows;
+					
+					const int pitch = pFace->glyph->bitmap.pitch;
+					
+					const unsigned char *bdBase = pFace->glyph->bitmap.buffer;
+					if(pitch < 0){
+						bdBase += (rows - 1 - padTop) * -pitch;
+						
+					}else{
+						bdBase += padTop * pitch;
 					}
-					dg += strideY;
-					bd += pitch;
+					
+					// some fonts cause the bearing to be included in the bitmap width although it
+					// is not included in the metrics. this is incorrect and causes problems.
+					// as a work around calculate the padding on the left side and clip the bitmap
+					const unsigned char *bd = bdBase;
+					const int realWidth = pFace->glyph->bitmap.width;
+					int padLeft = realWidth - 1;
+					
+					for(y=0; y<safeRows; y++){
+						const sFTColorBGRA * const bg = (sFTColorBGRA*)bd;
+						for(x=0; x<realWidth; x++){
+							if(bg[x].alpha > 0){
+								padLeft = decMath::min(padLeft, x);
+								break;
+							}
+						}
+						bd += pitch;
+					}
+					
+					const int width = decMath::min(realWidth - padLeft, glyph.GetWidth());
+					
+					/*
+					pModule.LogInfoFormat("Render: g=0x%x s=(%d,%d) p=%d pm=%d pad=(%d,%d)", (int)charcode,
+						pFace->glyph->bitmap.width, pFace->glyph->bitmap.rows,
+						pFace->glyph->bitmap.pitch, pFace->glyph->bitmap.pixel_mode, padLeft, padTop);
+					*/
+					
+					sRGBA8 *dg = di + strideZ * glyph.GetZ() + strideY * glyph.GetY() + glyph.GetX();
+					bd = bdBase + sizeof(sFTColorBGRA) * padLeft;
+					
+					for(y=0; y<safeRows; y++){
+						const sFTColorBGRA * const bg = (sFTColorBGRA*)bd;
+						for(x=0; x<width; x++){
+							dg[x].red = bg[x].red;
+							dg[x].green = bg[x].green;
+							dg[x].blue = bg[x].blue;
+							dg[x].alpha = bg[x].alpha;
+						}
+						dg += strideY;
+						bd += pitch;
+					}
 				}
 			}
 			charcode = FT_Get_Next_Char(pFace, charcode, &gindex);
