@@ -29,6 +29,7 @@
 #include "meWindowMain.h"
 #include "meWindowMainListener.h"
 #include "meView3D.h"
+#include "vieweditor/meViewEditor.h"
 #include "meTaskSyncGameDefinition.h"
 #include "properties/meWindowProperties.h"
 // #include "effects/meWindowEffects.h"
@@ -64,6 +65,7 @@
 #include "../undosys/gui/object/meUObjectCopyPosition.h"
 #include "../undosys/gui/object/meUObjectCopyRotation.h"
 #include "../undosys/gui/object/meUObjectCopyScale.h"
+#include "../undosys/gui/object/meURotateObject.h"
 #include "../undosys/gui/objectshape/meUObjectShapeAdd.h"
 #include "../undosys/gui/objectshape/meUObjectShapeDelete.h"
 #include "../undosys/gui/navspace/meUDeleteNavSpace.h"
@@ -1159,23 +1161,89 @@ public:
 };
 
 class cActionObjectRotate : public cActionBase{
-	const decVector pRotation;
+	meWindowMain &pWindow;
+	const decVector pAxis;
+	const float pAngle;
 public:
-	cActionObjectRotate( meWindowMain &window, const decVector &rotation, const char *text,
-		igdeIcon *icon, const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, deInputEvent::esmNone,
-		deInputEvent::ekcUndefined, mnemonic ), pRotation( rotation ){}
+	cActionObjectRotate(meWindowMain &window, const decVector &axis, float angle, const char *text,
+		igdeIcon *icon, const char *description, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, deInputEvent::esmNone,
+		deInputEvent::ekcUndefined, mnemonic), pWindow(window), pAxis(axis), pAngle(angle){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ){
-		meObject * const object = world->GetSelectionObject().GetActive();
-		if( ! object ){
-			return NULL;
+	void GetSelectedObjectsWithAttached(meWorld &world, meObjectList &list){
+		const meObjectList &listSelected = world.GetSelectionObject().GetSelected();
+		const int selectedCount = listSelected.GetCount();
+		meObject *object;
+		int i, j;
+		
+		list.RemoveAll();
+		
+		for(i=0; i<selectedCount; i++){
+			list.Add(listSelected.GetAt(i));
 		}
-		return new meUSetObjectRotation( object, object->GetRotation() + pRotation );
+		
+		for(i=0; i<list.GetCount(); i++){
+			object = list.GetAt(i);
+			
+			const meObjectList &listChildren = object->GetAttachedObjectsList();
+			const int childrenCount = listChildren.GetCount();
+			
+			for(j=0; j<childrenCount; j++){
+				list.AddIfAbsent(listChildren.GetAt(j));
+			}
+		}
 	}
 	
-	virtual void Update( const meWorld &world ){
-		SetEnabled( world.GetSelectionObject().HasActive() );
+	virtual igdeUndo *OnAction(meWorld *world){
+		meObject * const activeObject = world->GetSelectionObject().GetActive();
+		if(!activeObject){
+			return nullptr;
+		}
+		
+		const meWorldGuiParameters &guiparams = world->GetGuiParameters();
+		decDVector center, axis(pAxis);
+		
+		if(guiparams.GetUseLocal()){
+			axis = activeObject->GetObjectMatrix() * axis;
+		}
+		
+		const meObjectList &listSelected = world->GetSelectionObject().GetSelected();
+		meObjectList list;
+		int i, count;
+		
+		GetSelectedObjectsWithAttached(*world, list);
+		
+		bool modifyPosition = list.GetCount() > 0;
+		
+		switch(world->GetGuiParameters().GetRotationPivotCenter()){
+		case meWorldGuiParameters::erpcActive:
+			center = activeObject->GetPosition();
+			break;
+			
+		case meWorldGuiParameters::erpcSelected:
+			count = listSelected.GetCount();
+			for(i=0; i<count; i++){
+				center += listSelected.GetAt(i)->GetPosition();
+			}
+			center /= (double)listSelected.GetCount();
+			break;
+			
+		case meWorldGuiParameters::erpcIndividual:
+			center = activeObject->GetPosition();
+			modifyPosition = false;
+			break;
+		}
+		
+		meURotateObject * const undo = new meURotateObject(world, list);
+		undo->SetPivot(center);
+		undo->SetAxis(axis);
+		undo->SetAngle(pAngle);
+		undo->SetModifyPosition(modifyPosition);
+		return undo;
+	}
+	
+	virtual void Update(const meWorld &world){
+		SetEnabled(world.GetSelectionObject().HasActive());
 	}
 };
 
@@ -1738,21 +1806,26 @@ void meWindowMain::pCreateActions(){
 	
 	pActionObjectLightToggle.TakeOver( new cActionObjectLightToggle( *this ) );
 	
-	pActionObjectRotateL45.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, 45.0f, 0.0f ),
-		"Left 45°", environment.GetStockIcon( igdeEnvironment::esiLeft ),
-		"Rotate object left by 45°", deInputEvent::ekcUndefined ) );
-	pActionObjectRotateL90.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, 90.0f, 0.0f ),
-		"Left 90°", environment.GetStockIcon( igdeEnvironment::esiStrongLeft ),
-		"Rotate object left by 90°", deInputEvent::ekcUndefined ) );
-	pActionObjectRotateR45.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, -45.0f, 0.0f ),
-		"Right 45°", environment.GetStockIcon( igdeEnvironment::esiRight ),
-		"Rotate object right by 45°", deInputEvent::ekcUndefined ) );
-	pActionObjectRotateR90.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, -90.0f, 0.0f ),
-		"Right 90°", environment.GetStockIcon( igdeEnvironment::esiStrongRight ),
-		"Rotate object right by 90°", deInputEvent::ekcUndefined ) );
-	pActionObjectRotate180.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, 180.0f, 0.0f ),
-		"Turn around 180°", environment.GetStockIcon( igdeEnvironment::esiStrongDown ),
-		"Rotate object by 180°", deInputEvent::ekcUndefined ) );
+	pActionObjectRotateL45.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), 45.0f,
+		"Left 45°", environment.GetStockIcon(igdeEnvironment::esiLeft),
+		"Rotate object left by 45°", deInputEvent::ekcUndefined));
+	pActionObjectRotateL90.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), 90.0f,
+		"Left 90°", environment.GetStockIcon(igdeEnvironment::esiStrongLeft),
+		"Rotate object left by 90°", deInputEvent::ekcUndefined));
+	pActionObjectRotateR45.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), -45.0f,
+		"Right 45°", environment.GetStockIcon(igdeEnvironment::esiRight),
+		"Rotate object right by 45°", deInputEvent::ekcUndefined));
+	pActionObjectRotateR90.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), -90.0f,
+		"Right 90°", environment.GetStockIcon(igdeEnvironment::esiStrongRight),
+		"Rotate object right by 90°", deInputEvent::ekcUndefined));
+	pActionObjectRotate180.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), 180.0f,
+		"Turn around 180°", environment.GetStockIcon(igdeEnvironment::esiStrongDown),
+		"Rotate object by 180°", deInputEvent::ekcUndefined));
 	
 	pActionObjectDropToGround.TakeOver( new cActionObjectDropToGround( *this ) );
 	pActionObjectSnapToGrid.TakeOver( new cActionObjectSnapToGrid( *this ) );
