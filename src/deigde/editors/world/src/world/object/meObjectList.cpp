@@ -95,6 +95,68 @@ void meObjectList::RemoveAll(){
 }
 
 
+class BridgeVisitor : public decObjectVisitor{
+	meObjectList::Visitor &pVisitor;
+public:
+	BridgeVisitor(meObjectList::Visitor &visitor) : pVisitor(visitor){}
+	void operator() (deObject *object) override{
+		pVisitor(*(meObject*)object);
+	}
+};
+
+void meObjectList::Visit(Visitor &visitor, int from, int to, int step) const{
+	BridgeVisitor bridge(visitor);
+	pObjects.Visit(bridge, from, to, step);
+}
+
+class BridgeEvaluator : public decObjectEvaluator{
+	meObjectList::Evaluator &pEveluator;
+public:
+	BridgeEvaluator(meObjectList::Evaluator &evaluator) : pEveluator(evaluator){}
+	bool operator() (deObject *object) override{
+		return pEveluator(*(meObject*)object);
+	}
+};
+
+meObject *meObjectList::Find(Evaluator &evaluator, int from, int to, int step) const{
+	BridgeEvaluator bridge(evaluator);
+	deObject *found = nullptr;
+	return pObjects.Find(bridge, found, from, to, step) ? (meObject*)found : nullptr;
+}
+
+meObjectList meObjectList::Collect(Evaluator &evaluator, int from, int to, int step) const{
+	BridgeEvaluator bridge(evaluator);
+	meObjectList list;
+	list.pObjects = pObjects.Collect(bridge, from, to, step);
+	return list;
+}
+
+void meObjectList::RemoveIf(Evaluator &evaluator, int from, int to, int step) { 
+	BridgeEvaluator bridge(evaluator);
+	pObjects.RemoveIf(bridge, from, to, step);
+}
+
+class BridgeComparator : public decObjectComparator{
+	meObjectList::Comparator &pComparator;
+public:
+	BridgeComparator(meObjectList::Comparator &comparator) : pComparator(comparator){}
+	int operator() (deObject *a, deObject *b) override{
+		return pComparator(*(meObject*)a, *(meObject*)b);
+	}
+};
+
+void meObjectList::Sort(Comparator &comparator){
+	BridgeComparator bridge(comparator);
+	pObjects.Sort(bridge);
+}
+
+meObjectList meObjectList::GetSorted(Comparator &comparator) const{
+	BridgeComparator bridge(comparator);
+	meObjectList list;
+	list.pObjects = pObjects.GetSorted(bridge);
+	return list;
+}
+
 
 meObjectList &meObjectList::operator=( const meObjectList &list ){
 	pObjects = list.pObjects;

@@ -35,6 +35,25 @@ class meObject;
  * @brief Object List.
  */
 class meObjectList{
+public:
+	class Comparator{
+	public:
+		Comparator() = default;
+		virtual int operator() (meObject &a, meObject &b) = 0;
+	};
+	
+	class Visitor{
+	public:
+		Visitor() = default;
+		virtual void operator() (meObject &object) = 0;
+	};
+	
+	class Evaluator{
+	public:
+		Evaluator() = default;
+		virtual bool operator() (meObject &object) = 0;
+	};
+	
 private:
 	decObjectOrderedSet pObjects;
 	
@@ -67,6 +86,18 @@ public:
 	void RemoveIfPresent( meObject *object );
 	/** Removes all objects. */
 	void RemoveAll();
+	
+	void Visit(Visitor &visitor, int from = 0, int to = -1, int step = 1) const;
+	
+	meObject *Find(Evaluator &evaluator, int from = 0, int to = -1, int step = 1) const;
+	
+	meObjectList Collect(Evaluator &evaluator, int from = 0, int to = -1, int step = 1) const;
+	
+	void RemoveIf(Evaluator &evaluator, int from = 0, int to = -1, int step = 1);
+	
+	void Sort(Comparator &comparator);
+	
+	meObjectList GetSorted(Comparator &comparator) const;
 	
 	/** Sets the list to the contain the same objects as another list. */
 	meObjectList &operator=( const meObjectList &list );

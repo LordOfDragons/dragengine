@@ -40,6 +40,15 @@
 #include <dragengine/common/exceptions.h>
 
 
+class cSorter : public meObjectList::Comparator{
+public:
+	cSorter() = default;
+	int operator() (meObject &a, meObject &b) override{
+		const double d = a.GetPosition().y - b.GetPosition().y;
+		return d > DOUBLE_SAFE_EPSILON ? 1 : (d < -DOUBLE_SAFE_EPSILON ? -1 : 0);
+	}
+};
+
 
 // Class meUObjectDropToGround
 ////////////////////////////////
@@ -47,50 +56,45 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectDropToGround::meUObjectDropToGround( meWorld *world, const meObjectList &objects ){
-	if( ! world ) DETHROW( deeInvalidParam );
+meUObjectDropToGround::meUObjectDropToGround( meWorld *world, const meObjectList &objects ) :
+pWorld(nullptr),
+pObjects(nullptr),
+pObjectCount(0),
+pDropOnObjects(true),
+pAlign(false)
+{
+	DEASSERT_NOTNULL(world)
 	
-	int count = objects.GetCount();
-	meObject *object;
+	const int count = objects.GetCount();
+	DEASSERT_TRUE(count > 0)
+	
+	SetShortInfo("Drop objects to ground");
+	
 	decString text;
-	
-	if( count == 0 ) DETHROW( deeInvalidParam );
-	
-	pWorld = NULL;
-	
-	pDropOnObjects = true;
-	pAlign = false;
-	
-	pObjects = NULL;
-	pObjectCount = 0;
-	
-	SetShortInfo( "Drop objects to ground" );
-	if( count > 1 ){
-		text.Format( "%i objects", count );
+	if(count > 1){
+		text.Format("%d objects", count);
 		
 	}else{
 		text = "1 object";
 	}
-	SetLongInfo( text.GetString() );
+	SetLongInfo(text);
 	
-	// TODO: sort the objects using their y coordinate. this way if they
-	// are stuck inside each other they stack properly after the dropping
-	// since they are dropped in the order they are stored in the list.
+	cSorter sorter;
+	const meObjectList sorted(objects.GetSorted(sorter));
 	
 	try{
-		pObjects = new sObject[ count ];
-		if( ! pObjects ) DETHROW( deeOutOfMemory );
+		pObjects = new sObject[count];
 		
-		for( pObjectCount=0; pObjectCount<count; pObjectCount++ ){
-			object = objects.GetAt( pObjectCount );
+		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
+			meObject * const object = sorted.GetAt(pObjectCount);
 			
-			pObjects[ pObjectCount ].oldpos = object->GetPosition();
-			pObjects[ pObjectCount ].oldrot = object->GetRotation();
-			pObjects[ pObjectCount ].object = object;
+			pObjects[pObjectCount].oldpos = object->GetPosition();
+			pObjects[pObjectCount].oldrot = object->GetRotation();
+			pObjects[pObjectCount].object = object;
 			object->AddReference();
 		}
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
